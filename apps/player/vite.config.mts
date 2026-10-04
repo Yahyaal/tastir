@@ -1,5 +1,6 @@
 /// <reference types='vitest' />
-import { defineConfig } from 'vite';
+import { fileURLToPath } from 'node:url';
+import { defaultClientConditions, defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig(() => ({
@@ -14,6 +15,14 @@ export default defineConfig(() => ({
     host: 'localhost',
   },
   plugins: [react()],
+  resolve: {
+    // Use the workspace packages' TypeScript sources directly, so the dev
+    // server needs no build step for the engine or the schema.
+    conditions: ['@tastir/source', ...defaultClientConditions],
+    alias: {
+      '@tutorials': fileURLToPath(new URL('../../tutorials', import.meta.url)),
+    },
+  },
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [],

@@ -4,5 +4,9 @@
   "private": true,
   "nx": {
     "name": "player"
+  },
+  "dependencies": {
+    "@tastir/engine": "workspace:*",
+    "@tastir/schema": "workspace:*"
   }
 }

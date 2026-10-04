@@ -27,7 +27,7 @@ The goal of phase 0 is one tutorial, the eight-fold star and cross, playing exac
 - [x] **0.7 Golden test harness.** A single test loads every file in `tutorials/`, evaluates it and compares the result with its `expect` block.
   *Done when:* the test passes for the example, and changing one number in `expect` makes it fail with a readable diff.
 
-- [ ] **0.8 Bare player.** In `apps/player`, load the example and render it as SVG with Next and Back buttons and the step text. Elements from the current step are drawn in color and earlier ones in light grey. After the last step, show the inked pattern, then the two piece types filled and the cell tiled across the screen.
+- [x] **0.8 Bare player.** In `apps/player`, load the example and render it as SVG with Next and Back buttons and the step text. Elements from the current step are drawn in color and earlier ones in light grey. After the last step, show the inked pattern, then the two piece types filled and the cell tiled across the screen.
   *Done when:* I can click through all six steps, the ink and the tiled wall in the browser, and what I see matches the description in each step's text. No animation is needed yet.
 
 **Phase 0 exit:** all boxes ticked, golden test green, and the star and cross plays end to end.
