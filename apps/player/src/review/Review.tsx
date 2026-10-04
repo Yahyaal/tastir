@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
-import { PATTERNS, type Pattern, type Picture } from './data';
+import {
+  PATTERNS,
+  QUESTIONS,
+  type Pattern,
+  type Picture,
+  type Question,
+} from './data';
 import './review.css';
 
 const STORE = 'tastir-review-answers';
@@ -28,18 +34,72 @@ function useAnswers() {
 /** All answers as plain text, ready to paste back into the chat. */
 function answersText(answers: Record<string, string>): string {
   const lines: string[] = ['My review answers:', ''];
-  for (const p of PATTERNS) {
-    const given = p.asks
-      .map((q, i) => [q, answers[`${p.id}:${i}`]?.trim()] as const)
-      .filter(([, a]) => a);
-    if (!given.length) continue;
-    lines.push(`## ${p.title} (${p.id})`);
-    for (const [q, a] of given) lines.push(`- Q: ${q}`, `  A: ${a}`);
-    lines.push('');
-  }
+  QUESTIONS.forEach((q, i) => {
+    const a = answers[q.id]?.trim();
+    if (a) lines.push(`Q${i + 1}. ${q.text}`, `A: ${a}`, '');
+  });
   const other = answers['other']?.trim();
-  if (other) lines.push('## Anything else', other, '');
+  if (other) lines.push('Anything else:', other, '');
   return lines.join('\n');
+}
+
+/** Question numbers as shown on the page, by question id. */
+const NUMBER = new Map(QUESTIONS.map((q, i) => [q.id, i + 1]));
+
+function QuestionItem({
+  question: q,
+  answer,
+  setAnswer,
+}: {
+  question: Question;
+  answer: string;
+  setAnswer: (value: string) => void;
+}) {
+  const title = PATTERNS.find((p) => p.id === q.card)?.title ?? q.card;
+  return (
+    <li
+      className={answer.trim() ? 'question answered' : 'question'}
+      id={`q-${q.id}`}
+    >
+      <p className="q-text">
+        <span className="q-num">Q{NUMBER.get(q.id)}</span> {q.text}
+      </p>
+      {q.pictures.length ? (
+        <div className="figures">
+          {q.pictures.map((pic) => (
+            <Figure
+              key={pic.src}
+              picture={pic}
+              wide={pic.src.includes('designs-')}
+            />
+          ))}
+        </div>
+      ) : null}
+      {q.choices?.length ? (
+        <div className="choices">
+          {q.choices.map((c) => (
+            <button
+              key={c}
+              type="button"
+              className={answer === c ? 'chosen' : undefined}
+              onClick={() => setAnswer(c)}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+      ) : null}
+      <textarea
+        aria-label={`Your answer to Q${NUMBER.get(q.id)}`}
+        placeholder="Or type your own answer (saved in this browser)"
+        value={answer}
+        onChange={(e) => setAnswer(e.target.value)}
+      />
+      <p className="q-more">
+        Details: <a href={`#${q.card}`}>{title}</a>
+      </p>
+    </li>
+  );
 }
 
 const url = (p: Picture) => `/__review/${p.src}`;
@@ -47,9 +107,9 @@ const url = (p: Picture) => `/__review/${p.src}`;
 /** Side-by-side comparisons need the card's full width to be legible. */
 const isWide = (p: Picture) => /compare|overlay\.png/.test(p.src);
 
-function Figure({ picture }: { picture: Picture }) {
+function Figure({ picture, wide }: { picture: Picture; wide?: boolean }) {
   return (
-    <figure className={isWide(picture) ? 'wide' : undefined}>
+    <figure className={wide || isWide(picture) ? 'wide' : undefined}>
       <a href={url(picture)} target="_blank" rel="noreferrer">
         <img src={url(picture)} alt={picture.caption} loading="lazy" />
       </a>
@@ -58,15 +118,7 @@ function Figure({ picture }: { picture: Picture }) {
   );
 }
 
-function Card({
-  pattern: p,
-  answers,
-  setAnswer,
-}: {
-  pattern: Pattern;
-  answers: Record<string, string>;
-  setAnswer: (key: string, value: string) => void;
-}) {
+function Card({ pattern: p }: { pattern: Pattern }) {
   const decide = p.status === 'decide';
   return (
     <article className={`review-card ${p.status}`} id={p.id}>
@@ -92,24 +144,30 @@ function Card({
           <Figure key={pic.src} picture={pic} />
         ))}
       </div>
-      <section className="asks">
-        <h4>{decide ? 'What I need from you' : 'What to look at'}</h4>
-        <ol>
-          {p.asks.map((q, i) => (
-            <li key={i}>
-              <p>{q}</p>
-              {decide ? (
-                <textarea
-                  aria-label={`Your answer: ${q}`}
-                  placeholder="Your answer (saved in this browser)"
-                  value={answers[`${p.id}:${i}`] ?? ''}
-                  onChange={(e) => setAnswer(`${p.id}:${i}`, e.target.value)}
-                />
-              ) : null}
-            </li>
-          ))}
-        </ol>
-      </section>
+      {decide ? (
+        <section className="asks">
+          <h4>My questions about this pattern</h4>
+          <p>
+            {QUESTIONS.filter((q) => q.card === p.id).map((q, i) => (
+              <span key={q.id}>
+                {i ? ' · ' : ''}
+                <a href={`#q-${q.id}`}>
+                  Q{NUMBER.get(q.id)}: {q.text.split(/[.:?]/)[0]}
+                </a>
+              </span>
+            ))}
+          </p>
+        </section>
+      ) : (
+        <section className="asks">
+          <h4>What to look at</h4>
+          <ul>
+            {p.asks.map((q) => (
+              <li key={q}>{q}</li>
+            ))}
+          </ul>
+        </section>
+      )}
       <section className="sources">
         <h4>Sources</h4>
         <ul>
@@ -151,78 +209,83 @@ export function Review() {
       </nav>
 
       <header className="review-head">
-        <h1>Overnight review</h1>
+        <h1>Review</h1>
         <p className="lede">
-          On the night of 3–4 October I added pattern tutorials to Tastir. Five
-          are checked against photos of the real pattern and ready. Five others
-          need your decision, because I could not find a photo to check them
-          against. Nothing was deleted: every pattern below is in the library
-          and you can play it.
-        </p>
-        <div className="how">
-          <h2>How to use this page</h2>
-          <p>
-            Each card has pictures (click one to open it full size), a link that
-            opens the tutorial in the player, and its sources. Type your answers
-            in the boxes; they are saved in this browser. When you are done,
-            press <strong>Copy my answers</strong> at the top and paste the text
-            into our chat.
-          </p>
-        </div>
-        <details className="glossary">
-          <summary>Words I use on this page</summary>
-          <dl>
-            <dt>Construction</dt>
-            <dd>
-              The compass circles and ruler lines the learner draws, step by
-              step. In the pictures they are grey.
-            </dd>
-            <dt>Ink</dt>
-            <dd>
-              The lines chosen from the construction to form the pattern. In the
-              pictures they are black, or red when laid over a source drawing to
-              compare.
-            </dd>
-            <dt>Tile</dt>
-            <dd>
-              The square or hexagon of pattern that repeats. Six- and
-              twelve-fold patterns repeat as hexagons, which the app could not
-              do before tonight.
-            </dd>
-            <dt>Wall</dt>
-            <dd>
-              The tile repeated edge to edge, coloured by piece, as in the
-              player’s last stage.
-            </dd>
-            <dt>Piece</dt>
-            <dd>
-              One closed shape between ink lines, the way a tile cutter would
-              cut it.
-            </dd>
-            <dt>Six-fold, eight-fold…</dt>
-            <dd>
-              How many times the pattern repeats around its centre: six-fold
-              looks the same after turning it by 60°.
-            </dd>
-            <dt>Verified</dt>
-            <dd>
-              The wall matches a photo of the pattern on a real building or
-              object. Matching the tutorial I learned it from is not enough.
-            </dd>
-          </dl>
-        </details>
-        <p className="jump">
-          Jump to: <a href="#decide-list">needs your decision</a> ·{' '}
-          <a href="#verified-list">verified</a> ·{' '}
-          <a href="#other">other things from the night</a>
+          {QUESTIONS.length} questions for you, most important first. Each has a
+          picture where the designs are named with letters (Design A, B…) and
+          the parts I mean are marked in colour. Click a choice or type your own
+          answer; answers are saved in this browser. When you are done, press{' '}
+          <strong>Copy my answers</strong> at the top and paste the text into
+          our chat.
         </p>
       </header>
 
+      <h2 className="group" id="questions">
+        Questions for you
+      </h2>
+      <ol className="questions">
+        {QUESTIONS.map((q) => (
+          <QuestionItem
+            key={q.id}
+            question={q}
+            answer={answers[q.id] ?? ''}
+            setAnswer={(v) => set(q.id, v)}
+          />
+        ))}
+      </ol>
+
+      <h2 className="group" id="background">
+        Background
+      </h2>
+      <p className="group-note">
+        On the night of 3–4 October I added pattern tutorials to Tastir. Nothing
+        was deleted: every pattern below is in the library and you can play it.
+        Jump to: <a href="#decide-list">patterns waiting for you</a> ·{' '}
+        <a href="#verified-list">verified patterns</a> ·{' '}
+        <a href="#other">other things from the night</a>
+      </p>
+      <details className="glossary">
+        <summary>Words I use on this page</summary>
+        <dl>
+          <dt>Construction</dt>
+          <dd>
+            The compass circles and ruler lines the learner draws, step by step.
+            In the pictures they are grey.
+          </dd>
+          <dt>Ink</dt>
+          <dd>
+            The lines chosen from the construction to form the pattern. In the
+            pictures they are black, or red when laid over a source drawing.
+          </dd>
+          <dt>Tile</dt>
+          <dd>The square or hexagon of pattern that repeats.</dd>
+          <dt>Wall</dt>
+          <dd>
+            The tile repeated edge to edge, coloured by piece, as in the
+            player’s last stage.
+          </dd>
+          <dt>Piece</dt>
+          <dd>
+            One closed shape between ink lines, as a tile cutter would cut it.
+          </dd>
+          <dt>Six-fold, eight-fold…</dt>
+          <dd>
+            How many times the pattern repeats around its centre: six-fold looks
+            the same after turning it by 60°.
+          </dd>
+          <dt>Verified</dt>
+          <dd>
+            The wall matches a photo of the pattern on a real building or
+            object, not just the tutorial I learned it from.
+          </dd>
+        </dl>
+      </details>
+
       <h2 className="group" id="decide-list">
-        Needs your decision ({decide.length})
+        Patterns waiting for you ({decide.length})
       </h2>
       {decide.map((p) => (
-        <Card key={p.id} pattern={p} answers={answers} setAnswer={set} />
+        <Card key={p.id} pattern={p} />
       ))}
 
       <h2 className="group" id="verified-list">
@@ -233,7 +296,7 @@ export function Review() {
         all they need.
       </p>
       {verified.map((p) => (
-        <Card key={p.id} pattern={p} answers={answers} setAnswer={set} />
+        <Card key={p.id} pattern={p} />
       ))}
 
       <h2 className="group" id="other">

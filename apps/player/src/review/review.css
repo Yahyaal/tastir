@@ -272,3 +272,70 @@
 .review figure.wide {
   grid-column: 1 / -1;
 }
+
+.review .questions {
+  list-style: none;
+  padding: 0;
+}
+
+.review .question {
+  background: #fff;
+  border: 1px solid var(--faint);
+  border-left: 6px solid #d97706;
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin: 16px 0;
+}
+
+.review .question.answered {
+  border-left-color: #15803d;
+}
+
+.review .q-text {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 4px 0 10px;
+}
+
+.review .q-num {
+  display: inline-block;
+  min-width: 2.4em;
+  padding: 1px 8px;
+  margin-right: 6px;
+  border-radius: 6px;
+  background: #9a3412;
+  color: #fff;
+  text-align: center;
+}
+
+.review .choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.review .choices button {
+  font: inherit;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid #9a3412;
+  background: #fff;
+  color: #9a3412;
+  cursor: pointer;
+}
+
+.review .choices button.chosen {
+  background: #9a3412;
+  color: #fff;
+}
+
+.review .q-more {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+.review .question .figures {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 340px));
+}

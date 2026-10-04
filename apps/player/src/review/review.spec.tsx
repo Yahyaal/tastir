@@ -1,18 +1,28 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { PATTERNS } from './data';
+import { PATTERNS, QUESTIONS } from './data';
 import { Review } from './Review';
 
-describe('the overnight review page', () => {
+describe('the review page', () => {
   beforeEach(() => localStorage.clear());
 
-  it('shows a card for every pattern, decisions first', () => {
+  it('asks its questions first, numbered in order', () => {
     render(<Review />);
-    const titles = screen
-      .getAllByRole('heading', { level: 3 })
-      .map((h) => h.textContent);
-    for (const p of PATTERNS) expect(titles).toContain(p.title);
-    const decide = PATTERNS.filter((p) => p.status === 'decide');
-    expect(titles.slice(0, decide.length)).toEqual(decide.map((p) => p.title));
+    const items = document.querySelectorAll('.question');
+    expect(items).toHaveLength(QUESTIONS.length);
+    QUESTIONS.forEach((q, i) => {
+      expect(items[i]?.textContent).toContain(`Q${i + 1}`);
+      expect(items[i]?.textContent).toContain(q.text);
+    });
+  });
+
+  it('points every question at a pattern card, and every waiting card back at its questions', () => {
+    render(<Review />);
+    for (const q of QUESTIONS)
+      expect(document.getElementById(q.card)).toBeTruthy();
+    for (const p of PATTERNS.filter((x) => x.status === 'decide')) {
+      const card = document.getElementById(p.id) as HTMLElement;
+      expect(card.querySelector('a[href^="#q-"]')).toBeTruthy();
+    }
   });
 
   it('links each pattern to the player and its pictures to the dev server', () => {
@@ -20,29 +30,31 @@ describe('the overnight review page', () => {
     for (const p of PATTERNS) {
       const card = document.getElementById(p.id) as HTMLElement;
       expect(card.querySelector(`a[href="/#/${p.id}"]`)).toBeTruthy();
-      for (const img of card.querySelectorAll('img'))
-        expect(img.getAttribute('src')).toMatch(
-          /^\/__review\/(renders|research)\//,
-        );
     }
+    for (const img of document.querySelectorAll('img'))
+      expect(img.getAttribute('src')).toMatch(
+        /^\/__review\/(renders|research)\//,
+      );
   });
 
-  it('keeps typed answers and copies them as text', async () => {
+  it('records a one-click choice and copies the answers as text', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.assign(navigator, { clipboard: { writeText } });
     render(<Review />);
-    const first = PATTERNS.find((p) => p.status === 'decide');
-    const box = screen.getAllByPlaceholderText(
-      /Your answer/,
-    )[0] as HTMLTextAreaElement;
-    fireEvent.change(box, { target: { value: 'Keep it.' } });
+    const first = QUESTIONS[0];
+    const choice = first?.choices?.[0] as string;
+    fireEvent.click(
+      screen.getAllByRole('button', { name: choice })[0] as HTMLElement,
+    );
     expect(
       JSON.parse(localStorage.getItem('tastir-review-answers') ?? '{}'),
     ).toEqual({
-      [`${first?.id}:0`]: 'Keep it.',
+      [first?.id as string]: choice,
     });
     fireEvent.click(screen.getByRole('button', { name: 'Copy my answers' }));
     await screen.findByRole('button', { name: 'Copied ✓' });
-    expect(writeText.mock.calls[0]?.[0]).toContain('A: Keep it.');
+    expect(writeText.mock.calls[0]?.[0]).toContain(
+      `Q1. ${first?.text}\nA: ${choice}`,
+    );
   });
 });

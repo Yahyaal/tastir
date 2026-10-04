@@ -72,11 +72,7 @@ export const PATTERNS: readonly Pattern[] = [
           'Left: your marocarchitecture.com photo (close-up). Right: our rosette. The ring around the centre star differs: pentagons there, blades here.',
       },
     ],
-    asks: [
-      'Do you know a building where this rosette repeats, or a photo of the whole Alhambra ceiling? If you find one, send it and I will rebuild the repeat to match.',
-      'If not, pick one: keep it with the square repeat shown, remove it, or keep the rosette on its own (that needs a small format change so a tutorial can end without a repeating wall).',
-      'Your photos’ pattern: I measured it (small two-square stars on a square grid, star size 0.17 of the spacing, points turned 22.5°, each ringed by eight pentagons) but could not yet identify it or find a construction. The two families I tried do not match (last picture). Can you find out where it comes from: the seller’s name for it, the Alhambra room, or a larger, unwatermarked photo? Any of those would let me finish it.',
-    ],
+    asks: [],
     sources: [
       {
         label:
@@ -121,11 +117,7 @@ export const PATTERNS: readonly Pattern[] = [
           'A Mughal stone screen (Sikandra) that looked similar but is a different pattern.',
       },
     ],
-    asks: [
-      'Have you seen this pattern on a real building? If so, tell me where and I will compare against it.',
-      'Copyright: ship it with credit as it is, ask Sandy Kurt for permission first, or drop it?',
-      'Open it in the player and step through steps 9–11. Are they acceptable, or should I regroup them so each step marks fewer points?',
-    ],
+    asks: [],
     sources: [
       {
         label: 'Sandy Kurt: free tutorials page (“4fold pattern” PDF)',
@@ -155,9 +147,7 @@ export const PATTERNS: readonly Pattern[] = [
         caption: 'Our wall, coloured by piece.',
       },
     ],
-    asks: [
-      'Have you seen this on a building? If not: keep it as a beginner exercise, or remove it?',
-    ],
+    asks: [],
     sources: [
       {
         label: 'Envato Tuts+: “Geometric Design: Working With 6 and 12”',
@@ -183,10 +173,7 @@ export const PATTERNS: readonly Pattern[] = [
           'Left: Sandy Kurt’s final 8-fold zellige drawing. Right: our wall. Not the same pattern.',
       },
     ],
-    asks: [
-      'Do you have a photo of the pattern you wanted here? If you meant Kurt’s richer pattern, I can rebuild it from her drawing with the same method I used for the four-fold one.',
-      'Otherwise: keep our simpler rosette as it is (and drop the reference to Kurt in the notes), or remove it?',
-    ],
+    asks: [],
     sources: [
       {
         label: 'Sandy Kurt: free tutorials page (“8fold zellige” PDFs)',
@@ -211,9 +198,7 @@ export const PATTERNS: readonly Pattern[] = [
           'Left: zellige at the Bou Inania madrasa, Fès. Right: our wall. The rosettes are alike; the ground between them is not.',
       },
     ],
-    asks: [
-      'Keep it as a simplified beginner version, or should I work towards the full Bou Inania pattern? (That is a bigger job: probably a new advanced tutorial.)',
-    ],
+    asks: [],
     sources: [
       {
         label: 'Wikimedia Commons: Bou Inania zellige photo',
@@ -368,5 +353,104 @@ export const PATTERNS: readonly Pattern[] = [
         url: 'https://commons.wikimedia.org/wiki/File:Tiles._Field_cross_and_star_pattern._From_Kashan,_Iran._Dated_697_AH_(1297-1298_CE)._Quartz_ceramic,_underglaze_and_luster_painting._Islamic_Art_Museum_(Museum_f%C3%BCr_Islamische_Kunst),_Berlin,_Germany.jpg',
       },
     ],
+  },
+];
+
+export interface Question {
+  /** Stable key for the saved answer. */
+  readonly id: string;
+  /** One or two short lines. Designs are named by the letters in the pictures. */
+  readonly text: string;
+  /** One-click answers; the owner can still type their own. */
+  readonly choices?: readonly string[];
+  readonly pictures: readonly Picture[];
+  /** The pattern card with the details. */
+  readonly card: string;
+}
+
+/**
+ * The questions for the owner, most important first; a question that only
+ * matters given an earlier answer comes straight after it.
+ */
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'design-b-origin',
+    text: 'Design B (your photo): where is it from? A name, the Alhambra room, or a bigger photo without the watermark would let me build it.',
+    choices: ['I’ll ask the seller', 'I don’t know, drop it'],
+    pictures: [
+      {
+        src: 'renders/alhambra-star-and-arrows/designs-A-B.png',
+        caption:
+          'Design B: red marks one small star, yellow its 8 pentagons. Design A is our rosette, for comparison: a different design.',
+      },
+    ],
+    card: 'alhambra-star-and-arrows',
+  },
+  {
+    id: 'design-g-copyright',
+    text: 'Design G follows Sandy Kurt’s tutorial, which is marked “all rights reserved”. Ship it with credit, ask her first, or drop it?',
+    choices: ['Ship it with credit', 'Ask her first', 'Drop it'],
+    pictures: [
+      {
+        src: 'renders/four-fold-ring-of-circles/design-G.png',
+        caption: 'Design G',
+      },
+    ],
+    card: 'four-fold-ring-of-circles',
+  },
+  {
+    id: 'design-g-steps',
+    text: 'If Design G stays: its steps 9–11 mark many points at once. Fine, or split them into smaller steps?',
+    choices: ['Fine as it is', 'Split them'],
+    pictures: [],
+    card: 'four-fold-ring-of-circles',
+  },
+  {
+    id: 'design-d',
+    text: 'Design D is already in the app, but it is not Sandy Kurt’s design (C), as our notes claimed. Keep D, rebuild it as C, or both?',
+    choices: ['Keep D', 'Rebuild as C', 'Keep both'],
+    pictures: [
+      {
+        src: 'renders/eight-fold-zellige/designs-C-D.png',
+        caption: 'Design C (left) and our Design D (right)',
+      },
+    ],
+    card: 'eight-fold-zellige',
+  },
+  {
+    id: 'design-a',
+    text: 'Design A’s repeat is my guess (picture). Keep it, show the rosette alone with no wall, or remove it?',
+    choices: ['Keep the guessed repeat', 'Rosette alone', 'Remove it'],
+    pictures: [
+      {
+        src: 'renders/alhambra-star-and-arrows/design-A-wall.png',
+        caption: 'Design A repeated on a square grid: my guess',
+      },
+    ],
+    card: 'alhambra-star-and-arrows',
+  },
+  {
+    id: 'design-f',
+    text: 'Design F is a simpler version of the real wall E. Keep F as a beginner version, also build the full E, or both?',
+    choices: ['Keep F only', 'Build E too', 'Replace F with E'],
+    pictures: [
+      {
+        src: 'renders/sixteen-fold-rosette/designs-E-F.png',
+        caption: 'The real wall E (left) and our Design F (right)',
+      },
+    ],
+    card: 'sixteen-fold-rosette',
+  },
+  {
+    id: 'design-h',
+    text: 'Design H matches its tutorial, but I found no building with it. Keep it as a beginner exercise or remove it?',
+    choices: ['Keep it', 'Remove it'],
+    pictures: [
+      {
+        src: 'renders/twelve-fold-dodecagrams/design-H.png',
+        caption: 'Design H',
+      },
+    ],
+    card: 'twelve-fold-dodecagrams',
   },
 ];
