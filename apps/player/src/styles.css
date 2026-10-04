@@ -324,3 +324,41 @@ button:disabled {
 .thumbnail.broken {
   background: var(--faint);
 }
+
+.free-ink .hit {
+  stroke: transparent;
+  stroke-width: 12px;
+  cursor: pointer;
+}
+
+.free-ink .show {
+  stroke: var(--old);
+  stroke-width: 1.5px;
+  stroke-dasharray: 3 3;
+  pointer-events: none;
+}
+
+.free-ink .piece-line:hover .show {
+  stroke: var(--current);
+  stroke-dasharray: none;
+  stroke-width: 3px;
+}
+
+.free-ink .inked .show {
+  stroke: var(--ink);
+  stroke-width: 3px;
+  stroke-dasharray: none;
+  stroke-linecap: round;
+}
+
+.ink-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+
+.ink-tools button {
+  padding: 4px 12px;
+}

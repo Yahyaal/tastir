@@ -1,4 +1,10 @@
-import type { Geometry, Line, SceneElement, Vec } from '@tastir/engine';
+import type {
+  Geometry,
+  InkPiece,
+  Line,
+  SceneElement,
+  Vec,
+} from '@tastir/engine';
 import { compassStart, highlightedNames } from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors, type Model } from './model';
@@ -206,6 +212,51 @@ function Labels({ labels, size }: { labels: readonly Label[]; size: number }) {
   );
 }
 
+export interface FreeInk {
+  readonly pieces: readonly InkPiece[];
+  readonly chosen: ReadonlySet<string>;
+  readonly onToggle: (id: string) => void;
+}
+
+/**
+ * Every piece of construction between two crossings, inked or not; a
+ * click inks or erases one. A wide invisible stroke makes them easy to hit.
+ */
+function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
+  return (
+    <g className="free-ink">
+      {pieces.map(({ id, segment: s }) => (
+        <g
+          key={id}
+          data-id={id}
+          className={chosen.has(id) ? 'piece-line inked' : 'piece-line'}
+          role="button"
+          aria-pressed={chosen.has(id)}
+          aria-label="Ink or erase this line"
+          onClick={() => onToggle(id)}
+        >
+          <line
+            className="hit"
+            x1={sx(s.a)}
+            y1={sy(s.a)}
+            x2={sx(s.b)}
+            y2={sy(s.b)}
+            vectorEffect="non-scaling-stroke"
+          />
+          <line
+            className="show"
+            x1={sx(s.a)}
+            y1={sy(s.a)}
+            x2={sx(s.b)}
+            y2={sy(s.b)}
+            vectorEffect="non-scaling-stroke"
+          />
+        </g>
+      ))}
+    </g>
+  );
+}
+
 /**
  * The construction up to `upTo`: the elements of step `upTo` in color and
  * earlier ones in light grey. With `ink`, everything is faint and the ink
@@ -218,6 +269,7 @@ export function Construction({
   ink = false,
   svgRef,
   outlineHighlights = false,
+  freeInk,
 }: {
   model: Model;
   upTo: number;
@@ -227,6 +279,8 @@ export function Construction({
   svgRef?: React.Ref<SVGSVGElement>;
   /** Outline the step's highlighted elements (instead of flashing them). */
   outlineHighlights?: boolean;
+  /** On the ink stage: every piece the learner can ink, and which are. */
+  freeInk?: FreeInk;
 }) {
   const size = width(view);
   // Lines are clipped well beyond the view, so panning never shows an end.
@@ -269,7 +323,9 @@ export function Construction({
           />
         ))}
       </g>
-      {ink ? (
+      {ink && freeInk ? (
+        <FreeInkPieces {...freeInk} />
+      ) : ink ? (
         <g className="ink">
           {model.pattern.ink.map((s, i) => (
             <line

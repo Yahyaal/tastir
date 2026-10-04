@@ -21,6 +21,7 @@ export {
 export { arrangement, signedArea } from './lib/arrangement.js';
 export { inkStrokes, type InkStroke } from './lib/ink.js';
 export {
+  cellOf,
   computePattern,
   type Cell,
   type Pattern,
@@ -33,3 +34,9 @@ export {
   hasSymmetry,
   strokesOffCrossings,
 } from './lib/checks.js';
+export {
+  classicSelection,
+  inkPieces,
+  strokesOf,
+  type InkPiece,
+} from './lib/freeInk.js';

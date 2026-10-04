@@ -9,6 +9,7 @@ import {
 import { planStep, play } from './animation';
 import { fullView, stepFrame, width } from './camera';
 import { useCamera } from './useCamera';
+import { useInking } from './useInking';
 import { Construction, Legend, RepeatedInk, Thumbnail, Wall } from './drawing';
 import { LIBRARY, type Entry } from './library';
 import { loadModel, stagesOf, type Model, type Stage } from './model';
@@ -60,6 +61,7 @@ export function Player({ model }: { model: Model }) {
   const [speed, setSpeed] = useState(1);
   const [reduced, setReduced] = useState(prefersReducedMotion);
 
+  const inking = useInking(model);
   const svgRef = useRef<SVGSVGElement>(null);
   const running = useRef<Animation[]>([]);
   const reversing = useRef(false);
@@ -156,13 +158,16 @@ export function Player({ model }: { model: Model }) {
     );
   } else if (stage.kind === 'ink') {
     label = 'Ink';
-    text = tutorial.ink.text ?? 'Go over the pattern lines.';
+    text = inking.isClassic
+      ? (tutorial.ink.text ?? 'Go over the pattern lines.')
+      : 'Your own pattern: the next steps repeat and color the lines you inked.';
     picture = (
       <Construction
-        model={model}
         upTo={steps}
+        model={inking.shown}
         view={camera.view}
         svgRef={svgRef}
+        freeInk={inking.freeInk}
         ink
       />
     );
@@ -171,11 +176,11 @@ export function Player({ model }: { model: Model }) {
     text =
       tutorial.pattern.text ??
       'Repeat the tile edge to edge, with the same lines in every copy.';
-    picture = <RepeatedInk model={model} />;
+    picture = <RepeatedInk model={inking.shown} />;
   } else {
     label = 'Color';
-    text = colorText(model);
-    picture = <Wall model={model} />;
+    text = colorText(inking.shown);
+    picture = <Wall model={inking.shown} />;
   }
 
   return (
@@ -215,7 +220,31 @@ export function Player({ model }: { model: Model }) {
         <div className="text">
           <p className="label">{label}</p>
           <p aria-live="polite">{text}</p>
-          {stage.kind === 'color' ? <Legend model={model} /> : null}
+          {stage.kind === 'ink' ? (
+            <div className="ink-tools">
+              <button
+                type="button"
+                className="secondary"
+                aria-pressed={inking.editing}
+                onClick={() => inking.setEditing(!inking.editing)}
+              >
+                {inking.editing ? 'Done' : 'Make your own'}
+              </button>
+              {inking.isClassic ? null : (
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={inking.restoreClassic}
+                >
+                  Back to the classic
+                </button>
+              )}
+              {inking.editing ? (
+                <span>Click a line to ink or erase it.</span>
+              ) : null}
+            </div>
+          ) : null}
+          {stage.kind === 'color' ? <Legend model={inking.shown} /> : null}
         </div>
         <nav>
           {onConstruction ? (

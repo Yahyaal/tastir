@@ -51,10 +51,14 @@ const SLIVER = 0.02;
  * the cell so pieces crossing its edges come out whole, keeps the ones
  * whose centroid lies in the cell, and groups them into types by shape.
  */
-export function computePattern(scene: Scene, tutorial: Tutorial): Pattern {
+export function computePattern(
+  scene: Scene,
+  tutorial: Tutorial,
+  /** Ink to use instead of the tutorial's own, for free inking. */
+  ink: readonly InkStroke[] = inkStrokes(scene, tutorial),
+): Pattern {
   const { eps } = scene.tol;
   const cell = cellOf(scene, tutorial.pattern.cell);
-  const ink = inkStrokes(scene, tutorial);
 
   const segments: Segment[] = [];
   for (let i = -1; i <= 1; i++) {
@@ -124,7 +128,7 @@ export function computePattern(scene: Scene, tutorial: Tutorial): Pattern {
 }
 
 /** The pattern cell; in format v0 it must be a rectangle. */
-function cellOf(scene: Scene, name: string): Cell {
+export function cellOf(scene: Scene, name: string): Cell {
   const fail = (reason: string): never => {
     throw new TutorialError('pattern', name, reason);
   };

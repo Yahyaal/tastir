@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Vec } from '@tastir/engine';
 import { between, centreOf, panBy, width, zoomAt, type Rect } from './camera';
 
+/** How far the pointer moves before a press becomes a drag. */
+const DRAG_PX = 4;
+
 /** How long the view takes to glide to a new frame. */
 const GLIDE_MS = 450;
 
@@ -90,20 +93,27 @@ export function useCamera(
     return () => svg.removeEventListener('wheel', onWheel);
   }, [svgRef, active]);
 
-  // Dragging pans.
+  // Dragging pans. The drag starts only once the pointer has moved a few
+  // pixels, so a plain click still reaches what is under it (free inking).
   useEffect(() => {
     const svg = svgRef.current;
     if (!svg || !active) return;
+    let start: { x: number; y: number; id: number } | undefined;
     let last: { x: number; y: number } | undefined;
     const down = (e: PointerEvent) => {
       if (e.button !== 0) return;
-      stopGlide();
-      last = { x: e.clientX, y: e.clientY };
-      svg.setPointerCapture?.(e.pointerId);
-      svg.classList.add('dragging');
+      start = { x: e.clientX, y: e.clientY, id: e.pointerId };
     };
     const move = (e: PointerEvent) => {
-      if (!last) return;
+      if (!start) return;
+      if (!last) {
+        if (Math.hypot(e.clientX - start.x, e.clientY - start.y) < DRAG_PX)
+          return;
+        stopGlide();
+        last = { x: start.x, y: start.y };
+        svg.setPointerCapture?.(start.id);
+        svg.classList.add('dragging');
+      }
       const u = unitsPerPixel(svg, current.current);
       const dx = e.clientX - last.x;
       const dy = e.clientY - last.y;
@@ -112,6 +122,7 @@ export function useCamera(
       setView(panBy(current.current, -dx * u, dy * u));
     };
     const up = () => {
+      start = undefined;
       last = undefined;
       svg.classList.remove('dragging');
     };
