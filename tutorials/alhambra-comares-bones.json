@@ -1,0 +1,162 @@
+{
+  "format": 0,
+  "id": "alhambra-comares-bones",
+  "title": "Comares bones",
+  "fold": 4,
+  "style": "Nasrid",
+  "level": "beginner",
+  "credits": [
+    {
+      "source": "La Alhambra con regla y compás: el trazado de los diseños geométricos nazaríes (ALZADA 115, 2017)",
+      "creator": "Manuel Martínez Vela",
+      "url": "https://www.riarte.es/handle/20.500.12251/633",
+      "note": "The article shows this Comares panel (“los huesos”) photographed with its grid and diagonals drawn over it; the outlines here were read from that photo.",
+      "steps": [1, 2, 3, 4, 5]
+    }
+  ],
+  "given": {
+    "O": "The centre of a square where four bones meet.",
+    "A": "Any point to the right of O. The distance OA is half a square of the grid."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Rule a horizontal line through the centre and draw a small circle. Its radius is half a square of the grid, and the compass keeps this opening for the whole construction.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Walk the compass along the horizontal: put the point where the circle crosses the line and mark the next crossing, again and again, both ways. The marks are half a square apart.",
+      "create": {
+        "Xm1": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "cx1": {"circle": {"centre": "A", "radiusOf": "c"}},
+        "X2": {"point": {"meet": ["cx1", "h"], "pick": {"farthest": "O"}}},
+        "cxm1": {"circle": {"centre": "Xm1", "radiusOf": "c"}},
+        "Xm2": {"point": {"meet": ["cxm1", "h"], "pick": {"farthest": "O"}}},
+        "cx2": {"circle": {"centre": "X2", "radiusOf": "c"}},
+        "X3": {"point": {"meet": ["cx2", "h"], "pick": {"farthest": "O"}}},
+        "cxm2": {"circle": {"centre": "Xm2", "radiusOf": "c"}},
+        "Xm3": {"point": {"meet": ["cxm2", "h"], "pick": {"farthest": "O"}}},
+        "cx3": {"circle": {"centre": "X3", "radiusOf": "c"}},
+        "X4": {"point": {"meet": ["cx3", "h"], "pick": {"farthest": "O"}}},
+        "cxm3": {"circle": {"centre": "Xm3", "radiusOf": "c"}},
+        "Xm4": {"point": {"meet": ["cxm3", "h"], "pick": {"farthest": "O"}}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "Rule the vertical through the centre, at right angles to the horizontal, and walk the compass up and down it in the same way.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "Y1": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "Ym1": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}},
+        "cy1": {"circle": {"centre": "Y1", "radiusOf": "c"}},
+        "Y2": {"point": {"meet": ["cy1", "v"], "pick": {"farthest": "O"}}},
+        "cym1": {"circle": {"centre": "Ym1", "radiusOf": "c"}},
+        "Ym2": {"point": {"meet": ["cym1", "v"], "pick": {"farthest": "O"}}},
+        "cy2": {"circle": {"centre": "Y2", "radiusOf": "c"}},
+        "Y3": {"point": {"meet": ["cy2", "v"], "pick": {"farthest": "O"}}},
+        "cym2": {"circle": {"centre": "Ym2", "radiusOf": "c"}},
+        "Ym3": {"point": {"meet": ["cym2", "v"], "pick": {"farthest": "O"}}},
+        "cy3": {"circle": {"centre": "Y3", "radiusOf": "c"}},
+        "Y4": {"point": {"meet": ["cy3", "v"], "pick": {"farthest": "O"}}},
+        "cym3": {"circle": {"centre": "Ym3", "radiusOf": "c"}},
+        "Ym4": {"point": {"meet": ["cym3", "v"], "pick": {"farthest": "O"}}}
+      },
+      "highlight": ["h"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Through the first mark on each side of the centre, and every second mark after it, rule a line at right angles to its axis. The lines make a square grid with the centre in the middle of a square.",
+      "create": {
+        "Vm3": {"line": {"through": "Xm3", "perpendicularTo": "h"}},
+        "Hm3": {"line": {"through": "Ym3", "perpendicularTo": "v"}},
+        "Vm1": {"line": {"through": "Xm1", "perpendicularTo": "h"}},
+        "Hm1": {"line": {"through": "Ym1", "perpendicularTo": "v"}},
+        "V1": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "H1": {"line": {"through": "Y1", "perpendicularTo": "v"}},
+        "V3": {"line": {"through": "X3", "perpendicularTo": "h"}},
+        "H3": {"line": {"through": "Y3", "perpendicularTo": "v"}}
+      },
+      "highlight": ["h", "v"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Halve the right angles at the centre to get the two diagonals, and rule lines parallel to them through every second mark on the horizontal, counting from the centre. Every square of the grid now has both its diagonals.",
+      "create": {
+        "d1": {"line": {"through": "O", "bisects": ["A", "O", "Y1"]}},
+        "d2": {"line": {"through": "O", "bisects": ["Y1", "O", "Xm1"]}},
+        "Dmm4": {"line": {"through": "Xm4", "parallelTo": "d1"}},
+        "Dpm4": {"line": {"through": "Xm4", "parallelTo": "d2"}},
+        "Dmm2": {"line": {"through": "Xm2", "parallelTo": "d1"}},
+        "Dpm2": {"line": {"through": "Xm2", "parallelTo": "d2"}},
+        "Dm2": {"line": {"through": "X2", "parallelTo": "d1"}},
+        "Dp2": {"line": {"through": "X2", "parallelTo": "d2"}},
+        "Dm4": {"line": {"through": "X4", "parallelTo": "d1"}},
+        "Dp4": {"line": {"through": "X4", "parallelTo": "d2"}}
+      },
+      "highlight": ["h", "v"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Mark the tile: the square, standing on a corner, whose corners are two squares from the centre along the horizontal and the vertical.",
+      "create": {
+        "Gm4_0": {"point": {"meet": ["Dmm4", "Dpm4"]}},
+        "Gm3_m1": {"point": {"meet": ["Vm3", "Hm1"]}},
+        "Gm3_1": {"point": {"meet": ["Vm3", "H1"]}},
+        "Gm1_m3": {"point": {"meet": ["Vm1", "Hm3"]}},
+        "Gm1_m1": {"point": {"meet": ["Vm1", "Hm1"]}},
+        "Gm1_1": {"point": {"meet": ["Vm1", "H1"]}},
+        "Gm1_3": {"point": {"meet": ["Vm1", "H3"]}},
+        "G0_m4": {"point": {"meet": ["Dm4", "Dpm4"]}},
+        "G0_4": {"point": {"meet": ["Dmm4", "Dp4"]}},
+        "G1_m3": {"point": {"meet": ["V1", "Hm3"]}},
+        "G1_m1": {"point": {"meet": ["V1", "Hm1"]}},
+        "G1_1": {"point": {"meet": ["V1", "H1"]}},
+        "G1_3": {"point": {"meet": ["V1", "H3"]}},
+        "G3_m1": {"point": {"meet": ["V3", "Hm1"]}},
+        "G3_1": {"point": {"meet": ["V3", "H1"]}},
+        "G4_0": {"point": {"meet": ["Dm4", "Dp4"]}},
+        "tile": {"polygon": ["G4_0", "G0_4", "Gm4_0", "G0_m4"]}
+      },
+      "animate": "ruler"
+    }
+  ],
+  "ink": {
+    "text": "Go over the outline of the bones. Each bone is three squares long, and at both ends it reaches half a square out to each side along the diagonals, so it looks like a bone with knobbed ends.",
+    "paths": [
+      {"through": ["Gm4_0", "Gm3_1"]},
+      {"through": ["Gm1_3", "G0_4"]},
+      {"through": ["Gm1_m1", "G1_1"]},
+      {"through": ["G0_m4", "G1_m3"]},
+      {"through": ["G3_m1", "G4_0"]},
+      {"through": ["Gm4_0", "Gm3_m1"]},
+      {"through": ["Gm1_m3", "G0_m4"]},
+      {"through": ["Gm1_1", "G1_m1"]},
+      {"through": ["G0_4", "G1_3"]},
+      {"through": ["G3_1", "G4_0"]},
+      {"through": ["Gm3_m1", "Gm1_m1"]},
+      {"through": ["G1_1", "G3_1"]},
+      {"through": ["Gm1_1", "Gm1_3"]},
+      {"through": ["G1_m3", "G1_m1"]}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Repeat the tile edge to edge. Upright and lying bones interlock like a basket weave, as in the tile panel of the Hall of Comares, where the upright bones are glazed black, green and ochre and the lying ones white.",
+    "palette": "Fès tile",
+    "colors": {"bone": "a"}
+  },
+  "expect": {
+    "note": "Golden values in units of OA (half a grid square, so one square is 4); every piece is the same bone of 4 squares, two per tile of 8 squares.",
+    "pieceTypes": 1,
+    "pieces": [{"name": "bone", "vertices": 12, "area": 16, "perCell": 2}],
+    "cellArea": 32
+  }
+}

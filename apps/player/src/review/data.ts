@@ -383,6 +383,36 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-comares-bones',
+    title: 'Comares bones (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'The “bones” tile panel of the Hall of Comares: one bone shape, upright and lying, interlocking like a basket weave.',
+    story: [
+      'Read straight from the photo of the real panel that Martínez Vela prints with the grid and diagonals drawn over it. Every piece is the same bone, three squares long with half-square knobs at its ends; I checked that the bones fill the plane with no gaps, and our lines fall on every edge between coloured tiles in the photo (first picture).',
+      'One thing the photo cannot show: where one white bone ends and the next begins, because white meets white. The coloured bones fix the geometry, and bones are the only shape that fills the white areas, so the white edges follow from them.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-bones/overlay-ink.png',
+        caption: 'Our lines (red) on the photo of the real Comares panel.',
+      },
+      {
+        src: 'renders/alhambra-comares-bones/wall.png',
+        caption: 'Our wall: one bone shape, two per tile.',
+      },
+    ],
+    asks: ['A quick look at the wall in the player.'],
+    sources: [
+      {
+        label:
+          'Martínez Vela: “La Alhambra con regla y compás” (ALZADA 115, 2017, PDF)',
+        url: 'https://www.riarte.es/handle/20.500.12251/633',
+      },
+    ],
+  },
+  {
     id: 'six-fold-snowflake',
     title: 'Six-fold snowflake',
     fold: 6,

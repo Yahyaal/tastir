@@ -15,7 +15,11 @@ Usage: grid_tutorial.py spec.json tutorials/<id>.json
 spec.json: {"id", "title", "style", "level", "credits", "given", "radius",
             "tile": [[x, y], ...] corners in grid units (on grid lines),
             "segments": [[[x1, y1], [x2, y2]], ...], "ink_text", "pattern_text",
-            "step_texts": {optional overrides}}
+            "centred": optional, true when O is the centre of a square}
+
+With "centred", O sits in the middle of a grid square and OA is half a
+square: the compass marks every half square, grid lines are ruled through
+every other mark and diagonals through the rest.
 """
 import json
 import sys
@@ -27,15 +31,19 @@ def name(prefix, k):
 
 
 def build(spec):
-    R = spec["radius"]  # grid lines run from -R to R either way
+    centred = spec.get("centred", False)
+    unit = 2 if centred else 1  # marks per grid square
+    R = spec["radius"] * unit  # marks run from -R to R either way
     # Points are whole grid points, or centres of squares (both halves).
-    F = lambda v: Fraction(v).limit_denominator(2)
+    F = lambda v: Fraction(v).limit_denominator(2) * unit
     segs = [tuple((F(x), F(y)) for x, y in s) for s in spec["segments"]]
     steps = []
+    grid_k = lambda k: (k % 2 == 1) if centred else True  # grid lines here
+    diag_k = lambda k: (k % 2 == 0) if centred else True  # diagonals here
 
     steps.append({
         "id": 1,
-        "text": "Rule a horizontal line through the centre and draw a small circle. Its radius is one square of the grid, and the compass keeps this opening for the whole construction.",
+        "text": ("Rule a horizontal line through the centre and draw a small circle. Its radius is half a square of the grid, and the compass keeps this opening for the whole construction." if centred else "Rule a horizontal line through the centre and draw a small circle. Its radius is one square of the grid, and the compass keeps this opening for the whole construction."),
         "create": {"h": {"line": {"through": ["O", "A"]}},
                    "c": {"circle": {"centre": "O", "through": "A"}}},
         "animate": "compass",
@@ -56,7 +64,7 @@ def build(spec):
             prev[sgn * k] = name("X", sgn * k)
     steps.append({
         "id": 2,
-        "text": "Walk the compass along the horizontal: put the point where the circle crosses the line and mark the next crossing, again and again, both ways. The marks are one square apart.",
+        "text": "Walk the compass along the horizontal: put the point where the circle crosses the line and mark the next crossing, again and again, both ways. The marks are " + ("half a square" if centred else "one square") + " apart.",
         "create": create, "highlight": ["c", "h"], "animate": "compass",
     })
     X = {k: ("O" if k == 0 else "A" if k == 1 else name("X", k)) for k in range(-R, R + 1)}
@@ -83,12 +91,12 @@ def build(spec):
     # Step 4: the grid.
     create = {}
     for k in range(-R, R + 1):
-        if k:
+        if k and grid_k(k):
             create[name("V", k)] = {"line": {"through": X[k], "perpendicularTo": "h"}}
             create[name("H", k)] = {"line": {"through": Y[k], "perpendicularTo": "v"}}
     steps.append({
         "id": 4,
-        "text": "Through every mark rule a line at right angles to its axis. The lines make a square grid.",
+        "text": ("Through the first mark on each side of the centre, and every second mark after it, rule a line at right angles to its axis. The lines make a square grid with the centre in the middle of a square." if centred else "Through every mark rule a line at right angles to its axis. The lines make a square grid."),
         "create": create, "highlight": ["h", "v"], "animate": "ruler",
     })
     V = {k: ("v" if k == 0 else name("V", k)) for k in range(-R, R + 1)}
@@ -98,13 +106,13 @@ def build(spec):
     create = {"d1": {"line": {"through": "O", "bisects": ["A", "O", Y[1]]}},
               "d2": {"line": {"through": "O", "bisects": [Y[1], "O", X[-1]]}}}
     for k in range(-2 * R, 2 * R + 1):
-        if k == 0 or abs(k) > R:
+        if k == 0 or abs(k) > R or not diag_k(k):
             continue
         create[name("Dm", k)] = {"line": {"through": X[k], "parallelTo": "d1"}}
         create[name("Dp", k)] = {"line": {"through": X[k], "parallelTo": "d2"}}
     steps.append({
         "id": 5,
-        "text": "Halve the right angles at the centre to get the two diagonals, and rule lines parallel to them through every mark on the horizontal. Every square of the grid now has both its diagonals.",
+        "text": ("Halve the right angles at the centre to get the two diagonals, and rule lines parallel to them through every second mark on the horizontal, counting from the centre. Every square of the grid now has both its diagonals." if centred else "Halve the right angles at the centre to get the two diagonals, and rule lines parallel to them through every mark on the horizontal. Every square of the grid now has both its diagonals."),
         "create": create, "highlight": ["h", "v"], "animate": "ruler",
     })
     Dm = {k: ("d1" if k == 0 else name("Dm", k)) for k in range(-R, R + 1)}
@@ -120,6 +128,12 @@ def build(spec):
 
     def meet(p):
         x, y = p
+        if centred:
+            if x % 2 == 1 and y % 2 == 1:
+                return [V[int(x)], H[int(y)]]
+            if x % 2 == 0 and y % 2 == 0:
+                return [Dm[int(x - y)], Dp[int(x + y)]]
+            raise SystemExit(f"{p} is neither a grid point nor the centre of a square")
         if x.denominator == 1 and y.denominator == 1:
             return [V[int(x)], H[int(y)]]
         if x.denominator == 2 and y.denominator == 2:
