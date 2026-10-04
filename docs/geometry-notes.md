@@ -39,12 +39,12 @@ With the main circle of radius 1 divided into 8 by a static and a dynamic square
 - The two squares cross at 8 points at distance √(2−√2) = 0.76537 from the centre, on the 22.5° rays.
 - A circle centred on one of those crossings and touching the vertical and the 45° diagonal has radius 1 − 1/√2 = 0.29289. Eight of them form a ring in which neighbours touch.
 - The lines through those circles' centres are at ±0.29289 (horizontal and vertical) and ±0.41421 (diagonal, measured along the axis). Two of them cross on the 67.5° ray; a circle there touching the vertical and the diagonal has radius 0.29289 × tan 22.5° = 0.12132.
-- A circle about the centre that encloses that small circle and touches its far side has radius 0.43835.
+- A circle about the centre that encloses that small circle and touches its far side has radius 0.43835 (used by `eight-fold-zellige`). Kurt's construction instead touches its near side, radius 0.19570.
 - Star and cross: star area 2.34315, cross area 1.65685, cell area 4.
 
 ## Pattern research: the classic eight-fold zellige
 
-Sandy Kurt publishes a free 19-step PDF tutorial for this pattern (https://sandykurt.com/free-tutorials). Its text was read; its drawings could not be downloaded. `docs/research/eightfold-zellige-reconstruction.png` shows a reconstruction from the text alone.
+Sandy Kurt publishes a free 19-step PDF tutorial for an eight-fold zellige (https://sandykurt.com/free-tutorials). Its drawings were downloaded on 4 October 2026 and show that the tutorial in `tutorials/eight-fold-zellige.json` is a different, simpler design, not a reconstruction of hers; both are kept (owner's decision). Her drawings also correct two values guessed below from the text: the step-9 circle touches the step-8 circle on its near side (radius 0.19570, not 0.43835), and the step-13 lines join ring-circle centres two apart. `tools/review/kurt8/kurt_geom.py` computes her construction exactly. `docs/research/eightfold-zellige-reconstruction.png` shows a reconstruction from the text alone.
 
 Steps 1–10 and 17 are unambiguous and give the values above. Steps 11–16 are ambiguous from the words ("the intersection", "4 pairs of lines connecting the centres"), and the reconstruction of them is probably wrong. Steps 18–19 (inking, and the central rosette) depend on them.
 
