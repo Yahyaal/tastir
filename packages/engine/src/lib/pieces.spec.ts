@@ -129,3 +129,22 @@ describe('the piece under a point', () => {
     expect(hit?.shift.x).toBeCloseTo(8, 9);
   });
 });
+
+describe('slivers', () => {
+  const t = starAndCross();
+  const scene = evaluate(t);
+
+  it('flags a thin strip but not a large star with many points', () => {
+    // Inking the tile's diagonal as well as the star cuts thin slivers.
+    const strip = computePattern(scene, t, [
+      ...computePattern(scene, t).ink,
+      {
+        from: 'c1',
+        to: 'c3',
+        segment: { kind: 'segment', a: { x: 1, y: 1 }, b: { x: 0.99, y: -1 } },
+      },
+    ]);
+    expect(strip.types.some((p) => p.sliver)).toBe(true);
+    expect(computePattern(scene, t).types.some((p) => p.sliver)).toBe(false);
+  });
+});

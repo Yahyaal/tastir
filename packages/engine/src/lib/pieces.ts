@@ -24,7 +24,7 @@ export interface PieceType {
   readonly sides: readonly number[];
   /** How many pieces of this type each cell holds. */
   readonly perCell: number;
-  /** Too thin to cut from tile (area / perimeter² below 0.02). */
+  /** Too thin or too small to cut from tile; see isSliver. */
   readonly sliver: boolean;
 }
 
@@ -44,7 +44,16 @@ export interface Pattern {
   readonly types: readonly PieceType[];
 }
 
-const SLIVER = 0.02;
+/**
+ * A piece too thin or too small to cut from tile: thin (area / perimeter²
+ * below 0.02) and small (under 5% of the tile), or tiny (under 0.2%). A
+ * large star with many points is thin by the first measure alone, but it
+ * cuts fine.
+ */
+function isSliver(area: number, perimeter: number, cellArea: number): boolean {
+  const thin = area / perimeter ** 2 < 0.02;
+  return (thin && area < 0.05 * cellArea) || area < 0.002 * cellArea;
+}
 
 /**
  * Inks the tutorial, finds the closed pieces over a 3×3 neighbourhood of
@@ -94,7 +103,7 @@ export function computePattern(
       types.push({
         ...shape,
         perCell: 0,
-        sliver: shape.area / shape.perimeter ** 2 < SLIVER,
+        sliver: isSliver(shape.area, shape.perimeter, cell.area),
       });
     }
     (types[index] as { perCell: number }).perCell++;
