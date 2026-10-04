@@ -163,6 +163,28 @@ describe('repeat', () => {
       'steps[6].create.p.point.meet[0]: "d1@8" is not defined by any earlier step',
     ]);
   });
+
+  it.each([
+    ['rot3', 2],
+    ['rot5', 4],
+    ['rot6', 5],
+    ['rot10', 9],
+    ['rot12', 11],
+  ])('knows that %s makes %i copies', (by, n) => {
+    const using = (copy: number) =>
+      variant((t) => {
+        t.steps.push({
+          id: 7,
+          text: 'Copy the diagonal.',
+          create: {
+            spokes: { repeat: { of: ['d1'], by } },
+            p: { point: { meet: [`d1@${copy}`, 'c'], pick: { angle: 0 } } },
+          },
+        });
+      });
+    expect(problems(using(n))).toEqual([]);
+    expect(problems(using(n + 1))).toHaveLength(1);
+  });
 });
 
 describe('circles', () => {

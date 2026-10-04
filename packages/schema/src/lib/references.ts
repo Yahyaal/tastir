@@ -9,10 +9,12 @@ export interface Issue {
   readonly message: string;
 }
 
-const COPIES: Record<string, number> = { rot4: 3, rot8: 7, rot16: 15 };
-
-/** How many copies a repeat makes, named `name@1` to `name@n`. */
-export const copyCount = (by: string): number => COPIES[by] ?? 1;
+/**
+ * How many copies a repeat makes, named `name@1` to `name@n`: one fewer
+ * than the order of a rotation, and one for a mirror.
+ */
+export const copyCount = (by: string): number =>
+  by.startsWith('rot') ? Number(by.slice('rot'.length)) - 1 : 1;
 
 const article = (kind: string) => (/^[aeiou]/.test(kind) ? 'an' : 'a');
 const oneOf = (kinds: readonly ElementKind[]) =>
