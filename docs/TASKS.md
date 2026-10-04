@@ -21,7 +21,7 @@ The goal of phase 0 is one tutorial, the eight-fold star and cross, playing exac
 - [x] **0.5 Evaluator.** Turn a parsed tutorial into a scene: every element with its geometry, the step that made it and the elements it depends on. Implement the `pick` rules and the frame. Missing, ambiguous or impossible references throw an error naming the step and element.
   *Done when:* evaluating the example gives the eight crossings `k.1`–`k.8` at distance 0.76537 from `O`, in counter-clockwise order starting at 22.5°; tests cover an ambiguous pick and a missing reference.
 
-- [ ] **0.6 Ink and pieces.** Check that each ink segment lies on an existing element. Port the planar arrangement from the prototype (split at crossings, drop dangling ends, walk faces), compute pieces over a 3×3 neighbourhood of the cell, and group them into types by congruence.
+- [x] **0.6 Ink and pieces.** Check that each ink segment lies on an existing element. Port the planar arrangement from the prototype (split at crossings, drop dangling ends, walk faces), compute pieces over a 3×3 neighbourhood of the cell, and group them into types by congruence.
   *Done when:* the example yields exactly two piece types matching its `expect` block (star and cross, 16 vertices each, areas 2.34315 and 1.65685, one of each per cell).
 
 - [ ] **0.7 Golden test harness.** A single test loads every file in `tutorials/`, evaluates it and compares the result with its `expect` block.

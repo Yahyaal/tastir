@@ -18,3 +18,12 @@ export {
   type Scene,
   type SceneElement,
 } from './lib/evaluate.js';
+export { arrangement, signedArea } from './lib/arrangement.js';
+export { inkStrokes, type InkStroke } from './lib/ink.js';
+export {
+  computePattern,
+  type Cell,
+  type Pattern,
+  type Piece,
+  type PieceType,
+} from './lib/pieces.js';
