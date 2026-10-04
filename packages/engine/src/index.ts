@@ -8,3 +8,4 @@ export {
   intersectLineLine,
   overlap,
 } from './lib/intersect.js';
+export * from './lib/construct.js';
