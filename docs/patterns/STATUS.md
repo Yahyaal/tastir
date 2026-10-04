@@ -1,6 +1,6 @@
 # Pattern status
 
-One line per tutorial in `tutorials/`. **verified** means the tiled pattern was compared with a photo of the real pattern and the line structure matches; **needs review** says what differs; **abandoned** says why. Each pattern's log is in `docs/patterns/<id>.md`, and the overnight run is summarised in `docs/OVERNIGHT.md`.
+One line per pattern worked on in the overnight run, plus the existing star and cross, which was checked too. Verified tutorials are in `tutorials/`; abandoned ones are kept in `docs/patterns/abandoned/` and are not shipped. **verified** means the tiled pattern was compared with a photo of the real pattern and the line structure matches; **needs review** says what differs; **abandoned** says why. Each pattern's log is in `docs/patterns/<id>.md`, and the overnight run is summarised in `docs/OVERNIGHT.md`.
 
 | Tutorial | Fold | Status | Notes |
 | --- | --- | --- | --- |
@@ -11,6 +11,7 @@ One line per tutorial in `tutorials/`. **verified** means the tiled pattern was 
 | ibn-tulun-window | 6 | verified | Ink overlays the source's final drawing exactly; the wall matches the source's clover tiling and the openings in the (low-resolution) photo of the grille. Only one step-by-step source. |
 | four-fold-ring-of-circles | 4 | abandoned | Matches Sandy Kurt's drawing exactly, but no photo of a real example was found (the Sikandra jali is a different pattern), and the source is all rights reserved. Kept in `docs/patterns/abandoned/`. |
 | eight-fold-star-and-cross | 8 | verified | Existing tutorial, reviewed tonight: the wall matches the Kashan star-and-cross lustre tiles of 1297–98 (Berlin): stars meeting point to point with crosses between. |
+| twelve-fold-dodecagrams | 12 | abandoned | Matches the Tuts+ drawing exactly, but no photo of a real example was found. Kept in `docs/patterns/abandoned/`. |
 
 ## Existing tutorials that need your review
 

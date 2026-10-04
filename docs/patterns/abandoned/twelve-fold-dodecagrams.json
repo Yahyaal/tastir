@@ -1,0 +1,158 @@
+{
+  "format": 0,
+  "id": "twelve-fold-dodecagrams",
+  "title": "Twelve-pointed stars",
+  "fold": 6,
+  "style": "Seljuk",
+  "level": "beginner",
+  "credits": [
+    {
+      "source": "Geometric Design: Working With 6 and 12 (Dodecagram Pattern)",
+      "creator": "Envato Tuts+",
+      "url": "https://design.tutsplus.com/tutorials/geometric-design-working-with-6-and-12--cms-22872",
+      "note": "The pattern of two six-pointed stars in each circle of the seven-circle grid follows this tutorial.",
+      "steps": [6, 7]
+    }
+  ],
+  "given": {
+    "O": "The centre of the star.",
+    "A": "Any point to the right of O. The distance OA is the radius of the first circle, and the unit for every length."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal line, put the compass point on it and draw a circle. Keep the compass at this opening until the end.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Put the compass point where the circle crosses the line on the right and draw a circle through the centre. Do the same on the left. The two new circles touch at the centre.",
+      "create": {
+        "E": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
+        "W": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "cE": {"circle": {"centre": "E", "radiusOf": "c"}},
+        "cW": {"circle": {"centre": "W", "radiusOf": "c"}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "The two new circles cross the first one at four more points. Draw a circle of the same size around each of them. Six circles now ring the first, and their crossings divide it into six.",
+      "create": {
+        "P60": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60}}},
+        "P300": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300}}},
+        "P120": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120}}},
+        "P240": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240}}},
+        "c60": {"circle": {"centre": "P60", "radiusOf": "c"}},
+        "c120": {"circle": {"centre": "P120", "radiusOf": "c"}},
+        "c240": {"circle": {"centre": "P240", "radiusOf": "c"}},
+        "c300": {"circle": {"centre": "P300", "radiusOf": "c"}}
+      },
+      "highlight": ["cE", "cW"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Outside the first circle, each pair of neighbouring circles makes a large petal. Rule a line through the centre and the tips of two opposite petals; do it three times. One line is vertical and two lean at 30° either side of it.",
+      "create": {
+        "X30": {"point": {"meet": ["cE", "c60"], "pick": {"farthest": "O"}}},
+        "X90": {"point": {"meet": ["c60", "c120"], "pick": {"farthest": "O"}}},
+        "X150": {"point": {"meet": ["c120", "cW"], "pick": {"farthest": "O"}}},
+        "m30": {"line": {"through": ["O", "X30"]}},
+        "m90": {"line": {"through": ["O", "X90"]}},
+        "m150": {"line": {"through": ["O", "X150"]}}
+      },
+      "highlight": ["cE", "c60", "c120", "cW"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "The three lines cut the circle at six points. Join them to draw a hexagon standing on a corner; with the six points from the circles, the circle is now divided into twelve.",
+      "create": {
+        "D30": {"point": {"meet": ["c", "m30"], "pick": {"angle": 30}}},
+        "D90": {"point": {"meet": ["c", "m90"], "pick": {"angle": 90}}},
+        "D150": {"point": {"meet": ["c", "m150"], "pick": {"angle": 150}}},
+        "D210": {"point": {"meet": ["c", "m30"], "pick": {"angle": 210}}},
+        "D270": {"point": {"meet": ["c", "m90"], "pick": {"angle": 270}}},
+        "D330": {"point": {"meet": ["c", "m150"], "pick": {"angle": 330}}},
+        "hex": {"polygon": ["D30", "D90", "D150", "D210", "D270", "D330"]}
+      },
+      "highlight": ["m30", "m90", "m150"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Join every other corner of the hexagon to draw two triangles, one pointing up and one pointing down. Together they make a six-pointed star.",
+      "create": {
+        "up": {"polygon": ["D90", "D210", "D330"]},
+        "down": {"polygon": ["D30", "D150", "D270"]},
+        "K": {"points": {"meet": ["up", "down"], "pick": {"all": "byAngle"}}}
+      },
+      "highlight": ["D30", "D90", "D150", "D210", "D270", "D330"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Join every other one of the six points from the circles to draw a second pair of triangles, pointing right and left. They make a second six-pointed star, turned 30° from the first.",
+      "create": {
+        "right": {"polygon": ["E", "P120", "P240"]},
+        "left": {"polygon": ["P60", "W", "P300"]},
+        "J": {"points": {"meet": ["right", "left"], "pick": {"all": "byAngle"}}}
+      },
+      "highlight": ["E", "P60", "P120", "W", "P240", "P300"],
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "At each point of the first star, rule a line at right angles to the line through the centre, so it just touches the circle. The six lines make a hexagon around the circle: this is the tile, and the next circle sits beyond each of its sides, touching this one at the star's point.",
+      "create": {
+        "tan30": {"line": {"through": "D30", "perpendicularTo": "m30"}},
+        "tan90": {"line": {"through": "D90", "perpendicularTo": "m90"}},
+        "tan150": {"line": {"through": "D150", "perpendicularTo": "m150"}},
+        "tan210": {"line": {"through": "D210", "perpendicularTo": "m30"}},
+        "tan270": {"line": {"through": "D270", "perpendicularTo": "m90"}},
+        "tan330": {"line": {"through": "D330", "perpendicularTo": "m150"}},
+        "V0": {"point": {"meet": ["tan30", "tan330"]}},
+        "V60": {"point": {"meet": ["tan90", "tan30"]}},
+        "V120": {"point": {"meet": ["tan150", "tan90"]}},
+        "V180": {"point": {"meet": ["tan210", "tan150"]}},
+        "V240": {"point": {"meet": ["tan270", "tan210"]}},
+        "V300": {"point": {"meet": ["tan330", "tan270"]}},
+        "tile": {"polygon": ["V0", "V60", "V120", "V180", "V240", "V300"]}
+      },
+      "highlight": ["D30", "D90", "D150", "D210", "D270", "D330"],
+      "animate": "ruler"
+    }
+  ],
+  "ink": {
+    "text": "Go over the outline of each six-pointed star. Together they make a twelve-pointed star whose two outlines weave through each other.",
+    "paths": [
+      {
+        "closed": true,
+        "through": ["K.1", "D30", "K.2", "D90", "K.3", "D150", "K.4", "D210", "K.5", "D270", "K.6", "D330"]
+      },
+      {
+        "closed": true,
+        "through": ["E", "J.1", "P60", "J.2", "P120", "J.3", "W", "J.4", "P240", "J.5", "P300", "J.6"]
+      }
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Repeat the hexagon side to side. Neighbouring stars touch point to point, and the space between three stars stays open.",
+    "palette": "Fès tile",
+    "colors": {"star": "a", "ground": "b", "rhombus": "c"}
+  },
+  "expect": {
+    "note": "Golden values computed by the engine; the pattern matches the Tuts+ drawing but no photo of a real example was found.",
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "star", "vertices": 24, "area": 1.26795, "perCell": 1},
+      {"name": "ground", "vertices": 12, "area": 0.63397, "perCell": 2},
+      {"name": "rhombus", "vertices": 4, "area": 0.07735, "perCell": 12}
+    ],
+    "cellArea": 3.4641
+  }
+}
