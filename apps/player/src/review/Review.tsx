@@ -235,6 +235,12 @@ export function Review() {
       <h2 className="group" id="questions">
         Questions for you
       </h2>
+      {QUESTIONS.length === 0 ? (
+        <p className="group-note">
+          No questions for you right now. Your decisions are on the cards below,
+          marked Decided.
+        </p>
+      ) : null}
       <ol className="questions">
         {QUESTIONS.map((q) => (
           <QuestionItem

@@ -153,20 +153,23 @@
     },
     {
       "id": 10,
-      "text": "For this repeat, each row of rosettes is shifted half a rosette from the row below. Put the compass on the right-hand point E and mark one more radius along the horizontal; through that mark rule a line at right angles. The tile is the slanted box from the bottom-left corner of the square, along its bottom edge, and up to this line and the square's top edge.",
+      "text": "Now set the rows. Open the compass from the centre to a corner of the tile square and swing it up to the vertical: that height is how far the next row of rosettes sits above this one. Rule the horizontal there. Put the compass on the right-hand point E, mark one more radius along the horizontal, and rule the vertical through that mark. The tile is the slanted box from W along to E, up to the new horizontal, and back along it.",
       "create": {
+        "cRow": {"circle": {"centre": "O", "through": "c1"}},
+        "Up": {"point": {"meet": ["cRow", "v"], "pick": {"angle": 90}}},
+        "hUp": {"line": {"through": "Up", "perpendicularTo": "v"}},
         "cE": {"circle": {"centre": "E", "radiusOf": "c"}},
         "E2": {"point": {"meet": ["cE", "h"], "pick": {"farthest": "O"}}},
         "tE2": {"line": {"through": "E2", "perpendicularTo": "h"}},
-        "R": {"point": {"meet": ["tE2", "tN"]}},
-        "shifted": {"polygon": ["c3", "c4", "R", "N"]}
+        "R": {"point": {"meet": ["tE2", "hUp"]}},
+        "shifted": {"polygon": ["W", "E", "R", "Up"]}
       },
-      "highlight": ["E", "tN"],
+      "highlight": ["c1", "v", "E"],
       "animate": "compass"
     }
   ],
   "ink": {
-    "text": "From each corner of the two squares, go along the square's side to where a star line arrives, turn in along that line to the star's point, and carry straight on to where it crosses its neighbour near the centre. Each point of the star becomes an arrow, and the corners of the squares close round it into an eight-pointed outline. Then rule along the top edge of the tile, between the rows, so the ground between rows closes into pieces.",
+    "text": "From each corner of the two squares, go along the square's side to where a star line arrives, turn in along that line to the star's point, and carry straight on to where it crosses its neighbour near the centre. Each point of the star becomes an arrow, and the corners of the squares close round it into an eight-pointed outline.",
     "paths": [
       {"through": ["SE", "Fm0", "T0", "G45"]},
       {"through": ["NE", "Fp0", "T0", "G315"]},
@@ -183,26 +186,25 @@
       {"through": ["SW", "Fm270", "T270", "G315"]},
       {"through": ["SE", "Fp270", "T270", "G225"]},
       {"through": ["S", "Fm315", "T315", "G0"]},
-      {"through": ["E", "Fp315", "T315", "G270"]},
-      {"through": ["c2", "R"]}
+      {"through": ["E", "Fp315", "T315", "G270"]}
     ]
   },
   "pattern": {
     "cell": "shifted",
-    "text": "Repeat the slanted tile edge to edge. Each row of rosettes sits half a rosette along from the row below, with a straight band between the rows.",
+    "text": "Repeat the slanted tile edge to edge. Each row sits half a rosette along from the row below and as close as it can come: the squares of neighbouring rows meet edge to edge, and the gaps between them close into pieces of their own.",
     "palette": "Fès tile",
-    "colors": {"ground": "ground", "arrow": "a", "blade": "b", "star": "c", "dart": "ground"}
+    "colors": {"chevron": "c", "arrow": "a", "blade": "b", "star": "c", "dart": "ground"}
   },
   "expect": {
-    "note": "Golden values in units of OA, computed by the engine. The row shift is the owner's suggestion; the band between rows is needed to close the ground into pieces.",
+    "note": "Golden values in units of OA. Rows half a rosette apart sideways and √2 apart upward (the owner's suggestion, brought as close as the squares allow); the gaps close into chevrons.",
     "pieceTypes": 5,
     "pieces": [
-      {"name": "ground", "vertices": 9, "area": 0.82843, "perCell": 2},
+      {"name": "chevron", "vertices": 6, "area": 0.24264, "perCell": 2},
       {"name": "arrow", "vertices": 6, "area": 0.13604, "perCell": 8},
       {"name": "blade", "vertices": 6, "area": 0.12132, "perCell": 8},
       {"name": "star", "vertices": 16, "area": 0.11775, "perCell": 1},
       {"name": "dart", "vertices": 4, "area": 0.02082, "perCell": 8}
     ],
-    "cellArea": 4
+    "cellArea": 2.82843
   }
 }

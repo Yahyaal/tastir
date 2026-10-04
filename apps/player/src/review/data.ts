@@ -40,7 +40,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 8,
     status: 'decided',
     decision:
-      'You: keep the guessed square repeat, and try rows shifted by half a rosette. Done: the shifted version is in the library as “Alhambra star and arrows, shifted rows” (see the new question). Your photo’s design B could not be identified beyond the product page; it stays on my list.',
+      'You: keep the guessed square repeat, and try rows shifted by half a rosette. Done: the shifted version is in the library as “Alhambra star and arrows, shifted rows”. As you suggested, its rows sit as close as they can (√2 apart instead of 2), and the gaps then close into chevrons with no extra band. Your photo’s design B could not be identified beyond the product page; it stays on my list.',
     summary:
       'An eight-pointed star whose points become arrows, framed by two squares, from a painted ceiling in the Alhambra.',
     story: [
@@ -135,7 +135,9 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'twelve-fold-dodecagrams',
     title: 'Twelve-pointed stars',
     fold: 12,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: keep it as a beginner design, and make more advanced designs from it. Agreed: the same twelve-pointed stars can be joined differently (every fourth or fifth point instead of every second), carried into interlaced bands, or set further apart with new shapes between them. Those are on my list.',
     summary:
       'Two six-pointed stars in every circle of a hexagonal grid, making twelve-pointed stars that touch point to point.',
     story: [
@@ -220,7 +222,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alhambra-comares-stars',
     title: 'Comares stars and crosses (new)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: 'You: keep it, on the strength of the published tracing.',
     summary:
       'Notched eight-pointed stars and crosses from a tile panel in the Hall of Comares, on the grid of eight-pointed stars.',
     story: [
@@ -256,7 +259,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alhambra-comares-lattice',
     title: 'Comares star lattice (new)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: 'You: keep it, on the strength of the published tracing.',
     summary:
       'Crossing bands closing into twelve-sided pieces, from a second Comares panel, on the same star grid.',
     story: [
@@ -292,7 +296,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alhambra-mexuar-stars',
     title: 'Mexuar stars (new)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: 'You: keep it, on the strength of the published tracing.',
     summary:
       'Stepped stars meeting at small crossed squares, from the tile panel of the Mexuar, on the same star grid.',
     story: [
@@ -328,7 +333,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alhambra-infantas-stars',
     title: 'Infantas plaster stars (new)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: 'You: keep it, on the strength of the published tracing.',
     summary:
       'Notched four-pointed stars from a carved plaster panel in the Torre de las Infantas, on the same grid as the Infantas crosses.',
     story: [
@@ -359,7 +365,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alhambra-infantas-crosses',
     title: 'Infantas crosses (new)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: 'You: keep it, on the strength of the published tracing.',
     summary:
       'Crosses and pinwheel shapes from the tile panel of the Torre de las Infantas, the first design of the Alhambra grid family.',
     story: [
@@ -590,54 +597,4 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'design-a-shifted',
-    text: 'Design A with your shifted rows (right) only closes up if I add a straight band between the rows. Keep this version too?',
-    choices: [
-      'Keep both repeats',
-      'Keep only the shifted one',
-      'Keep only the square one',
-    ],
-    pictures: [
-      {
-        src: 'renders/alhambra-star-and-arrows-shifted/designs-A2.png',
-        caption:
-          'Left: the square repeat. Right: rows shifted by half a rosette; the long horizontal lines between rows are the band I added.',
-      },
-    ],
-    card: 'alhambra-star-and-arrows',
-  },
-
-  {
-    id: 'designs-i-l',
-    text: 'Designs I–M match published tracings of Alhambra panels line for line, but I found no photos of the real tiles. Keep them on the strength of the tracings?',
-    choices: ['Keep all four', 'Only with photos', 'Remove them'],
-    pictures: [
-      {
-        src: 'renders/alhambra-comares-stars/designs-I-M.png',
-        caption:
-          'Top: the article’s tracings. Bottom: our walls. Each card below shows ours drawn in red over the tracing.',
-      },
-    ],
-    card: 'alhambra-comares-stars',
-    also: [
-      'alhambra-infantas-crosses',
-      'alhambra-infantas-stars',
-      'alhambra-comares-lattice',
-      'alhambra-mexuar-stars',
-    ],
-  },
-  {
-    id: 'design-h',
-    text: 'Design H matches its tutorial, but I found no building with it. Keep it as a beginner exercise or remove it?',
-    choices: ['Keep it', 'Remove it'],
-    pictures: [
-      {
-        src: 'renders/twelve-fold-dodecagrams/design-H.png',
-        caption: 'Design H',
-      },
-    ],
-    card: 'twelve-fold-dodecagrams',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
