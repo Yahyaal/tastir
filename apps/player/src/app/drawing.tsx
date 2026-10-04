@@ -132,7 +132,7 @@ interface Label {
 /**
  * Names for the points of this step, the points it highlights and the
  * given points. Points at the same place get one label, preferring the
- * current step's names (E is where A is).
+ * current step's name (E is where A is).
  */
 function labelsFor(
   points: readonly SceneElement[],
@@ -143,6 +143,9 @@ function labelsFor(
   for (const el of points) {
     if (el.geometry.kind !== 'point') continue;
     if (!current(el) && !highlighted.has(el.name) && el.step !== 0) continue;
+    // Copies made by a repeat carry the engine's names (C@3); the learner
+    // knows them as "the same point at every corner", so they stay unnamed.
+    if (el.name.includes('@')) continue;
     const at = el.geometry.at;
     const group = groups.find(
       (g) => Math.hypot(g.at.x - at.x, g.at.y - at.y) < 1e-6,
@@ -164,7 +167,8 @@ function labelsFor(
     return {
       name: named[0]?.name ?? '',
       at,
-      text: named.map((el) => el.name).join(' = '),
+      // One name per place, the one that matters most here.
+      text: named[0]?.name ?? '',
       className,
     };
   });

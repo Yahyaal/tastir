@@ -1,0 +1,795 @@
+{
+  "format": 0,
+  "id": "eight-fold-zellige",
+  "title": "Eight-fold rosette",
+  "fold": 8,
+  "style": "Moroccan",
+  "level": "intermediate",
+  "credits": [],
+  "given": {
+    "O": "The centre of the rosette.",
+    "A": "Any point to the right of O. The distance OA is the unit for every length."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Put the compass point on the centre and draw a circle. Its radius is the unit for the whole pattern.",
+      "create": {
+        "c": {
+          "circle": {
+            "centre": "O",
+            "through": "A"
+          }
+        }
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw the horizontal through the centre and the vertical at right angles to it. They cut the circle at four points.",
+      "create": {
+        "h": {
+          "line": {
+            "through": [
+              "O",
+              "A"
+            ]
+          }
+        },
+        "v": {
+          "line": {
+            "through": "O",
+            "perpendicularTo": "h"
+          }
+        },
+        "E": {
+          "point": {
+            "meet": [
+              "c",
+              "h"
+            ],
+            "pick": {
+              "angle": 0
+            }
+          }
+        },
+        "N": {
+          "point": {
+            "meet": [
+              "c",
+              "v"
+            ],
+            "pick": {
+              "angle": 90
+            }
+          }
+        },
+        "W": {
+          "point": {
+            "meet": [
+              "c",
+              "h"
+            ],
+            "pick": {
+              "angle": 180
+            }
+          }
+        },
+        "S": {
+          "point": {
+            "meet": [
+              "c",
+              "v"
+            ],
+            "pick": {
+              "angle": 270
+            }
+          }
+        }
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Halve the four right angles with two diagonals. The circle is now cut into eight equal parts.",
+      "create": {
+        "d1": {
+          "line": {
+            "through": "O",
+            "bisects": [
+              "E",
+              "O",
+              "N"
+            ]
+          }
+        },
+        "d2": {
+          "line": {
+            "through": "O",
+            "bisects": [
+              "N",
+              "O",
+              "W"
+            ]
+          }
+        },
+        "NE": {
+          "point": {
+            "meet": [
+              "c",
+              "d1"
+            ],
+            "pick": {
+              "angle": 45
+            }
+          }
+        },
+        "NW": {
+          "point": {
+            "meet": [
+              "c",
+              "d2"
+            ],
+            "pick": {
+              "angle": 135
+            }
+          }
+        },
+        "SW": {
+          "point": {
+            "meet": [
+              "c",
+              "d1"
+            ],
+            "pick": {
+              "angle": 225
+            }
+          }
+        },
+        "SE": {
+          "point": {
+            "meet": [
+              "c",
+              "d2"
+            ],
+            "pick": {
+              "angle": 315
+            }
+          }
+        }
+      },
+      "highlight": [
+        "h",
+        "v"
+      ],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw the square that just touches the circle at the ends of the horizontal and the vertical. This square is the tile that repeats.",
+      "create": {
+        "tE": {
+          "line": {
+            "through": "E",
+            "perpendicularTo": "h"
+          }
+        },
+        "tN": {
+          "line": {
+            "through": "N",
+            "perpendicularTo": "v"
+          }
+        },
+        "tW": {
+          "line": {
+            "through": "W",
+            "perpendicularTo": "h"
+          }
+        },
+        "tS": {
+          "line": {
+            "through": "S",
+            "perpendicularTo": "v"
+          }
+        },
+        "c1": {
+          "point": {
+            "meet": [
+              "tE",
+              "tN"
+            ]
+          }
+        },
+        "c2": {
+          "point": {
+            "meet": [
+              "tN",
+              "tW"
+            ]
+          }
+        },
+        "c3": {
+          "point": {
+            "meet": [
+              "tW",
+              "tS"
+            ]
+          }
+        },
+        "c4": {
+          "point": {
+            "meet": [
+              "tS",
+              "tE"
+            ]
+          }
+        },
+        "cell": {
+          "polygon": [
+            "c1",
+            "c2",
+            "c3",
+            "c4"
+          ]
+        }
+      },
+      "highlight": [
+        "E",
+        "N",
+        "W",
+        "S"
+      ],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a line touching the circle at each end of the diagonals, at right angles to the diagonal. With the sides of the square they make an octagon around the circle.",
+      "create": {
+        "tNE": {
+          "line": {
+            "through": "NE",
+            "perpendicularTo": "d1"
+          }
+        },
+        "tNW": {
+          "line": {
+            "through": "NW",
+            "perpendicularTo": "d2"
+          }
+        },
+        "tSW": {
+          "line": {
+            "through": "SW",
+            "perpendicularTo": "d1"
+          }
+        },
+        "tSE": {
+          "line": {
+            "through": "SE",
+            "perpendicularTo": "d2"
+          }
+        },
+        "a1": {
+          "point": {
+            "meet": [
+              "tE",
+              "tNE"
+            ]
+          }
+        },
+        "a2": {
+          "point": {
+            "meet": [
+              "tNE",
+              "tN"
+            ]
+          }
+        },
+        "a3": {
+          "point": {
+            "meet": [
+              "tN",
+              "tNW"
+            ]
+          }
+        },
+        "a4": {
+          "point": {
+            "meet": [
+              "tNW",
+              "tW"
+            ]
+          }
+        },
+        "a5": {
+          "point": {
+            "meet": [
+              "tW",
+              "tSW"
+            ]
+          }
+        },
+        "a6": {
+          "point": {
+            "meet": [
+              "tSW",
+              "tS"
+            ]
+          }
+        },
+        "a7": {
+          "point": {
+            "meet": [
+              "tS",
+              "tSE"
+            ]
+          }
+        },
+        "a8": {
+          "point": {
+            "meet": [
+              "tSE",
+              "tE"
+            ]
+          }
+        },
+        "oct": {
+          "polygon": [
+            "a1",
+            "a2",
+            "a3",
+            "a4",
+            "a5",
+            "a6",
+            "a7",
+            "a8"
+          ]
+        }
+      },
+      "highlight": [
+        "NE",
+        "NW",
+        "SW",
+        "SE"
+      ],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Join the centre to the corners of the octagon. These four lines halve the eight parts, so the circle is now cut into sixteen.",
+      "create": {
+        "s1": {
+          "line": {
+            "through": [
+              "O",
+              "a1"
+            ]
+          }
+        },
+        "s2": {
+          "line": {
+            "through": [
+              "O",
+              "a2"
+            ]
+          }
+        },
+        "s3": {
+          "line": {
+            "through": [
+              "O",
+              "a3"
+            ]
+          }
+        },
+        "s4": {
+          "line": {
+            "through": [
+              "O",
+              "a4"
+            ]
+          }
+        }
+      },
+      "highlight": [
+        "a1",
+        "a2",
+        "a3",
+        "a4"
+      ],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Put the compass point on a corner of the octagon and open it to the middle of the side next to it. Mark where the arc cuts the line to the centre. Do the same at every corner.",
+      "create": {
+        "q": {
+          "circle": {
+            "centre": "a1",
+            "through": "E"
+          }
+        },
+        "C": {
+          "point": {
+            "meet": [
+              "q",
+              "s1"
+            ],
+            "pick": {
+              "nearest": "O"
+            }
+          }
+        },
+        "marks": {
+          "repeat": {
+            "of": [
+              "q",
+              "C"
+            ],
+            "by": "rot8"
+          }
+        }
+      },
+      "highlight": [
+        "a1",
+        "E",
+        "s1"
+      ],
+      "animate": "compass"
+    },
+    {
+      "id": 8,
+      "text": "Join each mark to the third mark along, all the way round. The eight lines make the star at the heart of the rosette.",
+      "create": {
+        "t": {
+          "line": {
+            "through": [
+              "C",
+              "C@3"
+            ]
+          }
+        },
+        "star": {
+          "repeat": {
+            "of": [
+              "t"
+            ],
+            "by": "rot8"
+          }
+        }
+      },
+      "highlight": [
+        "C",
+        "C@3"
+      ],
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "From the middle of each side of the octagon, draw two lines leaning inwards, each parallel to one of the lines to the centre from step 6. Where they meet the star lines they turn into the petals.",
+      "create": {
+        "p": {
+          "line": {
+            "through": "E",
+            "parallelTo": "s3"
+          }
+        },
+        "pm": {
+          "line": {
+            "through": "E",
+            "parallelTo": "s2"
+          }
+        },
+        "petals": {
+          "repeat": {
+            "of": [
+              "p",
+              "pm"
+            ],
+            "by": "rot8"
+          }
+        }
+      },
+      "highlight": [
+        "E",
+        "s2",
+        "s3"
+      ],
+      "animate": "ruler"
+    },
+    {
+      "id": 10,
+      "text": "Mark where each leaning line meets its star line, and where each star line crosses the next diagonal. These are the corners of the petals and the points of the star.",
+      "create": {
+        "G": {
+          "point": {
+            "meet": [
+              "p",
+              "t"
+            ]
+          }
+        },
+        "P": {
+          "point": {
+            "meet": [
+              "t",
+              "d1"
+            ]
+          }
+        },
+        "Gm": {
+          "point": {
+            "meet": [
+              "pm",
+              "t@4"
+            ]
+          }
+        },
+        "Pm": {
+          "point": {
+            "meet": [
+              "t@4",
+              "d2"
+            ]
+          }
+        },
+        "corners": {
+          "repeat": {
+            "of": [
+              "G",
+              "P",
+              "Gm",
+              "Pm"
+            ],
+            "by": "rot8"
+          }
+        }
+      },
+      "animate": "fade"
+    },
+    {
+      "id": 11,
+      "text": "Carry the leaning lines from the diagonal sides of the octagon on into the gaps between the octagons, as far as the side of the tile.",
+      "create": {
+        "X": {
+          "point": {
+            "meet": [
+              "p@1",
+              "tE"
+            ]
+          }
+        },
+        "Xm": {
+          "point": {
+            "meet": [
+              "pm@1",
+              "tN"
+            ]
+          }
+        },
+        "gaps": {
+          "repeat": {
+            "of": [
+              "X",
+              "Xm"
+            ],
+            "by": "rot4"
+          }
+        }
+      },
+      "highlight": [
+        "NE",
+        "tE",
+        "tN"
+      ],
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink each leaning line from the middle of a side to its petal corner, then along the star line to the star's point. From the diagonal sides, ink the short lines out to the edge of the tile.",
+    "paths": [
+      {
+        "through": [
+          "E",
+          "G",
+          "P"
+        ]
+      },
+      {
+        "through": [
+          "E",
+          "Gm",
+          "Pm"
+        ]
+      },
+      {
+        "through": [
+          "NE",
+          "G@1",
+          "P@1"
+        ]
+      },
+      {
+        "through": [
+          "NE",
+          "Gm@1",
+          "Pm@1"
+        ]
+      },
+      {
+        "through": [
+          "N",
+          "G@2",
+          "P@2"
+        ]
+      },
+      {
+        "through": [
+          "N",
+          "Gm@2",
+          "Pm@2"
+        ]
+      },
+      {
+        "through": [
+          "NW",
+          "G@3",
+          "P@3"
+        ]
+      },
+      {
+        "through": [
+          "NW",
+          "Gm@3",
+          "Pm@3"
+        ]
+      },
+      {
+        "through": [
+          "W",
+          "G@4",
+          "P@4"
+        ]
+      },
+      {
+        "through": [
+          "W",
+          "Gm@4",
+          "Pm@4"
+        ]
+      },
+      {
+        "through": [
+          "SW",
+          "G@5",
+          "P@5"
+        ]
+      },
+      {
+        "through": [
+          "SW",
+          "Gm@5",
+          "Pm@5"
+        ]
+      },
+      {
+        "through": [
+          "S",
+          "G@6",
+          "P@6"
+        ]
+      },
+      {
+        "through": [
+          "S",
+          "Gm@6",
+          "Pm@6"
+        ]
+      },
+      {
+        "through": [
+          "SE",
+          "G@7",
+          "P@7"
+        ]
+      },
+      {
+        "through": [
+          "SE",
+          "Gm@7",
+          "Pm@7"
+        ]
+      },
+      {
+        "through": [
+          "NE",
+          "X"
+        ]
+      },
+      {
+        "through": [
+          "NE",
+          "Xm"
+        ]
+      },
+      {
+        "through": [
+          "NW",
+          "X@1"
+        ]
+      },
+      {
+        "through": [
+          "NW",
+          "Xm@1"
+        ]
+      },
+      {
+        "through": [
+          "SW",
+          "X@2"
+        ]
+      },
+      {
+        "through": [
+          "SW",
+          "Xm@2"
+        ]
+      },
+      {
+        "through": [
+          "SE",
+          "X@3"
+        ]
+      },
+      {
+        "through": [
+          "SE",
+          "Xm@3"
+        ]
+      }
+    ]
+  },
+  "pattern": {
+    "cell": "cell",
+    "text": "Repeat the tile edge to edge. Each rosette meets its neighbours point to point, and where four tiles meet, the lines close into an octagon inside a second eight-pointed star.",
+    "palette": "Fès tile",
+    "colors": {
+      "star": "a",
+      "octagon": "c",
+      "petal": "ground",
+      "link": "b"
+    }
+  },
+  "expect": {
+    "note": "Golden values, in units of OA, computed by the engine and checked for eight-fold symmetry, no slivers, and pieces that exactly fill the tile.",
+    "pieceTypes": 4,
+    "pieces": [
+      {
+        "name": "star",
+        "vertices": 16,
+        "area": 0.73972,
+        "perCell": 1
+      },
+      {
+        "name": "octagon",
+        "vertices": 8,
+        "area": 0.48528,
+        "perCell": 1
+      },
+      {
+        "name": "petal",
+        "vertices": 6,
+        "area": 0.23401,
+        "perCell": 8
+      },
+      {
+        "name": "link",
+        "vertices": 10,
+        "area": 0.22574,
+        "perCell": 4
+      }
+    ],
+    "cellArea": 4
+  }
+}

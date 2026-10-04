@@ -103,6 +103,10 @@ header h1 {
   fill: var(--old);
 }
 
+.mark {
+  vector-effect: non-scaling-stroke;
+}
+
 /* Points and their names pop in from their own centre. */
 .mark,
 .point-name {

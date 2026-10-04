@@ -28,3 +28,8 @@ export {
   type PieceType,
 } from './lib/pieces.js';
 export { expectedGolden, goldenOf, type Golden } from './lib/golden.js';
+export {
+  constructionCrossings,
+  hasSymmetry,
+  strokesOffCrossings,
+} from './lib/checks.js';
