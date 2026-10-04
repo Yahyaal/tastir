@@ -15,7 +15,13 @@ import {
   type Vec,
 } from './vec.js';
 
-/** The repeating cell: a parallelogram at `origin` spanned by `u` and `v`. */
+/**
+ * The repeating cell. `corners` is the tile as drawn (a rectangle,
+ * parallelogram or centrally symmetric hexagon); `u` and `v` are the two
+ * slides that repeat it; and the parallelogram at `origin` spanned by `u`
+ * and `v` has the same area and decides which copy of each piece belongs
+ * to the cell.
+ */
 export interface Cell {
   readonly origin: Vec;
   readonly u: Vec;
@@ -147,34 +153,49 @@ export function computePattern(
 }
 
 /**
- * The pattern cell: a rectangle, or a parallelogram (such as the 60°
- * rhombus of a hexagonal pattern) whose lattice also repeats as a
- * rectangle, so the wall can be filled with a rectangular tile.
+ * The pattern cell: a rectangle, a parallelogram (such as the 60° rhombus
+ * of a hexagonal pattern) whose lattice also repeats as a rectangle, or a
+ * centrally symmetric hexagon, which repeats by sliding it onto its
+ * neighbours side to side.
  */
 export function cellOf(scene: Scene, name: string): Cell {
   const fail = (reason: string): never => {
     throw new TutorialError('pattern', name, reason);
   };
+  const { eps } = scene.tol;
   const g = scene.elements.get(name)?.geometry;
   if (g?.kind !== 'polygon') return fail('the cell must be a polygon');
-  const [o, b, c, d] = g.vertices as Vec[];
-  if (g.vertices.length !== 4 || !o || !b || !c || !d)
-    return fail('the cell must have four corners');
-  const u = sub(b, o);
-  const v = sub(d, o);
-  if (distance(add(o, add(u, v)), c) > scene.tol.eps)
-    fail('the cell must be a rectangle or a parallelogram');
-  const cell = {
-    origin: o,
-    u,
-    v,
-    corners: g.vertices,
-    area: Math.abs(cross(u, v)),
-  };
-  if (!rectangularPeriod(cell, scene.tol.eps))
-    fail(
-      'the cell is a parallelogram whose copies never line up into a rectangle',
-    );
+  const corners = g.vertices;
+  let cell: Cell;
+  if (corners.length === 6) {
+    const at = (i: number) => corners[i] as Vec;
+    const centre = scale(add(at(0), at(3)), 0.5);
+    for (let i = 1; i < 3; i++) {
+      if (distance(scale(add(at(i), at(i + 3)), 0.5), centre) > eps)
+        fail('a hexagonal cell must have opposite sides equal and parallel');
+    }
+    // Each corner two places on lands on the corner across a side.
+    const u = sub(at(0), at(2));
+    const v = sub(at(1), at(3));
+    cell = {
+      origin: sub(centre, scale(add(u, v), 0.5)),
+      u,
+      v,
+      corners,
+      area: Math.abs(cross(u, v)),
+    };
+  } else {
+    const [o, b, c, d] = corners as Vec[];
+    if (corners.length !== 4 || !o || !b || !c || !d)
+      return fail('the cell must have four or six corners');
+    const u = sub(b, o);
+    const v = sub(d, o);
+    if (distance(add(o, add(u, v)), c) > eps)
+      fail('the cell must be a rectangle or a parallelogram');
+    cell = { origin: o, u, v, corners, area: Math.abs(cross(u, v)) };
+  }
+  if (!rectangularPeriod(cell, eps))
+    fail('the cell repeats on a lattice that never lines up into a rectangle');
   return cell;
 }
 

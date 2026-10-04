@@ -67,7 +67,7 @@ Rules can be combined; all must hold.
 
 `ink.paths` lists the pattern lines. Each path goes `through` named points in order, and every pair of neighbouring points must lie on one existing line, circle or polygon side; the engine checks that. This is what stops a tutorial from inking a line that the construction never produced.
 
-`pattern.cell` names the polygon that repeats, and the wall is made by translating it edge to edge. It is a rectangle, or a parallelogram whose copies also line up into a rectangle. The parallelogram is what six- and twelve-fold patterns need: their rosettes sit on a triangular lattice, and the 60° rhombus joining four neighbouring rosette centres (or any rhombus with those sides) is the smallest tile that repeats. The ink must cover one whole tile's worth of the pattern, which for a rhombus usually means inking the hexagon around `O`; the engine copies it to the neighbouring cells before cutting pieces. The optional `pattern.text` is what the learner reads when the player repeats the inked tile. `pattern.colors` gives the default palette key for each named piece.
+`pattern.cell` names the polygon that repeats, and the wall is made by translating it edge to edge. It is a rectangle, a parallelogram whose copies also line up into a rectangle, or a hexagon whose opposite sides are equal and parallel. Six- and twelve-fold patterns use the hexagon: their rosettes sit on a triangular lattice, and the hexagon around `O` (with corners on the 30° directions, so its sides face the neighbouring rosettes) is how these patterns are drawn by hand. The hexagon repeats by sliding it onto the next hexagon side to side. Ink only inside the cell, and cover the whole of it; free inking offers only the construction inside the cell, so a cell that reaches beyond the construction (a rhombus with a corner at `O`, for instance) leaves the learner pieces they cannot ink. The optional `pattern.text` is what the learner reads when the player repeats the inked tile. `pattern.colors` gives the default palette key for each named piece.
 
 `expect` holds the golden values for the tutorial's test: how many piece types there are, and each type's vertex count, area (in units of OA²) and count per cell. A piece is named in `expect.pieces`, and `pattern.colors` uses those names.
 
@@ -79,4 +79,4 @@ Its golden values were checked numerically: the eight crossings sit at distance 
 
 ## Not in v0
 
-Hexagonal cells (use the rhombus instead), curved ink (arcs), free inking by the user, per-step camera, and credits per step are all in the PRD and come in phase 1 or later. Leave room for them but do not build them in phase 0.
+Curved ink (arcs), free inking by the user, per-step camera, and credits per step are all in the PRD and come in phase 1 or later. Leave room for them but do not build them in phase 0.

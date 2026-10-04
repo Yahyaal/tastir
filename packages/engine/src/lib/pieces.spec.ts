@@ -1,5 +1,5 @@
 import type { Tutorial } from '@tastir/schema';
-import { starAndCross } from '../test/tutorials.js';
+import { loadTutorial, starAndCross } from '../test/tutorials.js';
 import { evaluate, TutorialError } from './evaluate.js';
 import { inkStrokes } from './ink.js';
 import { computePattern, pieceAt, rectangularPeriod } from './pieces.js';
@@ -83,7 +83,7 @@ describe('pieces of the star and cross', () => {
     expect(Math.max(...xs)).toBeGreaterThan(1);
   });
 
-  it('rejects a cell without four corners', () => {
+  it('rejects a cell without four or six corners', () => {
     const bad = structuredClone(t);
     bad.steps.push({
       id: 7,
@@ -92,7 +92,7 @@ describe('pieces of the star and cross', () => {
     });
     bad.pattern.cell = 'tri';
     expect(() => computePattern(evaluate(bad), bad)).toThrow(
-      'The pattern, element "tri": the cell must have four corners',
+      'The pattern, element "tri": the cell must have four or six corners',
     );
   });
 
@@ -161,6 +161,56 @@ describe('a parallelogram cell', () => {
   it('keeps a rectangle as it is', () => {
     const cell = { u: { x: 2, y: 0 }, v: { x: 0, y: 3 } };
     expect(rectangularPeriod(cell)?.v).toBe(cell.v);
+  });
+
+  it('cuts the same pieces from the hexagon as from the rhombus', () => {
+    // The rhombus joining the centre to the next centres along 0° and 60°,
+    // each the centre reflected in the middle of a side of the hexagon.
+    const t = loadTutorial('six-fold-snowflake.json');
+    t.steps.push({
+      id: 99,
+      text: 'The rhombus.',
+      create: {
+        l60: { line: { through: ['O', 'P60'] } },
+        M0: { point: { meet: ['h', 'hex'], pick: { angle: 0 } } },
+        M60: { point: { meet: ['l60', 'hex'], pick: { angle: 60 } } },
+        cM0: { circle: { centre: 'M0', through: 'O' } },
+        cM60: { circle: { centre: 'M60', through: 'O' } },
+        N0: { point: { meet: ['cM0', 'h'], pick: { farthest: 'O' } } },
+        N60: { point: { meet: ['cM60', 'l60'], pick: { farthest: 'O' } } },
+        g1: { line: { through: 'N60', parallelTo: 'h' } },
+        g2: { line: { through: 'N0', parallelTo: 'l60' } },
+        F: { point: { meet: ['g1', 'g2'] } },
+        rhombus: { polygon: ['O', 'N0', 'F', 'N60'] },
+      },
+    });
+    const scene = evaluate(t);
+    const hex = computePattern(scene, t);
+    const rhombus = computePattern(scene, {
+      ...t,
+      pattern: { ...t.pattern, cell: 'rhombus' },
+    });
+    expect(hex.cell.area).toBeCloseTo((3 * Math.sqrt(3)) / 2, 12);
+    expect(rhombus.cell.area).toBeCloseTo(hex.cell.area, 12);
+    const shapes = (p: typeof hex) =>
+      p.types.map((x) => [x.vertices, x.area.toFixed(5), x.perCell]);
+    expect(shapes(rhombus)).toEqual(shapes(hex));
+  });
+
+  it('rejects a hexagon whose opposite sides are not parallel', () => {
+    const t = loadTutorial('six-fold-snowflake.json');
+    const bad = structuredClone(t);
+    bad.steps.push({
+      id: 99,
+      text: 'A lopsided hexagon.',
+      create: {
+        lop: { polygon: ['D30', 'D90', 'D150', 'D210', 'D270', 'Q330'] },
+      },
+    });
+    bad.pattern.cell = 'lop';
+    expect(() => computePattern(evaluate(bad), bad)).toThrow(
+      'opposite sides equal and parallel',
+    );
   });
 
   it('finds none for a lattice that never lines up', () => {

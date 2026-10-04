@@ -18,3 +18,4 @@ docs/research/
 # Review renders: regenerate with pnpm review <id>
 docs/review/
 __pycache__/
+.claude/worktrees/
