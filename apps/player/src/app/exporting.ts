@@ -1,0 +1,157 @@
+import type { Vec } from '@tastir/engine';
+import type { Model } from './model';
+import type { WallStyle } from './Wall';
+
+const INK = '#23201c';
+const BAND = '#f7f2e6';
+const f = (n: number) => String(Math.round(n * 1e5) / 1e5);
+
+export interface WallOptions {
+  readonly look?: WallStyle;
+  readonly grout?: number;
+  /** How many tiles across and down. */
+  readonly across?: number;
+  readonly down?: number;
+  /** Size of one unit (OA) in output pixels. */
+  readonly scale?: number;
+  readonly title?: string;
+}
+
+/**
+ * The colored wall as a standalone SVG document: explicit copies of the
+ * pieces over `across` × `down` tiles, every color and width written as an
+ * attribute, so it opens the same in any program.
+ */
+export function wallSvg(
+  model: Model,
+  colors: readonly string[],
+  options: WallOptions = {},
+): string {
+  const {
+    look = 'tiles',
+    grout = 1,
+    across = 4,
+    down = 4,
+    scale = 100,
+    title = model.tutorial.title,
+  } = options;
+  const { cell, pieces, ink } = model.pattern;
+  const xs = cell.corners.map((p) => p.x);
+  const ys = cell.corners.map((p) => p.y);
+  const cellW = Math.max(...xs) - Math.min(...xs);
+  const cellH = Math.max(...ys) - Math.min(...ys);
+  const centre = {
+    x: (Math.max(...xs) + Math.min(...xs)) / 2,
+    y: (Math.max(...ys) + Math.min(...ys)) / 2,
+  };
+  const view = {
+    minX: centre.x - (across * cellW) / 2,
+    maxX: centre.x + (across * cellW) / 2,
+    minY: centre.y - (down * cellH) / 2,
+    maxY: centre.y + (down * cellH) / 2,
+  };
+  const w = view.maxX - view.minX;
+  const h = view.maxY - view.minY;
+  const groutWidth = 0.012 * (cellW / 2) * grout;
+  // Every shift of the cell whose pieces may reach into the view.
+  const shifts: Vec[] = [];
+  const reach = Math.ceil(Math.max(across, down) / 2) + 2;
+  for (let i = -reach; i <= reach; i++) {
+    for (let j = -reach; j <= reach; j++) {
+      shifts.push({
+        x: cell.u.x * i + cell.v.x * j,
+        y: cell.u.y * i + cell.v.y * j,
+      });
+    }
+  }
+  const pt = (p: Vec, d: Vec) => `${f(p.x + d.x)},${f(-(p.y + d.y))}`;
+  const inView = (ps: readonly Vec[], d: Vec) =>
+    ps.some(
+      (p) =>
+        p.x + d.x > view.minX - cellW &&
+        p.x + d.x < view.maxX + cellW &&
+        p.y + d.y > view.minY - cellH &&
+        p.y + d.y < view.maxY + cellH,
+    );
+  const body: string[] = [];
+  if (look === 'lines')
+    body.push(
+      `<rect x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}" fill="#ffffff"/>`,
+    );
+  for (const d of shifts) {
+    for (const p of pieces) {
+      if (!inView(p.polygon, d)) continue;
+      const fill = look === 'lines' ? 'none' : (colors[p.type] ?? '#999999');
+      const stroke = look === 'strapwork' ? 'none' : INK;
+      const width = look === 'lines' ? groutWidth * 0.8 : groutWidth;
+      body.push(
+        `<polygon data-type="${p.type}" points="${p.polygon.map((q) => pt(q, d)).join(' ')}" fill="${fill}" stroke="${stroke}" stroke-width="${f(width)}" stroke-linejoin="round"/>`,
+      );
+    }
+  }
+  if (look === 'strapwork') {
+    for (const [color, k] of [
+      [INK, 4],
+      [BAND, 2.4],
+    ] as const) {
+      for (const d of shifts) {
+        for (const s of ink) {
+          if (!inView([s.segment.a, s.segment.b], d)) continue;
+          const [x1, y1] = pt(s.segment.a, d).split(',');
+          const [x2, y2] = pt(s.segment.b, d).split(',');
+          body.push(
+            `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${f(groutWidth * k)}" stroke-linecap="round"/>`,
+          );
+        }
+      }
+    }
+  }
+  const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(w * scale)}" height="${Math.round(h * scale)}" viewBox="${f(view.minX)} ${f(-view.maxY)} ${f(w)} ${f(h)}">`,
+    `<title>${esc(title)}</title>`,
+    `<clipPath id="wall"><rect x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}"/></clipPath>`,
+    `<g clip-path="url(#wall)">`,
+    ...body,
+    `</g>`,
+    `</svg>`,
+  ].join('\n');
+}
+
+/** Saves a blob under a file name, as a download. */
+export function download(blob: Blob, name: string): void {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+export const svgBlob = (svg: string) =>
+  new Blob([svg], { type: 'image/svg+xml' });
+
+/** The SVG drawn onto a canvas and saved as PNG. */
+export async function pngBlob(svg: string): Promise<Blob> {
+  const url = URL.createObjectURL(svgBlob(svg));
+  try {
+    const img = new Image();
+    img.src = url;
+    await img.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    canvas.getContext('2d')?.drawImage(img, 0, 0);
+    return await new Promise<Blob>((resolve, reject) =>
+      canvas.toBlob(
+        (b) =>
+          b ? resolve(b) : reject(new Error('The PNG could not be made')),
+        'image/png',
+      ),
+    );
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}

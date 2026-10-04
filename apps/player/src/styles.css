@@ -456,3 +456,61 @@ button:disabled {
   vertical-align: middle;
   width: 110px;
 }
+
+.export-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+
+.export-tools button {
+  padding: 4px 6px;
+}
+
+.export-tools select {
+  font: inherit;
+}
+
+/* The line sheet shows only on paper; on screen nothing changes. */
+.print-sheet {
+  display: none;
+}
+
+@media print {
+  .player > :not(.print-sheet) {
+    display: none !important;
+  }
+
+  .player {
+    height: auto;
+    padding: 0;
+  }
+
+  .print-sheet {
+    display: block;
+    color: #000;
+  }
+
+  .print-sheet h1 {
+    font-size: 18pt;
+    margin: 0 0 2pt;
+  }
+
+  .print-sheet p {
+    margin: 0 0 6pt;
+  }
+
+  .print-pattern svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .print-sheet footer {
+    border: 0;
+    display: block;
+    font-size: 9pt;
+    padding: 6pt 0 0;
+  }
+}

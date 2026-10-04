@@ -60,7 +60,7 @@ The goal of phase 1 is a player a friend can use unaided: animated steps, a came
 - [x] **1.8 Wall.** The wall becomes infinite: an SVG `<pattern>` fill, drag to pan and scroll to zoom. Controls for grout width and three styles: tiles (filled pieces with grout), strapwork (the ink drawn as bands) and lines (black lines on white, for coloring by hand).
   *Done when:* tests show the pattern tile holds every piece that reaches into the cell, and each style renders; in the browser I can pan the wall without reaching an edge.
 
-- [ ] **1.9 Export.** Download the colored wall as SVG and PNG, and print a line sheet on A4 or Letter with the pattern in lines only and the tutorial's title and credits.
+- [x] **1.9 Export.** Download the colored wall as SVG and PNG, and print a line sheet on A4 or Letter with the pattern in lines only and the tutorial's title and credits.
   *Done when:* a test checks the SVG is standalone and shows the same pieces as the screen; I can open the SVG and PNG and print the sheet from the browser.
 
 - [ ] **1.10 Web Worker.** Evaluation and piece finding run in a Web Worker, so the page stays responsive; the player shows progress while it waits.

@@ -18,6 +18,8 @@ import {
   type History,
 } from './coloring';
 import { PiecePanel } from './PiecePanel';
+import { download, pngBlob, svgBlob, wallSvg } from './exporting';
+import { PrintSheet, type Paper } from './PrintSheet';
 import { Construction, RepeatedInk, Thumbnail } from './drawing';
 import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { LIBRARY, type Entry } from './library';
@@ -88,6 +90,11 @@ export function Player({ model }: { model: Model }) {
   const [selected, setSelected] = useState<number>();
   const [wallStyle, setWallStyle] = useState<WallStyle>('tiles');
   const [grout, setGrout] = useState(1);
+  const [paper, setPaper] = useState<Paper>('A4');
+  const [printing, setPrinting] = useState(false);
+  const stopPrinting = useCallback(() => setPrinting(false), []);
+  const exportSvg = () =>
+    wallSvg(inking.shown, colors, { look: wallStyle, grout });
   const svgRef = useRef<SVGSVGElement>(null);
   const running = useRef<Animation[]>([]);
   const reversing = useRef(false);
@@ -221,6 +228,9 @@ export function Player({ model }: { model: Model }) {
 
   return (
     <div className="player">
+      {printing ? (
+        <PrintSheet model={inking.shown} paper={paper} onDone={stopPrinting} />
+      ) : null}
       <header>
         <div className="title">
           <a className="home" href="#/">
@@ -309,6 +319,45 @@ export function Player({ model }: { model: Model }) {
               <span className="hint">
                 Drag to move along the wall, scroll to zoom.
               </span>
+            </div>
+          ) : null}
+          {stage.kind === 'color' ? (
+            <div className="export-tools">
+              <button
+                type="button"
+                className="quiet"
+                onClick={() =>
+                  download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
+                }
+              >
+                Download SVG
+              </button>
+              <button
+                type="button"
+                className="quiet"
+                onClick={() =>
+                  void pngBlob(exportSvg()).then((png) =>
+                    download(png, `${tutorial.id}.png`),
+                  )
+                }
+              >
+                Download PNG
+              </button>
+              <select
+                aria-label="Paper"
+                value={paper}
+                onChange={(e) => setPaper(e.target.value as Paper)}
+              >
+                <option>A4</option>
+                <option>Letter</option>
+              </select>
+              <button
+                type="button"
+                className="quiet"
+                onClick={() => setPrinting(true)}
+              >
+                Print line sheet
+              </button>
             </div>
           ) : null}
           {stage.kind === 'color' ? (
