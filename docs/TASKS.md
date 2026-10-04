@@ -15,7 +15,7 @@ The goal of phase 0 is one tutorial, the eight-fold star and cross, playing exac
 - [x] **0.3 Constructions.** Add perpendicular and parallel through a point, the bisector of an angle given three points, a circle through a point, a circle with another circle's radius, and a circle at a centre tangent to lines or circles (an error when no single radius touches all of them).
   *Done when:* each construction has a test against a hand-computed value; the tangent circle is tested with the two cases from `docs/geometry-notes.md` (radii 0.29289 and 0.12132).
 
-- [ ] **0.4 Schema.** In `packages/schema`, write the Zod schema for format v0 from `docs/tutorial-format.md` and export its TypeScript types.
+- [x] **0.4 Schema.** In `packages/schema`, write the Zod schema for format v0 from `docs/tutorial-format.md` and export its TypeScript types.
   *Done when:* `tutorials/eight-fold-star-and-cross.json` parses; tests show a coordinate, a forward reference and an index-style pick are each rejected with a clear message.
 
 - [ ] **0.5 Evaluator.** Turn a parsed tutorial into a scene: every element with its geometry, the step that made it and the elements it depends on. Implement the `pick` rules and the frame. Missing, ambiguous or impossible references throw an error naming the step and element.

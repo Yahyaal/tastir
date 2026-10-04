@@ -17,5 +17,8 @@
   },
   "nx": {
     "name": "schema"
+  },
+  "dependencies": {
+    "zod": "^4.6.5"
   }
 }

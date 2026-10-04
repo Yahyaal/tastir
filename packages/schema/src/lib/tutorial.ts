@@ -1,0 +1,258 @@
+import { z } from 'zod';
+
+// Format v0 of the tutorial JSON, as described in docs/tutorial-format.md.
+// This file checks the shape; references.ts checks that every name refers
+// to an earlier element of the right kind.
+
+/** A name a step gives to a new element. `.` and `@` are kept for the
+ * names the engine derives (`k.1`, `c4@2`). */
+export const NAME_PATTERN = /^[A-Za-z][A-Za-z0-9_]*$/;
+/** A reference: a name, optionally a crossing number and a copy number. */
+export const REF_PATTERN = /^[A-Za-z][A-Za-z0-9_]*(\.[1-9]\d*)?(@[1-9]\d*)?$/;
+
+const NO_COORDINATES =
+  'tutorials never contain coordinates; build the point from crossings of earlier elements';
+
+const Name = z
+  .string()
+  .regex(
+    NAME_PATTERN,
+    'a name starts with a letter and uses only letters, digits and _',
+  );
+
+const Ref = z
+  .string({
+    error: (iss) =>
+      typeof iss.input === 'number'
+        ? `${NO_COORDINATES} (got the number ${iss.input})`
+        : 'expected the name of an earlier element',
+  })
+  .regex(REF_PATTERN, 'expected the name of an earlier element');
+
+const PICK_RULES = 'angle, nearest, farthest, inside or outside';
+
+export const Pick = z
+  .strictObject(
+    {
+      angle: z.number().optional(),
+      nearest: Ref.optional(),
+      farthest: Ref.optional(),
+      inside: Ref.optional(),
+      outside: Ref.optional(),
+    },
+    {
+      error: (iss) =>
+        iss.code === 'unrecognized_keys'
+          ? `pick by position is not allowed (found ${iss.keys.map((k) => `"${k}"`).join(', ')}): its meaning depends on how the engine orders crossings. Choose the point by rule with ${PICK_RULES}`
+          : undefined,
+    },
+  )
+  .refine((p) => Object.keys(p).length > 0, {
+    error: `a pick needs at least one rule: ${PICK_RULES}`,
+    // Only an empty pick is reported here; unknown keys already have an error.
+    when: (payload) => payload.issues.length === 0,
+  });
+
+const Pair = z.tuple([Ref, Ref]);
+
+export const PointSpec = z.strictObject({ meet: Pair, pick: Pick.optional() });
+export const PointsSpec = z.strictObject({
+  meet: Pair,
+  pick: z.strictObject({ all: z.literal('byAngle') }),
+});
+
+export const LineSpec = z.union(
+  [
+    z.strictObject({ through: Pair }),
+    z.strictObject({ through: Ref, perpendicularTo: Ref }),
+    z.strictObject({ through: Ref, parallelTo: Ref }),
+    z.strictObject({ through: Ref, bisects: z.tuple([Ref, Ref, Ref]) }),
+  ],
+  {
+    error:
+      'a line is { through: [p, q] }, { through: p, perpendicularTo: l }, { through: p, parallelTo: l } or { through: q, bisects: [p, q, r] }',
+  },
+);
+
+export const CircleSpec = z.union(
+  [
+    z.strictObject({ centre: Ref, through: Ref }),
+    z.strictObject({ centre: Ref, radiusOf: Ref }),
+    z.strictObject({ centre: Ref, radiusFrom: Pair }),
+    z.strictObject({ centre: Ref, tangentTo: z.array(Ref).min(1) }),
+  ],
+  {
+    error:
+      'a circle is { centre, through }, { centre, radiusOf }, { centre, radiusFrom: [q, r] } or { centre, tangentTo: [...] }',
+  },
+);
+
+export const PolygonSpec = z
+  .array(Ref)
+  .min(3, 'a polygon needs at least three points');
+
+export const Symmetry = z.union(
+  [
+    z.enum(['rot4', 'rot8', 'rot16']),
+    z.templateLiteral(['mirror:', z.string().regex(REF_PATTERN)]),
+  ],
+  { error: 'a repeat is by rot4, rot8, rot16 or mirror:<line>' },
+);
+
+export const RepeatSpec = z.strictObject({
+  of: z.array(Ref).min(1),
+  by: Symmetry,
+});
+
+const KINDS = [
+  'point',
+  'points',
+  'line',
+  'circle',
+  'polygon',
+  'repeat',
+] as const;
+const COORDINATE_KEYS = new Set([
+  'x',
+  'y',
+  'at',
+  'xy',
+  'coords',
+  'coordinates',
+  'position',
+]);
+
+/** Where a coordinate hides in an element spec, outside its pick rules. */
+function findCoordinate(value: unknown, path: string): string | undefined {
+  if (typeof value === 'number') return path;
+  if (Array.isArray(value)) {
+    for (const [i, v] of value.entries()) {
+      const found = findCoordinate(v, `${path}[${i}]`);
+      if (found) return found;
+    }
+  } else if (value && typeof value === 'object') {
+    for (const [k, v] of Object.entries(value)) {
+      if (k === 'pick') continue;
+      if (COORDINATE_KEYS.has(k)) return `${path}.${k}`;
+      const found = findCoordinate(v, `${path}.${k}`);
+      if (found) return found;
+    }
+  }
+  return undefined;
+}
+
+export const ElementSpec = z
+  .record(z.string(), z.unknown(), {
+    error: `an element is { "<kind>": { ... } }`,
+  })
+  .superRefine((el, ctx) => {
+    const keys = Object.keys(el);
+    const coordinate = findCoordinate(el, 'element');
+    if (coordinate) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `${NO_COORDINATES} (found one at ${coordinate.replace(/^element\.?/, '')})`,
+      });
+    } else if (
+      keys.length !== 1 ||
+      !(KINDS as readonly string[]).includes(keys[0] as string)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        message: `an element has exactly one kind: ${KINDS.join(', ')} (got ${keys.join(', ') || 'nothing'})`,
+      });
+    }
+  })
+  .pipe(
+    z.union([
+      z.strictObject({ point: PointSpec }),
+      z.strictObject({ points: PointsSpec }),
+      z.strictObject({ line: LineSpec }),
+      z.strictObject({ circle: CircleSpec }),
+      z.strictObject({ polygon: PolygonSpec }),
+      z.strictObject({ repeat: RepeatSpec }),
+    ]),
+  );
+
+export const Step = z.strictObject({
+  id: z.int().positive(),
+  text: z.string().min(1),
+  create: z.record(Name, ElementSpec),
+  highlight: z.array(Ref).optional(),
+  animate: z.enum(['compass', 'ruler', 'fade']).optional(),
+});
+
+export const InkPath = z.strictObject({
+  closed: z.boolean().optional(),
+  through: z.array(Ref).min(2, 'an ink path goes through at least two points'),
+});
+
+export const Credit = z.strictObject({
+  source: z.string().min(1),
+  creator: z.string().optional(),
+  url: z.url().optional(),
+  note: z.string().optional(),
+  steps: z.array(z.int().positive()).optional(),
+});
+
+export const ExpectedPiece = z.strictObject({
+  name: Name,
+  vertices: z.int().min(3),
+  area: z.number().positive(),
+  perCell: z.int().positive(),
+});
+
+export const Expect = z.strictObject({
+  note: z.string().optional(),
+  crossings: z
+    .record(
+      Name,
+      z.strictObject({
+        count: z.int().positive(),
+        distanceFromO: z.number().positive().optional(),
+      }),
+    )
+    .optional(),
+  pieceTypes: z.int().positive(),
+  pieces: z.array(ExpectedPiece).min(1),
+  cellArea: z.number().positive().optional(),
+});
+
+export const TutorialShape = z.strictObject({
+  format: z.literal(0),
+  id: z
+    .string()
+    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'an id is lower-case words joined by -'),
+  title: z.string().min(1),
+  fold: z.int().min(3),
+  style: z.string().min(1),
+  level: z.enum(['beginner', 'intermediate', 'advanced']),
+  credits: z.array(Credit),
+  given: z.strictObject({ O: z.string().min(1), A: z.string().min(1) }),
+  steps: z.array(Step).min(1),
+  ink: z.strictObject({
+    text: z.string().optional(),
+    paths: z.array(InkPath).min(1),
+  }),
+  pattern: z.strictObject({
+    cell: Ref,
+    palette: z.string().optional(),
+    colors: z.record(Name, z.string().min(1)),
+  }),
+  expect: Expect,
+});
+
+export type Tutorial = z.infer<typeof TutorialShape>;
+export type Step = z.infer<typeof Step>;
+export type ElementSpec = z.infer<typeof ElementSpec>;
+export type PointSpec = z.infer<typeof PointSpec>;
+export type PointsSpec = z.infer<typeof PointsSpec>;
+export type LineSpec = z.infer<typeof LineSpec>;
+export type CircleSpec = z.infer<typeof CircleSpec>;
+export type PolygonSpec = z.infer<typeof PolygonSpec>;
+export type RepeatSpec = z.infer<typeof RepeatSpec>;
+export type Pick = z.infer<typeof Pick>;
+export type Symmetry = z.infer<typeof Symmetry>;
+export type InkPath = z.infer<typeof InkPath>;
+export type Expect = z.infer<typeof Expect>;
+export type ExpectedPiece = z.infer<typeof ExpectedPiece>;
