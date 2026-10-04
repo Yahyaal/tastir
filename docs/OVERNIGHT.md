@@ -35,3 +35,7 @@ Mamoot's Ibn Tulun window is the most intricate pattern so far: a twelve-pointed
 ## Four-fold ring of circles (abandoned)
 
 The earlier attempt's research pointed at Sandy Kurt's free four-fold tutorial and a photo of a Mughal jali. The construction is the ring of eight small circles from the geometry notes, each divided by its own two squares, so the candidate lines could be derived independently and Kurt's final drawing classified against them; a generator script built the 40 lines and 220 ink paths, and the overlay is exact. But the jali turned out to be a different pattern, with large stars among smaller octagons where this one has equal stars, and Kurt names no monument, so there is nothing to verify the wall against. With the source marked all rights reserved as well, the tutorial is abandoned and kept for review.
+
+## Existing tutorials
+
+The three tutorials that were already in `tutorials/` were compared with photos too. Star and cross matches the Kashan lustre tiles of 1297–98 in Berlin. No photo of the eight-fold rosette was found, and the sixteen-fold rosette is much plainer than the real rosette walls at the Bou Inania madrasa, so both are listed in `STATUS.md` for your review rather than marked by me.
