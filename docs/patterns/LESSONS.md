@@ -16,6 +16,11 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - Run `python3 tools/review/format_tutorial.py tutorials/<id>.json` after generating a tutorial with a script; `json.dump` with indent 2 spreads every element over a dozen lines.
 - The golden test checks the tutorial's `fold` symmetry about O for pieces within distance 1 of O, so O must be a rosette centre and OA should be about the size of the rosette.
 
+## Checking
+
+- A source's suggested tile can be wrong even when its drawing is right. The ATM handout repeats the large hexagon of the star-and-hexagons pattern, which gives a different wall from the photo. Always compare the wall with a photo of the real pattern, not only with the source's drawing.
+- Before building a tile, work out the expected piece areas by hand (star, hexagon, rhombus) and check that they add up to the cell area; when `pnpm review` prints the same numbers, the construction is right.
+
 ## Tooling
 
 - Agent worktrees live in `.claude/worktrees/` inside the repo. Without `.nxignore`, Nx picks them up as extra projects, the main test run fails with circular project references, and `pnpm typecheck` adds them to the root `tsconfig.json`. `.nxignore` now excludes `.claude/`.

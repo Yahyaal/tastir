@@ -13,3 +13,9 @@ Running agents in worktrees under `.claude/worktrees/` made Nx discover their co
 ## Six-fold snowflake (verified)
 
 Mamoot's "Six-Fold Snowflake" was the only step-by-step source found for this exact sequence, with photos of the pattern at Ibn Tulun and the Eski Mosque on the same page; the ATM handout builds the same base for a sibling pattern. Every step matched the source drawings, the only correction being to draw the small star as six lines rather than two triangles, as the source does. The first tile was a rhombus from O to two neighbouring centres, which cut the right pieces but broke free inking, because the learner can only ink construction inside the cell. So the engine now accepts a hexagon as the cell, and the snowflake repeats its hexagon exactly as the source does. The wall matches both photos: small stars each ringed by six hexagons, with chevrons, rhombi and triangles between.
+
+## Star and hexagons (verified)
+
+The four agents started in parallel all stopped on a usage limit within minutes, before writing anything usable, so from here the patterns were done one at a time without agents. Their downloads in `docs/research/` were kept, and their worktrees are still in `.claude/worktrees/` because removing them was not permitted.
+
+Charlotte Webb's ATM handout gives three step drawings and a photo, and Kaplan's dissertation names the pattern. The construction and ink matched the handout on the first try. The handout's tile, though, is the large hexagon, and repeating it gave three hexagons sharing edges at every corner, which the photo does not have. The repeat in the photo is the smaller hexagon through the centres of the corner hexagons, so the tutorial adds that as its tile, and the wall then matches the photo. Lesson: a source's suggested tile can be wrong even when its drawing is right, so always check the wall against a photo.
