@@ -6,7 +6,7 @@ Standing goals: many designs per pattern family, not one; build toward letting u
 
 - [ ] **Owner decisions of 2026-10-04 (do these first).**
   - [x] Design A: add a repeat with rows shifted by half a rosette (done: `alhambra-star-and-arrows-shifted`, needs a band between rows; question on the review page).
-  - [ ] Design G (`four-fold-ring-of-circles`): ship with credit; split steps 9–11 into smaller steps that each animate a few points.
+  - [x] Design G (`four-fold-ring-of-circles`): ship with credit; steps split by line direction (generator now `tools/review/gen_four_fold_ring.py`).
   - [ ] Design C: build Sandy Kurt's 8-fold zellige (`docs/research/eight-fold-zellige/kurt-*.pdf`) as a new tutorial, credited; keep Design D (`eight-fold-zellige`) and remove the wrong note tying it to her in `docs/geometry-notes.md`.
   - [ ] Design E: build the full Bou Inania sixteen-fold wall (`docs/research/sixteen-fold-rosette/photo-bou-inania.jpg`) as a new advanced tutorial; keep F.
 - [ ] **Alhambra interlace from the owner's photos (low priority: the owner has no more than the product page; try again only with a new source).** Measured: square lattice, two-square stars of radius 0.17·spacing, points at 22.5°+45k, eight pentagons round each star. Ruled out: Hankin on 4.8.8 at 40–88° (stars too thin), tilingsearch AL1/C1/F172, Kurt's 8-fold zellige PDFs, ALZADA grid drawings. Photos: `docs/research/alhambra-star-and-arrows/maroc/`.
@@ -17,4 +17,5 @@ Standing goals: many designs per pattern family, not one; build toward letting u
   1. Alhambra grids: Wichmann's tilingsearch (tilingsearch.mit.edu/contents/<id>.pdf, line drawings) lists many Alhambra panels whose angles are all multiples of 45°; read them with `starread.py`/`gridread.py` and pair each with a Wikimedia Commons photo of the same panel for verification.
   2. Six-fold: the Mosque of Ibn Tulun has over a hundred different window grilles; find ones with a published construction (Mamoot, drawingislamicgeometricdesigns.com, Riding) and a Commons photo.
   3. Eight-fold squares: variants of the star and cross (star and octagon, khatam patterns) with photos.
+- [ ] **Format idea: ink along a line between crossings.** Let an ink path name a line and the lines it runs between, so tutorials need no step that only marks turning points (four-fold ring of circles has two such steps, 360 marks).
 - [ ] **User-made designs (future).** Note what the player needs so learners can generate new designs from a construction.

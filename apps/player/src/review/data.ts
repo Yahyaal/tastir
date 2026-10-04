@@ -99,7 +99,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 4,
     status: 'decided',
     decision:
-      'You: ship it with credit, and split steps 9–11. I agree on credit: the step text is ours, the construction is credited in the app, and if she objects it can be removed. Doing next: splitting steps 9–11 into smaller steps, each animating a few points at once.',
+      'You: ship it with credit, and split steps 9–11. I agree on credit: the step text is ours, the construction is credited in the app, and if she objects it can be removed. Done: the old steps 9–11 are now six steps, one for each direction of line, then two steps that only fade in the turning points of the pattern (they are marks, not drawing). Removing those mark steps entirely needs a small format change, which I have noted for later.',
     summary:
       'A square pattern of eight-pointed stars and crossed bands, built from a ring of small circles each divided by two squares.',
     story: [

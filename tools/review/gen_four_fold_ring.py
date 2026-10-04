@@ -1,8 +1,12 @@
-"""Generate tutorials/four-fold-mughal-jali.json from the classified ink."""
+"""Generates the four-fold ring of circles tutorial from Sandy Kurt's final
+drawing, classified into ff-ink.json. Usage: gen_four_fold_ring.py <out.json>
+The result has placeholder expect values; copy its steps and ink into
+tutorials/four-fold-ring-of-circles.json."""
 import json, math
 
-S = '/tmp/claude-1001/-home-yahya-Documents-projects-Tastir/50649b5a-b65a-41ae-9550-7d77efdce9e0/scratchpad/'
-ROOT = '/home/yahya/Documents/projects/Tastir/'
+import os
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..') + '/'
+S = ROOT + 'docs/research/four-fold-model/'  # ff-ink.json: Kurt's drawing classified
 sc = json.load(open(ROOT + 'tutorials/eight-fold-star-and-cross.json'))
 rho = 1 - 1 / math.sqrt(2)
 a = rho / math.sqrt(2)
@@ -60,6 +64,7 @@ need = sorted(set((s[2][0], s[2][1]) for s in ink))
 
 # One small circle that makes each needed line, and the helper through it.
 lines = {}       # (n, d) -> name
+pt_dir, line_dir, end_dir = {}, {}, {}
 steps_helpers, steps_points, steps_lines = {}, {}, {}
 for n, d in need:
     made = False
@@ -83,7 +88,7 @@ for n, d in need:
                         pname = f'q{len(steps_points)}'
                         rule = pick_for(tgt, cands)
                         steps_points[pname] = {'point': {'meet': [circ[c], hname], 'pick': rule}}
-                        P[pname] = tgt; pts.append(pname)
+                        P[pname] = tgt; pts.append(pname); pt_dir[pname] = n
                     made = True
         else:                     # side of its standing square: through its points on the axes
             s45 = (cx * math.cos(math.radians(n)) + cy * math.sin(math.radians(n)))
@@ -104,11 +109,11 @@ for n, d in need:
                         tgt = [q for q in cands if abs(q[0] * nn[0] + q[1] * nn[1] - d) < 1e-4][0]
                         pname = f'q{len(steps_points)}'
                         steps_points[pname] = {'point': {'meet': [circ[c], hname], 'pick': pick_for(tgt, cands)}}
-                        P[pname] = tgt; pts.append(pname)
+                        P[pname] = tgt; pts.append(pname); pt_dir[pname] = n
                     made = True
         if made:
             lname = f'L{len(lines)}'
-            steps_lines[lname] = {'line': {'through': pts}}
+            steps_lines[lname] = {'line': {'through': pts}}; line_dir[lname] = n
             lines[(n, d)] = lname
             break
     assert made, (n, d)
@@ -136,7 +141,7 @@ def end_name(n, d, p):
         if (m, e) != (n, d) and m != n and on(m, e, p):
             pname = f'x{len(ends)}'
             ends[key] = pname
-            steps_ends[pname] = {'point': {'meet': [line_name(n, d), nm]}}
+            steps_ends[pname] = {'point': {'meet': [line_name(n, d), nm]}}; end_dir[pname] = n
             P[pname] = p
             return pname
     raise SystemExit(f'no line crosses {(n, d)} at {p}')
@@ -166,14 +171,18 @@ st.append({'id': 7, 'text': 'Put the compass on the crossing of the two squares 
            'create': ring, 'highlight': ['k', 'h', 'd1'], 'animate': 'compass'})
 st.append({'id': 8, 'text': 'Through the middle of every small circle, rule lines parallel to the horizontal, the vertical and the two diagonals. Each small circle is now divided into eight.',
            'create': steps_helpers, 'highlight': ['h', 'v', 'd1', 'd2'], 'animate': 'ruler'})
-st.append({'id': 9, 'text': 'Mark where each small circle cuts the lines through its middle.',
-           'create': steps_points, 'animate': 'fade'})
-st.append({'id': 10, 'text': 'Draw a lying square and a standing square inside every small circle, joining the points you marked, and rule each side right across the tile. Many sides of neighbouring circles fall on the same long line, so the drawing becomes a lattice of lines in four directions.',
-           'create': steps_lines, 'animate': 'ruler'})
-st.append({'id': 11, 'text': 'Mark the crossings of the long lines where the pattern turns.',
-           'create': steps_ends, 'animate': 'fade'})
+WORDS = {90: ('lying', 'horizontal'), 0: ('lying', 'vertical'), 45: ('standing', 'slanting up to the left'), 135: ('standing', 'slanting up to the right')}
+for n in (90, 0, 45, 135):
+    sq, way = WORDS[n]
+    create = {k: v for k, v in steps_points.items() if pt_dir[k] == n}
+    create.update({k: v for k, v in steps_lines.items() if line_dir[k] == n})
+    st.append({'text': f'Now the {way} sides of the {sq} squares, one inside every small circle. Mark where each circle cuts the line through its middle that the side needs, and rule the side right across the tile; neighbouring circles often share the same long line.',
+               'create': create, 'animate': 'ruler'})
+for group, text in (((90, 0), 'Mark where the horizontal and vertical lines meet the other lines at the turns of the pattern.'),
+                    ((45, 135), 'Mark where the slanting lines meet the other lines at the turns of the pattern.')):
+    st.append({'text': text, 'create': {k: v for k, v in steps_ends.items() if end_dir[k] in group}, 'animate': 'fade'})
 for i, s in enumerate(st): s['id'] = i + 1
-t = {'format': 0, 'id': 'four-fold-mughal-jali', 'title': 'Mughal jali', 'fold': 4, 'style': 'Mughal', 'level': 'advanced',
+t = {'format': 0, 'id': 'four-fold-ring-of-circles', 'title': 'Mughal jali', 'fold': 4, 'style': 'Mughal', 'level': 'advanced',
      'credits': [{'source': '4fold Pattern Tutorial', 'creator': 'Sandy Kurt', 'url': 'https://sandykurt.com/free-tutorials',
                   'note': 'The ring of small circles touching the axes and diagonals, a lying and a standing square in each, and the choice of lines to ink follow this tutorial; our steps group the drawing differently and the text is our own.',
                   'steps': [7, 8, 9, 10]}],
@@ -181,5 +190,6 @@ t = {'format': 0, 'id': 'four-fold-mughal-jali', 'title': 'Mughal jali', 'fold':
      'ink': {'text': 'Go over the lattice lines that form the pattern: around the centre an eight-pointed star, around it a ring of crossed bands, and in the corners the start of the next star.', 'paths': paths},
      'pattern': {'cell': 'cell', 'text': 'Repeat the tile edge to edge. The corners of four tiles close into another eight-pointed star, and the bands cross between the stars as in a carved stone screen.', 'palette': 'Fès tile', 'colors': {}},
      'expect': {'pieceTypes': 1, 'pieces': [{'name': 'x', 'vertices': 3, 'area': 1, 'perCell': 1}]}}
-json.dump(t, open(ROOT + 'tutorials/four-fold-mughal-jali.json', 'w'))
+import sys
+json.dump(t, open(sys.argv[1], 'w'))
 print(len(lines), 'lines', len(steps_points), 'points', len(steps_ends), 'ends', len(paths), 'paths')
