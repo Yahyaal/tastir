@@ -124,7 +124,11 @@ function Card({ pattern: p }: { pattern: Pattern }) {
     <article className={`review-card ${p.status}`} id={p.id}>
       <header>
         <span className={`badge ${p.status}`}>
-          {decide ? 'Needs your decision' : 'Verified'}
+          {decide
+            ? 'Needs your decision'
+            : p.status === 'decided'
+              ? 'Decided'
+              : 'Verified'}
         </span>
         <h3>{p.title}</h3>
         <span className="fold">{p.fold}-fold</span>
@@ -144,7 +148,13 @@ function Card({ pattern: p }: { pattern: Pattern }) {
           <Figure key={pic.src} picture={pic} />
         ))}
       </div>
-      {decide ? (
+      {p.decision ? (
+        <section className="asks decided">
+          <h4>Decision</h4>
+          <p>{p.decision}</p>
+        </section>
+      ) : null}
+      {QUESTIONS.some((q) => q.card === p.id || q.also?.includes(p.id)) ? (
         <section className="asks">
           <h4>My questions about this pattern</h4>
           <p>
@@ -160,7 +170,7 @@ function Card({ pattern: p }: { pattern: Pattern }) {
             ))}
           </p>
         </section>
-      ) : (
+      ) : p.asks.length ? (
         <section className="asks">
           <h4>What to look at</h4>
           <ul>
@@ -169,7 +179,7 @@ function Card({ pattern: p }: { pattern: Pattern }) {
             ))}
           </ul>
         </section>
-      )}
+      ) : null}
       <section className="sources">
         <h4>Sources</h4>
         <ul>
@@ -194,7 +204,7 @@ function Card({ pattern: p }: { pattern: Pattern }) {
 export function Review() {
   const { answers, set } = useAnswers();
   const [copied, setCopied] = useState(false);
-  const decide = PATTERNS.filter((p) => p.status === 'decide');
+  const decide = PATTERNS.filter((p) => p.status !== 'verified');
   const verified = PATTERNS.filter((p) => p.status === 'verified');
   const copy = async () => {
     await navigator.clipboard?.writeText(answersText(answers));

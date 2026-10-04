@@ -18,7 +18,9 @@ export interface Pattern {
   readonly id: string;
   readonly title: string;
   readonly fold: number;
-  readonly status: 'decide' | 'verified';
+  readonly status: 'decide' | 'decided' | 'verified';
+  /** For "decided": the owner's decision and what I am doing about it. */
+  readonly decision?: string;
   /** One sentence: what this pattern is. */
   readonly summary: string;
   /** What happened, in plain words. */
@@ -36,7 +38,9 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alhambra-star-and-arrows',
     title: 'Alhambra star and arrows',
     fold: 8,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: keep the guessed square repeat, and try rows shifted by half a rosette. Done: the shifted version is in the library as “Alhambra star and arrows, shifted rows” (see the new question). Your photo’s design B could not be identified beyond the product page; it stays on my list.',
     summary:
       'An eight-pointed star whose points become arrows, framed by two squares, from a painted ceiling in the Alhambra.',
     story: [
@@ -93,7 +97,9 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'four-fold-ring-of-circles',
     title: 'Four-fold ring of circles',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: ship it with credit, and split steps 9–11. I agree on credit: the step text is ours, the construction is credited in the app, and if she objects it can be removed. Doing next: splitting steps 9–11 into smaller steps, each animating a few points at once.',
     summary:
       'A square pattern of eight-pointed stars and crossed bands, built from a ring of small circles each divided by two squares.',
     story: [
@@ -159,7 +165,9 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'eight-fold-zellige',
     title: 'Eight-fold rosette (existed before tonight)',
     fold: 8,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: keep both. Keeping our Design D as it is (fixing the notes that wrongly tied it to Sandy Kurt) and building her Design C as a new tutorial, credited to her.',
     summary:
       'An eight-pointed star ringed by eight petals, with an octagon inside a second star where four tiles meet.',
     story: [
@@ -185,7 +193,9 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'sixteen-fold-rosette',
     title: 'Sixteen-fold rosette (existed before tonight)',
     fold: 16,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: build E too. Keeping F as the beginner version and building the full Bou Inania wall E as a new advanced tutorial.',
     summary:
       'A sixteen-pointed star ringed by sixteen petals, rosettes touching on a square grid.',
     story: [
@@ -582,73 +592,23 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
-    id: 'design-b-origin',
-    text: 'Design B (your photo): where is it from? A name, the Alhambra room, or a bigger photo without the watermark would let me build it.',
-    choices: ['I’ll ask the seller', 'I don’t know, drop it'],
+    id: 'design-a-shifted',
+    text: 'Design A with your shifted rows (right) only closes up if I add a straight band between the rows. Keep this version too?',
+    choices: [
+      'Keep both repeats',
+      'Keep only the shifted one',
+      'Keep only the square one',
+    ],
     pictures: [
       {
-        src: 'renders/alhambra-star-and-arrows/designs-A-B.png',
+        src: 'renders/alhambra-star-and-arrows-shifted/designs-A2.png',
         caption:
-          'Design B: red marks one small star, yellow its 8 pentagons. Design A is our rosette, for comparison: a different design.',
+          'Left: the square repeat. Right: rows shifted by half a rosette; the long horizontal lines between rows are the band I added.',
       },
     ],
     card: 'alhambra-star-and-arrows',
   },
-  {
-    id: 'design-g-copyright',
-    text: 'Design G follows Sandy Kurt’s tutorial, which is marked “all rights reserved”. Ship it with credit, ask her first, or drop it?',
-    choices: ['Ship it with credit', 'Ask her first', 'Drop it'],
-    pictures: [
-      {
-        src: 'renders/four-fold-ring-of-circles/design-G.png',
-        caption: 'Design G',
-      },
-    ],
-    card: 'four-fold-ring-of-circles',
-  },
-  {
-    id: 'design-g-steps',
-    text: 'If Design G stays: its steps 9–11 mark many points at once. Fine, or split them into smaller steps?',
-    choices: ['Fine as it is', 'Split them'],
-    pictures: [],
-    card: 'four-fold-ring-of-circles',
-  },
-  {
-    id: 'design-d',
-    text: 'Design D is already in the app, but it is not Sandy Kurt’s design (C), as our notes claimed. Keep D, rebuild it as C, or both?',
-    choices: ['Keep D', 'Rebuild as C', 'Keep both'],
-    pictures: [
-      {
-        src: 'renders/eight-fold-zellige/designs-C-D.png',
-        caption: 'Design C (left) and our Design D (right)',
-      },
-    ],
-    card: 'eight-fold-zellige',
-  },
-  {
-    id: 'design-a',
-    text: 'Design A’s repeat is my guess (picture); I searched again and found no photo of it repeating. Keep it, show the rosette alone with no wall, or remove it? If you can photograph or find the ceiling around it, I will rebuild the repeat.',
-    choices: ['Keep the guessed repeat', 'Rosette alone', 'Remove it'],
-    pictures: [
-      {
-        src: 'renders/alhambra-star-and-arrows/design-A-wall.png',
-        caption: 'Design A repeated on a square grid: my guess',
-      },
-    ],
-    card: 'alhambra-star-and-arrows',
-  },
-  {
-    id: 'design-f',
-    text: 'Design F is a simpler version of the real wall E. Keep F as a beginner version, also build the full E, or both?',
-    choices: ['Keep F only', 'Build E too', 'Replace F with E'],
-    pictures: [
-      {
-        src: 'renders/sixteen-fold-rosette/designs-E-F.png',
-        caption: 'The real wall E (left) and our Design F (right)',
-      },
-    ],
-    card: 'sixteen-fold-rosette',
-  },
+
   {
     id: 'designs-i-l',
     text: 'Designs I–M match published tracings of Alhambra panels line for line, but I found no photos of the real tiles. Keep them on the strength of the tracings?',

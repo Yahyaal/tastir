@@ -339,3 +339,17 @@
 .review .question .figures {
   grid-template-columns: repeat(auto-fill, minmax(260px, 340px));
 }
+
+.review .badge.decided {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.review-card.decided {
+  border-top: 4px solid #4f46e5;
+}
+
+.review .asks.decided {
+  background: #eef2ff;
+  margin-bottom: 12px;
+}
