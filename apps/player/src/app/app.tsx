@@ -1,7 +1,15 @@
 import example from '@tutorials/eight-fold-star-and-cross.json';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { planStep, play } from './animation';
 import { Construction, Legend, RepeatedInk, Wall } from './drawing';
-import { loadModel, stagesOf, type Model } from './model';
+import { loadModel, stagesOf, type Model, type Stage } from './model';
 
 const NUMBER_WORDS = [
   'no',
@@ -34,17 +42,70 @@ function colorText(model: Model): string {
   return `Color the pieces by shape, so ${joinAnd(same)}. Each tile holds ${joinAnd(held)}.`;
 }
 
+const prefersReducedMotion = () =>
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 export function Player({ model }: { model: Model }) {
   const { tutorial } = model;
   const stages = useMemo(() => stagesOf(tutorial), [tutorial]);
   const [index, setIndex] = useState(0);
-  const stage = stages[index] ?? { kind: 'color' };
-  const last = stages.length - 1;
-  const back = useCallback(() => setIndex((i) => Math.max(0, i - 1)), []);
-  const next = useCallback(
-    () => setIndex((i) => Math.min(last, i + 1)),
-    [last],
+  const stage = useMemo(
+    (): Stage => stages[index] ?? { kind: 'color' },
+    [stages, index],
   );
+  const last = stages.length - 1;
+  const [speed, setSpeed] = useState(1);
+  const [reduced, setReduced] = useState(prefersReducedMotion);
+
+  const svgRef = useRef<SVGSVGElement>(null);
+  const running = useRef<Animation[]>([]);
+  const reversing = useRef(false);
+  // Set when the next render should animate its step in: on load and Next.
+  const animateNext = useRef(true);
+
+  /** Jumps every running animation to its end. */
+  const settle = () => {
+    for (const a of running.current) a.finish();
+    running.current = [];
+  };
+
+  useLayoutEffect(() => {
+    // Before paint, so the step's new elements start hidden.
+    if (!animateNext.current) return;
+    animateNext.current = false;
+    if (stage.kind !== 'step' || reduced) return;
+    running.current = play(svgRef.current, planStep(model, stage.step, speed));
+  }, [index, stage, model, reduced, speed]);
+
+  const next = useCallback(() => {
+    if (reversing.current) return settle();
+    settle();
+    if (index === last) return;
+    animateNext.current = true;
+    setIndex(index + 1);
+  }, [index, last]);
+
+  const back = useCallback(() => {
+    // A second Back while undrawing finishes the undrawing at once.
+    if (reversing.current) return settle();
+    settle();
+    if (index === 0) return;
+    const undraw =
+      stage.kind === 'step' && !reduced
+        ? play(svgRef.current, planStep(model, stage.step, speed), {
+            reverse: true,
+          })
+        : [];
+    if (undraw.length === 0) return setIndex(index - 1);
+    reversing.current = true;
+    running.current = undraw;
+    void Promise.allSettled(undraw.map((a) => a.finished)).then(() => {
+      reversing.current = false;
+      running.current = [];
+      setIndex(index - 1);
+    });
+  }, [index, stage, model, reduced, speed]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -62,7 +123,7 @@ export function Player({ model }: { model: Model }) {
   if (stage.kind === 'step') {
     label = `Step ${stage.step} of ${steps}`;
     text = tutorial.steps[stage.step - 1]?.text ?? '';
-    picture = <Construction model={model} upTo={stage.step} />;
+    picture = <Construction model={model} upTo={stage.step} svgRef={svgRef} />;
   } else if (stage.kind === 'ink') {
     label = 'Ink';
     text = tutorial.ink.text ?? 'Go over the pattern lines.';
@@ -83,7 +144,28 @@ export function Player({ model }: { model: Model }) {
     <div className="player">
       <header>
         <h1>{tutorial.title}</h1>
-        <span className="brand">Tastir</span>
+        <div className="controls">
+          <label>
+            Speed{' '}
+            <select
+              value={speed}
+              onChange={(e) => setSpeed(Number(e.target.value))}
+            >
+              <option value={0.5}>½×</option>
+              <option value={1}>1×</option>
+              <option value={2}>2×</option>
+            </select>
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={reduced}
+              onChange={(e) => setReduced(e.target.checked)}
+            />{' '}
+            Reduce motion
+          </label>
+          <span className="brand">Tastir</span>
+        </div>
       </header>
       <main className="stage">{picture}</main>
       <footer>

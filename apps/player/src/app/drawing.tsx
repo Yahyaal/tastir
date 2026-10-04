@@ -1,4 +1,5 @@
 import type { Geometry, Line, SceneElement, Vec } from '@tastir/engine';
+import { compassStart } from './animation';
 import { pieceColors, type Model } from './model';
 
 interface Rect {
@@ -70,13 +71,18 @@ function clip(l: Line, r: Rect): [Vec, Vec] | undefined {
 }
 
 function Shape({
+  name,
   g,
   view,
   className,
+  startDeg = 0,
 }: {
+  name: string;
   g: Geometry;
   view: Rect;
   className: string;
+  /** Where a circle's stroke starts, in degrees in the tutorial frame. */
+  startDeg?: number;
 }) {
   switch (g.kind) {
     case 'line': {
@@ -85,6 +91,7 @@ function Shape({
       const [a, b] = seg;
       return (
         <line
+          data-name={name}
           className={className}
           x1={sx(a)}
           y1={sy(a)}
@@ -97,16 +104,21 @@ function Shape({
     case 'circle':
       return (
         <circle
+          data-name={name}
           className={className}
           cx={sx(g.circle.centre)}
           cy={sy(g.circle.centre)}
           r={g.circle.radius}
+          // SVG strokes a circle from its rightmost point, clockwise on
+          // screen; turn it so the stroke starts where the compass opens.
+          transform={`rotate(${-startDeg} ${sx(g.circle.centre)} ${sy(g.circle.centre)})`}
           vectorEffect="non-scaling-stroke"
         />
       );
     case 'polygon':
       return (
         <polygon
+          data-name={name}
           className={className}
           points={points(g.vertices)}
           vectorEffect="non-scaling-stroke"
@@ -130,6 +142,7 @@ function Mark({
   const p = el.geometry.at;
   return (
     <circle
+      data-name={el.name}
       className={current ? 'mark current' : 'mark'}
       cx={sx(p)}
       cy={sy(p)}
@@ -139,6 +152,8 @@ function Mark({
 }
 
 interface Label {
+  /** The element the label belongs to, so it appears with its point. */
+  readonly name: string;
   readonly at: Vec;
   readonly text: string;
   readonly className: string;
@@ -176,14 +191,19 @@ function labelsFor(
       'point-name',
       els,
     ];
-    return { at, text: named.map((el) => el.name).join(' = '), className };
+    return {
+      name: named[0]?.name ?? '',
+      at,
+      text: named.map((el) => el.name).join(' = '),
+      className,
+    };
   });
 }
 
 function Labels({ labels, size }: { labels: readonly Label[]; size: number }) {
   return (
     <g>
-      {labels.map(({ at, text, className }) => {
+      {labels.map(({ name, at, text, className }) => {
         const len = Math.hypot(at.x, at.y);
         // Just outside the point, away from O, turned 35° so the name does
         // not sit on a line through O.
@@ -196,6 +216,7 @@ function Labels({ labels, size }: { labels: readonly Label[]; size: number }) {
         return (
           <text
             key={text}
+            data-name={name}
             className={className}
             x={sx(at) + off.x * size * 0.05}
             y={sy(at) - off.y * size * 0.05}
@@ -220,10 +241,12 @@ export function Construction({
   model,
   upTo,
   ink = false,
+  svgRef,
 }: {
   model: Model;
   upTo: number;
   ink?: boolean;
+  svgRef?: React.Ref<SVGSVGElement>;
 }) {
   const view = boundsOf(model);
   const size = view.maxX - view.minX;
@@ -234,6 +257,7 @@ export function Construction({
   const highlighted = new Set(model.tutorial.steps[upTo - 1]?.highlight ?? []);
   return (
     <svg
+      ref={svgRef}
       className="drawing"
       viewBox={viewBox(view)}
       role="img"
@@ -245,6 +269,8 @@ export function Construction({
         {shown.map((el) => (
           <Shape
             key={el.name}
+            name={el.name}
+            startDeg={compassStart(model, el.name)}
             g={el.geometry}
             view={view}
             className={isCurrent(el) ? 'el current' : ink ? 'el faint' : 'el'}

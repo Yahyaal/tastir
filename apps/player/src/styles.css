@@ -44,6 +44,18 @@ header h1 {
   margin: 0;
 }
 
+.controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.controls select {
+  font: inherit;
+}
+
 .brand {
   color: var(--muted);
   font-size: 0.9rem;
@@ -77,6 +89,13 @@ header h1 {
 
 .mark {
   fill: var(--old);
+}
+
+/* Points and their names pop in from their own centre. */
+.mark,
+.point-name {
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .mark.current {
