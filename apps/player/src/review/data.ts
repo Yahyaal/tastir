@@ -43,6 +43,7 @@ export const PATTERNS: readonly Pattern[] = [
       'I rebuilt this from Mamoot’s eight-step tutorial, and every inked line lands exactly on the source’s final drawing (first picture: our lines in red over theirs in black).',
       'The problem is the repeat. The app needs a tile that repeats to make a wall, but the only photo shows a single rosette on a ceiling, sitting inside a larger network of bands that one photo is not enough to reconstruct. The source itself says the rosette “doesn’t produce a very interesting tessellation”. The only repeat I could make is my own: rosettes on a square grid, touching at their outer points, with a large plain area between them (third picture). That repeat is not attested anywhere I could find.',
       'Overnight I hid it from the app because I could not verify it. It is back in the library now so you can try it.',
+      'Update: you sent two photos of an “Alhambra mosaic” from marocarchitecture.com. They are real repeating patterns, but a different one: there, each small eight-pointed star is ringed by eight short pentagons with interlaced bands between, while our rosette has eight long blades and arrows framed by two squares (comparison below). So they do not verify this rosette’s repeat, but they would make a good tutorial of their own.',
     ],
     pictures: [
       {
@@ -60,16 +61,26 @@ export const PATTERNS: readonly Pattern[] = [
         caption:
           'My guessed repeat: rosettes touching tip to tip on a square grid. This part is invented.',
       },
+      {
+        src: 'renders/alhambra-star-and-arrows/compare-maroc.png',
+        caption:
+          'Left: your marocarchitecture.com photo (close-up). Right: our rosette. The ring around the centre star differs: pentagons there, blades here.',
+      },
     ],
     asks: [
       'Do you know a building where this rosette repeats, or a photo of the whole Alhambra ceiling? If you find one, send it and I will rebuild the repeat to match.',
       'If not, pick one: keep it with the square repeat shown, remove it, or keep the rosette on its own (that needs a small format change so a tutorial can end without a repeating wall).',
+      'Should I build the pattern in your marocarchitecture.com photos as a new tutorial? I would look for a step-by-step construction of it first, and verify it against those photos.',
     ],
     sources: [
       {
         label:
           'Mamoot: “A Rosette Tile from the Alhambra” (the steps I followed)',
         url: `${MAMOOT}/2021/02/01/islamic-geometry-rosette-tile-from-the-alhambra/`,
+      },
+      {
+        label: 'marocarchitecture.com: “Alhambra mosaic 1690” (your photos)',
+        url: 'https://marocarchitecture.com/products/alhambra-mosaic-1690-12-pointed-star-with-laces',
       },
       {
         label: 'Mamoot: “Four-Fold Model” (the starting construction)',
