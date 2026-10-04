@@ -37,26 +37,3 @@ export function stagesOf(tutorial: Tutorial): Stage[] {
     { kind: 'color' },
   ];
 }
-
-/** Palettes by name; tutorials pick one and map piece names to its keys. */
-export const PALETTES: Record<string, Record<string, string>> = {
-  'Fès tile': {
-    a: '#1d5c7c',
-    b: '#2f7d4f',
-    c: '#c9a227',
-    d: '#8c2f39',
-    ground: '#f2ead8',
-  },
-};
-
-const FALLBACK = ['#1d5c7c', '#f2ead8', '#2f7d4f', '#c9a227', '#8c2f39'];
-
-/** The fill for each piece type, from the tutorial's palette and colors. */
-export function pieceColors(model: Model): string[] {
-  const { pattern, tutorial } = model;
-  const palette = PALETTES[tutorial.pattern.palette ?? ''] ?? {};
-  return pattern.types.map((t, i) => {
-    const key = t.name ? tutorial.pattern.colors[t.name] : undefined;
-    return (key && palette[key]) ?? FALLBACK[i % FALLBACK.length] ?? '#999';
-  });
-}

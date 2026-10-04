@@ -6,8 +6,11 @@ const label = () => document.querySelector('.label')?.textContent;
 const click = (name: string) =>
   fireEvent.click(screen.getByRole('button', { name }));
 const inked = () => document.querySelectorAll('.free-ink .piece-line.inked');
+/** The piece types the color stage lists, by their buttons. */
 const legend = () =>
-  [...document.querySelectorAll('.legend li')].map((li) => li.textContent);
+  [...document.querySelectorAll('.piece-button')].map((b) =>
+    b.getAttribute('aria-label'),
+  );
 
 /** Opens the star and cross at its ink stage, with reduced motion. */
 function atInk() {
@@ -35,17 +38,14 @@ describe('free inking', () => {
     click('Next'); // repeat
     expect(document.querySelectorAll('.ink.original line')).toHaveLength(15);
     click('Next'); // color: with one stroke gone, the star and cross merge
-    expect(legend().some((l) => l?.startsWith('star'))).toBe(false);
+    expect(legend()).not.toContain('Recolor every star');
     click('Back');
     click('Back');
     click('Back to the classic');
     expect(inked()).toHaveLength(16);
     click('Next');
     click('Next');
-    expect(legend()).toEqual([
-      'star: 16 corners, 1 per tile',
-      'cross: 16 corners, 1 per tile',
-    ]);
+    expect(legend()).toEqual(['Recolor every star', 'Recolor every cross']);
   });
 
   it('inks a new piece with a click', () => {

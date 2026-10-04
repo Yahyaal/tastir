@@ -225,25 +225,6 @@ button:disabled {
   cursor: default;
 }
 
-.legend {
-  list-style: none;
-  padding: 0;
-  margin: 6px 0 0;
-  display: flex;
-  gap: 18px;
-  font-size: 0.9rem;
-}
-
-.swatch {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  margin-right: 6px;
-  vertical-align: -2px;
-  border: 1px solid var(--ink);
-  border-radius: 2px;
-}
-
 .error {
   white-space: pre-wrap;
   color: #8c2f39;
@@ -361,4 +342,99 @@ button:disabled {
 
 .ink-tools button {
   padding: 4px 12px;
+}
+
+.piece.dim {
+  opacity: 0.35;
+}
+
+.piece.hl {
+  stroke: var(--current);
+  stroke-width: 3px;
+}
+
+.wall .piece {
+  cursor: pointer;
+}
+
+.piece-panel {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.color-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.color-tools select {
+  font: inherit;
+}
+
+.color-tools button {
+  padding: 4px 10px;
+}
+
+.piece-types {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.piece-button {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--faint);
+  padding: 4px 10px 4px 4px;
+  text-align: left;
+}
+
+.piece-types li.active .piece-button {
+  border-color: var(--current);
+}
+
+.piece-button small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.piece-shape {
+  width: 34px;
+  height: 34px;
+}
+
+.chooser {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.swatch-button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+}
+
+.swatch-button.current {
+  outline: 3px solid var(--current);
+  outline-offset: 1px;
+}
+
+.any-color input {
+  vertical-align: middle;
+}
+
+.hint {
+  color: var(--muted);
+  margin: 0;
 }

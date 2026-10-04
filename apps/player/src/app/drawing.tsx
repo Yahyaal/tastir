@@ -7,7 +7,8 @@ import type {
 } from '@tastir/engine';
 import { compassStart, highlightedNames } from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
-import { pieceColors, type Model } from './model';
+import { pieceColors } from './coloring';
+import type { Model } from './model';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
@@ -447,10 +448,28 @@ export function RepeatedInk({ model }: { model: Model }) {
 }
 
 /** The pieces filled and the cell repeated edge to edge across the screen. */
-export function Wall({ model }: { model: Model }) {
+export function Wall({
+  model,
+  colors = pieceColors(model),
+  hovered,
+  onHover,
+  onPick,
+}: {
+  model: Model;
+  colors?: readonly string[];
+  /** The piece type to highlight on every copy, if any. */
+  hovered?: number;
+  onHover?: (type: number | undefined) => void;
+  onPick?: (type: number) => void;
+}) {
   const { view, shifts } = tiling(model);
   const { pieces } = model.pattern;
-  const colors = pieceColors(model);
+  const look = (type: number) =>
+    hovered === undefined
+      ? 'piece'
+      : hovered === type
+        ? 'piece hl'
+        : 'piece dim';
   return (
     <svg
       className="drawing wall"
@@ -458,16 +477,20 @@ export function Wall({ model }: { model: Model }) {
       preserveAspectRatio="xMidYMid slice"
       role="img"
       aria-label="The pattern colored and tiled as a wall"
+      onPointerLeave={() => onHover?.(undefined)}
     >
       {shifts.map((d, k) => (
         <g key={k} transform={`translate(${d.x} ${-d.y})`}>
           {pieces.map((p, i) => (
             <polygon
               key={i}
-              className="piece"
+              data-type={p.type}
+              className={look(p.type)}
               points={points(p.polygon)}
               fill={colors[p.type]}
               vectorEffect="non-scaling-stroke"
+              onPointerEnter={() => onHover?.(p.type)}
+              onClick={() => onPick?.(p.type)}
             />
           ))}
         </g>
@@ -476,19 +499,45 @@ export function Wall({ model }: { model: Model }) {
   );
 }
 
-/** The piece types with their colors and how many each tile holds. */
-export function Legend({ model }: { model: Model }) {
-  const colors = pieceColors(model);
+/** One piece type's shape, small, for the piece panel. */
+export function PieceShape({
+  model,
+  type,
+  color,
+}: {
+  model: Model;
+  type: number;
+  color: string;
+}) {
+  const polygon =
+    model.pattern.pieces.find((p) => p.type === type)?.polygon ?? [];
+  const xs = polygon.map((p) => p.x);
+  const ys = polygon.map((p) => p.y);
+  const box = {
+    minX: Math.min(...xs),
+    minY: Math.min(...ys),
+    maxX: Math.max(...xs),
+    maxY: Math.max(...ys),
+  };
+  const pad = 0.08 * Math.max(box.maxX - box.minX, box.maxY - box.minY);
   return (
-    <ul className="legend">
-      {model.pattern.types.map((t, i) => (
-        <li key={i}>
-          <span className="swatch" style={{ background: colors[i] }} />
-          {t.name ?? `piece ${i + 1}`}: {t.vertices} corners, {t.perCell} per
-          tile
-        </li>
-      ))}
-    </ul>
+    <svg
+      className="piece-shape"
+      viewBox={viewBox({
+        minX: box.minX - pad,
+        minY: box.minY - pad,
+        maxX: box.maxX + pad,
+        maxY: box.maxY + pad,
+      })}
+      aria-hidden="true"
+    >
+      <polygon
+        className="piece"
+        points={points(polygon)}
+        fill={color}
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
   );
 }
 

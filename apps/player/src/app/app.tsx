@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useReducer,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -10,7 +11,14 @@ import { planStep, play } from './animation';
 import { fullView, stepFrame, width } from './camera';
 import { useCamera } from './useCamera';
 import { useInking } from './useInking';
-import { Construction, Legend, RepeatedInk, Thumbnail, Wall } from './drawing';
+import {
+  colorReducer,
+  pieceColors,
+  tutorialColoring,
+  type History,
+} from './coloring';
+import { PiecePanel } from './PiecePanel';
+import { Construction, RepeatedInk, Thumbnail, Wall } from './drawing';
 import { LIBRARY, type Entry } from './library';
 import { loadModel, stagesOf, type Model, type Stage } from './model';
 
@@ -27,8 +35,15 @@ const NUMBER_WORDS = [
 ];
 const count = (n: number) => NUMBER_WORDS[n] ?? String(n);
 
-const nameOf = (model: Model, i: number) =>
-  model.pattern.types[i]?.name ?? `piece ${i + 1}`;
+/** A piece type's name; one without a name is called by its corners. */
+const nameOf = (model: Model, i: number) => {
+  const t = model.pattern.types[i];
+  return t?.name ?? `${t?.vertices ?? 0}-corner piece`;
+};
+
+/** "star", "stars"; "cross", "crosses"; "4-corner piece", "4-corner pieces". */
+const plural = (name: string, n: number) =>
+  n === 1 ? name : /(s|x|ch|sh)$/.test(name) ? `${name}es` : `${name}s`;
 
 function joinAnd(parts: string[]): string {
   return parts.length > 1
@@ -40,7 +55,7 @@ function colorText(model: Model): string {
   const names = model.pattern.types.map((_, i) => nameOf(model, i));
   const same = names.map((n) => `every ${n} matches every other ${n}`);
   const held = model.pattern.types.map(
-    (t, i) => `${count(t.perCell)} ${nameOf(model, i)}`,
+    (t, i) => `${count(t.perCell)} ${plural(nameOf(model, i), t.perCell)}`,
   );
   return `Color the pieces by shape, so ${joinAnd(same)}. Each tile holds ${joinAnd(held)}.`;
 }
@@ -62,6 +77,14 @@ export function Player({ model }: { model: Model }) {
   const [reduced, setReduced] = useState(prefersReducedMotion);
 
   const inking = useInking(model);
+  const [colorHistory, colorDispatch] = useReducer(
+    colorReducer,
+    model,
+    (m): History => ({ past: [], now: tutorialColoring(m), future: [] }),
+  );
+  const colors = pieceColors(inking.shown, colorHistory.now);
+  const [hovered, setHovered] = useState<number>();
+  const [selected, setSelected] = useState<number>();
   const svgRef = useRef<SVGSVGElement>(null);
   const running = useRef<Animation[]>([]);
   const reversing = useRef(false);
@@ -180,7 +203,15 @@ export function Player({ model }: { model: Model }) {
   } else {
     label = 'Color';
     text = colorText(inking.shown);
-    picture = <Wall model={inking.shown} />;
+    picture = (
+      <Wall
+        model={inking.shown}
+        colors={colors}
+        hovered={hovered}
+        onHover={setHovered}
+        onPick={(type) => setSelected(type)}
+      />
+    );
   }
 
   return (
@@ -244,7 +275,21 @@ export function Player({ model }: { model: Model }) {
               ) : null}
             </div>
           ) : null}
-          {stage.kind === 'color' ? <Legend model={inking.shown} /> : null}
+          {stage.kind === 'color' ? (
+            <PiecePanel
+              model={inking.shown}
+              colors={colors}
+              history={colorHistory}
+              dispatch={colorDispatch}
+              hovered={hovered}
+              onHover={setHovered}
+              selected={selected}
+              onSelect={setSelected}
+              onReset={() =>
+                colorDispatch({ kind: 'reset', to: tutorialColoring(model) })
+              }
+            />
+          ) : null}
         </div>
         <nav>
           {onConstruction ? (
