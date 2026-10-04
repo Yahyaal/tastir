@@ -27,3 +27,4 @@ export {
   type Piece,
   type PieceType,
 } from './lib/pieces.js';
+export { expectedGolden, goldenOf, type Golden } from './lib/golden.js';

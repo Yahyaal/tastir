@@ -24,7 +24,7 @@ The goal of phase 0 is one tutorial, the eight-fold star and cross, playing exac
 - [x] **0.6 Ink and pieces.** Check that each ink segment lies on an existing element. Port the planar arrangement from the prototype (split at crossings, drop dangling ends, walk faces), compute pieces over a 3×3 neighbourhood of the cell, and group them into types by congruence.
   *Done when:* the example yields exactly two piece types matching its `expect` block (star and cross, 16 vertices each, areas 2.34315 and 1.65685, one of each per cell).
 
-- [ ] **0.7 Golden test harness.** A single test loads every file in `tutorials/`, evaluates it and compares the result with its `expect` block.
+- [x] **0.7 Golden test harness.** A single test loads every file in `tutorials/`, evaluates it and compares the result with its `expect` block.
   *Done when:* the test passes for the example, and changing one number in `expect` makes it fail with a readable diff.
 
 - [ ] **0.8 Bare player.** In `apps/player`, load the example and render it as SVG with Next and Back buttons and the step text. Elements from the current step are drawn in color and earlier ones in light grey. After the last step, show the inked pattern, then the two piece types filled and the cell tiled across the screen.
