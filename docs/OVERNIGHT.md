@@ -23,3 +23,7 @@ Charlotte Webb's ATM handout gives three step drawings and a photo, and Kaplan's
 ## Six-fold hammerheads (verified)
 
 Mamoot's hammerhead tutorial was the one step-by-step source, with photos from Seville and Aleppo. Its note and its written step disagree on the size of the inner star, so the drawing was measured, and it follows the written step. The final trace was matched by sampling the source drawing along every construction segment and keeping the black ones, which gave a clean six-fold rule and an exact overlay. The motif tiles two ways; the Alcázar photo's lattice is turned 30° from the obvious one, so the tile is the hexagon lying on its side, and the wall then matches the source's own drawing of that tiling.
+
+## Alhambra star and arrows (abandoned)
+
+Mamoot's Alhambra rosette was rebuilt exactly, and our ink overlays the source's final drawing line for line. But the source shows it only as a single rosette, and the Alhambra photo sets it inside a larger band network that one photo is not enough to reconstruct. The only repeat available, rosettes touching tip to tip on a square grid, is our own invention and cannot be checked against a real wall, so the tutorial is abandoned. The finished file, which passes every check, is kept in `docs/patterns/abandoned/` for review rather than shipped.

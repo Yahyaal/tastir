@@ -1,0 +1,194 @@
+{
+  "format": 0,
+  "id": "alhambra-star-and-arrows",
+  "title": "Alhambra star and arrows",
+  "fold": 8,
+  "style": "Nasrid",
+  "level": "beginner",
+  "credits": [
+    {
+      "source": "Islamic Geometry: A Rosette Tile from The Alhambra",
+      "creator": "Mamoot (mamootdiy.com)",
+      "url": "https://mamootdiy.com/2021/02/01/islamic-geometry-rosette-tile-from-the-alhambra/",
+      "note": "The small circle sized from a square's corner to the squares' crossing, the star joining every third point, and the lines carried out to the squares follow this tutorial.",
+      "steps": [7, 8, 9]
+    }
+  ],
+  "given": {
+    "O": "The centre of the drawing.",
+    "A": "Any point to the right of O. The distance OA is the radius, and the unit for every length."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Put the compass point on the centre and draw a circle.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a horizontal line through the centre, then a vertical line at right angles to it. They cut the circle at four points.",
+      "create": {
+        "h": {"line": {"through": ["O", "A"]}},
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "E": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
+        "N": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "W": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "S": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Halve each right angle to get the two diagonals. The circle is now divided into eight equal parts.",
+      "create": {
+        "d1": {"line": {"through": "O", "bisects": ["E", "O", "N"]}},
+        "d2": {"line": {"through": "O", "bisects": ["N", "O", "W"]}},
+        "NE": {"point": {"meet": ["c", "d1"], "pick": {"angle": 45}}},
+        "NW": {"point": {"meet": ["c", "d2"], "pick": {"angle": 135}}},
+        "SW": {"point": {"meet": ["c", "d1"], "pick": {"angle": 225}}},
+        "SE": {"point": {"meet": ["c", "d2"], "pick": {"angle": 315}}}
+      },
+      "highlight": ["h", "v"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Join the four points on the horizontal and vertical lines. This is the dynamic square, standing on its corner.",
+      "create": {"dynamic": {"polygon": ["E", "N", "W", "S"]}},
+      "highlight": ["E", "N", "W", "S"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Join the four points on the diagonals. This is the static square, sitting flat. The two squares cross each other at eight points.",
+      "create": {
+        "static": {"polygon": ["NE", "NW", "SW", "SE"]},
+        "k": {"points": {"meet": ["dynamic", "static"], "pick": {"all": "byAngle"}}}
+      },
+      "highlight": ["NE", "NW", "SW", "SE"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw the square that just touches the circle: a line at right angles to the horizontal at each side, and at right angles to the vertical at the top and bottom. This square is the tile that will repeat.",
+      "create": {
+        "tE": {"line": {"through": "E", "perpendicularTo": "h"}},
+        "tW": {"line": {"through": "W", "perpendicularTo": "h"}},
+        "tN": {"line": {"through": "N", "perpendicularTo": "v"}},
+        "tS": {"line": {"through": "S", "perpendicularTo": "v"}},
+        "c1": {"point": {"meet": ["tE", "tN"]}},
+        "c2": {"point": {"meet": ["tN", "tW"]}},
+        "c3": {"point": {"meet": ["tW", "tS"]}},
+        "c4": {"point": {"meet": ["tS", "tE"]}},
+        "cell": {"polygon": ["c1", "c2", "c3", "c4"]}
+      },
+      "highlight": ["E", "N", "W", "S"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Open the compass from the right-hand corner of the standing square to the nearest point where the two squares cross. With that opening, draw a small circle around the centre. It cuts the horizontal, the vertical and the diagonals at eight points.",
+      "create": {
+        "small": {"circle": {"centre": "O", "radiusFrom": ["E", "k.1"]}},
+        "T0": {"point": {"meet": ["small", "h"], "pick": {"angle": 0}}},
+        "T45": {"point": {"meet": ["small", "d1"], "pick": {"angle": 45}}},
+        "T90": {"point": {"meet": ["small", "v"], "pick": {"angle": 90}}},
+        "T135": {"point": {"meet": ["small", "d2"], "pick": {"angle": 135}}},
+        "T180": {"point": {"meet": ["small", "h"], "pick": {"angle": 180}}},
+        "T225": {"point": {"meet": ["small", "d1"], "pick": {"angle": 225}}},
+        "T270": {"point": {"meet": ["small", "v"], "pick": {"angle": 270}}},
+        "T315": {"point": {"meet": ["small", "d2"], "pick": {"angle": 315}}}
+      },
+      "highlight": ["E", "k.1"],
+      "animate": "compass"
+    },
+    {
+      "id": 8,
+      "text": "From each of the eight points, rule a line to the point three places further round. The eight lines draw an eight-pointed star in one continuous loop.",
+      "create": {
+        "L0": {"line": {"through": ["T0", "T135"]}},
+        "L45": {"line": {"through": ["T45", "T180"]}},
+        "L90": {"line": {"through": ["T90", "T225"]}},
+        "L135": {"line": {"through": ["T135", "T270"]}},
+        "L180": {"line": {"through": ["T180", "T315"]}},
+        "L225": {"line": {"through": ["T225", "T0"]}},
+        "L270": {"line": {"through": ["T270", "T45"]}},
+        "L315": {"line": {"through": ["T315", "T90"]}}
+      },
+      "highlight": ["T0", "T45", "T90", "T135", "T180", "T225", "T270", "T315"],
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "Follow each line of the star outwards past its point until it meets a square: the lying square for the points on the horizontal and vertical, the standing square for the points on the diagonals. Mark where the star's lines cross nearest the centre, too.",
+      "create": {
+        "Fp0": {"point": {"meet": ["L225", "static"], "pick": {"nearest": "T0"}}},
+        "Fm0": {"point": {"meet": ["L0", "static"], "pick": {"nearest": "T0"}}},
+        "Fp45": {"point": {"meet": ["L270", "dynamic"], "pick": {"nearest": "T45"}}},
+        "Fm45": {"point": {"meet": ["L45", "dynamic"], "pick": {"nearest": "T45"}}},
+        "Fp90": {"point": {"meet": ["L315", "static"], "pick": {"nearest": "T90"}}},
+        "Fm90": {"point": {"meet": ["L90", "static"], "pick": {"nearest": "T90"}}},
+        "Fp135": {"point": {"meet": ["L0", "dynamic"], "pick": {"nearest": "T135"}}},
+        "Fm135": {"point": {"meet": ["L135", "dynamic"], "pick": {"nearest": "T135"}}},
+        "Fp180": {"point": {"meet": ["L45", "static"], "pick": {"nearest": "T180"}}},
+        "Fm180": {"point": {"meet": ["L180", "static"], "pick": {"nearest": "T180"}}},
+        "Fp225": {"point": {"meet": ["L90", "dynamic"], "pick": {"nearest": "T225"}}},
+        "Fm225": {"point": {"meet": ["L225", "dynamic"], "pick": {"nearest": "T225"}}},
+        "Fp270": {"point": {"meet": ["L135", "static"], "pick": {"nearest": "T270"}}},
+        "Fm270": {"point": {"meet": ["L270", "static"], "pick": {"nearest": "T270"}}},
+        "Fp315": {"point": {"meet": ["L180", "dynamic"], "pick": {"nearest": "T315"}}},
+        "Fm315": {"point": {"meet": ["L315", "dynamic"], "pick": {"nearest": "T315"}}},
+        "G0": {"point": {"meet": ["L315", "L270"]}},
+        "G45": {"point": {"meet": ["L0", "L315"]}},
+        "G90": {"point": {"meet": ["L45", "L0"]}},
+        "G135": {"point": {"meet": ["L90", "L45"]}},
+        "G180": {"point": {"meet": ["L135", "L90"]}},
+        "G225": {"point": {"meet": ["L180", "L135"]}},
+        "G270": {"point": {"meet": ["L225", "L180"]}},
+        "G315": {"point": {"meet": ["L270", "L225"]}}
+      },
+      "highlight": ["static", "dynamic"],
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "From each corner of the two squares, go along the square's side to where a star line arrives, turn in along that line to the star's point, and carry straight on to where it crosses its neighbour near the centre. Each point of the star becomes an arrow, and the corners of the squares close round it into an eight-pointed outline.",
+    "paths": [
+      {"through": ["SE", "Fm0", "T0", "G45"]},
+      {"through": ["NE", "Fp0", "T0", "G315"]},
+      {"through": ["E", "Fm45", "T45", "G90"]},
+      {"through": ["N", "Fp45", "T45", "G0"]},
+      {"through": ["NE", "Fm90", "T90", "G135"]},
+      {"through": ["NW", "Fp90", "T90", "G45"]},
+      {"through": ["N", "Fm135", "T135", "G180"]},
+      {"through": ["W", "Fp135", "T135", "G90"]},
+      {"through": ["NW", "Fm180", "T180", "G225"]},
+      {"through": ["SW", "Fp180", "T180", "G135"]},
+      {"through": ["W", "Fm225", "T225", "G270"]},
+      {"through": ["S", "Fp225", "T225", "G180"]},
+      {"through": ["SW", "Fm270", "T270", "G315"]},
+      {"through": ["SE", "Fp270", "T270", "G225"]},
+      {"through": ["S", "Fm315", "T315", "G0"]},
+      {"through": ["E", "Fp315", "T315", "G270"]}
+    ]
+  },
+  "pattern": {
+    "cell": "cell",
+    "text": "Repeat the tile edge to edge. Neighbouring rosettes touch at the points of their standing squares, and the space between four rosettes is left as ground.",
+    "palette": "Fès tile",
+    "colors": {"ground": "ground", "arrow": "a", "blade": "b", "star": "c", "dart": "ground"}
+  },
+  "expect": {
+    "note": "Golden values for the square repeat, computed by the engine. The repeat itself is not attested by a photo.",
+    "pieceTypes": 5,
+    "pieces": [
+      {"name": "ground", "vertices": 16, "area": 1.65685, "perCell": 1},
+      {"name": "arrow", "vertices": 6, "area": 0.13604, "perCell": 8},
+      {"name": "blade", "vertices": 6, "area": 0.12132, "perCell": 8},
+      {"name": "star", "vertices": 16, "area": 0.11775, "perCell": 1},
+      {"name": "dart", "vertices": 4, "area": 0.02082, "perCell": 8}
+    ],
+    "cellArea": 4
+  }
+}

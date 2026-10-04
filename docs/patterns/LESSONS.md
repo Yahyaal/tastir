@@ -25,6 +25,8 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - When a source's note and its written step disagree, measure the source drawing.
 - One motif can tile several ways. Check which way the photo uses by the direction from one star to its neighbours, then pick the cell that gives that lattice.
 
+- Before building, check that a source shows the pattern repeating, not just one motif. Standalone rosettes (like Mamoot's Alhambra rosette) cannot be verified as a wall.
+
 ## Tooling
 
 - Agent worktrees live in `.claude/worktrees/` inside the repo. Without `.nxignore`, Nx picks them up as extra projects, the main test run fails with circular project references, and `pnpm typecheck` adds them to the root `tsconfig.json`. `.nxignore` now excludes `.claude/`.
