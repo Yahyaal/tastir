@@ -30,7 +30,6 @@ describe('the library', () => {
       .map((f) => f.replace(/\.json$/, ''))
       .sort();
     expect(LIBRARY.map((e) => e.id)).toEqual(files);
-    expect(LIBRARY.every((e) => e.model)).toBe(true);
   });
 
   it('shows a new tutorial with no code change', () => {

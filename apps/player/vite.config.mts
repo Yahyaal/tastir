@@ -35,10 +35,10 @@ export default defineConfig(() => ({
       '@tutorials': tutorials,
     },
   },
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [],
-  // },
+  // The engine worker is an ES module, like the app.
+  worker: {
+    format: 'es',
+  },
   build: {
     outDir: './dist',
     emptyOutDir: true,

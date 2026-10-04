@@ -23,7 +23,8 @@ import { PrintSheet, type Paper } from './PrintSheet';
 import { Construction, RepeatedInk, Thumbnail } from './drawing';
 import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { LIBRARY, type Entry } from './library';
-import { loadModel, stagesOf, type Model, type Stage } from './model';
+import { stagesOf, type Model, type Stage } from './model';
+import { PROGRESS_TEXT, useModel } from './workerClient';
 
 const NUMBER_WORDS = [
   'no',
@@ -405,15 +406,16 @@ export function Player({ model }: { model: Model }) {
 
 /** Plays one tutorial; a tutorial the engine rejects shows its error. */
 export function Play({ json }: { json: unknown }) {
-  const loaded = useMemo(() => {
-    try {
-      return { model: loadModel(json) };
-    } catch (e) {
-      return { error: e instanceof Error ? e.message : String(e) };
-    }
-  }, [json]);
-  if (!loaded.model) return <Broken message={loaded.error ?? ''} />;
-  return <Player model={loaded.model} />;
+  const { model, error, progress } = useModel(json);
+  if (error !== undefined) return <Broken message={error} />;
+  if (!model) {
+    return (
+      <div className="player loading" role="status">
+        <p>{PROGRESS_TEXT[progress ?? 'checking']}</p>
+      </div>
+    );
+  }
+  return <Player model={model} />;
 }
 
 function Broken({ message }: { message: string }) {
@@ -446,28 +448,38 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
         </p>
       </header>
       <ul className="cards">
-        {entries.map(({ id, model, error }) => (
-          <li key={id}>
-            <a className="card" href={`#/${id}`}>
-              {model ? (
-                <Thumbnail model={model} />
-              ) : (
-                <div className="thumbnail broken" />
-              )}
-              <h2>{model?.tutorial.title ?? id}</h2>
-              {model ? (
-                <p>
-                  {fold(model.tutorial.fold)} · {model.tutorial.style} ·{' '}
-                  {model.tutorial.level} · {model.tutorial.steps.length} steps
-                </p>
-              ) : (
-                <p className="error">Cannot be played: {error}</p>
-              )}
-            </a>
-          </li>
+        {entries.map((entry) => (
+          <Card key={entry.id} entry={entry} />
         ))}
       </ul>
     </div>
+  );
+}
+
+/** One tutorial in the library, loaded in the worker. */
+function Card({ entry: { id, json } }: { entry: Entry }) {
+  const { model, error, progress } = useModel(json);
+  return (
+    <li>
+      <a className="card" href={`#/${id}`}>
+        {model ? (
+          <Thumbnail model={model} />
+        ) : (
+          <div className={error ? 'thumbnail broken' : 'thumbnail waiting'} />
+        )}
+        <h2>{model?.tutorial.title ?? id}</h2>
+        {model ? (
+          <p>
+            {fold(model.tutorial.fold)} · {model.tutorial.style} ·{' '}
+            {model.tutorial.level} · {model.tutorial.steps.length} steps
+          </p>
+        ) : error ? (
+          <p className="error">Cannot be played: {error}</p>
+        ) : (
+          <p>{PROGRESS_TEXT[progress ?? 'checking']}</p>
+        )}
+      </a>
+    </li>
   );
 }
 

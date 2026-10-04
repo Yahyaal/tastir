@@ -514,3 +514,17 @@ button:disabled {
     padding: 6pt 0 0;
   }
 }
+
+.player.loading {
+  justify-content: center;
+  align-items: center;
+  color: var(--muted);
+}
+
+.thumbnail.waiting {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--faint) 0 8px,
+    #fff 8px 16px
+  );
+}

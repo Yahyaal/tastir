@@ -63,7 +63,7 @@ The goal of phase 1 is a player a friend can use unaided: animated steps, a came
 - [x] **1.9 Export.** Download the colored wall as SVG and PNG, and print a line sheet on A4 or Letter with the pattern in lines only and the tutorial's title and credits.
   *Done when:* a test checks the SVG is standalone and shows the same pieces as the screen; I can open the SVG and PNG and print the sheet from the browser.
 
-- [ ] **1.10 Web Worker.** Evaluation and piece finding run in a Web Worker, so the page stays responsive; the player shows progress while it waits.
+- [x] **1.10 Web Worker.** Evaluation and piece finding run in a Web Worker, so the page stays responsive; the player shows progress while it waits.
   *Done when:* the player loads every tutorial through the worker; an engine benchmark finds the pieces of about 3,000 segments in under 300 ms and evaluates a 40-step tutorial in under 50 ms.
 
 - [ ] **1.11 Sixteen-fold rosette tutorial.** Write `tutorials/sixteen-fold-rosette.json`, a sixteen-fold rosette on a square repeat, under the same rules as 1.5. This proves the engine reaches patterns like the Fès panel.

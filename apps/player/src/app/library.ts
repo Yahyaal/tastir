@@ -1,12 +1,8 @@
-import { loadModel, type Model } from './model';
-
-/** A tutorial file from tutorials/, loaded or with the reason it cannot be. */
+/** A tutorial file from tutorials/; it is loaded (in the worker) when shown. */
 export interface Entry {
   /** The file name without .json; the address of the tutorial. */
   readonly id: string;
   readonly json: unknown;
-  readonly model?: Model;
-  readonly error?: string;
 }
 
 // Every file in tutorials/: adding one needs no code change.
@@ -15,17 +11,13 @@ const files = import.meta.glob<unknown>('../../../../tutorials/*.json', {
   import: 'default',
 });
 
-/** Loads each tutorial, keeping the engine's message for any it rejects. */
+/** The tutorial files, by address, in order. */
 export function entriesOf(files: Record<string, unknown>): Entry[] {
   return Object.entries(files)
-    .map(([path, json]) => {
-      const id = path.replace(/^.*\//, '').replace(/\.json$/, '');
-      try {
-        return { id, json, model: loadModel(json) };
-      } catch (e) {
-        return { id, json, error: e instanceof Error ? e.message : String(e) };
-      }
-    })
+    .map(([path, json]) => ({
+      id: path.replace(/^.*\//, '').replace(/\.json$/, ''),
+      json,
+    }))
     .sort((a, b) => a.id.localeCompare(b.id));
 }
 
