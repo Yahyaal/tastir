@@ -62,6 +62,11 @@ export const PATTERNS: readonly Pattern[] = [
           'My guessed repeat: rosettes touching tip to tip on a square grid. This part is invented.',
       },
       {
+        src: 'renders/alhambra-star-and-arrows/tried-octagon-family.png',
+        caption:
+          'Your photo (left) against the octagon-and-square family at four angles. Its stars are thin and spiky; yours are fat two-square stars, so this is not it.',
+      },
+      {
         src: 'renders/alhambra-star-and-arrows/compare-maroc.png',
         caption:
           'Left: your marocarchitecture.com photo (close-up). Right: our rosette. The ring around the centre star differs: pentagons there, blades here.',
@@ -70,7 +75,7 @@ export const PATTERNS: readonly Pattern[] = [
     asks: [
       'Do you know a building where this rosette repeats, or a photo of the whole Alhambra ceiling? If you find one, send it and I will rebuild the repeat to match.',
       'If not, pick one: keep it with the square repeat shown, remove it, or keep the rosette on its own (that needs a small format change so a tutorial can end without a repeating wall).',
-      'Should I build the pattern in your marocarchitecture.com photos as a new tutorial? I would look for a step-by-step construction of it first, and verify it against those photos.',
+      'Your photos’ pattern: I measured it (small two-square stars on a square grid, star size 0.17 of the spacing, points turned 22.5°, each ringed by eight pentagons) but could not yet identify it or find a construction. The two families I tried do not match (last picture). Can you find out where it comes from: the seller’s name for it, the Alhambra room, or a larger, unwatermarked photo? Any of those would let me finish it.',
     ],
     sources: [
       {
