@@ -1,1 +1,10 @@
-export * from './lib/engine.js';
+export * from './lib/vec.js';
+export * from './lib/tolerance.js';
+export * from './lib/shapes.js';
+export {
+  intersect,
+  intersectCircleCircle,
+  intersectLineCircle,
+  intersectLineLine,
+  overlap,
+} from './lib/intersect.js';

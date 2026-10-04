@@ -9,7 +9,7 @@ The goal of phase 0 is one tutorial, the eight-fold star and cross, playing exac
 - [x] **0.1 Set up the repo.** Initialise git and an Nx workspace with pnpm in this folder, keeping every existing file. Create `packages/engine` and `packages/schema` as TypeScript libraries with Vitest, and `apps/player` as a React + Vite app. Add ESLint, Prettier and strict TypeScript. Fill in the Commands section of `CLAUDE.md`.
   *Done when:* install, test, lint and typecheck all run clean from the root; the player dev server shows a placeholder page; the first commit exists. If the GitHub CLI is logged in, create a private GitHub repo named `tastir` and push; if not, stop and tell me.
 
-- [ ] **0.2 Engine primitives.** In `packages/engine`, add vectors, lines (point + direction), circles and segments, with the three intersections: line–line, line–circle, circle–circle. Use one shared tolerance, relative to the drawing size, and report a tangent contact as one point.
+- [x] **0.2 Engine primitives.** In `packages/engine`, add vectors, lines (point + direction), circles and segments, with the three intersections: line–line, line–circle, circle–circle. Use one shared tolerance, relative to the drawing size, and report a tangent contact as one point.
   *Done when:* unit tests cover crossing, parallel, tangent and disjoint cases for each intersection, and a test shows two points closer than the tolerance are treated as one.
 
 - [ ] **0.3 Constructions.** Add perpendicular and parallel through a point, the bisector of an angle given three points, a circle through a point, a circle with another circle's radius, and a circle at a centre tangent to lines or circles (an error when no single radius touches all of them).
