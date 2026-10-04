@@ -627,7 +627,7 @@ export const QUESTIONS: readonly Question[] = [
   },
   {
     id: 'design-a',
-    text: 'Design A’s repeat is my guess (picture). Keep it, show the rosette alone with no wall, or remove it?',
+    text: 'Design A’s repeat is my guess (picture); I searched again and found no photo of it repeating. Keep it, show the rosette alone with no wall, or remove it? If you can photograph or find the ceiling around it, I will rebuild the repeat.',
     choices: ['Keep the guessed repeat', 'Rosette alone', 'Remove it'],
     pictures: [
       {
