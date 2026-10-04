@@ -1,0 +1,147 @@
+{
+  "format": 0,
+  "id": "alhambra-comares-stars",
+  "title": "Comares stars and crosses",
+  "fold": 4,
+  "style": "Nasrid",
+  "level": "intermediate",
+  "credits": [
+    {
+      "source": "La Alhambra con regla y compás: el trazado de los diseños geométricos nazaríes (ALZADA 115, 2017)",
+      "creator": "Manuel Martínez Vela",
+      "url": "https://www.riarte.es/handle/20.500.12251/633",
+      "note": "The grid of eight-pointed stars (each turned square found with a circle through the diagonal grid corners) and the tracing of this Comares panel (the article's drawing 1) follow this article.",
+      "steps": [1, 2, 3, 4, 5]
+    }
+  ],
+  "given": {
+    "O": "The centre of one eight-pointed star.",
+    "A": "Any point to the right of O. The distance OA is one square of the grid."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Rule a horizontal line through the centre and draw a small circle. Its radius is one square of the grid, and the compass keeps this opening while you build the grid.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Rule the vertical through the centre. Walk the compass along both lines, both ways, marking a point every square.",
+      "create": {
+        "Xm1": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "Y1": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "Ym1": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}},
+        "cx1": {"circle": {"centre": "A", "radiusOf": "c"}},
+        "X2": {"point": {"meet": ["cx1", "h"], "pick": {"farthest": "O"}}},
+        "cy1": {"circle": {"centre": "Y1", "radiusOf": "c"}},
+        "Y2": {"point": {"meet": ["cy1", "v"], "pick": {"farthest": "O"}}},
+        "cxm1": {"circle": {"centre": "Xm1", "radiusOf": "c"}},
+        "Xm2": {"point": {"meet": ["cxm1", "h"], "pick": {"farthest": "O"}}},
+        "cym1": {"circle": {"centre": "Ym1", "radiusOf": "c"}},
+        "Ym2": {"point": {"meet": ["cym1", "v"], "pick": {"farthest": "O"}}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "Through every mark rule a line at right angles to its axis. The lines make a square grid.",
+      "create": {
+        "Vm2": {"line": {"through": "Xm2", "perpendicularTo": "h"}},
+        "Hm2": {"line": {"through": "Ym2", "perpendicularTo": "v"}},
+        "Vm1": {"line": {"through": "Xm1", "perpendicularTo": "h"}},
+        "Hm1": {"line": {"through": "Ym1", "perpendicularTo": "v"}},
+        "V1": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "H1": {"line": {"through": "Y1", "perpendicularTo": "v"}},
+        "V2": {"line": {"through": "X2", "perpendicularTo": "h"}},
+        "H2": {"line": {"through": "Y2", "perpendicularTo": "v"}}
+      },
+      "highlight": ["h", "v"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Open the compass from the centre to the corner of a square diagonally next to it, and draw that circle: it passes through four grid corners. Where it crosses the horizontal, rule lines at 45° both ways. They form a square standing on its corner, which with the grid square around the centre makes an eight-pointed star.",
+      "create": {
+        "g11": {"point": {"meet": ["V1", "H1"]}},
+        "s": {"circle": {"centre": "O", "through": "g11"}},
+        "d1": {"line": {"through": "O", "bisects": ["A", "O", "Y1"]}},
+        "d2": {"line": {"through": "O", "bisects": ["Y1", "O", "Xm1"]}},
+        "T0n": {"point": {"meet": ["s", "h"], "pick": {"angle": 180}}},
+        "T0p": {"point": {"meet": ["s", "h"], "pick": {"angle": 0}}},
+        "P0n": {"line": {"through": "T0n", "parallelTo": "d2"}},
+        "M0n": {"line": {"through": "T0n", "parallelTo": "d1"}},
+        "P0p": {"line": {"through": "T0p", "parallelTo": "d2"}},
+        "M0p": {"line": {"through": "T0p", "parallelTo": "d1"}}
+      },
+      "highlight": ["g11"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Mark the crossings where the design turns, and the tile: the square, standing on a corner, whose corners are two squares from the centre along the horizontal and the vertical.",
+      "create": {
+        "Q1": {"point": {"meet": ["h", "V2"]}},
+        "Q2": {"point": {"meet": ["v", "H2"]}},
+        "Q3": {"point": {"meet": ["Vm2", "h"]}},
+        "Q4": {"point": {"meet": ["Hm2", "v"]}},
+        "Q5": {"point": {"meet": ["Vm1", "Hm1"]}},
+        "Q6": {"point": {"meet": ["Hm1", "P0n"]}},
+        "Q7": {"point": {"meet": ["Hm1", "M0p"]}},
+        "Q8": {"point": {"meet": ["Hm1", "V1"]}},
+        "Q9": {"point": {"meet": ["Vm1", "H1"]}},
+        "Q10": {"point": {"meet": ["H1", "M0n"]}},
+        "Q11": {"point": {"meet": ["H1", "P0p"]}},
+        "Q12": {"point": {"meet": ["V1", "H1"]}},
+        "Q13": {"point": {"meet": ["h", "P0n"]}},
+        "Q14": {"point": {"meet": ["Vm1", "M0n"]}},
+        "Q15": {"point": {"meet": ["v", "M0n"]}},
+        "Q16": {"point": {"meet": ["v", "P0n"]}},
+        "Q17": {"point": {"meet": ["V1", "M0p"]}},
+        "Q18": {"point": {"meet": ["h", "P0p"]}},
+        "Q19": {"point": {"meet": ["Vm1", "P0n"]}},
+        "Q20": {"point": {"meet": ["V1", "P0p"]}},
+        "tile": {"polygon": ["Q1", "Q2", "Q3", "Q4"]}
+      },
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Go over the lines of the design. Around the centre they draw an eight-pointed star whose points are notched by the grid; between the stars they close into crosses.",
+    "paths": [
+      {"through": ["Q5", "Q6"]},
+      {"through": ["Q7", "Q8"]},
+      {"through": ["Q9", "Q10"]},
+      {"through": ["Q11", "Q12"]},
+      {"through": ["Q13", "Q14"]},
+      {"through": ["Q10", "Q15"]},
+      {"through": ["Q16", "Q7"]},
+      {"through": ["Q17", "Q18"]},
+      {"through": ["Q13", "Q19"]},
+      {"through": ["Q6", "Q16"]},
+      {"through": ["Q15", "Q11"]},
+      {"through": ["Q20", "Q18"]},
+      {"through": ["Q5", "Q19"]},
+      {"through": ["Q14", "Q9"]},
+      {"through": ["Q8", "Q17"]},
+      {"through": ["Q20", "Q12"]}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Repeat the tile edge to edge. Notched eight-pointed stars and crosses alternate, as in a tile panel of the Hall of Comares.",
+    "palette": "Fès tile",
+    "colors": {"star": "a", "cross": "b"}
+  },
+  "expect": {
+    "note": "Golden values in grid squares (OA = one square), computed by the engine; the pieces fill the tile.",
+    "pieceTypes": 2,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 4.68629, "perCell": 1},
+      {"name": "cross", "vertices": 16, "area": 3.31371, "perCell": 1}
+    ],
+    "cellArea": 8
+  }
+}

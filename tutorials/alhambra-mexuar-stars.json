@@ -1,0 +1,173 @@
+{
+  "format": 0,
+  "id": "alhambra-mexuar-stars",
+  "title": "Mexuar stars",
+  "fold": 4,
+  "style": "Nasrid",
+  "level": "intermediate",
+  "credits": [
+    {
+      "source": "La Alhambra con regla y compás: el trazado de los diseños geométricos nazaríes (ALZADA 115, 2017)",
+      "creator": "Manuel Martínez Vela",
+      "url": "https://www.riarte.es/handle/20.500.12251/633",
+      "note": "The grid of eight-pointed stars and the tracing of this panel (the article's drawing 3) follow this article.",
+      "steps": [1, 2, 3, 4, 5]
+    }
+  ],
+  "given": {
+    "O": "The centre of one eight-pointed star.",
+    "A": "Any point to the right of O. The distance OA is one square of the grid."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Rule a horizontal line through the centre and draw a small circle. Its radius is one square of the grid, and the compass keeps this opening while you build the grid.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Rule the vertical through the centre. Walk the compass along both lines, both ways, marking a point every square.",
+      "create": {
+        "Xm1": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "Y1": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "Ym1": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}},
+        "cx1": {"circle": {"centre": "A", "radiusOf": "c"}},
+        "X2": {"point": {"meet": ["cx1", "h"], "pick": {"farthest": "O"}}},
+        "cy1": {"circle": {"centre": "Y1", "radiusOf": "c"}},
+        "Y2": {"point": {"meet": ["cy1", "v"], "pick": {"farthest": "O"}}},
+        "cxm1": {"circle": {"centre": "Xm1", "radiusOf": "c"}},
+        "Xm2": {"point": {"meet": ["cxm1", "h"], "pick": {"farthest": "O"}}},
+        "cym1": {"circle": {"centre": "Ym1", "radiusOf": "c"}},
+        "Ym2": {"point": {"meet": ["cym1", "v"], "pick": {"farthest": "O"}}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "Through every mark rule a line at right angles to its axis. The lines make a square grid.",
+      "create": {
+        "Vm2": {"line": {"through": "Xm2", "perpendicularTo": "h"}},
+        "Hm2": {"line": {"through": "Ym2", "perpendicularTo": "v"}},
+        "Vm1": {"line": {"through": "Xm1", "perpendicularTo": "h"}},
+        "Hm1": {"line": {"through": "Ym1", "perpendicularTo": "v"}},
+        "V1": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "H1": {"line": {"through": "Y1", "perpendicularTo": "v"}},
+        "V2": {"line": {"through": "X2", "perpendicularTo": "h"}},
+        "H2": {"line": {"through": "Y2", "perpendicularTo": "v"}}
+      },
+      "highlight": ["h", "v"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Open the compass from the centre to the corner of a square diagonally next to it, and draw that circle: it passes through four grid corners. Where it crosses the horizontal, rule lines at 45° both ways. They form a square standing on its corner, which with the grid square around the centre makes an eight-pointed star.",
+      "create": {
+        "g11": {"point": {"meet": ["V1", "H1"]}},
+        "s": {"circle": {"centre": "O", "through": "g11"}},
+        "d1": {"line": {"through": "O", "bisects": ["A", "O", "Y1"]}},
+        "d2": {"line": {"through": "O", "bisects": ["Y1", "O", "Xm1"]}},
+        "sm2": {"circle": {"centre": "Xm2", "radiusOf": "s"}},
+        "Tm2n": {"point": {"meet": ["sm2", "h"], "pick": {"farthest": "O"}}},
+        "Tm2p": {"point": {"meet": ["sm2", "h"], "pick": {"nearest": "O"}}},
+        "s2": {"circle": {"centre": "X2", "radiusOf": "s"}},
+        "T2n": {"point": {"meet": ["s2", "h"], "pick": {"nearest": "O"}}},
+        "T2p": {"point": {"meet": ["s2", "h"], "pick": {"farthest": "O"}}},
+        "Pm2n": {"line": {"through": "Tm2n", "parallelTo": "d2"}},
+        "Mm2n": {"line": {"through": "Tm2n", "parallelTo": "d1"}},
+        "Pm2p": {"line": {"through": "Tm2p", "parallelTo": "d2"}},
+        "Mm2p": {"line": {"through": "Tm2p", "parallelTo": "d1"}},
+        "P2n": {"line": {"through": "T2n", "parallelTo": "d2"}},
+        "M2n": {"line": {"through": "T2n", "parallelTo": "d1"}},
+        "P2p": {"line": {"through": "T2p", "parallelTo": "d2"}},
+        "M2p": {"line": {"through": "T2p", "parallelTo": "d1"}}
+      },
+      "highlight": ["g11"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Mark the crossings where the design turns, and the tile: the square whose corners are two squares from the centre both across and up, so its sides run along the grid.",
+      "create": {
+        "Q1": {"point": {"meet": ["V2", "H2"]}},
+        "Q2": {"point": {"meet": ["Vm2", "H2"]}},
+        "Q3": {"point": {"meet": ["Vm2", "Hm2"]}},
+        "Q4": {"point": {"meet": ["Hm2", "V2"]}},
+        "Q5": {"point": {"meet": ["Hm2", "Pm2n"]}},
+        "Q6": {"point": {"meet": ["Hm2", "Pm2p"]}},
+        "Q7": {"point": {"meet": ["Vm1", "Hm1"]}},
+        "Q8": {"point": {"meet": ["Hm1", "M2n"]}},
+        "Q9": {"point": {"meet": ["Hm1", "V1"]}},
+        "Q10": {"point": {"meet": ["Hm1", "P2n"]}},
+        "Q11": {"point": {"meet": ["h", "Pm2p"]}},
+        "Q12": {"point": {"meet": ["h", "P2n"]}},
+        "Q13": {"point": {"meet": ["H1", "Pm2p"]}},
+        "Q14": {"point": {"meet": ["Vm1", "H1"]}},
+        "Q15": {"point": {"meet": ["H1", "Mm2p"]}},
+        "Q16": {"point": {"meet": ["V1", "H1"]}},
+        "Q17": {"point": {"meet": ["Vm2", "Mm2n"]}},
+        "Q18": {"point": {"meet": ["H2", "Mm2n"]}},
+        "Q19": {"point": {"meet": ["V1", "Mm2p"]}},
+        "Q20": {"point": {"meet": ["H2", "Mm2p"]}},
+        "Q21": {"point": {"meet": ["Vm1", "M2n"]}},
+        "Q22": {"point": {"meet": ["V2", "P2n"]}},
+        "Q23": {"point": {"meet": ["Vm2", "Pm2n"]}},
+        "Q24": {"point": {"meet": ["Vm1", "Pm2p"]}},
+        "Q25": {"point": {"meet": ["v", "Pm2p"]}},
+        "Q26": {"point": {"meet": ["v", "Mm2p"]}},
+        "Q27": {"point": {"meet": ["V1", "P2n"]}},
+        "Q28": {"point": {"meet": ["V2", "M2n"]}},
+        "tile": {"polygon": ["Q1", "Q2", "Q3", "Q4"]}
+      },
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Go over the lines of the design. Stepped stars run along the grid, and where four of them meet, the star diagonals cross inside a small square.",
+    "paths": [
+      {"through": ["Q3", "Q5"]},
+      {"through": ["Q6", "Q4"]},
+      {"through": ["Q7", "Q8"]},
+      {"through": ["Q9", "Q10"]},
+      {"through": ["Q11", "Q12"]},
+      {"through": ["Q13", "Q14"]},
+      {"through": ["Q15", "Q16"]},
+      {"through": ["Q17", "Q18"]},
+      {"through": ["Q11", "Q15"]},
+      {"through": ["Q19", "Q20"]},
+      {"through": ["Q5", "Q21"]},
+      {"through": ["Q8", "Q12"]},
+      {"through": ["Q6", "Q22"]},
+      {"through": ["Q23", "Q5"]},
+      {"through": ["Q17", "Q13"]},
+      {"through": ["Q24", "Q25"]},
+      {"through": ["Q26", "Q27"]},
+      {"through": ["Q10", "Q22"]},
+      {"through": ["Q20", "Q28"]},
+      {"through": ["Q21", "Q7"]},
+      {"through": ["Q24", "Q14"]},
+      {"through": ["Q25", "Q26"]},
+      {"through": ["Q9", "Q27"]},
+      {"through": ["Q16", "Q19"]},
+      {"through": ["Q4", "Q22"]},
+      {"through": ["Q28", "Q1"]}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Repeat the tile edge to edge. Stepped stars meet at small crossed squares, as in the tile panel of the Mexuar.",
+    "palette": "Fès tile",
+    "colors": {"star": "a", "triangle": "c"}
+  },
+  "expect": {
+    "note": "Golden values in grid squares (OA = one square), computed by the engine; the pieces fill the tile.",
+    "pieceTypes": 2,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 7.31371, "perCell": 2},
+      {"name": "triangle", "vertices": 3, "area": 0.17157, "perCell": 8}
+    ],
+    "cellArea": 16
+  }
+}

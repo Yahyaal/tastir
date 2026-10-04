@@ -207,6 +207,114 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-comares-stars',
+    title: 'Comares stars and crosses (new)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Notched eight-pointed stars and crosses from a tile panel in the Hall of Comares, on the grid of eight-pointed stars.',
+    story: [
+      'This uses the article’s second base: the square grid plus an eight-pointed star at chosen grid points, its turned square found with a circle through the four diagonal grid corners. Our wall matches the tracing exactly.',
+      'Same source as the Comares bones. The article prints no photo of this panel, so I can only check against its tracing (drawing 1 in the article).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-stars/overlay-ink.png',
+        caption:
+          'Our lines (red) over the article’s tracing (black): an exact match.',
+      },
+      {
+        src: 'renders/alhambra-comares-stars/wall.png',
+        caption: 'Our wall, coloured by piece.',
+      },
+      {
+        src: 'renders/alhambra-comares-stars/step-04.png',
+        caption:
+          'Step 4: the circle through four grid corners gives the turned square of the eight-pointed star.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Martínez Vela: “La Alhambra con regla y compás” (ALZADA 115, 2017, PDF)',
+        url: 'https://www.riarte.es/handle/20.500.12251/633',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-comares-lattice',
+    title: 'Comares star lattice (new)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Crossing bands closing into twelve-sided pieces, from a second Comares panel, on the same star grid.',
+    story: [
+      'Same star-grid base as Design J, with a larger repeat (every four squares diagonally). Our wall matches the tracing exactly.',
+      'Same source as the Comares bones. The article prints no photo of this panel, so I can only check against its tracing (drawing 2 in the article).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-lattice/overlay-ink.png',
+        caption:
+          'Our lines (red) over the article’s tracing (black): an exact match.',
+      },
+      {
+        src: 'renders/alhambra-comares-lattice/wall.png',
+        caption: 'Our wall, coloured by piece.',
+      },
+      {
+        src: 'renders/alhambra-comares-lattice/step-04.png',
+        caption:
+          'Step 4: the circle through four grid corners gives the turned square of the eight-pointed star.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Martínez Vela: “La Alhambra con regla y compás” (ALZADA 115, 2017, PDF)',
+        url: 'https://www.riarte.es/handle/20.500.12251/633',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-mexuar-stars',
+    title: 'Mexuar stars (new)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Stepped stars meeting at small crossed squares, from the tile panel of the Mexuar, on the same star grid.',
+    story: [
+      'Same star-grid base as Designs J and K. Our wall matches the tracing exactly, including the small crossed squares.',
+      'Same source as the Comares bones. The article prints no photo of this panel, so I can only check against its tracing (drawing 3 in the article).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-mexuar-stars/overlay-ink.png',
+        caption:
+          'Our lines (red) over the article’s tracing (black): an exact match.',
+      },
+      {
+        src: 'renders/alhambra-mexuar-stars/wall.png',
+        caption: 'Our wall, coloured by piece.',
+      },
+      {
+        src: 'renders/alhambra-mexuar-stars/step-04.png',
+        caption:
+          'Step 4: the circle through four grid corners gives the turned square of the eight-pointed star.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Martínez Vela: “La Alhambra con regla y compás” (ALZADA 115, 2017, PDF)',
+        url: 'https://www.riarte.es/handle/20.500.12251/633',
+      },
+    ],
+  },
+  {
     id: 'alhambra-infantas-stars',
     title: 'Infantas notched stars (new)',
     fold: 4,
@@ -433,6 +541,8 @@ export interface Question {
   readonly pictures: readonly Picture[];
   /** The pattern card with the details. */
   readonly card: string;
+  /** Other cards this question is about. */
+  readonly also?: readonly string[];
 }
 
 /**
@@ -509,16 +619,22 @@ export const QUESTIONS: readonly Question[] = [
     card: 'sixteen-fold-rosette',
   },
   {
-    id: 'design-i',
-    text: 'Design I matches a published tracing of an Alhambra panel, but I found no photo of the real tiles. Keep it on the strength of the tracing?',
-    choices: ['Keep it', 'Only with a photo', 'Remove it'],
+    id: 'designs-i-l',
+    text: 'Designs I–L match published tracings of Alhambra panels line for line, but I found no photos of the real tiles. Keep them on the strength of the tracings?',
+    choices: ['Keep all four', 'Only with photos', 'Remove them'],
     pictures: [
       {
-        src: 'renders/alhambra-infantas-stars/designs-I.png',
-        caption: 'The article’s tracing (left) and our Design I (right)',
+        src: 'renders/alhambra-comares-stars/designs-I-L.png',
+        caption:
+          'Top: the article’s tracings. Bottom: our walls. Each card below shows ours drawn in red over the tracing.',
       },
     ],
-    card: 'alhambra-infantas-stars',
+    card: 'alhambra-comares-stars',
+    also: [
+      'alhambra-infantas-stars',
+      'alhambra-comares-lattice',
+      'alhambra-mexuar-stars',
+    ],
   },
   {
     id: 'design-h',

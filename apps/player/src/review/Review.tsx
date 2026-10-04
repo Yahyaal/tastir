@@ -148,7 +148,9 @@ function Card({ pattern: p }: { pattern: Pattern }) {
         <section className="asks">
           <h4>My questions about this pattern</h4>
           <p>
-            {QUESTIONS.filter((q) => q.card === p.id).map((q, i) => (
+            {QUESTIONS.filter(
+              (q) => q.card === p.id || q.also?.includes(p.id),
+            ).map((q, i) => (
               <span key={q.id}>
                 {i ? ' · ' : ''}
                 <a href={`#q-${q.id}`}>
