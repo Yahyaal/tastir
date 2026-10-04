@@ -27,3 +27,7 @@ Mamoot's hammerhead tutorial was the one step-by-step source, with photos from S
 ## Alhambra star and arrows (abandoned)
 
 Mamoot's Alhambra rosette was rebuilt exactly, and our ink overlays the source's final drawing line for line. But the source shows it only as a single rosette, and the Alhambra photo sets it inside a larger band network that one photo is not enough to reconstruct. The only repeat available, rosettes touching tip to tip on a square grid, is our own invention and cannot be checked against a real wall, so the tutorial is abandoned. The finished file, which passes every check, is kept in `docs/patterns/abandoned/` for review rather than shipped.
+
+## Ibn Tulun window (verified)
+
+Mamoot's Ibn Tulun window is the most intricate pattern so far: a twelve-pointed star on a six-fold base, with six "fish" and two stars that bend on the diagonals. The text does not say which lines those are, so a crop of the fish was measured, which showed fins along the square sides and a crossed tail through a square-square crossing; the stars then follow as the twelve-pointed star's lines and lines parallel to them through the fin tips. That set explains every black segment of the final drawing, and our ink overlays it exactly. The tile is the hexagon through the noses, the source's "clover" tiling, whose lattice and openings match the photo of the grille.
