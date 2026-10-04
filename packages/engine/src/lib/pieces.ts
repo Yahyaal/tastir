@@ -3,7 +3,17 @@ import { arrangement, signedArea } from './arrangement.js';
 import { pointInPolygon, TutorialError, type Scene } from './evaluate.js';
 import { inkStrokes, type InkStroke } from './ink.js';
 import { segment, type Segment } from './shapes.js';
-import { add, cross, distance, dot, scale, sub, vec, type Vec } from './vec.js';
+import {
+  add,
+  cross,
+  distance,
+  dot,
+  length,
+  scale,
+  sub,
+  vec,
+  type Vec,
+} from './vec.js';
 
 /** The repeating cell: a parallelogram at `origin` spanned by `u` and `v`. */
 export interface Cell {
@@ -136,7 +146,11 @@ export function computePattern(
   };
 }
 
-/** The pattern cell; in format v0 it must be a rectangle. */
+/**
+ * The pattern cell: a rectangle, or a parallelogram (such as the 60°
+ * rhombus of a hexagonal pattern) whose lattice also repeats as a
+ * rectangle, so the wall can be filled with a rectangular tile.
+ */
 export function cellOf(scene: Scene, name: string): Cell {
   const fail = (reason: string): never => {
     throw new TutorialError('pattern', name, reason);
@@ -148,13 +162,42 @@ export function cellOf(scene: Scene, name: string): Cell {
     return fail('the cell must have four corners');
   const u = sub(b, o);
   const v = sub(d, o);
-  const square = (x: Vec, y: Vec) =>
-    Math.abs(dot(x, y)) <=
-    scene.tol.eps * Math.hypot(x.x, x.y) * Math.hypot(y.x, y.y);
-  if (!square(u, v) || distance(add(o, add(u, v)), c) > scene.tol.eps) {
-    fail('the cell must be a rectangle in format v0');
+  if (distance(add(o, add(u, v)), c) > scene.tol.eps)
+    fail('the cell must be a rectangle or a parallelogram');
+  const cell = {
+    origin: o,
+    u,
+    v,
+    corners: g.vertices,
+    area: Math.abs(cross(u, v)),
+  };
+  if (!rectangularPeriod(cell, scene.tol.eps))
+    fail(
+      'the cell is a parallelogram whose copies never line up into a rectangle',
+    );
+  return cell;
+}
+
+/**
+ * The same lattice as the cell, spanned by a rectangle: u, and the
+ * shortest m·v + k·u at right angles to it (m ≤ 6). For a rectangle that
+ * is v itself; for a 60° rhombus it is 2v − u. Undefined when no small
+ * combination is square to u.
+ */
+export function rectangularPeriod(
+  cell: Pick<Cell, 'u' | 'v'>,
+  eps = 1e-9,
+): { u: Vec; v: Vec } | undefined {
+  const { u, v } = cell;
+  const lu = length(u);
+  if (Math.abs(dot(u, v)) <= eps * lu * length(v)) return { u, v };
+  for (let m = 1; m <= 6; m++) {
+    for (let k = -6; k <= 6; k++) {
+      const w = add(scale(v, m), scale(u, k));
+      if (Math.abs(dot(u, w)) <= eps * lu * length(w)) return { u, v: w };
+    }
   }
-  return { origin: o, u, v, corners: g.vertices, area: Math.abs(cross(u, v)) };
+  return undefined;
 }
 
 /** Drops corners where the outline runs straight on. */

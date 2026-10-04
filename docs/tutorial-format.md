@@ -34,7 +34,7 @@ Each entry in a step's `create` map is `"name": { "<kind>": { ... } }`.
 | | `{ "centre": p, "tangentTo": [x, ...] }` | centre `p`, just touching every listed line or circle; an error if no single radius does that |
 | | `{ "centre": p, "tangentTo": [x, ...], "touch": "near" }` | the same, touching each listed circle on its `near` side (the side facing `p`) or its `far` side (going round it, so the new circle encloses it); needed when a circle can be touched both ways |
 | `polygon` | `[p1, p2, ...]` | a closed polygon through the points in order; its sides are segments, and it can be used in `meet` |
-| `repeat` | `{ "of": [names], "by": "rot8" }` | copies of the named elements under a symmetry about `O` (`rot4`, `rot8`, `rot16`, `mirror:<line>`); copies are named `name@1`, `name@2`, … |
+| `repeat` | `{ "of": [names], "by": "rot8" }` | copies of the named elements under a symmetry about `O` (`rot3`, `rot4`, `rot5`, `rot6`, `rot8`, `rot10`, `rot12`, `rot16`, `mirror:<line>`); copies are named `name@1`, `name@2`, … |
 
 Lines are infinite for the purpose of `meet`. Polygon sides and inked paths are segments.
 
@@ -67,7 +67,7 @@ Rules can be combined; all must hold.
 
 `ink.paths` lists the pattern lines. Each path goes `through` named points in order, and every pair of neighbouring points must lie on one existing line, circle or polygon side; the engine checks that. This is what stops a tutorial from inking a line that the construction never produced.
 
-`pattern.cell` names the polygon that repeats. In v0 it must be a square or rectangle, and the wall is made by translating it edge to edge. The optional `pattern.text` is what the learner reads when the player repeats the inked tile. `pattern.colors` gives the default palette key for each named piece.
+`pattern.cell` names the polygon that repeats, and the wall is made by translating it edge to edge. It is a rectangle, or a parallelogram whose copies also line up into a rectangle. The parallelogram is what six- and twelve-fold patterns need: their rosettes sit on a triangular lattice, and the 60° rhombus joining four neighbouring rosette centres (or any rhombus with those sides) is the smallest tile that repeats. The ink must cover one whole tile's worth of the pattern, which for a rhombus usually means inking the hexagon around `O`; the engine copies it to the neighbouring cells before cutting pieces. The optional `pattern.text` is what the learner reads when the player repeats the inked tile. `pattern.colors` gives the default palette key for each named piece.
 
 `expect` holds the golden values for the tutorial's test: how many piece types there are, and each type's vertex count, area (in units of OA²) and count per cell. A piece is named in `expect.pieces`, and `pattern.colors` uses those names.
 
@@ -79,4 +79,4 @@ Its golden values were checked numerically: the eight crossings sit at distance 
 
 ## Not in v0
 
-Hexagonal and rhombic cells, curved ink (arcs), free inking by the user, per-step camera, and credits per step are all in the PRD and come in phase 1 or later. Leave room for them but do not build them in phase 0.
+Hexagonal cells (use the rhombus instead), curved ink (arcs), free inking by the user, per-step camera, and credits per step are all in the PRD and come in phase 1 or later. Leave room for them but do not build them in phase 0.

@@ -1,4 +1,4 @@
-import { pieceAt, type Vec } from '@tastir/engine';
+import { pieceAt, rectangularPeriod, type Vec } from '@tastir/engine';
 import { useId, useMemo, useRef } from 'react';
 import { fit, viewBox, width, type Rect } from './camera';
 import { tiling } from './drawing';
@@ -15,9 +15,16 @@ export const WALL_STYLES: readonly WallStyle[] = [
 const INK = '#23201c';
 const BAND = '#f7f2e6';
 
-/** Maps the tutorial frame into the tile's own frame and back. */
+/**
+ * Maps the tutorial frame into the tile's own frame and back. The SVG
+ * pattern tile is always a rectangle: the cell itself, or for a
+ * parallelogram cell the rectangle that spans the same lattice, so grout
+ * is never sheared.
+ */
 function tileFrame(model: Model) {
-  const { origin, u, v } = model.pattern.cell;
+  const { cell } = model.pattern;
+  const { origin } = cell;
+  const { u, v } = rectangularPeriod(cell) ?? cell;
   const lu = Math.hypot(u.x, u.y);
   const lv = Math.hypot(v.x, v.y);
   const eu = { x: u.x / lu, y: u.y / lu };
@@ -29,15 +36,17 @@ function tileFrame(model: Model) {
   };
   // Tile coordinates to SVG (whose y points down): through the frame.
   const matrix = `matrix(${eu.x} ${-eu.y} ${ev.x} ${-ev.y} ${origin.x} ${-origin.y})`;
-  return { lu, lv, toTile, matrix };
+  // How many cells either way it takes to cover the rectangle.
+  const reach = v === cell.v ? 1 : 4;
+  return { lu, lv, toTile, matrix, reach };
 }
 
 const pts = (ps: readonly Vec[]) => ps.map((p) => `${p.x},${p.y}`).join(' ');
 
 /**
  * The colored pattern repeated without end: one SVG pattern tile holds the
- * cell's pieces (and their copies from the eight neighbouring cells, so
- * pieces crossing its edge are whole), and one rectangle covering the view
+ * cell's pieces (and their copies from the neighbouring cells, so pieces
+ * crossing its edge are whole), and one rectangle covering the view
  * is filled with it. Drag pans, the wheel zooms.
  */
 export function Wall({
@@ -74,8 +83,8 @@ export function Wall({
     const out: { type: number; corners: Vec[] }[] = [];
     const lines: [Vec, Vec][] = [];
     const { u, v } = pattern.cell;
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
+    for (let i = -tile.reach; i <= tile.reach; i++) {
+      for (let j = -tile.reach; j <= tile.reach; j++) {
         const dx = u.x * i + v.x * j;
         const dy = u.y * i + v.y * j;
         const move = (p: Vec) => tile.toTile({ x: p.x + dx, y: p.y + dy });

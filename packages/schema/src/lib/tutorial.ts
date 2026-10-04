@@ -97,10 +97,13 @@ export const PolygonSpec = z
 
 export const Symmetry = z.union(
   [
-    z.enum(['rot4', 'rot8', 'rot16']),
+    z.enum(['rot3', 'rot4', 'rot5', 'rot6', 'rot8', 'rot10', 'rot12', 'rot16']),
     z.templateLiteral(['mirror:', z.string().regex(REF_PATTERN)]),
   ],
-  { error: 'a repeat is by rot4, rot8, rot16 or mirror:<line>' },
+  {
+    error:
+      'a repeat is by rot3, rot4, rot5, rot6, rot8, rot10, rot12, rot16 or mirror:<line>',
+  },
 );
 
 export const RepeatSpec = z.strictObject({

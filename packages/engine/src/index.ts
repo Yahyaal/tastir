@@ -24,6 +24,7 @@ export {
   cellOf,
   computePattern,
   pieceAt,
+  rectangularPeriod,
   type Cell,
   type Pattern,
   type Piece,

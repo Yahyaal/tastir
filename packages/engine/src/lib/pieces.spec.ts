@@ -2,7 +2,7 @@ import type { Tutorial } from '@tastir/schema';
 import { starAndCross } from '../test/tutorials.js';
 import { evaluate, TutorialError } from './evaluate.js';
 import { inkStrokes } from './ink.js';
-import { computePattern, pieceAt } from './pieces.js';
+import { computePattern, pieceAt, rectangularPeriod } from './pieces.js';
 
 function withInk(through: string[]): Tutorial {
   const t = structuredClone(starAndCross());
@@ -83,7 +83,7 @@ describe('pieces of the star and cross', () => {
     expect(Math.max(...xs)).toBeGreaterThan(1);
   });
 
-  it('rejects a cell that is not a rectangle', () => {
+  it('rejects a cell without four corners', () => {
     const bad = structuredClone(t);
     bad.steps.push({
       id: 7,
@@ -146,5 +146,57 @@ describe('slivers', () => {
     ]);
     expect(strip.types.some((p) => p.sliver)).toBe(true);
     expect(computePattern(scene, t).types.some((p) => p.sliver)).toBe(false);
+  });
+});
+
+describe('a parallelogram cell', () => {
+  it('finds the rectangle that spans the lattice of a 60° rhombus', () => {
+    const u = { x: 2, y: 0 };
+    const v = { x: 1, y: Math.sqrt(3) };
+    const r = rectangularPeriod({ u, v });
+    expect(r?.v.x).toBeCloseTo(0, 12);
+    expect(r?.v.y).toBeCloseTo(2 * Math.sqrt(3), 12);
+  });
+
+  it('keeps a rectangle as it is', () => {
+    const cell = { u: { x: 2, y: 0 }, v: { x: 0, y: 3 } };
+    expect(rectangularPeriod(cell)?.v).toBe(cell.v);
+  });
+
+  it('finds none for a lattice that never lines up', () => {
+    expect(
+      rectangularPeriod({ u: { x: 1, y: 0 }, v: { x: 0.3, y: 1 } }),
+    ).toBeUndefined();
+  });
+
+  it('cuts pieces in a 60° rhombus cell', () => {
+    const t: Tutorial = {
+      ...starAndCross(),
+      fold: 6,
+      steps: [
+        {
+          id: 1,
+          text: 'Two circles and a rhombus.',
+          create: {
+            c: { circle: { centre: 'O', through: 'A' } },
+            c2: { circle: { centre: 'A', through: 'O' } },
+            X: { point: { meet: ['c', 'c2'], pick: { angle: 60 } } },
+            c3: { circle: { centre: 'X', through: 'O' } },
+            Y: { point: { meet: ['c2', 'c3'], pick: { farthest: 'O' } } },
+            rh: { polygon: ['O', 'A', 'Y', 'X'] },
+          },
+        },
+      ],
+      ink: { paths: [{ closed: true, through: ['O', 'A', 'Y', 'X'] }] },
+      pattern: { cell: 'rh', colors: {} },
+      expect: {
+        pieceTypes: 1,
+        pieces: [{ name: 'rhombus', vertices: 4, area: 0.86603, perCell: 1 }],
+      },
+    };
+    const pattern = computePattern(evaluate(t), t);
+    expect(pattern.cell.area).toBeCloseTo(Math.sqrt(3) / 2, 12);
+    expect(pattern.types).toHaveLength(1);
+    expect(pattern.types[0]?.name).toBe('rhombus');
   });
 });
