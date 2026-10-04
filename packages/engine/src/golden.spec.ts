@@ -46,7 +46,13 @@ describe.each(files)('%s', (file) => {
   });
 
   it(`has the symmetry of its fold about O`, () => {
-    expect(hasSymmetry(pattern, tutorial.fold)).toBe(true);
+    const mirror = !tutorial.chiral;
+    expect(
+      hasSymmetry(pattern, tutorial.fold, undefined, undefined, mirror),
+    ).toBe(true);
+    // A tutorial that claims to be chiral must really lack the mirror.
+    if (tutorial.chiral)
+      expect(hasSymmetry(pattern, tutorial.fold)).toBe(false);
   });
 
   it('has no slivers, and its pieces fill the tile', () => {

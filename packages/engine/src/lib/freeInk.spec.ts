@@ -17,7 +17,7 @@ describe.each(tutorialFiles())('free inking %s', (file) => {
   const cell = cellOf(scene, tutorial.pattern.cell);
   const classic = computePattern(scene, tutorial);
   const pieces = inkPieces(scene, cell);
-  const chosen = classicSelection(pieces, classic.ink, scene.tol.eps);
+  const chosen = classicSelection(pieces, classic.ink, scene.tol.eps, cell);
 
   it('splits the construction inside the tile into separate pieces', () => {
     expect(pieces.length).toBeGreaterThan(classic.ink.length);

@@ -3,6 +3,7 @@
   "id": "alhambra-comares-lattice",
   "title": "Comares star lattice",
   "fold": 4,
+  "chiral": true,
   "style": "Nasrid",
   "level": "intermediate",
   "credits": [

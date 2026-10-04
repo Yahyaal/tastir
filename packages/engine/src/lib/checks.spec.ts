@@ -1,4 +1,4 @@
-import { starAndCross } from '../test/tutorials.js';
+import { loadTutorial, starAndCross } from '../test/tutorials.js';
 import {
   firstFailingStep,
   hasSymmetry,
@@ -40,6 +40,13 @@ describe('symmetry', () => {
   it('finds no sixteen-fold or five-fold symmetry', () => {
     expect(hasSymmetry(pattern, 16)).toBe(false);
     expect(hasSymmetry(pattern, 5)).toBe(false);
+  });
+
+  it('accepts a pinwheel when the mirror is not required', () => {
+    const t = loadTutorial('alhambra-infantas-crosses.json');
+    const p = computePattern(evaluate(t), t);
+    expect(hasSymmetry(p, 4)).toBe(false);
+    expect(hasSymmetry(p, 4, undefined, undefined, false)).toBe(true);
   });
 
   it('finds no symmetry about a point that is not a centre', () => {

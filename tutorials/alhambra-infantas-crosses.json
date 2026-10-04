@@ -3,6 +3,7 @@
   "id": "alhambra-infantas-crosses",
   "title": "Infantas crosses",
   "fold": 4,
+  "chiral": true,
   "style": "Nasrid",
   "level": "beginner",
   "credits": [

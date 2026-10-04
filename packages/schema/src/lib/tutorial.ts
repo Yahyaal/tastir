@@ -244,6 +244,8 @@ export const TutorialShape = z.strictObject({
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'an id is lower-case words joined by -'),
   title: z.string().min(1),
   fold: z.int().min(3),
+  /** The pattern turns into itself but has no mirror symmetry (a pinwheel). */
+  chiral: z.boolean().optional(),
   style: z.string().min(1),
   level: z.enum(['beginner', 'intermediate', 'advanced']),
   credits: z.array(Credit),

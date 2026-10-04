@@ -63,6 +63,10 @@ Rules can be combined; all must hold.
 
 `text` is what the learner reads. `highlight` lists earlier elements the step depends on, which the player flashes before drawing. `animate` is `compass`, `ruler` or `fade`.
 
+## Chiral patterns
+
+`"chiral": true` says the pattern turns into itself by 360°/`fold` but has no mirror symmetry, like a pinwheel. The golden test then checks the rotation only, and also checks that the mirror really is missing, so the flag cannot hide a broken mirror-symmetric pattern.
+
 ## Ink, pattern, expect
 
 `ink.paths` lists the pattern lines. Each path goes `through` named points in order, and every pair of neighbouring points must lie on one existing line, circle or polygon side; the engine checks that. This is what stops a tutorial from inking a line that the construction never produced.

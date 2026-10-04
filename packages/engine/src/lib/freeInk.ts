@@ -65,18 +65,54 @@ function clipToCell(
 }
 
 /**
- * Every straight piece of the construction inside the cell, split at every
- * crossing with another line, circle or polygon side: what a learner can
- * choose to ink.
+ * Every straight piece of the construction inside the cell, its own and
+ * its neighbours' copies, split at every crossing with another line,
+ * circle or polygon side: what a learner can choose to ink.
  */
 export function inkPieces(scene: Scene, cell: Cell): InkPiece[] {
+  // The construction repeats with the tile, so the neighbouring tiles'
+  // construction reaches into this one too: a slanted or hexagonal tile
+  // can hold the tip of a rosette drawn around a neighbouring centre.
   const curves: Curve[] = [];
-  for (const { geometry: g } of scene.elements.values()) {
-    if (g.kind === 'line') curves.push(g.line);
-    if (g.kind === 'circle') curves.push(g.circle);
-    if (g.kind === 'polygon') curves.push(...g.sides);
+  const seen = new Set<string>();
+  const key = (c: Curve) =>
+    c.kind === 'line'
+      ? `l${round(Math.abs(c.dir.x * c.point.y - c.dir.y * c.point.x))},${round(Math.abs(c.dir.x))},${round(Math.sign(c.dir.x || 1) * c.dir.y)},${round(Math.sign(c.dir.x || 1) * (c.dir.x * c.point.y - c.dir.y * c.point.x))}`
+      : c.kind === 'circle'
+        ? `c${pointKey(c.centre)},${round(c.radius)}`
+        : `s${pieceId(c.a, c.b)}`;
+  for (let i = -1; i <= 1; i++) {
+    for (let j = -1; j <= 1; j++) {
+      const d = add(scale(cell.u, i), scale(cell.v, j));
+      const move = (c: Curve): Curve =>
+        c.kind === 'line'
+          ? { ...c, point: add(c.point, d) }
+          : c.kind === 'circle'
+            ? { ...c, centre: add(c.centre, d) }
+            : segment(add(c.a, d), add(c.b, d));
+      for (const { geometry: g } of scene.elements.values()) {
+        const own: Curve[] =
+          g.kind === 'line'
+            ? [g.line]
+            : g.kind === 'circle'
+              ? [g.circle]
+              : g.kind === 'polygon'
+                ? [...g.sides]
+                : [];
+        for (const c of own.map(move)) {
+          const k = key(c);
+          if (!seen.has(k)) {
+            seen.add(k);
+            curves.push(c);
+          }
+        }
+      }
+    }
   }
   const pieces = new Map<string, InkPiece>();
+  const shifts = [-1, 0, 1].flatMap((i) =>
+    [-1, 0, 1].map((j) => add(scale(cell.u, i), scale(cell.v, j))),
+  );
   for (const c of curves) {
     if (c.kind === 'circle') continue;
     const s = clipToCell(c, cell, scene.tol.eps);
@@ -95,7 +131,13 @@ export function inkPieces(scene: Scene, cell: Cell): InkPiece[] {
       const b = add(s.a, scale(d, ts[k + 1] as number));
       if (distance(a, b) <= scene.tol.eps * 10) continue;
       const id = pieceId(a, b);
-      if (!pieces.has(id)) pieces.set(id, { id, segment: segment(a, b) });
+      // One copy per piece of the wall: a piece on one edge of the tile
+      // and its copy on the opposite edge are the same piece.
+      const copy = shifts.some(
+        (d) => (d.x || d.y) && pieces.has(pieceId(add(a, d), add(b, d))),
+      );
+      if (!copy && !pieces.has(id))
+        pieces.set(id, { id, segment: segment(a, b) });
     }
   }
   return [...pieces.values()];
@@ -109,18 +151,28 @@ function onSegment(p: Vec, s: Segment, eps: number): boolean {
   return distance(p, add(s.a, scale(d, t))) <= eps * 10;
 }
 
-/** The ids of the pieces the tutorial's own ink covers. */
+/**
+ * The ids of the pieces the tutorial's own ink covers, counting its copies
+ * in the neighbouring tiles when the cell is given.
+ */
 export function classicSelection(
   pieces: readonly InkPiece[],
   ink: readonly InkStroke[],
   eps: number,
+  cell?: Cell,
 ): Set<string> {
+  const shifts = cell
+    ? [-1, 0, 1].flatMap((i) =>
+        [-1, 0, 1].map((j) => add(scale(cell.u, i), scale(cell.v, j))),
+      )
+    : [{ x: 0, y: 0 }];
+  const strokes = shifts.flatMap((d) =>
+    ink.map(({ segment: s }) => segment(add(s.a, d), add(s.b, d))),
+  );
   return new Set(
     pieces
       .filter(({ segment: p }) =>
-        ink.some(
-          ({ segment: s }) => onSegment(p.a, s, eps) && onSegment(p.b, s, eps),
-        ),
+        strokes.some((s) => onSegment(p.a, s, eps) && onSegment(p.b, s, eps)),
       )
       .map((p) => p.id),
   );

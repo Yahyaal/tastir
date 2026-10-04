@@ -23,7 +23,13 @@ export function useInking(model: Model) {
     [editing, chosen, model],
   );
   const classic = useMemo(
-    () => classicSelection(pieces, model.pattern.ink, model.scene.tol.eps),
+    () =>
+      classicSelection(
+        pieces,
+        model.pattern.ink,
+        model.scene.tol.eps,
+        model.pattern.cell,
+      ),
     [pieces, model],
   );
 

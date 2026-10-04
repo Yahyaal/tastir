@@ -40,3 +40,6 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - Judge a reading by overlaying it in red on the source in black, never by putting two drawings side by side: side by side, a correct reading looked mirrored twice.
 - Read grid drawings at half-square resolution: Alhambra grid designs often end lines at the centre of a square, which a whole-square reader misses.
 - Read the source's captions for every picture before matching a tracing to a photo. The ALZADA article prints the Comares "huesos" photo next to two Torre de las Infantas tracings; I assumed the first tracing was of the photo and wrongly marked it verified. Overlay our lines on the photo itself before saying a design matches it.
+- Nx cached test results across tutorial edits because `tutorials/` is outside every project, so `pnpm test` replayed old passes while several tutorials were broken (fixed: `sharedGlobals` in `nx.json` now includes `tutorials/**`). When in doubt, run `pnpm nx reset` before trusting a pass.
+- Some real designs (the Infantas crosses, the Comares lattice) are pinwheels: four-fold rotation but no mirror. Mark them `"chiral": true`; the golden test then checks that the mirror really is absent.
+- Free inking now offers the neighbouring tiles' construction inside the tile and keeps one copy of each edge piece, so slanted and hexagonal tiles work.

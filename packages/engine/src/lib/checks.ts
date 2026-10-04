@@ -89,7 +89,8 @@ export function strokesOffCrossings(scene: Scene, pattern: Pattern): string[] {
 
 /**
  * Whether the pieces around `centre` repeat under a turn of 360°/fold and
- * under the mirror in the horizontal through it: every piece within
+ * (unless `mirror` is false) under the mirror in the horizontal through
+ * it: every piece within
  * `radius` must land on a piece of the same type.
  */
 export function hasSymmetry(
@@ -97,6 +98,8 @@ export function hasSymmetry(
   fold: number,
   centre: Vec = { x: 0, y: 0 },
   radius = 1,
+  /** Also require the mirror in the horizontal through the centre. */
+  mirror = true,
 ): boolean {
   const { cell } = pattern;
   // The pieces of the central cell and its eight neighbours.
@@ -137,9 +140,10 @@ export function hasSymmetry(
         moved(p.polygon, (v) => rotate(v, (2 * Math.PI) / fold)),
         p.type,
       ) &&
-      isPiece(
-        moved(p.polygon, (v) => ({ x: v.x, y: -v.y })),
-        p.type,
-      ),
+      (!mirror ||
+        isPiece(
+          moved(p.polygon, (v) => ({ x: v.x, y: -v.y })),
+          p.type,
+        )),
   );
 }
