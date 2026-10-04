@@ -12,7 +12,8 @@
     "build": "nx run-many -t build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "review": "tools/review/review.sh"
+    "review": "tools/review/review.sh",
+    "compare": "python3 tools/review/compare.py"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
