@@ -88,16 +88,20 @@ export function planStep(
  * scale with the view (vector-effect: non-scaling-stroke), and browsers
  * then measure dashes in screen pixels, so the dash must match this.
  */
-function screenLength(node: SVGElement): number {
+function screenLength(node: SVGElement, lengthScale: number): number {
   const shape = node as Partial<SVGGeometryElement>;
   if (typeof shape.getTotalLength !== 'function') return 1;
   const m = shape.getScreenCTM?.();
   const scale = m ? Math.hypot(m.a, m.b) : 1;
   // A pixel more, so no sliver of gap shows at the end.
-  return shape.getTotalLength() * scale + 1;
+  return shape.getTotalLength() * scale * lengthScale + 1;
 }
 
-function keyframes(kind: EffectKind, node: SVGElement): Keyframe[] {
+function keyframes(
+  kind: EffectKind,
+  node: SVGElement,
+  lengthScale: number,
+): Keyframe[] {
   if (kind === 'flash') {
     // Twice bright and back, on the node's own color.
     if (node.tagName === 'text') {
@@ -117,7 +121,7 @@ function keyframes(kind: EffectKind, node: SVGElement): Keyframe[] {
     ];
   }
   // One dash as long as the shape slides in from its start.
-  const len = screenLength(node);
+  const len = screenLength(node, lengthScale);
   const dash = `${len} ${len}`;
   return [
     { strokeDasharray: dash, strokeDashoffset: len },
@@ -134,7 +138,12 @@ function keyframes(kind: EffectKind, node: SVGElement): Keyframe[] {
 export function play(
   svg: SVGSVGElement | null,
   effects: readonly Effect[],
-  { reverse = false } = {},
+  {
+    reverse = false,
+    // How much longer strokes will be on screen by the end, when the view
+    // is zooming in at the same time.
+    lengthScale = 1,
+  } = {},
 ): Animation[] {
   if (!svg) return [];
   const total = Math.max(0, ...effects.map((e) => e.delay + e.duration));
@@ -146,7 +155,7 @@ export function play(
     for (const node of nodes) {
       if (typeof node.animate !== 'function') continue;
       animations.push(
-        node.animate(keyframes(effect.kind, node), {
+        node.animate(keyframes(effect.kind, node, lengthScale), {
           duration: effect.duration,
           delay: reverse
             ? total - effect.delay - effect.duration

@@ -193,9 +193,27 @@ button {
   cursor: pointer;
 }
 
-button:first-child {
+button.secondary,
+button.quiet {
   background: transparent;
   color: var(--ink);
+}
+
+button.quiet {
+  border-color: transparent;
+  text-decoration: underline;
+}
+
+.drawing {
+  touch-action: none;
+}
+
+main.stage .drawing:not(.wall) {
+  cursor: grab;
+}
+
+.drawing.dragging {
+  cursor: grabbing;
 }
 
 button:disabled {

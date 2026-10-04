@@ -1,47 +1,13 @@
 import type { Geometry, Line, SceneElement, Vec } from '@tastir/engine';
 import { compassStart, highlightedNames } from './animation';
+import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors, type Model } from './model';
-
-interface Rect {
-  readonly minX: number;
-  readonly minY: number;
-  readonly maxX: number;
-  readonly maxY: number;
-}
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
 const sy = (p: Vec) => -p.y;
 const points = (ps: readonly Vec[]) =>
   ps.map((p) => `${sx(p)},${sy(p)}`).join(' ');
-const viewBox = (r: Rect) =>
-  `${r.minX} ${-r.maxY} ${r.maxX - r.minX} ${r.maxY - r.minY}`;
-
-/** Everything the construction draws, with a margin around it. */
-function boundsOf(model: Model): Rect {
-  const xs: number[] = [];
-  const ys: number[] = [];
-  const add = (p: Vec, r = 0) => {
-    xs.push(p.x - r, p.x + r);
-    ys.push(p.y - r, p.y + r);
-  };
-  for (const { geometry: g } of model.scene.elements.values()) {
-    if (g.kind === 'point') add(g.at);
-    if (g.kind === 'circle') add(g.circle.centre, g.circle.radius);
-    if (g.kind === 'polygon') g.vertices.forEach((p) => add(p));
-  }
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const pad = 0.12 * Math.max(maxX - minX, maxY - minY);
-  return {
-    minX: minX - pad,
-    minY: minY - pad,
-    maxX: maxX + pad,
-    maxY: maxY + pad,
-  };
-}
 
 /** The part of an infinite line inside the rectangle (Liang–Barsky). */
 function clip(l: Line, r: Rect): [Vec, Vec] | undefined {
@@ -244,19 +210,23 @@ function Labels({ labels, size }: { labels: readonly Label[]; size: number }) {
 export function Construction({
   model,
   upTo,
+  view = fullView(model),
   ink = false,
   svgRef,
   outlineHighlights = false,
 }: {
   model: Model;
   upTo: number;
+  /** The part of the tutorial frame to show. */
+  view?: Rect;
   ink?: boolean;
   svgRef?: React.Ref<SVGSVGElement>;
   /** Outline the step's highlighted elements (instead of flashing them). */
   outlineHighlights?: boolean;
 }) {
-  const view = boundsOf(model);
-  const size = view.maxX - view.minX;
+  const size = width(view);
+  // Lines are clipped well beyond the view, so panning never shows an end.
+  const clipTo = fit(view, 1);
   const shown = [...model.scene.elements.values()].filter(
     (el) => el.step <= upTo,
   );
@@ -282,7 +252,7 @@ export function Construction({
             name={el.name}
             startDeg={compassStart(model, el.name)}
             g={el.geometry}
-            view={view}
+            view={clipTo}
             className={
               isCurrent(el)
                 ? 'el current'

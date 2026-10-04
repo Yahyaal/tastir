@@ -42,7 +42,7 @@ The goal of phase 1 is a player a friend can use unaided: animated steps, a came
 - [x] **1.2 Highlight before draw.** Before a step animates, the elements in its `highlight` list flash, so the learner can predict where the compass goes. With reduced motion they are outlined instead, without flashing.
   *Done when:* tests show the flash comes before the drawing and covers every highlighted element, and that reduced motion outlines them; in the browser, step 4 of the star and cross flashes E, N, W and S before the square draws.
 
-- [ ] **1.3 Camera.** Drag to pan, wheel or pinch to zoom about the pointer, and a Fit button. Each step frames itself: the view moves smoothly to fit the step's new elements and the elements they are built from. The arrow keys stay with Back and Next.
+- [x] **1.3 Camera.** Drag to pan, wheel or pinch to zoom about the pointer, and a Fit button. Each step frames itself: the view moves smoothly to fit the step's new elements and the elements they are built from. The arrow keys stay with Back and Next.
   *Done when:* unit tests show that zooming keeps the point under the pointer still, that fitting contains the given box with a margin, and that the frame for a step contains its elements; in the browser I can drag, zoom, fit, and watch the view follow the steps.
 
 - [ ] **1.4 Tutorial picker.** The player lists every tutorial in `tutorials/` with its title, fold, level, step count and a small picture of the finished pattern, and plays the one I choose. The address bar keeps the choice, so a reload returns to it.

@@ -8,6 +8,8 @@ import {
   useState,
 } from 'react';
 import { planStep, play } from './animation';
+import { fullView, stepFrame, width } from './camera';
+import { useCamera } from './useCamera';
 import { Construction, Legend, RepeatedInk, Wall } from './drawing';
 import { loadModel, stagesOf, type Model, type Stage } from './model';
 
@@ -70,13 +72,31 @@ export function Player({ model }: { model: Model }) {
     running.current = [];
   };
 
+  // Each step frames itself; the ink shows the whole drawing.
+  const frame = useMemo(
+    () =>
+      stage.kind === 'step' ? stepFrame(model, stage.step) : fullView(model),
+    [model, stage],
+  );
+  const onConstruction = stage.kind === 'step' || stage.kind === 'ink';
+  const camera = useCamera(frame, svgRef, {
+    stage: index,
+    instant: reduced,
+    active: onConstruction,
+  });
+
   useLayoutEffect(() => {
     // Before paint, so the step's new elements start hidden.
     if (!animateNext.current) return;
     animateNext.current = false;
     if (stage.kind !== 'step' || reduced) return;
-    running.current = play(svgRef.current, planStep(model, stage.step, speed));
-  }, [index, stage, model, reduced, speed]);
+    running.current = play(svgRef.current, planStep(model, stage.step, speed), {
+      // The camera glides to the step's frame while it draws.
+      lengthScale: width(camera.view) / width(frame),
+    });
+    // Only a change of step starts an animation; the view is read as it is.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, stage, model, reduced, speed, frame]);
 
   const next = useCallback(() => {
     if (reversing.current) return settle();
@@ -129,6 +149,7 @@ export function Player({ model }: { model: Model }) {
       <Construction
         model={model}
         upTo={stage.step}
+        view={camera.view}
         svgRef={svgRef}
         outlineHighlights={reduced}
       />
@@ -136,7 +157,15 @@ export function Player({ model }: { model: Model }) {
   } else if (stage.kind === 'ink') {
     label = 'Ink';
     text = tutorial.ink.text ?? 'Go over the pattern lines.';
-    picture = <Construction model={model} upTo={steps} ink />;
+    picture = (
+      <Construction
+        model={model}
+        upTo={steps}
+        view={camera.view}
+        svgRef={svgRef}
+        ink
+      />
+    );
   } else if (stage.kind === 'repeat') {
     label = 'Repeat';
     text =
@@ -184,7 +213,21 @@ export function Player({ model }: { model: Model }) {
           {stage.kind === 'color' ? <Legend model={model} /> : null}
         </div>
         <nav>
-          <button type="button" onClick={back} disabled={index === 0}>
+          {onConstruction ? (
+            <button
+              type="button"
+              className="quiet"
+              onClick={() => camera.goTo(fullView(model))}
+            >
+              Fit
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className="secondary"
+            onClick={back}
+            disabled={index === 0}
+          >
             Back
           </button>
           <button type="button" onClick={next} disabled={index === last}>
