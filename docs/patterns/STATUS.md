@@ -9,3 +9,4 @@ One line per tutorial in `tutorials/`. **verified** means the tiled pattern was 
 | six-fold-hammerhead | 6 | verified | Matches the source's left-hand tiling line for line and the lattice of the Alcázar of Seville panel. Only one step-by-step source (mamoot). |
 | alhambra-star-and-arrows | 8 | abandoned | The rosette matches the source exactly, but no real repeat of it was found, so a tiled wall would be invented. Kept in `docs/patterns/abandoned/`. |
 | ibn-tulun-window | 6 | verified | Ink overlays the source's final drawing exactly; the wall matches the source's clover tiling and the openings in the (low-resolution) photo of the grille. Only one step-by-step source. |
+| four-fold-ring-of-circles | 4 | abandoned | Matches Sandy Kurt's drawing exactly, but no photo of a real example was found (the Sikandra jali is a different pattern), and the source is all rights reserved. Kept in `docs/patterns/abandoned/`. |

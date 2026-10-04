@@ -31,3 +31,7 @@ Mamoot's Alhambra rosette was rebuilt exactly, and our ink overlays the source's
 ## Ibn Tulun window (verified)
 
 Mamoot's Ibn Tulun window is the most intricate pattern so far: a twelve-pointed star on a six-fold base, with six "fish" and two stars that bend on the diagonals. The text does not say which lines those are, so a crop of the fish was measured, which showed fins along the square sides and a crossed tail through a square-square crossing; the stars then follow as the twelve-pointed star's lines and lines parallel to them through the fin tips. That set explains every black segment of the final drawing, and our ink overlays it exactly. The tile is the hexagon through the noses, the source's "clover" tiling, whose lattice and openings match the photo of the grille.
+
+## Four-fold ring of circles (abandoned)
+
+The earlier attempt's research pointed at Sandy Kurt's free four-fold tutorial and a photo of a Mughal jali. The construction is the ring of eight small circles from the geometry notes, each divided by its own two squares, so the candidate lines could be derived independently and Kurt's final drawing classified against them; a generator script built the 40 lines and 220 ink paths, and the overlay is exact. But the jali turned out to be a different pattern, with large stars among smaller octagons where this one has equal stars, and Kurt names no monument, so there is nothing to verify the wall against. With the source marked all rights reserved as well, the tutorial is abandoned and kept for review.
