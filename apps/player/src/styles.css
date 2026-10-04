@@ -344,16 +344,17 @@ button:disabled {
   padding: 4px 12px;
 }
 
-.piece.dim {
+/* Wall pieces sit in an SVG pattern, where widths are in tile units: the
+   stroke width comes from the attribute, never from CSS. */
+.wall-piece.dim {
   opacity: 0.35;
 }
 
-.piece.hl {
+.wall-piece.hl {
   stroke: var(--current);
-  stroke-width: 3px;
 }
 
-.wall .piece {
+.wall {
   cursor: pointer;
 }
 
@@ -437,4 +438,21 @@ button:disabled {
 .hint {
   color: var(--muted);
   margin: 0;
+}
+
+.wall-tools {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+
+.wall-tools select {
+  font: inherit;
+}
+
+.wall-tools input[type='range'] {
+  vertical-align: middle;
+  width: 110px;
 }

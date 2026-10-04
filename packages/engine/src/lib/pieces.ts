@@ -1,6 +1,6 @@
 import type { Tutorial } from '@tastir/schema';
 import { arrangement, signedArea } from './arrangement.js';
-import { TutorialError, type Scene } from './evaluate.js';
+import { pointInPolygon, TutorialError, type Scene } from './evaluate.js';
 import { inkStrokes, type InkStroke } from './ink.js';
 import { segment, type Segment } from './shapes.js';
 import { add, cross, distance, dot, scale, sub, vec, type Vec } from './vec.js';
@@ -206,4 +206,38 @@ function congruent(a: Shape, b: Shape, eps: number): boolean {
     Math.abs(a.perimeter - b.perimeter) <= len * a.vertices &&
     a.sides.every((s, i) => Math.abs(s - (b.sides[i] as number)) <= len)
   );
+}
+
+/**
+ * The piece of the tiled pattern under point p, anywhere in the plane: its
+ * index in `pattern.pieces` and the shift that carries that piece to p.
+ * Undefined on a line between pieces or where nothing is inked.
+ */
+export function pieceAt(
+  pattern: Pattern,
+  p: Vec,
+): { index: number; shift: Vec } | undefined {
+  const { cell } = pattern;
+  const det = cross(cell.u, cell.v);
+  const d = sub(p, cell.origin);
+  // Which copy of the cell p is in, then p moved back into the cell.
+  const i = Math.floor(cross(d, cell.v) / det);
+  const j = Math.floor(cross(cell.u, d) / det);
+  const home = sub(p, add(scale(cell.u, i), scale(cell.v, j)));
+  for (let a = -1; a <= 1; a++) {
+    for (let b = -1; b <= 1; b++) {
+      const shift = add(scale(cell.u, a), scale(cell.v, b));
+      const local = sub(home, shift);
+      const index = pattern.pieces.findIndex((piece) =>
+        pointInPolygon(local, piece.polygon),
+      );
+      if (index >= 0) {
+        return {
+          index,
+          shift: add(shift, add(scale(cell.u, i), scale(cell.v, j))),
+        };
+      }
+    }
+  }
+  return undefined;
 }

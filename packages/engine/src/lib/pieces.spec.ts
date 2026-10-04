@@ -2,7 +2,7 @@ import type { Tutorial } from '@tastir/schema';
 import { starAndCross } from '../test/tutorials.js';
 import { evaluate, TutorialError } from './evaluate.js';
 import { inkStrokes } from './ink.js';
-import { computePattern } from './pieces.js';
+import { computePattern, pieceAt } from './pieces.js';
 
 function withInk(through: string[]): Tutorial {
   const t = structuredClone(starAndCross());
@@ -103,5 +103,29 @@ describe('pieces of the star and cross', () => {
       2,
       12,
     );
+  });
+});
+
+describe('the piece under a point', () => {
+  const t = starAndCross();
+  const pattern = computePattern(evaluate(t), t);
+  const typeAt = (x: number, y: number) => {
+    const hit = pieceAt(pattern, { x, y });
+    return hit
+      ? pattern.types[pattern.pieces[hit.index]?.type ?? -1]?.name
+      : undefined;
+  };
+
+  it('finds the star at the centre of every tile, however far away', () => {
+    expect(typeAt(0, 0)).toBe('star');
+    expect(typeAt(20, -14)).toBe('star');
+    expect(typeAt(-6.1, 4.05)).toBe('star');
+  });
+
+  it('finds the cross where four tiles meet, and its shift', () => {
+    expect(typeAt(1, 1)).toBe('cross');
+    expect(typeAt(-9, 13)).toBe('cross');
+    const hit = pieceAt(pattern, { x: 9, y: 9 });
+    expect(hit?.shift.x).toBeCloseTo(8, 9);
   });
 });

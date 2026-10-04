@@ -365,7 +365,7 @@ export function Construction({
  * side of the original, and the shifts that copy the tile edge to edge
  * `reach` times in each direction to cover it.
  */
-function tiling(
+export function tiling(
   model: Model,
   { halfWide = 3, halfHigh = 2, reach = 8 } = {},
 ): { view: Rect; shifts: Vec[] } {
@@ -439,58 +439,6 @@ export function RepeatedInk({ model }: { model: Model }) {
               x2={sx(s.segment.b)}
               y2={sy(s.segment.b)}
               vectorEffect="non-scaling-stroke"
-            />
-          ))}
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-/** The pieces filled and the cell repeated edge to edge across the screen. */
-export function Wall({
-  model,
-  colors = pieceColors(model),
-  hovered,
-  onHover,
-  onPick,
-}: {
-  model: Model;
-  colors?: readonly string[];
-  /** The piece type to highlight on every copy, if any. */
-  hovered?: number;
-  onHover?: (type: number | undefined) => void;
-  onPick?: (type: number) => void;
-}) {
-  const { view, shifts } = tiling(model);
-  const { pieces } = model.pattern;
-  const look = (type: number) =>
-    hovered === undefined
-      ? 'piece'
-      : hovered === type
-        ? 'piece hl'
-        : 'piece dim';
-  return (
-    <svg
-      className="drawing wall"
-      viewBox={viewBox(view)}
-      preserveAspectRatio="xMidYMid slice"
-      role="img"
-      aria-label="The pattern colored and tiled as a wall"
-      onPointerLeave={() => onHover?.(undefined)}
-    >
-      {shifts.map((d, k) => (
-        <g key={k} transform={`translate(${d.x} ${-d.y})`}>
-          {pieces.map((p, i) => (
-            <polygon
-              key={i}
-              data-type={p.type}
-              className={look(p.type)}
-              points={points(p.polygon)}
-              fill={colors[p.type]}
-              vectorEffect="non-scaling-stroke"
-              onPointerEnter={() => onHover?.(p.type)}
-              onClick={() => onPick?.(p.type)}
             />
           ))}
         </g>

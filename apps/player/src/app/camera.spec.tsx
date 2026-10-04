@@ -144,3 +144,17 @@ describe('the camera in the player', () => {
     expect(box().w).toBeCloseTo(width(stepFrame(model, 2)), 9);
   });
 });
+
+describe('zoom limits', () => {
+  it('stops zooming out at three times the frame, and in at a twentieth', () => {
+    render(<Play json={example} />);
+    fireEvent.click(screen.getByLabelText('Reduce motion'));
+    const svg = document.querySelector('svg.drawing') as SVGSVGElement;
+    const w = () => Number((svg.getAttribute('viewBox') ?? '').split(' ')[2]);
+    const frame = w();
+    for (let i = 0; i < 30; i++) fireEvent.wheel(svg, { deltaY: 500 });
+    expect(w()).toBeCloseTo(frame * 3, 9);
+    for (let i = 0; i < 60; i++) fireEvent.wheel(svg, { deltaY: -500 });
+    expect(w()).toBeCloseTo(frame / 20, 9);
+  });
+});

@@ -5,6 +5,10 @@ import { between, centreOf, panBy, width, zoomAt, type Rect } from './camera';
 /** How far the pointer moves before a press becomes a drag. */
 const DRAG_PX = 4;
 
+/** Zoom stays between these multiples of the frame's width. */
+const ZOOM_IN = 1 / 20;
+const ZOOM_OUT = 3;
+
 /** How long the view takes to glide to a new frame. */
 const GLIDE_MS = 450;
 
@@ -44,7 +48,11 @@ export function useCamera(
   const [view, setView] = useState(frame);
   const current = useRef(view);
   current.current = view;
+  const frameRef = useRef(frame);
+  frameRef.current = frame;
   const glide = useRef(0);
+  // Whether the last press became a drag, so its click can be ignored.
+  const dragged = useRef(false);
 
   const stopGlide = () => cancelAnimationFrame(glide.current);
 
@@ -85,7 +93,14 @@ export function useCamera(
       e.preventDefault();
       stopGlide();
       // Pinch arrives as a wheel with ctrlKey and small deltas.
-      const factor = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015));
+      const wanted = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015));
+      // Keep the width within ZOOM_IN and ZOOM_OUT of the frame's.
+      const w = width(current.current);
+      const limit = width(frameRef.current);
+      const factor = Math.min(
+        Math.max(wanted, w / (limit * ZOOM_OUT)),
+        w / (limit * ZOOM_IN),
+      );
       const at = frameAt(svg, current.current, e.clientX, e.clientY);
       setView(zoomAt(current.current, at, factor));
     };
@@ -103,6 +118,7 @@ export function useCamera(
     const down = (e: PointerEvent) => {
       if (e.button !== 0) return;
       start = { x: e.clientX, y: e.clientY, id: e.pointerId };
+      dragged.current = false;
     };
     const move = (e: PointerEvent) => {
       if (!start) return;
@@ -110,6 +126,7 @@ export function useCamera(
         if (Math.hypot(e.clientX - start.x, e.clientY - start.y) < DRAG_PX)
           return;
         stopGlide();
+        dragged.current = true;
         last = { x: start.x, y: start.y };
         svg.setPointerCapture?.(start.id);
         svg.classList.add('dragging');
@@ -138,5 +155,5 @@ export function useCamera(
     };
   }, [svgRef, active]);
 
-  return { view, goTo };
+  return { view, goTo, wasDrag: () => dragged.current };
 }

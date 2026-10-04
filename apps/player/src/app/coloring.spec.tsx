@@ -63,8 +63,8 @@ function atColor() {
 /** The fills of every star on the wall (type 0, the largest). */
 const starFills = () =>
   new Set(
-    [...document.querySelectorAll('.wall .piece[data-type="0"]')].map((p) =>
-      p.getAttribute('fill'),
+    [...document.querySelectorAll('.wall .wall-piece[data-type="0"]')].map(
+      (p) => p.getAttribute('fill'),
     ),
   );
 const click = (name: string | RegExp) =>
@@ -85,23 +85,17 @@ describe('coloring in the player', () => {
     expect(starFills()).toEqual(new Set(['#1d5c7c']));
   });
 
-  it('opens the colors for a piece clicked on the wall, with any color allowed', () => {
+  it('opens the colors for the piece clicked on the wall, with any color allowed', () => {
     atColor();
-    fireEvent.click(
-      document.querySelector('.wall .piece[data-type="1"]') as Element,
-    );
+    // Without layout, a click lands at the middle of the view: a star.
+    fireEvent.click(document.querySelector('svg.wall') as Element);
     expect(
-      screen.getByRole('group', { name: 'Colors for every cross' }),
+      screen.getByRole('group', { name: 'Colors for every star' }),
     ).toBeTruthy();
     fireEvent.change(screen.getByLabelText(/Any color/), {
       target: { value: '#123456' },
     });
-    const crosses = new Set(
-      [...document.querySelectorAll('.wall .piece[data-type="1"]')].map((p) =>
-        p.getAttribute('fill'),
-      ),
-    );
-    expect(crosses).toEqual(new Set(['#123456']));
+    expect(starFills()).toEqual(new Set(['#123456']));
   });
 
   it('switches palette', () => {
@@ -114,23 +108,21 @@ describe('coloring in the player', () => {
 
   it('highlights every copy of the piece under the pointer', () => {
     atColor();
-    fireEvent.pointerEnter(
-      document.querySelector('.wall .piece[data-type="1"]') as Element,
-    );
-    const lit = [...document.querySelectorAll('.wall .piece.hl')];
+    fireEvent.pointerMove(document.querySelector('svg.wall') as Element);
+    const lit = [...document.querySelectorAll('.wall .wall-piece.hl')];
     expect(lit.length).toBe(
-      document.querySelectorAll('.wall .piece[data-type="1"]').length,
+      document.querySelectorAll('.wall .wall-piece[data-type="0"]').length,
     );
-    expect(lit.every((p) => p.getAttribute('data-type') === '1')).toBe(true);
-    expect(document.querySelectorAll('.wall .piece.dim').length).toBe(
-      document.querySelectorAll('.wall .piece[data-type="0"]').length,
+    expect(lit.every((p) => p.getAttribute('data-type') === '0')).toBe(true);
+    expect(document.querySelectorAll('.wall .wall-piece.dim').length).toBe(
+      document.querySelectorAll('.wall .wall-piece[data-type="1"]').length,
     );
     fireEvent.pointerEnter(
-      screen.getByRole('button', { name: 'Recolor every star' }),
+      screen.getByRole('button', { name: 'Recolor every cross' }),
     );
     expect(
-      [...document.querySelectorAll('.wall .piece.hl')].every(
-        (p) => p.getAttribute('data-type') === '0',
+      [...document.querySelectorAll('.wall .wall-piece.hl')].every(
+        (p) => p.getAttribute('data-type') === '1',
       ),
     ).toBe(true);
   });

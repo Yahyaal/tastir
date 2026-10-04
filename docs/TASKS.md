@@ -57,7 +57,7 @@ The goal of phase 1 is a player a friend can use unaided: animated steps, a came
 - [x] **1.7 Coloring.** The color stage gets a piece panel: each piece type with its shape, count per tile and color. Hovering a type, in the panel or on the wall, highlights every copy; clicking one opens a palette to recolor every piece of that type. Preset palettes (Fès, Marrakech, Chefchaouen, Tétouan, Isfahan, Kashan), undo and redo, and Reset to the tutorial's colors.
   *Done when:* player tests recolor a type, undo, redo and reset, and switch palettes; in the browser hovering a star highlights every star.
 
-- [ ] **1.8 Wall.** The wall becomes infinite: an SVG `<pattern>` fill, drag to pan and scroll to zoom. Controls for grout width and three styles: tiles (filled pieces with grout), strapwork (the ink drawn as bands) and lines (black lines on white, for coloring by hand).
+- [x] **1.8 Wall.** The wall becomes infinite: an SVG `<pattern>` fill, drag to pan and scroll to zoom. Controls for grout width and three styles: tiles (filled pieces with grout), strapwork (the ink drawn as bands) and lines (black lines on white, for coloring by hand).
   *Done when:* tests show the pattern tile holds every piece that reaches into the cell, and each style renders; in the browser I can pan the wall without reaching an edge.
 
 - [ ] **1.9 Export.** Download the colored wall as SVG and PNG, and print a line sheet on A4 or Letter with the pattern in lines only and the tutorial's title and credits.

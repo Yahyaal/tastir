@@ -23,6 +23,7 @@ export { inkStrokes, type InkStroke } from './lib/ink.js';
 export {
   cellOf,
   computePattern,
+  pieceAt,
   type Cell,
   type Pattern,
   type Piece,

@@ -1,0 +1,152 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+import example from '@tutorials/eight-fold-star-and-cross.json';
+import zellige from '@tutorials/eight-fold-zellige.json';
+import { Play } from './app';
+import { pieceColors } from './coloring';
+import { loadModel } from './model';
+import { Wall } from './Wall';
+
+type P = { x: number; y: number };
+const parse = (s: string | null): P[] =>
+  (s ?? '')
+    .trim()
+    .split(/\s+/)
+    .map((xy) => {
+      const [x, y] = xy.split(',').map(Number);
+      return { x: x as number, y: y as number };
+    });
+const area = (ps: P[]) =>
+  Math.abs(
+    ps.reduce((s, p, i) => {
+      const q = ps[(i + 1) % ps.length] as P;
+      return s + p.x * q.y - q.x * p.y;
+    }, 0),
+  ) / 2;
+/** The part of the polygon on the side of the box edge where `side` ≥ 0. */
+function clipSide(ps: P[], side: (p: P) => number): P[] {
+  const out: P[] = [];
+  ps.forEach((p, i) => {
+    const q = ps[(i + 1) % ps.length] as P;
+    const a = side(p);
+    const b = side(q);
+    if (a >= 0) out.push(p);
+    if (a >= 0 !== b >= 0) {
+      const t = a / (a - b);
+      out.push({ x: p.x + (q.x - p.x) * t, y: p.y + (q.y - p.y) * t });
+    }
+  });
+  return out;
+}
+
+/** The polygon clipped to the box [0, w] × [0, h] (Sutherland–Hodgman). */
+const clip = (ps: P[], w: number, h: number): P[] =>
+  [(p: P) => p.x, (p: P) => w - p.x, (p: P) => p.y, (p: P) => h - p.y].reduce(
+    clipSide,
+    ps,
+  );
+
+describe.each([
+  ['the star and cross', example],
+  ['the eight-fold rosette', zellige],
+])('the wall tile for %s', (_, json) => {
+  const model = loadModel(json);
+
+  it('holds every piece that reaches into the tile, covering it exactly once', () => {
+    const { container } = render(
+      <Wall model={model} colors={pieceColors(model)} />,
+    );
+    const pattern = container.querySelector('pattern') as SVGPatternElement;
+    const w = Number(pattern.getAttribute('width'));
+    const h = Number(pattern.getAttribute('height'));
+    const covered = [...pattern.querySelectorAll('polygon.wall-piece')]
+      .map((p) => area(clip(parse(p.getAttribute('points')), w, h)))
+      .reduce((s, a) => s + a, 0);
+    expect(covered).toBeCloseTo(w * h, 9);
+  });
+});
+
+describe('the wall', () => {
+  const model = loadModel(example);
+  const colors = pieceColors(model);
+
+  it('fills one rectangle with the tile, so it never ends', () => {
+    const { container } = render(<Wall model={model} colors={colors} />);
+    const rect = container.querySelector('svg.wall > rect');
+    expect(rect?.getAttribute('fill')).toMatch(/^url\(#wall-/);
+  });
+
+  it('draws tiles with grout, strapwork with bands, and lines on white', () => {
+    const tiles = render(
+      <Wall model={model} colors={colors} look="tiles" grout={2} />,
+    );
+    const piece = tiles.container.querySelector(
+      'polygon.wall-piece[data-type="0"]',
+    );
+    expect(piece?.getAttribute('fill')).toBe(colors[0]);
+    expect(Number(piece?.getAttribute('stroke-width'))).toBeCloseTo(0.024, 9);
+    tiles.unmount();
+
+    const straps = render(
+      <Wall model={model} colors={colors} look="strapwork" />,
+    );
+    expect(straps.container.querySelectorAll('.band-out line').length).toBe(
+      9 * 16,
+    );
+    expect(
+      straps.container
+        .querySelector('polygon.wall-piece')
+        ?.getAttribute('stroke'),
+    ).toBe('none');
+    straps.unmount();
+
+    const lines = render(<Wall model={model} colors={colors} look="lines" />);
+    expect(
+      lines.container.querySelector('pattern rect')?.getAttribute('fill'),
+    ).toBe('#fff');
+    expect(
+      lines.container.querySelector('polygon.wall-piece')?.getAttribute('fill'),
+    ).toBe('none');
+  });
+
+  it('pans when dragged and zooms with the wheel', () => {
+    const { container } = render(<Wall model={model} colors={colors} />);
+    const svg = container.querySelector('svg.wall') as SVGSVGElement;
+    const box = () =>
+      (svg.getAttribute('viewBox') ?? '').split(' ').map(Number);
+    const [x0, , w0] = box();
+    fireEvent.pointerDown(svg, {
+      button: 0,
+      clientX: 100,
+      clientY: 100,
+      pointerId: 1,
+    });
+    fireEvent.pointerMove(svg, { clientX: 400, clientY: 100, pointerId: 1 });
+    fireEvent.pointerUp(svg, { pointerId: 1 });
+    expect(box()[0]).toBeLessThan(x0 as number);
+    fireEvent.wheel(svg, { deltaY: -300 });
+    expect(box()[2]).toBeLessThan(w0 as number);
+  });
+});
+
+describe('the wall controls', () => {
+  it('switch the style and grout in the player', () => {
+    render(<Play json={example} />);
+    fireEvent.click(screen.getByLabelText('Reduce motion'));
+    for (let i = 0; i < 8; i++)
+      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    fireEvent.change(screen.getByLabelText(/Style/), {
+      target: { value: 'lines' },
+    });
+    expect(
+      document.querySelector('svg.wall')?.classList.contains('style-lines'),
+    ).toBe(true);
+    fireEvent.change(screen.getByLabelText(/Grout/), {
+      target: { value: '0' },
+    });
+    expect(
+      document
+        .querySelector('polygon.wall-piece')
+        ?.getAttribute('stroke-width'),
+    ).toBe('0');
+  });
+});

@@ -18,7 +18,8 @@ import {
   type History,
 } from './coloring';
 import { PiecePanel } from './PiecePanel';
-import { Construction, RepeatedInk, Thumbnail, Wall } from './drawing';
+import { Construction, RepeatedInk, Thumbnail } from './drawing';
+import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { LIBRARY, type Entry } from './library';
 import { loadModel, stagesOf, type Model, type Stage } from './model';
 
@@ -85,6 +86,8 @@ export function Player({ model }: { model: Model }) {
   const colors = pieceColors(inking.shown, colorHistory.now);
   const [hovered, setHovered] = useState<number>();
   const [selected, setSelected] = useState<number>();
+  const [wallStyle, setWallStyle] = useState<WallStyle>('tiles');
+  const [grout, setGrout] = useState(1);
   const svgRef = useRef<SVGSVGElement>(null);
   const running = useRef<Animation[]>([]);
   const reversing = useRef(false);
@@ -207,6 +210,8 @@ export function Player({ model }: { model: Model }) {
       <Wall
         model={inking.shown}
         colors={colors}
+        look={wallStyle}
+        grout={grout}
         hovered={hovered}
         onHover={setHovered}
         onPick={(type) => setSelected(type)}
@@ -273,6 +278,37 @@ export function Player({ model }: { model: Model }) {
               {inking.editing ? (
                 <span>Click a line to ink or erase it.</span>
               ) : null}
+            </div>
+          ) : null}
+          {stage.kind === 'color' ? (
+            <div className="wall-tools">
+              <label>
+                Style{' '}
+                <select
+                  value={wallStyle}
+                  onChange={(e) => setWallStyle(e.target.value as WallStyle)}
+                >
+                  {WALL_STYLES.map((s) => (
+                    <option key={s} value={s}>
+                      {s[0]?.toUpperCase() + s.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                {wallStyle === 'strapwork' ? 'Band' : 'Grout'}{' '}
+                <input
+                  type="range"
+                  min={0}
+                  max={3}
+                  step={0.25}
+                  value={grout}
+                  onChange={(e) => setGrout(Number(e.target.value))}
+                />
+              </label>
+              <span className="hint">
+                Drag to move along the wall, scroll to zoom.
+              </span>
             </div>
           ) : null}
           {stage.kind === 'color' ? (
