@@ -1,0 +1,274 @@
+.review {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+  line-height: 1.55;
+}
+
+.review a {
+  color: #9a3412;
+}
+
+.review-top {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  background: var(--paper);
+  border-bottom: 1px solid var(--faint);
+}
+
+.review-top button {
+  font: inherit;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid #9a3412;
+  background: #9a3412;
+  color: #fff;
+  cursor: pointer;
+}
+
+.review-head {
+  display: block;
+  padding: 0;
+}
+
+.review-head h1 {
+  font-size: 2rem;
+  margin: 28px 0 8px;
+}
+
+.review .lede {
+  font-size: 1.1rem;
+  max-width: 46em;
+}
+
+.review .how {
+  background: #fff;
+  border: 1px solid var(--faint);
+  border-left: 4px solid #9a3412;
+  border-radius: 8px;
+  padding: 4px 18px;
+  margin: 18px 0;
+}
+
+.review .how h2 {
+  font-size: 1rem;
+  margin: 12px 0 0;
+}
+
+.review .glossary {
+  margin: 12px 0;
+}
+
+.review .glossary summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.review .glossary dl {
+  display: grid;
+  grid-template-columns: 11em 1fr;
+  gap: 6px 16px;
+  margin: 12px 0;
+}
+
+.review .glossary dt {
+  font-weight: 600;
+}
+
+.review .glossary dd {
+  margin: 0;
+}
+
+.review .jump {
+  color: var(--muted);
+}
+
+.review h2.group {
+  margin: 48px 0 8px;
+  padding-top: 8px;
+  border-top: 2px solid var(--ink);
+  font-size: 1.4rem;
+}
+
+.review .group-note {
+  color: var(--muted);
+  margin-top: 0;
+}
+
+.review-card {
+  background: #fff;
+  border: 1px solid var(--faint);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+}
+
+.review-card.decide {
+  border-top: 4px solid #d97706;
+}
+
+.review-card.verified {
+  border-top: 4px solid #15803d;
+}
+
+.review-card > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 0;
+}
+
+.review-card > header .fold {
+  margin-left: auto;
+}
+
+.review-card h3 {
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+.review-card.other h3 {
+  font-size: 1.05rem;
+  margin: 22px 0 4px;
+}
+
+.review-card.other h3:first-child {
+  margin-top: 0;
+}
+
+.review .badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.review .badge.decide {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.review .badge.verified {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.review .fold {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.review .summary {
+  font-size: 1.05rem;
+  font-style: italic;
+}
+
+.review .open .hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.review .figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.review figure {
+  margin: 0;
+}
+
+.review figure img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--faint);
+  border-radius: 6px;
+  background: #fff;
+  display: block;
+}
+
+.review figcaption {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.review .asks {
+  background: #fffbeb;
+  border-radius: 8px;
+  padding: 4px 18px 12px;
+}
+
+.review-card.verified .asks {
+  background: #f0fdf4;
+}
+
+.review .asks h4,
+.review .sources h4 {
+  margin: 12px 0 4px;
+}
+
+.review .asks ol {
+  padding-left: 1.2em;
+}
+
+.review .asks li p {
+  margin: 8px 0 6px;
+}
+
+.review textarea {
+  width: 100%;
+  min-height: 64px;
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #d6d3d1;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.review .sources ul {
+  margin: 4px 0;
+  padding-left: 1.2em;
+}
+
+.review pre {
+  background: #1c1917;
+  color: #f5f5f4;
+  padding: 12px 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+}
+
+.review code {
+  background: #f5f5f4;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.review pre code {
+  background: none;
+  padding: 0;
+}
+
+@media (width <= 600px) {
+  .review .glossary dl {
+    grid-template-columns: 1fr;
+  }
+}
+
+.review figure.wide {
+  grid-column: 1 / -1;
+}

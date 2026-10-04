@@ -1,4 +1,6 @@
 import {
+  lazy,
+  Suspense,
   useCallback,
   useReducer,
   useEffect,
@@ -25,6 +27,15 @@ import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { LIBRARY, type Entry } from './library';
 import { stagesOf, type Model, type Stage } from './model';
 import { PROGRESS_TEXT, useModel } from './workerClient';
+
+/**
+ * The overnight review page (#/review). Its pictures come from the private
+ * docs/research folder through the dev server, so it exists only in dev and
+ * is left out of the production bundle.
+ */
+const Review = import.meta.env.DEV
+  ? lazy(() => import('../review/Review').then((m) => ({ default: m.Review })))
+  : undefined;
 
 const NUMBER_WORDS = [
   'no',
@@ -447,6 +458,12 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           time.
         </p>
       </header>
+      {import.meta.env.DEV ? (
+        <a className="review-banner" href="#/review">
+          <strong>Overnight review:</strong> five patterns are waiting for your
+          decision. Open the review page →
+        </a>
+      ) : null}
       <ul className="cards">
         {entries.map((entry) => (
           <Card key={entry.id} entry={entry} />
@@ -503,6 +520,15 @@ function useRoute(): string {
 export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
   const route = useRoute();
   if (!route) return <Library entries={entries} />;
+  if (route === 'review') {
+    return Review ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <Review />
+      </Suspense>
+    ) : (
+      <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
   const entry = entries.find((e) => e.id === route);
   if (!entry)
     return <Broken message={`There is no tutorial called "${route}".`} />;

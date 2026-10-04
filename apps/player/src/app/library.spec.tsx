@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -43,12 +43,18 @@ describe('the library', () => {
       '../../../../tutorials/another-star.json': extra,
     });
     render(<App entries={entries} />);
-    const cards = screen.getAllByRole('link');
+    const cards = within(screen.getByRole('list')).getAllByRole('link');
     expect(cards.map((c) => c.getAttribute('href'))).toEqual([
       '#/another-star',
       '#/eight-fold-star-and-cross',
     ]);
     expect(screen.getByRole('heading', { name: 'Another star' })).toBeTruthy();
+    // On the dev server the library also links to the overnight review.
+    expect(
+      screen
+        .getByRole('link', { name: /Overnight review/ })
+        .getAttribute('href'),
+    ).toBe('#/review');
     expect(
       screen.getAllByText('8-fold · Moroccan · beginner · 6 steps'),
     ).toHaveLength(2);
