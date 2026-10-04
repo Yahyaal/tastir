@@ -87,6 +87,89 @@ describe('planning a step', () => {
   });
 });
 
+describe('highlight before draw', () => {
+  it('flashes the highlighted points first, then draws', () => {
+    const plan = planStep(model, 4);
+    expect(plan.map((e) => [e.name, e.kind, e.delay, e.duration])).toEqual([
+      ['E', 'flash', 0, 600],
+      ['N', 'flash', 0, 600],
+      ['W', 'flash', 0, 600],
+      ['S', 'flash', 0, 600],
+      ['dynamic', 'ruler', 600, 800],
+    ]);
+  });
+
+  it('opens groups and scales the flash with the speed', () => {
+    const t = structuredClone(example) as { steps: { highlight?: string[] }[] };
+    (t.steps[5] as { highlight?: string[] }).highlight = ['k', 'h'];
+    const plan = planStep(loadModel(t), 6, 2);
+    const flashed = plan.filter((e) => e.kind === 'flash');
+    expect(flashed.map((e) => e.name)).toEqual([
+      'k.1',
+      'k.2',
+      'k.3',
+      'k.4',
+      'k.5',
+      'k.6',
+      'k.7',
+      'k.8',
+      'h',
+    ]);
+    expect(flashed[0]?.duration).toBe(300);
+    expect(plan.find((e) => e.kind === 'ruler')?.delay).toBe(300);
+  });
+
+  it('leaves the flash out when undrawing', () => {
+    expect(planStep(model, 4, 1, { flash: false }).map((e) => e.kind)).toEqual([
+      'ruler',
+    ]);
+  });
+
+  it('flashes in the player before the square draws, without leaving a trace', () => {
+    const { calls } = recordAnimations();
+    render(<App />);
+    next();
+    next();
+    calls.length = 0;
+    next(); // step 4
+    const flashE = calls.filter((c) => c.name === 'E');
+    expect(flashE).toHaveLength(2); // the point and its name
+    expect(flashE[0]?.options).toMatchObject({
+      delay: 0,
+      duration: 600,
+      fill: 'none',
+    });
+    const square = calls.find((c) => c.name === 'dynamic');
+    expect(square?.options.delay).toBe(600);
+  });
+
+  it('outlines the highlighted elements instead with reduced motion', () => {
+    const { container } = render(<App />);
+    fireEvent.click(screen.getByLabelText('Reduce motion'));
+    next();
+    next(); // step 3 highlights h and v
+    const outlined = [...container.querySelectorAll('.el.highlighted')].map(
+      (n) => n.getAttribute('data-name'),
+    );
+    expect(outlined).toEqual(['h', 'v']);
+    next(); // step 4 highlights E, N, W and S
+    const marks = [...container.querySelectorAll('.mark.highlighted')].map(
+      (n) => n.getAttribute('data-name'),
+    );
+    expect(marks).toEqual(['E', 'N', 'W', 'S']);
+    expect(container.querySelectorAll('.el.highlighted')).toHaveLength(0);
+  });
+
+  it('does not outline anything when the flash plays', () => {
+    const { container } = render(<App />);
+    next();
+    next();
+    expect(
+      container.querySelectorAll('.highlighted.el, .highlighted.mark'),
+    ).toHaveLength(0);
+  });
+});
+
 describe('animating in the player', () => {
   it('sweeps the first circle on load', () => {
     const { calls } = recordAnimations();

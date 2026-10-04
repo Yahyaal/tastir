@@ -82,6 +82,18 @@ header h1 {
   stroke: var(--faint);
 }
 
+.el.highlighted {
+  stroke: var(--ink);
+  stroke-width: 2px;
+  stroke-dasharray: 6 4;
+}
+
+.mark.highlighted {
+  fill: var(--ink);
+  stroke: var(--current);
+  stroke-width: 2px;
+}
+
 .el.current {
   stroke: var(--current);
   stroke-width: 2.5px;

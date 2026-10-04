@@ -2,7 +2,7 @@ import type { Vec } from '@tastir/engine';
 import type { Model } from './model';
 
 /** How one element enters the drawing. */
-export type EffectKind = 'compass' | 'ruler' | 'pop';
+export type EffectKind = 'flash' | 'compass' | 'ruler' | 'pop';
 
 export interface Effect {
   readonly name: string;
@@ -12,17 +12,38 @@ export interface Effect {
   readonly duration: number;
 }
 
-/** One step at normal speed, in milliseconds. */
+/** One step's drawing at normal speed, in milliseconds. */
 export const STEP_MS = 800;
+/** The flash of the highlighted elements before a step draws. */
+export const FLASH_MS = 600;
+/** The accent the current step is drawn in (--current in styles.css). */
+const ACCENT = '#c2410c';
 /** The share of a step spent drawing lines and circles; points pop after. */
 const DRAW_SHARE = 0.75;
 
+/** The names a step highlights, with groups such as `k` opened up. */
+export function highlightedNames(model: Model, step: number): string[] {
+  const names = model.tutorial.steps[step - 1]?.highlight ?? [];
+  return names.flatMap((name) => {
+    const g = model.scene.elements.get(name)?.geometry;
+    return g?.kind === 'group' ? [...g.members] : [name];
+  });
+}
+
 /**
- * The timing of one construction step: its lines and circles draw one
- * after another, then its new points pop in, all within STEP_MS / speed.
+ * The timing of one construction step: its highlighted elements flash,
+ * then its lines and circles draw one after another, then its new points
+ * pop in. Drawing takes STEP_MS / speed; the flash comes first.
  */
-export function planStep(model: Model, step: number, speed = 1): Effect[] {
+export function planStep(
+  model: Model,
+  step: number,
+  speed = 1,
+  { flash = true } = {},
+): Effect[] {
   const total = STEP_MS / speed;
+  const flashed = flash ? highlightedNames(model, step) : [];
+  const start = flashed.length ? FLASH_MS / speed : 0;
   const made = [...model.scene.elements.values()].filter(
     (el) => el.step === step,
   );
@@ -33,12 +54,20 @@ export function planStep(model: Model, step: number, speed = 1): Effect[] {
   const drawTime =
     curves.length === 0 ? 0 : points.length ? total * DRAW_SHARE : total;
   const each = curves.length ? drawTime / curves.length : 0;
-  const effects: Effect[] = curves.map((el, i) => ({
-    name: el.name,
-    kind: el.geometry.kind === 'circle' ? 'compass' : 'ruler',
-    delay: i * each,
-    duration: each,
+  const effects: Effect[] = flashed.map((name) => ({
+    name,
+    kind: 'flash',
+    delay: 0,
+    duration: start,
   }));
+  curves.forEach((el, i) => {
+    effects.push({
+      name: el.name,
+      kind: el.geometry.kind === 'circle' ? 'compass' : 'ruler',
+      delay: start + i * each,
+      duration: each,
+    });
+  });
   // Points pop in one after another in what is left of the step.
   const popTime = total - drawTime;
   const pop = Math.min(popTime, 200 / speed);
@@ -47,7 +76,7 @@ export function planStep(model: Model, step: number, speed = 1): Effect[] {
     effects.push({
       name: el.name,
       kind: 'pop',
-      delay: drawTime + i * gap,
+      delay: start + drawTime + i * gap,
       duration: pop,
     });
   });
@@ -69,6 +98,18 @@ function screenLength(node: SVGElement): number {
 }
 
 function keyframes(kind: EffectKind, node: SVGElement): Keyframe[] {
+  if (kind === 'flash') {
+    // Twice bright and back, on the node's own color.
+    if (node.tagName === 'text') {
+      return [{}, { fill: ACCENT }, {}, { fill: ACCENT }, {}];
+    }
+    if (node.classList.contains('mark')) {
+      const big = { fill: ACCENT, transform: 'scale(1.8)' };
+      return [{}, big, {}, big, {}];
+    }
+    const bold = { stroke: ACCENT, strokeWidth: '3px' };
+    return [{}, bold, {}, bold, {}];
+  }
   if (kind === 'pop') {
     return [
       { transform: 'scale(0)', opacity: 0 },
@@ -112,7 +153,14 @@ export function play(
             : effect.delay,
           easing: effect.kind === 'pop' ? 'ease-out' : 'ease-in-out',
           direction: reverse ? 'reverse' : 'normal',
-          fill: reverse ? 'forwards' : 'backwards',
+          // A flash leaves the element as it was; drawing hides the new
+          // element until its turn, and undrawing leaves it hidden.
+          fill:
+            effect.kind === 'flash'
+              ? 'none'
+              : reverse
+                ? 'forwards'
+                : 'backwards',
         }),
       );
     }

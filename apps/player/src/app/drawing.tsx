@@ -1,5 +1,5 @@
 import type { Geometry, Line, SceneElement, Vec } from '@tastir/engine';
-import { compassStart } from './animation';
+import { compassStart, highlightedNames } from './animation';
 import { pieceColors, type Model } from './model';
 
 interface Rect {
@@ -132,10 +132,12 @@ function Shape({
 function Mark({
   el,
   current,
+  outlined,
   size,
 }: {
   el: SceneElement;
   current: boolean;
+  outlined: boolean;
   size: number;
 }) {
   if (el.geometry.kind !== 'point') return null;
@@ -143,7 +145,9 @@ function Mark({
   return (
     <circle
       data-name={el.name}
-      className={current ? 'mark current' : 'mark'}
+      className={
+        current ? 'mark current' : outlined ? 'mark highlighted' : 'mark'
+      }
       cx={sx(p)}
       cy={sy(p)}
       r={size * (current ? 0.011 : 0.008)}
@@ -242,11 +246,14 @@ export function Construction({
   upTo,
   ink = false,
   svgRef,
+  outlineHighlights = false,
 }: {
   model: Model;
   upTo: number;
   ink?: boolean;
   svgRef?: React.Ref<SVGSVGElement>;
+  /** Outline the step's highlighted elements (instead of flashing them). */
+  outlineHighlights?: boolean;
 }) {
   const view = boundsOf(model);
   const size = view.maxX - view.minX;
@@ -254,7 +261,10 @@ export function Construction({
     (el) => el.step <= upTo,
   );
   const isCurrent = (el: SceneElement) => !ink && el.step === upTo;
-  const highlighted = new Set(model.tutorial.steps[upTo - 1]?.highlight ?? []);
+  const highlighted = new Set(ink ? [] : highlightedNames(model, upTo));
+  /** Highlighted elements are outlined when they are not flashed. */
+  const outlined = (el: SceneElement) =>
+    outlineHighlights && highlighted.has(el.name);
   return (
     <svg
       ref={svgRef}
@@ -273,7 +283,15 @@ export function Construction({
             startDeg={compassStart(model, el.name)}
             g={el.geometry}
             view={view}
-            className={isCurrent(el) ? 'el current' : ink ? 'el faint' : 'el'}
+            className={
+              isCurrent(el)
+                ? 'el current'
+                : ink
+                  ? 'el faint'
+                  : outlined(el)
+                    ? 'el highlighted'
+                    : 'el'
+            }
           />
         ))}
       </g>
@@ -293,7 +311,13 @@ export function Construction({
       ) : (
         <g>
           {shown.map((el) => (
-            <Mark key={el.name} el={el} current={isCurrent(el)} size={size} />
+            <Mark
+              key={el.name}
+              el={el}
+              current={isCurrent(el)}
+              outlined={outlined(el)}
+              size={size}
+            />
           ))}
           <Labels
             labels={labelsFor(shown, isCurrent, highlighted)}

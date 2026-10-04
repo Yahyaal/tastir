@@ -93,9 +93,11 @@ export function Player({ model }: { model: Model }) {
     if (index === 0) return;
     const undraw =
       stage.kind === 'step' && !reduced
-        ? play(svgRef.current, planStep(model, stage.step, speed), {
-            reverse: true,
-          })
+        ? play(
+            svgRef.current,
+            planStep(model, stage.step, speed, { flash: false }),
+            { reverse: true },
+          )
         : [];
     if (undraw.length === 0) return setIndex(index - 1);
     reversing.current = true;
@@ -123,7 +125,14 @@ export function Player({ model }: { model: Model }) {
   if (stage.kind === 'step') {
     label = `Step ${stage.step} of ${steps}`;
     text = tutorial.steps[stage.step - 1]?.text ?? '';
-    picture = <Construction model={model} upTo={stage.step} svgRef={svgRef} />;
+    picture = (
+      <Construction
+        model={model}
+        upTo={stage.step}
+        svgRef={svgRef}
+        outlineHighlights={reduced}
+      />
+    );
   } else if (stage.kind === 'ink') {
     label = 'Ink';
     text = tutorial.ink.text ?? 'Go over the pattern lines.';
