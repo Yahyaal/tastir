@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import { compassStart, planStep } from './animation';
-import App from './app';
+import { Play } from './app';
 import { loadModel } from './model';
 
 const model = loadModel(example);
@@ -127,7 +127,7 @@ describe('highlight before draw', () => {
 
   it('flashes in the player before the square draws, without leaving a trace', () => {
     const { calls } = recordAnimations();
-    render(<App />);
+    render(<Play json={example} />);
     next();
     next();
     calls.length = 0;
@@ -144,7 +144,7 @@ describe('highlight before draw', () => {
   });
 
   it('outlines the highlighted elements instead with reduced motion', () => {
-    const { container } = render(<App />);
+    const { container } = render(<Play json={example} />);
     fireEvent.click(screen.getByLabelText('Reduce motion'));
     next();
     next(); // step 3 highlights h and v
@@ -161,7 +161,7 @@ describe('highlight before draw', () => {
   });
 
   it('does not outline anything when the flash plays', () => {
-    const { container } = render(<App />);
+    const { container } = render(<Play json={example} />);
     next();
     next();
     expect(
@@ -173,7 +173,7 @@ describe('highlight before draw', () => {
 describe('animating in the player', () => {
   it('sweeps the first circle on load', () => {
     const { calls } = recordAnimations();
-    render(<App />);
+    render(<Play json={example} />);
     expect(named(calls)).toEqual(['c']);
     expect(calls[0]?.options).toMatchObject({
       duration: 800,
@@ -186,7 +186,7 @@ describe('animating in the player', () => {
 
   it('animates the new step on Next, at the chosen speed', () => {
     const { calls } = recordAnimations();
-    render(<App />);
+    render(<Play json={example} />);
     fireEvent.change(screen.getByLabelText(/Speed/), {
       target: { value: '2' },
     });
@@ -204,7 +204,7 @@ describe('animating in the player', () => {
 
   it('undraws the step backwards on Back, then shows the previous one', async () => {
     const { calls, finishAll } = recordAnimations();
-    render(<App />);
+    render(<Play json={example} />);
     next();
     await finishAll();
     calls.length = 0;
@@ -224,7 +224,7 @@ describe('animating in the player', () => {
 
   it('draws every step at once with reduced motion', () => {
     const { calls } = recordAnimations();
-    render(<App />);
+    render(<Play json={example} />);
     fireEvent.click(screen.getByLabelText('Reduce motion'));
     calls.length = 0;
     next();

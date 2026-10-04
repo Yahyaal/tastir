@@ -45,7 +45,7 @@ The goal of phase 1 is a player a friend can use unaided: animated steps, a came
 - [x] **1.3 Camera.** Drag to pan, wheel or pinch to zoom about the pointer, and a Fit button. Each step frames itself: the view moves smoothly to fit the step's new elements and the elements they are built from. The arrow keys stay with Back and Next.
   *Done when:* unit tests show that zooming keeps the point under the pointer still, that fitting contains the given box with a margin, and that the frame for a step contains its elements; in the browser I can drag, zoom, fit, and watch the view follow the steps.
 
-- [ ] **1.4 Tutorial picker.** The player lists every tutorial in `tutorials/` with its title, fold, level, step count and a small picture of the finished pattern, and plays the one I choose. The address bar keeps the choice, so a reload returns to it.
+- [x] **1.4 Tutorial picker.** The player lists every tutorial in `tutorials/` with its title, fold, level, step count and a small picture of the finished pattern, and plays the one I choose. The address bar keeps the choice, so a reload returns to it.
   *Done when:* adding a tutorial file shows it in the list with no code change (a test covers this), and the star and cross plays from the list.
 
 - [ ] **1.5 Eight-fold zellige tutorial.** Write `tutorials/eight-fold-zellige.json`, the classic eight-fold star with petals. Steps 1–10 and 17 of the geometry notes are known; work out the rest again from the geometry, not from the ambiguous PDF text. Every inked line must pass through at least two crossings of the construction, no piece may be a sliver, and the pattern must have eight-fold symmetry. Step text is our own; credit Sandy Kurt if the sequence follows her tutorial closely.

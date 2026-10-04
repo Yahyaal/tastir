@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
-import App from './app';
+import { Play } from './app';
 import {
   centreOf,
   drawingBox,
@@ -103,7 +103,7 @@ describe('the camera in the player', () => {
     fireEvent.click(screen.getByLabelText('Reduce motion'));
 
   it('zooms in with the wheel and out again', () => {
-    render(<App />);
+    render(<Play json={example} />);
     reduceMotion();
     const before = box().w;
     const svg = document.querySelector('svg.drawing') as SVGSVGElement;
@@ -114,7 +114,7 @@ describe('the camera in the player', () => {
   });
 
   it('pans when dragged', () => {
-    render(<App />);
+    render(<Play json={example} />);
     reduceMotion();
     const svg = document.querySelector('svg.drawing') as SVGSVGElement;
     const before = box();
@@ -133,7 +133,7 @@ describe('the camera in the player', () => {
   });
 
   it('fits the whole drawing, and frames each step on Next', () => {
-    render(<App />);
+    render(<Play json={example} />);
     reduceMotion();
     const svg = document.querySelector('svg.drawing') as SVGSVGElement;
     fireEvent.wheel(svg, { deltaY: -500 });

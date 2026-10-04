@@ -300,10 +300,14 @@ export function Construction({
 }
 
 /**
- * The view for the repeated tile, about three tiles wide around the
- * original, and the shifts that copy the tile edge to edge across it.
+ * The view for the repeated tile, `halfWide` by `halfHigh` tiles either
+ * side of the original, and the shifts that copy the tile edge to edge
+ * `reach` times in each direction to cover it.
  */
-function tiling(model: Model): { view: Rect; shifts: Vec[] } {
+function tiling(
+  model: Model,
+  { halfWide = 3, halfHigh = 2, reach = 8 } = {},
+): { view: Rect; shifts: Vec[] } {
   const { cell } = model.pattern;
   const centre = {
     x: cell.origin.x + (cell.u.x + cell.v.x) / 2,
@@ -314,13 +318,11 @@ function tiling(model: Model): { view: Rect; shifts: Vec[] } {
     Math.hypot(cell.v.x, cell.v.y),
   );
   const view: Rect = {
-    minX: centre.x - 3 * span,
-    maxX: centre.x + 3 * span,
-    minY: centre.y - 2 * span,
-    maxY: centre.y + 2 * span,
+    minX: centre.x - halfWide * span,
+    maxX: centre.x + halfWide * span,
+    minY: centre.y - halfHigh * span,
+    maxY: centre.y + halfHigh * span,
   };
-  // Enough copies to cover the view however wide the screen is.
-  const reach = 8;
   const shifts: Vec[] = [];
   for (let i = -reach; i <= reach; i++) {
     for (let j = -reach; j <= reach; j++) {
@@ -427,5 +429,32 @@ export function Legend({ model }: { model: Model }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+/** A small square picture of the colored pattern, for the library. */
+export function Thumbnail({ model }: { model: Model }) {
+  const { view, shifts } = tiling(model, {
+    halfWide: 1,
+    halfHigh: 1,
+    reach: 2,
+  });
+  const colors = pieceColors(model);
+  return (
+    <svg className="thumbnail" viewBox={viewBox(view)} aria-hidden="true">
+      {shifts.map((d, k) => (
+        <g key={k} transform={`translate(${d.x} ${-d.y})`}>
+          {model.pattern.pieces.map((p, i) => (
+            <polygon
+              key={i}
+              className="piece"
+              points={points(p.polygon)}
+              fill={colors[p.type]}
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+        </g>
+      ))}
+    </svg>
   );
 }

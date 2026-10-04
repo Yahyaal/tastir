@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
-import App from './app';
+import { Play } from './app';
 
 const next = () =>
   fireEvent.click(screen.getByRole('button', { name: 'Next' }));
@@ -10,7 +10,7 @@ const label = () => document.querySelector('.label')?.textContent;
 
 describe('the player', () => {
   it('starts at step 1 with its text, and Back disabled', () => {
-    render(<App />);
+    render(<Play json={example} />);
     expect(
       screen.getByRole('heading', { name: 'Eight-fold star and cross' }),
     ).toBeTruthy();
@@ -27,7 +27,7 @@ describe('the player', () => {
   });
 
   it('draws the current step in color and earlier ones in grey', () => {
-    const { container } = render(<App />);
+    const { container } = render(<Play json={example} />);
     next(); // step 2: h, v and four points
     expect(container.querySelectorAll('line.el.current')).toHaveLength(2);
     expect(container.querySelectorAll('circle.el:not(.current)')).toHaveLength(
@@ -41,7 +41,7 @@ describe('the player', () => {
   });
 
   it('names the points a step highlights', () => {
-    const { container } = render(<App />);
+    const { container } = render(<Play json={example} />);
     for (let i = 0; i < 3; i++) next(); // step 4 joins E, N, W and S
     const named = [
       ...container.querySelectorAll('text.point-name.highlighted'),
@@ -50,7 +50,7 @@ describe('the player', () => {
   });
 
   it('steps through all six steps, the ink, the repeat and the coloring, and back', () => {
-    const { container } = render(<App />);
+    const { container } = render(<Play json={example} />);
     const seen = [label()];
     for (let i = 0; i < 8; i++) {
       next();
@@ -96,7 +96,7 @@ describe('the player', () => {
   });
 
   it('moves with the arrow keys', () => {
-    render(<App />);
+    render(<Play json={example} />);
     fireEvent.keyDown(window, { key: 'ArrowRight' });
     expect(label()).toBe('Step 2 of 6');
     fireEvent.keyDown(window, { key: 'ArrowLeft' });
@@ -110,7 +110,7 @@ describe('the player', () => {
     (broken.steps[1] as { create: Record<string, unknown> }).create.E = {
       point: { meet: ['c', 'h'] },
     };
-    render(<App json={broken} />);
+    render(<Play json={broken} />);
     expect(
       screen.getByText(/Step 2, element "E": 2 crossings of "c" and "h" match/),
     ).toBeTruthy();

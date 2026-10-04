@@ -1,4 +1,3 @@
-import example from '@tutorials/eight-fold-star-and-cross.json';
 import {
   useCallback,
   useEffect,
@@ -10,7 +9,8 @@ import {
 import { planStep, play } from './animation';
 import { fullView, stepFrame, width } from './camera';
 import { useCamera } from './useCamera';
-import { Construction, Legend, RepeatedInk, Wall } from './drawing';
+import { Construction, Legend, RepeatedInk, Thumbnail, Wall } from './drawing';
+import { LIBRARY, type Entry } from './library';
 import { loadModel, stagesOf, type Model, type Stage } from './model';
 
 const NUMBER_WORDS = [
@@ -181,7 +181,12 @@ export function Player({ model }: { model: Model }) {
   return (
     <div className="player">
       <header>
-        <h1>{tutorial.title}</h1>
+        <div className="title">
+          <a className="home" href="#/">
+            All tutorials
+          </a>
+          <h1>{tutorial.title}</h1>
+        </div>
         <div className="controls">
           <label>
             Speed{' '}
@@ -239,8 +244,8 @@ export function Player({ model }: { model: Model }) {
   );
 }
 
-/** Loads the example; a tutorial the engine rejects shows its error. */
-export function App({ json = example }: { json?: unknown }) {
+/** Plays one tutorial; a tutorial the engine rejects shows its error. */
+export function Play({ json }: { json: unknown }) {
   const loaded = useMemo(() => {
     try {
       return { model: loadModel(json) };
@@ -248,15 +253,89 @@ export function App({ json = example }: { json?: unknown }) {
       return { error: e instanceof Error ? e.message : String(e) };
     }
   }, [json]);
-  if ('error' in loaded) {
-    return (
-      <div className="player">
-        <h1>This tutorial cannot be played</h1>
-        <pre className="error">{loaded.error}</pre>
-      </div>
-    );
-  }
+  if (!loaded.model) return <Broken message={loaded.error ?? ''} />;
   return <Player model={loaded.model} />;
+}
+
+function Broken({ message }: { message: string }) {
+  return (
+    <div className="player">
+      <header>
+        <div className="title">
+          <a className="home" href="#/">
+            All tutorials
+          </a>
+          <h1>This tutorial cannot be played</h1>
+        </div>
+      </header>
+      <pre className="error">{message}</pre>
+    </div>
+  );
+}
+
+const fold = (n: number) => `${n}-fold`;
+
+/** Every tutorial, with a picture of the finished pattern. */
+export function Library({ entries }: { entries: readonly Entry[] }) {
+  return (
+    <div className="library">
+      <header>
+        <h1>Tastir</h1>
+        <p>
+          Islamic geometric patterns, drawn one compass and ruler step at a
+          time.
+        </p>
+      </header>
+      <ul className="cards">
+        {entries.map(({ id, model, error }) => (
+          <li key={id}>
+            <a className="card" href={`#/${id}`}>
+              {model ? (
+                <Thumbnail model={model} />
+              ) : (
+                <div className="thumbnail broken" />
+              )}
+              <h2>{model?.tutorial.title ?? id}</h2>
+              {model ? (
+                <p>
+                  {fold(model.tutorial.fold)} · {model.tutorial.style} ·{' '}
+                  {model.tutorial.level} · {model.tutorial.steps.length} steps
+                </p>
+              ) : (
+                <p className="error">Cannot be played: {error}</p>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** The tutorial id in the address (#/id), or '' for the library. */
+function useRoute(): string {
+  const read = () =>
+    decodeURIComponent(window.location.hash.replace(/^#\/?/, ''));
+  const [route, setRoute] = useState(read);
+  useEffect(() => {
+    const onChange = () => {
+      setRoute(read());
+      window.scrollTo?.(0, 0);
+    };
+    window.addEventListener('hashchange', onChange);
+    return () => window.removeEventListener('hashchange', onChange);
+  }, []);
+  return route;
+}
+
+/** The library, or the tutorial the address names. */
+export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
+  const route = useRoute();
+  if (!route) return <Library entries={entries} />;
+  const entry = entries.find((e) => e.id === route);
+  if (!entry)
+    return <Broken message={`There is no tutorial called "${route}".`} />;
+  return <Play key={entry.id} json={entry.json} />;
 }
 
 export default App;
