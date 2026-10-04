@@ -229,7 +229,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 16,
     status: 'decided',
     decision:
-      'You: build E too. Keeping F as the beginner version and building the full Bou Inania wall E as a new advanced tutorial.',
+      'You: build E too. F stays as the beginner version. For E I found no published drawing (I checked Brian Wichmann’s tiling database, which has five Bou Inania panels but not this one, and Sandy Kurt’s zellige study), and the photo is too rough to measure precisely, so I am asking you how to proceed (question at the top).',
     summary:
       'A sixteen-pointed star ringed by sixteen petals, rosettes touching on a square grid.',
     story: [
@@ -630,6 +630,23 @@ export interface Question {
  * matters given an earlier answer comes straight after it.
  */
 export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'design-e',
+    text: 'Design E has no published drawing, and the photo is too rough to measure precisely. Should I rebuild it as my best guess from the photo (marked unverified), or wait for a better source?',
+    choices: [
+      'Best guess from the photo',
+      'Wait: I will look for a drawing or a straight-on photo',
+      'Skip E for now',
+    ],
+    pictures: [
+      {
+        src: 'renders/sixteen-fold-rosette/designs-E-F-zoom.png',
+        caption:
+          'Left: the real Bou Inania wall close up (red: one rosette with its rings; yellow: a small eight-fold cluster where four rosettes meet). Right: our simpler Design F.',
+      },
+    ],
+    card: 'sixteen-fold-rosette',
+  },
   {
     id: 'design-c',
     text: 'Design C is built (left: our lines over Kurt’s drawing). Is the square repeat on the right acceptable, with its very small kite and star pieces?',
