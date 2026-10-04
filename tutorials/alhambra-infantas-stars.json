@@ -1,7 +1,7 @@
 {
   "format": 0,
   "id": "alhambra-infantas-stars",
-  "title": "Infantas notched stars",
+  "title": "Infantas plaster stars",
   "fold": 4,
   "style": "Nasrid",
   "level": "beginner",
@@ -10,7 +10,7 @@
       "source": "La Alhambra con regla y compás: el trazado de los diseños geométricos nazaríes (ALZADA 115, 2017)",
       "creator": "Manuel Martínez Vela",
       "url": "https://www.riarte.es/handle/20.500.12251/633",
-      "note": "The grid-and-diagonals base and the tracing of the alicatado from the Torre de las Infantas follow this article.",
+      "note": "The grid-and-diagonals base and the tracing of the plaster panel (yesería) of the Torre de las Infantas follow this article.",
       "steps": [1, 2, 3, 4, 5, 6]
     }
   ],
@@ -193,7 +193,7 @@
   },
   "pattern": {
     "cell": "tile",
-    "text": "Repeat the tile edge to edge, as in the tile panel of the Torre de las Infantas.",
+    "text": "Repeat the tile edge to edge, as in the carved plaster panel of the Torre de las Infantas.",
     "palette": "Fès tile",
     "colors": {"star": "a"}
   },

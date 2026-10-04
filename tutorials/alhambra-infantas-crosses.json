@@ -1,7 +1,7 @@
 {
   "format": 0,
-  "id": "alhambra-comares-bones",
-  "title": "Comares bones",
+  "id": "alhambra-infantas-crosses",
+  "title": "Infantas crosses",
   "fold": 4,
   "style": "Nasrid",
   "level": "beginner",
@@ -10,12 +10,12 @@
       "source": "La Alhambra con regla y compás: el trazado de los diseños geométricos nazaríes (ALZADA 115, 2017)",
       "creator": "Manuel Martínez Vela",
       "url": "https://www.riarte.es/handle/20.500.12251/633",
-      "note": "The grid-and-diagonals base and the tracing of the Comares panel known as “los huesos” follow this article.",
+      "note": "The grid-and-diagonals base and the tracing of the tile panel (alicatado) of the Torre de las Infantas follow this article.",
       "steps": [1, 2, 3, 4, 5, 6]
     }
   ],
   "given": {
-    "O": "The centre of one cross of four bones.",
+    "O": "The centre of one cross.",
     "A": "Any point to the right of O. The distance OA is one square of the grid."
   },
   "steps": [
@@ -137,7 +137,7 @@
     }
   ],
   "ink": {
-    "text": "Go over the lines of the design: each bone is a band of grid lines that turns along the diagonals, and four bones meet in a cross at the centre.",
+    "text": "Go over the lines of the design: bands of grid lines that turn along the diagonals, crossing in fours at the centre of each cross.",
     "paths": [
       {"through": ["Gm2_0", "Gm1_1"]},
       {"through": ["G0_1", "G1_2"]},
@@ -159,16 +159,16 @@
   },
   "pattern": {
     "cell": "tile",
-    "text": "Repeat the tile edge to edge. The bones lock together, each one shared between two crosses, as in the tile panel of the Hall of Comares.",
+    "text": "Repeat the tile edge to edge. Crosses and pinwheel shapes lock together, as in the tile panel of the Torre de las Infantas.",
     "palette": "Fès tile",
-    "colors": {"bone": "a", "ground": "ground"}
+    "colors": {"pinwheel": "ground", "cross": "a"}
   },
   "expect": {
     "note": "Golden values in grid squares (OA = one square), computed by the engine; the pieces fill the tile of 18 squares.",
     "pieceTypes": 2,
     "pieces": [
-      {"name": "ground", "vertices": 12, "area": 5, "perCell": 2},
-      {"name": "bone", "vertices": 12, "area": 4, "perCell": 2}
+      {"name": "pinwheel", "vertices": 12, "area": 5, "perCell": 2},
+      {"name": "cross", "vertices": 12, "area": 4, "perCell": 2}
     ],
     "cellArea": 18
   }

@@ -215,7 +215,7 @@ export const PATTERNS: readonly Pattern[] = [
       'Notched eight-pointed stars and crosses from a tile panel in the Hall of Comares, on the grid of eight-pointed stars.',
     story: [
       'This uses the article’s second base: the square grid plus an eight-pointed star at chosen grid points, its turned square found with a circle through the four diagonal grid corners. Our wall matches the tracing exactly.',
-      'Same source as the Comares bones. The article prints no photo of this panel, so I can only check against its tracing (drawing 1 in the article).',
+      'Same source as the Infantas crosses. The article prints no photo of this panel, so I can only check against its tracing (drawing 1 in the article).',
     ],
     pictures: [
       {
@@ -250,8 +250,8 @@ export const PATTERNS: readonly Pattern[] = [
     summary:
       'Crossing bands closing into twelve-sided pieces, from a second Comares panel, on the same star grid.',
     story: [
-      'Same star-grid base as Design J, with a larger repeat (every four squares diagonally). Our wall matches the tracing exactly.',
-      'Same source as the Comares bones. The article prints no photo of this panel, so I can only check against its tracing (drawing 2 in the article).',
+      'Same star-grid base as Design K, with a larger repeat (every four squares diagonally). Our wall matches the tracing exactly.',
+      'Same source as the Infantas crosses. The article prints no photo of this panel, so I can only check against its tracing (drawing 2 in the article).',
     ],
     pictures: [
       {
@@ -286,8 +286,8 @@ export const PATTERNS: readonly Pattern[] = [
     summary:
       'Stepped stars meeting at small crossed squares, from the tile panel of the Mexuar, on the same star grid.',
     story: [
-      'Same star-grid base as Designs J and K. Our wall matches the tracing exactly, including the small crossed squares.',
-      'Same source as the Comares bones. The article prints no photo of this panel, so I can only check against its tracing (drawing 3 in the article).',
+      'Same star-grid base as Designs K and L. Our wall matches the tracing exactly, including the small crossed squares.',
+      'Same source as the Infantas crosses. The article prints no photo of this panel, so I can only check against its tracing (drawing 3 in the article).',
     ],
     pictures: [
       {
@@ -316,13 +316,13 @@ export const PATTERNS: readonly Pattern[] = [
   },
   {
     id: 'alhambra-infantas-stars',
-    title: 'Infantas notched stars (new)',
+    title: 'Infantas plaster stars (new)',
     fold: 4,
     status: 'decide',
     summary:
-      'Notched four-pointed stars from a tile panel in the Torre de las Infantas, the second design of the Alhambra grid family.',
+      'Notched four-pointed stars from a carved plaster panel in the Torre de las Infantas, on the same grid as the Infantas crosses.',
     story: [
-      'Same source and same six opening steps as the Comares bones; only the inked lines differ. Our wall matches the article’s tracing exactly (first picture: our lines in red over the tracing in black).',
+      'Same source and same six opening steps as the Infantas crosses; only the inked lines differ. Our wall matches the article’s tracing exactly (first picture: our lines in red over the tracing in black).',
       'The article prints no photo of this panel, and the photos of the tower I found do not show its tiles, so I cannot check the tracing against the real wall myself.',
     ],
     pictures: [
@@ -346,33 +346,34 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
-    id: 'alhambra-comares-bones',
-    title: 'Comares bones (new)',
+    id: 'alhambra-infantas-crosses',
+    title: 'Infantas crosses (new)',
     fold: 4,
-    status: 'verified',
+    status: 'decide',
     summary:
-      'Interlocking “bones” from a tile panel in the Hall of Comares, the first of a family of Alhambra designs that all start from one square grid.',
+      'Crosses and pinwheel shapes from the tile panel of the Torre de las Infantas, the first design of the Alhambra grid family.',
     story: [
-      'From Manuel Martínez Vela’s article “La Alhambra con regla y compás”, which traces several Alhambra panels on a square grid with its diagonals, and prints a photo of this panel with the grid drawn over it. I read the tracing square by square, found how it repeats (every three squares diagonally, turning around the centre of each cross), and built the tutorial from that. Every line of our wall matches the article’s tracing, checked segment by segment.',
-      'This is the first design of the “many designs from one grid” family: the same six opening steps will serve the article’s other panels (Torre de las Infantas, more from Comares, the Mexuar, the Sala de los Reyes), which differ only in which grid lines are inked.',
+      'From Manuel Martínez Vela’s article “La Alhambra con regla y compás”, which traces several Alhambra panels on a square grid with its diagonals. Our wall matches the article’s tracing exactly (first picture).',
+      'Correction: earlier I called this “Comares bones” and marked it verified against the article’s photo of the Comares panel. Re-reading the article, the photo shows a different panel; this tracing is the Torre de las Infantas tile panel, which has no photo. Laying our lines on the Comares photo confirms they do not match (second picture). I am building the real Comares bones from that photo separately.',
     ],
     pictures: [
       {
-        src: 'renders/alhambra-comares-bones/compare-wall.png',
+        src: 'renders/alhambra-infantas-crosses/compare-wall.png',
         caption:
-          'Left: the real panel (photo with the article’s grid). Middle: the article’s tracing. Right: our wall at the same scale; they match line for line.',
+          'The Comares photo (left), the Infantas tracing (middle) and our wall (right): ours matches the tracing, not the photo.',
       },
       {
-        src: 'renders/alhambra-comares-bones/wall.png',
-        caption: 'Our wall, coloured by piece.',
+        src: 'renders/alhambra-infantas-crosses/overlay-photo.png',
+        caption:
+          'Our lines (red) on the Comares photo: they cut through its bone-shaped tiles, so it is a different design.',
       },
       {
-        src: 'renders/alhambra-comares-bones/step-05.png',
+        src: 'renders/alhambra-infantas-crosses/step-05.png',
         caption:
           'Step 5: the grid with both diagonals of every square, the base the whole family shares.',
       },
     ],
-    asks: ['A quick look in the player: are the six grid steps clear?'],
+    asks: [],
     sources: [
       {
         label:
@@ -620,17 +621,18 @@ export const QUESTIONS: readonly Question[] = [
   },
   {
     id: 'designs-i-l',
-    text: 'Designs I–L match published tracings of Alhambra panels line for line, but I found no photos of the real tiles. Keep them on the strength of the tracings?',
+    text: 'Designs I–M match published tracings of Alhambra panels line for line, but I found no photos of the real tiles. Keep them on the strength of the tracings?',
     choices: ['Keep all four', 'Only with photos', 'Remove them'],
     pictures: [
       {
-        src: 'renders/alhambra-comares-stars/designs-I-L.png',
+        src: 'renders/alhambra-comares-stars/designs-I-M.png',
         caption:
           'Top: the article’s tracings. Bottom: our walls. Each card below shows ours drawn in red over the tracing.',
       },
     ],
     card: 'alhambra-comares-stars',
     also: [
+      'alhambra-infantas-crosses',
       'alhambra-infantas-stars',
       'alhambra-comares-lattice',
       'alhambra-mexuar-stars',

@@ -39,3 +39,4 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - `perf.spec.ts` times a 3,000-segment arrangement against 300 ms. While several agents run tests at once it can take slightly longer; rerun it alone before treating it as a regression.
 - Judge a reading by overlaying it in red on the source in black, never by putting two drawings side by side: side by side, a correct reading looked mirrored twice.
 - Read grid drawings at half-square resolution: Alhambra grid designs often end lines at the centre of a square, which a whole-square reader misses.
+- Read the source's captions for every picture before matching a tracing to a photo. The ALZADA article prints the Comares "huesos" photo next to two Torre de las Infantas tracings; I assumed the first tracing was of the photo and wrongly marked it verified. Overlay our lines on the photo itself before saying a design matches it.
