@@ -9,3 +9,12 @@ export {
   overlap,
 } from './lib/intersect.js';
 export * from './lib/construct.js';
+export {
+  evaluate,
+  pointInPolygon,
+  pointOf,
+  TutorialError,
+  type Geometry,
+  type Scene,
+  type SceneElement,
+} from './lib/evaluate.js';

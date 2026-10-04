@@ -17,5 +17,8 @@
   },
   "nx": {
     "name": "engine"
+  },
+  "devDependencies": {
+    "@tastir/schema": "workspace:*"
   }
 }

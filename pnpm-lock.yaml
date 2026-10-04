@@ -123,7 +123,11 @@ importers:
 
   apps/player: {}
 
-  packages/engine: {}
+  packages/engine:
+    devDependencies:
+      '@tastir/schema':
+        specifier: workspace:*
+        version: link:../schema
 
   packages/schema:
     dependencies:
