@@ -28,7 +28,9 @@ def name(prefix, k):
 
 def build(spec):
     R = spec["radius"]  # grid lines run from -R to R either way
-    segs = [tuple(map(tuple, s)) for s in spec["segments"]]
+    # Points are whole grid points, or centres of squares (both halves).
+    F = lambda v: Fraction(v).limit_denominator(2)
+    segs = [tuple((F(x), F(y)) for x, y in s) for s in spec["segments"]]
     steps = []
 
     steps.append({
@@ -93,7 +95,6 @@ def build(spec):
     H = {k: ("h" if k == 0 else name("H", k)) for k in range(-R, R + 1)}
 
     # Step 5: diagonals x - y = k (through X[k], parallel to d1) and x + y = k.
-    used_minus = {x - y for s in segs for (x, y) in s if s[0][0] != s[1][0] and s[0][1] != s[1][1]}
     create = {"d1": {"line": {"through": "O", "bisects": ["A", "O", Y[1]]}},
               "d2": {"line": {"through": "O", "bisects": [Y[1], "O", X[-1]]}}}
     for k in range(-2 * R, 2 * R + 1):
@@ -110,19 +111,20 @@ def build(spec):
     Dp = {k: ("d2" if k == 0 else name("Dp", k)) for k in range(-R, R + 1)}
 
     # Grid points the ink needs, as crossings of a vertical and a horizontal.
+    def num(v):
+        return name("", int(v)) if v.denominator == 1 else name("", int(v * 2)) + "h"
+
     def gp(p):
         x, y = p
-        return f"G{name('', x)}_{name('', y)}"
+        return f"G{num(x)}_{num(y)}"
 
-    pts = sorted({p for s in segs for p in s} | {tuple(c) for c in spec["tile"]})
-    create = {gp(p): {"point": {"meet": [V[p[0]], H[p[1]]]}} for p in pts if p != (0, 0)}
-    tile = [("O" if tuple(c) == (0, 0) else gp(tuple(c))) for c in spec["tile"]]
-    create["tile"] = {"polygon": tile}
-    steps.append({
-        "id": 6,
-        "text": spec.get("tile_text", "Mark the tile: the square whose corners are the centres of the four neighbouring repeats. The pattern inside it repeats edge to edge."),
-        "create": create, "animate": "ruler",
-    })
+    def meet(p):
+        x, y = p
+        if x.denominator == 1 and y.denominator == 1:
+            return [V[int(x)], H[int(y)]]
+        if x.denominator == 2 and y.denominator == 2:
+            return [Dm[int(x - y)], Dp[int(x + y)]]
+        raise SystemExit(f"{p} is neither a grid point nor the centre of a square")
 
     # Merge collinear unit segments into maximal runs along each line.
     def line_of(a, b):
@@ -130,12 +132,12 @@ def build(spec):
             return ("H", a[1])
         if a[0] == b[0]:
             return ("V", a[0])
-        return ("Dm", a[0] - a[1]) if (b[0] - a[0]) == (b[1] - a[1]) else ("Dp", a[0] + a[1])
+        return ("Dm", int(a[0] - a[1])) if (b[0] - a[0]) == (b[1] - a[1]) else ("Dp", int(a[0] + a[1]))
 
     by_line = {}
     for a, b in segs:
         by_line.setdefault(line_of(a, b), []).append((a, b))
-    paths = []
+    ends = []
     for key, items in sorted(by_line.items()):
         kind = key[0]
         t = (lambda p: p[0]) if kind in ("H", "Dm", "Dp") else (lambda p: p[1])
@@ -147,8 +149,20 @@ def build(spec):
             else:
                 runs.append([a, b])
         for r in runs:
-            paths.append({"through": [("O" if p == (0, 0) else gp(p)) for p in (r[0], r[-1])]})
+            ends.append((r[0], r[-1]))
 
+    tile_pts = [tuple(F(v) for v in c) for c in spec["tile"]]
+    pts = sorted({p for e in ends for p in e} | set(tile_pts))
+    create = {gp(p): {"point": {"meet": meet(p)}} for p in pts if p != (0, 0)}
+    tile = [("O" if c == (0, 0) else gp(c)) for c in tile_pts]
+    create["tile"] = {"polygon": tile}
+    steps.append({
+        "id": 6,
+        "text": spec.get("tile_text", "Mark the tile: the square whose corners are the centres of the four neighbouring repeats. The pattern inside it repeats edge to edge."),
+        "create": create, "animate": "ruler",
+    })
+
+    paths = [{"through": [("O" if p == (0, 0) else gp(p)) for p in e]} for e in ends]
     return {
         "format": 0, "id": spec["id"], "title": spec["title"], "fold": spec.get("fold", 4),
         "style": spec["style"], "level": spec["level"], "credits": spec["credits"],

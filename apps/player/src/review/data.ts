@@ -207,6 +207,37 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-infantas-stars',
+    title: 'Infantas notched stars (new)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Notched four-pointed stars from a tile panel in the Torre de las Infantas, the second design of the Alhambra grid family.',
+    story: [
+      'Same source and same six opening steps as the Comares bones; only the inked lines differ. Our wall matches the article’s tracing exactly (first picture: our lines in red over the tracing in black).',
+      'The article prints no photo of this panel, and the photos of the tower I found do not show its tiles, so I cannot check the tracing against the real wall myself.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-infantas-stars/overlay-ink.png',
+        caption:
+          'Our lines (red) over the article’s tracing (black): an exact match.',
+      },
+      {
+        src: 'renders/alhambra-infantas-stars/wall.png',
+        caption: 'Our wall: one notched star shape, four per tile.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Martínez Vela: “La Alhambra con regla y compás” (ALZADA 115, 2017, PDF)',
+        url: 'https://www.riarte.es/handle/20.500.12251/633',
+      },
+    ],
+  },
+  {
     id: 'alhambra-comares-bones',
     title: 'Comares bones (new)',
     fold: 4,
@@ -476,6 +507,18 @@ export const QUESTIONS: readonly Question[] = [
       },
     ],
     card: 'sixteen-fold-rosette',
+  },
+  {
+    id: 'design-i',
+    text: 'Design I matches a published tracing of an Alhambra panel, but I found no photo of the real tiles. Keep it on the strength of the tracing?',
+    choices: ['Keep it', 'Only with a photo', 'Remove it'],
+    pictures: [
+      {
+        src: 'renders/alhambra-infantas-stars/designs-I.png',
+        caption: 'The article’s tracing (left) and our Design I (right)',
+      },
+    ],
+    card: 'alhambra-infantas-stars',
   },
   {
     id: 'design-h',

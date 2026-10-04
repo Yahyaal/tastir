@@ -37,3 +37,5 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 
 - Agent worktrees live in `.claude/worktrees/` inside the repo. Without `.nxignore`, Nx picks them up as extra projects, the main test run fails with circular project references, and `pnpm typecheck` adds them to the root `tsconfig.json`. `.nxignore` now excludes `.claude/`.
 - `perf.spec.ts` times a 3,000-segment arrangement against 300 ms. While several agents run tests at once it can take slightly longer; rerun it alone before treating it as a regression.
+- Judge a reading by overlaying it in red on the source in black, never by putting two drawings side by side: side by side, a correct reading looked mirrored twice.
+- Read grid drawings at half-square resolution: Alhambra grid designs often end lines at the centre of a square, which a whole-square reader misses.
