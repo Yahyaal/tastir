@@ -219,6 +219,8 @@ export const ExpectedPiece = z.strictObject({
   vertices: z.int().min(3),
   area: z.number().positive(),
   perCell: z.int().positive(),
+  /** A deliberately small or thin piece, which the sliver check accepts. */
+  small: z.boolean().optional(),
 });
 
 export const Expect = z.strictObject({

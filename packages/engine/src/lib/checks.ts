@@ -119,7 +119,9 @@ export function hasSymmetry(
       }
     }
   }
-  const near = pieces.filter((p) => distance(p.at, centre) <= radius);
+  // Strictly inside: pieces centred on the circle itself (radius 1 is the
+  // main circle) are the joins between repeats, which follow the tile.
+  const near = pieces.filter((p) => distance(p.at, centre) < radius - 1e-9);
   const tol = 1e-6;
   /** Whether some piece of the type has exactly these corners. */
   const isPiece = (corners: readonly Vec[], type: number) =>

@@ -63,6 +63,10 @@ Rules can be combined; all must hold.
 
 `text` is what the learner reads. `highlight` lists earlier elements the step depends on, which the player flashes before drawing. `animate` is `compass`, `ruler` or `fade`.
 
+## Small pieces
+
+A piece in `expect.pieces` may carry `"small": true` when it is small or thin on purpose, as in fine zellige. The golden test rejects every other sliver, so the flag only covers pieces the author has named and looked at.
+
 ## Chiral patterns
 
 `"chiral": true` says the pattern turns into itself by 360°/`fold` but has no mirror symmetry, like a pinwheel. The golden test then checks the rotation only, and also checks that the mirror really is missing, so the flag cannot hide a broken mirror-symmetric pattern.

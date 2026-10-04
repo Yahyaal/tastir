@@ -56,7 +56,14 @@ describe.each(files)('%s', (file) => {
   });
 
   it('has no slivers, and its pieces fill the tile', () => {
-    expect(pattern.types.filter((t) => t.sliver)).toEqual([]);
+    // A tutorial may declare a piece small on purpose (fine zellige);
+    // any other sliver means the construction or the ink is wrong.
+    const small = new Set(
+      tutorial.expect.pieces.filter((p) => p.small).map((p) => p.name),
+    );
+    expect(
+      pattern.types.filter((t) => t.sliver && !small.has(t.name ?? '')),
+    ).toEqual([]);
     const total = pattern.types.reduce((sum, t) => sum + t.area * t.perCell, 0);
     expect(total).toBeCloseTo(pattern.cell.area, 9);
   });

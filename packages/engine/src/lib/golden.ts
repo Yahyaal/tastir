@@ -62,7 +62,7 @@ export function expectedGolden(tutorial: Tutorial): Golden {
   return {
     ...rest,
     pieces: rest.pieces
-      .map((p) => ({ ...p, area: round(p.area) }))
+      .map(({ small: _small, ...p }) => ({ ...p, area: round(p.area) }))
       .sort((a, b) => b.area - a.area),
   };
 }

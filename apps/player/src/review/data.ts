@@ -164,12 +164,44 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'kurt-eight-fold-zellige',
+    title: 'Eight-fold zellige wheel (Design C, new)',
+    fold: 8,
+    status: 'decide',
+    summary:
+      'Sandy Kurt’s eight-fold zellige wheel: octagons, bands and a star in the middle, built with her nineteen steps.',
+    story: [
+      'Built as you asked (keep both C and D). Her drawings showed that two values in our old notes were guessed wrong; with the right values, every line of her finished drawing lies on her construction, and our ink matches it (first picture, ours in red).',
+      'Her tutorial shows one wheel, not a wall. The wheel’s large octagons reach exactly to the edge of a 2 × 2 square, so I repeat it on that square (second picture). That repeat is mine, not hers.',
+      'The wheel is very fine, so two pieces are small by our rules: the orange kites inside the large octagons, and the thin blue star where wheels meet. Our test now accepts small pieces only when a tutorial names them as small on purpose.',
+    ],
+    pictures: [
+      {
+        src: 'renders/kurt-eight-fold-zellige/design-C.png',
+        caption:
+          'Left: our ink (red) over Kurt’s finished drawing. Right: the wheel repeated on a 2 × 2 square.',
+      },
+      {
+        src: 'renders/kurt-eight-fold-zellige/step-12.png',
+        caption:
+          'One of the steps: the circles around the ring centres cut the new lines, and the vertical bands are ruled through those points.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Sandy Kurt: free tutorials page (“8fold zellige” PDF)',
+        url: 'https://sandykurt.com/free-tutorials',
+      },
+    ],
+  },
+  {
     id: 'eight-fold-zellige',
     title: 'Eight-fold rosette (existed before tonight)',
     fold: 8,
     status: 'decided',
     decision:
-      'You: keep both. Keeping our Design D as it is (fixing the notes that wrongly tied it to Sandy Kurt) and building her Design C as a new tutorial, credited to her.',
+      'You: keep both. Done: Design D stays as it is (the notes no longer tie it to Sandy Kurt), and her Design C is built as “Eight-fold zellige wheel” (see its card and the question at the top).',
     summary:
       'An eight-pointed star ringed by eight petals, with an octagon inside a second star where four tiles meet.',
     story: [
@@ -597,4 +629,22 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'design-c',
+    text: 'Design C is built (left: our lines over Kurt’s drawing). Is the square repeat on the right acceptable, with its very small kite and star pieces?',
+    choices: [
+      'Yes, keep it',
+      'Keep the wheel, try another repeat',
+      'Too fine, simplify it',
+    ],
+    pictures: [
+      {
+        src: 'renders/kurt-eight-fold-zellige/design-C.png',
+        caption:
+          'Left: Design C over Kurt’s drawing. Right: repeated on a 2 × 2 square.',
+      },
+    ],
+    card: 'kurt-eight-fold-zellige',
+  },
+];
