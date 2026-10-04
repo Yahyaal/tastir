@@ -207,6 +207,42 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-comares-bones',
+    title: 'Comares bones (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'Interlocking “bones” from a tile panel in the Hall of Comares, the first of a family of Alhambra designs that all start from one square grid.',
+    story: [
+      'From Manuel Martínez Vela’s article “La Alhambra con regla y compás”, which traces several Alhambra panels on a square grid with its diagonals, and prints a photo of this panel with the grid drawn over it. I read the tracing square by square, found how it repeats (every three squares diagonally, turning around the centre of each cross), and built the tutorial from that. Every line of our wall matches the article’s tracing, checked segment by segment.',
+      'This is the first design of the “many designs from one grid” family: the same six opening steps will serve the article’s other panels (Torre de las Infantas, more from Comares, the Mexuar, the Sala de los Reyes), which differ only in which grid lines are inked.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-bones/compare-wall.png',
+        caption:
+          'Left: the real panel (photo with the article’s grid). Middle: the article’s tracing. Right: our wall at the same scale; they match line for line.',
+      },
+      {
+        src: 'renders/alhambra-comares-bones/wall.png',
+        caption: 'Our wall, coloured by piece.',
+      },
+      {
+        src: 'renders/alhambra-comares-bones/step-05.png',
+        caption:
+          'Step 5: the grid with both diagonals of every square, the base the whole family shares.',
+      },
+    ],
+    asks: ['A quick look in the player: are the six grid steps clear?'],
+    sources: [
+      {
+        label:
+          'Martínez Vela: “La Alhambra con regla y compás” (ALZADA 115, 2017, PDF)',
+        url: 'https://www.riarte.es/handle/20.500.12251/633',
+      },
+    ],
+  },
+  {
     id: 'six-fold-snowflake',
     title: 'Six-fold snowflake',
     fold: 6,
