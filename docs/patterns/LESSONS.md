@@ -21,6 +21,10 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - A source's suggested tile can be wrong even when its drawing is right. The ATM handout repeats the large hexagon of the star-and-hexagons pattern, which gives a different wall from the photo. Always compare the wall with a photo of the real pattern, not only with the source's drawing.
 - Before building a tile, work out the expected piece areas by hand (star, hexagon, rhombus) and check that they add up to the cell area; when `pnpm review` prints the same numbers, the construction is right.
 
+- When a source's final trace is intricate, sample its image along every construction segment between crossings and keep the ones drawn black (see the hammerhead log). Then overlay our ink on the source image to confirm; it is faster and surer than reading the drawing by eye.
+- When a source's note and its written step disagree, measure the source drawing.
+- One motif can tile several ways. Check which way the photo uses by the direction from one star to its neighbours, then pick the cell that gives that lattice.
+
 ## Tooling
 
 - Agent worktrees live in `.claude/worktrees/` inside the repo. Without `.nxignore`, Nx picks them up as extra projects, the main test run fails with circular project references, and `pnpm typecheck` adds them to the root `tsconfig.json`. `.nxignore` now excludes `.claude/`.

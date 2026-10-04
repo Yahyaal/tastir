@@ -1,0 +1,175 @@
+{
+  "format": 0,
+  "id": "six-fold-hammerhead",
+  "title": "Six-fold hammerheads",
+  "fold": 6,
+  "style": "Mamluk",
+  "level": "intermediate",
+  "credits": [
+    {
+      "source": "Islamic Geometry: Six-Fold Hammerhead Pattern",
+      "creator": "Mamoot (mamootdiy.com)",
+      "url": "https://mamootdiy.com/2020/12/19/islamic-geometry-six-fold-hammerhead-pattern/",
+      "note": "The two crossing hexagons, the hammerhead lines joining their crossings, the inner star from the petal arcs, and the lines to ink follow this tutorial.",
+      "steps": [5, 6, 7]
+    }
+  ],
+  "given": {
+    "O": "The centre of the star.",
+    "A": "Any point to the right of O. The distance OA is the radius of the first circle, and the unit for every length."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal line, put the compass point on it and draw a circle. Keep the compass at this opening until the end.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Put the compass point where the circle crosses the line on the right and draw a circle through the centre. Do the same on the left. The two new circles touch at the centre.",
+      "create": {
+        "E": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
+        "W": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "cE": {"circle": {"centre": "E", "radiusOf": "c"}},
+        "cW": {"circle": {"centre": "W", "radiusOf": "c"}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "The two new circles cross the first one at four more points. Draw a circle of the same size around each of them. Six circles now ring the first, and their crossings divide it into six.",
+      "create": {
+        "P60": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60}}},
+        "P300": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300}}},
+        "P120": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120}}},
+        "P240": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240}}},
+        "c60": {"circle": {"centre": "P60", "radiusOf": "c"}},
+        "c120": {"circle": {"centre": "P120", "radiusOf": "c"}},
+        "c240": {"circle": {"centre": "P240", "radiusOf": "c"}},
+        "c300": {"circle": {"centre": "P300", "radiusOf": "c"}}
+      },
+      "highlight": ["cE", "cW"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Outside the first circle, each pair of neighbouring circles makes a large petal. Rule a line through the centre and the tips of two opposite petals; do it three times. Together with the tips of the small petals inside, these lines divide the circle into twelve.",
+      "create": {
+        "X30": {"point": {"meet": ["cE", "c60"], "pick": {"farthest": "O"}}},
+        "X90": {"point": {"meet": ["c60", "c120"], "pick": {"farthest": "O"}}},
+        "X150": {"point": {"meet": ["c120", "cW"], "pick": {"farthest": "O"}}},
+        "m30": {"line": {"through": ["O", "X30"]}},
+        "m90": {"line": {"through": ["O", "X90"]}},
+        "m150": {"line": {"through": ["O", "X150"]}}
+      },
+      "highlight": ["cE", "c60", "c120", "cW"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Join the six points where the three new lines cut the circle to draw a hexagon standing on a corner. Then join the six tips of the small petals to draw a second hexagon lying on its side; this one is the tile that will repeat. The two hexagons cross at twelve points.",
+      "create": {
+        "D30": {"point": {"meet": ["c", "m30"], "pick": {"angle": 30}}},
+        "D90": {"point": {"meet": ["c", "m90"], "pick": {"angle": 90}}},
+        "D150": {"point": {"meet": ["c", "m150"], "pick": {"angle": 150}}},
+        "D210": {"point": {"meet": ["c", "m30"], "pick": {"angle": 210}}},
+        "D270": {"point": {"meet": ["c", "m90"], "pick": {"angle": 270}}},
+        "D330": {"point": {"meet": ["c", "m150"], "pick": {"angle": 330}}},
+        "hex": {"polygon": ["D30", "D90", "D150", "D210", "D270", "D330"]},
+        "flat": {"polygon": ["E", "P60", "P120", "W", "P240", "P300"]},
+        "X": {"points": {"meet": ["hex", "flat"], "pick": {"all": "byAngle"}}}
+      },
+      "highlight": ["m30", "m90", "m150", "E", "P60", "P120", "W", "P240", "P300"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "From each crossing rule a line to the crossing three places further round, skipping two, so that the line runs across the hexagons parallel to one of their sides. Six such lines make a large six-pointed outline: these are the hammerhead lines.",
+      "create": {
+        "ch0": {"line": {"through": ["X.2", "X.11"]}},
+        "ch60": {"line": {"through": ["X.4", "X.1"]}},
+        "ch120": {"line": {"through": ["X.6", "X.3"]}},
+        "ch180": {"line": {"through": ["X.8", "X.5"]}},
+        "ch240": {"line": {"through": ["X.10", "X.7"]}},
+        "ch300": {"line": {"through": ["X.12", "X.9"]}}
+      },
+      "highlight": ["X"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Each hammerhead line crosses the arcs of the small petals near the centre. Join these crossings across the middle with lines parallel to the hammerhead lines, three pairs in all. They draw a small star, and around its centre a tiny hexagon.",
+      "create": {
+        "Y0a": {"point": {"meet": ["ch0", "c300"], "pick": {"nearest": "O"}}},
+        "Y0b": {"point": {"meet": ["ch0", "c60"], "pick": {"nearest": "O"}}},
+        "Y60a": {"point": {"meet": ["ch60", "cE"], "pick": {"nearest": "O"}}},
+        "Y60b": {"point": {"meet": ["ch60", "c120"], "pick": {"nearest": "O"}}},
+        "Y120a": {"point": {"meet": ["ch120", "c60"], "pick": {"nearest": "O"}}},
+        "Y120b": {"point": {"meet": ["ch120", "cW"], "pick": {"nearest": "O"}}},
+        "Y180a": {"point": {"meet": ["ch180", "c120"], "pick": {"nearest": "O"}}},
+        "Y180b": {"point": {"meet": ["ch180", "c240"], "pick": {"nearest": "O"}}},
+        "Y240a": {"point": {"meet": ["ch240", "cW"], "pick": {"nearest": "O"}}},
+        "Y240b": {"point": {"meet": ["ch240", "c300"], "pick": {"nearest": "O"}}},
+        "Y300a": {"point": {"meet": ["ch300", "c240"], "pick": {"nearest": "O"}}},
+        "Y300b": {"point": {"meet": ["ch300", "cE"], "pick": {"nearest": "O"}}},
+        "s30": {"line": {"through": ["Y300a", "Y120b"]}},
+        "s90": {"line": {"through": ["Y0a", "Y180b"]}},
+        "s150": {"line": {"through": ["Y60a", "Y240b"]}},
+        "s210": {"line": {"through": ["Y120a", "Y300b"]}},
+        "s270": {"line": {"through": ["Y180a", "Y0b"]}},
+        "s330": {"line": {"through": ["Y240a", "Y60b"]}},
+        "V0": {"point": {"meet": ["s30", "s330"]}},
+        "V60": {"point": {"meet": ["s90", "s30"]}},
+        "V120": {"point": {"meet": ["s150", "s90"]}},
+        "V180": {"point": {"meet": ["s210", "s150"]}},
+        "V240": {"point": {"meet": ["s270", "s210"]}},
+        "V300": {"point": {"meet": ["s330", "s270"]}}
+      },
+      "highlight": ["ch0", "ch60", "ch120", "ch180", "ch240", "ch300"],
+      "animate": "ruler"
+    }
+  ],
+  "ink": {
+    "text": "Go over the middle of each side of the standing hexagon, between its two crossings. Then follow each hammerhead line in from its crossing until it meets the small star, and turn along the star's line to the tiny hexagon. You get a small star held by six hammerheads.",
+    "paths": [
+      {"through": ["X.12", "X.1"]},
+      {"through": ["X.2", "Y0a", "V60"]},
+      {"through": ["X.11", "Y0b", "V300"]},
+      {"through": ["X.2", "X.3"]},
+      {"through": ["X.4", "Y60a", "V120"]},
+      {"through": ["X.1", "Y60b", "V0"]},
+      {"through": ["X.4", "X.5"]},
+      {"through": ["X.6", "Y120a", "V180"]},
+      {"through": ["X.3", "Y120b", "V60"]},
+      {"through": ["X.6", "X.7"]},
+      {"through": ["X.8", "Y180a", "V240"]},
+      {"through": ["X.5", "Y180b", "V120"]},
+      {"through": ["X.8", "X.9"]},
+      {"through": ["X.10", "Y240a", "V300"]},
+      {"through": ["X.7", "Y240b", "V180"]},
+      {"through": ["X.10", "X.11"]},
+      {"through": ["X.12", "Y300a", "V0"]},
+      {"through": ["X.9", "Y300b", "V240"]}
+    ]
+  },
+  "pattern": {
+    "cell": "flat",
+    "text": "Repeat the hexagon lying on its side, side to side. The middles of the standing hexagon's sides line up with the next tiles' hammerhead lines into long straight lines, and between them new diamonds, triangles, kites and rectangles appear.",
+    "palette": "Fès tile",
+    "colors": {"hammerhead": "a", "star": "b", "kite": "ground", "triangle": "c", "rhombus": "ground"}
+  },
+  "expect": {
+    "note": "Golden values, in units of OA, computed by the engine and checked for six-fold symmetry, no slivers, and pieces that exactly fill the flat hexagon of area 3√3/2.",
+    "pieceTypes": 5,
+    "pieces": [
+      {"name": "hammerhead", "vertices": 9, "area": 0.25215, "perCell": 6},
+      {"name": "star", "vertices": 12, "area": 0.10818, "perCell": 1},
+      {"name": "kite", "vertices": 4, "area": 0.10065, "perCell": 6},
+      {"name": "triangle", "vertices": 3, "area": 0.09327, "perCell": 2},
+      {"name": "rhombus", "vertices": 4, "area": 0.06218, "perCell": 3}
+    ],
+    "cellArea": 2.59808
+  }
+}
