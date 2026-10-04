@@ -1,7 +1,15 @@
 // The golden test: every tutorial in tutorials/ is evaluated, inked and cut
 // into pieces, and the result must match the tutorial's expect block. An
-// engine change that alters any tutorial's pieces fails here.
-import { hasSymmetry, strokesOffCrossings } from './lib/checks.js';
+// engine change that alters any tutorial's pieces fails here. Each tutorial
+// is also checked to build step by step, to ink only along lines the
+// construction drew and between its crossings, to keep its symmetry, and
+// to have no pieces too thin to cut.
+import {
+  firstFailingStep,
+  hasSymmetry,
+  strokesOffConstruction,
+  strokesOffCrossings,
+} from './lib/checks.js';
 import { evaluate } from './lib/evaluate.js';
 import { expectedGolden, goldenOf } from './lib/golden.js';
 import { computePattern } from './lib/pieces.js';
@@ -15,8 +23,17 @@ it('finds the tutorials', () => {
 
 describe.each(files)('%s', (file) => {
   const tutorial = loadTutorial(file);
+
+  it('builds every step, with no ambiguous or impossible reference', () => {
+    expect(firstFailingStep(tutorial)).toBeUndefined();
+  });
+
   const scene = evaluate(tutorial);
   const pattern = computePattern(scene, tutorial);
+
+  it('inks only along lines and polygon sides of the construction', () => {
+    expect(strokesOffConstruction(scene, pattern.ink)).toEqual([]);
+  });
 
   it('matches its expect block', () => {
     expect(goldenOf(tutorial, scene, pattern)).toEqual(

@@ -32,7 +32,9 @@ export {
 export { expectedGolden, goldenOf, type Golden } from './lib/golden.js';
 export {
   constructionCrossings,
+  firstFailingStep,
   hasSymmetry,
+  strokesOffConstruction,
   strokesOffCrossings,
 } from './lib/checks.js';
 export {

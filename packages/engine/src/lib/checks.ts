@@ -1,9 +1,52 @@
-import type { Scene } from './evaluate.js';
+import type { Tutorial } from '@tastir/schema';
+import { distanceToSegment, evaluate, type Scene } from './evaluate.js';
+import type { InkStroke } from './ink.js';
 import { intersect } from './intersect.js';
 import type { Pattern } from './pieces.js';
-import type { Curve } from './shapes.js';
+import { project, type Curve } from './shapes.js';
 import { mergePoints } from './tolerance.js';
 import { distance, rotate, type Vec } from './vec.js';
+
+/**
+ * The first step that cannot be built, evaluating the tutorial one step at
+ * a time so the message names the step where an ambiguous, missing or
+ * impossible reference first appears. Undefined when every step builds.
+ */
+export function firstFailingStep(tutorial: Tutorial): string | undefined {
+  for (let n = 1; n <= tutorial.steps.length; n++) {
+    try {
+      evaluate({ ...tutorial, steps: tutorial.steps.slice(0, n) });
+    } catch (e) {
+      return e instanceof Error ? e.message : String(e);
+    }
+  }
+  return undefined;
+}
+
+/**
+ * The ink strokes that lie on no line or polygon side of the construction.
+ * Ink is a choice among lines already drawn, so a stroke off them inks a
+ * line the learner never made.
+ */
+export function strokesOffConstruction(
+  scene: Scene,
+  ink: readonly InkStroke[],
+): string[] {
+  const { eps } = scene.tol;
+  const elements = [...scene.elements.values()];
+  const carried = ({ segment: { a, b } }: InkStroke) =>
+    elements.some(({ geometry: g }) => {
+      if (g.kind === 'line')
+        return [a, b].every((p) => distance(p, project(p, g.line)) <= eps);
+      if (g.kind === 'polygon')
+        return g.sides.some(
+          (s) =>
+            distanceToSegment(a, s) <= eps && distanceToSegment(b, s) <= eps,
+        );
+      return false;
+    });
+  return ink.filter((s) => !carried(s)).map((s) => `${s.from}–${s.to}`);
+}
 
 /** Every line, circle and polygon side the construction draws. */
 function constructionCurves(scene: Scene): Curve[] {
