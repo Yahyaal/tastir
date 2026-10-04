@@ -131,6 +131,35 @@ describe('errors name the step and the element', () => {
     );
   });
 
+  it('reports touch when every target is a line', () => {
+    const e = errorOf(
+      withStep({
+        bad: {
+          circle: { centre: 'k.2', tangentTo: ['v', 'd1'], touch: 'far' },
+        },
+      }),
+    );
+    expect(e.message).toBe(
+      'Step 7, element "bad": "touch" chooses a side of a circle, but every target is a line',
+    );
+  });
+
+  it('touches the near or far side of a circle', () => {
+    const scene = evaluate(
+      withStep({
+        inner: { circle: { centre: 'k.1', tangentTo: ['c'], touch: 'near' } },
+        outer: { circle: { centre: 'k.1', tangentTo: ['c'], touch: 'far' } },
+      }),
+    );
+    const radius = (name: string) => {
+      const g = scene.elements.get(name)?.geometry;
+      return g?.kind === 'circle' ? g.circle.radius : NaN;
+    };
+    const d = Math.sqrt(2 - Math.SQRT2);
+    expect(radius('inner')).toBeCloseTo(1 - d, 12);
+    expect(radius('outer')).toBeCloseTo(1 + d, 12);
+  });
+
   it('reports a reference of the wrong kind', () => {
     const e = errorOf(
       withElement(2, 'v', { line: { through: 'O', perpendicularTo: 'c' } }),

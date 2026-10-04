@@ -165,6 +165,23 @@ describe('repeat', () => {
   });
 });
 
+describe('circles', () => {
+  it('accepts touch near or far on a tangent circle, and nothing else', () => {
+    const ok = variant((t) => {
+      t.steps[5].create.r = {
+        circle: { centre: 'O', tangentTo: ['c'], touch: 'far' },
+      };
+    });
+    expect(problems(ok)).toEqual([]);
+    const bad = variant((t) => {
+      t.steps[5].create.r = {
+        circle: { centre: 'O', tangentTo: ['c'], touch: 'outside' },
+      };
+    });
+    expect(problems(bad).join('\n')).toContain('touch?');
+  });
+});
+
 describe('pick', () => {
   it('rejects an empty pick', () => {
     const input = variant((t) => {

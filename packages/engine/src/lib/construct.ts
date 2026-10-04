@@ -69,7 +69,19 @@ function circleWithRadius(centre: Vec, radius: number, tol: Tolerance) {
 }
 
 /** Every radius at which a circle about `centre` just touches `target`. */
-function touchingRadii(centre: Vec, target: Line | Circle, tol: Tolerance) {
+/**
+ * Which side of a target circle the new circle touches: `near` is the
+ * side facing the centre (radius |d − R|), `far` is the opposite side, so
+ * the new circle goes round and encloses the target (radius d + R).
+ */
+export type Touch = 'near' | 'far';
+
+function touchingRadii(
+  centre: Vec,
+  target: Line | Circle,
+  tol: Tolerance,
+  touch?: Touch,
+) {
   if (target.kind === 'line') {
     const r = distance(centre, project(centre, target));
     if (r <= tol.eps) throw new GeometryError('the centre lies on the line');
@@ -77,27 +89,30 @@ function touchingRadii(centre: Vec, target: Line | Circle, tol: Tolerance) {
   }
   const d = distance(centre, target.centre);
   if (d <= tol.eps) return [target.radius];
-  // Touching from outside (or from inside when the centre is within the
-  // target), and enclosing it.
-  return [Math.abs(d - target.radius), d + target.radius].filter(
-    (r) => r > tol.eps,
-  );
+  const near = Math.abs(d - target.radius);
+  const far = d + target.radius;
+  const radii =
+    touch === 'near' ? [near] : touch === 'far' ? [far] : [near, far];
+  return radii.filter((r) => r > tol.eps);
 }
 
 /**
  * The circle about `centre` that just touches every target. It is an error
- * when no single radius touches all of them, or when more than one does.
+ * when no single radius touches all of them, or when more than one does;
+ * `touch` chooses the side of every target circle and so removes the
+ * second kind of error.
  */
 export function circleTangentTo(
   centre: Vec,
   targets: readonly (Line | Circle)[],
   tol: Tolerance,
+  touch?: Touch,
 ): Circle {
   if (targets.length === 0) throw new GeometryError('nothing to touch');
-  let radii = touchingRadii(centre, targets[0] as Line | Circle, tol);
+  let radii = touchingRadii(centre, targets[0] as Line | Circle, tol, touch);
   const seen = [...radii];
   for (const target of targets.slice(1)) {
-    const next = touchingRadii(centre, target, tol);
+    const next = touchingRadii(centre, target, tol, touch);
     seen.push(...next);
     radii = radii.filter((r) => next.some((s) => Math.abs(r - s) <= tol.eps));
   }
@@ -109,7 +124,7 @@ export function circleTangentTo(
   }
   if (radii.length > 1) {
     throw new GeometryError(
-      `${radii.length} radii touch every target (${radii.map(fmt).join(' and ')}), so the circle is ambiguous`,
+      `${radii.length} radii touch every target (${radii.map(fmt).join(' and ')}), so the circle is ambiguous; add touch: "near" or "far"`,
     );
   }
   return circle(centre, radii[0] as number);

@@ -136,8 +136,26 @@ describe('tangent circles (docs/geometry-notes.md)', () => {
       tol,
     );
     expect(() => circleTangentTo(O, [small], tol)).toThrow(
-      '2 radii touch every target (0.19570 and 0.43835), so the circle is ambiguous',
+      '2 radii touch every target (0.19570 and 0.43835), so the circle is ambiguous; add touch: "near" or "far"',
     );
+    // The geometry notes' circle about O that encloses the small circle
+    // and touches its far side.
+    expect(circleTangentTo(O, [small], tol, 'far').radius.toFixed(5)).toBe(
+      '0.43835',
+    );
+    expect(circleTangentTo(O, [small], tol, 'near').radius.toFixed(5)).toBe(
+      '0.19570',
+    );
+  });
+
+  it('touches a circle from inside on its near side when the centre is within it', () => {
+    // Centre 0.25 from O inside the unit circle: near side 0.75, far side 1.25.
+    expect(
+      circleTangentTo(vec(0.25, 0), [circle(O, 1)], tol, 'near').radius,
+    ).toBeCloseTo(0.75, 12);
+    expect(
+      circleTangentTo(vec(0.25, 0), [circle(O, 1)], tol, 'far').radius,
+    ).toBeCloseTo(1.25, 12);
   });
 
   it('touches a circle and a line when only one radius fits both', () => {

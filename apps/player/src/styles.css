@@ -103,6 +103,17 @@ header h1 {
   stroke-linecap: round;
 }
 
+.ink.original line {
+  stroke: var(--current);
+}
+
+.tile-borders polygon {
+  fill: none;
+  stroke: var(--old);
+  stroke-width: 1px;
+  stroke-dasharray: 4 4;
+}
+
 .piece {
   stroke: var(--ink);
   stroke-width: 1.5px;

@@ -32,6 +32,7 @@ Each entry in a step's `create` map is `"name": { "<kind>": { ... } }`.
 | | `{ "centre": p, "radiusOf": c }` | centre `p`, same radius as circle `c` (the compass keeps its opening) |
 | | `{ "centre": p, "radiusFrom": [q, r] }` | centre `p`, radius equal to the distance `q r` |
 | | `{ "centre": p, "tangentTo": [x, ...] }` | centre `p`, just touching every listed line or circle; an error if no single radius does that |
+| | `{ "centre": p, "tangentTo": [x, ...], "touch": "near" }` | the same, touching each listed circle on its `near` side (the side facing `p`) or its `far` side (going round it, so the new circle encloses it); needed when a circle can be touched both ways |
 | `polygon` | `[p1, p2, ...]` | a closed polygon through the points in order; its sides are segments, and it can be used in `meet` |
 | `repeat` | `{ "of": [names], "by": "rot8" }` | copies of the named elements under a symmetry about `O` (`rot4`, `rot8`, `rot16`, `mirror:<line>`); copies are named `name@1`, `name@2`, … |
 
@@ -66,7 +67,7 @@ Rules can be combined; all must hold.
 
 `ink.paths` lists the pattern lines. Each path goes `through` named points in order, and every pair of neighbouring points must lie on one existing line, circle or polygon side; the engine checks that. This is what stops a tutorial from inking a line that the construction never produced.
 
-`pattern.cell` names the polygon that repeats. In v0 it must be a square or rectangle, and the wall is made by translating it edge to edge. `pattern.colors` gives the default palette key for each named piece.
+`pattern.cell` names the polygon that repeats. In v0 it must be a square or rectangle, and the wall is made by translating it edge to edge. The optional `pattern.text` is what the learner reads when the player repeats the inked tile. `pattern.colors` gives the default palette key for each named piece.
 
 `expect` holds the golden values for the tutorial's test: how many piece types there are, and each type's vertex count, area (in units of OA²) and count per cell. A piece is named in `expect.pieces`, and `pattern.colors` uses those names.
 

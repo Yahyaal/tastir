@@ -12,11 +12,15 @@ export interface Model {
   readonly pattern: Pattern;
 }
 
-/** A stage of the player: one construction step, then the ink, then the wall. */
+/**
+ * A stage of the player: each construction step, then the ink, then the
+ * inked tile repeated edge to edge, then the pieces colored.
+ */
 export type Stage =
   | { readonly kind: 'step'; readonly step: number }
   | { readonly kind: 'ink' }
-  | { readonly kind: 'wall' };
+  | { readonly kind: 'repeat' }
+  | { readonly kind: 'color' };
 
 /** Parses, evaluates and cuts a tutorial; throws with the engine's message. */
 export function loadModel(json: unknown): Model {
@@ -29,7 +33,8 @@ export function stagesOf(tutorial: Tutorial): Stage[] {
   return [
     ...tutorial.steps.map((s): Stage => ({ kind: 'step', step: s.id })),
     { kind: 'ink' },
-    { kind: 'wall' },
+    { kind: 'repeat' },
+    { kind: 'color' },
   ];
 }
 

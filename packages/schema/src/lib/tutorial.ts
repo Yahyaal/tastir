@@ -79,11 +79,15 @@ export const CircleSpec = z.union(
     z.strictObject({ centre: Ref, through: Ref }),
     z.strictObject({ centre: Ref, radiusOf: Ref }),
     z.strictObject({ centre: Ref, radiusFrom: Pair }),
-    z.strictObject({ centre: Ref, tangentTo: z.array(Ref).min(1) }),
+    z.strictObject({
+      centre: Ref,
+      tangentTo: z.array(Ref).min(1),
+      touch: z.enum(['near', 'far']).optional(),
+    }),
   ],
   {
     error:
-      'a circle is { centre, through }, { centre, radiusOf }, { centre, radiusFrom: [q, r] } or { centre, tangentTo: [...] }',
+      'a circle is { centre, through }, { centre, radiusOf }, { centre, radiusFrom: [q, r] } or { centre, tangentTo: [...], touch? }',
   },
 );
 
@@ -141,6 +145,16 @@ function findCoordinate(value: unknown, path: string): string | undefined {
   return undefined;
 }
 
+/** The schema for each kind of element, as `{ "<kind>": spec }`. */
+const ELEMENT_BY_KIND = {
+  point: z.strictObject({ point: PointSpec }),
+  points: z.strictObject({ points: PointsSpec }),
+  line: z.strictObject({ line: LineSpec }),
+  circle: z.strictObject({ circle: CircleSpec }),
+  polygon: z.strictObject({ polygon: PolygonSpec }),
+  repeat: z.strictObject({ repeat: RepeatSpec }),
+};
+
 export const ElementSpec = z
   .record(z.string(), z.unknown(), {
     error: `an element is { "<kind>": { ... } }`,
@@ -153,26 +167,28 @@ export const ElementSpec = z
         code: 'custom',
         message: `${NO_COORDINATES} (found one at ${coordinate.replace(/^element\.?/, '')})`,
       });
-    } else if (
-      keys.length !== 1 ||
-      !(KINDS as readonly string[]).includes(keys[0] as string)
-    ) {
+      return;
+    }
+    const kind = keys[0] as (typeof KINDS)[number];
+    if (keys.length !== 1 || !KINDS.includes(kind)) {
       ctx.addIssue({
         code: 'custom',
         message: `an element has exactly one kind: ${KINDS.join(', ')} (got ${keys.join(', ') || 'nothing'})`,
       });
+      return;
+    }
+    // Check against the one kind it names, so its own message comes through
+    // rather than a union's "Invalid input".
+    const result = ELEMENT_BY_KIND[kind].safeParse(el);
+    for (const issue of result.error?.issues ?? []) {
+      ctx.addIssue({
+        code: 'custom',
+        message: issue.message,
+        path: issue.path,
+      });
     }
   })
-  .pipe(
-    z.union([
-      z.strictObject({ point: PointSpec }),
-      z.strictObject({ points: PointsSpec }),
-      z.strictObject({ line: LineSpec }),
-      z.strictObject({ circle: CircleSpec }),
-      z.strictObject({ polygon: PolygonSpec }),
-      z.strictObject({ repeat: RepeatSpec }),
-    ]),
-  );
+  .pipe(z.union(Object.values(ELEMENT_BY_KIND)));
 
 export const Step = z.strictObject({
   id: z.int().positive(),
@@ -236,6 +252,8 @@ export const TutorialShape = z.strictObject({
   }),
   pattern: z.strictObject({
     cell: Ref,
+    /** What the learner reads when the inked tile is repeated. */
+    text: z.string().optional(),
     palette: z.string().optional(),
     colors: z.record(Name, z.string().min(1)),
   }),

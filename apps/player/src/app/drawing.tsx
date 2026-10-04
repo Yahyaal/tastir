@@ -279,10 +279,12 @@ export function Construction({
   );
 }
 
-/** The pieces filled and the cell repeated edge to edge across the screen. */
-export function Wall({ model }: { model: Model }) {
-  const { cell, pieces } = model.pattern;
-  const colors = pieceColors(model);
+/**
+ * The view for the repeated tile, about three tiles wide around the
+ * original, and the shifts that copy the tile edge to edge across it.
+ */
+function tiling(model: Model): { view: Rect; shifts: Vec[] } {
+  const { cell } = model.pattern;
   const centre = {
     x: cell.origin.x + (cell.u.x + cell.v.x) / 2,
     y: cell.origin.y + (cell.u.y + cell.v.y) / 2,
@@ -308,13 +310,72 @@ export function Wall({ model }: { model: Model }) {
       });
     }
   }
+  return { view, shifts };
+}
+
+const isOrigin = (d: Vec) => d.x === 0 && d.y === 0;
+
+/**
+ * The inked tile copied edge to edge: the original in color, the copies in
+ * ink, and the tile borders faint, so the new shapes between the copies
+ * show where they close up.
+ */
+export function RepeatedInk({ model }: { model: Model }) {
+  const { view, shifts } = tiling(model);
+  const { cell, ink } = model.pattern;
   return (
     <svg
       className="drawing wall"
       viewBox={viewBox(view)}
       preserveAspectRatio="xMidYMid slice"
       role="img"
-      aria-label="The pattern tiled as a wall"
+      aria-label="The inked tile repeated edge to edge"
+    >
+      <g className="tile-borders">
+        {shifts.map((d, k) => (
+          <polygon
+            key={k}
+            points={points(
+              cell.corners.map((p) => ({ x: p.x + d.x, y: p.y + d.y })),
+            )}
+            vectorEffect="non-scaling-stroke"
+          />
+        ))}
+      </g>
+      {shifts.map((d, k) => (
+        <g
+          key={k}
+          className={isOrigin(d) ? 'ink original' : 'ink'}
+          transform={`translate(${d.x} ${-d.y})`}
+        >
+          {ink.map((s, i) => (
+            <line
+              key={i}
+              x1={sx(s.segment.a)}
+              y1={sy(s.segment.a)}
+              x2={sx(s.segment.b)}
+              y2={sy(s.segment.b)}
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+/** The pieces filled and the cell repeated edge to edge across the screen. */
+export function Wall({ model }: { model: Model }) {
+  const { view, shifts } = tiling(model);
+  const { pieces } = model.pattern;
+  const colors = pieceColors(model);
+  return (
+    <svg
+      className="drawing wall"
+      viewBox={viewBox(view)}
+      preserveAspectRatio="xMidYMid slice"
+      role="img"
+      aria-label="The pattern colored and tiled as a wall"
     >
       {shifts.map((d, k) => (
         <g key={k} transform={`translate(${d.x} ${-d.y})`}>

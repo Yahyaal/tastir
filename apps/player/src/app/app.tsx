@@ -1,6 +1,6 @@
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Construction, Legend, Wall } from './drawing';
+import { Construction, Legend, RepeatedInk, Wall } from './drawing';
 import { loadModel, stagesOf, type Model } from './model';
 
 const NUMBER_WORDS = [
@@ -16,22 +16,29 @@ const NUMBER_WORDS = [
 ];
 const count = (n: number) => NUMBER_WORDS[n] ?? String(n);
 
-function wallText(model: Model): string {
-  const parts = model.pattern.types.map(
-    (t, i) => `${count(t.perCell)} ${t.name ?? `piece ${i + 1}`}`,
+const nameOf = (model: Model, i: number) =>
+  model.pattern.types[i]?.name ?? `piece ${i + 1}`;
+
+function joinAnd(parts: string[]): string {
+  return parts.length > 1
+    ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}`
+    : (parts[0] ?? '');
+}
+
+function colorText(model: Model): string {
+  const names = model.pattern.types.map((_, i) => nameOf(model, i));
+  const same = names.map((n) => `every ${n} matches every other ${n}`);
+  const held = model.pattern.types.map(
+    (t, i) => `${count(t.perCell)} ${nameOf(model, i)}`,
   );
-  const list =
-    parts.length > 1
-      ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}`
-      : parts[0];
-  return `Each tile holds ${list}. Laid edge to edge, the tiles make the wall.`;
+  return `Color the pieces by shape, so ${joinAnd(same)}. Each tile holds ${joinAnd(held)}.`;
 }
 
 export function Player({ model }: { model: Model }) {
   const { tutorial } = model;
   const stages = useMemo(() => stagesOf(tutorial), [tutorial]);
   const [index, setIndex] = useState(0);
-  const stage = stages[index] ?? { kind: 'wall' };
+  const stage = stages[index] ?? { kind: 'color' };
   const last = stages.length - 1;
   const back = useCallback(() => setIndex((i) => Math.max(0, i - 1)), []);
   const next = useCallback(
@@ -60,9 +67,15 @@ export function Player({ model }: { model: Model }) {
     label = 'Ink';
     text = tutorial.ink.text ?? 'Go over the pattern lines.';
     picture = <Construction model={model} upTo={steps} ink />;
+  } else if (stage.kind === 'repeat') {
+    label = 'Repeat';
+    text =
+      tutorial.pattern.text ??
+      'Repeat the tile edge to edge, with the same lines in every copy.';
+    picture = <RepeatedInk model={model} />;
   } else {
-    label = 'Wall';
-    text = wallText(model);
+    label = 'Color';
+    text = colorText(model);
     picture = <Wall model={model} />;
   }
 
@@ -72,14 +85,12 @@ export function Player({ model }: { model: Model }) {
         <h1>{tutorial.title}</h1>
         <span className="brand">Tastir</span>
       </header>
-      <main className={stage.kind === 'wall' ? 'stage wall-stage' : 'stage'}>
-        {picture}
-      </main>
+      <main className="stage">{picture}</main>
       <footer>
         <div className="text">
           <p className="label">{label}</p>
           <p aria-live="polite">{text}</p>
-          {stage.kind === 'wall' ? <Legend model={model} /> : null}
+          {stage.kind === 'color' ? <Legend model={model} /> : null}
         </div>
         <nav>
           <button type="button" onClick={back} disabled={index === 0}>

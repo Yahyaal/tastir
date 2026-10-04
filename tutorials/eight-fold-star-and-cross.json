@@ -94,6 +94,7 @@
   },
   "pattern": {
     "cell": "cell",
+    "text": "Repeat the tile edge to edge, with the same star in every square. Neighbouring stars touch at their points, and the space between four stars closes into a cross.",
     "palette": "Fès tile",
     "colors": { "star": "a", "cross": "ground" }
   },

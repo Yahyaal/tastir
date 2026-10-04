@@ -242,7 +242,12 @@ class Context {
         `"${ref}" is not a line or a circle, so nothing can touch it`,
       );
     });
-    return circleTangentTo(centre, targets, this.tol);
+    if (spec.touch && !targets.some((t) => t.kind === 'circle')) {
+      this.fail(
+        '"touch" chooses a side of a circle, but every target is a line',
+      );
+    }
+    return circleTangentTo(centre, targets, this.tol, spec.touch);
   }
 
   private buildPolygon(refs: readonly string[]): Geometry {

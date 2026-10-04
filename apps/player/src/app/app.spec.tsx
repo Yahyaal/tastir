@@ -49,10 +49,10 @@ describe('the player', () => {
     expect(named).toEqual(['E', 'N', 'W', 'S']);
   });
 
-  it('steps through all six steps, the ink and the wall, and back', () => {
+  it('steps through all six steps, the ink, the repeat and the coloring, and back', () => {
     const { container } = render(<App />);
     const seen = [label()];
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       next();
       seen.push(label());
     }
@@ -64,7 +64,8 @@ describe('the player', () => {
       'Step 5 of 6',
       'Step 6 of 6',
       'Ink',
-      'Wall',
+      'Repeat',
+      'Color',
     ]);
     expect(screen.getByRole('button', { name: 'Next' })).toHaveProperty(
       'disabled',
@@ -72,7 +73,7 @@ describe('the player', () => {
     );
     expect(
       screen.getByText(
-        'Each tile holds one star and one cross. Laid edge to edge, the tiles make the wall.',
+        'Color the pieces by shape, so every star matches every other star and every cross matches every other cross. Each tile holds one star and one cross.',
       ),
     ).toBeTruthy();
     // Every copy of the cell has one star and one cross.
@@ -81,6 +82,14 @@ describe('the player', () => {
     expect(new Set([...pieces].map((p) => p.getAttribute('fill'))).size).toBe(
       2,
     );
+    back();
+    expect(label()).toBe('Repeat');
+    expect(screen.getByText(/Repeat the tile edge to edge/)).toBeTruthy();
+    // One original star in color, copies of it in every other tile.
+    expect(container.querySelectorAll('.ink.original line')).toHaveLength(16);
+    expect(
+      container.querySelectorAll('.ink:not(.original) line').length,
+    ).toBeGreaterThan(16 * 8);
     back();
     expect(label()).toBe('Ink');
     expect(container.querySelectorAll('.ink line')).toHaveLength(16);
