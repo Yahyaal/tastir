@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zellige studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@500;700&family=Karla:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --panel: #FAF8F4;
+    --panel-edge: rgba(31, 42, 51, 0.12);
+    --ink: #1F2A33;
+    --ink-soft: #5A6570;
+    --field: #EFEAE1;
+    --accent: #2D6FA8;
+    --shadow: 0 18px 50px rgba(15, 25, 35, 0.28);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --panel: #1B2128;
+      --panel-edge: rgba(236, 230, 218, 0.12);
+      --ink: #ECE6DA;
+      --ink-soft: #A7A196;
+      --field: #262E37;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --panel: #1B2128;
+    --panel-edge: rgba(236, 230, 218, 0.12);
+    --ink: #ECE6DA;
+    --ink-soft: #A7A196;
+    --field: #262E37;
+    --shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+    color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: #14365F;
+    font-family: "Karla", "Segoe UI", system-ui, sans-serif;
+    color: var(--ink);
+    overflow: hidden;
+  }
+  #canvas, #overlay { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  #canvas { touch-action: none; cursor: grab; }
+  #canvas.dragging { cursor: grabbing; }
+  .tip {
+    position: fixed; pointer-events: none; z-index: 5; display: none;
+    background: var(--panel); color: var(--ink); border: 1px solid var(--panel-edge); box-shadow: var(--shadow);
+    border-radius: 10px; padding: 6px 10px; font-size: .85rem; white-space: nowrap;
+  }
+  #overlay { pointer-events: none; }
+  .checks { display: grid; gap: 8px; margin-top: 4px; }
+  .check { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; cursor: pointer; }
+  .check input { width: 18px; height: 18px; accent-color: var(--accent); margin: 0; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .pal-wrap { display: inline-flex; align-items: center; }
+  .pal-del {
+    appearance: none; border: 0; background: none; color: var(--ink-soft); cursor: pointer;
+    font: inherit; font-size: 1rem; line-height: 1; padding: 4px 6px; margin-left: -4px; border-radius: 8px;
+  }
+  .phase { font-size: 0.85rem; color: var(--ink-soft); margin: 8px 0 0; min-height: 1.2em; }
+
+  .panel {
+    position: fixed;
+    top: calc(16px + env(safe-area-inset-top, 0px));
+    left: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    width: 340px;
+    max-width: calc(100% - 32px);
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.35s cubic-bezier(.2,.8,.2,1), opacity 0.25s;
+  }
+  .panel.hidden { transform: translateX(calc(-100% - 24px)); opacity: 0; pointer-events: none; }
+
+  .panel header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px 12px;
+  }
+  h1 {
+    font-family: "Reem Kufi", "Georgia", serif;
+    font-weight: 700;
+    font-size: 1.75rem;
+    letter-spacing: 0.01em;
+    margin: 0;
+    line-height: 1;
+  }
+  .scroll { overflow-y: auto; padding: 4px 20px 20px; flex: 1; }
+  section { margin-top: 18px; }
+  h2 {
+    font-family: "Reem Kufi", "Georgia", serif;
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin: 0 0 10px;
+  }
+
+  .thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .thumb {
+    appearance: none; border: 0; padding: 0; background: none; cursor: pointer;
+    display: flex; flex-direction: column; gap: 6px; align-items: stretch;
+    color: var(--ink); font: inherit; font-size: 0.8rem; text-align: center;
+  }
+  .thumb svg {
+    width: 100%; aspect-ratio: 1; display: block;
+    border-radius: 14px;
+    outline: 2px solid transparent; outline-offset: 2px;
+    transition: outline-color 0.15s;
+  }
+  .thumb[aria-pressed="true"] svg { outline-color: var(--accent); }
+  .thumb[aria-pressed="true"] span { font-weight: 600; }
+
+  .row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 10px; margin-bottom: 12px; }
+  .row label { font-size: 0.92rem; }
+  .row output { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 0.88rem; }
+  .row input[type=range] { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+
+  .palettes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .pal {
+    appearance: none; cursor: pointer; font: inherit; font-size: 0.82rem;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 10px 5px 5px; border-radius: 999px;
+    border: 1px solid var(--panel-edge); background: var(--field); color: var(--ink);
+  }
+  .pal i { display: inline-flex; border-radius: 999px; overflow: hidden; height: 18px; }
+  .pal i b { width: 9px; height: 18px; display: block; }
+  .pal[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+
+  .swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .sw { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--ink-soft); }
+  .sw input[type=color] {
+    width: 100%; aspect-ratio: 1; height: auto; padding: 0; cursor: pointer;
+    border: 1px solid var(--panel-edge); border-radius: 12px; background: none;
+  }
+  .sw input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+  .sw input[type=color]::-webkit-color-swatch { border: 0; border-radius: 11px; }
+  .sw input[type=color]::-moz-color-swatch { border: 0; border-radius: 11px; }
+
+  .actions { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+  .btn {
+    appearance: none; cursor: pointer; font: inherit; font-weight: 600; font-size: 0.9rem;
+    padding: 10px 14px; border-radius: 12px; border: 1px solid var(--panel-edge);
+    background: var(--field); color: var(--ink); flex: 1;
+  }
+  .btn.primary { background: var(--accent); color: #fff; border-color: transparent; }
+  .icon-btn {
+    appearance: none; cursor: pointer; border: 1px solid var(--panel-edge);
+    background: var(--field); color: var(--ink); border-radius: 10px;
+    font: inherit; font-size: 0.85rem; padding: 6px 10px;
+  }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .reveal {
+    position: fixed;
+    left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    background: var(--panel); color: var(--ink);
+    border: 1px solid var(--panel-edge); box-shadow: var(--shadow);
+    border-radius: 999px; padding: 12px 18px; font: inherit; font-weight: 600; cursor: pointer;
+    display: none;
+  }
+  .reveal.show { display: block; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+    transform: translateX(-50%) translateY(20px); opacity: 0;
+    background: var(--panel); color: var(--ink); border: 1px solid var(--panel-edge);
+    padding: 10px 16px; border-radius: 12px; box-shadow: var(--shadow);
+    transition: opacity .2s, transform .2s; pointer-events: none; font-size: 0.9rem;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  dialog {
+    border: 1px solid var(--panel-edge); border-radius: 18px; padding: 18px;
+    background: var(--panel); color: var(--ink); width: min(560px, calc(100% - 32px));
+  }
+  dialog::backdrop { background: rgba(0,0,0,.45); }
+  dialog textarea {
+    width: 100%; height: 220px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.75rem;
+    background: var(--field); color: var(--ink); border: 1px solid var(--panel-edge); border-radius: 10px; padding: 10px;
+  }
+  dialog p { margin: 0 0 10px; }
+
+  @media (max-width: 640px) {
+    .panel {
+      top: auto; left: 8px; right: 8px; width: auto; max-width: none;
+      bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+      max-height: 58%;
+    }
+    .panel.hidden { transform: translateY(calc(100% + 24px)); }
+    .reveal { left: 50%; transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .panel, .toast, .thumb svg { transition: none; }
+  }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: var(--field); padding: 4px; border-radius: 12px; }
+  .seg button {
+    appearance: none; border: 0; background: none; color: var(--ink); font: inherit; font-size: .88rem;
+    padding: 8px 6px; border-radius: 9px; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--panel); box-shadow: 0 1px 3px rgba(0,0,0,.15); font-weight: 600; }
+  .fams { display: flex; flex-direction: column; gap: 6px; }
+  .fam {
+    appearance: none; text-align: left; cursor: pointer; font: inherit; font-size: .88rem;
+    padding: 9px 12px; border-radius: 12px; border: 1px solid var(--panel-edge); background: var(--field); color: var(--ink);
+    display: flex; justify-content: space-between; gap: 8px;
+  }
+  .fam small { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .fam[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .piece {
+    appearance: none; cursor: pointer; font: inherit; font-size: .8rem; color: var(--ink);
+    display: flex; align-items: center; gap: 8px; text-align: left;
+    padding: 6px; border-radius: 12px; border: 1px solid var(--panel-edge); background: var(--field);
+  }
+  .piece svg { width: 38px; height: 38px; flex: none; }
+  .hint { font-size: .82rem; color: var(--ink-soft); margin: 0 0 8px; }
+  .caption {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    max-width: min(560px, calc(100% - 32px));
+    background: var(--panel); color: var(--ink); border: 1px solid var(--panel-edge); box-shadow: var(--shadow);
+    border-radius: 16px; padding: 12px 16px; font-size: .95rem; line-height: 1.45;
+    display: none; pointer-events: none;
+  }
+  .caption.show { display: block; }
+  .caption b { font-family: "Reem Kufi", Georgia, serif; font-weight: 500; display: block; margin-bottom: 2px; }
+  .legend-marks { display: flex; gap: 14px; flex-wrap: wrap; font-size: .8rem; color: var(--ink-soft); margin-top: 10px; }
+  .legend-marks span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend-marks i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  #about { width: min(680px, calc(100% - 32px)); max-height: 86vh; padding: 0; }
+  #about article { padding: 22px 26px 8px; overflow-y: auto; max-height: calc(86vh - 70px); line-height: 1.6; }
+  #about h3 { font-family: "Reem Kufi", Georgia, serif; font-weight: 500; font-size: 1.15rem; margin: 18px 0 6px; }
+  #about h3:first-child { margin-top: 0; }
+  #about p { margin: 0 0 10px; }
+  #about ol { padding-left: 20px; margin: 0 0 10px; }
+  #about li { margin-bottom: 4px; }
+  #about footer { padding: 10px 26px 18px; }
+  @media (min-width: 641px) {
+    .caption { left: calc(50% + 186px); max-width: min(520px, calc(100% - 420px)); }
+    .caption.full { left: 50%; }
+  }
+</style>
+</head>
+<body>
+<svg id="canvas" xmlns="http://www.w3.org/2000/svg" aria-label="Pattern preview" role="img"></svg>
+<svg id="overlay" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+
+<aside class="panel" id="panel">
+  <header>
+    <h1>Zellige studio</h1>
+    <div style="display:flex;gap:6px">
+      <button class="icon-btn" id="aboutBtn">How it's made</button>
+      <button class="icon-btn" id="hide" aria-label="Hide controls">Hide</button>
+    </div>
+  </header>
+  <div class="scroll">
+    <section>
+      <h2>Underlying grid</h2>
+      <p class="hint">Every pattern grows from a hidden grid of polygons.</p>
+      <div class="thumbs" id="thumbs"></div>
+    </section>
+
+    <section>
+      <h2>Star family</h2>
+      <p class="hint">The angle the lines leave each edge at, and which motif goes in the big polygons.</p>
+      <div class="fams" id="fams"></div>
+    </section>
+
+    <section>
+      <h2>Drawing</h2>
+      <div class="actions" style="margin-top:0">
+        <button class="btn primary" id="play">Draw it</button>
+        <button class="btn" id="pause" disabled>Pause</button>
+        <button class="btn" id="next" disabled>Next step</button>
+        <button class="btn" id="finish" disabled>Finish</button>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <label for="speed">Drawing speed</label><output id="speedOut"></output>
+        <input type="range" id="speed" min="0.25" max="3" step="0.25">
+      </div>
+      <div class="checks">
+        <label class="check"><input type="checkbox" id="stepMode"> Pause after each step</label>
+        <label class="check"><input type="checkbox" id="keepGuides"> Keep construction lines</label>
+        <label class="check"><input type="checkbox" id="grid"> Show repeat unit</label>
+      </div>
+      <div class="legend-marks">
+        <span><i style="background:#3D7BE0"></i>Corners</span>
+        <span><i style="background:#E09A2B"></i>Midpoints</span>
+        <span><i style="background:#1E8A6A"></i>Arc cuts</span>
+        <span><i style="background:#7A4FC2"></i>Rosette points</span>
+        <span><i style="background:#C8322A"></i>Crossings</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Style</h2>
+      <div class="seg" id="style">
+        <button data-v="tiles">Tiles</button>
+        <button data-v="strap">Strapwork</button>
+        <button data-v="lines">Lines only</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Pieces</h2>
+      <p class="hint">Hover a piece (here or on the wall) to see everywhere it's used; click it here to change its glaze. Drag the wall to move it, scroll to zoom.</p>
+      <p class="hint" id="pieceCount"></p>
+      <div class="legend" id="legend"></div>
+    </section>
+
+    <section>
+      <h2>Size</h2>
+      <div class="row">
+        <label for="size">Scale</label><output id="sizeOut"></output>
+        <input type="range" id="size" min="20" max="220" step="1">
+      </div>
+      <div class="row">
+        <label for="grout">Line thickness</label><output id="groutOut"></output>
+        <input type="range" id="grout" min="0" max="10" step="0.25">
+      </div>
+      <div class="row" id="bandRow">
+        <label for="band">Band width <small style="color:var(--ink-soft)">(strapwork)</small></label><output id="bandOut"></output>
+        <input type="range" id="band" min="2" max="24" step="0.5">
+      </div>
+      <div class="row">
+        <label for="rot">Rotation</label><output id="rotOut"></output>
+        <input type="range" id="rot" min="0" max="90" step="1">
+      </div>
+    </section>
+
+    <section>
+      <h2>Colors</h2>
+      <div class="palettes" id="palettes"></div>
+      <div class="swatches" id="swatches"></div>
+      <div class="actions">
+        <button class="btn" id="savePal">Save as palette</button>
+        <button class="btn" id="shuffle">Shuffle</button>
+        <button class="btn" id="resetColors">Reset colors</button>
+      </div>
+      <div class="actions" style="margin-top:8px">
+        <button class="btn primary" id="copy">Copy SVG</button>
+      </div>
+    </section>
+  </div>
+</aside>
+
+<button class="reveal" id="reveal">Show controls</button>
+<div class="caption" id="caption" aria-live="polite"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="tip" id="tip"></div>
+
+<dialog id="svgDialog">
+  <p>Select all and copy this SVG code, then save it as a .svg file.</p>
+  <textarea id="svgText" readonly></textarea>
+  <div class="actions"><button class="btn" id="closeDialog">Close</button></div>
+</dialog>
+
+<dialog id="about">
+  <article>
+    <h3>Drawn with two tools</h3>
+    <p>These patterns were never drawn freehand. The designer (a <em>muhandis</em>, or geometer) worked with only a compass and a straightedge. The compass makes circles, the straightedge makes lines, and every important point in the design is a place where a line and a circle, or two lines, cross. Nothing is measured with a ruler; proportions come entirely from those crossings, which is why the same construction works at any size, from a box lid to a mosque wall.</p>
+    <p>That knowledge passed between mathematicians and craftsmen. In the 10th century, the astronomer Abu'l-Wafa' al-Buzjani wrote a book of geometric constructions for artisans. An anonymous Persian treatise from around 1300, <em>On Interlocking Similar or Corresponding Figures</em>, records meetings where mathematicians and artisans worked through ornamental problems together.</p>
+
+    <h3>The hidden grid</h3>
+    <p>Almost no pattern drawings survive. The most important one is the Topkapı Scroll, a Timurid-Persian roll from the late 15th or early 16th century with 114 patterns and no text. Many of its drawings show faint red-dotted construction lines beneath the black pattern lines: the scaffolding the pattern was built on.</p>
+    <p>In the early 1900s, E. H. Hankin, studying half-finished Indian work, described what that scaffolding does. Researchers call his method the polygonal technique, or "polygons in contact." Jay Bonner has since shown how widely it was used historically, and Craig Kaplan turned it into an algorithm. This studio implements it:</p>
+    <ol>
+      <li>Mark out the repeat unit, the rectangle the whole wall is copied from.</li>
+      <li>Draw a circle at each center and divide it into equal parts. For six parts, step the compass's own radius around the circle; for eight, draw two diameters and bisect the right angles; for twelve, combine the two.</li>
+      <li>Join the division points to make a grid of polygons: octagons with squares, dodecagons with triangles, and so on.</li>
+      <li>Find the midpoint of every polygon edge. These contact points are where neighboring polygons touch.</li>
+      <li>From every midpoint draw two lines crossing in an X, at the same angle to the edge. Joining every third midpoint of an octagon gives 67.5°, joining every second gives 45°. Changing the angle gives a different family of stars from the same grid.</li>
+      <li>Ink each line only as far as its first crossing with another line. The stars and the pieces between them emerge from those crossings.</li>
+      <li>Erase the circles and the grid, and repeat the unit across the wall.</li>
+    </ol>
+
+    <h3>Rosettes and the sixteen-fold grid</h3>
+    <p>Simple stars leave the centers of big polygons empty, so craftsmen filled them with rosettes: a central star ringed by petals. The studio follows A. J. Lee's construction as generalized by Craig Kaplan. From each corner of the polygon, the compass is opened to the neighboring midpoint and swung until it cuts the corner's spoke. The bisector of that corner angle meets the contact line at the petal's shoulder, and the line turns there toward the arc's cut.</p>
+    <p>An extended rosette adds one more ring. The contact lines are carried inward until they meet the corner spokes, and those meeting points become the midpoints of a smaller, half-turned polygon that holds the rosette. That is what produces the many-ringed Moroccan look.</p>
+    <p>The sixteen-fold grid starts with 16-gons and octagons of equal edge length pushed together until they touch. The bow-tie gaps between them become tiles too, and their lines are found by Kaplan's inference rule: pair up the rays whose crossing costs the least line.</p>
+    <p>Moroccan workshops also had their own freer method. Jean-Marc Castéra has described how masters start from a skeleton of eight-point stars and elongated hexagons and fill the space around it. Large one-off panels built around a single 24- or 32-point star, like the one in the center of your photo, belong to that tradition rather than to a repeating grid.</p>
+
+    <h3>How the Fès panel is drawn, by hand</h3>
+    <p>The panel repeats one unit: a centre with a ring of eight touching circles. Shifting each unit so its ring touches its neighbours' rings leaves no empty space, and the gap between four rings turns out to be a perfect centre of its own. One length fixes everything:</p>
+    <ol>
+      <li>Draw the square repeat with its diagonals and centre lines, dividing it into four quarter squares. Call half its side h.</li>
+      <li>In a quarter square, put the compass on the outer corner and open it to the quarter's centre. The arc cuts the edge at a distance c from the centre line: c = h(1 − 1/√2).</li>
+      <li>The eight ring circles have radius c, and each centre sits c from a centre line and c from the repeat edge. They touch each other, and the rings of the neighbouring repeats.</li>
+      <li>Draw an octagon around each circle, with sides in the four directions: 0°, 45°, 90°, 135°. Small squares appear by themselves where four octagons meet.</li>
+      <li>What remains is a centre in the middle and one at each corner: the circle through the ring's inner corners. The middle holds a 24-point medallion, and the corners hold 16-point rosettes.</li>
+      <li>Rule lines at 45° through the midpoint of every octagon side. These are long lines in the same four directions, crossing the whole field and passing straight through the squares. Ink them where they cross to close a piece, which makes each octagon an eight-point star with its ring of petals.</li>
+      <li>Build the medallion and the rosettes inside their circles with the compass (see "Rosettes" above). The small pentagons and kites between them and the ring are cut as single pieces.</li>
+    </ol>
+    <p>That's the whole construction: one square, one length c, and lines in four directions, plus the two rosettes. It gives 24 distinct piece shapes in all, every one a normal zellige cut.</p>
+
+    <h3>Persian and Moroccan patterns</h3>
+    <p>Both traditions use the same compass-and-straightedge geometry and, very likely, the same polygonal technique. They differ in which symmetries they favor and in how the tiles are made.</p>
+    <p><b>Symmetry.</b> Persian work, from the Seljuks through the Timurids and Safavids, is famous for five- and ten-fold patterns: ten-point stars, pentagons, and elongated "bow tie" and hexagon shapes. These are the <em>girih</em> ("knot") patterns, drawn from a small set of tiles with strapwork lines that cross each edge at 54°. Moroccan and Andalusian work favors eight-fold geometry and its multiples: eight- and sixteen-point stars and rosettes, sometimes with a 24- or 32-point medallion as in your photo. Try "Persian girih (10-fold)" next to "Sixteen-fold (Fez)" to see the difference.</p>
+    <p><b>Materials.</b> Moroccan zellige is true cut mosaic: each piece is chipped by hand from a single-color glazed tile. Persian buildings used several techniques: <em>banna'i</em> (glazed bricks spelling patterns into brickwork), cut-tile mosaic (<em>moarraq</em>, closest to zellige), and later <em>haft-rangi</em> ("seven colors"), where the whole design is painted onto square tiles before firing.</p>
+    <p><b>Color.</b> Persian palettes lean on cobalt and turquoise with white, yellow, and a brick or earth ground (the "Isfahan" and "Kashan" palettes). Moroccan zellige uses more colors, often with white ground, green, black, and honey.</p>
+    <p><b>Lines.</b> Persian girih often reads as continuous interlacing bands; try the Strapwork style. Zellige is usually read as a mosaic of colored pieces with thin white joints.</p>
+
+    <h3>From drawing to zellige</h3>
+    <p>In Morocco the drawing is only the beginning. The <em>maâlem</em> (master craftsman) draws each piece's outline onto square glazed tiles fired in single colors. He then chips it free with a <em>menqach</em>, a sharp hammer, working from the back so the glaze stays clean and the edge bevels. The pieces are laid face-down on the full-size drawing like a puzzle seen from behind, and a plaster or mortar backing is poured over them. The panel is lifted into place only once it has set.</p>
+    <p>That's why every closed shape in the line drawing becomes a single piece of one color, and why identical shapes are always glazed alike. The "Pieces" section reproduces this: each kind of piece is cut from one glaze.</p>
+  </article>
+  <footer class="actions"><button class="btn" id="closeAbout">Close</button></footer>
+</dialog>
+<script>
+(() => {
+  // ============================================================
+  // Geometry: points, lines, circles, and where they cross
+  // ============================================================
+  const SQ2 = Math.SQRT2, SQ3 = Math.sqrt(3), D = Math.PI / 180;
+  const A = 100; // edge length of the underlying polygons, in units
+  const sub = (p, q) => [p[0] - q[0], p[1] - q[1]], add = (p, q) => [p[0] + q[0], p[1] + q[1]];
+  const mul = (p, s) => [p[0] * s, p[1] * s], len = p => Math.hypot(p[0], p[1]);
+  const norm = p => mul(p, 1 / len(p)), cross = (p, q) => p[0] * q[1] - p[1] * q[0];
+  const key = p => Math.round(p[0] * 20) + ',' + Math.round(p[1] * 20);
+  const f = n => (Math.round(n * 100) / 100).toString();
+  const pts = arr => arr.map(p => f(p[0]) + ',' + f(p[1])).join(' ');
+
+  // Where does line p + t·r cross line q + u·s?
+  function lineX(p, r, q, s) {
+    const den = cross(r, s);
+    if (Math.abs(den) < 1e-9) return null;
+    const t = cross(sub(q, p), s) / den;
+    return { pt: add(p, mul(r, t)), t };
+  }
+  // Clip an infinite line to a rectangle (for drawing construction lines inside the repeat unit)
+  function clipLine(p, d, x0, y0, x1, y1) {
+    let t0 = -1e9, t1 = 1e9;
+    for (const [pi, di, lo, hi] of [[p[0], d[0], x0, x1], [p[1], d[1], y0, y1]]) {
+      if (Math.abs(di) < 1e-12) { if (pi < lo || pi > hi) return null; continue; }
+      const ta = (lo - pi) / di, tb = (hi - pi) / di;
+      t0 = Math.max(t0, Math.min(ta, tb)); t1 = Math.min(t1, Math.max(ta, tb));
+    }
+    return t1 > t0 ? [add(p, mul(d, t0)), add(p, mul(d, t1))] : null;
+  }
+  const perim = P => P.reduce((s, p, i) => s + len(sub(P[(i + 1) % P.length], p)), 0);
+  const area = P => { let s = 0; P.forEach((p, i) => { const q = P[(i + 1) % P.length]; s += p[0] * q[1] - q[0] * p[1]; }); return Math.abs(s) / 2; };
+  const bbox = P => { const xs = P.map(p => p[0]), ys = P.map(p => p[1]); return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]; };
+  const hits = (b, w, h) => b[2] > 0 && b[0] < w && b[3] > 0 && b[1] < h;
+  const centroid = P => mul(P.reduce((s, p) => add(s, p), [0, 0]), 1 / P.length);
+
+  // ============================================================
+  // The underlying polygon grids (regular tessellations), each with a rectangular repeat unit
+  // ============================================================
+  const r12 = A * (2 + SQ3) / 2, R12 = A / (2 * Math.sin(15 * D));
+  const L8 = A * (1 + SQ2), d46 = A * (3 + SQ3);
+  // Sixteen-fold grid (Kaplan's Najm notation ([4,4]; 4e, 0, 2e; AC)): 16-gons and octagons with equal edges,
+  // pushed together until they touch; the leftover gaps become bow-tie shaped tiles.
+  const r16 = A / (2 * Math.tan(Math.PI / 16)), r8 = A / (2 * Math.tan(Math.PI / 8));
+  const L16 = (r16 + r8) * SQ2, R16 = A / (2 * Math.sin(Math.PI / 16)), R8 = A / (2 * Math.sin(Math.PI / 8));
+  const BOW = (() => {
+    const v = a => [R16 * Math.cos(a * D), R16 * Math.sin(a * D)];
+    const p1 = v(33.75), p2 = v(11.25), mir = p => [L16 - p[0], p[1]], fl = p => [p[0], -p[1]];
+    return [p1, mir(p1), mir(p2), fl(mir(p2)), fl(mir(p1)), fl(p1), fl(p2), p2].map(p => [p[0] - L16 / 2, p[1]]);
+  })();
+  const ORD = { 1: 'next', 2: 'second', 3: 'third', 4: 'fourth', 5: 'fifth' };
+  const POLY = { 3: 'triangle', 4: 'square', 6: 'hexagon', 8: 'octagon', 10: 'decagon', 12: 'dodecagon', 16: '16-gon', 24: '24-gon' };
+  const joinFams = (main, list) => list.map(s => ({ label: `Join every ${ORD[s]} midpoint of the ${POLY[main]}`, theta: 180 * s / main, join: s, els: {} }));
+  const ROS = { type: 'rosette', s: 2 }, EXT = { type: 'rosette', s: 2, ext: 1 };
+  const TESS = {
+    '16': { name: 'Sixteen-fold (Fez)', w: L16, h: L16, main: 16, def: 0,
+      protos: [{ o: [L16 / 2, L16 / 2], n: 16, R: R16, rot: 11.25 }, { o: [0, 0], n: 8, R: R8, rot: 22.5 },
+        { o: [0, L16 / 2], V: BOW }, { o: [L16 / 2, 0], V: BOW.map(p => [-p[1], p[0]]) }],
+      fams: [
+        { label: 'Extended 16-rosettes, 8-rosettes', theta: 22.5, els: { 16: EXT, 8: ROS }, glaze: ['c', 'e', 'a', 'b', 'ground', 'd', 'f', 'ground'] },
+        { label: 'Extended rosettes, wider petals', theta: 33.75, els: { 16: EXT, 8: ROS }, glaze: ['c', 'e', 'a', 'b', 'ground', 'd', 'f', 'ground'] },
+        { label: 'Rosettes in both', theta: 45, els: { 16: ROS, 8: ROS } },
+        { label: 'Layered stars', theta: 67.5, els: { 16: { type: 'star', s: 2 }, 8: { type: 'star', s: 2 } } }] },
+    '488': { name: 'Octagons and squares', w: L8, h: L8, main: 8, def: 1,
+      protos: [{ o: [L8 / 2, L8 / 2], n: 8, R: A / (2 * Math.sin(22.5 * D)), rot: 22.5 }, { o: [0, 0], n: 4, R: A / SQ2, rot: 0 }],
+      fams: [...joinFams(8, [2, 3]), { label: 'Rosettes in the octagons', theta: 45, els: { 8: ROS } }] },
+    '666': { name: 'Hexagons', w: 3 * A, h: SQ3 * A, main: 6, def: 1,
+      protos: [{ o: [0, 0], n: 6, R: A, rot: 0 }, { o: [1.5 * A, SQ3 * A / 2], n: 6, R: A, rot: 0 }],
+      fams: joinFams(6, [1, 2]) },
+    '3636': { name: 'Hexagons and triangles', w: 2 * A, h: 2 * SQ3 * A, main: 6, def: 1,
+      protos: [0, 1].flatMap(q => { const o = q ? [A, SQ3 * A] : [0, 0]; return [
+        { o, n: 6, R: A, rot: 0 },
+        { o: [o[0] + A, o[1] + SQ3 * A / 3], n: 3, R: A / SQ3, rot: 30 },
+        { o: [o[0], o[1] + 2 * SQ3 * A / 3], n: 3, R: A / SQ3, rot: 90 }]; }),
+      fams: joinFams(6, [1, 2]) },
+    '31212': { name: 'Dodecagons and triangles', w: 2 * r12, h: 2 * SQ3 * r12, main: 12, def: 1,
+      protos: [0, 1].flatMap(q => { const o = q ? [r12, SQ3 * r12] : [0, 0]; return [
+        { o, n: 12, R: R12, rot: 15 },
+        { o: [o[0] + r12, o[1] + r12 / SQ3], n: 3, R: A / SQ3, rot: 30 },
+        { o: [o[0] + r12, o[1] - r12 / SQ3], n: 3, R: A / SQ3, rot: 90 }]; }),
+      fams: [...joinFams(12, [3, 4, 5]), { label: 'Rosettes in the dodecagons', theta: 30, els: { 12: ROS } }] },
+    '4612': { name: 'Dodecagons, hexagons, squares', w: d46, h: SQ3 * d46, main: 12, def: 1,
+      protos: [0, 1].flatMap(q => { const o = q ? [d46 / 2, SQ3 * d46 / 2] : [0, 0]; return [
+        { o, n: 12, R: R12, rot: 15 },
+        { o: [o[0] + d46 / 2, o[1]], n: 4, R: A / SQ2, rot: 45 },
+        { o: [o[0] + d46 / 4, o[1] + SQ3 * d46 / 4], n: 4, R: A / SQ2, rot: 15 },
+        { o: [o[0] - d46 / 4, o[1] + SQ3 * d46 / 4], n: 4, R: A / SQ2, rot: 75 },
+        { o: [o[0] + d46 / 2, o[1] + d46 / (2 * SQ3)], n: 6, R: A, rot: 0 },
+        { o: [o[0] + d46 / 2, o[1] - d46 / (2 * SQ3)], n: 6, R: A, rot: 0 }]; }),
+      fams: [...joinFams(12, [3, 4, 5]), { label: 'Extended rosettes in the dodecagons', theta: 30, els: { 12: EXT } }] }
+  };
+  const ORDER = ['panel', '16', '10', '488', '666', '3636', '31212', '4612'];
+  Object.values(TESS).forEach(T => T.protos.forEach(p => { if (p.V) { p.R = Math.max(...p.V.map(len)); } }));
+
+  function polygons(T, x0, y0, x1, y1) {
+    const out = [];
+    const maxR = Math.max(...T.protos.map(p => p.R));
+    const i0 = Math.floor((x0 - maxR) / T.w) - 1, i1 = Math.ceil((x1 + maxR) / T.w);
+    const j0 = Math.floor((y0 - maxR) / T.h) - 1, j1 = Math.ceil((y1 + maxR) / T.h);
+    for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) for (const pr of T.protos) {
+      const c = [pr.o[0] + i * T.w, pr.o[1] + j * T.h];
+      if (c[0] + pr.R < x0 || c[0] - pr.R > x1 || c[1] + pr.R < y0 || c[1] - pr.R > y1) continue;
+      if (pr.V) { out.push({ c, n: pr.V.length, R: pr.R, V: pr.V.map(p => add(c, p)), regular: false, kind: pr.kind }); continue; }
+      const V = [];
+      for (let k = 0; k < pr.n; k++) { const a = (pr.rot + 360 * k / pr.n) * D; V.push([c[0] + pr.R * Math.cos(a), c[1] + pr.R * Math.sin(a)]); }
+      out.push({ c, n: pr.n, R: pr.R, rot: pr.rot, V, ap: pr.R * Math.cos(Math.PI / pr.n), regular: true, kind: pr.kind });
+    }
+    return out;
+  }
+
+  // ---------- Design elements for a regular n-gon ----------
+  // Local frame: center at the origin, one edge midpoint M due east, its corner A just above.
+  const rot = (p, a) => [p[0] * Math.cos(a) - p[1] * Math.sin(a), p[0] * Math.sin(a) + p[1] * Math.cos(a)];
+  const dot = (p, q) => p[0] * q[0] + p[1] * q[1];
+  function segX(p, p2, q, q2) {
+    const r = sub(p2, p), s = sub(q2, q), den = cross(r, s);
+    if (Math.abs(den) < 1e-9) return null;
+    const t = cross(sub(q, p), s) / den, u = cross(sub(q, p), r) / den;
+    if (t < -1e-7 || t > 1 + 1e-7 || u < -1e-7 || u > 1 + 1e-7) return null;
+    return { pt: add(p, mul(r, t)), t, u };
+  }
+  function rayX(p, r, q, s) {
+    const den = cross(r, s);
+    if (Math.abs(den) < 1e-9) return null;
+    return { pt: add(p, mul(r, cross(sub(q, p), s) / den)), t: cross(sub(q, p), s) / den, u: cross(sub(q, p), r) / den };
+  }
+  // Star: one straight line leaving M at the contact angle.
+  // Rosette (Lee's construction, generalized by Kaplan): C lies on the corner spoke with AC = AM (a compass arc from A);
+  // the petal's shoulder G is where the contact line meets the bisector of angle CAM; the line then turns through C.
+  function rosetteGeom(n, R, theta) {
+    const ap = R * Math.cos(Math.PI / n), M = [ap, 0], Av = [R * Math.cos(Math.PI / n), R * Math.sin(Math.PI / n)];
+    const dir = [-Math.sin(theta * D), Math.cos(theta * D)];
+    const C = sub(Av, mul(norm(Av), R * Math.sin(Math.PI / n)));
+    const bis = add(norm(sub(C, Av)), norm(sub(M, Av)));
+    const G = rayX(M, dir, Av, bis).pt;
+    return { M, A: Av, C, G, dir };
+  }
+  function elementPath(n, R, theta, type) {
+    if (type === 'star') { const M = [R * Math.cos(Math.PI / n), 0]; return [M, add(M, mul([-Math.sin(theta * D), Math.cos(theta * D)], 3 * R))]; }
+    const g = rosetteGeom(n, R, theta);
+    return [g.M, g.G, add(g.G, mul(norm(sub(g.C, g.G)), 3 * R))];
+  }
+  const copies = (pl, n, skipSelf) => {
+    const out = [];
+    for (let k = 0; k < n; k++) for (const refl of [false, true]) {
+      if (skipSelf && k === 0 && !refl) continue;
+      out.push(pl.map(p => rot(refl ? [p[0], -p[1]] : p, 2 * Math.PI * k / n)));
+    }
+    return out;
+  };
+  // Replicate the path around the polygon. Each line is cut where it crosses one of the polygon's mirror lines
+  // (the spokes through corners and through midpoints), because that is exactly where it meets its own reflection,
+  // so every end closes into a proper point. s counts how many mirror lines the path passes before it stops.
+  function motifLocal(n, R, theta, type, s) {
+    const path = elementPath(n, R, theta, type);
+    const hitsA = []; let acc = 0;
+    for (let i = 0; i < path.length - 1; i++) {
+      const a = path[i], b = path[i + 1], Ls = len(sub(b, a));
+      for (let j = 0; j < n; j++) {
+        const u = [Math.cos(j * Math.PI / n), Math.sin(j * Math.PI / n)];
+        const x = segX(a, b, mul(u, -3 * R), mul(u, 3 * R));
+        if (x && acc + x.t * Ls > 1e-3 * R) hitsA.push(acc + x.t * Ls);
+      }
+      acc += Ls;
+    }
+    hitsA.sort((p, q) => p - q);
+    const uniq = []; hitsA.forEach(h => { if (!uniq.length || h - uniq[uniq.length - 1] > 1e-4 * R) uniq.push(h); });
+    const stopD = uniq.length ? uniq[Math.min(s, uniq.length) - 1] : R;
+    const out = [path[0]]; acc = 0;
+    for (let i = 0; i < path.length - 1; i++) {
+      const a = path[i], b = path[i + 1], Ls = len(sub(b, a));
+      if (acc + Ls >= stopD - 1e-9) { out.push(add(a, mul(sub(b, a), (stopD - acc) / Ls))); break; }
+      out.push(b); acc += Ls;
+    }
+    return copies(out, n, false);
+  }
+  // Extension: the contact lines run in to the corner spokes, where they become the contacts of a smaller,
+  // turned polygon that holds the inner motif. Returns polylines plus the construction it needs.
+  function motifSpec(n, R, theta, spec, cons) {
+    if (!spec.ext) {
+      if (cons && spec.type === 'rosette') cons.push({ kind: 'rosette', n, R, theta, frame: 0 });
+      return motifLocal(n, R, theta, spec.type || 'star', spec.s || 1);
+    }
+    const M = [R * Math.cos(Math.PI / n), 0], d = [-Math.sin(theta * D), Math.cos(theta * D)];
+    const P = rayX(M, d, [0, 0], [Math.cos(Math.PI / n), Math.sin(Math.PI / n)]).pt;
+    const R2 = len(P) / Math.cos(Math.PI / n);
+    const th2 = Math.acos(Math.min(1, Math.abs(dot(d, [-Math.sin(Math.PI / n), Math.cos(Math.PI / n)])))) / D;
+    if (cons) cons.push({ kind: 'ext', n, R2, P });
+    const out = copies([M, P], n, false);
+    const sub2 = [];
+    motifSpec(n, R2, th2, { ...spec, ext: spec.ext - 1 }, sub2).forEach(pl => out.push(pl.map(p => rot(p, Math.PI / n))));
+    if (cons) sub2.forEach(c => cons.push({ ...c, frame: (c.frame || 0) + Math.PI / n }));
+    return out;
+  }
+  // Kaplan's greedy inference for irregular tiles: rays from every midpoint, cheapest crossing pairs first
+  function infer(V, theta) {
+    const n = V.length, rays = [];
+    let a2 = 0; V.forEach((p, i) => { a2 += cross(p, V[(i + 1) % n]); });
+    const ct = Math.cos(theta * D), st = Math.sin(theta * D);
+    for (let k = 0; k < n; k++) {
+      const a = V[k], b = V[(k + 1) % n], M = mul(add(a, b), .5), e = norm(sub(b, a));
+      const nr = a2 > 0 ? [-e[1], e[0]] : [e[1], -e[0]];
+      rays.push({ M, d: add(mul(e, ct), mul(nr, st)), k }, { M, d: add(mul(e, -ct), mul(nr, st)), k });
+    }
+    const inside = p => { let c = false; for (let i = 0, j = n - 1; i < n; j = i++) { const a = V[i], b = V[j];
+      if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; };
+    const pairs = [];
+    for (let i = 0; i < rays.length; i++) for (let j = i + 1; j < rays.length; j++) {
+      const r1 = rays[i], r2 = rays[j]; if (r1.k === r2.k) continue;
+      const x = rayX(r1.M, r1.d, r2.M, r2.d);
+      if (x) { if (x.t > 1e-6 && x.u > 1e-6 && inside(x.pt)) pairs.push({ i, j, cost: x.t + x.u, pt: x.pt }); }
+      else { const w = sub(r2.M, r1.M); if (Math.abs(cross(w, r1.d)) < 1e-6 && dot(w, r1.d) > 0 && dot(r2.d, r1.d) < 0) pairs.push({ i, j, cost: len(w), pt: mul(add(r1.M, r2.M), .5) }); }
+    }
+    pairs.sort((a, b) => a.cost - b.cost);
+    // Take the cheapest crossings first. When two equally cheap crossings compete for the same ray (a mirror-image
+    // tie), take neither, so a symmetric tile always gets a symmetric pattern.
+    const used = new Set(), lines = [];
+    for (let g = 0; g < pairs.length;) {
+      let h = g; while (h < pairs.length && pairs[h].cost - pairs[g].cost < 1e-6 * (1 + pairs[g].cost)) h++;
+      const grp = pairs.slice(g, h).filter(p => !used.has(p.i) && !used.has(p.j));
+      const cnt = {}; grp.forEach(p => { cnt[p.i] = (cnt[p.i] || 0) + 1; cnt[p.j] = (cnt[p.j] || 0) + 1; });
+      grp.forEach(p => { if (cnt[p.i] > 1 || cnt[p.j] > 1) return; used.add(p.i); used.add(p.j); lines.push([rays[p.i].M, p.pt, rays[p.j].M]); });
+      g = h;
+    }
+    return lines;
+  }
+  // Planar arrangement: split every line at every crossing and walk the closed regions (the pieces)
+  function arrangement(segs, snap = 0.05, tidy = false) {
+    const n = segs.length, cuts = segs.map(() => [0, 1]);
+    const bb = segs.map(([a, b]) => [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[0], b[0]), Math.max(a[1], b[1])]);
+    const Gs = 60, grid = new Map();
+    segs.forEach((s, i) => { for (let gx = Math.floor(bb[i][0] / Gs); gx <= Math.floor(bb[i][2] / Gs); gx++) for (let gy = Math.floor(bb[i][1] / Gs); gy <= Math.floor(bb[i][3] / Gs); gy++) { const k = gx + ',' + gy; (grid.get(k) || grid.set(k, []).get(k)).push(i); } });
+    const seen = new Set();
+    for (const list of grid.values()) for (let x = 0; x < list.length; x++) for (let y = x + 1; y < list.length; y++) {
+      const i = list[x], j = list[y], kk = i < j ? i * n + j : j * n + i;
+      if (seen.has(kk)) continue; seen.add(kk);
+      const r = segX(segs[i][0], segs[i][1], segs[j][0], segs[j][1]);
+      if (r) { cuts[i].push(r.t); cuts[j].push(r.u); }
+      else { // two edges lying on the same line (tiles touching along an edge): cut each where the other ends
+        const [a0, a1] = segs[i], [b0, b1] = segs[j], d = sub(a1, a0), L2 = dot(d, d), Ls = Math.sqrt(L2);
+        if (Math.abs(cross(d, sub(b0, a0))) < 1e-6 * Ls && Math.abs(cross(d, sub(b1, a0))) < 1e-6 * Ls) {
+          const e = sub(b1, b0), M2 = dot(e, e);
+          [b0, b1].forEach(q => { const t = dot(sub(q, a0), d) / L2; if (t > 0 && t < 1) cuts[i].push(t); });
+          [a0, a1].forEach(q => { const u = dot(sub(q, b0), e) / M2; if (u > 0 && u < 1) cuts[j].push(u); });
+        }
+      }
+    }
+    const vid = new Map(), V = [];
+    const id = p => { const k = Math.round(p[0] / snap) + ',' + Math.round(p[1] / snap); if (!vid.has(k)) { vid.set(k, V.length); V.push(p); } return vid.get(k); };
+    const edges = new Set(), adj = [];
+    segs.forEach(([a, b], i) => {
+      const ts = [...new Set(cuts[i].map(t => Math.min(1, Math.max(0, t))))].sort((p, q) => p - q);
+      for (let k = 0; k < ts.length - 1; k++) {
+        const u = id(add(a, mul(sub(b, a), ts[k]))), v = id(add(a, mul(sub(b, a), ts[k + 1])));
+        if (u === v) continue;
+        const ek = u < v ? u + ':' + v : v + ':' + u;
+        if (edges.has(ek)) continue; edges.add(ek);
+        (adj[u] = adj[u] || []).push(v); (adj[v] = adj[v] || []).push(u);
+      }
+    });
+    // Remove any line end that doesn't meet another line, so no stray stubs are drawn inside a piece
+    let changed = true;
+    while (changed) { changed = false; adj.forEach((l, u) => { if (l && l.length === 1) { const v = l[0]; adj[u] = null; const lv = adj[v]; if (lv) lv.splice(lv.indexOf(u), 1); changed = true; } }); }
+    adj.forEach((l, u) => { if (l && !l.length) adj[u] = null; });
+    const prune = () => {
+      let changed = true;
+      while (changed) { changed = false; adj.forEach((l, u) => { if (l && l.length === 1) { const v = l[0]; adj[u] = null; const lv = adj[v]; if (lv) lv.splice(lv.indexOf(u), 1); changed = true; } }); }
+      adj.forEach((l, u) => { if (l && !l.length) adj[u] = null; });
+    };
+    const walk = () => {
+      adj.forEach((l, u) => { if (l) l.sort((p, q) => Math.atan2(V[p][1] - V[u][1], V[p][0] - V[u][0]) - Math.atan2(V[q][1] - V[u][1], V[q][0] - V[u][0])); });
+      const used = new Set(), res = [];
+      adj.forEach((l, u0) => { if (!l) return; l.forEach(v0 => {
+        if (used.has(u0 + '>' + v0)) return;
+        const cyc = []; let u = u0, v = v0, guard = 0;
+        while (!used.has(u + '>' + v) && guard++ < 5000) {
+          used.add(u + '>' + v); cyc.push(u);
+          const l2 = adj[v], ix = l2.indexOf(u);
+          const w = l2[(ix - 1 + l2.length) % l2.length];
+          u = v; v = w;
+        }
+        let s2 = 0; cyc.forEach((q, ix) => { s2 += cross(V[q], V[cyc[(ix + 1) % cyc.length]]); });
+        if (s2 > 1e-6 && cyc.length >= 3) res.push(cyc);
+      }); });
+      return res;
+    };
+    let cycles = walk();
+    if (tidy) {
+      // A craftsman can't cut a sliver: any piece that is tiny or very thin is merged with the neighbour
+      // across its longest side, by removing that side.
+      const kill = new Set();
+      cycles.forEach(cyc => {
+        const P = cyc.map(q => V[q]), A2 = area(P), per = perim(P);
+        if (A2 > 70 && A2 / (per * per) > 0.022) return;
+        let best = 0, bl = 0;
+        cyc.forEach((q, ix) => { const r = cyc[(ix + 1) % cyc.length], L = len(sub(V[q], V[r])); if (L > bl) { bl = L; best = ix; } });
+        const q = cyc[best], r = cyc[(best + 1) % cyc.length];
+        kill.add(q < r ? q + ':' + r : r + ':' + q);
+      });
+      kill.forEach(k2 => { const [q, r] = k2.split(':').map(Number); if (adj[q]) adj[q] = adj[q].filter(x => x !== r); if (adj[r]) adj[r] = adj[r].filter(x => x !== q); });
+      prune();
+      cycles = walk();
+    }
+    const out = cycles.map(cyc => cyc.map(q => V[q]));
+    return out;
+  }
+  // ---------- Fès panel: the "centre + ring of eight" unit, repeated ----------
+  // Hand construction (one number fixes everything):
+  //   h = half the repeat.  In a quarter square, an arc from its outer corner through its centre cuts the edge at c = h(1 − 1/√2).
+  //   Ring: 8 circles of radius c, each c in from the repeat edge and c off a centre line -> centres (h − c, c) etc.
+  //   Their tangent octagons touch each other AND the neighbouring units' rings; small squares appear between four octagons.
+  //   What's left is a centre in the middle (24-point medallion) and one at each corner (16-point rosette), both inside the
+  //   circle through the ring's inner corners. No other shapes are needed.
+  function panelTemplate() {
+    const h = 294, c = h * (1 - 1 / SQ2), Pn = 2 * h;
+    const cl = [h - c, c];
+    const Rin = Math.hypot(cl[0] - c, cl[1] - c * Math.tan(Math.PI / 8));
+    const reg = (cc, n, Rr, vrot, kind) => ({ c: cc, n, R: Rr, rot: vrot, kind,
+      V: Array.from({ length: n }, (_, k) => { const t2 = (vrot + 360 * k / n) * D; return [cc[0] + Rr * Math.cos(t2), cc[1] + Rr * Math.sin(t2)]; }) });
+    const polys = [];
+    for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) {
+      const A = [i * Pn, j * Pn], Hc = [i * Pn + h, j * Pn + h];
+      polys.push(reg(A, 24, Rin, 7.5, 'M'), reg(Hc, 16, Rin, 0, 'R'));
+      for (let k = 0; k < 8; k++) polys.push(reg(add(A, rot(cl, 45 * k * D)), 8, c / Math.cos(Math.PI / 8), 22.5, 'C'));
+      const sq = c * Math.tan(Math.PI / 8) * SQ2;
+      polys.push(reg(add(A, [h, 0]), 4, sq, 0, 'S'), reg(add(A, [0, h]), 4, sq, 0, 'S'));
+    }
+    const seen = new Set();
+    const P2 = polys.filter(q => { const k = Math.round(q.c[0]) + ',' + Math.round(q.c[1]) + ',' + q.n; if (seen.has(k)) return false; seen.add(k); return true; });
+    const cen = f => mul(f.reduce((s2, q) => add(s2, q), [0, 0]), 1 / f.length);
+    const holes = arrangement(P2.flatMap(q => q.V.map((v, k) => [v, q.V[(k + 1) % q.n]]))).filter(f => !P2.some(q => len(sub(q.c, cen(f))) < 1 && f.length === q.n));
+    const inUnit = q => q[0] >= -h - 1e-6 && q[0] < h - 1e-6 && q[1] >= -h - 1e-6 && q[1] < h - 1e-6;
+    const protos = [];
+    P2.forEach(q => { if (inUnit(q.c)) protos.push({ o: add(q.c, [h, h]), n: q.n, R: q.R, rot: q.rot, kind: q.kind }); });
+    holes.forEach(f => { const cc = cen(f); if (inUnit(cc)) protos.push({ o: add(cc, [h, h]), V: f.map(q => sub(q, cc)), kind: 'P' }); });
+    return { w: Pn, h: Pn, protos };
+  }
+  // Glazes, ring by ring outward from each motif's centre (palette keys)
+  const LADDERS = {
+    M: ['a', 'ground', 'ground', 'f', 'f', 'ground', 'e', 'e', 'e'],
+    R: ['c', 'ground', 'a', 'a', 'ground', 'b', 'ground', 'b', 'ground'],
+    C: ['b', 'e', 'c', 'ground', 'c', 'ground', 'c', 'ground'],
+    S: ['d', 'ground'], P: ['ground', 'd', 'b']
+  };
+  // Persian girih grid: decagons touching edge to edge along ±36°, repeating in a w×h rectangle (two per unit).
+  // The gaps between them are computed and become elongated hexagon tiles.
+  const r10 = A / (2 * Math.tan(Math.PI / 10)), R10 = A / (2 * Math.sin(Math.PI / 10));
+  TESS['10'] = { name: 'Persian girih (10-fold)', w: 4 * r10 * Math.cos(36 * D), h: 4 * r10 * Math.sin(36 * D), main: 10, def: 0, palette: 'Isfahan',
+    protos: [{ o: [0, 0], n: 10, R: R10, rot: 18 }, { o: [2 * r10 * Math.cos(36 * D), 2 * r10 * Math.sin(36 * D)], n: 10, R: R10, rot: 18 }],
+    fams: [
+      { label: 'Classic girih: ten-point stars', theta: 54, els: {}, glaze: ['f', 'a', 'ground', 'c', 'e', 'b', 'd'] },
+      { label: 'Acute stars', theta: 72, els: {}, glaze: ['f', 'a', 'ground', 'c', 'e', 'b', 'd'] },
+      { label: 'Obtuse stars', theta: 36, els: {}, glaze: ['f', 'a', 'c', 'ground', 'e', 'b', 'd'] },
+      { label: 'Rosettes in the decagons', theta: 54, els: { 10: ROS }, glaze: ['f', 'a', 'c', 'ground', 'b', 'e', 'd'] }] };
+  (() => {
+    const T = TESS['10'];
+    const ps = polygons(T, -T.w, -T.h, 2 * T.w, 2 * T.h);
+    const cen = f => mul(f.reduce((s2, p) => add(s2, p), [0, 0]), 1 / f.length);
+    arrangement(ps.flatMap(p => p.V.map((v, k) => [v, p.V[(k + 1) % p.n]]))).forEach(f => {
+      const c = cen(f);
+      if (ps.some(p => len(sub(p.c, c)) < 1 && f.length === p.n)) return;
+      if (c[0] >= 0 && c[0] < T.w && c[1] >= 0 && c[1] < T.h) T.protos.push({ o: c, V: f.map(p => sub(p, c)), R: Math.max(...f.map(p => len(sub(p, c)))), kind: 'H' });
+    });
+  })();
+  const PANEL = panelTemplate();
+  PANEL.protos.forEach(p => { if (p.V) p.R = Math.max(...p.V.map(len)); });
+  TESS.panel = { name: 'Fès panel', w: PANEL.w, h: PANEL.h, main: 24, def: 0, palette: 'Fès tile', protos: PANEL.protos,
+    fams: [{ label: 'Centre + ring of eight, repeated', theta: 45, tidy: true, outline: ['M', 'R', 'P'],
+      els: { M: { type: 'rosette', s: 5, ext: 3 }, R: { type: 'rosette', s: 4, ext: 2 }, C: { type: 'rosette', s: 2, ext: 1 }, S: { type: 'star', s: 1 } },
+      ladders: LADDERS }] };
+  // How many points a star-shaped piece has: its vertices alternate between convex and reflex
+  function describe(P) {
+    const n = P.length; let reflex = 0;
+    let a2 = 0; P.forEach((p, i) => { a2 += cross(p, P[(i + 1) % n]); });
+    for (let i = 0; i < n; i++) { const a = P[(i - 1 + n) % n], b = P[i], c = P[(i + 1) % n]; if (cross(sub(b, a), sub(c, b)) * a2 < -1e-6) reflex++; }
+    if (n >= 8 && reflex * 2 === n) return `${n / 2}-point star`;
+    return `${n}-sided piece`;
+  }
+
+  // Build everything for one grid + family: construction, pattern lines, and the pieces they enclose
+  const cache = {};
+  function build(tid, fi) {
+    const ck = tid + '_' + fi;
+    if (cache[ck]) return cache[ck];
+    const T = TESS[tid], F = T.fams[fi], theta = F.theta, w = T.w, h = T.h;
+    const maxR = Math.max(...T.protos.map(p => p.R));
+    const marg = maxR * 1.25;
+    const polys = polygons(T, -marg, -marg, w + marg, h + marg);
+    const segs = [];
+    polys.forEach(P => {
+      if (P.regular) {
+        const phi = (P.rot + 180 / P.n) * D;
+        P.cons = [];
+        const spec = F.els[P.kind] || F.els[P.n] || { type: 'star', s: 1 };
+        P.lines = motifSpec(P.n, P.R, theta, spec, P.cons).map(pl => pl.map(p => add(P.c, rot(p, phi))));
+        if (F.outline && F.outline.includes(P.kind)) P.lines.push([...P.V, P.V[0]]);
+        P.phi = phi; P.spec = spec;
+        P.M = P.V.map((v, k) => mul(add(v, P.V[(k + 1) % P.n]), .5));
+      } else {
+        P.lines = F.outline && F.outline.includes(P.kind) ? [[...P.V, P.V[0]]] : infer(P.V, theta);
+        P.M = P.V.map((v, k) => mul(add(v, P.V[(k + 1) % P.n]), .5));
+      }
+      P.lines.forEach(pl => { for (let k = 0; k < pl.length - 1; k++) segs.push([pl[k], pl[k + 1]]); });
+    });
+    const inReg = p => p[0] > -marg + 1 && p[0] < w + marg - 1 && p[1] > -marg + 1 && p[1] < h + marg - 1;
+    const faces = arrangement(segs, 0.05, !!F.tidy).filter(P => P.every(inReg) && hits(bbox(P), w, h)).map(P => ({ pts: P, area: area(P), c: centroid(P) }));
+    faces.forEach(fc => { fc.cls = fc.pts.length + '_' + Math.round(fc.area / 40) + '_' + Math.round(perim(fc.pts) / 4); });
+    if (F.ladders) {
+      // Which motif does each piece belong to, and how far out from that motif's center is it?
+      const pip = (V, p) => { let c = false; for (let i = 0, j = V.length - 1; i < V.length; j = i++) { const a = V[i], b = V[j];
+        if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; };
+      const owners = [...polys.filter(P => P.regular), ...polys.filter(P => !P.regular)];
+      faces.forEach(fc => {
+        const own = owners.find(P => len(sub(P.c, fc.c)) < P.R && pip(P.V, fc.c));
+        fc.kind = own ? (own.kind || 'H') : 'H'; fc.d = own ? len(sub(fc.c, own.c)) / own.R : 0;
+      });
+      // One piece type per shape: identical shapes are one piece, whichever motif they sit in.
+      // The motif it belongs to (for glazing) is decided by majority.
+      const votes = {};
+      faces.forEach(fc => { const v = votes[fc.cls] || (votes[fc.cls] = {}); v[fc.kind] = (v[fc.kind] || 0) + 1; });
+      faces.forEach(fc => { const v = votes[fc.cls]; fc.kind = Object.keys(v).sort((a, b) => v[b] - v[a] || (a < b ? -1 : 1))[0]; });
+    }
+    const classes = [];
+    faces.forEach(fc => {
+      let c = classes.find(x => x.key === fc.cls);
+      if (!c) classes.push(c = { key: fc.cls, area: fc.area, sample: fc.pts, count: 0, label: describe(fc.pts) });
+      c.count++;
+    });
+    classes.sort((a, b) => b.area - a.area);
+    if (F.ladders) {
+      const byKind = {};
+      classes.forEach(c => {
+        const fs = faces.filter(fc => fc.cls === c.key);
+        c.kind = fs[0].kind; c.d = fs.reduce((s2, fc) => s2 + fc.d, 0) / fs.length;
+        (byKind[c.kind] = byKind[c.kind] || []).push(c);
+      });
+      Object.entries(byKind).forEach(([kind, list]) => {
+        list.sort((a, b) => kind === 'H' ? b.area - a.area : a.d - b.d);
+        const lad = F.ladders[kind] || ['ground'];
+        list.forEach((c, r) => { c.glaze = lad[Math.min(r, lad.length - 1)]; });
+      });
+    }
+
+    // Construction for the repeat unit
+    const cp = polys.filter(P => P.c[0] + P.R > 0 && P.c[0] - P.R < w && P.c[1] + P.R > 0 && P.c[1] - P.R < h);
+    const inCell = p => p[0] > -.5 && p[0] < w + .5 && p[1] > -.5 && p[1] < h + .5;
+    const uniq = list => { const m = {}; list.forEach(p => { if (inCell(p)) m[key(p)] = p; }); return Object.values(m); };
+    const marksV = uniq(cp.flatMap(P => P.V)), marksM = uniq(cp.flatMap(P => P.M));
+    const lines = {};
+    const ct = Math.cos(theta * D), st = Math.sin(theta * D);
+    cp.forEach(P => P.M.forEach((M, k) => {
+      const e = norm(sub(P.V[(k + 1) % P.n], P.V[k]));
+      [rot(e, theta * D), rot(e, -theta * D)].forEach(d => {
+        let ang = Math.atan2(d[1], d[0]) / D, dd = d;
+        if (ang < 0) { ang += 180; dd = mul(d, -1); }
+        if (ang >= 179.995) { ang -= 180; dd = mul(dd, -1); }
+        const lk = Math.round(ang * 20) + ':' + Math.round(cross(dd, M) * 2);
+        if (lines[lk]) return;
+        const seg = clipLine(M, dd, 0, 0, w, h);
+        if (seg) lines[lk] = { seg, M };
+      });
+    }));
+    // Rosette construction (extension points, compass arcs, shoulders) for the regular polygons in the unit
+    const ext = { circles: [], P: [], polys: [] }, ros = { arcs: [], C: [], G: [], bis: [], turn: [] };
+    cp.filter(P => P.regular).forEach(P => {
+      const W2 = p => add(P.c, rot(p, P.phi));
+      P.cons.forEach(c => {
+        const fr = a => p => W2(rot(p, a));
+        if (c.kind === 'ext') {
+          ext.circles.push({ c: P.c, r: len(c.P) });
+          for (let k = 0; k < c.n; k++) ext.P.push(W2(rot(c.P, 2 * Math.PI * k / c.n)));
+          const Vs = []; for (let k = 0; k < c.n; k++) Vs.push(W2(rot([c.R2, 0], 2 * Math.PI * k / c.n + Math.PI / c.n + Math.PI / c.n)));
+          ext.polys.push(Vs);
+        } else {
+          const g = rosetteGeom(c.n, c.R, c.theta), T0 = fr(c.frame || 0);
+          for (let k = 0; k < c.n; k++) {
+            const a = 2 * Math.PI * k / c.n;
+            const Aw = T0(rot(g.A, a)), Cw = T0(rot(g.C, a));
+            ros.arcs.push({ c: Aw, r: len(sub(g.M, g.A)), from: T0(rot(g.M, a)), to: T0(rot([g.M[0], -g.M[1]], a + 2 * Math.PI / c.n)) });
+            ros.C.push(Cw);
+            [false, true].forEach(rf => {
+              const Gl = rf ? [g.G[0], -g.G[1]] : g.G;
+              const aa = rf ? a + 2 * Math.PI / c.n : a;
+              const Gw = T0(rot(Gl, aa)); ros.G.push(Gw);
+              ros.bis.push([T0(rot(rf ? [g.A[0], -g.A[1]] : g.A, aa)), Gw]);
+            });
+          }
+        }
+      });
+    });
+    const inkP = cp.flatMap(P => P.lines);
+    const marksQ = uniq(inkP.flatMap(pl => pl.slice(1)));
+    const B = { T, F, tid, fi, theta, w, h, polys, faces, classes, cp, marksV, marksM, marksQ, lines: Object.values(lines),
+      ink: inkP, ext: { ...ext, P: uniq(ext.P) }, ros: { ...ros, C: uniq(ros.C), G: uniq(ros.G) },
+      rosette: !!Object.values(F.els).length };
+    return cache[ck] = B;
+  }
+
+  // ============================================================
+  // Colors and state
+  // ============================================================
+  const INK = '#1E2630', PAPER = '#FBFAF6', GUIDE = '#3D7BE0', LINEC = '#B07A1E';
+  const MARK = { V: '#3D7BE0', M: '#E09A2B', Q: '#C8322A', P: '#7A4FC2', C: '#1E8A6A' };
+  const PALETTES = [
+    { name: 'Fès tile',    c: { grout: '#F8F7F2', ground: '#F8F7F2', a: '#9C2F25', b: '#6F9DD1', c: '#7FA79A', d: '#C28B3C', e: '#121417', f: '#2240B8' } },
+    { name: 'Fez',         c: { grout: '#EFE8DA', ground: '#14365F', a: '#2D6FA8', b: '#F2F2EC', c: '#C7962E', d: '#E0B458', e: '#0B1C33', f: '#3A8FD0' } },
+    { name: 'Marrakech',   c: { grout: '#F4E9D8', ground: '#8C2F1B', a: '#C4552D', b: '#E8B04B', c: '#1F5E57', d: '#D98E32', e: '#2A1A14', f: '#2F6DB0' } },
+    { name: 'Chefchaouen', c: { grout: '#FFFFFF', ground: '#5B8FC7', a: '#2E5E9E', b: '#BFD7EE', c: '#F0F4F8', d: '#E3EDF7', e: '#1C3A66', f: '#7FB0E0' } },
+    { name: 'Tétouan',     c: { grout: '#EDE6D6', ground: '#0F4D3F', a: '#1E7A5C', b: '#F1E7CE', c: '#B8452C', d: '#C8A24A', e: '#10241E', f: '#2F6DB0' } },
+    { name: 'Majorelle',   c: { grout: '#1B1F3B', ground: '#2F45C5', a: '#F5C242', b: '#EAE4D3', c: '#1E8A74', d: '#E56B3A', e: '#0E1230', f: '#6FC3E0' } },
+    { name: 'Isfahan',     c: { grout: '#F3EEE2', ground: '#F3EEE2', a: '#2AA5B8', b: '#3E8A4A', c: '#E0B040', d: '#C8702E', e: '#10213F', f: '#1B3F8B' } },
+    { name: 'Kashan',      c: { grout: '#FBF7EE', ground: '#8A5A2B', a: '#39A7B7', b: '#FBF7EE', c: '#1F5FA8', d: '#D9A441', e: '#16223A', f: '#1F5FA8' } },
+    { name: 'Ivory',       c: { grout: '#2B2A28', ground: '#EDE6D6', a: '#D9CFBA', b: '#FFFFFF', c: '#B79A5B', d: '#9C8455', e: '#3A3834', f: '#C8BBA0' } }
+  ];
+  const COLOR_KEYS = [
+    ['grout', 'Lines'], ['ground', 'Ground'], ['a', 'Main'], ['b', 'Second'], ['c', 'Accent'],
+    ['d', 'Band'], ['e', 'Deep'], ['f', 'Bright']
+  ];
+  const GLAZES = ['a', 'f', 'b', 'c', 'e', 'd', 'ground'];
+
+  const state = {
+    tess: 'panel', fam: {}, style: 'tiles', v: 4, size: 60, grout: 1.5, band: 9, rot: 0,
+    palette: 'Fès tile', colors: { ...PALETTES[0].c }, custom: [], pieceColors: {},
+    keepGuides: false, grid: false, stepMode: false, speed: 1
+  };
+  try {
+    const saved = JSON.parse(localStorage.getItem('zellige-studio-3') || 'null');
+    if (saved && saved.colors) Object.assign(state, saved, { colors: { ...PALETTES[0].c, ...saved.colors } });
+    else {
+      const old = JSON.parse(localStorage.getItem('zellige-studio-2') || 'null');
+      if (old && Array.isArray(old.custom)) state.custom = old.custom;
+    }
+    if (state.v !== 4) { state.tess = 'panel'; state.v = 4; }
+    if (!TESS[state.tess]) state.tess = 'panel';
+    Object.keys(state.fam).forEach(t => { if (!TESS[t] || !TESS[t].fams[state.fam[t]]) delete state.fam[t]; });
+  } catch (e) {}
+  const save = () => { try { localStorage.setItem('zellige-studio-3', JSON.stringify(state)); } catch (e) {} };
+
+  const famOf = tid => state.fam[tid] != null ? state.fam[tid] : TESS[tid].def;
+  const current = () => build(state.tess, famOf(state.tess));
+  function glazeOf(B, cls) {
+    const pk = B.tid + '_' + B.fi;
+    const g = (state.pieceColors[pk] || {})[cls];
+    if (g) return g;
+    const i = Math.max(0, B.classes.findIndex(c => c.key === cls));
+    if (B.classes[i] && B.classes[i].glaze) return B.classes[i].glaze;
+    // Default glazing: the family's own scheme, otherwise the largest pieces take the strongest glazes
+    const seq = B.F.glaze || ['a', 'b', 'f', 'ground', 'c', 'e', 'd', 'ground'];
+    return seq[i % seq.length];
+  }
+  function look() {
+    const c = state.colors;
+    if (state.style === 'lines') return { lines: true, ground: PAPER, line: INK, fill: () => PAPER, band: PAPER, bandEdge: INK };
+    return { lines: false, ground: c.ground, line: c.grout, fill: (B, cls) => c[glazeOf(B, cls)], band: c.d, bandEdge: c.e };
+  }
+
+  // ============================================================
+  // Rendering the finished pattern as an SVG <pattern>
+  // ============================================================
+  function patternBody(B, k, lineW, opts, lk) {
+    const sw = lineW / k;
+    let s = `<rect x="-1" y="-1" width="${f(B.w + 2)}" height="${f(B.h + 2)}" fill="${lk.ground}"/>`;
+    const strap = state.style === 'strap' && !opts.plain;
+    s += `<g stroke="${strap ? 'none' : lk.line}" stroke-width="${f(sw)}" stroke-linejoin="round">`;
+    B.faces.forEach(fc => { s += `<polygon points="${pts(fc.pts)}" fill="${lk.fill(B, fc.cls)}"/>`; });
+    s += '</g>';
+    if (strap) {
+      const bw = state.band / k;
+      s += `<g fill="none" stroke-linejoin="round" stroke-linecap="round">`;
+      const allInk = B.polys.filter(P => P.c[0] + P.R > -2 && P.c[0] - P.R < B.w + 2 && P.c[1] + P.R > -2 && P.c[1] - P.R < B.h + 2).flatMap(P => P.lines);
+      allInk.forEach(p => { s += `<polyline points="${pts(p)}" stroke="${lk.bandEdge}" stroke-width="${f(bw + 2 * Math.max(sw, .6 / k))}"/>`; });
+      allInk.forEach(p => { s += `<polyline points="${pts(p)}" stroke="${lk.band}" stroke-width="${f(bw)}"/>`; });
+      s += '</g>';
+    }
+    if (opts.guides) {
+      s += `<g fill="none" stroke-width="${f(.8 / k)}" opacity=".7">`;
+      B.cp.forEach(P => { s += `<polygon points="${pts(P.V)}" stroke="${GUIDE}"/>`; });
+      B.lines.forEach(L => { s += `<line x1="${f(L.seg[0][0])}" y1="${f(L.seg[0][1])}" x2="${f(L.seg[1][0])}" y2="${f(L.seg[1][1])}" stroke="${LINEC}"/>`; });
+      s += '</g>';
+    }
+    if (opts.grid) s += `<rect x="0" y="0" width="${f(B.w)}" height="${f(B.h)}" fill="none" stroke="${GUIDE}" stroke-width="${f(1.5 / k)}" stroke-dasharray="${f(6 / k)} ${f(4 / k)}"/>`;
+    return s;
+  }
+  const view = { x: 0, y: 0 }; // pan offset in screen pixels (drag to move; the wall is infinite)
+  const ptf = (rot, pan) => (pan ? `translate(${f(view.x)} ${f(view.y)}) ` : '') + `rotate(${rot})`;
+  function patternDef(pid, B, sizePx, lineW, rot, opts = {}) {
+    const k = sizePx / 100;
+    return `<pattern id="${pid}" patternUnits="userSpaceOnUse" width="${f(B.w * k)}" height="${f(B.h * k)}" patternTransform="${ptf(rot, opts.pan)}">` +
+      `<g transform="scale(${k})">${patternBody(B, k, lineW, opts, look())}</g></pattern>`;
+  }
+
+  const canvas = document.getElementById('canvas');
+  const overlay = document.getElementById('overlay');
+  const panel = document.getElementById('panel');
+  function render() {
+    stopDrawing();
+    const B = current(), lk = look();
+    canvas.innerHTML = `<defs>${patternDef('p-main', B, state.size, state.grout, state.rot, { guides: state.keepGuides, grid: state.grid, pan: true })}<pattern id="p-hl" patternUnits="userSpaceOnUse" width="1" height="1"></pattern></defs>` +
+      `<rect width="100%" height="100%" fill="url(#p-main)"/><rect id="hlRect" width="100%" height="100%" fill="url(#p-hl)" style="display:none"/>`;
+    hoverCls = null;
+    document.body.style.background = lk.ground;
+    document.documentElement.style.setProperty('--accent', state.style === 'lines' ? GUIDE : state.colors.a);
+    document.getElementById('sizeOut').textContent = state.size + ' px';
+    document.getElementById('groutOut').textContent = state.grout + ' px';
+    document.getElementById('bandOut').textContent = state.band + ' px';
+    document.getElementById('rotOut').textContent = state.rot + '°';
+    document.getElementById('speedOut').textContent = state.speed + '×';
+    ['keepGuides', 'grid', 'stepMode'].forEach(id => document.getElementById(id).checked = !!state[id]);
+    document.querySelectorAll('#style button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === state.style));
+    document.getElementById('bandRow').style.display = state.style === 'strap' ? '' : 'none';
+    renderThumbs(); renderFams(); renderLegend(); syncSwatches(); renderPalettes();
+    save();
+  }
+
+  // ============================================================
+  // The drawing: an animated compass-and-straightedge construction of one repeat unit
+  // ============================================================
+  let run = null;
+  const captionEl = document.getElementById('caption');
+  const playBtn = document.getElementById('play'), pauseBtn = document.getElementById('pause'),
+    nextBtn = document.getElementById('next'), finishBtn = document.getElementById('finish');
+  function setControls() {
+    pauseBtn.disabled = finishBtn.disabled = !run;
+    nextBtn.disabled = !(run && run.waiting);
+    pauseBtn.textContent = run && run.paused ? 'Resume' : 'Pause';
+    playBtn.textContent = run ? 'Restart' : 'Draw it';
+  }
+  function say(title, text) {
+    captionEl.innerHTML = `<b>${title}</b>${text}`;
+    captionEl.classList.add('show');
+    captionEl.classList.toggle('full', panel.classList.contains('hidden'));
+  }
+  function stopDrawing() {
+    if (!run) return;
+    run.dead = true;
+    run.anims.forEach(a => { try { a.cancel(); } catch (e) {} });
+    cancelAnimationFrame(run.raf);
+    if (run.release) run.release();
+    run = null;
+    overlay.innerHTML = '';
+    canvas.style.opacity = 1;
+    captionEl.classList.remove('show');
+    document.body.style.background = look().ground;
+    setControls();
+  }
+
+  function divisionHint(n) {
+    return {
+      3: 'thirds come from the hexagon\'s alternate points',
+      4: 'two diameters at right angles',
+      6: 'step the compass\'s own radius six times around',
+      8: 'two diameters, then bisect each right angle',
+      12: 'step the radius around, then bisect each arc',
+      16: 'two diameters, then bisect three times',
+      24: 'step the radius around, then bisect twice',
+      10: 'the golden-section construction of the pentagon, then bisect each arc'
+    }[n];
+  }
+
+  function playDrawing() {
+    stopDrawing();
+    const B = current(), lk = look();
+    const W = innerWidth, H = innerHeight;
+    const k = state.size / 100, tw = B.w * k, th = B.h * k;
+    const r = state.rot * D, cos = Math.cos(r), sin = Math.sin(r);
+    let x0 = 0, x1 = W, y0 = 0, y1 = H;
+    if (!panel.classList.contains('hidden')) {
+      const pr = panel.getBoundingClientRect();
+      if (W > 640) x0 = pr.right; else y1 = pr.top;
+    }
+    y1 -= Math.min(130, (y1 - y0) * .2); // room for the caption
+    const T = [(x0 + x1) / 2, (y0 + y1) / 2];
+    const Tp = [T[0] - view.x, T[1] - view.y];
+    const u = Tp[0] * cos + Tp[1] * sin, v = -Tp[0] * sin + Tp[1] * cos;
+    const i = Math.floor(u / tw), j = Math.floor(v / th);
+    const cu = (i + .5) * tw, cv = (j + .5) * th;
+    const C = [view.x + cu * cos - cv * sin, view.y + cu * sin + cv * cos];
+    const bw = Math.abs(tw * cos) + Math.abs(th * sin), bh = Math.abs(tw * sin) + Math.abs(th * cos);
+    const Z = Math.min((x1 - x0) * .9 / bw, (y1 - y0) * .9 / bh, 20);
+    const px = 1 / (k * Z); // one screen pixel, in units, while zoomed in
+    const zoomT = (z, t) => `translate(${f(t[0])} ${f(t[1])}) scale(${z}) translate(${f(-C[0])} ${f(-C[1])})`;
+    const sw = state.grout / k;
+    const cw = 1.1 * px, iw = 2.4 * px, mr = 4.6 * px;
+    const cx = B.w / 2, cy = B.h / 2;
+    const dist = p => Math.hypot(p[0] - cx, p[1] - cy);
+    const lineEl = (a, b, extra = '') => `<line x1="${f(a[0])}" y1="${f(a[1])}" x2="${f(b[0])}" y2="${f(b[1])}"${extra}/>`;
+
+    const polysIn = B.cp.slice().sort((p, q) => dist(p.c) - dist(q.c));
+    const regs = polysIn.filter(P => P.regular), irr = polysIn.filter(P => !P.regular);
+    let g1 = lineEl([0, 0], [B.w, 0]) + lineEl([B.w, 0], [B.w, B.h]) + lineEl([B.w, B.h], [0, B.h]) + lineEl([0, B.h], [0, 0]) +
+      lineEl([cx, 0], [cx, B.h]) + lineEl([0, cy], [B.w, cy]);
+    let g2 = '', g3 = '', g4 = '', g4b = '', g5 = '', g6 = '', g7 = '', g8 = '', g9 = '';
+    regs.forEach(P => {
+      g2 += `<circle cx="${f(P.c[0])}" cy="${f(P.c[1])}" r="${f(P.ap)}"/>`;
+      P.V.forEach(V => { g3 += lineEl(P.c, V); });
+      g4 += `<polygon points="${pts(P.V)}"/>`;
+      P.M.forEach(M => { g5 += lineEl(P.c, M); });
+    });
+    irr.forEach(P => { g4b += `<polygon points="${pts(P.V)}"/>`; });
+    B.lines.slice().sort((a, b) => dist(a.M) - dist(b.M)).forEach(Ln => { g6 += lineEl(Ln.seg[0], Ln.seg[1]); });
+    // extension: circles through the points where contact lines meet the corner spokes, and the smaller turned polygons
+    B.ext.circles.forEach(c => { g7 += `<circle cx="${f(c.c[0])}" cy="${f(c.c[1])}" r="${f(c.r)}"/>`; });
+    B.ext.polys.forEach(V => { g7 += `<polygon points="${pts(V)}"/>`; });
+    // rosette: compass arcs from each corner through the midpoints, and the corner bisectors
+    const arcPath = (a) => {
+      const a0 = Math.atan2(a.from[1] - a.c[1], a.from[0] - a.c[0]);
+      let a1 = Math.atan2(a.to[1] - a.c[1], a.to[0] - a.c[0]);
+      let dA = a1 - a0; while (dA > Math.PI) dA -= 2 * Math.PI; while (dA < -Math.PI) dA += 2 * Math.PI;
+      const P = []; for (let q = 0; q <= 16; q++) { const t2 = a0 + dA * q / 16; P.push([a.c[0] + a.r * Math.cos(t2), a.c[1] + a.r * Math.sin(t2)]); }
+      return `<polyline points="${pts(P)}"/>`;
+    };
+    B.ros.arcs.slice().sort((p, q) => dist(p.c) - dist(q.c)).forEach(a => { g8 += arcPath(a); });
+    B.ros.bis.slice().sort((p, q) => dist(p[1]) - dist(q[1])).forEach(([a, b]) => { g9 += lineEl(a, b); });
+    const marks = (list, col, cls) => list.slice().sort((p, q) => dist(p) - dist(q))
+      .map(p => `<circle class="${cls}" cx="${f(p[0])}" cy="${f(p[1])}" r="${f(mr)}" fill="${col}" stroke="${PAPER}" stroke-width="${f(px)}"/>`).join('');
+    const centers = regs.map(P => `<circle class="mc" cx="${f(P.c[0])}" cy="${f(P.c[1])}" r="${f(mr * .7)}" fill="${INK}"/>`).join('');
+    const inkS = B.ink.slice().sort((a, b) => dist(a[0]) - dist(b[0])).map(p => `<polyline points="${pts(p)}"/>`).join('');
+
+    overlay.innerHTML =
+      `<defs><clipPath id="cellclip"><rect x="0" y="0" width="${f(B.w)}" height="${f(B.h)}"/></clipPath></defs>` +
+      `<g id="zoom" transform="${zoomT(Z, T)}"><g transform="translate(${f(view.x)} ${f(view.y)}) rotate(${state.rot}) translate(${f(i * tw)} ${f(j * th)}) scale(${k})">` +
+      `<g clip-path="url(#cellclip)">` +
+        `<rect id="paper" x="0" y="0" width="${f(B.w)}" height="${f(B.h)}" fill="${PAPER}"/>` +
+        `<g id="final" opacity="0">${patternBody(B, k, state.grout, {}, lk)}</g>` +
+        `<g id="cons" fill="none" stroke-linecap="round">` +
+          `<g id="g1" stroke="${GUIDE}" stroke-width="${f(cw * 1.4)}">${g1}</g>` +
+          `<g id="g2" stroke="${GUIDE}" stroke-width="${f(cw)}">${g2}</g>` +
+          `<g id="g3" stroke="${GUIDE}" stroke-width="${f(cw * .8)}" opacity=".7">${g3}</g>` +
+          `<g id="g4" stroke="${GUIDE}" stroke-width="${f(cw * 1.8)}">${g4}</g>` +
+          `<g id="g4b" stroke="${GUIDE}" stroke-width="${f(cw * 1.8)}" stroke-dasharray="0">${g4b}</g>` +
+          `<g id="g5" stroke="${MARK.M}" stroke-width="${f(cw * .8)}" opacity=".7">${g5}</g>` +
+          `<g id="g6" stroke="${LINEC}" stroke-width="${f(cw)}">${g6}</g>` +
+          `<g id="g7" stroke="${MARK.P}" stroke-width="${f(cw)}" opacity=".85">${g7}</g>` +
+          `<g id="g8" stroke="${MARK.C}" stroke-width="${f(cw)}">${g8}</g>` +
+          `<g id="g9" stroke="${MARK.C}" stroke-width="${f(cw * .9)}" opacity=".8">${g9}</g>` +
+        `</g>` +
+        `<g id="ink" fill="none" stroke="${INK}" stroke-width="${f(iw)}" stroke-linejoin="round" stroke-linecap="round">${inkS}</g>` +
+        `<g id="marks">${centers}${marks(B.marksV, MARK.V, 'mv')}${marks(B.marksM, MARK.M, 'mm')}${marks(B.ext.P, MARK.P, 'mp')}${marks(B.ros.C, MARK.C, 'mcc')}${marks(B.ros.G, MARK.P, 'mg')}${marks(B.marksQ, MARK.Q, 'mq')}</g>` +
+      `</g></g></g>`;
+    canvas.style.opacity = 0;
+    document.body.style.background = PAPER;
+
+    const me = { anims: [], dead: false, paused: false, waiting: false, raf: 0, release: null };
+    run = me;
+    const $ = sel => Array.from(overlay.querySelectorAll(sel));
+    const anim = (el, kf, opt) => { const a = el.animate(kf, { fill: 'both', ...opt }); a.playbackRate = state.speed; if (me.paused) a.pause(); me.anims.push(a); return a; };
+    // Hide every stroke until its step draws it
+    $('#cons line, #cons circle, #cons polygon, #cons polyline, #ink polyline').forEach(el => {
+      const Lg = (el.getTotalLength ? el.getTotalLength() : 1000) + 2;
+      el.style.strokeDasharray = `${Lg} ${Lg}`; el.style.strokeDashoffset = Lg; el._L = Lg;
+    });
+    $('#marks circle').forEach(el => { el.style.opacity = 0; el.style.transformBox = 'fill-box'; el.style.transformOrigin = 'center'; });
+    const drawAll = (els, spread, dur, start = 0) => els.map((el, n) =>
+      anim(el, [{ strokeDashoffset: el._L }, { strokeDashoffset: 0 }], { duration: dur, delay: start + (els.length > 1 ? n / (els.length - 1) : 0) * spread, easing: 'ease-in-out' }));
+    const popAll = (els, spread, start = 0) => els.map((el, n) =>
+      anim(el, [{ opacity: 0, transform: 'scale(0)' }, { opacity: 1, transform: 'scale(1.6)', offset: .6 }, { opacity: 1, transform: 'scale(1)' }],
+        { duration: 380, delay: start + (els.length > 1 ? n / (els.length - 1) : 0) * spread }));
+
+    const Tt = B.T, main = POLY[Tt.main], kinds = [...new Set(Tt.protos.filter(p => p.n && !p.V).map(p => p.n))].sort((a, b) => b - a);
+    const F = B.F;
+    const hasExt = B.ext.P.length > 0, hasRos = B.ros.C.length > 0;
+    const steps = [
+      ['Mark out the repeat unit', 'This rectangle is all that gets drawn. The whole wall is copies of it.',
+        () => drawAll($('#g1 line'), 500, 700)],
+      ['Set the compass on each center', `One circle for every regular polygon of the grid (${kinds.map(n => POLY[n] + 's').join(', ')}), sized so neighboring circles just touch.`,
+        () => [...popAll($('.mc'), 400), ...drawAll($('#g2 circle'), 1400, 900, 200)]],
+      ['Divide each circle into equal parts', kinds.map(n => `${n} for the ${POLY[n]}: ${divisionHint(n)}`).join('; ') + '. The spokes run out past each circle; the blue points mark the polygon corners on them.',
+        () => { const sp = drawAll($('#g3 line'), 1600, 500); return [...sp, ...popAll($('.mv'), 1200, 700)]; }],
+      ['Draw the tangent lines', irr.length
+        ? `The ${kinds.map(n => POLY[n] + 's').join(' and ')} are pushed together until they touch, edge for edge. The gaps left between them become tiles of their own.`
+        : `This is the hidden grid of ${Tt.name.toLowerCase()}. It will be erased at the end.`,
+        () => [...drawAll($('#g4 polygon'), 1400, 900), ...drawAll($('#g4b polygon'), 600, 800, 1200)]],
+      ['Find the middle of every edge', 'Half-way spokes and a smaller circle cross each edge at its midpoint. These orange contact points are where the pattern is anchored.',
+        () => [...drawAll($('#g5 line, #g5 circle'), 1300, 600), ...popAll($('.mm'), 1000, 800)]],
+      [F.join ? `Join every ${ORD[F.join]} midpoint` : `Draw the lines at ${f(B.theta)}°`,
+        (F.join ? `On each ${main}, a line from one midpoint to the ${ORD[F.join]} one after it leaves the edge at ${f(B.theta)}°. ` : `Through every midpoint, two lines cross like an X, each at ${f(B.theta)}° to the edge (the angle is copied from one edge to the next with the compass). `) +
+        'The red points are where the lines meet.',
+        () => [...drawAll($('#g6 line'), 1800, 800)]]
+    ];
+    if (hasExt) steps.push(['Carry the lines in to the spokes',
+      'Where two neighboring contact lines reach a corner spoke, they mark the midpoint of a smaller polygon, turned half a step. It holds the rosette, and the lines already drawn become its contact lines.',
+      () => [...drawAll($('#g7 circle, #g7 polygon'), 900, 900), ...popAll($('.mp'), 1000, 500)]]);
+    if (hasRos) steps.push(['Build the rosette petals',
+      'Open the compass from each corner to its midpoint and swing an arc; it cuts the corner spoke at a green point. Bisect the angle at the corner: where it meets the contact line is the shoulder of a petal (purple). From the shoulder, the line turns toward the green point.',
+      () => [...drawAll($('#g8 polyline'), 1600, 700), ...popAll($('.mcc'), 1200, 600), ...drawAll($('#g9 line'), 1400, 500, 900), ...popAll($('.mg'), 1200, 1300)]]);
+    steps.push(
+      ['Ink the pattern at the crossings', hasRos
+        ? 'Each line is inked from its midpoint, bent at its shoulder, and stopped at the crossing that closes its piece. Every red point comes from lines meeting; nothing is placed by eye.'
+        : 'Follow each line out from its midpoint until it meets the line coming from the neighboring midpoint, at a red crossing, and stop there. The pieces come straight out of those intersections.',
+        () => [...popAll($('.mq'), 1200), ...drawAll($('#ink polyline'), 2400, 1100, 300)]],
+      [state.keepGuides ? 'Keep the construction' : 'Erase the construction', state.keepGuides ? 'The circles and grid stay visible so you can see what each line depends on.' : 'The circles, the grid and the extra line lengths are rubbed out. Only the pattern remains.',
+        () => [anim($('#cons')[0], [{ opacity: 1 }, { opacity: state.keepGuides ? .45 : 0 }], { duration: 1100 }),
+               anim($('#marks')[0], [{ opacity: 1 }, { opacity: 0 }], { duration: 900 })]],
+      state.style === 'lines'
+        ? ['The drawing is complete', 'Every line is a piece of one of the construction lines, stopped at a crossing.',
+            () => [anim($('#final')[0], [{ opacity: 0 }, { opacity: 1 }], { duration: 900 }), anim($('#ink')[0], [{ opacity: 1 }, { opacity: 0 }], { duration: 900 })]]
+        : ['Cut the pieces', 'Each closed shape becomes a piece chipped from a single-color glazed tile, and identical shapes share a glaze.',
+            () => [anim($('#final')[0], [{ opacity: 0 }, { opacity: 1 }], { duration: 1600 }), anim($('#ink')[0], [{ opacity: 1 }, { opacity: 0 }], { duration: 1600 })]]);
+
+    const gate = () => new Promise(res => { me.waiting = true; me.release = () => { me.waiting = false; me.release = null; setControls(); res(); }; setControls(); });
+    (async () => {
+      try {
+        for (let n = 0; n < steps.length; n++) {
+          const [title, text, fn] = steps[n];
+          if (me.dead) return;
+          say(`${n + 1}. ${title}`, text);
+          const as = fn();
+          await Promise.all(as.map(a => a.finished));
+          if (me.dead) return;
+          await new Promise(res => setTimeout(res, 350 / state.speed));
+          if (state.stepMode && n < steps.length - 1) await gate();
+        }
+        if (me.dead) return;
+        say(`${steps.length + 1}. Repeat the unit`, 'The finished unit is copied edge to edge across the wall.');
+        if (state.stepMode) await gate();
+        if (me.dead) return;
+        const zoomG = overlay.querySelector('#zoom');
+        const paperEl = overlay.querySelector('#paper');
+        let p = 0, last = performance.now();
+        const DUR = 1600;
+        document.body.style.background = lk.ground;
+        const stepF = now => {
+          if (me.dead) return;
+          const dt = now - last; last = now;
+          if (!me.paused) p = Math.min(1, p + dt * state.speed / DUR);
+          const e = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+          zoomG.setAttribute('transform', zoomT(Z + (1 - Z) * e, [T[0] + (C[0] - T[0]) * e, T[1] + (C[1] - T[1]) * e]));
+          canvas.style.opacity = Math.max(0, (p - .3) / .7);
+          paperEl.setAttribute('fill', lk.ground);
+          if (p < 1) me.raf = requestAnimationFrame(stepF);
+          else stopDrawing();
+        };
+        me.raf = requestAnimationFrame(stepF);
+      } catch (e) { /* cancelled */ }
+    })();
+    setControls();
+  }
+
+  playBtn.onclick = () => playDrawing();
+  pauseBtn.onclick = () => {
+    if (!run) return;
+    run.paused = !run.paused;
+    run.anims.forEach(a => run.paused ? a.pause() : a.play());
+    setControls();
+  };
+  nextBtn.onclick = () => { if (run && run.release) run.release(); };
+  finishBtn.onclick = () => stopDrawing();
+  const speedEl = document.getElementById('speed');
+  speedEl.value = state.speed;
+  speedEl.oninput = () => {
+    state.speed = parseFloat(speedEl.value);
+    document.getElementById('speedOut').textContent = state.speed + '×';
+    if (run) run.anims.forEach(a => a.playbackRate = state.speed);
+    save();
+  };
+  document.getElementById('stepMode').onchange = e => { state.stepMode = e.target.checked; save(); };
+  ['keepGuides', 'grid'].forEach(id => { document.getElementById(id).onchange = e => { state[id] = e.target.checked; render(); }; });
+  document.querySelectorAll('#style button').forEach(b => b.onclick = () => { state.style = b.dataset.v; render(); });
+  addEventListener('resize', () => { if (run) stopDrawing(); });
+  const autoplay = () => { if (!matchMedia('(prefers-reduced-motion: reduce)').matches) playDrawing(); };
+
+  // ============================================================
+  // Panel: grids, families, pieces, palettes
+  // ============================================================
+  const thumbs = document.getElementById('thumbs');
+  function renderThumbs() {
+    thumbs.innerHTML = '';
+    ORDER.forEach((tid, n) => {
+      const B = build(tid, famOf(tid));
+      const b = document.createElement('button');
+      b.className = 'thumb';
+      b.setAttribute('aria-pressed', tid === state.tess);
+      const sz = Math.min(40, 100 * 100 / (Math.max(B.w, B.h) * 1.3));
+      b.innerHTML = `<svg viewBox="0 0 100 100" aria-hidden="true"><defs>${patternDef('p-t' + n, B, sz, .7, 0)}</defs>` +
+        `<rect width="100" height="100" fill="url(#p-t${n})"/></svg><span>${TESS[tid].name}</span>`;
+      b.onclick = () => { state.tess = tid; render(); };
+      thumbs.appendChild(b);
+    });
+  }
+  const famBox = document.getElementById('fams');
+  function renderFams() {
+    famBox.innerHTML = '';
+    const T = TESS[state.tess];
+    T.fams.forEach((F, fi) => {
+      const b = document.createElement('button');
+      b.className = 'fam';
+      b.setAttribute('aria-pressed', fi === famOf(state.tess));
+      b.innerHTML = `<span>${F.label}</span><small>${f(F.theta)}°</small>`;
+      b.onclick = () => { state.fam[state.tess] = fi; render(); };
+      famBox.appendChild(b);
+    });
+  }
+  const legend = document.getElementById('legend');
+  function renderLegend() {
+    legend.innerHTML = '';
+    { const B0 = current(); const shapes = new Set(B0.faces.map(fc => fc.pts.length + '_' + Math.round(fc.area / 40) + '_' + Math.round(perim(fc.pts) / 4)));
+      document.getElementById('pieceCount').textContent = `${shapes.size} different shapes, glazed as ${B0.classes.length} piece types.`; }
+    const B = current(), lk = look();
+    B.classes.forEach(c => {
+      const bb = bbox(c.sample), sc = 30 / Math.max(bb[2] - bb[0], bb[3] - bb[1]);
+      const P = c.sample.map(p => [(p[0] - (bb[0] + bb[2]) / 2) * sc + 19, (p[1] - (bb[1] + bb[3]) / 2) * sc + 19]);
+      const b = document.createElement('button');
+      b.className = 'piece';
+      b.innerHTML = `<svg viewBox="0 0 38 38" aria-hidden="true"><polygon points="${pts(P)}" fill="${lk.fill(B, c.key)}" stroke="${lk.lines ? INK : 'rgba(0,0,0,.35)'}" stroke-width="1"/></svg><span>${c.label}</span>`;
+      b.setAttribute('aria-label', `${c.label}: change glaze`);
+      b.title = `${c.count} in each repeat`;
+      b.onmouseenter = () => highlight(c.key, null); b.onfocus = () => highlight(c.key, null);
+      b.onmouseleave = () => highlight(null); b.onblur = () => highlight(null);
+      b.onclick = () => {
+        const pk = B.tid + '_' + B.fi;
+        const cur = glazeOf(B, c.key);
+        (state.pieceColors[pk] = state.pieceColors[pk] || {})[c.key] = GLAZES[(GLAZES.indexOf(cur) + 1) % GLAZES.length];
+        if (state.style === 'lines') state.style = 'tiles';
+        render();
+      };
+      legend.appendChild(b);
+    });
+  }
+
+  const palBox = document.getElementById('palettes');
+  function renderPalettes() {
+    palBox.innerHTML = '';
+    const chip = (pal, custom) => {
+      const wrap = document.createElement('span');
+      wrap.className = 'pal-wrap';
+      const b = document.createElement('button');
+      b.className = 'pal';
+      b.setAttribute('aria-pressed', state.style !== 'lines' && pal.name === state.palette);
+      b.innerHTML = `<i>${['ground', 'a', 'b', 'c', 'd', 'e', 'f'].map(k => `<b style="background:${pal.c[k]}"></b>`).join('')}</i>`;
+      b.appendChild(document.createTextNode(pal.name));
+      b.onclick = () => { state.colors = { ...PALETTES[0].c, ...pal.c }; state.palette = pal.name; if (state.style === 'lines') state.style = 'tiles'; render(); };
+      wrap.appendChild(b);
+      if (custom) {
+        const del = document.createElement('button');
+        del.className = 'pal-del'; del.textContent = '×';
+        del.setAttribute('aria-label', 'Delete palette ' + pal.name);
+        del.onclick = () => { state.custom = state.custom.filter(p => p !== pal); if (state.palette === pal.name) state.palette = null; render(); showToast('Palette deleted'); };
+        wrap.appendChild(del);
+      }
+      palBox.appendChild(wrap);
+    };
+    PALETTES.forEach(p => chip(p, false));
+    state.custom.forEach(p => chip(p, true));
+  }
+  document.getElementById('savePal').onclick = () => {
+    let n = state.custom.length + 1, name;
+    do { name = 'My palette ' + n++; } while (state.custom.some(p => p.name === name));
+    state.custom.push({ name, c: { ...state.colors } });
+    state.palette = name;
+    render(); showToast(name + ' saved');
+  };
+
+  const swBox = document.getElementById('swatches');
+  const inputs = {};
+  COLOR_KEYS.forEach(([k, label]) => {
+    const wrap = document.createElement('label');
+    wrap.className = 'sw';
+    const inp = document.createElement('input');
+    inp.type = 'color';
+    inp.setAttribute('aria-label', label + ' color');
+    inp.oninput = () => { state.colors[k] = inp.value; state.palette = null; if (state.style === 'lines') state.style = 'tiles'; render(); };
+    wrap.appendChild(inp); wrap.appendChild(document.createTextNode(label));
+    swBox.appendChild(wrap); inputs[k] = inp;
+  });
+  function syncSwatches() {
+    COLOR_KEYS.forEach(([k]) => { if (inputs[k].value.toLowerCase() !== state.colors[k].toLowerCase()) inputs[k].value = state.colors[k]; });
+  }
+
+  [['size', 'size'], ['grout', 'grout'], ['band', 'band'], ['rot', 'rot']].forEach(([id, k]) => {
+    const el = document.getElementById(id);
+    el.value = state[k];
+    el.oninput = () => { state[k] = parseFloat(el.value); render(); };
+  });
+
+  // Back to the grid's own palette and the default glaze for every piece of this pattern
+  document.getElementById('resetColors').onclick = () => {
+    const T = TESS[state.tess], B = current();
+    const pal = PALETTES.find(p => p.name === (T.palette || 'Fès tile')) || PALETTES[0];
+    state.colors = { ...PALETTES[0].c, ...pal.c };
+    state.palette = pal.name;
+    delete state.pieceColors[B.tid + '_' + B.fi];
+    if (state.style === 'lines') state.style = 'tiles';
+    render(); showToast('Colors reset to ' + pal.name);
+  };
+  document.getElementById('shuffle').onclick = () => {
+    const B = current(), pk = B.tid + '_' + B.fi;
+    const keys = GLAZES.slice(0, 6).sort(() => Math.random() - .5);
+    state.pieceColors[pk] = {};
+    B.classes.forEach((c, n) => state.pieceColors[pk][c.key] = keys[n % keys.length]);
+    if (state.style === 'lines') state.style = 'tiles';
+    render();
+  };
+
+  const toast = document.getElementById('toast');
+  function showToast(msg) {
+    toast.textContent = msg; toast.classList.add('show');
+    clearTimeout(showToast.t); showToast.t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  document.getElementById('copy').onclick = async () => {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">` +
+      `<defs>${patternDef('zellige', current(), state.size, state.grout, state.rot, { guides: state.keepGuides, grid: state.grid })}</defs>` +
+      `<rect width="1200" height="800" fill="url(#zellige)"/></svg>`;
+    try { await navigator.clipboard.writeText(svg); showToast('SVG copied'); }
+    catch (e) {
+      const dlg = document.getElementById('svgDialog'), ta = document.getElementById('svgText');
+      ta.value = svg; if (dlg.showModal) { dlg.showModal(); ta.select(); }
+    }
+  };
+  document.getElementById('closeDialog').onclick = () => document.getElementById('svgDialog').close();
+  const about = document.getElementById('about');
+  document.getElementById('aboutBtn').onclick = () => { if (about.showModal) about.showModal(); };
+  document.getElementById('closeAbout').onclick = () => about.close();
+
+  const reveal = document.getElementById('reveal');
+  document.getElementById('hide').onclick = () => { panel.classList.add('hidden'); reveal.classList.add('show'); captionEl.classList.add('full'); reveal.focus(); };
+  reveal.onclick = () => { panel.classList.remove('hidden'); reveal.classList.remove('show'); captionEl.classList.remove('full'); };
+
+  // ---------- Moving around the infinite wall, and finding every copy of a piece ----------
+  let hoverCls = null, drag = null;
+  const tip = document.getElementById('tip');
+  function highlight(cls, at) {
+    if (cls === hoverCls && !at) return;
+    const hlRect = document.getElementById('hlRect'), hl = document.getElementById('p-hl');
+    if (!hlRect || !hl) return;
+    if (!cls || run) { hoverCls = null; hlRect.style.display = 'none'; tip.style.display = 'none'; return; }
+    const B = current(), lk = look(), k = state.size / 100, c = B.classes.find(x => x.key === cls);
+    if (cls !== hoverCls) {
+      hoverCls = cls;
+      hl.setAttribute('width', f(B.w * k)); hl.setAttribute('height', f(B.h * k));
+      hl.setAttribute('patternTransform', ptf(state.rot, true));
+      const sw = Math.max(state.grout, 1) / k;
+      hl.innerHTML = `<g transform="scale(${k})"><rect x="-1" y="-1" width="${f(B.w + 2)}" height="${f(B.h + 2)}" fill="${lk.ground}" opacity=".62"/>` +
+        B.faces.filter(fc => fc.cls === cls).map(fc => `<polygon points="${pts(fc.pts)}" fill="${lk.fill(B, fc.cls)}" stroke="${INK}" stroke-width="${f(sw * 1.6)}" stroke-linejoin="round"/>`).join('') + '</g>';
+      hlRect.style.display = '';
+    }
+    if (at && c) {
+      tip.textContent = `${c.label} · ${c.count} in each repeat`;
+      tip.style.display = 'block'; tip.style.left = (at[0] + 14) + 'px'; tip.style.top = (at[1] + 14) + 'px';
+    } else tip.style.display = 'none';
+  }
+  const pip2 = (V, p) => { let c = false; for (let i = 0, j = V.length - 1; i < V.length; j = i++) { const a = V[i], b = V[j];
+    if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; };
+  function pieceAt(sx, sy) {
+    const B = current(), k = state.size / 100, r = state.rot * D;
+    const dx = sx - view.x, dy = sy - view.y;
+    let x = (dx * Math.cos(r) + dy * Math.sin(r)) / k, y = (-dx * Math.sin(r) + dy * Math.cos(r)) / k;
+    x = ((x % B.w) + B.w) % B.w; y = ((y % B.h) + B.h) % B.h;
+    for (const fc of B.faces) {
+      const bb = fc.bb || (fc.bb = bbox(fc.pts));
+      if (x < bb[0] || x > bb[2] || y < bb[1] || y > bb[3]) continue;
+      if (pip2(fc.pts, [x, y])) return fc.cls;
+    }
+    return null;
+  }
+  const setPan = () => {
+    const pm = document.getElementById('p-main'), hl = document.getElementById('p-hl');
+    if (pm) pm.setAttribute('patternTransform', ptf(state.rot, true));
+    if (hl) hl.setAttribute('patternTransform', ptf(state.rot, true));
+  };
+  canvas.addEventListener('pointerdown', e => {
+    if (run) return;
+    drag = { x: e.clientX, y: e.clientY, vx: view.x, vy: view.y, moved: false };
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (run) return;
+    if (drag) {
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (Math.abs(dx) + Math.abs(dy) > 3) { drag.moved = true; canvas.classList.add('dragging'); highlight(null); }
+      if (drag.moved) { view.x = drag.vx + dx; view.y = drag.vy + dy; setPan(); }
+      return;
+    }
+    if (e.pointerType === 'mouse') highlight(pieceAt(e.clientX, e.clientY), [e.clientX, e.clientY]);
+  });
+  const endDrag = e => {
+    if (drag && !drag.moved && e.pointerType !== 'mouse') highlight(pieceAt(e.clientX, e.clientY), [e.clientX, e.clientY]);
+    drag = null; canvas.classList.remove('dragging');
+  };
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', endDrag);
+  canvas.addEventListener('pointerleave', () => { if (!drag) highlight(null); });
+  canvas.addEventListener('wheel', e => {
+    if (run) return;
+    e.preventDefault();
+    const old = state.size, next = Math.max(20, Math.min(220, Math.round(old * Math.exp(-e.deltaY * 0.0015))));
+    if (next === old) return;
+    // keep the point under the cursor fixed while zooming
+    view.x = e.clientX - (e.clientX - view.x) * next / old;
+    view.y = e.clientY - (e.clientY - view.y) * next / old;
+    state.size = next; document.getElementById('size').value = next;
+    clearTimeout(canvas._wz); canvas._wz = setTimeout(render, 60);
+  }, { passive: false });
+  addEventListener('keydown', e => {
+    if (run || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+    const step = 60, m = { ArrowLeft: [step, 0], ArrowRight: [-step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] }[e.key];
+    if (m) { view.x += m[0]; view.y += m[1]; setPan(); e.preventDefault(); }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

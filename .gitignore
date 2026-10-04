@@ -1,0 +1,16 @@
+node_modules
+dist
+coverage
+tmp
+out-tsc
+*.tsbuildinfo
+.nx/cache
+.nx/workspace-data
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+
+# Private research images: kept locally, never committed or shipped
+docs/research/
