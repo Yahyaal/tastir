@@ -9,5 +9,14 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 
 ## Format
 
-- The cell may be a rectangle or a parallelogram whose lattice also repeats as a rectangle, such as the 60° rhombus of a hexagonal pattern. Repeats exist for `rot3`, `rot4`, `rot5`, `rot6`, `rot8`, `rot10`, `rot12` and `rot16`.
+- The cell may be a rectangle, a parallelogram whose lattice also repeats as a rectangle, or a centrally symmetric hexagon. Repeats exist for `rot3`, `rot4`, `rot5`, `rot6`, `rot8`, `rot10`, `rot12` and `rot16`.
+- Use the hexagon around O as the cell for six- and twelve-fold patterns, not a rhombus. Free inking (and its test) only offers construction inside the cell, and a rhombus with a corner at O reaches into neighbouring hexagons where nothing was built.
+- A step-by-step source often draws a star as lines, not as two triangles. Match the source's elements, not just its final shape, or the step comparison shows extra lines.
+- Our renders are framed on the cell, so they can look smaller than the source. Crop the source to the same area before deciding a step does not match.
+- Run `python3 tools/review/format_tutorial.py tutorials/<id>.json` after generating a tutorial with a script; `json.dump` with indent 2 spreads every element over a dozen lines.
 - The golden test checks the tutorial's `fold` symmetry about O for pieces within distance 1 of O, so O must be a rosette centre and OA should be about the size of the rosette.
+
+## Tooling
+
+- Agent worktrees live in `.claude/worktrees/` inside the repo. Without `.nxignore`, Nx picks them up as extra projects, the main test run fails with circular project references, and `pnpm typecheck` adds them to the root `tsconfig.json`. `.nxignore` now excludes `.claude/`.
+- `perf.spec.ts` times a 3,000-segment arrangement against 300 ms. While several agents run tests at once it can take slightly longer; rerun it alone before treating it as a regression.

@@ -4,3 +4,4 @@ One line per tutorial in `tutorials/`. **verified** means the tiled pattern was 
 
 | Tutorial | Fold | Status | Notes |
 | --- | --- | --- | --- |
+| six-fold-snowflake | 6 | verified | Matches the Ibn Tulun window grille and the Eski Mosque panel. Only one step-by-step source for this exact sequence (mamoot). |
