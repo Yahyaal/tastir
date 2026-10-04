@@ -119,7 +119,8 @@ class Canvas:
 def view_of(dump):
     """One view for every image, so the steps line up with each other."""
     if "cell" in dump:
-        pts = dump["cell"]["corners"]
+        # The cell, and the rosette at O, which a rhombus cell may only touch.
+        pts = dump["cell"]["corners"] + [(-1.1, -1.1), (1.1, 1.1)]
     else:
         last = next((s for s in reversed(dump["steps"]) if "elements" in s), None)
         pts = []
