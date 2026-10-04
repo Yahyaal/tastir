@@ -14,3 +14,6 @@ vitest.config.*.timestamp*
 
 # Private research images: kept locally, never committed or shipped
 docs/research/
+
+# Review renders: regenerate with pnpm review <id>
+docs/review/

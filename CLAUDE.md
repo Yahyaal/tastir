@@ -47,6 +47,9 @@ pnpm lint          ESLint in every project
 pnpm typecheck     strict TypeScript in every project
 pnpm format        Prettier over code and config (Markdown and tutorials are left as written)
 pnpm dev           player dev server at http://localhost:4200
+pnpm review <id>   render each step, the ink, one tile and the wall to docs/review/<id>/
+pnpm compare <id> <step|wall> <picture> [--crop x,y,w,h]
+                   put a source picture beside our render as compare-step-N.png
 ```
 
 The engine's tsconfig has no DOM or Node types, so any DOM use in `packages/engine` fails typecheck.
