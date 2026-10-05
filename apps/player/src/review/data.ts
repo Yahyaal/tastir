@@ -66,7 +66,9 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bou-inania-v2',
     title: 'Bou Inania rosette, her way (draft: where it does not match)',
     fold: 12,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: put it in the library as it is, to see the repeat. Done: /#/bou-inania-rosette (slivers marked small).',
     summary:
       'Built her way as far as it goes: her rosette, the bigger circle, and sets of twelve lines each drawn through a crossing already on the paper. Four areas still differ from the drawing.',
     story: [
@@ -804,20 +806,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'bou-areas',
-    text: 'Bou Inania her way: four areas (A–D in the picture) still differ from the drawing. Any ideas, especially for A, the band round the green shields?',
-    choices: ['I have ideas (type them)', 'Good enough, put it in the library'],
-    pictures: [
-      {
-        src: 'renders/bou-inania-v2/mismatch-areas.png',
-        caption: 'Ours (left) and the drawing (right).',
-      },
-    ],
-    card: 'bou-inania-v2',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -905,7 +894,7 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Waiting: your ideas on the Bou Inania areas A–D',
+    title: 'Bou Inania draft in the library; your ideas on areas A–D welcome',
     text: 'Draft built: her rosette plus eleven sets of lines through crossings. Fixing the small stars and slivers, then colouring and the library.',
     link: { label: 'Card', href: '#bou-inania-v2' },
   },
