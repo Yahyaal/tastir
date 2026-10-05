@@ -258,6 +258,28 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
   );
 }
 
+/** Seconds over which the ink strokes start, centre first. */
+const INK_SPREAD = 1.8;
+
+/**
+ * When each ink stroke starts drawing: in order of distance from O, so the
+ * pattern grows outwards from the centre of the tile.
+ */
+export function inkDelays(model: Model): number[] {
+  const ink = model.pattern.ink;
+  const dist = ink.map(({ segment: s }) =>
+    Math.hypot((s.a.x + s.b.x) / 2, (s.a.y + s.b.y) / 2),
+  );
+  const order = dist
+    .map((_, i) => i)
+    .sort((a, b) => (dist[a] ?? 0) - (dist[b] ?? 0));
+  const delays = new Array<number>(ink.length).fill(0);
+  order.forEach((i, rank) => {
+    delays[i] = 0.6 + (INK_SPREAD * rank) / Math.max(1, ink.length - 1);
+  });
+  return delays;
+}
+
 /**
  * The construction up to `upTo`: the elements of step `upTo` in color and
  * earlier ones in light grey. With `ink`, everything is faint and the ink
@@ -271,6 +293,7 @@ export function Construction({
   svgRef,
   outlineHighlights = false,
   freeInk,
+  enter = false,
 }: {
   model: Model;
   upTo: number;
@@ -282,7 +305,11 @@ export function Construction({
   outlineHighlights?: boolean;
   /** On the ink stage: every piece the learner can ink, and which are. */
   freeInk?: FreeInk;
+  /** Play the move into the ink stage: the ink strokes appear over the
+   * construction, from the centre outwards, as the construction fades. */
+  enter?: boolean;
 }) {
+  const delays = ink && enter ? inkDelays(model) : [];
   const size = width(view);
   // Lines are clipped well beyond the view, so panning never shows an end.
   const clipTo = fit(view, 1);
@@ -297,7 +324,7 @@ export function Construction({
   return (
     <svg
       ref={svgRef}
-      className="drawing"
+      className={ink && enter ? 'drawing ink-enter' : 'drawing'}
       viewBox={viewBox(view)}
       role="img"
       aria-label={
@@ -336,6 +363,13 @@ export function Construction({
               x2={sx(s.segment.b)}
               y2={sy(s.segment.b)}
               vectorEffect="non-scaling-stroke"
+              style={
+                enter
+                  ? ({
+                      '--delay': `${delays[i] ?? 0}s`,
+                    } as React.CSSProperties)
+                  : undefined
+              }
             />
           ))}
         </g>
@@ -398,51 +432,101 @@ export function tiling(
 
 const isOrigin = (d: Vec) => d.x === 0 && d.y === 0;
 
+/** The view shrunk by `k` about its centre. */
+function zoomIn(view: Rect, k: number): Rect {
+  const cx = (view.minX + view.maxX) / 2;
+  const cy = (view.minY + view.maxY) / 2;
+  const hw = (view.maxX - view.minX) / (2 * k);
+  const hh = (view.maxY - view.minY) / (2 * k);
+  return { minX: cx - hw, maxX: cx + hw, minY: cy - hh, maxY: cy + hh };
+}
+
 /**
  * The inked tile copied edge to edge: the original in color, the copies in
  * ink, and the tile borders faint, so the new shapes between the copies
  * show where they close up.
  */
-export function RepeatedInk({ model }: { model: Model }) {
+export function RepeatedInk({
+  model,
+  enter = false,
+}: {
+  model: Model;
+  /** Play the move into the repeat: the view starts on the one tile, and
+   * the copies slide out of it ring by ring as the view pulls back. */
+  enter?: boolean;
+}) {
   const { view, shifts } = tiling(model);
   const { cell, ink } = model.pattern;
+  const span = Math.max(
+    Math.hypot(cell.u.x, cell.u.y),
+    Math.hypot(cell.v.x, cell.v.y),
+  );
+  /** How many tiles away a copy is, so nearer copies arrive first. */
+  const ring = (d: Vec) => Math.round(Math.hypot(d.x, d.y) / span);
+  const vars = (d: Vec) =>
+    enter
+      ? ({
+          '--dx': d.x,
+          '--dy': -d.y,
+          // Rings beyond the fourth are off screen at first; they arrive
+          // together with the fourth.
+          '--delay': `${0.4 + 0.4 * (Math.min(ring(d), 4) - 1)}s`,
+        } as React.CSSProperties)
+      : undefined;
   return (
     <svg
-      className="drawing wall"
+      className={enter ? 'drawing wall repeat-enter' : 'drawing wall'}
       viewBox={viewBox(view)}
       preserveAspectRatio="xMidYMid slice"
       role="img"
       aria-label="The inked tile repeated edge to edge"
     >
-      <g className="tile-borders">
-        {shifts.map((d, k) => (
-          <polygon
-            key={k}
-            points={points(
-              cell.corners.map((p) => ({ x: p.x + d.x, y: p.y + d.y })),
-            )}
-            vectorEffect="non-scaling-stroke"
-          />
-        ))}
-      </g>
-      {shifts.map((d, k) => (
-        <g
-          key={k}
-          className={isOrigin(d) ? 'ink original' : 'ink'}
-          transform={`translate(${d.x} ${-d.y})`}
-        >
-          {ink.map((s, i) => (
-            <line
-              key={i}
-              x1={sx(s.segment.a)}
-              y1={sy(s.segment.a)}
-              x2={sx(s.segment.b)}
-              y2={sy(s.segment.b)}
+      {enter ? (
+        // Start on the one tile and pull back to the whole wall. The view
+        // box itself is animated, so the zoom is always about the tile.
+        <animate
+          attributeName="viewBox"
+          from={viewBox(zoomIn(view, 2.6))}
+          to={viewBox(view)}
+          dur="2.4s"
+          fill="freeze"
+          calcMode="spline"
+          keyTimes="0;1"
+          keySplines="0.42 0 0.58 1"
+        />
+      ) : null}
+      <g className="zoom">
+        <g className="tile-borders">
+          {shifts.map((d, k) => (
+            <polygon
+              key={k}
+              points={points(
+                cell.corners.map((p) => ({ x: p.x + d.x, y: p.y + d.y })),
+              )}
               vectorEffect="non-scaling-stroke"
             />
           ))}
         </g>
-      ))}
+        {shifts.map((d, k) => (
+          <g
+            key={k}
+            className={isOrigin(d) ? 'ink original' : 'ink copy'}
+            transform={`translate(${d.x} ${-d.y})`}
+            style={isOrigin(d) ? undefined : vars(d)}
+          >
+            {ink.map((s, i) => (
+              <line
+                key={i}
+                x1={sx(s.segment.a)}
+                y1={sy(s.segment.a)}
+                x2={sx(s.segment.b)}
+                y2={sy(s.segment.b)}
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+          </g>
+        ))}
+      </g>
     </svg>
   );
 }

@@ -37,6 +37,15 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - Classify ink by face colours, not by distance to dark pixels, when the drawing is coloured: thick outlines make short false pieces look inked. But the faces must be cut by every line that reaches the tile, including lines of motifs centred in neighbouring tiles.
 - Time-box a pattern: after about two hours without a clean pieces comparison, record the state in the queue and move on.
 
+## Player
+
+- CSS animations do not play inside an SVG `<pattern>`; animate an overlay instead (the colour veil in `Wall.tsx`).
+- Dashes cannot draw a line with `vector-effect: non-scaling-stroke` along its length (the path length is ignored); fade strokes in instead.
+- A CSS zoom on SVG content with `transform-box: view-box` does not centre on the view box; animate the `viewBox` attribute with SMIL instead.
+- In jsdom, hundreds of elements each with an inline custom property are very slow; put the property on a parent group.
+- Prettier rewriting a file while the dev server is reading it can leave Vite serving an empty module; `touch` the file to make it reload.
+- To check an animation, drive headless Chrome over the DevTools protocol (`node` has `WebSocket`): press keys, take screenshots at chosen times, and read `element.getAnimations()` when a frame looks wrong.
+
 ## Tooling
 
 - Agent worktrees live in `.claude/worktrees/` inside the repo. Without `.nxignore`, Nx picks them up as extra projects, the main test run fails with circular project references, and `pnpm typecheck` adds them to the root `tsconfig.json`. `.nxignore` now excludes `.claude/`.

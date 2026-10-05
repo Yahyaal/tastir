@@ -540,3 +540,84 @@ button:disabled {
   color: #92400e;
   text-decoration: none;
 }
+
+/* Transitions between the last step, the ink, the repeat and the colour.
+   They play only on the way forward, and never with Reduce motion. */
+
+/* Construction to ink: the construction holds, then fades back while each
+   ink stroke draws itself, from the centre of the tile outwards. */
+.ink-enter .el.faint {
+  animation: construction-recede 1.2s ease-in-out 0.2s both;
+}
+
+@keyframes construction-recede {
+  from {
+    stroke: var(--old);
+  }
+}
+
+.ink-enter .ink line {
+  animation: ink-draw 0.5s ease-out var(--delay, 0s) both;
+}
+
+/* Lines keep a constant width on screen, which rules out drawing them
+   along their length with dashes; each stroke glows in instead. */
+@keyframes ink-draw {
+  from {
+    opacity: 0;
+    stroke: var(--current);
+  }
+  60% {
+    opacity: 1;
+    stroke: var(--current);
+  }
+}
+
+/* Ink to repeat: start on the one tile, and pull back while the copies
+   slide out of it, nearest first. */
+.repeat-enter .ink.copy {
+  animation: repeat-slide 0.8s ease-out var(--delay, 0s) both;
+}
+
+@keyframes repeat-slide {
+  from {
+    transform: translate(calc(var(--dx) * 0.75px), calc(var(--dy) * 0.75px));
+    opacity: 0;
+  }
+  to {
+    transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px));
+    opacity: 1;
+  }
+}
+
+.repeat-enter .tile-borders {
+  animation: fade-in 0.8s ease 1.8s both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Repeat to colour: the wall starts as lines on white, and each piece type
+   floods in with its colour, one type after another. */
+.color-veil {
+  pointer-events: none;
+}
+
+.color-veil .veil-type {
+  animation: color-flood 0.7s ease-out calc(0.3s + var(--type, 0) * 0.45s) both;
+}
+
+@keyframes color-flood {
+  to {
+    opacity: 0;
+  }
+}
+
+.stage-hint {
+  margin: -4px 0 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}

@@ -57,6 +57,7 @@ export function Wall({
   hovered,
   onHover,
   onPick,
+  enter = false,
 }: {
   model: Model;
   colors: readonly string[];
@@ -67,6 +68,8 @@ export function Wall({
   hovered?: number;
   onHover?: (type: number | undefined) => void;
   onPick?: (type: number) => void;
+  /** Play the move into colour: each piece type floods in, one by one. */
+  enter?: boolean;
 }) {
   const id = useId().replace(/:/g, '');
   const svgRef = useRef<SVGSVGElement>(null);
@@ -122,11 +125,39 @@ export function Wall({
     return hit ? pattern.pieces[hit.index]?.type : undefined;
   };
 
+  // The pieces sit in an SVG pattern, where CSS animations do not play, so
+  // the colour flood is a white veil over the wall: one copy of every piece
+  // in the first view, fading out a type at a time. Once faded it stays,
+  // invisible and ignoring the pointer.
+  const veil = useMemo(() => {
+    if (!enter) return [];
+    const { shifts } = tiling(model);
+    const view = start;
+    const out: { type: number; pts: string }[] = [];
+    for (const d of shifts) {
+      for (const p of pattern.pieces) {
+        const moved = p.polygon.map((q) => ({ x: q.x + d.x, y: q.y + d.y }));
+        if (
+          moved.every((q) => q.x < view.minX) ||
+          moved.every((q) => q.x > view.maxX) ||
+          moved.every((q) => q.y < view.minY) ||
+          moved.every((q) => q.y > view.maxY)
+        )
+          continue;
+        out.push({
+          type: p.type,
+          pts: moved.map((q) => `${q.x},${-q.y}`).join(' '),
+        });
+      }
+    }
+    return out;
+  }, [enter, model, pattern, start]);
+
   const cover = fit(camera.view, 1);
   return (
     <svg
       ref={svgRef}
-      className={`drawing wall style-${style}`}
+      className={`drawing wall style-${style}${enter ? ' color-enter' : ''}`}
       viewBox={viewBox(camera.view)}
       preserveAspectRatio="xMidYMid slice"
       role="img"
@@ -155,6 +186,7 @@ export function Wall({
               key={i}
               data-type={p.type}
               className={pieceClass(p.type)}
+              style={{ '--type': p.type } as React.CSSProperties}
               points={pts(p.corners)}
               fill={style === 'lines' ? 'none' : colors[p.type]}
               stroke={
@@ -193,6 +225,27 @@ export function Wall({
         height={cover.maxY - cover.minY}
         fill={`url(#wall-${id})`}
       />
+      {veil.length ? (
+        <g className="color-veil" aria-hidden="true">
+          {pattern.types.map((_, type) => (
+            <g
+              key={type}
+              className="veil-type"
+              style={{ '--type': type } as React.CSSProperties}
+              fill="#fff"
+              stroke={INK}
+              strokeWidth={groutWidth}
+              strokeLinejoin="round"
+            >
+              {veil
+                .filter((v) => v.type === type)
+                .map((v, i) => (
+                  <polygon key={i} points={v.pts} />
+                ))}
+            </g>
+          ))}
+        </g>
+      ) : null}
     </svg>
   );
 }

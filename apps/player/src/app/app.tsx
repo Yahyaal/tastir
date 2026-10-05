@@ -112,6 +112,10 @@ export function Player({ model }: { model: Model }) {
   const reversing = useRef(false);
   // Set when the next render should animate its step in: on load and Next.
   const animateNext = useRef(true);
+  // Whether the learner arrived at this stage with Next (or on load), so
+  // the stage plays its way in; Back shows it as it is.
+  const [forward, setForward] = useState(true);
+  const enter = forward && !reduced;
 
   /** Jumps every running animation to its end. */
   const settle = () => {
@@ -150,6 +154,7 @@ export function Player({ model }: { model: Model }) {
     settle();
     if (index === last) return;
     animateNext.current = true;
+    setForward(true);
     setIndex(index + 1);
   }, [index, last]);
 
@@ -158,6 +163,7 @@ export function Player({ model }: { model: Model }) {
     if (reversing.current) return settle();
     settle();
     if (index === 0) return;
+    setForward(false);
     const undraw =
       stage.kind === 'step' && !reduced
         ? play(
@@ -187,6 +193,7 @@ export function Player({ model }: { model: Model }) {
 
   const steps = tutorial.steps.length;
   let label: string;
+  let hint: string | undefined;
   let text: string;
   let picture: React.ReactNode;
   if (stage.kind === 'step') {
@@ -203,6 +210,7 @@ export function Player({ model }: { model: Model }) {
     );
   } else if (stage.kind === 'ink') {
     label = 'Ink';
+    hint = 'The pattern, picked out of the lines you drew.';
     text = inking.isClassic
       ? (tutorial.ink.text ?? 'Go over the pattern lines.')
       : 'Your own pattern: the next steps repeat and color the lines you inked.';
@@ -214,16 +222,19 @@ export function Player({ model }: { model: Model }) {
         svgRef={svgRef}
         freeInk={inking.freeInk}
         ink
+        enter={enter && !inking.editing}
       />
     );
   } else if (stage.kind === 'repeat') {
     label = 'Repeat';
+    hint = 'Copies of the tile, laid edge to edge.';
     text =
       tutorial.pattern.text ??
       'Repeat the tile edge to edge, with the same lines in every copy.';
-    picture = <RepeatedInk model={inking.shown} />;
+    picture = <RepeatedInk model={inking.shown} enter={enter} />;
   } else {
     label = 'Color';
+    hint = 'One color for each shape of piece.';
     text = colorText(inking.shown);
     picture = (
       <Wall
@@ -234,6 +245,7 @@ export function Player({ model }: { model: Model }) {
         hovered={hovered}
         onHover={setHovered}
         onPick={(type) => setSelected(type)}
+        enter={enter}
       />
     );
   }
@@ -277,6 +289,7 @@ export function Player({ model }: { model: Model }) {
       <footer>
         <div className="text">
           <p className="label">{label}</p>
+          {hint ? <p className="stage-hint">{hint}</p> : null}
           <p aria-live="polite">{text}</p>
           {stage.kind === 'ink' ? (
             <div className="ink-tools">

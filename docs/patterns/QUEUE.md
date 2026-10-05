@@ -4,7 +4,7 @@ Continue from the first unchecked item after any interruption (including a usage
 
 Standing goals: many designs per pattern family, not one; build toward letting users make their own designs.
 
-- [ ] **Player transitions (owner, 2026-10-04; do first).** The jump from the last construction step to the ink is unexplained; add a transition that shows the ink being picked out of the construction, then one showing the repeats being generated, then one showing the pattern being coloured.
+- [x] **Player transitions (owner, 2026-10-04).** Done: ink grows out of the construction from the centre, the repeat pulls back while copies arrive ring by ring, colour floods in a piece type at a time (a fading white veil, since SVG patterns do not animate); each stage has a one-line hint. Original request: The jump from the last construction step to the ink is unexplained; add a transition that shows the ink being picked out of the construction, then one showing the repeats being generated, then one showing the pattern being coloured.
 - [x] **Design C shifted rows (owner):** done as `kurt-eight-fold-zellige-shifted`.
 - [ ] **Owner decisions of 2026-10-04 (do these first).**
   - [x] Design A: add a repeat with rows shifted by half a rosette (done: `alhambra-star-and-arrows-shifted`, needs a band between rows; question on the review page).
