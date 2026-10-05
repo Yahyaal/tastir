@@ -654,3 +654,92 @@ export interface Question {
  * matters given an earlier answer comes straight after it.
  */
 export const QUESTIONS: readonly Question[] = [];
+
+export interface ProgressItem {
+  readonly title: string;
+  readonly text: string;
+  /** A card on this page, or a tutorial in the player (`/#/<id>`). */
+  readonly link?: { readonly label: string; readonly href: string };
+}
+
+/**
+ * Where the work stands, shown at the top of the review page: what is done,
+ * what is left (in the order I will do it) and what waits on the owner.
+ * Updated as the work moves; `updated` is the date of the last change.
+ */
+export const PROGRESS: {
+  readonly updated: string;
+  readonly goal: string;
+  readonly done: readonly ProgressItem[];
+  readonly now: ProgressItem;
+  readonly next: readonly ProgressItem[];
+  readonly waiting: readonly ProgressItem[];
+} = {
+  updated: '5 October 2026',
+  goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
+  done: [
+    {
+      title: 'Colors by placement',
+      text: 'Pieces of the same shape can now take different colors by their direction and their place in the wall. Comares bones are colored like the photo (white across; black, teal and brown standing up), and the Infantas plaster stars in four colors. Click a piece in the color stage and tick “Only pieces placed like this one” to recolor just those.',
+      link: { label: 'Comares bones', href: '/#/alhambra-comares-bones' },
+    },
+    {
+      title: 'The two “cannot be played” errors',
+      text: 'Fixed. The dev server was not watching the engine and schema folders, so it kept an old copy of the tutorial format that did not know the new colors. It now watches them, and it restarted itself with the fix.',
+    },
+    {
+      title: 'Hand-drawn transitions',
+      text: 'Ink is drawn line by line along each path (red while drawing, black when done, no pen dot); the repeat copies the tile along a row, then copies the row up and across (showing the shift when rows are shifted); color is painted one color at a time from the centre out.',
+      link: {
+        label: 'Eight-fold zellige wheel, shifted rows',
+        href: '/#/kurt-eight-fold-zellige-shifted',
+      },
+    },
+    {
+      title: 'Design C with shifted rows',
+      text: 'Rows of Kurt’s wheels shifted by half a wheel and moved closer, to 2√2 − 1 apart, so the wheels nest.',
+      link: {
+        label: 'Eight-fold zellige wheel, shifted rows',
+        href: '/#/kurt-eight-fold-zellige-shifted',
+      },
+    },
+    {
+      title: 'Design E: the photo read',
+      text: 'The Bou Inania wall turned out to be twelve-fold, not sixteen-fold. I averaged every rosette, corner and edge of the photo into one sharp tile, and fitted the rosette exactly: every line at a multiple of 15°, tied to the tile by two crossings, buildable by ruler and compass, within a seventh of a band’s width of the photo. The centre star is decided too.',
+      link: { label: 'Design E card', href: '#sixteen-fold-rosette' },
+    },
+  ],
+  now: {
+    title: 'Design E: the rest of the wall',
+    text: 'Draw the rosette’s rim, the eight-fold corner stars with their orange rings, and the bands along the grid lines that meet in the black X; then write the tutorial steps, check it with the tests, and put it on this page beside the photo for you to judge.',
+    link: { label: 'Design E card', href: '#sixteen-fold-rosette' },
+  },
+  next: [
+    {
+      title: 'Design H family',
+      text: 'Two or more advanced twelve-fold designs from the dodecagram tutorial (other ways of joining the stars, stars set apart), each checked against a real example.',
+    },
+    {
+      title: 'More designs per family',
+      text: 'At least one more for each family: an Alhambra panel from Wichmann’s line drawings, an Ibn Tulun window grille with a published construction, and an eight-fold star-and-octagon variant, each with a photo.',
+    },
+    {
+      title: 'Inking along a line',
+      text: 'A small format change: an ink path can name a line and the two lines it runs between, so tutorials no longer need steps that only mark turning points (the four-fold ring has two such steps, 360 marks).',
+    },
+    {
+      title: 'Córdoba Synagogue, one more try',
+      text: 'The geometry is solved; choosing which bits of line are inked is not. One more attempt with the method in my notes; if it fails I will ask you whether a simpler Córdoba design is acceptable.',
+    },
+  ],
+  waiting: [
+    {
+      title: 'Alhambra interlace',
+      text: 'Needs a better source than the product page: a photo or drawing of the whole panel.',
+    },
+    {
+      title: 'Alhambra rosette’s real repeat',
+      text: 'Needs a photo of the ceiling or wall around the rosette, to see how it repeats.',
+    },
+  ],
+};

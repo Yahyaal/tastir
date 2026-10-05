@@ -1,8 +1,27 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { PATTERNS, QUESTIONS } from './data';
+import { PATTERNS, PROGRESS, QUESTIONS } from './data';
 import { Review } from './Review';
 
 describe('the review page', () => {
+  it('shows the progress first: now, done, still to do, and waiting on the owner', () => {
+    render(<Review />);
+    const progress = document.querySelector('#progress') as HTMLElement;
+    expect(progress).toBeTruthy();
+    expect(progress.querySelector('.progress-now li')?.textContent).toContain(
+      PROGRESS.now.title,
+    );
+    expect(progress.querySelectorAll('.progress-done li')).toHaveLength(
+      PROGRESS.done.length,
+    );
+    expect(progress.querySelectorAll('.progress-next li')).toHaveLength(
+      PROGRESS.next.length,
+    );
+    const order = [...document.querySelectorAll('h2.group')].map(
+      (h) => h.textContent,
+    );
+    expect(order[0]).toBe('Progress');
+  });
+
   it('says so when there are no questions', () => {
     render(<Review />);
     if (QUESTIONS.length === 0)

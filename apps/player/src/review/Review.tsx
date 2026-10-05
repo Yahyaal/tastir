@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
   PATTERNS,
+  PROGRESS,
   QUESTIONS,
+  type ProgressItem,
   type Pattern,
   type Picture,
   type Question,
@@ -99,6 +101,64 @@ function QuestionItem({
         Details: <a href={`#${q.card}`}>{title}</a>
       </p>
     </li>
+  );
+}
+
+function Item({ item }: { item: ProgressItem }) {
+  return (
+    <li>
+      <strong>{item.title}.</strong> {item.text}
+      {item.link ? (
+        <>
+          {' '}
+          <a
+            href={item.link.href}
+            {...(item.link.href.startsWith('/#/')
+              ? { target: '_blank', rel: 'noreferrer' }
+              : {})}
+          >
+            {item.link.label}
+            {item.link.href.startsWith('/#/') ? ' ↗' : ''}
+          </a>
+        </>
+      ) : null}
+    </li>
+  );
+}
+
+/** Where the work stands: done, doing now, next, and waiting on the owner. */
+function Progress() {
+  return (
+    <section className="progress" id="progress">
+      <h2 className="group">Progress</h2>
+      <p className="group-note">
+        Updated {PROGRESS.updated}. The goal: {PROGRESS.goal}
+      </p>
+      <div className="progress-now">
+        <h3>Working on now</h3>
+        <ul>
+          <Item item={PROGRESS.now} />
+        </ul>
+      </div>
+      <h3>Done recently</h3>
+      <ul className="progress-done">
+        {PROGRESS.done.map((item) => (
+          <Item key={item.title} item={item} />
+        ))}
+      </ul>
+      <h3>Still to do, in this order</h3>
+      <ol className="progress-next">
+        {PROGRESS.next.map((item) => (
+          <Item key={item.title} item={item} />
+        ))}
+      </ol>
+      <h3>Waiting on you</h3>
+      <ul className="progress-waiting">
+        {PROGRESS.waiting.map((item) => (
+          <Item key={item.title} item={item} />
+        ))}
+      </ul>
+    </section>
   );
 }
 
@@ -231,6 +291,8 @@ export function Review() {
           our chat.
         </p>
       </header>
+
+      <Progress />
 
       <h2 className="group" id="questions">
         Questions for you
