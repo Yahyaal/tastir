@@ -1,5 +1,5 @@
 import json, math
-D = json.load(open('ideal12e.json')); P = {int(k): tuple(v) for k, v in D['P'].items()}; C = D['C']
+D = json.load(open('ideal12f.json')); P = {int(k): tuple(v) for k, v in D['P'].items()}; C = D['C']
 axis = {2: 15, 3: 0, 4: 0, 10: 15, 13: 0}
 E = [(2,3,0,1,150),(2,3,1,1,60),(3,4,0,1,0),(4,5,0,1,30),(5,6,0,1,60),(6,7,0,1,150),(7,8,0,1,0),(8,9,0,1,30),(9,10,0,1,75),(9,11,0,1,0),(11,12,0,1,105),(12,13,0,1,135)]
 def inst(c, k, sg):

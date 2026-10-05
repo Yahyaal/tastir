@@ -35,6 +35,37 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'bou-inania-twelve-fold-wall',
+    title: 'Design E: Bou Inania twelve-fold wall (new)',
+    fold: 12,
+    status: 'decide',
+    summary:
+      'The zellige wall of the Bou Inania madrasa in Fès: twelve-fold rosettes on a square grid, eight-pointed stars in orange rings at the corners, black bands along the grid lines meeting in an X.',
+    story: [
+      'Built as you asked: my best guess from the photo, by extending lines and choosing their crossings. No published drawing of this wall exists that I could find, so it is marked unverified until you judge it.',
+      'How: I straightened the photo, averaged every rosette, corner and edge into one sharp tile, traced its white bands, and fitted a ruler-and-compass drawing to them. Every line of the rosette runs at a multiple of 15°; the whole rosette follows from two crossings tied to the tile. The fit is within about a seventh of a band’s width of the photo (second picture: our lines in red over the averaged photo).',
+      'The tutorial has 25 steps and 15 piece shapes. Choose the Strapwork style on the color stage to see it most like the real wall (first picture). Known differences: the real corner stars have more pieces inside their ring, and the small white pieces at the rim are simplified.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bou-inania-twelve-fold-wall/compare-wall.png',
+        caption:
+          'Left: the real wall. Right: Design E in the player, Strapwork style.',
+      },
+      {
+        src: 'renders/bou-inania-twelve-fold-wall/overlay-photo.png',
+        caption: 'Our ink (red) over the photo averaged into one sharp tile.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Wikimedia Commons: Bou Inania zellige photo',
+        url: 'https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg',
+      },
+    ],
+  },
+  {
     id: 'alhambra-star-and-arrows',
     title: 'Alhambra star and arrows',
     fold: 8,
@@ -653,7 +684,24 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'design-e-judge',
+    text: 'Design E (the Fès wall): is it close enough to the photo to keep?',
+    choices: [
+      'Keep it as it is',
+      'Keep it, but make the corner stars richer',
+      'Not close enough yet',
+    ],
+    pictures: [
+      {
+        src: 'renders/bou-inania-twelve-fold-wall/compare-wall.png',
+        caption: 'Left: the real wall. Right: Design E (Strapwork style).',
+      },
+    ],
+    card: 'bou-inania-twelve-fold-wall',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
@@ -678,6 +726,14 @@ export const PROGRESS: {
   updated: '5 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Design E: the Fès wall, built',
+      text: 'A 25-step tutorial of the Bou Inania wall, read from the photo and fitted to it; on the color stage choose Strapwork to see it like the real wall. Waiting for your judgement (question at the top).',
+      link: {
+        label: 'Bou Inania twelve-fold wall',
+        href: '/#/bou-inania-twelve-fold-wall',
+      },
+    },
     {
       title: 'Colors by placement',
       text: 'Pieces of the same shape can now take different colors by their direction and their place in the wall. Comares bones are colored like the photo (white across; black, teal and brown standing up), and the Infantas plaster stars in four colors. Click a piece in the color stage and tick “Only pieces placed like this one” to recolor just those.',
@@ -704,21 +760,16 @@ export const PROGRESS: {
       },
     },
     {
-      title: 'Design E: the photo read',
+      title: 'Design E: reading the photo',
       text: 'The Bou Inania wall turned out to be twelve-fold, not sixteen-fold. I averaged every rosette, corner and edge of the photo into one sharp tile, and fitted the rosette exactly: every line at a multiple of 15°, tied to the tile by two crossings, buildable by ruler and compass, within a seventh of a band’s width of the photo. The centre star is decided too.',
       link: { label: 'Design E card', href: '#sixteen-fold-rosette' },
     },
   ],
   now: {
-    title: 'Design E: the rest of the wall',
-    text: 'Draw the rosette’s rim, the eight-fold corner stars with their orange rings, and the bands along the grid lines that meet in the black X; then write the tutorial steps, check it with the tests, and put it on this page beside the photo for you to judge.',
-    link: { label: 'Design E card', href: '#sixteen-fold-rosette' },
+    title: 'Design H family',
+    text: 'Two or more advanced twelve-fold designs from the dodecagram tutorial (other ways of joining the stars, stars set apart), each checked against a real example.',
   },
   next: [
-    {
-      title: 'Design H family',
-      text: 'Two or more advanced twelve-fold designs from the dodecagram tutorial (other ways of joining the stars, stars set apart), each checked against a real example.',
-    },
     {
       title: 'More designs per family',
       text: 'At least one more for each family: an Alhambra panel from Wichmann’s line drawings, an Ibn Tulun window grille with a published construction, and an eight-fold star-and-octagon variant, each with a photo.',
@@ -733,6 +784,11 @@ export const PROGRESS: {
     },
   ],
   waiting: [
+    {
+      title: 'Design E',
+      text: 'Your judgement: keep it, enrich the corner stars, or keep working (Q1).',
+      link: { label: 'Q1', href: '#q-design-e-judge' },
+    },
     {
       title: 'Alhambra interlace',
       text: 'Needs a better source than the product page: a photo or drawing of the whole panel.',

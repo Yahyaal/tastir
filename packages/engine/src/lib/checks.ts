@@ -79,12 +79,40 @@ export function constructionCrossings(scene: Scene): Vec[] {
  * when one does not, a circle or line is missing from the construction.
  */
 export function strokesOffCrossings(scene: Scene, pattern: Pattern): string[] {
-  const crossings = constructionCrossings(scene);
-  const onCrossing = (p: Vec) =>
-    crossings.some((q) => distance(p, q) <= scene.tol.eps * 10);
+  // Checked from the ink's ends: an end is on a crossing when two curves
+  // through it cross there. Listing every crossing first (as
+  // constructionCrossings does) is too slow for large constructions.
+  const curves = constructionCurves(scene);
+  const near = scene.tol.eps * 10;
+  const known = new Map<string, boolean>();
+  const onCrossing = (p: Vec) => {
+    const key = `${p.x.toFixed(7)},${p.y.toFixed(7)}`;
+    const hit = known.get(key);
+    if (hit !== undefined) return hit;
+    const through = curves.filter((c) => distanceToCurve(p, c) <= near);
+    let found = false;
+    for (let i = 0; i < through.length && !found; i++) {
+      for (let j = i + 1; j < through.length && !found; j++) {
+        found = intersect(
+          through[i] as Curve,
+          through[j] as Curve,
+          scene.tol,
+        ).some((q) => distance(p, q) <= near);
+      }
+    }
+    known.set(key, found);
+    return found;
+  };
   return pattern.ink
     .filter((s) => !onCrossing(s.segment.a) || !onCrossing(s.segment.b))
     .map((s) => `${s.from}–${s.to}`);
+}
+
+/** How far a point is from a line, circle or segment. */
+function distanceToCurve(p: Vec, c: Curve): number {
+  if (c.kind === 'line') return distance(p, project(p, c));
+  if (c.kind === 'circle') return Math.abs(distance(p, c.centre) - c.radius);
+  return distanceToSegment(p, c);
 }
 
 /**

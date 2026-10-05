@@ -26,7 +26,9 @@ body {
 .player {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  /* At least the window; taller (and the page scrolls) when a tutorial's
+     text and piece list are long, so the picture keeps its room. */
+  min-height: 100vh;
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 16px;
@@ -63,7 +65,7 @@ header h1 {
 
 .stage {
   flex: 1;
-  min-height: 0;
+  min-height: 50vh;
   display: flex;
 }
 

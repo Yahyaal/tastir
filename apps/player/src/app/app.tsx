@@ -79,6 +79,8 @@ function colorText(model: Model): string {
       m * n > 1 ? `, and the colors repeat every ${m} by ${n} tiles` : '';
     return `Color the pieces by where they sit: pieces of the same shape can take different colors by their turn and their place${block}. Click a piece to recolor every piece placed like it. Each tile holds ${joinAnd(held)}.`;
   }
+  if (names.length > 4)
+    return `Color the pieces by shape: every piece of one shape takes the same color. Each tile holds ${joinAnd(held)}.`;
   return `Color the pieces by shape, so ${joinAnd(same)}. Each tile holds ${joinAnd(held)}.`;
 }
 

@@ -51,8 +51,9 @@ def fit(C, v):
         r += [w*x for x in edge_res(P)]
         if ANCHOR:
             q = inst(P, 9, 1, 1); r.append(w*(q[0] + q[1] - 0.5))
-            q = inst(P, 9, 0, -1); a = math.radians(75)
-            r.append(w*((0.5 - q[0])*math.sin(a) - (0.5 - q[1])*math.cos(a)))
+            # and on the 60° line through the 45° point of the radius-½ circle
+            c45 = (0.5*math.cos(math.radians(45)), 0.5*math.sin(math.radians(45))); a = math.radians(60)
+            r.append(w*((c45[0] - q[0])*math.sin(a) - (c45[1] - q[1])*math.cos(a)))
             q = inst(P, 9, 8, -1); r.append(w*(P[13][0] - (q[0] + math.sqrt(max(0.5 - q[1]**2, 0)))))
         for d, mem in C:
             a = math.radians(d); n = (-math.sin(a), math.cos(a))
@@ -71,10 +72,10 @@ print('long lines kept', [sorted({m[0] for m in c[1]}) for c in C0])
 v, rms = fit(C0, v); print('with the five lines and the anchor: rms', round(rms, 4))
 Pq = unpack(v)
 print('max edge-direction error', max(abs(x) for x in edge_res(Pq)))
-q = inst(Pq, 9, 1, 1); print('x+y-0.5 at class 9:', q[0] + q[1] - 0.5)
+q = inst(Pq, 9, 1, 1); print('class 9 copy', q, 'x+y-0.5:', q[0] + q[1] - 0.5)
 q = inst(Pq, 9, 8, -1); print('rim minus circle:', Pq[13][0] - (q[0] + math.sqrt(0.5 - q[1]**2)))
 P = unpack(v)
-json.dump({'P': {str(c): P[c] for c in order}, 'C': C0}, open('ideal12e.json', 'w'))
+json.dump({'P': {str(c): P[c] for c in order}, 'C': C0}, open('ideal12f.json', 'w'))
 for c in order: print(c, tuple(round(x, 5) for x in P[c]), 'r', round(math.hypot(*P[c]), 5))
 raise SystemExit
 C = []
