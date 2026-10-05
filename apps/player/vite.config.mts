@@ -6,6 +6,7 @@ import { defaultClientConditions, defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 const tutorials = fileURLToPath(new URL('../../tutorials', import.meta.url));
+const packages = fileURLToPath(new URL('../../packages', import.meta.url));
 const docs = fileURLToPath(new URL('../../docs', import.meta.url));
 
 /** The folders the review page may show pictures from, by URL prefix. */
@@ -35,11 +36,12 @@ export default defineConfig(() => ({
   plugins: [
     react(),
     {
-      // tutorials/ is outside the app, so the dev server would not notice a
-      // tutorial being added or changed without this.
+      // tutorials/ and packages/ (the engine and the schema) are outside
+      // the app, so the dev server would not notice them change without
+      // this, and would go on serving the old engine or tutorial format.
       name: 'watch-tutorials',
       configureServer(server) {
-        server.watcher.add(tutorials);
+        server.watcher.add([tutorials, packages]);
       },
     },
     {
