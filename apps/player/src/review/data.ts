@@ -377,6 +377,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/alhambra-infantas-stars/wall-colored.png',
+        caption:
+          'New (your request): the plaster panel has no colors, so this is my choice in the Alhambra tile colors. Each tile holds four stars and each takes its own color, so every star differs from all four of its neighbours. Click a star in the player to try others.',
+      },
+      {
         src: 'renders/alhambra-infantas-stars/overlay-ink.png',
         caption:
           'Our lines (red) over the article’s tracing (black): an exact match.',
@@ -450,8 +455,13 @@ export const PATTERNS: readonly Pattern[] = [
         caption: 'Our lines (red) on the photo of the real Comares panel.',
       },
       {
+        src: 'renders/alhambra-comares-bones/wall-colored.png',
+        caption:
+          'New (your request): colored as the photo. Lying bones are white; standing bones are black in every other column and alternate teal and brown in the columns between. The player can now color same-shaped pieces by where they sit, and clicking a bone recolors the bones placed like it.',
+      },
+      {
         src: 'renders/alhambra-comares-bones/wall.png',
-        caption: 'Our wall: one bone shape, two per tile.',
+        caption: 'Before: one bone shape, two per tile, one color.',
       },
     ],
     asks: ['A quick look at the wall in the player.'],

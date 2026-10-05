@@ -125,6 +125,22 @@ describe('rejected tutorials', () => {
     ]);
   });
 
+  it('rejects a placement rule for an unknown piece or outside its repeat', () => {
+    const input = variant((t) => {
+      t.pattern.placements = {
+        repeat: [2, 2],
+        rules: [
+          { piece: 'kite', color: 'a' },
+          { piece: 'star', cell: [2, 0], color: 'b' },
+        ],
+      };
+    });
+    expect(problems(input)).toEqual([
+      'pattern.placements.rules.0.piece: "kite" is not a piece named in expect.pieces',
+      'pattern.placements.rules.1.cell: cell 2,0 is outside the 2×2 repeat',
+    ]);
+  });
+
   it('throws one error listing every problem', () => {
     const input = variant((t) => {
       t.steps[1].create.E.point.pick = { nth: 2 };

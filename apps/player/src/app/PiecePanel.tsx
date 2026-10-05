@@ -1,4 +1,4 @@
-import type { Dispatch } from 'react';
+import { useState, type Dispatch } from 'react';
 import {
   PALETTES,
   SLOTS,
@@ -31,6 +31,7 @@ export function PiecePanel({
   selected,
   onSelect,
   onReset,
+  place,
 }: {
   model: Model;
   colors: readonly string[];
@@ -41,12 +42,21 @@ export function PiecePanel({
   selected?: number;
   onSelect: (type: number | undefined) => void;
   onReset: () => void;
+  /** The placement clicked on the wall, when the tutorial colors by
+   * placement: its color key and its color now. */
+  place?: { key: string; color: string };
 }) {
+  const [onlyHere, setOnlyHere] = useState(true);
   const { types } = model.pattern;
   const nameOf = (i: number) =>
     types[i]?.name ?? `${types[i]?.vertices ?? 0}-corner piece`;
   const palette = PALETTES[history.now.palette] ?? {};
   const chosenType = selected === undefined ? undefined : types[selected];
+  const here = place && onlyHere ? place : undefined;
+  const current =
+    here?.color ?? (selected === undefined ? undefined : colors[selected]);
+  const target = (t: NonNullable<typeof chosenType>) =>
+    here ? here.key : typeKey(t);
   return (
     <div className="piece-panel">
       <div className="color-tools">
@@ -112,8 +122,22 @@ export function PiecePanel({
         <div
           className="chooser"
           role="group"
-          aria-label={`Colors for every ${nameOf(selected)}`}
+          aria-label={
+            here
+              ? `Colors for this ${nameOf(selected)}'s place`
+              : `Colors for every ${nameOf(selected)}`
+          }
         >
+          {place ? (
+            <label className="only-here">
+              <input
+                type="checkbox"
+                checked={onlyHere}
+                onChange={(e) => setOnlyHere(e.target.checked)}
+              />{' '}
+              Only pieces placed like this one
+            </label>
+          ) : null}
           {SLOTS.map((slot) => {
             const color = (palette as Record<string, string>)[slot] ?? '#999';
             return (
@@ -121,14 +145,12 @@ export function PiecePanel({
                 key={slot}
                 type="button"
                 className={
-                  color === colors[selected]
-                    ? 'swatch-button current'
-                    : 'swatch-button'
+                  color === current ? 'swatch-button current' : 'swatch-button'
                 }
                 style={{ background: color }}
                 aria-label={`${SLOT_NAMES[slot]} (${color})`}
                 onClick={() =>
-                  dispatch({ kind: 'paint', type: typeKey(chosenType), color })
+                  dispatch({ kind: 'paint', type: target(chosenType), color })
                 }
               />
             );
@@ -137,11 +159,11 @@ export function PiecePanel({
             Any color{' '}
             <input
               type="color"
-              value={colors[selected] ?? '#999999'}
+              value={current ?? '#999999'}
               onChange={(e) =>
                 dispatch({
                   kind: 'paint',
-                  type: typeKey(chosenType),
+                  type: target(chosenType),
                   color: e.target.value,
                 })
               }

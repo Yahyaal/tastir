@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nx run player:dev",
-    "test": "nx run-many -t test",
+    "test": "nx run-many -t test --parallel=1",
     "lint": "nx run-many -t lint",
     "typecheck": "nx run-many -t typecheck",
     "build": "nx run-many -t build",

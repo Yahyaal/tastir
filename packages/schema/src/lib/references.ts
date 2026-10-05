@@ -203,6 +203,22 @@ export function checkReferences(t: Tutorial): Issue[] {
       });
     }
   }
+  const placements = t.pattern.placements;
+  placements?.rules.forEach((rule, i) => {
+    if (!pieceNames.has(rule.piece)) {
+      issues.push({
+        path: `pattern.placements.rules.${i}.piece`,
+        message: `"${rule.piece}" is not a piece named in expect.pieces`,
+      });
+    }
+    const [m, n] = placements.repeat;
+    if (rule.cell && (rule.cell[0] >= m || rule.cell[1] >= n)) {
+      issues.push({
+        path: `pattern.placements.rules.${i}.cell`,
+        message: `cell ${rule.cell.join(',')} is outside the ${m}×${n} repeat`,
+      });
+    }
+  });
   for (const name of Object.keys(t.expect.crossings ?? {})) {
     use(`expect.crossings.${name}`, name, ['points']);
   }

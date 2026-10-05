@@ -15,6 +15,8 @@ export interface WallOptions {
   /** Size of one unit (OA) in output pixels. */
   readonly scale?: number;
   readonly title?: string;
+  /** The fill for each placement, when same shapes take different colors. */
+  readonly fill?: (piece: number, i: number, j: number) => string;
 }
 
 /**
@@ -34,6 +36,7 @@ export function wallSvg(
     down = 4,
     scale = 100,
     title = model.tutorial.title,
+    fill: placed,
   } = options;
   const { cell, pieces, ink } = model.pattern;
   const xs = cell.corners.map((p) => p.x);
@@ -54,13 +57,15 @@ export function wallSvg(
   const h = view.maxY - view.minY;
   const groutWidth = 0.012 * (cellW / 2) * grout;
   // Every shift of the cell whose pieces may reach into the view.
-  const shifts: Vec[] = [];
+  const shifts: (Vec & { i: number; j: number })[] = [];
   const reach = Math.ceil(Math.max(across, down) / 2) + 2;
   for (let i = -reach; i <= reach; i++) {
     for (let j = -reach; j <= reach; j++) {
       shifts.push({
         x: cell.u.x * i + cell.v.x * j,
         y: cell.u.y * i + cell.v.y * j,
+        i,
+        j,
       });
     }
   }
@@ -79,9 +84,14 @@ export function wallSvg(
       `<rect x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}" fill="#ffffff"/>`,
     );
   for (const d of shifts) {
-    for (const p of pieces) {
+    for (const [k, p] of pieces.entries()) {
       if (!inView(p.polygon, d)) continue;
-      const fill = look === 'lines' ? 'none' : (colors[p.type] ?? '#999999');
+      const fill =
+        look === 'lines'
+          ? 'none'
+          : placed
+            ? placed(k, d.i, d.j)
+            : (colors[p.type] ?? '#999999');
       const stroke = look === 'strapwork' ? 'none' : INK;
       const width = look === 'lines' ? groutWidth * 0.8 : groutWidth;
       body.push(

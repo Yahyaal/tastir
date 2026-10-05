@@ -75,7 +75,21 @@ A piece in `expect.pieces` may carry `"small": true` when it is small or thin on
 
 `ink.paths` lists the pattern lines. Each path goes `through` named points in order, and every pair of neighbouring points must lie on one existing line, circle or polygon side; the engine checks that. This is what stops a tutorial from inking a line that the construction never produced.
 
-`pattern.cell` names the polygon that repeats, and the wall is made by translating it edge to edge. It is a rectangle, a parallelogram whose copies also line up into a rectangle, or a hexagon whose opposite sides are equal and parallel. Six- and twelve-fold patterns use the hexagon: their rosettes sit on a triangular lattice, and the hexagon around `O` (with corners on the 30° directions, so its sides face the neighbouring rosettes) is how these patterns are drawn by hand. The hexagon repeats by sliding it onto the next hexagon side to side. Ink only inside the cell, and cover the whole of it; free inking offers only the construction inside the cell, so a cell that reaches beyond the construction (a rhombus with a corner at `O`, for instance) leaves the learner pieces they cannot ink. The optional `pattern.text` is what the learner reads when the player repeats the inked tile. `pattern.colors` gives the default palette key for each named piece.
+`pattern.cell` names the polygon that repeats, and the wall is made by translating it edge to edge. It is a rectangle, a parallelogram whose copies also line up into a rectangle, or a hexagon whose opposite sides are equal and parallel. Six- and twelve-fold patterns use the hexagon: their rosettes sit on a triangular lattice, and the hexagon around `O` (with corners on the 30° directions, so its sides face the neighbouring rosettes) is how these patterns are drawn by hand. The hexagon repeats by sliding it onto the next hexagon side to side. Ink only inside the cell, and cover the whole of it; free inking offers only the construction inside the cell, so a cell that reaches beyond the construction (a rhombus with a corner at `O`, for instance) leaves the learner pieces they cannot ink. The optional `pattern.text` is what the learner reads when the player repeats the inked tile. `pattern.colors` gives the default palette key for each named piece. `pattern.palette` names the preset palette to start from (Fès tile, Marrakech, Chefchaouen, Tétouan, Isfahan, Kashan, Alhambra).
+
+Some walls color pieces of the same shape differently by where they sit: the Comares bones are white when they lie across and black, teal or brown when they stand up, by column. The optional `pattern.placements` says how. `repeat` is how many cells along the cell's two slides the coloring repeats after (`[2, 2]` for the bones). Each rule in `rules` names a piece from `expect.pieces` and a color (a palette slot or a CSS color), and may narrow which pieces it colors by `turn` (the direction of the piece's long axis in degrees from the horizontal, matched within 3°; pieces with no long axis, such as squares and regular stars, never match a turn), `nth` (the piece's place among the cell's pieces of that shape, counted along the cell's second slide, then its first, by the piece's centre) and `cell` (which cell of the repeat, `[0, 0]` to `repeat` minus one). Later rules win over earlier ones, and pieces no rule matches keep their `pattern.colors` slot. None of these are coordinates: they name directions and counts, never positions.
+
+```json
+"placements": {
+  "repeat": [2, 2],
+  "rules": [
+    { "piece": "bone", "turn": 90, "cell": [0, 0], "color": "a" },
+    { "piece": "bone", "turn": 90, "cell": [1, 1], "color": "a" },
+    { "piece": "bone", "turn": 90, "cell": [1, 0], "color": "c" },
+    { "piece": "bone", "turn": 90, "cell": [0, 1], "color": "b" }
+  ]
+}
+```
 
 `expect` holds the golden values for the tutorial's test: how many piece types there are, and each type's vertex count, area (in units of OA²) and count per cell. A piece is named in `expect.pieces`, and `pattern.colors` uses those names.
 

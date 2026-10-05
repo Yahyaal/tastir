@@ -150,8 +150,17 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the tile edge to edge. Upright and lying bones interlock like a basket weave, as in the tile panel of the Hall of Comares, where the upright bones are glazed black, green and ochre and the lying ones white.",
-    "palette": "Fès tile",
-    "colors": {"bone": "a"}
+    "palette": "Alhambra",
+    "colors": {"bone": "ground"},
+    "placements": {
+      "repeat": [2, 2],
+      "rules": [
+        {"piece": "bone", "turn": 90, "cell": [0, 0], "color": "a"},
+        {"piece": "bone", "turn": 90, "cell": [1, 1], "color": "a"},
+        {"piece": "bone", "turn": 90, "cell": [1, 0], "color": "c"},
+        {"piece": "bone", "turn": 90, "cell": [0, 1], "color": "b"}
+      ]
+    }
   },
   "expect": {
     "note": "Golden values in units of OA (half a grid square, so one square is 4); every piece is the same bone of 4 squares, two per tile of 8 squares.",

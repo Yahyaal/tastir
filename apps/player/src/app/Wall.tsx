@@ -21,8 +21,14 @@ const BAND = '#f7f2e6';
  * parallelogram cell the rectangle that spans the same lattice, so grout
  * is never sheared.
  */
-function tileFrame(model: Model) {
-  const { cell } = model.pattern;
+function tileFrame(model: Model, [m, n]: readonly [number, number] = [1, 1]) {
+  const base = model.pattern.cell;
+  // The coloring may repeat after more than one cell along each slide.
+  const cell = {
+    ...base,
+    u: { x: base.u.x * m, y: base.u.y * m },
+    v: { x: base.v.x * n, y: base.v.y * n },
+  };
   const { origin } = cell;
   const { u, v } = rectangularPeriod(cell) ?? cell;
   const lu = Math.hypot(u.x, u.y);
@@ -37,7 +43,7 @@ function tileFrame(model: Model) {
   // Tile coordinates to SVG (whose y points down): through the frame.
   const matrix = `matrix(${eu.x} ${-eu.y} ${ev.x} ${-ev.y} ${origin.x} ${-origin.y})`;
   // How many cells either way it takes to cover the rectangle.
-  const reach = v === cell.v ? 1 : 4;
+  const reach = (v === cell.v ? 1 : 4) * Math.max(m, n);
   return { lu, lv, toTile, matrix, reach };
 }
 
@@ -52,6 +58,8 @@ const pts = (ps: readonly Vec[]) => ps.map((p) => `${p.x},${p.y}`).join(' ');
 export function Wall({
   model,
   colors,
+  fill,
+  repeat = [1, 1],
   look: style = 'tiles',
   grout = 1,
   hovered,
@@ -61,13 +69,21 @@ export function Wall({
 }: {
   model: Model;
   colors: readonly string[];
+  /** The fill for each placement (piece, and the cell it is copied to),
+   * when same-shaped pieces take different colors; else `colors`. */
+  fill?: (piece: number, i: number, j: number) => string;
+  /** How many cells along each slide the coloring repeats after. */
+  repeat?: readonly [number, number];
   look?: WallStyle;
   /** Grout (or band) width, as a multiple of the normal width. */
   grout?: number;
   /** The piece type to highlight on every copy, if any. */
   hovered?: number;
   onHover?: (type: number | undefined) => void;
-  onPick?: (type: number) => void;
+  onPick?: (
+    type: number,
+    place: { piece: number; i: number; j: number },
+  ) => void;
   /** Play the move into colour: each piece type floods in, one by one. */
   enter?: boolean;
 }) {
@@ -75,7 +91,8 @@ export function Wall({
   const svgRef = useRef<SVGSVGElement>(null);
   const start = useMemo(() => tiling(model).view, [model]);
   const camera = useCamera(start, svgRef);
-  const tile = useMemo(() => tileFrame(model), [model]);
+  const [rm, rn] = repeat;
+  const tile = useMemo(() => tileFrame(model, [rm, rn]), [model, rm, rn]);
   const { pattern } = model;
   // Grout in proportion to the tile, so every pattern gets the same look.
   const unit = width(fullCell(model)) / 2;
@@ -83,7 +100,7 @@ export function Wall({
 
   // The pieces and ink strokes in tile coordinates, with neighbours' copies.
   const shifted = useMemo(() => {
-    const out: { type: number; corners: Vec[] }[] = [];
+    const out: { type: number; corners: Vec[]; fill: string }[] = [];
     const lines: [Vec, Vec][] = [];
     const { u, v } = pattern.cell;
     for (let i = -tile.reach; i <= tile.reach; i++) {
@@ -91,15 +108,19 @@ export function Wall({
         const dx = u.x * i + v.x * j;
         const dy = u.y * i + v.y * j;
         const move = (p: Vec) => tile.toTile({ x: p.x + dx, y: p.y + dy });
-        for (const piece of pattern.pieces) {
-          out.push({ type: piece.type, corners: piece.polygon.map(move) });
-        }
+        pattern.pieces.forEach((piece, k) => {
+          out.push({
+            type: piece.type,
+            corners: piece.polygon.map(move),
+            fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
+          });
+        });
         for (const s of pattern.ink)
           lines.push([move(s.segment.a), move(s.segment.b)]);
       }
     }
     return { pieces: out, lines };
-  }, [pattern, tile]);
+  }, [pattern, tile, fill, colors]);
 
   const pieceClass = (type: number) =>
     hovered === undefined
@@ -122,7 +143,14 @@ export function Wall({
           y: (camera.view.minY + camera.view.maxY) / 2,
         };
     const hit = pieceAt(pattern, at);
-    return hit ? pattern.pieces[hit.index]?.type : undefined;
+    const piece = hit ? pattern.pieces[hit.index] : undefined;
+    if (!hit || !piece) return undefined;
+    // Which copy of the cell: the shift in steps of the two slides.
+    const { u, v } = pattern.cell;
+    const det = u.x * v.y - u.y * v.x;
+    const i = Math.round((hit.shift.x * v.y - hit.shift.y * v.x) / det);
+    const j = Math.round((u.x * hit.shift.y - u.y * hit.shift.x) / det);
+    return { type: piece.type, place: { piece: hit.index, i, j } };
   };
 
   // The pieces sit in an SVG pattern, where CSS animations do not play, so
@@ -201,12 +229,12 @@ export function Wall({
       preserveAspectRatio="xMidYMid slice"
       role="img"
       aria-label="The pattern repeated as a wall"
-      onPointerMove={(e) => onHover?.(typeAt(e.clientX, e.clientY))}
+      onPointerMove={(e) => onHover?.(typeAt(e.clientX, e.clientY)?.type)}
       onPointerLeave={() => onHover?.(undefined)}
       onClick={(e) => {
         if (camera.wasDrag()) return;
-        const type = typeAt(e.clientX, e.clientY);
-        if (type !== undefined) onPick?.(type);
+        const hit = typeAt(e.clientX, e.clientY);
+        if (hit) onPick?.(hit.type, hit.place);
       }}
     >
       <defs>
@@ -227,7 +255,7 @@ export function Wall({
               className={pieceClass(p.type)}
               style={{ '--type': p.type } as React.CSSProperties}
               points={pts(p.corners)}
-              fill={style === 'lines' ? 'none' : colors[p.type]}
+              fill={style === 'lines' ? 'none' : p.fill}
               stroke={
                 style === 'tiles' ? INK : style === 'lines' ? INK : 'none'
               }

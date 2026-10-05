@@ -194,8 +194,16 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the tile edge to edge, as in the carved plaster panel of the Torre de las Infantas.",
-    "palette": "Fès tile",
-    "colors": {"star": "a"}
+    "palette": "Alhambra",
+    "colors": {"star": "c"},
+    "placements": {
+      "repeat": [1, 1],
+      "rules": [
+        {"piece": "star", "nth": 1, "color": "b"},
+        {"piece": "star", "nth": 2, "color": "a"},
+        {"piece": "star", "nth": 3, "color": "ground"}
+      ]
+    }
   },
   "expect": {
     "note": "Golden values in grid squares (OA = one square), computed by the engine; four notched stars fill the tile of 18 squares.",

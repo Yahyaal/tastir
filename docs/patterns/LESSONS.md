@@ -47,7 +47,13 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - Prettier rewriting a file while the dev server is reading it can leave Vite serving an empty module; `touch` the file to make it reload.
 - To check an animation, drive headless Chrome over the DevTools protocol (`node` has `WebSocket`): press keys, take screenshots at chosen times, and read `element.getAnimations()` when a frame looks wrong.
 
+## Coloring
+
+- Same-shaped pieces often take different colors in real panels (Comares bones: white across, black and colored up, by column). `pattern.placements` colors by turn, by place in the cell and by cell of a larger repeat; check the photo's color repeat in cells before writing rules (the bones repeat every 2 × 2 cells).
+
 ## Tooling
+
+- Timed tests (the PRD speed targets) fail when they share the CPU with the golden suite; the engine runs them as their own Vitest group after everything else, and `pnpm test` runs projects one at a time.
 
 - Agent worktrees live in `.claude/worktrees/` inside the repo. Without `.nxignore`, Nx picks them up as extra projects, the main test run fails with circular project references, and `pnpm typecheck` adds them to the root `tsconfig.json`. `.nxignore` now excludes `.claude/`.
 - `perf.spec.ts` times a 3,000-segment arrangement against 300 ms. While several agents run tests at once it can take slightly longer; rerun it alone before treating it as a regression.

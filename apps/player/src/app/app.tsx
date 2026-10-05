@@ -20,6 +20,7 @@ import {
   type History,
 } from './coloring';
 import { PiecePanel } from './PiecePanel';
+import { colorRepeat, placeFills, placeKey } from './placement';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
 import { PrintSheet, type Paper } from './PrintSheet';
 import { Construction, RepeatedInk, Thumbnail } from './drawing';
@@ -72,6 +73,12 @@ function colorText(model: Model): string {
   const held = model.pattern.types.map(
     (t, i) => `${count(t.perCell)} ${plural(nameOf(model, i), t.perCell)}`,
   );
+  if (model.tutorial.pattern.placements) {
+    const [m, n] = model.tutorial.pattern.placements.repeat;
+    const block =
+      m * n > 1 ? `, and the colors repeat every ${m} by ${n} tiles` : '';
+    return `Color the pieces by where they sit: pieces of the same shape can take different colors by their turn and their place${block}. Click a piece to recolor every piece placed like it. Each tile holds ${joinAnd(held)}.`;
+  }
   return `Color the pieces by shape, so ${joinAnd(same)}. Each tile holds ${joinAnd(held)}.`;
 }
 
@@ -98,6 +105,15 @@ export function Player({ model }: { model: Model }) {
     (m): History => ({ past: [], now: tutorialColoring(m), future: [] }),
   );
   const colors = pieceColors(inking.shown, colorHistory.now);
+  // Fills by placement, when the tutorial colors same shapes differently.
+  const fill = useMemo(
+    () =>
+      inking.shown.tutorial.pattern.placements
+        ? placeFills(inking.shown, colorHistory.now)
+        : undefined,
+    [inking.shown, colorHistory.now],
+  );
+  const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
   const [hovered, setHovered] = useState<number>();
   const [selected, setSelected] = useState<number>();
   const [wallStyle, setWallStyle] = useState<WallStyle>('tiles');
@@ -106,7 +122,7 @@ export function Player({ model }: { model: Model }) {
   const [printing, setPrinting] = useState(false);
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
-    wallSvg(inking.shown, colors, { look: wallStyle, grout });
+    wallSvg(inking.shown, colors, { look: wallStyle, grout, fill });
   const svgRef = useRef<SVGSVGElement>(null);
   const running = useRef<Animation[]>([]);
   const reversing = useRef(false);
@@ -242,17 +258,24 @@ export function Player({ model }: { model: Model }) {
     picture = <RepeatedInk model={inking.shown} enter={enter} speed={speed} />;
   } else {
     label = 'Color';
-    hint = 'One color for each shape of piece.';
+    hint = tutorial.pattern.placements
+      ? 'Colors by where each piece sits.'
+      : 'One color for each shape of piece.';
     text = colorText(inking.shown);
     picture = (
       <Wall
         model={inking.shown}
         colors={colors}
+        fill={fill}
+        repeat={colorRepeat(inking.shown)}
         look={wallStyle}
         grout={grout}
         hovered={hovered}
         onHover={setHovered}
-        onPick={(type) => setSelected(type)}
+        onPick={(type, at) => {
+          setSelected(type);
+          setPlace(at);
+        }}
         enter={enter}
       />
     );
@@ -402,7 +425,23 @@ export function Player({ model }: { model: Model }) {
               hovered={hovered}
               onHover={setHovered}
               selected={selected}
-              onSelect={setSelected}
+              onSelect={(type) => {
+                setSelected(type);
+                setPlace(undefined);
+              }}
+              place={
+                fill && place
+                  ? {
+                      key: placeKey(
+                        inking.shown,
+                        place.piece,
+                        place.i,
+                        place.j,
+                      ),
+                      color: fill(place.piece, place.i, place.j),
+                    }
+                  : undefined
+              }
               onReset={() =>
                 colorDispatch({ kind: 'reset', to: tutorialColoring(model) })
               }

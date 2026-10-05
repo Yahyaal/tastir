@@ -239,6 +239,31 @@ export const Expect = z.strictObject({
   cellArea: z.number().positive().optional(),
 });
 
+/**
+ * Colors by where a piece sits, for walls whose same-shaped pieces take
+ * different colors (Comares bones: white across, black and colored up).
+ * The coloring repeats every `repeat` cells along the cell's two slides;
+ * each rule colors the named pieces it matches, later rules winning. A rule
+ * can match a piece's turn (its long axis, in degrees from the horizontal),
+ * its place among the cell's pieces of that shape (`nth`, counted along
+ * the cell's second slide, then its first), and the cell of the repeat it
+ * is in.
+ */
+const Placements = z.strictObject({
+  repeat: z.tuple([z.int().min(1), z.int().min(1)]),
+  rules: z
+    .array(
+      z.strictObject({
+        piece: Name,
+        turn: z.number().min(0).max(180).optional(),
+        nth: z.int().min(0).optional(),
+        cell: z.tuple([z.int().min(0), z.int().min(0)]).optional(),
+        color: z.string().min(1),
+      }),
+    )
+    .min(1),
+});
+
 export const TutorialShape = z.strictObject({
   format: z.literal(0),
   id: z
@@ -263,6 +288,7 @@ export const TutorialShape = z.strictObject({
     text: z.string().optional(),
     palette: z.string().optional(),
     colors: z.record(Name, z.string().min(1)),
+    placements: Placements.optional(),
   }),
   expect: Expect,
 });
@@ -278,6 +304,7 @@ export type PolygonSpec = z.infer<typeof PolygonSpec>;
 export type RepeatSpec = z.infer<typeof RepeatSpec>;
 export type Pick = z.infer<typeof Pick>;
 export type Symmetry = z.infer<typeof Symmetry>;
+export type Placements = z.infer<typeof Placements>;
 export type InkPath = z.infer<typeof InkPath>;
 export type Expect = z.infer<typeof Expect>;
 export type ExpectedPiece = z.infer<typeof ExpectedPiece>;

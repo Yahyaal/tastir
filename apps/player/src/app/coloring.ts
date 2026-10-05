@@ -50,6 +50,15 @@ export const PALETTES: Readonly<Record<string, Palette>> = {
     d: '#e9d8a6',
     ground: '#fbf7ee',
   },
+  // The glazed tile of the Alhambra's dados: white, black, teal, honey
+  // brown and a deep blue.
+  Alhambra: {
+    a: '#1f1c1a',
+    b: '#1f7f86',
+    c: '#a5652b',
+    d: '#2b4f8f',
+    ground: '#f1ece1',
+  },
 };
 
 export const DEFAULT_PALETTE = 'Fès tile';
@@ -75,7 +84,7 @@ export const tutorialColoring = (model: Model): Coloring => ({
 });
 
 /** The palette slot each piece type takes: the tutorial's, else in turn. */
-function slotOf(model: Model, t: PieceType, i: number): Slot {
+export function slotOf(model: Model, t: PieceType, i: number): Slot {
   const named = t.name ? model.tutorial.pattern.colors[t.name] : undefined;
   if (named && (SLOTS as readonly string[]).includes(named))
     return named as Slot;
@@ -115,11 +124,21 @@ export function colorReducer(h: History, action: ColorAction): History {
       ? h
       : { past: [...h.past, h.now], now, future: [] };
   switch (action.kind) {
-    case 'paint':
+    case 'paint': {
+      // A whole shape painted drops the colors chosen for its placements
+      // (keys `shape#piece@i,j`, see placement.ts).
+      const chosen = action.type.includes('#')
+        ? { ...h.now.chosen }
+        : Object.fromEntries(
+            Object.entries(h.now.chosen).filter(
+              ([k]) => !k.startsWith(`${action.type}#`),
+            ),
+          );
       return change({
         ...h.now,
-        chosen: { ...h.now.chosen, [action.type]: action.color },
+        chosen: { ...chosen, [action.type]: action.color },
       });
+    }
     case 'palette':
       // A new palette recolors everything; single choices are dropped.
       return change({ palette: action.palette, chosen: {} });
