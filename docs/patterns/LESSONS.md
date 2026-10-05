@@ -33,6 +33,10 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - Measure before deciding a mismatch. The dodecagram stars looked as if they overlapped in the source, but measuring showed they touch, exactly as ours do.
 - Many good step-by-step sources (Mamoot, Tuts+, Sandy Kurt) never show their pattern on a real building. Find the photo first, before building, or the work may end abandoned.
 
+- To read a periodic drawing, fold every line pixel into one symmetry wedge (translate to the nearest repeat centre, then turn and mirror into the wedge): the true lines pile up into sharp segments and noise spreads out (see the Córdoba research folder).
+- Classify ink by face colours, not by distance to dark pixels, when the drawing is coloured: thick outlines make short false pieces look inked. But the faces must be cut by every line that reaches the tile, including lines of motifs centred in neighbouring tiles.
+- Time-box a pattern: after about two hours without a clean pieces comparison, record the state in the queue and move on.
+
 ## Tooling
 
 - Agent worktrees live in `.claude/worktrees/` inside the repo. Without `.nxignore`, Nx picks them up as extra projects, the main test run fails with circular project references, and `pnpm typecheck` adds them to the root `tsconfig.json`. `.nxignore` now excludes `.claude/`.
