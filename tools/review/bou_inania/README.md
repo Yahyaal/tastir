@@ -18,3 +18,15 @@ Run from `docs/research/bou-inania/` (private, not in git) with
    crossing of earlier ones (only the first few choices are meaningful).
 
 Findings are in `docs/patterns/QUEUE.md` under Design E.
+
+Second pass (the band network itself, which works better than line search):
+
+10. `10_band_graph12.py`: skeleton of the white bands in `avg12.png`, each branch walked and
+    simplified into a polyline; vertices folded into one 15° wedge and clustered
+    (`verts12.json`, 18 classes).
+11. `11_snap_classes12.py`: snaps the polylines to those classes and lists the edge orbits.
+12. `12_ideal_net12.py`: ideal positions with every core edge at a multiple of 15°, then
+    adds long lines (three or more vertices) greedily while the fit stays within 0.0045
+    of the photo (`ideal12b.json`).
+13. `13_construction_order12.py`: checks that the net follows from one seed vertex by
+    crossings of 15° lines through vertices already found, and prints the order.
