@@ -60,6 +60,7 @@ export function Wall({
   colors,
   fill,
   repeat = [1, 1],
+  band = BAND,
   look: style = 'tiles',
   grout = 1,
   hovered,
@@ -74,6 +75,8 @@ export function Wall({
   fill?: (piece: number, i: number, j: number) => string;
   /** How many cells along each slide the coloring repeats after. */
   repeat?: readonly [number, number];
+  /** The strapwork band's colour: the palette's ground. */
+  band?: string;
   look?: WallStyle;
   /** Grout (or band) width, as a multiple of the normal width. */
   grout?: number;
@@ -273,7 +276,7 @@ export function Wall({
                       y1={a.y}
                       x2={b.x}
                       y2={b.y}
-                      stroke={layer === 'out' ? INK : BAND}
+                      stroke={layer === 'out' ? INK : band}
                       strokeWidth={
                         layer === 'out' ? groutWidth * 4 : groutWidth * 2.4
                       }

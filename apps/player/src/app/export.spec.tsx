@@ -75,7 +75,7 @@ describe('export in the player', () => {
       reader.onload = () => resolve(String(reader.result));
       reader.readAsText(blobs[0] as Blob);
     });
-    expect(text).toContain('fill="#c9a227"');
+    expect(text).toContain('fill="#b07a3c"');
     click.mockRestore();
   });
 

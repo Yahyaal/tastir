@@ -43,10 +43,10 @@ describe('colors by placement', () => {
       [1, 1],
     ] as const)
       expect(fill(across, i, j)).toBe(alhambra['ground']);
-    expect(fill(up, 0, 0)).toBe(alhambra['a']);
-    expect(fill(up, 1, 1)).toBe(alhambra['a']);
-    expect(fill(up, 1, 0)).toBe(alhambra['c']);
-    expect(fill(up, 0, 1)).toBe(alhambra['b']);
+    expect(fill(up, 0, 0)).toBe(alhambra['d']);
+    expect(fill(up, 1, 1)).toBe(alhambra['d']);
+    expect(fill(up, 1, 0)).toBe(alhambra['b']);
+    expect(fill(up, 0, 1)).toBe(alhambra['a']);
     // The repeat: two cells along is the same color again.
     expect(fill(up, 2, 3)).toBe(fill(up, 0, 1));
   });
@@ -109,7 +109,7 @@ describe('colors by placement', () => {
         alhambra['ground'],
         alhambra['a'],
         alhambra['b'],
-        alhambra['c'],
+        alhambra['d'],
       ]),
     );
   });

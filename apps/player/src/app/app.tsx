@@ -15,6 +15,8 @@ import { useCamera } from './useCamera';
 import { useInking } from './useInking';
 import {
   colorReducer,
+  DEFAULT_PALETTE,
+  PALETTES,
   pieceColors,
   tutorialColoring,
   type History,
@@ -107,6 +109,8 @@ export function Player({ model }: { model: Model }) {
     (m): History => ({ past: [], now: tutorialColoring(m), future: [] }),
   );
   const colors = pieceColors(inking.shown, colorHistory.now);
+  const band = (PALETTES[colorHistory.now.palette] ?? PALETTES[DEFAULT_PALETTE])
+    ?.ground;
   // Fills by placement, when the tutorial colors same shapes differently.
   const fill = useMemo(
     () =>
@@ -124,7 +128,7 @@ export function Player({ model }: { model: Model }) {
   const [printing, setPrinting] = useState(false);
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
-    wallSvg(inking.shown, colors, { look: wallStyle, grout, fill });
+    wallSvg(inking.shown, colors, { look: wallStyle, grout, fill, band });
   const svgRef = useRef<SVGSVGElement>(null);
   const running = useRef<Animation[]>([]);
   const reversing = useRef(false);
@@ -269,6 +273,7 @@ export function Player({ model }: { model: Model }) {
         model={inking.shown}
         colors={colors}
         fill={fill}
+        band={band}
         repeat={colorRepeat(inking.shown)}
         look={wallStyle}
         grout={grout}

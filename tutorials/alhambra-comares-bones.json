@@ -155,10 +155,10 @@
     "placements": {
       "repeat": [2, 2],
       "rules": [
-        {"piece": "bone", "turn": 90, "cell": [0, 0], "color": "a"},
-        {"piece": "bone", "turn": 90, "cell": [1, 1], "color": "a"},
-        {"piece": "bone", "turn": 90, "cell": [1, 0], "color": "c"},
-        {"piece": "bone", "turn": 90, "cell": [0, 1], "color": "b"}
+        {"piece": "bone", "turn": 90, "cell": [0, 0], "color": "d"},
+        {"piece": "bone", "turn": 90, "cell": [1, 1], "color": "d"},
+        {"piece": "bone", "turn": 90, "cell": [1, 0], "color": "b"},
+        {"piece": "bone", "turn": 90, "cell": [0, 1], "color": "a"}
       ]
     }
   },

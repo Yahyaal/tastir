@@ -6,21 +6,29 @@ export const SLOTS = ['a', 'b', 'c', 'd', 'ground'] as const;
 export type Slot = (typeof SLOTS)[number];
 export type Palette = Readonly<Record<Slot, string>>;
 
-/** Preset palettes, named after the places whose tilework they recall. */
+/**
+ * Preset palettes, each sampled from photographs of that place's tilework
+ * (docs/research/palettes, glazes clustered and lifted to the lightness of
+ * fired glaze, since photos in shade darken them). Slot a is the place's
+ * leading colour and d its darkest, so black never becomes a design's main
+ * colour by default.
+ */
 export const PALETTES: Readonly<Record<string, Palette>> = {
+  // Fès: the Attarine and Bou Inania madrasas and a Fès fountain.
   'Fès tile': {
-    a: '#1d5c7c',
-    b: '#2f7d4f',
-    c: '#c9a227',
-    d: '#8c2f39',
-    ground: '#f2ead8',
+    a: '#2f4a8f',
+    b: '#2f7f7a',
+    c: '#b07a3c',
+    d: '#1c1a1a',
+    ground: '#ebe7e1',
   },
+  // Marrakech: the Saadian tombs and the Ben Youssef madrasa.
   Marrakech: {
-    a: '#b5452f',
-    b: '#2e6b5e',
-    c: '#e0b04a',
-    d: '#3b3a6b',
-    ground: '#f4e6cf',
+    a: '#2a3d5c',
+    b: '#a66a35',
+    c: '#5a7ea6',
+    d: '#1d1a19',
+    ground: '#e2d8cc',
   },
   Chefchaouen: {
     a: '#2d5fa8',
@@ -29,35 +37,46 @@ export const PALETTES: Readonly<Record<string, Palette>> = {
     d: '#c9d9ee',
     ground: '#f5f7fa',
   },
+  // Tétouan: zellige walls and a fountain niche in the medina.
   Tétouan: {
-    a: '#1f6b4f',
-    b: '#d6a53a',
-    c: '#20304f',
-    d: '#a23b2a',
-    ground: '#f3efe4',
+    a: '#2c2b63',
+    b: '#8a5638',
+    c: '#c3a580',
+    d: '#1d141c',
+    ground: '#f5f2ec',
   },
+  // Isfahan: the Shah Mosque's haft-rang tiles.
   Isfahan: {
-    a: '#1e6f9f',
-    b: '#2aa198',
-    c: '#e8c547',
-    d: '#7a3b1d',
-    ground: '#f6f0e1',
+    a: '#4b54a3',
+    b: '#6670ad',
+    c: '#d3c67e',
+    d: '#37364f',
+    ground: '#e4e2d6',
   },
+  // Kashan: lustre star tiles, brown lustre and cobalt on white.
   Kashan: {
-    a: '#24476b',
-    b: '#3f8f9b',
-    c: '#c46b3a',
-    d: '#e9d8a6',
-    ground: '#fbf7ee',
+    a: '#6e5a33',
+    b: '#2f3f99',
+    c: '#a08c50',
+    d: '#3b2b1c',
+    ground: '#f4f0e6',
   },
-  // The glazed tile of the Alhambra's dados: white, black, teal, honey
-  // brown and a deep blue.
+  // The Alhambra: the Comares dado (white, teal, honey, gold, black).
   Alhambra: {
-    a: '#1f1c1a',
-    b: '#1f7f86',
-    c: '#a5652b',
-    d: '#2b4f8f',
-    ground: '#f1ece1',
+    a: '#2f7a7c',
+    b: '#9a6430',
+    c: '#c7b97a',
+    d: '#1a1614',
+    ground: '#e8e6e1',
+  },
+  // The Bou Inania wall in our photo, colour for colour: honey, teal,
+  // blue, black and the light grey of its bands, brightened evenly.
+  'Bou Inania': {
+    a: '#925825',
+    b: '#2e747d',
+    c: '#557b96',
+    d: '#0d0d0d',
+    ground: '#c9ced0',
   },
 };
 

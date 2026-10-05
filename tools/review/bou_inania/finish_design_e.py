@@ -57,8 +57,8 @@ def name_of(t, typ):
 
 # The photo's colors: black stars, petals and shields, orange pentagons and
 # ring, blue arrows, teal centres, white for the rest.
-COLORS = {'centre': 'b', 'cornerstar': 'b', 'petal': 'a', 'star': 'a', 'shield': 'a', 'kite': 'ground',
-          'pentagon': 'c', 'ring': 'c', 'arrow': 'd', 'arrowhead': 'a', 'cross': 'a', 'arm': 'a',
+COLORS = {'centre': 'b', 'cornerstar': 'b', 'petal': 'd', 'star': 'd', 'shield': 'd', 'kite': 'ground',
+          'pentagon': 'a', 'ring': 'a', 'arrow': 'c', 'arrowhead': 'd', 'cross': 'd', 'arm': 'd',
           'diamond': 'ground', 'gap': 'ground', 'chip': 'ground'}
 names = {}
 pieces = []
@@ -71,7 +71,7 @@ for t, typ in enumerate(dump['types']):
         e['small'] = True
     pieces.append(e)
     print(t, nm, slot, typ['vertices'], typ['area'], typ['perCell'], 'small' if typ['sliver'] else '', where(t))
-tut['pattern']['palette'] = 'Alhambra'
+tut['pattern']['palette'] = 'Bou Inania'
 tut['pattern']['colors'] = names
 tut['expect'] = {'pieceTypes': len(pieces), 'pieces': pieces}
 json.dump(tut, open(sys.argv[2], 'w'), ensure_ascii=False)

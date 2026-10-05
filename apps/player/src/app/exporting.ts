@@ -17,6 +17,8 @@ export interface WallOptions {
   readonly title?: string;
   /** The fill for each placement, when same shapes take different colors. */
   readonly fill?: (piece: number, i: number, j: number) => string;
+  /** The strapwork band's colour: the palette's ground. */
+  readonly band?: string;
 }
 
 /**
@@ -37,6 +39,7 @@ export function wallSvg(
     scale = 100,
     title = model.tutorial.title,
     fill: placed,
+    band = BAND,
   } = options;
   const { cell, pieces, ink } = model.pattern;
   const xs = cell.corners.map((p) => p.x);
@@ -102,7 +105,7 @@ export function wallSvg(
   if (look === 'strapwork') {
     for (const [color, k] of [
       [INK, 4],
-      [BAND, 2.4],
+      [band, 2.4],
     ] as const) {
       for (const d of shifts) {
         for (const s of ink) {

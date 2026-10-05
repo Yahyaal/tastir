@@ -38,7 +38,7 @@ describe('the coloring history', () => {
     expect(colorReducer(start, { kind: 'undo' })).toBe(start);
   });
 
-  it('has the seven preset palettes, each filling every slot', () => {
+  it('has the eight preset palettes, each filling every slot', () => {
     expect(Object.keys(PALETTES)).toEqual([
       'Fès tile',
       'Marrakech',
@@ -47,6 +47,7 @@ describe('the coloring history', () => {
       'Isfahan',
       'Kashan',
       'Alhambra',
+      'Bou Inania',
     ]);
     for (const p of Object.values(PALETTES))
       expect(Object.keys(p)).toEqual(['a', 'b', 'c', 'd', 'ground']);
@@ -74,16 +75,16 @@ const click = (name: string | RegExp) =>
 describe('coloring in the player', () => {
   it('recolors every star at once, then undoes, redoes and resets', () => {
     atColor();
-    expect(starFills()).toEqual(new Set(['#1d5c7c']));
+    expect(starFills()).toEqual(new Set(['#2f4a8f']));
     click('Recolor every star');
     click(/third color/);
-    expect(starFills()).toEqual(new Set(['#c9a227']));
+    expect(starFills()).toEqual(new Set(['#b07a3c']));
     click('Undo');
-    expect(starFills()).toEqual(new Set(['#1d5c7c']));
+    expect(starFills()).toEqual(new Set(['#2f4a8f']));
     click('Redo');
-    expect(starFills()).toEqual(new Set(['#c9a227']));
+    expect(starFills()).toEqual(new Set(['#b07a3c']));
     click('Reset');
-    expect(starFills()).toEqual(new Set(['#1d5c7c']));
+    expect(starFills()).toEqual(new Set(['#2f4a8f']));
   });
 
   it('opens the colors for the piece clicked on the wall, with any color allowed', () => {

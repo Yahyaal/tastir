@@ -35,6 +35,45 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'palettes',
+    title: 'Colour palettes, sampled from photos (new)',
+    fold: 12,
+    status: 'decide',
+    summary:
+      'Every city palette is now taken from photographs of that place’s tilework, and a new Bou Inania palette reproduces our photo colour for colour.',
+    story: [
+      'You were right that the old palettes were made up. Each one now comes from photos on Wikimedia Commons (first picture: the palette beside the photos it was sampled from). I clustered only the glazed colours, then lifted their lightness to that of fired glaze, because photos taken in shade darken them. Chefchaouen stays as it was, as you liked it.',
+      'Black is now the fourth colour of every palette rather than the first, so it no longer becomes a design’s main colour. Comares bones keep their photo colours (white lying, black, teal and brown standing).',
+      'Bou Inania: the colour of every piece of Design E was read from the photo itself (white bands, black, teal centres, honey pentagons and rings, blue arrows), brightened evenly so the bands look like the photo’s light grey. In the Strapwork style the bands now take the palette’s white too (second picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/palettes/palettes.png',
+        caption: 'Each palette and the photos it was sampled from.',
+      },
+      {
+        src: 'renders/palettes/bou-inania-compare.png',
+        caption:
+          'The photo (left) and Design E in the Bou Inania palette, Strapwork style (right).',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Wikimedia Commons: Zellij decoration, Bou Inania madrasa, Fès',
+        url: 'https://commons.wikimedia.org/wiki/File:Zellij_Decoration_Bou_Inania_Madrasa_Fes.jpg',
+      },
+      {
+        label: 'Wikimedia Commons: Zellij, Saadian tombs, Marrakech',
+        url: 'https://commons.wikimedia.org/wiki/File:Zellij_-_Saadi_Tombs_1083.jpg',
+      },
+      {
+        label: 'Wikimedia Commons: Shah Mosque, Isfahan',
+        url: 'https://commons.wikimedia.org/wiki/File:Shah_Mosque,_Isfahan_05.jpg',
+      },
+    ],
+  },
+  {
     id: 'twelve-fold-rosette-mian',
     title: 'Twelve-fold rosette: Samira Mian’s construction (new)',
     fold: 12,
@@ -722,7 +761,20 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'palettes-ok',
+    text: 'Are the new palettes closer to each place? Tell me any that still look wrong.',
+    choices: ['They look right', 'Some still look wrong (say which)'],
+    pictures: [
+      {
+        src: 'renders/palettes/palettes.png',
+        caption: 'The palettes and their photos.',
+      },
+    ],
+    card: 'palettes',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
@@ -747,6 +799,11 @@ export const PROGRESS: {
   updated: '5 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Palettes from photos',
+      text: 'Every city palette sampled from photos of its tilework; black moved out of first place; a Bou Inania palette that reproduces our photo; strapwork bands take the palette’s white.',
+      link: { label: 'Palettes card', href: '#palettes' },
+    },
     {
       title: 'Design E rebuilt her way',
       text: 'Fifteen sets of twelve lines, each through a corner already drawn; 21 steps; the same wall.',
