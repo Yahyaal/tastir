@@ -167,7 +167,9 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'kurt-eight-fold-zellige',
     title: 'Eight-fold zellige wheel (Design C, new)',
     fold: 8,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: shift the rows as in the Alhambra star. Agreed and done: “Eight-fold zellige wheel, shifted rows” is in the library. With a half-wheel shift the rows come down from 2 apart to 2√2 − 1 (the height is drawn with one circle), the wheels nest and each touches four neighbours corner to corner (first picture). The square version stays too.',
     summary:
       'Sandy Kurt’s eight-fold zellige wheel: octagons, bands and a star in the middle, built with her nineteen steps.',
     story: [
@@ -229,7 +231,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 16,
     status: 'decided',
     decision:
-      'You: build E too. F stays as the beginner version. For E I found no published drawing (I checked Brian Wichmann’s tiling database, which has five Bou Inania panels but not this one, and Sandy Kurt’s zellige study), and the photo is too rough to measure precisely, so I am asking you how to proceed (question at the top).',
+      'You: build E too. F stays as the beginner version. Then you: build it as my best guess from the photo, extending the lines and choosing the crossings that get closest to the image. In progress.',
     summary:
       'A sixteen-pointed star ringed by sixteen petals, rosettes touching on a square grid.',
     story: [
@@ -629,39 +631,4 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'design-e',
-    text: 'Design E has no published drawing, and the photo is too rough to measure precisely. Should I rebuild it as my best guess from the photo (marked unverified), or wait for a better source?',
-    choices: [
-      'Best guess from the photo',
-      'Wait: I will look for a drawing or a straight-on photo',
-      'Skip E for now',
-    ],
-    pictures: [
-      {
-        src: 'renders/sixteen-fold-rosette/designs-E-F-zoom.png',
-        caption:
-          'Left: the real Bou Inania wall close up (red: one rosette with its rings; yellow: a small eight-fold cluster where four rosettes meet). Right: our simpler Design F.',
-      },
-    ],
-    card: 'sixteen-fold-rosette',
-  },
-  {
-    id: 'design-c',
-    text: 'Design C is built (left: our lines over Kurt’s drawing). Is the square repeat on the right acceptable, with its very small kite and star pieces?',
-    choices: [
-      'Yes, keep it',
-      'Keep the wheel, try another repeat',
-      'Too fine, simplify it',
-    ],
-    pictures: [
-      {
-        src: 'renders/kurt-eight-fold-zellige/design-C.png',
-        caption:
-          'Left: Design C over Kurt’s drawing. Right: repeated on a 2 × 2 square.',
-      },
-    ],
-    card: 'kurt-eight-fold-zellige',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
