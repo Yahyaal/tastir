@@ -771,7 +771,20 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'mian-stellated',
+    text: 'Samira Mian’s stellated rosettes (activity 8) are a close cousin of Bou Inania, not the same: same square grid, octagons at the corners, but hers has no ring of five-pointed stars and pentagons, and hexagons where Bou Inania has the long bands. Build hers as its own tutorial (credited) and reuse its grid steps to simplify Bou Inania?',
+    choices: ['Yes, both', 'Only hers', 'Only use it for Bou Inania'],
+    pictures: [
+      {
+        src: 'renders/mian-stellated/compare.png',
+        caption: 'Left: her finished drawing. Right: the Bou Inania drawing.',
+      },
+    ],
+    card: 'bou-inania-v2',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
