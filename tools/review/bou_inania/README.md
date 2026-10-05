@@ -36,3 +36,9 @@ Second pass (the band network itself, which works better than line search):
     an hour); run it in the background.
 15. `15_stitch_tile.py`: stitches the rosette, corner and edge averages into one sharp
     tile, `tile-composite.png` (±0.6 units), the reference for the outer region.
+16. `16_band_graph_tile.py`: the band network of the stitched tile, with the mask smoothed
+    and dead-end spurs under 0.04 pruned (`raw-segsT.json`).
+17. `17_snap_classes_tile.py`: folds it with the tile's four-fold symmetry and keeps edge
+    orbits seen at least three times (`graphT.json`). It catches the corner stars and their
+    octagon but not the orange ring or the grid-line bands, so the outer region is drawn by
+    hand (next step).
