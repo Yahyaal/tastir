@@ -27,3 +27,4 @@ for k, e in enumerate(eight):                  # diamonds of the 8-stars
         n = L(th, 0); c = n[0] * e[0] + n[1] * e[1]
         for sgn in (1, -1):
             add(f'D{k}_{th % 180}_{sgn}', L(th, c + sgn * r8 * math.cos(math.radians(45))))
+
