@@ -64,29 +64,34 @@ export const PATTERNS: readonly Pattern[] = [
   },
   {
     id: 'bou-inania-v2',
-    title: 'Bou Inania rosette, simpler (draft)',
+    title: 'Bou Inania rosette, her way (draft: where it does not match)',
     fold: 12,
-    status: 'decided',
-    decision:
-      'You: join crossings where needed; the source of the drawing’s construction is unknown. Draft built; finishing the small stars.',
+    status: 'decide',
     summary:
-      'Samira Mian’s rosette plus eleven sets of lines, each ruled through a crossing already on the paper.',
+      'Built her way as far as it goes: her rosette, the bigger circle, and sets of twelve lines each drawn through a crossing already on the paper. Four areas still differ from the drawing.',
     story: [
-      'Done: the whole pattern comes from Mian’s rosette, the bigger circle (2 × cos 15° radii) and eleven sets of lines. Every set is ruled through a crossing of the sets before it (first picture, one colour per set), then turned round: twelve times for the rosette, eight times for the corner octagon, four times for the frame and the lines across the corners. Together they lie on 88% of the white bands of the drawing; the rest is the width of the bands at turns. Nothing in it is measured: every position is a crossing.',
-      'The 24 lines at 7.5° steps either side of the 0°, 30°, 60°… directions are the ones that make the five-pointed stars. They need one extra halving of the angle (15° to 7.5°); otherwise every line is at 15° steps, the octagon at 22.5°.',
-      'Draft tutorial (second picture, left; the drawing on the right): 20 steps, 20 piece shapes, the pieces fill the square exactly. The centre star, the petals, the pentagons, the shield ring and the frame are right.',
-      'Still wrong: around each small five-pointed star a band is missing, so the star merges with the area beside it (the yellow pieces); and where two lines meet a hair apart instead of at one point, five kinds of tiny slivers appear. Next I fix those two, then colour it like the drawing and put it in the library for you to try.',
+      'How close it is (first picture: our ink over the drawing): 99.7% of our ink lies on the drawing’s bands, and our ink covers 96% of the band centres; magenta marks band with no ink, blue ink off the bands.',
+      'Where it differs (second picture, ours on the left with one colour per piece shape, the drawing on the right, same areas circled):',
+      'A. The ring round the green shields. In the drawing a band separates each green shield from the black piece beside it; in ours that band is missing, so the shield and the black piece merge into one pink piece. None of our line sets runs along that band; it is the one place I could not find a line through existing crossings.',
+      'B. Where the shield ring meets the 0°, 90°… directions, several of our lines cross a hair apart instead of at one point, leaving tiny slivers.',
+      'C. The middle of each tile side. The drawing has two bands crossing in an X; ours has one plain piece there.',
+      'D. The corners. The brown band bends at different places and our corner pieces are split differently.',
+      'Ideas welcome for any of these: for A especially, if you know how the shield’s outer band is set out.',
     ],
     pictures: [
       {
-        src: 'renders/bou-inania-v2/line-sets.png',
+        src: 'renders/bou-inania-v2/ink-vs-drawing.png',
         caption:
-          'The line sets on the drawing, one colour each (pieces that lie on bands only).',
+          'Our ink on the drawing: green on a band, blue off it; magenta = band with no ink.',
       },
       {
-        src: 'renders/bou-inania-v2/draft-tile.png',
+        src: 'renders/bou-inania-v2/mismatch-areas.png',
         caption:
-          'Left: the draft tile, one colour per piece shape. Right: the drawing.',
+          'Left: our tile (one colour per piece shape). Right: the drawing. A–D: where they differ.',
+      },
+      {
+        src: 'renders/bou-inania-v2/line-sets.png',
+        caption: 'The line sets on the drawing, one colour each.',
       },
     ],
     asks: [],
@@ -799,7 +804,19 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'bou-areas',
+    text: 'Bou Inania her way: four areas (A–D in the picture) still differ from the drawing. Any ideas, especially for A, the band round the green shields?',
+    pictures: [
+      {
+        src: 'renders/bou-inania-v2/mismatch-areas.png',
+        caption: 'Ours (left) and the drawing (right).',
+      },
+    ],
+    card: 'bou-inania-v2',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
@@ -887,7 +904,7 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Bou Inania with Mian’s grid steps',
+    title: 'Waiting: your ideas on the Bou Inania areas A–D',
     text: 'Draft built: her rosette plus eleven sets of lines through crossings. Fixing the small stars and slivers, then colouring and the library.',
     link: { label: 'Card', href: '#bou-inania-v2' },
   },
