@@ -1,8 +1,9 @@
 # Bou Inania rosette, simpler (owner, 2026-10-05)
 
 Reference: the clear drawing `docs/12-rosette tutorial/bouinania-pattern.jpg` (by
-@aslam.geometricpatterns). Centre (1024.5, 1011.5) px, unit R = 415 px (Samira Mian's outline
-radius, found from her rosette lying on the bands).
+@aslam.geometricpatterns). Centre (1027, 1027.5) px (the frame's centre; a symmetry fit gave a wrong centre 16 px
+higher), unit R = 367 px = Samira Mian's first circle (her rosette fits the inside exactly).
+Big figure on the circle 2R·cos 15° (sides 1.866R); frame 2.29R.
 
 1. `1_scan_big_circle.py`: scores sizes of a second rosette/outline against the bands; a
    twelve-sided outline at √3·R fits (90%).

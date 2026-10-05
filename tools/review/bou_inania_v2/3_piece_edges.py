@@ -4,7 +4,7 @@ from scipy import ndimage as ndi
 from skimage.measure import find_contours, approximate_polygon
 im = np.asarray(Image.open('bouinania-pattern.jpg').convert('RGB')).astype(float)
 r, g, b = im[..., 0], im[..., 1], im[..., 2]
-cx, cy, R = 1024.5, 1011.5, 415.0
+cx, cy, R = 1027.0, 1027.5, 367.0
 band = im.min(2) > 120
 dt = ndi.distance_transform_edt(band)
 yy, xx = np.mgrid[0:im.shape[0], 0:im.shape[1]]
@@ -31,11 +31,12 @@ def edges(m, name):
         dd = px*nx + py*ny
         if dd < 0: nx, ny, dd = -nx, -ny, -dd
         nang = math.degrees(math.atan2(ny, nx)) % 360
-        out.append((round(ang, 1), round(nang, 1), round(dd, 4), round(L/R, 3)))
+        hw = 22/R
+        out.append((round(nang % 30, 1), round(nang, 1), 'edge', round(dd, 3), 'band centre', round(dd - hw, 3), 'or', round(dd + hw, 3), 'len', round(L/R, 3)))
     print(name, 'edges: (line dir, normal dir, distance from O, length), all in R')
     for e in out: print('   ', e)
 # one of each, near the 75° axis (between 60 and 90) and on the 90 axis
-for name, col, (ang, rad) in (('brown pentagon', 'brown', (75, 1.18)), ('small black star', 'black', (90, 1.03)), ('green shield', 'green', (75, 1.55)), ('black between', 'black', (90, 1.33))):
+for name, col, (ang, rad) in (('brown pentagon', 'brown', (75, 1.38)), ('small black star', 'black', (90, 1.15)), ('green shield', 'green', (75, 1.80)), ('black after star (0 axis)', 'black', (90, 1.57)), ('black after shield (15 axis)', 'black', (75, 2.15))):
     x, y = rad*math.cos(math.radians(ang)), rad*math.sin(math.radians(ang))
     m = piece_at(masks[col], x, y)
     if m is None: print(name, 'not found at', ang, rad); continue

@@ -38,31 +38,31 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bou-inania-v2',
     title: 'Bou Inania rosette, simpler (in progress)',
     fold: 12,
-    status: 'decided',
-    decision:
-      'You: the old Design E is overcomplicated (low-res photo); use the clearer image, keep it simple, find the bigger circle by research or by trying examples, credit everyone. Working on it.',
+    status: 'decide',
     summary:
-      'Rebuilding the Bou Inania rosette from Samira Mian’s rosette, one bigger circle and a frame.',
+      'Rebuilding the Bou Inania rosette from Samira Mian’s rosette, one bigger circle and two squares.',
     story: [
-      'Research: the two papers on Moroccan twelve-fold rosettes are paywalled and the journal blocks downloads; the Art of Islamic Pattern class only describes itself. So I am working from the drawings, testing simple choices against your clear image.',
-      'Found (first picture): the inside is exactly Samira Mian’s rosette. The bigger circle has radius √3 times the first, and needs no new step: it passes through the outer crossings of the six circles of her opening. A twelve-sided figure on it gives the long straight bands; its top, bottom and side edges are your “smaller square”, so your guess was close (the square’s side is the width of that figure, 2 × 1.67 radii, a little less than the circle’s diameter). The frame touches a circle twice the first.',
-      'Found next, from the exact edges of one brown pentagon: its two long sides are her star lines carried on, its inner edges are her outline carried on, and its outer edges are the lines touching the first circle at its 0°, 30°, 60°… points. So the ring needs only one new set of lines so far (purple in the second picture).',
-      'Not yet explained (magenta dots in the second picture): the outer ring round the green shields and the corner pieces between the two squares. Next I read the edges of a shield and a corner piece the same way, add the line sets they need, and stop as soon as everything is covered. Then the tutorial.',
+      'Correction: my first measurements used a centre 16 px off. Measured again from the frame’s true centre, everything is cleanly twelve-fold and simpler than I first said.',
+      'Inside (first picture, red): exactly Samira Mian’s rosette, every crossing within a few pixels, except that her twelve-sided outline is not drawn: her star lines run straight on out to the green ring and beyond.',
+      'The bigger circle (green): radius 2 × cos 15° ≈ 1.93 times the first. It is where two circles of the first size, drawn round neighbouring points of the first circle, cross on the outside: one compass step. The twelve-sided figure on it gives the long straight bands, and its top, bottom and side edges make your smaller square (half-width 1.87 radii, just inside the big circle, so your guess “side = diameter of the largest circle” is very close).',
+      'The frame (blue): 2.29 radii from the centre. I have not yet found a simple step that gives exactly that.',
+      'Brown pentagons sit between two more sets of twelve lines, at about 1.08 and 1.17 radii. Three sets of lines already explain a third of the drawing (first picture).',
+      'Where I am stuck (second picture): the small black stars are five-pointed, and my edge readings put two of their sides at about 10° and 38° rather than at multiples of 15°, though short sides are hard to measure exactly. If that holds, those sides cannot come from sets of twelve lines at 15° steps; they would be lines joining two crossings already on the paper. See the question at the top.',
     ],
     pictures: [
       {
-        src: 'renders/bou-inania-v2/frame-found.png',
+        src: 'renders/bou-inania-v2/candidate-2.png',
         caption:
-          'Red: her star lines carried on. Orange: the first circle. Green: the bigger circle (√3 times) and its twelve-sided figure. Blue: the frame.',
+          'Red: her star lines, carried on. Green: the twelve-sided figure on the bigger circle (2 cos 15° radii). Only the pieces that lie on the white bands are drawn; the rest is still to explain.',
       },
       {
-        src: 'renders/bou-inania-v2/candidate-1.png',
+        src: 'renders/bou-inania-v2/small-star.png',
         caption:
-          'Pieces of five line sets that lie on the bands. Red: her star lines; orange: her outline; purple: lines touching the first circle; green: the big figure; blue: the frame. Magenta dots: bands not explained yet.',
+          'A small black star: its sides do not all run at multiples of 15°.',
       },
       {
         src: 'renders/bou-inania-v2/mian-inside.png',
-        caption: 'Mian’s rosette (red) fits the inside line for line.',
+        caption: 'Mian’s rosette (red) over the inside.',
       },
     ],
     asks: [],
@@ -775,7 +775,28 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'bou-small-stars',
+    text: 'Bou Inania: the small five-pointed stars have sides that are not at 15° steps. May I draw those sides as lines joining two crossings already on the paper (exact, but not a set of twelve parallel lines)? And do you know where @aslam.geometricpatterns explains this construction (a video or post)? It would settle the frame size too.',
+    choices: [
+      'Yes, join crossings',
+      'Find another way first',
+      'I have a link (type it)',
+    ],
+    pictures: [
+      {
+        src: 'renders/bou-inania-v2/small-star.png',
+        caption: 'A small black star.',
+      },
+      {
+        src: 'renders/bou-inania-v2/candidate-2.png',
+        caption: 'What three sets of lines already give.',
+      },
+    ],
+    card: 'bou-inania-v2',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
@@ -859,7 +880,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'Bou Inania rosette, simpler',
-    text: 'Rebuilding it from Mian’s rosette plus a circle √3 times bigger and two squares; now working out the ring of pentagons and shields.',
+    text: 'Her rosette plus a bigger circle (2 cos 15° radii) and two squares; stuck on the small five-pointed stars, question at the top.',
     link: { label: 'Card', href: '#bou-inania-v2' },
   },
   next: [
