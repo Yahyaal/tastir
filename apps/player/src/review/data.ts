@@ -236,12 +236,24 @@ export const PATTERNS: readonly Pattern[] = [
       'A sixteen-pointed star ringed by sixteen petals, rosettes touching on a square grid.',
     story: [
       'This tutorial was already in the app. Compared with a real sixteen-fold zellige wall at the Bou Inania madrasa in Fès (first picture), the rosette itself is plausible, but the real wall is much richer: the space between rosettes is filled with further rings, small stars and octagons, where ours leaves one large plain piece.',
+      'Design E progress (correction): the Bou Inania rosette is twelve-fold, not sixteen-fold. Straightening the photo and measuring how each rosette repeats around its centre gives 12 every time, and by eye it has 12 petals, 12 orange pentagons and 12 small black stars (second picture). So Design E will be a twelve-fold rosette on a square grid, with eight-fold stars at the corners.',
+      'Averaging every rosette, every corner and every edge of the photo with their symmetries gives one sharp tile (third picture), which I am now fitting a ruler-and-compass drawing to. The rosette is already fitted: every edge runs at a multiple of 15°, and the whole rosette follows from one starting point by crossings of lines, which is how the tutorial will build it. The corners and the bands between rosettes are next.',
     ],
     pictures: [
       {
         src: 'renders/sixteen-fold-rosette/compare-wall.png',
         caption:
           'Left: zellige at the Bou Inania madrasa, Fès. Right: our wall. The rosettes are alike; the ground between them is not.',
+      },
+      {
+        src: 'research/sixteen-fold-rosette/photo-rosette-twelve-rays.png',
+        caption:
+          'One rosette of the photo, straightened, with twelve rays drawn: twelve petals, pentagons and stars, so it is twelve-fold.',
+      },
+      {
+        src: 'research/bou-inania/tile-composite.png',
+        caption:
+          'The whole tile, averaged from every rosette, corner and edge in the photo: the reference Design E is being fitted to.',
       },
     ],
     asks: [],

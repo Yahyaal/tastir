@@ -30,3 +30,9 @@ Second pass (the band network itself, which works better than line search):
     of the photo (`ideal12b.json`).
 13. `13_construction_order12.py`: checks that the net follows from one seed vertex by
     crossings of 15° lines through vertices already found, and prints the order.
+14. `14_average_corners_edges.py`: averages every corner (four-fold) and every edge
+    midpoint (mirror both ways) around the six fitted rosettes, each centre refined
+    first (`corner-avg.png`, `edgeV-avg.png`, `edgeH-avg.png`, ±0.24 units). Slow (about
+    an hour); run it in the background.
+15. `15_stitch_tile.py`: stitches the rosette, corner and edge averages into one sharp
+    tile, `tile-composite.png` (±0.6 units), the reference for the outer region.
