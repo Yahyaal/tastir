@@ -768,6 +768,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Inking with a ruler, and the tile in green',
+      text: 'As you suggested: the ink is drawn one ruler line at a time (a pale blue ruler shows where it lies), parallel lines one after the other with the partner flashing blue, then the short joining stretches. The tile outline is traced in green at the end of the ink, every copy carries it in the repeat, and it fades once the wall is built.',
+      link: { label: 'Try it', href: '/#/twelve-fold-rosette-mian' },
+    },
+    {
       title: 'Samira Mian’s rosette, fixed',
       text: 'No triangle bases; outline lines carried to the tile edge; square and hexagonal tiles, both matching hers line for line.',
       link: { label: 'Square tile', href: '/#/twelve-fold-rosette-mian' },

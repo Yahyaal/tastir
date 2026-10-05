@@ -575,3 +575,26 @@ button:disabled {
   font-size: 0.85rem;
   color: var(--muted);
 }
+
+/* Ink by ruler: the ruler shows only while it is laid (playInk). */
+.rulers line {
+  opacity: 0;
+}
+
+/* The tile, in green, at the end of the ink and on each copy in the
+   repeat, where it fades once the wall is built. */
+.tile-outline {
+  fill: none;
+  stroke-width: 2.5px;
+  stroke-dasharray: none;
+}
+
+.ink .tile-outline {
+  stroke-width: 2.5px;
+}
+
+.copy-outline {
+  fill: none;
+  stroke-width: 2.5px;
+  opacity: 0;
+}

@@ -2,7 +2,8 @@ import { render } from '@testing-library/react';
 import json from '@tutorials/six-fold-hammerhead.json';
 import shiftedJson from '@tutorials/kurt-eight-fold-zellige-shifted.json';
 import squareJson from '@tutorials/kurt-eight-fold-zellige.json';
-import { penOrder } from './animation';
+import { rulerOrder } from './animation';
+import mianJson from '@tutorials/twelve-fold-rosette-mian.json';
 import { pieceColors } from './coloring';
 import { Construction, RepeatedInk, rowBasis } from './drawing';
 import { loadModel } from './model';
@@ -12,19 +13,39 @@ const model = loadModel(json);
 const steps = model.tutorial.steps.length;
 
 describe('the move from the last step to the ink', () => {
-  it('inks every line once, path by path, starting nearest the centre', () => {
-    const order = penOrder(model);
-    const drawn = order.flat().map((s) => s.index);
+  it('inks every line once, a ruler at a time, parallel lines together', () => {
+    const order = rulerOrder(loadModel(mianJson));
+    const m = loadModel(mianJson);
+    const drawn = order.flatMap((r) => r.strokes.map((s) => s.index));
     expect([...drawn].sort((a, b) => a - b)).toEqual(
-      model.pattern.ink.map((_, i) => i),
+      m.pattern.ink.map((_, i) => i),
     );
-    const start = (s: { index: number; reversed: boolean }) => {
-      const seg = model.pattern.ink[s.index]!.segment;
-      const p = s.reversed ? seg.b : seg.a;
-      return Math.hypot(p.x, p.y);
-    };
-    const firsts = order.map((path) => start(path[0]!));
-    expect(firsts[0]).toBe(Math.min(...firsts));
+    // Every stretch under one ruler lies on that ruler's line.
+    for (const r of order) {
+      const d = { x: r.to.x - r.from.x, y: r.to.y - r.from.y };
+      const len = Math.hypot(d.x, d.y);
+      for (const { index } of r.strokes) {
+        for (const p of [
+          m.pattern.ink[index]!.segment.a,
+          m.pattern.ink[index]!.segment.b,
+        ]) {
+          const off = ((p.x - r.from.x) * d.y - (p.y - r.from.y) * d.x) / len;
+          expect(Math.abs(off)).toBeLessThan(1e-6);
+        }
+      }
+    }
+    // Lines of one direction follow each other.
+    const angles = order.map((r) => Math.round(r.angle));
+    const seen = new Set<number>();
+    angles.forEach((a, k) => {
+      if (k > 0 && angles[k - 1] !== a) {
+        expect(seen.has(a)).toBe(false);
+      }
+      seen.add(a);
+    });
+    // Her star lines (long, in pairs) come before the short outline stretches.
+    expect(order[0]!.strokes.length).toBe(2);
+    expect(order[1]!.parallelToPrevious).toBe(true);
   });
 
   it('plays only when asked', () => {
@@ -32,11 +53,16 @@ describe('the move from the last step to the ink', () => {
       <Construction model={model} upTo={steps} ink enter />,
     );
     expect(container.querySelector('svg.ink-enter')).toBeTruthy();
+    expect(container.querySelectorAll('[data-ruler]').length).toBeGreaterThan(
+      0,
+    );
+    expect(container.querySelector('[data-tile]')).toBeTruthy();
     expect(container.querySelectorAll('[data-ink]')).toHaveLength(
       model.pattern.ink.length,
     );
     rerender(<Construction model={model} upTo={steps} ink />);
     expect(container.querySelector('svg.ink-enter')).toBeNull();
+    expect(container.querySelector('[data-ruler]')).toBeNull();
   });
 });
 
@@ -59,6 +85,9 @@ describe('the move to the repeat', () => {
     expect(original?.getAttribute('data-copy')).toBe('0,0');
     expect(container.querySelector('[data-copy="1,0"]')).toBeTruthy();
     expect(container.querySelector('[data-copy="0,1"]')).toBeTruthy();
+    expect(container.querySelectorAll('[data-copy] .copy-outline').length).toBe(
+      container.querySelectorAll('[data-copy]').length,
+    );
   });
 });
 

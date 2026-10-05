@@ -6,7 +6,13 @@ import type {
   SceneElement,
   Vec,
 } from '@tastir/engine';
-import { compassStart, highlightedNames } from './animation';
+import {
+  compassStart,
+  highlightedNames,
+  rulerOrder,
+  RULER_COLOR,
+  TILE_COLOR,
+} from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors } from './coloring';
 import type { Model } from './model';
@@ -329,10 +335,34 @@ export function Construction({
           />
         ))}
       </g>
-      {ink && freeInk ? (
-        <FreeInkPieces {...freeInk} />
-      ) : ink ? (
+      {ink && freeInk ? <FreeInkPieces {...freeInk} /> : null}
+      {ink && !freeInk && enter ? (
+        <g className="rulers" aria-hidden="true">
+          {rulerOrder(model).map((r, k) => (
+            <line
+              key={k}
+              data-ruler={k}
+              x1={sx(r.from)}
+              y1={sy(r.from)}
+              x2={sx(r.to)}
+              y2={sy(r.to)}
+              stroke={RULER_COLOR}
+              strokeWidth={12}
+              strokeLinecap="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+        </g>
+      ) : null}
+      {ink && freeInk ? null : ink ? (
         <g className="ink">
+          <polygon
+            className="tile-outline"
+            data-tile
+            points={points(model.pattern.cell.corners)}
+            stroke={TILE_COLOR}
+            vectorEffect="non-scaling-stroke"
+          />
           {model.pattern.ink.map((s, i) => (
             <line
               key={i}
@@ -578,12 +608,33 @@ export function RepeatedInk({
       );
       end = Math.max(end, delay + dur);
     }
+    // Each copy carries the tile's green outline while the wall is built;
+    // once it is complete the outlines fade away.
+    const fade = 1200 / speed;
+    for (const outline of svg.querySelectorAll<SVGPolygonElement>(
+      '.copy-outline',
+    )) {
+      if (typeof outline.animate !== 'function') continue;
+      anims.push(
+        outline.animate(
+          [
+            { opacity: 1 },
+            {
+              opacity: 1,
+              offset: (end + 400 / speed) / (end + 400 / speed + fade),
+            },
+            { opacity: 0 },
+          ],
+          { duration: end + 400 / speed + fade, fill: 'none' },
+        ),
+      );
+    }
     const borders = svg.querySelector<SVGGElement>('.tile-borders');
     if (borders && typeof borders.animate === 'function')
       anims.push(
         borders.animate([{ opacity: 0 }, { opacity: 1 }], {
           duration: 600,
-          delay: end,
+          delay: end + 400 / speed + fade,
           fill: 'backwards',
         }),
       );
@@ -621,6 +672,14 @@ export function RepeatedInk({
           className={isOrigin(d) ? 'ink original' : 'ink'}
           transform={`translate(${d.x} ${-d.y})`}
         >
+          {enter ? (
+            <polygon
+              className="copy-outline"
+              points={points(cell.corners)}
+              stroke={TILE_COLOR}
+              vectorEffect="non-scaling-stroke"
+            />
+          ) : null}
           {ink.map((s, k) => (
             <line
               key={k}

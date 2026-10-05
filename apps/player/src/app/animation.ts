@@ -209,6 +209,8 @@ const PEN_SPEED = 420;
 const INK_MAX_MS = 14000;
 /** The pen lifts and moves between paths. */
 const PEN_LIFT_MS = 90;
+/** Laying the ruler along the next line. */
+const RULER_MS = 250;
 /** How long a finished line takes to settle from red to black. */
 const SETTLE_MS = 450;
 
@@ -219,56 +221,117 @@ interface PenStroke {
   readonly reversed: boolean;
 }
 
+/** One ruler position: every ink stretch along one straight line. */
+export interface RulerLine {
+  /** Direction of the line, in degrees in [0, 180). */
+  readonly angle: number;
+  /** The stretches along it, in drawing order, each from its start. */
+  readonly strokes: readonly PenStroke[];
+  /** Where the ruler lies: a little past the first and last stretch. */
+  readonly from: Vec;
+  readonly to: Vec;
+  /** Whether a parallel line was drawn just before (same direction). */
+  readonly parallelToPrevious: boolean;
+}
+
+const turnDiff = (p: number, q: number) =>
+  Math.abs(((((p - q) % 180) + 270) % 180) - 90);
+
 /**
- * The order a hand would ink the pattern: the tutorial's paths, each drawn
- * end to end, starting with the path nearest the centre and then always
- * moving on to the nearest unfinished one.
+ * The order a person with a ruler would ink the pattern: lay the ruler
+ * once along each line and draw every stretch on it, and draw parallel
+ * lines one after the other. Directions that carry the most ink go first,
+ * so the long lines are drawn before the short ones that join them, and
+ * parallel lines go across in order.
  */
-export function penOrder(model: Model): PenStroke[][] {
+export function rulerOrder(model: Model): RulerLine[] {
   const ink = model.pattern.ink;
-  const paths: number[][] = [];
-  ink.forEach((s, i) => {
-    const prev = ink[i - 1];
-    if (prev && prev.to === s.from && s.from !== '')
-      paths[paths.length - 1]?.push(i);
-    else paths.push([i]);
+  const lines: { angle: number; offset: number; dir: Vec; items: number[] }[] =
+    [];
+  ink.forEach(({ segment: { a, b } }, index) => {
+    const len = Math.hypot(b.x - a.x, b.y - a.y);
+    if (len < 1e-12) return;
+    let dir = { x: (b.x - a.x) / len, y: (b.y - a.y) / len };
+    if (dir.y < -1e-9 || (Math.abs(dir.y) <= 1e-9 && dir.x < 0))
+      dir = { x: -dir.x, y: -dir.y };
+    const angle =
+      ((((Math.atan2(dir.y, dir.x) * 180) / Math.PI) % 180) + 180) % 180;
+    const offset = -dir.y * a.x + dir.x * a.y;
+    const same = lines.find(
+      (l) =>
+        turnDiff(l.angle, angle) < 1e-4 &&
+        Math.abs(-l.dir.y * a.x + l.dir.x * a.y - l.offset) < 1e-6,
+    );
+    if (same) same.items.push(index);
+    else lines.push({ angle, offset, dir, items: [index] });
   });
-  const ends = (path: number[]) => {
-    const first = ink[path[0] as number]!.segment.a;
-    const last = ink[path[path.length - 1] as number]!.segment.b;
-    return [first, last] as const;
+  const length = (i: number) => {
+    const { a, b } = ink[i]!.segment;
+    return Math.hypot(b.x - a.x, b.y - a.y);
   };
-  const left = new Set(paths.map((_, k) => k));
-  const out: PenStroke[][] = [];
-  let pen: Vec = { x: 0, y: 0 };
-  while (left.size) {
-    let best = -1;
-    let bestD = Infinity;
-    let bestRev = false;
-    for (const k of left) {
-      const [a, b] = ends(paths[k] as number[]);
-      const da = Math.hypot(a.x - pen.x, a.y - pen.y);
-      const db = Math.hypot(b.x - pen.x, b.y - pen.y);
-      if (da < bestD) [best, bestD, bestRev] = [k, da, false];
-      if (db < bestD) [best, bestD, bestRev] = [k, db, true];
-    }
-    left.delete(best);
-    const path = paths[best] as number[];
-    const strokes = (bestRev ? [...path].reverse() : path).map((index) => ({
-      index,
-      reversed: bestRev,
-    }));
-    out.push(strokes);
-    const [a, b] = ends(path);
-    pen = bestRev ? a : b;
+  // Lines grouped by direction.
+  const families: (typeof lines)[] = [];
+  for (const l of lines) {
+    const fam = families.find((f) => turnDiff(f[0]!.angle, l.angle) < 1e-3);
+    if (fam) fam.push(l);
+    else families.push([l]);
+  }
+  const inkOf = (f: typeof lines) =>
+    f.reduce((s, l) => s + l.items.reduce((t, i) => t + length(i), 0), 0);
+  families.sort((p, q) => inkOf(q) - inkOf(p) || p[0]!.angle - q[0]!.angle);
+  const out: RulerLine[] = [];
+  for (const fam of families) {
+    // Line offsets measured with one shared direction, so they sort across.
+    const d0 = fam[0]!.dir;
+    const across = (l: (typeof lines)[number]) =>
+      l.offset * (l.dir.x * d0.x + l.dir.y * d0.y);
+    fam.sort((p, q) => across(p) - across(q));
+    fam.forEach((l, k) => {
+      const along = (p: Vec) => p.x * l.dir.x + p.y * l.dir.y;
+      const strokes = l.items
+        .map((index) => {
+          const { a, b } = ink[index]!.segment;
+          const ta = along(a);
+          const tb = along(b);
+          return {
+            index,
+            reversed: tb < ta,
+            t: Math.min(ta, tb),
+            u: Math.max(ta, tb),
+          };
+        })
+        .sort((p, q) => p.t - q.t);
+      const t0 = strokes[0]!.t;
+      const t1 = Math.max(...strokes.map((s) => s.u));
+      const pad = (t1 - t0) * 0.12 + 0.05;
+      const base = { x: -l.dir.y * l.offset, y: l.dir.x * l.offset };
+      const at = (t: number) => ({
+        x: base.x + l.dir.x * t,
+        y: base.y + l.dir.y * t,
+      });
+      out.push({
+        angle: l.angle,
+        strokes: strokes.map(({ index, reversed }) => ({ index, reversed })),
+        from: at(t0 - pad),
+        to: at(t1 + pad),
+        parallelToPrevious: k > 0,
+      });
+    });
   }
   return out;
 }
 
+/** The pale blue of the ruler and of a parallel line it is laid against. */
+export const RULER_COLOR = '#2563eb';
+/** The tile's outline. */
+export const TILE_COLOR = '#16a34a';
+
 /**
- * Inks the pattern by hand: each line of the `.ink` group (marked
- * data-ink) draws from its start at pen speed, red while drawing and then
- * settling to black, path after path.
+ * Inks the pattern with a ruler: for each line of rulerOrder, the ruler
+ * (data-ruler) appears along it, the parallel line drawn just before
+ * flashes blue, and every stretch on the line draws from its start at pen
+ * speed, red while drawing and then settling to black; the pen lifts over
+ * the gaps. Last, the tile's outline (data-tile) is traced in green.
  */
 export function playInk(
   svg: SVGSVGElement | null,
@@ -281,31 +344,50 @@ export function playInk(
   svg.querySelectorAll<SVGLineElement>('[data-ink]').forEach((n) => {
     lines.set(Number(n.dataset['ink']), n);
   });
-  const order = penOrder(model);
+  const rulers = [...svg.querySelectorAll<SVGLineElement>('[data-ruler]')];
+  const order = rulerOrder(model);
   const lengths = new Map<number, number>();
   let total = 0;
-  for (const path of order) {
-    for (const { index } of path) {
+  for (const r of order) {
+    for (const { index } of r.strokes) {
       const node = lines.get(index);
       const len = node ? screenLength(node, lengthScale) : 0;
       lengths.set(index, len);
       total += len;
     }
   }
-  const lifts = Math.max(0, order.length - 1) * PEN_LIFT_MS;
+  const lifts = order.length * (PEN_LIFT_MS + RULER_MS);
   const pxPerMs = Math.max(
     (PEN_SPEED * speed) / 1000,
     total / Math.max(1, INK_MAX_MS / speed - lifts),
   );
   const animations: Animation[] = [];
-  // A moment on the finished construction before the pen comes down.
+  const can = (n: Element | undefined | null): n is SVGElement =>
+    !!n && typeof (n as SVGElement).animate === 'function';
+  // A moment on the finished construction before the ruler comes down.
   let t = 400 / speed;
-  for (const path of order) {
-    for (const { index, reversed } of path) {
+  order.forEach((r, k) => {
+    const ruler = rulers[k];
+    const start = t;
+    t += RULER_MS / speed;
+    if (r.parallelToPrevious) {
+      for (const { index } of order[k - 1]!.strokes) {
+        const prev = lines.get(index);
+        if (can(prev))
+          animations.push(
+            prev.animate(
+              [{}, { stroke: RULER_COLOR }, { stroke: RULER_COLOR }, {}],
+              { duration: 700 / speed, delay: start, fill: 'none' },
+            ),
+          );
+      }
+    }
+    r.strokes.forEach(({ index, reversed }, s) => {
       const node = lines.get(index);
       const len = lengths.get(index) ?? 0;
       const dur = Math.max(30, len / pxPerMs);
-      if (node && typeof node.animate === 'function') {
+      if (s > 0) t += PEN_LIFT_MS / 2 / speed;
+      if (can(node)) {
         const dash = `${len} ${len}`;
         animations.push(
           node.animate(
@@ -328,8 +410,39 @@ export function playInk(
         );
       }
       t += dur;
-    }
-    t += PEN_LIFT_MS;
+    });
+    if (can(ruler))
+      animations.push(
+        ruler.animate(
+          [
+            { opacity: 0 },
+            { opacity: 0.35, offset: 0.15 },
+            { opacity: 0.35, offset: 0.85 },
+            { opacity: 0 },
+          ],
+          { duration: t - start + 150 / speed, delay: start, fill: 'none' },
+        ),
+      );
+    t += PEN_LIFT_MS / speed;
+  });
+  const tile = svg.querySelector<SVGPolygonElement>('[data-tile]');
+  if (can(tile)) {
+    const len = screenLength(tile, lengthScale);
+    const dash = `${len} ${len}`;
+    animations.push(
+      tile.animate(
+        [
+          { strokeDasharray: dash, strokeDashoffset: len },
+          { strokeDasharray: dash, strokeDashoffset: 0 },
+        ],
+        {
+          duration: 1200 / speed,
+          delay: t + 300 / speed,
+          easing: 'ease-in-out',
+          fill: 'backwards',
+        },
+      ),
+    );
   }
   return animations;
 }
