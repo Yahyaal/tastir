@@ -808,6 +808,7 @@ export const QUESTIONS: readonly Question[] = [
   {
     id: 'bou-areas',
     text: 'Bou Inania her way: four areas (A–D in the picture) still differ from the drawing. Any ideas, especially for A, the band round the green shields?',
+    choices: ['I have ideas (type them)', 'Good enough, put it in the library'],
     pictures: [
       {
         src: 'renders/bou-inania-v2/mismatch-areas.png',
