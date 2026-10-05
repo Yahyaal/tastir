@@ -82,9 +82,7 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bou-inania-twelve-fold-wall',
     title: 'Design E: Bou Inania twelve-fold wall (new)',
     fold: 12,
-    status: 'decided',
-    decision:
-      'You: overcomplicated and not an exact match; rebuild it the way Samira Mian draws (a few sets of twelve lines, each touching one circle), then replace this version. In progress.',
+    status: 'decide',
     summary:
       'The zellige wall of the Bou Inania madrasa in Fès: twelve-fold rosettes on a square grid, eight-pointed stars in orange rings at the corners, black bands along the grid lines meeting in an X.',
     story: [
@@ -732,6 +730,27 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
+    id: 'design-e-how',
+    text: 'Design E: the real Fès rosette needs 13 sets of twelve lines (hers needs 1), so drawn her way it is still about 22 steps, though each step is clean: one circle and its twelve lines. Which do you want?',
+    choices: [
+      'Faithful: all 13 sets, her way (about 22 steps)',
+      'Simpler: her rosette plus one ring of stars and pentagons, close but not exact (about 14 steps)',
+    ],
+    pictures: [
+      {
+        src: 'renders/bou-inania-twelve-fold-wall/line-sets.png',
+        caption:
+          'Left: our current rosette (red) on the averaged photo; it follows the white bands closely. Right: the 13 sets of lines it is made of, one colour each.',
+      },
+      {
+        src: 'renders/bou-inania-twelve-fold-wall/compare-zoom.png',
+        caption:
+          'Photo (left) and our current wall (right), close up. If you can, also say which parts look most wrong to you: the corner stars, the blue arrows round the rim, the bands between rosettes, or the rosette itself.',
+      },
+    ],
+    card: 'bou-inania-twelve-fold-wall',
+  },
+  {
     id: 'rosette-a-or-b',
     text: 'Twelve-fold rosette: keep A (her construction, credited), B (our own steps), or both?',
     choices: ['Keep A', 'Keep B', 'Keep both'],
@@ -812,8 +831,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Design E rebuilt her way',
-    text: 'As you decided: a few sets of twelve lines each touching one circle, fitted to the Fès photo; it will replace the current version when ready.',
+    title: 'Design E: waiting on one question',
+    text: 'Rebuilding it her way showed the real Fès rosette needs 13 sets of lines, not a few. Faithful or simpler? (question at the top)',
   },
   next: [
     {
