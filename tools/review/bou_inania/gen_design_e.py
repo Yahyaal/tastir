@@ -237,71 +237,114 @@ def build(research):
         line_perp(nm, 'O', ref)
     refs = {0: 'h', 15: 'r15', 30: 'r30', 45: 'r45', 60: 'r60', 75: 'r75', 90: 'v', 105: 'r105', 120: 'r120', 135: 'r135', 150: 'r150', 165: 'r165'}
 
-    def spread(p):
-        """A point and all its copies around the rosette: its mirror image in
-        the horizontal (W...), then both turned twelve times."""
-        on_axis = abs(((ang(P(p)) + 7.5) % 15) - 7.5) < 1e-6
-        if not on_axis:
-            line_perp(f'{p}_p', p, 'h')
-            circle_through(f'{p}_c', 'O', p)
-            w = 'W' + p[1:]
-            meet(w, f'{p}_p', f'{p}_c', (P(p)[0], -P(p)[1]))
-            repeat(f'{p}s', [p, w], 'rot12')
-        else:
-            repeat(f'{p}s', [p], 'rot12')
+    ideal[0] = (ideal[2][0] - ideal[2][1], 0.0)   # the 45° line through class 2 meets the axis
+    WHERE = {0: 'the tip of a small kite between two petals', 2: 'the inner end of a petal',
+             3: 'the point between two petals', 4: 'the outer end of a small kite',
+             5: 'the shoulder of a petal', 6: 'the outer corner of a petal',
+             7: 'the inner point of a small star', 8: 'the point of a small star',
+             9: 'the first corner', 10: 'the point of a shield', 11: 'the corner of a pentagon',
+             12: 'the corner beside the outer tip', 13: 'the outer tip'}
 
-    step('Join A to the top of the circle. Where this line crosses the line through the 45° point of the circle at 60° is the first corner of the rosette. Copy it round the rosette: mirror it in the horizontal, then turn both copies twelve times.', highlight=['A', 'N'])
+    def instances(c):
+        x, y = ideal[c]
+        r = math.hypot(x, y)
+        t = math.atan2(y, x)
+        out = []
+        for k in range(12):
+            for sg in (1, -1):
+                a = math.radians(30 * k) + sg * t
+                out.append((r * math.cos(a), r * math.sin(a)))
+        return out
+
+    def corner(c):
+        """A named point at a corner of class c already fixed by two lines."""
+        for p in sorted(instances(c), key=lambda p: (ang(p) - 1e-9) % 360):
+            n = named_at(p, 1e-7)
+            if n:
+                return n
+            ls = [l for l in lines_through(p) if el[l][0] == 'line']
+            pairs = [(a, b) for i, a in enumerate(ls) for b in ls[i + 1:]
+                     if abs(el[a][1][1][0] * el[b][1][1][1] - el[a][1][1][1] * el[b][1][1][0]) > 1e-6]
+            if pairs:
+                name = f'C{c}'
+                meet(name, pairs[0][0], pairs[0][1], p)
+                return name
+        raise AssertionError(f'no corner of class {c} is fixed yet')
+
+    count = [0]
+
+    def line_set(phi, d, c, text):
+        """Twelve lines touching the circle of radius d about O, normals at
+        phi + 30k, drawn through a corner of class c and turned round."""
+        X = corner(c)
+        p = P(X)
+        best = None
+        for k in range(12):
+            a = phi + 30 * k
+            n = dirdeg(a)
+            if abs(p[0] * n[0] + p[1] * n[1] - d) < 1e-6:
+                best = a
+                break
+        assert best is not None, (phi, d, c)
+        count[0] += 1
+        name = f'F{count[0]}'
+        line_par(name, X, refs[(best + 90) % 180])
+        repeat(f'{name}s', [name], 'rot12')
+        return name
+
+    step('Join A to the top of the circle. Through the point of the circle at 45°, draw a line at 60°. Where the two lines cross is the first corner of the rosette.', highlight=['A', 'N'])
     line_through('an', 'A', 'N')
     meet('c45', 'c', 'r45', dirdeg(45))
     line_par('l9', 'c45', 'r60')
     meet('V9', 'an', 'l9', crossings('an', 'l9')[0])
-    spread('V9')
 
-    # class 13: circle about the class-9 copy at 231°, radius OK, meets h
-    q = min((n for n in el if n[:2] in ('V9', 'W9') and el[n][0] == 'point'), key=lambda n: math.dist(P(n), (-0.4447, -0.5555)))
-    step('Open the compass from O to the corner K. Put its point on the copy of that first corner down and to the left of O, and mark where the arc crosses the horizontal on the right: this is the tip of the rosette’s outer ring. Copy it round.', 'compass', ['O', 'K', q])
+    # The rest of the rosette is thirteen sets of twelve lines (and two
+    # helper sets), each drawn through a corner already on the paper and
+    # turned round: every set touches one circle about O.
+    def sets_step(group, text):
+        step(text)
+        for (phi, d), c in group:
+            line_set(phi, d, c, text)
+
+    sets_step([((0, 0.107206), 9), ((0, 0.258819), 9)],
+              'Through the first corner, draw two lines: one at right angles to the 0° direction, one at right angles to the 30° direction. Turn each round the rosette: two sets of twelve lines, each set touching one circle about O. The second set joins points of the first circle 150° apart, like the star lines of a simple rosette.')
+
+    q = min((n for n in el if el[n][0] == 'point' and n != 'V9' and abs(math.hypot(*P(n)) - math.hypot(*ideal[9])) < 1e-7), key=lambda n: abs(ang(P(n)) - 231.42), default=None)
+    if q is None:
+        target = min(instances(9), key=lambda p: abs(ang(p) - 231.42))
+        ls = [l for l in lines_through(target) if el[l][0] == 'line']
+        meet('V9b', ls[0], ls[1], target)
+        q = 'V9b'
+    step('Open the compass from O to the corner K. Put its point on the copy of the first corner down and to the left of O, and mark where the arc crosses the horizontal on the right: this is the outer tip of the rosette.', 'compass', ['O', 'K', q])
     circle_from('ck', q, 'O', 'K')
     meet('V13', 'ck', 'h', ideal[13])
-    spread('V13')
 
-    def by_lines(cls, pairs, text, highlight=None):
-        step(text, highlight=highlight)
-        target = ideal[cls]
-        made = []
-        for (deg, src) in pairs:
-            # an instance of class src on the line through target at deg
-            d = dirdeg(deg)
-            cands = [n for n, (k, g) in el.items() if k == 'point' and ((n.split('@')[0] in (f'V{src}', f'W{src}')) if src != 'O' else n == 'O')
-                     and math.dist(g, target) > 1e-6 and abs((g[0] - target[0]) * d[1] - (g[1] - target[1]) * d[0]) < 1e-6]
-            assert cands, (cls, deg, src)
-            src_pt = min(cands, key=lambda n: math.dist(P(n), target))
-            ln = f'L{cls}_{deg}'
-            if ln not in el:
-                line_par(ln, src_pt, refs[deg % 180])
-            made.append(ln)
-        meet(f'V{cls}', made[0], made[1], target)
-        spread(f'V{cls}')
-
-    by_lines(8, [(30, 9), (75, 13)], 'Through the first corner draw a line at 30°, and through the outer tip a line at 75°; they cross at the next corner. Copy it round.')
-    by_lines(12, [(135, 13), (150, 9)], 'Through the outer tip draw a line at 135°, and through the first corner one at 150°: they cross at the corner beside the tip. Copy it round.')
-    by_lines(10, [(15, 'O'), (135, 9)], 'Where the 15° line from O meets the 135° line through the first corner is the point of a shield between two petals. Copy it round.')
-    by_lines(2, [(135, 12), (75, 12)], 'Lines at 135° and 75° through the corners beside the tips meet near the middle, at the inner end of a petal. Copy it round.')
-    by_lines(3, [(150, 2), (0, 13)], 'The 150° line through that petal end meets the horizontal at the point between two petals. Copy it round.')
-    by_lines(5, [(120, 12), (165, 12)], 'A 120° line and a 165° line through corners beside the tips meet at the shoulder of a petal. Copy it round.')
-    by_lines(6, [(0, 9), (60, 5)], 'The level line through the first corner and the 60° line through the shoulder meet at the next corner. Copy it round.')
-    by_lines(7, [(150, 6), (0, 8)], 'A 150° line through that corner meets the level line through the 30° corner. Copy it round.')
-    by_lines(11, [(0, 9), (105, 12)], 'The level line through the first corner meets the 105° line through the corner beside the tip. Copy it round.')
-    by_lines(4, [(0, 3), (30, 5)], 'The 30° line through the shoulder meets the horizontal at the outer end of a small kite. Copy it round.')
-
-    step('Through the inner end of a petal draw a line at 45°: it meets the horizontal at the tip of the small black kite between two petals. Copy it round. The twelve tips and twelve petal ends make the star at the centre.')
-    pts = [n for n in el if n.split('@')[0] in ('V2', 'W2') and el[n][0] == 'point']
-    v2 = min(pts, key=lambda n: math.dist(P(n), ideal[2]))
-    line_par('L0_45', v2, 'r45')
-    meet('V0', 'L0_45', 'h', crossings('L0_45', 'h')[0])
-    spread('V0')
+    sets_step([((15, 0.605313), 13)],
+              'Through the outer tip, draw a line at 105° and turn it round: the set that will close the shields.')
+    sets_step([((0, 0.074468), 8), ((0, 0.64662), 8)],
+              'Through the point of a small star, where the last lines cross, draw the two sets that cross there, at right angles to the 0° and the 30° directions.')
+    sets_step([((15, 0.651613), 9), ((0, 0.444506), 9)],
+              'Through the first corner again, draw two more sets: one that closes the shields, and a helper that fixes the corner beside the outer tip.')
+    sets_step([((15, 0.795028), 12), ((15, 0.166401), 12)],
+              'Through the corner beside the outer tip, draw two sets: one that closes the pentagons, and a helper reaching in towards the centre.')
+    sets_step([((0, 0.135866), 2)],
+              'Through the inner end of a petal, draw the set that makes the sides of the petals.')
+    sets_step([((0, 0.209179), 5), ((0, 0.403407), 5)],
+              'Through the shoulder of a petal, draw two sets: one closes the small kites between the petals, the other runs along the petals’ outer sides.')
+    sets_step([((0, 0.356698), 6), ((15, 0.537476), 6)],
+              'Through the outer corner of a petal, draw the two sets that make the small stars.')
+    sets_step([((15, 0.096072), 0)],
+              'Through the tip of a small kite between two petals, draw the last set: it makes the twelve-pointed star at the centre.')
 
     # the rim: twelve-gon sides at the distance A to the class-3 copy at 60°
-    v3_60 = min((n for n in el if n.split('@')[0] == 'V3'), key=lambda n: math.dist(P(n), (0.271732 * 0.5, 0.271732 * math.sqrt(3) / 2)))
+    p60 = (ideal[3][0] * 0.5, ideal[3][0] * math.sqrt(3) / 2)
+    v3_60 = named_at(p60, 1e-7)
+    if not v3_60:
+        ls = [l for l in lines_through(p60) if el[l][0] == 'line']
+        pairs = [(a, b) for i, a in enumerate(ls) for b in ls[i + 1:]
+                 if abs(el[a][1][1][0] * el[b][1][1][1] - el[a][1][1][1] * el[b][1][1][0]) > 1e-6]
+        meet('V3', pairs[0][0], pairs[0][1], p60)
+        v3_60 = 'V3'
     step('Open the compass from A to the point between two petals at 60°, and draw that circle about O. Where it crosses the horizontal, draw a line at right angles: one side of the twelve-sided rim around the rosette. Copy it round.', 'compass', ['A', v3_60])
     circle_from('cr', 'O', 'A', v3_60)
     meet('RA', 'cr', 'h', crossings('cr', 'h')[0] if crossings('cr', 'h')[0][0] > 0 else crossings('cr', 'h')[1])
@@ -356,7 +399,6 @@ def rot(p, deg, m=1):
 def design_segments(ideal):
     """Every ink segment of the wall near the tile, in the frame (OA = 1)."""
     V = dict(ideal)
-    V[0] = P('V0')
     def inst(c, k, sg):
         x, y = V[c]
         r = math.hypot(x, y)
@@ -459,26 +501,6 @@ def main():
     research, out = sys.argv[1], sys.argv[2]
     ideal = build(research)
     segs = clip_to_cell(design_segments(ideal))
-    step('Join the corners of the rosette along its edges, one edge of each kind and its mirror image, and turn them round the rosette.', 'ruler')
-    def inst_name(c, k, sg):
-        x, y = ideal[c] if c else P('V0')
-        r = math.hypot(x, y)
-        t = math.atan2(y, x)
-        a = math.radians(30 * k) + sg * t
-        return named_at((r * math.cos(a), r * math.sin(a)))
-    for a_, b_, k_, sg_ in EDGES:
-        for mirror in (1, -1):
-            pa = inst_name(a_, 0, mirror)
-            pb = inst_name(b_, (k_ * mirror) % 12, sg_ * mirror)
-            if not pa or not pb or pa == pb:
-                continue
-            if any(el[n][0] == 'line' for n in set(lines_through(P(pa))) & set(lines_through(P(pb)))):
-                continue
-            ln = f'E{a_}_{b_}_{k_}{"p" if sg_ > 0 else "m"}{"" if mirror > 0 else "w"}'
-            line_through(ln, pa, pb)
-            repeat(f'{ln}s', [ln], 'rot12')
-    if not steps[-1]['create']:
-        steps.pop()
     step('Mark the corners of the pattern: every point where two of the lines meet and the pattern turns.', 'fade')
     names = {}
     for p, q in segs:
@@ -504,7 +526,7 @@ def main():
     tut = {
         'format': 0, 'id': 'bou-inania-twelve-fold-wall', 'title': 'Bou Inania twelve-fold wall',
         'fold': 4, 'style': 'Marinid zellige (Fès)', 'level': 'advanced',
-        'credits': [{'source': 'Photograph of the zellige dado of the Bou Inania madrasa, Fès (Wikimedia Commons, File:Bou_inania_DSCF2978.jpg)', 'url': 'https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg', 'note': 'The design was read from this photo; the construction is our own reconstruction, not a published one.'}],
+        'credits': [{'source': 'Photograph of the zellige dado of the Bou Inania madrasa, Fès (Wikimedia Commons, File:Bou_inania_DSCF2978.jpg)', 'url': 'https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg', 'note': 'The design was read from this photo; the construction is our own reconstruction, not a published one, drawn the way Samira Mian builds her rosettes: each set of twelve lines through a corner already drawn, touching one circle about O.'}],
         'given': {'O': 'centre of a rosette', 'A': 'halfway to the next rosette'},
         'steps': steps,
         'ink': {'text': 'Ink the rosette, its twelve-sided rim, the bands between the rosettes and the eight-pointed stars with their rings.', 'paths': paths},

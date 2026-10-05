@@ -72,9 +72,11 @@ export const PATTERNS: readonly Pattern[] = [
   },
   {
     id: 'bou-inania-twelve-fold-wall',
-    title: 'Design E: Bou Inania twelve-fold wall (new)',
+    title: 'Design E: Bou Inania twelve-fold wall (rebuilt)',
     fold: 12,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: faithful, her way. Done: the rosette is now drawn as fifteen sets of twelve lines (thirteen that carry its edges and two helpers), each set through a corner already on the paper and touching one circle about O. 21 steps instead of 25, no copied points, and the same wall as before (same pieces, so the golden test is unchanged).',
     summary:
       'The zellige wall of the Bou Inania madrasa in Fès: twelve-fold rosettes on a square grid, eight-pointed stars in orange rings at the corners, black bands along the grid lines meeting in an X.',
     story: [
@@ -720,29 +722,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'design-e-how',
-    text: 'Design E: the real Fès rosette needs 13 sets of twelve lines (hers needs 1), so drawn her way it is still about 22 steps, though each step is clean: one circle and its twelve lines. Which do you want?',
-    choices: [
-      'Faithful: all 13 sets, her way (about 22 steps)',
-      'Simpler: her rosette plus one ring of stars and pentagons, close but not exact (about 14 steps)',
-    ],
-    pictures: [
-      {
-        src: 'renders/bou-inania-twelve-fold-wall/line-sets.png',
-        caption:
-          'Left: our current rosette (red) on the averaged photo; it follows the white bands closely. Right: the 13 sets of lines it is made of, one colour each.',
-      },
-      {
-        src: 'renders/bou-inania-twelve-fold-wall/compare-zoom.png',
-        caption:
-          'Photo (left) and our current wall (right), close up. If you can, also say which parts look most wrong to you: the corner stars, the blue arrows round the rim, the bands between rosettes, or the rosette itself.',
-      },
-    ],
-    card: 'bou-inania-twelve-fold-wall',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -767,6 +747,14 @@ export const PROGRESS: {
   updated: '5 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Design E rebuilt her way',
+      text: 'Fifteen sets of twelve lines, each through a corner already drawn; 21 steps; the same wall.',
+      link: {
+        label: 'Bou Inania wall',
+        href: '/#/bou-inania-twelve-fold-wall',
+      },
+    },
     {
       title: 'Inking with a ruler, and the tile in green',
       text: 'As you suggested: the ink is drawn one ruler line at a time (a pale blue ruler shows where it lies), parallel lines one after the other with the partner flashing blue, then the short joining stretches. The tile outline is traced in green at the end of the ink, every copy carries it in the repeat, and it fades once the wall is built.',
@@ -817,8 +805,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Design E: waiting on one question',
-    text: 'Rebuilding it her way showed the real Fès rosette needs 13 sets of lines, not a few. Faithful or simpler? (question at the top)',
+    title: 'Design H1: the al-Maridani minbar (Cairo)',
+    text: 'Samira Mian names this minbar as her source; next I fit her construction to the straightened photo and draw the corner motif.',
   },
   next: [
     {
