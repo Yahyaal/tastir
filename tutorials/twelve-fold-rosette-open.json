@@ -1,0 +1,247 @@
+{
+  "format": 0,
+  "id": "twelve-fold-rosette-open",
+  "title": "Twelve-fold rosette, open petals",
+  "fold": 12,
+  "style": "Mamluk",
+  "level": "beginner",
+  "credits": [],
+  "given": {
+    "O": "The centre of the rosette.",
+    "A": "Any point to the right of O. OA is the radius of the first circle."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Rule a horizontal line and draw a circle on it about the centre O, through A. Keep this opening for the next steps.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Put the compass point where the circle crosses the line on the right, and draw a circle through O; do the same on the left.",
+      "create": {
+        "P0": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
+        "P180": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "cE": {"circle": {"centre": "P0", "radiusOf": "c"}},
+        "cW": {"circle": {"centre": "P180", "radiusOf": "c"}}
+      },
+      "animate": "compass",
+      "highlight": ["c", "h"]
+    },
+    {
+      "id": 3,
+      "text": "Rule the vertical through O, at right angles to the horizontal, and draw the same circle about its top and bottom points.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "P90": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "P270": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}},
+        "cN": {"circle": {"centre": "P90", "radiusOf": "c"}},
+        "cS": {"circle": {"centre": "P270", "radiusOf": "c"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The four new circles cut the first one at eight more points, so it is divided into twelve. Rule the lines joining opposite points through O.",
+      "create": {
+        "P60": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60}}},
+        "P300": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300}}},
+        "P120": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120}}},
+        "P240": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240}}},
+        "P30": {"point": {"meet": ["c", "cN"], "pick": {"angle": 30}}},
+        "P150": {"point": {"meet": ["c", "cN"], "pick": {"angle": 150}}},
+        "P210": {"point": {"meet": ["c", "cS"], "pick": {"angle": 210}}},
+        "P330": {"point": {"meet": ["c", "cS"], "pick": {"angle": 330}}},
+        "r30": {"line": {"through": ["P30", "P210"]}},
+        "r60": {"line": {"through": ["P60", "P240"]}},
+        "r120": {"line": {"through": ["P120", "P300"]}},
+        "r150": {"line": {"through": ["P150", "P330"]}}
+      },
+      "animate": "ruler",
+      "highlight": ["cE", "cW", "cN", "cS"]
+    },
+    {
+      "id": 5,
+      "text": "Join the twelve points in turn: this twelve-sided figure is the outline of the rosette.",
+      "create": {
+        "out": {
+          "polygon": [
+            "P0",
+            "P30",
+            "P60",
+            "P90",
+            "P120",
+            "P150",
+            "P180",
+            "P210",
+            "P240",
+            "P270",
+            "P300",
+            "P330"
+          ]
+        }
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Halve each of the twelve angles at O with a line, so there is a line through O every 15°.",
+      "create": {
+        "r15": {"line": {"through": "O", "bisects": ["P0", "O", "P30"]}},
+        "r45": {"line": {"through": "O", "bisects": ["P30", "O", "P60"]}},
+        "r75": {"line": {"through": "O", "bisects": ["P60", "O", "P90"]}},
+        "r105": {"line": {"through": "O", "bisects": ["P90", "O", "P120"]}},
+        "r135": {"line": {"through": "O", "bisects": ["P120", "O", "P150"]}},
+        "r165": {"line": {"through": "O", "bisects": ["P150", "O", "P180"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Mark the twelve points where the first circle meets the lines at 15°, 45°, 75° and so on, halfway between the corners of the outline.",
+      "create": {
+        "Q15": {"point": {"meet": ["c", "r15"], "pick": {"angle": 15}}},
+        "Q45": {"point": {"meet": ["c", "r45"], "pick": {"angle": 45}}},
+        "Q75": {"point": {"meet": ["c", "r75"], "pick": {"angle": 75}}},
+        "Q105": {"point": {"meet": ["c", "r105"], "pick": {"angle": 105}}},
+        "Q135": {"point": {"meet": ["c", "r135"], "pick": {"angle": 135}}},
+        "Q165": {"point": {"meet": ["c", "r165"], "pick": {"angle": 165}}},
+        "Q195": {"point": {"meet": ["c", "r15"], "pick": {"angle": 195}}},
+        "Q225": {"point": {"meet": ["c", "r45"], "pick": {"angle": 225}}},
+        "Q255": {"point": {"meet": ["c", "r75"], "pick": {"angle": 255}}},
+        "Q285": {"point": {"meet": ["c", "r105"], "pick": {"angle": 285}}},
+        "Q315": {"point": {"meet": ["c", "r135"], "pick": {"angle": 315}}},
+        "Q345": {"point": {"meet": ["c", "r165"], "pick": {"angle": 345}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Join each of these points to the one five places round, 150° away. The twelve lines make a twelve-pointed star.",
+      "create": {
+        "s0": {"line": {"through": ["Q15", "Q165"]}},
+        "s1": {"line": {"through": ["Q45", "Q195"]}},
+        "s2": {"line": {"through": ["Q75", "Q225"]}},
+        "s3": {"line": {"through": ["Q105", "Q255"]}},
+        "s4": {"line": {"through": ["Q135", "Q285"]}},
+        "s5": {"line": {"through": ["Q165", "Q315"]}},
+        "s6": {"line": {"through": ["Q195", "Q345"]}},
+        "s7": {"line": {"through": ["Q225", "Q15"]}},
+        "s8": {"line": {"through": ["Q255", "Q45"]}},
+        "s9": {"line": {"through": ["Q285", "Q75"]}},
+        "s10": {"line": {"through": ["Q315", "Q105"]}},
+        "s11": {"line": {"through": ["Q345", "Q135"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "Mark where each star line meets the outline, and where it crosses the line at right angles to it. Then draw the square that touches the outline at its top, bottom and sides: it is the tile.",
+      "create": {
+        "H0a": {"point": {"meet": ["s0", "out"], "pick": {"angle": 164.458}}},
+        "X0_3": {"point": {"meet": ["s0", "s3"]}},
+        "H0b": {"point": {"meet": ["s0", "out"], "pick": {"angle": 15.542}}},
+        "X0_9": {"point": {"meet": ["s0", "s9"]}},
+        "H1a": {"point": {"meet": ["s1", "out"], "pick": {"angle": 194.458}}},
+        "X1_4": {"point": {"meet": ["s1", "s4"]}},
+        "H1b": {"point": {"meet": ["s1", "out"], "pick": {"angle": 45.542}}},
+        "X1_10": {"point": {"meet": ["s1", "s10"]}},
+        "H2a": {"point": {"meet": ["s2", "out"], "pick": {"angle": 224.458}}},
+        "X2_5": {"point": {"meet": ["s2", "s5"]}},
+        "H2b": {"point": {"meet": ["s2", "out"], "pick": {"angle": 75.542}}},
+        "X2_11": {"point": {"meet": ["s2", "s11"]}},
+        "H3a": {"point": {"meet": ["s3", "out"], "pick": {"angle": 254.458}}},
+        "X3_6": {"point": {"meet": ["s3", "s6"]}},
+        "H3b": {"point": {"meet": ["s3", "out"], "pick": {"angle": 105.542}}},
+        "H4a": {"point": {"meet": ["s4", "out"], "pick": {"angle": 284.458}}},
+        "X4_7": {"point": {"meet": ["s4", "s7"]}},
+        "H4b": {"point": {"meet": ["s4", "out"], "pick": {"angle": 135.542}}},
+        "H5a": {"point": {"meet": ["s5", "out"], "pick": {"angle": 314.458}}},
+        "X5_8": {"point": {"meet": ["s5", "s8"]}},
+        "H5b": {"point": {"meet": ["s5", "out"], "pick": {"angle": 165.542}}},
+        "H6a": {"point": {"meet": ["s6", "out"], "pick": {"angle": 344.458}}},
+        "X6_9": {"point": {"meet": ["s6", "s9"]}},
+        "H6b": {"point": {"meet": ["s6", "out"], "pick": {"angle": 195.542}}},
+        "H7a": {"point": {"meet": ["s7", "out"], "pick": {"angle": 14.458}}},
+        "X7_10": {"point": {"meet": ["s7", "s10"]}},
+        "H7b": {"point": {"meet": ["s7", "out"], "pick": {"angle": 225.542}}},
+        "H8a": {"point": {"meet": ["s8", "out"], "pick": {"angle": 44.458}}},
+        "X8_11": {"point": {"meet": ["s8", "s11"]}},
+        "H8b": {"point": {"meet": ["s8", "out"], "pick": {"angle": 255.542}}},
+        "H9a": {"point": {"meet": ["s9", "out"], "pick": {"angle": 74.458}}},
+        "H9b": {"point": {"meet": ["s9", "out"], "pick": {"angle": 285.542}}},
+        "H10a": {"point": {"meet": ["s10", "out"], "pick": {"angle": 104.458}}},
+        "H10b": {"point": {"meet": ["s10", "out"], "pick": {"angle": 315.542}}},
+        "H11a": {"point": {"meet": ["s11", "out"], "pick": {"angle": 134.458}}},
+        "H11b": {"point": {"meet": ["s11", "out"], "pick": {"angle": 345.542}}},
+        "gE": {"line": {"through": "P0", "perpendicularTo": "h"}},
+        "gW": {"line": {"through": "P180", "perpendicularTo": "h"}},
+        "gN": {"line": {"through": "P90", "perpendicularTo": "v"}},
+        "gS": {"line": {"through": "P270", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gE", "gN"]}},
+        "K2": {"point": {"meet": ["gW", "gN"]}},
+        "K3": {"point": {"meet": ["gW", "gS"]}},
+        "K4": {"point": {"meet": ["gE", "gS"]}},
+        "tile": {"polygon": ["K1", "K2", "K3", "K4"]}
+      },
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink each star line from the outline inwards, stopping where it meets the line at right angles to it, and ink the outline. Twelve petals ring a twelve-pointed star.",
+    "paths": [
+      {"through": ["H0a", "X0_3"]},
+      {"through": ["H0b", "X0_9"]},
+      {"through": ["H1a", "X1_4"]},
+      {"through": ["H1b", "X1_10"]},
+      {"through": ["H2a", "X2_5"]},
+      {"through": ["H2b", "X2_11"]},
+      {"through": ["H3a", "X3_6"]},
+      {"through": ["H3b", "X0_3"]},
+      {"through": ["H4a", "X4_7"]},
+      {"through": ["H4b", "X1_4"]},
+      {"through": ["H5a", "X5_8"]},
+      {"through": ["H5b", "X2_5"]},
+      {"through": ["H6a", "X6_9"]},
+      {"through": ["H6b", "X3_6"]},
+      {"through": ["H7a", "X7_10"]},
+      {"through": ["H7b", "X4_7"]},
+      {"through": ["H8a", "X8_11"]},
+      {"through": ["H8b", "X5_8"]},
+      {"through": ["H9a", "X0_9"]},
+      {"through": ["H9b", "X6_9"]},
+      {"through": ["H10a", "X1_10"]},
+      {"through": ["H10b", "X7_10"]},
+      {"through": ["H11a", "X2_11"]},
+      {"through": ["H11b", "X8_11"]},
+      {"through": ["P0", "H7a", "H0b", "P30"]},
+      {"through": ["P30", "H8a", "H1b", "P60"]},
+      {"through": ["P60", "H9a", "H2b", "P90"]},
+      {"through": ["P90", "H10a", "H3b", "P120"]},
+      {"through": ["P120", "H11a", "H4b", "P150"]},
+      {"through": ["P150", "H0a", "H5b", "P180"]},
+      {"through": ["P180", "H1a", "H6b", "P210"]},
+      {"through": ["P210", "H2a", "H7b", "P240"]},
+      {"through": ["P240", "H3a", "H8b", "P270"]},
+      {"through": ["P270", "H4a", "H9b", "P300"]},
+      {"through": ["P300", "H5a", "H10b", "P330"]},
+      {"through": ["P330", "H6a", "H11b", "P0"]}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Repeat the square side to side: neighbouring rosettes meet corner to corner, and a four-pointed space opens between four of them.",
+    "palette": "Fès tile",
+    "colors": {"space": "ground", "star": "a", "petal": "b", "outer": "c"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "space", "vertices": 12, "area": 1, "perCell": 1},
+      {"name": "star", "vertices": 24, "area": 0.58846, "perCell": 1},
+      {"name": "petal", "vertices": 4, "area": 0.11634, "perCell": 12},
+      {"name": "outer", "vertices": 5, "area": 0.08463, "perCell": 12}
+    ]
+  }
+}

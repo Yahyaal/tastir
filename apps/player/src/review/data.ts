@@ -35,10 +35,56 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'twelve-fold-rosette-mian',
+    title: 'Twelve-fold rosette, A: Samira Mian’s construction (new)',
+    fold: 12,
+    status: 'decide',
+    summary:
+      'Her rosette: twelve petals round a twelve-pointed star, in a square tile, rosettes meeting corner to corner.',
+    story: [
+      'Your answer to Q1 was to do both, so this is A: it follows her construction step by step, in our words, and credits her. 10 steps. The one step that is hers alone is the inner circle found from one chord; the rest is the classic division of the circle.',
+      'The square tile is the simple one, rosettes touching at their corners. Her square tile in the gallery carries the lines on to the tile edge; that picture is too small to read exactly, so I left it out.',
+    ],
+    pictures: [
+      {
+        src: 'renders/twelve-fold-rosette-mian/wall.png',
+        caption: 'Wall A.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Samira Mian: Twelvefold Islamic Geometric Rosette',
+        url: 'https://www.samiramian.uk/twelvefoldrosette',
+      },
+    ],
+  },
+  {
+    id: 'twelve-fold-rosette-open',
+    title: 'Twelve-fold rosette, B: our own steps (new)',
+    fold: 12,
+    status: 'decide',
+    summary:
+      'The same kind of rosette by a shorter construction of our own: wider petals and a larger centre star.',
+    story: [
+      'B leaves out her inner circle: the twelve star lines join points of the first circle itself. One step fewer (9), no step taken from her tutorial, and a different look.',
+    ],
+    pictures: [
+      {
+        src: 'renders/twelve-fold-rosette-open/wall.png',
+        caption: 'Wall B.',
+      },
+    ],
+    asks: [],
+    sources: [],
+  },
+  {
     id: 'bou-inania-twelve-fold-wall',
     title: 'Design E: Bou Inania twelve-fold wall (new)',
     fold: 12,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: overcomplicated and not an exact match; rebuild it the way Samira Mian draws (a few sets of twelve lines, each touching one circle), then replace this version. In progress.',
     summary:
       'The zellige wall of the Bou Inania madrasa in Fès: twelve-fold rosettes on a square grid, eight-pointed stars in orange rings at the corners, black bands along the grid lines meeting in an X.',
     story: [
@@ -686,36 +732,15 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
-    id: 'mian-copy',
-    text: 'Samira Mian’s rosette is about 8 clean steps. May I make a tutorial that follows her construction, in my own words and credited to her? Our rule says a near-copy of one published tutorial is not allowed, so this needs your OK.',
-    choices: [
-      'Yes, follow it, credited',
-      'Only as a starting point; change the steps',
-      'No, keep our own constructions',
-    ],
+    id: 'rosette-a-or-b',
+    text: 'Twelve-fold rosette: keep A (her construction, credited), B (our own steps), or both?',
+    choices: ['Keep A', 'Keep B', 'Keep both'],
     pictures: [
-      {
-        src: 'renders/mian-rosette/rebuilt.png',
-        caption: 'Her rosette, rebuilt exactly from your screenshots.',
-      },
+      { src: 'renders/twelve-fold-rosette-mian/wall.png', caption: 'A' },
+      { src: 'renders/twelve-fold-rosette-open/wall.png', caption: 'B' },
     ],
-    card: 'bou-inania-twelve-fold-wall',
-  },
-  {
-    id: 'design-e-redo',
-    text: 'Design E: I agree it is overcomplicated. Shall I rebuild it the way she draws, a few sets of twelve lines each touching one circle, and keep the current version only until the new one is ready?',
-    choices: [
-      'Yes, rebuild it, then replace the old one',
-      'Rebuild it and keep both',
-    ],
-    pictures: [
-      {
-        src: 'renders/mian-rosette/compare-overlays.png',
-        caption:
-          'Her rosette (red) over the Fès wall (top) and the Cairo minbar (bottom), two turns each. It is not the Fès rosette, which has extra rings; it is close to the Cairo one, her stated source, but the proportions do not line up yet.',
-      },
-    ],
-    card: 'bou-inania-twelve-fold-wall',
+    card: 'twelve-fold-rosette-mian',
+    also: ['twelve-fold-rosette-open'],
   },
 ];
 
@@ -742,6 +767,11 @@ export const PROGRESS: {
   updated: '5 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Twelve-fold rosette, two versions',
+      text: 'A follows Samira Mian’s construction, credited (10 steps); B is our own shorter construction (9 steps).',
+      link: { label: 'Rosette A', href: '/#/twelve-fold-rosette-mian' },
+    },
     {
       title: 'Design E: the Fès wall, built',
       text: 'A 25-step tutorial of the Bou Inania wall, read from the photo and fitted to it; on the color stage choose Strapwork to see it like the real wall. Waiting for your judgement (question at the top).',
@@ -782,8 +812,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Paused, waiting on your two questions',
-    text: 'Design E rebuild and H1 (the Cairo minbar) both depend on whether I may follow Samira Mian’s construction.',
+    title: 'Design E rebuilt her way',
+    text: 'As you decided: a few sets of twelve lines each touching one circle, fitted to the Fès photo; it will replace the current version when ready.',
   },
   next: [
     {
@@ -805,9 +835,9 @@ export const PROGRESS: {
   ],
   waiting: [
     {
-      title: 'Design E and Samira Mian’s rosette',
-      text: 'You found Design E overcomplicated. Two questions at the top: may I follow her construction (credited), and shall I rebuild Design E her way?',
-      link: { label: 'Questions', href: '#questions' },
+      title: 'Twelve-fold rosette A or B',
+      text: 'Keep her construction, our own, or both (question at the top).',
+      link: { label: 'Question', href: '#questions' },
     },
     {
       title: 'Alhambra interlace',
