@@ -1,5 +1,7 @@
 # Work queue
 
+- [ ] **Owner 2026-10-05: build both.** (1) Samira Mian's stellated rosettes (activity 8; screenshots `docs/4-stellated-12fold-rosettes/`): construction in `tools/review/mian_stellated/gen_mian_stellated.py` (14 steps, builds); her rosette = star lines (inner circle from circle Ro = (√3/2)/cos15, chord 90°–195°) + the twelve lines joining circle points 60° apart, copied into neighbouring cells (97.8% of her frame-20 ink); corners: four hexagons + octagon (inner corner at √3−1 on the cell side). Ink chooser `choose_ink.py` works for the rosette but the corner octagon/hexagons are still wrong (registration of frame 24, `4_register.py`, unit 286 px, centre (704.5, 397)); next: fix the corner ink, then dump, expect block, review card. (2) Then reuse her grid steps to simplify the Bou Inania draft (`tools/review/bou_inania_v2/`).
+
 Continue from the first unchecked item after any interruption (including a usage limit). Report results on the review page (`#/review`), one card per pattern.
 
 Standing goals: many designs per pattern family, not one; build toward letting users make their own designs.
