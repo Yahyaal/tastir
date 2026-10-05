@@ -32,7 +32,8 @@ def dist(p, q): return math.hypot(p[0] - q[0], p[1] - q[1])
 def pick_for(target, cands):
     """A pick rule that chooses target among cands with the best margin."""
     best = None
-    for rule in [('angle',)] + [(k, n) for k in ('nearest', 'farthest') for n in P]:
+    # Only points from the shared opening steps: q-points may be made in a later step.
+    for rule in [('angle',)] + [(k, n) for k in ('nearest', 'farthest') for n in P if not n.startswith('q')]:
         if rule[0] == 'angle':
             if math.hypot(*target) < 1e-6: continue
             want = round(ang(target))
