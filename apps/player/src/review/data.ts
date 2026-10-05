@@ -767,7 +767,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'Design H family: H1, the al-Maridani minbar (Cairo)',
-    text: 'A real 14th-century example found: the carved wooden minbar of the al-Maridani mosque, with twelve-pointed star rosettes alternating with a twelve-sided motif. The photo is straightened and averaged; it has the same layout as Design E, so I am adapting the Design E tools to draw it. A second H design comes after.',
+    text: 'A real 14th-century example found: the carved wooden minbar of the al-Maridani mosque, with twelve-pointed star rosettes alternating with a twelve-sided motif. Done so far: the photo is straightened and averaged into one sharp tile, and the joints between the carved pieces are traced; the rosette and its first ring are read. Next: the corner motif, then straightening every line to a multiple of 15°, then the tutorial. A second H design comes after.',
   },
   next: [
     {
