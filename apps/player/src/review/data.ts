@@ -35,6 +35,39 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'bou-inania-v2',
+    title: 'Bou Inania rosette, simpler (in progress)',
+    fold: 12,
+    status: 'decided',
+    decision:
+      'You: the old Design E is overcomplicated because the photo is low-res; use the clearer image (by @aslam.geometricpatterns), keep it simple, guess the bigger circle by trying examples. Working on it.',
+    summary:
+      'Rebuilding the Bou Inania rosette from Samira Mian’s rosette, one bigger circle and two squares.',
+    story: [
+      'Found so far (first picture: the clearer image with Mian’s rosette over it in red): the inside of the Bou Inania rosette is exactly her rosette, turned so a point of the twelve-sided outline faces 15°.',
+      'The bigger circle (second picture, green) has radius √3 times the first. It costs nothing to draw: it passes through the outer crossings of the circles drawn round the first one in her opening steps. A twelve-sided figure on it, turned like her outline, gives the long straight bands; its top, bottom and side edges are your “smaller square”. The outer frame (blue) is the square touching a circle twice the first, so neighbouring rosettes are four radii apart.',
+      'Still to work out: which lines make the ring of brown pentagons, small black stars and green shields between the two circles, and the corner pieces between the two squares. Her star lines carried straight on explain part of the ring but not all of it.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bou-inania-v2/mian-inside.png',
+        caption: 'Mian’s rosette (red) fits the inside line for line.',
+      },
+      {
+        src: 'renders/bou-inania-v2/frame-found.png',
+        caption:
+          'Red: her star lines carried on. Orange: the first circle. Green: the bigger circle (√3 times) and its twelve-sided figure. Blue: the frame, touching a circle twice the first.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Samira Mian: Twelvefold Islamic Geometric Rosette',
+        url: 'https://www.samiramian.uk/twelvefoldrosette',
+      },
+    ],
+  },
+  {
     id: 'twelve-fold-rosette-mian',
     title: 'Twelve-fold rosette: Samira Mian’s construction (new)',
     fold: 12,
@@ -805,8 +838,9 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Design H1: the al-Maridani minbar (Cairo)',
-    text: 'Samira Mian names this minbar as her source; next I fit her construction to the straightened photo and draw the corner motif.',
+    title: 'Bou Inania rosette, simpler',
+    text: 'Rebuilding it from Mian’s rosette plus a circle √3 times bigger and two squares; now working out the ring of pentagons and shields.',
+    link: { label: 'Card', href: '#bou-inania-v2' },
   },
   next: [
     {
