@@ -126,7 +126,9 @@ def meet(name, a, b, want):
     spec = {'point': {'meet': [a, b]}}
     if len(cs) > 1 and math.dist(cs[0], cs[1]) > 1e-9:
         other = [c for c in cs if c is not best][0]
-        if math.hypot(*best) > 1e-6 and abs(((ang(best) - ang(other) + 180) % 360) - 180) > 1:
+        if math.hypot(*other) < 1e-6:
+            spec['point']['pick'] = {'farthest': 'O'}
+        elif math.hypot(*best) > 1e-6 and abs(((ang(best) - ang(other) + 180) % 360) - 180) > 1:
             spec['point']['pick'] = {'angle': round(ang(best), 3)}
             # the angle pick must be unambiguous
         elif abs(math.hypot(*best) - math.hypot(*other)) > 1e-6:

@@ -1,0 +1,189 @@
+[
+ {
+  "label": "C",
+  "through": [
+   1.2632230804046545,
+   -1.5440842510143507
+  ],
+  "normal": 7.5,
+  "turns": 12,
+  "mirror": true,
+  "d": 1.050872594084137,
+  "helper": false,
+  "text": "Where a star line crosses a side of the big figure, rule a line at right angles to the 7.5° line, and its mirror image in the horizontal; turn both round. These 24 lines make the small five-pointed stars.",
+  "from": [
+   "A",
+   "E"
+  ]
+ },
+ {
+  "label": "Tg",
+  "through": [
+   0.8660254037844387,
+   0.49999999999999994
+  ],
+  "normal": 30.0,
+  "turns": 12,
+  "mirror": false,
+  "d": 1.0,
+  "helper": true,
+  "text": "Through the point of the first circle at 30°, rule the line at right angles to the 30° line: it just touches the circle. Turn it round (helper lines).",
+  "from": [
+   "P30",
+   null
+  ]
+ },
+ {
+  "label": "B",
+  "through": [
+   1.154700538379252,
+   -3.845925372767127e-16
+  ],
+  "normal": 0,
+  "turns": 12,
+  "mirror": false,
+  "d": 1.154700538379252,
+  "helper": false,
+  "text": "Where the lines touching the circle at 30° and −30° cross the horizontal, rule a line at right angles to it; turn it round. These lines close the brown pentagons.",
+  "from": [
+   "Tg",
+   "Tg"
+  ]
+ },
+ {
+  "label": "G",
+  "through": [
+   1.8660254037844388,
+   0.7056046467595675
+  ],
+  "normal": 22.5,
+  "turns": 8,
+  "mirror": false,
+  "d": 1.9940058858172605,
+  "helper": false,
+  "text": "Where a side of the big figure crosses one of the 24 lines, rule a line at right angles to the 22.5° line; turn it round in eighths: the octagon of the corner stars.",
+  "from": [
+   "E",
+   "C"
+  ]
+ },
+ {
+  "label": "F",
+  "through": [
+   2.261823313956479,
+   -1.2214185258132957
+  ],
+  "normal": 0,
+  "turns": 4,
+  "mirror": false,
+  "d": 2.261823313956479,
+  "helper": false,
+  "text": "Where an octagon side crosses one of the 24 lines, rule a line at right angles to the horizontal; turn it round in quarters: the frame, and the edge of the tile.",
+  "from": [
+   "C",
+   "G"
+  ]
+ },
+ {
+  "label": "D",
+  "through": [
+   1.7177808544944757,
+   0.6658826394950071
+  ],
+  "normal": 0,
+  "turns": 12,
+  "mirror": false,
+  "d": 1.7177808544944757,
+  "helper": false,
+  "text": "Where a star line crosses one of the pentagon lines, rule a line at right angles to the horizontal; turn it round: the inner side of the ring round the shields.",
+  "from": [
+   "A",
+   "B"
+  ]
+ },
+ {
+  "label": "K",
+  "through": [
+   1.3245959154824611,
+   -2.298774904674523e-16
+  ],
+  "normal": 15,
+  "turns": 12,
+  "mirror": false,
+  "d": 1.279461404161521,
+  "helper": false,
+  "text": "Where two of the 24 lines cross on the horizontal, rule a line at right angles to the 15° line; turn it round: the points of the ring round the shields.",
+  "from": [
+   "C",
+   "C"
+  ]
+ },
+ {
+  "label": "S",
+  "through": [
+   0.20351090142007416,
+   1.8660254037844386
+  ],
+  "normal": 0,
+  "turns": 12,
+  "mirror": false,
+  "d": 0.20351090142007416,
+  "helper": false,
+  "text": "Where a side of the big figure crosses one of the last-but-one set, rule a line at right angles to the horizontal; turn it round. These carry the star lines on into the corners.",
+  "from": [
+   "E",
+   "D"
+  ]
+ },
+ {
+  "label": "H",
+  "through": [
+   1.608191820757931,
+   2.261823313956479
+  ],
+  "normal": 45,
+  "turns": 4,
+  "mirror": false,
+  "d": 2.7365139450511298,
+  "helper": false,
+  "text": "Where the frame crosses a pentagon line, rule a line at right angles to the 45° line; turn it round in quarters: the lines across the corners.",
+  "from": [
+   "B",
+   "F"
+  ]
+ },
+ {
+  "label": "M",
+  "through": [
+   1.8660254037844386,
+   -0.25598306414370764
+  ],
+  "normal": 15,
+  "turns": 12,
+  "mirror": false,
+  "d": 1.7361888378027845,
+  "helper": false,
+  "text": "Where a side of the big figure crosses a pentagon line, rule a line at right angles to the 15° line; turn it round.",
+  "from": [
+   "E",
+   "B"
+  ]
+ },
+ {
+  "label": "N",
+  "through": [
+   1.2206409638172835,
+   1.2206409638172835
+  ],
+  "normal": 15,
+  "turns": 12,
+  "mirror": false,
+  "d": 1.494973760245704,
+  "helper": false,
+  "text": "Where two of the 24 lines cross on the 45° line, rule a line at right angles to the 15° line; turn it round. This is the last set.",
+  "from": [
+   "C",
+   "C"
+  ]
+ }
+]

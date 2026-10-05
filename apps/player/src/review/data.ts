@@ -36,33 +36,29 @@ const MAMOOT = 'https://mamootdiy.com';
 export const PATTERNS: readonly Pattern[] = [
   {
     id: 'bou-inania-v2',
-    title: 'Bou Inania rosette, simpler (in progress)',
+    title: 'Bou Inania rosette, simpler (draft)',
     fold: 12,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: join crossings where needed; the source of the drawing’s construction is unknown. Draft built; finishing the small stars.',
     summary:
-      'Rebuilding the Bou Inania rosette from Samira Mian’s rosette, one bigger circle and two squares.',
+      'Samira Mian’s rosette plus eleven sets of lines, each ruled through a crossing already on the paper.',
     story: [
-      'Correction: my first measurements used a centre 16 px off. Measured again from the frame’s true centre, everything is cleanly twelve-fold and simpler than I first said.',
-      'Inside (first picture, red): exactly Samira Mian’s rosette, every crossing within a few pixels, except that her twelve-sided outline is not drawn: her star lines run straight on out to the green ring and beyond.',
-      'The bigger circle (green): radius 2 × cos 15° ≈ 1.93 times the first. It is where two circles of the first size, drawn round neighbouring points of the first circle, cross on the outside: one compass step. The twelve-sided figure on it gives the long straight bands, and its top, bottom and side edges make your smaller square (half-width 1.87 radii, just inside the big circle, so your guess “side = diameter of the largest circle” is very close).',
-      'The frame (blue): 2.29 radii from the centre. I have not yet found a simple step that gives exactly that.',
-      'Brown pentagons sit between two more sets of twelve lines, at about 1.08 and 1.17 radii. Three sets of lines already explain a third of the drawing (first picture).',
-      'Where I am stuck (second picture): the small black stars are five-pointed, and my edge readings put two of their sides at about 10° and 38° rather than at multiples of 15°, though short sides are hard to measure exactly. If that holds, those sides cannot come from sets of twelve lines at 15° steps; they would be lines joining two crossings already on the paper. See the question at the top.',
+      'Done: the whole pattern comes from Mian’s rosette, the bigger circle (2 × cos 15° radii) and eleven sets of lines. Every set is ruled through a crossing of the sets before it (first picture, one colour per set), then turned round: twelve times for the rosette, eight times for the corner octagon, four times for the frame and the lines across the corners. Together they lie on 88% of the white bands of the drawing; the rest is the width of the bands at turns. Nothing in it is measured: every position is a crossing.',
+      'The 24 lines at 7.5° steps either side of the 0°, 30°, 60°… directions are the ones that make the five-pointed stars. They need one extra halving of the angle (15° to 7.5°); otherwise every line is at 15° steps, the octagon at 22.5°.',
+      'Draft tutorial (second picture, left; the drawing on the right): 20 steps, 20 piece shapes, the pieces fill the square exactly. The centre star, the petals, the pentagons, the shield ring and the frame are right.',
+      'Still wrong: around each small five-pointed star a band is missing, so the star merges with the area beside it (the yellow pieces); and where two lines meet a hair apart instead of at one point, five kinds of tiny slivers appear. Next I fix those two, then colour it like the drawing and put it in the library for you to try.',
     ],
     pictures: [
       {
-        src: 'renders/bou-inania-v2/candidate-2.png',
+        src: 'renders/bou-inania-v2/line-sets.png',
         caption:
-          'Red: her star lines, carried on. Green: the twelve-sided figure on the bigger circle (2 cos 15° radii). Only the pieces that lie on the white bands are drawn; the rest is still to explain.',
+          'The line sets on the drawing, one colour each (pieces that lie on bands only).',
       },
       {
-        src: 'renders/bou-inania-v2/small-star.png',
+        src: 'renders/bou-inania-v2/draft-tile.png',
         caption:
-          'A small black star: its sides do not all run at multiples of 15°.',
-      },
-      {
-        src: 'renders/bou-inania-v2/mian-inside.png',
-        caption: 'Mian’s rosette (red) over the inside.',
+          'Left: the draft tile, one colour per piece shape. Right: the drawing.',
       },
     ],
     asks: [],
@@ -775,28 +771,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'bou-small-stars',
-    text: 'Bou Inania: the small five-pointed stars have sides that are not at 15° steps. May I draw those sides as lines joining two crossings already on the paper (exact, but not a set of twelve parallel lines)? And do you know where @aslam.geometricpatterns explains this construction (a video or post)? It would settle the frame size too.',
-    choices: [
-      'Yes, join crossings',
-      'Find another way first',
-      'I have a link (type it)',
-    ],
-    pictures: [
-      {
-        src: 'renders/bou-inania-v2/small-star.png',
-        caption: 'A small black star.',
-      },
-      {
-        src: 'renders/bou-inania-v2/candidate-2.png',
-        caption: 'What three sets of lines already give.',
-      },
-    ],
-    card: 'bou-inania-v2',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -880,7 +855,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'Bou Inania rosette, simpler',
-    text: 'Her rosette plus a bigger circle (2 cos 15° radii) and two squares; stuck on the small five-pointed stars, question at the top.',
+    text: 'Draft built: her rosette plus eleven sets of lines through crossings. Fixing the small stars and slivers, then colouring and the library.',
     link: { label: 'Card', href: '#bou-inania-v2' },
   },
   next: [

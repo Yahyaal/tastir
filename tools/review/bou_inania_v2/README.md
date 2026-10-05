@@ -15,3 +15,11 @@ Big figure on the circle 2R·cos 15° (sides 1.866R); frame 2.29R.
 
 An automatic greedy choice of line sets overfits (tried, ten sets for 69%); choose sets from
 piece edges instead.
+5. `5_exact_sets.py`: the line sets exactly, each through a crossing of the sets before it
+   (`sets.json`).
+6. `6a_piece_network.py <out.json>`: the band-centre network from the coloured pieces offset
+   by half a band (`network.json`). `6_choose_ink.py <drawing> ink.json [preview]`: ink = the
+   stretches of the line sets that this network covers, decided by symmetry family, tiny
+   gaps closed.
+7. `gen_bou_inania_v2.py ink.json out.json`: the tutorial (draft kept here as
+   `draft-bou-inania-rosette.json` until the small stars and slivers are fixed).
