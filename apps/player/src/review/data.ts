@@ -40,23 +40,29 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 12,
     status: 'decided',
     decision:
-      'You: the old Design E is overcomplicated because the photo is low-res; use the clearer image (by @aslam.geometricpatterns), keep it simple, guess the bigger circle by trying examples. Working on it.',
+      'You: the old Design E is overcomplicated (low-res photo); use the clearer image, keep it simple, find the bigger circle by research or by trying examples, credit everyone. Working on it.',
     summary:
-      'Rebuilding the Bou Inania rosette from Samira Mian’s rosette, one bigger circle and two squares.',
+      'Rebuilding the Bou Inania rosette from Samira Mian’s rosette, one bigger circle and a frame.',
     story: [
-      'Found so far (first picture: the clearer image with Mian’s rosette over it in red): the inside of the Bou Inania rosette is exactly her rosette, turned so a point of the twelve-sided outline faces 15°.',
-      'The bigger circle (second picture, green) has radius √3 times the first. It costs nothing to draw: it passes through the outer crossings of the circles drawn round the first one in her opening steps. A twelve-sided figure on it, turned like her outline, gives the long straight bands; its top, bottom and side edges are your “smaller square”. The outer frame (blue) is the square touching a circle twice the first, so neighbouring rosettes are four radii apart.',
-      'Still to work out: which lines make the ring of brown pentagons, small black stars and green shields between the two circles, and the corner pieces between the two squares. Her star lines carried straight on explain part of the ring but not all of it.',
+      'Research: the two papers on Moroccan twelve-fold rosettes are paywalled and the journal blocks downloads; the Art of Islamic Pattern class only describes itself. So I am working from the drawings, testing simple choices against your clear image.',
+      'Found (first picture): the inside is exactly Samira Mian’s rosette. The bigger circle has radius √3 times the first, and needs no new step: it passes through the outer crossings of the six circles of her opening. A twelve-sided figure on it gives the long straight bands; its top, bottom and side edges are your “smaller square”, so your guess was close (the square’s side is the width of that figure, 2 × 1.67 radii, a little less than the circle’s diameter). The frame touches a circle twice the first.',
+      'Found next, from the exact edges of one brown pentagon: its two long sides are her star lines carried on, its inner edges are her outline carried on, and its outer edges are the lines touching the first circle at its 0°, 30°, 60°… points. So the ring needs only one new set of lines so far (purple in the second picture).',
+      'Not yet explained (magenta dots in the second picture): the outer ring round the green shields and the corner pieces between the two squares. Next I read the edges of a shield and a corner piece the same way, add the line sets they need, and stop as soon as everything is covered. Then the tutorial.',
     ],
     pictures: [
       {
-        src: 'renders/bou-inania-v2/mian-inside.png',
-        caption: 'Mian’s rosette (red) fits the inside line for line.',
-      },
-      {
         src: 'renders/bou-inania-v2/frame-found.png',
         caption:
-          'Red: her star lines carried on. Orange: the first circle. Green: the bigger circle (√3 times) and its twelve-sided figure. Blue: the frame, touching a circle twice the first.',
+          'Red: her star lines carried on. Orange: the first circle. Green: the bigger circle (√3 times) and its twelve-sided figure. Blue: the frame.',
+      },
+      {
+        src: 'renders/bou-inania-v2/candidate-1.png',
+        caption:
+          'Pieces of five line sets that lie on the bands. Red: her star lines; orange: her outline; purple: lines touching the first circle; green: the big figure; blue: the frame. Magenta dots: bands not explained yet.',
+      },
+      {
+        src: 'renders/bou-inania-v2/mian-inside.png',
+        caption: 'Mian’s rosette (red) fits the inside line for line.',
       },
     ],
     asks: [],
@@ -64,6 +70,20 @@ export const PATTERNS: readonly Pattern[] = [
       {
         label: 'Samira Mian: Twelvefold Islamic Geometric Rosette',
         url: 'https://www.samiramian.uk/twelvefoldrosette',
+      },
+      {
+        label:
+          'Clear drawing of the pattern by @aslam.geometricpatterns (saved by you)',
+        url: 'https://www.instagram.com/aslam.geometricpatterns/',
+      },
+      {
+        label: 'Photo: Bou Inania madrasa zellige (Wikimedia Commons)',
+        url: 'https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg',
+      },
+      {
+        label:
+          'Ouazene, Benslimane et al.: Varieties of 12-fold rosettes in Moroccan geometric ornament (J. Appl. Cryst. 2019, paywalled)',
+        url: 'https://doi.org/10.1107/S1600576719004928',
       },
     ],
   },
