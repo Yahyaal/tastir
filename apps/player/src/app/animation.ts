@@ -268,7 +268,7 @@ export function penOrder(model: Model): PenStroke[][] {
 /**
  * Inks the pattern by hand: each line of the `.ink` group (marked
  * data-ink) draws from its start at pen speed, red while drawing and then
- * settling to black, path after path; a pen tip (data-pen) travels along.
+ * settling to black, path after path.
  */
 export function playInk(
   svg: SVGSVGElement | null,
@@ -297,7 +297,6 @@ export function playInk(
     (PEN_SPEED * speed) / 1000,
     total / Math.max(1, INK_MAX_MS / speed - lifts),
   );
-  const tip = svg.querySelector<SVGElement>('[data-pen]');
   const animations: Animation[] = [];
   // A moment on the finished construction before the pen comes down.
   let t = 400 / speed;
@@ -327,28 +326,10 @@ export function playInk(
             fill: 'backwards',
           }),
         );
-        const seg = model.pattern.ink[index]?.segment;
-        if (tip && seg && typeof tip.animate === 'function') {
-          const [from, to] = reversed ? [seg.b, seg.a] : [seg.a, seg.b];
-          animations.push(
-            tip.animate(
-              [
-                {
-                  transform: `translate(${from.x}px, ${-from.y}px)`,
-                  opacity: 1,
-                },
-                { transform: `translate(${to.x}px, ${-to.y}px)`, opacity: 1 },
-              ],
-              { duration: dur, delay: t, easing: 'linear', fill: 'none' },
-            ),
-          );
-        }
       }
       t += dur;
     }
     t += PEN_LIFT_MS;
   }
-  // The tip is invisible by default (styles.css) and shows only while a
-  // line is drawing.
   return animations;
 }

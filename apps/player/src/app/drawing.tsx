@@ -344,9 +344,6 @@ export function Construction({
               data-ink={i}
             />
           ))}
-          {enter ? (
-            <circle className="pen" data-pen r={width(view) * 0.008} />
-          ) : null}
         </g>
       ) : (
         <g>

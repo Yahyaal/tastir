@@ -27,18 +27,16 @@ describe('the move from the last step to the ink', () => {
     expect(firsts[0]).toBe(Math.min(...firsts));
   });
 
-  it('brings a pen only when asked', () => {
+  it('plays only when asked', () => {
     const { container, rerender } = render(
       <Construction model={model} upTo={steps} ink enter />,
     );
     expect(container.querySelector('svg.ink-enter')).toBeTruthy();
-    expect(container.querySelector('[data-pen]')).toBeTruthy();
     expect(container.querySelectorAll('[data-ink]')).toHaveLength(
       model.pattern.ink.length,
     );
     rerender(<Construction model={model} upTo={steps} ink />);
     expect(container.querySelector('svg.ink-enter')).toBeNull();
-    expect(container.querySelector('[data-pen]')).toBeNull();
   });
 });
 

@@ -562,11 +562,6 @@ button:disabled {
   }
 }
 
-.pen {
-  fill: var(--current);
-  opacity: 0;
-}
-
 /* Repeat to colour: the wall starts as lines on white, and each piece type
    floods in with its colour, one type after another. */
 .color-veil {
