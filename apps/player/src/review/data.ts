@@ -686,17 +686,33 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
-    id: 'design-e-judge',
-    text: 'Design E (the Fès wall): is it close enough to the photo to keep?',
+    id: 'mian-copy',
+    text: 'Samira Mian’s rosette is about 8 clean steps. May I make a tutorial that follows her construction, in my own words and credited to her? Our rule says a near-copy of one published tutorial is not allowed, so this needs your OK.',
     choices: [
-      'Keep it as it is',
-      'Keep it, but make the corner stars richer',
-      'Not close enough yet',
+      'Yes, follow it, credited',
+      'Only as a starting point; change the steps',
+      'No, keep our own constructions',
     ],
     pictures: [
       {
-        src: 'renders/bou-inania-twelve-fold-wall/compare-wall.png',
-        caption: 'Left: the real wall. Right: Design E (Strapwork style).',
+        src: 'renders/mian-rosette/rebuilt.png',
+        caption: 'Her rosette, rebuilt exactly from your screenshots.',
+      },
+    ],
+    card: 'bou-inania-twelve-fold-wall',
+  },
+  {
+    id: 'design-e-redo',
+    text: 'Design E: I agree it is overcomplicated. Shall I rebuild it the way she draws, a few sets of twelve lines each touching one circle, and keep the current version only until the new one is ready?',
+    choices: [
+      'Yes, rebuild it, then replace the old one',
+      'Rebuild it and keep both',
+    ],
+    pictures: [
+      {
+        src: 'renders/mian-rosette/compare-overlays.png',
+        caption:
+          'Her rosette (red) over the Fès wall (top) and the Cairo minbar (bottom), two turns each. It is not the Fès rosette, which has extra rings; it is close to the Cairo one, her stated source, but the proportions do not line up yet.',
       },
     ],
     card: 'bou-inania-twelve-fold-wall',
@@ -766,10 +782,14 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Design H family: H1, the al-Maridani minbar (Cairo)',
-    text: 'A real 14th-century example found: the carved wooden minbar of the al-Maridani mosque, with twelve-pointed star rosettes alternating with a twelve-sided motif. Done so far: the photo is straightened and averaged into one sharp tile, and the joints between the carved pieces are traced; the rosette and its first ring are read. Next: the corner motif, then straightening every line to a multiple of 15°, then the tutorial. A second H design comes after.',
+    title: 'Paused, waiting on your two questions',
+    text: 'Design E rebuild and H1 (the Cairo minbar) both depend on whether I may follow Samira Mian’s construction.',
   },
   next: [
+    {
+      title: 'Design H family: H1, the al-Maridani minbar (Cairo)',
+      text: 'A real 14th-century example found: the carved wooden minbar of the al-Maridani mosque, with twelve-pointed star rosettes alternating with a twelve-sided motif. Done so far: the photo is straightened and averaged into one sharp tile, and the joints between the carved pieces are traced; the rosette and its first ring are read. Next: the corner motif, then straightening every line to a multiple of 15°, then the tutorial. A second H design comes after.',
+    },
     {
       title: 'More designs per family',
       text: 'At least one more for each family: an Alhambra panel from Wichmann’s line drawings, an Ibn Tulun window grille with a published construction, and an eight-fold star-and-octagon variant, each with a photo.',
@@ -785,9 +805,9 @@ export const PROGRESS: {
   ],
   waiting: [
     {
-      title: 'Design E',
-      text: 'Your judgement: keep it, enrich the corner stars, or keep working (Q1).',
-      link: { label: 'Q1', href: '#q-design-e-judge' },
+      title: 'Design E and Samira Mian’s rosette',
+      text: 'You found Design E overcomplicated. Two questions at the top: may I follow her construction (credited), and shall I rebuild Design E her way?',
+      link: { label: 'Questions', href: '#questions' },
     },
     {
       title: 'Alhambra interlace',
