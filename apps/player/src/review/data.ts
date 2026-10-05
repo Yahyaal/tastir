@@ -36,47 +36,39 @@ const MAMOOT = 'https://mamootdiy.com';
 export const PATTERNS: readonly Pattern[] = [
   {
     id: 'twelve-fold-rosette-mian',
-    title: 'Twelve-fold rosette, A: Samira Mian’s construction (new)',
+    title: 'Twelve-fold rosette: Samira Mian’s construction (new)',
     fold: 12,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: keep A (B removed). Fixed as you pointed out: the base of the white triangles is no longer inked, and the outline lines run on to the tile edge, so the repeat closes the shapes between rosettes as in her square and hexagonal tiles. Both tiles are now in the library.',
     summary:
-      'Her rosette: twelve petals round a twelve-pointed star, in a square tile, rosettes meeting corner to corner.',
+      'Twelve petals round a twelve-pointed star, with the outline lines carried on into the neighbouring tiles; a square tile and a hexagonal one.',
     story: [
-      'Your answer to Q1 was to do both, so this is A: it follows her construction step by step, in our words, and credits her. 10 steps. The one step that is hers alone is the inner circle found from one chord; the rest is the classic division of the circle.',
-      'The square tile is the simple one, rosettes touching at their corners. Her square tile in the gallery carries the lines on to the tile edge; that picture is too small to read exactly, so I left it out.',
+      'I measured her tiles: every line she inks is in ours, and every line we ink is in hers (first picture). Square: 11 steps, seven piece shapes. Hexagon: 11 steps, five piece shapes. The thin white bow between rosettes is marked small, since it is part of her design.',
     ],
     pictures: [
       {
+        src: 'renders/twelve-fold-rosette-mian/compare-tiles.png',
+        caption: 'Her tiles and ours, side by side.',
+      },
+      {
         src: 'renders/twelve-fold-rosette-mian/wall.png',
-        caption: 'Wall A.',
+        caption: 'The square-tile wall.',
+      },
+      {
+        src: 'renders/twelve-fold-rosette-mian-hex/wall.png',
+        caption: 'The hexagonal-tile wall.',
       },
     ],
-    asks: [],
+    asks: [
+      'A look at both in the player: /#/twelve-fold-rosette-mian and /#/twelve-fold-rosette-mian-hex.',
+    ],
     sources: [
       {
         label: 'Samira Mian: Twelvefold Islamic Geometric Rosette',
         url: 'https://www.samiramian.uk/twelvefoldrosette',
       },
     ],
-  },
-  {
-    id: 'twelve-fold-rosette-open',
-    title: 'Twelve-fold rosette, B: our own steps (new)',
-    fold: 12,
-    status: 'decide',
-    summary:
-      'The same kind of rosette by a shorter construction of our own: wider petals and a larger centre star.',
-    story: [
-      'B leaves out her inner circle: the twelve star lines join points of the first circle itself. One step fewer (9), no step taken from her tutorial, and a different look.',
-    ],
-    pictures: [
-      {
-        src: 'renders/twelve-fold-rosette-open/wall.png',
-        caption: 'Wall B.',
-      },
-    ],
-    asks: [],
-    sources: [],
   },
   {
     id: 'bou-inania-twelve-fold-wall',
@@ -750,17 +742,6 @@ export const QUESTIONS: readonly Question[] = [
     ],
     card: 'bou-inania-twelve-fold-wall',
   },
-  {
-    id: 'rosette-a-or-b',
-    text: 'Twelve-fold rosette: keep A (her construction, credited), B (our own steps), or both?',
-    choices: ['Keep A', 'Keep B', 'Keep both'],
-    pictures: [
-      { src: 'renders/twelve-fold-rosette-mian/wall.png', caption: 'A' },
-      { src: 'renders/twelve-fold-rosette-open/wall.png', caption: 'B' },
-    ],
-    card: 'twelve-fold-rosette-mian',
-    also: ['twelve-fold-rosette-open'],
-  },
 ];
 
 export interface ProgressItem {
@@ -787,9 +768,9 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
-      title: 'Twelve-fold rosette, two versions',
-      text: 'A follows Samira Mian’s construction, credited (10 steps); B is our own shorter construction (9 steps).',
-      link: { label: 'Rosette A', href: '/#/twelve-fold-rosette-mian' },
+      title: 'Samira Mian’s rosette, fixed',
+      text: 'No triangle bases; outline lines carried to the tile edge; square and hexagonal tiles, both matching hers line for line.',
+      link: { label: 'Square tile', href: '/#/twelve-fold-rosette-mian' },
     },
     {
       title: 'Design E: the Fès wall, built',
@@ -853,11 +834,6 @@ export const PROGRESS: {
     },
   ],
   waiting: [
-    {
-      title: 'Twelve-fold rosette A or B',
-      text: 'Keep her construction, our own, or both (question at the top).',
-      link: { label: 'Question', href: '#questions' },
-    },
     {
       title: 'Alhambra interlace',
       text: 'Needs a better source than the product page: a photo or drawing of the whole panel.',

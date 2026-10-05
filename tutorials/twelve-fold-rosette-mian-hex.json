@@ -1,0 +1,299 @@
+{
+  "format": 0,
+  "id": "twelve-fold-rosette-mian-hex",
+  "title": "Twelve-fold rosette (Samira Mian’s construction), hexagonal tile",
+  "fold": 12,
+  "style": "Mamluk",
+  "level": "beginner",
+  "credits": [
+    {
+      "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",
+      "creator": "Samira Mian",
+      "url": "https://www.samiramian.uk/twelvefoldrosette",
+      "note": "The construction (the inner circle from one chord, the star lines joining its points 150° apart, the inking, and the square and hexagonal tiles) follows her tutorial; the wording is ours. She names the source as the minbar of the al-Maridani mosque, Cairo.",
+      "steps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    }
+  ],
+  "given": {
+    "O": "The centre of the rosette.",
+    "A": "Any point to the right of O. OA is the radius of the first circle."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Rule a horizontal line and draw a circle on it about the centre O, through A. Keep this opening for the next steps.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Put the compass point where the circle crosses the line on the right, and draw a circle through O; do the same on the left.",
+      "create": {
+        "P0": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
+        "P180": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "cE": {"circle": {"centre": "P0", "radiusOf": "c"}},
+        "cW": {"circle": {"centre": "P180", "radiusOf": "c"}}
+      },
+      "animate": "compass",
+      "highlight": ["c", "h"]
+    },
+    {
+      "id": 3,
+      "text": "Rule the vertical through O, at right angles to the horizontal, and draw the same circle about its top and bottom points.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "P90": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "P270": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}},
+        "cN": {"circle": {"centre": "P90", "radiusOf": "c"}},
+        "cS": {"circle": {"centre": "P270", "radiusOf": "c"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The four new circles cut the first one at eight more points, so it is divided into twelve. Rule the lines joining opposite points through O.",
+      "create": {
+        "P60": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60}}},
+        "P300": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300}}},
+        "P120": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120}}},
+        "P240": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240}}},
+        "P30": {"point": {"meet": ["c", "cN"], "pick": {"angle": 30}}},
+        "P150": {"point": {"meet": ["c", "cN"], "pick": {"angle": 150}}},
+        "P210": {"point": {"meet": ["c", "cS"], "pick": {"angle": 210}}},
+        "P330": {"point": {"meet": ["c", "cS"], "pick": {"angle": 330}}},
+        "r30": {"line": {"through": ["P30", "P210"]}},
+        "r60": {"line": {"through": ["P60", "P240"]}},
+        "r120": {"line": {"through": ["P120", "P300"]}},
+        "r150": {"line": {"through": ["P150", "P330"]}}
+      },
+      "animate": "ruler",
+      "highlight": ["cE", "cW", "cN", "cS"]
+    },
+    {
+      "id": 5,
+      "text": "Rule a line through each pair of neighbouring points. The twelve lines outline the rosette, and they run on past its corners.",
+      "create": {
+        "o0": {"line": {"through": ["P0", "P30"]}},
+        "o1": {"line": {"through": ["P30", "P60"]}},
+        "o2": {"line": {"through": ["P60", "P90"]}},
+        "o3": {"line": {"through": ["P90", "P120"]}},
+        "o4": {"line": {"through": ["P120", "P150"]}},
+        "o5": {"line": {"through": ["P150", "P180"]}},
+        "o6": {"line": {"through": ["P180", "P210"]}},
+        "o7": {"line": {"through": ["P210", "P240"]}},
+        "o8": {"line": {"through": ["P240", "P270"]}},
+        "o9": {"line": {"through": ["P270", "P300"]}},
+        "o10": {"line": {"through": ["P300", "P330"]}},
+        "o11": {"line": {"through": ["P330", "P0"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Halve each of the twelve angles at O with a line, so there is a line through O every 15°.",
+      "create": {
+        "r15": {"line": {"through": "O", "bisects": ["P0", "O", "P30"]}},
+        "r45": {"line": {"through": "O", "bisects": ["P30", "O", "P60"]}},
+        "r75": {"line": {"through": "O", "bisects": ["P60", "O", "P90"]}},
+        "r105": {"line": {"through": "O", "bisects": ["P90", "O", "P120"]}},
+        "r135": {"line": {"through": "O", "bisects": ["P120", "O", "P150"]}},
+        "r165": {"line": {"through": "O", "bisects": ["P150", "O", "P180"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Mark where the 75° line cuts the circle, and join that point to the point on the left of the horizontal. Where this line crosses the vertical, draw a circle about O: it is the inner circle the rosette is built on.",
+      "create": {
+        "P75": {"point": {"meet": ["c", "r75"], "pick": {"angle": 75}}},
+        "ch": {"line": {"through": ["P180", "P75"]}},
+        "T": {"point": {"meet": ["ch", "v"]}},
+        "ci": {"circle": {"centre": "O", "through": "T"}}
+      },
+      "animate": "compass",
+      "highlight": ["P180"]
+    },
+    {
+      "id": 8,
+      "text": "Mark the twelve points where the inner circle meets the lines at 15°, 45°, 75° and so on.",
+      "create": {
+        "Q15": {"point": {"meet": ["ci", "r15"], "pick": {"angle": 15}}},
+        "Q45": {"point": {"meet": ["ci", "r45"], "pick": {"angle": 45}}},
+        "Q75": {"point": {"meet": ["ci", "r75"], "pick": {"angle": 75}}},
+        "Q105": {"point": {"meet": ["ci", "r105"], "pick": {"angle": 105}}},
+        "Q135": {"point": {"meet": ["ci", "r135"], "pick": {"angle": 135}}},
+        "Q165": {"point": {"meet": ["ci", "r165"], "pick": {"angle": 165}}},
+        "Q195": {"point": {"meet": ["ci", "r15"], "pick": {"angle": 195}}},
+        "Q225": {"point": {"meet": ["ci", "r45"], "pick": {"angle": 225}}},
+        "Q255": {"point": {"meet": ["ci", "r75"], "pick": {"angle": 255}}},
+        "Q285": {"point": {"meet": ["ci", "r105"], "pick": {"angle": 285}}},
+        "Q315": {"point": {"meet": ["ci", "r135"], "pick": {"angle": 315}}},
+        "Q345": {"point": {"meet": ["ci", "r165"], "pick": {"angle": 345}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "Join each of these points to the one five places round, 150° away. The twelve lines make a twelve-pointed star.",
+      "create": {
+        "s0": {"line": {"through": ["Q15", "Q165"]}},
+        "s1": {"line": {"through": ["Q45", "Q195"]}},
+        "s2": {"line": {"through": ["Q75", "Q225"]}},
+        "s3": {"line": {"through": ["Q105", "Q255"]}},
+        "s4": {"line": {"through": ["Q135", "Q285"]}},
+        "s5": {"line": {"through": ["Q165", "Q315"]}},
+        "s6": {"line": {"through": ["Q195", "Q345"]}},
+        "s7": {"line": {"through": ["Q225", "Q15"]}},
+        "s8": {"line": {"through": ["Q255", "Q45"]}},
+        "s9": {"line": {"through": ["Q285", "Q75"]}},
+        "s10": {"line": {"through": ["Q315", "Q105"]}},
+        "s11": {"line": {"through": ["Q345", "Q135"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 10,
+      "text": "Draw the hexagon whose sides touch the first circle at 0°, 60°, 120° and so on: it is the tile.",
+      "create": {
+        "g0": {"line": {"through": "P0", "perpendicularTo": "h"}},
+        "g60": {"line": {"through": "P60", "perpendicularTo": "r60"}},
+        "g120": {"line": {"through": "P120", "perpendicularTo": "r120"}},
+        "g180": {"line": {"through": "P180", "perpendicularTo": "h"}},
+        "g240": {"line": {"through": "P240", "perpendicularTo": "r60"}},
+        "g300": {"line": {"through": "P300", "perpendicularTo": "r120"}},
+        "K1": {"point": {"meet": ["g0", "g60"]}},
+        "K2": {"point": {"meet": ["g60", "g120"]}},
+        "K3": {"point": {"meet": ["g120", "g180"]}},
+        "K4": {"point": {"meet": ["g180", "g240"]}},
+        "K5": {"point": {"meet": ["g240", "g300"]}},
+        "K6": {"point": {"meet": ["g300", "g0"]}},
+        "tile": {"polygon": ["K1", "K2", "K3", "K4", "K5", "K6"]}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 11,
+      "text": "Mark where each star line meets the outline, where it crosses the line at right angles to it, and where the outline lines reach the edge of the tile.",
+      "create": {
+        "H0_5": {"point": {"meet": ["s0", "o5"]}},
+        "X0_3": {"point": {"meet": ["s0", "s3"]}},
+        "H0_0": {"point": {"meet": ["s0", "o0"]}},
+        "X0_9": {"point": {"meet": ["s0", "s9"]}},
+        "H1_6": {"point": {"meet": ["s1", "o6"]}},
+        "X1_4": {"point": {"meet": ["s1", "s4"]}},
+        "H1_1": {"point": {"meet": ["s1", "o1"]}},
+        "X1_10": {"point": {"meet": ["s1", "s10"]}},
+        "H2_7": {"point": {"meet": ["s2", "o7"]}},
+        "X2_5": {"point": {"meet": ["s2", "s5"]}},
+        "H2_2": {"point": {"meet": ["s2", "o2"]}},
+        "X2_11": {"point": {"meet": ["s2", "s11"]}},
+        "H3_8": {"point": {"meet": ["s3", "o8"]}},
+        "X3_6": {"point": {"meet": ["s3", "s6"]}},
+        "H3_3": {"point": {"meet": ["s3", "o3"]}},
+        "H4_9": {"point": {"meet": ["s4", "o9"]}},
+        "X4_7": {"point": {"meet": ["s4", "s7"]}},
+        "H4_4": {"point": {"meet": ["s4", "o4"]}},
+        "H5_10": {"point": {"meet": ["s5", "o10"]}},
+        "X5_8": {"point": {"meet": ["s5", "s8"]}},
+        "H5_5": {"point": {"meet": ["s5", "o5"]}},
+        "H6_11": {"point": {"meet": ["s6", "o11"]}},
+        "X6_9": {"point": {"meet": ["s6", "s9"]}},
+        "H6_6": {"point": {"meet": ["s6", "o6"]}},
+        "H7_0": {"point": {"meet": ["s7", "o0"]}},
+        "X7_10": {"point": {"meet": ["s7", "s10"]}},
+        "H7_7": {"point": {"meet": ["s7", "o7"]}},
+        "H8_1": {"point": {"meet": ["s8", "o1"]}},
+        "X8_11": {"point": {"meet": ["s8", "s11"]}},
+        "H8_8": {"point": {"meet": ["s8", "o8"]}},
+        "H9_2": {"point": {"meet": ["s9", "o2"]}},
+        "H9_9": {"point": {"meet": ["s9", "o9"]}},
+        "H10_3": {"point": {"meet": ["s10", "o3"]}},
+        "H10_10": {"point": {"meet": ["s10", "o10"]}},
+        "H11_4": {"point": {"meet": ["s11", "o4"]}},
+        "H11_11": {"point": {"meet": ["s11", "o11"]}},
+        "E0b": {"point": {"meet": ["o0", "g60"]}},
+        "E1a": {"point": {"meet": ["o1", "g0"]}},
+        "E2b": {"point": {"meet": ["o2", "g120"]}},
+        "E3a": {"point": {"meet": ["o3", "g60"]}},
+        "E4b": {"point": {"meet": ["o4", "g180"]}},
+        "E5a": {"point": {"meet": ["o5", "g120"]}},
+        "E6b": {"point": {"meet": ["o6", "g240"]}},
+        "E7a": {"point": {"meet": ["o7", "g180"]}},
+        "E8b": {"point": {"meet": ["o8", "g300"]}},
+        "E9a": {"point": {"meet": ["o9", "g240"]}},
+        "E10b": {"point": {"meet": ["o10", "g0"]}},
+        "E11a": {"point": {"meet": ["o11", "g300"]}}
+      },
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink each star line from the outline inwards, stopping where it meets the line at right angles to it. Ink the outline lines from where a star line meets them, out through the outline’s corner to the edge of the tile, but not between the two star lines on each side.",
+    "paths": [
+      {"through": ["H0_5", "X0_3"]},
+      {"through": ["H0_0", "X0_9"]},
+      {"through": ["H1_6", "X1_4"]},
+      {"through": ["H1_1", "X1_10"]},
+      {"through": ["H2_7", "X2_5"]},
+      {"through": ["H2_2", "X2_11"]},
+      {"through": ["H3_8", "X3_6"]},
+      {"through": ["H3_3", "X0_3"]},
+      {"through": ["H4_9", "X4_7"]},
+      {"through": ["H4_4", "X1_4"]},
+      {"through": ["H5_10", "X5_8"]},
+      {"through": ["H5_5", "X2_5"]},
+      {"through": ["H6_11", "X6_9"]},
+      {"through": ["H6_6", "X3_6"]},
+      {"through": ["H7_0", "X7_10"]},
+      {"through": ["H7_7", "X4_7"]},
+      {"through": ["H8_1", "X8_11"]},
+      {"through": ["H8_8", "X5_8"]},
+      {"through": ["H9_2", "X0_9"]},
+      {"through": ["H9_9", "X6_9"]},
+      {"through": ["H10_3", "X1_10"]},
+      {"through": ["H10_10", "X7_10"]},
+      {"through": ["H11_4", "X2_11"]},
+      {"through": ["H11_11", "X8_11"]},
+      {"through": ["P0", "H0_0"]},
+      {"through": ["H7_0", "P30", "E0b"]},
+      {"through": ["E1a", "P30", "H1_1"]},
+      {"through": ["H8_1", "P60"]},
+      {"through": ["P60", "H2_2"]},
+      {"through": ["H9_2", "P90", "E2b"]},
+      {"through": ["E3a", "P90", "H3_3"]},
+      {"through": ["H10_3", "P120"]},
+      {"through": ["P120", "H4_4"]},
+      {"through": ["H11_4", "P150", "E4b"]},
+      {"through": ["E5a", "P150", "H5_5"]},
+      {"through": ["H0_5", "P180"]},
+      {"through": ["P180", "H6_6"]},
+      {"through": ["H1_6", "P210", "E6b"]},
+      {"through": ["E7a", "P210", "H7_7"]},
+      {"through": ["H2_7", "P240"]},
+      {"through": ["P240", "H8_8"]},
+      {"through": ["H3_8", "P270", "E8b"]},
+      {"through": ["E9a", "P270", "H9_9"]},
+      {"through": ["H4_9", "P300"]},
+      {"through": ["P300", "H10_10"]},
+      {"through": ["H5_10", "P330", "E10b"]},
+      {"through": ["E11a", "P330", "H11_11"]},
+      {"through": ["H6_11", "P0"]}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Repeat the hexagon side to side. The outline lines run on into the neighbouring tiles and close the shapes between the rosettes.",
+    "palette": "Fès tile",
+    "colors": {"star": "c", "outer": "b", "kite": "d", "bow": "ground", "petal": "d"}
+  },
+  "expect": {
+    "pieceTypes": 5,
+    "pieces": [
+      {"name": "star", "vertices": 24, "area": 0.34648, "perCell": 1},
+      {"name": "outer", "vertices": 6, "area": 0.16055, "perCell": 12},
+      {"name": "kite", "vertices": 6, "area": 0.08494, "perCell": 2},
+      {"name": "bow", "vertices": 10, "area": 0.07017, "perCell": 6, "small": true},
+      {"name": "petal", "vertices": 4, "area": 0.05001, "perCell": 12}
+    ]
+  }
+}

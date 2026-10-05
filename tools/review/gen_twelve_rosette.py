@@ -9,13 +9,19 @@
 Both: the rosette fills a twelve-sided outline whose corners touch the
 square tile at the middle of each side, so rosettes meet corner to corner.
 
-Usage: gen_twelve_rosette.py mian|open tutorials/<id>.json
+The outline is drawn as twelve full lines: they run on past the outline's
+corners to the tile edge, and are inked there but not between the two star
+lines that meet each side (owner, 2026-10-05, from her square and hexagonal
+tiles). The tile is a square (side two radii) or a hexagon (apothem one
+radius) touching the first circle; both repeat.
+
+Usage: gen_twelve_rosette.py mian|open square|hex tutorials/<id>.json
 """
 import json
 import math
 import sys
 
-variant, out = sys.argv[1], sys.argv[2]
+variant, tile_kind, out = sys.argv[1], sys.argv[2], sys.argv[3]
 steps = []
 
 
@@ -55,8 +61,8 @@ for a in (30, 60, 120, 150):
 step('The four new circles cut the first one at eight more points, so it is divided into twelve. Rule the lines joining opposite points through O.',
      create, highlight=['cE', 'cW', 'cN', 'cS'])
 
-step('Join the twelve points in turn: this twelve-sided figure is the outline of the rosette.',
-     {'out': {'polygon': [P(30 * k) for k in range(12)]}})
+step('Rule a line through each pair of neighbouring points. The twelve lines outline the rosette, and they run on past its corners.',
+     {f'o{j}': {'line': {'through': [P(30 * j), P(30 * j + 30)]}} for j in range(12)})
 
 create = {}
 rays = {0: 'h', 30: 'r30', 60: 'r60', 90: 'v', 120: 'r120', 150: 'r150'}
@@ -108,66 +114,115 @@ def meet(k, j):
 ap = math.cos(math.radians(15))
 
 
-def outline_hit(k, sg):
-    n = normal(k)
-    t_ = (-n[1] * sg, n[0] * sg)
-    p0 = (n[0] * d, n[1] * d)
-    best = None
-    for j in range(12):
-        a = math.radians(15 + 30 * j)
-        m = (math.cos(a), math.sin(a))
-        den = t_[0] * m[0] + t_[1] * m[1]
-        if den > 1e-9:
-            t = (ap - (p0[0] * m[0] + p0[1] * m[1])) / den
-            if best is None or t < best[0]:
-                best = (t, j)
-    t, j = best
-    return (p0[0] + t * t_[0], p0[1] + t * t_[1]), j
+def side_normal(j):
+    a = math.radians(15 + 30 * j)
+    return (math.cos(a), math.sin(a))
 
+
+def meet_lines(n, c, m, e):
+    det = n[0] * m[1] - n[1] * m[0]
+    return ((c * m[1] - e * n[1]) / det, (n[0] * e - m[0] * c) / det)
+
+
+def tpar(n, p):
+    return -n[1] * p[0] + n[0] * p[1]
+
+
+if tile_kind == 'square':
+    edges = [(0, 'gE', 'P0', 'h'), (90, 'gN', 'P90', 'v'), (180, 'gW', 'P180', 'h'), (270, 'gS', 'P270', 'v')]
+else:
+    edges = [(60 * k, f'g{60 * k}', P(60 * k), rays[(60 * k) % 180]) for k in range(6)]
+tile_edges = [((math.cos(math.radians(a)), math.sin(math.radians(a))), name) for a, name, _, _ in edges]
 
 create = {}
 paths = []
-side_hits = {j: [] for j in range(12)}
 for k in range(12):
-    for sg, other in ((1, (k + 3) % 12), (-1, (k - 3) % 12)):
-        p, j = outline_hit(k, sg)
-        hn = f'H{k}{"a" if sg > 0 else "b"}'
-        ang = math.degrees(math.atan2(p[1], p[0])) % 360
-        create[hn] = {'point': {'meet': [f's{k}', 'out'], 'pick': {'angle': round(ang, 3)}}}
-        side_hits[j].append((ang, hn))
+    n = normal(k)
+    for other in ((k + 3) % 12, (k - 3) % 12):
+        X = meet(k, other)
+        t0 = tpar(n, X)
+        sgn = 1 if t0 > 0 else -1
+        best = None
+        for j in range(12):
+            m = side_normal(j)
+            if abs(n[0] * m[1] - n[1] * m[0]) < 1e-9:
+                continue
+            q = meet_lines(n, d, m, ap)
+            tq = tpar(n, q)
+            if (tq - t0) * sgn > 1e-9 and math.hypot(*q) <= 1 + 1e-9 and (best is None or abs(tq - t0) < abs(best[0] - t0)):
+                best = (tq, j)
+        j = best[1]
+        hn = f'H{k}_{j}'
+        create.setdefault(hn, {'point': {'meet': [f's{k}', f'o{j}']}})
         cn = f'X{min(k, other)}_{max(k, other)}'
-        if cn not in create:
-            create[cn] = {'point': {'meet': [f's{k}', f's{other}']}}
+        create.setdefault(cn, {'point': {'meet': [f's{k}', f's{other}']}})
         paths.append({'through': [hn, cn]})
 for j in range(12):
-    a0, a1 = 30 * j, 30 * j + 30
-    hits = sorted(side_hits[j], key=lambda h: (h[0] - a0) % 360)
-    paths.append({'through': [P(a0)] + [h[1] for h in hits] + [P(a1)]})
-create['gE'] = {'line': {'through': 'P0', 'perpendicularTo': 'h'}}
-create['gW'] = {'line': {'through': 'P180', 'perpendicularTo': 'h'}}
-create['gN'] = {'line': {'through': 'P90', 'perpendicularTo': 'v'}}
-create['gS'] = {'line': {'through': 'P270', 'perpendicularTo': 'v'}}
-create['K1'] = {'point': {'meet': ['gE', 'gN']}}
-create['K2'] = {'point': {'meet': ['gW', 'gN']}}
-create['K3'] = {'point': {'meet': ['gW', 'gS']}}
-create['K4'] = {'point': {'meet': ['gE', 'gS']}}
-create['tile'] = {'polygon': ['K1', 'K2', 'K3', 'K4']}
-step('Mark where each star line meets the outline, and where it crosses the line at right angles to it. Then draw the square that touches the outline at its top, bottom and sides: it is the tile.',
+    m = side_normal(j)
+    hits = []
+    for k in range(12):
+        n = normal(k)
+        if abs(n[0] * m[1] - n[1] * m[0]) < 1e-9:
+            continue
+        q = meet_lines(m, ap, n, d)
+        if math.hypot(*q) <= 1 + 1e-9:
+            hits.append((tpar(m, q), f'H{k}_{j}'))
+    hits.sort()
+    # where the side leaves the tile, either way
+    ends = []
+    for sgn in (-1, 1):
+        best = None
+        for (e, ename) in tile_edges:
+            den = -m[1] * e[0] + m[0] * e[1]
+            if den * sgn <= 1e-12:
+                continue
+            q = meet_lines(m, ap, e, 1.0)
+            tq = tpar(m, q)
+            if best is None or abs(tq) < abs(best[0]):
+                best = (tq, ename)
+        en = f'E{j}{"a" if sgn < 0 else "b"}'
+        q = meet_lines(m, ap, [e for e, nm in tile_edges if nm == best[1]][0], 1.0)
+        corner = [nm for nm in (P(30 * j), P(30 * j + 30)) if math.dist(q, (math.cos(math.radians(int(nm[1:]))), math.sin(math.radians(int(nm[1:]))))) < 1e-9]
+        if corner:
+            ends.append(None)   # the outline's corner is on the tile edge
+        else:
+            create[en] = {'point': {'meet': [f'o{j}', best[1]]}}
+            ends.append(en)
+    # corners of the outline on this side: P(30j) and P(30j+30), in t order
+    c0, c1 = sorted([P(30 * j), P(30 * j + 30)], key=lambda nm: tpar(m, (math.cos(math.radians(int(nm[1:]))), math.sin(math.radians(int(nm[1:]))))))
+    paths.append({'through': [x for x in (ends[0], c0, hits[0][1]) if x]})
+    paths.append({'through': [x for x in (hits[-1][1], c1, ends[1]) if x]})
+tcreate = {}
+for a, name, pt, ray in edges:
+    tcreate[name] = {'line': {'through': pt, 'perpendicularTo': ray}}
+corner_names = []
+for i in range(len(edges)):
+    a, b = edges[i][1], edges[(i + 1) % len(edges)][1]
+    cn = f'K{i + 1}'
+    tcreate[cn] = {'point': {'meet': [a, b]}}
+    corner_names.append(cn)
+tcreate['tile'] = {'polygon': corner_names}
+if tile_kind == 'square':
+    tile_text = 'Draw the square that touches the first circle at its top, bottom and sides: it is the tile.'
+else:
+    tile_text = 'Draw the hexagon whose sides touch the first circle at 0°, 60°, 120° and so on: it is the tile.'
+step(tile_text, tcreate)
+step('Mark where each star line meets the outline, where it crosses the line at right angles to it, and where the outline lines reach the edge of the tile.',
      create, 'fade')
 
 common = {
-    'format': 0, 'fold': 12, 'style': 'Mamluk', 'level': 'beginner',
+    'format': 0, 'fold': 12 if tile_kind == 'hex' else 4, 'style': 'Mamluk', 'level': 'beginner',
     'given': {'O': 'The centre of the rosette.', 'A': 'Any point to the right of O. OA is the radius of the first circle.'},
     'steps': steps,
-    'ink': {'text': 'Ink each star line from the outline inwards, stopping where it meets the line at right angles to it, and ink the outline. Twelve petals ring a twelve-pointed star.', 'paths': paths},
-    'pattern': {'cell': 'tile', 'text': 'Repeat the square side to side: neighbouring rosettes meet corner to corner, and a four-pointed space opens between four of them.', 'palette': 'Fès tile', 'colors': {}},
+    'ink': {'text': 'Ink each star line from the outline inwards, stopping where it meets the line at right angles to it. Ink the outline lines from where a star line meets them, out through the outline’s corner to the edge of the tile, but not between the two star lines on each side.', 'paths': paths},
+    'pattern': {'cell': 'tile', 'text': ('Repeat the square side to side.' if tile_kind == 'square' else 'Repeat the hexagon side to side.') + ' The outline lines run on into the neighbouring tiles and close the shapes between the rosettes.', 'palette': 'Fès tile', 'colors': {}},
     'expect': {'pieceTypes': 1, 'pieces': [{'name': 'x', 'vertices': 3, 'area': 1, 'perCell': 1}]},
 }
 if variant == 'mian':
-    tut = {'id': 'twelve-fold-rosette-mian', 'title': 'Twelve-fold rosette (Samira Mian’s construction)',
+    tut = {'id': 'twelve-fold-rosette-mian' + ('' if tile_kind == 'square' else '-hex'), 'title': 'Twelve-fold rosette (Samira Mian’s construction)' + ('' if tile_kind == 'square' else ', hexagonal tile'),
            'credits': [{'source': 'Twelvefold Islamic Geometric Rosette (online tutorial)', 'creator': 'Samira Mian',
                         'url': 'https://www.samiramian.uk/twelvefoldrosette',
-                        'note': 'The construction (the inner circle from one chord, the star lines joining its points 150° apart, and the inking) follows her tutorial; the wording is ours. She names the source as the minbar of the al-Maridani mosque, Cairo.',
+                        'note': 'The construction (the inner circle from one chord, the star lines joining its points 150° apart, the inking, and the square and hexagonal tiles) follows her tutorial; the wording is ours. She names the source as the minbar of the al-Maridani mosque, Cairo.',
                         'steps': list(range(1, len(steps) + 1))}]}
 else:
     tut = {'id': 'twelve-fold-rosette-open', 'title': 'Twelve-fold rosette, open petals', 'credits': []}
