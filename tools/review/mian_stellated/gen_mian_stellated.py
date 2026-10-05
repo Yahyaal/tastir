@@ -5,8 +5,7 @@
   the rosette's circle and its square cell; the circle divided into twelve;
   the twelve lines joining points 60° apart (two hexagons); the circle
   through their crossings and, from one chord, the inner circle; the star
-  lines joining its points 150° apart; all of it mirrored into the
-  neighbouring cells; then at each corner of the cell, four hexagons and an
+  lines joining its points 150° apart; then at each corner of the cell, four hexagons and an
   octagon, found with a small compass.
 
 Units: OA = 1 (the rosette's circle); the tile is the square cell, side 2.
@@ -92,16 +91,6 @@ def build():
         meet(f'Q{a}', 'ci', rays[a % 180], (ri * math.cos(math.radians(a)), ri * math.sin(math.radians(a))))
     for k in range(12):
         line_through(f'A{k}', f'Q{30 * k}', f'Q{(30 * k + 150) % 360}')
-
-    step('The same rosette sits in each neighbouring cell. Copy the hexagon sides and the star lines across the right side of the cell, as in a mirror, then turn the copies about O to the other three sides; copy one of those across again for the cells at the corners, and turn them too.')
-    lines = [f'H{k}' for k in range(12)] + [f'A{k}' for k in range(12)]
-    repeat('mx', lines, 'mirror:gx')
-    side = [f'{n}@1' for n in lines]
-    repeat('mr', side, 'rot4')
-    up = [f'{n}@1' for n in side]          # the copies in the cell above
-    repeat('md', up, 'mirror:gx')
-    diag = [f'{n}@1' for n in up]
-    repeat('mdr', diag, 'rot4')
 
     step('Four small hexagons sit round each corner of the cell. Where the 60° line from O crosses the top of the cell is the centre of one. Open the compass to where a hexagon side crosses the top of the cell, and draw the circle: it marks the hexagon’s inner corner on the top of the cell. Do the same on the right side of the cell with the 30° line.', 'compass', ['K'])
     meet('Hc', 'r60', 'gy', (1 / S3, 1))

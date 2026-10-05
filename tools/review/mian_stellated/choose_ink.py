@@ -127,6 +127,27 @@ for A, B in segs:
     orbits.append(ms)
 keep = [ms for ms in orbits if np.mean([score[m] > 0.8 for m in ms]) >= 0.5]
 ink = sorted({m for ms in keep for m in ms})
+# The corner motif is known exactly from her steps (four hexagons and an
+# octagon round each corner K): ink it as drawn there, replacing whatever
+# the low-resolution screenshot suggested within 0.3 of a corner.
+S3 = math.sqrt(3)
+hexagon = [((S3 / 2 - 0.5) / (S3 / 2), 1.0), (0.5, S3 / 2), (S3 - 1 - (1 - S3 / 2) / S3, S3 / 2), (S3 - 1, 1.0)]
+octa = [(S3 - 1, 1.0), (1 - (2 - S3) / (1 + 1 / S3) * 1, 1 - (2 - S3) / (1 + 1 / S3) * 1), (1.0, S3 - 1)]
+motif = list(zip(hexagon, hexagon[1:])) + list(zip(octa, octa[1:]))
+motif += [((a[1], a[0]), (b[1], b[0])) for a, b in zip(hexagon, hexagon[1:])]
+full = set()
+for a, b in motif:
+    for sx in (1, -1):
+        for sy in (1, -1):
+            A = (a[0] * sx, a[1] * sy); B = (b[0] * sx, b[1] * sy)
+            full.add(tuple(sorted((key(A), key(B)))))
+            exact[key(A)] = A; exact[key(B)] = B
+def near_corner(m):
+    mid = ((m[0][0] + m[1][0]) / 2, (m[0][1] + m[1][1]) / 2)
+    u, w = abs(mid[0]), abs(mid[1])
+    return (math.hypot(u - 1, w - 1) < 0.32 or math.hypot(u - 1 / S3, w - 1) < 0.17
+            or math.hypot(u - 1, w - 1 / S3) < 0.17)
+ink = sorted({m for m in ink if not near_corner(m)} | full)
 # no loose ends inside the tile
 edge = lambda z: max(abs(z[0]), abs(z[1])) > H - 1e-4
 while True:

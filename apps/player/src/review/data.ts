@@ -35,6 +35,32 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'mian-stellated-rosettes',
+    title: 'Stellated twelve-fold rosettes, Samira Mian (new)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Her activity 8: twelve-fold rosettes in square cells, with four hexagons and an octagon at every corner.',
+    story: [
+      'Built from your screenshots of her video, step by step and credited to her. Her rosette is her first rosette scaled into the cell: the twelve lines joining circle points 60° apart, a circle through their crossings, the inner circle from one chord, and the star lines; together they explain 98% of the ink in her rosette stage. At each corner, the 60° line from O crossing the cell side gives a hexagon’s centre, a small circle gives its inner corner, and the two missing sides carried to the diagonal close the octagon, as she shows.',
+      'The rosette’s ink was read from her screenshot; the hexagons and octagon are drawn exactly from her steps. Two tiny slivers remain near the star tips (marked small).',
+    ],
+    pictures: [
+      {
+        src: 'renders/mian-stellated/wall-compare.png',
+        caption: 'Left: our wall. Right: her finished drawing.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Samira Mian: Twelvefold Islamic Geometric Rosette (activity 8 video)',
+        url: 'https://www.samiramian.uk/twelvefoldrosette',
+      },
+    ],
+  },
+  {
     id: 'bou-inania-v2',
     title: 'Bou Inania rosette, simpler (draft)',
     fold: 12,
@@ -773,16 +799,16 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
-    id: 'mian-stellated',
-    text: 'Samira Mian’s stellated rosettes (activity 8) are a close cousin of Bou Inania, not the same: same square grid, octagons at the corners, but hers has no ring of five-pointed stars and pentagons, and hexagons where Bou Inania has the long bands. Build hers as its own tutorial (credited) and reuse its grid steps to simplify Bou Inania?',
-    choices: ['Yes, both', 'Only hers', 'Only use it for Bou Inania'],
+    id: 'mian-stellated-check',
+    text: 'Samira Mian’s stellated rosettes are in the library (13 steps). Does the wall match her drawing well enough? Two tiny slivers remain near the star tips; say if they bother you.',
+    choices: ['Looks right', 'Something is off (say what)'],
     pictures: [
       {
-        src: 'renders/mian-stellated/compare.png',
-        caption: 'Left: her finished drawing. Right: the Bou Inania drawing.',
+        src: 'renders/mian-stellated/wall-compare.png',
+        caption: 'Left: our wall. Right: her finished drawing.',
       },
     ],
-    card: 'bou-inania-v2',
+    card: 'mian-stellated-rosettes',
   },
 ];
 
@@ -809,6 +835,11 @@ export const PROGRESS: {
   updated: '5 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Samira Mian’s stellated rosettes',
+      text: 'Her activity 8 in the library: rosettes in square cells, hexagons and an octagon at the corners.',
+      link: { label: 'Open it', href: '/#/mian-stellated-rosettes' },
+    },
     {
       title: 'Design E rebuilt her way',
       text: 'Fifteen sets of twelve lines, each through a corner already drawn; 21 steps; the same wall.',
@@ -867,7 +898,7 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Bou Inania rosette, simpler',
+    title: 'Bou Inania with Mian’s grid steps',
     text: 'Draft built: her rosette plus eleven sets of lines through crossings. Fixing the small stars and slivers, then colouring and the library.',
     link: { label: 'Card', href: '#bou-inania-v2' },
   },
