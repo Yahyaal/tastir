@@ -107,8 +107,22 @@ for A, B in segs:
 score = {tuple(sorted((key(A), key(B)))): covered(A, B) for A, B in segs}
 
 
+RO = (math.sqrt(3) / 2) / math.cos(math.radians(15))
+
+
 def images(A, B):
+    """The stretch's copies: twelve-fold inside the rosette (her rosette is
+    twelve-fold), four-fold with mirrors elsewhere (the tile)."""
     out = set()
+    if max(math.hypot(*A), math.hypot(*B)) < 1.0 + 1e-6:
+        for k in range(12):
+            for m in (1, -1):
+                def f(p, k=k, m=m):
+                    x, y = p[0], m * p[1]
+                    a = math.radians(30 * k)
+                    return (x * math.cos(a) - y * math.sin(a), x * math.sin(a) + y * math.cos(a))
+                out.add(tuple(sorted((key(f(A)), key(f(B))))))
+        return out
     for sx in (1, -1):
         for sy in (1, -1):
             for sw in (0, 1):
@@ -125,7 +139,11 @@ for A, B in segs:
     ms = [m for m in images(A, B) if m in score]
     seen |= set(ms)
     orbits.append(ms)
-keep = [ms for ms in orbits if np.mean([score[m] > 0.8 for m in ms]) >= 0.5]
+# Inside the rosette circle her drawing shows the full ring only on the
+# axes (the screenshot is cut by later steps elsewhere); the owner confirmed
+# the ring is twelve-fold, so a twelve-fold family is kept when a third of
+# it (the axis copies) is inked.
+keep = [ms for ms in orbits if np.mean([score[m] > 0.8 for m in ms]) >= (0.3 if len(ms) > 8 else 0.5)]
 ink = sorted({m for ms in keep for m in ms})
 # The corner motif is known exactly from her steps (four hexagons and an
 # octagon round each corner K): ink it as drawn there, replacing whatever
@@ -159,6 +177,21 @@ while True:
     if not loose:
         break
     ink = [m for m in ink if m not in loose]
+# Where two crossings fall a hair apart (a star tip), the short stretches
+# form a tiny diamond; drop short stretches whose removal leaves no loose end.
+touch = {}
+for m in ink:
+    for z in m:
+        touch.setdefault(z, []).append(m)
+# of two all-short nodes facing each other, keep the one nearer O (where
+# the long star lines actually cross) and drop the other's stretches
+shorty = [z for z, ms in touch.items() if not edge(z) and all(math.dist(*m) < 0.015 for m in ms)]
+drop = set()
+for z in shorty:
+    twin = [w for w in shorty if w != z and math.dist(w, z) < 0.03]
+    if twin and math.hypot(*z) > math.hypot(*twin[0]):
+        drop |= set(touch[z])
+ink = [m for m in ink if m not in drop]
 json.dump([[list(exact[a]), list(exact[b])] for a, b in ink], open(out, 'w'))
 print(len(segs), 'stretches,', len(orbits), 'families,', len(ink), 'inked')
 if len(sys.argv) > 6:

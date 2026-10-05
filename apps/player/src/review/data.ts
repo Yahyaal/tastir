@@ -38,7 +38,9 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'mian-stellated-rosettes',
     title: 'Stellated twelve-fold rosettes, Samira Mian (new)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You: close, but 12 of the small six-cornered kites per tile, not 4, and no 16-cornered ground piece. Fixed: the rosette ring is now twelve-fold out to its circle, which gives 12 kites and splits the 16-cornered piece; the slivers at the star tips are gone too (8 piece shapes, none thin).',
     summary:
       'Her activity 8: twelve-fold rosettes in square cells, with four hexagons and an octagon at every corner.',
     story: [
@@ -797,20 +799,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'mian-stellated-check',
-    text: 'Samira Mian’s stellated rosettes are in the library (13 steps). Does the wall match her drawing well enough? Two tiny slivers remain near the star tips; say if they bother you.',
-    choices: ['Looks right', 'Something is off (say what)'],
-    pictures: [
-      {
-        src: 'renders/mian-stellated/wall-compare.png',
-        caption: 'Left: our wall. Right: her finished drawing.',
-      },
-    ],
-    card: 'mian-stellated-rosettes',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
