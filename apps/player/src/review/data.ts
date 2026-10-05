@@ -766,8 +766,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Design H family',
-    text: 'Two or more advanced twelve-fold designs from the dodecagram tutorial (other ways of joining the stars, stars set apart), each checked against a real example.',
+    title: 'Design H family: H1, the al-Maridani minbar (Cairo)',
+    text: 'A real 14th-century example found: the carved wooden minbar of the al-Maridani mosque, with twelve-pointed star rosettes alternating with a twelve-sided motif. The photo is straightened and averaged; it has the same layout as Design E, so I am adapting the Design E tools to draw it. A second H design comes after.',
   },
   next: [
     {
