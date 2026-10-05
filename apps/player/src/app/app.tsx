@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { planStep, play } from './animation';
+import { planStep, play, playInk } from './animation';
 import { fullView, stepFrame, width } from './camera';
 import { useCamera } from './useCamera';
 import { useInking } from './useInking';
@@ -140,7 +140,15 @@ export function Player({ model }: { model: Model }) {
     // Before paint, so the step's new elements start hidden.
     if (!animateNext.current) return;
     animateNext.current = false;
-    if (stage.kind !== 'step' || reduced) return;
+    if (reduced) return;
+    if (stage.kind === 'ink') {
+      if (!inking.editing && inking.isClassic)
+        running.current = playInk(svgRef.current, model, speed, {
+          lengthScale: width(camera.view) / width(frame),
+        });
+      return;
+    }
+    if (stage.kind !== 'step') return;
     running.current = play(svgRef.current, planStep(model, stage.step, speed), {
       // The camera glides to the step's frame while it draws.
       lengthScale: width(camera.view) / width(frame),
@@ -231,7 +239,7 @@ export function Player({ model }: { model: Model }) {
     text =
       tutorial.pattern.text ??
       'Repeat the tile edge to edge, with the same lines in every copy.';
-    picture = <RepeatedInk model={inking.shown} enter={enter} />;
+    picture = <RepeatedInk model={inking.shown} enter={enter} speed={speed} />;
   } else {
     label = 'Color';
     hint = 'One color for each shape of piece.';

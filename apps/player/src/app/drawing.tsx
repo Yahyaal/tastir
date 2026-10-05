@@ -1,3 +1,4 @@
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import type {
   Geometry,
   InkPiece,
@@ -258,28 +259,6 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
   );
 }
 
-/** Seconds over which the ink strokes start, centre first. */
-const INK_SPREAD = 1.8;
-
-/**
- * When each ink stroke starts drawing: in order of distance from O, so the
- * pattern grows outwards from the centre of the tile.
- */
-export function inkDelays(model: Model): number[] {
-  const ink = model.pattern.ink;
-  const dist = ink.map(({ segment: s }) =>
-    Math.hypot((s.a.x + s.b.x) / 2, (s.a.y + s.b.y) / 2),
-  );
-  const order = dist
-    .map((_, i) => i)
-    .sort((a, b) => (dist[a] ?? 0) - (dist[b] ?? 0));
-  const delays = new Array<number>(ink.length).fill(0);
-  order.forEach((i, rank) => {
-    delays[i] = 0.6 + (INK_SPREAD * rank) / Math.max(1, ink.length - 1);
-  });
-  return delays;
-}
-
 /**
  * The construction up to `upTo`: the elements of step `upTo` in color and
  * earlier ones in light grey. With `ink`, everything is faint and the ink
@@ -305,11 +284,10 @@ export function Construction({
   outlineHighlights?: boolean;
   /** On the ink stage: every piece the learner can ink, and which are. */
   freeInk?: FreeInk;
-  /** Play the move into the ink stage: the ink strokes appear over the
-   * construction, from the centre outwards, as the construction fades. */
+  /** Play the move into the ink stage: the construction fades back while
+   * a pen inks the pattern (playInk in animation.ts). */
   enter?: boolean;
 }) {
-  const delays = ink && enter ? inkDelays(model) : [];
   const size = width(view);
   // Lines are clipped well beyond the view, so panning never shows an end.
   const clipTo = fit(view, 1);
@@ -363,15 +341,12 @@ export function Construction({
               x2={sx(s.segment.b)}
               y2={sy(s.segment.b)}
               vectorEffect="non-scaling-stroke"
-              style={
-                enter
-                  ? ({
-                      '--delay': `${delays[i] ?? 0}s`,
-                    } as React.CSSProperties)
-                  : undefined
-              }
+              data-ink={i}
             />
           ))}
+          {enter ? (
+            <circle className="pen" data-pen r={width(view) * 0.008} />
+          ) : null}
         </g>
       ) : (
         <g>
@@ -432,104 +407,241 @@ export function tiling(
 
 const isOrigin = (d: Vec) => d.x === 0 && d.y === 0;
 
-/** The view shrunk by `k` about its centre. */
-function zoomIn(view: Rect, k: number): Rect {
-  const cx = (view.minX + view.maxX) / 2;
-  const cy = (view.minY + view.maxY) / 2;
-  const hw = (view.maxX - view.minX) / (2 * k);
-  const hh = (view.maxY - view.minY) / (2 * k);
-  return { minX: cx - hw, maxX: cx + hw, minY: cy - hh, maxY: cy + hh };
+/**
+ * The two slides that build the wall: `row`, the shortest repeat, as near
+ * horizontal as possible, and `next`, from one row to the next, with its
+ * sideways part as small as it can be (the shift between rows).
+ */
+export function rowBasis(model: Model): { row: Vec; next: Vec } {
+  const { u, v } = model.pattern.cell;
+  const cands: Vec[] = [];
+  for (let a = -2; a <= 2; a++)
+    for (let b = -2; b <= 2; b++)
+      if (a || b) cands.push({ x: a * u.x + b * v.x, y: a * u.y + b * v.y });
+  const len = (p: Vec) => Math.hypot(p.x, p.y);
+  const shortest = Math.min(...cands.map(len));
+  const row =
+    cands
+      .filter((p) => len(p) < shortest * 1.001 && p.x > 1e-9)
+      .sort((p, q) => Math.abs(p.y) - Math.abs(q.y))[0] ?? cands[0]!;
+  const cross = (p: Vec) => row.x * p.y - row.y * p.x;
+  const ups = cands.filter((p) => cross(p) > 1e-9);
+  const h = Math.min(...ups.map(cross));
+  const level = ups.filter((p) => Math.abs(cross(p) - h) < 1e-9);
+  const along = (p: Vec) => (p.x * row.x + p.y * row.y) / len(row) ** 2;
+  // Bring the shift into (-½, ½] of a step, nearest straight up.
+  const next0 = level.sort(
+    (p, q) => Math.abs(along(p)) - Math.abs(along(q)),
+  )[0]!;
+  const k = Math.round(along(next0));
+  const next = { x: next0.x - k * row.x, y: next0.y - k * row.y };
+  return { row, next };
 }
+
+/** Milliseconds for one copy or one row to slide into place. */
+const SLIDE_MS = 700;
+const ROW_STEP_MS = 420;
+const ROWS_STEP_MS = 900;
 
 /**
  * The inked tile copied edge to edge: the original in color, the copies in
  * ink, and the tile borders faint, so the new shapes between the copies
- * show where they close up.
+ * show where they close up. With `enter`, the wall is built as a hand
+ * would: the tile is copied and slid along to make a row, then the row is
+ * copied and slid up (and across, when the rows are shifted), row by row.
  */
 export function RepeatedInk({
   model,
   enter = false,
+  speed = 1,
 }: {
   model: Model;
-  /** Play the move into the repeat: the view starts on the one tile, and
-   * the copies slide out of it ring by ring as the view pulls back. */
   enter?: boolean;
+  speed?: number;
 }) {
-  const { view, shifts } = tiling(model);
+  const { view } = tiling(model);
   const { cell, ink } = model.pattern;
-  const span = Math.max(
-    Math.hypot(cell.u.x, cell.u.y),
-    Math.hypot(cell.v.x, cell.v.y),
-  );
-  /** How many tiles away a copy is, so nearer copies arrive first. */
-  const ring = (d: Vec) => Math.round(Math.hypot(d.x, d.y) / span);
-  const vars = (d: Vec) =>
-    enter
-      ? ({
-          '--dx': d.x,
-          '--dy': -d.y,
-          // Rings beyond the fourth are off screen at first; they arrive
-          // together with the fourth.
-          '--delay': `${0.4 + 0.4 * (Math.min(ring(d), 4) - 1)}s`,
-        } as React.CSSProperties)
-      : undefined;
+  const { row, next } = useMemo(() => rowBasis(model), [model]);
+  const svgRef = useRef<SVGSVGElement>(null);
+  // Every copy whose tile reaches into the view, by row (j) and place (i).
+  const copies = useMemo(() => {
+    const out: { i: number; j: number; d: Vec }[] = [];
+    const span = Math.hypot(row.x, row.y) + Math.hypot(next.x, next.y);
+    const inView = (d: Vec) =>
+      d.x > view.minX - span &&
+      d.x < view.maxX + span &&
+      d.y > view.minY - span &&
+      d.y < view.maxY + span;
+    for (let j = -12; j <= 12; j++)
+      for (let i = -24; i <= 24; i++) {
+        const d = { x: i * row.x + j * next.x, y: i * row.y + j * next.y };
+        if (inView(d)) out.push({ i, j, d });
+      }
+    return out;
+  }, [row, next, view]);
+
+  // The row is built first, then the rows; the camera pulls back from the
+  // tile while the row grows.
+  const rowsStart = useMemo(() => {
+    const maxI = Math.max(
+      ...copies.filter((c) => c.j === 0).map((c) => Math.abs(c.i)),
+    );
+    return (300 + maxI * ROW_STEP_MS + SLIDE_MS) / speed;
+  }, [copies, speed]);
+  const close = useMemo(() => {
+    const cx = (view.minX + view.maxX) / 2;
+    const cy = (view.minY + view.maxY) / 2;
+    const k = 2.4;
+    const hw = (view.maxX - view.minX) / 2 / k;
+    const hh = (view.maxY - view.minY) / 2 / k;
+    return { minX: cx - hw, maxX: cx + hw, minY: cy - hh, maxY: cy + hh };
+  }, [view]);
+
+  useLayoutEffect(() => {
+    const svg = svgRef.current;
+    if (!enter || !svg) return;
+    const anims: Animation[] = [];
+    const tr = (p: Vec) => `translate(${p.x}px, ${-p.y}px)`;
+    // The camera moves on the same clock as the copies (an SVG <animate>
+    // starts at mount, before a slow first render has finished).
+    let frame = 0;
+    const t0 = performance.now();
+    const ease = (t: number) => 1 - (1 - t) ** 3;
+    const camera = () => {
+      const t = Math.min(1, (performance.now() - t0) / rowsStart);
+      const e = ease(t);
+      const mix = (a: number, b: number) => a + (b - a) * e;
+      svg.setAttribute(
+        'viewBox',
+        viewBox({
+          minX: mix(close.minX, view.minX),
+          maxX: mix(close.maxX, view.maxX),
+          minY: mix(close.minY, view.minY),
+          maxY: mix(close.maxY, view.maxY),
+        }),
+      );
+      if (t < 1) frame = requestAnimationFrame(camera);
+    };
+    camera();
+    let end = rowsStart;
+    for (const node of svg.querySelectorAll<SVGGElement>('[data-copy]')) {
+      if (typeof node.animate !== 'function') continue;
+      const [i, j] = (node.dataset['copy'] ?? '0,0').split(',').map(Number) as [
+        number,
+        number,
+      ];
+      if (i === 0 && j === 0) continue;
+      const d = { x: i * row.x + j * next.x, y: i * row.y + j * next.y };
+      let frames: Keyframe[];
+      let delay: number;
+      if (j === 0) {
+        // Along the row: from the copy before it.
+        const s = Math.sign(i);
+        const from = { x: d.x - s * row.x, y: d.y - s * row.y };
+        frames = [{ transform: tr(from) }, { transform: tr(d) }];
+        delay = (300 + (Math.abs(i) - 1) * ROW_STEP_MS) / speed;
+      } else {
+        // A whole row: from the row before it, straight up first, then
+        // across by the shift.
+        const s = Math.sign(j);
+        const from = { x: d.x - s * next.x, y: d.y - s * next.y };
+        const rowLen = Math.hypot(row.x, row.y);
+        const across = (next.x * row.x + next.y * row.y) / rowLen;
+        const upOnly = {
+          x: d.x - (s * across * row.x) / rowLen,
+          y: d.y - (s * across * row.y) / rowLen,
+        };
+        frames =
+          Math.abs(across) > 1e-9
+            ? [
+                { transform: tr(from), offset: 0 },
+                { transform: tr(upOnly), offset: 0.55 },
+                { transform: tr(d), offset: 1 },
+              ]
+            : [{ transform: tr(from) }, { transform: tr(d) }];
+        delay = rowsStart + ((Math.abs(j) - 1) * ROWS_STEP_MS) / speed;
+      }
+      const dur = (j === 0 ? SLIDE_MS : SLIDE_MS * 1.4) / speed;
+      anims.push(
+        node.animate(frames, {
+          duration: dur,
+          delay,
+          easing: 'ease-in-out',
+          fill: 'backwards',
+        }),
+        node.animate([{ opacity: 0 }, { opacity: 0 }], {
+          duration: delay,
+          fill: 'none',
+        }),
+        node.animate([{ stroke: ACCENT_COLOR }, { stroke: ACCENT_COLOR }, {}], {
+          duration: dur + 400 / speed,
+          delay,
+          fill: 'none',
+        }),
+      );
+      end = Math.max(end, delay + dur);
+    }
+    const borders = svg.querySelector<SVGGElement>('.tile-borders');
+    if (borders && typeof borders.animate === 'function')
+      anims.push(
+        borders.animate([{ opacity: 0 }, { opacity: 1 }], {
+          duration: 600,
+          delay: end,
+          fill: 'backwards',
+        }),
+      );
+    return () => {
+      cancelAnimationFrame(frame);
+      svg.setAttribute('viewBox', viewBox(view));
+      anims.forEach((a) => a.cancel());
+    };
+  }, [enter, copies, row, next, speed, rowsStart, close, view]);
+
   return (
     <svg
-      className={enter ? 'drawing wall repeat-enter' : 'drawing wall'}
+      ref={svgRef}
+      className="drawing wall"
       viewBox={viewBox(view)}
       preserveAspectRatio="xMidYMid slice"
       role="img"
       aria-label="The inked tile repeated edge to edge"
     >
-      {enter ? (
-        // Start on the one tile and pull back to the whole wall. The view
-        // box itself is animated, so the zoom is always about the tile.
-        <animate
-          attributeName="viewBox"
-          from={viewBox(zoomIn(view, 2.6))}
-          to={viewBox(view)}
-          dur="2.4s"
-          fill="freeze"
-          calcMode="spline"
-          keyTimes="0;1"
-          keySplines="0.42 0 0.58 1"
-        />
-      ) : null}
-      <g className="zoom">
-        <g className="tile-borders">
-          {shifts.map((d, k) => (
-            <polygon
+      <g className="tile-borders">
+        {copies.map(({ d }, k) => (
+          <polygon
+            key={k}
+            points={points(
+              cell.corners.map((p) => ({ x: p.x + d.x, y: p.y + d.y })),
+            )}
+            vectorEffect="non-scaling-stroke"
+          />
+        ))}
+      </g>
+      {copies.map(({ i, j, d }) => (
+        <g
+          key={`${i},${j}`}
+          data-copy={`${i},${j}`}
+          className={isOrigin(d) ? 'ink original' : 'ink'}
+          transform={`translate(${d.x} ${-d.y})`}
+        >
+          {ink.map((s, k) => (
+            <line
               key={k}
-              points={points(
-                cell.corners.map((p) => ({ x: p.x + d.x, y: p.y + d.y })),
-              )}
+              x1={sx(s.segment.a)}
+              y1={sy(s.segment.a)}
+              x2={sx(s.segment.b)}
+              y2={sy(s.segment.b)}
               vectorEffect="non-scaling-stroke"
             />
           ))}
         </g>
-        {shifts.map((d, k) => (
-          <g
-            key={k}
-            className={isOrigin(d) ? 'ink original' : 'ink copy'}
-            transform={`translate(${d.x} ${-d.y})`}
-            style={isOrigin(d) ? undefined : vars(d)}
-          >
-            {ink.map((s, i) => (
-              <line
-                key={i}
-                x1={sx(s.segment.a)}
-                y1={sy(s.segment.a)}
-                x2={sx(s.segment.b)}
-                y2={sy(s.segment.b)}
-                vectorEffect="non-scaling-stroke"
-              />
-            ))}
-          </g>
-        ))}
-      </g>
+      ))}
     </svg>
   );
 }
+
+/** The accent for things in motion (--current in styles.css). */
+const ACCENT_COLOR = '#c2410c';
 
 /** One piece type's shape, small, for the piece panel. */
 export function PieceShape({

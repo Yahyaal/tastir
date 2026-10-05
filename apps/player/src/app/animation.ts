@@ -202,3 +202,153 @@ export function compassStart(model: Model, name: string): number {
   }
   return 0;
 }
+
+/** Pen speed for inking, in screen pixels per second at normal speed. */
+const PEN_SPEED = 420;
+/** Longest the inking may take at normal speed, in milliseconds. */
+const INK_MAX_MS = 14000;
+/** The pen lifts and moves between paths. */
+const PEN_LIFT_MS = 90;
+/** How long a finished line takes to settle from red to black. */
+const SETTLE_MS = 450;
+
+interface PenStroke {
+  /** Index into model.pattern.ink. */
+  readonly index: number;
+  /** Drawn from b to a instead of a to b. */
+  readonly reversed: boolean;
+}
+
+/**
+ * The order a hand would ink the pattern: the tutorial's paths, each drawn
+ * end to end, starting with the path nearest the centre and then always
+ * moving on to the nearest unfinished one.
+ */
+export function penOrder(model: Model): PenStroke[][] {
+  const ink = model.pattern.ink;
+  const paths: number[][] = [];
+  ink.forEach((s, i) => {
+    const prev = ink[i - 1];
+    if (prev && prev.to === s.from && s.from !== '')
+      paths[paths.length - 1]?.push(i);
+    else paths.push([i]);
+  });
+  const ends = (path: number[]) => {
+    const first = ink[path[0] as number]!.segment.a;
+    const last = ink[path[path.length - 1] as number]!.segment.b;
+    return [first, last] as const;
+  };
+  const left = new Set(paths.map((_, k) => k));
+  const out: PenStroke[][] = [];
+  let pen: Vec = { x: 0, y: 0 };
+  while (left.size) {
+    let best = -1;
+    let bestD = Infinity;
+    let bestRev = false;
+    for (const k of left) {
+      const [a, b] = ends(paths[k] as number[]);
+      const da = Math.hypot(a.x - pen.x, a.y - pen.y);
+      const db = Math.hypot(b.x - pen.x, b.y - pen.y);
+      if (da < bestD) [best, bestD, bestRev] = [k, da, false];
+      if (db < bestD) [best, bestD, bestRev] = [k, db, true];
+    }
+    left.delete(best);
+    const path = paths[best] as number[];
+    const strokes = (bestRev ? [...path].reverse() : path).map((index) => ({
+      index,
+      reversed: bestRev,
+    }));
+    out.push(strokes);
+    const [a, b] = ends(path);
+    pen = bestRev ? a : b;
+  }
+  return out;
+}
+
+/**
+ * Inks the pattern by hand: each line of the `.ink` group (marked
+ * data-ink) draws from its start at pen speed, red while drawing and then
+ * settling to black, path after path; a pen tip (data-pen) travels along.
+ */
+export function playInk(
+  svg: SVGSVGElement | null,
+  model: Model,
+  speed = 1,
+  { lengthScale = 1 } = {},
+): Animation[] {
+  if (!svg) return [];
+  const lines = new Map<number, SVGLineElement>();
+  svg.querySelectorAll<SVGLineElement>('[data-ink]').forEach((n) => {
+    lines.set(Number(n.dataset['ink']), n);
+  });
+  const order = penOrder(model);
+  const lengths = new Map<number, number>();
+  let total = 0;
+  for (const path of order) {
+    for (const { index } of path) {
+      const node = lines.get(index);
+      const len = node ? screenLength(node, lengthScale) : 0;
+      lengths.set(index, len);
+      total += len;
+    }
+  }
+  const lifts = Math.max(0, order.length - 1) * PEN_LIFT_MS;
+  const pxPerMs = Math.max(
+    (PEN_SPEED * speed) / 1000,
+    total / Math.max(1, INK_MAX_MS / speed - lifts),
+  );
+  const tip = svg.querySelector<SVGElement>('[data-pen]');
+  const animations: Animation[] = [];
+  // A moment on the finished construction before the pen comes down.
+  let t = 400 / speed;
+  for (const path of order) {
+    for (const { index, reversed } of path) {
+      const node = lines.get(index);
+      const len = lengths.get(index) ?? 0;
+      const dur = Math.max(30, len / pxPerMs);
+      if (node && typeof node.animate === 'function') {
+        const dash = `${len} ${len}`;
+        animations.push(
+          node.animate(
+            [
+              {
+                strokeDasharray: dash,
+                strokeDashoffset: reversed ? -len : len,
+                stroke: ACCENT,
+              },
+              { strokeDasharray: dash, strokeDashoffset: 0, stroke: ACCENT },
+            ],
+            { duration: dur, delay: t, easing: 'linear', fill: 'backwards' },
+          ),
+          node.animate([{ stroke: ACCENT }, {}], {
+            duration: SETTLE_MS,
+            delay: t + dur,
+            easing: 'ease-out',
+            fill: 'backwards',
+          }),
+        );
+        const seg = model.pattern.ink[index]?.segment;
+        if (tip && seg && typeof tip.animate === 'function') {
+          const [from, to] = reversed ? [seg.b, seg.a] : [seg.a, seg.b];
+          animations.push(
+            tip.animate(
+              [
+                {
+                  transform: `translate(${from.x}px, ${-from.y}px)`,
+                  opacity: 1,
+                },
+                { transform: `translate(${to.x}px, ${-to.y}px)`, opacity: 1 },
+              ],
+              { duration: dur, delay: t, easing: 'linear', fill: 'none' },
+            ),
+          );
+        }
+      }
+      t += dur;
+    }
+    t += PEN_LIFT_MS;
+  }
+  // The tip is invisible by default (styles.css) and shows only while a
+  // line is drawing.
+  return animations;
+}

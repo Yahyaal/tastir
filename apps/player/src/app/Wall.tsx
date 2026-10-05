@@ -1,5 +1,5 @@
 import { pieceAt, rectangularPeriod, type Vec } from '@tastir/engine';
-import { useId, useMemo, useRef } from 'react';
+import { useId, useLayoutEffect, useMemo, useRef } from 'react';
 import { fit, viewBox, width, type Rect } from './camera';
 import { tiling } from './drawing';
 import type { Model } from './model';
@@ -126,14 +126,15 @@ export function Wall({
   };
 
   // The pieces sit in an SVG pattern, where CSS animations do not play, so
-  // the colour flood is a white veil over the wall: one copy of every piece
-  // in the first view, fading out a type at a time. Once faded it stays,
-  // invisible and ignoring the pointer.
+  // the colouring is a white veil over the wall: one copy of every piece
+  // in the first view. Like a hand with one colour at a time, each type's
+  // veils fade from the centre outwards, then the next type's. Once faded
+  // the veil stays, invisible and ignoring the pointer.
   const veil = useMemo(() => {
     if (!enter) return [];
     const { shifts } = tiling(model);
     const view = start;
-    const out: { type: number; pts: string }[] = [];
+    const out: { type: number; pts: string; dist: number }[] = [];
     for (const d of shifts) {
       for (const p of pattern.pieces) {
         const moved = p.polygon.map((q) => ({ x: q.x + d.x, y: q.y + d.y }));
@@ -144,14 +145,52 @@ export function Wall({
           moved.every((q) => q.y > view.maxY)
         )
           continue;
+        const c = moved.reduce((a, q) => ({ x: a.x + q.x, y: a.y + q.y }), {
+          x: 0,
+          y: 0,
+        });
         out.push({
           type: p.type,
           pts: moved.map((q) => `${q.x},${-q.y}`).join(' '),
+          dist: Math.hypot(c.x, c.y) / moved.length,
         });
       }
     }
     return out;
   }, [enter, model, pattern, start]);
+
+  const veilRef = useRef<SVGGElement>(null);
+  useLayoutEffect(() => {
+    const g = veilRef.current;
+    if (!g || !veil.length) return;
+    const nodes = [...g.querySelectorAll<SVGPolygonElement>('polygon')];
+    if (nodes.some((n) => typeof n.animate !== 'function')) {
+      g.style.display = 'none';
+      return;
+    }
+    const far = Math.max(...veil.map((v) => v.dist)) || 1;
+    const byType = pattern.types.map(() => [] as number[]);
+    veil.forEach((v, i) => byType[v.type]?.push(i));
+    const anims: Animation[] = [];
+    let k = 0;
+    byType.forEach((list, order) => {
+      for (const i of list) {
+        const v = veil[i];
+        const node = nodes[k++];
+        if (!v || !node) continue;
+        anims.push(
+          node.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: COLOR_FILL_MS,
+            delay:
+              400 + order * COLOR_TYPE_MS + (v.dist / far) * COLOR_SPREAD_MS,
+            easing: 'ease-out',
+            fill: 'both',
+          }),
+        );
+      }
+    });
+    return () => anims.forEach((a) => a.cancel());
+  }, [veil, pattern]);
 
   const cover = fit(camera.view, 1);
   return (
@@ -226,12 +265,12 @@ export function Wall({
         fill={`url(#wall-${id})`}
       />
       {veil.length ? (
-        <g className="color-veil" aria-hidden="true">
+        <g ref={veilRef} className="color-veil" aria-hidden="true">
           {pattern.types.map((_, type) => (
             <g
               key={type}
               className="veil-type"
-              style={{ '--type': type } as React.CSSProperties}
+              data-type={type}
               fill="#fff"
               stroke={INK}
               strokeWidth={groutWidth}
@@ -249,6 +288,12 @@ export function Wall({
     </svg>
   );
 }
+
+/** The colouring: each piece's fade, one type after another, and how long
+ * one type takes to spread from the centre to the edge of the view. */
+const COLOR_FILL_MS = 350;
+const COLOR_TYPE_MS = 1100;
+const COLOR_SPREAD_MS = 800;
 
 /** The cell's box, for sizing grout in proportion to the pattern. */
 function fullCell(model: Model): Rect {

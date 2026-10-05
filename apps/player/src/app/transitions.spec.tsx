@@ -1,7 +1,10 @@
 import { render } from '@testing-library/react';
 import json from '@tutorials/six-fold-hammerhead.json';
+import shiftedJson from '@tutorials/kurt-eight-fold-zellige-shifted.json';
+import squareJson from '@tutorials/kurt-eight-fold-zellige.json';
+import { penOrder } from './animation';
 import { pieceColors } from './coloring';
-import { Construction, inkDelays, RepeatedInk } from './drawing';
+import { Construction, RepeatedInk, rowBasis } from './drawing';
 import { loadModel } from './model';
 import { Wall } from './Wall';
 
@@ -9,56 +12,65 @@ const model = loadModel(json);
 const steps = model.tutorial.steps.length;
 
 describe('the move from the last step to the ink', () => {
-  it('draws the ink from the centre of the tile outwards', () => {
-    const delays = inkDelays(model);
-    const dist = model.pattern.ink.map(({ segment: s }) =>
-      Math.hypot((s.a.x + s.b.x) / 2, (s.a.y + s.b.y) / 2),
+  it('inks every line once, path by path, starting nearest the centre', () => {
+    const order = penOrder(model);
+    const drawn = order.flat().map((s) => s.index);
+    expect([...drawn].sort((a, b) => a - b)).toEqual(
+      model.pattern.ink.map((_, i) => i),
     );
-    const near = dist.indexOf(Math.min(...dist));
-    const far = dist.indexOf(Math.max(...dist));
-    expect(delays[near]).toBeLessThan(delays[far] as number);
+    const start = (s: { index: number; reversed: boolean }) => {
+      const seg = model.pattern.ink[s.index]!.segment;
+      const p = s.reversed ? seg.b : seg.a;
+      return Math.hypot(p.x, p.y);
+    };
+    const firsts = order.map((path) => start(path[0]!));
+    expect(firsts[0]).toBe(Math.min(...firsts));
   });
 
-  it('plays only when asked', () => {
+  it('brings a pen only when asked', () => {
     const { container, rerender } = render(
       <Construction model={model} upTo={steps} ink enter />,
     );
     expect(container.querySelector('svg.ink-enter')).toBeTruthy();
-    const line = container.querySelector('.ink line') as SVGLineElement;
-    expect(line.style.getPropertyValue('--delay')).toMatch(/s$/);
+    expect(container.querySelector('[data-pen]')).toBeTruthy();
+    expect(container.querySelectorAll('[data-ink]')).toHaveLength(
+      model.pattern.ink.length,
+    );
     rerender(<Construction model={model} upTo={steps} ink />);
     expect(container.querySelector('svg.ink-enter')).toBeNull();
+    expect(container.querySelector('[data-pen]')).toBeNull();
   });
 });
 
 describe('the move to the repeat', () => {
-  it('pulls back from the tile while the copies arrive, nearest first', () => {
-    const { container } = render(<RepeatedInk model={model} enter />);
-    expect(
-      container.querySelector('animate[attributeName="viewBox"]'),
-    ).toBeTruthy();
-    expect(
-      container.querySelector('.ink.original')?.getAttribute('style'),
-    ).toBeNull();
-    const delays = [
-      ...container.querySelectorAll<SVGGElement>('.ink.copy'),
-    ].map((g) => parseFloat(g.style.getPropertyValue('--delay')));
-    expect(Math.min(...delays)).toBeLessThan(Math.max(...delays));
+  it('builds a row along the shortest repeat, with no shift on a square grid', () => {
+    const { row, next } = rowBasis(loadModel(squareJson));
+    expect(Math.abs(row.y)).toBeLessThan(1e-9);
+    expect(Math.abs(next.x)).toBeLessThan(1e-9);
   });
 
-  it('shows the wall at once without it', () => {
-    const { container } = render(<RepeatedInk model={model} />);
-    expect(container.querySelector('animate')).toBeNull();
+  it('shifts each row along by half a step when the rows are shifted', () => {
+    const { row, next } = rowBasis(loadModel(shiftedJson));
+    const along = (next.x * row.x + next.y * row.y) / (row.x ** 2 + row.y ** 2);
+    expect(Math.abs(along)).toBeCloseTo(0.5, 6);
+  });
+
+  it('marks each copy by its place in the row and its row', () => {
+    const { container } = render(<RepeatedInk model={model} enter />);
+    const original = container.querySelector('.ink.original');
+    expect(original?.getAttribute('data-copy')).toBe('0,0');
+    expect(container.querySelector('[data-copy="1,0"]')).toBeTruthy();
+    expect(container.querySelector('[data-copy="0,1"]')).toBeTruthy();
   });
 });
 
 describe('the move to colour', () => {
-  it('veils the wall in white, one piece type at a time', () => {
+  it('veils the wall in white, one group for each piece type', () => {
     const { container } = render(
       <Wall model={model} colors={pieceColors(model)} enter />,
     );
     const groups = [...container.querySelectorAll<SVGGElement>('.veil-type')];
-    expect(groups.map((g) => g.style.getPropertyValue('--type'))).toEqual(
+    expect(groups.map((g) => g.dataset['type'])).toEqual(
       model.pattern.types.map((_, i) => String(i)),
     );
     expect(groups.every((g) => g.querySelector('polygon'))).toBe(true);

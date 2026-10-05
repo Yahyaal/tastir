@@ -41,7 +41,8 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 
 - CSS animations do not play inside an SVG `<pattern>`; animate an overlay instead (the colour veil in `Wall.tsx`).
 - Dashes cannot draw a line with `vector-effect: non-scaling-stroke` along its length (the path length is ignored); fade strokes in instead.
-- A CSS zoom on SVG content with `transform-box: view-box` does not centre on the view box; animate the `viewBox` attribute with SMIL instead.
+- A CSS zoom on SVG content with `transform-box: view-box` does not centre on the view box. A SMIL `<animate>` on `viewBox` does, but its clock starts at mount, so after a slow first render it is out of step with Web Animations started in an effect; set `viewBox` from requestAnimationFrame on the same clock instead.
+- Owner feedback on transitions (2026-10-04): they must look done by hand. Ink with a pen, line after line along each path, red while drawing and black once drawn; build the wall by copying the tile along into a row, then copying the row up (and across when shifted); paint one colour at a time.
 - In jsdom, hundreds of elements each with an inline custom property are very slow; put the property on a parent group.
 - Prettier rewriting a file while the dev server is reading it can leave Vite serving an empty module; `touch` the file to make it reload.
 - To check an animation, drive headless Chrome over the DevTools protocol (`node` has `WebSocket`): press keys, take screenshots at chosen times, and read `element.getAnimations()` when a frame looks wrong.
