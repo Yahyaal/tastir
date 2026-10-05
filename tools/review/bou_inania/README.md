@@ -42,3 +42,11 @@ Second pass (the band network itself, which works better than line search):
     orbits seen at least three times (`graphT.json`). It catches the corner stars and their
     octagon but not the orange ring or the grid-line bands, so the outer region is drawn by
     hand (next step).
+18. `18_anchor_rosette.py`: ties the rosette to the tile and writes `ideal12e.json`. A copy
+    of vertex class 9 lies on the line joining the edge midpoints (½, 0) and (0, ½), and
+    another copy on the 75° line through the corner (½, ½); the rim vertex (class 13) is
+    where the circle of radius √2/2 about a class-9 copy (through the copy half a tile away
+    diagonally) meets the axis. The long line through classes 4, 6, 7 is dropped to keep
+    the system exact. Every constraint holds to 1e-12; rms 0.0044 from the photo.
+19. `19_rosette_build_order.py`: the order in which a tutorial can draw the rosette from
+    those two anchors, each vertex the crossing of two 15° lines through vertices found.
