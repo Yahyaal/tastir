@@ -53,6 +53,8 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 
 ## Tooling
 
+- Never `git stash` (or check out other versions of files) while the owner's dev server runs: Vite picked up the old schema during a stash and kept serving it after the files came back, so two tutorials showed "Unrecognized key" until the server was restarted.
+
 - Timed tests (the PRD speed targets) fail when they share the CPU with the golden suite; the engine runs them as their own Vitest group after everything else, and `pnpm test` runs projects one at a time.
 
 - Agent worktrees live in `.claude/worktrees/` inside the repo. Without `.nxignore`, Nx picks them up as extra projects, the main test run fails with circular project references, and `pnpm typecheck` adds them to the root `tsconfig.json`. `.nxignore` now excludes `.claude/`.
