@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import bou from '@tutorials/bou-inania-rosette.json';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import { Play } from './app';
 import {
@@ -8,6 +9,7 @@ import {
   fullView,
   height,
   MIN_FRAME,
+  focusFrame,
   stepFrame,
   width,
   zoomAt,
@@ -65,6 +67,30 @@ describe('the view maths', () => {
         MIN_FRAME * width(drawingBox(model)),
       );
     }
+  });
+
+  it('closes in on one corner of a move made at every corner, then widens', () => {
+    const m = loadModel(bou);
+    // Step 12, part 1: the centre of the corner star, at all four corners.
+    const beat = m.scene.elements.get('Sa')?.beat ?? 0;
+    const { frame, widens } = focusFrame(m, beat);
+    const at = (n: string) => {
+      const g = m.scene.elements.get(n)?.geometry;
+      return g?.kind === 'point' ? g.at : { x: NaN, y: NaN };
+    };
+    const inside = (p: { x: number; y: number }) =>
+      p.x >= frame.minX &&
+      p.x <= frame.maxX &&
+      p.y >= frame.minY &&
+      p.y <= frame.maxY;
+    expect(inside(at('Sa'))).toBe(true);
+    expect(inside(at('Sc'))).toBe(false);
+    expect(width(frame)).toBeLessThan(width(drawingBox(m)) / 2);
+    expect(widens).toBe(true);
+  });
+
+  it('does not widen a step that has no copies', () => {
+    expect(focusFrame(model, 1).widens).toBe(false);
   });
 
   it('never frames a step smaller than a share of the whole drawing', () => {
@@ -141,7 +167,23 @@ describe('the camera in the player', () => {
     expect(box().w).toBeCloseTo(width(fullView(model)), 9);
     fireEvent.wheel(svg, { deltaY: -500 });
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-    expect(box().w).toBeCloseTo(width(stepFrame(model, 2)), 9);
+    expect(box().w).toBeCloseTo(width(focusFrame(model, 2).frame), 9);
+  });
+
+  it('widens to the whole drawing once the first line of a step is down', () => {
+    vi.useFakeTimers();
+    try {
+      render(<Play json={example} />);
+      reduceMotion();
+      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+      expect(box().w).toBeCloseTo(width(focusFrame(model, 2).frame), 9);
+      act(() => {
+        vi.advanceTimersByTime(1000);
+      });
+      expect(box().w).toBeCloseTo(width(fullView(model)), 9);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });
 

@@ -20,6 +20,8 @@ export const centreOf = (r: Rect): Vec => ({
 export const MARGIN = 0.12;
 /** A step's frame is never smaller than this share of the whole drawing. */
 export const MIN_FRAME = 0.6;
+/** A close-up of one move is never smaller than this share. */
+export const MIN_FOCUS = 0.3;
 
 /** The smallest box around the points; undefined for none. */
 export function boxOf(points: readonly Vec[]): Rect | undefined {
@@ -105,6 +107,74 @@ export function stepFrame(model: Model, step: number): Rect {
   const whole = drawingBox(model);
   const box = boxOf(points) ?? whole;
   return fit(atLeast(box, MIN_FRAME * width(whole), MIN_FRAME * height(whole)));
+}
+
+/**
+ * Where a beat does its work, and whether it has copies elsewhere: its new
+ * points (and the points they are built from) within one turn of the
+ * pattern's symmetry around its first new point, never smaller than
+ * MIN_FOCUS of the whole drawing. Lines add no points, so a line and its turned copies are
+ * framed by the crossing it runs through. `widens` says the beat also
+ * draws copies outside the close-up, so the view should then widen.
+ */
+export function focusFrame(
+  model: Model,
+  beat: number,
+): { frame: Rect; widens: boolean } {
+  const { elements } = model.scene;
+  const made = [...elements.values()].filter((el) => el.beat === beat);
+  const names = new Set<string>();
+  for (const el of made) {
+    names.add(el.name);
+    el.deps.forEach((d) => names.add(d));
+  }
+  const whole = drawingBox(model);
+  const copies = made.some(
+    (el) => el.name.includes('@') || el.geometry.kind === 'group',
+  );
+  // Each element counts where it sits: a point, a circle's centre, a
+  // polygon's first corner. Elements at O belong to every turn.
+  const anchor = (g: Geometry): Vec | undefined =>
+    g.kind === 'point'
+      ? g.at
+      : g.kind === 'circle'
+        ? g.circle.centre
+        : g.kind === 'polygon'
+          ? g.vertices[0]
+          : undefined;
+  const sector = (2 * Math.PI) / Math.max(1, model.tutorial.fold);
+  const angle = (p: Vec) => {
+    const a = Math.atan2(p.y, p.x);
+    return a < 0 ? a + 2 * Math.PI : a;
+  };
+  const far = (p: Vec) => Math.hypot(p.x, p.y) > 1e-6;
+  // The first of the new elements that is away from O.
+  const first = made
+    .map((el) => anchor(el.geometry))
+    .find((p): p is Vec => !!p && far(p));
+  // Within half a turn of the symmetry either side of that element.
+  const inFirstTurn = (p: Vec) => {
+    if (!first || !far(p)) return true;
+    const d = Math.abs(angle(p) - angle(first)) % (2 * Math.PI);
+    return Math.min(d, 2 * Math.PI - d) < sector / 2 - 1e-9;
+  };
+  let dropped = false;
+  const kept = [...names].flatMap((n) => {
+    const g = elements.get(n)?.geometry;
+    if (!g) return [];
+    const at = anchor(g);
+    if (at && !inFirstTurn(at)) {
+      dropped = true;
+      return [];
+    }
+    return outline(g);
+  });
+  const box = boxOf(kept) ?? whole;
+  const frame = fit(
+    atLeast(box, MIN_FOCUS * width(whole), MIN_FOCUS * height(whole)),
+  );
+  const widens = copies || dropped;
+  return { frame, widens };
 }
 
 /** The view zoomed by `factor` (above 1 zooms in) keeping `at` still. */

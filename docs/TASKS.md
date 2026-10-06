@@ -88,7 +88,7 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 - [x] **1.16 The next tile in blue.** On the step that creates the pattern cell, the neighbouring copies of the ink are drawn in blue around the tile, so the band at the edge explains itself; Bou Inania's tile step text says so.
   *Done when:* a player test finds the neighbour copies on that step; Bou Inania's last step looks like picture E.
 
-- [ ] **1.17 Zoom to the work.** Each step or part frames the elements it uses and makes, then the view widens to show their copies round the centre.
+- [x] **1.17 Zoom to the work.** Each step or part frames the elements it uses and makes, then the view widens to show their copies round the centre.
   *Done when:* camera tests show the frame of a part holds its crossing and new line; in the browser step 12 zooms to the corner star.
 
 **Phase 1 exit:** all boxes ticked, every golden test green, and a friend finishes a tutorial unaided in under 10 minutes.

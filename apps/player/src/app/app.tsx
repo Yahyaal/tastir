@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 import { planStep, play, playInk } from './animation';
-import { fullView, stepFrame, width } from './camera';
+import { focusFrame, fullView, width } from './camera';
 import { useCamera } from './useCamera';
 import { useInking } from './useInking';
 import {
@@ -160,12 +160,30 @@ export function Player({ model }: { model: Model }) {
     running.current = [];
   };
 
-  // Each step frames itself; the ink shows the whole drawing.
-  const frame = useMemo(
-    () =>
-      stage.kind === 'step' ? stepFrame(model, stage.beat) : fullView(model),
+  // Each step or part first frames where it works, then, if it draws
+  // copies elsewhere, widens to the whole drawing once its first line is
+  // down. Arriving with Back shows it widened. The ink shows everything.
+  const focus = useMemo(
+    () => (stage.kind === 'step' ? focusFrame(model, stage.beat) : undefined),
     [model, stage],
   );
+  const [widened, setWidened] = useState(-1);
+  const frame = useMemo(
+    () =>
+      focus && !(focus.widens && (!forward || widened === index))
+        ? focus.frame
+        : fullView(model),
+    [model, focus, forward, widened, index],
+  );
+  useEffect(() => {
+    if (stage.kind !== 'step' || !focus?.widens || !forward) return;
+    const drawn = planStep(model, stage.beat, speed)
+      .filter((e) => e.kind === 'ruler' || e.kind === 'compass')
+      .map((e) => e.delay + e.duration);
+    const after = Math.max(drawn.length ? Math.min(...drawn) : 0, 500 / speed);
+    const timer = setTimeout(() => setWidened(index), after);
+    return () => clearTimeout(timer);
+  }, [index, stage, model, focus, forward, speed]);
   const onConstruction = stage.kind === 'step' || stage.kind === 'ink';
   const camera = useCamera(frame, svgRef, {
     stage: index,
