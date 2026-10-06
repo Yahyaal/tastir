@@ -24,6 +24,9 @@ const IMAGE_TYPES: Record<string, string> = {
 
 export default defineConfig(() => ({
   root: import.meta.dirname,
+  // GitHub Pages serves the app under /<repo>/; the deploy workflow sets
+  // TASTIR_BASE to that path. Locally the app lives at the root.
+  base: process.env['TASTIR_BASE'] ?? '/',
   cacheDir: '../../node_modules/.vite/apps/player',
   server: {
     port: 4200,
