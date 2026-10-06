@@ -19,6 +19,16 @@
       "note": "The real panel, used to check the wall."
     }
   ],
+  "photos": [
+    {
+      "file": "alhambra-wichmann/wade-spa_1624x.jpg",
+      "caption": "The panel in the Sala de la Barca, Alhambra (photo SPA 1624x).",
+      "creator": "David Wade",
+      "license": "All rights reserved",
+      "url": "https://patterninislamicart.com/",
+      "private": true
+    }
+  ],
   "given": {"O": "The centre of a large star.", "A": "Halfway from O to the next large star."},
   "steps": [
     {

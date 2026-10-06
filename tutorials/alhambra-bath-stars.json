@@ -19,6 +19,16 @@
       "note": "The same design on a real panel, used to check the wall."
     }
   ],
+  "photos": [
+    {
+      "file": "alhambra-wichmann/wade-mor0711-original.jpg",
+      "caption": "A carved wooden panel with the same design (photo MOR 0711).",
+      "creator": "David Wade",
+      "license": "All rights reserved",
+      "url": "https://patterninislamicart.com/",
+      "private": true
+    }
+  ],
   "given": {"O": "The centre of a large star.", "A": "Halfway from O to the next large star."},
   "steps": [
     {

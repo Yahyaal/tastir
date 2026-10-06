@@ -24,6 +24,22 @@
       "note": "A second minbar with the same design, checked the same way."
     }
   ],
+  "photos": [
+    {
+      "file": "cairo-al-maridani-minbar.jpg",
+      "caption": "The minbar of the al-Maridani mosque, Cairo: a lantern slide of the wooden panelling (cropped).",
+      "creator": "Unknown photographer",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Ca%C3%AFro._Amir_al-Maridani-moskee_Minbar_Detail_van_het_houten_maaswerk,_GDE002950.jpg"
+    },
+    {
+      "file": "cairo-al-nasir-muhammad-minbar.jpg",
+      "caption": "The minbar of the mosque of al-Nasir Muhammad, Cairo Citadel, 1318–35.",
+      "creator": "Sailko",
+      "license": "CC BY 3.0",
+      "url": "https://commons.wikimedia.org/wiki/File:Cairo,_cittadella,_moschea_di_an-nasr_mohammed,_1318-1335,_minbar,_intarsi.JPG"
+    }
+  ],
   "given": {
     "O": "The centre of a rosette.",
     "A": "Any point to the right of O. OA is the radius of the rosette’s circle."

@@ -19,6 +19,16 @@
       "note": "The real panel, used to check the wall."
     }
   ],
+  "photos": [
+    {
+      "file": "alhambra-wichmann/wade-spa_1416.jpg",
+      "caption": "The tiled panel in the Salón de Comares, Alhambra (photo SPA 1416).",
+      "creator": "David Wade",
+      "license": "All rights reserved",
+      "url": "https://patterninislamicart.com/",
+      "private": true
+    }
+  ],
   "given": {"O": "The centre of a framed star.", "A": "Halfway from O to the next framed star."},
   "steps": [
     {

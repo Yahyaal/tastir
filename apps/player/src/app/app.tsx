@@ -25,6 +25,7 @@ import { download, pngBlob, svgBlob, wallSvg } from './exporting';
 import { PrintSheet, type Paper } from './PrintSheet';
 import { Construction, RepeatedInk, Thumbnail } from './drawing';
 import { Wall, WALL_STYLES, type WallStyle } from './Wall';
+import { Original } from './Original';
 import { LIBRARY, type Entry } from './library';
 import { useRemembered } from './remembered';
 import {
@@ -141,6 +142,7 @@ export function Player({ model }: { model: Model }) {
   const [grout, setGrout] = useState(1);
   const [paper, setPaper] = useState<Paper>('A4');
   const [printing, setPrinting] = useState(false);
+  const [comparing, setComparing] = useState(false);
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
     wallSvg(inking.shown, colors, { look: wallStyle, grout, fill });
@@ -329,6 +331,9 @@ export function Player({ model }: { model: Model }) {
     );
   }
 
+  const photos = tutorial.photos ?? [];
+  const showOriginal = comparing && stage.kind === 'color' && photos.length > 0;
+
   return (
     <div className="player">
       {printing ? (
@@ -382,7 +387,10 @@ export function Player({ model }: { model: Model }) {
           <span className="brand">Tastir</span>
         </div>
       </header>
-      <main className="stage">{picture}</main>
+      <main className={showOriginal ? 'stage comparing' : 'stage'}>
+        {showOriginal ? <Original photos={photos} /> : null}
+        {picture}
+      </main>
       <footer>
         <div className="text">
           <p className="label">{label}</p>
@@ -438,6 +446,18 @@ export function Player({ model }: { model: Model }) {
                   onChange={(e) => setGrout(Number(e.target.value))}
                 />
               </label>
+              {photos.length ? (
+                <button
+                  type="button"
+                  className="secondary"
+                  aria-pressed={comparing}
+                  onClick={() => setComparing(!comparing)}
+                >
+                  {comparing
+                    ? 'Hide the original'
+                    : 'Compare with the original'}
+                </button>
+              ) : null}
               <span className="hint">
                 Drag to move along the wall, scroll to zoom.
               </span>

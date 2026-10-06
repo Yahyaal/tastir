@@ -19,6 +19,15 @@
       "note": "The design was read from the museum’s photo: the inlays were measured and every band traced back to a line of the construction."
     }
   ],
+  "photos": [
+    {
+      "file": "cairo-minbar-doors-met.jpg",
+      "caption": "Pair of minbar doors, Egypt, probably Cairo, about 1325–30. The Metropolitan Museum of Art, 91.1.2064 (cropped).",
+      "creator": "The Metropolitan Museum of Art",
+      "license": "Public domain (CC0)",
+      "url": "https://www.metmuseum.org/art/collection/search/444812"
+    }
+  ],
   "given": {
     "O": "The centre of a rosette.",
     "A": "Halfway from O to the next rosette. OA is the radius of the rosette’s circle."

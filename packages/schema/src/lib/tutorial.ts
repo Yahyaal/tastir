@@ -235,6 +235,22 @@ export const Credit = z.strictObject({
   steps: z.array(z.int().positive()).optional(),
 });
 
+/**
+ * A photo of the real pattern, to compare the wall with. A free photo
+ * (public domain or Creative Commons) ships with the app: `file` is its name
+ * in the player's public photos/ folder. A photo we may not ship is `private`:
+ * `file` is its path under docs/research/, the dev server shows it, and the
+ * built app shows a placeholder linking to `url` until a free photo is found.
+ */
+export const Photo = z.strictObject({
+  file: z.string().regex(/^[\w./-]+$/, 'a photo file is a plain relative path'),
+  caption: z.string().min(1),
+  creator: z.string().min(1),
+  license: z.string().min(1),
+  url: z.url(),
+  private: z.boolean().optional(),
+});
+
 export const ExpectedPiece = z.strictObject({
   name: Name,
   vertices: z.int().min(3),
@@ -297,6 +313,7 @@ export const TutorialShape = z.strictObject({
   style: z.string().min(1),
   level: z.enum(['beginner', 'intermediate', 'advanced']),
   credits: z.array(Credit),
+  photos: z.array(Photo).optional(),
   given: z.strictObject({ O: z.string().min(1), A: z.string().min(1) }),
   steps: z.array(Step).min(1),
   ink: z.strictObject({
@@ -344,5 +361,6 @@ export type Pick = z.infer<typeof Pick>;
 export type Symmetry = z.infer<typeof Symmetry>;
 export type Placements = z.infer<typeof Placements>;
 export type InkPath = z.infer<typeof InkPath>;
+export type Photo = z.infer<typeof Photo>;
 export type Expect = z.infer<typeof Expect>;
 export type ExpectedPiece = z.infer<typeof ExpectedPiece>;

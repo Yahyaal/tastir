@@ -20,6 +20,16 @@
       "note": "The real panel, used to check the wall."
     }
   ],
+  "photos": [
+    {
+      "file": "alhambra-wichmann/wade-spa_0218.jpg",
+      "caption": "The carved panel in the Patio de los Leones, Alhambra (photo SPA 0218).",
+      "creator": "David Wade",
+      "license": "All rights reserved",
+      "url": "https://patterninislamicart.com/",
+      "private": true
+    }
+  ],
   "given": {"O": "The centre of a star.", "A": "Halfway from O to the next star."},
   "steps": [
     {

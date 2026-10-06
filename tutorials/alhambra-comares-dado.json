@@ -19,6 +19,15 @@
       "note": "The real dado, used to check the wall."
     }
   ],
+  "photos": [
+    {
+      "file": "alhambra-comares-dado.jpg",
+      "caption": "The tiled dado with white octagons, Nasrid Palaces, Alhambra (cropped).",
+      "creator": "Chabe01",
+      "license": "CC BY-SA 4.0",
+      "url": "https://commons.wikimedia.org/wiki/File:Palais_Nasrides_Alhambra_-_Grenade_(ES61)_-_2023-04-27_-_82.jpg"
+    }
+  ],
   "given": {"O": "The centre of an octagon.", "A": "Halfway from O to the next octagon."},
   "steps": [
     {

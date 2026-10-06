@@ -35,6 +35,24 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'photos-of-originals',
+    title: 'Compare with the original (new)',
+    fold: 4,
+    status: 'decided',
+    decision:
+      'You: ship free photos wherever possible; use the others on the dev server only, with a placeholder in the built app until a free one is found. Done for the eleven tutorials added on 5–6 October.',
+    summary:
+      'At the color stage, “Compare with the original” shows a photo of the real pattern beside the wall, with its photographer and licence.',
+    story: [
+      'Five tutorials have free photos that ship with the app: the Arrayanes squares, the Comares dado and the Sala de los Reyes twelve-pointed stars (Wikimedia Commons, Creative Commons), the minbar doors (the Met, public domain) and the stellated rosettes (two Cairo minbars, public domain and CC BY). I checked the two Alhambra photos by laying our lines over them, as with Wade’s; the Sala de los Reyes photo is taken at an angle and was matched by eye.',
+      'Six still use David Wade’s photos: the bath stars, Barca stars, Leones fret, Reyes stars, Reyes fret and Comares frames. You see them on the dev server; the built app shows “A photo of the real pattern is to come” with a link to Wade’s site. They are on the queue to find free photos for.',
+      'One thing to judge: some walls are turned 45° from the photo (the Arrayanes squares and the Leones fret, for example), because the tutorial puts the grid along the axes. If that makes comparing hard, I can turn the photo to match.',
+    ],
+    pictures: [],
+    asks: [],
+    sources: [],
+  },
+  {
     id: 'ux-steps',
     title: 'Making long tutorials easy to follow (Bou Inania, step 13)',
     fold: 12,
@@ -1255,6 +1273,11 @@ export const PROGRESS: {
   updated: '6 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Compare with the original',
+      text: 'A button at the color stage shows the photo of the real pattern beside the wall. Five tutorials have free photos that ship; six show Wade’s photos on the dev server only, with a placeholder in the built app.',
+      link: { label: 'Try it', href: '/#/alhambra-arrayanes-squares' },
+    },
     {
       title: 'Clearer steps, all six changes',
       text: 'No more steps full of red dots (seventeen marking steps hidden in sixteen tutorials, the new Alhambra ones included); four colours with one meaning each and no point codes unless you tick Show names; an Ink menu at the top to ink at the end or as you go; long Bou Inania steps played in parts (“Step 11 · 2 of 4”); the next tiles in blue on the tile step; and each step zooms to where it works, then widens.',

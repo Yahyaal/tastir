@@ -19,6 +19,15 @@
       "note": "The real panel, used to check the wall."
     }
   ],
+  "photos": [
+    {
+      "file": "alhambra-sala-de-los-reyes.jpg",
+      "caption": "A tiled pillar of the Sala de los Reyes, Alhambra, seen at an angle (cropped).",
+      "creator": "José Luiz",
+      "license": "CC BY-SA 3.0",
+      "url": "https://commons.wikimedia.org/wiki/File:Hall_of_Kings_-_Alhambra_(2).JPG"
+    }
+  ],
   "given": {"O": "The centre of a star.", "A": "Halfway from O to the next star."},
   "steps": [
     {
