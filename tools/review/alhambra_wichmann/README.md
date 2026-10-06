@@ -55,3 +55,9 @@ from the centre (the octagon's side marked inward from the star's point; drawing
 `gen_reyes_stars.py` then `finish_reyes.py` (kites round the crosses dark, by nth).
 Checked against Wade's SPA 0408x (`reyes-picks.json`): every piece lines up; the panel's
 top two rows repeat instead of alternating, probably a repair.
+
+CM052, the Sala de la Barca (6 October): the Comares bath design turned by 45°, with the small
+star reduced to its square on the cell's sides. All diagonal lines are the bath's; the
+horizontal and vertical ones near the corner sit at 1 ± Rs/2, through the middles of the small
+square's sides. `gen_barca_stars.py` (reuses `gen_bath_stars.build`) then `finish_barca.py`.
+Checked against Wade's SPA 1624x (`barca-picks.json`).

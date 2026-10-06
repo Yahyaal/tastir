@@ -35,6 +35,41 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'alhambra-barca-stars',
+    title: 'Interlaced stars of the Sala de la Barca (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'A second design from the Comares bath construction: the same large stars, with a small square instead of the small star, and the bands interlaced between them.',
+    story: [
+      'Brian Wichmann’s drawing of this Sala de la Barca panel turned out to use every line of the Comares bath stars, plus four lines through the middles of the small square’s sides. So the tutorial is the bath construction with one more step, inked differently: a family of two designs from one construction.',
+      'David Wade’s photo of the panel matches: our lines run down the middle of its white bands (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-barca-stars/photo-overlay.png',
+        caption:
+          'Left: the panel. Right: the same with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-barca-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Sala de la Barca (CM052)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/CM052.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 1624x)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
     id: 'alhambra-reyes-stars',
     title: 'Stars, octagons and crosses of the Sala de los Reyes (new)',
     fold: 4,
@@ -995,6 +1030,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Stars of the Sala de la Barca',
+      text: 'A second design from the Comares bath construction, one step longer, checked against a photo of the panel.',
+      link: { label: 'Open it', href: '/#/alhambra-barca-stars' },
+    },
+    {
       title: 'Stars of the Sala de los Reyes',
       text: 'A new tutorial: eight-pointed stars round octagons and crosses, checked piece for piece against a photo of the panel.',
       link: { label: 'Open it', href: '/#/alhambra-reyes-stars' },
@@ -1097,7 +1137,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'More Alhambra panels, each with a photo',
-    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: a panel from the Sala de la Barca.',
+    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: another dado with a frontal photo.',
   },
   next: [
     {

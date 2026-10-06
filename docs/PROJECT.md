@@ -8,8 +8,9 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 ## Where things stand (5 October 2026)
 
-There are 28 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
+There are 29 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
 
+- The interlaced stars of the Sala de la Barca, built on the same construction as the Comares bath stars with one extra step, checked against Wade's photo (`alhambra-barca-stars`). Two designs from one construction, as the standing goals ask.
 - The zellige of the Sala de los Reyes (eight-pointed stars round octagons and crosses), from Wichmann's drawing and checked against Wade's photo, built as `alhambra-reyes-stars`.
 - The zellige dado of the Salón de Comares (octagons, long hexagons, crosses of five squares), from Wichmann's drawing and checked against David Wade's photo, built as `alhambra-comares-dado`. Wichmann's site lists 83 Alhambra designs paired with Wade photos, so the Alhambra family can keep growing from there.
 - The interlaced eight-pointed stars of the Comares bath (Alhambra), read from Brian Wichmann's Tiling Search drawing and checked against David Wade's photo of a carved panel with the same design, built as `alhambra-bath-stars`.
