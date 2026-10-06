@@ -35,6 +35,37 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'alhambra-comares-dado',
+    title: 'Octagons and hexagons of the Comares dado (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'The tiled dado of the Salón de Comares: white octagons, honey-coloured long hexagons, and a cross of five small squares where four cells meet.',
+    story: [
+      'Brian Wichmann drew this dado exactly, and David Wade photographed it. All its edges run at 0°, 45° or 90°, and one length sets them all: half the diagonal of the small square at each corner. One line gives it: from a corner of the cell through the point where the diagonal crosses the circle, to the opposite side. The tutorial takes nine steps.',
+      'The red lines in the picture are the tutorial’s outlines over Wade’s photo; each tile of the dado sits in one of them. As on the dado, the middle square of each cross is white and the four round it black.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-dado/photo-overlay.png',
+        caption:
+          'Left: the dado. Right: the same with the tutorial’s outlines in red.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Salón de Comares (J43A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data5/J43A.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 0204)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
     id: 'alhambra-bath-stars',
     title: 'Interlaced stars of the Comares bath (new)',
     fold: 4,
@@ -933,6 +964,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'The Comares dado',
+      text: 'A new beginner tutorial: octagons, long hexagons and crosses of small squares, one length found with a single line. Checked against a photo of the real dado.',
+      link: { label: 'Open it', href: '/#/alhambra-comares-dado' },
+    },
+    {
       title: 'Interlaced stars of the Comares bath',
       text: 'A new Alhambra tutorial from Brian Wichmann’s exact drawing, checked against a photo of a carved panel with the same design. Each band is a side of a large or small eight-pointed star.',
       link: { label: 'Open it', href: '/#/alhambra-bath-stars' },
@@ -1024,8 +1060,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'A second Wichmann Alhambra panel',
-    text: 'The Mexuar patio’s south wall (octagons and eight-pointed stars), if a photo of it can be found to check against.',
+    title: 'More Alhambra panels, each with a photo',
+    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: the pinwheel of eight-pointed stars in the Sala de los Reyes.',
   },
   next: [
     {

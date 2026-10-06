@@ -1,0 +1,168 @@
+{
+  "format": 0,
+  "id": "alhambra-comares-dado",
+  "title": "Octagons and hexagons of the Comares dado (Alhambra)",
+  "fold": 4,
+  "style": "Nasrid",
+  "level": "beginner",
+  "credits": [
+    {
+      "source": "Tiling Search, data5/J43A: Alhambra, Salón de Comares",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data5/J43A.html",
+      "note": "The design was read from his line drawing; the construction (one length found by a single line from a corner of the cell) is ours."
+    },
+    {
+      "source": "Photograph SPA 0204 (zellige dado of the Salón de Comares)",
+      "creator": "David Wade",
+      "url": "https://patterninislamicart.com/",
+      "note": "The real dado, used to check the wall."
+    }
+  ],
+  "given": {"O": "The centre of an octagon.", "A": "Halfway from O to the next octagon."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Rule a horizontal line through O and A and draw a circle about O through A. An octagon will sit at O and at every point two radii away along the grid.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Rule the vertical through O. At the four points where the circle meets the two lines, rule lines at right angles to them: the square cell. A small square will sit at each of its corners.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "P0": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
+        "P180": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "P90": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "P270": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "P0", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "P180", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "P90", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "P270", "perpendicularTo": "v"}},
+        "K": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Rule the diagonal through O and the corner K, and mark where it crosses the circle. From the opposite corner of the top side, K2, rule a line through that mark: it meets the right side of the cell a little below K, at T.",
+      "create": {
+        "d45": {"line": {"through": ["O", "K"]}},
+        "D": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "kd": {"line": {"through": ["K2", "D"]}},
+        "T": {"point": {"meet": ["kd", "gx"]}}
+      },
+      "highlight": ["K2"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw the circle about K through T. It meets the top of the cell at U, as far from K as T is: KT is half the diagonal of the small square at the corner. Join T and U: a side of that square.",
+      "create": {
+        "ck": {"circle": {"centre": "K", "through": "T"}},
+        "U": {"point": {"meet": ["ck", "gy"], "pick": {"angle": 56.701}}},
+        "f1": {"line": {"through": ["T", "U"]}}
+      },
+      "highlight": ["K", "T"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Through U rule a vertical and through T a horizontal: the sides of the octagon and of the long hexagons. Through T and U rule lines parallel to the diagonal: the sides of the squares round the corner and the ends of the hexagons.",
+      "create": {
+        "x1": {"line": {"through": "U", "parallelTo": "v"}},
+        "y1": {"line": {"through": "T", "parallelTo": "h"}},
+        "e1": {"line": {"through": "T", "parallelTo": "d45"}},
+        "e2": {"line": {"through": "U", "parallelTo": "d45"}}
+      },
+      "highlight": ["T", "U"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Where the new vertical meets the lower diagonal line, and where the new horizontal meets the upper one, are two corners of the octagon. Join them: the octagon’s slanting side, which also closes the square below the corner one.",
+      "create": {
+        "V1": {"point": {"meet": ["x1", "e1"]}},
+        "V2": {"point": {"meet": ["y1", "e2"]}},
+        "f2": {"line": {"through": ["V1", "V2"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Copy these lines to the other three corners of the cell, turning them about O.",
+      "create": {"cp": {"repeat": {"of": ["f1", "x1", "y1", "e1", "e2", "f2"], "by": "rot4"}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Mark the corners of the pattern: every point where the outline of a tile turns.",
+      "create": {
+        "M1": {"point": {"meet": ["gxw", "e2"]}},
+        "M2": {"point": {"meet": ["gys", "e1"]}},
+        "M3": {"point": {"meet": ["e2", "x1@2"]}},
+        "M4": {"point": {"meet": ["gxw", "y1"]}},
+        "M5": {"point": {"meet": ["x1@2", "e1@3"]}},
+        "M6": {"point": {"meet": ["gy", "f1@1"]}},
+        "M7": {"point": {"meet": ["e1", "x1@3"]}},
+        "M8": {"point": {"meet": ["y1", "e1@1"]}},
+        "M9": {"point": {"meet": ["x1@3", "e1@3"]}},
+        "M10": {"point": {"meet": ["gys", "x1"]}},
+        "M11": {"point": {"meet": ["x1", "e1@1"]}},
+        "M12": {"point": {"meet": ["gx", "f1@3"]}}
+      },
+      "animate": "fade"
+    },
+    {
+      "id": 9,
+      "text": "The tile is the square cell.",
+      "create": {"tile": {"polygon": ["K", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the outline of each tile: the octagon, the halves of the long hexagons on the cell’s sides, and the squares at its corners.",
+    "paths": [
+      {"through": ["M1", "M2"]},
+      {"through": ["M1", "M3"]},
+      {"through": ["M4", "M5"]},
+      {"through": ["M4", "M6"]},
+      {"through": ["M2", "M7"]},
+      {"through": ["M3", "M5"]},
+      {"through": ["M3", "M7"]},
+      {"through": ["M5", "M8"]},
+      {"through": ["M6", "M8"]},
+      {"through": ["M7", "M9"]},
+      {"through": ["M8", "V2"]},
+      {"through": ["M9", "M10"]},
+      {"through": ["M9", "M11"]},
+      {"through": ["V2", "V1"]},
+      {"through": ["V2", "U"]},
+      {"through": ["M10", "M12"]},
+      {"through": ["M11", "V1"]},
+      {"through": ["M11", "M12"]},
+      {"through": ["V1", "T"]},
+      {"through": ["U", "T"]}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Repeat the square cell edge to edge: octagons on the grid, a long hexagon between each two, and five small squares in a cross where four cells meet.",
+    "palette": "Alhambra",
+    "colors": {"octagon": "ground", "hexagon": "c", "square": "a"},
+    "placements": {"repeat": [1, 1], "rules": [{"piece": "square", "nth": 0, "color": "ground"}]}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "octagon", "vertices": 8, "area": 1.49033, "perCell": 1},
+      {"name": "hexagon", "vertices": 6, "area": 0.66609, "perCell": 2},
+      {"name": "square", "vertices": 4, "area": 0.2355, "perCell": 5}
+    ]
+  }
+}

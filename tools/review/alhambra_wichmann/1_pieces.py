@@ -1,6 +1,6 @@
 """Reads the pieces of a Tiling Search vector drawing: the filled polygons of
 the PDF, cleaned (back-tracking spikes and collinear corners removed).
-Usage: 1_pieces.py <name>   reads <name>-vec.json, writes <name>-pieces.json
+Usage: 1_pieces.py <name> [--no-grey]   (--no-grey drops grey fills, the bevels of drawn bands)   reads <name>-vec.json, writes <name>-pieces.json
 Run from docs/research/alhambra-wichmann/."""
 import json, math, sys
 name = sys.argv[1]
@@ -47,6 +47,7 @@ def chain(lines):
 pieces = []
 for s in segs:
     if not s['fill'] or not s['lines']: continue
+    if '--no-grey' in sys.argv and max(s['fill']) - min(s['fill']) < 0.05: continue   # grey: band shading, not a piece
     P = clean(chain(s['lines']))
     if len(P) < 3: continue
     A = 0.5*sum(P[i-1][0]*P[i][1] - P[i][0]*P[i-1][1] for i in range(len(P)))
