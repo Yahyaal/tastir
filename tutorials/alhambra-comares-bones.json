@@ -14,6 +14,15 @@
       "steps": [1, 2, 3, 4, 5]
     }
   ],
+  "photos": [
+    {
+      "file": "alhambra-comares-bones.jpg",
+      "caption": "The tiled panel of bones in the Salón de Embajadores (Comares), Alhambra, seen at an angle (cropped).",
+      "creator": "Jl FilpoC",
+      "license": "CC BY 4.0",
+      "url": "https://commons.wikimedia.org/wiki/File:Panel_de_azulejos_en_el_Sal%C3%B3n_de_Embajadores,_la_Alhambra.jpg"
+    }
+  ],
   "given": {
     "O": "The centre of a square where four bones meet.",
     "A": "Any point to the right of O. The distance OA is half a square of the grid."

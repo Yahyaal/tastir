@@ -15,7 +15,8 @@ import {
   TILE_COLOR,
 } from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
-import { pieceColors } from './coloring';
+import { pieceColors, tutorialColoring } from './coloring';
+import { placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
@@ -860,12 +861,15 @@ export function strapWidths(model: Model, grout = 1) {
  * light band with dark edges.
  */
 export function Thumbnail({ model }: { model: Model }) {
-  const { view, shifts } = tiling(model, {
-    halfWide: 1,
-    halfHigh: 1,
-    reach: 2,
-  });
+  const reach = 2;
+  const { view } = tiling(model, { halfWide: 1, halfHigh: 1, reach });
+  const { cell } = model.pattern;
   const colors = pieceColors(model);
+  // Pieces of one shape can take different colors by where they sit (the
+  // Comares bones); the wall's own rule then colors each copy.
+  const fill = model.tutorial.pattern.placements
+    ? placeFills(model, tutorialColoring(model))
+    : undefined;
   const widths = strapWidths(model);
   // Only what shows: pieces and lines whose box meets the view.
   const seen = fit(view, 1 + widths.edge);
@@ -875,46 +879,48 @@ export function Thumbnail({ model }: { model: Model }) {
     Math.max(...ps.map((p) => p.y)) >= seen.minY &&
     Math.min(...ps.map((p) => p.y)) <= seen.maxY;
   const move = (p: Vec, d: Vec): Vec => ({ x: p.x + d.x, y: p.y + d.y });
-  const pieces = shifts.flatMap((d) =>
-    model.pattern.pieces.flatMap((p) => {
-      const polygon = p.polygon.map((q) => move(q, d));
-      return meets(polygon) ? [{ type: p.type, polygon }] : [];
-    }),
-  );
-  const lines = shifts.flatMap((d) =>
-    model.pattern.ink.flatMap((s) => {
-      const ab = [move(s.segment.a, d), move(s.segment.b, d)];
-      return meets(ab) ? [ab as [Vec, Vec]] : [];
-    }),
-  );
-  // One path per piece type and one per band layer keeps the library light.
   const poly = (ps: readonly Vec[]) =>
     `M${ps.map((q) => `${sx(q)} ${sy(q)}`).join('L')}Z`;
-  const byType = new Map<number, string[]>();
-  for (const p of pieces) {
-    const list = byType.get(p.type) ?? [];
-    list.push(poly(p.polygon));
-    byType.set(p.type, list);
+  // One path per color and one per band layer keeps the library light.
+  const byColor = new Map<string, string[]>();
+  const strokes: string[] = [];
+  for (let i = -reach; i <= reach; i++) {
+    for (let j = -reach; j <= reach; j++) {
+      const d = {
+        x: cell.u.x * i + cell.v.x * j,
+        y: cell.u.y * i + cell.v.y * j,
+      };
+      model.pattern.pieces.forEach((p, k) => {
+        const polygon = p.polygon.map((q) => move(q, d));
+        if (!meets(polygon)) return;
+        const color = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
+        const list = byColor.get(color) ?? [];
+        list.push(poly(polygon));
+        byColor.set(color, list);
+      });
+      for (const s of model.pattern.ink) {
+        const a = move(s.segment.a, d);
+        const b = move(s.segment.b, d);
+        if (meets([a, b])) strokes.push(`M${sx(a)} ${sy(a)}L${sx(b)} ${sy(b)}`);
+      }
+    }
   }
-  const strokes = lines
-    .map(([a, b]) => `M${sx(a)} ${sy(a)}L${sx(b)} ${sy(b)}`)
-    .join('');
   return (
     <svg className="thumbnail" viewBox={viewBox(view)} aria-hidden="true">
-      {[...byType].map(([type, ds]) => (
+      {[...byColor].map(([color, ds]) => (
         <path
-          key={type}
+          key={color}
           className="piece strap"
           d={ds.join('')}
-          fill={colors[type]}
-          style={{ stroke: colors[type] }}
+          fill={color}
+          style={{ stroke: color }}
           vectorEffect="non-scaling-stroke"
         />
       ))}
       {(['edge', 'band'] as const).map((layer) => (
         <path
           key={layer}
-          d={strokes}
+          d={strokes.join('')}
           fill="none"
           stroke={layer === 'edge' ? STRAP_EDGE : STRAP_BAND}
           strokeWidth={widths[layer]}
