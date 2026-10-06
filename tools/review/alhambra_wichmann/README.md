@@ -103,3 +103,8 @@ diagonal through the star's point crosses the horizontal through its inner corne
 diamonds on the cell sides with half-diagonal c = √2(R − a). `gen_comares_frames.py` then
 `finish_comares_frames.py` (honey star at O by nth). Registration on Wade's SPA 1416 was fitted
 by maximising the photo's brightness along our lines (the white bands), giving OA = 344 px.
+
+CM026, a Generalife ceiling (parked 6 October): `gen_generalife_ceiling.py` builds Wichmann's
+drawing exactly (octagon apothem 1/√2, corner stars of radius √2 − 1), but Wade's photo SPA 0305
+shows each octagon inside a square frame and smaller relative to the grid, so the design does
+not match the photo. Needs a photo of the drawn panel, or a reading of the ceiling itself.

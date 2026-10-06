@@ -1329,8 +1329,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'More Alhambra panels, each with a photo',
-    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: more panels whose photos are taken straight on.',
+    title: 'Overnight run finished (6 October, 8 am)',
+    text: 'Eight new Alhambra tutorials, each checked against David Wade’s photo of the real panel, plus the minbar doors from Cairo. Two Alhambra designs were parked because the photo shows a different panel from the published drawing. Each new tutorial has a card below.',
   },
   next: [
     {
