@@ -992,7 +992,7 @@ export const PROGRESS: {
   done: [
     {
       title: 'Clearer steps, all six changes',
-      text: 'No more steps full of red dots (nine marking steps hidden in nine tutorials); four colours with one meaning each and no point codes unless you tick Show names; an Ink menu at the top to ink at the end or as you go; long Bou Inania steps played in parts (“Step 11 · 2 of 4”); the next tiles in blue on the tile step; and each step zooms to where it works, then widens.',
+      text: 'No more steps full of red dots (ten marking steps hidden in nine tutorials); four colours with one meaning each and no point codes unless you tick Show names; an Ink menu at the top to ink at the end or as you go; long Bou Inania steps played in parts (“Step 11 · 2 of 4”); the next tiles in blue on the tile step; and each step zooms to where it works, then widens.',
       link: { label: 'Bou Inania rosette', href: '/#/bou-inania-rosette' },
     },
     {
