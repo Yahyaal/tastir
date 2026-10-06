@@ -856,9 +856,9 @@ export function strapWidths(model: Model, grout = 1) {
 }
 
 /**
- * A small square picture of the colored pattern, for the library, in the
- * player's default strapwork look: the pieces, then each pattern line as a
- * light band with dark edges.
+ * A small square picture of the colored pattern, for the library, as the
+ * wall first shows it: tiles with grout, or strapwork, where each pattern
+ * line is a light band with dark edges.
  */
 export function Thumbnail({ model }: { model: Model }) {
   const reach = 2;
@@ -871,6 +871,8 @@ export function Thumbnail({ model }: { model: Model }) {
     ? placeFills(model, tutorialColoring(model))
     : undefined;
   const widths = strapWidths(model);
+  // As the wall first shows it: strapwork bands, or tiles with grout.
+  const strap = model.tutorial.pattern.look === 'strapwork';
   // Only what shows: pieces and lines whose box meets the view.
   const seen = fit(view, 1 + widths.edge);
   const meets = (ps: readonly Vec[]) =>
@@ -910,14 +912,14 @@ export function Thumbnail({ model }: { model: Model }) {
       {[...byColor].map(([color, ds]) => (
         <path
           key={color}
-          className="piece strap"
+          className={strap ? 'piece strap' : 'piece'}
           d={ds.join('')}
           fill={color}
-          style={{ stroke: color }}
+          style={strap ? { stroke: color } : undefined}
           vectorEffect="non-scaling-stroke"
         />
       ))}
-      {(['edge', 'band'] as const).map((layer) => (
+      {(strap ? (['edge', 'band'] as const) : []).map((layer) => (
         <path
           key={layer}
           d={strokes.join('')}

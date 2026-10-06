@@ -285,6 +285,7 @@
     "cell": "tile",
     "text": "Repeat the square cell edge to edge: large stars on the grid, small stars at the corners, and the bands interlaced between them.",
     "palette": "Alhambra",
+    "look": "strapwork",
     "colors": {"star": "a", "bar": "b", "cross_arm": "d", "small_star": "c"}
   },
   "expect": {

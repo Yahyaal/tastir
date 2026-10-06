@@ -1081,6 +1081,7 @@
     "cell": "tile",
     "text": "Repeat the square tile edge to edge: rosettes on a square grid, stars at the corners.",
     "palette": "Alhambra",
+    "look": "strapwork",
     "colors": {
       "centre": "b",
       "arrowhead": "a",

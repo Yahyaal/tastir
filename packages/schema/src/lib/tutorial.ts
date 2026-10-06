@@ -325,6 +325,12 @@ export const TutorialShape = z.strictObject({
     /** What the learner reads when the inked tile is repeated. */
     text: z.string().optional(),
     palette: z.string().optional(),
+    /**
+     * How the wall is shown at first, as on the real pattern: separate
+     * tiles with grout (the default), or strapwork, where the lines are
+     * bands woven between the pieces (carved wood and plaster, Fès zellige).
+     */
+    look: z.enum(['tiles', 'strapwork', 'lines']).optional(),
     colors: z.record(Name, z.string().min(1)),
     placements: Placements.optional(),
   }),

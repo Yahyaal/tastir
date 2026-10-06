@@ -372,6 +372,7 @@
     "cell": "tile",
     "text": "Repeat the square cell edge to edge: framed stars on the grid, plain stars at the corners, and diamonds on the sides, all held in interlaced bands.",
     "palette": "Alhambra",
+    "look": "strapwork",
     "colors": {
       "teal_star": "b",
       "star": "b",

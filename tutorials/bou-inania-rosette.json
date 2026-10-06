@@ -3435,6 +3435,7 @@
     "cell": "tile",
     "text": "Repeat the square edge to edge: neighbouring tiles share the frame band, and the corner pieces of four tiles meet in an eight-pointed star.",
     "palette": "Fès tile",
+    "look": "strapwork",
     "colors": {
       "star": "b",
       "outer": "d",

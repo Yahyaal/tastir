@@ -659,6 +659,7 @@
     "cell": "tile",
     "text": "Repeat the square cell edge to edge: rosettes meet on the sides, and an octagon ringed by four hexagons opens at every corner.",
     "palette": "Fès tile",
+    "look": "strapwork",
     "colors": {
       "star": "c",
       "octagon": "a",

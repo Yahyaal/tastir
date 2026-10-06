@@ -233,6 +233,7 @@
     "cell": "tile",
     "text": "Repeat the square cell edge to edge: the frets lock together round the stars like a pinwheel.",
     "palette": "Alhambra",
+    "look": "strapwork",
     "colors": {"fret": "b", "star": "c"}
   },
   "expect": {
