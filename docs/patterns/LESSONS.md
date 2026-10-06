@@ -92,3 +92,9 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - Check the photo's own orientation against the straightened frame before reading directions: a lattice fitted from two neighbour vectors can come out turned by 30°.
 - Wichmann's Tiling Search pictures sit at `tilingsearch.mit.edu/contents/<folder>/<id>.gif` and `.pdf` (the HTML page links them as `../../contents/...`).
 - The Met's search API moved to `/public/collection/v1.1/search` (paginated); the old `/v1/search` was retired on 1 October 2026.
+
+## Wichmann's drawings (6 October)
+
+- Tiling Search PDFs are vector drawings: PyMuPDF's `page.get_drawings()` gives every piece as a filled path, exact to 0.01 pt. Their paths sometimes draw a segment back and forth; cancel those pairs before chaining the outline, or a real corner is lost.
+- Piece names in `expect` may use letters, digits and `_` only (no hyphens).
+- To find what fixes a design's proportions, list every distinct line modulo the lattice, then look for gaps that repeat and for a crossing that lands on a simple point (here the line from the cell corner to the bottom of the circle).

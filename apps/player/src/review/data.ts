@@ -35,6 +35,37 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'alhambra-bath-stars',
+    title: 'Interlaced stars of the Comares bath (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'An Alhambra design from the Comares bath: large and small eight-pointed stars with interlaced bands between them.',
+    story: [
+      'Brian Wichmann’s Tiling Search has an exact drawing of this design. Every band turned out to be a side of one of two stars, each made of two squares, carried on until it meets the next star. Two crossings fix the stars’ sizes: the line from a corner of the cell to the bottom of the circle crosses the 22.5° line exactly above the large star’s point, and the small star’s circle runs through the point on the cell side level with the large star’s top. The tutorial builds it that way in eleven steps.',
+      'David Wade photographed a carved wooden panel with the same design. Our lines run along the middle of its bands (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-bath-stars/photo-overlay.png',
+        caption:
+          'Left: the carved panel. Right: the same with the tutorial’s lines in red.',
+      },
+      { src: 'renders/alhambra-bath-stars/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Alhambra, Baño Real (AL01)',
+        url: 'https://tilingsearch.mit.edu/HTML/data182/AL01.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo MOR 0711)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
     id: 'design-h2',
     title: 'Design H2: minbar doors from Cairo (new)',
     fold: 12,
@@ -902,6 +933,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Interlaced stars of the Comares bath',
+      text: 'A new Alhambra tutorial from Brian Wichmann’s exact drawing, checked against a photo of a carved panel with the same design. Each band is a side of a large or small eight-pointed star.',
+      link: { label: 'Open it', href: '/#/alhambra-bath-stars' },
+    },
+    {
       title: 'Second Ibn Tulun grille: parked',
       text: 'A new design found on Commons (star openings, rhombi, and long openings that meet in threes like cubes). The photo is straightened, but the openings are deep and their inner walls hide the bands, so I parked it with notes rather than guess.',
     },
@@ -988,8 +1024,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'An Alhambra panel from Wichmann’s drawings',
-    text: 'Picking an Alhambra panel we do not have from Brian Wichmann’s Tiling Search line drawings, with a photo of the real panel to check it against.',
+    title: 'A second Wichmann Alhambra panel',
+    text: 'The Mexuar patio’s south wall (octagons and eight-pointed stars), if a photo of it can be found to check against.',
   },
   next: [
     {

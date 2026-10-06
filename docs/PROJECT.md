@@ -8,8 +8,9 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 ## Where things stand (5 October 2026)
 
-There are 25 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
+There are 26 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
 
+- The interlaced eight-pointed stars of the Comares bath (Alhambra), read from Brian Wichmann's Tiling Search drawing and checked against David Wade's photo of a carved panel with the same design, built as `alhambra-bath-stars`.
 - The minbar of al-Nasir Muhammad in the Citadel turned out to be the same design as the al-Maridani minbar, so `mian-stellated-rosettes` now has two real examples.
 - Design H2, the minbar doors from Cairo in the Metropolitan Museum (about 1325–30), built as `minbar-doors-cairo` and checked against the museum's photo. It is Samira Mian's rosette on a hexagonal tile, inked as the doors are.
 - Design H1, the al-Maridani minbar in Cairo, turned out to be Samira Mian's stellated rosettes, already in the library. Every inlay of the photo was measured and matches; the tutorial now credits the photo and is marked verified.
@@ -20,7 +21,7 @@ There are 25 tutorials in the library. Each one's status, with what was checked,
 
 ## The next goal
 
-Add an Alhambra panel the library does not have, read from Wichmann's Tiling Search line drawings and checked against a photo of the same panel. The tools for the Alhambra grid designs already exist. Details are in [the queue](patterns/QUEUE.md). A second Ibn Tulun window grille was tried and parked: the photo is straightened, but the deep openings make the bands slow to read.
+A second Alhambra panel from Wichmann's Tiling Search: the Mexuar patio's south wall (AL09), checked against a photo of the patio. The tools that read Wichmann's vector drawings are in `tools/review/alhambra_wichmann/`. Details are in [the queue](patterns/QUEUE.md).
 
 After that, take the next unchecked item in [the queue](patterns/QUEUE.md).
 

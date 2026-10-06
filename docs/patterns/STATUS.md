@@ -34,6 +34,7 @@ Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified
 | four-fold-ring-of-circles | 4 | 14 | approved | Design G, Sandy Kurt's drawing, shipped with credit. No photo found. |
 | alhambra-star-and-arrows | 8 | 9 | approved | The rosette matches the source exactly; the square repeat is a guess (no real repeat found). |
 | alhambra-star-and-arrows-shifted | 8 | 10 | approved | The same rosette with rows shifted by half a rosette. |
+| alhambra-bath-stars | 4 | 11 | verified (6 Oct) | Interlaced eight-pointed stars of the Comares bath, from Wichmann's Tiling Search drawing (AL01); each band is a side of a large or small star, sizes fixed by two crossings. Checked against David Wade's photo of a carved panel with the same design. |
 | alhambra-comares-bones | 4 | 6 | verified | Matches the Comares "bones" panel photo, coloured by placement. |
 | alhambra-comares-stars | 4 | 5 | approved | From the published tracing (ALZADA, Martínez Vela). |
 | alhambra-comares-lattice | 4 | 5 | approved | From the published tracing. |
