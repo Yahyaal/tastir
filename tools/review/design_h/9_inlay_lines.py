@@ -5,6 +5,8 @@ line at half a band's width. This fits each inlay of one 45° wedge of
 half a band (W) and prints the line with its distance from O, from the corner
 (1, 1) and from the next rosette (2, 0).
 
+Usage: 9_inlay_lines.py [half band] [half composite width] [wedge degrees]
+
 What it found (5 October): every line is one of Samira Mian's stellated-rosette
 lines. Distance √3/2 with normals at 30° steps (the two hexagons' sides), about
 0.177 with normals at 15° + 30° steps (the star lines), and 1 − √3/2 about the
@@ -17,8 +19,11 @@ from scipy import ndimage as ndi
 from skimage import measure
 from skimage.morphology import remove_small_objects
 
-W = 0.055
-im = np.asarray(Image.open('tile-composite.png')).astype(float); N = im.shape[0]; S = N/2.4
+# Optional arguments: half band width, half the composite's width, wedge angle.
+W = float(sys.argv[1]) if len(sys.argv) > 1 else 0.055
+HALF = float(sys.argv[2]) if len(sys.argv) > 2 else 1.2
+WEDGE = float(sys.argv[3]) if len(sys.argv) > 3 else 45
+im = np.asarray(Image.open('tile-composite.png')).astype(float); N = im.shape[0]; S = N/(2*HALF)
 g = ndi.gaussian_filter(im, 1.0); loc = g - ndi.gaussian_filter(im, 15)
 rim = remove_small_objects(loc > np.percentile(loc, 88), max_size=30)
 inlaid = ndi.binary_opening(ndi.binary_fill_holes(ndi.binary_closing(rim, iterations=2)), iterations=1)
@@ -29,7 +34,7 @@ for k in range(1, n+1):
     if comp.sum() < 250: continue
     c = max(measure.find_contours(np.pad(comp, 1).astype(float), 0.5), key=len) - 1
     pts = np.array([((x-N/2)/S, (N/2-y)/S) for y, x in c]); cen = pts.mean(0)
-    if not (cen[0] > -0.05 and cen[1] > -0.05 and cen[1] < cen[0] + 0.05 and cen[0] < 1.15): continue
+    if not (cen[0] > -0.05 and cen[1] > -0.05 and math.degrees(math.atan2(cen[1], cen[0])) < WEDGE + 3 and math.hypot(*cen) < HALF - 0.05): continue
     poly = measure.approximate_polygon(c, tolerance=1.6)
     Pp = np.array([((x-N/2)/S, (N/2-y)/S) for y, x in poly[:-1]])
     for i in range(len(Pp)):
