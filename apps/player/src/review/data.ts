@@ -64,39 +64,25 @@ export const PATTERNS: readonly Pattern[] = [
   },
   {
     id: 'bou-inania-v2',
-    title: 'Bou Inania rosette, her way (draft: where it does not match)',
+    title: 'Bou Inania rosette, her way',
     fold: 12,
     status: 'decided',
     decision:
-      'You: fewer steps, no extra lines in B and D, and the copies overlap by one band. Done: /#/bou-inania-rosette.',
+      'You: the pattern looks right; outer and outer2 were several shapes joined. Done: the corner piece and the long hexagons are now separate pieces. /#/bou-inania-rosette',
     summary:
-      'Built her way: her rosette, the bigger circle, and sets of twelve lines each drawn through a crossing already on the paper. Now in 13 steps (was 20), with the tile copies overlapping by one band. Only area A still differs from the drawing.',
+      'Built her way in 13 steps, with the tile copies overlapping by one band. The joined corner shapes are now split (first picture).',
     story: [
-      'What changed after your look (first picture: our ink, and the wall):',
-      'Steps: 13 instead of 20. The line sets are drawn four or five to a step, grouped by what they make (the ring round the shields, the frame, the corner bands, the last short sets).',
-      'B and C. The stray bar across the crossings on the shield ring is gone, and the two lines there now run straight through the crossing, so the tiny slivers are gone too.',
-      'D. The loose hooks near the corners are removed.',
-      'The tile. It now runs from the frame on the left and bottom to the big figure’s sides on the right and top, so each copy overlaps the next by one band: the two lines on the right fall on the two lines on the left of the next copy. Where they meet, the band is broken by the crossing at the side’s midpoint, as in the drawing (the drawing’s outer frame is only the picture’s border).',
-      'Still open, A: the band round the green shields. In the drawing it separates each shield from the black piece beside it; none of the line sets runs along it, so the shield and the black piece are one piece in ours.',
+      'Your note: outer was the corner piece plus two long hexagons, outer2 the corner piece plus one. Missing lines along the tile edge near the corners joined them; they are drawn again, so each is its own piece (green: long hexagons, yellow: corner piece).',
     ],
     pictures: [
       {
-        src: 'renders/bou-inania-v2/tile-and-wall.png',
-        caption: 'Now: the ink of one tile (left) and the wall (right).',
-      },
-      {
-        src: 'renders/bou-inania-v2/ink-vs-drawing.png',
+        src: 'renders/bou-inania-v2/outer-split.png',
         caption:
-          'Our ink on the drawing: green on a band, blue off it; magenta = band with no ink.',
+          'Before and now: the long hexagons (green) and the corner piece (yellow).',
       },
       {
-        src: 'renders/bou-inania-v2/mismatch-areas.png',
-        caption:
-          'Before these changes. Left: our tile (one colour per piece shape). Right: the drawing. A–D: where they differed.',
-      },
-      {
-        src: 'renders/bou-inania-v2/line-sets.png',
-        caption: 'The line sets on the drawing, one colour each.',
+        src: 'renders/bou-inania-v2/wall-now.png',
+        caption: 'The wall now.',
       },
     ],
     asks: [],
@@ -897,7 +883,7 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Bou Inania draft: 13 steps, overlapping tile; area A still open',
+    title: 'Bou Inania her way: corner shapes split; nothing waiting on you',
     text: 'Draft built: her rosette plus eleven sets of lines through crossings. Fixing the small stars and slivers, then colouring and the library.',
     link: { label: 'Card', href: '#bou-inania-v2' },
   },

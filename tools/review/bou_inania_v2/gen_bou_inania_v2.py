@@ -156,8 +156,13 @@ for a, b in segs:
         _seam.append(([[a[0] - _T, a[1]], [b[0] - _T, b[1]]], 'h'))
     if abs(a[1] - _E) < 1e-7 and abs(b[1] - _E) < 1e-7:
         _seam.append(([[a[0], a[1] - _T], [b[0], b[1] - _T]], 'v'))
-segs = [sg for sg in segs if _in(sg[0]) and _in(sg[1]) and not _edge(sg) and not _frame(sg)]
+# Away from the side midpoints the frame is drawn too (it closes the
+# elongated hexagons at the corners); at the midpoints only the broken band.
+_mid = lambda sg: all(abs(z[0]) < 0.6 or abs(z[1]) < 0.6 for z in sg)
+segs = [sg for sg in segs if _in(sg[0]) and _in(sg[1]) and not _edge(sg) and not (_frame(sg) and _mid(sg))]
 _seam = [(sg, d) for sg, d in _seam if _in(sg[0]) and _in(sg[1])]
+_have = {tuple(sorted((tuple(a), tuple(b)))) for a, b in segs}
+_seam = [(sg, d) for sg, d in _seam if tuple(sorted((tuple(sg[0]), tuple(sg[1])))) not in _have]
 segs += [sg for sg, _ in _seam]
 step('Mark the corners of the pattern: every point where the pattern turns or ends. Where the inner band on the right (or top) side breaks, rule a line across to the left (or bottom) side: the band breaks there too, because the next tile lies over it.', 'fade')
 names = {}
