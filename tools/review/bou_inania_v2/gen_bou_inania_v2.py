@@ -135,11 +135,97 @@ for grp in sorted({s['group'] for s in SETS}):
     for s in members:
         C(None, tuple(s['through']), s['normal'], s['turns'], s['label'], s['text'], s.get('mirror', False))
 
-# Ink: every stretch, named by the crossings at its ends.
-segs = json.load(open(ink_path))
-# keep the ink inside the tile (it is offset by one band; see the tile step)
+# The eight-pointed star at each corner of the frame (owner, 2026-10-05):
+# the square between the big figure's sides and the frame, with a diamond
+# whose side towards O is a line of set H.
 _F = [s for s in SETS if s['label'] == 'F'][0]['d']
 _E = 2 * math.cos(math.radians(15)) ** 2
+_H = [s for s in SETS if s['label'] == 'H'][0]['d']
+_c = (_E + _F) / 2
+_r = 2 * _c - _H * math.sqrt(2)
+step('At each corner of the frame, draw the eight-pointed star. Its square is the little square between the big figure’s sides and the frame. Join the square’s other two corners and mark where that line crosses the diagonal: the star’s centre. Through it rule a level and an upright line; where they meet the corner line of set H are two points of the diamond. Draw the circle about the centre through one of them to find the other two, and join the four points.', 'compass')
+star_ink = []
+for sx, sy in ((1, 1), (-1, 1), (-1, -1), (1, -1)):
+    tag = {(1, 1): 'a', (-1, 1): 'b', (-1, -1): 'c', (1, -1): 'd'}[(sx, sy)]
+    Ka, Kb = pt_at((sx * _E, sy * _F), 'K'), pt_at((sx * _F, sy * _E), 'K')
+    line_through(f'sd{tag}', Ka, Kb)
+    Cc = (sx * _c, sy * _c)
+    meet(f'S{tag}', f'sd{tag}', ray(45 if sx * sy > 0 else 135), Cc)
+    line_par(f'sh{tag}', f'S{tag}', 'h')
+    line_par(f'sv{tag}', f'S{tag}', 'v')
+    t1 = (Cc[0] - sx * _r, Cc[1]); t2 = (Cc[0], Cc[1] - sy * _r)
+    t3 = (Cc[0] + sx * _r, Cc[1]); t4 = (Cc[0], Cc[1] + sy * _r)
+    Hl = [n for n in g.lines_through(t1) if n in g.lines_through(t2)][0]
+    meet(f'St1{tag}', Hl, f'sh{tag}', t1)
+    meet(f'St2{tag}', Hl, f'sv{tag}', t2)
+    circle_through(f'sc{tag}', f'S{tag}', f'St1{tag}')
+    meet(f'St3{tag}', f'sc{tag}', f'sh{tag}', t3)
+    meet(f'St4{tag}', f'sc{tag}', f'sv{tag}', t4)
+    line_through(f'sp{tag}', f'St1{tag}', f'St4{tag}')
+    line_through(f'sq{tag}', f'St2{tag}', f'St3{tag}')
+    line_through(f'ss{tag}', f'St3{tag}', f'St4{tag}')
+    # outline: square (side half-width w) and diamond (half-diagonal r)
+    w = (_F - _E) / 2
+    pts = []
+    for k in range(16):
+        a = math.radians(22.5 * k)
+        if k % 4 == 0:      # diamond tip
+            pts.append((Cc[0] + _r * math.cos(a), Cc[1] + _r * math.sin(a)))
+        elif k % 4 == 2:    # square corner
+            pts.append((Cc[0] + w * math.copysign(1, math.cos(a)), Cc[1] + w * math.copysign(1, math.sin(a))))
+        else:               # where a diamond side crosses a square side
+            q = k // 4      # between tip q and the corner after (or before) it
+            ux, uy = round(math.cos(math.radians(90 * q))), round(math.sin(math.radians(90 * q)))
+            # tip direction (ux, uy); the side next to it is x or y = +-w
+            if k % 4 == 1:
+                vx, vy = round(math.cos(math.radians(90 * q + 90))), round(math.sin(math.radians(90 * q + 90)))
+            else:
+                vx, vy = round(math.cos(math.radians(90 * (q + 1)))), round(math.sin(math.radians(90 * (q + 1))))
+                ux, uy = vx, vy
+                vx, vy = round(math.cos(math.radians(90 * q))), round(math.sin(math.radians(90 * q)))
+            # point on the square side perpendicular to the tip direction u: u.p = w,
+            # on the diamond side |p.u| + |p.v| = r  ->  p.v = r - w
+            pts.append((Cc[0] + ux * w + vx * (_r - w), Cc[1] + uy * w + vy * (_r - w)))
+    for a, b in zip(pts, pts[1:] + pts[:1]):
+        star_ink.append([list(a), list(b)])
+
+# Ink: every stretch, named by the crossings at its ends.
+segs = json.load(open(ink_path))
+# Round each star: the ink chosen from the drawing gives way, inside the
+# star's square and along the four bands leaving it, to the star itself and
+# the diamond's sides carried on past each point to the lines of the
+# square's sides: the pointed ends of the long hexagons. Between the star and
+# those ends the square's sides are not inked, so each piece between two
+# hexagons runs up to the star (owner, 2026-10-05).
+_w = (_F - _E) / 2
+_reach = _r + _w + 0.02
+def _zone(m):
+    for sx in (1, -1):
+        for sy in (1, -1):
+            dx, dy = abs(m[0] - sx * _c), abs(m[1] - sy * _c)
+            if (dx <= _w + 1e-6 and dy <= _reach) or (dy <= _w + 1e-6 and dx <= _reach):
+                return True
+    return False
+old_segs = segs
+segs = [sg for sg in segs if not _zone(((sg[0][0] + sg[1][0]) / 2, (sg[0][1] + sg[1][1]) / 2))]
+segs += star_ink
+for sx in (1, -1):
+    for sy in (1, -1):
+        Cc = (sx * _c, sy * _c)
+        for ex, ey in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            px, py = -ey, ex          # across the band
+            tip = (Cc[0] + _r * ex, Cc[1] + _r * ey)
+            for side in (1, -1):
+                hx = (Cc[0] + (_r + _w) * ex + side * _w * px, Cc[1] + (_r + _w) * ey + side * _w * py)
+                segs.append([list(tip), list(hx)])
+                # on to the next point of the old ink along this line
+                along = lambda z: (z[0] - Cc[0]) * ex + (z[1] - Cc[1]) * ey
+                off = lambda z: (z[0] - Cc[0]) * px + (z[1] - Cc[1]) * py
+                nxt = [z for sg in segs for z in sg if abs(off(z) - side * _w) < 1e-7 and along(z) > _r + _w + 1e-7]
+                if nxt:
+                    z = min(nxt, key=along)
+                    segs.append([list(hx), list(z)])
+# keep the ink inside the tile (it is offset by one band; see the tile step)
 _in = lambda p: -_F - 1e-7 <= p[0] <= _E + 1e-7 and -_F - 1e-7 <= p[1] <= _E + 1e-7
 # the lines on the tile's right and top sides are the neighbours' left and
 # bottom lines (the copies overlap there), so they are inked by those

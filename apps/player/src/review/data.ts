@@ -68,17 +68,18 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 12,
     status: 'decided',
     decision:
-      'You: the pattern looks right; outer and outer2 were several shapes joined. Done: the corner piece and the long hexagons are now separate pieces. /#/bou-inania-rosette',
+      'You: an eight-pointed star at each corner with the same piece all round it, no little triangles. Done (first picture). /#/bou-inania-rosette',
     summary:
-      'Built her way in 13 steps, with the tile copies overlapping by one band. The joined corner shapes are now split (first picture).',
+      'Built her way in 14 steps, with the tile copies overlapping by one band. Each corner now has an eight-pointed star with four identical pieces round it.',
     story: [
-      'Your note: outer was the corner piece plus two long hexagons, outer2 the corner piece plus one. Missing lines along the tile edge near the corners joined them; they are drawn again, so each is its own piece (green: long hexagons, yellow: corner piece).',
+      'Your note: the corner piece was an incomplete star, two small triangles sat beside it, and two different pieces surrounded it. Now one step draws the star at each corner (its square, plus a diamond found with the compass), the diamond’s sides run on to make the pointed ends of the long hexagons, and the four pieces between the hexagons are the same shape.',
+      'Earlier note, still fixed: the long hexagons are separate from the pieces beside them.',
     ],
     pictures: [
       {
-        src: 'renders/bou-inania-v2/outer-split.png',
+        src: 'renders/bou-inania-v2/corner-star.png',
         caption:
-          'Before and now: the long hexagons (green) and the corner piece (yellow).',
+          'The corner of the wall, before and now: grey star, four purple pieces round it, green long hexagons.',
       },
       {
         src: 'renders/bou-inania-v2/wall-now.png',
@@ -883,7 +884,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Bou Inania her way: corner shapes split; nothing waiting on you',
+    title:
+      'Bou Inania her way: eight-pointed corner stars; nothing waiting on you',
     text: 'Draft built: her rosette plus eleven sets of lines through crossings. Fixing the small stars and slivers, then colouring and the library.',
     link: { label: 'Card', href: '#bou-inania-v2' },
   },
