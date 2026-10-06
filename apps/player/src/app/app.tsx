@@ -150,7 +150,7 @@ export function Player({
   const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
   const [hovered, setHovered] = useState<number>();
   const [selected, setSelected] = useState<number>();
-  const [wallStyle, setWallStyle] = useState<WallStyle>('tiles');
+  const [wallStyle, setWallStyle] = useState<WallStyle>('strapwork');
   const [grout, setGrout] = useState(1);
   const [paper, setPaper] = useState<Paper>('A4');
   const [printing, setPrinting] = useState(false);
