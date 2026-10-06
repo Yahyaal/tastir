@@ -93,6 +93,271 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-comares-frames',
+    title: 'Framed stars of the Salón de Comares (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'A honey star in a square frame with black corners, teal stars round it, and small diamonds, all held in interlaced white bands.',
+    story: [
+      'All the stars are the same: two squares on one small circle, whose radius is one minus half the diagonal of the unit square. The frame round the honey star and the small diamonds come from that star’s own corners, so after the first circle every length is found with the ruler and a compass already open. Brian Wichmann’s drawing gave the design; the tutorial takes ten steps.',
+      'Over David Wade’s photo, the tutorial’s lines run inside the white bands everywhere: round the frame, the stars and the diamonds (picture). On the panel the stars left and right of the frame are glazed black, those above and below teal.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-frames/photo-overlay.png',
+        caption:
+          'Left: the panel. Right: the same with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-comares-frames/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Salón de Comares (SPA1416)',
+        url: 'https://tilingsearch.mit.edu/HTML/data174/SPA1416.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 1416)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-reyes-dodecagrams',
+    title: 'Twelve-pointed stars of the Sala de los Reyes (new)',
+    fold: 6,
+    status: 'verified',
+    summary:
+      'A zellige of black twelve-pointed stars on a triangular grid, ringed by blue, honey and teal six-sided tiles and white kites.',
+    story: [
+      'Brian Wichmann’s drawing turned out to need only two kinds of line: twelve round each star, all touching one small circle whose radius is half the star’s point, and the sides of the hexagon through six points of the star’s circle. The tutorial finds the small circle with ruler and compass and copies the lines to the neighbouring stars, in eleven steps, on a hexagonal tile.',
+      'Over David Wade’s photo of the panel, every tile has its outline (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-reyes-dodecagrams/photo-overlay.png',
+        caption:
+          'Left: the panel. Right: the same with the tutorial’s outlines in red.',
+      },
+      {
+        src: 'renders/alhambra-reyes-dodecagrams/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Sala de los Reyes (P069)',
+        url: 'https://tilingsearch.mit.edu/HTML/data177/P069.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 1908)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-reyes-fret',
+    title: 'Carved fret of the Sala de los Reyes (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'Carved plaster: long bars and hooked frets turning round a cross, with a small diamond wherever two bands cross. A pinwheel, so it has no mirror.',
+    story: [
+      'Every line of Brian Wichmann’s drawing is either horizontal or vertical at an odd sixth of OA, or slanting in pairs round the small diamonds that sit at the thirds. The diamond’s size comes from one circle: about O through the point a sixth of the way to the corner. The tutorial divides OA into sixths with the ruler and finds the diamonds with the compass, in eleven steps.',
+      'I found every small diamond in David Wade’s photo of the panel (42 of them) and all fit the tutorial’s diamonds. Over the photo the tutorial’s lines follow the carved grooves (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-reyes-fret/photo-overlay.png',
+        caption:
+          'Left: the carved panel. Right: the same with the tutorial’s lines in red.',
+      },
+      { src: 'renders/alhambra-reyes-fret/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Sala de los Reyes (PG365)',
+        url: 'https://tilingsearch.mit.edu/HTML/data8/PG365.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 0405x)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-arrayanes-squares',
+    title: 'Squares and stars of the Patio de los Arrayanes (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'A simple dado: large squares set in white bands, with a small eight-pointed star where the bands cross. A beginner design.',
+    story: [
+      'Brian Wichmann draws this dado with larger squares than the real one. Over David Wade’s photo, the real squares are each inscribed in a circle of radius OA about a corner of the cell, and every white band tile ends in a point, its seams running along the diagonals from a square’s corner to the star’s point. So the tutorial follows the photo, and keeps Wichmann’s star, whose size matches.',
+      'Over the photo, our outlines follow every square, star and seam (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-arrayanes-squares/photo-overlay.png',
+        caption:
+          'Left: the dado. Right: the same with the tutorial’s outlines in red.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Patio de los Arrayanes (PG299)',
+        url: 'https://tilingsearch.mit.edu/HTML/data8/PG299.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 0111)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-leones-fret',
+    title: 'Pinwheel fret of the Patio de los Leones (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'Eight-pointed stars with fret bands hooking round them like a pinwheel: it turns into itself by a quarter turn but has no mirror.',
+    story: [
+      'The frets run along the diagonals of a square grid, and the stars are two squares each. One line sets the stars’ size: from the point where the diagonal crosses the circle, through the middle of the radius above O, to the other diagonal. Brian Wichmann’s drawing gave the design; the tutorial takes nine steps.',
+      'Over David Wade’s photo of the carved panel, every line of the tutorial lies on a carved groove, and the frets turn the same way (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-leones-fret/photo-overlay.png',
+        caption:
+          'Left: the carved panel. Right: the same with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-leones-fret/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Patio de los Leones (C55)',
+        url: 'https://tilingsearch.mit.edu/HTML/data18/C55.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 0218)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-barca-stars',
+    title: 'Interlaced stars of the Sala de la Barca (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'A second design from the Comares bath construction: the same large stars, with a small square instead of the small star, and the bands interlaced between them.',
+    story: [
+      'Brian Wichmann’s drawing of this Sala de la Barca panel turned out to use every line of the Comares bath stars, plus four lines through the middles of the small square’s sides. So the tutorial is the bath construction with one more step, inked differently: a family of two designs from one construction.',
+      'David Wade’s photo of the panel matches: our lines run down the middle of its white bands (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-barca-stars/photo-overlay.png',
+        caption:
+          'Left: the panel. Right: the same with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-barca-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Sala de la Barca (CM052)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/CM052.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 1624x)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-reyes-stars',
+    title: 'Stars, octagons and crosses of the Sala de los Reyes (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'A zellige of the Sala de los Reyes: the same eight-pointed star round every point of a square grid, with octagons and crosses alternating at the centres.',
+    story: [
+      'Each motif is one star: a circle divided into eight, every point joined to the one three places round, and the octagon round it. Octagons and four-armed crosses alternate at the centres like a chessboard. The crosses’ notches are found with the compass: open it to a side of the octagon, put it on the star’s point and mark inwards. The tutorial takes eleven steps; Brian Wichmann’s drawing gave the design.',
+      'David Wade’s photo of the panel matches piece for piece (picture). As on the panel, the kites round the crosses are dark and those round the octagons pale. Near the top of the panel two rows repeat instead of alternating, probably a repair.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-reyes-stars/photo-overlay.png',
+        caption:
+          'Left: the panel. Right: the same with the tutorial’s outlines in red.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Sala de los Reyes (M060)',
+        url: 'https://tilingsearch.mit.edu/HTML/data9/M060.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 0408x)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-comares-dado',
+    title: 'Octagons and hexagons of the Comares dado (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'The tiled dado of the Salón de Comares: white octagons, honey-coloured long hexagons, and a cross of five small squares where four cells meet.',
+    story: [
+      'Brian Wichmann drew this dado exactly, and David Wade photographed it. All its edges run at 0°, 45° or 90°, and one length sets them all: half the diagonal of the small square at each corner. One line gives it: from a corner of the cell through the point where the diagonal crosses the circle, to the opposite side. The tutorial takes nine steps.',
+      'The red lines in the picture are the tutorial’s outlines over Wade’s photo; each tile of the dado sits in one of them. As on the dado, the middle square of each cross is white and the four round it black.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-dado/photo-overlay.png',
+        caption:
+          'Left: the dado. Right: the same with the tutorial’s outlines in red.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Salón de Comares (J43A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data5/J43A.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 0204)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
     id: 'alhambra-bath-stars',
     title: 'Interlaced stars of the Comares bath (new)',
     fold: 4,
@@ -992,8 +1257,48 @@ export const PROGRESS: {
   done: [
     {
       title: 'Clearer steps, all six changes',
-      text: 'No more steps full of red dots (ten marking steps hidden in nine tutorials); four colours with one meaning each and no point codes unless you tick Show names; an Ink menu at the top to ink at the end or as you go; long Bou Inania steps played in parts (“Step 11 · 2 of 4”); the next tiles in blue on the tile step; and each step zooms to where it works, then widens.',
+      text: 'No more steps full of red dots (seventeen marking steps hidden in sixteen tutorials, the new Alhambra ones included); four colours with one meaning each and no point codes unless you tick Show names; an Ink menu at the top to ink at the end or as you go; long Bou Inania steps played in parts (“Step 11 · 2 of 4”); the next tiles in blue on the tile step; and each step zooms to where it works, then widens.',
       link: { label: 'Bou Inania rosette', href: '/#/bou-inania-rosette' },
+    },
+    {
+      title: 'Framed stars of the Salón de Comares',
+      text: 'A new advanced tutorial: a framed honey star, teal stars and diamonds in interlaced bands, checked against the photo of the panel.',
+      link: { label: 'Open it', href: '/#/alhambra-comares-frames' },
+    },
+    {
+      title: 'Twelve-pointed stars of the Sala de los Reyes',
+      text: 'A new tutorial on a hexagonal tile: black twelve-pointed stars with blue, honey and teal tiles round them, matching the photo of the panel.',
+      link: { label: 'Open it', href: '/#/alhambra-reyes-dodecagrams' },
+    },
+    {
+      title: 'Carved fret of the Sala de los Reyes',
+      text: 'A new advanced tutorial: a pinwheel of bars and frets on sixths of OA, every diamond matching the photo of the panel.',
+      link: { label: 'Open it', href: '/#/alhambra-reyes-fret' },
+    },
+    {
+      title: 'Squares and stars of the Patio de los Arrayanes',
+      text: 'A new beginner tutorial, built to the photo of the real dado, which has smaller squares than the published drawing.',
+      link: { label: 'Open it', href: '/#/alhambra-arrayanes-squares' },
+    },
+    {
+      title: 'Pinwheel fret of the Patio de los Leones',
+      text: 'A new tutorial: frets hooking round eight-pointed stars, all turning one way. It matches the carved panel line for line.',
+      link: { label: 'Open it', href: '/#/alhambra-leones-fret' },
+    },
+    {
+      title: 'Stars of the Sala de la Barca',
+      text: 'A second design from the Comares bath construction, one step longer, checked against a photo of the panel.',
+      link: { label: 'Open it', href: '/#/alhambra-barca-stars' },
+    },
+    {
+      title: 'Stars of the Sala de los Reyes',
+      text: 'A new tutorial: eight-pointed stars round octagons and crosses, checked piece for piece against a photo of the panel.',
+      link: { label: 'Open it', href: '/#/alhambra-reyes-stars' },
+    },
+    {
+      title: 'The Comares dado',
+      text: 'A new beginner tutorial: octagons, long hexagons and crosses of small squares, one length found with a single line. Checked against a photo of the real dado.',
+      link: { label: 'Open it', href: '/#/alhambra-comares-dado' },
     },
     {
       title: 'Interlaced stars of the Comares bath',
@@ -1087,8 +1392,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'A second Wichmann Alhambra panel',
-    text: 'The Mexuar patio’s south wall (octagons and eight-pointed stars), if a photo of it can be found to check against.',
+    title: 'Overnight run finished (6 October, 8 am)',
+    text: 'Eight new Alhambra tutorials, each checked against David Wade’s photo of the real panel, plus the minbar doors from Cairo. Two Alhambra designs were parked because the photo shows a different panel from the published drawing. Each new tutorial has a card below.',
   },
   next: [
     {

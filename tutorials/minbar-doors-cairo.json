@@ -162,6 +162,7 @@
     },
     {
       "id": 10,
+      "hidden": true,
       "text": "Mark the corners of the pattern: every point where it turns or ends.",
       "create": {
         "M1": {"point": {"meet": ["r15", "t180"]}},

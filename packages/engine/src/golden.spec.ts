@@ -50,9 +50,11 @@ describe.each(files)('%s', (file) => {
     expect(
       hasSymmetry(pattern, tutorial.fold, undefined, undefined, mirror),
     ).toBe(true);
-    // A tutorial that claims to be chiral must really lack the mirror.
+    // A tutorial that claims to be chiral must really lack the mirror. The
+    // turning pieces can lie a little further out than the rotation check
+    // looks (the Leones frets are centred about 1 from O), so look to 2.
     if (tutorial.chiral)
-      expect(hasSymmetry(pattern, tutorial.fold)).toBe(false);
+      expect(hasSymmetry(pattern, tutorial.fold, undefined, 2)).toBe(false);
   });
 
   it('has no slivers, and its pieces fill the tile', () => {

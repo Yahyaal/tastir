@@ -1,0 +1,202 @@
+{
+  "format": 0,
+  "id": "alhambra-arrayanes-squares",
+  "title": "Squares and stars of the Patio de los Arrayanes (Alhambra)",
+  "fold": 4,
+  "style": "Nasrid",
+  "level": "beginner",
+  "credits": [
+    {
+      "source": "Tiling Search, data8/PG299: Alhambra, Patio de los Arrayanes",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data8/PG299.html",
+      "note": "The design and the star’s size were read from his line drawing; the construction is ours."
+    },
+    {
+      "source": "Photograph SPA 0111 (zellige dado, Patio de los Arrayanes)",
+      "creator": "David Wade",
+      "url": "https://patterninislamicart.com/",
+      "note": "The real dado: the squares’ size and the pointed ends of the band tiles were read from it."
+    }
+  ],
+  "given": {"O": "The centre of a star.", "A": "Halfway from O to the next star."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Rule a horizontal line through O and A and draw a circle about O through A. A star will sit at O and at every point of the grid two radii away; the bands run between them along the grid.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Rule the vertical through O. At the four points where the circle meets the two lines, rule lines at right angles to them: the square cell. Rule its two diagonals through O.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "P90": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "P180": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "P270": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "P180", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "P90", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "P270", "perpendicularTo": "v"}},
+        "K": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K"]}},
+        "d135": {"line": {"through": ["O", "K2"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Halve the angle between the vertical and the diagonal through K: the 67.5° line meets the top of the cell at T. Join the top and left points of the circle; that line crosses the other diagonal halfway to K2, at Z. Rule the line from Z through T: it crosses the vertical at U, a little below the top of the cell.",
+      "create": {
+        "r67": {"line": {"through": "O", "bisects": ["P90", "O", "K"]}},
+        "T": {"point": {"meet": ["r67", "gy"]}},
+        "f": {"line": {"through": ["P90", "P180"]}},
+        "Z": {"point": {"meet": ["f", "d135"]}},
+        "zt": {"line": {"through": ["Z", "T"]}},
+        "U": {"point": {"meet": ["zt", "v"]}}
+      },
+      "highlight": ["P90", "K"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw the circle about the top of the circle, P90, through U. It marks two points on the top of the cell, either side of the vertical. Through them rule lines at right angles to the top.",
+      "create": {
+        "cu": {"circle": {"centre": "P90", "through": "U"}},
+        "V1": {"point": {"meet": ["cu", "gy"], "pick": {"angle": 77.236}}},
+        "V2": {"point": {"meet": ["cu", "gy"], "pick": {"angle": 102.764}}},
+        "x1": {"line": {"through": "V1", "perpendicularTo": "gy"}},
+        "x2": {"line": {"through": "V2", "perpendicularTo": "gy"}}
+      },
+      "highlight": ["P90", "U"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Where the right one meets the diagonal is a point of the star. Draw the circle about O through it, mark where it meets the horizontal, the vertical and the diagonals, and join every other mark: the star’s two squares.",
+      "create": {
+        "B45": {"point": {"meet": ["x1", "d45"]}},
+        "cb": {"circle": {"centre": "O", "through": "B45"}},
+        "B0": {"point": {"meet": ["cb", "h"], "pick": {"angle": 0.0}}},
+        "B90": {"point": {"meet": ["cb", "v"], "pick": {"angle": 90.0}}},
+        "B180": {"point": {"meet": ["cb", "h"], "pick": {"angle": 180.0}}},
+        "B270": {"point": {"meet": ["cb", "v"], "pick": {"angle": 270.0}}},
+        "B135": {"point": {"meet": ["cb", "d135"], "pick": {"angle": 135.0}}},
+        "B225": {"point": {"meet": ["cb", "d45"], "pick": {"angle": 225.0}}},
+        "B315": {"point": {"meet": ["cb", "d135"], "pick": {"angle": 315.0}}},
+        "y1": {"line": {"through": ["B45", "B135"]}},
+        "y2": {"line": {"through": ["B225", "B315"]}},
+        "y3": {"line": {"through": ["B45", "B315"]}},
+        "y4": {"line": {"through": ["B135", "B225"]}},
+        "bs0": {"line": {"through": ["B0", "B90"]}},
+        "bs90": {"line": {"through": ["B90", "B180"]}},
+        "bs180": {"line": {"through": ["B180", "B270"]}},
+        "bs270": {"line": {"through": ["B270", "B0"]}}
+      },
+      "highlight": ["x1", "d45"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw the circle about the corner K through A. It meets the diagonal at Q, the corner of the large square that sits at K. Through Q rule a horizontal and a vertical: two sides of that square, and the edges of the bands.",
+      "create": {
+        "ck": {"circle": {"centre": "K", "through": "A"}},
+        "Q": {"point": {"meet": ["ck", "d45"], "pick": {"nearest": "O"}}},
+        "e1": {"line": {"through": "Q", "parallelTo": "h"}},
+        "e2": {"line": {"through": "Q", "parallelTo": "v"}}
+      },
+      "highlight": ["K", "A"],
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "Copy the square’s sides to the other three corners of the cell, turning them about O.",
+      "create": {"cq": {"repeat": {"of": ["e1", "e2"], "by": "rot4"}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Mark the corners of the pattern: every point where the outline of a piece turns.",
+      "create": {
+        "M1": {"point": {"meet": ["gxw", "e1@2"]}},
+        "M2": {"point": {"meet": ["d45", "e1@1"]}},
+        "M3": {"point": {"meet": ["gxw", "e1"]}},
+        "M4": {"point": {"meet": ["d135", "e1"]}},
+        "M5": {"point": {"meet": ["x2", "bs180"]}},
+        "M6": {"point": {"meet": ["x2", "bs90"]}},
+        "M7": {"point": {"meet": ["gys", "e1@1"]}},
+        "M8": {"point": {"meet": ["gy", "e1@1"]}},
+        "M9": {"point": {"meet": ["r67", "y2"]}},
+        "M10": {"point": {"meet": ["y1", "bs90"]}},
+        "M11": {"point": {"meet": ["y2", "bs270"]}},
+        "M12": {"point": {"meet": ["r67", "y1"]}},
+        "M13": {"point": {"meet": ["x1", "bs270"]}},
+        "M14": {"point": {"meet": ["d135", "e2"]}},
+        "M15": {"point": {"meet": ["x1", "bs0"]}},
+        "M16": {"point": {"meet": ["gys", "e2"]}},
+        "M17": {"point": {"meet": ["gx", "e1@2"]}},
+        "M18": {"point": {"meet": ["gy", "e2"]}},
+        "M19": {"point": {"meet": ["gx", "e1"]}}
+      },
+      "animate": "fade"
+    },
+    {
+      "id": 9,
+      "text": "The tile is the square cell.",
+      "create": {"tile": {"polygon": ["K", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O, the large squares at the corners, and the seams that run along the diagonals from each square’s corner to the star’s point.",
+    "paths": [
+      {"through": ["M1", "M2"]},
+      {"through": ["M3", "M4"]},
+      {"through": ["B180", "M5"]},
+      {"through": ["B180", "M6"]},
+      {"through": ["M7", "M2"]},
+      {"through": ["M2", "B225"]},
+      {"through": ["M4", "M8"]},
+      {"through": ["M4", "B135"]},
+      {"through": ["B225", "M5"]},
+      {"through": ["B225", "M9"]},
+      {"through": ["M6", "B135"]},
+      {"through": ["B135", "M10"]},
+      {"through": ["M9", "B270"]},
+      {"through": ["M10", "B90"]},
+      {"through": ["B270", "M11"]},
+      {"through": ["B90", "M12"]},
+      {"through": ["M11", "B315"]},
+      {"through": ["M12", "B45"]},
+      {"through": ["B315", "M13"]},
+      {"through": ["B315", "M14"]},
+      {"through": ["M13", "B0"]},
+      {"through": ["M15", "B45"]},
+      {"through": ["M15", "B0"]},
+      {"through": ["B45", "Q"]},
+      {"through": ["M16", "M14"]},
+      {"through": ["M14", "M17"]},
+      {"through": ["Q", "M18"]},
+      {"through": ["Q", "M19"]}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Repeat the square cell edge to edge: a large square in each gap of the band grid, and a small star where the bands cross.",
+    "palette": "Alhambra",
+    "colors": {"square": "c", "band": "ground", "star": "d"}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "square", "vertices": 4, "area": 2, "perCell": 1},
+      {"name": "band", "vertices": 14, "area": 0.87975, "perCell": 2},
+      {"name": "star", "vertices": 16, "area": 0.2405, "perCell": 1}
+    ]
+  }
+}

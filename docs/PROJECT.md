@@ -8,8 +8,16 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 ## Where things stand (5 October 2026)
 
-There are 26 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
+There are 34 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
 
+- The framed stars of the Salón de Comares in interlaced white bands, from Wichmann's drawing and checked against Wade's photo (`alhambra-comares-frames`).
+- The twelve-pointed stars of the Sala de los Reyes on a triangular grid, from Wichmann's drawing and checked against Wade's photo (`alhambra-reyes-dodecagrams`).
+- The carved pinwheel fret of the Sala de los Reyes, from Wichmann's drawing, every diamond matching Wade's photo (`alhambra-reyes-fret`).
+- The dado of the Patio de los Arrayanes (squares in white bands, small stars), built to David Wade's photo because Wichmann's drawing has different proportions (`alhambra-arrayanes-squares`).
+- The pinwheel fret of the Patio de los Leones, a chiral design, from Wichmann's drawing and checked against Wade's photo (`alhambra-leones-fret`).
+- The interlaced stars of the Sala de la Barca, built on the same construction as the Comares bath stars with one extra step, checked against Wade's photo (`alhambra-barca-stars`). Two designs from one construction, as the standing goals ask.
+- The zellige of the Sala de los Reyes (eight-pointed stars round octagons and crosses), from Wichmann's drawing and checked against Wade's photo, built as `alhambra-reyes-stars`.
+- The zellige dado of the Salón de Comares (octagons, long hexagons, crosses of five squares), from Wichmann's drawing and checked against David Wade's photo, built as `alhambra-comares-dado`. Wichmann's site lists 83 Alhambra designs paired with Wade photos, so the Alhambra family can keep growing from there.
 - The interlaced eight-pointed stars of the Comares bath (Alhambra), read from Brian Wichmann's Tiling Search drawing and checked against David Wade's photo of a carved panel with the same design, built as `alhambra-bath-stars`.
 - The minbar of al-Nasir Muhammad in the Citadel turned out to be the same design as the al-Maridani minbar, so `mian-stellated-rosettes` now has two real examples.
 - Design H2, the minbar doors from Cairo in the Metropolitan Museum (about 1325–30), built as `minbar-doors-cairo` and checked against the museum's photo. It is Samira Mian's rosette on a hexagonal tile, inked as the doors are.
@@ -21,7 +29,7 @@ There are 26 tutorials in the library. Each one's status, with what was checked,
 
 ## The next goal
 
-A second Alhambra panel from Wichmann's Tiling Search: the Mexuar patio's south wall (AL09), checked against a photo of the patio. The tools that read Wichmann's vector drawings are in `tools/review/alhambra_wichmann/`. Details are in [the queue](patterns/QUEUE.md).
+More Alhambra panels from Brian Wichmann's Tiling Search, each checked against David Wade's photo of the real panel. Wichmann's index pairs 83 Alhambra designs with Wade photos; the next three candidates and the method are in [the queue](patterns/QUEUE.md).
 
 After that, take the next unchecked item in [the queue](patterns/QUEUE.md).
 
