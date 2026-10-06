@@ -902,6 +902,10 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Second Ibn Tulun grille: parked',
+      text: 'A new design found on Commons (star openings, rhombi, and long openings that meet in threes like cubes). The photo is straightened, but the openings are deep and their inner walls hide the bands, so I parked it with notes rather than guess.',
+    },
+    {
       title: 'Design H3: another minbar, same design',
       text: 'The minbar of al-Nasir Muhammad in the Citadel has the same design as the al-Maridani minbar, so Samira Mian’s stellated rosettes now have two real examples. No new twelve-fold wood design turned up.',
       link: { label: 'See the card', href: '#design-h1' },
@@ -984,8 +988,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'A second Ibn Tulun window grille',
-    text: 'The mosque has over a hundred different window grilles and we have one. I am reading a different one from a photo and building it.',
+    title: 'An Alhambra panel from Wichmann’s drawings',
+    text: 'Picking an Alhambra panel we do not have from Brian Wichmann’s Tiling Search line drawings, with a photo of the real panel to check it against.',
   },
   next: [
     {

@@ -20,7 +20,7 @@ There are 25 tutorials in the library. Each one's status, with what was checked,
 
 ## The next goal
 
-Add a second Ibn Tulun window grille. The mosque has over a hundred different grilles and the library has one; Wikimedia Commons has straight-on photos of many. Read a different one from its photo, build it, and check the wall against the photo. Details are in [the queue](patterns/QUEUE.md).
+Add an Alhambra panel the library does not have, read from Wichmann's Tiling Search line drawings and checked against a photo of the same panel. The tools for the Alhambra grid designs already exist. Details are in [the queue](patterns/QUEUE.md). A second Ibn Tulun window grille was tried and parked: the photo is straightened, but the deep openings make the bands slow to read.
 
 After that, take the next unchecked item in [the queue](patterns/QUEUE.md).
 

@@ -85,3 +85,10 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - Inlays of sharp pieces sit far inside their cells: a 30° kite tip loses half a band divided by sin 15°, about four band-halves. Do not read a kite as short from its inlay.
 - Judge an overlay on the sharp averaged tile, not on the raw photo: on the photo the frames' many stripes make good lines look wrong.
 - `pnpm format` also rewrites JSON data under `tools/review/`; run Prettier on the files you changed instead, or revert the rest before committing.
+
+## Second Ibn Tulun grille (6 October)
+
+- Deep pierced grilles show the inner walls of their openings, shifted by the viewing angle, so averaging many copies blurs them. Read them near the camera's axis instead (the middle of the photo), where the walls almost vanish, and only from edges on the side away from the walls.
+- Check the photo's own orientation against the straightened frame before reading directions: a lattice fitted from two neighbour vectors can come out turned by 30°.
+- Wichmann's Tiling Search pictures sit at `tilingsearch.mit.edu/contents/<folder>/<id>.gif` and `.pdf` (the HTML page links them as `../../contents/...`).
+- The Met's search API moved to `/public/collection/v1.1/search` (paginated); the old `/v1/search` was retired on 1 October 2026.
