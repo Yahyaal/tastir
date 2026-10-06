@@ -78,3 +78,10 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - Before building a design from a photo, overlay the ink of every tutorial of the same family already in the library on the photo. H1 turned out to be `mian-stellated-rosettes`, which took a full reading of the photo to find out; the overlay takes minutes.
 - In carved and inlaid woodwork, read the lines from the inlays, not from the joints between frames. Each inlay is framed by bands of one width, so its edges run parallel to the pattern lines at half a band. Fitting the crisp inlay edges at multiples of 15° and moving them out by half a band gave every line to within 0.002 of OA; the skeleton of the joints was too noisy to read the corners.
 - Two constructions can agree within the photo's accuracy (here a star-line distance of √2/8 and Samira Mian's 0.178). When they do, use the published one and credit it.
+
+## Minbar doors, Design H2 (5 October)
+
+- A small inlay at a vertex (here a five-pointed star where five bands meet) looks like a piece with its own cell, and a watershed of the inlays gives it one, cutting back the corners of every neighbour. Check in the photo whether bands radiate from the small inlay; if they do, it is a decoration at a crossing, as the tiny arrows of H1 were.
+- Inlays of sharp pieces sit far inside their cells: a 30° kite tip loses half a band divided by sin 15°, about four band-halves. Do not read a kite as short from its inlay.
+- Judge an overlay on the sharp averaged tile, not on the raw photo: on the photo the frames' many stripes make good lines look wrong.
+- `pnpm format` also rewrites JSON data under `tools/review/`; run Prettier on the files you changed instead, or revert the rest before committing.

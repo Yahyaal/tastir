@@ -35,6 +35,43 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'design-h2',
+    title: 'Design H2: minbar doors from Cairo (new)',
+    fold: 12,
+    status: 'verified',
+    summary:
+      'A pair of carved minbar doors from Cairo, about 1325–30, now in the Metropolitan Museum. Twelve-pointed rosettes on a hexagonal repeat.',
+    story: [
+      'The rosette is Samira Mian’s first rosette, the one in her square and hexagonal tiles, but the doors ink it differently: a small star ringed by twelve kites, then twelve shields. Each shield runs from a star point to the kites’ tips, out along the 15° lines, and ends flat on a line that touches the circle at one of its twelve points. Between every three rosettes this leaves a triangle.',
+      'The small five-pointed stars of the doors sit where five bands meet, at the corners of those triangles, so they are inlays at crossings rather than pieces, like the tiny arrows of the al-Maridani minbar. The first picture shows the doors with our lines over them; the second shows the triangle between three rosettes.',
+    ],
+    pictures: [
+      {
+        src: 'renders/minbar-doors-cairo/photo-overlay.png',
+        caption:
+          'Left: the doors, straightened. Right: the same with the tutorial’s lines in red. Each carved piece sits inside one of our pieces, half a band in from its edges.',
+      },
+      {
+        src: 'renders/minbar-doors-cairo/photo-gap.png',
+        caption:
+          'Between three rosettes: the triangle, with a five-pointed star inlaid at each corner.',
+      },
+      { src: 'renders/minbar-doors-cairo/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'The Met: Pair of Minbar Doors, Egypt, ca. 1325–30 (public-domain photo)',
+        url: 'https://www.metmuseum.org/art/collection/search/444812',
+      },
+      {
+        label: 'Samira Mian: Twelvefold Islamic Geometric Rosette',
+        url: 'https://www.samiramian.uk/twelvefoldrosette',
+      },
+    ],
+  },
+  {
     id: 'design-h1',
     title: 'Design H1: the al-Maridani minbar is already in the library',
     fold: 4,
@@ -859,6 +896,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Design H2: minbar doors from Cairo',
+      text: 'A new tutorial, checked against the Metropolitan Museum’s photo: Samira Mian’s rosette on a hexagonal repeat, inked as on the doors, with a triangle between every three rosettes.',
+      link: { label: 'Open it', href: '/#/minbar-doors-cairo' },
+    },
+    {
       title: 'Design H1: the al-Maridani minbar',
       text: 'It is Samira Mian’s stellated rosettes, already in the library: every carved inlay on the photo lies in one of its pieces. The tutorial now credits the minbar and is marked verified.',
       link: { label: 'See the card', href: '#design-h1' },
@@ -931,8 +973,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Design H2: minbar doors from Cairo in the Met',
-    text: 'A pair of carved minbar doors (about 1325–30), public domain and photographed sharply by the Metropolitan Museum. Its twelve-pointed rosettes repeat on a different lattice from H1. First I check it against the twelve-fold tutorials we already have, then read the photo and build what is new.',
+    title: 'Design H3: a third Mamluk woodwork design',
+    text: 'Looking for a straight-on photo of another Cairo minbar or door with twelve-pointed stars. As with H1 and H2, I first check it against the twelve-fold tutorials we already have.',
   },
   next: [
     {
