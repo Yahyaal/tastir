@@ -61,3 +61,10 @@ star reduced to its square on the cell's sides. All diagonal lines are the bath'
 horizontal and vertical ones near the corner sit at 1 ± Rs/2, through the middles of the small
 square's sides. `gen_barca_stars.py` (reuses `gen_bath_stars.build`) then `finish_barca.py`.
 Checked against Wade's SPA 1624x (`barca-picks.json`).
+
+C55, the Patio de los Leones (6 October): a pinwheel (chiral). Stars of two squares with
+R = 1/(2√2 − 1) (drawing 0.5471), frets on the diagonals of the unit grid (Wichmann draws it
+turned by 45°). R comes from one line: from the circle's 45° point through (0, ½) to the 135°
+diagonal. `gen_leones_fret.py` then `finish_leones.py`; checked against Wade's SPA 0218
+(`leones-picks.json`, star centres refined by eight-fold self-similarity, kept only where it
+scores above 0.55: lower scores land off the stars).

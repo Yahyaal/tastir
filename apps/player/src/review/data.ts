@@ -35,6 +35,41 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'alhambra-leones-fret',
+    title: 'Pinwheel fret of the Patio de los Leones (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'Eight-pointed stars with fret bands hooking round them like a pinwheel: it turns into itself by a quarter turn but has no mirror.',
+    story: [
+      'The frets run along the diagonals of a square grid, and the stars are two squares each. One line sets the stars’ size: from the point where the diagonal crosses the circle, through the middle of the radius above O, to the other diagonal. Brian Wichmann’s drawing gave the design; the tutorial takes nine steps.',
+      'Over David Wade’s photo of the carved panel, every line of the tutorial lies on a carved groove, and the frets turn the same way (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-leones-fret/photo-overlay.png',
+        caption:
+          'Left: the carved panel. Right: the same with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-leones-fret/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Patio de los Leones (C55)',
+        url: 'https://tilingsearch.mit.edu/HTML/data18/C55.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 0218)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
     id: 'alhambra-barca-stars',
     title: 'Interlaced stars of the Sala de la Barca (new)',
     fold: 4,
@@ -1030,6 +1065,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Pinwheel fret of the Patio de los Leones',
+      text: 'A new tutorial: frets hooking round eight-pointed stars, all turning one way. It matches the carved panel line for line.',
+      link: { label: 'Open it', href: '/#/alhambra-leones-fret' },
+    },
+    {
       title: 'Stars of the Sala de la Barca',
       text: 'A second design from the Comares bath construction, one step longer, checked against a photo of the panel.',
       link: { label: 'Open it', href: '/#/alhambra-barca-stars' },
@@ -1137,7 +1177,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'More Alhambra panels, each with a photo',
-    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: another dado with a frontal photo.',
+    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: the squares in bands of the Patio de los Arrayanes.',
   },
   next: [
     {

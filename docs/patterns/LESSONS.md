@@ -98,3 +98,5 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - Tiling Search PDFs are vector drawings: PyMuPDF's `page.get_drawings()` gives every piece as a filled path, exact to 0.01 pt. Their paths sometimes draw a segment back and forth; cancel those pairs before chaining the outline, or a real corner is lost.
 - Piece names in `expect` may use letters, digits and `_` only (no hyphens).
 - To find what fixes a design's proportions, list every distinct line modulo the lattice, then look for gaps that repeat and for a crossing that lands on a simple point (here the line from the cell corner to the bottom of the circle).
+- To register a photo, read the motif centres from the photo itself, not from a rendered comparison picture (its title band shifts every y). Refining a centre by self-similarity only helps when the score ends high (above about 0.55 here); a low score means it has locked onto something else.
+- A design drawn by Wichmann can be turned by 45° from the frame that makes its construction simple; turn his outlines before matching, and try the simpler frame whenever the lines' offsets look irrational.
