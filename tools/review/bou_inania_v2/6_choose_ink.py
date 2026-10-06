@@ -145,6 +145,77 @@ while True:
     if not bad: break
     drop = {m for i in bad for m in orbits[i]}
     ink = [m for m in ink if m not in drop]; added -= drop
+# Extend each remaining loose end along its own line until it reaches other
+# ink (at most 0.35), when the drawing has band along most of the way.
+by_node = {}
+for m in cand:
+    for z in m: by_node.setdefault(z, []).append(m)
+def along(m1, m2):
+    (a, b), (c, d) = m1, m2
+    u = (b[0]-a[0], b[1]-a[1]); v = (d[0]-c[0], d[1]-c[1])
+    return abs(u[0]*v[1] - u[1]*v[0]) < 2e-3 * math.hypot(*u) * math.hypot(*v)
+for _ in range(2):
+    have = set(ink); nodes = {z for m in ink for z in m}
+    added = set()
+    for z in loose_ends(ink):
+        start = [m for m in have if z in m][0]
+        path, cur, prev, tot = [], z, start, 0.0
+        while tot < 0.5:
+            nxt = [m for m in by_node.get(cur, []) if m != prev and along(m, prev)]
+            if not nxt: break
+            m = nxt[0]; path.append(m); tot += math.dist(*m)
+            other = m[0] if m[1] == cur else m[1]
+            if other in nodes and m not in have:
+                break
+            prev, cur = m, other
+        else:
+            continue
+        if path and (path[-1][0] in nodes or path[-1][1] in nodes) and np.mean([cand.get(m, 0) for m in path]) >= 0.0:
+            added |= {mm for m in path for mm in orbits[orbit_index[m]]}
+    if not added: break
+    ink = sorted(have | added)
+# Two loose ends close together, on lines that cross nearby: carry both on
+# to that crossing (the band turns a corner there).
+def walk(z, prevm, target, limit=0.4):
+    path, cur, prev, tot = [], z, prevm, 0.0
+    while tot < limit:
+        nxt = [m for m in by_node.get(cur, []) if m != prev and along(m, prev)]
+        if not nxt: return None
+        m = nxt[0]; path.append(m); tot += math.dist(*m)
+        cur = m[0] if m[1] == cur else m[1]
+        if cur == target: return path
+        prev = m
+    return None
+for _ in range(2):
+    have = set(ink); ends = sorted(loose_ends(ink)); added = set()
+    for i, z in enumerate(ends):
+        for w in ends[i+1:]:
+            if math.dist(z, w) > 0.3: continue
+            mz = [m for m in have if z in m][0]; mw = [m for m in have if w in m][0]
+            # crossing of the two lines
+            a, b, c, d = exact[mz[0]], exact[mz[1]], exact[mw[0]], exact[mw[1]]
+            u = (b[0]-a[0], b[1]-a[1]); v = (d[0]-c[0], d[1]-c[1]); det = u[0]*v[1] - u[1]*v[0]
+            if abs(det) < 1e-9:
+                off = abs((w[0]-z[0])*u[1] - (w[1]-z[1])*u[0]) / math.hypot(*u)
+                if off < 1e-4:
+                    p = walk(z, mz, w)
+                    if p: added |= {mm for m in p for mm in orbits[orbit_index[m]]}
+                    else: print('collinear pair', z, w, 'no path')
+                else: print('parallel pair', z, w, round(off, 4))
+                continue
+            t = ((c[0]-a[0])*v[1] - (c[1]-a[1])*v[0]) / det
+            X = (a[0] + t*u[0], a[1] + t*u[1])
+            kx = min(by_node, key=lambda q: math.dist(q, X))
+            if math.dist(kx, X) > 2e-3:
+                print('pair', z, w, 'crossing', X, 'not a node'); continue
+            p1 = [] if kx == z else walk(z, mz, kx)
+            p2 = [] if kx == w else walk(w, mw, kx)
+            if p1 is None or p2 is None: print('pair', z, w, 'crossing', kx, 'walk', p1 is not None, p2 is not None)
+            if p1 is not None and p2 is not None and (p1 or p2):
+                added |= {mm for m in p1 + p2 for mm in orbits[orbit_index[m]]}
+    print("pairs added", len(added)); 
+    if not added: break
+    ink = sorted(have | added)
 print('loose ends left', len(loose_ends(ink)))
 json.dump([[list(exact[a]), list(exact[b])] for a, b in ink], open(sys.argv[2], 'w'))
 print(len(segs), 'stretches;', len(ink), 'inked')

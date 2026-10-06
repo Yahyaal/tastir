@@ -14,7 +14,8 @@
   "from": [
    "A",
    "E"
-  ]
+  ],
+  "group": 1
  },
  {
   "label": "Tg",
@@ -31,7 +32,8 @@
   "from": [
    "P30",
    null
-  ]
+  ],
+  "group": 1
  },
  {
   "label": "B",
@@ -48,7 +50,8 @@
   "from": [
    "Tg",
    "Tg"
-  ]
+  ],
+  "group": 1
  },
  {
   "label": "G",
@@ -65,7 +68,8 @@
   "from": [
    "E",
    "C"
-  ]
+  ],
+  "group": 2
  },
  {
   "label": "F",
@@ -82,7 +86,8 @@
   "from": [
    "C",
    "G"
-  ]
+  ],
+  "group": 2
  },
  {
   "label": "D",
@@ -95,11 +100,12 @@
   "mirror": false,
   "d": 1.7177808544944757,
   "helper": false,
-  "text": "Where a star line crosses one of the pentagon lines, rule a line at right angles to the horizontal; turn it round: the inner side of the ring round the shields.",
+  "text": "Where a star line crosses one of the pentagon lines, rule a line at right angles to the horizontal, and turn it round: the inner side of the ring round the shields.",
   "from": [
    "A",
    "B"
-  ]
+  ],
+  "group": 3
  },
  {
   "label": "K",
@@ -116,7 +122,8 @@
   "from": [
    "C",
    "C"
-  ]
+  ],
+  "group": 3
  },
  {
   "label": "S",
@@ -133,7 +140,8 @@
   "from": [
    "E",
    "D"
-  ]
+  ],
+  "group": 4
  },
  {
   "label": "H",
@@ -150,7 +158,8 @@
   "from": [
    "B",
    "F"
-  ]
+  ],
+  "group": 4
  },
  {
   "label": "M",
@@ -167,7 +176,8 @@
   "from": [
    "E",
    "B"
-  ]
+  ],
+  "group": 4
  },
  {
   "label": "N",
@@ -180,10 +190,11 @@
   "mirror": false,
   "d": 1.494973760245704,
   "helper": false,
-  "text": "Where two of the 24 lines cross on the 45° line, rule a line at right angles to the 15° line; turn it round. This is the last set.",
+  "text": "Where two of the 24 lines cross on the 45° line, rule a line at right angles to the 15° line; turn it round. ",
   "from": [
    "C",
    "C"
-  ]
+  ],
+  "group": 4
  }
 ]

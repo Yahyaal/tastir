@@ -68,19 +68,22 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 12,
     status: 'decided',
     decision:
-      'You: put it in the library as it is, to see the repeat. Done: /#/bou-inania-rosette (slivers marked small).',
+      'You: fewer steps, no extra lines in B and D, and the copies overlap by one band. Done: /#/bou-inania-rosette.',
     summary:
-      'Built her way as far as it goes: her rosette, the bigger circle, and sets of twelve lines each drawn through a crossing already on the paper. Four areas still differ from the drawing.',
+      'Built her way: her rosette, the bigger circle, and sets of twelve lines each drawn through a crossing already on the paper. Now in 13 steps (was 20), with the tile copies overlapping by one band. Only area A still differs from the drawing.',
     story: [
-      'How close it is (first picture: our ink over the drawing): 99.7% of our ink lies on the drawing’s bands, and our ink covers 96% of the band centres; magenta marks band with no ink, blue ink off the bands.',
-      'Where it differs (second picture, ours on the left with one colour per piece shape, the drawing on the right, same areas circled):',
-      'A. The ring round the green shields. In the drawing a band separates each green shield from the black piece beside it; in ours that band is missing, so the shield and the black piece merge into one pink piece. None of our line sets runs along that band; it is the one place I could not find a line through existing crossings.',
-      'B. Where the shield ring meets the 0°, 90°… directions, several of our lines cross a hair apart instead of at one point, leaving tiny slivers.',
-      'C. The middle of each tile side. The drawing has two bands crossing in an X; ours has one plain piece there.',
-      'D. The corners. The brown band bends at different places and our corner pieces are split differently.',
-      'Ideas welcome for any of these: for A especially, if you know how the shield’s outer band is set out.',
+      'What changed after your look (first picture: our ink, and the wall):',
+      'Steps: 13 instead of 20. The line sets are drawn four or five to a step, grouped by what they make (the ring round the shields, the frame, the corner bands, the last short sets).',
+      'B and C. The stray bar across the crossings on the shield ring is gone, and the two lines there now run straight through the crossing, so the tiny slivers are gone too.',
+      'D. The loose hooks near the corners are removed.',
+      'The tile. It now runs from the frame on the left and bottom to the big figure’s sides on the right and top, so each copy overlaps the next by one band: the two lines on the right fall on the two lines on the left of the next copy. Where they meet, the band is broken by the crossing at the side’s midpoint, as in the drawing (the drawing’s outer frame is only the picture’s border).',
+      'Still open, A: the band round the green shields. In the drawing it separates each shield from the black piece beside it; none of the line sets runs along it, so the shield and the black piece are one piece in ours.',
     ],
     pictures: [
+      {
+        src: 'renders/bou-inania-v2/tile-and-wall.png',
+        caption: 'Now: the ink of one tile (left) and the wall (right).',
+      },
       {
         src: 'renders/bou-inania-v2/ink-vs-drawing.png',
         caption:
@@ -89,7 +92,7 @@ export const PATTERNS: readonly Pattern[] = [
       {
         src: 'renders/bou-inania-v2/mismatch-areas.png',
         caption:
-          'Left: our tile (one colour per piece shape). Right: the drawing. A–D: where they differ.',
+          'Before these changes. Left: our tile (one colour per piece shape). Right: the drawing. A–D: where they differed.',
       },
       {
         src: 'renders/bou-inania-v2/line-sets.png',
@@ -894,7 +897,7 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Bou Inania draft in the library; your ideas on areas A–D welcome',
+    title: 'Bou Inania draft: 13 steps, overlapping tile; area A still open',
     text: 'Draft built: her rosette plus eleven sets of lines through crossings. Fixing the small stars and slivers, then colouring and the library.',
     link: { label: 'Card', href: '#bou-inania-v2' },
   },

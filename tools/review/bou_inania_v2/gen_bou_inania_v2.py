@@ -129,22 +129,55 @@ def C(names, p, normal, turns, label, text, mirror=False):
 
 
 SETS = json.load(open(os.path.join(os.path.dirname(__file__), 'sets.json')))
-for s in SETS:
-    step(s['text'], highlight=s.get('highlight'))
-    C(None, tuple(s['through']), s['normal'], s['turns'], s['label'], s['text'], s.get('mirror', False))
+for grp in sorted({s['group'] for s in SETS}):
+    members = [s for s in SETS if s['group'] == grp]
+    step(' '.join(s['text'] for s in members))
+    for s in members:
+        C(None, tuple(s['through']), s['normal'], s['turns'], s['label'], s['text'], s.get('mirror', False))
 
 # Ink: every stretch, named by the crossings at its ends.
 segs = json.load(open(ink_path))
-step('Mark the corners of the pattern: every point where the pattern turns or ends.', 'fade')
+# keep the ink inside the tile (it is offset by one band; see the tile step)
+_F = [s for s in SETS if s['label'] == 'F'][0]['d']
+_E = 2 * math.cos(math.radians(15)) ** 2
+_in = lambda p: -_F - 1e-7 <= p[0] <= _E + 1e-7 and -_F - 1e-7 <= p[1] <= _E + 1e-7
+# the lines on the tile's right and top sides are the neighbours' left and
+# bottom lines (the copies overlap there), so they are inked by those
+_edge = lambda sg: any(abs(sg[0][i] - _E) < 1e-7 and abs(sg[1][i] - _E) < 1e-7 for i in (0, 1))
+_frame = lambda sg: any(abs(sg[0][i] + _F) < 1e-7 and abs(sg[1][i] + _F) < 1e-7 for i in (0, 1))
+# The seam where the copies overlap carries the inner band (the big figure's
+# side, broken where the crossings at the side midpoints pass through it); the
+# frame round the drawing is only the picture's border. So the left and
+# bottom lines are inked as the right and top sides are in the drawing.
+_T = _E + _F
+_seam = []
+for a, b in segs:
+    if abs(a[0] - _E) < 1e-7 and abs(b[0] - _E) < 1e-7:
+        _seam.append(([[a[0] - _T, a[1]], [b[0] - _T, b[1]]], 'h'))
+    if abs(a[1] - _E) < 1e-7 and abs(b[1] - _E) < 1e-7:
+        _seam.append(([[a[0], a[1] - _T], [b[0], b[1] - _T]], 'v'))
+segs = [sg for sg in segs if _in(sg[0]) and _in(sg[1]) and not _edge(sg) and not _frame(sg)]
+_seam = [(sg, d) for sg, d in _seam if _in(sg[0]) and _in(sg[1])]
+segs += [sg for sg, _ in _seam]
+step('Mark the corners of the pattern: every point where the pattern turns or ends. Where the inner band on the right (or top) side breaks, rule a line across to the left (or bottom) side: the band breaks there too, because the next tile lies over it.', 'fade')
 names = {}
+for sg, d in _seam:
+    for z in sg:
+        z = tuple(z)
+        if z not in names and named_at(z, 1e-7) is None and not g.lines_through(z)[1:]:
+            o = (z[0] + _T, z[1]) if d == 'h' else (z[0], z[1] + _T)
+            nm = f'sm{len(names)}'
+            line_par(nm, pt_at(o, 'M'), d)
+            names[z] = pt_at(z, 'M')
 for a, b in segs:
     for z in (tuple(a), tuple(b)):
         if z not in names:
             names[z] = pt_at(z, 'M')
 paths = [{'through': [names[tuple(a)], names[tuple(b)]]} for a, b in segs]
-step('The tile is the square inside the frame.', 'fade')
-F = SETS_FRAME = [s for s in SETS if s['label'] == 'F'][0]['d']
-corners = [pt_at((sx * F, sy * F), 'K') for sx, sy in ((1, 1), (-1, 1), (-1, -1), (1, -1))]
+step('The tile: the square between the big figure’s right and top sides and the frame’s left and bottom sides. Its copies overlap by one band, so the two lines along each side of the tile fall on the two lines of the next tile.', 'fade')
+F = [s for s in SETS if s['label'] == 'F'][0]['d']
+Eb = 2 * math.cos(math.radians(15)) ** 2
+corners = [pt_at(p, 'K') for p in ((Eb, Eb), (-F, Eb), (-F, -F), (Eb, -F))]
 put('tile', 'polygon', None, {'polygon': corners})
 
 tut = {
