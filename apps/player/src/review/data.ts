@@ -35,6 +35,37 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'alhambra-arrayanes-squares',
+    title: 'Squares and stars of the Patio de los Arrayanes (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'A simple dado: large squares set in white bands, with a small eight-pointed star where the bands cross. A beginner design.',
+    story: [
+      'Brian Wichmann draws this dado with larger squares than the real one. Over David Wade’s photo, the real squares are each inscribed in a circle of radius OA about a corner of the cell, and every white band tile ends in a point, its seams running along the diagonals from a square’s corner to the star’s point. So the tutorial follows the photo, and keeps Wichmann’s star, whose size matches.',
+      'Over the photo, our outlines follow every square, star and seam (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-arrayanes-squares/photo-overlay.png',
+        caption:
+          'Left: the dado. Right: the same with the tutorial’s outlines in red.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Patio de los Arrayanes (PG299)',
+        url: 'https://tilingsearch.mit.edu/HTML/data8/PG299.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 0111)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
     id: 'alhambra-leones-fret',
     title: 'Pinwheel fret of the Patio de los Leones (new)',
     fold: 4,
@@ -1065,6 +1096,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Squares and stars of the Patio de los Arrayanes',
+      text: 'A new beginner tutorial, built to the photo of the real dado, which has smaller squares than the published drawing.',
+      link: { label: 'Open it', href: '/#/alhambra-arrayanes-squares' },
+    },
+    {
       title: 'Pinwheel fret of the Patio de los Leones',
       text: 'A new tutorial: frets hooking round eight-pointed stars, all turning one way. It matches the carved panel line for line.',
       link: { label: 'Open it', href: '/#/alhambra-leones-fret' },
@@ -1177,7 +1213,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'More Alhambra panels, each with a photo',
-    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: the squares in bands of the Patio de los Arrayanes.',
+    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: a panel from the Sala de los Reyes.',
   },
   next: [
     {

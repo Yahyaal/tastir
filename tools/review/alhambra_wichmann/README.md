@@ -68,3 +68,11 @@ turned by 45°). R comes from one line: from the circle's 45° point through (0,
 diagonal. `gen_leones_fret.py` then `finish_leones.py`; checked against Wade's SPA 0218
 (`leones-picks.json`, star centres refined by eight-fold self-similarity, kept only where it
 scores above 0.55: lower scores land off the stars).
+
+PG299, the Patio de los Arrayanes (6 October): Wichmann's proportions do not match Wade's
+photo SPA 0111. On the real dado each large square is inscribed in the unit circle about its
+cell corner (half-side 1/√2, Wichmann has 0.77) and each white band tile ends in a point, its
+seams on the diagonals from the square's corner to the star's point. The tutorial follows the
+photo and keeps Wichmann's star (half-side of its square (3 − √2)/7). Its ink is written
+directly in `gen_arrayanes_squares.py` (no PDF needed); `finish_arrayanes.py`;
+`arrayanes-picks.json` (stars found by edge template matching).
