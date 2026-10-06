@@ -90,3 +90,9 @@ twelve lines round each star touching a circle of radius (√3 − 1)/4, or a si
 through the circle's points at 0°, 60°…. `gen_reyes_dodecagram.py` (with a hexagon clipper)
 then `finish_reyes_dodecagram.py`; checked against Wade's SPA 1908 (`reyes-dodec-picks.json`).
 `3_overlay_photo.py` now repeats the tile by the dump's own cell vectors (hexagonal cells too).
+
+P042 (Mirador de Lindaraja), parked 6 October: `gen_lindaraja_rosettes.py` builds Wichmann's
+drawing exactly (each star two squares turned 22.5°, sides carried on; pieces match his to
+0.001), but Wade's photo SPA 1009 shows a different panel: smaller stars, a lobed flower at each
+cell corner, and pentagonal petals each touching one star and one flower (Wichmann's petals
+join two stars). No tutorial until a photo of his panel is found.
