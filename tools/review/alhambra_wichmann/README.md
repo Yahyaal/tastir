@@ -76,3 +76,10 @@ seams on the diagonals from the square's corner to the star's point. The tutoria
 photo and keeps Wichmann's star (half-side of its square (3 − √2)/7). Its ink is written
 directly in `gen_arrayanes_squares.py` (no PDF needed); `finish_arrayanes.py`;
 `arrayanes-picks.json` (stars found by edge template matching).
+
+PG365, the Sala de los Reyes fret (6 October): chiral. Horizontal and vertical lines at odd
+sixths of OA, diagonal lines in pairs x ± y = (2k + 1)/3 ± e with e = (1 − 1/√2)/3, the sides
+of small diamonds at the thirds. `2_centrelines.py` was run with the 24-cornered crosses as
+centres. `gen_reyes_fret.py` then `finish_reyes_fret.py`. Registration on Wade's SPA 0405x was
+fitted to all 42 diamonds detected in the photo (template matching, then a search over scale,
+offset and hand), which is far more reliable than reading centres by eye.

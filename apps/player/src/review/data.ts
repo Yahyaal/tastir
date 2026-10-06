@@ -35,6 +35,38 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'alhambra-reyes-fret',
+    title: 'Carved fret of the Sala de los Reyes (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'Carved plaster: long bars and hooked frets turning round a cross, with a small diamond wherever two bands cross. A pinwheel, so it has no mirror.',
+    story: [
+      'Every line of Brian Wichmann’s drawing is either horizontal or vertical at an odd sixth of OA, or slanting in pairs round the small diamonds that sit at the thirds. The diamond’s size comes from one circle: about O through the point a sixth of the way to the corner. The tutorial divides OA into sixths with the ruler and finds the diamonds with the compass, in eleven steps.',
+      'I found every small diamond in David Wade’s photo of the panel (42 of them) and all fit the tutorial’s diamonds. Over the photo the tutorial’s lines follow the carved grooves (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-reyes-fret/photo-overlay.png',
+        caption:
+          'Left: the carved panel. Right: the same with the tutorial’s lines in red.',
+      },
+      { src: 'renders/alhambra-reyes-fret/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Sala de los Reyes (PG365)',
+        url: 'https://tilingsearch.mit.edu/HTML/data8/PG365.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 0405x)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -1096,6 +1128,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Carved fret of the Sala de los Reyes',
+      text: 'A new advanced tutorial: a pinwheel of bars and frets on sixths of OA, every diamond matching the photo of the panel.',
+      link: { label: 'Open it', href: '/#/alhambra-reyes-fret' },
+    },
+    {
       title: 'Squares and stars of the Patio de los Arrayanes',
       text: 'A new beginner tutorial, built to the photo of the real dado, which has smaller squares than the published drawing.',
       link: { label: 'Open it', href: '/#/alhambra-arrayanes-squares' },
@@ -1213,7 +1250,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'More Alhambra panels, each with a photo',
-    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: a panel from the Sala de los Reyes.',
+    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: more panels whose photos are taken straight on.',
   },
   next: [
     {
