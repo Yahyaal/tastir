@@ -30,6 +30,7 @@ import { LIBRARY, type Entry } from './library';
 import { useRemembered } from './remembered';
 import {
   beatsOf,
+  shownBeats,
   shownSteps,
   stagesOf,
   type InkMode,
@@ -346,122 +347,147 @@ export function Player({
   const photos = tutorial.photos ?? [];
   const showOriginal = comparing && stage.kind === 'color' && photos.length > 0;
 
+  /** Jumps straight to a stage from the journey, without playing it in. */
+  const jump = (to: number) => {
+    if (to === index) return;
+    settle();
+    reversing.current = false;
+    setForward(false);
+    setIndex(to);
+  };
+
+  const colorStage = stage.kind === 'color';
+
   return (
     <div className="player">
       {printing ? (
         <PrintSheet model={inking.shown} paper={paper} onDone={stopPrinting} />
       ) : null}
-      <header>
-        <div className="title">
-          <a className="home" href="#/">
-            All tutorials
-          </a>
-          <h1>{tutorial.title}</h1>
-        </div>
-        <div className="controls">
-          <label>
-            Speed{' '}
-            <select
-              value={speed}
-              onChange={(e) => setSpeed(Number(e.target.value))}
-            >
-              <option value={0.5}>½×</option>
-              <option value={1}>1×</option>
-              <option value={2}>2×</option>
-            </select>
-          </label>
-          <label>
-            Ink{' '}
-            <select
-              value={inkMode}
-              onChange={(e) => setInkMode(e.target.value as InkMode)}
-            >
-              <option value="end">at the end</option>
-              <option value="asYouGo">as you go</option>
-            </select>
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={reduced}
-              onChange={(e) => setReduced(e.target.checked)}
-            />{' '}
-            Reduce motion
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={showNames}
-              onChange={(e) => setShowNames(e.target.checked)}
-            />{' '}
-            Show names
-          </label>
-          <span className="brand">Tastir</span>
-        </div>
+      <header className="topbar">
+        <a className="home" href="#/">
+          <span className="wordmark">Tastir</span>
+          <span>All patterns</span>
+        </a>
+        <h1>{tutorial.title}</h1>
+        <details className="view-menu">
+          <summary>View settings</summary>
+          <div className="controls">
+            <label>
+              Speed
+              <select
+                value={speed}
+                onChange={(e) => setSpeed(Number(e.target.value))}
+              >
+                <option value={0.5}>½×</option>
+                <option value={1}>1×</option>
+                <option value={2}>2×</option>
+              </select>
+            </label>
+            <label>
+              Ink
+              <select
+                value={inkMode}
+                onChange={(e) => setInkMode(e.target.value as InkMode)}
+              >
+                <option value="end">at the end</option>
+                <option value="asYouGo">as you go</option>
+              </select>
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={reduced}
+                onChange={(e) => setReduced(e.target.checked)}
+              />
+              Reduce motion
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={showNames}
+                onChange={(e) => setShowNames(e.target.checked)}
+              />
+              Show names
+            </label>
+          </div>
+        </details>
       </header>
-      <main className={showOriginal ? 'stage comparing' : 'stage'}>
-        {showOriginal ? <Original photos={photos} /> : null}
-        {picture}
-      </main>
-      <footer>
-        <div className="text">
-          <p className="label">{label}</p>
-          {hint ? <p className="stage-hint">{hint}</p> : null}
-          <p aria-live="polite">{text}</p>
-          {stage.kind === 'ink' ? (
-            <div className="ink-tools">
+      <div className={colorStage ? 'workspace with-panel' : 'workspace'}>
+        <Journey stages={stages} index={index} onJump={jump} />
+        <section className="plate-area">
+          <main className={showOriginal ? 'stage comparing' : 'stage'}>
+            {showOriginal ? <Original photos={photos} /> : null}
+            {picture}
+          </main>
+          <footer className="caption">
+            <div className="text">
+              <p className="label">{label}</p>
+              {hint ? <p className="stage-hint">{hint}</p> : null}
+              <p className="instruction" aria-live="polite">
+                {text}
+              </p>
+              {stage.kind === 'ink' ? (
+                <div className="ink-tools">
+                  <button
+                    type="button"
+                    className="secondary"
+                    aria-pressed={inking.editing}
+                    onClick={() => inking.setEditing(!inking.editing)}
+                  >
+                    {inking.editing ? 'Done' : 'Make your own'}
+                  </button>
+                  {inking.isClassic ? null : (
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={inking.restoreClassic}
+                    >
+                      Back to the classic
+                    </button>
+                  )}
+                  {inking.editing ? (
+                    <span>Click a line to ink or erase it.</span>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+            <nav aria-label="Steps">
+              {onConstruction ? (
+                <button
+                  type="button"
+                  className="quiet"
+                  onClick={() => camera.goTo(fullView(model))}
+                >
+                  Fit
+                </button>
+              ) : null}
               <button
                 type="button"
                 className="secondary"
-                aria-pressed={inking.editing}
-                onClick={() => inking.setEditing(!inking.editing)}
+                onClick={back}
+                disabled={index === 0}
               >
-                {inking.editing ? 'Done' : 'Make your own'}
+                Back
               </button>
-              {inking.isClassic ? null : (
+              <button
+                type="button"
+                className="next"
+                onClick={next}
+                disabled={index === last}
+              >
+                Next
+              </button>
+            </nav>
+          </footer>
+        </section>
+        {colorStage ? (
+          <aside className="side-panel" aria-label="The wall">
+            {photos.length ? (
+              <section>
+                <h2>The original</h2>
                 <button
                   type="button"
-                  className="secondary"
-                  onClick={inking.restoreClassic}
-                >
-                  Back to the classic
-                </button>
-              )}
-              {inking.editing ? (
-                <span>Click a line to ink or erase it.</span>
-              ) : null}
-            </div>
-          ) : null}
-          {stage.kind === 'color' ? (
-            <div className="wall-tools">
-              <label>
-                Style{' '}
-                <select
-                  value={wallStyle}
-                  onChange={(e) => setWallStyle(e.target.value as WallStyle)}
-                >
-                  {WALL_STYLES.map((s) => (
-                    <option key={s} value={s}>
-                      {s[0]?.toUpperCase() + s.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                {wallStyle === 'strapwork' ? 'Band' : 'Grout'}{' '}
-                <input
-                  type="range"
-                  min={0}
-                  max={3}
-                  step={0.25}
-                  value={grout}
-                  onChange={(e) => setGrout(Number(e.target.value))}
-                />
-              </label>
-              {photos.length ? (
-                <button
-                  type="button"
-                  className="secondary"
+                  className="compare-toggle"
                   aria-pressed={comparing}
                   onClick={() => setComparing(!comparing)}
                 >
@@ -469,107 +495,209 @@ export function Player({
                     ? 'Hide the original'
                     : 'Compare with the original'}
                 </button>
-              ) : null}
-              <span className="hint">
+                <p className="hint">
+                  A photo of the real pattern, beside the wall. Click it to see
+                  it at full size.
+                </p>
+              </section>
+            ) : null}
+            <section>
+              <h2>The wall</h2>
+              <div className="wall-tools">
+                <label>
+                  Style
+                  <select
+                    value={wallStyle}
+                    onChange={(e) => setWallStyle(e.target.value as WallStyle)}
+                  >
+                    {WALL_STYLES.map((s) => (
+                      <option key={s} value={s}>
+                        {s[0]?.toUpperCase() + s.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  {wallStyle === 'strapwork' ? 'Band' : 'Grout'}
+                  <input
+                    type="range"
+                    min={0}
+                    max={3}
+                    step={0.25}
+                    value={grout}
+                    onChange={(e) => setGrout(Number(e.target.value))}
+                  />
+                </label>
+              </div>
+              <p className="hint">
                 Drag to move along the wall, scroll to zoom.
-              </span>
-            </div>
-          ) : null}
-          {stage.kind === 'color' ? (
-            <div className="export-tools">
-              <button
-                type="button"
-                className="quiet"
-                onClick={() =>
-                  download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
+              </p>
+            </section>
+            <section>
+              <h2>Colors</h2>
+              <PiecePanel
+                model={inking.shown}
+                colors={colors}
+                history={colorHistory}
+                dispatch={colorDispatch}
+                hovered={hovered}
+                onHover={setHovered}
+                selected={selected}
+                onSelect={(type) => {
+                  setSelected(type);
+                  setPlace(undefined);
+                }}
+                place={
+                  fill && place
+                    ? {
+                        key: placeKey(
+                          inking.shown,
+                          place.piece,
+                          place.i,
+                          place.j,
+                        ),
+                        color: fill(place.piece, place.i, place.j),
+                      }
+                    : undefined
                 }
-              >
-                Download SVG
-              </button>
-              <button
-                type="button"
-                className="quiet"
-                onClick={() =>
-                  void pngBlob(exportSvg()).then((png) =>
-                    download(png, `${tutorial.id}.png`),
-                  )
+                onReset={() =>
+                  colorDispatch({ kind: 'reset', to: tutorialColoring(model) })
                 }
-              >
-                Download PNG
-              </button>
-              <select
-                aria-label="Paper"
-                value={paper}
-                onChange={(e) => setPaper(e.target.value as Paper)}
-              >
-                <option>A4</option>
-                <option>Letter</option>
-              </select>
-              <button
-                type="button"
-                className="quiet"
-                onClick={() => setPrinting(true)}
-              >
-                Print line sheet
-              </button>
-            </div>
-          ) : null}
-          {stage.kind === 'color' ? (
-            <PiecePanel
-              model={inking.shown}
-              colors={colors}
-              history={colorHistory}
-              dispatch={colorDispatch}
-              hovered={hovered}
-              onHover={setHovered}
-              selected={selected}
-              onSelect={(type) => {
-                setSelected(type);
-                setPlace(undefined);
-              }}
-              place={
-                fill && place
-                  ? {
-                      key: placeKey(
-                        inking.shown,
-                        place.piece,
-                        place.i,
-                        place.j,
-                      ),
-                      color: fill(place.piece, place.i, place.j),
-                    }
-                  : undefined
-              }
-              onReset={() =>
-                colorDispatch({ kind: 'reset', to: tutorialColoring(model) })
-              }
-            />
-          ) : null}
-        </div>
-        <nav>
-          {onConstruction ? (
+              />
+            </section>
+            <section>
+              <h2>Take it with you</h2>
+              <div className="export-tools">
+                <button
+                  type="button"
+                  className="quiet"
+                  onClick={() =>
+                    download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
+                  }
+                >
+                  Download SVG
+                </button>
+                <button
+                  type="button"
+                  className="quiet"
+                  onClick={() =>
+                    void pngBlob(exportSvg()).then((png) =>
+                      download(png, `${tutorial.id}.png`),
+                    )
+                  }
+                >
+                  Download PNG
+                </button>
+                <select
+                  aria-label="Paper"
+                  value={paper}
+                  onChange={(e) => setPaper(e.target.value as Paper)}
+                >
+                  <option>A4</option>
+                  <option>Letter</option>
+                </select>
+                <button
+                  type="button"
+                  className="quiet"
+                  onClick={() => setPrinting(true)}
+                >
+                  Print line sheet
+                </button>
+              </div>
+            </section>
+          </aside>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+/** A small mark for each phase after the construction. */
+const PHASE_MARKS: Record<'ink' | 'repeat' | 'color', React.ReactNode> = {
+  ink: (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path
+        d="M3 13 L13 3"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  ),
+  repeat: (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path
+        d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+    </svg>
+  ),
+  color: (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path
+        d="M8 1 L10 6 L15 8 L10 10 L8 15 L6 10 L1 8 L6 6 Z"
+        fill="currentColor"
+      />
+    </svg>
+  ),
+};
+
+const PHASE_NAMES = { ink: 'Ink', repeat: 'Repeat', color: 'Color' } as const;
+
+/**
+ * Where the learner is: every step of the construction, then the ink, the
+ * repeat and the color. Each can be clicked to go straight there.
+ */
+function Journey({
+  stages,
+  index,
+  onJump,
+}: {
+  stages: readonly Stage[];
+  index: number;
+  onJump: (to: number) => void;
+}) {
+  const steps = stages.flatMap((s, i) => (s.kind === 'step' ? [i] : []));
+  const state = (i: number) => (i < index ? 'done' : undefined);
+  return (
+    <nav className="journey" aria-label="Where you are">
+      <h2>Construction</h2>
+      <ol className="steps">
+        {steps.map((i, n) => (
+          <li key={i}>
             <button
               type="button"
-              className="quiet"
-              onClick={() => camera.goTo(fullView(model))}
+              className={['step-dot', state(i)].filter(Boolean).join(' ')}
+              aria-current={i === index ? 'step' : undefined}
+              aria-label={`Go to step ${n + 1}`}
+              onClick={() => onJump(i)}
             >
-              Fit
+              {n + 1}
             </button>
-          ) : null}
-          <button
-            type="button"
-            className="secondary"
-            onClick={back}
-            disabled={index === 0}
-          >
-            Back
-          </button>
-          <button type="button" onClick={next} disabled={index === last}>
-            Next
-          </button>
-        </nav>
-      </footer>
-    </div>
+          </li>
+        ))}
+      </ol>
+      <ol className="phases">
+        {stages.map((s, i) =>
+          s.kind === 'step' ? null : (
+            <li key={s.kind}>
+              <button
+                type="button"
+                className={['phase', state(i)].filter(Boolean).join(' ')}
+                aria-current={i === index ? 'step' : undefined}
+                aria-label={`Go to ${PHASE_NAMES[s.kind].toLowerCase()}`}
+                onClick={() => onJump(i)}
+              >
+                <span className="phase-mark">{PHASE_MARKS[s.kind]}</span>
+                <span className="phase-name">{PHASE_NAMES[s.kind]}</span>
+              </button>
+            </li>
+          ),
+        )}
+      </ol>
+    </nav>
   );
 }
 
@@ -590,48 +718,152 @@ export function Play({ json, start }: { json: unknown; start?: Start }) {
 function Broken({ message }: { message: string }) {
   return (
     <div className="player">
-      <header>
-        <div className="title">
-          <a className="home" href="#/">
-            All tutorials
-          </a>
-          <h1>This tutorial cannot be played</h1>
-        </div>
+      <header className="topbar">
+        <a className="home" href="#/">
+          <span className="wordmark">Tastir</span>
+          <span>All patterns</span>
+        </a>
+        <h1>This pattern cannot be shown</h1>
       </header>
       <pre className="error">{message}</pre>
     </div>
   );
 }
 
-const fold = (n: number) => `${n}-fold`;
+/** What the library needs to know about a tutorial before it is loaded. */
+function aboutOf(json: unknown): { style?: string; level?: string } {
+  const t = (json ?? {}) as { style?: unknown; level?: unknown };
+  return {
+    ...(typeof t.style === 'string' ? { style: t.style } : {}),
+    ...(typeof t.level === 'string' ? { level: t.level } : {}),
+  };
+}
+
+const LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
+const capital = (s: string) => (s ? s[0]?.toUpperCase() + s.slice(1) : s);
+
+/** The pattern that draws itself at the top of the library. */
+const HERO = 'twelve-fold-rosette-mian';
+/** Where a newcomer starts. */
+const FIRST = 'eight-fold-star-and-cross';
 
 /** Every tutorial, with a picture of the finished pattern. */
 export function Library({ entries }: { entries: readonly Entry[] }) {
+  const [style, setStyle] = useState<string>();
+  const [level, setLevel] = useState<string>();
+  const styles = [
+    ...new Set(entries.flatMap((e) => aboutOf(e.json).style ?? [])),
+  ].sort();
+  const shown = entries.filter((e) => {
+    const about = aboutOf(e.json);
+    return (
+      (!style || about.style === style) && (!level || about.level === level)
+    );
+  });
+  const hero = entries.find((e) => e.id === HERO) ?? entries[0];
+  const first = entries.find((e) => e.id === FIRST) ?? entries[0];
   return (
     <div className="library">
-      <header>
+      <header className="masthead">
         <h1>Tastir</h1>
-        <p>
-          Islamic geometric patterns, drawn one compass and ruler step at a
-          time.
-        </p>
+        {import.meta.env.DEV ? (
+          <p className="dev-links">
+            <a href="#/review">
+              <strong>Review page:</strong> progress, decisions and questions
+            </a>
+            <a href="#/notes">
+              <strong>Project notes:</strong> goal, queue, status and lessons
+            </a>
+          </p>
+        ) : null}
       </header>
-      {import.meta.env.DEV ? (
-        <p className="review-banner">
-          <a href="#/review">
-            <strong>Review page:</strong> progress, decisions and questions →
-          </a>{' '}
-          <a href="#/notes">
-            <strong>Project notes:</strong> goal, queue, status and lessons →
-          </a>
-        </p>
-      ) : null}
-      <ul className="cards">
-        {entries.map((entry) => (
-          <Card key={entry.id} entry={entry} />
-        ))}
-      </ul>
+      <section className="hero">
+        {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}
+        <div className="hero-copy">
+          <h2>Draw Islamic geometric patterns with a compass and a ruler.</h2>
+          <p>
+            Every pattern here starts from one circle. Each step adds a circle
+            or a line, and the pattern appears out of the lines you drew.
+          </p>
+          <ol className="hero-steps">
+            <li>Follow the construction, one step at a time.</li>
+            <li>Ink the lines that make the pattern.</li>
+            <li>Repeat the tile into a wall and color it.</li>
+          </ol>
+          {first ? (
+            <a className="button primary" href={`#/${first.id}`}>
+              Start with the star and cross
+            </a>
+          ) : null}
+        </div>
+      </section>
+      <section aria-labelledby="collection">
+        <div className="collection-head">
+          <h2 id="collection">The patterns</h2>
+          <p>
+            {shown.length === entries.length
+              ? `${entries.length} patterns, many checked against photos of the real walls.`
+              : `${shown.length} of ${entries.length} patterns.`}
+          </p>
+        </div>
+        <div className="filters">
+          <fieldset className="filter-group">
+            <legend>Tradition</legend>
+            <Chip on={!style} onClick={() => setStyle(undefined)}>
+              All
+            </Chip>
+            {styles.map((s) => (
+              <Chip key={s} on={style === s} onClick={() => setStyle(s)}>
+                {s}
+              </Chip>
+            ))}
+          </fieldset>
+          <fieldset className="filter-group">
+            <legend>Level</legend>
+            <Chip on={!level} onClick={() => setLevel(undefined)}>
+              Any
+            </Chip>
+            {LEVELS.map((l) => (
+              <Chip key={l} on={level === l} onClick={() => setLevel(l)}>
+                {capital(l)}
+              </Chip>
+            ))}
+          </fieldset>
+        </div>
+        {shown.length ? (
+          <ul className="cards">
+            {shown.map((entry) => (
+              <Card key={entry.id} entry={entry} />
+            ))}
+          </ul>
+        ) : (
+          <p className="empty">
+            No pattern matches both choices. Choose another tradition or level.
+          </p>
+        )}
+      </section>
+      <footer className="site-footer">
+        Tastir draws every point from crossings of earlier circles and lines, as
+        with a real compass and ruler. Sources and photographers are named with
+        each pattern.
+      </footer>
     </div>
+  );
+}
+
+function Chip({
+  on,
+  onClick,
+  children,
+}: {
+  on: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button type="button" className="chip" aria-pressed={on} onClick={onClick}>
+      {children}
+    </button>
   );
 }
 
@@ -647,11 +879,13 @@ function Card({ entry: { id, json } }: { entry: Entry }) {
         ) : (
           <div className={error ? 'thumbnail broken' : 'thumbnail waiting'} />
         )}
-        <h2>{model?.tutorial.title ?? id}</h2>
+        <h3>{model?.tutorial.title ?? id}</h3>
         {model ? (
-          <p>
-            {fold(model.tutorial.fold)} · {model.tutorial.style} ·{' '}
-            {model.tutorial.level} · {shownSteps(model.tutorial).length} steps
+          <p className="meta">
+            <span className="level">{capital(model.tutorial.level)}</span>
+            <span>{shownSteps(model.tutorial).length} steps</span>
+            <span>{model.tutorial.fold}-fold</span>
+            <span>{model.tutorial.style}</span>
           </p>
         ) : error ? (
           <p className="error">Cannot be played: {error}</p>
@@ -661,15 +895,100 @@ function Card({ entry: { id, json } }: { entry: Entry }) {
       </a>
       {model ? (
         <div className="card-actions">
-          <a className="button secondary" href={`#/${id}`}>
+          <a className="button watch" href={`#/${id}`}>
             Watch it drawn
           </a>
-          <a className="button secondary" href={`#/${id}/result`}>
+          <a className="button result" href={`#/${id}/result`}>
             {photos ? 'Result and original' : 'See the result'}
           </a>
         </div>
       ) : null}
     </li>
+  );
+}
+
+/** The hero: a pattern drawing itself, loaded like any other. */
+function HeroDrawing({ entry }: { entry: Entry }) {
+  const { model } = useModel(entry.json);
+  return (
+    <figure className="hero-plate">
+      {model ? (
+        <HeroPlay model={model} />
+      ) : (
+        <div className="plate-frame">
+          <div className="thumbnail waiting" />
+        </div>
+      )}
+    </figure>
+  );
+}
+
+/** How long the hero holds the finished, colored pattern. */
+const HERO_HOLD_MS = 4500;
+const HERO_SPEED = 1.6;
+
+/**
+ * Plays the construction step by step, inks it, then shows it colored, and
+ * starts again; with reduced motion it shows the colored pattern only.
+ */
+function HeroPlay({ model }: { model: Model }) {
+  const beats = useMemo(() => shownBeats(model.tutorial), [model]);
+  const all = beatsOf(model.tutorial).length;
+  const reduced = useMemo(prefersReducedMotion, []);
+  const [k, setK] = useState(0);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const view = useMemo(() => fullView(model), [model]);
+  const n = beats.length;
+  useLayoutEffect(() => {
+    if (reduced) return;
+    let anims: Animation[] = [];
+    if (k < n) {
+      anims = play(svgRef.current, planStep(model, beats[k] ?? 1, HERO_SPEED));
+    } else if (k === n) {
+      anims = playInk(svgRef.current, model, HERO_SPEED * 1.5);
+    }
+    const ends = anims.map(
+      (a) => Number(a.effect?.getComputedTiming().endTime ?? 0) || 0,
+    );
+    const wait =
+      k > n ? HERO_HOLD_MS : Math.max(600, ...ends) + (k === n ? 900 : 350);
+    const timer = setTimeout(() => setK((k + 1) % (n + 2)), wait);
+    return () => {
+      clearTimeout(timer);
+      for (const a of anims) a.cancel();
+    };
+  }, [k, n, beats, model, reduced]);
+  const caption =
+    reduced || k > n
+      ? model.tutorial.title
+      : k === n
+        ? `${model.tutorial.title}: inking the pattern`
+        : `${model.tutorial.title}: step ${k + 1} of ${n}`;
+  return (
+    <>
+      <div className="plate-frame">
+        {reduced || k > n ? (
+          <Thumbnail model={model} />
+        ) : k === n ? (
+          <Construction
+            model={model}
+            upTo={all}
+            view={view}
+            svgRef={svgRef}
+            ink
+            enter
+          />
+        ) : (
+          <Construction
+            model={model}
+            upTo={beats[k] ?? 1}
+            view={view}
+            svgRef={svgRef}
+          />
+        )}
+      </div>
+      <figcaption>{caption}</figcaption>
+    </>
   );
 }
 

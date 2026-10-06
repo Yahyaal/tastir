@@ -1274,6 +1274,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'A new look for the whole app',
+      text: 'The drawing sits on a pale plaster plate in a deep lapis frame; saffron marks what is happening now. The home page opens with a pattern drawing itself and three plain sentences on how it works, then the patterns as a tiled wall you can filter by tradition and level. In a tutorial, the left column shows every step and the ink, repeat and color stages, and you can click any of them; the settings sit in one menu; at the color stage the wall tools and colors are on the right. On a phone, Back and Next stay at the bottom.',
+      link: { label: 'See it', href: '/#/' },
+    },
+    {
       title: 'Two ways in from the home page, and photos at full size',
       text: 'Each card has “Watch it drawn” (from step 1) and “Result and original” (straight to the finished wall with the photo beside it; the address is #/<id>/result). Click the photo to see it over the whole page, fitted or at actual size. The free photos now ship at their full resolution (up to 4032 px), and the Leones fret has a free Flickr photo (CC BY-SA), so five tutorials still wait for one.',
       link: { label: 'Try it', href: '/#/alhambra-leones-fret/result' },

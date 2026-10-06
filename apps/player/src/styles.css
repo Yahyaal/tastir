@@ -1,20 +1,41 @@
+/*
+ * Tastir: a pattern is drawn on a pale plaster plate (gesso), set in a deep
+ * lapis frame the way a tiled panel is set in a wall. Saffron marks what is
+ * happening now. Titles are in Marcellus, cut like carved letters; all
+ * reading text is in Atkinson Hyperlegible.
+ */
 :root {
-  --ink: #23201c;
-  --old: #c9c6c0;
-  --faint: #e4e1db;
-  --current: #d55e00;
-  /* What a step works from, and ink drawn in this step (Okabe–Ito). */
-  --used: #0072b2;
-  --fresh: #009e73;
-  --paper: #fbf9f4;
-  --muted: #6b665e;
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    sans-serif;
+  /* The frame. */
+  --lapis: #1f2b5c;
+  --lapis-deep: #172149;
+  --lapis-raised: #27356c;
+  --lapis-line: #3a4a88;
+  --on-lapis: #eef0eb;
+  --on-lapis-muted: #b4bcd8;
+  /* The plate. */
+  --gesso: #eef0eb;
+  --gesso-edge: #dde1da;
+  --graphite: #2a2e35;
+  --saffron: #e3a72f;
+  --malachite: #1f8a6b;
+
+  /* Meanings in the drawing: what this step draws (saffron), what it works
+     from (cobalt), ink drawn this step (malachite). */
+  --ink: var(--graphite);
+  --old: #b7bcc2;
+  --faint: #d6dad3;
+  --current: #b97806;
+  --used: #2f5bb7;
+  --fresh: var(--malachite);
+  --paper: var(--gesso);
+  --muted: #5b616b;
+
+  --display: 'Marcellus', 'Iowan Old Style', Georgia, serif;
+  --text:
+    'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: var(--text);
   color: var(--ink);
-  background: var(--paper);
+  background: var(--gesso);
 }
 
 * {
@@ -23,8 +44,127 @@
 
 body {
   margin: 0;
-  background: var(--paper);
+  background: var(--gesso);
 }
+
+/* The library and the player sit in the lapis frame. */
+html:has(.player, .library) body {
+  background: var(--lapis);
+}
+
+:focus-visible {
+  outline: 3px solid var(--saffron);
+  outline-offset: 2px;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  padding: 8px 18px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+button.secondary,
+button.quiet {
+  background: transparent;
+  color: var(--ink);
+}
+
+button.quiet {
+  border-color: transparent;
+  text-decoration: underline;
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+select,
+input {
+  font: inherit;
+}
+
+.error {
+  white-space: pre-wrap;
+  color: #ffb4b4;
+}
+
+/* ------------------------------------------------------------------ */
+/* Buttons and controls on the lapis frame */
+
+.player button,
+.library .button,
+.card-actions .button {
+  border-color: var(--on-lapis);
+  background: var(--on-lapis);
+  color: var(--lapis-deep);
+}
+
+.player button.secondary,
+.library .button.secondary {
+  background: transparent;
+  color: var(--on-lapis);
+  border-color: var(--lapis-line);
+}
+
+.player button.secondary:hover:not(:disabled),
+.library .button.secondary:hover {
+  border-color: var(--on-lapis);
+}
+
+.player button.quiet {
+  background: transparent;
+  border-color: transparent;
+  color: var(--on-lapis-muted);
+  text-decoration: underline;
+  padding: 4px 6px;
+}
+
+.player button.quiet:hover:not(:disabled) {
+  color: var(--on-lapis);
+}
+
+.player select {
+  background: var(--lapis-deep);
+  color: var(--on-lapis);
+  border: 1px solid var(--lapis-line);
+  border-radius: 6px;
+  padding: 3px 6px;
+}
+
+a.button {
+  display: inline-block;
+  font-size: 0.9rem;
+  padding: 7px 14px;
+  border: 1px solid var(--on-lapis);
+  border-radius: 999px;
+  text-decoration: none;
+  text-align: center;
+}
+
+a.button.primary {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 10px 22px;
+}
+
+a.button.primary:hover {
+  background: #f0ba4b;
+}
+
+/* ------------------------------------------------------------------ */
+/* The player */
 
 .player {
   display: flex;
@@ -32,50 +172,519 @@ body {
   /* At least the window; taller (and the page scrolls) when a tutorial's
      text and piece list are long, so the picture keeps its room. */
   min-height: 100vh;
-  max-width: 1100px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 20px 20px;
+  color: var(--on-lapis);
+  background: var(--lapis);
 }
 
-header {
+.topbar {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   padding: 12px 0;
 }
 
-header h1 {
-  font-size: 1.25rem;
-  margin: 0;
-}
-
-.controls {
-  display: flex;
-  gap: 16px;
+.topbar .home {
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
+  color: var(--on-lapis-muted);
+  text-decoration: none;
   font-size: 0.9rem;
-  color: var(--muted);
+  white-space: nowrap;
 }
 
-.controls select {
-  font: inherit;
+.topbar .home:hover {
+  color: var(--on-lapis);
 }
 
-.brand {
-  color: var(--muted);
+.wordmark {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  color: var(--on-lapis);
+}
+
+.topbar h1 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+/* The view settings, folded into one menu. */
+.view-menu {
+  position: relative;
   font-size: 0.9rem;
 }
 
+.view-menu summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 6px 14px;
+  border: 1px solid var(--lapis-line);
+  border-radius: 999px;
+  color: var(--on-lapis);
+  white-space: nowrap;
+}
+
+.view-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.view-menu[open] summary {
+  border-color: var(--on-lapis);
+}
+
+.view-menu .controls {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 20;
+  display: grid;
+  gap: 12px;
+  min-width: 230px;
+  padding: 14px 16px;
+  background: var(--lapis-deep);
+  border: 1px solid var(--lapis-line);
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(5, 9, 30, 0.45);
+}
+
+.view-menu label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.view-menu label:has(input[type='checkbox']) {
+  justify-content: flex-start;
+}
+
+.view-menu input[type='checkbox'] {
+  accent-color: var(--saffron);
+  width: 18px;
+  height: 18px;
+}
+
+/* On a wide screen the player fits the window: the plate takes what is
+   left, and the color panel scrolls inside itself. */
+@media (min-width: 761px) {
+  .player {
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  .workspace {
+    min-height: 0;
+  }
+
+  .plate-area {
+    min-height: 0;
+  }
+
+  .stage {
+    min-height: 0;
+  }
+
+  .side-panel {
+    max-height: 100%;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .journey {
+    max-height: 100%;
+    overflow-y: auto;
+  }
+}
+
+/* Journey on the left, the plate in the middle, colors on the right. */
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 148px minmax(0, 1fr);
+  gap: 20px;
+  min-height: 0;
+}
+
+.workspace.with-panel {
+  grid-template-columns: 148px minmax(0, 1fr) 300px;
+}
+
+.plate-area {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 14px;
+}
+
+/* The plate: the drawing on plaster, framed by a thin saffron fillet. */
 .stage {
   flex: 1;
-  min-height: 50vh;
+  min-height: 58vh;
   display: flex;
+  background: var(--gesso);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 0 0 1px var(--gesso-edge),
+    0 0 0 6px var(--lapis-deep),
+    0 0 0 7px rgba(227, 167, 47, 0.55);
+  overflow: hidden;
+  color: var(--ink);
 }
 
 .drawing {
   width: 100%;
   height: 100%;
+  touch-action: none;
 }
+
+main.stage .drawing:not(.wall) {
+  cursor: grab;
+}
+
+.drawing.dragging {
+  cursor: grabbing;
+}
+
+/* The journey: every step of the construction, then ink, repeat, color. */
+.journey {
+  align-self: start;
+  position: sticky;
+  top: 12px;
+  font-size: 0.85rem;
+}
+
+.journey h2 {
+  margin: 0 0 8px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: var(--on-lapis-muted);
+}
+
+.journey ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.journey .steps {
+  display: grid;
+  grid-template-columns: repeat(4, 28px);
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.journey .phases {
+  display: grid;
+  gap: 6px;
+  border-left: 1px solid var(--lapis-line);
+  margin-left: 13px;
+  padding-left: 0;
+}
+
+.journey button {
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.player .journey .step-dot {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--on-lapis-muted);
+  border: 1px solid var(--lapis-line);
+}
+
+.player .journey .step-dot.done {
+  background: var(--lapis-raised);
+  color: var(--on-lapis);
+  border-color: var(--lapis-raised);
+}
+
+.player .journey .phase {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-left: -14px;
+  padding: 4px 8px 4px 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: var(--on-lapis-muted);
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.phase-mark {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--lapis-line);
+  background: var(--lapis);
+  display: grid;
+  place-items: center;
+}
+
+.phase-mark svg {
+  width: 14px;
+  height: 14px;
+}
+
+.player .journey .phase.done {
+  color: var(--on-lapis);
+}
+
+.player .journey .phase.done .phase-mark {
+  background: var(--lapis-raised);
+  border-color: var(--lapis-raised);
+}
+
+.player .journey [aria-current='step'],
+.player .journey [aria-current='step'] .phase-mark {
+  color: var(--lapis-deep);
+  background: var(--saffron);
+  border-color: var(--saffron);
+}
+
+.player .journey .phase[aria-current='step'] {
+  background: transparent;
+  color: var(--saffron);
+  font-weight: 700;
+}
+
+.player .journey button:hover:not([aria-current='step']) {
+  border-color: var(--on-lapis);
+  color: var(--on-lapis);
+}
+
+/* What the step says, under the plate. */
+.caption {
+  display: flex;
+  gap: 24px;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.text {
+  max-width: 68ch;
+}
+
+.text p {
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+
+.label {
+  margin: 0 0 2px;
+  font-family: var(--display);
+  font-size: 1rem;
+  color: var(--saffron);
+}
+
+.stage-hint {
+  margin: 0 0 6px;
+  font-size: 0.9rem;
+  color: var(--on-lapis-muted);
+}
+
+.instruction {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+.text .instruction {
+  margin-bottom: 10px;
+}
+
+.caption nav {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.caption nav button:not(.quiet) {
+  min-width: 96px;
+  padding: 10px 20px;
+}
+
+.caption nav .next {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+}
+
+.caption nav .next:hover:not(:disabled) {
+  background: #f0ba4b;
+}
+
+.ink-tools {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 6px;
+  font-size: 0.9rem;
+  color: var(--on-lapis-muted);
+}
+
+.ink-tools button {
+  padding: 5px 14px;
+}
+
+/* The color panel on the right. */
+.side-panel {
+  align-self: start;
+  display: grid;
+  gap: 18px;
+  font-size: 0.9rem;
+}
+
+.side-panel section {
+  display: grid;
+  gap: 10px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--lapis-line);
+}
+
+.side-panel h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.05rem;
+}
+
+.wall-tools,
+.export-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+}
+
+.wall-tools label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wall-tools input[type='range'] {
+  width: 110px;
+  accent-color: var(--saffron);
+}
+
+.export-tools button {
+  padding: 4px 6px;
+}
+
+.compare-toggle {
+  width: 100%;
+}
+
+.player .compare-toggle[aria-pressed='false'] {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+}
+
+.hint {
+  color: var(--on-lapis-muted);
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+/* The pieces and their colors. */
+.piece-panel {
+  font-size: 0.9rem;
+}
+
+.color-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.color-tools button {
+  padding: 4px 10px;
+}
+
+.piece-types {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+  display: grid;
+  gap: 6px;
+}
+
+.player .piece-button {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  background: var(--lapis-raised);
+  color: var(--on-lapis);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 5px 10px 5px 5px;
+  text-align: left;
+}
+
+.player .piece-types li.active .piece-button {
+  border-color: var(--saffron);
+}
+
+.piece-button small {
+  display: block;
+  color: var(--on-lapis-muted);
+  font-size: 0.8rem;
+}
+
+.piece-shape {
+  width: 34px;
+  height: 34px;
+  flex: none;
+}
+
+.chooser {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.player .swatch-button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 2px solid var(--lapis-deep);
+  border-radius: 50%;
+}
+
+.swatch-button.current {
+  outline: 3px solid var(--saffron);
+  outline-offset: 1px;
+}
+
+.any-color input {
+  vertical-align: middle;
+}
+
+/* ------------------------------------------------------------------ */
+/* What is drawn on the plate */
 
 .el {
   fill: none;
@@ -114,9 +723,6 @@ header h1 {
 
 .mark {
   fill: var(--old);
-}
-
-.mark {
   vector-effect: non-scaling-stroke;
 }
 
@@ -137,12 +743,12 @@ header h1 {
 
 .point-name.highlighted {
   fill: var(--used);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .point-name.current {
   fill: var(--current);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .ink {
@@ -182,157 +788,6 @@ header h1 {
   stroke-linejoin: round;
 }
 
-footer {
-  display: flex;
-  gap: 24px;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 12px 0 20px;
-  border-top: 1px solid var(--faint);
-}
-
-.text {
-  max-width: 70ch;
-}
-
-.text p {
-  margin: 0 0 6px;
-  line-height: 1.45;
-}
-
-.label {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--current);
-}
-
-nav {
-  display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-button {
-  font: inherit;
-  padding: 8px 18px;
-  border: 1px solid var(--ink);
-  border-radius: 6px;
-  background: var(--ink);
-  color: var(--paper);
-  cursor: pointer;
-}
-
-button.secondary,
-button.quiet {
-  background: transparent;
-  color: var(--ink);
-}
-
-button.quiet {
-  border-color: transparent;
-  text-decoration: underline;
-}
-
-.drawing {
-  touch-action: none;
-}
-
-main.stage .drawing:not(.wall) {
-  cursor: grab;
-}
-
-.drawing.dragging {
-  cursor: grabbing;
-}
-
-button:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.error {
-  white-space: pre-wrap;
-  color: #8c2f39;
-}
-
-.title {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.home {
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.library {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 24px 16px 48px;
-}
-
-.library header {
-  display: block;
-  padding: 0 0 16px;
-}
-
-.library h1 {
-  margin: 0 0 4px;
-}
-
-.library header p {
-  margin: 0;
-  color: var(--muted);
-}
-
-.cards {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  display: block;
-  color: inherit;
-  text-decoration: none;
-  border: 1px solid var(--faint);
-  border-radius: 8px;
-  overflow: hidden;
-  background: #fff;
-}
-
-.card:hover,
-.card:focus-visible {
-  border-color: var(--ink);
-}
-
-.card h2 {
-  font-size: 1.05rem;
-  margin: 10px 12px 2px;
-}
-
-.card p {
-  margin: 0 12px 12px;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.thumbnail {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1;
-}
-
-.thumbnail.broken {
-  background: var(--faint);
-}
-
 .free-ink .hit {
   stroke: transparent;
   stroke-width: 12px;
@@ -359,18 +814,6 @@ button:disabled {
   stroke-linecap: round;
 }
 
-.ink-tools {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-top: 6px;
-  font-size: 0.9rem;
-}
-
-.ink-tools button {
-  padding: 4px 12px;
-}
-
 /* Wall pieces sit in an SVG pattern, where widths are in tile units: the
    stroke width comes from the attribute, never from CSS. */
 .wall-piece.dim {
@@ -383,194 +826,6 @@ button:disabled {
 
 .wall {
   cursor: pointer;
-}
-
-.piece-panel {
-  margin-top: 8px;
-  font-size: 0.9rem;
-}
-
-.color-tools {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.color-tools select {
-  font: inherit;
-}
-
-.color-tools button {
-  padding: 4px 10px;
-}
-
-.piece-types {
-  list-style: none;
-  padding: 0;
-  margin: 8px 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.piece-button {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  background: #fff;
-  color: var(--ink);
-  border: 1px solid var(--faint);
-  padding: 4px 10px 4px 4px;
-  text-align: left;
-}
-
-.piece-types li.active .piece-button {
-  border-color: var(--current);
-}
-
-.piece-button small {
-  display: block;
-  color: var(--muted);
-  font-size: 0.8rem;
-}
-
-.piece-shape {
-  width: 34px;
-  height: 34px;
-}
-
-.chooser {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.swatch-button {
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 1px solid var(--ink);
-  border-radius: 50%;
-}
-
-.swatch-button.current {
-  outline: 3px solid var(--current);
-  outline-offset: 1px;
-}
-
-.any-color input {
-  vertical-align: middle;
-}
-
-.hint {
-  color: var(--muted);
-  margin: 0;
-}
-
-.wall-tools {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  margin-top: 6px;
-  font-size: 0.9rem;
-}
-
-.wall-tools select {
-  font: inherit;
-}
-
-.wall-tools input[type='range'] {
-  vertical-align: middle;
-  width: 110px;
-}
-
-.export-tools {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-top: 6px;
-  font-size: 0.9rem;
-}
-
-.export-tools button {
-  padding: 4px 6px;
-}
-
-.export-tools select {
-  font: inherit;
-}
-
-/* The line sheet shows only on paper; on screen nothing changes. */
-.print-sheet {
-  display: none;
-}
-
-@media print {
-  .player > :not(.print-sheet) {
-    display: none !important;
-  }
-
-  .player {
-    height: auto;
-    padding: 0;
-  }
-
-  .print-sheet {
-    display: block;
-    color: #000;
-  }
-
-  .print-sheet h1 {
-    font-size: 18pt;
-    margin: 0 0 2pt;
-  }
-
-  .print-sheet p {
-    margin: 0 0 6pt;
-  }
-
-  .print-pattern svg {
-    width: 100%;
-    height: auto;
-  }
-
-  .print-sheet footer {
-    border: 0;
-    display: block;
-    font-size: 9pt;
-    padding: 6pt 0 0;
-  }
-}
-
-.player.loading {
-  justify-content: center;
-  align-items: center;
-  color: var(--muted);
-}
-
-.thumbnail.waiting {
-  background: repeating-linear-gradient(
-    45deg,
-    var(--faint) 0 8px,
-    #fff 8px 16px
-  );
-}
-
-/* Dev-only link to the overnight review page. */
-.review-banner {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 24px;
-  margin: 0 0 20px;
-  padding: 12px 16px;
-  background: #fef3c7;
-  border: 1px solid #fcd34d;
-  border-radius: 10px;
-}
-
-.review-banner a {
-  color: #92400e;
-  text-decoration: none;
 }
 
 /* Transitions between the last step, the ink, the repeat and the colour.
@@ -592,12 +847,6 @@ button:disabled {
    floods in with its colour, one type after another. */
 .color-veil {
   pointer-events: none;
-}
-
-.stage-hint {
-  margin: -4px 0 6px;
-  font-size: 0.85rem;
-  color: var(--muted);
 }
 
 /* Ink by ruler: the ruler shows only while it is laid (playInk). */
@@ -623,18 +872,24 @@ button:disabled {
   opacity: 0;
 }
 
-/* The original: a photo of the real pattern beside the wall. */
+/* ------------------------------------------------------------------ */
+/* The original: a photo of the real pattern beside the wall */
+
 .stage.comparing {
-  gap: 12px;
+  gap: 0;
 }
 
 .original {
-  flex: 0 0 40%;
+  flex: 0 0 42%;
   margin: 0;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   min-width: 0;
   min-height: 0;
+  padding: 14px;
+  background: var(--lapis-deep);
+  color: var(--on-lapis);
 }
 
 .photo-open {
@@ -647,6 +902,13 @@ button:disabled {
   display: flex;
 }
 
+.player .photo-open {
+  background: none;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+}
+
 .original img {
   width: 100%;
   max-height: 62vh;
@@ -655,8 +917,13 @@ button:disabled {
 
 .original figcaption {
   font-size: 0.8rem;
-  color: var(--muted);
-  padding: 4px 0;
+  color: var(--on-lapis-muted);
+  padding: 8px 0 0;
+  line-height: 1.45;
+}
+
+.original figcaption a {
+  color: var(--on-lapis);
 }
 
 .original .photo-nav {
@@ -671,15 +938,10 @@ button:disabled {
   flex-direction: column;
   justify-content: center;
   padding: 16px;
-  border: 1px dashed var(--old);
-  color: var(--muted);
+  border: 1px dashed var(--lapis-line);
+  border-radius: 6px;
+  color: var(--on-lapis-muted);
   text-align: center;
-}
-
-@media (max-width: 700px) {
-  .stage.comparing {
-    flex-direction: column;
-  }
 }
 
 /* A photo over the whole page. */
@@ -687,17 +949,17 @@ button:disabled {
   position: fixed;
   inset: 0;
   z-index: 50;
-  background: #1a1816;
+  background: #0d1230;
   display: flex;
   flex-direction: column;
+  color: var(--on-lapis);
 }
 
 .full-size-bar {
   display: flex;
   gap: 10px;
   align-items: center;
-  padding: 8px 16px;
-  color: #eee;
+  padding: 10px 16px;
   font-size: 0.85rem;
 }
 
@@ -706,9 +968,10 @@ button:disabled {
 }
 
 .full-size-bar button {
-  color: #eee;
-  border-color: #eee;
-  padding: 4px 12px;
+  color: var(--on-lapis);
+  background: transparent;
+  border: 1px solid var(--on-lapis);
+  padding: 4px 14px;
 }
 
 .full-size-view {
@@ -739,39 +1002,510 @@ button:disabled {
   cursor: zoom-out;
 }
 
-/* The two ways into a tutorial, under its card. */
+/* ------------------------------------------------------------------ */
+/* The library */
+
+.library {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 20px 64px;
+  color: var(--on-lapis);
+}
+
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 0;
+}
+
+.masthead h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+}
+
+.dev-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  font-size: 0.85rem;
+}
+
+.dev-links a {
+  color: var(--saffron);
+}
+
+/* The opening: a pattern drawing itself, beside one plain sentence. */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+  padding: 16px 0 56px;
+}
+
+.hero-plate {
+  margin: 0;
+}
+
+.hero-plate .plate-frame {
+  aspect-ratio: 1;
+  background: var(--gesso);
+  border-radius: 6px;
+  box-shadow:
+    0 0 0 8px var(--lapis-deep),
+    0 0 0 9px rgba(227, 167, 47, 0.55);
+  overflow: hidden;
+  display: flex;
+}
+
+.hero-plate .plate-frame > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-plate .thumbnail {
+  animation: hero-color 1.2s ease-out both;
+}
+
+@keyframes hero-color {
+  from {
+    opacity: 0;
+  }
+}
+
+.hero-plate figcaption {
+  margin-top: 18px;
+  font-size: 0.85rem;
+  color: var(--on-lapis-muted);
+  min-height: 1.3em;
+}
+
+.hero-copy h2 {
+  margin: 0 0 18px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(2rem, 4.2vw, 3.25rem);
+  line-height: 1.12;
+  letter-spacing: 0.005em;
+}
+
+.hero-copy p {
+  margin: 0 0 14px;
+  max-width: 46ch;
+  font-size: 1.08rem;
+  line-height: 1.6;
+  color: var(--on-lapis-muted);
+}
+
+.hero-steps {
+  list-style: none;
+  counter-reset: how;
+  margin: 22px 0 28px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.hero-steps li {
+  counter-increment: how;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 1rem;
+}
+
+.hero-steps li::before {
+  content: counter(how);
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--saffron);
+  color: var(--saffron);
+  font-family: var(--display);
+  font-size: 0.9rem;
+}
+
+/* The collection: tiles on a wall, with grout between them. */
+.collection-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-top: 28px;
+  border-top: 1px solid var(--lapis-line);
+  margin-bottom: 18px;
+}
+
+.collection-head h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.7rem;
+}
+
+.collection-head p {
+  margin: 0;
+  color: var(--on-lapis-muted);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin-bottom: 22px;
+}
+
+.filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.filter-group legend {
+  float: left;
+  margin-right: 6px;
+  font-size: 0.85rem;
+  color: var(--on-lapis-muted);
+}
+
+.library .chip {
+  padding: 5px 12px;
+  font-size: 0.85rem;
+  background: transparent;
+  color: var(--on-lapis);
+  border: 1px solid var(--lapis-line);
+  border-radius: 999px;
+}
+
+.library .chip[aria-pressed='true'] {
+  background: var(--on-lapis);
+  color: var(--lapis-deep);
+  border-color: var(--on-lapis);
+}
+
+.cards {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 28px 6px;
+}
+
 .card-item {
   display: flex;
   flex-direction: column;
 }
 
-.card-item .card {
+.card {
   flex: 1;
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.card .thumbnail {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--gesso);
+  outline: 3px solid var(--gesso-edge);
+  transition: filter 0.2s;
+}
+
+.card:hover .thumbnail,
+.card:focus-visible .thumbnail {
+  filter: brightness(1.06) saturate(1.08);
+}
+
+.card h3 {
+  margin: 14px 4px 6px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.12rem;
+  line-height: 1.3;
+}
+
+.card:hover h3 {
+  text-decoration: underline;
+  text-decoration-color: var(--saffron);
+  text-underline-offset: 4px;
+}
+
+.card p {
+  margin: 0 4px 10px;
+  font-size: 0.85rem;
+  color: var(--on-lapis-muted);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.meta .level {
+  color: var(--saffron);
 }
 
 .card-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
-  margin-top: 6px;
+  margin: 0 4px;
 }
 
-.card-actions a.button {
-  text-align: center;
+.card-actions .button {
+  font-size: 0.82rem;
+  padding: 6px 8px;
 }
 
-a.button {
-  display: inline-block;
+.card-actions .button.watch {
+  background: var(--on-lapis);
+  color: var(--lapis-deep);
+}
+
+.card-actions .button.watch:hover {
+  background: #fff;
+}
+
+.card-actions .button.result {
+  background: transparent;
+  color: var(--on-lapis);
+  border-color: var(--lapis-line);
+}
+
+.card-actions .button.result:hover {
+  border-color: var(--on-lapis);
+}
+
+.thumbnail {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.thumbnail.broken {
+  background: var(--lapis-raised);
+}
+
+.thumbnail.waiting {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--lapis-raised) 0 8px,
+    var(--lapis) 8px 16px
+  );
+}
+
+.empty {
+  padding: 32px 0;
+  color: var(--on-lapis-muted);
+}
+
+.site-footer {
+  margin-top: 64px;
+  padding-top: 20px;
+  border-top: 1px solid var(--lapis-line);
   font-size: 0.85rem;
-  padding: 5px 10px;
-  border: 1px solid var(--ink);
-  border-radius: 6px;
-  color: var(--ink);
-  text-decoration: none;
+  color: var(--on-lapis-muted);
+  max-width: 70ch;
+  line-height: 1.55;
 }
 
-a.button:hover,
-a.button:focus-visible {
-  background: var(--ink);
-  color: var(--paper);
+/* ------------------------------------------------------------------ */
+/* Loading and errors */
+
+.player.loading {
+  justify-content: center;
+  align-items: center;
+  color: var(--on-lapis-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* Narrow screens */
+
+@media (max-width: 1100px) {
+  .workspace.with-panel {
+    grid-template-columns: 148px minmax(0, 1fr);
+  }
+
+  .workspace.with-panel .side-panel {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 760px) {
+  .player {
+    padding: 0 12px 88px;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+
+  .topbar h1 {
+    order: 3;
+    flex-basis: 100%;
+    font-size: 1.2rem;
+  }
+
+  .topbar .wordmark {
+    display: none;
+  }
+
+  .view-menu {
+    margin-left: auto;
+  }
+
+  .workspace,
+  .workspace.with-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .workspace.with-panel .side-panel {
+    grid-column: 1;
+  }
+
+  /* The journey becomes a thin strip above the plate. */
+  .journey {
+    position: static;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .journey h2 {
+    display: none;
+  }
+
+  .journey .steps {
+    display: flex;
+    margin: 0;
+  }
+
+  .journey .phases {
+    display: flex;
+    border: 0;
+    margin: 0;
+  }
+
+  .player .journey .phase {
+    margin: 0;
+  }
+
+  .player .journey .phase .phase-name {
+    display: none;
+  }
+
+  .stage {
+    min-height: 54vh;
+  }
+
+  .stage.comparing {
+    flex-direction: column;
+  }
+
+  .instruction {
+    font-size: 1.08rem;
+  }
+
+  /* Back and Next stay at the bottom of the screen. */
+  .caption nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 15;
+    justify-content: flex-end;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: var(--lapis-deep);
+    border-top: 1px solid var(--lapis-line);
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding-bottom: 40px;
+  }
+
+  .cards {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 22px 6px;
+  }
+
+  .card-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-plate .thumbnail {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* The line sheet shows only on paper; on screen nothing changes. */
+
+.print-sheet {
+  display: none;
+}
+
+@media print {
+  html:has(.player, .library) body {
+    background: #fff;
+  }
+
+  .player > :not(.print-sheet) {
+    display: none !important;
+  }
+
+  .player {
+    height: auto;
+    padding: 0;
+    background: #fff;
+    color: #000;
+  }
+
+  .print-sheet {
+    display: block;
+    color: #000;
+  }
+
+  .print-sheet h1 {
+    font-size: 18pt;
+    margin: 0 0 2pt;
+  }
+
+  .print-sheet p {
+    margin: 0 0 6pt;
+  }
+
+  .print-pattern svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .print-sheet footer {
+    border: 0;
+    display: block;
+    font-size: 9pt;
+    padding: 6pt 0 0;
+  }
 }

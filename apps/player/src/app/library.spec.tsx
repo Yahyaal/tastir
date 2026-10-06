@@ -43,7 +43,7 @@ describe('the library', () => {
       '../../../../tutorials/another-star.json': extra,
     });
     render(<App entries={entries} />);
-    const links = within(screen.getByRole('list'))
+    const links = within(document.querySelector('.cards') as HTMLElement)
       .getAllByRole('link')
       .map((c) => c.getAttribute('href'));
     // Each card opens the tutorial, and has two buttons: watch it drawn from
@@ -71,13 +71,38 @@ describe('the library', () => {
     expect(
       screen.getByRole('link', { name: /Project notes/ }).getAttribute('href'),
     ).toBe('#/notes');
+    // Each card says its level and length.
     expect(
-      screen.getAllByText('8-fold · Moroccan · beginner · 6 steps'),
+      screen.getAllByText('Beginner', { selector: '.meta *' }),
     ).toHaveLength(2);
+    expect(screen.getAllByText('6 steps')).toHaveLength(2);
     // Each card has a picture of the colored pattern.
     expect(
       document.querySelectorAll('svg.thumbnail polygon.piece').length,
     ).toBeGreaterThan(0);
+  });
+
+  it('filters the patterns by tradition and level', () => {
+    const extra = {
+      ...(structuredClone(example) as object),
+      id: 'another-star',
+      title: 'Another star',
+      style: 'Nasrid',
+      level: 'advanced',
+    };
+    const entries = entriesOf({
+      '../../../../tutorials/eight-fold-star-and-cross.json': example,
+      '../../../../tutorials/another-star.json': extra,
+    });
+    render(<App entries={entries} />);
+    const cards = () => document.querySelectorAll('.cards > li').length;
+    expect(cards()).toBe(2);
+    act(() => screen.getByRole('button', { name: 'Nasrid' }).click());
+    expect(cards()).toBe(1);
+    act(() => screen.getByRole('button', { name: 'Beginner' }).click());
+    expect(screen.getByText(/No pattern matches both choices/)).toBeTruthy();
+    act(() => screen.getByRole('button', { name: 'All' }).click());
+    expect(cards()).toBe(1);
   });
 
   it('keeps a card for a tutorial that cannot be played, with the reason', () => {

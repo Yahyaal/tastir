@@ -10,6 +10,22 @@ const back = () =>
 const label = () => document.querySelector('.label')?.textContent;
 
 describe('the player', () => {
+  it('shows where the learner is, and jumps anywhere from the journey', () => {
+    render(<Play json={example} />);
+    const journey = screen.getByRole('navigation', { name: 'Where you are' });
+    expect(journey.querySelector('[aria-current="step"]')?.textContent).toBe(
+      '1',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Go to color' }));
+    expect(label()).toBe('Color');
+    fireEvent.click(screen.getByRole('button', { name: 'Go to step 3' }));
+    expect(label()).toBe('Step 3 of 6');
+    // Steps already passed are marked done.
+    expect(
+      screen.getByRole('button', { name: 'Go to step 2' }).className,
+    ).toContain('done');
+  });
+
   it('starts at step 1 with its text, and Back disabled', () => {
     render(<Play json={example} />);
     expect(
