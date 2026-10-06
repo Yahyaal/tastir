@@ -1274,6 +1274,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Two ways in from the home page, and photos at full size',
+      text: 'Each card has “Watch it drawn” (from step 1) and “Result and original” (straight to the finished wall with the photo beside it; the address is #/<id>/result). Click the photo to see it over the whole page, fitted or at actual size. The free photos now ship at their full resolution (up to 4032 px), and the Leones fret has a free Flickr photo (CC BY-SA), so five tutorials still wait for one.',
+      link: { label: 'Try it', href: '/#/alhambra-leones-fret/result' },
+    },
+    {
       title: 'Compare with the original',
       text: 'A button at the color stage shows the photo of the real pattern beside the wall. Five tutorials have free photos that ship; six show Wade’s photos on the dev server only, with a placeholder in the built app.',
       link: { label: 'Try it', href: '/#/alhambra-arrayanes-squares' },

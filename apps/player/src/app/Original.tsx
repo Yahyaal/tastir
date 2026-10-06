@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { Photo } from '@tastir/schema';
 
 /**
@@ -28,13 +29,22 @@ export function Original({
   dev?: boolean;
 }) {
   const [shown, setShown] = useState(0);
+  const [full, setFull] = useState(false);
   const photo = photos[shown] ?? photos[0];
   if (!photo) return null;
   const src = photoSrc(photo, dev);
   return (
     <figure className="original" aria-label="The original">
       {src ? (
-        <img src={src} alt={photo.caption} />
+        <button
+          type="button"
+          className="photo-open"
+          title="See the photo at full size"
+          aria-label={`See the photo at full size: ${photo.caption}`}
+          onClick={() => setFull(true)}
+        >
+          <img src={src} alt={photo.caption} />
+        </button>
       ) : (
         <div className="photo-placeholder">
           <p>A photo of the real pattern is to come.</p>
@@ -67,6 +77,71 @@ export function Original({
           </span>
         ) : null}
       </figcaption>
+      {full && src ? (
+        <FullSize photo={photo} src={src} onClose={() => setFull(false)} />
+      ) : null}
     </figure>
+  );
+}
+
+/**
+ * A photo over the whole page: fitted to the window, or at its actual size
+ * to scroll around (a click on the photo switches). Esc, the close button or
+ * a click outside the photo closes it.
+ */
+function FullSize({
+  photo,
+  src,
+  onClose,
+}: {
+  photo: Photo;
+  src: string;
+  onClose: () => void;
+}) {
+  const [actual, setActual] = useState(false);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+  // Over the whole page, outside the comparison's own layout.
+  return createPortal(
+    <div
+      className="full-size"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Full size: ${photo.caption}`}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="full-size-bar">
+        <span>
+          {photo.caption} Photo: {photo.creator}, {photo.license}.
+        </span>
+        <button
+          type="button"
+          className="secondary"
+          aria-pressed={actual}
+          onClick={() => setActual(!actual)}
+        >
+          {actual ? 'Fit to the window' : 'Actual size'}
+        </button>
+        <button type="button" className="secondary" onClick={onClose}>
+          Close
+        </button>
+      </div>
+      <div
+        className={actual ? 'full-size-view actual' : 'full-size-view'}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
+        <img src={src} alt={photo.caption} onClick={() => setActual(!actual)} />
+      </div>
+    </div>,
+    document.body,
   );
 }

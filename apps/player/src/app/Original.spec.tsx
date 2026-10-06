@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseTutorial, type Photo } from '@tastir/schema';
@@ -66,7 +66,7 @@ describe('photos of the originals', () => {
   it('shows the photo with its credit', () => {
     render(<Original photos={[free]} dev={false} />);
     expect(
-      screen.getByRole('img', { name: 'Pair of minbar doors.' }),
+      screen.getByRole('button', { name: /full size: Pair of minbar doors/ }),
     ).toBeTruthy();
     expect(
       screen.getByText(/Photo: The Metropolitan Museum of Art/),
@@ -82,5 +82,18 @@ describe('photos of the originals', () => {
     expect(
       screen.getByRole('link', { name: 'its source' }).getAttribute('href'),
     ).toBe('https://patterninislamicart.com/');
+  });
+
+  it('opens a free photo at full size, at actual size, and closes on Esc', () => {
+    render(<Original photos={[free]} dev={false} />);
+    fireEvent.click(screen.getByRole('button', { name: /full size/ }));
+    const dialog = screen.getByRole('dialog');
+    expect(dialog.querySelector('img')?.getAttribute('src')).toMatch(
+      /cairo-minbar-doors-met\.jpg$/,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Actual size' }));
+    expect(dialog.querySelector('.full-size-view.actual')).toBeTruthy();
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(screen.queryByRole('dialog')).toBeNull();
   });
 });

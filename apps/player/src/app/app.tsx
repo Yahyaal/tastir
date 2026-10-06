@@ -105,10 +105,21 @@ const prefersReducedMotion = () =>
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export function Player({ model }: { model: Model }) {
+/** Where a tutorial opens: at its first step, or at the finished wall. */
+export type Start = 'beginning' | 'result';
+
+export function Player({
+  model,
+  start = 'beginning',
+}: {
+  model: Model;
+  start?: Start;
+}) {
   const { tutorial } = model;
   const stages = useMemo(() => stagesOf(tutorial), [tutorial]);
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(() =>
+    start === 'result' ? stagesOf(tutorial).length - 1 : 0,
+  );
   const stage = useMemo(
     (): Stage => stages[index] ?? { kind: 'color' },
     [stages, index],
@@ -142,7 +153,8 @@ export function Player({ model }: { model: Model }) {
   const [grout, setGrout] = useState(1);
   const [paper, setPaper] = useState<Paper>('A4');
   const [printing, setPrinting] = useState(false);
-  const [comparing, setComparing] = useState(false);
+  // Opening at the result shows the original beside the wall at once.
+  const [comparing, setComparing] = useState(start === 'result');
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
     wallSvg(inking.shown, colors, { look: wallStyle, grout, fill });
@@ -153,7 +165,7 @@ export function Player({ model }: { model: Model }) {
   const animateNext = useRef(true);
   // Whether the learner arrived at this stage with Next (or on load), so
   // the stage plays its way in; Back shows it as it is.
-  const [forward, setForward] = useState(true);
+  const [forward, setForward] = useState(start !== 'result');
   const enter = forward && !reduced;
 
   /** Jumps every running animation to its end. */
@@ -562,7 +574,7 @@ export function Player({ model }: { model: Model }) {
 }
 
 /** Plays one tutorial; a tutorial the engine rejects shows its error. */
-export function Play({ json }: { json: unknown }) {
+export function Play({ json, start }: { json: unknown; start?: Start }) {
   const { model, error, progress } = useModel(json);
   if (error !== undefined) return <Broken message={error} />;
   if (!model) {
@@ -572,7 +584,7 @@ export function Play({ json }: { json: unknown }) {
       </div>
     );
   }
-  return <Player model={model} />;
+  return <Player model={model} start={start} />;
 }
 
 function Broken({ message }: { message: string }) {
@@ -626,8 +638,9 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
 /** One tutorial in the library, loaded in the worker. */
 function Card({ entry: { id, json } }: { entry: Entry }) {
   const { model, error, progress } = useModel(json);
+  const photos = model?.tutorial.photos?.length ?? 0;
   return (
-    <li>
+    <li className="card-item">
       <a className="card" href={`#/${id}`}>
         {model ? (
           <Thumbnail model={model} />
@@ -646,6 +659,16 @@ function Card({ entry: { id, json } }: { entry: Entry }) {
           <p>{PROGRESS_TEXT[progress ?? 'checking']}</p>
         )}
       </a>
+      {model ? (
+        <div className="card-actions">
+          <a className="button secondary" href={`#/${id}`}>
+            Watch it drawn
+          </a>
+          <a className="button secondary" href={`#/${id}/result`}>
+            {photos ? 'Result and original' : 'See the result'}
+          </a>
+        </div>
+      ) : null}
     </li>
   );
 }
@@ -688,10 +711,19 @@ export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
       <Broken message="The project notes only exist on the dev server (pnpm dev)." />
     );
   }
-  const entry = entries.find((e) => e.id === route);
+  // #/id plays from the first step; #/id/result opens at the finished wall.
+  const result = route.endsWith('/result');
+  const id = result ? route.slice(0, -'/result'.length) : route;
+  const entry = entries.find((e) => e.id === id);
   if (!entry)
     return <Broken message={`There is no tutorial called "${route}".`} />;
-  return <Play key={entry.id} json={entry.json} />;
+  return (
+    <Play
+      key={route}
+      json={entry.json}
+      start={result ? 'result' : 'beginning'}
+    />
+  );
 }
 
 export default App;

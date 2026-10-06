@@ -43,11 +43,25 @@ describe('the library', () => {
       '../../../../tutorials/another-star.json': extra,
     });
     render(<App entries={entries} />);
-    const cards = within(screen.getByRole('list')).getAllByRole('link');
-    expect(cards.map((c) => c.getAttribute('href'))).toEqual([
+    const links = within(screen.getByRole('list'))
+      .getAllByRole('link')
+      .map((c) => c.getAttribute('href'));
+    // Each card opens the tutorial, and has two buttons: watch it drawn from
+    // the first step, or see the finished result.
+    expect(links).toEqual([
       '#/another-star',
+      '#/another-star',
+      '#/another-star/result',
       '#/eight-fold-star-and-cross',
+      '#/eight-fold-star-and-cross',
+      '#/eight-fold-star-and-cross/result',
     ]);
+    expect(
+      screen.getAllByRole('link', { name: 'Watch it drawn' }),
+    ).toHaveLength(2);
+    expect(
+      screen.getAllByRole('link', { name: 'See the result' }),
+    ).toHaveLength(2);
     expect(screen.getByRole('heading', { name: 'Another star' })).toBeTruthy();
     // On the dev server the library also links to the review page and the
     // project notes.
@@ -96,6 +110,23 @@ describe('the address', () => {
     window.location.hash = '#/eight-fold-star-and-cross';
     render(<App />);
     expect(document.querySelector('.label')?.textContent).toBe('Step 1 of 6');
+  });
+
+  it('opens at the finished wall with /result, beside the original', () => {
+    window.location.hash = '#/minbar-doors-cairo/result';
+    render(<App />);
+    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    expect(screen.getByRole('figure', { name: 'The original' })).toBeTruthy();
+    expect(
+      screen.getByRole('button', { name: 'Hide the original' }),
+    ).toBeTruthy();
+  }, 15000);
+
+  it('opens at the finished wall alone when there is no photo', () => {
+    window.location.hash = '#/eight-fold-star-and-cross/result';
+    render(<App />);
+    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    expect(screen.queryByRole('figure', { name: 'The original' })).toBeNull();
   });
 
   it('says so when no tutorial has that name', () => {
