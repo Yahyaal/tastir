@@ -69,6 +69,28 @@ The goal of phase 1 is a player a friend can use unaided: animated steps, a came
 - [ ] **1.11 Sixteen-fold rosette tutorial.** Write `tutorials/sixteen-fold-rosette.json`, a sixteen-fold rosette on a square repeat, under the same rules as 1.5. This proves the engine reaches patterns like the Fès panel.
   *Done when:* the golden test passes for it, the two-crossings and symmetry checks pass, and I confirm by eye that it looks right.
 
+### Clear steps (owner, 5 October 2026; review card “Making long tutorials easy to follow”)
+
+Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into main when done. Mockups: `docs/review/ux-steps/` (made by the scratch script described on the card).
+
+- [ ] **1.12 Hidden marking steps.** A step may say `"hidden": true`: the engine evaluates it, the player skips it as a stage and never draws its elements, and the step counter leaves it out. Mark the nine steps that only mark corners (Bou Inania rosette 13, Bou Inania wall 20, four-fold ring 13 and 14, Kurt wheel 19 and its shifted copy 19, stellated rosettes 12, Mian rosette 11 square and hex).
+  *Done when:* schema and player tests cover hidden steps, golden tests are unchanged, and Bou Inania goes from step 12 to the tile with no red dots.
+
+- [ ] **1.13 Colours with one meaning, and no codes.** Earlier construction grey, this step's new elements orange, what the step uses (its `highlight`) blue with crossings ringed, construction that never carries ink thin and dashed. Point names are hidden unless “Show names” is on. Colours from the Okabe–Ito set; each role also differs by width or dash.
+  *Done when:* player tests check each role's class and the names toggle; Bou Inania step 6 looks like picture C.
+
+- [ ] **1.14 Ink as you go, as a switch.** The engine gives each ink stroke the earliest step at which it can be drawn: its line and the lines it turns onto at both ends exist (strokes along one line between turns form one run). The player gets an “Ink as you go / Ink at the end” switch beside the speed control, remembered per browser. As you go, a step's new ink draws in green after its lines and is black from the next step; the ink stage then fades the construction.
+  *Done when:* an engine test checks the steps for the star and cross and Bou Inania (6: star; 8: a third of the ink), player tests cover the switch; both modes play every tutorial.
+
+- [ ] **1.15 Parts of a step.** A step may have `parts`, each with its own `text`, `create`, `highlight` and `animate`; the player shows “Step 11 · 2 of 4” and Next/Back move by part. Split Bou Inania steps 8–12 into parts, one construction each.
+  *Done when:* schema, engine and player tests cover parts; golden tests unchanged; step 11 plays like picture D.
+
+- [ ] **1.16 The next tile in blue.** On the step that creates the pattern cell, the neighbouring copies of the ink are drawn in blue around the tile, so the band at the edge explains itself; Bou Inania's tile step text says so.
+  *Done when:* a player test finds the neighbour copies on that step; Bou Inania's last step looks like picture E.
+
+- [ ] **1.17 Zoom to the work.** Each step or part frames the elements it uses and makes, then the view widens to show their copies round the centre.
+  *Done when:* camera tests show the frame of a part holds its crossing and new line; in the browser step 12 zooms to the corner star.
+
 **Phase 1 exit:** all boxes ticked, every golden test green, and a friend finishes a tutorial unaided in under 10 minutes.
 
 Later phases (AI pipeline, accounts and library, learning features, designers) are described in `docs/PRD.md`.

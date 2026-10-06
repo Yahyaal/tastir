@@ -35,6 +35,64 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'ux-steps',
+    title: 'Making long tutorials easy to follow (Bou Inania, step 13)',
+    fold: 12,
+    status: 'decided',
+    decision:
+      'You: inking as you go becomes a switch in every tutorial so you can compare it with inking at the end; yes to the four colours; yes to parts of one step (“Step 11 · 2 of 4”); yes to showing the next tile in blue. The plan for building it is waiting for your OK.',
+    summary:
+      'Why step 13 is unreadable, and five changes that would make the long tutorials easy to follow. Every picture uses the real Bou Inania geometry.',
+    story: [
+      'Step 13 is not a drawing step (picture A). The player can only ink between named points, so the tutorial names every turning point of the pattern: 1,549 points and 88 helper lines, all in the “new” colour with their names. The learner has nothing to do and cannot see anything. Seven other tutorials have the same kind of step, but smaller (Kurt’s wheel 216 points, the four-fold ring 196, the stellated rosettes 176).',
+      'First change: remove the marking steps. An ink path would name its line and the two lines where it stops, so the engine finds those points without showing them. This was already the next format change on the list. Step 13 then keeps only its one real idea, the band at the tile edge, and picture E shows that idea instead of describing it. The next tile is drawn beside this one in blue, and the band breaks where its lines come through.',
+      'Second change: ink as you go (picture B). I checked every inked stretch of this pattern, and each one can be inked in the step that draws the line it turns onto. Step 6 inks the star, 7 the big twelve-sided figure, and 8 the small stars and pentagons (a third of the ink); 9 adds the octagon and frame, 10 the ring round the shields, and 11–12 the corners. Nothing is left for the end, so the last stage only clears the construction away and shows the finished pattern. The learner sees each line turn into pattern straight after drawing it, which is how the pattern is drawn by hand.',
+      'Third change: four colours, each with one meaning (picture C). Earlier lines are light grey and new lines orange. Blue marks what this step uses: the crossing is ringed and the direction to follow is dashed. Ink drawn now is green and turns black at the next step. The colours stay distinct for colour-blind viewers, and each role also has its own thickness or dash, so colour is never the only clue. Only the one to three points the text talks about get a label, written in words (“from here”, “to here”) instead of codes like M1013.',
+      'Fourth change: one move at a time (picture D). Steps 8 to 12 each pack two to four constructions into one paragraph, and step 11 has four. Split into 11a to 11d, each part shows only its own crossing and direction. The counter would read “Step 11 · 2 of 4”, so the tutorial still has 14 steps. Lines that only help find a point (11c and 11d make no ink of their own) would be drawn thin and dashed, so they read as helpers.',
+      'Fifth change: the view follows the work. Each step zooms to the area it works in (step 12’s corner star is tiny today), then zooms out to show the copies turning round. Construction that will not be used again fades, and a button hides all the grey lines.',
+      'Order of work, one task each, after your answers: the ink path change and removing the marking steps, then the colours and labels, then inking as you go, then the sub-steps and the zooming, and finally rewriting Bou Inania with all of it before moving the other long tutorials over.',
+    ],
+    pictures: [
+      {
+        src: 'renders/ux-steps/A-today-step13.png',
+        caption: 'A. Step 13 today: 1,549 named points and 88 helper lines.',
+      },
+      {
+        src: 'renders/ux-steps/B-ink-as-you-go.png',
+        caption:
+          'B. Ink as you go: green is the ink each step adds, black the ink already there.',
+      },
+      {
+        src: 'renders/ux-steps/C-step6-roles.png',
+        caption:
+          'C. Step 6 with four colours: blue is what the step uses, orange the new lines, green the new ink.',
+      },
+      {
+        src: 'renders/ux-steps/D-step11-split.png',
+        caption:
+          'D. Step 11 split into four moves, each with its crossing ringed and its direction dashed.',
+      },
+      {
+        src: 'renders/ux-steps/E-overlap.png',
+        caption:
+          'E. The band at the edge, shown with the next tile in blue instead of 1,549 marks.',
+      },
+    ],
+    asks: [
+      'Should every tutorial ink as it goes (B)?',
+      'Are the four colours right (C)?',
+      'Split long steps into parts (D)?',
+      'Show the next tile for the band (E)?',
+    ],
+    sources: [
+      {
+        label:
+          'Okabe and Ito: colours that colour-blind viewers can tell apart',
+        url: 'https://jfly.uni-koeln.de/color/',
+      },
+    ],
+  },
+  {
     id: 'mian-stellated-rosettes',
     title: 'Stellated twelve-fold rosettes, Samira Mian (new)',
     fold: 4,
