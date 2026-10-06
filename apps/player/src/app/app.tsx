@@ -28,6 +28,7 @@ import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { LIBRARY, type Entry } from './library';
 import { useRemembered } from './remembered';
 import {
+  beatsOf,
   shownSteps,
   stagesOf,
   type InkMode,
@@ -162,7 +163,7 @@ export function Player({ model }: { model: Model }) {
   // Each step frames itself; the ink shows the whole drawing.
   const frame = useMemo(
     () =>
-      stage.kind === 'step' ? stepFrame(model, stage.step) : fullView(model),
+      stage.kind === 'step' ? stepFrame(model, stage.beat) : fullView(model),
     [model, stage],
   );
   const onConstruction = stage.kind === 'step' || stage.kind === 'ink';
@@ -185,7 +186,7 @@ export function Player({ model }: { model: Model }) {
       return;
     }
     if (stage.kind !== 'step') return;
-    const plan = planStep(model, stage.step, speed, { ink: asYouGo });
+    const plan = planStep(model, stage.beat, speed, { ink: asYouGo });
     running.current = play(svgRef.current, plan, {
       // The camera glides to the step's frame while it draws.
       lengthScale: width(camera.view) / width(frame),
@@ -213,7 +214,7 @@ export function Player({ model }: { model: Model }) {
       stage.kind === 'step' && !reduced
         ? play(
             svgRef.current,
-            planStep(model, stage.step, speed, { flash: false, ink: asYouGo }),
+            planStep(model, stage.beat, speed, { flash: false, ink: asYouGo }),
             { reverse: true },
           )
         : [];
@@ -236,19 +237,24 @@ export function Player({ model }: { model: Model }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [back, next]);
 
-  const steps = tutorial.steps.length;
   const shown = shownSteps(tutorial);
+  const beats = beatsOf(tutorial);
   let label: string;
   let hint: string | undefined;
   let text: string;
   let picture: React.ReactNode;
   if (stage.kind === 'step') {
-    label = `Step ${shown.indexOf(stage.step) + 1} of ${shown.length}`;
-    text = tutorial.steps[stage.step - 1]?.text ?? '';
+    const beat = beats[stage.beat - 1];
+    const number = shown.indexOf(beat?.step ?? 0) + 1;
+    label = beat?.parts
+      ? `Step ${number} · ${beat.part} of ${beat.parts}`
+      : `Step ${number} of ${shown.length}`;
+    hint = beat?.heading;
+    text = beat?.text ?? '';
     picture = (
       <Construction
         model={model}
-        upTo={stage.step}
+        upTo={stage.beat}
         view={camera.view}
         svgRef={svgRef}
         showNames={showNames}
@@ -263,7 +269,7 @@ export function Player({ model }: { model: Model }) {
       : 'Your own pattern: the next steps repeat and color the lines you inked.';
     picture = (
       <Construction
-        upTo={steps}
+        upTo={beats.length}
         model={inking.shown}
         view={camera.view}
         svgRef={svgRef}

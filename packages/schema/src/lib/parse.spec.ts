@@ -98,6 +98,41 @@ describe('rejected tutorials', () => {
     expect(problems(input)).toEqual([]);
   });
 
+  it('accepts a step in parts, and checks names part by part', () => {
+    const ok = variant((t) => {
+      const { h, v, E, N, W, S } = t.steps[1].create;
+      t.steps[1].create = undefined;
+      t.steps[1].parts = [
+        { text: 'The horizontal.', create: { h, E, W } },
+        { text: 'The vertical.', create: { v, N, S } },
+      ];
+    });
+    expect(problems(ok)).toEqual([]);
+    const early = variant((t) => {
+      const { h, v, E, N, W, S } = t.steps[1].create;
+      t.steps[1].create = undefined;
+      t.steps[1].parts = [
+        { text: 'The vertical first.', create: { v, N, S } },
+        { text: 'The horizontal.', create: { h, E, W } },
+      ];
+    });
+    expect(problems(early).join('\n')).toContain(
+      'steps[1].parts[0].create.v.line.perpendicularTo: "h" is used before it exists',
+    );
+  });
+
+  it('rejects a step with both create and parts', () => {
+    const input = variant((t) => {
+      t.steps[1].parts = [
+        { text: 'One.', create: {} },
+        { text: 'Two.', create: {} },
+      ];
+    });
+    expect(problems(input).join('\n')).toContain(
+      'a step has either create or parts',
+    );
+  });
+
   it('rejects a name that is never defined', () => {
     const input = variant((t) => {
       t.ink.paths[0].through[2] = 'Q';

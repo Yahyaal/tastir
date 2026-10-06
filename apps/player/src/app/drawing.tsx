@@ -16,7 +16,7 @@ import {
 } from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors } from './coloring';
-import { carriersOf, hiddenSteps, inkStepsOf, type Model } from './model';
+import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
@@ -283,7 +283,7 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
  * the ink step `upTo` makes in green (named so its step can draw it in).
  */
 function InkSoFar({ model, upTo }: { model: Model; upTo: number }) {
-  const steps = inkStepsOf(model);
+  const steps = inkBeatsOf(model);
   return (
     <g className="ink so-far">
       {model.pattern.ink.map((s, i) => {
@@ -346,11 +346,11 @@ export function Construction({
   const size = width(view);
   // Lines are clipped well beyond the view, so panning never shows an end.
   const clipTo = fit(view, 1);
-  const hidden = hiddenSteps(model.tutorial);
+  const hidden = hiddenBeats(model.tutorial);
   const shown = [...model.scene.elements.values()].filter(
-    (el) => el.step <= upTo && !hidden.has(el.step),
+    (el) => el.beat <= upTo && !hidden.has(el.beat),
   );
-  const isCurrent = (el: SceneElement) => !ink && el.step === upTo;
+  const isCurrent = (el: SceneElement) => !ink && el.beat === upTo;
   const highlighted = new Set(ink ? [] : usedNames(model, upTo));
   /** What the step works from: blue while the step is shown. */
   const used = (el: SceneElement) => highlighted.has(el.name);

@@ -1,5 +1,5 @@
 import type { Vec } from '@tastir/engine';
-import { inkStepsOf, type Model } from './model';
+import { beatsOf, inkBeatsOf, type Model } from './model';
 
 /** How one element enters the drawing. */
 export type EffectKind = 'flash' | 'compass' | 'ruler' | 'pop';
@@ -32,9 +32,12 @@ function opened(model: Model, name: string): string[] {
   return g?.kind === 'group' ? [...g.members] : [name];
 }
 
-/** The names a step highlights (flashed before it draws), groups opened. */
+/**
+ * The names a beat (a step, or a part of one) highlights, flashed before
+ * it draws, with groups opened.
+ */
 export function highlightedNames(model: Model, step: number): string[] {
-  const names = model.tutorial.steps[step - 1]?.highlight ?? [];
+  const names = beatsOf(model.tutorial)[step - 1]?.highlight ?? [];
   return names.flatMap((name) => opened(model, name));
 }
 
@@ -46,7 +49,7 @@ export function highlightedNames(model: Model, step: number): string[] {
 export function usedNames(model: Model, step: number): string[] {
   const { elements } = model.scene;
   const open = (name: string) => opened(model, name);
-  if (model.tutorial.steps[step - 1]?.highlight)
+  if (beatsOf(model.tutorial)[step - 1]?.highlight)
     return highlightedNames(model, step);
   const found = new Set<string>();
   const seen = new Set<string>();
@@ -55,10 +58,10 @@ export function usedNames(model: Model, step: number): string[] {
     seen.add(name);
     const el = elements.get(name);
     if (!el) return;
-    if (el.step === step) el.deps.forEach(visit);
+    if (el.beat === step) el.deps.forEach(visit);
     else for (const n of open(name)) found.add(n);
   };
-  for (const el of elements.values()) if (el.step === step) visit(el.name);
+  for (const el of elements.values()) if (el.beat === step) visit(el.name);
   return [...found];
 }
 
@@ -77,7 +80,7 @@ export function planStep(
   const flashed = flash ? highlightedNames(model, step) : [];
   const start = flashed.length ? FLASH_MS / speed : 0;
   const made = [...model.scene.elements.values()].filter(
-    (el) => el.step === step,
+    (el) => el.beat === step,
   );
   const curves = made.filter((el) =>
     ['line', 'circle', 'polygon'].includes(el.geometry.kind),
@@ -113,7 +116,7 @@ export function planStep(
     });
   });
   // Inking as you go: the ink this step makes is drawn once it is built.
-  if (ink && inkStepsOf(model).includes(step)) {
+  if (ink && inkBeatsOf(model).includes(step)) {
     effects.push({
       name: FRESH_INK,
       kind: 'ruler',

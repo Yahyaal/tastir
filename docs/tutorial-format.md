@@ -65,6 +65,8 @@ Rules can be combined; all must hold.
 
 A step with `"hidden": true` is evaluated like any other but never shown: the player skips it, never draws its elements and leaves it out of the step count. Use it only for a step that names the points the ink turns at, which the learner does not need to see.
 
+A long step can be split into `parts` instead of having one `create`: each part has its own `text`, `create`, and optional `highlight` and `animate`, and the step's own `text` becomes the heading shown over each part. The player shows a part as “Step 11 · 2 of 4”, and Next and Back move one part at a time. Give each part one move (one new line and its copies, say), so the learner sees one thing happen at a time. A step has either `create` or `parts`, never both.
+
 ## Small pieces
 
 A piece in `expect.pieces` may carry `"small": true` when it is small or thin on purpose, as in fine zellige. The golden test rejects every other sliver, so the flag only covers pieces the author has named and looked at.

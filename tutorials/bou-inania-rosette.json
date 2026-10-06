@@ -150,129 +150,214 @@
     },
     {
       "id": 8,
-      "text": "Where a star line crosses a side of the big figure, rule a line at right angles to the 7.5° line, and its mirror image in the horizontal; turn both round. These 24 lines make the small five-pointed stars. Through the point of the first circle at 30°, rule the line at right angles to the 30° line: it just touches the circle. Turn it round (helper lines). Where the lines touching the circle at 30° and −30° cross the horizontal, rule a line at right angles to it; turn it round. These lines close the brown pentagons.",
-      "create": {
-        "X1": {"point": {"meet": ["A5", "E@11"]}},
-        "C": {"line": {"through": "X1", "perpendicularTo": "r7h"}},
-        "Cs": {"repeat": {"of": ["C"], "by": "rot12"}},
-        "X2": {"point": {"meet": ["A2", "E@1"]}},
-        "Cw": {"line": {"through": "X2", "perpendicularTo": "r172h"}},
-        "Cws": {"repeat": {"of": ["Cw"], "by": "rot12"}},
-        "Tg": {"line": {"through": "P30", "perpendicularTo": "r30"}},
-        "Tgs": {"repeat": {"of": ["Tg"], "by": "rot12"}},
-        "X3": {"point": {"meet": ["h", "Tg"]}},
-        "B": {"line": {"through": "X3", "perpendicularTo": "h"}},
-        "Bs": {"repeat": {"of": ["B"], "by": "rot12"}}
-      },
-      "animate": "ruler"
+      "text": "The ring of small stars and pentagons.",
+      "parts": [
+        {
+          "text": "Where a star line crosses a side of the big figure, rule a line at right angles to the 7.5° line, and its mirror image in the horizontal. Turn both round: 24 lines that make the small five-pointed stars.",
+          "create": {
+            "X1": {"point": {"meet": ["A5", "E@11"]}},
+            "C": {"line": {"through": "X1", "perpendicularTo": "r7h"}},
+            "Cs": {"repeat": {"of": ["C"], "by": "rot12"}},
+            "X2": {"point": {"meet": ["A2", "E@1"]}},
+            "Cw": {"line": {"through": "X2", "perpendicularTo": "r172h"}},
+            "Cws": {"repeat": {"of": ["Cw"], "by": "rot12"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Through the point of the first circle at 30°, rule the line at right angles to the 30° line: it just touches the circle. Turn it round. These are helper lines.",
+          "create": {
+            "Tg": {"line": {"through": "P30", "perpendicularTo": "r30"}},
+            "Tgs": {"repeat": {"of": ["Tg"], "by": "rot12"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Where the helper lines touching the circle at 30° and −30° cross the horizontal, rule a line at right angles to it, and turn it round: these lines close the pentagons.",
+          "create": {
+            "X3": {"point": {"meet": ["h", "Tg"]}},
+            "B": {"line": {"through": "X3", "perpendicularTo": "h"}},
+            "Bs": {"repeat": {"of": ["B"], "by": "rot12"}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 9,
-      "text": "Where a side of the big figure crosses one of the 24 lines, rule a line at right angles to the 22.5° line; turn it round in eighths: the octagon of the corner stars. Where an octagon side crosses one of the 24 lines, rule a line at right angles to the horizontal; turn it round in quarters: the frame, and the edge of the tile.",
-      "create": {
-        "X4": {"point": {"meet": ["A1", "E"]}},
-        "G": {"line": {"through": "X4", "perpendicularTo": "r22h"}},
-        "Gs": {"repeat": {"of": ["G"], "by": "rot8"}},
-        "X5": {"point": {"meet": ["C@1", "G@6"]}},
-        "F": {"line": {"through": "X5", "perpendicularTo": "h"}},
-        "Fs": {"repeat": {"of": ["F"], "by": "rot4"}}
-      },
-      "animate": "ruler"
+      "text": "The octagon of the corner stars, and the frame.",
+      "parts": [
+        {
+          "text": "Where a side of the big figure crosses one of the 24 lines, rule a line at right angles to the 22.5° line. Turn it round in eighths: the octagon of the corner stars.",
+          "create": {
+            "X4": {"point": {"meet": ["A1", "E"]}},
+            "G": {"line": {"through": "X4", "perpendicularTo": "r22h"}},
+            "Gs": {"repeat": {"of": ["G"], "by": "rot8"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Where an octagon side crosses one of the 24 lines, rule a line at right angles to the horizontal. Turn it round in quarters: the frame, and the edge of the tile.",
+          "create": {
+            "X5": {"point": {"meet": ["C@1", "G@6"]}},
+            "F": {"line": {"through": "X5", "perpendicularTo": "h"}},
+            "Fs": {"repeat": {"of": ["F"], "by": "rot4"}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 10,
-      "text": "Where a star line crosses one of the pentagon lines, rule a line at right angles to the horizontal, and turn it round: the inner side of the ring round the shields. Where two of the 24 lines cross on the horizontal, rule a line at right angles to the 15° line; turn it round: the points of the ring round the shields.",
-      "create": {
-        "X6": {"point": {"meet": ["A1", "B@11"]}},
-        "D": {"line": {"through": "X6", "perpendicularTo": "h"}},
-        "Ds": {"repeat": {"of": ["D"], "by": "rot12"}},
-        "X7": {"point": {"meet": ["h", "C@1"]}},
-        "K": {"line": {"through": "X7", "perpendicularTo": "r15"}},
-        "Ks": {"repeat": {"of": ["K"], "by": "rot12"}}
-      },
-      "animate": "ruler"
+      "text": "The ring round the shields.",
+      "parts": [
+        {
+          "text": "Where a star line crosses a pentagon line, rule a line at right angles to the horizontal, and turn it round: the inner side of the ring.",
+          "create": {
+            "X6": {"point": {"meet": ["A1", "B@11"]}},
+            "D": {"line": {"through": "X6", "perpendicularTo": "h"}},
+            "Ds": {"repeat": {"of": ["D"], "by": "rot12"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Where two of the 24 lines cross on the horizontal, rule a line at right angles to the 15° line, and turn it round: the points of the ring.",
+          "create": {
+            "X7": {"point": {"meet": ["h", "C@1"]}},
+            "K": {"line": {"through": "X7", "perpendicularTo": "r15"}},
+            "Ks": {"repeat": {"of": ["K"], "by": "rot12"}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 11,
-      "text": "Where a side of the big figure crosses one of the last-but-one set, rule a line at right angles to the horizontal; turn it round. These carry the star lines on into the corners. Where the frame crosses a pentagon line, rule a line at right angles to the 45° line; turn it round in quarters: the lines across the corners. Where a side of the big figure crosses a pentagon line, rule a line at right angles to the 15° line; turn it round. Where two of the 24 lines cross on the 45° line, rule a line at right angles to the 15° line; turn it round. ",
-      "create": {
-        "X8": {"point": {"meet": ["E@3", "D@2"]}},
-        "S": {"line": {"through": "X8", "perpendicularTo": "h"}},
-        "Ss": {"repeat": {"of": ["S"], "by": "rot12"}},
-        "X9": {"point": {"meet": ["B@4", "F@1"]}},
-        "H": {"line": {"through": "X9", "perpendicularTo": "r45"}},
-        "Hs": {"repeat": {"of": ["H"], "by": "rot4"}},
-        "X10": {"point": {"meet": ["E", "B@10"]}},
-        "M": {"line": {"through": "X10", "perpendicularTo": "r15"}},
-        "Ms": {"repeat": {"of": ["M"], "by": "rot12"}},
-        "X11": {"point": {"meet": ["r45", "C@3"]}},
-        "N": {"line": {"through": "X11", "perpendicularTo": "r15"}},
-        "Ns": {"repeat": {"of": ["N"], "by": "rot12"}}
-      },
-      "animate": "ruler"
+      "text": "Lines out into the corners.",
+      "parts": [
+        {
+          "text": "Where a side of the big figure crosses the inner side of the ring, rule a line at right angles to the horizontal, and turn it round. These carry the star lines on into the corners.",
+          "create": {
+            "X8": {"point": {"meet": ["E@3", "D@2"]}},
+            "S": {"line": {"through": "X8", "perpendicularTo": "h"}},
+            "Ss": {"repeat": {"of": ["S"], "by": "rot12"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Where the frame crosses a pentagon line, rule a line at right angles to the 45° line, and turn it round in quarters: the lines across the corners.",
+          "create": {
+            "X9": {"point": {"meet": ["B@4", "F@1"]}},
+            "H": {"line": {"through": "X9", "perpendicularTo": "r45"}},
+            "Hs": {"repeat": {"of": ["H"], "by": "rot4"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Where a side of the big figure crosses a pentagon line, rule a line at right angles to the 15° line, and turn it round.",
+          "create": {
+            "X10": {"point": {"meet": ["E", "B@10"]}},
+            "M": {"line": {"through": "X10", "perpendicularTo": "r15"}},
+            "Ms": {"repeat": {"of": ["M"], "by": "rot12"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Where two of the 24 lines cross on the 45° line, rule a line at right angles to the 15° line, and turn it round.",
+          "create": {
+            "X11": {"point": {"meet": ["r45", "C@3"]}},
+            "N": {"line": {"through": "X11", "perpendicularTo": "r15"}},
+            "Ns": {"repeat": {"of": ["N"], "by": "rot12"}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 12,
-      "text": "At each corner of the frame, draw the eight-pointed star. Its square is the little square between the big figure’s sides and the frame. Join the square’s other two corners and mark where that line crosses the diagonal: the star’s centre. Through it rule a level and an upright line; where they meet the corner line of set H are two points of the diamond. Draw the circle about the centre through one of them to find the other two, and join the four points.",
-      "create": {
-        "K13": {"point": {"meet": ["E", "F@1"]}},
-        "K14": {"point": {"meet": ["E@3", "F"]}},
-        "sda": {"line": {"through": ["K13", "K14"]}},
-        "Sa": {"point": {"meet": ["sda", "r45"]}},
-        "sha": {"line": {"through": "Sa", "parallelTo": "h"}},
-        "sva": {"line": {"through": "Sa", "parallelTo": "v"}},
-        "St1a": {"point": {"meet": ["H", "sha"]}},
-        "St2a": {"point": {"meet": ["H", "sva"]}},
-        "sca": {"circle": {"centre": "Sa", "through": "St1a"}},
-        "St3a": {"point": {"meet": ["sca", "sha"], "pick": {"angle": 41.635}}},
-        "St4a": {"point": {"meet": ["sca", "sva"], "pick": {"angle": 48.365}}},
-        "spa": {"line": {"through": ["St1a", "St4a"]}},
-        "sqa": {"line": {"through": ["St2a", "St3a"]}},
-        "ssa": {"line": {"through": ["St3a", "St4a"]}},
-        "K15": {"point": {"meet": ["E@6", "F@1"]}},
-        "K16": {"point": {"meet": ["E@3", "F@2"]}},
-        "sdb": {"line": {"through": ["K15", "K16"]}},
-        "Sb": {"point": {"meet": ["sdb", "r135"]}},
-        "shb": {"line": {"through": "Sb", "parallelTo": "h"}},
-        "svb": {"line": {"through": "Sb", "parallelTo": "v"}},
-        "St1b": {"point": {"meet": ["H@1", "shb"]}},
-        "St2b": {"point": {"meet": ["H@1", "svb"]}},
-        "scb": {"circle": {"centre": "Sb", "through": "St1b"}},
-        "St3b": {"point": {"meet": ["scb", "shb"], "pick": {"angle": 138.365}}},
-        "St4b": {"point": {"meet": ["scb", "svb"], "pick": {"angle": 131.635}}},
-        "spb": {"line": {"through": ["St1b", "St4b"]}},
-        "sqb": {"line": {"through": ["St2b", "St3b"]}},
-        "ssb": {"line": {"through": ["St3b", "St4b"]}},
-        "K17": {"point": {"meet": ["E@6", "F@3"]}},
-        "K18": {"point": {"meet": ["E@9", "F@2"]}},
-        "sdc": {"line": {"through": ["K17", "K18"]}},
-        "Sc": {"point": {"meet": ["sdc", "r45"]}},
-        "shc": {"line": {"through": "Sc", "parallelTo": "h"}},
-        "svc": {"line": {"through": "Sc", "parallelTo": "v"}},
-        "St1c": {"point": {"meet": ["H@2", "shc"]}},
-        "St2c": {"point": {"meet": ["H@2", "svc"]}},
-        "scc": {"circle": {"centre": "Sc", "through": "St1c"}},
-        "St3c": {"point": {"meet": ["scc", "shc"], "pick": {"angle": 221.635}}},
-        "St4c": {"point": {"meet": ["scc", "svc"], "pick": {"angle": 228.365}}},
-        "spc": {"line": {"through": ["St1c", "St4c"]}},
-        "sqc": {"line": {"through": ["St2c", "St3c"]}},
-        "ssc": {"line": {"through": ["St3c", "St4c"]}},
-        "K19": {"point": {"meet": ["E", "F@3"]}},
-        "K20": {"point": {"meet": ["E@9", "F"]}},
-        "sdd": {"line": {"through": ["K19", "K20"]}},
-        "Sd": {"point": {"meet": ["sdd", "r135"]}},
-        "shd": {"line": {"through": "Sd", "parallelTo": "h"}},
-        "svd": {"line": {"through": "Sd", "parallelTo": "v"}},
-        "St1d": {"point": {"meet": ["H@3", "shd"]}},
-        "St2d": {"point": {"meet": ["H@3", "svd"]}},
-        "scd": {"circle": {"centre": "Sd", "through": "St1d"}},
-        "St3d": {"point": {"meet": ["scd", "shd"], "pick": {"angle": 318.365}}},
-        "St4d": {"point": {"meet": ["scd", "svd"], "pick": {"angle": 311.635}}},
-        "spd": {"line": {"through": ["St1d", "St4d"]}},
-        "sqd": {"line": {"through": ["St2d", "St3d"]}},
-        "ssd": {"line": {"through": ["St3d", "St4d"]}}
-      },
-      "animate": "compass"
+      "text": "An eight-pointed star at each corner of the frame. Its square is the little square between the big figure’s sides and the frame.",
+      "parts": [
+        {
+          "text": "Join the little square’s other two corners, and mark where that line crosses the diagonal: the star’s centre.",
+          "create": {
+            "K13": {"point": {"meet": ["E", "F@1"]}},
+            "K14": {"point": {"meet": ["E@3", "F"]}},
+            "sda": {"line": {"through": ["K13", "K14"]}},
+            "Sa": {"point": {"meet": ["sda", "r45"]}},
+            "K15": {"point": {"meet": ["E@6", "F@1"]}},
+            "K16": {"point": {"meet": ["E@3", "F@2"]}},
+            "sdb": {"line": {"through": ["K15", "K16"]}},
+            "Sb": {"point": {"meet": ["sdb", "r135"]}},
+            "K17": {"point": {"meet": ["E@6", "F@3"]}},
+            "K18": {"point": {"meet": ["E@9", "F@2"]}},
+            "sdc": {"line": {"through": ["K17", "K18"]}},
+            "Sc": {"point": {"meet": ["sdc", "r45"]}},
+            "K19": {"point": {"meet": ["E", "F@3"]}},
+            "K20": {"point": {"meet": ["E@9", "F"]}},
+            "sdd": {"line": {"through": ["K19", "K20"]}},
+            "Sd": {"point": {"meet": ["sdd", "r135"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Through the centre, rule a level line and an upright one. Where they meet the line across the corner are two points of the diamond.",
+          "create": {
+            "sha": {"line": {"through": "Sa", "parallelTo": "h"}},
+            "sva": {"line": {"through": "Sa", "parallelTo": "v"}},
+            "St1a": {"point": {"meet": ["H", "sha"]}},
+            "St2a": {"point": {"meet": ["H", "sva"]}},
+            "shb": {"line": {"through": "Sb", "parallelTo": "h"}},
+            "svb": {"line": {"through": "Sb", "parallelTo": "v"}},
+            "St1b": {"point": {"meet": ["H@1", "shb"]}},
+            "St2b": {"point": {"meet": ["H@1", "svb"]}},
+            "shc": {"line": {"through": "Sc", "parallelTo": "h"}},
+            "svc": {"line": {"through": "Sc", "parallelTo": "v"}},
+            "St1c": {"point": {"meet": ["H@2", "shc"]}},
+            "St2c": {"point": {"meet": ["H@2", "svc"]}},
+            "shd": {"line": {"through": "Sd", "parallelTo": "h"}},
+            "svd": {"line": {"through": "Sd", "parallelTo": "v"}},
+            "St1d": {"point": {"meet": ["H@3", "shd"]}},
+            "St2d": {"point": {"meet": ["H@3", "svd"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw the circle about the centre through one of these points: it meets the level and upright lines again at the other two.",
+          "create": {
+            "sca": {"circle": {"centre": "Sa", "through": "St1a"}},
+            "St3a": {"point": {"meet": ["sca", "sha"], "pick": {"angle": 41.635}}},
+            "St4a": {"point": {"meet": ["sca", "sva"], "pick": {"angle": 48.365}}},
+            "scb": {"circle": {"centre": "Sb", "through": "St1b"}},
+            "St3b": {"point": {"meet": ["scb", "shb"], "pick": {"angle": 138.365}}},
+            "St4b": {"point": {"meet": ["scb", "svb"], "pick": {"angle": 131.635}}},
+            "scc": {"circle": {"centre": "Sc", "through": "St1c"}},
+            "St3c": {"point": {"meet": ["scc", "shc"], "pick": {"angle": 221.635}}},
+            "St4c": {"point": {"meet": ["scc", "svc"], "pick": {"angle": 228.365}}},
+            "scd": {"circle": {"centre": "Sd", "through": "St1d"}},
+            "St3d": {"point": {"meet": ["scd", "shd"], "pick": {"angle": 318.365}}},
+            "St4d": {"point": {"meet": ["scd", "svd"], "pick": {"angle": 311.635}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Join the four points: the diamond, which with the little square makes the eight-pointed star.",
+          "create": {
+            "spa": {"line": {"through": ["St1a", "St4a"]}},
+            "sqa": {"line": {"through": ["St2a", "St3a"]}},
+            "ssa": {"line": {"through": ["St3a", "St4a"]}},
+            "spb": {"line": {"through": ["St1b", "St4b"]}},
+            "sqb": {"line": {"through": ["St2b", "St3b"]}},
+            "ssb": {"line": {"through": ["St3b", "St4b"]}},
+            "spc": {"line": {"through": ["St1c", "St4c"]}},
+            "sqc": {"line": {"through": ["St2c", "St3c"]}},
+            "ssc": {"line": {"through": ["St3c", "St4c"]}},
+            "spd": {"line": {"through": ["St1d", "St4d"]}},
+            "sqd": {"line": {"through": ["St2d", "St3d"]}},
+            "ssd": {"line": {"through": ["St3d", "St4d"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 13,

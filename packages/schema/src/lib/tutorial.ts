@@ -193,15 +193,34 @@ export const ElementSpec = z
   })
   .pipe(z.union(Object.values(ELEMENT_BY_KIND)));
 
-export const Step = z.strictObject({
-  id: z.int().positive(),
+const Animate = z.enum(['compass', 'ruler', 'fade']);
+
+/** One move of a long step, shown on its own: "Step 11 · 2 of 4". */
+export const Part = z.strictObject({
   text: z.string().min(1),
   create: z.record(Name, ElementSpec),
   highlight: z.array(Ref).optional(),
-  animate: z.enum(['compass', 'ruler', 'fade']).optional(),
-  /** Evaluated but never shown: a step that only names points for the ink. */
-  hidden: z.boolean().optional(),
+  animate: Animate.optional(),
 });
+
+export const Step = z
+  .strictObject({
+    id: z.int().positive(),
+    /** With parts, the step's heading over the text of each part. */
+    text: z.string().min(1),
+    create: z.record(Name, ElementSpec).optional(),
+    parts: z
+      .array(Part)
+      .min(2, 'a step with parts has at least two')
+      .optional(),
+    highlight: z.array(Ref).optional(),
+    animate: Animate.optional(),
+    /** Evaluated but never shown: a step that only names points for the ink. */
+    hidden: z.boolean().optional(),
+  })
+  .refine((s) => (s.create === undefined) !== (s.parts === undefined), {
+    message: 'a step has either create or parts, not both and not neither',
+  });
 
 export const InkPath = z.strictObject({
   closed: z.boolean().optional(),
@@ -297,6 +316,23 @@ export const TutorialShape = z.strictObject({
 
 export type Tutorial = z.infer<typeof TutorialShape>;
 export type Step = z.infer<typeof Step>;
+export type Part = z.infer<typeof Part>;
+
+/**
+ * A step's parts, in order: its own parts, or the whole step as one part.
+ * Everything that walks the construction goes through this.
+ */
+export function partsOf(step: Step): Part[] {
+  if (step.parts) return step.parts;
+  return [
+    {
+      text: step.text,
+      create: step.create ?? {},
+      ...(step.highlight ? { highlight: step.highlight } : {}),
+      ...(step.animate ? { animate: step.animate } : {}),
+    },
+  ];
+}
 export type ElementSpec = z.infer<typeof ElementSpec>;
 export type PointSpec = z.infer<typeof PointSpec>;
 export type PointsSpec = z.infer<typeof PointsSpec>;

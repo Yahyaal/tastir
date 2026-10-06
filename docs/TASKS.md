@@ -82,7 +82,7 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 - [x] **1.14 Ink as you go, as a switch.** The engine gives each ink stroke the earliest step at which it can be drawn: its line and the lines it turns onto at both ends exist (strokes along one line between turns form one run). The player gets an “Ink as you go / Ink at the end” switch beside the speed control, remembered per browser. As you go, a step's new ink draws in green after its lines and is black from the next step; the ink stage then fades the construction.
   *Done when:* an engine test checks the steps for the star and cross and Bou Inania (6: star; 8: a third of the ink), player tests cover the switch; both modes play every tutorial.
 
-- [ ] **1.15 Parts of a step.** A step may have `parts`, each with its own `text`, `create`, `highlight` and `animate`; the player shows “Step 11 · 2 of 4” and Next/Back move by part. Split Bou Inania steps 8–12 into parts, one construction each.
+- [x] **1.15 Parts of a step.** A step may have `parts`, each with its own `text`, `create`, `highlight` and `animate`; the player shows “Step 11 · 2 of 4” and Next/Back move by part. Split Bou Inania steps 8–12 into parts, one construction each.
   *Done when:* schema, engine and player tests cover parts; golden tests unchanged; step 11 plays like picture D.
 
 - [ ] **1.16 The next tile in blue.** On the step that creates the pattern cell, the neighbouring copies of the ink are drawn in blue around the tile, so the band at the edge explains itself; Bou Inania's tile step text says so.

@@ -1,4 +1,4 @@
-import type { ElementSpec, Tutorial } from './tutorial.js';
+import { partsOf, type ElementSpec, type Tutorial } from './tutorial.js';
 
 /** The kind of element a name refers to. A `repeat` names a group. */
 export type ElementKind =
@@ -37,8 +37,10 @@ export function checkReferences(t: Tutorial): Issue[] {
   ]);
   const definedIn = new Map<string, number>();
   for (const step of t.steps) {
-    for (const name of Object.keys(step.create)) {
-      if (!definedIn.has(name)) definedIn.set(name, step.id);
+    for (const part of partsOf(step)) {
+      for (const name of Object.keys(part.create)) {
+        if (!definedIn.has(name)) definedIn.set(name, step.id);
+      }
     }
   }
 
@@ -158,19 +160,24 @@ export function checkReferences(t: Tutorial): Issue[] {
         message: `steps are numbered 1, 2, 3, … in order; expected ${si + 1}, got ${step.id}`,
       });
     }
-    for (const [name, el] of Object.entries(step.create)) {
-      const path = `${sp}.create.${name}`;
-      if (known.has(name)) {
-        issues.push({
-          path,
-          message: `"${name}" is already defined; every element needs its own name`,
-        });
-        continue;
+    partsOf(step).forEach((part, pi) => {
+      const pp = step.parts ? `${sp}.parts[${pi}]` : sp;
+      for (const [name, el] of Object.entries(part.create)) {
+        const path = `${pp}.create.${name}`;
+        if (known.has(name)) {
+          issues.push({
+            path,
+            message: `"${name}" is already defined; every element needs its own name`,
+          });
+          continue;
+        }
+        checkElement(path, el);
+        define(name, el);
       }
-      checkElement(path, el);
-      define(name, el);
-    }
-    step.highlight?.forEach((r, i) => use(`${sp}.highlight[${i}]`, r));
+      part.highlight?.forEach((r, i) => use(`${pp}.highlight[${i}]`, r));
+    });
+    if (step.parts)
+      step.highlight?.forEach((r, i) => use(`${sp}.highlight[${i}]`, r));
   });
 
   t.ink.paths.forEach((p, pi) =>

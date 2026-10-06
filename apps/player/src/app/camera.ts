@@ -94,7 +94,7 @@ export function stepFrame(model: Model, step: number): Rect {
   const { elements } = model.scene;
   const names = new Set<string>();
   for (const el of elements.values()) {
-    if (el.step !== step) continue;
+    if (el.beat !== step) continue;
     names.add(el.name);
     el.deps.forEach((d) => names.add(d));
   }

@@ -2,7 +2,9 @@ import type {
   CircleSpec,
   ElementSpec,
   LineSpec,
+  Part,
   Pick,
+  Step,
   Tutorial,
 } from '@tastir/schema';
 import {
@@ -57,6 +59,12 @@ export interface SceneElement {
   readonly name: string;
   /** The step that made it; 0 for the given points O and A. */
   readonly step: number;
+  /**
+   * The beat that made it: every step, or every part of a step with parts,
+   * numbered 1, 2, 3, … in order (0 for O and A). Without parts, the beat
+   * is the step.
+   */
+  readonly beat: number;
   /** The elements it was built from, so the player can show why it exists. */
   readonly deps: readonly string[];
   readonly geometry: Geometry;
@@ -96,6 +104,16 @@ function describe(p: Vec, tol: Tolerance) {
 }
 
 /**
+ * A step's parts, or the whole step as one part. (The schema's `partsOf`
+ * does the same; the engine keeps its own so it imports only types.)
+ */
+export function stepParts(
+  step: Step,
+): readonly { readonly create: Part['create'] }[] {
+  return step.parts ?? [{ create: step.create ?? {} }];
+}
+
+/**
  * Evaluates a tutorial in its own frame: O at the origin, A at (1, 0), so
  * OA is the unit of length and the direction OA is 0°. Throws a
  * `TutorialError` for any missing, ambiguous or impossible reference.
@@ -103,30 +121,34 @@ function describe(p: Vec, tol: Tolerance) {
 export function evaluate(tutorial: Tutorial): Scene {
   const tol = tolerance(1);
   const elements = new Map<string, SceneElement>();
+  let beat = 0;
   const put = (
     name: string,
     step: number,
     deps: string[],
     geometry: Geometry,
-  ) => elements.set(name, { name, step, deps, geometry });
+  ) => elements.set(name, { name, step, beat, deps, geometry });
   put('O', 0, [], { kind: 'point', at: vec(0, 0) });
   put('A', 0, [], { kind: 'point', at: vec(1, 0) });
 
   for (const step of tutorial.steps) {
-    for (const [name, spec] of Object.entries(step.create)) {
-      const fail = (reason: string): never => {
-        throw new TutorialError(step.id, name, reason);
-      };
-      if (elements.has(name)) fail('this name is already used');
-      const deps: string[] = [];
-      const ctx = new Context(elements, tol, deps, fail);
-      try {
-        for (const [n, g, d] of ctx.build(name, spec)) {
-          put(n, step.id, d ?? deps, g);
+    for (const part of stepParts(step)) {
+      beat += 1;
+      for (const [name, spec] of Object.entries(part.create)) {
+        const fail = (reason: string): never => {
+          throw new TutorialError(step.id, name, reason);
+        };
+        if (elements.has(name)) fail('this name is already used');
+        const deps: string[] = [];
+        const ctx = new Context(elements, tol, deps, fail);
+        try {
+          for (const [n, g, d] of ctx.build(name, spec)) {
+            put(n, step.id, d ?? deps, g);
+          }
+        } catch (e) {
+          if (e instanceof GeometryError) fail(e.message);
+          throw e;
         }
-      } catch (e) {
-        if (e instanceof GeometryError) fail(e.message);
-        throw e;
       }
     }
   }

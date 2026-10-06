@@ -215,3 +215,36 @@ describe('pick rules and repeats', () => {
     expect(scene.elements.get('k.1@1')?.deps).toEqual(['k.1', 'h']);
   });
 });
+
+describe('parts of a step', () => {
+  it('numbers every part as its own beat, and later steps after them', () => {
+    const t = starAndCross();
+    const step2 = t.steps[1] as Tutorial['steps'][number];
+    const { h, v, E, N, W, S } = step2.create ?? {};
+    const split: Tutorial = {
+      ...t,
+      steps: t.steps.map((s) =>
+        s.id === 2
+          ? {
+              id: 2,
+              text: s.text,
+              parts: [
+                { text: 'The horizontal.', create: { h, E, W } as never },
+                { text: 'The vertical.', create: { v, N, S } as never },
+              ],
+            }
+          : s,
+      ),
+    };
+    const scene = evaluate(split);
+    const at = (name: string) => {
+      const el = scene.elements.get(name);
+      return [el?.step, el?.beat];
+    };
+    expect(at('c')).toEqual([1, 1]);
+    expect(at('h')).toEqual([2, 2]);
+    expect(at('W')).toEqual([2, 2]);
+    expect(at('v')).toEqual([2, 3]);
+    expect(at('d1')).toEqual([3, 4]);
+  });
+});

@@ -1,7 +1,7 @@
 import type { Tutorial } from '@tastir/schema';
 import { distanceToSegment, TutorialError, type Scene } from './evaluate.js';
 import { project, segment, type Segment } from './shapes.js';
-import { distance, type Vec } from './vec.js';
+import { distance, sub, type Vec } from './vec.js';
 
 export interface InkStroke {
   /** The named points at its two ends. */
@@ -75,6 +75,68 @@ export function inkStrokes(scene: Scene, tutorial: Tutorial): InkStroke[] {
   return strokes;
 }
 
+/** Directions are compared in buckets of this many radians. */
+const DIRECTION_BUCKET = 1e-3;
+const BUCKETS = Math.round(Math.PI / DIRECTION_BUCKET);
+const bucketOf = (d: Vec) => {
+  const angle = Math.atan2(d.y, d.x);
+  return (
+    ((Math.round((angle < 0 ? angle + Math.PI : angle) / DIRECTION_BUCKET) %
+      BUCKETS) +
+      BUCKETS) %
+    BUCKETS
+  );
+};
+
+/**
+ * For each line and polygon that carries ink, the strokes along it. A
+ * stroke can only lie along a line that runs the same way, so strokes are
+ * sorted by direction first and each line is checked against its own.
+ */
+function strokesAlong(
+  scene: Scene,
+  strokes: readonly InkStroke[],
+): Map<string, number[]> {
+  const { eps } = scene.tol;
+  const byDirection = new Map<number, number[]>();
+  strokes.forEach((s, i) => {
+    const k = bucketOf(sub(s.segment.b, s.segment.a));
+    byDirection.set(k, [...(byDirection.get(k) ?? []), i]);
+  });
+  const near = (d: Vec) => {
+    const k = bucketOf(d);
+    return [k - 1, k, k + 1].flatMap(
+      (j) => byDirection.get((j + BUCKETS) % BUCKETS) ?? [],
+    );
+  };
+  const onLine = (p: Vec, line: { point: Vec; dir: Vec }) =>
+    distance(p, project(p, { kind: 'line', ...line })) <= eps;
+  const along = new Map<string, number[]>();
+  for (const el of scene.elements.values()) {
+    const g = el.geometry;
+    const found = new Set<number>();
+    if (g.kind === 'line') {
+      for (const i of near(g.line.dir)) {
+        const { a, b } = (strokes[i] as InkStroke).segment;
+        if (onLine(a, g.line) && onLine(b, g.line)) found.add(i);
+      }
+    } else if (g.kind === 'polygon') {
+      for (const side of g.sides) {
+        for (const i of near(sub(side.b, side.a))) {
+          const { a, b } = (strokes[i] as InkStroke).segment;
+          if (
+            distanceToSegment(a, side) <= eps &&
+            distanceToSegment(b, side) <= eps
+          )
+            found.add(i);
+        }
+      }
+    }
+    if (found.size) along.set(el.name, [...found]);
+  }
+  return along;
+}
+
 /**
  * The names of the lines and polygons that carry some of the ink. The
  * others only help to find points, so the player draws them as helpers.
@@ -83,61 +145,36 @@ export function inkCarriers(
   scene: Scene,
   strokes: readonly InkStroke[],
 ): Set<string> {
-  const { eps } = scene.tol;
-  const carriers = new Set<string>();
-  const onLine = (p: Vec, line: { point: Vec; dir: Vec }) =>
-    distance(p, project(p, { kind: 'line', ...line })) <= eps;
-  for (const el of scene.elements.values()) {
-    const g = el.geometry;
-    const carries = (s: Segment) =>
-      g.kind === 'line'
-        ? onLine(s.a, g.line) && onLine(s.b, g.line)
-        : g.kind === 'polygon' &&
-          g.sides.some(
-            (side) =>
-              distanceToSegment(s.a, side) <= eps &&
-              distanceToSegment(s.b, side) <= eps,
-          );
-    if (strokes.some((s) => carries(s.segment))) carriers.add(el.name);
-  }
-  return carriers;
+  return new Set(strokesAlong(scene, strokes).keys());
 }
 
 /**
- * For each stroke, the earliest step at which a learner can ink it. The
+ * For each stroke, the earliest beat (a step, or a part of one; see
+ * SceneElement.beat) at which a learner can ink it. The
  * strokes along one line between two turns form a run, and a run can be
  * inked once its line exists and so do the lines it turns onto at both
  * ends; inking it any sooner would leave loose dashes whose ends mean
  * nothing yet.
  */
-export function inkSteps(
+export function inkBeats(
   scene: Scene,
   strokes: readonly InkStroke[],
 ): number[] {
-  const { eps } = scene.tol;
-  const carriers = inkCarriers(scene, strokes);
-  const onLine = (p: Vec, line: { point: Vec; dir: Vec }) =>
-    distance(p, project(p, { kind: 'line', ...line })) <= eps;
   // The line (or polygon) each stroke lies along: the earliest made.
-  const support = strokes.map((s) => {
-    let best: { name: string; step: number } | undefined;
-    for (const name of carriers) {
-      const el = scene.elements.get(name);
-      const g = el?.geometry;
-      if (!el || !g) continue;
-      const on =
-        g.kind === 'line'
-          ? onLine(s.segment.a, g.line) && onLine(s.segment.b, g.line)
-          : g.kind === 'polygon' &&
-            g.sides.some(
-              (side) =>
-                distanceToSegment(s.segment.a, side) <= eps &&
-                distanceToSegment(s.segment.b, side) <= eps,
-            );
-      if (on && (!best || el.step < best.step)) best = { name, step: el.step };
+  const support: { name: string; beat: number }[] = strokes.map((s) => ({
+    name: `stroke ${s.from}–${s.to}`,
+    beat: 0,
+  }));
+  const found = strokes.map(() => false);
+  for (const [name, list] of strokesAlong(scene, strokes)) {
+    const beat = scene.elements.get(name)?.beat ?? 0;
+    for (const i of list) {
+      if (!found[i] || beat < (support[i] as { beat: number }).beat) {
+        support[i] = { name, beat };
+        found[i] = true;
+      }
     }
-    return best ?? { name: `stroke ${s.from}–${s.to}`, step: 0 };
-  });
+  }
   // Which supports have ink touching each end point.
   const key = (p: Vec) => `${p.x.toFixed(6)},${p.y.toFixed(6)}`;
   const touching = new Map<string, Map<string, number>>();
@@ -145,7 +182,7 @@ export function inkSteps(
     for (const p of [s.segment.a, s.segment.b]) {
       const k = key(p);
       const here = touching.get(k) ?? new Map<string, number>();
-      here.set(support[i]?.name ?? '', support[i]?.step ?? 0);
+      here.set(support[i]?.name ?? '', support[i]?.beat ?? 0);
       touching.set(k, here);
     }
   });
@@ -172,8 +209,8 @@ export function inkSteps(
   const runStep = new Map<number, number>();
   strokes.forEach((s, i) => {
     const root = find(i);
-    const own = support[i] as { name: string; step: number };
-    let step = Math.max(runStep.get(root) ?? 0, own.step);
+    const own = support[i] as { name: string; beat: number };
+    let step = Math.max(runStep.get(root) ?? 0, own.beat);
     for (const p of [s.segment.a, s.segment.b]) {
       const others = [...(touching.get(key(p)) ?? new Map<string, number>())]
         .filter(([name]) => name !== own.name)

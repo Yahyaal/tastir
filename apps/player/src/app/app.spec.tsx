@@ -165,6 +165,50 @@ describe('the player', () => {
     expect(container.querySelector('.rulers')).toBeNull();
   });
 
+  it('plays a step in parts: “Step 2 · 1 of 2”, then the next part', () => {
+    const t = parseTutorial(example);
+    const step2 = t.steps[1];
+    const { h, v, E, N, W, S } = step2?.create ?? {};
+    const split = {
+      ...t,
+      steps: t.steps.map((s) =>
+        s.id === 2
+          ? {
+              id: 2,
+              text: 'Two lines.',
+              parts: [
+                { text: 'The horizontal.', create: { h, E, W } },
+                { text: 'The vertical.', create: { v, N, S } },
+              ],
+            }
+          : s,
+      ),
+    };
+    const { container } = render(<Play json={split} />);
+    const seen = [label()];
+    next();
+    seen.push(label());
+    expect(screen.getByText('The horizontal.')).toBeTruthy();
+    expect(screen.getByText('Two lines.')).toBeTruthy();
+    expect(container.querySelector('[data-name="v"]')).toBeNull();
+    next();
+    seen.push(label());
+    expect(container.querySelector('[data-name="v"]')?.classList).toContain(
+      'current',
+    );
+    expect(container.querySelector('[data-name="h"]')?.classList).not.toContain(
+      'current',
+    );
+    next();
+    seen.push(label());
+    expect(seen).toEqual([
+      'Step 1 of 6',
+      'Step 2 · 1 of 2',
+      'Step 2 · 2 of 2',
+      'Step 3 of 6',
+    ]);
+  });
+
   it('skips a hidden step: never shown, never drawn, left out of the count', () => {
     const tutorial = parseTutorial(example);
     const hidden = {

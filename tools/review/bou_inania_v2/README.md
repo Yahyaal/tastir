@@ -23,3 +23,4 @@ piece edges instead.
    gaps closed.
 7. `gen_bou_inania_v2.py ink.json out.json`: the tutorial (draft kept here as
    `draft-bou-inania-rosette.json` until the small stars and slivers are fixed).
+8. `10_parts.py tutorials/bou-inania-rosette.json`: after `finish.py`, splits steps 8–12 into parts, one move each (owner, 5 October 2026).

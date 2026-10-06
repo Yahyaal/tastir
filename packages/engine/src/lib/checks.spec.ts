@@ -62,7 +62,7 @@ describe('step by step', () => {
   it('names the first step whose pick is ambiguous', () => {
     const broken = structuredClone(t);
     const step2 = broken.steps[1] as (typeof broken.steps)[number];
-    step2.create['E'] = { point: { meet: ['c', 'h'] } };
+    (step2.create ?? {})['E'] = { point: { meet: ['c', 'h'] } };
     expect(firstFailingStep(broken)).toMatch(/^Step 2, element "E"/);
   });
 });

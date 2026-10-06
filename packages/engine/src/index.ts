@@ -21,7 +21,7 @@ export {
 export { arrangement, signedArea } from './lib/arrangement.js';
 export {
   inkCarriers,
-  inkSteps,
+  inkBeats,
   inkStrokes,
   type InkStroke,
 } from './lib/ink.js';
