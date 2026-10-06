@@ -8,6 +8,7 @@ import type {
 } from '@tastir/engine';
 import {
   compassStart,
+  FRESH_INK,
   usedNames,
   rulerOrder,
   RULER_COLOR,
@@ -15,7 +16,7 @@ import {
 } from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors } from './coloring';
-import { carriersOf, hiddenSteps, type Model } from './model';
+import { carriersOf, hiddenSteps, inkStepsOf, type Model } from './model';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
@@ -278,6 +279,35 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
 }
 
 /**
+ * When inking as you go: the ink of the steps before `upTo` in black, and
+ * the ink step `upTo` makes in green (named so its step can draw it in).
+ */
+function InkSoFar({ model, upTo }: { model: Model; upTo: number }) {
+  const steps = inkStepsOf(model);
+  return (
+    <g className="ink so-far">
+      {model.pattern.ink.map((s, i) => {
+        const step = steps[i] ?? Infinity;
+        if (step > upTo) return null;
+        const fresh = step === upTo;
+        return (
+          <line
+            key={i}
+            className={fresh ? 'fresh' : undefined}
+            data-name={fresh ? FRESH_INK : undefined}
+            x1={sx(s.segment.a)}
+            y1={sy(s.segment.a)}
+            x2={sx(s.segment.b)}
+            y2={sy(s.segment.b)}
+            vectorEffect="non-scaling-stroke"
+          />
+        );
+      })}
+    </g>
+  );
+}
+
+/**
  * The construction up to `upTo`: the elements of step `upTo` in orange,
  * the ones it works from in blue, and earlier ones in light grey; lines
  * that never carry ink are dashed. With `ink`, everything is faint and the ink
@@ -290,6 +320,8 @@ export function Construction({
   ink = false,
   svgRef,
   showNames = false,
+  inkSoFar = false,
+  pen = true,
   freeInk,
   enter = false,
 }: {
@@ -301,6 +333,10 @@ export function Construction({
   svgRef?: React.Ref<SVGSVGElement>;
   /** Name the points this step makes and uses (codes like E or M12). */
   showNames?: boolean;
+  /** Inking as you go: the ink made so far, this step's in green. */
+  inkSoFar?: boolean;
+  /** On the ink stage, ink the pattern with a pen (inking at the end). */
+  pen?: boolean;
   /** On the ink stage: every piece the learner can ink, and which are. */
   freeInk?: FreeInk;
   /** Play the move into the ink stage: the construction fades back while
@@ -357,8 +393,9 @@ export function Construction({
           />
         ))}
       </g>
+      {inkSoFar && !ink ? <InkSoFar model={model} upTo={upTo} /> : null}
       {ink && freeInk ? <FreeInkPieces {...freeInk} /> : null}
-      {ink && !freeInk && enter ? (
+      {ink && !freeInk && enter && pen ? (
         <g className="rulers" aria-hidden="true">
           {rulerOrder(model).map((r, k) => (
             <line

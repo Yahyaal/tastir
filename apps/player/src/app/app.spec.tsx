@@ -145,6 +145,26 @@ describe('the player', () => {
     ).not.toContain('helper');
   });
 
+  it('inks as you go when asked: each step’s ink in green, then black', () => {
+    const { container } = render(<Play json={example} />);
+    const fresh = () => container.querySelectorAll('.ink line.fresh').length;
+    const all = () => container.querySelectorAll('.so-far line').length;
+    for (let i = 0; i < 4; i++) next(); // step 5: both squares exist
+    expect(all()).toBe(0); // inking at the end, by default
+    fireEvent.change(screen.getByLabelText(/Ink/), {
+      target: { value: 'asYouGo' },
+    });
+    expect(fresh()).toBe(16);
+    back();
+    expect(all()).toBe(0); // step 4 inks nothing yet
+    next();
+    next(); // step 6
+    expect(fresh()).toBe(0);
+    expect(all()).toBe(16);
+    next(); // the ink stage: no pen, the ink is already there
+    expect(container.querySelector('.rulers')).toBeNull();
+  });
+
   it('skips a hidden step: never shown, never drawn, left out of the count', () => {
     const tutorial = parseTutorial(example);
     const hidden = {

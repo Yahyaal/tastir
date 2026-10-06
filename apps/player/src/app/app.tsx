@@ -27,7 +27,13 @@ import { Construction, RepeatedInk, Thumbnail } from './drawing';
 import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { LIBRARY, type Entry } from './library';
 import { useRemembered } from './remembered';
-import { shownSteps, stagesOf, type Model, type Stage } from './model';
+import {
+  shownSteps,
+  stagesOf,
+  type InkMode,
+  type Model,
+  type Stage,
+} from './model';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
 /**
@@ -109,6 +115,8 @@ export function Player({ model }: { model: Model }) {
   const [speed, setSpeed] = useState(1);
   const [reduced, setReduced] = useState(prefersReducedMotion);
   const [showNames, setShowNames] = useRemembered<boolean>('showNames', false);
+  const [inkMode, setInkMode] = useRemembered<InkMode>('inkMode', 'end');
+  const asYouGo = inkMode === 'asYouGo';
 
   const inking = useInking(model);
   const [colorHistory, colorDispatch] = useReducer(
@@ -170,20 +178,21 @@ export function Player({ model }: { model: Model }) {
     animateNext.current = false;
     if (reduced) return;
     if (stage.kind === 'ink') {
-      if (!inking.editing && inking.isClassic)
+      if (!inking.editing && inking.isClassic && !asYouGo)
         running.current = playInk(svgRef.current, model, speed, {
           lengthScale: width(camera.view) / width(frame),
         });
       return;
     }
     if (stage.kind !== 'step') return;
-    running.current = play(svgRef.current, planStep(model, stage.step, speed), {
+    const plan = planStep(model, stage.step, speed, { ink: asYouGo });
+    running.current = play(svgRef.current, plan, {
       // The camera glides to the step's frame while it draws.
       lengthScale: width(camera.view) / width(frame),
     });
     // Only a change of step starts an animation; the view is read as it is.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, stage, model, reduced, speed, frame]);
+  }, [index, stage, model, reduced, speed, frame, asYouGo]);
 
   const next = useCallback(() => {
     if (reversing.current) return settle();
@@ -204,7 +213,7 @@ export function Player({ model }: { model: Model }) {
       stage.kind === 'step' && !reduced
         ? play(
             svgRef.current,
-            planStep(model, stage.step, speed, { flash: false }),
+            planStep(model, stage.step, speed, { flash: false, ink: asYouGo }),
             { reverse: true },
           )
         : [];
@@ -216,7 +225,7 @@ export function Player({ model }: { model: Model }) {
       running.current = [];
       setIndex(index - 1);
     });
-  }, [index, stage, model, reduced, speed]);
+  }, [index, stage, model, reduced, speed, asYouGo]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -243,6 +252,7 @@ export function Player({ model }: { model: Model }) {
         view={camera.view}
         svgRef={svgRef}
         showNames={showNames}
+        inkSoFar={asYouGo}
       />
     );
   } else if (stage.kind === 'ink') {
@@ -259,6 +269,7 @@ export function Player({ model }: { model: Model }) {
         svgRef={svgRef}
         freeInk={inking.freeInk}
         ink
+        pen={!asYouGo}
         enter={enter && !inking.editing}
       />
     );
@@ -316,6 +327,16 @@ export function Player({ model }: { model: Model }) {
               <option value={0.5}>½×</option>
               <option value={1}>1×</option>
               <option value={2}>2×</option>
+            </select>
+          </label>
+          <label>
+            Ink{' '}
+            <select
+              value={inkMode}
+              onChange={(e) => setInkMode(e.target.value as InkMode)}
+            >
+              <option value="end">at the end</option>
+              <option value="asYouGo">as you go</option>
             </select>
           </label>
           <label>

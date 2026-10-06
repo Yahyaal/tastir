@@ -235,3 +235,18 @@ describe('what a step works from', () => {
     expect(usedNames(model, 2).sort()).toEqual(['A', 'O', 'c']);
   });
 });
+
+describe('inking as you go', () => {
+  it("draws the step's new ink after its lines", () => {
+    const plain = planStep(model, 5);
+    const plan = planStep(model, 5, 1, { ink: true });
+    const ink = plan.find((e) => e.name === 'ink-fresh');
+    expect(ink?.kind).toBe('ruler');
+    expect(ink?.delay).toBeGreaterThanOrEqual(
+      Math.max(...plain.map((e) => e.delay + e.duration)),
+    );
+    expect(
+      planStep(model, 4, 1, { ink: true }).map((e) => e.name),
+    ).not.toContain('ink-fresh');
+  });
+});

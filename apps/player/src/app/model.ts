@@ -1,6 +1,7 @@
 import {
   computePattern,
   inkCarriers,
+  inkSteps,
   evaluate,
   type Pattern,
   type Scene,
@@ -57,6 +58,29 @@ export function carriersOf(model: Model): ReadonlySet<string> {
   if (!found) {
     found = inkCarriers(model.scene, model.pattern.ink);
     carriers.set(model, found);
+  }
+  return found;
+}
+
+/** When the ink is drawn: as each step makes it, or all at the end. */
+export type InkMode = 'end' | 'asYouGo';
+
+const strokeSteps = new WeakMap<Model, readonly number[]>();
+
+/**
+ * For each of the tutorial's ink strokes, the step that inks it when the
+ * learner inks as they go: the earliest step it can be drawn, moved on to
+ * the next step the learner sees if that one is hidden.
+ */
+export function inkStepsOf(model: Model): readonly number[] {
+  let found = strokeSteps.get(model);
+  if (!found) {
+    const shown = shownSteps(model.tutorial);
+    const lastShown = shown[shown.length - 1] ?? 0;
+    found = inkSteps(model.scene, model.pattern.ink).map(
+      (step) => shown.find((s) => s >= step) ?? lastShown,
+    );
+    strokeSteps.set(model, found);
   }
   return found;
 }

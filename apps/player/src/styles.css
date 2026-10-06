@@ -157,6 +157,10 @@ header h1 {
   stroke-linecap: round;
 }
 
+.ink line.fresh {
+  stroke: var(--fresh);
+}
+
 .ink.original {
   stroke: var(--current);
 }

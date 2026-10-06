@@ -1,5 +1,5 @@
 import type { Vec } from '@tastir/engine';
-import type { Model } from './model';
+import { inkStepsOf, type Model } from './model';
 
 /** How one element enters the drawing. */
 export type EffectKind = 'flash' | 'compass' | 'ruler' | 'pop';
@@ -11,6 +11,11 @@ export interface Effect {
   readonly delay: number;
   readonly duration: number;
 }
+
+/** The name shared by the ink a step makes, when inking as you go. */
+export const FRESH_INK = 'ink-fresh';
+/** How long a step's new ink takes to draw, at normal speed. */
+export const INK_STEP_MS = 700;
 
 /** One step's drawing at normal speed, in milliseconds. */
 export const STEP_MS = 800;
@@ -66,7 +71,7 @@ export function planStep(
   model: Model,
   step: number,
   speed = 1,
-  { flash = true } = {},
+  { flash = true, ink = false } = {},
 ): Effect[] {
   const total = STEP_MS / speed;
   const flashed = flash ? highlightedNames(model, step) : [];
@@ -107,6 +112,15 @@ export function planStep(
       duration: pop,
     });
   });
+  // Inking as you go: the ink this step makes is drawn once it is built.
+  if (ink && inkStepsOf(model).includes(step)) {
+    effects.push({
+      name: FRESH_INK,
+      kind: 'ruler',
+      delay: start + total,
+      duration: INK_STEP_MS / speed,
+    });
+  }
   return effects;
 }
 
