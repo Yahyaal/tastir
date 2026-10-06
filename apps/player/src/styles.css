@@ -788,6 +788,12 @@ main.stage .drawing:not(.wall) {
   stroke-linejoin: round;
 }
 
+/* Strapwork thumbnails: the bands draw the outlines, so each piece only
+   closes the hairline seams with its own colour. */
+.piece.strap {
+  stroke-width: 1px;
+}
+
 .free-ink .hit {
   stroke: transparent;
   stroke-width: 12px;

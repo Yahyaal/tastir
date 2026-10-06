@@ -839,7 +839,26 @@ export function PieceShape({
   );
 }
 
-/** A small square picture of the colored pattern, for the library. */
+/** The strapwork look's colours: a light band with dark edges. */
+export const STRAP_EDGE = '#23201c';
+export const STRAP_BAND = '#f7f2e6';
+
+/**
+ * Grout and band widths in proportion to the tile, so every pattern gets the
+ * same look; shared by the wall and the thumbnails.
+ */
+export function strapWidths(model: Model, grout = 1) {
+  const xs = model.pattern.cell.corners.map((p) => p.x);
+  const unit = (Math.max(...xs) - Math.min(...xs)) / 2;
+  const g = 0.012 * unit * grout;
+  return { grout: g, edge: g * 4, band: g * 2.4 };
+}
+
+/**
+ * A small square picture of the colored pattern, for the library, in the
+ * player's default strapwork look: the pieces, then each pattern line as a
+ * light band with dark edges.
+ */
 export function Thumbnail({ model }: { model: Model }) {
   const { view, shifts } = tiling(model, {
     halfWide: 1,
@@ -847,20 +866,60 @@ export function Thumbnail({ model }: { model: Model }) {
     reach: 2,
   });
   const colors = pieceColors(model);
+  const widths = strapWidths(model);
+  // Only what shows: pieces and lines whose box meets the view.
+  const seen = fit(view, 1 + widths.edge);
+  const meets = (ps: readonly Vec[]) =>
+    Math.max(...ps.map((p) => p.x)) >= seen.minX &&
+    Math.min(...ps.map((p) => p.x)) <= seen.maxX &&
+    Math.max(...ps.map((p) => p.y)) >= seen.minY &&
+    Math.min(...ps.map((p) => p.y)) <= seen.maxY;
+  const move = (p: Vec, d: Vec): Vec => ({ x: p.x + d.x, y: p.y + d.y });
+  const pieces = shifts.flatMap((d) =>
+    model.pattern.pieces.flatMap((p) => {
+      const polygon = p.polygon.map((q) => move(q, d));
+      return meets(polygon) ? [{ type: p.type, polygon }] : [];
+    }),
+  );
+  const lines = shifts.flatMap((d) =>
+    model.pattern.ink.flatMap((s) => {
+      const ab = [move(s.segment.a, d), move(s.segment.b, d)];
+      return meets(ab) ? [ab as [Vec, Vec]] : [];
+    }),
+  );
+  // One path per piece type and one per band layer keeps the library light.
+  const poly = (ps: readonly Vec[]) =>
+    `M${ps.map((q) => `${sx(q)} ${sy(q)}`).join('L')}Z`;
+  const byType = new Map<number, string[]>();
+  for (const p of pieces) {
+    const list = byType.get(p.type) ?? [];
+    list.push(poly(p.polygon));
+    byType.set(p.type, list);
+  }
+  const strokes = lines
+    .map(([a, b]) => `M${sx(a)} ${sy(a)}L${sx(b)} ${sy(b)}`)
+    .join('');
   return (
     <svg className="thumbnail" viewBox={viewBox(view)} aria-hidden="true">
-      {shifts.map((d, k) => (
-        <g key={k} transform={`translate(${d.x} ${-d.y})`}>
-          {model.pattern.pieces.map((p, i) => (
-            <polygon
-              key={i}
-              className="piece"
-              points={points(p.polygon)}
-              fill={colors[p.type]}
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
-        </g>
+      {[...byType].map(([type, ds]) => (
+        <path
+          key={type}
+          className="piece strap"
+          d={ds.join('')}
+          fill={colors[type]}
+          style={{ stroke: colors[type] }}
+          vectorEffect="non-scaling-stroke"
+        />
+      ))}
+      {(['edge', 'band'] as const).map((layer) => (
+        <path
+          key={layer}
+          d={strokes}
+          fill="none"
+          stroke={layer === 'edge' ? STRAP_EDGE : STRAP_BAND}
+          strokeWidth={widths[layer]}
+          strokeLinecap="round"
+        />
       ))}
     </svg>
   );

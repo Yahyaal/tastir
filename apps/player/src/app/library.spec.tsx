@@ -78,7 +78,7 @@ describe('the library', () => {
     expect(screen.getAllByText('6 steps')).toHaveLength(2);
     // Each card has a picture of the colored pattern.
     expect(
-      document.querySelectorAll('svg.thumbnail polygon.piece').length,
+      document.querySelectorAll('svg.thumbnail .piece').length,
     ).toBeGreaterThan(0);
   });
 

@@ -1,7 +1,7 @@
 import { pieceAt, rectangularPeriod, type Vec } from '@tastir/engine';
 import { useId, useLayoutEffect, useMemo, useRef } from 'react';
-import { fit, viewBox, width, type Rect } from './camera';
-import { tiling } from './drawing';
+import { fit, viewBox, width } from './camera';
+import { STRAP_BAND, STRAP_EDGE, strapWidths, tiling } from './drawing';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
 
@@ -12,8 +12,8 @@ export const WALL_STYLES: readonly WallStyle[] = [
   'lines',
 ];
 
-const INK = '#23201c';
-const BAND = '#f7f2e6';
+const INK = STRAP_EDGE;
+const BAND = STRAP_BAND;
 
 /**
  * Maps the tutorial frame into the tile's own frame and back. The SVG
@@ -95,8 +95,7 @@ export function Wall({
   const tile = useMemo(() => tileFrame(model, [rm, rn]), [model, rm, rn]);
   const { pattern } = model;
   // Grout in proportion to the tile, so every pattern gets the same look.
-  const unit = width(fullCell(model)) / 2;
-  const groutWidth = 0.012 * unit * grout;
+  const groutWidth = strapWidths(model, grout).grout;
 
   // The pieces and ink strokes in tile coordinates, with neighbours' copies.
   const shifted = useMemo(() => {
@@ -322,15 +321,3 @@ export function Wall({
 const COLOR_FILL_MS = 350;
 const COLOR_TYPE_MS = 1100;
 const COLOR_SPREAD_MS = 800;
-
-/** The cell's box, for sizing grout in proportion to the pattern. */
-function fullCell(model: Model): Rect {
-  const xs = model.pattern.cell.corners.map((p) => p.x);
-  const ys = model.pattern.cell.corners.map((p) => p.y);
-  return {
-    minX: Math.min(...xs),
-    minY: Math.min(...ys),
-    maxX: Math.max(...xs),
-    maxY: Math.max(...ys),
-  };
-}
