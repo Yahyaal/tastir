@@ -35,6 +35,37 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'alhambra-reyes-stars',
+    title: 'Stars, octagons and crosses of the Sala de los Reyes (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'A zellige of the Sala de los Reyes: the same eight-pointed star round every point of a square grid, with octagons and crosses alternating at the centres.',
+    story: [
+      'Each motif is one star: a circle divided into eight, every point joined to the one three places round, and the octagon round it. Octagons and four-armed crosses alternate at the centres like a chessboard. The crosses’ notches are found with the compass: open it to a side of the octagon, put it on the star’s point and mark inwards. The tutorial takes eleven steps; Brian Wichmann’s drawing gave the design.',
+      'David Wade’s photo of the panel matches piece for piece (picture). As on the panel, the kites round the crosses are dark and those round the octagons pale. Near the top of the panel two rows repeat instead of alternating, probably a repair.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-reyes-stars/photo-overlay.png',
+        caption:
+          'Left: the panel. Right: the same with the tutorial’s outlines in red.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Sala de los Reyes (M060)',
+        url: 'https://tilingsearch.mit.edu/HTML/data9/M060.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 0408x)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
     id: 'alhambra-comares-dado',
     title: 'Octagons and hexagons of the Comares dado (new)',
     fold: 4,
@@ -964,6 +995,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Stars of the Sala de los Reyes',
+      text: 'A new tutorial: eight-pointed stars round octagons and crosses, checked piece for piece against a photo of the panel.',
+      link: { label: 'Open it', href: '/#/alhambra-reyes-stars' },
+    },
+    {
       title: 'The Comares dado',
       text: 'A new beginner tutorial: octagons, long hexagons and crosses of small squares, one length found with a single line. Checked against a photo of the real dado.',
       link: { label: 'Open it', href: '/#/alhambra-comares-dado' },
@@ -1061,7 +1097,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'More Alhambra panels, each with a photo',
-    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: the pinwheel of eight-pointed stars in the Sala de los Reyes.',
+    text: 'Wichmann’s index pairs 83 Alhambra designs with David Wade’s photos. Next: a panel from the Sala de la Barca.',
   },
   next: [
     {

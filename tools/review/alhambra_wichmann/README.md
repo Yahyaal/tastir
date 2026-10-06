@@ -47,3 +47,11 @@ t = 6 − 4√2 (drawing: 0.3428 ± 0.0005). `gen_comares_dado.py` then `finish_
 
 Parked: AL09 (Mexuar patio, no photo found; the CC0 Cuarto Dorado zellige panel is a
 different, non-repeating design) and AL1 (the banded star and cross, already in the library).
+
+M060, the Sala de los Reyes (6 October): the same {8/3} star on a circle of radius ½ round
+every grid point (grid 1), with the star's octagon; octagons and four-armed crosses alternate
+like a chessboard at the centres. The crosses' notches are 45° lines at d = ½ − sin 22.5°
+from the centre (the octagon's side marked inward from the star's point; drawing 0.1173).
+`gen_reyes_stars.py` then `finish_reyes.py` (kites round the crosses dark, by nth).
+Checked against Wade's SPA 0408x (`reyes-picks.json`): every piece lines up; the panel's
+top two rows repeat instead of alternating, probably a repair.

@@ -51,6 +51,7 @@ for i in range(-2, 3):
 font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', 40)
 box = tuple(cfg['crop'])
 a, b = rgb.crop(box), over.crop(box)
+font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', min(40, a.width // 14))
 out = Image.new('RGB', (a.width*2 + 20, a.height + 60), 'white'); out.paste(a, (0, 60)); out.paste(b, (a.width + 20, 60))
 dd = ImageDraw.Draw(out); dd.text((10, 8), cfg['credit'], font=font, fill='black'); dd.text((a.width + 30, 8), 'With our lines (red)', font=font, fill='black')
 out.thumbnail((1600, 1600)); font = None; os.makedirs(outdir, exist_ok=True); out.save(os.path.join(outdir, 'photo-overlay.png'))
