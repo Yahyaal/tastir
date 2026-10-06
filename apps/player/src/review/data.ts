@@ -80,6 +80,7 @@ export const PATTERNS: readonly Pattern[] = [
       'The carved woodwork of the al-Maridani minbar in Cairo (1340) is exactly Samira Mian’s stellated rosettes, the tutorial you already approved.',
     story: [
       'I measured every carved inlay on the photo. Each one is framed by bands of the same width, so its edges show where the pattern lines run. Every line found is one of her construction lines: the two hexagons in the circle, her star lines, and the small hexagons and corner piece. The red lines in the first picture are her tutorial’s ink, laid over the photo, and every inlay sits in one of its pieces.',
+      'A second minbar has the same design: the one in the mosque of al-Nasir Muhammad in the Citadel, twenty years older (third picture). Its inlays sit in the same pieces.',
       'One place needed a close look (A in the second picture). At the tip of each small kite, the band runs straight on to the tiny white arrow, with no line across it, just as in her drawing. So nothing in her tutorial changes. It now credits the minbar photo too, its title names the minbar, and its status is verified.',
     ],
     pictures: [
@@ -92,6 +93,11 @@ export const PATTERNS: readonly Pattern[] = [
         src: 'renders/mian-stellated-rosettes/photo-kite-tip.png',
         caption:
           'A: at a kite tip the band runs on unbroken to the tiny white arrow, so no line crosses there.',
+      },
+      {
+        src: 'renders/mian-stellated-rosettes/nasir-overlay.png',
+        caption:
+          'A second minbar with the same design: al-Nasir Muhammad’s, in the Citadel (1318–35), with the same lines over it.',
       },
     ],
     asks: [],
@@ -896,6 +902,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Design H3: another minbar, same design',
+      text: 'The minbar of al-Nasir Muhammad in the Citadel has the same design as the al-Maridani minbar, so Samira Mian’s stellated rosettes now have two real examples. No new twelve-fold wood design turned up.',
+      link: { label: 'See the card', href: '#design-h1' },
+    },
+    {
       title: 'Design H2: minbar doors from Cairo',
       text: 'A new tutorial, checked against the Metropolitan Museum’s photo: Samira Mian’s rosette on a hexagonal repeat, inked as on the doors, with a triangle between every three rosettes.',
       link: { label: 'Open it', href: '/#/minbar-doors-cairo' },
@@ -973,8 +984,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Design H3: a third Mamluk woodwork design',
-    text: 'Looking for a straight-on photo of another Cairo minbar or door with twelve-pointed stars. As with H1 and H2, I first check it against the twelve-fold tutorials we already have.',
+    title: 'A second Ibn Tulun window grille',
+    text: 'The mosque has over a hundred different window grilles and we have one. I am reading a different one from a photo and building it.',
   },
   next: [
     {

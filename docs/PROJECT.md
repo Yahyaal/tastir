@@ -10,6 +10,7 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 There are 25 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
 
+- The minbar of al-Nasir Muhammad in the Citadel turned out to be the same design as the al-Maridani minbar, so `mian-stellated-rosettes` now has two real examples.
 - Design H2, the minbar doors from Cairo in the Metropolitan Museum (about 1325–30), built as `minbar-doors-cairo` and checked against the museum's photo. It is Samira Mian's rosette on a hexagonal tile, inked as the doors are.
 - Design H1, the al-Maridani minbar in Cairo, turned out to be Samira Mian's stellated rosettes, already in the library. Every inlay of the photo was measured and matches; the tutorial now credits the photo and is marked verified.
 - Samira Mian's twelve-fold rosette (square and hexagonal tiles) and her stellated rosettes (activity 8), both credited to her.
@@ -19,9 +20,9 @@ There are 25 tutorials in the library. Each one's status, with what was checked,
 
 ## The next goal
 
-Build Design H3, a third twelve-fold Mamluk design in wood, from a straight-on photo of a real minbar or door (Cairo's minbars on Wikimedia Commons are the place to look). Start by overlaying the library's twelve-fold tutorials on the photo, since H1 and H2 both used Samira Mian's lines. Details are in [the queue](patterns/QUEUE.md).
+Add a second Ibn Tulun window grille. The mosque has over a hundred different grilles and the library has one; Wikimedia Commons has straight-on photos of many. Read a different one from its photo, build it, and check the wall against the photo. Details are in [the queue](patterns/QUEUE.md).
 
-After H3, take the next unchecked item in [the queue](patterns/QUEUE.md).
+After that, take the next unchecked item in [the queue](patterns/QUEUE.md).
 
 ## How a session works
 
