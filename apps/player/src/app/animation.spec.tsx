@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
-import { compassStart, planStep } from './animation';
+import { compassStart, planStep, usedNames } from './animation';
 import { Play } from './app';
 import { loadModel } from './model';
 
@@ -133,7 +133,7 @@ describe('highlight before draw', () => {
     calls.length = 0;
     next(); // step 4
     const flashE = calls.filter((c) => c.name === 'E');
-    expect(flashE).toHaveLength(2); // the point and its name
+    expect(flashE).toHaveLength(1); // the point (names are off)
     expect(flashE[0]?.options).toMatchObject({
       delay: 0,
       duration: 600,
@@ -143,34 +143,24 @@ describe('highlight before draw', () => {
     expect(square?.options.delay).toBe(600);
   });
 
-  it('outlines the highlighted elements instead with reduced motion', () => {
+  it('shows what the step works from in blue, with a ring round each point', () => {
     const { container } = render(<Play json={example} />);
     fireEvent.click(screen.getByLabelText('Reduce motion'));
     next();
-    next(); // step 3 highlights h and v
-    const outlined = [...container.querySelectorAll('.el.highlighted')].map(
-      (n) => n.getAttribute('data-name'),
+    next(); // step 3 works from h and v
+    const used = [...container.querySelectorAll('.el.used')].map((n) =>
+      n.getAttribute('data-name'),
     );
-    expect(outlined).toEqual(['h', 'v']);
-    next(); // step 4 highlights E, N, W and S
-    const marks = [...container.querySelectorAll('.mark.highlighted')].map(
-      (n) => n.getAttribute('data-name'),
+    expect(used).toEqual(['h', 'v']);
+    next(); // step 4 works from E, N, W and S
+    const marks = [...container.querySelectorAll('.mark.used')].map((n) =>
+      n.getAttribute('data-name'),
     );
     expect(marks).toEqual(['E', 'N', 'W', 'S']);
-    expect(container.querySelectorAll('.el.highlighted')).toHaveLength(0);
+    expect(container.querySelectorAll('.mark-ring')).toHaveLength(4);
+    expect(container.querySelectorAll('.el.used')).toHaveLength(0);
   });
 
-  it('does not outline anything when the flash plays', () => {
-    const { container } = render(<Play json={example} />);
-    next();
-    next();
-    expect(
-      container.querySelectorAll('.highlighted.el, .highlighted.mark'),
-    ).toHaveLength(0);
-  });
-});
-
-describe('animating in the player', () => {
   it('sweeps the first circle on load', () => {
     const { calls } = recordAnimations();
     render(<Play json={example} />);
@@ -198,7 +188,7 @@ describe('animating in the player', () => {
     const v = calls.find((c) => c.name === 'v');
     expect(v?.options).toMatchObject({ delay: 150, duration: 150 });
     const pops = calls.filter((c) => c.name === 'E');
-    expect(pops).toHaveLength(2); // the dot and its label
+    expect(pops).toHaveLength(1); // the dot (names are off)
     expect(pops[0]?.keyframes[0]).toMatchObject({ transform: 'scale(0)' });
   });
 
@@ -232,5 +222,16 @@ describe('animating in the player', () => {
     back();
     expect(label()).toBe('Step 2 of 6');
     expect(calls).toEqual([]);
+  });
+});
+
+describe('what a step works from', () => {
+  it('is the highlight list when the step has one', () => {
+    expect(usedNames(model, 4)).toEqual(['E', 'N', 'W', 'S']);
+  });
+
+  it("is otherwise what the step's new elements are built from", () => {
+    // Step 2 rules h through O and A, v through O, and marks the circle.
+    expect(usedNames(model, 2).sort()).toEqual(['A', 'O', 'c']);
   });
 });

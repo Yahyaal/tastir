@@ -2,7 +2,10 @@
   --ink: #23201c;
   --old: #c9c6c0;
   --faint: #e4e1db;
-  --current: #c2410c;
+  --current: #d55e00;
+  /* What a step works from, and ink drawn in this step (Okabe–Ito). */
+  --used: #0072b2;
+  --fresh: #009e73;
   --paper: #fbf9f4;
   --muted: #6b665e;
   font-family:
@@ -84,15 +87,23 @@ header h1 {
   stroke: var(--faint);
 }
 
-.el.highlighted {
-  stroke: var(--ink);
+.el.used {
+  stroke: var(--used);
   stroke-width: 2px;
-  stroke-dasharray: 6 4;
 }
 
-.mark.highlighted {
-  fill: var(--ink);
-  stroke: var(--current);
+/* Lines that never carry ink only help to find points. */
+.el.helper {
+  stroke-dasharray: 5 4;
+}
+
+.mark.used {
+  fill: var(--used);
+}
+
+.mark-ring {
+  fill: none;
+  stroke: var(--used);
   stroke-width: 2px;
 }
 
@@ -125,7 +136,7 @@ header h1 {
 }
 
 .point-name.highlighted {
-  fill: var(--ink);
+  fill: var(--used);
   font-weight: 600;
 }
 

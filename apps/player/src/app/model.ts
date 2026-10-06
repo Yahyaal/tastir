@@ -1,5 +1,6 @@
 import {
   computePattern,
+  inkCarriers,
   evaluate,
   type Pattern,
   type Scene,
@@ -46,4 +47,16 @@ export function stagesOf(tutorial: Tutorial): Stage[] {
     { kind: 'repeat' },
     { kind: 'color' },
   ];
+}
+
+const carriers = new WeakMap<Model, ReadonlySet<string>>();
+
+/** The lines and polygons that carry some of the ink (computed once). */
+export function carriersOf(model: Model): ReadonlySet<string> {
+  let found = carriers.get(model);
+  if (!found) {
+    found = inkCarriers(model.scene, model.pattern.ink);
+    carriers.set(model, found);
+  }
+  return found;
 }

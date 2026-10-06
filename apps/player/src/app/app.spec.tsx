@@ -29,6 +29,7 @@ describe('the player', () => {
 
   it('draws the current step in color and earlier ones in grey', () => {
     const { container } = render(<Play json={example} />);
+    fireEvent.click(screen.getByLabelText('Show names'));
     next(); // step 2: h, v and four points
     expect(container.querySelectorAll('line.el.current')).toHaveLength(2);
     expect(container.querySelectorAll('circle.el:not(.current)')).toHaveLength(
@@ -43,6 +44,7 @@ describe('the player', () => {
 
   it('names the points a step highlights', () => {
     const { container } = render(<Play json={example} />);
+    fireEvent.click(screen.getByLabelText('Show names'));
     for (let i = 0; i < 3; i++) next(); // step 4 joins E, N, W and S
     const named = [
       ...container.querySelectorAll('text.point-name.highlighted'),
@@ -115,6 +117,32 @@ describe('the player', () => {
     expect(
       screen.getByText(/Step 2, element "E": 2 crossings of "c" and "h" match/),
     ).toBeTruthy();
+  });
+
+  it('hides the names until asked, and remembers the choice', () => {
+    const { container, unmount } = render(<Play json={example} />);
+    next();
+    expect(container.querySelectorAll('text.point-name')).toHaveLength(0);
+    fireEvent.click(screen.getByLabelText('Show names'));
+    expect(
+      container.querySelectorAll('text.point-name').length,
+    ).toBeGreaterThan(0);
+    unmount();
+    render(<Play json={example} />);
+    expect(screen.getByLabelText('Show names')).toHaveProperty('checked', true);
+    fireEvent.click(screen.getByLabelText('Show names'));
+  });
+
+  it('dashes the lines that never carry ink', () => {
+    const { container } = render(<Play json={example} />);
+    for (let i = 0; i < 3; i++) next(); // step 4: the dynamic square
+    const helpers = [...container.querySelectorAll('.el.helper')].map((n) =>
+      n.getAttribute('data-name'),
+    );
+    expect(helpers).toEqual(['h', 'v', 'd1', 'd2']);
+    expect(
+      container.querySelector('[data-name="dynamic"]')?.classList,
+    ).not.toContain('helper');
   });
 
   it('skips a hidden step: never shown, never drawn, left out of the count', () => {

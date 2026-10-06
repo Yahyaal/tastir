@@ -17,17 +17,44 @@ export const STEP_MS = 800;
 /** The flash of the highlighted elements before a step draws. */
 export const FLASH_MS = 600;
 /** The accent the current step is drawn in (--current in styles.css). */
-const ACCENT = '#c2410c';
+const ACCENT = '#d55e00';
 /** The share of a step spent drawing lines and circles; points pop after. */
 const DRAW_SHARE = 0.75;
 
-/** The names a step highlights, with groups such as `k` opened up. */
+/** A name, or the members of the group it names (such as `k`). */
+function opened(model: Model, name: string): string[] {
+  const g = model.scene.elements.get(name)?.geometry;
+  return g?.kind === 'group' ? [...g.members] : [name];
+}
+
+/** The names a step highlights (flashed before it draws), groups opened. */
 export function highlightedNames(model: Model, step: number): string[] {
   const names = model.tutorial.steps[step - 1]?.highlight ?? [];
-  return names.flatMap((name) => {
-    const g = model.scene.elements.get(name)?.geometry;
-    return g?.kind === 'group' ? [...g.members] : [name];
-  });
+  return names.flatMap((name) => opened(model, name));
+}
+
+/**
+ * The names a step works from, shown in blue while it is on screen: its
+ * `highlight` list, or else the earlier elements its new ones are built
+ * from (looking through the step's own points to what made them).
+ */
+export function usedNames(model: Model, step: number): string[] {
+  const { elements } = model.scene;
+  const open = (name: string) => opened(model, name);
+  if (model.tutorial.steps[step - 1]?.highlight)
+    return highlightedNames(model, step);
+  const found = new Set<string>();
+  const seen = new Set<string>();
+  const visit = (name: string) => {
+    if (seen.has(name)) return;
+    seen.add(name);
+    const el = elements.get(name);
+    if (!el) return;
+    if (el.step === step) el.deps.forEach(visit);
+    else for (const n of open(name)) found.add(n);
+  };
+  for (const el of elements.values()) if (el.step === step) visit(el.name);
+  return [...found];
 }
 
 /**

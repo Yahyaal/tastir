@@ -19,7 +19,7 @@ export {
   type SceneElement,
 } from './lib/evaluate.js';
 export { arrangement, signedArea } from './lib/arrangement.js';
-export { inkStrokes, type InkStroke } from './lib/ink.js';
+export { inkCarriers, inkStrokes, type InkStroke } from './lib/ink.js';
 export {
   cellOf,
   computePattern,

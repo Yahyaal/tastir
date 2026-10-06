@@ -17,6 +17,7 @@
     "lib": ["es2022", "dom", "dom.iterable"]
   },
   "include": [
+    "src/test-setup.ts",
     "vite.config.ts",
     "vite.config.mts",
     "vitest.config.ts",

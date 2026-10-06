@@ -8,14 +8,14 @@ import type {
 } from '@tastir/engine';
 import {
   compassStart,
-  highlightedNames,
+  usedNames,
   rulerOrder,
   RULER_COLOR,
   TILE_COLOR,
 } from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors } from './coloring';
-import { hiddenSteps, type Model } from './model';
+import { carriersOf, hiddenSteps, type Model } from './model';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
@@ -112,26 +112,38 @@ function Shape({
 function Mark({
   el,
   current,
-  outlined,
+  used,
   size,
 }: {
   el: SceneElement;
   current: boolean;
-  outlined: boolean;
+  used: boolean;
   size: number;
 }) {
   if (el.geometry.kind !== 'point') return null;
   const p = el.geometry.at;
-  return (
+  const dot = (
     <circle
       data-name={el.name}
-      className={
-        current ? 'mark current' : outlined ? 'mark highlighted' : 'mark'
-      }
+      className={current ? 'mark current' : used ? 'mark used' : 'mark'}
       cx={sx(p)}
       cy={sy(p)}
-      r={size * (current ? 0.011 : 0.008)}
+      r={size * (current || used ? 0.011 : 0.008)}
     />
+  );
+  // A point the step works from gets a ring, so the eye finds it at once.
+  if (!used || current) return dot;
+  return (
+    <g>
+      <circle
+        className="mark-ring"
+        cx={sx(p)}
+        cy={sy(p)}
+        r={size * 0.03}
+        vectorEffect="non-scaling-stroke"
+      />
+      {dot}
+    </g>
   );
 }
 
@@ -266,8 +278,9 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
 }
 
 /**
- * The construction up to `upTo`: the elements of step `upTo` in color and
- * earlier ones in light grey. With `ink`, everything is faint and the ink
+ * The construction up to `upTo`: the elements of step `upTo` in orange,
+ * the ones it works from in blue, and earlier ones in light grey; lines
+ * that never carry ink are dashed. With `ink`, everything is faint and the ink
  * strokes are drawn over it.
  */
 export function Construction({
@@ -276,7 +289,7 @@ export function Construction({
   view = fullView(model),
   ink = false,
   svgRef,
-  outlineHighlights = false,
+  showNames = false,
   freeInk,
   enter = false,
 }: {
@@ -286,8 +299,8 @@ export function Construction({
   view?: Rect;
   ink?: boolean;
   svgRef?: React.Ref<SVGSVGElement>;
-  /** Outline the step's highlighted elements (instead of flashing them). */
-  outlineHighlights?: boolean;
+  /** Name the points this step makes and uses (codes like E or M12). */
+  showNames?: boolean;
   /** On the ink stage: every piece the learner can ink, and which are. */
   freeInk?: FreeInk;
   /** Play the move into the ink stage: the construction fades back while
@@ -302,10 +315,14 @@ export function Construction({
     (el) => el.step <= upTo && !hidden.has(el.step),
   );
   const isCurrent = (el: SceneElement) => !ink && el.step === upTo;
-  const highlighted = new Set(ink ? [] : highlightedNames(model, upTo));
-  /** Highlighted elements are outlined when they are not flashed. */
-  const outlined = (el: SceneElement) =>
-    outlineHighlights && highlighted.has(el.name);
+  const highlighted = new Set(ink ? [] : usedNames(model, upTo));
+  /** What the step works from: blue while the step is shown. */
+  const used = (el: SceneElement) => highlighted.has(el.name);
+  // Lines that never carry ink only help to find points: drawn dashed.
+  const carriers = carriersOf(model);
+  const helper = (el: SceneElement) =>
+    (el.geometry.kind === 'line' || el.geometry.kind === 'polygon') &&
+    !carriers.has(el.name);
   return (
     <svg
       ref={svgRef}
@@ -324,15 +341,19 @@ export function Construction({
             startDeg={compassStart(model, el.name)}
             g={el.geometry}
             view={clipTo}
-            className={
+            className={[
+              'el',
               isCurrent(el)
-                ? 'el current'
+                ? 'current'
                 : ink
-                  ? 'el faint'
-                  : outlined(el)
-                    ? 'el highlighted'
-                    : 'el'
-            }
+                  ? 'faint'
+                  : used(el)
+                    ? 'used'
+                    : '',
+              helper(el) ? 'helper' : '',
+            ]
+              .filter(Boolean)
+              .join(' ')}
           />
         ))}
       </g>
@@ -383,14 +404,16 @@ export function Construction({
               key={el.name}
               el={el}
               current={isCurrent(el)}
-              outlined={outlined(el)}
+              used={used(el)}
               size={size}
             />
           ))}
-          <Labels
-            labels={labelsFor(shown, isCurrent, highlighted)}
-            size={size}
-          />
+          {showNames ? (
+            <Labels
+              labels={labelsFor(shown, isCurrent, highlighted)}
+              size={size}
+            />
+          ) : null}
         </g>
       )}
     </svg>
@@ -698,7 +721,7 @@ export function RepeatedInk({
 }
 
 /** The accent for things in motion (--current in styles.css). */
-const ACCENT_COLOR = '#c2410c';
+const ACCENT_COLOR = '#d55e00';
 
 /** One piece type's shape, small, for the piece panel. */
 export function PieceShape({

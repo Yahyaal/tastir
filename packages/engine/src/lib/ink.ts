@@ -74,3 +74,31 @@ export function inkStrokes(scene: Scene, tutorial: Tutorial): InkStroke[] {
   });
   return strokes;
 }
+
+/**
+ * The names of the lines and polygons that carry some of the ink. The
+ * others only help to find points, so the player draws them as helpers.
+ */
+export function inkCarriers(
+  scene: Scene,
+  strokes: readonly InkStroke[],
+): Set<string> {
+  const { eps } = scene.tol;
+  const carriers = new Set<string>();
+  const onLine = (p: Vec, line: { point: Vec; dir: Vec }) =>
+    distance(p, project(p, { kind: 'line', ...line })) <= eps;
+  for (const el of scene.elements.values()) {
+    const g = el.geometry;
+    const carries = (s: Segment) =>
+      g.kind === 'line'
+        ? onLine(s.a, g.line) && onLine(s.b, g.line)
+        : g.kind === 'polygon' &&
+          g.sides.some(
+            (side) =>
+              distanceToSegment(s.a, side) <= eps &&
+              distanceToSegment(s.b, side) <= eps,
+          );
+    if (strokes.some((s) => carries(s.segment))) carriers.add(el.name);
+  }
+  return carriers;
+}

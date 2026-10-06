@@ -26,6 +26,7 @@ import { PrintSheet, type Paper } from './PrintSheet';
 import { Construction, RepeatedInk, Thumbnail } from './drawing';
 import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { LIBRARY, type Entry } from './library';
+import { useRemembered } from './remembered';
 import { shownSteps, stagesOf, type Model, type Stage } from './model';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
@@ -107,6 +108,7 @@ export function Player({ model }: { model: Model }) {
   const last = stages.length - 1;
   const [speed, setSpeed] = useState(1);
   const [reduced, setReduced] = useState(prefersReducedMotion);
+  const [showNames, setShowNames] = useRemembered<boolean>('showNames', false);
 
   const inking = useInking(model);
   const [colorHistory, colorDispatch] = useReducer(
@@ -240,7 +242,7 @@ export function Player({ model }: { model: Model }) {
         upTo={stage.step}
         view={camera.view}
         svgRef={svgRef}
-        outlineHighlights={reduced}
+        showNames={showNames}
       />
     );
   } else if (stage.kind === 'ink') {
@@ -323,6 +325,14 @@ export function Player({ model }: { model: Model }) {
               onChange={(e) => setReduced(e.target.checked)}
             />{' '}
             Reduce motion
+          </label>
+          <label>
+            <input
+              type="checkbox"
+              checked={showNames}
+              onChange={(e) => setShowNames(e.target.checked)}
+            />{' '}
+            Show names
           </label>
           <span className="brand">Tastir</span>
         </div>
