@@ -8,8 +8,9 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 ## Where things stand (5 October 2026)
 
-There are 33 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
+There are 34 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
 
+- The framed stars of the Salón de Comares in interlaced white bands, from Wichmann's drawing and checked against Wade's photo (`alhambra-comares-frames`).
 - The twelve-pointed stars of the Sala de los Reyes on a triangular grid, from Wichmann's drawing and checked against Wade's photo (`alhambra-reyes-dodecagrams`).
 - The carved pinwheel fret of the Sala de los Reyes, from Wichmann's drawing, every diamond matching Wade's photo (`alhambra-reyes-fret`).
 - The dado of the Patio de los Arrayanes (squares in white bands, small stars), built to David Wade's photo because Wichmann's drawing has different proportions (`alhambra-arrayanes-squares`).

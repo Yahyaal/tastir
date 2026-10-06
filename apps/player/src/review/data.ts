@@ -35,6 +35,41 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'alhambra-comares-frames',
+    title: 'Framed stars of the Salón de Comares (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'A honey star in a square frame with black corners, teal stars round it, and small diamonds, all held in interlaced white bands.',
+    story: [
+      'All the stars are the same: two squares on one small circle, whose radius is one minus half the diagonal of the unit square. The frame round the honey star and the small diamonds come from that star’s own corners, so after the first circle every length is found with the ruler and a compass already open. Brian Wichmann’s drawing gave the design; the tutorial takes ten steps.',
+      'Over David Wade’s photo, the tutorial’s lines run inside the white bands everywhere: round the frame, the stars and the diamonds (picture). On the panel the stars left and right of the frame are glazed black, those above and below teal.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-frames/photo-overlay.png',
+        caption:
+          'Left: the panel. Right: the same with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-comares-frames/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Salón de Comares (SPA1416)',
+        url: 'https://tilingsearch.mit.edu/HTML/data174/SPA1416.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 1416)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
     id: 'alhambra-reyes-dodecagrams',
     title: 'Twelve-pointed stars of the Sala de los Reyes (new)',
     fold: 6,
@@ -1162,6 +1197,11 @@ export const PROGRESS: {
   updated: '5 October 2026, late evening',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Framed stars of the Salón de Comares',
+      text: 'A new advanced tutorial: a framed honey star, teal stars and diamonds in interlaced bands, checked against the photo of the panel.',
+      link: { label: 'Open it', href: '/#/alhambra-comares-frames' },
+    },
     {
       title: 'Twelve-pointed stars of the Sala de los Reyes',
       text: 'A new tutorial on a hexagonal tile: black twelve-pointed stars with blue, honey and teal tiles round them, matching the photo of the panel.',

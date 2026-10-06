@@ -96,3 +96,10 @@ drawing exactly (each star two squares turned 22.5°, sides carried on; pieces m
 0.001), but Wade's photo SPA 1009 shows a different panel: smaller stars, a lobed flower at each
 cell corner, and pentagonal petals each touching one star and one flower (Wichmann's petals
 join two stars). No tutorial until a photo of his panel is found.
+
+SPA1416, the Salón de Comares framed stars (6 October): both stars are two squares of radius
+R = 1 − 1/√2 (half-side a = R/√2); the frame round the star at O is at b = 2R − a (where the
+diagonal through the star's point crosses the horizontal through its inner corner); small
+diamonds on the cell sides with half-diagonal c = √2(R − a). `gen_comares_frames.py` then
+`finish_comares_frames.py` (honey star at O by nth). Registration on Wade's SPA 1416 was fitted
+by maximising the photo's brightness along our lines (the white bands), giving OA = 344 px.

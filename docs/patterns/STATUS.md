@@ -34,6 +34,7 @@ Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified
 | four-fold-ring-of-circles | 4 | 14 | approved | Design G, Sandy Kurt's drawing, shipped with credit. No photo found. |
 | alhambra-star-and-arrows | 8 | 9 | approved | The rosette matches the source exactly; the square repeat is a guess (no real repeat found). |
 | alhambra-star-and-arrows-shifted | 8 | 10 | approved | The same rosette with rows shifted by half a rosette. |
+| alhambra-comares-frames | 4 | 10 | verified (6 Oct) | Framed eight-pointed stars, plain stars and diamonds in interlaced bands, Salón de Comares, from Wichmann's drawing (SPA1416). Checked against David Wade's photo SPA 1416. |
 | alhambra-reyes-dodecagrams | 6 | 11 | verified (6 Oct) | Twelve-pointed stars on a triangular grid, the zellige of the Sala de los Reyes, from Wichmann's drawing (P069): twelve lines round each star touching one small circle, and the hexagon of the star's circle. Checked against David Wade's photo SPA 1908. |
 | alhambra-reyes-fret | 4 | 11 | verified (6 Oct) | Carved pinwheel fret of the Sala de los Reyes, from Wichmann's drawing (PG365); chiral; sixths of OA and small diamonds. All 42 diamonds of David Wade's photo SPA 0405x fit. |
 | alhambra-arrayanes-squares | 4 | 9 | verified (6 Oct) | Large squares in white bands with small stars, the dado of the Patio de los Arrayanes. Built to David Wade's photo SPA 0111 (squares inscribed in the unit circle about each corner, pointed band tiles), which differs in proportion from Wichmann's PG299; the star is Wichmann's. |
