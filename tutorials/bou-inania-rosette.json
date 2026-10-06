@@ -1918,7 +1918,7 @@
     },
     {
       "id": 14,
-      "text": "The tile: the square between the big figure’s right and top sides and the frame’s left and bottom sides. Its copies overlap by one band, so the two lines along each side of the tile fall on the two lines of the next tile.",
+      "text": "The tile: the square between the big figure’s right and top sides and the frame’s left and bottom sides. Its copies overlap by one band, so the two lines along each side of the tile fall on the two lines of the next tile. In blue, the tiles around it: each of their lines meets this tile’s edge just where one of its own lines carries on, and the band breaks there to let it through.",
       "create": {
         "K21": {"point": {"meet": ["r45", "E"]}},
         "tile": {"polygon": ["K21", "K16", "M1460", "K19"]}

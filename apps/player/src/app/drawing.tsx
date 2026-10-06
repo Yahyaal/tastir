@@ -278,6 +278,42 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
   );
 }
 
+/** The beat that makes the pattern's cell (the tile). */
+function cellBeat(model: Model): number | undefined {
+  return model.scene.elements.get(model.tutorial.pattern.cell)?.beat;
+}
+
+/**
+ * On the step that draws the tile: the ink of the eight tiles around it,
+ * in blue, so the learner sees each of their lines meet this tile's edge
+ * where one of its own lines carries on.
+ */
+function NextTiles({ model }: { model: Model }) {
+  const { u, v } = model.pattern.cell;
+  const shifts: Vec[] = [];
+  for (const i of [-1, 0, 1])
+    for (const j of [-1, 0, 1])
+      if (i || j) shifts.push({ x: i * u.x + j * v.x, y: i * u.y + j * v.y });
+  return (
+    <g className="ink next-tiles" aria-label="The next tiles">
+      {shifts.map((d, k) => (
+        <g key={k} data-next-tile={k}>
+          {model.pattern.ink.map((s, i) => (
+            <line
+              key={i}
+              x1={sx(s.segment.a) + d.x}
+              y1={sy(s.segment.a) - d.y}
+              x2={sx(s.segment.b) + d.x}
+              y2={sy(s.segment.b) - d.y}
+              vectorEffect="non-scaling-stroke"
+            />
+          ))}
+        </g>
+      ))}
+    </g>
+  );
+}
+
 /**
  * When inking as you go: the ink of the steps before `upTo` in black, and
  * the ink step `upTo` makes in green (named so its step can draw it in).
@@ -394,6 +430,7 @@ export function Construction({
         ))}
       </g>
       {inkSoFar && !ink ? <InkSoFar model={model} upTo={upTo} /> : null}
+      {!ink && upTo === cellBeat(model) ? <NextTiles model={model} /> : null}
       {ink && freeInk ? <FreeInkPieces {...freeInk} /> : null}
       {ink && !freeInk && enter && pen ? (
         <g className="rulers" aria-hidden="true">

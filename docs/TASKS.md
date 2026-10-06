@@ -85,7 +85,7 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 - [x] **1.15 Parts of a step.** A step may have `parts`, each with its own `text`, `create`, `highlight` and `animate`; the player shows “Step 11 · 2 of 4” and Next/Back move by part. Split Bou Inania steps 8–12 into parts, one construction each.
   *Done when:* schema, engine and player tests cover parts; golden tests unchanged; step 11 plays like picture D.
 
-- [ ] **1.16 The next tile in blue.** On the step that creates the pattern cell, the neighbouring copies of the ink are drawn in blue around the tile, so the band at the edge explains itself; Bou Inania's tile step text says so.
+- [x] **1.16 The next tile in blue.** On the step that creates the pattern cell, the neighbouring copies of the ink are drawn in blue around the tile, so the band at the edge explains itself; Bou Inania's tile step text says so.
   *Done when:* a player test finds the neighbour copies on that step; Bou Inania's last step looks like picture E.
 
 - [ ] **1.17 Zoom to the work.** Each step or part frames the elements it uses and makes, then the view widens to show their copies round the centre.

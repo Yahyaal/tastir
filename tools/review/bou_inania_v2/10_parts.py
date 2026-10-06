@@ -1,4 +1,5 @@
-"""Split the long steps 8-12 of bou-inania-rosette.json into parts, one move each.
+"""Split the long steps 8-12 of bou-inania-rosette.json into parts, one move each,
+and add the sentence about the blue next tiles to the tile step.
 
 Usage: python3 10_parts.py tutorials/bou-inania-rosette.json
 
@@ -90,6 +91,12 @@ for sid, (heading, parts) in PARTS.items():
 start = re.search(r'\n    \{\n      "id": 8,', text).start() + 1
 end = re.search(r'\n    \{\n      "id": 13,', text).start() + 1
 text = text[:start] + '\n'.join(blocks) + '\n' + text[end:]
+# The tile step explains the band with the next tiles, which the player
+# draws in blue there (owner, 5 October 2026).
+TILE_OLD = 'so the two lines along each side of the tile fall on the two lines of the next tile.'
+TILE_NEW = TILE_OLD + ' In blue, the tiles around it: each of their lines meets this tile’s edge just where one of its own lines carries on, and the band breaks there to let it through.'
+if TILE_NEW not in text:
+    text = text.replace(TILE_OLD, TILE_NEW)
 json.loads(text)
 open(path, 'w', encoding='utf-8').write(text)
 print('split steps', ', '.join(map(str, PARTS)))

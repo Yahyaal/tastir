@@ -209,6 +209,16 @@ describe('the player', () => {
     ]);
   });
 
+  it('shows the tiles around the tile in blue on the step that draws it', () => {
+    const { container } = render(<Play json={example} />);
+    for (let i = 0; i < 4; i++) next(); // step 5
+    expect(container.querySelectorAll('[data-next-tile]')).toHaveLength(0);
+    next(); // step 6 draws the tile
+    expect(container.querySelectorAll('[data-next-tile]')).toHaveLength(8);
+    next(); // the ink stage
+    expect(container.querySelectorAll('[data-next-tile]')).toHaveLength(0);
+  });
+
   it('skips a hidden step: never shown, never drawn, left out of the count', () => {
     const tutorial = parseTutorial(example);
     const hidden = {
