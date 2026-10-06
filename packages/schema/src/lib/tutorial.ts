@@ -199,6 +199,8 @@ export const Step = z.strictObject({
   create: z.record(Name, ElementSpec),
   highlight: z.array(Ref).optional(),
   animate: z.enum(['compass', 'ruler', 'fade']).optional(),
+  /** Evaluated but never shown: a step that only names points for the ink. */
+  hidden: z.boolean().optional(),
 });
 
 export const InkPath = z.strictObject({

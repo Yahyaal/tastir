@@ -91,6 +91,13 @@ describe('rejected tutorials', () => {
     ]);
   });
 
+  it('accepts a hidden step', () => {
+    const input = variant((t) => {
+      t.steps[4].hidden = true;
+    });
+    expect(problems(input)).toEqual([]);
+  });
+
   it('rejects a name that is never defined', () => {
     const input = variant((t) => {
       t.ink.paths[0].through[2] = 'Q';

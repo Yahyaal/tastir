@@ -498,6 +498,7 @@
     },
     {
       "id": 19,
+      "hidden": true,
       "text": "Mark the crossings where the pattern turns.",
       "create": {
         "e170": {"point": {"meet": ["l0_m2180", "octK5"], "pick": {"farthest": "x0_m2180"}}},

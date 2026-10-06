@@ -169,6 +169,7 @@
     },
     {
       "id": 11,
+      "hidden": true,
       "text": "Mark where each star line meets the outline, where it crosses the line at right angles to it, and where the outline lines reach the edge of the tile.",
       "create": {
         "H0_5": {"point": {"meet": ["s0", "o5"]}},

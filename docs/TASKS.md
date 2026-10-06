@@ -73,7 +73,7 @@ The goal of phase 1 is a player a friend can use unaided: animated steps, a came
 
 Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into main when done. Mockups: `docs/review/ux-steps/` (made by the scratch script described on the card).
 
-- [ ] **1.12 Hidden marking steps.** A step may say `"hidden": true`: the engine evaluates it, the player skips it as a stage and never draws its elements, and the step counter leaves it out. Mark the nine steps that only mark corners (Bou Inania rosette 13, Bou Inania wall 20, four-fold ring 13 and 14, Kurt wheel 19 and its shifted copy 19, stellated rosettes 12, Mian rosette 11 square and hex).
+- [x] **1.12 Hidden marking steps.** A step may say `"hidden": true`: the engine evaluates it, the player skips it as a stage and never draws its elements, and the step counter leaves it out. Mark the nine steps that only mark corners (Bou Inania rosette 13, Bou Inania wall 20, four-fold ring 13 and 14, Kurt wheel 19 and its shifted copy 19, stellated rosettes 12, Mian rosette 11 square and hex).
   *Done when:* schema and player tests cover hidden steps, golden tests are unchanged, and Bou Inania goes from step 12 to the tile with no red dots.
 
 - [ ] **1.13 Colours with one meaning, and no codes.** Earlier construction grey, this step's new elements orange, what the step uses (its `highlight`) blue with crossings ringed, construction that never carries ink thin and dashed. Point names are hidden unless “Show names” is on. Colours from the Okabe–Ito set; each role also differs by width or dash.

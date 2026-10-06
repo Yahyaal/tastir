@@ -29,9 +29,19 @@ export function loadModel(json: unknown): Model {
   return { tutorial, scene, pattern: computePattern(scene, tutorial) };
 }
 
+/** The ids of the steps the learner sees, in order: all but the hidden. */
+export function shownSteps(tutorial: Tutorial): number[] {
+  return tutorial.steps.filter((s) => !s.hidden).map((s) => s.id);
+}
+
+/** The ids of the steps that are evaluated but never drawn. */
+export function hiddenSteps(tutorial: Tutorial): ReadonlySet<number> {
+  return new Set(tutorial.steps.filter((s) => s.hidden).map((s) => s.id));
+}
+
 export function stagesOf(tutorial: Tutorial): Stage[] {
   return [
-    ...tutorial.steps.map((s): Stage => ({ kind: 'step', step: s.id })),
+    ...shownSteps(tutorial).map((step): Stage => ({ kind: 'step', step })),
     { kind: 'ink' },
     { kind: 'repeat' },
     { kind: 'color' },

@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
+import { parseTutorial } from '@tastir/schema';
 import { Play } from './app';
 
 const next = () =>
@@ -114,5 +115,30 @@ describe('the player', () => {
     expect(
       screen.getByText(/Step 2, element "E": 2 crossings of "c" and "h" match/),
     ).toBeTruthy();
+  });
+
+  it('skips a hidden step: never shown, never drawn, left out of the count', () => {
+    const tutorial = parseTutorial(example);
+    const hidden = {
+      ...tutorial,
+      steps: tutorial.steps.map((s) =>
+        s.id === 5 ? { ...s, hidden: true } : s,
+      ),
+    };
+    const { container } = render(<Play json={hidden} />);
+    const seen = [label()];
+    for (let i = 0; i < 5; i++) {
+      next();
+      seen.push(label());
+      expect(container.querySelector('[data-name="static"]')).toBeNull();
+    }
+    expect(seen).toEqual([
+      'Step 1 of 5',
+      'Step 2 of 5',
+      'Step 3 of 5',
+      'Step 4 of 5',
+      'Step 5 of 5',
+      'Ink',
+    ]);
   });
 });

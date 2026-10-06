@@ -276,6 +276,7 @@
     },
     {
       "id": 13,
+      "hidden": true,
       "text": "Mark the corners of the pattern: every point where the pattern turns or ends. Where the inner band on the right (or top) side breaks, rule a line across to the left (or bottom) side: the band breaks there too, because the next tile lies over it.",
       "create": {
         "M13": {"point": {"meet": ["A11", "E@3"]}},

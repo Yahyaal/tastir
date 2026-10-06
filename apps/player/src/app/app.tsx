@@ -26,7 +26,7 @@ import { PrintSheet, type Paper } from './PrintSheet';
 import { Construction, RepeatedInk, Thumbnail } from './drawing';
 import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { LIBRARY, type Entry } from './library';
-import { stagesOf, type Model, type Stage } from './model';
+import { shownSteps, stagesOf, type Model, type Stage } from './model';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
 /**
@@ -226,12 +226,13 @@ export function Player({ model }: { model: Model }) {
   }, [back, next]);
 
   const steps = tutorial.steps.length;
+  const shown = shownSteps(tutorial);
   let label: string;
   let hint: string | undefined;
   let text: string;
   let picture: React.ReactNode;
   if (stage.kind === 'step') {
-    label = `Step ${stage.step} of ${steps}`;
+    label = `Step ${shown.indexOf(stage.step) + 1} of ${shown.length}`;
     text = tutorial.steps[stage.step - 1]?.text ?? '';
     picture = (
       <Construction
@@ -562,7 +563,7 @@ function Card({ entry: { id, json } }: { entry: Entry }) {
         {model ? (
           <p>
             {fold(model.tutorial.fold)} · {model.tutorial.style} ·{' '}
-            {model.tutorial.level} · {model.tutorial.steps.length} steps
+            {model.tutorial.level} · {shownSteps(model.tutorial).length} steps
           </p>
         ) : error ? (
           <p className="error">Cannot be played: {error}</p>

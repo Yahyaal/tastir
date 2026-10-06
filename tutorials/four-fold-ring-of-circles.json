@@ -502,7 +502,8 @@
         "x291": {"point": {"meet": ["L29", "L2"]}}
       },
       "animate": "fade",
-      "id": 13
+      "id": 13,
+      "hidden": true
     },
     {
       "text": "Mark where the slanting lines meet the other lines at the turns of the pattern.",
@@ -673,7 +674,8 @@
         "x359": {"point": {"meet": ["L39", "L13"]}}
       },
       "animate": "fade",
-      "id": 14
+      "id": 14,
+      "hidden": true
     }
   ],
   "ink": {

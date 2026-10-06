@@ -302,6 +302,7 @@
     },
     {
       "id": 20,
+      "hidden": true,
       "text": "Mark the corners of the pattern: every point where two of the lines meet and the pattern turns.",
       "create": {
         "M1": {"point": {"meet": ["SLad0", "SLr450@2"]}},

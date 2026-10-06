@@ -63,6 +63,8 @@ Rules can be combined; all must hold.
 
 `text` is what the learner reads. `highlight` lists earlier elements the step depends on, which the player flashes before drawing. `animate` is `compass`, `ruler` or `fade`.
 
+A step with `"hidden": true` is evaluated like any other but never shown: the player skips it, never draws its elements and leaves it out of the step count. Use it only for a step that names the points the ink turns at, which the learner does not need to see.
+
 ## Small pieces
 
 A piece in `expect.pieces` may carry `"small": true` when it is small or thin on purpose, as in fine zellige. The golden test rejects every other sliver, so the flag only covers pieces the author has named and looked at.

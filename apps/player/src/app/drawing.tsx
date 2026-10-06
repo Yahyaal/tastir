@@ -15,7 +15,7 @@ import {
 } from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors } from './coloring';
-import type { Model } from './model';
+import { hiddenSteps, type Model } from './model';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
@@ -297,8 +297,9 @@ export function Construction({
   const size = width(view);
   // Lines are clipped well beyond the view, so panning never shows an end.
   const clipTo = fit(view, 1);
+  const hidden = hiddenSteps(model.tutorial);
   const shown = [...model.scene.elements.values()].filter(
-    (el) => el.step <= upTo,
+    (el) => el.step <= upTo && !hidden.has(el.step),
   );
   const isCurrent = (el: SceneElement) => !ink && el.step === upTo;
   const highlighted = new Set(ink ? [] : highlightedNames(model, upTo));
