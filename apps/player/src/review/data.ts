@@ -822,6 +822,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Bou Inania rosette, her way',
+      text: 'Fourteen steps; the tile copies overlap by one band; an eight-pointed star at each corner with four identical pieces round it.',
+      link: { label: 'Open it', href: '/#/bou-inania-rosette' },
+    },
+    {
       title: 'Samira Mian’s stellated rosettes',
       text: 'Her activity 8 in the library: rosettes in square cells, hexagons and an octagon at the corners.',
       link: { label: 'Open it', href: '/#/mian-stellated-rosettes' },
@@ -884,10 +889,9 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title:
-      'Bou Inania her way: eight-pointed corner stars; nothing waiting on you',
-    text: 'Draft built: her rosette plus eleven sets of lines through crossings. Fixing the small stars and slivers, then colouring and the library.',
-    link: { label: 'Card', href: '#bou-inania-v2' },
+    title: 'Project notes are in the app',
+    text: 'The goal, the work queue, the status of every tutorial, the lessons learned and how we work together, all on one page. These are the same files every new Claude Code session reads first. Next session: Design H1.',
+    link: { label: 'Open the project notes', href: '/#/notes' },
   },
   next: [
     {

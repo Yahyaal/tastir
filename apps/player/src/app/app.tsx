@@ -38,6 +38,14 @@ const Review = import.meta.env.DEV
   ? lazy(() => import('../review/Review').then((m) => ({ default: m.Review })))
   : undefined;
 
+/**
+ * The project notes (#/notes): the docs a new session reads first, shown in
+ * the app. Like the review page, it exists only on the dev server.
+ */
+const Notes = import.meta.env.DEV
+  ? lazy(() => import('../review/Notes').then((m) => ({ default: m.Notes })))
+  : undefined;
+
 const NUMBER_WORDS = [
   'no',
   'one',
@@ -521,10 +529,14 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
         </p>
       </header>
       {import.meta.env.DEV ? (
-        <a className="review-banner" href="#/review">
-          <strong>Overnight review:</strong> five patterns are waiting for your
-          decision. Open the review page →
-        </a>
+        <p className="review-banner">
+          <a href="#/review">
+            <strong>Review page:</strong> progress, decisions and questions →
+          </a>{' '}
+          <a href="#/notes">
+            <strong>Project notes:</strong> goal, queue, status and lessons →
+          </a>
+        </p>
       ) : null}
       <ul className="cards">
         {entries.map((entry) => (
@@ -589,6 +601,15 @@ export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
       </Suspense>
     ) : (
       <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'notes' || route.startsWith('notes/')) {
+    return Notes ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <Notes page={route.slice('notes/'.length) || 'start'} />
+      </Suspense>
+    ) : (
+      <Broken message="The project notes only exist on the dev server (pnpm dev)." />
     );
   }
   const entry = entries.find((e) => e.id === route);

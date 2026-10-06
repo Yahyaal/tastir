@@ -49,12 +49,14 @@ describe('the library', () => {
       '#/eight-fold-star-and-cross',
     ]);
     expect(screen.getByRole('heading', { name: 'Another star' })).toBeTruthy();
-    // On the dev server the library also links to the overnight review.
+    // On the dev server the library also links to the review page and the
+    // project notes.
     expect(
-      screen
-        .getByRole('link', { name: /Overnight review/ })
-        .getAttribute('href'),
+      screen.getByRole('link', { name: /Review page/ }).getAttribute('href'),
     ).toBe('#/review');
+    expect(
+      screen.getByRole('link', { name: /Project notes/ }).getAttribute('href'),
+    ).toBe('#/notes');
     expect(
       screen.getAllByText('8-fold · Moroccan · beginner · 6 steps'),
     ).toHaveLength(2);

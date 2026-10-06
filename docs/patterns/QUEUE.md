@@ -1,10 +1,16 @@
 # Work queue
 
-- [x] **Owner 2026-10-05: build both.** (1) Samira Mian's stellated rosettes (activity 8; screenshots `docs/4-stellated-12fold-rosettes/`): construction in `tools/review/mian_stellated/gen_mian_stellated.py` (14 steps, builds); her rosette = star lines (inner circle from circle Ro = (√3/2)/cos15, chord 90°–195°) + the twelve lines joining circle points 60° apart, copied into neighbouring cells (97.8% of her frame-20 ink); corners: four hexagons + octagon (inner corner at √3−1 on the cell side). Done 2026-10-05 as `mian-stellated-rosettes` (13 steps; neighbour-cell copies dropped since the ink lies only on the cell's own lines; corner motif drawn exactly; `finish.py` writes the expect block); owner asked to check. (2) Then reuse her grid steps to simplify the Bou Inania draft (`tools/review/bou_inania_v2/`). Done 2026-10-05 as `bou-inania-rosette` (14 steps; tile copies overlap by one band; eight-pointed star at each corner, built in `gen_bou_inania_v2.py`; ink cleaned by `9_clean_ink.py`); owner: looks right.
-
 Continue from the first unchecked item after any interruption (including a usage limit). Report results on the review page (`#/review`), one card per pattern.
 
 Standing goals: many designs per pattern family, not one; build toward letting users make their own designs.
+
+## Next goal
+
+Build Design H1, the al-Maridani minbar in Cairo, as a tutorial in the library. Its twelve-pointed star rosettes alternate with four-fold motifs like a checkerboard, the same layout as Design E. Start from where the Design H item below and `tools/review/design_h/README.md` leave off: the corner motif around (1, 1), then lines forced to multiples of 15°, a build order, and a generator adapted from `tools/review/bou_inania/gen_design_e.py`. Check it against the photo and credit Samira Mian's published construction. When it is done, tick the Design H item, update `docs/PROJECT.md` and `docs/patterns/STATUS.md`, and suggest the next goal.
+
+## All work
+
+- [x] **Owner 2026-10-05: build both.** (1) Samira Mian's stellated rosettes (activity 8; screenshots `docs/4-stellated-12fold-rosettes/`): construction in `tools/review/mian_stellated/gen_mian_stellated.py` (14 steps, builds); her rosette = star lines (inner circle from circle Ro = (√3/2)/cos15, chord 90°–195°) + the twelve lines joining circle points 60° apart, copied into neighbouring cells (97.8% of her frame-20 ink); corners: four hexagons + octagon (inner corner at √3−1 on the cell side). Done 2026-10-05 as `mian-stellated-rosettes` (13 steps; neighbour-cell copies dropped since the ink lies only on the cell's own lines; corner motif drawn exactly; `finish.py` writes the expect block); owner asked to check. (2) Then reuse her grid steps to simplify the Bou Inania draft (`tools/review/bou_inania_v2/`). Done 2026-10-05 as `bou-inania-rosette` (14 steps; tile copies overlap by one band; eight-pointed star at each corner, built in `gen_bou_inania_v2.py`; ink cleaned by `9_clean_ink.py`); owner: looks right.
 
 - [x] **Player transitions (owner, 2026-10-04).** Done: ink grows out of the construction from the centre, the repeat pulls back while copies arrive ring by ring, colour floods in a piece type at a time (a fading white veil, since SVG patterns do not animate); each stage has a one-line hint. Original request: The jump from the last construction step to the ink is unexplained; add a transition that shows the ink being picked out of the construction, then one showing the repeats being generated, then one showing the pattern being coloured.
 - [x] **Design C shifted rows (owner):** done as `kurt-eight-fold-zellige-shifted`.

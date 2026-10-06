@@ -4,6 +4,9 @@ A web app that walks people through Islamic geometric pattern tutorials one step
 
 ## Read these first
 
+- `docs/PROJECT.md` is the way in: the objective, where things stand, the next goal and a map of the other documents. Start every session there.
+- `docs/WORKING-WITH-OWNER.md` is how the owner wants work shown and questions asked, with the process mistakes made so far.
+- `docs/patterns/QUEUE.md` is the pattern work, done and left; `docs/patterns/LESSONS.md` holds the lessons from it, and `docs/patterns/STATUS.md` the state of every tutorial.
 - `docs/PRD.md` is the product: what we are building and why.
 - `docs/TASKS.md` is the work, in order, each task with its acceptance test. Do one task per session.
 - `docs/tutorial-format.md` is the tutorial JSON format, with a full worked example in `tutorials/`.

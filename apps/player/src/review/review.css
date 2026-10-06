@@ -389,3 +389,114 @@
 .progress-waiting li::marker {
   content: '…  ';
 }
+
+/* Project notes (#/notes) */
+
+.notes-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 20px;
+}
+
+.notes-tabs a {
+  padding: 6px 14px;
+  border: 1px solid var(--faint);
+  border-radius: 999px;
+  background: #fff;
+  text-decoration: none;
+}
+
+.notes-tabs a.current {
+  background: #9a3412;
+  border-color: #9a3412;
+  color: #fff;
+}
+
+.notes-doc {
+  background: #fff;
+  border: 1px solid var(--faint);
+  border-radius: 10px;
+  padding: 8px 28px 24px;
+  max-width: 52em;
+}
+
+.notes-doc .notes-file {
+  color: #78716c;
+  font-size: 0.85rem;
+  margin: 12px 0 0;
+}
+
+.notes-doc h2 {
+  font-size: 1.6rem;
+  margin: 18px 0 8px;
+}
+
+.notes-doc h3 {
+  font-size: 1.2rem;
+  margin: 26px 0 6px;
+}
+
+.notes-doc li {
+  margin: 4px 0;
+}
+
+.notes-doc li.task {
+  list-style: none;
+  position: relative;
+}
+
+.notes-doc li.task .box {
+  display: inline-block;
+  width: 1.1em;
+  height: 1.1em;
+  margin: 0 8px 0 -1.5em;
+  border: 1.5px solid #78716c;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 1;
+  font-size: 0.85em;
+  vertical-align: -0.1em;
+}
+
+.notes-doc li.task.done .box {
+  background: #15803d;
+  border-color: #15803d;
+  color: #fff;
+}
+
+.notes-doc code {
+  font-size: 0.88em;
+  background: #f5f5f4;
+  padding: 1px 4px;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+
+.notes-doc .md-table {
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.notes-doc table {
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.notes-doc th,
+.notes-doc td {
+  border: 1px solid var(--faint);
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.notes-doc th {
+  background: #fafaf9;
+}
+
+@media (max-width: 600px) {
+  .notes-doc {
+    padding: 4px 14px 16px;
+  }
+}
