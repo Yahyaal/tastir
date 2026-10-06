@@ -83,3 +83,10 @@ of small diamonds at the thirds. `2_centrelines.py` was run with the 24-cornered
 centres. `gen_reyes_fret.py` then `finish_reyes_fret.py`. Registration on Wade's SPA 0405x was
 fitted to all 42 diamonds detected in the photo (template matching, then a search over scale,
 offset and hand), which is far more reliable than reading centres by eye.
+
+P069, the Sala de los Reyes twelve-pointed stars (6 October): stars on a triangular grid
+(Wichmann's neighbours at 30° and 90°; turned by −30° for the tutorial). Every edge is one of
+twelve lines round each star touching a circle of radius (√3 − 1)/4, or a side of the hexagon
+through the circle's points at 0°, 60°…. `gen_reyes_dodecagram.py` (with a hexagon clipper)
+then `finish_reyes_dodecagram.py`; checked against Wade's SPA 1908 (`reyes-dodec-picks.json`).
+`3_overlay_photo.py` now repeats the tile by the dump's own cell vectors (hexagonal cells too).

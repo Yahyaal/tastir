@@ -39,12 +39,13 @@ for (x, y), (U, V) in picks:
 Hm = np.linalg.svd(np.array(A))[2][-1].reshape(3, 3); Hm /= Hm[2, 2]
 def P(u, v):
     p = Hm @ [u, v, 1]; return p[0]/p[2], p[1]/p[2]
-d = json.load(open(dump)); ink = d['ink']
+d = json.load(open(dump)); ink = d['ink']; cu, cv = d['cell']['u'], d['cell']['v']
 over = rgb.copy(); dr = ImageDraw.Draw(over)
-for i in range(-2, 3):
-    for j in range(-3, 2):
+for i in range(-6, 7):
+    for j in range(-6, 7):
+        ox, oy = i*cu[0] + j*cv[0], i*cu[1] + j*cv[1]
         for a, b in ink:
-            pa, pb = P(a[0] + 2*i, a[1] + 2*j), P(b[0] + 2*i, b[1] + 2*j)
+            pa, pb = P(a[0] + ox, a[1] + oy), P(b[0] + ox, b[1] + oy)
             x0, y0, x1, y1 = cfg['crop']
             if all(x0 + 20 < c[0] < x1 - 20 and y0 + 10 < c[1] < y1 - 20 for c in (pa, pb)):
                 dr.line((*pa, *pb), fill=(255, 40, 40), width=3)

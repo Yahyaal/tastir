@@ -35,6 +35,41 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'alhambra-reyes-dodecagrams',
+    title: 'Twelve-pointed stars of the Sala de los Reyes (new)',
+    fold: 6,
+    status: 'verified',
+    summary:
+      'A zellige of black twelve-pointed stars on a triangular grid, ringed by blue, honey and teal six-sided tiles and white kites.',
+    story: [
+      'Brian Wichmann’s drawing turned out to need only two kinds of line: twelve round each star, all touching one small circle whose radius is half the star’s point, and the sides of the hexagon through six points of the star’s circle. The tutorial finds the small circle with ruler and compass and copies the lines to the neighbouring stars, in eleven steps, on a hexagonal tile.',
+      'Over David Wade’s photo of the panel, every tile has its outline (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-reyes-dodecagrams/photo-overlay.png',
+        caption:
+          'Left: the panel. Right: the same with the tutorial’s outlines in red.',
+      },
+      {
+        src: 'renders/alhambra-reyes-dodecagrams/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Sala de los Reyes (P069)',
+        url: 'https://tilingsearch.mit.edu/HTML/data177/P069.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo SPA 1908)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
     id: 'alhambra-reyes-fret',
     title: 'Carved fret of the Sala de los Reyes (new)',
     fold: 4,
@@ -1127,6 +1162,11 @@ export const PROGRESS: {
   updated: '5 October 2026, late evening',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Twelve-pointed stars of the Sala de los Reyes',
+      text: 'A new tutorial on a hexagonal tile: black twelve-pointed stars with blue, honey and teal tiles round them, matching the photo of the panel.',
+      link: { label: 'Open it', href: '/#/alhambra-reyes-dodecagrams' },
+    },
     {
       title: 'Carved fret of the Sala de los Reyes',
       text: 'A new advanced tutorial: a pinwheel of bars and frets on sixths of OA, every diamond matching the photo of the panel.',
