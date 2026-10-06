@@ -10,7 +10,7 @@ Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified
 | bou-inania-twelve-fold-wall | 4 | 21 | approved | Design E, the Bou Inania wall read from the photo, rebuilt as fifteen sets of twelve lines. |
 | twelve-fold-rosette-mian | 4 | 11 | approved | Samira Mian's twelve-fold rosette, square tile, checked line for line against her pictures. |
 | twelve-fold-rosette-mian-hex | 12 | 11 | approved | The same rosette on a hexagonal tile. |
-| mian-stellated-rosettes | 4 | 13 | approved | Her activity 8: stellated rosettes, with hexagons and an octagon at the corners. |
+| mian-stellated-rosettes | 4 | 13 | verified (5 Oct) | Her activity 8: stellated rosettes, with hexagons and an octagon at the corners. It is Design H1, the woodwork of the al-Maridani minbar in Cairo: every inlay of the photo was measured and lies in one piece of this pattern (`tools/review/design_h/`, tools 9 and 10). |
 | twelve-fold-dodecagrams | 6 | 8 | approved | Matches the Tuts+ drawing; kept as a beginner design. No photo of a real example. |
 | ibn-tulun-window | 6 | 10 | verified | Matches a window grille of the Mosque of Ibn Tulun. |
 

@@ -10,6 +10,7 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 There are 24 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
 
+- Design H1, the al-Maridani minbar in Cairo, turned out to be Samira Mian's stellated rosettes, already in the library. Every inlay of the photo was measured and matches; the tutorial now credits the photo and is marked verified.
 - Samira Mian's twelve-fold rosette (square and hexagonal tiles) and her stellated rosettes (activity 8), both credited to her.
 - The Bou Inania rosette built her way, in 14 steps. Its tile copies overlap by one band, and each corner holds an eight-pointed star with four identical pieces round it. The owner judged it right on 5 October.
 - Design E, the Bou Inania twelve-fold wall, rebuilt as fifteen sets of twelve lines.
@@ -17,9 +18,9 @@ There are 24 tutorials in the library. Each one's status, with what was checked,
 
 ## The next goal
 
-Build Design H1, the al-Maridani minbar in Cairo, as a tutorial in the library. Its twelve-pointed star rosettes alternate with four-fold motifs like a checkerboard, the same layout as Design E. Work starts from where [the queue](patterns/QUEUE.md) and `tools/review/design_h/README.md` leave off: the corner motif around (1, 1), then lines forced to multiples of 15°, a build order, and a generator adapted from `tools/review/bou_inania/gen_design_e.py`. Check it against the photo, and credit Samira Mian's published construction.
+Build Design H2, the pair of minbar doors from Cairo in the Metropolitan Museum (about 1325–30), as a tutorial. Its twelve-pointed rosettes sit on a centred rectangular lattice, so it is a new repeat for the family. The Met's photo is public domain and sharp. The method, starting with an overlay of the library's twelve-fold tutorials on the photo, is in [the queue](patterns/QUEUE.md).
 
-After H1, take the next unchecked item in [the queue](patterns/QUEUE.md).
+After H2, take the next unchecked item in [the queue](patterns/QUEUE.md).
 
 ## How a session works
 

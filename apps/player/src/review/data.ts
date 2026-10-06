@@ -35,6 +35,43 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'design-h1',
+    title: 'Design H1: the al-Maridani minbar is already in the library',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'The carved woodwork of the al-Maridani minbar in Cairo (1340) is exactly Samira Mian’s stellated rosettes, the tutorial you already approved.',
+    story: [
+      'I measured every carved inlay on the photo. Each one is framed by bands of the same width, so its edges show where the pattern lines run. Every line found is one of her construction lines: the two hexagons in the circle, her star lines, and the small hexagons and corner piece. The red lines in the first picture are her tutorial’s ink, laid over the photo, and every inlay sits in one of its pieces.',
+      'One place needed a close look (A in the second picture). At the tip of each small kite, the band runs straight on to the tiny white arrow, with no line across it, just as in her drawing. So nothing in her tutorial changes. It now credits the minbar photo too, its title names the minbar, and its status is verified.',
+    ],
+    pictures: [
+      {
+        src: 'renders/mian-stellated-rosettes/photo-overlay.png',
+        caption:
+          'Left: one tile of the minbar, averaged from the photo. Right: the same with her tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/mian-stellated-rosettes/photo-kite-tip.png',
+        caption:
+          'A: at a kite tip the band runs on unbroken to the tiny white arrow, so no line crosses there.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Photo: al-Maridani minbar, Cairo, lantern slide (Wikimedia Commons)',
+        url: 'https://commons.wikimedia.org/wiki/File:Ca%C3%AFro._Amir_al-Maridani-moskee_Minbar_Detail_van_het_houten_maaswerk,_GDE002950.jpg',
+      },
+      {
+        label:
+          'Samira Mian: Twelvefold Islamic Geometric Rosette (activity 8 video)',
+        url: 'https://www.samiramian.uk/twelvefoldrosette',
+      },
+    ],
+  },
+  {
     id: 'mian-stellated-rosettes',
     title: 'Stellated twelve-fold rosettes, Samira Mian (new)',
     fold: 4,
@@ -818,9 +855,14 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '5 October 2026',
+  updated: '5 October 2026, late evening',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Design H1: the al-Maridani minbar',
+      text: 'It is Samira Mian’s stellated rosettes, already in the library: every carved inlay on the photo lies in one of its pieces. The tutorial now credits the minbar and is marked verified.',
+      link: { label: 'See the card', href: '#design-h1' },
+    },
     {
       title: 'Bou Inania rosette, her way',
       text: 'Fourteen steps; the tile copies overlap by one band; an eight-pointed star at each corner with four identical pieces round it.',
@@ -889,15 +931,10 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Project notes are in the app',
-    text: 'The goal, the work queue, the status of every tutorial, the lessons learned and how we work together, all on one page. These are the same files every new Claude Code session reads first. Next session: Design H1.',
-    link: { label: 'Open the project notes', href: '/#/notes' },
+    title: 'Design H2: minbar doors from Cairo in the Met',
+    text: 'A pair of carved minbar doors (about 1325–30), public domain and photographed sharply by the Metropolitan Museum. Its twelve-pointed rosettes repeat on a different lattice from H1. First I check it against the twelve-fold tutorials we already have, then read the photo and build what is new.',
   },
   next: [
-    {
-      title: 'Design H family: H1, the al-Maridani minbar (Cairo)',
-      text: 'A real 14th-century example found: the carved wooden minbar of the al-Maridani mosque, with twelve-pointed star rosettes alternating with a twelve-sided motif. Done so far: the photo is straightened and averaged into one sharp tile, and the joints between the carved pieces are traced; the rosette and its first ring are read. Next: the corner motif, then straightening every line to a multiple of 15°, then the tutorial. A second H design comes after.',
-    },
     {
       title: 'More designs per family',
       text: 'At least one more for each family: an Alhambra panel from Wichmann’s line drawings, an Ibn Tulun window grille with a published construction, and an eight-fold star-and-octagon variant, each with a photo.',

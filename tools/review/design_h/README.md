@@ -28,3 +28,21 @@ Design E's layout: rosettes at (0, 0) and (2, 0), a four-fold motif at the corne
 8. `8_symmetric_net.py`: corners clustered with the tile's four-fold symmetry and edges
    snapped to them (`fit4-in.json`, `fit4-in.png`). The rosette and its first ring come out
    clean; the corner motif region (r > 1.05) is still to do.
+
+The joint network turned out too noisy for the corner, so the lines were read from the
+inlays instead:
+
+9. `9_inlay_lines.py`: every carved piece is an inlay framed by bands of equal width, so
+   each inlay edge is parallel to a pattern line, half a band (0.055) away. It fits the
+   inlays of one 45° wedge with edges at multiples of 15° and prints the lines
+   (`inlay-lines.json`). They are all lines of Samira Mian's stellated rosettes: the two
+   hexagons' sides (distance √3/2 from O, normals every 30°), the star lines (distance
+   0.177 ± 0.002, normals at 15° + 30k°; hers give 0.178) and the small hexagons about
+   (1, 1/√3) with inner radius 1 − √3/2.
+10. `10_overlay_tutorial.py <dump.json> <out>`: draws a tutorial's ink over the photo's tile
+    (`photo-overlay.png`, `photo-overlay-quarter.png`) and at a kite tip
+    (`photo-kite-tip.png`).
+
+Result (5 October): Design H1 is exactly `mian-stellated-rosettes`, already in the
+library. At each kite tip the band runs straight on to the tiny white arrow, so the
+dodecagon side is not drawn there, just as in her ink.
