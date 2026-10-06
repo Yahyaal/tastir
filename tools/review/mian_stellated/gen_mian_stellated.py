@@ -126,12 +126,18 @@ def main():
     step('The tile is the square cell.', 'fade')
     put('tile', 'polygon', None, {'polygon': ['K', 'K2', 'K3', 'K4']})
     tut = {
-        'format': 0, 'id': 'mian-stellated-rosettes', 'title': 'Stellated twelve-fold rosettes (Samira Mian)', 'fold': 4,
+        'format': 0, 'id': 'mian-stellated-rosettes', 'title': 'Stellated twelve-fold rosettes: the al-Maridani minbar (Samira Mian)', 'fold': 4,
         'style': 'Mamluk', 'level': 'advanced',
         'credits': [{'source': 'Twelvefold Islamic Geometric Rosette, activity 8: stellated rosettes in a square arrangement (video)',
                      'creator': 'Samira Mian', 'url': 'https://www.samiramian.uk/twelvefoldrosette',
                      'note': 'The construction follows her video step by step; the wording is ours.',
-                     'steps': list(range(1, len(steps) + 1))}],
+                     'steps': list(range(1, len(steps) + 1))},
+                    {'source': 'Lantern slide of the minbar of the al-Maridani mosque, Cairo (14th century): detail of the wooden panelling (Wikimedia Commons, GDE002950)',
+                     'url': 'https://commons.wikimedia.org/wiki/File:Ca%C3%AFro._Amir_al-Maridani-moskee_Minbar_Detail_van_het_houten_maaswerk,_GDE002950.jpg',
+                     'note': 'The same design, carved in wood: every inlaid piece of the minbar is one piece of this pattern. Checked by measuring the inlays on the photo.'},
+                    {'source': 'Photograph of the minbar of the mosque of al-Nasir Muhammad, Cairo Citadel (1318–35), by Sailko (Wikimedia Commons, CC BY 3.0)',
+                     'url': 'https://commons.wikimedia.org/wiki/File:Cairo,_cittadella,_moschea_di_an-nasr_mohammed,_1318-1335,_minbar,_intarsi.JPG',
+                     'note': 'A second minbar with the same design, checked the same way.'}],
         'given': {'O': 'The centre of a rosette.', 'A': 'Any point to the right of O. OA is the radius of the rosette’s circle.'},
         'steps': steps,
         'ink': {'text': 'Ink the twelve-pointed star and its petals, the stellated points where the hexagon sides cross, and the hexagons and octagons at the corners.', 'paths': paths},

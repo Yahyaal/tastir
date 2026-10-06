@@ -1,0 +1,317 @@
+{
+  "format": 0,
+  "id": "minbar-doors-cairo",
+  "title": "Minbar doors from Cairo (Metropolitan Museum)",
+  "fold": 12,
+  "style": "Mamluk",
+  "level": "intermediate",
+  "credits": [
+    {
+      "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",
+      "creator": "Samira Mian",
+      "url": "https://www.samiramian.uk/twelvefoldrosette",
+      "note": "The construction of the rosette (the inner circle from one chord and the star lines joining its points 150° apart) and the hexagonal tile follow her tutorial; the wording is ours.",
+      "steps": [1, 2, 3, 4, 5, 6, 7, 8]
+    },
+    {
+      "source": "Pair of Minbar Doors, Egypt, probably Cairo, ca. 1325–30 (The Metropolitan Museum of Art, 91.1.2064, public domain photo)",
+      "url": "https://www.metmuseum.org/art/collection/search/444812",
+      "note": "The design was read from the museum’s photo: the inlays were measured and every band traced back to a line of the construction."
+    }
+  ],
+  "given": {
+    "O": "The centre of a rosette.",
+    "A": "Halfway from O to the next rosette. OA is the radius of the rosette’s circle."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Rule a horizontal line and draw a circle on it about the centre O, through A. Keep this opening for the next steps.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Put the compass point where the circle crosses the line on the right, and draw a circle through O; do the same on the left.",
+      "create": {
+        "P0": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
+        "P180": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "cE": {"circle": {"centre": "P0", "through": "O"}},
+        "cW": {"circle": {"centre": "P180", "through": "O"}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "Rule the vertical through O, at right angles to the horizontal, and draw the same circle about its top and bottom points.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "P90": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "P270": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "cN": {"circle": {"centre": "P90", "through": "O"}},
+        "cS": {"circle": {"centre": "P270", "through": "O"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The four new circles cut the first one at eight more points, so it is divided into twelve. Rule the lines joining opposite points through O.",
+      "create": {
+        "P60": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60.0}}},
+        "P300": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300.0}}},
+        "P120": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
+        "P240": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}},
+        "P30": {"point": {"meet": ["c", "cN"], "pick": {"angle": 30.0}}},
+        "P150": {"point": {"meet": ["c", "cN"], "pick": {"angle": 150.0}}},
+        "P210": {"point": {"meet": ["c", "cS"], "pick": {"angle": 210.0}}},
+        "P330": {"point": {"meet": ["c", "cS"], "pick": {"angle": 330.0}}},
+        "r30": {"line": {"through": ["P30", "P210"]}},
+        "r60": {"line": {"through": ["P60", "P240"]}},
+        "r120": {"line": {"through": ["P120", "P300"]}},
+        "r150": {"line": {"through": ["P150", "P330"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Halve each of the twelve angles at O with a line, so there is a line through O every 15°.",
+      "create": {
+        "r15": {"line": {"through": "O", "bisects": ["P0", "O", "P30"]}},
+        "r45": {"line": {"through": "O", "bisects": ["P30", "O", "P60"]}},
+        "r75": {"line": {"through": "O", "bisects": ["P60", "O", "P90"]}},
+        "r105": {"line": {"through": "O", "perpendicularTo": "r15"}},
+        "r135": {"line": {"through": "O", "perpendicularTo": "r45"}},
+        "r165": {"line": {"through": "O", "perpendicularTo": "r75"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Mark where the 75° line cuts the circle, and join that point to the point on the left of the horizontal. Where this line crosses the vertical, draw a circle about O: it is the inner circle the rosette is built on.",
+      "create": {
+        "P75": {"point": {"meet": ["c", "r75"], "pick": {"angle": 75.0}}},
+        "ch": {"line": {"through": ["P75", "P180"]}},
+        "T": {"point": {"meet": ["ch", "v"]}},
+        "ci": {"circle": {"centre": "O", "through": "T"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "Mark the twelve points where the inner circle meets the lines at 15°, 45°, 75° and so on. Each will be the tip of a small kite.",
+      "create": {
+        "Q15": {"point": {"meet": ["ci", "r15"], "pick": {"angle": 15.0}}},
+        "Q45": {"point": {"meet": ["ci", "r45"], "pick": {"angle": 45.0}}},
+        "Q75": {"point": {"meet": ["ci", "r75"], "pick": {"angle": 75.0}}},
+        "Q105": {"point": {"meet": ["ci", "r105"], "pick": {"angle": 105.0}}},
+        "Q135": {"point": {"meet": ["ci", "r135"], "pick": {"angle": 135.0}}},
+        "Q165": {"point": {"meet": ["ci", "r165"], "pick": {"angle": 165.0}}},
+        "Q195": {"point": {"meet": ["ci", "r15"], "pick": {"angle": 195.0}}},
+        "Q225": {"point": {"meet": ["ci", "r45"], "pick": {"angle": 225.0}}},
+        "Q255": {"point": {"meet": ["ci", "r75"], "pick": {"angle": 255.0}}},
+        "Q285": {"point": {"meet": ["ci", "r105"], "pick": {"angle": 285.0}}},
+        "Q315": {"point": {"meet": ["ci", "r135"], "pick": {"angle": 315.0}}},
+        "Q345": {"point": {"meet": ["ci", "r165"], "pick": {"angle": 345.0}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Join each of these points to the one five places round, 150° away. The twelve lines make a twelve-pointed star in the middle and the sides of the kites and shields round it.",
+      "create": {
+        "s0": {"line": {"through": ["Q15", "Q165"]}},
+        "s1": {"line": {"through": ["Q45", "Q195"]}},
+        "s2": {"line": {"through": ["Q75", "Q225"]}},
+        "s3": {"line": {"through": ["Q105", "Q255"]}},
+        "s4": {"line": {"through": ["Q135", "Q285"]}},
+        "s5": {"line": {"through": ["Q165", "Q315"]}},
+        "s6": {"line": {"through": ["Q195", "Q345"]}},
+        "s7": {"line": {"through": ["Q225", "Q15"]}},
+        "s8": {"line": {"through": ["Q255", "Q45"]}},
+        "s9": {"line": {"through": ["Q285", "Q75"]}},
+        "s10": {"line": {"through": ["Q315", "Q105"]}},
+        "s11": {"line": {"through": ["Q345", "Q135"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "At each of the twelve points on the first circle, rule the line at right angles to its line through O: these lines touch the circle. The six at 0°, 60°, 120° and so on make the hexagonal tile; the six between them close the shields that point between two neighbours.",
+      "create": {
+        "t0": {"line": {"through": "P0", "perpendicularTo": "h"}},
+        "t30": {"line": {"through": "P30", "perpendicularTo": "r30"}},
+        "t60": {"line": {"through": "P60", "perpendicularTo": "r60"}},
+        "t90": {"line": {"through": "P90", "perpendicularTo": "v"}},
+        "t120": {"line": {"through": "P120", "perpendicularTo": "r120"}},
+        "t150": {"line": {"through": "P150", "perpendicularTo": "r150"}},
+        "t180": {"line": {"through": "P180", "perpendicularTo": "h"}},
+        "t210": {"line": {"through": "P210", "perpendicularTo": "r30"}},
+        "t240": {"line": {"through": "P240", "perpendicularTo": "r60"}},
+        "t270": {"line": {"through": "P270", "perpendicularTo": "v"}},
+        "t300": {"line": {"through": "P300", "perpendicularTo": "r120"}},
+        "t330": {"line": {"through": "P330", "perpendicularTo": "r150"}},
+        "K1": {"point": {"meet": ["t0", "t60"]}},
+        "K2": {"point": {"meet": ["t60", "t120"]}},
+        "K3": {"point": {"meet": ["t120", "t180"]}},
+        "K4": {"point": {"meet": ["t180", "t240"]}},
+        "K5": {"point": {"meet": ["t240", "t300"]}},
+        "K6": {"point": {"meet": ["t300", "t0"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 10,
+      "text": "Mark the corners of the pattern: every point where it turns or ends.",
+      "create": {
+        "M1": {"point": {"meet": ["r15", "t180"]}},
+        "M2": {"point": {"meet": ["r165", "t150"]}},
+        "M3": {"point": {"meet": ["r45", "t210"]}},
+        "M4": {"point": {"meet": ["r135", "t120"]}},
+        "M5": {"point": {"meet": ["h", "s1"]}},
+        "M6": {"point": {"meet": ["r30", "s2"]}},
+        "M7": {"point": {"meet": ["r150", "s0"]}},
+        "M8": {"point": {"meet": ["r60", "s3"]}},
+        "M9": {"point": {"meet": ["r120", "s3"]}},
+        "M10": {"point": {"meet": ["r75", "t240"]}},
+        "M11": {"point": {"meet": ["r105", "t90"]}},
+        "M12": {"point": {"meet": ["r15", "s2"]}},
+        "M13": {"point": {"meet": ["r165", "s1"]}},
+        "M14": {"point": {"meet": ["r45", "s3"]}},
+        "M15": {"point": {"meet": ["r135", "s0"]}},
+        "M16": {"point": {"meet": ["v", "s4"]}},
+        "M17": {"point": {"meet": ["r75", "s4"]}},
+        "M18": {"point": {"meet": ["r105", "s2"]}},
+        "M19": {"point": {"meet": ["v", "s2"]}},
+        "M20": {"point": {"meet": ["r105", "t270"]}},
+        "M21": {"point": {"meet": ["r105", "s5"]}},
+        "M22": {"point": {"meet": ["r75", "s1"]}},
+        "M23": {"point": {"meet": ["r75", "t60"]}},
+        "M24": {"point": {"meet": ["r120", "s5"]}},
+        "M25": {"point": {"meet": ["r60", "s1"]}},
+        "M26": {"point": {"meet": ["r135", "s6"]}},
+        "M27": {"point": {"meet": ["r150", "s6"]}},
+        "M28": {"point": {"meet": ["r45", "s0"]}},
+        "M29": {"point": {"meet": ["r30", "s0"]}},
+        "M30": {"point": {"meet": ["r165", "s7"]}},
+        "M31": {"point": {"meet": ["h", "s7"]}},
+        "M32": {"point": {"meet": ["r15", "s8"]}},
+        "M33": {"point": {"meet": ["r135", "t300"]}},
+        "M34": {"point": {"meet": ["r45", "t30"]}},
+        "M35": {"point": {"meet": ["r165", "t0"]}},
+        "M36": {"point": {"meet": ["r15", "t0"]}}
+      },
+      "animate": "fade"
+    },
+    {
+      "id": 11,
+      "text": "The tile is the hexagon whose sides touch the circle at 0°, 60°, 120° and so on.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4", "K5", "K6"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the small twelve-pointed star and the kites round it, then each shield: from its point along the star lines to the kites’ tips, out along the 15° lines, and across its flat end on a line that touches the circle.",
+    "paths": [
+      {"through": ["M1", "P180"]},
+      {"through": ["M1", "P210"]},
+      {"through": ["M1", "Q195"]},
+      {"through": ["P180", "M2"]},
+      {"through": ["M2", "P150"]},
+      {"through": ["M2", "Q165"]},
+      {"through": ["P210", "M3"]},
+      {"through": ["P150", "M4"]},
+      {"through": ["Q195", "M5"]},
+      {"through": ["Q195", "M6"]},
+      {"through": ["Q165", "M5"]},
+      {"through": ["Q165", "M7"]},
+      {"through": ["M3", "Q225"]},
+      {"through": ["M3", "P240"]},
+      {"through": ["M4", "Q135"]},
+      {"through": ["M4", "P120"]},
+      {"through": ["Q225", "M6"]},
+      {"through": ["Q225", "M8"]},
+      {"through": ["Q135", "M7"]},
+      {"through": ["Q135", "M9"]},
+      {"through": ["P240", "M10"]},
+      {"through": ["P120", "M11"]},
+      {"through": ["M5", "M12"]},
+      {"through": ["M5", "M13"]},
+      {"through": ["M6", "M12"]},
+      {"through": ["M6", "M14"]},
+      {"through": ["M7", "M13"]},
+      {"through": ["M7", "M15"]},
+      {"through": ["M10", "Q255"]},
+      {"through": ["M10", "P270"]},
+      {"through": ["M11", "Q105"]},
+      {"through": ["M11", "P90"]},
+      {"through": ["Q255", "M8"]},
+      {"through": ["Q255", "M16"]},
+      {"through": ["M8", "M14"]},
+      {"through": ["M8", "M17"]},
+      {"through": ["M15", "M9"]},
+      {"through": ["M9", "Q105"]},
+      {"through": ["M9", "M18"]},
+      {"through": ["Q105", "M19"]},
+      {"through": ["M17", "M16"]},
+      {"through": ["M18", "M19"]},
+      {"through": ["P270", "M20"]},
+      {"through": ["M16", "M21"]},
+      {"through": ["M16", "Q285"]},
+      {"through": ["M19", "M22"]},
+      {"through": ["M19", "Q75"]},
+      {"through": ["P90", "M23"]},
+      {"through": ["M21", "M24"]},
+      {"through": ["M22", "M25"]},
+      {"through": ["Q285", "M24"]},
+      {"through": ["Q285", "M20"]},
+      {"through": ["M24", "M26"]},
+      {"through": ["M24", "Q315"]},
+      {"through": ["M26", "M27"]},
+      {"through": ["M28", "M25"]},
+      {"through": ["M28", "M29"]},
+      {"through": ["M25", "Q75"]},
+      {"through": ["M25", "Q45"]},
+      {"through": ["Q75", "M23"]},
+      {"through": ["M20", "P300"]},
+      {"through": ["M23", "P60"]},
+      {"through": ["M30", "M27"]},
+      {"through": ["M30", "M31"]},
+      {"through": ["M32", "M29"]},
+      {"through": ["M32", "M31"]},
+      {"through": ["M27", "Q315"]},
+      {"through": ["M27", "Q345"]},
+      {"through": ["M29", "Q45"]},
+      {"through": ["M29", "Q15"]},
+      {"through": ["M31", "Q345"]},
+      {"through": ["M31", "Q15"]},
+      {"through": ["P300", "M33"]},
+      {"through": ["P60", "M34"]},
+      {"through": ["Q315", "M33"]},
+      {"through": ["Q45", "M34"]},
+      {"through": ["M33", "P330"]},
+      {"through": ["M34", "P30"]},
+      {"through": ["Q345", "M35"]},
+      {"through": ["Q15", "M36"]},
+      {"through": ["P330", "M35"]},
+      {"through": ["P30", "M36"]},
+      {"through": ["M35", "A"]},
+      {"through": ["A", "M36"]}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Repeat the hexagon side to side: the shields meet back to back on the tile’s sides, and a triangle opens between every three rosettes. On the doors a small five-pointed star is inlaid at each corner of the triangles.",
+    "palette": "Fès tile",
+    "colors": {"star": "c", "shield": "a", "triangle": "d", "kite": "b"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "star", "vertices": 24, "area": 0.34648, "perCell": 1},
+      {"name": "shield", "vertices": 5, "area": 0.18907, "perCell": 12},
+      {"name": "triangle", "vertices": 3, "area": 0.12436, "perCell": 2},
+      {"name": "kite", "vertices": 4, "area": 0.05001, "perCell": 12}
+    ]
+  }
+}

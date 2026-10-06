@@ -72,3 +72,29 @@ Each entry is a mistake that already cost time once, or a fact that saves time. 
 - At the corners where four overlapping copies meet, the content must be symmetric about the corner's own centre. The Bou Inania corner is an eight-pointed star: the little square between the two bands, plus a diamond whose side towards O is a line of set H. The diamond's sides carry on past its points to make the pointed ends of the long hexagons, and the square's sides are not inked between the star and those ends, so the same ten-cornered piece sits all round the star.
 - Ink read from a picture leaves loose ends, bars across crossings and tiny triangles where two nearly equal lines both got inked. `tools/review/bou_inania_v2/9_clean_ink.py` fills short gaps along a line, drops runs of ink shorter than 0.05, drops what dangles, and opens tiny triangles; given the engine's dump it also opens any remaining piece under 0.001 in area.
 - After every change to the ink, compare the whole list of piece shapes with the last version the owner approved. Piece names from `finish.py` are given by size and shift between builds, so compare shapes and counts, not names. A fix for the long hexagons once broke the corner star, and the owner found it first.
+
+## The al-Maridani minbar, Design H1 (5 October)
+
+- Before building a design from a photo, overlay the ink of every tutorial of the same family already in the library on the photo. H1 turned out to be `mian-stellated-rosettes`, which took a full reading of the photo to find out; the overlay takes minutes.
+- In carved and inlaid woodwork, read the lines from the inlays, not from the joints between frames. Each inlay is framed by bands of one width, so its edges run parallel to the pattern lines at half a band. Fitting the crisp inlay edges at multiples of 15° and moving them out by half a band gave every line to within 0.002 of OA; the skeleton of the joints was too noisy to read the corners.
+- Two constructions can agree within the photo's accuracy (here a star-line distance of √2/8 and Samira Mian's 0.178). When they do, use the published one and credit it.
+
+## Minbar doors, Design H2 (5 October)
+
+- A small inlay at a vertex (here a five-pointed star where five bands meet) looks like a piece with its own cell, and a watershed of the inlays gives it one, cutting back the corners of every neighbour. Check in the photo whether bands radiate from the small inlay; if they do, it is a decoration at a crossing, as the tiny arrows of H1 were.
+- Inlays of sharp pieces sit far inside their cells: a 30° kite tip loses half a band divided by sin 15°, about four band-halves. Do not read a kite as short from its inlay.
+- Judge an overlay on the sharp averaged tile, not on the raw photo: on the photo the frames' many stripes make good lines look wrong.
+- `pnpm format` also rewrites JSON data under `tools/review/`; run Prettier on the files you changed instead, or revert the rest before committing.
+
+## Second Ibn Tulun grille (6 October)
+
+- Deep pierced grilles show the inner walls of their openings, shifted by the viewing angle, so averaging many copies blurs them. Read them near the camera's axis instead (the middle of the photo), where the walls almost vanish, and only from edges on the side away from the walls.
+- Check the photo's own orientation against the straightened frame before reading directions: a lattice fitted from two neighbour vectors can come out turned by 30°.
+- Wichmann's Tiling Search pictures sit at `tilingsearch.mit.edu/contents/<folder>/<id>.gif` and `.pdf` (the HTML page links them as `../../contents/...`).
+- The Met's search API moved to `/public/collection/v1.1/search` (paginated); the old `/v1/search` was retired on 1 October 2026.
+
+## Wichmann's drawings (6 October)
+
+- Tiling Search PDFs are vector drawings: PyMuPDF's `page.get_drawings()` gives every piece as a filled path, exact to 0.01 pt. Their paths sometimes draw a segment back and forth; cancel those pairs before chaining the outline, or a real corner is lost.
+- Piece names in `expect` may use letters, digits and `_` only (no hyphens).
+- To find what fixes a design's proportions, list every distinct line modulo the lattice, then look for gaps that repeat and for a crossing that lands on a simple point (here the line from the cell corner to the bottom of the circle).

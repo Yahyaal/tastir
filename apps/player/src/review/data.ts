@@ -40,7 +40,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 12,
     status: 'decided',
     decision:
-      'You: inking as you go becomes a switch in every tutorial so you can compare it with inking at the end; yes to the four colours; yes to parts of one step (“Step 11 · 2 of 4”); yes to showing the next tile in blue. The plan for building it is waiting for your OK.',
+      'You: inking as you go becomes a switch in every tutorial so you can compare it with inking at the end; yes to the four colours; yes to parts of one step (“Step 11 · 2 of 4”); yes to showing the next tile in blue. All six changes are built (open the Bou Inania rosette: the step 13 dots are gone, step 6 shows the inner circle and rays it uses in blue, steps 8 to 12 play in parts, and the last step shows the next tiles in blue; the Ink menu at the top switches between inking at the end and as you go).',
     summary:
       'Why step 13 is unreadable, and five changes that would make the long tutorials easy to follow. Every picture uses the real Bou Inania geometry.',
     story: [
@@ -89,6 +89,117 @@ export const PATTERNS: readonly Pattern[] = [
         label:
           'Okabe and Ito: colours that colour-blind viewers can tell apart',
         url: 'https://jfly.uni-koeln.de/color/',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-bath-stars',
+    title: 'Interlaced stars of the Comares bath (new)',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'An Alhambra design from the Comares bath: large and small eight-pointed stars with interlaced bands between them.',
+    story: [
+      'Brian Wichmann’s Tiling Search has an exact drawing of this design. Every band turned out to be a side of one of two stars, each made of two squares, carried on until it meets the next star. Two crossings fix the stars’ sizes: the line from a corner of the cell to the bottom of the circle crosses the 22.5° line exactly above the large star’s point, and the small star’s circle runs through the point on the cell side level with the large star’s top. The tutorial builds it that way in eleven steps.',
+      'David Wade photographed a carved wooden panel with the same design. Our lines run along the middle of its bands (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-bath-stars/photo-overlay.png',
+        caption:
+          'Left: the carved panel. Right: the same with the tutorial’s lines in red.',
+      },
+      { src: 'renders/alhambra-bath-stars/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Alhambra, Baño Real (AL01)',
+        url: 'https://tilingsearch.mit.edu/HTML/data182/AL01.html',
+      },
+      {
+        label: 'David Wade, Pattern in Islamic Art (photo MOR 0711)',
+        url: 'https://patterninislamicart.com/',
+      },
+    ],
+  },
+  {
+    id: 'design-h2',
+    title: 'Design H2: minbar doors from Cairo (new)',
+    fold: 12,
+    status: 'verified',
+    summary:
+      'A pair of carved minbar doors from Cairo, about 1325–30, now in the Metropolitan Museum. Twelve-pointed rosettes on a hexagonal repeat.',
+    story: [
+      'The rosette is Samira Mian’s first rosette, the one in her square and hexagonal tiles, but the doors ink it differently: a small star ringed by twelve kites, then twelve shields. Each shield runs from a star point to the kites’ tips, out along the 15° lines, and ends flat on a line that touches the circle at one of its twelve points. Between every three rosettes this leaves a triangle.',
+      'The small five-pointed stars of the doors sit where five bands meet, at the corners of those triangles, so they are inlays at crossings rather than pieces, like the tiny arrows of the al-Maridani minbar. The first picture shows the doors with our lines over them; the second shows the triangle between three rosettes.',
+    ],
+    pictures: [
+      {
+        src: 'renders/minbar-doors-cairo/photo-overlay.png',
+        caption:
+          'Left: the doors, straightened. Right: the same with the tutorial’s lines in red. Each carved piece sits inside one of our pieces, half a band in from its edges.',
+      },
+      {
+        src: 'renders/minbar-doors-cairo/photo-gap.png',
+        caption:
+          'Between three rosettes: the triangle, with a five-pointed star inlaid at each corner.',
+      },
+      { src: 'renders/minbar-doors-cairo/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'The Met: Pair of Minbar Doors, Egypt, ca. 1325–30 (public-domain photo)',
+        url: 'https://www.metmuseum.org/art/collection/search/444812',
+      },
+      {
+        label: 'Samira Mian: Twelvefold Islamic Geometric Rosette',
+        url: 'https://www.samiramian.uk/twelvefoldrosette',
+      },
+    ],
+  },
+  {
+    id: 'design-h1',
+    title: 'Design H1: the al-Maridani minbar is already in the library',
+    fold: 4,
+    status: 'verified',
+    summary:
+      'The carved woodwork of the al-Maridani minbar in Cairo (1340) is exactly Samira Mian’s stellated rosettes, the tutorial you already approved.',
+    story: [
+      'I measured every carved inlay on the photo. Each one is framed by bands of the same width, so its edges show where the pattern lines run. Every line found is one of her construction lines: the two hexagons in the circle, her star lines, and the small hexagons and corner piece. The red lines in the first picture are her tutorial’s ink, laid over the photo, and every inlay sits in one of its pieces.',
+      'A second minbar has the same design: the one in the mosque of al-Nasir Muhammad in the Citadel, twenty years older (third picture). Its inlays sit in the same pieces.',
+      'One place needed a close look (A in the second picture). At the tip of each small kite, the band runs straight on to the tiny white arrow, with no line across it, just as in her drawing. So nothing in her tutorial changes. It now credits the minbar photo too, its title names the minbar, and its status is verified.',
+    ],
+    pictures: [
+      {
+        src: 'renders/mian-stellated-rosettes/photo-overlay.png',
+        caption:
+          'Left: one tile of the minbar, averaged from the photo. Right: the same with her tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/mian-stellated-rosettes/photo-kite-tip.png',
+        caption:
+          'A: at a kite tip the band runs on unbroken to the tiny white arrow, so no line crosses there.',
+      },
+      {
+        src: 'renders/mian-stellated-rosettes/nasir-overlay.png',
+        caption:
+          'A second minbar with the same design: al-Nasir Muhammad’s, in the Citadel (1318–35), with the same lines over it.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Photo: al-Maridani minbar, Cairo, lantern slide (Wikimedia Commons)',
+        url: 'https://commons.wikimedia.org/wiki/File:Ca%C3%AFro._Amir_al-Maridani-moskee_Minbar_Detail_van_het_houten_maaswerk,_GDE002950.jpg',
+      },
+      {
+        label:
+          'Samira Mian: Twelvefold Islamic Geometric Rosette (activity 8 video)',
+        url: 'https://www.samiramian.uk/twelvefoldrosette',
       },
     ],
   },
@@ -876,9 +987,38 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '5 October 2026',
+  updated: '6 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Clearer steps, all six changes',
+      text: 'No more steps full of red dots (nine marking steps hidden in nine tutorials); four colours with one meaning each and no point codes unless you tick Show names; an Ink menu at the top to ink at the end or as you go; long Bou Inania steps played in parts (“Step 11 · 2 of 4”); the next tiles in blue on the tile step; and each step zooms to where it works, then widens.',
+      link: { label: 'Bou Inania rosette', href: '/#/bou-inania-rosette' },
+    },
+    {
+      title: 'Interlaced stars of the Comares bath',
+      text: 'A new Alhambra tutorial from Brian Wichmann’s exact drawing, checked against a photo of a carved panel with the same design. Each band is a side of a large or small eight-pointed star.',
+      link: { label: 'Open it', href: '/#/alhambra-bath-stars' },
+    },
+    {
+      title: 'Second Ibn Tulun grille: parked',
+      text: 'A new design found on Commons (star openings, rhombi, and long openings that meet in threes like cubes). The photo is straightened, but the openings are deep and their inner walls hide the bands, so I parked it with notes rather than guess.',
+    },
+    {
+      title: 'Design H3: another minbar, same design',
+      text: 'The minbar of al-Nasir Muhammad in the Citadel has the same design as the al-Maridani minbar, so Samira Mian’s stellated rosettes now have two real examples. No new twelve-fold wood design turned up.',
+      link: { label: 'See the card', href: '#design-h1' },
+    },
+    {
+      title: 'Design H2: minbar doors from Cairo',
+      text: 'A new tutorial, checked against the Metropolitan Museum’s photo: Samira Mian’s rosette on a hexagonal repeat, inked as on the doors, with a triangle between every three rosettes.',
+      link: { label: 'Open it', href: '/#/minbar-doors-cairo' },
+    },
+    {
+      title: 'Design H1: the al-Maridani minbar',
+      text: 'It is Samira Mian’s stellated rosettes, already in the library: every carved inlay on the photo lies in one of its pieces. The tutorial now credits the minbar and is marked verified.',
+      link: { label: 'See the card', href: '#design-h1' },
+    },
     {
       title: 'Bou Inania rosette, her way',
       text: 'Fourteen steps; the tile copies overlap by one band; an eight-pointed star at each corner with four identical pieces round it.',
@@ -947,15 +1087,10 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Project notes are in the app',
-    text: 'The goal, the work queue, the status of every tutorial, the lessons learned and how we work together, all on one page. These are the same files every new Claude Code session reads first. Next session: Design H1.',
-    link: { label: 'Open the project notes', href: '/#/notes' },
+    title: 'A second Wichmann Alhambra panel',
+    text: 'The Mexuar patio’s south wall (octagons and eight-pointed stars), if a photo of it can be found to check against.',
   },
   next: [
-    {
-      title: 'Design H family: H1, the al-Maridani minbar (Cairo)',
-      text: 'A real 14th-century example found: the carved wooden minbar of the al-Maridani mosque, with twelve-pointed star rosettes alternating with a twelve-sided motif. Done so far: the photo is straightened and averaged into one sharp tile, and the joints between the carved pieces are traced; the rosette and its first ring are read. Next: the corner motif, then straightening every line to a multiple of 15°, then the tutorial. A second H design comes after.',
-    },
     {
       title: 'More designs per family',
       text: 'At least one more for each family: an Alhambra panel from Wichmann’s line drawings, an Ibn Tulun window grille with a published construction, and an eight-fold star-and-octagon variant, each with a photo.',

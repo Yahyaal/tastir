@@ -8,8 +8,12 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 ## Where things stand (5 October 2026)
 
-There are 24 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
+There are 26 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
 
+- The interlaced eight-pointed stars of the Comares bath (Alhambra), read from Brian Wichmann's Tiling Search drawing and checked against David Wade's photo of a carved panel with the same design, built as `alhambra-bath-stars`.
+- The minbar of al-Nasir Muhammad in the Citadel turned out to be the same design as the al-Maridani minbar, so `mian-stellated-rosettes` now has two real examples.
+- Design H2, the minbar doors from Cairo in the Metropolitan Museum (about 1325–30), built as `minbar-doors-cairo` and checked against the museum's photo. It is Samira Mian's rosette on a hexagonal tile, inked as the doors are.
+- Design H1, the al-Maridani minbar in Cairo, turned out to be Samira Mian's stellated rosettes, already in the library. Every inlay of the photo was measured and matches; the tutorial now credits the photo and is marked verified.
 - Samira Mian's twelve-fold rosette (square and hexagonal tiles) and her stellated rosettes (activity 8), both credited to her.
 - The Bou Inania rosette built her way, in 14 steps. Its tile copies overlap by one band, and each corner holds an eight-pointed star with four identical pieces round it. The owner judged it right on 5 October.
 - Design E, the Bou Inania twelve-fold wall, rebuilt as fifteen sets of twelve lines.
@@ -17,9 +21,9 @@ There are 24 tutorials in the library. Each one's status, with what was checked,
 
 ## The next goal
 
-Build Design H1, the al-Maridani minbar in Cairo, as a tutorial in the library. Its twelve-pointed star rosettes alternate with four-fold motifs like a checkerboard, the same layout as Design E. Work starts from where [the queue](patterns/QUEUE.md) and `tools/review/design_h/README.md` leave off: the corner motif around (1, 1), then lines forced to multiples of 15°, a build order, and a generator adapted from `tools/review/bou_inania/gen_design_e.py`. Check it against the photo, and credit Samira Mian's published construction.
+A second Alhambra panel from Wichmann's Tiling Search: the Mexuar patio's south wall (AL09), checked against a photo of the patio. The tools that read Wichmann's vector drawings are in `tools/review/alhambra_wichmann/`. Details are in [the queue](patterns/QUEUE.md).
 
-After H1, take the next unchecked item in [the queue](patterns/QUEUE.md).
+After that, take the next unchecked item in [the queue](patterns/QUEUE.md).
 
 ## How a session works
 

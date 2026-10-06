@@ -105,6 +105,9 @@ export default defineConfig(() => ({
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/test-setup.ts'],
+    // Whole-player renders in jsdom take 2–7 s, and over 5 s (Vitest's default
+    // limit) when the machine is busy, which made the coloring test flaky.
+    testTimeout: 20_000,
     include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
     coverage: {
