@@ -75,6 +75,10 @@ export const BACKUP = designs.backup;
 /** Whether a store that could not be read has been kept aside. */
 export const unreadableKept = designs.unreadableKept;
 
+/** Whether some saved designs cannot be read (they are kept aside on the
+ * next save). */
+export const unreadableNow = designs.unreadableNow;
+
 /** The longest name a design can have, so it fits on its card. */
 export const NAME_LIMIT = 60;
 const named = <T extends { name?: string }>(fields: T): T =>

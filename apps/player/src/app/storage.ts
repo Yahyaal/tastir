@@ -13,6 +13,8 @@ export interface Store<T> {
   readonly backup: string;
   /** Whether a store that could not be read has been kept aside. */
   readonly unreadableKept: () => boolean;
+  /** Whether the store holds something this version cannot read now. */
+  readonly unreadableNow: () => boolean;
 }
 
 export function store<T>(
@@ -61,6 +63,14 @@ export function store<T>(
         }
         storage.setItem(key, JSON.stringify(items));
         return true;
+      } catch {
+        return false;
+      }
+    },
+    unreadableNow: () => {
+      try {
+        const raw = window.localStorage.getItem(key);
+        return raw !== null && unreadable(raw);
       } catch {
         return false;
       }

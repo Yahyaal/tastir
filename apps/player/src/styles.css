@@ -607,29 +607,36 @@ main.stage .drawing:not(.wall) {
   font-weight: 700;
 }
 
-/* Leaving with unsaved changes asks first, in the top bar. */
+/* Leaving with unsaved changes asks first, over the page, where it
+   cannot be missed. */
+.leave-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(15, 21, 48, 0.6);
+}
+
 .leave-check {
+  max-width: 26rem;
+  padding: 18px 20px;
+  border: 2px solid var(--saffron);
+  border-radius: 10px;
+  background: var(--lapis-deep);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+.leave-check p {
+  margin: 0 0 14px;
+  font-size: 1rem;
+}
+
+.leave-check div {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 10px;
-  padding: 6px 10px;
-  border: 1px solid var(--saffron);
-  border-radius: 8px;
-  font-size: 0.85rem;
-}
-
-.leave-check .button {
-  padding: 4px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--on-lapis);
-  background: var(--on-lapis);
-  color: var(--lapis-deep);
-  text-decoration: none;
-}
-
-.leave-check button {
-  padding: 4px 12px;
+  gap: 10px;
 }
 
 /* A page that only says something, such as a design that is not here. */
@@ -1655,6 +1662,19 @@ main.stage .drawing:not(.wall) {
 
   .workspace.with-panel .side-panel {
     grid-column: 2;
+  }
+
+  /* The panel goes under the wall here, so the page grows and scrolls
+     rather than squeezing the wall and the panel into one screen, where
+     they were drawn over each other. */
+  .player.at-color {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .player.at-color .side-panel {
+    max-height: none;
+    overflow: visible;
   }
 }
 

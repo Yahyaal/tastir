@@ -216,6 +216,16 @@ describe('saving a design', () => {
     ).toMatch(/Your changes to “Plain” are not saved/);
     click('Stay');
     expect(screen.queryByRole('alertdialog')).toBeNull();
+    // The browser's Back asks too, and puts the design's address back.
+    go('#/');
+    expect(
+      screen.getByRole('alertdialog', { name: 'Unsaved changes' }),
+    ).toBeTruthy();
+    expect(window.location.hash).toBe(
+      `#/eight-fold-star-and-cross/design/${d?.id}`,
+    );
+    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    click('Stay');
     click('Save');
     expect(screen.queryByText(/Unsaved changes/)).toBeNull();
     expect(listDesigns()[0]?.coloring.palette).toBe('Marrakech');

@@ -28,7 +28,13 @@ import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { Original } from './Original';
 import { LIBRARY, type Entry } from './library';
 import { useRemembered } from './remembered';
-import { getDesign, listDesigns, unreadableKept, type Design } from './designs';
+import {
+  getDesign,
+  listDesigns,
+  unreadableKept,
+  unreadableNow,
+  type Design,
+} from './designs';
 import { Shelf } from './Shelf';
 import { SaveDesign } from './SaveDesign';
 import {
@@ -226,7 +232,24 @@ export function Player({
   // A design opened or saved, changed since: Save is offered, and leaving
   // asks first.
   const changed = design !== undefined && !sameDesign(design, designFields());
-  const [leaving, setLeaving] = useState(false);
+  // Where the learner was going when asked to save first, if anywhere.
+  const [leaving, setLeaving] = useState<string>();
+  const leaveAnyway = useRef(false);
+  useEffect(() => {
+    if (!changed || !design) return;
+    const here = `#/${tutorial.id}/design/${design.id}`;
+    // The browser's Back (or any other change of address) asks first too:
+    // the address is put back and the question shown.
+    stayGuard = (to) => {
+      if (leaveAnyway.current) return false;
+      window.history.pushState(null, '', here);
+      setLeaving(to);
+      return true;
+    };
+    return () => {
+      stayGuard = undefined;
+    };
+  }, [changed, design, tutorial.id]);
   // At the color stage the design sits at the top of the panel, or, where
   // the panel goes below the wall, under the wall so it is in view.
   const narrow = useNarrow();
@@ -454,7 +477,40 @@ export function Player({
   const colorStage = stage.kind === 'color';
 
   return (
-    <div className="player">
+    <div className={colorStage ? 'player at-color' : 'player'}>
+      {leaving !== undefined && changed ? (
+        <div className="leave-backdrop">
+          <div
+            className="leave-check"
+            role="alertdialog"
+            aria-label="Unsaved changes"
+          >
+            <p>
+              Your changes to “{design?.name}” are not saved. Leave without
+              saving them?
+            </p>
+            <div>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => {
+                  leaveAnyway.current = true;
+                  window.location.hash = leaving;
+                }}
+              >
+                Leave without saving
+              </button>
+              <button
+                type="button"
+                autoFocus
+                onClick={() => setLeaving(undefined)}
+              >
+                Stay
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
       {printing ? (
         <PrintSheet model={inking.shown} paper={paper} onDone={stopPrinting} />
       ) : null}
@@ -465,32 +521,13 @@ export function Player({
           onClick={(e) => {
             if (!changed) return;
             e.preventDefault();
-            setLeaving(true);
+            setLeaving('#/');
           }}
         >
           <span className="wordmark">Tastir</span>
           <span>All patterns</span>
         </a>
         <h1>{tutorial.title}</h1>
-        {leaving && changed ? (
-          <div
-            className="leave-check"
-            role="alertdialog"
-            aria-label="Unsaved changes"
-          >
-            <span>Your changes to “{design?.name}” are not saved.</span>
-            <a className="button" href="#/">
-              Leave without saving
-            </a>
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => setLeaving(false)}
-            >
-              Stay
-            </button>
-          </div>
-        ) : null}
         <details className="view-menu">
           <summary>View settings</summary>
           <div className="controls">
@@ -1015,7 +1052,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           ) : null}
         </div>
       </section>
-      {designs.length || unreadableKept() ? (
+      {designs.length || unreadableKept() || unreadableNow() ? (
         <Shelf
           designs={designs}
           entries={entries}
@@ -1218,6 +1255,12 @@ function HeroPlay({ model }: { model: Model }) {
   );
 }
 
+/**
+ * Set by a player whose design has unsaved changes: called when the
+ * address changes, it may put the address back and ask first (true).
+ */
+let stayGuard: ((to: string) => boolean) | undefined;
+
 /** The tutorial id in the address (#/id), or '' for the library. */
 function useRoute(): string {
   const read = () =>
@@ -1225,6 +1268,7 @@ function useRoute(): string {
   const [route, setRoute] = useState(read);
   useEffect(() => {
     const onChange = () => {
+      if (stayGuard?.(`#/${read()}`)) return;
       setRoute(read());
       window.scrollTo?.(0, 0);
     };

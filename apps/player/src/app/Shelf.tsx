@@ -6,6 +6,7 @@ import {
   NAME_LIMIT,
   renameDesign,
   unreadableKept,
+  unreadableNow,
   type Design,
 } from './designs';
 import type { Entry } from './library';
@@ -38,11 +39,14 @@ export function Shelf({
         <h2 id="my-designs">My designs</h2>
         <p>Your own inking and colors, kept in this browser.</p>
       </div>
-      {unreadableKept() ? (
-        <p className="shelf-note">
-          Some saved designs could not be read, perhaps from a newer version of
-          Tastir. They are not lost: a copy is kept in this browser under{' '}
-          <code>{BACKUP}</code>.
+      {unreadableNow() || unreadableKept() ? (
+        <p className="shelf-note" role="note">
+          Some saved designs could not be read, perhaps because they were made
+          by a newer version of Tastir. They are not lost:{' '}
+          {unreadableNow()
+            ? 'they are left as they are, and kept aside when you next save'
+            : 'a copy is kept in this browser'}{' '}
+          under <code>{BACKUP}</code>.
         </p>
       ) : null}
       <ul className="cards">
