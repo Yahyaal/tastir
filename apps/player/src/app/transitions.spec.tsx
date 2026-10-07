@@ -13,7 +13,7 @@ const model = loadModel(json);
 const steps = model.tutorial.steps.length;
 
 describe('the move from the last step to the ink', () => {
-  it('inks every line once, a ruler at a time, parallel lines together', () => {
+  it('inks every line once, a ruler at a time, from the centre outward', () => {
     const order = rulerOrder(loadModel(mianJson));
     const m = loadModel(mianJson);
     const drawn = order.flatMap((r) => r.strokes.map((s) => s.index));
@@ -34,18 +34,30 @@ describe('the move from the last step to the ink', () => {
         }
       }
     }
-    // Lines of one direction follow each other.
-    const angles = order.map((r) => Math.round(r.angle));
-    const seen = new Set<number>();
-    angles.forEach((a, k) => {
-      if (k > 0 && angles[k - 1] !== a) {
-        expect(seen.has(a)).toBe(false);
-      }
-      seen.add(a);
+    // Out from the centre: each ruler's ink comes no nearer the centre than
+    // the one before, and each line is drawn from its end nearer the centre.
+    const near = (r: (typeof order)[number]) => {
+      const d = { x: r.to.x - r.from.x, y: r.to.y - r.from.y };
+      const len = Math.hypot(d.x, d.y);
+      return Math.abs((r.from.x * d.y - r.from.y * d.x) / len);
+    };
+    const reach = order.map((r) => {
+      const ps = r.strokes.flatMap(({ index }) => [
+        m.pattern.ink[index]!.segment.a,
+        m.pattern.ink[index]!.segment.b,
+      ]);
+      return Math.min(...ps.map((p) => Math.hypot(p.x, p.y)), Infinity);
     });
-    // Her star lines (long, in pairs) come before the short outline stretches.
-    expect(order[0]!.strokes.length).toBe(2);
-    expect(order[1]!.parallelToPrevious).toBe(true);
+    for (let k = 1; k < order.length; k++) {
+      expect(Math.min(reach[k]!, near(order[k]!))).toBeGreaterThan(
+        Math.min(reach[k - 1]!, near(order[k - 1]!)) - 1e-6,
+      );
+    }
+    for (const r of order) {
+      expect(Math.hypot(r.from.x, r.from.y)).toBeLessThanOrEqual(
+        Math.hypot(r.to.x, r.to.y) + 1e-9,
+      );
+    }
   });
 
   it('plays only when asked', () => {

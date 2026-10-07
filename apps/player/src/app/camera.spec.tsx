@@ -9,7 +9,8 @@ import {
   fullView,
   height,
   MIN_FRAME,
-  focusFrame,
+  growingFrame,
+  MIN_GROWING,
   stepFrame,
   width,
   zoomAt,
@@ -69,28 +70,31 @@ describe('the view maths', () => {
     }
   });
 
-  it('closes in on one corner of a move made at every corner, then widens', () => {
+  it('shows everything drawn so far, and only ever widens', () => {
     const m = loadModel(bou);
-    // Step 12, part 1: the centre of the corner star, at all four corners.
-    const beat = m.scene.elements.get('Sa')?.beat ?? 0;
-    const { frame, widens } = focusFrame(m, beat);
-    const at = (n: string) => {
-      const g = m.scene.elements.get(n)?.geometry;
-      return g?.kind === 'point' ? g.at : { x: NaN, y: NaN };
-    };
-    const inside = (p: { x: number; y: number }) =>
-      p.x >= frame.minX &&
-      p.x <= frame.maxX &&
-      p.y >= frame.minY &&
-      p.y <= frame.maxY;
-    expect(inside(at('Sa'))).toBe(true);
-    expect(inside(at('Sc'))).toBe(false);
-    expect(width(frame)).toBeLessThan(width(drawingBox(m)) / 2);
-    expect(widens).toBe(true);
-  });
-
-  it('does not widen a step that has no copies', () => {
-    expect(focusFrame(model, 1).widens).toBe(false);
+    const beats = Math.max(
+      ...[...m.scene.elements.values()].map((el) => el.beat),
+    );
+    let before = growingFrame(m, 1);
+    expect(width(before)).toBeGreaterThanOrEqual(
+      MIN_GROWING * width(drawingBox(m)) - 1e-9,
+    );
+    for (let beat = 2; beat <= beats; beat++) {
+      const frame = growingFrame(m, beat);
+      expect(contains(frame, before)).toBe(true);
+      for (const el of m.scene.elements.values()) {
+        if (el.beat <= beat && el.geometry.kind === 'point')
+          expect(
+            contains(frame, {
+              minX: el.geometry.at.x,
+              minY: el.geometry.at.y,
+              maxX: el.geometry.at.x,
+              maxY: el.geometry.at.y,
+            }),
+          ).toBe(true);
+      }
+      before = frame;
+    }
   });
 
   it('never frames a step smaller than a share of the whole drawing', () => {
@@ -158,7 +162,7 @@ describe('the camera in the player', () => {
     expect(after.w).toBeCloseTo(before.w, 12);
   });
 
-  it('fits the whole drawing, and frames each step on Next', () => {
+  it('fits the whole drawing, and frames what is drawn so far on Next', () => {
     render(<Play json={example} />);
     reduceMotion();
     const svg = document.querySelector('svg.drawing') as SVGSVGElement;
@@ -167,20 +171,21 @@ describe('the camera in the player', () => {
     expect(box().w).toBeCloseTo(width(fullView(model)), 9);
     fireEvent.wheel(svg, { deltaY: -500 });
     fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-    expect(box().w).toBeCloseTo(width(focusFrame(model, 2).frame), 9);
+    expect(box().w).toBeCloseTo(width(growingFrame(model, 2)), 9);
   });
 
-  it('widens to the whole drawing once the first line of a step is down', () => {
+  it('holds still while a step works inside what is already shown', () => {
     vi.useFakeTimers();
     try {
       render(<Play json={example} />);
       reduceMotion();
       fireEvent.click(screen.getByRole('button', { name: 'Next' }));
-      expect(box().w).toBeCloseTo(width(focusFrame(model, 2).frame), 9);
+      const w = box().w;
       act(() => {
-        vi.advanceTimersByTime(1000);
+        vi.advanceTimersByTime(2000);
       });
-      expect(box().w).toBeCloseTo(width(fullView(model)), 9);
+      expect(box().w).toBeCloseTo(w, 9);
+      expect(w).toBeCloseTo(width(growingFrame(model, 2)), 9);
     } finally {
       vi.useRealTimers();
     }

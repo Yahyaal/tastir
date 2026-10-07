@@ -1274,6 +1274,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Calmer, more natural drawing',
+      text: 'The view no longer zooms in and out: each step shows everything drawn so far and only widens, smoothly, when the drawing grows. Ruler lines grow outward from the point they are ruled through; a step with many lines draws them round the centre in turn. The ink starts at the centre and works outward ring by ring, so a star closes before the next ring. On the tile step the tile’s own ink appears first, then its neighbours one by one. The tile border is dotted.',
+      link: { label: 'Try it', href: '/#/twelve-fold-rosette-mian' },
+    },
+    {
       title: 'A new look for the whole app',
       text: 'The drawing sits on a pale plaster plate in a deep lapis frame; saffron marks what is happening now. The home page opens with a pattern drawing itself and three plain sentences on how it works, then the patterns as a tiled wall you can filter by tradition and level. In a tutorial, the left column shows every step and the ink, repeat and color stages, and you can click any of them; the settings sit in one menu; at the color stage the wall tools and colors are on the right. On a phone, Back and Next stay at the bottom.',
       link: { label: 'See it', href: '/#/' },

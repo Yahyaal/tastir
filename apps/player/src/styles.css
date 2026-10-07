@@ -767,6 +767,36 @@ main.stage .drawing:not(.wall) {
   stroke: var(--used);
 }
 
+/* The tile step: the tile's own ink, then its neighbours one by one. */
+.ink.own-tile {
+  animation: tile-in 0.5s ease-out 1.5s both;
+}
+
+.ink.next-tiles > g {
+  opacity: 0.6;
+  animation: next-tile-in 0.45s ease-out both;
+  animation-delay: calc(2.1s + var(--k) * 0.2s);
+}
+
+@keyframes tile-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes next-tile-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink.own-tile,
+  .ink.next-tiles > g {
+    animation: none;
+  }
+}
+
 .ink line.fresh {
   stroke: var(--fresh);
 }
@@ -865,7 +895,8 @@ main.stage .drawing:not(.wall) {
 .tile-outline {
   fill: none;
   stroke-width: 2.5px;
-  stroke-dasharray: none;
+  stroke-dasharray: 1 6;
+  stroke-linecap: round;
 }
 
 .ink .tile-outline {
@@ -875,6 +906,8 @@ main.stage .drawing:not(.wall) {
 .copy-outline {
   fill: none;
   stroke-width: 2.5px;
+  stroke-dasharray: 1 6;
+  stroke-linecap: round;
   opacity: 0;
 }
 

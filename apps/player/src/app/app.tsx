@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 import { planStep, play, playInk } from './animation';
-import { focusFrame, fullView, width } from './camera';
+import { fullView, growingFrame, width } from './camera';
 import { useCamera } from './useCamera';
 import { useInking } from './useInking';
 import {
@@ -30,6 +30,7 @@ import { LIBRARY, type Entry } from './library';
 import { useRemembered } from './remembered';
 import {
   beatsOf,
+  hiddenBeats,
   shownBeats,
   shownSteps,
   stagesOf,
@@ -177,30 +178,17 @@ export function Player({
     running.current = [];
   };
 
-  // Each step or part first frames where it works, then, if it draws
-  // copies elsewhere, widens to the whole drawing once its first line is
-  // down. Arriving with Back shows it widened. The ink shows everything.
-  const focus = useMemo(
-    () => (stage.kind === 'step' ? focusFrame(model, stage.beat) : undefined),
-    [model, stage],
-  );
-  const [widened, setWidened] = useState(-1);
+  // A calm camera: each step shows everything drawn so far, so the view
+  // stays still while a step works inside it and widens, once and smoothly,
+  // only when the drawing grows past it. The ink shows everything.
+  const hidden = useMemo(() => hiddenBeats(tutorial), [tutorial]);
   const frame = useMemo(
     () =>
-      focus && !(focus.widens && (!forward || widened === index))
-        ? focus.frame
+      stage.kind === 'step'
+        ? growingFrame(model, stage.beat, hidden)
         : fullView(model),
-    [model, focus, forward, widened, index],
+    [model, stage, hidden],
   );
-  useEffect(() => {
-    if (stage.kind !== 'step' || !focus?.widens || !forward) return;
-    const drawn = planStep(model, stage.beat, speed)
-      .filter((e) => e.kind === 'ruler' || e.kind === 'compass')
-      .map((e) => e.delay + e.duration);
-    const after = Math.max(drawn.length ? Math.min(...drawn) : 0, 500 / speed);
-    const timer = setTimeout(() => setWidened(index), after);
-    return () => clearTimeout(timer);
-  }, [index, stage, model, focus, forward, speed]);
   const onConstruction = stage.kind === 'step' || stage.kind === 'ink';
   const camera = useCamera(frame, svgRef, {
     stage: index,

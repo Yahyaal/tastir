@@ -82,8 +82,10 @@ export function planStep(
   const made = [...model.scene.elements.values()].filter(
     (el) => el.beat === step,
   );
-  const curves = made.filter((el) =>
-    ['line', 'circle', 'polygon'].includes(el.geometry.kind),
+  const curves = inTurn(
+    made.filter((el) =>
+      ['line', 'circle', 'polygon'].includes(el.geometry.kind),
+    ),
   );
   const points = made.filter((el) => el.geometry.kind === 'point');
   const drawTime =
@@ -128,6 +130,35 @@ export function planStep(
 }
 
 /**
+ * A step's lines and circles in the order a hand would draw them: what
+ * works at the centre first, then round the centre counter-clockwise from
+ * 0°, so a ring of lines closes as it is drawn. A step with one or two
+ * keeps the tutorial's order.
+ */
+function inTurn<T extends { geometry: import('@tastir/engine').Geometry }>(
+  els: T[],
+): T[] {
+  if (els.length < 3) return els;
+  const at = (el: T) => {
+    const g = el.geometry;
+    if (g.kind === 'line') return g.line.point;
+    if (g.kind === 'circle') return g.circle.centre;
+    if (g.kind === 'polygon') return g.vertices[0];
+    return undefined;
+  };
+  const key = (el: T) => {
+    const p = at(el);
+    if (!p || Math.hypot(p.x, p.y) < 1e-6) return -1;
+    const a = Math.atan2(p.y, p.x);
+    return a < -1e-9 ? a + 2 * Math.PI : Math.max(0, a);
+  };
+  return els
+    .map((el, i) => ({ el, i, k: key(el) }))
+    .sort((p, q) => p.k - q.k || p.i - q.i)
+    .map((x) => x.el);
+}
+
+/**
  * The length of a shape's stroke on screen, in pixels. Strokes do not
  * scale with the view (vector-effect: non-scaling-stroke), and browsers
  * then measure dashes in screen pixels, so the dash must match this.
@@ -166,6 +197,29 @@ function keyframes(
   }
   // One dash as long as the shape slides in from its start.
   const len = screenLength(node, lengthScale);
+  // A ruler line grows both ways from the point it is ruled through, as a
+  // hand would draw it, and reaches the edges of the screen by the end;
+  // the rest, off screen, completes at once.
+  const grow = node.dataset['grow']?.split(' ').map(Number);
+  if (grow && grow.length === 2 && grow.every(Number.isFinite)) {
+    const [from = 0.5, reach = 1] = grow;
+    const at = from * len;
+    const w = Math.min(2 * reach * len, 2 * len);
+    // The part from at - width/2 to at + width/2, kept on the line.
+    const dashAt = (width: number) => {
+      const lo = Math.max(0, at - width / 2);
+      const hi = Math.min(len, at + width / 2);
+      return {
+        strokeDasharray: `0 ${lo} ${Math.max(0, hi - lo)} ${2 * len}`,
+        strokeDashoffset: 0,
+      };
+    };
+    return [
+      { ...dashAt(0), offset: 0 },
+      { ...dashAt(w), offset: 0.98 },
+      { strokeDasharray: `${len} 0`, strokeDashoffset: 0, offset: 1 },
+    ];
+  }
   const dash = `${len} ${len}`;
   return [
     { strokeDasharray: dash, strokeDashoffset: len },
@@ -283,10 +337,10 @@ const turnDiff = (p: number, q: number) =>
 
 /**
  * The order a person with a ruler would ink the pattern: lay the ruler
- * once along each line and draw every stretch on it, and draw parallel
- * lines one after the other. Directions that carry the most ink go first,
- * so the long lines are drawn before the short ones that join them, and
- * parallel lines go across in order.
+ * once along each line and draw every stretch on it. Lines go out from the
+ * centre in rings: the ring nearest the centre first, and each ring round
+ * the centre counter-clockwise, so a star or a ring of petals closes before
+ * the next ring starts. Each line is drawn from its end nearer the centre.
  */
 export function rulerOrder(model: Model): RulerLine[] {
   const ink = model.pattern.ink;
@@ -309,59 +363,61 @@ export function rulerOrder(model: Model): RulerLine[] {
     if (same) same.items.push(index);
     else lines.push({ angle, offset, dir, items: [index] });
   });
-  const length = (i: number) => {
-    const { a, b } = ink[i]!.segment;
-    return Math.hypot(b.x - a.x, b.y - a.y);
-  };
-  // Lines grouped by direction.
-  const families: (typeof lines)[] = [];
-  for (const l of lines) {
-    const fam = families.find((f) => turnDiff(f[0]!.angle, l.angle) < 1e-3);
-    if (fam) fam.push(l);
-    else families.push([l]);
-  }
-  const inkOf = (f: typeof lines) =>
-    f.reduce((s, l) => s + l.items.reduce((t, i) => t + length(i), 0), 0);
-  families.sort((p, q) => inkOf(q) - inkOf(p) || p[0]!.angle - q[0]!.angle);
-  const out: RulerLine[] = [];
-  for (const fam of families) {
-    // Line offsets measured with one shared direction, so they sort across.
-    const d0 = fam[0]!.dir;
-    const across = (l: (typeof lines)[number]) =>
-      l.offset * (l.dir.x * d0.x + l.dir.y * d0.y);
-    fam.sort((p, q) => across(p) - across(q));
-    fam.forEach((l, k) => {
-      const along = (p: Vec) => p.x * l.dir.x + p.y * l.dir.y;
-      const strokes = l.items
-        .map((index) => {
-          const { a, b } = ink[index]!.segment;
-          const ta = along(a);
-          const tb = along(b);
-          return {
-            index,
-            reversed: tb < ta,
-            t: Math.min(ta, tb),
-            u: Math.max(ta, tb),
-          };
-        })
-        .sort((p, q) => p.t - q.t);
-      const t0 = strokes[0]!.t;
-      const t1 = Math.max(...strokes.map((s) => s.u));
-      const pad = (t1 - t0) * 0.12 + 0.05;
-      const base = { x: -l.dir.y * l.offset, y: l.dir.x * l.offset };
-      const at = (t: number) => ({
-        x: base.x + l.dir.x * t,
-        y: base.y + l.dir.y * t,
-      });
-      out.push({
-        angle: l.angle,
-        strokes: strokes.map(({ index, reversed }) => ({ index, reversed })),
-        from: at(t0 - pad),
-        to: at(t1 + pad),
-        parallelToPrevious: k > 0,
-      });
+  const placed = lines.map((l) => {
+    const along = (p: Vec) => p.x * l.dir.x + p.y * l.dir.y;
+    const spans = l.items.map((index) => {
+      const { a, b } = ink[index]!.segment;
+      const ta = along(a);
+      const tb = along(b);
+      return { index, ta, tb, t: Math.min(ta, tb), u: Math.max(ta, tb) };
     });
-  }
+    const t0 = Math.min(...spans.map((s) => s.t));
+    const t1 = Math.max(...spans.map((s) => s.u));
+    const base = { x: -l.dir.y * l.offset, y: l.dir.x * l.offset };
+    const at = (t: number) => ({
+      x: base.x + l.dir.x * t,
+      y: base.y + l.dir.y * t,
+    });
+    // How near the centre the inked part comes, and where.
+    const tc = Math.min(t1, Math.max(t0, 0));
+    const near = at(tc);
+    const ring = Math.hypot(near.x, near.y);
+    // Seen from the centre, where the line's ink lies.
+    const mid = at((t0 + t1) / 2);
+    const around =
+      Math.hypot(mid.x, mid.y) < 1e-9 ? 0 : Math.atan2(mid.y, mid.x);
+    // Start at the end nearer the centre.
+    const forward =
+      Math.hypot(at(t0).x, at(t0).y) <= Math.hypot(at(t1).x, at(t1).y) + 1e-9;
+    return { l, spans, t0, t1, at, ring, around, forward };
+  });
+  const scale = Math.max(1e-9, ...placed.map((p) => p.ring));
+  const tol = 1e-4 * scale;
+  placed.sort((p, q) => {
+    if (Math.abs(p.ring - q.ring) > tol) return p.ring - q.ring;
+    const ap = p.around < -1e-9 ? p.around + 2 * Math.PI : p.around;
+    const aq = q.around < -1e-9 ? q.around + 2 * Math.PI : q.around;
+    return ap - aq;
+  });
+  const out: RulerLine[] = [];
+  placed.forEach(({ l, spans, t0, t1, at, forward }, k) => {
+    const pad = (t1 - t0) * 0.12 + 0.05;
+    const ordered = [...spans].sort((p, q) =>
+      forward ? p.t - q.t : q.u - p.u,
+    );
+    const prev = placed[k - 1];
+    out.push({
+      angle: l.angle,
+      // Each stretch in the line's drawing direction.
+      strokes: ordered.map(({ index, ta, tb }) => ({
+        index,
+        reversed: forward ? tb < ta : ta < tb,
+      })),
+      from: at(forward ? t0 - pad : t1 + pad),
+      to: at(forward ? t1 + pad : t0 - pad),
+      parallelToPrevious: !!prev && turnDiff(prev.l.angle, l.angle) < 1e-3,
+    });
+  });
   return out;
 }
 

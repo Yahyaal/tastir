@@ -58,10 +58,13 @@ function Shape({
   view,
   className,
   startDeg = 0,
+  seen,
 }: {
   name: string;
   g: Geometry;
   view: Rect;
+  /** What is on screen, so a line's stroke can spend its time there. */
+  seen?: Rect;
   className: string;
   /** Where a circle's stroke starts, in degrees in the tutorial frame. */
   startDeg?: number;
@@ -71,9 +74,24 @@ function Shape({
       const seg = clip(g.line, view);
       if (!seg) return null;
       const [a, b] = seg;
+      // The ruler is laid through the line's own point: the stroke grows
+      // from there outward, and reaches the edges of the screen first.
+      const t = (p: Vec) =>
+        (p.x - g.line.point.x) * g.line.dir.x +
+        (p.y - g.line.point.y) * g.line.dir.y;
+      const ta = t(a);
+      const tb = t(b);
+      const span = tb - ta || 1;
+      const from = Math.min(1, Math.max(0, -ta / span));
+      const onScreen = seen ? clip(g.line, seen) : undefined;
+      const reach = onScreen
+        ? Math.max(Math.abs(t(onScreen[0])), Math.abs(t(onScreen[1]))) /
+          Math.abs(span)
+        : 1;
       return (
         <line
           data-name={name}
+          data-grow={`${from.toFixed(4)} ${Math.min(1, reach).toFixed(4)}`}
           className={className}
           x1={sx(a)}
           y1={sy(a)}
@@ -285,9 +303,10 @@ function cellBeat(model: Model): number | undefined {
 }
 
 /**
- * On the step that draws the tile: the ink of the eight tiles around it,
- * in blue, so the learner sees each of their lines meet this tile's edge
- * where one of its own lines carries on.
+ * On the step that draws the tile: once the tile is down, its own ink
+ * appears in black, then the ink of the eight tiles around it, faint and in
+ * blue, one after another, so the learner sees each of their lines meet this
+ * tile's edge where one of its own lines carries on.
  */
 function NextTiles({ model }: { model: Model }) {
   const { u, v } = model.pattern.cell;
@@ -295,23 +314,36 @@ function NextTiles({ model }: { model: Model }) {
   for (const i of [-1, 0, 1])
     for (const j of [-1, 0, 1])
       if (i || j) shifts.push({ x: i * u.x + j * v.x, y: i * u.y + j * v.y });
+  // Round the tile in turn, so the copies arrive like a hand moving round.
+  shifts.sort((p, q) => Math.atan2(p.y, p.x) - Math.atan2(q.y, q.x));
+  const lines = (d: Vec) =>
+    model.pattern.ink.map((s, i) => (
+      <line
+        key={i}
+        x1={sx(s.segment.a) + d.x}
+        y1={sy(s.segment.a) - d.y}
+        x2={sx(s.segment.b) + d.x}
+        y2={sy(s.segment.b) - d.y}
+        vectorEffect="non-scaling-stroke"
+      />
+    ));
   return (
-    <g className="ink next-tiles" aria-label="The next tiles">
-      {shifts.map((d, k) => (
-        <g key={k} data-next-tile={k}>
-          {model.pattern.ink.map((s, i) => (
-            <line
-              key={i}
-              x1={sx(s.segment.a) + d.x}
-              y1={sy(s.segment.a) - d.y}
-              x2={sx(s.segment.b) + d.x}
-              y2={sy(s.segment.b) - d.y}
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
-        </g>
-      ))}
-    </g>
+    <>
+      <g className="ink own-tile" aria-label="This tile">
+        {lines({ x: 0, y: 0 })}
+      </g>
+      <g className="ink next-tiles" aria-label="The next tiles">
+        {shifts.map((d, k) => (
+          <g
+            key={k}
+            data-next-tile={k}
+            style={{ '--k': k } as React.CSSProperties}
+          >
+            {lines(d)}
+          </g>
+        ))}
+      </g>
+    </>
   );
 }
 
@@ -414,6 +446,7 @@ export function Construction({
             startDeg={compassStart(model, el.name)}
             g={el.geometry}
             view={clipTo}
+            seen={view}
             className={[
               'el',
               isCurrent(el)
