@@ -395,8 +395,9 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
             </ol>
           ) : (
             <p className="hint">
-              Only the centre O and the point A so far. Pick a tool and click on
-              the drawing.
+              Only the centre O and the point A so far. Start with the compass:
+              click O, then A, for the first circle. Every point you click must
+              already exist, as with a real compass and ruler.
             </p>
           )}
           {broken ? (

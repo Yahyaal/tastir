@@ -39,7 +39,7 @@ import { Shelf } from './Shelf';
 import { Editor } from '../editor/Editor';
 import { copyUpTo } from '../editor/document';
 import { addPattern, listPatterns, playable } from '../editor/patterns';
-import { PatternShelf } from '../editor/PatternShelf';
+import { NewPattern, PatternShelf } from '../editor/PatternShelf';
 import { SaveDesign } from './SaveDesign';
 import {
   asPanel,
@@ -1110,6 +1110,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             My patterns ({patterns.length})
           </button>
         ) : null}
+        {patterns.length ? null : <NewPattern />}
         {import.meta.env.DEV ? (
           <p className="dev-links">
             <a href="#/review">

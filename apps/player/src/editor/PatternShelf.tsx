@@ -1,9 +1,14 @@
 import type { Scene } from '@tastir/engine';
 import { useEffect, useState } from 'react';
 import { viewBox } from '../app/camera';
-import { check } from './document';
+import { check, emptyDraft } from './document';
 import { frameOf } from './EditorDrawing';
-import { deletePattern, savePattern, type UserPattern } from './patterns';
+import {
+  addPattern,
+  deletePattern,
+  savePattern,
+  type UserPattern,
+} from './patterns';
 
 const day = (iso: string) =>
   new Date(iso).toLocaleDateString('en-GB', {
@@ -30,6 +35,7 @@ export function PatternShelf({
       <div className="collection-head">
         <h2 id="my-patterns">My patterns</h2>
         <p>Your own constructions, kept in this browser.</p>
+        <NewPattern />
       </div>
       <ul className="cards">
         {patterns.map((p) => (
@@ -37,6 +43,35 @@ export function PatternShelf({
         ))}
       </ul>
     </section>
+  );
+}
+
+/**
+ * “New pattern”: the editor with only the centre O and the point A, as a
+ * blank sheet with a compass and a ruler.
+ */
+export function NewPattern() {
+  const [refused, setRefused] = useState(false);
+  return (
+    <span className="new-pattern">
+      <button
+        type="button"
+        className="button"
+        onClick={() => {
+          const made = addPattern(emptyDraft('my-pattern', 'My pattern'));
+          if (!made) return setRefused(true);
+          window.location.hash = `#/edit/${made.id}`;
+        }}
+      >
+        New pattern
+      </button>
+      {refused ? (
+        <span className="refused" role="alert">
+          This browser would not keep a new pattern: its storage is blocked (a
+          private window) or full.
+        </span>
+      ) : null}
+    </span>
   );
 }
 

@@ -1898,3 +1898,27 @@ main.stage .drawing:not(.wall) {
     padding: 6pt 0 0;
   }
 }
+
+/* Starting a pattern from nothing. */
+.new-pattern {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+}
+
+.library .new-pattern .button {
+  padding: 5px 16px;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  background: var(--saffron);
+  border: 1px solid var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.new-pattern .refused {
+  font-size: 0.8rem;
+  color: #ffb4a6;
+}

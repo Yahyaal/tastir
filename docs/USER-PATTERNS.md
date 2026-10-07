@@ -38,7 +38,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 
 ### Phase 3: from nothing
 
-- [ ] **3.1 New pattern.** “New pattern” opens the editor with only O and A.
+- [x] **3.1 New pattern.** “New pattern” opens the editor with only O and A.
 - [ ] **3.2 Symmetry mode.** Off, 4, 6, 8, 12, 16: every new element is also repeated round the centre. *Test:* rebuild the eight-fold star and cross from nothing; its file passes the same golden test as ours.
 
 ### Phase 4: building blocks
