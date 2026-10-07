@@ -14,11 +14,14 @@ import {
   type Draft,
   type StepStatus,
 } from './document';
+import { useRemembered } from '../app/remembered';
 import { AboutPanel } from './AboutPanel';
 import { EditorDrawing } from './EditorDrawing';
 import {
+  foldOf,
   imagesOf,
   inkableOf,
+  isMotif,
   inTile,
   tileWarning,
   inkedNow,
@@ -158,7 +161,17 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   // New steps go at the end, or after the selected step when asked; the
   // drawing then shows, and the tools take, only what exists by then.
   const [insertAfter, setInsertAfter] = useState(false);
-  const [symmetry, setSymmetry] = useState<Symmetry>(0);
+  // The symmetry choice is remembered for each pattern.
+  const [symmetryText, setSymmetryText] = useRemembered<string>(
+    `symmetry.${pattern.id}`,
+    '0',
+  );
+  const symmetry = (
+    SYMMETRIES.includes(Number(symmetryText) as Symmetry)
+      ? Number(symmetryText)
+      : 0
+  ) as Symmetry;
+  const setSymmetry = (n: Symmetry) => setSymmetryText(String(n));
   const last = draft.steps.length;
   const at =
     insertAfter && selected !== undefined && selected < last ? selected : last;
@@ -442,6 +455,10 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
                 aria-pressed={m === mode}
                 onClick={() => {
                   setMode(m);
+                  // Inking follows the symmetry the steps were drawn with.
+                  const fold = foldOf(draft);
+                  if (m === 'ink' && !draft.ink && fold !== draft.fold)
+                    edit({ ...draft, fold });
                   setTargets([]);
                   setSaid(undefined);
                 }}
@@ -690,6 +707,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               dependents={dependents(checked, step.id)}
               tile={cellName}
               say={(name) => describe(name, specsOf(draft), { scene })}
+              motif={(name) => isMotif(checked.scene, name)}
               onTile={(name) => {
                 const next = withTile(draft, name);
                 const tile = tileOf(next, checked.scene);
@@ -736,6 +754,7 @@ function StepPanel({
   tile,
   onTile,
   say,
+  motif,
   onText,
   onMove,
   onDelete,
@@ -749,6 +768,8 @@ function StepPanel({
   dependents: readonly number[];
   /** The tile's polygon, if one is chosen. */
   tile?: string;
+  /** Whether a polygon is part of the motif rather than a tile. */
+  motif: (name: string) => boolean;
   /** An element in plain words, to tell two shapes apart. */
   say: (name: string) => string;
   /** Makes a polygon the tile; the reason when it cannot repeat. */
@@ -853,7 +874,13 @@ function StepPanel({
         <section>
           <h2>The tile</h2>
           {polygons.map((name) =>
-            name === tile ? (
+            motif(name) ? (
+              <p key={name} className="hint">
+                This shape is part of the pattern, not a tile that holds it. For
+                a star or rosette, draw a square (or hexagon) around the circle,
+                touching it, and use its corners as the tile.
+              </p>
+            ) : name === tile ? (
               <p key={name} className="step-status ok">
                 ✓{' '}
                 {polygons.length > 1

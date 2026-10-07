@@ -566,3 +566,9 @@
     overflow-y: auto;
   }
 }
+
+/* The status line keeps room for two lines, so a longer hint never moves
+   the drawing. */
+.editor-caption .instruction {
+  min-height: 2.9em;
+}

@@ -42,6 +42,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - [x] **3.1 New pattern.** “New pattern” opens the editor with only O and A.
 - [x] **3.2 Symmetry mode.** Off, 4, 6, 8, 12, 16: every new element is also repeated round the centre. *Test:* rebuild the eight-fold star and cross from nothing; its file passes the same golden test as ours.
 - [x] **3.3 No duplicate copies in symmetry mode.** A repeat can say `"distinct": true` (format, schema and engine) to leave out copies that land on the original or an earlier copy; the editor writes it only when a step's copies coincide, and drops a repeat whose copies all coincide (a circle about O). The star and cross rebuilt from nothing now has one turned line, one turned square and three tile sides.
+- [x] **3.4 Fixes from the tester's phase 3 report.** Ink starts with the fold the steps were drawn with (the largest turn of their repeats); a polygon whose corners lie on a circle about O that the steps drew is called part of the pattern, with the hint to draw a square (or hexagon) around the circle, and is not offered as the tile; the Tile tool's hint says the same; the Symmetry choice is remembered for each pattern; the status line keeps room for two lines so the drawing never moves; new patterns are numbered (2.9); pieces are named square, rectangle, rhombus, kite, parallelogram, hexagon, octagon, star or cross; a turned step is one sentence (“…, turned round the centre in steps of 45°”).
 
 ### Phase 4: building blocks
 

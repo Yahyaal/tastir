@@ -167,7 +167,7 @@ export const TOOLS: readonly Tool[] = [
     icon: '▢',
     wants: ['point'],
     asks: [
-      'Click the corners of the tile that repeats (four, or six for a hexagon); click the first again, or Done.',
+      'The tile is the square (or hexagon) that repeats. For a star or rosette, draw a square around the circle, touching it, and click its corners; then the first again.',
     ],
     more: { least: 4 },
   },

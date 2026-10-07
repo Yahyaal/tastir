@@ -1,6 +1,8 @@
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import { parseTutorial } from '@tastir/schema';
+import { computePattern, evaluate } from '@tastir/engine';
 import { check, copyUpTo, plainReason, sayStep, specsOf } from './document';
+import { pieceNames, shapeName } from './finish';
 
 const draft = copyUpTo(parseTutorial(example), 3);
 const drawn = { scene: check(draft).scene };
@@ -53,5 +55,45 @@ describe('generated step texts', () => {
       specsOf(draft),
     );
     expect(reason).not.toMatch(/\d\.\d/);
+  });
+});
+
+describe('piece names', () => {
+  const sq = [
+    { x: 0, y: 0 },
+    { x: 1, y: 0 },
+    { x: 1, y: 1 },
+    { x: 0, y: 1 },
+  ];
+  it('names convex shapes by kind', () => {
+    expect(shapeName(sq)).toBe('square');
+    expect(
+      shapeName([
+        { x: 0, y: 0 },
+        { x: 2, y: 1 },
+        { x: 0, y: 2 },
+        { x: -2, y: 1 },
+      ]),
+    ).toBe('rhombus');
+    expect(
+      shapeName([
+        { x: 0, y: 0 },
+        { x: 1, y: 1 },
+        { x: 0, y: 3 },
+        { x: -1, y: 1 },
+      ]),
+    ).toBe('kite');
+  });
+
+  it('names the star and the cross of the star and cross', () => {
+    const t = parseTutorial(example);
+    const p = computePattern(evaluate(t), t);
+    const names = pieceNames(
+      p.types.map((ty, i) => ({
+        vertices: ty.vertices,
+        polygon: p.pieces.find((x) => x.type === i)?.polygon,
+      })),
+    );
+    expect(names).toEqual(['star', 'cross']);
   });
 });

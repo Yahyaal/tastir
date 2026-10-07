@@ -511,8 +511,21 @@ export function sayStep(
             `${list(points.map(([n]) => n))} are crossings of lines already drawn.`,
           ]
         : [];
-  return [
-    ...main.map(([n, el]) => sayElement(n, el, specs, drawn)),
-    ...marks,
-  ].join(' ');
+  // A turned copy of what the step draws joins its sentence.
+  const said = main.map(([n, el]) => sayElement(n, el, specs, drawn));
+  const turned = main.findIndex(
+    ([, el]) =>
+      'repeat' in el &&
+      el.repeat.by.startsWith('rot') &&
+      el.repeat.of.length === 1 &&
+      main.some(([n]) => n === el.repeat.of[0]),
+  );
+  if (turned > 0) {
+    const el = main[turned]?.[1];
+    const by = el && 'repeat' in el ? el.repeat.by : 'rot1';
+    said[turned - 1] =
+      `${said[turned - 1]?.replace(/\.$/, '')}, turned round the centre in steps of ${degrees(360 / Number(by.slice(3)))}°.`;
+    said.splice(turned, 1);
+  }
+  return [...said, ...marks].join(' ');
 }

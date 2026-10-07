@@ -74,6 +74,40 @@ export function tileWarning(scene: Scene, cell: Cell): string | undefined {
     : undefined;
 }
 
+/**
+ * The fold the steps were drawn with: the most copies any of their repeats
+ * turns round the centre, or the tutorial's own fold.
+ */
+export function foldOf(draft: Pick<Draft, 'steps' | 'fold'>): number {
+  let most = 0;
+  for (const step of draft.steps)
+    for (const el of Object.values(step.create ?? {}))
+      if ('repeat' in el && el.repeat.by.startsWith('rot'))
+        most = Math.max(most, Number(el.repeat.by.slice(3)));
+  return most || draft.fold;
+}
+
+/**
+ * Whether a polygon is part of the motif rather than a tile that could
+ * hold it: its corners all lie on one circle about O that the steps drew
+ * (the square through the points of the first circle, say).
+ */
+export function isMotif(scene: Scene, polygon: string): boolean {
+  const g = scene.elements.get(polygon)?.geometry;
+  if (g?.kind !== 'polygon') return false;
+  const eps = scene.tol.eps * 10;
+  const r = Math.hypot(g.vertices[0]?.x ?? 0, g.vertices[0]?.y ?? 0);
+  if (!g.vertices.every((v) => Math.abs(Math.hypot(v.x, v.y) - r) <= eps))
+    return false;
+  return [...scene.elements.values()].some(
+    (el) =>
+      el.geometry.kind === 'circle' &&
+      Math.hypot(el.geometry.circle.centre.x, el.geometry.circle.centre.y) <=
+        eps &&
+      Math.abs(el.geometry.circle.radius - r) <= eps,
+  );
+}
+
 /** The draft with a polygon as its tile, keeping the rest of its pattern. */
 export const withTile = (draft: Draft, polygon: string): Draft => ({
   ...draft,
@@ -290,39 +324,82 @@ const SHAPES: Record<number, string> = {
   12: 'dodecagon',
 };
 
-/** Whether a polygon turns the same way at every corner. */
-function convex(polygon: readonly Vec[]): boolean {
-  let sign = 0;
-  for (let i = 0; i < polygon.length; i++) {
-    const a = polygon[i] as Vec;
+/** The turn at each corner: +1 the way most corners turn, -1 the other. */
+function turns(polygon: readonly Vec[]): number[] {
+  const raw = polygon.map((a, i) => {
     const b = polygon[(i + 1) % polygon.length] as Vec;
     const c = polygon[(i + 2) % polygon.length] as Vec;
-    const turn = Math.sign(
-      (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x),
-    );
-    if (!turn) continue;
-    if (sign && turn !== sign) return false;
-    sign = turn;
+    return Math.sign((b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x));
+  });
+  const most = raw.filter((t) => t > 0).length >= raw.length / 2 ? 1 : -1;
+  return raw.map((t) => t * most);
+}
+
+/** Whether a polygon turns into itself by 360°/n about its centre. */
+function turnsInto(polygon: readonly Vec[], n: number): boolean {
+  const c = {
+    x: polygon.reduce((s, p) => s + p.x, 0) / polygon.length,
+    y: polygon.reduce((s, p) => s + p.y, 0) / polygon.length,
+  };
+  const t = (2 * Math.PI) / n;
+  const scale = Math.max(...polygon.map((p) => distance(p, c)));
+  return polygon.every((p) => {
+    const q = {
+      x: c.x + (p.x - c.x) * Math.cos(t) - (p.y - c.y) * Math.sin(t),
+      y: c.y + (p.x - c.x) * Math.sin(t) + (p.y - c.y) * Math.cos(t),
+    };
+    return polygon.some((r) => distance(q, r) <= 1e-6 * scale);
+  });
+}
+
+const near = (a: number, b: number) =>
+  Math.abs(a - b) <= 1e-6 * Math.max(1, a, b);
+
+/**
+ * A plain name for one piece shape: triangle, square, rectangle, rhombus,
+ * kite, pentagon, hexagon, octagon…; a star (its points alternate in and
+ * out), a cross (four inner corners, turning into itself by quarters), or
+ * a shape.
+ */
+export function shapeName(polygon: readonly Vec[]): string {
+  const n = polygon.length;
+  const t = turns(polygon);
+  const reflex = t.filter((x) => x < 0).length;
+  if (reflex === 0) {
+    if (n === 4) {
+      const side = polygon.map((p, i) =>
+        distance(p, polygon[(i + 1) % 4] as Vec),
+      );
+      const [a = 0, b = 0, c = 0, d = 0] = side;
+      const diag1 = distance(polygon[0] as Vec, polygon[2] as Vec);
+      const diag2 = distance(polygon[1] as Vec, polygon[3] as Vec);
+      const equal = near(a, b) && near(b, c) && near(c, d);
+      if (equal) return near(diag1, diag2) ? 'square' : 'rhombus';
+      if (near(a, c) && near(b, d))
+        return near(diag1, diag2) ? 'rectangle' : 'parallelogram';
+      if ((near(a, b) && near(c, d)) || (near(b, c) && near(d, a)))
+        return 'kite';
+      return 'quadrilateral';
+    }
+    return SHAPES[n] ?? `polygon${n}`;
   }
-  return true;
+  // A star: its corners turn out and in by turns, all round.
+  if (n % 2 === 0 && t.every((x, i) => x === -(t[(i + 1) % n] as number)))
+    return 'star';
+  if (reflex === 4 && turnsInto(polygon, 4)) return 'cross';
+  return 'shape';
 }
 
 /**
- * A plain name for each piece type: a convex one by its corners (hexagon),
- * one with eight or more corners that turns in and out a star, anything
- * else a shape; numbered when two types would share a name.
+ * A plain name for each piece type (see shapeName), numbered when two
+ * types would share one.
  */
 export function pieceNames(
   types: readonly { vertices: number; polygon?: readonly Vec[] }[],
 ): string[] {
   const seen = new Map<string, number>();
   return types.map(({ vertices: n, polygon }) => {
-    const base =
-      !polygon || convex(polygon)
-        ? (SHAPES[n] ?? `polygon${n}`)
-        : n >= 8 && n % 2 === 0
-          ? 'star'
-          : 'shape';
+    const base = polygon ? shapeName(polygon) : (SHAPES[n] ?? `polygon${n}`);
     const k = (seen.get(base) ?? 0) + 1;
     seen.set(base, k);
     return k === 1 ? base : `${base}${k}`;
