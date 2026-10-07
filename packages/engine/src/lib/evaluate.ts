@@ -286,6 +286,11 @@ class Context {
     return { kind: 'polygon', vertices, sides };
   }
 
+  /** Every crossing of two elements, each once, as a `meet` finds them. */
+  crossings(meet: readonly [string, string]): Vec[] {
+    return this.meet(meet);
+  }
+
   /** The crossing of two elements a pick chooses, as a point step makes it. */
   crossing(meet: readonly [string, string], pick: Pick | undefined): Vec {
     return this.choose(this.meet(meet), pick, meet);
@@ -527,6 +532,24 @@ export function crossingOf(
   const ctx = new Context(scene.elements, scene.tol, [], fail);
   try {
     return ctx.crossing(meet, pick);
+  } catch (e) {
+    if (e instanceof GeometryError) return fail(e.message);
+    throw e;
+  }
+}
+
+/**
+ * Every crossing of two elements of a scene, each once, as a `point` step
+ * sees them; elements that cannot meet are reported through `fail`.
+ */
+export function crossingsOf(
+  scene: Scene,
+  meet: readonly [string, string],
+  fail: (reason: string) => never,
+): Vec[] {
+  const ctx = new Context(scene.elements, scene.tol, [], fail);
+  try {
+    return ctx.crossings(meet);
   } catch (e) {
     if (e instanceof GeometryError) return fail(e.message);
     throw e;

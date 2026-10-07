@@ -10,6 +10,8 @@ export {
 } from './lib/intersect.js';
 export * from './lib/construct.js';
 export {
+  crossingOf,
+  crossingsOf,
   evaluate,
   pointInPolygon,
   pointOf,
@@ -36,6 +38,7 @@ export {
   type PieceType,
 } from './lib/pieces.js';
 export { panelOf, type Panel } from './lib/panel.js';
+export { pickFor, stepsBuiltOn, type PickChoice } from './lib/picking.js';
 export { expectedGolden, goldenOf, type Golden } from './lib/golden.js';
 export {
   constructionCrossings,

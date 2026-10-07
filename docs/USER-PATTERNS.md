@@ -25,7 +25,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 ### Phase 2: the editor, from a copy
 
 - [x] **2.0 Inking along a line.** A format change so an ink path can name a line (or polygon side) and the two elements it runs between, so free inking can be written back as ink paths without marking steps. Update `docs/tutorial-format.md`, the schema and the engine; every tutorial's golden test still passes.
-- [ ] **2.1 Picking a crossing by rule.** Engine: given two elements and the crossing clicked, the simplest pick rule that names it and no other (angle, nearest or farthest from O or a named point, inside or outside a circle), checked by evaluating. Also the step dependencies (which later steps are built on a step). *Test:* every point in the library's tutorials gets a rule that picks it back.
+- [x] **2.1 Picking a crossing by rule.** Engine: given two elements and the crossing clicked, the simplest pick rule that names it and no other (angle, nearest or farthest from O or a named point, inside or outside a circle), checked by evaluating. Also the step dependencies (which later steps are built on a step). *Test:* every point in the library's tutorials gets a rule that picks it back.
 - [ ] **2.2 The editor's document.** A pure TypeScript model of a user tutorial being edited: add, change, delete and move steps; every edit re-evaluates; a broken step carries the engine's reason; removing the steps that depend on one. Auto-names and plain step text for each tool. *Test:* each operation, and a broken step after an edit upstream.
 - [ ] **2.3 The editor page.** `#/edit/<id>`: the step list, the drawing with the tool bar (compass, same opening, opening from two points, touching, ruler, square to, parallel, halve an angle, polygon), clicks snap to existing points only, the step text is editable, undo and redo. *Test:* draw the first three steps of the star and cross by clicking.
 - [ ] **2.4 Make my own copy from here.** On every step of the player; the copy keeps the steps so far and the credits, plus “based on” the original. *Test:* copy the star and cross at step 3, the editor opens with three steps.
@@ -54,6 +54,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - `pnpm format` rewrites the JSON in `tools/review/` (thousands of lines of line breaks), which then looks like real changes; run Prettier only on the files you changed. (6 October)
 - The player steps on Space and the arrow keys from a window listener, so any text box in the player must be skipped there, or typing a design's name steps the tutorial. (6 October)
 - A design's wall needs its inked pattern, which is slow for big tutorials, so the worker makes it: `useModel(json, inked)` sends the pieces with the tutorial and the worker applies `withInking` (model.ts) before replying. The player itself still re-inks on the main thread, as free inking always did. (6 October)
+- A pick rule must be checked against the crossings the engine sees, so `pickFor` (engine `picking.ts`) only proposes rules and then evaluates each with `crossingOf`, the same code a point step runs; `angle: 90` can pick a crossing at 45° when the other is at 225°, so the crossing's own round angle is tried first. (6 October)
 
 ## Tester reports
 
