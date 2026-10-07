@@ -1274,6 +1274,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'My designs: your inking and colors are kept',
+      text: 'At the ink and color stages, “Save as my design” asks for a name in the page and keeps your inking, colors, wall style and grout in this browser. The home page then shows a “My designs” shelf above the patterns, each design drawn as its wall; clicking one opens its tutorial at the wall just as you left it, with “Save” to update it and “Save as new” to keep both. Each card can be renamed, or deleted after it asks. To try it, open the Comares bath stars, go to Ink, click “Make your own”, erase a few lines, recolor a piece at Color, save it as “Test”, then go back to all patterns.',
+      link: { label: 'Try it', href: '/#/alhambra-bath-stars/result' },
+    },
+    {
       title: 'Bou Inania: the whole panel, overlapping its neighbours',
       text: 'The ink stage now traces the whole square panel with its band on all four sides, and the panels around it slide out overlapping it by one band; the repeating tile and the coloring are unchanged. The dotted outline appears before the first line, so you see where each line stops. The tracing is faster: every pattern\u2019s ink, pauses included, fits in about eight seconds.',
       link: { label: 'Try it', href: '/#/bou-inania-rosette' },

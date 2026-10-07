@@ -1327,6 +1327,39 @@ main.stage .drawing:not(.wall) {
   color: var(--on-lapis-muted);
 }
 
+/* The learner's own designs, above the collection. */
+.shelf {
+  margin-bottom: 44px;
+}
+
+.design-rename input {
+  grid-column: 1 / -1;
+  padding: 5px 8px;
+  background: var(--lapis-deep);
+  color: var(--on-lapis);
+  border: 1px solid var(--lapis-line);
+  border-radius: 4px;
+}
+
+.design-delete p {
+  grid-column: 1 / -1;
+  margin: 0 0 2px;
+  font-size: 0.85rem;
+  color: var(--on-lapis);
+}
+
+.card-actions .button.secondary {
+  background: transparent;
+  color: var(--on-lapis);
+  border-color: var(--lapis-line);
+}
+
+.card-actions .button.danger {
+  background: #c0533f;
+  border-color: #c0533f;
+  color: #fff;
+}
+
 .filters {
   display: flex;
   flex-wrap: wrap;

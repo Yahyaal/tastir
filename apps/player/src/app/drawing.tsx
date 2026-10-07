@@ -16,9 +16,10 @@ import {
   TILE_COLOR,
 } from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
-import { pieceColors, tutorialColoring } from './coloring';
+import { pieceColors, tutorialColoring, type Coloring } from './coloring';
 import { placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
+import type { WallStyle } from './Wall';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
@@ -1005,19 +1006,31 @@ export function strapWidths(model: Model, grout = 1) {
  * wall first shows it: tiles with grout, or strapwork, where each pattern
  * line is a light band with dark edges.
  */
-export function Thumbnail({ model }: { model: Model }) {
+export function Thumbnail({
+  model,
+  coloring = tutorialColoring(model),
+  look = model.tutorial.pattern.look,
+}: {
+  model: Model;
+  /** A learner's colors (a saved design); else the tutorial's own. */
+  coloring?: Coloring;
+  /** A learner's wall style; else the tutorial's. */
+  look?: WallStyle;
+}) {
   const reach = 2;
   const { view } = tiling(model, { halfWide: 1, halfHigh: 1, reach });
   const { cell } = model.pattern;
-  const colors = pieceColors(model);
+  const colors = pieceColors(model, coloring);
   // Pieces of one shape can take different colors by where they sit (the
   // Comares bones); the wall's own rule then colors each copy.
   const fill = model.tutorial.pattern.placements
-    ? placeFills(model, tutorialColoring(model))
+    ? placeFills(model, coloring)
     : undefined;
   const widths = strapWidths(model);
-  // As the wall first shows it: strapwork bands, or tiles with grout.
-  const strap = model.tutorial.pattern.look === 'strapwork';
+  // As the wall first shows it: strapwork bands, tiles with grout, or
+  // only the lines.
+  const strap = look === 'strapwork';
+  const lines = look === 'lines';
   // Only what shows: pieces and lines whose box meets the view.
   const seen = fit(view, 1 + widths.edge);
   const meets = (ps: readonly Vec[]) =>
@@ -1040,7 +1053,11 @@ export function Thumbnail({ model }: { model: Model }) {
       model.pattern.pieces.forEach((p, k) => {
         const polygon = p.polygon.map((q) => move(q, d));
         if (!meets(polygon)) return;
-        const color = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
+        const color = lines
+          ? 'none'
+          : fill
+            ? fill(k, i, j)
+            : (colors[p.type] ?? '#999999');
         const list = byColor.get(color) ?? [];
         list.push(poly(polygon));
         byColor.set(color, list);

@@ -28,7 +28,8 @@ import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { Original } from './Original';
 import { LIBRARY, type Entry } from './library';
 import { useRemembered } from './remembered';
-import { getDesign, type Design } from './designs';
+import { getDesign, listDesigns, type Design } from './designs';
+import { Shelf } from './Shelf';
 import { SaveDesign } from './SaveDesign';
 import {
   asPanel,
@@ -814,6 +815,7 @@ const FIRST = 'eight-fold-star-and-cross';
 export function Library({ entries }: { entries: readonly Entry[] }) {
   const [style, setStyle] = useState<string>();
   const [level, setLevel] = useState<string>();
+  const [designs, setDesigns] = useState(listDesigns);
   const styles = [
     ...new Set(entries.flatMap((e) => aboutOf(e.json).style ?? [])),
   ].sort();
@@ -860,6 +862,13 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           ) : null}
         </div>
       </section>
+      {designs.length ? (
+        <Shelf
+          designs={designs}
+          entries={entries}
+          onChange={() => setDesigns(listDesigns())}
+        />
+      ) : null}
       <section aria-labelledby="collection">
         <div className="collection-head">
           <h2 id="collection">The patterns</h2>

@@ -2,13 +2,13 @@
 // page stays responsive. Reports each stage as it starts.
 import { computePattern, evaluate } from '@tastir/engine';
 import { parseTutorial } from '@tastir/schema';
-import type { Model } from './model';
+import { withInking, type Model } from './model';
 import type { Progress, Reply, Request } from './workerClient';
 
 const post = (reply: Reply) => postMessage(reply);
 
 onmessage = ({ data }: MessageEvent<Request>) => {
-  const { id, json } = data;
+  const { id, json, inked } = data;
   const progress = (stage: Progress) => post({ id, kind: 'progress', stage });
   try {
     progress('checking');
@@ -21,7 +21,7 @@ onmessage = ({ data }: MessageEvent<Request>) => {
       scene,
       pattern: computePattern(scene, tutorial),
     };
-    post({ id, kind: 'done', model });
+    post({ id, kind: 'done', model: withInking(model, inked).model });
   } catch (e) {
     post({
       id,
