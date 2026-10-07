@@ -1,4 +1,4 @@
-import type { Vec } from '@tastir/engine';
+import type { InkStroke, Vec } from '@tastir/engine';
 import { beatsOf, inkBeatsOf, type Model } from './model';
 
 /** How one element enters the drawing. */
@@ -305,6 +305,8 @@ export function compassStart(model: Model, name: string): number {
 const PEN_SPEED = 720;
 /** Longest the inking may take at normal speed, in milliseconds. */
 const INK_MAX_MS = 8000;
+/** Longest all the ruler moves, pen lifts and ring pauses may take. */
+const PAUSES_MAX_MS = 5000;
 /** The pen lifts and moves between paths. */
 const PEN_LIFT_MS = 60;
 /** Laying the ruler along the next line. */
@@ -376,7 +378,7 @@ export function rulerOrder(model: Model): RulerLine[] {
   const placed = lines.map((l) => {
     const along = (p: Vec) => p.x * l.dir.x + p.y * l.dir.y;
     const spans = l.items.map((index) => {
-      const { a, b } = ink[index]!.segment;
+      const { a, b } = (ink[index] as InkStroke).segment;
       const ta = along(a);
       const tb = along(b);
       return { index, ta, tb, t: Math.min(ta, tb), u: Math.max(ta, tb) };
@@ -412,7 +414,11 @@ export function rulerOrder(model: Model): RulerLine[] {
   const out: RulerLine[] = [];
   let ringNo = 0;
   placed.forEach(({ l, spans, t0, t1, at, forward, ring }, k) => {
-    if (k > 0 && Math.abs(ring - placed[k - 1]!.ring) > tol) ringNo++;
+    if (
+      k > 0 &&
+      Math.abs(ring - (placed[k - 1] as (typeof placed)[number]).ring) > tol
+    )
+      ringNo++;
     const pad = (t1 - t0) * 0.12 + 0.05;
     const ordered = [...spans].sort((p, q) =>
       forward ? p.t - q.t : q.u - p.u,
@@ -469,7 +475,13 @@ export function playInk(
       total += len;
     }
   }
-  const lifts = order.length * (PEN_LIFT_MS + RULER_MS);
+  // A big pattern has many ruler lines: its pauses shrink together so they
+  // never add up to more than PAUSES_MAX_MS.
+  const rings = new Set(order.map((r) => r.ring)).size;
+  const pauses =
+    order.length * (PEN_LIFT_MS + RULER_MS) + rings * RING_PAUSE_MS;
+  const squeeze = Math.min(1, PAUSES_MAX_MS / Math.max(1, pauses));
+  const lifts = (squeeze * pauses) / speed;
   const pxPerMs = Math.max(
     (PEN_SPEED * speed) / 1000,
     total / Math.max(1, INK_MAX_MS / speed - lifts),
@@ -477,6 +489,19 @@ export function playInk(
   const animations: Animation[] = [];
   const can = (n: Element | undefined | null): n is SVGElement =>
     !!n && typeof (n as SVGElement).animate === 'function';
+  // First the tile's dotted outline, so the learner sees where each line
+  // stops before the ruler comes down.
+  const tile = svg.querySelector<SVGPolygonElement>('[data-tile]');
+  if (can(tile)) {
+    animations.push(
+      tile.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 600 / speed,
+        delay: 100 / speed,
+        easing: 'ease-in-out',
+        fill: 'backwards',
+      }),
+    );
+  }
   // The points each ruler line joins, shown just before it is inked.
   const dots = new Map<number, SVGElement[]>();
   svg.querySelectorAll<SVGElement>('[data-dot-line]').forEach((n) => {
@@ -485,19 +510,20 @@ export function playInk(
   });
   const lineStart = new Map<number, number>();
   let lastRing = -1;
-  // A moment on the finished construction before the ruler comes down.
-  let t = 400 / speed;
+  // A moment on the outline before the ruler comes down.
+  let t = 800 / speed;
   order.forEach((r, k) => {
     const ruler = rulers[k];
     // A short pause between rings, a breath before the next ring of lines.
-    if (r.ring !== lastRing && lastRing >= 0) t += RING_PAUSE_MS / speed;
+    if (r.ring !== lastRing && lastRing >= 0)
+      t += (squeeze * RING_PAUSE_MS) / speed;
     lastRing = r.ring;
     // This line's points appear as the ruler comes down.
     lineStart.set(k, t);
     const start = t;
-    t += RULER_MS / speed;
+    t += (squeeze * RULER_MS) / speed;
     if (r.parallelToPrevious) {
-      for (const { index } of order[k - 1]!.strokes) {
+      for (const { index } of (order[k - 1] as RulerLine).strokes) {
         const prev = lines.get(index);
         if (can(prev))
           animations.push(
@@ -512,7 +538,7 @@ export function playInk(
       const node = lines.get(index);
       const len = lengths.get(index) ?? 0;
       const dur = Math.max(30, len / pxPerMs);
-      if (s > 0) t += PEN_LIFT_MS / 2 / speed;
+      if (s > 0) t += (squeeze * PEN_LIFT_MS) / 2 / speed;
       if (can(node)) {
         const dash = `${len} ${len}`;
         animations.push(
@@ -549,7 +575,7 @@ export function playInk(
           { duration: t - start + 150 / speed, delay: start, fill: 'none' },
         ),
       );
-    t += PEN_LIFT_MS / speed;
+    t += (squeeze * PEN_LIFT_MS) / speed;
   });
   // The dots stay until the ink is done, then fade.
   const inkEnd = t;
@@ -574,18 +600,6 @@ export function playInk(
         ),
       );
     }
-  }
-  // The tile's dotted outline fades in once the ink is done.
-  const tile = svg.querySelector<SVGPolygonElement>('[data-tile]');
-  if (can(tile)) {
-    animations.push(
-      tile.animate([{ opacity: 0 }, { opacity: 1 }], {
-        duration: 900 / speed,
-        delay: t + 300 / speed,
-        easing: 'ease-in-out',
-        fill: 'backwards',
-      }),
-    );
   }
   // Then the tiles around it: each side's copy comes off the finished tile
   // in blue and slides out, and the corner after it comes off that copy

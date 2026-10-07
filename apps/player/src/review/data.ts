@@ -1274,6 +1274,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Bou Inania: the whole panel, overlapping its neighbours',
+      text: 'The ink stage now traces the whole square panel with its band on all four sides, and the panels around it slide out overlapping it by one band; the repeating tile and the coloring are unchanged. The dotted outline appears before the first line, so you see where each line stops. The tracing is faster: every pattern\u2019s ink, pauses included, fits in about eight seconds.',
+      link: { label: 'Try it', href: '/#/bou-inania-rosette' },
+    },
+    {
       title: 'Clearer dots, a guided ink, and a faster player',
       text: 'New points and lines are blue and what a step works from is saffron, with no rings; on Next the last step’s blue turns saffron (or grey) and a key under each step says what the colours mean. The tile step draws only the tile. The ink stage is a guided tracing: for each line, its turning points appear, the ruler comes down and the pen joins them, from the centre out; the tiles around it appear at the end. Big patterns no longer freeze: Bou Inania’s repeat went from a 3.4 s freeze to smooth, the color stage from 1.2 s, and camera moves run at full frame rate.',
       link: { label: 'Try it', href: '/#/bou-inania-rosette' },

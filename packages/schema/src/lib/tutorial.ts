@@ -322,6 +322,12 @@ export const TutorialShape = z.strictObject({
   }),
   pattern: z.strictObject({
     cell: Ref,
+    /**
+     * The whole panel to trace in the ink stage, when the tile carries a
+     * shared band on only two sides: a convex polygon holding the tile. Its
+     * copies overlap by the difference; the tile stays the repeat.
+     */
+    panel: Ref.optional(),
     /** What the learner reads when the inked tile is repeated. */
     text: z.string().optional(),
     palette: z.string().optional(),

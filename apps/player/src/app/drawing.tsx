@@ -2,6 +2,7 @@ import { useId, useLayoutEffect, useMemo, useRef } from 'react';
 import type {
   Geometry,
   InkPiece,
+  InkStroke,
   Line,
   SceneElement,
   Vec,
@@ -315,7 +316,7 @@ function NextTiles({ model }: { model: Model }) {
     (p, q) => clockwise(p) - clockwise(q),
   );
   const shifts: { to: Vec; from: Vec }[] = sides.flatMap((side, k) => {
-    const after = sides[(k + 1) % 4]!;
+    const after = sides[(k + 1) % 4] as Vec;
     return [
       { to: side, from: at(0, 0) },
       { to: { x: side.x + after.x, y: side.y + after.y }, from: side },
@@ -369,14 +370,14 @@ function InkDots({ model, size }: { model: Model; size: number }) {
     const ds = leaving.get(k) ?? [];
     return (
       ds.length === 2 &&
-      Math.abs(ds[0]!.x + ds[1]!.x) < 1e-6 &&
-      Math.abs(ds[0]!.y + ds[1]!.y) < 1e-6
+      Math.abs((ds[0] as Vec).x + (ds[1] as Vec).x) < 1e-6 &&
+      Math.abs((ds[0] as Vec).y + (ds[1] as Vec).y) < 1e-6
     );
   };
   const lineOf = new Map<string, { at: Vec; line: number }>();
   rulerOrder(model).forEach((r, line) => {
     for (const { index } of r.strokes) {
-      const { a, b } = model.pattern.ink[index]!.segment;
+      const { a, b } = (model.pattern.ink[index] as InkStroke).segment;
       for (const p of [a, b]) {
         const k = key(p);
         if (straight(k) || lineOf.has(k)) continue;
@@ -473,8 +474,8 @@ export function Construction({
    * new colour. */
   arrived?: boolean;
 }) {
+  const settled = frame ?? view;
   const content = useMemo(() => {
-    const settled = frame ?? view;
     const size = width(settled);
     // Lines are clipped well beyond the frame, so panning never shows an end.
     const clipTo = fit(settled, 1.6);
@@ -592,11 +593,10 @@ export function Construction({
       </>
     );
     // Rebuilt when the step or what it shows changes, not when the view moves.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     model,
     upTo,
-    frame ?? view,
+    settled,
     ink,
     showNames,
     inkSoFar,

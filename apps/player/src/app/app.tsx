@@ -29,6 +29,7 @@ import { Original } from './Original';
 import { LIBRARY, type Entry } from './library';
 import { useRemembered } from './remembered';
 import {
+  asPanel,
   beatsOf,
   hiddenBeats,
   shownBeats,
@@ -142,6 +143,11 @@ export function Player({
   const asYouGo = inkMode === 'asYouGo';
 
   const inking = useInking(model);
+  // The ink stage traces the whole panel, when the tutorial names one.
+  const inkModel = useMemo(
+    () => (inking.editing ? inking.shown : asPanel(inking.shown)),
+    [inking.editing, inking.shown],
+  );
   const [colorHistory, colorDispatch] = useReducer(
     colorReducer,
     model,
@@ -211,7 +217,7 @@ export function Player({
     if (reduced) return;
     if (stage.kind === 'ink') {
       if (!inking.editing && inking.isClassic && !asYouGo)
-        running.current = playInk(svgRef.current, model, speed, {
+        running.current = playInk(svgRef.current, asPanel(model), speed, {
           lengthScale: width(camera.view) / width(frame),
         });
       return;
@@ -303,7 +309,7 @@ export function Player({
     picture = (
       <Construction
         upTo={beats.length}
-        model={inking.shown}
+        model={inkModel}
         view={camera.view}
         frame={frame}
         svgRef={svgRef}
@@ -945,6 +951,7 @@ function HeroPlay({ model }: { model: Model }) {
   const [k, setK] = useState(0);
   const svgRef = useRef<SVGSVGElement>(null);
   const view = useMemo(() => fullView(model), [model]);
+  const panelModel = useMemo(() => asPanel(model), [model]);
   const n = beats.length;
   useLayoutEffect(() => {
     if (reduced) return;
@@ -952,7 +959,7 @@ function HeroPlay({ model }: { model: Model }) {
     if (k < n) {
       anims = play(svgRef.current, planStep(model, beats[k] ?? 1, HERO_SPEED));
     } else if (k === n) {
-      anims = playInk(svgRef.current, model, HERO_SPEED * 1.5);
+      anims = playInk(svgRef.current, panelModel, HERO_SPEED * 1.5);
     }
     const ends = anims.map(
       (a) => Number(a.effect?.getComputedTiming().endTime ?? 0) || 0,
@@ -964,7 +971,7 @@ function HeroPlay({ model }: { model: Model }) {
       clearTimeout(timer);
       for (const a of anims) a.cancel();
     };
-  }, [k, n, beats, model, reduced]);
+  }, [k, n, beats, model, panelModel, reduced]);
   const caption =
     reduced || k > n
       ? model.tutorial.title
@@ -978,7 +985,7 @@ function HeroPlay({ model }: { model: Model }) {
           <Thumbnail model={model} />
         ) : k === n ? (
           <Construction
-            model={model}
+            model={panelModel}
             upTo={all}
             view={view}
             svgRef={svgRef}

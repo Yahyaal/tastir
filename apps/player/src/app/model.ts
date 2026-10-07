@@ -15,6 +15,25 @@ export interface Model {
 }
 
 /**
+ * The model as the ink stage shows it: when the tutorial names a panel, its
+ * whole outline and ink in place of the tile's, so the learner traces the
+ * complete panel and its neighbours slide out overlapping it. The repeat
+ * and the coloring keep the tile.
+ */
+export function asPanel(model: Model): Model {
+  const { panel } = model.pattern;
+  if (!panel) return model;
+  return {
+    ...model,
+    pattern: {
+      ...model.pattern,
+      ink: panel.ink,
+      cell: { ...model.pattern.cell, corners: panel.corners },
+    },
+  };
+}
+
+/**
  * A stage of the player: each construction step, then the ink, then the
  * inked tile repeated edge to edge, then the pieces colored.
  */

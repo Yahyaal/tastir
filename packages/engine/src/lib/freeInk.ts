@@ -26,9 +26,9 @@ const pointKey = (p: Vec) => `${round(p.x)},${round(p.y)}`;
 const pieceId = (a: Vec, b: Vec) => [pointKey(a), pointKey(b)].sort().join('|');
 
 /** The part of an infinite line or segment inside the convex cell. */
-function clipToCell(
+export function clipToCell(
   c: Line | Segment,
-  cell: Cell,
+  cell: Pick<Cell, 'corners'>,
   eps: number,
 ): Segment | undefined {
   const p = c.kind === 'line' ? c.point : c.a;

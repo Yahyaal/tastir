@@ -1,7 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
+import bouInania from '@tutorials/bou-inania-rosette.json';
 import { parseTutorial } from '@tastir/schema';
 import { Play } from './app';
+import { loadModel } from './model';
 
 const next = () =>
   fireEvent.click(screen.getByRole('button', { name: 'Next' }));
@@ -245,6 +247,29 @@ describe('the player', () => {
     // corners, each shown with the first ruler line that reaches it.
     expect(container.querySelectorAll('[data-dot-line]')).toHaveLength(16);
   });
+
+  it('traces the whole panel when the tutorial names one', () => {
+    const { container } = render(<Play json={bouInania} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Go to ink' }));
+    const model = loadModel(bouInania);
+    const panel = model.pattern.panel;
+    expect(panel).toBeDefined();
+    // The panel's strokes, not the tile's, and its outline as the tile's.
+    expect(container.querySelectorAll('[data-ink]')).toHaveLength(
+      panel?.ink.length ?? 0,
+    );
+    expect(container.querySelector('[data-tile]')?.getAttribute('points')).toBe(
+      panel?.corners.map((p) => `${p.x},${-p.y}`).join(' '),
+    );
+    // The repeat keeps the tile.
+    next();
+    expect(
+      container
+        .querySelector('defs path.tile-ink')
+        ?.getAttribute('d')
+        ?.split('M').length,
+    ).toBe(model.pattern.ink.length + 1);
+  }, 30000);
 
   it('skips a hidden step: never shown, never drawn, left out of the count', () => {
     const tutorial = parseTutorial(example);

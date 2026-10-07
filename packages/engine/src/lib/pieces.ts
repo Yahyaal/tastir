@@ -1,3 +1,4 @@
+import { panelOf, type Panel } from './panel.js';
 import type { Tutorial } from '@tastir/schema';
 import { arrangement, signedArea } from './arrangement.js';
 import { pointInPolygon, TutorialError, type Scene } from './evaluate.js';
@@ -54,6 +55,8 @@ export interface Piece {
 export interface Pattern {
   readonly cell: Cell;
   readonly ink: readonly InkStroke[];
+  /** The whole panel to trace, when the tutorial names one (panelOf). */
+  readonly panel?: Panel;
   /** The pieces belonging to the central cell; translate by u and v to tile. */
   readonly pieces: readonly Piece[];
   /** Largest first. */
@@ -144,9 +147,13 @@ export function computePattern(
       ? { ...t, name: (match[0] as { name: string }).name }
       : t;
   });
+  const panel = tutorial.pattern.panel
+    ? panelOf(scene, tutorial.pattern.panel, cell, ink)
+    : undefined;
   return {
     cell,
     ink,
+    ...(panel ? { panel } : {}),
     pieces: pieces.map((p) => ({ ...p, type: rank.get(p.type) as number })),
     types: named,
   };

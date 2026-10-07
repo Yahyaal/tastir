@@ -594,8 +594,8 @@ function PhaseOne() {
       <figure className="plan-fig">
         <ShelfFigure />
         <figcaption>
-          A sketch of the shelf. The walls are drawn by the engine;
-          the names and colours are made up.
+          A sketch of the shelf. The walls are drawn by the engine; the names
+          and colours are made up.
         </figcaption>
       </figure>
       <p>

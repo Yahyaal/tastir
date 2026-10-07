@@ -35,6 +35,7 @@ export {
   type Piece,
   type PieceType,
 } from './lib/pieces.js';
+export { panelOf, type Panel } from './lib/panel.js';
 export { expectedGolden, goldenOf, type Golden } from './lib/golden.js';
 export {
   constructionCrossings,
