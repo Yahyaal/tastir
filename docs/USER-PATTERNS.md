@@ -21,6 +21,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - [x] **1.1 The design store.** `apps/player/src/app/designs.ts`: a design is `{ id, name, tutorial, inked (piece ids, or none for the tutorial's own inking), coloring, look, grout, created, updated }`, kept in localStorage under `tastir.designs`; reads and writes never throw (private windows). *Test:* save, list, rename, delete, round trip, a corrupt store reads as empty.
 - [x] **1.2 Save from the player.** “Save as my design” at the ink and colour stages asks for a name in the page (no browser prompt). A design opened from its address `#/<tutorial>/design/<id>` starts at the wall with its inking and colours, and offers “Save” and “Save as new”. If its inked pieces no longer exist in the tutorial, it opens with the tutorial's own inking and says so. *Test:* re-ink and recolour, save, remount, open: the same pieces and colours.
 - [x] **1.3 The shelf.** A “My designs” shelf above the library when there are any, each design drawn as its wall, with rename and delete (delete asks first). *Test:* the shelf lists saved designs, opens one, and deletes one only after confirming.
+- [x] **1.4 Fixes from the tester's phase 1 report.** A clear message when the browser will not keep a design; Escape closes the name and rename boxes; a friendly page for a design address that leads nowhere; names of at most 60 characters, cut with an ellipsis on the cards; My design at the top of the colour panel (under the wall on narrow screens); Save shows unsaved changes and leaving asks first; an unreadable store is kept aside before it is replaced; a “My designs (n)” button at the top of the home page.
 
 ### Phase 2: the editor, from a copy
 
@@ -55,6 +56,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - The player steps on Space and the arrow keys from a window listener, so any text box in the player must be skipped there, or typing a design's name steps the tutorial. (6 October)
 - A design's wall needs its inked pattern, which is slow for big tutorials, so the worker makes it: `useModel(json, inked)` sends the pieces with the tutorial and the worker applies `withInking` (model.ts) before replying. The player itself still re-inks on the main thread, as free inking always did. (6 October)
 - A pick rule must be checked against the crossings the engine sees, so `pickFor` (engine `picking.ts`) only proposes rules and then evaluates each with `crossingOf`, the same code a point step runs; `angle: 90` can pick a crossing at 45° when the other is at 225°, so the crossing's own round angle is tried first. (6 October)
+- jsdom has no CSS, so two copies of a control hidden by media queries both show in tests and break `getByRole`; choose the one place by screen width in code (`useNarrow` in app.tsx) instead. (6 October)
 
 ## Tester reports
 

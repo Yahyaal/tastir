@@ -592,6 +592,88 @@ main.stage .drawing:not(.wall) {
   color: var(--saffron);
 }
 
+.design-tools .hint.refused {
+  color: #ffb4a6;
+}
+
+.design-tools .unsaved-note {
+  color: var(--saffron);
+}
+
+.player .design-tools button.unsaved {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+}
+
+/* Leaving with unsaved changes asks first, in the top bar. */
+.leave-check {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--saffron);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.leave-check .button {
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--on-lapis);
+  background: var(--on-lapis);
+  color: var(--lapis-deep);
+  text-decoration: none;
+}
+
+.leave-check button {
+  padding: 4px 12px;
+}
+
+/* A page that only says something, such as a design that is not here. */
+.notice {
+  max-width: 36rem;
+  margin: 48px auto;
+  display: grid;
+  gap: 12px;
+}
+
+.notice h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.6rem;
+}
+
+.notice p {
+  margin: 0;
+  color: var(--on-lapis-muted);
+}
+
+.notice-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px !important;
+}
+
+.notice-links .button {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--on-lapis);
+  background: var(--on-lapis);
+  color: var(--lapis-deep);
+  text-decoration: none;
+}
+
+.notice-links .button.secondary {
+  background: transparent;
+  color: var(--on-lapis);
+  border-color: var(--lapis-line);
+}
+
 /* The color panel on the right. */
 .side-panel {
   align-self: start;
@@ -1330,6 +1412,32 @@ main.stage .drawing:not(.wall) {
 /* The learner's own designs, above the collection. */
 .shelf {
   margin-bottom: 44px;
+}
+
+/* A long name is cut, not wrapped, so every card keeps its shape. */
+.shelf .card h3 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shelf-note {
+  margin: -6px 0 18px;
+  font-size: 0.85rem;
+  color: var(--saffron);
+}
+
+.library .jump-link {
+  margin-left: auto;
+  padding: 4px 12px;
+  background: transparent;
+  color: var(--saffron);
+  border: 1px solid var(--lapis-line);
+  font-size: 0.85rem;
+}
+
+.library .jump-link:hover {
+  border-color: var(--saffron);
 }
 
 .design-rename input {

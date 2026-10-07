@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { Thumbnail } from './drawing';
-import { deleteDesign, renameDesign, type Design } from './designs';
+import {
+  BACKUP,
+  deleteDesign,
+  NAME_LIMIT,
+  renameDesign,
+  unreadableKept,
+  type Design,
+} from './designs';
 import type { Entry } from './library';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
@@ -31,6 +38,13 @@ export function Shelf({
         <h2 id="my-designs">My designs</h2>
         <p>Your own inking and colors, kept in this browser.</p>
       </div>
+      {unreadableKept() ? (
+        <p className="shelf-note">
+          Some saved designs could not be read, perhaps from a newer version of
+          Tastir. They are not lost: a copy is kept in this browser under{' '}
+          <code>{BACKUP}</code>.
+        </p>
+      ) : null}
       <ul className="cards">
         {designs.map((d) => (
           <DesignCard
@@ -61,7 +75,7 @@ function DesignCard({
       ) : (
         <div className="card">
           <div className="thumbnail broken" />
-          <h3>{design.name}</h3>
+          <h3 title={design.name}>{design.name}</h3>
           <p className="error">
             Its tutorial, {design.tutorial}, is no longer in the library.
           </p>
@@ -89,7 +103,7 @@ function DesignLink({ design, entry }: { design: Design; entry: Entry }) {
       ) : (
         <div className={error ? 'thumbnail broken' : 'thumbnail waiting'} />
       )}
-      <h3>{design.name}</h3>
+      <h3 title={design.name}>{design.name}</h3>
       {error ? (
         <p className="error">Cannot be played: {error}</p>
       ) : (
@@ -130,7 +144,11 @@ function DesignActions({
           type="text"
           aria-label={`New name for ${design.name}`}
           value={name}
+          maxLength={NAME_LIMIT}
           autoFocus
+          onKeyDown={(e) => {
+            if (e.key === 'Escape') setDoing(undefined);
+          }}
           onChange={(e) => setName(e.target.value)}
         />
         <button type="submit" className="button" disabled={!name.trim()}>

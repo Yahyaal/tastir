@@ -138,10 +138,87 @@ describe('saving a design', () => {
     expect(fills()).toContain('#b5452f');
   });
 
-  it('says so when a design is not in this browser', () => {
+  it('says plainly when a design is not here, with the ways on', () => {
     render(<App />);
     go('#/eight-fold-star-and-cross/design/nothing');
-    expect(screen.getByText(/not saved in this browser/)).toBeTruthy();
+    expect(
+      screen.getByRole('heading', { name: 'This design is not here' }),
+    ).toBeTruthy();
+    expect(screen.getByText(/no such design in this browser/)).toBeTruthy();
+    expect(
+      screen
+        .getByRole('link', { name: 'Open the pattern' })
+        .getAttribute('href'),
+    ).toBe('#/eight-fold-star-and-cross');
+    expect(screen.getAllByRole('link', { name: /All patterns/ })).toHaveLength(
+      2,
+    );
+  });
+
+  it('opens nothing for a design put under another pattern, and says so', () => {
+    const mine = addDesign({
+      name: 'Mine',
+      tutorial: 'eight-fold-star-and-cross',
+      coloring: { palette: 'Isfahan', chosen: {} },
+      look: 'tiles',
+      grout: 1,
+    });
+    render(<App />);
+    go(`#/six-fold-snowflake/design/${mine?.id}`);
+    expect(screen.getByText(/is a design of another pattern/)).toBeTruthy();
+    expect(screen.queryByText(/in this browser/)).toBeNull();
+    expect(
+      screen.getByRole('link', { name: 'Open “Mine”' }).getAttribute('href'),
+    ).toBe(`#/eight-fold-star-and-cross/design/${mine?.id}`);
+  });
+
+  it('says so when the browser will not keep the design, and keeps the form', () => {
+    render(<Play json={example} start="result" />);
+    const set = vi
+      .spyOn(Storage.prototype, 'setItem')
+      .mockImplementation(() => {
+        throw new Error('QuotaExceededError');
+      });
+    click('Save as my design');
+    name('Kept?');
+    set.mockRestore();
+    expect(screen.getByRole('alert').textContent).toMatch(
+      /Not saved: .*blocked \(a private window\) or full/,
+    );
+    expect(screen.getByLabelText('Name')).toBeTruthy();
+    expect(listDesigns()).toEqual([]);
+    // Once storage works again, the same form saves.
+    click('Save');
+    expect(listDesigns().map((d) => d.name)).toEqual(['Kept?']);
+  });
+
+  it('shows unsaved changes, and asks before leaving with them', () => {
+    const d = addDesign({
+      name: 'Plain',
+      tutorial: 'eight-fold-star-and-cross',
+      coloring: { palette: 'Isfahan', chosen: {} },
+      look: 'tiles',
+      grout: 1,
+    });
+    render(<App />);
+    go(`#/eight-fold-star-and-cross/design/${d?.id}`);
+    expect(screen.getByRole('button', { name: 'Saved' })).toHaveProperty(
+      'disabled',
+      true,
+    );
+    fireEvent.change(screen.getByLabelText(/Palette/), {
+      target: { value: 'Marrakech' },
+    });
+    expect(screen.getByText(/Unsaved changes/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('link', { name: /All patterns/ }));
+    expect(
+      screen.getByRole('alertdialog', { name: 'Unsaved changes' }).textContent,
+    ).toMatch(/Your changes to “Plain” are not saved/);
+    click('Stay');
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+    click('Save');
+    expect(screen.queryByText(/Unsaved changes/)).toBeNull();
+    expect(listDesigns()[0]?.coloring.palette).toBe('Marrakech');
   });
 
   it('typing a name does not step the player', () => {
@@ -152,6 +229,10 @@ describe('saving a design', () => {
     fireEvent.keyDown(input, { key: 'ArrowLeft' });
     expect(label()).toBe('Color');
     click('Cancel');
+    expect(screen.queryByLabelText('Name')).toBeNull();
+    // Escape closes the name box too.
+    click('Save as my design');
+    fireEvent.keyDown(screen.getByLabelText('Name'), { key: 'Escape' });
     expect(screen.queryByLabelText('Name')).toBeNull();
   });
 });

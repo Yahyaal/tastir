@@ -28,7 +28,7 @@ import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { Original } from './Original';
 import { LIBRARY, type Entry } from './library';
 import { useRemembered } from './remembered';
-import { getDesign, listDesigns, type Design } from './designs';
+import { getDesign, listDesigns, unreadableKept, type Design } from './designs';
 import { Shelf } from './Shelf';
 import { SaveDesign } from './SaveDesign';
 import {
@@ -119,6 +119,40 @@ const prefersReducedMotion = () =>
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/** Whether the screen is narrow enough that the panel goes below the wall
+ * (styles.css, max-width 1100px). */
+function useNarrow(): boolean {
+  const query = '(max-width: 1100px)';
+  const read = () =>
+    typeof window.matchMedia === 'function' && window.matchMedia(query).matches;
+  const [narrow, setNarrow] = useState(read);
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') return;
+    const list = window.matchMedia(query);
+    const onChange = () => setNarrow(list.matches);
+    list.addEventListener?.('change', onChange);
+    return () => list.removeEventListener?.('change', onChange);
+  }, []);
+  return narrow;
+}
+
+/** Whether a saved design holds just what the player shows now. */
+function sameDesign(
+  design: Design,
+  now: Pick<Design, 'inked' | 'coloring' | 'look' | 'grout'>,
+): boolean {
+  const sorted = (chosen: Readonly<Record<string, string>>) =>
+    JSON.stringify(Object.entries(chosen).sort(([a], [b]) => (a < b ? -1 : 1)));
+  return (
+    JSON.stringify(design.inked ?? null) ===
+      JSON.stringify(now.inked ?? null) &&
+    design.coloring.palette === now.coloring.palette &&
+    sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
+    design.look === now.look &&
+    design.grout === now.grout
+  );
+}
+
 /** Where a tutorial opens: at its first step, or at the finished wall. */
 export type Start = 'beginning' | 'result';
 
@@ -182,18 +216,34 @@ export function Player({
   const [grout, setGrout] = useState(opened?.grout ?? 1);
   // The design being worked on: the one opened, or the last one saved.
   const [design, setDesign] = useState(opened);
+  const designFields = () => ({
+    tutorial: tutorial.id,
+    inked: inking.inked,
+    coloring: colorHistory.now,
+    look: wallStyle,
+    grout,
+  });
+  // A design opened or saved, changed since: Save is offered, and leaving
+  // asks first.
+  const changed = design !== undefined && !sameDesign(design, designFields());
+  const [leaving, setLeaving] = useState(false);
+  // At the color stage the design sits at the top of the panel, or, where
+  // the panel goes below the wall, under the wall so it is in view.
+  const narrow = useNarrow();
+  useEffect(() => {
+    if (!changed) return;
+    // Reloading or closing the tab: the browser's own question.
+    const onUnload = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener('beforeunload', onUnload);
+    return () => window.removeEventListener('beforeunload', onUnload);
+  }, [changed]);
   const saveDesign = (
     <SaveDesign
       title={tutorial.title}
       design={design}
       lost={inking.lost}
-      fields={() => ({
-        tutorial: tutorial.id,
-        inked: inking.inked,
-        coloring: colorHistory.now,
-        look: wallStyle,
-        grout,
-      })}
+      changed={changed}
+      fields={designFields}
       onSaved={(saved) => {
         setDesign(saved);
         // Its own address, so a reload or a bookmark opens the design.
@@ -409,11 +459,38 @@ export function Player({
         <PrintSheet model={inking.shown} paper={paper} onDone={stopPrinting} />
       ) : null}
       <header className="topbar">
-        <a className="home" href="#/">
+        <a
+          className="home"
+          href="#/"
+          onClick={(e) => {
+            if (!changed) return;
+            e.preventDefault();
+            setLeaving(true);
+          }}
+        >
           <span className="wordmark">Tastir</span>
           <span>All patterns</span>
         </a>
         <h1>{tutorial.title}</h1>
+        {leaving && changed ? (
+          <div
+            className="leave-check"
+            role="alertdialog"
+            aria-label="Unsaved changes"
+          >
+            <span>Your changes to “{design?.name}” are not saved.</span>
+            <a className="button" href="#/">
+              Leave without saving
+            </a>
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => setLeaving(false)}
+            >
+              Stay
+            </button>
+          </div>
+        ) : null}
         <details className="view-menu">
           <summary>View settings</summary>
           <div className="controls">
@@ -468,6 +545,7 @@ export function Player({
             <div className="text">
               <p className="label">{label}</p>
               {hint ? <p className="stage-hint">{hint}</p> : null}
+              {stage.kind === 'color' && narrow ? saveDesign : null}
               <p className="instruction" aria-live="polite">
                 {text}
               </p>
@@ -534,6 +612,12 @@ export function Player({
         </section>
         {colorStage ? (
           <aside className="side-panel" aria-label="The wall">
+            {narrow ? null : (
+              <section>
+                <h2>My design</h2>
+                {saveDesign}
+              </section>
+            )}
             {photos.length ? (
               <section>
                 <h2>The original</h2>
@@ -616,10 +700,6 @@ export function Player({
                   colorDispatch({ kind: 'reset', to: tutorialColoring(model) })
                 }
               />
-            </section>
-            <section>
-              <h2>My design</h2>
-              {saveDesign}
             </section>
             <section>
               <h2>Take it with you</h2>
@@ -794,6 +874,66 @@ function Broken({ message }: { message: string }) {
   );
 }
 
+/**
+ * A design address that leads nowhere: no such design in this browser, or
+ * a design of another pattern. Said plainly, with the ways on.
+ */
+function MissingDesign({
+  tutorial,
+  design,
+  known,
+}: {
+  /** The pattern the address names, when it is in the library. */
+  tutorial?: string;
+  /** The design the address names, when it is saved here. */
+  design?: Design;
+  /** Whether the design's own pattern is in the library. */
+  known: boolean;
+}) {
+  return (
+    <div className="player">
+      <header className="topbar">
+        <a className="home" href="#/">
+          <span className="wordmark">Tastir</span>
+          <span>All patterns</span>
+        </a>
+      </header>
+      <section className="notice">
+        <h1>This design is not here</h1>
+        {design ? (
+          <p>
+            “{design.name}” is a design of another pattern, so this address does
+            not open it.
+          </p>
+        ) : (
+          <p>
+            There is no such design in this browser. Designs are kept only in
+            the browser they were made in, and this one may have been deleted.
+          </p>
+        )}
+        <p className="notice-links">
+          {design && known ? (
+            <a
+              className="button"
+              href={`#/${design.tutorial}/design/${design.id}`}
+            >
+              Open “{design.name}”
+            </a>
+          ) : null}
+          {tutorial ? (
+            <a className="button secondary" href={`#/${tutorial}`}>
+              Open the pattern
+            </a>
+          ) : null}
+          <a className="button secondary" href="#/">
+            All patterns
+          </a>
+        </p>
+      </section>
+    </div>
+  );
+}
+
 /** What the library needs to know about a tutorial before it is loaded. */
 function aboutOf(json: unknown): { style?: string; level?: string } {
   const t = (json ?? {}) as { style?: unknown; level?: unknown };
@@ -831,6 +971,19 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
     <div className="library">
       <header className="masthead">
         <h1>Tastir</h1>
+        {designs.length ? (
+          <button
+            type="button"
+            className="jump-link"
+            onClick={() =>
+              document
+                .getElementById('my-designs')
+                ?.scrollIntoView?.({ behavior: 'smooth' })
+            }
+          >
+            My designs ({designs.length})
+          </button>
+        ) : null}
         {import.meta.env.DEV ? (
           <p className="dev-links">
             <a href="#/review">
@@ -862,7 +1015,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           ) : null}
         </div>
       </section>
-      {designs.length ? (
+      {designs.length || unreadableKept() ? (
         <Shelf
           designs={designs}
           entries={entries}
@@ -1118,11 +1271,15 @@ export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
     const [, tutorial = '', designId = ''] = mine;
     const design = getDesign(designId);
     const entry = entries.find((e) => e.id === tutorial);
-    if (!entry || design?.tutorial !== tutorial)
-      return (
-        <Broken message="This design is not saved in this browser. Designs are kept only in the browser they were made in." />
-      );
-    return <Play key={route} json={entry.json} design={design} />;
+    if (entry && design?.tutorial === tutorial)
+      return <Play key={route} json={entry.json} design={design} />;
+    return (
+      <MissingDesign
+        tutorial={entry ? tutorial : undefined}
+        design={design}
+        known={design ? entries.some((e) => e.id === design.tutorial) : false}
+      />
+    );
   }
   // #/id plays from the first step; #/id/result opens at the finished wall.
   const result = route.endsWith('/result');

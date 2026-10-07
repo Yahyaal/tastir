@@ -131,6 +131,37 @@ describe('the shelf of my designs', () => {
     expect(screen.queryByRole('region', { name: 'My designs' })).toBeNull();
   });
 
+  it('closes the rename box on Escape, and keeps names short', () => {
+    design('Short');
+    render(<App entries={entries} />);
+    fireEvent.click(within(shelf()).getByRole('button', { name: 'Rename' }));
+    const box = within(shelf()).getByLabelText(/New name/);
+    expect(box.getAttribute('maxLength')).toBe('60');
+    fireEvent.keyDown(box, { key: 'Escape' });
+    expect(within(shelf()).queryByLabelText(/New name/)).toBeNull();
+    // The store cuts a name to 60 characters whatever sends it.
+    expect(design('x'.repeat(300))?.name).toHaveLength(60);
+  });
+
+  it('jumps to the shelf from the top of the home page', () => {
+    design('One');
+    design('Two');
+    render(<App entries={entries} />);
+    expect(screen.getByRole('button', { name: 'My designs (2)' })).toBeTruthy();
+  });
+
+  it('keeps an unreadable store aside before writing, and says so', () => {
+    window.localStorage.setItem('tastir.designs', '{"from": "the future"}');
+    design('New');
+    expect(window.localStorage.getItem('tastir.designs.unreadable')).toBe(
+      '{"from": "the future"}',
+    );
+    render(<App entries={entries} />);
+    expect(
+      within(shelf()).getByText(/Some saved designs could not be read/),
+    ).toBeTruthy();
+  });
+
   it('keeps a design whose tutorial is gone, so it can be deleted', () => {
     design('Lost', { tutorial: 'no-such-pattern' });
     render(<App entries={entries} />);

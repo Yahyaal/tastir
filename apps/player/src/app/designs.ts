@@ -73,15 +73,60 @@ export function listDesigns(): Design[] {
 export const getDesign = (id: string): Design | undefined =>
   listDesigns().find((d) => d.id === id);
 
-/** Writes the designs; false when the browser refused to keep them. */
+/** Where a store that could not be read is kept before it is replaced. */
+export const BACKUP = `${KEY}.unreadable`;
+
+/**
+ * Whether the stored value holds anything this version cannot read: not
+ * JSON, not a list, or a list with entries that are not designs.
+ */
+function unreadable(raw: string): boolean {
+  try {
+    const saved: unknown = JSON.parse(raw);
+    return !Array.isArray(saved) || !saved.every(isDesign);
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Writes the designs; false when the browser refused to keep them. A store
+ * that could not be read (corrupt, or from a later version) is never
+ * simply overwritten: it is first copied under its own backup key, and if
+ * even that is refused nothing is written.
+ */
 function write(designs: readonly Design[]): boolean {
   try {
-    window.localStorage.setItem(KEY, JSON.stringify(designs));
+    const storage = window.localStorage;
+    const raw = storage.getItem(KEY);
+    if (raw !== null && unreadable(raw)) {
+      let key = BACKUP;
+      for (let n = 2; storage.getItem(key) !== null; n++)
+        key = `${BACKUP}.${n}`;
+      storage.setItem(key, raw);
+    }
+    storage.setItem(KEY, JSON.stringify(designs));
     return true;
   } catch {
     return false;
   }
 }
+
+/** Whether a store that could not be read has been kept aside. */
+export function unreadableKept(): boolean {
+  try {
+    return window.localStorage.getItem(BACKUP) !== null;
+  } catch {
+    return false;
+  }
+}
+
+/** The longest name a design can have, so it fits on its card. */
+export const NAME_LIMIT = 60;
+const named = <T extends { name?: string }>(fields: T): T =>
+  fields.name === undefined
+    ? fields
+    : { ...fields, name: fields.name.trim().slice(0, NAME_LIMIT) };
 
 const now = () => new Date().toISOString();
 const newId = () =>
@@ -93,7 +138,12 @@ const newId = () =>
  */
 export function addDesign(fields: DesignFields): Design | undefined {
   const at = now();
-  const design: Design = { ...fields, id: newId(), created: at, updated: at };
+  const design: Design = {
+    ...named(fields),
+    id: newId(),
+    created: at,
+    updated: at,
+  };
   return write([design, ...listDesigns()]) ? design : undefined;
 }
 
@@ -110,7 +160,7 @@ export function updateDesign(
   if (!before) return undefined;
   // inked: undefined (back to the tutorial's own inking) is not written,
   // as JSON leaves undefined out.
-  const after: Design = { ...before, ...changes, id, updated: now() };
+  const after: Design = { ...before, ...named(changes), id, updated: now() };
   return write(all.map((d) => (d.id === id ? after : d))) ? after : undefined;
 }
 
