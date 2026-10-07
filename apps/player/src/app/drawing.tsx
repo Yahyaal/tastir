@@ -297,16 +297,30 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
  * At the end of the ink: the ink of the eight tiles around this one, faint
  * and in blue, so the learner sees each of their lines meet this tile's
  * edge where one of its own lines carries on (each is copied off the
- * finished tile and slides out to its place, round the tile; see playInk).
+ * finished tile, or a corner off the side copy before it, and slides out to
+ * its place, round the tile; see playInk).
  */
 function NextTiles({ model }: { model: Model }) {
   const { u, v } = model.pattern.cell;
-  const shifts: Vec[] = [];
-  for (const i of [-1, 0, 1])
-    for (const j of [-1, 0, 1])
-      if (i || j) shifts.push({ x: i * u.x + j * v.x, y: i * u.y + j * v.y });
-  // Round the tile in turn, so the copies arrive like a hand moving round.
-  shifts.sort((p, q) => Math.atan2(p.y, p.x) - Math.atan2(q.y, q.x));
+  const at = (i: number, j: number): Vec => ({
+    x: i * u.x + j * v.x,
+    y: i * u.y + j * v.y,
+  });
+  // Round the tile like a hand, starting on the left and going clockwise
+  // on screen: each side's copy comes off the tile, then the corner after
+  // it comes off that side's copy (left, top-left, top, top-right...).
+  const clockwise = (p: Vec) =>
+    (Math.atan2(-p.y, p.x) - Math.PI + 4 * Math.PI) % (2 * Math.PI);
+  const sides = [at(-1, 0), at(0, 1), at(1, 0), at(0, -1)].sort(
+    (p, q) => clockwise(p) - clockwise(q),
+  );
+  const shifts: { to: Vec; from: Vec }[] = sides.flatMap((side, k) => {
+    const after = sides[(k + 1) % 4]!;
+    return [
+      { to: side, from: at(0, 0) },
+      { to: { x: side.x + after.x, y: side.y + after.y }, from: side },
+    ];
+  });
   const d = model.pattern.ink
     .map(
       (s) =>
@@ -315,12 +329,13 @@ function NextTiles({ model }: { model: Model }) {
     .join('');
   return (
     <g className="ink next-tiles" aria-label="The next tiles">
-      {shifts.map((t, k) => (
+      {shifts.map(({ to, from }, k) => (
         <g
           key={k}
           data-next-tile={k}
-          data-shift={`${t.x} ${-t.y}`}
-          transform={`translate(${t.x} ${-t.y})`}
+          data-shift={`${to.x} ${-to.y}`}
+          data-from={`${from.x} ${-from.y}`}
+          transform={`translate(${to.x} ${-to.y})`}
         >
           <path className="tile-ink" d={d} />
         </g>

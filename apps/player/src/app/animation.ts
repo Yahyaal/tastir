@@ -302,19 +302,19 @@ export function compassStart(model: Model, name: string): number {
 }
 
 /** Pen speed for inking, in screen pixels per second at normal speed. */
-const PEN_SPEED = 420;
+const PEN_SPEED = 720;
 /** Longest the inking may take at normal speed, in milliseconds. */
-const INK_MAX_MS = 14000;
+const INK_MAX_MS = 8000;
 /** The pen lifts and moves between paths. */
-const PEN_LIFT_MS = 90;
+const PEN_LIFT_MS = 60;
 /** Laying the ruler along the next line. */
-const RULER_MS = 250;
+const RULER_MS = 160;
 /** A neighbouring tile's slide from the finished tile to its place. */
 const NEXT_TILE_SLIDE_MS = 900;
 /** The gap between one neighbouring tile's slide and the next. */
-const NEXT_TILE_GAP_MS = 260;
+const NEXT_TILE_GAP_MS = 380;
 /** The pause between one ring of lines and the next. */
-const RING_PAUSE_MS = 350;
+const RING_PAUSE_MS = 250;
 /** How long the dots take to fade once the ink is done. */
 const DOT_FADE_MS = 700;
 /** How long a finished line takes to settle from red to black. */
@@ -587,8 +587,9 @@ export function playInk(
       }),
     );
   }
-  // Then the tiles around it: each is copied off the finished tile in blue
-  // and slides out to its place, one after another round the tile, so each
+  // Then the tiles around it: each side's copy comes off the finished tile
+  // in blue and slides out, and the corner after it comes off that copy
+  // (left, then top-left from the left, then top...), so each
   // of their lines is seen meeting this tile's edge where one of its own
   // lines carries on.
   const next = [...svg.querySelectorAll<SVGElement>('[data-next-tile]')];
@@ -596,11 +597,18 @@ export function playInk(
   next.forEach((n, k) => {
     if (!can(n)) return;
     const [x = 0, y = 0] = (n.dataset['shift'] ?? '0 0').split(' ').map(Number);
+    const [fx = 0, fy = 0] = (n.dataset['from'] ?? '0 0')
+      .split(' ')
+      .map(Number);
     animations.push(
       n.animate(
         [
-          { transform: 'translate(0px, 0px)', opacity: 0 },
-          { transform: 'translate(0px, 0px)', opacity: 0.85, offset: 0.2 },
+          { transform: `translate(${fx}px, ${fy}px)`, opacity: 0 },
+          {
+            transform: `translate(${fx}px, ${fy}px)`,
+            opacity: 0.85,
+            offset: 0.2,
+          },
           { transform: `translate(${x}px, ${y}px)`, opacity: 0.6 },
         ],
         {
