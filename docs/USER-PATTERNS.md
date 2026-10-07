@@ -18,7 +18,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 
 ### Phase 1: My designs
 
-- [ ] **1.1 The design store.** `apps/player/src/app/designs.ts`: a design is `{ id, name, tutorial, inked (piece ids, or none for the tutorial's own inking), coloring, look, grout, created, updated }`, kept in localStorage under `tastir.designs`; reads and writes never throw (private windows). *Test:* save, list, rename, delete, round trip, a corrupt store reads as empty.
+- [x] **1.1 The design store.** `apps/player/src/app/designs.ts`: a design is `{ id, name, tutorial, inked (piece ids, or none for the tutorial's own inking), coloring, look, grout, created, updated }`, kept in localStorage under `tastir.designs`; reads and writes never throw (private windows). *Test:* save, list, rename, delete, round trip, a corrupt store reads as empty.
 - [ ] **1.2 Save from the player.** “Save as my design” at the ink and colour stages asks for a name in the page (no browser prompt). A design opened from its address `#/<tutorial>/design/<id>` starts at the wall with its inking and colours, and offers “Save” and “Save as new”. If its inked pieces no longer exist in the tutorial, it opens with the tutorial's own inking and says so. *Test:* re-ink and recolour, save, remount, open: the same pieces and colours.
 - [ ] **1.3 The shelf.** A “My designs” shelf above the library when there are any, each design drawn as its wall, with rename and delete (delete asks first). *Test:* the shelf lists saved designs, opens one, and deletes one only after confirming.
 
