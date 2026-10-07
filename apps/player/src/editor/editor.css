@@ -572,3 +572,45 @@
 .editor-caption .instruction {
   min-height: 2.9em;
 }
+
+/* Building blocks. */
+.blocks ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.block-card {
+  display: grid;
+  gap: 3px;
+}
+
+.player .block-card > button.secondary {
+  justify-self: start;
+  padding: 4px 12px;
+  font-size: 0.85rem;
+}
+
+.block-delete {
+  font-size: 0.8rem;
+  color: var(--on-lapis-muted);
+}
+
+.save-block input[type='text'] {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 3px 8px;
+  color: var(--on-lapis);
+  background: var(--lapis-deep);
+  border: 1px solid var(--lapis-line);
+  border-radius: 6px;
+}
+
+.save-block label {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.82rem;
+}

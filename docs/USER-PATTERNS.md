@@ -46,9 +46,9 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 
 ### Phase 4: building blocks
 
-- [ ] **4.1 The block format and insertion.** A block is a few steps with named inputs; inserting it fills the inputs from clicks and adds ordinary steps.
-- [ ] **4.2 The starter shelf.** Divide a circle by 4, 6, 8, 12 and 16; the static and dynamic squares; a ring of touching circles; the square and hexagon tile round a circle; A. J. Lee's rosette.
-- [ ] **4.3 Save my steps as a block.** *Test:* insert “Divide a circle into eight” on a drawn circle; its three steps appear, each undoable.
+- [x] **4.1 The block format and insertion.** A block is a few steps with named inputs; inserting it fills the inputs from clicks and adds ordinary steps.
+- [x] **4.2 The starter shelf.** Divide a circle by 4, 6, 8, 12 and 16; the static and dynamic squares; a ring of touching circles; the square and hexagon tile round a circle; A. J. Lee's rosette.
+- [x] **4.3 Save my steps as a block.** *Test:* insert “Divide a circle into eight” on a drawn circle; its three steps appear, each undoable.
 
 ### Phase 5: share
 
@@ -73,6 +73,8 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - Symmetry mode needs nothing new in the format: each new element gets a `repeat` with `rotN` in its own step (the format has rot3, 4, 5, 6, 8, 10, 12 and 16; the editor offers 4, 6, 8, 12 and 16). Turned copies that land on each other (a line through O turned by 180°) do no harm: snapping skips lines lying along each other, and free inking merges equal bits. With it, the eight-fold star and cross is five clicked steps: circle, line ×4, square ×8, tangent ×4, tile. (7 October)
 - When two tasks touch the same file, commit them one at a time from the start; splitting them afterwards meant copying files aside and briefly reverting my own uncommitted edits, which a live dev server would have shown. (7 October)
 - Never run `git checkout -- <file>` to undo a formatter, even on your own files: it threw away a real edit to the format doc, which had to be written again. Undo by editing. (7 October)
+- Phase 4 went in as one commit: the three tasks grew in the same two files (blocks.ts, Editor.tsx) and could not be split afterwards without reverting the working tree. Next time, commit 4.1's core before writing 4.2's blocks. (7 October)
+- A block's internal names must be unique across all its steps (a circle `h1` and a corner `h1` clashed after renaming); blocks.spec.ts now checks every block for it. Blocks pick crossings by `nearest`/`farthest` a clicked point or by `points` (all crossings), never by angle, so they work on any circle, not only one about O. (7 October)
 
 ## Tester reports
 

@@ -31,7 +31,7 @@ export const SYMMETRIES = [0, 4, 6, 8, 12, 16] as const;
 export type Symmetry = (typeof SYMMETRIES)[number];
 
 /** What a click can take: a point, or an element of some kinds. */
-export type Want = 'point' | 'line' | 'circle' | 'curve';
+export type Want = 'point' | 'line' | 'circle' | 'curve' | 'shape';
 
 /**
  * What a click took. A point is an existing named point, or a crossing of
@@ -62,7 +62,8 @@ export type ToolId =
   | 'parallel'
   | 'halve'
   | 'polygon'
-  | 'tile';
+  | 'tile'
+  | 'block';
 
 export interface Tool {
   readonly id: ToolId;
@@ -211,6 +212,7 @@ const fits = (scene: Scene, name: string, want: Want): boolean => {
   if (want === 'line') return kind === 'line';
   if (want === 'circle') return kind === 'circle';
   if (want === 'curve') return kind === 'line' || kind === 'circle';
+  if (want === 'shape') return kind === 'polygon';
   return false;
 };
 
@@ -385,6 +387,9 @@ export function buildStep(
         return [fresh(PREFIX.polygon), { polygon: names }];
       case 'tile':
         return [fresh('Tile'), { polygon: names }];
+      case 'block':
+        // A block is inserted by insertBlock, not built here.
+        return undefined;
     }
   })();
   if (spec) create[spec[0]] = spec[1];

@@ -16,6 +16,16 @@ import {
 } from './document';
 import { useRemembered } from '../app/remembered';
 import { AboutPanel } from './AboutPanel';
+import {
+  addBlock,
+  blockFromSteps,
+  blockTool,
+  deleteBlock,
+  insertBlock,
+  listBlocks,
+  STARTER_BLOCKS,
+  type Block,
+} from './blocks';
 import { EditorDrawing } from './EditorDrawing';
 import {
   foldOf,
@@ -143,7 +153,9 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   }, [pattern.id, draft]);
 
   const [toolId, setToolId] = useState<ToolId>('compass');
-  const tool = toolOf(toolId);
+  // A building block being placed works as a tool: its inputs are clicked.
+  const [block, setBlock] = useState<Block>();
+  const tool = block ? blockTool(block) : toolOf(toolId);
   const [targets, setTargets] = useState<Target[]>([]);
   const [hover, setHover] = useState<Target>();
   const [said, setSaid] = useState<string>();
@@ -153,6 +165,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   const step = draft.steps.find((s) => s.id === selected);
 
   const chooseTool = (id: ToolId) => {
+    setBlock(undefined);
     setToolId(id);
     setTargets([]);
     setSaid(undefined);
@@ -199,6 +212,30 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   /** Adds the step the clicks make, unless the engine cannot do it. */
   const finish = (clicks: readonly Target[]) => {
     setTargets([]);
+    if (block) {
+      // All the block's steps go in as one edit, so one Undo takes them out.
+      const made = insertBlock(draft, block, clicks, at);
+      const next =
+        made.tile && !draft.pattern?.cell
+          ? withTile(made.draft, made.tile)
+          : made.draft;
+      const { status } = check(next);
+      const count = block.steps.length;
+      for (let id = at + 1; id <= at + count; id++) {
+        const st = status.get(id);
+        if (st && !st.ok) {
+          setSaid(`That block does not fit there: ${st.reason}`);
+          return;
+        }
+      }
+      edit(next);
+      setSelected(at + count);
+      setBlock(undefined);
+      setSaid(
+        `Added “${block.name}”: ${count === 1 ? 'one step' : `${count} steps`}. Each is an ordinary step you can change or delete.`,
+      );
+      return;
+    }
     const sides =
       tool.id === 'touch' ? [undefined, 'near', 'far'] : [undefined];
     let reason = '';
@@ -305,7 +342,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   // Inking: the bits of line inside the tile that the file can name, and
   // which of them are inked now.
   const [mode, setMode] = useState<'construct' | 'ink'>('construct');
-  const [panel, setPanel] = useState<'step' | 'about'>('step');
+  const [panel, setPanel] = useState<'step' | 'about' | 'blocks'>('step');
   const [symmetric, setSymmetric] = useState(true);
   const cellName = draft.pattern?.cell;
   const inkable = useMemo(
@@ -681,7 +718,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
         </section>
         <aside className="side-panel" aria-label="This step">
           <div className="editor-modes" role="group" aria-label="Panel">
-            {(['step', 'about'] as const).map((p) => (
+            {(['step', 'about', 'blocks'] as const).map((p) => (
               <button
                 key={p}
                 type="button"
@@ -689,12 +726,25 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
                 aria-pressed={p === panel}
                 onClick={() => setPanel(p)}
               >
-                {p === 'step' ? 'This step' : 'About the pattern'}
+                {p === 'step'
+                  ? 'This step'
+                  : p === 'about'
+                    ? 'About the pattern'
+                    : 'Building blocks'}
               </button>
             ))}
           </div>
           {panel === 'about' ? (
             <AboutPanel draft={draft} onChange={edit} file={playable} />
+          ) : panel === 'blocks' ? (
+            <BlocksPanel
+              onUse={(b) => {
+                setMode('construct');
+                setTargets([]);
+                setBlock(b);
+                setSaid(undefined);
+              }}
+            />
           ) : step ? (
             <StepPanel
               key={step.id}
@@ -722,6 +772,23 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               onMove={(to) => {
                 edit(moveStep(draft, step.id, to - 1));
                 setSelected(to);
+              }}
+              onSaveBlock={(to, name) => {
+                const made = blockFromSteps(
+                  draft,
+                  checked.scene,
+                  step.id,
+                  to,
+                  name,
+                );
+                if ('reason' in made) return made.reason;
+                if (!addBlock(made))
+                  return 'This browser would not keep the block: its storage is blocked or full.';
+                return `Saved “${made.name}”. It is under Building blocks, asking for ${
+                  made.inputs.length
+                    ? `${made.inputs.length} ${made.inputs.length === 1 ? 'thing' : 'things'} to click`
+                    : 'nothing to click'
+                }.`;
               }}
               onDelete={(withDependents) => {
                 const next = withDependents
@@ -758,6 +825,7 @@ function StepPanel({
   onText,
   onMove,
   onDelete,
+  onSaveBlock,
 }: {
   draft: Draft;
   id: number;
@@ -777,8 +845,13 @@ function StepPanel({
   onText: (text: string) => void;
   onMove: (to: number) => void;
   onDelete: (withDependents: boolean) => void;
+  /** Keeps steps from this one to `to` as a block; what happened. */
+  onSaveBlock: (to: number, name: string) => string;
 }) {
   const [asking, setAsking] = useState(false);
+  const [blockTo, setBlockTo] = useState(id);
+  const [blockName, setBlockName] = useState('');
+  const [blockSaid, setBlockSaid] = useState<string>();
   const [notTile, setNotTile] = useState<string>();
   const polygons = Object.entries(
     (create ?? {}) as Record<string, Record<string, unknown>>,
@@ -906,6 +979,48 @@ function StepPanel({
           ) : null}
         </section>
       ) : null}
+      <section className="save-block">
+        <h2>Save as a building block</h2>
+        <div className="about-row">
+          <label>
+            Steps {id} to
+            <select
+              value={blockTo}
+              onChange={(e) => setBlockTo(Number(e.target.value))}
+            >
+              {Array.from({ length: last - id + 1 }, (_, i) => id + i).map(
+                (n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ),
+              )}
+            </select>
+          </label>
+          <label>
+            Block name
+            <input
+              type="text"
+              value={blockName}
+              maxLength={60}
+              onChange={(e) => setBlockName(e.target.value)}
+            />
+          </label>
+          <button
+            type="button"
+            className="secondary"
+            disabled={!blockName.trim()}
+            onClick={() => setBlockSaid(onSaveBlock(blockTo, blockName))}
+          >
+            Save the block
+          </button>
+        </div>
+        {blockSaid ? (
+          <p className="hint" role="status">
+            {blockSaid}
+          </p>
+        ) : null}
+      </section>
       <section>
         <details className="saved-form">
           <summary>Show the saved form</summary>
@@ -937,4 +1052,69 @@ function nearestPiece(
     if (gap <= reach && (!best || gap < best.d)) best = { id: p.id, d: gap };
   }
   return best?.id;
+}
+
+/** The building blocks to insert: the starter shelf and the learner's own. */
+function BlocksPanel({ onUse }: { onUse: (block: Block) => void }) {
+  const [mine, setMine] = useState(listBlocks);
+  const [asking, setAsking] = useState<string>();
+  const card = (b: Block, own: boolean) => (
+    <li key={b.id} className="block-card">
+      <button type="button" className="secondary" onClick={() => onUse(b)}>
+        {b.name}
+      </button>
+      <span className="hint">{b.text}</span>
+      {own ? (
+        asking === b.id ? (
+          <span className="block-delete">
+            Delete this block?{' '}
+            <button
+              type="button"
+              className="quiet"
+              onClick={() => {
+                deleteBlock(b.id);
+                setMine(listBlocks());
+                setAsking(undefined);
+              }}
+            >
+              Delete
+            </button>
+            <button
+              type="button"
+              className="quiet"
+              onClick={() => setAsking(undefined)}
+            >
+              Keep
+            </button>
+          </span>
+        ) : (
+          <button
+            type="button"
+            className="quiet"
+            onClick={() => setAsking(b.id)}
+          >
+            Delete {b.name}
+          </button>
+        )
+      ) : null}
+    </li>
+  );
+  return (
+    <>
+      <section className="blocks">
+        <h2>Building blocks</h2>
+        <p className="hint">
+          A few steps at once. Choose one, then click what it asks for; its
+          steps are added as ordinary steps.
+        </p>
+        <ul>{STARTER_BLOCKS.map((b) => card(b, false))}</ul>
+      </section>
+      {mine.length ? (
+        <section className="blocks">
+          <h2>My blocks</h2>
+          <ul>{mine.map((b) => card(b, true))}</ul>
+        </section>
+      ) : null}
+    </>
+  );
 }
