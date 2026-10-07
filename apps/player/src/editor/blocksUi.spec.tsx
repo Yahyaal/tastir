@@ -97,13 +97,15 @@ describe('building blocks in the editor', () => {
       at: { x: 0, y: 0 },
       name: n,
     });
+    // On a copy that stops before them, they come back as two steps.
+    const before = copyUpTo(star, 2);
     const again = insertBlock(
-      d,
+      before,
       block,
       [by('E'), by('N'), by('W'), { kind: 'element', name: 'c' }, by('S')],
-      d.steps.length,
+      before.steps.length,
     ).draft;
-    expect(again.steps).toHaveLength(6);
+    expect(again.steps).toHaveLength(4);
     expect([...check(again).status.values()].every((s) => s.ok)).toBe(true);
   });
 

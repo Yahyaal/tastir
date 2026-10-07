@@ -423,6 +423,35 @@ export function plainReason(reason: string, specs: Specs): string {
   );
 }
 
+/**
+ * Which of the two touching circles a step chose, in words that match the
+ * drawing: near is the smaller one, inside the circle it touches when the
+ * centre is inside it, outside it when the centre is outside; far is the
+ * larger one, which goes round the circle it touches.
+ */
+function touchSide(
+  centre: string,
+  targets: readonly string[],
+  touch: 'near' | 'far',
+  drawn?: Drawn,
+): string {
+  if (touch === 'far') return ', the larger circle, which goes round it';
+  const at = drawn?.scene.elements.get(centre)?.geometry;
+  const circle = targets
+    .map((t) => drawn?.scene.elements.get(t)?.geometry)
+    .find((g) => g?.kind === 'circle');
+  if (at?.kind === 'point' && circle?.kind === 'circle') {
+    const d = Math.hypot(
+      at.at.x - circle.circle.centre.x,
+      at.at.y - circle.circle.centre.y,
+    );
+    return d < circle.circle.radius
+      ? ', the smaller circle, inside it and touching it from within'
+      : ', the smaller circle, touching it from outside';
+  }
+  return ', the smaller of the two';
+}
+
 /** One element in plain words, as the learner reads it. */
 export function sayElement(
   name: string,
@@ -460,12 +489,9 @@ export function sayElement(
       return `Keep the opening of ${d(c.radiusOf)} and draw a circle about ${n(c.centre)}.`;
     if ('radiusFrom' in c)
       return `Open the compass from ${n(c.radiusFrom[0])} to ${n(c.radiusFrom[1])} and draw a circle about ${n(c.centre)}.`;
-    const side =
-      c.touch === 'near'
-        ? ', the smaller circle that just touches it from outside'
-        : c.touch === 'far'
-          ? ', the larger circle that goes round it'
-          : '';
+    const side = c.touch
+      ? touchSide(c.centre, c.tangentTo, c.touch, drawn)
+      : '';
     return `Put the compass point on ${n(c.centre)} and open it until the circle touches ${list(c.tangentTo.map(d))}${side}.`;
   }
   if ('polygon' in el)

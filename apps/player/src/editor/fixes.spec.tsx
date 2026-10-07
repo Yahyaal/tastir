@@ -67,11 +67,27 @@ describe('the fixes from the editor report', () => {
     expect(screen.queryByRole('region', { name: 'My patterns' })).toBeNull();
   });
 
-  it('shows Play for a pattern that is tiled and inked', () => {
+  it('shows Play only for a pattern whose ink closes pieces', async () => {
     addPattern(star);
-    render(<App />);
+    addPattern({
+      ...copyUpTo(star, 6),
+      title: 'Inked but open',
+      pattern: star.pattern,
+      ink: { paths: [{ through: ['E', 'k.1'] }] },
+    });
+    render(<App entries={[]} />);
     const shelf = screen.getByRole('region', { name: 'My patterns' });
-    expect(within(shelf).getByRole('link', { name: 'Play' })).toBeTruthy();
+    expect(
+      await within(shelf).findByRole(
+        'link',
+        { name: 'Play' },
+        { timeout: 5000 },
+      ),
+    ).toBeTruthy();
+    expect(within(shelf).getAllByRole('link', { name: 'Play' })).toHaveLength(
+      1,
+    );
+    expect(within(shelf).getByText('Ink it to play')).toBeTruthy();
   });
 
   it('uses E, not the given A, where both name one point', () => {

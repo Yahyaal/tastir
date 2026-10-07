@@ -41,11 +41,28 @@ describe('generated step texts', () => {
     );
   });
 
-  it('says which touching circle was chosen', () => {
-    expect(
-      say({ C1: { circle: { centre: 'N', tangentTo: ['c'], touch: 'far' } } }),
-    ).toBe(
-      'Put the compass point on N and open it until the circle touches the circle about O through E, the larger circle that goes round it.',
+  it('says which touching circle was chosen, inside or outside', () => {
+    // The whole star and cross: O is inside the circle c, the tile's
+    // corner c1 outside it.
+    const full = copyUpTo(parseTutorial(example), 6);
+    const at = { scene: check(full).scene };
+    const touch = (centre: string, side: 'near' | 'far') =>
+      sayStep(
+        { C1: { circle: { centre, tangentTo: ['c'], touch: side } } },
+        full,
+        at,
+      );
+    expect(touch('O', 'near')).toMatch(
+      /the smaller circle, inside it and touching it from within\.$/,
+    );
+    expect(touch('c1', 'near')).toMatch(
+      /the smaller circle, touching it from outside\.$/,
+    );
+    expect(touch('O', 'far')).toMatch(
+      /the larger circle, which goes round it\.$/,
+    );
+    expect(touch('c1', 'far')).toMatch(
+      /the larger circle, which goes round it\.$/,
     );
   });
 

@@ -627,3 +627,10 @@
   margin: 0;
   font-size: 0.95rem;
 }
+
+/* The status line has a fixed height, so no hint, short or long, ever
+   moves the drawing. */
+.editor-caption .instruction {
+  height: 4.4em;
+  overflow-y: auto;
+}

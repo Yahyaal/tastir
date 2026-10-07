@@ -1,8 +1,9 @@
-import type { Scene } from '@tastir/engine';
+import type { Geometry, Scene, Vec } from '@tastir/engine';
 import { partsOf, type ElementSpec, type Pick } from '@tastir/schema';
 import { newId, now, store } from '../app/storage';
 import {
   addStep,
+  check,
   describe,
   freshName,
   PREFIX,
@@ -28,6 +29,9 @@ export interface Block {
   readonly steps: readonly BlockStep[];
   /** The polygon that becomes the tile, when the block makes one. */
   readonly tile?: string;
+  /** Ink paths through the block's named points, for a block that makes
+   * a figure (the rosette), so it looks like itself at once. */
+  readonly ink?: readonly (readonly string[])[];
 }
 
 export interface BlockInput {
@@ -358,6 +362,12 @@ export const STARTER_BLOCKS: readonly Block[] = [
     text: 'The petals and star of an eight-fold rosette, drawn round an octagon by Anthony Lee’s method.',
     inputs: ON_A_CIRCLE,
     steps: [OPPOSITE, QUARTERS, EIGHTHS, ...leeRosette()],
+    // Each petal: from a side's middle along the star line to the halving
+    // line, then back along the petal line to the spoke point.
+    ink: Array.from({ length: 8 }, (_, k) => [
+      [`M${k}`, `G${k}`, `C${k}`],
+      [`M${(k + 1) % 8}`, `H${k}`, `C${k}`],
+    ]).flat(),
   },
 ];
 
@@ -366,6 +376,10 @@ const baseOf = (ref: string) => ref.replace(/[.@].*$/, '');
 
 /** A reference under new names, keeping its crossing or copy number. */
 const renamed = (ref: string, names: ReadonlyMap<string, string>) => {
+  // A whole reference first (a crossing mapped to a point already drawn),
+  // then its base name.
+  const whole = names.get(ref);
+  if (whole !== undefined) return whole;
   const base = baseOf(ref);
   const to = names.get(base);
   return to === undefined ? ref : to + ref.slice(base.length);
@@ -374,9 +388,8 @@ const renamed = (ref: string, names: ReadonlyMap<string, string>) => {
 /** An element with every name it refers to replaced. */
 export function renameSpec(
   el: ElementSpec,
-  names: ReadonlyMap<string, string>,
+  r: (ref: string) => string,
 ): ElementSpec {
-  const r = (ref: string) => renamed(ref, names);
   const pick = (p?: Pick) =>
     p
       ? Object.fromEntries(
@@ -466,7 +479,7 @@ export function insertBlock(
   block: Block,
   clicked: readonly Target[],
   at: number,
-): { draft: Draft; tile?: string } {
+): { draft: Draft; steps: number; tile?: string } {
   const names = new Map<string, string>();
   const taken: string[] = [];
   const fresh = (prefix: string) => {
@@ -489,21 +502,128 @@ export function insertBlock(
   for (const step of block.steps)
     for (const [name, el] of Object.entries(step.create))
       if (!names.has(name)) names.set(name, fresh(prefixOf(el, name, block)));
+  // Each step is added, then every element it makes that the drawing
+  // already has (the line through the centre drawn by an earlier block,
+  // say) is dropped and the existing one used instead; a step left with
+  // nothing is left out.
   let next = draft;
+  let place = at;
   block.steps.forEach((step, i) => {
-    const create = Object.fromEntries([
+    const create: Record<string, ElementSpec> = Object.fromEntries([
       ...(i === 0 ? Object.entries(marks) : []),
       ...Object.entries(step.create).map(([name, el]) => [
         names.get(name) as string,
-        renameSpec(el, names),
+        renameSpec(el, (ref) => renamed(ref, names)),
       ]),
     ]);
-    next = addStep(next, { text: step.text, create }, at + i);
+    const before = check({ steps: next.steps.slice(0, place) } as Draft).scene;
+    const trial = check({
+      steps: [
+        ...next.steps.slice(0, place),
+        { id: place + 1, text: '', create },
+      ],
+    } as Draft).scene;
+    const reuse = new Map<string, string>();
+    for (const [name, el] of Object.entries(create)) {
+      if (name === names.get(block.tile ?? '')) continue;
+      const g = trial.elements.get(name)?.geometry;
+      if (!g) continue;
+      if (g.kind === 'group') {
+        // A crossings element: each crossing that is already a point.
+        if (!('points' in el)) continue;
+        const found = g.members.map((m) => {
+          const at = trial.elements.get(m)?.geometry;
+          return at?.kind === 'point' ? existing(before, at) : undefined;
+        });
+        if (found.every((f) => f !== undefined))
+          g.members.forEach((m, k) => reuse.set(m, found[k] as string));
+        continue;
+      }
+      const same = existing(before, g);
+      if (same) reuse.set(name, same);
+    }
+    for (const [from, to] of reuse) {
+      // Later steps refer to the existing element by the block's name (a
+      // crossing k.1 by its group's block name and its number).
+      const base = baseOf(from);
+      const suffix = from.slice(base.length);
+      for (const [blockName, given] of [...names])
+        if (given === base) names.set(blockName + suffix, to);
+    }
+    const kept = Object.fromEntries(
+      Object.entries(create)
+        .filter(([name]) => {
+          if (reuse.has(name)) return false;
+          const g = trial.elements.get(name)?.geometry;
+          return !(
+            g?.kind === 'group' &&
+            g.members.length > 0 &&
+            g.members.every((m) => reuse.has(m))
+          );
+        })
+        .map(([name, el]) => [
+          name,
+          renameSpec(el, (ref) => reuse.get(ref) ?? ref),
+        ]),
+    );
+    if (!Object.keys(kept).length) return;
+    next = addStep(next, { text: step.text, create: kept }, place);
+    place += 1;
   });
+  // A block that brings its own ink inks its figure too.
+  if (block.ink?.length) {
+    const paths = block.ink.map((through) => ({
+      through: through.map((ref) => renamed(ref, names)),
+    }));
+    next = {
+      ...next,
+      ink: {
+        text: next.ink?.text ?? 'Go over the lines of the pattern.',
+        paths: [...(next.ink?.paths ?? []), ...paths],
+      },
+    };
+  }
   return {
     draft: next,
+    steps: place - at,
     ...(block.tile ? { tile: names.get(block.tile) as string } : {}),
   };
+}
+
+/** The name of an element of the drawing that is the same figure. */
+function existing(scene: Scene, g: Geometry): string | undefined {
+  const eps = scene.tol.eps;
+  const close = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y) <= eps;
+  for (const el of scene.elements.values()) {
+    const h = el.geometry;
+    if (g.kind === 'point' && h.kind === 'point' && close(g.at, h.at))
+      return el.name;
+    if (g.kind === 'circle' && h.kind === 'circle')
+      if (
+        close(g.circle.centre, h.circle.centre) &&
+        Math.abs(g.circle.radius - h.circle.radius) <= eps
+      )
+        return el.name;
+    if (g.kind === 'line' && h.kind === 'line') {
+      const d = {
+        x: g.line.point.x - h.line.point.x,
+        y: g.line.point.y - h.line.point.y,
+      };
+      const across = Math.abs(d.x * h.line.dir.y - d.y * h.line.dir.x);
+      const turn = Math.abs(
+        g.line.dir.x * h.line.dir.y - g.line.dir.y * h.line.dir.x,
+      );
+      if (across <= eps && turn <= eps) return el.name;
+    }
+    if (
+      g.kind === 'polygon' &&
+      h.kind === 'polygon' &&
+      g.vertices.length === h.vertices.length &&
+      g.vertices.every((v) => h.vertices.some((w) => close(v, w)))
+    )
+      return el.name;
+  }
+  return undefined;
 }
 
 /** The tool a block works as while its inputs are clicked. */
@@ -518,13 +638,10 @@ export const blockTool = (block: Block): Tool => ({
 /** Every name an element refers to (base names: k for k.1). */
 export function refsOf(el: ElementSpec): string[] {
   const seen = new Set<string>();
-  const spy = {
-    get: (k: string) => {
-      seen.add(k);
-      return undefined;
-    },
-  } as unknown as ReadonlyMap<string, string>;
-  renameSpec(el, spy);
+  renameSpec(el, (ref) => {
+    seen.add(ref);
+    return ref;
+  });
   return [...seen];
 }
 

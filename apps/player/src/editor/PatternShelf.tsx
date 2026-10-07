@@ -242,12 +242,18 @@ function PatternCard({
           <a className="button watch" href={`#/edit/${pattern.id}`}>
             Edit
           </a>
-          {ready ? (
+          {file ? (
             <a className="button result" href={`#/mine/${pattern.id}`}>
               Play
             </a>
           ) : (
-            <span className="not-yet">Tile and ink it to play</span>
+            <span className="not-yet">
+              {!tutorial.pattern?.cell
+                ? 'Tile and ink it to play'
+                : ready && !scene
+                  ? 'Checking…'
+                  : 'Ink it to play'}
+            </span>
           )}
           <button
             type="button"

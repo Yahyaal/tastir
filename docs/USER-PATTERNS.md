@@ -49,6 +49,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - [x] **4.1 The block format and insertion.** A block is a few steps with named inputs; inserting it fills the inputs from clicks and adds ordinary steps.
 - [x] **4.2 The starter shelf.** Divide a circle by 4, 6, 8, 12 and 16; the static and dynamic squares; a ring of touching circles; the square and hexagon tile round a circle; A. J. Lee's rosette.
 - [x] **4.3 Save my steps as a block.** *Test:* insert “Divide a circle into eight” on a drawn circle; its three steps appear, each undoable.
+- [x] **4.4 Fixes from the tester's phase 4 report.** The Touching text says from the drawing which circle was chosen (inside and touching from within, outside, or going round it), with a test for each case; Lee's rosette brings its own ink, so it is a rosette at once; in Ink, a click inks the whole run of a line between marked points or another shape's side (Whole lines between points, on by default); blocks reuse what the drawing already has (the same line, circle, point or crossings) and leave out steps that would add nothing; with no circle yet the blocks panel says to draw one first; the status line has a fixed height, so no hint moves the drawing; tile choices read “the larger square” and “the smaller square”; Play shows on My patterns only when the ink closes pieces.
 
 ### Phase 5: share
 
@@ -76,6 +77,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - Phase 4 went in as one commit: the three tasks grew in the same two files (blocks.ts, Editor.tsx) and could not be split afterwards without reverting the working tree. Next time, commit 4.1's core before writing 4.2's blocks. (7 October)
 - A block's internal names must be unique across all its steps (a circle `h1` and a corner `h1` clashed after renaming); blocks.spec.ts now checks every block for it. Blocks pick crossings by `nearest`/`farthest` a clicked point or by `points` (all crossings), never by angle, so they work on any circle, not only one about O. (7 October)
 - A share link carries the pattern in the address after `#/shared/`: JSON, compressed with the browser's `CompressionStream('deflate-raw')` (prefix z) or plain (prefix j, where there is none, as in jsdom), in URL-safe base64. A library tutorial travels by its id, a learner's own pattern whole; either way the design (inking, colours, look, grout) goes with it. Fetch before pulling: `git pull --rebase` refuses with uncommitted work in the tree, while `git fetch` and a later pull do not. (7 October)
+- `grep "error TS"` misses tsc's coloured output, so a typecheck that failed looked clean; check for `Successfully` (or `failed`) in Nx's summary line instead. (7 October)
 
 ## Tester reports
 

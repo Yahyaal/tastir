@@ -2,7 +2,8 @@ import example from '@tutorials/eight-fold-star-and-cross.json';
 import { cellOf } from '@tastir/engine';
 import { parseTutorial } from '@tastir/schema';
 import { insertBlock, STARTER_BLOCKS } from './blocks';
-import { check, copyUpTo, type Draft } from './document';
+import { check, copyUpTo, pointPlaces, type Draft } from './document';
+import { inkableOf, runOf, withTile } from './finish';
 
 const circleOnly = copyUpTo(parseTutorial(example), 1);
 const onCircle = [
@@ -67,13 +68,52 @@ describe('the starter blocks', () => {
     },
   );
 
-  it('gives every element a fresh name, keeping the drawing’s own', () => {
-    const block = STARTER_BLOCKS.find((b) => b.id === 'divide-8');
-    if (!block) throw new Error();
-    const once = insertBlock(circleOnly, block, onCircle, 1).draft;
-    const twice = insertBlock(once, block, onCircle, once.steps.length).draft;
-    const names = twice.steps.flatMap((s) => Object.keys(s.create ?? {}));
+  it('reuses what the drawing already has, and adds only what is new', () => {
+    const find = (id: string) => {
+      const b = STARTER_BLOCKS.find((x) => x.id === id);
+      if (!b) throw new Error(id);
+      return b;
+    };
+    const eighths = insertBlock(circleOnly, find('divide-8'), onCircle, 1);
+    expect(eighths.steps).toBe(3);
+    // The square tile needs the line through the centre and the one square
+    // to it, both drawn already: only its tangents and corners are added.
+    const tile = insertBlock(eighths.draft, find('square-tile'), onCircle, 4);
+    expect(tile.steps).toBe(2);
+    expect(check(tile.draft).status.size).toBe(6);
+    expect([...check(tile.draft).status.values()].every((s) => s.ok)).toBe(
+      true,
+    );
+    // The same block again adds nothing.
+    expect(insertBlock(tile.draft, find('divide-8'), onCircle, 6).steps).toBe(
+      0,
+    );
+    const names = tile.draft.steps.flatMap((s) => Object.keys(s.create ?? {}));
     expect(new Set(names).size).toBe(names.length);
-    expect(check(twice).status.size).toBe(7);
+  });
+
+  it('brings the rosette’s own ink', () => {
+    const lee = STARTER_BLOCKS.find((b) => b.id === 'lee-rosette-8');
+    if (!lee) throw new Error();
+    const { draft } = insertBlock(circleOnly, lee, onCircle, 1);
+    expect(draft.ink?.paths).toHaveLength(16);
+  });
+});
+
+describe('inking whole runs', () => {
+  it('inks a petal line of the rosette in one click, from point to point', () => {
+    const lee = STARTER_BLOCKS.find((b) => b.id === 'lee-rosette-8');
+    const tile = STARTER_BLOCKS.find((b) => b.id === 'square-tile');
+    if (!lee || !tile) throw new Error();
+    const one = insertBlock(circleOnly, lee, onCircle, 1);
+    const two = insertBlock(one.draft, tile, onCircle, one.draft.steps.length);
+    const draft = withTile(two.draft, two.tile ?? '');
+    const { scene } = check(draft);
+    const inkable = inkableOf(draft, scene);
+    if (!inkable) throw new Error('no tile');
+    const named = pointPlaces(scene).map((p) => p.at);
+    const runs = inkable.pieces.map((p) => runOf(inkable, p.id, named, scene));
+    // Some lines are cut into several bits; a click takes them all.
+    expect(Math.max(...runs.map((r) => r.length))).toBeGreaterThan(1);
   });
 });

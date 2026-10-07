@@ -1,4 +1,4 @@
-import { distance, type InkPiece, type Vec } from '@tastir/engine';
+import { distance, type InkPiece, type Scene, type Vec } from '@tastir/engine';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   addStep,
@@ -8,9 +8,9 @@ import {
   deleteWithDependents,
   dependents,
   moveStep,
-  describe,
   plainReason,
   specsOf,
+  pointPlaces,
   type Draft,
   type StepStatus,
 } from './document';
@@ -31,7 +31,9 @@ import { EditorDrawing } from './EditorDrawing';
 import {
   foldOf,
   imagesOf,
+  shapeName,
   inkableOf,
+  runOf,
   isMotif,
   inTile,
   tileWarning,
@@ -221,7 +223,12 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
           ? withTile(made.draft, made.tile)
           : made.draft;
       const { status } = check(next);
-      const count = block.steps.length;
+      const count = made.steps;
+      if (!count) {
+        setBlock(undefined);
+        setSaid('Everything this block draws is already in the drawing.');
+        return;
+      }
       for (let id = at + 1; id <= at + count; id++) {
         const st = status.get(id);
         if (st && !st.ok) {
@@ -345,6 +352,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   const [mode, setMode] = useState<'construct' | 'ink'>('construct');
   const [panel, setPanel] = useState<'step' | 'about' | 'blocks'>('step');
   const [symmetric, setSymmetric] = useState(true);
+  const [wholeRuns, setWholeRuns] = useState(true);
   const cellName = draft.pattern?.cell;
   const inkable = useMemo(
     () =>
@@ -363,9 +371,18 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   );
   const toggle = (id: string) => {
     if (!inkable) return;
-    const ids = symmetric
-      ? imagesOf(inkable, id, draft.fold, !draft.chiral)
+    // A whole run between marked points, and its symmetric copies.
+    const run = wholeRuns
+      ? runOf(
+          inkable,
+          id,
+          pointPlaces(checked.scene).map((p) => p.at),
+          checked.scene,
+        )
       : [id];
+    const ids = symmetric
+      ? run.flatMap((r) => imagesOf(inkable, r, draft.fold, !draft.chiral))
+      : run;
     const next = new Set(chosen);
     const on = !chosen.has(id);
     for (const i of ids) {
@@ -514,6 +531,14 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
                   onChange={(e) => setSymmetric(e.target.checked)}
                 />
                 Keep it symmetric
+              </label>
+              <label className="tool">
+                <input
+                  type="checkbox"
+                  checked={wholeRuns}
+                  onChange={(e) => setWholeRuns(e.target.checked)}
+                />
+                Whole lines between points
               </label>
               <label className="tool">
                 Fold
@@ -744,6 +769,9 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
             />
           ) : panel === 'blocks' ? (
             <BlocksPanel
+              hasCircle={[...checked.scene.elements.values()].some(
+                (el) => el.geometry.kind === 'circle',
+              )}
               onUse={(b) => {
                 setMode('construct');
                 setTargets([]);
@@ -762,7 +790,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               last={draft.steps.length}
               dependents={dependents(checked, step.id)}
               tile={cellName}
-              say={(name) => describe(name, specsOf(draft), { scene })}
+              say={(name) => shapeWords(checked.scene, step.create ?? {}, name)}
               motif={(name) => isMotif(checked.scene, name)}
               onTile={(name) => {
                 const next = withTile(draft, name);
@@ -1037,6 +1065,41 @@ function StepPanel({
   );
 }
 
+/**
+ * A shape of a step in plain words, told apart from the step's other
+ * shapes by kind and size: “the larger square”, “the hexagon”.
+ */
+function shapeWords(
+  scene: Scene,
+  create: Readonly<Record<string, unknown>>,
+  name: string,
+): string {
+  const shapes = Object.keys(create).flatMap((n) => {
+    const g = scene.elements.get(n)?.geometry;
+    return g?.kind === 'polygon'
+      ? [{ n, kind: shapeName(g.vertices), size: areaOf(g.vertices) }]
+      : [];
+  });
+  const me = shapes.find((x) => x.n === name);
+  if (!me) return 'this shape';
+  const alike = shapes.filter((x) => x.kind === me.kind);
+  if (alike.length === 1) return `the ${me.kind}`;
+  const rank = alike.sort((a, b) => b.size - a.size).indexOf(me);
+  const word =
+    alike.length === 2
+      ? ['larger', 'smaller'][rank]
+      : `${['first', 'second', 'third', 'fourth'][rank] ?? 'next'} largest`;
+  return `the ${word} ${me.kind}`;
+}
+
+const areaOf = (vs: readonly Vec[]) =>
+  Math.abs(
+    vs.reduce((s, a, i) => {
+      const b = vs[(i + 1) % vs.length] as Vec;
+      return s + a.x * b.y - a.y * b.x;
+    }, 0) / 2,
+  );
+
 /** The bit of line nearest a click, within reach. */
 function nearestPiece(
   pieces: readonly InkPiece[],
@@ -1061,7 +1124,14 @@ function nearestPiece(
 }
 
 /** The building blocks to insert: the starter shelf and the learner's own. */
-function BlocksPanel({ onUse }: { onUse: (block: Block) => void }) {
+function BlocksPanel({
+  hasCircle,
+  onUse,
+}: {
+  /** Whether there is a circle to work on yet. */
+  hasCircle: boolean;
+  onUse: (block: Block) => void;
+}) {
   const [mine, setMine] = useState(listBlocks);
   const [asking, setAsking] = useState<string>();
   const card = (b: Block, own: boolean) => (
@@ -1111,8 +1181,14 @@ function BlocksPanel({ onUse }: { onUse: (block: Block) => void }) {
         <h2>Building blocks</h2>
         <p className="hint">
           A few steps at once. Choose one, then click what it asks for; its
-          steps are added as ordinary steps.
+          steps are added as ordinary steps, using what is already drawn.
         </p>
+        {hasCircle ? null : (
+          <p className="hint lost">
+            These blocks work on a circle: draw one with the Compass first
+            (click O, then A).
+          </p>
+        )}
         <ul>{STARTER_BLOCKS.map((b) => card(b, false))}</ul>
       </section>
       {mine.length ? (

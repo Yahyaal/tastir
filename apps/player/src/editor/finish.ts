@@ -265,6 +265,54 @@ export function withInk(
   };
 }
 
+/**
+ * The run of bits a click inks at once: along the same line or shape side,
+ * from the clicked bit on in both directions, until a named point (a
+ * place the steps marked), a crossing with another shape, or the end of
+ * the line inside the tile. So one click inks a whole side, not one of
+ * its tiny dashes.
+ */
+export function runOf(
+  inkable: Inkable,
+  id: string,
+  named: readonly Vec[],
+  scene?: Scene,
+): string[] {
+  const along = inkable.paths.get(id)?.along;
+  if (!along) return [id];
+  const same = inkable.pieces.filter(
+    (p) => inkable.paths.get(p.id)?.along === along,
+  );
+  const at = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y) < 1e-6;
+  // A run also stops where another shape's side crosses it (the two
+  // squares of a star cross there), but runs on across construction lines
+  // and circles.
+  const shapes = scene
+    ? [...scene.elements.values()].filter(
+        (el) => el.geometry.kind === 'polygon' && el.name !== along,
+      )
+    : [];
+  const stop = (p: Vec) =>
+    named.some((q) => at(p, q)) ||
+    shapes.some((el) => scene !== undefined && onCurve(scene, el.name, p));
+  const run = new Set([id]);
+  const start = same.find((p) => p.id === id);
+  if (!start) return [id];
+  for (const end of [start.segment.a, start.segment.b]) {
+    let tip = end;
+    for (;;) {
+      if (stop(tip)) break;
+      const next = same.find(
+        (p) => !run.has(p.id) && (at(p.segment.a, tip) || at(p.segment.b, tip)),
+      );
+      if (!next) break;
+      run.add(next.id);
+      tip = at(next.segment.a, tip) ? next.segment.b : next.segment.a;
+    }
+  }
+  return [...run];
+}
+
 const key = (p: Vec) =>
   `${p.x.toFixed(5)},${p.y.toFixed(5)}`.replace(/-0\.00000/g, '0.00000');
 const pairKey = (a: Vec, b: Vec) => [key(a), key(b)].sort().join('|');
