@@ -225,4 +225,31 @@ I tested from a frozen worktree of commit bae3a46, with my own server on port 43
 
 **The rosette block.** On a fresh circle, “A. J. Lee's rosette (eight-fold)” added 7 steps whose texts follow Lee's method clearly: the octagon and its side middles, the star lines, a circle about each corner, then halving lines and petal lines back to the inner point (09). The construction looks right, with a ring of sixteen petal points round an inner octagon. But it is drawn with full-length lines, so the drawing is a dense mesh, and nothing on screen looks like a rosette until it is inked. Inking it is impractical. Every petal side is cut into many tiny bits by the other construction lines, and each click inks one bit (with its 8 copies), so after four clicks I had only short dashes (12–14). A block like this should bring its own ink, as the library tutorials do, or offer “ink this block's figure”. As it stands, the rosette block gives a correct construction but not, for a learner, a real-looking rosette.
 
-(The rest follows below.)
+**My own block, mixed with my own steps.** In the step panel, “Save as a building block” takes a range (“Steps 2 to 6”) and a name. Saving said “Saved ‘Octagon and star lines’. It is under Building blocks, asking for 1 thing to click” (15). The block then appears under “My blocks” with a Delete button (16). In a new pattern (called “My pattern 3”, so names are now distinct), I drew a circle and inserted my block. It asked “Click the circle about O through A (the one the steps used)” and added its 5 steps (17). I then added a Compass step of my own. One Undo removed my step, a second Undo removed the whole insertion at once, and Redo put the five steps back (18). That is exactly what a learner would hope for.
+
+**Re-check of 3.3 and 3.4.**
+- **Shorter text, no duplicates:** a line drawn with ×8 now reads “Draw a line through O and A, turned round the centre in steps of 45°”, and the ×8 polygon reads “…P1, P2 and P3 are crossings of lines already drawn”. Both are short and plain.
+- **Tile hint:** the Tile tool now says “For a star or rosette, draw a square around the circle, touching it, and click its corners”.
+- **The S1 offer:** instead of offering S1 as a tile, the panel says “This shape is part of the pattern, not a tile that holds it” (20).
+- **Small tile warning:** a tile drawn on the four diagonal points is now followed by “Much of the drawing lies outside this tile, and only what is inside it can be inked” (25).
+- **Fold and symmetry:** Fold follows the symmetry (6 for a ×6 pattern). Symmetry is remembered after a reload (×8).
+- **Piece names:** the from-nothing star and cross plays with pieces named “star” and “cross” (24).
+- **Stable drawing:** turning symmetry on no longer moves the drawing (1 px). Choosing the Tile tool still does: its two-line hint shrinks the drawing by 29 px (A moves from 738,438 to 729,424). This happens before any click, so it is mild.
+
+**Re-check of 2.9 (my phase 2 items).**
+- **Fixed:** step texts now say “square to the horizontal line” and “the circle about O through E”, with no stray A. The credit to the original cannot be removed (“The credit to the original always stays”), and the photos text is plain. The download is named after the pattern's title (`star-and-cross-mine.json`). Cards on My patterns show the wall once the pattern plays (28). Deleting a pattern with a design now asks “It has one saved design, which cannot open without it”, with Delete it and its designs, Only the pattern and Keep it (28). The Touching error is plain: “No one circle about that centre touches all of them. Try fewer lines or circles to touch.”
+- **Still cryptic:** the Bou Inania tile buttons now differ, but read “Use the shape PN1–PN2–M1460–PN3 as the tile” and “…K21–K16–M1460–K19…”, which mean nothing to a learner. “The panel's square” and “the inner square” would.
+
+**Real bugs**
+
+1. **The Touching text can say the wrong side.** With the centre P1 inside the first circle (the middle of the N–E chord), I chose the smaller of the two dashed circles. The step text says it “touches the circle about O through E, the smaller circle that just touches it from outside”. That small circle sits inside the first circle and touches it from inside.
+2. **The rosette block cannot be inked into a rosette in practice.** Its petal and star lines are cut into many tiny bits, and the block brings no ink (12–14). A learner gets a correct mesh but no rosette.
+3. **Blocks redraw lines that already exist.** Inserting three blocks on one circle repeats the same three opening steps three times (07).
+
+**Suggestions**
+
+4. A block cannot start a pattern. On a new pattern every block asks for a circle that is not there and only says “There is no circle there” (03, 04). The block list could say “Draw a circle first”, or a block could draw it.
+5. The Tile hint wraps to two lines and shrinks the drawing (see above).
+6. My pattern 2 (the rosette with a few dashes of ink) shows Play on the shelf, although its ink closes no pieces.
+
+My verdict: building blocks work as promised. Inserting, saving my own block, reusing it, mixing it with my own steps and undoing an insertion are all smooth, and the 2.9, 3.3 and 3.4 fixes hold almost everywhere. The rosette block needs its own ink before it gives a learner a rosette, and the Touching side text needs a check.
