@@ -29,10 +29,13 @@ const isObject = (x: unknown): x is Record<string, unknown> =>
  * file (from the library or the editor). Anything else, or a file whose
  * steps the engine cannot even read, gives the reason in plain words.
  */
-export function readPattern(
-  text: string,
-):
-  | { readonly tutorial: Draft; readonly basedOn?: UserPattern['basedOn'] }
+export function readPattern(text: string):
+  | {
+      readonly tutorial: Draft;
+      readonly basedOn?: UserPattern['basedOn'];
+      /** Whether it was a pattern file, not a plain tutorial file. */
+      readonly pattern: boolean;
+    }
   | { readonly reason: string } {
   let data: unknown;
   try {
@@ -68,6 +71,7 @@ export function readPattern(
   const basedOn =
     wrapped && isObject(data['basedOn']) ? data['basedOn'] : undefined;
   return {
+    pattern: wrapped,
     tutorial: (full.success ? full.tutorial : tutorial) as Draft,
     ...(basedOn ? { basedOn: basedOn as UserPattern['basedOn'] } : {}),
   };

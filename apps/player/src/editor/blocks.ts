@@ -29,6 +29,9 @@ export interface Block {
   readonly steps: readonly BlockStep[];
   /** The polygon that becomes the tile, when the block makes one. */
   readonly tile?: string;
+  /** Where a specific construction comes from: added to the credits of
+   * any pattern the block is inserted into, so its file names it too. */
+  readonly credits?: readonly Draft['credits'][number][];
   /** Ink paths through the block's named points, for a block that makes
    * a figure (the rosette), so it looks like itself at once. */
   readonly ink?: readonly (readonly string[])[];
@@ -185,6 +188,13 @@ function leeRosette(): BlockStep[] {
     petals[`H${k}`] = pt(`w${k}`, st(k - 1));
     petals[`ql${k}`] = ln(`H${k}`, `C${k}`);
   }
+  const inner: Record<string, ElementSpec> = {};
+  for (let k = 0; k < n; k++) {
+    // The petal line from M(k) turns at C(k) and runs on to the spoke
+    // through the next side's middle, where it meets its mirror image.
+    inner[`X${k}`] = pt(`pl${k}`, `mp${(k + 1) % n}`);
+    inner[`Y${k}`] = pt(`ql${k}`, `mp${k}`);
+  }
   return [
     {
       text: 'Join the eight points into an octagon, and mark the middle of each side, where the line from the centre square to it meets it.',
@@ -201,6 +211,10 @@ function leeRosette(): BlockStep[] {
     {
       text: 'At each corner, halve the angle between that inner point and each side’s middle; where the halving line meets the star line, draw the petal line back to the inner point.',
       create: petals,
+    },
+    {
+      text: 'Carry each petal line on past the inner point to the line from the centre to the next side’s middle: these crossings are the points of the central star.',
+      create: inner,
     },
   ];
 }
@@ -362,11 +376,19 @@ export const STARTER_BLOCKS: readonly Block[] = [
     text: 'The petals and star of an eight-fold rosette, drawn round an octagon by Anthony Lee’s method.',
     inputs: ON_A_CIRCLE,
     steps: [OPPOSITE, QUARTERS, EIGHTHS, ...leeRosette()],
+    credits: [
+      {
+        source:
+          'Anthony J. Lee’s method for rosettes, as generalised by Craig S. Kaplan',
+        creator: 'Anthony J. Lee; Craig S. Kaplan',
+        note: 'The rosette block follows Kaplan, “Islamic star patterns from polygons in contact” (2005): side middles, star lines, circles about the corners, halving lines and petals.',
+      },
+    ],
     // Each petal: from a side's middle along the star line to the halving
     // line, then back along the petal line to the spoke point.
     ink: Array.from({ length: 8 }, (_, k) => [
-      [`M${k}`, `G${k}`, `C${k}`],
-      [`M${(k + 1) % 8}`, `H${k}`, `C${k}`],
+      [`M${k}`, `G${k}`, `C${k}`, `X${k}`],
+      [`M${(k + 1) % 8}`, `H${k}`, `C${k}`, `Y${k}`],
     ]).flat(),
   },
 ];
@@ -570,6 +592,10 @@ export function insertBlock(
     next = addStep(next, { text: step.text, create: kept }, place);
     place += 1;
   });
+  // A block's source is credited in the pattern, once.
+  for (const credit of block.credits ?? [])
+    if (!next.credits.some((c) => c.source === credit.source))
+      next = { ...next, credits: [...next.credits, credit] };
   // A block that brings its own ink inks its figure too.
   if (block.ink?.length) {
     const paths = block.ink.map((through) => ({

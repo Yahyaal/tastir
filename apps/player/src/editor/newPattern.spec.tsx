@@ -7,37 +7,46 @@ afterEach(() => {
 });
 
 describe('new pattern', () => {
-  it('opens the editor from the home page with only O and A, and says what to click first', () => {
-    render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: 'New pattern' }));
-    const id = listPatterns()[0]?.id ?? '';
-    expect(window.location.hash).toBe(`#/edit/${id}`);
-    act(() => {
-      window.dispatchEvent(new HashChangeEvent('hashchange'));
-    });
-    expect(document.querySelectorAll('.editor-step')).toHaveLength(0);
-    expect(
-      screen.getByText(/Start with the compass: click O, then A/),
-    ).toBeTruthy();
-    expect(screen.getByRole('textbox', { name: 'Title' })).toHaveProperty(
-      'value',
-      'My pattern',
-    );
-  });
+  it(
+    'opens the editor from the home page with only O and A, and says what to click first',
+    { timeout: 30_000 },
+    () => {
+      render(<App entries={[]} />);
+      fireEvent.click(screen.getByRole('button', { name: 'New pattern' }));
+      const id = listPatterns()[0]?.id ?? '';
+      expect(window.location.hash).toBe(`#/edit/${id}`);
+      act(() => {
+        window.dispatchEvent(new HashChangeEvent('hashchange'));
+      });
+      expect(document.querySelectorAll('.editor-step')).toHaveLength(0);
+      expect(
+        screen.getByText(/Start with the compass: click O, then A/),
+      ).toBeTruthy();
+      expect(screen.getByRole('textbox', { name: 'Title' })).toHaveProperty(
+        'value',
+        'My pattern',
+      );
+    },
+  );
 
-  it('is also offered beside my patterns once there are some', () => {
-    render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: 'New pattern' }));
-    act(() => {
-      window.dispatchEvent(new HashChangeEvent('hashchange'));
-    });
-    act(() => {
-      window.location.hash = '';
-      window.dispatchEvent(new HashChangeEvent('hashchange'));
-    });
-    const shelf = screen.getByRole('region', { name: 'My patterns' });
-    expect(shelf.querySelector('.new-pattern button')?.textContent).toBe(
-      'New pattern',
-    );
-  });
+  // Slow in the full parallel run, like the other home page tests.
+  it(
+    'is also offered beside my patterns once there are some',
+    { timeout: 30_000 },
+    () => {
+      render(<App entries={[]} />);
+      fireEvent.click(screen.getByRole('button', { name: 'New pattern' }));
+      act(() => {
+        window.dispatchEvent(new HashChangeEvent('hashchange'));
+      });
+      act(() => {
+        window.location.hash = '';
+        window.dispatchEvent(new HashChangeEvent('hashchange'));
+      });
+      const shelf = screen.getByRole('region', { name: 'My patterns' });
+      expect(shelf.querySelector('.new-pattern button')?.textContent).toBe(
+        'New pattern',
+      );
+    },
+  );
 });

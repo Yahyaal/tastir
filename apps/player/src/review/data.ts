@@ -35,6 +35,33 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'lee-rosette-block',
+    title: 'The rosette building block (new)',
+    fold: 8,
+    status: 'decide',
+    summary:
+      'A building block in the editor that draws an eight-fold rosette round a circle by Anthony Lee’s method, and inks it.',
+    story: [
+      'In the editor, Building blocks has “A. J. Lee’s rosette (eight-fold)”. On a circle it adds eight steps, all ruler and compass: the octagon’s side middles, the star lines, a circle about each corner, the halving lines and petal lines, and where the petal lines meet past the inner points. It inks itself, so with the square tile round the circle it plays at once.',
+      'The result (A) has the same structure as our sixteen-fold rosette (B): a star in the middle and a ring of petals, with six corners each. It is credited to Anthony Lee and to Craig Kaplan, whose paper generalises the method, and any pattern that uses the block keeps that credit in its file.',
+    ],
+    pictures: [
+      {
+        src: 'renders/user-patterns/lee/a-rosette-block.png',
+        caption:
+          'A: a new pattern with one circle, the rosette block and the square tile block, played to the colour stage.',
+      },
+      {
+        src: 'renders/user-patterns/lee/b-sixteen-fold-rosette.png',
+        caption: 'B: our sixteen-fold rosette, for comparison.',
+      },
+    ],
+    asks: [
+      'Does A read as a real eight-fold rosette, or should its petals or the lines round it change?',
+    ],
+    sources: [],
+  },
+  {
     id: 'photos-of-originals',
     title: 'Compare with the original (new)',
     fold: 4,
@@ -1248,7 +1275,24 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'lee-rosette-block',
+    text: 'Is the rosette block’s result (A) a real eight-fold rosette, like our sixteen-fold one (B)?',
+    choices: ['Yes, it is a rosette', 'No, see my note'],
+    pictures: [
+      {
+        src: 'renders/user-patterns/lee/a-rosette-block.png',
+        caption: 'A: the rosette block, played.',
+      },
+      {
+        src: 'renders/user-patterns/lee/b-sixteen-fold-rosette.png',
+        caption: 'B: the sixteen-fold rosette.',
+      },
+    ],
+    card: 'lee-rosette-block',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
@@ -1270,11 +1314,31 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '6 October 2026',
+  updated: '7 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
-      title: 'My designs: your inking and colors are kept',
+      title: 'Your own patterns, phase 5: share',
+      text: 'A pattern can be kept as a file and opened again from the home page in any browser, and “Copy a share link” at the colour stage puts the pattern with its colours in one address: whoever opens it sees the same wall and can keep a copy. A finished pattern can be sent to us: the learner’s name goes into its credits and the file is ready for the library.',
+      link: { label: 'Try it', href: '/#/eight-fold-star-and-cross/result' },
+    },
+    {
+      title: 'Your own patterns, phase 4: building blocks',
+      text: 'In the editor, Building blocks adds a few steps at once on a circle: divide it into 4, 6, 8, 12 or 16, the two squares of the eight-pointed star, a ring of touching circles, the square or hexagon tile round it, and Anthony Lee’s eight-fold rosette, which inks itself. A block reuses what is already drawn, one Undo takes it out, and learners can save their own steps as a block.',
+      link: { label: 'Try it', href: '/#/' },
+    },
+    {
+      title: 'Your own patterns, phase 3: from nothing',
+      text: '“New pattern” on the home page opens the editor with only the centre and one point. Symmetry mode turns everything you draw round the centre four to sixteen times, so the eight-fold star and cross takes five clicked steps; our test rebuilds it that way and it passes the same checks as ours.',
+      link: { label: 'Try it', href: '/#/' },
+    },
+    {
+      title: 'Your own patterns, phase 2: the editor',
+      text: 'On any step of a tutorial, “Make my own copy from here” opens your copy in the editor: compass, ruler and the other tools click only points that exist, each step gets plain words you can edit, broken steps show in red with the reason, and Undo works. You choose the tile, ink the lines (their symmetric copies follow), and press Play to watch and colour your pattern like any tutorial. Your patterns are on the home page under My patterns.',
+      link: { label: 'Try it', href: '/#/eight-fold-star-and-cross' },
+    },
+    {
+      title: 'Your own patterns, phase 1: My designs',
       text: 'At the ink and color stages, “Save as my design” asks for a name in the page and keeps your inking, colors, wall style and grout in this browser. The home page then shows a “My designs” shelf above the patterns, each design drawn as its wall; clicking one opens its tutorial at the wall just as you left it, with “Save” to update it and “Save as new” to keep both. Each card can be renamed, or deleted after it asks. To try it, open the Comares bath stars, go to Ink, click “Make your own”, erase a few lines, recolor a piece at Color, save it as “Test”, then go back to all patterns.',
       link: { label: 'Try it', href: '/#/alhambra-bath-stars/result' },
     },
@@ -1445,9 +1509,9 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Your own patterns: all five phases are built',
-    text: 'Learners can save designs, copy any tutorial into the editor, draw a pattern from nothing with symmetry, insert building blocks (dividing a circle, the two squares, tiles round a circle, Lee’s rosette), keep and open pattern files, share a pattern with its colours as a link, and send a finished pattern to us with their name in the credits. The tester is checking the last phases; its reports and my fixes are in the build log.',
-    link: { label: 'Try it', href: '/#/' },
+    title: 'Your own patterns are ready for your look',
+    text: 'All five phases are built and tested by the tester. Start on the home page: try “New pattern”, or open a tutorial, go to a step and press “Make my own copy from here”. One question is waiting below: whether the rosette block looks right; and one item: which address learners should send their patterns to.',
+    link: { label: 'Start here', href: '/#/' },
   },
 
   next: [
@@ -1465,6 +1529,10 @@ export const PROGRESS: {
     },
   ],
   waiting: [
+    {
+      title: 'Where learners send their patterns',
+      text: '“Send it to the library” makes the file and tells the learner to send it to the Tastir team, but there is no address yet: the page shows “[the address the Tastir team will give here]”. Which email address, form or project page should it name? It is one line to change (LIBRARY_ADDRESS in the editor’s AboutPanel).',
+    },
     {
       title: 'Alhambra interlace',
       text: 'Needs a better source than the product page: a photo or drawing of the whole panel.',

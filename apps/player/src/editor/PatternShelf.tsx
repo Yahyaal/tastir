@@ -77,8 +77,13 @@ export function NewPattern() {
   const open = (text: string) => {
     const read = readPattern(text);
     if ('reason' in read) return setSaid(read.reason);
+    // A tutorial file (from the library) becomes one's own: “My …”.
+    const title =
+      read.basedOn || read.pattern
+        ? read.tutorial.title
+        : `My ${read.tutorial.title}`;
     const made = addPattern(
-      { ...read.tutorial, title: freeTitle(read.tutorial.title) },
+      { ...read.tutorial, title: freeTitle(title) },
       read.basedOn,
     );
     if (!made) return refused();

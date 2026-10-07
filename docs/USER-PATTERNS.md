@@ -56,6 +56,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - [x] **5.1 File.** Download a pattern as a file and open one.
 - [x] **5.2 Link.** A share link that carries the whole pattern in the address. *Test:* the link opens the same pattern, wall and colours in another browser.
 - [x] **5.3 Send to the library.** Makes the library-ready file with the maker in its credits and explains how it reaches the review page.
+- [x] **5.4 Fixes from the tester's final report.** The rosette block now carries its petal lines on to the points of the central star and inks them, so it plays as a real eight-fold rosette (a sixteen-cornered star ringed by eight six-cornered petals, as in our sixteen-fold rosette); blocks carry credits, and Lee's rosette credits Anthony Lee and Craig Kaplan in any pattern that uses it, kept in its files; “one kind of piece”; an opened library tutorial file becomes “My <title>”; “Send it to the library” names a placeholder address, asked about on the review page; the slow home page tests have room to run; the review page shows phases 1–5 as done, a question about the rosette with pictures, and the address as waiting.
 
 ## Lessons
 

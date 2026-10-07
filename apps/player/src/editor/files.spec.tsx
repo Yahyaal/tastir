@@ -23,7 +23,11 @@ describe('pattern files', () => {
     if (!p) throw new Error();
     const text = JSON.stringify(patternFile(p));
     const read = readPattern(text);
-    expect(read).toEqual({ tutorial: draft, basedOn: p.basedOn });
+    expect(read).toEqual({
+      pattern: true,
+      tutorial: draft,
+      basedOn: p.basedOn,
+    });
   });
 
   it('reads a library tutorial file too', () => {
@@ -55,7 +59,10 @@ describe('pattern files', () => {
       timeout: 5000,
     });
     expect(window.location.hash).toBe(`#/edit/${listPatterns()[0]?.id}`);
-    expect(listPatterns()[0]?.tutorial.title).toBe('Eight-fold star and cross');
+    // A library tutorial becomes one's own, so it is not mistaken for it.
+    expect(listPatterns()[0]?.tutorial.title).toBe(
+      'My Eight-fold star and cross',
+    );
   });
 
   it('shows why a file cannot be opened', async () => {

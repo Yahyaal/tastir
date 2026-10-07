@@ -266,8 +266,11 @@ export function AboutPanel({
         {file && 'tutorial' in file ? (
           <>
             <p className="step-status ok">
-              ✓ Complete: {file.tutorial.expect.pieceTypes} kinds of piece,
-              checked by the engine.
+              ✓ Complete:{' '}
+              {file.tutorial.expect.pieceTypes === 1
+                ? 'one kind of piece'
+                : `${file.tutorial.expect.pieceTypes} kinds of piece`}
+              , checked by the engine.
             </p>
             <button
               type="button"
@@ -348,6 +351,12 @@ export function libraryFile(
   };
 }
 
+/**
+ * Where learners send their library files. There is no server yet; the
+ * owner is asked on the review page which address or channel to name.
+ */
+export const LIBRARY_ADDRESS = '[the address the Tastir team will give here]';
+
 function SendToLibrary({ tutorial }: { tutorial: Tutorial }) {
   const [maker, setMaker] = useState('');
   const [note, setNote] = useState('');
@@ -357,9 +366,11 @@ function SendToLibrary({ tutorial }: { tutorial: Tutorial }) {
       <h3>Send it to the library</h3>
       <p className="hint">
         Good patterns can join the library for everyone. Write your name for the
-        credits, make the file and send it to the Tastir team. We check it with
-        the same engine as our own patterns, give it a golden test and show it
-        on our review page; if it joins the library, you are named with it.
+        credits, make the file and send it to the Tastir team at{' '}
+        {LIBRARY_ADDRESS}. There is no upload yet, so the file goes by hand. We
+        check it with the same engine as our own patterns, give it a golden test
+        and show it on our review page; if it joins the library, you are named
+        with it.
       </p>
       <label className="about-field">
         Your name, as it should appear
@@ -397,8 +408,8 @@ function SendToLibrary({ tutorial }: { tutorial: Tutorial }) {
       </button>
       {made ? (
         <p className="hint" role="status">
-          The file is downloaded. Send it to the Tastir team with a line about
-          where the design comes from.
+          The file is downloaded. Send it to the Tastir team at{' '}
+          {LIBRARY_ADDRESS}, with a line about where the design comes from.
         </p>
       ) : null}
     </div>
