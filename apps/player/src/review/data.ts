@@ -1445,8 +1445,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Building your own patterns: the editor',
-    text: 'Phase 1 (My designs) is done. Phase 2 has begun: on any step of a tutorial, “Make my own copy from here” opens your copy in the new editor, where you add steps with the compass, ruler and other tools by clicking only points that exist, edit each step’s text, undo, and see broken steps in red with the reason. Tiling, inking and Play come next.',
+    title: 'Your own patterns: phase 2 is built, the tester is checking it',
+    text: 'The editor is done. On any step of a tutorial, “Make my own copy from here” opens your copy; you add steps with the compass, ruler and other tools by clicking only points that exist, choose the tile, ink the lines (symmetric copies follow), and press Play to watch and colour it like any tutorial, or save it as a design. Your patterns are listed on the home page under My patterns. The editor can also fill in credits, photos and level and download a library-ready file.',
     link: { label: 'Try it', href: '/#/eight-fold-star-and-cross' },
   },
 
