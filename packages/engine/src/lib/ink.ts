@@ -1,5 +1,10 @@
-import type { Tutorial } from '@tastir/schema';
-import { distanceToSegment, TutorialError, type Scene } from './evaluate.js';
+import type { InkAlong, InkEnd, Tutorial } from '@tastir/schema';
+import {
+  crossingOf,
+  distanceToSegment,
+  TutorialError,
+  type Scene,
+} from './evaluate.js';
 import { project, segment, type Segment } from './shapes.js';
 import { distance, sub, type Vec } from './vec.js';
 
@@ -28,6 +33,10 @@ export function inkStrokes(scene: Scene, tutorial: Tutorial): InkStroke[] {
       if (!g) return fail(`"${name}" does not exist`);
       return g.kind === 'point' ? g.at : fail(`"${name}" is not a point`);
     };
+    if ('along' in path) {
+      strokes.push(alongStroke(scene, path, fail));
+      return;
+    }
     const names = path.closed
       ? [...path.through, path.through[0] as string]
       : path.through;
@@ -73,6 +82,56 @@ export function inkStrokes(scene: Scene, tutorial: Tutorial): InkStroke[] {
     }
   });
   return strokes;
+}
+
+/**
+ * An ink path along one line or polygon side, from where it meets one
+ * element to where it meets another. It must run along the element it
+ * names: on the line, or within one side of the polygon.
+ */
+function alongStroke(
+  scene: Scene,
+  path: InkAlong,
+  fail: (reason: string) => never,
+): InkStroke {
+  const { eps } = scene.tol;
+  const along = scene.elements.get(path.along)?.geometry;
+  if (!along) return fail(`"${path.along}" does not exist`);
+  if (along.kind !== 'line' && along.kind !== 'polygon')
+    return fail(`ink runs along a line or a polygon, not "${path.along}"`);
+  const end = (e: InkEnd): { name: string; at: Vec } => {
+    if (typeof e === 'string') {
+      const g = scene.elements.get(e)?.geometry;
+      if (g?.kind === 'point') return { name: e, at: g.at };
+    }
+    const cross = typeof e === 'string' ? e : e.cross;
+    const pick = typeof e === 'string' ? undefined : e.pick;
+    return {
+      name: `${path.along}×${cross}`,
+      at: crossingOf(scene, [path.along, cross], pick, fail),
+    };
+  };
+  const from = end(path.from);
+  const to = end(path.to);
+  const { at: a } = from;
+  const { at: b } = to;
+  if (distance(a, b) <= eps)
+    fail(`its two ends are the same point (${from.name} and ${to.name})`);
+  if (along.kind === 'line') {
+    for (const { name, at } of [from, to]) {
+      if (distance(at, project(at, along.line)) > eps)
+        fail(`"${name}" is not on "${path.along}"`);
+    }
+  } else if (
+    !along.sides.some(
+      (s) => distanceToSegment(a, s) <= eps && distanceToSegment(b, s) <= eps,
+    )
+  ) {
+    fail(
+      `"${from.name}" and "${to.name}" are not on one side of "${path.along}"`,
+    );
+  }
+  return { from: from.name, to: to.name, segment: segment(a, b) };
 }
 
 /** Directions are compared in buckets of this many radians. */

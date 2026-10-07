@@ -222,9 +222,36 @@ export const Step = z
     message: 'a step has either create or parts, not both and not neither',
   });
 
-export const InkPath = z.strictObject({
+/** An ink path through named points, in order. */
+export const InkThrough = z.strictObject({
   closed: z.boolean().optional(),
   through: z.array(Ref).min(2, 'an ink path goes through at least two points'),
+});
+
+/**
+ * Where an ink path along a line stops: a point on it, or where it crosses
+ * another element (a pick chooses when they cross more than once).
+ */
+export const InkEnd = z.union(
+  [Ref, z.strictObject({ cross: Ref, pick: Pick.optional() })],
+  {
+    error:
+      'an ink end is the name of a point or of the element it stops at, or { cross, pick }',
+  },
+);
+
+/**
+ * An ink path along one line or polygon side, between the two elements it
+ * runs between, so no step has to mark its ends.
+ */
+export const InkAlong = z.strictObject({
+  along: Ref,
+  from: InkEnd,
+  to: InkEnd,
+});
+
+export const InkPath = z.union([InkThrough, InkAlong], {
+  error: 'an ink path is { through: [points], closed? } or { along, from, to }',
 });
 
 export const Credit = z.strictObject({
@@ -373,6 +400,9 @@ export type Pick = z.infer<typeof Pick>;
 export type Symmetry = z.infer<typeof Symmetry>;
 export type Placements = z.infer<typeof Placements>;
 export type InkPath = z.infer<typeof InkPath>;
+export type InkThrough = z.infer<typeof InkThrough>;
+export type InkAlong = z.infer<typeof InkAlong>;
+export type InkEnd = z.infer<typeof InkEnd>;
 export type Photo = z.infer<typeof Photo>;
 export type Expect = z.infer<typeof Expect>;
 export type ExpectedPiece = z.infer<typeof ExpectedPiece>;

@@ -142,6 +142,39 @@ describe('rejected tutorials', () => {
     ]);
   });
 
+  it('accepts ink along a line, between two elements or points', () => {
+    const input = variant((t) => {
+      t.ink.paths.push(
+        { along: 'tE', from: 'tN', to: 'tS' },
+        { along: 'h', from: 'O', to: { cross: 'c', pick: { angle: 0 } } },
+      );
+    });
+    expect(problems(input)).toEqual([]);
+  });
+
+  it('checks the names in ink along a line', () => {
+    const input = variant((t) => {
+      t.ink.paths = [
+        { along: 'c', from: 'Q', to: { cross: 'E', pick: { nearest: 'h' } } },
+      ];
+    });
+    expect(problems(input)).toEqual([
+      'ink.paths[0].along: "c" is a circle, but this needs line or polygon',
+      'ink.paths[0].from: "Q" is not defined by any earlier step',
+      'ink.paths[0].to.cross: "E" is a point, but this needs line, circle or polygon',
+      'ink.paths[0].to.pick.nearest: "h" is a line, but this needs a point',
+    ]);
+  });
+
+  it('rejects an ink path that is neither form', () => {
+    const input = variant((t) => {
+      t.ink.paths = [{ along: 'h', from: 'O' }];
+    });
+    expect(problems(input).join('\n')).toContain(
+      'an ink path is { through: [points], closed? } or { along, from, to }',
+    );
+  });
+
   it('rejects a reference of the wrong kind', () => {
     const input = variant((t) => {
       t.steps[1].create.v.line.perpendicularTo = 'O';

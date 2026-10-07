@@ -1,4 +1,9 @@
-import { partsOf, type ElementSpec, type Tutorial } from './tutorial.js';
+import {
+  partsOf,
+  type ElementSpec,
+  type Pick,
+  type Tutorial,
+} from './tutorial.js';
 
 /** The kind of element a name refers to. A `repeat` names a group. */
 export type ElementKind =
@@ -73,21 +78,22 @@ export function checkReferences(t: Tutorial): Issue[] {
     }
   };
 
+  const checkPick = (at: string, pick: Pick) => {
+    for (const key of ['nearest', 'farthest'] as const) {
+      if (pick[key]) use(`${at}.${key}`, pick[key], ['point']);
+    }
+    for (const key of ['inside', 'outside'] as const) {
+      if (pick[key]) use(`${at}.${key}`, pick[key], ['circle', 'polygon']);
+    }
+  };
+
   const checkElement = (path: string, el: ElementSpec) => {
     if ('point' in el || 'points' in el) {
       const spec = 'point' in el ? el.point : el.points;
       const at = `${path}.${'point' in el ? 'point' : 'points'}`;
       spec.meet.forEach((r, i) => use(`${at}.meet[${i}]`, r, CURVES));
-      if ('point' in el && el.point.pick) {
-        const pick = el.point.pick;
-        for (const key of ['nearest', 'farthest'] as const) {
-          if (pick[key]) use(`${at}.pick.${key}`, pick[key], ['point']);
-        }
-        for (const key of ['inside', 'outside'] as const) {
-          if (pick[key])
-            use(`${at}.pick.${key}`, pick[key], ['circle', 'polygon']);
-        }
-      }
+      if ('point' in el && el.point.pick)
+        checkPick(`${at}.pick`, el.point.pick);
     } else if ('line' in el) {
       const l = el.line;
       const at = `${path}.line`;
@@ -180,11 +186,23 @@ export function checkReferences(t: Tutorial): Issue[] {
       step.highlight?.forEach((r, i) => use(`${sp}.highlight[${i}]`, r));
   });
 
-  t.ink.paths.forEach((p, pi) =>
-    p.through.forEach((r, i) =>
-      use(`ink.paths[${pi}].through[${i}]`, r, ['point']),
-    ),
-  );
+  t.ink.paths.forEach((p, pi) => {
+    const at = `ink.paths[${pi}]`;
+    if ('through' in p) {
+      p.through.forEach((r, i) => use(`${at}.through[${i}]`, r, ['point']));
+      return;
+    }
+    use(`${at}.along`, p.along, ['line', 'polygon']);
+    for (const key of ['from', 'to'] as const) {
+      const end = p[key];
+      if (typeof end === 'string') {
+        use(`${at}.${key}`, end, ['point', ...CURVES]);
+        continue;
+      }
+      use(`${at}.${key}.cross`, end.cross, CURVES);
+      if (end.pick) checkPick(`${at}.${key}.pick`, end.pick);
+    }
+  });
   use('pattern.cell', t.pattern.cell, ['polygon']);
 
   const pieceNames = new Set<string>();

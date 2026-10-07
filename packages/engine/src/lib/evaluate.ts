@@ -286,6 +286,11 @@ class Context {
     return { kind: 'polygon', vertices, sides };
   }
 
+  /** The crossing of two elements a pick chooses, as a point step makes it. */
+  crossing(meet: readonly [string, string], pick: Pick | undefined): Vec {
+    return this.choose(this.meet(meet), pick, meet);
+  }
+
   /** Every crossing of two elements, each once. */
   private meet([a, b]: readonly [string, string]): Vec[] {
     const ca = this.curves(a);
@@ -505,6 +510,26 @@ function transformGeometry(
     }
     case 'group':
       return onGroup();
+  }
+}
+
+/**
+ * The crossing of two elements of a scene that a pick chooses, exactly as
+ * a `point` step would make it; anything missing or ambiguous is reported
+ * through `fail`, which must throw.
+ */
+export function crossingOf(
+  scene: Scene,
+  meet: readonly [string, string],
+  pick: Pick | undefined,
+  fail: (reason: string) => never,
+): Vec {
+  const ctx = new Context(scene.elements, scene.tol, [], fail);
+  try {
+    return ctx.crossing(meet, pick);
+  } catch (e) {
+    if (e instanceof GeometryError) return fail(e.message);
+    throw e;
   }
 }
 
