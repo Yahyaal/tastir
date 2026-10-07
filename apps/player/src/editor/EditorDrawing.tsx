@@ -55,6 +55,7 @@ export function EditorDrawing({
   targets,
   hover,
   ink,
+  candidates,
   onHover,
   onClick,
 }: {
@@ -64,6 +65,8 @@ export function EditorDrawing({
   hover?: Target;
   /** In ink mode: the bits of line, and which are inked. */
   ink?: { pieces: readonly InkPiece[]; chosen: ReadonlySet<string> };
+  /** Circles to choose between, drawn dashed. */
+  candidates?: readonly { centre: Vec; radius: number }[];
   onHover: (at: Vec, reach: number) => void;
   onClick: (at: Vec, reach: number) => void;
 }) {
@@ -271,6 +274,15 @@ export function EditorDrawing({
               cx={c.p.x}
               cy={c.p.y}
               r={unit * 2.5}
+            />
+          ))}
+          {candidates?.map((c, i) => (
+            <circle
+              key={`c${i}`}
+              className="candidate"
+              cx={c.centre.x}
+              cy={c.centre.y}
+              r={c.radius}
             />
           ))}
           {dots}

@@ -146,20 +146,49 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
     setSaid(undefined);
   };
 
+  // New steps go at the end, or after the selected step when asked; the
+  // drawing then shows, and the tools take, only what exists by then.
+  const [insertAfter, setInsertAfter] = useState(false);
+  const last = draft.steps.length;
+  const at =
+    insertAfter && selected !== undefined && selected < last ? selected : last;
+  const scene = useMemo(
+    () =>
+      at === last
+        ? checked.scene
+        : check({ steps: steps.slice(0, at) } as Draft).scene,
+    [at, last, steps, checked.scene],
+  );
+  // When two circles touch what was clicked, the learner chooses one.
+  const [choices, setChoices] = useState<{
+    drafts: Draft[];
+    circles: { centre: Vec; radius: number }[];
+  }>();
+
+  /** Keeps a new step made at place `at`, selecting it. */
+  const keep = (next: Draft) => {
+    edit(next);
+    setSelected(at + 1);
+    setSaid(undefined);
+    setChoices(undefined);
+  };
+
   /** Adds the step the clicks make, unless the engine cannot do it. */
   const finish = (clicks: readonly Target[]) => {
     setTargets([]);
     const sides =
       tool.id === 'touch' ? [undefined, 'near', 'far'] : [undefined];
     let reason = '';
+    const works: { next: Draft; circle?: { centre: Vec; radius: number } }[] =
+      [];
     for (const side of sides) {
       const made = buildStep(draft, tool, clicks, side as 'near' | 'far');
       if (!Object.keys(made.create).length) {
         setSaid('That point is already marked.');
         return;
       }
-      let next = addStep(draft, made);
-      const id = next.steps.length;
+      let next = addStep(draft, made, at);
+      const id = at + 1;
       const after = check(next);
       const st = after.status.get(id);
       if (st?.ok && tool.id === 'tile') {
@@ -172,12 +201,25 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
         }
       }
       if (st?.ok) {
-        edit(next);
-        setSelected(id);
-        setSaid(undefined);
-        return;
-      }
-      reason ||= st && !st.ok ? st.reason : '';
+        // One circle fits without choosing a side: that is the step.
+        if (side === undefined) return keep(next);
+        const g = after.scene.elements.get(
+          Object.keys(made.create).at(-1) as string,
+        )?.geometry;
+        works.push({
+          next,
+          ...(g?.kind === 'circle' ? { circle: g.circle } : {}),
+        });
+      } else reason ||= st && !st.ok ? st.reason : '';
+    }
+    if (works.length === 1) return keep(works[0]?.next as Draft);
+    if (works.length > 1) {
+      setChoices({
+        drafts: works.map((w) => w.next),
+        circles: works.flatMap((w) => (w.circle ? [w.circle] : [])),
+      });
+      setSaid('Two circles fit. Click the one you want.');
+      return;
     }
     setSaid(`That does not make a figure: ${reason}`);
   };
@@ -203,7 +245,10 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
       const typing =
         e.target instanceof HTMLInputElement ||
         e.target instanceof HTMLTextAreaElement;
-      if (e.key === 'Escape') setTargets([]);
+      if (e.key === 'Escape') {
+        setTargets([]);
+        setChoices(undefined);
+      }
       if (typing || !(e.ctrlKey || e.metaKey)) return;
       if (e.key.toLowerCase() === 'z') {
         e.preventDefault();
@@ -446,6 +491,16 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
                 </button>
               ))}
               <span className="tool-gap" />
+              {selected !== undefined && selected < last ? (
+                <label className="tool">
+                  <input
+                    type="checkbox"
+                    checked={insertAfter}
+                    onChange={(e) => setInsertAfter(e.target.checked)}
+                  />
+                  Add after step {selected}
+                </label>
+              ) : null}
               <button
                 type="button"
                 className="tool"
@@ -466,14 +521,15 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
           )}
           <main className="stage">
             <EditorDrawing
-              scene={checked.scene}
+              scene={scene}
+              candidates={choices?.circles}
               selected={selected}
               targets={targets}
               hover={hover}
               ink={inkable ? { pieces: inkable.pieces, chosen } : undefined}
               onHover={(at, reach) =>
                 setHover(
-                  want ? snap(checked.scene, at, reach, want) : undefined,
+                  want && !choices ? snap(scene, at, reach, want) : undefined,
                 )
               }
               onClick={(at, reach) => {
@@ -484,7 +540,17 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
                   return;
                 }
                 if (!want) return;
-                const target = snap(checked.scene, at, reach, want);
+                if (choices) {
+                  // The circle passing nearest the click.
+                  const gaps = choices.circles.map((c) =>
+                    Math.abs(distance(at, c.centre) - c.radius),
+                  );
+                  const i = gaps.indexOf(Math.min(...gaps));
+                  const chosen = choices.drafts[i];
+                  if (chosen) keep(chosen);
+                  return;
+                }
+                const target = snap(scene, at, reach, want);
                 if (target) onPick(target);
                 else
                   setSaid(

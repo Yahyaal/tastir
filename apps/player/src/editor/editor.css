@@ -523,3 +523,19 @@
     font-size: 0.72rem;
   }
 }
+
+.editor-drawing .candidate {
+  fill: none;
+  stroke: var(--used);
+  stroke-width: 2px;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.editor-drawing .candidate {
+  fill: none;
+  stroke: var(--used);
+  stroke-width: 2px;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+}
