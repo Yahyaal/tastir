@@ -5,6 +5,7 @@ import { Thumbnail } from '../app/drawing';
 import { useModel } from '../app/workerClient';
 import { deleteDesign, listDesigns } from '../app/designs';
 import { check, emptyDraft } from './document';
+import { readPattern } from './files';
 import { frameOf } from './EditorDrawing';
 import {
   addPattern,
@@ -55,8 +56,34 @@ export function PatternShelf({
  * “New pattern”: the editor with only the centre O and the point A, as a
  * blank sheet with a compass and a ruler.
  */
+/** A file's text (FileReader where File.text is missing). */
+const readText = (f: File): Promise<string> =>
+  typeof f.text === 'function'
+    ? f.text()
+    : new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(String(r.result));
+        r.onerror = () => reject(r.error);
+        r.readAsText(f);
+      });
+
 export function NewPattern() {
-  const [refused, setRefused] = useState(false);
+  const [said, setSaid] = useState<string>();
+  const refused = () =>
+    setSaid(
+      'This browser would not keep the pattern: its storage is blocked (a private window) or full.',
+    );
+  /** Opens a pattern (or tutorial) file as a pattern of one's own. */
+  const open = (text: string) => {
+    const read = readPattern(text);
+    if ('reason' in read) return setSaid(read.reason);
+    const made = addPattern(
+      { ...read.tutorial, title: freeTitle(read.tutorial.title) },
+      read.basedOn,
+    );
+    if (!made) return refused();
+    window.location.hash = `#/edit/${made.id}`;
+  };
   return (
     <span className="new-pattern">
       <button
@@ -66,16 +93,26 @@ export function NewPattern() {
           const made = addPattern(
             emptyDraft('my-pattern', freeTitle('My pattern')),
           );
-          if (!made) return setRefused(true);
+          if (!made) return refused();
           window.location.hash = `#/edit/${made.id}`;
         }}
       >
         New pattern
       </button>
-      {refused ? (
+      <label className="button secondary open-file">
+        Open a pattern file
+        <input
+          type="file"
+          accept=".json,application/json"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) void readText(f).then(open);
+          }}
+        />
+      </label>
+      {said ? (
         <span className="refused" role="alert">
-          This browser would not keep a new pattern: its storage is blocked (a
-          private window) or full.
+          {said}
         </span>
       ) : null}
     </span>

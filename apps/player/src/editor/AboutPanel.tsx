@@ -38,8 +38,11 @@ export function AboutPanel({
   draft,
   onChange,
   file,
+  patternFile,
 }: {
   draft: Draft;
+  /** The pattern as a file to keep, finished or not. */
+  patternFile?: () => unknown;
   /** Each change, with the key that merges a run of typing into one undo. */
   onChange: (next: Draft, merge?: string) => void;
   /** The whole tutorial file, or why it cannot be made yet. */
@@ -288,6 +291,28 @@ export function AboutPanel({
             {file?.reason ?? 'draw the tile and ink the pattern first.'}
           </p>
         )}
+        {patternFile ? (
+          <>
+            <p className="hint">
+              Keep your pattern as a file, finished or not, and open it again
+              from the home page in any browser.
+            </p>
+            <button
+              type="button"
+              className="secondary"
+              onClick={() =>
+                download(
+                  new Blob([`${JSON.stringify(patternFile(), null, 2)}\n`], {
+                    type: 'application/json',
+                  }),
+                  `${slug(draft.title)}.tastir.json`,
+                )
+              }
+            >
+              Download my pattern file
+            </button>
+          </>
+        ) : null}
       </section>
     </>
   );

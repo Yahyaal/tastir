@@ -16,6 +16,7 @@ import {
 } from './document';
 import { useRemembered } from '../app/remembered';
 import { AboutPanel } from './AboutPanel';
+import { patternFile } from './files';
 import {
   addBlock,
   blockFromSteps,
@@ -735,7 +736,12 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
             ))}
           </div>
           {panel === 'about' ? (
-            <AboutPanel draft={draft} onChange={edit} file={playable} />
+            <AboutPanel
+              draft={draft}
+              onChange={edit}
+              file={playable}
+              patternFile={() => patternFile({ ...pattern, tutorial: draft })}
+            />
           ) : panel === 'blocks' ? (
             <BlocksPanel
               onUse={(b) => {

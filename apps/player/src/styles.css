@@ -1922,3 +1922,20 @@ main.stage .drawing:not(.wall) {
   font-size: 0.8rem;
   color: #ffb4a6;
 }
+
+.new-pattern .open-file {
+  position: relative;
+  padding: 5px 14px;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--lapis-line);
+  color: var(--on-lapis);
+  cursor: pointer;
+}
+
+.new-pattern .open-file input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
