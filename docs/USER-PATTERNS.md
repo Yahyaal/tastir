@@ -180,3 +180,13 @@ I tested phase 2 from a frozen worktree of commit 962fe8b, with my own server on
 10. On the Bou Inania copy, “The tile” offers “Use panel as the tile” and “Use tile as the tile”, which is hard to tell apart (31). At 1280x800 the big copy's drawing runs below the window, so the status line is off screen.
 
 My verdict: phase 2 works. With the route, a learner gets from a copied tutorial to their own played, coloured and saved pattern in a few minutes, and most of my earlier editor items are fixed. Bugs 1 and 2 should be fixed first: one quietly breaks saved work, and the other is the one place a learner without the route gets stuck.
+
+### Phase 3, tester report (7 October 2026)
+
+I tested from a frozen worktree of commit 2d6e512, with my own server on port 4351, at 1280x800. Screenshots are in `docs/review/user-patterns/phase3/`. I worked as a learner who has never drawn these patterns and had not read the builder's route.
+
+**A six-fold pattern from nothing.** “New pattern” is at the top of the home page. It opens “My pattern” with only O and A, and a first hint: “Start with the compass: click O, then A, for the first circle. Every point you click must already exist”. The hint was enough to begin. I drew the first circle, set Symmetry to ×6, and used Compass on A through O, which drew the six-petal flower in one step (“Turn it round the centre, 6 times in all”) (03). I then drew a Ruler line from A to the crossing at 120°, which drew the six lines of a hexagram (05). Tile on the six points of the first circle gave a hexagon that repeats (06). In Ink I clicked one star tip, pressed ▶ Play, and the colour stage showed six-pointed stars with rhombi between them, named “star” and “quadrilateral” (09). That is a real pattern, made from nothing in about twelve clicks, which is very encouraging.
+
+**Where I got stuck.** In Ink, the Fold was 8, although everything was drawn with Symmetry ×6. The hint said “with its 8 turned and mirrored copies”, and my click inked only four of the six tips. The pattern did not close, and the top line said “The ink closes no pieces yet” (07). I only found the fix by noticing the Fold menu, changing it to 6 and pressing Clear the ink (08). The Fold should start at the symmetry used in the construction, or at least say why the ink looks lopsided.
+
+(The eight-fold attempt follows below.)
