@@ -143,7 +143,7 @@ describe('highlight before draw', () => {
     expect(square?.options.delay).toBe(600);
   });
 
-  it('shows what the step works from in blue, with a ring round each point', () => {
+  it('shows what the step works from in saffron, with no ring that could pass for a circle', () => {
     const { container } = render(<Play json={example} />);
     fireEvent.click(screen.getByLabelText('Reduce motion'));
     next();
@@ -157,8 +157,22 @@ describe('highlight before draw', () => {
       n.getAttribute('data-name'),
     );
     expect(marks).toEqual(['E', 'N', 'W', 'S']);
-    expect(container.querySelectorAll('.mark-ring')).toHaveLength(4);
+    expect(container.querySelectorAll('.mark-ring')).toHaveLength(0);
     expect(container.querySelectorAll('.el.used')).toHaveLength(0);
+  });
+
+  it('turns what the last step made from blue to its new colour on Next', () => {
+    const { container } = render(<Play json={example} />);
+    next(); // step 2 makes h, v and E, N, W, S
+    next(); // step 3
+    const was = [...container.querySelectorAll('.was-new')].map((n) =>
+      n.getAttribute('data-name'),
+    );
+    expect(was).toEqual(expect.arrayContaining(['h', 'v']));
+    // Back shows the step as it is, with no change of colour.
+    fireEvent.click(screen.getByLabelText('Reduce motion'));
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }));
+    expect(container.querySelectorAll('.was-new')).toHaveLength(0);
   });
 
   it('sweeps the first circle on load', () => {

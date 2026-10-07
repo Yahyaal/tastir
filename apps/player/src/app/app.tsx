@@ -280,6 +280,7 @@ export function Player({
         upTo={stage.beat}
         view={camera.view}
         frame={frame}
+        arrived={enter}
         svgRef={svgRef}
         showNames={showNames}
         inkSoFar={asYouGo}
@@ -418,6 +419,12 @@ export function Player({
               <p className="instruction" aria-live="polite">
                 {text}
               </p>
+              {stage.kind === 'step' ? (
+                <p className="dot-key">
+                  <span className="new">blue: what this step makes</span>
+                  <span className="used">saffron: what it works from</span>
+                </p>
+              ) : null}
               {stage.kind === 'ink' ? (
                 <div className="ink-tools">
                   <button

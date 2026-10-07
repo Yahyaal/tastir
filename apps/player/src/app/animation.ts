@@ -22,7 +22,7 @@ export const STEP_MS = 800;
 /** The flash of the highlighted elements before a step draws. */
 export const FLASH_MS = 600;
 /** The accent the current step is drawn in (--current in styles.css). */
-const ACCENT = '#b97806';
+const ACCENT = '#2f5bb7';
 /** The share of a step spent drawing lines and circles; points pop after. */
 const DRAW_SHARE = 0.75;
 

@@ -133,11 +133,14 @@ function Mark({
   el,
   current,
   used,
+  wasNew,
   size,
 }: {
   el: SceneElement;
   current: boolean;
   used: boolean;
+  /** Made by the step before: starts blue, then takes its new colour. */
+  wasNew?: boolean;
   size: number;
 }) {
   if (el.geometry.kind !== 'point') return null;
@@ -145,26 +148,19 @@ function Mark({
   const dot = (
     <circle
       data-name={el.name}
-      className={current ? 'mark current' : used ? 'mark used' : 'mark'}
+      className={[
+        'mark',
+        current ? 'current' : used ? 'used' : '',
+        wasNew ? 'was-new' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
       cx={sx(p)}
       cy={sy(p)}
-      r={size * (current || used ? 0.011 : 0.008)}
+      r={size * (current || used ? 0.012 : 0.008)}
     />
   );
-  // A point the step works from gets a ring, so the eye finds it at once.
-  if (!used || current) return dot;
-  return (
-    <g>
-      <circle
-        className="mark-ring"
-        cx={sx(p)}
-        cy={sy(p)}
-        r={size * 0.03}
-        vectorEffect="non-scaling-stroke"
-      />
-      {dot}
-    </g>
-  );
+  return dot;
 }
 
 interface Label {
@@ -394,6 +390,7 @@ export function Construction({
   pen = true,
   freeInk,
   enter = false,
+  arrived = false,
 }: {
   model: Model;
   upTo: number;
@@ -415,6 +412,9 @@ export function Construction({
   /** Play the move into the ink stage: the construction fades back while
    * a pen inks the pattern (playInk in animation.ts). */
   enter?: boolean;
+  /** Arrived with Next: what the step before made turns from blue to its
+   * new colour. */
+  arrived?: boolean;
 }) {
   const content = useMemo(() => {
     const settled = frame ?? view;
@@ -426,6 +426,12 @@ export function Construction({
       (el) => el.beat <= upTo && !hidden.has(el.beat),
     );
     const isCurrent = (el: SceneElement) => !ink && el.beat === upTo;
+    // The step shown before this one, among those the learner sees.
+    const before = Math.max(
+      -1,
+      ...shown.map((el) => el.beat).filter((b) => b < upTo),
+    );
+    const wasNew = (el: SceneElement) => arrived && !ink && el.beat === before;
     const highlighted = new Set(ink ? [] : usedNames(model, upTo));
     /** What the step works from: blue while the step is shown. */
     const used = (el: SceneElement) => highlighted.has(el.name);
@@ -455,6 +461,7 @@ export function Construction({
                       ? 'used'
                       : '',
                 helper(el) ? 'helper' : '',
+                wasNew(el) ? 'was-new' : '',
               ]
                 .filter(Boolean)
                 .join(' ')}
@@ -511,6 +518,7 @@ export function Construction({
                 el={el}
                 current={isCurrent(el)}
                 used={used(el)}
+                wasNew={wasNew(el)}
                 size={size}
               />
             ))}
@@ -536,6 +544,7 @@ export function Construction({
     pen,
     freeInk,
     enter,
+    arrived,
   ]);
   return (
     <svg
@@ -873,7 +882,7 @@ export function RepeatedInk({
 }
 
 /** The accent for things in motion (--current in styles.css). */
-const ACCENT_COLOR = '#b97806';
+const ACCENT_COLOR = '#2f5bb7';
 
 /** One piece type's shape, small, for the piece panel. */
 export function PieceShape({
