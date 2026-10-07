@@ -19,3 +19,7 @@ docs/research/
 docs/review/
 __pycache__/
 .claude/worktrees/
+
+# Pasted pages of published tutorials: private research, never committed
+docs/12-rosette tutorial/
+docs/4-stellated-12fold-rosettes/
