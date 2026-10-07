@@ -15,7 +15,6 @@ import {
 } from '@tastir/engine';
 import {
   parseTutorial,
-  type ExpectedPiece,
   type InkAlong,
   type InkEnd,
   type Tutorial,
@@ -319,32 +318,89 @@ export function tutorialOf(
   if (!draft.ink?.paths.length)
     return { reason: 'Ink the pattern first: click the lines to keep.' };
   try {
+    // Pieces that match the draft's earlier expect block keep their names
+    // (and with them their colors and placements); new ones get plain
+    // names that no other piece uses.
+    const before = draft.expect?.pieces ?? [];
     const bare = {
       ...draft,
       ink: draft.ink,
       pattern: draft.pattern,
-      expect: { pieceTypes: 1, pieces: [] as ExpectedPiece[] },
+      expect: { pieceTypes: before.length || 1, pieces: before },
     } as Tutorial;
     const scene = evaluate(bare);
     const pattern = computePattern(scene, bare);
     if (!pattern.types.length)
       return { reason: 'The ink closes no pieces yet.' };
-    const names = pieceNames(
+    const fresh = pieceNames(
       pattern.types.map((t, i) => ({
         vertices: t.vertices,
         polygon: pattern.pieces.find((p) => p.type === i)?.polygon,
       })),
     );
+    const used = new Set(pattern.types.flatMap((t) => t.name ?? []));
+    const names = pattern.types.map((t, i) => {
+      if (t.name) return t.name;
+      let name = fresh[i] as string;
+      for (let k = 2; used.has(name); k++) name = `${fresh[i]}_${k}`;
+      used.add(name);
+      return name;
+    });
+    const kept = new Set(names);
+    const small = new Set(before.filter((p) => p.small).map((p) => p.name));
+    const colors = Object.fromEntries(
+      Object.entries(draft.pattern.colors ?? {}).filter(([n]) => kept.has(n)),
+    );
+    const rules = draft.pattern.placements?.rules.filter((r) =>
+      kept.has(r.piece),
+    );
+    const { placements: _placements, ...look } = draft.pattern;
+    // Crossing counts the file checks, for the groups that still exist.
+    const crossings = Object.fromEntries(
+      Object.entries(draft.expect?.crossings ?? {}).flatMap(([name, want]) => {
+        const g = scene.elements.get(name)?.geometry;
+        if (g?.kind !== 'group') return [];
+        const far = g.members.map((m) => {
+          const q = scene.elements.get(m)?.geometry;
+          return q?.kind === 'point' ? round(Math.hypot(q.at.x, q.at.y)) : NaN;
+        });
+        const same = far.every((d) => d === far[0]);
+        return [
+          [
+            name,
+            {
+              count: g.members.length,
+              ...(want.distanceFromO !== undefined && same
+                ? { distanceFromO: far[0] as number }
+                : {}),
+            },
+          ],
+        ];
+      }),
+    );
     const tutorial = parseTutorial({
       ...bare,
+      pattern: {
+        ...look,
+        colors,
+        ...(rules?.length && draft.pattern.placements
+          ? { placements: { ...draft.pattern.placements, rules } }
+          : {}),
+      },
       expect: {
+        ...(draft.expect?.note ? { note: draft.expect.note } : {}),
+        ...(Object.keys(crossings).length ? { crossings } : {}),
         pieceTypes: pattern.types.length,
         pieces: pattern.types.map((t, i) => ({
           name: names[i],
           vertices: t.vertices,
           area: round(t.area),
           perCell: t.perCell,
+          ...(small.has(names[i] as string) ? { small: true } : {}),
         })),
+        ...(draft.expect?.cellArea !== undefined
+          ? { cellArea: round(pattern.cell.area) }
+          : {}),
       },
     });
     return { tutorial };

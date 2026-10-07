@@ -11,6 +11,7 @@ import {
   type Draft,
   type StepStatus,
 } from './document';
+import { AboutPanel } from './AboutPanel';
 import {
   imagesOf,
   inkableOf,
@@ -219,6 +220,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   // Inking: the bits of line inside the tile that the file can name, and
   // which of them are inked now.
   const [mode, setMode] = useState<'construct' | 'ink'>('construct');
+  const [panel, setPanel] = useState<'step' | 'about'>('step');
   const [symmetric, setSymmetric] = useState(true);
   const cellName = draft.pattern?.cell;
   const inkable = useMemo(
@@ -521,7 +523,22 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
           </footer>
         </section>
         <aside className="side-panel" aria-label="This step">
-          {step ? (
+          <div className="editor-modes" role="group" aria-label="Panel">
+            {(['step', 'about'] as const).map((p) => (
+              <button
+                key={p}
+                type="button"
+                className={p === panel ? 'mode on' : 'mode'}
+                aria-pressed={p === panel}
+                onClick={() => setPanel(p)}
+              >
+                {p === 'step' ? 'This step' : 'About the pattern'}
+              </button>
+            ))}
+          </div>
+          {panel === 'about' ? (
+            <AboutPanel draft={draft} onChange={edit} file={playable} />
+          ) : step ? (
             <StepPanel
               key={step.id}
               draft={draft}

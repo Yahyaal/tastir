@@ -32,7 +32,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - [x] **2.3 The editor page.** `#/edit/<id>`: the step list, the drawing with the tool bar (compass, same opening, opening from two points, touching, ruler, square to, parallel, halve an angle, polygon), clicks snap to existing points only, the step text is editable, undo and redo. *Test:* draw the first three steps of the star and cross by clicking.
 - [x] **2.4 Make my own copy from here.** On every step of the player; the copy keeps the steps so far and the credits, plus “based on” the original. *Test:* copy the star and cross at step 3, the editor opens with three steps.
 - [x] **2.5 Tile, ink, colour, play.** The tile tool (checks the tile can repeat), inking with symmetric toggling written as ink paths, colouring, and Play, which opens the pattern in the player like any tutorial. *Test:* the octagon-and-star example from the plan, played start to finish.
-- [ ] **2.6 Library-grade files.** The editor can fill in what only library tutorials have (credits, photos, level, style) and computes the expected pieces, so we can make library tutorials in it. *Test:* a file saved from the editor passes the golden test.
+- [x] **2.6 Library-grade files.** The editor can fill in what only library tutorials have (credits, photos, level, style) and computes the expected pieces, so we can make library tutorials in it. *Test:* a file saved from the editor passes the golden test.
 
 ### Phase 3: from nothing
 
@@ -62,6 +62,8 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - Check every layout change at 1280, 1100, 1024, 900, 800 and 390 px: between 761 and 1100 px the player had a fixed screen height, so the colour panel, placed under the wall, was squeezed onto the wall (found by the tester, and older than phase 1). To compare with an old commit, use `git worktree add` in the scratch folder with symlinks to `node_modules` and `apps/player/node_modules`, and run its Vite on another port. (7 October)
 - The editor snaps only near the click: it takes the elements within reach and crosses just those pairs, then asks `pickFor` for the rule, so it never lists every crossing of a big drawing. For jsdom tests, give the drawing a `getBoundingClientRect` and click at screen positions worked out from its `viewBox`. (7 October)
 - The editor offers only the bits of line a file can name: each must run along a line or polygon side of the construction and end where an element crosses it. Bits drawn only by a neighbouring tile's copy are left out, because ink written outside the tile is repeated only one tile either way (computePattern) and would leave gaps. A user pattern plays at `#/mine/<id>`; the player gets an `address` so its designs and copies point back there. (7 October)
+- Never leave half-done work in the main tree for long: the tester's dev server picked up unfinished editor code live and two polygon steps vanished in its run. The tester now tests from a frozen worktree of the last commit, which is the right way; the builder commits each task as soon as it passes. (7 October)
+- Saving a pattern again keeps its piece names: `tutorialOf` computes the pieces with the draft's earlier expect block, so matching pieces keep their names, colours and placements, and only new ones get plain names. Every library tutorial round-trips through the editor and passes the golden checks (roundtrip.spec.ts, two seconds for all 34). (7 October)
 
 ## Tester reports
 
