@@ -31,6 +31,8 @@ import {
   TOOLS,
   toolOf,
   wantAt,
+  SYMMETRIES,
+  type Symmetry,
   type Target,
   type ToolId,
 } from './tools';
@@ -149,6 +151,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   // New steps go at the end, or after the selected step when asked; the
   // drawing then shows, and the tools take, only what exists by then.
   const [insertAfter, setInsertAfter] = useState(false);
+  const [symmetry, setSymmetry] = useState<Symmetry>(0);
   const last = draft.steps.length;
   const at =
     insertAfter && selected !== undefined && selected < last ? selected : last;
@@ -182,7 +185,13 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
     const works: { next: Draft; circle?: { centre: Vec; radius: number } }[] =
       [];
     for (const side of sides) {
-      const made = buildStep(draft, tool, clicks, side as 'near' | 'far');
+      const made = buildStep(
+        draft,
+        tool,
+        clicks,
+        side as 'near' | 'far',
+        symmetry,
+      );
       if (!Object.keys(made.create).length) {
         setSaid('That point is already marked.');
         return;
@@ -491,6 +500,21 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
                   {t.label}
                 </button>
               ))}
+              <label className="tool">
+                Symmetry
+                <select
+                  value={symmetry}
+                  onChange={(e) =>
+                    setSymmetry(Number(e.target.value) as Symmetry)
+                  }
+                >
+                  {SYMMETRIES.map((n) => (
+                    <option key={n} value={n}>
+                      {n ? `×${n}` : 'Off'}
+                    </option>
+                  ))}
+                </select>
+              </label>
               <span className="tool-gap" />
               {selected !== undefined && selected < last ? (
                 <label className="tool">
@@ -576,6 +600,12 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               ) : (
                 <>
                   <b>{tool.label}:</b> {said ?? ask}
+                  {!said &&
+                  symmetry &&
+                  tool.id !== 'tile' &&
+                  tool.id !== 'point'
+                    ? ` What you draw is turned round the centre, ${symmetry} times.`
+                    : ''}
                 </>
               )}
             </p>

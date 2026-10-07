@@ -388,7 +388,7 @@ export function sayElement(
   const { of, by } = el.repeat;
   return by.startsWith('mirror:')
     ? `Mirror ${list(of.map(d))} in ${d(by.slice('mirror:'.length))}.`
-    : `Turn ${list(of.map(d))} round the centre into ${by.slice(3)} copies.`;
+    : `Turn ${of.length === 1 ? 'it' : list(of.map(d))} round the centre, ${by.slice(3)} times in all.`;
 }
 
 /**

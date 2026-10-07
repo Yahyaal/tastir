@@ -39,7 +39,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 ### Phase 3: from nothing
 
 - [x] **3.1 New pattern.** “New pattern” opens the editor with only O and A.
-- [ ] **3.2 Symmetry mode.** Off, 4, 6, 8, 12, 16: every new element is also repeated round the centre. *Test:* rebuild the eight-fold star and cross from nothing; its file passes the same golden test as ours.
+- [x] **3.2 Symmetry mode.** Off, 4, 6, 8, 12, 16: every new element is also repeated round the centre. *Test:* rebuild the eight-fold star and cross from nothing; its file passes the same golden test as ours.
 
 ### Phase 4: building blocks
 
@@ -67,6 +67,8 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - Never leave half-done work in the main tree for long: the tester's dev server picked up unfinished editor code live and two polygon steps vanished in its run. The tester now tests from a frozen worktree of the last commit, which is the right way; the builder commits each task as soon as it passes. (7 October)
 - Saving a pattern again keeps its piece names: `tutorialOf` computes the pieces with the draft's earlier expect block, so matching pieces keep their names, colours and placements, and only new ones get plain names. Every library tutorial round-trips through the editor and passes the golden checks (roundtrip.spec.ts, two seconds for all 34). (7 October)
 - Never let a learner read an internal name (c, d1, S1): step texts and engine reasons go through `describe` and `plainReason` (editor/document.ts), which name lines, circles and shapes by how they were made; points keep their names, since the drawing labels them. (7 October)
+- Symmetry mode needs nothing new in the format: each new element gets a `repeat` with `rotN` in its own step (the format has rot3, 4, 5, 6, 8, 10, 12 and 16; the editor offers 4, 6, 8, 12 and 16). Turned copies that land on each other (a line through O turned by 180°) do no harm: snapping skips lines lying along each other, and free inking merges equal bits. With it, the eight-fold star and cross is five clicked steps: circle, line ×4, square ×8, tangent ×4, tile. (7 October)
+- When two tasks touch the same file, commit them one at a time from the start; splitting them afterwards meant copying files aside and briefly reverting my own uncommitted edits, which a live dev server would have shown. (7 October)
 
 ## Tester reports
 

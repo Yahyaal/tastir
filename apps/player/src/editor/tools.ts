@@ -19,6 +19,13 @@ import {
   type NewStep,
 } from './document';
 
+/**
+ * Symmetry mode: off, or how many times every new element is turned
+ * round the centre. The format can also turn by 3, 5 and 10.
+ */
+export const SYMMETRIES = [0, 4, 6, 8, 12, 16] as const;
+export type Symmetry = (typeof SYMMETRIES)[number];
+
 /** What a click can take: a point, or an element of some kinds. */
 export type Want = 'point' | 'line' | 'circle' | 'curve';
 
@@ -351,6 +358,7 @@ export function buildStep(
   tool: Tool,
   targets: readonly Target[],
   touch?: 'near' | 'far',
+  symmetry: Symmetry = 0,
 ): NewStep {
   const create: Record<string, ElementSpec> = {};
   const taken: string[] = [];
@@ -417,5 +425,11 @@ export function buildStep(
     }
   })();
   if (spec) create[spec[0]] = spec[1];
+  // Symmetry mode: what the step draws is also turned round the centre.
+  // The tile is never turned; it is the one cell that repeats.
+  if (spec && symmetry && tool.id !== 'tile')
+    create[fresh(PREFIX.repeat)] = {
+      repeat: { of: [spec[0]], by: `rot${symmetry}` },
+    } as ElementSpec;
   return { text: sayStep(create, draft), create };
 }
