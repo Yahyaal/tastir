@@ -25,6 +25,12 @@ export const DOCS: readonly {
     text: read('PROJECT.md'),
   },
   {
+    key: 'yours',
+    label: 'Your own patterns',
+    file: 'USER-PATTERNS.md',
+    text: read('USER-PATTERNS.md'),
+  },
+  {
     key: 'working',
     label: 'Working together',
     file: 'WORKING-WITH-OWNER.md',

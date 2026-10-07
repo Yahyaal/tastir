@@ -1440,8 +1440,9 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Overnight run finished (6 October, 8 am)',
-    text: 'Eight new Alhambra tutorials, each checked against David Wade’s photo of the real panel, plus the minbar doors from Cairo. Two Alhambra designs were parked because the photo shows a different panel from the published drawing. Each new tutorial has a card below.',
+    title: 'Building your own patterns',
+    text: 'Two agents are building the plan you approved: one builds, the other uses the app like a learner and reports problems. Phase 1, “My designs”, comes first. The build log shows every task and each tester report.',
+    link: { label: 'Build log', href: '#/notes/yours' },
   },
   next: [
     {
@@ -1458,11 +1459,6 @@ export const PROGRESS: {
     },
   ],
   waiting: [
-    {
-      title: 'Your OK on phase 1 of your own patterns',
-      text: 'Your five answers are recorded on the plan. Phase 1, “My designs” (save your inking and colours, a shelf on the home page), is planned in detail there and waits for your OK.',
-      link: { label: 'Read phase 1', href: '#/plan' },
-    },
     {
       title: 'Alhambra interlace',
       text: 'Needs a better source than the product page: a photo or drawing of the whole panel.',

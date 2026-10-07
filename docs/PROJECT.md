@@ -29,9 +29,9 @@ There are 34 tutorials in the library. Each one's status, with what was checked,
 
 ## The next goal
 
-More Alhambra panels from Brian Wichmann's Tiling Search, each checked against David Wade's photo of the real panel. Wichmann's index pairs 83 Alhambra designs with Wade photos; the next three candidates and the method are in [the queue](patterns/QUEUE.md).
+Build “your own patterns”, the plan at `#/plan` that the owner approved on 6 October 2026: saving your own inking and colours, then an editor that copies a tutorial at any step, starts from nothing, and offers building blocks, then sharing. The tasks, their state and the tester's reports are in [the build log](USER-PATTERNS.md); resume from its first unticked task.
 
-After that, take the next unchecked item in [the queue](patterns/QUEUE.md).
+After that, more Alhambra panels from Brian Wichmann's Tiling Search, each checked against David Wade's photo of the real panel (the candidates and the method are in [the queue](patterns/QUEUE.md)).
 
 ## How a session works
 
@@ -47,6 +47,7 @@ After that, take the next unchecked item in [the queue](patterns/QUEUE.md).
 | Document | What it holds |
 | --- | --- |
 | [How to work with the owner](WORKING-WITH-OWNER.md) | How the owner wants to be shown work and asked questions, and the process mistakes made so far |
+| [Your own patterns](USER-PATTERNS.md) | The build log for user-made patterns: tasks, tester reports, lessons |
 | [Work queue](patterns/QUEUE.md) | Every piece of pattern work, done and left, with the detail needed to resume it |
 | [Pattern status](patterns/STATUS.md) | Every tutorial in the library and how it was verified |
 | [Lessons](patterns/LESSONS.md) | Mistakes that cost time once, and facts that save time |
