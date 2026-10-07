@@ -51,6 +51,7 @@ After that, take the next unchecked item in [the queue](patterns/QUEUE.md).
 | [Pattern status](patterns/STATUS.md) | Every tutorial in the library and how it was verified |
 | [Lessons](patterns/LESSONS.md) | Mistakes that cost time once, and facts that save time |
 | `docs/geometry-notes.md` | Lessons from the prototype about intersections, motifs and piece finding |
+| Plan for user-made patterns (`#/plan`, `apps/player/src/review/Plan.tsx`) | How learners will make their own patterns: the editor, copying at any step, building blocks, the order of the work, and the owner's open questions |
 | [How to write a pattern tutorial](patterns/BRIEF.md) | The working method and the tools for adding a pattern |
 | `docs/PRD.md`, `docs/TASKS.md`, `docs/tutorial-format.md` | The product, the original task list and the tutorial format |
 | `docs/OVERNIGHT.md` | The log of the overnight run of 3–4 October |

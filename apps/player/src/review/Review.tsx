@@ -275,7 +275,10 @@ export function Review() {
     <div className="review">
       <nav className="review-top">
         <a href="#/">← Library</a>
-        <a href="#/notes">Project notes</a>
+        <span>
+          <a href="#/notes">Project notes</a> ·{' '}
+          <a href="#/plan">Plan: your own patterns</a>
+        </span>
         <button type="button" onClick={copy}>
           {copied ? 'Copied ✓' : 'Copy my answers'}
         </button>

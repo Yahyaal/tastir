@@ -1,0 +1,433 @@
+/* The plan page (#/plan): drawings computed by the engine, and diagrams. */
+
+.plan h3 {
+  margin: 28px 0 6px;
+  font-size: 1.1rem;
+}
+
+.plan-fig {
+  margin: 20px 0;
+}
+
+.plan-fig figcaption,
+.plan-thumb figcaption {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-top: 6px;
+}
+
+.plan-draw {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border: 1px solid var(--faint);
+  border-radius: 8px;
+}
+
+.plan-draw .old,
+.plan-draw .new,
+.plan-draw .ghost {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.plan-draw .old {
+  stroke: var(--old);
+  stroke-width: 1;
+}
+
+.plan-draw .new {
+  stroke: var(--current);
+  stroke-width: 2.2;
+}
+
+.plan-draw .dot.old,
+.plan-draw .dot.new {
+  fill: var(--current);
+  stroke: none;
+}
+
+.plan-draw .ghost {
+  stroke: var(--current);
+  stroke-width: 2;
+  stroke-dasharray: 6 5;
+}
+
+.plan-draw .candidate {
+  fill: #fff;
+  stroke: var(--muted);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.plan-draw .candidate.chosen {
+  fill: var(--saffron);
+  stroke: var(--graphite);
+}
+
+.plan-draw .cursor {
+  fill: var(--graphite);
+  stroke: #fff;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.plan-draw.wall polygon {
+  stroke: var(--graphite);
+  stroke-width: 0.6;
+  vector-effect: non-scaling-stroke;
+}
+
+.plan-diagram {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border: 1px solid var(--faint);
+  border-radius: 8px;
+}
+
+.flow-box rect {
+  fill: var(--gesso);
+  stroke: var(--lapis);
+  stroke-width: 1.5;
+}
+
+.flow-box.main rect {
+  fill: var(--lapis);
+}
+
+.flow-box .t {
+  font: 600 15px var(--display);
+  fill: var(--graphite);
+}
+
+.flow-box .s {
+  font-size: 12px;
+  fill: var(--muted);
+}
+
+.flow-box.main .t,
+.flow-box.main .s {
+  fill: var(--on-lapis);
+}
+
+.flow-arrow {
+  stroke: var(--lapis);
+  stroke-width: 1.5;
+  fill: none;
+  marker-end: url(#plan-head);
+}
+
+.flow-head {
+  fill: var(--lapis);
+}
+
+.plan-diagram .arc {
+  fill: none;
+  stroke: var(--old);
+  stroke-width: 1.5;
+}
+
+.plan-diagram .arc.lit {
+  stroke: #b5523b;
+  stroke-width: 2;
+}
+
+.plan-diagram .node {
+  fill: #fff;
+  stroke: var(--graphite);
+  stroke-width: 1.5;
+}
+
+.plan-diagram .node.edited {
+  fill: var(--saffron);
+}
+
+.plan-diagram .node.hit {
+  fill: #f3d3c9;
+  stroke: #b5523b;
+}
+
+.plan-diagram text {
+  font-size: 13px;
+  font-weight: 600;
+  fill: var(--graphite);
+}
+
+/* A row of small drawings: steps kept, then the learner's own. */
+.plan-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.plan-thumb {
+  margin: 0;
+  width: 128px;
+}
+
+.plan-thumb.yours .plan-draw {
+  border: 2px dashed var(--current);
+}
+
+.plan-cut {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  border-left: 3px solid var(--saffron);
+  padding: 0 10px;
+  max-width: 110px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.plan-block {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.plan-block-card {
+  width: 220px;
+  background: var(--gesso);
+  border: 2px solid var(--lapis);
+  border-radius: 10px;
+  padding: 10px 12px 12px;
+}
+
+.plan-block-name {
+  font: 600 1.05rem var(--display);
+  margin: 0;
+}
+
+.plan-block-in {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 2px 0 8px;
+}
+
+.plan-arrow {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.plan-arrow::after {
+  content: ' →';
+}
+
+/* The editor sketch: steps, drawing with tools, this step. */
+.plan-editor {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr 1fr;
+  gap: 0;
+  border: 1px solid var(--lapis);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 0.86rem;
+  background: #fff;
+}
+
+.ed-steps {
+  background: var(--lapis);
+  color: var(--on-lapis);
+  padding: 10px 12px;
+}
+
+.ed-steps ol {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.ed-steps li {
+  margin: 4px 0;
+  color: var(--on-lapis-muted);
+}
+
+.ed-steps li.ed-new {
+  color: var(--saffron);
+  font-weight: 600;
+}
+
+.ed-add {
+  margin: 12px 0 0;
+  color: var(--saffron);
+}
+
+.ed-title {
+  font-weight: 700;
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+}
+
+.ed-canvas {
+  padding: 8px;
+}
+
+.ed-canvas .plan-draw {
+  border: none;
+}
+
+.ed-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.ed-tools .tool {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  border: 1px solid var(--faint);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+}
+
+.ed-tools .tool.on {
+  background: var(--saffron);
+  border-color: var(--saffron);
+}
+
+.ed-hint {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.ed-side {
+  border-left: 1px solid var(--faint);
+  padding: 10px 12px;
+  background: var(--gesso);
+}
+
+.ed-side label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.ed-field {
+  display: block;
+  font-weight: 400;
+  background: #fff;
+  border: 1px solid var(--faint);
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin-top: 4px;
+}
+
+.review .ed-json {
+  display: block;
+  white-space: pre;
+  font-size: 0.78rem;
+  background: var(--graphite);
+  color: var(--gesso);
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-top: 4px;
+  overflow-x: auto;
+}
+
+.review .ed-json.big {
+  font-size: 0.95rem;
+  align-self: center;
+}
+
+.ed-ok {
+  color: var(--malachite);
+  font-weight: 600;
+  margin: 0;
+}
+
+.plan-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: center;
+}
+
+.plan-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 12px 0;
+  font-size: 0.92rem;
+}
+
+.plan-table th,
+.plan-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--faint);
+}
+
+.plan-table td:first-child {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.plan-copy {
+  font: inherit;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1px solid #9a3412;
+  background: #9a3412;
+  color: #fff;
+  cursor: pointer;
+}
+
+.plan-phases {
+  list-style: none;
+  padding: 0;
+  counter-reset: none;
+}
+
+.plan-phases li {
+  background: #fff;
+  border: 1px solid var(--faint);
+  border-left: 4px solid var(--lapis);
+  border-radius: 8px;
+  padding: 4px 18px 10px;
+  margin: 12px 0;
+}
+
+.plan-phases h3 {
+  margin: 10px 0 4px;
+}
+
+.plan-size {
+  font: 600 0.75rem var(--text, inherit);
+  background: var(--gesso);
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.plan-done {
+  color: var(--muted);
+  margin: 4px 0 0;
+}
+
+@media (max-width: 720px) {
+  .plan-editor,
+  .plan-pair {
+    grid-template-columns: 1fr;
+  }
+
+  .ed-side {
+    border-left: none;
+    border-top: 1px solid var(--faint);
+  }
+
+  .plan-table td:first-child {
+    white-space: normal;
+  }
+}

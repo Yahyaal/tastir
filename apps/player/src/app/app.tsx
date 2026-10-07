@@ -57,6 +57,14 @@ const Notes = import.meta.env.DEV
   ? lazy(() => import('../review/Notes').then((m) => ({ default: m.Notes })))
   : undefined;
 
+/**
+ * The plan for user-made patterns (#/plan), with its questions for the
+ * owner. Like the review page, it exists only on the dev server.
+ */
+const Plan = import.meta.env.DEV
+  ? lazy(() => import('../review/Plan').then((m) => ({ default: m.Plan })))
+  : undefined;
+
 const NUMBER_WORDS = [
   'no',
   'one',
@@ -1018,6 +1026,15 @@ export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
       </Suspense>
     ) : (
       <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'plan') {
+    return Plan ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <Plan />
+      </Suspense>
+    ) : (
+      <Broken message="The plan only exists on the dev server (pnpm dev)." />
     );
   }
   if (route === 'notes' || route.startsWith('notes/')) {

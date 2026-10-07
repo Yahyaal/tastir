@@ -1449,6 +1449,11 @@ export const PROGRESS: {
   ],
   waiting: [
     {
+      title: 'Plan for your own patterns',
+      text: 'How learners could make patterns from nothing, from building blocks, or by copying one of ours at any step. Five questions for you at the top of the plan.',
+      link: { label: 'Read the plan', href: '#/plan' },
+    },
+    {
       title: 'Alhambra interlace',
       text: 'Needs a better source than the product page: a photo or drawing of the whole panel.',
     },

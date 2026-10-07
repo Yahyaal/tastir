@@ -87,7 +87,10 @@ export function Notes({ page = 'start' }: { page?: string }) {
     <div className="review notes">
       <nav className="review-top">
         <a href="#/">← Library</a>
-        <a href="#/review">Review page →</a>
+        <span>
+          <a href="#/plan">Plan: your own patterns</a> ·{' '}
+          <a href="#/review">Review page →</a>
+        </span>
       </nav>
       <header className="review-head">
         <h1>Project notes</h1>
