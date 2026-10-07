@@ -320,3 +320,72 @@
     overflow-y: auto;
   }
 }
+
+/* Construct or ink. */
+.editor-modes {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.player .editor-modes .mode {
+  padding: 4px 16px;
+  font-size: 0.85rem;
+  background: transparent;
+  color: var(--on-lapis);
+  border: 1px solid var(--lapis-line);
+}
+
+.player .editor-modes .mode.on {
+  background: var(--on-lapis);
+  color: var(--lapis-deep);
+  font-weight: 700;
+}
+
+.editor-tools label.tool {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 9px;
+  font-size: 0.8rem;
+  border: 1px solid var(--lapis-line);
+  border-radius: 6px;
+}
+
+.editor-drawing .ink-piece {
+  stroke: var(--current);
+  stroke-opacity: 0.35;
+  stroke-width: 2px;
+  stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+}
+
+.editor-drawing .ink-piece.inked {
+  stroke: var(--ink);
+  stroke-opacity: 1;
+  stroke-width: 3.5px;
+  stroke-dasharray: none;
+  stroke-linecap: round;
+}
+
+.editor-play {
+  display: flex;
+  align-items: center;
+}
+
+.editor-play .button.play {
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: var(--saffron);
+  border: 1px solid var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.editor-play .play-later {
+  max-width: 22rem;
+  font-size: 0.8rem;
+  color: var(--on-lapis-muted);
+}

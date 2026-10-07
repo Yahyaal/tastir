@@ -38,7 +38,7 @@ import {
 import { Shelf } from './Shelf';
 import { Editor } from '../editor/Editor';
 import { copyUpTo } from '../editor/document';
-import { addPattern } from '../editor/patterns';
+import { addPattern, playable } from '../editor/patterns';
 import { SaveDesign } from './SaveDesign';
 import {
   asPanel,
@@ -169,13 +169,19 @@ export function Player({
   model,
   start: asked = 'beginning',
   design: opened,
+  address: given,
 }: {
   model: Model;
   start?: Start;
   /** A saved design to open, at the wall with its inking and colors. */
   design?: Design;
+  /** Where the tutorial lives: its id in the library, or mine/<id> for
+   * the learner's own pattern. */
+  address?: string;
 }) {
   const { tutorial } = model;
+  const address = given ?? tutorial.id;
+  const mine = address.startsWith('mine/');
   const start = opened ? 'result' : asked;
   const stages = useMemo(() => stagesOf(tutorial), [tutorial]);
   const [index, setIndex] = useState(() =>
@@ -226,7 +232,7 @@ export function Player({
   // The design being worked on: the one opened, or the last one saved.
   const [design, setDesign] = useState(opened);
   const designFields = () => ({
-    tutorial: tutorial.id,
+    tutorial: address,
     inked: inking.inked,
     coloring: colorHistory.now,
     look: wallStyle,
@@ -240,7 +246,7 @@ export function Player({
   const leaveAnyway = useRef(false);
   useEffect(() => {
     if (!changed || !design) return;
-    const here = `#/${tutorial.id}/design/${design.id}`;
+    const here = `#/${address}/design/${design.id}`;
     // The browser's Back (or any other change of address) asks first too:
     // the address is put back and the question shown.
     stayGuard = (to) => {
@@ -252,7 +258,7 @@ export function Player({
     return () => {
       stayGuard = undefined;
     };
-  }, [changed, design, tutorial.id]);
+  }, [changed, design, address]);
   // At the color stage the design sits at the top of the panel, or, where
   // the panel goes below the wall, under the wall so it is in view.
   const narrow = useNarrow();
@@ -276,7 +282,7 @@ export function Player({
         window.history.replaceState(
           null,
           '',
-          `#/${tutorial.id}/design/${saved.id}`,
+          `#/${address}/design/${saved.id}`,
         );
       }}
     />
@@ -531,6 +537,14 @@ export function Player({
           <span>All patterns</span>
         </a>
         <h1>{tutorial.title}</h1>
+        {mine ? (
+          <a
+            className="edit-link"
+            href={`#/edit/${address.slice('mine/'.length)}`}
+          >
+            Edit this pattern
+          </a>
+        ) : null}
         <details className="view-menu">
           <summary>View settings</summary>
           <div className="controls">
@@ -598,6 +612,7 @@ export function Player({
               {stage.kind === 'step' ? (
                 <CopyHere
                   tutorial={tutorial}
+                  address={address}
                   step={beats[stage.beat - 1]?.step ?? 1}
                   shownNumber={
                     shown.indexOf(beats[stage.beat - 1]?.step ?? 0) + 1
@@ -804,10 +819,12 @@ export function Player({
  */
 function CopyHere({
   tutorial,
+  address,
   step,
   shownNumber,
 }: {
   tutorial: Model['tutorial'];
+  address: string;
   /** The step's id: every step up to it is kept, hidden ones too. */
   step: number;
   /** Its number as the learner sees it. */
@@ -816,7 +833,7 @@ function CopyHere({
   const [refused, setRefused] = useState(false);
   const copy = () => {
     const made = addPattern(copyUpTo(tutorial, step, shownNumber), {
-      tutorial: tutorial.id,
+      tutorial: address,
       title: tutorial.title,
       step: shownNumber,
     });
@@ -932,10 +949,12 @@ export function Play({
   json,
   start,
   design,
+  address,
 }: {
   json: unknown;
   start?: Start;
   design?: Design;
+  address?: string;
 }) {
   const { model, error, progress } = useModel(json);
   if (error !== undefined) return <Broken message={error} />;
@@ -946,7 +965,9 @@ export function Play({
       </div>
     );
   }
-  return <Player model={model} start={start} design={design} />;
+  return (
+    <Player model={model} start={start} design={design} address={address} />
+  );
 }
 
 function Broken({ message }: { message: string }) {
@@ -1332,9 +1353,25 @@ function useRoute(): string {
 }
 
 /** The library, or the tutorial the address names. */
-export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
+export function App({
+  entries: library = LIBRARY,
+}: {
+  entries?: readonly Entry[];
+}) {
   const route = useRoute();
-  if (!route) return <Library entries={entries} />;
+  // #/mine/p… plays the learner's own pattern p like a library tutorial.
+  const ownId = /^mine\/([^/]+)/.exec(route)?.[1];
+  const own = useMemo(
+    () => (ownId === undefined ? undefined : playable(ownId)),
+    [ownId],
+  );
+  const entries = useMemo(
+    () => (own && 'entry' in own ? [...library, own.entry] : library),
+    [own, library],
+  );
+  if (!route) return <Library entries={library} />;
+  if (ownId !== undefined && !(own && 'entry' in own))
+    return <NotPlayable id={ownId} reason={own?.reason} />;
   if (route === 'review') {
     return Review ? (
       <Suspense fallback={<p className="review-loading">Loading…</p>}>
@@ -1372,7 +1409,14 @@ export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
     const design = getDesign(designId);
     const entry = entries.find((e) => e.id === tutorial);
     if (entry && design?.tutorial === tutorial)
-      return <Play key={route} json={entry.json} design={design} />;
+      return (
+        <Play
+          key={route}
+          json={entry.json}
+          design={design}
+          address={tutorial}
+        />
+      );
     return (
       <MissingDesign
         tutorial={entry ? tutorial : undefined}
@@ -1392,7 +1436,43 @@ export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
       key={route}
       json={entry.json}
       start={result ? 'result' : 'beginning'}
+      address={id}
     />
+  );
+}
+
+/** One of the learner's own patterns that cannot be played (yet). */
+function NotPlayable({ id, reason }: { id: string; reason?: string }) {
+  return (
+    <div className="player">
+      <header className="topbar">
+        <a className="home" href="#/">
+          <span className="wordmark">Tastir</span>
+          <span>All patterns</span>
+        </a>
+      </header>
+      <section className="notice">
+        <h1>
+          {reason
+            ? 'This pattern cannot be played yet'
+            : 'This pattern is not here'}
+        </h1>
+        <p>
+          {reason ??
+            'There is no such pattern in this browser. Your own patterns are kept only in the browser they were made in.'}
+        </p>
+        <p className="notice-links">
+          {reason ? (
+            <a className="button" href={`#/edit/${id}`}>
+              Open it in the editor
+            </a>
+          ) : null}
+          <a className="button secondary" href="#/">
+            All patterns
+          </a>
+        </p>
+      </section>
+    </div>
   );
 }
 

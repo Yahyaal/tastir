@@ -296,7 +296,9 @@ export function sayElement(name: string, el: ElementSpec): string {
     return `Put the compass point on ${c.centre} and open it until the circle ${name} touches ${list(c.tangentTo)}.`;
   }
   if ('polygon' in el)
-    return `Join ${list(el.polygon)} into the shape ${name}.`;
+    return name.startsWith('Tile')
+      ? `Join ${list(el.polygon)} into the tile ${name}, which repeats edge to edge.`
+      : `Join ${list(el.polygon)} into the shape ${name}.`;
   const { of, by } = el.repeat;
   return by.startsWith('mirror:')
     ? `Mirror ${list(of)} in ${by.slice('mirror:'.length)}.`

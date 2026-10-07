@@ -546,6 +546,11 @@ main.stage .drawing:not(.wall) {
   padding: 5px 14px;
 }
 
+.topbar .edit-link {
+  font-size: 0.85rem;
+  color: var(--saffron);
+}
+
 /* Copying a tutorial at a step into the learner's own pattern. */
 .copy-here {
   display: flex;

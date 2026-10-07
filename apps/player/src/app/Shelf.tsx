@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { playable } from '../editor/patterns';
 import { Thumbnail } from './drawing';
 import {
   BACKUP,
@@ -72,16 +73,26 @@ function DesignCard({
   entry?: Entry;
   onChange: () => void;
 }) {
+  // A design of the learner's own pattern (mine/<id>) is drawn from the
+  // pattern kept in this browser.
+  const own = useMemo(() => {
+    const id = /^mine\/(.+)$/.exec(design.tutorial)?.[1];
+    const found = id === undefined ? undefined : playable(id);
+    return found && 'entry' in found ? found.entry : undefined;
+  }, [design.tutorial]);
+  const shown = entry ?? own;
   return (
     <li className="card-item">
-      {entry ? (
-        <DesignLink design={design} entry={entry} />
+      {shown ? (
+        <DesignLink design={design} entry={shown} />
       ) : (
         <div className="card">
           <div className="thumbnail broken" />
           <h3 title={design.name}>{design.name}</h3>
           <p className="error">
-            Its tutorial, {design.tutorial}, is no longer in the library.
+            {design.tutorial.startsWith('mine/')
+              ? 'Its pattern is not in this browser, or cannot be played now.'
+              : `Its tutorial, ${design.tutorial}, is no longer in the library.`}
           </p>
         </div>
       )}

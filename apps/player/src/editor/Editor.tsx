@@ -1,4 +1,4 @@
-import type { Scene, Vec } from '@tastir/engine';
+import { distance, type InkPiece, type Scene, type Vec } from '@tastir/engine';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   addStep,
@@ -11,6 +11,15 @@ import {
   type Draft,
   type StepStatus,
 } from './document';
+import {
+  imagesOf,
+  inkableOf,
+  inkedNow,
+  tileOf,
+  tutorialOf,
+  withInk,
+  withTile,
+} from './finish';
 import { getPattern, savePattern, type UserPattern } from './patterns';
 import {
   buildStep,
@@ -77,7 +86,9 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
     future: [],
   });
   const draft = history.now;
-  const checked = useMemo(() => check(draft), [draft]);
+  // Only the steps are evaluated, so inking does not draw everything again.
+  const { steps } = draft;
+  const checked = useMemo(() => check({ steps } as Draft), [steps]);
   // A run of typing in one text box is one undo step.
   const merging = useRef<string | undefined>(undefined);
   const edit = useCallback((next: Draft, merge?: string) => {
@@ -145,9 +156,19 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
         setSaid('That point is already marked.');
         return;
       }
-      const next = addStep(draft, made);
+      let next = addStep(draft, made);
       const id = next.steps.length;
-      const st = check(next).status.get(id);
+      const after = check(next);
+      const st = after.status.get(id);
+      if (st?.ok && tool.id === 'tile') {
+        // The tile must repeat edge to edge, or there is no wall.
+        next = withTile(next, Object.keys(made.create).at(-1) as string);
+        const tile = tileOf(next, after.scene);
+        if ('reason' in tile) {
+          setSaid(`That cannot be the tile: ${tile.reason}`);
+          return;
+        }
+      }
       if (st?.ok) {
         edit(next);
         setSelected(id);
@@ -195,7 +216,45 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [undo, redo]);
 
-  const want = wantAt(tool, targets.length);
+  // Inking: the bits of line inside the tile that the file can name, and
+  // which of them are inked now.
+  const [mode, setMode] = useState<'construct' | 'ink'>('construct');
+  const [symmetric, setSymmetric] = useState(true);
+  const cellName = draft.pattern?.cell;
+  const inkable = useMemo(
+    () =>
+      mode === 'ink' && cellName
+        ? inkableOf(
+            { steps, pattern: { cell: cellName } } as Draft,
+            checked.scene,
+          )
+        : undefined,
+    [mode, steps, cellName, checked.scene],
+  );
+  const chosen = useMemo(
+    () =>
+      inkable ? inkedNow(draft, checked.scene, inkable) : new Set<string>(),
+    [inkable, draft, checked.scene],
+  );
+  const toggle = (id: string) => {
+    if (!inkable) return;
+    const ids = symmetric
+      ? imagesOf(inkable, id, draft.fold, !draft.chiral)
+      : [id];
+    const next = new Set(chosen);
+    const on = !chosen.has(id);
+    for (const i of ids) {
+      if (on) next.add(i);
+      else next.delete(i);
+    }
+    edit(withInk(draft, inkable, next));
+  };
+  const playable = useMemo(
+    () => (draft.pattern?.cell && draft.ink ? tutorialOf(draft) : undefined),
+    [draft],
+  );
+
+  const want = mode === 'ink' ? undefined : wantAt(tool, targets.length);
   const ask = tool.asks[Math.min(targets.length, tool.asks.length - 1)] ?? '';
   const status =
     selected !== undefined ? checked.status.get(selected) : undefined;
@@ -217,6 +276,21 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
             onChange={(e) => edit({ ...draft, title: e.target.value }, 'title')}
           />
         </label>
+        <div className="editor-play">
+          {playable && 'tutorial' in playable ? (
+            <a className="button play" href={`#/mine/${pattern.id}`}>
+              ▶ Play
+            </a>
+          ) : (
+            <span className="play-later">
+              ▶ Play:{' '}
+              {playable?.reason ??
+                (draft.pattern?.cell
+                  ? 'ink the pattern first.'
+                  : 'draw the tile first, with the Tile tool.')}
+            </span>
+          )}
+        </div>
         <p className={kept ? 'kept' : 'kept refused'} role="status">
           {kept
             ? 'Kept in this browser'
@@ -273,49 +347,128 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
           ) : null}
         </nav>
         <section className="plate-area">
-          <div className="editor-tools" role="toolbar" aria-label="Tools">
-            {TOOLS.map((t) => (
+          <div className="editor-modes" role="group" aria-label="Mode">
+            {(['construct', 'ink'] as const).map((m) => (
               <button
-                key={t.id}
+                key={m}
                 type="button"
-                className={t.id === toolId ? 'tool on' : 'tool'}
-                aria-pressed={t.id === toolId}
-                onClick={() => chooseTool(t.id)}
+                className={m === mode ? 'mode on' : 'mode'}
+                aria-pressed={m === mode}
+                onClick={() => {
+                  setMode(m);
+                  setTargets([]);
+                  setSaid(undefined);
+                }}
               >
-                <b aria-hidden="true">{t.icon}</b>
-                {t.label}
+                {m === 'construct' ? 'Construct' : 'Ink'}
               </button>
             ))}
-            <span className="tool-gap" />
-            <button
-              type="button"
-              className="tool"
-              onClick={undo}
-              disabled={!history.past.length}
-            >
-              Undo
-            </button>
-            <button
-              type="button"
-              className="tool"
-              onClick={redo}
-              disabled={!history.future.length}
-            >
-              Redo
-            </button>
           </div>
+          {mode === 'ink' ? (
+            <div className="editor-tools" role="toolbar" aria-label="Ink">
+              <label className="tool">
+                <input
+                  type="checkbox"
+                  checked={symmetric}
+                  onChange={(e) => setSymmetric(e.target.checked)}
+                />
+                Keep it symmetric
+              </label>
+              <label className="tool">
+                Fold
+                <select
+                  value={draft.fold}
+                  onChange={(e) =>
+                    edit({ ...draft, fold: Number(e.target.value) })
+                  }
+                >
+                  {[3, 4, 5, 6, 8, 10, 12, 16].map((n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button
+                type="button"
+                className="tool"
+                disabled={!draft.ink}
+                onClick={() =>
+                  inkable && edit(withInk(draft, inkable, new Set()))
+                }
+              >
+                Clear the ink
+              </button>
+              <span className="tool-gap" />
+              <button
+                type="button"
+                className="tool"
+                onClick={undo}
+                disabled={!history.past.length}
+              >
+                Undo
+              </button>
+              <button
+                type="button"
+                className="tool"
+                onClick={redo}
+                disabled={!history.future.length}
+              >
+                Redo
+              </button>
+            </div>
+          ) : (
+            <div className="editor-tools" role="toolbar" aria-label="Tools">
+              {TOOLS.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  className={t.id === toolId ? 'tool on' : 'tool'}
+                  aria-pressed={t.id === toolId}
+                  onClick={() => chooseTool(t.id)}
+                >
+                  <b aria-hidden="true">{t.icon}</b>
+                  {t.label}
+                </button>
+              ))}
+              <span className="tool-gap" />
+              <button
+                type="button"
+                className="tool"
+                onClick={undo}
+                disabled={!history.past.length}
+              >
+                Undo
+              </button>
+              <button
+                type="button"
+                className="tool"
+                onClick={redo}
+                disabled={!history.future.length}
+              >
+                Redo
+              </button>
+            </div>
+          )}
           <main className="stage">
             <Drawing
               scene={checked.scene}
               selected={selected}
               targets={targets}
               hover={hover}
+              ink={inkable ? { pieces: inkable.pieces, chosen } : undefined}
               onHover={(at, reach) =>
                 setHover(
                   want ? snap(checked.scene, at, reach, want) : undefined,
                 )
               }
               onClick={(at, reach) => {
+                if (mode === 'ink') {
+                  const hit =
+                    inkable && nearestPiece(inkable.pieces, at, reach);
+                  if (hit) toggle(hit);
+                  return;
+                }
                 if (!want) return;
                 const target = snap(checked.scene, at, reach, want);
                 if (target) onPick(target);
@@ -330,7 +483,20 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
           </main>
           <footer className="caption editor-caption">
             <p className="instruction" aria-live="polite">
-              <b>{tool.label}:</b> {said ?? ask}
+              {mode === 'ink' ? (
+                <>
+                  <b>Ink:</b>{' '}
+                  {!cellName
+                    ? 'Draw the tile first, with the Tile tool, or use a shape as the tile.'
+                    : symmetric
+                      ? `Click a bit of line to ink or erase it, with its ${draft.fold} turned${draft.chiral ? '' : ' and mirrored'} copies.`
+                      : 'Click a bit of line to ink or erase it.'}
+                </>
+              ) : (
+                <>
+                  <b>{tool.label}:</b> {said ?? ask}
+                </>
+              )}
             </p>
             {targets.length ? (
               <div className="ink-tools">
@@ -365,6 +531,14 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               status={status}
               last={draft.steps.length}
               dependents={dependents(checked, step.id)}
+              tile={cellName}
+              onTile={(name) => {
+                const next = withTile(draft, name);
+                const tile = tileOf(next, checked.scene);
+                if ('reason' in tile) return tile.reason;
+                edit(next);
+                return undefined;
+              }}
               onText={(text) =>
                 edit(changeStep(draft, step.id, { text }), `text-${step.id}`)
               }
@@ -400,6 +574,8 @@ function StepPanel({
   status,
   last,
   dependents: built,
+  tile,
+  onTile,
   onText,
   onMove,
   onDelete,
@@ -411,11 +587,21 @@ function StepPanel({
   status?: StepStatus;
   last: number;
   dependents: readonly number[];
+  /** The tile's polygon, if one is chosen. */
+  tile?: string;
+  /** Makes a polygon the tile; the reason when it cannot repeat. */
+  onTile: (polygon: string) => string | undefined;
   onText: (text: string) => void;
   onMove: (to: number) => void;
   onDelete: (withDependents: boolean) => void;
 }) {
   const [asking, setAsking] = useState(false);
+  const [notTile, setNotTile] = useState<string>();
+  const polygons = Object.entries(
+    (create ?? {}) as Record<string, Record<string, unknown>>,
+  )
+    .filter(([, el]) => 'polygon' in el)
+    .map(([name]) => name);
   const steps = (ns: readonly number[]) =>
     ns.length === 1
       ? `step ${ns[0]}`
@@ -492,12 +678,61 @@ function StepPanel({
           </div>
         ) : null}
       </section>
+      {polygons.length ? (
+        <section>
+          <h2>The tile</h2>
+          {polygons.map((name) =>
+            name === tile ? (
+              <p key={name} className="step-status ok">
+                ✓ {name} is the tile that repeats.
+              </p>
+            ) : (
+              <button
+                key={name}
+                type="button"
+                className="secondary"
+                onClick={() => setNotTile(onTile(name))}
+              >
+                Use {name} as the tile
+              </button>
+            ),
+          )}
+          {notTile ? (
+            <p className="step-status broken" role="alert">
+              It cannot be the tile: {notTile}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
       <section>
         <h2>What is saved</h2>
         <code className="step-json">{JSON.stringify(create, null, 2)}</code>
       </section>
     </>
   );
+}
+
+/** The bit of line nearest a click, within reach. */
+function nearestPiece(
+  pieces: readonly InkPiece[],
+  at: Vec,
+  reach: number,
+): string | undefined {
+  let best: { id: string; d: number } | undefined;
+  for (const p of pieces) {
+    const { a, b } = p.segment;
+    const d = { x: b.x - a.x, y: b.y - a.y };
+    const t = Math.max(
+      0,
+      Math.min(
+        1,
+        ((at.x - a.x) * d.x + (at.y - a.y) * d.y) / (d.x * d.x + d.y * d.y),
+      ),
+    );
+    const gap = distance(at, { x: a.x + d.x * t, y: a.y + d.y * t });
+    if (gap <= reach && (!best || gap < best.d)) best = { id: p.id, d: gap };
+  }
+  return best?.id;
 }
 
 type Box = { x: number; y: number; w: number; h: number };
@@ -541,6 +776,7 @@ function Drawing({
   selected,
   targets,
   hover,
+  ink,
   onHover,
   onClick,
 }: {
@@ -548,6 +784,8 @@ function Drawing({
   selected?: number;
   targets: readonly Target[];
   hover?: Target;
+  /** In ink mode: the bits of line, and which are inked. */
+  ink?: { pieces: readonly InkPiece[]; chosen: ReadonlySet<string> };
   onHover: (at: Vec, reach: number) => void;
   onClick: (at: Vec, reach: number) => void;
 }) {
@@ -667,6 +905,20 @@ function Drawing({
     >
       <g transform="scale(1,-1)" style={{ strokeWidth: unit * 1.5 }}>
         {shapes}
+        {ink
+          ? ink.pieces.map((p) => (
+              <line
+                key={p.id}
+                className={
+                  ink.chosen.has(p.id) ? 'ink-piece inked' : 'ink-piece'
+                }
+                x1={p.segment.a.x}
+                y1={p.segment.a.y}
+                x2={p.segment.b.x}
+                y2={p.segment.b.y}
+              />
+            ))
+          : null}
         {targets.map((t, i) => ring(t, i, 'target'))}
         {hover ? ring(hover, 'h', 'hover') : null}
       </g>

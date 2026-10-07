@@ -1,5 +1,6 @@
 import { newId, now, store } from '../app/storage';
 import type { Draft } from './document';
+import { tutorialOf } from './finish';
 
 /**
  * A learner's own pattern, kept in this browser: a whole tutorial (a draft
@@ -76,3 +77,22 @@ export function savePattern(
 
 export const deletePattern = (id: string): boolean =>
   patterns.write(listPatterns().filter((p) => p.id !== id));
+
+/**
+ * A pattern as the player plays it, at the address `mine/<id>`: the whole
+ * tutorial file, or why it cannot be played yet. Undefined when there is
+ * no such pattern in this browser.
+ */
+export function playable(
+  id: string,
+):
+  | { readonly entry: { readonly id: string; readonly json: unknown } }
+  | { readonly reason: string }
+  | undefined {
+  const pattern = getPattern(id);
+  if (!pattern) return undefined;
+  const made = tutorialOf(pattern.tutorial);
+  return 'tutorial' in made
+    ? { entry: { id: `mine/${id}`, json: made.tutorial } }
+    : { reason: made.reason };
+}

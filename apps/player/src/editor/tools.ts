@@ -50,7 +50,8 @@ export type ToolId =
   | 'square'
   | 'parallel'
   | 'halve'
-  | 'polygon';
+  | 'polygon'
+  | 'tile';
 
 export interface Tool {
   readonly id: ToolId;
@@ -148,6 +149,16 @@ export const TOOLS: readonly Tool[] = [
     wants: ['point'],
     asks: ['Click the corners in turn; click the first again, or Done.'],
     more: { least: 3 },
+  },
+  {
+    id: 'tile',
+    label: 'Tile',
+    icon: '▢',
+    wants: ['point'],
+    asks: [
+      'Click the corners of the tile that repeats (four, or six for a hexagon); click the first again, or Done.',
+    ],
+    more: { least: 4 },
   },
 ];
 
@@ -336,6 +347,8 @@ export function buildStep(
         ];
       case 'polygon':
         return [fresh(PREFIX.polygon), { polygon: names }];
+      case 'tile':
+        return [fresh('Tile'), { polygon: names }];
     }
   })();
   if (spec) create[spec[0]] = spec[1];
