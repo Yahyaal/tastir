@@ -92,7 +92,7 @@ describe('the fixes from the editor report', () => {
     clickAt(Math.SQRT1_2, Math.SQRT1_2); // NE
     expect(screen.getByLabelText('Text the learner reads')).toHaveProperty(
       'value',
-      'Keep the opening of the circle about O through A and draw a circle about NE.',
+      'Keep the opening of the circle about O through E and draw a circle about NE.',
     );
     // The saved form is folded away.
     expect(

@@ -1,5 +1,6 @@
 import {
   cellOf,
+  pointInPolygon,
   classicSelection,
   computePattern,
   distance,
@@ -39,6 +40,38 @@ export function tileOf(
   } catch (e) {
     return { reason: e instanceof Error ? e.message : String(e) };
   }
+}
+
+/** Whether a point is inside the tile or on its edge. */
+export function inTile(cell: Cell, p: Vec, eps = 1e-9): boolean {
+  if (pointInPolygon(p, cell.corners)) return true;
+  return cell.corners.some((a, i) => {
+    const b = cell.corners[(i + 1) % cell.corners.length] as Vec;
+    const d = { x: b.x - a.x, y: b.y - a.y };
+    const t = Math.max(
+      0,
+      Math.min(
+        1,
+        ((p.x - a.x) * d.x + (p.y - a.y) * d.y) / (d.x * d.x + d.y * d.y),
+      ),
+    );
+    return distance(p, { x: a.x + d.x * t, y: a.y + d.y * t }) <= eps * 10;
+  });
+}
+
+/**
+ * A warning when much of the drawing lies outside the tile, where it
+ * cannot be inked; undefined when the tile holds most of it.
+ */
+export function tileWarning(scene: Scene, cell: Cell): string | undefined {
+  const points = [...scene.elements.values()].flatMap((el) =>
+    el.geometry.kind === 'point' ? [el.geometry.at] : [],
+  );
+  if (!points.length) return undefined;
+  const outside = points.filter((p) => !inTile(cell, p, scene.tol.eps)).length;
+  return outside / points.length > 0.3
+    ? 'Much of the drawing lies outside this tile, and only what is inside it can be inked. For a star or rosette, draw a square (or hexagon) around the circle, touching it, and use its corners.'
+    : undefined;
 }
 
 /** The draft with a polygon as its tile, keeping the rest of its pattern. */

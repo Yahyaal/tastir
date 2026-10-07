@@ -15,6 +15,18 @@ function tidy<T extends object>(entry: T, required: readonly string[]): T {
 }
 
 const LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
+
+/** The credit a copy gives its original, which the learner cannot remove. */
+const isOriginal = (c: Credit) => c.source.startsWith('Tastir: ');
+
+/** A tutorial id (and file name) from a title: lower-case words and -. */
+export const slug = (title: string) =>
+  title
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'my-pattern';
 const FOLDS = [3, 4, 5, 6, 8, 10, 12, 16];
 
 /**
@@ -123,41 +135,49 @@ export function AboutPanel({
         <p className="hint">
           Name every book, drawing or person the construction comes from.
         </p>
-        {credits.map((c, i) => (
-          <fieldset key={i} className="about-entry">
-            <legend>Credit {i + 1}</legend>
-            {(['source', 'creator', 'url', 'note'] as const).map((k) => (
-              <label key={k} className="about-field">
-                {k === 'url'
-                  ? 'Address (URL)'
-                  : k[0]?.toUpperCase() + k.slice(1)}
-                <input
-                  type="text"
-                  value={c[k] ?? ''}
-                  onChange={(e) =>
-                    setCredit(
-                      i,
-                      { ...c, [k]: e.target.value },
-                      `credit-${i}-${k}`,
-                    )
-                  }
-                />
-              </label>
-            ))}
-            <button
-              type="button"
-              className="secondary"
-              onClick={() =>
-                onChange({
-                  ...draft,
-                  credits: credits.filter((_, j) => j !== i),
-                })
-              }
-            >
-              Remove credit {i + 1}
-            </button>
-          </fieldset>
-        ))}
+        {credits.map((c, i) =>
+          isOriginal(c) ? (
+            <p key={i} className="about-entry original">
+              <b>{c.source}</b>
+              {c.note ? ` ${c.note}` : ''} The credit to the original always
+              stays.
+            </p>
+          ) : (
+            <fieldset key={i} className="about-entry">
+              <legend>Credit {i + 1}</legend>
+              {(['source', 'creator', 'url', 'note'] as const).map((k) => (
+                <label key={k} className="about-field">
+                  {k === 'url'
+                    ? 'Address (URL)'
+                    : k[0]?.toUpperCase() + k.slice(1)}
+                  <input
+                    type="text"
+                    value={c[k] ?? ''}
+                    onChange={(e) =>
+                      setCredit(
+                        i,
+                        { ...c, [k]: e.target.value },
+                        `credit-${i}-${k}`,
+                      )
+                    }
+                  />
+                </label>
+              ))}
+              <button
+                type="button"
+                className="secondary"
+                onClick={() =>
+                  onChange({
+                    ...draft,
+                    credits: credits.filter((_, j) => j !== i),
+                  })
+                }
+              >
+                Remove credit {i + 1}
+              </button>
+            </fieldset>
+          ),
+        )}
         <button
           type="button"
           className="secondary"
@@ -171,8 +191,9 @@ export function AboutPanel({
       <section className="about">
         <h2>Photos of the original</h2>
         <p className="hint">
-          A free photo (public domain or Creative Commons) goes in
-          apps/player/public/photos/; any other is marked private.
+          A photo of the real pattern, with who took it and its licence. Only a
+          free photo (public domain or Creative Commons) can be shown to
+          everyone; mark any other private.
         </p>
         {photos.map((p, i) => (
           <fieldset key={i} className="about-entry">
@@ -248,10 +269,13 @@ export function AboutPanel({
               type="button"
               onClick={() =>
                 download(
-                  new Blob([`${JSON.stringify(file.tutorial, null, 2)}\n`], {
-                    type: 'application/json',
-                  }),
-                  `${file.tutorial.id}.json`,
+                  new Blob(
+                    [
+                      `${JSON.stringify({ ...file.tutorial, id: slug(file.tutorial.title) }, null, 2)}\n`,
+                    ],
+                    { type: 'application/json' },
+                  ),
+                  `${slug(file.tutorial.title)}.json`,
                 )
               }
             >

@@ -8,6 +8,9 @@ import {
   deleteWithDependents,
   dependents,
   moveStep,
+  describe,
+  plainReason,
+  specsOf,
   type Draft,
   type StepStatus,
 } from './document';
@@ -16,6 +19,8 @@ import { EditorDrawing } from './EditorDrawing';
 import {
   imagesOf,
   inkableOf,
+  inTile,
+  tileWarning,
   inkedNow,
   tileOf,
   tutorialOf,
@@ -26,6 +31,7 @@ import { getPattern, savePattern, type UserPattern } from './patterns';
 import {
   buildStep,
   complete,
+  elementNear,
   sameTarget,
   snap,
   TOOLS,
@@ -192,8 +198,9 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
         clicks,
         side as 'near' | 'far',
         symmetry,
+        { scene },
       );
-      const made = symmetry ? tidySymmetry(draft, built, at) : built;
+      const made = symmetry ? tidySymmetry(draft, built, at, { scene }) : built;
       if (!Object.keys(made.create).length) {
         setSaid('That point is already marked.');
         return;
@@ -202,18 +209,26 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
       const id = at + 1;
       const after = check(next);
       const st = after.status.get(id);
+      let warn: string | undefined;
       if (st?.ok && tool.id === 'tile') {
         // The tile must repeat edge to edge, or there is no wall.
         next = withTile(next, Object.keys(made.create).at(-1) as string);
         const tile = tileOf(next, after.scene);
         if ('reason' in tile) {
-          setSaid(`That cannot be the tile: ${tile.reason}`);
+          setSaid(
+            `That cannot be the tile: ${plainReason(tile.reason, specsOf(next))}`,
+          );
           return;
         }
+        warn = tileWarning(after.scene, tile.cell);
       }
       if (st?.ok) {
         // One circle fits without choosing a side: that is the step.
-        if (side === undefined) return keep(next);
+        if (side === undefined) {
+          keep(next);
+          if (warn) setSaid(warn);
+          return;
+        }
         const g = after.scene.elements.get(
           Object.keys(made.create).at(-1) as string,
         )?.geometry;
@@ -550,6 +565,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
             <EditorDrawing
               scene={scene}
               candidates={choices?.circles}
+              tile={inkable?.cell.corners}
               selected={selected}
               targets={targets}
               hover={hover}
@@ -563,7 +579,17 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
                 if (mode === 'ink') {
                   const hit =
                     inkable && nearestPiece(inkable.pieces, at, reach);
-                  if (hit) toggle(hit);
+                  if (hit) {
+                    setSaid(undefined);
+                    toggle(hit);
+                  } else if (
+                    inkable &&
+                    !inTile(inkable.cell, at, scene.tol.eps) &&
+                    elementNear(scene, at, reach)
+                  )
+                    setSaid(
+                      'That line is outside the tile. Ink inside the dotted tile, or choose a bigger tile.',
+                    );
                   return;
                 }
                 if (!want) return;
@@ -593,11 +619,12 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               {mode === 'ink' ? (
                 <>
                   <b>Ink:</b>{' '}
-                  {!cellName
-                    ? 'Draw the tile first, with the Tile tool, or use a shape as the tile.'
-                    : symmetric
-                      ? `Click a bit of line to ink or erase it, with its ${draft.fold} turned${draft.chiral ? '' : ' and mirrored'} copies.`
-                      : 'Click a bit of line to ink or erase it.'}
+                  {said ??
+                    (!cellName
+                      ? 'Draw the tile first, with the Tile tool, or use a shape as the tile.'
+                      : symmetric
+                        ? `Click a bit of line to ink or erase it, with its ${draft.fold} turned${draft.chiral ? '' : ' and mirrored'} copies.`
+                        : 'Click a bit of line to ink or erase it.')}
                 </>
               ) : (
                 <>
@@ -662,12 +689,14 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               last={draft.steps.length}
               dependents={dependents(checked, step.id)}
               tile={cellName}
+              say={(name) => describe(name, specsOf(draft), { scene })}
               onTile={(name) => {
                 const next = withTile(draft, name);
                 const tile = tileOf(next, checked.scene);
-                if ('reason' in tile) return tile.reason;
+                if ('reason' in tile)
+                  return `It cannot be the tile: ${plainReason(tile.reason, specsOf(next))}`;
                 edit(next);
-                return undefined;
+                return tileWarning(checked.scene, tile.cell);
               }}
               onText={(text) =>
                 edit(changeStep(draft, step.id, { text }), `text-${step.id}`)
@@ -706,6 +735,7 @@ function StepPanel({
   dependents: built,
   tile,
   onTile,
+  say,
   onText,
   onMove,
   onDelete,
@@ -719,6 +749,8 @@ function StepPanel({
   dependents: readonly number[];
   /** The tile's polygon, if one is chosen. */
   tile?: string;
+  /** An element in plain words, to tell two shapes apart. */
+  say: (name: string) => string;
   /** Makes a polygon the tile; the reason when it cannot repeat. */
   onTile: (polygon: string) => string | undefined;
   onText: (text: string) => void;
@@ -823,7 +855,11 @@ function StepPanel({
           {polygons.map((name) =>
             name === tile ? (
               <p key={name} className="step-status ok">
-                ✓ {name} is the tile that repeats.
+                ✓{' '}
+                {polygons.length > 1
+                  ? `${say(name)[0]?.toUpperCase()}${say(name).slice(1)}`
+                  : 'This shape'}{' '}
+                is the tile that repeats.
               </p>
             ) : (
               <button
@@ -832,13 +868,13 @@ function StepPanel({
                 className="secondary"
                 onClick={() => setNotTile(onTile(name))}
               >
-                Use {name} as the tile
+                Use {polygons.length > 1 ? say(name) : 'this shape'} as the tile
               </button>
             ),
           )}
           {notTile ? (
             <p className="step-status broken" role="alert">
-              It cannot be the tile: {notTile}
+              {notTile}
             </p>
           ) : null}
         </section>

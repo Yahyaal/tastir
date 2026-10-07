@@ -70,7 +70,7 @@ describe('the editor', () => {
     expect(steps()).toEqual([
       'Put the compass point on O and draw a circle through A.',
       'Draw a line through O and A.',
-      'Draw a line through O, square to the line through O and A.',
+      'Draw a line through O, square to the horizontal line.',
       'Halve the angle A–O–P1 with a line through O.',
     ]);
     const saved = getPattern(id)?.tutorial;

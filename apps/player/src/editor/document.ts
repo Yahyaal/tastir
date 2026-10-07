@@ -3,6 +3,7 @@ import {
   stepsBuiltOn,
   TutorialError,
   type Scene,
+  type Vec,
 } from '@tastir/engine';
 import {
   partsOf,
@@ -81,7 +82,8 @@ export function copyUpTo(
   return {
     ...rest,
     id: `${tutorial.id}-mine`,
-    title: `${tutorial.title} (my copy)`,
+    // Titles often start with a name (Bou Inania), so its case is kept.
+    title: `My ${tutorial.title}`,
     steps: tutorial.steps.filter((s) => s.id <= step),
     credits: [
       ...tutorial.credits,
@@ -276,59 +278,133 @@ export function specsOf(draft: Pick<Draft, 'steps'>): Map<string, ElementSpec> {
 }
 
 /**
- * An element as the learner knows it from the drawing: a point by its
- * name (points are labelled), a line, circle or shape by how it was made
- * ("the circle about O through A"), never by an internal name like d1.
+ * What the words need from the drawing, when it is at hand: each point's
+ * displayed name (E where E and the given A share a place) and where the
+ * lines run, so a line through O can be called the horizontal line.
  */
-export function describe(ref: string, specs: Specs): string {
-  const base = ref.replace(/[.@].*$/, '');
-  const el = specs.get(base);
-  if (!el || 'point' in el) return ref;
-  if (ref.includes('.')) return ref; // a crossing of a points element
-  const copy = ref.includes('@') ? 'a copy of ' : '';
-  const say = (): string => {
-    if ('points' in el)
-      return `the crossings of ${el.points.meet.join(' and ')}`;
-    if ('line' in el) {
-      const l = el.line;
-      if ('bisects' in l)
-        return `the line halving the angle ${l.bisects.join('–')}`;
-      if ('perpendicularTo' in l || 'parallelTo' in l)
-        return `the line through ${l.through} ${'perpendicularTo' in l ? 'square to' : 'parallel to'} ${describeShort(
-          'perpendicularTo' in l ? l.perpendicularTo : l.parallelTo,
-          specs,
-        )}`;
-      return `the line through ${l.through[0]} and ${l.through[1]}`;
-    }
-    if ('circle' in el) {
-      const c = el.circle;
-      return 'through' in c
-        ? `the circle about ${c.centre} through ${c.through}`
-        : `the circle about ${c.centre}`;
-    }
-    if ('polygon' in el)
-      return base.startsWith('Tile')
-        ? 'the tile'
-        : el.polygon.length <= 4
-          ? `the shape ${el.polygon.join('')}`
-          : `the ${el.polygon.length}-sided shape through ${el.polygon[0]}`;
-    return `the copies of ${el.repeat.of.map((o) => describeShort(o, specs)).join(' and ')}`;
-  };
-  return copy + say();
+export interface Drawn {
+  readonly scene: Scene;
 }
 
-/** A shorter description, for an element named inside another's. */
-function describeShort(ref: string, specs: Specs): string {
-  const el = specs.get(ref.replace(/[.@].*$/, ''));
-  if (el && 'line' in el) {
+/**
+ * The clearest of several names for one point: O for the centre; else a
+ * name a step gave (E rather than the given A, which shares its place),
+ * not a crossing number (k.1) or a copy (x@2) when another name exists;
+ * the first made of those.
+ */
+export function clearestName(names: readonly string[]): string {
+  if (names.includes('O')) return 'O';
+  const own = names.filter((n) => n !== 'A');
+  const plain = own.filter((n) => !/[.@]/.test(n));
+  return plain[0] ?? own[0] ?? names[0] ?? '';
+}
+
+/** A place where one or more named points sit, under its clearest name. */
+export interface PointPlace {
+  readonly at: Vec;
+  /** The name to show and to use: see clearestName. */
+  readonly name: string;
+  readonly names: readonly string[];
+}
+
+const places = new WeakMap<Scene, PointPlace[]>();
+
+/** Every named point, grouped by place (computed once per drawing). */
+export function pointPlaces(scene: Scene): readonly PointPlace[] {
+  let found = places.get(scene);
+  if (found) return found;
+  const byKey = new Map<string, { at: Vec; names: string[] }>();
+  for (const el of scene.elements.values()) {
+    const g = el.geometry;
+    if (g.kind !== 'point') continue;
+    const k = `${g.at.x.toFixed(6)},${g.at.y.toFixed(6)}`.replace(
+      /-(0\.0+)(?=,|$)/g,
+      '$1',
+    );
+    const place = byKey.get(k) ?? { at: g.at, names: [] };
+    place.names.push(el.name);
+    byKey.set(k, place);
+  }
+  found = [...byKey.values()].map((p) => ({
+    at: p.at,
+    names: p.names,
+    name: clearestName(p.names),
+  }));
+  places.set(scene, found);
+  return found;
+}
+
+const shown = new WeakMap<Scene, Map<string, string>>();
+
+/** The name the drawing shows for a point. */
+export function shownName(name: string, drawn?: Drawn): string {
+  if (!drawn) return name;
+  let map = shown.get(drawn.scene);
+  if (!map) {
+    map = new Map();
+    for (const p of pointPlaces(drawn.scene))
+      for (const n of p.names) map.set(n, p.name);
+    shown.set(drawn.scene, map);
+  }
+  return map.get(name) ?? name;
+}
+
+const degrees = (n: number) => Number(n.toFixed(1));
+
+/**
+ * An element as the learner knows it from the drawing: a point by its
+ * shown name, a line or circle by a short plain description ("the
+ * vertical line", "the circle about O"), never by an internal name like
+ * d1, and never one description inside another.
+ */
+export function describe(ref: string, specs: Specs, drawn?: Drawn): string {
+  const name = (n: string) => shownName(n, drawn);
+  const base = ref.replace(/[.@].*$/, '');
+  const el = specs.get(base);
+  if (!el || 'point' in el || ref.includes('.')) return name(ref);
+  const g = drawn?.scene.elements.get(ref)?.geometry;
+  if (ref.includes('@')) {
+    const of = describe(base, specs, drawn);
+    return `a turned copy of ${of.replace(/^the /, 'the ')}`;
+  }
+  if ('points' in el) return 'those crossings';
+  if ('line' in el) {
+    if (g?.kind === 'line') {
+      const { point: p, dir: d } = g.line;
+      const throughO = Math.abs(d.x * p.y - d.y * p.x) < 1e-9;
+      const angle = ((Math.atan2(d.y, d.x) * 180) / Math.PI + 180) % 180;
+      const flat = Math.min(angle, 180 - angle) < 1e-6;
+      const upright = Math.abs(angle - 90) < 1e-6;
+      if (throughO && flat) return 'the horizontal line';
+      if (throughO && upright) return 'the vertical line';
+      if (throughO) return `the line through O at ${degrees(angle)}°`;
+      const via =
+        'through' in el.line && typeof el.line.through === 'string'
+          ? ` through ${name(el.line.through)}`
+          : '';
+      if (flat) return `the horizontal line${via}`;
+      if (upright) return `the vertical line${via}`;
+    }
     const l = el.line;
     if ('bisects' in l)
-      return `the line halving the angle ${l.bisects.join('–')}`;
+      return `the line halving the angle ${l.bisects.map(name).join('–')}`;
     if (Array.isArray(l.through))
-      return `the line through ${l.through[0]} and ${l.through[1]}`;
-    return `the line through ${l.through}`;
+      return `the line through ${name(l.through[0])} and ${name(l.through[1])}`;
+    return `the line through ${name(l.through as string)}`;
   }
-  return describe(ref, specs);
+  if ('circle' in el) {
+    const c = el.circle;
+    return 'through' in c
+      ? `the circle about ${name(c.centre)} through ${name(c.through)}`
+      : `the circle about ${name(c.centre)}`;
+  }
+  if ('polygon' in el)
+    return base.startsWith('Tile')
+      ? 'the tile'
+      : el.polygon.length <= 4
+        ? `the shape ${el.polygon.map(name).join('–')}`
+        : `the ${el.polygon.length}-sided shape`;
+  return 'the turned copies';
 }
 
 /** An engine message in plain words: names become descriptions. */
@@ -336,9 +412,12 @@ export function plainReason(reason: string, specs: Specs): string {
   const missing = /^"([^"]+)" does not exist$/.exec(reason)?.[1];
   if (missing)
     return `It uses ${describe(missing, specs)}, which no earlier step makes.`;
-  const text = reason.replace(/"([^"]+)"/g, (_, n: string) =>
-    describe(n, specs),
-  );
+  if (/no single radius touches/i.test(reason))
+    return 'No one circle about that centre touches all of them. Try fewer lines or circles to touch.';
+  const text = reason
+    // Raw numbers mean nothing to a learner.
+    .replace(/\s*\([^)]*\d\.\d{3,}[^)]*\)/g, '')
+    .replace(/"([^"]+)"/g, (_, n: string) => describe(n, specs));
   return (
     text[0]?.toUpperCase() + text.slice(1) + (/[.!?]$/.test(text) ? '' : '.')
   );
@@ -349,8 +428,10 @@ export function sayElement(
   name: string,
   el: ElementSpec,
   specs: Specs = new Map(),
+  drawn?: Drawn,
 ): string {
-  const d = (ref: string) => describe(ref, specs);
+  const d = (ref: string) => describe(ref, specs, drawn);
+  const n = (ref: string) => shownName(ref, drawn);
   if ('point' in el) {
     const [a, b] = el.point.meet;
     return `Mark ${name} where ${d(a)} and ${d(b)} cross.`;
@@ -362,60 +443,76 @@ export function sayElement(
   if ('line' in el) {
     const l = el.line;
     if ('perpendicularTo' in l)
-      return `Draw a line through ${l.through}, square to ${d(l.perpendicularTo)}.`;
+      return `Draw a line through ${n(l.through)}, square to ${d(l.perpendicularTo)}.`;
     if ('parallelTo' in l)
-      return `Draw a line through ${l.through}, parallel to ${d(l.parallelTo)}.`;
+      return `Draw a line through ${n(l.through)}, parallel to ${d(l.parallelTo)}.`;
     if ('bisects' in l) {
-      const [p, q, r] = l.bisects;
+      const [p, q, r] = l.bisects.map(n);
       return `Halve the angle ${p}–${q}–${r} with a line through ${q}.`;
     }
-    return `Draw a line through ${l.through[0]} and ${l.through[1]}.`;
+    return `Draw a line through ${n(l.through[0])} and ${n(l.through[1])}.`;
   }
   if ('circle' in el) {
     const c = el.circle;
     if ('through' in c)
-      return `Put the compass point on ${c.centre} and draw a circle through ${c.through}.`;
+      return `Put the compass point on ${n(c.centre)} and draw a circle through ${n(c.through)}.`;
     if ('radiusOf' in c)
-      return `Keep the opening of ${d(c.radiusOf)} and draw a circle about ${c.centre}.`;
+      return `Keep the opening of ${d(c.radiusOf)} and draw a circle about ${n(c.centre)}.`;
     if ('radiusFrom' in c)
-      return `Open the compass from ${c.radiusFrom[0]} to ${c.radiusFrom[1]} and draw a circle about ${c.centre}.`;
-    return `Put the compass point on ${c.centre} and open it until the circle touches ${list(c.tangentTo.map(d))}.`;
+      return `Open the compass from ${n(c.radiusFrom[0])} to ${n(c.radiusFrom[1])} and draw a circle about ${n(c.centre)}.`;
+    const side =
+      c.touch === 'near'
+        ? ', the smaller circle that just touches it from outside'
+        : c.touch === 'far'
+          ? ', the larger circle that goes round it'
+          : '';
+    return `Put the compass point on ${n(c.centre)} and open it until the circle touches ${list(c.tangentTo.map(d))}${side}.`;
   }
   if ('polygon' in el)
     return name.startsWith('Tile')
-      ? `Join ${list(el.polygon)} into the tile, which repeats edge to edge.`
-      : `Join ${list(el.polygon)} into a shape.`;
+      ? `Join ${list(el.polygon.map(n))} into the tile, which repeats edge to edge.`
+      : `Join ${list(el.polygon.map(n))} into a shape.`;
   const { of, by } = el.repeat;
-  if (el.repeat.distinct && by.startsWith('rot'))
-    return `Turn ${of.length === 1 ? 'it' : list(of.map(d))} round the centre in steps of ${Number((360 / Number(by.slice(3))).toFixed(1))}°.`;
-  return by.startsWith('mirror:')
-    ? `Mirror ${list(of.map(d))} in ${d(by.slice('mirror:'.length))}.`
-    : `Turn ${of.length === 1 ? 'it' : list(of.map(d))} round the centre, ${by.slice(3)} times in all.`;
+  const what = of.length === 1 ? 'it' : list(of.map(d));
+  if (by.startsWith('mirror:'))
+    return `Mirror ${what} in ${d(by.slice('mirror:'.length))}.`;
+  return `Turn ${what} round the centre in steps of ${degrees(360 / Number(by.slice(3)))}°.`;
 }
 
 /**
- * A step's text in plain words, written for the learner to edit. `draft`
- * tells what earlier names stand for, so they can be described.
+ * A step's text in plain words, written for the learner to edit: short
+ * sentences, what the step draws first. `draft` tells what earlier names
+ * stand for; `drawn`, when at hand, gives the names the drawing shows
+ * and where lines run.
  */
 export function sayStep(
   create: NewStep['create'],
   draft?: Pick<Draft, 'steps'>,
+  drawn?: Drawn,
 ): string {
   const specs = draft ? specsOf(draft) : new Map<string, ElementSpec>();
   for (const [n, el] of Object.entries(create)) specs.set(n, el);
-  const d = (ref: string) => describe(ref, specs);
+  const d = (ref: string) => describe(ref, specs, drawn);
   const all = Object.entries(create);
   const main = all.filter(([, el]) => !('point' in el));
   if (!main.length)
-    return all.map(([n, el]) => sayElement(n, el, specs)).join(' ');
-  // What the step draws comes first; the crossings it names, after.
-  const marks = all
-    .filter(([, el]) => 'point' in el)
-    .map(([n, el]) => {
-      const [a, b] = 'point' in el ? el.point.meet : ['', ''];
-      return `${n} is where ${d(a)} and ${d(b)} cross.`;
-    });
-  return [...main.map(([n, el]) => sayElement(n, el, specs)), ...marks].join(
-    ' ',
-  );
+    return all.map(([n, el]) => sayElement(n, el, specs, drawn)).join(' ');
+  // What the step draws comes first; the crossings it names, after, in
+  // one short sentence when there are several.
+  const points = all.filter(([, el]) => 'point' in el);
+  const marks =
+    points.length === 1
+      ? points.map(([n, el]) => {
+          const [a, b] = 'point' in el ? el.point.meet : ['', ''];
+          return `${n} is where ${d(a)} and ${d(b)} cross.`;
+        })
+      : points.length
+        ? [
+            `${list(points.map(([n]) => n))} are crossings of lines already drawn.`,
+          ]
+        : [];
+  return [
+    ...main.map(([n, el]) => sayElement(n, el, specs, drawn)),
+    ...marks,
+  ].join(' ');
 }

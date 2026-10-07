@@ -56,6 +56,7 @@ export function EditorDrawing({
   hover,
   ink,
   candidates,
+  tile,
   onHover,
   onClick,
 }: {
@@ -67,6 +68,9 @@ export function EditorDrawing({
   ink?: { pieces: readonly InkPiece[]; chosen: ReadonlySet<string> };
   /** Circles to choose between, drawn dashed. */
   candidates?: readonly { centre: Vec; radius: number }[];
+  /** In ink mode: the tile's corners, drawn dotted, as only what is
+   * inside it can be inked. */
+  tile?: readonly Vec[];
   onHover: (at: Vec, reach: number) => void;
   onClick: (at: Vec, reach: number) => void;
 }) {
@@ -276,6 +280,12 @@ export function EditorDrawing({
               r={unit * 2.5}
             />
           ))}
+          {tile ? (
+            <polygon
+              className="tile-outline"
+              points={tile.map((v) => `${v.x},${v.y}`).join(' ')}
+            />
+          ) : null}
           {candidates?.map((c, i) => (
             <circle
               key={`c${i}`}

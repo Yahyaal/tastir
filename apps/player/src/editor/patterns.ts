@@ -96,3 +96,14 @@ export function playable(
     ? { entry: { id: `mine/${id}`, json: made.tutorial } }
     : { reason: made.reason };
 }
+
+/**
+ * A title no other pattern here has: the one asked for, or numbered
+ * (“My pattern 2”), so two patterns on the shelf can be told apart.
+ */
+export function freeTitle(wanted: string): string {
+  const taken = new Set(listPatterns().map((p) => p.tutorial.title));
+  if (!taken.has(wanted)) return wanted;
+  for (let n = 2; ; n++)
+    if (!taken.has(`${wanted} ${n}`)) return `${wanted} ${n}`;
+}

@@ -14,10 +14,13 @@ import {
 import type { ElementSpec, Pick } from '@tastir/schema';
 import {
   freshName,
+  pointPlaces,
   PREFIX,
   sayStep,
   type Draft,
+  type Drawn,
   type NewStep,
+  type PointPlace,
 } from './document';
 
 /**
@@ -217,53 +220,7 @@ const fits = (scene: Scene, name: string, want: Want): boolean => {
  * touching point) of two elements, which gets the simplest pick rule that
  * names it. There is no free point anywhere.
  */
-/** A place where one or more named points sit, under its clearest name. */
-export interface PointPlace {
-  readonly at: Vec;
-  /** The name to show and to use: see clearestName. */
-  readonly name: string;
-  readonly names: readonly string[];
-}
-
-/**
- * The clearest of several names for one point: O for the centre; else a
- * name a step gave (E rather than the given A, which shares its place),
- * not a crossing number (k.1) or a copy (x@2) when another name exists;
- * the first made of those.
- */
-export function clearestName(names: readonly string[]): string {
-  if (names.includes('O')) return 'O';
-  const own = names.filter((n) => n !== 'A');
-  const plain = own.filter((n) => !/[.@]/.test(n));
-  return plain[0] ?? own[0] ?? names[0] ?? '';
-}
-
-const places = new WeakMap<Scene, PointPlace[]>();
-
-/** Every named point, grouped by place (computed once per drawing). */
-export function pointPlaces(scene: Scene): readonly PointPlace[] {
-  let found = places.get(scene);
-  if (found) return found;
-  const byKey = new Map<string, { at: Vec; names: string[] }>();
-  for (const el of scene.elements.values()) {
-    const g = el.geometry;
-    if (g.kind !== 'point') continue;
-    const k = `${g.at.x.toFixed(6)},${g.at.y.toFixed(6)}`.replace(
-      /-(0\.0+)(?=,|$)/g,
-      '$1',
-    );
-    const place = byKey.get(k) ?? { at: g.at, names: [] };
-    place.names.push(el.name);
-    byKey.set(k, place);
-  }
-  found = [...byKey.values()].map((p) => ({
-    at: p.at,
-    names: p.names,
-    name: clearestName(p.names),
-  }));
-  places.set(scene, found);
-  return found;
-}
+export { clearestName, pointPlaces, type PointPlace } from './document';
 
 /** The elements whose curves pass within `reach` of a point, nearest first. */
 function curvesNear(scene: Scene, at: Vec, reach: number) {
@@ -276,6 +233,10 @@ function curvesNear(scene: Scene, at: Vec, reach: number) {
   }
   return near.sort((a, b) => a.d - b.d);
 }
+
+/** Whether any line, circle or shape passes within `reach` of a point. */
+export const elementNear = (scene: Scene, at: Vec, reach: number): boolean =>
+  curvesNear(scene, at, reach).length > 0;
 
 /** The crossings of elements within `reach` of a point, nearest first. */
 export function crossingsNear(
@@ -360,6 +321,7 @@ export function buildStep(
   targets: readonly Target[],
   touch?: 'near' | 'far',
   symmetry: Symmetry = 0,
+  drawn?: Drawn,
 ): NewStep {
   const create: Record<string, ElementSpec> = {};
   const taken: string[] = [];
@@ -432,7 +394,7 @@ export function buildStep(
     create[fresh(PREFIX.repeat)] = {
       repeat: { of: [spec[0]], by: `rot${symmetry}` },
     } as ElementSpec;
-  return { text: sayStep(create, draft), create };
+  return { text: sayStep(create, draft, drawn), create };
 }
 
 /**
@@ -442,7 +404,12 @@ export function buildStep(
  * original (a circle about O) is dropped. Checked by evaluating the step
  * where it will go (`at` steps before it).
  */
-export function tidySymmetry(draft: Draft, made: NewStep, at: number): NewStep {
+export function tidySymmetry(
+  draft: Draft,
+  made: NewStep,
+  at: number,
+  drawn?: Drawn,
+): NewStep {
   const entry = Object.entries(made.create).find(([, el]) => 'repeat' in el);
   if (!entry) return made;
   const [name, el] = entry;
@@ -468,5 +435,5 @@ export function tidySymmetry(draft: Draft, made: NewStep, at: number): NewStep {
   const create = { ...made.create };
   if (members === 0) delete create[name];
   else create[name] = tried[name] as ElementSpec;
-  return { text: sayStep(create, draft), create };
+  return { text: sayStep(create, draft, drawn), create };
 }

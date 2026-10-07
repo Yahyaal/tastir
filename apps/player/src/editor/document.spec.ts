@@ -148,7 +148,7 @@ describe('the editor document', () => {
       sayStep({ L3: { line: { through: 'P1', perpendicularTo: 'L1' } } }),
     ).toBe('Draw a line through P1, square to L1.');
     expect(sayStep({ R1: { repeat: { of: ['L3'], by: 'rot8' } } })).toBe(
-      'Turn it round the centre, 8 times in all.',
+      'Turn it round the centre in steps of 45°.',
     );
   });
 });

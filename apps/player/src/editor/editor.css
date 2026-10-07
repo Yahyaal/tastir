@@ -539,3 +539,30 @@
   stroke-dasharray: 6 4;
   vector-effect: non-scaling-stroke;
 }
+
+.editor-drawing .tile-outline {
+  fill: var(--saffron);
+  fill-opacity: 0.06;
+  stroke: var(--used);
+  stroke-width: 2px;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+}
+
+/* On a wide screen the editor fits the window: the drawing takes what
+   the tools and the status line leave. */
+@media (min-width: 1101px) {
+  .editor .stage {
+    min-height: 0;
+  }
+
+  .editor-drawing {
+    min-height: 0;
+  }
+
+  .editor .editor-steps,
+  .editor .side-panel {
+    max-height: 100%;
+    overflow-y: auto;
+  }
+}

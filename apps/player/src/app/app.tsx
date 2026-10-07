@@ -38,7 +38,12 @@ import {
 import { Shelf } from './Shelf';
 import { Editor } from '../editor/Editor';
 import { copyUpTo } from '../editor/document';
-import { addPattern, listPatterns, playable } from '../editor/patterns';
+import {
+  addPattern,
+  freeTitle,
+  listPatterns,
+  playable,
+} from '../editor/patterns';
 import { NewPattern, PatternShelf } from '../editor/PatternShelf';
 import { SaveDesign } from './SaveDesign';
 import {
@@ -833,11 +838,15 @@ function CopyHere({
 }) {
   const [refused, setRefused] = useState(false);
   const copy = () => {
-    const made = addPattern(copyUpTo(tutorial, step, shownNumber), {
-      tutorial: address,
-      title: tutorial.title,
-      step: shownNumber,
-    });
+    const copy = copyUpTo(tutorial, step, shownNumber);
+    const made = addPattern(
+      { ...copy, title: freeTitle(copy.title) },
+      {
+        tutorial: address,
+        title: tutorial.title,
+        step: shownNumber,
+      },
+    );
     if (!made) return setRefused(true);
     window.location.hash = `#/edit/${made.id}`;
   };
@@ -1152,7 +1161,10 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
       {patterns.length ? (
         <PatternShelf
           patterns={patterns}
-          onChange={() => setPatterns(listPatterns())}
+          onChange={() => {
+            setPatterns(listPatterns());
+            setDesigns(listDesigns());
+          }}
         />
       ) : null}
       <section aria-labelledby="collection">

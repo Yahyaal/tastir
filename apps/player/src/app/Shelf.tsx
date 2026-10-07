@@ -75,12 +75,14 @@ function DesignCard({
 }) {
   // A design of the learner's own pattern (mine/<id>) is drawn from the
   // pattern kept in this browser.
+  // Read again whenever the list is (the design object is new each time),
+  // so a pattern deleted meanwhile shows as deleted.
   const own = useMemo(() => {
     const id = /^mine\/(.+)$/.exec(design.tutorial)?.[1];
-    const found = id === undefined ? undefined : playable(id);
-    return found && 'entry' in found ? found.entry : undefined;
-  }, [design.tutorial]);
-  const shown = entry ?? own;
+    return id === undefined ? undefined : playable(id);
+  }, [design]);
+  const ownEntry = own && 'entry' in own ? own.entry : undefined;
+  const shown = entry ?? ownEntry;
   return (
     <li className="card-item">
       {shown ? (
@@ -91,7 +93,9 @@ function DesignCard({
           <h3 title={design.name}>{design.name}</h3>
           <p className="error">
             {design.tutorial.startsWith('mine/')
-              ? 'Its pattern is not in this browser, or cannot be played now.'
+              ? own === undefined
+                ? 'Its pattern was deleted, so it cannot open. You can delete it too.'
+                : 'Its pattern cannot be played now: open the pattern in the editor to mend it.'
               : `Its tutorial, ${design.tutorial}, is no longer in the library.`}
           </p>
         </div>

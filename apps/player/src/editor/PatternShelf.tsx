@@ -1,11 +1,16 @@
 import type { Scene } from '@tastir/engine';
 import { useEffect, useState } from 'react';
 import { viewBox } from '../app/camera';
+import { Thumbnail } from '../app/drawing';
+import { useModel } from '../app/workerClient';
+import { deleteDesign, listDesigns } from '../app/designs';
 import { check, emptyDraft } from './document';
 import { frameOf } from './EditorDrawing';
 import {
   addPattern,
   deletePattern,
+  freeTitle,
+  playable,
   savePattern,
   type UserPattern,
 } from './patterns';
@@ -58,7 +63,9 @@ export function NewPattern() {
         type="button"
         className="button"
         onClick={() => {
-          const made = addPattern(emptyDraft('my-pattern', 'My pattern'));
+          const made = addPattern(
+            emptyDraft('my-pattern', freeTitle('My pattern')),
+          );
           if (!made) return setRefused(true);
           window.location.hash = `#/edit/${made.id}`;
         }}
@@ -87,16 +94,29 @@ function PatternCard({
   const [name, setName] = useState(tutorial.title);
   // The drawing is worked out after the page shows, so a big pattern does
   // not hold up the home page.
-  const [scene, setScene] = useState<Scene>();
-  useEffect(() => {
-    const t = setTimeout(() => setScene(check(tutorial).scene), 0);
-    return () => clearTimeout(t);
-  }, [tutorial]);
   const ready = Boolean(tutorial.pattern?.cell && tutorial.ink?.paths.length);
+  // A finished pattern shows its wall, like a design; one still being
+  // made shows its construction so far.
+  const [scene, setScene] = useState<Scene>();
+  const [file, setFile] = useState<unknown>();
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const found = ready ? playable(pattern.id) : undefined;
+      if (found && 'entry' in found) setFile(found.entry.json);
+      else setScene(check(tutorial).scene);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [tutorial, ready, pattern.id]);
+  const designs =
+    doing === 'delete'
+      ? listDesigns().filter((d) => d.tutorial === `mine/${pattern.id}`)
+      : [];
   return (
     <li className="card-item">
       <a className="card" href={`#/edit/${pattern.id}`}>
-        {scene ? (
+        {file ? (
+          <WallThumb json={file} />
+        ) : scene ? (
           <Sketch scene={scene} />
         ) : (
           <div className="thumbnail waiting" />
@@ -143,17 +163,35 @@ function PatternCard({
         </form>
       ) : doing === 'delete' ? (
         <div className="card-actions design-delete" role="group">
-          <p>Delete “{tutorial.title}”? This cannot be undone.</p>
+          <p>
+            Delete “{tutorial.title}”? This cannot be undone.
+            {designs.length
+              ? ` It has ${designs.length === 1 ? 'one saved design' : `${designs.length} saved designs`}, which cannot open without it.`
+              : ''}
+          </p>
           <button
             type="button"
             className="button danger"
             onClick={() => {
+              for (const d of designs) deleteDesign(d.id);
               deletePattern(pattern.id);
               onChange();
             }}
           >
-            Delete
+            {designs.length ? 'Delete it and its designs' : 'Delete'}
           </button>
+          {designs.length ? (
+            <button
+              type="button"
+              className="button secondary"
+              onClick={() => {
+                deletePattern(pattern.id);
+                onChange();
+              }}
+            >
+              Only the pattern
+            </button>
+          ) : null}
           <button
             type="button"
             className="button secondary"
@@ -194,6 +232,16 @@ function PatternCard({
         </div>
       )}
     </li>
+  );
+}
+
+/** The finished wall, small, loaded in the worker like a library card. */
+function WallThumb({ json }: { json: unknown }) {
+  const { model } = useModel(json);
+  return model ? (
+    <Thumbnail model={model} />
+  ) : (
+    <div className="thumbnail waiting" />
   );
 }
 
