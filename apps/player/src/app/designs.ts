@@ -1,4 +1,5 @@
 import type { Coloring } from './coloring';
+import { newId, now, store } from './storage';
 import type { WallStyle } from './Wall';
 
 /**
@@ -54,72 +55,25 @@ function isDesign(x: unknown): x is Design {
   );
 }
 
+const designs = store(KEY, isDesign);
+
 /**
  * Every saved design, the latest changed first. Storage can be missing or
  * blocked (a private window) and a store can be corrupt; both read as none.
  */
-export function listDesigns(): Design[] {
-  try {
-    const saved: unknown = JSON.parse(window.localStorage.getItem(KEY) ?? '[]');
-    if (!Array.isArray(saved)) return [];
-    return saved
-      .filter(isDesign)
-      .sort((a, b) => b.updated.localeCompare(a.updated));
-  } catch {
-    return [];
-  }
-}
+export const listDesigns = (): Design[] =>
+  designs.list().sort((a, b) => b.updated.localeCompare(a.updated));
 
 export const getDesign = (id: string): Design | undefined =>
   listDesigns().find((d) => d.id === id);
 
+const write = designs.write;
+
 /** Where a store that could not be read is kept before it is replaced. */
-export const BACKUP = `${KEY}.unreadable`;
-
-/**
- * Whether the stored value holds anything this version cannot read: not
- * JSON, not a list, or a list with entries that are not designs.
- */
-function unreadable(raw: string): boolean {
-  try {
-    const saved: unknown = JSON.parse(raw);
-    return !Array.isArray(saved) || !saved.every(isDesign);
-  } catch {
-    return true;
-  }
-}
-
-/**
- * Writes the designs; false when the browser refused to keep them. A store
- * that could not be read (corrupt, or from a later version) is never
- * simply overwritten: it is first copied under its own backup key, and if
- * even that is refused nothing is written.
- */
-function write(designs: readonly Design[]): boolean {
-  try {
-    const storage = window.localStorage;
-    const raw = storage.getItem(KEY);
-    if (raw !== null && unreadable(raw)) {
-      let key = BACKUP;
-      for (let n = 2; storage.getItem(key) !== null; n++)
-        key = `${BACKUP}.${n}`;
-      storage.setItem(key, raw);
-    }
-    storage.setItem(KEY, JSON.stringify(designs));
-    return true;
-  } catch {
-    return false;
-  }
-}
+export const BACKUP = designs.backup;
 
 /** Whether a store that could not be read has been kept aside. */
-export function unreadableKept(): boolean {
-  try {
-    return window.localStorage.getItem(BACKUP) !== null;
-  } catch {
-    return false;
-  }
-}
+export const unreadableKept = designs.unreadableKept;
 
 /** The longest name a design can have, so it fits on its card. */
 export const NAME_LIMIT = 60;
@@ -127,10 +81,6 @@ const named = <T extends { name?: string }>(fields: T): T =>
   fields.name === undefined
     ? fields
     : { ...fields, name: fields.name.trim().slice(0, NAME_LIMIT) };
-
-const now = () => new Date().toISOString();
-const newId = () =>
-  `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
 
 /**
  * Keeps a new design and returns it, or undefined when the browser would
