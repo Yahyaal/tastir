@@ -2,7 +2,10 @@ import {
   computePattern,
   inkCarriers,
   inkBeats,
+  inkPieces,
   evaluate,
+  strokesOf,
+  type InkPiece,
   type Pattern,
   type Scene,
 } from '@tastir/engine';
@@ -165,4 +168,50 @@ export function inkBeatsOf(model: Model): readonly number[] {
     strokeBeats.set(model, found);
   }
   return found;
+}
+
+const allPieces = new WeakMap<Model, readonly InkPiece[]>();
+
+/** Every piece of construction a learner can ink (computed once). */
+export function inkPiecesOf(model: Model): readonly InkPiece[] {
+  let found = allPieces.get(model);
+  if (!found) {
+    found = inkPieces(model.scene, model.pattern.cell);
+    allPieces.set(model, found);
+  }
+  return found;
+}
+
+/** Whether every saved piece of ink is still a piece of the construction. */
+export function inkFits(model: Model, inked: readonly string[]): boolean {
+  const ids = new Set(inkPiecesOf(model).map((p) => p.id));
+  return inked.every((id) => ids.has(id));
+}
+
+/** The pattern a free inking makes: the chosen pieces as ink strokes. */
+export function patternInked(
+  model: Model,
+  chosen: ReadonlySet<string>,
+): Pattern {
+  return computePattern(
+    model.scene,
+    model.tutorial,
+    strokesOf(inkPiecesOf(model), chosen),
+  );
+}
+
+/**
+ * The model with a saved inking, as a design keeps it; when its pieces no
+ * longer fit (the tutorial has changed), the tutorial's own, and lost.
+ */
+export function withInking(
+  model: Model,
+  inked: readonly string[] | undefined,
+): { model: Model; lost: boolean } {
+  if (!inked) return { model, lost: false };
+  if (!inkFits(model, inked)) return { model, lost: true };
+  return {
+    model: { ...model, pattern: patternInked(model, new Set(inked)) },
+    lost: false,
+  };
 }

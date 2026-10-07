@@ -28,6 +28,8 @@ import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { Original } from './Original';
 import { LIBRARY, type Entry } from './library';
 import { useRemembered } from './remembered';
+import { getDesign, type Design } from './designs';
+import { SaveDesign } from './SaveDesign';
 import {
   asPanel,
   beatsOf,
@@ -121,12 +123,16 @@ export type Start = 'beginning' | 'result';
 
 export function Player({
   model,
-  start = 'beginning',
+  start: asked = 'beginning',
+  design: opened,
 }: {
   model: Model;
   start?: Start;
+  /** A saved design to open, at the wall with its inking and colors. */
+  design?: Design;
 }) {
   const { tutorial } = model;
+  const start = opened ? 'result' : asked;
   const stages = useMemo(() => stagesOf(tutorial), [tutorial]);
   const [index, setIndex] = useState(() =>
     start === 'result' ? stagesOf(tutorial).length - 1 : 0,
@@ -142,7 +148,7 @@ export function Player({
   const [inkMode, setInkMode] = useRemembered<InkMode>('inkMode', 'end');
   const asYouGo = inkMode === 'asYouGo';
 
-  const inking = useInking(model);
+  const inking = useInking(model, opened?.inked);
   // The ink stage traces the whole panel, when the tutorial names one.
   const inkModel = useMemo(
     () => (inking.editing ? inking.shown : asPanel(inking.shown)),
@@ -151,7 +157,11 @@ export function Player({
   const [colorHistory, colorDispatch] = useReducer(
     colorReducer,
     model,
-    (m): History => ({ past: [], now: tutorialColoring(m), future: [] }),
+    (m): History => ({
+      past: [],
+      now: opened?.coloring ?? tutorialColoring(m),
+      future: [],
+    }),
   );
   const colors = pieceColors(inking.shown, colorHistory.now);
   // Fills by placement, when the tutorial colors same shapes differently.
@@ -166,9 +176,34 @@ export function Player({
   const [hovered, setHovered] = useState<number>();
   const [selected, setSelected] = useState<number>();
   const [wallStyle, setWallStyle] = useState<WallStyle>(
-    tutorial.pattern.look ?? 'tiles',
+    opened?.look ?? tutorial.pattern.look ?? 'tiles',
   );
-  const [grout, setGrout] = useState(1);
+  const [grout, setGrout] = useState(opened?.grout ?? 1);
+  // The design being worked on: the one opened, or the last one saved.
+  const [design, setDesign] = useState(opened);
+  const saveDesign = (
+    <SaveDesign
+      title={tutorial.title}
+      design={design}
+      lost={inking.lost}
+      fields={() => ({
+        tutorial: tutorial.id,
+        inked: inking.inked,
+        coloring: colorHistory.now,
+        look: wallStyle,
+        grout,
+      })}
+      onSaved={(saved) => {
+        setDesign(saved);
+        // Its own address, so a reload or a bookmark opens the design.
+        window.history.replaceState(
+          null,
+          '',
+          `#/${tutorial.id}/design/${saved.id}`,
+        );
+      }}
+    />
+  );
   const [paper, setPaper] = useState<Paper>('A4');
   const [printing, setPrinting] = useState(false);
   // Opening at the result shows the original beside the wall at once.
@@ -267,6 +302,8 @@ export function Player({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Typing a design's name is not a step.
+      if (e.target instanceof HTMLInputElement) return;
       if (e.key === 'ArrowLeft') back();
       if (e.key === 'ArrowRight' || e.key === ' ') next();
     };
@@ -463,6 +500,7 @@ export function Player({
                   ) : null}
                 </div>
               ) : null}
+              {stage.kind === 'ink' ? saveDesign : null}
             </div>
             <nav aria-label="Steps">
               {onConstruction ? (
@@ -577,6 +615,10 @@ export function Player({
                   colorDispatch({ kind: 'reset', to: tutorialColoring(model) })
                 }
               />
+            </section>
+            <section>
+              <h2>My design</h2>
+              {saveDesign}
             </section>
             <section>
               <h2>Take it with you</h2>
@@ -715,7 +757,15 @@ function Journey({
 }
 
 /** Plays one tutorial; a tutorial the engine rejects shows its error. */
-export function Play({ json, start }: { json: unknown; start?: Start }) {
+export function Play({
+  json,
+  start,
+  design,
+}: {
+  json: unknown;
+  start?: Start;
+  design?: Design;
+}) {
   const { model, error, progress } = useModel(json);
   if (error !== undefined) return <Broken message={error} />;
   if (!model) {
@@ -725,7 +775,7 @@ export function Play({ json, start }: { json: unknown; start?: Start }) {
       </div>
     );
   }
-  return <Player model={model} start={start} />;
+  return <Player model={model} start={start} design={design} />;
 }
 
 function Broken({ message }: { message: string }) {
@@ -1052,6 +1102,18 @@ export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
     ) : (
       <Broken message="The project notes only exist on the dev server (pnpm dev)." />
     );
+  }
+  // #/id/design/d opens a saved design at its wall.
+  const mine = /^(.+)\/design\/([^/]+)$/.exec(route);
+  if (mine) {
+    const [, tutorial = '', designId = ''] = mine;
+    const design = getDesign(designId);
+    const entry = entries.find((e) => e.id === tutorial);
+    if (!entry || design?.tutorial !== tutorial)
+      return (
+        <Broken message="This design is not saved in this browser. Designs are kept only in the browser they were made in." />
+      );
+    return <Play key={route} json={entry.json} design={design} />;
   }
   // #/id plays from the first step; #/id/result opens at the finished wall.
   const result = route.endsWith('/result');

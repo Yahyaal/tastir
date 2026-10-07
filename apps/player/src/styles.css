@@ -546,6 +546,52 @@ main.stage .drawing:not(.wall) {
   padding: 5px 14px;
 }
 
+/* Saving the learner's inking and colors as a design. */
+.design-tools {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--on-lapis-muted);
+}
+
+.design-buttons,
+.design-name {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+}
+
+.design-buttons b {
+  color: var(--on-lapis);
+  font-weight: 600;
+}
+
+.design-tools button {
+  padding: 5px 14px;
+}
+
+.design-name label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.design-name input {
+  width: 14em;
+  max-width: 100%;
+  padding: 4px 8px;
+  background: var(--lapis-deep);
+  color: var(--on-lapis);
+  border: 1px solid var(--lapis-line);
+  border-radius: 4px;
+}
+
+.design-tools .hint.lost {
+  color: var(--saffron);
+}
+
 /* The color panel on the right. */
 .side-panel {
   align-self: start;

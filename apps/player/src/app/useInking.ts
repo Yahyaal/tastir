@@ -1,25 +1,29 @@
-import {
-  classicSelection,
-  computePattern,
-  inkPieces,
-  strokesOf,
-} from '@tastir/engine';
+import { classicSelection } from '@tastir/engine';
 import { useCallback, useMemo, useState } from 'react';
 import type { FreeInk } from './drawing';
-import type { Model } from './model';
+import { inkFits, inkPiecesOf, patternInked, type Model } from './model';
 
 /**
  * Free inking: which pieces of construction are inked, and the model with
  * the pattern they make. Until the learner changes something, the
- * tutorial's own (classic) inking is used.
+ * tutorial's own (classic) inking is used, or a saved design's inking.
  */
-export function useInking(model: Model) {
+export function useInking(model: Model, saved?: readonly string[]) {
   const [editing, setEditing] = useState(false);
+  // A saved inking whose pieces are gone (the tutorial has changed since)
+  // gives way to the tutorial's own, and says so.
+  const [start] = useState(() =>
+    saved && !inkFits(model, saved)
+      ? { lost: true }
+      : { lost: false, chosen: saved && new Set(saved) },
+  );
   // undefined while the inking is the tutorial's own.
-  const [chosen, setChosen] = useState<ReadonlySet<string>>();
+  const [chosen, setChosen] = useState<ReadonlySet<string> | undefined>(
+    start.chosen,
+  );
 
   const pieces = useMemo(
-    () => (editing || chosen ? inkPieces(model.scene, model.pattern.cell) : []),
+    () => (editing || chosen ? inkPiecesOf(model) : []),
     [editing, chosen, model],
   );
   const classic = useMemo(
@@ -33,15 +37,11 @@ export function useInking(model: Model) {
     [pieces, model],
   );
 
-  const shown = useMemo((): Model => {
-    if (!chosen) return model;
-    const pattern = computePattern(
-      model.scene,
-      model.tutorial,
-      strokesOf(pieces, chosen),
-    );
-    return { ...model, pattern };
-  }, [chosen, pieces, model]);
+  const shown = useMemo(
+    (): Model =>
+      chosen ? { ...model, pattern: patternInked(model, chosen) } : model,
+    [chosen, model],
+  );
 
   const onToggle = useCallback(
     (id: string) =>
@@ -52,6 +52,11 @@ export function useInking(model: Model) {
         return next;
       }),
     [classic],
+  );
+
+  const inked = useMemo(
+    () => (chosen ? [...chosen].sort() : undefined),
+    [chosen],
   );
 
   const freeInk: FreeInk | undefined = editing
@@ -65,6 +70,10 @@ export function useInking(model: Model) {
     setEditing,
     freeInk,
     isClassic: chosen === undefined,
+    /** The inked pieces, as a design keeps them; none while classic. */
+    inked,
+    /** Whether a saved inking no longer fitted and was dropped. */
+    lost: start.lost,
     /** Back to the tutorial's own inking. */
     restoreClassic: () => setChosen(undefined),
   };
