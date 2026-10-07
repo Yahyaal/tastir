@@ -189,4 +189,21 @@ I tested from a frozen worktree of commit 2d6e512, with my own server on port 43
 
 **Where I got stuck.** In Ink, the Fold was 8, although everything was drawn with Symmetry ×6. The hint said “with its 8 turned and mirrored copies”, and my click inked only four of the six tips. The pattern did not close, and the top line said “The ink closes no pieces yet” (07). I only found the fix by noticing the Fold menu, changing it to 6 and pressing Clear the ink (08). The Fold should start at the symmetry used in the construction, or at least say why the ink looks lopsided.
 
-(The eight-fold attempt follows below.)
+**The eight-fold star and cross from nothing.** I drew the first circle, then a Ruler line from O to A with Symmetry ×8, which gave the four lines through the centre. Polygon on the four points where they meet the circle, still with ×8, drew both squares of the star in one step (11). The panel then offered “Use S1 as the tile”, and as a learner I took it. That was my second dead end. The tile was the diamond, and inking a star tip with Fold 8 inked only a few scattered bits inside the diamond, with “The ink closes no pieces yet” (12, 13). I could not guess the right tile myself, so I followed the builder's route from there. With Symmetry ×4, Square to on the horizontal line then A drew the four tangent lines of a square around the circle (15), and Tile on their four corners made the right tile (16). After Clear the ink, one click on a star tip with Fold 8 inked the whole star and ▶ Play lit up (18). The played pattern is the star and cross, coloured in 0.1 s (19), and Save as my design and the home shelves worked as in phase 2. Symmetry ×16 on a compass step drew sixteen circles, and one Undo removed the whole step (21).
+
+**Where a hint would have helped.** Both dead ends come down to the tile. The editor accepts any square or hexagon as a tile, and offers a shape such as S1 as a tile, but says nothing when the motif does not fit inside it. A short hint at the Tile tool would have saved me. For example: “The tile is the square that repeats. For a star or rosette, draw a square (or hexagon) around the circle, touching it, and use its corners.” A check after tiling would help too: “Parts of your shape are outside the tile, so they cannot be inked.”
+
+**Real bugs**
+
+1. **The Ink fold ignores the symmetry used.** A pattern drawn entirely with ×6 opens Ink with Fold 8, so the first ink click inks the wrong copies and closes nothing (07). The Fold should start at the construction's symmetry.
+2. **“Use S1 as the tile” leads to a dead end.** It is offered as soon as a polygon exists, even when the polygon is the motif itself, and the result cannot be inked into closed pieces (12, 13). It should be offered only when the shape can hold the motif, or it should explain what happens.
+
+**Suggestions**
+
+3. Symmetry goes back to Off after a reload, while the steps stay turned. A learner who comes back has to set it again.
+4. Turning symmetry on makes the hint wrap to a second line, and the drawing shrinks by about 14 px at that moment (O moved from y 452 to 438). This is not harmful, because nothing is mid-click, but it is the jump I reported before.
+5. Every new pattern is called “My pattern”, so the shelf showed two cards with the same name. Numbering them, or asking for a name on the first Play, would help.
+6. The star and cross made from nothing names its cross “star2” (19), and the six-fold pattern's rhombus is “quadrilateral”. Names such as “cross” and “rhombus” would read better.
+7. Step texts get long with symmetry: “Join A, P1, P2 and P3 into a shape. Turn it round the centre, 8 times in all. P1 is where a copy of the line through O and A and the circle about O through A cross. P2 is…” (11). A square turned 8 times is also really only two squares, which is the duplicate problem the builder already knows.
+
+My verdict: phase 3 works, and it is the most satisfying part so far. A six-pointed star pattern from nothing took about twelve clicks without any help. The star and cross needed the route at exactly one point, choosing the tile, plus one change to the Fold setting. With a tile hint and Fold following the symmetry, a hobbyist could do both alone.
