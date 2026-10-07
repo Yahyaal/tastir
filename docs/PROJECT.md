@@ -29,7 +29,7 @@ There are 34 tutorials in the library. Each one's status, with what was checked,
 
 ## The next goal
 
-Build “your own patterns”, the plan at `#/plan` that the owner approved on 6 October 2026: saving your own inking and colours, then an editor that copies a tutorial at any step, starts from nothing, and offers building blocks, then sharing. The tasks, their state and the tester's reports are in [the build log](USER-PATTERNS.md); resume from its first unticked task.
+“Your own patterns” (the plan at `#/plan`) is built: phases 1 to 5 were finished and checked by a tester agent on 7 October 2026, as recorded in [the build log](USER-PATTERNS.md). It now waits for the owner's look on the review page (the rosette block, and which address “Send it to the library” should name). Fix what the owner finds first.
 
 After that, more Alhambra panels from Brian Wichmann's Tiling Search, each checked against David Wade's photo of the real panel (the candidates and the method are in [the queue](patterns/QUEUE.md)).
 
