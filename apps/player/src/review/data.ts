@@ -1445,10 +1445,11 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Building your own patterns',
-    text: 'Two agents are building the plan you approved: one builds, the other uses the app like a learner and reports problems. Phase 1, “My designs”, comes first. The build log shows every task and each tester report.',
-    link: { label: 'Build log', href: '#/notes/yours' },
+    title: 'Building your own patterns: the editor',
+    text: 'Phase 1 (My designs) is done. Phase 2 has begun: on any step of a tutorial, “Make my own copy from here” opens your copy in the new editor, where you add steps with the compass, ruler and other tools by clicking only points that exist, edit each step’s text, undo, and see broken steps in red with the reason. Tiling, inking and Play come next.',
+    link: { label: 'Try it', href: '/#/eight-fold-star-and-cross' },
   },
+
   next: [
     {
       title: 'More designs per family',

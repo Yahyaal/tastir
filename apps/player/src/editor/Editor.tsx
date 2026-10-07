@@ -361,7 +361,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               draft={draft}
               id={step.id}
               text={step.text}
-              create={step.create}
+              create={step.create ?? step.parts}
               status={status}
               last={draft.steps.length}
               dependents={dependents(checked, step.id)}

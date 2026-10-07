@@ -306,6 +306,15 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .editor-title {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .editor-title input {
+    font-size: 1.1rem;
+  }
+
   .editor-steps ol {
     max-height: 30vh;
     overflow-y: auto;

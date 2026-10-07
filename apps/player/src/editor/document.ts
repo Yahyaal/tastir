@@ -61,6 +61,38 @@ export function emptyDraft(id: string, title: string): Draft {
   };
 }
 
+/**
+ * A learner's copy of a tutorial, cut after one step: the steps so far
+ * and the original's credits, with the original named as its source. The
+ * ink, tile and expected pieces are left out, since later steps make them.
+ */
+export function copyUpTo(
+  tutorial: Tutorial,
+  step: number,
+  shownNumber = step,
+): Draft {
+  const {
+    ink: _ink,
+    pattern: _pattern,
+    expect: _expect,
+    photos: _photos,
+    ...rest
+  } = tutorial;
+  return {
+    ...rest,
+    id: `${tutorial.id}-mine`,
+    title: `${tutorial.title} (my copy)`,
+    steps: tutorial.steps.filter((s) => s.id <= step),
+    credits: [
+      ...tutorial.credits,
+      {
+        source: `Tastir: ${tutorial.title}`,
+        note: `Copied from the library tutorial “${tutorial.title}” (${tutorial.id}) after step ${shownNumber}.`,
+      },
+    ],
+  };
+}
+
 /** Steps are numbered 1, 2, 3, … in order; every edit keeps them so. */
 const numbered = (steps: readonly Step[]): Step[] =>
   steps.map((s, i) => (s.id === i + 1 ? s : { ...s, id: i + 1 }));

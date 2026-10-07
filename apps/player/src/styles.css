@@ -546,6 +546,25 @@ main.stage .drawing:not(.wall) {
   padding: 5px 14px;
 }
 
+/* Copying a tutorial at a step into the learner's own pattern. */
+.copy-here {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  align-items: center;
+  margin-top: 4px;
+  font-size: 0.85rem;
+}
+
+.player .copy-here button.quiet {
+  padding: 2px 0;
+  color: var(--saffron);
+}
+
+.copy-here .refused {
+  color: #ffb4a6;
+}
+
 /* Saving the learner's inking and colors as a design. */
 .design-tools {
   display: grid;

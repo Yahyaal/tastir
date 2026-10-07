@@ -37,6 +37,8 @@ import {
 } from './designs';
 import { Shelf } from './Shelf';
 import { Editor } from '../editor/Editor';
+import { copyUpTo } from '../editor/document';
+import { addPattern } from '../editor/patterns';
 import { SaveDesign } from './SaveDesign';
 import {
   asPanel,
@@ -593,6 +595,15 @@ export function Player({
                   <span className="used">saffron: what it works from</span>
                 </p>
               ) : null}
+              {stage.kind === 'step' ? (
+                <CopyHere
+                  tutorial={tutorial}
+                  step={beats[stage.beat - 1]?.step ?? 1}
+                  shownNumber={
+                    shown.indexOf(beats[stage.beat - 1]?.step ?? 0) + 1
+                  }
+                />
+              ) : null}
               {stage.kind === 'ink' ? (
                 <div className="ink-tools">
                   <button
@@ -782,6 +793,47 @@ export function Player({
           </aside>
         ) : null}
       </div>
+    </div>
+  );
+}
+
+/**
+ * “Make my own copy from here”: the steps so far, with the original's
+ * credits and where it came from, as the learner's own pattern, opened in
+ * the editor.
+ */
+function CopyHere({
+  tutorial,
+  step,
+  shownNumber,
+}: {
+  tutorial: Model['tutorial'];
+  /** The step's id: every step up to it is kept, hidden ones too. */
+  step: number;
+  /** Its number as the learner sees it. */
+  shownNumber: number;
+}) {
+  const [refused, setRefused] = useState(false);
+  const copy = () => {
+    const made = addPattern(copyUpTo(tutorial, step, shownNumber), {
+      tutorial: tutorial.id,
+      title: tutorial.title,
+      step: shownNumber,
+    });
+    if (!made) return setRefused(true);
+    window.location.hash = `#/edit/${made.id}`;
+  };
+  return (
+    <div className="copy-here">
+      <button type="button" className="quiet" onClick={copy}>
+        Make my own copy from here
+      </button>
+      {refused ? (
+        <span className="refused" role="alert">
+          This browser would not keep the copy: its storage is blocked (a
+          private window) or full.
+        </span>
+      ) : null}
     </div>
   );
 }
