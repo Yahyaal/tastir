@@ -33,6 +33,7 @@ import { mergePoints, tolerance, type Tolerance } from './tolerance.js';
 import {
   add,
   angleDeg,
+  cross,
   distance,
   dot,
   length,
@@ -219,7 +220,12 @@ class Context {
       ];
     }
     if ('polygon' in spec) return [[name, this.buildPolygon(spec.polygon)]];
-    return this.repeat(name, spec.repeat.of, spec.repeat.by);
+    return this.repeat(
+      name,
+      spec.repeat.of,
+      spec.repeat.by,
+      spec.repeat.distinct ?? false,
+    );
   }
 
   private buildLine(spec: LineSpec): Line {
@@ -448,7 +454,12 @@ class Context {
   }
 
   /** Copies under a rotation about O or a mirror, named orig@1, orig@2, … */
-  private repeat(name: string, of: readonly string[], by: string): Built[] {
+  private repeat(
+    name: string,
+    of: readonly string[],
+    by: string,
+    distinct: boolean,
+  ): Built[] {
     let transforms: ((p: Vec) => Vec)[];
     let mirror: string | undefined;
     if (by.startsWith('mirror:')) {
@@ -466,16 +477,17 @@ class Context {
     const members: string[] = [];
     for (const orig of of) {
       const g = this.get(orig).geometry;
+      const kept: Geometry[] = [g];
       transforms.forEach((t, i) => {
         const copy = `${orig}@${i + 1}`;
+        const made = transformGeometry(g, t, () =>
+          this.fail(`"${orig}" is a group; repeat its members instead`),
+        );
+        if (distinct && kept.some((k) => sameGeometry(k, made, this.tol.eps)))
+          return;
+        kept.push(made);
         members.push(copy);
-        out.push([
-          copy,
-          transformGeometry(g, t, () =>
-            this.fail(`"${orig}" is a group; repeat its members instead`),
-          ),
-          mirror ? [orig, mirror] : [orig],
-        ]);
+        out.push([copy, made, mirror ? [orig, mirror] : [orig]]);
       });
     }
     return [[name, { kind: 'group', members }], ...out];
@@ -483,6 +495,28 @@ class Context {
 }
 
 /** Geometry moved by a rotation or reflection (an isometry). */
+/** Whether two elements are the same figure, whatever their order. */
+function sameGeometry(a: Geometry, b: Geometry, eps: number): boolean {
+  if (a.kind === 'point' && b.kind === 'point')
+    return distance(a.at, b.at) <= eps;
+  if (a.kind === 'circle' && b.kind === 'circle')
+    return (
+      distance(a.circle.centre, b.circle.centre) <= eps &&
+      Math.abs(a.circle.radius - b.circle.radius) <= eps
+    );
+  if (a.kind === 'line' && b.kind === 'line')
+    return (
+      distance(b.line.point, project(b.line.point, a.line)) <= eps &&
+      Math.abs(cross(a.line.dir, b.line.dir)) <= eps
+    );
+  if (a.kind === 'polygon' && b.kind === 'polygon')
+    return (
+      a.vertices.length === b.vertices.length &&
+      a.vertices.every((v) => b.vertices.some((w) => distance(v, w) <= eps))
+    );
+  return false;
+}
+
 function transformGeometry(
   g: Geometry,
   t: (p: Vec) => Vec,

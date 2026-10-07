@@ -34,7 +34,7 @@ Each entry in a step's `create` map is `"name": { "<kind>": { ... } }`.
 | | `{ "centre": p, "tangentTo": [x, ...] }` | centre `p`, just touching every listed line or circle; an error if no single radius does that |
 | | `{ "centre": p, "tangentTo": [x, ...], "touch": "near" }` | the same, touching each listed circle on its `near` side (the side facing `p`) or its `far` side (going round it, so the new circle encloses it); needed when a circle can be touched both ways |
 | `polygon` | `[p1, p2, ...]` | a closed polygon through the points in order; its sides are segments, and it can be used in `meet` |
-| `repeat` | `{ "of": [names], "by": "rot8" }` | copies of the named elements under a symmetry about `O` (`rot3`, `rot4`, `rot5`, `rot6`, `rot8`, `rot10`, `rot12`, `rot16`, `mirror:<line>`); copies are named `name@1`, `name@2`, … |
+| `repeat` | `{ "of": [names], "by": "rot8" }` | copies of the named elements under a symmetry about `O` (`rot3`, `rot4`, `rot5`, `rot6`, `rot8`, `rot10`, `rot12`, `rot16`, `mirror:<line>`); copies are named `name@1`, `name@2`, …; with `"distinct": true`, copies that land on the original or an earlier copy (a line through `O` turned by 180°) are left out and their names do not exist |
 
 Lines are infinite for the purpose of `meet`. Polygon sides and inked paths are segments.
 

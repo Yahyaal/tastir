@@ -386,6 +386,8 @@ export function sayElement(
       ? `Join ${list(el.polygon)} into the tile, which repeats edge to edge.`
       : `Join ${list(el.polygon)} into a shape.`;
   const { of, by } = el.repeat;
+  if (el.repeat.distinct && by.startsWith('rot'))
+    return `Turn ${of.length === 1 ? 'it' : list(of.map(d))} round the centre in steps of ${Number((360 / Number(by.slice(3))).toFixed(1))}°.`;
   return by.startsWith('mirror:')
     ? `Mirror ${list(of.map(d))} in ${d(by.slice('mirror:'.length))}.`
     : `Turn ${of.length === 1 ? 'it' : list(of.map(d))} round the centre, ${by.slice(3)} times in all.`;

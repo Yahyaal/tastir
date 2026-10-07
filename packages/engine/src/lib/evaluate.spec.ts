@@ -248,3 +248,28 @@ describe('parts of a step', () => {
     expect(at('d1')).toEqual([3, 4]);
   });
 });
+
+describe('repeat with distinct copies', () => {
+  it('leaves out copies that land on earlier ones', () => {
+    const t = structuredClone(starAndCross());
+    t.steps.push({
+      id: 7,
+      text: 'Lines through O, turned four times.',
+      create: {
+        twice: { repeat: { of: ['h'], by: 'rot4' } },
+        once: { repeat: { of: ['v'], by: 'rot4', distinct: true } },
+        same: { repeat: { of: ['c'], by: 'rot8', distinct: true } },
+      },
+    });
+    const scene = evaluate(t);
+    const members = (n: string) => {
+      const g = scene.elements.get(n)?.geometry;
+      return g?.kind === 'group' ? g.members : [];
+    };
+    expect(members('twice')).toEqual(['h@1', 'h@2', 'h@3']);
+    // With distinct, the copy at 180° (v@2) lies on v and is left out,
+    // and so does v@3, which lies on v@1.
+    expect(members('once')).toEqual(['v@1']);
+    expect(members('same')).toEqual([]);
+  });
+});

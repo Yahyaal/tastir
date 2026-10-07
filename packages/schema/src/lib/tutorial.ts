@@ -109,6 +109,9 @@ export const Symmetry = z.union(
 export const RepeatSpec = z.strictObject({
   of: z.array(Ref).min(1),
   by: Symmetry,
+  /** Leave out copies that land on the original or an earlier copy (a
+   * line through O turned by 180°); their names then do not exist. */
+  distinct: z.boolean().optional(),
 });
 
 const KINDS = [

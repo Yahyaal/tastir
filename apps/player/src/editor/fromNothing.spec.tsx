@@ -96,6 +96,19 @@ describe('a pattern from nothing', () => {
     ] as const)
       clickAt(x, y);
     expect(document.querySelectorAll('.editor-step')).toHaveLength(5);
+    // No duplicate copies: the horizontal turned ×4 gives one more line
+    // (the vertical), the square turned ×8 one more square (at 45°).
+    const saved = getPattern(id)?.tutorial;
+    const groups = evaluate(saved as never);
+    const members = (step: number) =>
+      Object.keys(saved?.steps[step - 1]?.create ?? {}).flatMap((n) => {
+        const g = groups.elements.get(n)?.geometry;
+        return g?.kind === 'group' ? g.members : [];
+      });
+    expect(members(2)).toHaveLength(1);
+    expect(members(3)).toHaveLength(1);
+    expect(members(4)).toHaveLength(3);
+    expect(saved?.steps[1]?.text).toMatch(/in steps of 90°/);
     expect(document.querySelectorAll('.editor-step.broken')).toHaveLength(0);
     // Ink one tip of the star: its turned and mirrored copies make all 16.
     fireEvent.click(screen.getByRole('button', { name: 'Ink' }));

@@ -40,6 +40,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 
 - [x] **3.1 New pattern.** “New pattern” opens the editor with only O and A.
 - [x] **3.2 Symmetry mode.** Off, 4, 6, 8, 12, 16: every new element is also repeated round the centre. *Test:* rebuild the eight-fold star and cross from nothing; its file passes the same golden test as ours.
+- [x] **3.3 No duplicate copies in symmetry mode.** A repeat can say `"distinct": true` (format, schema and engine) to leave out copies that land on the original or an earlier copy; the editor writes it only when a step's copies coincide, and drops a repeat whose copies all coincide (a circle about O). The star and cross rebuilt from nothing now has one turned line, one turned square and three tile sides.
 
 ### Phase 4: building blocks
 
@@ -69,6 +70,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - Never let a learner read an internal name (c, d1, S1): step texts and engine reasons go through `describe` and `plainReason` (editor/document.ts), which name lines, circles and shapes by how they were made; points keep their names, since the drawing labels them. (7 October)
 - Symmetry mode needs nothing new in the format: each new element gets a `repeat` with `rotN` in its own step (the format has rot3, 4, 5, 6, 8, 10, 12 and 16; the editor offers 4, 6, 8, 12 and 16). Turned copies that land on each other (a line through O turned by 180°) do no harm: snapping skips lines lying along each other, and free inking merges equal bits. With it, the eight-fold star and cross is five clicked steps: circle, line ×4, square ×8, tangent ×4, tile. (7 October)
 - When two tasks touch the same file, commit them one at a time from the start; splitting them afterwards meant copying files aside and briefly reverting my own uncommitted edits, which a live dev server would have shown. (7 October)
+- Never run `git checkout -- <file>` to undo a formatter, even on your own files: it threw away a real edit to the format doc, which had to be written again. Undo by editing. (7 October)
 
 ## Tester reports
 

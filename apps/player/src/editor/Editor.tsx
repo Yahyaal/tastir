@@ -32,6 +32,7 @@ import {
   toolOf,
   wantAt,
   SYMMETRIES,
+  tidySymmetry,
   type Symmetry,
   type Target,
   type ToolId,
@@ -185,13 +186,14 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
     const works: { next: Draft; circle?: { centre: Vec; radius: number } }[] =
       [];
     for (const side of sides) {
-      const made = buildStep(
+      const built = buildStep(
         draft,
         tool,
         clicks,
         side as 'near' | 'far',
         symmetry,
       );
+      const made = symmetry ? tidySymmetry(draft, built, at) : built;
       if (!Object.keys(made.create).length) {
         setSaid('That point is already marked.');
         return;

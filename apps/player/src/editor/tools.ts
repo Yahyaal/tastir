@@ -1,6 +1,7 @@
 import {
   distance,
   dot,
+  evaluate,
   intersect,
   overlap,
   pickFor,
@@ -431,5 +432,41 @@ export function buildStep(
     create[fresh(PREFIX.repeat)] = {
       repeat: { of: [spec[0]], by: `rot${symmetry}` },
     } as ElementSpec;
+  return { text: sayStep(create, draft), create };
+}
+
+/**
+ * A symmetry-mode step without duplicate copies: a turned copy that lands
+ * on the original or an earlier copy (a line through O turned by 180°)
+ * is left out with `distinct`, and a repeat whose copies all land on the
+ * original (a circle about O) is dropped. Checked by evaluating the step
+ * where it will go (`at` steps before it).
+ */
+export function tidySymmetry(draft: Draft, made: NewStep, at: number): NewStep {
+  const entry = Object.entries(made.create).find(([, el]) => 'repeat' in el);
+  if (!entry) return made;
+  const [name, el] = entry;
+  if (!('repeat' in el)) return made;
+  const n = el.repeat.by.startsWith('rot') ? Number(el.repeat.by.slice(3)) : 2;
+  const tried = {
+    ...made.create,
+    [name]: { repeat: { ...el.repeat, distinct: true } },
+  } as Record<string, ElementSpec>;
+  const steps = [
+    ...draft.steps.slice(0, at),
+    { id: at + 1, text: made.text, create: tried },
+  ];
+  let members: number;
+  try {
+    const g = evaluate({ steps } as never).elements.get(name)?.geometry;
+    if (g?.kind !== 'group') return made;
+    members = g.members.length;
+  } catch {
+    return made;
+  }
+  if (members === n - 1) return made;
+  const create = { ...made.create };
+  if (members === 0) delete create[name];
+  else create[name] = tried[name] as ElementSpec;
   return { text: sayStep(create, draft), create };
 }
