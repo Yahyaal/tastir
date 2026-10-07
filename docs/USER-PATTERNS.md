@@ -53,7 +53,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 ### Phase 5: share
 
 - [x] **5.1 File.** Download a pattern as a file and open one.
-- [ ] **5.2 Link.** A share link that carries the whole pattern in the address. *Test:* the link opens the same pattern, wall and colours in another browser.
+- [x] **5.2 Link.** A share link that carries the whole pattern in the address. *Test:* the link opens the same pattern, wall and colours in another browser.
 - [ ] **5.3 Send to the library.** Makes the library-ready file with the maker in its credits and explains how it reaches the review page.
 
 ## Lessons
@@ -75,6 +75,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 - Never run `git checkout -- <file>` to undo a formatter, even on your own files: it threw away a real edit to the format doc, which had to be written again. Undo by editing. (7 October)
 - Phase 4 went in as one commit: the three tasks grew in the same two files (blocks.ts, Editor.tsx) and could not be split afterwards without reverting the working tree. Next time, commit 4.1's core before writing 4.2's blocks. (7 October)
 - A block's internal names must be unique across all its steps (a circle `h1` and a corner `h1` clashed after renaming); blocks.spec.ts now checks every block for it. Blocks pick crossings by `nearest`/`farthest` a clicked point or by `points` (all crossings), never by angle, so they work on any circle, not only one about O. (7 October)
+- A share link carries the pattern in the address after `#/shared/`: JSON, compressed with the browser's `CompressionStream('deflate-raw')` (prefix z) or plain (prefix j, where there is none, as in jsdom), in URL-safe base64. A library tutorial travels by its id, a learner's own pattern whole; either way the design (inking, colours, look, grout) goes with it. Fetch before pulling: `git pull --rebase` refuses with uncommitted work in the tree, while `git fetch` and a later pull do not. (7 October)
 
 ## Tester reports
 

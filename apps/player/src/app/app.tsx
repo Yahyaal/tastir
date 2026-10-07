@@ -36,6 +36,7 @@ import {
   type Design,
 } from './designs';
 import { Shelf } from './Shelf';
+import { openShared, ShareLink, useShared } from './Sharing';
 import { Editor } from '../editor/Editor';
 import { copyUpTo } from '../editor/document';
 import {
@@ -176,8 +177,11 @@ export function Player({
   start: asked = 'beginning',
   design: opened,
   address: given,
+  banner,
 }: {
   model: Model;
+  /** A line over the workspace, such as a shared pattern's Keep a copy. */
+  banner?: React.ReactNode;
   start?: Start;
   /** A saved design to open, at the wall with its inking and colors. */
   design?: Design;
@@ -188,6 +192,8 @@ export function Player({
   const { tutorial } = model;
   const address = given ?? tutorial.id;
   const mine = address.startsWith('mine/');
+  // A pattern opened from a share link: shown, not saved, until kept.
+  const sharedView = address === 'shared';
   const start = opened ? 'result' : asked;
   const stages = useMemo(() => stagesOf(tutorial), [tutorial]);
   const [index, setIndex] = useState(() =>
@@ -275,7 +281,11 @@ export function Player({
     window.addEventListener('beforeunload', onUnload);
     return () => window.removeEventListener('beforeunload', onUnload);
   }, [changed]);
-  const saveDesign = (
+  const saveDesign = sharedView ? (
+    <p className="hint">
+      Shared with you. Keep a copy (at the top) to save it in this browser.
+    </p>
+  ) : (
     <SaveDesign
       title={tutorial.title}
       design={design}
@@ -594,6 +604,7 @@ export function Player({
           </div>
         </details>
       </header>
+      {banner}
       <div className={colorStage ? 'workspace with-panel' : 'workspace'}>
         <Journey stages={stages} index={index} onJump={jump} />
         <section className="plate-area">
@@ -615,7 +626,7 @@ export function Player({
                   <span className="used">saffron: what it works from</span>
                 </p>
               ) : null}
-              {stage.kind === 'step' ? (
+              {stage.kind === 'step' && !sharedView ? (
                 <CopyHere
                   tutorial={tutorial}
                   address={address}
@@ -773,6 +784,16 @@ export function Player({
             </section>
             <section>
               <h2>Take it with you</h2>
+              {sharedView ? null : (
+                <ShareLink
+                  address={address}
+                  name={design?.name ?? tutorial.title}
+                  fields={() => {
+                    const { tutorial: _t, ...rest } = designFields();
+                    return rest;
+                  }}
+                />
+              )}
               <div className="export-tools">
                 <button
                   type="button"
@@ -960,11 +981,13 @@ export function Play({
   start,
   design,
   address,
+  banner,
 }: {
   json: unknown;
   start?: Start;
   design?: Design;
   address?: string;
+  banner?: React.ReactNode;
 }) {
   const { model, error, progress } = useModel(json);
   if (error !== undefined) return <Broken message={error} />;
@@ -976,7 +999,13 @@ export function Play({
     );
   }
   return (
-    <Player model={model} start={start} design={design} address={address} />
+    <Player
+      model={model}
+      start={start}
+      design={design}
+      address={address}
+      banner={banner}
+    />
   );
 }
 
@@ -1433,6 +1462,15 @@ export function App({
       <Broken message="The project notes only exist on the dev server (pnpm dev)." />
     );
   }
+  // #/shared/code opens a pattern from a share link.
+  if (route.startsWith('shared/'))
+    return (
+      <SharedPage
+        key={route}
+        code={route.slice('shared/'.length)}
+        library={library}
+      />
+    );
   // #/edit/p opens one of the learner's own patterns in the editor.
   if (route.startsWith('edit/'))
     return <Editor key={route} id={route.slice('edit/'.length)} />;
@@ -1471,6 +1509,65 @@ export function App({
       json={entry.json}
       start={result ? 'result' : 'beginning'}
       address={id}
+    />
+  );
+}
+
+/** A pattern from a share link: played at its wall, with Keep a copy. */
+function SharedPage({
+  code,
+  library,
+}: {
+  code: string;
+  library: readonly Entry[];
+}) {
+  const shared = useShared(code);
+  const opened = useMemo(
+    () => (shared ? openShared(shared, library) : undefined),
+    [shared, library],
+  );
+  const [refused, setRefused] = useState(false);
+  if (shared === undefined)
+    return (
+      <div className="player loading" role="status">
+        <p>Opening the shared pattern…</p>
+      </div>
+    );
+  if (shared === null || !opened || 'reason' in opened)
+    return (
+      <Broken
+        message={
+          opened && 'reason' in opened
+            ? opened.reason
+            : 'This share link cannot be read. It may have been cut short when it was copied.'
+        }
+      />
+    );
+  return (
+    <Play
+      json={opened.json}
+      design={opened.design}
+      address="shared"
+      banner={
+        <div className="shared-banner">
+          <span>A pattern shared with you: “{opened.design.name}”.</span>
+          <button
+            type="button"
+            onClick={() => {
+              const to = opened.keep();
+              if (to) window.location.hash = to;
+              else setRefused(true);
+            }}
+          >
+            Keep a copy in this browser
+          </button>
+          {refused ? (
+            <span className="refused" role="alert">
+              This browser would not keep it: its storage is blocked or full.
+            </span>
+          ) : null}
+        </div>
+      }
     />
   );
 }

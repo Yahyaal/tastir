@@ -1939,3 +1939,39 @@ main.stage .drawing:not(.wall) {
   opacity: 0;
   cursor: pointer;
 }
+
+/* Share links and shared patterns. */
+.share-link {
+  display: grid;
+  gap: 6px;
+}
+
+.player .share-link button.quiet {
+  justify-self: start;
+}
+
+.share-link input {
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 4px 8px;
+  color: var(--on-lapis);
+  background: var(--lapis-deep);
+  border: 1px solid var(--lapis-line);
+  border-radius: 6px;
+}
+
+.shared-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  align-items: center;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border: 1px solid var(--saffron);
+  border-radius: 8px;
+}
+
+.shared-banner .refused {
+  color: #ffb4a6;
+  font-size: 0.85rem;
+}
