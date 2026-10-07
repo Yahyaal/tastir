@@ -2,12 +2,14 @@ import { render, screen } from '@testing-library/react';
 import { Plan } from './Plan';
 
 describe('the plan page', () => {
-  it('asks its questions first, with a choice for each', () => {
+  it('shows the decisions, then asks for an OK on phase 1', () => {
     render(<Plan />);
-    const questions = document.querySelectorAll('#questions li.question');
-    expect(questions.length).toBeGreaterThan(0);
-    for (const q of questions)
-      expect(q.querySelectorAll('.choices button').length).toBeGreaterThan(1);
+    expect(
+      document.querySelectorAll('#decisions tbody tr').length,
+    ).toBeGreaterThan(0);
+    const ask = document.querySelectorAll('#phase-1 li.question');
+    expect(ask).toHaveLength(1);
+    expect(ask[0]?.querySelectorAll('.choices button').length).toBe(2);
   });
 
   it('draws its figures from real tutorials', () => {

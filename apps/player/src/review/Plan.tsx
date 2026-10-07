@@ -114,7 +114,7 @@ const FILLS = [
 ];
 
 /** The finished wall of a tutorial, a few tiles round the centre. */
-function Wall({ id }: { id: string }) {
+function Wall({ id, shift = 0 }: { id: string; shift?: number }) {
   const { pattern } = model(id);
   const { cell } = pattern;
   const xs = cell.corners.map((c) => c.x);
@@ -131,7 +131,7 @@ function Wall({ id }: { id: string }) {
         pieces.push(
           <polygon
             key={`${i},${j},${k}`}
-            fill={FILLS[p.type % FILLS.length]}
+            fill={FILLS[(p.type + shift) % FILLS.length]}
             points={p.polygon.map((v) => `${v.x + dx},${v.y + dy}`).join(' ')}
           />,
         ),
@@ -448,52 +448,73 @@ function FlowFigure() {
   );
 }
 
-interface Ask {
-  readonly id: string;
-  readonly text: string;
-  readonly why: string;
-  readonly choices: readonly string[];
-}
-
-const ASKS: readonly Ask[] = [
+/** The owner's answers of 6 October 2026, and what each one changes. */
+const DECISIONS: readonly {
+  question: string;
+  answer: string;
+  means: string;
+}[] = [
   {
-    id: 'plan-first',
-    text: 'Which should come first? I suggest the order in the roadmap below: saving your own inking and colours of a pattern first, because it is small and people can use it next week.',
-    why: 'See “The order of the work”.',
-    choices: [
-      'Yes, in your order',
-      'Copy-a-pattern editor first',
-      'Blank editor first',
-    ],
+    question: 'Which comes first?',
+    answer: 'In the order below',
+    means:
+      'Phase 1, “My designs”, comes first. Its detailed plan is just below and waits for your OK.',
   },
   {
-    id: 'plan-strict',
-    text: 'Must every user pattern be a true ruler-and-compass construction? I suggest yes, because then every user pattern plays step by step like ours and stays exact.',
-    why: 'This rules out placing points by hand anywhere on the page.',
-    choices: [
-      'Yes, always ruler and compass',
-      'Also allow free drawing, marked as such',
-    ],
+    question: 'Must user patterns be ruler and compass?',
+    answer: 'Yes, always',
+    means:
+      'The editor only lets you click points that exist. There is no free drawing anywhere.',
   },
   {
-    id: 'plan-save',
-    text: 'Where are user patterns kept at first? I suggest in the browser, with a file to download and a link to share, and accounts later, because accounts need a server we do not have yet.',
-    why: 'Accounts are phase 3 of the PRD.',
-    choices: ['Browser, file and link first', 'Accounts from the start'],
+    question: 'Where are they kept?',
+    answer: 'Browser, file and link first',
+    means:
+      'Designs live in this browser in phase 1; files and share links come in phase 5; accounts later.',
   },
   {
-    id: 'plan-library',
-    text: 'Should good user patterns be able to join the public library? If so they would go through the review page like ours, with a golden test.',
-    why: 'This decides whether we need a submit button and a credit line for the maker.',
-    choices: ['Yes, after review', 'No, they stay private', 'Later'],
+    question: 'Can user patterns join the library?',
+    answer: 'Yes, after review',
+    means:
+      'Phase 5 gets a “Send to the library” button. A sent pattern comes to the review page, gets a golden test, and its maker is named in its credits.',
   },
   {
-    id: 'plan-us',
-    text: 'Should we also use the editor to make the library tutorials, instead of writing the JSON by hand?',
-    why: 'It would make the editor better tested, and our work faster.',
-    choices: ['Yes', 'No, keep writing JSON'],
+    question: 'Do we use the editor for our own tutorials?',
+    answer: 'Yes',
+    means:
+      'From phase 2 the editor can also write the parts only library tutorials have (credits, photos, the expected pieces), so new library patterns are made in it.',
   },
 ];
+
+function Decisions() {
+  return (
+    <section id="decisions">
+      <h2 className="group">Your decisions</h2>
+      <p className="group-note">
+        You answered the five questions on 6 October. Here is what each answer
+        changes in the plan.
+      </p>
+      <table className="plan-table">
+        <thead>
+          <tr>
+            <th>Question</th>
+            <th>Your answer</th>
+            <th>What it changes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {DECISIONS.map((d) => (
+            <tr key={d.question}>
+              <td>{d.question}</td>
+              <td className="plan-answer">{d.answer}</td>
+              <td>{d.means}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  );
+}
 
 const STORE = 'tastir-plan-answers';
 
@@ -519,62 +540,120 @@ function useAnswers() {
   };
 }
 
-function Questions() {
+/** A small sketch of the home page shelf, with three saved designs. */
+function ShelfFigure() {
+  const designs = [
+    { id: 'alhambra-bath-stars', name: 'My bath stars, blue', shift: 0 },
+    { id: 'alhambra-barca-stars', name: 'Barca in honey', shift: 1 },
+    { id: 'eight-fold-star-and-cross', name: 'Star and cross, red', shift: 3 },
+  ];
+  return (
+    <div className="plan-shelf">
+      <p className="plan-shelf-title">My designs</p>
+      <div className="plan-shelf-row">
+        {designs.map((d) => (
+          <figure key={d.name} className="plan-shelf-card">
+            <Wall id={d.id} shift={d.shift} />
+            <figcaption>
+              <b>{d.name}</b>
+              <span>from {model(d.id).tutorial.title}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Phase 1 in detail, with the owner's OK. */
+function PhaseOne() {
   const { answers, set } = useAnswers();
   const [copied, setCopied] = useState(false);
+  const id = 'phase1-ok';
+  const answer = answers[id] ?? '';
   const copy = async () => {
-    const lines = ['My answers about the plan for user patterns:', ''];
-    ASKS.forEach((q, i) => {
-      const a = answers[q.id]?.trim();
-      if (a) lines.push(`Q${i + 1}. ${q.text}`, `A: ${a}`, '');
-    });
-    await navigator.clipboard?.writeText(lines.join('\n'));
+    await navigator.clipboard?.writeText(
+      `Phase 1 plan (My designs): ${answer.trim() || '(no answer)'}`,
+    );
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
   return (
-    <section id="questions">
-      <h2 className="group">Questions for you</h2>
-      <p className="group-note">
-        Most important first. Click a choice or type your own answer, then press{' '}
-        <button type="button" className="plan-copy" onClick={copy}>
-          {copied ? 'Copied ✓' : 'Copy my answers'}
-        </button>{' '}
-        and paste them into our chat.
+    <section id="phase-1">
+      <h2 className="group">Phase 1 in detail: My designs</h2>
+      <p>
+        Today you can re-ink a pattern and recolour it, but it is gone when you
+        leave. Phase 1 keeps it. At the ink and colour stages a “Save as my
+        design” button asks for a name and keeps the design in this browser. The
+        home page then shows a “My designs” shelf above the library, each design
+        drawn as its wall, and clicking one opens its tutorial straight at the
+        wall with your inking and colours. A design you opened has “Save” to
+        update it and “Save as new” to keep both, and each card can be renamed
+        or deleted.
+      </p>
+      <figure className="plan-fig">
+        <ShelfFigure />
+        <figcaption>
+          A sketch of the shelf. The walls are drawn by the engine;
+          the names and colours are made up.
+        </figcaption>
+      </figure>
+      <p>
+        A design stores only what you changed, not a copy of the pattern: the
+        tutorial it belongs to, which bits of line are inked, the palette and
+        the colours you picked, and the wall style and grout. That keeps it
+        small, and every piece of it already exists in the player, so the engine
+        does not change. The bits of line are named by their end points, so if
+        we later change a tutorial in a way that moves its lines, the design
+        opens with the tutorial’s own inking and a short note saying so, rather
+        than showing something broken.
+      </p>
+      <p>
+        The work is one commit. A new file holds the saved designs and reads and
+        writes them safely, because a private window can refuse storage; the
+        player gets the buttons and opens a design from its address (
+        <code>#/&lt;tutorial&gt;/design/&lt;name&gt;</code>); and the home page
+        gets the shelf. Tests check that a design survives a reload with the
+        same inking and colours, that a broken or missing store never stops the
+        app, and that deleting asks first.
+      </p>
+      <p>
+        <b>What you will check:</b> run <code>pnpm dev</code>, open the Comares
+        bath stars, switch on free inking and remove a few bits of line,
+        recolour two pieces, save it as “Test”, and reload. The shelf on the
+        home page shows “Test”, and opening it shows your inking and colours.
       </p>
       <ol className="questions">
-        {ASKS.map((q, i) => {
-          const answer = answers[q.id] ?? '';
-          return (
-            <li
-              key={q.id}
-              className={answer.trim() ? 'question answered' : 'question'}
-            >
-              <p className="q-text">
-                <span className="q-num">Q{i + 1}</span> {q.text}
-              </p>
-              <p className="q-more">{q.why}</p>
-              <div className="choices">
-                {q.choices.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    className={answer === c ? 'chosen' : undefined}
-                    onClick={() => set(q.id, c)}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-              <textarea
-                aria-label={`Your answer to Q${i + 1}`}
-                placeholder="Or type your own answer (saved in this browser)"
-                value={answer}
-                onChange={(e) => set(q.id, e.target.value)}
-              />
-            </li>
-          );
-        })}
+        <li className={answer.trim() ? 'question answered' : 'question'}>
+          <p className="q-text">
+            <span className="q-num">OK?</span> May I build phase 1 as described?
+            I would do it before the next Alhambra panels.
+          </p>
+          <div className="choices">
+            {['OK, go ahead', 'OK, but after the Alhambra panels'].map((c) => (
+              <button
+                key={c}
+                type="button"
+                className={answer === c ? 'chosen' : undefined}
+                onClick={() => set(id, c)}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+          <textarea
+            aria-label="Your answer about phase 1"
+            placeholder="Or tell me what to change (saved in this browser)"
+            value={answer}
+            onChange={(e) => set(id, e.target.value)}
+          />
+          <p className="q-more">
+            <button type="button" className="plan-copy" onClick={copy}>
+              {copied ? 'Copied ✓' : 'Copy my answer'}
+            </button>{' '}
+            and paste it into our chat.
+          </p>
+        </li>
       </ol>
     </section>
   );
@@ -684,7 +763,9 @@ export function Plan() {
         </p>
       </header>
 
-      <Questions />
+      <Decisions />
+
+      <PhaseOne />
 
       <h2 className="group">The idea in one picture</h2>
       <p>

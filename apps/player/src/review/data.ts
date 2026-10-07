@@ -1454,9 +1454,9 @@ export const PROGRESS: {
   ],
   waiting: [
     {
-      title: 'Plan for your own patterns',
-      text: 'How learners could make patterns from nothing, from building blocks, or by copying one of ours at any step. Five questions for you at the top of the plan.',
-      link: { label: 'Read the plan', href: '#/plan' },
+      title: 'Your OK on phase 1 of your own patterns',
+      text: 'Your five answers are recorded on the plan. Phase 1, “My designs” (save your inking and colours, a shelf on the home page), is planned in detail there and waits for your OK.',
+      link: { label: 'Read phase 1', href: '#/plan' },
     },
     {
       title: 'Alhambra interlace',

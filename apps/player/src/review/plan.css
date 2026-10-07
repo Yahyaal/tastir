@@ -431,3 +431,50 @@
     white-space: normal;
   }
 }
+
+.plan-answer {
+  font-weight: 600;
+  color: var(--malachite);
+}
+
+/* The sketch of the home page shelf of saved designs. */
+.plan-shelf {
+  background: var(--lapis);
+  border-radius: 10px;
+  padding: 12px 16px 16px;
+}
+
+.plan-shelf-title {
+  color: var(--on-lapis);
+  font: 600 1.1rem var(--display);
+  margin: 0 0 10px;
+}
+
+.plan-shelf-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.plan-shelf-card {
+  margin: 0;
+  background: var(--gesso);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.plan-shelf-card .plan-draw {
+  border: none;
+  border-radius: 0;
+}
+
+.plan-shelf-card figcaption {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px 8px;
+  font-size: 0.85rem;
+}
+
+.plan-shelf-card figcaption span {
+  color: var(--muted);
+}
