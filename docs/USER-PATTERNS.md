@@ -255,3 +255,13 @@ I tested from a frozen worktree of commit bae3a46, with my own server on port 43
 6. My pattern 2 (the rosette with a few dashes of ink) shows Play on the shelf, although its ink closes no pieces.
 
 My verdict: building blocks work as promised. Inserting, saving my own block, reusing it, mixing it with my own steps and undoing an insertion are all smooth, and the 2.9, 3.3 and 3.4 fixes hold almost everywhere. The rosette block needs its own ink before it gives a learner a rosette, and the Touching side text needs a check.
+
+### Phase 5 and final pass, tester report (7 October 2026)
+
+I tested from a frozen worktree of commit 4f66789, with my own server on port 4351, at 1280x800. Screenshots are in `docs/review/user-patterns/phase5/`. The only console error was a font request that failed with a certificate error in my sandbox, which is not the app's fault.
+
+**End-to-end journey as a new learner.** The home page now has “New pattern” and “Open a pattern file” at the top. In a new pattern, the Building blocks panel says straight away “These blocks work on a circle: draw one with the Compass first (click O, then A)”. After one Compass step I inserted “A. J. Lee's rosette (eight-fold)”, which added 7 steps. I then inserted “The square tile round a circle”, which added only 2 steps because it reused the lines the rosette had drawn (02). The drawing kept its height while each block's hint showed. The rosette block now brings its own ink, so ▶ Play lit up without a single ink click (03). On the colour stage I recoloured, chose Strapwork and saved the design as “Red rosettes”. “Copy a share link” put a 2.5 kB address on the clipboard. In a fresh browser with empty storage, that address opened in 3.8 s with “A pattern shared with you: ‘Red rosettes’” and a “Keep a copy in this browser” button. It showed the same wall, colour and Strapwork style (09). Keep a copy saved the pattern and the design, and that fresh browser's home page then showed My designs (1) and My patterns (1). The whole journey works.
+
+**Is the rosette real?** Not yet. The block's ink closes one piece, named “shape”, with 32 corners: the outer outline of an eight-petalled rosette, filled in one colour. Each tile holds one such shape floating on the ground, with no lines out to the tile edges (05). A real eight-fold rosette, such as the ones in the library or in Lee's method, shows a central eight-pointed star, eight petals round it as separate pieces, and lines running on to meet the neighbours. Here the inner star and the petal divisions are not inked, so the result reads as a flower-shaped blob rather than a rosette.
+
+(The rest follows below.)
