@@ -140,3 +140,43 @@ The gaps the builder already lists, and how much they hurt:
 - **Copy button below long step text on phones:** on the star and cross it was just above the bottom bar and easy to find, so it is a small issue.
 
 My verdict: the editor already works as a true ruler-and-compass editor for small patterns. A hobbyist who copies the star and cross can follow the hints, build Figure 4, see clearly why steps break, and undo. Bugs 1 and 2 must be fixed before learners use it: without a way back to their copy their work feels lost, and big tutorials cannot be edited at all.
+
+### Phase 2, tester report (7 October 2026)
+
+I tested phase 2 from a frozen worktree of commit 962fe8b, with my own server on port 4351, at 1280x800 and on a phone (390x844). Screenshots are in `docs/review/user-patterns/phase2/`. I first tried to make my own pattern without reading the builder's route, starting from the star and cross at step 3, and then followed the route where I got stuck. After that I re-checked the ten editor items from my last report, a Bou Inania copy with zoom and pan, the Touching side choice, Add after step N, the file download, the My patterns shelf and the phone layout. I saw no page errors.
+
+**Where I got stuck.** Making the octagon with Polygon was easy, and the hint at the top, “▶ Play: draw the tile first, with the Tile tool”, told me what came next. As a learner I chose the four diagonal points NE, NW, SW and SE as the tile, a square inside the octagon. The editor accepted it (“Tile1 is the tile that repeats”), and in Ink the octagon sides outside that square cannot be inked: clicking them does nothing and no message explains why (05, 07). Play then gave a pattern of crossed diagonals instead of octagons. I only found the right tile, a square around the circle made with four Square-to lines, by reading the route. A learner needs a hint at this point, such as “the tile should hold the whole motif” or “only lines inside the tile can be inked”.
+
+**The route works end to end.** The octagon, the four Square-to lines, the tile on their four corners and one click on an octagon side inked all eight sides (13). ▶ Play opened `#/mine/<id>` as a normal tutorial with 9 steps. The colour stage showed octagons and four-pointed stars, both named correctly (14). Save as my design worked (`#/mine/<id>/design/<id>`), and the home page then showed “My designs (1)” and “My patterns (2)” at the top, with both shelves filled (16c). On the My patterns shelf, Edit and Play open the right pages. Rename works, with Escape cancelling. Delete asks first, and Keep it keeps. A pattern that is not tiled yet says “Tile and ink it to play” instead of offering Play, which is helpful.
+
+**My editor items 1–10.**
+- **1 (shelf):** fixed.
+- **2 (big copy):** fixed. Names now show only near the pointer, the wheel zooms, dragging pans, and Fit resets (31–34). I added a Ruler step on the zoomed Bou Inania copy in 0.8 s.
+- **3 (one name per point):** fixed. The labels show E only.
+- **4 (delete question):** fixed. After “Only step 2” the question closes.
+- **5 (layout and Escape):** fixed. The drawing no longer moves on the first click, and Escape cancels a polygon in progress.
+- **6 (plain words):** partly fixed (see bug 4).
+- **7 (saved form):** fixed. It is folded under “Show the saved form”.
+- **8 (unnamed crossings):** fixed. They show faintly near the pointer (11).
+- **9 (hidden steps):** fixed. The step list explains that hidden steps make the numbers run higher.
+- **10 (phone):** fixed. On the phone the drawing comes right after the tools and the status line sits under it (43).
+
+**The other new parts.** “Add after step 1” works: the drawing then shows only O and A, and the new compass step was inserted as step 2 without breaking anything. Touching with two possible circles shows both dashed and says “Two circles fit. Click the one you want”, and clicking one makes it (27, 28). About the pattern has level, fold, style, credits and photos, and says “✓ Complete: 2 kinds of piece, checked by the engine”. Download gives a valid tutorial file with credits and an `expect` block (29).
+
+**Real bugs**
+
+1. **Deleting a pattern silently breaks its designs.** To reproduce, save a design from a played pattern, then delete that pattern on the My patterns shelf. The question says only “Delete “Octagon and square star”? This cannot be undone.” Afterwards the design card still shows its wall on My designs, but opening it gives “This pattern is not here” (19, 20). I expected the question to say that the pattern has one saved design, and to delete the design too or keep it in a form that still opens.
+2. **A tile that does not hold the motif fails silently.** To reproduce, make a tile from NE, NW, SW and SE, then in Ink click an octagon side outside it. Nothing happens and no message explains why (05, 07). This is where I was stuck as a learner (see above).
+3. **Step texts name a point that is no longer shown.** Since item 3, the shared point is labelled E only, but the texts still say “the line through O and A” and “the circle about O through A” (10, 28). A learner looks for an A on the drawing and cannot find it.
+4. **Generated step text can become unreadable.** Square to on the vertical line gives “Draw a line through N, square to the line through O square to the line through O and A”. The tile step in the player reads “P1 is where the line halving the angle E–O–N and the line through E square to the line through O and A cross. P2 is where…”, which is four long sentences (15-play-step9). The engine's names for these lines are fine. The learner needs “the vertical line”, “the horizontal line” and “the corner P1”.
+
+**Suggestions**
+
+5. The learner can remove the credit to the original. “Remove credit 1” deletes “Tastir: Eight-fold star and cross”, although the plan says the maker of the original is always named (29). The copy's own “based on” credit should not be removable.
+6. The photos help text speaks to developers: “goes in apps/player/public/photos/”.
+7. The downloaded file is named `eight-fold-star-and-cross-mine.json` even after renaming the pattern “Octagon and square star”. Every copy starts with the same title “Eight-fold star and cross (my copy)”, so two copies on the shelf cannot be told apart until renamed (16c).
+8. Cards on My patterns show the construction lines, not the finished wall as on My designs. A played pattern could show its wall.
+9. The Touching step text does not say which of the two circles was chosen, inside or outside (28). The Touching error “No single radius touches all 2 targets (each is touched at radius 0.70711, 2.00000)” is engine language.
+10. On the Bou Inania copy, “The tile” offers “Use panel as the tile” and “Use tile as the tile”, which is hard to tell apart (31). At 1280x800 the big copy's drawing runs below the window, so the status line is off screen.
+
+My verdict: phase 2 works. With the route, a learner gets from a copied tutorial to their own played, coloured and saved pattern in a few minutes, and most of my earlier editor items are fixed. Bugs 1 and 2 should be fixed first: one quietly breaks saved work, and the other is the one place a learner without the route gets stuck.
