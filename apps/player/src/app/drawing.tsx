@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useId, useLayoutEffect, useMemo, useRef } from 'react';
 import type {
   Geometry,
   InkPiece,
@@ -386,6 +386,7 @@ export function Construction({
   model,
   upTo,
   view = fullView(model),
+  frame,
   ink = false,
   svgRef,
   showNames = false,
@@ -398,6 +399,9 @@ export function Construction({
   upTo: number;
   /** The part of the tutorial frame to show. */
   view?: Rect;
+  /** The step's settled frame: sizes marks and clips lines, so the drawing
+   * is built once per step and a moving camera only changes the viewBox. */
+  frame?: Rect;
   ink?: boolean;
   svgRef?: React.Ref<SVGSVGElement>;
   /** Name the points this step makes and uses (codes like E or M12). */
@@ -412,22 +416,127 @@ export function Construction({
    * a pen inks the pattern (playInk in animation.ts). */
   enter?: boolean;
 }) {
-  const size = width(view);
-  // Lines are clipped well beyond the view, so panning never shows an end.
-  const clipTo = fit(view, 1);
-  const hidden = hiddenBeats(model.tutorial);
-  const shown = [...model.scene.elements.values()].filter(
-    (el) => el.beat <= upTo && !hidden.has(el.beat),
-  );
-  const isCurrent = (el: SceneElement) => !ink && el.beat === upTo;
-  const highlighted = new Set(ink ? [] : usedNames(model, upTo));
-  /** What the step works from: blue while the step is shown. */
-  const used = (el: SceneElement) => highlighted.has(el.name);
-  // Lines that never carry ink only help to find points: drawn dashed.
-  const carriers = carriersOf(model);
-  const helper = (el: SceneElement) =>
-    (el.geometry.kind === 'line' || el.geometry.kind === 'polygon') &&
-    !carriers.has(el.name);
+  const content = useMemo(() => {
+    const settled = frame ?? view;
+    const size = width(settled);
+    // Lines are clipped well beyond the frame, so panning never shows an end.
+    const clipTo = fit(settled, 1.6);
+    const hidden = hiddenBeats(model.tutorial);
+    const shown = [...model.scene.elements.values()].filter(
+      (el) => el.beat <= upTo && !hidden.has(el.beat),
+    );
+    const isCurrent = (el: SceneElement) => !ink && el.beat === upTo;
+    const highlighted = new Set(ink ? [] : usedNames(model, upTo));
+    /** What the step works from: blue while the step is shown. */
+    const used = (el: SceneElement) => highlighted.has(el.name);
+    // Lines that never carry ink only help to find points: drawn dashed.
+    const carriers = carriersOf(model);
+    const helper = (el: SceneElement) =>
+      (el.geometry.kind === 'line' || el.geometry.kind === 'polygon') &&
+      !carriers.has(el.name);
+    return (
+      <>
+        <g>
+          {shown.map((el) => (
+            <Shape
+              key={el.name}
+              name={el.name}
+              startDeg={compassStart(model, el.name)}
+              g={el.geometry}
+              view={clipTo}
+              seen={settled}
+              className={[
+                'el',
+                isCurrent(el)
+                  ? 'current'
+                  : ink
+                    ? 'faint'
+                    : used(el)
+                      ? 'used'
+                      : '',
+                helper(el) ? 'helper' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            />
+          ))}
+        </g>
+        {inkSoFar && !ink ? <InkSoFar model={model} upTo={upTo} /> : null}
+        {!ink && upTo === cellBeat(model) ? <NextTiles model={model} /> : null}
+        {ink && freeInk ? <FreeInkPieces {...freeInk} /> : null}
+        {ink && !freeInk && enter && pen ? (
+          <g className="rulers" aria-hidden="true">
+            {rulerOrder(model).map((r, k) => (
+              <line
+                key={k}
+                data-ruler={k}
+                x1={sx(r.from)}
+                y1={sy(r.from)}
+                x2={sx(r.to)}
+                y2={sy(r.to)}
+                stroke={RULER_COLOR}
+                strokeWidth={12}
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
+            ))}
+          </g>
+        ) : null}
+        {ink && freeInk ? null : ink ? (
+          <g className="ink">
+            <polygon
+              className="tile-outline"
+              data-tile
+              points={points(model.pattern.cell.corners)}
+              stroke={TILE_COLOR}
+              vectorEffect="non-scaling-stroke"
+            />
+            {model.pattern.ink.map((s, i) => (
+              <line
+                key={i}
+                x1={sx(s.segment.a)}
+                y1={sy(s.segment.a)}
+                x2={sx(s.segment.b)}
+                y2={sy(s.segment.b)}
+                vectorEffect="non-scaling-stroke"
+                data-ink={i}
+              />
+            ))}
+          </g>
+        ) : (
+          <g>
+            {shown.map((el) => (
+              <Mark
+                key={el.name}
+                el={el}
+                current={isCurrent(el)}
+                used={used(el)}
+                size={size}
+              />
+            ))}
+            {showNames ? (
+              <Labels
+                labels={labelsFor(shown, isCurrent, highlighted)}
+                size={size}
+              />
+            ) : null}
+          </g>
+        )}
+      </>
+    );
+    // Rebuilt when the step or what it shows changes, not when the view moves.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    model,
+    upTo,
+    frame ?? view,
+    ink,
+    showNames,
+    inkSoFar,
+    pen,
+    freeInk,
+    enter,
+  ]);
   return (
     <svg
       ref={svgRef}
@@ -438,92 +547,7 @@ export function Construction({
         ink ? 'The inked pattern' : `The construction after step ${upTo}`
       }
     >
-      <g>
-        {shown.map((el) => (
-          <Shape
-            key={el.name}
-            name={el.name}
-            startDeg={compassStart(model, el.name)}
-            g={el.geometry}
-            view={clipTo}
-            seen={view}
-            className={[
-              'el',
-              isCurrent(el)
-                ? 'current'
-                : ink
-                  ? 'faint'
-                  : used(el)
-                    ? 'used'
-                    : '',
-              helper(el) ? 'helper' : '',
-            ]
-              .filter(Boolean)
-              .join(' ')}
-          />
-        ))}
-      </g>
-      {inkSoFar && !ink ? <InkSoFar model={model} upTo={upTo} /> : null}
-      {!ink && upTo === cellBeat(model) ? <NextTiles model={model} /> : null}
-      {ink && freeInk ? <FreeInkPieces {...freeInk} /> : null}
-      {ink && !freeInk && enter && pen ? (
-        <g className="rulers" aria-hidden="true">
-          {rulerOrder(model).map((r, k) => (
-            <line
-              key={k}
-              data-ruler={k}
-              x1={sx(r.from)}
-              y1={sy(r.from)}
-              x2={sx(r.to)}
-              y2={sy(r.to)}
-              stroke={RULER_COLOR}
-              strokeWidth={12}
-              strokeLinecap="round"
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
-        </g>
-      ) : null}
-      {ink && freeInk ? null : ink ? (
-        <g className="ink">
-          <polygon
-            className="tile-outline"
-            data-tile
-            points={points(model.pattern.cell.corners)}
-            stroke={TILE_COLOR}
-            vectorEffect="non-scaling-stroke"
-          />
-          {model.pattern.ink.map((s, i) => (
-            <line
-              key={i}
-              x1={sx(s.segment.a)}
-              y1={sy(s.segment.a)}
-              x2={sx(s.segment.b)}
-              y2={sy(s.segment.b)}
-              vectorEffect="non-scaling-stroke"
-              data-ink={i}
-            />
-          ))}
-        </g>
-      ) : (
-        <g>
-          {shown.map((el) => (
-            <Mark
-              key={el.name}
-              el={el}
-              current={isCurrent(el)}
-              used={used(el)}
-              size={size}
-            />
-          ))}
-          {showNames ? (
-            <Labels
-              labels={labelsFor(shown, isCurrent, highlighted)}
-              size={size}
-            />
-          ) : null}
-        </g>
-      )}
+      {content}
     </svg>
   );
 }
@@ -622,6 +646,17 @@ export function RepeatedInk({
   const { cell, ink } = model.pattern;
   const { row, next } = useMemo(() => rowBasis(model), [model]);
   const svgRef = useRef<SVGSVGElement>(null);
+  const inkId = `tile-ink-${useId().replace(/:/g, '')}`;
+  const inkPath = useMemo(
+    () =>
+      ink
+        .map(
+          (s) =>
+            `M${sx(s.segment.a)} ${sy(s.segment.a)}L${sx(s.segment.b)} ${sy(s.segment.b)}`,
+        )
+        .join(''),
+    [ink],
+  );
   // Every copy whose tile reaches into the view, by row (j) and place (i).
   const copies = useMemo(() => {
     const out: { i: number; j: number; d: Vec }[] = [];
@@ -786,6 +821,11 @@ export function RepeatedInk({
       role="img"
       aria-label="The inked tile repeated edge to edge"
     >
+      <defs>
+        {/* The tile's ink, drawn once and reused by every copy, so a
+            pattern with hundreds of lines stays light. */}
+        <path id={inkId} className="tile-ink" d={inkPath} />
+      </defs>
       <g className="tile-borders">
         {copies.map(({ d }, k) => (
           <polygon
@@ -812,16 +852,20 @@ export function RepeatedInk({
               vectorEffect="non-scaling-stroke"
             />
           ) : null}
-          {ink.map((s, k) => (
-            <line
-              key={k}
-              x1={sx(s.segment.a)}
-              y1={sy(s.segment.a)}
-              x2={sx(s.segment.b)}
-              y2={sy(s.segment.b)}
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
+          {isOrigin(d) ? (
+            ink.map((s, k) => (
+              <line
+                key={k}
+                x1={sx(s.segment.a)}
+                y1={sy(s.segment.a)}
+                x2={sx(s.segment.b)}
+                y2={sy(s.segment.b)}
+                vectorEffect="non-scaling-stroke"
+              />
+            ))
+          ) : (
+            <use href={`#${inkId}`} />
+          )}
         </g>
       ))}
     </svg>

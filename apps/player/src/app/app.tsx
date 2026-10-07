@@ -279,6 +279,7 @@ export function Player({
         model={model}
         upTo={stage.beat}
         view={camera.view}
+        frame={frame}
         svgRef={svgRef}
         showNames={showNames}
         inkSoFar={asYouGo}
@@ -295,6 +296,7 @@ export function Player({
         upTo={beats.length}
         model={inking.shown}
         view={camera.view}
+        frame={frame}
         svgRef={svgRef}
         freeInk={inking.freeInk}
         ink

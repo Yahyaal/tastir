@@ -767,6 +767,15 @@ main.stage .drawing:not(.wall) {
   stroke: var(--used);
 }
 
+/* The tile's ink, drawn once in the repeat and reused by every copy. */
+.tile-ink {
+  fill: none;
+  stroke: inherit;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
 /* The tile step: the tile's own ink, then its neighbours one by one. */
 .ink.own-tile {
   animation: tile-in 0.5s ease-out 1.5s both;

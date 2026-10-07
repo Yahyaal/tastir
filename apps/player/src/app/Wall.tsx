@@ -120,6 +120,11 @@ export function Wall({
     }
     return { pieces: out, lines };
   }, [pattern, tile, fill, colors]);
+  const bandPath = useMemo(
+    () =>
+      shifted.lines.map(([a, b]) => `M${a.x} ${a.y}L${b.x} ${b.y}`).join(''),
+    [shifted],
+  );
 
   const pieceClass = (type: number) =>
     hovered === undefined
@@ -265,20 +270,17 @@ export function Wall({
           {style === 'strapwork'
             ? (['out', 'in'] as const).map((layer) => (
                 <g key={layer} className={`band-${layer}`}>
-                  {shifted.lines.map(([a, b], i) => (
-                    <line
-                      key={i}
-                      x1={a.x}
-                      y1={a.y}
-                      x2={b.x}
-                      y2={b.y}
-                      stroke={layer === 'out' ? INK : BAND}
-                      strokeWidth={
-                        layer === 'out' ? groutWidth * 4 : groutWidth * 2.4
-                      }
-                      strokeLinecap="round"
-                    />
-                  ))}
+                  {/* Every band line in one path, so a wall of hundreds of
+                      lines stays light. */}
+                  <path
+                    d={bandPath}
+                    fill="none"
+                    stroke={layer === 'out' ? INK : BAND}
+                    strokeWidth={
+                      layer === 'out' ? groutWidth * 4 : groutWidth * 2.4
+                    }
+                    strokeLinecap="round"
+                  />
                 </g>
               ))
             : null}

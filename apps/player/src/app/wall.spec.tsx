@@ -89,9 +89,13 @@ describe('the wall', () => {
     const straps = render(
       <Wall model={model} colors={colors} look="strapwork" />,
     );
-    expect(straps.container.querySelectorAll('.band-out line').length).toBe(
-      9 * 16,
-    );
+    // Every band line (16 per tile, with the neighbours' copies) in one path.
+    expect(
+      straps.container
+        .querySelector('.band-out path')
+        ?.getAttribute('d')
+        ?.split('M').length,
+    ).toBe(9 * 16 + 1);
     expect(
       straps.container
         .querySelector('polygon.wall-piece')
