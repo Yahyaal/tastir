@@ -296,8 +296,8 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
 /**
  * At the end of the ink: the ink of the eight tiles around this one, faint
  * and in blue, so the learner sees each of their lines meet this tile's
- * edge where one of its own lines carries on (they fade in one after
- * another, round the tile; see playInk).
+ * edge where one of its own lines carries on (each is copied off the
+ * finished tile and slides out to its place, round the tile; see playInk).
  */
 function NextTiles({ model }: { model: Model }) {
   const { u, v } = model.pattern.cell;
@@ -316,7 +316,12 @@ function NextTiles({ model }: { model: Model }) {
   return (
     <g className="ink next-tiles" aria-label="The next tiles">
       {shifts.map((t, k) => (
-        <g key={k} data-next-tile={k} transform={`translate(${t.x} ${-t.y})`}>
+        <g
+          key={k}
+          data-next-tile={k}
+          data-shift={`${t.x} ${-t.y}`}
+          transform={`translate(${t.x} ${-t.y})`}
+        >
           <path className="tile-ink" d={d} />
         </g>
       ))}

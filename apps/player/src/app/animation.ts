@@ -309,6 +309,10 @@ const INK_MAX_MS = 14000;
 const PEN_LIFT_MS = 90;
 /** Laying the ruler along the next line. */
 const RULER_MS = 250;
+/** A neighbouring tile's slide from the finished tile to its place. */
+const NEXT_TILE_SLIDE_MS = 900;
+/** The gap between one neighbouring tile's slide and the next. */
+const NEXT_TILE_GAP_MS = 260;
 /** The pause between one ring of lines and the next. */
 const RING_PAUSE_MS = 350;
 /** How long the dots take to fade once the ink is done. */
@@ -571,38 +575,41 @@ export function playInk(
       );
     }
   }
+  // The tile's dotted outline fades in once the ink is done.
   const tile = svg.querySelector<SVGPolygonElement>('[data-tile]');
   if (can(tile)) {
-    const len = screenLength(tile, lengthScale);
-    const dash = `${len} ${len}`;
     animations.push(
-      tile.animate(
+      tile.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 900 / speed,
+        delay: t + 300 / speed,
+        easing: 'ease-in-out',
+        fill: 'backwards',
+      }),
+    );
+  }
+  // Then the tiles around it: each is copied off the finished tile in blue
+  // and slides out to its place, one after another round the tile, so each
+  // of their lines is seen meeting this tile's edge where one of its own
+  // lines carries on.
+  const next = [...svg.querySelectorAll<SVGElement>('[data-next-tile]')];
+  const copyAt = t + 1700 / speed;
+  next.forEach((n, k) => {
+    if (!can(n)) return;
+    const [x = 0, y = 0] = (n.dataset['shift'] ?? '0 0').split(' ').map(Number);
+    animations.push(
+      n.animate(
         [
-          { strokeDasharray: dash, strokeDashoffset: len },
-          { strokeDasharray: dash, strokeDashoffset: 0 },
+          { transform: 'translate(0px, 0px)', opacity: 0 },
+          { transform: 'translate(0px, 0px)', opacity: 0.85, offset: 0.2 },
+          { transform: `translate(${x}px, ${y}px)`, opacity: 0.6 },
         ],
         {
-          duration: 1200 / speed,
-          delay: t + 300 / speed,
-          easing: 'ease-in-out',
+          duration: NEXT_TILE_SLIDE_MS / speed,
+          delay: copyAt + (k * NEXT_TILE_GAP_MS) / speed,
+          easing: 'cubic-bezier(0.45, 0, 0.25, 1)',
           fill: 'backwards',
         },
       ),
-    );
-  }
-  // Then the tiles around it, one after another round the tile, so each of
-  // their lines is seen meeting this tile's edge where one of its own
-  // lines carries on.
-  const next = [...svg.querySelectorAll<SVGElement>('[data-next-tile]')];
-  next.forEach((n, k) => {
-    if (!can(n)) return;
-    animations.push(
-      n.animate([{ opacity: 0 }, { opacity: 0.6 }], {
-        duration: 450 / speed,
-        delay: t + (1600 + k * 200) / speed,
-        easing: 'ease-out',
-        fill: 'backwards',
-      }),
     );
   });
   return animations;
