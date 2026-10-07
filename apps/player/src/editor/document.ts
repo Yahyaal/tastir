@@ -272,7 +272,16 @@ export function sayElement(name: string, el: ElementSpec): string {
 }
 
 /** A step's text in plain words, written for the learner to edit. */
-export const sayStep = (create: NewStep['create']): string =>
-  Object.entries(create)
-    .map(([name, el]) => sayElement(name, el))
-    .join(' ');
+export function sayStep(create: NewStep['create']): string {
+  const all = Object.entries(create);
+  const main = all.filter(([, el]) => !('point' in el));
+  if (!main.length) return all.map(([n, el]) => sayElement(n, el)).join(' ');
+  // What the step draws comes first; the crossings it names, after.
+  const marks = all
+    .filter(([, el]) => 'point' in el)
+    .map(([n, el]) => {
+      const [a, b] = 'point' in el ? el.point.meet : ['', ''];
+      return `${n} is where ${a} and ${b} cross.`;
+    });
+  return [...main.map(([n, el]) => sayElement(n, el)), ...marks].join(' ');
+}

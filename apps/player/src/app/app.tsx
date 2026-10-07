@@ -36,6 +36,7 @@ import {
   type Design,
 } from './designs';
 import { Shelf } from './Shelf';
+import { Editor } from '../editor/Editor';
 import { SaveDesign } from './SaveDesign';
 import {
   asPanel,
@@ -1309,6 +1310,9 @@ export function App({ entries = LIBRARY }: { entries?: readonly Entry[] }) {
       <Broken message="The project notes only exist on the dev server (pnpm dev)." />
     );
   }
+  // #/edit/p opens one of the learner's own patterns in the editor.
+  if (route.startsWith('edit/'))
+    return <Editor key={route} id={route.slice('edit/'.length)} />;
   // #/id/design/d opens a saved design at its wall.
   const mine = /^(.+)\/design\/([^/]+)$/.exec(route);
   if (mine) {

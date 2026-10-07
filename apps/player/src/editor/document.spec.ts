@@ -139,8 +139,11 @@ describe('the editor document', () => {
         C2: { circle: { centre: 'P1', tangentTo: ['L1', 'L2'] } },
       }),
     ).toBe(
-      'Mark P1 where C1 and L1 cross. Put the compass point on P1 and open it until the circle C2 touches L1 and L2.',
+      'Put the compass point on P1 and open it until the circle C2 touches L1 and L2. P1 is where C1 and L1 cross.',
     );
+    expect(
+      sayStep({ P1: { point: { meet: ['C1', 'L1'], pick: { angle: 0 } } } }),
+    ).toBe('Mark P1 where C1 and L1 cross.');
     expect(
       sayStep({ L3: { line: { through: 'P1', perpendicularTo: 'L1' } } }),
     ).toBe('Draw L3 through P1, square to L1.');
