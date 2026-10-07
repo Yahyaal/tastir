@@ -232,14 +232,18 @@ describe('the player', () => {
     ]);
   });
 
-  it('shows the tiles around the tile in blue on the step that draws it', () => {
+  it('draws only the tile on its step, and the tiles around it with the ink', () => {
     const { container } = render(<Play json={example} />);
-    for (let i = 0; i < 4; i++) next(); // step 5
+    for (let i = 0; i < 5; i++) next(); // step 6 draws the tile
+    expect(label()).toBe('Step 6 of 6');
     expect(container.querySelectorAll('[data-next-tile]')).toHaveLength(0);
-    next(); // step 6 draws the tile
+    expect(container.querySelectorAll('[data-ink]')).toHaveLength(0);
+    next(); // the ink stage: the ink, then the tiles around it
+    expect(container.querySelectorAll('[data-ink]').length).toBeGreaterThan(0);
     expect(container.querySelectorAll('[data-next-tile]')).toHaveLength(8);
-    next(); // the ink stage
-    expect(container.querySelectorAll('[data-next-tile]')).toHaveLength(0);
+    // The points the ink turns at: the star's 8 points and 8 inner
+    // corners, each shown with the first ruler line that reaches it.
+    expect(container.querySelectorAll('[data-dot-line]')).toHaveLength(16);
   });
 
   it('skips a hidden step: never shown, never drawn, left out of the count', () => {

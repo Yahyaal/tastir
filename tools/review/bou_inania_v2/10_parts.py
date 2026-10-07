@@ -94,7 +94,8 @@ text = text[:start] + '\n'.join(blocks) + '\n' + text[end:]
 # The tile step explains the band with the next tiles, which the player
 # draws in blue there (owner, 5 October 2026).
 TILE_OLD = 'so the two lines along each side of the tile fall on the two lines of the next tile.'
-TILE_NEW = TILE_OLD + ' In blue, the tiles around it: each of their lines meets this tile’s edge just where one of its own lines carries on, and the band breaks there to let it through.'
+# The sentence about the tiles around it now ends the ink text (6 October).
+TILE_NEW = TILE_OLD
 if TILE_NEW not in text:
     text = text.replace(TILE_OLD, TILE_NEW)
 json.loads(text)

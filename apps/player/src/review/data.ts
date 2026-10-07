@@ -1274,6 +1274,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Clearer dots, a guided ink, and a faster player',
+      text: 'New points and lines are blue and what a step works from is saffron, with no rings; on Next the last step’s blue turns saffron (or grey) and a key under each step says what the colours mean. The tile step draws only the tile. The ink stage is a guided tracing: for each line, its turning points appear, the ruler comes down and the pen joins them, from the centre out; the tiles around it appear at the end. Big patterns no longer freeze: Bou Inania’s repeat went from a 3.4 s freeze to smooth, the color stage from 1.2 s, and camera moves run at full frame rate.',
+      link: { label: 'Try it', href: '/#/bou-inania-rosette' },
+    },
+    {
       title: 'Calmer, more natural drawing',
       text: 'The view no longer zooms in and out: each step shows everything drawn so far and only widens, smoothly, when the drawing grows. Ruler lines grow outward from the point they are ruled through; a step with many lines draws them round the centre in turn. The ink starts at the centre and works outward ring by ring, so a star closes before the next ring. On the tile step the tile’s own ink appears first, then its neighbours one by one. The tile border is dotted.',
       link: { label: 'Try it', href: '/#/twelve-fold-rosette-mian' },

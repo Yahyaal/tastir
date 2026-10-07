@@ -293,16 +293,11 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
   );
 }
 
-/** The beat that makes the pattern's cell (the tile). */
-function cellBeat(model: Model): number | undefined {
-  return model.scene.elements.get(model.tutorial.pattern.cell)?.beat;
-}
-
 /**
- * On the step that draws the tile: once the tile is down, its own ink
- * appears in black, then the ink of the eight tiles around it, faint and in
- * blue, one after another, so the learner sees each of their lines meet this
- * tile's edge where one of its own lines carries on.
+ * At the end of the ink: the ink of the eight tiles around this one, faint
+ * and in blue, so the learner sees each of their lines meet this tile's
+ * edge where one of its own lines carries on (they fade in one after
+ * another, round the tile; see playInk).
  */
 function NextTiles({ model }: { model: Model }) {
   const { u, v } = model.pattern.cell;
@@ -312,34 +307,76 @@ function NextTiles({ model }: { model: Model }) {
       if (i || j) shifts.push({ x: i * u.x + j * v.x, y: i * u.y + j * v.y });
   // Round the tile in turn, so the copies arrive like a hand moving round.
   shifts.sort((p, q) => Math.atan2(p.y, p.x) - Math.atan2(q.y, q.x));
-  const lines = (d: Vec) =>
-    model.pattern.ink.map((s, i) => (
-      <line
-        key={i}
-        x1={sx(s.segment.a) + d.x}
-        y1={sy(s.segment.a) - d.y}
-        x2={sx(s.segment.b) + d.x}
-        y2={sy(s.segment.b) - d.y}
-        vectorEffect="non-scaling-stroke"
-      />
-    ));
+  const d = model.pattern.ink
+    .map(
+      (s) =>
+        `M${sx(s.segment.a)} ${sy(s.segment.a)}L${sx(s.segment.b)} ${sy(s.segment.b)}`,
+    )
+    .join('');
   return (
-    <>
-      <g className="ink own-tile" aria-label="This tile">
-        {lines({ x: 0, y: 0 })}
-      </g>
-      <g className="ink next-tiles" aria-label="The next tiles">
-        {shifts.map((d, k) => (
-          <g
-            key={k}
-            data-next-tile={k}
-            style={{ '--k': k } as React.CSSProperties}
-          >
-            {lines(d)}
-          </g>
-        ))}
-      </g>
-    </>
+    <g className="ink next-tiles" aria-label="The next tiles">
+      {shifts.map((t, k) => (
+        <g key={k} data-next-tile={k} transform={`translate(${t.x} ${-t.y})`}>
+          <path className="tile-ink" d={d} />
+        </g>
+      ))}
+    </g>
+  );
+}
+
+/**
+ * The points the ink turns at or ends at (not those where it runs straight
+ * on), each with the first ruler line of the ink order that reaches it, so
+ * the ink stage can show a line's points just before the pen joins them.
+ */
+function InkDots({ model, size }: { model: Model; size: number }) {
+  const key = (p: Vec) => `${p.x.toFixed(6)},${p.y.toFixed(6)}`;
+  // The directions of ink leaving each endpoint.
+  const leaving = new Map<string, Vec[]>();
+  for (const { segment: s } of model.pattern.ink) {
+    const d = { x: s.b.x - s.a.x, y: s.b.y - s.a.y };
+    const n = Math.hypot(d.x, d.y) || 1;
+    const u = { x: d.x / n, y: d.y / n };
+    for (const [p, v] of [
+      [s.a, u],
+      [s.b, { x: -u.x, y: -u.y }],
+    ] as const) {
+      leaving.set(key(p), [...(leaving.get(key(p)) ?? []), v]);
+    }
+  }
+  // Straight on: exactly two stretches leaving in opposite directions.
+  const straight = (k: string) => {
+    const ds = leaving.get(k) ?? [];
+    return (
+      ds.length === 2 &&
+      Math.abs(ds[0]!.x + ds[1]!.x) < 1e-6 &&
+      Math.abs(ds[0]!.y + ds[1]!.y) < 1e-6
+    );
+  };
+  const lineOf = new Map<string, { at: Vec; line: number }>();
+  rulerOrder(model).forEach((r, line) => {
+    for (const { index } of r.strokes) {
+      const { a, b } = model.pattern.ink[index]!.segment;
+      for (const p of [a, b]) {
+        const k = key(p);
+        if (straight(k) || lineOf.has(k)) continue;
+        lineOf.set(k, { at: p, line });
+      }
+    }
+  });
+  return (
+    <g className="ink-dots" aria-hidden="true">
+      {[...lineOf.values()].map(({ at, line }, i) => (
+        <circle
+          key={i}
+          className="ink-dot"
+          data-dot-line={line}
+          cx={sx(at)}
+          cy={sy(at)}
+          r={size * 0.007}
+        />
+      ))}
+    </g>
   );
 }
 
@@ -469,7 +506,7 @@ export function Construction({
           ))}
         </g>
         {inkSoFar && !ink ? <InkSoFar model={model} upTo={upTo} /> : null}
-        {!ink && upTo === cellBeat(model) ? <NextTiles model={model} /> : null}
+
         {ink && freeInk ? <FreeInkPieces {...freeInk} /> : null}
         {ink && !freeInk && enter && pen ? (
           <g className="rulers" aria-hidden="true">
@@ -509,6 +546,8 @@ export function Construction({
                 data-ink={i}
               />
             ))}
+            <NextTiles model={model} />
+            {enter && pen ? <InkDots model={model} size={size} /> : null}
           </g>
         ) : (
           <g>

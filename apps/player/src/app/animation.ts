@@ -309,6 +309,10 @@ const INK_MAX_MS = 14000;
 const PEN_LIFT_MS = 90;
 /** Laying the ruler along the next line. */
 const RULER_MS = 250;
+/** The pause between one ring of lines and the next. */
+const RING_PAUSE_MS = 350;
+/** How long the dots take to fade once the ink is done. */
+const DOT_FADE_MS = 700;
 /** How long a finished line takes to settle from red to black. */
 const SETTLE_MS = 450;
 
@@ -330,6 +334,8 @@ export interface RulerLine {
   readonly to: Vec;
   /** Whether a parallel line was drawn just before (same direction). */
   readonly parallelToPrevious: boolean;
+  /** Which ring out from the centre it belongs to (0 nearest). */
+  readonly ring: number;
 }
 
 const turnDiff = (p: number, q: number) =>
@@ -400,7 +406,9 @@ export function rulerOrder(model: Model): RulerLine[] {
     return ap - aq;
   });
   const out: RulerLine[] = [];
-  placed.forEach(({ l, spans, t0, t1, at, forward }, k) => {
+  let ringNo = 0;
+  placed.forEach(({ l, spans, t0, t1, at, forward, ring }, k) => {
+    if (k > 0 && Math.abs(ring - placed[k - 1]!.ring) > tol) ringNo++;
     const pad = (t1 - t0) * 0.12 + 0.05;
     const ordered = [...spans].sort((p, q) =>
       forward ? p.t - q.t : q.u - p.u,
@@ -416,6 +424,7 @@ export function rulerOrder(model: Model): RulerLine[] {
       from: at(forward ? t0 - pad : t1 + pad),
       to: at(forward ? t1 + pad : t0 - pad),
       parallelToPrevious: !!prev && turnDiff(prev.l.angle, l.angle) < 1e-3,
+      ring: ringNo,
     });
   });
   return out;
@@ -464,10 +473,23 @@ export function playInk(
   const animations: Animation[] = [];
   const can = (n: Element | undefined | null): n is SVGElement =>
     !!n && typeof (n as SVGElement).animate === 'function';
+  // The points each ruler line joins, shown just before it is inked.
+  const dots = new Map<number, SVGElement[]>();
+  svg.querySelectorAll<SVGElement>('[data-dot-line]').forEach((n) => {
+    const line = Number(n.dataset['dotLine']);
+    dots.set(line, [...(dots.get(line) ?? []), n]);
+  });
+  const lineStart = new Map<number, number>();
+  let lastRing = -1;
   // A moment on the finished construction before the ruler comes down.
   let t = 400 / speed;
   order.forEach((r, k) => {
     const ruler = rulers[k];
+    // A short pause between rings, a breath before the next ring of lines.
+    if (r.ring !== lastRing && lastRing >= 0) t += RING_PAUSE_MS / speed;
+    lastRing = r.ring;
+    // This line's points appear as the ruler comes down.
+    lineStart.set(k, t);
     const start = t;
     t += RULER_MS / speed;
     if (r.parallelToPrevious) {
@@ -525,6 +547,30 @@ export function playInk(
       );
     t += PEN_LIFT_MS / speed;
   });
+  // The dots stay until the ink is done, then fade.
+  const inkEnd = t;
+  for (const [line, nodes] of dots) {
+    const from = lineStart.get(line) ?? 0;
+    const span = inkEnd + DOT_FADE_MS / speed - from;
+    for (const n of nodes) {
+      if (!can(n)) continue;
+      animations.push(
+        n.animate(
+          [
+            { opacity: 0, transform: 'scale(0)' },
+            {
+              opacity: 1,
+              transform: 'scale(1)',
+              offset: Math.min(1, 200 / speed / span),
+            },
+            { opacity: 1, offset: Math.max(0, (inkEnd - from) / span) },
+            { opacity: 0 },
+          ],
+          { duration: span, delay: from, fill: 'none' },
+        ),
+      );
+    }
+  }
   const tile = svg.querySelector<SVGPolygonElement>('[data-tile]');
   if (can(tile)) {
     const len = screenLength(tile, lengthScale);
@@ -544,5 +590,20 @@ export function playInk(
       ),
     );
   }
+  // Then the tiles around it, one after another round the tile, so each of
+  // their lines is seen meeting this tile's edge where one of its own
+  // lines carries on.
+  const next = [...svg.querySelectorAll<SVGElement>('[data-next-tile]')];
+  next.forEach((n, k) => {
+    if (!can(n)) return;
+    animations.push(
+      n.animate([{ opacity: 0 }, { opacity: 0.6 }], {
+        duration: 450 / speed,
+        delay: t + (1600 + k * 200) / speed,
+        easing: 'ease-out',
+        fill: 'backwards',
+      }),
+    );
+  });
   return animations;
 }

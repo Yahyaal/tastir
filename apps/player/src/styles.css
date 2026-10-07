@@ -817,7 +817,30 @@ main.stage .drawing:not(.wall) {
 }
 
 .ink.next-tiles {
-  stroke: var(--used);
+  stroke: var(--current);
+}
+
+/* The tile's ink, drawn once in the repeat and reused by every copy. */
+.tile-ink {
+  fill: none;
+  stroke: inherit;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.ink.next-tiles > g {
+  opacity: 0.6;
+}
+
+/* The crossings a ring of the ink joins: shown just before it is inked
+   (playInk), hidden otherwise. */
+.ink-dot {
+  fill: var(--current);
+  stroke: none;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 /* The tile's ink, drawn once in the repeat and reused by every copy. */

@@ -129,7 +129,7 @@ describe('the address', () => {
     expect(document.querySelector('.label')?.textContent).toBe('Step 1 of 6');
     go('#/');
     expect(screen.getByRole('heading', { name: 'Tastir' })).toBeTruthy();
-  }, 15000); // with the library; a busy machine can push it past the default 5 s. // The library computes every tutorial in tutorials/, so this grows
+  }, 30000); // with the library; a busy machine can push it past the default 5 s. // The library computes every tutorial in tutorials/, so this grows
 
   it('opens the tutorial in the address on load', () => {
     window.location.hash = '#/eight-fold-star-and-cross';
