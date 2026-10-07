@@ -54,7 +54,7 @@ The tester starts its own dev server on a spare port (never the owner's on 4200)
 
 - [x] **5.1 File.** Download a pattern as a file and open one.
 - [x] **5.2 Link.** A share link that carries the whole pattern in the address. *Test:* the link opens the same pattern, wall and colours in another browser.
-- [ ] **5.3 Send to the library.** Makes the library-ready file with the maker in its credits and explains how it reaches the review page.
+- [x] **5.3 Send to the library.** Makes the library-ready file with the maker in its credits and explains how it reaches the review page.
 
 ## Lessons
 

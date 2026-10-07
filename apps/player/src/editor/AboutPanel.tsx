@@ -1,4 +1,5 @@
 import type { Tutorial } from '@tastir/schema';
+import { useState } from 'react';
 import { download } from '../app/exporting';
 import type { Draft } from './document';
 
@@ -291,6 +292,9 @@ export function AboutPanel({
             {file?.reason ?? 'draw the tile and ink the pattern first.'}
           </p>
         )}
+        {file && 'tutorial' in file ? (
+          <SendToLibrary tutorial={file.tutorial} />
+        ) : null}
         {patternFile ? (
           <>
             <p className="hint">
@@ -315,5 +319,88 @@ export function AboutPanel({
         ) : null}
       </section>
     </>
+  );
+}
+
+/**
+ * A finished pattern as a file for the library: the maker is named in its
+ * credits, and the learner reads how it reaches the library.
+ */
+export function libraryFile(
+  tutorial: Tutorial,
+  maker: string,
+  note = '',
+): Tutorial {
+  const credit = {
+    source: 'Made with the Tastir editor',
+    creator: maker.trim(),
+    ...(note.trim() ? { note: note.trim() } : {}),
+  };
+  return {
+    ...tutorial,
+    id: slug(tutorial.title),
+    credits: [
+      ...tutorial.credits.filter(
+        (c) => c.source !== 'Made with the Tastir editor',
+      ),
+      credit,
+    ],
+  };
+}
+
+function SendToLibrary({ tutorial }: { tutorial: Tutorial }) {
+  const [maker, setMaker] = useState('');
+  const [note, setNote] = useState('');
+  const [made, setMade] = useState(false);
+  return (
+    <div className="send">
+      <h3>Send it to the library</h3>
+      <p className="hint">
+        Good patterns can join the library for everyone. Write your name for the
+        credits, make the file and send it to the Tastir team. We check it with
+        the same engine as our own patterns, give it a golden test and show it
+        on our review page; if it joins the library, you are named with it.
+      </p>
+      <label className="about-field">
+        Your name, as it should appear
+        <input
+          type="text"
+          value={maker}
+          maxLength={80}
+          onChange={(e) => setMaker(e.target.value)}
+        />
+      </label>
+      <label className="about-field">
+        A note for us (optional)
+        <input
+          type="text"
+          value={note}
+          maxLength={200}
+          onChange={(e) => setNote(e.target.value)}
+        />
+      </label>
+      <button
+        type="button"
+        disabled={!maker.trim()}
+        onClick={() => {
+          const file = libraryFile(tutorial, maker, note);
+          download(
+            new Blob([`${JSON.stringify(file, null, 2)}\n`], {
+              type: 'application/json',
+            }),
+            `${file.id}.json`,
+          );
+          setMade(true);
+        }}
+      >
+        Make the library file
+      </button>
+      {made ? (
+        <p className="hint" role="status">
+          The file is downloaded. Send it to the Tastir team with a line about
+          where the design comes from.
+        </p>
+      ) : null}
+    </div>
   );
 }
