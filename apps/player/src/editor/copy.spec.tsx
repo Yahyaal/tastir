@@ -35,7 +35,7 @@ describe('make my own copy from here', () => {
     render(<App />);
     expect(document.querySelectorAll('.editor-step')).toHaveLength(3);
     expect(screen.getByText(/Based on/).textContent).toMatch(
-      /Eight-fold star and cross, up to step 3/,
+      /Eight-fold star and cross, up to its step 3/,
     );
     expect(document.querySelectorAll('.editor-step.broken')).toHaveLength(0);
   });

@@ -68,10 +68,10 @@ describe('the editor', () => {
     clickAt(0, 0);
     clickAt(0, 1);
     expect(steps()).toEqual([
-      'Put the compass point on O and draw the circle C1 through A.',
-      'Draw the line L1 through O and A.',
-      'Draw L2 through O, square to L1.',
-      'Halve the angle A–O–P1 with L3, a line through O.',
+      'Put the compass point on O and draw a circle through A.',
+      'Draw a line through O and A.',
+      'Draw a line through O, square to the line through O and A.',
+      'Halve the angle A–O–P1 with a line through O.',
     ]);
     const saved = getPattern(id)?.tutorial;
     expect(saved?.steps[3]?.create).toEqual({
@@ -119,7 +119,7 @@ describe('the editor', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
     expect(getPattern(id)?.tutorial.steps[1]?.text).toBe(
-      'Draw the line L1 through O and A.',
+      'Draw a line through O and A.',
     );
   });
 
@@ -145,7 +145,7 @@ describe('the editor', () => {
     expect(screen.getByText('One step is broken.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /^2/ }));
     expect(screen.getByRole('alert').textContent).toMatch(
-      /This step is broken.*"L1" does not exist/,
+      /This step is broken. It uses L1, which no earlier step makes/,
     );
     // Undo, then delete both.
     fireEvent.click(screen.getByRole('button', { name: 'Undo' }));

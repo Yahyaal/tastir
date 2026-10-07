@@ -1,4 +1,4 @@
-import { distance, type InkPiece, type Scene, type Vec } from '@tastir/engine';
+import { distance, type InkPiece, type Vec } from '@tastir/engine';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   addStep,
@@ -12,6 +12,7 @@ import {
   type StepStatus,
 } from './document';
 import { AboutPanel } from './AboutPanel';
+import { EditorDrawing } from './EditorDrawing';
 import {
   imagesOf,
   inkableOf,
@@ -308,7 +309,10 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               <a href={`#/${pattern.basedOn.tutorial}`}>
                 {pattern.basedOn.title}
               </a>
-              , up to step {pattern.basedOn.step}.
+              , up to its step {pattern.basedOn.step}.
+              {draft.steps.some((st) => st.hidden)
+                ? ' Steps marked hidden only name points for the ink; the player skips them, so the numbers here run higher.'
+                : ''}
             </p>
           ) : null}
           {draft.steps.length ? (
@@ -330,7 +334,15 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
                       onClick={() => setSelected(s.id)}
                     >
                       <span className="n">{s.id}</span>
-                      <span className="t">{firstSentence(s.text)}</span>
+                      <span className="t">
+                        {firstSentence(s.text)}
+                        {s.hidden ? (
+                          <em className="hidden-note">
+                            {' '}
+                            Hidden in the player.
+                          </em>
+                        ) : null}
+                      </span>
                     </button>
                   </li>
                 );
@@ -453,7 +465,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
             </div>
           )}
           <main className="stage">
-            <Drawing
+            <EditorDrawing
               scene={checked.scene}
               selected={selected}
               targets={targets}
@@ -500,26 +512,28 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
                 </>
               )}
             </p>
-            {targets.length ? (
-              <div className="ink-tools">
-                {tool.more ? (
-                  <button
-                    type="button"
-                    disabled={!complete(tool, targets.length)}
-                    onClick={() => finish(targets)}
-                  >
-                    Done
-                  </button>
-                ) : null}
+            {/* Always there, so the drawing never moves when it shows. */}
+            <div
+              className="ink-tools"
+              style={{ visibility: targets.length ? 'visible' : 'hidden' }}
+            >
+              {tool.more ? (
                 <button
                   type="button"
-                  className="secondary"
-                  onClick={() => setTargets([])}
+                  disabled={!complete(tool, targets.length)}
+                  onClick={() => finish(targets)}
                 >
-                  Cancel
+                  Done
                 </button>
-              </div>
-            ) : null}
+              ) : null}
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => setTargets([])}
+              >
+                Cancel
+              </button>
+            </div>
           </footer>
         </section>
         <aside className="side-panel" aria-label="This step">
@@ -675,13 +689,22 @@ function StepPanel({
             <p>
               Step {id} is used by {steps(built)}, which would break without it.
             </p>
-            <button type="button" onClick={() => onDelete(true)}>
+            <button
+              type="button"
+              onClick={() => {
+                setAsking(false);
+                onDelete(true);
+              }}
+            >
               Delete {built.length === 1 ? 'both' : `all ${built.length + 1}`}
             </button>
             <button
               type="button"
               className="secondary"
-              onClick={() => onDelete(false)}
+              onClick={() => {
+                setAsking(false);
+                onDelete(false);
+              }}
             >
               Only step {id}
             </button>
@@ -722,8 +745,10 @@ function StepPanel({
         </section>
       ) : null}
       <section>
-        <h2>What is saved</h2>
-        <code className="step-json">{JSON.stringify(create, null, 2)}</code>
+        <details className="saved-form">
+          <summary>Show the saved form</summary>
+          <code className="step-json">{JSON.stringify(create, null, 2)}</code>
+        </details>
       </section>
     </>
   );
@@ -750,196 +775,4 @@ function nearestPiece(
     if (gap <= reach && (!best || gap < best.d)) best = { id: p.id, d: gap };
   }
   return best?.id;
-}
-
-type Box = { x: number; y: number; w: number; h: number };
-
-/** A frame that holds every point and circle drawn, with room round it. */
-function viewOf(scene: Scene): Box {
-  let minX = -1.4;
-  let maxX = 1.4;
-  let minY = -1.4;
-  let maxY = 1.4;
-  const take = (p: Vec, r = 0) => {
-    minX = Math.min(minX, p.x - r);
-    maxX = Math.max(maxX, p.x + r);
-    minY = Math.min(minY, p.y - r);
-    maxY = Math.max(maxY, p.y + r);
-  };
-  for (const el of scene.elements.values()) {
-    const g = el.geometry;
-    if (g.kind === 'point') take(g.at);
-    else if (g.kind === 'circle') take(g.circle.centre, g.circle.radius);
-    else if (g.kind === 'polygon') g.vertices.forEach((v) => take(v));
-  }
-  const pad = 0.08 * Math.max(maxX - minX, maxY - minY);
-  return {
-    x: minX - pad,
-    y: minY - pad,
-    w: maxX - minX + 2 * pad,
-    h: maxY - minY + 2 * pad,
-  };
-}
-
-/** How near a click must be to take something, in screen pixels. */
-const REACH_PX = 12;
-
-/**
- * The construction so far, with what the tool has taken in saffron and
- * what a click would take ringed. Clicks become drawing coordinates.
- */
-function Drawing({
-  scene,
-  selected,
-  targets,
-  hover,
-  ink,
-  onHover,
-  onClick,
-}: {
-  scene: Scene;
-  selected?: number;
-  targets: readonly Target[];
-  hover?: Target;
-  /** In ink mode: the bits of line, and which are inked. */
-  ink?: { pieces: readonly InkPiece[]; chosen: ReadonlySet<string> };
-  onHover: (at: Vec, reach: number) => void;
-  onClick: (at: Vec, reach: number) => void;
-}) {
-  const view = useMemo(() => viewOf(scene), [scene]);
-  const svgRef = useRef<SVGSVGElement>(null);
-  // Screen to drawing: the SVG keeps its aspect (meet), centred.
-  const toFrame = (clientX: number, clientY: number) => {
-    const r = svgRef.current?.getBoundingClientRect();
-    if (!r || !r.width || !r.height) return undefined;
-    const s = Math.min(r.width / view.w, r.height / view.h);
-    const ox = (r.width - view.w * s) / 2;
-    const oy = (r.height - view.h * s) / 2;
-    return {
-      at: {
-        x: view.x + (clientX - r.left - ox) / s,
-        y: view.y + view.h - (clientY - r.top - oy) / s,
-      },
-      reach: REACH_PX / s,
-    };
-  };
-  const unit = view.w / 400;
-  const far = 4 * Math.max(view.w, view.h);
-  const named = (t: Target) =>
-    t.kind === 'element' ? t.name : (t.name ?? undefined);
-  const taken = new Set(targets.map(named).filter(Boolean));
-  const shapes: React.ReactNode[] = [];
-  const labels: React.ReactNode[] = [];
-  for (const el of scene.elements.values()) {
-    const g = el.geometry;
-    const cls = [
-      'el',
-      el.step === selected ? 'current' : '',
-      taken.has(el.name) || (hover && named(hover) === el.name) ? 'taken' : '',
-    ]
-      .filter(Boolean)
-      .join(' ');
-    if (g.kind === 'circle')
-      shapes.push(
-        <circle
-          key={el.name}
-          className={cls}
-          cx={g.circle.centre.x}
-          cy={g.circle.centre.y}
-          r={g.circle.radius}
-        />,
-      );
-    else if (g.kind === 'line') {
-      const { point: p, dir: d } = g.line;
-      shapes.push(
-        <line
-          key={el.name}
-          className={cls}
-          x1={p.x - d.x * far}
-          y1={p.y - d.y * far}
-          x2={p.x + d.x * far}
-          y2={p.y + d.y * far}
-        />,
-      );
-    } else if (g.kind === 'polygon')
-      shapes.push(
-        <polygon
-          key={el.name}
-          className={cls}
-          points={g.vertices.map((v) => `${v.x},${v.y}`).join(' ')}
-        />,
-      );
-    else if (g.kind === 'point') {
-      shapes.push(
-        <circle
-          key={el.name}
-          className={`dot ${cls}`}
-          cx={g.at.x}
-          cy={g.at.y}
-          r={unit * 3}
-        />,
-      );
-      if (!el.name.includes('@') && !el.name.includes('.'))
-        labels.push(
-          <text
-            key={el.name}
-            className="point-name"
-            x={g.at.x + unit * 5}
-            y={-(g.at.y + unit * 5)}
-            fontSize={unit * 11}
-          >
-            {el.name}
-          </text>,
-        );
-    }
-  }
-  const ring = (t: Target, i: number | string, cls: string) =>
-    t.kind === 'point' ? (
-      <circle
-        key={`${cls}${i}`}
-        className={cls}
-        cx={t.at.x}
-        cy={t.at.y}
-        r={unit * 7}
-      />
-    ) : null;
-  return (
-    <svg
-      ref={svgRef}
-      className="drawing editor-drawing"
-      viewBox={`${view.x} ${-(view.y + view.h)} ${view.w} ${view.h}`}
-      role="img"
-      aria-label="The construction so far"
-      onPointerMove={(e) => {
-        const f = toFrame(e.clientX, e.clientY);
-        if (f) onHover(f.at, f.reach);
-      }}
-      onPointerLeave={() => onHover({ x: Infinity, y: Infinity }, 0)}
-      onClick={(e) => {
-        const f = toFrame(e.clientX, e.clientY);
-        if (f) onClick(f.at, f.reach);
-      }}
-    >
-      <g transform="scale(1,-1)" style={{ strokeWidth: unit * 1.5 }}>
-        {shapes}
-        {ink
-          ? ink.pieces.map((p) => (
-              <line
-                key={p.id}
-                className={
-                  ink.chosen.has(p.id) ? 'ink-piece inked' : 'ink-piece'
-                }
-                x1={p.segment.a.x}
-                y1={p.segment.a.y}
-                x2={p.segment.b.x}
-                y2={p.segment.b.y}
-              />
-            ))
-          : null}
-        {targets.map((t, i) => ring(t, i, 'target'))}
-        {hover ? ring(hover, 'h', 'hover') : null}
-      </g>
-      <g className="labels">{labels}</g>
-    </svg>
-  );
 }

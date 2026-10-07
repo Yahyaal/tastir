@@ -181,6 +181,7 @@ export function check(draft: Draft): Checked {
       return { scene, status };
     } catch (e) {
       if (!(e instanceof TutorialError) || typeof e.step !== 'number') throw e;
+      const specs = specsOf(draft);
       const missing = /^"([^"]+)" does not exist$/.exec(e.reason)?.[1];
       const from = missing ? made.get(baseName(missing)) : undefined;
       status.set(
@@ -188,10 +189,10 @@ export function check(draft: Draft): Checked {
         from !== undefined && skipped.has(from)
           ? {
               ok: false,
-              reason: `It uses ${missing}, which step ${from} was to make, and step ${from} is broken.`,
+              reason: `It uses ${describe(missing as string, specs)}, which step ${from} was to make, and step ${from} is broken.`,
               builtOn: from,
             }
-          : { ok: false, reason: `${e.element}: ${e.reason}` },
+          : { ok: false, reason: plainReason(e.reason, specs) },
       );
       skipped.add(e.step);
     }
@@ -263,59 +264,156 @@ const list = (names: readonly string[]) =>
     ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`
     : (names[0] ?? '');
 
+/** What each name was made as, by its step's spec. */
+export type Specs = ReadonlyMap<string, ElementSpec>;
+
+export function specsOf(draft: Pick<Draft, 'steps'>): Map<string, ElementSpec> {
+  const specs = new Map<string, ElementSpec>();
+  for (const step of draft.steps)
+    for (const part of partsOf(step))
+      for (const [name, el] of Object.entries(part.create)) specs.set(name, el);
+  return specs;
+}
+
+/**
+ * An element as the learner knows it from the drawing: a point by its
+ * name (points are labelled), a line, circle or shape by how it was made
+ * ("the circle about O through A"), never by an internal name like d1.
+ */
+export function describe(ref: string, specs: Specs): string {
+  const base = ref.replace(/[.@].*$/, '');
+  const el = specs.get(base);
+  if (!el || 'point' in el) return ref;
+  if (ref.includes('.')) return ref; // a crossing of a points element
+  const copy = ref.includes('@') ? 'a copy of ' : '';
+  const say = (): string => {
+    if ('points' in el)
+      return `the crossings of ${el.points.meet.join(' and ')}`;
+    if ('line' in el) {
+      const l = el.line;
+      if ('bisects' in l)
+        return `the line halving the angle ${l.bisects.join('–')}`;
+      if ('perpendicularTo' in l || 'parallelTo' in l)
+        return `the line through ${l.through} ${'perpendicularTo' in l ? 'square to' : 'parallel to'} ${describeShort(
+          'perpendicularTo' in l ? l.perpendicularTo : l.parallelTo,
+          specs,
+        )}`;
+      return `the line through ${l.through[0]} and ${l.through[1]}`;
+    }
+    if ('circle' in el) {
+      const c = el.circle;
+      return 'through' in c
+        ? `the circle about ${c.centre} through ${c.through}`
+        : `the circle about ${c.centre}`;
+    }
+    if ('polygon' in el)
+      return base.startsWith('Tile')
+        ? 'the tile'
+        : el.polygon.length <= 4
+          ? `the shape ${el.polygon.join('')}`
+          : `the ${el.polygon.length}-sided shape through ${el.polygon[0]}`;
+    return `the copies of ${el.repeat.of.map((o) => describeShort(o, specs)).join(' and ')}`;
+  };
+  return copy + say();
+}
+
+/** A shorter description, for an element named inside another's. */
+function describeShort(ref: string, specs: Specs): string {
+  const el = specs.get(ref.replace(/[.@].*$/, ''));
+  if (el && 'line' in el) {
+    const l = el.line;
+    if ('bisects' in l)
+      return `the line halving the angle ${l.bisects.join('–')}`;
+    if (Array.isArray(l.through))
+      return `the line through ${l.through[0]} and ${l.through[1]}`;
+    return `the line through ${l.through}`;
+  }
+  return describe(ref, specs);
+}
+
+/** An engine message in plain words: names become descriptions. */
+export function plainReason(reason: string, specs: Specs): string {
+  const missing = /^"([^"]+)" does not exist$/.exec(reason)?.[1];
+  if (missing)
+    return `It uses ${describe(missing, specs)}, which no earlier step makes.`;
+  const text = reason.replace(/"([^"]+)"/g, (_, n: string) =>
+    describe(n, specs),
+  );
+  return (
+    text[0]?.toUpperCase() + text.slice(1) + (/[.!?]$/.test(text) ? '' : '.')
+  );
+}
+
 /** One element in plain words, as the learner reads it. */
-export function sayElement(name: string, el: ElementSpec): string {
+export function sayElement(
+  name: string,
+  el: ElementSpec,
+  specs: Specs = new Map(),
+): string {
+  const d = (ref: string) => describe(ref, specs);
   if ('point' in el) {
     const [a, b] = el.point.meet;
-    return `Mark ${name} where ${a} and ${b} cross.`;
+    return `Mark ${name} where ${d(a)} and ${d(b)} cross.`;
   }
   if ('points' in el) {
     const [a, b] = el.points.meet;
-    return `Mark every crossing of ${a} and ${b}.`;
+    return `Mark every crossing of ${d(a)} and ${d(b)}.`;
   }
   if ('line' in el) {
     const l = el.line;
     if ('perpendicularTo' in l)
-      return `Draw ${name} through ${l.through}, square to ${l.perpendicularTo}.`;
+      return `Draw a line through ${l.through}, square to ${d(l.perpendicularTo)}.`;
     if ('parallelTo' in l)
-      return `Draw ${name} through ${l.through}, parallel to ${l.parallelTo}.`;
+      return `Draw a line through ${l.through}, parallel to ${d(l.parallelTo)}.`;
     if ('bisects' in l) {
       const [p, q, r] = l.bisects;
-      return `Halve the angle ${p}–${q}–${r} with ${name}, a line through ${q}.`;
+      return `Halve the angle ${p}–${q}–${r} with a line through ${q}.`;
     }
-    return `Draw the line ${name} through ${l.through[0]} and ${l.through[1]}.`;
+    return `Draw a line through ${l.through[0]} and ${l.through[1]}.`;
   }
   if ('circle' in el) {
     const c = el.circle;
     if ('through' in c)
-      return `Put the compass point on ${c.centre} and draw the circle ${name} through ${c.through}.`;
+      return `Put the compass point on ${c.centre} and draw a circle through ${c.through}.`;
     if ('radiusOf' in c)
-      return `Keep the opening of ${c.radiusOf} and draw the circle ${name} around ${c.centre}.`;
+      return `Keep the opening of ${d(c.radiusOf)} and draw a circle about ${c.centre}.`;
     if ('radiusFrom' in c)
-      return `Open the compass from ${c.radiusFrom[0]} to ${c.radiusFrom[1]} and draw the circle ${name} around ${c.centre}.`;
-    return `Put the compass point on ${c.centre} and open it until the circle ${name} touches ${list(c.tangentTo)}.`;
+      return `Open the compass from ${c.radiusFrom[0]} to ${c.radiusFrom[1]} and draw a circle about ${c.centre}.`;
+    return `Put the compass point on ${c.centre} and open it until the circle touches ${list(c.tangentTo.map(d))}.`;
   }
   if ('polygon' in el)
     return name.startsWith('Tile')
-      ? `Join ${list(el.polygon)} into the tile ${name}, which repeats edge to edge.`
-      : `Join ${list(el.polygon)} into the shape ${name}.`;
+      ? `Join ${list(el.polygon)} into the tile, which repeats edge to edge.`
+      : `Join ${list(el.polygon)} into a shape.`;
   const { of, by } = el.repeat;
   return by.startsWith('mirror:')
-    ? `Mirror ${list(of)} in ${by.slice('mirror:'.length)}.`
-    : `Turn ${list(of)} round the centre into ${by.slice(3)} copies.`;
+    ? `Mirror ${list(of.map(d))} in ${d(by.slice('mirror:'.length))}.`
+    : `Turn ${list(of.map(d))} round the centre into ${by.slice(3)} copies.`;
 }
 
-/** A step's text in plain words, written for the learner to edit. */
-export function sayStep(create: NewStep['create']): string {
+/**
+ * A step's text in plain words, written for the learner to edit. `draft`
+ * tells what earlier names stand for, so they can be described.
+ */
+export function sayStep(
+  create: NewStep['create'],
+  draft?: Pick<Draft, 'steps'>,
+): string {
+  const specs = draft ? specsOf(draft) : new Map<string, ElementSpec>();
+  for (const [n, el] of Object.entries(create)) specs.set(n, el);
+  const d = (ref: string) => describe(ref, specs);
   const all = Object.entries(create);
   const main = all.filter(([, el]) => !('point' in el));
-  if (!main.length) return all.map(([n, el]) => sayElement(n, el)).join(' ');
+  if (!main.length)
+    return all.map(([n, el]) => sayElement(n, el, specs)).join(' ');
   // What the step draws comes first; the crossings it names, after.
   const marks = all
     .filter(([, el]) => 'point' in el)
     .map(([n, el]) => {
       const [a, b] = 'point' in el ? el.point.meet : ['', ''];
-      return `${n} is where ${a} and ${b} cross.`;
+      return `${n} is where ${d(a)} and ${d(b)} cross.`;
     });
-  return [...main.map(([n, el]) => sayElement(n, el)), ...marks].join(' ');
+  return [...main.map(([n, el]) => sayElement(n, el, specs)), ...marks].join(
+    ' ',
+  );
 }

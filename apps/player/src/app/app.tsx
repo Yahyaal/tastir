@@ -38,7 +38,8 @@ import {
 import { Shelf } from './Shelf';
 import { Editor } from '../editor/Editor';
 import { copyUpTo } from '../editor/document';
-import { addPattern, playable } from '../editor/patterns';
+import { addPattern, listPatterns, playable } from '../editor/patterns';
+import { PatternShelf } from '../editor/PatternShelf';
 import { SaveDesign } from './SaveDesign';
 import {
   asPanel,
@@ -1067,6 +1068,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   const [style, setStyle] = useState<string>();
   const [level, setLevel] = useState<string>();
   const [designs, setDesigns] = useState(listDesigns);
+  const [patterns, setPatterns] = useState(listPatterns);
   const styles = [
     ...new Set(entries.flatMap((e) => aboutOf(e.json).style ?? [])),
   ].sort();
@@ -1093,6 +1095,19 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             }
           >
             My designs ({designs.length})
+          </button>
+        ) : null}
+        {patterns.length ? (
+          <button
+            type="button"
+            className="jump-link"
+            onClick={() =>
+              document
+                .getElementById('my-patterns')
+                ?.scrollIntoView?.({ behavior: 'smooth' })
+            }
+          >
+            My patterns ({patterns.length})
           </button>
         ) : null}
         {import.meta.env.DEV ? (
@@ -1131,6 +1146,12 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           designs={designs}
           entries={entries}
           onChange={() => setDesigns(listDesigns())}
+        />
+      ) : null}
+      {patterns.length ? (
+        <PatternShelf
+          patterns={patterns}
+          onChange={() => setPatterns(listPatterns())}
         />
       ) : null}
       <section aria-labelledby="collection">

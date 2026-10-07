@@ -1445,6 +1445,40 @@ main.stage .drawing:not(.wall) {
   margin-bottom: 44px;
 }
 
+/* A pattern of one's own, drawn as its construction so far. */
+.thumbnail.sketch {
+  background: var(--gesso);
+}
+
+.thumbnail.sketch line,
+.thumbnail.sketch circle,
+.thumbnail.sketch polygon {
+  fill: none;
+  stroke: var(--old);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.thumbnail.sketch polygon.shape {
+  stroke: var(--current);
+  stroke-width: 1.6px;
+}
+
+.card-actions.pattern-actions {
+  grid-template-columns: 1fr 1fr;
+}
+
+.pattern-actions .not-yet {
+  align-self: center;
+  font-size: 0.78rem;
+  color: var(--on-lapis-muted);
+  text-align: center;
+}
+
+.masthead .jump-link + .jump-link {
+  margin-left: 0;
+}
+
 /* A long name is cut, not wrapped, so every card keeps its shape. */
 .shelf .card h3 {
   overflow: hidden;

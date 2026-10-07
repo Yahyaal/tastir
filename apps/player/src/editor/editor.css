@@ -447,3 +447,79 @@
   padding: 4px 12px;
   font-size: 0.82rem;
 }
+
+.editor-canvas {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
+
+.player .editor-canvas .fit {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 3px 12px;
+  font-size: 0.8rem;
+  background: var(--gesso);
+  color: var(--ink);
+  border: 1px solid var(--old);
+}
+
+.editor-drawing.dragging {
+  cursor: grabbing;
+}
+
+.editor-drawing .crossing {
+  fill: var(--current);
+  fill-opacity: 0.35;
+  stroke: none;
+}
+
+.editor-step .hidden-note {
+  color: var(--on-lapis-muted);
+  font-size: 0.75rem;
+}
+
+.saved-form summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--on-lapis-muted);
+}
+
+.saved-form[open] summary {
+  margin-bottom: 8px;
+}
+
+/* On a phone the drawing comes first, then the tools and the steps. */
+@media (max-width: 760px) {
+  .editor .plate-area {
+    order: -1;
+  }
+
+  .editor .topbar {
+    gap: 6px;
+  }
+
+  .editor-title input {
+    font-size: 1rem;
+  }
+
+  .editor-drawing {
+    min-height: 60vw;
+  }
+}
+
+.editor-drawing .dot.crowded {
+  fill: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .editor-title {
+    order: 5;
+    flex-basis: 100%;
+  }
+
+  .editor-play .play-later {
+    font-size: 0.72rem;
+  }
+}

@@ -108,7 +108,7 @@ describe('the editor document', () => {
     const { status } = check(d);
     expect(status.get(1)).toMatchObject({ ok: false });
     expect(String((status.get(1) as { reason: string }).reason)).toMatch(
-      /"c" does not exist/,
+      /It uses c, which no earlier step makes/,
     );
   });
 
@@ -139,14 +139,14 @@ describe('the editor document', () => {
         C2: { circle: { centre: 'P1', tangentTo: ['L1', 'L2'] } },
       }),
     ).toBe(
-      'Put the compass point on P1 and open it until the circle C2 touches L1 and L2. P1 is where C1 and L1 cross.',
+      'Put the compass point on P1 and open it until the circle touches L1 and L2. P1 is where C1 and L1 cross.',
     );
     expect(
       sayStep({ P1: { point: { meet: ['C1', 'L1'], pick: { angle: 0 } } } }),
     ).toBe('Mark P1 where C1 and L1 cross.');
     expect(
       sayStep({ L3: { line: { through: 'P1', perpendicularTo: 'L1' } } }),
-    ).toBe('Draw L3 through P1, square to L1.');
+    ).toBe('Draw a line through P1, square to L1.');
     expect(sayStep({ R1: { repeat: { of: ['L3'], by: 'rot8' } } })).toBe(
       'Turn L3 round the centre into 8 copies.',
     );
