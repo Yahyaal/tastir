@@ -264,4 +264,30 @@ I tested from a frozen worktree of commit 4f66789, with my own server on port 43
 
 **Is the rosette real?** Not yet. The block's ink closes one piece, named “shape”, with 32 corners: the outer outline of an eight-petalled rosette, filled in one colour. Each tile holds one such shape floating on the ground, with no lines out to the tile edges (05). A real eight-fold rosette, such as the ones in the library or in Lee's method, shows a central eight-pointed star, eight petals round it as separate pieces, and lines running on to meet the neighbours. Here the inner star and the petal divisions are not inked, so the result reads as a flower-shaped blob rather than a rosette.
 
-(The rest follows below.)
+**5.1 Pattern files.** “Download my pattern file” sits under About the pattern, with the line “Keep your pattern as a file, finished or not, and open it again from the home page in any browser”. It saved `rosette-tiles.tastir.json` (23 kB), named after the pattern's title. In a fresh browser, “Open a pattern file” on the home page opened that file straight into the editor, and it joined My patterns. A file that is not JSON says “This is not a pattern file: it is not JSON.”, and `{"hello":"world"}` says “This is not a pattern file: it has no title and steps.”. Both messages are clear, and the page stays usable. A library tutorial file (`tutorials/eight-fold-star-and-cross.json`) also opens, as an editable pattern that plays. It then sits on My patterns under the library's own title, “Eight-fold star and cross”, which looks like the library pattern itself and could confuse a learner.
+
+**5.2 Share link.** “Copy a share link” says “Copied. Anyone who opens it sees this wall, in any browser.”, and the link worked in a fresh browser as described above (09). I could not check one case. Without clipboard permission the page still says “Copied”, and I could not confirm in headless Chromium whether the link really reached the clipboard. In a normal browser, a click usually grants that permission.
+
+**5.3 Send it to the library.** About the pattern explains the process in plain words: write your name, make the file, send it, and the team checks it with the engine, gives it a golden test and names you if it joins. “Make the library file” stays disabled until a name is given. It then downloaded `rosette-tiles.json`, a full tutorial file with `expect` and the credit “Made with the Tastir editor, Test Learner, ‘Made with blocks.’”, and said “The file is downloaded. Send it to the Tastir team…” (10).
+
+**Re-check of phase 4 (4.4).**
+- **Fixed:**
+  - **Touching text:** it now says the right side. The small circle reads “the smaller circle, inside it and touching it from within”, and the large one “the larger circle, which goes round it” (12).
+  - **Whole-line ink:** “Whole lines between points” is ticked by default, and one click inked a whole star outline with its copies (13).
+  - **Reusing lines:** blocks reuse what exists; the square tile added 2 steps instead of 4 after the rosette.
+  - **Starting a pattern:** “draw a circle first” is said in the block panel.
+  - **Stable drawing:** the drawing keeps its height (437 px) with the Tile, Touching and Polygon hints.
+  - **Bou Inania tiles:** they read “Use the larger square as the tile” and “Use the smaller square as the tile”.
+  - **Play:** it waits for ink that closes pieces (“▶ Play: ink the pattern first”).
+- **Still not a real rosette:** the rosette block now brings ink, but the result is one 32-corner outline per tile, as described above (05).
+
+**Remaining problems**
+
+1. **The rosette block's ink is only the outline.** It should ink the central star and the petal divisions, and ideally lines out to the tile edges, so that it looks like an eight-fold rosette.
+2. **A block's source is not credited.** The library file made from a pattern that uses “A. J. Lee's rosette” credits only “Made with the Tastir editor” and the learner. The block is Anthony Lee's method, and the content rules say a specific sequence must be credited. Blocks should add their credit to the pattern when inserted.
+3. “Send it to the Tastir team” does not say how: no address, form or link. A learner who has made the file does not know where to send it.
+4. About the pattern says “✓ Complete: 1 kinds of piece” (a plural for one).
+5. An opened library tutorial file keeps the library title on My patterns. Adding “(from a file)” or “(my copy)” would avoid confusion.
+6. The single piece of the rosette is named “shape”.
+
+My verdict on phase 5: sharing works. The file round trip, clear errors on broken files, the share link in a fresh browser with Keep a copy, and the library file with the maker credited all behave as promised. The new-learner journey from New pattern to a shared wall in another browser works without a dead end. What is left is the rosette block's look and its missing credit.
