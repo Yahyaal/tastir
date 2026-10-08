@@ -8,7 +8,14 @@ import {
   TutorialError,
   type Scene,
 } from '@tastir/engine';
-import type { ElementSpec, Step, Tutorial } from '@tastir/schema';
+import type {
+  ElementSpec,
+  InkEnd,
+  InkPath,
+  Pick,
+  Step,
+  Tutorial,
+} from '@tastir/schema';
 import { renameSpec } from '../editor/blocks';
 import { pointPlaces, specsOf, type Draft } from '../editor/document';
 import { crossingsNear } from '../editor/tools';
@@ -36,6 +43,48 @@ export function drawForMe(
   const base = check(draft.steps);
   const missing = checkStep(tScene, base, beat).missing;
   if (!missing.length) return undefined;
+  const b = builder(tutorial, tScene, draft, text, base);
+  for (const m of missing) {
+    // Something drawn on the way may already have brought it.
+    if (
+      !checkStep(tScene, b.scene(), beat).missing.some((x) => x.name === m.name)
+    )
+      continue;
+    b.resolve(m.name);
+  }
+  return b.draft();
+}
+
+/**
+ * The board with the tutorial's tile on it, and the tile's name there:
+ * the board's own polygon when it has one in its place, else the tile
+ * drawn from the corners the board has (one more step).
+ */
+export function withTutorialTile(
+  tutorial: Tutorial,
+  tScene: Scene,
+  draft: Draft,
+): { draft: Draft; cell: string } {
+  const b = builder(
+    tutorial,
+    tScene,
+    draft,
+    'The tile, which repeats edge to edge.',
+    check(draft.steps),
+  );
+  const cell = b.resolve(tutorial.pattern.cell);
+  return { draft: b.draft(), cell };
+}
+
+/** Takes references to the tutorial's elements from the board by geometry,
+ * drawing in one new step whatever the board lacks. */
+function builder(
+  tutorial: Tutorial,
+  tScene: Scene,
+  draft: Draft,
+  text: string,
+  base: Scene,
+) {
   const specs = specsOf(tutorial);
   const create: Record<string, ElementSpec> = {};
   const taken = new Set([...specsOf(draft).keys(), 'O', 'A']);
@@ -140,13 +189,15 @@ export function drawForMe(
     return add(ref, mapped);
   };
 
-  for (const m of missing) {
-    // Something drawn on the way may already have brought it.
-    if (!checkStep(tScene, scene, beat).missing.some((x) => x.name === m.name))
-      continue;
-    resolve(m.name);
-  }
-  return { ...draft, steps: [...draft.steps, stepOf()] };
+  return {
+    resolve,
+    scene: () => scene,
+    /** The board with the new step, if anything was drawn. */
+    draft: (): Draft =>
+      Object.keys(create).length
+        ? { ...draft, steps: [...draft.steps, stepOf()] }
+        : draft,
+  };
 }
 
 /** The board's scene; any step that cannot be evaluated is an error. */
@@ -157,4 +208,43 @@ function check(steps: readonly Step[]): Scene {
     if (e instanceof TutorialError) throw new Error(e.message);
     throw e;
   }
+}
+
+/**
+ * The board with the tutorial's own ink, its references taken from the
+ * board by geometry; points the ink needs that the board has not named
+ * are marked in one more step, hidden like the tutorial's own such steps.
+ * So a drawing whose pieces match the pattern's plays as a pattern.
+ */
+export function withTutorialInk(
+  tutorial: Tutorial,
+  tScene: Scene,
+  draft: Draft,
+): Draft {
+  const b = builder(
+    tutorial,
+    tScene,
+    draft,
+    'Mark the points the ink runs between.',
+    check(draft.steps),
+  );
+  const r = (ref: string) => b.resolve(ref);
+  const pick = (p: Pick) =>
+    Object.fromEntries(
+      Object.entries(p).map(([k, v]) => [k, typeof v === 'string' ? r(v) : v]),
+    ) as Pick;
+  const end = (e: InkEnd): InkEnd =>
+    typeof e === 'string'
+      ? r(e)
+      : { cross: r(e.cross), ...(e.pick ? { pick: pick(e.pick) } : {}) };
+  const paths = tutorial.ink.paths.map((p): InkPath =>
+    'through' in p
+      ? { ...p, through: p.through.map(r) }
+      : { ...p, along: r(p.along), from: end(p.from), to: end(p.to) },
+  );
+  const made = b.draft();
+  const steps = made.steps.map((s, i) =>
+    i >= draft.steps.length ? { ...s, hidden: true } : s,
+  );
+  return { ...made, steps, ink: { ...tutorial.ink, paths } };
 }

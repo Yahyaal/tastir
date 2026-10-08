@@ -180,7 +180,9 @@ function sameDesign(
 }
 
 /** Where a tutorial opens: at its first step, or at the finished wall. */
-export type Start = 'beginning' | 'result';
+/** Where the player opens: the first step, the repeat (after drawing
+ * along), or the finished wall. */
+export type Start = 'beginning' | 'repeat' | 'result';
 
 export function Player({
   model,
@@ -207,7 +209,11 @@ export function Player({
   const start = opened ? 'result' : asked;
   const stages = useMemo(() => stagesOf(tutorial), [tutorial]);
   const [index, setIndex] = useState(() =>
-    start === 'result' ? stagesOf(tutorial).length - 1 : 0,
+    start === 'result'
+      ? stagesOf(tutorial).length - 1
+      : start === 'repeat'
+        ? stagesOf(tutorial).length - 2
+        : 0,
   );
   const stage = useMemo(
     (): Stage => stages[index] ?? { kind: 'color' },
@@ -1524,9 +1530,15 @@ export function App({
       return <Broken message={`There is no tutorial called "${id}".`} />;
     return <DrawAlongPage key={route} json={entry.json} address={id} />;
   }
-  // #/id plays from the first step; #/id/result opens at the finished wall.
+  // #/id plays from the first step; #/id/result opens at the finished wall;
+  // #/id/repeat at the repeat, where drawing along goes on.
   const result = route.endsWith('/result');
-  const id = result ? route.slice(0, -'/result'.length) : route;
+  const repeat = route.endsWith('/repeat');
+  const id = result
+    ? route.slice(0, -'/result'.length)
+    : repeat
+      ? route.slice(0, -'/repeat'.length)
+      : route;
   const entry = entries.find((e) => e.id === id);
   if (!entry)
     return <Broken message={`There is no tutorial called "${route}".`} />;
@@ -1534,7 +1546,7 @@ export function App({
     <Play
       key={route}
       json={entry.json}
-      start={result ? 'result' : 'beginning'}
+      start={result ? 'result' : repeat ? 'repeat' : 'beginning'}
       address={id}
     />
   );

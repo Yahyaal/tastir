@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import App from '../app/app';
+import { listPatterns } from '../editor/patterns';
 import { TOOLS } from '../editor/tools';
 
 /** Clicks the board at a point of the frame (x right, y up). */
@@ -177,5 +178,31 @@ describe('drawing along', () => {
     click('Next');
     click('Draw it for me');
     expect(ticked()).toEqual(['1', '2', '3', '4']);
+  });
+
+  it('ends by inking the board, and keeps the drawing as a pattern that plays from the repeat', () => {
+    openAlong();
+    for (let i = 0; i < 6; i++) {
+      click('Draw it for me');
+      click(i < 5 ? 'Next' : 'Ink it');
+    }
+    expect(screen.getByRole('toolbar', { name: 'Ink' })).toBeTruthy();
+    const go = screen.getByRole('button', { name: 'Repeat and color it' });
+    expect((go as HTMLButtonElement).disabled).toBe(true);
+    // One click on a side of a star tip inks the star, with its copies.
+    const k = 0.76537;
+    const a = (22.5 * Math.PI) / 180;
+    clickAt((1 + k * Math.cos(a)) / 2, (k * Math.sin(a)) / 2);
+    expect(status()).toMatch(/Your ink closes the pattern’s pieces/);
+    fireEvent.click(go);
+    const kept = listPatterns()[0];
+    expect(kept?.basedOn?.tutorial).toBe('eight-fold-star-and-cross');
+    expect(kept?.tutorial.title).toBe('My Eight-fold star and cross');
+    expect(kept?.tutorial.credits.at(-1)?.note).toMatch(/Drawn along/);
+    expect(window.location.hash).toBe(`#/mine/${kept?.id}/repeat`);
+    expect(kept?.tutorial.expect?.pieces.map((p) => p.name).sort()).toEqual([
+      'cross',
+      'star',
+    ]);
   });
 });

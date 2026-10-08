@@ -9,6 +9,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fullView, growingFrame } from '../app/camera';
 import { Construction } from '../app/drawing';
 import {
+  asPanel,
   beatsOf,
   hiddenBeats,
   shownBeats,
@@ -16,6 +17,7 @@ import {
   type Model,
 } from '../app/model';
 import { useCamera } from '../app/useCamera';
+import { nearestPiece } from '../editor/Editor';
 import { PROGRESS_TEXT, useModel } from '../app/workerClient';
 import { check, emptyDraft, type Draft } from '../editor/document';
 import { EditorDrawing } from '../editor/EditorDrawing';
@@ -34,6 +36,7 @@ import {
 import { drawForMe } from './drawForMe';
 import { hintFor } from './hints';
 import { withTutorialNames } from './naming';
+import { useInkBoard } from './useInkBoard';
 import '../editor/editor.css';
 import './along.css';
 
@@ -93,6 +96,14 @@ function stillToDraw(c: StepCheck): string {
     : (parts[0] ?? '');
 }
 
+const INK_SYMMETRIC =
+  'Ink or erase a bit of line together with its turned and mirrored copies, so the pattern stays even.';
+const INK_RUNS =
+  'Ink a whole stretch of line between two points with one click, not each little piece.';
+const INK_FOR_ME =
+  'Ink your board the way the tutorial inks it, to see the pattern or to start from it.';
+const INK_CLEAR = 'Take all the ink off your board.';
+
 /** Whether the screen is a phone's, where the two halves take turns. */
 function usePhone(): boolean {
   const query = '(max-width: 760px)';
@@ -130,7 +141,9 @@ export function DrawAlong({
   const shownIds = useMemo(() => shownSteps(tutorial), [tutorial]);
   const hidden = useMemo(() => hiddenBeats(tutorial), [tutorial]);
   const [index, setIndex] = useState(0);
-  const beat = shown[index] ?? 1;
+  // After the last step, the learner inks their board.
+  const inking = index === shown.length;
+  const beat = shown[Math.min(index, shown.length - 1)] ?? 1;
   const info = beats[beat - 1];
 
   // The learner's board: a draft of their own, drawn with the editor.
@@ -182,7 +195,18 @@ export function DrawAlong({
     () => extrasOn(model.scene, board),
     [model.scene, board],
   );
-  const here = checks[index];
+  const here = inking ? undefined : checks[index];
+
+  // The ink stage: the learner's own ink on their board.
+  const [chosen, setChosen] = useState<ReadonlySet<string>>(new Set());
+  const ink = useInkBoard(model, draft, inking, chosen, setChosen);
+  const ready = ink.ready && !('reason' in ink.ready) ? ink.ready : undefined;
+  const [keepFailed, setKeepFailed] = useState<string>();
+  const goOn = () => {
+    const kept = ink.keep();
+    if ('reason' in kept) return setKeepFailed(kept.reason);
+    window.location.hash = `#/mine/${kept.pattern.id}/repeat`;
+  };
 
   // Hints grow a level with each press; a new step starts without one.
   const [hintLevel, setHintLevel] = useState(0);
@@ -304,8 +328,8 @@ export function DrawAlong({
   // One view for both halves: the step's calm frame, as the player
   // shows it; Fit shows the whole pattern.
   const frame = useMemo(
-    () => growingFrame(model, beat, hidden),
-    [model, beat, hidden],
+    () => (inking ? fullView(model) : growingFrame(model, beat, hidden)),
+    [inking, model, beat, hidden],
   );
   const boardRef = useRef<SVGSVGElement>(null);
   const stepRef = useRef<SVGSVGElement>(null);
@@ -315,7 +339,8 @@ export function DrawAlong({
   const phone = usePhone();
   const [showStep, setShowStep] = useState(false);
   const go = (to: number) => {
-    setIndex(Math.max(0, Math.min(shown.length - 1, to)));
+    setIndex(Math.max(0, Math.min(shown.length, to)));
+    setKeepFailed(undefined);
     setHintLevel(0);
     setDrawFailed(undefined);
     setTargets([]);
@@ -323,11 +348,26 @@ export function DrawAlong({
   };
   const number = shownIds.indexOf(info?.step ?? 0) + 1;
   const last = index === shown.length - 1;
+  const kindsWord = (n: number) =>
+    `${count(n)} ${n === 1 ? 'kind' : 'kinds'} of piece`;
+  const inkStatus = !inking
+    ? ''
+    : ink.ready && 'reason' in ink.ready
+      ? `Your board cannot be inked yet: ${ink.ready.reason}`
+      : !chosen.size
+        ? 'Ink the lines the pattern keeps on your board.'
+        : ink.result?.matches
+          ? `✓ Your ink closes the pattern’s pieces: ${kindsWord(ink.result.types.length)}, as in the tutorial.`
+          : ink.result?.types.length
+            ? `Your ink closes ${kindsWord(ink.result.types.length)}; the pattern has ${kindsWord(tutorial.expect.pieces.length)}.`
+            : 'Your ink closes no pieces yet.';
 
   const boardHalf = (
     <main className="stage along-plate" hidden={phone && showStep}>
       <EditorDrawing
-        scene={board}
+        scene={ready?.scene ?? board}
+        ink={ready ? { pieces: ready.pieces, chosen } : undefined}
+        tile={ready?.cell.corners}
         targets={targets}
         hover={hover}
         candidates={choices?.circles}
@@ -342,6 +382,11 @@ export function DrawAlong({
           setHover(want && !choices ? snap(board, at, reach, want) : undefined)
         }
         onClick={(at: Vec, reach: number) => {
+          if (inking) {
+            const hit = ready && nearestPiece(ready.pieces, at, reach);
+            if (hit) ink.toggle(hit);
+            return;
+          }
           if (choices) {
             // The circle passing nearest the click.
             const gaps = choices.circles.map((c) =>
@@ -373,14 +418,26 @@ export function DrawAlong({
       hidden={phone && !showStep}
       aria-label="The step to copy"
     >
-      <Construction
-        model={model}
-        upTo={beat}
-        view={camera.view}
-        frame={frame}
-        svgRef={stepRef}
-        showNames
-      />
+      {inking ? (
+        <Construction
+          model={asPanel(model)}
+          upTo={beats.length}
+          view={camera.view}
+          frame={frame}
+          svgRef={stepRef}
+          ink
+          pen={false}
+        />
+      ) : (
+        <Construction
+          model={model}
+          upTo={beat}
+          view={camera.view}
+          frame={frame}
+          svgRef={stepRef}
+          showNames
+        />
+      )}
       <button
         type="button"
         className="fit"
@@ -430,6 +487,23 @@ export function DrawAlong({
               </li>
             );
           })}
+          <li>
+            <button
+              type="button"
+              className={[
+                'along-dot',
+                inking ? 'on' : '',
+                ink.result?.matches ? 'done' : '',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              aria-current={inking ? 'step' : undefined}
+              aria-label="Ink"
+              onClick={() => go(shown.length)}
+            >
+              Ink
+            </button>
+          </li>
         </ol>
         {phone ? (
           <button
@@ -443,21 +517,63 @@ export function DrawAlong({
       </nav>
       <div className="along-grid">
         <div className="along-tools" hidden={phone && showStep}>
-          <ToolBar
-            tool={toolId}
-            onTool={chooseTool}
-            symmetry={symmetry}
-            onSymmetry={setSymmetry}
-            canUndo={history.past.length > 0}
-            canRedo={history.future.length > 0}
-            onUndo={undo}
-            onRedo={redo}
-            hinted={hint?.tool}
-          />
+          {inking ? (
+            <div className="editor-tools" role="toolbar" aria-label="Ink">
+              <label className="tool" title={INK_SYMMETRIC}>
+                <input
+                  type="checkbox"
+                  checked={ink.symmetric}
+                  aria-description={INK_SYMMETRIC}
+                  onChange={(e) => ink.setSymmetric(e.target.checked)}
+                />
+                Keep it symmetric
+              </label>
+              <label className="tool" title={INK_RUNS}>
+                <input
+                  type="checkbox"
+                  checked={ink.wholeRuns}
+                  aria-description={INK_RUNS}
+                  onChange={(e) => ink.setWholeRuns(e.target.checked)}
+                />
+                Whole lines between points
+              </label>
+              <button
+                type="button"
+                className="tool"
+                title={INK_FOR_ME}
+                aria-description={INK_FOR_ME}
+                onClick={ink.inkForMe}
+              >
+                Ink it for me
+              </button>
+              <button
+                type="button"
+                className="tool"
+                title={INK_CLEAR}
+                aria-description={INK_CLEAR}
+                disabled={!chosen.size}
+                onClick={() => setChosen(new Set())}
+              >
+                Clear the ink
+              </button>
+            </div>
+          ) : (
+            <ToolBar
+              tool={toolId}
+              onTool={chooseTool}
+              symmetry={symmetry}
+              onSymmetry={setSymmetry}
+              canUndo={history.past.length > 0}
+              canRedo={history.future.length > 0}
+              onUndo={undo}
+              onRedo={redo}
+              hinted={hint?.tool}
+            />
+          )}
         </div>
         <div className="along-head" hidden={phone}>
           <p className="label">
-            Step {number} of {shownIds.length}
+            {inking ? 'Ink' : `Step ${number} of ${shownIds.length}`}
           </p>
         </div>
         {boardHalf}
@@ -467,96 +583,141 @@ export function DrawAlong({
           hidden={phone && showStep}
         >
           <h2>Your drawing</h2>
-          <p className="instruction" aria-live="polite">
-            <b>{tool.label}:</b> {said ?? ask}
-            {!said && symmetry && tool.id !== 'tile' && tool.id !== 'point'
-              ? ` What you draw is turned round the centre, ${symmetry} times.`
-              : ''}
-          </p>
-          {/* Always there, so the drawing never moves when it shows. */}
-          <div
-            className="ink-tools"
-            style={{ visibility: targets.length ? 'visible' : 'hidden' }}
-          >
-            {tool.more ? (
-              <button
-                type="button"
-                disabled={!complete(tool, targets.length)}
-                onClick={() => finish(targets)}
+          {inking ? (
+            <p className="instruction" aria-live="polite">
+              <b>Ink:</b> Click a bit of line to ink or erase it
+              {ink.symmetric ? ', with its turned and mirrored copies' : ''}.
+              Only what is inside the dotted tile can be inked.
+            </p>
+          ) : (
+            <>
+              <p className="instruction" aria-live="polite">
+                <b>{tool.label}:</b> {said ?? ask}
+                {!said && symmetry && tool.id !== 'tile' && tool.id !== 'point'
+                  ? ` What you draw is turned round the centre, ${symmetry} times.`
+                  : ''}
+              </p>
+              {/* Always there, so the drawing never moves when it shows. */}
+              <div
+                className="ink-tools"
+                style={{ visibility: targets.length ? 'visible' : 'hidden' }}
               >
-                Done
-              </button>
-            ) : null}
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => setTargets([])}
-            >
-              Cancel
-            </button>
-          </div>
-          <div className="along-hints">
-            <button
-              type="button"
-              className="secondary"
-              disabled={!here || here.done || hintLevel >= 3}
-              onClick={() => setHintLevel(hintLevel + 1)}
-            >
-              {hintLevel ? 'Show me more' : 'Show me a hint'}
-            </button>
-            <button
-              type="button"
-              className="secondary"
-              disabled={!here || here.done}
-              onClick={drawIt}
-            >
-              Draw it for me
-            </button>
-            <span className="along-hint-words" aria-live="polite">
-              {drawFailed ?? hint?.words ?? ''}
-            </span>
-          </div>
+                {tool.more ? (
+                  <button
+                    type="button"
+                    disabled={!complete(tool, targets.length)}
+                    onClick={() => finish(targets)}
+                  >
+                    Done
+                  </button>
+                ) : null}
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => setTargets([])}
+                >
+                  Cancel
+                </button>
+              </div>
+              <div className="along-hints">
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={!here || here.done || hintLevel >= 3}
+                  onClick={() => setHintLevel(hintLevel + 1)}
+                >
+                  {hintLevel ? 'Show me more' : 'Show me a hint'}
+                </button>
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={!here || here.done}
+                  onClick={drawIt}
+                >
+                  Draw it for me
+                </button>
+                <span className="along-hint-words" aria-live="polite">
+                  {drawFailed ?? hint?.words ?? ''}
+                </span>
+              </div>
+            </>
+          )}
         </footer>
         <footer className="caption along-step-caption">
-          <div className="along-text">
-            <h2>
-              {phone ? `Step ${number} of ${shownIds.length}: ` : ''}The step to
-              copy
-            </h2>
-            <p
-              className={here?.done ? 'along-check done' : 'along-check'}
-              role="status"
-            >
-              {!here
-                ? ''
-                : here.done
-                  ? here.needed.length
-                    ? `✓ Step ${number} is on your board.${last ? '' : ' Next moves both halves on.'}`
-                    : `✓ This step only marks points, and points come by themselves where lines cross.`
-                  : here.missing.length === here.needed.length
-                    ? 'Not on your board yet.'
-                    : `Still to draw: ${stillToDraw(here)}.`}
-            </p>
-            <p className="instruction">{info?.text}</p>
-          </div>
-          <nav className="along-nav" aria-label="Step">
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => go(index - 1)}
-              disabled={index === 0}
-            >
-              Back
-            </button>
-            <button
-              type="button"
-              className="next"
-              onClick={() => go(index + 1)}
-              disabled={last}
-            >
-              Next
-            </button>
-          </nav>
+          {inking ? (
+            <>
+              <div className="along-text">
+                <h2>Ink</h2>
+                <p
+                  className={
+                    ink.result?.matches ? 'along-check done' : 'along-check'
+                  }
+                  role="status"
+                >
+                  {keepFailed ?? inkStatus}
+                </p>
+                <p className="instruction">{tutorial.ink.text}</p>
+              </div>
+              <nav className="along-nav" aria-label="Step">
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => go(index - 1)}
+                >
+                  Back
+                </button>
+                <button
+                  type="button"
+                  className="next"
+                  disabled={!ink.result?.matches}
+                  onClick={goOn}
+                >
+                  Repeat and color it
+                </button>
+              </nav>
+            </>
+          ) : (
+            <>
+              <div className="along-text">
+                <h2>
+                  {phone ? `Step ${number} of ${shownIds.length}: ` : ''}The
+                  step to copy
+                </h2>
+                <p
+                  className={here?.done ? 'along-check done' : 'along-check'}
+                  role="status"
+                >
+                  {!here
+                    ? ''
+                    : here.done
+                      ? here.needed.length
+                        ? `✓ Step ${number} is on your board. Next moves both halves on.`
+                        : `✓ This step only marks points, and points come by themselves where lines cross.`
+                      : here.missing.length === here.needed.length
+                        ? 'Not on your board yet.'
+                        : `Still to draw: ${stillToDraw(here)}.`}
+                </p>
+                <p className="instruction">{info?.text}</p>
+              </div>
+              <nav className="along-nav" aria-label="Step">
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() => go(index - 1)}
+                  disabled={index === 0}
+                >
+                  Back
+                </button>
+                <button
+                  type="button"
+                  className="next"
+                  onClick={() => go(index + 1)}
+                >
+                  {last ? 'Ink it' : 'Next'}
+                </button>
+              </nav>
+            </>
+          )}
         </footer>
       </div>
     </div>

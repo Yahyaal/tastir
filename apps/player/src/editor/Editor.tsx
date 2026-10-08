@@ -1011,7 +1011,7 @@ const areaOf = (vs: readonly Vec[]) =>
   );
 
 /** The bit of line nearest a click, within reach. */
-function nearestPiece(
+export function nearestPiece(
   pieces: readonly InkPiece[],
   at: Vec,
   reach: number,
