@@ -3,7 +3,7 @@ import example from '@tutorials/eight-fold-star-and-cross.json';
 import { expectedGolden, goldenOf } from '@tastir/engine';
 import { parseTutorial } from '@tastir/schema';
 import App from '../app/app';
-import { libraryFile } from './AboutPanel';
+import { LIBRARY_SENDING, libraryFile } from './AboutPanel';
 import { copyUpTo } from './document';
 import { tutorialOf } from './finish';
 import { addPattern } from './patterns';
@@ -36,7 +36,7 @@ describe('send to the library', () => {
     ).toHaveLength(1);
   });
 
-  it('is offered in About the pattern once the pattern is finished', () => {
+  it('is not offered until there is somewhere to send it', () => {
     const p = addPattern({
       ...copyUpTo(star, 6),
       ink: star.ink,
@@ -47,25 +47,9 @@ describe('send to the library', () => {
     });
     render(<App />);
     fireEvent.click(screen.getByRole('button', { name: 'About the pattern' }));
-    const button = screen.getByRole('button', {
-      name: 'Make the library file',
-    });
-    expect(button).toHaveProperty('disabled', true);
-    fireEvent.change(screen.getByLabelText('Your name, as it should appear'), {
-      target: { value: 'A. Learner' },
-    });
-    const made: Blob[] = [];
-    vi.stubGlobal('URL', {
-      ...URL,
-      createObjectURL: (b: Blob) => {
-        made.push(b);
-        return 'blob:x';
-      },
-      revokeObjectURL: () => undefined,
-    });
-    fireEvent.click(button);
-    vi.unstubAllGlobals();
-    expect(made).toHaveLength(1);
-    expect(screen.getByText(/Send it to the Tastir team/)).toBeTruthy();
+    expect(LIBRARY_SENDING).toBe(false);
+    expect(
+      screen.queryByRole('button', { name: 'Make the library file' }),
+    ).toBeNull();
   });
 });

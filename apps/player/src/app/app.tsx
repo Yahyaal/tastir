@@ -85,6 +85,15 @@ const Plan = import.meta.env.DEV
   ? lazy(() => import('../review/Plan').then((m) => ({ default: m.Plan })))
   : undefined;
 
+/** The plan for drawing along (#/plan/draw-along), dev server only. */
+const DrawAlongPlan = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/DrawAlongPlan').then((m) => ({
+        default: m.DrawAlongPlan,
+      })),
+    )
+  : undefined;
+
 const NUMBER_WORDS = [
   'no',
   'one',
@@ -1442,6 +1451,15 @@ export function App({
       </Suspense>
     ) : (
       <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'plan/draw-along') {
+    return DrawAlongPlan ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <DrawAlongPlan />
+      </Suspense>
+    ) : (
+      <Broken message="The plan only exists on the dev server (pnpm dev)." />
     );
   }
   if (route === 'plan') {

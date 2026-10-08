@@ -478,3 +478,14 @@
 .plan-shelf-card figcaption span {
   color: var(--muted);
 }
+
+.plan-shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.plan-shot.narrow {
+  max-width: 520px;
+}

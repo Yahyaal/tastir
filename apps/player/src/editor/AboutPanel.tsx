@@ -295,7 +295,7 @@ export function AboutPanel({
             {file?.reason ?? 'draw the tile and ink the pattern first.'}
           </p>
         )}
-        {file && 'tutorial' in file ? (
+        {LIBRARY_SENDING && file && 'tutorial' in file ? (
           <SendToLibrary tutorial={file.tutorial} />
         ) : null}
         {patternFile ? (
@@ -352,9 +352,13 @@ export function libraryFile(
 }
 
 /**
- * Where learners send their library files. There is no server yet; the
- * owner is asked on the review page which address or channel to name.
+ * Whether learners are offered “Send it to the library”. Off until there
+ * is somewhere to send it: the owner chose (7 October) not to publish an
+ * address before there is a form or a server.
  */
+export const LIBRARY_SENDING = false;
+
+/** Where learners send their library files, once sending is on. */
 export const LIBRARY_ADDRESS = '[the address the Tastir team will give here]';
 
 function SendToLibrary({ tutorial }: { tutorial: Tutorial }) {

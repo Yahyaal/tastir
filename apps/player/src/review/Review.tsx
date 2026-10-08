@@ -76,7 +76,7 @@ function QuestionItem({
             <Figure
               key={pic.src}
               picture={pic}
-              wide={pic.src.includes('designs-')}
+              wide={/designs-|draw-along/.test(pic.src)}
             />
           ))}
         </div>
@@ -298,7 +298,8 @@ export function Review() {
         <a href="#/">← Library</a>
         <span>
           <a href="#/notes">Project notes</a> ·{' '}
-          <a href="#/plan">Plan: your own patterns</a>
+          <a href="#/plan">Plan: your own patterns</a> ·{' '}
+          <a href="#/plan/draw-along">Plan: draw along</a>
         </span>
         <button type="button" onClick={copy}>
           {copied ? 'Copied ✓' : 'Copy my answers'}

@@ -35,6 +35,31 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'draw-along-plan',
+    title: 'Plan: draw along (new)',
+    fold: 8,
+    status: 'decide',
+    summary:
+      'Your split-screen idea: the tutorial shows each step on the right and the learner draws it on the left, starting with the thirteen beginner patterns.',
+    story: [
+      'The whole plan, with mock-ups made from the real editor and player, is on its own page: open #/plan/draw-along. In short, the right half is the player and the left half is the editor; a step counts as done when the learner’s drawing has the same circles and lines in the same places, however they were drawn; three levels of hints and “Draw it for me” help a stuck learner; at the end they ink their own drawing and colour its wall.',
+      'Three things are yours to decide; the questions are at the top of this page. Once you answer, the builder and tester agents build it task by task, as before.',
+    ],
+    pictures: [
+      {
+        src: 'renders/user-patterns/draw-along/a-split-screen.png',
+        caption:
+          'A: the learner’s board (left). B: the step to copy (right). C: the hint buttons; Next opens when the board has the step.',
+      },
+      {
+        src: 'renders/user-patterns/draw-along/b-hints.png',
+        caption: 'The three hint levels on the board.',
+      },
+    ],
+    asks: [],
+    sources: [{ label: 'The draw-along plan', url: '/#/plan/draw-along' }],
+  },
+  {
     id: 'lee-rosette-block',
     title: 'The rosette building block',
     fold: 8,
@@ -65,9 +90,11 @@ export const PATTERNS: readonly Pattern[] = [
   },
   {
     id: 'send-to-library',
-    title: 'Send it to the library (new)',
+    title: 'Send it to the library',
     fold: 8,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You (7 October): hide the button until there is a form or a server, rather than publish an address. It is hidden; learners can still download their pattern file.',
     summary:
       'A learner with a finished pattern can make a library-ready file with their name in its credits, to send to us for review.',
     story: [
@@ -1294,14 +1321,42 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
-    id: 'library-address',
-    text: 'When a learner presses “Send it to the library”, where should the page tell them to send their file? Today it shows a placeholder.',
+    id: 'draw-along-next',
+    text: 'In draw along, can the learner press Next without drawing the step? I suggest no: Next opens once the step is on their board (A), and “Draw it for me” (C) is there for anyone who wants to move on.',
+    choices: ['Next only after the step is drawn', 'Next always open'],
+    pictures: [
+      {
+        src: 'renders/user-patterns/draw-along/a-split-screen.png',
+        caption:
+          'A: the learner’s board. B: the step to copy. C: the hint buttons and Next.',
+      },
+    ],
+    card: 'draw-along-plan',
+  },
+  {
+    id: 'draw-along-tools',
+    text: 'Which tools does the board show (the row above A)? I suggest all of them, as in the editor, with the right tool ringed only as a hint; fewer tools would be simpler but would give the answer away.',
     choices: [
-      'My email address (I type it below)',
-      'Hide the button until we have a form',
+      'All tools, the right one as a hint',
+      'Only the tools the step needs',
+    ],
+    pictures: [
+      {
+        src: 'renders/user-patterns/draw-along/a-split-screen.png',
+        caption: 'The tool row sits above the board (A).',
+      },
+    ],
+    card: 'draw-along-plan',
+  },
+  {
+    id: 'draw-along-entry',
+    text: 'Where do learners find draw along? I suggest a third button, “Draw along”, on each beginner card on the home page, beside “Watch it drawn” and “Result and original”, and one in the player.',
+    choices: [
+      'A third button on beginner cards and in the player',
+      'Replace “Watch it drawn” on beginner cards',
     ],
     pictures: [],
-    card: 'send-to-library',
+    card: 'draw-along-plan',
   },
 ];
 
@@ -1521,7 +1576,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'Your own patterns are ready for your look',
-    text: 'All five phases are built and tested by the tester. Start on the home page: try “New pattern”, or open a tutorial, go to a step and press “Make my own copy from here”. One question is waiting below: where learners should send their patterns. The rosette block is removed, as you asked.',
+    text: 'All five phases are built and tested by the tester. Start on the home page: try “New pattern”, or open a tutorial, go to a step and press “Make my own copy from here”. The rosette block is removed and “Send it to the library” is hidden until there is a form, as you decided. The plan for draw along is ready, with three questions at the top of this page.',
     link: { label: 'Start here', href: '/#/' },
   },
 
