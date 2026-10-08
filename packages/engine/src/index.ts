@@ -53,3 +53,16 @@ export {
   strokesOf,
   type InkPiece,
 } from './lib/freeInk.js';
+export {
+  ALONG_EPS,
+  checkStep,
+  drawnOn,
+  extrasOn,
+  figureOn,
+  figuresOf,
+  neededAt,
+  sameLine,
+  type Figures,
+  type Needed,
+  type StepCheck,
+} from './lib/along.js';
