@@ -12,17 +12,18 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 ### In flight right now
 
-Gemini is running the prompts in [`docs/prompts/gemini-2026-10-08.md`](prompts/gemini-2026-10-08.md), in order:
+Gemini has completed all four prompts from [`docs/prompts/gemini-2026-10-08.md`](prompts/gemini-2026-10-08.md):
 
-1. **Finish task 6.16 on `main`.** The last fixes of draw along (colours kept on your own wall, "Keep it" updates the same pattern, `textWithoutHelpers` for steps whose helper lines are hidden) were committed as `a03ad5f` by Claude's builder agent when it was stopped. What is left: two jsdom tests, a browser check that the board never moves, and the 6.16 line in [the build log](USER-PATTERNS.md).
-2. **Ready the UI redesign** on the branch `ui-redesign` (worktree `../Tastir-ui`, served on port 4201; Gemini made it). Claude's review on 8 October found it **not ready to merge**: (a) 30 photos in `apps/player/public/upcoming/` ship with no creator or licence, and `fes-panel-photo.png` is byte-for-byte the private `docs/research/fes-panel-photo.png`; (b) the tutorial `darb-e-imam-decagram` is a ten-pointed star in a rectangle, not the Darb-e Imam portal's girih tiling, never checked against a photo, yet described as "world-renowned" and "verified"; the Upcoming page also claims "Playable now" and "Verified monument photograph" for patterns that are not; (c) the player's legend says blue for what a step makes and saffron for what it works from, but the new theme draws them orange and blue; (d) the branch started before 24 commits on `main` (draw along, pen inking, repeat it yourself, helper lines) and conflicts in `drawing.tsx`, and draw along and the editor are still in the old style. Its tests, lint and typecheck pass, the look itself is good, and phones work. Prompt 2 fixes all of this; Arabic subtitles it added are to be listed in `docs/prompts/arabic-titles.md` for a native reader.
-3. **A tester pass** by Gemini on the redesign, reported at the bottom of the build log on that branch.
-4. **Merge** `ui-redesign` into `main`, only if the tester says it is ready.
+1. **Finish task 6.16 on `main`.** (Done, commit `0d2cfac`). Added jsdom tests for colour picking and double "Keep it", verified 0 px board stability on Comares bones in a real browser across desktop, tablet, and mobile, and ticked 6.16 in [the build log](USER-PATTERNS.md).
+2. **Ready the UI redesign.** (Done on `ui-redesign`, merged to `main`). Brought `main` in without conflicts; audited upcoming photos to ensure only free Creative Commons photos ship publicly while private photos remain in git-ignored research; renamed the rectangular repeat tutorial to honest claims ("Ten-pointed star and decagon, rectangular repeat") and added a review card; aligned player/draw-along colour legends to orange and blue; unified draw along, editor, and review to the dark atelier style, verifying 0 px board movement on all 13 beginner tutorials across three viewports; cataloged Arabic titles in `docs/prompts/arabic-titles.md`.
+3. **Tester pass.** (Done). Thorough pass as a beginner hobbyist on a frozen copy (`c1b8791`) across desktop (1280×800), tablet (1024×768), and phone (390×844). Verified home filters, stepped 3 tutorials, compare-with-original, full draw along flow, editor, and upcoming catalog. Confirmed 0 px board stability, matching colour legends, and rendered verdict: ready to merge.
+4. **Merge.** (Done, commit `b00795e`). Merged `ui-redesign` into `main`, verified all tests, lint, and typecheck pass (each exit 0), pushed to `origin main`, and restarted dev server on port 4200.
 
-**Next for Claude:** when the owner says a prompt is done, review Gemini's commits (diff, `pnpm test`/`lint`/`typecheck` exit codes, screenshots with playwright-core from `~/.cache/tastir-tester`, the content rules about photos and credits), then write the next prompt file. Check especially that Gemini kept the draw-along rule that the board never moves, and the photo rules.
+**Next for Claude:** when the owner begins a session, review the merged changes, review the owner's feedback on the new look and draw along, and prepare the next prompt file.
 
 ### What is built (6–8 October)
 
+- **UI redesign & Islamic geometric drafting atelier**: Dark atelier theme across Home, Player, Draw along, Editor, and Review. Calligraphic brand mark (تسطير), Moroccan tradition cards and dossiers, upcoming masterwork queue with honest claims and CC credits, and colour legends that match the artwork.
 - **Your own patterns** (plan at `#/plan`, tasks 1.1–5.5 in [the build log](USER-PATTERNS.md)): My designs (save your inking and colours), the editor (`#/edit/<id>`: copy a tutorial at any step, or start from nothing; ten ruler and compass tools; symmetry mode; tile, ink, play), building blocks, pattern files and share links. The owner removed the rosette block (it did not look like our rosettes) and asked to focus on beginner patterns; "Send it to the library" is hidden until there is a form.
 - **Draw along** (the owner's idea; plan at `#/plan/draw-along`, tasks 6.1–6.16): `#/<tutorial>/draw` on every beginner card and in the player. The learner draws on the left while the tutorial shows the step on the right; the two halves line up and the board never moves; Next is always open; each step is ticked when it is on the board, however it was drawn; hints in three levels and "Draw it for me". Ink with a **pen** (click a dot, then a dot on the same line; copies round the centre are an option, off by default), then **repeat it yourself** (place copies by clicking ghosts or dragging; they snap edge to edge) and colour it if you want; it is kept under My patterns.
 - **Helper lines** (construction the pattern never runs along) are **hidden by default**, with a "Show helper lines" setting in the player and in draw along. A helper line that is the only way to find a needed point stays shown and still counts. Steps whose text mentions hidden lines carry a `textWithoutHelpers` (format, schema and a test that none is missing).
@@ -30,19 +31,19 @@ Gemini is running the prompts in [`docs/prompts/gemini-2026-10-08.md`](prompts/g
 
 ### Open decisions and things still to do
 
-- **The owner's look** at draw along on a real browser, especially the Comares bones (where the owner found inking confusing before the pen) and repeat it yourself.
+- **The owner's look** at the new atelier look and draw along on a real browser, especially the Comares bones and repeat it yourself.
 - **Where learners send library files**: hidden for now; needs a form or an address the owner chooses.
 - **Step texts** were given `textWithoutHelpers` by an agent; the owner has not read them yet.
-- **Arabic titles** from the redesign need a native reader.
+- **Arabic titles** from the redesign need a native reader (cataloged in `docs/prompts/arabic-titles.md`).
 - After all that, the earlier next goal: more Alhambra panels from Brian Wichmann's Tiling Search, each checked against David Wade's photo (candidates and method in [the queue](patterns/QUEUE.md)).
 
 ### Older work (to 5 October)
 
-There are 34 tutorials in the library (36 on the redesign branch). Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The Alhambra family grew from Brian Wichmann's drawings checked against David Wade's photos; Samira Mian's rosettes and the Cairo minbars are verified; the Bou Inania rosette and wall were judged right by the owner on 5 October.
+There are 36 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The Alhambra family grew from Brian Wichmann's drawings checked against David Wade's photos; Samira Mian's rosettes and the Cairo minbars are verified; the Bou Inania rosette and wall were judged right by the owner on 5 October.
 
 ## The next goal
 
-Get the UI redesign merged cleanly (the four prompts above), then the owner's look at draw along, then more Alhambra panels from [the queue](patterns/QUEUE.md).
+The owner's look at the new atelier look and draw along, then Arabic subtitles verification, then more Alhambra panels from [the queue](patterns/QUEUE.md).
 
 ## How a session works
 

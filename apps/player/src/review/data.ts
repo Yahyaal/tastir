@@ -1378,9 +1378,14 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '7 October 2026',
+  updated: '8 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'UI redesign merged: Islamic geometric atelier',
+      text: 'The new look is merged across the entire app. The home page introduces the drafting atelier with the calligraphic Arabic brand mark (تسطير), curated Moroccan dossiers, and a transparent Upcoming Masterwork Queue with CC credits. Draw along, editor, and review were restyled to the unified dark atelier theme, the step colour legend matches the orange and blue drawn elements, and board stability across stages was measured at 0 px movement across desktop, tablet, and mobile.',
+      link: { label: 'Explore the atelier', href: '/#/' },
+    },
     {
       title: 'Draw along',
       text: 'Every beginner card and the player have a “Draw along” button. You draw the pattern yourself on the left, with the editor’s tools, while the right shows the step as the player draws it; both drawings are the same size and move together. A step is ticked when it is on your board, whichever way you drew it, and Next is always open. “Show me a hint” shows a little more each time, and “Draw it for me” draws the step. After the last step you ink your board; when its pieces match the pattern’s, it becomes one of your patterns and goes on to the wall to colour. Leaving and coming back finds your board as you left it. A test draws all thirteen beginner patterns this way and gets their pieces.',
@@ -1578,9 +1583,9 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Draw along is ready for your look',
-    text: 'Built and checked by the tester agent, who drew beginner patterns by hand on a desktop and a phone, from the home page’s Draw along button to a coloured wall. Every step is ticked as you draw it, Next is always open, the two halves line up and never move, hints help at every step and at the ink, and what you draw is kept under My patterns.',
-    link: { label: 'Try it', href: '/#/eight-fold-star-and-cross/draw' },
+    title: 'The owner’s look at the new look and Draw along',
+    text: 'The UI redesign is merged into main and running on the dev server. Draw along, the editor, and the new atelier look are ready for your review. Take a look at the home page, the Moroccan dossier, and try drawing the Comares bones and Eight-fold star and cross.',
+    link: { label: 'Home page', href: '/#/' },
   },
   next: [
     {
