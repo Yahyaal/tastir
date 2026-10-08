@@ -1347,6 +1347,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Draw along',
+      text: 'Every beginner card and the player have a “Draw along” button. You draw the pattern yourself on the left, with the editor’s tools, while the right shows the step as the player draws it; both drawings are the same size and move together. A step is ticked when it is on your board, whichever way you drew it, and Next is always open. “Show me a hint” shows a little more each time, and “Draw it for me” draws the step. After the last step you ink your board; when its pieces match the pattern’s, it becomes one of your patterns and goes on to the wall to colour. Leaving and coming back finds your board as you left it. A test draws all thirteen beginner patterns this way and gets their pieces.',
+      link: { label: 'Try it', href: '/#/eight-fold-star-and-cross/draw' },
+    },
+    {
       title: 'Your own patterns, phase 5: share',
       text: 'A pattern can be kept as a file and opened again from the home page in any browser, and “Copy a share link” at the colour stage puts the pattern with its colours in one address: whoever opens it sees the same wall and can keep a copy. A finished pattern can be sent to us: the learner’s name goes into its credits and the file is ready for the library.',
       link: { label: 'Try it', href: '/#/eight-fold-star-and-cross/result' },
@@ -1538,8 +1543,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Building draw along',
-    text: 'Your answers are in the plan. The builder and tester agents are building draw along task by task (6.1–6.6 in the build log), beginner patterns first.',
+    title: 'Draw along: the last check',
+    text: 'Draw along is built (6.1–6.7 in the build log). The tester agent is drawing three beginner patterns by hand, as a learner, and I fix what it finds.',
     link: { label: 'The plan', href: '#/plan/draw-along' },
   },
   next: [

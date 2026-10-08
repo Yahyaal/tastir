@@ -1,10 +1,26 @@
-import { checkStep, evaluate } from '@tastir/engine';
+import {
+  cellOf,
+  checkStep,
+  classicSelection,
+  computePattern,
+  evaluate,
+  expectedGolden,
+  inkPieces,
+  strokesOf,
+} from '@tastir/engine';
 import { parseTutorial, type Tutorial } from '@tastir/schema';
 import { emptyDraft, type Draft } from '../editor/document';
 import { LIBRARY } from '../app/library';
 import { shownBeats } from '../app/model';
-import { drawForMe } from './drawForMe';
+import { loadModel } from '../app/model';
+import { check } from '../editor/document';
+import { tutorialOf } from '../editor/finish';
+import { drawForMe, withTutorialInk } from './drawForMe';
+import { readyToInk, samePieces } from './inking';
 
+const beginnerJson = LIBRARY.map((e) => e.json).filter(
+  (j) => (j as { level?: string }).level === 'beginner',
+);
 const beginners = LIBRARY.map((e) => e.json)
   .filter((j) => (j as { level?: string }).level === 'beginner')
   .map((j) => parseTutorial(j));
@@ -16,17 +32,63 @@ export function drawnForMe(t: Tutorial): Draft {
   for (const beat of shownBeats(t)) {
     draft = drawForMe(t, scene, draft, beat, 'Drawn for me.') ?? draft;
     const board = evaluate({ steps: draft.steps } as Tutorial);
-    expect(checkStep(scene, board, beat).done, `${t.id} beat ${beat}`).toBe(
-      true,
-    );
+    const shapes = new Set([t.pattern.cell]);
+    expect(
+      checkStep(scene, board, beat, undefined, shapes).done,
+      `${t.id} beat ${beat}`,
+    ).toBe(true);
   }
   return draft;
 }
 
-describe('Draw it for me', () => {
-  it.each(beginners.map((t) => [t.id, t] as const))('%s', (_, t) => {
-    drawnForMe(t);
+describe('Draw it for me through every beginner tutorial', () => {
+  it('finds all thirteen', () => {
+    expect(beginners).toHaveLength(13);
   });
+
+  // Every step drawn for the learner, then the board inked as the tutorial
+  // inks it: the pieces are the tutorial's expected pieces, both as the
+  // draw-along page checks them (free ink on the board) and in the
+  // pattern it keeps (the tutorial's ink taken onto the board).
+  it.each(beginnerJson.map((j) => [(j as { id: string }).id, j] as const))(
+    '%s',
+    (_, json) => {
+      const t = parseTutorial(json);
+      const scene = evaluate(t);
+      const board = readyToInk(t, scene, drawnForMe(t));
+
+      const bs = check(board).scene;
+      const cell = cellOf(bs, board.pattern?.cell ?? '');
+      const pieces = inkPieces(bs, cell);
+      const inked = classicSelection(
+        pieces,
+        loadModel(json).pattern.ink,
+        1e-7,
+        cell,
+      );
+      const pattern = computePattern(
+        bs,
+        board as Tutorial,
+        strokesOf(pieces, inked),
+      );
+      const free = pattern.types.map((p) => ({
+        name: p.name ?? '',
+        vertices: p.vertices,
+        area: Number(p.area.toFixed(5)),
+        perCell: p.perCell,
+      }));
+      expect(
+        samePieces({ expect: { pieceTypes: free.length, pieces: free } }, t),
+      ).toBe(true);
+
+      const kept = tutorialOf(withTutorialInk(t, scene, board));
+      if (!('tutorial' in kept)) throw new Error(kept.reason);
+      const golden = expectedGolden(t);
+      const got = expectedGolden(kept.tutorial);
+      expect(got.pieceTypes).toBe(golden.pieceTypes);
+      expect(got.pieces).toEqual(golden.pieces);
+    },
+  );
 
   it('draws a step on a board drawn another way', () => {
     const t = beginners.find(
