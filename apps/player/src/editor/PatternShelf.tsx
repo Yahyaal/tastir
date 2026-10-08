@@ -165,7 +165,9 @@ function PatternCard({
         )}
         <h3 title={tutorial.title}>{tutorial.title}</h3>
         <p className="meta">
-          <span>{tutorial.steps.length} steps</span>
+          {/* As the player counts them: steps that only name points for
+              the ink are hidden there. */}
+          <span>{tutorial.steps.filter((s) => !s.hidden).length} steps</span>
           <span>{day(pattern.updated)}</span>
           {pattern.basedOn ? <span>from {pattern.basedOn.title}</span> : null}
         </p>

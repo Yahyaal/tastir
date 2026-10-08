@@ -14,6 +14,11 @@ export function namesIn(text: string, scene: Scene): Set<string> {
   return out;
 }
 
+/** A name a person would write on a drawing: E, NE, K2. Highlighted
+ * names like g5_330 or P120 are the engine's, shown only if a text uses
+ * them. */
+const LABEL = /^[A-Z]{1,2}\d?$/;
+
 /**
  * The tutorial's point names a learner reads: those its texts use and its
  * steps highlight (E, N, the corner K). The others (g6_90, J120) are names for the engine only
@@ -36,7 +41,7 @@ export function readableNames(tutorial: Tutorial, scene: Scene): Set<string> {
       ...(s.highlight ?? []),
       ...(s.parts ?? []).flatMap((p) => p.highlight ?? []),
     ])
-      if (!/[.@]/.test(h) && scene.elements.get(h)?.geometry.kind === 'point')
+      if (LABEL.test(h) && scene.elements.get(h)?.geometry.kind === 'point')
         out.add(h);
   return out;
 }

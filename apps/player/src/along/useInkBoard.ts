@@ -1,5 +1,7 @@
 import {
   cellOf,
+  type Pattern,
+  type Vec,
   classicSelection,
   computePattern,
   inkPieces,
@@ -16,6 +18,7 @@ import { imagesOf, runOf, tutorialOf, type Inkable } from '../editor/finish';
 import { addPattern, freeTitle, type UserPattern } from '../editor/patterns';
 import { strokesOf } from '@tastir/engine';
 import type { InkAlong } from '@tastir/schema';
+import { withoutDuplicates } from './dedupe';
 import { withTutorialInk } from './drawForMe';
 import { readyToInk, samePieces } from './inking';
 
@@ -27,6 +30,12 @@ interface Ready {
   readonly pieces: readonly InkPiece[];
   /** For runs along one line: each bit's line, as a key. */
   readonly inkable: Inkable;
+  /** The bits the tutorial's ink keeps. */
+  readonly classic: ReadonlySet<string>;
+  /** The pattern they make, with its pieces. */
+  readonly pattern: Pattern;
+  /** Whether the pattern is its own mirror image. */
+  readonly mirror: boolean;
 }
 
 const r6 = (n: number) => (Math.abs(n) < 5e-7 ? 0 : n).toFixed(6);
@@ -79,12 +88,35 @@ export function useInkBoard(
       const paths = new Map(
         pieces.map((p) => [p.id, { along: lineKey(p) } as InkAlong]),
       );
+      const inkable = { cell, pieces, paths };
+      // The bits the tutorial's own ink keeps, and the pieces they close.
+      const classic = classicSelection(
+        pieces,
+        asPanel(model).pattern.ink,
+        1e-7,
+        cell,
+      );
+      const pattern = computePattern(
+        scene,
+        d as Tutorial,
+        strokesOf(pieces, classic),
+      );
+      // Symmetric inking follows the pattern's own symmetry: its turns,
+      // and its mirror images only when it has them (a pinwheel has not).
+      const mirror =
+        !tutorial.chiral &&
+        [...classic].every((id) =>
+          imagesOf(inkable, id, 1, true).every((i) => classic.has(i)),
+        );
       return {
         draft: d,
         scene,
         cell,
         pieces,
-        inkable: { cell, pieces, paths },
+        inkable,
+        classic,
+        pattern,
+        mirror,
       };
     } catch (e) {
       return { reason: e instanceof Error ? e.message : String(e) };
@@ -118,6 +150,69 @@ export function useInkBoard(
     }
   }, [ready, chosen, tutorial]);
 
+  // Hints at the ink: what is still missing, one piece kind at a time.
+  const [hintLevel, setHintLevel] = useState(0);
+  const hint = useMemo(() => {
+    if (!ready || 'reason' in ready || !hintLevel) return undefined;
+    const missing = [...ready.classic].filter((id) => !chosen.has(id));
+    const extra = [...chosen].filter((id) => !ready.classic.has(id));
+    // The first kind of piece the learner's ink does not close yet.
+    const have = new Set(
+      (result?.types ?? []).map((t) => `${t.vertices},${t.area.toFixed(4)}`),
+    );
+    const kind = ready.pattern.types.findIndex(
+      (t) => !have.has(`${t.vertices},${t.area.toFixed(4)}`),
+    );
+    const around = (id: string) => {
+      const piece = ready.pieces.find((q) => q.id === id);
+      if (!piece || kind < 0) return false;
+      const { u, v } = ready.cell;
+      return ready.pattern.pieces
+        .filter((q) => q.type === kind)
+        .some((q) =>
+          [-1, 0, 1].some((i) =>
+            [-1, 0, 1].some((j) => {
+              const d = { x: u.x * i + v.x * j, y: u.y * i + v.y * j };
+              const poly = q.polygon.map((c) => ({
+                x: c.x + d.x,
+                y: c.y + d.y,
+              }));
+              return (
+                onOutline(piece.segment.a, poly) &&
+                onOutline(piece.segment.b, poly)
+              );
+            }),
+          ),
+        );
+    };
+    const forKind = missing.filter(around);
+    const focus = forKind.length ? forKind : missing;
+    const first = ready.pieces.find((q) => q.id === focus[0]);
+    const kindName = kind >= 0 ? ready.pattern.types[kind]?.name : undefined;
+    return {
+      glow: new Set(focus),
+      ring:
+        hintLevel >= 2 && first
+          ? [
+              {
+                x: (first.segment.a.x + first.segment.b.x) / 2,
+                y: (first.segment.a.y + first.segment.b.y) / 2,
+              },
+            ]
+          : [],
+      dashed: new Set(hintLevel >= 3 ? missing : []),
+      words: !missing.length
+        ? extra.length
+          ? `Everything the pattern keeps is inked; ${extra.length} ${extra.length === 1 ? 'bit is' : 'bits are'} extra. Click ${extra.length === 1 ? 'it' : 'them'} to erase.`
+          : 'Everything the pattern keeps is inked.'
+        : hintLevel === 1
+          ? `The bits that glow are still to ink${kindName ? `, round the ${kindName}` : ''}.`
+          : hintLevel === 2
+            ? `Click the ringed bit${kindName ? ` of the ${kindName}` : ''}.`
+            : `All ${missing.length} bits still to ink are dashed.`,
+    };
+  }, [ready, hintLevel, chosen, result]);
+
   const toggle = (id: string) => {
     if (!ready || 'reason' in ready) return;
     const { inkable } = ready;
@@ -130,9 +225,7 @@ export function useInkBoard(
         )
       : [id];
     const ids = symmetric
-      ? run.flatMap((r) =>
-          imagesOf(inkable, r, tutorial.fold, !tutorial.chiral),
-        )
+      ? run.flatMap((r) => imagesOf(inkable, r, tutorial.fold, ready.mirror))
       : run;
     const next = new Set(chosen);
     const on = !chosen.has(id);
@@ -141,6 +234,7 @@ export function useInkBoard(
       else next.delete(i);
     }
     setChosen(next);
+    setHintLevel(0);
   };
 
   /** “Ink it for me”: the bits the tutorial's own ink runs along. */
@@ -165,7 +259,11 @@ export function useInkBoard(
   const keep = (): { pattern: UserPattern } | { reason: string } => {
     if (!ready || 'reason' in ready) return { reason: 'There is no tile.' };
     try {
-      const inked = withTutorialInk(tutorial, model.scene, ready.draft);
+      // Each figure once, however many times the learner drew it.
+      const once = withoutDuplicates(draft);
+      const clean = [...check(once).status.values()].every((st) => st.ok);
+      const board = readyToInk(tutorial, model.scene, clean ? once : draft);
+      const inked = withTutorialInk(tutorial, model.scene, board);
       const made = tutorialOf(inked);
       if (!('tutorial' in made)) return { reason: made.reason };
       if (!samePieces(made.tutorial, tutorial))
@@ -203,6 +301,20 @@ export function useInkBoard(
   return {
     ready,
     result,
+    hint,
+    hintLevel,
+    setHintLevel,
+    /** The kinds of piece the ink does not close yet, by name. */
+    missingKinds: (() => {
+      if (!ready || 'reason' in ready || !result) return [];
+      const have = new Set(
+        result.types.map((t) => `${t.vertices},${t.area.toFixed(4)}`),
+      );
+      return ready.pattern.types
+        .filter((t) => !have.has(`${t.vertices},${t.area.toFixed(4)}`))
+        .map((t) => t.name ?? `${t.vertices}-cornered piece`);
+    })(),
+    mirror: ready && !('reason' in ready) ? ready.mirror : true,
     toggle,
     inkForMe,
     keep,
@@ -211,4 +323,16 @@ export function useInkBoard(
     wholeRuns,
     setWholeRuns,
   };
+}
+
+/** Whether a point lies on a polygon's outline. */
+function onOutline(p: Vec, poly: readonly Vec[]): boolean {
+  return poly.some((a, i) => {
+    const b = poly[(i + 1) % poly.length] as Vec;
+    const d = { x: b.x - a.x, y: b.y - a.y };
+    const len2 = d.x * d.x + d.y * d.y;
+    const t = ((p.x - a.x) * d.x + (p.y - a.y) * d.y) / len2;
+    if (t < -1e-6 || t > 1 + 1e-6) return false;
+    return Math.hypot(p.x - (a.x + d.x * t), p.y - (a.y + d.y * t)) < 1e-6;
+  });
 }

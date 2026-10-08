@@ -7,8 +7,15 @@ import {
   type StepCheck,
   type Vec,
 } from '@tastir/engine';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { fullView, growingFrame } from '../app/camera';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { fullView, growingFrame, type Rect } from '../app/camera';
 import { Construction } from '../app/drawing';
 import {
   asPanel,
@@ -112,7 +119,7 @@ const TILE_ASK =
   'Click the corners of the tile the step names, in turn, then the first again.';
 
 const INK_SYMMETRIC =
-  'Ink or erase a bit of line together with its turned and mirrored copies, so the pattern stays even.';
+  'Ink or erase a bit of line together with its copies, turned round the centre (and mirrored when the pattern is), so the pattern stays even.';
 const INK_RUNS =
   'Ink a whole stretch of line between two points with one click, not each little piece.';
 const INK_FOR_ME =
@@ -409,7 +416,7 @@ export function DrawAlong({
   /** A board point's name as the tutorial shows it, never an engine name. */
   const labelOf = (p: PointPlace) =>
     readAt.get(placeKey(p.at)) ??
-    (model.scene.elements.has(p.name) && !readable.has(p.name) ? '' : p.name);
+    (model.scene.elements.has(p.name) || /^P\d+$/.test(p.name) ? '' : p.name);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -441,6 +448,48 @@ export function DrawAlong({
   const stepRef = useRef<SVGSVGElement>(null);
   const refs = useMemo(() => [boardRef, stepRef], []);
   const camera = useCamera(frame, refs, { stage: index });
+  // At the ink the text row keeps the last step's height, so the board
+  // stays where the learner drew it.
+  const textRow = useRef<HTMLElement>(null);
+  const textHeight = useRef(0);
+  const toolRow = useRef<HTMLDivElement>(null);
+  const toolHeight = useRef(0);
+  useLayoutEffect(() => {
+    if (inking) return;
+    if (textRow.current)
+      textHeight.current = textRow.current.getBoundingClientRect().height;
+    if (toolRow.current)
+      toolHeight.current = toolRow.current.getBoundingClientRect().height;
+  });
+  // The zoom is remembered for this board and step, so a reload keeps it.
+  const viewKey = `tastir.along.view.${address}`;
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(viewKey);
+      const kept = raw
+        ? (JSON.parse(raw) as { index: number; view: Rect })
+        : undefined;
+      if (kept && kept.index === index && Number.isFinite(kept.view?.minX))
+        camera.goTo(kept.view);
+    } catch {
+      // Fit, as on a first visit.
+    }
+    // Only on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    const t = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(
+          viewKey,
+          JSON.stringify({ index, view: camera.view }),
+        );
+      } catch {
+        // Not remembered; nothing else is lost.
+      }
+    }, 400);
+    return () => window.clearTimeout(t);
+  }, [viewKey, index, camera.view]);
 
   const phone = usePhone();
   const [showStep, setShowStep] = useState(false);
@@ -477,14 +526,29 @@ export function DrawAlong({
         : ink.result?.matches
           ? `✓ Your ink closes the pattern’s pieces: ${kindsWord(ink.result.types.length)}, as in the tutorial.`
           : ink.result?.types.length
-            ? `Your ink closes ${kindsWord(ink.result.types.length)}; the pattern has ${kindsWord(tutorial.expect.pieces.length)}.`
+            ? `Your ink closes ${kindsWord(ink.result.types.length)}; the pattern has ${kindsWord(tutorial.expect.pieces.length)}.${
+                ink.missingKinds.length &&
+                ink.missingKinds.length < tutorial.expect.pieces.length
+                  ? ` Still missing: the ${ink.missingKinds.join(' and the ')}. Show me a hint marks where.`
+                  : ''
+              }`
             : 'Your ink closes no pieces yet.';
 
   const boardHalf = (
     <main className="stage along-plate" hidden={phone && showStep}>
       <EditorDrawing
         scene={ready?.scene ?? board}
-        ink={ready ? { pieces: ready.pieces, chosen } : undefined}
+        ink={
+          ready
+            ? {
+                pieces: ready.pieces,
+                chosen,
+                ...(ink.hint
+                  ? { glow: ink.hint.glow, dashed: ink.hint.dashed }
+                  : {}),
+              }
+            : undefined
+        }
         tile={ready?.cell.corners}
         targets={targets}
         hover={hover}
@@ -493,7 +557,7 @@ export function DrawAlong({
         current={currentOnBoard}
         labelOf={labelOf}
         glow={hint?.glow}
-        rings={hint?.rings}
+        rings={inking ? ink.hint?.ring : hint?.rings}
         dashed={hint?.dashed}
         camera={camera}
         svgRef={boardRef}
@@ -669,7 +733,16 @@ export function DrawAlong({
         ) : null}
       </nav>
       <div className="along-grid">
-        <section className="along-text-row" aria-label="The step to copy">
+        <section
+          className="along-text-row"
+          aria-label="The step to copy"
+          ref={textRow}
+          style={
+            inking && textHeight.current && !phone
+              ? { minHeight: textHeight.current }
+              : undefined
+          }
+        >
           <div className="along-text">
             <h2>
               {inking
@@ -719,7 +792,16 @@ export function DrawAlong({
             )}
           </nav>
         </section>
-        <div className="along-tools" hidden={phone && showStep}>
+        <div
+          className="along-tools"
+          hidden={phone && showStep}
+          ref={toolRow}
+          style={
+            inking && toolHeight.current && !phone
+              ? { minHeight: toolHeight.current }
+              : undefined
+          }
+        >
           {inking ? (
             <div className="editor-tools" role="toolbar" aria-label="Ink">
               <label className="tool" title={INK_SYMMETRIC}>
@@ -774,26 +856,44 @@ export function DrawAlong({
             />
           )}
         </div>
-        <div className="along-hints" hidden={inking}>
-          <button
-            type="button"
-            className="secondary"
-            disabled={!here || here.done || hintLevel >= 3}
-            onClick={() => setHintLevel(hintLevel + 1)}
-          >
-            {hintLevel ? 'Show me more' : 'Show me a hint'}
-          </button>
-          <button
-            type="button"
-            className="secondary"
-            disabled={!here || here.done}
-            onClick={drawIt}
-          >
-            Draw it for me
-          </button>
-          <span className="along-hint-words" aria-live="polite">
-            {drawFailed ?? hint?.words ?? ''}
-          </span>
+        {/* Always there, at ink too, so the drawings keep their place. */}
+        <div className="along-hints">
+          {inking ? (
+            <>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => ink.setHintLevel(Math.min(3, ink.hintLevel + 1))}
+              >
+                {ink.hintLevel ? 'Show me more' : 'Show me a hint'}
+              </button>
+              <span className="along-hint-words" aria-live="polite">
+                {ink.hint?.words ?? ''}
+              </span>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="secondary"
+                disabled={!here || here.done || hintLevel >= 3}
+                onClick={() => setHintLevel(hintLevel + 1)}
+              >
+                {hintLevel ? 'Show me more' : 'Show me a hint'}
+              </button>
+              <button
+                type="button"
+                className="secondary"
+                disabled={!here || here.done}
+                onClick={drawIt}
+              >
+                Draw it for me
+              </button>
+              <span className="along-hint-words" aria-live="polite">
+                {drawFailed ?? hint?.words ?? ''}
+              </span>
+            </>
+          )}
         </div>
         {boardHalf}
         {stepHalf}
@@ -804,9 +904,12 @@ export function DrawAlong({
           <h2>Your drawing</h2>
           {inking ? (
             <p className="instruction" aria-live="polite">
-              <b>Ink:</b> Click a bit of line to ink or erase it
-              {ink.symmetric ? ', with its turned and mirrored copies' : ''}.
-              Only what is inside the dotted tile can be inked.
+              <b>Ink:</b>{' '}
+              {ink.symmetric
+                ? ink.mirror
+                  ? 'Click a bit of line in the dotted tile to ink or erase it, with its turned and mirrored copies.'
+                  : 'Click a bit of line in the dotted tile to ink or erase it, with its turned copies only: this pattern turns, but is not its own mirror image.'
+                : 'Click a bit of line in the dotted tile to ink or erase it.'}
             </p>
           ) : (
             <>

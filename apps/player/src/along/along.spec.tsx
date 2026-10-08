@@ -8,6 +8,7 @@ import {
 } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import dado from '@tutorials/alhambra-comares-dado.json';
+import infantas from '@tutorials/alhambra-infantas-crosses.json';
 import App from '../app/app';
 import { listPatterns } from '../editor/patterns';
 import { TOOLS } from '../editor/tools';
@@ -308,5 +309,105 @@ describe('drawing along', () => {
     expect(
       screen.getByRole('link', { name: 'Draw along' }).getAttribute('href'),
     ).toBe('#/eight-fold-star-and-cross/draw');
+  });
+
+  it('keeps the same layout at the ink, with hints there too', () => {
+    openAlong();
+    const cells = () =>
+      [...(document.querySelector('.along-grid')?.children ?? [])].map(
+        (c) =>
+          c.className.split(' ').find((n) => n.startsWith('along-')) ??
+          c.className,
+      );
+    const atStep = cells();
+    for (let i = 0; i < 6; i++) {
+      click('Draw it for me');
+      click(i < 5 ? 'Next' : 'Ink it');
+    }
+    expect(cells()).toEqual(atStep);
+    expect(
+      screen.getByText(/with its turned and mirrored copies/),
+    ).toBeTruthy();
+    const board = () =>
+      screen.getByRole('img', { name: 'The construction so far' });
+    click('Show me a hint');
+    expect(board().querySelectorAll('.ink-piece.glow').length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.getByText(/still to ink, round the star/)).toBeTruthy();
+    click('Show me more');
+    expect(board().querySelectorAll('.hint-ring')).toHaveLength(1);
+    click('Show me more');
+    expect(board().querySelectorAll('.ink-piece.answer')).toHaveLength(16);
+  });
+
+  it('inks a pinwheel with turned copies only', () => {
+    act(() => {
+      window.location.hash = '#/alhambra-infantas-crosses/draw';
+    });
+    render(
+      <App entries={[{ id: 'alhambra-infantas-crosses', json: infantas }]} />,
+    );
+    for (let i = 0; i < 6; i++) {
+      click('Draw it for me');
+      click(i < 5 ? 'Next' : 'Ink it');
+    }
+    expect(
+      screen.getByText(
+        /turned copies only: this pattern turns, but is not its own mirror image/,
+      ),
+    ).toBeTruthy();
+    click('Ink it for me');
+    expect(status()).toMatch(/Your ink closes the pattern’s pieces/);
+  });
+
+  it('shows no name for a crossing the tutorial does not name', () => {
+    openAlong();
+    tool('Compass');
+    clickAt(0, 0);
+    clickAt(1, 0);
+    clickAt(1, 0);
+    clickAt(0, 0);
+    // A line through O and a crossing of the two circles, which the
+    // board names P1 for itself.
+    tool('Ruler');
+    clickAt(0, 0);
+    clickAt(0.5, Math.sqrt(3) / 2);
+    const board = screen.getByRole('img', { name: 'The construction so far' });
+    const names = [...board.querySelectorAll('text')].map((t) => t.textContent);
+    expect(names).not.toContain('P1');
+    expect(names).toContain('O');
+  });
+
+  it('keeps each figure once when the learner drew it twice', () => {
+    openAlong();
+    // The circle drawn twice.
+    tool('Compass');
+    clickAt(0, 0);
+    clickAt(1, 0);
+    clickAt(0, 0);
+    clickAt(1, 0);
+    for (let i = 0; i < 6; i++) {
+      if (
+        !(
+          screen.getByRole('button', {
+            name: 'Draw it for me',
+          }) as HTMLButtonElement
+        ).disabled
+      )
+        click('Draw it for me');
+      click(i < 5 ? 'Next' : 'Ink it');
+    }
+    click('Ink it for me');
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Repeat and color it' }),
+    );
+    const kept = listPatterns()[0]?.tutorial;
+    const circles = (kept?.steps ?? []).flatMap((st) =>
+      Object.values(st.create ?? {}).filter(
+        (el) => 'circle' in el && el.circle.centre === 'O',
+      ),
+    );
+    expect(circles).toHaveLength(1);
   });
 });

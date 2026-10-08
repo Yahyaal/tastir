@@ -97,8 +97,16 @@ function builder(
   const map = new Map<string, string>();
 
   const fresh = (wanted: string) => {
-    let name = PLAIN.test(wanted) ? wanted : 'P';
-    for (let n = 2; taken.has(name); n++) name = `${wanted}_${n}`;
+    let name: string;
+    if (wanted === 'P' || !PLAIN.test(wanted)) {
+      // A point the tutorial has no name for: P1, P2, …, never shown.
+      let n = 1;
+      while (taken.has(`P${n}`)) n++;
+      name = `P${n}`;
+    } else {
+      name = wanted;
+      for (let n = 2; taken.has(name); n++) name = `${wanted}_${n}`;
+    }
     taken.add(name);
     return name;
   };

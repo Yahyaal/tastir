@@ -78,8 +78,14 @@ export function EditorDrawing({
   selected?: number;
   targets: readonly Target[];
   hover?: Target;
-  /** In ink mode: the bits of line, and which are inked. */
-  ink?: { pieces: readonly InkPiece[]; chosen: ReadonlySet<string> };
+  /** In ink mode: the bits of line, and which are inked; a hint may make
+   * some glow and show others dashed. */
+  ink?: {
+    pieces: readonly InkPiece[];
+    chosen: ReadonlySet<string>;
+    glow?: ReadonlySet<string>;
+    dashed?: ReadonlySet<string>;
+  };
   /** Circles to choose between, drawn dashed. */
   candidates?: readonly { centre: Vec; radius: number }[];
   /** In ink mode: the tile's corners, drawn dotted, as only what is
@@ -306,9 +312,14 @@ export function EditorDrawing({
             ? ink.pieces.map((p) => (
                 <line
                   key={p.id}
-                  className={
-                    ink.chosen.has(p.id) ? 'ink-piece inked' : 'ink-piece'
-                  }
+                  className={[
+                    'ink-piece',
+                    ink.chosen.has(p.id) ? 'inked' : '',
+                    ink.glow?.has(p.id) ? 'glow' : '',
+                    ink.dashed?.has(p.id) ? 'answer' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
                   x1={p.segment.a.x}
                   y1={p.segment.a.y}
                   x2={p.segment.b.x}

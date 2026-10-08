@@ -77,6 +77,9 @@
 
 .along-text-row {
   grid-column: 1 / -1;
+  /* Room for most steps' text, so the drawings do not move from step to
+     step or into the ink; a longer text still shows in full. */
+  min-height: 7.6rem;
   display: flex;
   gap: 24px;
   align-items: flex-start;
@@ -272,6 +275,11 @@
   .along .editor-tools .tool {
     flex: none;
   }
+
+  /* Symmetry first, where the hints that name it can be followed. */
+  .along .editor-tools .tool.symmetry {
+    order: -1;
+  }
 }
 
 .along-back {
@@ -282,4 +290,19 @@
 
 .along-back.refused {
   color: #ffb4a6;
+}
+
+/* Ink hints: the bits still to ink glow, or are dashed. */
+.editor-drawing .ink-piece.glow {
+  stroke: var(--saffron);
+  stroke-dasharray: none;
+  stroke-width: 4px;
+  stroke-opacity: 1;
+}
+
+.editor-drawing .ink-piece.answer {
+  stroke: var(--current);
+  stroke-width: 2.4px;
+  stroke-dasharray: 6 4;
+  stroke-opacity: 1;
 }

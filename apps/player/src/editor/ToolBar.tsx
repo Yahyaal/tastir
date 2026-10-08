@@ -53,7 +53,7 @@ export function ToolBar({
           {t.label}
         </button>
       ))}
-      <label className="tool" title={SYMMETRY_DOES}>
+      <label className="tool symmetry" title={SYMMETRY_DOES}>
         Symmetry
         <select
           value={symmetry}
