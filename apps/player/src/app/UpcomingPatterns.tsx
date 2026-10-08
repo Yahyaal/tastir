@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   UPCOMING_PATTERNS,
+  upcomingPhotoSrc,
   type UpcomingPattern,
   type UpcomingPhase,
 } from './upcoming-patterns';
@@ -10,7 +11,9 @@ import { UpcomingIllustration } from './UpcomingIllustrations';
 export function UpcomingPatterns() {
   const [selectedFold, setSelectedFold] = useState<number | 'all'>('all');
   const [selectedStyle, setSelectedStyle] = useState<string>('all');
-  const [selectedPhase, setSelectedPhase] = useState<UpcomingPhase | 'all'>('all');
+  const [selectedPhase, setSelectedPhase] = useState<UpcomingPhase | 'all'>(
+    'all',
+  );
   const [search, setSearch] = useState<string>('');
   const [activeLightbox, setActiveLightbox] = useState<{
     pattern: UpcomingPattern;
@@ -18,7 +21,9 @@ export function UpcomingPatterns() {
   } | null>(null);
 
   const folds = useMemo(() => {
-    const list = [...new Set(UPCOMING_PATTERNS.map((p) => p.fold))].sort((a, b) => a - b);
+    const list = [...new Set(UPCOMING_PATTERNS.map((p) => p.fold))].sort(
+      (a, b) => a - b,
+    );
     return list;
   }, []);
 
@@ -35,8 +40,10 @@ export function UpcomingPatterns() {
   const filtered = useMemo(() => {
     return UPCOMING_PATTERNS.filter((pattern) => {
       if (selectedFold !== 'all' && pattern.fold !== selectedFold) return false;
-      if (selectedStyle !== 'all' && pattern.style !== selectedStyle) return false;
-      if (selectedPhase !== 'all' && pattern.phase !== selectedPhase) return false;
+      if (selectedStyle !== 'all' && pattern.style !== selectedStyle)
+        return false;
+      if (selectedPhase !== 'all' && pattern.phase !== selectedPhase)
+        return false;
       if (search.trim()) {
         const q = search.toLowerCase();
         const matchTitle = pattern.title.toLowerCase().includes(q);
@@ -44,7 +51,13 @@ export function UpcomingPatterns() {
         const matchMonument = pattern.monument.toLowerCase().includes(q);
         const matchLocation = pattern.location.toLowerCase().includes(q);
         const matchStyle = pattern.style.toLowerCase().includes(q);
-        if (!matchTitle && !matchArabic && !matchMonument && !matchLocation && !matchStyle) {
+        if (
+          !matchTitle &&
+          !matchArabic &&
+          !matchMonument &&
+          !matchLocation &&
+          !matchStyle
+        ) {
           return false;
         }
       }
@@ -56,9 +69,19 @@ export function UpcomingPatterns() {
     <div className="upcoming-page">
       <header className="upcoming-topbar">
         <a className="home" href="#/">
-          <span className="back-arrow" aria-hidden="true">←</span>
+          <span className="back-arrow" aria-hidden="true">
+            ←
+          </span>
           <span className="wordmark">
-            Tastir <span className="brand-arabic" aria-hidden="true" lang="ar" dir="rtl">تسطير</span>
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
           </span>
           <span className="library-crumb">All patterns</span>
         </a>
@@ -69,18 +92,24 @@ export function UpcomingPatterns() {
           <div className="eyebrow">
             <span>CURATORIAL ROADMAP</span>
             <span className="eyebrow-sep">·</span>
-            <span className="eyebrow-arabic" lang="ar" dir="rtl">قائمة الأنماط القادمة</span>
+            <span className="eyebrow-arabic" lang="ar" dir="rtl">
+              قائمة الأنماط القادمة
+            </span>
           </div>
           <h1>Upcoming Patterns & Masterwork Queue</h1>
           <p className="upcoming-lead">
-            A researched catalog of historic masterworks from across the Islamic world, prepared for
-            step-by-step compass and straightedge construction in the Tastir atelier. We are adding
-            these in structured batches—starting with missing honeycomb rosettes from Samira Mian and the
-            celebrated 10-fold Girih tile systems.
+            A researched catalog of historic masterworks from across the Islamic
+            world, prepared for step-by-step compass and straightedge
+            construction in the Tastir atelier. We are adding these in
+            structured batches—starting with missing honeycomb rosettes from
+            Samira Mian and the celebrated 10-fold Girih tile systems.
           </p>
         </header>
 
-        <section className="upcoming-controls" aria-label="Filters for upcoming patterns">
+        <section
+          className="upcoming-controls"
+          aria-label="Filters for upcoming patterns"
+        >
           <div className="upcoming-search-row">
             <input
               type="search"
@@ -90,7 +119,10 @@ export function UpcomingPatterns() {
               onChange={(e) => setSearch(e.target.value)}
               aria-label="Search upcoming patterns"
             />
-            {(selectedFold !== 'all' || selectedStyle !== 'all' || selectedPhase !== 'all' || search) && (
+            {(selectedFold !== 'all' ||
+              selectedStyle !== 'all' ||
+              selectedPhase !== 'all' ||
+              search) && (
               <button
                 type="button"
                 className="upcoming-reset-btn"
@@ -184,7 +216,10 @@ export function UpcomingPatterns() {
           </div>
         </section>
 
-        <section className="upcoming-grid-section" aria-label="Catalog of upcoming patterns">
+        <section
+          className="upcoming-grid-section"
+          aria-label="Catalog of upcoming patterns"
+        >
           <ul className="upcoming-grid">
             {filtered.map((pattern) => (
               <UpcomingCard
@@ -235,19 +270,25 @@ function UpcomingCard({
   const [showInstructions, setShowInstructions] = useState(false);
   const isPlayable = pattern.status === 'Playable now';
 
-  const defaultMode = pattern.photoUrl
+  const photo = pattern.photo;
+  const photoSrcUrl = photo ? upcomingPhotoSrc(photo) : undefined;
+  const defaultMode = photo
     ? 'photo'
     : pattern.drawnUrl
-    ? 'drawn'
-    : 'blueprint';
-  const [mode, setMode] = useState<'photo' | 'drawn' | 'blueprint'>(defaultMode);
+      ? 'drawn'
+      : 'blueprint';
+  const [mode, setMode] = useState<'photo' | 'drawn' | 'blueprint'>(
+    defaultMode,
+  );
 
   return (
     <li className={`upcoming-card ${isPlayable ? 'playable-card' : ''}`}>
       <div className="card-top-meta">
         <div className="card-badge-row">
           <span className="card-fold-badge">{pattern.foldLabel}</span>
-          <span className="card-phase-badge">{pattern.phase.split(' · ')[0]}</span>
+          <span className="card-phase-badge">
+            {pattern.phase.split(' · ')[0]}
+          </span>
           <span className={`card-status-badge ${isPlayable ? 'playable' : ''}`}>
             {isPlayable ? '✦ Playable now' : pattern.status}
           </span>
@@ -260,7 +301,7 @@ function UpcomingCard({
       {/* Visual Media Section with Photo / Drawn / Blueprint Switcher */}
       <div className="card-visual-section">
         <div className="card-media-tabs" role="tablist">
-          {pattern.photoUrl && (
+          {photo && (
             <button
               type="button"
               className={`media-tab ${mode === 'photo' ? 'active' : ''}`}
@@ -291,27 +332,44 @@ function UpcomingCard({
         </div>
 
         <div className="card-media-viewport">
-          {mode === 'photo' && pattern.photoUrl ? (
-            <div
-              className="card-media-interactive"
-              onClick={() => onOpenLightbox('photo')}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') onOpenLightbox('photo');
-              }}
-              title="Click to view full-size historical photograph"
-            >
-              <img
-                src={pattern.photoUrl}
-                alt={pattern.photoCaption ?? pattern.title}
-                className="card-media-img"
-                loading="lazy"
-              />
-              <div className="card-media-hover-bar">
-                <span className="hover-zoom-pill">🔍 Click to inspect full size</span>
+          {mode === 'photo' && photo ? (
+            photoSrcUrl ? (
+              <div
+                className="card-media-interactive"
+                onClick={() => onOpenLightbox('photo')}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ')
+                    onOpenLightbox('photo');
+                }}
+                title="Click to view full-size historical photograph"
+              >
+                <img
+                  src={photoSrcUrl}
+                  alt={photo.caption}
+                  className="card-media-img"
+                  loading="lazy"
+                />
+                <div className="card-media-hover-bar">
+                  <span className="hover-zoom-pill">
+                    🔍 Click to inspect full size
+                  </span>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="card-photo-placeholder photo-placeholder">
+                <p>A photo of the real pattern is to come.</p>
+                <p>
+                  We are looking for one we may show here. Meanwhile you can see
+                  it at{' '}
+                  <a href={photo.url} target="_blank" rel="noopener noreferrer">
+                    its source
+                  </a>
+                  .
+                </p>
+              </div>
+            )
           ) : mode === 'drawn' && pattern.drawnUrl ? (
             <div
               className="card-media-interactive"
@@ -330,7 +388,9 @@ function UpcomingCard({
                 loading="lazy"
               />
               <div className="card-media-hover-bar">
-                <span className="hover-zoom-pill">🔍 Click to inspect full size</span>
+                <span className="hover-zoom-pill">
+                  🔍 Click to inspect full size
+                </span>
               </div>
             </div>
           ) : (
@@ -340,17 +400,34 @@ function UpcomingCard({
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') onOpenLightbox('blueprint');
+                if (e.key === 'Enter' || e.key === ' ')
+                  onOpenLightbox('blueprint');
               }}
               title="Click to expand geometric blueprint"
             >
               <UpcomingIllustration pattern={pattern} size={220} />
               <div className="card-media-hover-bar">
-                <span className="hover-zoom-pill">📐 Click to expand blueprint</span>
+                <span className="hover-zoom-pill">
+                  📐 Click to expand blueprint
+                </span>
               </div>
             </div>
           )}
         </div>
+
+        {mode === 'photo' && photo && (
+          <div className="card-photo-credit">
+            <span className="photo-credit-text">
+              Photo: {photo.creator}, {photo.license}.{' '}
+              <a href={photo.url} target="_blank" rel="noopener noreferrer">
+                Source
+              </a>
+              {photoSrcUrl && photo.private
+                ? ' (shown on the dev server only)'
+                : ''}
+            </span>
+          </div>
+        )}
 
         <div className="card-visual-footer">
           <span className="visual-badge">
@@ -360,8 +437,8 @@ function UpcomingCard({
             {pattern.fold === 6 || pattern.id.includes('hex')
               ? 'Honeycomb (p6m)'
               : pattern.fold === 10
-              ? 'Rectangular (cmm)'
-              : 'Square (p4m)'}
+                ? 'Rectangular (cmm)'
+                : 'Square (p4m)'}
           </span>
         </div>
       </div>
@@ -400,8 +477,8 @@ function UpcomingCard({
           aria-expanded={showInstructions}
         >
           <span className="toggle-label">
-            <span className="compass-icon">✦</span> How to Draw · Compass & Straightedge (
-            {pattern.drawingSteps?.length ?? 4} Steps)
+            <span className="compass-icon">✦</span> How to Draw · Compass &
+            Straightedge ({pattern.drawingSteps?.length ?? 4} Steps)
           </span>
           <span className="toggle-indicator">
             {showInstructions ? 'Hide instructions ▴' : 'View instructions ▾'}
@@ -430,11 +507,7 @@ function UpcomingCard({
       <footer className="card-footer">
         <div className="card-source">
           <span className="source-label">Authentic Reference:</span>
-          <span className="source-text">
-            {pattern.photoUrl
-              ? '📷 Verified monument photograph & geometric reconstruction bundled in Tastir'
-              : pattern.source.name}
-          </span>
+          <span className="source-text">{pattern.source.name}</span>
           {pattern.source.citation && (
             <span className="source-citation">{pattern.source.citation}</span>
           )}
@@ -453,10 +526,16 @@ function UpcomingCard({
 
         {isPlayable && (
           <div className="card-play-actions-group">
-            <a href={`#/${pattern.id}`} className="card-play-action-btn primary">
+            <a
+              href={`#/${pattern.id}`}
+              className="card-play-action-btn primary"
+            >
               Play Interactive Tutorial →
             </a>
-            <a href={`#/${pattern.id}/result`} className="card-play-action-btn secondary">
+            <a
+              href={`#/${pattern.id}/result`}
+              className="card-play-action-btn secondary"
+            >
               View Tiled Wall →
             </a>
           </div>
@@ -486,15 +565,18 @@ function UpcomingLightbox({
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  const hasPhoto = Boolean(pattern.photoUrl);
+  const photo = pattern.photo;
+  const photoSrcUrl = photo ? upcomingPhotoSrc(photo) : undefined;
+  const hasPhoto = Boolean(photo);
   const hasDrawn = Boolean(pattern.drawnUrl);
 
   const currentCaption =
-    mode === 'photo'
-      ? pattern.photoCaption ?? `Historical photograph: ${pattern.monument}`
+    mode === 'photo' && photo
+      ? photo.caption
       : mode === 'drawn'
-      ? pattern.drawnCaption ?? `Finished masterwork tiling: ${pattern.title}`
-      : `Geometric blueprint: ${pattern.fold}-fold symmetry analysis`;
+        ? (pattern.drawnCaption ??
+          `Finished masterwork tiling: ${pattern.title}`)
+        : `Geometric blueprint: ${pattern.fold}-fold symmetry analysis`;
 
   const isPlayable = pattern.status === 'Playable now';
 
@@ -517,7 +599,8 @@ function UpcomingLightbox({
             </span>
           </h3>
           <p className="lightbox-provenance">
-            {pattern.monument} · {pattern.location} ({pattern.period}) · {pattern.medium}
+            {pattern.monument} · {pattern.location} ({pattern.period}) ·{' '}
+            {pattern.medium}
           </p>
         </div>
 
@@ -584,13 +667,27 @@ function UpcomingLightbox({
           if (e.target === e.currentTarget) onClose();
         }}
       >
-        {mode === 'photo' && pattern.photoUrl ? (
-          <img
-            src={pattern.photoUrl}
-            alt={currentCaption}
-            className="lightbox-img"
-            onClick={() => setActualSize(!actualSize)}
-          />
+        {mode === 'photo' && photo ? (
+          photoSrcUrl ? (
+            <img
+              src={photoSrcUrl}
+              alt={currentCaption}
+              className="lightbox-img"
+              onClick={() => setActualSize(!actualSize)}
+            />
+          ) : (
+            <div className="lightbox-photo-placeholder photo-placeholder">
+              <p>A photo of the real pattern is to come.</p>
+              <p>
+                We are looking for one we may show here. Meanwhile you can see
+                it at{' '}
+                <a href={photo.url} target="_blank" rel="noopener noreferrer">
+                  its source
+                </a>
+                .
+              </p>
+            </div>
+          )
         ) : mode === 'drawn' && pattern.drawnUrl ? (
           <img
             src={pattern.drawnUrl}
@@ -608,15 +705,34 @@ function UpcomingLightbox({
       <footer className="lightbox-footer">
         <div className="lightbox-footer-info">
           <p className="lightbox-caption">{currentCaption}</p>
+          {mode === 'photo' && photo && (
+            <p className="lightbox-credit">
+              Photo: {photo.creator}, {photo.license}.{' '}
+              <a href={photo.url} target="_blank" rel="noopener noreferrer">
+                Source
+              </a>
+              {photoSrcUrl && photo.private
+                ? ' (shown on the dev server only)'
+                : ''}
+            </p>
+          )}
           <p className="lightbox-summary">{pattern.summary}</p>
         </div>
 
         {isPlayable && (
           <div className="lightbox-actions">
-            <a href={`#/${pattern.id}`} className="lightbox-play-btn" onClick={onClose}>
+            <a
+              href={`#/${pattern.id}`}
+              className="lightbox-play-btn"
+              onClick={onClose}
+            >
               ✦ Play Interactive Tutorial →
             </a>
-            <a href={`#/${pattern.id}/result`} className="lightbox-secondary-btn" onClick={onClose}>
+            <a
+              href={`#/${pattern.id}/result`}
+              className="lightbox-secondary-btn"
+              onClick={onClose}
+            >
               View Tiled Wall
             </a>
           </div>

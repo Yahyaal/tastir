@@ -5,23 +5,23 @@
  */
 :root {
   /* Design System: Cobalt & Honey Gold */
-  --theme-bg-canvas: #070f1e;       /* Deep starry midnight navy (60% canvas) */
-  --theme-bg-surface: #0c1b33;      /* Lapis architectural slate */
-  --theme-bg-card: #091529;         /* Deep obsidian navy */
-  --theme-bg-raised: #132748;       /* Elevated lapis interactive state */
-  --theme-border: #172f57;          /* Hairline divider */
-  --theme-border-hover: #22447d;    /* Active/hover border */
+  --theme-bg-canvas: #070f1e; /* Deep starry midnight navy (60% canvas) */
+  --theme-bg-surface: #0c1b33; /* Lapis architectural slate */
+  --theme-bg-card: #091529; /* Deep obsidian navy */
+  --theme-bg-raised: #132748; /* Elevated lapis interactive state */
+  --theme-border: #172f57; /* Hairline divider */
+  --theme-border-hover: #22447d; /* Active/hover border */
   --theme-border-gold: rgba(245, 158, 11, 0.4);
 
-  --theme-text-primary: #f8fafc;    /* Crisp soft white (WCAG AAA) */
-  --theme-text-secondary: #cbd5e1;  /* Muted slate white */
-  --theme-text-muted: #94a3b8;      /* Gentle architectural slate */
+  --theme-text-primary: #f8fafc; /* Crisp soft white (WCAG AAA) */
+  --theme-text-secondary: #cbd5e1; /* Muted slate white */
+  --theme-text-muted: #94a3b8; /* Gentle architectural slate */
 
-  --theme-accent: #f59e0b;          /* Radiant Honey Gold (10% budget) */
-  --theme-accent-hover: #d97706;    /* Warm amber hover */
+  --theme-accent: #f59e0b; /* Radiant Honey Gold (10% budget) */
+  --theme-accent-hover: #d97706; /* Warm amber hover */
   --theme-accent-muted: rgba(245, 158, 11, 0.18); /* Soft gold glow */
-  --theme-accent-cobalt: #2563eb;   /* Royal Fez cobalt secondary accent */
-  --theme-grid-line: rgba(245, 158, 11, 0.035);   /* 32px subtle drafting grid */
+  --theme-accent-cobalt: #2563eb; /* Royal Fez cobalt secondary accent */
+  --theme-grid-line: rgba(245, 158, 11, 0.035); /* 32px subtle drafting grid */
 
   /* Semantic Mappings for Tastir components */
   --lapis: var(--theme-bg-surface);
@@ -41,18 +41,20 @@
   --malachite: #10b981;
 
   /* Geometry Canvas Stroke System calibrated for Dark Mode */
-  --ink: #f8fafc;                   /* Finished pattern ink: crisp ivory/bone white */
-  --old: #475569;                   /* Prior construction lines: subtle slate */
-  --faint: #1e3a5f;                 /* Guide circles/lines: deep architectural midnight slate */
-  --current: #f59e0b;               /* Active step being drawn: glowing Honey Gold */
-  --used: #38bdf8;                  /* Reference intersections/elements: brilliant sky cyan */
-  --fresh: var(--malachite);        /* Newly inked lines: emerald malachite */
-  --paper: var(--theme-bg-card);    /* Background behind the drawing */
-  --muted: #64748b;                 /* Muted construction labels */
+  --ink: #f8fafc; /* Finished pattern ink: crisp ivory/bone white */
+  --old: #475569; /* Prior construction lines: subtle slate */
+  --faint: #1e3a5f; /* Guide circles/lines: deep architectural midnight slate */
+  --current: #f59e0b; /* Active step being drawn: glowing Honey Gold */
+  --used: #38bdf8; /* Reference intersections/elements: brilliant sky cyan */
+  --fresh: var(--malachite); /* Newly inked lines: emerald malachite */
+  --paper: var(--theme-bg-card); /* Background behind the drawing */
+  --muted: #64748b; /* Muted construction labels */
 
   /* Typography */
   --display: 'Amiri', 'Marcellus', 'Iowan Old Style', Georgia, serif;
-  --text: 'Plus Jakarta Sans', 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif;
+  --text:
+    'Plus Jakarta Sans', 'Atkinson Hyperlegible', system-ui, -apple-system,
+    sans-serif;
   --mono: 'JetBrains Mono', monospace;
 
   font-family: var(--text);
@@ -396,7 +398,7 @@ a.button.primary:hover {
   display: flex;
   background-color: var(--theme-bg-card);
   background-size: 32px 32px;
-  background-image: 
+  background-image:
     linear-gradient(to right, var(--theme-grid-line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--theme-grid-line) 1px, transparent 1px);
   border-radius: 14px;
@@ -1585,7 +1587,11 @@ main.stage .drawing:not(.wall) {
 
 /* Contextual Tradition Dossier (Progressive Disclosure) */
 .tradition-dossier {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, var(--theme-bg-surface) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.05) 0%,
+    var(--theme-bg-surface) 100%
+  );
   border: 1px solid var(--theme-border-hover);
   border-left: 3px solid var(--saffron);
   border-radius: 10px;
@@ -1717,7 +1723,7 @@ main.stage .drawing:not(.wall) {
   aspect-ratio: 1;
   background-color: var(--theme-bg-card);
   background-size: 32px 32px;
-  background-image: 
+  background-image:
     linear-gradient(to right, var(--theme-grid-line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--theme-grid-line) 1px, transparent 1px);
   border-radius: 14px;
@@ -1741,7 +1747,9 @@ main.stage .drawing:not(.wall) {
 }
 
 .hero-plate .thumbnail .piece {
-  transition: fill 0.35s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    fill 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    stroke 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-plate .thumbnail .piece.rippling {
@@ -1818,7 +1826,9 @@ main.stage .drawing:not(.wall) {
   opacity: 1;
   transform: scale(1.15);
   border-color: #ffffff;
-  box-shadow: 0 0 8px currentColor, 0 0 2px rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 0 8px currentColor,
+    0 0 2px rgba(255, 255, 255, 0.9);
 }
 
 .hero-progress-track {
@@ -2078,7 +2088,9 @@ main.stage .drawing:not(.wall) {
   border: 1px solid var(--theme-border);
   border-radius: 12px;
   padding: 14px;
-  transition: border-color 150ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 150ms ease;
+  transition:
+    border-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 150ms ease;
 }
 
 .card-item:hover {
@@ -2103,7 +2115,9 @@ main.stage .drawing:not(.wall) {
   border-radius: 8px;
   outline: none;
   overflow: hidden;
-  transition: filter 0.2s, border-color 0.2s;
+  transition:
+    filter 0.2s,
+    border-color 0.2s;
 }
 
 .card:hover .thumbnail,
@@ -2485,7 +2499,9 @@ main.stage .drawing:not(.wall) {
   border: 1px solid rgba(245, 158, 11, 0.6);
   color: #0b1329;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
   transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
 }
@@ -3099,7 +3115,9 @@ main.stage .drawing:not(.wall) {
   padding: 10px 10px 10px;
   overflow: hidden;
   position: relative;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .upcoming-card:hover .card-visual-section {
@@ -3445,7 +3463,9 @@ main.stage .drawing:not(.wall) {
   font-weight: 700;
   text-decoration: none;
   box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
-  transition: transform 140ms ease, box-shadow 140ms ease;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease;
 }
 
 .lightbox-play-btn:hover {
@@ -3658,4 +3678,32 @@ main.stage .drawing:not(.wall) {
   box-shadow: 0 0 12px rgba(42, 161, 152, 0.35);
 }
 
+.card-photo-credit {
+  font-size: 0.72rem;
+  color: var(--theme-text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
+  text-align: center;
+}
 
+.card-photo-credit a,
+.lightbox-credit a {
+  color: var(--theme-amber, #d4a373);
+  text-decoration: underline;
+}
+
+.lightbox-credit {
+  font-size: 0.8rem;
+  color: var(--theme-text-muted);
+  margin: 4px 0 8px;
+}
+
+.card-photo-placeholder {
+  min-height: 180px;
+}
+
+.lightbox-photo-placeholder {
+  min-height: 300px;
+  margin: auto;
+  max-width: 500px;
+}
