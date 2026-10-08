@@ -563,24 +563,41 @@ describe('drawing along', () => {
     expect(placed()).toBe(before - 1);
     // Colour it: the wall's pieces are found and filled by their kind.
     click('Color it');
-    const pieces = [...wall().querySelectorAll('.wall-piece')];
-    const star = pieces.filter((p) => p.getAttribute('data-type') !== '-1');
-    expect(star.length).toBeGreaterThan(4);
+    const pieces = () => [...wall().querySelectorAll('.wall-piece')];
+    const star = () =>
+      pieces().filter((p) => p.getAttribute('data-type') !== '-1');
+    expect(star().length).toBeGreaterThan(4);
+    const targetType = star()[0]?.getAttribute('data-type');
+    const sameKind = () =>
+      pieces().filter((p) => p.getAttribute('data-type') === targetType);
+    const initialFills = sameKind().map((p) => p.getAttribute('fill'));
+    expect(new Set(initialFills).size).toBe(1);
+
     // A click on a piece chooses its kind: the colours for it open.
-    fireEvent.click(star[0] as Element);
+    fireEvent.click(star()[0] as Element);
     expect(document.querySelector('.along-colors .chooser')).toBeTruthy();
     fireEvent.click(
       document.querySelectorAll('.along-colors .swatch-button')[2] as Element,
     );
+
+    // Recolours every piece of that kind.
+    const recolouredFills = sameKind().map((p) => p.getAttribute('fill'));
+    expect(new Set(recolouredFills).size).toBe(1);
+    expect(recolouredFills[0]).not.toBe(initialFills[0]);
+
     // Keeping twice updates one pattern, and its colours are its design.
     click('Keep it');
     click('Keep it');
     expect(listPatterns()).toHaveLength(1);
     const kept = listPatterns()[0];
+    expect(kept?.tutorial.title).toBe('My Eight-fold star and cross');
+    expect(kept?.tutorial.title).not.toMatch(/ 2$/);
     const designs = listDesigns().filter(
       (d) => d.tutorial === `mine/${kept?.id}`,
     );
     expect(designs).toHaveLength(1);
+    expect(designs[0]?.name).toBe('My Eight-fold star and cross');
+    expect(designs[0]?.name).not.toMatch(/ 2$/);
     expect(designs[0]?.coloring).toEqual(kept?.wall?.coloring);
     expect(kept?.wall?.copies).toHaveLength(before - 1);
     expect(kept?.wall?.coloring?.palette).toBeTruthy();
@@ -594,6 +611,64 @@ describe('drawing along', () => {
       screen.getByRole('img', { name: 'Your wall' }).querySelectorAll('.copy')
         .length - 1,
     ).toBe(before - 1);
+  });
+
+  it('opens the colour chooser on clicking a piece of the colour board and recolours every piece of that kind', () => {
+    openAlong();
+    for (let i = 0; i < 6; i++) {
+      click('Draw it for me');
+      click(i < 5 ? 'Next' : 'Ink it');
+    }
+    click('Ink it for me');
+    click('Repeat it');
+    const wall = () => screen.getByRole('img', { name: 'Your wall' });
+    const ghosts = () => wall().querySelectorAll('.ghost');
+    fireEvent.click(ghosts()[0] as Element);
+    click('Color it');
+    const pieces = () => [...wall().querySelectorAll('.wall-piece')];
+    const firstPiece = pieces().find(
+      (p) => Number(p.getAttribute('data-type')) >= 0,
+    );
+    const kind = firstPiece?.getAttribute('data-type');
+    const ofKind = () =>
+      pieces().filter((p) => p.getAttribute('data-type') === kind);
+    expect(ofKind().length).toBeGreaterThan(1);
+    const beforeFills = ofKind().map((p) => p.getAttribute('fill'));
+    expect(new Set(beforeFills).size).toBe(1);
+
+    // Clicking a piece on the colour board opens the chooser
+    fireEvent.click(ofKind()[0] as Element);
+    expect(document.querySelector('.along-colors .chooser')).toBeTruthy();
+
+    // Choosing a swatch recolours every piece of that kind
+    const swatches = document.querySelectorAll('.along-colors .swatch-button');
+    fireEvent.click(swatches[3] as Element);
+    const afterFills = ofKind().map((p) => p.getAttribute('fill'));
+    expect(new Set(afterFills).size).toBe(1);
+    expect(afterFills[0]).not.toBe(beforeFills[0]);
+  });
+
+  it('makes one pattern and one design, not My … 2, when Keep it is pressed twice', () => {
+    openAlong();
+    for (let i = 0; i < 6; i++) {
+      click('Draw it for me');
+      click(i < 5 ? 'Next' : 'Ink it');
+    }
+    click('Ink it for me');
+    click('Repeat it');
+    click('Color it');
+    click('Keep it');
+    click('Keep it');
+    const patterns = listPatterns();
+    expect(patterns).toHaveLength(1);
+    expect(patterns[0]?.tutorial.title).toBe('My Eight-fold star and cross');
+    expect(patterns[0]?.tutorial.title).not.toMatch(/ 2$/);
+    const designs = listDesigns().filter(
+      (d) => d.tutorial === `mine/${patterns[0]?.id}`,
+    );
+    expect(designs).toHaveLength(1);
+    expect(designs[0]?.name).toBe('My Eight-fold star and cross');
+    expect(designs[0]?.name).not.toMatch(/ 2$/);
   });
 
   it('snaps a dropped copy to a place where it joins up, and leaves it loose otherwise', () => {
