@@ -36,9 +36,11 @@ const MAMOOT = 'https://mamootdiy.com';
 export const PATTERNS: readonly Pattern[] = [
   {
     id: 'draw-along-plan',
-    title: 'Plan: draw along (new)',
+    title: 'Plan: draw along',
     fold: 8,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You (7 October): Next is always open, so a learner can peek ahead or draw several steps at once; the two drawings line up; all tools, the right one only as a hint, each with a tooltip; a third “Draw along” button on beginner cards and in the player. The builder and tester agents are building it.',
     summary:
       'Your split-screen idea: the tutorial shows each step on the right and the learner draws it on the left, starting with the thirteen beginner patterns.',
     story: [
@@ -1319,46 +1321,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'draw-along-next',
-    text: 'In draw along, can the learner press Next without drawing the step? I suggest no: Next opens once the step is on their board (A), and “Draw it for me” (C) is there for anyone who wants to move on.',
-    choices: ['Next only after the step is drawn', 'Next always open'],
-    pictures: [
-      {
-        src: 'renders/user-patterns/draw-along/a-split-screen.png',
-        caption:
-          'A: the learner’s board. B: the step to copy. C: the hint buttons and Next.',
-      },
-    ],
-    card: 'draw-along-plan',
-  },
-  {
-    id: 'draw-along-tools',
-    text: 'Which tools does the board show (the row above A)? I suggest all of them, as in the editor, with the right tool ringed only as a hint; fewer tools would be simpler but would give the answer away.',
-    choices: [
-      'All tools, the right one as a hint',
-      'Only the tools the step needs',
-    ],
-    pictures: [
-      {
-        src: 'renders/user-patterns/draw-along/a-split-screen.png',
-        caption: 'The tool row sits above the board (A).',
-      },
-    ],
-    card: 'draw-along-plan',
-  },
-  {
-    id: 'draw-along-entry',
-    text: 'Where do learners find draw along? I suggest a third button, “Draw along”, on each beginner card on the home page, beside “Watch it drawn” and “Result and original”, and one in the player.',
-    choices: [
-      'A third button on beginner cards and in the player',
-      'Replace “Watch it drawn” on beginner cards',
-    ],
-    pictures: [],
-    card: 'draw-along-plan',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -1575,11 +1538,10 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Your own patterns are ready for your look',
-    text: 'All five phases are built and tested by the tester. Start on the home page: try “New pattern”, or open a tutorial, go to a step and press “Make my own copy from here”. The rosette block is removed and “Send it to the library” is hidden until there is a form, as you decided. The plan for draw along is ready, with three questions at the top of this page.',
-    link: { label: 'Start here', href: '/#/' },
+    title: 'Building draw along',
+    text: 'Your answers are in the plan. The builder and tester agents are building draw along task by task (6.1–6.6 in the build log), beginner patterns first.',
+    link: { label: 'The plan', href: '#/plan/draw-along' },
   },
-
   next: [
     {
       title: 'More designs per family',
