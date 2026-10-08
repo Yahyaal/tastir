@@ -1742,8 +1742,8 @@ export function DrawAlong({
             </p>
           ) : (
             <p className="dot-key">
-              <span className="new">blue: what this step makes</span>
-              <span className="used">saffron: what it works from</span>
+              <span className="new">orange: what this step makes</span>
+              <span className="used">blue: what it works from</span>
               <span className="helper">
                 dashed: helper lines that only help find points; the pattern
                 never runs along them

@@ -23,7 +23,12 @@ import { PiecePanel } from './PiecePanel';
 import { colorRepeat, placeFills, placeKey } from './placement';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
 import { PrintSheet, type Paper } from './PrintSheet';
-import { Construction, RepeatedInk, Thumbnail, orderedPaletteColors } from './drawing';
+import {
+  Construction,
+  RepeatedInk,
+  Thumbnail,
+  orderedPaletteColors,
+} from './drawing';
 import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { Original } from './Original';
 import { LIBRARY, type Entry } from './library';
@@ -592,7 +597,15 @@ export function Player({
           }}
         >
           <span className="wordmark">
-            Tastir <span className="brand-arabic" aria-hidden="true" lang="ar" dir="rtl">تسطير</span>
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
           </span>
           <span>All patterns</span>
         </a>
@@ -682,8 +695,8 @@ export function Player({
               </p>
               {stage.kind === 'step' ? (
                 <p className="dot-key">
-                  <span className="new">blue: what this step makes</span>
-                  <span className="used">saffron: what it works from</span>
+                  <span className="new">orange: what this step makes</span>
+                  <span className="used">blue: what it works from</span>
                 </p>
               ) : null}
               {stage.kind === 'step' && !sharedView ? (
@@ -1145,8 +1158,16 @@ function MissingDesign({
 }
 
 /** What the library needs to know about a tutorial before it is loaded. */
-function aboutOf(json: unknown): { style?: string; level?: string; fold?: number } {
-  const t = (json ?? {}) as { style?: unknown; level?: unknown; fold?: unknown };
+function aboutOf(json: unknown): {
+  style?: string;
+  level?: string;
+  fold?: number;
+} {
+  const t = (json ?? {}) as {
+    style?: unknown;
+    level?: unknown;
+    fold?: unknown;
+  };
   return {
     ...(typeof t.style === 'string' ? { style: t.style } : {}),
     ...(typeof t.level === 'string' ? { level: t.level } : {}),
@@ -1266,7 +1287,15 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
       <header className="masthead">
         <div className="masthead-brand">
           <h1 aria-label="Tastir">
-            Tastir <span className="brand-arabic" aria-hidden="true" lang="ar" dir="rtl">تسطير</span>
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
           </h1>
           <span className="brand-badge">ATELIER</span>
         </div>
@@ -1277,7 +1306,9 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             className="nav-item"
             onClick={(e) => {
               e.preventDefault();
-              document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });
+              document
+                .getElementById('collection')
+                ?.scrollIntoView({ behavior: 'smooth' });
             }}
           >
             <span>Library</span>
@@ -1298,7 +1329,8 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
                   ?.scrollIntoView?.({ behavior: 'smooth' })
               }
             >
-              <span>My designs</span> <span className="nav-badge">({designs.length})</span>
+              <span>My designs</span>{' '}
+              <span className="nav-badge">({designs.length})</span>
             </button>
           ) : null}
           {patterns.length ? (
@@ -1312,7 +1344,8 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
                   ?.scrollIntoView?.({ behavior: 'smooth' })
               }
             >
-              <span>My patterns</span> <span className="nav-badge">({patterns.length})</span>
+              <span>My patterns</span>{' '}
+              <span className="nav-badge">({patterns.length})</span>
             </button>
           ) : null}
         </nav>
@@ -1322,11 +1355,19 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           {import.meta.env.DEV ? (
             <div className="dev-links" aria-label="Developer quick links">
               <span className="dev-tag">⚡ DEV</span>
-              <a href="#/review" className="dev-link" title="Progress, decisions and questions">
+              <a
+                href="#/review"
+                className="dev-link"
+                title="Progress, decisions and questions"
+              >
                 <strong>Review page</strong>
               </a>
               <span className="dev-sep">/</span>
-              <a href="#/notes" className="dev-link" title="Goal, queue, status and lessons">
+              <a
+                href="#/notes"
+                className="dev-link"
+                title="Goal, queue, status and lessons"
+              >
                 <strong>Project notes</strong>
               </a>
             </div>
@@ -1339,7 +1380,9 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           <div className="eyebrow">
             <span>Islamic Geometric Drafting Atelier</span>
             <span className="eyebrow-sep">·</span>
-            <span className="eyebrow-arabic" lang="ar" dir="rtl">علم التسطير والهندسة</span>
+            <span className="eyebrow-arabic" lang="ar" dir="rtl">
+              علم التسطير والهندسة
+            </span>
           </div>
           <h2>Draw Islamic geometric patterns with a compass and a ruler.</h2>
           <p>
@@ -1424,12 +1467,17 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           </fieldset>
         </div>
         {style && TRADITIONS[style] ? (
-          <aside className="tradition-dossier" aria-label={`Context for ${style}`}>
+          <aside
+            className="tradition-dossier"
+            aria-label={`Context for ${style}`}
+          >
             <div className="dossier-header">
               <div className="dossier-badge">
                 <span className="dossier-tag">TRADITION CONTEXT</span>
                 <span className="dossier-sep">·</span>
-                <span className="dossier-ar" lang="ar" dir="rtl">{TRADITIONS[style].arabic}</span>
+                <span className="dossier-ar" lang="ar" dir="rtl">
+                  {TRADITIONS[style].arabic}
+                </span>
               </div>
               <button
                 type="button"
@@ -1693,7 +1741,17 @@ function HeroPlay({ model }: { model: Model }) {
       clearTimeout(timer);
       for (const a of anims) a.cancel();
     };
-  }, [k, n, total, beats, model, panelModel, reduced, isFadingLines, isColoring]);
+  }, [
+    k,
+    n,
+    total,
+    beats,
+    model,
+    panelModel,
+    reduced,
+    isFadingLines,
+    isColoring,
+  ]);
 
   const colorNames = currentColor?.names.length
     ? currentColor.names.join(' & ')
@@ -1768,8 +1826,14 @@ function HeroPlay({ model }: { model: Model }) {
       <div className="hero-status-row">
         <figcaption>{caption}</figcaption>
         {!reduced && (
-          <div className="hero-progress-group" aria-label="Hero animation progress">
-            <div className="hero-coloring-chips" title="Coloring progress by unique color">
+          <div
+            className="hero-progress-group"
+            aria-label="Hero animation progress"
+          >
+            <div
+              className="hero-coloring-chips"
+              title="Coloring progress by unique color"
+            >
               {palette.map((item, i) => (
                 <span
                   key={item.color}
@@ -1852,7 +1916,9 @@ export function App({
   if (!route) return <Library entries={library} />;
   if (route === 'upcoming') {
     return (
-      <Suspense fallback={<p className="review-loading">Loading upcoming patterns…</p>}>
+      <Suspense
+        fallback={<p className="review-loading">Loading upcoming patterns…</p>}
+      >
         <UpcomingPatterns />
       </Suspense>
     );

@@ -825,6 +825,10 @@ function StepPanel({
         ) : (
           <p className="step-status ok">✓ {STATUS_OK}</p>
         )}
+        <p className="dot-key">
+          <span className="new">orange: what this step makes</span>
+          <span className="used">blue: what it works from</span>
+        </p>
       </section>
       <section>
         <h2>Change it</h2>

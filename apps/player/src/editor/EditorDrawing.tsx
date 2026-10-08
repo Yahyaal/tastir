@@ -121,7 +121,7 @@ export function EditorDrawing({
   /** The name shown for a point, when it differs from the board's own;
    * an empty name hides it. */
   labelOf?: (place: PointPlace) => string | undefined;
-  /** Elements drawn as the step at hand (blue), when drawing along. */
+  /** Elements drawn as the step at hand (orange), when drawing along. */
   current?: ReadonlySet<string>;
   /** Inking with a pen: where it is down, and the dots one straight
    * stroke reaches; a line follows the pointer from the pen. */

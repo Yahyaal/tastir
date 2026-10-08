@@ -979,8 +979,8 @@ main.stage .drawing:not(.wall) {
   filter: drop-shadow(0 0 4px var(--theme-accent-muted));
 }
 
-/* Arriving at a step: what the last step made starts blue, then takes its
-   new role (saffron if this step uses it, grey if not). */
+/* Arriving at a step: what the last step made starts orange, then takes its
+   new role (blue if this step uses it, grey if not). */
 .el.was-new {
   animation: was-new-line 0.9s ease-in-out 0.15s both;
 }
