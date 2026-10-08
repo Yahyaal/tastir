@@ -1223,67 +1223,139 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           }}
         />
       ) : null}
-      <section className="traditions-spotlight" aria-label="Traditions of Islamic Geometry">
-        <button
-          type="button"
-          className={`spotlight-card ${style?.toLowerCase().includes('morocc') || style?.toLowerCase().includes('marinid') ? 'active' : ''}`}
-          onClick={() =>
-            setStyle((prev) =>
-              prev?.toLowerCase().includes('morocc') || prev?.toLowerCase().includes('marinid')
-                ? undefined
-                : styles.find((s) => s.toLowerCase().includes('morocc') || s.toLowerCase().includes('marinid')),
-            )
-          }
-        >
-          <div className="spotlight-num">
-            <span>01 · MOROCCO</span>
-            <span className="spotlight-ar" lang="ar" dir="rtl">الزليج المغربي</span>
+      <section className="traditions-spotlight-section" aria-label="Traditions of Islamic Geometry">
+        <div className="spotlight-section-head">
+          <div className="spotlight-eyebrow-line">
+            <span className="spotlight-tag">REGIONAL TRADITIONS</span>
+            <span className="spotlight-tag-sep">·</span>
+            <span className="spotlight-tag-ar" lang="ar" dir="rtl">المدارس الهندسية</span>
           </div>
-          <h3>Moroccan Zellij (Fez & Marrakech)</h3>
-          <p>
-            Hand-chiseled glazed terracotta tesserae, 8-fold to 16-fold star rosettes with saft petals and cobalt glazes.
+          <p className="spotlight-lead">
+            Select a geometric tradition to filter the catalog, or browse all patterns below.
           </p>
-        </button>
-        <button
-          type="button"
-          className={`spotlight-card ${style?.toLowerCase().includes('nasrid') ? 'active' : ''}`}
-          onClick={() =>
-            setStyle((prev) =>
-              prev?.toLowerCase().includes('nasrid')
-                ? undefined
-                : styles.find((s) => s.toLowerCase().includes('nasrid')),
-            )
-          }
-        >
-          <div className="spotlight-num">
-            <span>02 · AL-ANDALUS</span>
-            <span className="spotlight-ar" lang="ar" dir="rtl">الحسبة الأندلسية</span>
-          </div>
-          <h3>Nasrid & Umayyad Lacería (Granada & Córdoba)</h3>
-          <p>
-            Infinite interlacing strapwork ribbons woven over-and-under through celestial stars in the Alhambra.
-          </p>
-        </button>
-        <button
-          type="button"
-          className={`spotlight-card ${style?.toLowerCase().includes('seljuk') || style?.toLowerCase().includes('timurid') || style?.toLowerCase().includes('mamluk') || style?.toLowerCase().includes('tulunid') ? 'active' : ''}`}
-          onClick={() =>
-            setStyle((prev) =>
-              prev?.toLowerCase().includes('seljuk') || prev?.toLowerCase().includes('timurid') || prev?.toLowerCase().includes('mamluk')
-                ? undefined
-                : styles.find((s) => s.toLowerCase().includes('seljuk') || s.toLowerCase().includes('timurid') || s.toLowerCase().includes('mamluk')),
-            )
-          }
-        >
-          <div className="spotlight-num">
-            <span>03 · CAIRO & THE EAST</span>
-            <span className="spotlight-ar" lang="ar" dir="rtl">المشرق والعمارة المملوكية</span>
-          </div>
-          <h3>Mamluk, Timurid & Cairo Windows</h3>
-          <p>
-            Monumental decagram rosettes, openwork stucco lattices, and polygonal strapwork on sacred monuments.
-          </p>
-        </button>
+        </div>
+        <div className="traditions-spotlight">
+          <button
+            type="button"
+            className={`spotlight-card ${style?.toLowerCase().includes('morocc') || style?.toLowerCase().includes('marinid') ? 'active' : ''}`}
+            onClick={() =>
+              setStyle((prev) =>
+                prev?.toLowerCase().includes('morocc') || prev?.toLowerCase().includes('marinid')
+                  ? undefined
+                  : styles.find((s) => s.toLowerCase().includes('morocc') || s.toLowerCase().includes('marinid')),
+              )
+            }
+          >
+            <div className="spotlight-card-top">
+              <div className="spotlight-badge-group">
+                <div className="spotlight-motif-box">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <rect x="5" y="5" width="14" height="14" rx="1.5" />
+                    <rect x="5" y="5" width="14" height="14" rx="1.5" transform="rotate(45 12 12)" />
+                    <circle cx="12" cy="12" r="2.5" />
+                  </svg>
+                </div>
+                <span className="spotlight-badge">01 · MOROCCO</span>
+              </div>
+              <span className="spotlight-ar" lang="ar" dir="rtl">الزليج المغربي</span>
+            </div>
+            <h3 className="spotlight-title">Moroccan Zellij</h3>
+            <div className="spotlight-sub">Fez &amp; Marrakech · Terracotta Tesserae</div>
+            <p className="spotlight-desc">
+              Hand-chiseled glazed terracotta tesserae, 8-fold to 16-fold star rosettes with saft petals and cobalt glazes.
+            </p>
+            <div className="spotlight-card-footer">
+              {style?.toLowerCase().includes('morocc') || style?.toLowerCase().includes('marinid') ? (
+                <span className="spotlight-indicator active">
+                  <svg aria-hidden="true" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 8.5l3.5 3.5L13 4" /></svg>
+                  Tradition active
+                </span>
+              ) : (
+                <span className="spotlight-indicator">Explore Fez &amp; Marinid →</span>
+              )}
+            </div>
+          </button>
+          <button
+            type="button"
+            className={`spotlight-card ${style?.toLowerCase().includes('nasrid') ? 'active' : ''}`}
+            onClick={() =>
+              setStyle((prev) =>
+                prev?.toLowerCase().includes('nasrid')
+                  ? undefined
+                  : styles.find((s) => s.toLowerCase().includes('nasrid')),
+              )
+            }
+          >
+            <div className="spotlight-card-top">
+              <div className="spotlight-badge-group">
+                <div className="spotlight-motif-box">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <polygon points="12,2 22,20 2,20" />
+                    <polygon points="12,22 22,4 2,4" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                </div>
+                <span className="spotlight-badge">02 · AL-ANDALUS</span>
+              </div>
+              <span className="spotlight-ar" lang="ar" dir="rtl">الحسبة الأندلسية</span>
+            </div>
+            <h3 className="spotlight-title">Nasrid &amp; Umayyad Lacería</h3>
+            <div className="spotlight-sub">Granada &amp; Córdoba · Celestial Strapwork</div>
+            <p className="spotlight-desc">
+              Infinite interlacing strapwork ribbons woven over-and-under through celestial stars in the Alhambra.
+            </p>
+            <div className="spotlight-card-footer">
+              {style?.toLowerCase().includes('nasrid') ? (
+                <span className="spotlight-indicator active">
+                  <svg aria-hidden="true" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 8.5l3.5 3.5L13 4" /></svg>
+                  Tradition active
+                </span>
+              ) : (
+                <span className="spotlight-indicator">Explore the Alhambra →</span>
+              )}
+            </div>
+          </button>
+          <button
+            type="button"
+            className={`spotlight-card ${style?.toLowerCase().includes('seljuk') || style?.toLowerCase().includes('timurid') || style?.toLowerCase().includes('mamluk') || style?.toLowerCase().includes('tulunid') ? 'active' : ''}`}
+            onClick={() =>
+              setStyle((prev) =>
+                prev?.toLowerCase().includes('seljuk') || prev?.toLowerCase().includes('timurid') || prev?.toLowerCase().includes('mamluk')
+                  ? undefined
+                  : styles.find((s) => s.toLowerCase().includes('seljuk') || s.toLowerCase().includes('timurid') || s.toLowerCase().includes('mamluk')),
+              )
+            }
+          >
+            <div className="spotlight-card-top">
+              <div className="spotlight-badge-group">
+                <div className="spotlight-motif-box">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <circle cx="12" cy="12" r="9.5" strokeDasharray="2 2" />
+                    <polygon points="12,3 14.5,9.5 21,9.5 16,13.5 18,20 12,16 6,20 8,13.5 3,9.5 9.5,9.5" />
+                    <circle cx="12" cy="12" r="2" />
+                  </svg>
+                </div>
+                <span className="spotlight-badge">03 · CAIRO</span>
+              </div>
+              <span className="spotlight-ar" lang="ar" dir="rtl">العمارة المملوكية</span>
+            </div>
+            <h3 className="spotlight-title">Mamluk &amp; Timurid Windows</h3>
+            <div className="spotlight-sub">Cairo &amp; Isfahan · Decagram Girih</div>
+            <p className="spotlight-desc">
+              Monumental 10-fold decagram rosettes, openwork stucco lattices, and polygonal strapwork on sacred monuments.
+            </p>
+            <div className="spotlight-card-footer">
+              {style?.toLowerCase().includes('seljuk') || style?.toLowerCase().includes('timurid') || style?.toLowerCase().includes('mamluk') || style?.toLowerCase().includes('tulunid') ? (
+                <span className="spotlight-indicator active">
+                  <svg aria-hidden="true" viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M3 8.5l3.5 3.5L13 4" /></svg>
+                  Tradition active
+                </span>
+              ) : (
+                <span className="spotlight-indicator">Explore Cairo &amp; Timurid →</span>
+              )}
+            </div>
+          </button>
+        </div>
       </section>
       <section aria-labelledby="collection">
         <div className="collection-head">
