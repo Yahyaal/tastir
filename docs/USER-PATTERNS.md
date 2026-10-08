@@ -470,3 +470,38 @@ At Ink, one tap on the ringed bit inked the pattern. Repeat and color it showed 
 **Remaining small point.** On the phone, after a hint brings the ringed bit into view, the board stays at that view, with part of the tile off the left edge (`six-fold-star-and-hexagons-ink-end-390.png`). Fit brings it back, so this is not a problem, only worth knowing.
 
 **Verdict: ready for the owner.** All five problems are fixed. I drew a pattern by tapping on a phone and inked it to a coloured wall, and I inked the two patterns that defeated me before on desktop by following the hints with the default settings. I found no new bug.
+
+### Inking with a pen (6.11), tester report (8 October 2026)
+
+I tested from a frozen worktree of b5fccb3, with my own server on port 4351, at 1280×800 and on a touch phone (390×844). I had not read how the pen is meant to work. Screenshots are in `docs/review/user-patterns/ink-pen-test/`. There were no console or page errors in any run.
+
+**What I did.** I opened `#/alhambra-comares-bones/draw`, used Draw it for me through the six steps, and pressed Ink it. On the Ink stage I first tried to ink the bones by reading the screen and comparing my board with the picture on the right. Then I followed the hints alone, and finally tried copies, Erase, Undo, Redo and Escape. I did the same on the phone by tapping, then inked the star and cross.
+
+**Is it now obvious what a click will do? Mostly yes.**
+- The board says “Pen: Click a dot to put the pen down, then a dot on the same line to ink between them.”
+- After the first click the pen shows as a saffron dot. Every dot it can reach turns blue, and a dashed line follows the pointer, so I could see the stroke before making it (`bones-rubber.png`).
+- A second click on a blue dot inks exactly the straight stretch between the two dots, and the pen stays there to carry on (`bones-1280-b.png`).
+- A dot that is not on a common line is refused with a clear message: “Those two points are not on one line; ink goes along the lines you drew.”
+- “Lift the pen” and Escape lift it. Undo and Redo (and Ctrl+Z) take back or bring back one whole stroke. Erase works the same way, stroke by stroke.
+- **One click never inked more than I expected while “Also ink the copies round the centre” was off, which is the default.** A stroke inks only the stretch between its two dots. A long stroke across several dots inks the whole straight stretch, which is what I asked for.
+- With copies on, one stroke on the star and cross inked all sixteen copies at once, and the copies flashed saffron. That surprised me less, because the box says what it does.
+
+**By hand, from the screen only.** The first strokes went as expected. Following the hints, both the bones and the star and cross reached “✓ Your ink closes the pattern's pieces”:
+- the bones at 1280 in 10 strokes;
+- the bones on the phone in 10 strokes, tapping;
+- the star and cross in 2 strokes with copies on, with no hint.
+
+At level 2 the hint rings the two dots of a stroke (“Put the pen on the first ringed dot, then click the second: a side of the bone”), and at level 3 every stroke still to ink is dashed. On the phone the page is 390 px wide and tapping dots works exactly as clicking does.
+
+**Problems, most important first.** Bugs:
+
+1. **A stroke along the tile's edge is inked on the opposite edge, not where I drew it.** On the bones, a pen stroke from (−1, 3) to (0, 4) runs along the top-left side of the tile, but the ink appears on the bottom-right side, at (3, −1)–(4, 0). The same happens for the other edges (`bones-tile-edge-crop.png`). Where I drew, nothing shows, and the ink that does appear is dark over the tile's saffron dashes and hard to see. This is exactly the owner's confusion: one click making ink appear where I did not expect it. Expected: the ink shows where it was drawn, even if the two edges are the same once repeated (show both, or flash the other one).
+2. **The dots I must start from are not shown until the pointer is near them.** Before the pen is down, the board shows dots only on the two axes and at the tile corners (17 dots), not at the bone's own corners, such as (−1, 1) or (−1, 3). On a computer they appear when the pointer passes near; on a phone there is no pointer, so the screen says “Click a dot” while showing only dots that are mostly not where the bones turn (`bones-phone-ink-full.png`). Tapping an unshown crossing does work, but a learner would not know to try. Expected: show every crossing inside the tile as a small dot at the Ink stage, or at least on touch screens.
+
+Suggestions:
+
+3. On a phone the texts say “Click”; “Tap” would read better.
+4. The level 2 hint says “the first ringed dot”, but the two rings look the same. Either order works, so “one ringed dot, then the other” would be clearer.
+5. On the phone, the ink buttons (Undo, Redo, Clear the ink) sit at the end of a sideways-scrolling row and are cut off at the edge.
+
+**Verdict: the owner's confusion is mostly fixed.** With the pen, a click no longer inks several lines in different directions. The dashed line shows the stroke before it is made, and with the default settings a stroke inks exactly the stretch between two dots. Undo, Erase and the hints all work by stroke, on a computer and on a phone. Two things remain before I would call it obvious: strokes along the tile's edge must not move to the opposite edge (1), and the dots a learner needs should be visible before the pen is down, especially on a phone (2).
