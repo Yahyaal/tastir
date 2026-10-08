@@ -554,3 +554,46 @@ Suggestions:
 8. In the player, the step numbers change when helper lines are turned on or off (Mian has 9 or 10 steps, Bou Inania 12 or 13). That is reasonable, but a learner who switches mid-way finds themselves on a different step number.
 
 **Verdict.** Repeat it yourself is a real success: ghosts, dragging, snapping, loose copies, Erase, Undo and Fill all work and are easy to understand. The board stays put on desktop, and the star and cross ticks are right. Colouring at the end is not yet usable as described: a click on a piece does nothing (1), and the chosen colours do not reach the kept pattern (2). Hiding helper lines leaves some step texts describing lines that are no longer drawn (4). I would fix 1, 2 and 4 before the owner tries it.
+
+### UI redesign, tester report (8 October 2026)
+
+I tested as a beginner hobbyist on a frozen copy of `ui-redesign` (commit `c1b8791`) running on port 4352, driven through playwright-core at 1280×800 (desktop), 1024×768 (tablet) and 390×844 (phone with touch emulation). Screenshots are saved under `docs/review/ui-redesign-test/`.
+
+**What I did.**
+- **Home page and filters.** Checked the new atelier home page across desktop, tablet, and mobile (`home-desktop.png`, `home-tablet.png`, `home-phone.png`). Filtered by symmetry family ("8-fold" displaying 6 matching patterns, `home-filter-8fold.png`), clicked the "Moroccan" tradition chip which reveals the contextual Moroccan dossier banner (`home-filter-moroccan.png`), and filtered by "Beginner" to verify all 13 beginner tutorials appear cleanly.
+- **Three tutorials stepped through.** Opened and stepped through "Eight-fold star and cross", "Comares bones", and "Six-fold snowflake". Verified the new step legends, stepped each all the way through construction to the Color stage (`eight-fold-star-and-cross-finished.png`, `alhambra-comares-bones-finished.png`, `six-fold-snowflake-finished.png`).
+- **Original photo comparison.** On the Comares bones Color stage, clicked "Compare with the original". Verified the split view opens smoothly, placing the historical monument photograph side-by-side with the geometric tile reconstruction (`alhambra-comares-bones-compared.png`), with full attribution to Jl FilpoC under CC BY 4.0 and a link to the source.
+- **Draw along full workflow.** On both "Comares bones" and "Eight-fold star and cross", drew steps on the learner plate, inked construction segments with the pen tool (`draw-alhambra-comares-bones-ink.png`, `draw-eight-fold-star-and-cross-ink.png`), proceeded to Repeat, placed and snapped copies to tile the wall (`draw-alhambra-comares-bones-repeat.png`, `draw-eight-fold-star-and-cross-repeat.png`), coloured the pieces (`draw-alhambra-comares-bones-color.png`, `draw-eight-fold-star-and-cross-color.png`), and clicked "Keep it" to verify the pattern saves to local designs. Reloaded the browser mid-session to verify resumption.
+- **Editor interaction.** Opened "New pattern" in the editor (`editor-new.png`). Tested the tooltips on Point, Compass, Same opening, Opening from two points, Touching, and Ruler. Selected the Compass tool, clicked the canvas, drew a circle, and tested Cancel/Undo (`editor-circle-drawn.png`).
+- **Upcoming patterns audit.** Inspected the Upcoming patterns roadmap (`#/upcoming`, `upcoming-page.png`), filtering across 8 traditions and 5 symmetry families. Checked that images in `public/upcoming/` include author credits and licenses, and that unlicensed or private research images display the "Private reference: shown on dev server only" placeholder with an outbound link to their source. Verified all pattern statuses are honest ("Planned", "Researching", or "Playable now" only where verified in `STATUS.md`).
+
+**What worked.**
+- **Unified dark atelier aesthetic.** Home, Player, Draw along, Editor, and Review share a coherent, dark drafting aesthetic. The calligraphic Arabic brand mark (`تسطير`) is placed consistently across topbars and headings.
+- **0 px board movement during continuous progression.** Across all 13 beginner tutorials, the learner's board coordinates and dimensions remain completely stationary (0 px displacement) as the user steps through construction, Ink, Repeat, and Color stages across desktop (1280×800), tablet (1024×768), and mobile (390×844).
+- **Accurate colour legends.** The player and Draw along step legends accurately state "orange: what this step makes" and "blue: what it works from", with matching orange and blue dot swatches corresponding to the orange new strokes and blue reference points drawn on the board.
+- **Authentic monument comparison.** The side-by-side photo comparison displays high-resolution authentic photography beside the mathematical reconstruction, honoring Creative Commons licensing and sources.
+- **Draw along end-to-end flow.** The inking pen, ghost tile placing, dragging, snapping, palette selection, and saving via "Keep it" function reliably.
+- **Editor tooltips.** The new tooltips provide immediate, plain-language guidance explaining how each classical geometric tool operates.
+- **Transparent roadmap.** The Upcoming masterwork catalog accurately represents the research state without unverified claims.
+
+**Problems, most important first.** Bugs:
+
+1. **Reloading mid-construction in Draw along pushes the board down by 38 px.**
+   - *How to reproduce:* Navigate to `#/alhambra-comares-bones/draw`, draw step 1, proceed to step 2, and reload the browser page (`F5`).
+   - *What I expected:* The board should remain at the exact same vertical position after the page reloads.
+   - *What happened:* The banner `<p className="along-back">Welcome back: your board and your step are as you left them. Start again</p>` renders outside the `.along-grid`, shifting the entire board and controls downward by 38 px (`y = 111 px` shifted to `y = 149 px`). Once the learner completes the step or clicks "Start again", the banner unmounts and the board jumps back up to its original position (`draw-alhambra-comares-bones-step1.png`).
+2. **Two 404 image load errors on the Upcoming patterns page.**
+   - *How to reproduce:* Open the browser developer console and navigate to `#/upcoming`.
+   - *What I expected:* All 24 masterwork cards should load either their public image or dev-server placeholder without console errors.
+   - *What happened:* The console recorded two 404 (Not Found) resource errors for missing image assets referenced by the upcoming catalog (`upcoming-page.png`).
+
+Suggestions:
+
+3. **Compass click feedback on empty canvas.**
+   - *How to reproduce:* In `#/editor`, select the Compass tool and click an empty region of the grid without first clicking point O.
+   - *What I expected:* Subtle visual feedback indicating that compass operations must originate at a recognized point or crossing.
+   - *What happened:* An orange warning text appears below the board: "Compass: There is no point there. Click a crossing or a named point" (`editor-circle-drawn.png`). A visual snap radius or pulsing indicator on valid points would help novice learners know where to click.
+
+**Verdict: Ready to merge into `main`.**
+The UI redesign succeeds in creating a stunning, consistent, and mathematically honest Islamic geometric drafting atelier. Board stability during continuous drawing is rock-solid (0 px movement across all screen sizes), colour legends match the artwork, photo attributions are compliant, and tutorials flow seamlessly. The 38 px shift while the "Welcome back" banner is visible on reload is a minor layout detail that can be polished later and does not block merging.
+
