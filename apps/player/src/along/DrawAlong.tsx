@@ -7,14 +7,7 @@ import {
   type StepCheck,
   type Vec,
 } from '@tastir/engine';
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { fullView, growingFrame, type Rect } from '../app/camera';
 import { Construction } from '../app/drawing';
 import {
@@ -448,19 +441,6 @@ export function DrawAlong({
   const stepRef = useRef<SVGSVGElement>(null);
   const refs = useMemo(() => [boardRef, stepRef], []);
   const camera = useCamera(frame, refs, { stage: index });
-  // At the ink the text row keeps the last step's height, so the board
-  // stays where the learner drew it.
-  const textRow = useRef<HTMLElement>(null);
-  const textHeight = useRef(0);
-  const toolRow = useRef<HTMLDivElement>(null);
-  const toolHeight = useRef(0);
-  useLayoutEffect(() => {
-    if (inking) return;
-    if (textRow.current)
-      textHeight.current = textRow.current.getBoundingClientRect().height;
-    if (toolRow.current)
-      toolHeight.current = toolRow.current.getBoundingClientRect().height;
-  });
   // The zoom is remembered for this board and step, so a reload keeps it.
   const viewKey = `tastir.along.view.${address}`;
   useEffect(() => {
@@ -733,35 +713,46 @@ export function DrawAlong({
         ) : null}
       </nav>
       <div className="along-grid">
-        <section
-          className="along-text-row"
-          aria-label="The step to copy"
-          ref={textRow}
-          style={
-            inking && textHeight.current && !phone
-              ? { minHeight: textHeight.current }
-              : undefined
-          }
-        >
+        <section className="along-text-row" aria-label="The step to copy">
           <div className="along-text">
-            <h2>
-              {inking
-                ? 'Ink'
-                : `Step ${number} of ${shownIds.length}: the step to copy`}
-            </h2>
-            <p className="instruction">
-              {inking ? tutorial.ink.text : info?.text}
-            </p>
-            <p
-              className={
-                (inking ? ink.result?.matches : ticks[index])
-                  ? 'along-check done'
-                  : 'along-check'
-              }
-              role="status"
-            >
-              {inking ? (keepFailed ?? inkStatus) : stepStatus}
-            </p>
+            {/* Every step's text and the ink's, in one cell, only the one
+                at hand visible: the row is as tall as the tallest text in
+                the tutorial, so the drawings never move between stages. */}
+            <div className="along-stack">
+              {[
+                ...shown.map((b, i) => ({
+                  on: !inking && i === index,
+                  head: `Step ${shownIds.indexOf(beats[b - 1]?.step ?? 0) + 1} of ${shownIds.length}: the step to copy`,
+                  text: beats[b - 1]?.text ?? '',
+                })),
+                { on: inking, head: 'Ink', text: tutorial.ink.text ?? '' },
+              ].map((layer, i) => (
+                <div
+                  key={i}
+                  className={layer.on ? 'along-layer on' : 'along-layer'}
+                  aria-hidden={layer.on ? undefined : true}
+                >
+                  <h2>{layer.head}</h2>
+                  <p className="instruction">{layer.text}</p>
+                  {/* The status under the text at hand; an empty slot of the
+                      same height under the others. */}
+                  {layer.on ? (
+                    <p
+                      className={
+                        (inking ? ink.result?.matches : ticks[index])
+                          ? 'along-check done'
+                          : 'along-check'
+                      }
+                      role="status"
+                    >
+                      {inking ? (keepFailed ?? inkStatus) : stepStatus}
+                    </p>
+                  ) : (
+                    <p className="along-check" />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
           <nav className="along-nav" aria-label="Step">
             <button
@@ -772,89 +763,98 @@ export function DrawAlong({
             >
               Back
             </button>
-            {inking ? (
+            {/* Both forward buttons in one cell, so the text beside them
+                keeps its width (and its lines) from the steps to the ink. */}
+            <span className="along-stack">
               <button
                 type="button"
-                className="next"
+                className={inking ? 'next along-layer on' : 'next along-layer'}
+                aria-hidden={inking ? undefined : true}
+                inert={!inking}
                 disabled={!ink.result?.matches}
                 onClick={goOn}
               >
                 Repeat and color it
               </button>
-            ) : (
               <button
                 type="button"
-                className="next"
+                className={inking ? 'next along-layer' : 'next along-layer on'}
+                aria-hidden={inking ? true : undefined}
+                inert={inking}
                 onClick={() => go(index + 1)}
               >
                 {last ? 'Ink it' : 'Next'}
               </button>
-            )}
+            </span>
           </nav>
         </section>
-        <div
-          className="along-tools"
-          hidden={phone && showStep}
-          ref={toolRow}
-          style={
-            inking && toolHeight.current && !phone
-              ? { minHeight: toolHeight.current }
-              : undefined
-          }
-        >
-          {inking ? (
-            <div className="editor-tools" role="toolbar" aria-label="Ink">
-              <label className="tool" title={INK_SYMMETRIC}>
-                <input
-                  type="checkbox"
-                  checked={ink.symmetric}
-                  aria-description={INK_SYMMETRIC}
-                  onChange={(e) => ink.setSymmetric(e.target.checked)}
-                />
-                Keep it symmetric
-              </label>
-              <label className="tool" title={INK_RUNS}>
-                <input
-                  type="checkbox"
-                  checked={ink.wholeRuns}
-                  aria-description={INK_RUNS}
-                  onChange={(e) => ink.setWholeRuns(e.target.checked)}
-                />
-                Whole lines between points
-              </label>
-              <button
-                type="button"
-                className="tool"
-                title={INK_FOR_ME}
-                aria-description={INK_FOR_ME}
-                onClick={ink.inkForMe}
-              >
-                Ink it for me
-              </button>
-              <button
-                type="button"
-                className="tool"
-                title={INK_CLEAR}
-                aria-description={INK_CLEAR}
-                disabled={!chosen.size}
-                onClick={() => setChosen(new Set())}
-              >
-                Clear the ink
-              </button>
+        <div className="along-tools" hidden={phone && showStep}>
+          {/* Both tool bars in one cell, the one at hand visible, so the
+              row keeps its height from the steps to the ink. */}
+          <div className="along-stack">
+            <div
+              className={inking ? 'along-layer on' : 'along-layer'}
+              aria-hidden={inking ? undefined : true}
+              inert={!inking}
+            >
+              <div className="editor-tools" role="toolbar" aria-label="Ink">
+                <label className="tool" title={INK_SYMMETRIC}>
+                  <input
+                    type="checkbox"
+                    checked={ink.symmetric}
+                    aria-description={INK_SYMMETRIC}
+                    onChange={(e) => ink.setSymmetric(e.target.checked)}
+                  />
+                  Keep it symmetric
+                </label>
+                <label className="tool" title={INK_RUNS}>
+                  <input
+                    type="checkbox"
+                    checked={ink.wholeRuns}
+                    aria-description={INK_RUNS}
+                    onChange={(e) => ink.setWholeRuns(e.target.checked)}
+                  />
+                  Whole lines between points
+                </label>
+                <button
+                  type="button"
+                  className="tool"
+                  title={INK_FOR_ME}
+                  aria-description={INK_FOR_ME}
+                  onClick={ink.inkForMe}
+                >
+                  Ink it for me
+                </button>
+                <button
+                  type="button"
+                  className="tool"
+                  title={INK_CLEAR}
+                  aria-description={INK_CLEAR}
+                  disabled={!chosen.size}
+                  onClick={() => setChosen(new Set())}
+                >
+                  Clear the ink
+                </button>
+              </div>
             </div>
-          ) : (
-            <ToolBar
-              tool={toolId}
-              onTool={chooseTool}
-              symmetry={symmetry}
-              onSymmetry={setSymmetry}
-              canUndo={history.past.length > 0}
-              canRedo={history.future.length > 0}
-              onUndo={undo}
-              onRedo={redo}
-              hinted={hint?.tool}
-            />
-          )}
+            <div
+              className={inking ? 'along-layer' : 'along-layer on'}
+              aria-hidden={inking ? true : undefined}
+              inert={inking}
+            >
+              <ToolBar
+                tool={toolId}
+                onTool={chooseTool}
+                symmetry={symmetry}
+                onSymmetry={setSymmetry}
+                canUndo={history.past.length > 0}
+                canRedo={history.future.length > 0}
+                onUndo={undo}
+                onRedo={redo}
+                hinted={hint?.tool}
+              />
+            </div>
+          </div>
         </div>
         {/* Always there, at ink too, so the drawings keep their place. */}
         <div className="along-hints">

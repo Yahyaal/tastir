@@ -317,6 +317,26 @@ const key = (p: Vec) =>
   `${p.x.toFixed(5)},${p.y.toFixed(5)}`.replace(/-0\.00000/g, '0.00000');
 const pairKey = (a: Vec, b: Vec) => [key(a), key(b)].sort().join('|');
 
+const keyMaps = new WeakMap<Inkable, Map<string, string>>();
+
+/** Every piece by its ends, its copies in the tiles around included
+ * (built once per board: a big pattern has thousands of pieces). */
+function keysOf(inkable: Inkable): Map<string, string> {
+  let byKey = keyMaps.get(inkable);
+  if (byKey) return byKey;
+  byKey = new Map();
+  const { u, v } = inkable.cell;
+  for (const p of inkable.pieces)
+    for (let i = -2; i <= 2; i++)
+      for (let j = -2; j <= 2; j++) {
+        const d = { x: u.x * i + v.x * j, y: u.y * i + v.y * j };
+        const move = (q: Vec) => ({ x: q.x + d.x, y: q.y + d.y });
+        byKey.set(pairKey(move(p.segment.a), move(p.segment.b)), p.id);
+      }
+  keyMaps.set(inkable, byKey);
+  return byKey;
+}
+
 /**
  * The pieces a piece turns into under the pattern's symmetry about O:
  * every turn by 360°/fold, and their mirror images in the line OA when
@@ -331,15 +351,7 @@ export function imagesOf(
 ): string[] {
   const piece = inkable.pieces.find((p) => p.id === id);
   if (!piece) return [];
-  const { u, v } = inkable.cell;
-  const byKey = new Map<string, string>();
-  for (const p of inkable.pieces)
-    for (let i = -2; i <= 2; i++)
-      for (let j = -2; j <= 2; j++) {
-        const d = { x: u.x * i + v.x * j, y: u.y * i + v.y * j };
-        const move = (q: Vec) => ({ x: q.x + d.x, y: q.y + d.y });
-        byKey.set(pairKey(move(p.segment.a), move(p.segment.b)), p.id);
-      }
+  const byKey = keysOf(inkable);
   const out = new Set<string>([id]);
   for (let k = 0; k < fold; k++) {
     const t = (2 * Math.PI * k) / fold;

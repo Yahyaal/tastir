@@ -42,7 +42,8 @@ const ticked = () =>
     .getAllByRole('button', { name: /^Step \d/ })
     .filter((b) => /on your board/.test(b.getAttribute('aria-label') ?? ''))
     .map((b) => b.textContent?.replace(/\D/g, ''));
-const status = () => document.querySelector('.along-check')?.textContent ?? '';
+const status = () =>
+  document.querySelector('.along-check[role="status"]')?.textContent ?? '';
 const current = () =>
   within(steps())
     .getAllByRole('button')

@@ -90,6 +90,25 @@
   max-width: 90ch;
 }
 
+/* Layers in one cell: the cell is as big as the biggest, and only the one
+   at hand shows. */
+.along-stack {
+  display: grid;
+}
+
+.along-stack > .along-layer {
+  grid-area: 1 / 1;
+}
+
+.along-stack > .along-layer:not(.on) {
+  visibility: hidden;
+}
+
+/* The status keeps two lines, so a longer one does not move the board. */
+.along-text .along-check {
+  min-height: 2.8em;
+}
+
 .along-text-row h2 {
   margin: 0 0 4px;
   font-family: var(--display);
