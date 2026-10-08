@@ -31,6 +31,8 @@ import {
   type Target,
   type ToolId,
 } from '../editor/tools';
+import { drawForMe } from './drawForMe';
+import { hintFor } from './hints';
 import { withTutorialNames } from './naming';
 import '../editor/editor.css';
 import './along.css';
@@ -182,6 +184,43 @@ export function DrawAlong({
   );
   const here = checks[index];
 
+  // Hints grow a level with each press; a new step starts without one.
+  const [hintLevel, setHintLevel] = useState(0);
+  const hint = useMemo(
+    () =>
+      hintLevel && here && !here.done
+        ? hintFor(
+            tutorial,
+            model.scene,
+            board,
+            beat,
+            info?.highlight,
+            here,
+            hintLevel,
+          )
+        : undefined,
+    [hintLevel, here, tutorial, model.scene, board, beat, info],
+  );
+  const [drawFailed, setDrawFailed] = useState<string>();
+  const drawIt = () => {
+    try {
+      const next = drawForMe(
+        tutorial,
+        model.scene,
+        draft,
+        beat,
+        `Drawn for me: ${info?.text ?? ''}`.trim(),
+      );
+      if (next) edit(next);
+      setHintLevel(0);
+      setDrawFailed(undefined);
+    } catch (e) {
+      setDrawFailed(
+        `This step could not be drawn on your board (${e instanceof Error ? e.message : String(e)}).`,
+      );
+    }
+  };
+
   // The tools, as in the editor.
   const [toolId, setToolId] = useState<ToolId>('compass');
   const tool = toolOf(toolId);
@@ -277,6 +316,8 @@ export function DrawAlong({
   const [showStep, setShowStep] = useState(false);
   const go = (to: number) => {
     setIndex(Math.max(0, Math.min(shown.length - 1, to)));
+    setHintLevel(0);
+    setDrawFailed(undefined);
     setTargets([]);
     setChoices(undefined);
   };
@@ -291,6 +332,9 @@ export function DrawAlong({
         hover={hover}
         candidates={choices?.circles}
         faint={extras}
+        glow={hint?.glow}
+        rings={hint?.rings}
+        dashed={hint?.dashed}
         camera={camera}
         svgRef={boardRef}
         fitTo={fullView(model)}
@@ -408,6 +452,7 @@ export function DrawAlong({
             canRedo={history.future.length > 0}
             onUndo={undo}
             onRedo={redo}
+            hinted={hint?.tool}
           />
         </div>
         <div className="along-head" hidden={phone}>
@@ -449,6 +494,27 @@ export function DrawAlong({
             >
               Cancel
             </button>
+          </div>
+          <div className="along-hints">
+            <button
+              type="button"
+              className="secondary"
+              disabled={!here || here.done || hintLevel >= 3}
+              onClick={() => setHintLevel(hintLevel + 1)}
+            >
+              {hintLevel ? 'Show me more' : 'Show me a hint'}
+            </button>
+            <button
+              type="button"
+              className="secondary"
+              disabled={!here || here.done}
+              onClick={drawIt}
+            >
+              Draw it for me
+            </button>
+            <span className="along-hint-words" aria-live="polite">
+              {drawFailed ?? hint?.words ?? ''}
+            </span>
           </div>
         </footer>
         <footer className="caption along-step-caption">

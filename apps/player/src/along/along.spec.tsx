@@ -142,4 +142,40 @@ describe('drawing along', () => {
       within(bar).getByRole('button', { name: 'Undo' }).getAttribute('title'),
     ).toBeTruthy();
   });
+
+  it('gives hints a level at a time on step 3, and draws it for the learner', () => {
+    openAlong();
+    click('Draw it for me');
+    click('Next');
+    click('Draw it for me');
+    click('Next');
+    expect(ticked()).toEqual(['1', '2']);
+    const board = () =>
+      screen.getByRole('img', { name: 'The construction so far' });
+    // Level 1: the horizontal and the vertical glow.
+    click('Show me a hint');
+    expect(board().querySelectorAll('.el.glow')).toHaveLength(2);
+    expect(board().querySelectorAll('.hint-ring')).toHaveLength(0);
+    // Level 2: the points to click are ringed, and so is the tool.
+    click('Show me more');
+    expect(board().querySelectorAll('.hint-ring')).toHaveLength(3);
+    const halve = within(
+      screen.getByRole('toolbar', { name: 'Tools' }),
+    ).getByRole('button', { name: /Halve angle/ });
+    expect(halve.className).toMatch(/hinted/);
+    expect(screen.getByText(/Use Halve angle/)).toBeTruthy();
+    // Level 3: the answer, dashed: both diagonals.
+    click('Show me more');
+    expect(board().querySelectorAll('.answer')).toHaveLength(2);
+    // Draw it for me puts the step on the board, and the hints go.
+    click('Draw it for me');
+    expect(ticked()).toEqual(['1', '2', '3']);
+    expect(
+      board().querySelectorAll('.answer, .hint-ring, .el.glow'),
+    ).toHaveLength(0);
+    // The board names the points as the tutorial does.
+    click('Next');
+    click('Draw it for me');
+    expect(ticked()).toEqual(['1', '2', '3', '4']);
+  });
 });
