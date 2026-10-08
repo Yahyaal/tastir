@@ -186,13 +186,17 @@ export function useInkBoard(
         );
     };
     const forKind = missing.filter(around);
-    const focus = forKind.length ? forKind : missing;
+    // Once nothing is missing, the hints mark the extra bits to erase.
+    const erasing = !missing.length && extra.length > 0;
+    const focus = erasing ? extra : forKind.length ? forKind : missing;
     const first = ready.pieces.find((q) => q.id === focus[0]);
     const kindName = kind >= 0 ? ready.pattern.types[kind]?.name : undefined;
     return {
       glow: new Set(focus),
+      /** The bit that is ringed, which a click near the ring takes. */
+      ringId: hintLevel >= 2 || erasing ? first?.id : undefined,
       ring:
-        hintLevel >= 2 && first
+        (hintLevel >= 2 || erasing) && first
           ? [
               {
                 x: (first.segment.a.x + first.segment.b.x) / 2,
@@ -200,10 +204,10 @@ export function useInkBoard(
               },
             ]
           : [],
-      dashed: new Set(hintLevel >= 3 ? missing : []),
+      dashed: new Set(hintLevel >= 3 && !erasing ? missing : []),
       words: !missing.length
         ? extra.length
-          ? `Everything the pattern keeps is inked; ${extra.length} ${extra.length === 1 ? 'bit is' : 'bits are'} extra. Click ${extra.length === 1 ? 'it' : 'them'} to erase.`
+          ? `Everything the pattern keeps is inked, and ${extra.length} ${extra.length === 1 ? 'bit is' : 'bits are'} extra: ${extra.length === 1 ? 'it glows' : 'they glow'}. Click the ringed one to erase it.`
           : 'Everything the pattern keeps is inked.'
         : hintLevel === 1
           ? `The bits that glow are still to ink${kindName ? `, round the ${kindName}` : ''}.`
@@ -216,14 +220,18 @@ export function useInkBoard(
   const toggle = (id: string) => {
     if (!ready || 'reason' in ready) return;
     const { inkable } = ready;
-    const run = wholeRuns
-      ? runOf(
-          inkable,
-          id,
-          pointPlaces(ready.scene).map((p) => p.at),
-          ready.scene,
-        )
-      : [id];
+    // A whole run on a bit the pattern keeps is the pattern's own stretch
+    // of that line, so following the hints never inks more than it keeps.
+    const run = !wholeRuns
+      ? [id]
+      : ready.classic.has(id) && !chosen.has(id)
+        ? keptRun(ready, id)
+        : runOf(
+            inkable,
+            id,
+            pointPlaces(ready.scene).map((p) => p.at),
+            ready.scene,
+          );
     const ids = symmetric
       ? run.flatMap((r) => imagesOf(inkable, r, tutorial.fold, ready.mirror))
       : run;
@@ -335,4 +343,31 @@ function onOutline(p: Vec, poly: readonly Vec[]): boolean {
     if (t < -1e-6 || t > 1 + 1e-6) return false;
     return Math.hypot(p.x - (a.x + d.x * t), p.y - (a.y + d.y * t)) < 1e-6;
   });
+}
+
+/** The stretch of line through a bit that the pattern keeps: the kept
+ * bits along the same line, joined end to end with it. */
+function keptRun(ready: Ready, id: string): string[] {
+  const line = ready.inkable.paths.get(id)?.along;
+  const same = ready.pieces.filter(
+    (p) =>
+      ready.classic.has(p.id) && ready.inkable.paths.get(p.id)?.along === line,
+  );
+  const at = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y) < 1e-6;
+  const run = new Set([id]);
+  const todo = same.filter((p) => p.id === id);
+  while (todo.length) {
+    const p = todo.pop() as InkPiece;
+    for (const q of same)
+      if (
+        !run.has(q.id) &&
+        [q.segment.a, q.segment.b].some(
+          (e) => at(e, p.segment.a) || at(e, p.segment.b),
+        )
+      ) {
+        run.add(q.id);
+        todo.push(q);
+      }
+  }
+  return [...run];
 }

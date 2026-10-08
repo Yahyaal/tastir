@@ -85,7 +85,19 @@ interface History {
   readonly future: readonly Draft[];
 }
 
-const NUMBER_WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
+const NUMBER_WORDS = [
+  'no',
+  'one',
+  'two',
+  'three',
+  'four',
+  'five',
+  'six',
+  'seven',
+  'eight',
+  'nine',
+  'ten',
+];
 const count = (n: number) => NUMBER_WORDS[n] ?? String(n);
 /** What a step still needs, in words: “one line and the tile”. */
 function stillToDraw(c: StepCheck, cell: string): string {
@@ -441,6 +453,44 @@ export function DrawAlong({
   const stepRef = useRef<SVGSVGElement>(null);
   const refs = useMemo(() => [boardRef, stepRef], []);
   const camera = useCamera(frame, refs, { stage: index });
+  // A ringed hint is brought into view, and a tiny ringed bit is zoomed in
+  // on until it is easy to click.
+  const ringAt = inking ? ink.hint?.ring[0] : hint?.rings[0];
+  const ringBit =
+    inking && ink.hint?.ringId && ready
+      ? ready.pieces.find((p) => p.id === ink.hint?.ringId)
+      : undefined;
+  useEffect(() => {
+    if (!ringAt) return;
+    const v = camera.view;
+    const w = v.maxX - v.minX;
+    const h = v.maxY - v.minY;
+    const px = boardRef.current?.getBoundingClientRect().width || 600;
+    const len = ringBit
+      ? Math.hypot(
+          ringBit.segment.b.x - ringBit.segment.a.x,
+          ringBit.segment.b.y - ringBit.segment.a.y,
+        )
+      : Infinity;
+    // At least 36 px long on the screen, never closer than a twentieth.
+    const scale = Math.min(1, Math.max((len * px) / (36 * w), 1 / 20));
+    const inside =
+      ringAt.x > v.minX + 0.08 * w &&
+      ringAt.x < v.maxX - 0.08 * w &&
+      ringAt.y > v.minY + 0.08 * h &&
+      ringAt.y < v.maxY - 0.08 * h;
+    if (inside && scale >= 1) return;
+    const nw = w * scale;
+    const nh = h * scale;
+    camera.goTo({
+      minX: ringAt.x - nw / 2,
+      maxX: ringAt.x + nw / 2,
+      minY: ringAt.y - nh / 2,
+      maxY: ringAt.y + nh / 2,
+    });
+    // Only when the ring moves.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ringAt?.x, ringAt?.y]);
   // The zoom is remembered for this board and step, so a reload keeps it.
   const viewKey = `tastir.along.view.${address}`;
   useEffect(() => {
@@ -547,7 +597,14 @@ export function DrawAlong({
         }
         onClick={(at: Vec, reach: number) => {
           if (inking) {
-            const hit = ready && nearestPiece(ready.pieces, at, reach);
+            // A click near the ring takes the ringed bit, however close its
+            // neighbours are.
+            const ringed = ink.hint?.ringId;
+            const ringAt = ink.hint?.ring[0];
+            const hit =
+              ringed && ringAt && distance(at, ringAt) <= reach * 2.5
+                ? ringed
+                : ready && nearestPiece(ready.pieces, at, reach);
             if (hit) ink.toggle(hit);
             return;
           }
@@ -788,7 +845,13 @@ export function DrawAlong({
             </span>
           </nav>
         </section>
-        <div className="along-tools" hidden={phone && showStep}>
+        {/* On a phone showing the step, the tools keep their room (unseen),
+            so the step's picture sits where the board was. */}
+        <div
+          className="along-tools"
+          style={phone && showStep ? { visibility: 'hidden' } : undefined}
+          inert={phone && showStep}
+        >
           {/* Both tool bars in one cell, the one at hand visible, so the
               row keeps its height from the steps to the ink. */}
           <div className="along-stack">

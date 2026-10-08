@@ -34,7 +34,7 @@ const tool = (name: string) =>
       name: new RegExp(name),
     }),
   );
-const click = (name: string) =>
+const click = (name: string | RegExp) =>
   fireEvent.click(screen.getByRole('button', { name }));
 const steps = () => screen.getByRole('navigation', { name: 'Steps' });
 const ticked = () =>
@@ -410,5 +410,32 @@ describe('drawing along', () => {
       ),
     );
     expect(circles).toHaveLength(1);
+  });
+
+  it('follows the ink hints with whole lines on to the pattern, after an extra bit too', () => {
+    act(() => {
+      window.location.hash = '#/alhambra-infantas-crosses/draw';
+    });
+    render(
+      <App entries={[{ id: 'alhambra-infantas-crosses', json: infantas }]} />,
+    );
+    for (let i = 0; i < 6; i++) {
+      click('Draw it for me');
+      click(i < 5 ? 'Next' : 'Ink it');
+    }
+    const board = () =>
+      screen.getByRole('img', { name: 'The construction so far' });
+    const ring = () => board().querySelector('.hint-ring');
+    const clickRing = () => {
+      const r = ring() as SVGCircleElement;
+      clickAt(Number(r.getAttribute('cx')), Number(r.getAttribute('cy')));
+    };
+    // An extra bit first: a whole line the pattern does not keep.
+    clickAt(0, 0.5);
+    for (let k = 0; k < 20 && !/✓/.test(status()); k++) {
+      while (!ring()) click(/^Show me/);
+      clickRing();
+    }
+    expect(status()).toMatch(/Your ink closes the pattern’s pieces/);
   });
 });

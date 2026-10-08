@@ -94,10 +94,20 @@
    at hand shows. */
 .along-stack {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
 }
 
 .along-stack > .along-layer {
   grid-area: 1 / 1;
+  min-width: 0;
+}
+
+/* Grid items default to their content's width; a long tool row must not
+   push the page wider than the screen. */
+.along-grid > *,
+.along-tools {
+  min-width: 0;
 }
 
 .along-stack > .along-layer:not(.on) {
