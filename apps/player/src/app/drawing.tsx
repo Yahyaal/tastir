@@ -1004,6 +1004,75 @@ export function strapWidths(model: Model, grout = 1) {
   return { grout: g, edge: g * 4, band: g * 2.4 };
 }
 
+export interface PaletteColorGroup {
+  color: string;
+  minDistance: number;
+  names: string[];
+}
+
+/**
+ * Returns distinct colors present in the pattern, ordered strictly by how close
+ * their innermost piece sits to the middle (0, 0) of the design.
+ */
+export function orderedPaletteColors(
+  model: Model,
+  coloring = tutorialColoring(model),
+  view?: Rect,
+): PaletteColorGroup[] {
+  const reach = 2;
+  const { view: defaultView } = tiling(model, { halfWide: 1, halfHigh: 1, reach });
+  const activeView = view ?? defaultView;
+  const { cell } = model.pattern;
+  const colors = pieceColors(model, coloring);
+  const fill = model.tutorial.pattern.placements
+    ? placeFills(model, coloring)
+    : undefined;
+  const widths = strapWidths(model);
+  const seen = fit(activeView, 1 + widths.edge);
+  const meets = (ps: readonly Vec[]) =>
+    Math.max(...ps.map((p) => p.x)) >= seen.minX &&
+    Math.min(...ps.map((p) => p.x)) <= seen.maxX &&
+    Math.max(...ps.map((p) => p.y)) >= seen.minY &&
+    Math.min(...ps.map((p) => p.y)) <= seen.maxY;
+  const move = (p: Vec, d: Vec): Vec => ({ x: p.x + d.x, y: p.y + d.y });
+
+  const colorMap = new Map<string, { minDistance: number; names: Set<string> }>();
+
+  for (let i = -reach; i <= reach; i++) {
+    for (let j = -reach; j <= reach; j++) {
+      const d = {
+        x: cell.u.x * i + cell.v.x * j,
+        y: cell.u.y * i + cell.v.y * j,
+      };
+      model.pattern.pieces.forEach((p, k) => {
+        const polygon = p.polygon.map((q) => move(q, d));
+        if (!meets(polygon)) return;
+        const color = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
+        const cx = polygon.reduce((sum, q) => sum + q.x, 0) / polygon.length;
+        const cy = polygon.reduce((sum, q) => sum + q.y, 0) / polygon.length;
+        const dist = Math.hypot(cx, cy);
+        const name = model.pattern.types[p.type]?.name;
+
+        const entry = colorMap.get(color) ?? {
+          minDistance: Infinity,
+          names: new Set<string>(),
+        };
+        if (dist < entry.minDistance) entry.minDistance = dist;
+        if (name) entry.names.add(name);
+        colorMap.set(color, entry);
+      });
+    }
+  }
+
+  return [...colorMap.entries()]
+    .map(([color, { minDistance, names }]) => ({
+      color,
+      minDistance,
+      names: [...names],
+    }))
+    .sort((a, b) => a.minDistance - b.minDistance);
+}
+
 /**
  * A small square picture of the colored pattern, for the library, as the
  * wall first shows it: tiles with grout, or strapwork, where each pattern
@@ -1014,7 +1083,7 @@ export function Thumbnail({
   coloring = tutorialColoring(model),
   look = model.tutorial.pattern.look,
   coloredUpTo,
-  activeColorType,
+  activeColorIndex,
   view: givenView,
 }: {
   model: Model;
@@ -1022,10 +1091,10 @@ export function Thumbnail({
   coloring?: Coloring;
   /** A learner's wall style; else the tutorial's. */
   look?: WallStyle;
-  /** If set, only pieces with type < coloredUpTo receive their color; others show blueprint tone. */
+  /** If set, only colors with index < coloredUpTo receive their color; others show blueprint tone. */
   coloredUpTo?: number;
-  /** Currently active color type being animated/rippled in quick succession. */
-  activeColorType?: number;
+  /** Currently active color index being animated/rippled in quick succession. */
+  activeColorIndex?: number;
   /** If set, renders within this camera view (e.g. locked to fullView) rather than tiling view. */
   view?: Rect;
 }) {
@@ -1058,12 +1127,15 @@ export function Thumbnail({
   const strokes: string[] = [];
 
   // When coloredUpTo is defined (e.g. progressive coloring in hero), render individual pieces
-  // sorted radially and clockwise so each color ripples in quick, graceful succession 1-by-1.
+  // grouped by UNIQUE COLOR, rippling strictly from the middle (center rosette) outward.
   if (coloredUpTo !== undefined) {
+    const palette = orderedPaletteColors(model, coloring, view);
+    const colorIndexMap = new Map<string, number>();
+    palette.forEach((p, idx) => colorIndexMap.set(p.color, idx));
+
     interface VisPiece {
       id: string;
       d: string;
-      type: number;
       color: string;
       dist: number;
       angle: number;
@@ -1092,7 +1164,6 @@ export function Thumbnail({
           visPieces.push({
             id: `p-${p.type}-${i}-${j}-${k}`,
             d: poly(polygon),
-            type: p.type,
             color: lines ? 'none' : targetColor,
             dist,
             angle,
@@ -1106,46 +1177,44 @@ export function Thumbnail({
       }
     }
 
-    // Group by piece type to calculate ordered ripple indices
-    const byType = new Map<number, VisPiece[]>();
+    // Group by unique color
+    const byColorGroup = new Map<string, VisPiece[]>();
     for (const vp of visPieces) {
-      const list = byType.get(vp.type) ?? [];
+      const list = byColorGroup.get(vp.color) ?? [];
       list.push(vp);
-      byType.set(vp.type, list);
+      byColorGroup.set(vp.color, list);
     }
 
     interface StaggeredPiece extends VisPiece {
+      colorIndex: number;
       staggerIndex: number;
       stepDelay: number;
     }
     const staggeredPieces: StaggeredPiece[] = [];
 
-    for (const [, list] of byType.entries()) {
-      // Sort pieces for an organic, non-dizzying ripple:
-      // Center rosette pieces (dist < 1.35) bloom first clockwise around the circle,
-      // followed by surrounding repeated tiles rippling outward radially.
+    for (const [color, list] of byColorGroup.entries()) {
+      const cIdx = colorIndexMap.get(color) ?? 0;
+
+      // Sort strictly from the middle (center rosette, lowest r) outward:
       list.sort((a, b) => {
-        const aCenter = a.dist < 1.35;
-        const bCenter = b.dist < 1.35;
-        if (aCenter !== bCenter) return aCenter ? -1 : 1;
-        if (aCenter) {
-          return a.angle - b.angle;
-        }
         const dDiff = a.dist - b.dist;
-        if (Math.abs(dDiff) > 0.4) return dDiff;
+        if (Math.abs(dDiff) > 0.15) {
+          return dDiff;
+        }
         return a.angle - b.angle;
       });
 
-      // Brisk ripple: between 28ms and 55ms per piece so each color family
+      // Quick, smooth cadence: between 22ms and 48ms per piece so each color family
       // completes within ~500ms without feeling sluggish or frenetic
       const stepDelay = Math.max(
-        28,
-        Math.min(55, Math.floor(520 / Math.max(1, list.length))),
+        22,
+        Math.min(48, Math.floor(480 / Math.max(1, list.length))),
       );
 
       list.forEach((vp, idx) => {
         staggeredPieces.push({
           ...vp,
+          colorIndex: cIdx,
           staggerIndex: idx,
           stepDelay,
         });
@@ -1155,8 +1224,8 @@ export function Thumbnail({
     return (
       <svg className="thumbnail" viewBox={viewBox(view)} aria-hidden="true">
         {staggeredPieces.map((p) => {
-          const isColored = p.type < coloredUpTo;
-          const isRippling = p.type === activeColorType;
+          const isColored = p.colorIndex < coloredUpTo;
+          const isRippling = p.colorIndex === activeColorIndex;
           const currentColor = isColored ? p.color : 'rgba(18, 28, 48, 0.45)';
           return (
             <path

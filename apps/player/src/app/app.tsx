@@ -23,7 +23,7 @@ import { PiecePanel } from './PiecePanel';
 import { colorRepeat, placeFills, placeKey } from './placement';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
 import { PrintSheet, type Paper } from './PrintSheet';
-import { Construction, RepeatedInk, Thumbnail } from './drawing';
+import { Construction, RepeatedInk, Thumbnail, orderedPaletteColors } from './drawing';
 import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { Original } from './Original';
 import { LIBRARY, type Entry } from './library';
@@ -1574,18 +1574,23 @@ function HeroPlay({ model }: { model: Model }) {
   const view = useMemo(() => fullView(model), [model]);
   const panelModel = useMemo(() => asPanel(model), [model]);
   const n = beats.length;
-  const colorSteps = model.pattern.types.length;
-  const total = n + colorSteps + 3;
-  const colors = useMemo(
-    () => pieceColors(model, tutorialColoring(model)),
-    [model],
+
+  const palette = useMemo(
+    () => orderedPaletteColors(model, tutorialColoring(model), view),
+    [model, view],
   );
+  const colorSteps = palette.length;
+  const total = n + colorSteps + 3;
 
   const isFadingLines = k === n + 1;
   const isColoring = k >= n + 2 && k <= n + 1 + colorSteps;
   const isFinished = k > n + 1 + colorSteps;
   const coloredUpTo = isFinished ? undefined : isColoring ? k - (n + 1) : 0;
   const colorIndex = isColoring ? k - n - 2 : isFinished ? colorSteps - 1 : -1;
+  const currentColor =
+    colorIndex >= 0 && colorIndex < palette.length
+      ? palette[colorIndex]
+      : undefined;
 
   useLayoutEffect(() => {
     if (reduced) return;
@@ -1613,6 +1618,9 @@ function HeroPlay({ model }: { model: Model }) {
     };
   }, [k, n, total, beats, model, panelModel, reduced, isFadingLines, isColoring]);
 
+  const colorNames = currentColor?.names.length
+    ? currentColor.names.join(' & ')
+    : 'accent';
   const caption =
     reduced || isFinished
       ? `${model.tutorial.title}: completed design`
@@ -1621,20 +1629,27 @@ function HeroPlay({ model }: { model: Model }) {
         : isFadingLines
           ? `${model.tutorial.title}: revealing the inked pattern`
           : isColoring
-            ? `${model.tutorial.title}: coloring — ${nameOf(model, colorIndex)} (${colorIndex + 1} of ${colorSteps})`
+            ? `${model.tutorial.title}: coloring — ${colorNames} (${colorIndex + 1} of ${colorSteps})`
             : `${model.tutorial.title}: step ${k + 1} of ${n}`;
 
   return (
     <>
       <div className={`plate-frame ${isColoring ? 'coloring-active' : ''}`}>
-        {reduced || isFinished ? (
+        {reduced ? (
           <Thumbnail model={model} view={view} />
+        ) : isFinished ? (
+          <Thumbnail
+            model={model}
+            view={view}
+            coloredUpTo={colorSteps}
+            activeColorIndex={-1}
+          />
         ) : isColoring ? (
           <Thumbnail
             model={model}
             view={view}
             coloredUpTo={coloredUpTo}
-            activeColorType={colorIndex}
+            activeColorIndex={colorIndex}
           />
         ) : isFadingLines ? (
           <>
@@ -1642,7 +1657,7 @@ function HeroPlay({ model }: { model: Model }) {
               model={model}
               view={view}
               coloredUpTo={0}
-              activeColorType={-1}
+              activeColorIndex={-1}
             />
             <Construction
               model={panelModel}
@@ -1677,18 +1692,22 @@ function HeroPlay({ model }: { model: Model }) {
         <figcaption>{caption}</figcaption>
         {!reduced && (
           <div className="hero-progress-group" aria-label="Hero animation progress">
-            <div className="hero-coloring-chips" title="Coloring progress by shape">
-              {model.pattern.types.map((_, i) => (
+            <div className="hero-coloring-chips" title="Coloring progress by unique color">
+              {palette.map((item, i) => (
                 <span
-                  key={i}
+                  key={item.color}
                   className={`hero-color-chip ${
                     isFinished || i <= colorIndex ? 'active' : ''
-                  }`}
+                  } ${i === colorIndex && isColoring ? 'current' : ''}`}
                   style={{
-                    backgroundColor: colors[i] ?? '#c2410c',
+                    backgroundColor: item.color,
+                    boxShadow:
+                      i === colorIndex && isColoring
+                        ? `0 0 10px ${item.color}`
+                        : undefined,
                   }}
-                  title={nameOf(model, i)}
-                  aria-label={nameOf(model, i)}
+                  title={`${item.names.join(' & ')} (${i + 1} of ${colorSteps})`}
+                  aria-label={`${item.names.join(' & ')} (${i + 1} of ${colorSteps})`}
                 />
               ))}
             </div>
