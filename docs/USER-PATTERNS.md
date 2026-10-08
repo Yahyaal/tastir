@@ -512,3 +512,41 @@ Suggestions:
 5. On the phone, the ink buttons (Undo, Redo, Clear the ink) sit at the end of a sideways-scrolling row and are cut off at the edge.
 
 **Verdict: the owner's confusion is mostly fixed.** With the pen, a click no longer inks several lines in different directions. The dashed line shows the stroke before it is made, and with the default settings a stroke inks exactly the stretch between two dots. Undo, Erase and the hints all work by stroke, on a computer and on a phone. Two things remain before I would call it obvious: strokes along the tile's edge must not move to the opposite edge (1), and the dots a learner needs should be visible before the pen is down, especially on a phone (2).
+
+### Repeat it yourself and helper lines (6.13–6.15), tester report (8 October 2026)
+
+I tested from a frozen worktree of ffeef4e, with my own server on port 4351, at 1280×800, 1024×768 and 390×844 (touch). Screenshots are in `docs/review/user-patterns/repeat-test/`. There were no console or page errors in any run. “Show helper lines” was left at its default (off) unless I say otherwise.
+
+**What I did.**
+- **The bones, drawn by hand at 1280.** I drew all six steps of `#/alhambra-comares-bones/draw` with the tools, inked with the pen by following the hints, and pressed Repeat it.
+- **The Repeat stage.** I laid copies by clicking ghosts, dragged one somewhere loose and one back near its place, erased one, used Undo, Redo and Fill the wall for me.
+- **The Color stage.** I coloured, pressed Keep it, opened the kept pattern from My patterns and reopened the draw page.
+- **Board stability.** I went through the same stages at 1024 and on the phone, measuring where the board sits at each one.
+- **The star and cross and the player.** I checked the star and cross ticks, and walked the player with helper lines off and on for the Mian rosette and the Bou Inania rosette.
+
+**What worked.**
+- **Simpler drawing, sensible ticks.** With helper lines hidden, the step pictures are simpler. On the bones the horizontal and vertical show as dashed helpers that are still needed, and the legend explains the dashes. Each bones step ticked only once its figures were on my board. A step with only part drawn said what was left (“Still to draw: one circle”, “six circles”, “four lines”).
+- **Star and cross.** Steps 2 and 3 no longer tick early. After the circle only step 1 is ticked, step 2 says “Not on your board yet”, one line gives “Still to draw: one line”, and step 2 ticks only with both lines, step 3 only with both diagonals.
+- **Repeat it yourself is clear and works.** The text says what to do. Clicking a ghost places a copy beside the tile (“one copy placed”, then “two copies placed”) and new ghosts appear around it. A copy dragged into empty space stays there (“two copies placed, one of them loose”, `rep-1280-loose.png`). Dragged back to within about 10 px of its place, it snaps exactly onto it. Erase then a click on a copy removes it, and Undo and Redo work. Fill the wall for me lays 12 copies that match the pattern's own wall on the right (`rep-1280-fill.png`).
+- **Keep it and reopen.** Keep it says “✓ Kept as one of your patterns. Play it · My patterns”. The pattern shows on My patterns and plays, and the draw page reopens on the Color stage with my colour.
+- **The board never moved on desktop.** At 1280 and 1024 it stayed at the same place and size, to the pixel, through all six steps, Ink, Repeat (before and after placing and filling) and Color.
+- **The setting.** “Show helper lines” is at the top of draw along and in the player's View settings, off by default. Turning it on and off changes the pictures and the step count straight away.
+
+**Problems, most important first.** Bugs:
+
+1. **Clicking a piece on the colour board does nothing.** On the Color stage, a click on a bone hits an invisible tile-area shape lying on top of the pieces (`elementFromPoint` gives `polygon.copy-area`). Nothing is selected and no colours appear, although the text says “Click a piece of your wall, then choose its colour on the right”. The only way to colour is to click the “bone” row on the right, which opens the swatches (`color-1280-picked.png`).
+2. **The colours I chose are not kept in the kept pattern.** I made every bone teal and pressed Keep it. The draw page shows teal again, but the kept pattern's Color stage in the player shows the tutorial's own colouring by place: cream, black, orange and teal (`kept-color.png`).
+3. **Keep it makes a second pattern instead of updating the first.** Pressing Keep it again (after recolouring on a later visit) added “My Comares bones 2” beside “My Comares bones”. Their cards say “22 steps”, while the player shows 20 construction steps, so the step counts disagree again (they matched after 6.8).
+4. **With helper lines hidden, some step texts describe lines the picture no longer shows.**
+   - Mian rosette: the skipped step is the one that rules the lines through O joining opposite points. Step 5 of 9 still says “Halve each of the twelve angles at O … so there is a line through O every 15°”. The picture shows no lines making those angles, and only the new half-way lines in blue (`mian-off-step5.png`).
+   - Bones, step 4: the text says “Through the first mark … and every second mark after it, rule a line”, which means the marks at ±1 and ±3, and “The lines make a square grid”. The picture shows only the four lines at ±1 (`alhambra-comares-bones-peek-4-1280.png`), and the step ticks without the ±3 lines. With helper lines on, those are drawn “light dashed: optional”, so the logic is consistent, but with the default setting a learner reads a text that asks for lines the picture leaves out.
+   - Bou Inania: with helpers off, step 7 (the circles that find the bigger circle) is skipped, and the steps renumber from 13 to 12. I did not find a sentence that clearly refers to it, but check the later steps' wording the same way.
+5. **On the phone the board moves between stages.** It sits at y = 596 through the steps and Ink, 578 at Repeat and 598 at Color. At 1280 and 1024 it does not move.
+
+Suggestions:
+
+6. On the phone, the Color stage says “choose its colour on the right” and “Tap a piece, then press Show the step to choose its colour”, while the button is still called “Show the step”. “Show the colours” would match what it shows (`stab-390-color.png`).
+7. On the Color stage the tile edges (saffron dashes) still show across the coloured wall, like cracks in the bones (`color-1280-0.png`).
+8. In the player, the step numbers change when helper lines are turned on or off (Mian has 9 or 10 steps, Bou Inania 12 or 13). That is reasonable, but a learner who switches mid-way finds themselves on a different step number.
+
+**Verdict.** Repeat it yourself is a real success: ghosts, dragging, snapping, loose copies, Erase, Undo and Fill all work and are easy to understand. The board stays put on desktop, and the star and cross ticks are right. Colouring at the end is not yet usable as described: a click on a piece does nothing (1), and the chosen colours do not reach the kept pattern (2). Hiding helper lines leaves some step texts describing lines that are no longer drawn (4). I would fix 1, 2 and 4 before the owner tries it.
