@@ -41,6 +41,7 @@ import { drawForMe } from './drawForMe';
 import { hintFor } from './hints';
 import { namesIn, placeKey, readableAt, readableNames } from './names';
 import { withTutorialNames } from './naming';
+import { dotNear, reachable, type PenGraph } from './pen';
 import { forgetProgress, getProgress, keepProgress } from './progress';
 import { useInkBoard } from './useInkBoard';
 import '../editor/editor.css';
@@ -123,13 +124,27 @@ function stillToDraw(c: StepCheck, cell: string): string {
 const TILE_ASK =
   'Click the corners of the tile the step names, in turn, then the first again.';
 
-const INK_SYMMETRIC =
-  'Ink or erase a bit of line together with its copies, turned round the centre (and mirrored when the pattern is), so the pattern stays even.';
-const INK_RUNS =
-  'Ink a whole stretch of line between two points with one click, not each little piece.';
+const INK_LIFT =
+  'Lift the pen off the board, to start a new stroke somewhere else (or press Escape).';
+const INK_ERASE =
+  'Erase instead of ink: strokes from dot to dot take ink away. With the pen lifted, a click on an inked stretch also erases it.';
+const INK_COPIES =
+  'Each stroke is also inked turned round the centre (and mirrored, when the pattern is its own mirror image), so you ink one part and the rest follows.';
 const INK_FOR_ME =
   'Ink your board the way the tutorial inks it, to see the pattern or to start from it.';
 const INK_CLEAR = 'Take all the ink off your board.';
+
+const penDotCache = new WeakMap<PenGraph, Vec[]>();
+
+/** Every dot the pen can go down on (computed once per board). */
+function penDotsOf(g: PenGraph): Vec[] {
+  let found = penDotCache.get(g);
+  if (!found) {
+    found = [...g.dots.values()].map((d) => d.at);
+    penDotCache.set(g, found);
+  }
+  return found;
+}
 
 /** Whether the screen is a phone's, where the two halves take turns. */
 function usePhone(): boolean {
@@ -253,9 +268,50 @@ export function DrawAlong({
   const here = inking ? undefined : checks[index];
 
   // The ink stage: the learner's own ink on their board.
-  const [chosen, setChosen] = useState<ReadonlySet<string>>(
-    () => new Set(saved?.inked ?? []),
+  // The ink, with Undo and Redo of its own.
+  const [inkHistory, setInkHistory] = useState<{
+    past: readonly ReadonlySet<string>[];
+    now: ReadonlySet<string>;
+    future: readonly ReadonlySet<string>[];
+  }>(() => ({ past: [], now: new Set(saved?.inked ?? []), future: [] }));
+  const chosen = inkHistory.now;
+  const setChosen = useCallback(
+    (next: ReadonlySet<string>) =>
+      setInkHistory((h) => ({
+        past: [...h.past, h.now],
+        now: next,
+        future: [],
+      })),
+    [],
   );
+  const inkUndo = useCallback(
+    () =>
+      setInkHistory((h) => {
+        const before = h.past.at(-1);
+        return before
+          ? {
+              past: h.past.slice(0, -1),
+              now: before,
+              future: [h.now, ...h.future],
+            }
+          : h;
+      }),
+    [],
+  );
+  const inkRedo = useCallback(
+    () =>
+      setInkHistory((h) => {
+        const after = h.future[0];
+        return after
+          ? { past: [...h.past, h.now], now: after, future: h.future.slice(1) }
+          : h;
+      }),
+    [],
+  );
+  // The pen: the dot it is down on, if any; and whether it erases.
+  const [pen, setPen] = useState<string>();
+  const [erasing, setErasing] = useState(false);
+  const [penSaid, setPenSaid] = useState<string>();
   // Every change is kept, so leaving and coming back loses nothing.
   const [kept, setKept] = useState(true);
   useEffect(() => {
@@ -279,7 +335,7 @@ export function DrawAlong({
       now: emptyDraft(`${tutorial.id}-along`, `My ${tutorial.title}`),
       future: [],
     });
-    setChosen(new Set());
+    setInkHistory({ past: [], now: new Set(), future: [] });
     setIndex(0);
     setRestarting(false);
     setWelcome(false);
@@ -428,20 +484,22 @@ export function DrawAlong({
       if (e.key === 'Escape') {
         setTargets([]);
         setChoices(undefined);
+        setPen(undefined);
       }
       if (!(e.ctrlKey || e.metaKey)) return;
+      const [u, r] = inking ? [inkUndo, inkRedo] : [undo, redo];
       if (e.key.toLowerCase() === 'z') {
         e.preventDefault();
-        if (e.shiftKey) redo();
-        else undo();
+        if (e.shiftKey) r();
+        else u();
       } else if (e.key.toLowerCase() === 'y') {
         e.preventDefault();
-        redo();
+        r();
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [undo, redo]);
+  }, [undo, redo, inkUndo, inkRedo, inking]);
 
   // One view for both halves: the step's calm frame, as the player
   // shows it; Fit shows the whole pattern.
@@ -455,13 +513,34 @@ export function DrawAlong({
   const camera = useCamera(frame, refs, { stage: index });
   // A ringed hint is brought into view, and a tiny ringed bit is zoomed in
   // on until it is easy to click.
-  const ringAt = inking ? ink.hint?.ring[0] : hint?.rings[0];
+  const phone = usePhone();
+  // For a ringed stroke, its middle, and its length decides the zoom.
+  const rings = inking ? (ink.hint?.ring ?? []) : (hint?.rings ?? []);
+  const ringAt =
+    inking && rings.length === 2 && rings[0] && rings[1]
+      ? {
+          x: (rings[0].x + rings[1].x) / 2,
+          y: (rings[0].y + rings[1].y) / 2,
+        }
+      : rings[0];
   const ringBit =
-    inking && ink.hint?.ringId && ready
-      ? ready.pieces.find((p) => p.id === ink.hint?.ringId)
-      : undefined;
+    inking && rings.length === 2 && rings[0] && rings[1]
+      ? { segment: { a: rings[0], b: rings[1] } }
+      : inking && ink.hint?.ringId && ready
+        ? ready.pieces.find((p) => p.id === ink.hint?.ringId)
+        : undefined;
+  // A hint that shows a stroke lifts the pen, ready for its first dot.
+  useEffect(() => {
+    if (ink.hint?.stroke) setPen(undefined);
+  }, [ink.hint?.stroke]);
   useEffect(() => {
     if (!ringAt) return;
+    // On a phone the board may be below the text: bring it on screen.
+    if (phone)
+      boardRef.current?.scrollIntoView?.({
+        block: 'nearest',
+        behavior: 'smooth',
+      });
     const v = camera.view;
     const w = v.maxX - v.minX;
     const h = v.maxY - v.minY;
@@ -521,11 +600,12 @@ export function DrawAlong({
     return () => window.clearTimeout(t);
   }, [viewKey, index, camera.view]);
 
-  const phone = usePhone();
   const [showStep, setShowStep] = useState(false);
   const go = (to: number) => {
     setIndex(Math.max(0, Math.min(shown.length, to)));
     setKeepFailed(undefined);
+    setPen(undefined);
+    setPenSaid(undefined);
     setHintLevel(0);
     setDrawFailed(undefined);
     setTargets([]);
@@ -573,6 +653,7 @@ export function DrawAlong({
             ? {
                 pieces: ready.pieces,
                 chosen,
+                fresh: ink.fresh,
                 ...(ink.hint
                   ? { glow: ink.hint.glow, dashed: ink.hint.dashed }
                   : {}),
@@ -588,6 +669,15 @@ export function DrawAlong({
         labelOf={labelOf}
         glow={hint?.glow}
         rings={inking ? ink.hint?.ring : hint?.rings}
+        pen={
+          inking && ready && pen && ready.graph.dots.get(pen)
+            ? {
+                at: ready.graph.dots.get(pen)?.at as Vec,
+                reach: reachable(ready.graph, pen).map((d) => d.at),
+              }
+            : undefined
+        }
+        penDots={inking && ready ? penDotsOf(ready.graph) : undefined}
         dashed={hint?.dashed}
         camera={camera}
         svgRef={boardRef}
@@ -597,15 +687,39 @@ export function DrawAlong({
         }
         onClick={(at: Vec, reach: number) => {
           if (inking) {
-            // A click near the ring takes the ringed bit, however close its
-            // neighbours are.
-            const ringed = ink.hint?.ringId;
-            const ringAt = ink.hint?.ring[0];
+            if (!ready) return;
+            const stroke = ink.hint?.stroke;
+            const ringed = stroke ? [stroke.from, stroke.to] : [];
+            const dot = dotNear(ready.graph, at, reach * 1.2, ringed);
+            if (dot) {
+              setPenSaid(undefined);
+              // The pen goes down; on its own dot it lifts.
+              if (!pen) return setPen(dot.key);
+              if (pen === dot.key) return setPen(undefined);
+              if (ink.stroke(pen, dot.key, !erasing)) setPen(dot.key);
+              else
+                setPenSaid(
+                  'Those two points are not on one line; ink goes along the lines you drew.',
+                );
+              return;
+            }
+            // With the pen lifted, a click on an inked bit erases it; near
+            // a ringed extra bit, that one.
+            const extra = ink.hint?.ringId;
+            const extraAt = ink.hint?.ring[0];
             const hit =
-              ringed && ringAt && distance(at, ringAt) <= reach * 2.5
-                ? ringed
-                : ready && nearestPiece(ready.pieces, at, reach);
-            if (hit) ink.toggle(hit);
+              extra && extraAt && distance(at, extraAt) <= reach * 2.5
+                ? extra
+                : nearestPiece(ready.pieces, at, reach);
+            if (!pen && hit && chosen.has(hit)) {
+              ink.erase(hit);
+              setPenSaid(undefined);
+            } else
+              setPenSaid(
+                pen
+                  ? 'Click a dot: the pen draws straight from dot to dot.'
+                  : 'Click a dot to put the pen down.',
+              );
             return;
           }
           if (choices) {
@@ -861,23 +975,34 @@ export function DrawAlong({
               inert={!inking}
             >
               <div className="editor-tools" role="toolbar" aria-label="Ink">
-                <label className="tool" title={INK_SYMMETRIC}>
+                <button
+                  type="button"
+                  className="tool"
+                  title={INK_LIFT}
+                  aria-description={INK_LIFT}
+                  disabled={!pen}
+                  onClick={() => setPen(undefined)}
+                >
+                  Lift the pen
+                </button>
+                <button
+                  type="button"
+                  className={erasing ? 'tool on' : 'tool'}
+                  aria-pressed={erasing}
+                  title={INK_ERASE}
+                  aria-description={INK_ERASE}
+                  onClick={() => setErasing(!erasing)}
+                >
+                  Erase
+                </button>
+                <label className="tool" title={INK_COPIES}>
                   <input
                     type="checkbox"
-                    checked={ink.symmetric}
-                    aria-description={INK_SYMMETRIC}
-                    onChange={(e) => ink.setSymmetric(e.target.checked)}
+                    checked={ink.copies}
+                    aria-description={INK_COPIES}
+                    onChange={(e) => ink.setCopies(e.target.checked)}
                   />
-                  Keep it symmetric
-                </label>
-                <label className="tool" title={INK_RUNS}>
-                  <input
-                    type="checkbox"
-                    checked={ink.wholeRuns}
-                    aria-description={INK_RUNS}
-                    onChange={(e) => ink.setWholeRuns(e.target.checked)}
-                  />
-                  Whole lines between points
+                  Also ink the copies round the centre
                 </label>
                 <button
                   type="button"
@@ -897,6 +1022,26 @@ export function DrawAlong({
                   onClick={() => setChosen(new Set())}
                 >
                   Clear the ink
+                </button>
+                <button
+                  type="button"
+                  className="tool"
+                  title="Take back the last stroke."
+                  aria-description="Take back the last stroke."
+                  disabled={!inkHistory.past.length}
+                  onClick={inkUndo}
+                >
+                  Undo
+                </button>
+                <button
+                  type="button"
+                  className="tool"
+                  title="Put back what Undo took away."
+                  aria-description="Put back what Undo took away."
+                  disabled={!inkHistory.future.length}
+                  onClick={inkRedo}
+                >
+                  Redo
                 </button>
               </div>
             </div>
@@ -967,12 +1112,11 @@ export function DrawAlong({
           <h2>Your drawing</h2>
           {inking ? (
             <p className="instruction" aria-live="polite">
-              <b>Ink:</b>{' '}
-              {ink.symmetric
-                ? ink.mirror
-                  ? 'Click a bit of line in the dotted tile to ink or erase it, with its turned and mirrored copies.'
-                  : 'Click a bit of line in the dotted tile to ink or erase it, with its turned copies only: this pattern turns, but is not its own mirror image.'
-                : 'Click a bit of line in the dotted tile to ink or erase it.'}
+              <b>{erasing ? 'Erase:' : 'Pen:'}</b>{' '}
+              {penSaid ??
+                (pen
+                  ? `Click a marked dot on the same line to ${erasing ? 'erase' : 'ink'} the straight stretch to it; click the pen's dot to lift it.`
+                  : `Click a dot to put the pen down, then a dot on the same line to ${erasing ? 'erase' : 'ink'} between them.`)}
             </p>
           ) : (
             <>

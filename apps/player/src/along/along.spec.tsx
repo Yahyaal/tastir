@@ -9,6 +9,7 @@ import {
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import dado from '@tutorials/alhambra-comares-dado.json';
 import infantas from '@tutorials/alhambra-infantas-crosses.json';
+import bones from '@tutorials/alhambra-comares-bones.json';
 import App from '../app/app';
 import { listPatterns } from '../editor/patterns';
 import { TOOLS } from '../editor/tools';
@@ -37,6 +38,12 @@ const tool = (name: string) =>
 const click = (name: string | RegExp) =>
   fireEvent.click(screen.getByRole('button', { name }));
 const steps = () => screen.getByRole('navigation', { name: 'Steps' });
+const inkBoard = () =>
+  screen.getByRole('img', { name: 'The construction so far' });
+const inked = () => inkBoard().querySelectorAll('.ink-piece.inked').length;
+const rings = () => [...inkBoard().querySelectorAll('.hint-ring')];
+const clickRing = (r: Element) =>
+  clickAt(Number(r.getAttribute('cx')), Number(r.getAttribute('cy')));
 const ticked = () =>
   within(steps())
     .getAllByRole('button', { name: /^Step \d/ })
@@ -191,7 +198,7 @@ describe('drawing along', () => {
     expect(ticked()).toEqual(['1', '2', '3', '4']);
   });
 
-  it('ends by inking the board, and keeps the drawing as a pattern that plays from the repeat', () => {
+  it('ends by inking the board with a pen, and keeps the drawing as a pattern that plays from the repeat', () => {
     openAlong();
     for (let i = 0; i < 6; i++) {
       click('Draw it for me');
@@ -200,11 +207,32 @@ describe('drawing along', () => {
     expect(screen.getByRole('toolbar', { name: 'Ink' })).toBeTruthy();
     const go = screen.getByRole('button', { name: 'Repeat and color it' });
     expect((go as HTMLButtonElement).disabled).toBe(true);
-    // One click on a side of a star tip inks the star, with its copies.
+    // Copies are off at first.
+    expect(
+      (
+        screen.getByRole('checkbox', {
+          name: 'Also ink the copies round the centre',
+        }) as HTMLInputElement
+      ).checked,
+    ).toBe(false);
+    // The pen goes round the star: E, its crossing with the other square,
+    // NE, and so on, sixteen straight strokes back to E.
     const k = 0.76537;
-    const a = (22.5 * Math.PI) / 180;
-    clickAt((1 + k * Math.cos(a)) / 2, (k * Math.sin(a)) / 2);
+    const corner = (j: number) => {
+      const a = (22.5 * j * Math.PI) / 180;
+      const r = j % 2 ? k : 1;
+      return [r * Math.cos(a), r * Math.sin(a)] as const;
+    };
+    clickAt(...corner(0));
+    expect(document.querySelector('.pen-at')).toBeTruthy();
+    clickAt(...corner(1));
+    // One stroke inks only its own stretch, no copies.
+    expect(inked()).toBe(1);
+    for (let j = 2; j <= 16; j++) clickAt(...corner(j % 16));
     expect(status()).toMatch(/Your ink closes the pattern’s pieces/);
+    // The pen stays at the last dot until it is lifted.
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(document.querySelector('.pen-at')).toBeNull();
     fireEvent.click(go);
     const kept = listPatterns()[0];
     expect(kept?.basedOn?.tutorial).toBe('eight-fold-star-and-cross');
@@ -326,9 +354,7 @@ describe('drawing along', () => {
       click(i < 5 ? 'Next' : 'Ink it');
     }
     expect(cells()).toEqual(atStep);
-    expect(
-      screen.getByText(/with its turned and mirrored copies/),
-    ).toBeTruthy();
+    expect(screen.getByText(/Click a dot to put the pen down/)).toBeTruthy();
     const board = () =>
       screen.getByRole('img', { name: 'The construction so far' });
     click('Show me a hint');
@@ -337,12 +363,17 @@ describe('drawing along', () => {
     );
     expect(screen.getByText(/still to ink, round the star/)).toBeTruthy();
     click('Show me more');
-    expect(board().querySelectorAll('.hint-ring')).toHaveLength(1);
+    expect(board().querySelectorAll('.hint-ring')).toHaveLength(2);
+    expect(
+      screen.getByText(
+        /Put the pen on the first ringed dot, then click the second/,
+      ),
+    ).toBeTruthy();
     click('Show me more');
     expect(board().querySelectorAll('.ink-piece.answer')).toHaveLength(16);
   });
 
-  it('inks a pinwheel with turned copies only', () => {
+  it('inks the copies round the centre only when asked, and a pinwheel without mirror images', () => {
     act(() => {
       window.location.hash = '#/alhambra-infantas-crosses/draw';
     });
@@ -353,11 +384,25 @@ describe('drawing along', () => {
       click('Draw it for me');
       click(i < 5 ? 'Next' : 'Ink it');
     }
-    expect(
-      screen.getByText(
-        /turned copies only: this pattern turns, but is not its own mirror image/,
-      ),
-    ).toBeTruthy();
+    // One stroke the hint shows, without copies, then with them.
+    while (rings().length < 2) click(/^Show me/);
+    const [a, b] = rings() as [Element, Element];
+    clickRing(a);
+    clickRing(b);
+    const one = inked();
+    expect(one).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
+    expect(inked()).toBe(0);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    fireEvent.click(
+      screen.getByRole('checkbox', {
+        name: 'Also ink the copies round the centre',
+      }),
+    );
+    clickRing(a);
+    clickRing(b);
+    // Turned four times; the pinwheel is not its own mirror image.
+    expect(inked()).toBe(4 * one);
     click('Ink it for me');
     expect(status()).toMatch(/Your ink closes the pattern’s pieces/);
   });
@@ -412,29 +457,38 @@ describe('drawing along', () => {
     expect(circles).toHaveLength(1);
   });
 
-  it('follows the ink hints with whole lines on to the pattern, after an extra bit too', () => {
+  it.each([
+    ['alhambra-infantas-crosses', infantas],
+    ['alhambra-comares-bones', bones],
+  ] as const)('inks %s by pen strokes, following the hints', (id, json) => {
     act(() => {
-      window.location.hash = '#/alhambra-infantas-crosses/draw';
+      window.location.hash = `#/${id}/draw`;
     });
-    render(
-      <App entries={[{ id: 'alhambra-infantas-crosses', json: infantas }]} />,
-    );
+    render(<App entries={[{ id, json }]} />);
     for (let i = 0; i < 6; i++) {
-      click('Draw it for me');
+      if (
+        !(
+          screen.getByRole('button', {
+            name: 'Draw it for me',
+          }) as HTMLButtonElement
+        ).disabled
+      )
+        click('Draw it for me');
       click(i < 5 ? 'Next' : 'Ink it');
     }
-    const board = () =>
-      screen.getByRole('img', { name: 'The construction so far' });
-    const ring = () => board().querySelector('.hint-ring');
-    const clickRing = () => {
-      const r = ring() as SVGCircleElement;
-      clickAt(Number(r.getAttribute('cx')), Number(r.getAttribute('cy')));
-    };
-    // An extra bit first: a whole line the pattern does not keep.
-    clickAt(0, 0.5);
-    for (let k = 0; k < 20 && !/✓/.test(status()); k++) {
-      while (!ring()) click(/^Show me/);
-      clickRing();
+    for (let k = 0; k < 120 && !/✓/.test(status()); k++) {
+      while (!rings().length) click(/^Show me/);
+      const rs = rings();
+      if (rs.length === 2) {
+        // A stroke still to ink: pen down on the first, then the second.
+        clickRing(rs[0] as Element);
+        clickRing(rs[1] as Element);
+      } else {
+        // An extra bit: lift the pen and click it to erase it.
+        fireEvent.keyDown(window, { key: 'Escape' });
+        clickRing(rs[0] as Element);
+      }
+      fireEvent.keyDown(window, { key: 'Escape' });
     }
     expect(status()).toMatch(/Your ink closes the pattern’s pieces/);
   });

@@ -11,16 +11,23 @@ import {
   type Scene,
 } from '@tastir/engine';
 import type { Tutorial } from '@tastir/schema';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { asPanel, type Model } from '../app/model';
-import { check, pointPlaces, type Draft } from '../editor/document';
-import { imagesOf, runOf, tutorialOf, type Inkable } from '../editor/finish';
+import { check, type Draft } from '../editor/document';
+import { imagesOf, tutorialOf, type Inkable } from '../editor/finish';
 import { addPattern, freeTitle, type UserPattern } from '../editor/patterns';
 import { strokesOf } from '@tastir/engine';
 import type { InkAlong } from '@tastir/schema';
 import { withoutDuplicates } from './dedupe';
 import { withTutorialInk } from './drawForMe';
 import { readyToInk, samePieces } from './inking';
+import {
+  lineKey,
+  penGraph,
+  strokeBetween,
+  strokeThrough,
+  type PenGraph,
+} from './pen';
 
 /** The board ready to ink: its tile, scene and every bit of line. */
 interface Ready {
@@ -36,23 +43,8 @@ interface Ready {
   readonly pattern: Pattern;
   /** Whether the pattern is its own mirror image. */
   readonly mirror: boolean;
-}
-
-const r6 = (n: number) => (Math.abs(n) < 5e-7 ? 0 : n).toFixed(6);
-
-/** The line a bit runs along, as a key shared by every bit on it. */
-function lineKey(p: InkPiece): string {
-  const { a, b } = p.segment;
-  let dx = b.x - a.x;
-  let dy = b.y - a.y;
-  const len = Math.hypot(dx, dy);
-  dx /= len;
-  dy /= len;
-  if (dx < -1e-9 || (Math.abs(dx) <= 1e-9 && dy < 0)) {
-    dx = -dx;
-    dy = -dy;
-  }
-  return `${r6(dx)},${r6(dy)},${r6(a.x * dy - a.y * dx)}`;
+  /** The dots and lines the pen goes along. */
+  readonly graph: PenGraph;
 }
 
 /** How the learner's inking stands against the pattern. */
@@ -117,13 +109,23 @@ export function useInkBoard(
         classic,
         pattern,
         mirror,
+        graph: penGraph(pieces),
       };
     } catch (e) {
       return { reason: e instanceof Error ? e.message : String(e) };
     }
   }, [active, tutorial, model.scene, draft]);
-  const [symmetric, setSymmetric] = useState(true);
-  const [wholeRuns, setWholeRuns] = useState(true);
+  // The copies round the centre are a choice, off at first: a stroke
+  // inks only what the learner drew.
+  const [copies, setCopies] = useState(false);
+  // Copies just drawn, shown with a brief flash so the learner sees them
+  // come from the stroke.
+  const [fresh, setFresh] = useState<ReadonlySet<string>>(new Set());
+  useEffect(() => {
+    if (!fresh.size) return;
+    const t = window.setTimeout(() => setFresh(new Set()), 900);
+    return () => window.clearTimeout(t);
+  }, [fresh]);
 
   const result = useMemo((): InkCheck | undefined => {
     if (!ready || 'reason' in ready || !chosen.size) return undefined;
@@ -191,58 +193,86 @@ export function useInkBoard(
     const focus = erasing ? extra : forKind.length ? forKind : missing;
     const first = ready.pieces.find((q) => q.id === focus[0]);
     const kindName = kind >= 0 ? ready.pattern.types[kind]?.name : undefined;
+    // A missing stroke: its start and end dots are ringed.
+    const stroke =
+      !erasing && first && hintLevel >= 2
+        ? strokeThrough(ready.graph, first.id, new Set(missing))
+        : undefined;
+    const dotAt = (k: string) => ready.graph.dots.get(k)?.at;
+    const ends = stroke
+      ? [dotAt(stroke.from), dotAt(stroke.to)].filter(
+          (v): v is Vec => v !== undefined,
+        )
+      : [];
     return {
       glow: new Set(focus),
-      /** The bit that is ringed, which a click near the ring takes. */
-      ringId: hintLevel >= 2 || erasing ? first?.id : undefined,
-      ring:
-        (hintLevel >= 2 || erasing) && first
+      /** The extra bit that is ringed, which a click near the ring
+       * erases. */
+      ringId: erasing ? first?.id : undefined,
+      /** The dots of the ringed stroke, first the start. */
+      stroke,
+      ring: erasing
+        ? first
           ? [
               {
                 x: (first.segment.a.x + first.segment.b.x) / 2,
                 y: (first.segment.a.y + first.segment.b.y) / 2,
               },
             ]
-          : [],
+          : []
+        : ends,
       dashed: new Set(hintLevel >= 3 && !erasing ? missing : []),
       words: !missing.length
         ? extra.length
-          ? `Everything the pattern keeps is inked, and ${extra.length} ${extra.length === 1 ? 'bit is' : 'bits are'} extra: ${extra.length === 1 ? 'it glows' : 'they glow'}. Click the ringed one to erase it.`
+          ? `Everything the pattern keeps is inked, and ${extra.length} ${extra.length === 1 ? 'bit is' : 'bits are'} extra: ${extra.length === 1 ? 'it glows' : 'they glow'}. With the pen lifted, click the ringed one to erase it.`
           : 'Everything the pattern keeps is inked.'
         : hintLevel === 1
           ? `The bits that glow are still to ink${kindName ? `, round the ${kindName}` : ''}.`
           : hintLevel === 2
-            ? `Click the ringed bit${kindName ? ` of the ${kindName}` : ''}.`
-            : `All ${missing.length} bits still to ink are dashed.`,
+            ? `Put the pen on the first ringed dot, then click the second${kindName ? `: a side of the ${kindName}` : ''}.`
+            : `Every stroke still to ink is dashed${kindName ? `; start with the ${kindName}` : ''}.`,
     };
   }, [ready, hintLevel, chosen, result]);
 
-  const toggle = (id: string) => {
-    if (!ready || 'reason' in ready) return;
-    const { inkable } = ready;
-    // A whole run on a bit the pattern keeps is the pattern's own stretch
-    // of that line, so following the hints never inks more than it keeps.
-    const run = !wholeRuns
-      ? [id]
-      : ready.classic.has(id) && !chosen.has(id)
-        ? keptRun(ready, id)
-        : runOf(
-            inkable,
-            id,
-            pointPlaces(ready.scene).map((p) => p.at),
-            ready.scene,
-          );
-    const ids = symmetric
-      ? run.flatMap((r) => imagesOf(inkable, r, tutorial.fold, ready.mirror))
-      : run;
+  /** The bits with their copies round the centre, when copies are on. */
+  const withCopies = (ids: readonly string[]): string[] => {
+    if (!ready || 'reason' in ready || !copies) return [...ids];
+    return [
+      ...new Set(
+        ids.flatMap((id) =>
+          imagesOf(ready.inkable, id, tutorial.fold, ready.mirror),
+        ),
+      ),
+    ];
+  };
+
+  /** Inks (or erases) bits, with their copies when copies are on. */
+  const apply = (ids: readonly string[], add: boolean) => {
+    const all = withCopies(ids);
     const next = new Set(chosen);
-    const on = !chosen.has(id);
-    for (const i of ids) {
-      if (on) next.add(i);
+    for (const i of all) {
+      if (add) next.add(i);
       else next.delete(i);
     }
     setChosen(next);
+    if (add && copies) setFresh(new Set(all.filter((i) => !ids.includes(i))));
     setHintLevel(0);
+  };
+
+  /**
+   * A straight stroke of the pen from one dot to another: the bits between
+   * them, inked (or erased); undefined when no line joins them.
+   */
+  const stroke = (from: string, to: string, add: boolean): boolean => {
+    if (!ready || 'reason' in ready) return false;
+    const { u, v } = ready.cell;
+    const shifts = [-1, 0, 1].flatMap((i) =>
+      [-1, 0, 1].map((j) => ({ x: u.x * i + v.x * j, y: u.y * i + v.y * j })),
+    );
+    const ids = strokeBetween(ready.graph, from, to, shifts);
+    if (!ids.length) return false;
+    apply(ids, add);
+    return true;
   };
 
   /** “Ink it for me”: the bits the tutorial's own ink runs along. */
@@ -323,13 +353,14 @@ export function useInkBoard(
         .map((t) => t.name ?? `${t.vertices}-cornered piece`);
     })(),
     mirror: ready && !('reason' in ready) ? ready.mirror : true,
-    toggle,
+    stroke,
+    /** Erases one bit (and its copies when copies are on). */
+    erase: (id: string) => apply([id], false),
     inkForMe,
     keep,
-    symmetric,
-    setSymmetric,
-    wholeRuns,
-    setWholeRuns,
+    copies,
+    setCopies,
+    fresh,
   };
 }
 
@@ -343,31 +374,4 @@ function onOutline(p: Vec, poly: readonly Vec[]): boolean {
     if (t < -1e-6 || t > 1 + 1e-6) return false;
     return Math.hypot(p.x - (a.x + d.x * t), p.y - (a.y + d.y * t)) < 1e-6;
   });
-}
-
-/** The stretch of line through a bit that the pattern keeps: the kept
- * bits along the same line, joined end to end with it. */
-function keptRun(ready: Ready, id: string): string[] {
-  const line = ready.inkable.paths.get(id)?.along;
-  const same = ready.pieces.filter(
-    (p) =>
-      ready.classic.has(p.id) && ready.inkable.paths.get(p.id)?.along === line,
-  );
-  const at = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y) < 1e-6;
-  const run = new Set([id]);
-  const todo = same.filter((p) => p.id === id);
-  while (todo.length) {
-    const p = todo.pop() as InkPiece;
-    for (const q of same)
-      if (
-        !run.has(q.id) &&
-        [q.segment.a, q.segment.b].some(
-          (e) => at(e, p.segment.a) || at(e, p.segment.b),
-        )
-      ) {
-        run.add(q.id);
-        todo.push(q);
-      }
-  }
-  return [...run];
 }

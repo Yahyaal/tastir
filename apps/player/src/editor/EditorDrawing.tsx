@@ -73,6 +73,8 @@ export function EditorDrawing({
   dashed,
   labelOf,
   current: currentNames,
+  pen,
+  penDots,
 }: {
   scene: Scene;
   selected?: number;
@@ -85,6 +87,8 @@ export function EditorDrawing({
     chosen: ReadonlySet<string>;
     glow?: ReadonlySet<string>;
     dashed?: ReadonlySet<string>;
+    /** Copies just inked, which flash briefly. */
+    fresh?: ReadonlySet<string>;
   };
   /** Circles to choose between, drawn dashed. */
   candidates?: readonly { centre: Vec; radius: number }[];
@@ -115,6 +119,11 @@ export function EditorDrawing({
   labelOf?: (place: PointPlace) => string | undefined;
   /** Elements drawn as the step at hand (blue), when drawing along. */
   current?: ReadonlySet<string>;
+  /** Inking with a pen: where it is down, and the dots one straight
+   * stroke reaches; a line follows the pointer from the pen. */
+  pen?: { readonly at: Vec; readonly reach: readonly Vec[] };
+  /** Every dot the pen can go down on; those near the pointer show. */
+  penDots?: readonly Vec[];
 }) {
   const ownFrame = useMemo(() => frameOf(scene), [scene]);
   const frame = fitTo ?? ownFrame;
@@ -317,6 +326,7 @@ export function EditorDrawing({
                     ink.chosen.has(p.id) ? 'inked' : '',
                     ink.glow?.has(p.id) ? 'glow' : '',
                     ink.dashed?.has(p.id) ? 'answer' : '',
+                    ink.fresh?.has(p.id) ? 'fresh' : '',
                   ]
                     .filter(Boolean)
                     .join(' ')}
@@ -355,6 +365,52 @@ export function EditorDrawing({
             <Dashed key={`a${i}`} g={g} far={far} />
           ))}
           {dots}
+          {!pen && penDots && pointer
+            ? penDots
+                .filter(
+                  (d) =>
+                    Math.hypot(d.x - pointer.x, d.y - pointer.y) <=
+                    DOTS_PX * perPx.current,
+                )
+                .slice(0, 80)
+                .map((d, i) => (
+                  <circle
+                    key={`pd${i}`}
+                    className="pen-dot"
+                    cx={d.x}
+                    cy={d.y}
+                    r={unit * 3}
+                  />
+                ))
+            : null}
+          {pen
+            ? pen.reach.map((d, i) => (
+                <circle
+                  key={`pr${i}`}
+                  className="pen-dot reach"
+                  cx={d.x}
+                  cy={d.y}
+                  r={unit * 3.5}
+                />
+              ))
+            : null}
+          {pen && pointer ? (
+            <line
+              className="pen-band"
+              x1={pen.at.x}
+              y1={pen.at.y}
+              x2={pointer.x}
+              y2={pointer.y}
+            />
+          ) : null}
+          {pen ? (
+            <circle
+              className="pen-at"
+              cx={pen.at.x}
+              cy={pen.at.y}
+              r={unit * 6}
+            />
+          ) : null}
           {rings?.map((p, i) => (
             <circle
               key={`r${i}`}

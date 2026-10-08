@@ -335,3 +335,48 @@
   stroke-dasharray: 6 4;
   stroke-opacity: 1;
 }
+
+/* The pen: where it is down, the dots it can reach in one stroke, and a
+   line from it to the pointer, as a rubber band. */
+.editor-drawing .pen-at {
+  fill: var(--saffron);
+  stroke: var(--ink);
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.editor-drawing .pen-dot {
+  fill: var(--current);
+  fill-opacity: 0.55;
+}
+
+.editor-drawing .pen-dot.reach {
+  fill: var(--current);
+  fill-opacity: 0.9;
+}
+
+.editor-drawing .pen-band {
+  stroke: var(--saffron);
+  stroke-width: 2px;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+/* Copies just inked flash saffron, so the learner sees them arrive. */
+.editor-drawing .ink-piece.fresh {
+  animation: ink-copy 0.9s ease-out;
+}
+
+@keyframes ink-copy {
+  from {
+    stroke: var(--saffron);
+    stroke-width: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor-drawing .ink-piece.fresh {
+    animation: none;
+  }
+}
