@@ -47,14 +47,17 @@ describe('the library', () => {
       .getAllByRole('link')
       .map((c) => c.getAttribute('href'));
     // Each card opens the tutorial, and has two buttons: watch it drawn from
-    // the first step, or see the finished result.
+    // the first step, or see the finished result; a beginner pattern has a
+    // third, to draw it along.
     expect(links).toEqual([
       '#/another-star',
       '#/another-star',
       '#/another-star/result',
+      '#/another-star/draw',
       '#/eight-fold-star-and-cross',
       '#/eight-fold-star-and-cross',
       '#/eight-fold-star-and-cross/result',
+      '#/eight-fold-star-and-cross/draw',
     ]);
     expect(
       screen.getAllByRole('link', { name: 'Watch it drawn' }),

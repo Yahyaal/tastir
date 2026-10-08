@@ -1668,6 +1668,19 @@ main.stage .drawing:not(.wall) {
   border-color: var(--on-lapis);
 }
 
+/* Drawing along: the third way in, on beginner patterns. */
+.card-actions .button.draw {
+  grid-column: 1 / -1;
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+}
+
+.card-actions .button.draw:hover {
+  background: #f0ba4b;
+}
+
 .thumbnail {
   display: block;
   width: 100%;

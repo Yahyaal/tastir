@@ -1,4 +1,11 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import dado from '@tutorials/alhambra-comares-dado.json';
 import App from '../app/app';
@@ -52,6 +59,7 @@ function openAlong() {
 
 afterEach(() => {
   window.location.hash = '';
+  window.localStorage.clear();
 });
 
 describe('drawing along', () => {
@@ -245,5 +253,60 @@ describe('drawing along', () => {
     expect(status()).toMatch(/the tile, marked with the Tile tool/);
     click('Draw it for me');
     expect(ticked()).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9']);
+  });
+
+  it('comes back to the same board and step after leaving at step 4', () => {
+    openAlong();
+    for (let i = 0; i < 3; i++) {
+      click('Draw it for me');
+      click('Next');
+    }
+    expect(current()).toBe('4');
+    // An extra circle of the learner's own, to be kept too.
+    tool('Compass');
+    clickAt(1, 0);
+    clickAt(0, 0);
+    cleanup();
+    openAlong();
+    expect(current()).toBe('4');
+    expect(ticked()).toEqual(['1', '2', '3']);
+    expect(screen.getByText(/Welcome back/)).toBeTruthy();
+    expect(document.querySelectorAll('.editor-drawing .el.extra')).toHaveLength(
+      1,
+    );
+    // Start again asks first, then empties the board.
+    click('Start again');
+    click('Start again');
+    expect(current()).toBe('1');
+    expect(ticked()).toEqual([]);
+  });
+
+  it('has a Draw along button on beginner cards and in the player', () => {
+    act(() => {
+      window.location.hash = '';
+    });
+    render(
+      <App
+        entries={[
+          { id: 'eight-fold-star-and-cross', json: example },
+          { id: 'alhambra-comares-dado', json: dado },
+        ]}
+      />,
+    );
+    const draw = screen.getAllByRole('link', { name: 'Draw along' });
+    expect(draw.map((a) => a.getAttribute('href')).sort()).toEqual([
+      '#/alhambra-comares-dado/draw',
+      '#/eight-fold-star-and-cross/draw',
+    ]);
+    cleanup();
+    act(() => {
+      window.location.hash = '#/eight-fold-star-and-cross';
+    });
+    render(
+      <App entries={[{ id: 'eight-fold-star-and-cross', json: example }]} />,
+    );
+    expect(
+      screen.getByRole('link', { name: 'Draw along' }).getAttribute('href'),
+    ).toBe('#/eight-fold-star-and-cross/draw');
   });
 });

@@ -41,6 +41,7 @@ import { drawForMe } from './drawForMe';
 import { hintFor } from './hints';
 import { namesIn, placeKey, readableAt, readableNames } from './names';
 import { withTutorialNames } from './naming';
+import { forgetProgress, getProgress, keepProgress } from './progress';
 import { useInkBoard } from './useInkBoard';
 import '../editor/editor.css';
 import './along.css';
@@ -165,7 +166,11 @@ export function DrawAlong({
     () => readableAt(model.scene, readable),
     [model.scene, readable],
   );
-  const [index, setIndex] = useState(0);
+  // Where the learner left off, if they have been here before.
+  const [saved] = useState(() => getProgress(address));
+  const [index, setIndex] = useState(() =>
+    Math.min(saved?.index ?? 0, shown.length),
+  );
   // After the last step, the learner inks their board.
   const inking = index === shown.length;
   const beat = shown[Math.min(index, shown.length - 1)] ?? 1;
@@ -174,7 +179,9 @@ export function DrawAlong({
   // The learner's board: a draft of their own, drawn with the editor.
   const [history, setHistory] = useState<History>(() => ({
     past: [],
-    now: emptyDraft(`${tutorial.id}-along`, `My ${tutorial.title}`),
+    now:
+      saved?.board ??
+      emptyDraft(`${tutorial.id}-along`, `My ${tutorial.title}`),
     future: [],
   }));
   const draft = history.now;
@@ -234,7 +241,37 @@ export function DrawAlong({
   const here = inking ? undefined : checks[index];
 
   // The ink stage: the learner's own ink on their board.
-  const [chosen, setChosen] = useState<ReadonlySet<string>>(new Set());
+  const [chosen, setChosen] = useState<ReadonlySet<string>>(
+    () => new Set(saved?.inked ?? []),
+  );
+  // Every change is kept, so leaving and coming back loses nothing.
+  const [kept, setKept] = useState(true);
+  useEffect(() => {
+    setKept(
+      keepProgress({
+        tutorial: address,
+        board: draft,
+        index,
+        inked: [...chosen],
+      }),
+    );
+  }, [address, draft, index, chosen]);
+  const [restarting, setRestarting] = useState(false);
+  const [welcome, setWelcome] = useState(
+    () => (saved?.board.steps.length ?? 0) > 0,
+  );
+  const startAgain = () => {
+    forgetProgress(address);
+    setHistory({
+      past: [],
+      now: emptyDraft(`${tutorial.id}-along`, `My ${tutorial.title}`),
+      future: [],
+    });
+    setChosen(new Set());
+    setIndex(0);
+    setRestarting(false);
+    setWelcome(false);
+  };
   const ink = useInkBoard(model, draft, inking, chosen, setChosen);
   const ready = ink.ready && !('reason' in ink.ready) ? ink.ready : undefined;
   const [keepFailed, setKeepFailed] = useState<string>();
@@ -543,6 +580,39 @@ export function DrawAlong({
           Watch it drawn
         </a>
       </header>
+      {welcome && !restarting ? (
+        <p className="along-back" role="status">
+          Welcome back: your board and your step are as you left them.{' '}
+          <button
+            type="button"
+            className="quiet"
+            onClick={() => setRestarting(true)}
+          >
+            Start again
+          </button>
+        </p>
+      ) : null}
+      {restarting ? (
+        <p className="along-back" role="alert">
+          Start again with an empty board? Your drawing here is lost.{' '}
+          <button type="button" className="quiet" onClick={startAgain}>
+            Start again
+          </button>
+          <button
+            type="button"
+            className="quiet"
+            onClick={() => setRestarting(false)}
+          >
+            Keep my board
+          </button>
+        </p>
+      ) : null}
+      {kept ? null : (
+        <p className="along-back refused" role="alert">
+          This browser will not keep your board (private window or storage
+          full), so it is lost if you leave.
+        </p>
+      )}
       <nav className="along-steps" aria-label="Steps">
         <span className="along-steps-label">Steps</span>
         <ol>

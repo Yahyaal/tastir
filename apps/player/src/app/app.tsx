@@ -576,6 +576,14 @@ export function Player({
           >
             Edit this pattern
           </a>
+        ) : !sharedView && tutorial.level === 'beginner' ? (
+          <a
+            className="edit-link"
+            href={`#/${address}/draw`}
+            title="Draw it yourself, step by step, beside the tutorial"
+          >
+            Draw along
+          </a>
         ) : null}
         <details className="view-menu">
           <summary>View settings</summary>
@@ -1316,6 +1324,15 @@ function Card({ entry: { id, json } }: { entry: Entry }) {
           <a className="button result" href={`#/${id}/result`}>
             {photos ? 'Result and original' : 'See the result'}
           </a>
+          {model.tutorial.level === 'beginner' ? (
+            <a
+              className="button draw"
+              href={`#/${id}/draw`}
+              title="Draw it yourself, step by step, beside the tutorial"
+            >
+              Draw along
+            </a>
+          ) : null}
         </div>
       ) : null}
     </li>
