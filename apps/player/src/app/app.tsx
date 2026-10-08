@@ -1574,6 +1574,13 @@ function HeroPlay({ model }: { model: Model }) {
   const view = useMemo(() => fullView(model), [model]);
   const panelModel = useMemo(() => asPanel(model), [model]);
   const n = beats.length;
+  const colorSteps = model.pattern.types.length;
+  const total = n + 1 + colorSteps + 1;
+  const colors = useMemo(
+    () => pieceColors(model, tutorialColoring(model)),
+    [model],
+  );
+
   useLayoutEffect(() => {
     if (reduced) return;
     let anims: Animation[] = [];
@@ -1586,24 +1593,39 @@ function HeroPlay({ model }: { model: Model }) {
       (a) => Number(a.effect?.getComputedTiming().endTime ?? 0) || 0,
     );
     const wait =
-      k > n ? HERO_HOLD_MS : Math.max(600, ...ends) + (k === n ? 900 : 350);
-    const timer = setTimeout(() => setK((k + 1) % (n + 2)), wait);
+      k === total - 1
+        ? HERO_HOLD_MS
+        : k > n
+          ? 850
+          : Math.max(600, ...ends) + (k === n ? 900 : 350);
+    const timer = setTimeout(() => setK((k + 1) % total), wait);
     return () => {
       clearTimeout(timer);
       for (const a of anims) a.cancel();
     };
-  }, [k, n, beats, model, panelModel, reduced]);
+  }, [k, n, total, beats, model, panelModel, reduced]);
+
+  const isColoring = k > n && k <= n + colorSteps;
+  const isFinished = k > n + colorSteps;
+  const coloredUpTo = isFinished ? undefined : isColoring ? k - n : 0;
+  const colorIndex = isColoring ? k - n - 1 : isFinished ? colorSteps - 1 : -1;
+
   const caption =
-    reduced || k > n
-      ? model.tutorial.title
+    reduced || isFinished
+      ? `${model.tutorial.title}: completed design`
       : k === n
         ? `${model.tutorial.title}: inking the pattern`
-        : `${model.tutorial.title}: step ${k + 1} of ${n}`;
+        : isColoring
+          ? `${model.tutorial.title}: coloring — ${nameOf(model, colorIndex)} (${colorIndex + 1} of ${colorSteps})`
+          : `${model.tutorial.title}: step ${k + 1} of ${n}`;
+
   return (
     <>
-      <div className="plate-frame">
-        {reduced || k > n ? (
+      <div className={`plate-frame ${isColoring ? 'coloring-active' : ''}`}>
+        {reduced || isFinished ? (
           <Thumbnail model={model} />
+        ) : isColoring ? (
+          <Thumbnail model={model} coloredUpTo={coloredUpTo} />
         ) : k === n ? (
           <Construction
             model={panelModel}
@@ -1622,7 +1644,43 @@ function HeroPlay({ model }: { model: Model }) {
           />
         )}
       </div>
-      <figcaption>{caption}</figcaption>
+
+      <div className="hero-status-row">
+        <figcaption>{caption}</figcaption>
+        {!reduced && (
+          <div className="hero-progress-group" aria-label="Hero animation progress">
+            <div className="hero-coloring-chips" title="Coloring progress by shape">
+              {model.pattern.types.map((_, i) => (
+                <span
+                  key={i}
+                  className={`hero-color-chip ${
+                    isFinished || i <= colorIndex ? 'active' : ''
+                  }`}
+                  style={{
+                    backgroundColor: colors[i] ?? '#c2410c',
+                  }}
+                  title={nameOf(model, i)}
+                  aria-label={nameOf(model, i)}
+                />
+              ))}
+            </div>
+            <div
+              className="hero-progress-track"
+              role="progressbar"
+              aria-valuenow={Math.round(((k + 1) / total) * 100)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <div
+                className="hero-progress-fill"
+                style={{
+                  width: `${Math.round(((k + 1) / total) * 100)}%`,
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
     </>
   );
 }

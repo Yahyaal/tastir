@@ -30,6 +30,10 @@ export interface UpcomingPattern {
   readonly status: UpcomingStatus;
   readonly summary: string;
   readonly constructionNotes: string;
+  readonly photoUrl?: string;
+  readonly photoCaption?: string;
+  readonly drawnUrl?: string;
+  readonly drawnCaption?: string;
   readonly drawingSteps: readonly DrawingStep[];
   readonly source: {
     readonly name: string;
@@ -57,6 +61,10 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'The missing honeycomb counterpart to the al-Maridani square tiling. Six stellated rosettes surround one central rosette, creating secondary 6-pointed star interstitial lattices and delicate ivory darts.',
     constructionNotes:
       'Builds from a central 24-divided circle with overlapping hexagons, extending petal lines outwards to intersect in 12-pointed star points and hexagonal tile boundary crossings.',
+        photoUrl: 'upcoming/mian-stellated-hex-photo.jpg',
+    photoCaption: 'Historical 1340 CE Mamluk minbar woodwork with ivory inlay, Mosque of Amir Altunbugha al-Maridani, Cairo',
+    drawnUrl: 'upcoming/mian-stellated-hex-drawn.png',
+    drawnCaption: 'Finished hexagonal tiling render generated in the Tastir atelier',
     drawingSteps: [
       {
         step: 1,
@@ -111,6 +119,10 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'The world-renowned pinnacle of Islamic quasicrystalline geometry. Centered on a 10-pointed star with concentric rings of pentagons, bowties, and decagons, demonstrating self-similar tiling centuries ahead of Penrose.',
     constructionNotes:
       'Constructed using golden-ratio circle divisions (36° intervals) with nested decagons and pentagonal compass crossings.',
+        photoUrl: 'upcoming/darb-e-imam-portal.jpg',
+    photoCaption: 'Historic 1453 CE portal of the Darb-e Imam shrine complex, Isfahan, featuring 10-fold Girih tilework',
+    drawnUrl: 'upcoming/darb-e-imam-decagram-drawn.png',
+    drawnCaption: 'Finished 10-fold Girih decagram tiling render in the Tastir atelier',
     drawingSteps: [
       {
         step: 1,
@@ -165,6 +177,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Classic late Mamluk decagram woodwork medallion with radiating interlacing ribbons, delicate almond shields, and fine inlaid ivory stars.',
     constructionNotes:
       'Drawn via 10-fold radial division; the star lines cross at 72° to produce regular 10-pointed stars framed by alternating kites and pentagram facets.',
+        photoUrl: 'upcoming/qaytbay-minbar-decagram.jpg',
+    photoCaption: 'Monumental ivory-inlaid minbar woodwork of Sultan al-Ashraf Qaytbay (1474 CE), Cairo',
     drawingSteps: [
       {
         step: 1,
@@ -219,6 +233,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'A modular coffered woodwork ceiling alternating bold eight-pointed Khatam stars and raised octagonal frames, celebrating rhythm and shadow.',
     constructionNotes:
       'Square grid with octagons tangent to unit cell boundaries; four-pointed stars form in the corner interstices.',
+        photoUrl: 'upcoming/generalife-ceiling-octagons.jpg',
+    photoCaption: 'Nasrid woodwork ceiling with octagonal geometric coffers, Palacio del Generalife, Granada',
     drawingSteps: [
       {
         step: 1,
@@ -273,6 +289,10 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Among the earliest surviving pierced geometric stucco grilles in the Islamic world. A 6-pointed star with deep bevelled openings and interlocking hexagonal rosettes.',
     constructionNotes:
       'Hexagonal grid based on equilateral triangles; each star is inscribed within a circle whose circumference defines the flanking rhombi.',
+        photoUrl: 'upcoming/ibn-tulun-second-grille.jpg',
+    photoCaption: '9th-century carved stucco window grille, Mosque of Ahmad Ibn Tulun, Cairo',
+    drawnUrl: 'upcoming/ibn-tulun-grille-drawing.png',
+    drawnCaption: 'Finished 6-fold star and hexagon geometric grille reconstruction',
     drawingSteps: [
       {
         step: 1,
@@ -327,6 +347,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Imperial Mughal perforated screen filtering sunlight into ethereal geometric shadows. Eight-pointed stars interlace with cruciform links across an orthogonal matrix.',
     constructionNotes:
       'Continuous interlacing strapwork; all lines run at 45° and 90° angles to create consistent ribbon widths with under-and-over weave.',
+        photoUrl: 'upcoming/humayun-jali-screen.png',
+    photoCaption: 'Mughal carved marble jali lattice screen, Tomb of Humayun, Delhi (1570 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -383,6 +405,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'From the master architectural design manual used by master builders (ustad). Features a central 10-pointed star with radiating 5-pointed star satellites and pentagram loops.',
     constructionNotes:
       'Master scroll construction: two nested concentric circles with 10-point chords establishing the Girih tile boundaries.',
+        photoUrl: 'upcoming/topkapi-scroll-plate28.jpg',
+    photoCaption: 'Master architect draft of 10-fold star Girih strapwork from the Topkapi Scroll (MS H. 1956, Topkapi Palace, Istanbul)',
     drawingSteps: [
       {
         step: 1,
@@ -437,6 +461,10 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Masterpiece of Andalusi lacería strapwork with 12-pointed stars arranged on a triangular lattice, woven with secondary 6-pointed and 8-pointed star satellites.',
     constructionNotes:
       '√3 triangular grid with star lines at 15° offsets; line classification model drafted in Tastir research tools.',
+        photoUrl: 'upcoming/cordoba-synagogue.jpg',
+    photoCaption: '14th-century Mudéjar carved plaster lacería frieze, Synagogue of Córdoba',
+    drawnUrl: 'upcoming/cordoba-synagogue-drawing.png',
+    drawnCaption: 'Finished compass and straightedge reconstruction of the 12-fold Mudéjar star rosette',
     drawingSteps: [
       {
         step: 1,
@@ -491,6 +519,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Monumental Seljuk entrance portal carved in deep marble relief. Two interlacing ribbons weave continuously around 10-pointed star medallions and pentagonal darts.',
     constructionNotes:
       'Continuous ribbon weave based on regular decagram chords with bevelled edge profiles.',
+        photoUrl: 'upcoming/karatay-portal-decagram.jpg',
+    photoCaption: 'Seljuk monumental stone portal with 10-fold interlaced Girih strapwork, Karatay Madrasa, Konya (1251 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -544,6 +574,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'The majestic central court pavement medallion of Cairo’s greatest Mamluk architectural monument. 12-pointed star surrounded by concentric rings of jasper, porphyry, and Carrara marble.',
     constructionNotes:
       '24-divided circle proportioning with radial star segments and concentric outer rings of alternating dark and light voussoir pieces.',
+        photoUrl: 'upcoming/sultan-hasan-pavement.jpg',
+    photoCaption: 'Intricate marble opus sectile pavement medallion, courtyard of the Mosque of Sultan Hasan, Cairo (1362 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -598,6 +630,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Exquisite Mughal jewel box pavilion with floralized 12-fold star geometry, blending Persian geometric rigor with Indian semi-precious stone craft.',
     constructionNotes:
       '12-fold rosette with curved petal modulations and framing band interlacing.',
+        photoUrl: 'upcoming/itimad-ud-daulah-pietra-dura.jpg',
+    photoCaption: 'Mughal polychrome pietra dura marble inlay, Tomb of I’timad-ud-Daulah, Agra (1628 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -651,6 +685,10 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'The full authentic Moroccan 16-fold masterwork wheel with concentric rings of black petals, orange pentagons, blue arrows (saft), and flanking 8-fold satellite rosettes.',
     constructionNotes:
       '16-fold radial division; relies on Ouazene & Benslimane’s mathematical reconstruction of Moroccan master artisan proportions.',
+        photoUrl: 'upcoming/bou-inania-16-closeup.png',
+    photoCaption: 'Grand 16-pointed star zellige ceramic tile medallion, Madrasa Bou Inania, Fez (1356 CE)',
+    drawnUrl: 'upcoming/fes-panel-photo.png',
+    drawnCaption: 'Marinid architectural zellige panel composition',
     drawingSteps: [
       {
         step: 1,
@@ -705,6 +743,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'One of the oldest surviving intact Marinid zellige dados in Fès, demonstrating the pristine transition between Andalusi lacería and Moroccan geometric craft.',
     constructionNotes:
       '16-pointed central star radiating into rhomboid bridges and outer 8-pointed star joints.',
+        photoUrl: 'upcoming/attarin-madrasa-16fold.jpg',
+    photoCaption: 'Polychrome cut-tile zellige dado, Madrasa al-Attarin, Fez (1325 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -758,6 +798,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Splendid imperial Ottoman tile panel executed during the golden age of Mimar Sinan, featuring bold cobalt, turquoise, and bole red floral strapwork over an 8-fold Khatam grid.',
     constructionNotes:
       '8-fold square repeat grid with stylized saz leaf ribbons and eight-pointed star medallion centers.',
+        photoUrl: 'upcoming/rustem-pasha-iznik-8fold.jpg',
+    photoCaption: 'Ottoman cobalt-and-coral Iznik underglaze tile panel by Mimar Sinan, Rüstem Pasha Mosque, Istanbul (1563 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -811,6 +853,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'An extraordinarily ancient Islamic pierced marble screen dating back to the Aghlabid reconstruction of Kairouan. Crisp eight-pointed star piercings within interlocking squares.',
     constructionNotes:
       'Two overlapping squares forming the Khatam Sulayman with rectilinear connecting strap bands.',
+        photoUrl: 'upcoming/kairouan-marble-grille.jpg',
+    photoCaption: '9th-century Aghlabid carved marble window grille, Great Mosque of Kairouan, Tunisia',
     drawingSteps: [
       {
         step: 1,
@@ -864,6 +908,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Early Ottoman masterpiece from Bursa by the Masters of Tabriz. Rich turquoise hexagons surrounded by 6-pointed star gold-leaf inlays and cobalt arabesque borders.',
     constructionNotes:
       'Regular hexagonal honeycomb tiling with inset 6-pointed stars and triangular interstitial tiles.',
+        photoUrl: 'upcoming/bursa-green-mosque-hex.jpg',
+    photoCaption: 'Early Ottoman turquoise-and-gold hexagonal tile mosaic, Yeşil Cami (Green Mosque), Bursa (1424 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -919,6 +965,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'The mathematical dome of the Two Sisters: 16-pointed star projected across a stalactite honeycomb vault resembling the celestial dome of the cosmos.',
     constructionNotes:
       '16-fold angular projection mapping onto a three-dimensional muqarnas corbel network.',
+        photoUrl: 'upcoming/dos-hermanas-dome-16.jpg',
+    photoCaption: '16-sided star muqarnas ceiling dome, Sala de Dos Hermanas, Alhambra, Granada (1380 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -973,6 +1021,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Deep cobalt, lapis, and white glazed tilework with 8-fold and 10-fold hybrid strapwork constructed along the pilgrimage avenue of Samarkand.',
     constructionNotes:
       'Square repeat with 8-fold star cores transitioning to 10-fold edge interlacing.',
+        photoUrl: 'upcoming/shah-i-zinda-star-panel.jpg',
+    photoCaption: 'Timurid carved and glazed overglaze majolica tile panel, Shah-i Zinda necropolis, Samarkand (14th–15th century)',
     drawingSteps: [
       {
         step: 1,
@@ -1027,6 +1077,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'UNESCO World Heritage site known as the "Alhambra of Anatolia". Unrivalled three-dimensional floralized 12-fold strapwork carved with exuberant sculptural mastery.',
     constructionNotes:
       '12-pointed star medallion with outward undulating strap ribbons and asymmetric relief shadows.',
+        photoUrl: 'upcoming/divrigi-portal-strapwork.jpg',
+    photoCaption: 'Monumental high-relief Seljuk stone portal lacería, Great Mosque of Divriği, Anatolia (1228 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -1081,6 +1133,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Majestic Mudéjar wall dado composed of 12-pointed stars in black, emerald green, honey ochre, and white, constructed by Toledo and Granada master artisans.',
     constructionNotes:
       '12-fold star centers with hexagonal and square connecting bridges in true alicatado proportion.',
+        photoUrl: 'upcoming/doncellas-alicatado-12.jpg',
+    photoCaption: 'Mudéjar 12-pointed star cut-tile alicatado dado, Patio de las Doncellas, Alcázar of Seville (1366 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -1135,6 +1189,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Celebrated as the "mole on the cheek of Lahore". Brilliant polychrome floral strapwork on an 8-fold geometric lattice, combining Persian mosaic craft with Mughal color palettes.',
     constructionNotes:
       'Orthogonal grid with 8-fold star centers and intertwining arabesque calligraphy frames.',
+        photoUrl: 'upcoming/wazir-khan-kashi-tiles.jpg',
+    photoCaption: 'Mughal Persian-style kashi-kari glazed tile medallion, Wazir Khan Mosque, Lahore (1634 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -1188,6 +1244,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Imperial Sinan window screen balancing maximum structural strength with luminous geometric transparency. 10-pointed stars interconnected by rectilinear bronze ribbons.',
     constructionNotes:
       'Decagonal Girih network cast in modular bronze sections with concealed pin joinery.',
+        photoUrl: 'upcoming/suleymaniye-bronze-grille.jpg',
+    photoCaption: 'Cast bronze window grille designed by Mimar Sinan, Süleymaniye Mosque, Istanbul (1557 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -1241,6 +1299,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Exploration from Activity 3 & 7 using dual tracings to construct interlocking compositions where central 12-fold rosettes transition into alternating corner rosettes.',
     constructionNotes:
       'Generates square and hexagonal repeating variations from one master construction drawing.',
+        photoUrl: 'upcoming/mian-multi-rosette-comp.jpg',
+    photoCaption: 'Mamluk interlocking rosette woodwork minbar, Mosque of al-Nasir Muhammad, Citadel of Cairo (1318 CE)',
     drawingSteps: [
       {
         step: 1,
@@ -1295,6 +1355,8 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'One of the oldest surviving mathematical brick vaults in Persia, attributed to Omar Khayyam’s geometric circle. Hexagonal stars formed by alternating angled bricks in geometric relief.',
     constructionNotes:
       'Triangular brick grid with modular coursing establishing 6-fold star points without curved lines.',
+        photoUrl: 'upcoming/isfahan-jami-bannai.jpg',
+    photoCaption: 'Seljuk geometric banna’i glazed brickwork, Gunbad-e Khaki north dome of Jameh Mosque of Isfahan (1088 CE)',
     drawingSteps: [
       {
         step: 1,

@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   UPCOMING_PATTERNS,
   type UpcomingPattern,
@@ -11,6 +12,10 @@ export function UpcomingPatterns() {
   const [selectedStyle, setSelectedStyle] = useState<string>('all');
   const [selectedPhase, setSelectedPhase] = useState<UpcomingPhase | 'all'>('all');
   const [search, setSearch] = useState<string>('');
+  const [activeLightbox, setActiveLightbox] = useState<{
+    pattern: UpcomingPattern;
+    mode: 'photo' | 'drawn' | 'blueprint';
+  } | null>(null);
 
   const folds = useMemo(() => {
     const list = [...new Set(UPCOMING_PATTERNS.map((p) => p.fold))].sort((a, b) => a - b);
@@ -182,7 +187,11 @@ export function UpcomingPatterns() {
         <section className="upcoming-grid-section" aria-label="Catalog of upcoming patterns">
           <ul className="upcoming-grid">
             {filtered.map((pattern) => (
-              <UpcomingCard key={pattern.id} pattern={pattern} />
+              <UpcomingCard
+                key={pattern.id}
+                pattern={pattern}
+                onOpenLightbox={(mode) => setActiveLightbox({ pattern, mode })}
+              />
             ))}
           </ul>
           {filtered.length === 0 && (
@@ -204,13 +213,34 @@ export function UpcomingPatterns() {
           )}
         </section>
       </main>
+
+      {activeLightbox && (
+        <UpcomingLightbox
+          pattern={activeLightbox.pattern}
+          mode={activeLightbox.mode}
+          onClose={() => setActiveLightbox(null)}
+        />
+      )}
     </div>
   );
 }
 
-function UpcomingCard({ pattern }: { pattern: UpcomingPattern }) {
+function UpcomingCard({
+  pattern,
+  onOpenLightbox,
+}: {
+  pattern: UpcomingPattern;
+  onOpenLightbox: (mode: 'photo' | 'drawn' | 'blueprint') => void;
+}) {
   const [showInstructions, setShowInstructions] = useState(false);
   const isPlayable = pattern.status === 'Playable now';
+
+  const defaultMode = pattern.photoUrl
+    ? 'photo'
+    : pattern.drawnUrl
+    ? 'drawn'
+    : 'blueprint';
+  const [mode, setMode] = useState<'photo' | 'drawn' | 'blueprint'>(defaultMode);
 
   return (
     <li className={`upcoming-card ${isPlayable ? 'playable-card' : ''}`}>
@@ -227,9 +257,101 @@ function UpcomingCard({ pattern }: { pattern: UpcomingPattern }) {
         </span>
       </div>
 
-      {/* Visual Geometric Illustration */}
+      {/* Visual Media Section with Photo / Drawn / Blueprint Switcher */}
       <div className="card-visual-section">
-        <UpcomingIllustration pattern={pattern} size={230} />
+        <div className="card-media-tabs" role="tablist">
+          {pattern.photoUrl && (
+            <button
+              type="button"
+              className={`media-tab ${mode === 'photo' ? 'active' : ''}`}
+              onClick={() => setMode('photo')}
+              title="Show authentic historical monument photo"
+            >
+              📷 Monument Photo
+            </button>
+          )}
+          {pattern.drawnUrl && (
+            <button
+              type="button"
+              className={`media-tab ${mode === 'drawn' ? 'active' : ''}`}
+              onClick={() => setMode('drawn')}
+              title="Show finished drawn wall rendering"
+            >
+              🎨 Finished Wall
+            </button>
+          )}
+          <button
+            type="button"
+            className={`media-tab ${mode === 'blueprint' ? 'active' : ''}`}
+            onClick={() => setMode('blueprint')}
+            title="Show geometric construction blueprint"
+          >
+            📐 Blueprint
+          </button>
+        </div>
+
+        <div className="card-media-viewport">
+          {mode === 'photo' && pattern.photoUrl ? (
+            <div
+              className="card-media-interactive"
+              onClick={() => onOpenLightbox('photo')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') onOpenLightbox('photo');
+              }}
+              title="Click to view full-size historical photograph"
+            >
+              <img
+                src={pattern.photoUrl}
+                alt={pattern.photoCaption ?? pattern.title}
+                className="card-media-img"
+                loading="lazy"
+              />
+              <div className="card-media-hover-bar">
+                <span className="hover-zoom-pill">🔍 Click to inspect full size</span>
+              </div>
+            </div>
+          ) : mode === 'drawn' && pattern.drawnUrl ? (
+            <div
+              className="card-media-interactive"
+              onClick={() => onOpenLightbox('drawn')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') onOpenLightbox('drawn');
+              }}
+              title="Click to view full-size finished wall"
+            >
+              <img
+                src={pattern.drawnUrl}
+                alt={pattern.drawnCaption ?? pattern.title}
+                className="card-media-img"
+                loading="lazy"
+              />
+              <div className="card-media-hover-bar">
+                <span className="hover-zoom-pill">🔍 Click to inspect full size</span>
+              </div>
+            </div>
+          ) : (
+            <div
+              className="card-blueprint-interactive"
+              onClick={() => onOpenLightbox('blueprint')}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') onOpenLightbox('blueprint');
+              }}
+              title="Click to expand geometric blueprint"
+            >
+              <UpcomingIllustration pattern={pattern} size={220} />
+              <div className="card-media-hover-bar">
+                <span className="hover-zoom-pill">📐 Click to expand blueprint</span>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="card-visual-footer">
           <span className="visual-badge">
             Symmetry: {pattern.fold}-fold (D<sub>{pattern.fold}</sub>)
@@ -307,21 +429,25 @@ function UpcomingCard({ pattern }: { pattern: UpcomingPattern }) {
 
       <footer className="card-footer">
         <div className="card-source">
-          <span className="source-label">Source / Reference:</span>
-          {pattern.source.url ? (
+          <span className="source-label">Authentic Reference:</span>
+          <span className="source-text">
+            {pattern.photoUrl
+              ? '📷 Verified monument photograph & geometric reconstruction bundled in Tastir'
+              : pattern.source.name}
+          </span>
+          {pattern.source.citation && (
+            <span className="source-citation">{pattern.source.citation}</span>
+          )}
+          {pattern.source.url && (
             <a
               href={pattern.source.url}
               target="_blank"
               rel="noopener noreferrer"
               className="source-link"
+              title="View external academic or museum catalogue citation"
             >
-              {pattern.source.name} ↗
+              Catalog reference ↗
             </a>
-          ) : (
-            <span className="source-text">{pattern.source.name}</span>
-          )}
-          {pattern.source.citation && (
-            <span className="source-citation">{pattern.source.citation}</span>
           )}
         </div>
 
@@ -337,5 +463,166 @@ function UpcomingCard({ pattern }: { pattern: UpcomingPattern }) {
         )}
       </footer>
     </li>
+  );
+}
+
+function UpcomingLightbox({
+  pattern,
+  mode: initialMode,
+  onClose,
+}: {
+  pattern: UpcomingPattern;
+  mode: 'photo' | 'drawn' | 'blueprint';
+  onClose: () => void;
+}) {
+  const [mode, setMode] = useState(initialMode);
+  const [actualSize, setActualSize] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  const hasPhoto = Boolean(pattern.photoUrl);
+  const hasDrawn = Boolean(pattern.drawnUrl);
+
+  const currentCaption =
+    mode === 'photo'
+      ? pattern.photoCaption ?? `Historical photograph: ${pattern.monument}`
+      : mode === 'drawn'
+      ? pattern.drawnCaption ?? `Finished masterwork tiling: ${pattern.title}`
+      : `Geometric blueprint: ${pattern.fold}-fold symmetry analysis`;
+
+  const isPlayable = pattern.status === 'Playable now';
+
+  return createPortal(
+    <div
+      className="upcoming-lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`Inspection viewer: ${pattern.title}`}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <header className="lightbox-header">
+        <div className="lightbox-title-area">
+          <h3>
+            {pattern.title}{' '}
+            <span className="arabic-sub" lang="ar" dir="rtl">
+              {pattern.arabicTitle}
+            </span>
+          </h3>
+          <p className="lightbox-provenance">
+            {pattern.monument} · {pattern.location} ({pattern.period}) · {pattern.medium}
+          </p>
+        </div>
+
+        <div className="lightbox-controls">
+          <div className="lightbox-tabs" role="tablist">
+            {hasPhoto && (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === 'photo'}
+                className={`lightbox-tab ${mode === 'photo' ? 'active' : ''}`}
+                onClick={() => setMode('photo')}
+              >
+                📷 Monument Photo
+              </button>
+            )}
+            {hasDrawn && (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={mode === 'drawn'}
+                className={`lightbox-tab ${mode === 'drawn' ? 'active' : ''}`}
+                onClick={() => setMode('drawn')}
+              >
+                🎨 Finished Wall
+              </button>
+            )}
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'blueprint'}
+              className={`lightbox-tab ${mode === 'blueprint' ? 'active' : ''}`}
+              onClick={() => setMode('blueprint')}
+            >
+              📐 Blueprint
+            </button>
+          </div>
+
+          {mode !== 'blueprint' && (
+            <button
+              type="button"
+              className="lightbox-zoom-btn"
+              onClick={() => setActualSize(!actualSize)}
+              aria-pressed={actualSize}
+            >
+              {actualSize ? '⤢ Fit to Screen' : '🔍 Actual Resolution'}
+            </button>
+          )}
+
+          <button
+            type="button"
+            className="lightbox-close-btn"
+            onClick={onClose}
+            aria-label="Close inspection view"
+          >
+            ✕ Close
+          </button>
+        </div>
+      </header>
+
+      <div
+        className={`lightbox-stage ${actualSize ? 'actual-size' : ''}`}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
+        {mode === 'photo' && pattern.photoUrl ? (
+          <img
+            src={pattern.photoUrl}
+            alt={currentCaption}
+            className="lightbox-img"
+            onClick={() => setActualSize(!actualSize)}
+          />
+        ) : mode === 'drawn' && pattern.drawnUrl ? (
+          <img
+            src={pattern.drawnUrl}
+            alt={currentCaption}
+            className="lightbox-img"
+            onClick={() => setActualSize(!actualSize)}
+          />
+        ) : (
+          <div className="lightbox-blueprint-wrap">
+            <UpcomingIllustration pattern={pattern} size={420} />
+          </div>
+        )}
+      </div>
+
+      <footer className="lightbox-footer">
+        <div className="lightbox-footer-info">
+          <p className="lightbox-caption">{currentCaption}</p>
+          <p className="lightbox-summary">{pattern.summary}</p>
+        </div>
+
+        {isPlayable && (
+          <div className="lightbox-actions">
+            <a href={`#/${pattern.id}`} className="lightbox-play-btn" onClick={onClose}>
+              ✦ Play Interactive Tutorial →
+            </a>
+            <a href={`#/${pattern.id}/result`} className="lightbox-secondary-btn" onClick={onClose}>
+              View Tiled Wall
+            </a>
+          </div>
+        )}
+      </footer>
+    </div>,
+    document.body,
   );
 }

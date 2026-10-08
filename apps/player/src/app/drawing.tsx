@@ -1010,12 +1010,15 @@ export function Thumbnail({
   model,
   coloring = tutorialColoring(model),
   look = model.tutorial.pattern.look,
+  coloredUpTo,
 }: {
   model: Model;
   /** A learner's colors (a saved design); else the tutorial's own. */
   coloring?: Coloring;
   /** A learner's wall style; else the tutorial's. */
   look?: WallStyle;
+  /** If set, only pieces with type < coloredUpTo receive their color; others show blueprint tone. */
+  coloredUpTo?: number;
 }) {
   const reach = 2;
   const { view } = tiling(model, { halfWide: 1, halfHigh: 1, reach });
@@ -1053,11 +1056,14 @@ export function Thumbnail({
       model.pattern.pieces.forEach((p, k) => {
         const polygon = p.polygon.map((q) => move(q, d));
         if (!meets(polygon)) return;
+        const isColored = coloredUpTo === undefined || p.type < coloredUpTo;
         const color = lines
           ? 'none'
-          : fill
-            ? fill(k, i, j)
-            : (colors[p.type] ?? '#999999');
+          : isColored
+            ? fill
+              ? fill(k, i, j)
+              : (colors[p.type] ?? '#999999')
+            : 'rgba(18, 28, 48, 0.45)';
         const list = byColor.get(color) ?? [];
         list.push(poly(polygon));
         byColor.set(color, list);
@@ -1091,6 +1097,17 @@ export function Thumbnail({
           strokeLinecap="round"
         />
       ))}
+      {!strap && coloredUpTo !== undefined && strokes.length > 0 && (
+        <path
+          className="thumbnail-lines"
+          d={strokes.join('')}
+          fill="none"
+          stroke="rgba(226, 232, 240, 0.4)"
+          strokeWidth={0.015}
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      )}
     </svg>
   );
 }
