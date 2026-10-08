@@ -317,8 +317,6 @@ export function Review() {
         </p>
       </header>
 
-      <Progress />
-
       <h2 className="group" id="questions">
         Questions for you
       </h2>
@@ -338,6 +336,8 @@ export function Review() {
           />
         ))}
       </ol>
+
+      <Progress />
 
       <h2 className="group" id="background">
         Background

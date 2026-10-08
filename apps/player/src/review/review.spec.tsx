@@ -20,7 +20,8 @@ describe('the review page', () => {
     const order = [...document.querySelectorAll('h2.group')].map(
       (h) => h.textContent,
     );
-    expect(order[0]).toBe('Progress');
+    // The questions come first, then where the work stands.
+    expect(order.slice(0, 2)).toEqual(['Questions for you', 'Progress']);
   });
 
   it('says so when there are no questions', () => {
