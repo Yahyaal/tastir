@@ -67,7 +67,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Isfahan, Iran',
     medium: 'Cut-tile glazed mosaic (haft-rangi & moarraq)',
     phase: 'Phase 1 · Immediate',
-    status: 'Geometry verified',
+    status: 'Playable now',
     summary:
       'The world-renowned pinnacle of Islamic quasicrystalline geometry. Centered on a 10-pointed star with concentric rings of pentagons, bowties, and decagons, demonstrating self-similar tiling centuries ahead of Penrose.',
     constructionNotes:
