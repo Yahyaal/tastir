@@ -1,16 +1,15 @@
 {
   "format": 0,
-  "id": "darb-e-imam-decagram",
-  "title": "Darb-e Imam Decagram & Girih Tiling",
+  "id": "ten-pointed-star-decagon-rect",
+  "title": "Ten-pointed star and decagon, rectangular repeat",
   "fold": 10,
   "style": "Timurid / Persian",
   "level": "advanced",
   "credits": [
     {
-      "source": "Darb-e Imam shrine portal, Isfahan (1453 CE)",
-      "creator": "Lu & Steinhardt (Science 2007)",
-      "url": "https://doi.org/10.1126/science.1135491",
-      "note": "The classic 10-fold Girih decagram and decagon tiling of the Isfahan shrine portal."
+      "source": "Ten-pointed star and decagon rectangular repeat",
+      "creator": "Tastir",
+      "note": "A ten-pointed star and decagon pattern repeated across a rectangular cell."
     }
   ],
   "given": {

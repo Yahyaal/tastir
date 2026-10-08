@@ -2,13 +2,7 @@ import type { Photo } from '@tastir/schema';
 export type UpcomingPhase =
   'Phase 1 · Immediate' | 'Phase 2 · Classical' | 'Phase 3 · Monumental';
 
-export type UpcomingStatus =
-  | 'Playable now'
-  | 'Research complete'
-  | 'Geometry verified'
-  | 'Construction drafted'
-  | 'Photo reference matched'
-  | 'Source queued';
+export type UpcomingStatus = 'Playable now' | 'Planned' | 'Researching';
 
 export interface DrawingStep {
   readonly step: number;
@@ -69,7 +63,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Cairo, Egypt',
     medium: 'Woodwork with ivory & ebony inlay',
     phase: 'Phase 1 · Immediate',
-    status: 'Playable now',
+    status: 'Researching',
     summary:
       'The missing honeycomb counterpart to the al-Maridani square tiling. Six stellated rosettes surround one central rosette, creating secondary 6-pointed star interstitial lattices and delicate ivory darts.',
     constructionNotes:
@@ -136,9 +130,9 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Isfahan, Iran',
     medium: 'Cut-tile glazed mosaic (haft-rangi & moarraq)',
     phase: 'Phase 1 · Immediate',
-    status: 'Playable now',
+    status: 'Researching',
     summary:
-      'The world-renowned pinnacle of Islamic quasicrystalline geometry. Centered on a 10-pointed star with concentric rings of pentagons, bowties, and decagons, demonstrating self-similar tiling centuries ahead of Penrose.',
+      'Centered on a 10-pointed star with concentric rings of pentagons, bowties, and decagons. Researching authentic girih construction.',
     constructionNotes:
       'Constructed using golden-ratio circle divisions (36° intervals) with nested decagons and pentagonal compass crossings.',
     photo: {
@@ -207,7 +201,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Northern Cemetery, Cairo, Egypt',
     medium: 'Inlaid ebony, ivory, and polished hardwood',
     phase: 'Phase 1 · Immediate',
-    status: 'Photo reference matched',
+    status: 'Researching',
     summary:
       'Classic late Mamluk decagram woodwork medallion with radiating interlacing ribbons, delicate almond shields, and fine inlaid ivory stars.',
     constructionNotes:
@@ -272,7 +266,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Granada, Spain',
     medium: 'Carved & polychrome cedar wood (carpintería de lo blanco)',
     phase: 'Phase 1 · Immediate',
-    status: 'Research complete',
+    status: 'Researching',
     summary:
       'A modular coffered woodwork ceiling alternating bold eight-pointed Khatam stars and raised octagonal frames, celebrating rhythm and shadow.',
     constructionNotes:
@@ -337,7 +331,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Cairo, Egypt',
     medium: 'Carved openwork stucco (yesería)',
     phase: 'Phase 1 · Immediate',
-    status: 'Construction drafted',
+    status: 'Researching',
     summary:
       'Among the earliest surviving pierced geometric stucco grilles in the Islamic world. A 6-pointed star with deep bevelled openings and interlocking hexagonal rosettes.',
     constructionNotes:
@@ -403,7 +397,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Delhi, India',
     medium: 'Pierced red sandstone & white marble (jali)',
     phase: 'Phase 1 · Immediate',
-    status: 'Research complete',
+    status: 'Researching',
     summary:
       'Imperial Mughal perforated screen filtering sunlight into ethereal geometric shadows. Eight-pointed stars interlace with cruciform links across an orthogonal matrix.',
     constructionNotes:
@@ -470,7 +464,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Istanbul, Turkey / Tabriz or Herat',
     medium: 'Architectural parchment scroll drawing in red & black ink',
     phase: 'Phase 2 · Classical',
-    status: 'Geometry verified',
+    status: 'Planned',
     summary:
       'From the master architectural design manual used by master builders (ustad). Features a central 10-pointed star with radiating 5-pointed star satellites and pentagram loops.',
     constructionNotes:
@@ -535,7 +529,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Córdoba, Spain',
     medium: 'Carved polychrome plaster & stucco (yesería mudéjar)',
     phase: 'Phase 2 · Classical',
-    status: 'Geometry verified',
+    status: 'Planned',
     summary:
       'Masterpiece of Andalusi lacería strapwork with 12-pointed stars arranged on a triangular lattice, woven with secondary 6-pointed and 8-pointed star satellites.',
     constructionNotes:
@@ -601,7 +595,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Konya, Turkey',
     medium: 'Carved white and grey marble portal relief',
     phase: 'Phase 2 · Classical',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'Monumental Seljuk entrance portal carved in deep marble relief. Two interlacing ribbons weave continuously around 10-pointed star medallions and pentagonal darts.',
     constructionNotes:
@@ -665,7 +659,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Cairo, Egypt',
     medium: 'Intarsia marble pavement (opus sectile)',
     phase: 'Phase 2 · Classical',
-    status: 'Photo reference matched',
+    status: 'Planned',
     summary:
       'The majestic central court pavement medallion of Cairo’s greatest Mamluk architectural monument. 12-pointed star surrounded by concentric rings of jasper, porphyry, and Carrara marble.',
     constructionNotes:
@@ -729,7 +723,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     medium:
       'White marble with pietra dura inlays of jasper, onyx, and cornelian',
     phase: 'Phase 2 · Classical',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'Exquisite Mughal jewel box pavilion with floralized 12-fold star geometry, blending Persian geometric rigor with Indian semi-precious stone craft.',
     constructionNotes:
@@ -791,7 +785,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Fès, Morocco',
     medium: 'Chiseled terracotta zellige ceramic tiles',
     phase: 'Phase 2 · Classical',
-    status: 'Geometry verified',
+    status: 'Planned',
     summary:
       'The full authentic Moroccan 16-fold masterwork wheel with concentric rings of black petals, orange pentagons, blue arrows (saft), and flanking 8-fold satellite rosettes.',
     constructionNotes:
@@ -856,7 +850,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Fès, Morocco',
     medium: 'Polychrome cut zellige tilework',
     phase: 'Phase 2 · Classical',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'One of the oldest surviving intact Marinid zellige dados in Fès, demonstrating the pristine transition between Andalusi lacería and Moroccan geometric craft.',
     constructionNotes:
@@ -918,7 +912,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Istanbul, Turkey',
     medium: 'Underglaze-painted Iznik fritware ceramic tiles',
     phase: 'Phase 2 · Classical',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'Splendid imperial Ottoman tile panel executed during the golden age of Mimar Sinan, featuring bold cobalt, turquoise, and bole red floral strapwork over an 8-fold Khatam grid.',
     constructionNotes:
@@ -982,7 +976,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Kairouan, Tunisia',
     medium: 'Perforated translucent marble window panel',
     phase: 'Phase 2 · Classical',
-    status: 'Photo reference matched',
+    status: 'Planned',
     summary:
       'An extraordinarily ancient Islamic pierced marble screen dating back to the Aghlabid reconstruction of Kairouan. Crisp eight-pointed star piercings within interlocking squares.',
     constructionNotes:
@@ -1046,7 +1040,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Bursa, Turkey',
     medium: 'Turquoise and gold cuerda seca glazed tiles',
     phase: 'Phase 2 · Classical',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'Early Ottoman masterpiece from Bursa by the Masters of Tabriz. Rich turquoise hexagons surrounded by 6-pointed star gold-leaf inlays and cobalt arabesque borders.',
     constructionNotes:
@@ -1110,7 +1104,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Granada, Spain',
     medium: 'Carved muqarnas plaster vaulting & woodwork',
     phase: 'Phase 3 · Monumental',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'The mathematical dome of the Two Sisters: 16-pointed star projected across a stalactite honeycomb vault resembling the celestial dome of the cosmos.',
     constructionNotes:
@@ -1173,7 +1167,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Samarkand, Uzbekistan',
     medium: 'Carved glazed terracotta & majolica tilework',
     phase: 'Phase 3 · Monumental',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'Deep cobalt, lapis, and white glazed tilework with 8-fold and 10-fold hybrid strapwork constructed along the pilgrimage avenue of Samarkand.',
     constructionNotes:
@@ -1238,7 +1232,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Sivas, Turkey',
     medium: 'High-relief carved sandstone architectural portal',
     phase: 'Phase 3 · Monumental',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'UNESCO World Heritage site known as the "Alhambra of Anatolia". Unrivalled three-dimensional floralized 12-fold strapwork carved with exuberant sculptural mastery.',
     constructionNotes:
@@ -1301,7 +1295,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Seville, Spain',
     medium: 'Cut glazed ceramic mosaic tilework (alicatado)',
     phase: 'Phase 3 · Monumental',
-    status: 'Photo reference matched',
+    status: 'Planned',
     summary:
       'Majestic Mudéjar wall dado composed of 12-pointed stars in black, emerald green, honey ochre, and white, constructed by Toledo and Granada master artisans.',
     constructionNotes:
@@ -1364,7 +1358,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Lahore, Pakistan',
     medium: 'Faience kashi-kari glazed ceramic tile mosaic',
     phase: 'Phase 3 · Monumental',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'Celebrated as the "mole on the cheek of Lahore". Brilliant polychrome floral strapwork on an 8-fold geometric lattice, combining Persian mosaic craft with Mughal color palettes.',
     constructionNotes:
@@ -1428,7 +1422,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Istanbul, Turkey',
     medium: 'Cast and openwork bronze window lattice',
     phase: 'Phase 3 · Monumental',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'Imperial Sinan window screen balancing maximum structural strength with luminous geometric transparency. 10-pointed stars interconnected by rectilinear bronze ribbons.',
     constructionNotes:
@@ -1492,7 +1486,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'London / Cairo',
     medium: 'Compass & straightedge drafting on watercolor paper',
     phase: 'Phase 3 · Monumental',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'Exploration from Activity 3 & 7 using dual tracings to construct interlocking compositions where central 12-fold rosettes transition into alternating corner rosettes.',
     constructionNotes:
@@ -1554,7 +1548,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Isfahan, Iran',
     medium: 'Carved unglazed terra-cotta & banna’i glazed brick relief',
     phase: 'Phase 3 · Monumental',
-    status: 'Research complete',
+    status: 'Planned',
     summary:
       'One of the oldest surviving mathematical brick vaults in Persia, attributed to Omar Khayyam’s geometric circle. Hexagonal stars formed by alternating angled bricks in geometric relief.',
     constructionNotes:

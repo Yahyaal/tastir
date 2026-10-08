@@ -35,6 +35,29 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'ten-pointed-star-decagon-rect',
+    title: 'Ten-pointed star and decagon, rectangular repeat',
+    fold: 10,
+    status: 'decide',
+    summary:
+      'A ten-pointed star with concentric decagonal rings repeated in a rectangular cell. Previously claimed as Darb-e Imam, but needs review.',
+    story: [
+      'This tutorial was drafted as a 10-fold pattern repeated across a rectangular tile. It was previously labeled as the Darb-e Imam portal girih tiling, but that shrine portal features a famous two-level quasi-crystalline girih pattern which this rectangular repeat is not, and it was never verified against a monument photograph.',
+      'We renamed it to accurately describe what it is: "Ten-pointed star and decagon, rectangular repeat", and removed claims of being Darb-e Imam, world-renowned, or quasicrystalline.',
+      'The construction itself builds cleanly with ruler and compass (10 steps) and tiles periodically, but should be judged by the owner before remaining in the library.',
+    ],
+    pictures: [],
+    asks: [
+      'Should we keep this tutorial as an unverified 10-fold rectangular repeat, or replace it with an authentic reconstruction of the actual Darb-e Imam portal or another verified 10-fold pattern?',
+    ],
+    sources: [
+      {
+        label: 'Darb-e Imam decagram study (Lu & Steinhardt, Science 2007)',
+        url: 'https://doi.org/10.1126/science.1135491',
+      },
+    ],
+  },
+  {
     id: 'draw-along-plan',
     title: 'Plan: draw along',
     fold: 8,
@@ -1321,7 +1344,19 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'ten-pointed-star-decagon-rect',
+    text: 'Should we keep this tutorial as an unverified 10-fold rectangular repeat, or replace it with an authentic reconstruction of the actual Darb-e Imam portal or another verified 10-fold pattern?',
+    choices: [
+      'Keep as unverified 10-fold rectangular repeat',
+      'Replace with authentic Darb-e Imam or verified 10-fold pattern',
+      'Remove from library',
+    ],
+    pictures: [],
+    card: 'ten-pointed-star-decagon-rect',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
