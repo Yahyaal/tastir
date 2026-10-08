@@ -400,3 +400,37 @@ Suggestions:
 7. After a reload the board's zoom goes back to Fit. That is fine, but on a tiny Ink board (problem 1) it means zooming again each time.
 
 **Verdict.** Draw along is nearly ready for the owner. The construction part (6.1–6.3, 6.5 and the 6.7 fixes) is ready: it is clear, hints help at the right moments, progress is kept, and I drew all three tutorials by hand without a dead end. The ending (6.4) is not ready yet, because of problem 1: at the two desktop widths the Ink stage loses the split screen and makes the board too small to ink by hand, so a desktop learner will press Ink it for me. Problems 2 and 3 then make hand inking a pinwheel, or finding a missing bit, a matter of luck. Fix problem 1, and preferably 2, before showing it to the owner.
+
+### Draw along 6.8–6.9, tester re-check (7 October 2026)
+
+I tested from a frozen worktree of c973ce5, with my own server on port 4351, at 1280×800, 1024×768 and 390×844 (touch, as a phone). Screenshots are in `docs/review/user-patterns/draw-along-test3/`. There were no console or page errors in any run. To confirm one phone problem, I also ran the previous build, ffe355d, briefly on port 4352.
+
+**Re-check of my 7 problems from the 6.3–6.7 report.**
+
+1. **Ink layout: fixed.** The board keeps its place and size through every step, every hint level and the Ink stage: 0 px of movement at 1280 and 1024 (`eight-fold-star-and-cross-ink-1024.png`). On the phone the board also stays put, but the step's picture shown by “Show the step” sits 48 px higher than the board did, so swapping makes it jump a little.
+2. **Pinwheel: fixed.** For the Infantas crosses the ink line says “with its turned copies only: this pattern turns, but is not its own mirror image”, and hand inking closes the pinwheel and the cross.
+3. **Ink help: mostly fixed, but see problem 1 below.**
+   - The status names what is missing (“Still missing: the star and the chevron and the rhombus. Show me a hint marks where.”).
+   - The hint goes through three levels: the bits still to ink glow, then one bit is ringed, then all are dashed.
+4. **Names: fixed.** The board shows only the tutorial's names (E, N, W, S, NE…), and no P1 or `g5_330` appears anywhere.
+5. **Symmetry on the phone: fixed but with a regression.** Symmetry now comes first in the phone's tool row, but see problem 2 below.
+6. **Step counts: fixed.** The kept patterns' cards and players agree: 10 and 10 steps for the snowflake, 6 and 6 for the Infantas crosses.
+7. **Zoom: fixed.** The board's zoom is kept across a reload.
+
+Also checked: the Mian rosette's Ink stage opens in 1.3 s, and Ink it for me matches its seven kinds of piece.
+
+**Inking the two patterns I could not finish before.** The snowflake (at 1024) and the Infantas crosses (at 1280) were both inked by hand, by following the hints. Both reached “✓ Your ink closes the pattern's pieces”, then Repeat and color it. Both kept patterns show on My patterns and play, and both coloured walls are right (`snow-color-12s.png`).
+
+It only worked once I unticked **Whole lines between points**:
+- With it off, the snowflake took 16 clicks and the Infantas crosses 8, each on the ringed bit.
+- With it on, which is the default, clicking exactly the ringed bit each time ends both patterns in the same dead end. The run of line it inks reaches past the bit the pattern keeps. The hint then says “Everything the pattern keeps is inked; 36 bits are extra. Click them to erase” (16 for the Infantas crosses), but no hint level marks the extra bits, and the status still says “Show me a hint marks where” (`alhambra-infantas-crosses-noring.png`).
+
+**Problems, most important first.**
+
+1. **Following the hints with the default settings leads to extra ink the hints never point at.** Reproduce: the snowflake or the Infantas crosses at the Ink stage, Whole lines on (the default); press Show me a hint, then Show me more, and click the ringed bit; repeat. Expected: either the ringed bit inks only what the pattern keeps, or a hint level marks the extra bits (glow or ring them) so they can be clicked off. What happens instead: “N bits are extra. Click them to erase”, with nothing marked. A beginner is stuck there and ends on Ink it for me.
+2. **Regression on the phone: the page is 980 px wide, and taps on the board no longer draw.** The tool bar (`.along-layer`, 966 px) spills out of its 366 px box, so with a phone viewport the page's layout width becomes 980 px. In the touch run, tapping O with the Compass chosen leaves “Compass: Click the centre.” unchanged, and mouse clicks fail the same way. The same test on ffe355d draws at once, with a layout width of 390 px. The same drawing in a 390 px browser window without touch still works, so it is the phone (mobile) case that breaks. I could not draw along on the phone at all in this build. Screenshots `phone-overflow-true.png`, `inf-tapdebug.png`.
+3. While zoomed in, a hint can ring a bit outside the visible board; the learner has to press Fit to find it. It would help if the hint brought the ringed bit into view.
+4. The ringed bits on the snowflake are only 3 to 5 px apart at Fit at 1024, so clicking the ring without zooming in often takes a neighbouring bit. A larger ring, or zooming to it, would help.
+5. On the phone, the step's picture shown by “Show the step” sits 48 px higher than the board.
+
+**Verdict: not ready for the owner yet.** On desktop it is close: everything from my last report is fixed, the board never moves, and a learner can draw and ink both hard patterns by hand. Two things block it. The phone build cannot draw at all (problem 2, a regression). And with the default Whole lines setting, the ink hints lead a beginner to extra ink they cannot find (problem 1). With those two fixed, I would call it ready.
