@@ -195,6 +195,9 @@ function keyframes(
       { transform: 'scale(1)', opacity: 1 },
     ];
   }
+  if (kind === 'compass') {
+    return [{ opacity: 0 }, { opacity: 1 }];
+  }
   // One dash as long as the shape slides in from its start.
   const len = screenLength(node, lengthScale);
   // A ruler line grows both ways from the point it is ruled through, as a

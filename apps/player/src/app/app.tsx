@@ -1222,51 +1222,74 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   return (
     <div className="library">
       <header className="masthead">
-        <div className="brand-group">
+        <div className="masthead-brand">
           <h1 aria-label="Tastir">
             Tastir <span className="brand-arabic" aria-hidden="true" lang="ar" dir="rtl">تسطير</span>
           </h1>
+          <span className="brand-badge">ATELIER</span>
         </div>
-        {designs.length ? (
-          <button
-            type="button"
-            className="jump-link"
-            onClick={() =>
-              document
-                .getElementById('my-designs')
-                ?.scrollIntoView?.({ behavior: 'smooth' })
-            }
+
+        <nav className="masthead-nav" aria-label="Main Navigation">
+          <a
+            href="#collection"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('collection')?.scrollIntoView({ behavior: 'smooth' });
+            }}
           >
-            My designs ({designs.length})
-          </button>
-        ) : null}
-        {patterns.length ? (
-          <button
-            type="button"
-            className="jump-link"
-            onClick={() =>
-              document
-                .getElementById('my-patterns')
-                ?.scrollIntoView?.({ behavior: 'smooth' })
-            }
-          >
-            My patterns ({patterns.length})
-          </button>
-        ) : null}
-        {patterns.length ? null : <NewPattern />}
-        <a className="jump-link upcoming-nav-link" href="#/upcoming">
-          Upcoming patterns (24)
-        </a>
-        {import.meta.env.DEV ? (
-          <p className="dev-links">
-            <a href="#/review">
-              <strong>Review page:</strong> progress, decisions and questions
-            </a>
-            <a href="#/notes">
-              <strong>Project notes:</strong> goal, queue, status and lessons
-            </a>
-          </p>
-        ) : null}
+            <span>Library</span>
+            <span className="nav-badge">{entries.length}</span>
+          </a>
+          <a className="nav-item jump-link upcoming-nav-link" href="#/upcoming">
+            <span>Upcoming patterns</span>
+            <span className="nav-badge highlight">24</span>
+          </a>
+          {designs.length ? (
+            <button
+              type="button"
+              className="nav-item jump-link"
+              aria-label={`My designs (${designs.length})`}
+              onClick={() =>
+                document
+                  .getElementById('my-designs')
+                  ?.scrollIntoView?.({ behavior: 'smooth' })
+              }
+            >
+              <span>My designs</span> <span className="nav-badge">({designs.length})</span>
+            </button>
+          ) : null}
+          {patterns.length ? (
+            <button
+              type="button"
+              className="nav-item jump-link"
+              aria-label={`My patterns (${patterns.length})`}
+              onClick={() =>
+                document
+                  .getElementById('my-patterns')
+                  ?.scrollIntoView?.({ behavior: 'smooth' })
+              }
+            >
+              <span>My patterns</span> <span className="nav-badge">({patterns.length})</span>
+            </button>
+          ) : null}
+        </nav>
+
+        <div className="masthead-actions">
+          {patterns.length ? null : <NewPattern />}
+          {import.meta.env.DEV ? (
+            <div className="dev-links" aria-label="Developer quick links">
+              <span className="dev-tag">⚡ DEV</span>
+              <a href="#/review" className="dev-link" title="Progress, decisions and questions">
+                <strong>Review page</strong>
+              </a>
+              <span className="dev-sep">/</span>
+              <a href="#/notes" className="dev-link" title="Goal, queue, status and lessons">
+                <strong>Project notes</strong>
+              </a>
+            </div>
+          ) : null}
+        </div>
       </header>
       <section className="hero">
         {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}

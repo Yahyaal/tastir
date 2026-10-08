@@ -93,7 +93,7 @@ export function NewPattern() {
     <span className="new-pattern">
       <button
         type="button"
-        className="button"
+        className="button primary new-pattern-btn"
         onClick={() => {
           const made = addPattern(
             emptyDraft('my-pattern', freeTitle('My pattern')),
@@ -102,9 +102,15 @@ export function NewPattern() {
           window.location.hash = `#/edit/${made.id}`;
         }}
       >
+        <svg className="btn-icon" width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z"/>
+        </svg>
         New pattern
       </button>
       <label className="button secondary open-file">
+        <svg className="btn-icon" width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M.5 4a1.5 1.5 0 0 1 1.5-1.5h3.628a1.5 1.5 0 0 1 1.06.44l1.372 1.372h6.44A1.5 1.5 0 0 1 16 5.812v6.688A1.5 1.5 0 0 1 14.5 14h-13A1.5 1.5 0 0 1 0 12.5V4Zm1.5-.5a.5.5 0 0 0-.5.5v1.312h14V5.812a.5.5 0 0 0-.5-.5H7.56a1.5 1.5 0 0 1-1.06-.44L5.128 3.5H2Z"/>
+        </svg>
         Open a pattern file
         <input
           type="file"

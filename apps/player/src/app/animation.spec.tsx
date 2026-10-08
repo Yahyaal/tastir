@@ -175,7 +175,7 @@ describe('highlight before draw', () => {
     expect(container.querySelectorAll('.was-new')).toHaveLength(0);
   });
 
-  it('sweeps the first circle on load', () => {
+  it('fades in the first circle on load', () => {
     const { calls } = recordAnimations();
     render(<Play json={example} />);
     expect(named(calls)).toEqual(['c']);
@@ -185,7 +185,8 @@ describe('highlight before draw', () => {
       fill: 'backwards',
       direction: 'normal',
     });
-    expect(calls[0]?.keyframes[0]).toMatchObject({ strokeDashoffset: 1 });
+    expect(calls[0]?.keyframes[0]).toMatchObject({ opacity: 0 });
+    expect(calls[0]?.keyframes[1]).toMatchObject({ opacity: 1 });
   });
 
   it('animates the new step on Next, at the chosen speed', () => {
