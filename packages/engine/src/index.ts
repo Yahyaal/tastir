@@ -31,6 +31,7 @@ export {
   cellOf,
   computePattern,
   pieceAt,
+  wallPieces,
   rectangularPeriod,
   type Cell,
   type Pattern,

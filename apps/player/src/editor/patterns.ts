@@ -18,6 +18,15 @@ export interface UserPattern {
   };
   readonly created: string;
   readonly updated: string;
+  /** A wall the learner laid by hand when drawing along: where each copy
+   * of the tile sits (offsets from the first), and its colours. */
+  readonly wall?: {
+    readonly copies: readonly { readonly x: number; readonly y: number }[];
+    readonly coloring?: {
+      readonly palette: string;
+      readonly chosen: Readonly<Record<string, string>>;
+    };
+  };
 }
 
 /** Whether a stored entry is a whole pattern; anything else is dropped. */
@@ -106,4 +115,14 @@ export function freeTitle(wanted: string): string {
   if (!taken.has(wanted)) return wanted;
   for (let n = 2; ; n++)
     if (!taken.has(`${wanted} ${n}`)) return `${wanted} ${n}`;
+}
+
+/** Keeps a hand-laid wall with a pattern; false when refused. */
+export function setPatternWall(
+  id: string,
+  wall: NonNullable<UserPattern['wall']>,
+): boolean {
+  const all = listPatterns();
+  if (!all.some((p) => p.id === id)) return false;
+  return patterns.write(all.map((p) => (p.id === id ? { ...p, wall } : p)));
 }

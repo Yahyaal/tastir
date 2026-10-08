@@ -12,6 +12,7 @@ import infantas from '@tutorials/alhambra-infantas-crosses.json';
 import bones from '@tutorials/alhambra-comares-bones.json';
 import App from '../app/app';
 import { listPatterns } from '../editor/patterns';
+import { dropAt, snapped } from './repeat';
 import { TOOLS } from '../editor/tools';
 
 /** Clicks the board at a point of the frame (x right, y up). */
@@ -105,7 +106,9 @@ describe('drawing along', () => {
     clickAt(0, 0);
     clickAt(1, 0);
     expect(ticked()).toEqual(['1']);
-    expect(status()).toBe('Still to draw: one line.');
+    expect(status()).toBe(
+      'Only helper lines are missing: draw them if you need their points later.',
+    );
     tool('Square to');
     clickAt(-0.5, 0);
     clickAt(0, 0);
@@ -117,7 +120,9 @@ describe('drawing along', () => {
     clickAt(1, 0);
     clickAt(0, 0);
     clickAt(0, 1);
-    expect(status()).toBe('Still to draw: one line.');
+    expect(status()).toBe(
+      'Only helper lines are missing: draw them if you need their points later.',
+    );
     tool('Halve angle');
     clickAt(0, 1);
     clickAt(0, 0);
@@ -198,14 +203,14 @@ describe('drawing along', () => {
     expect(ticked()).toEqual(['1', '2', '3', '4']);
   });
 
-  it('ends by inking the board with a pen, and keeps the drawing as a pattern that plays from the repeat', () => {
+  it('ends by inking the board with a pen, and keeps the drawing as one of the learner’s patterns', () => {
     openAlong();
     for (let i = 0; i < 6; i++) {
       click('Draw it for me');
       click(i < 5 ? 'Next' : 'Ink it');
     }
     expect(screen.getByRole('toolbar', { name: 'Ink' })).toBeTruthy();
-    const go = screen.getByRole('button', { name: 'Repeat and color it' });
+    const go = screen.getByRole('button', { name: 'Repeat it' });
     expect((go as HTMLButtonElement).disabled).toBe(true);
     // Copies are off at first.
     expect(
@@ -234,11 +239,14 @@ describe('drawing along', () => {
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(document.querySelector('.pen-at')).toBeNull();
     fireEvent.click(go);
+    click('Keep it as it is');
     const kept = listPatterns()[0];
     expect(kept?.basedOn?.tutorial).toBe('eight-fold-star-and-cross');
     expect(kept?.tutorial.title).toBe('My Eight-fold star and cross');
     expect(kept?.tutorial.credits.at(-1)?.note).toMatch(/Drawn along/);
-    expect(window.location.hash).toBe(`#/mine/${kept?.id}/repeat`);
+    expect(
+      screen.getByRole('link', { name: 'Play it' }).getAttribute('href'),
+    ).toBe(`#/mine/${kept?.id}`);
     expect(kept?.tutorial.expect?.pieces.map((p) => p.name).sort()).toEqual([
       'cross',
       'star',
@@ -443,9 +451,8 @@ describe('drawing along', () => {
       click(i < 5 ? 'Next' : 'Ink it');
     }
     click('Ink it for me');
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Repeat and color it' }),
-    );
+    click('Repeat it');
+    click('Keep it as it is');
     const kept = listPatterns()[0]?.tutorial;
     const circles = (kept?.steps ?? []).flatMap((st) =>
       Object.values(st.create ?? {}).filter(
@@ -523,5 +530,81 @@ describe('drawing along', () => {
           (near(x2, -1) && near(y2, 3) && near(x1, 0) && near(y1, 4)),
       ),
     ).toBe(true);
+  });
+
+  it('repeats the tile by hand, colours the wall, and keeps both', () => {
+    openAlong();
+    for (let i = 0; i < 6; i++) {
+      click('Draw it for me');
+      click(i < 5 ? 'Next' : 'Ink it');
+    }
+    click('Ink it for me');
+    click('Repeat it');
+    const wall = () => screen.getByRole('img', { name: 'Your wall' });
+    const ghosts = () => wall().querySelectorAll('.ghost');
+    const placed = () => wall().querySelectorAll('.copy').length - 1;
+    // Four ghosts round a square tile; a click on one places a copy there.
+    expect(ghosts()).toHaveLength(4);
+    fireEvent.click(ghosts()[0] as Element);
+    expect(placed()).toBe(1);
+    expect(ghosts()).toHaveLength(6);
+    // Undo and Redo the placing; Fill the wall for me lays many.
+    click('Undo');
+    expect(placed()).toBe(0);
+    click('Redo');
+    expect(placed()).toBe(1);
+    click('Fill the wall for me');
+    expect(placed()).toBeGreaterThan(4);
+    // Erase takes one away.
+    const before = placed();
+    click('Erase');
+    fireEvent.click(wall().querySelectorAll('.copy-area')[2] as Element);
+    expect(placed()).toBe(before - 1);
+    // Colour it: the wall's pieces are found and filled by their kind.
+    click('Color it');
+    const pieces = [...wall().querySelectorAll('.wall-piece')];
+    const star = pieces.filter((p) => p.getAttribute('data-type') !== '-1');
+    expect(star.length).toBeGreaterThan(4);
+    fireEvent.click(star[0] as Element);
+    click('Keep it');
+    const kept = listPatterns()[0];
+    expect(kept?.wall?.copies).toHaveLength(before - 1);
+    expect(kept?.wall?.coloring?.palette).toBeTruthy();
+    // Coming back finds the wall as it was.
+    cleanup();
+    openAlong();
+    expect(
+      document.querySelector('.along-dot[aria-current="step"]')?.textContent,
+    ).toBe('Color');
+    expect(
+      screen.getByRole('img', { name: 'Your wall' }).querySelectorAll('.copy')
+        .length - 1,
+    ).toBe(before - 1);
+  });
+
+  it('snaps a dropped copy to a place where it joins up, and leaves it loose otherwise', () => {
+    const cell = {
+      origin: { x: -1, y: -1 },
+      u: { x: 2, y: 0 },
+      v: { x: 0, y: 2 },
+      corners: [
+        { x: -1, y: -1 },
+        { x: 1, y: -1 },
+        { x: 1, y: 1 },
+        { x: -1, y: 1 },
+      ],
+      area: 4,
+    };
+    const copies = [{ at: { x: 2, y: 0 } }];
+    // Near (0, 2), within a sixth of the tile: it snaps there.
+    expect(dropAt(cell, copies, 0, { x: 0.2, y: 2.1 })).toEqual({ x: 0, y: 2 });
+    // Far from any place: it stays where it was dropped.
+    const loose = { x: 0.9, y: 1.1 };
+    expect(dropAt(cell, copies, 0, loose)).toEqual(loose);
+    expect(snapped(cell, loose)).toBe(false);
+    // Never onto the first tile or another copy.
+    expect(
+      dropAt(cell, [...copies, { at: { x: 5, y: 5 } }], 1, { x: 2.1, y: 0 }),
+    ).toEqual({ x: 2.1, y: 0 });
   });
 });

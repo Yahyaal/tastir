@@ -93,6 +93,8 @@ export function useCamera(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [frameKey, goTo]);
 
+  // (Listeners are attached again at each stage, as a stage may swap the
+  // drawing for another.)
   // Wheel and trackpad pinch zoom about the pointer. The listener is not
   // passive, so the page does not scroll while zooming.
   useEffect(() => {
@@ -118,7 +120,7 @@ export function useCamera(
       return () => svg.removeEventListener('wheel', onWheel);
     });
     return () => offs.forEach((off) => off());
-  }, [svgRef, active]);
+  }, [svgRef, active, stage]);
 
   // Dragging pans. The drag starts only once the pointer has moved a few
   // pixels, so a plain click still reaches what is under it (free inking).
@@ -168,7 +170,7 @@ export function useCamera(
       };
     });
     return () => offs.forEach((off) => off());
-  }, [svgRef, active]);
+  }, [svgRef, active, stage]);
 
   return { view, goTo, wasDrag: () => dragged.current };
 }

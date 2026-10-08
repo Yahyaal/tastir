@@ -4,15 +4,25 @@ import {
   extrasOn,
   figureOn,
   neededAt,
+  wallPieces,
+  type Segment,
   type StepCheck,
   type Vec,
 } from '@tastir/engine';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+  useState,
+} from 'react';
 import { fullView, growingFrame, type Rect } from '../app/camera';
 import { Construction } from '../app/drawing';
 import {
   asPanel,
   beatsOf,
+  carriersOf,
   hiddenBeats,
   shownBeats,
   shownSteps,
@@ -44,6 +54,18 @@ import { withTutorialNames } from './naming';
 import { dotNear, reachable, type PenGraph } from './pen';
 import { forgetProgress, getProgress, keepProgress } from './progress';
 import { useInkBoard } from './useInkBoard';
+import { RepeatBoard, TargetWall } from './RepeatBoard';
+import { fillCopies, snapped, wallSegments, type Copy } from './repeat';
+import { setPatternWall } from '../editor/patterns';
+import { PiecePanel } from '../app/PiecePanel';
+import {
+  colorReducer,
+  DEFAULT_PALETTE,
+  PALETTES,
+  pieceColors,
+  tutorialColoring,
+  type History as ColorHistory,
+} from '../app/coloring';
 import '../editor/editor.css';
 import './along.css';
 
@@ -123,6 +145,11 @@ function stillToDraw(c: StepCheck, cell: string): string {
 /** In drawing along, the tile is the one the step names. */
 const TILE_ASK =
   'Click the corners of the tile the step names, in turn, then the first again.';
+
+const WALL_ERASE = 'Take copies away: a click on a copy removes it.';
+const WALL_FILL =
+  'Place copies edge to edge all over the board, as far as you can see.';
+const WALL_CLEAR = 'Take every copy away, keeping your first tile.';
 
 const INK_LIFT =
   'Lift the pen off the board, to start a new stroke somewhere else (or press Escape).';
@@ -219,10 +246,14 @@ export function DrawAlong({
   // Where the learner left off, if they have been here before.
   const [saved] = useState(() => getProgress(address));
   const [index, setIndex] = useState(() =>
-    Math.min(saved?.index ?? 0, shown.length),
+    Math.min(saved?.index ?? 0, shown.length + 2),
   );
   // After the last step, the learner inks their board.
   const inking = index === shown.length;
+  // Then the learner repeats their tile into a wall, and may color it.
+  const repeating = index === shown.length + 1;
+  const coloring = index === shown.length + 2;
+  const afterInk = repeating || coloring;
   const beat = shown[Math.min(index, shown.length - 1)] ?? 1;
   const info = beats[beat - 1];
 
@@ -335,6 +366,60 @@ export function DrawAlong({
   const [pen, setPen] = useState<string>();
   const [erasing, setErasing] = useState(false);
   const [penSaid, setPenSaid] = useState<string>();
+  // The wall the learner lays: copies of their tile, with Undo and Redo.
+  const [copyHistory, setCopyHistory] = useState<{
+    past: readonly (readonly Copy[])[];
+    now: readonly Copy[];
+    future: readonly (readonly Copy[])[];
+  }>(() => ({
+    past: [],
+    now: (saved?.copies ?? []).map((at) => ({ at })),
+    future: [],
+  }));
+  const copies = copyHistory.now;
+  const setCopies = useCallback(
+    (next: readonly Copy[]) =>
+      setCopyHistory((h) => ({
+        past: [...h.past, h.now],
+        now: next,
+        future: [],
+      })),
+    [],
+  );
+  const copyUndo = () =>
+    setCopyHistory((h) => {
+      const before = h.past.at(-1);
+      return before
+        ? {
+            past: h.past.slice(0, -1),
+            now: before,
+            future: [h.now, ...h.future],
+          }
+        : h;
+    });
+  const copyRedo = () =>
+    setCopyHistory((h) => {
+      const after = h.future[0];
+      return after
+        ? { past: [...h.past, h.now], now: after, future: h.future.slice(1) }
+        : h;
+    });
+  const [arrived, setArrived] = useState<{ index: number; from: Vec }>();
+  const [removing, setRemoving] = useState(false);
+  // Its colours, as the player's colour stage keeps them.
+  const [colorHistory, colorDispatch] = useReducer(
+    colorReducer,
+    model,
+    (m): ColorHistory => ({
+      past: [],
+      now: saved?.coloring ?? tutorialColoring(m),
+      future: [],
+    }),
+  );
+  const [selectedKind, setSelectedKind] = useState<number>();
+  const [hoveredKind, setHoveredKind] = useState<number>();
+  const [keptAs, setKeptAs] = useState<string>();
+
   // Every change is kept, so leaving and coming back loses nothing.
   const [kept, setKept] = useState(true);
   useEffect(() => {
@@ -344,9 +429,11 @@ export function DrawAlong({
         board: draft,
         index,
         inked: [...chosen],
+        copies: copyHistory.now.map((c) => c.at),
+        coloring: colorHistory.now,
       }),
     );
-  }, [address, draft, index, chosen]);
+  }, [address, draft, index, chosen, copyHistory.now, colorHistory.now]);
   const [restarting, setRestarting] = useState(false);
   const [welcome, setWelcome] = useState(
     () => (saved?.board.steps.length ?? 0) > 0,
@@ -363,7 +450,13 @@ export function DrawAlong({
     setRestarting(false);
     setWelcome(false);
   };
-  const ink = useInkBoard(model, draft, inking, chosen, setChosen);
+  const ink = useInkBoard(
+    model,
+    draft,
+    index >= shown.length,
+    chosen,
+    setChosen,
+  );
   const ready = ink.ready && !('reason' in ink.ready) ? ink.ready : undefined;
   // On the tile's edge the wall keeps one of a bit's two copies; the
   // inked bit is drawn at the other copy too, so ink shows where the
@@ -393,11 +486,43 @@ export function DrawAlong({
     }
     return out;
   }, [ready, chosen]);
+  // The learner's inked tile, as it repeats: its bits and their edge
+  // copies.
+  const tileInk = useMemo((): Segment[] => {
+    if (!ready) return [];
+    const bits = [...chosen].flatMap((id) => {
+      const p = ready.graph.bits.get(id);
+      return p ? [p.segment] : [];
+    });
+    return [
+      ...bits,
+      ...echoes.map((e) => ({ kind: 'segment' as const, a: e.a, b: e.b })),
+    ];
+  }, [ready, chosen, echoes]);
+  // At the colour stage: the pieces of the learner's own wall, each of
+  // the pattern's kind it has the shape of (the ground where none).
+  const colors = pieceColors(model, colorHistory.now);
+  const ground =
+    (PALETTES[colorHistory.now.palette] ?? PALETTES[DEFAULT_PALETTE])?.ground ??
+    '#eee';
+  const wall = useMemo(
+    () =>
+      coloring && ready
+        ? wallPieces(wallSegments(tileInk, copies), model.pattern.types)
+        : [],
+    [coloring, ready, tileInk, copies, model.pattern.types],
+  );
   const [keepFailed, setKeepFailed] = useState<string>();
-  const goOn = () => {
+  /** Keeps the drawing as one of the learner's patterns, with the wall
+   * they laid and, when they coloured it, its colours. */
+  const keepIt = (withColors: boolean) => {
     const kept = ink.keep();
     if ('reason' in kept) return setKeepFailed(kept.reason);
-    window.location.hash = `#/mine/${kept.pattern.id}/repeat`;
+    setPatternWall(kept.pattern.id, {
+      copies: copies.map((c) => c.at),
+      ...(withColors ? { coloring: colorHistory.now } : {}),
+    });
+    setKeptAs(kept.pattern.id);
   };
 
   // Hints grow a level with each press; a new step starts without one.
@@ -659,7 +784,10 @@ export function DrawAlong({
 
   const [showStep, setShowStep] = useState(false);
   const go = (to: number) => {
-    setIndex(Math.max(0, Math.min(shown.length, to)));
+    // The repeat and the colours open once the ink closes the pieces.
+    const top = ink.result?.matches ? shown.length + 2 : shown.length;
+    setIndex(Math.max(0, Math.min(top, to)));
+    setRemoving(false);
     setKeepFailed(undefined);
     setPen(undefined);
     setPenSaid(undefined);
@@ -678,10 +806,23 @@ export function DrawAlong({
         : '✓ This step only marks points, and they come by themselves where lines cross.'
       : here.done
         ? 'This step only marks points: it is ticked once the step before it is on your board.'
-        : here.missing.length === here.needed.length &&
-            !here.missing.some((m) => m.name === tutorial.pattern.cell)
-          ? 'Not on your board yet.'
-          : `Still to draw: ${stillToDraw(here, tutorial.pattern.cell)}.`;
+        : here.missing.every(
+              (m) =>
+                m.geometry.kind === 'line' && !carriersOf(model).has(m.name),
+            )
+          ? 'Only helper lines are missing: draw them if you need their points later.'
+          : here.missing.length === here.needed.length &&
+              !here.missing.some((m) => m.name === tutorial.pattern.cell)
+            ? 'Not on your board yet.'
+            : `Still to draw: ${stillToDraw(here, tutorial.pattern.cell)}.`;
+  const loose = ready
+    ? copies.filter((c) => !snapped(ready.cell, c.at)).length
+    : 0;
+  const wallStatus = keptAs
+    ? '✓ Kept as one of your patterns.'
+    : repeating
+      ? `${count(copies.length)} ${copies.length === 1 ? 'copy' : 'copies'} placed${loose ? `, ${count(loose)} of them loose` : ''}.`
+      : `${count(wall.filter((p) => p.type >= 0).length)} pieces in your wall${wall.some((p) => p.type < 0) ? ', and some that do not close' : ''}.`;
   const kindsWord = (n: number) =>
     `${count(n)} ${n === 1 ? 'kind' : 'kinds'} of piece`;
   const inkStatus = !inking
@@ -703,107 +844,144 @@ export function DrawAlong({
 
   const boardHalf = (
     <main className="stage along-plate" hidden={phone && showStep}>
-      <EditorDrawing
-        scene={ready?.scene ?? board}
-        ink={
-          ready
+      {afterInk && ready ? (
+        <RepeatBoard
+          view={camera.view}
+          svgRef={boardRef}
+          wasDrag={camera.wasDrag}
+          cell={ready.cell}
+          ink={tileInk}
+          copies={copies}
+          arrived={arrived}
+          erasing={removing}
+          {...(coloring
             ? {
-                pieces: ready.pieces,
-                chosen,
-                fresh: ink.fresh,
-                echo: echoes,
-                ...(ink.hint
-                  ? { glow: ink.hint.glow, dashed: ink.hint.dashed }
-                  : {}),
+                pieces: wall.map((p) => ({
+                  polygon: p.polygon,
+                  type: p.type,
+                  fill: p.type >= 0 ? (colors[p.type] ?? ground) : ground,
+                })),
               }
-            : undefined
-        }
-        tile={ready?.cell.corners}
-        targets={targets}
-        hover={hover}
-        candidates={choices?.circles}
-        faint={extras}
-        current={currentOnBoard}
-        labelOf={labelOf}
-        glow={hint?.glow}
-        rings={inking ? ink.hint?.ring : hint?.rings}
-        pen={
-          inking && ready && pen && ready.graph.dots.get(pen)
-            ? {
-                at: ready.graph.dots.get(pen)?.at as Vec,
-                reach: reachable(ready.graph, pen).map((d) => d.at),
+            : {})}
+          onPlace={(at, from) => {
+            setCopies([...copies, { at }]);
+            setArrived({ index: copies.length, from });
+          }}
+          onMove={(i, at) => {
+            setCopies(copies.map((c, k) => (k === i ? { at } : c)));
+            setArrived(undefined);
+          }}
+          onRemove={(i) => {
+            setCopies(copies.filter((_, k) => k !== i));
+            setArrived(undefined);
+          }}
+          onPick={(type) => setSelectedKind(type)}
+        />
+      ) : (
+        <EditorDrawing
+          scene={ready?.scene ?? board}
+          ink={
+            ready
+              ? {
+                  pieces: ready.pieces,
+                  chosen,
+                  fresh: ink.fresh,
+                  echo: echoes,
+                  ...(ink.hint
+                    ? { glow: ink.hint.glow, dashed: ink.hint.dashed }
+                    : {}),
+                }
+              : undefined
+          }
+          tile={ready?.cell.corners}
+          targets={targets}
+          hover={hover}
+          candidates={choices?.circles}
+          faint={extras}
+          current={currentOnBoard}
+          labelOf={labelOf}
+          glow={hint?.glow}
+          rings={inking ? ink.hint?.ring : hint?.rings}
+          pen={
+            inking && ready && pen && ready.graph.dots.get(pen)
+              ? {
+                  at: ready.graph.dots.get(pen)?.at as Vec,
+                  reach: reachable(ready.graph, pen).map((d) => d.at),
+                }
+              : undefined
+          }
+          penDots={inking && ready ? penDotsOf(ready.graph) : undefined}
+          numbered={inking && Boolean(ink.hint?.stroke)}
+          dashed={hint?.dashed}
+          camera={camera}
+          svgRef={boardRef}
+          fitTo={fullView(model)}
+          onHover={(at, reach) =>
+            setHover(
+              want && !choices ? snap(board, at, reach, want) : undefined,
+            )
+          }
+          onClick={(at: Vec, reach: number) => {
+            if (inking) {
+              if (!ready) return;
+              const stroke = ink.hint?.stroke;
+              const ringed = stroke ? [stroke.from, stroke.to] : [];
+              const dot = dotNear(ready.graph, at, reach * 1.2, ringed);
+              if (dot) {
+                setPenSaid(undefined);
+                // The pen goes down; on its own dot it lifts.
+                if (!pen) return setPen(dot.key);
+                if (pen === dot.key) return setPen(undefined);
+                if (ink.stroke(pen, dot.key, !erasing)) setPen(dot.key);
+                else
+                  setPenSaid(
+                    'Those two points are not on one line; ink goes along the lines you drew.',
+                  );
+                return;
               }
-            : undefined
-        }
-        penDots={inking && ready ? penDotsOf(ready.graph) : undefined}
-        numbered={inking && Boolean(ink.hint?.stroke)}
-        dashed={hint?.dashed}
-        camera={camera}
-        svgRef={boardRef}
-        fitTo={fullView(model)}
-        onHover={(at, reach) =>
-          setHover(want && !choices ? snap(board, at, reach, want) : undefined)
-        }
-        onClick={(at: Vec, reach: number) => {
-          if (inking) {
-            if (!ready) return;
-            const stroke = ink.hint?.stroke;
-            const ringed = stroke ? [stroke.from, stroke.to] : [];
-            const dot = dotNear(ready.graph, at, reach * 1.2, ringed);
-            if (dot) {
-              setPenSaid(undefined);
-              // The pen goes down; on its own dot it lifts.
-              if (!pen) return setPen(dot.key);
-              if (pen === dot.key) return setPen(undefined);
-              if (ink.stroke(pen, dot.key, !erasing)) setPen(dot.key);
-              else
+              // With the pen lifted, a click on an inked bit erases it; near
+              // a ringed extra bit, that one.
+              const extra = ink.hint?.ringId;
+              const extraAt = ink.hint?.ring[0];
+              const hit =
+                extra && extraAt && distance(at, extraAt) <= reach * 2.5
+                  ? extra
+                  : nearestPiece(ready.pieces, at, reach);
+              if (!pen && hit && chosen.has(hit)) {
+                ink.erase(hit);
+                setPenSaid(undefined);
+              } else
                 setPenSaid(
-                  'Those two points are not on one line; ink goes along the lines you drew.',
+                  pen
+                    ? 'Click a dot: the pen draws straight from dot to dot.'
+                    : 'Click a dot to put the pen down.',
                 );
               return;
             }
-            // With the pen lifted, a click on an inked bit erases it; near
-            // a ringed extra bit, that one.
-            const extra = ink.hint?.ringId;
-            const extraAt = ink.hint?.ring[0];
-            const hit =
-              extra && extraAt && distance(at, extraAt) <= reach * 2.5
-                ? extra
-                : nearestPiece(ready.pieces, at, reach);
-            if (!pen && hit && chosen.has(hit)) {
-              ink.erase(hit);
-              setPenSaid(undefined);
-            } else
-              setPenSaid(
-                pen
-                  ? 'Click a dot: the pen draws straight from dot to dot.'
-                  : 'Click a dot to put the pen down.',
+            if (choices) {
+              // The circle passing nearest the click.
+              const gaps = choices.circles.map((c) =>
+                Math.abs(distance(at, c.centre) - c.radius),
               );
-            return;
-          }
-          if (choices) {
-            // The circle passing nearest the click.
-            const gaps = choices.circles.map((c) =>
-              Math.abs(distance(at, c.centre) - c.radius),
-            );
-            const chosen = choices.drafts[gaps.indexOf(Math.min(...gaps))];
-            if (chosen) {
-              keep(chosen);
-              setSaid(undefined);
+              const chosen = choices.drafts[gaps.indexOf(Math.min(...gaps))];
+              if (chosen) {
+                keep(chosen);
+                setSaid(undefined);
+              }
+              return;
             }
-            return;
-          }
-          if (!want) return;
-          const target = snap(board, at, reach, want);
-          if (target) onPick(target);
-          else
-            setSaid(
-              want === 'point'
-                ? 'There is no point there. Click a crossing or a named point.'
-                : `There is no ${want === 'curve' ? 'line or circle' : want} there.`,
-            );
-        }}
-      />
+            if (!want) return;
+            const target = snap(board, at, reach, want);
+            if (target) onPick(target);
+            else
+              setSaid(
+                want === 'point'
+                  ? 'There is no point there. Click a crossing or a named point.'
+                  : `There is no ${want === 'curve' ? 'line or circle' : want} there.`,
+              );
+          }}
+        />
+      )}
     </main>
   );
   const stepHalf = (
@@ -812,7 +990,25 @@ export function DrawAlong({
       hidden={phone && !showStep}
       aria-label="The step to copy"
     >
-      {inking ? (
+      {coloring ? (
+        <div className="along-colors">
+          <PiecePanel
+            model={model}
+            colors={colors}
+            history={colorHistory}
+            dispatch={colorDispatch}
+            hovered={hoveredKind}
+            onHover={setHoveredKind}
+            selected={selectedKind}
+            onSelect={setSelectedKind}
+            onReset={() =>
+              colorDispatch({ kind: 'reset', to: tutorialColoring(model) })
+            }
+          />
+        </div>
+      ) : repeating ? (
+        <TargetWall model={model} view={camera.view} svgRef={stepRef} />
+      ) : inking ? (
         <Construction
           model={asPanel(model)}
           upTo={beats.length}
@@ -832,13 +1028,15 @@ export function DrawAlong({
           names={stepNames}
         />
       )}
-      <button
-        type="button"
-        className="fit"
-        onClick={() => camera.goTo(fullView(model))}
-      >
-        Fit
-      </button>
+      {coloring ? null : (
+        <button
+          type="button"
+          className="fit"
+          onClick={() => camera.goTo(fullView(model))}
+        >
+          Fit
+        </button>
+      )}
     </main>
   );
 
@@ -931,6 +1129,32 @@ export function DrawAlong({
               Ink
             </button>
           </li>
+          {(['Repeat', 'Color'] as const).map((name, k) => (
+            <li key={name}>
+              <button
+                type="button"
+                className={[
+                  'along-dot',
+                  index === shown.length + 1 + k ? 'on' : '',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+                aria-current={
+                  index === shown.length + 1 + k ? 'step' : undefined
+                }
+                aria-label={name}
+                disabled={!ink.result?.matches}
+                title={
+                  ink.result?.matches
+                    ? undefined
+                    : 'Opens once your ink closes the pattern’s pieces'
+                }
+                onClick={() => go(shown.length + 1 + k)}
+              >
+                {name}
+              </button>
+            </li>
+          ))}
         </ol>
         {phone ? (
           <button
@@ -956,6 +1180,16 @@ export function DrawAlong({
                   text: beats[b - 1]?.text ?? '',
                 })),
                 { on: inking, head: 'Ink', text: tutorial.ink.text ?? '' },
+                {
+                  on: repeating,
+                  head: 'Repeat it yourself',
+                  text: 'Lay copies of your tile into a wall: click a faint ghost to place a copy beside one, or drag a copy wherever you like; near a place where it joins up, it snaps there. Drag a copy off the board to take it away.',
+                },
+                {
+                  on: coloring,
+                  head: 'Color it (if you like)',
+                  text: 'Click a piece of your wall, then choose its colour on the right: every piece of that shape takes it. Pieces that do not close, where copies do not join, stay the ground colour.',
+                },
               ].map((layer, i) => (
                 <div
                   key={i}
@@ -969,13 +1203,23 @@ export function DrawAlong({
                   {layer.on ? (
                     <p
                       className={
-                        (inking ? ink.result?.matches : ticks[index])
+                        (
+                          inking
+                            ? ink.result?.matches
+                            : afterInk
+                              ? Boolean(keptAs)
+                              : ticks[index]
+                        )
                           ? 'along-check done'
                           : 'along-check'
                       }
                       role="status"
                     >
-                      {inking ? (keepFailed ?? inkStatus) : stepStatus}
+                      {inking
+                        ? (keepFailed ?? inkStatus)
+                        : afterInk
+                          ? (keepFailed ?? wallStatus)
+                          : stepStatus}
                     </p>
                   ) : (
                     <p className="along-check" />
@@ -996,25 +1240,78 @@ export function DrawAlong({
             {/* Both forward buttons in one cell, so the text beside them
                 keeps its width (and its lines) from the steps to the ink. */}
             <span className="along-stack">
-              <button
-                type="button"
-                className={inking ? 'next along-layer on' : 'next along-layer'}
-                aria-hidden={inking ? undefined : true}
-                inert={!inking}
-                disabled={!ink.result?.matches}
-                onClick={goOn}
-              >
-                Repeat and color it
-              </button>
-              <button
-                type="button"
-                className={inking ? 'next along-layer' : 'next along-layer on'}
-                aria-hidden={inking ? true : undefined}
-                inert={inking}
-                onClick={() => go(index + 1)}
-              >
-                {last ? 'Ink it' : 'Next'}
-              </button>
+              {[
+                {
+                  on: !inking && !afterInk,
+                  buttons: [
+                    <button
+                      key="n"
+                      type="button"
+                      className="next"
+                      onClick={() => go(index + 1)}
+                    >
+                      {last ? 'Ink it' : 'Next'}
+                    </button>,
+                  ],
+                },
+                {
+                  on: inking,
+                  buttons: [
+                    <button
+                      key="r"
+                      type="button"
+                      className="next"
+                      disabled={!ink.result?.matches}
+                      onClick={() => go(shown.length + 1)}
+                    >
+                      Repeat it
+                    </button>,
+                  ],
+                },
+                {
+                  on: repeating,
+                  buttons: [
+                    <button
+                      key="c"
+                      type="button"
+                      className="secondary"
+                      onClick={() => go(shown.length + 2)}
+                    >
+                      Color it
+                    </button>,
+                    <button
+                      key="k"
+                      type="button"
+                      className="next"
+                      onClick={() => keepIt(false)}
+                    >
+                      Keep it as it is
+                    </button>,
+                  ],
+                },
+                {
+                  on: coloring,
+                  buttons: [
+                    <button
+                      key="k"
+                      type="button"
+                      className="next"
+                      onClick={() => keepIt(true)}
+                    >
+                      Keep it
+                    </button>,
+                  ],
+                },
+              ].map((layer, i) => (
+                <span
+                  key={i}
+                  className={layer.on ? 'along-layer on' : 'along-layer'}
+                  aria-hidden={layer.on ? undefined : true}
+                  inert={!layer.on}
+                >
+                  {layer.buttons}
+                </span>
+              ))}
             </span>
           </nav>
         </section>
@@ -1105,9 +1402,76 @@ export function DrawAlong({
               </div>
             </div>
             <div
-              className={inking ? 'along-layer' : 'along-layer on'}
-              aria-hidden={inking ? true : undefined}
-              inert={inking}
+              className={afterInk ? 'along-layer on' : 'along-layer'}
+              aria-hidden={afterInk ? undefined : true}
+              inert={!afterInk}
+            >
+              <div className="editor-tools" role="toolbar" aria-label="Wall">
+                {repeating ? (
+                  <>
+                    <button
+                      type="button"
+                      className={removing ? 'tool on' : 'tool'}
+                      aria-pressed={removing}
+                      title={WALL_ERASE}
+                      aria-description={WALL_ERASE}
+                      onClick={() => setRemoving(!removing)}
+                    >
+                      Erase
+                    </button>
+                    <button
+                      type="button"
+                      className="tool"
+                      title={WALL_FILL}
+                      aria-description={WALL_FILL}
+                      onClick={() => {
+                        if (ready)
+                          setCopies(
+                            fillCopies(ready.cell, camera.view, copies),
+                          );
+                        setArrived(undefined);
+                      }}
+                    >
+                      Fill the wall for me
+                    </button>
+                    <button
+                      type="button"
+                      className="tool"
+                      title={WALL_CLEAR}
+                      aria-description={WALL_CLEAR}
+                      disabled={!copies.length}
+                      onClick={() => setCopies([])}
+                    >
+                      Clear the copies
+                    </button>
+                    <button
+                      type="button"
+                      className="tool"
+                      title="Take back the last placing, moving or removing."
+                      aria-description="Take back the last placing, moving or removing."
+                      disabled={!copyHistory.past.length}
+                      onClick={copyUndo}
+                    >
+                      Undo
+                    </button>
+                    <button
+                      type="button"
+                      className="tool"
+                      title="Put back what Undo took away."
+                      aria-description="Put back what Undo took away."
+                      disabled={!copyHistory.future.length}
+                      onClick={copyRedo}
+                    >
+                      Redo
+                    </button>
+                  </>
+                ) : null}
+              </div>
+            </div>
+            <div
+              className={inking || afterInk ? 'along-layer' : 'along-layer on'}
+              aria-hidden={inking || afterInk ? true : undefined}
+              inert={inking || afterInk}
             >
               <ToolBar
                 tool={toolId}
@@ -1125,7 +1489,25 @@ export function DrawAlong({
         </div>
         {/* Always there, at ink too, so the drawings keep their place. */}
         <div className="along-hints">
-          {inking ? (
+          {afterInk ? (
+            <span className="along-hint-words" aria-live="polite">
+              {keptAs ? (
+                <>
+                  Kept as one of your patterns.{' '}
+                  <a href={`#/mine/${keptAs}`}>Play it</a> ·{' '}
+                  <a href="#/">My patterns</a>
+                </>
+              ) : (
+                say(
+                  repeating
+                    ? 'Click a ghost to place a copy; drag a copy to move it.'
+                    : phone
+                      ? 'Click a piece, then press Show the step to choose its colour.'
+                      : 'Click a piece, then a colour on the right.',
+                )
+              )}
+            </span>
+          ) : inking ? (
             <>
               <button
                 type="button"
@@ -1169,7 +1551,17 @@ export function DrawAlong({
           hidden={phone && showStep}
         >
           <h2>Your drawing</h2>
-          {inking ? (
+          {afterInk ? (
+            <p className="instruction" aria-live="polite">
+              {say(
+                repeating
+                  ? removing
+                    ? 'Erase: click a copy to take it away.'
+                    : 'Click a ghost to place a copy, or drag a copy anywhere; off the board takes it away.'
+                  : 'Your wall, coloured piece by piece.',
+              )}
+            </p>
+          ) : inking ? (
             <p className="instruction" aria-live="polite">
               <b>{erasing ? 'Erase:' : 'Pen:'}</b>{' '}
               {say(
@@ -1218,7 +1610,13 @@ export function DrawAlong({
           )}
         </footer>
         <footer className="caption along-step-caption" hidden={phone}>
-          {inking ? (
+          {repeating ? (
+            <p className="dot-key">The pattern’s own wall, to aim for.</p>
+          ) : coloring ? (
+            <p className="dot-key">
+              The colours, as at the player’s colour stage.
+            </p>
+          ) : inking ? (
             <p className="dot-key">
               The pattern, inked as the tutorial inks it.
             </p>
@@ -1226,6 +1624,10 @@ export function DrawAlong({
             <p className="dot-key">
               <span className="new">blue: what this step makes</span>
               <span className="used">saffron: what it works from</span>
+              <span className="helper">
+                dashed: helper lines that only help find points; the pattern
+                never runs along them
+              </span>
             </p>
           )}
         </footer>

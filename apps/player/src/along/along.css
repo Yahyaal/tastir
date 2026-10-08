@@ -409,3 +409,98 @@
     overflow-x: visible;
   }
 }
+
+/* The learner's own wall: copies of their tile, ghosts where the next can
+   go, and the pieces filled at the colour stage. */
+.repeat-board .copy-area {
+  fill: transparent;
+  stroke: var(--used);
+  stroke-width: 1px;
+  stroke-dasharray: 2 3;
+  vector-effect: non-scaling-stroke;
+  cursor: grab;
+}
+
+.repeat-board .copy-area.first {
+  cursor: default;
+}
+
+.repeat-board .wall-ink,
+.target-wall .wall-ink {
+  stroke: #15171b;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.target-wall .wall-ink.target {
+  stroke: var(--current);
+  stroke-width: 2.4px;
+}
+
+.target-wall .tile-outline {
+  fill: none;
+  stroke: var(--malachite);
+  stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.repeat-board .ghost {
+  fill: var(--current);
+  fill-opacity: 0.06;
+  stroke: var(--current);
+  stroke-opacity: 0.5;
+  stroke-width: 1.2px;
+  stroke-dasharray: 3 4;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+}
+
+.repeat-board .ghost:hover {
+  fill-opacity: 0.16;
+}
+
+.repeat-board .copy.arriving {
+  animation: copy-arrive 0.45s ease-out;
+}
+
+@keyframes copy-arrive {
+  from {
+    transform: var(--from);
+    opacity: 0.3;
+  }
+  to {
+    transform: var(--to);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .repeat-board .copy.arriving {
+    animation: none;
+  }
+}
+
+.repeat-board .wall-piece {
+  stroke: none;
+  cursor: pointer;
+}
+
+/* The colour panel fills the right half and scrolls inside it. */
+.along-colors {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px;
+  background: var(--lapis);
+  color: var(--on-lapis);
+}
+
+.along .dot-key .helper::before {
+  width: 18px;
+  height: 0;
+  border-radius: 0;
+  vertical-align: middle;
+  border-top: 2px dashed var(--old);
+}

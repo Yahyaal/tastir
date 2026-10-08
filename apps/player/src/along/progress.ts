@@ -14,6 +14,12 @@ export interface Progress {
   readonly index: number;
   /** The bits of line inked, at the ink. */
   readonly inked: readonly string[];
+  /** The copies of the tile placed at the repeat, and the colours. */
+  readonly copies?: readonly { readonly x: number; readonly y: number }[];
+  readonly coloring?: {
+    readonly palette: string;
+    readonly chosen: Readonly<Record<string, string>>;
+  };
   readonly updated: string;
 }
 
