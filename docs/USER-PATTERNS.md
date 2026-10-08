@@ -343,4 +343,54 @@ Suggestions:
 
 ### Draw along 6.3–6.7, tester report (7 October 2026)
 
-*First version, saved while testing; the full report replaces this.* Tested from a frozen worktree of ffe355d on port 4351; screenshots in `docs/review/user-patterns/draw-along-test2/`. The star and cross went from the home page's Draw along button to a coloured wall by hand, with hints, a reload mid-way (Welcome back worked) and the kept pattern playing from My patterns. Two bugs so far: at the Ink stage the layout breaks at 1280 and 1024 px (the board jumps to the top right at a third of its height, the tutorial's picture drops to the bottom left, an empty block is left top left: `ink-layout-fresh.png`), and the kept pattern's Repeat stage shows a seam along the top and bottom rows (doubled tile lines, blue stars overlapping the next row: `star-repeat-crop.png`).
+I tested from a frozen worktree of ffe355d, with my own server on port 4351. Screenshots are in `docs/review/user-patterns/draw-along-test2/`. There were no console or page errors in any run. Each tutorial ran in its own browser profile, so reloads and returns kept local storage like a real browser.
+
+**What I tried.** I started each tutorial from the saffron “Draw along” button on its card on the home page. I drew three tutorials by clicking, all the way to a coloured wall:
+- **Eight-fold star and cross, at 1280×800.** I drew every step by hand and marked the tile with the Tile tool. I reloaded at step 5, inked by hand, then repeated and coloured.
+- **Six-fold snowflake, at 1024×768.** I drew every step by hand, using Symmetry ×6 for the ring of circles, the three lines and the six small-star lines. I reloaded at the end and inked partly by hand, then used Ink it for me.
+- **Infantas crosses, at 390×844 with touch.** I drew every step by tapping, with Symmetry ×4 for the walked circles, the grid and the diagonals. I inked by hand, then used Ink it for me.
+
+I used Draw it for me through all six steps of the star in a fresh browser. I used hints where I would really have been stuck. I tried Start again, then opened each kept pattern from My patterns and played it.
+
+**What worked.**
+- **The way in.** All 13 beginner cards have the Draw along button, and the player has a Draw along link at the top for beginner tutorials.
+- **Hints.** They are good, and the levels behave as planned. Level 1 makes the lines the step works from glow on my board. Level 2 rings the points to click and the right tool, and says “Then 2 more” when one line is not enough. Level 3 dashes the answer on my board, and Show me more then greys out (`star-s5-hint1…3`). On the snowflake's step 4 (“the tips of two opposite petals”), level 2 was enough: the ringed point showed me which petal tip was meant (`snow-s4-hint2`). On the star's step 5, level 2 was enough too. On the dado's step 7, the hint now says to set Symmetry to ×4.
+- **Draw it for me.** It drew each step and ticked it.
+- **Progress.** After a reload I came back to the same step and board with “Welcome back… Start again”, and the ink came back too. Start again asks first, with Keep my board.
+- **The end of the construction.** On the last step Next becomes “Ink it”. The ink status is clear and useful, for example “Your ink closes two kinds of piece; the pattern has five kinds of piece”. Once the pieces match, “Repeat and color it” lights up and opens the kept pattern at its Repeat stage. The walls are right (the star and cross `star-repeat-12s`, the snowflake `snow-repeat-12s`), and colouring by shape works (`mine-color`, `snow-color`, `inf-color`). My first version of this report claimed a seam in the wall; that was wrong. I had taken the screenshot while the Repeat animation was still running.
+- **My patterns.** Each kept pattern appears as “My <title>… from <title>” with Edit, Play, Rename and Delete, and Play opens it.
+
+**Re-check of my 11 items from the 6.1–6.2 report:**
+
+1. The step text is no longer cut: it is now in full above both drawings at 1280 and 1024. **Fixed.**
+2. The step to copy is labelled properly on the dado's step 3: K, K2 and T. **Mostly fixed.** The six-fold step 7 still shows the internal name `g5_330`.
+3. No tool is chosen at first, and the board says “Choose a tool above…”. **Fixed.**
+4. The point-only step ticks once the step before it is done, and the tile counts only when marked with the Tile tool. **Fixed.**
+5. The Tile tool says “Click the corners of the tile the step names”, with no editor advice. **Fixed.**
+6. The status now says “the tile, marked with the Tile tool” and “one triangle”. **Fixed.**
+7. The step at hand is blue on my board, and the rest is darker than the construction on the right. **Fixed.**
+8. The board says E, not A. **Partly fixed.** Crossings I clicked are still named P1, P2… (star tile corners P1–P4, Infantas P1–P6).
+9. The hints cover what I needed. **Fixed.**
+10. The tool bar is two rows at 1280, and one scrolling row on the phone with Back and Next above the board. **Fixed.** On the phone, though, Symmetry is off-screen at the end of that row, and nothing hints that the row scrolls.
+11. The board, step and ink are kept across a reload. **Fixed.**
+
+**Problems, most important first.** Bugs:
+
+1. **The Ink stage's layout breaks at 1280 and 1024 px.** As soon as Ink it is pressed:
+   - the learner's board jumps to the top right and shrinks to about a third of its height (224 px at 1280, 136 px at 1024);
+   - the tutorial's inked picture drops to the bottom left;
+   - an empty block is left at the top left;
+   - the two drawings no longer line up or share a size.
+
+   At 1024 my board was too small to ink by hand: the snowflake inside it was about 50 px across. It happens with a board drawn by hand and with one made by Draw it for me, and it happens after a reload too. The phone is fine. Reproduce: finish any tutorial at 1280×800 and press Ink it. Expected: the same split as in the construction steps, my board on the left at full size. Screenshots `ink-layout-fresh.png`, `snow-ink-3.png`, `start-again-ask.png`.
+2. **A pinwheel cannot be inked by hand with “Keep it symmetric” on.** The Infantas crosses' ink is a pinwheel, turned but not mirrored. Symmetric inking adds “turned and mirrored copies”, so my one diagonal click inked a mirrored cross. The status then said “Your ink closes three kinds of piece; the pattern has two”, and nothing tells the learner to turn symmetry off. I finished with Ink it for me. Expected: symmetric ink follows the pattern's own symmetry (turns only here), or the text says to untick Keep it symmetric. Screenshots `inf-ink-2.png`, `inf-ink-ref.png`.
+3. **There is no help at the Ink stage.** The ink text is general, for example “bands of grid lines that turn along the diagonals”. When my ink closed four kinds of piece out of five (snowflake), nothing showed which bits were missing or extra. Show me a hint is greyed out at Ink. A hint level that rings one missing bit, or dashes the tutorial's ink over the board, would let a beginner finish by hand rather than pressing Ink it for me. That is what I ended up doing on two of the three tutorials.
+
+Suggestions:
+
+4. The board still names clicked crossings P1, P2…, and the six-fold step 7 shows `g5_330` on the step to copy.
+5. On the phone, Symmetry is at the far end of the scrolling tool row. Since the hints now say “Set Symmetry to ×4”, it should be easy to find, for example at the start of the row or under it.
+6. A kept pattern lists its own construction steps, as many as I drew (12 for the star, against the tutorial's 6), while its card says “13 steps”. The numbers differ, and the 12 steps include my extra copies.
+7. After a reload the board's zoom goes back to Fit. That is fine, but on a tiny Ink board (problem 1) it means zooming again each time.
+
+**Verdict.** Draw along is nearly ready for the owner. The construction part (6.1–6.3, 6.5 and the 6.7 fixes) is ready: it is clear, hints help at the right moments, progress is kept, and I drew all three tutorials by hand without a dead end. The ending (6.4) is not ready yet, because of problem 1: at the two desktop widths the Ink stage loses the split screen and makes the board too small to ink by hand, so a desktop learner will press Ink it for me. Problems 2 and 3 then make hand inking a pinwheel, or finding a missing bit, a matter of luck. Fix problem 1, and preferably 2, before showing it to the owner.
