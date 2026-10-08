@@ -1014,6 +1014,7 @@ export function Thumbnail({
   coloring = tutorialColoring(model),
   look = model.tutorial.pattern.look,
   coloredUpTo,
+  activeColorType,
   view: givenView,
 }: {
   model: Model;
@@ -1023,6 +1024,8 @@ export function Thumbnail({
   look?: WallStyle;
   /** If set, only pieces with type < coloredUpTo receive their color; others show blueprint tone. */
   coloredUpTo?: number;
+  /** Currently active color type being animated/rippled in quick succession. */
+  activeColorType?: number;
   /** If set, renders within this camera view (e.g. locked to fullView) rather than tiling view. */
   view?: Rect;
 }) {
@@ -1051,9 +1054,156 @@ export function Thumbnail({
   const move = (p: Vec, d: Vec): Vec => ({ x: p.x + d.x, y: p.y + d.y });
   const poly = (ps: readonly Vec[]) =>
     `M${ps.map((q) => `${sx(q)} ${sy(q)}`).join('L')}Z`;
-  // One path per color and one per band layer keeps the library light.
-  const byColor = new Map<string, string[]>();
+
   const strokes: string[] = [];
+
+  // When coloredUpTo is defined (e.g. progressive coloring in hero), render individual pieces
+  // sorted radially and clockwise so each color ripples in quick, graceful succession 1-by-1.
+  if (coloredUpTo !== undefined) {
+    interface VisPiece {
+      id: string;
+      d: string;
+      type: number;
+      color: string;
+      dist: number;
+      angle: number;
+    }
+    const visPieces: VisPiece[] = [];
+
+    for (let i = -reach; i <= reach; i++) {
+      for (let j = -reach; j <= reach; j++) {
+        const d = {
+          x: cell.u.x * i + cell.v.x * j,
+          y: cell.u.y * i + cell.v.y * j,
+        };
+        model.pattern.pieces.forEach((p, k) => {
+          const polygon = p.polygon.map((q) => move(q, d));
+          if (!meets(polygon)) return;
+          const targetColor = fill
+            ? fill(k, i, j)
+            : (colors[p.type] ?? '#999999');
+          const cx = polygon.reduce((sum, q) => sum + q.x, 0) / polygon.length;
+          const cy = polygon.reduce((sum, q) => sum + q.y, 0) / polygon.length;
+          const dist = Math.hypot(cx, cy);
+          // Angle normalized from 12 o'clock clockwise: [0, 2*PI)
+          let angle = Math.atan2(cy, cx) + Math.PI / 2;
+          if (angle < 0) angle += Math.PI * 2;
+
+          visPieces.push({
+            id: `p-${p.type}-${i}-${j}-${k}`,
+            d: poly(polygon),
+            type: p.type,
+            color: lines ? 'none' : targetColor,
+            dist,
+            angle,
+          });
+        });
+        for (const s of model.pattern.ink) {
+          const a = move(s.segment.a, d);
+          const b = move(s.segment.b, d);
+          if (meets([a, b])) strokes.push(`M${sx(a)} ${sy(a)}L${sx(b)} ${sy(b)}`);
+        }
+      }
+    }
+
+    // Group by piece type to calculate ordered ripple indices
+    const byType = new Map<number, VisPiece[]>();
+    for (const vp of visPieces) {
+      const list = byType.get(vp.type) ?? [];
+      list.push(vp);
+      byType.set(vp.type, list);
+    }
+
+    interface StaggeredPiece extends VisPiece {
+      staggerIndex: number;
+      stepDelay: number;
+    }
+    const staggeredPieces: StaggeredPiece[] = [];
+
+    for (const [, list] of byType.entries()) {
+      // Sort pieces for an organic, non-dizzying ripple:
+      // Center rosette pieces (dist < 1.35) bloom first clockwise around the circle,
+      // followed by surrounding repeated tiles rippling outward radially.
+      list.sort((a, b) => {
+        const aCenter = a.dist < 1.35;
+        const bCenter = b.dist < 1.35;
+        if (aCenter !== bCenter) return aCenter ? -1 : 1;
+        if (aCenter) {
+          return a.angle - b.angle;
+        }
+        const dDiff = a.dist - b.dist;
+        if (Math.abs(dDiff) > 0.4) return dDiff;
+        return a.angle - b.angle;
+      });
+
+      // Brisk ripple: between 28ms and 55ms per piece so each color family
+      // completes within ~500ms without feeling sluggish or frenetic
+      const stepDelay = Math.max(
+        28,
+        Math.min(55, Math.floor(520 / Math.max(1, list.length))),
+      );
+
+      list.forEach((vp, idx) => {
+        staggeredPieces.push({
+          ...vp,
+          staggerIndex: idx,
+          stepDelay,
+        });
+      });
+    }
+
+    return (
+      <svg className="thumbnail" viewBox={viewBox(view)} aria-hidden="true">
+        {staggeredPieces.map((p) => {
+          const isColored = p.type < coloredUpTo;
+          const isRippling = p.type === activeColorType;
+          const currentColor = isColored ? p.color : 'rgba(18, 28, 48, 0.45)';
+          return (
+            <path
+              key={p.id}
+              className={`piece ${strap ? 'strap' : ''} ${isRippling ? 'rippling' : ''}`}
+              d={p.d}
+              fill={currentColor}
+              style={{
+                fill: currentColor,
+                stroke: strap ? currentColor : undefined,
+                transition:
+                  'fill 0.35s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+                transitionDelay: isRippling
+                  ? `${p.staggerIndex * p.stepDelay}ms`
+                  : '0ms',
+              }}
+              vectorEffect="non-scaling-stroke"
+            />
+          );
+        })}
+        {(strap ? (['edge', 'band'] as const) : []).map((layer) => (
+          <path
+            key={layer}
+            d={strokes.join('')}
+            fill="none"
+            stroke={layer === 'edge' ? STRAP_EDGE : STRAP_BAND}
+            strokeWidth={widths[layer]}
+            strokeLinecap="round"
+          />
+        ))}
+        {!strap && strokes.length > 0 && (
+          <path
+            className="thumbnail-lines"
+            d={strokes.join('')}
+            fill="none"
+            stroke="rgba(226, 232, 240, 0.4)"
+            strokeWidth={0.015}
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
+          />
+        )}
+      </svg>
+    );
+  }
+
+  // Fast bundled path rendering for static catalog thumbnails (coloredUpTo === undefined)
+  const byColor = new Map<string, string[]>();
   for (let i = -reach; i <= reach; i++) {
     for (let j = -reach; j <= reach; j++) {
       const d = {
@@ -1063,14 +1213,11 @@ export function Thumbnail({
       model.pattern.pieces.forEach((p, k) => {
         const polygon = p.polygon.map((q) => move(q, d));
         if (!meets(polygon)) return;
-        const isColored = coloredUpTo === undefined || p.type < coloredUpTo;
         const color = lines
           ? 'none'
-          : isColored
-            ? fill
-              ? fill(k, i, j)
-              : (colors[p.type] ?? '#999999')
-            : 'rgba(18, 28, 48, 0.45)';
+          : fill
+            ? fill(k, i, j)
+            : (colors[p.type] ?? '#999999');
         const list = byColor.get(color) ?? [];
         list.push(poly(polygon));
         byColor.set(color, list);

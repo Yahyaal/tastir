@@ -1604,7 +1604,7 @@ function HeroPlay({ model }: { model: Model }) {
         : isFadingLines
           ? 1100
           : isColoring
-            ? 850
+            ? 950
             : Math.max(600, ...ends) + (k === n ? 900 : 350);
     const timer = setTimeout(() => setK((k + 1) % total), wait);
     return () => {
@@ -1630,17 +1630,30 @@ function HeroPlay({ model }: { model: Model }) {
         {reduced || isFinished ? (
           <Thumbnail model={model} view={view} />
         ) : isColoring ? (
-          <Thumbnail model={model} view={view} coloredUpTo={coloredUpTo} />
-        ) : isFadingLines ? (
-          <Construction
-            model={panelModel}
-            upTo={all}
+          <Thumbnail
+            model={model}
             view={view}
-            svgRef={svgRef}
-            ink
-            enter
-            fadeLines
+            coloredUpTo={coloredUpTo}
+            activeColorType={colorIndex}
           />
+        ) : isFadingLines ? (
+          <>
+            <Thumbnail
+              model={model}
+              view={view}
+              coloredUpTo={0}
+              activeColorType={-1}
+            />
+            <Construction
+              model={panelModel}
+              upTo={all}
+              view={view}
+              svgRef={svgRef}
+              ink
+              enter
+              fadeLines
+            />
+          </>
         ) : k === n ? (
           <Construction
             model={panelModel}
