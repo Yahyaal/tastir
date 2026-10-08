@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
+import dado from '@tutorials/alhambra-comares-dado.json';
 import App from '../app/app';
 import { listPatterns } from '../editor/patterns';
 import { TOOLS } from '../editor/tools';
@@ -204,5 +205,45 @@ describe('drawing along', () => {
       'cross',
       'star',
     ]);
+  });
+
+  it('starts with no tool chosen, and the step to copy names only what its text uses', () => {
+    openAlong();
+    const bar = screen.getByRole('toolbar', { name: 'Tools' });
+    expect(
+      within(bar)
+        .getAllByRole('button')
+        .filter((b) => b.getAttribute('aria-pressed') === 'true'),
+    ).toEqual([]);
+    expect(status()).toBe('Not on your board yet.');
+    for (let i = 0; i < 4; i++) click('Next');
+    const step = screen.getByRole('img', {
+      name: 'The construction after step 5',
+    });
+    const names = [...step.querySelectorAll('text')].map((t) => t.textContent);
+    // Its corners, which it highlights; never the engine's k.1 … k.8.
+    expect(names.sort()).toEqual(['NE', 'NW', 'SE', 'SW']);
+  });
+
+  it('ticks a step that only marks points after the step before it, and the tile only once it is marked', () => {
+    act(() => {
+      window.location.hash = '#/alhambra-comares-dado/draw';
+    });
+    render(<App entries={[{ id: 'alhambra-comares-dado', json: dado }]} />);
+    expect(ticked()).toEqual([]);
+    click('Draw it for me');
+    click('Next');
+    click('Draw it for me');
+    // The tile's sides lie on lines already drawn, but it is not marked.
+    expect(ticked()).toEqual(['1', '2']);
+    for (let i = 0; i < 6; i++) {
+      click('Next');
+      click('Draw it for me');
+    }
+    click('Next');
+    expect(current()).toBe('9');
+    expect(status()).toMatch(/the tile, marked with the Tile tool/);
+    click('Draw it for me');
+    expect(ticked()).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9']);
   });
 });

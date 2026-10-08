@@ -45,12 +45,14 @@ export function withTutorialNames(
   draft: Draft,
   at: number,
   tutorial: Scene,
+  readable: ReadonlySet<string>,
   eps = ALONG_EPS,
 ): Draft {
   const step = draft.steps[at];
   if (!step?.create) return draft;
   const taken = new Set([...specsOf(draft).keys(), 'O', 'A']);
-  const points = tutorialPoints(tutorial);
+  // Only names the learner reads in the tutorial (E), never the engine's.
+  const points = tutorialPoints(tutorial).filter((p) => readable.has(p.name));
   const fresh = Object.entries(step.create).filter(
     ([name, el]) => 'point' in el && /^P\d+$/.test(name),
   );

@@ -48,6 +48,22 @@ export function toolFor(spec: ElementSpec, isTile: boolean): ToolId {
   return 'point';
 }
 
+/** How many turns make a copy (×4), or that it is a mirror image. */
+function turnOf(
+  tutorial: Tutorial,
+  scene: Scene,
+  name: string,
+): number | 'mirror' | undefined {
+  const group = [...scene.elements.values()].find(
+    (e) => e.geometry.kind === 'group' && e.geometry.members.includes(name),
+  );
+  const spec = group && specsOf(tutorial).get(group.name);
+  if (!spec || !('repeat' in spec)) return undefined;
+  return spec.repeat.by.startsWith('mirror:')
+    ? 'mirror'
+    : Number(spec.repeat.by.slice(3));
+}
+
 /** The turn or mirror that makes a copy (`x@k`) from its original. */
 function copyMove(
   tutorial: Tutorial,
@@ -143,18 +159,24 @@ export function hintFor(
       if (on) glow.add(on);
     }
   }
-  const copies = check.missing.filter((m) => m.name.includes('@')).length;
   const label = toolOf(tool).label;
+  const copies = check.missing.filter((m) => m.name.includes('@'));
+  const turn = copies[0] ? turnOf(tutorial, scene, copies[0].name) : undefined;
+  const symmetry =
+    turn === undefined
+      ? ''
+      : turn === 'mirror'
+        ? ' The mirrored copy is drawn the same way, through the mirrored points.'
+        : first.name.includes('@')
+          ? ` Set Symmetry to ×${turn} and draw it once more: its turned copies come with it.`
+          : ` Set Symmetry to ×${turn} first, and its turned copies come with it.`;
+  const others = check.missing.length - 1 - copies.length;
   const more =
-    check.missing.length > 1
-      ? copies
-        ? ` Then the turned copies: Symmetry draws them all at once.`
-        : ` Then ${check.missing.length - 1} more.`
-      : '';
+    others > 0 && !first.name.includes('@') ? ` Then ${others} more.` : '';
   const words =
     level < 3
-      ? `Use ${label}: the points to click are ringed.${more}`
-      : `The answer is dashed: draw over it with ${label}.${more}`;
+      ? `Use ${label}: the points to click are ringed.${symmetry}${more}`
+      : `The answer is dashed: draw over it with ${label}.${symmetry}${more}`;
   return {
     glow,
     rings: clicks,

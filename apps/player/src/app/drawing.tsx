@@ -182,11 +182,13 @@ function labelsFor(
   points: readonly SceneElement[],
   current: (el: SceneElement) => boolean,
   highlighted: ReadonlySet<string>,
+  all = false,
 ): Label[] {
   const groups: { at: Vec; els: SceneElement[] }[] = [];
   for (const el of points) {
     if (el.geometry.kind !== 'point') continue;
-    if (!current(el) && !highlighted.has(el.name) && el.step !== 0) continue;
+    if (!all && !current(el) && !highlighted.has(el.name) && el.step !== 0)
+      continue;
     // Copies made by a repeat carry the engine's names (C@3); the learner
     // knows them as "the same point at every corner", so they stay unnamed.
     if (el.name.includes('@')) continue;
@@ -450,7 +452,11 @@ export function Construction({
   freeInk,
   enter = false,
   arrived = false,
+  names,
 }: {
+  /** Exactly the point names to show (drawing along: those the step text
+   * uses), instead of the step's own and highlighted points. */
+  names?: ReadonlySet<string>;
   model: Model;
   upTo: number;
   /** The part of the tutorial frame to show. */
@@ -583,7 +589,17 @@ export function Construction({
                 size={size}
               />
             ))}
-            {showNames ? (
+            {names ? (
+              <Labels
+                labels={labelsFor(
+                  shown.filter((el) => names.has(el.name)),
+                  isCurrent,
+                  highlighted,
+                  true,
+                )}
+                size={size}
+              />
+            ) : showNames ? (
               <Labels
                 labels={labelsFor(shown, isCurrent, highlighted)}
                 size={size}
@@ -599,6 +615,7 @@ export function Construction({
     upTo,
     settled,
     ink,
+    names,
     showNames,
     inkSoFar,
     pen,

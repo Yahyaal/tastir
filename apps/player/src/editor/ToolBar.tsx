@@ -17,7 +17,8 @@ export function ToolBar({
   hinted,
   children,
 }: {
-  tool: ToolId;
+  /** The chosen tool, if any. */
+  tool?: ToolId;
   onTool: (id: ToolId) => void;
   symmetry: Symmetry;
   onSymmetry: (n: Symmetry) => void;

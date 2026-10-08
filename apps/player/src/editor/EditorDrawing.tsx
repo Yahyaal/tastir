@@ -2,7 +2,12 @@ import type { Geometry, InkPiece, Scene, Vec } from '@tastir/engine';
 import { useMemo, useRef, useState } from 'react';
 import { viewBox, width, type Rect } from '../app/camera';
 import { useCamera } from '../app/useCamera';
-import { crossingsNear, pointPlaces, type Target } from './tools';
+import {
+  crossingsNear,
+  pointPlaces,
+  type PointPlace,
+  type Target,
+} from './tools';
 
 /** How near a click must be to take something, in screen pixels. */
 const REACH_PX = 12;
@@ -66,6 +71,8 @@ export function EditorDrawing({
   glow,
   rings,
   dashed,
+  labelOf,
+  current: currentNames,
 }: {
   scene: Scene;
   selected?: number;
@@ -97,6 +104,11 @@ export function EditorDrawing({
   rings?: readonly Vec[];
   /** Figures drawn dashed: the answer (a hint). */
   dashed?: readonly Geometry[];
+  /** The name shown for a point, when it differs from the board's own;
+   * an empty name hides it. */
+  labelOf?: (place: PointPlace) => string | undefined;
+  /** Elements drawn as the step at hand (blue), when drawing along. */
+  current?: ReadonlySet<string>;
 }) {
   const ownFrame = useMemo(() => frameOf(scene), [scene]);
   const frame = fitTo ?? ownFrame;
@@ -137,7 +149,7 @@ export function EditorDrawing({
     if (g.kind === 'point' || g.kind === 'group') continue;
     const cls = [
       'el',
-      el.step === selected ? 'current' : '',
+      el.step === selected || currentNames?.has(el.name) ? 'current' : '',
       taken.has(el.name) || (hover && named(hover) === el.name) ? 'taken' : '',
       extras?.has(el.name) ? 'extra' : '',
       glow?.has(el.name) ? 'glow' : '',
@@ -224,17 +236,21 @@ export function EditorDrawing({
       r={unit * (crowded ? 1.6 : 3)}
     />
   ));
-  const labels = visible.filter(showName).map((p) => (
-    <text
-      key={`n${p.name}`}
-      className="point-name"
-      x={p.at.x + unit * 5}
-      y={-(p.at.y + unit * 5)}
-      fontSize={unit * 12}
-    >
-      {p.name}
-    </text>
-  ));
+  const labels = visible
+    .filter(showName)
+    .map((p) => ({ p, text: labelOf?.(p) ?? p.name }))
+    .filter(({ text }) => text)
+    .map(({ p, text }) => (
+      <text
+        key={`n${p.name}`}
+        className="point-name"
+        x={p.at.x + unit * 5}
+        y={-(p.at.y + unit * 5)}
+        fontSize={unit * 12}
+      >
+        {text}
+      </text>
+    ));
   // Crossings with no name yet, near the pointer: places a click can take.
   const faint = useMemo(() => {
     if (!pointer || ink) return [];

@@ -61,32 +61,47 @@
   margin-left: auto;
 }
 
-/* Two equal columns; the tool bar and the step's heading share the first
-   row, so both drawings start at the same height and have the same size. */
+/* Two equal columns. The step's text sits in a row above both drawings,
+   and the tool bar and the hint buttons share the next row, so both
+   drawings start at the same height and have the same size, whatever the
+   length of the text. */
 .along-grid {
   flex: 1;
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  /* The captions keep one height, so no text moves the drawings. */
-  grid-template-rows: auto minmax(0, 1fr) 10rem;
+  grid-template-rows: auto auto minmax(240px, 1fr) 4.6rem;
   column-gap: 28px;
-  row-gap: 14px;
+  row-gap: 12px;
+}
+
+.along-text-row {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.along-text {
+  max-width: 90ch;
+}
+
+.along-text-row h2 {
+  margin: 0 0 4px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.05rem;
+  color: var(--saffron);
+}
+
+.along-text-row .instruction {
+  margin: 0 0 4px;
+  line-height: 1.45;
 }
 
 .along-tools .editor-tools {
   margin-bottom: 0;
-}
-
-.along-head {
-  display: flex;
-  align-items: flex-end;
-}
-
-.along-head .label {
-  margin: 0;
-  color: var(--saffron);
-  font-weight: 700;
 }
 
 .along-plate {
@@ -121,20 +136,17 @@
   overflow-y: auto;
 }
 
-.along .along-step-caption {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: start;
-}
-
 .along .tool-gap {
   display: none;
 }
 
+.along .editor-tools {
+  gap: 3px;
+}
+
 .along .editor-tools .tool {
-  padding: 3px 7px;
-  font-size: 0.78rem;
+  padding: 3px 6px;
+  font-size: 0.75rem;
 }
 
 .along .caption h2 {
@@ -150,7 +162,7 @@
 }
 
 .along-check {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 0.9rem;
   color: var(--on-lapis-muted);
 }
@@ -162,8 +174,45 @@
 
 .along-nav {
   display: flex;
+  flex-shrink: 0;
   gap: 10px;
   justify-content: flex-end;
+}
+
+.player .along-nav button {
+  min-width: 96px;
+  padding: 10px 20px;
+}
+
+.player .along-nav .next {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+}
+
+.player .along-nav .next:disabled {
+  opacity: 0.45;
+}
+
+/* The board's own lines in ink, the step at hand in blue; the step to
+   copy keeps the player's colours. */
+.along .editor-drawing .el {
+  stroke: #7d8590;
+}
+
+.along .editor-drawing .el.current {
+  stroke: var(--current);
+  stroke-width: 2.4px;
+}
+
+/* Names stay readable over dots and lines. */
+.along .point-name {
+  paint-order: stroke;
+  stroke: var(--gesso);
+  /* In em, so the halo follows the label's size in any view. */
+  stroke-width: 0.25em;
+  stroke-linejoin: round;
 }
 
 /* The learner's own extras: kept, faint, never wrong. */
@@ -204,34 +253,23 @@
     grid-template-rows: none;
   }
 
+  .along-text-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
   .along-plate {
-    min-height: 56vh;
+    min-height: 62vh;
   }
 
-  /* Room under the page for the fixed Back and Next. */
-  .player.along {
-    padding-bottom: 96px;
+  /* One row of tools that scrolls sideways, so the board shows. */
+  .along .editor-tools {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
   }
 
-  /* On a phone the step to copy, with Back and Next, comes first. */
-  .along .along-step-caption {
-    order: -1;
+  .along .editor-tools .tool {
+    flex: none;
   }
-}
-
-.along-hints {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  margin-top: 6px;
-  font-size: 0.88rem;
-}
-
-.player .along-hints button {
-  padding: 5px 14px;
-}
-
-.along-hint-words {
-  color: var(--saffron);
 }

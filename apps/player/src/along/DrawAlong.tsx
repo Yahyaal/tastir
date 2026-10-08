@@ -2,6 +2,8 @@ import {
   checkStep,
   distance,
   extrasOn,
+  figureOn,
+  neededAt,
   type StepCheck,
   type Vec,
 } from '@tastir/engine';
@@ -21,6 +23,7 @@ import { nearestPiece } from '../editor/Editor';
 import { PROGRESS_TEXT, useModel } from '../app/workerClient';
 import { check, emptyDraft, type Draft } from '../editor/document';
 import { EditorDrawing } from '../editor/EditorDrawing';
+import { shapeName } from '../editor/finish';
 import { makeStep, type Choice } from '../editor/makeStep';
 import { ToolBar } from '../editor/ToolBar';
 import {
@@ -29,12 +32,14 @@ import {
   snap,
   toolOf,
   wantAt,
+  type PointPlace,
   type Symmetry,
   type Target,
   type ToolId,
 } from '../editor/tools';
 import { drawForMe } from './drawForMe';
 import { hintFor } from './hints';
+import { namesIn, placeKey, readableAt, readableNames } from './names';
 import { withTutorialNames } from './naming';
 import { useInkBoard } from './useInkBoard';
 import '../editor/editor.css';
@@ -81,20 +86,29 @@ interface History {
 
 const NUMBER_WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
 const count = (n: number) => NUMBER_WORDS[n] ?? String(n);
-const KIND_WORDS = { line: 'line', circle: 'circle', polygon: 'shape' };
-
-/** What a step still needs, in words: “one line and two circles”. */
-function stillToDraw(c: StepCheck): string {
+/** What a step still needs, in words: “one line and the tile”. */
+function stillToDraw(c: StepCheck, cell: string): string {
   const by = new Map<string, number>();
+  let tile = false;
   for (const m of c.missing) {
-    const w = KIND_WORDS[m.geometry.kind];
+    if (m.name === cell) {
+      tile = true;
+      continue;
+    }
+    const g = m.geometry;
+    const w = g.kind === 'polygon' ? shapeName(g.vertices) : g.kind;
     by.set(w, (by.get(w) ?? 0) + 1);
   }
   const parts = [...by].map(([w, n]) => `${count(n)} ${n === 1 ? w : `${w}s`}`);
+  if (tile) parts.push('the tile, marked with the Tile tool');
   return parts.length > 1
     ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}`
     : (parts[0] ?? '');
 }
+
+/** In drawing along, the tile is the one the step names. */
+const TILE_ASK =
+  'Click the corners of the tile the step names, in turn, then the first again.';
 
 const INK_SYMMETRIC =
   'Ink or erase a bit of line together with its turned and mirrored copies, so the pattern stays even.';
@@ -140,6 +154,17 @@ export function DrawAlong({
   const shown = useMemo(() => shownBeats(tutorial), [tutorial]);
   const shownIds = useMemo(() => shownSteps(tutorial), [tutorial]);
   const hidden = useMemo(() => hiddenBeats(tutorial), [tutorial]);
+  // The tile counts only when marked as a shape.
+  const shapes = useMemo(() => new Set([tutorial.pattern.cell]), [tutorial]);
+  // The point names a learner reads, and where each sits.
+  const readable = useMemo(
+    () => readableNames(tutorial, model.scene),
+    [tutorial, model.scene],
+  );
+  const readAt = useMemo(
+    () => readableAt(model.scene, readable),
+    [model.scene, readable],
+  );
   const [index, setIndex] = useState(0);
   // After the last step, the learner inks their board.
   const inking = index === shown.length;
@@ -188,9 +213,20 @@ export function DrawAlong({
 
   // How each step stands on the board, and the learner's own extras.
   const checks = useMemo(
-    () => shown.map((b) => checkStep(model.scene, board, b)),
-    [shown, model.scene, board],
+    () => shown.map((b) => checkStep(model.scene, board, b, undefined, shapes)),
+    [shown, model.scene, board, shapes],
   );
+  // A step is ticked when it is on the board; a step that only marks
+  // points, once the step before it is ticked.
+  const ticks = useMemo(() => {
+    const out: boolean[] = [];
+    checks.forEach((c, i) =>
+      out.push(
+        c.done && (c.needed.length > 0 || (i === 0 || out[i - 1]) === true),
+      ),
+    );
+    return out;
+  }, [checks]);
   const extras = useMemo(
     () => extrasOn(model.scene, board),
     [model.scene, board],
@@ -234,6 +270,7 @@ export function DrawAlong({
         draft,
         beat,
         `Drawn for me: ${info?.text ?? ''}`.trim(),
+        shapes,
       );
       if (next) edit(next);
       setHintLevel(0);
@@ -246,8 +283,9 @@ export function DrawAlong({
   };
 
   // The tools, as in the editor.
-  const [toolId, setToolId] = useState<ToolId>('compass');
-  const tool = toolOf(toolId);
+  // No tool is chosen at first, so none looks like a suggestion.
+  const [toolId, setToolId] = useState<ToolId>();
+  const tool = toolId ? toolOf(toolId) : undefined;
   const [symmetry, setSymmetry] = useState<Symmetry>(0);
   const [targets, setTargets] = useState<Target[]>([]);
   const [hover, setHover] = useState<Target>();
@@ -265,11 +303,12 @@ export function DrawAlong({
   /** Keeps a step drawn on the board, its points named as the tutorial
    * names them. */
   const keep = (next: Draft) => {
-    edit(withTutorialNames(next, next.steps.length - 1, model.scene));
+    edit(withTutorialNames(next, next.steps.length - 1, model.scene, readable));
     setChoices(undefined);
   };
   const finish = (clicks: readonly Target[]) => {
     setTargets([]);
+    if (!tool) return;
     const made = makeStep(
       draft,
       tool,
@@ -284,11 +323,14 @@ export function DrawAlong({
       setSaid('Two circles fit. Click the one you want.');
       return;
     }
+    // The editor's tile advice is not for drawing along: the step says
+    // which tile to mark.
     keep(made.next);
-    setSaid(made.warn);
+    setSaid(undefined);
   };
   const onPick = (target: Target) => {
     setSaid(undefined);
+    if (!tool) return;
     const eps = board.tol.eps;
     // Clicking the first corner again closes a polygon.
     if (
@@ -302,8 +344,35 @@ export function DrawAlong({
     if (!tool.more && complete(tool, clicks.length)) return finish(clicks);
     setTargets(clicks);
   };
-  const want = wantAt(tool, targets.length);
-  const ask = tool.asks[Math.min(targets.length, tool.asks.length - 1)] ?? '';
+  const want = tool && wantAt(tool, targets.length);
+  const ask = !tool
+    ? 'Choose a tool above to draw with. Hold the pointer over a tool to see what it does.'
+    : tool.id === 'tile'
+      ? TILE_ASK
+      : (tool.asks[Math.min(targets.length, tool.asks.length - 1)] ?? '');
+  // The board's figures that are the step's, drawn blue.
+  const currentOnBoard = useMemo(() => {
+    const out = new Set<string>();
+    if (inking) return out;
+    for (const n of neededAt(model.scene, beat)) {
+      const on = figureOn(board, n.geometry);
+      if (on) out.add(on);
+    }
+    return out;
+  }, [inking, model.scene, beat, board]);
+  // The names the step to copy shows: those its text and highlight use.
+  const stepNames = useMemo(() => {
+    const names = namesIn(
+      `${info?.heading ?? ''} ${info?.text ?? ''}`,
+      model.scene,
+    );
+    for (const h of info?.highlight ?? []) if (readable.has(h)) names.add(h);
+    return names;
+  }, [info, model.scene, readable]);
+  /** A board point's name as the tutorial shows it, never an engine name. */
+  const labelOf = (p: PointPlace) =>
+    readAt.get(placeKey(p.at)) ??
+    (model.scene.elements.has(p.name) && !readable.has(p.name) ? '' : p.name);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -348,6 +417,18 @@ export function DrawAlong({
   };
   const number = shownIds.indexOf(info?.step ?? 0) + 1;
   const last = index === shown.length - 1;
+  const stepStatus = !here
+    ? ''
+    : ticks[index]
+      ? here.needed.length
+        ? `✓ Step ${number} is on your board.`
+        : '✓ This step only marks points, and they come by themselves where lines cross.'
+      : here.done
+        ? 'This step only marks points: it is ticked once the step before it is on your board.'
+        : here.missing.length === here.needed.length &&
+            !here.missing.some((m) => m.name === tutorial.pattern.cell)
+          ? 'Not on your board yet.'
+          : `Still to draw: ${stillToDraw(here, tutorial.pattern.cell)}.`;
   const kindsWord = (n: number) =>
     `${count(n)} ${n === 1 ? 'kind' : 'kinds'} of piece`;
   const inkStatus = !inking
@@ -372,6 +453,8 @@ export function DrawAlong({
         hover={hover}
         candidates={choices?.circles}
         faint={extras}
+        current={currentOnBoard}
+        labelOf={labelOf}
         glow={hint?.glow}
         rings={hint?.rings}
         dashed={hint?.dashed}
@@ -435,7 +518,7 @@ export function DrawAlong({
           view={camera.view}
           frame={frame}
           svgRef={stepRef}
-          showNames
+          names={stepNames}
         />
       )}
       <button
@@ -464,7 +547,7 @@ export function DrawAlong({
         <span className="along-steps-label">Steps</span>
         <ol>
           {shown.map((b, i) => {
-            const done = checks[i]?.done ?? false;
+            const done = ticks[i] ?? false;
             return (
               <li key={b}>
                 <button
@@ -516,6 +599,56 @@ export function DrawAlong({
         ) : null}
       </nav>
       <div className="along-grid">
+        <section className="along-text-row" aria-label="The step to copy">
+          <div className="along-text">
+            <h2>
+              {inking
+                ? 'Ink'
+                : `Step ${number} of ${shownIds.length}: the step to copy`}
+            </h2>
+            <p className="instruction">
+              {inking ? tutorial.ink.text : info?.text}
+            </p>
+            <p
+              className={
+                (inking ? ink.result?.matches : ticks[index])
+                  ? 'along-check done'
+                  : 'along-check'
+              }
+              role="status"
+            >
+              {inking ? (keepFailed ?? inkStatus) : stepStatus}
+            </p>
+          </div>
+          <nav className="along-nav" aria-label="Step">
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => go(index - 1)}
+              disabled={index === 0}
+            >
+              Back
+            </button>
+            {inking ? (
+              <button
+                type="button"
+                className="next"
+                disabled={!ink.result?.matches}
+                onClick={goOn}
+              >
+                Repeat and color it
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="next"
+                onClick={() => go(index + 1)}
+              >
+                {last ? 'Ink it' : 'Next'}
+              </button>
+            )}
+          </nav>
+        </section>
         <div className="along-tools" hidden={phone && showStep}>
           {inking ? (
             <div className="editor-tools" role="toolbar" aria-label="Ink">
@@ -571,10 +704,26 @@ export function DrawAlong({
             />
           )}
         </div>
-        <div className="along-head" hidden={phone}>
-          <p className="label">
-            {inking ? 'Ink' : `Step ${number} of ${shownIds.length}`}
-          </p>
+        <div className="along-hints" hidden={inking}>
+          <button
+            type="button"
+            className="secondary"
+            disabled={!here || here.done || hintLevel >= 3}
+            onClick={() => setHintLevel(hintLevel + 1)}
+          >
+            {hintLevel ? 'Show me more' : 'Show me a hint'}
+          </button>
+          <button
+            type="button"
+            className="secondary"
+            disabled={!here || here.done}
+            onClick={drawIt}
+          >
+            Draw it for me
+          </button>
+          <span className="along-hint-words" aria-live="polite">
+            {drawFailed ?? hint?.words ?? ''}
+          </span>
         </div>
         {boardHalf}
         {stepHalf}
@@ -592,8 +741,13 @@ export function DrawAlong({
           ) : (
             <>
               <p className="instruction" aria-live="polite">
-                <b>{tool.label}:</b> {said ?? ask}
-                {!said && symmetry && tool.id !== 'tile' && tool.id !== 'point'
+                {tool ? <b>{tool.label}: </b> : null}
+                {said ?? ask}
+                {!said &&
+                tool &&
+                symmetry &&
+                tool.id !== 'tile' &&
+                tool.id !== 'point'
                   ? ` What you draw is turned round the centre, ${symmetry} times.`
                   : ''}
               </p>
@@ -602,7 +756,7 @@ export function DrawAlong({
                 className="ink-tools"
                 style={{ visibility: targets.length ? 'visible' : 'hidden' }}
               >
-                {tool.more ? (
+                {tool?.more ? (
                   <button
                     type="button"
                     disabled={!complete(tool, targets.length)}
@@ -619,104 +773,19 @@ export function DrawAlong({
                   Cancel
                 </button>
               </div>
-              <div className="along-hints">
-                <button
-                  type="button"
-                  className="secondary"
-                  disabled={!here || here.done || hintLevel >= 3}
-                  onClick={() => setHintLevel(hintLevel + 1)}
-                >
-                  {hintLevel ? 'Show me more' : 'Show me a hint'}
-                </button>
-                <button
-                  type="button"
-                  className="secondary"
-                  disabled={!here || here.done}
-                  onClick={drawIt}
-                >
-                  Draw it for me
-                </button>
-                <span className="along-hint-words" aria-live="polite">
-                  {drawFailed ?? hint?.words ?? ''}
-                </span>
-              </div>
             </>
           )}
         </footer>
-        <footer className="caption along-step-caption">
+        <footer className="caption along-step-caption" hidden={phone}>
           {inking ? (
-            <>
-              <div className="along-text">
-                <h2>Ink</h2>
-                <p
-                  className={
-                    ink.result?.matches ? 'along-check done' : 'along-check'
-                  }
-                  role="status"
-                >
-                  {keepFailed ?? inkStatus}
-                </p>
-                <p className="instruction">{tutorial.ink.text}</p>
-              </div>
-              <nav className="along-nav" aria-label="Step">
-                <button
-                  type="button"
-                  className="secondary"
-                  onClick={() => go(index - 1)}
-                >
-                  Back
-                </button>
-                <button
-                  type="button"
-                  className="next"
-                  disabled={!ink.result?.matches}
-                  onClick={goOn}
-                >
-                  Repeat and color it
-                </button>
-              </nav>
-            </>
+            <p className="dot-key">
+              The pattern, inked as the tutorial inks it.
+            </p>
           ) : (
-            <>
-              <div className="along-text">
-                <h2>
-                  {phone ? `Step ${number} of ${shownIds.length}: ` : ''}The
-                  step to copy
-                </h2>
-                <p
-                  className={here?.done ? 'along-check done' : 'along-check'}
-                  role="status"
-                >
-                  {!here
-                    ? ''
-                    : here.done
-                      ? here.needed.length
-                        ? `✓ Step ${number} is on your board. Next moves both halves on.`
-                        : `✓ This step only marks points, and points come by themselves where lines cross.`
-                      : here.missing.length === here.needed.length
-                        ? 'Not on your board yet.'
-                        : `Still to draw: ${stillToDraw(here)}.`}
-                </p>
-                <p className="instruction">{info?.text}</p>
-              </div>
-              <nav className="along-nav" aria-label="Step">
-                <button
-                  type="button"
-                  className="secondary"
-                  onClick={() => go(index - 1)}
-                  disabled={index === 0}
-                >
-                  Back
-                </button>
-                <button
-                  type="button"
-                  className="next"
-                  onClick={() => go(index + 1)}
-                >
-                  {last ? 'Ink it' : 'Next'}
-                </button>
-              </nav>
-            </>
+            <p className="dot-key">
+              <span className="new">blue: what this step makes</span>
+              <span className="used">saffron: what it works from</span>
+            </p>
           )}
         </footer>
       </div>

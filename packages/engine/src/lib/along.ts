@@ -177,15 +177,25 @@ export function drawnOn(board: Scene, g: Geometry, eps = ALONG_EPS): boolean {
   return figureOn(board, g, eps) !== undefined;
 }
 
-/** How one beat of the tutorial stands on the learner's board. */
+/**
+ * How one beat of the tutorial stands on the learner's board. The
+ * polygons named in `shapes` (the tile) count only when drawn as a shape,
+ * not when their sides merely lie on drawn lines, since the learner must
+ * still mark them.
+ */
 export function checkStep(
   tutorial: Scene,
   board: Scene,
   beat: number,
   eps = ALONG_EPS,
+  shapes: ReadonlySet<string> = new Set(),
 ): StepCheck {
   const needed = neededAt(tutorial, beat);
-  const missing = needed.filter((n) => !drawnOn(board, n.geometry, eps));
+  const missing = needed.filter((n) =>
+    shapes.has(n.name)
+      ? figureOn(board, n.geometry, eps) === undefined
+      : !drawnOn(board, n.geometry, eps),
+  );
   return { needed, missing, done: missing.length === 0 };
 }
 

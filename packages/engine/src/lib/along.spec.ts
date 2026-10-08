@@ -168,4 +168,20 @@ describe('checking a step by geometry', () => {
     expect(check.missing.every((m) => m.name.includes('@'))).toBe(true);
     expect(checkStep(scene, board([...before, step]), beat).done).toBe(true);
   });
+
+  it('counts the tile only when it is marked as a shape', () => {
+    const dado = loadTutorial('alhambra-comares-dado.json');
+    const scene = evaluate(dado);
+    const cell = dado.pattern.cell;
+    const beat = dado.steps.findIndex((s) => cell in (s.create ?? {})) + 1;
+    const lines = board(dado.steps.filter((s) => s.id < beat));
+    expect(checkStep(scene, lines, beat).done).toBe(true);
+    expect(checkStep(scene, lines, beat, undefined, new Set([cell])).done).toBe(
+      false,
+    );
+    const marked = board(dado.steps.filter((s) => s.id <= beat));
+    expect(
+      checkStep(scene, marked, beat, undefined, new Set([cell])).done,
+    ).toBe(true);
+  });
 });
