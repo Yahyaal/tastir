@@ -1087,7 +1087,17 @@ function Broken({ message }: { message: string }) {
     <div className="player">
       <header className="topbar">
         <a className="home" href="#/">
-          <span className="wordmark">Tastir</span>
+          <span className="wordmark">
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
+          </span>
           <span>All patterns</span>
         </a>
         <h1>This pattern cannot be shown</h1>
@@ -1117,7 +1127,17 @@ function MissingDesign({
     <div className="player">
       <header className="topbar">
         <a className="home" href="#/">
-          <span className="wordmark">Tastir</span>
+          <span className="wordmark">
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
+          </span>
           <span>All patterns</span>
         </a>
       </header>
@@ -2091,7 +2111,17 @@ function NotPlayable({ id, reason }: { id: string; reason?: string }) {
     <div className="player">
       <header className="topbar">
         <a className="home" href="#/">
-          <span className="wordmark">Tastir</span>
+          <span className="wordmark">
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
+          </span>
           <span>All patterns</span>
         </a>
       </header>

@@ -16,16 +16,23 @@
   padding: 4px 10px;
   font-family: var(--display);
   font-size: 1.4rem;
-  color: var(--on-lapis);
+  color: var(--theme-text-primary);
   background: transparent;
   border: 1px solid transparent;
   border-radius: 6px;
+  transition: all 150ms ease;
 }
 
-.editor-title input:hover,
+.editor-title input:hover {
+  border-color: var(--theme-border);
+  background: var(--theme-bg-surface);
+}
+
 .editor-title input:focus {
-  border-color: var(--lapis-line);
-  background: var(--lapis-deep);
+  border-color: var(--theme-border-gold);
+  background: var(--theme-bg-surface);
+  outline: none;
+  box-shadow: 0 0 0 1px var(--saffron);
 }
 
 .visually-hidden {
@@ -56,6 +63,7 @@
   font-family: var(--display);
   font-weight: 400;
   font-size: 1.05rem;
+  color: var(--saffron);
 }
 
 .editor-steps ol {
@@ -77,17 +85,21 @@
   border-radius: 6px;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--on-lapis-muted);
+  color: var(--theme-text-muted);
+  transition: all 150ms ease;
 }
 
 .player .editor-step:hover {
-  border-color: var(--lapis-line);
+  border-color: var(--theme-border);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
 }
 
 .player .editor-step.on {
-  background: var(--lapis-raised);
+  background: var(--theme-bg-raised);
   border-color: var(--saffron);
-  color: var(--on-lapis);
+  color: var(--theme-text-primary);
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.2);
 }
 
 .editor-step .n {
@@ -138,16 +150,24 @@
   padding: 4px 9px;
   font-size: 0.8rem;
   border-radius: 6px;
-  background: transparent;
-  color: var(--on-lapis);
-  border: 1px solid var(--lapis-line);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-secondary);
+  border: 1px solid var(--theme-border);
+  transition: all 150ms ease;
+}
+
+.player .editor-tools .tool:hover {
+  border-color: var(--theme-border-hover);
+  color: var(--theme-text-primary);
+  background: var(--theme-bg-raised);
 }
 
 .player .editor-tools .tool.on {
   background: var(--saffron);
   border-color: var(--saffron);
-  color: var(--lapis-deep);
+  color: var(--theme-bg-canvas);
   font-weight: 700;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
 }
 
 .editor-tools .tool-gap {
@@ -225,11 +245,16 @@
   font-size: 0.92rem;
   line-height: 1.4;
   padding: 8px;
-  color: var(--on-lapis);
-  background: var(--lapis-deep);
-  border: 1px solid var(--lapis-line);
+  color: var(--theme-text-primary);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
   resize: vertical;
+}
+
+.step-text textarea:focus {
+  border-color: var(--saffron);
+  outline: none;
 }
 
 .step-status {
@@ -238,7 +263,7 @@
 }
 
 .step-status.ok {
-  color: #9fd9b8;
+  color: #34d399;
 }
 
 .step-status.broken {
@@ -251,8 +276,9 @@
   overflow-x: auto;
   padding: 8px 10px;
   font-size: 0.75rem;
-  color: var(--on-lapis);
-  background: var(--lapis-deep);
+  color: var(--theme-text-secondary);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
 }
 
@@ -331,14 +357,22 @@
 .player .editor-modes .mode {
   padding: 4px 16px;
   font-size: 0.85rem;
-  background: transparent;
-  color: var(--on-lapis);
-  border: 1px solid var(--lapis-line);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-secondary);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  transition: all 150ms ease;
+}
+
+.player .editor-modes .mode:hover {
+  border-color: var(--theme-border-hover);
+  color: var(--theme-text-primary);
 }
 
 .player .editor-modes .mode.on {
-  background: var(--on-lapis);
-  color: var(--lapis-deep);
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--saffron);
+  color: var(--saffron);
   font-weight: 700;
 }
 
@@ -348,8 +382,16 @@
   align-items: center;
   padding: 4px 9px;
   font-size: 0.8rem;
-  border: 1px solid var(--lapis-line);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-secondary);
+  transition: all 150ms ease;
+}
+
+.editor-tools label.tool:hover {
+  border-color: var(--theme-border-hover);
+  color: var(--theme-text-primary);
 }
 
 .editor-drawing .ink-piece {
@@ -379,9 +421,16 @@
   border-radius: 999px;
   background: var(--saffron);
   border: 1px solid var(--saffron);
-  color: var(--lapis-deep);
+  color: var(--theme-bg-canvas);
   font-weight: 700;
   text-decoration: none;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.25);
+  transition: all 150ms ease;
+}
+
+.editor-play .button.play:hover {
+  background: var(--saffron-hover);
+  border-color: var(--saffron-hover);
 }
 
 .editor-play .play-later {
@@ -422,10 +471,15 @@
   font: inherit;
   font-size: 0.88rem;
   padding: 4px 8px;
-  color: var(--on-lapis);
-  background: var(--lapis-deep);
-  border: 1px solid var(--lapis-line);
+  color: var(--theme-text-primary);
+  background: var(--theme-bg-card);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
+}
+
+.about input[type='text']:focus {
+  border-color: var(--saffron);
+  outline: none;
 }
 
 .about-entry {
@@ -433,8 +487,9 @@
   gap: 6px;
   margin: 0;
   padding: 8px 10px;
-  border: 1px solid var(--lapis-line);
+  border: 1px solid var(--theme-border);
   border-radius: 8px;
+  background: var(--theme-bg-surface);
 }
 
 .about-entry legend {
@@ -460,9 +515,16 @@
   bottom: 8px;
   padding: 3px 12px;
   font-size: 0.8rem;
-  background: var(--gesso);
-  color: var(--ink);
-  border: 1px solid var(--old);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-secondary);
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  transition: all 150ms ease;
+}
+
+.player .editor-canvas .fit:hover {
+  border-color: var(--theme-border-hover);
+  color: var(--theme-text-primary);
 }
 
 .editor-drawing.dragging {
@@ -602,10 +664,15 @@
   font: inherit;
   font-size: 0.85rem;
   padding: 3px 8px;
-  color: var(--on-lapis);
-  background: var(--lapis-deep);
-  border: 1px solid var(--lapis-line);
+  color: var(--theme-text-primary);
+  background: var(--theme-bg-card);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
+}
+
+.save-block input[type='text']:focus {
+  border-color: var(--saffron);
+  outline: none;
 }
 
 .save-block label {

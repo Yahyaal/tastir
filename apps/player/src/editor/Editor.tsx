@@ -67,7 +67,17 @@ export function Editor({ id }: { id: string }) {
       <div className="player">
         <header className="topbar">
           <a className="home" href="#/">
-            <span className="wordmark">Tastir</span>
+            <span className="wordmark">
+              Tastir{' '}
+              <span
+                className="brand-arabic"
+                aria-hidden="true"
+                lang="ar"
+                dir="rtl"
+              >
+                تسطير
+              </span>
+            </span>
             <span>All patterns</span>
           </a>
         </header>
@@ -351,7 +361,17 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
     <div className="player editor">
       <header className="topbar">
         <a className="home" href="#/">
-          <span className="wordmark">Tastir</span>
+          <span className="wordmark">
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
+          </span>
           <span>All patterns</span>
         </a>
         <label className="editor-title">

@@ -1105,7 +1105,17 @@ export function DrawAlong({
     <div className="player along">
       <header className="topbar">
         <a className="home" href="#/">
-          <span className="wordmark">Tastir</span>
+          <span className="wordmark">
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
+          </span>
           <span>All patterns</span>
         </a>
         <h1>Draw along: {tutorial.title}</h1>
