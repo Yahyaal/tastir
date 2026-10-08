@@ -29,7 +29,7 @@ There are 34 tutorials in the library. Each one's status, with what was checked,
 
 ## The next goal
 
-“Your own patterns” (the plan at `#/plan`) is built: phases 1 to 5 were finished and checked by a tester agent on 7 October 2026, as recorded in [the build log](USER-PATTERNS.md). The owner reviewed it on 7 October: the rosette block is removed and “Send it to the library” is hidden until there is a form. The next feature is **draw along** (the owner's idea): the learner draws each step on the left while the tutorial shows it on the right, beginner patterns first. Its plan is at `#/plan/draw-along` (`apps/player/src/review/DrawAlongPlan.tsx`) and waits for the owner's answers to three questions on the review page; then build it with the builder and tester agents as tasks 6.1–6.6 in [the build log](USER-PATTERNS.md).
+“Your own patterns” (the plan at `#/plan`) is built: phases 1 to 5 were finished and checked by a tester agent on 7 October 2026, as recorded in [the build log](USER-PATTERNS.md). The owner reviewed it on 7 October: the rosette block is removed and “Send it to the library” is hidden until there is a form. **Draw along** (the owner's idea: the learner draws each step on the left while the tutorial shows it on the right) was built and checked by the tester agent on 7 October, for the thirteen beginner patterns; its plan is at `#/plan/draw-along` and its tasks 6.1–6.10 are in [the build log](USER-PATTERNS.md). It waits for the owner's look; fix what the owner finds first.
 
 After that, more Alhambra panels from Brian Wichmann's Tiling Search, each checked against David Wade's photo of the real panel (the candidates and the method are in [the queue](patterns/QUEUE.md)).
 

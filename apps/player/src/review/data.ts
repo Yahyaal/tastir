@@ -1543,9 +1543,9 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Draw along: the last check',
-    text: 'Draw along is built (6.1–6.7 in the build log). The tester agent is drawing three beginner patterns by hand, as a learner, and I fix what it finds.',
-    link: { label: 'The plan', href: '#/plan/draw-along' },
+    title: 'Draw along is ready for your look',
+    text: 'Built and checked by the tester agent, who drew beginner patterns by hand on a desktop and a phone, from the home page’s Draw along button to a coloured wall. Every step is ticked as you draw it, Next is always open, the two halves line up and never move, hints help at every step and at the ink, and what you draw is kept under My patterns.',
+    link: { label: 'Try it', href: '/#/eight-fold-star-and-cross/draw' },
   },
   next: [
     {
