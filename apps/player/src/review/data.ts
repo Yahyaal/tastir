@@ -36,9 +36,11 @@ const MAMOOT = 'https://mamootdiy.com';
 export const PATTERNS: readonly Pattern[] = [
   {
     id: 'draw-along-plan',
-    title: 'Plan: draw along (new)',
+    title: 'Plan: draw along',
     fold: 8,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You (7 October): Next is always open, so a learner can peek ahead or draw several steps at once; the two drawings line up; all tools, the right one only as a hint, each with a tooltip; a third “Draw along” button on beginner cards and in the player. The builder and tester agents are building it.',
     summary:
       'Your split-screen idea: the tutorial shows each step on the right and the learner draws it on the left, starting with the thirteen beginner patterns.',
     story: [
@@ -1319,46 +1321,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'draw-along-next',
-    text: 'In draw along, can the learner press Next without drawing the step? I suggest no: Next opens once the step is on their board (A), and “Draw it for me” (C) is there for anyone who wants to move on.',
-    choices: ['Next only after the step is drawn', 'Next always open'],
-    pictures: [
-      {
-        src: 'renders/user-patterns/draw-along/a-split-screen.png',
-        caption:
-          'A: the learner’s board. B: the step to copy. C: the hint buttons and Next.',
-      },
-    ],
-    card: 'draw-along-plan',
-  },
-  {
-    id: 'draw-along-tools',
-    text: 'Which tools does the board show (the row above A)? I suggest all of them, as in the editor, with the right tool ringed only as a hint; fewer tools would be simpler but would give the answer away.',
-    choices: [
-      'All tools, the right one as a hint',
-      'Only the tools the step needs',
-    ],
-    pictures: [
-      {
-        src: 'renders/user-patterns/draw-along/a-split-screen.png',
-        caption: 'The tool row sits above the board (A).',
-      },
-    ],
-    card: 'draw-along-plan',
-  },
-  {
-    id: 'draw-along-entry',
-    text: 'Where do learners find draw along? I suggest a third button, “Draw along”, on each beginner card on the home page, beside “Watch it drawn” and “Result and original”, and one in the player.',
-    choices: [
-      'A third button on beginner cards and in the player',
-      'Replace “Watch it drawn” on beginner cards',
-    ],
-    pictures: [],
-    card: 'draw-along-plan',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -1383,6 +1346,11 @@ export const PROGRESS: {
   updated: '7 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Draw along',
+      text: 'Every beginner card and the player have a “Draw along” button. You draw the pattern yourself on the left, with the editor’s tools, while the right shows the step as the player draws it; both drawings are the same size and move together. A step is ticked when it is on your board, whichever way you drew it, and Next is always open. “Show me a hint” shows a little more each time, and “Draw it for me” draws the step. After the last step you ink your board; when its pieces match the pattern’s, it becomes one of your patterns and goes on to the wall to colour. Leaving and coming back finds your board as you left it. A test draws all thirteen beginner patterns this way and gets their pieces.',
+      link: { label: 'Try it', href: '/#/eight-fold-star-and-cross/draw' },
+    },
     {
       title: 'Your own patterns, phase 5: share',
       text: 'A pattern can be kept as a file and opened again from the home page in any browser, and “Copy a share link” at the colour stage puts the pattern with its colours in one address: whoever opens it sees the same wall and can keep a copy. A finished pattern can be sent to us: the learner’s name goes into its credits and the file is ready for the library.',
@@ -1575,11 +1543,10 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Your own patterns are ready for your look',
-    text: 'All five phases are built and tested by the tester. Start on the home page: try “New pattern”, or open a tutorial, go to a step and press “Make my own copy from here”. The rosette block is removed and “Send it to the library” is hidden until there is a form, as you decided. The plan for draw along is ready, with three questions at the top of this page.',
-    link: { label: 'Start here', href: '/#/' },
+    title: 'Draw along is ready for your look',
+    text: 'Built and checked by the tester agent, who drew beginner patterns by hand on a desktop and a phone, from the home page’s Draw along button to a coloured wall. Every step is ticked as you draw it, Next is always open, the two halves line up and never move, hints help at every step and at the ink, and what you draw is kept under My patterns.',
+    link: { label: 'Try it', href: '/#/eight-fold-star-and-cross/draw' },
   },
-
   next: [
     {
       title: 'More designs per family',

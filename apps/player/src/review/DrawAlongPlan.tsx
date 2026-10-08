@@ -28,8 +28,8 @@ const TASKS: readonly { name: string; does: string; done: string }[] = [
   },
   {
     name: '6.2 The split screen',
-    does: '“Draw along” opens the learner’s board on the left and the tutorial’s step on the right. Next opens once the step is on the board. On a phone a button swaps the two halves.',
-    done: 'The first three steps of the star and cross drawn by clicking, with Next opening after each.',
+    does: '“Draw along” opens the learner’s board on the left and the tutorial’s step on the right, the two drawings the same size, side by side at the same height, and showing the same view, so a point sits at the same place in both. Next and Back are always open; each step in the list is ticked once it is on the board, so a learner can peek ahead or draw several steps at once. Every tool has a tooltip saying what it does. On a phone a button swaps the two halves.',
+    done: 'The first three steps of the star and cross drawn by clicking, each ticked as it is drawn, after peeking ahead to step 5 and coming back; the two drawings line up.',
   },
   {
     name: '6.3 Hints',
@@ -68,10 +68,32 @@ export function DrawAlongPlan() {
           Your idea: the tutorial shows each step on the right, and the learner
           draws the same step on the left with the editor’s tools. Learners stop
           watching and start drawing, which is where they learn. This page is my
-          plan; my three questions about it are at the top of the{' '}
-          <a href="#/review">review page</a>.
+          plan, changed after your answers of 7 October, listed just below.
         </p>
       </header>
+
+      <h2 className="group">Your decisions</h2>
+      <ul>
+        <li>
+          <b>Next is always open.</b> A learner may peek ahead to see where the
+          pattern is going, then come back, or draw several steps at once; each
+          step is ticked on the list when its circles and lines are on the
+          board, whenever they were drawn.
+        </li>
+        <li>
+          <b>The two halves line up.</b> Both drawings are the same size, at the
+          same height, and show the same view, so a point sits in the same place
+          on both.
+        </li>
+        <li>
+          <b>All tools, the right one only as a hint,</b> and every tool has a
+          tooltip saying what it does.
+        </li>
+        <li>
+          <b>A third “Draw along” button</b> on every beginner card on the home
+          page, and one in the player.
+        </li>
+      </ul>
 
       <h2 className="group">What the learner sees</h2>
       <figure className="plan-fig">
@@ -83,8 +105,8 @@ export function DrawAlongPlan() {
         <figcaption>
           A mock-up made from the real editor and player. A is the learner’s
           board, with the editor’s tools; B is the step to copy, exactly as the
-          player shows it; C are the hint buttons, and Next opens once the board
-          has the step.
+          player shows it; C are the hint buttons. Since your answers, Next is
+          always open, and the two drawings are the same size and line up.
         </figcaption>
       </figure>
       <p>
@@ -115,7 +137,7 @@ export function DrawAlongPlan() {
           alt="The board with both diagonals drawn and a tick saying the step is done"
         />
         <figcaption>
-          When the step is on the board, the app says so and Next opens.
+          When the step is on the board, the app says so and ticks it.
         </figcaption>
       </figure>
 

@@ -64,6 +64,7 @@
     {
       "id": 4,
       "text": "Through every mark rule a line at right angles to its axis. The lines make a square grid.",
+      "textWithoutHelpers": "Through the first two marks on each side of the centre, rule a line at right angles to its axis. The lines make a square grid.",
       "create": {
         "Vm3": {"line": {"through": "Xm3", "perpendicularTo": "h"}},
         "Hm3": {"line": {"through": "Ym3", "perpendicularTo": "v"}},

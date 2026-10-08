@@ -31,6 +31,7 @@ export {
   cellOf,
   computePattern,
   pieceAt,
+  wallPieces,
   rectangularPeriod,
   type Cell,
   type Pattern,
@@ -53,3 +54,17 @@ export {
   strokesOf,
   type InkPiece,
 } from './lib/freeInk.js';
+export {
+  ALONG_EPS,
+  checkStep,
+  drawnOn,
+  extrasOn,
+  figureOn,
+  figuresOf,
+  neededAt,
+  sameLine,
+  type Figures,
+  type Needed,
+  type StepCheck,
+} from './lib/along.js';
+export { floatingPoints, helperLines, hiddenHelpers } from './lib/helpers.js';

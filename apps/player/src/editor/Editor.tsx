@@ -1,7 +1,6 @@
 import { distance, type InkPiece, type Scene, type Vec } from '@tastir/engine';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  addStep,
   changeStep,
   check,
   deleteSteps,
@@ -28,6 +27,8 @@ import {
   type Block,
 } from './blocks';
 import { EditorDrawing } from './EditorDrawing';
+import { makeStep } from './makeStep';
+import { ToolBar } from './ToolBar';
 import {
   foldOf,
   imagesOf,
@@ -45,16 +46,13 @@ import {
 } from './finish';
 import { getPattern, savePattern, type UserPattern } from './patterns';
 import {
-  buildStep,
   complete,
   elementNear,
   sameTarget,
   snap,
-  TOOLS,
   toolOf,
   wantAt,
   SYMMETRIES,
-  tidySymmetry,
   type Symmetry,
   type Target,
   type ToolId,
@@ -244,68 +242,15 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
       );
       return;
     }
-    const sides =
-      tool.id === 'touch' ? [undefined, 'near', 'far'] : [undefined];
-    let reason = '';
-    const works: { next: Draft; circle?: { centre: Vec; radius: number } }[] =
-      [];
-    for (const side of sides) {
-      const built = buildStep(
-        draft,
-        tool,
-        clicks,
-        side as 'near' | 'far',
-        symmetry,
-        { scene },
-      );
-      const made = symmetry ? tidySymmetry(draft, built, at, { scene }) : built;
-      if (!Object.keys(made.create).length) {
-        setSaid('That point is already marked.');
-        return;
-      }
-      let next = addStep(draft, made, at);
-      const id = at + 1;
-      const after = check(next);
-      const st = after.status.get(id);
-      let warn: string | undefined;
-      if (st?.ok && tool.id === 'tile') {
-        // The tile must repeat edge to edge, or there is no wall.
-        next = withTile(next, Object.keys(made.create).at(-1) as string);
-        const tile = tileOf(next, after.scene);
-        if ('reason' in tile) {
-          setSaid(
-            `That cannot be the tile: ${plainReason(tile.reason, specsOf(next))}`,
-          );
-          return;
-        }
-        warn = tileWarning(after.scene, tile.cell);
-      }
-      if (st?.ok) {
-        // One circle fits without choosing a side: that is the step.
-        if (side === undefined) {
-          keep(next);
-          if (warn) setSaid(warn);
-          return;
-        }
-        const g = after.scene.elements.get(
-          Object.keys(made.create).at(-1) as string,
-        )?.geometry;
-        works.push({
-          next,
-          ...(g?.kind === 'circle' ? { circle: g.circle } : {}),
-        });
-      } else reason ||= st && !st.ok ? st.reason : '';
-    }
-    if (works.length === 1) return keep(works[0]?.next as Draft);
-    if (works.length > 1) {
-      setChoices({
-        drafts: works.map((w) => w.next),
-        circles: works.flatMap((w) => (w.circle ? [w.circle] : [])),
-      });
+    const made = makeStep(draft, tool, clicks, at, symmetry, scene);
+    if (made.kind === 'refused') return setSaid(made.said);
+    if (made.kind === 'choose') {
+      setChoices({ drafts: [...made.drafts], circles: [...made.circles] });
       setSaid('Two circles fit. Click the one you want.');
       return;
     }
-    setSaid(`That does not make a figure: ${reason}`);
+    keep(made.next);
+    if (made.warn) setSaid(made.warn);
   };
 
   const onPick = (target: Target) => {
@@ -584,35 +529,16 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               </button>
             </div>
           ) : (
-            <div className="editor-tools" role="toolbar" aria-label="Tools">
-              {TOOLS.map((t) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  className={t.id === toolId ? 'tool on' : 'tool'}
-                  aria-pressed={t.id === toolId}
-                  onClick={() => chooseTool(t.id)}
-                >
-                  <b aria-hidden="true">{t.icon}</b>
-                  {t.label}
-                </button>
-              ))}
-              <label className="tool">
-                Symmetry
-                <select
-                  value={symmetry}
-                  onChange={(e) =>
-                    setSymmetry(Number(e.target.value) as Symmetry)
-                  }
-                >
-                  {SYMMETRIES.map((n) => (
-                    <option key={n} value={n}>
-                      {n ? `×${n}` : 'Off'}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <span className="tool-gap" />
+            <ToolBar
+              tool={toolId}
+              onTool={chooseTool}
+              symmetry={symmetry}
+              onSymmetry={setSymmetry}
+              canUndo={history.past.length > 0}
+              canRedo={history.future.length > 0}
+              onUndo={undo}
+              onRedo={redo}
+            >
               {selected !== undefined && selected < last ? (
                 <label className="tool">
                   <input
@@ -623,23 +549,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
                   Add after step {selected}
                 </label>
               ) : null}
-              <button
-                type="button"
-                className="tool"
-                onClick={undo}
-                disabled={!history.past.length}
-              >
-                Undo
-              </button>
-              <button
-                type="button"
-                className="tool"
-                onClick={redo}
-                disabled={!history.future.length}
-              >
-                Redo
-              </button>
-            </div>
+            </ToolBar>
           )}
           <main className="stage">
             <EditorDrawing
@@ -1101,7 +1011,7 @@ const areaOf = (vs: readonly Vec[]) =>
   );
 
 /** The bit of line nearest a click, within reach. */
-function nearestPiece(
+export function nearestPiece(
   pieces: readonly InkPiece[],
   at: Vec,
   reach: number,

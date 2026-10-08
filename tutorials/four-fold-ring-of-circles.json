@@ -110,6 +110,7 @@
     {
       "id": 8,
       "text": "Through the middle of every small circle, rule lines parallel to the horizontal, the vertical and the two diagonals. Each small circle is now divided into eight.",
+      "textWithoutHelpers": "Through the middle of every small circle, rule the lines parallel to the horizontal, the vertical and the two diagonals that the pattern runs along.",
       "create": {
         "d1_k4": {"line": {"through": "k.4", "parallelTo": "d1"}},
         "d2_k4": {"line": {"through": "k.4", "parallelTo": "d2"}},

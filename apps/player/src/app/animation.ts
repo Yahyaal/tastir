@@ -80,7 +80,7 @@ export function planStep(
   const flashed = flash ? highlightedNames(model, step) : [];
   const start = flashed.length ? FLASH_MS / speed : 0;
   const made = [...model.scene.elements.values()].filter(
-    (el) => el.beat === step,
+    (el) => el.beat === step && !model.hide?.has(el.name),
   );
   const curves = inTurn(
     made.filter((el) =>

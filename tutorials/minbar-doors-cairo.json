@@ -85,6 +85,7 @@
     {
       "id": 5,
       "text": "Halve each of the twelve angles at O with a line, so there is a line through O every 15°.",
+      "textWithoutHelpers": "The four new circles cut the first one at eight more points, so it is divided into twelve. Halve the angle at O between each pair of neighbouring points: six lines through O, at 15°, 45°, 75° and so on.",
       "create": {
         "r15": {"line": {"through": "O", "bisects": ["P0", "O", "P30"]}},
         "r45": {"line": {"through": "O", "bisects": ["P30", "O", "P60"]}},

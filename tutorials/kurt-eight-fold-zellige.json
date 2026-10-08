@@ -274,6 +274,7 @@
     {
       "id": 16,
       "text": "Draw an octagon inside each ring circle, each small circle and the centre circle, with its corners where the circle meets lines through its centre parallel to the horizontal, the vertical and the diagonals.",
+      "textWithoutHelpers": "Draw an octagon inside each ring circle, each small circle and the centre circle, with its corners on the circle at the horizontal, the vertical and the diagonals through its centre.",
       "create": {
         "oK0_0": {"point": {"meet": ["ring0", "g6a"], "pick": {"farthest": "k3"}}},
         "oK0_1": {"point": {"meet": ["ring0", "g7a"], "pick": {"farthest": "k5"}}},
@@ -482,6 +483,7 @@
     {
       "id": 18,
       "text": "Draw the square that just touches the main circle: a line at right angles to the horizontal at each side, and at right angles to the vertical at the top and bottom. This square is the tile that repeats.",
+      "textWithoutHelpers": "Mark the square that just touches the main circle at the top, the bottom and the sides: this square is the tile that repeats. Its corners are crossings already on the board.",
       "create": {
         "tE": {"line": {"through": "E", "perpendicularTo": "h"}},
         "tW": {"line": {"through": "W", "perpendicularTo": "h"}},

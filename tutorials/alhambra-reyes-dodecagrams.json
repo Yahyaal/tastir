@@ -39,6 +39,7 @@
     {
       "id": 2,
       "text": "Keep the compass open. Put its point on A and on the point opposite, P180, and draw circles through O: they cut the first circle at 60°, 120°, 240° and 300°. Rule the lines through O and these points.",
+      "textWithoutHelpers": "Keep the compass open. Put its point on A and on the point opposite, P180, and draw circles through O: they cut the first circle at 60°, 120°, 240° and 300°.",
       "create": {
         "P180": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
         "cE": {"circle": {"centre": "A", "through": "O"}},
@@ -129,6 +130,7 @@
     {
       "id": 8,
       "text": "The neighbouring star along the horizontal sits at the far side of the circle about A through O. Carry the twelve lines over to it: through the points as far from that star as T0 is from O, rule lines parallel to O’s twelve lines.",
+      "textWithoutHelpers": "The neighbouring star along the horizontal sits at the far side of the circle about A through O. Carry over to it the lines the pattern runs along: through the points as far from that star as T0 is from O, rule lines parallel to O’s lines.",
       "create": {
         "N": {"point": {"meet": ["cE", "h"], "pick": {"farthest": "O"}}},
         "cn": {"circle": {"centre": "N", "radiusFrom": ["O", "T0"]}},
@@ -169,6 +171,7 @@
     {
       "id": 9,
       "text": "Turn these lines about O to the other five neighbours.",
+      "textWithoutHelpers": "Turn these lines about O to the other five neighbours.",
       "create": {
         "nr": {
           "repeat": {

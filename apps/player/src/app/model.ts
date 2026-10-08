@@ -1,5 +1,7 @@
 import {
   computePattern,
+  floatingPoints,
+  hiddenHelpers,
   inkCarriers,
   inkBeats,
   inkPieces,
@@ -15,6 +17,55 @@ export interface Model {
   readonly tutorial: Tutorial;
   readonly scene: Scene;
   readonly pattern: Pattern;
+  /** Elements left out of the drawing: helper lines the learner chose
+   * not to see, and points they alone would find. */
+  readonly hide?: ReadonlySet<string>;
+}
+
+const helperless = new WeakMap<Model, Model>();
+
+/**
+ * The model as drawn with helper lines shown or not. Without them, the
+ * helper lines nothing needs are left out (hiddenHelpers), with the
+ * points only they find, and a step that would draw nothing new is
+ * skipped like a hidden step. The construction, the ink and the pieces
+ * are the same.
+ */
+export function withHelpers(model: Model, show: boolean): Model {
+  if (show) return model;
+  let found = helperless.get(model);
+  if (found) return found;
+  const hidden = hiddenHelpers(model.scene, model.tutorial);
+  const hide = new Set([...hidden, ...floatingPoints(model.scene, hidden)]);
+  const figures = (step: number) =>
+    [...model.scene.elements.values()].filter(
+      (el) =>
+        el.step === step &&
+        (el.geometry.kind === 'line' ||
+          el.geometry.kind === 'circle' ||
+          el.geometry.kind === 'polygon'),
+    );
+  const steps = model.tutorial.steps.map((s) => {
+    const made = figures(s.id);
+    // The texts written for a drawing without helper lines.
+    const text = {
+      ...s,
+      ...(s.textWithoutHelpers ? { text: s.textWithoutHelpers } : {}),
+      ...(s.parts
+        ? {
+            parts: s.parts.map((p) =>
+              p.textWithoutHelpers ? { ...p, text: p.textWithoutHelpers } : p,
+            ),
+          }
+        : {}),
+    };
+    return !s.hidden && made.length && made.every((el) => hide.has(el.name))
+      ? { ...text, hidden: true }
+      : text;
+  });
+  found = { ...model, tutorial: { ...model.tutorial, steps }, hide };
+  helperless.set(model, found);
+  return found;
 }
 
 /**

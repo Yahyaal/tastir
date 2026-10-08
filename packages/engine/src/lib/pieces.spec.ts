@@ -2,7 +2,13 @@ import type { Tutorial } from '@tastir/schema';
 import { loadTutorial, starAndCross } from '../test/tutorials.js';
 import { evaluate, TutorialError } from './evaluate.js';
 import { inkStrokes } from './ink.js';
-import { computePattern, pieceAt, rectangularPeriod } from './pieces.js';
+import {
+  computePattern,
+  pieceAt,
+  rectangularPeriod,
+  wallPieces,
+} from './pieces.js';
+import { segment } from './shapes.js';
 
 function withInk(through: string[]): Tutorial {
   const t = structuredClone(starAndCross());
@@ -248,5 +254,39 @@ describe('a parallelogram cell', () => {
     expect(pattern.cell.area).toBeCloseTo(Math.sqrt(3) / 2, 12);
     expect(pattern.types).toHaveLength(1);
     expect(pattern.types[0]?.name).toBe('rhombus');
+  });
+});
+
+describe('the pieces of a wall laid by hand', () => {
+  it('finds whole stars and crosses where copies join, and nothing at a loose copy', () => {
+    const t = starAndCross();
+    const scene = evaluate(t);
+    const pattern = computePattern(scene, t);
+    const { u, v } = pattern.cell;
+    const at = (i: number, j: number) => ({
+      x: u.x * i + v.x * j,
+      y: u.y * i + v.y * j,
+    });
+    const tile = (d: { x: number; y: number }) =>
+      pattern.ink.map(({ segment: s }) =>
+        segment(
+          { x: s.a.x + d.x, y: s.a.y + d.y },
+          { x: s.b.x + d.x, y: s.b.y + d.y },
+        ),
+      );
+    // Two by two copies, edge to edge: four stars and the cross between.
+    const joined = [at(0, 0), at(1, 0), at(0, 1), at(1, 1)].flatMap(tile);
+    const pieces = wallPieces(joined, pattern.types);
+    const star = pattern.types.findIndex((x) => x.name === 'star');
+    const cross = pattern.types.findIndex((x) => x.name === 'cross');
+    expect(pieces.filter((p) => p.type === star)).toHaveLength(4);
+    expect(pieces.filter((p) => p.type === cross)).toHaveLength(1);
+    // A copy dropped loose, off the lattice, adds one star and no cross.
+    const loose = wallPieces(
+      [...joined, ...tile({ x: 7.3, y: 0.4 })],
+      pattern.types,
+    );
+    expect(loose.filter((p) => p.type === star)).toHaveLength(5);
+    expect(loose.filter((p) => p.type === cross)).toHaveLength(1);
   });
 });

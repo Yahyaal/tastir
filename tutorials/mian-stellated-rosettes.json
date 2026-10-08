@@ -54,6 +54,7 @@
     {
       "id": 2,
       "text": "Rule the vertical through O. At the four points where the circle meets the two lines, rule lines at right angles to them: the square cell the rosette sits in. Its sides are where this rosette meets its neighbours.",
+      "textWithoutHelpers": "Rule the vertical through O. Where the circle meets the two lines, rule lines at right angles to them on the left, the right and the top: three sides of the square cell the rosette sits in. Its sides are where this rosette meets its neighbours.",
       "create": {
         "v": {"line": {"through": "O", "perpendicularTo": "h"}},
         "P0": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
@@ -115,6 +116,7 @@
     {
       "id": 5,
       "text": "Rule the lines through O and opposite points, and halve the angles between them: a line through O every 15°.",
+      "textWithoutHelpers": "Rule the lines through O and the opposite points at 30°, 60°, 120° and 150°.",
       "create": {
         "r30": {"line": {"through": ["P30", "P210"]}},
         "r60": {"line": {"through": ["P60", "P240"]}},

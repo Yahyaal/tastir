@@ -15,6 +15,11 @@ These are the owner's standing wishes about how work is shown and discussed. Eac
 
 ## Doing the work
 
+- **When the owner is near the Claude limit, orchestrate.** Plan, review and write self-contained prompts for Gemini in Antigravity in `docs/prompts/<date>.md`, and do not spawn builder or tester agents. *Why (8 October):* the owner is close to the weekly limit and asked for this; prompts in chat are hard to copy, so they go in a file the owner points Antigravity at.
+- **Review outside work against the content rules, not only the looks.** *Why (8 October):* a redesign made elsewhere looked good and passed every test, but shipped a private research photo, uncredited photos, and claims ("verified", "world-renowned") that were not true.
+- **An action that does more than the learner clicked must show it, or be off by default.** *Why (8 October):* inking a dot on the Comares bones inked several lines in different directions (whole runs plus copies round the centre, both on by default), and the owner could not tell why.
+- **The owner's eye matters most on layout.** Two halves that should match must line up exactly, and nothing may shift between stages. *Why (7 October):* the owner asked for it in the draw-along answers.
+
 - **Plan first.** Show a short plan for each task and wait for an OK before writing code (`CLAUDE.md`).
 - **One task, one commit,** with the task named in the message. Run `pnpm test`, `pnpm lint` and `pnpm typecheck` first.
 - **Check the whole result after every change, not only the part that was fixed.** *Why (5 October):* a fix to the Bou Inania long hexagons broke the corner, giving an incomplete star and two stray triangles, and the owner caught it. After each change, compare the full list of piece shapes with the last version the owner approved, and look at the wall.

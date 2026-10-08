@@ -36,6 +36,7 @@
     {
       "id": 3,
       "text": "Divide the circle into twelve: with the compass still open to OA, put its point on A and mark where it cuts the circle at 60°. Join O to that mark, and halve the angles between the lines through O, so you have a line through O every 15°.",
+      "textWithoutHelpers": "Divide the circle into twelve: with the compass still open to OA, put its point on A and mark where it cuts the circle at 60°. Join O to that mark, and halve the angles between the lines through O to get the lines at 15°, 30°, 45°, 120°, 135° and 150°.",
       "create": {
         "cA": {"circle": {"centre": "A", "through": "O"}},
         "P60": {"point": {"meet": ["c", "cA"], "pick": {"angle": 60.0}}},
@@ -112,6 +113,7 @@
     {
       "id": 9,
       "text": "Through the first corner again, draw two more sets: one that closes the shields, and a helper that fixes the corner beside the outer tip.",
+      "textWithoutHelpers": "Through the first corner again, draw the set of lines that closes the shields.",
       "create": {
         "C9": {"point": {"meet": ["F1@11", "F2@11"]}},
         "F6": {"line": {"through": "C9", "parallelTo": "r75"}},
@@ -124,6 +126,7 @@
     {
       "id": 10,
       "text": "Through the corner beside the outer tip, draw two sets: one that closes the pentagons, and a helper reaching in towards the centre.",
+      "textWithoutHelpers": "Through the corner beside the outer tip, draw the set of lines that closes the pentagons.",
       "create": {
         "C12": {"point": {"meet": ["F3", "F7"]}},
         "F8": {"line": {"through": "C12", "parallelTo": "r105"}},
@@ -204,6 +207,7 @@
     {
       "id": 17,
       "text": "Through K draw the other diagonal. The eight-pointed star at K is two squares: one square’s sides are the rims of the four rosettes around it; the other, turned square has its sides as far from K. Set the compass to that distance (from the rim side to A), draw it about K, and draw the turned square’s sides across the diagonals where the circle cuts them.",
+      "textWithoutHelpers": "Through K draw the other diagonal. The eight-pointed star at K is two squares: one square’s sides are the rims of the four rosettes around it; the other, turned square has its sides as far from K. Set the compass to that distance (from the rim side to A), draw it about K, and draw the turned square’s sides across the diagonals where the circle cuts them.",
       "create": {
         "ad": {"line": {"through": "K", "perpendicularTo": "r45"}},
         "cs": {"circle": {"centre": "K", "radiusFrom": ["RA", "A"]}},
@@ -222,6 +226,7 @@
     {
       "id": 18,
       "text": "The ring around the star is two octagons. The inner one has its square sides through the rim’s 45° corner, the outer one its diagonal side: draw a circle about K through each, and the octagon sides across the grid lines and the diagonals where the circles cut them.",
+      "textWithoutHelpers": "The ring around the star is two octagons. The inner one has its square sides through the rim’s 45° corner, the outer one its diagonal side: draw a circle about K through each, and the octagon sides the pattern keeps, across the grid lines and the diagonals where the circles cut them.",
       "create": {
         "Oi": {"point": {"meet": ["oh", "gx"]}},
         "ci": {"circle": {"centre": "K", "through": "Oi"}},
@@ -265,6 +270,7 @@
     {
       "id": 19,
       "text": "Copy the star and its ring to the other three corners of the tile by turning them a quarter turn at a time about O, together with the grid lines.",
+      "textWithoutHelpers": "Copy the star and its ring to the other three corners of the tile by turning them a quarter turn at a time about O, together with the grid lines.",
       "create": {
         "Ks": {"repeat": {"of": ["K"], "by": "rot4"}},
         "corners": {

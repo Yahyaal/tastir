@@ -348,6 +348,7 @@
     {
       "id": 5,
       "text": "Rule the lines through O and opposite points, and halve the angles between them: a line through O every 15°.",
+      "textWithoutHelpers": "Rule the lines through O and the opposite points at 30°, 60°, 120° and 150°.",
       "create": {
         "r30": {
           "line": {

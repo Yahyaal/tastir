@@ -357,6 +357,7 @@
     {
       "id": 6,
       "text": "Join the centre to the corners of the octagon. These four lines halve the eight parts, so the circle is now cut into sixteen.",
+      "textWithoutHelpers": "Join the centre to the two corners of the octagon that the pattern needs: these lines halve two of the eight parts of the circle.",
       "create": {
         "s1": {
           "line": {

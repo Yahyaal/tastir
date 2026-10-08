@@ -1,0 +1,561 @@
+/* Drawing along (#/<tutorial>/draw): the learner's board on the left, the
+   tutorial's step on the right, the same size and at the same height. */
+
+.along [hidden] {
+  display: none !important;
+}
+
+.along .topbar .edit-link {
+  color: var(--on-lapis-muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.along-steps {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+
+.along-steps-label {
+  font-family: var(--display);
+  color: var(--on-lapis-muted);
+}
+
+.along-steps ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.player .along-dot {
+  min-width: 34px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 15px;
+  font-size: 0.82rem;
+  background: transparent;
+  color: var(--on-lapis-muted);
+  border: 1px solid var(--lapis-line);
+}
+
+.player .along-dot.done {
+  background: var(--lapis-raised);
+  color: #9fe3c7;
+  border-color: var(--lapis-raised);
+}
+
+.player .along-dot.on {
+  border-color: var(--saffron);
+  color: var(--on-lapis);
+  font-weight: 700;
+}
+
+.along-swap {
+  margin-left: auto;
+}
+
+/* Two equal columns. The step's text sits in a row above both drawings,
+   and the tool bar and the hint buttons share the next row, so both
+   drawings start at the same height and have the same size, whatever the
+   length of the text. */
+.along-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(240px, 1fr) 4.6rem;
+  column-gap: 28px;
+  row-gap: 12px;
+}
+
+.along-text-row {
+  grid-column: 1 / -1;
+  /* Room for most steps' text, so the drawings do not move from step to
+     step or into the ink; a longer text still shows in full. */
+  min-height: 7.6rem;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.along-text {
+  max-width: 90ch;
+}
+
+/* Layers in one cell: the cell is as big as the biggest, and only the one
+   at hand shows. */
+.along-stack {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+.along-stack > .along-layer {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+/* Grid items default to their content's width; a long tool row must not
+   push the page wider than the screen. */
+.along-grid > *,
+.along-tools {
+  min-width: 0;
+}
+
+.along-stack > .along-layer:not(.on) {
+  visibility: hidden;
+}
+
+/* The status keeps two lines, so a longer one does not move the board. */
+.along-text .along-check {
+  min-height: 2.8em;
+}
+
+.along-text-row h2 {
+  margin: 0 0 4px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.05rem;
+  color: var(--saffron);
+}
+
+.along-text-row .instruction {
+  margin: 0 0 4px;
+  line-height: 1.45;
+}
+
+.along-tools .editor-tools {
+  margin-bottom: 0;
+}
+
+.along-plate {
+  position: relative;
+  min-height: 0;
+}
+
+.along .along-plate .editor-canvas,
+.along .along-plate > .drawing {
+  flex: 1;
+  min-width: 0;
+}
+
+.along .editor-drawing {
+  min-height: 0;
+}
+
+.player .along-plate > .fit {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 3px 12px;
+  font-size: 0.8rem;
+  background: var(--gesso);
+  color: var(--ink);
+  border: 1px solid var(--old);
+}
+
+.along .caption {
+  display: block;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.along .tool-gap {
+  display: none;
+}
+
+.along .editor-tools {
+  gap: 3px;
+}
+
+.along .editor-tools .tool {
+  padding: 3px 6px;
+  font-size: 0.75rem;
+}
+
+.along .caption h2 {
+  margin: 0 0 4px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.05rem;
+  color: var(--saffron);
+}
+
+.along .caption .instruction {
+  margin: 0 0 6px;
+}
+
+.along-check {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--on-lapis-muted);
+}
+
+.along-check.done {
+  color: #9fe3c7;
+  font-weight: 700;
+}
+
+.along-nav {
+  display: flex;
+  flex-shrink: 0;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.player .along-nav button {
+  min-width: 96px;
+  padding: 10px 20px;
+}
+
+.player .along-nav .next {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+}
+
+.player .along-nav .next:disabled {
+  opacity: 0.45;
+}
+
+/* The board's own lines in ink, the step at hand in blue; the step to
+   copy keeps the player's colours. */
+.along .editor-drawing .el {
+  stroke: #7d8590;
+}
+
+.along .editor-drawing .el.current {
+  stroke: var(--current);
+  stroke-width: 2.4px;
+}
+
+/* Names stay readable over dots and lines. */
+.along .point-name {
+  paint-order: stroke;
+  stroke: var(--gesso);
+  /* In em, so the halo follows the label's size in any view. */
+  stroke-width: 0.25em;
+  stroke-linejoin: round;
+}
+
+/* The learner's own extras: kept, faint, never wrong. */
+.editor-drawing .el.extra {
+  stroke: var(--faint);
+  stroke-dasharray: 4 3;
+}
+
+/* Hints: what the step works from glows; where to click is ringed; the
+   answer is dashed. */
+.editor-drawing .el.glow {
+  stroke: var(--saffron);
+  stroke-width: 4px;
+}
+
+.editor-drawing .hint-ring {
+  fill: none;
+  stroke: var(--saffron);
+  stroke-width: 3px;
+  vector-effect: non-scaling-stroke;
+}
+
+.editor-drawing .answer {
+  fill: none;
+  stroke: var(--current);
+  stroke-width: 2px;
+  stroke-dasharray: 8 6;
+  vector-effect: non-scaling-stroke;
+}
+
+.player .editor-tools .tool.hinted {
+  box-shadow: 0 0 0 3px var(--saffron);
+}
+
+@media (max-width: 760px) {
+  .along-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+
+  .along-text-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .along-plate {
+    min-height: 62vh;
+  }
+
+  /* One row of tools that scrolls sideways, so the board shows. */
+  .along .editor-tools {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .along .editor-tools .tool {
+    flex: none;
+  }
+
+  /* Symmetry first, where the hints that name it can be followed. */
+  .along .editor-tools .tool.symmetry {
+    order: -1;
+  }
+}
+
+.along-back {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  color: var(--on-lapis-muted);
+}
+
+.along-back.refused {
+  color: #ffb4a6;
+}
+
+/* Ink hints: the bits still to ink glow, or are dashed. */
+.editor-drawing .ink-piece.glow {
+  stroke: var(--saffron);
+  stroke-dasharray: none;
+  stroke-width: 4px;
+  stroke-opacity: 1;
+}
+
+.editor-drawing .ink-piece.answer {
+  stroke: var(--current);
+  stroke-width: 2.4px;
+  stroke-dasharray: 6 4;
+  stroke-opacity: 1;
+}
+
+/* The pen: where it is down, the dots it can reach in one stroke, and a
+   line from it to the pointer, as a rubber band. */
+.editor-drawing .pen-at {
+  fill: var(--saffron);
+  stroke: var(--ink);
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+
+.editor-drawing .pen-dot {
+  fill: var(--muted);
+  fill-opacity: 0.45;
+}
+
+.editor-drawing .pen-dot.reach {
+  fill: var(--current);
+  fill-opacity: 0.9;
+}
+
+.editor-drawing .pen-band {
+  stroke: var(--saffron);
+  stroke-width: 2px;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+/* Copies just inked flash saffron, so the learner sees them arrive. */
+.editor-drawing .ink-piece.fresh {
+  animation: ink-copy 0.9s ease-out;
+}
+
+@keyframes ink-copy {
+  from {
+    stroke: var(--saffron);
+    stroke-width: 7px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .editor-drawing .ink-piece.fresh {
+    animation: none;
+  }
+}
+
+/* Ink stands out over the tile's dashes. */
+.along .editor-drawing .ink-piece.inked {
+  stroke: #15171b;
+  stroke-width: 4.2px;
+}
+
+/* A stroke to ink: start at 1 (filled), then 2. */
+.editor-drawing .hint-ring.start {
+  fill: var(--saffron);
+  fill-opacity: 0.35;
+}
+
+.along .ring-number {
+  fill: var(--used);
+  font-weight: 700;
+  font-family: var(--text);
+  paint-order: stroke;
+  stroke: var(--gesso);
+  stroke-width: 0.25em;
+}
+
+@media (max-width: 760px) {
+  /* The ink tools wrap onto a second row, so Undo and Redo show. */
+  .along .editor-tools[aria-label='Ink'] {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
+/* The learner's own wall: copies of their tile, ghosts where the next can
+   go, and the pieces filled at the colour stage. */
+.repeat-board .copy-area {
+  fill: transparent;
+  stroke: var(--used);
+  stroke-width: 1px;
+  stroke-dasharray: 2 3;
+  vector-effect: non-scaling-stroke;
+  cursor: grab;
+}
+
+.repeat-board .copy-area.first {
+  cursor: default;
+}
+
+.repeat-board .wall-ink,
+.target-wall .wall-ink {
+  stroke: #15171b;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.target-wall .wall-ink.target {
+  stroke: var(--current);
+  stroke-width: 2.4px;
+}
+
+.target-wall .tile-outline {
+  fill: none;
+  stroke: var(--malachite);
+  stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.repeat-board .ghost {
+  fill: var(--current);
+  fill-opacity: 0.06;
+  stroke: var(--current);
+  stroke-opacity: 0.5;
+  stroke-width: 1.2px;
+  stroke-dasharray: 3 4;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+}
+
+.repeat-board .ghost:hover {
+  fill-opacity: 0.16;
+}
+
+.repeat-board .copy.arriving {
+  animation: copy-arrive 0.45s ease-out;
+}
+
+@keyframes copy-arrive {
+  from {
+    transform: var(--from);
+    opacity: 0.3;
+  }
+  to {
+    transform: var(--to);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .repeat-board .copy.arriving {
+    animation: none;
+  }
+}
+
+.repeat-board .wall-piece {
+  stroke: none;
+  cursor: pointer;
+}
+
+/* The colour panel fills the right half and scrolls inside it. */
+.along-colors {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px;
+  background: var(--lapis);
+  color: var(--on-lapis);
+}
+
+.along .dot-key .helper::before {
+  width: 18px;
+  height: 0;
+  border-radius: 0;
+  vertical-align: middle;
+  border-top: 2px dashed var(--old);
+}
+
+.along-helpers {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--on-lapis-muted);
+  white-space: nowrap;
+}
+
+.along-helpers input {
+  accent-color: var(--saffron);
+}
+
+/* Helper lines nothing needs: lighter, and optional on the board. */
+.along .drawing .el.optional {
+  opacity: 0.4;
+}
+
+.along .dot-key .helper.optional::before {
+  opacity: 0.4;
+}
+
+/* The hint row: its buttons and words, one layer per stage. */
+.along-hints {
+  min-width: 0;
+  font-size: 0.88rem;
+}
+
+.along-hints-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+
+.player .along-hints button {
+  padding: 5px 14px;
+}
+
+.along-hint-words {
+  color: var(--saffron);
+}
+
+.along-hint-words a {
+  color: var(--saffron);
+}
+
+@media (max-width: 760px) {
+  /* Room for two lines of hint, so no stage moves the board. */
+  .along-hints {
+    min-height: 4.6rem;
+  }
+}

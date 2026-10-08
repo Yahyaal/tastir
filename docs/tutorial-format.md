@@ -65,6 +65,8 @@ Rules can be combined; all must hold.
 
 A step with `"hidden": true` is evaluated like any other but never shown: the player skips it, never draws its elements and leaves it out of the step count. Use it only for a step that names the points the ink turns at, which the learner does not need to see; a new tutorial can usually ink `along` its lines instead (see Ink, below).
 
+Helper lines are lines the ink never runs along: they only help find points. The player hides the ones nothing needs unless the learner turns on “Show helper lines” (the engine's `hiddenHelpers` decides which: a helper line stays when a point that a shown element, the ink or the tile relies on can be found no other way), and skips a step that would then draw nothing new. A step (or part) whose text describes lines that are hidden then, or refers to a skipped step, gives `"textWithoutHelpers"`: its text for a drawing without helper lines, in plain words that match what is shown. A test checks that every shown step making hidden helper lines, and every first shown step after a skipped one, has it.
+
 A long step can be split into `parts` instead of having one `create`: each part has its own `text`, `create`, and optional `highlight` and `animate`, and the step's own `text` becomes the heading shown over each part. The player shows a part as “Step 11 · 2 of 4”, and Next and Back move one part at a time. Give each part one move (one new line and its copies, say), so the learner sees one thing happen at a time. A step has either `create` or `parts`, never both.
 
 ## Small pieces

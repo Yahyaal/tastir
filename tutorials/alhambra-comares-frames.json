@@ -40,6 +40,7 @@
     {
       "id": 2,
       "text": "Rule the vertical through O. At the four points where the circle meets the two lines, rule lines at right angles to them: the square cell. Rule its two diagonals through O.",
+      "textWithoutHelpers": "Rule the vertical through O. Where the circle meets the two lines, rule lines at right angles to them on the left, the right and the top: three sides of the square cell (its bottom side is not needed). Rule the cell’s two diagonals through O.",
       "create": {
         "v": {"line": {"through": "O", "perpendicularTo": "h"}},
         "P90": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
@@ -98,6 +99,7 @@
     {
       "id": 6,
       "text": "The stars at the corners of the cell, and the next framed stars, have the same lines. Drop Q onto the horizontal; open the compass from O to that foot and mark the distance either side of A, and carry T across A. The verticals and slanting lines through the marks belong to those stars.",
+      "textWithoutHelpers": "The stars at the corners of the cell, and the next framed stars, have the same lines. Drop Q onto the horizontal; open the compass from O to that foot and mark the distance either side of A, and carry T across A. Rule the vertical and the slanting line through the marks that the pattern runs along: they belong to those stars.",
       "create": {
         "Qh": {"point": {"meet": ["x1", "h"]}},
         "cq": {"circle": {"centre": "A", "radiusFrom": ["O", "Qh"]}},
@@ -128,6 +130,7 @@
     {
       "id": 8,
       "text": "Turn all these lines about O by quarter turns, so the cell has them on every side.",
+      "textWithoutHelpers": "Turn all these lines about O by quarter turns, so the cell has them on every side.",
       "create": {
         "cp": {"repeat": {"of": ["e1", "e2", "x1", "fr", "x2", "x3", "e3", "g1", "g2"], "by": "rot4"}}
       },

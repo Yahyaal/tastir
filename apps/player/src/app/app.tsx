@@ -38,10 +38,12 @@ import {
 import { Shelf } from './Shelf';
 import { openShared, ShareLink, useShared } from './Sharing';
 import { Editor } from '../editor/Editor';
+import { DrawAlongPage } from '../along/DrawAlong';
 import { copyUpTo } from '../editor/document';
 import {
   addPattern,
   freeTitle,
+  getPattern,
   listPatterns,
   playable,
 } from '../editor/patterns';
@@ -54,6 +56,7 @@ import {
   shownBeats,
   shownSteps,
   stagesOf,
+  withHelpers,
   type InkMode,
   type Model,
   type Stage,
@@ -168,6 +171,12 @@ function useNarrow(): boolean {
   return narrow;
 }
 
+/** The colours a learner gave their own pattern when drawing along. */
+function keptColoring(address: string) {
+  if (!address.startsWith('mine/')) return undefined;
+  return getPattern(address.slice('mine/'.length))?.wall?.coloring;
+}
+
 /** Whether a saved design holds just what the player shows now. */
 function sameDesign(
   design: Design,
@@ -186,10 +195,12 @@ function sameDesign(
 }
 
 /** Where a tutorial opens: at its first step, or at the finished wall. */
-export type Start = 'beginning' | 'result';
+/** Where the player opens: the first step, the repeat (after drawing
+ * along), or the finished wall. */
+export type Start = 'beginning' | 'repeat' | 'result';
 
 export function Player({
-  model,
+  model: full,
   start: asked = 'beginning',
   design: opened,
   address: given,
@@ -205,6 +216,16 @@ export function Player({
    * the learner's own pattern. */
   address?: string;
 }) {
+  // Helper lines (construction lines the pattern never runs along) are
+  // left out unless the learner asks for them.
+  const [showHelpers, setShowHelpers] = useRemembered<boolean>(
+    'showHelpers',
+    false,
+  );
+  const model = useMemo(
+    () => withHelpers(full, showHelpers),
+    [full, showHelpers],
+  );
   const { tutorial } = model;
   const address = given ?? tutorial.id;
   const mine = address.startsWith('mine/');
@@ -213,7 +234,11 @@ export function Player({
   const start = opened ? 'result' : asked;
   const stages = useMemo(() => stagesOf(tutorial), [tutorial]);
   const [index, setIndex] = useState(() =>
-    start === 'result' ? stagesOf(tutorial).length - 1 : 0,
+    start === 'result'
+      ? stagesOf(tutorial).length - 1
+      : start === 'repeat'
+        ? stagesOf(tutorial).length - 2
+        : 0,
   );
   const stage = useMemo(
     (): Stage => stages[index] ?? { kind: 'color' },
@@ -237,7 +262,8 @@ export function Player({
     model,
     (m): History => ({
       past: [],
-      now: opened?.coloring ?? tutorialColoring(m),
+      // A pattern drawn along and coloured keeps its colours.
+      now: opened?.coloring ?? keptColoring(address) ?? tutorialColoring(m),
       future: [],
     }),
   );
@@ -578,6 +604,14 @@ export function Player({
           >
             Edit this pattern
           </a>
+        ) : !sharedView && tutorial.level === 'beginner' ? (
+          <a
+            className="edit-link"
+            href={`#/${address}/draw`}
+            title="Draw it yourself, step by step, beside the tutorial"
+          >
+            Draw along
+          </a>
         ) : null}
         <details className="view-menu">
           <summary>View settings</summary>
@@ -618,6 +652,14 @@ export function Player({
                 onChange={(e) => setShowNames(e.target.checked)}
               />
               Show names
+            </label>
+            <label title="Construction lines the pattern never runs along: they only help find points. Hidden, the drawing looks as simple as it is.">
+              <input
+                type="checkbox"
+                checked={showHelpers}
+                onChange={(e) => setShowHelpers(e.target.checked)}
+              />
+              Show helper lines
             </label>
           </div>
         </details>
@@ -1558,6 +1600,15 @@ function Card({ entry: { id, json } }: { entry: Entry }) {
               </>
             )}
           </a>
+          {model.tutorial.level === 'beginner' ? (
+            <a
+              className="button draw"
+              href={`#/${id}/draw`}
+              title="Draw it yourself, step by step, beside the tutorial"
+            >
+              Draw along
+            </a>
+          ) : null}
         </div>
       ) : null}
     </li>
@@ -1879,9 +1930,23 @@ export function App({
       />
     );
   }
-  // #/id plays from the first step; #/id/result opens at the finished wall.
+  // #/id/draw: the learner draws the tutorial along, step by step.
+  if (route.endsWith('/draw')) {
+    const id = route.slice(0, -'/draw'.length);
+    const entry = entries.find((e) => e.id === id);
+    if (!entry)
+      return <Broken message={`There is no tutorial called "${id}".`} />;
+    return <DrawAlongPage key={route} json={entry.json} address={id} />;
+  }
+  // #/id plays from the first step; #/id/result opens at the finished wall;
+  // #/id/repeat at the repeat, where drawing along goes on.
   const result = route.endsWith('/result');
-  const id = result ? route.slice(0, -'/result'.length) : route;
+  const repeat = route.endsWith('/repeat');
+  const id = result
+    ? route.slice(0, -'/result'.length)
+    : repeat
+      ? route.slice(0, -'/repeat'.length)
+      : route;
   const entry = entries.find((e) => e.id === id);
   if (!entry)
     return <Broken message={`There is no tutorial called "${route}".`} />;
@@ -1889,7 +1954,7 @@ export function App({
     <Play
       key={route}
       json={entry.json}
-      start={result ? 'result' : 'beginning'}
+      start={result ? 'result' : repeat ? 'repeat' : 'beginning'}
       address={id}
     />
   );

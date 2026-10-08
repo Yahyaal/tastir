@@ -1,8 +1,13 @@
-import type { InkPiece, Scene, Vec } from '@tastir/engine';
+import type { Geometry, InkPiece, Scene, Vec } from '@tastir/engine';
 import { useMemo, useRef, useState } from 'react';
 import { viewBox, width, type Rect } from '../app/camera';
 import { useCamera } from '../app/useCamera';
-import { crossingsNear, pointPlaces, type Target } from './tools';
+import {
+  crossingsNear,
+  pointPlaces,
+  type PointPlace,
+  type Target,
+} from './tools';
 
 /** How near a click must be to take something, in screen pixels. */
 const REACH_PX = 12;
@@ -59,13 +64,36 @@ export function EditorDrawing({
   tile,
   onHover,
   onClick,
+  camera: shared,
+  svgRef: sharedRef,
+  fitTo,
+  faint: extras,
+  glow,
+  rings,
+  dashed,
+  labelOf,
+  current: currentNames,
+  pen,
+  penDots,
+  numbered,
 }: {
   scene: Scene;
   selected?: number;
   targets: readonly Target[];
   hover?: Target;
-  /** In ink mode: the bits of line, and which are inked. */
-  ink?: { pieces: readonly InkPiece[]; chosen: ReadonlySet<string> };
+  /** In ink mode: the bits of line, and which are inked; a hint may make
+   * some glow and show others dashed. */
+  ink?: {
+    pieces: readonly InkPiece[];
+    chosen: ReadonlySet<string>;
+    glow?: ReadonlySet<string>;
+    dashed?: ReadonlySet<string>;
+    /** Copies just inked, which flash briefly. */
+    fresh?: ReadonlySet<string>;
+    /** Inked bits drawn again where the learner drew them: on the tile's
+     * edge, the wall keeps one of two copies, and the other is shown too. */
+    echo?: readonly { readonly a: Vec; readonly b: Vec }[];
+  };
   /** Circles to choose between, drawn dashed. */
   candidates?: readonly { centre: Vec; radius: number }[];
   /** In ink mode: the tile's corners, drawn dotted, as only what is
@@ -73,10 +101,42 @@ export function EditorDrawing({
   tile?: readonly Vec[];
   onHover: (at: Vec, reach: number) => void;
   onClick: (at: Vec, reach: number) => void;
+  /** A camera shared with another drawing (drawing along): its view is
+   * shown, and Fit goes to `fitTo`. */
+  camera?: {
+    readonly view: Rect;
+    readonly goTo: (r: Rect) => void;
+    readonly wasDrag: () => boolean;
+  };
+  svgRef?: React.RefObject<SVGSVGElement | null>;
+  fitTo?: Rect;
+  /** Elements drawn faint: the learner's own extras when drawing along. */
+  faint?: ReadonlySet<string>;
+  /** Elements that glow: what a step works from (a hint). */
+  glow?: ReadonlySet<string>;
+  /** Points ringed: where to click (a hint). */
+  rings?: readonly Vec[];
+  /** Figures drawn dashed: the answer (a hint). */
+  dashed?: readonly Geometry[];
+  /** The name shown for a point, when it differs from the board's own;
+   * an empty name hides it. */
+  labelOf?: (place: PointPlace) => string | undefined;
+  /** Elements drawn as the step at hand (blue), when drawing along. */
+  current?: ReadonlySet<string>;
+  /** Inking with a pen: where it is down, and the dots one straight
+   * stroke reaches; a line follows the pointer from the pen. */
+  pen?: { readonly at: Vec; readonly reach: readonly Vec[] };
+  /** Every dot the pen can go down on; those near the pointer show. */
+  penDots?: readonly Vec[];
+  /** The rings are numbered 1, 2, in the order to click them. */
+  numbered?: boolean;
 }) {
-  const frame = useMemo(() => frameOf(scene), [scene]);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const camera = useCamera(frame, svgRef);
+  const ownFrame = useMemo(() => frameOf(scene), [scene]);
+  const frame = fitTo ?? ownFrame;
+  const ownRef = useRef<SVGSVGElement>(null);
+  const svgRef = sharedRef ?? ownRef;
+  const own = useCamera(frame, ownRef, { active: !shared });
+  const camera = shared ?? own;
   const view = camera.view;
   const [pointer, setPointer] = useState<Vec>();
   // Screen to drawing: the SVG keeps its aspect (meet), centred.
@@ -110,8 +170,10 @@ export function EditorDrawing({
     if (g.kind === 'point' || g.kind === 'group') continue;
     const cls = [
       'el',
-      el.step === selected ? 'current' : '',
+      el.step === selected || currentNames?.has(el.name) ? 'current' : '',
       taken.has(el.name) || (hover && named(hover) === el.name) ? 'taken' : '',
+      extras?.has(el.name) ? 'extra' : '',
+      glow?.has(el.name) ? 'glow' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -195,17 +257,21 @@ export function EditorDrawing({
       r={unit * (crowded ? 1.6 : 3)}
     />
   ));
-  const labels = visible.filter(showName).map((p) => (
-    <text
-      key={`n${p.name}`}
-      className="point-name"
-      x={p.at.x + unit * 5}
-      y={-(p.at.y + unit * 5)}
-      fontSize={unit * 12}
-    >
-      {p.name}
-    </text>
-  ));
+  const labels = visible
+    .filter(showName)
+    .map((p) => ({ p, text: labelOf?.(p) ?? p.name }))
+    .filter(({ text }) => text)
+    .map(({ p, text }) => (
+      <text
+        key={`n${p.name}`}
+        className="point-name"
+        x={p.at.x + unit * 5}
+        y={-(p.at.y + unit * 5)}
+        fontSize={unit * 12}
+      >
+        {text}
+      </text>
+    ));
   // Crossings with no name yet, near the pointer: places a click can take.
   const faint = useMemo(() => {
     if (!pointer || ink) return [];
@@ -220,6 +286,21 @@ export function EditorDrawing({
       .slice(0, 60);
   }, [pointer, ink, scene, places]);
 
+  // Every dot the pen can go down on, small and light, so a phone shows
+  // them too (drawn once per board and zoom, not on every pointer move).
+  const allDots = useMemo(
+    () =>
+      penDots?.map((d, i) => (
+        <circle
+          key={`pd${i}`}
+          className="pen-dot"
+          cx={d.x}
+          cy={d.y}
+          r={unit * 2.2}
+        />
+      )),
+    [penDots, unit],
+  );
   const ring = (t: Target, i: number | string, cls: string) =>
     t.kind === 'point' ? (
       <circle
@@ -257,13 +338,26 @@ export function EditorDrawing({
       >
         <g transform="scale(1,-1)" style={{ strokeWidth: unit * 1.5 }}>
           {shapes}
+          {/* The tile under the ink, so ink along its edge shows. */}
+          {tile ? (
+            <polygon
+              className="tile-outline"
+              points={tile.map((v) => `${v.x},${v.y}`).join(' ')}
+            />
+          ) : null}
           {ink
             ? ink.pieces.map((p) => (
                 <line
                   key={p.id}
-                  className={
-                    ink.chosen.has(p.id) ? 'ink-piece inked' : 'ink-piece'
-                  }
+                  className={[
+                    'ink-piece',
+                    ink.chosen.has(p.id) ? 'inked' : '',
+                    ink.glow?.has(p.id) ? 'glow' : '',
+                    ink.dashed?.has(p.id) ? 'answer' : '',
+                    ink.fresh?.has(p.id) ? 'fresh' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
                   x1={p.segment.a.x}
                   y1={p.segment.a.y}
                   x2={p.segment.b.x}
@@ -271,6 +365,16 @@ export function EditorDrawing({
                 />
               ))
             : null}
+          {ink?.echo?.map((s, i) => (
+            <line
+              key={`e${i}`}
+              className="ink-piece inked echo"
+              x1={s.a.x}
+              y1={s.a.y}
+              x2={s.b.x}
+              y2={s.b.y}
+            />
+          ))}
           {faint.map((c, i) => (
             <circle
               key={`f${i}`}
@@ -280,12 +384,6 @@ export function EditorDrawing({
               r={unit * 2.5}
             />
           ))}
-          {tile ? (
-            <polygon
-              className="tile-outline"
-              points={tile.map((v) => `${v.x},${v.y}`).join(' ')}
-            />
-          ) : null}
           {candidates?.map((c, i) => (
             <circle
               key={`c${i}`}
@@ -295,15 +393,104 @@ export function EditorDrawing({
               r={c.radius}
             />
           ))}
+          {dashed?.map((g, i) => (
+            <Dashed key={`a${i}`} g={g} far={far} />
+          ))}
           {dots}
+          {allDots}
+          {pen
+            ? pen.reach.map((d, i) => (
+                <circle
+                  key={`pr${i}`}
+                  className="pen-dot reach"
+                  cx={d.x}
+                  cy={d.y}
+                  r={unit * 3.5}
+                />
+              ))
+            : null}
+          {pen && pointer ? (
+            <line
+              className="pen-band"
+              x1={pen.at.x}
+              y1={pen.at.y}
+              x2={pointer.x}
+              y2={pointer.y}
+            />
+          ) : null}
+          {pen ? (
+            <circle
+              className="pen-at"
+              cx={pen.at.x}
+              cy={pen.at.y}
+              r={unit * 6}
+            />
+          ) : null}
+          {rings?.map((p, i) => (
+            <circle
+              key={`r${i}`}
+              className={numbered && i === 0 ? 'hint-ring start' : 'hint-ring'}
+              cx={p.x}
+              cy={p.y}
+              r={unit * 9}
+            />
+          ))}
           {targets.map((t, i) => ring(t, i, 'target'))}
           {hover ? ring(hover, 'h', 'hover') : null}
         </g>
-        <g className="labels">{labels}</g>
+        <g className="labels">
+          {labels}
+          {numbered
+            ? rings?.map((p, i) => (
+                <text
+                  key={`rn${i}`}
+                  className="ring-number"
+                  x={p.x + unit * 11}
+                  y={-(p.y + unit * 11)}
+                  fontSize={unit * 15}
+                >
+                  {i + 1}
+                </text>
+              ))
+            : null}
+        </g>
       </svg>
       <button type="button" className="fit" onClick={() => camera.goTo(frame)}>
         Fit
       </button>
     </div>
   );
+}
+
+/** A figure of the answer, dashed, for the learner to draw over. */
+function Dashed({ g, far }: { g: Geometry; far: number }) {
+  if (g.kind === 'circle')
+    return (
+      <circle
+        className="answer"
+        cx={g.circle.centre.x}
+        cy={g.circle.centre.y}
+        r={g.circle.radius}
+      />
+    );
+  if (g.kind === 'line') {
+    const { point: p, dir: d } = g.line;
+    return (
+      <line
+        className="answer"
+        x1={p.x - d.x * far}
+        y1={p.y - d.y * far}
+        x2={p.x + d.x * far}
+        y2={p.y + d.y * far}
+      />
+    );
+  }
+  if (g.kind === 'polygon')
+    return (
+      <polygon
+        className="answer"
+        points={g.vertices.map((v) => `${v.x},${v.y}`).join(' ')}
+      />
+    );
+  return null;
 }

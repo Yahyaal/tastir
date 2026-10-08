@@ -182,11 +182,13 @@ function labelsFor(
   points: readonly SceneElement[],
   current: (el: SceneElement) => boolean,
   highlighted: ReadonlySet<string>,
+  all = false,
 ): Label[] {
   const groups: { at: Vec; els: SceneElement[] }[] = [];
   for (const el of points) {
     if (el.geometry.kind !== 'point') continue;
-    if (!current(el) && !highlighted.has(el.name) && el.step !== 0) continue;
+    if (!all && !current(el) && !highlighted.has(el.name) && el.step !== 0)
+      continue;
     // Copies made by a repeat carry the engine's names (C@3); the learner
     // knows them as "the same point at every corner", so they stay unnamed.
     if (el.name.includes('@')) continue;
@@ -450,8 +452,16 @@ export function Construction({
   freeInk,
   enter = false,
   arrived = false,
+  names,
+  optional,
   fadeLines = false,
 }: {
+  /** Helper lines nothing needs, drawn lighter (drawing along, with
+   * helper lines shown). */
+  optional?: ReadonlySet<string>;
+  /** Exactly the point names to show (drawing along: those the step text
+   * uses), instead of the step's own and highlighted points. */
+  names?: ReadonlySet<string>;
   model: Model;
   upTo: number;
   /** The part of the tutorial frame to show. */
@@ -485,7 +495,8 @@ export function Construction({
     const clipTo = fit(settled, 1.6);
     const hidden = hiddenBeats(model.tutorial);
     const shown = [...model.scene.elements.values()].filter(
-      (el) => el.beat <= upTo && !hidden.has(el.beat),
+      (el) =>
+        el.beat <= upTo && !hidden.has(el.beat) && !model.hide?.has(el.name),
     );
     const isCurrent = (el: SceneElement) => !ink && el.beat === upTo;
     // The step shown before this one, among those the learner sees.
@@ -523,6 +534,7 @@ export function Construction({
                       ? 'used'
                       : '',
                 helper(el) ? 'helper' : '',
+                optional?.has(el.name) ? 'optional' : '',
                 wasNew(el) ? 'was-new' : '',
               ]
                 .filter(Boolean)
@@ -586,7 +598,17 @@ export function Construction({
                 size={size}
               />
             ))}
-            {showNames ? (
+            {names ? (
+              <Labels
+                labels={labelsFor(
+                  shown.filter((el) => names.has(el.name)),
+                  isCurrent,
+                  highlighted,
+                  true,
+                )}
+                size={size}
+              />
+            ) : showNames ? (
               <Labels
                 labels={labelsFor(shown, isCurrent, highlighted)}
                 size={size}
@@ -602,6 +624,8 @@ export function Construction({
     upTo,
     settled,
     ink,
+    names,
+    optional,
     showNames,
     inkSoFar,
     pen,
@@ -1020,7 +1044,11 @@ export function orderedPaletteColors(
   view?: Rect,
 ): PaletteColorGroup[] {
   const reach = 2;
-  const { view: defaultView } = tiling(model, { halfWide: 1, halfHigh: 1, reach });
+  const { view: defaultView } = tiling(model, {
+    halfWide: 1,
+    halfHigh: 1,
+    reach,
+  });
   const activeView = view ?? defaultView;
   const { cell } = model.pattern;
   const colors = pieceColors(model, coloring);
@@ -1036,7 +1064,10 @@ export function orderedPaletteColors(
     Math.min(...ps.map((p) => p.y)) <= seen.maxY;
   const move = (p: Vec, d: Vec): Vec => ({ x: p.x + d.x, y: p.y + d.y });
 
-  const colorMap = new Map<string, { minDistance: number; names: Set<string> }>();
+  const colorMap = new Map<
+    string,
+    { minDistance: number; names: Set<string> }
+  >();
 
   for (let i = -reach; i <= reach; i++) {
     for (let j = -reach; j <= reach; j++) {
@@ -1099,7 +1130,11 @@ export function Thumbnail({
   view?: Rect;
 }) {
   const reach = 2;
-  const { view: defaultView } = tiling(model, { halfWide: 1, halfHigh: 1, reach });
+  const { view: defaultView } = tiling(model, {
+    halfWide: 1,
+    halfHigh: 1,
+    reach,
+  });
   const view = givenView ?? defaultView;
   const { cell } = model.pattern;
   const colors = pieceColors(model, coloring);
@@ -1172,7 +1207,8 @@ export function Thumbnail({
         for (const s of model.pattern.ink) {
           const a = move(s.segment.a, d);
           const b = move(s.segment.b, d);
-          if (meets([a, b])) strokes.push(`M${sx(a)} ${sy(a)}L${sx(b)} ${sy(b)}`);
+          if (meets([a, b]))
+            strokes.push(`M${sx(a)} ${sy(a)}L${sx(b)} ${sy(b)}`);
         }
       }
     }

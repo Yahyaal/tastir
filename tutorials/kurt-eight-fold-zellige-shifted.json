@@ -274,6 +274,7 @@
     {
       "id": 16,
       "text": "Draw an octagon inside each ring circle, each small circle and the centre circle, with its corners where the circle meets lines through its centre parallel to the horizontal, the vertical and the diagonals.",
+      "textWithoutHelpers": "Draw an octagon inside each ring circle, each small circle and the centre circle, with its corners on the circle at the horizontal, the vertical and the diagonals through its centre.",
       "create": {
         "oK0_0": {"point": {"meet": ["ring0", "g6a"], "pick": {"farthest": "k3"}}},
         "oK0_1": {"point": {"meet": ["ring0", "g7a"], "pick": {"farthest": "k5"}}},
@@ -482,6 +483,7 @@
     {
       "id": 18,
       "text": "Draw the square that just touches the main circle: a line at right angles to the horizontal at each side, and at right angles to the vertical at the top and bottom. This square is the tile that repeats.",
+      "textWithoutHelpers": "Mark the square that just touches the main circle at the top, the bottom and the sides: this square is the tile that repeats. Its corners are crossings already on the board.",
       "create": {
         "tE": {"line": {"through": "E", "perpendicularTo": "h"}},
         "tW": {"line": {"through": "W", "perpendicularTo": "h"}},
@@ -723,6 +725,7 @@
     {
       "id": 20,
       "text": "Now set the rows: each row sits half a wheel along from the one below, as close as the wheels allow. Put the compass on the centre of the small circle above the middle and draw the circle through the middle; where it crosses the vertical again is the bottom of the next row. Rule the horizontal there, and through the bottom-right corner of the square rule a line parallel to the line from the bottom-left corner to that mark. The slanted box between them is the tile.",
+      "textWithoutHelpers": "Now set the rows: each row sits half a wheel along from the one below, as close as the wheels allow. Put the compass on the centre of the small circle above the middle and draw the circle through the middle; where it crosses the vertical again is the bottom of the next row. Rule the horizontal there, and through the bottom-right corner of the square rule a line parallel to the slant from the bottom-left corner to that mark. The slanted box between them is the tile.",
       "create": {
         "cRow": {"circle": {"centre": "s2", "through": "O"}},
         "Up": {"point": {"meet": ["cRow", "v"], "pick": {"farthest": "O"}}},

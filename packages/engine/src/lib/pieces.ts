@@ -321,3 +321,24 @@ export function pieceAt(
   }
   return undefined;
 }
+
+/**
+ * The pieces of a wall laid by hand: the closed faces of all its ink, each
+ * with the index of the piece type it has the shape of, or -1 for a face
+ * that matches none (where copies do not join up).
+ */
+export function wallPieces(
+  segments: readonly Segment[],
+  types: readonly PieceType[],
+  eps = 1e-6,
+): { polygon: Vec[]; type: number }[] {
+  const tol = { eps };
+  const faces = arrangement(segments, tol).map((f) => simplify(f, eps));
+  return faces
+    .filter((f) => f.length >= 3)
+    .map((polygon) => {
+      const shape = measure(polygon);
+      const type = types.findIndex((t) => congruent(t, shape, eps * 10));
+      return { polygon, type };
+    });
+}

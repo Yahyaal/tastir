@@ -167,6 +167,7 @@
     {
       "id": 4,
       "text": "Draw the square that just touches the circle at the ends of the horizontal and the vertical. This square is the tile that repeats.",
+      "textWithoutHelpers": "Draw the square that just touches the circle at the ends of the horizontal and the vertical (its bottom side is not needed as a line). This square is the tile that repeats.",
       "create": {
         "tE": {
           "line": {
@@ -244,6 +245,7 @@
     {
       "id": 5,
       "text": "Halve each of the eight parts with a line through the centre. The circle is now cut into sixteen; mark the new points on it.",
+      "textWithoutHelpers": "Halve the first of the eight parts with a line through the centre, and mark the new points on the circle: it is now cut into sixteen.",
       "create": {
         "s1": {
           "line": {
@@ -411,6 +413,7 @@
     {
       "id": 9,
       "text": "From each of the sixteen points on the circle, draw two lines leaning inwards, parallel to the lines from the centre to the fourth and fifth marks. Where they meet the star lines they turn into petals.",
+      "textWithoutHelpers": "From each of the sixteen points on the circle, draw two lines leaning inwards, at the slant of the lines from the centre to the fourth and fifth marks. Where they meet the star lines they turn into petals.",
       "create": {
         "r1": {
           "line": {
