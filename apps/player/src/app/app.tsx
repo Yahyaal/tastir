@@ -558,7 +558,9 @@ export function Player({
             setLeaving('#/');
           }}
         >
-          <span className="wordmark">Tastir</span>
+          <span className="wordmark">
+            Tastir <span className="brand-arabic" aria-hidden="true" lang="ar" dir="rtl">تسطير</span>
+          </span>
           <span>All patterns</span>
         </a>
         <h1>{tutorial.title}</h1>
@@ -1094,11 +1096,12 @@ function MissingDesign({
 }
 
 /** What the library needs to know about a tutorial before it is loaded. */
-function aboutOf(json: unknown): { style?: string; level?: string } {
-  const t = (json ?? {}) as { style?: unknown; level?: unknown };
+function aboutOf(json: unknown): { style?: string; level?: string; fold?: number } {
+  const t = (json ?? {}) as { style?: unknown; level?: unknown; fold?: unknown };
   return {
     ...(typeof t.style === 'string' ? { style: t.style } : {}),
     ...(typeof t.level === 'string' ? { level: t.level } : {}),
+    ...(typeof t.fold === 'number' ? { fold: t.fold } : {}),
   };
 }
 
@@ -1114,15 +1117,21 @@ const FIRST = 'eight-fold-star-and-cross';
 export function Library({ entries }: { entries: readonly Entry[] }) {
   const [style, setStyle] = useState<string>();
   const [level, setLevel] = useState<string>();
+  const [fold, setFold] = useState<number>();
   const [designs, setDesigns] = useState(listDesigns);
   const [patterns, setPatterns] = useState(listPatterns);
   const styles = [
     ...new Set(entries.flatMap((e) => aboutOf(e.json).style ?? [])),
   ].sort();
+  const folds = [
+    ...new Set(entries.flatMap((e) => aboutOf(e.json).fold ?? [])),
+  ].sort((a, b) => a - b);
   const shown = entries.filter((e) => {
     const about = aboutOf(e.json);
     return (
-      (!style || about.style === style) && (!level || about.level === level)
+      (!style || about.style === style) &&
+      (!level || about.level === level) &&
+      (!fold || about.fold === fold)
     );
   });
   const hero = entries.find((e) => e.id === HERO) ?? entries[0];
@@ -1130,7 +1139,11 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   return (
     <div className="library">
       <header className="masthead">
-        <h1>Tastir</h1>
+        <div className="brand-group">
+          <h1 aria-label="Tastir">
+            Tastir <span className="brand-arabic" aria-hidden="true" lang="ar" dir="rtl">تسطير</span>
+          </h1>
+        </div>
         {designs.length ? (
           <button
             type="button"
@@ -1172,6 +1185,11 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
       <section className="hero">
         {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}
         <div className="hero-copy">
+          <div className="eyebrow">
+            <span>Islamic Geometric Drafting Atelier</span>
+            <span className="eyebrow-sep">·</span>
+            <span className="eyebrow-arabic" lang="ar" dir="rtl">علم التسطير والهندسة</span>
+          </div>
           <h2>Draw Islamic geometric patterns with a compass and a ruler.</h2>
           <p>
             Every pattern here starts from one circle. Each step adds a circle
@@ -1205,6 +1223,68 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           }}
         />
       ) : null}
+      <section className="traditions-spotlight" aria-label="Traditions of Islamic Geometry">
+        <button
+          type="button"
+          className={`spotlight-card ${style?.toLowerCase().includes('morocc') || style?.toLowerCase().includes('marinid') ? 'active' : ''}`}
+          onClick={() =>
+            setStyle((prev) =>
+              prev?.toLowerCase().includes('morocc') || prev?.toLowerCase().includes('marinid')
+                ? undefined
+                : styles.find((s) => s.toLowerCase().includes('morocc') || s.toLowerCase().includes('marinid')),
+            )
+          }
+        >
+          <div className="spotlight-num">
+            <span>01 · MOROCCO</span>
+            <span className="spotlight-ar" lang="ar" dir="rtl">الزليج المغربي</span>
+          </div>
+          <h3>Moroccan Zellij (Fez & Marrakech)</h3>
+          <p>
+            Hand-chiseled glazed terracotta tesserae, 8-fold to 16-fold star rosettes with saft petals and cobalt glazes.
+          </p>
+        </button>
+        <button
+          type="button"
+          className={`spotlight-card ${style?.toLowerCase().includes('nasrid') ? 'active' : ''}`}
+          onClick={() =>
+            setStyle((prev) =>
+              prev?.toLowerCase().includes('nasrid')
+                ? undefined
+                : styles.find((s) => s.toLowerCase().includes('nasrid')),
+            )
+          }
+        >
+          <div className="spotlight-num">
+            <span>02 · AL-ANDALUS</span>
+            <span className="spotlight-ar" lang="ar" dir="rtl">الحسبة الأندلسية</span>
+          </div>
+          <h3>Nasrid & Umayyad Lacería (Granada & Córdoba)</h3>
+          <p>
+            Infinite interlacing strapwork ribbons woven over-and-under through celestial stars in the Alhambra.
+          </p>
+        </button>
+        <button
+          type="button"
+          className={`spotlight-card ${style?.toLowerCase().includes('seljuk') || style?.toLowerCase().includes('timurid') || style?.toLowerCase().includes('mamluk') || style?.toLowerCase().includes('tulunid') ? 'active' : ''}`}
+          onClick={() =>
+            setStyle((prev) =>
+              prev?.toLowerCase().includes('seljuk') || prev?.toLowerCase().includes('timurid') || prev?.toLowerCase().includes('mamluk')
+                ? undefined
+                : styles.find((s) => s.toLowerCase().includes('seljuk') || s.toLowerCase().includes('timurid') || s.toLowerCase().includes('mamluk')),
+            )
+          }
+        >
+          <div className="spotlight-num">
+            <span>03 · CAIRO & THE EAST</span>
+            <span className="spotlight-ar" lang="ar" dir="rtl">المشرق والعمارة المملوكية</span>
+          </div>
+          <h3>Mamluk, Timurid & Cairo Windows</h3>
+          <p>
+            Monumental decagram rosettes, openwork stucco lattices, and polygonal strapwork on sacred monuments.
+          </p>
+        </button>
+      </section>
       <section aria-labelledby="collection">
         <div className="collection-head">
           <h2 id="collection">The patterns</h2>
@@ -1223,6 +1303,17 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             {styles.map((s) => (
               <Chip key={s} on={style === s} onClick={() => setStyle(s)}>
                 {s}
+              </Chip>
+            ))}
+          </fieldset>
+          <fieldset className="filter-group">
+            <legend>Symmetry</legend>
+            <Chip on={!fold} onClick={() => setFold(undefined)}>
+              Any fold
+            </Chip>
+            {folds.map((f) => (
+              <Chip key={f} on={fold === f} onClick={() => setFold(f)}>
+                {f}-fold
               </Chip>
             ))}
           </fieldset>
@@ -1275,6 +1366,30 @@ function Chip({
   );
 }
 
+const ARABIC_TITLES: Record<string, string> = {
+  'eight-fold-star-and-cross': 'خاتم سليمان وثماني',
+  'eight-fold-zellige': 'زليج ثماني مغربي',
+  'bou-inania-rosette': 'خاتم الستة عشر البوعنانية بفاس',
+  'bou-inania-twelve-fold-wall': 'حائط اثنا عشري بالبوعنانية',
+  'sixteen-fold-rosette': 'طاسة الستة عشر المرينية',
+  'twelve-fold-rosette-mian': 'روزيتا اثنا عشرية',
+  'twelve-fold-rosette-mian-hex': 'روزيتا مسدسة مسدسة',
+  'twelve-fold-dodecagrams': 'اثنا عشري نجمي',
+  'alhambra-comares-stars': 'نجوم قاعة قمارش بقصر الحمراء',
+  'alhambra-reyes-dodecagrams': 'اثنا عشري قاعة الملوك بالحمراء',
+  'alhambra-reyes-stars': 'نجوم قاعة الملوك بالحمراء',
+  'alhambra-mexuar-stars': 'نجوم المشور بقصر الحمراء',
+  'alhambra-barca-stars': 'نجوم قاعة البركة بالحمراء',
+  'alhambra-bath-stars': 'نجوم حمامات قصر الحمراء',
+  'alhambra-arrayanes-squares': 'مربعات صحن الريحان بالحمراء',
+  'ibn-tulun-window': 'شمسية جامع ابن طولون بالقاهرة',
+  'minbar-doors-cairo': 'مصاريع منبر قاهري مملوكي',
+  'four-fold-ring-of-circles': 'حلقة الدوائر الرباعية',
+  'six-fold-star-and-hexagons': 'نجمة مسدسة ومسدسات',
+  'six-fold-snowflake': 'ندفة الثلج المسدسة',
+  'six-fold-hammerhead': 'مطرقة مسدسة تيمورية',
+};
+
 /** One tutorial in the library, loaded in the worker. */
 function Card({ entry: { id, json } }: { entry: Entry }) {
   const { model, error, progress } = useModel(json);
@@ -1288,6 +1403,11 @@ function Card({ entry: { id, json } }: { entry: Entry }) {
           <div className={error ? 'thumbnail broken' : 'thumbnail waiting'} />
         )}
         <h3>{model?.tutorial.title ?? id}</h3>
+        {ARABIC_TITLES[id] ? (
+          <span className="card-arabic" lang="ar" dir="rtl">
+            {ARABIC_TITLES[id]}
+          </span>
+        ) : null}
         {model ? (
           <p className="meta">
             <span className="level">{capital(model.tutorial.level)}</span>
@@ -1304,10 +1424,56 @@ function Card({ entry: { id, json } }: { entry: Entry }) {
       {model ? (
         <div className="card-actions">
           <a className="button watch" href={`#/${id}`}>
+            <svg
+              aria-hidden="true"
+              className="action-icon"
+              viewBox="0 0 16 16"
+              width="13"
+              height="13"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+            >
+              <circle cx="8" cy="8" r="6" />
+              <path d="M8 2v4M8 10v4M2 8h4M10 8h4" />
+            </svg>
             Watch it drawn
           </a>
           <a className="button result" href={`#/${id}/result`}>
-            {photos ? 'Result and original' : 'See the result'}
+            {photos ? (
+              <>
+                <svg
+                  aria-hidden="true"
+                  className="action-icon"
+                  viewBox="0 0 16 16"
+                  width="13"
+                  height="13"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                >
+                  <rect x="2" y="3" width="12" height="10" rx="1.5" />
+                  <circle cx="8" cy="8" r="2.5" />
+                </svg>
+                Result and original
+              </>
+            ) : (
+              <>
+                <svg
+                  aria-hidden="true"
+                  className="action-icon"
+                  viewBox="0 0 16 16"
+                  width="13"
+                  height="13"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                >
+                  <path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z" />
+                </svg>
+                See the result
+              </>
+            )}
           </a>
         </div>
       ) : null}
