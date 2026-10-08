@@ -33,7 +33,7 @@ export interface Block {
    * any pattern the block is inserted into, so its file names it too. */
   readonly credits?: readonly Draft['credits'][number][];
   /** Ink paths through the block's named points, for a block that makes
-   * a figure (the rosette), so it looks like itself at once. */
+   * a figure, so it looks like itself at once. */
   readonly ink?: readonly (readonly string[])[];
 }
 
@@ -101,18 +101,6 @@ const EIGHTHS: BlockStep = {
 };
 /** The eight points in order round the circle. */
 const EIGHT = ['Q', 'E1', 'B.1', 'E4', 'Qx', 'E2', 'B.2', 'E3'];
-/** The line through the centre each of the eight lies on. */
-const SPOKE: Record<string, string> = {
-  Q: 'a',
-  Qx: 'a',
-  'B.1': 'b',
-  'B.2': 'b',
-  E1: 'd1',
-  E2: 'd1',
-  E3: 'd2',
-  E4: 'd2',
-};
-
 /** Circles of the same opening about the start and the opposite point. */
 const SIXTHS: BlockStep = {
   text: 'Keep the opening and draw circles about the starting point and the point opposite: the circle is cut into six.',
@@ -150,74 +138,6 @@ const twelfths: BlockStep = {
     G2: pts('c', 'g2'),
   },
 };
-
-/** Lee's rosette, eight-fold, on the octagon of the eight points. */
-function leeRosette(): BlockStep[] {
-  const n = EIGHT.length;
-  const v = (k: number) => EIGHT[((k % n) + n) % n] as string;
-  const m = (k: number) => `M${((k % n) + n) % n}`;
-  const st = (k: number) => `st${((k % n) + n) % n}`;
-  const mids: Record<string, ElementSpec> = {};
-  const stars: Record<string, ElementSpec> = {};
-  const circles: Record<string, ElementSpec> = {};
-  const petals: Record<string, ElementSpec> = {};
-  for (let k = 0; k < n; k++) {
-    // The middle of each side of the octagon: where the line from the
-    // centre square to that side meets it.
-    mids[`ch${k}`] = ln(v(k), v(k + 1));
-    mids[`mp${k}`] = perp('P', `ch${k}`);
-    mids[m(k)] = pt(`ch${k}`, `mp${k}`);
-  }
-  for (let k = 0; k < n; k++) stars[st(k)] = ln(m(k), m(k + 2));
-  for (let k = 0; k < n; k++) {
-    // About each corner, through the middle of the side: it meets the
-    // spoke to that corner nearer the centre.
-    const corner = v(k + 1);
-    circles[`cc${k}`] = circ(corner, m(k));
-    circles[`C${k}`] = pt(`cc${k}`, SPOKE[corner] as string, { nearest: 'P' });
-  }
-  for (let k = 0; k < n; k++) {
-    const corner = v(k + 1);
-    // At each corner, halve the angle between the spoke point and each
-    // side's middle; the halving line meets the star line from that
-    // middle, and the petal line runs from there to the spoke point.
-    petals[`u${k}`] = halve(`C${k}`, corner, m(k));
-    petals[`G${k}`] = pt(`u${k}`, st(k));
-    petals[`pl${k}`] = ln(`G${k}`, `C${k}`);
-    petals[`w${k}`] = halve(`C${k}`, corner, m(k + 1));
-    petals[`H${k}`] = pt(`w${k}`, st(k - 1));
-    petals[`ql${k}`] = ln(`H${k}`, `C${k}`);
-  }
-  const inner: Record<string, ElementSpec> = {};
-  for (let k = 0; k < n; k++) {
-    // The petal line from M(k) turns at C(k) and runs on to the spoke
-    // through the next side's middle, where it meets its mirror image.
-    inner[`X${k}`] = pt(`pl${k}`, `mp${(k + 1) % n}`);
-    inner[`Y${k}`] = pt(`ql${k}`, `mp${k}`);
-  }
-  return [
-    {
-      text: 'Join the eight points into an octagon, and mark the middle of each side, where the line from the centre square to it meets it.',
-      create: mids,
-    },
-    {
-      text: 'Join each middle to the middle two sides on: the eight star lines.',
-      create: stars,
-    },
-    {
-      text: 'About each corner, draw a circle through the middle of the side next to it; mark where it meets the line from the centre to that corner, on the inside.',
-      create: circles,
-    },
-    {
-      text: 'At each corner, halve the angle between that inner point and each side’s middle; where the halving line meets the star line, draw the petal line back to the inner point.',
-      create: petals,
-    },
-    {
-      text: 'Carry each petal line on past the inner point to the line from the centre to the next side’s middle: these crossings are the points of the central star.',
-      create: inner,
-    },
-  ];
-}
 
 /** The blocks every learner starts with. */
 export const STARTER_BLOCKS: readonly Block[] = [
@@ -369,27 +289,6 @@ export const STARTER_BLOCKS: readonly Block[] = [
         })(),
       },
     ],
-  },
-  {
-    id: 'lee-rosette-8',
-    name: 'A. J. Lee’s rosette (eight-fold)',
-    text: 'The petals and star of an eight-fold rosette, drawn round an octagon by Anthony Lee’s method.',
-    inputs: ON_A_CIRCLE,
-    steps: [OPPOSITE, QUARTERS, EIGHTHS, ...leeRosette()],
-    credits: [
-      {
-        source:
-          'Anthony J. Lee’s method for rosettes, as generalised by Craig S. Kaplan',
-        creator: 'Anthony J. Lee; Craig S. Kaplan',
-        note: 'The rosette block follows Kaplan, “Islamic star patterns from polygons in contact” (2005): side middles, star lines, circles about the corners, halving lines and petals.',
-      },
-    ],
-    // Each petal: from a side's middle along the star line to the halving
-    // line, then back along the petal line to the spoke point.
-    ink: Array.from({ length: 8 }, (_, k) => [
-      [`M${k}`, `G${k}`, `C${k}`, `X${k}`],
-      [`M${(k + 1) % 8}`, `H${k}`, `C${k}`, `Y${k}`],
-    ]).flat(),
   },
 ];
 

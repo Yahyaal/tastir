@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type MouseEvent } from 'react';
 import {
   PATTERNS,
   PROGRESS,
@@ -8,6 +8,7 @@ import {
   type Picture,
   type Question,
 } from './data';
+import { LIBRARY } from '../app/library';
 import './review.css';
 
 const STORE = 'tastir-review-answers';
@@ -44,6 +45,9 @@ function answersText(answers: Record<string, string>): string {
   if (other) lines.push('Anything else:', other, '');
   return lines.join('\n');
 }
+
+/** The cards that are tutorials, so they can open in the player. */
+const TUTORIALS = new Set(LIBRARY.map((e) => e.id));
 
 /** Question numbers as shown on the page, by question id. */
 const NUMBER = new Map(QUESTIONS.map((q, i) => [q.id, i + 1]));
@@ -162,6 +166,19 @@ function Progress() {
   );
 }
 
+/**
+ * Links to a card or question on this page (#design-h1, #q-x) scroll to it.
+ * The app routes by the address's #, so following them would leave the page.
+ */
+function jumpWithinPage(e: MouseEvent<HTMLDivElement>) {
+  const href = (e.target as Element).closest('a')?.getAttribute('href');
+  if (!href?.startsWith('#') || href.startsWith('#/')) return;
+  e.preventDefault();
+  document
+    .getElementById(href.slice(1))
+    ?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+}
+
 const url = (p: Picture) => `/__review/${p.src}`;
 
 /** Side-by-side comparisons need the card's full width to be legible. */
@@ -194,12 +211,16 @@ function Card({ pattern: p }: { pattern: Pattern }) {
         <span className="fold">{p.fold}-fold</span>
       </header>
       <p className="summary">{p.summary}</p>
-      <p className="open">
-        <a href={`/#/${p.id}`} target="_blank" rel="noreferrer">
-          Open it in the player ↗
-        </a>{' '}
-        <span className="hint">(step through it, then go on to the wall)</span>
-      </p>
+      {TUTORIALS.has(p.id) ? (
+        <p className="open">
+          <a href={`/#/${p.id}`} target="_blank" rel="noreferrer">
+            Open it in the player ↗
+          </a>{' '}
+          <span className="hint">
+            (step through it, then go on to the wall)
+          </span>
+        </p>
+      ) : null}
       {p.story.map((para, i) => (
         <p key={i}>{para}</p>
       ))}
@@ -272,7 +293,7 @@ export function Review() {
     setTimeout(() => setCopied(false), 2500);
   };
   return (
-    <div className="review">
+    <div className="review" onClick={jumpWithinPage}>
       <nav className="review-top">
         <a href="#/">← Library</a>
         <span>

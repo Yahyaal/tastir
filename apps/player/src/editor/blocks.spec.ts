@@ -3,7 +3,7 @@ import { cellOf } from '@tastir/engine';
 import { parseTutorial } from '@tastir/schema';
 import { insertBlock, STARTER_BLOCKS } from './blocks';
 import { check, copyUpTo, pointPlaces, type Draft } from './document';
-import { inkableOf, runOf, tutorialOf, withTile } from './finish';
+import { inkableOf, runOf, withTile } from './finish';
 
 const circleOnly = copyUpTo(parseTutorial(example), 1);
 const onCircle = [
@@ -92,25 +92,30 @@ describe('the starter blocks', () => {
     expect(new Set(names).size).toBe(names.length);
   });
 
-  it('brings the rosette’s own ink and credit', () => {
-    const lee = STARTER_BLOCKS.find((b) => b.id === 'lee-rosette-8');
-    if (!lee) throw new Error();
-    const { draft } = insertBlock(circleOnly, lee, onCircle, 1);
-    expect(draft.ink?.paths).toHaveLength(16);
-    // And credits Lee's method, once however often it is inserted.
-    const twice = insertBlock(draft, lee, onCircle, draft.steps.length).draft;
+  it('brings its own ink and credit', () => {
+    const divide8 = STARTER_BLOCKS.find((b) => b.id === 'divide-8');
+    if (!divide8) throw new Error();
+    const block = {
+      ...divide8,
+      credits: [{ source: 'A test source' }],
+      ink: [['Q', 'Qx']],
+    };
+    const { draft } = insertBlock(circleOnly, block, onCircle, 1);
+    expect(draft.ink?.paths).toHaveLength(1);
+    // And credits its source once, however often it is inserted.
+    const twice = insertBlock(draft, block, onCircle, draft.steps.length).draft;
     expect(
-      twice.credits.filter((c) => c.source.startsWith('Anthony J. Lee')),
+      twice.credits.filter((c) => c.source === 'A test source'),
     ).toHaveLength(1);
   });
 });
 
 describe('inking whole runs', () => {
-  it('inks a petal line of the rosette in one click, from point to point', () => {
-    const lee = STARTER_BLOCKS.find((b) => b.id === 'lee-rosette-8');
+  it('inks a side of the two squares in one click, from point to point', () => {
+    const squares = STARTER_BLOCKS.find((b) => b.id === 'two-squares');
     const tile = STARTER_BLOCKS.find((b) => b.id === 'square-tile');
-    if (!lee || !tile) throw new Error();
-    const one = insertBlock(circleOnly, lee, onCircle, 1);
+    if (!squares || !tile) throw new Error();
+    const one = insertBlock(circleOnly, squares, onCircle, 1);
     const two = insertBlock(one.draft, tile, onCircle, one.draft.steps.length);
     const draft = withTile(two.draft, two.tile ?? '');
     const { scene } = check(draft);
@@ -120,18 +125,5 @@ describe('inking whole runs', () => {
     const runs = inkable.pieces.map((p) => runOf(inkable, p.id, named, scene));
     // Some lines are cut into several bits; a click takes them all.
     expect(Math.max(...runs.map((r) => r.length))).toBeGreaterThan(1);
-    // The block's own ink reads as a rosette: a central eight-pointed star
-    // ringed by eight petals; and the file credits Lee's method.
-    const made = tutorialOf(draft);
-    if (!('tutorial' in made)) throw new Error(made.reason);
-    expect(
-      made.tutorial.expect.pieces.map((p) => [p.name, p.vertices, p.perCell]),
-    ).toEqual([
-      ['star', 16, 1],
-      ['hexagon', 6, 8],
-    ]);
-    expect(
-      made.tutorial.credits.some((c) => c.source.startsWith('Anthony J. Lee')),
-    ).toBe(true);
   });
 });

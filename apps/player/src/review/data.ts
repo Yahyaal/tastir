@@ -36,9 +36,11 @@ const MAMOOT = 'https://mamootdiy.com';
 export const PATTERNS: readonly Pattern[] = [
   {
     id: 'lee-rosette-block',
-    title: 'The rosette building block (new)',
+    title: 'The rosette building block',
     fold: 8,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You (7 October): it does not look like our rosette; skip it for now and focus on the beginner patterns. The block is removed from the editor’s Building blocks.',
     summary:
       'A building block in the editor that draws an eight-fold rosette round a circle by Anthony Lee’s method, and inks it.',
     story: [
@@ -59,6 +61,21 @@ export const PATTERNS: readonly Pattern[] = [
     asks: [
       'Does A read as a real eight-fold rosette, or should its petals or the lines round it change?',
     ],
+    sources: [],
+  },
+  {
+    id: 'send-to-library',
+    title: 'Send it to the library (new)',
+    fold: 8,
+    status: 'decide',
+    summary:
+      'A learner with a finished pattern can make a library-ready file with their name in its credits, to send to us for review.',
+    story: [
+      'In the editor, “About the pattern” has “Send it to the library” once the pattern is tiled and inked. The learner types their name, downloads the file, and is told we check it, give it a golden test, show it on this page and credit them if it joins the library.',
+      'There is no server yet, so the file has to reach us by hand, and the page needs to say where. Today it shows “[the address the Tastir team will give here]”.',
+    ],
+    pictures: [],
+    asks: [],
     sources: [],
   },
   {
@@ -1277,20 +1294,14 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
-    id: 'lee-rosette-block',
-    text: 'Is the rosette block’s result (A) a real eight-fold rosette, like our sixteen-fold one (B)?',
-    choices: ['Yes, it is a rosette', 'No, see my note'],
-    pictures: [
-      {
-        src: 'renders/user-patterns/lee/a-rosette-block.png',
-        caption: 'A: the rosette block, played.',
-      },
-      {
-        src: 'renders/user-patterns/lee/b-sixteen-fold-rosette.png',
-        caption: 'B: the sixteen-fold rosette.',
-      },
+    id: 'library-address',
+    text: 'When a learner presses “Send it to the library”, where should the page tell them to send their file? Today it shows a placeholder.',
+    choices: [
+      'My email address (I type it below)',
+      'Hide the button until we have a form',
     ],
-    card: 'lee-rosette-block',
+    pictures: [],
+    card: 'send-to-library',
   },
 ];
 
@@ -1324,7 +1335,7 @@ export const PROGRESS: {
     },
     {
       title: 'Your own patterns, phase 4: building blocks',
-      text: 'In the editor, Building blocks adds a few steps at once on a circle: divide it into 4, 6, 8, 12 or 16, the two squares of the eight-pointed star, a ring of touching circles, the square or hexagon tile round it, and Anthony Lee’s eight-fold rosette, which inks itself. A block reuses what is already drawn, one Undo takes it out, and learners can save their own steps as a block.',
+      text: 'In the editor, Building blocks adds a few steps at once on a circle: divide it into 4, 6, 8, 12 or 16, the two squares of the eight-pointed star, a ring of touching circles, the square or hexagon tile round it. A block reuses what is already drawn, one Undo takes it out, and learners can save their own steps as a block.',
       link: { label: 'Try it', href: '/#/' },
     },
     {
@@ -1510,7 +1521,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'Your own patterns are ready for your look',
-    text: 'All five phases are built and tested by the tester. Start on the home page: try “New pattern”, or open a tutorial, go to a step and press “Make my own copy from here”. One question is waiting below: whether the rosette block looks right; and one item: which address learners should send their patterns to.',
+    text: 'All five phases are built and tested by the tester. Start on the home page: try “New pattern”, or open a tutorial, go to a step and press “Make my own copy from here”. One question is waiting below: where learners should send their patterns. The rosette block is removed, as you asked.',
     link: { label: 'Start here', href: '/#/' },
   },
 
@@ -1529,10 +1540,6 @@ export const PROGRESS: {
     },
   ],
   waiting: [
-    {
-      title: 'Where learners send their patterns',
-      text: '“Send it to the library” makes the file and tells the learner to send it to the Tastir team, but there is no address yet: the page shows “[the address the Tastir team will give here]”. Which email address, form or project page should it name? It is one line to change (LIBRARY_ADDRESS in the editor’s AboutPanel).',
-    },
     {
       title: 'Alhambra interlace',
       text: 'Needs a better source than the product page: a photo or drawing of the whole panel.',

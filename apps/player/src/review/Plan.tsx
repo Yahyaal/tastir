@@ -946,9 +946,10 @@ export function Plan() {
         undoes like anything else and the format does not change. The first
         blocks come straight from our library: dividing a circle by 4, 6, 8, 12
         and 16, the static and dynamic squares, a ring of touching circles, the
-        square or hexagon tile round a circle, and A. J. Lee’s rosette, which is
-        drawn with a compass. Learners can select a few of their own steps and
-        save them as a block.
+        square or hexagon tile round a circle. (A. J. Lee’s rosette was built
+        too, but on 7 October you judged it did not look like our rosettes and
+        asked to focus on the beginner patterns, so it was removed.) Learners
+        can select a few of their own steps and save them as a block.
       </p>
       <figure className="plan-fig">
         <BlockFigure />

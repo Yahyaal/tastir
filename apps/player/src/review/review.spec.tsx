@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { PATTERNS, PROGRESS, QUESTIONS } from './data';
+import { LIBRARY } from '../app/library';
 import { Review } from './Review';
 
 describe('the review page', () => {
@@ -40,6 +41,21 @@ describe('the review page', () => {
     });
   });
 
+  it('scrolls to a card on this page instead of leaving it', () => {
+    window.location.hash = '#/review';
+    render(<Review />);
+    const scrolled: Element[] = [];
+    Element.prototype.scrollIntoView = function (this: Element) {
+      scrolled.push(this);
+    };
+    const link = [...document.querySelectorAll('a')].find(
+      (a) => a.getAttribute('href') === '#decide-list',
+    ) as HTMLAnchorElement;
+    fireEvent.click(link);
+    expect(window.location.hash).toBe('#/review');
+    expect(scrolled[0]?.id).toBe('decide-list');
+  });
+
   it('points every question at a pattern card, and every waiting card back at its questions', () => {
     render(<Review />);
     for (const q of QUESTIONS)
@@ -50,11 +66,15 @@ describe('the review page', () => {
     }
   });
 
-  it('links each pattern to the player and its pictures to the dev server', () => {
+  it('links each tutorial to the player and its pictures to the dev server', () => {
     render(<Review />);
+    const tutorials = new Set(LIBRARY.map((e) => e.id));
     for (const p of PATTERNS) {
       const card = document.getElementById(p.id) as HTMLElement;
-      expect(card.querySelector(`a[href="/#/${p.id}"]`)).toBeTruthy();
+      // Only a card that is a tutorial can open in the player.
+      expect(!!card.querySelector(`a[href="/#/${p.id}"]`)).toBe(
+        tutorials.has(p.id),
+      );
     }
     for (const img of document.querySelectorAll('img'))
       expect(img.getAttribute('src')).toMatch(
