@@ -340,3 +340,7 @@ Suggestions:
 11. A reload loses the board without warning (progress is task 6.5, so only noted).
 
 **Verdict.** 6.1 and 6.2 do what was promised: the checking is right and generous (every other correct route I tried counted, extras never blocked a tick), Next and Back are free, ticks follow the board, and the two halves line up exactly at every width and zoom. A beginner can draw the star and cross from start to finish without help. Before more learners use it, the step text must be readable in full (1) and the step to copy must label exactly the points its text names (2); the always-lit Compass (3) and the early ticks on point-only and tile steps (4, 5) are the next things that would mislead a beginner.
+
+### Draw along 6.3–6.7, tester report (7 October 2026)
+
+*First version, saved while testing; the full report replaces this.* Tested from a frozen worktree of ffe355d on port 4351; screenshots in `docs/review/user-patterns/draw-along-test2/`. The star and cross went from the home page's Draw along button to a coloured wall by hand, with hints, a reload mid-way (Welcome back worked) and the kept pattern playing from My patterns. Two bugs so far: at the Ink stage the layout breaks at 1280 and 1024 px (the board jumps to the top right at a third of its height, the tutorial's picture drops to the bottom left, an empty block is left top left: `ink-layout-fresh.png`), and the kept pattern's Repeat stage shows a seam along the top and bottom rows (doubled tile lines, blue stars overlapping the next row: `star-repeat-crop.png`).
