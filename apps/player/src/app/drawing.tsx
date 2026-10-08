@@ -453,7 +453,11 @@ export function Construction({
   enter = false,
   arrived = false,
   names,
+  optional,
 }: {
+  /** Helper lines nothing needs, drawn lighter (drawing along, with
+   * helper lines shown). */
+  optional?: ReadonlySet<string>;
   /** Exactly the point names to show (drawing along: those the step text
    * uses), instead of the step's own and highlighted points. */
   names?: ReadonlySet<string>;
@@ -527,6 +531,7 @@ export function Construction({
                       ? 'used'
                       : '',
                 helper(el) ? 'helper' : '',
+                optional?.has(el.name) ? 'optional' : '',
                 wasNew(el) ? 'was-new' : '',
               ]
                 .filter(Boolean)
@@ -617,6 +622,7 @@ export function Construction({
     settled,
     ink,
     names,
+    optional,
     showNames,
     inkSoFar,
     pen,

@@ -6,7 +6,7 @@ import {
   neededAt,
   wallPieces,
   type Segment,
-  helperLines,
+  hiddenHelpers,
   type StepCheck,
   type Vec,
 } from '@tastir/engine';
@@ -238,10 +238,11 @@ export function DrawAlong({
     () => withHelpers(full, showHelpers),
     [full, showHelpers],
   );
-  // Helper lines are never needed to tick a step: they only help find
-  // points.
+  // The helper lines nothing needs (those the setting hides) are
+  // optional for a tick; a helper line that finds a point something needs
+  // still counts.
   const optional = useMemo(
-    () => helperLines(full.scene, full.tutorial),
+    () => hiddenHelpers(full.scene, full.tutorial),
     [full],
   );
   const { tutorial } = model;
@@ -1051,6 +1052,7 @@ export function DrawAlong({
           frame={frame}
           svgRef={stepRef}
           names={stepNames}
+          optional={showHelpers ? optional : undefined}
         />
       )}
       {coloring ? null : (
@@ -1664,6 +1666,11 @@ export function DrawAlong({
                 dashed: helper lines that only help find points; the pattern
                 never runs along them
               </span>
+              {showHelpers ? (
+                <span className="helper optional">
+                  light dashed: optional, as nothing needs their points
+                </span>
+              ) : null}
             </p>
           )}
         </footer>

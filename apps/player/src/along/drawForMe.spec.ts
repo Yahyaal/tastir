@@ -6,7 +6,7 @@ import {
   evaluate,
   expectedGolden,
   goldenOf,
-  helperLines,
+  hiddenHelpers,
   inkPieces,
   strokesOf,
 } from '@tastir/engine';
@@ -38,7 +38,7 @@ export function drawnForMe(t: Tutorial, helpers = true): Draft {
     { tutorial: t, scene, pattern: computePattern(scene, t) },
     helpers,
   );
-  const optional = helperLines(scene, t);
+  const optional = hiddenHelpers(scene, t);
   const shapes = new Set([t.pattern.cell]);
   let draft = emptyDraft(`${t.id}-along`, t.title);
   for (const beat of shownBeats(model.tutorial)) {
@@ -150,4 +150,36 @@ describe('Draw it for me through every beginner tutorial', () => {
       expect(goldenOf(hidden.tutorial)).toEqual(expectedGolden(model.tutorial));
     },
   );
+
+  it('does not require a helper line nothing needs (Comares bones)', () => {
+    const t = beginners.find(
+      (x) => x.id === 'alhambra-comares-bones',
+    ) as Tutorial;
+    const scene = evaluate(t);
+    const hidden = hiddenHelpers(scene, t);
+    const step = t.steps.find((s) =>
+      Object.keys(s.create ?? {}).some((n) => hidden.has(n)),
+    );
+    if (!step) throw new Error('no hideable helper line');
+    const beat = t.steps.indexOf(step) + 1;
+    // The step drawn without its hideable helper lines (and without the
+    // points they alone would find).
+    const create = Object.fromEntries(
+      Object.entries(step.create ?? {}).filter(
+        ([n, el]) =>
+          !hidden.has(n) &&
+          !('point' in el && el.point.meet.some((m) => hidden.has(m))),
+      ),
+    );
+    const before = t.steps.filter((s) => s.id < step.id);
+    const board = evaluate({
+      steps: [...before, { ...step, create }],
+    } as Tutorial);
+    const shapes = new Set([t.pattern.cell]);
+    expect(checkStep(scene, board, beat, undefined, shapes, hidden).done).toBe(
+      true,
+    );
+    // Without the option they would be missing.
+    expect(checkStep(scene, board, beat, undefined, shapes).done).toBe(false);
+  });
 });

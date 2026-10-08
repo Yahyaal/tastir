@@ -517,3 +517,12 @@
 .along-helpers input {
   accent-color: var(--saffron);
 }
+
+/* Helper lines nothing needs: lighter, and optional on the board. */
+.along .drawing .el.optional {
+  opacity: 0.4;
+}
+
+.along .dot-key .helper.optional::before {
+  opacity: 0.4;
+}

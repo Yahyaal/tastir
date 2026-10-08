@@ -73,7 +73,7 @@ afterEach(() => {
 });
 
 describe('drawing along', () => {
-  it('draws the star and cross by clicking, peeking ahead to step 5 and back; helper lines are up to the learner', () => {
+  it('draws the star and cross by clicking, peeking ahead to step 5 and back', () => {
     openAlong();
     expect(
       screen.getByText(/Draw along: Eight-fold star and cross/),
@@ -85,13 +85,12 @@ describe('drawing along', () => {
     expect(ticked()).toEqual([]);
     expect(status()).toBe('Not on your board yet.');
 
-    // Step 1: the circle. Steps 2 and 3 draw only helper lines (the
-    // pattern runs along the squares, not along them): they are ticked
-    // with it, as nothing else needs them drawn.
+    // Step 1: the circle. Step 2's helper lines find E, N, W and S, which
+    // the squares need, so they still count: step 2 is not ticked.
     tool('Compass');
     clickAt(0, 0);
     clickAt(1, 0);
-    expect(ticked()).toEqual(['1', '2', '3']);
+    expect(ticked()).toEqual(['1']);
     expect(status()).toMatch(/Step 1 is on your board/);
 
     // Next is always open: peek ahead to step 5, then back to step 2.
@@ -102,29 +101,32 @@ describe('drawing along', () => {
     ).toBeTruthy();
     for (let i = 0; i < 3; i++) click('Back');
     expect(current()).toBe('2');
-    expect(status()).toMatch(/This step draws only helper lines/);
+    expect(status()).toBe('Not on your board yet.');
 
-    // The learner draws them anyway, to find E, N, W and S.
+    // Step 2: the horizontal, then the vertical; half done in between.
     tool('Ruler');
     clickAt(0, 0);
     clickAt(1, 0);
+    expect(ticked()).toEqual(['1']);
+    expect(status()).toBe('Still to draw: one line.');
     tool('Square to');
     clickAt(-0.5, 0);
     clickAt(0, 0);
+    expect(ticked()).toEqual(['1', '2']);
 
-    // Step 4: the dynamic square, by clicking its corners.
+    // Step 3: both diagonals, by halving the two right angles.
     click('Next');
-    click('Next');
-    expect(current()).toBe('4');
-    expect(status()).toBe('Not on your board yet.');
-    tool('Polygon');
+    tool('Halve angle');
     clickAt(1, 0);
+    clickAt(0, 0);
     clickAt(0, 1);
+    expect(status()).toBe('Still to draw: one line.');
+    tool('Halve angle');
+    clickAt(0, 1);
+    clickAt(0, 0);
     clickAt(-1, 0);
-    clickAt(0, -1);
-    clickAt(1, 0);
-    expect(ticked()).toEqual(['1', '2', '3', '4']);
-    expect(status()).toMatch(/Step 4 is on your board/);
+    expect(ticked()).toEqual(['1', '2', '3']);
+    expect(status()).toMatch(/Step 3 is on your board/);
     // The board names the crossings it took as the tutorial does.
     expect(screen.getAllByText('N').length).toBeGreaterThan(0);
   });
@@ -137,7 +139,7 @@ describe('drawing along', () => {
     // An extra circle about A: kept, faint, and step 1 stays done.
     clickAt(1, 0);
     clickAt(0, 0);
-    expect(ticked()).toEqual(['1', '2', '3']);
+    expect(ticked()).toEqual(['1']);
     expect(document.querySelectorAll('.editor-drawing .el.extra')).toHaveLength(
       1,
     );
@@ -163,35 +165,39 @@ describe('drawing along', () => {
     ).toBeTruthy();
   });
 
-  it('gives hints a level at a time on step 4, and draws it for the learner', () => {
+  it('gives hints a level at a time on step 3, and draws it for the learner', () => {
     openAlong();
     click('Draw it for me');
-    for (let i = 0; i < 3; i++) click('Next');
-    expect(current()).toBe('4');
-    expect(ticked()).toEqual(['1', '2', '3']);
+    click('Next');
+    click('Draw it for me');
+    click('Next');
+    expect(ticked()).toEqual(['1', '2']);
     const board = () =>
       screen.getByRole('img', { name: 'The construction so far' });
-    // Level 1: what the step works from, its four corners, is ringed.
+    // Level 1: the horizontal and the vertical glow.
     click('Show me a hint');
-    expect(board().querySelectorAll('.hint-ring')).toHaveLength(4);
+    expect(board().querySelectorAll('.el.glow')).toHaveLength(2);
+    expect(board().querySelectorAll('.hint-ring')).toHaveLength(0);
     // Level 2: the points to click are ringed, and so is the tool.
     click('Show me more');
-    expect(board().querySelectorAll('.hint-ring')).toHaveLength(4);
-    const polygon = within(
+    expect(board().querySelectorAll('.hint-ring')).toHaveLength(3);
+    const halve = within(
       screen.getByRole('toolbar', { name: 'Tools' }),
-    ).getByRole('button', { name: /Polygon/ });
-    expect(polygon.className).toMatch(/hinted/);
-    expect(screen.getByText(/Use Polygon/)).toBeTruthy();
-    // Level 3: the answer, dashed.
+    ).getByRole('button', { name: /Halve angle/ });
+    expect(halve.className).toMatch(/hinted/);
+    expect(screen.getByText(/Use Halve angle/)).toBeTruthy();
+    // Level 3: the answer, dashed: both diagonals.
     click('Show me more');
-    expect(board().querySelectorAll('.answer')).toHaveLength(1);
-    // Draw it for me puts the step on the board (and the lines it needs
-    // to find its corners), and the hints go.
+    expect(board().querySelectorAll('.answer')).toHaveLength(2);
+    // Draw it for me puts the step on the board, and the hints go.
     click('Draw it for me');
-    expect(ticked()).toEqual(['1', '2', '3', '4']);
+    expect(ticked()).toEqual(['1', '2', '3']);
     expect(
       board().querySelectorAll('.answer, .hint-ring, .el.glow'),
     ).toHaveLength(0);
+    click('Next');
+    click('Draw it for me');
+    expect(ticked()).toEqual(['1', '2', '3', '4']);
   });
 
   it('ends by inking the board with a pen, and keeps the drawing as one of the learner’s patterns', () => {
