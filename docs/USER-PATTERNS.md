@@ -437,3 +437,34 @@ It only worked once I unticked **Whole lines between points**:
 5. On the phone, the step's picture shown by “Show the step” sits 48 px higher than the board.
 
 **Verdict: not ready for the owner yet.** On desktop it is close: everything from my last report is fixed, the board never moves, and a learner can draw and ink both hard patterns by hand. Two things block it. The phone build cannot draw at all (problem 2, a regression). And with the default Whole lines setting, the ink hints lead a beginner to extra ink they cannot find (problem 1). With those two fixed, I would call it ready.
+
+### Draw along 6.10, tester re-check (7 October 2026)
+
+I tested from a frozen worktree of 65b6985, with my own server on port 4351. Screenshots are in `docs/review/user-patterns/draw-along-test4/`. There were no console or page errors in any run.
+
+**Re-check of my 5 problems from the 6.8–6.9 re-check.**
+
+1. **Hints with Whole lines on (the default): fixed.** A ringed bit now inks exactly the stretch the pattern keeps. I followed the rings with the default settings and never zoomed by hand:
+   - snowflake at 1024: 2 clicks to “✓ Your ink closes the pattern's pieces: five kinds of piece”;
+   - Infantas crosses at 1280: 4 clicks;
+   - star and hexagons on the phone: 1 tap.
+
+   When I added an extra bit on purpose, the hint said “Everything the pattern keeps is inked, and 18 bits are extra: they glow. Click the ringed one to erase it”. The 18 bits glowed, and clicking the ring finished the pattern.
+2. **Phone: fixed.** At 390 px the page is 390 px wide again (no sideways overflow), and taps on the board draw.
+3. **A ring outside the view: fixed.** I zoomed far into an empty corner, cleared the ink and asked for a hint, and the board moved so the ringed bit was in view.
+4. **Tiny bits: fixed.** At Fit at 1024 every ringed bit I clicked took the right one (the two clicks above, with no hand zoom).
+5. **The phone's step picture: fixed.** “Show the step” puts the picture exactly where the board was (12, 718, 366×523 for both).
+
+**As a learner on a touch phone (390×844).** I started from the home page's Draw along button on Star and hexagons and tapped all seven steps. Each step ticked as I drew it:
+- the ring of circles in one tap with Symmetry ×6, which is now first in the tool row;
+- the two triangles and the hexagon with Polygon;
+- the six lines and the diagonal with Ruler and ×6;
+- the tile with the Tile tool, after the status asked for “the tile, marked with the Tile tool”.
+
+At Ink, one tap on the ringed bit inked the pattern. Repeat and color it showed the right wall of stars and hexagons, coloured by shape (`six-fold-star-and-hexagons-color.png`). “My Star and hexagons” (11 steps) is on My patterns and plays with 11 steps.
+
+**On desktop with the default Whole lines setting.** I inked the snowflake (1024) and the Infantas crosses (1280) by following the hints only, as above, and both reached the pattern's pieces.
+
+**Remaining small point.** On the phone, after a hint brings the ringed bit into view, the board stays at that view, with part of the tile off the left edge (`six-fold-star-and-hexagons-ink-end-390.png`). Fit brings it back, so this is not a problem, only worth knowing.
+
+**Verdict: ready for the owner.** All five problems are fixed. I drew a pattern by tapping on a phone and inked it to a coloured wall, and I inked the two patterns that defeated me before on desktop by following the hints with the default settings. I found no new bug.
