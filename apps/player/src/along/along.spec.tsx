@@ -365,9 +365,7 @@ describe('drawing along', () => {
     click('Show me more');
     expect(board().querySelectorAll('.hint-ring')).toHaveLength(2);
     expect(
-      screen.getByText(
-        /Put the pen on the first ringed dot, then click the second/,
-      ),
+      screen.getByText(/Start at 1: put the pen down there, then click 2/),
     ).toBeTruthy();
     click('Show me more');
     expect(board().querySelectorAll('.ink-piece.answer')).toHaveLength(16);
@@ -491,5 +489,39 @@ describe('drawing along', () => {
       fireEvent.keyDown(window, { key: 'Escape' });
     }
     expect(status()).toMatch(/Your ink closes the pattern’s pieces/);
+  });
+
+  it('inks a stroke along the tile’s edge where it is drawn, and shows every dot without hovering', () => {
+    act(() => {
+      window.location.hash = '#/alhambra-comares-bones/draw';
+    });
+    render(<App entries={[{ id: 'alhambra-comares-bones', json: bones }]} />);
+    for (let i = 0; i < 6; i++) {
+      if (
+        !(
+          screen.getByRole('button', {
+            name: 'Draw it for me',
+          }) as HTMLButtonElement
+        ).disabled
+      )
+        click('Draw it for me');
+      click(i < 5 ? 'Next' : 'Ink it');
+    }
+    // The dots to start from show before the pen is down.
+    expect(inkBoard().querySelectorAll('.pen-dot').length).toBeGreaterThan(20);
+    // A stroke along the top-left side of the tile.
+    clickAt(-1, 3);
+    clickAt(0, 4);
+    const near = (a: number, b: number) => Math.abs(a - b) < 1e-6;
+    const at = [...inkBoard().querySelectorAll('line.ink-piece.inked')].map(
+      (l) => ['x1', 'y1', 'x2', 'y2'].map((k) => Number(l.getAttribute(k))),
+    );
+    expect(
+      at.some(
+        ([x1 = 0, y1 = 0, x2 = 0, y2 = 0]) =>
+          (near(x1, -1) && near(y1, 3) && near(x2, 0) && near(y2, 4)) ||
+          (near(x2, -1) && near(y2, 3) && near(x1, 0) && near(y1, 4)),
+      ),
+    ).toBe(true);
   });
 });

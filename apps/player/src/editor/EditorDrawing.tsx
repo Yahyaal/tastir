@@ -75,6 +75,7 @@ export function EditorDrawing({
   current: currentNames,
   pen,
   penDots,
+  numbered,
 }: {
   scene: Scene;
   selected?: number;
@@ -89,6 +90,9 @@ export function EditorDrawing({
     dashed?: ReadonlySet<string>;
     /** Copies just inked, which flash briefly. */
     fresh?: ReadonlySet<string>;
+    /** Inked bits drawn again where the learner drew them: on the tile's
+     * edge, the wall keeps one of two copies, and the other is shown too. */
+    echo?: readonly { readonly a: Vec; readonly b: Vec }[];
   };
   /** Circles to choose between, drawn dashed. */
   candidates?: readonly { centre: Vec; radius: number }[];
@@ -124,6 +128,8 @@ export function EditorDrawing({
   pen?: { readonly at: Vec; readonly reach: readonly Vec[] };
   /** Every dot the pen can go down on; those near the pointer show. */
   penDots?: readonly Vec[];
+  /** The rings are numbered 1, 2, in the order to click them. */
+  numbered?: boolean;
 }) {
   const ownFrame = useMemo(() => frameOf(scene), [scene]);
   const frame = fitTo ?? ownFrame;
@@ -280,6 +286,21 @@ export function EditorDrawing({
       .slice(0, 60);
   }, [pointer, ink, scene, places]);
 
+  // Every dot the pen can go down on, small and light, so a phone shows
+  // them too (drawn once per board and zoom, not on every pointer move).
+  const allDots = useMemo(
+    () =>
+      penDots?.map((d, i) => (
+        <circle
+          key={`pd${i}`}
+          className="pen-dot"
+          cx={d.x}
+          cy={d.y}
+          r={unit * 2.2}
+        />
+      )),
+    [penDots, unit],
+  );
   const ring = (t: Target, i: number | string, cls: string) =>
     t.kind === 'point' ? (
       <circle
@@ -317,6 +338,13 @@ export function EditorDrawing({
       >
         <g transform="scale(1,-1)" style={{ strokeWidth: unit * 1.5 }}>
           {shapes}
+          {/* The tile under the ink, so ink along its edge shows. */}
+          {tile ? (
+            <polygon
+              className="tile-outline"
+              points={tile.map((v) => `${v.x},${v.y}`).join(' ')}
+            />
+          ) : null}
           {ink
             ? ink.pieces.map((p) => (
                 <line
@@ -337,6 +365,16 @@ export function EditorDrawing({
                 />
               ))
             : null}
+          {ink?.echo?.map((s, i) => (
+            <line
+              key={`e${i}`}
+              className="ink-piece inked echo"
+              x1={s.a.x}
+              y1={s.a.y}
+              x2={s.b.x}
+              y2={s.b.y}
+            />
+          ))}
           {faint.map((c, i) => (
             <circle
               key={`f${i}`}
@@ -346,12 +384,6 @@ export function EditorDrawing({
               r={unit * 2.5}
             />
           ))}
-          {tile ? (
-            <polygon
-              className="tile-outline"
-              points={tile.map((v) => `${v.x},${v.y}`).join(' ')}
-            />
-          ) : null}
           {candidates?.map((c, i) => (
             <circle
               key={`c${i}`}
@@ -365,24 +397,7 @@ export function EditorDrawing({
             <Dashed key={`a${i}`} g={g} far={far} />
           ))}
           {dots}
-          {!pen && penDots && pointer
-            ? penDots
-                .filter(
-                  (d) =>
-                    Math.hypot(d.x - pointer.x, d.y - pointer.y) <=
-                    DOTS_PX * perPx.current,
-                )
-                .slice(0, 80)
-                .map((d, i) => (
-                  <circle
-                    key={`pd${i}`}
-                    className="pen-dot"
-                    cx={d.x}
-                    cy={d.y}
-                    r={unit * 3}
-                  />
-                ))
-            : null}
+          {allDots}
           {pen
             ? pen.reach.map((d, i) => (
                 <circle
@@ -414,7 +429,7 @@ export function EditorDrawing({
           {rings?.map((p, i) => (
             <circle
               key={`r${i}`}
-              className="hint-ring"
+              className={numbered && i === 0 ? 'hint-ring start' : 'hint-ring'}
               cx={p.x}
               cy={p.y}
               r={unit * 9}
@@ -423,7 +438,22 @@ export function EditorDrawing({
           {targets.map((t, i) => ring(t, i, 'target'))}
           {hover ? ring(hover, 'h', 'hover') : null}
         </g>
-        <g className="labels">{labels}</g>
+        <g className="labels">
+          {labels}
+          {numbered
+            ? rings?.map((p, i) => (
+                <text
+                  key={`rn${i}`}
+                  className="ring-number"
+                  x={p.x + unit * 11}
+                  y={-(p.y + unit * 11)}
+                  fontSize={unit * 15}
+                >
+                  {i + 1}
+                </text>
+              ))
+            : null}
+        </g>
       </svg>
       <button type="button" className="fit" onClick={() => camera.goTo(frame)}>
         Fit

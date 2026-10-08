@@ -229,7 +229,7 @@ export function useInkBoard(
         : hintLevel === 1
           ? `The bits that glow are still to ink${kindName ? `, round the ${kindName}` : ''}.`
           : hintLevel === 2
-            ? `Put the pen on the first ringed dot, then click the second${kindName ? `: a side of the ${kindName}` : ''}.`
+            ? `Start at 1: put the pen down there, then click 2${kindName ? `: a side of the ${kindName}` : ''}.`
             : `Every stroke still to ink is dashed${kindName ? `; start with the ${kindName}` : ''}.`,
     };
   }, [ready, hintLevel, chosen, result]);

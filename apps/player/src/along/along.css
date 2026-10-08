@@ -346,8 +346,8 @@
 }
 
 .editor-drawing .pen-dot {
-  fill: var(--current);
-  fill-opacity: 0.55;
+  fill: var(--muted);
+  fill-opacity: 0.45;
 }
 
 .editor-drawing .pen-dot.reach {
@@ -378,5 +378,34 @@
 @media (prefers-reduced-motion: reduce) {
   .editor-drawing .ink-piece.fresh {
     animation: none;
+  }
+}
+
+/* Ink stands out over the tile's dashes. */
+.along .editor-drawing .ink-piece.inked {
+  stroke: #15171b;
+  stroke-width: 4.2px;
+}
+
+/* A stroke to ink: start at 1 (filled), then 2. */
+.editor-drawing .hint-ring.start {
+  fill: var(--saffron);
+  fill-opacity: 0.35;
+}
+
+.along .ring-number {
+  fill: var(--used);
+  font-weight: 700;
+  font-family: var(--text);
+  paint-order: stroke;
+  stroke: var(--gesso);
+  stroke-width: 0.25em;
+}
+
+@media (max-width: 760px) {
+  /* The ink tools wrap onto a second row, so Undo and Redo show. */
+  .along .editor-tools[aria-label='Ink'] {
+    flex-wrap: wrap;
+    overflow-x: visible;
   }
 }

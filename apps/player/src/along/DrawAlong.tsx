@@ -146,6 +146,29 @@ function penDotsOf(g: PenGraph): Vec[] {
   return found;
 }
 
+/** Whether the pointer is a finger (a touch screen), so the words say
+ * tap rather than click. */
+function useCoarse(): boolean {
+  const [coarse] = useState(
+    () =>
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(pointer: coarse)').matches,
+  );
+  return coarse;
+}
+
+/** Whether the point lies on the outline of a polygon. */
+function onOutline(p: Vec, poly: readonly Vec[]): boolean {
+  return poly.some((a, i) => {
+    const b = poly[(i + 1) % poly.length] as Vec;
+    const d = { x: b.x - a.x, y: b.y - a.y };
+    const len2 = d.x * d.x + d.y * d.y;
+    const t = ((p.x - a.x) * d.x + (p.y - a.y) * d.y) / len2;
+    if (t < -1e-6 || t > 1 + 1e-6) return false;
+    return Math.hypot(p.x - (a.x + d.x * t), p.y - (a.y + d.y * t)) < 1e-6;
+  });
+}
+
 /** Whether the screen is a phone's, where the two halves take turns. */
 function usePhone(): boolean {
   const query = '(max-width: 760px)';
@@ -342,6 +365,34 @@ export function DrawAlong({
   };
   const ink = useInkBoard(model, draft, inking, chosen, setChosen);
   const ready = ink.ready && !('reason' in ink.ready) ? ink.ready : undefined;
+  // On the tile's edge the wall keeps one of a bit's two copies; the
+  // inked bit is drawn at the other copy too, so ink shows where the
+  // learner drew it.
+  const echoes = useMemo(() => {
+    if (!ready) return [];
+    const { u, v, corners } = ready.cell;
+    const slides = [
+      u,
+      v,
+      { x: -u.x, y: -u.y },
+      { x: -v.x, y: -v.y },
+      { x: u.x + v.x, y: u.y + v.y },
+      { x: u.x - v.x, y: u.y - v.y },
+      { x: -u.x + v.x, y: -u.y + v.y },
+      { x: -u.x - v.x, y: -u.y - v.y },
+    ];
+    const out: { a: Vec; b: Vec }[] = [];
+    for (const id of chosen) {
+      const p = ready.graph.bits.get(id);
+      if (!p) continue;
+      for (const d of slides) {
+        const a = { x: p.segment.a.x + d.x, y: p.segment.a.y + d.y };
+        const b = { x: p.segment.b.x + d.x, y: p.segment.b.y + d.y };
+        if (onOutline(a, corners) && onOutline(b, corners)) out.push({ a, b });
+      }
+    }
+    return out;
+  }, [ready, chosen]);
   const [keepFailed, setKeepFailed] = useState<string>();
   const goOn = () => {
     const kept = ink.keep();
@@ -514,6 +565,12 @@ export function DrawAlong({
   // A ringed hint is brought into view, and a tiny ringed bit is zoomed in
   // on until it is easy to click.
   const phone = usePhone();
+  // On a touch screen the words say tap.
+  const coarse = useCoarse();
+  const say = (text: string) =>
+    coarse
+      ? text.replace(/\bClick\b/g, 'Tap').replace(/\bclick\b/g, 'tap')
+      : text;
   // For a ringed stroke, its middle, and its length decides the zoom.
   const rings = inking ? (ink.hint?.ring ?? []) : (hint?.rings ?? []);
   const ringAt =
@@ -654,6 +711,7 @@ export function DrawAlong({
                 pieces: ready.pieces,
                 chosen,
                 fresh: ink.fresh,
+                echo: echoes,
                 ...(ink.hint
                   ? { glow: ink.hint.glow, dashed: ink.hint.dashed }
                   : {}),
@@ -678,6 +736,7 @@ export function DrawAlong({
             : undefined
         }
         penDots={inking && ready ? penDotsOf(ready.graph) : undefined}
+        numbered={inking && Boolean(ink.hint?.stroke)}
         dashed={hint?.dashed}
         camera={camera}
         svgRef={boardRef}
@@ -1076,7 +1135,7 @@ export function DrawAlong({
                 {ink.hintLevel ? 'Show me more' : 'Show me a hint'}
               </button>
               <span className="along-hint-words" aria-live="polite">
-                {ink.hint?.words ?? ''}
+                {say(ink.hint?.words ?? '')}
               </span>
             </>
           ) : (
@@ -1098,7 +1157,7 @@ export function DrawAlong({
                 Draw it for me
               </button>
               <span className="along-hint-words" aria-live="polite">
-                {drawFailed ?? hint?.words ?? ''}
+                {say(drawFailed ?? hint?.words ?? '')}
               </span>
             </>
           )}
@@ -1113,16 +1172,18 @@ export function DrawAlong({
           {inking ? (
             <p className="instruction" aria-live="polite">
               <b>{erasing ? 'Erase:' : 'Pen:'}</b>{' '}
-              {penSaid ??
-                (pen
-                  ? `Click a marked dot on the same line to ${erasing ? 'erase' : 'ink'} the straight stretch to it; click the pen's dot to lift it.`
-                  : `Click a dot to put the pen down, then a dot on the same line to ${erasing ? 'erase' : 'ink'} between them.`)}
+              {say(
+                penSaid ??
+                  (pen
+                    ? `Click a marked dot on the same line to ${erasing ? 'erase' : 'ink'} the straight stretch to it; click the pen's dot to lift it.`
+                    : `Click a dot to put the pen down, then a dot on the same line to ${erasing ? 'erase' : 'ink'} between them.`),
+              )}
             </p>
           ) : (
             <>
               <p className="instruction" aria-live="polite">
                 {tool ? <b>{tool.label}: </b> : null}
-                {said ?? ask}
+                {say(said ?? ask)}
                 {!said &&
                 tool &&
                 symmetry &&
