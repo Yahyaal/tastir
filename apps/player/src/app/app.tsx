@@ -55,6 +55,7 @@ import {
   shownBeats,
   shownSteps,
   stagesOf,
+  withHelpers,
   type InkMode,
   type Model,
   type Stage,
@@ -185,7 +186,7 @@ function sameDesign(
 export type Start = 'beginning' | 'repeat' | 'result';
 
 export function Player({
-  model,
+  model: full,
   start: asked = 'beginning',
   design: opened,
   address: given,
@@ -201,6 +202,16 @@ export function Player({
    * the learner's own pattern. */
   address?: string;
 }) {
+  // Helper lines (construction lines the pattern never runs along) are
+  // left out unless the learner asks for them.
+  const [showHelpers, setShowHelpers] = useRemembered<boolean>(
+    'showHelpers',
+    false,
+  );
+  const model = useMemo(
+    () => withHelpers(full, showHelpers),
+    [full, showHelpers],
+  );
   const { tutorial } = model;
   const address = given ?? tutorial.id;
   const mine = address.startsWith('mine/');
@@ -624,6 +635,14 @@ export function Player({
                 onChange={(e) => setShowNames(e.target.checked)}
               />
               Show names
+            </label>
+            <label title="Construction lines the pattern never runs along: they only help find points. Hidden, the drawing looks as simple as it is.">
+              <input
+                type="checkbox"
+                checked={showHelpers}
+                onChange={(e) => setShowHelpers(e.target.checked)}
+              />
+              Show helper lines
             </label>
           </div>
         </details>

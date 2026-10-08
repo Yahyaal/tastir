@@ -181,7 +181,7 @@ export function drawnOn(board: Scene, g: Geometry, eps = ALONG_EPS): boolean {
  * How one beat of the tutorial stands on the learner's board. The
  * polygons named in `shapes` (the tile) count only when drawn as a shape,
  * not when their sides merely lie on drawn lines, since the learner must
- * still mark them.
+ * still mark them; those in `optional` (helper lines) are not needed.
  */
 export function checkStep(
   tutorial: Scene,
@@ -189,8 +189,10 @@ export function checkStep(
   beat: number,
   eps = ALONG_EPS,
   shapes: ReadonlySet<string> = new Set(),
+  /** Figures the step need not have, such as helper lines. */
+  optional: ReadonlySet<string> = new Set(),
 ): StepCheck {
-  const needed = neededAt(tutorial, beat);
+  const needed = neededAt(tutorial, beat).filter((n) => !optional.has(n.name));
   const missing = needed.filter((n) =>
     shapes.has(n.name)
       ? figureOn(board, n.geometry, eps) === undefined

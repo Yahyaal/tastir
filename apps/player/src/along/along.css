@@ -504,3 +504,16 @@
   vertical-align: middle;
   border-top: 2px dashed var(--old);
 }
+
+.along-helpers {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--on-lapis-muted);
+  white-space: nowrap;
+}
+
+.along-helpers input {
+  accent-color: var(--saffron);
+}

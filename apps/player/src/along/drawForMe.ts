@@ -40,17 +40,32 @@ export function drawForMe(
   beat: number,
   text: string,
   shapes: ReadonlySet<string> = new Set([tutorial.pattern.cell]),
+  /** Figures the step need not have (helper lines): drawn only when
+   * something else needs their points. */
+  optional: ReadonlySet<string> = new Set(),
 ): Draft | undefined {
   const base = check(draft.steps);
-  const missing = checkStep(tScene, base, beat, undefined, shapes).missing;
+  const missing = checkStep(
+    tScene,
+    base,
+    beat,
+    undefined,
+    shapes,
+    optional,
+  ).missing;
   if (!missing.length) return undefined;
   const b = builder(tutorial, tScene, draft, text, base);
   for (const m of missing) {
     // Something drawn on the way may already have brought it.
     if (
-      !checkStep(tScene, b.scene(), beat, undefined, shapes).missing.some(
-        (x) => x.name === m.name,
-      )
+      !checkStep(
+        tScene,
+        b.scene(),
+        beat,
+        undefined,
+        shapes,
+        optional,
+      ).missing.some((x) => x.name === m.name)
     )
       continue;
     b.resolve(m.name);

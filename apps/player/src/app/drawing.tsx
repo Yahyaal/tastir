@@ -488,7 +488,8 @@ export function Construction({
     const clipTo = fit(settled, 1.6);
     const hidden = hiddenBeats(model.tutorial);
     const shown = [...model.scene.elements.values()].filter(
-      (el) => el.beat <= upTo && !hidden.has(el.beat),
+      (el) =>
+        el.beat <= upTo && !hidden.has(el.beat) && !model.hide?.has(el.name),
     );
     const isCurrent = (el: SceneElement) => !ink && el.beat === upTo;
     // The step shown before this one, among those the learner sees.

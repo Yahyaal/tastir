@@ -5,13 +5,15 @@ import {
   computePattern,
   evaluate,
   expectedGolden,
+  goldenOf,
+  helperLines,
   inkPieces,
   strokesOf,
 } from '@tastir/engine';
 import { parseTutorial, type Tutorial } from '@tastir/schema';
 import { emptyDraft, type Draft } from '../editor/document';
 import { LIBRARY } from '../app/library';
-import { shownBeats } from '../app/model';
+import { shownBeats, withHelpers } from '../app/model';
 import { loadModel } from '../app/model';
 import { check } from '../editor/document';
 import { tutorialOf } from '../editor/finish';
@@ -25,16 +27,27 @@ const beginners = LIBRARY.map((e) => e.json)
   .filter((j) => (j as { level?: string }).level === 'beginner')
   .map((j) => parseTutorial(j));
 
-/** Every shown step drawn for the learner, from an empty board. */
-export function drawnForMe(t: Tutorial): Draft {
+/**
+ * Every shown step drawn for the learner, from an empty board; helper
+ * lines are optional, and with `helpers` off the steps that draw only
+ * hidden helper lines are skipped, as draw along does.
+ */
+export function drawnForMe(t: Tutorial, helpers = true): Draft {
   const scene = evaluate(t);
+  const model = withHelpers(
+    { tutorial: t, scene, pattern: computePattern(scene, t) },
+    helpers,
+  );
+  const optional = helperLines(scene, t);
+  const shapes = new Set([t.pattern.cell]);
   let draft = emptyDraft(`${t.id}-along`, t.title);
-  for (const beat of shownBeats(t)) {
-    draft = drawForMe(t, scene, draft, beat, 'Drawn for me.') ?? draft;
+  for (const beat of shownBeats(model.tutorial)) {
+    draft =
+      drawForMe(t, scene, draft, beat, 'Drawn for me.', shapes, optional) ??
+      draft;
     const board = evaluate({ steps: draft.steps } as Tutorial);
-    const shapes = new Set([t.pattern.cell]);
     expect(
-      checkStep(scene, board, beat, undefined, shapes).done,
+      checkStep(scene, board, beat, undefined, shapes, optional).done,
       `${t.id} beat ${beat}`,
     ).toBe(true);
   }
@@ -50,45 +63,48 @@ describe('Draw it for me through every beginner tutorial', () => {
   // inks it: the pieces are the tutorial's expected pieces, both as the
   // draw-along page checks them (free ink on the board) and in the
   // pattern it keeps (the tutorial's ink taken onto the board).
-  it.each(beginnerJson.map((j) => [(j as { id: string }).id, j] as const))(
-    '%s',
-    (_, json) => {
-      const t = parseTutorial(json);
-      const scene = evaluate(t);
-      const board = readyToInk(t, scene, drawnForMe(t));
+  it.each(
+    beginnerJson.flatMap((j) =>
+      [true, false].map(
+        (helpers) => [(j as { id: string }).id, helpers, j] as const,
+      ),
+    ),
+  )('%s, helper lines shown: %s', (_, helpers, json) => {
+    const t = parseTutorial(json);
+    const scene = evaluate(t);
+    const board = readyToInk(t, scene, drawnForMe(t, helpers));
 
-      const bs = check(board).scene;
-      const cell = cellOf(bs, board.pattern?.cell ?? '');
-      const pieces = inkPieces(bs, cell);
-      const inked = classicSelection(
-        pieces,
-        loadModel(json).pattern.ink,
-        1e-7,
-        cell,
-      );
-      const pattern = computePattern(
-        bs,
-        board as Tutorial,
-        strokesOf(pieces, inked),
-      );
-      const free = pattern.types.map((p) => ({
-        name: p.name ?? '',
-        vertices: p.vertices,
-        area: Number(p.area.toFixed(5)),
-        perCell: p.perCell,
-      }));
-      expect(
-        samePieces({ expect: { pieceTypes: free.length, pieces: free } }, t),
-      ).toBe(true);
+    const bs = check(board).scene;
+    const cell = cellOf(bs, board.pattern?.cell ?? '');
+    const pieces = inkPieces(bs, cell);
+    const inked = classicSelection(
+      pieces,
+      loadModel(json).pattern.ink,
+      1e-7,
+      cell,
+    );
+    const pattern = computePattern(
+      bs,
+      board as Tutorial,
+      strokesOf(pieces, inked),
+    );
+    const free = pattern.types.map((p) => ({
+      name: p.name ?? '',
+      vertices: p.vertices,
+      area: Number(p.area.toFixed(5)),
+      perCell: p.perCell,
+    }));
+    expect(
+      samePieces({ expect: { pieceTypes: free.length, pieces: free } }, t),
+    ).toBe(true);
 
-      const kept = tutorialOf(withTutorialInk(t, scene, board));
-      if (!('tutorial' in kept)) throw new Error(kept.reason);
-      const golden = expectedGolden(t);
-      const got = expectedGolden(kept.tutorial);
-      expect(got.pieceTypes).toBe(golden.pieceTypes);
-      expect(got.pieces).toEqual(golden.pieces);
-    },
-  );
+    const kept = tutorialOf(withTutorialInk(t, scene, board));
+    if (!('tutorial' in kept)) throw new Error(kept.reason);
+    const golden = expectedGolden(t);
+    const got = expectedGolden(kept.tutorial);
+    expect(got.pieceTypes).toBe(golden.pieceTypes);
+    expect(got.pieces).toEqual(golden.pieces);
+  });
 
   it('draws a step on a board drawn another way', () => {
     const t = beginners.find(
@@ -125,4 +141,13 @@ describe('Draw it for me through every beginner tutorial', () => {
     expect(checkStep(scene, after, 5).done).toBe(true);
     expect(drawForMe(t, scene, draft, 5, '')).toBeUndefined();
   });
+
+  it.each(LIBRARY.map((e) => [e.id, e.json] as const))(
+    '%s: hiding helper lines changes no piece (golden values)',
+    (_, json) => {
+      const model = loadModel(json);
+      const hidden = withHelpers(model, false);
+      expect(goldenOf(hidden.tutorial)).toEqual(expectedGolden(model.tutorial));
+    },
+  );
 });

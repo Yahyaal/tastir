@@ -6,6 +6,7 @@ import {
   neededAt,
   wallPieces,
   type Segment,
+  helperLines,
   type StepCheck,
   type Vec,
 } from '@tastir/engine';
@@ -22,13 +23,14 @@ import { Construction } from '../app/drawing';
 import {
   asPanel,
   beatsOf,
-  carriersOf,
+  withHelpers,
   hiddenBeats,
   shownBeats,
   shownSteps,
   type Model,
 } from '../app/model';
 import { useCamera } from '../app/useCamera';
+import { useRemembered } from '../app/remembered';
 import { nearestPiece } from '../editor/Editor';
 import { PROGRESS_TEXT, useModel } from '../app/workerClient';
 import { check, emptyDraft, type Draft } from '../editor/document';
@@ -221,12 +223,27 @@ function usePhone(): boolean {
  * circles are on the board, whenever they were drawn.
  */
 export function DrawAlong({
-  model,
+  model: full,
   address,
 }: {
   model: Model;
   address: string;
 }) {
+  // Helper lines are left out unless asked for, as in the player.
+  const [showHelpers, setShowHelpers] = useRemembered<boolean>(
+    'showHelpers',
+    false,
+  );
+  const model = useMemo(
+    () => withHelpers(full, showHelpers),
+    [full, showHelpers],
+  );
+  // Helper lines are never needed to tick a step: they only help find
+  // points.
+  const optional = useMemo(
+    () => helperLines(full.scene, full.tutorial),
+    [full],
+  );
   const { tutorial } = model;
   const beats = useMemo(() => beatsOf(tutorial), [tutorial]);
   const shown = useMemo(() => shownBeats(tutorial), [tutorial]);
@@ -301,8 +318,11 @@ export function DrawAlong({
 
   // How each step stands on the board, and the learner's own extras.
   const checks = useMemo(
-    () => shown.map((b) => checkStep(model.scene, board, b, undefined, shapes)),
-    [shown, model.scene, board, shapes],
+    () =>
+      shown.map((b) =>
+        checkStep(model.scene, board, b, undefined, shapes, optional),
+      ),
+    [shown, model.scene, board, shapes, optional],
   );
   // A step is ticked when it is on the board; a step that only marks
   // points, once the step before it is ticked.
@@ -552,6 +572,7 @@ export function DrawAlong({
         beat,
         `Drawn for me: ${info?.text ?? ''}`.trim(),
         shapes,
+        optional,
       );
       if (next) edit(next);
       setHintLevel(0);
@@ -798,23 +819,27 @@ export function DrawAlong({
   };
   const number = shownIds.indexOf(info?.step ?? 0) + 1;
   const last = index === shown.length - 1;
+  // A step whose figures are all helper lines needs nothing drawn.
+  const helperOnly =
+    here !== undefined &&
+    !here.needed.length &&
+    neededAt(model.scene, beat).length > 0;
   const stepStatus = !here
     ? ''
     : ticks[index]
       ? here.needed.length
         ? `✓ Step ${number} is on your board.`
-        : '✓ This step only marks points, and they come by themselves where lines cross.'
+        : helperOnly
+          ? '✓ This step draws only helper lines: draw them if you want their points; nothing else needs them.'
+          : '✓ This step only marks points, and they come by themselves where lines cross.'
       : here.done
-        ? 'This step only marks points: it is ticked once the step before it is on your board.'
-        : here.missing.every(
-              (m) =>
-                m.geometry.kind === 'line' && !carriersOf(model).has(m.name),
-            )
-          ? 'Only helper lines are missing: draw them if you need their points later.'
-          : here.missing.length === here.needed.length &&
-              !here.missing.some((m) => m.name === tutorial.pattern.cell)
-            ? 'Not on your board yet.'
-            : `Still to draw: ${stillToDraw(here, tutorial.pattern.cell)}.`;
+        ? helperOnly
+          ? 'This step draws only helper lines, which are up to you: it is ticked once the step before it is on your board.'
+          : 'This step only marks points: it is ticked once the step before it is on your board.'
+        : here.missing.length === here.needed.length &&
+            !here.missing.some((m) => m.name === tutorial.pattern.cell)
+          ? 'Not on your board yet.'
+          : `Still to draw: ${stillToDraw(here, tutorial.pattern.cell)}.`;
   const loose = ready
     ? copies.filter((c) => !snapped(ready.cell, c.at)).length
     : 0;
@@ -1048,6 +1073,17 @@ export function DrawAlong({
           <span>All patterns</span>
         </a>
         <h1>Draw along: {tutorial.title}</h1>
+        <label
+          className="along-helpers"
+          title="Construction lines the pattern never runs along: they only help find points. Hidden, the drawing looks as simple as it is."
+        >
+          <input
+            type="checkbox"
+            checked={showHelpers}
+            onChange={(e) => setShowHelpers(e.target.checked)}
+          />
+          Show helper lines
+        </label>
         <a className="edit-link" href={`#/${address}`}>
           Watch it drawn
         </a>

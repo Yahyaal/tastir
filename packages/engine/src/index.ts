@@ -67,3 +67,4 @@ export {
   type Needed,
   type StepCheck,
 } from './lib/along.js';
+export { floatingPoints, helperLines, hiddenHelpers } from './lib/helpers.js';
