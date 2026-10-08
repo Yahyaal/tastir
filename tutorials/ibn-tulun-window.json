@@ -186,6 +186,7 @@
     {
       "id": 10,
       "text": "Rule the diagonals between the fish, through the centre and the points halfway between neighbouring noses. Then, through each fin tip, rule a line parallel to the star line that runs past the tail on the same side. Each pair of these lines crosses on a diagonal, and so does each pair of star lines, nearer the centre.",
+      "textWithoutHelpers": "Through each fin tip, rule a line parallel to the star line that runs past the tail on the same side. Each pair of these lines crosses between the fish, and so does each pair of star lines, nearer the centre.",
       "create": {
         "bis30": {"line": {"through": ["O", "D30"]}},
         "bis90": {"line": {"through": ["O", "D90"]}},

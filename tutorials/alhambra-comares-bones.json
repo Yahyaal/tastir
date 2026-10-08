@@ -81,6 +81,7 @@
     {
       "id": 4,
       "text": "Through the first mark on each side of the centre, and every second mark after it, rule a line at right angles to its axis. The lines make a square grid with the centre in the middle of a square.",
+      "textWithoutHelpers": "Through the first mark on each side of the centre, rule a line at right angles to its axis. The four lines make a square with the centre in its middle.",
       "create": {
         "Vm3": {"line": {"through": "Xm3", "perpendicularTo": "h"}},
         "Hm3": {"line": {"through": "Ym3", "perpendicularTo": "v"}},
@@ -97,6 +98,7 @@
     {
       "id": 5,
       "text": "Halve the right angles at the centre to get the two diagonals, and rule lines parallel to them through every second mark on the horizontal, counting from the centre. Every square of the grid now has both its diagonals.",
+      "textWithoutHelpers": "Halve the right angles at the centre to get the two diagonals, and rule lines parallel to them through the fourth mark on each side of the centre, on the horizontal.",
       "create": {
         "d1": {"line": {"through": "O", "bisects": ["A", "O", "Y1"]}},
         "d2": {"line": {"through": "O", "bisects": ["Y1", "O", "Xm1"]}},

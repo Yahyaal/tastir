@@ -526,3 +526,36 @@
 .along .dot-key .helper.optional::before {
   opacity: 0.4;
 }
+
+/* The hint row: its buttons and words, one layer per stage. */
+.along-hints {
+  min-width: 0;
+  font-size: 0.88rem;
+}
+
+.along-hints-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+
+.player .along-hints button {
+  padding: 5px 14px;
+}
+
+.along-hint-words {
+  color: var(--saffron);
+}
+
+.along-hint-words a {
+  color: var(--saffron);
+}
+
+@media (max-width: 760px) {
+  /* Room for two lines of hint, so no stage moves the board. */
+  .along-hints {
+    min-height: 4.6rem;
+  }
+}

@@ -107,6 +107,7 @@
     {
       "id": 6,
       "text": "The next large star along sits two units away, so its tip lies as far beyond A as this star’s tip lies before it. Put the compass on A, open it to the tip, and mark the other side. Through that mark, rule the line parallel to the large star’s side B0–B90: a side of the neighbouring star that crosses this cell.",
+      "textWithoutHelpers": "The next large star along sits two units away, so its tip lies as far beyond A as this star’s tip lies before it. Put the compass on A, open it to the tip, and draw the circle: it marks the neighbouring star’s tip on the other side.",
       "create": {
         "ca": {"circle": {"centre": "P0", "through": "B0"}},
         "N0": {"point": {"meet": ["ca", "h"], "pick": {"farthest": "O"}}},
@@ -129,6 +130,7 @@
     {
       "id": 8,
       "text": "The small star is two squares in its circle too. Mark where it meets the two sides of the cell through K and the two diagonals through K, and join every other mark. Rule each side as a full line.",
+      "textWithoutHelpers": "The small star is two squares in its circle too. Mark where it meets the two sides of the cell through K and the two diagonals through K, and join every other mark. Rule as full lines the sides the pattern runs along; the others are not needed.",
       "create": {
         "kd": {"line": {"through": "K", "perpendicularTo": "d45"}},
         "S0": {"point": {"meet": ["cs", "gy"], "pick": {"angle": 36.139}}},
@@ -154,6 +156,7 @@
     {
       "id": 9,
       "text": "Copy the small star’s lines and the neighbouring star’s side to the other three corners, turning them about O.",
+      "textWithoutHelpers": "Copy the small star’s lines to the other three corners, turning them about O.",
       "create": {
         "cp": {
           "repeat": {
@@ -167,6 +170,7 @@
     {
       "id": 10,
       "text": "Here the small star keeps only its square on the cell’s sides and diagonal through K. Mark where the diagonal through K at right angles to the first crosses that square’s two near sides: the middles of those sides. Through each, rule a vertical and a horizontal: the bands that run past the small square.",
+      "textWithoutHelpers": "Here the small star keeps only its square on the cell’s sides and diagonal through K. Mark where the diagonal through K at right angles to the first crosses that square’s two near sides: the middles of those sides. Rule a vertical through one and a horizontal through the other: the bands that run past the small square.",
       "create": {
         "H1": {"point": {"meet": ["ss90", "kd"]}},
         "H2": {"point": {"meet": ["ss270", "kd"]}},

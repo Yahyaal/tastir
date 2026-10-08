@@ -201,6 +201,9 @@ const Animate = z.enum(['compass', 'ruler', 'fade']);
 /** One move of a long step, shown on its own: "Step 11 · 2 of 4". */
 export const Part = z.strictObject({
   text: z.string().min(1),
+  /** The text when helper lines are hidden, for a part whose text
+   * describes lines that are then left out. */
+  textWithoutHelpers: z.string().min(1).optional(),
   create: z.record(Name, ElementSpec),
   highlight: z.array(Ref).optional(),
   animate: Animate.optional(),
@@ -211,6 +214,10 @@ export const Step = z
     id: z.int().positive(),
     /** With parts, the step's heading over the text of each part. */
     text: z.string().min(1),
+    /** The text when helper lines are hidden (the player's “Show helper
+     * lines” off), for a step whose text describes lines that are then
+     * left out, or refers to a step that is then skipped. */
+    textWithoutHelpers: z.string().min(1).optional(),
     create: z.record(Name, ElementSpec).optional(),
     parts: z
       .array(Part)

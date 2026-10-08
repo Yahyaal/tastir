@@ -55,6 +55,7 @@
     {
       "id": 3,
       "text": "The four circles cut the first one at eight more points: it is divided into twelve. Rule the lines through O and opposite points, then halve every angle between them, so there is a line through O every 15°.",
+      "textWithoutHelpers": "The four circles cut the first one at eight more points: it is divided into twelve. Rule the lines through O and opposite points, then halve the angles between them where the pattern needs a line: at 45°, 75° and 135°.",
       "create": {
         "P60": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60.0}}},
         "P300": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300.0}}},
@@ -95,6 +96,7 @@
     {
       "id": 5,
       "text": "Mark where the 75° line cuts the circle and join that point to the point on the left of the horizontal. Where this chord crosses the vertical, draw a circle about O: Samira Mian’s inner circle.",
+      "textWithoutHelpers": "Mark where the 75° line cuts the circle and join that point to the point on the left of the horizontal. Where this chord crosses the vertical, draw a circle about O: Samira Mian’s inner circle.",
       "create": {
         "P75": {"point": {"meet": ["c", "r75"], "pick": {"angle": 75.0}}},
         "ch": {"line": {"through": ["P180", "P75"]}},
@@ -151,6 +153,7 @@
     {
       "id": 8,
       "text": "The ring of small stars and pentagons.",
+      "textWithoutHelpers": "The ring of small stars and pentagons.",
       "parts": [
         {
           "text": "Where a star line crosses a side of the big figure, rule a line at right angles to the 7.5° line, and its mirror image in the horizontal. Turn both round: 24 lines that make the small five-pointed stars.",
@@ -276,6 +279,7 @@
     {
       "id": 12,
       "text": "An eight-pointed star at each corner of the frame. Its square is the little square between the big figure’s sides and the frame.",
+      "textWithoutHelpers": "An eight-pointed star at each corner of the frame. Its square is the little square between the big figure’s sides and the frame.",
       "parts": [
         {
           "text": "Join the little square’s other two corners, and mark where that line crosses the diagonal: the star’s centre.",

@@ -47,9 +47,21 @@ export function withHelpers(model: Model, show: boolean): Model {
     );
   const steps = model.tutorial.steps.map((s) => {
     const made = figures(s.id);
+    // The texts written for a drawing without helper lines.
+    const text = {
+      ...s,
+      ...(s.textWithoutHelpers ? { text: s.textWithoutHelpers } : {}),
+      ...(s.parts
+        ? {
+            parts: s.parts.map((p) =>
+              p.textWithoutHelpers ? { ...p, text: p.textWithoutHelpers } : p,
+            ),
+          }
+        : {}),
+    };
     return !s.hidden && made.length && made.every((el) => hide.has(el.name))
-      ? { ...s, hidden: true }
-      : s;
+      ? { ...text, hidden: true }
+      : text;
   });
   found = { ...model, tutorial: { ...model.tutorial, steps }, hide };
   helperless.set(model, found);

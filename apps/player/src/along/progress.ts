@@ -16,6 +16,8 @@ export interface Progress {
   readonly inked: readonly string[];
   /** The copies of the tile placed at the repeat, and the colours. */
   readonly copies?: readonly { readonly x: number; readonly y: number }[];
+  /** The pattern (and design) the drawing was kept as. */
+  readonly kept?: { readonly pattern?: string; readonly design?: string };
   readonly coloring?: {
     readonly palette: string;
     readonly chosen: Readonly<Record<string, string>>;

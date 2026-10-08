@@ -65,6 +65,7 @@
     {
       "id": 4,
       "text": "Through every mark rule a line at right angles to its axis. The lines make a square grid.",
+      "textWithoutHelpers": "Through the first two marks on each side of the centre, rule a line at right angles to its axis. The lines make a square grid.",
       "create": {
         "Vm3": {"line": {"through": "Xm3", "perpendicularTo": "h"}},
         "Hm3": {"line": {"through": "Ym3", "perpendicularTo": "v"}},
@@ -85,6 +86,7 @@
     {
       "id": 5,
       "text": "Halve the right angles at the centre to get the two diagonals, and rule lines parallel to them through every mark on the horizontal. Every square of the grid now has both its diagonals.",
+      "textWithoutHelpers": "Through the first two marks on each side of the centre, on the horizontal, rule lines at 45° both ways. They cross the squares of the grid from corner to corner.",
       "create": {
         "d1": {"line": {"through": "O", "bisects": ["A", "O", "Y1"]}},
         "d2": {"line": {"through": "O", "bisects": ["Y1", "O", "Xm1"]}},

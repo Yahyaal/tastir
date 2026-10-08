@@ -12,6 +12,7 @@ import infantas from '@tutorials/alhambra-infantas-crosses.json';
 import bones from '@tutorials/alhambra-comares-bones.json';
 import App from '../app/app';
 import { listPatterns } from '../editor/patterns';
+import { listDesigns } from '../app/designs';
 import { dropAt, snapped } from './repeat';
 import { TOOLS } from '../editor/tools';
 
@@ -565,9 +566,22 @@ describe('drawing along', () => {
     const pieces = [...wall().querySelectorAll('.wall-piece')];
     const star = pieces.filter((p) => p.getAttribute('data-type') !== '-1');
     expect(star.length).toBeGreaterThan(4);
+    // A click on a piece chooses its kind: the colours for it open.
     fireEvent.click(star[0] as Element);
+    expect(document.querySelector('.along-colors .chooser')).toBeTruthy();
+    fireEvent.click(
+      document.querySelectorAll('.along-colors .swatch-button')[2] as Element,
+    );
+    // Keeping twice updates one pattern, and its colours are its design.
     click('Keep it');
+    click('Keep it');
+    expect(listPatterns()).toHaveLength(1);
     const kept = listPatterns()[0];
+    const designs = listDesigns().filter(
+      (d) => d.tutorial === `mine/${kept?.id}`,
+    );
+    expect(designs).toHaveLength(1);
+    expect(designs[0]?.coloring).toEqual(kept?.wall?.coloring);
     expect(kept?.wall?.copies).toHaveLength(before - 1);
     expect(kept?.wall?.coloring?.palette).toBeTruthy();
     // Coming back finds the wall as it was.

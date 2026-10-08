@@ -180,14 +180,18 @@ export function RepeatBoard({
                 } as React.CSSProperties
               }
             >
-              <polygon
-                className={index < 0 ? 'copy-area first' : 'copy-area'}
-                {...(index >= 0 && !pieces ? { 'data-copy': index } : {})}
-                points={pts(cell.corners)}
-                onClick={() => {
-                  if (erasing && index >= 0 && !wasDrag()) onRemove(index);
-                }}
-              />
+              {/* At the colour stage the tiles' outlines go: they would
+                  cover the pieces and cross them like seams. */}
+              {pieces ? null : (
+                <polygon
+                  className={index < 0 ? 'copy-area first' : 'copy-area'}
+                  {...(index >= 0 && !pieces ? { 'data-copy': index } : {})}
+                  points={pts(cell.corners)}
+                  onClick={() => {
+                    if (erasing && index >= 0 && !wasDrag()) onRemove(index);
+                  }}
+                />
+              )}
               {ink.map((s, k) => (
                 <line
                   key={k}

@@ -59,6 +59,7 @@ import { useInkBoard } from './useInkBoard';
 import { RepeatBoard, TargetWall } from './RepeatBoard';
 import { fillCopies, snapped, wallSegments, type Copy } from './repeat';
 import { setPatternWall } from '../editor/patterns';
+import { addDesign, updateDesign } from '../app/designs';
 import { PiecePanel } from '../app/PiecePanel';
 import {
   colorReducer,
@@ -440,6 +441,10 @@ export function DrawAlong({
   const [selectedKind, setSelectedKind] = useState<number>();
   const [hoveredKind, setHoveredKind] = useState<number>();
   const [keptAs, setKeptAs] = useState<string>();
+  // The pattern and design kept on an earlier visit, which a keep updates.
+  const [keptIds, setKeptIds] = useState<{ pattern?: string; design?: string }>(
+    () => saved?.kept ?? {},
+  );
 
   // Every change is kept, so leaving and coming back loses nothing.
   const [kept, setKept] = useState(true);
@@ -452,9 +457,18 @@ export function DrawAlong({
         inked: [...chosen],
         copies: copyHistory.now.map((c) => c.at),
         coloring: colorHistory.now,
+        kept: keptIds,
       }),
     );
-  }, [address, draft, index, chosen, copyHistory.now, colorHistory.now]);
+  }, [
+    address,
+    draft,
+    index,
+    chosen,
+    copyHistory.now,
+    colorHistory.now,
+    keptIds,
+  ]);
   const [restarting, setRestarting] = useState(false);
   const [welcome, setWelcome] = useState(
     () => (saved?.board.steps.length ?? 0) > 0,
@@ -537,13 +551,33 @@ export function DrawAlong({
   /** Keeps the drawing as one of the learner's patterns, with the wall
    * they laid and, when they coloured it, its colours. */
   const keepIt = (withColors: boolean) => {
-    const kept = ink.keep();
+    // A second keep updates the pattern (and design) kept before.
+    const kept = ink.keep(keptIds.pattern, withColors);
     if ('reason' in kept) return setKeepFailed(kept.reason);
-    setPatternWall(kept.pattern.id, {
+    const id = kept.pattern.id;
+    setPatternWall(id, {
       copies: copies.map((c) => c.at),
       ...(withColors ? { coloring: colorHistory.now } : {}),
     });
-    setKeptAs(kept.pattern.id);
+    // The colours are also kept as a design of it, so it plays with them.
+    let design = keptIds.design;
+    if (withColors) {
+      const fields = {
+        coloring: colorHistory.now,
+        look: 'tiles' as const,
+        grout: 1,
+      };
+      const updated = design ? updateDesign(design, fields) : undefined;
+      design =
+        updated?.id ??
+        addDesign({
+          ...fields,
+          name: kept.pattern.tutorial.title,
+          tutorial: `mine/${id}`,
+        })?.id;
+    }
+    setKeptIds({ pattern: id, ...(design ? { design } : {}) });
+    setKeptAs(id);
   };
 
   // Hints grow a level with each press; a new step starts without one.
@@ -1200,7 +1234,15 @@ export function DrawAlong({
             className="secondary along-swap"
             onClick={() => setShowStep(!showStep)}
           >
-            {showStep ? 'Show my drawing' : 'Show the step'}
+            {showStep
+              ? repeating || coloring
+                ? 'Show my wall'
+                : 'Show my drawing'
+              : repeating
+                ? 'Show the wall to aim for'
+                : coloring
+                  ? 'Show the colours'
+                  : 'Show the step'}
           </button>
         ) : null}
       </nav>
@@ -1226,7 +1268,7 @@ export function DrawAlong({
                 {
                   on: coloring,
                   head: 'Color it (if you like)',
-                  text: 'Click a piece of your wall, then choose its colour on the right: every piece of that shape takes it. Pieces that do not close, where copies do not join, stay the ground colour.',
+                  text: `Click a piece of your wall, then choose its colour ${phone ? 'under Show the colours' : 'on the right'}: every piece of that shape takes it. Pieces that do not close, where copies do not join, stay the ground colour.`,
                 },
               ].map((layer, i) => (
                 <div
@@ -1526,61 +1568,101 @@ export function DrawAlong({
           </div>
         </div>
         {/* Always there, at ink too, so the drawings keep their place. */}
+        {/* The hint row of every stage in one cell, the one at hand
+            visible, so its height never changes between stages. */}
         <div className="along-hints">
-          {afterInk ? (
-            <span className="along-hint-words" aria-live="polite">
-              {keptAs ? (
-                <>
-                  Kept as one of your patterns.{' '}
-                  <a href={`#/mine/${keptAs}`}>Play it</a> ·{' '}
-                  <a href="#/">My patterns</a>
-                </>
-              ) : (
-                say(
-                  repeating
-                    ? 'Click a ghost to place a copy; drag a copy to move it.'
-                    : phone
-                      ? 'Click a piece, then press Show the step to choose its colour.'
-                      : 'Click a piece, then a colour on the right.',
-                )
-              )}
-            </span>
-          ) : inking ? (
-            <>
-              <button
-                type="button"
-                className="secondary"
-                onClick={() => ink.setHintLevel(Math.min(3, ink.hintLevel + 1))}
-              >
-                {ink.hintLevel ? 'Show me more' : 'Show me a hint'}
-              </button>
+          <div className="along-stack">
+            <div
+              className={
+                afterInk
+                  ? 'along-layer along-hints-row on'
+                  : 'along-layer along-hints-row'
+              }
+              aria-hidden={afterInk ? undefined : true}
+              inert={!afterInk}
+            >
               <span className="along-hint-words" aria-live="polite">
-                {say(ink.hint?.words ?? '')}
+                {keptAs ? (
+                  <>
+                    Kept as one of your patterns.{' '}
+                    <a
+                      href={
+                        keptIds.design
+                          ? `#/mine/${keptAs}/design/${keptIds.design}`
+                          : `#/mine/${keptAs}`
+                      }
+                    >
+                      Play it
+                    </a>{' '}
+                    · <a href="#/">My patterns</a>
+                  </>
+                ) : (
+                  say(
+                    repeating
+                      ? 'Click a ghost to place a copy; drag a copy to move it.'
+                      : phone
+                        ? 'Click a piece, then press Show the colours to choose its colour.'
+                        : 'Click a piece, then a colour on the right.',
+                  )
+                )}
               </span>
-            </>
-          ) : (
-            <>
-              <button
-                type="button"
-                className="secondary"
-                disabled={!here || here.done || hintLevel >= 3}
-                onClick={() => setHintLevel(hintLevel + 1)}
-              >
-                {hintLevel ? 'Show me more' : 'Show me a hint'}
-              </button>
-              <button
-                type="button"
-                className="secondary"
-                disabled={!here || here.done}
-                onClick={drawIt}
-              >
-                Draw it for me
-              </button>
-              <span className="along-hint-words" aria-live="polite">
-                {say(drawFailed ?? hint?.words ?? '')}
-              </span>
-            </>
-          )}
+            </div>
+            <div
+              className={
+                inking
+                  ? 'along-layer along-hints-row on'
+                  : 'along-layer along-hints-row'
+              }
+              aria-hidden={inking ? undefined : true}
+              inert={!inking}
+            >
+              <>
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() =>
+                    ink.setHintLevel(Math.min(3, ink.hintLevel + 1))
+                  }
+                >
+                  {ink.hintLevel ? 'Show me more' : 'Show me a hint'}
+                </button>
+                <span className="along-hint-words" aria-live="polite">
+                  {say(ink.hint?.words ?? '')}
+                </span>
+              </>
+            </div>
+            <div
+              className={
+                !inking && !afterInk
+                  ? 'along-layer along-hints-row on'
+                  : 'along-layer along-hints-row'
+              }
+              aria-hidden={!inking && !afterInk ? undefined : true}
+              inert={!(!inking && !afterInk)}
+            >
+              <>
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={!here || here.done || hintLevel >= 3}
+                  onClick={() => setHintLevel(hintLevel + 1)}
+                >
+                  {hintLevel ? 'Show me more' : 'Show me a hint'}
+                </button>
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={!here || here.done}
+                  onClick={drawIt}
+                >
+                  Draw it for me
+                </button>
+                <span className="along-hint-words" aria-live="polite">
+                  {say(drawFailed ?? hint?.words ?? '')}
+                </span>
+              </>
+            </div>
+          </div>
         </div>
         {boardHalf}
         {stepHalf}

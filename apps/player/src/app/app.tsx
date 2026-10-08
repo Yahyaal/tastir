@@ -43,6 +43,7 @@ import { copyUpTo } from '../editor/document';
 import {
   addPattern,
   freeTitle,
+  getPattern,
   listPatterns,
   playable,
 } from '../editor/patterns';
@@ -163,6 +164,12 @@ function useNarrow(): boolean {
   return narrow;
 }
 
+/** The colours a learner gave their own pattern when drawing along. */
+function keptColoring(address: string) {
+  if (!address.startsWith('mine/')) return undefined;
+  return getPattern(address.slice('mine/'.length))?.wall?.coloring;
+}
+
 /** Whether a saved design holds just what the player shows now. */
 function sameDesign(
   design: Design,
@@ -248,7 +255,8 @@ export function Player({
     model,
     (m): History => ({
       past: [],
-      now: opened?.coloring ?? tutorialColoring(m),
+      // A pattern drawn along and coloured keeps its colours.
+      now: opened?.coloring ?? keptColoring(address) ?? tutorialColoring(m),
       future: [],
     }),
   );

@@ -40,6 +40,7 @@
     {
       "id": 2,
       "text": "Rule the vertical through O. At the four points where the circle meets the two lines, rule lines at right angles to them: they meet at the corners of the tile, where more octagons sit. Rule the two diagonals through O and the corners.",
+      "textWithoutHelpers": "Rule the vertical through O. Where the circle meets the two lines, rule lines at right angles to them on the left, the right and the top: they meet at the corners of the tile, where more octagons sit (the bottom side is not needed). Rule the two diagonals through O and the corners.",
       "create": {
         "v": {"line": {"through": "O", "perpendicularTo": "h"}},
         "P90": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
@@ -107,6 +108,7 @@
     {
       "id": 5,
       "text": "Draw the same circle about A, rule the lines through A parallel to the diagonals, and build the same star and octagon there.",
+      "textWithoutHelpers": "Draw the same circle about A, and build the same star and octagon there, ruling the lines the pattern runs along.",
       "create": {
         "cs2": {"circle": {"centre": "A", "radiusOf": "cs"}},
         "a45": {"line": {"through": "A", "parallelTo": "d45"}},
@@ -142,6 +144,7 @@
     {
       "id": 6,
       "text": "Do the same about the corner K, whose diagonal is the one through O.",
+      "textWithoutHelpers": "Do the same about the corner K, which lies on the diagonal through O.",
       "create": {
         "cs3": {"circle": {"centre": "K", "radiusOf": "cs"}},
         "k135": {"line": {"through": "K", "perpendicularTo": "d45"}},
@@ -199,6 +202,7 @@
     {
       "id": 9,
       "text": "Copy the stars at A and K, and the cross’s lines, to the other sides and corners of the tile, turning them about O.",
+      "textWithoutHelpers": "Copy the stars at A and K, and the cross’s lines, to the other sides and corners of the tile, turning them about O.",
       "create": {
         "cp": {
           "repeat": {

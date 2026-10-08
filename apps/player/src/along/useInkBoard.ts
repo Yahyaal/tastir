@@ -15,7 +15,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { asPanel, type Model } from '../app/model';
 import { check, type Draft } from '../editor/document';
 import { imagesOf, tutorialOf, type Inkable } from '../editor/finish';
-import { addPattern, freeTitle, type UserPattern } from '../editor/patterns';
+import {
+  addPattern,
+  freeTitle,
+  getPattern,
+  savePattern,
+  type UserPattern,
+} from '../editor/patterns';
 import { strokesOf } from '@tastir/engine';
 import type { InkAlong } from '@tastir/schema';
 import { withoutDuplicates } from './dedupe';
@@ -294,7 +300,12 @@ export function useInkBoard(
    * the board (the learner's ink closes the same pieces). Its address,
    * or why it could not be kept.
    */
-  const keep = (): { pattern: UserPattern } | { reason: string } => {
+  const keep = (
+    /** The pattern kept before, which a second keep updates. */
+    existing?: string,
+    /** Coloured by kind: the tutorial's colouring by place is dropped. */
+    byKind = false,
+  ): { pattern: UserPattern } | { reason: string } => {
     if (!ready || 'reason' in ready) return { reason: 'There is no tile.' };
     try {
       // Each figure once, however many times the learner drew it.
@@ -306,25 +317,28 @@ export function useInkBoard(
       if (!('tutorial' in made)) return { reason: made.reason };
       if (!samePieces(made.tutorial, tutorial))
         return { reason: 'The drawing does not close the pattern’s pieces.' };
-      const pattern = addPattern(
-        {
-          ...made.tutorial,
-          id: `${tutorial.id}-mine`,
-          title: freeTitle(`My ${tutorial.title}`),
-          credits: [
-            ...tutorial.credits,
-            {
-              source: `Tastir: ${tutorial.title}`,
-              note: `Drawn along with the library tutorial “${tutorial.title}” (${tutorial.id}).`,
-            },
-          ],
-        },
-        {
-          tutorial: tutorial.id,
-          title: tutorial.title,
-          step: tutorial.steps.filter((s) => !s.hidden).length,
-        },
-      );
+      const { placements: _placements, ...byShape } = made.tutorial.pattern;
+      const file = {
+        ...made.tutorial,
+        ...(byKind ? { pattern: byShape } : {}),
+        id: `${tutorial.id}-mine`,
+        title: freeTitle(`My ${tutorial.title}`),
+        credits: [
+          ...tutorial.credits,
+          {
+            source: `Tastir: ${tutorial.title}`,
+            note: `Drawn along with the library tutorial “${tutorial.title}” (${tutorial.id}).`,
+          },
+        ],
+      };
+      const before = existing ? getPattern(existing) : undefined;
+      const pattern = before
+        ? savePattern(before.id, { ...file, title: before.tutorial.title })
+        : addPattern(file, {
+            tutorial: tutorial.id,
+            title: tutorial.title,
+            step: tutorial.steps.filter((s) => !s.hidden).length,
+          });
       return pattern
         ? { pattern }
         : {

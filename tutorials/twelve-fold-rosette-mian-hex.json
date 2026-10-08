@@ -52,6 +52,7 @@
     {
       "id": 4,
       "text": "The four new circles cut the first one at eight more points, so it is divided into twelve. Rule the lines joining opposite points through O.",
+      "textWithoutHelpers": "The four new circles cut the first one at eight more points, so it is divided into twelve. Rule the lines through O and the points at 30° and 150°, on to the opposite points.",
       "create": {
         "P60": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60}}},
         "P300": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300}}},

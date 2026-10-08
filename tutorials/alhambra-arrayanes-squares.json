@@ -39,6 +39,7 @@
     {
       "id": 2,
       "text": "Rule the vertical through O. At the four points where the circle meets the two lines, rule lines at right angles to them: the square cell. Rule its two diagonals through O.",
+      "textWithoutHelpers": "Rule the vertical through O. Where the circle meets the two lines, rule lines at right angles to them on the left, the right and the top: three sides of the square cell (its bottom side is not needed). Rule the cell’s two diagonals through O.",
       "create": {
         "v": {"line": {"through": "O", "perpendicularTo": "h"}},
         "P90": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},

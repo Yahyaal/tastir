@@ -65,6 +65,7 @@
     {
       "id": 3,
       "text": "Through every mark rule a line at right angles to its axis. The lines make a square grid.",
+      "textWithoutHelpers": "Through the first and third marks on each side of the centre, rule a line at right angles to its axis. The lines make a square grid.",
       "create": {
         "Vm4": {"line": {"through": "Xm4", "perpendicularTo": "h"}},
         "Hm4": {"line": {"through": "Ym4", "perpendicularTo": "v"}},
@@ -89,6 +90,7 @@
     {
       "id": 4,
       "text": "Open the compass from the centre to the corner of a square diagonally next to it, and draw that circle: it passes through four grid corners. Where it crosses the horizontal, rule lines at 45° both ways. They form a square standing on its corner, which with the grid square around the centre makes an eight-pointed star.",
+      "textWithoutHelpers": "Open the compass from the centre to the corner of a square diagonally next to it, and draw that circle: it passes through four grid corners. Where it crosses the horizontal, rule lines at 45° both ways. They form a square standing on its corner, which with the grid square around the centre makes an eight-pointed star.",
       "create": {
         "g11": {"point": {"meet": ["V1", "H1"]}},
         "s": {"circle": {"centre": "O", "through": "g11"}},

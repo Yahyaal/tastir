@@ -1,4 +1,6 @@
 import type { Scene } from '@tastir/engine';
+import { loadModel, shownSteps, withHelpers } from '../app/model';
+import { useRemembered } from '../app/remembered';
 import { useEffect, useState } from 'react';
 import { viewBox } from '../app/camera';
 import { Thumbnail } from '../app/drawing';
@@ -141,14 +143,24 @@ function PatternCard({
   // made shows its construction so far.
   const [scene, setScene] = useState<Scene>();
   const [file, setFile] = useState<unknown>();
+  const [showHelpers] = useRemembered<boolean>('showHelpers', false);
+  const [count, setCount] = useState<number>();
   useEffect(() => {
     const t = setTimeout(() => {
       const found = ready ? playable(pattern.id) : undefined;
-      if (found && 'entry' in found) setFile(found.entry.json);
-      else setScene(check(tutorial).scene);
+      if (found && 'entry' in found) {
+        setFile(found.entry.json);
+        // Counted as the player counts them, with helper lines shown or not.
+        try {
+          const model = withHelpers(loadModel(found.entry.json), showHelpers);
+          setCount(shownSteps(model.tutorial).length);
+        } catch {
+          // The plain count below.
+        }
+      } else setScene(check(tutorial).scene);
     }, 0);
     return () => clearTimeout(t);
-  }, [tutorial, ready, pattern.id]);
+  }, [tutorial, ready, pattern.id, showHelpers]);
   const designs =
     doing === 'delete'
       ? listDesigns().filter((d) => d.tutorial === `mine/${pattern.id}`)
@@ -167,7 +179,9 @@ function PatternCard({
         <p className="meta">
           {/* As the player counts them: steps that only name points for
               the ink are hidden there. */}
-          <span>{tutorial.steps.filter((s) => !s.hidden).length} steps</span>
+          <span>
+            {count ?? tutorial.steps.filter((s) => !s.hidden).length} steps
+          </span>
           <span>{day(pattern.updated)}</span>
           {pattern.basedOn ? <span>from {pattern.basedOn.title}</span> : null}
         </p>
