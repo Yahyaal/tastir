@@ -1619,7 +1619,10 @@ function HeroPlay({ model }: { model: Model }) {
     if (reduced) return;
     let anims: Animation[] = [];
     if (k < n) {
-      anims = play(svgRef.current, planStep(model, beats[k] ?? 1, HERO_SPEED));
+      anims = play(
+        svgRef.current,
+        planStep(model, beats[k] ?? 1, HERO_SPEED, { flash: false }),
+      );
     } else if (k === n) {
       anims = playInk(svgRef.current, panelModel, HERO_SPEED * 1.5);
     }

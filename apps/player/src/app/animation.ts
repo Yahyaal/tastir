@@ -168,6 +168,21 @@ function screenLength(node: SVGElement, lengthScale: number): number {
   if (typeof shape.getTotalLength !== 'function') return 1;
   const m = shape.getScreenCTM?.();
   const scale = m ? Math.hypot(m.a, m.b) : 1;
+
+  if (node.tagName.toLowerCase() === 'circle') {
+    const circle = node as SVGCircleElement;
+    const r =
+      circle.r?.baseVal?.value ??
+      parseFloat(circle.getAttribute('r') ?? '0');
+    if (r > 0) {
+      // SVG circles in Chromium report getTotalLength() as the perimeter of an
+      // inscribed square (4*sqrt(2)*r ~ 5.65r instead of 2*PI*r ~ 6.28r).
+      // Computing the true circumference ensures strokeDashoffset fully covers
+      // the circumference so no premature arc is visible at t=0.
+      return 2 * Math.PI * r * scale * lengthScale + 2;
+    }
+  }
+
   // A pixel more, so no sliver of gap shows at the end.
   return shape.getTotalLength() * scale * lengthScale + 1;
 }
@@ -194,9 +209,6 @@ function keyframes(
       { transform: 'scale(0)', opacity: 0 },
       { transform: 'scale(1)', opacity: 1 },
     ];
-  }
-  if (kind === 'compass') {
-    return [{ opacity: 0 }, { opacity: 1 }];
   }
   // One dash as long as the shape slides in from its start.
   const len = screenLength(node, lengthScale);
