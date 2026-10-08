@@ -94,6 +94,13 @@ const DrawAlongPlan = import.meta.env.DEV
     )
   : undefined;
 
+/** Curatorial roadmap of upcoming patterns (#/upcoming). */
+const UpcomingPatterns = lazy(() =>
+  import('./UpcomingPatterns').then((m) => ({
+    default: m.UpcomingPatterns,
+  })),
+);
+
 const NUMBER_WORDS = [
   'no',
   'one',
@@ -1247,6 +1254,9 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           </button>
         ) : null}
         {patterns.length ? null : <NewPattern />}
+        <a className="jump-link upcoming-nav-link" href="#/upcoming">
+          Upcoming patterns (24)
+        </a>
         {import.meta.env.DEV ? (
           <p className="dev-links">
             <a href="#/review">
@@ -1302,11 +1312,16 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
       <section aria-labelledby="collection">
         <div className="collection-head">
           <h2 id="collection">The patterns</h2>
-          <p>
-            {shown.length === entries.length
-              ? `${entries.length} patterns, many checked against photos of the real walls.`
-              : `${shown.length} of ${entries.length} patterns.`}
-          </p>
+          <div className="collection-meta">
+            <p>
+              {shown.length === entries.length
+                ? `${entries.length} patterns, many checked against photos of the real walls.`
+                : `${shown.length} of ${entries.length} patterns.`}
+            </p>
+            <a className="upcoming-teaser-link" href="#/upcoming">
+              Upcoming masterworks roadmap (24) →
+            </a>
+          </div>
         </div>
         <div className="filters">
           <fieldset className="filter-group">
@@ -1653,6 +1668,13 @@ export function App({
     [own, library],
   );
   if (!route) return <Library entries={library} />;
+  if (route === 'upcoming') {
+    return (
+      <Suspense fallback={<p className="review-loading">Loading upcoming patterns…</p>}>
+        <UpcomingPatterns />
+      </Suspense>
+    );
+  }
   if (ownId !== undefined && !(own && 'entry' in own))
     return <NotPlayable id={ownId} reason={own?.reason} />;
   if (route === 'review') {
