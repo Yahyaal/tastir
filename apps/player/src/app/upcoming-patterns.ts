@@ -8,6 +8,13 @@ export type UpcomingStatus =
   | 'Photo reference matched'
   | 'Source queued';
 
+export interface DrawingStep {
+  readonly step: number;
+  readonly title: string;
+  readonly instruction: string;
+  readonly geometry: string;
+}
+
 export interface UpcomingPattern {
   readonly id: string;
   readonly title: string;
@@ -23,6 +30,7 @@ export interface UpcomingPattern {
   readonly status: UpcomingStatus;
   readonly summary: string;
   readonly constructionNotes: string;
+  readonly drawingSteps: readonly DrawingStep[];
   readonly source: {
     readonly name: string;
     readonly url?: string;
@@ -49,6 +57,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'The missing honeycomb counterpart to the al-Maridani square tiling. Six stellated rosettes surround one central rosette, creating secondary 6-pointed star interstitial lattices and delicate ivory darts.',
     constructionNotes:
       'Builds from a central 24-divided circle with overlapping hexagons, extending petal lines outwards to intersect in 12-pointed star points and hexagonal tile boundary crossings.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Base Circle & 12 Division Points",
+        instruction:
+          "Rule circle c about centre O with radius R and draw horizontal diameter. Swing compass radius R from the intersection points to divide the circumference into 12 equal points at 30\u00b0 spacing.",
+        geometry: "12 vertices on perimeter, \u03b8 = 30\u00b0 radial spacing",
+      },
+      {
+        step: 2,
+        title: "Dual Overlapping Hexagons & 15\u00b0 Rays",
+        instruction:
+          "Construct two nested regular hexagons to locate intermediate 15\u00b0 rays. Inscribe outer boundary circle co and inner reference circle ci tangent to the hexagonal chords.",
+        geometry: "Rays at 15\u00b0 increments, inner radius ci = R \u00b7 cos(30\u00b0) \u00b7 tan(15\u00b0)",
+      },
+      {
+        step: 3,
+        title: "12-Pointed Stellated Star Rosette",
+        instruction:
+          "Rule 12 star rays connecting circumference division points through the inner circle crossing points, forming 12 acute star points and surrounding kite facets.",
+        geometry: "12 star tips at r = 1.0, 12 valleys at r = 0.5176",
+      },
+      {
+        step: 4,
+        title: "Hexagonal Honeycomb Tile Boundary",
+        instruction:
+          "Construct a regular hexagon tangent to the circle at 6 points. Extend star points to meet at the hexagon corners, creating secondary 6-pointed florets where three tiles meet.",
+        geometry: "Regular hexagon cell, side length s = 2/\u221a3 R, area = 2\u221a3 R\u00b2",
+      },
+    ],
+
     source: {
       name: 'Samira Mian: Twelvefold Rosette, Activity 9',
       url: 'https://www.samiramian.uk/twelvefoldrosette',
@@ -72,6 +111,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'The world-renowned pinnacle of Islamic quasicrystalline geometry. Centered on a 10-pointed star with concentric rings of pentagons, bowties, and decagons, demonstrating self-similar tiling centuries ahead of Penrose.',
     constructionNotes:
       'Constructed using golden-ratio circle divisions (36° intervals) with nested decagons and pentagonal compass crossings.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Euclidean Golden Section & 10 Points",
+        instruction:
+          "Draw base circle c about O and rule perpendicular axes. Find midpoint M(-0.5, 0), swing arc through (0, 1) down to horizontal axis at golden section point F = (\u221a5 - 1)/2. Step distance OF around circumference to obtain 10 exact points.",
+        geometry: "Golden ratio \u03c6 = (\u221a5 + 1)/2, chord length = 2 \u00b7 sin(18\u00b0) = \u03c6 - 1",
+      },
+      {
+        step: 2,
+        title: "{10/3} Star Chords & Girih Decagram",
+        instruction:
+          "Rule 10 chords connecting each vertex Pi to Pi+3 (skipping 2 vertices, 108\u00b0 apart). Their intersections form the central 10-pointed star with sharp 36\u00b0 points.",
+        geometry: "10-pointed star polygon {10/3}, inner crossing radius r = 0.5257 R",
+      },
+      {
+        step: 3,
+        title: "Surrounding Kites & Interstitial Bowties",
+        instruction:
+          "Rule decagon perimeter chords. Trace star lines outward to form 10 surrounding kites, 10 interstitial darts, and elongated hexagons (Shesh Band).",
+        geometry: "Concentric decagon side s = 2 \u00b7 sin(18\u00b0), kite angle = 72\u00b0",
+      },
+      {
+        step: 4,
+        title: "Rectangular Periodic Tile Closure",
+        instruction:
+          "Establish rectangular tile corners at outer crossings 54\u00b0, 126\u00b0, 234\u00b0, and 306\u00b0. The width w = \u221a5 and height h = \u221a(5 + 2\u221a5) allow periodic plane tiling with 10-fold core symmetry.",
+        geometry: "Rectangular cell w = 2.236 R, h = 3.078 R, area = 6.882 R\u00b2",
+      },
+    ],
+
     source: {
       name: 'Lu & Steinhardt (Science 2007) / Peter J. Lu',
       url: 'https://doi.org/10.1126/science.1135491',
@@ -95,6 +165,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Classic late Mamluk decagram woodwork medallion with radiating interlacing ribbons, delicate almond shields, and fine inlaid ivory stars.',
     constructionNotes:
       'Drawn via 10-fold radial division; the star lines cross at 72° to produce regular 10-pointed stars framed by alternating kites and pentagram facets.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Decagonal Radial Framework",
+        instruction:
+          "Rule base circle and orthogonal diameters. Divide circle into 10 equal sectors of 36\u00b0 using compass golden-ratio bisection.",
+        geometry: "10 radial vertices, \u03b8 = 36\u00b0",
+      },
+      {
+        step: 2,
+        title: "Primary Decagram Chords",
+        instruction:
+          "Rule chords skipping 2 points to generate the {10/3} star polygon; intersect with radial spokes to define strapwork ribbon paths.",
+        geometry: "{10/3} decagram, tip angle 36\u00b0, internal crossing angle 72\u00b0",
+      },
+      {
+        step: 3,
+        title: "Girih Strapwork & Secondary Facets",
+        instruction:
+          "Extend star lines to construct surrounding pentagons, bowties, and lozenges according to traditional Girih tile angles (72\u00b0 and 144\u00b0).",
+        geometry: "Girih tiles: decagon, pentagon, bowtie, rhombus, elongated hexagon",
+      },
+      {
+        step: 4,
+        title: "Panel Boundary & Seamless Seams",
+        instruction:
+          "Align strapwork terminals with the modular panel frame, ensuring ribbons cross tile seams at perpendicular angles for continuous interlace.",
+        geometry: "Over-and-under ribbon interlace, uniform band width",
+      },
+    ],
+
     source: {
       name: 'Victoria and Albert Museum (V&A 1050-1869) & Creswell Archive',
       url: 'https://collections.vam.ac.uk/item/O89010/',
@@ -118,6 +219,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'A modular coffered woodwork ceiling alternating bold eight-pointed Khatam stars and raised octagonal frames, celebrating rhythm and shadow.',
     constructionNotes:
       'Square grid with octagons tangent to unit cell boundaries; four-pointed stars form in the corner interstices.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Orthogonal & Diagonal Axis Matrix",
+        instruction:
+          "Draw base circle with radius R. Rule horizontal and vertical axes, then bisect each 90\u00b0 quadrant to establish 8 equal 45\u00b0 sectors.",
+        geometry: "8 perimeter division points, \u03b8 = 45\u00b0",
+      },
+      {
+        step: 2,
+        title: "8-Pointed Khatam Star ({8/3})",
+        instruction:
+          "Connect alternate vertices to form two concentric squares rotated by 45\u00b0, producing the classical 8-pointed star (Khatam / Seal of Solomon).",
+        geometry: "Octagram {8/3}, tip angle 45\u00b0, inner radius r = R \u00b7 (\u221a2 - 1)",
+      },
+      {
+        step: 3,
+        title: "Radiating Kites & Cruciform Links",
+        instruction:
+          "Extend star chords outward beyond the star tips to intersect flanking rays, creating radiating kites and secondary cruciform connecting bridges.",
+        geometry: "Kite side angles: 45\u00b0, 90\u00b0, 135\u00b0",
+      },
+      {
+        step: 4,
+        title: "Square Grid Tessellation (p4m)",
+        instruction:
+          "Inscribe the star within a square unit cell. Replicate the module edge-to-edge; adjacent stars link across tile seams to form secondary 4-pointed stars.",
+        geometry: "Square cell side s = 2 R, area = 4 R\u00b2, p4m wallpaper group",
+      },
+    ],
+
     source: {
       name: 'Wichmann CM026 & David Wade SPA 0305',
       url: 'http://www.patterninislamicart.com/drawings-diagrams-analyses/1-wade-analyses/spa-spain/spa-0305',
@@ -141,6 +273,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Among the earliest surviving pierced geometric stucco grilles in the Islamic world. A 6-pointed star with deep bevelled openings and interlocking hexagonal rosettes.',
     constructionNotes:
       'Hexagonal grid based on equilateral triangles; each star is inscribed within a circle whose circumference defines the flanking rhombi.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Isometric Hexagonal Division",
+        instruction:
+          "Rule circle with radius R. Step compass radius R around the circumference to mark 6 equal points at 60\u00b0 spacing.",
+        geometry: "6 vertices on circle, side length = radius R",
+      },
+      {
+        step: 2,
+        title: "6-Pointed Star ({6/2}) Inscription",
+        instruction:
+          "Connect alternate vertices with straightedge to form two intersecting equilateral triangles (Seal of Solomon / Hexagram).",
+        geometry: "Hexagram {6/2}, inner radius r = R / \u221a3 \u2248 0.577 R",
+      },
+      {
+        step: 3,
+        title: "Hexagonal Satellite Rosettes",
+        instruction:
+          "Draw surrounding concentric circles centered at each of the 6 vertices; rule lines through intersections to generate interlocking lozenges and stars.",
+        geometry: "Rhombic facets with 60\u00b0 and 120\u00b0 corner angles",
+      },
+      {
+        step: 4,
+        title: "Honeycomb Tiling (p6m)",
+        instruction:
+          "Frame the unit inside a regular hexagon. Tile edge-to-edge across the plane with zero gaps, forming seamless tri-hexagonal lattices.",
+        geometry: "Hexagonal lattice, p6m symmetry, 3-fold vertex junctions",
+      },
+    ],
+
     source: {
       name: 'Wikimedia Commons DSCF3561 / Creswell',
       url: 'https://commons.wikimedia.org/wiki/File:Cairo_-_Ibn_Tulun_Mosque_-_DSCF3561.JPG',
@@ -164,6 +327,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Imperial Mughal perforated screen filtering sunlight into ethereal geometric shadows. Eight-pointed stars interlace with cruciform links across an orthogonal matrix.',
     constructionNotes:
       'Continuous interlacing strapwork; all lines run at 45° and 90° angles to create consistent ribbon widths with under-and-over weave.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Orthogonal & Diagonal Axis Matrix",
+        instruction:
+          "Draw base circle with radius R. Rule horizontal and vertical axes, then bisect each 90\u00b0 quadrant to establish 8 equal 45\u00b0 sectors.",
+        geometry: "8 perimeter division points, \u03b8 = 45\u00b0",
+      },
+      {
+        step: 2,
+        title: "8-Pointed Khatam Star ({8/3})",
+        instruction:
+          "Connect alternate vertices to form two concentric squares rotated by 45\u00b0, producing the classical 8-pointed star (Khatam / Seal of Solomon).",
+        geometry: "Octagram {8/3}, tip angle 45\u00b0, inner radius r = R \u00b7 (\u221a2 - 1)",
+      },
+      {
+        step: 3,
+        title: "Radiating Kites & Cruciform Links",
+        instruction:
+          "Extend star chords outward beyond the star tips to intersect flanking rays, creating radiating kites and secondary cruciform connecting bridges.",
+        geometry: "Kite side angles: 45\u00b0, 90\u00b0, 135\u00b0",
+      },
+      {
+        step: 4,
+        title: "Square Grid Tessellation (p4m)",
+        instruction:
+          "Inscribe the star within a square unit cell. Replicate the module edge-to-edge; adjacent stars link across tile seams to form secondary 4-pointed stars.",
+        geometry: "Square cell side s = 2 R, area = 4 R\u00b2, p4m wallpaper group",
+      },
+    ],
+
     source: {
       name: 'Archaeological Survey of India / UNESCO World Heritage 479',
       url: 'https://whc.unesco.org/en/list/479',
@@ -189,6 +383,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'From the master architectural design manual used by master builders (ustad). Features a central 10-pointed star with radiating 5-pointed star satellites and pentagram loops.',
     constructionNotes:
       'Master scroll construction: two nested concentric circles with 10-point chords establishing the Girih tile boundaries.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Decagonal Radial Framework",
+        instruction:
+          "Rule base circle and orthogonal diameters. Divide circle into 10 equal sectors of 36\u00b0 using compass golden-ratio bisection.",
+        geometry: "10 radial vertices, \u03b8 = 36\u00b0",
+      },
+      {
+        step: 2,
+        title: "Primary Decagram Chords",
+        instruction:
+          "Rule chords skipping 2 points to generate the {10/3} star polygon; intersect with radial spokes to define strapwork ribbon paths.",
+        geometry: "{10/3} decagram, tip angle 36\u00b0, internal crossing angle 72\u00b0",
+      },
+      {
+        step: 3,
+        title: "Girih Strapwork & Secondary Facets",
+        instruction:
+          "Extend star lines to construct surrounding pentagons, bowties, and lozenges according to traditional Girih tile angles (72\u00b0 and 144\u00b0).",
+        geometry: "Girih tiles: decagon, pentagon, bowtie, rhombus, elongated hexagon",
+      },
+      {
+        step: 4,
+        title: "Panel Boundary & Seamless Seams",
+        instruction:
+          "Align strapwork terminals with the modular panel frame, ensuring ribbons cross tile seams at perpendicular angles for continuous interlace.",
+        geometry: "Over-and-under ribbon interlace, uniform band width",
+      },
+    ],
+
     source: {
       name: 'Gülru Necipoğlu: The Topkapı Scroll (Getty, 1995)',
       url: 'https://www.getty.edu/publications/virtuallibrary/0892363355.html',
@@ -212,6 +437,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Masterpiece of Andalusi lacería strapwork with 12-pointed stars arranged on a triangular lattice, woven with secondary 6-pointed and 8-pointed star satellites.',
     constructionNotes:
       '√3 triangular grid with star lines at 15° offsets; line classification model drafted in Tastir research tools.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "12-Fold Radial Framework",
+        instruction:
+          "Draw circle of radius R. Using compass radius R from the 4 cardinal points, strike arcs to divide the perimeter into 12 equal 30\u00b0 points.",
+        geometry: "12 perimeter vertices, \u03b8 = 30\u00b0 radial spacing",
+      },
+      {
+        step: 2,
+        title: "12-Pointed Dodecagram Chords",
+        instruction:
+          "Rule chords skipping 4 vertices ({12/4}) and chords skipping 3 vertices ({12/3}) to establish dual concentric star starpoints.",
+        geometry: "{12/4} star polygon, acute 30\u00b0 points, {12/3} squares",
+      },
+      {
+        step: 3,
+        title: "Petal Rings & Almond Shields (Saft)",
+        instruction:
+          "Extend star chords to intersect concentric guide circles, forming 12 almond petals (saft) and 12 outer shielding kites.",
+        geometry: "Dual concentric petal rings, interlocking ribbon channels",
+      },
+      {
+        step: 4,
+        title: "Tessellation Lattice Framing",
+        instruction:
+          "Enclose rosette in a square or hexagonal repeating tile. Continue strapwork across the borders to interlace with adjacent rosettes.",
+        geometry: "Periodic lattice repeat (p4m or p6m), ribbon interlace",
+      },
+    ],
+
     source: {
       name: 'Tastir Research tools/review/cordoba / Wade SPA 1400',
       url: 'http://www.patterninislamicart.com',
@@ -235,6 +491,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Monumental Seljuk entrance portal carved in deep marble relief. Two interlacing ribbons weave continuously around 10-pointed star medallions and pentagonal darts.',
     constructionNotes:
       'Continuous ribbon weave based on regular decagram chords with bevelled edge profiles.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Decagonal Radial Framework",
+        instruction:
+          "Rule base circle and orthogonal diameters. Divide circle into 10 equal sectors of 36\u00b0 using compass golden-ratio bisection.",
+        geometry: "10 radial vertices, \u03b8 = 36\u00b0",
+      },
+      {
+        step: 2,
+        title: "Primary Decagram Chords",
+        instruction:
+          "Rule chords skipping 2 points to generate the {10/3} star polygon; intersect with radial spokes to define strapwork ribbon paths.",
+        geometry: "{10/3} decagram, tip angle 36\u00b0, internal crossing angle 72\u00b0",
+      },
+      {
+        step: 3,
+        title: "Girih Strapwork & Secondary Facets",
+        instruction:
+          "Extend star lines to construct surrounding pentagons, bowties, and lozenges according to traditional Girih tile angles (72\u00b0 and 144\u00b0).",
+        geometry: "Girih tiles: decagon, pentagon, bowtie, rhombus, elongated hexagon",
+      },
+      {
+        step: 4,
+        title: "Panel Boundary & Seamless Seams",
+        instruction:
+          "Align strapwork terminals with the modular panel frame, ensuring ribbons cross tile seams at perpendicular angles for continuous interlace.",
+        geometry: "Over-and-under ribbon interlace, uniform band width",
+      },
+    ],
+
     source: {
       name: 'Eric Broug: Islamic Geometric Patterns (Thames & Hudson)',
       citation: 'Chapter 5: Ten-Fold Patterns, Plate 14',
@@ -257,6 +544,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'The majestic central court pavement medallion of Cairo’s greatest Mamluk architectural monument. 12-pointed star surrounded by concentric rings of jasper, porphyry, and Carrara marble.',
     constructionNotes:
       '24-divided circle proportioning with radial star segments and concentric outer rings of alternating dark and light voussoir pieces.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "12-Fold Radial Framework",
+        instruction:
+          "Draw circle of radius R. Using compass radius R from the 4 cardinal points, strike arcs to divide the perimeter into 12 equal 30\u00b0 points.",
+        geometry: "12 perimeter vertices, \u03b8 = 30\u00b0 radial spacing",
+      },
+      {
+        step: 2,
+        title: "12-Pointed Dodecagram Chords",
+        instruction:
+          "Rule chords skipping 4 vertices ({12/4}) and chords skipping 3 vertices ({12/3}) to establish dual concentric star starpoints.",
+        geometry: "{12/4} star polygon, acute 30\u00b0 points, {12/3} squares",
+      },
+      {
+        step: 3,
+        title: "Petal Rings & Almond Shields (Saft)",
+        instruction:
+          "Extend star chords to intersect concentric guide circles, forming 12 almond petals (saft) and 12 outer shielding kites.",
+        geometry: "Dual concentric petal rings, interlocking ribbon channels",
+      },
+      {
+        step: 4,
+        title: "Tessellation Lattice Framing",
+        instruction:
+          "Enclose rosette in a square or hexagonal repeating tile. Continue strapwork across the borders to interlace with adjacent rosettes.",
+        geometry: "Periodic lattice repeat (p4m or p6m), ribbon interlace",
+      },
+    ],
+
     source: {
       name: 'Museum with No Frontiers (MWNF) / Creswell',
       url: 'https://islamicart.museumwnf.org/database_item.php?id=monument;ISL;eg;Mon01;10;en',
@@ -280,6 +598,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Exquisite Mughal jewel box pavilion with floralized 12-fold star geometry, blending Persian geometric rigor with Indian semi-precious stone craft.',
     constructionNotes:
       '12-fold rosette with curved petal modulations and framing band interlacing.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "12-Fold Radial Framework",
+        instruction:
+          "Draw circle of radius R. Using compass radius R from the 4 cardinal points, strike arcs to divide the perimeter into 12 equal 30\u00b0 points.",
+        geometry: "12 perimeter vertices, \u03b8 = 30\u00b0 radial spacing",
+      },
+      {
+        step: 2,
+        title: "12-Pointed Dodecagram Chords",
+        instruction:
+          "Rule chords skipping 4 vertices ({12/4}) and chords skipping 3 vertices ({12/3}) to establish dual concentric star starpoints.",
+        geometry: "{12/4} star polygon, acute 30\u00b0 points, {12/3} squares",
+      },
+      {
+        step: 3,
+        title: "Petal Rings & Almond Shields (Saft)",
+        instruction:
+          "Extend star chords to intersect concentric guide circles, forming 12 almond petals (saft) and 12 outer shielding kites.",
+        geometry: "Dual concentric petal rings, interlocking ribbon channels",
+      },
+      {
+        step: 4,
+        title: "Tessellation Lattice Framing",
+        instruction:
+          "Enclose rosette in a square or hexagonal repeating tile. Continue strapwork across the borders to interlace with adjacent rosettes.",
+        geometry: "Periodic lattice repeat (p4m or p6m), ribbon interlace",
+      },
+    ],
+
     source: {
       name: 'Ebba Koch: Mughal Architecture (Prestel)',
       citation: 'The Tomb of I’timad-ud-Daulah, Agra',
@@ -302,6 +651,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'The full authentic Moroccan 16-fold masterwork wheel with concentric rings of black petals, orange pentagons, blue arrows (saft), and flanking 8-fold satellite rosettes.',
     constructionNotes:
       '16-fold radial division; relies on Ouazene & Benslimane’s mathematical reconstruction of Moroccan master artisan proportions.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Bisection into 16 Equal Sectors",
+        instruction:
+          "Rule circle and perpendicular diameters. Bisect the quadrants to 45\u00b0, then bisect again to obtain 16 equal points on circumference at 22.5\u00b0 spacing.",
+        geometry: "16 vertices, \u03b8 = 22.5\u00b0 = \u03c0/8 radians",
+      },
+      {
+        step: 2,
+        title: "16-Pointed Star Rosette ({16/5})",
+        instruction:
+          "Rule chords connecting vertex Pi to Pi+5 ({16/5} star). The intersecting chords generate a luminous central 16-pointed star core (na'ura).",
+        geometry: "16-pointed star {16/5}, sharp tip angle 22.5\u00b0",
+      },
+      {
+        step: 3,
+        title: "Radiating Saft & Jabanah Rings",
+        instruction:
+          "Draw concentric outer circles; extend star lines outward to produce 16 radiating almond petals (saft) and 16 surrounding cups (jabanah).",
+        geometry: "Marinid zellige terminology: 16 na'ura, 16 saft, 16 jabanah",
+      },
+      {
+        step: 4,
+        title: "Architectural Dado Framing",
+        instruction:
+          "Frame the circular rosette inside a square panel. Fill corner spandrels with quarter 8-fold rosettes or interlaced braided borders.",
+        geometry: "Square panel frame, 4 corner spandrel rosettes",
+      },
+    ],
+
     source: {
       name: 'Ouazene & Benslimane / Tastir docs/research/bou-inania',
       url: 'https://www.researchgate.net/publication/333095210',
@@ -325,6 +705,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'One of the oldest surviving intact Marinid zellige dados in Fès, demonstrating the pristine transition between Andalusi lacería and Moroccan geometric craft.',
     constructionNotes:
       '16-pointed central star radiating into rhomboid bridges and outer 8-pointed star joints.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Bisection into 16 Equal Sectors",
+        instruction:
+          "Rule circle and perpendicular diameters. Bisect the quadrants to 45\u00b0, then bisect again to obtain 16 equal points on circumference at 22.5\u00b0 spacing.",
+        geometry: "16 vertices, \u03b8 = 22.5\u00b0 = \u03c0/8 radians",
+      },
+      {
+        step: 2,
+        title: "16-Pointed Star Rosette ({16/5})",
+        instruction:
+          "Rule chords connecting vertex Pi to Pi+5 ({16/5} star). The intersecting chords generate a luminous central 16-pointed star core (na'ura).",
+        geometry: "16-pointed star {16/5}, sharp tip angle 22.5\u00b0",
+      },
+      {
+        step: 3,
+        title: "Radiating Saft & Jabanah Rings",
+        instruction:
+          "Draw concentric outer circles; extend star lines outward to produce 16 radiating almond petals (saft) and 16 surrounding cups (jabanah).",
+        geometry: "Marinid zellige terminology: 16 na'ura, 16 saft, 16 jabanah",
+      },
+      {
+        step: 4,
+        title: "Architectural Dado Framing",
+        instruction:
+          "Frame the circular rosette inside a square panel. Fill corner spandrels with quarter 8-fold rosettes or interlaced braided borders.",
+        geometry: "Square panel frame, 4 corner spandrel rosettes",
+      },
+    ],
+
     source: {
       name: 'Jean-Marc Castera: Arabesques (ACR Edition)',
       citation: 'Zellige Architecture of the Merinid Medinas',
@@ -347,6 +758,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Splendid imperial Ottoman tile panel executed during the golden age of Mimar Sinan, featuring bold cobalt, turquoise, and bole red floral strapwork over an 8-fold Khatam grid.',
     constructionNotes:
       '8-fold square repeat grid with stylized saz leaf ribbons and eight-pointed star medallion centers.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Orthogonal & Diagonal Axis Matrix",
+        instruction:
+          "Draw base circle with radius R. Rule horizontal and vertical axes, then bisect each 90\u00b0 quadrant to establish 8 equal 45\u00b0 sectors.",
+        geometry: "8 perimeter division points, \u03b8 = 45\u00b0",
+      },
+      {
+        step: 2,
+        title: "8-Pointed Khatam Star ({8/3})",
+        instruction:
+          "Connect alternate vertices to form two concentric squares rotated by 45\u00b0, producing the classical 8-pointed star (Khatam / Seal of Solomon).",
+        geometry: "Octagram {8/3}, tip angle 45\u00b0, inner radius r = R \u00b7 (\u221a2 - 1)",
+      },
+      {
+        step: 3,
+        title: "Radiating Kites & Cruciform Links",
+        instruction:
+          "Extend star chords outward beyond the star tips to intersect flanking rays, creating radiating kites and secondary cruciform connecting bridges.",
+        geometry: "Kite side angles: 45\u00b0, 90\u00b0, 135\u00b0",
+      },
+      {
+        step: 4,
+        title: "Square Grid Tessellation (p4m)",
+        instruction:
+          "Inscribe the star within a square unit cell. Replicate the module edge-to-edge; adjacent stars link across tile seams to form secondary 4-pointed stars.",
+        geometry: "Square cell side s = 2 R, area = 4 R\u00b2, p4m wallpaper group",
+      },
+    ],
+
     source: {
       name: 'Walter B. Denny: Iznik: The Artistry of Ottoman Ceramics',
       citation: 'The Tile Program of Rüstem Pasha, Istanbul',
@@ -369,6 +811,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'An extraordinarily ancient Islamic pierced marble screen dating back to the Aghlabid reconstruction of Kairouan. Crisp eight-pointed star piercings within interlocking squares.',
     constructionNotes:
       'Two overlapping squares forming the Khatam Sulayman with rectilinear connecting strap bands.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Orthogonal & Diagonal Axis Matrix",
+        instruction:
+          "Draw base circle with radius R. Rule horizontal and vertical axes, then bisect each 90\u00b0 quadrant to establish 8 equal 45\u00b0 sectors.",
+        geometry: "8 perimeter division points, \u03b8 = 45\u00b0",
+      },
+      {
+        step: 2,
+        title: "8-Pointed Khatam Star ({8/3})",
+        instruction:
+          "Connect alternate vertices to form two concentric squares rotated by 45\u00b0, producing the classical 8-pointed star (Khatam / Seal of Solomon).",
+        geometry: "Octagram {8/3}, tip angle 45\u00b0, inner radius r = R \u00b7 (\u221a2 - 1)",
+      },
+      {
+        step: 3,
+        title: "Radiating Kites & Cruciform Links",
+        instruction:
+          "Extend star chords outward beyond the star tips to intersect flanking rays, creating radiating kites and secondary cruciform connecting bridges.",
+        geometry: "Kite side angles: 45\u00b0, 90\u00b0, 135\u00b0",
+      },
+      {
+        step: 4,
+        title: "Square Grid Tessellation (p4m)",
+        instruction:
+          "Inscribe the star within a square unit cell. Replicate the module edge-to-edge; adjacent stars link across tile seams to form secondary 4-pointed stars.",
+        geometry: "Square cell side s = 2 R, area = 4 R\u00b2, p4m wallpaper group",
+      },
+    ],
+
     source: {
       name: 'Georges Marçais: L’Architecture Musulmane d’Occident',
       citation: 'The Aghlabid Grilles of Kairouan',
@@ -391,6 +864,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Early Ottoman masterpiece from Bursa by the Masters of Tabriz. Rich turquoise hexagons surrounded by 6-pointed star gold-leaf inlays and cobalt arabesque borders.',
     constructionNotes:
       'Regular hexagonal honeycomb tiling with inset 6-pointed stars and triangular interstitial tiles.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Isometric Hexagonal Division",
+        instruction:
+          "Rule circle with radius R. Step compass radius R around the circumference to mark 6 equal points at 60\u00b0 spacing.",
+        geometry: "6 vertices on circle, side length = radius R",
+      },
+      {
+        step: 2,
+        title: "6-Pointed Star ({6/2}) Inscription",
+        instruction:
+          "Connect alternate vertices with straightedge to form two intersecting equilateral triangles (Seal of Solomon / Hexagram).",
+        geometry: "Hexagram {6/2}, inner radius r = R / \u221a3 \u2248 0.577 R",
+      },
+      {
+        step: 3,
+        title: "Hexagonal Satellite Rosettes",
+        instruction:
+          "Draw surrounding concentric circles centered at each of the 6 vertices; rule lines through intersections to generate interlocking lozenges and stars.",
+        geometry: "Rhombic facets with 60\u00b0 and 120\u00b0 corner angles",
+      },
+      {
+        step: 4,
+        title: "Honeycomb Tiling (p6m)",
+        instruction:
+          "Frame the unit inside a regular hexagon. Tile edge-to-edge across the plane with zero gaps, forming seamless tri-hexagonal lattices.",
+        geometry: "Hexagonal lattice, p6m symmetry, 3-fold vertex junctions",
+      },
+    ],
+
     source: {
       name: 'Doğan Kuban: Ottoman Architecture (Antique Collectors’ Club)',
       citation: 'Early Ottoman Architecture: The Bursa Period',
@@ -415,6 +919,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'The mathematical dome of the Two Sisters: 16-pointed star projected across a stalactite honeycomb vault resembling the celestial dome of the cosmos.',
     constructionNotes:
       '16-fold angular projection mapping onto a three-dimensional muqarnas corbel network.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Bisection into 16 Equal Sectors",
+        instruction:
+          "Rule circle and perpendicular diameters. Bisect the quadrants to 45\u00b0, then bisect again to obtain 16 equal points on circumference at 22.5\u00b0 spacing.",
+        geometry: "16 vertices, \u03b8 = 22.5\u00b0 = \u03c0/8 radians",
+      },
+      {
+        step: 2,
+        title: "16-Pointed Star Rosette ({16/5})",
+        instruction:
+          "Rule chords connecting vertex Pi to Pi+5 ({16/5} star). The intersecting chords generate a luminous central 16-pointed star core (na'ura).",
+        geometry: "16-pointed star {16/5}, sharp tip angle 22.5\u00b0",
+      },
+      {
+        step: 3,
+        title: "Radiating Saft & Jabanah Rings",
+        instruction:
+          "Draw concentric outer circles; extend star lines outward to produce 16 radiating almond petals (saft) and 16 surrounding cups (jabanah).",
+        geometry: "Marinid zellige terminology: 16 na'ura, 16 saft, 16 jabanah",
+      },
+      {
+        step: 4,
+        title: "Architectural Dado Framing",
+        instruction:
+          "Frame the circular rosette inside a square panel. Fill corner spandrels with quarter 8-fold rosettes or interlaced braided borders.",
+        geometry: "Square panel frame, 4 corner spandrel rosettes",
+      },
+    ],
+
     source: {
       name: 'David Wade SPA 0600 / Patronato de la Alhambra',
       url: 'http://www.patterninislamicart.com',
@@ -438,6 +973,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Deep cobalt, lapis, and white glazed tilework with 8-fold and 10-fold hybrid strapwork constructed along the pilgrimage avenue of Samarkand.',
     constructionNotes:
       'Square repeat with 8-fold star cores transitioning to 10-fold edge interlacing.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Orthogonal & Diagonal Axis Matrix",
+        instruction:
+          "Draw base circle with radius R. Rule horizontal and vertical axes, then bisect each 90\u00b0 quadrant to establish 8 equal 45\u00b0 sectors.",
+        geometry: "8 perimeter division points, \u03b8 = 45\u00b0",
+      },
+      {
+        step: 2,
+        title: "8-Pointed Khatam Star ({8/3})",
+        instruction:
+          "Connect alternate vertices to form two concentric squares rotated by 45\u00b0, producing the classical 8-pointed star (Khatam / Seal of Solomon).",
+        geometry: "Octagram {8/3}, tip angle 45\u00b0, inner radius r = R \u00b7 (\u221a2 - 1)",
+      },
+      {
+        step: 3,
+        title: "Radiating Kites & Cruciform Links",
+        instruction:
+          "Extend star chords outward beyond the star tips to intersect flanking rays, creating radiating kites and secondary cruciform connecting bridges.",
+        geometry: "Kite side angles: 45\u00b0, 90\u00b0, 135\u00b0",
+      },
+      {
+        step: 4,
+        title: "Square Grid Tessellation (p4m)",
+        instruction:
+          "Inscribe the star within a square unit cell. Replicate the module edge-to-edge; adjacent stars link across tile seams to form secondary 4-pointed stars.",
+        geometry: "Square cell side s = 2 R, area = 4 R\u00b2, p4m wallpaper group",
+      },
+    ],
+
     source: {
       name: 'Samira Mian: Uzbekistan Recorded Series',
       url: 'https://www.samiramian.uk/uzbekistan',
@@ -461,6 +1027,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'UNESCO World Heritage site known as the "Alhambra of Anatolia". Unrivalled three-dimensional floralized 12-fold strapwork carved with exuberant sculptural mastery.',
     constructionNotes:
       '12-pointed star medallion with outward undulating strap ribbons and asymmetric relief shadows.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "12-Fold Radial Framework",
+        instruction:
+          "Draw circle of radius R. Using compass radius R from the 4 cardinal points, strike arcs to divide the perimeter into 12 equal 30\u00b0 points.",
+        geometry: "12 perimeter vertices, \u03b8 = 30\u00b0 radial spacing",
+      },
+      {
+        step: 2,
+        title: "12-Pointed Dodecagram Chords",
+        instruction:
+          "Rule chords skipping 4 vertices ({12/4}) and chords skipping 3 vertices ({12/3}) to establish dual concentric star starpoints.",
+        geometry: "{12/4} star polygon, acute 30\u00b0 points, {12/3} squares",
+      },
+      {
+        step: 3,
+        title: "Petal Rings & Almond Shields (Saft)",
+        instruction:
+          "Extend star chords to intersect concentric guide circles, forming 12 almond petals (saft) and 12 outer shielding kites.",
+        geometry: "Dual concentric petal rings, interlocking ribbon channels",
+      },
+      {
+        step: 4,
+        title: "Tessellation Lattice Framing",
+        instruction:
+          "Enclose rosette in a square or hexagonal repeating tile. Continue strapwork across the borders to interlace with adjacent rosettes.",
+        geometry: "Periodic lattice repeat (p4m or p6m), ribbon interlace",
+      },
+    ],
+
     source: {
       name: 'UNESCO World Heritage 354 / Eric Broug',
       url: 'https://whc.unesco.org/en/list/354',
@@ -484,6 +1081,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Majestic Mudéjar wall dado composed of 12-pointed stars in black, emerald green, honey ochre, and white, constructed by Toledo and Granada master artisans.',
     constructionNotes:
       '12-fold star centers with hexagonal and square connecting bridges in true alicatado proportion.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "12-Fold Radial Framework",
+        instruction:
+          "Draw circle of radius R. Using compass radius R from the 4 cardinal points, strike arcs to divide the perimeter into 12 equal 30\u00b0 points.",
+        geometry: "12 perimeter vertices, \u03b8 = 30\u00b0 radial spacing",
+      },
+      {
+        step: 2,
+        title: "12-Pointed Dodecagram Chords",
+        instruction:
+          "Rule chords skipping 4 vertices ({12/4}) and chords skipping 3 vertices ({12/3}) to establish dual concentric star starpoints.",
+        geometry: "{12/4} star polygon, acute 30\u00b0 points, {12/3} squares",
+      },
+      {
+        step: 3,
+        title: "Petal Rings & Almond Shields (Saft)",
+        instruction:
+          "Extend star chords to intersect concentric guide circles, forming 12 almond petals (saft) and 12 outer shielding kites.",
+        geometry: "Dual concentric petal rings, interlocking ribbon channels",
+      },
+      {
+        step: 4,
+        title: "Tessellation Lattice Framing",
+        instruction:
+          "Enclose rosette in a square or hexagonal repeating tile. Continue strapwork across the borders to interlace with adjacent rosettes.",
+        geometry: "Periodic lattice repeat (p4m or p6m), ribbon interlace",
+      },
+    ],
+
     source: {
       name: 'David Wade SPA 1205 / Real Alcázar Archive',
       url: 'http://www.patterninislamicart.com',
@@ -507,6 +1135,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Celebrated as the "mole on the cheek of Lahore". Brilliant polychrome floral strapwork on an 8-fold geometric lattice, combining Persian mosaic craft with Mughal color palettes.',
     constructionNotes:
       'Orthogonal grid with 8-fold star centers and intertwining arabesque calligraphy frames.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Orthogonal & Diagonal Axis Matrix",
+        instruction:
+          "Draw base circle with radius R. Rule horizontal and vertical axes, then bisect each 90\u00b0 quadrant to establish 8 equal 45\u00b0 sectors.",
+        geometry: "8 perimeter division points, \u03b8 = 45\u00b0",
+      },
+      {
+        step: 2,
+        title: "8-Pointed Khatam Star ({8/3})",
+        instruction:
+          "Connect alternate vertices to form two concentric squares rotated by 45\u00b0, producing the classical 8-pointed star (Khatam / Seal of Solomon).",
+        geometry: "Octagram {8/3}, tip angle 45\u00b0, inner radius r = R \u00b7 (\u221a2 - 1)",
+      },
+      {
+        step: 3,
+        title: "Radiating Kites & Cruciform Links",
+        instruction:
+          "Extend star chords outward beyond the star tips to intersect flanking rays, creating radiating kites and secondary cruciform connecting bridges.",
+        geometry: "Kite side angles: 45\u00b0, 90\u00b0, 135\u00b0",
+      },
+      {
+        step: 4,
+        title: "Square Grid Tessellation (p4m)",
+        instruction:
+          "Inscribe the star within a square unit cell. Replicate the module edge-to-edge; adjacent stars link across tile seams to form secondary 4-pointed stars.",
+        geometry: "Square cell side s = 2 R, area = 4 R\u00b2, p4m wallpaper group",
+      },
+    ],
+
     source: {
       name: 'Ahmad Nabi Khan: Islamic Architecture of Pakistan',
       citation: 'The Kashi Tile Art of the Wazir Khan Mosque',
@@ -529,6 +1188,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Imperial Sinan window screen balancing maximum structural strength with luminous geometric transparency. 10-pointed stars interconnected by rectilinear bronze ribbons.',
     constructionNotes:
       'Decagonal Girih network cast in modular bronze sections with concealed pin joinery.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Decagonal Radial Framework",
+        instruction:
+          "Rule base circle and orthogonal diameters. Divide circle into 10 equal sectors of 36\u00b0 using compass golden-ratio bisection.",
+        geometry: "10 radial vertices, \u03b8 = 36\u00b0",
+      },
+      {
+        step: 2,
+        title: "Primary Decagram Chords",
+        instruction:
+          "Rule chords skipping 2 points to generate the {10/3} star polygon; intersect with radial spokes to define strapwork ribbon paths.",
+        geometry: "{10/3} decagram, tip angle 36\u00b0, internal crossing angle 72\u00b0",
+      },
+      {
+        step: 3,
+        title: "Girih Strapwork & Secondary Facets",
+        instruction:
+          "Extend star lines to construct surrounding pentagons, bowties, and lozenges according to traditional Girih tile angles (72\u00b0 and 144\u00b0).",
+        geometry: "Girih tiles: decagon, pentagon, bowtie, rhombus, elongated hexagon",
+      },
+      {
+        step: 4,
+        title: "Panel Boundary & Seamless Seams",
+        instruction:
+          "Align strapwork terminals with the modular panel frame, ensuring ribbons cross tile seams at perpendicular angles for continuous interlace.",
+        geometry: "Over-and-under ribbon interlace, uniform band width",
+      },
+    ],
+
     source: {
       name: 'Aptullah Kuran: Sinan: The Grand Old Master of Ottoman Architecture',
       citation: 'The Architectural Metalwork of the Süleymaniye',
@@ -551,6 +1241,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'Exploration from Activity 3 & 7 using dual tracings to construct interlocking compositions where central 12-fold rosettes transition into alternating corner rosettes.',
     constructionNotes:
       'Generates square and hexagonal repeating variations from one master construction drawing.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "12-Fold Radial Framework",
+        instruction:
+          "Draw circle of radius R. Using compass radius R from the 4 cardinal points, strike arcs to divide the perimeter into 12 equal 30\u00b0 points.",
+        geometry: "12 perimeter vertices, \u03b8 = 30\u00b0 radial spacing",
+      },
+      {
+        step: 2,
+        title: "12-Pointed Dodecagram Chords",
+        instruction:
+          "Rule chords skipping 4 vertices ({12/4}) and chords skipping 3 vertices ({12/3}) to establish dual concentric star starpoints.",
+        geometry: "{12/4} star polygon, acute 30\u00b0 points, {12/3} squares",
+      },
+      {
+        step: 3,
+        title: "Petal Rings & Almond Shields (Saft)",
+        instruction:
+          "Extend star chords to intersect concentric guide circles, forming 12 almond petals (saft) and 12 outer shielding kites.",
+        geometry: "Dual concentric petal rings, interlocking ribbon channels",
+      },
+      {
+        step: 4,
+        title: "Tessellation Lattice Framing",
+        instruction:
+          "Enclose rosette in a square or hexagonal repeating tile. Continue strapwork across the borders to interlace with adjacent rosettes.",
+        geometry: "Periodic lattice repeat (p4m or p6m), ribbon interlace",
+      },
+    ],
+
     source: {
       name: 'Samira Mian: Twelvefold Rosette Activities 3 & 7',
       url: 'https://www.samiramian.uk/twelvefoldrosette',
@@ -574,6 +1295,37 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       'One of the oldest surviving mathematical brick vaults in Persia, attributed to Omar Khayyam’s geometric circle. Hexagonal stars formed by alternating angled bricks in geometric relief.',
     constructionNotes:
       'Triangular brick grid with modular coursing establishing 6-fold star points without curved lines.',
+    drawingSteps: [
+      {
+        step: 1,
+        title: "Isometric Hexagonal Division",
+        instruction:
+          "Rule circle with radius R. Step compass radius R around the circumference to mark 6 equal points at 60\u00b0 spacing.",
+        geometry: "6 vertices on circle, side length = radius R",
+      },
+      {
+        step: 2,
+        title: "6-Pointed Star ({6/2}) Inscription",
+        instruction:
+          "Connect alternate vertices with straightedge to form two intersecting equilateral triangles (Seal of Solomon / Hexagram).",
+        geometry: "Hexagram {6/2}, inner radius r = R / \u221a3 \u2248 0.577 R",
+      },
+      {
+        step: 3,
+        title: "Hexagonal Satellite Rosettes",
+        instruction:
+          "Draw surrounding concentric circles centered at each of the 6 vertices; rule lines through intersections to generate interlocking lozenges and stars.",
+        geometry: "Rhombic facets with 60\u00b0 and 120\u00b0 corner angles",
+      },
+      {
+        step: 4,
+        title: "Honeycomb Tiling (p6m)",
+        instruction:
+          "Frame the unit inside a regular hexagon. Tile edge-to-edge across the plane with zero gaps, forming seamless tri-hexagonal lattices.",
+        geometry: "Hexagonal lattice, p6m symmetry, 3-fold vertex junctions",
+      },
+    ],
+
     source: {
       name: 'Alireza Doostdar & Anthony Lee / Wade IRN 0101',
       url: 'http://www.patterninislamicart.com',

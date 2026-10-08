@@ -4,6 +4,7 @@ import {
   type UpcomingPattern,
   type UpcomingPhase,
 } from './upcoming-patterns';
+import { UpcomingIllustration } from './UpcomingIllustrations';
 
 export function UpcomingPatterns() {
   const [selectedFold, setSelectedFold] = useState<number | 'all'>('all');
@@ -208,6 +209,7 @@ export function UpcomingPatterns() {
 }
 
 function UpcomingCard({ pattern }: { pattern: UpcomingPattern }) {
+  const [showInstructions, setShowInstructions] = useState(false);
   const isPlayable = pattern.status === 'Playable now';
 
   return (
@@ -223,6 +225,23 @@ function UpcomingCard({ pattern }: { pattern: UpcomingPattern }) {
         <span className="card-arabic-title" lang="ar" dir="rtl">
           {pattern.arabicTitle}
         </span>
+      </div>
+
+      {/* Visual Geometric Illustration */}
+      <div className="card-visual-section">
+        <UpcomingIllustration pattern={pattern} size={230} />
+        <div className="card-visual-footer">
+          <span className="visual-badge">
+            Symmetry: {pattern.fold}-fold (D<sub>{pattern.fold}</sub>)
+          </span>
+          <span className="visual-badge">
+            {pattern.fold === 6 || pattern.id.includes('hex')
+              ? 'Honeycomb (p6m)'
+              : pattern.fold === 10
+              ? 'Rectangular (cmm)'
+              : 'Square (p4m)'}
+          </span>
+        </div>
       </div>
 
       <div className="card-main">
@@ -250,6 +269,42 @@ function UpcomingCard({ pattern }: { pattern: UpcomingPattern }) {
         </div>
       </div>
 
+      {/* Step-by-Step Drawing Instructions Section */}
+      <div className="card-drawing-guide">
+        <button
+          type="button"
+          className={`drawing-guide-toggle ${showInstructions ? 'open' : ''}`}
+          onClick={() => setShowInstructions((prev) => !prev)}
+          aria-expanded={showInstructions}
+        >
+          <span className="toggle-label">
+            <span className="compass-icon">✦</span> How to Draw · Compass & Straightedge (
+            {pattern.drawingSteps?.length ?? 4} Steps)
+          </span>
+          <span className="toggle-indicator">
+            {showInstructions ? 'Hide instructions ▴' : 'View instructions ▾'}
+          </span>
+        </button>
+
+        {showInstructions && pattern.drawingSteps && (
+          <ol className="drawing-steps-list">
+            {pattern.drawingSteps.map((step) => (
+              <li key={step.step} className="drawing-step-card">
+                <div className="step-card-header">
+                  <span className="step-badge">Step {step.step}</span>
+                  <h4 className="step-title">{step.title}</h4>
+                </div>
+                <p className="step-instruction">{step.instruction}</p>
+                <div className="step-geometry-tag">
+                  <span className="geo-icon">📐</span>
+                  <span className="geo-formula">{step.geometry}</span>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
+      </div>
+
       <footer className="card-footer">
         <div className="card-source">
           <span className="source-label">Source / Reference:</span>
@@ -271,9 +326,12 @@ function UpcomingCard({ pattern }: { pattern: UpcomingPattern }) {
         </div>
 
         {isPlayable && (
-          <div className="card-play-action">
-            <a href={`#/${pattern.id}`} className="card-play-action-btn">
+          <div className="card-play-actions-group">
+            <a href={`#/${pattern.id}`} className="card-play-action-btn primary">
               Play Interactive Tutorial →
+            </a>
+            <a href={`#/${pattern.id}/result`} className="card-play-action-btn secondary">
+              View Tiled Wall →
             </a>
           </div>
         )}

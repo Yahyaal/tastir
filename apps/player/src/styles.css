@@ -2823,3 +2823,233 @@ main.stage .drawing:not(.wall) {
   color: var(--theme-text-muted);
 }
 
+/* ------------------------------------------------------------------ */
+/* Upcoming Pattern Visual Illustrations & Drawing Guide */
+
+.card-visual-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #081326;
+  border: 1px solid rgba(240, 184, 50, 0.18);
+  border-radius: 10px;
+  padding: 14px 10px 10px;
+  overflow: hidden;
+  position: relative;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.upcoming-card:hover .card-visual-section {
+  border-color: rgba(240, 184, 50, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.upcoming-illustration-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.upcoming-illustration-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.45));
+  transition: transform 220ms ease;
+}
+
+.upcoming-card:hover .upcoming-illustration-svg {
+  transform: scale(1.025);
+}
+
+.card-visual-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.visual-badge {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(23, 47, 87, 0.55);
+  color: var(--theme-text-muted);
+  border: 1px solid rgba(240, 184, 50, 0.16);
+}
+
+.visual-badge sub {
+  font-size: 0.75em;
+}
+
+/* Step-by-Step Drawing Guide Drawer */
+
+.card-drawing-guide {
+  border-top: 1px dashed rgba(23, 47, 87, 0.6);
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.drawing-guide-toggle {
+  background: rgba(230, 168, 34, 0.08);
+  border: 1px solid rgba(230, 168, 34, 0.28);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--saffron);
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  transition: all 140ms ease;
+  text-align: left;
+}
+
+.drawing-guide-toggle:hover,
+.drawing-guide-toggle.open {
+  background: rgba(230, 168, 34, 0.16);
+  border-color: rgba(230, 168, 34, 0.55);
+  color: var(--saffron-hover);
+  box-shadow: 0 0 10px rgba(230, 168, 34, 0.15);
+}
+
+.toggle-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.compass-icon {
+  color: var(--saffron);
+  font-size: 0.85rem;
+}
+
+.toggle-indicator {
+  font-size: 0.72rem;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.drawing-steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeInSteps 160ms ease-in-out;
+}
+
+@keyframes fadeInSteps {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.drawing-step-card {
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  border-left: 3px solid var(--saffron);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.step-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-badge {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(230, 168, 34, 0.18);
+  color: var(--saffron);
+  padding: 1px 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.step-title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--theme-text-primary);
+  font-family: var(--display);
+  letter-spacing: 0.02em;
+}
+
+.step-instruction {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--theme-text-secondary);
+}
+
+.step-geometry-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--saffron);
+  background: rgba(7, 15, 30, 0.65);
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid rgba(230, 168, 34, 0.18);
+  margin-top: 2px;
+  width: fit-content;
+}
+
+.geo-icon {
+  font-size: 0.72rem;
+}
+
+.geo-formula {
+  color: #93c5fd;
+  letter-spacing: 0.02em;
+}
+
+.card-play-actions-group {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.card-play-action-btn.secondary {
+  background: rgba(42, 161, 152, 0.12);
+  color: var(--theme-cyan);
+  border-color: rgba(42, 161, 152, 0.4);
+}
+
+.card-play-action-btn.secondary:hover {
+  background: var(--theme-cyan);
+  color: var(--theme-bg-canvas);
+  border-color: var(--theme-cyan);
+  box-shadow: 0 0 12px rgba(42, 161, 152, 0.35);
+}
+
+
