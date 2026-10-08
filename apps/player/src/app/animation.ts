@@ -22,7 +22,7 @@ export const STEP_MS = 800;
 /** The flash of the highlighted elements before a step draws. */
 export const FLASH_MS = 600;
 /** The accent the current step is drawn in (--current in styles.css). */
-const ACCENT = '#2f5bb7';
+const ACCENT = '#f59e0b';
 /** The share of a step spent drawing lines and circles; points pop after. */
 const DRAW_SHARE = 0.75;
 
@@ -441,9 +441,9 @@ export function rulerOrder(model: Model): RulerLine[] {
 }
 
 /** The pale blue of the ruler and of a parallel line it is laid against. */
-export const RULER_COLOR = '#4467c8';
+export const RULER_COLOR = '#3b82f6';
 /** The tile's outline. */
-export const TILE_COLOR = '#1f8a6b';
+export const TILE_COLOR = '#10b981';
 
 /**
  * Inks the pattern with a ruler: for each line of rulerOrder, the ruler

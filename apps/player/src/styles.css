@@ -1,43 +1,63 @@
 /*
- * Tastir: a pattern is drawn on a pale plaster plate (gesso), set in a deep
- * lapis frame the way a tiled panel is set in a wall. Saffron marks what is
- * happening now. Titles are in Marcellus, cut like carved letters; all
- * reading text is in Atkinson Hyperlegible.
+ * Tastir: Cobalt & Honey Gold Architectural Design System.
+ * An editorial, museum-grade dark aesthetic for Islamic geometric constructions.
+ * Deep starry midnight canvas, lapis-toned surfaces, and radiant honey gold accents.
  */
 :root {
-  /* The frame. */
-  --lapis: #1f2b5c;
-  --lapis-deep: #172149;
-  --lapis-raised: #27356c;
-  --lapis-line: #3a4a88;
-  --on-lapis: #eef0eb;
-  --on-lapis-muted: #b4bcd8;
-  /* The plate. */
-  --gesso: #eef0eb;
-  --gesso-edge: #dde1da;
-  --graphite: #2a2e35;
-  --saffron: #e3a72f;
-  --malachite: #1f8a6b;
+  /* Design System: Cobalt & Honey Gold */
+  --theme-bg-canvas: #070f1e;       /* Deep starry midnight navy (60% canvas) */
+  --theme-bg-surface: #0c1b33;      /* Lapis architectural slate */
+  --theme-bg-card: #091529;         /* Deep obsidian navy */
+  --theme-bg-raised: #132748;       /* Elevated lapis interactive state */
+  --theme-border: #172f57;          /* Hairline divider */
+  --theme-border-hover: #22447d;    /* Active/hover border */
+  --theme-border-gold: rgba(245, 158, 11, 0.4);
 
-  /* Meanings in the drawing: what this step makes (blue), what it works
-     from (saffron), ink drawn this step (malachite). A step's new points
-     and lines turn from blue to saffron when the next step works from
-     them, and fade to grey when it does not. */
-  --ink: var(--graphite);
-  --old: #b7bcc2;
-  --faint: #d6dad3;
-  --current: #2f5bb7;
-  --used: #b97806;
-  --fresh: var(--malachite);
-  --paper: var(--gesso);
-  --muted: #5b616b;
+  --theme-text-primary: #f8fafc;    /* Crisp soft white (WCAG AAA) */
+  --theme-text-secondary: #cbd5e1;  /* Muted slate white */
+  --theme-text-muted: #94a3b8;      /* Gentle architectural slate */
 
-  --display: 'Marcellus', 'Iowan Old Style', Georgia, serif;
-  --text:
-    'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --theme-accent: #f59e0b;          /* Radiant Honey Gold (10% budget) */
+  --theme-accent-hover: #d97706;    /* Warm amber hover */
+  --theme-accent-muted: rgba(245, 158, 11, 0.18); /* Soft gold glow */
+  --theme-accent-cobalt: #2563eb;   /* Royal Fez cobalt secondary accent */
+  --theme-grid-line: rgba(245, 158, 11, 0.035);   /* 32px subtle drafting grid */
+
+  /* Semantic Mappings for Tastir components */
+  --lapis: var(--theme-bg-surface);
+  --lapis-deep: var(--theme-bg-canvas);
+  --lapis-raised: var(--theme-bg-raised);
+  --lapis-line: var(--theme-border);
+  --lapis-hover: var(--theme-border-hover);
+  --on-lapis: var(--theme-text-primary);
+  --on-lapis-muted: var(--theme-text-muted);
+
+  /* The stage (plate) is now an obsidian drafting stage */
+  --gesso: var(--theme-bg-card);
+  --gesso-edge: var(--theme-border);
+  --graphite: #f8fafc;
+  --saffron: var(--theme-accent);
+  --saffron-hover: var(--theme-accent-hover);
+  --malachite: #10b981;
+
+  /* Geometry Canvas Stroke System calibrated for Dark Mode */
+  --ink: #f8fafc;                   /* Finished pattern ink: crisp ivory/bone white */
+  --old: #475569;                   /* Prior construction lines: subtle slate */
+  --faint: #1e3a5f;                 /* Guide circles/lines: deep architectural midnight slate */
+  --current: #f59e0b;               /* Active step being drawn: glowing Honey Gold */
+  --used: #38bdf8;                  /* Reference intersections/elements: brilliant sky cyan */
+  --fresh: var(--malachite);        /* Newly inked lines: emerald malachite */
+  --paper: var(--theme-bg-card);    /* Background behind the drawing */
+  --muted: #64748b;                 /* Muted construction labels */
+
+  /* Typography */
+  --display: 'Amiri', 'Marcellus', 'Iowan Old Style', Georgia, serif;
+  --text: 'Plus Jakarta Sans', 'Atkinson Hyperlegible', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+
   font-family: var(--text);
-  color: var(--ink);
-  background: var(--gesso);
+  color: var(--theme-text-primary);
+  background: var(--theme-bg-canvas);
 }
 
 * {
@@ -46,16 +66,19 @@
 
 body {
   margin: 0;
-  background: var(--gesso);
+  font-family: var(--text);
+  background: var(--theme-bg-canvas);
+  color: var(--theme-text-primary);
+  -webkit-font-smoothing: antialiased;
 }
 
 /* The library and the player sit in the lapis frame. */
 html:has(.player, .library) body {
-  background: var(--lapis);
+  background: var(--theme-bg-canvas);
 }
 
 :focus-visible {
-  outline: 3px solid var(--saffron);
+  outline: 2px solid var(--saffron);
   outline-offset: 2px;
 }
 
@@ -66,22 +89,33 @@ a {
 button {
   font: inherit;
   padding: 8px 18px;
-  border: 1px solid var(--ink);
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--paper);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
   cursor: pointer;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--theme-border-hover);
+  background: var(--theme-bg-raised);
 }
 
 button.secondary,
 button.quiet {
   background: transparent;
-  color: var(--ink);
+  color: var(--theme-text-secondary);
 }
 
 button.quiet {
   border-color: transparent;
-  text-decoration: underline;
+  text-decoration: none;
+}
+
+button.quiet:hover:not(:disabled) {
+  color: var(--theme-text-primary);
+  background: transparent;
 }
 
 button:disabled {
@@ -92,77 +126,99 @@ button:disabled {
 select,
 input {
   font: inherit;
+  accent-color: var(--saffron);
 }
 
 .error {
   white-space: pre-wrap;
-  color: #ffb4b4;
+  color: #fca5a5;
 }
 
 /* ------------------------------------------------------------------ */
-/* Buttons and controls on the lapis frame */
+/* Buttons and controls on the architectural frame */
 
 .player button,
 .library .button,
 .card-actions .button {
-  border-color: var(--on-lapis);
-  background: var(--on-lapis);
-  color: var(--lapis-deep);
+  border-color: var(--theme-border);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  border-radius: 8px;
+}
+
+.player button:hover:not(:disabled),
+.library .button:hover,
+.card-actions .button:hover {
+  border-color: var(--theme-border-hover);
+  background: var(--theme-bg-raised);
 }
 
 .player button.secondary,
 .library .button.secondary {
   background: transparent;
-  color: var(--on-lapis);
-  border-color: var(--lapis-line);
+  color: var(--theme-text-secondary);
+  border-color: var(--theme-border);
 }
 
 .player button.secondary:hover:not(:disabled),
 .library .button.secondary:hover {
-  border-color: var(--on-lapis);
+  border-color: var(--theme-border-hover);
+  color: var(--theme-text-primary);
+  background: rgba(37, 99, 235, 0.08);
 }
 
 .player button.quiet {
   background: transparent;
   border-color: transparent;
-  color: var(--on-lapis-muted);
-  text-decoration: underline;
-  padding: 4px 6px;
+  color: var(--theme-text-muted);
+  text-decoration: none;
+  padding: 4px 8px;
 }
 
 .player button.quiet:hover:not(:disabled) {
-  color: var(--on-lapis);
+  color: var(--theme-text-primary);
 }
 
 .player select {
-  background: var(--lapis-deep);
-  color: var(--on-lapis);
-  border: 1px solid var(--lapis-line);
+  background: var(--theme-bg-card);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
   border-radius: 6px;
-  padding: 3px 6px;
+  padding: 4px 8px;
 }
 
 a.button {
   display: inline-block;
   font-size: 0.9rem;
-  padding: 7px 14px;
-  border: 1px solid var(--on-lapis);
-  border-radius: 999px;
+  padding: 8px 18px;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
   text-decoration: none;
   text-align: center;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+a.button:hover {
+  border-color: var(--theme-border-hover);
+  background: var(--theme-bg-raised);
 }
 
 a.button.primary {
   background: var(--saffron);
   border-color: var(--saffron);
-  color: var(--lapis-deep);
-  font-weight: 700;
-  font-size: 1rem;
+  color: var(--theme-bg-canvas);
+  font-weight: 600;
+  font-size: 0.95rem;
   padding: 10px 22px;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
 }
 
 a.button.primary:hover {
-  background: #f0ba4b;
+  background: var(--saffron-hover);
+  border-color: var(--saffron-hover);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
 }
 
 /* ------------------------------------------------------------------ */
@@ -228,18 +284,25 @@ a.button.primary:hover {
   list-style: none;
   cursor: pointer;
   padding: 6px 14px;
-  border: 1px solid var(--lapis-line);
-  border-radius: 999px;
-  color: var(--on-lapis);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
   white-space: nowrap;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .view-menu summary::-webkit-details-marker {
   display: none;
 }
 
+.view-menu summary:hover {
+  border-color: var(--theme-border-hover);
+  background: var(--theme-bg-raised);
+}
+
 .view-menu[open] summary {
-  border-color: var(--on-lapis);
+  border-color: var(--saffron);
 }
 
 .view-menu .controls {
@@ -326,19 +389,23 @@ a.button.primary:hover {
   gap: 14px;
 }
 
-/* The plate: the drawing on plaster, framed by a thin saffron fillet. */
+/* The plate: the obsidian drafting stage framed by an architectural hairline and subtle grid. */
 .stage {
   flex: 1;
   min-height: 58vh;
   display: flex;
-  background: var(--gesso);
-  border-radius: 6px;
+  background-color: var(--theme-bg-card);
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, var(--theme-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--theme-grid-line) 1px, transparent 1px);
+  border-radius: 14px;
+  border: 1px solid var(--theme-border);
   box-shadow:
-    inset 0 0 0 1px var(--gesso-edge),
-    0 0 0 6px var(--lapis-deep),
-    0 0 0 7px rgba(227, 167, 47, 0.55);
+    inset 0 0 0 1px rgba(245, 158, 11, 0.06),
+    0 16px 44px rgba(3, 7, 18, 0.6);
   overflow: hidden;
-  color: var(--ink);
+  color: var(--theme-text-primary);
 }
 
 .drawing {
@@ -368,7 +435,7 @@ main.stage .drawing:not(.wall) {
   font-family: var(--display);
   font-weight: 400;
   font-size: 0.95rem;
-  color: var(--on-lapis-muted);
+  color: var(--theme-text-muted);
 }
 
 .journey ol {
@@ -387,7 +454,7 @@ main.stage .drawing:not(.wall) {
 .journey .phases {
   display: grid;
   gap: 6px;
-  border-left: 1px solid var(--lapis-line);
+  border-left: 1px solid var(--theme-border);
   margin-left: 13px;
   padding-left: 0;
 }
@@ -401,16 +468,33 @@ main.stage .drawing:not(.wall) {
   width: 28px;
   height: 28px;
   padding: 0;
-  border-radius: 50%;
+  border-radius: 6px;
   background: transparent;
-  color: var(--on-lapis-muted);
-  border: 1px solid var(--lapis-line);
+  color: var(--theme-text-muted);
+  border: 1px solid var(--theme-border);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.player .journey .step-dot:hover:not(:disabled) {
+  border-color: var(--theme-border-hover);
+  color: var(--theme-text-primary);
 }
 
 .player .journey .step-dot.done {
-  background: var(--lapis-raised);
-  color: var(--on-lapis);
-  border-color: var(--lapis-raised);
+  background: rgba(37, 99, 235, 0.12);
+  color: #93c5fd;
+  border-color: rgba(37, 99, 235, 0.4);
+}
+
+.player .journey .step-dot[aria-current='step'] {
+  background: var(--saffron);
+  color: var(--theme-bg-canvas);
+  border-color: var(--saffron);
+  box-shadow: 0 0 12px var(--theme-accent-muted);
+  font-weight: 700;
 }
 
 .player .journey .phase {
@@ -422,21 +506,23 @@ main.stage .drawing:not(.wall) {
   padding: 4px 8px 4px 0;
   background: transparent;
   border: 0;
-  border-radius: 0;
-  color: var(--on-lapis-muted);
+  border-radius: 6px;
+  color: var(--theme-text-muted);
   text-align: left;
   font-size: 0.9rem;
+  transition: all 150ms ease;
 }
 
 .phase-mark {
   flex: none;
   width: 28px;
   height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--lapis-line);
-  background: var(--lapis);
+  border-radius: 6px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
   display: grid;
   place-items: center;
+  transition: all 150ms ease;
 }
 
 .phase-mark svg {
@@ -796,21 +882,28 @@ main.stage .drawing:not(.wall) {
   gap: 10px;
   align-items: center;
   width: 100%;
-  background: var(--lapis-raised);
-  color: var(--on-lapis);
-  border: 1px solid transparent;
-  border-radius: 10px;
-  padding: 5px 10px 5px 5px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  padding: 6px 10px 6px 6px;
   text-align: left;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.player .piece-button:hover {
+  border-color: var(--theme-border-hover);
+  background: var(--theme-bg-raised);
 }
 
 .player .piece-types li.active .piece-button {
   border-color: var(--saffron);
+  box-shadow: 0 0 10px var(--theme-accent-muted);
 }
 
 .piece-button small {
   display: block;
-  color: var(--on-lapis-muted);
+  color: var(--theme-text-muted);
   font-size: 0.8rem;
 }
 
@@ -831,13 +924,20 @@ main.stage .drawing:not(.wall) {
   width: 28px;
   height: 28px;
   padding: 0;
-  border: 2px solid var(--lapis-deep);
-  border-radius: 50%;
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.player .swatch-button:hover {
+  transform: scale(1.08);
+  border-color: var(--theme-border-hover);
 }
 
 .swatch-button.current {
-  outline: 3px solid var(--saffron);
-  outline-offset: 1px;
+  outline: 2px solid var(--saffron);
+  outline-offset: 2px;
 }
 
 .any-color input {
@@ -874,6 +974,7 @@ main.stage .drawing:not(.wall) {
 .el.current {
   stroke: var(--current);
   stroke-width: 2.5px;
+  filter: drop-shadow(0 0 4px var(--theme-accent-muted));
 }
 
 /* Arriving at a step: what the last step made starts blue, then takes its
@@ -926,11 +1027,12 @@ main.stage .drawing:not(.wall) {
 }
 
 .dot-key .new::before {
-  background: #6f93e6;
+  background: var(--current);
+  box-shadow: 0 0 6px var(--theme-accent-muted);
 }
 
 .dot-key .used::before {
-  background: var(--saffron);
+  background: var(--used);
 }
 
 .mark {
@@ -947,6 +1049,7 @@ main.stage .drawing:not(.wall) {
 
 .mark.current {
   fill: var(--current);
+  filter: drop-shadow(0 0 4px var(--theme-accent-muted));
 }
 
 .point-name {
@@ -1337,11 +1440,17 @@ main.stage .drawing:not(.wall) {
 
 .hero-plate .plate-frame {
   aspect-ratio: 1;
-  background: var(--gesso);
-  border-radius: 6px;
+  background-color: var(--theme-bg-card);
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, var(--theme-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--theme-grid-line) 1px, transparent 1px);
+  border-radius: 14px;
+  border: 1px solid var(--theme-border);
   box-shadow:
-    0 0 0 8px var(--lapis-deep),
-    0 0 0 9px rgba(227, 167, 47, 0.55);
+    0 0 0 6px var(--theme-bg-canvas),
+    0 0 0 8px rgba(245, 158, 11, 0.25),
+    0 24px 54px rgba(3, 7, 18, 0.7);
   overflow: hidden;
   display: flex;
 }
@@ -1558,18 +1667,26 @@ main.stage .drawing:not(.wall) {
 }
 
 .library .chip {
-  padding: 5px 12px;
+  padding: 5px 14px;
   font-size: 0.85rem;
-  background: transparent;
-  color: var(--on-lapis);
-  border: 1px solid var(--lapis-line);
-  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-secondary);
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.library .chip:hover {
+  border-color: var(--theme-border-hover);
+  color: var(--theme-text-primary);
 }
 
 .library .chip[aria-pressed='true'] {
-  background: var(--on-lapis);
-  color: var(--lapis-deep);
-  border-color: var(--on-lapis);
+  background: var(--theme-accent-muted);
+  color: var(--saffron);
+  border-color: var(--saffron);
+  font-weight: 600;
 }
 
 .cards {
@@ -1577,18 +1694,29 @@ main.stage .drawing:not(.wall) {
   padding: 0;
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 28px 6px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
 }
 
 .card-item {
   display: flex;
   flex-direction: column;
+  background: var(--theme-bg-card);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  padding: 14px;
+  transition: border-color 150ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 150ms ease;
+}
+
+.card-item:hover {
+  border-color: var(--theme-border-hover);
+  box-shadow: 0 12px 32px rgba(3, 7, 18, 0.45);
 }
 
 .card {
   flex: 1;
-  display: block;
+  display: flex;
+  flex-direction: column;
   color: inherit;
   text-decoration: none;
 }
@@ -1597,22 +1725,27 @@ main.stage .drawing:not(.wall) {
   display: block;
   width: 100%;
   aspect-ratio: 1;
-  background: var(--gesso);
-  outline: 3px solid var(--gesso-edge);
-  transition: filter 0.2s;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  outline: none;
+  overflow: hidden;
+  transition: filter 0.2s, border-color 0.2s;
 }
 
 .card:hover .thumbnail,
 .card:focus-visible .thumbnail {
-  filter: brightness(1.06) saturate(1.08);
+  filter: brightness(1.08) saturate(1.1);
+  border-color: var(--theme-border-hover);
 }
 
 .card h3 {
-  margin: 14px 4px 6px;
+  margin: 14px 2px 6px;
   font-family: var(--display);
   font-weight: 400;
-  font-size: 1.12rem;
+  font-size: 1.18rem;
   line-height: 1.3;
+  color: var(--theme-text-primary);
 }
 
 .card:hover h3 {
@@ -1622,50 +1755,71 @@ main.stage .drawing:not(.wall) {
 }
 
 .card p {
-  margin: 0 4px 10px;
+  margin: 0 2px 10px;
   font-size: 0.85rem;
-  color: var(--on-lapis-muted);
+  color: var(--theme-text-muted);
 }
 
+/* Zero-Pill Metadata Discipline */
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 12px;
+  align-items: center;
+  gap: 0 8px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--theme-text-muted);
+  margin-top: auto;
+}
+
+.meta span + span::before {
+  content: '·';
+  margin-right: 8px;
+  color: var(--theme-border-hover);
+  font-weight: bold;
 }
 
 .meta .level {
   color: var(--saffron);
+  font-weight: 500;
 }
 
 .card-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin: 0 4px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .card-actions .button {
   font-size: 0.82rem;
-  padding: 6px 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  text-align: center;
 }
 
 .card-actions .button.watch {
-  background: var(--on-lapis);
-  color: var(--lapis-deep);
+  background: var(--saffron);
+  color: var(--theme-bg-canvas);
+  border-color: var(--saffron);
+  font-weight: 600;
 }
 
 .card-actions .button.watch:hover {
-  background: #fff;
+  background: var(--saffron-hover);
+  border-color: var(--saffron-hover);
 }
 
 .card-actions .button.result {
   background: transparent;
-  color: var(--on-lapis);
-  border-color: var(--lapis-line);
+  color: var(--theme-text-secondary);
+  border-color: var(--theme-border);
 }
 
 .card-actions .button.result:hover {
-  border-color: var(--on-lapis);
+  border-color: var(--theme-border-hover);
+  color: var(--theme-text-primary);
+  background: rgba(37, 99, 235, 0.08);
 }
 
 .thumbnail {

@@ -942,7 +942,7 @@ export function RepeatedInk({
 }
 
 /** The accent for things in motion (--current in styles.css). */
-const ACCENT_COLOR = '#2f5bb7';
+const ACCENT_COLOR = '#f59e0b';
 
 /** One piece type's shape, small, for the piece panel. */
 export function PieceShape({
