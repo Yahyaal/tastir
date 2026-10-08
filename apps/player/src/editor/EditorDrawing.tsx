@@ -1,4 +1,4 @@
-import type { InkPiece, Scene, Vec } from '@tastir/engine';
+import type { Geometry, InkPiece, Scene, Vec } from '@tastir/engine';
 import { useMemo, useRef, useState } from 'react';
 import { viewBox, width, type Rect } from '../app/camera';
 import { useCamera } from '../app/useCamera';
@@ -59,6 +59,13 @@ export function EditorDrawing({
   tile,
   onHover,
   onClick,
+  camera: shared,
+  svgRef: sharedRef,
+  fitTo,
+  faint: extras,
+  glow,
+  rings,
+  dashed,
 }: {
   scene: Scene;
   selected?: number;
@@ -73,10 +80,30 @@ export function EditorDrawing({
   tile?: readonly Vec[];
   onHover: (at: Vec, reach: number) => void;
   onClick: (at: Vec, reach: number) => void;
+  /** A camera shared with another drawing (drawing along): its view is
+   * shown, and Fit goes to `fitTo`. */
+  camera?: {
+    readonly view: Rect;
+    readonly goTo: (r: Rect) => void;
+    readonly wasDrag: () => boolean;
+  };
+  svgRef?: React.RefObject<SVGSVGElement | null>;
+  fitTo?: Rect;
+  /** Elements drawn faint: the learner's own extras when drawing along. */
+  faint?: ReadonlySet<string>;
+  /** Elements that glow: what a step works from (a hint). */
+  glow?: ReadonlySet<string>;
+  /** Points ringed: where to click (a hint). */
+  rings?: readonly Vec[];
+  /** Figures drawn dashed: the answer (a hint). */
+  dashed?: readonly Geometry[];
 }) {
-  const frame = useMemo(() => frameOf(scene), [scene]);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const camera = useCamera(frame, svgRef);
+  const ownFrame = useMemo(() => frameOf(scene), [scene]);
+  const frame = fitTo ?? ownFrame;
+  const ownRef = useRef<SVGSVGElement>(null);
+  const svgRef = sharedRef ?? ownRef;
+  const own = useCamera(frame, ownRef, { active: !shared });
+  const camera = shared ?? own;
   const view = camera.view;
   const [pointer, setPointer] = useState<Vec>();
   // Screen to drawing: the SVG keeps its aspect (meet), centred.
@@ -112,6 +139,8 @@ export function EditorDrawing({
       'el',
       el.step === selected ? 'current' : '',
       taken.has(el.name) || (hover && named(hover) === el.name) ? 'taken' : '',
+      extras?.has(el.name) ? 'extra' : '',
+      glow?.has(el.name) ? 'glow' : '',
     ]
       .filter(Boolean)
       .join(' ');
@@ -295,7 +324,19 @@ export function EditorDrawing({
               r={c.radius}
             />
           ))}
+          {dashed?.map((g, i) => (
+            <Dashed key={`a${i}`} g={g} far={far} />
+          ))}
           {dots}
+          {rings?.map((p, i) => (
+            <circle
+              key={`r${i}`}
+              className="hint-ring"
+              cx={p.x}
+              cy={p.y}
+              r={unit * 9}
+            />
+          ))}
           {targets.map((t, i) => ring(t, i, 'target'))}
           {hover ? ring(hover, 'h', 'hover') : null}
         </g>
@@ -306,4 +347,37 @@ export function EditorDrawing({
       </button>
     </div>
   );
+}
+
+/** A figure of the answer, dashed, for the learner to draw over. */
+function Dashed({ g, far }: { g: Geometry; far: number }) {
+  if (g.kind === 'circle')
+    return (
+      <circle
+        className="answer"
+        cx={g.circle.centre.x}
+        cy={g.circle.centre.y}
+        r={g.circle.radius}
+      />
+    );
+  if (g.kind === 'line') {
+    const { point: p, dir: d } = g.line;
+    return (
+      <line
+        className="answer"
+        x1={p.x - d.x * far}
+        y1={p.y - d.y * far}
+        x2={p.x + d.x * far}
+        y2={p.y + d.y * far}
+      />
+    );
+  }
+  if (g.kind === 'polygon')
+    return (
+      <polygon
+        className="answer"
+        points={g.vertices.map((v) => `${v.x},${v.y}`).join(' ')}
+      />
+    );
+  return null;
 }

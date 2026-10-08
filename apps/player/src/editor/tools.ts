@@ -69,6 +69,8 @@ export interface Tool {
   readonly id: ToolId;
   readonly label: string;
   readonly icon: string;
+  /** What the tool does, in plain words, for its tooltip. */
+  readonly does: string;
   /** What each click takes, in turn; the last repeats for a tool with
    * `more` (the circles to touch, the corners of a polygon). */
   readonly wants: readonly Want[];
@@ -81,6 +83,7 @@ export interface Tool {
 export const TOOLS: readonly Tool[] = [
   {
     id: 'point',
+    does: 'Mark a crossing of two lines or circles and give it a name. Crossings are there anyway; a name lets a step text point at it.',
     label: 'Point',
     icon: '•',
     wants: ['point'],
@@ -88,6 +91,7 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     id: 'compass',
+    does: 'Draw a circle: click its centre, then a point it passes through.',
     label: 'Compass',
     icon: '◯',
     wants: ['point', 'point'],
@@ -95,6 +99,7 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     id: 'same',
+    does: 'Draw a circle as big as one already drawn: click that circle, then the new centre.',
     label: 'Same opening',
     icon: '◎',
     wants: ['circle', 'point'],
@@ -102,6 +107,7 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     id: 'span',
+    does: 'Open the compass between two points, then draw a circle that size about a third point.',
     label: 'Opening from two points',
     icon: '⟷',
     wants: ['point', 'point', 'point'],
@@ -113,6 +119,7 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     id: 'touch',
+    does: 'Draw a circle about a centre that just touches the lines or circles you click.',
     label: 'Touching',
     icon: '⦾',
     wants: ['point', 'curve'],
@@ -124,6 +131,7 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     id: 'ruler',
+    does: 'Draw a straight line through two points.',
     label: 'Ruler',
     icon: '╱',
     wants: ['point', 'point'],
@@ -131,6 +139,7 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     id: 'square',
+    does: 'Draw a line at right angles to a line, through a point.',
     label: 'Square to',
     icon: '⊥',
     wants: ['line', 'point'],
@@ -138,6 +147,7 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     id: 'parallel',
+    does: 'Draw a line parallel to a line, through a point.',
     label: 'Parallel',
     icon: '∥',
     wants: ['line', 'point'],
@@ -145,6 +155,7 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     id: 'halve',
+    does: 'Draw the line that cuts an angle in half: a point on one arm, the corner, a point on the other arm.',
     label: 'Halve angle',
     icon: '∠',
     wants: ['point', 'point', 'point'],
@@ -156,6 +167,7 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     id: 'polygon',
+    does: 'Join points into a closed shape: click its corners in turn.',
     label: 'Polygon',
     icon: '⬠',
     wants: ['point'],
@@ -164,6 +176,7 @@ export const TOOLS: readonly Tool[] = [
   },
   {
     id: 'tile',
+    does: 'Mark the square or hexagon that repeats edge to edge into a wall: click its corners.',
     label: 'Tile',
     icon: '▢',
     wants: ['point'],

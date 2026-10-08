@@ -38,6 +38,7 @@ import {
 import { Shelf } from './Shelf';
 import { openShared, ShareLink, useShared } from './Sharing';
 import { Editor } from '../editor/Editor';
+import { DrawAlongPage } from '../along/DrawAlong';
 import { copyUpTo } from '../editor/document';
 import {
   addPattern,
@@ -1514,6 +1515,14 @@ export function App({
         known={design ? entries.some((e) => e.id === design.tutorial) : false}
       />
     );
+  }
+  // #/id/draw: the learner draws the tutorial along, step by step.
+  if (route.endsWith('/draw')) {
+    const id = route.slice(0, -'/draw'.length);
+    const entry = entries.find((e) => e.id === id);
+    if (!entry)
+      return <Broken message={`There is no tutorial called "${id}".`} />;
+    return <DrawAlongPage key={route} json={entry.json} address={id} />;
   }
   // #/id plays from the first step; #/id/result opens at the finished wall.
   const result = route.endsWith('/result');

@@ -1,0 +1,215 @@
+/* Drawing along (#/<tutorial>/draw): the learner's board on the left, the
+   tutorial's step on the right, the same size and at the same height. */
+
+.along [hidden] {
+  display: none !important;
+}
+
+.along .topbar .edit-link {
+  color: var(--on-lapis-muted);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.along-steps {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+
+.along-steps-label {
+  font-family: var(--display);
+  color: var(--on-lapis-muted);
+}
+
+.along-steps ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.player .along-dot {
+  min-width: 34px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 15px;
+  font-size: 0.82rem;
+  background: transparent;
+  color: var(--on-lapis-muted);
+  border: 1px solid var(--lapis-line);
+}
+
+.player .along-dot.done {
+  background: var(--lapis-raised);
+  color: #9fe3c7;
+  border-color: var(--lapis-raised);
+}
+
+.player .along-dot.on {
+  border-color: var(--saffron);
+  color: var(--on-lapis);
+  font-weight: 700;
+}
+
+.along-swap {
+  margin-left: auto;
+}
+
+/* Two equal columns; the tool bar and the step's heading share the first
+   row, so both drawings start at the same height and have the same size. */
+.along-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  /* The captions keep one height, so no text moves the drawings. */
+  grid-template-rows: auto minmax(0, 1fr) 9rem;
+  column-gap: 28px;
+  row-gap: 14px;
+}
+
+.along-tools .editor-tools {
+  margin-bottom: 0;
+}
+
+.along-head {
+  display: flex;
+  align-items: flex-end;
+}
+
+.along-head .label {
+  margin: 0;
+  color: var(--saffron);
+  font-weight: 700;
+}
+
+.along-plate {
+  position: relative;
+  min-height: 0;
+}
+
+.along .along-plate .editor-canvas,
+.along .along-plate > .drawing {
+  flex: 1;
+  min-width: 0;
+}
+
+.along .editor-drawing {
+  min-height: 0;
+}
+
+.player .along-plate > .fit {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 3px 12px;
+  font-size: 0.8rem;
+  background: var(--gesso);
+  color: var(--ink);
+  border: 1px solid var(--old);
+}
+
+.along .caption {
+  display: block;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.along .along-step-caption {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+}
+
+.along .tool-gap {
+  display: none;
+}
+
+.along .editor-tools .tool {
+  padding: 3px 7px;
+  font-size: 0.78rem;
+}
+
+.along .caption h2 {
+  margin: 0 0 4px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.05rem;
+  color: var(--saffron);
+}
+
+.along .caption .instruction {
+  margin: 0 0 6px;
+}
+
+.along-check {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: var(--on-lapis-muted);
+}
+
+.along-check.done {
+  color: #9fe3c7;
+  font-weight: 700;
+}
+
+.along-nav {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* The learner's own extras: kept, faint, never wrong. */
+.editor-drawing .el.extra {
+  stroke: var(--faint);
+  stroke-dasharray: 4 3;
+}
+
+/* Hints: what the step works from glows; where to click is ringed; the
+   answer is dashed. */
+.editor-drawing .el.glow {
+  stroke: var(--saffron);
+  stroke-width: 4px;
+}
+
+.editor-drawing .hint-ring {
+  fill: none;
+  stroke: var(--saffron);
+  stroke-width: 3px;
+  vector-effect: non-scaling-stroke;
+}
+
+.editor-drawing .answer {
+  fill: none;
+  stroke: var(--current);
+  stroke-width: 2px;
+  stroke-dasharray: 8 6;
+  vector-effect: non-scaling-stroke;
+}
+
+.player .editor-tools .tool.hinted {
+  box-shadow: 0 0 0 3px var(--saffron);
+}
+
+@media (max-width: 760px) {
+  .along-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+
+  .along-plate {
+    min-height: 56vh;
+  }
+
+  /* On a phone the step to copy, with Back and Next, comes first. */
+  .along .along-step-caption {
+    order: -1;
+  }
+}

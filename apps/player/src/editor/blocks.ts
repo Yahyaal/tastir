@@ -556,6 +556,7 @@ export const blockTool = (block: Block): Tool => ({
   id: 'block',
   label: block.name,
   icon: '▦',
+  does: block.text,
   wants: block.inputs.map((i) => i.want),
   asks: block.inputs.map((i) => i.ask),
 });
