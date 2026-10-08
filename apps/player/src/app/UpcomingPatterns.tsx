@@ -208,13 +208,17 @@ export function UpcomingPatterns() {
 }
 
 function UpcomingCard({ pattern }: { pattern: UpcomingPattern }) {
+  const isPlayable = pattern.status === 'Playable now';
+
   return (
-    <li className="upcoming-card">
+    <li className={`upcoming-card ${isPlayable ? 'playable-card' : ''}`}>
       <div className="card-top-meta">
         <div className="card-badge-row">
           <span className="card-fold-badge">{pattern.foldLabel}</span>
           <span className="card-phase-badge">{pattern.phase.split(' · ')[0]}</span>
-          <span className="card-status-badge">{pattern.status}</span>
+          <span className={`card-status-badge ${isPlayable ? 'playable' : ''}`}>
+            {isPlayable ? '✦ Playable now' : pattern.status}
+          </span>
         </div>
         <span className="card-arabic-title" lang="ar" dir="rtl">
           {pattern.arabicTitle}
@@ -265,6 +269,14 @@ function UpcomingCard({ pattern }: { pattern: UpcomingPattern }) {
             <span className="source-citation">{pattern.source.citation}</span>
           )}
         </div>
+
+        {isPlayable && (
+          <div className="card-play-action">
+            <a href={`#/${pattern.id}`} className="card-play-action-btn">
+              Play Interactive Tutorial →
+            </a>
+          </div>
+        )}
       </footer>
     </li>
   );

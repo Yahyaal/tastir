@@ -1,6 +1,7 @@
 export type UpcomingPhase = 'Phase 1 · Immediate' | 'Phase 2 · Classical' | 'Phase 3 · Monumental';
 
 export type UpcomingStatus =
+  | 'Playable now'
   | 'Research complete'
   | 'Geometry verified'
   | 'Construction drafted'
@@ -43,7 +44,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     location: 'Cairo, Egypt',
     medium: 'Woodwork with ivory & ebony inlay',
     phase: 'Phase 1 · Immediate',
-    status: 'Research complete',
+    status: 'Playable now',
     summary:
       'The missing honeycomb counterpart to the al-Maridani square tiling. Six stellated rosettes surround one central rosette, creating secondary 6-pointed star interstitial lattices and delicate ivory darts.',
     constructionNotes:
