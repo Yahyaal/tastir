@@ -6,32 +6,43 @@ This page is the way into the project for the owner and for every new Claude Cod
 
 Tastir teaches Islamic geometric patterns one ruler or compass step at a time. The current goal is a rich library: every pattern family with several real designs, each verified against a photo or a published drawing of a real example, drawn exactly with ruler and compass, and shown well by the player (inking by hand, the repeat built tile by tile, colouring piece by piece). Later, learners should be able to make their own designs from a construction.
 
-## Where things stand (5 October 2026)
+## Where things stand (8 October 2026)
 
-There are 34 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The most recent work:
+**Read this first if you are a fresh session.** The owner is close to the weekly Claude limit, so Claude now works as an **orchestrator**: it reviews, plans and writes prompts, and **Gemini in Antigravity does the building**. Prompts for Gemini go in `docs/prompts/`, one dated file per batch, each prompt self-contained (it repeats the project's rules), because the owner points Antigravity at the file. Do not spawn builder or tester agents unless the owner asks; they use a lot of the limit.
 
-- The framed stars of the Salón de Comares in interlaced white bands, from Wichmann's drawing and checked against Wade's photo (`alhambra-comares-frames`).
-- The twelve-pointed stars of the Sala de los Reyes on a triangular grid, from Wichmann's drawing and checked against Wade's photo (`alhambra-reyes-dodecagrams`).
-- The carved pinwheel fret of the Sala de los Reyes, from Wichmann's drawing, every diamond matching Wade's photo (`alhambra-reyes-fret`).
-- The dado of the Patio de los Arrayanes (squares in white bands, small stars), built to David Wade's photo because Wichmann's drawing has different proportions (`alhambra-arrayanes-squares`).
-- The pinwheel fret of the Patio de los Leones, a chiral design, from Wichmann's drawing and checked against Wade's photo (`alhambra-leones-fret`).
-- The interlaced stars of the Sala de la Barca, built on the same construction as the Comares bath stars with one extra step, checked against Wade's photo (`alhambra-barca-stars`). Two designs from one construction, as the standing goals ask.
-- The zellige of the Sala de los Reyes (eight-pointed stars round octagons and crosses), from Wichmann's drawing and checked against Wade's photo, built as `alhambra-reyes-stars`.
-- The zellige dado of the Salón de Comares (octagons, long hexagons, crosses of five squares), from Wichmann's drawing and checked against David Wade's photo, built as `alhambra-comares-dado`. Wichmann's site lists 83 Alhambra designs paired with Wade photos, so the Alhambra family can keep growing from there.
-- The interlaced eight-pointed stars of the Comares bath (Alhambra), read from Brian Wichmann's Tiling Search drawing and checked against David Wade's photo of a carved panel with the same design, built as `alhambra-bath-stars`.
-- The minbar of al-Nasir Muhammad in the Citadel turned out to be the same design as the al-Maridani minbar, so `mian-stellated-rosettes` now has two real examples.
-- Design H2, the minbar doors from Cairo in the Metropolitan Museum (about 1325–30), built as `minbar-doors-cairo` and checked against the museum's photo. It is Samira Mian's rosette on a hexagonal tile, inked as the doors are.
-- Design H1, the al-Maridani minbar in Cairo, turned out to be Samira Mian's stellated rosettes, already in the library. Every inlay of the photo was measured and matches; the tutorial now credits the photo and is marked verified.
-- Samira Mian's twelve-fold rosette (square and hexagonal tiles) and her stellated rosettes (activity 8), both credited to her.
-- The Bou Inania rosette built her way, in 14 steps. Its tile copies overlap by one band, and each corner holds an eight-pointed star with four identical pieces round it. The owner judged it right on 5 October.
-- Design E, the Bou Inania twelve-fold wall, rebuilt as fifteen sets of twelve lines.
-- Player transitions that look hand-drawn: inking by ruler, the tile copied into a row and then the rows, colouring one colour at a time, and the tile outline in green that fades.
+### In flight right now
+
+Gemini is running the prompts in [`docs/prompts/gemini-2026-10-08.md`](prompts/gemini-2026-10-08.md), in order:
+
+1. **Finish task 6.16 on `main`.** The last fixes of draw along (colours kept on your own wall, "Keep it" updates the same pattern, `textWithoutHelpers` for steps whose helper lines are hidden) were committed as `a03ad5f` by Claude's builder agent when it was stopped. What is left: two jsdom tests, a browser check that the board never moves, and the 6.16 line in [the build log](USER-PATTERNS.md).
+2. **Ready the UI redesign** on the branch `ui-redesign` (worktree `../Tastir-ui`, served on port 4201; Gemini made it). Claude's review on 8 October found it **not ready to merge**: (a) 30 photos in `apps/player/public/upcoming/` ship with no creator or licence, and `fes-panel-photo.png` is byte-for-byte the private `docs/research/fes-panel-photo.png`; (b) the tutorial `darb-e-imam-decagram` is a ten-pointed star in a rectangle, not the Darb-e Imam portal's girih tiling, never checked against a photo, yet described as "world-renowned" and "verified"; the Upcoming page also claims "Playable now" and "Verified monument photograph" for patterns that are not; (c) the player's legend says blue for what a step makes and saffron for what it works from, but the new theme draws them orange and blue; (d) the branch started before 24 commits on `main` (draw along, pen inking, repeat it yourself, helper lines) and conflicts in `drawing.tsx`, and draw along and the editor are still in the old style. Its tests, lint and typecheck pass, the look itself is good, and phones work. Prompt 2 fixes all of this; Arabic subtitles it added are to be listed in `docs/prompts/arabic-titles.md` for a native reader.
+3. **A tester pass** by Gemini on the redesign, reported at the bottom of the build log on that branch.
+4. **Merge** `ui-redesign` into `main`, only if the tester says it is ready.
+
+**Next for Claude:** when the owner says a prompt is done, review Gemini's commits (diff, `pnpm test`/`lint`/`typecheck` exit codes, screenshots with playwright-core from `~/.cache/tastir-tester`, the content rules about photos and credits), then write the next prompt file. Check especially that Gemini kept the draw-along rule that the board never moves, and the photo rules.
+
+### What is built (6–8 October)
+
+- **Your own patterns** (plan at `#/plan`, tasks 1.1–5.5 in [the build log](USER-PATTERNS.md)): My designs (save your inking and colours), the editor (`#/edit/<id>`: copy a tutorial at any step, or start from nothing; ten ruler and compass tools; symmetry mode; tile, ink, play), building blocks, pattern files and share links. The owner removed the rosette block (it did not look like our rosettes) and asked to focus on beginner patterns; "Send it to the library" is hidden until there is a form.
+- **Draw along** (the owner's idea; plan at `#/plan/draw-along`, tasks 6.1–6.16): `#/<tutorial>/draw` on every beginner card and in the player. The learner draws on the left while the tutorial shows the step on the right; the two halves line up and the board never moves; Next is always open; each step is ticked when it is on the board, however it was drawn; hints in three levels and "Draw it for me". Ink with a **pen** (click a dot, then a dot on the same line; copies round the centre are an option, off by default), then **repeat it yourself** (place copies by clicking ghosts or dragging; they snap edge to edge) and colour it if you want; it is kept under My patterns.
+- **Helper lines** (construction the pattern never runs along) are **hidden by default**, with a "Show helper lines" setting in the player and in draw along. A helper line that is the only way to find a needed point stays shown and still counts. Steps whose text mentions hidden lines carry a `textWithoutHelpers` (format, schema and a test that none is missing).
+- The review page puts its questions first, above Progress, and its links to cards stay on the page.
+
+### Open decisions and things still to do
+
+- **The owner's look** at draw along on a real browser, especially the Comares bones (where the owner found inking confusing before the pen) and repeat it yourself.
+- **Where learners send library files**: hidden for now; needs a form or an address the owner chooses.
+- **Step texts** were given `textWithoutHelpers` by an agent; the owner has not read them yet.
+- **Arabic titles** from the redesign need a native reader.
+- After all that, the earlier next goal: more Alhambra panels from Brian Wichmann's Tiling Search, each checked against David Wade's photo (candidates and method in [the queue](patterns/QUEUE.md)).
+
+### Older work (to 5 October)
+
+There are 34 tutorials in the library (36 on the redesign branch). Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The Alhambra family grew from Brian Wichmann's drawings checked against David Wade's photos; Samira Mian's rosettes and the Cairo minbars are verified; the Bou Inania rosette and wall were judged right by the owner on 5 October.
 
 ## The next goal
 
-“Your own patterns” (the plan at `#/plan`) is built: phases 1 to 5 were finished and checked by a tester agent on 7 October 2026, as recorded in [the build log](USER-PATTERNS.md). The owner reviewed it on 7 October: the rosette block is removed and “Send it to the library” is hidden until there is a form. **Draw along** (the owner's idea: the learner draws each step on the left while the tutorial shows it on the right) was built and checked by the tester agent on 7 October, for the thirteen beginner patterns; its plan is at `#/plan/draw-along` and its tasks 6.1–6.10 are in [the build log](USER-PATTERNS.md). It waits for the owner's look; fix what the owner finds first.
-
-After that, more Alhambra panels from Brian Wichmann's Tiling Search, each checked against David Wade's photo of the real panel (the candidates and the method are in [the queue](patterns/QUEUE.md)).
+Get the UI redesign merged cleanly (the four prompts above), then the owner's look at draw along, then more Alhambra panels from [the queue](patterns/QUEUE.md).
 
 ## How a session works
 
@@ -47,6 +58,7 @@ After that, more Alhambra panels from Brian Wichmann's Tiling Search, each check
 | Document | What it holds |
 | --- | --- |
 | [How to work with the owner](WORKING-WITH-OWNER.md) | How the owner wants to be shown work and asked questions, and the process mistakes made so far |
+| [Prompts for Gemini](prompts/) | One dated file per batch of work handed to Gemini in Antigravity |
 | [Your own patterns](USER-PATTERNS.md) | The build log for user-made patterns: tasks, tester reports, lessons |
 | [Work queue](patterns/QUEUE.md) | Every piece of pattern work, done and left, with the detail needed to resume it |
 | [Pattern status](patterns/STATUS.md) | Every tutorial in the library and how it was verified |
