@@ -1575,11 +1575,17 @@ function HeroPlay({ model }: { model: Model }) {
   const panelModel = useMemo(() => asPanel(model), [model]);
   const n = beats.length;
   const colorSteps = model.pattern.types.length;
-  const total = n + 1 + colorSteps + 1;
+  const total = n + colorSteps + 3;
   const colors = useMemo(
     () => pieceColors(model, tutorialColoring(model)),
     [model],
   );
+
+  const isFadingLines = k === n + 1;
+  const isColoring = k >= n + 2 && k <= n + 1 + colorSteps;
+  const isFinished = k > n + 1 + colorSteps;
+  const coloredUpTo = isFinished ? undefined : isColoring ? k - (n + 1) : 0;
+  const colorIndex = isColoring ? k - n - 2 : isFinished ? colorSteps - 1 : -1;
 
   useLayoutEffect(() => {
     if (reduced) return;
@@ -1595,37 +1601,46 @@ function HeroPlay({ model }: { model: Model }) {
     const wait =
       k === total - 1
         ? HERO_HOLD_MS
-        : k > n
-          ? 850
-          : Math.max(600, ...ends) + (k === n ? 900 : 350);
+        : isFadingLines
+          ? 1100
+          : isColoring
+            ? 850
+            : Math.max(600, ...ends) + (k === n ? 900 : 350);
     const timer = setTimeout(() => setK((k + 1) % total), wait);
     return () => {
       clearTimeout(timer);
       for (const a of anims) a.cancel();
     };
-  }, [k, n, total, beats, model, panelModel, reduced]);
-
-  const isColoring = k > n && k <= n + colorSteps;
-  const isFinished = k > n + colorSteps;
-  const coloredUpTo = isFinished ? undefined : isColoring ? k - n : 0;
-  const colorIndex = isColoring ? k - n - 1 : isFinished ? colorSteps - 1 : -1;
+  }, [k, n, total, beats, model, panelModel, reduced, isFadingLines, isColoring]);
 
   const caption =
     reduced || isFinished
       ? `${model.tutorial.title}: completed design`
       : k === n
         ? `${model.tutorial.title}: inking the pattern`
-        : isColoring
-          ? `${model.tutorial.title}: coloring — ${nameOf(model, colorIndex)} (${colorIndex + 1} of ${colorSteps})`
-          : `${model.tutorial.title}: step ${k + 1} of ${n}`;
+        : isFadingLines
+          ? `${model.tutorial.title}: revealing the inked pattern`
+          : isColoring
+            ? `${model.tutorial.title}: coloring — ${nameOf(model, colorIndex)} (${colorIndex + 1} of ${colorSteps})`
+            : `${model.tutorial.title}: step ${k + 1} of ${n}`;
 
   return (
     <>
       <div className={`plate-frame ${isColoring ? 'coloring-active' : ''}`}>
         {reduced || isFinished ? (
-          <Thumbnail model={model} />
+          <Thumbnail model={model} view={view} />
         ) : isColoring ? (
-          <Thumbnail model={model} coloredUpTo={coloredUpTo} />
+          <Thumbnail model={model} view={view} coloredUpTo={coloredUpTo} />
+        ) : isFadingLines ? (
+          <Construction
+            model={panelModel}
+            upTo={all}
+            view={view}
+            svgRef={svgRef}
+            ink
+            enter
+            fadeLines
+          />
         ) : k === n ? (
           <Construction
             model={panelModel}

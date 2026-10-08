@@ -450,6 +450,7 @@ export function Construction({
   freeInk,
   enter = false,
   arrived = false,
+  fadeLines = false,
 }: {
   model: Model;
   upTo: number;
@@ -474,6 +475,8 @@ export function Construction({
   /** Arrived with Next: what the step before made turns from blue to its
    * new colour. */
   arrived?: boolean;
+  /** Smoothly fade out construction lines and circles while keeping ink. */
+  fadeLines?: boolean;
 }) {
   const settled = frame ?? view;
   const content = useMemo(() => {
@@ -609,7 +612,7 @@ export function Construction({
   return (
     <svg
       ref={svgRef}
-      className={ink && enter ? 'drawing ink-enter' : 'drawing'}
+      className={`drawing ${ink && enter ? 'ink-enter' : ''} ${fadeLines ? 'fade-lines' : ''}`}
       viewBox={viewBox(view)}
       role="img"
       aria-label={
@@ -1011,6 +1014,7 @@ export function Thumbnail({
   coloring = tutorialColoring(model),
   look = model.tutorial.pattern.look,
   coloredUpTo,
+  view: givenView,
 }: {
   model: Model;
   /** A learner's colors (a saved design); else the tutorial's own. */
@@ -1019,9 +1023,12 @@ export function Thumbnail({
   look?: WallStyle;
   /** If set, only pieces with type < coloredUpTo receive their color; others show blueprint tone. */
   coloredUpTo?: number;
+  /** If set, renders within this camera view (e.g. locked to fullView) rather than tiling view. */
+  view?: Rect;
 }) {
   const reach = 2;
-  const { view } = tiling(model, { halfWide: 1, halfHigh: 1, reach });
+  const { view: defaultView } = tiling(model, { halfWide: 1, halfHigh: 1, reach });
+  const view = givenView ?? defaultView;
   const { cell } = model.pattern;
   const colors = pieceColors(model, coloring);
   // Pieces of one shape can take different colors by where they sit (the
