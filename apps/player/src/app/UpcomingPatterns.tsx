@@ -99,11 +99,9 @@ export function UpcomingPatterns() {
           </div>
           <h1>Upcoming Patterns & Masterwork Queue</h1>
           <p className="upcoming-lead">
-            A researched catalog of historic masterworks from across the Islamic
-            world, prepared for step-by-step compass and straightedge
-            construction in the Tastir atelier. We are adding these in
-            structured batches—starting with missing honeycomb rosettes from
-            Samira Mian and the celebrated 10-fold Girih tile systems.
+            A catalog of historic masterworks from across the Islamic world that
+            we are researching for step-by-step compass and straightedge
+            construction in the Tastir atelier.
           </p>
         </header>
 
