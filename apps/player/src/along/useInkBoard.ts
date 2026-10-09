@@ -1,20 +1,8 @@
-import {
-  cellOf,
-  type Pattern,
-  type Vec,
-  classicSelection,
-  computePattern,
-  inkPieces,
-  type Cell,
-  type InkPiece,
-  type PieceType,
-  type Scene,
-} from '@tastir/engine';
-import type { Tutorial } from '@tastir/schema';
+import { type Vec } from '@tastir/engine';
 import { useEffect, useMemo, useState } from 'react';
-import { asPanel, type Model } from '../app/model';
+import { type Model } from '../app/model';
 import { check, type Draft } from '../editor/document';
-import { imagesOf, tutorialOf, type Inkable } from '../editor/finish';
+import { imagesOf, tutorialOf } from '../editor/finish';
 import {
   addPattern,
   freeTitle,
@@ -22,44 +10,13 @@ import {
   savePattern,
   type UserPattern,
 } from '../editor/patterns';
-import { strokesOf } from '@tastir/engine';
-import type { InkAlong } from '@tastir/schema';
 import { withoutDuplicates } from './dedupe';
 import { withTutorialInk } from './drawForMe';
 import { readyToInk, samePieces } from './inking';
-import {
-  lineKey,
-  penGraph,
-  strokeBetween,
-  strokeThrough,
-  type PenGraph,
-} from './pen';
+import { strokeBetween, strokeThrough } from './pen';
 
-/** The board ready to ink: its tile, scene and every bit of line. */
-interface Ready {
-  readonly draft: Draft;
-  readonly scene: Scene;
-  readonly cell: Cell;
-  readonly pieces: readonly InkPiece[];
-  /** For runs along one line: each bit's line, as a key. */
-  readonly inkable: Inkable;
-  /** The bits the tutorial's ink keeps. */
-  readonly classic: ReadonlySet<string>;
-  /** The pattern they make, with its pieces. */
-  readonly pattern: Pattern;
-  /** Whether the pattern is its own mirror image. */
-  readonly mirror: boolean;
-  /** The dots and lines the pen goes along. */
-  readonly graph: PenGraph;
-}
-
-/** How the learner's inking stands against the pattern. */
-export interface InkCheck {
-  /** The kinds of piece the ink closes. */
-  readonly types: readonly PieceType[];
-  /** Whether they are the pattern's. */
-  readonly matches: boolean;
-}
+import { useAlongWork } from './useAlongWork';
+export type { InkCheck } from './inkWork';
 
 /**
  * The ink stage of drawing along: the learner inks their own board, bit
@@ -76,51 +33,12 @@ export function useInkBoard(
   setChosen: (s: ReadonlySet<string>) => void,
 ) {
   const { tutorial } = model;
-  const ready = useMemo((): Ready | { reason: string } | undefined => {
-    if (!active) return undefined;
-    try {
-      const d = readyToInk(tutorial, model.scene, draft);
-      const scene = check(d).scene;
-      const cell = cellOf(scene, d.pattern?.cell ?? '');
-      const pieces = inkPieces(scene, cell, { allEdges: true });
-      const paths = new Map(
-        pieces.map((p) => [p.id, { along: lineKey(p) } as InkAlong]),
-      );
-      const inkable = { cell, pieces, paths };
-      // The bits the tutorial's own ink keeps, and the pieces they close.
-      const classic = classicSelection(
-        pieces,
-        asPanel(model).pattern.ink,
-        1e-7,
-        cell,
-      );
-      const pattern = computePattern(
-        scene,
-        d as Tutorial,
-        strokesOf(pieces, classic),
-      );
-      // Symmetric inking follows the pattern's own symmetry: its turns,
-      // and its mirror images only when it has them (a pinwheel has not).
-      const mirror =
-        !tutorial.chiral &&
-        [...classic].every((id) =>
-          imagesOf(inkable, id, 1, true).every((i) => classic.has(i)),
-        );
-      return {
-        draft: d,
-        scene,
-        cell,
-        pieces,
-        inkable,
-        classic,
-        pattern,
-        mirror,
-        graph: penGraph(pieces),
-      };
-    } catch (e) {
-      return { reason: e instanceof Error ? e.message : String(e) };
-    }
-  }, [active, tutorial, model.scene, draft]);
+  const preparing = useAlongWork(
+    'prepare',
+    useMemo(() => ({ model, draft }), [model, draft]),
+    active || model.scene.elements.size > 300,
+  );
+  const ready = active ? preparing.value : undefined;
   // The copies round the centre are a choice, off at first: a stroke
   // inks only what the learner drew.
   const [copies, setCopies] = useState(false);
@@ -133,30 +51,15 @@ export function useInkBoard(
     return () => window.clearTimeout(t);
   }, [fresh]);
 
-  const result = useMemo((): InkCheck | undefined => {
-    if (!ready || 'reason' in ready || !chosen.size) return undefined;
-    try {
-      const pattern = computePattern(
-        ready.scene,
-        ready.draft as Tutorial,
-        strokesOf(ready.pieces, chosen),
-      );
-      const made = {
-        expect: {
-          pieceTypes: pattern.types.length,
-          pieces: pattern.types.map((t) => ({
-            name: t.name ?? '',
-            vertices: t.vertices,
-            area: Number(t.area.toFixed(5)),
-            perCell: t.perCell,
-          })),
-        },
-      } as Pick<Tutorial, 'expect'>;
-      return { types: pattern.types, matches: samePieces(made, tutorial) };
-    } catch {
-      return { types: [], matches: false };
-    }
-  }, [ready, chosen, tutorial]);
+  const checking = useAlongWork(
+    'ink',
+    useMemo(
+      () =>
+        ready && !('reason' in ready) ? { ready, chosen, tutorial } : undefined,
+      [ready, chosen, tutorial],
+    ),
+  );
+  const result = checking.value;
 
   // Hints at the ink: what is still missing, one piece kind at a time.
   const [hintLevel, setHintLevel] = useState(0);
@@ -280,14 +183,7 @@ export function useInkBoard(
   /** “Ink it for me”: the bits the tutorial's own ink runs along. */
   const inkForMe = () => {
     if (!ready || 'reason' in ready) return;
-    setChosen(
-      classicSelection(
-        ready.pieces,
-        asPanel(model).pattern.ink,
-        1e-7,
-        ready.cell,
-      ),
-    );
+    setChosen(new Set(ready.classic));
   };
 
   /**
@@ -348,6 +244,9 @@ export function useInkBoard(
 
   return {
     ready,
+    pending: active && preparing.pending,
+    checking: checking.pending,
+    error: preparing.error ?? checking.error,
     result,
     hint,
     hintLevel,

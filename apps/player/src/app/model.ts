@@ -14,6 +14,13 @@ import {
 import { parseTutorial, type Tutorial } from '@tastir/schema';
 
 export interface Model {
+  /** Prepared in the worker so large constructions do not hide helpers on the UI thread. */
+  readonly helperView?: {
+    readonly tutorial: Tutorial;
+    readonly hide: ReadonlySet<string>;
+    readonly optional: ReadonlySet<string>;
+  };
+  readonly optionalHelpers?: ReadonlySet<string>;
   readonly tutorial: Tutorial;
   readonly scene: Scene;
   readonly pattern: Pattern;
@@ -35,6 +42,12 @@ export function withHelpers(model: Model, show: boolean): Model {
   if (show) return model;
   let found = helperless.get(model);
   if (found) return found;
+  if (model.helperView) {
+    const { tutorial, hide, optional } = model.helperView;
+    found = { ...model, tutorial, hide, optionalHelpers: optional };
+    helperless.set(model, found);
+    return found;
+  }
   const hidden = hiddenHelpers(model.scene, model.tutorial);
   const hide = new Set([...hidden, ...floatingPoints(model.scene, hidden)]);
   const figures = (step: number) =>
@@ -63,7 +76,12 @@ export function withHelpers(model: Model, show: boolean): Model {
       ? { ...text, hidden: true }
       : text;
   });
-  found = { ...model, tutorial: { ...model.tutorial, steps }, hide };
+  found = {
+    ...model,
+    tutorial: { ...model.tutorial, steps },
+    hide,
+    optionalHelpers: hidden,
+  };
   helperless.set(model, found);
   return found;
 }

@@ -1,11 +1,8 @@
 import {
-  checkStep,
   distance,
-  extrasOn,
   figureOn,
   hiddenHelpers,
   neededAt,
-  wallPieces,
   type Segment,
   type StepCheck,
   type Vec,
@@ -64,6 +61,7 @@ import { dotNear, reachable, type PenGraph } from './pen';
 import { forgetProgress, getProgress, keepProgress } from './progress';
 import { fillCopies, snapped, wallSegments, type Copy } from './repeat';
 import { RepeatBoard, TargetWall } from './RepeatBoard';
+import { useAlongWork } from './useAlongWork';
 import { useHistory } from './useHistory';
 import { useInkBoard } from './useInkBoard';
 
@@ -219,8 +217,11 @@ export function DrawAlong({
   // optional for a tick; a helper line that finds a point something needs
   // still counts.
   const optional = useMemo(
-    () => hiddenHelpers(full.scene, full.tutorial),
-    [full],
+    () =>
+      full.helperView?.optional ??
+      model.optionalHelpers ??
+      hiddenHelpers(full.scene, full.tutorial),
+    [full, model.optionalHelpers],
   );
   const { tutorial } = model;
   const beats = useMemo(() => beatsOf(tutorial), [tutorial]);
@@ -270,13 +271,20 @@ export function DrawAlong({
   const board = checked.scene;
 
   // How each step stands on the board, and the learner's own extras.
-  const checks = useMemo(
-    () =>
-      shown.map((b) =>
-        checkStep(model.scene, board, b, undefined, shapes, optional),
-      ),
-    [shown, model.scene, board, shapes, optional],
+  const checkingSteps = useAlongWork(
+    'steps',
+    useMemo(
+      () => ({
+        scene: model.scene,
+        board,
+        shown,
+        shapes,
+        optional,
+      }),
+      [model.scene, board, shown, shapes, optional],
+    ),
   );
+  const checks = checkingSteps.value?.checks ?? [];
   // A step is ticked when it is on the board; a step that only marks
   // points, once the step before it is ticked.
   const ticks = useMemo(() => {
@@ -288,10 +296,7 @@ export function DrawAlong({
     );
     return out;
   }, [checks]);
-  const extras = useMemo(
-    () => extrasOn(model.scene, board),
-    [model.scene, board],
-  );
+  const extras = checkingSteps.value?.extras;
   const here = inking ? undefined : checks[index];
 
   // The ink stage: the learner's own ink on their board.
@@ -399,13 +404,20 @@ export function DrawAlong({
   const ground =
     (PALETTES[colorHistory.now.palette] ?? PALETTES[DEFAULT_PALETTE])?.ground ??
     '#eee';
-  const wall = useMemo(
-    () =>
-      coloring && ready
-        ? wallPieces(wallSegments(tileInk, copies), model.pattern.types)
-        : [],
-    [coloring, ready, tileInk, copies, model.pattern.types],
+  const makingWall = useAlongWork(
+    'wall',
+    useMemo(
+      () =>
+        coloring && ready
+          ? {
+              segments: wallSegments(tileInk, copies),
+              types: model.pattern.types,
+            }
+          : undefined,
+      [coloring, ready, tileInk, copies, model.pattern.types],
+    ),
   );
+  const wall = makingWall.value ?? [];
   const [keepFailed, setKeepFailed] = useState<string>();
   /** Keeps the drawing as one of the learner's patterns, with the wall
    * they laid and, when they coloured it, its colours. */
@@ -726,48 +738,61 @@ export function DrawAlong({
     here !== undefined &&
     !here.needed.length &&
     neededAt(model.scene, beat).length > 0;
-  const stepStatus = !here
-    ? ''
-    : ticks[index]
-      ? here.needed.length
-        ? `✓ Step ${number} is on your board.`
-        : helperOnly
-          ? '✓ This step draws only helper lines: draw them if you want their points; nothing else needs them.'
-          : '✓ This step only marks points, and they come by themselves where lines cross.'
-      : here.done
-        ? helperOnly
-          ? 'This step draws only helper lines, which are up to you: it is ticked once the step before it is on your board.'
-          : 'This step only marks points: it is ticked once the step before it is on your board.'
-        : here.missing.length === here.needed.length &&
-            !here.missing.some((m) => m.name === tutorial.pattern.cell)
-          ? 'Not on your board yet.'
-          : `Still to draw: ${stillToDraw(here, tutorial.pattern.cell)}.`;
+  const stepStatus =
+    checkingSteps.error ??
+    (checkingSteps.pending
+      ? 'Checking your drawing…'
+      : !here
+        ? ''
+        : ticks[index]
+          ? here.needed.length
+            ? `✓ Step ${number} is on your board.`
+            : helperOnly
+              ? '✓ This step draws only helper lines: draw them if you want their points; nothing else needs them.'
+              : '✓ This step only marks points, and they come by themselves where lines cross.'
+          : here.done
+            ? helperOnly
+              ? 'This step draws only helper lines, which are up to you: it is ticked once the step before it is on your board.'
+              : 'This step only marks points: it is ticked once the step before it is on your board.'
+            : here.missing.length === here.needed.length &&
+                !here.missing.some((m) => m.name === tutorial.pattern.cell)
+              ? 'Not on your board yet.'
+              : `Still to draw: ${stillToDraw(here, tutorial.pattern.cell)}.`);
   const loose = ready
     ? copies.filter((c) => !snapped(ready.cell, c.at)).length
     : 0;
   const wallStatus = keptAs
     ? '✓ Kept as one of your patterns.'
-    : repeating
-      ? `${count(copies.length)} ${copies.length === 1 ? 'copy' : 'copies'} placed${loose ? `, ${count(loose)} of them loose` : ''}.`
-      : `${count(wall.filter((p) => p.type >= 0).length)} pieces in your wall${wall.some((p) => p.type < 0) ? ', and some that do not close' : ''}.`;
+    : (makingWall.error ??
+      (makingWall.pending
+        ? 'Finding the pieces of your wall…'
+        : repeating
+          ? `${count(copies.length)} ${copies.length === 1 ? 'copy' : 'copies'} placed${loose ? `, ${count(loose)} of them loose` : ''}.`
+          : `${count(wall.filter((p) => p.type >= 0).length)} pieces in your wall${wall.some((p) => p.type < 0) ? ', and some that do not close' : ''}.`));
   const kindsWord = (n: number) =>
     `${count(n)} ${n === 1 ? 'kind' : 'kinds'} of piece`;
-  const inkStatus = !inking
-    ? ''
-    : ink.ready && 'reason' in ink.ready
-      ? `Your board cannot be inked yet: ${ink.ready.reason}`
-      : !chosen.size
-        ? 'Ink the lines the pattern keeps on your board.'
-        : ink.result?.matches
-          ? `✓ Your ink closes the pattern’s pieces: ${kindsWord(ink.result.types.length)}, as in the tutorial.`
-          : ink.result?.types.length
-            ? `Your ink closes ${kindsWord(ink.result.types.length)}; the pattern has ${kindsWord(tutorial.expect.pieces.length)}.${
-                ink.missingKinds.length &&
-                ink.missingKinds.length < tutorial.expect.pieces.length
-                  ? ` Still missing: the ${ink.missingKinds.join(' and the ')}. Show me a hint marks where.`
-                  : ''
-              }`
-            : 'Your ink closes no pieces yet.';
+  const inkStatus =
+    ink.error ??
+    (ink.pending
+      ? 'Preparing the lines you can ink…'
+      : !inking
+        ? ''
+        : ink.ready && 'reason' in ink.ready
+          ? `Your board cannot be inked yet: ${ink.ready.reason}`
+          : ink.checking && chosen.size
+            ? 'Checking your ink…'
+            : !chosen.size
+              ? 'Ink the lines the pattern keeps on your board.'
+              : ink.result?.matches
+                ? `✓ Your ink closes the pattern’s pieces: ${kindsWord(ink.result.types.length)}, as in the tutorial.`
+                : ink.result?.types.length
+                  ? `Your ink closes ${kindsWord(ink.result.types.length)}; the pattern has ${kindsWord(tutorial.expect.pieces.length)}.${
+                      ink.missingKinds.length &&
+                      ink.missingKinds.length < tutorial.expect.pieces.length
+                        ? ` Still missing: the ${ink.missingKinds.join(' and the ')}. Show me a hint marks where.`
+                        : ''
+                    }`
+                  : 'Your ink closes no pieces yet.');
 
   const boardHalf = (
     <main className="stage along-plate" hidden={phone && showStep}>
@@ -968,7 +993,9 @@ export function DrawAlong({
   );
 
   return (
-    <div className="player along">
+    <div
+      className={`player along${model.scene.elements.size > 300 ? ' dense' : ''}`}
+    >
       <header className="topbar">
         <a className="home" href="#/">
           <span className="wordmark">
@@ -1321,6 +1348,7 @@ export function DrawAlong({
                   className="tool"
                   title={INK_FOR_ME}
                   aria-description={INK_FOR_ME}
+                  disabled={!ready}
                   onClick={ink.inkForMe}
                 >
                   Ink it for me

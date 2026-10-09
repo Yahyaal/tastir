@@ -15,12 +15,16 @@ export function readyToInk(
   tScene: Scene,
   draft: Draft,
 ): Draft {
-  const { draft: tiled, cell } = withTutorialTile(tutorial, tScene, draft);
+  const {
+    draft: tiled,
+    cell,
+    panel,
+  } = withTutorialTile(tutorial, tScene, draft);
   return {
     ...tiled,
     fold: tutorial.fold,
     ...(tutorial.chiral !== undefined ? { chiral: tutorial.chiral } : {}),
-    pattern: { ...tutorial.pattern, cell },
+    pattern: { ...tutorial.pattern, cell, ...(panel ? { panel } : {}) },
     expect: tutorial.expect,
   };
 }

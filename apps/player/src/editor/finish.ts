@@ -317,28 +317,26 @@ const key = (p: Vec) =>
   `${p.x.toFixed(5)},${p.y.toFixed(5)}`.replace(/-0\.00000/g, '0.00000');
 const pairKey = (a: Vec, b: Vec) => [key(a), key(b)].sort().join('|');
 
-const keyMaps = new WeakMap<Inkable, Map<string, string>>();
-
-/** Every piece by its ends, its copies in the tiles around included
- * (built once per board: a big pattern has thousands of pieces). */
-function keysOf(inkable: Inkable): Map<string, string> {
-  let byKey = keyMaps.get(inkable);
-  if (byKey) return byKey;
-  byKey = new Map();
-  const { u, v } = inkable.cell;
-  for (const p of inkable.pieces)
-    for (let i = -2; i <= 2; i++)
-      for (let j = -2; j <= 2; j++) {
-        if (i === 0 && j === 0) continue;
-        const d = { x: u.x * i + v.x * j, y: u.y * i + v.y * j };
-        const move = (q: Vec) => ({ x: q.x + d.x, y: q.y + d.y });
-        byKey.set(pairKey(move(p.segment.a), move(p.segment.b)), p.id);
-      }
-  for (const p of inkable.pieces) {
-    byKey.set(pairKey(p.segment.a, p.segment.b), p.id);
+const keyMaps = new WeakMap<
+  Inkable,
+  {
+    byEnds: Map<string, string>;
+    byId: Map<string, InkPiece>;
   }
-  keyMaps.set(inkable, byKey);
-  return byKey;
+>();
+
+/** Index the board once, rather than materializing 25 translated copies. */
+function keysOf(inkable: Inkable) {
+  let found = keyMaps.get(inkable);
+  if (found) return found;
+  found = {
+    byEnds: new Map(
+      inkable.pieces.map((p) => [pairKey(p.segment.a, p.segment.b), p.id]),
+    ),
+    byId: new Map(inkable.pieces.map((p) => [p.id, p])),
+  };
+  keyMaps.set(inkable, found);
+  return found;
 }
 
 /**
@@ -353,9 +351,27 @@ export function imagesOf(
   fold: number,
   mirror: boolean,
 ): string[] {
-  const piece = inkable.pieces.find((p) => p.id === id);
+  const { byEnds, byId } = keysOf(inkable);
+  const piece = byId.get(id);
   if (!piece) return [];
-  const byKey = keysOf(inkable);
+  const find = (a: Vec, b: Vec) => {
+    const direct = byEnds.get(pairKey(a, b));
+    if (direct) return direct;
+    const { u, v } = inkable.cell;
+    // Same precedence as the old translated table: the board itself,
+    // then the last of the neighbouring copies when two coincide.
+    for (let i = 2; i >= -2; i--)
+      for (let j = 2; j >= -2; j--) {
+        if (!i && !j) continue;
+        const dx = u.x * i + v.x * j;
+        const dy = u.y * i + v.y * j;
+        const found = byEnds.get(
+          pairKey({ x: a.x - dx, y: a.y - dy }, { x: b.x - dx, y: b.y - dy }),
+        );
+        if (found) return found;
+      }
+    return undefined;
+  };
   const out = new Set<string>([id]);
   for (let k = 0; k < fold; k++) {
     const t = (2 * Math.PI * k) / fold;
@@ -369,7 +385,7 @@ export function imagesOf(
     for (const flip of flips) {
       const a = turn(flip(piece.segment.a));
       const b = turn(flip(piece.segment.b));
-      const found = byKey.get(pairKey(a, b));
+      const found = find(a, b);
       if (found) out.add(found);
     }
   }

@@ -652,3 +652,10 @@
     min-height: 4.6rem;
   }
 }
+
+/* Hundreds of filtered SVG lines allocate enormous offscreen surfaces.
+   Colour and stroke width still identify the current step on dense boards. */
+.along.dense .el.current,
+.along.dense .mark.current {
+  filter: none;
+}

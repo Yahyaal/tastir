@@ -84,7 +84,7 @@ export function withTutorialTile(
   tutorial: Tutorial,
   tScene: Scene,
   draft: Draft,
-): { draft: Draft; cell: string } {
+): { draft: Draft; cell: string; panel?: string } {
   const b = builder(
     tutorial,
     tScene,
@@ -93,9 +93,12 @@ export function withTutorialTile(
     check(draft.steps),
   );
   const cell = b.resolve(tutorial.pattern.cell);
+  const panel = tutorial.pattern.panel
+    ? b.resolve(tutorial.pattern.panel)
+    : undefined;
   const carriers = inkCarriers(tScene, inkStrokes(tScene, tutorial));
   for (const c of carriers) b.resolve(c);
-  return { draft: b.draft(), cell };
+  return { draft: b.draft(), cell, ...(panel ? { panel } : {}) };
 }
 
 /** Takes references to the tutorial's elements from the board by geometry,
