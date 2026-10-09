@@ -35,7 +35,7 @@ was checked with my own Python rebuild, **not** with the app's engine. Run
 - **Highlight:** none.
 - **Ink:** none yet.
 
-![Step 1](img/simple-step01.png)
+![Step 1](img/bou-inania-wall/simple-step01.png)
 
 ### 2. Vertical, grid lines, tile corner, diagonal
 

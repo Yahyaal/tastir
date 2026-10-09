@@ -171,6 +171,40 @@ Each step's text says something different from what its JSON draws.
 | `img/bou-inania-wall/photo-corner.png` | The same corner, photo only |
 | `img/bou-inania-wall/simple-overlay-corner.png` | Simplified ink on the corner, new cuts in cyan |
 
+## Engine check (2026-10-09)
+
+Ran `pnpm review bou-inania-twelve-fold-wall` and `pnpm compare bou-inania-twelve-fold-wall wall <photo>` with the engine against the Wikimedia Commons photo.
+
+### Confirmed findings
+
+1. **Rebuild matches the engine.** The engine renders all 21 steps successfully. Piece count from `pnpm review`: 15 types, 120 pieces per cell, matching the tutorial's `expect` block exactly. The Python rebuild's piece list is confirmed accurate.
+
+2. **Ring cut error (D1) confirmed.** The engine's current output shows the ring piece as 8 equal segments (6 vertices, area 0.04912, 8 per cell, total area 0.39296). Looking at the overlay against the photo (`compare-wall.png`), the current rungs clearly sit on orange tile (not white mortar), confirming they are cut in the wrong places. The rim lines should carry straight across the ring as white bands, creating 4 axis trapezoids and 4 bent diagonal pieces.
+
+3. **Unused elements confirmed.** Searched the JSON: `SLr451`, `ILgx1`, `ILgy1`, `ILr451`, `ULgx1`, `ULgy1`, `ULr451`, `ULad0`, `ULad1` and their defining points appear only where created and used by no later element.
+
+4. **Redundant `l9` confirmed.** Element `l9` (step 4) through c45 parallel to r60 is indeed redundant. Point V9 at `an ∩ l9` could instead be `an ∩ F2` since F2 is the same line (through c45 parallel to r60, repeated 12 times). The simplified construction eliminates `l9`.
+
+5. **Step text mismatches confirmed.** 
+   - Step 5: text says "at right angles to 0° and 30°" but JSON has `parallelTo: r30` and `r60`, which are at right angles to 120° and 150°, not 0° and 30°.
+   - Step 7: text says "line at 105°" but JSON has `parallelTo: r135`.
+   - Step 8: text says "at right angles to 0° and 30°" but JSON has `parallelTo: h` and `v` (0° and 90°).
+
+6. **Credit fixes needed.** The current tutorial's photo credit lacks creator name and licence. The tutorial has no `photos` entry. Samira Mian credit for star lines is present in the rosette tutorial but should also be in this wall tutorial.
+
+7. **Hidden step complexity.** Step 20 is hidden and marks 337 points. All ink paths use `through` two marks. The simplified construction replaces this with `along` a line between two crossing elements, eliminating all hidden marks.
+
+8. **Comparison overlay.** The engine's `compare-wall.png` shows the current tutorial's ink overlaid on the photo. The rosette and grid band match well, but the corner ring misalignment is visible where the cyan-marked rungs sit on orange tile instead of white mortar.
+
+### Review summary
+
+- **Ring error:** High confidence confirmed. Fix: replace 8 ring pieces with ringaxis (4 trapezoids) + ringbend (4 bent pieces).
+- **Complexity:** The 337 hidden marks and unused elements are accurate counts. The simplified 18-step construction with `along` ink eliminates all of them.
+- **Step texts:** Angle descriptions in steps 5, 7, 8 contradict the JSON and need correction.
+- **Credits:** Photo creator, licence, and Samira Mian star-line credit need adding.
+
+All findings from the review document are confirmed by the engine. The simplified construction addresses all issues.
+
 ## For the reviewer
 
 Please confirm or push back on each item. My numbers come from my own rebuild, so the engine
