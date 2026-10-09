@@ -553,7 +553,7 @@ export function Player({
           >
             Edit this pattern
           </a>
-        ) : !sharedView && tutorial.level === 'beginner' ? (
+        ) : !sharedView ? (
           <a
             className="edit-link"
             href={`#/${address}/draw`}

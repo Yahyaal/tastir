@@ -539,15 +539,13 @@ function CardView({
               </>
             )}
           </a>
-          {level === 'beginner' ? (
-            <a
-              className="button draw"
-              href={`#/${id}/draw`}
-              title="Draw it yourself, step by step, beside the tutorial"
-            >
-              Draw along
-            </a>
-          ) : null}
+          <a
+            className="button draw"
+            href={`#/${id}/draw`}
+            title="Draw it yourself, step by step, beside the tutorial"
+          >
+            Draw along
+          </a>
         </div>
       ) : null}
     </li>
