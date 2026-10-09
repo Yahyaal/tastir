@@ -3708,3 +3708,12 @@ main.stage .drawing:not(.wall) {
   margin: auto;
   max-width: 500px;
 }
+
+.explore-next h3 {
+  font-size: 0.95rem;
+  margin: 1rem 0 0.5rem;
+}
+.explore-next ul {
+  padding-left: 1.2rem;
+  line-height: 1.6;
+}

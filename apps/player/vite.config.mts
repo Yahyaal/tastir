@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 /// <reference types='vitest' />
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { extname, resolve, sep } from 'node:path';
@@ -22,7 +23,7 @@ const IMAGE_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
 };
 
-export default defineConfig(() => ({
+export default defineConfig(({ mode }) => ({
   root: import.meta.dirname,
   // GitHub Pages serves the app under /<repo>/; the deploy workflow sets
   // TASTIR_BASE to that path. Locally the app lives at the root.
@@ -38,6 +39,48 @@ export default defineConfig(() => ({
   },
   plugins: [
     react(),
+    {
+      name: 'library-previews',
+      resolveId(id) {
+        if (id === 'virtual:tastir-fixtures') return '\0tastir-fixtures';
+      },
+      load(id) {
+        if (id === '\0tastir-fixtures')
+          return mode === 'test'
+            ? `export { default } from ${JSON.stringify(resolve(import.meta.dirname, 'src/app/libraryFixtures.ts'))};`
+            : 'export default {};';
+      },
+      buildStart() {
+        execFileSync(
+          process.execPath,
+          [
+            '--conditions=@tastir/source',
+            '--import',
+            'tsx',
+            resolve(import.meta.dirname, 'src/build/catalog.tsx'),
+          ],
+          { cwd: resolve(import.meta.dirname, '../..'), stdio: 'inherit' },
+        );
+      },
+      handleHotUpdate(ctx) {
+        if (
+          ctx.file.startsWith(tutorials + sep) &&
+          ctx.file.endsWith('.json')
+        ) {
+          execFileSync(
+            process.execPath,
+            [
+              '--conditions=@tastir/source',
+              '--import',
+              'tsx',
+              resolve(import.meta.dirname, 'src/build/catalog.tsx'),
+            ],
+            { cwd: resolve(import.meta.dirname, '../..'), stdio: 'inherit' },
+          );
+          ctx.server.ws.send({ type: 'full-reload' });
+        }
+      },
+    },
     {
       // tutorials/ and packages/ (the engine and the schema) are outside
       // the app, so the dev server would not notice them change without
@@ -111,6 +154,7 @@ export default defineConfig(() => ({
     // Whole-player renders in jsdom take 2–7 s, and over 5 s (Vitest's default
     // limit) when the machine is busy, which made the coloring test flaky.
     testTimeout: 20_000,
+    maxWorkers: 2,
     include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
     coverage: {

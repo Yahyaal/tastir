@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import { Play } from './app';
 import { loadModel } from './model';
-import type { Reply, Request } from './workerClient';
+import { loadInWorker, type Reply, type Request } from './workerClient';
 
 /**
  * A stand-in Worker that runs the same steps as engine.worker.ts, but
@@ -11,6 +11,11 @@ import type { Reply, Request } from './workerClient';
 class FakeWorker {
   static last: FakeWorker | undefined;
   onmessage: ((e: MessageEvent<Reply>) => void) | null = null;
+  onerror: (() => void) | null = null;
+  onmessageerror: (() => void) | null = null;
+  terminate() {
+    this.queue = [];
+  }
   private queue: Reply[] = [];
   constructor() {
     FakeWorker.last = this;
@@ -37,6 +42,7 @@ describe('loading in a worker', () => {
     vi.stubGlobal('Worker', FakeWorker);
   });
   afterEach(() => {
+    FakeWorker.last?.onerror?.();
     vi.unstubAllGlobals();
   });
 
@@ -59,5 +65,17 @@ describe('loading in a worker', () => {
     // The finished model arrives through a promise.
     await act(() => Promise.resolve());
     expect(document.querySelector('.label')?.textContent).toBe('Step 1 of 6');
+  });
+  it('rejects pending requests after a worker crash and creates a fresh worker', async () => {
+    const failed = loadInWorker(example, () => undefined);
+    const old = FakeWorker.last as FakeWorker;
+    const rejected = expect(failed).rejects.toThrow('drawing engine stopped');
+    old.onerror?.();
+    await rejected;
+    const next = loadInWorker(example, () => undefined);
+    const fresh = FakeWorker.last as FakeWorker;
+    expect(fresh).not.toBe(old);
+    for (let n = 0; n < 4; n++) fresh.step();
+    expect((await next).tutorial.id).toBe('eight-fold-star-and-cross');
   });
 });

@@ -1,0 +1,555 @@
+import { useState } from 'react';
+import { listPatterns } from '../editor/patterns';
+import { NewPattern, PatternShelf } from '../editor/PatternShelf';
+import { listDesigns, unreadableKept, unreadableNow } from './designs';
+import { Thumbnail } from './drawing';
+import { type Entry } from './library';
+import { shownSteps } from './model';
+import { Shelf } from './Shelf';
+import { PROGRESS_TEXT, useModel } from './workerClient';
+
+import { HeroDrawing } from './Hero';
+/** What the library needs to know about a tutorial before it is loaded. */
+function aboutOf(json: unknown): {
+  style?: string;
+  level?: string;
+  fold?: number;
+} {
+  const t = (json ?? {}) as {
+    style?: unknown;
+    level?: unknown;
+    fold?: unknown;
+  };
+  return {
+    ...(typeof t.style === 'string' ? { style: t.style } : {}),
+    ...(typeof t.level === 'string' ? { level: t.level } : {}),
+    ...(typeof t.fold === 'number' ? { fold: t.fold } : {}),
+  };
+}
+
+const LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
+const capital = (s: string) => (s ? s[0]?.toUpperCase() + s.slice(1) : s);
+
+/** The pattern that draws itself at the top of the library. */
+const HERO = 'twelve-fold-rosette-mian';
+/** Where a newcomer starts. */
+const FIRST = 'eight-fold-star-and-cross';
+
+const TRADITIONS: Record<
+  string,
+  {
+    arabic: string;
+    era: string;
+    region: string;
+    medium: string;
+    summary: string;
+  }
+> = {
+  Moroccan: {
+    arabic: 'الزليج المغربي',
+    era: '12th Century – Present',
+    region: 'Fez, Marrakech & Rabat',
+    medium: 'Glazed terracotta tesserae (zellij)',
+    summary:
+      'Masterful geometric mosaics hand-chiselled from enamelled terracotta, renowned for rich saffron, cobalt, and emerald glazes radiating through celestial star rosettes.',
+  },
+  'Marinid zellige (Fès)': {
+    arabic: 'الزليج المريني بفاس',
+    era: '1244 – 1465 CE',
+    region: 'Bou Inania & Attarine Medersas, Fez',
+    medium: 'Classical Marinid zellij & carved cedarwood',
+    summary:
+      'The zenith of western Islamic geometry, epitomized by the monumental 16-fold and 12-fold star rosettes of Fez madrasas, harmonizing cut tilework with intricate stucco and cedar joinery.',
+  },
+  Nasrid: {
+    arabic: 'الحسبة الأندلسية بالنصرية',
+    era: '1238 – 1492 CE',
+    region: 'The Alhambra, Granada',
+    medium: 'Interlacing tilework (alicatado) & carved stucco',
+    summary:
+      'Sophisticated lacería strapwork with infinite ribbons weaving over and under through celestial 12, 16, and 24-pointed stars, celebrating proportion and harmony in the Palaces of the Alhambra.',
+  },
+  Mamluk: {
+    arabic: 'العمارة المملوكية بالقاهرة',
+    era: '1250 – 1517 CE',
+    region: 'Cairo, Egypt',
+    medium: 'Pierced marble, minbar inlays & brass doorplates',
+    summary:
+      'Monumental Cairo geometry characterized by crisp polygonal strapwork, decagram star rosettes, and ivory-inlaid geometric minbars of Sultan Hassan and Qaytbay.',
+  },
+  Timurid: {
+    arabic: 'العمارة التيمورية',
+    era: '1370 – 1507 CE',
+    region: 'Samarkand, Bukhara & Herat',
+    medium: 'Banna’i glazed brickwork & girih tiles',
+    summary:
+      'Monumental turquoise and lapis lazuli geometric faience adorning colossal iwans, domes, and portals, pioneering complex quasi-crystalline girih decagrams.',
+  },
+  Seljuk: {
+    arabic: 'الهندسة السلجوقية',
+    era: '1037 – 1194 CE',
+    region: 'Isfahan, Konya & Divriği',
+    medium: 'Carved stone portals & brick strapwork',
+    summary:
+      'Bold three-dimensional geometric relief carved deeply into monumental stone portals, madrasa gates, and intricate brickwork throughout Anatolia and Persia.',
+  },
+  Tulunid: {
+    arabic: 'الطراز الطولوني',
+    era: '868 – 905 CE',
+    region: 'Ibn Tulun Mosque, Cairo',
+    medium: 'Carved stucco arcades & geometric window grilles',
+    summary:
+      'Pioneering openwork stucco lattices with stylized geometric strapwork filtering sacred desert daylight into early Islamic hypostyle prayer halls.',
+  },
+  Mughal: {
+    arabic: 'العمارة المغولية',
+    era: '1526 – 1857 CE',
+    region: 'Agra, Delhi & Lahore',
+    medium: 'Carved red sandstone & pierced marble jali lattices',
+    summary:
+      'Intricate marble jali screens and pietra dura stonework uniting imperial Islamic geometric symmetry with refined architectural grace.',
+  },
+};
+
+/** Every tutorial, with a picture of the finished pattern. */
+export function Library({ entries }: { entries: readonly Entry[] }) {
+  const [style, setStyle] = useState<string>();
+  const [level, setLevel] = useState<string>();
+  const [fold, setFold] = useState<number>();
+  const [designs, setDesigns] = useState(listDesigns);
+  const [patterns, setPatterns] = useState(listPatterns);
+  const styles = [
+    ...new Set(
+      entries.flatMap((e) => aboutOf(e.preview ?? e.json).style ?? []),
+    ),
+  ].sort();
+  const folds = [
+    ...new Set(entries.flatMap((e) => aboutOf(e.preview ?? e.json).fold ?? [])),
+  ].sort((a, b) => a - b);
+  const shown = entries.filter((e) => {
+    const about = aboutOf(e.preview ?? e.json);
+    return (
+      (!style || about.style === style) &&
+      (!level || about.level === level) &&
+      (!fold || about.fold === fold)
+    );
+  });
+  const hero = entries.find((e) => e.id === HERO) ?? entries[0];
+  const first = entries.find((e) => e.id === FIRST) ?? entries[0];
+  return (
+    <div className="library">
+      <header className="masthead">
+        <div className="masthead-brand">
+          <h1 aria-label="Tastir">
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
+          </h1>
+          <span className="brand-badge">ATELIER</span>
+        </div>
+
+        <nav className="masthead-nav" aria-label="Main Navigation">
+          <a
+            href="#collection"
+            className="nav-item"
+            onClick={(e) => {
+              e.preventDefault();
+              document
+                .getElementById('collection')
+                ?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            <span>Library</span>
+            <span className="nav-badge">{entries.length}</span>
+          </a>
+          <a className="nav-item jump-link upcoming-nav-link" href="#/upcoming">
+            <span>Upcoming patterns</span>
+            <span className="nav-badge highlight">24</span>
+          </a>
+          {designs.length ? (
+            <button
+              type="button"
+              className="nav-item jump-link"
+              aria-label={`My designs (${designs.length})`}
+              onClick={() =>
+                document
+                  .getElementById('my-designs')
+                  ?.scrollIntoView?.({ behavior: 'smooth' })
+              }
+            >
+              <span>My designs</span>{' '}
+              <span className="nav-badge">({designs.length})</span>
+            </button>
+          ) : null}
+          {patterns.length ? (
+            <button
+              type="button"
+              className="nav-item jump-link"
+              aria-label={`My patterns (${patterns.length})`}
+              onClick={() =>
+                document
+                  .getElementById('my-patterns')
+                  ?.scrollIntoView?.({ behavior: 'smooth' })
+              }
+            >
+              <span>My patterns</span>{' '}
+              <span className="nav-badge">({patterns.length})</span>
+            </button>
+          ) : null}
+        </nav>
+
+        <div className="masthead-actions">
+          {patterns.length ? null : <NewPattern />}
+          {import.meta.env.DEV ? (
+            <div className="dev-links" aria-label="Developer quick links">
+              <span className="dev-tag">⚡ DEV</span>
+              <a
+                href="#/review"
+                className="dev-link"
+                title="Progress, decisions and questions"
+              >
+                <strong>Review page</strong>
+              </a>
+              <span className="dev-sep">/</span>
+              <a
+                href="#/notes"
+                className="dev-link"
+                title="Goal, queue, status and lessons"
+              >
+                <strong>Project notes</strong>
+              </a>
+            </div>
+          ) : null}
+        </div>
+      </header>
+      <section className="hero">
+        {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}
+        <div className="hero-copy">
+          <div className="eyebrow">
+            <span>Islamic Geometric Drafting Atelier</span>
+            <span className="eyebrow-sep">·</span>
+            <span className="eyebrow-arabic" lang="ar" dir="rtl">
+              علم التسطير والهندسة
+            </span>
+          </div>
+          <h2>Draw Islamic geometric patterns with a compass and a ruler.</h2>
+          <p>
+            Every pattern here starts from one circle. Each step adds a circle
+            or a line, and the pattern appears out of the lines you drew.
+          </p>
+          <ol className="hero-steps">
+            <li>Follow the construction, one step at a time.</li>
+            <li>Ink the lines that make the pattern.</li>
+            <li>Repeat the tile into a wall and color it.</li>
+          </ol>
+          {first ? (
+            <a className="button primary" href={`#/${first.id}`}>
+              Start with the star and cross
+            </a>
+          ) : null}
+        </div>
+      </section>
+      {designs.length || unreadableKept() || unreadableNow() ? (
+        <Shelf
+          designs={designs}
+          entries={entries}
+          onChange={() => setDesigns(listDesigns())}
+        />
+      ) : null}
+      {patterns.length ? (
+        <PatternShelf
+          patterns={patterns}
+          onChange={() => {
+            setPatterns(listPatterns());
+            setDesigns(listDesigns());
+          }}
+        />
+      ) : null}
+      <section aria-labelledby="collection">
+        <div className="collection-head">
+          <h2 id="collection">The patterns</h2>
+          <div className="collection-meta">
+            <p>
+              {shown.length === entries.length
+                ? `${entries.length} patterns, many checked against photos of the real walls.`
+                : `${shown.length} of ${entries.length} patterns.`}
+            </p>
+            <a className="upcoming-teaser-link" href="#/upcoming">
+              Upcoming masterworks roadmap (24) →
+            </a>
+          </div>
+        </div>
+        <div className="filters">
+          <fieldset className="filter-group">
+            <legend>Tradition</legend>
+            <Chip on={!style} onClick={() => setStyle(undefined)}>
+              All
+            </Chip>
+            {styles.map((s) => (
+              <Chip key={s} on={style === s} onClick={() => setStyle(s)}>
+                {s}
+              </Chip>
+            ))}
+          </fieldset>
+          <fieldset className="filter-group">
+            <legend>Symmetry</legend>
+            <Chip on={!fold} onClick={() => setFold(undefined)}>
+              Any fold
+            </Chip>
+            {folds.map((f) => (
+              <Chip key={f} on={fold === f} onClick={() => setFold(f)}>
+                {f}-fold
+              </Chip>
+            ))}
+          </fieldset>
+          <fieldset className="filter-group">
+            <legend>Level</legend>
+            <Chip on={!level} onClick={() => setLevel(undefined)}>
+              Any
+            </Chip>
+            {LEVELS.map((l) => (
+              <Chip key={l} on={level === l} onClick={() => setLevel(l)}>
+                {capital(l)}
+              </Chip>
+            ))}
+          </fieldset>
+        </div>
+        {style && TRADITIONS[style] ? (
+          <aside
+            className="tradition-dossier"
+            aria-label={`Context for ${style}`}
+          >
+            <div className="dossier-header">
+              <div className="dossier-badge">
+                <span className="dossier-tag">TRADITION CONTEXT</span>
+                <span className="dossier-sep">·</span>
+                <span className="dossier-ar" lang="ar" dir="rtl">
+                  {TRADITIONS[style].arabic}
+                </span>
+              </div>
+              <button
+                type="button"
+                className="dossier-clear"
+                onClick={() => setStyle(undefined)}
+              >
+                Clear tradition filter ✕
+              </button>
+            </div>
+            <div className="dossier-body">
+              <div className="dossier-heading">
+                <h3 className="dossier-title">{style}</h3>
+                <p className="dossier-meta">
+                  <span>{TRADITIONS[style].era}</span>
+                  <span className="meta-dot">·</span>
+                  <span>{TRADITIONS[style].region}</span>
+                  <span className="meta-dot">·</span>
+                  <span>{TRADITIONS[style].medium}</span>
+                </p>
+              </div>
+              <p className="dossier-summary">{TRADITIONS[style].summary}</p>
+            </div>
+          </aside>
+        ) : null}
+        {shown.length ? (
+          <ul className="cards">
+            {shown.map((entry) => (
+              <Card key={entry.id} entry={entry} />
+            ))}
+          </ul>
+        ) : (
+          <p className="empty">
+            No pattern matches both choices. Choose another tradition or level.
+          </p>
+        )}
+      </section>
+      <footer className="site-footer">
+        Tastir draws every point from crossings of earlier circles and lines, as
+        with a real compass and ruler. Sources and photographers are named with
+        each pattern.
+      </footer>
+    </div>
+  );
+}
+
+function Chip({
+  on,
+  onClick,
+  children,
+}: {
+  on: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button type="button" className="chip" aria-pressed={on} onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+const ARABIC_TITLES: Record<string, string> = {
+  'eight-fold-star-and-cross': 'خاتم سليمان وثماني',
+  'eight-fold-zellige': 'زليج ثماني مغربي',
+  'bou-inania-rosette': 'خاتم الستة عشر البوعنانية بفاس',
+  'bou-inania-twelve-fold-wall': 'حائط اثنا عشري بالبوعنانية',
+  'sixteen-fold-rosette': 'طاسة الستة عشر المرينية',
+  'twelve-fold-rosette-mian': 'روزيتا اثنا عشرية',
+  'twelve-fold-rosette-mian-hex': 'روزيتا مسدسة مسدسة',
+  'twelve-fold-dodecagrams': 'اثنا عشري نجمي',
+  'alhambra-comares-stars': 'نجوم قاعة قمارش بقصر الحمراء',
+  'alhambra-reyes-dodecagrams': 'اثنا عشري قاعة الملوك بالحمراء',
+  'alhambra-reyes-stars': 'نجوم قاعة الملوك بالحمراء',
+  'alhambra-mexuar-stars': 'نجوم المشور بقصر الحمراء',
+  'alhambra-barca-stars': 'نجوم قاعة البركة بالحمراء',
+  'alhambra-bath-stars': 'نجوم حمامات قصر الحمراء',
+  'alhambra-arrayanes-squares': 'مربعات صحن الريحان بالحمراء',
+  'ibn-tulun-window': 'شمسية جامع ابن طولون بالقاهرة',
+  'minbar-doors-cairo': 'مصاريع منبر قاهري مملوكي',
+  'four-fold-ring-of-circles': 'حلقة الدوائر الرباعية',
+  'six-fold-star-and-hexagons': 'نجمة مسدسة ومسدسات',
+  'six-fold-snowflake': 'ندفة الثلج المسدسة',
+  'six-fold-hammerhead': 'مطرقة مسدسة تيمورية',
+};
+
+/** One tutorial in the library, loaded in the worker. */
+function Card({ entry }: { entry: Entry }) {
+  return entry.preview ? (
+    <CardView id={entry.id} preview={entry.preview} />
+  ) : (
+    <LiveCard entry={entry} />
+  );
+}
+function LiveCard({ entry: { id, json } }: { entry: Entry }) {
+  const { model, error, progress } = useModel(json);
+  return <CardView id={id} model={model} error={error} progress={progress} />;
+}
+function CardView({
+  id,
+  preview,
+  model,
+  error,
+  progress,
+}: {
+  id: string;
+  preview?: import('./library').Preview;
+  model?: import('./model').Model;
+  error?: string;
+  progress?: import('./workerClient').Progress;
+}) {
+  const photos = preview?.photos ?? Boolean(model?.tutorial.photos?.length);
+  const title = preview?.title ?? model?.tutorial.title ?? id;
+  const level = preview?.level ?? model?.tutorial.level;
+  return (
+    <li className="card-item">
+      <a className="card" href={`#/${id}`}>
+        {preview ? (
+          <img
+            className="thumbnail"
+            src={import.meta.env.BASE_URL + preview.thumbnail}
+            alt=""
+            loading="lazy"
+            width="360"
+            height="360"
+          />
+        ) : model ? (
+          <Thumbnail model={model} />
+        ) : (
+          <div className={error ? 'thumbnail broken' : 'thumbnail waiting'} />
+        )}
+        <h3>{title}</h3>
+        {ARABIC_TITLES[id] ? (
+          <span className="card-arabic" lang="ar" dir="rtl">
+            {ARABIC_TITLES[id]}
+          </span>
+        ) : null}
+        {preview || model ? (
+          <p className="meta">
+            <span className="level">{capital(level ?? '')}</span>
+            <span>
+              {preview?.steps ??
+                (model ? shownSteps(model.tutorial).length : 0)}{' '}
+              steps
+            </span>
+            <span>{preview?.fold ?? model?.tutorial.fold}-fold</span>
+            <span>{preview?.style ?? model?.tutorial.style}</span>
+          </p>
+        ) : error ? (
+          <p className="error">Cannot be played: {error}</p>
+        ) : (
+          <p>{PROGRESS_TEXT[progress ?? 'checking']}</p>
+        )}
+      </a>
+      {preview || model ? (
+        <div className="card-actions">
+          <a className="button watch" href={`#/${id}`}>
+            <svg
+              aria-hidden="true"
+              className="action-icon"
+              viewBox="0 0 16 16"
+              width="13"
+              height="13"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+            >
+              <circle cx="8" cy="8" r="6" />
+              <path d="M8 2v4M8 10v4M2 8h4M10 8h4" />
+            </svg>
+            Watch it drawn
+          </a>
+          <a className="button result" href={`#/${id}/result`}>
+            {photos ? (
+              <>
+                <svg
+                  aria-hidden="true"
+                  className="action-icon"
+                  viewBox="0 0 16 16"
+                  width="13"
+                  height="13"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                >
+                  <rect x="2" y="3" width="12" height="10" rx="1.5" />
+                  <circle cx="8" cy="8" r="2.5" />
+                </svg>
+                Result and original
+              </>
+            ) : (
+              <>
+                <svg
+                  aria-hidden="true"
+                  className="action-icon"
+                  viewBox="0 0 16 16"
+                  width="13"
+                  height="13"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                >
+                  <path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z" />
+                </svg>
+                See the result
+              </>
+            )}
+          </a>
+          {level === 'beginner' ? (
+            <a
+              className="button draw"
+              href={`#/${id}/draw`}
+              title="Draw it yourself, step by step, beside the tutorial"
+            >
+              Draw along
+            </a>
+          ) : null}
+        </div>
+      ) : null}
+    </li>
+  );
+}

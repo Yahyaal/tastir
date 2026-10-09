@@ -1,0 +1,75 @@
+/** @jsxRuntime automatic */
+import sharp from 'sharp';
+import { createHash } from 'node:crypto';
+import {
+  existsSync,
+  unlinkSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { Thumbnail } from '../app/drawing';
+import { loadModel, shownSteps, withHelpers } from '../app/model';
+
+async function main() {
+  const root = fileURLToPath(new URL('../../../../', import.meta.url));
+  const out = resolve(root, 'apps/player/src/generated/catalog.ts');
+  const thumbnails = resolve(root, 'apps/player/public/thumbnails');
+  mkdirSync(dirname(out), { recursive: true });
+  mkdirSync(thumbnails, { recursive: true });
+  const catalog = [];
+  for (const file of readdirSync(resolve(root, 'tutorials'))
+    .filter((f) => f.endsWith('.json'))
+    .sort()) {
+    const json = JSON.parse(
+      readFileSync(resolve(root, 'tutorials', file), 'utf8'),
+    );
+    const model = loadModel(json);
+    const t = model.tutorial;
+    const id = file.replace(/\.json$/, '');
+    const svg = renderToStaticMarkup(<Thumbnail model={model} />)
+      .replace(
+        '<svg ',
+        '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" ',
+      )
+      .replace(
+        '><path',
+        '><style>.piece{stroke:#f8fafc;stroke-width:1.5px;stroke-linejoin:round}.piece.strap{stroke-width:1px}</style><path',
+      );
+    const hash = createHash('sha256').update(svg).digest('hex').slice(0, 12);
+    const filename = `${id}-${hash}.webp`;
+    if (!existsSync(resolve(thumbnails, filename))) {
+      await sharp(Buffer.from(svg))
+        .resize(480, 480)
+        .webp({ quality: 90 })
+        .toFile(resolve(thumbnails, filename));
+    }
+    catalog.push({
+      id,
+      title: t.title,
+      style: t.style,
+      level: t.level,
+      fold: t.fold,
+      steps: shownSteps(withHelpers(model, false).tutorial).length,
+      photos: Boolean(t.photos?.length),
+      thumbnail: `thumbnails/${filename}`,
+    });
+  }
+  const used = new Set(
+    catalog.map((entry) => entry.thumbnail.replace('thumbnails/', '')),
+  );
+  for (const name of readdirSync(thumbnails)) {
+    if (/\.(svg|webp)$/.test(name) && !used.has(name))
+      unlinkSync(resolve(thumbnails, name));
+  }
+  writeFileSync(out, 'export default ' + JSON.stringify(catalog) + ';\n');
+  console.log(`Prepared ${catalog.length} library previews.`);
+}
+void main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

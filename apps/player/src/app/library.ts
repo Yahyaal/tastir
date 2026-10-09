@@ -1,17 +1,25 @@
-/** A tutorial file from tutorials/; it is loaded (in the worker) when shown. */
-export interface Entry {
-  /** The file name without .json; the address of the tutorial. */
-  readonly id: string;
-  readonly json: unknown;
-}
+import fixtures from 'virtual:tastir-fixtures';
+import catalog from '../generated/catalog';
 
-// Every file in tutorials/: adding one needs no code change.
-const files = import.meta.glob<unknown>('../../../../tutorials/*.json', {
-  eager: true,
+/** Library metadata and previews are prepared at build time; geometry loads on demand. */
+export interface Preview {
+  readonly title: string;
+  readonly style: string;
+  readonly level: string;
+  readonly fold: number;
+  readonly steps: number;
+  readonly photos: boolean;
+  readonly thumbnail: string;
+}
+export interface Entry {
+  readonly id: string;
+  /** Raw data for user patterns/tests, or an async loader for library tutorials. */
+  readonly json: unknown;
+  readonly preview?: Preview;
+}
+const loaders = import.meta.glob<unknown>('../../../../tutorials/*.json', {
   import: 'default',
 });
-
-/** The tutorial files, by address, in order. */
 export function entriesOf(files: Record<string, unknown>): Entry[] {
   return Object.entries(files)
     .map(([path, json]) => ({
@@ -20,5 +28,11 @@ export function entriesOf(files: Record<string, unknown>): Entry[] {
     }))
     .sort((a, b) => a.id.localeCompare(b.id));
 }
-
-export const LIBRARY: readonly Entry[] = entriesOf(files);
+export const LIBRARY: readonly Entry[] =
+  import.meta.env.MODE === 'test'
+    ? entriesOf(fixtures)
+    : catalog.map(({ id, ...preview }) => ({
+        id,
+        preview,
+        json: loaders[`../../../../tutorials/${id}.json`],
+      }));

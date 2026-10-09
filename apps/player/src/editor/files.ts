@@ -1,5 +1,10 @@
-import { safeParseTutorial } from '@tastir/schema';
-import { check, type Draft } from './document';
+import {
+  BasedOnShape,
+  DraftShape,
+  SharedShape,
+  safeParseTutorial,
+} from '@tastir/schema';
+import type { Draft } from './document';
 import type { UserPattern } from './patterns';
 
 /**
@@ -21,6 +26,9 @@ export const patternFile = (p: UserPattern): PatternFile => ({
   ...(p.basedOn ? { basedOn: p.basedOn } : {}),
 });
 
+export const MAX_FILE_BYTES = 8 * 1024 * 1024;
+const MAX_LINK_CHARS = 2 * 1024 * 1024;
+
 const isObject = (x: unknown): x is Record<string, unknown> =>
   typeof x === 'object' && x !== null && !Array.isArray(x);
 
@@ -37,6 +45,8 @@ export function readPattern(text: string):
       readonly pattern: boolean;
     }
   | { readonly reason: string } {
+  if (text.length > MAX_FILE_BYTES)
+    return { reason: 'This pattern file is too large to open (8 MB maximum).' };
   let data: unknown;
   try {
     data = JSON.parse(text);
@@ -46,34 +56,36 @@ export function readPattern(text: string):
   if (!isObject(data))
     return { reason: 'This is not a pattern file: it holds no pattern.' };
   const wrapped = data['tastir'] === 'pattern';
+  if (wrapped && data['version'] !== 1)
+    return {
+      reason:
+        'This pattern file uses an unsupported version. Keep the original file and open it in the version of Tastir that created it.',
+    };
   const tutorial = wrapped ? data['tutorial'] : data;
   if (
     !isObject(tutorial) ||
     typeof tutorial['title'] !== 'string' ||
     !Array.isArray(tutorial['steps'])
   )
+    return { reason: 'This is not a pattern file: it has no title and steps.' };
+  const draft = DraftShape.safeParse(tutorial);
+  if (!draft.success)
     return {
-      reason: 'This is not a pattern file: it has no title and steps.',
+      reason:
+        'This pattern file is damaged: ' +
+        (draft.error.issues[0]?.message ?? 'its steps cannot be read.'),
     };
-  // A finished tutorial is checked in full; a draft only needs steps the
-  // engine can read (broken ones open marked in red).
-  const full = safeParseTutorial(tutorial);
-  try {
-    check(tutorial as unknown as Draft);
-  } catch {
-    if (!full.success)
-      return {
-        reason:
-          'This pattern file is damaged: its steps cannot be read. ' +
-          (full.issues[0]?.message ?? ''),
-      };
-  }
   const basedOn =
-    wrapped && isObject(data['basedOn']) ? data['basedOn'] : undefined;
+    wrapped && data['basedOn'] !== undefined
+      ? BasedOnShape.safeParse(data['basedOn'])
+      : undefined;
+  if (basedOn && !basedOn.success)
+    return { reason: 'This pattern file has damaged source information.' };
+  const full = safeParseTutorial(draft.data);
   return {
     pattern: wrapped,
-    tutorial: (full.success ? full.tutorial : tutorial) as Draft,
-    ...(basedOn ? { basedOn: basedOn as UserPattern['basedOn'] } : {}),
+    tutorial: full.success ? full.tutorial : draft.data,
+    ...(basedOn?.success ? { basedOn: basedOn.data } : {}),
   };
 }
 
@@ -110,7 +122,30 @@ async function pipe(
   stream: CompressionStream | DecompressionStream,
 ): Promise<Uint8Array> {
   const out = new Blob([bytes as BlobPart]).stream().pipeThrough(stream);
-  return new Uint8Array(await new Response(out).arrayBuffer());
+  const reader = out.getReader();
+  const chunks: Uint8Array[] = [];
+  let size = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > MAX_FILE_BYTES) {
+        await reader.cancel();
+        throw new Error('This shared pattern is too large to open.');
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const bytesOut = new Uint8Array(size);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytesOut.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return bytesOut;
 }
 
 /**
@@ -132,16 +167,16 @@ export async function encodeShared(shared: Shared): Promise<string> {
 /** The payload back from an address; undefined when it cannot be read. */
 export async function decodeShared(text: string): Promise<Shared | undefined> {
   try {
+    if (text.length > MAX_LINK_CHARS || !/^[jz][A-Za-z0-9_-]+$/.test(text))
+      return undefined;
     const raw = fromBase64Url(text.slice(1));
     const bytes =
       text[0] === 'z'
         ? await pipe(raw, new DecompressionStream('deflate-raw'))
         : raw;
     const data: unknown = JSON.parse(new TextDecoder().decode(bytes));
-    if (!isObject(data)) return undefined;
-    if (typeof data['library'] !== 'string' && !isObject(data['tutorial']))
-      return undefined;
-    return data as Shared;
+    const parsed = SharedShape.safeParse(data);
+    return parsed.success ? parsed.data : undefined;
   } catch {
     return undefined;
   }

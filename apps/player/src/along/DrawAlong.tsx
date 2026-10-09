@@ -3,40 +3,45 @@ import {
   distance,
   extrasOn,
   figureOn,
+  hiddenHelpers,
   neededAt,
   wallPieces,
   type Segment,
-  hiddenHelpers,
   type StepCheck,
   type Vec,
 } from '@tastir/engine';
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { fullView, growingFrame, type Rect } from '../app/camera';
+import {
+  colorReducer,
+  DEFAULT_PALETTE,
+  PALETTES,
+  pieceColors,
+  tutorialColoring,
+  type History as ColorHistory,
+} from '../app/coloring';
+import { addDesign, updateDesign } from '../app/designs';
 import { Construction } from '../app/drawing';
 import {
   asPanel,
   beatsOf,
-  withHelpers,
   hiddenBeats,
   shownBeats,
   shownSteps,
+  withHelpers,
   type Model,
 } from '../app/model';
-import { useCamera } from '../app/useCamera';
+import { PiecePanel } from '../app/PiecePanel';
 import { useRemembered } from '../app/remembered';
-import { nearestPiece } from '../editor/Editor';
+import { useCamera } from '../app/useCamera';
 import { PROGRESS_TEXT, useModel } from '../app/workerClient';
 import { check, emptyDraft, type Draft } from '../editor/document';
+import '../editor/editor.css';
 import { EditorDrawing } from '../editor/EditorDrawing';
 import { shapeName } from '../editor/finish';
+import { nearestPiece } from '../editor/geometry';
 import { makeStep, type Choice } from '../editor/makeStep';
+import { setPatternWall } from '../editor/patterns';
 import { ToolBar } from '../editor/ToolBar';
 import {
   complete,
@@ -49,28 +54,18 @@ import {
   type Target,
   type ToolId,
 } from '../editor/tools';
+import './along.css';
 import { drawForMe } from './drawForMe';
+import { guidanceFor } from './guidance';
 import { hintFor } from './hints';
 import { namesIn, placeKey, readableAt, readableNames } from './names';
 import { withTutorialNames } from './naming';
 import { dotNear, reachable, type PenGraph } from './pen';
 import { forgetProgress, getProgress, keepProgress } from './progress';
-import { useInkBoard } from './useInkBoard';
-import { RepeatBoard, TargetWall } from './RepeatBoard';
 import { fillCopies, snapped, wallSegments, type Copy } from './repeat';
-import { setPatternWall } from '../editor/patterns';
-import { addDesign, updateDesign } from '../app/designs';
-import { PiecePanel } from '../app/PiecePanel';
-import {
-  colorReducer,
-  DEFAULT_PALETTE,
-  PALETTES,
-  pieceColors,
-  tutorialColoring,
-  type History as ColorHistory,
-} from '../app/coloring';
-import '../editor/editor.css';
-import './along.css';
+import { RepeatBoard, TargetWall } from './RepeatBoard';
+import { useHistory } from './useHistory';
+import { useInkBoard } from './useInkBoard';
 
 /** The draw-along page (#/<tutorial>/draw), once the tutorial is loaded. */
 export function DrawAlongPage({
@@ -102,13 +97,6 @@ export function DrawAlongPage({
       </div>
     );
   return <DrawAlong model={model} address={address} />;
-}
-
-/** The board's drafts before and after this one, for Undo and Redo. */
-interface History {
-  readonly past: readonly Draft[];
-  readonly now: Draft;
-  readonly future: readonly Draft[];
 }
 
 const NUMBER_WORDS = [
@@ -277,46 +265,21 @@ export function DrawAlong({
   const info = beats[beat - 1];
 
   // The learner's board: a draft of their own, drawn with the editor.
-  const [history, setHistory] = useState<History>(() => ({
-    past: [],
-    now:
+  const {
+    history,
+    setHistory,
+    change: edit,
+    undo,
+    redo,
+  } = useHistory<Draft>(
+    () =>
       saved?.board ??
       emptyDraft(`${tutorial.id}-along`, `My ${tutorial.title}`),
-    future: [],
-  }));
+  );
   const draft = history.now;
   const { steps } = draft;
   const checked = useMemo(() => check({ steps } as Draft), [steps]);
   const board = checked.scene;
-  const edit = useCallback(
-    (next: Draft) =>
-      setHistory((h) => ({ past: [...h.past, h.now], now: next, future: [] })),
-    [],
-  );
-  const undo = useCallback(
-    () =>
-      setHistory((h) => {
-        const before = h.past.at(-1);
-        return before
-          ? {
-              past: h.past.slice(0, -1),
-              now: before,
-              future: [h.now, ...h.future],
-            }
-          : h;
-      }),
-    [],
-  );
-  const redo = useCallback(
-    () =>
-      setHistory((h) => {
-        const after = h.future[0];
-        return after
-          ? { past: [...h.past, h.now], now: after, future: h.future.slice(1) }
-          : h;
-      }),
-    [],
-  );
 
   // How each step stands on the board, and the learner's own extras.
   const checks = useMemo(
@@ -345,87 +308,28 @@ export function DrawAlong({
 
   // The ink stage: the learner's own ink on their board.
   // The ink, with Undo and Redo of its own.
-  const [inkHistory, setInkHistory] = useState<{
-    past: readonly ReadonlySet<string>[];
-    now: ReadonlySet<string>;
-    future: readonly ReadonlySet<string>[];
-  }>(() => ({ past: [], now: new Set(saved?.inked ?? []), future: [] }));
+  const {
+    history: inkHistory,
+    setHistory: setInkHistory,
+    change: setChosen,
+    undo: inkUndo,
+    redo: inkRedo,
+  } = useHistory<ReadonlySet<string>>(() => new Set(saved?.inked ?? []));
   const chosen = inkHistory.now;
-  const setChosen = useCallback(
-    (next: ReadonlySet<string>) =>
-      setInkHistory((h) => ({
-        past: [...h.past, h.now],
-        now: next,
-        future: [],
-      })),
-    [],
-  );
-  const inkUndo = useCallback(
-    () =>
-      setInkHistory((h) => {
-        const before = h.past.at(-1);
-        return before
-          ? {
-              past: h.past.slice(0, -1),
-              now: before,
-              future: [h.now, ...h.future],
-            }
-          : h;
-      }),
-    [],
-  );
-  const inkRedo = useCallback(
-    () =>
-      setInkHistory((h) => {
-        const after = h.future[0];
-        return after
-          ? { past: [...h.past, h.now], now: after, future: h.future.slice(1) }
-          : h;
-      }),
-    [],
-  );
   // The pen: the dot it is down on, if any; and whether it erases.
   const [pen, setPen] = useState<string>();
   const [erasing, setErasing] = useState(false);
   const [penSaid, setPenSaid] = useState<string>();
   // The wall the learner lays: copies of their tile, with Undo and Redo.
-  const [copyHistory, setCopyHistory] = useState<{
-    past: readonly (readonly Copy[])[];
-    now: readonly Copy[];
-    future: readonly (readonly Copy[])[];
-  }>(() => ({
-    past: [],
-    now: (saved?.copies ?? []).map((at) => ({ at })),
-    future: [],
-  }));
-  const copies = copyHistory.now;
-  const setCopies = useCallback(
-    (next: readonly Copy[]) =>
-      setCopyHistory((h) => ({
-        past: [...h.past, h.now],
-        now: next,
-        future: [],
-      })),
-    [],
+  const {
+    history: copyHistory,
+    change: setCopies,
+    undo: copyUndo,
+    redo: copyRedo,
+  } = useHistory<readonly Copy[]>(() =>
+    (saved?.copies ?? []).map((at) => ({ at })),
   );
-  const copyUndo = () =>
-    setCopyHistory((h) => {
-      const before = h.past.at(-1);
-      return before
-        ? {
-            past: h.past.slice(0, -1),
-            now: before,
-            future: [h.now, ...h.future],
-          }
-        : h;
-    });
-  const copyRedo = () =>
-    setCopyHistory((h) => {
-      const after = h.future[0];
-      return after
-        ? { past: [...h.past, h.now], now: after, future: h.future.slice(1) }
-        : h;
-    });
+  const copies = copyHistory.now;
   const [arrived, setArrived] = useState<{ index: number; from: Vec }>();
   const [removing, setRemoving] = useState(false);
   // Its colours, as the player's colour stage keeps them.
@@ -597,6 +501,13 @@ export function DrawAlong({
         : undefined,
     [hintLevel, here, tutorial, model.scene, board, beat, info],
   );
+  const guidance = useMemo(
+    () =>
+      here && !inking && !afterInk
+        ? guidanceFor(tutorial, model.scene, board, beat, here, readAt)
+        : undefined,
+    [here, inking, afterInk, tutorial, model.scene, board, beat, readAt],
+  );
   const [drawFailed, setDrawFailed] = useState<string>();
   const drawIt = () => {
     try {
@@ -683,7 +594,8 @@ export function DrawAlong({
   };
   const want = tool && wantAt(tool, targets.length);
   const ask = !tool
-    ? 'Choose a tool above to draw with. Hold the pointer over a tool to see what it does.'
+    ? (guidance?.words ??
+      'Choose a tool above to draw with. Hold the pointer over a tool to see what it does.')
     : tool.id === 'tile'
       ? TILE_ASK
       : (tool.asks[Math.min(targets.length, tool.asks.length - 1)] ?? '');
@@ -1572,7 +1484,7 @@ export function DrawAlong({
                 canRedo={history.future.length > 0}
                 onUndo={undo}
                 onRedo={redo}
-                hinted={hint?.tool}
+                hinted={hint?.tool ?? guidance?.tool}
               />
             </div>
           </div>
@@ -1604,7 +1516,8 @@ export function DrawAlong({
                     >
                       Play it
                     </a>{' '}
-                    · <a href="#/">My patterns</a>
+                    · <a href={`#/edit/${keptAs}`}>Make a variation</a> ·{' '}
+                    <a href="#/">My patterns</a>
                   </>
                 ) : (
                   say(

@@ -1,11 +1,10 @@
-# Builds the player and publishes it to GitHub Pages on every push to main.
+# Manual deployment only. Repository Actions are disabled at the owner’s request.
+# Run pnpm check locally before publishing; re-enable Actions explicitly to deploy.
 # Only apps/player/dist is published: the review page, the project notes and
 # docs/research exist on the dev server only and are not part of the build.
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

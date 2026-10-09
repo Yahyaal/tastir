@@ -1,0 +1,185 @@
+import { expect, test, type Page } from '@playwright/test';
+import { readdirSync, readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
+const star = 'eight-fold-star-and-cross';
+const route = (id: string) => `/#/${id}`;
+const payload = (data: unknown) =>
+  'j' + Buffer.from(JSON.stringify(data)).toString('base64url');
+
+test('library previews need no construction downloads except the animated hero', async ({
+  page,
+}) => {
+  const tutorials: string[] = [];
+  page.on('request', (r) => {
+    if (/\/assets\/.*\.js/.test(r.url())) tutorials.push(r.url());
+  });
+  await page.goto('/');
+  await expect(page.locator('.cards > li')).toHaveCount(36);
+  const previews = page.locator('.cards img.thumbnail');
+  await expect(previews).toHaveCount(36);
+  await expect(previews.first()).toBeVisible();
+  await expect
+    .poll(() =>
+      previews
+        .first()
+        .evaluate(
+          (img: HTMLImageElement) => img.complete && img.naturalWidth > 0,
+        ),
+    )
+    .toBe(true);
+  await expect(
+    page.getByRole('link', { name: 'Start with the star and cross' }),
+  ).toBeVisible();
+  // A library card must be usable without downloading its JSON module.
+  expect(
+    tutorials.some((url) => url.includes('eight-fold-star-and-cross-')),
+  ).toBe(false);
+});
+
+test('a beginner draws the first circle, gets a completed step, and resumes', async ({
+  page,
+}) => {
+  await page.goto(route(`${star}/draw`));
+  await expect(
+    page.getByText(/Choose Compass, (click|tap) O, then E\./),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Compass', exact: true }),
+  ).toHaveClass(/hinted/);
+  await page.getByRole('button', { name: 'Compass', exact: true }).click();
+  await page.evaluate(() => document.fonts.ready);
+  const svg = page.locator('.along-plate .editor-drawing');
+  for (const x of [0, 1]) {
+    const p = await svg.evaluate((el: SVGSVGElement, x) => {
+      const p = new DOMPoint(x, 0).matrixTransform(el.getScreenCTM()!);
+      return { x: p.x, y: p.y };
+    }, x);
+    await page.mouse.click(p.x, p.y);
+  }
+  await expect(
+    page.getByRole('button', { name: 'Step 1, on your board', exact: true }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(page.getByText(/Welcome back/)).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Step 1, on your board', exact: true }),
+  ).toBeVisible();
+});
+
+test('a finished wall can be saved, shared, reopened, and used for a variation', async ({
+  page,
+  context,
+}) => {
+  await page.goto(route(`${star}/result`));
+  await page
+    .getByLabel('Palette', { exact: false })
+    .selectOption('Chefchaouen');
+  await page
+    .getByRole('button', { name: 'Save as my design', exact: true })
+    .click();
+  await page
+    .getByRole('textbox', { name: 'Name', exact: true })
+    .fill('Browser test wall');
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(
+    page.getByText('Saved as “Browser test wall”.', { exact: false }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Copy a share link' }).click();
+  const link = await page
+    .getByRole('textbox', { name: 'Share link' })
+    .inputValue();
+  const other = await context.newPage();
+  await other.goto(link);
+  await expect(other.getByText(/A pattern shared with you/)).toBeVisible();
+  await expect(other.getByLabel('Palette', { exact: false })).toHaveValue(
+    'Chefchaouen',
+  );
+  await other.close();
+  await page.reload();
+  await expect(page.getByLabel('Palette', { exact: false })).toHaveValue(
+    'Chefchaouen',
+  );
+  await page
+    .getByRole('button', { name: 'Make a variation', exact: true })
+    .click();
+  await expect(page).toHaveURL(/#\/edit\//);
+  await expect(page.locator('.editor-step')).toHaveCount(6);
+  await expect(page.locator('.editor-step.broken')).toHaveCount(0);
+});
+
+test('bad links recover and never leave a blank page', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto(
+    route(
+      'shared/' +
+        payload({
+          library: star,
+          design: { coloring: { palette: 'Fès tile' } },
+        }),
+    ),
+  );
+  await expect(
+    page.getByRole('heading', { name: 'This pattern cannot be shown' }),
+  ).toBeVisible();
+  await page.getByRole('link', { name: /All patterns/ }).click();
+  await expect(page.locator('.cards > li')).toHaveCount(36);
+  await page.goto('/#/%E0%A4%A');
+  await expect(
+    page.getByRole('heading', { name: 'This pattern cannot be shown' }),
+  ).toBeVisible();
+  expect(errors).toEqual([]);
+});
+
+async function boardBounds(page: Page) {
+  return page.locator('.along-plate').evaluateAll((elements) =>
+    elements.map((el) => {
+      const r = el.getBoundingClientRect();
+      return {
+        x: r.x + window.scrollX,
+        y: r.y + window.scrollY,
+        width: r.width,
+        height: r.height,
+        bottom: r.bottom + window.scrollY,
+      };
+    }),
+  );
+}
+const tutorials = resolve('tutorials');
+const beginners = readdirSync(tutorials)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => JSON.parse(readFileSync(resolve(tutorials, f), 'utf8')))
+  .filter((t) => t.level === 'beginner');
+for (const tutorial of beginners) {
+  test(`${tutorial.id}: boards stay aligned and fit through construction and ink`, async ({
+    page,
+  }, info) => {
+    await page.goto(route(`${tutorial.id}/draw`));
+    await expect(page.locator('.along-grid')).toBeVisible();
+    await page.evaluate(() => document.fonts.ready);
+    const before = await boardBounds(page);
+    if (info.project.name !== 'phone')
+      expect(before[0]!.bottom).toBeLessThanOrEqual(
+        page.viewportSize()!.height,
+      );
+    if (info.project.name !== 'phone')
+      expect(before[0]).toMatchObject({
+        y: before[1]!.y,
+        width: before[1]!.width,
+        height: before[1]!.height,
+      });
+    const steps = page.locator('.along-steps button[aria-label^="Step "]');
+    for (let i = 0; i < (await steps.count()); i++) {
+      await steps.nth(i).click();
+      expect(await boardBounds(page)).toEqual(before);
+    }
+    await page.getByRole('button', { name: 'Ink', exact: true }).click();
+    expect(await boardBounds(page)).toEqual(before);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+  });
+}
