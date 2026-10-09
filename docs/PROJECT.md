@@ -19,7 +19,9 @@ Gemini has completed all four prompts from [`docs/prompts/gemini-2026-10-08.md`]
 3. **Tester pass.** (Done). Thorough pass as a beginner hobbyist on a frozen copy (`c1b8791`) across desktop (1280×800), tablet (1024×768), and phone (390×844). Verified home filters, stepped 3 tutorials, compare-with-original, full draw along flow, editor, and upcoming catalog. Confirmed 0 px board stability, matching colour legends, and rendered verdict: ready to merge.
 4. **Merge.** (Done, commit `b00795e`). Merged `ui-redesign` into `main`, verified all tests, lint, and typecheck pass (each exit 0), pushed to `origin main`, and restarted dev server on port 4200.
 
-**Next for Claude:** when the owner begins a session, review the merged changes, review the owner's feedback on the new look and draw along, and prepare the next prompt file.
+**Claude's review of the merge (8 October):** good to keep. Checks pass; only two credited Commons photos ship and the private ones stay in `docs/research/upcoming/`; the Darb-e Imam tutorial is renamed (`ten-pointed-star-decagon-rect`) with a review card for the owner; every Upcoming status is "Planned" or "Researching"; the legend matches the drawing; the board stays still from step 1 to Repeat. Left to fix, in [`docs/prompts/gemini-2026-10-08b.md`](prompts/gemini-2026-10-08b.md): draw along does not fit a 1280×800 screen (the bottom of the drawings is cut off), the "Welcome back" line moves the board by 38 px (Gemini's tester called this minor; it breaks the owner's rule), two 404 images on `#/upcoming`, "(cropped)" missing on the al-Maridani photo, and the Upcoming intro still promises work. Prompt 6 is a tester pass in a fresh Antigravity conversation, because the tester in the same conversation judged its own work.
+
+**Next for Claude:** when the owner says the second batch is done, review it the same way (exit codes, screenshots, the owner's layout rules, the content rules) and write the next prompt file.
 
 ### What is built (6–8 October)
 
