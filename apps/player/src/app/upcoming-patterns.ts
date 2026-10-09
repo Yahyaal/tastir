@@ -48,6 +48,15 @@ export function upcomingPhotoSrc(
   return dev ? `/__review/research/upcoming/${name}` : undefined;
 }
 
+export function upcomingDrawnSrc(
+  drawnUrl?: string,
+  dev: boolean = import.meta.env.DEV,
+): string | undefined {
+  if (!drawnUrl) return undefined;
+  const name = drawnUrl.replace(/^upcoming\//, '');
+  return dev ? `/__review/research/upcoming/${name}` : undefined;
+}
+
 export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
   // --- PHASE 1: IMMEDIATE / HIGH PRIORITY ---
   {

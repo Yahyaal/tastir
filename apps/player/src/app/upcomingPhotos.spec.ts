@@ -2,7 +2,11 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { UPCOMING_PATTERNS, upcomingPhotoSrc } from './upcoming-patterns';
+import {
+  UPCOMING_PATTERNS,
+  upcomingPhotoSrc,
+  upcomingDrawnSrc,
+} from './upcoming-patterns';
 
 // Tests run from apps/player or from the repo root.
 const ROOT = process.cwd().replace(/\/apps\/player$/, '');
@@ -109,5 +113,28 @@ describe('photos of upcoming patterns', () => {
       /^\/__review\/research\/upcoming\/[^/]+$/,
     );
     expect(upcomingPhotoSrc(priv!, false)).toBeUndefined();
+  });
+
+  it('serves a drawn pattern image only in dev from /__review/research/upcoming/', () => {
+    const withDrawn = UPCOMING_PATTERNS.find((p) => p.drawnUrl);
+    expect(withDrawn).toBeDefined();
+    expect(upcomingDrawnSrc(withDrawn!.drawnUrl, true)).toMatch(
+      /^\/__review\/research\/upcoming\/[^/]+$/,
+    );
+    expect(upcomingDrawnSrc(withDrawn!.drawnUrl, false)).toBeUndefined();
+  });
+
+  it('finds every upcoming drawn image in docs/research/upcoming, where docs/research exists', () => {
+    if (!existsSync(RESEARCH)) return;
+    const missing = UPCOMING_PATTERNS.filter((p) => p.drawnUrl)
+      .filter((p) => {
+        const file = p.drawnUrl!.replace(/^upcoming\//, '');
+        return (
+          !existsSync(join(RESEARCH, 'upcoming', file)) &&
+          !existsSync(join(RESEARCH, file))
+        );
+      })
+      .map((p) => `${p.id}: ${p.drawnUrl!}`);
+    expect(missing).toEqual([]);
   });
 });
