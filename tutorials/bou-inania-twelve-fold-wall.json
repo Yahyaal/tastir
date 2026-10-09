@@ -116,6 +116,7 @@
   {
    "id": 3,
    "text": "Divide the circle into 24. With the compass still open to OA, put its point on A and mark where it cuts the circle at 60°; join O to that mark. Halve the angles and draw the lines at right angles to those you have, so there is a line through O every 15°.",
+   "textWithoutHelpers": "Divide the circle into 24. With the compass still open to OA, put its point on A and mark where it cuts the circle at 60°; join O to that mark, and halve the angle to get the lines at 15°, 30°, 45°, 60°, 75° and 90°.",
    "create": {
     "cA": {
      "circle": {
@@ -922,6 +923,7 @@
   {
    "id": 17,
    "text": "Copy the star, its ring and the grid lines to the other three corners of the tile by turning them a quarter turn at a time about O.",
+   "textWithoutHelpers": "Copy the star and its ring to the other three corners of the tile by turning them a quarter turn at a time about O.",
    "create": {
     "Ks": {
      "repeat": {
@@ -2824,99 +2826,99 @@
    {
     "name": "centre",
     "vertices": 24,
-    "area": 0.0811,
+    "area": 0.08108,
     "perCell": 1
    },
    {
     "name": "arrowhead",
     "vertices": 5,
-    "area": 0.0752,
+    "area": 0.07515,
     "perCell": 4
    },
    {
     "name": "ringbend",
     "vertices": 8,
-    "area": 0.0684,
+    "area": 0.06839,
     "perCell": 4
    },
    {
     "name": "cross",
     "vertices": 6,
-    "area": 0.0623,
+    "area": 0.06233,
     "perCell": 2,
     "small": true
    },
    {
     "name": "arrow",
     "vertices": 12,
-    "area": 0.0569,
+    "area": 0.05686,
     "perCell": 12
    },
    {
     "name": "petal",
     "vertices": 9,
-    "area": 0.0522,
+    "area": 0.05223,
     "perCell": 12
    },
    {
     "name": "cornerstar",
     "vertices": 16,
-    "area": 0.0501,
+    "area": 0.05013,
     "perCell": 1
    },
    {
     "name": "shield",
     "vertices": 9,
-    "area": 0.0344,
+    "area": 0.03438,
     "perCell": 12
    },
    {
     "name": "pentagon",
     "vertices": 9,
-    "area": 0.0303,
+    "area": 0.03026,
     "perCell": 12
    },
    {
     "name": "arm",
     "vertices": 5,
-    "area": 0.0301,
+    "area": 0.03013,
     "perCell": 8
    },
    {
     "name": "ringaxis",
     "vertices": 4,
-    "area": 0.0294,
+    "area": 0.02944,
     "perCell": 4
    },
    {
     "name": "star",
     "vertices": 9,
-    "area": 0.0282,
+    "area": 0.02815,
     "perCell": 12
    },
    {
     "name": "gap",
     "vertices": 4,
-    "area": 0.0259,
+    "area": 0.02592,
     "perCell": 8
    },
    {
     "name": "diamond",
     "vertices": 4,
-    "area": 0.0089,
+    "area": 0.00886,
     "perCell": 8
    },
    {
     "name": "kite",
     "vertices": 4,
-    "area": 0.0068,
+    "area": 0.00676,
     "perCell": 12,
     "small": true
    },
    {
     "name": "chip",
     "vertices": 4,
-    "area": 0.0037,
+    "area": 0.00366,
     "perCell": 8,
     "small": true
    }
