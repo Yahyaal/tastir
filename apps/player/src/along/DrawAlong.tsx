@@ -1033,6 +1033,13 @@ export function DrawAlong({
           <button
             type="button"
             className="quiet"
+            onClick={() => setWelcome(false)}
+          >
+            Continue drawing
+          </button>
+          <button
+            type="button"
+            className="quiet"
             onClick={() => setRestarting(true)}
           >
             Start again

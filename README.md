@@ -1,6 +1,6 @@
 # Tastir
 
-Tastir teaches Islamic geometric patterns through compass-and-ruler constructions. Watch a pattern unfold, draw beside the tutorial, ink selected lines, repeat the tile, and color the wall. You can save designs in your browser, make your own construction in the editor, export pattern files, and share designs by link.
+Tastir teaches Islamic geometric patterns through compass-and-ruler constructions. Watch a pattern unfold, draw beside any beginner, intermediate, or advanced tutorial, ink selected lines, repeat the tile, and color the wall. You can save designs in your browser, make your own construction in the editor, export pattern files, and share designs by link.
 
 ## Run locally
 
@@ -27,7 +27,7 @@ pnpm exec playwright install chromium
 pnpm check
 ```
 
-`pnpm check` runs lint, strict TypeScript checks, geometry and UI tests, the production build, and Chromium browser tests. Browser tests use port 4392 and cover desktop, tablet, and phone viewports. To run individual checks:
+`pnpm check` runs lint, strict TypeScript checks, geometry and UI tests, the production build, and Chromium browser tests. Run checks sequentially: the build and TypeScript checks share generated output. Browser tests use port 4392 and cover desktop, tablet, and phone viewports. To run individual checks:
 
 ```sh
 pnpm lint
@@ -37,6 +37,14 @@ pnpm build
 pnpm test:browser
 pnpm exec playwright show-report
 ```
+
+For the full draw-along layout audit, leave the dev server running on port 4290 and run:
+
+```sh
+node tools/check-draw-along.mjs
+```
+
+This draws and inks six tutorials, repeats and colors them, and measures both boards at every stage at five screen sizes. It checks equal board sizes, zero movement, desktop page fit, and phone panel switching. Measurements and screenshots go to `docs/review/codex-layout/`. Set `TASTIR_URL` to use a different dev server. Run the audit after build and catalog commands finish so dev-server reloads do not interrupt measurements.
 
 Generated previews, reports, and browser traces are ignored by Git. `pnpm catalog` rebuilds the library metadata and thumbnails; adding a tutorial does not require changing the app's code. Browser test traces and screenshots appear in `test-results/` on failure.
 

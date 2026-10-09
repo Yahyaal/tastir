@@ -59,6 +59,12 @@
   transition: all 150ms ease;
 }
 
+/* Reserve the completion mark before it appears, including two-digit steps. */
+.player .along-dot[aria-label^='Step '] {
+  width: 48px;
+  padding: 0;
+}
+
 .player .along-dot:hover {
   border-color: var(--theme-border-hover);
   color: var(--theme-text-primary);
@@ -135,9 +141,9 @@
   visibility: hidden;
 }
 
-/* The status keeps two lines, so a longer one does not move the board. */
+/* Reserve three actual line heights for asynchronous and wrapped feedback. */
 .along-text .along-check {
-  min-height: 2.2em;
+  min-height: 3lh;
   font-size: 0.85rem;
 }
 
@@ -354,7 +360,9 @@
   .along-plate,
   .along .along-plate,
   .along .stage {
+    height: 62vh;
     min-height: 62vh;
+    max-height: 62vh;
   }
 
   /* One row of tools that scrolls sideways, so the board shows. */

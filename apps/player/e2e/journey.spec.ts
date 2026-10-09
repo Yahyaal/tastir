@@ -2,6 +2,9 @@ import { expect, test, type Page } from '@playwright/test';
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+const tutorialFiles = readdirSync(resolve('tutorials')).filter((f) =>
+  f.endsWith('.json'),
+);
 const star = 'eight-fold-star-and-cross';
 const route = (id: string) => `/#/${id}`;
 const payload = (data: unknown) =>
@@ -15,9 +18,9 @@ test('library previews need no construction downloads except the animated hero',
     if (/\/assets\/.*\.js/.test(r.url())) tutorials.push(r.url());
   });
   await page.goto('/');
-  await expect(page.locator('.cards > li')).toHaveCount(36);
+  await expect(page.locator('.cards > li')).toHaveCount(tutorialFiles.length);
   const previews = page.locator('.cards img.thumbnail');
-  await expect(previews).toHaveCount(36);
+  await expect(previews).toHaveCount(tutorialFiles.length);
   await expect(previews.first()).toBeVisible();
   await expect
     .poll(() =>
@@ -39,6 +42,7 @@ test('library previews need no construction downloads except the animated hero',
 
 test('a beginner draws the first circle, gets a completed step, and resumes', async ({
   page,
+  hasTouch,
 }) => {
   await page.goto(route(`${star}/draw`));
   await expect(
@@ -50,18 +54,24 @@ test('a beginner draws the first circle, gets a completed step, and resumes', as
   await page.getByRole('button', { name: 'Compass', exact: true }).click();
   await page.evaluate(() => document.fonts.ready);
   const svg = page.locator('.along-plate .editor-drawing');
+  await svg.scrollIntoViewIfNeeded();
   for (const x of [0, 1]) {
     const p = await svg.evaluate((el: SVGSVGElement, x) => {
       const p = new DOMPoint(x, 0).matrixTransform(el.getScreenCTM()!);
       return { x: p.x, y: p.y };
     }, x);
-    await page.mouse.click(p.x, p.y);
+    if (hasTouch) await page.touchscreen.tap(p.x, p.y);
+    else await page.mouse.click(p.x, p.y);
   }
   await expect(
     page.getByRole('button', { name: 'Step 1, on your board', exact: true }),
   ).toBeVisible();
   await page.reload();
   await expect(page.getByText(/Welcome back/)).toBeVisible();
+  await page
+    .getByRole('button', { name: 'Continue drawing', exact: true })
+    .click();
+  await expect(page.getByText(/Welcome back/)).toHaveCount(0);
   await expect(
     page.getByRole('button', { name: 'Step 1, on your board', exact: true }),
   ).toBeVisible();
@@ -124,7 +134,7 @@ test('bad links recover and never leave a blank page', async ({ page }) => {
     page.getByRole('heading', { name: 'This pattern cannot be shown' }),
   ).toBeVisible();
   await page.getByRole('link', { name: /All patterns/ }).click();
-  await expect(page.locator('.cards > li')).toHaveCount(36);
+  await expect(page.locator('.cards > li')).toHaveCount(tutorialFiles.length);
   await page.goto('/#/%E0%A4%A');
   await expect(
     page.getByRole('heading', { name: 'This pattern cannot be shown' }),
@@ -147,8 +157,7 @@ async function boardBounds(page: Page) {
   );
 }
 const tutorials = resolve('tutorials');
-const beginners = readdirSync(tutorials)
-  .filter((f) => f.endsWith('.json'))
+const beginners = tutorialFiles
   .map((f) => JSON.parse(readFileSync(resolve(tutorials, f), 'utf8')))
   .filter((t) => t.level === 'beginner');
 for (const tutorial of beginners) {
