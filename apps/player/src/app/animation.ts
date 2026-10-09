@@ -168,6 +168,9 @@ function screenLength(node: SVGElement, lengthScale: number): number {
   if (typeof shape.getTotalLength !== 'function') return 1;
   const m = shape.getScreenCTM?.();
   const scale = m ? Math.hypot(m.a, m.b) : 1;
+  // If the view is zooming out (lengthScale < 1), strokes are longer at the
+  // start than at the end. The dash must be at least the start length.
+  const stretch = Math.max(1, lengthScale);
 
   if (node.tagName.toLowerCase() === 'circle') {
     const circle = node as SVGCircleElement;
@@ -179,12 +182,12 @@ function screenLength(node: SVGElement, lengthScale: number): number {
       // inscribed square (4*sqrt(2)*r ~ 5.65r instead of 2*PI*r ~ 6.28r).
       // Computing the true circumference ensures strokeDashoffset fully covers
       // the circumference so no premature arc is visible at t=0.
-      return 2 * Math.PI * r * scale * lengthScale + 2;
+      return 2 * Math.PI * r * scale * stretch + 2;
     }
   }
 
   // A pixel more, so no sliver of gap shows at the end.
-  return shape.getTotalLength() * scale * lengthScale + 1;
+  return shape.getTotalLength() * scale * stretch + 1;
 }
 
 function keyframes(
@@ -230,15 +233,17 @@ function keyframes(
       };
     };
     return [
-      { ...dashAt(0), offset: 0 },
-      { ...dashAt(w), offset: 0.98 },
-      { strokeDasharray: `${len} 0`, strokeDashoffset: 0, offset: 1 },
+      { ...dashAt(0), opacity: 0, offset: 0 },
+      { ...dashAt(0), opacity: 1, offset: 0.0001 },
+      { ...dashAt(w), opacity: 1, offset: 0.98 },
+      { strokeDasharray: `${len} 0`, strokeDashoffset: 0, opacity: 1, offset: 1 },
     ];
   }
   const dash = `${len} ${len}`;
   return [
-    { strokeDasharray: dash, strokeDashoffset: len },
-    { strokeDasharray: dash, strokeDashoffset: 0 },
+    { opacity: 0, strokeDasharray: dash, strokeDashoffset: len, offset: 0 },
+    { opacity: 1, strokeDasharray: dash, strokeDashoffset: len, offset: 0.0001 },
+    { opacity: 1, strokeDasharray: dash, strokeDashoffset: 0, offset: 1 },
   ];
 }
 
