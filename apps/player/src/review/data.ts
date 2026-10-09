@@ -40,17 +40,17 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 4,
     status: 'decide',
     summary:
-      'Eight-pointed khatam stars, crossing diagonal bands, cartouches, and squares from the minbar woodwork of Hakim Mosque in Isfahan.',
+      'Eight-pointed khatam stars, crossing diagonal bands, cartouches, and squares from the Sikandra jali screen and Hakim Mosque.',
     story: [
-      'From the carved woodwork and khatam parquetry panel on the minbar of the Hakim Mosque in Isfahan (Safavid, 1656–1662 CE), documented in Sandy Kurt’s tutorial “4fold Pattern from Al-Hakim Mosque, Isfahan”.',
+      'From the pierced jali lattice screen at the Tomb of Akbar the Great in Sikandra (Agra, Mughal, 1605–1613 CE) and the woodwork of Hakim Mosque in Isfahan (Safavid, 1656–1662 CE), documented in Sandy Kurt’s tutorial “4fold Pattern from Al-Hakim Mosque, Isfahan”.',
       'The construction establishes a unit circle divided into eight parts, static and dynamic squares, radius-0.5 circles at the centre and on the diagonals, and diagonal facet lines shaping the central eight-pointed khatam star, crossing diagonal bands, connecting cartouches, and squares.',
-      'We verified the tutorial line-for-line against a cropped Wikimedia Commons photo of the minbar woodwork panel (CC BY-SA 4.0 by Manijeh yazdanshenas).',
+      'We verified the tutorial line-for-line against a cropped Wikimedia Commons photo of the carved sandstone jali screen at Sikandra (CC BY-SA 4.0 by LBM1948).',
     ],
     pictures: [
       {
         src: 'renders/eight-fold-khatam/compare-wall.png',
         caption:
-          'Our wall (right) compared side-by-side with the cropped minbar woodwork panel from Hakim Mosque, Isfahan (left).',
+          'Our wall (right) compared side-by-side with the Sikandra jali lattice screen (left).',
       },
       {
         src: 'renders/eight-fold-khatam/wall.png',
@@ -62,7 +62,7 @@ export const PATTERNS: readonly Pattern[] = [
       },
     ],
     asks: [
-      'Should we ship this Safavid eight-fold khatam panel in the library with level intermediate?',
+      'Should we ship this eight-fold khatam panel in the library with level intermediate?',
     ],
     sources: [
       {
@@ -71,8 +71,8 @@ export const PATTERNS: readonly Pattern[] = [
       },
       {
         label:
-          'Wikimedia Commons: Rotten green design.jpg (Minbar of Hakim Mosque, Isfahan by Manijeh yazdanshenas, CC BY-SA 4.0)',
-        url: 'https://commons.wikimedia.org/wiki/File:Rotten_green_design.jpg',
+          'Wikimedia Commons: Sikandra, Tumba de Akbar (2002) 11.jpg by LBM1948 (CC BY-SA 4.0)',
+        url: 'https://commons.wikimedia.org/wiki/File:Sikandra,_Tumba_de_Akbar_(2002)_11.jpg',
       },
     ],
   },
