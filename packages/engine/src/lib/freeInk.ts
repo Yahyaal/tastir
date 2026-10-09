@@ -21,6 +21,12 @@ export interface InkPiece {
   readonly segment: Segment;
 }
 
+/** Options for finding a construction's inkable pieces. */
+export interface InkPiecesOptions {
+  /** Keep pieces on all edges of the cell, rather than merging opposite edges. */
+  readonly allEdges?: boolean;
+}
+
 const round = (n: number) => (Math.abs(n) < 5e-7 ? 0 : n).toFixed(6);
 const pointKey = (p: Vec) => `${round(p.x)},${round(p.y)}`;
 const pieceId = (a: Vec, b: Vec) => [pointKey(a), pointKey(b)].sort().join('|');
@@ -69,7 +75,11 @@ export function clipToCell(
  * its neighbours' copies, split at every crossing with another line,
  * circle or polygon side: what a learner can choose to ink.
  */
-export function inkPieces(scene: Scene, cell: Cell): InkPiece[] {
+export function inkPieces(
+  scene: Scene,
+  cell: Cell,
+  options?: InkPiecesOptions,
+): InkPiece[] {
   // The construction repeats with the tile, so the neighbouring tiles'
   // construction reaches into this one too: a slanted or hexagonal tile
   // can hold the tip of a rosette drawn around a neighbouring centre.
@@ -133,9 +143,11 @@ export function inkPieces(scene: Scene, cell: Cell): InkPiece[] {
       const id = pieceId(a, b);
       // One copy per piece of the wall: a piece on one edge of the tile
       // and its copy on the opposite edge are the same piece.
-      const copy = shifts.some(
-        (d) => (d.x || d.y) && pieces.has(pieceId(add(a, d), add(b, d))),
-      );
+      const copy =
+        !options?.allEdges &&
+        shifts.some(
+          (d) => (d.x || d.y) && pieces.has(pieceId(add(a, d), add(b, d))),
+        );
       if (!copy && !pieces.has(id))
         pieces.set(id, { id, segment: segment(a, b) });
     }

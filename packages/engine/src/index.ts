@@ -53,6 +53,7 @@ export {
   inkPieces,
   strokesOf,
   type InkPiece,
+  type InkPiecesOptions,
 } from './lib/freeInk.js';
 export {
   ALONG_EPS,

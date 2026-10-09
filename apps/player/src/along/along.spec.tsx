@@ -531,6 +531,12 @@ describe('drawing along', () => {
           (near(x2, -1) && near(y2, 3) && near(x1, 0) && near(y1, 4)),
       ),
     ).toBe(true);
+    // Inking top-left inks ONLY that stroke: exactly 1 line, no phantom arrows on opposite edges
+    expect(at).toHaveLength(1);
+    // Connecting to (1, 3) completes the top knob and does not ink arrow lines on left or right
+    clickAt(1, 3);
+    const at2 = [...inkBoard().querySelectorAll('line.ink-piece.inked')];
+    expect(at2).toHaveLength(2);
   });
 
   it('repeats the tile by hand, colours the wall, and keeps both', () => {
