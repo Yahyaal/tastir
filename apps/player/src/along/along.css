@@ -5,6 +5,19 @@
   display: none !important;
 }
 
+.player.along {
+  height: 100vh;
+  min-height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0 20px 12px;
+}
+
+.along .topbar {
+  min-height: 44px;
+  padding: 6px 0;
+}
+
 .along .topbar .edit-link {
   color: var(--on-lapis-muted);
   font-size: 0.9rem;
@@ -16,7 +29,7 @@
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   font-size: 0.85rem;
 }
 
@@ -78,16 +91,16 @@
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(240px, 1fr) 4.6rem;
+  grid-template-rows: auto auto minmax(180px, 1fr) 3.8rem;
   column-gap: 28px;
-  row-gap: 12px;
+  row-gap: 8px;
 }
 
 .along-text-row {
   grid-column: 1 / -1;
   /* Room for most steps' text, so the drawings do not move from step to
      step or into the ink; a longer text still shows in full. */
-  min-height: 7.6rem;
+  min-height: 6.2rem;
   display: flex;
   gap: 24px;
   align-items: flex-start;
@@ -124,27 +137,31 @@
 
 /* The status keeps two lines, so a longer one does not move the board. */
 .along-text .along-check {
-  min-height: 2.8em;
+  min-height: 2.2em;
+  font-size: 0.85rem;
 }
 
 .along-text-row h2 {
-  margin: 0 0 4px;
+  margin: 0 0 2px;
   font-family: var(--display);
   font-weight: 400;
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   color: var(--saffron);
 }
 
 .along-text-row .instruction {
   margin: 0 0 4px;
-  line-height: 1.45;
+  line-height: 1.4;
+  font-size: 0.92rem;
 }
 
 .along-tools .editor-tools {
   margin-bottom: 0;
 }
 
-.along-plate {
+.along-plate,
+.along .along-plate,
+.along .stage {
   position: relative;
   min-height: 0;
 }
@@ -188,24 +205,39 @@
 }
 
 .along .editor-tools {
-  gap: 3px;
+  gap: 2px;
 }
 
 .along .editor-tools .tool {
-  padding: 3px 6px;
-  font-size: 0.75rem;
+  padding: 2px 6px;
+  font-size: 0.73rem;
+}
+
+.along .editor-tools label.tool {
+  padding: 1px 5px;
+}
+
+.along .editor-tools label.tool select {
+  font-size: 0.73rem;
+  padding: 1px 2px;
 }
 
 .along .caption h2 {
-  margin: 0 0 4px;
+  margin: 0 0 2px;
   font-family: var(--display);
   font-weight: 400;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   color: var(--saffron);
 }
 
 .along .caption .instruction {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.along .caption .dot-key {
+  font-size: 0.85rem;
 }
 
 .along-check {
@@ -303,6 +335,12 @@
 }
 
 @media (max-width: 760px) {
+  .player.along {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+  }
+
   .along-grid {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
@@ -313,7 +351,9 @@
     gap: 8px;
   }
 
-  .along-plate {
+  .along-plate,
+  .along .along-plate,
+  .along .stage {
     min-height: 62vh;
   }
 
