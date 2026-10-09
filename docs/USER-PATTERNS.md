@@ -12,7 +12,7 @@ The phases go in the order below. Every user pattern is a true ruler and compass
 
 The builder takes one task at a time, shows nothing to the owner until it works, runs `pnpm test`, `pnpm lint` and `pnpm typecheck`, commits with the task number (“User patterns 1.2: …”), pushes, ticks the task here and adds anything learned to the lessons at the bottom. The builder never runs `pnpm format` over the whole repo (it rewrites the tool JSON in `tools/review/`); it runs Prettier on the files it changed.
 
-The tester starts its own dev server on a spare port (never the owner's on 4200), drives the app in headless Chromium with `playwright-core` from `~/.cache/tastir-tester/` (the browser is `~/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome`), and goes through each finished phase the way a learner would, from the home page, by clicking. It writes a dated report at the bottom of this file: what it tried, what worked, what was confusing or broken, with screenshots saved under `docs/review/user-patterns/` (ignored by git). The builder fixes what the report finds before moving on.
+The tester starts its own dev server on a spare port (never the owner's on 4200), drives the app in headless Chromium with `playwright-core` from `~/.cache/tastir-tester/` (the browser is the newest `~/.cache/ms-playwright/chromium-*/chrome-linux64/chrome`), and goes through each finished phase the way a learner would, from the home page, by clicking. It writes a dated report at the bottom of this file: what it tried, what worked, what was confusing or broken, with screenshots saved under `docs/review/user-patterns/` (ignored by git). The builder fixes what the report finds before moving on.
 
 ## Tasks
 
