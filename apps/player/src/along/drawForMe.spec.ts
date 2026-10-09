@@ -14,18 +14,14 @@ import { parseTutorial, type Tutorial } from '@tastir/schema';
 import { emptyDraft, type Draft } from '../editor/document';
 import { LIBRARY } from '../app/library';
 import { shownBeats, withHelpers } from '../app/model';
-import { loadModel } from '../app/model';
+import { asPanel, loadModel } from '../app/model';
 import { check } from '../editor/document';
 import { tutorialOf } from '../editor/finish';
 import { drawForMe, withTutorialInk } from './drawForMe';
 import { readyToInk, samePieces } from './inking';
 
-const beginnerJson = LIBRARY.map((e) => e.json).filter(
-  (j) => (j as { level?: string }).level === 'beginner',
-);
-const beginners = LIBRARY.map((e) => e.json)
-  .filter((j) => (j as { level?: string }).level === 'beginner')
-  .map((j) => parseTutorial(j));
+const tutorialJson = LIBRARY.map((e) => e.json);
+const tutorials = tutorialJson.map((j) => parseTutorial(j));
 
 /**
  * Every shown step drawn for the learner, from an empty board; helper
@@ -54,9 +50,12 @@ export function drawnForMe(t: Tutorial, helpers = true): Draft {
   return draft;
 }
 
-describe('Draw it for me through every beginner tutorial', () => {
-  it('finds all thirteen', () => {
-    expect(beginners).toHaveLength(13);
+describe('Draw it for me through every tutorial', () => {
+  it('covers every library entry and every difficulty', () => {
+    expect(tutorials).toHaveLength(LIBRARY.length);
+    expect(new Set(tutorials.map((t) => t.level))).toEqual(
+      new Set(['beginner', 'intermediate', 'advanced']),
+    );
   });
 
   // Every step drawn for the learner, then the board inked as the tutorial
@@ -64,7 +63,7 @@ describe('Draw it for me through every beginner tutorial', () => {
   // draw-along page checks them (free ink on the board) and in the
   // pattern it keeps (the tutorial's ink taken onto the board).
   it.each(
-    beginnerJson.flatMap((j) =>
+    tutorialJson.flatMap((j) =>
       [true, false].map(
         (helpers) => [(j as { id: string }).id, helpers, j] as const,
       ),
@@ -76,10 +75,10 @@ describe('Draw it for me through every beginner tutorial', () => {
 
     const bs = check(board).scene;
     const cell = cellOf(bs, board.pattern?.cell ?? '');
-    const pieces = inkPieces(bs, cell);
+    const pieces = inkPieces(bs, cell, { allEdges: true });
     const inked = classicSelection(
       pieces,
-      loadModel(json).pattern.ink,
+      asPanel(loadModel(json)).pattern.ink,
       1e-7,
       cell,
     );
@@ -107,7 +106,7 @@ describe('Draw it for me through every beginner tutorial', () => {
   });
 
   it('draws a step on a board drawn another way', () => {
-    const t = beginners.find(
+    const t = tutorials.find(
       (x) => x.id === 'eight-fold-star-and-cross',
     ) as Tutorial;
     const scene = evaluate(t);
@@ -152,7 +151,7 @@ describe('Draw it for me through every beginner tutorial', () => {
   );
 
   it('does not require a helper line nothing needs (Comares bones)', () => {
-    const t = beginners.find(
+    const t = tutorials.find(
       (x) => x.id === 'alhambra-comares-bones',
     ) as Tutorial;
     const scene = evaluate(t);

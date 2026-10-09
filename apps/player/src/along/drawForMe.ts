@@ -33,7 +33,7 @@ const PLAIN = /^[A-Za-z][A-Za-z0-9_]*$/;
  * point or a crossing there, and anything the board lacks is drawn too,
  * from the tutorial's own construction. Undefined when nothing is
  * missing; throws when the board cannot carry the step, which a test
- * over every beginner tutorial rules out.
+ * over every tutorial rules out.
  */
 export function drawForMe(
   tutorial: Tutorial,
