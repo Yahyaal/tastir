@@ -26,6 +26,8 @@ Gemini has completed all four prompts from [`docs/prompts/gemini-2026-10-08.md`]
 4. **Al-Maridani photo marked "(cropped)"** (commit `2dd9173`). Added "(cropped)" to caption in `upcoming-patterns.ts`.
 5. **Upcoming intro without promises** (commit `382f252`). Replaced batch promises with one plain sentence describing the researched masterwork catalog.
 
+**Circle animation fix (8 October, commit `f86282b`):** Fixed premature circle arc "leak" during pre-draw highlight pause (e.g., Step 2 of Comares bones). Keyframes now apply `opacity: 0` at offset 0 so shapes stay completely hidden during their pre-draw delay, transitioning to full opacity the instant drawing begins. In addition, guarded `screenLength` with `Math.max(1, lengthScale)` so zoom-out camera transitions never shrink dash offsets below the shape's initial screen size. Verified in Playwright that circles draw smoothly and continuously with no frozen curves beforehand.
+
 **Next:** Prompt 6 (independent tester pass on a frozen worktree) to be run in a fresh Antigravity conversation so the tester has not seen the code it is judging.
 
 ### What is built (6–8 October)
