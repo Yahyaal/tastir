@@ -951,11 +951,11 @@ tutorial = {
     ],
     "photos": [
         {
-            "file": "hakim-khatam.jpg",
-            "caption": "Cropped panel of carved woodwork and parquetry from the minbar of Hakim Mosque, Isfahan.",
-            "creator": "Manijeh yazdanshenas",
+            "file": "sikandra-khatam-jali.jpg",
+            "caption": "Carved sandstone pierced jali lattice screen at the Tomb of Akbar the Great, Sikandra (Agra).",
+            "creator": "LBM1948",
             "license": "CC BY-SA 4.0",
-            "url": "https://commons.wikimedia.org/wiki/File:Rotten_green_design.jpg"
+            "url": "https://commons.wikimedia.org/wiki/File:Sikandra,_Tumba_de_Akbar_(2002)_11.jpg"
         }
     ],
     "given": {
