@@ -28,6 +28,7 @@ Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified
 | Tutorial | Fold | Steps | Status | Notes |
 | --- | --- | --- | --- | --- |
 | eight-fold-star-and-cross | 8 | 6 | verified | Matches the Kashan star-and-cross lustre tiles (1297–98). |
+| eight-fold-khatam | 4 | 9 | verified (9 Oct) | Eight-pointed khatam stars, crossing diagonal bands, connecting cartouches and squares, from the minbar woodwork of Hakim Mosque in Isfahan (Safavid, 1656–1662 CE), from Sandy Kurt's tutorial. Checked against Wikimedia Commons photo by Manijeh yazdanshenas. |
 | eight-fold-star-and-octagon | 4 | 9 | verified (9 Oct) | Eight-pointed stars and corner crosses alternating with regular octagons, from the marble inlay of the Tomb of I'timād-ud-Daulah in Agra (Mughal, 1622–1628 CE), from Sandy Kurt's tutorial. Checked against Wikimedia Commons photo by Sabyasachi Paldas. |
 | eight-fold-zellige | 8 | 11 | approved | Design D, kept by the owner. |
 | kurt-eight-fold-zellige | 8 | 19 | approved | Design C, Sandy Kurt's zellige wheel. |

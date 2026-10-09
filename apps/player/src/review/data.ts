@@ -35,6 +35,48 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'eight-fold-khatam',
+    title: 'Eight-fold khatam',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Eight-pointed khatam stars, crossing diagonal bands, cartouches, and squares from the minbar woodwork of Hakim Mosque in Isfahan.',
+    story: [
+      'From the carved woodwork and khatam parquetry panel on the minbar of the Hakim Mosque in Isfahan (Safavid, 1656–1662 CE), documented in Sandy Kurt’s tutorial “4fold Pattern from Al-Hakim Mosque, Isfahan”.',
+      'The construction establishes a unit circle divided into eight parts, static and dynamic squares, radius-0.5 circles at the centre and on the diagonals, and diagonal facet lines shaping the central eight-pointed khatam star, crossing diagonal bands, connecting cartouches, and squares.',
+      'We verified the tutorial line-for-line against a cropped Wikimedia Commons photo of the minbar woodwork panel (CC BY-SA 4.0 by Manijeh yazdanshenas).',
+    ],
+    pictures: [
+      {
+        src: 'renders/eight-fold-khatam/compare-wall.png',
+        caption:
+          'Our wall (right) compared side-by-side with the cropped minbar woodwork panel from Hakim Mosque, Isfahan (left).',
+      },
+      {
+        src: 'renders/eight-fold-khatam/wall.png',
+        caption: 'Our wall repeated.',
+      },
+      {
+        src: 'renders/eight-fold-khatam/tile.png',
+        caption: 'The static tile pieces.',
+      },
+    ],
+    asks: [
+      'Should we ship this Safavid eight-fold khatam panel in the library with level intermediate?',
+    ],
+    sources: [
+      {
+        label: 'Sandy Kurt, 4fold Pattern from Al-Hakim Mosque, Isfahan',
+        url: 'https://sandykurt.com/free-tutorials',
+      },
+      {
+        label:
+          'Wikimedia Commons: Rotten green design.jpg (Minbar of Hakim Mosque, Isfahan by Manijeh yazdanshenas, CC BY-SA 4.0)',
+        url: 'https://commons.wikimedia.org/wiki/File:Rotten_green_design.jpg',
+      },
+    ],
+  },
+  {
     id: 'eight-fold-star-and-octagon',
     title: 'Eight-fold star and octagon',
     fold: 4,
@@ -1387,6 +1429,23 @@ export interface Question {
  * matters given an earlier answer comes straight after it.
  */
 export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'eight-fold-khatam',
+    text: 'Should we ship this Safavid eight-fold khatam panel in the library with level intermediate?',
+    choices: [
+      'Ship with level intermediate',
+      'Revise construction',
+      'Remove from library',
+    ],
+    pictures: [
+      {
+        src: 'renders/eight-fold-khatam/compare-wall.png',
+        caption:
+          'Our wall compared with the Hakim Mosque minbar woodwork panel.',
+      },
+    ],
+    card: 'eight-fold-khatam',
+  },
   {
     id: 'eight-fold-star-and-octagon',
     text: 'Should we ship this Mughal eight-fold star and octagon panel in the library with level intermediate?',
