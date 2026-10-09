@@ -35,6 +35,48 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'eight-fold-star-and-octagon',
+    title: 'Eight-fold star and octagon',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Eight-pointed stars and corner crosses alternating with regular octagons, from the Tomb of I’timād-ud-Daulah in Agra.',
+    story: [
+      'From the pietra dura marble inlay panels on the exterior wall of the Tomb of I’timād-ud-Daulah in Agra (Mughal, 1622–1628 CE), documented in Sandy Kurt’s tutorial “4fold Pattern from the Tomb of Itimud ad-Daula”.',
+      'The construction establishes a circle divided into eight parts, static and dynamic squares, and small circles of radius 0.5 at the centre and axes. The dynamic square tile carries an eight-pointed star at the centre and four bowties that meet at corner crosses, tiling into regular octagons.',
+      'We verified the tutorial line-for-line against a straight-on Wikimedia Commons photo of the exterior wall panel (CC BY-SA 4.0 by Sabyasachi Paldas).',
+    ],
+    pictures: [
+      {
+        src: 'renders/eight-fold-star-and-octagon/compare-wall.png',
+        caption:
+          'Our wall (right) compared side-by-side with the Tomb of I’timād-ud-Daulah inlay panel (left).',
+      },
+      {
+        src: 'renders/eight-fold-star-and-octagon/wall.png',
+        caption: 'Our wall repeated.',
+      },
+      {
+        src: 'renders/eight-fold-star-and-octagon/tile.png',
+        caption: 'The dynamic square tile pieces.',
+      },
+    ],
+    asks: [
+      'Should we ship this Mughal eight-fold star and octagon panel in the library with level intermediate?',
+    ],
+    sources: [
+      {
+        label: 'Sandy Kurt, 4fold Pattern from the Tomb of Itimud ad-Daula',
+        url: 'https://sandykurt.com/free-tutorials',
+      },
+      {
+        label:
+          'Wikimedia Commons: Inlay work detail on I’timad-ud-Daulah, Agra (Sabyasachi Paldas, CC BY-SA 4.0)',
+        url: 'https://commons.wikimedia.org/wiki/File:Inlay_work_detail_on_I%27timad-ud-Daulah,_Agra.jpg',
+      },
+    ],
+  },
+  {
     id: 'ten-pointed-star-decagon-rect',
     title: 'Ten-pointed star and decagon, rectangular repeat',
     fold: 10,
@@ -1345,6 +1387,22 @@ export interface Question {
  * matters given an earlier answer comes straight after it.
  */
 export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'eight-fold-star-and-octagon',
+    text: 'Should we ship this Mughal eight-fold star and octagon panel in the library with level intermediate?',
+    choices: [
+      'Ship with level intermediate',
+      'Revise construction',
+      'Remove from library',
+    ],
+    pictures: [
+      {
+        src: 'renders/eight-fold-star-and-octagon/compare-wall.png',
+        caption: 'Our wall compared with the Tomb of I’timād-ud-Daulah panel.',
+      },
+    ],
+    card: 'eight-fold-star-and-octagon',
+  },
   {
     id: 'ten-pointed-star-decagon-rect',
     text: 'Should we keep this tutorial as an unverified 10-fold rectangular repeat, or replace it with an authentic reconstruction of the actual Darb-e Imam portal or another verified 10-fold pattern?',
