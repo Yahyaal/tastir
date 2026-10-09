@@ -539,6 +539,25 @@ describe('drawing along', () => {
     expect(at2).toHaveLength(2);
   });
 
+  it('inks across the middle circle even when later construction steps were skipped', () => {
+    act(() => {
+      window.location.hash = '#/alhambra-comares-bones/draw';
+    });
+    render(<App entries={[{ id: 'alhambra-comares-bones', json: bones }]} />);
+    // Draw only steps 1 to 4, skipping step 5 (diagonals) and step 6 (tile)
+    for (let i = 0; i < 4; i++) {
+      click('Draw it for me');
+      click('Next');
+    }
+    // Jump straight to Ink
+    click('Ink');
+    // Connect (-1, -1) to (1, 1) across the middle circle
+    clickAt(-1, -1);
+    clickAt(1, 1);
+    const inked = [...inkBoard().querySelectorAll('line.ink-piece.inked')];
+    expect(inked.length).toBeGreaterThanOrEqual(1);
+  });
+
   it('repeats the tile by hand, colours the wall, and keeps both', () => {
     openAlong();
     for (let i = 0; i < 6; i++) {
