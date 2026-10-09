@@ -175,18 +175,6 @@ function useCoarse(): boolean {
   return coarse;
 }
 
-/** Whether the point lies on the outline of a polygon. */
-function onOutline(p: Vec, poly: readonly Vec[]): boolean {
-  return poly.some((a, i) => {
-    const b = poly[(i + 1) % poly.length] as Vec;
-    const d = { x: b.x - a.x, y: b.y - a.y };
-    const len2 = d.x * d.x + d.y * d.y;
-    const t = ((p.x - a.x) * d.x + (p.y - a.y) * d.y) / len2;
-    if (t < -1e-6 || t > 1 + 1e-6) return false;
-    return Math.hypot(p.x - (a.x + d.x * t), p.y - (a.y + d.y * t)) < 1e-6;
-  });
-}
-
 /** Whether the screen is a phone's, where the two halves take turns. */
 function usePhone(): boolean {
   const query = '(max-width: 760px)';
@@ -397,47 +385,14 @@ export function DrawAlong({
     setChosen,
   );
   const ready = ink.ready && !('reason' in ink.ready) ? ink.ready : undefined;
-  // On the tile's edge the wall keeps one of a bit's two copies; the
-  // inked bit is drawn at the other copy too, so ink shows where the
-  // learner drew it.
-  const echoes = useMemo(() => {
-    if (!ready) return [];
-    const { u, v, corners } = ready.cell;
-    const slides = [
-      u,
-      v,
-      { x: -u.x, y: -u.y },
-      { x: -v.x, y: -v.y },
-      { x: u.x + v.x, y: u.y + v.y },
-      { x: u.x - v.x, y: u.y - v.y },
-      { x: -u.x + v.x, y: -u.y + v.y },
-      { x: -u.x - v.x, y: -u.y - v.y },
-    ];
-    const out: { a: Vec; b: Vec }[] = [];
-    for (const id of chosen) {
-      const p = ready.graph.bits.get(id);
-      if (!p) continue;
-      for (const d of slides) {
-        const a = { x: p.segment.a.x + d.x, y: p.segment.a.y + d.y };
-        const b = { x: p.segment.b.x + d.x, y: p.segment.b.y + d.y };
-        if (onOutline(a, corners) && onOutline(b, corners)) out.push({ a, b });
-      }
-    }
-    return out;
-  }, [ready, chosen]);
-  // The learner's inked tile, as it repeats: its bits and their edge
-  // copies.
+  // The learner's inked tile, as it repeats: its bits.
   const tileInk = useMemo((): Segment[] => {
     if (!ready) return [];
-    const bits = [...chosen].flatMap((id) => {
+    return [...chosen].flatMap((id) => {
       const p = ready.graph.bits.get(id);
       return p ? [p.segment] : [];
     });
-    return [
-      ...bits,
-      ...echoes.map((e) => ({ kind: 'segment' as const, a: e.a, b: e.b })),
-    ];
-  }, [ready, chosen, echoes]);
+  }, [ready, chosen]);
   // At the colour stage: the pieces of the learner's own wall, each of
   // the pattern's kind it has the shape of (the ground where none).
   const colors = pieceColors(model, colorHistory.now);
@@ -858,7 +813,6 @@ export function DrawAlong({
                   pieces: ready.pieces,
                   chosen,
                   fresh: ink.fresh,
-                  echo: echoes,
                   ...(ink.hint
                     ? { glow: ink.hint.glow, dashed: ink.hint.dashed }
                     : {}),

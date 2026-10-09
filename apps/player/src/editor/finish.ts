@@ -329,10 +329,14 @@ function keysOf(inkable: Inkable): Map<string, string> {
   for (const p of inkable.pieces)
     for (let i = -2; i <= 2; i++)
       for (let j = -2; j <= 2; j++) {
+        if (i === 0 && j === 0) continue;
         const d = { x: u.x * i + v.x * j, y: u.y * i + v.y * j };
         const move = (q: Vec) => ({ x: q.x + d.x, y: q.y + d.y });
         byKey.set(pairKey(move(p.segment.a), move(p.segment.b)), p.id);
       }
+  for (const p of inkable.pieces) {
+    byKey.set(pairKey(p.segment.a, p.segment.b), p.id);
+  }
   keyMaps.set(inkable, byKey);
   return byKey;
 }

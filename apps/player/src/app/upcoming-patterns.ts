@@ -48,6 +48,15 @@ export function upcomingPhotoSrc(
   return dev ? `/__review/research/upcoming/${name}` : undefined;
 }
 
+export function upcomingDrawnSrc(
+  drawnUrl?: string,
+  dev: boolean = import.meta.env.DEV,
+): string | undefined {
+  if (!drawnUrl) return undefined;
+  const name = drawnUrl.replace(/^upcoming\//, '');
+  return dev ? `/__review/research/upcoming/${name}` : undefined;
+}
+
 export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
   // --- PHASE 1: IMMEDIATE / HIGH PRIORITY ---
   {
@@ -71,7 +80,7 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     photo: {
       file: 'mian-stellated-hex-photo.jpg',
       caption:
-        'Historical 1340 CE Mamluk minbar woodwork with ivory inlay, Mosque of Amir Altunbugha al-Maridani, Cairo',
+        'Historical 1340 CE Mamluk minbar woodwork with ivory inlay, Mosque of Amir Altunbugha al-Maridani, Cairo (cropped)',
       creator: 'Unknown photographer',
       license: 'Public domain',
       url: 'https://commons.wikimedia.org/wiki/File:Ca%C3%AFro._Amir_al-Maridani-moskee_Minbar_Detail_van_het_houten_maaswerk,_GDE002950.jpg',

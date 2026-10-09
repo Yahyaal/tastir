@@ -82,7 +82,7 @@ export function useInkBoard(
       const d = readyToInk(tutorial, model.scene, draft);
       const scene = check(d).scene;
       const cell = cellOf(scene, d.pattern?.cell ?? '');
-      const pieces = inkPieces(scene, cell);
+      const pieces = inkPieces(scene, cell, { allEdges: true });
       const paths = new Map(
         pieces.map((p) => [p.id, { along: lineKey(p) } as InkAlong]),
       );
@@ -271,11 +271,7 @@ export function useInkBoard(
    */
   const stroke = (from: string, to: string, add: boolean): boolean => {
     if (!ready || 'reason' in ready) return false;
-    const { u, v } = ready.cell;
-    const shifts = [-1, 0, 1].flatMap((i) =>
-      [-1, 0, 1].map((j) => ({ x: u.x * i + v.x * j, y: u.y * i + v.y * j })),
-    );
-    const ids = strokeBetween(ready.graph, from, to, shifts);
+    const ids = strokeBetween(ready.graph, from, to);
     if (!ids.length) return false;
     apply(ids, add);
     return true;

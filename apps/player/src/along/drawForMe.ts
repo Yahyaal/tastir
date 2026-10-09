@@ -4,6 +4,8 @@ import {
   distance,
   evaluate,
   figureOn,
+  inkCarriers,
+  inkStrokes,
   pickFor,
   TutorialError,
   type Scene,
@@ -91,6 +93,8 @@ export function withTutorialTile(
     check(draft.steps),
   );
   const cell = b.resolve(tutorial.pattern.cell);
+  const carriers = inkCarriers(tScene, inkStrokes(tScene, tutorial));
+  for (const c of carriers) b.resolve(c);
   return { draft: b.draft(), cell };
 }
 

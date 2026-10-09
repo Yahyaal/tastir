@@ -10,18 +10,16 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 **Read this first if you are a fresh session.** The owner is close to the weekly Claude limit, so Claude now works as an **orchestrator**: it reviews, plans and writes prompts, and **Gemini in Antigravity does the building**. Prompts for Gemini go in `docs/prompts/`, one dated file per batch, each prompt self-contained (it repeats the project's rules), because the owner points Antigravity at the file. Do not spawn builder or tester agents unless the owner asks; they use a lot of the limit.
 
-### In flight right now
+### In flight right now (9 October)
 
-Gemini has completed all four prompts from [`docs/prompts/gemini-2026-10-08.md`](prompts/gemini-2026-10-08.md):
+The second Gemini batch is done and Claude reviewed it on 9 October: checks pass; draw along now fits 1280×800, 1366×768 and 1024×768 without scrolling, and the board never moved through steps, a reload ("Welcome back" is now an overlay), Ink and Repeat (measured on the Comares bones); no 404s on `#/upcoming`; the al-Maridani caption says cropped; the Upcoming intro promises nothing. The independent tester's pass (Prompt 6) was not run; Grok's outsider test below replaces it. Small leftover: the "Welcome back" overlay slightly covers the top of Back and Next at 1280×800.
 
-1. **Finish task 6.16 on `main`.** (Done, commit `0d2cfac`). Added jsdom tests for colour picking and double "Keep it", verified 0 px board stability on Comares bones in a real browser across desktop, tablet, and mobile, and ticked 6.16 in [the build log](USER-PATTERNS.md).
-2. **Ready the UI redesign.** (Done on `ui-redesign`, merged to `main`). Brought `main` in without conflicts; audited upcoming photos to ensure only free Creative Commons photos ship publicly while private photos remain in git-ignored research; renamed the rectangular repeat tutorial to honest claims ("Ten-pointed star and decagon, rectangular repeat") and added a review card; aligned player/draw-along colour legends to orange and blue; unified draw along, editor, and review to the dark atelier style, verifying 0 px board movement on all 13 beginner tutorials across three viewports; cataloged Arabic titles in `docs/prompts/arabic-titles.md`.
-3. **Tester pass.** (Done). Thorough pass as a beginner hobbyist on a frozen copy (`c1b8791`) across desktop (1280×800), tablet (1024×768), and phone (390×844). Verified home filters, stepped 3 tutorials, compare-with-original, full draw along flow, editor, and upcoming catalog. Confirmed 0 px board stability, matching colour legends, and rendered verdict: ready to merge.
-4. **Merge.** (Done, commit `b00795e`). Merged `ui-redesign` into `main`, verified all tests, lint, and typecheck pass (each exit 0), pushed to `origin main`, and restarted dev server on port 4200.
+Three tools now work at once, from [`docs/prompts/team-2026-10-09.md`](prompts/team-2026-10-09.md), each in its own area and branch (nobody pushes `main`; the owner merges after Claude reviews):
+- **Codex** (worktree `../Tastir-learning-reliability`): draw along for every tutorial, not only beginners, and the "Draw along" button on all cards.
+- **Gemini** (worktree `../Tastir-patterns`, branch `patterns/khatam`): two new eight-fold designs (star and octagon, khatam) verified against free photos.
+- **Grok** (its own computer, a fresh GitHub clone): an outsider's test reported as GitHub issues, a hunt for free photos (`docs/research-candidates.md`), and a review of the Arabic titles, in one pull request `grok/free-photos`.
 
-**Claude's review of the merge (8 October):** good to keep. Checks pass; only two credited Commons photos ship and the private ones stay in `docs/research/upcoming/`; the Darb-e Imam tutorial is renamed (`ten-pointed-star-decagon-rect`) with a review card for the owner; every Upcoming status is "Planned" or "Researching"; the legend matches the drawing; the board stays still from step 1 to Repeat. Left to fix, in [`docs/prompts/gemini-2026-10-08b.md`](prompts/gemini-2026-10-08b.md): draw along does not fit a 1280×800 screen (the bottom of the drawings is cut off), the "Welcome back" line moves the board by 38 px (Gemini's tester called this minor; it breaks the owner's rule), two 404 images on `#/upcoming`, "(cropped)" missing on the al-Maridani photo, and the Upcoming intro still promises work. Prompt 6 is a tester pass in a fresh Antigravity conversation, because the tester in the same conversation judged its own work.
-
-**Next for Claude:** when the owner says the second batch is done, review it the same way (exit codes, screenshots, the owner's layout rules, the content rules) and write the next prompt file.
+**Next for Claude:** review each branch or pull request when the owner says it is done (exit codes, screenshots, the owner's layout rules, the content rules about photos and credits), triage Grok's issues into prompts, then merge order: Codex's branch, then Gemini's, then Grok's docs.
 
 ### What is built (6–8 October)
 

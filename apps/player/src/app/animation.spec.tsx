@@ -185,7 +185,14 @@ describe('highlight before draw', () => {
       fill: 'backwards',
       direction: 'normal',
     });
-    expect(calls[0]?.keyframes[0]).toMatchObject({ strokeDashoffset: 1 });
+    expect(calls[0]?.keyframes[0]).toMatchObject({
+      opacity: 0,
+      strokeDashoffset: 1,
+    });
+    expect(calls[0]?.keyframes[1]).toMatchObject({
+      opacity: 1,
+      strokeDashoffset: 1,
+    });
   });
 
   it('animates the new step on Next, at the chosen speed', () => {

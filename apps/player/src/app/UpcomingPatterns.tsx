@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import {
   UPCOMING_PATTERNS,
   upcomingPhotoSrc,
+  upcomingDrawnSrc,
   type UpcomingPattern,
   type UpcomingPhase,
 } from './upcoming-patterns';
@@ -98,11 +99,9 @@ export function UpcomingPatterns() {
           </div>
           <h1>Upcoming Patterns & Masterwork Queue</h1>
           <p className="upcoming-lead">
-            A researched catalog of historic masterworks from across the Islamic
-            world, prepared for step-by-step compass and straightedge
-            construction in the Tastir atelier. We are adding these in
-            structured batches—starting with missing honeycomb rosettes from
-            Samira Mian and the celebrated 10-fold Girih tile systems.
+            A catalog of historic masterworks from across the Islamic world that
+            we are researching for step-by-step compass and straightedge
+            construction in the Tastir atelier.
           </p>
         </header>
 
@@ -272,11 +271,8 @@ function UpcomingCard({
 
   const photo = pattern.photo;
   const photoSrcUrl = photo ? upcomingPhotoSrc(photo) : undefined;
-  const defaultMode = photo
-    ? 'photo'
-    : pattern.drawnUrl
-      ? 'drawn'
-      : 'blueprint';
+  const drawnSrcUrl = upcomingDrawnSrc(pattern.drawnUrl);
+  const defaultMode = photo ? 'photo' : drawnSrcUrl ? 'drawn' : 'blueprint';
   const [mode, setMode] = useState<'photo' | 'drawn' | 'blueprint'>(
     defaultMode,
   );
@@ -311,7 +307,7 @@ function UpcomingCard({
               📷 Monument Photo
             </button>
           )}
-          {pattern.drawnUrl && (
+          {drawnSrcUrl && (
             <button
               type="button"
               className={`media-tab ${mode === 'drawn' ? 'active' : ''}`}
@@ -350,6 +346,9 @@ function UpcomingCard({
                   alt={photo.caption}
                   className="card-media-img"
                   loading="lazy"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLElement).style.display = 'none';
+                  }}
                 />
                 <div className="card-media-hover-bar">
                   <span className="hover-zoom-pill">
@@ -370,7 +369,7 @@ function UpcomingCard({
                 </p>
               </div>
             )
-          ) : mode === 'drawn' && pattern.drawnUrl ? (
+          ) : mode === 'drawn' && drawnSrcUrl ? (
             <div
               className="card-media-interactive"
               onClick={() => onOpenLightbox('drawn')}
@@ -382,10 +381,13 @@ function UpcomingCard({
               title="Click to view full-size finished wall"
             >
               <img
-                src={pattern.drawnUrl}
+                src={drawnSrcUrl}
                 alt={pattern.drawnCaption ?? pattern.title}
                 className="card-media-img"
                 loading="lazy"
+                onError={(e) => {
+                  (e.currentTarget as HTMLElement).style.display = 'none';
+                }}
               />
               <div className="card-media-hover-bar">
                 <span className="hover-zoom-pill">
@@ -567,8 +569,9 @@ function UpcomingLightbox({
 
   const photo = pattern.photo;
   const photoSrcUrl = photo ? upcomingPhotoSrc(photo) : undefined;
+  const drawnSrcUrl = upcomingDrawnSrc(pattern.drawnUrl);
   const hasPhoto = Boolean(photo);
-  const hasDrawn = Boolean(pattern.drawnUrl);
+  const hasDrawn = Boolean(drawnSrcUrl);
 
   const currentCaption =
     mode === 'photo' && photo
@@ -688,9 +691,9 @@ function UpcomingLightbox({
               </p>
             </div>
           )
-        ) : mode === 'drawn' && pattern.drawnUrl ? (
+        ) : mode === 'drawn' && drawnSrcUrl ? (
           <img
-            src={pattern.drawnUrl}
+            src={drawnSrcUrl}
             alt={currentCaption}
             className="lightbox-img"
             onClick={() => setActualSize(!actualSize)}
