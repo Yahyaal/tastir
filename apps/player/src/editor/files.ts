@@ -154,14 +154,22 @@ async function pipe(
  */
 export async function encodeShared(shared: Shared): Promise<string> {
   const bytes = new TextEncoder().encode(JSON.stringify(shared));
+  const tooLarge = () =>
+    new Error(
+      'This pattern is too large for a share link. Download a pattern file instead.',
+    );
+  if (bytes.byteLength > MAX_FILE_BYTES) throw tooLarge();
+  let code: string | undefined;
   if (typeof CompressionStream === 'function') {
     try {
-      return `z${toBase64Url(await pipe(bytes, new CompressionStream('deflate-raw')))}`;
+      code = `z${toBase64Url(await pipe(bytes, new CompressionStream('deflate-raw')))}`;
     } catch {
       // Fall back to the plain form.
     }
   }
-  return `j${toBase64Url(bytes)}`;
+  code ??= `j${toBase64Url(bytes)}`;
+  if (code.length > MAX_LINK_CHARS) throw tooLarge();
+  return code;
 }
 
 /** The payload back from an address; undefined when it cannot be read. */

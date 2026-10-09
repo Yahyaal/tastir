@@ -62,12 +62,14 @@ export default defineConfig(({ mode }) => ({
       name: 'library-previews',
       resolveId(id) {
         if (id === 'virtual:tastir-fixtures') return '\0tastir-fixtures';
+        return null;
       },
       load(id) {
         if (id === '\0tastir-fixtures')
           return mode === 'test'
             ? `export { default } from ${JSON.stringify(resolve(import.meta.dirname, 'src/app/libraryFixtures.ts'))};`
             : 'export default {};';
+        return null;
       },
       buildStart() {
         execFileSync(

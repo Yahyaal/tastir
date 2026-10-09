@@ -71,3 +71,9 @@ it('refuses oversized files and damaged metadata', () => {
     ),
   ).toHaveProperty('reason', expect.stringContaining('source information'));
 });
+
+it('refuses to create a link its reader would reject as too large', async () => {
+  await expect(
+    encodeShared({ library: 'x'.repeat(MAX_FILE_BYTES) }),
+  ).rejects.toThrow('pattern file');
+});
