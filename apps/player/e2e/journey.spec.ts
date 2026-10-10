@@ -51,6 +51,29 @@ test('library previews need no construction downloads except the animated hero',
   ).toBe(false);
 });
 
+test('a missing original photo keeps its source link and shows no broken image', async ({
+  page,
+}) => {
+  await page.route('**/photos/cairo-minbar-doors-met.jpg', (request) =>
+    request.fulfill({ status: 404, body: 'Not found' }),
+  );
+  await page.goto(route('minbar-doors-cairo/result'));
+  const original = page.getByRole('figure', { name: 'The original' });
+  await expect(
+    original.getByText('This photo could not be loaded.'),
+  ).toBeVisible();
+  await expect(original.getByRole('img')).toHaveCount(0);
+  await expect(original.getByRole('button', { name: /full size/ })).toHaveCount(
+    0,
+  );
+  await expect(
+    original.getByRole('link', { name: 'its source' }),
+  ).toHaveAttribute(
+    'href',
+    'https://www.metmuseum.org/art/collection/search/444812',
+  );
+});
+
 test('a beginner draws the first circle, gets a completed step, and resumes', async ({
   page,
   hasTouch,
