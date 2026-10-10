@@ -2315,6 +2315,13 @@ main.stage .drawing:not(.wall) {
 }
 
 @media (max-width: 760px) {
+  .masthead-nav {
+    max-width: 100%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    border-radius: 16px;
+  }
+
   .player {
     padding: 0 12px 88px;
   }

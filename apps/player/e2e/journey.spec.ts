@@ -51,6 +51,50 @@ test('library previews need no construction downloads except the animated hero',
   ).toBe(false);
 });
 
+test('home navigation fits narrow phones before and after saving a design', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  const fits = async () => {
+    await page.evaluate(() => document.fonts.ready);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(320);
+    const header = await page.locator('.masthead').boundingBox();
+    expect(header).not.toBeNull();
+    for (const link of await page
+      .getByRole('navigation', { name: 'Main Navigation' })
+      .locator('a, button')
+      .all()) {
+      const box = await link.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.x).toBeGreaterThanOrEqual(header!.x);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(
+        header!.x + header!.width,
+      );
+    }
+  };
+  await page.goto('/');
+  await expect(page.locator('.library')).toBeVisible();
+  await fits();
+  await page.goto(route(`${star}/result`));
+  await page
+    .getByRole('button', { name: 'Save as my design', exact: true })
+    .click();
+  await page
+    .getByRole('textbox', { name: 'Name', exact: true })
+    .fill('Phone wall');
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(
+    page.getByText('Saved as “Phone wall”.', { exact: false }),
+  ).toBeVisible();
+  await page.goto('/');
+  await expect(
+    page.getByRole('button', { name: 'My designs (1)' }),
+  ).toBeVisible();
+  await fits();
+});
+
 test('Upcoming inspection keeps keyboard focus inside and returns to its card', async ({
   page,
 }) => {

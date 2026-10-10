@@ -42,8 +42,12 @@ The Upcoming inspection viewer was confirmed to leave focus outside on entry and
 
 After the correction, full tests, lint and type checks each exited 0. The complete production browser suite passed 69 cases and skipped six intentionally desktop-only performance cases, exit code 0. Timing budgets were unchanged.
 
+## Task 7: home navigation on narrow phones
+
+The home navigation overflowed at 320 px (document scroll width 334 px), clipping Upcoming patterns. Its links now wrap within the header on phones; document scroll width is now 320 px. Before/after screenshots were inspected. A production regression checks a fresh library and the extra My designs link after actually saving a wall. Full tests, lint, type checks and production build each exited 0. The narrow-navigation and square-preview browser checks passed in all three projects: six passed, exit code 0.
+
 ## Next
 
-Check narrow phone layouts for further reproducible app issues. Tasks 1–6 are complete; retain this checkpoint if the session is interrupted.
+Tasks 1–7 are complete. Continue checking the remaining app dialogs for reproducible keyboard issues; retain this checkpoint if the session is interrupted.
 
 Engine and tutorial work remain assigned elsewhere.
