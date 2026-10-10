@@ -20,6 +20,7 @@
     "src/test-setup.ts",
     "vite.config.ts",
     "vite.config.mts",
+    "reviewFiles.ts",
     "vitest.config.ts",
     "vitest.config.mts",
     "src/**/*.test.ts",
