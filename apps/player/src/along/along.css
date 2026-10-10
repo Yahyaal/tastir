@@ -111,16 +111,14 @@
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: 10.5rem auto minmax(180px, 1fr) 3.8rem;
+  grid-template-rows: 6.75rem auto minmax(180px, 1fr) 3.8rem;
   column-gap: 28px;
   row-gap: 8px;
 }
 
 .along-text-row {
   grid-column: 1 / -1;
-  /* Room for most steps' text, so the drawings do not move from step to
-     step or into the ink; a longer text still shows in full. */
-  min-height: 6.2rem;
+  min-height: 0;
   display: flex;
   gap: 24px;
   align-items: flex-start;
@@ -128,18 +126,32 @@
 }
 
 .along-text {
+  flex: 1;
+  min-width: 0;
   max-width: 90ch;
-  max-height: 100%;
-  overflow-y: auto;
+}
+
+.along-text .along-layer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(140px, 22%);
+  gap: 12px;
+}
+
+.along-instruction {
+  min-width: 0;
+}
+
+.instruction-scroll-hint {
+  margin-left: 12px;
+  font-family: var(--text);
+  font-size: 0.72rem;
+  color: var(--on-lapis-muted);
+  white-space: nowrap;
 }
 
 @media (min-width: 761px) and (max-width: 1100px) {
   .along .topbar {
     min-height: 70px;
-  }
-
-  .along-grid {
-    grid-template-rows: 14rem auto minmax(180px, 1fr) 3.8rem;
   }
 }
 
@@ -167,10 +179,12 @@
   visibility: hidden;
 }
 
-/* Reserve three actual line heights for asynchronous and wrapped feedback. */
+/* Feedback uses the space beside the instruction, without shortening boards. */
 .along-text .along-check {
-  min-height: 3lh;
+  height: 6lh;
+  min-height: 6lh;
   font-size: 0.85rem;
+  overflow-y: auto;
 }
 
 .along-text-row h2 {
@@ -178,6 +192,8 @@
   font-family: var(--display);
   font-weight: 400;
   font-size: 0.98rem;
+  line-height: 1.2;
+  height: 2lh;
   color: var(--saffron);
 }
 
@@ -185,6 +201,15 @@
   margin: 0 0 4px;
   line-height: 1.4;
   font-size: 0.92rem;
+  height: 3lh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--saffron) var(--theme-bg-surface);
+}
+
+.along-text-row .instruction:focus-visible {
+  outline: 2px solid var(--saffron);
+  outline-offset: 2px;
 }
 
 .along-tools .editor-tools {
@@ -284,10 +309,30 @@
 }
 
 .along-nav {
+  position: relative;
   display: flex;
   flex-shrink: 0;
   gap: 10px;
   justify-content: flex-end;
+}
+
+.along-nav-normal,
+.along-resume-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.along-resume-actions {
+  position: absolute;
+  inset: 0;
+}
+
+.player .along-resume-actions button {
+  flex: 1;
+  min-width: 0;
+  padding: 3px 6px;
+  font-size: 0.85rem;
+  line-height: 1.15;
 }
 
 .player .along-nav button {
@@ -383,9 +428,18 @@
     gap: 8px;
   }
 
-  .along-text {
-    max-height: none;
-    overflow: visible;
+  .along-text .along-layer {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .along-instruction {
+    height: 6.75rem;
+  }
+
+  .along-text .along-check {
+    height: 3lh;
+    min-height: 3lh;
   }
 
   .along-plate,
@@ -413,44 +467,8 @@
   }
 }
 
-.along-back {
-  position: absolute;
-  top: 50px;
-  right: 20px;
-  margin: 0;
-  padding: 6px 14px;
-  background: var(--theme-bg-raised);
-  border: 1px solid var(--theme-border-hover);
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  font-size: 0.85rem;
-  color: var(--theme-text-primary);
-  z-index: 50;
-  backdrop-filter: blur(8px);
-}
-
-.along-back button.quiet {
-  color: var(--saffron);
-  font-weight: 600;
-  margin-left: 8px;
-  text-decoration: underline;
-}
-
-.along-back.refused {
+.along-check.refused {
   color: #ffb4a6;
-  border-color: rgba(255, 180, 166, 0.3);
-}
-
-@media (max-width: 760px) {
-  .along-back {
-    top: auto;
-    bottom: 16px;
-    left: 12px;
-    right: 12px;
-    font-size: 0.82rem;
-    padding: 8px 12px;
-    position: fixed;
-  }
 }
 
 /* Ink hints: the bits still to ink glow, or are dashed. */

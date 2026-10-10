@@ -44,6 +44,9 @@ describe('Upcoming patterns page', () => {
     const viewer = screen.getByRole('dialog');
     const full = viewer.querySelector('.lightbox-img')!;
     expect(full).not.toBeNull();
+    within(viewer)
+      .getByRole('button', { name: /Actual Resolution/ })
+      .focus();
     fireEvent.error(full);
     expect(viewer.querySelector('.lightbox-img')).toBeNull();
     expect(
@@ -51,6 +54,38 @@ describe('Upcoming patterns page', () => {
         .getByRole('tab', { name: /Blueprint/ })
         .getAttribute('aria-selected'),
     ).toBe('true');
+    expect(document.activeElement).toBe(
+      within(viewer).getByRole('button', { name: 'Close inspection view' }),
+    );
+  });
+
+  it('contains inspection keyboard focus and restores the card and page scrolling', () => {
+    const { container } = render(<UpcomingPatterns />);
+    const card = container.querySelector('.upcoming-card') as HTMLElement;
+    fireEvent.click(within(card).getByRole('button', { name: /Blueprint/ }));
+    const opener = card.querySelector(
+      '.card-blueprint-interactive',
+    ) as HTMLElement;
+    opener.focus();
+    const overflow = document.body.style.overflow;
+    fireEvent.keyDown(opener, { key: 'Enter' });
+    const viewer = screen.getByRole('dialog');
+    expect(document.activeElement).toBe(
+      within(viewer).getByRole('button', { name: 'Close inspection view' }),
+    );
+    expect(document.body.style.overflow).toBe('hidden');
+    const controls = [
+      ...viewer.querySelectorAll<HTMLElement>('button:not(:disabled), a[href]'),
+    ];
+    controls[controls.length - 1]!.focus();
+    fireEvent.keyDown(window, { key: 'Tab' });
+    expect(document.activeElement).toBe(controls[0]);
+    fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(controls[controls.length - 1]);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(document.activeElement).toBe(opener);
+    expect(document.body.style.overflow).toBe(overflow);
   });
 
   it('renders all 24 cataloged patterns by default', () => {

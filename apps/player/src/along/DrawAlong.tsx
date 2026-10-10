@@ -8,6 +8,7 @@ import {
   type Vec,
 } from '@tastir/engine';
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { StepInstruction } from './StepInstruction';
 import { fullView, growingFrame, type Rect } from '../app/camera';
 import {
   colorReducer,
@@ -1038,46 +1039,6 @@ export function DrawAlong({
           Watch it drawn
         </a>
       </header>
-      {welcome && !restarting ? (
-        <p className="along-back" role="status">
-          Welcome back: your board and your step are as you left them.{' '}
-          <button
-            type="button"
-            className="quiet"
-            onClick={() => setWelcome(false)}
-          >
-            Continue drawing
-          </button>
-          <button
-            type="button"
-            className="quiet"
-            onClick={() => setRestarting(true)}
-          >
-            Start again
-          </button>
-        </p>
-      ) : null}
-      {restarting ? (
-        <p className="along-back" role="alert">
-          Start again with an empty board? Your drawing here is lost.{' '}
-          <button type="button" className="quiet" onClick={startAgain}>
-            Start again
-          </button>
-          <button
-            type="button"
-            className="quiet"
-            onClick={() => setRestarting(false)}
-          >
-            Keep my board
-          </button>
-        </p>
-      ) : null}
-      {kept ? null : (
-        <p className="along-back refused" role="alert">
-          This browser will not keep your board (private window or storage
-          full), so it is lost if you leave.
-        </p>
-      )}
       <nav className="along-steps" aria-label="Steps">
         <span className="along-steps-label">Steps</span>
         <ol ref={stepChips}>
@@ -1170,9 +1131,8 @@ export function DrawAlong({
       <div className="along-grid">
         <section className="along-text-row" aria-label="The step to copy">
           <div className="along-text">
-            {/* Every step's text and the ink's, in one cell, only the one
-                at hand visible: the row is as tall as the tallest text in
-                the tutorial, so the drawings never move between stages. */}
+            {/* A fixed three-line instruction box keeps the drawings still
+                without reserving room for every tutorial's longest text. */}
             <div className="along-stack">
               {[
                 ...shown.map((b, i) => ({
@@ -1197,30 +1157,55 @@ export function DrawAlong({
                   className={layer.on ? 'along-layer on' : 'along-layer'}
                   aria-hidden={layer.on ? undefined : true}
                 >
-                  <h2>{layer.head}</h2>
-                  <p className="instruction">{layer.text}</p>
+                  <StepInstruction
+                    head={
+                      layer.on && restarting
+                        ? 'Start again?'
+                        : layer.on && welcome
+                          ? 'Welcome back'
+                          : layer.head
+                    }
+                    text={
+                      layer.on && restarting
+                        ? 'Start again with an empty board? Your drawing here is lost.'
+                        : layer.on && welcome
+                          ? 'Your board and your step are as you left them.'
+                          : layer.text
+                    }
+                    announcement={
+                      layer.on && restarting
+                        ? 'alert'
+                        : layer.on && welcome
+                          ? 'status'
+                          : undefined
+                    }
+                  />
                   {/* The status under the text at hand; an empty slot of the
                       same height under the others. */}
                   {layer.on ? (
                     <p
                       className={
-                        (
-                          inking
-                            ? ink.result?.matches
-                            : afterInk
-                              ? Boolean(keptAs)
-                              : ticks[index]
-                        )
-                          ? 'along-check done'
-                          : 'along-check'
+                        !kept
+                          ? 'along-check refused'
+                          : (
+                                inking
+                                  ? ink.result?.matches
+                                  : afterInk
+                                    ? Boolean(keptAs)
+                                    : ticks[index]
+                              )
+                            ? 'along-check done'
+                            : 'along-check'
                       }
-                      role="status"
+                      role={kept ? 'status' : 'alert'}
                     >
-                      {inking
-                        ? (keepFailed ?? inkStatus)
-                        : afterInk
-                          ? (keepFailed ?? wallStatus)
-                          : stepStatus}
+                      {!kept
+                        ? 'This browser cannot save your board. Keep this page open to avoid losing it.'
+                        : inking
+                          ? (keepFailed ?? inkStatus)
+                          : afterInk
+                            ? (keepFailed ?? wallStatus)
+                            : stepStatus}
                     </p>
                   ) : (
                     <p className="along-check" />
@@ -1230,90 +1215,121 @@ export function DrawAlong({
             </div>
           </div>
           <nav className="along-nav" aria-label="Step">
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => go(index - 1)}
-              disabled={index === 0}
+            <div
+              className="along-nav-normal"
+              style={
+                welcome || restarting ? { visibility: 'hidden' } : undefined
+              }
+              aria-hidden={welcome || restarting ? true : undefined}
+              inert={welcome || restarting}
             >
-              Back
-            </button>
-            {/* Both forward buttons in one cell, so the text beside them
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => go(index - 1)}
+                disabled={index === 0}
+              >
+                Back
+              </button>
+              {/* Both forward buttons in one cell, so the text beside them
                 keeps its width (and its lines) from the steps to the ink. */}
-            <span className="along-stack">
-              {[
-                {
-                  on: !inking && !afterInk,
-                  buttons: [
-                    <button
-                      key="n"
-                      type="button"
-                      className="next"
-                      onClick={() => go(index + 1)}
-                    >
-                      {last ? 'Ink it' : 'Next'}
-                    </button>,
-                  ],
-                },
-                {
-                  on: inking,
-                  buttons: [
-                    <button
-                      key="r"
-                      type="button"
-                      className="next"
-                      disabled={!ink.result?.matches}
-                      onClick={() => go(shown.length + 1)}
-                    >
-                      Repeat it
-                    </button>,
-                  ],
-                },
-                {
-                  on: repeating,
-                  buttons: [
-                    <button
-                      key="c"
-                      type="button"
-                      className="secondary"
-                      onClick={() => go(shown.length + 2)}
-                    >
-                      Color it
-                    </button>,
-                    <button
-                      key="k"
-                      type="button"
-                      className="next"
-                      onClick={() => keepIt(false)}
-                    >
-                      Keep it as it is
-                    </button>,
-                  ],
-                },
-                {
-                  on: coloring,
-                  buttons: [
-                    <button
-                      key="k"
-                      type="button"
-                      className="next"
-                      onClick={() => keepIt(true)}
-                    >
-                      Keep it
-                    </button>,
-                  ],
-                },
-              ].map((layer, i) => (
-                <span
-                  key={i}
-                  className={layer.on ? 'along-layer on' : 'along-layer'}
-                  aria-hidden={layer.on ? undefined : true}
-                  inert={!layer.on}
+              <span className="along-stack">
+                {[
+                  {
+                    on: !inking && !afterInk,
+                    buttons: [
+                      <button
+                        key="n"
+                        type="button"
+                        className="next"
+                        onClick={() => go(index + 1)}
+                      >
+                        {last ? 'Ink it' : 'Next'}
+                      </button>,
+                    ],
+                  },
+                  {
+                    on: inking,
+                    buttons: [
+                      <button
+                        key="r"
+                        type="button"
+                        className="next"
+                        disabled={!ink.result?.matches}
+                        onClick={() => go(shown.length + 1)}
+                      >
+                        Repeat it
+                      </button>,
+                    ],
+                  },
+                  {
+                    on: repeating,
+                    buttons: [
+                      <button
+                        key="c"
+                        type="button"
+                        className="secondary"
+                        onClick={() => go(shown.length + 2)}
+                      >
+                        Color it
+                      </button>,
+                      <button
+                        key="k"
+                        type="button"
+                        className="next"
+                        onClick={() => keepIt(false)}
+                      >
+                        Keep it as it is
+                      </button>,
+                    ],
+                  },
+                  {
+                    on: coloring,
+                    buttons: [
+                      <button
+                        key="k"
+                        type="button"
+                        className="next"
+                        onClick={() => keepIt(true)}
+                      >
+                        Keep it
+                      </button>,
+                    ],
+                  },
+                ].map((layer, i) => (
+                  <span
+                    key={i}
+                    className={layer.on ? 'along-layer on' : 'along-layer'}
+                    aria-hidden={layer.on ? undefined : true}
+                    inert={!layer.on}
+                  >
+                    {layer.buttons}
+                  </span>
+                ))}
+              </span>
+            </div>
+            {welcome || restarting ? (
+              <div className="along-resume-actions">
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() =>
+                    restarting ? setRestarting(false) : setWelcome(false)
+                  }
                 >
-                  {layer.buttons}
-                </span>
-              ))}
-            </span>
+                  {restarting ? 'Keep my board' : 'Continue drawing'}
+                </button>
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={() =>
+                    restarting ? startAgain() : setRestarting(true)
+                  }
+                >
+                  Start again
+                </button>
+              </div>
+            ) : null}
           </nav>
         </section>
         {/* On a phone showing the step, the tools keep their room (unseen),

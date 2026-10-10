@@ -41,6 +41,7 @@ import { SaveDesign } from './SaveDesign';
 import { ShareLink } from './Sharing';
 import { useCamera } from './useCamera';
 import { useInking } from './useInking';
+import { useModalFocus } from './useModalFocus';
 import { Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
@@ -384,8 +385,22 @@ export function Player({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      // Typing a design's name is not a step.
-      if (e.target instanceof HTMLInputElement) return;
+      // Focused controls and browser shortcuts handle their own keys.
+      if (
+        e.defaultPrevented ||
+        e.altKey ||
+        e.ctrlKey ||
+        e.metaKey ||
+        e.shiftKey
+      )
+        return;
+      if (
+        e.target instanceof Element &&
+        e.target.closest(
+          'input, textarea, select, button, a, [contenteditable]:not([contenteditable="false"]), [role="dialog"], [role="alertdialog"]',
+        )
+      )
+        return;
       if (e.key === 'ArrowLeft') back();
       if (e.key === 'ArrowRight' || e.key === ' ') next();
     };
@@ -487,37 +502,14 @@ export function Player({
   return (
     <div className={colorStage ? 'player at-color' : 'player'}>
       {leaving !== undefined && changed ? (
-        <div className="leave-backdrop">
-          <div
-            className="leave-check"
-            role="alertdialog"
-            aria-label="Unsaved changes"
-          >
-            <p>
-              Your changes to “{design?.name}” are not saved. Leave without
-              saving them?
-            </p>
-            <div>
-              <button
-                type="button"
-                className="secondary"
-                onClick={() => {
-                  leaveAnyway.current = true;
-                  window.location.hash = leaving;
-                }}
-              >
-                Leave without saving
-              </button>
-              <button
-                type="button"
-                autoFocus
-                onClick={() => setLeaving(undefined)}
-              >
-                Stay
-              </button>
-            </div>
-          </div>
-        </div>
+        <LeaveConfirmation
+          name={design?.name}
+          onStay={() => setLeaving(undefined)}
+          onLeave={() => {
+            leaveAnyway.current = true;
+            window.location.hash = leaving;
+          }}
+        />
       ) : null}
       {printing ? (
         <PrintSheet model={inking.shown} paper={paper} onDone={stopPrinting} />
@@ -846,6 +838,43 @@ export function Player({
             </section>
           </aside>
         ) : null}
+      </div>
+    </div>
+  );
+}
+
+function LeaveConfirmation({
+  name,
+  onStay,
+  onLeave,
+}: {
+  name: string | undefined;
+  onStay: () => void;
+  onLeave: () => void;
+}) {
+  const dialog = useRef<HTMLDivElement>(null);
+  const stay = useRef<HTMLButtonElement>(null);
+  useModalFocus(dialog, stay, onStay, '.player', '.home');
+  return (
+    <div className="leave-backdrop">
+      <div
+        ref={dialog}
+        className="leave-check"
+        role="alertdialog"
+        aria-modal="true"
+        aria-label="Unsaved changes"
+      >
+        <p>
+          Your changes to “{name}” are not saved. Leave without saving them?
+        </p>
+        <div>
+          <button type="button" className="secondary" onClick={onLeave}>
+            Leave without saving
+          </button>
+          <button ref={stay} type="button" onClick={onStay}>
+            Stay
+          </button>
+        </div>
       </div>
     </div>
   );

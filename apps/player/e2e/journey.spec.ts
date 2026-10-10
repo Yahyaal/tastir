@@ -51,6 +51,288 @@ test('library previews need no construction downloads except the animated hero',
   ).toBe(false);
 });
 
+test('home navigation fits narrow phones before and after saving a design', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  const fits = async () => {
+    await page.evaluate(() => document.fonts.ready);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(320);
+    const header = await page.locator('.masthead').boundingBox();
+    expect(header).not.toBeNull();
+    for (const link of await page
+      .getByRole('navigation', { name: 'Main Navigation' })
+      .locator('a, button')
+      .all()) {
+      const box = await link.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.x).toBeGreaterThanOrEqual(header!.x);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(
+        header!.x + header!.width,
+      );
+    }
+  };
+  await page.goto('/');
+  await expect(page.locator('.library')).toBeVisible();
+  await fits();
+  await page.goto(route(`${star}/result`));
+  await page
+    .getByRole('button', { name: 'Save as my design', exact: true })
+    .click();
+  await page
+    .getByRole('textbox', { name: 'Name', exact: true })
+    .fill('Phone wall');
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(
+    page.getByText('Saved as “Phone wall”.', { exact: false }),
+  ).toBeVisible();
+  await page.goto('/');
+  await expect(
+    page.getByRole('button', { name: 'My designs (1)' }),
+  ).toBeVisible();
+  await fits();
+});
+
+test('unsaved changes confirmation keeps focus and Escape preserves the design', async ({
+  page,
+}) => {
+  await page.goto(route(`${star}/result`));
+  await page
+    .getByRole('button', { name: 'Save as my design', exact: true })
+    .click();
+  await page
+    .getByRole('textbox', { name: 'Name', exact: true })
+    .fill('Unsaved wall');
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(
+    page.getByText('Saved as “Unsaved wall”.', { exact: false }),
+  ).toBeVisible();
+  await page.getByLabel('Palette', { exact: false }).selectOption('Marrakech');
+  const address = page.url();
+  const home = page.getByRole('link', { name: /All patterns/ });
+  await home.focus();
+  const overflow = await page.evaluate(() => document.body.style.overflow);
+  await home.press('Enter');
+  const dialog = page.getByRole('alertdialog', { name: 'Unsaved changes' });
+  const stay = dialog.getByRole('button', { name: 'Stay', exact: true });
+  const leave = dialog.getByRole('button', { name: 'Leave without saving' });
+  await expect(stay).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(leave).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(stay).toBeFocused();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.label')).toHaveText('Color');
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(home).toBeFocused();
+  await expect(page).toHaveURL(address);
+  await expect(page.getByLabel('Palette', { exact: false })).toHaveValue(
+    'Marrakech',
+  );
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
+    overflow,
+  );
+  await home.press('Enter');
+  await dialog.getByRole('button', { name: 'Leave without saving' }).click();
+  await expect(page.locator('.library')).toBeVisible();
+});
+
+test('Upcoming card headers keep complete Arabic titles within their cards', async ({
+  page,
+}) => {
+  await page.goto('/#/upcoming');
+  const titles = page.locator('.card-arabic-title');
+  await expect(titles).toHaveCount(24);
+  await page.evaluate(() => document.fonts.ready);
+  const fits = async () => {
+    const boxes = await titles.evaluateAll((elements) =>
+      elements.map((title) => {
+        const text = title.getBoundingClientRect();
+        const header = title.closest('.card-top-meta')!.getBoundingClientRect();
+        return {
+          left: text.left,
+          right: text.right,
+          headerLeft: header.left,
+          headerRight: header.right,
+          scroll: title.scrollWidth,
+          width: title.clientWidth,
+        };
+      }),
+    );
+    for (const box of boxes) {
+      expect(box.left).toBeGreaterThanOrEqual(box.headerLeft - 1);
+      expect(box.right).toBeLessThanOrEqual(box.headerRight + 1);
+      expect(box.scroll).toBeLessThanOrEqual(box.width + 1);
+    }
+  };
+  await fits();
+  await page.setViewportSize({ width: 320, height: 740 });
+  await fits();
+});
+
+test('Upcoming inspection keeps keyboard focus inside and returns to its card', async ({
+  page,
+}) => {
+  await page.goto('/#/upcoming');
+  const card = page.locator('.upcoming-card').first();
+  await card.getByRole('button', { name: /Blueprint/ }).click();
+  const opener = card.locator('.card-blueprint-interactive');
+  await opener.focus();
+  const overflow = await page.evaluate(() => document.body.style.overflow);
+  await opener.press('Enter');
+  const viewer = page.getByRole('dialog');
+  await expect(
+    viewer.getByRole('button', { name: 'Close inspection view', exact: true }),
+  ).toBeFocused();
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
+    'hidden',
+  );
+  const controls = await viewer
+    .locator('button:not(:disabled), a[href]')
+    .count();
+  for (const key of ['Tab', 'Shift+Tab']) {
+    for (let i = 0; i <= controls; i++) {
+      await page.keyboard.press(key);
+      expect(
+        await page.evaluate(() =>
+          Boolean(document.activeElement?.closest('[role="dialog"]')),
+        ),
+      ).toBe(true);
+    }
+  }
+  await page.keyboard.press('Escape');
+  await expect(viewer).toHaveCount(0);
+  await expect(opener).toBeFocused();
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
+    overflow,
+  );
+});
+
+test('player shortcuts respect controls and still work on the page', async ({
+  page,
+}) => {
+  await page.goto(route(star));
+  await expect(page.locator('.label')).toHaveText('Step 1 of 6');
+  await page.getByRole('button', { name: 'Next', exact: true }).press('Space');
+  await expect(page.locator('.label')).toHaveText('Step 2 of 6');
+  await page.getByRole('button', { name: 'Go to color', exact: true }).click();
+  await expect(page.locator('.label')).toHaveText('Color');
+  await page.getByRole('combobox', { name: 'Style', exact: true }).focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.label')).toHaveText('Color');
+  await page.getByRole('button', { name: 'Back', exact: true }).focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.label')).toHaveText('Color');
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement)
+      document.activeElement.blur();
+  });
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.label')).toHaveText('Repeat');
+});
+
+test('the original photo viewer contains keyboard focus and restores it on Escape', async ({
+  page,
+}) => {
+  await page.goto(route('minbar-doors-cairo/result'));
+  const opener = page.getByRole('button', {
+    name: /See the photo at full size/,
+  });
+  const beforeOverflow = await page.evaluate(
+    () => document.body.style.overflow,
+  );
+  await opener.click();
+  const dialog = page.getByRole('dialog');
+  const close = dialog.getByRole('button', { name: 'Close', exact: true });
+  await expect(close).toBeFocused();
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
+    'hidden',
+  );
+  await page.keyboard.press('Tab');
+  await expect(
+    dialog.getByRole('button', { name: 'Actual size', exact: true }),
+  ).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(close).toBeFocused();
+  await page.keyboard.press('ArrowLeft');
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(opener).toBeFocused();
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
+    beforeOverflow,
+  );
+});
+
+test('blocked storage warns without covering controls or moving the boards', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const write = Storage.prototype.setItem;
+    Object.assign(window, {
+      restoreTestStorage: () => {
+        Storage.prototype.setItem = write;
+      },
+    });
+    Storage.prototype.setItem = () => {
+      throw new DOMException('Storage full', 'QuotaExceededError');
+    };
+  });
+  await page.goto(route('alhambra-comares-bones/draw'));
+  const alert = page.getByRole('alert');
+  await expect(alert).toContainText('cannot save your board');
+  await page.evaluate(() => document.fonts.ready);
+  const visibleBounds = async () =>
+    (await boardBounds(page)).filter((box) => box.width > 0 && box.height > 0);
+  const before = await visibleBounds();
+  const warning = await alert.boundingBox();
+  const instructions = await page.locator('.along-text-row').boundingBox();
+  expect(warning!.y).toBeGreaterThanOrEqual(instructions!.y);
+  expect(warning!.y + warning!.height).toBeLessThanOrEqual(
+    instructions!.y + instructions!.height,
+  );
+  await page
+    .getByRole('button', { name: 'Draw it for me', exact: true })
+    .click();
+  await expect(
+    page.getByRole('button', { name: 'Step 1, on your board', exact: true }),
+  ).toBeVisible();
+  await page.evaluate(() =>
+    (
+      window as Window & { restoreTestStorage: () => void }
+    ).restoreTestStorage(),
+  );
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(alert).toHaveCount(0);
+  expect(await visibleBounds()).toEqual(before);
+});
+
+test('a missing original photo keeps its source link and shows no broken image', async ({
+  page,
+}) => {
+  await page.route('**/photos/cairo-minbar-doors-met.jpg', (request) =>
+    request.fulfill({ status: 404, body: 'Not found' }),
+  );
+  await page.goto(route('minbar-doors-cairo/result'));
+  const original = page.getByRole('figure', { name: 'The original' });
+  await expect(
+    original.getByText('This photo could not be loaded.'),
+  ).toBeVisible();
+  await expect(original.getByRole('img')).toHaveCount(0);
+  await expect(original.getByRole('button', { name: /full size/ })).toHaveCount(
+    0,
+  );
+  await expect(
+    original.getByRole('link', { name: 'its source' }),
+  ).toHaveAttribute(
+    'href',
+    'https://www.metmuseum.org/art/collection/search/444812',
+  );
+});
+
 test('a beginner draws the first circle, gets a completed step, and resumes', async ({
   page,
   hasTouch,
@@ -77,12 +359,28 @@ test('a beginner draws the first circle, gets a completed step, and resumes', as
   await expect(
     page.getByRole('button', { name: 'Step 1, on your board', exact: true }),
   ).toBeVisible();
+  const visibleBounds = async () =>
+    (await boardBounds(page)).filter((box) => box.width > 0 && box.height > 0);
+  const savedBounds = await visibleBounds();
   await page.reload();
   await expect(page.getByText(/Welcome back/)).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+  expect(await visibleBounds()).toEqual(savedBounds);
+  const resume = page.getByRole('button', {
+    name: 'Continue drawing',
+    exact: true,
+  });
+  const resumeBox = await resume.boundingBox();
+  const instructionBox = await page.locator('.along-text-row').boundingBox();
+  expect(resumeBox!.y).toBeGreaterThanOrEqual(instructionBox!.y);
+  expect(resumeBox!.y + resumeBox!.height).toBeLessThanOrEqual(
+    instructionBox!.y + instructionBox!.height,
+  );
   await page
     .getByRole('button', { name: 'Continue drawing', exact: true })
     .click();
   await expect(page.getByText(/Welcome back/)).toHaveCount(0);
+  expect(await visibleBounds()).toEqual(savedBounds);
   await expect(
     page.getByRole('button', { name: 'Step 1, on your board', exact: true }),
   ).toBeVisible();

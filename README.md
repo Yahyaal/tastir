@@ -44,7 +44,7 @@ For the full draw-along layout audit, leave the dev server running on port 4290 
 node tools/check-draw-along.mjs
 ```
 
-This draws and inks seven tutorials, repeats and colors them, and measures both boards at every stage at five screen sizes. It checks equal board sizes, zero movement, consistent desktop board sizes between tutorials, desktop page fit, and phone panel switching. Measurements and screenshots go to `docs/review/codex-layout/`. Set `TASTIR_URL` to use a different dev server. Run the audit after build and catalog commands finish so dev-server reloads do not interrupt measurements.
+This draws and inks seven tutorials, repeats and colors them, and measures both boards at every stage at five screen sizes. It checks equal board sizes, zero movement, consistent desktop board sizes between tutorials, desktop page fit, phone panel switching, and three-line instruction boxes with accessible scroll hints. Boards at 1280×800 must be at least 443px tall. Measurements and screenshots go to `docs/review/codex-layout/`. Set `TASTIR_URL` to use a different dev server. Run the audit after build and catalog commands finish so dev-server reloads do not interrupt measurements.
 
 Generated previews, reports, and browser traces are ignored by Git. `pnpm catalog` rebuilds the library metadata and thumbnails; adding a tutorial does not require changing the app's code. Browser test traces and screenshots appear in `test-results/` on failure.
 

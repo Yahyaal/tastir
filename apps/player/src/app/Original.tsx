@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
+import { useModalFocus } from './useModalFocus';
 import { createPortal } from 'react-dom';
 import type { Photo } from '@tastir/schema';
 
@@ -30,9 +31,19 @@ export function Original({
 }) {
   const [shown, setShown] = useState(0);
   const [full, setFull] = useState(false);
-  const photo = photos[shown] ?? photos[0];
+  const close = useCallback(() => setFull(false), []);
+  const [unavailable, setUnavailable] = useState<ReadonlySet<string>>(
+    new Set(),
+  );
+  const selected = photos[shown] ? shown : 0;
+  const photo = photos[selected];
   if (!photo) return null;
-  const src = photoSrc(photo, dev);
+  const source = photoSrc(photo, dev);
+  const missing = Boolean(source && unavailable.has(source));
+  const src = missing ? undefined : source;
+  const failed = () => {
+    if (source) setUnavailable((files) => new Set([...files, source]));
+  };
   return (
     <figure className="original" aria-label="The original">
       {src ? (
@@ -43,16 +54,10 @@ export function Original({
           aria-label={`See the photo at full size: ${photo.caption}`}
           onClick={() => setFull(true)}
         >
-          <img src={src} alt={photo.caption} />
+          <img src={src} alt={photo.caption} onError={failed} />
         </button>
       ) : (
-        <div className="photo-placeholder">
-          <p>A photo of the real pattern is to come.</p>
-          <p>
-            We are looking for one we may show here. Meanwhile you can see it at{' '}
-            <a href={photo.url}>its source</a>.
-          </p>
-        </div>
+        <PhotoPlaceholder photo={photo} unavailable={missing} />
       )}
       <figcaption>
         {photo.caption}{' '}
@@ -68,7 +73,7 @@ export function Original({
                 key={p.file}
                 type="button"
                 className="quiet"
-                aria-pressed={i === shown}
+                aria-pressed={i === selected}
                 onClick={() => setShown(i)}
               >
                 Photo {i + 1}
@@ -77,10 +82,39 @@ export function Original({
           </span>
         ) : null}
       </figcaption>
-      {full && src ? (
-        <FullSize photo={photo} src={src} onClose={() => setFull(false)} />
+      {full ? (
+        <FullSize
+          photo={photo}
+          src={src}
+          onUnavailable={failed}
+          onClose={close}
+        />
       ) : null}
     </figure>
+  );
+}
+
+function PhotoPlaceholder({
+  photo,
+  unavailable = false,
+}: {
+  photo: Photo;
+  unavailable?: boolean;
+}) {
+  return (
+    <div className="photo-placeholder">
+      <p>
+        {unavailable
+          ? 'This photo could not be loaded.'
+          : 'A photo of the real pattern is to come.'}
+      </p>
+      <p>
+        {unavailable
+          ? 'You can still see it at '
+          : 'We are looking for one we may show here. Meanwhile you can see it at '}
+        <a href={photo.url}>its source</a>.
+      </p>
+    </div>
   );
 }
 
@@ -93,22 +127,27 @@ function FullSize({
   photo,
   src,
   onClose,
+  onUnavailable,
 }: {
   photo: Photo;
-  src: string;
+  src?: string;
   onClose: () => void;
+  onUnavailable: () => void;
 }) {
   const [actual, setActual] = useState(false);
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  const dialog = useRef<HTMLDivElement>(null);
+  const closeButton = useRef<HTMLButtonElement>(null);
+  useModalFocus(
+    dialog,
+    closeButton,
+    onClose,
+    '.original',
+    '.photo-placeholder a',
+  );
   // Over the whole page, outside the comparison's own layout.
   return createPortal(
     <div
+      ref={dialog}
       className="full-size"
       role="dialog"
       aria-modal="true"
@@ -121,25 +160,41 @@ function FullSize({
         <span>
           {photo.caption} Photo: {photo.creator}, {photo.license}.
         </span>
+        {src ? (
+          <button
+            type="button"
+            className="secondary"
+            aria-pressed={actual}
+            onClick={() => setActual(!actual)}
+          >
+            {actual ? 'Fit to the window' : 'Actual size'}
+          </button>
+        ) : null}
         <button
+          ref={closeButton}
           type="button"
           className="secondary"
-          aria-pressed={actual}
-          onClick={() => setActual(!actual)}
+          onClick={onClose}
         >
-          {actual ? 'Fit to the window' : 'Actual size'}
-        </button>
-        <button type="button" className="secondary" onClick={onClose}>
           Close
         </button>
       </div>
       <div
-        className={actual ? 'full-size-view actual' : 'full-size-view'}
+        className={src && actual ? 'full-size-view actual' : 'full-size-view'}
         onClick={(e) => {
           if (e.target === e.currentTarget) onClose();
         }}
       >
-        <img src={src} alt={photo.caption} onClick={() => setActual(!actual)} />
+        {src ? (
+          <img
+            src={src}
+            alt={photo.caption}
+            onError={onUnavailable}
+            onClick={() => setActual(!actual)}
+          />
+        ) : (
+          <PhotoPlaceholder photo={photo} unavailable />
+        )}
       </div>
     </div>,
     document.body,

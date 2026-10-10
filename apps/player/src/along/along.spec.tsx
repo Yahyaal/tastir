@@ -74,6 +74,29 @@ afterEach(() => {
 });
 
 describe('drawing along', () => {
+  it('warns inside the feedback slot when saving fails and recovers when saving works', () => {
+    const write = vi
+      .spyOn(Storage.prototype, 'setItem')
+      .mockImplementation(() => {
+        throw new DOMException('Storage full', 'QuotaExceededError');
+      });
+    try {
+      openAlong();
+      const alert = screen.getByRole('alert');
+      expect(alert.textContent).toContain('cannot save your board');
+      expect(alert.closest('.along-text')).toBeTruthy();
+      click('Draw it for me');
+      expect(ticked()).toEqual(['1']);
+      write.mockRestore();
+      click('Next');
+      expect(screen.queryByRole('alert')).toBeNull();
+      expect(current()).toBe('2');
+      expect(ticked()).toEqual(['1']);
+    } finally {
+      write.mockRestore();
+    }
+  });
+
   it('draws the star and cross by clicking, peeking ahead to step 5 and back', () => {
     openAlong();
     expect(
@@ -314,6 +337,13 @@ describe('drawing along', () => {
       1,
     );
     // Start again asks first, then empties the board.
+    click('Start again');
+    click('Keep my board');
+    expect(current()).toBe('4');
+    expect(ticked()).toEqual(['1', '2', '3']);
+    expect(document.querySelectorAll('.editor-drawing .el.extra')).toHaveLength(
+      1,
+    );
     click('Start again');
     click('Start again');
     expect(current()).toBe('1');

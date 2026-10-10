@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseTutorial, type Photo } from '@tastir/schema';
@@ -95,5 +95,101 @@ describe('photos of the originals', () => {
     expect(dialog.querySelector('.full-size-view.actual')).toBeTruthy();
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it.each([free, kept])(
+    'replaces a missing $file with its source link',
+    (photo) => {
+      render(<Original photos={[photo]} dev />);
+      fireEvent.error(screen.getByRole('img'));
+      expect(screen.queryByRole('img')).toBeNull();
+      expect(screen.queryByRole('button', { name: /full size/ })).toBeNull();
+      expect(screen.getByText('This photo could not be loaded.')).toBeTruthy();
+      expect(
+        screen.getByRole('link', { name: 'its source' }).getAttribute('href'),
+      ).toBe(photo.url);
+    },
+  );
+
+  it('keeps a failed full-size photo viewer open with a source link and Close', () => {
+    render(<Original photos={[free]} dev={false} />);
+    fireEvent.click(screen.getByRole('button', { name: /full size/ }));
+    const dialog = screen.getByRole('dialog');
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: 'Actual size' }),
+    );
+    fireEvent.error(within(dialog).getByRole('img'));
+    expect(screen.getByRole('dialog')).toBe(dialog);
+    expect(screen.queryAllByRole('img')).toHaveLength(0);
+    expect(
+      within(dialog).getByText('This photo could not be loaded.'),
+    ).toBeTruthy();
+    expect(
+      within(dialog)
+        .getByRole('link', { name: 'its source' })
+        .getAttribute('href'),
+    ).toBe(free.url);
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Close' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('still shows other gallery photos after one fails', () => {
+    render(<Original photos={[kept, free]} dev />);
+    fireEvent.error(screen.getByRole('img'));
+    fireEvent.click(screen.getByRole('button', { name: 'Photo 2' }));
+    expect(screen.getByRole('img').getAttribute('alt')).toBe(free.caption);
+    fireEvent.click(screen.getByRole('button', { name: 'Photo 1' }));
+    expect(screen.queryByRole('img')).toBeNull();
+  });
+
+  it('focuses the viewer, keeps Tab inside it, and restores focus and page scrolling', () => {
+    render(<Original photos={[free]} dev={false} />);
+    const opener = screen.getByRole('button', { name: /full size/ });
+    const previousOverflow = document.body.style.overflow;
+    opener.focus();
+    fireEvent.click(opener);
+    const close = screen.getByRole('button', { name: 'Close' });
+    const zoom = screen.getByRole('button', { name: 'Actual size' });
+    expect(document.activeElement).toBe(close);
+    expect(document.body.style.overflow).toBe('hidden');
+    fireEvent.keyDown(window, { key: 'Tab' });
+    expect(document.activeElement).toBe(zoom);
+    fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(close);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(document.activeElement).toBe(opener);
+    expect(document.body.style.overflow).toBe(previousOverflow);
+  });
+
+  it('returns focus to the source if the launch photo disappeared while viewing', () => {
+    render(<Original photos={[free]} dev={false} />);
+    const opener = screen.getByRole('button', { name: /full size/ });
+    opener.focus();
+    fireEvent.click(opener);
+    const dialog = screen.getByRole('dialog');
+    within(dialog).getByRole('button', { name: 'Actual size' }).focus();
+    fireEvent.error(within(dialog).getByRole('img'));
+    const close = within(dialog).getByRole('button', { name: 'Close' });
+    expect(document.activeElement).toBe(close);
+    fireEvent.click(close);
+    expect(document.activeElement).toBe(
+      screen.getByRole('link', { name: 'its source' }),
+    );
+  });
+
+  it('selects the first photo when a replacement gallery is shorter', () => {
+    const view = render(<Original photos={[kept, free]} dev />);
+    fireEvent.click(screen.getByRole('button', { name: 'Photo 2' }));
+    view.rerender(
+      <Original photos={[free, kept, { ...free, file: 'another.jpg' }]} dev />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Photo 3' }));
+    view.rerender(<Original photos={[free, kept]} dev />);
+    expect(screen.getByRole('img').getAttribute('alt')).toBe(free.caption);
+    expect(
+      screen
+        .getByRole('button', { name: 'Photo 1' })
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
   });
 });
