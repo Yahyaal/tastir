@@ -50,8 +50,24 @@ The home navigation overflowed at 320 px (document scroll width 334 px), clippin
 
 The unsaved-changes confirmation focused Stay initially, but Tab escaped to the page and Escape did nothing in a native browser. It now uses the shared modal focus handler, with Escape cancelling the departure and preserving edits. Functional and browser tests check tab wrapping, background shortcut blocking, focus/scroll restoration, preserved palette changes, and the explicit Leave action. Full tests, lint, type checks and production build each exited 0. All three dialog regressions passed in all three viewport projects: nine passed, exit code 0.
 
-## Next
+## Task 9: complete Upcoming titles on phones
 
-Tasks 1–8 are complete. Check clipped Upcoming card headers observed in the narrow-phone audit; retain this checkpoint if the session is interrupted.
+A native browser confirmed Upcoming card headers clipped 23 of 24 Arabic titles at 320 px and nine at 390 px. The metadata row and title now wrap, keeping the Arabic title aligned to the right. The same browser audit found zero clipped titles at both widths after the fix; the header screenshot was inspected. A production regression measures every title inside its header at the project's normal width and at 320 px. Full tests, lint, type checks and production build each exited 0. The complete production browser suite passed 78 cases and skipped six intentionally desktop-only performance cases, exit code 0. No assertions or timing budgets were weakened.
+
+The final desktop performance checks measured slowest stages of 423 ms (Bou Inania rosette), 358 ms (Kurt zellige), and 262 ms (shifted Kurt). First ink preparation on Bou Inania still waited 5,486 ms; that remains the separate engine task.
+
+## Try the changes
+
+The dev server for this worktree is `http://localhost:4290/#/`. Refresh it to load the current branch. If the server is stopped, run `pnpm exec vite --config apps/player/vite.config.mts --port 4290 --strictPort` from `/home/yahya/Documents/projects/Tastir-learning-reliability`.
+
+1. On the home page, check square thumbnails and shrink the browser to 320 px: Library and Upcoming patterns should remain fully visible.
+2. Open Upcoming patterns on a phone width: Arabic titles should remain complete. Choose Blueprint on a card, focus its preview and press Enter or Space. Tab and Shift+Tab should stay inside inspection; Escape should return to the card.
+3. Open Result and original on a tutorial with a photo. Open its full-size photo, try Tab and Escape, and check focus returns to the opener.
+4. Save a design, change its palette and choose All patterns. Tab should stay inside the unsaved-changes confirmation; Escape should retain the palette change and return to All patterns. Leave without saving should still return home.
+5. Draw a step in Draw along, reload, and try Continue and Start again/Keep my board. The message should leave the step chips visible and the board should stay in position.
+
+## Resume checkpoint
+
+Tasks 1–9 are complete. On a later continuation, check for new Claude feedback in `docs/prompts/` and on the branch before starting further app fixes. Work only in this worktree and keep GitHub Actions disabled; its repository setting was verified `false` during this batch.
 
 Engine and tutorial work remain assigned elsewhere.

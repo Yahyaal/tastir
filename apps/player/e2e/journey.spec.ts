@@ -140,6 +140,39 @@ test('unsaved changes confirmation keeps focus and Escape preserves the design',
   await expect(page.locator('.library')).toBeVisible();
 });
 
+test('Upcoming card headers keep complete Arabic titles within their cards', async ({
+  page,
+}) => {
+  await page.goto('/#/upcoming');
+  const titles = page.locator('.card-arabic-title');
+  await expect(titles).toHaveCount(24);
+  await page.evaluate(() => document.fonts.ready);
+  const fits = async () => {
+    const boxes = await titles.evaluateAll((elements) =>
+      elements.map((title) => {
+        const text = title.getBoundingClientRect();
+        const header = title.closest('.card-top-meta')!.getBoundingClientRect();
+        return {
+          left: text.left,
+          right: text.right,
+          headerLeft: header.left,
+          headerRight: header.right,
+          scroll: title.scrollWidth,
+          width: title.clientWidth,
+        };
+      }),
+    );
+    for (const box of boxes) {
+      expect(box.left).toBeGreaterThanOrEqual(box.headerLeft - 1);
+      expect(box.right).toBeLessThanOrEqual(box.headerRight + 1);
+      expect(box.scroll).toBeLessThanOrEqual(box.width + 1);
+    }
+  };
+  await fits();
+  await page.setViewportSize({ width: 320, height: 740 });
+  await fits();
+});
+
 test('Upcoming inspection keeps keyboard focus inside and returns to its card', async ({
   page,
 }) => {
