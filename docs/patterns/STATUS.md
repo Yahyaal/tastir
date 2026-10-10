@@ -32,7 +32,7 @@ Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified
 | eight-fold-star-and-octagon | 4 | 9 | verified (10 Oct) | Eight-pointed stars alternating with regular octagons and small squares, from the marble inlay of the Tomb of I'timād-ud-Daulah in Agra (Mughal, 1622–1628 CE), from Sandy Kurt's tutorial. Verified line-for-line with 1 px overlay against Wikimedia Commons photo by Sabyasachi Paldas (stray cell-boundary diagonals removed). |
 | eight-fold-zellige | 8 | 11 | approved | Design D, kept by the owner. |
 | kurt-eight-fold-zellige | 8 | 18 | approved | Design C, Sandy Kurt's zellige wheel. Simplified from 19 steps (563 elements) to 18 steps (347 elements) using along. |
-| kurt-eight-fold-zellige-shifted | 8 | 20 | approved | The same with rows shifted by half a wheel. |
+| kurt-eight-fold-zellige-shifted | 8 | 19 | approved | The same with rows shifted by half a wheel. Simplified from 20 steps (570 elements) to 19 steps (354 elements) using along. |
 | four-fold-ring-of-circles | 4 | 12 | approved | Design G, Sandy Kurt's drawing, shipped with credit. Simplified from 14 steps (566 elements) to 12 steps (196 elements) using along. No photo found. |
 | alhambra-star-and-arrows | 8 | 9 | approved | The rosette matches the source exactly; the square repeat is a guess (no real repeat found). |
 | alhambra-star-and-arrows-shifted | 8 | 10 | approved | The same rosette with rows shifted by half a rosette. |
