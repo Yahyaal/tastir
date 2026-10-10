@@ -35,7 +35,14 @@ Sent back in [the 10 October prompts](prompts/team-2026-10-10.md):
 
 The engine prompt has not been started.
 
-**Next for Claude:** review those follow-ups and the engine branch `engine/speed` when the owner says they are done.
+**Reviewed on the afternoon of 10 October.** Merged:
+- The engine speed-up (identical results; Bou Inania crossings 27 s → 0.07 s).
+- Codex's taller boards and app follow-ups.
+- Gemini's photo audit (only the Reyes stars free photo kept) and its four simplified tutorials (Bou Inania rosette 1,840 → 465 elements).
+
+The two new eight-fold tutorials stay on `patterns/khatam`: neither overlay matches its photo. Gemini hit its weekly limit.
+
+**Next for Claude:** the follow-ups in [the afternoon prompts](prompts/team-2026-10-10b.md): Ink under one second in the browser, the two eight-fold tutorials, and Grok's empty crop pull request.
 
 ### What is built (6–8 October)
 
