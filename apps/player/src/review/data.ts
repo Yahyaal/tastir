@@ -224,8 +224,9 @@ export const PATTERNS: readonly Pattern[] = [
     summary:
       'At the color stage, “Compare with the original” shows a photo of the real pattern beside the wall, with its photographer and licence.',
     story: [
-      'All eleven Alhambra tutorials now have free, open-licensed photos that ship with the app (from Wikimedia Commons and Flickr under Creative Commons or Public Domain), alongside the Met minbar doors and Cairo minbars for the other traditions. Every photo was verified by fitting our lines line-for-line over the high-resolution panel photograph.',
-      'The final five Alhambra placeholder photos (David Wade) have been fully replaced: the Comares bath stars (Roberto Venturini, CC BY 2.0), Barca stars (muffinn, CC BY 2.0), Reyes stars (Shesmax, CC BY-SA 3.0 es), Comares frames (Ashaio, CC BY 4.0), and Reyes fret (Jean Laurent, Library of Congress, Public Domain). Each is cropped to an 800×800 square and ships in public/photos/.',
+      'Seven Alhambra tutorials have free, open-licensed photos shipping with the app (from Wikimedia Commons and Flickr under Creative Commons or Public Domain), alongside the Met minbar doors and Cairo minbars for the other traditions. Following a line-for-line audit across 2×2 repeat crops with 1 px thin lines:',
+      '• Kept: Sala de los Reyes stars (Shesmax, CC BY-SA 3.0 es) verified line-for-line across octagons, stars, and crosses; David Wade’s photo SPA 0408x is kept as a private reference.',
+      '• Dropped: Sala de la Barca stars (muffinn photo is a field of small stars, a different pattern); Comares bath stars (Venturini photo has different ribbon interlace topology from AL01); Comares frames (Ashaio photo has stars at every grid position, differing from Wichmann SPA 1416 where diamonds alternate); Reyes fret (Laurent 1870s alcove photo is too distant and low-resolution at 48 px per repeat to verify strapwork). These four retain David Wade’s private photos.',
       'One thing to judge: some walls are turned 45° from the photo (the Arrayanes squares and the Leones fret, for example), because the tutorial puts the grid along the axes. If that makes comparing hard, I can turn the photo to match.',
     ],
     pictures: [],
@@ -1555,12 +1556,12 @@ export const PROGRESS: {
     },
     {
       title: 'Two ways in from the home page, and photos at full size',
-      text: 'Each card has “Watch it drawn” (from step 1) and “Result and original” (straight to the finished wall with the photo beside it; the address is #/<id>/result). Click the photo to see it over the whole page, fitted or at actual size. All tutorials with photos now ship free, open-licensed photographs at full resolution.',
+      text: 'Each card has “Watch it drawn” (from step 1) and “Result and original” (straight to the finished wall with the photo beside it; the address is #/<id>/result). Click the photo to see it over the whole page, fitted or at actual size. Tutorials with free photos ship open-licensed photographs at full resolution.',
       link: { label: 'Try it', href: '/#/alhambra-leones-fret/result' },
     },
     {
       title: 'Compare with the original',
-      text: 'A button at the color stage shows the photo of the real pattern beside the wall. All eleven Alhambra tutorials now have verified free open-licensed photos shipping with the app.',
+      text: 'A button at the color stage shows the photo of the real pattern beside the wall. Seven Alhambra tutorials ship verified free open-licensed photos; the remaining four use private reference photos on the dev server.',
       link: { label: 'Try it', href: '/#/alhambra-arrayanes-squares' },
     },
     {

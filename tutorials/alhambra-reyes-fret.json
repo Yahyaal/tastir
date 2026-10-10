@@ -22,11 +22,12 @@
   ],
   "photos": [
     {
-      "file": "alhambra-reyes-fret.jpg",
-      "caption": "Carved plaster fretwork in the Sala de Justicia (south alcove of the Sala de los Reyes), Alhambra.",
-      "creator": "Jean Laurent",
-      "license": "Public Domain",
-      "url": "https://commons.wikimedia.org/wiki/File:Granada._Interior_de_la_Sala_de_Justicia_(Alhambra)_-_J._Laurent._Madrid_LCCN94512091.jpg"
+      "file": "alhambra-wichmann/wade-spa_0405x.jpg",
+      "caption": "The carved plaster in the Sala de los Reyes, Alhambra (photo SPA 0405x).",
+      "creator": "David Wade",
+      "license": "All rights reserved",
+      "url": "https://patterninislamicart.com/",
+      "private": true
     }
   ],
   "given": {"O": "The centre of a cross.", "A": "Halfway from O to the next cross."},

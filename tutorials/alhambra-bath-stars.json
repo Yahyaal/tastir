@@ -21,11 +21,12 @@
   ],
   "photos": [
     {
-      "file": "alhambra-bath-stars.jpg",
-      "caption": "Tiled dado in the Baño Real (Comares bath), Alhambra.",
-      "creator": "Roberto Venturini",
-      "license": "CC BY 2.0",
-      "url": "https://www.flickr.com/photos/roberto_venturini/3142027266/"
+      "file": "alhambra-wichmann/wade-mor0711-original.jpg",
+      "caption": "A carved wooden panel with the same design (photo MOR 0711).",
+      "creator": "David Wade",
+      "license": "All rights reserved",
+      "url": "https://patterninislamicart.com/",
+      "private": true
     }
   ],
   "given": {"O": "The centre of a large star.", "A": "Halfway from O to the next large star."},
