@@ -857,6 +857,7 @@ export function DrawAlong({
           }
           tile={ready?.cell.corners}
           targets={targets}
+          tool={tool}
           hover={hover}
           candidates={choices?.circles}
           faint={extras}

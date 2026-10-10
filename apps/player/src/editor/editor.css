@@ -223,6 +223,40 @@
   vector-effect: non-scaling-stroke;
 }
 
+/* In-progress polygon and tile: dotted segments, rubber-band, and preview surface */
+.editor-drawing .polygon-band {
+  stroke: var(--saffron);
+  stroke-width: 2px;
+  stroke-dasharray: 4 4;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.editor-drawing .polygon-band.rubber {
+  stroke-width: 1.5px;
+  stroke-dasharray: 3 3;
+  opacity: 0.85;
+}
+
+.editor-drawing .polygon-band.rubber.closing {
+  stroke-width: 2.2px;
+  stroke-dasharray: 4 3;
+  opacity: 1;
+}
+
+.editor-drawing .polygon-preview {
+  fill: var(--saffron);
+  fill-opacity: 0.08;
+  stroke: none;
+  pointer-events: none;
+}
+
+.editor-drawing .target.closing {
+  stroke: var(--saffron);
+  stroke-width: 2.5px;
+}
+
 .editor-drawing .point-name {
   fill: var(--muted);
   font-family: var(--text);

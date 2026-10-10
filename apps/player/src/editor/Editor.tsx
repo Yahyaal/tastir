@@ -573,6 +573,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               tile={inkable?.cell.corners}
               selected={selected}
               targets={targets}
+              tool={tool}
               hover={hover}
               ink={inkable ? { pieces: inkable.pieces, chosen } : undefined}
               onHover={(at, reach) =>

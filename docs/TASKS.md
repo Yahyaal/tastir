@@ -93,4 +93,28 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 
 **Phase 1 exit:** all boxes ticked, every golden test green, and a friend finishes a tutorial unaided in under 10 minutes.
 
+## Phase 2: Visual styles & draw-along polish
+
+- [x] **2.0 Dotted in-progress polygon preview in Draw-Along & Editor.** When using the `polygon` or `tile` tool, render live dotted SVG lines connecting the corners clicked so far ($P_0 \to P_1 \to \dots \to P_{k-1}$), plus a rubber-band dotted line to the active pointer or hovered crossing.
+  *Done when:* Clicking corners shows dotted connected edges and a responsive rubber-band to the cursor; tests verify SVG rendering and closing behavior.
+
+- [ ] **2.1 Jali / Lattice (Pierced Screen) style.** Add `jali` to `WallStyle`. The strapwork forms a solid architectural screen (carved marble/sandstone/wood) while piece apertures are cut out (transparent or translucent) showing a soft ambient/backlit ground.
+  *Done when:* Player wall dropdown includes `Jali`, rendering open voids with a structural framework; tests and preview snapshots pass.
+
+- [ ] **2.2 Tazhib / Illumination (Gold Leaf & Lapis) style.** Add `illumination` to `WallStyle`. Gilded gold-leaf star rosettes with SVG metallic gradients, deep ultramarine/lapis lazuli backgrounds, and fine black *tahrir* pen outlines.
+  *Done when:* Player wall dropdown includes `Illumination`, applying gold metallic gradients and lapis ground; tests pass.
+
+- [ ] **2.3 True Interlace (Woven / Lacería) style.** Add `interlace` to `WallStyle`. Ribbons weave in an alternating over-and-under pattern at crossings instead of merging into a flat band, with seam incisions and subtle under-crossing drop shadows.
+  *Done when:* Player wall dropdown includes `Interlace`, displaying alternating over/under ribbon layers at intersections; tests pass.
+
+- [ ] **2.4 Carved Stucco / Yesería (Bas-Relief & Chiseled Stone) style.** Add `relief` to `WallStyle`. 2.5D architectural relief using SVG lighting filters (`feSpecularLighting`, `feDiffuseLighting`) or beveled facet gradients.
+  *Done when:* Player wall dropdown includes `Relief`, rendering dimensional beveled facets with directional lighting; tests pass.
+
+- [ ] **2.5 Kündekari & Wood Marquetry (Inlaid Woodwork) style.** Add `wood` to `WallStyle`. Oriented timber grain textures across piece types (e.g. radial grain for star petals) with ivory/bone stringing along seams.
+  *Done when:* Player wall dropdown includes `Wood`, rendering timber grain joinery; tests pass.
+
+- [ ] **2.6 Blueprint / Architectural Draft style.** Add `blueprint` to `WallStyle`. Cyanotype/architectural draft aesthetic with deep navy background, luminous cyan/amber linework, and faint ghost compass/ruler construction arcs.
+  *Done when:* Player wall dropdown includes `Blueprint`, rendering high-contrast architectural linework; tests pass.
+
 Later phases (AI pipeline, accounts and library, learning features, designers) are described in `docs/PRD.md`.
+
