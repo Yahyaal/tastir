@@ -78,15 +78,22 @@ try {
           const boards = [...document.querySelectorAll('.along-plate')]
             .filter((el) => !el.hidden)
             .map(box);
+          const instruction = document.querySelector(
+            '.along-layer.on .instruction',
+          );
+          const instructionStyle = getComputedStyle(instruction);
           return {
             boards,
             chipTops: [
               ...document.querySelectorAll('.along-steps ol button'),
             ].map((el) => el.getBoundingClientRect().top),
-            instructionHeight:
-              document.querySelector('.along-text').clientHeight,
-            instructionContentHeight:
-              document.querySelector('.along-text').scrollHeight,
+            instructionHeight: instruction.clientHeight,
+            instructionContentHeight: instruction.scrollHeight,
+            instructionLineHeight: parseFloat(instructionStyle.lineHeight),
+            instructionHint: document.querySelector(
+              '.along-layer.on .instruction-scroll-hint',
+            )?.textContent,
+            instructionFocusable: instruction.tabIndex === 0,
             pageWidth: document.documentElement.scrollWidth,
             pageHeight: document.documentElement.scrollHeight,
             footerBottom: Math.max(
@@ -109,8 +116,19 @@ try {
         result.observations.push({ stage, ...data });
         if (data.chipTops.some((y) => Math.abs(y - data.chipTops[0]) > 0.1))
           result.errors.push(`${stage}: step chips wrap`);
-        if (data.instructionContentHeight > data.instructionHeight + 1)
-          result.errors.push(`${stage}: instructions need scrolling`);
+        if (
+          Math.abs(data.instructionHeight - 3 * data.instructionLineHeight) > 1
+        )
+          result.errors.push(`${stage}: instruction box is not three lines`);
+        if (
+          data.instructionContentHeight > data.instructionHeight + 1 &&
+          (!data.instructionHint || !data.instructionFocusable)
+        )
+          result.errors.push(
+            `${stage}: long instructions lack a scroll hint or keyboard access`,
+          );
+        if (width === 1280 && data.boards.some((b) => b.height < 443))
+          result.errors.push(`${stage}: boards are shorter than 443px`);
         const before = result.observations[0].boards[0];
         if (data.boards.length !== (phone ? 1 : 2))
           result.errors.push(`${stage}: missing visible board`);

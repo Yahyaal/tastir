@@ -8,6 +8,7 @@ import {
   type Vec,
 } from '@tastir/engine';
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { StepInstruction } from './StepInstruction';
 import { fullView, growingFrame, type Rect } from '../app/camera';
 import {
   colorReducer,
@@ -1170,9 +1171,8 @@ export function DrawAlong({
       <div className="along-grid">
         <section className="along-text-row" aria-label="The step to copy">
           <div className="along-text">
-            {/* Every step's text and the ink's, in one cell, only the one
-                at hand visible: the row is as tall as the tallest text in
-                the tutorial, so the drawings never move between stages. */}
+            {/* A fixed three-line instruction box keeps the drawings still
+                without reserving room for every tutorial's longest text. */}
             <div className="along-stack">
               {[
                 ...shown.map((b, i) => ({
@@ -1197,8 +1197,7 @@ export function DrawAlong({
                   className={layer.on ? 'along-layer on' : 'along-layer'}
                   aria-hidden={layer.on ? undefined : true}
                 >
-                  <h2>{layer.head}</h2>
-                  <p className="instruction">{layer.text}</p>
+                  <StepInstruction head={layer.head} text={layer.text} />
                   {/* The status under the text at hand; an empty slot of the
                       same height under the others. */}
                   {layer.on ? (
