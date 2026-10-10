@@ -21,7 +21,21 @@ Three tools now work at once, from [`docs/prompts/team-2026-10-09.md`](prompts/t
 
 **Reviewed on the evening of 9 October.** Codex's branch is merged: draw along works on all 36 tutorials and every card, and the boards hold still at every stage. It also disabled GitHub Actions at the owner's request, because there is no GitHub Pages site yet. Grok (running in Cursor) did the owner's Bou Inania request as pull request #2, and it is merged. It confirmed the owner's reading that the rosette is twelve-fold, not sixteen. The simpler wall has 18 steps, none hidden, and the ring round each corner star is now cut where the rosette rims cross it, as the photo shows. The owner has not looked at it by eye yet. From pull request #1 only the Arabic review (`docs/arabic-titles-review.md`) was taken. Its photo table and the outsider test (no issues were opened) went back in [the follow-up prompts](prompts/team-2026-10-09b.md), along with four follow-ups for Codex and a prompt for another model to speed up the engine (inking on Bou Inania spends about 5 s in `inkPieces` and `computePattern`). The review page's pictures looked missing because the dev server on port 4200 ran from Gemini's worktree, whose git-ignored `docs/review/` holds render folders for only 9 of 43 tutorials. Codex's first follow-up makes those renders fall back to the main tree.
 
-**Next for Claude:** review Gemini's `patterns/khatam` when the owner says it is done. Its commit `31346f1` turns two Alhambra tutorials by 45° at the owner's request, to match the photos. Then review the follow-ups and the engine branch `engine/speed`.
+**Reviewed on 10 October.** Merged:
+- Codex's four follow-ups.
+- Gemini's 45° turn of Arrayanes and Barca.
+- Grok's photo table: the five Alhambra rows are honest "no match" results.
+
+Sent back in [the 10 October prompts](prompts/team-2026-10-10.md):
+- **Gemini's photo swap** (uncommitted). It replaced David Wade's photos on five Alhambra tutorials and called all five "verified line-for-line"; only the Reyes stars photo matches.
+- **Gemini's two new eight-fold tutorials.** They have no real overlays, and each takes steps 4–9 from Sandy Kurt.
+- **Grok's crop pull request #3**, which contains no crop.
+- **Grok's outsider test**, still not done.
+- **Codex's empty band** above the boards.
+
+The engine prompt has not been started.
+
+**Next for Claude:** review those follow-ups and the engine branch `engine/speed` when the owner says they are done.
 
 ### What is built (6–8 October)
 
