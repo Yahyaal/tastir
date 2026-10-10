@@ -14,6 +14,7 @@
     "format:check": "prettier --check .",
     "review": "tools/review/review.sh",
     "compare": "python3 tools/review/compare.py",
+    "bench:ink": "node --conditions=@tastir/source --import tsx tools/bench-ink.mts",
     "catalog": "node --conditions=@tastir/source --import tsx apps/player/src/build/catalog.tsx",
     "test:browser": "nx run player:build && playwright test",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm test:browser"

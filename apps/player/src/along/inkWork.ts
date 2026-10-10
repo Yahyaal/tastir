@@ -16,6 +16,7 @@ import { check, type Draft } from '../editor/document';
 import { imagesOf, type Inkable } from '../editor/finish';
 import { readyToInk, samePieces } from './inking';
 import { lineKey, penGraph, type PenGraph } from './pen';
+import { lap, startTiming } from './timing';
 
 export interface Ready {
   readonly draft: Draft;
@@ -51,9 +52,12 @@ export function prepareInk(
   draft: Draft,
 ): Ready | { reason: string } {
   const { tutorial } = model;
+  startTiming();
   try {
     const d = readyToInk(tutorial, model.scene, draft);
+    lap('board');
     const scene = check(d).scene;
+    lap('scene');
     const cell = cellOf(scene, d.pattern?.cell ?? '');
     const curves = new Set<string>();
     for (const { geometry: g } of scene.elements.values()) {
@@ -70,13 +74,16 @@ export function prepareInk(
       tutorial.expect,
       tutorial.chiral,
     ]);
+    lap('key');
     const cached = prepared.get(key);
     if (cached) return { ...cached, draft: d, scene, cell };
     const pieces = inkPieces(scene, cell, { allEdges: true });
+    lap('bits');
     const paths = new Map(
       pieces.map((p) => [p.id, { along: lineKey(p) } as InkAlong]),
     );
     const inkable = { cell, pieces, paths };
+    lap('paths');
     // The bits the tutorial's own ink keeps, and the pieces they close.
     const classic = classicSelection(
       pieces,
@@ -84,11 +91,13 @@ export function prepareInk(
       1e-7,
       cell,
     );
+    lap('classic');
     const pattern = computePattern(
       scene,
       d as Tutorial,
       strokesOf(pieces, classic),
     );
+    lap('pattern');
     // Symmetric inking follows the pattern's own symmetry: its turns,
     // and its mirror images only when it has them (a pinwheel has not).
     const mirror =
@@ -96,6 +105,9 @@ export function prepareInk(
       [...classic].every((id) =>
         imagesOf(inkable, id, 1, true).every((i) => classic.has(i)),
       );
+    lap('mirror');
+    const graph = penGraph(pieces);
+    lap('graph');
     const ready: Ready = {
       draft: d,
       scene,
@@ -105,7 +117,7 @@ export function prepareInk(
       classic,
       pattern,
       mirror,
-      graph: penGraph(pieces),
+      graph,
     };
     // Bound retained geometry: a worker lives for one draw-along visit.
     if (prepared.size >= 2)
