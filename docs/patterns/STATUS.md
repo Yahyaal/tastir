@@ -33,7 +33,7 @@ Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified
 | eight-fold-zellige | 8 | 11 | approved | Design D, kept by the owner. |
 | kurt-eight-fold-zellige | 8 | 19 | approved | Design C, Sandy Kurt's zellige wheel. |
 | kurt-eight-fold-zellige-shifted | 8 | 20 | approved | The same with rows shifted by half a wheel. |
-| four-fold-ring-of-circles | 4 | 14 | approved | Design G, Sandy Kurt's drawing, shipped with credit. No photo found. |
+| four-fold-ring-of-circles | 4 | 12 | approved | Design G, Sandy Kurt's drawing, shipped with credit. Simplified from 14 steps (566 elements) to 12 steps (196 elements) using along. No photo found. |
 | alhambra-star-and-arrows | 8 | 9 | approved | The rosette matches the source exactly; the square repeat is a guess (no real repeat found). |
 | alhambra-star-and-arrows-shifted | 8 | 10 | approved | The same rosette with rows shifted by half a rosette. |
 | alhambra-comares-frames | 4 | 10 | verified (6 Oct) | Framed eight-pointed stars, plain stars and diamonds in interlaced bands, Salón de Comares, from Wichmann's drawing (SPA1416). Checked against David Wade's photo SPA 1416 (free candidate by Ashaio dropped: different dado pattern with stars at every grid point). |
