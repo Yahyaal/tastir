@@ -244,6 +244,17 @@ export function DrawAlong({
   const [index, setIndex] = useState(() =>
     Math.min(saved?.index ?? 0, shown.length + 2),
   );
+  const stepChips = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    const list = stepChips.current;
+    const current = list?.querySelector('[aria-current="step"]');
+    if (!list || !current) return;
+    const row = list.getBoundingClientRect();
+    const chip = current.getBoundingClientRect();
+    // Reveal the active chip without scrolling the page or moving the board.
+    if (chip.left < row.left) list.scrollLeft += chip.left - row.left;
+    else if (chip.right > row.right) list.scrollLeft += chip.right - row.right;
+  }, [index]);
   // After the last step, the learner inks their board.
   const inking = index === shown.length;
   // Then the learner repeats their tile into a wall, and may color it.
@@ -1069,7 +1080,7 @@ export function DrawAlong({
       )}
       <nav className="along-steps" aria-label="Steps">
         <span className="along-steps-label">Steps</span>
-        <ol>
+        <ol ref={stepChips}>
           {shown.map((b, i) => {
             const done = ticks[i] ?? false;
             return (

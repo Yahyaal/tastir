@@ -23,7 +23,7 @@ const sizes = JSON.parse(
 );
 const tutorials = (
   process.env.TASTIR_TUTORIALS ??
-  'eight-fold-star-and-cross,alhambra-comares-bones,twelve-fold-rosette-mian,alhambra-reyes-stars,bou-inania-rosette,kurt-eight-fold-zellige'
+  'eight-fold-star-and-cross,alhambra-comares-bones,twelve-fold-rosette-mian,alhambra-reyes-stars,bou-inania-rosette,kurt-eight-fold-zellige,bou-inania-twelve-fold-wall'
 ).split(',');
 const output = process.env.TASTIR_LAYOUT_OUTPUT ?? 'docs/review/codex-layout';
 mkdirSync(output, { recursive: true });
@@ -80,6 +80,13 @@ try {
             .map(box);
           return {
             boards,
+            chipTops: [
+              ...document.querySelectorAll('.along-steps ol button'),
+            ].map((el) => el.getBoundingClientRect().top),
+            instructionHeight:
+              document.querySelector('.along-text').clientHeight,
+            instructionContentHeight:
+              document.querySelector('.along-text').scrollHeight,
             pageWidth: document.documentElement.scrollWidth,
             pageHeight: document.documentElement.scrollHeight,
             footerBottom: Math.max(
@@ -100,6 +107,10 @@ try {
           };
         });
         result.observations.push({ stage, ...data });
+        if (data.chipTops.some((y) => Math.abs(y - data.chipTops[0]) > 0.1))
+          result.errors.push(`${stage}: step chips wrap`);
+        if (data.instructionContentHeight > data.instructionHeight + 1)
+          result.errors.push(`${stage}: instructions need scrolling`);
         const before = result.observations[0].boards[0];
         if (data.boards.length !== (phone ? 1 : 2))
           result.errors.push(`${stage}: missing visible board`);
@@ -205,6 +216,16 @@ try {
       } catch (e) {
         result.errors.push(String(e));
       }
+      const sameViewport = report.find((r) => r.viewport === result.viewport);
+      const first = sameViewport?.observations[0]?.boards[0];
+      const current = result.observations[0]?.boards[0];
+      const shared = phone
+        ? ['width', 'height']
+        : ['x', 'y', 'width', 'height'];
+      if (first && current && shared.some((key) => first[key] !== current[key]))
+        result.errors.push(
+          'Board layout differs between tutorials at this viewport',
+        );
       report.push(result);
       allErrors.push(
         ...result.errors.map((e) => `${id} ${width}x${height}: ${e}`),

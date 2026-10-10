@@ -28,7 +28,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  height: 40px;
+  flex-shrink: 0;
   margin-bottom: 8px;
   font-size: 0.85rem;
 }
@@ -40,11 +42,23 @@
 
 .along-steps ol {
   display: flex;
-  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
   gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.along-steps li,
+.along-steps-label,
+.along-swap {
+  flex-shrink: 0;
 }
 
 .player .along-dot {
@@ -97,7 +111,7 @@
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(180px, 1fr) 3.8rem;
+  grid-template-rows: 10.5rem auto minmax(180px, 1fr) 3.8rem;
   column-gap: 28px;
   row-gap: 8px;
 }
@@ -115,6 +129,18 @@
 
 .along-text {
   max-width: 90ch;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  .along .topbar {
+    min-height: 70px;
+  }
+
+  .along-grid {
+    grid-template-rows: 14rem auto minmax(180px, 1fr) 3.8rem;
+  }
 }
 
 /* Layers in one cell: the cell is as big as the biggest, and only the one
@@ -355,6 +381,11 @@
   .along-text-row {
     flex-direction: column;
     gap: 8px;
+  }
+
+  .along-text {
+    max-height: none;
+    overflow: visible;
   }
 
   .along-plate,
