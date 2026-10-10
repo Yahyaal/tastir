@@ -51,6 +51,29 @@ test('library previews need no construction downloads except the animated hero',
   ).toBe(false);
 });
 
+test('player shortcuts respect controls and still work on the page', async ({
+  page,
+}) => {
+  await page.goto(route(star));
+  await expect(page.locator('.label')).toHaveText('Step 1 of 6');
+  await page.getByRole('button', { name: 'Next', exact: true }).press('Space');
+  await expect(page.locator('.label')).toHaveText('Step 2 of 6');
+  await page.getByRole('button', { name: 'Go to color', exact: true }).click();
+  await expect(page.locator('.label')).toHaveText('Color');
+  await page.getByRole('combobox', { name: 'Style', exact: true }).focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.label')).toHaveText('Color');
+  await page.getByRole('button', { name: 'Back', exact: true }).focus();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.label')).toHaveText('Color');
+  await page.evaluate(() => {
+    if (document.activeElement instanceof HTMLElement)
+      document.activeElement.blur();
+  });
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.label')).toHaveText('Repeat');
+});
+
 test('the original photo viewer contains keyboard focus and restores it on Escape', async ({
   page,
 }) => {

@@ -384,8 +384,22 @@ export function Player({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      // Typing a design's name is not a step.
-      if (e.target instanceof HTMLInputElement) return;
+      // Focused controls and browser shortcuts handle their own keys.
+      if (
+        e.defaultPrevented ||
+        e.altKey ||
+        e.ctrlKey ||
+        e.metaKey ||
+        e.shiftKey
+      )
+        return;
+      if (
+        e.target instanceof Element &&
+        e.target.closest(
+          'input, textarea, select, button, a, [contenteditable]:not([contenteditable="false"]), [role="dialog"], [role="alertdialog"]',
+        )
+      )
+        return;
       if (e.key === 'ArrowLeft') back();
       if (e.key === 'ArrowRight' || e.key === ' ') next();
     };

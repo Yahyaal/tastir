@@ -30,8 +30,14 @@ The viewer previously left focus on its launch button, and Tab reached Source on
 
 Functional tests cover focus entry, tab wrapping, Escape, scroll restoration, and photo-failure focus recovery. A native browser check confirmed ArrowLeft leaves the viewer open. Production viewer-keyboard and missing-photo regressions passed at all three sizes: six cases, exit code 0. Full tests, lint, type checks and production build each exited 0.
 
+## Task 5: keyboard shortcuts respect focused controls
+
+Confirmed ArrowLeft on Style changed Color to an earlier stage. Step shortcuts now ignore interactive controls, editable text and dialogs, modified browser shortcuts, and events already handled elsewhere. Ordinary page shortcuts still work. Native Space activation of Next advances exactly one step.
+
+Functional tests cover control keys and ignored modifiers/handled events while retaining ordinary arrows. Production shortcut and viewer-keyboard regressions passed on all three viewport projects: six cases, exit code 0. Full tests, lint, type checks and production build each exited 0. Type checking initially caught a test-query option from the wrong library; the option was removed and the recheck passed.
+
 ## Next
 
-Task 5 is confirmed and pending: ArrowLeft on the Style selector changes the player from Color to an earlier stage. Keep step shortcuts from acting on focused controls, modified browser shortcuts, or already-handled events.
+Task 6 is confirmed and pending: the Upcoming inspection viewer leaves focus outside on entry and after Tab. Give it the same focus containment, restoration, and background scroll protection as the original-photo viewer.
 
 Engine and tutorial work remain assigned elsewhere.

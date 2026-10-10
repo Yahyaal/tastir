@@ -131,6 +131,38 @@ describe('the player', () => {
     expect(label()).toBe('Step 1 of 6');
   });
 
+  it('lets focused buttons and selectors handle their own keys', () => {
+    render(<Play json={example} />);
+    const forward = screen.getByRole('button', { name: 'Next' });
+    fireEvent.keyDown(forward, { key: 'ArrowRight' });
+    fireEvent.keyDown(forward, { key: ' ' });
+    expect(label()).toBe('Step 1 of 6');
+    fireEvent.click(forward);
+    expect(label()).toBe('Step 2 of 6');
+    fireEvent.click(screen.getByRole('button', { name: 'Go to color' }));
+    fireEvent.keyDown(screen.getByRole('combobox', { name: 'Style' }), {
+      key: 'ArrowLeft',
+    });
+    expect(label()).toBe('Color');
+  });
+
+  it('does not step for modified or already-handled keyboard events', () => {
+    render(<Play json={example} />);
+    fireEvent.keyDown(window, { key: 'ArrowRight', ctrlKey: true });
+    fireEvent.keyDown(window, { key: 'ArrowRight', altKey: true });
+    fireEvent.keyDown(window, { key: 'ArrowRight', metaKey: true });
+    fireEvent.keyDown(window, { key: 'ArrowRight', shiftKey: true });
+    const handled = new KeyboardEvent('keydown', {
+      key: 'ArrowRight',
+      cancelable: true,
+    });
+    handled.preventDefault();
+    fireEvent(window, handled);
+    expect(label()).toBe('Step 1 of 6');
+    fireEvent.keyDown(window, { key: 'ArrowRight' });
+    expect(label()).toBe('Step 2 of 6');
+  });
+
   it('shows the engine error for a tutorial it cannot play', () => {
     const broken = structuredClone(example) as {
       steps: { create: Record<string, unknown> }[];
