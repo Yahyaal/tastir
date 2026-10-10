@@ -19,7 +19,9 @@ Three tools now work at once, from [`docs/prompts/team-2026-10-09.md`](prompts/t
 - **Gemini** (worktree `../Tastir-patterns`, branch `patterns/khatam`): two new eight-fold designs (star and octagon, khatam) verified against free photos.
 - **Grok** (its own computer, a fresh GitHub clone): an outsider's test reported as GitHub issues, a hunt for free photos (`docs/research-candidates.md`), and a review of the Arabic titles, in one pull request `grok/free-photos`.
 
-**Next for Claude:** review each branch or pull request when the owner says it is done (exit codes, screenshots, the owner's layout rules, the content rules about photos and credits), triage Grok's issues into prompts, then merge order: Codex's branch, then Gemini's, then Grok's docs.
+**Reviewed on the evening of 9 October.** Codex's branch is merged: draw along works on all 36 tutorials and every card, and the boards hold still at every stage. It also disabled GitHub Actions, so Pages no longer deploys on push. Grok (running in Cursor) did the owner's Bou Inania request as pull request #2, and it is merged. The simpler wall has 18 steps, none hidden, and the ring round each corner star is now cut where the rosette rims cross it, as the photo shows. The owner has not looked at it by eye yet. From pull request #1 only the Arabic review (`docs/arabic-titles-review.md`) was taken. Its photo table and the outsider test (no issues were opened) went back in [the follow-up prompts](prompts/team-2026-10-09b.md), along with four follow-ups for Codex.
+
+**Next for Claude:** review Gemini's `patterns/khatam` when the owner says it is done. Its commit `31346f1` turns two approved Alhambra tutorials by 45°, which is outside its prompt, so ask the owner about it. Then review the follow-ups.
 
 ### What is built (6–8 October)
 
