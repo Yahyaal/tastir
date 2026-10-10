@@ -36,8 +36,14 @@ Confirmed ArrowLeft on Style changed Color to an earlier stage. Step shortcuts n
 
 Functional tests cover control keys and ignored modifiers/handled events while retaining ordinary arrows. Production shortcut and viewer-keyboard regressions passed on all three viewport projects: six cases, exit code 0. Full tests, lint, type checks and production build each exited 0. Type checking initially caught a test-query option from the wrong library; the option was removed and the recheck passed.
 
+## Task 6: Upcoming inspection keyboard access
+
+The Upcoming inspection viewer was confirmed to leave focus outside on entry and after Tab. Both photo viewers now use a shared focus handler with containment, restoration, and background scroll protection. Upcoming tests cover opening from the blueprint, wrapping Tab, Escape focus return, and removal of a focused zoom control after a photo fails. The first full browser run passed 66 cases and failed all three new Upcoming keyboard-entry cases: Enter opened the viewer and then default activation closed it after focus moved to Close. Card Enter/Space handlers now prevent that default action. Native browser checks confirmed both activation keys keep the viewer open.
+
+After the correction, full tests, lint and type checks each exited 0. The complete production browser suite passed 69 cases and skipped six intentionally desktop-only performance cases, exit code 0. Timing budgets were unchanged.
+
 ## Next
 
-Task 6 is confirmed and pending: the Upcoming inspection viewer leaves focus outside on entry and after Tab. Give it the same focus containment, restoration, and background scroll protection as the original-photo viewer.
+Check narrow phone layouts for further reproducible app issues. Tasks 1–6 are complete; retain this checkpoint if the session is interrupted.
 
 Engine and tutorial work remain assigned elsewhere.

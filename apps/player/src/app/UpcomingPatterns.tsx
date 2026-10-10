@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useRef } from 'react';
+import { useModalFocus } from './useModalFocus';
 import { createPortal } from 'react-dom';
 import {
   UPCOMING_PATTERNS,
@@ -352,8 +353,10 @@ function UpcomingCard({
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ')
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
                     onOpenLightbox('photo');
+                  }
                 }}
                 title="Click to view full-size historical photograph"
               >
@@ -393,7 +396,10 @@ function UpcomingCard({
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') onOpenLightbox('drawn');
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onOpenLightbox('drawn');
+                }
               }}
               title="Click to view full-size finished wall"
             >
@@ -420,8 +426,10 @@ function UpcomingCard({
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ')
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
                   onOpenLightbox('blueprint');
+                }
               }}
               title="Click to expand geometric blueprint"
             >
@@ -577,13 +585,15 @@ function UpcomingLightbox({
   const [mode, setMode] = useState(initialMode);
   const [actualSize, setActualSize] = useState(false);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  const dialog = useRef<HTMLDivElement>(null);
+  const closeButton = useRef<HTMLButtonElement>(null);
+  useModalFocus(
+    dialog,
+    closeButton,
+    onClose,
+    '.upcoming-card',
+    '.card-media-tabs button',
+  );
 
   const { photo, photoSrcUrl, drawnSrcUrl, unavailable } =
     useUpcomingMedia(pattern);
@@ -602,6 +612,7 @@ function UpcomingLightbox({
 
   return createPortal(
     <div
+      ref={dialog}
       className="upcoming-lightbox"
       role="dialog"
       aria-modal="true"
@@ -672,6 +683,7 @@ function UpcomingLightbox({
 
           <button
             type="button"
+            ref={closeButton}
             className="lightbox-close-btn"
             onClick={onClose}
             aria-label="Close inspection view"

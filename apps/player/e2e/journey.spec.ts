@@ -51,6 +51,44 @@ test('library previews need no construction downloads except the animated hero',
   ).toBe(false);
 });
 
+test('Upcoming inspection keeps keyboard focus inside and returns to its card', async ({
+  page,
+}) => {
+  await page.goto('/#/upcoming');
+  const card = page.locator('.upcoming-card').first();
+  await card.getByRole('button', { name: /Blueprint/ }).click();
+  const opener = card.locator('.card-blueprint-interactive');
+  await opener.focus();
+  const overflow = await page.evaluate(() => document.body.style.overflow);
+  await opener.press('Enter');
+  const viewer = page.getByRole('dialog');
+  await expect(
+    viewer.getByRole('button', { name: 'Close inspection view', exact: true }),
+  ).toBeFocused();
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
+    'hidden',
+  );
+  const controls = await viewer
+    .locator('button:not(:disabled), a[href]')
+    .count();
+  for (const key of ['Tab', 'Shift+Tab']) {
+    for (let i = 0; i <= controls; i++) {
+      await page.keyboard.press(key);
+      expect(
+        await page.evaluate(() =>
+          Boolean(document.activeElement?.closest('[role="dialog"]')),
+        ),
+      ).toBe(true);
+    }
+  }
+  await page.keyboard.press('Escape');
+  await expect(viewer).toHaveCount(0);
+  await expect(opener).toBeFocused();
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
+    overflow,
+  );
+});
+
 test('player shortcuts respect controls and still work on the page', async ({
   page,
 }) => {

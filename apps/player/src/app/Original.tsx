@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
+import { useModalFocus } from './useModalFocus';
 import { createPortal } from 'react-dom';
 import type { Photo } from '@tastir/schema';
 
@@ -136,55 +137,13 @@ function FullSize({
   const [actual, setActual] = useState(false);
   const dialog = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
-  useEffect(() => {
-    const el = dialog.current;
-    if (!el) return;
-    const opener =
-      document.activeElement instanceof HTMLElement
-        ? document.activeElement
-        : null;
-    const original = opener?.closest('.original');
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    closeButton.current?.focus({ preventScroll: true });
-    const onKey = (e: KeyboardEvent) => {
-      // The player's arrow/space shortcuts must not act behind this viewer.
-      e.stopPropagation();
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        e.stopPropagation();
-        onClose();
-      } else if (e.key === 'Tab') {
-        const controls = [
-          ...el.querySelectorAll<HTMLElement>('button:not(:disabled), a[href]'),
-        ];
-        const first = controls[0];
-        const last = controls[controls.length - 1];
-        if (
-          !el.contains(document.activeElement) ||
-          (e.shiftKey
-            ? document.activeElement === first
-            : document.activeElement === last)
-        ) {
-          e.preventDefault();
-          (e.shiftKey ? last : first)?.focus();
-        }
-      }
-    };
-    window.addEventListener('keydown', onKey, true);
-    return () => {
-      window.removeEventListener('keydown', onKey, true);
-      document.body.style.overflow = overflow;
-      const target = opener?.isConnected
-        ? opener
-        : original?.querySelector<HTMLElement>('.photo-placeholder a');
-      target?.focus({ preventScroll: true });
-    };
-  }, [onClose]);
-  useEffect(() => {
-    if (!src && !dialog.current?.contains(document.activeElement))
-      closeButton.current?.focus();
-  }, [src]);
+  useModalFocus(
+    dialog,
+    closeButton,
+    onClose,
+    '.original',
+    '.photo-placeholder a',
+  );
   // Over the whole page, outside the comparison's own layout.
   return createPortal(
     <div
