@@ -40,17 +40,17 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 4,
     status: 'decide',
     summary:
-      'Eight-pointed khatam stars, crossing diagonal bands, cartouches, and squares from the Sikandra jali screen and Hakim Mosque.',
+      'Eight-pointed khatam stars with crossing diagonal bands, credited to Al-Hakim Mosque in Isfahan. Free Sikandra photo dropped due to band lattice mismatch; do not ship without verified photo.',
     story: [
-      'From the pierced jali lattice screen at the Tomb of Akbar the Great in Sikandra (Agra, Mughal, 1605–1613 CE) and the woodwork of Hakim Mosque in Isfahan (Safavid, 1656–1662 CE), documented in Sandy Kurt’s tutorial “4fold Pattern from Al-Hakim Mosque, Isfahan”.',
-      'The construction establishes a unit circle divided into eight parts, static and dynamic squares, radius-0.5 circles at the centre and on the diagonals, and diagonal facet lines shaping the central eight-pointed khatam star, crossing diagonal bands, connecting cartouches, and squares.',
-      'We verified the tutorial line-for-line against a cropped Wikimedia Commons photo of the carved sandstone jali screen at Sikandra (CC BY-SA 4.0 by LBM1948).',
+      'The construction follows Sandy Kurt’s tutorial “4fold Pattern from Al-Hakim Mosque, Isfahan” (steps 4–9), establishing a unit circle divided into eight parts, static and dynamic squares, radius-0.5 circles, and diagonal facet lines.',
+      'We tested a 1 px red overlay (photo-overlay.png) against the free Wikimedia Commons candidate from the carved sandstone jali at Akbar’s Tomb in Sikandra (CC BY-SA 4.0 by LBM1948). While the eight-pointed stars align with the star voids, the band lattice does not match: the Sikandra jali features diamond (45°) and cartouche voids where our construction builds small squares, green hexagons, and white kites.',
+      'The only free Commons candidate of the Al-Hakim Mosque minbar woodwork (“Rotten green design.jpg”) shows a damaged panel with the central star completely rotted away and missing, and continuous strap planks rather than mosaic tile facets. With no free photo matching line-for-line, we drop the Sikandra photo and recommend not shipping this tutorial until an authentic, matching panel photo is found.',
     ],
     pictures: [
       {
-        src: 'renders/eight-fold-khatam/compare-wall.png',
+        src: 'renders/eight-fold-khatam/photo-overlay.png',
         caption:
-          'Our wall (right) compared side-by-side with the Sikandra jali lattice screen (left).',
+          'Our lines (red, 1 px) overlaid on the Sikandra jali screen: the stars align, but the surrounding band lattice mismatches.',
       },
       {
         src: 'renders/eight-fold-khatam/wall.png',
@@ -62,17 +62,12 @@ export const PATTERNS: readonly Pattern[] = [
       },
     ],
     asks: [
-      'Should we ship this eight-fold khatam panel in the library with level intermediate?',
+      'Should we drop eight-fold-khatam from the library until a verified matching photo of the Hakim Mosque woodwork or another authentic panel is found?',
     ],
     sources: [
       {
         label: 'Sandy Kurt, 4fold Pattern from Al-Hakim Mosque, Isfahan',
         url: 'https://sandykurt.com/free-tutorials',
-      },
-      {
-        label:
-          'Wikimedia Commons: Sikandra, Tumba de Akbar (2002) 11.jpg by LBM1948 (CC BY-SA 4.0)',
-        url: 'https://commons.wikimedia.org/wiki/File:Sikandra,_Tumba_de_Akbar_(2002)_11.jpg',
       },
     ],
   },
@@ -1433,17 +1428,17 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'eight-fold-khatam',
-    text: 'Should we ship this Safavid eight-fold khatam panel in the library with level intermediate?',
+    text: 'Should we drop eight-fold-khatam from the library until a verified matching photo of the Hakim Mosque woodwork or another authentic panel is found?',
     choices: [
-      'Ship with level intermediate',
-      'Revise construction',
-      'Remove from library',
+      'Drop until verified matching photo is found',
+      'Keep as unverified Safavid khatam drawing',
+      'Remove from library permanently',
     ],
     pictures: [
       {
-        src: 'renders/eight-fold-khatam/compare-wall.png',
+        src: 'renders/eight-fold-khatam/photo-overlay.png',
         caption:
-          'Our wall compared with the Hakim Mosque minbar woodwork panel.',
+          'Our lines (red) overlaid on the Sikandra jali: stars match, band lattice mismatches.',
       },
     ],
     card: 'eight-fold-khatam',
