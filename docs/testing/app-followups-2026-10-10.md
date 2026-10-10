@@ -24,8 +24,14 @@ Reproduced the storage-failure notice covering Ink/Repeat/Color at 1024×768. Th
 
 The functional test blocks storage writes, draws a step, restores writing, and verifies completed work survives. Production browser tests block writes and verify warning placement, drawing, recovery and unchanged visible board boxes at all three sizes. The reload regression was also rerun. Six browser cases passed, exit code 0. Full tests, lint, type checks and production build each exited 0.
 
+## Task 4: full-size photo keyboard access
+
+The viewer previously left focus on its launch button, and Tab reached Source on the underlying page. It now focuses Close, contains Tab and Shift+Tab, blocks the player's shortcuts behind the viewer, and prevents background page scrolling. Escape closes the viewer and restores focus and scrolling. If a photo fails and removes its launch button, focus returns to its fallback source link. If the focused zoom button disappears on failure, focus moves to Close.
+
+Functional tests cover focus entry, tab wrapping, Escape, scroll restoration, and photo-failure focus recovery. A native browser check confirmed ArrowLeft leaves the viewer open. Production viewer-keyboard and missing-photo regressions passed at all three sizes: six cases, exit code 0. Full tests, lint, type checks and production build each exited 0.
+
 ## Next
 
-Task 4 is confirmed and pending: the full-size photo viewer leaves focus on its launch button; Tab reaches the underlying Source link. Fix focus entry, keyboard containment, Escape, focus return, and background scrolling.
+Task 5 is confirmed and pending: ArrowLeft on the Style selector changes the player from Color to an earlier stage. Keep step shortcuts from acting on focused controls, modified browser shortcuts, or already-handled events.
 
 Engine and tutorial work remain assigned elsewhere.

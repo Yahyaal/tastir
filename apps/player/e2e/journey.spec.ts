@@ -51,6 +51,39 @@ test('library previews need no construction downloads except the animated hero',
   ).toBe(false);
 });
 
+test('the original photo viewer contains keyboard focus and restores it on Escape', async ({
+  page,
+}) => {
+  await page.goto(route('minbar-doors-cairo/result'));
+  const opener = page.getByRole('button', {
+    name: /See the photo at full size/,
+  });
+  const beforeOverflow = await page.evaluate(
+    () => document.body.style.overflow,
+  );
+  await opener.click();
+  const dialog = page.getByRole('dialog');
+  const close = dialog.getByRole('button', { name: 'Close', exact: true });
+  await expect(close).toBeFocused();
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
+    'hidden',
+  );
+  await page.keyboard.press('Tab');
+  await expect(
+    dialog.getByRole('button', { name: 'Actual size', exact: true }),
+  ).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(close).toBeFocused();
+  await page.keyboard.press('ArrowLeft');
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(opener).toBeFocused();
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
+    beforeOverflow,
+  );
+});
+
 test('blocked storage warns without covering controls or moving the boards', async ({
   page,
 }) => {

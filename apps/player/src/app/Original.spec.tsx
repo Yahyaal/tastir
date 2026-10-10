@@ -142,6 +142,41 @@ describe('photos of the originals', () => {
     expect(screen.queryByRole('img')).toBeNull();
   });
 
+  it('focuses the viewer, keeps Tab inside it, and restores focus and page scrolling', () => {
+    render(<Original photos={[free]} dev={false} />);
+    const opener = screen.getByRole('button', { name: /full size/ });
+    const previousOverflow = document.body.style.overflow;
+    opener.focus();
+    fireEvent.click(opener);
+    const close = screen.getByRole('button', { name: 'Close' });
+    const zoom = screen.getByRole('button', { name: 'Actual size' });
+    expect(document.activeElement).toBe(close);
+    expect(document.body.style.overflow).toBe('hidden');
+    fireEvent.keyDown(window, { key: 'Tab' });
+    expect(document.activeElement).toBe(zoom);
+    fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(close);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(document.activeElement).toBe(opener);
+    expect(document.body.style.overflow).toBe(previousOverflow);
+  });
+
+  it('returns focus to the source if the launch photo disappeared while viewing', () => {
+    render(<Original photos={[free]} dev={false} />);
+    const opener = screen.getByRole('button', { name: /full size/ });
+    opener.focus();
+    fireEvent.click(opener);
+    const dialog = screen.getByRole('dialog');
+    within(dialog).getByRole('button', { name: 'Actual size' }).focus();
+    fireEvent.error(within(dialog).getByRole('img'));
+    const close = within(dialog).getByRole('button', { name: 'Close' });
+    expect(document.activeElement).toBe(close);
+    fireEvent.click(close);
+    expect(document.activeElement).toBe(
+      screen.getByRole('link', { name: 'its source' }),
+    );
+  });
+
   it('selects the first photo when a replacement gallery is shorter', () => {
     const view = render(<Original photos={[kept, free]} dev />);
     fireEvent.click(screen.getByRole('button', { name: 'Photo 2' }));
