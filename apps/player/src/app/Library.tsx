@@ -62,7 +62,7 @@ const TRADITIONS: Record<
       'The zenith of western Islamic geometry, epitomized by the monumental 16-fold and 12-fold star rosettes of Fez madrasas, harmonizing cut tilework with intricate stucco and cedar joinery.',
   },
   Nasrid: {
-    arabic: 'الحسبة الأندلسية بالنصرية',
+    arabic: 'العمارة النصرية بغرناطة',
     era: '1238 – 1492 CE',
     region: 'The Alhambra, Granada',
     medium: 'Interlacing tilework (alicatado) & carved stucco',
@@ -396,11 +396,11 @@ function Chip({
 const ARABIC_TITLES: Record<string, string> = {
   'eight-fold-star-and-cross': 'خاتم سليمان وثماني',
   'eight-fold-zellige': 'زليج ثماني مغربي',
-  'bou-inania-rosette': 'خاتم الستة عشر البوعنانية بفاس',
+  'bou-inania-rosette': 'خاتم الاثني عشر البوعنانية بفاس',
   'bou-inania-twelve-fold-wall': 'حائط اثنا عشري بالبوعنانية',
   'sixteen-fold-rosette': 'طاسة الستة عشر المرينية',
   'twelve-fold-rosette-mian': 'روزيتا اثنا عشرية',
-  'twelve-fold-rosette-mian-hex': 'روزيتا مسدسة مسدسة',
+  'twelve-fold-rosette-mian-hex': 'روزيتا اثنا عشرية بتكرار سداسي',
   'twelve-fold-dodecagrams': 'اثنا عشري نجمي',
   'alhambra-comares-stars': 'نجوم قاعة قمارش بقصر الحمراء',
   'alhambra-reyes-dodecagrams': 'اثنا عشري قاعة الملوك بالحمراء',
