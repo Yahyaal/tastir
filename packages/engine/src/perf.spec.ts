@@ -2,6 +2,7 @@
 // 50 ms, and find the pieces of about 3,000 segments in under 300 ms.
 import type { Tutorial } from '@tastir/schema';
 import { arrangement } from './lib/arrangement.js';
+import { constructionCrossings } from './lib/checks.js';
 import { evaluate } from './lib/evaluate.js';
 import { classicSelection, inkPieces, strokesOf } from './lib/freeInk.js';
 import { computePattern } from './lib/pieces.js';
@@ -32,6 +33,14 @@ for (const id of ['bou-inania-rosette', 'bou-inania-twelve-fold-wall']) {
     );
     expect(inkMs).toBeLessThan(300);
     expect(patternMs).toBeLessThan(300);
+  });
+  it(`${id}: finds construction crossings in under one second`, () => {
+    const scene = evaluate(loadTutorial(`${id}.json`));
+    const ms = fastest(() => {
+      constructionCrossings(scene);
+    }, 3);
+    console.log(`${id}: crossings ${ms.toFixed(1)} ms`);
+    expect(ms).toBeLessThan(1000);
   });
 }
 
