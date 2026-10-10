@@ -751,4 +751,55 @@ describe('drawing along', () => {
       dropAt(cell, [...copies, { at: { x: 5, y: 5 } }], 1, { x: 2.1, y: 0 }),
     ).toEqual({ x: 2.1, y: 0 });
   });
+
+  it('shows dotted preview lines while drawing a polygon and closes on clicking the first point', () => {
+    openAlong();
+    // Step 1: compass circle through A
+    tool('Compass');
+    clickAt(0, 0);
+    clickAt(1, 0);
+    // Step 2: horizontal and vertical lines to create corner crossings
+    tool('Ruler');
+    clickAt(0, 0);
+    clickAt(1, 0);
+    tool('Square to');
+    clickAt(-0.5, 0);
+    clickAt(0, 0);
+
+    // Pick Polygon tool
+    tool('Polygon');
+    const board = inkBoard();
+
+    // Click 1st corner at (1, 0)
+    clickAt(1, 0);
+    expect(board.querySelectorAll('.polygon-band:not(.rubber)')).toHaveLength(0);
+
+    // Click 2nd corner at (0, 1)
+    clickAt(0, 1);
+    expect(board.querySelectorAll('.polygon-band:not(.rubber)')).toHaveLength(1);
+
+    // Click 3rd corner at (-1, 0)
+    clickAt(-1, 0);
+    expect(board.querySelectorAll('.polygon-band:not(.rubber)')).toHaveLength(2);
+
+    // Move pointer near the first corner (1, 0) to check closing indication
+    const [vx = 0, vy = 0, vw = 1, vh = 1] = (board.getAttribute('viewBox') ?? '')
+      .split(' ')
+      .map(Number);
+    const s = Math.min(400 / vw, 400 / vh);
+    fireEvent.pointerMove(board, {
+      clientX: (1 - vx) * s + (400 - vw * s) / 2,
+      clientY: (0 - vy) * s + (400 - vh * s) / 2,
+    });
+    expect(board.querySelector('.target.closing')).toBeTruthy();
+    expect(board.querySelector('.polygon-band.rubber.closing')).toBeTruthy();
+
+    // Click 1st corner again to close the polygon
+    clickAt(1, 0);
+
+    // Once closed, polygon targets and preview bands are cleared
+    expect(board.querySelectorAll('.polygon-band')).toHaveLength(0);
+    expect(board.querySelectorAll('.polygon-preview')).toHaveLength(0);
+  });
 });
+

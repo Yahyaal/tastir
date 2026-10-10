@@ -1,4 +1,10 @@
-import type { Geometry, InkPiece, Scene, Vec } from '@tastir/engine';
+import {
+  distance,
+  type Geometry,
+  type InkPiece,
+  type Scene,
+  type Vec,
+} from '@tastir/engine';
 import { useMemo, useRef, useState } from 'react';
 import { viewBox, width, type Rect } from '../app/camera';
 import { useCamera } from '../app/useCamera';
@@ -7,6 +13,8 @@ import {
   pointPlaces,
   type PointPlace,
   type Target,
+  type Tool,
+  type ToolId,
 } from './tools';
 
 /** How near a click must be to take something, in screen pixels. */
@@ -58,6 +66,7 @@ export function EditorDrawing({
   scene,
   selected,
   targets,
+  tool,
   hover,
   ink,
   candidates,
@@ -80,6 +89,7 @@ export function EditorDrawing({
   scene: Scene;
   selected?: number;
   targets: readonly Target[];
+  tool?: Tool | ToolId;
   hover?: Target;
   /** In ink mode: the bits of line, and which are inked; a hint may make
    * some glow and show others dashed. */
@@ -350,16 +360,41 @@ export function EditorDrawing({
       <path key={cls} className={cls} d={parts.join('')} />
     ));
   }, [inkPieces, inkChosen, inkGlow, inkDashed, inkFresh]);
-  const ring = (t: Target, i: number | string, cls: string) =>
-    t.kind === 'point' ? (
+
+  const toolId = typeof tool === 'string' ? tool : tool?.id;
+  const polyPoints = useMemo(() => {
+    if (toolId !== 'polygon' && toolId !== 'tile') return [];
+    return targets
+      .filter((t): t is Target & { kind: 'point' } => t.kind === 'point')
+      .map((t) => t.at);
+  }, [targets, toolId]);
+
+  const isClosingHover = useMemo(() => {
+    if (!polyPoints.length || hover?.kind !== 'point') return false;
+    const minLeast = toolId === 'tile' ? 4 : 3;
+    if (polyPoints.length < minLeast) return false;
+    const first = polyPoints[0];
+    return first ? distance(hover.at, first) <= scene.tol.eps : false;
+  }, [polyPoints, hover, toolId, scene.tol.eps]);
+
+  const polyEnd = hover?.kind === 'point' ? hover.at : pointer;
+
+  const ring = (t: Target, i: number | string, cls: string) => {
+    if (t.kind !== 'point') return null;
+    const isFirstPolyTarget =
+      (toolId === 'polygon' || toolId === 'tile') &&
+      i === 0 &&
+      isClosingHover;
+    return (
       <circle
         key={`${cls}${i}`}
-        className={cls}
+        className={cls + (isFirstPolyTarget ? ' closing' : '')}
         cx={t.at.x}
         cy={t.at.y}
-        r={unit * 7}
+        r={unit * (isFirstPolyTarget ? 9 : 7)}
       />
-    ) : null;
+    );
+  };
   return (
     <div className="editor-canvas">
       <svg
@@ -465,6 +500,42 @@ export function EditorDrawing({
               r={unit * 9}
             />
           ))}
+          {/* In-progress polygon and tile: preview surface wash, dotted segments, and rubber-band */}
+          {polyPoints.length >= 2 && polyEnd ? (
+            <polygon
+              className="polygon-preview"
+              points={[
+                ...polyPoints,
+                ...(isClosingHover ? [] : [polyEnd]),
+              ]
+                .map((p) => `${p.x},${p.y}`)
+                .join(' ')}
+            />
+          ) : null}
+          {polyPoints.map((p, i) => {
+            if (i === 0) return null;
+            const prev = polyPoints[i - 1];
+            if (!prev) return null;
+            return (
+              <line
+                key={`poly-seg-${i}`}
+                className="polygon-band"
+                x1={prev.x}
+                y1={prev.y}
+                x2={p.x}
+                y2={p.y}
+              />
+            );
+          })}
+          {polyPoints.length >= 1 && polyEnd ? (
+            <line
+              className={`polygon-band rubber${isClosingHover ? ' closing' : ''}`}
+              x1={polyPoints[polyPoints.length - 1]!.x}
+              y1={polyPoints[polyPoints.length - 1]!.y}
+              x2={polyEnd.x}
+              y2={polyEnd.y}
+            />
+          ) : null}
           {targets.map((t, i) => ring(t, i, 'target'))}
           {hover ? ring(hover, 'h', 'hover') : null}
         </g>

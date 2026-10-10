@@ -1,0 +1,261 @@
+#!/usr/bin/env python3
+"""Generates tutorials/eight-fold-star-and-octagon.json from Sandy Kurt's tutorial
+and validates it against the Tomb of I'timād-ud-Daulah panel.
+"""
+import json
+import os
+
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+steps = [
+    {
+        "id": 1,
+        "text": "Put the compass point on the centre and draw a circle.",
+        "create": {
+            "c": {"circle": {"centre": "O", "through": "A"}}
+        },
+        "animate": "compass"
+    },
+    {
+        "id": 2,
+        "text": "Draw a horizontal line through the centre, then a vertical line at right angles to it. They cut the circle at four points.",
+        "create": {
+            "h": {"line": {"through": ["O", "A"]}},
+            "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+            "E": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
+            "N": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+            "W": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+            "S": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}}
+        },
+        "animate": "ruler"
+    },
+    {
+        "id": 3,
+        "text": "Halve each right angle to get the two diagonals. The circle is now divided into eight equal parts.",
+        "create": {
+            "d1": {"line": {"through": "O", "bisects": ["E", "O", "N"]}},
+            "d2": {"line": {"through": "O", "bisects": ["N", "O", "W"]}},
+            "NE": {"point": {"meet": ["c", "d1"], "pick": {"angle": 45}}},
+            "NW": {"point": {"meet": ["c", "d2"], "pick": {"angle": 135}}},
+            "SW": {"point": {"meet": ["c", "d1"], "pick": {"angle": 225}}},
+            "SE": {"point": {"meet": ["c", "d2"], "pick": {"angle": 315}}}
+        },
+        "highlight": ["h", "v"],
+        "animate": "ruler"
+    },
+    {
+        "id": 4,
+        "text": "Join the four points on the axes to form a standing dynamic square.",
+        "create": {
+            "dynamic": {"polygon": ["E", "N", "W", "S"]},
+            "mNE": {"point": {"meet": ["dynamic", "d1"], "pick": {"angle": 45}}},
+            "mNW": {"point": {"meet": ["dynamic", "d2"], "pick": {"angle": 135}}},
+            "mSW": {"point": {"meet": ["dynamic", "d1"], "pick": {"angle": 225}}},
+            "mSE": {"point": {"meet": ["dynamic", "d2"], "pick": {"angle": 315}}}
+        },
+        "highlight": ["E", "N", "W", "S"],
+        "animate": "ruler"
+    },
+    {
+        "id": 5,
+        "text": "Draw the horizontal and vertical lines through the four points on the diagonals. They form a square flat on its base, and mark the half-radius point on each axis.",
+        "textWithoutHelpers": "Draw the lines through the diagonal points to mark the half-radius point on each axis.",
+        "create": {
+            "hN": {"line": {"through": ["mNW", "mNE"]}},
+            "hS": {"line": {"through": ["mSW", "mSE"]}},
+            "vE": {"line": {"through": ["mSE", "mNE"]}},
+            "vW": {"line": {"through": ["mSW", "mNW"]}},
+            "jE": {"point": {"meet": ["vE", "h"]}},
+            "jN": {"point": {"meet": ["hN", "v"]}},
+            "jW": {"point": {"meet": ["vW", "h"]}},
+            "jS": {"point": {"meet": ["hS", "v"]}}
+        },
+        "highlight": ["mNE", "mNW", "mSW", "mSE"],
+        "animate": "ruler"
+    },
+    {
+        "id": 6,
+        "text": "Draw a small circle centered at O out to the half-radius mark. With the same radius, draw four more circles centered at the points on the main circle.",
+        "create": {
+            "cO": {"circle": {"centre": "O", "through": "jE"}},
+            "cE": {"circle": {"centre": "E", "radiusOf": "cO"}},
+            "cN": {"circle": {"centre": "N", "radiusOf": "cO"}},
+            "cW": {"circle": {"centre": "W", "radiusOf": "cO"}},
+            "cS": {"circle": {"centre": "S", "radiusOf": "cO"}}
+        },
+        "highlight": ["O", "jE", "E", "N", "W", "S"],
+        "animate": "compass"
+    },
+    {
+        "id": 7,
+        "text": "Mark where the diagonals cross the small center circle. Draw horizontal and vertical lines through them: they form the static square inside the small circle.",
+        "create": {
+            "kNE": {"point": {"meet": ["cO", "d1"], "pick": {"angle": 45}}},
+            "kNW": {"point": {"meet": ["cO", "d2"], "pick": {"angle": 135}}},
+            "kSW": {"point": {"meet": ["cO", "d1"], "pick": {"angle": 225}}},
+            "kSE": {"point": {"meet": ["cO", "d2"], "pick": {"angle": 315}}},
+            "hO_N": {"line": {"through": ["kNW", "kNE"]}},
+            "hO_S": {"line": {"through": ["kSW", "kSE"]}},
+            "vO_E": {"line": {"through": ["kSE", "kNE"]}},
+            "vO_W": {"line": {"through": ["kSW", "kNW"]}}
+        },
+        "highlight": ["cO", "d1", "d2"],
+        "animate": "ruler"
+    },
+    {
+        "id": 8,
+        "text": "Draw the four diagonal lines connecting the points where the center circle touches the outer circles.",
+        "create": {
+            "diaNE": {"line": {"through": ["jN", "jE"]}},
+            "diaNW": {"line": {"through": ["jN", "jW"]}},
+            "diaSW": {"line": {"through": ["jS", "jW"]}},
+            "diaSE": {"line": {"through": ["jS", "jE"]}}
+        },
+        "highlight": ["jN", "jE", "jW", "jS"],
+        "animate": "ruler"
+    },
+    {
+        "id": 9,
+        "text": "Mark where the vertical lines meet the upper circle, and rule a horizontal line through them. Do the same on the bottom, and with vertical lines on the left and right.",
+        "create": {
+            "pTopL": {"point": {"meet": ["cN", "vO_W"], "pick": {"nearest": "O"}}},
+            "pTopR": {"point": {"meet": ["cN", "vO_E"], "pick": {"nearest": "O"}}},
+            "hTop": {"line": {"through": ["pTopL", "pTopR"]}},
+            "pBotL": {"point": {"meet": ["cS", "vO_W"], "pick": {"nearest": "O"}}},
+            "pBotR": {"point": {"meet": ["cS", "vO_E"], "pick": {"nearest": "O"}}},
+            "hBot": {"line": {"through": ["pBotL", "pBotR"]}},
+            "pRightT": {"point": {"meet": ["cE", "hO_N"], "pick": {"nearest": "O"}}},
+            "pRightB": {"point": {"meet": ["cE", "hO_S"], "pick": {"nearest": "O"}}},
+            "vRight": {"line": {"through": ["pRightT", "pRightB"]}},
+            "pLeftT": {"point": {"meet": ["cW", "hO_N"], "pick": {"nearest": "O"}}},
+            "pLeftB": {"point": {"meet": ["cW", "hO_S"], "pick": {"nearest": "O"}}},
+            "vLeft": {"line": {"through": ["pLeftT", "pLeftB"]}}
+        },
+        "highlight": ["cN", "cS", "cE", "cW"],
+        "animate": "ruler"
+    }
+]
+
+# 16 edges of the central 8-pointed star:
+star_ink = [
+    # Along hO_N:
+    {"along": "hO_N", "from": "vO_E", "to": "diaNE"},
+    {"along": "hO_N", "from": "vO_W", "to": "diaNW"},
+    # Along hO_S:
+    {"along": "hO_S", "from": "vO_E", "to": "diaSE"},
+    {"along": "hO_S", "from": "vO_W", "to": "diaSW"},
+    # Along vO_E:
+    {"along": "vO_E", "from": "hO_N", "to": "diaNE"},
+    {"along": "vO_E", "from": "hO_S", "to": "diaSE"},
+    # Along vO_W:
+    {"along": "vO_W", "from": "hO_N", "to": "diaNW"},
+    {"along": "vO_W", "from": "hO_S", "to": "diaSW"},
+    # Along diaNE:
+    {"along": "diaNE", "from": "jN", "to": "hO_N"},
+    {"along": "diaNE", "from": "jE", "to": "vO_E"},
+    # Along diaNW:
+    {"along": "diaNW", "from": "jN", "to": "hO_N"},
+    {"along": "diaNW", "from": "jW", "to": "vO_W"},
+    # Along diaSW:
+    {"along": "diaSW", "from": "jS", "to": "hO_S"},
+    {"along": "diaSW", "from": "jW", "to": "vO_W"},
+    # Along diaSE:
+    {"along": "diaSE", "from": "jS", "to": "hO_S"},
+    {"along": "diaSE", "from": "jE", "to": "vO_E"},
+]
+
+# 32 edges of the surrounding bowties and corner tips:
+outer_ink = [
+    # Top (above jN):
+    {"along": "diaNE", "from": "jN", "to": "hTop"},
+    {"along": "diaNW", "from": "jN", "to": "hTop"},
+    {"along": "hTop", "from": "diaNE", "to": "vO_W"},
+    {"along": "hTop", "from": "diaNW", "to": "vO_E"},
+    {"along": "vO_W", "from": "hTop", "to": "hO_N"},
+    {"along": "vO_E", "from": "hTop", "to": "hO_N"},
+
+    # Bottom (below jS):
+    {"along": "diaSE", "from": "jS", "to": "hBot"},
+    {"along": "diaSW", "from": "jS", "to": "hBot"},
+    {"along": "hBot", "from": "diaSE", "to": "vO_W"},
+    {"along": "hBot", "from": "diaSW", "to": "vO_E"},
+    {"along": "vO_W", "from": "hBot", "to": "hO_S"},
+    {"along": "vO_E", "from": "hBot", "to": "hO_S"},
+
+    # Right (right of jE):
+    {"along": "diaNE", "from": "jE", "to": "vRight"},
+    {"along": "diaSE", "from": "jE", "to": "vRight"},
+    {"along": "vRight", "from": "diaSE", "to": "hO_N"},
+    {"along": "vRight", "from": "diaNE", "to": "hO_S"},
+    {"along": "hO_N", "from": "vRight", "to": "vO_E"},
+    {"along": "hO_S", "from": "vRight", "to": "vO_E"},
+
+    # Left (left of jW):
+    {"along": "diaNW", "from": "jW", "to": "vLeft"},
+    {"along": "diaSW", "from": "jW", "to": "vLeft"},
+    {"along": "vLeft", "from": "diaSW", "to": "hO_N"},
+    {"along": "vLeft", "from": "diaNW", "to": "hO_S"},
+    {"along": "hO_N", "from": "vLeft", "to": "vO_W"},
+    {"along": "hO_S", "from": "vLeft", "to": "vO_W"},
+]
+
+tutorial = {
+    "format": 0,
+    "id": "eight-fold-star-and-octagon",
+    "title": "Eight-fold star and octagon",
+    "fold": 4,
+    "style": "Mughal",
+    "level": "intermediate",
+    "credits": [
+        {
+            "source": "4fold Pattern from the Tomb of Itimud ad-Daula",
+            "creator": "Sandy Kurt (sandykurt.com)",
+            "url": "https://sandykurt.com/free-tutorials",
+            "note": "Circle divided into eight parts, static and dynamic squares establishing small circles and lines for octagons and stars.",
+            "steps": [4, 5, 6, 7, 8, 9]
+        }
+    ],
+    "photos": [
+        {
+            "file": "itimad-star-and-octagon.jpg",
+            "caption": "Cropped panel of marble and stone inlay work on the exterior wall of the Tomb of I'timād-ud-Daulah, Agra.",
+            "creator": "Sabyasachi Paldas",
+            "license": "CC BY-SA 4.0",
+            "url": "https://commons.wikimedia.org/wiki/File:Inlay_work_detail_on_I%27timad-ud-Daulah,_Agra.jpg"
+        }
+    ],
+    "given": {
+        "O": "The centre of the drawing.",
+        "A": "Any point to the right of O. The distance OA is the radius, and the unit for every length."
+    },
+    "steps": steps,
+    "ink": {
+        "text": "Go over the outline of the central eight-pointed star, the surrounding octagons, and the corner squares.",
+        "paths": star_ink + outer_ink
+    },
+    "pattern": {
+        "cell": "dynamic",
+        "text": "Repeat the dynamic tile. The eight-pointed stars and corner squares tile with regular octagons in between, forming the Mughal inlay pattern.",
+        "palette": "Fès tile",
+        "colors": {
+            "star": "a",
+            "corner_square": "c",
+            "octagon_arm": "ground"
+        }
+    },
+    "expect": {
+        "pieceTypes": 3,
+        "pieces": [
+            {"name": "star", "vertices": 16, "area": 0.58579, "perCell": 2},
+            {"name": "corner_square", "vertices": 4, "area": 0.08579, "perCell": 2},
+            {"name": "octagon_arm", "vertices": 5, "area": 0.08211, "perCell": 8}
+        ],
+        "cellArea": 2.0
+    }
+}
+
+target = os.path.join(ROOT, "tutorials", "eight-fold-star-and-octagon.json")
+with open(target, "w") as f:
+    json.dump(tutorial, f, indent=2)
+
+print("Saved tutorial to", target)

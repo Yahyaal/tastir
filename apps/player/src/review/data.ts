@@ -35,6 +35,86 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'eight-fold-khatam',
+    title: 'Eight-fold khatam',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Eight-pointed khatam stars with crossing diagonal bands, credited to Al-Hakim Mosque in Isfahan. Free Sikandra photo dropped due to band lattice mismatch; do not ship without verified photo.',
+    story: [
+      'The construction follows Sandy Kurt’s tutorial “4fold Pattern from Al-Hakim Mosque, Isfahan” (steps 4–9), establishing a unit circle divided into eight parts, static and dynamic squares, radius-0.5 circles, and diagonal facet lines.',
+      'We tested a 1 px red overlay (photo-overlay.png) against the free Wikimedia Commons candidate from the carved sandstone jali at Akbar’s Tomb in Sikandra (CC BY-SA 4.0 by LBM1948). While the eight-pointed stars align with the star voids, the band lattice does not match: the Sikandra jali features diamond (45°) and cartouche voids where our construction builds small squares, green hexagons, and white kites.',
+      'The only free Commons candidate of the Al-Hakim Mosque minbar woodwork (“Rotten green design.jpg”) shows a damaged panel with the central star completely rotted away and missing, and continuous strap planks rather than mosaic tile facets. With no free photo matching line-for-line, we drop the Sikandra photo and recommend not shipping this tutorial until an authentic, matching panel photo is found.',
+    ],
+    pictures: [
+      {
+        src: 'renders/eight-fold-khatam/photo-overlay.png',
+        caption:
+          'Our lines (red, 1 px) overlaid on the Sikandra jali screen: the stars align, but the surrounding band lattice mismatches.',
+      },
+      {
+        src: 'renders/eight-fold-khatam/wall.png',
+        caption: 'Our wall repeated.',
+      },
+      {
+        src: 'renders/eight-fold-khatam/tile.png',
+        caption: 'The static tile pieces.',
+      },
+    ],
+    asks: [
+      'Should we drop eight-fold-khatam from the library until a verified matching photo of the Hakim Mosque woodwork or another authentic panel is found?',
+    ],
+    sources: [
+      {
+        label: 'Sandy Kurt, 4fold Pattern from Al-Hakim Mosque, Isfahan',
+        url: 'https://sandykurt.com/free-tutorials',
+      },
+    ],
+  },
+  {
+    id: 'eight-fold-star-and-octagon',
+    title: 'Eight-fold star and octagon',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Eight-pointed stars alternating with regular octagons and small squares, from the Tomb of I’timād-ud-Daulah in Agra.',
+    story: [
+      'From the pietra dura marble inlay panels on the exterior wall of the Tomb of I’timād-ud-Daulah in Agra (Mughal, 1622–1628 CE), documented in Sandy Kurt’s tutorial “4fold Pattern from the Tomb of Itimud ad-Daula”.',
+      'The construction establishes a circle divided into eight parts, static and dynamic squares, and small circles of radius 0.5 at the centre and axes. The dynamic square tile carries an eight-pointed star at the centre and corner points that tile with regular octagons and small squares, forming clean eight-pointed stars across the wall with no stray lines.',
+      'We verified the tutorial line-for-line against a straight-on Wikimedia Commons photo of the exterior wall panel (CC BY-SA 4.0 by Sabyasachi Paldas). In the 1 px red overlay (photo-overlay.png), every band and star outline aligns exactly with the marble inlay lines.',
+    ],
+    pictures: [
+      {
+        src: 'renders/eight-fold-star-and-octagon/photo-overlay.png',
+        caption:
+          'Our lines (red, 1 px) overlaid on the Tomb of I’timād-ud-Daulah marble inlay panel (CC BY-SA 4.0 by Sabyasachi Paldas): an exact line-for-line match.',
+      },
+      {
+        src: 'renders/eight-fold-star-and-octagon/wall.png',
+        caption:
+          'Our wall repeated, with clean eight-pointed stars and octagons.',
+      },
+      {
+        src: 'renders/eight-fold-star-and-octagon/tile.png',
+        caption: 'The dynamic square tile pieces.',
+      },
+    ],
+    asks: [
+      'Should we ship this Mughal eight-fold star and octagon panel in the library with level intermediate?',
+    ],
+    sources: [
+      {
+        label: 'Sandy Kurt, 4fold Pattern from the Tomb of Itimud ad-Daula',
+        url: 'https://sandykurt.com/free-tutorials',
+      },
+      {
+        label:
+          'Wikimedia Commons: Inlay work detail on I’timad-ud-Daulah, Agra (Sabyasachi Paldas, CC BY-SA 4.0)',
+        url: 'https://commons.wikimedia.org/wiki/File:Inlay_work_detail_on_I%27timad-ud-Daulah,_Agra.jpg',
+      },
+    ],
+  },
+  {
     id: 'ten-pointed-star-decagon-rect',
     title: 'Ten-pointed star and decagon, rectangular repeat',
     fold: 10,
@@ -140,8 +220,9 @@ export const PATTERNS: readonly Pattern[] = [
     summary:
       'At the color stage, “Compare with the original” shows a photo of the real pattern beside the wall, with its photographer and licence.',
     story: [
-      'Five tutorials have free photos that ship with the app: the Arrayanes squares, the Comares dado and the Sala de los Reyes twelve-pointed stars (Wikimedia Commons, Creative Commons), the minbar doors (the Met, public domain) and the stellated rosettes (two Cairo minbars, public domain and CC BY). I checked the two Alhambra photos by laying our lines over them, as with Wade’s; the Sala de los Reyes photo is taken at an angle and was matched by eye.',
-      'Six still use David Wade’s photos: the bath stars, Barca stars, Leones fret, Reyes stars, Reyes fret and Comares frames. You see them on the dev server; the built app shows “A photo of the real pattern is to come” with a link to Wade’s site. They are on the queue to find free photos for.',
+      'Seven Alhambra tutorials have free, open-licensed photos shipping with the app (from Wikimedia Commons and Flickr under Creative Commons or Public Domain), alongside the Met minbar doors and Cairo minbars for the other traditions. Following a line-for-line audit across 2×2 repeat crops with 1 px thin lines:',
+      '• Kept: Sala de los Reyes stars (Shesmax, CC BY-SA 3.0 es) verified line-for-line across octagons, stars, and crosses; David Wade’s photo SPA 0408x is kept as a private reference.',
+      '• Dropped: Sala de la Barca stars (muffinn photo is a field of small stars, a different pattern); Comares bath stars (Venturini photo has different ribbon interlace topology from AL01); Comares frames (Ashaio photo has stars at every grid position, differing from Wichmann SPA 1416 where diamonds alternate); Reyes fret (Laurent 1870s alcove photo is too distant and low-resolution at 48 px per repeat to verify strapwork). These four retain David Wade’s private photos.',
       'One thing to judge: some walls are turned 45° from the photo (the Arrayanes squares and the Leones fret, for example), because the tutorial puts the grid along the axes. If that makes comparing hard, I can turn the photo to match.',
     ],
     pictures: [],
@@ -1346,6 +1427,40 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
+    id: 'eight-fold-khatam',
+    text: 'Should we drop eight-fold-khatam from the library until a verified matching photo of the Hakim Mosque woodwork or another authentic panel is found?',
+    choices: [
+      'Drop until verified matching photo is found',
+      'Keep as unverified Safavid khatam drawing',
+      'Remove from library permanently',
+    ],
+    pictures: [
+      {
+        src: 'renders/eight-fold-khatam/photo-overlay.png',
+        caption:
+          'Our lines (red) overlaid on the Sikandra jali: stars match, band lattice mismatches.',
+      },
+    ],
+    card: 'eight-fold-khatam',
+  },
+  {
+    id: 'eight-fold-star-and-octagon',
+    text: 'Should we ship this Mughal eight-fold star and octagon panel in the library with level intermediate?',
+    choices: [
+      'Ship with level intermediate',
+      'Revise construction',
+      'Remove from library',
+    ],
+    pictures: [
+      {
+        src: 'renders/eight-fold-star-and-octagon/photo-overlay.png',
+        caption:
+          'Our lines (red) overlaid on the Tomb of I’timād-ud-Daulah panel.',
+      },
+    ],
+    card: 'eight-fold-star-and-octagon',
+  },
+  {
     id: 'ten-pointed-star-decagon-rect',
     text: 'Should we keep this tutorial as an unverified 10-fold rectangular repeat, or replace it with an authentic reconstruction of the actual Darb-e Imam portal or another verified 10-fold pattern?',
     choices: [
@@ -1438,12 +1553,12 @@ export const PROGRESS: {
     },
     {
       title: 'Two ways in from the home page, and photos at full size',
-      text: 'Each card has “Watch it drawn” (from step 1) and “Result and original” (straight to the finished wall with the photo beside it; the address is #/<id>/result). Click the photo to see it over the whole page, fitted or at actual size. The free photos now ship at their full resolution (up to 4032 px), and the Leones fret has a free Flickr photo (CC BY-SA), so five tutorials still wait for one.',
+      text: 'Each card has “Watch it drawn” (from step 1) and “Result and original” (straight to the finished wall with the photo beside it; the address is #/<id>/result). Click the photo to see it over the whole page, fitted or at actual size. Tutorials with free photos ship open-licensed photographs at full resolution.',
       link: { label: 'Try it', href: '/#/alhambra-leones-fret/result' },
     },
     {
       title: 'Compare with the original',
-      text: 'A button at the color stage shows the photo of the real pattern beside the wall. Five tutorials have free photos that ship; six show Wade’s photos on the dev server only, with a placeholder in the built app.',
+      text: 'A button at the color stage shows the photo of the real pattern beside the wall. Seven Alhambra tutorials ship verified free open-licensed photos; the remaining four use private reference photos on the dev server.',
       link: { label: 'Try it', href: '/#/alhambra-arrayanes-squares' },
     },
     {
