@@ -46,8 +46,12 @@ After the correction, full tests, lint and type checks each exited 0. The comple
 
 The home navigation overflowed at 320 px (document scroll width 334 px), clipping Upcoming patterns. Its links now wrap within the header on phones; document scroll width is now 320 px. Before/after screenshots were inspected. A production regression checks a fresh library and the extra My designs link after actually saving a wall. Full tests, lint, type checks and production build each exited 0. The narrow-navigation and square-preview browser checks passed in all three projects: six passed, exit code 0.
 
+## Task 8: unsaved-changes confirmation keyboard access
+
+The unsaved-changes confirmation focused Stay initially, but Tab escaped to the page and Escape did nothing in a native browser. It now uses the shared modal focus handler, with Escape cancelling the departure and preserving edits. Functional and browser tests check tab wrapping, background shortcut blocking, focus/scroll restoration, preserved palette changes, and the explicit Leave action. Full tests, lint, type checks and production build each exited 0. All three dialog regressions passed in all three viewport projects: nine passed, exit code 0.
+
 ## Next
 
-Tasks 1–7 are complete. Continue checking the remaining app dialogs for reproducible keyboard issues; retain this checkpoint if the session is interrupted.
+Tasks 1–8 are complete. Check clipped Upcoming card headers observed in the narrow-phone audit; retain this checkpoint if the session is interrupted.
 
 Engine and tutorial work remain assigned elsewhere.

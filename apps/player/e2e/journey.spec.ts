@@ -95,6 +95,51 @@ test('home navigation fits narrow phones before and after saving a design', asyn
   await fits();
 });
 
+test('unsaved changes confirmation keeps focus and Escape preserves the design', async ({
+  page,
+}) => {
+  await page.goto(route(`${star}/result`));
+  await page
+    .getByRole('button', { name: 'Save as my design', exact: true })
+    .click();
+  await page
+    .getByRole('textbox', { name: 'Name', exact: true })
+    .fill('Unsaved wall');
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await expect(
+    page.getByText('Saved as “Unsaved wall”.', { exact: false }),
+  ).toBeVisible();
+  await page.getByLabel('Palette', { exact: false }).selectOption('Marrakech');
+  const address = page.url();
+  const home = page.getByRole('link', { name: /All patterns/ });
+  await home.focus();
+  const overflow = await page.evaluate(() => document.body.style.overflow);
+  await home.press('Enter');
+  const dialog = page.getByRole('alertdialog', { name: 'Unsaved changes' });
+  const stay = dialog.getByRole('button', { name: 'Stay', exact: true });
+  const leave = dialog.getByRole('button', { name: 'Leave without saving' });
+  await expect(stay).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(leave).toBeFocused();
+  await page.keyboard.press('Shift+Tab');
+  await expect(stay).toBeFocused();
+  await page.keyboard.press('ArrowLeft');
+  await expect(page.locator('.label')).toHaveText('Color');
+  await page.keyboard.press('Escape');
+  await expect(dialog).toHaveCount(0);
+  await expect(home).toBeFocused();
+  await expect(page).toHaveURL(address);
+  await expect(page.getByLabel('Palette', { exact: false })).toHaveValue(
+    'Marrakech',
+  );
+  expect(await page.evaluate(() => document.body.style.overflow)).toBe(
+    overflow,
+  );
+  await home.press('Enter');
+  await dialog.getByRole('button', { name: 'Leave without saving' }).click();
+  await expect(page.locator('.library')).toBeVisible();
+});
+
 test('Upcoming inspection keeps keyboard focus inside and returns to its card', async ({
   page,
 }) => {

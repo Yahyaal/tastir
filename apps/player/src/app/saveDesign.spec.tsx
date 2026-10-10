@@ -210,12 +210,31 @@ describe('saving a design', () => {
       target: { value: 'Marrakech' },
     });
     expect(screen.getByText(/Unsaved changes/)).toBeTruthy();
-    fireEvent.click(screen.getByRole('link', { name: /All patterns/ }));
+    const home = screen.getByRole('link', { name: /All patterns/ });
+    home.focus();
+    const overflow = document.body.style.overflow;
+    fireEvent.click(home);
     expect(
       screen.getByRole('alertdialog', { name: 'Unsaved changes' }).textContent,
     ).toMatch(/Your changes to “Plain” are not saved/);
-    click('Stay');
+    const stay = screen.getByRole('button', { name: 'Stay' });
+    const leave = screen.getByRole('button', { name: 'Leave without saving' });
+    expect(document.activeElement).toBe(stay);
+    expect(document.body.style.overflow).toBe('hidden');
+    fireEvent.keyDown(stay, { key: 'Tab' });
+    expect(document.activeElement).toBe(leave);
+    fireEvent.keyDown(leave, { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(stay);
+    fireEvent.keyDown(stay, { key: 'ArrowLeft' });
+    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    fireEvent.keyDown(stay, { key: 'Escape' });
     expect(screen.queryByRole('alertdialog')).toBeNull();
+    expect(document.activeElement).toBe(home);
+    expect(document.body.style.overflow).toBe(overflow);
+    expect(screen.getByLabelText(/Palette/)).toHaveProperty(
+      'value',
+      'Marrakech',
+    );
     // The browser's Back asks too, and puts the design's address back.
     go('#/');
     expect(

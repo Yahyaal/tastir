@@ -1,6 +1,6 @@
 import { useEffect, useRef, type RefObject } from 'react';
 
-/** Keyboard containment and focus return for the two photo inspection viewers. */
+/** Keyboard containment and focus return for modal viewers and confirmations. */
 export function useModalFocus(
   dialog: RefObject<HTMLElement | null>,
   closeButton: RefObject<HTMLElement | null>,
