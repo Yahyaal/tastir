@@ -2,6 +2,7 @@
  * Run from the repo root:
  * node --conditions=@tastir/source --import tsx tools/bench-engine.mts
  * Optional: --runs=3 --warmup=1 --crossings bou-inania-rosette
+ * Use --reference to time the frozen pre-optimization implementations.
  * Each reported time is the median of fresh synchronous calls; no results are cached.
  */
 import { readdirSync, readFileSync } from 'node:fs';
@@ -11,14 +12,21 @@ import { parseTutorial } from '../packages/schema/src/index.js';
 import {
   cellOf,
   classicSelection,
-  computePattern,
-  constructionCrossings,
+  computePattern as currentPattern,
+  constructionCrossings as currentCrossings,
   evaluate,
-  inkPieces,
+  inkPieces as currentInkPieces,
   strokesOf,
 } from '../packages/engine/src/index.js';
+import { computePattern as referencePattern } from '../packages/engine/src/test/reference/pieces.js';
+import { inkPieces as referenceInkPieces } from '../packages/engine/src/test/reference/freeInk.js';
+import { constructionCrossings as referenceCrossings } from '../packages/engine/src/test/reference/checks.js';
 
 const args = process.argv.slice(2);
+const reference = args.includes('--reference');
+const computePattern = reference ? referencePattern : currentPattern;
+const inkPieces = reference ? referenceInkPieces : currentInkPieces;
+const constructionCrossings = reference ? referenceCrossings : currentCrossings;
 const count = (name: string, fallback: number) => {
   const arg = args.find((a) => a.startsWith(`--${name}=`));
   const n = arg ? Number(arg.split('=')[1]) : fallback;
@@ -40,7 +48,7 @@ function timed<T>(f: () => T): { value: T; ms: number } {
     times.push(performance.now() - start);
   }
   times.sort((a, b) => a - b);
-  return { value, ms: times[Math.floor(times.length / 2)]! };
+  return { value, ms: times[Math.floor(times.length / 2)] as number };
 }
 const files = readdirSync(resolve('tutorials'))
   .filter(
@@ -49,7 +57,7 @@ const files = readdirSync(resolve('tutorials'))
   .sort();
 if (!files.length) throw new Error('No matching tutorials');
 console.log(
-  `Node ${process.version}; ${runs} measured run(s), ${warmup} warmup(s); milliseconds`,
+  `Node ${process.version}; ${reference ? 'reference' : 'current'}; ${runs} measured run(s), ${warmup} warmup(s); milliseconds`,
 );
 console.log(
   '| Tutorial | Elements | Ink bits | inkPieces | Selection | Pattern from bits | Tutorial pattern | Crossings |',

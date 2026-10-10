@@ -1,6 +1,6 @@
 import type { Scene } from './evaluate.js';
 import { TutorialError } from './evaluate.js';
-import { clipToCell } from './freeInk.js';
+import { clipToPreparedCell, prepareCell } from './freeInk.js';
 import type { InkStroke } from './ink.js';
 import type { Cell } from './pieces.js';
 import { segment } from './shapes.js';
@@ -48,15 +48,15 @@ export function panelOf(
   if (!cell.corners.every(inside)) fail('the panel must hold the whole tile');
 
   // The tile's ink and its neighbours', clipped to the panel.
+  const boundary = prepareCell({ corners }, eps);
   const pieces: { a: Vec; b: Vec; from: string; to: string }[] = [];
   for (let i = -1; i <= 1; i++)
     for (let j = -1; j <= 1; j++) {
       const shift = add(scale(cell.u, i), scale(cell.v, j));
       for (const s of ink) {
-        const c = clipToCell(
+        const c = clipToPreparedCell(
           segment(add(s.segment.a, shift), add(s.segment.b, shift)),
-          { corners },
-          eps,
+          boundary,
         );
         if (c) pieces.push({ a: c.a, b: c.b, from: s.from, to: s.to });
       }
@@ -75,7 +75,9 @@ export function panelOf(
   };
   for (const p of pieces) {
     const k = key(p);
-    groups.set(k, [...(groups.get(k) ?? []), p]);
+    const group = groups.get(k);
+    if (group) group.push(p);
+    else groups.set(k, [p]);
   }
   const out: InkStroke[] = [];
   for (const group of groups.values()) {

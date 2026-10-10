@@ -1,7 +1,13 @@
-import { intersect, overlap } from './intersect.js';
+import { BoxIndex, type Box } from './boxIndex.js';
+import {
+  appendCrossingCuts,
+  overlapPrepared,
+  prepareCurve,
+  type PreparedCurve,
+} from './prepared.js';
 import type { Segment } from './shapes.js';
 import type { Tolerance } from './tolerance.js';
-import { add, cross, dot, length, scale, sub, type Vec } from './vec.js';
+import { cross, dot, sub, type Vec } from './vec.js';
 
 // Ported from the prototype's arrangement(): split every segment at every
 // crossing, merge the end points, drop dangling ends and walk the faces.
@@ -15,170 +21,214 @@ export function arrangement(
   segments: readonly Segment[],
   tol: Tolerance,
 ): Vec[][] {
+  const prepared = segments.map(prepareCurve);
   const cuts = segments.map(() => [0, 1]);
   const param = (s: Segment, p: Vec) => {
     const d = sub(s.b, s.a);
     return dot(sub(p, s.a), d) / dot(d, d);
   };
 
-  for (const [i, j] of candidatePairs(segments)) {
+  const boxes = segments.map((s) => ({
+    minX: Math.min(s.a.x, s.b.x),
+    maxX: Math.max(s.a.x, s.b.x),
+    minY: Math.min(s.a.y, s.b.y),
+    maxY: Math.max(s.a.y, s.b.y),
+  }));
+  const index = new BoxIndex(boxes);
+  for (let i = 0; i < segments.length; i++) {
     const a = segments[i] as Segment;
-    const b = segments[j] as Segment;
-    if (overlap(a, b, tol)) {
-      // Edges lying along each other (tiles touching along an edge) never
-      // cross, so cut each one where the other ends.
-      for (const p of [b.a, b.b]) (cuts[i] as number[]).push(param(a, p));
-      for (const p of [a.a, a.b]) (cuts[j] as number[]).push(param(b, p));
-      continue;
-    }
-    for (const p of intersect(a, b, tol)) {
-      (cuts[i] as number[]).push(param(a, p));
-      (cuts[j] as number[]).push(param(b, p));
+    const pa = prepared[i] as PreparedCurve;
+    const aCuts = cuts[i] as number[];
+    for (const j of index.query(boxes[i] as Box, tol.eps * 4, i)) {
+      const b = segments[j] as Segment;
+      const pb = prepared[j] as PreparedCurve;
+      const bCuts = cuts[j] as number[];
+      if (overlapPrepared(pa, pb, tol)) {
+        // Collinear edges are split at each other's ends.
+        aCuts.push(param(a, b.a), param(a, b.b));
+        bCuts.push(param(b, a.a), param(b, a.b));
+      } else appendCrossingCuts(pa, pb, tol, aCuts, bCuts);
     }
   }
 
-  const vertices = new VertexIndex(tol);
-  const adjacency = new Map<number, Set<number>>();
+  const vertices = new VertexIndex(tol, segments.length);
+  const adjacency = new Map<number, number[]>();
   const link = (u: number, v: number) => {
     if (u === v) return;
-    (adjacency.get(u) ?? adjacency.set(u, new Set()).get(u))?.add(v);
-    (adjacency.get(v) ?? adjacency.set(v, new Set()).get(v))?.add(u);
+    const a = adjacency.get(u);
+    if (!a) adjacency.set(u, [v]);
+    else if (!a.includes(v)) a.push(v);
+    const b = adjacency.get(v);
+    if (!b) adjacency.set(v, [u]);
+    else if (!b.includes(u)) b.push(u);
   };
-  segments.forEach((s, i) => {
-    const ts = [
-      ...new Set((cuts[i] as number[]).map((t) => Math.min(1, Math.max(0, t)))),
-    ].sort((x, y) => x - y);
+  for (let i = 0; i < segments.length; i++) {
+    const s = segments[i] as Segment;
+    const ts = cuts[i] as number[];
+    for (let k = 0; k < ts.length; k++)
+      ts[k] = Math.min(1, Math.max(0, ts[k] as number));
+    ts.sort(numberOrder);
     const d = sub(s.b, s.a);
-    const ids = ts.map((t) => vertices.id(add(s.a, scale(d, t))));
-    for (let k = 0; k + 1 < ids.length; k++)
-      link(ids[k] as number, ids[k + 1] as number);
-  });
+    let previous = -1;
+    let previousT = NaN;
+    for (const t of ts) {
+      if (t === previousT) continue;
+      const id = vertices.id(s.a.x + d.x * t, s.a.y + d.y * t);
+      if (previous !== -1) link(previous, id);
+      previous = id;
+      previousT = t;
+    }
+  }
 
   pruneDanglingEnds(adjacency);
   return walkFaces(adjacency, vertices.points, tol);
 }
 
-/** Index pairs of segments whose bounding boxes share a grid cell. */
-function candidatePairs(segments: readonly Segment[]): [number, number][] {
-  if (segments.length === 0) return [];
-  const mean =
-    segments.reduce((sum, s) => sum + length(sub(s.b, s.a)), 0) /
-    segments.length;
-  const size = mean > 0 ? mean : 1;
-  const grid = new Map<string, number[]>();
-  segments.forEach((s, i) => {
-    const [x0, x1] = [Math.min(s.a.x, s.b.x), Math.max(s.a.x, s.b.x)].map((x) =>
-      Math.floor(x / size),
-    );
-    const [y0, y1] = [Math.min(s.a.y, s.b.y), Math.max(s.a.y, s.b.y)].map((y) =>
-      Math.floor(y / size),
-    );
-    for (let gx = (x0 as number) - 1; gx <= (x1 as number) + 1; gx++) {
-      for (let gy = (y0 as number) - 1; gy <= (y1 as number) + 1; gy++) {
-        const key = `${gx},${gy}`;
-        (grid.get(key) ?? grid.set(key, []).get(key))?.push(i);
-      }
-    }
-  });
-  const seen = new Set<number>();
-  const pairs: [number, number][] = [];
-  const n = segments.length;
-  for (const list of grid.values()) {
-    for (let x = 0; x < list.length; x++) {
-      for (let y = x + 1; y < list.length; y++) {
-        const i = list[x] as number;
-        const j = list[y] as number;
-        const key = i * n + j;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        pairs.push([i, j]);
-      }
-    }
-  }
-  return pairs;
-}
+const numberOrder = (a: number, b: number) => a - b;
 
 /** Gives points closer than the tolerance one shared id. */
 class VertexIndex {
   readonly points: Vec[] = [];
-  private readonly buckets = new Map<string, number[]>();
+  private heads: Int32Array;
+  private readonly next: number[] = [];
+  constructor(
+    private readonly tol: Tolerance,
+    expected: number,
+  ) {
+    let size = 16;
+    while (size < expected * 2) size *= 2;
+    this.heads = new Int32Array(size);
+  }
 
-  constructor(private readonly tol: Tolerance) {}
+  private hash(x: number, y: number): number {
+    return (
+      (Math.imul(x, 73856093) ^ Math.imul(y, 19349663)) &
+      (this.heads.length - 1)
+    );
+  }
 
-  id(p: Vec): number {
-    const bx = Math.floor(p.x / this.tol.eps);
-    const by = Math.floor(p.y / this.tol.eps);
+  private lastX = NaN;
+  private lastY = NaN;
+  private lastId = -1;
+
+  id(x: number, y: number): number {
+    if (x === this.lastX && y === this.lastY) return this.lastId;
+    this.lastX = x;
+    this.lastY = y;
+    const eps = this.tol.eps;
+    const bx = Math.floor(x / eps);
+    const by = Math.floor(y / eps);
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
-        for (const id of this.buckets.get(`${bx + dx},${by + dy}`) ?? []) {
+        let first = Infinity;
+        for (
+          let entry = this.heads[this.hash(bx + dx, by + dy)] as number;
+          entry;
+          entry = this.next[entry - 1] as number
+        ) {
+          const id = entry - 1;
           const q = this.points[id] as Vec;
-          if (Math.hypot(p.x - q.x, p.y - q.y) <= this.tol.eps) return id;
+          // Hash collisions do not change the original cell and insertion order.
+          if (
+            id < first &&
+            Math.floor(q.x / eps) === bx + dx &&
+            Math.floor(q.y / eps) === by + dy &&
+            Math.hypot(x - q.x, y - q.y) <= eps
+          )
+            first = id;
         }
+        if (first !== Infinity) return (this.lastId = first);
       }
     }
     const id = this.points.length;
-    this.points.push(p);
-    const key = `${bx},${by}`;
-    (this.buckets.get(key) ?? this.buckets.set(key, []).get(key))?.push(id);
+    this.points.push({ x, y });
+    this.lastId = id;
+    if (id >= this.heads.length) {
+      this.heads = new Int32Array(this.heads.length * 2);
+      for (let i = 0; i < id; i++) {
+        const p = this.points[i] as Vec;
+        const key = this.hash(Math.floor(p.x / eps), Math.floor(p.y / eps));
+        this.next[i] = this.heads[key] as number;
+        this.heads[key] = i + 1;
+      }
+    }
+    const key = this.hash(bx, by);
+    this.next[id] = this.heads[key] as number;
+    this.heads[key] = id + 1;
     return id;
   }
 }
 
 /** Removes every vertex with one neighbour, repeatedly, so no stubs remain. */
-function pruneDanglingEnds(adjacency: Map<number, Set<number>>) {
+function pruneDanglingEnds(adjacency: Map<number, number[]>) {
   const queue = [...adjacency.keys()].filter(
-    (u) => (adjacency.get(u)?.size ?? 0) <= 1,
+    (u) => (adjacency.get(u)?.length ?? 0) <= 1,
   );
   while (queue.length) {
     const u = queue.pop() as number;
     const nbrs = adjacency.get(u);
-    if (!nbrs || nbrs.size > 1) continue;
+    if (!nbrs || nbrs.length > 1) continue;
     adjacency.delete(u);
     for (const v of nbrs) {
       const rest = adjacency.get(v);
-      rest?.delete(u);
-      if (rest && rest.size <= 1) queue.push(v);
+      if (rest) {
+        const index = rest.indexOf(u);
+        if (index !== -1) rest.splice(index, 1);
+        if (rest.length <= 1) queue.push(v);
+      }
     }
   }
 }
 
 /** Traces every face with the face on the left; keeps the bounded ones. */
 function walkFaces(
-  adjacency: Map<number, Set<number>>,
+  adjacency: Map<number, number[]>,
   points: readonly Vec[],
   tol: Tolerance,
 ): Vec[][] {
   const at = (i: number) => points[i] as Vec;
-  const sorted = new Map<number, number[]>();
-  for (const [u, nbrs] of adjacency) {
-    const o = at(u);
-    sorted.set(
-      u,
-      [...nbrs].sort(
-        (p, q) =>
-          Math.atan2(at(p).y - o.y, at(p).x - o.x) -
-          Math.atan2(at(q).y - o.y, at(q).x - o.x),
-      ),
-    );
+  const sorted = adjacency;
+  let origin: Vec;
+  const angleOrder = (p: number, q: number) =>
+    Math.atan2(at(p).y - origin.y, at(p).x - origin.x) -
+    Math.atan2(at(q).y - origin.y, at(q).x - origin.x);
+  for (const [u, nbrs] of sorted) {
+    origin = at(u);
+    // Most vertices just split a straight edge: avoid a sort allocation there.
+    if (nbrs.length === 2) {
+      const a = nbrs[0] as number,
+        b = nbrs[1] as number;
+      if (angleOrder(a, b) > 0) {
+        nbrs[0] = b;
+        nbrs[1] = a;
+      }
+    } else nbrs.sort(angleOrder);
   }
-  const used = new Set<string>();
+  const starts = new Uint32Array(points.length);
+  let edgeCount = 0;
+  for (const [u, around] of sorted) {
+    starts[u] = edgeCount;
+    edgeCount += around.length;
+  }
+  const used = new Uint8Array(edgeCount);
   const faces: Vec[][] = [];
   for (const [u0, nbrs] of sorted) {
-    for (const v0 of nbrs) {
-      if (used.has(`${u0}>${v0}`)) continue;
+    for (let first = 0; first < nbrs.length; first++) {
+      const v0 = nbrs[first] as number;
+      let edge = (starts[u0] as number) + first;
+      if (used[edge]) continue;
       const cycle: number[] = [];
       let u = u0;
       let v = v0;
-      while (!used.has(`${u}>${v}`)) {
-        used.add(`${u}>${v}`);
+      while (!used[edge]) {
+        used[edge] = 1;
         cycle.push(u);
         // Leave v by the edge just clockwise of the one we arrived on.
         const around = sorted.get(v) as number[];
-        const w = around[
-          (around.indexOf(u) - 1 + around.length) % around.length
-        ] as number;
+        const next = (around.indexOf(u) - 1 + around.length) % around.length;
         u = v;
-        v = w;
+        v = around[next] as number;
+        edge = (starts[u] as number) + next;
       }
       const polygon = cycle.map(at);
       if (polygon.length >= 3 && signedArea(polygon) > tol.eps)

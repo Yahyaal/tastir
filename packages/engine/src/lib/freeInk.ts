@@ -1,6 +1,7 @@
+import { BoxIndex, type Box } from './boxIndex.js';
 import type { Scene } from './evaluate.js';
 import type { InkStroke } from './ink.js';
-import { intersect } from './intersect.js';
+import { appendCrossingCuts, prepareCurve } from './prepared.js';
 import type { Cell } from './pieces.js';
 import { segment, type Curve, type Line, type Segment } from './shapes.js';
 import {
@@ -29,7 +30,33 @@ export interface InkPiecesOptions {
 
 const round = (n: number) => (Math.abs(n) < 5e-7 ? 0 : n).toFixed(6);
 const pointKey = (p: Vec) => `${round(p.x)},${round(p.y)}`;
-const pieceId = (a: Vec, b: Vec) => [pointKey(a), pointKey(b)].sort().join('|');
+const joinedId = (a: string, b: string) => (a < b ? `${a}|${b}` : `${b}|${a}`);
+const pieceId = (a: Vec, b: Vec) => joinedId(pointKey(a), pointKey(b));
+
+interface PreparedCell {
+  readonly eps: number;
+  readonly turn: number;
+  readonly edges: readonly { a: Vec; e: Vec; slack: number }[];
+}
+
+/** Cell half-planes reused while clipping many curves against one boundary. */
+export function prepareCell(
+  cell: Pick<Cell, 'corners'>,
+  eps: number,
+): PreparedCell {
+  const { corners } = cell;
+  const turn = Math.sign(
+    cross(
+      sub(corners[1] as Vec, corners[0] as Vec),
+      sub(corners[2] as Vec, corners[1] as Vec),
+    ),
+  );
+  const edges = corners.map((a, i) => {
+    const e = sub(corners[(i + 1) % corners.length] as Vec, a);
+    return { a, e, slack: eps * length(e) };
+  });
+  return { eps, turn, edges };
+}
 
 /** The part of an infinite line or segment inside the convex cell. */
 export function clipToCell(
@@ -37,26 +64,22 @@ export function clipToCell(
   cell: Pick<Cell, 'corners'>,
   eps: number,
 ): Segment | undefined {
+  return clipToPreparedCell(c, prepareCell(cell, eps));
+}
+
+/** Same clipping arithmetic as clipToCell, using the precomputed half-planes. */
+export function clipToPreparedCell(
+  c: Line | Segment,
+  cell: PreparedCell,
+): Segment | undefined {
   const p = c.kind === 'line' ? c.point : c.a;
   const d = c.kind === 'line' ? c.dir : sub(c.b, c.a);
   let t0 = c.kind === 'line' ? -Infinity : 0;
   let t1 = c.kind === 'line' ? Infinity : 1;
-  const corners = cell.corners;
-  // Corners turn the same way round, so each edge's inside is on one side.
-  const turn = Math.sign(
-    cross(
-      sub(corners[1] as Vec, corners[0] as Vec),
-      sub(corners[2] as Vec, corners[1] as Vec),
-    ),
-  );
-  for (let i = 0; i < corners.length; i++) {
-    const a = corners[i] as Vec;
-    const b = corners[(i + 1) % corners.length] as Vec;
-    const e = sub(b, a);
-    // side(t) = turn · cross(e, p + t d − a) ≥ −eps
-    const base = turn * cross(e, sub(p, a));
+  const { eps, turn } = cell;
+  for (const { a, e, slack } of cell.edges) {
+    const base = turn * (e.x * (p.y - a.y) - e.y * (p.x - a.x));
     const rate = turn * cross(e, d);
-    const slack = eps * length(e);
     if (Math.abs(rate) <= 1e-15) {
       if (base < -slack) return undefined;
       continue;
@@ -119,37 +142,95 @@ export function inkPieces(
       }
     }
   }
+  const prepared = curves.map(prepareCurve);
+  const boundary = prepareCell(cell, scene.tol.eps);
+  const expandedBoundary = prepareCell(cell, scene.tol.eps * 4);
+  // A returned crossing lies in the clipped source segment (within eps).
+  // Bound infinite carriers with a more generously expanded cell so this
+  // broad phase never shortens an actual segment or changes an intersection.
+  const boxOf = (s: Segment): Box => ({
+    minX: Math.min(s.a.x, s.b.x),
+    maxX: Math.max(s.a.x, s.b.x),
+    minY: Math.min(s.a.y, s.b.y),
+    maxY: Math.max(s.a.y, s.b.y),
+  });
+  const boxes = curves.map((c): Box => {
+    if (c.kind === 'circle')
+      return {
+        minX: c.centre.x - c.radius,
+        maxX: c.centre.x + c.radius,
+        minY: c.centre.y - c.radius,
+        maxY: c.centre.y + c.radius,
+      };
+    const s =
+      c.kind === 'segment' ? c : clipToPreparedCell(c, expandedBoundary);
+    return s
+      ? boxOf(s)
+      : { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity };
+  });
+  const index = new BoxIndex(boxes);
   const pieces = new Map<string, InkPiece>();
+  // Flat strings avoid retaining trees of short concatenated strings for
+  // hundreds of thousands of ids. Reuse the join buffers within this call.
+  const coordinateParts = ['', ''];
+  const endpointKey = (p: Vec) => {
+    coordinateParts[0] = round(p.x);
+    coordinateParts[1] = round(p.y);
+    return coordinateParts.join(',');
+  };
+  const idParts = ['', ''];
+  const flatId = (a: string, b: string) => {
+    idParts[0] = a < b ? a : b;
+    idParts[1] = a < b ? b : a;
+    return idParts.join('|');
+  };
   const shifts = [-1, 0, 1].flatMap((i) =>
     [-1, 0, 1].map((j) => add(scale(cell.u, i), scale(cell.v, j))),
   );
   for (const c of curves) {
     if (c.kind === 'circle') continue;
-    const s = clipToCell(c, cell, scene.tol.eps);
+    const s = clipToPreparedCell(c, boundary);
     if (!s) continue;
     const d = sub(s.b, s.a);
-    const len2 = dot(d, d);
     const ts = [0, 1];
-    for (const other of curves) {
-      if (other === c) continue;
-      for (const p of intersect(s, other, scene.tol))
-        ts.push(dot(sub(p, s.a), d) / len2);
+    const source = prepareCurve(s);
+    for (const otherId of index.query(boxOf(s), scene.tol.eps * 4)) {
+      const other = prepared[otherId] as ReturnType<typeof prepareCurve>;
+      if (other.curve === c) continue;
+      appendCrossingCuts(source, other, scene.tol, ts);
     }
-    ts.sort((x, y) => x - y);
-    for (let k = 0; k + 1 < ts.length; k++) {
-      const a = add(s.a, scale(d, ts[k] as number));
-      const b = add(s.a, scale(d, ts[k + 1] as number));
-      if (distance(a, b) <= scene.tol.eps * 10) continue;
-      const id = pieceId(a, b);
-      // One copy per piece of the wall: a piece on one edge of the tile
-      // and its copy on the opposite edge are the same piece.
-      const copy =
-        !options?.allEdges &&
-        shifts.some(
-          (d) => (d.x || d.y) && pieces.has(pieceId(add(a, d), add(b, d))),
-        );
-      if (!copy && !pieces.has(id))
-        pieces.set(id, { id, segment: segment(a, b) });
+    const ordered =
+      ts.length > 32 ? new Float64Array(ts).sort() : ts.sort((x, y) => x - y);
+    const first = ordered[0] as number;
+    let a = { x: s.a.x + d.x * first, y: s.a.y + d.y * first };
+    let aKey: string | undefined;
+    for (let k = 1; k < ordered.length; k++) {
+      if (ordered[k] === ordered[k - 1]) continue;
+      const t = ordered[k] as number;
+      const b = { x: s.a.x + d.x * t, y: s.a.y + d.y * t };
+      let bKey: string | undefined;
+      const minimum = scene.tol.eps * 10;
+      // A component alone can prove the length exceeds the threshold.
+      if (
+        Math.abs(a.x - b.x) > minimum ||
+        Math.abs(a.y - b.y) > minimum ||
+        distance(a, b) > minimum
+      ) {
+        bKey = endpointKey(b);
+        const id = flatId(aKey ?? endpointKey(a), bKey);
+        // Opposite edges are the same piece unless the caller keeps all edges.
+        const copy =
+          !options?.allEdges &&
+          shifts.some(
+            (shift) =>
+              (shift.x || shift.y) &&
+              pieces.has(pieceId(add(a, shift), add(b, shift))),
+          );
+        if (!copy && !pieces.has(id))
+          pieces.set(id, { id, segment: { kind: 'segment', a, b } });
+      }
+      a = b;
+      aKey = bKey;
     }
   }
   return [...pieces.values()];
