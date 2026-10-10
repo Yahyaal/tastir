@@ -1,39 +1,18 @@
 import { execFileSync } from 'node:child_process';
 /// <reference types='vitest' />
-import { execSync } from 'node:child_process';
-import { createReadStream, existsSync, statSync } from 'node:fs';
+import { createReadStream } from 'node:fs';
 import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defaultClientConditions, defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { reviewFile, reviewFolders } from './reviewFiles';
 
 const tutorials = fileURLToPath(new URL('../../tutorials', import.meta.url));
 const packages = fileURLToPath(new URL('../../packages', import.meta.url));
 const docs = fileURLToPath(new URL('../../docs', import.meta.url));
 
-function resolveResearchDir(docsPath: string): string {
-  const local = resolve(docsPath, 'research');
-  if (existsSync(local)) return local;
-  try {
-    const gitCommon = execSync('git rev-parse --git-common-dir', {
-      cwd: docsPath,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
-    const commonRoot = resolve(docsPath, gitCommon, '..');
-    const fallback = resolve(commonRoot, 'docs', 'research');
-    if (existsSync(fallback)) return fallback;
-  } catch {
-    return local;
-  }
-  return local;
-}
-
 /** The folders the review page may show pictures from, by URL prefix. */
-const REVIEW_FOLDERS: Record<string, string> = {
-  renders: resolve(docs, 'review'),
-  research: resolveResearchDir(docs),
-};
+const REVIEW_FOLDERS = reviewFolders(docs);
 const IMAGE_TYPES: Record<string, string> = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
@@ -125,16 +104,11 @@ export default defineConfig(({ mode }) => ({
           )
             .replace(/^\//, '')
             .split('/');
-          const root = REVIEW_FOLDERS[folder ?? ''];
-          if (!root) return next();
-          const file = resolve(root, ...rest);
-          const type = IMAGE_TYPES[extname(file).toLowerCase()];
-          if (
-            !file.startsWith(root + sep) ||
-            !type ||
-            !existsSync(file) ||
-            !statSync(file).isFile()
-          ) {
+          const roots = REVIEW_FOLDERS[folder ?? ''];
+          if (!roots) return next();
+          const file = reviewFile(roots, rest);
+          const type = IMAGE_TYPES[extname(file ?? '').toLowerCase()];
+          if (!file || !type) {
             res.statusCode = 404;
             res.end('Not found');
             return;
