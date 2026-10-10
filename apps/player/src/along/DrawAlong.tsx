@@ -1039,12 +1039,6 @@ export function DrawAlong({
           Watch it drawn
         </a>
       </header>
-      {kept ? null : (
-        <p className="along-back refused" role="alert">
-          This browser will not keep your board (private window or storage
-          full), so it is lost if you leave.
-        </p>
-      )}
       <nav className="along-steps" aria-label="Steps">
         <span className="along-steps-label">Steps</span>
         <ol ref={stepChips}>
@@ -1191,23 +1185,27 @@ export function DrawAlong({
                   {layer.on ? (
                     <p
                       className={
-                        (
-                          inking
-                            ? ink.result?.matches
-                            : afterInk
-                              ? Boolean(keptAs)
-                              : ticks[index]
-                        )
-                          ? 'along-check done'
-                          : 'along-check'
+                        !kept
+                          ? 'along-check refused'
+                          : (
+                                inking
+                                  ? ink.result?.matches
+                                  : afterInk
+                                    ? Boolean(keptAs)
+                                    : ticks[index]
+                              )
+                            ? 'along-check done'
+                            : 'along-check'
                       }
-                      role="status"
+                      role={kept ? 'status' : 'alert'}
                     >
-                      {inking
-                        ? (keepFailed ?? inkStatus)
-                        : afterInk
-                          ? (keepFailed ?? wallStatus)
-                          : stepStatus}
+                      {!kept
+                        ? 'This browser cannot save your board. Keep this page open to avoid losing it.'
+                        : inking
+                          ? (keepFailed ?? inkStatus)
+                          : afterInk
+                            ? (keepFailed ?? wallStatus)
+                            : stepStatus}
                     </p>
                   ) : (
                     <p className="along-check" />

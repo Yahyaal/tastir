@@ -51,6 +51,49 @@ test('library previews need no construction downloads except the animated hero',
   ).toBe(false);
 });
 
+test('blocked storage warns without covering controls or moving the boards', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const write = Storage.prototype.setItem;
+    Object.assign(window, {
+      restoreTestStorage: () => {
+        Storage.prototype.setItem = write;
+      },
+    });
+    Storage.prototype.setItem = () => {
+      throw new DOMException('Storage full', 'QuotaExceededError');
+    };
+  });
+  await page.goto(route('alhambra-comares-bones/draw'));
+  const alert = page.getByRole('alert');
+  await expect(alert).toContainText('cannot save your board');
+  await page.evaluate(() => document.fonts.ready);
+  const visibleBounds = async () =>
+    (await boardBounds(page)).filter((box) => box.width > 0 && box.height > 0);
+  const before = await visibleBounds();
+  const warning = await alert.boundingBox();
+  const instructions = await page.locator('.along-text-row').boundingBox();
+  expect(warning!.y).toBeGreaterThanOrEqual(instructions!.y);
+  expect(warning!.y + warning!.height).toBeLessThanOrEqual(
+    instructions!.y + instructions!.height,
+  );
+  await page
+    .getByRole('button', { name: 'Draw it for me', exact: true })
+    .click();
+  await expect(
+    page.getByRole('button', { name: 'Step 1, on your board', exact: true }),
+  ).toBeVisible();
+  await page.evaluate(() =>
+    (
+      window as Window & { restoreTestStorage: () => void }
+    ).restoreTestStorage(),
+  );
+  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await expect(alert).toHaveCount(0);
+  expect(await visibleBounds()).toEqual(before);
+});
+
 test('a missing original photo keeps its source link and shows no broken image', async ({
   page,
 }) => {

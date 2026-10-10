@@ -467,44 +467,8 @@
   }
 }
 
-.along-back {
-  position: absolute;
-  top: 50px;
-  right: 20px;
-  margin: 0;
-  padding: 6px 14px;
-  background: var(--theme-bg-raised);
-  border: 1px solid var(--theme-border-hover);
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  font-size: 0.85rem;
-  color: var(--theme-text-primary);
-  z-index: 50;
-  backdrop-filter: blur(8px);
-}
-
-.along-back button.quiet {
-  color: var(--saffron);
-  font-weight: 600;
-  margin-left: 8px;
-  text-decoration: underline;
-}
-
-.along-back.refused {
+.along-check.refused {
   color: #ffb4a6;
-  border-color: rgba(255, 180, 166, 0.3);
-}
-
-@media (max-width: 760px) {
-  .along-back {
-    top: auto;
-    bottom: 16px;
-    left: 12px;
-    right: 12px;
-    font-size: 0.82rem;
-    padding: 8px 12px;
-    position: fixed;
-  }
 }
 
 /* Ink hints: the bits still to ink glow, or are dashed. */

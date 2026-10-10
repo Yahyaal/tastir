@@ -18,6 +18,14 @@ Added functional coverage for public/private failures, viewer failures, gallery 
 
 `pnpm test`, `pnpm lint`, `pnpm typecheck`, and the production build: exit code 0.
 
+## Task 3: saving failures without covered controls
+
+Reproduced the storage-failure notice covering Ink/Repeat/Color at 1024×768. The warning now uses the reserved feedback slot; obsolete floating-notice styles were removed. It explains the board cannot be saved and asks the learner to keep the page open. Drawing remains available, and ordinary feedback returns after a successful save.
+
+The functional test blocks storage writes, draws a step, restores writing, and verifies completed work survives. Production browser tests block writes and verify warning placement, drawing, recovery and unchanged visible board boxes at all three sizes. The reload regression was also rerun. Six browser cases passed, exit code 0. Full tests, lint, type checks and production build each exited 0.
+
 ## Next
 
-Further candidate: the storage-failure notice still floats over controls; reproduce it before changing it. Engine and tutorial work remain assigned elsewhere.
+Task 4 is confirmed and pending: the full-size photo viewer leaves focus on its launch button; Tab reaches the underlying Source link. Fix focus entry, keyboard containment, Escape, focus return, and background scrolling.
+
+Engine and tutorial work remain assigned elsewhere.
