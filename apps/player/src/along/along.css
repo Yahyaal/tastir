@@ -309,10 +309,30 @@
 }
 
 .along-nav {
+  position: relative;
   display: flex;
   flex-shrink: 0;
   gap: 10px;
   justify-content: flex-end;
+}
+
+.along-nav-normal,
+.along-resume-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.along-resume-actions {
+  position: absolute;
+  inset: 0;
+}
+
+.player .along-resume-actions button {
+  flex: 1;
+  min-width: 0;
+  padding: 3px 6px;
+  font-size: 0.85rem;
+  line-height: 1.15;
 }
 
 .player .along-nav button {

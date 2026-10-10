@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 export function StepInstruction({
   head,
   text,
+  announcement,
 }: {
   head: string;
   text: string;
+  announcement?: 'status' | 'alert';
 }) {
   const paragraph = useRef<HTMLParagraphElement>(null);
   const [overflow, setOverflow] = useState(false);
@@ -34,7 +36,7 @@ export function StepInstruction({
     };
   }, [text]);
   return (
-    <div className="along-instruction">
+    <div className="along-instruction" role={announcement}>
       <h2>
         {head}
         {overflow && (

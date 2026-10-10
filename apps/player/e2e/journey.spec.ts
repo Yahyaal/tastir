@@ -77,12 +77,28 @@ test('a beginner draws the first circle, gets a completed step, and resumes', as
   await expect(
     page.getByRole('button', { name: 'Step 1, on your board', exact: true }),
   ).toBeVisible();
+  const visibleBounds = async () =>
+    (await boardBounds(page)).filter((box) => box.width > 0 && box.height > 0);
+  const savedBounds = await visibleBounds();
   await page.reload();
   await expect(page.getByText(/Welcome back/)).toBeVisible();
+  await page.evaluate(() => document.fonts.ready);
+  expect(await visibleBounds()).toEqual(savedBounds);
+  const resume = page.getByRole('button', {
+    name: 'Continue drawing',
+    exact: true,
+  });
+  const resumeBox = await resume.boundingBox();
+  const instructionBox = await page.locator('.along-text-row').boundingBox();
+  expect(resumeBox!.y).toBeGreaterThanOrEqual(instructionBox!.y);
+  expect(resumeBox!.y + resumeBox!.height).toBeLessThanOrEqual(
+    instructionBox!.y + instructionBox!.height,
+  );
   await page
     .getByRole('button', { name: 'Continue drawing', exact: true })
     .click();
   await expect(page.getByText(/Welcome back/)).toHaveCount(0);
+  expect(await visibleBounds()).toEqual(savedBounds);
   await expect(
     page.getByRole('button', { name: 'Step 1, on your board', exact: true }),
   ).toBeVisible();
