@@ -12,7 +12,10 @@ export function useRemembered<T extends string | boolean>(
   const [value, setValue] = useState<T>(() => {
     try {
       const saved = window.localStorage.getItem(`tastir.${key}`);
-      if (saved !== null) return JSON.parse(saved) as T;
+      if (saved !== null) {
+        const parsed: unknown = JSON.parse(saved);
+        if (typeof parsed === typeof initial) return parsed as T;
+      }
     } catch {
       // Fall back to the default.
     }

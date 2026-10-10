@@ -1,38 +1,18 @@
+import { execFileSync } from 'node:child_process';
 /// <reference types='vitest' />
-import { execSync } from 'node:child_process';
-import { createReadStream, existsSync, statSync } from 'node:fs';
+import { createReadStream } from 'node:fs';
 import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defaultClientConditions, defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { reviewFile, reviewFolders } from './reviewFiles';
 
 const tutorials = fileURLToPath(new URL('../../tutorials', import.meta.url));
 const packages = fileURLToPath(new URL('../../packages', import.meta.url));
 const docs = fileURLToPath(new URL('../../docs', import.meta.url));
 
-function resolveResearchDir(docsPath: string): string {
-  const local = resolve(docsPath, 'research');
-  if (existsSync(local)) return local;
-  try {
-    const gitCommon = execSync('git rev-parse --git-common-dir', {
-      cwd: docsPath,
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
-    const commonRoot = resolve(docsPath, gitCommon, '..');
-    const fallback = resolve(commonRoot, 'docs', 'research');
-    if (existsSync(fallback)) return fallback;
-  } catch {
-    return local;
-  }
-  return local;
-}
-
 /** The folders the review page may show pictures from, by URL prefix. */
-const REVIEW_FOLDERS: Record<string, string> = {
-  renders: resolve(docs, 'review'),
-  research: resolveResearchDir(docs),
-};
+const REVIEW_FOLDERS = reviewFolders(docs);
 const IMAGE_TYPES: Record<string, string> = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
@@ -41,7 +21,7 @@ const IMAGE_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
 };
 
-export default defineConfig(() => ({
+export default defineConfig(({ mode }) => ({
   root: import.meta.dirname,
   // GitHub Pages serves the app under /<repo>/; the deploy workflow sets
   // TASTIR_BASE to that path. Locally the app lives at the root.
@@ -57,6 +37,50 @@ export default defineConfig(() => ({
   },
   plugins: [
     react(),
+    {
+      name: 'library-previews',
+      resolveId(id) {
+        if (id === 'virtual:tastir-fixtures') return '\0tastir-fixtures';
+        return null;
+      },
+      load(id) {
+        if (id === '\0tastir-fixtures')
+          return mode === 'test'
+            ? `export { default } from ${JSON.stringify(resolve(import.meta.dirname, 'src/app/libraryFixtures.ts'))};`
+            : 'export default {};';
+        return null;
+      },
+      buildStart() {
+        execFileSync(
+          process.execPath,
+          [
+            '--conditions=@tastir/source',
+            '--import',
+            'tsx',
+            resolve(import.meta.dirname, 'src/build/catalog.tsx'),
+          ],
+          { cwd: resolve(import.meta.dirname, '../..'), stdio: 'inherit' },
+        );
+      },
+      handleHotUpdate(ctx) {
+        if (
+          ctx.file.startsWith(tutorials + sep) &&
+          ctx.file.endsWith('.json')
+        ) {
+          execFileSync(
+            process.execPath,
+            [
+              '--conditions=@tastir/source',
+              '--import',
+              'tsx',
+              resolve(import.meta.dirname, 'src/build/catalog.tsx'),
+            ],
+            { cwd: resolve(import.meta.dirname, '../..'), stdio: 'inherit' },
+          );
+          ctx.server.ws.send({ type: 'full-reload' });
+        }
+      },
+    },
     {
       // tutorials/ and packages/ (the engine and the schema) are outside
       // the app, so the dev server would not notice them change without
@@ -80,16 +104,11 @@ export default defineConfig(() => ({
           )
             .replace(/^\//, '')
             .split('/');
-          const root = REVIEW_FOLDERS[folder ?? ''];
-          if (!root) return next();
-          const file = resolve(root, ...rest);
-          const type = IMAGE_TYPES[extname(file).toLowerCase()];
-          if (
-            !file.startsWith(root + sep) ||
-            !type ||
-            !existsSync(file) ||
-            !statSync(file).isFile()
-          ) {
+          const roots = REVIEW_FOLDERS[folder ?? ''];
+          if (!roots) return next();
+          const file = reviewFile(roots, rest);
+          const type = IMAGE_TYPES[extname(file ?? '').toLowerCase()];
+          if (!file || !type) {
             res.statusCode = 404;
             res.end('Not found');
             return;
@@ -130,6 +149,7 @@ export default defineConfig(() => ({
     // Whole-player renders in jsdom take 2–7 s, and over 5 s (Vitest's default
     // limit) when the machine is busy, which made the coloring test flaky.
     testTimeout: 30_000,
+    maxWorkers: 2,
     include: ['{src,tests}/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     reporters: ['default'],
     coverage: {

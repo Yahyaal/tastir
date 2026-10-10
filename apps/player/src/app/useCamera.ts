@@ -68,7 +68,12 @@ export function useCamera(
   const goTo = useCallback(
     (target: Rect) => {
       stopGlide();
-      if (instant || typeof requestAnimationFrame !== 'function') {
+      if (
+        instant ||
+        typeof requestAnimationFrame !== 'function' ||
+        (typeof window.matchMedia === 'function' &&
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+      ) {
         setView(target);
         return;
       }

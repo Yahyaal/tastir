@@ -215,7 +215,7 @@ export function EditorDrawing({
     p.x <= view.maxX &&
     p.y >= view.minY &&
     p.y <= view.maxY;
-  const places = pointPlaces(scene);
+  const places = useMemo(() => pointPlaces(scene), [scene]);
   const visible = places.filter((p) => inView(p.at));
   const current = new Set(
     [...scene.elements.values()]
@@ -288,19 +288,68 @@ export function EditorDrawing({
 
   // Every dot the pen can go down on, small and light, so a phone shows
   // them too (drawn once per board and zoom, not on every pointer move).
-  const allDots = useMemo(
-    () =>
-      penDots?.map((d, i) => (
-        <circle
-          key={`pd${i}`}
+  const allDots = useMemo(() => {
+    if (!penDots) return undefined;
+    const r = unit * 2.2;
+    if (penDots.length > 1000)
+      return (
+        <path
           className="pen-dot"
-          cx={d.x}
-          cy={d.y}
-          r={unit * 2.2}
+          d={penDots
+            .map(
+              ({ x, y }) =>
+                `M${x - r},${y}a${r},${r} 0 1,0 ${2 * r},0a${r},${r} 0 1,0 ${-2 * r},0`,
+            )
+            .join('')}
         />
-      )),
-    [penDots, unit],
-  );
+      );
+    return penDots.map((d, i) => (
+      <circle key={`pd${i}`} className="pen-dot" cx={d.x} cy={d.y} r={r} />
+    ));
+  }, [penDots, unit]);
+  // A large construction has hundreds of thousands of selectable bits.
+  // They still remain separate in the geometry; equal-style strokes can
+  // share an SVG path instead of creating one DOM node per bit.
+  const inkPieces = ink?.pieces;
+  const inkChosen = ink?.chosen;
+  const inkGlow = ink?.glow;
+  const inkDashed = ink?.dashed;
+  const inkFresh = ink?.fresh;
+  const inkDrawing = useMemo(() => {
+    if (!inkPieces) return undefined;
+    const classes = (id: string) =>
+      [
+        'ink-piece',
+        inkChosen?.has(id) ? 'inked' : '',
+        inkGlow?.has(id) ? 'glow' : '',
+        inkDashed?.has(id) ? 'answer' : '',
+        inkFresh?.has(id) ? 'fresh' : '',
+      ]
+        .filter(Boolean)
+        .join(' ');
+    if (inkPieces.length <= 1000)
+      return inkPieces.map((p) => (
+        <line
+          key={p.id}
+          className={classes(p.id)}
+          x1={p.segment.a.x}
+          y1={p.segment.a.y}
+          x2={p.segment.b.x}
+          y2={p.segment.b.y}
+        />
+      ));
+    const paths = new Map<string, string[]>();
+    for (const p of inkPieces) {
+      const cls = classes(p.id);
+      const { a, b } = p.segment;
+      const path = paths.get(cls) ?? [];
+      path.push(`M${a.x},${a.y}L${b.x},${b.y}`);
+      paths.set(cls, path);
+    }
+    return [...paths].map(([cls, parts]) => (
+      <path key={cls} className={cls} d={parts.join('')} />
+    ));
+  }, [inkPieces, inkChosen, inkGlow, inkDashed, inkFresh]);
   const ring = (t: Target, i: number | string, cls: string) =>
     t.kind === 'point' ? (
       <circle
@@ -345,26 +394,7 @@ export function EditorDrawing({
               points={tile.map((v) => `${v.x},${v.y}`).join(' ')}
             />
           ) : null}
-          {ink
-            ? ink.pieces.map((p) => (
-                <line
-                  key={p.id}
-                  className={[
-                    'ink-piece',
-                    ink.chosen.has(p.id) ? 'inked' : '',
-                    ink.glow?.has(p.id) ? 'glow' : '',
-                    ink.dashed?.has(p.id) ? 'answer' : '',
-                    ink.fresh?.has(p.id) ? 'fresh' : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
-                  x1={p.segment.a.x}
-                  y1={p.segment.a.y}
-                  x2={p.segment.b.x}
-                  y2={p.segment.b.y}
-                />
-              ))
-            : null}
+          {inkDrawing}
           {ink?.echo?.map((s, i) => (
             <line
               key={`e${i}`}

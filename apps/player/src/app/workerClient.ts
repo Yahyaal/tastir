@@ -32,10 +32,22 @@ function engineWorker(): Worker {
     worker = new Worker(new URL('./engine.worker.ts', import.meta.url), {
       type: 'module',
     });
+    worker.onerror = () =>
+      failWorker('The drawing engine stopped. Reload the page to try again.');
+    worker.onmessageerror = () =>
+      failWorker(
+        'The drawing engine returned unreadable data. Reload the page to try again.',
+      );
     worker.onmessage = ({ data }: MessageEvent<Reply>) =>
       waiting.get(data.id)?.(data);
   }
   return worker;
+}
+
+function failWorker(message: string) {
+  worker?.terminate();
+  worker = undefined;
+  for (const [id, reply] of [...waiting]) reply({ id, kind: 'error', message });
 }
 
 /** Loads a tutorial in the worker, reporting each stage. */
@@ -46,13 +58,27 @@ export function loadInWorker(
 ): Promise<Model> {
   const id = nextId++;
   return new Promise((resolve, reject) => {
+    const timeout = setTimeout(
+      () =>
+        failWorker(
+          'The pattern took too long to draw. Reload the page to try again.',
+        ),
+      60_000,
+    );
     waiting.set(id, (reply) => {
       if (reply.kind === 'progress') return onProgress(reply.stage);
+      clearTimeout(timeout);
       waiting.delete(id);
       if (reply.kind === 'done') resolve(reply.model);
       else reject(new Error(reply.message));
     });
-    engineWorker().postMessage({ id, json, inked } satisfies Request);
+    try {
+      engineWorker().postMessage({ id, json, inked } satisfies Request);
+    } catch (e) {
+      clearTimeout(timeout);
+      waiting.delete(id);
+      reject(e);
+    }
   });
 }
 
@@ -86,7 +112,10 @@ export function useModel(json: unknown, inked?: readonly string[]): Loading {
     [ink],
   );
   const direct = useMemo(
-    () => (canUseWorker() ? undefined : loadNow(json, pieces)),
+    () =>
+      canUseWorker() || typeof json === 'function'
+        ? undefined
+        : loadNow(json, pieces),
     [json, pieces],
   );
   const [loaded, setLoaded] = useState<{
@@ -99,8 +128,14 @@ export function useModel(json: unknown, inked?: readonly string[]): Loading {
     let live = true;
     const set = (state: Loading) => live && setLoaded({ json, ink, state });
     set({ progress: 'checking' });
-    loadInWorker(json, (stage) => set({ progress: stage }), pieces).then(
-      (model) => set({ model }),
+    const load = async () => {
+      const data = typeof json === 'function' ? await json() : json;
+      if (!live) return undefined;
+      if (!canUseWorker()) return withInking(loadModel(data), pieces).model;
+      return loadInWorker(data, (stage) => set({ progress: stage }), pieces);
+    };
+    load().then(
+      (model) => model && set({ model }),
       (e: Error) => set({ error: e.message }),
     );
     return () => {

@@ -28,7 +28,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  height: 40px;
+  flex-shrink: 0;
   margin-bottom: 8px;
   font-size: 0.85rem;
 }
@@ -40,11 +42,23 @@
 
 .along-steps ol {
   display: flex;
-  flex-wrap: wrap;
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  align-items: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
   gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.along-steps li,
+.along-steps-label,
+.along-swap {
+  flex-shrink: 0;
 }
 
 .player .along-dot {
@@ -57,6 +71,12 @@
   color: var(--theme-text-muted);
   border: 1px solid var(--theme-border);
   transition: all 150ms ease;
+}
+
+/* Reserve the completion mark before it appears, including two-digit steps. */
+.player .along-dot[aria-label^='Step '] {
+  width: 48px;
+  padding: 0;
 }
 
 .player .along-dot:hover {
@@ -91,7 +111,7 @@
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(180px, 1fr) 3.8rem;
+  grid-template-rows: 10.5rem auto minmax(180px, 1fr) 3.8rem;
   column-gap: 28px;
   row-gap: 8px;
 }
@@ -109,6 +129,18 @@
 
 .along-text {
   max-width: 90ch;
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  .along .topbar {
+    min-height: 70px;
+  }
+
+  .along-grid {
+    grid-template-rows: 14rem auto minmax(180px, 1fr) 3.8rem;
+  }
 }
 
 /* Layers in one cell: the cell is as big as the biggest, and only the one
@@ -135,9 +167,9 @@
   visibility: hidden;
 }
 
-/* The status keeps two lines, so a longer one does not move the board. */
+/* Reserve three actual line heights for asynchronous and wrapped feedback. */
 .along-text .along-check {
-  min-height: 2.2em;
+  min-height: 3lh;
   font-size: 0.85rem;
 }
 
@@ -351,10 +383,17 @@
     gap: 8px;
   }
 
+  .along-text {
+    max-height: none;
+    overflow: visible;
+  }
+
   .along-plate,
   .along .along-plate,
   .along .stage {
+    height: 62vh;
     min-height: 62vh;
+    max-height: 62vh;
   }
 
   /* One row of tools that scrolls sideways, so the board shows. */
@@ -651,4 +690,11 @@
   .along-hints {
     min-height: 4.6rem;
   }
+}
+
+/* Hundreds of filtered SVG lines allocate enormous offscreen surfaces.
+   Colour and stroke width still identify the current step on dense boards. */
+.along.dense .el.current,
+.along.dense .mark.current {
+  filter: none;
 }

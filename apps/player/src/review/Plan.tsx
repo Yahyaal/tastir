@@ -1,9 +1,15 @@
 import { pointOf, type Scene } from '@tastir/engine';
 import { useEffect, useState, type ReactNode } from 'react';
-import { LIBRARY } from '../app/library';
+import { entriesOf } from '../app/library';
 import { loadModel, type Model } from '../app/model';
 import './review.css';
 import './plan.css';
+const LIBRARY = entriesOf(
+  import.meta.glob<unknown>('../../../../tutorials/*.json', {
+    eager: true,
+    import: 'default',
+  }),
+);
 
 /**
  * The plan for letting people make their own patterns (#/plan), with its

@@ -29,7 +29,7 @@ This document catalogs every Arabic title and subtitle added across the Tastir U
 | :--- | :--- | :--- |
 | `eight-fold-star-and-cross` | Eight-fold star and cross | **خاتم سليمان وثماني** |
 | `eight-fold-zellige` | Eight-fold rosette | **زليج ثماني مغربي** |
-| `bou-inania-rosette` | Bou Inania rosette, her way | **خاتم الستة عشر البوعنانية بفاس** |
+| `bou-inania-rosette` | Bou Inania rosette, her way | **خاتم اثني عشر البوعنانية بفاس** |
 | `bou-inania-twelve-fold-wall` | Bou Inania twelve-fold wall | **حائط اثنا عشري بالبوعنانية** |
 | `sixteen-fold-rosette` | Sixteen-fold rosette | **طاسة الستة عشر المرينية** |
 | `twelve-fold-rosette-mian` | Twelve-fold rosette (Samira Mian’s construction) | **روزيتا اثنا عشرية** |

@@ -32,58 +32,65 @@ describe('the library', () => {
     expect(LIBRARY.map((e) => e.id)).toEqual(files);
   });
 
-  it('shows a new tutorial with no code change', () => {
-    const extra = {
-      ...(structuredClone(example) as object),
-      id: 'another-star',
-      title: 'Another star',
-    };
-    const entries = entriesOf({
-      '../../../../tutorials/eight-fold-star-and-cross.json': example,
-      '../../../../tutorials/another-star.json': extra,
-    });
-    render(<App entries={entries} />);
-    const links = within(document.querySelector('.cards') as HTMLElement)
-      .getAllByRole('link')
-      .map((c) => c.getAttribute('href'));
-    // Each card opens the tutorial, and has two buttons: watch it drawn from
-    // the first step, or see the finished result; a beginner pattern has a
-    // third, to draw it along.
-    expect(links).toEqual([
-      '#/another-star',
-      '#/another-star',
-      '#/another-star/result',
-      '#/another-star/draw',
-      '#/eight-fold-star-and-cross',
-      '#/eight-fold-star-and-cross',
-      '#/eight-fold-star-and-cross/result',
-      '#/eight-fold-star-and-cross/draw',
-    ]);
-    expect(
-      screen.getAllByRole('link', { name: 'Watch it drawn' }),
-    ).toHaveLength(2);
-    expect(
-      screen.getAllByRole('link', { name: 'See the result' }),
-    ).toHaveLength(2);
-    expect(screen.getByRole('heading', { name: 'Another star' })).toBeTruthy();
-    // On the dev server the library also links to the review page and the
-    // project notes.
-    expect(
-      screen.getByRole('link', { name: /Review page/ }).getAttribute('href'),
-    ).toBe('#/review');
-    expect(
-      screen.getByRole('link', { name: /Project notes/ }).getAttribute('href'),
-    ).toBe('#/notes');
-    // Each card says its level and length.
-    expect(
-      screen.getAllByText('Beginner', { selector: '.meta *' }),
-    ).toHaveLength(2);
-    expect(screen.getAllByText('6 steps')).toHaveLength(2);
-    // Each card has a picture of the colored pattern.
-    expect(
-      document.querySelectorAll('svg.thumbnail .piece').length,
-    ).toBeGreaterThan(0);
-  });
+  it.each(['beginner', 'intermediate', 'advanced'])(
+    'shows a new %s tutorial with no code change',
+    (level) => {
+      const extra = {
+        ...(structuredClone(example) as object),
+        id: 'another-star',
+        title: 'Another star',
+        level,
+      };
+      const entries = entriesOf({
+        '../../../../tutorials/eight-fold-star-and-cross.json': example,
+        '../../../../tutorials/another-star.json': extra,
+      });
+      render(<App entries={entries} />);
+      const links = within(document.querySelector('.cards') as HTMLElement)
+        .getAllByRole('link')
+        .map((c) => c.getAttribute('href'));
+      // Each card opens the tutorial, and has two buttons: watch it drawn from
+      // the first step, see the finished result, or draw it along.
+      expect(links).toEqual([
+        '#/another-star',
+        '#/another-star',
+        '#/another-star/result',
+        '#/another-star/draw',
+        '#/eight-fold-star-and-cross',
+        '#/eight-fold-star-and-cross',
+        '#/eight-fold-star-and-cross/result',
+        '#/eight-fold-star-and-cross/draw',
+      ]);
+      expect(
+        screen.getAllByRole('link', { name: 'Watch it drawn' }),
+      ).toHaveLength(2);
+      expect(
+        screen.getAllByRole('link', { name: 'See the result' }),
+      ).toHaveLength(2);
+      expect(
+        screen.getByRole('heading', { name: 'Another star' }),
+      ).toBeTruthy();
+      // On the dev server the library also links to the review page and the
+      // project notes.
+      expect(
+        screen.getByRole('link', { name: /Review page/ }).getAttribute('href'),
+      ).toBe('#/review');
+      expect(
+        screen
+          .getByRole('link', { name: /Project notes/ })
+          .getAttribute('href'),
+      ).toBe('#/notes');
+      // Each card says its level and length.
+      expect(
+        screen.getAllByText('Beginner', { selector: '.meta *' }),
+      ).toHaveLength(level === 'beginner' ? 2 : 1);
+      expect(screen.getAllByText('6 steps')).toHaveLength(2);
+      // Each card has a picture of the colored pattern.
+      expect(
+        document.querySelectorAll('svg.thumbnail .piece').length,
+      ).toBeGreaterThan(0);
+    },
+  );
 
   it('filters the patterns by tradition and level', () => {
     const extra = {

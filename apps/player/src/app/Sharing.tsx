@@ -38,7 +38,18 @@ export function ShareLink({
         : { library: address }),
       design: { name, ...(inked ? { inked } : {}), ...rest },
     };
-    const code = await encodeShared(shared);
+    setLink(undefined);
+    let code: string;
+    try {
+      code = await encodeShared(shared);
+    } catch (e) {
+      setSaid(
+        e instanceof Error
+          ? e.message
+          : 'The share link could not be made. Try downloading a pattern file instead.',
+      );
+      return;
+    }
     const url = `${window.location.origin}${window.location.pathname}#/shared/${code}`;
     setLink(url);
     try {

@@ -181,11 +181,56 @@ export function classicSelection(
   const strokes = shifts.flatMap((d) =>
     ink.map(({ segment: s }) => segment(add(s.a, d), add(s.b, d))),
   );
+  if (!strokes.length || !pieces.length) return new Set();
+  // Broad phase only: a stroke covering both endpoints must cover their
+  // midpoint's box too. Keep the exact endpoint test below, including its
+  // tolerance, so the index changes cost, never which bits get inked.
+  let totalLength = 0;
+  let extent = 0;
+  for (const s of strokes) {
+    totalLength += distance(s.a, s.b);
+    extent = Math.max(
+      extent,
+      Math.abs(s.a.x),
+      Math.abs(s.a.y),
+      Math.abs(s.b.x),
+      Math.abs(s.b.y),
+    );
+  }
+  const size = Math.max(
+    totalLength / strokes.length,
+    extent / 128,
+    eps * 20,
+    1e-12,
+  );
+  const bins = new Map<string, Segment[]>();
+  const bin = (x: number, y: number) => `${x},${y}`;
+  for (const s of strokes) {
+    // onSegment permits eps beyond each end and 10*eps sideways.
+    const pad = eps * (distance(s.a, s.b) + 10);
+    const x0 = Math.floor((Math.min(s.a.x, s.b.x) - pad) / size);
+    const x1 = Math.floor((Math.max(s.a.x, s.b.x) + pad) / size);
+    const y0 = Math.floor((Math.min(s.a.y, s.b.y) - pad) / size);
+    const y1 = Math.floor((Math.max(s.a.y, s.b.y) + pad) / size);
+    for (let x = x0; x <= x1; x++)
+      for (let y = y0; y <= y1; y++) {
+        const key = bin(x, y);
+        const found = bins.get(key);
+        if (found) found.push(s);
+        else bins.set(key, [s]);
+      }
+  }
   return new Set(
     pieces
-      .filter(({ segment: p }) =>
-        strokes.some((s) => onSegment(p.a, s, eps) && onSegment(p.b, s, eps)),
-      )
+      .filter(({ segment: p }) => {
+        const key = bin(
+          Math.floor((p.a.x + p.b.x) / (2 * size)),
+          Math.floor((p.a.y + p.b.y) / (2 * size)),
+        );
+        return bins
+          .get(key)
+          ?.some((s) => onSegment(p.a, s, eps) && onSegment(p.b, s, eps));
+      })
       .map((p) => p.id),
   );
 }

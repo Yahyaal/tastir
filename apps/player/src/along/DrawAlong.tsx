@@ -1,42 +1,44 @@
 import {
-  checkStep,
   distance,
-  extrasOn,
   figureOn,
-  neededAt,
-  wallPieces,
-  type Segment,
   hiddenHelpers,
+  neededAt,
+  type Segment,
   type StepCheck,
   type Vec,
 } from '@tastir/engine';
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-  useState,
-} from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { fullView, growingFrame, type Rect } from '../app/camera';
+import {
+  colorReducer,
+  DEFAULT_PALETTE,
+  PALETTES,
+  pieceColors,
+  tutorialColoring,
+  type History as ColorHistory,
+} from '../app/coloring';
+import { addDesign, updateDesign } from '../app/designs';
 import { Construction } from '../app/drawing';
 import {
   asPanel,
   beatsOf,
-  withHelpers,
   hiddenBeats,
   shownBeats,
   shownSteps,
+  withHelpers,
   type Model,
 } from '../app/model';
-import { useCamera } from '../app/useCamera';
+import { PiecePanel } from '../app/PiecePanel';
 import { useRemembered } from '../app/remembered';
-import { nearestPiece } from '../editor/Editor';
+import { useCamera } from '../app/useCamera';
 import { PROGRESS_TEXT, useModel } from '../app/workerClient';
 import { check, emptyDraft, type Draft } from '../editor/document';
+import '../editor/editor.css';
 import { EditorDrawing } from '../editor/EditorDrawing';
 import { shapeName } from '../editor/finish';
+import { nearestPiece } from '../editor/geometry';
 import { makeStep, type Choice } from '../editor/makeStep';
+import { setPatternWall } from '../editor/patterns';
 import { ToolBar } from '../editor/ToolBar';
 import {
   complete,
@@ -49,28 +51,19 @@ import {
   type Target,
   type ToolId,
 } from '../editor/tools';
+import './along.css';
 import { drawForMe } from './drawForMe';
+import { guidanceFor } from './guidance';
 import { hintFor } from './hints';
 import { namesIn, placeKey, readableAt, readableNames } from './names';
 import { withTutorialNames } from './naming';
 import { dotNear, reachable, type PenGraph } from './pen';
 import { forgetProgress, getProgress, keepProgress } from './progress';
-import { useInkBoard } from './useInkBoard';
-import { RepeatBoard, TargetWall } from './RepeatBoard';
 import { fillCopies, snapped, wallSegments, type Copy } from './repeat';
-import { setPatternWall } from '../editor/patterns';
-import { addDesign, updateDesign } from '../app/designs';
-import { PiecePanel } from '../app/PiecePanel';
-import {
-  colorReducer,
-  DEFAULT_PALETTE,
-  PALETTES,
-  pieceColors,
-  tutorialColoring,
-  type History as ColorHistory,
-} from '../app/coloring';
-import '../editor/editor.css';
-import './along.css';
+import { RepeatBoard, TargetWall } from './RepeatBoard';
+import { useAlongWork } from './useAlongWork';
+import { useHistory } from './useHistory';
+import { useInkBoard } from './useInkBoard';
 
 /** The draw-along page (#/<tutorial>/draw), once the tutorial is loaded. */
 export function DrawAlongPage({
@@ -102,13 +95,6 @@ export function DrawAlongPage({
       </div>
     );
   return <DrawAlong model={model} address={address} />;
-}
-
-/** The board's drafts before and after this one, for Undo and Redo. */
-interface History {
-  readonly past: readonly Draft[];
-  readonly now: Draft;
-  readonly future: readonly Draft[];
 }
 
 const NUMBER_WORDS = [
@@ -231,8 +217,11 @@ export function DrawAlong({
   // optional for a tick; a helper line that finds a point something needs
   // still counts.
   const optional = useMemo(
-    () => hiddenHelpers(full.scene, full.tutorial),
-    [full],
+    () =>
+      full.helperView?.optional ??
+      model.optionalHelpers ??
+      hiddenHelpers(full.scene, full.tutorial),
+    [full, model.optionalHelpers],
   );
   const { tutorial } = model;
   const beats = useMemo(() => beatsOf(tutorial), [tutorial]);
@@ -255,6 +244,17 @@ export function DrawAlong({
   const [index, setIndex] = useState(() =>
     Math.min(saved?.index ?? 0, shown.length + 2),
   );
+  const stepChips = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    const list = stepChips.current;
+    const current = list?.querySelector('[aria-current="step"]');
+    if (!list || !current) return;
+    const row = list.getBoundingClientRect();
+    const chip = current.getBoundingClientRect();
+    // Reveal the active chip without scrolling the page or moving the board.
+    if (chip.left < row.left) list.scrollLeft += chip.left - row.left;
+    else if (chip.right > row.right) list.scrollLeft += chip.right - row.right;
+  }, [index]);
   // After the last step, the learner inks their board.
   const inking = index === shown.length;
   // Then the learner repeats their tile into a wall, and may color it.
@@ -265,55 +265,37 @@ export function DrawAlong({
   const info = beats[beat - 1];
 
   // The learner's board: a draft of their own, drawn with the editor.
-  const [history, setHistory] = useState<History>(() => ({
-    past: [],
-    now:
+  const {
+    history,
+    setHistory,
+    change: edit,
+    undo,
+    redo,
+  } = useHistory<Draft>(
+    () =>
       saved?.board ??
       emptyDraft(`${tutorial.id}-along`, `My ${tutorial.title}`),
-    future: [],
-  }));
+  );
   const draft = history.now;
   const { steps } = draft;
   const checked = useMemo(() => check({ steps } as Draft), [steps]);
   const board = checked.scene;
-  const edit = useCallback(
-    (next: Draft) =>
-      setHistory((h) => ({ past: [...h.past, h.now], now: next, future: [] })),
-    [],
-  );
-  const undo = useCallback(
-    () =>
-      setHistory((h) => {
-        const before = h.past.at(-1);
-        return before
-          ? {
-              past: h.past.slice(0, -1),
-              now: before,
-              future: [h.now, ...h.future],
-            }
-          : h;
-      }),
-    [],
-  );
-  const redo = useCallback(
-    () =>
-      setHistory((h) => {
-        const after = h.future[0];
-        return after
-          ? { past: [...h.past, h.now], now: after, future: h.future.slice(1) }
-          : h;
-      }),
-    [],
-  );
 
   // How each step stands on the board, and the learner's own extras.
-  const checks = useMemo(
-    () =>
-      shown.map((b) =>
-        checkStep(model.scene, board, b, undefined, shapes, optional),
-      ),
-    [shown, model.scene, board, shapes, optional],
+  const checkingSteps = useAlongWork(
+    'steps',
+    useMemo(
+      () => ({
+        scene: model.scene,
+        board,
+        shown,
+        shapes,
+        optional,
+      }),
+      [model.scene, board, shown, shapes, optional],
+    ),
   );
+  const checks = checkingSteps.value?.checks ?? [];
   // A step is ticked when it is on the board; a step that only marks
   // points, once the step before it is ticked.
   const ticks = useMemo(() => {
@@ -325,95 +307,33 @@ export function DrawAlong({
     );
     return out;
   }, [checks]);
-  const extras = useMemo(
-    () => extrasOn(model.scene, board),
-    [model.scene, board],
-  );
+  const extras = checkingSteps.value?.extras;
   const here = inking ? undefined : checks[index];
 
   // The ink stage: the learner's own ink on their board.
   // The ink, with Undo and Redo of its own.
-  const [inkHistory, setInkHistory] = useState<{
-    past: readonly ReadonlySet<string>[];
-    now: ReadonlySet<string>;
-    future: readonly ReadonlySet<string>[];
-  }>(() => ({ past: [], now: new Set(saved?.inked ?? []), future: [] }));
+  const {
+    history: inkHistory,
+    setHistory: setInkHistory,
+    change: setChosen,
+    undo: inkUndo,
+    redo: inkRedo,
+  } = useHistory<ReadonlySet<string>>(() => new Set(saved?.inked ?? []));
   const chosen = inkHistory.now;
-  const setChosen = useCallback(
-    (next: ReadonlySet<string>) =>
-      setInkHistory((h) => ({
-        past: [...h.past, h.now],
-        now: next,
-        future: [],
-      })),
-    [],
-  );
-  const inkUndo = useCallback(
-    () =>
-      setInkHistory((h) => {
-        const before = h.past.at(-1);
-        return before
-          ? {
-              past: h.past.slice(0, -1),
-              now: before,
-              future: [h.now, ...h.future],
-            }
-          : h;
-      }),
-    [],
-  );
-  const inkRedo = useCallback(
-    () =>
-      setInkHistory((h) => {
-        const after = h.future[0];
-        return after
-          ? { past: [...h.past, h.now], now: after, future: h.future.slice(1) }
-          : h;
-      }),
-    [],
-  );
   // The pen: the dot it is down on, if any; and whether it erases.
   const [pen, setPen] = useState<string>();
   const [erasing, setErasing] = useState(false);
   const [penSaid, setPenSaid] = useState<string>();
   // The wall the learner lays: copies of their tile, with Undo and Redo.
-  const [copyHistory, setCopyHistory] = useState<{
-    past: readonly (readonly Copy[])[];
-    now: readonly Copy[];
-    future: readonly (readonly Copy[])[];
-  }>(() => ({
-    past: [],
-    now: (saved?.copies ?? []).map((at) => ({ at })),
-    future: [],
-  }));
-  const copies = copyHistory.now;
-  const setCopies = useCallback(
-    (next: readonly Copy[]) =>
-      setCopyHistory((h) => ({
-        past: [...h.past, h.now],
-        now: next,
-        future: [],
-      })),
-    [],
+  const {
+    history: copyHistory,
+    change: setCopies,
+    undo: copyUndo,
+    redo: copyRedo,
+  } = useHistory<readonly Copy[]>(() =>
+    (saved?.copies ?? []).map((at) => ({ at })),
   );
-  const copyUndo = () =>
-    setCopyHistory((h) => {
-      const before = h.past.at(-1);
-      return before
-        ? {
-            past: h.past.slice(0, -1),
-            now: before,
-            future: [h.now, ...h.future],
-          }
-        : h;
-    });
-  const copyRedo = () =>
-    setCopyHistory((h) => {
-      const after = h.future[0];
-      return after
-        ? { past: [...h.past, h.now], now: after, future: h.future.slice(1) }
-        : h;
-    });
+  const copies = copyHistory.now;
   const [arrived, setArrived] = useState<{ index: number; from: Vec }>();
   const [removing, setRemoving] = useState(false);
   // Its colours, as the player's colour stage keeps them.
@@ -495,13 +415,20 @@ export function DrawAlong({
   const ground =
     (PALETTES[colorHistory.now.palette] ?? PALETTES[DEFAULT_PALETTE])?.ground ??
     '#eee';
-  const wall = useMemo(
-    () =>
-      coloring && ready
-        ? wallPieces(wallSegments(tileInk, copies), model.pattern.types)
-        : [],
-    [coloring, ready, tileInk, copies, model.pattern.types],
+  const makingWall = useAlongWork(
+    'wall',
+    useMemo(
+      () =>
+        coloring && ready
+          ? {
+              segments: wallSegments(tileInk, copies),
+              types: model.pattern.types,
+            }
+          : undefined,
+      [coloring, ready, tileInk, copies, model.pattern.types],
+    ),
   );
+  const wall = makingWall.value ?? [];
   const [keepFailed, setKeepFailed] = useState<string>();
   /** Keeps the drawing as one of the learner's patterns, with the wall
    * they laid and, when they coloured it, its colours. */
@@ -551,6 +478,13 @@ export function DrawAlong({
           )
         : undefined,
     [hintLevel, here, tutorial, model.scene, board, beat, info],
+  );
+  const guidance = useMemo(
+    () =>
+      here && !inking && !afterInk
+        ? guidanceFor(tutorial, model.scene, board, beat, here, readAt)
+        : undefined,
+    [here, inking, afterInk, tutorial, model.scene, board, beat, readAt],
   );
   const [drawFailed, setDrawFailed] = useState<string>();
   const drawIt = () => {
@@ -638,7 +572,8 @@ export function DrawAlong({
   };
   const want = tool && wantAt(tool, targets.length);
   const ask = !tool
-    ? 'Choose a tool above to draw with. Hold the pointer over a tool to see what it does.'
+    ? (guidance?.words ??
+      'Choose a tool above to draw with. Hold the pointer over a tool to see what it does.')
     : tool.id === 'tile'
       ? TILE_ASK
       : (tool.asks[Math.min(targets.length, tool.asks.length - 1)] ?? '');
@@ -814,48 +749,61 @@ export function DrawAlong({
     here !== undefined &&
     !here.needed.length &&
     neededAt(model.scene, beat).length > 0;
-  const stepStatus = !here
-    ? ''
-    : ticks[index]
-      ? here.needed.length
-        ? `✓ Step ${number} is on your board.`
-        : helperOnly
-          ? '✓ This step draws only helper lines: draw them if you want their points; nothing else needs them.'
-          : '✓ This step only marks points, and they come by themselves where lines cross.'
-      : here.done
-        ? helperOnly
-          ? 'This step draws only helper lines, which are up to you: it is ticked once the step before it is on your board.'
-          : 'This step only marks points: it is ticked once the step before it is on your board.'
-        : here.missing.length === here.needed.length &&
-            !here.missing.some((m) => m.name === tutorial.pattern.cell)
-          ? 'Not on your board yet.'
-          : `Still to draw: ${stillToDraw(here, tutorial.pattern.cell)}.`;
+  const stepStatus =
+    checkingSteps.error ??
+    (checkingSteps.pending
+      ? 'Checking your drawing…'
+      : !here
+        ? ''
+        : ticks[index]
+          ? here.needed.length
+            ? `✓ Step ${number} is on your board.`
+            : helperOnly
+              ? '✓ This step draws only helper lines: draw them if you want their points; nothing else needs them.'
+              : '✓ This step only marks points, and they come by themselves where lines cross.'
+          : here.done
+            ? helperOnly
+              ? 'This step draws only helper lines, which are up to you: it is ticked once the step before it is on your board.'
+              : 'This step only marks points: it is ticked once the step before it is on your board.'
+            : here.missing.length === here.needed.length &&
+                !here.missing.some((m) => m.name === tutorial.pattern.cell)
+              ? 'Not on your board yet.'
+              : `Still to draw: ${stillToDraw(here, tutorial.pattern.cell)}.`);
   const loose = ready
     ? copies.filter((c) => !snapped(ready.cell, c.at)).length
     : 0;
   const wallStatus = keptAs
     ? '✓ Kept as one of your patterns.'
-    : repeating
-      ? `${count(copies.length)} ${copies.length === 1 ? 'copy' : 'copies'} placed${loose ? `, ${count(loose)} of them loose` : ''}.`
-      : `${count(wall.filter((p) => p.type >= 0).length)} pieces in your wall${wall.some((p) => p.type < 0) ? ', and some that do not close' : ''}.`;
+    : (makingWall.error ??
+      (makingWall.pending
+        ? 'Finding the pieces of your wall…'
+        : repeating
+          ? `${count(copies.length)} ${copies.length === 1 ? 'copy' : 'copies'} placed${loose ? `, ${count(loose)} of them loose` : ''}.`
+          : `${count(wall.filter((p) => p.type >= 0).length)} pieces in your wall${wall.some((p) => p.type < 0) ? ', and some that do not close' : ''}.`));
   const kindsWord = (n: number) =>
     `${count(n)} ${n === 1 ? 'kind' : 'kinds'} of piece`;
-  const inkStatus = !inking
-    ? ''
-    : ink.ready && 'reason' in ink.ready
-      ? `Your board cannot be inked yet: ${ink.ready.reason}`
-      : !chosen.size
-        ? 'Ink the lines the pattern keeps on your board.'
-        : ink.result?.matches
-          ? `✓ Your ink closes the pattern’s pieces: ${kindsWord(ink.result.types.length)}, as in the tutorial.`
-          : ink.result?.types.length
-            ? `Your ink closes ${kindsWord(ink.result.types.length)}; the pattern has ${kindsWord(tutorial.expect.pieces.length)}.${
-                ink.missingKinds.length &&
-                ink.missingKinds.length < tutorial.expect.pieces.length
-                  ? ` Still missing: the ${ink.missingKinds.join(' and the ')}. Show me a hint marks where.`
-                  : ''
-              }`
-            : 'Your ink closes no pieces yet.';
+  const inkStatus =
+    ink.error ??
+    (ink.pending
+      ? 'Preparing the lines you can ink…'
+      : !inking
+        ? ''
+        : ink.ready && 'reason' in ink.ready
+          ? `Your board cannot be inked yet: ${ink.ready.reason}`
+          : ink.checking && chosen.size
+            ? 'Checking your ink…'
+            : !chosen.size
+              ? 'Ink the lines the pattern keeps on your board.'
+              : ink.result?.matches
+                ? `✓ Your ink closes the pattern’s pieces: ${kindsWord(ink.result.types.length)}, as in the tutorial.`
+                : ink.result?.types.length
+                  ? `Your ink closes ${kindsWord(ink.result.types.length)}; the pattern has ${kindsWord(tutorial.expect.pieces.length)}.${
+                      ink.missingKinds.length &&
+                      ink.missingKinds.length < tutorial.expect.pieces.length
+                        ? ` Still missing: the ${ink.missingKinds.join(' and the ')}. Show me a hint marks where.`
+                        : ''
+                    }`
+                  : 'Your ink closes no pieces yet.');
 
   const boardHalf = (
     <main className="stage along-plate" hidden={phone && showStep}>
@@ -1056,7 +1004,9 @@ export function DrawAlong({
   );
 
   return (
-    <div className="player along">
+    <div
+      className={`player along${model.scene.elements.size > 300 ? ' dense' : ''}`}
+    >
       <header className="topbar">
         <a className="home" href="#/">
           <span className="wordmark">
@@ -1094,6 +1044,13 @@ export function DrawAlong({
           <button
             type="button"
             className="quiet"
+            onClick={() => setWelcome(false)}
+          >
+            Continue drawing
+          </button>
+          <button
+            type="button"
+            className="quiet"
             onClick={() => setRestarting(true)}
           >
             Start again
@@ -1123,7 +1080,7 @@ export function DrawAlong({
       )}
       <nav className="along-steps" aria-label="Steps">
         <span className="along-steps-label">Steps</span>
-        <ol>
+        <ol ref={stepChips}>
           {shown.map((b, i) => {
             const done = ticks[i] ?? false;
             return (
@@ -1409,6 +1366,7 @@ export function DrawAlong({
                   className="tool"
                   title={INK_FOR_ME}
                   aria-description={INK_FOR_ME}
+                  disabled={!ready}
                   onClick={ink.inkForMe}
                 >
                   Ink it for me
@@ -1526,7 +1484,7 @@ export function DrawAlong({
                 canRedo={history.future.length > 0}
                 onUndo={undo}
                 onRedo={redo}
-                hinted={hint?.tool}
+                hinted={hint?.tool ?? guidance?.tool}
               />
             </div>
           </div>
@@ -1558,7 +1516,8 @@ export function DrawAlong({
                     >
                       Play it
                     </a>{' '}
-                    · <a href="#/">My patterns</a>
+                    · <a href={`#/edit/${keptAs}`}>Make a variation</a> ·{' '}
+                    <a href="#/">My patterns</a>
                   </>
                 ) : (
                   say(

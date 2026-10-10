@@ -1,5 +1,5 @@
 import type { Cell, Segment, Vec } from '@tastir/engine';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { viewBox, width, type Rect } from '../app/camera';
 import type { Model } from '../app/model';
 import { dropAt, ghostsOf, type Copy } from './repeat';
@@ -47,6 +47,10 @@ export function RepeatBoard({
   onRemove: (index: number) => void;
   onPick?: (type: number) => void;
 }) {
+  const inkPath = useMemo(
+    () => ink.map((s) => `M${s.a.x},${s.a.y}L${s.b.x},${s.b.y}`).join(''),
+    [ink],
+  );
   const unit = width(view) / 400;
   const ghosts = pieces ? [] : ghostsOf(cell, copies);
   // A copy being dragged, and where it is now.
@@ -192,16 +196,7 @@ export function RepeatBoard({
                   }}
                 />
               )}
-              {ink.map((s, k) => (
-                <line
-                  key={k}
-                  className="wall-ink"
-                  x1={s.a.x}
-                  y1={s.a.y}
-                  x2={s.b.x}
-                  y2={s.b.y}
-                />
-              ))}
+              <path className="wall-ink" d={inkPath} />
             </g>
           );
         })}
@@ -224,6 +219,13 @@ export function TargetWall({
   svgRef: React.RefObject<SVGSVGElement | null>;
 }) {
   const { cell, ink } = model.pattern;
+  const inkPath = useMemo(
+    () =>
+      ink
+        .map(({ segment: s }) => `M${s.a.x},${s.a.y}L${s.b.x},${s.b.y}`)
+        .join(''),
+    [ink],
+  );
   const unit = width(view) / 400;
   const shifts: Vec[] = [];
   for (let i = -4; i <= 4; i++)
@@ -243,16 +245,7 @@ export function TargetWall({
       <g transform="scale(1,-1)" style={{ strokeWidth: unit * 1.5 }}>
         {shifts.map((d, k) => (
           <g key={k} transform={`translate(${d.x},${d.y})`}>
-            {ink.map((s, i) => (
-              <line
-                key={i}
-                className="wall-ink target"
-                x1={s.segment.a.x}
-                y1={s.segment.a.y}
-                x2={s.segment.b.x}
-                y2={s.segment.b.y}
-              />
-            ))}
+            <path className="wall-ink target" d={inkPath} />
           </g>
         ))}
         <polygon className="tile-outline" points={pts(cell.corners)} />

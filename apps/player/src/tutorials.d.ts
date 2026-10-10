@@ -4,3 +4,8 @@ declare module '@tutorials/*.json' {
   const json: unknown;
   export default json;
 }
+
+declare module 'virtual:tastir-fixtures' {
+  const files: Record<string, unknown>;
+  export default files;
+}

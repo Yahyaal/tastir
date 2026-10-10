@@ -12,6 +12,9 @@ export default defineConfig(() => ({
     watch: false,
     globals: true,
     environment: 'node',
+    // Functional geometry cases can be large; speed budgets are tested separately.
+    testTimeout: 20_000,
+    maxWorkers: 2,
     reporters: ['default'],
     coverage: {
       reportsDirectory: './test-output/vitest/coverage',

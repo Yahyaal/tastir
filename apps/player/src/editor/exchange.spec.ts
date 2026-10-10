@@ -1,0 +1,79 @@
+import example from '@tutorials/eight-fold-star-and-cross.json';
+import {
+  decodeShared,
+  encodeShared,
+  readPattern,
+  MAX_FILE_BYTES,
+} from './files';
+import { emptyDraft } from './document';
+
+const link = (data: unknown, prefix = 'j') =>
+  prefix +
+  btoa(JSON.stringify(data))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+
+it.each([
+  {
+    library: 'eight-fold-star-and-cross',
+    design: { coloring: { palette: 'Fès tile' } },
+  },
+  { library: 'eight-fold-star-and-cross', tutorial: {} },
+  { tutorial: { title: 'Broken', steps: [null] } },
+  { library: 'eight-fold-star-and-cross', basedOn: { step: -1 } },
+])('rejects a malformed shared payload before rendering: %j', async (data) => {
+  expect(await decodeShared(link(data))).toBeUndefined();
+});
+it('accepts existing library links without design overrides', async () => {
+  expect(
+    await decodeShared(link({ library: 'eight-fold-star-and-cross' })),
+  ).toEqual({ library: 'eight-fold-star-and-cross' });
+});
+it('rejects an unknown encoding and truncated payload', async () => {
+  expect(await decodeShared(link({ library: 'star' }, 'x'))).toBeUndefined();
+  expect(await decodeShared('jeyJsaWJyYXJ5Ijo')).toBeUndefined();
+});
+it('round trips compressed Unicode designs', async () => {
+  const shared = {
+    library: 'eight-fold-star-and-cross',
+    design: {
+      name: 'تسطير — My pattern',
+      coloring: { palette: 'Fès tile', chosen: { star: '#ffffff' } },
+      look: 'tiles' as const,
+      grout: 1,
+    },
+  };
+  expect(await decodeShared(await encodeShared(shared))).toEqual(shared);
+});
+it('preserves an unfinished draft but refuses unsupported file versions', () => {
+  const tutorial = emptyDraft('my-pattern', 'My pattern');
+  expect(
+    readPattern(JSON.stringify({ tastir: 'pattern', version: 1, tutorial })),
+  ).toEqual({ pattern: true, tutorial });
+  expect(
+    readPattern(JSON.stringify({ tastir: 'pattern', version: 2, tutorial })),
+  ).toHaveProperty('reason', expect.stringContaining('unsupported version'));
+});
+it('refuses oversized files and damaged metadata', () => {
+  expect(readPattern(' '.repeat(MAX_FILE_BYTES + 1))).toHaveProperty(
+    'reason',
+    expect.stringContaining('too large'),
+  );
+  expect(
+    readPattern(
+      JSON.stringify({
+        tastir: 'pattern',
+        version: 1,
+        tutorial: example,
+        basedOn: { title: 7 },
+      }),
+    ),
+  ).toHaveProperty('reason', expect.stringContaining('source information'));
+});
+
+it('refuses to create a link its reader would reject as too large', async () => {
+  await expect(
+    encodeShared({ library: 'x'.repeat(MAX_FILE_BYTES) }),
+  ).rejects.toThrow('pattern file');
+});

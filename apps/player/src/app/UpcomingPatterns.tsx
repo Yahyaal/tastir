@@ -259,6 +259,23 @@ export function UpcomingPatterns() {
   );
 }
 
+/** Failed private assets are absent in fresh clones; keep the blueprint usable. */
+function useUpcomingMedia(pattern: UpcomingPattern) {
+  const [missing, setMissing] = useState<ReadonlySet<string>>(() => new Set());
+  const photo = pattern.photo;
+  const photoUrl = photo ? upcomingPhotoSrc(photo) : undefined;
+  const drawingUrl = upcomingDrawnSrc(pattern.drawnUrl);
+  return {
+    photo,
+    photoSrcUrl: photoUrl && !missing.has(photoUrl) ? photoUrl : undefined,
+    drawnSrcUrl:
+      drawingUrl && !missing.has(drawingUrl) ? drawingUrl : undefined,
+    unavailable: (url: string | undefined) => {
+      if (url) setMissing((previous) => new Set([...previous, url]));
+    },
+  };
+}
+
 function UpcomingCard({
   pattern,
   onOpenLightbox,
@@ -269,9 +286,8 @@ function UpcomingCard({
   const [showInstructions, setShowInstructions] = useState(false);
   const isPlayable = pattern.status === 'Playable now';
 
-  const photo = pattern.photo;
-  const photoSrcUrl = photo ? upcomingPhotoSrc(photo) : undefined;
-  const drawnSrcUrl = upcomingDrawnSrc(pattern.drawnUrl);
+  const { photo, photoSrcUrl, drawnSrcUrl, unavailable } =
+    useUpcomingMedia(pattern);
   const defaultMode = photo ? 'photo' : drawnSrcUrl ? 'drawn' : 'blueprint';
   const [mode, setMode] = useState<'photo' | 'drawn' | 'blueprint'>(
     defaultMode,
@@ -346,8 +362,9 @@ function UpcomingCard({
                   alt={photo.caption}
                   className="card-media-img"
                   loading="lazy"
-                  onError={(e) => {
-                    (e.currentTarget as HTMLElement).style.display = 'none';
+                  onError={() => {
+                    unavailable(photoSrcUrl);
+                    setMode('blueprint');
                   }}
                 />
                 <div className="card-media-hover-bar">
@@ -385,8 +402,9 @@ function UpcomingCard({
                 alt={pattern.drawnCaption ?? pattern.title}
                 className="card-media-img"
                 loading="lazy"
-                onError={(e) => {
-                  (e.currentTarget as HTMLElement).style.display = 'none';
+                onError={() => {
+                  unavailable(drawnSrcUrl);
+                  setMode('blueprint');
                 }}
               />
               <div className="card-media-hover-bar">
@@ -567,9 +585,8 @@ function UpcomingLightbox({
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  const photo = pattern.photo;
-  const photoSrcUrl = photo ? upcomingPhotoSrc(photo) : undefined;
-  const drawnSrcUrl = upcomingDrawnSrc(pattern.drawnUrl);
+  const { photo, photoSrcUrl, drawnSrcUrl, unavailable } =
+    useUpcomingMedia(pattern);
   const hasPhoto = Boolean(photo);
   const hasDrawn = Boolean(drawnSrcUrl);
 
@@ -677,6 +694,10 @@ function UpcomingLightbox({
               alt={currentCaption}
               className="lightbox-img"
               onClick={() => setActualSize(!actualSize)}
+              onError={() => {
+                unavailable(photoSrcUrl);
+                setMode('blueprint');
+              }}
             />
           ) : (
             <div className="lightbox-photo-placeholder photo-placeholder">
@@ -697,6 +718,10 @@ function UpcomingLightbox({
             alt={currentCaption}
             className="lightbox-img"
             onClick={() => setActualSize(!actualSize)}
+            onError={() => {
+              unavailable(drawnSrcUrl);
+              setMode('blueprint');
+            }}
           />
         ) : (
           <div className="lightbox-blueprint-wrap">

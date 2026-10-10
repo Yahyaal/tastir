@@ -1,3 +1,4 @@
+/** @jsxRuntime automatic */
 import { useId, useLayoutEffect, useMemo, useRef } from 'react';
 import type {
   Geometry,
