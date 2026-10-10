@@ -2121,6 +2121,10 @@ main.stage .drawing:not(.wall) {
     border-color 0.2s;
 }
 
+.card img.thumbnail {
+  height: auto;
+}
+
 .card:hover .thumbnail,
 .card:focus-visible .thumbnail {
   filter: brightness(1.08) saturate(1.1);

@@ -31,6 +31,17 @@ test('library previews need no construction downloads except the animated hero',
         ),
     )
     .toBe(true);
+  await page.evaluate(() => document.fonts.ready);
+  const sizes = await previews.evaluateAll((images) =>
+    images.map((image) => {
+      const { width, height } = image.getBoundingClientRect();
+      return { width, height };
+    }),
+  );
+  for (const { width, height } of sizes) {
+    expect(width).toBeGreaterThan(0);
+    expect(Math.abs(width - height)).toBeLessThan(1);
+  }
   await expect(
     page.getByRole('link', { name: 'Start with the star and cross' }),
   ).toBeVisible();
