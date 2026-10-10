@@ -6,7 +6,7 @@ Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified
 
 | Tutorial | Fold | Steps | Status | Notes |
 | --- | --- | --- | --- | --- |
-| bou-inania-rosette | 4 | 14 | approved (5 Oct) | The Bou Inania rosette built with Samira Mian's method from the clear drawing by @aslam.geometricpatterns. The tile copies overlap by one band; there is an eight-pointed star at each corner. One known difference: the band round the green shields is not drawn, so each shield is joined to the black piece beside it. |
+| bou-inania-rosette | 4 | 14 | approved (5 Oct) | The Bou Inania rosette built with Samira Mian's method from the clear drawing by @aslam.geometricpatterns. Simplified from 1,840 to 465 elements using along (eliminating 1,375 mark points). The tile copies overlap by one band; there is an eight-pointed star at each corner. One known difference: the band round the green shields is not drawn, so each shield is joined to the black piece beside it. |
 | bou-inania-twelve-fold-wall | 4 | 18 | simplified (9 Oct) | Simplified construction with no hidden step, ring cut fixed (4 axis trapezoids + 4 bent diagonal pieces), ink runs `along` lines. Credits updated with photo details and Samira Mian for star lines. |
 | twelve-fold-rosette-mian | 4 | 11 | approved | Samira Mian's twelve-fold rosette, square tile, checked line for line against her pictures. |
 | twelve-fold-rosette-mian-hex | 12 | 11 | approved | The same rosette on a hexagonal tile. |
