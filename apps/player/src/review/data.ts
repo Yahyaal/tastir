@@ -82,21 +82,22 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 4,
     status: 'decide',
     summary:
-      'Eight-pointed stars and corner crosses alternating with regular octagons, from the Tomb of I’timād-ud-Daulah in Agra.',
+      'Eight-pointed stars alternating with regular octagons and small squares, from the Tomb of I’timād-ud-Daulah in Agra.',
     story: [
       'From the pietra dura marble inlay panels on the exterior wall of the Tomb of I’timād-ud-Daulah in Agra (Mughal, 1622–1628 CE), documented in Sandy Kurt’s tutorial “4fold Pattern from the Tomb of Itimud ad-Daula”.',
-      'The construction establishes a circle divided into eight parts, static and dynamic squares, and small circles of radius 0.5 at the centre and axes. The dynamic square tile carries an eight-pointed star at the centre and four bowties that meet at corner crosses, tiling into regular octagons.',
-      'We verified the tutorial line-for-line against a straight-on Wikimedia Commons photo of the exterior wall panel (CC BY-SA 4.0 by Sabyasachi Paldas).',
+      'The construction establishes a circle divided into eight parts, static and dynamic squares, and small circles of radius 0.5 at the centre and axes. The dynamic square tile carries an eight-pointed star at the centre and corner points that tile with regular octagons and small squares, forming clean eight-pointed stars across the wall with no stray lines.',
+      'We verified the tutorial line-for-line against a straight-on Wikimedia Commons photo of the exterior wall panel (CC BY-SA 4.0 by Sabyasachi Paldas). In the 1 px red overlay (photo-overlay.png), every band and star outline aligns exactly with the marble inlay lines.',
     ],
     pictures: [
       {
-        src: 'renders/eight-fold-star-and-octagon/compare-wall.png',
+        src: 'renders/eight-fold-star-and-octagon/photo-overlay.png',
         caption:
-          'Our wall (right) compared side-by-side with the Tomb of I’timād-ud-Daulah inlay panel (left).',
+          'Our lines (red, 1 px) overlaid on the Tomb of I’timād-ud-Daulah marble inlay panel (CC BY-SA 4.0 by Sabyasachi Paldas): an exact line-for-line match.',
       },
       {
         src: 'renders/eight-fold-star-and-octagon/wall.png',
-        caption: 'Our wall repeated.',
+        caption:
+          'Our wall repeated, with clean eight-pointed stars and octagons.',
       },
       {
         src: 'renders/eight-fold-star-and-octagon/tile.png',
@@ -1457,8 +1458,9 @@ export const QUESTIONS: readonly Question[] = [
     ],
     pictures: [
       {
-        src: 'renders/eight-fold-star-and-octagon/compare-wall.png',
-        caption: 'Our wall compared with the Tomb of I’timād-ud-Daulah panel.',
+        src: 'renders/eight-fold-star-and-octagon/photo-overlay.png',
+        caption:
+          'Our lines (red) overlaid on the Tomb of I’timād-ud-Daulah panel.',
       },
     ],
     card: 'eight-fold-star-and-octagon',

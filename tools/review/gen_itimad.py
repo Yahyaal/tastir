@@ -173,8 +173,6 @@ outer_ink = [
     {"along": "hTop", "from": "diaNW", "to": "vO_E"},
     {"along": "vO_W", "from": "hTop", "to": "hO_N"},
     {"along": "vO_E", "from": "hTop", "to": "hO_N"},
-    {"along": "dynamic", "from": "N", "to": "pTopL"},
-    {"along": "dynamic", "from": "N", "to": "pTopR"},
 
     # Bottom (below jS):
     {"along": "diaSE", "from": "jS", "to": "hBot"},
@@ -183,8 +181,6 @@ outer_ink = [
     {"along": "hBot", "from": "diaSW", "to": "vO_E"},
     {"along": "vO_W", "from": "hBot", "to": "hO_S"},
     {"along": "vO_E", "from": "hBot", "to": "hO_S"},
-    {"along": "dynamic", "from": "S", "to": "pBotL"},
-    {"along": "dynamic", "from": "S", "to": "pBotR"},
 
     # Right (right of jE):
     {"along": "diaNE", "from": "jE", "to": "vRight"},
@@ -193,8 +189,6 @@ outer_ink = [
     {"along": "vRight", "from": "diaNE", "to": "hO_S"},
     {"along": "hO_N", "from": "vRight", "to": "vO_E"},
     {"along": "hO_S", "from": "vRight", "to": "vO_E"},
-    {"along": "dynamic", "from": "E", "to": "pRightT"},
-    {"along": "dynamic", "from": "E", "to": "pRightB"},
 
     # Left (left of jW):
     {"along": "diaNW", "from": "jW", "to": "vLeft"},
@@ -203,8 +197,6 @@ outer_ink = [
     {"along": "vLeft", "from": "diaNW", "to": "hO_S"},
     {"along": "hO_N", "from": "vLeft", "to": "vO_W"},
     {"along": "hO_S", "from": "vLeft", "to": "vO_W"},
-    {"along": "dynamic", "from": "W", "to": "pLeftT"},
-    {"along": "dynamic", "from": "W", "to": "pLeftB"},
 ]
 
 tutorial = {
@@ -238,25 +230,23 @@ tutorial = {
     },
     "steps": steps,
     "ink": {
-        "text": "Go over the outline of the central eight-pointed star, the surrounding bowties, and the corner points.",
+        "text": "Go over the outline of the central eight-pointed star, the surrounding octagons, and the corner squares.",
         "paths": star_ink + outer_ink
     },
     "pattern": {
         "cell": "dynamic",
-        "text": "Repeat the dynamic tile. The eight-pointed stars and corner crosses tile with regular octagons in between, forming the Mughal inlay pattern.",
+        "text": "Repeat the dynamic tile. The eight-pointed stars and corner squares tile with regular octagons in between, forming the Mughal inlay pattern.",
         "palette": "Fès tile",
         "colors": {
             "star": "a",
-            "bowtie": "b",
             "corner_square": "c",
             "octagon_arm": "ground"
         }
     },
     "expect": {
-        "pieceTypes": 4,
+        "pieceTypes": 3,
         "pieces": [
-            {"name": "star", "vertices": 16, "area": 0.58579, "perCell": 1},
-            {"name": "bowtie", "vertices": 6, "area": 0.14645, "perCell": 4},
+            {"name": "star", "vertices": 16, "area": 0.58579, "perCell": 2},
             {"name": "corner_square", "vertices": 4, "area": 0.08579, "perCell": 2},
             {"name": "octagon_arm", "vertices": 5, "area": 0.08211, "perCell": 8}
         ],
