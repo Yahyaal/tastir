@@ -16,26 +16,25 @@ Comprehensive research conducted 9 October 2026 for free Creative Commons or pub
 
 ## Results Summary
 
-### Alhambra Patterns (6 tutorials)
+### Alhambra Patterns (5 tutorials compared)
 - **Exact panel matches**: 0
-- **Same design elsewhere**: 2
-- **General location only**: 4
-- **No suitable match**: 0
+- **Same design elsewhere**: 0
+- **No match**: 5 (detailed line-by-line comparisons completed with side-by-side images saved to /opt/cursor/artifacts/comparisons/)
 
 ### Upcoming Patterns (23+ broken images)
-- **Good matches found**: 5
-- **Partial matches**: 8  
-- **No match yet**: 10
+- **Good matches found**: 3 (darb-e-imam-decagram, topkapi-scroll-plate28, cordoba-synagogue-laceria)
+- **Partial matches**: 0  
+- **No match yet**: 20+ (searches in progress)
 
 ## Pattern Photo Candidates - Alhambra Tutorials
 
 | Tutorial ID | Pattern Name | Photo URL | License | Creator | Size (px) | Match Quality | Notes |
 |-------------|-------------|-----------|---------|---------|-----------|---------------|-------|
-| `alhambra-bath-stars` | Interlaced stars of the Comares bath | https://commons.wikimedia.org/wiki/File:Granada-La_Alhambra-28-Ba%C3%B1os_del_palacio_Comares-20110920.jpg | CC BY-SA 3.0, GFDL | Daniel Villafruela | 2,848 × 4,272 | General location | Shows Comares bath architecture and capitals, not the specific star tile pattern. Good establishing shot of the space but does not show the geometric pattern in detail. |
-| `alhambra-barca-stars` | Interlaced stars of the Sala de la Barca | https://commons.wikimedia.org/wiki/File:Sala_de_la_Barca-Alhambra_(2).jpg | CC BY 3.0 | Alberto-g-rovi | 2,848 × 4,288 | General location | Shows arabesque wall decoration in Sala de la Barca. The photo focuses on plasterwork, not the star tile patterns. Would need closer detail shots of the tiles. |
-| `alhambra-reyes-stars` | Stars, octagons and crosses of the Sala de los Reyes | Category with 40+ images: https://commons.wikimedia.org/wiki/Category:Sala_de_los_Reyes_(Alhambra) | Various CC licenses | Multiple photographers | Various | No exact match found | The category contains many photos of the Sala de los Reyes, including ceiling paintings and general views, but no clear close-up of the specific tile pattern showing stars, octagons and crosses. Best candidate: File:Granada,_Alhambra,_Sala_de_los_Reyes_(1).jpg (2,976 × 3,968) by unknown photographer. |
-| `alhambra-reyes-fret` | Carved plaster fret pattern in Sala de los Reyes | Category: https://commons.wikimedia.org/wiki/Category:Arabesque_details_in_Sala_de_los_Reyes_(Alhambra) | Various CC licenses | Multiple photographers | Various | Same design elsewhere | The Arabesque details category has 41 files showing plaster decoration. Multiple photos show geometric plaster fretwork, though not necessarily the exact panel referenced in the tutorial. Plaster designs are repetitive across the Alhambra. |
-| `alhambra-comares-frames` | Tiled frames in Salón de Comares | https://commons.wikimedia.org/wiki/File:Alicatados_de_la_Sala_del_Mexuar,_la_Alhambra.jpg | CC BY-SA 4.0 | Jl FilpoC | Not specified (high-res) | Same design elsewhere | This shows alicatado tilework from the Mexuar (not Comares), but uses the same eight- and sixteen-pointed star motifs in the "lazos" technique typical of Nasrid geometric patterns. The geometric system is identical even though it's a different room. Good alternative if the specific Comares panel isn't available. |
+| `alhambra-bath-stars` | Interlaced stars of the Comares bath | https://commons.wikimedia.org/wiki/File:Granada-La_Alhambra-28-Ba%C3%B1os_del_palacio_Comares-20110920.jpg | CC BY-SA 3.0 | Daniel Villafruela | 2,848 × 4,272 | No match | Photo shows Comares bath ceiling with different pattern. Tutorial shows interlaced 8-pointed stars with circular frames and systematic interlacing bands; photo shows simpler solid stars without interlacing. Star geometry, interlacing pattern, octagon frames, and tessellation structure all differ. Checked: star shapes, interlacing bands, central octagons, cross shapes, color palette (teal, orange, white), overall tessellation. Searched Category:Ba\u00f1o_de_la_Mezquita,_Alhambra - no better matches found. |
+| `alhambra-barca-stars` | Interlaced stars of the Sala de la Barca | https://commons.wikimedia.org/wiki/File:Sala_de_la_Barca-Alhambra_(2).jpg | CC BY 3.0 | Alberto-g-rovi | 2,848 × 4,288 | No match | Photo shows arabesque wall decoration from ceiling perspective, not the star tile pattern. Tutorial displays interlaced 8-pointed stars with distinct cross shapes; photo shows different decorative elements. Interlaced star construction, band weaving, cross shapes, and overall design differ. Checked: 8-pointed stars, interlacing bands, square/octagonal motifs, cross elements, color combinations (teal, white, orange), symmetry pattern. Searched Category:Sala_de_la_Barca and Category:Arabesque_details_in_Sala_de_la_Barca - no matches found. |
+| `alhambra-reyes-stars` | Stars, octagons and crosses of the Sala de los Reyes | Category searched | Various CC | Multiple | Various | No match | Tutorial shows regular flat tessellation with circular medallions containing white flower motifs, teal quatrefoil stars, orange squares, and black circles in precise grid. Searched Category:Sala_de_los_Reyes_(Alhambra) (40+ files) - photos show ceiling views with different architectural design. No photo matches the tutorial's circular flower medallions, quatrefoil stars in teal, regular grid layout, or specific color scheme. Checked: star-shaped tiles, octagon shapes, cross elements, circular center medallions with white flowers, color scheme (teal, orange, white, black), grid layout. |
+| `alhambra-reyes-fret` | Carved plaster fret pattern in Sala de los Reyes | Category searched | Various CC | Multiple | Various | No match | Tutorial shows clean geometric fret pattern with horizontal white rectangular bars, vertical connectors, and diamond junction points in regular lattice. Searched Category:Arabesque_details_in_Sala_de_los_Reyes_(Alhambra) (41 files) - photos show intricate 3D carved plaster arabesque with flowing muqarnas (stalactite decorations), not geometric fret tilework. Fundamentally different ornamental types. Checked: fret/interlaced bands, horizontal rectangular elements, vertical bars, diamond junction points, black diamonds in intersections, white bars, brown background fields, lattice structure. |
+| `alhambra-comares-frames` | Tiled frames in Salón de Comares | https://commons.wikimedia.org/wiki/File:Alicatados_de_la_Sala_del_Mexuar,_la_Alhambra.jpg | CC BY-SA 4.0 | Jl FilpoC | 3,048 × 2,286 | No match | Tutorial shows frame/border design with teal star lattice containing orange squares and brown corner elements. Photo shows elaborate alicatado from Mexuar with multi-layered border featuring large black arabesque/leaf motifs, golden 8-pointed stars, colorful geometric fills (green, blue, purple, gold, black), and central medallion. Completely different complexity levels and pattern structure. Checked: frame pattern structure, star lattice in teal with white outlines, orange square motifs, brown corner elements, border design, overall composition. Searched Category:Azulejos_in_Sala_del_Mexuar and Category:Salón_de_Comares - no exact matches. |
 
 | `alhambra-leones-fret` | Fret pattern in Patio de los Leones | General location | Need to search | - | - | Added to list during systematic check. Not yet researched. |
 
@@ -45,25 +44,25 @@ These 23 patterns currently show broken images on the Upcoming patterns page (co
 
 | Pattern ID/Name | Photo URL | License | Creator | Size (px) | Match Quality | Notes |
 |-----------------|-----------|---------|---------|-----------|---------------|-------|
-| `darb-e-imam-decagram` | https://commons.wikimedia.org/wiki/File:Darb-i_Imam_shrine_spandrel.JPG | Public Domain | Unknown (15th c.) | High-res | Exact match | Decagonal girih pattern from 1453, shows the famous quasi-crystalline tiling. Excellent quality diagram. |
+| `darb-e-imam-decagram` | https://commons.wikimedia.org/wiki/File:Darb-i_Imam_shrine_spandrel.JPG | Public Domain | Unknown (15th c.) | 646 × 431 | Exact match | Decagonal girih pattern from 1453, shows the famous quasi-crystalline tiling. Excellent quality diagram. |
 | `darb-e-imam-decagram` (alternate) | https://commons.wikimedia.org/wiki/Category:Northern_iwan_of_Darb-e_Imam | Various CC | Multiple | 20 files | Same design | Multiple high-res photos of the portal and geometric panels with ten-pointed stars. |
 | `topkapi-scroll-plate28` | https://commons.wikimedia.org/wiki/Category:Topkapi_Scroll | Public Domain | Anonymous (15th c.) | Various | Exact drawings | 17 files from the scroll. P294, P304, P314, P324 show stellar geometric patterns. |
 | `topkapi-scroll-plate28` (specific) | https://commons.wikimedia.org/wiki/File:Topkapi_Scroll_p294.JPG | Public Domain | Anonymous | 550 × 945 | Good match | Fan-shaped radial muqarnas and geometric designs. |
-| `cordoba-synagogue-laceria` | https://commons.wikimedia.org/wiki/File:Sinagoga_de_C%C3%B3rdoba,_muro_occidental.jpg | CC BY-SA 4.0 | José Luis Filpo Cabana | 2,736 × 2,736 | Excellent match | Western wall with geometric lacería plasterwork, yesería decoration. High quality. |
+| `cordoba-synagogue-laceria` | https://commons.wikimedia.org/wiki/File:Sinagoga_de_C%C3%B3rdoba,_muro_occidental.jpg | CC BY 3.0 | José Luis Filpo Cabana | 2,736 × 2,736 | Excellent match | Western wall with geometric lacería plasterwork, yesería decoration. High quality. |
 | `cordoba-synagogue-laceria` (interior) | https://commons.wikimedia.org/wiki/Category:Synagogue_of_C%C3%B3rdoba,_Spain | Various CC | Multiple | 127 interior files | Same building | Extensive documentation of the synagogue's geometric decoration. |
 | `qaytbay-minbar-decagram` | Not yet found | - | - | - | No match | Needs research in Metropolitan Museum or Mamluk architecture categories. |
-| `generalife-ceiling-octagons` | Not yet found | - | - | - | No match | Generalife Palace in Alhambra, should be in Wikimedia Commons. Need to search Category:Generalife. |
+| `generalife-ceiling-octagons` | Not yet found | - | - | - | No match | Generalife Palace in Alhambra. Searched Category:Generalife (40+ files) - mostly garden and exterior views, no clear ceiling octagons pattern photos found. Searched Category:Architecture_of_Generalife - similar results. May need more specific search terms or the pattern may be in a less-photographed area. |
 | `ibn-tulun-second-grille` | Not yet found | - | - | - | No match | Ibn Tulun Mosque Cairo, likely available. Need to search Category:Ibn Tulun Mosque. |
-| `humayun-jali-screen` | Not yet found | - | - | - | No match | Humayun's Tomb Delhi, Mughal jali work. Should be available on Commons. |
+| `humayun-jali-screen` | Not yet found | - | - | - | No match | Humayun's Tomb Delhi, Mughal jali work. Searched Category:Humayun's_Tomb - category exists but returned no results. Need to search alternative categories: Category:Humayun_Tomb, Category:Mughal_architecture_in_Delhi, or search for "Humayun jali" directly. |
 | `karatay-portal-decagram` | Not yet found | - | - | - | No match | Karatay Madrasa in Konya, Turkey. Seljuk architecture, may be limited photos. |
 | `sultan-hasan-pavement` | Not yet found | - | - | - | No match | Sultan Hasan Mosque Cairo, Mamluk marble work. Should be available. |
 | `itimad-ud-daulah-pietra-dura` | Not yet found | - | - | - | No match | Tomb in Agra, Mughal pietra dura. Should be well-photographed. |
 | `bou-inania-16-closeup` | Not yet found | - | - | - | No match | Bou Inania Madrasa Fez, sixteen-fold zellige. May have limited free photos. |
 | `attarin-madrasa-16fold` | Not yet found | - | - | - | No match | Al-Attarin Madrasa Fez, Marinid zellige. May have limited free photos. |
-| `rustem-pasha-iznik-8fold` | Not yet found | - | - | - | No match | Rustem Pasha Mosque Istanbul, İznik tiles. Should be available. |
+| `rustem-pasha-iznik-8fold` | Not yet found | - | - | - | No match | Rustem Pasha Mosque Istanbul, İznik tiles. Searched Category:R\u00fcstem_Pasha_Mosque and Category:Details_of_tiles_in_R\u00fcstem_Pasha_Mosque (100+ files with detailed tile photos). Many high-quality photos of eight-pointed star İznik tile patterns (CC BY-SA, various photographers). Examples: File:DSC04140_Istanbul_-_R\u00fcstem_Pasha_camii.jpg, File:Details_of_tiles_in_R\u00fcstem_Pasha_Mosque_(1).jpg. Requires detailed comparison with tutorial wall to find exact eight-fold match. |
 | `kairouan-marble-grille` | Not yet found | - | - | - | No match | Great Mosque of Kairouan Tunisia. Should be available. |
 | `bursa-green-mosque-hex` | Not yet found | - | - | - | No match | Green Mosque Bursa Turkey, hexagonal Ottoman tiles. Should be available. |
-| `dos-hermanas-dome-16` | Not yet found | - | - | - | No match | Sala de Dos Hermanas Alhambra, muqarnas dome. Should be available. |
+| `dos-hermanas-dome-16` | Not yet found | - | - | - | No match | Sala de Dos Hermanas Alhambra, muqarnas dome. Searched Category:Ceiling_of_Sala_de_las_Dos_Hermanas (50+ files) - many photos of the elaborate muqarnas honeycomb dome, but need to check if any show sixteen-fold geometric patterns in the base or design. Examples: File:Alhambra_koepel.jpg, File:C\u00fapula_de_mocarabes_de_la_sala_de_dos_Hermanas.jpg (various CC licenses). Requires detailed comparison with tutorial wall. |
 | `shah-i-zinda-star-panel` | Not yet found | - | - | - | No match | Shah-i Zinda Samarkand, Timurid tilework. May have limited photos. |
 | `divrigi-portal-strapwork` | Not yet found | - | - | - | No match | Divriği Great Mosque Turkey, Seljuk decoration. UNESCO site, should be photographed. |
 | `doncellas-alicatado-12` | Not yet found | - | - | - | No match | Alcázar of Seville, twelve-fold alicatado. Should be available. |
