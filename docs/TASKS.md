@@ -113,6 +113,9 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 - [x] **2.1c Grouped Jali finish options (11 October).** Owner-approved Stone → limestone/marble/sandstone/slate, Wood → oak/walnut/cedar, and Metal → silver/gold/bronze/copper. Each family supports Custom color and preserves its shading treatment. These are stylized color presets; new stone veins and bronze patina are not part of this implementation. Older gold/silver designs and links migrate to Metal without changing their appearance.
   *Done when:* The family limits the finish options, custom colors retain the family, saved/shared designs and exports retain the selected finish, and validation passes.
 
+- [x] **2.1d Jali material textures (11 October).** Add automatic finish-specific texture to the screen and the visible finish swatches. Limestone pores, marble veins, sandstone grain, slate strata, wood grain, brushed gold/silver and hammered bronze/copper must preserve open apertures, custom colors and the one-click controls. Match live walls, saved previews and SVG/PNG exports without lighting filters.
+  *Done when:* Normal and zoomed screenshots are captured and inspected on desktop/phone and dense Bou Inania, textures are refined from that inspection, and tests/lint/typecheck/build/browser checks pass. See [the texture report](testing/jali-textures-2026-10-11.md).
+
 - [ ] **2.2 Tazhib / Illumination (Gold Leaf & Lapis) style.** Add `illumination` to `WallStyle`. Gilded gold-leaf star rosettes with SVG metallic gradients, deep ultramarine/lapis lazuli backgrounds, and fine black *tahrir* pen outlines.
   *Done when:* Player wall dropdown includes `Illumination`, applying gold metallic gradients and lapis ground; tests pass.
 

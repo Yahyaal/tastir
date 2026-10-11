@@ -877,6 +877,8 @@ main.stage .drawing:not(.wall) {
   box-shadow: 0 0 0 1px var(--saffron);
 }
 .jali-finish-swatch {
+  width: 100%;
+  box-sizing: border-box;
   display: block;
   height: 28px;
   border-radius: 3px;

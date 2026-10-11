@@ -1,3 +1,4 @@
+import { JaliFinishSample } from './jaliTexture';
 import { useRef } from 'react';
 import type { JaliAppearance } from '@tastir/schema';
 import { DEFAULT_JALI, JALI_FINISHES, JALI_MATERIALS, sameJali } from './jali';
@@ -116,10 +117,13 @@ export function JaliControls({
                 })
               }
             >
-              <span
-                className="jali-finish-swatch"
-                style={{ background: p.color }}
-                aria-hidden="true"
+              <JaliFinishSample
+                appearance={{
+                  ...appearance,
+                  material: p.material,
+                  finish: p.finish,
+                  framework: p.color,
+                }}
               />
               <span>{p.name}</span>
             </button>

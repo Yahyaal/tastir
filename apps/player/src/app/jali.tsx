@@ -1,3 +1,5 @@
+import { useId } from 'react';
+import { JaliTexturePattern } from './jaliTexture';
 import type { Vec } from '@tastir/engine';
 import type { JaliAppearance } from '@tastir/schema';
 import type { Rect } from './camera';
@@ -204,6 +206,10 @@ export function JaliFramework({
   /** Convert screen-oriented lighting to the SVG pattern tile's frame. */
   toLocalOffset?: (x: number, y: number) => Vec;
 }) {
+  const textureId = `jali-texture-${useId()}`;
+  const x = toLocalOffset(1, 0);
+  const y = toLocalOffset(0, 1);
+  const textureOffset = toLocalOffset(0.24 * width, 0.24 * width);
   return (
     <g
       className="jali-framework"
@@ -212,6 +218,14 @@ export function JaliFramework({
       fill="none"
       pointerEvents="none"
     >
+      <defs>
+        <JaliTexturePattern
+          id={textureId}
+          appearance={appearance}
+          width={width}
+          transform={`matrix(${x.x} ${x.y} ${y.x} ${y.y} 0 0)`}
+        />
+      </defs>
       {jaliLayers(appearance).map((layer) => {
         const d = toLocalOffset(layer.x * width, layer.y * width);
         return (
@@ -228,6 +242,15 @@ export function JaliFramework({
           />
         );
       })}
+      <path
+        data-layer="texture"
+        d={path}
+        stroke={`url(#${textureId})`}
+        strokeWidth={5.1 * width}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        transform={`translate(${textureOffset.x} ${textureOffset.y})`}
+      />
     </g>
   );
 }

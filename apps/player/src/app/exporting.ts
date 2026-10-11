@@ -1,3 +1,4 @@
+import { jaliTextureSvg } from './jaliTexture';
 import type { JaliAppearance } from '@tastir/schema';
 import type { Vec } from '@tastir/engine';
 import type { Model } from './model';
@@ -127,11 +128,17 @@ export function wallSvg(
     body.push(
       `<g class="jali-framework" data-material="${appearance.material}" data-finish="${appearance.finish}" fill="none">`,
     );
+    body.push(
+      `<defs>${jaliTextureSvg('jali-texture', appearance, groutWidth)}</defs>`,
+    );
     for (const layer of jaliLayers(appearance)) {
       body.push(
         `<path data-layer="${layer.name}" d="${path}" stroke="${layer.color}" stroke-width="${f(layer.width * groutWidth)}" stroke-linecap="round" stroke-linejoin="round"${layer.dash ? ` stroke-dasharray="${layer.dash.map((n) => f(n * groutWidth)).join(' ')}"` : ''} transform="translate(${f(layer.x * groutWidth)} ${f(layer.y * groutWidth)})"/>`,
       );
     }
+    body.push(
+      `<path data-layer="texture" d="${path}" stroke="url(#jali-texture)" stroke-width="${f(5.1 * groutWidth)}" stroke-linecap="round" stroke-linejoin="round" transform="translate(${f(0.24 * groutWidth)} ${f(0.24 * groutWidth)})"/>`,
+    );
     body.push('</g>');
   }
   if (look === 'strapwork') {

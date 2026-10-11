@@ -34,7 +34,7 @@ for (const id of [
       .selectOption('jali');
     const wall = page.locator('svg.wall.style-jali');
     await expect(wall).toBeVisible();
-    await expect(wall.locator('.jali-framework path')).toHaveCount(4);
+    await expect(wall.locator('.jali-framework > path')).toHaveCount(5);
     await expect(wall.locator('polygon')).toHaveCount(0);
     await expect(wall.locator('.jali-ground')).toHaveCount(1);
     await expect(page.getByLabel('Lattice', { exact: true })).toHaveValue('1');
@@ -57,8 +57,8 @@ for (const id of [
         'data-material',
         finish,
       );
-      await expect(wall.locator('.jali-framework path')).toHaveCount(
-        finish === 'wood' ? 6 : finish === 'stone' ? 4 : 5,
+      await expect(wall.locator('.jali-framework > path')).toHaveCount(
+        finish === 'wood' ? 7 : finish === 'stone' ? 5 : 6,
       );
       await expect(wall.locator('polygon, filter')).toHaveCount(0);
       await expectColor(page, 'Background color', '#708d87');
@@ -70,12 +70,12 @@ for (const id of [
     }
     await setColor(page, 'Framework color', '#864b31');
     const strokes = await wall
-      .locator('.jali-framework path')
+      .locator('.jali-framework > path')
       .evaluateAll((paths) => paths.map((p) => p.getAttribute('stroke')));
     await setColor(page, 'Background color', '#234a79');
     expect(
       await wall
-        .locator('.jali-framework path')
+        .locator('.jali-framework > path')
         .evaluateAll((paths) => paths.map((p) => p.getAttribute('stroke'))),
     ).toEqual(strokes);
     await expect(wall.locator('stop[offset="48%"]')).toHaveAttribute(
@@ -190,7 +190,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
         const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
         return (
           !doc.querySelector('parsererror') &&
-          doc.querySelectorAll('.jali-framework path').length === 6 &&
+          doc.querySelectorAll('.jali-framework > path').length === 7 &&
           doc
             .querySelector('.jali-framework')
             ?.getAttribute('data-material') === 'wood' &&
@@ -240,7 +240,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     '#234a79',
   );
   const widths = await preview
-    .locator('.jali-framework path')
+    .locator('.jali-framework > path')
     .evaluateAll((paths) => paths.map((p) => p.getAttribute('stroke-width')));
   await preview.click();
   await expect(
@@ -249,7 +249,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await expect(lattice).toHaveValue('2');
   expect(
     await page
-      .locator('.wall .jali-framework path')
+      .locator('.wall .jali-framework > path')
       .evaluateAll((paths) => paths.map((p) => p.getAttribute('stroke-width'))),
   ).toEqual(widths);
   // Reset must also replace the saved finish if another style is active at save time.

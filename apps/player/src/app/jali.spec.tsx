@@ -8,6 +8,43 @@ import { loadModel } from './model';
 import { Wall } from './Wall';
 import { DEFAULT_JALI, JALI_FINISHES } from './jali';
 
+function compareTexture(wall: Element, target: Element) {
+  const a = wall.querySelector('pattern[data-texture]')!;
+  const b = target.querySelector('pattern[data-texture]')!;
+  expect(b.getAttribute('data-texture')).toBe(a.getAttribute('data-texture'));
+  const marks = (pattern: Element) =>
+    [...pattern.children].map((node) => ({
+      tag: node.tagName,
+      attributes: Object.fromEntries(
+        [...node.attributes].map((attr) => [attr.name, attr.value]),
+      ),
+    }));
+  expect(marks(b)).toEqual(marks(a));
+  expect(a.children.length).toBeLessThanOrEqual(64);
+  expect(Number(b.getAttribute('width'))).toBeCloseTo(
+    Number(a.getAttribute('width')),
+    5,
+  );
+  expect(
+    target.querySelector('[data-layer=texture]')?.getAttribute('stroke'),
+  ).toBe(`url(#${b.id})`);
+  expect(
+    Number(
+      target
+        .querySelector('[data-layer=texture]')
+        ?.getAttribute('stroke-width'),
+    ),
+  ).toBeLessThan(
+    Number(
+      target
+        .querySelector(
+          '[data-layer=stone], [data-layer=wood], [data-layer=metal]',
+        )
+        ?.getAttribute('stroke-width'),
+    ),
+  );
+}
+
 describe.each([example, zellige])('Jali: $id', (json) => {
   const model = loadModel(json);
   const colors = pieceColors(model);
@@ -40,19 +77,21 @@ describe.each([example, zellige])('Jali: $id', (json) => {
       expect(preview.querySelectorAll('.piece')).toHaveLength(0);
       expect(exported.querySelectorAll('polygon')).toHaveLength(0);
       expect(wall.querySelector('.color-veil')).toBeNull();
-      const layers = [...wall.querySelectorAll('.jali-framework path')];
-      expect(layers).toHaveLength(4);
+      const layers = [...wall.querySelectorAll('.jali-framework > path')];
+      expect(layers).toHaveLength(5);
       expect(new Set(layers.map((p) => p.getAttribute('d'))).size).toBe(1);
       expect(layers[0]?.getAttribute('d')).toContain('M');
       for (const target of [preview, exported.documentElement]) {
+        compareTexture(wall, target);
         for (const layer of layers) {
           const other = target.querySelector(
             `[data-layer="${layer.getAttribute('data-layer')}"]`,
           )!;
           expect(other).not.toBeNull();
-          expect(other.getAttribute('stroke')).toBe(
-            layer.getAttribute('stroke'),
-          );
+          if (layer.getAttribute('data-layer') !== 'texture')
+            expect(other.getAttribute('stroke')).toBe(
+              layer.getAttribute('stroke'),
+            );
           expect(Number(other.getAttribute('stroke-width'))).toBeCloseTo(
             Number(layer.getAttribute('stroke-width')),
             5,
@@ -111,14 +150,15 @@ describe.each([example, zellige])('Jali: $id', (json) => {
           target.querySelector('.jali-framework')?.getAttribute('data-finish'),
         ).toBe(finish);
         expect(target.querySelectorAll('polygon, filter')).toHaveLength(0);
-        for (const layer of wall.querySelectorAll('.jali-framework path')) {
+        compareTexture(wall, target);
+        for (const layer of wall.querySelectorAll('.jali-framework > path')) {
           const other = target.querySelector(
             `[data-layer="${layer.getAttribute('data-layer')}"]`,
           )!;
           expect(other).not.toBeNull();
-          for (const attribute of ['stroke'])
-            expect(other.getAttribute(attribute)).toBe(
-              layer.getAttribute(attribute),
+          if (layer.getAttribute('data-layer') !== 'texture')
+            expect(other.getAttribute('stroke')).toBe(
+              layer.getAttribute('stroke'),
             );
           const dash = layer.getAttribute('stroke-dasharray');
           if (dash) {

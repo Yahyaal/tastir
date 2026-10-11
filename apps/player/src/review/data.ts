@@ -1412,6 +1412,19 @@ export const PATTERNS: readonly Pattern[] = [
         caption:
           'Wood on a phone: Oak, Walnut and Cedar apply immediately; Custom color opens the native picker in one click.',
       },
+      ...(['marble', 'oak', 'bronze'] as const).map((finish) => ({
+        src: `renders/jali/textures/compare-${finish}.png`,
+        caption: `Jali ${finish}: before (left), textured finish (right), at normal viewing size.`,
+      })),
+      ...(['marble', 'sandstone', 'oak', 'silver'] as const).map((finish) => ({
+        src: `renders/jali/textures/eight-fold-star-and-cross-${finish}-desktop-detail.png`,
+        caption: `Zoomed ${finish} texture: surfaces gain detail while the openings remain clear.`,
+      })),
+      {
+        src: 'renders/jali/textures/bou-inania-rosette-oak-phone.png',
+        caption:
+          'Textured oak on Bou Inania at phone size; the dense pattern remains the focus.',
+      },
       ...(
         [
           'limestone',
@@ -1492,6 +1505,14 @@ export const PROGRESS: {
       title: 'Review decisions: keep the construction studies',
       text: 'The khatam and star-and-octagon drawings are now playable, with their source credits and historical-match labels. Star and octagon is intermediate. The ten-fold rectangular study stays; authentic Darb-e Imam research stays in Upcoming. Approval to teach a drawing is separate from verifying its match to a monument. Future community contributions are part of the owner’s longer-term plan.',
       link: { label: 'See the library', href: '/#/' },
+    },
+    {
+      title: 'Jali: material textures',
+      text: 'Finish buttons now preview and apply stone pores/veins, wood grain and brushed or hammered metal. Texture colors follow your framework color. I inspected normal and zoomed screenshots on desktop and phone, including dense Bou Inania. The first wood grain was too evenly striped and sandstone too pitted; both were refined. Marble reads most clearly; metal and limestone stay subtle. The openings remain clear. Full tests, lint, typecheck, build and all 24 browser checks pass. Before/after comparisons and close-ups are on the Star and cross card.',
+      link: {
+        label: 'See the texture screenshots',
+        href: '#eight-fold-star-and-cross',
+      },
     },
     {
       title: 'Jali: three material families and eleven finishes',
@@ -1703,8 +1724,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Try the new Jali colors and materials',
-    text: 'On the codex/jali preview, choose Style → Jali at Color. Choose Stone, Wood or Metal, then try the finishes within that family or Custom color. Adjust framework and background independently, and reset the finish. Labelled preset pictures are on the Star and cross card. Material buttons reveal the finish swatches. Click a finish to apply it, or Custom color to open the native picker directly. Background swatches work the same way. No material or finish dropdowns, and no extra dialog. All settings travel with saved designs, share links and downloads.',
+    title: 'Inspect the Jali material textures',
+    text: 'On the codex/jali preview, choose Style → Jali and click a finish. Texture applies immediately and appears on the finish swatches. The Star and cross card has normal-size before/after pictures, close-ups and dense Bou Inania on a phone. First inspection found wood too evenly striped and sandstone too pitted; both were softened before the final captures. The pattern stays readable at normal size; zoom in to inspect the grain, veins or brushed surface. Custom colors keep the material texture and the direct one-click picker.',
     link: {
       label: 'Open Jali controls',
       href: '/#/eight-fold-star-and-cross/result',
