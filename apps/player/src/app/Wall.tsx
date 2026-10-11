@@ -2,15 +2,21 @@ import { pieceAt, rectangularPeriod, type Vec } from '@tastir/engine';
 import { useId, useLayoutEffect, useMemo, useRef } from 'react';
 import { fit, viewBox, width } from './camera';
 import { STRAP_BAND, STRAP_EDGE, strapWidths, tiling } from './drawing';
+import { patchesAt, weaveRepeat } from './interlace';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
 
-export type WallStyle = 'tiles' | 'strapwork' | 'lines';
+export type WallStyle = 'tiles' | 'strapwork' | 'interlace' | 'lines';
 export const WALL_STYLES: readonly WallStyle[] = [
   'tiles',
   'strapwork',
+  'interlace',
   'lines',
 ];
+
+/** Whether a style draws the ink as bands (interlace weaves them). */
+export const banded = (style: WallStyle | undefined) =>
+  style === 'strapwork' || style === 'interlace';
 
 const INK = STRAP_EDGE;
 const BAND = STRAP_BAND;
@@ -91,9 +97,17 @@ export function Wall({
   const svgRef = useRef<SVGSVGElement>(null);
   const start = useMemo(() => tiling(model).view, [model]);
   const camera = useCamera(start, svgRef);
-  const [rm, rn] = repeat;
-  const tile = useMemo(() => tileFrame(model, [rm, rn]), [model, rm, rn]);
   const { pattern } = model;
+  // The weave may repeat after two tiles: the wall's tile holds whole
+  // repeats of both the colouring and the weave.
+  const [wm, wn] = useMemo(
+    (): readonly [number, number] =>
+      style === 'interlace' ? weaveRepeat(pattern) : [1, 1],
+    [style, pattern],
+  );
+  const rm = lcm(repeat[0], wm);
+  const rn = lcm(repeat[1], wn);
+  const tile = useMemo(() => tileFrame(model, [rm, rn]), [model, rm, rn]);
   // Grout in proportion to the tile, so every pattern gets the same look.
   const groutWidth = strapWidths(model, grout).grout;
 
@@ -101,6 +115,8 @@ export function Wall({
   const shifted = useMemo(() => {
     const out: { type: number; corners: Vec[]; fill: string }[] = [];
     const lines: [Vec, Vec][] = [];
+    const over: [Vec, Vec][] = [];
+    const overIn: [Vec, Vec][] = [];
     const { u, v } = pattern.cell;
     for (let i = -tile.reach; i <= tile.reach; i++) {
       for (let j = -tile.reach; j <= tile.reach; j++) {
@@ -116,15 +132,25 @@ export function Wall({
         });
         for (const s of pattern.ink)
           lines.push([move(s.segment.a), move(s.segment.b)]);
+        if (style === 'interlace')
+          for (const p of patchesAt(pattern, i, j, groutWidth * 4)) {
+            over.push([move(p.a), move(p.b)]);
+            overIn.push([move(p.inA), move(p.inB)]);
+          }
       }
     }
-    return { pieces: out, lines };
-  }, [pattern, tile, fill, colors]);
+    return { pieces: out, lines, over, overIn };
+  }, [pattern, tile, fill, colors, style, groutWidth]);
   const bandPath = useMemo(
     () =>
       shifted.lines.map(([a, b]) => `M${a.x} ${a.y}L${b.x} ${b.y}`).join(''),
     [shifted],
   );
+  const overPath = useMemo(() => {
+    const d = (list: [Vec, Vec][]) =>
+      list.map(([a, b]) => `M${a.x} ${a.y}L${b.x} ${b.y}`).join('');
+    return { out: d(shifted.over), in: d(shifted.overIn) };
+  }, [shifted]);
 
   const pieceClass = (type: number) =>
     hovered === undefined
@@ -267,7 +293,7 @@ export function Wall({
               strokeLinejoin="round"
             />
           ))}
-          {style === 'strapwork'
+          {banded(style)
             ? (['out', 'in'] as const).map((layer) => (
                 <g key={layer} className={`band-${layer}`}>
                   {/* Every band line in one path, so a wall of hundreds of
@@ -282,6 +308,23 @@ export function Wall({
                     strokeLinecap="round"
                   />
                 </g>
+              ))
+            : null}
+          {/* Interlace: the band on top at each crossing, drawn again over
+              the one below, with square ends so it joins its own band. */}
+          {style === 'interlace' && overPath.out
+            ? (['out', 'in'] as const).map((layer) => (
+                <path
+                  key={layer}
+                  className={`over-${layer}`}
+                  d={overPath[layer]}
+                  fill="none"
+                  stroke={layer === 'out' ? INK : BAND}
+                  strokeWidth={
+                    layer === 'out' ? groutWidth * 4 : groutWidth * 2.4
+                  }
+                  strokeLinecap="butt"
+                />
               ))
             : null}
         </pattern>
@@ -316,6 +359,14 @@ export function Wall({
       ) : null}
     </svg>
   );
+}
+
+/** The least common multiple of two small whole numbers. */
+function lcm(a: number, b: number): number {
+  let x = a;
+  let y = b;
+  while (y) [x, y] = [y, x % y];
+  return (a / x) * b;
 }
 
 /** The colouring: each piece's fade, one type after another, and how long

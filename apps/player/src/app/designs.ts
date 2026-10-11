@@ -27,7 +27,7 @@ export interface Design {
 export type DesignFields = Omit<Design, 'id' | 'created' | 'updated'>;
 
 const KEY = 'tastir.designs';
-const LOOKS: readonly string[] = ['tiles', 'strapwork', 'lines'];
+const LOOKS: readonly string[] = ['tiles', 'strapwork', 'interlace', 'lines'];
 
 const isStrings = (x: unknown): x is string[] =>
   Array.isArray(x) && x.every((s) => typeof s === 'string');

@@ -373,7 +373,7 @@ export const TutorialShape = z.strictObject({
      * tiles with grout (the default), or strapwork, where the lines are
      * bands woven between the pieces (carved wood and plaster, Fès zellige).
      */
-    look: z.enum(['tiles', 'strapwork', 'lines']).optional(),
+    look: z.enum(['tiles', 'strapwork', 'interlace', 'lines']).optional(),
     colors: z.record(Name, z.string().min(1)),
     placements: Placements.optional(),
   }),

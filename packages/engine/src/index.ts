@@ -39,6 +39,7 @@ export {
   type PieceType,
 } from './lib/pieces.js';
 export { panelOf, type Panel } from './lib/panel.js';
+export { weave, type Weave, type WeaveCrossing } from './lib/interlace.js';
 export { pickFor, stepsBuiltOn, type PickChoice } from './lib/picking.js';
 export { expectedGolden, goldenOf, type Golden } from './lib/golden.js';
 export {

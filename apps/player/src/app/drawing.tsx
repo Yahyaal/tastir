@@ -20,6 +20,7 @@ import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors, tutorialColoring, type Coloring } from './coloring';
 import { placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
+import { patchesAt } from './interlace';
 import type { WallStyle } from './Wall';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
@@ -1147,7 +1148,8 @@ export function Thumbnail({
   const widths = strapWidths(model);
   // As the wall first shows it: strapwork bands, tiles with grout, or
   // only the lines.
-  const strap = look === 'strapwork';
+  const strap = look === 'strapwork' || look === 'interlace';
+  const woven = look === 'interlace';
   const lines = look === 'lines';
   // Only what shows: pieces and lines whose box meets the view.
   const seen = fit(view, 1 + widths.edge);
@@ -1161,6 +1163,30 @@ export function Thumbnail({
     `M${ps.map((q) => `${sx(q)} ${sy(q)}`).join('L')}Z`;
 
   const strokes: string[] = [];
+  // Interlace: the band on top at each crossing, drawn again.
+  const over: string[] = [];
+  const overIn: string[] = [];
+  const overAt = (i: number, j: number) => {
+    if (!woven) return;
+    for (const p of patchesAt(model.pattern, i, j, widths.edge))
+      if (meets([p.a, p.b])) {
+        over.push(`M${sx(p.a)} ${sy(p.a)}L${sx(p.b)} ${sy(p.b)}`);
+        overIn.push(`M${sx(p.inA)} ${sy(p.inA)}L${sx(p.inB)} ${sy(p.inB)}`);
+      }
+  };
+  const overLayers = () =>
+    (['edge', 'band'] as const).map((layer) =>
+      over.length ? (
+        <path
+          key={`over-${layer}`}
+          d={(layer === 'edge' ? over : overIn).join('')}
+          fill="none"
+          stroke={layer === 'edge' ? STRAP_EDGE : STRAP_BAND}
+          strokeWidth={widths[layer]}
+          strokeLinecap="butt"
+        />
+      ) : null,
+    );
 
   // When coloredUpTo is defined (e.g. progressive coloring in hero), render individual pieces
   // grouped by UNIQUE COLOR, rippling strictly from the middle (center rosette) outward.
@@ -1211,6 +1237,7 @@ export function Thumbnail({
           if (meets([a, b]))
             strokes.push(`M${sx(a)} ${sy(a)}L${sx(b)} ${sy(b)}`);
         }
+        overAt(i, j);
       }
     }
 
@@ -1293,6 +1320,7 @@ export function Thumbnail({
             strokeLinecap="round"
           />
         ))}
+        {overLayers()}
         {!strap && strokes.length > 0 && (
           <path
             className="thumbnail-lines"
@@ -1333,6 +1361,7 @@ export function Thumbnail({
         const b = move(s.segment.b, d);
         if (meets([a, b])) strokes.push(`M${sx(a)} ${sy(a)}L${sx(b)} ${sy(b)}`);
       }
+      overAt(i, j);
     }
   }
   return (
@@ -1357,6 +1386,7 @@ export function Thumbnail({
           strokeLinecap="round"
         />
       ))}
+      {overLayers()}
       {!strap && coloredUpTo !== undefined && strokes.length > 0 && (
         <path
           className="thumbnail-lines"

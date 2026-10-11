@@ -102,7 +102,7 @@ export interface Shared {
     readonly name: string;
     readonly inked?: readonly string[];
     readonly coloring: { palette: string; chosen: Record<string, string> };
-    readonly look: 'tiles' | 'strapwork' | 'lines';
+    readonly look: 'tiles' | 'strapwork' | 'interlace' | 'lines';
     readonly grout: number;
   };
 }

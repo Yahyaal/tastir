@@ -1,6 +1,7 @@
 import type { Vec } from '@tastir/engine';
 import type { Model } from './model';
-import type { WallStyle } from './Wall';
+import { patchesAt } from './interlace';
+import { banded, type WallStyle } from './Wall';
 
 const INK = '#23201c';
 const BAND = '#f7f2e6';
@@ -92,14 +93,26 @@ export function wallSvg(
           : placed
             ? placed(k, d.i, d.j)
             : (colors[p.type] ?? '#999999');
-      const stroke = look === 'strapwork' ? 'none' : INK;
+      const stroke = banded(look) ? 'none' : INK;
       const width = look === 'lines' ? groutWidth * 0.8 : groutWidth;
       body.push(
         `<polygon data-type="${p.type}" points="${p.polygon.map((q) => pt(q, d)).join(' ')}" fill="${fill}" stroke="${stroke}" stroke-width="${f(width)}" stroke-linejoin="round"/>`,
       );
     }
   }
-  if (look === 'strapwork') {
+  if (banded(look)) {
+    const line = (
+      a: Vec,
+      b: Vec,
+      d: Vec,
+      color: string,
+      k: number,
+      cap: string,
+    ) => {
+      const [x1, y1] = pt(a, d).split(',');
+      const [x2, y2] = pt(b, d).split(',');
+      return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${f(groutWidth * k)}" stroke-linecap="${cap}"/>`;
+    };
     for (const [color, k] of [
       [INK, 4],
       [BAND, 2.4],
@@ -107,14 +120,20 @@ export function wallSvg(
       for (const d of shifts) {
         for (const s of ink) {
           if (!inView([s.segment.a, s.segment.b], d)) continue;
-          const [x1, y1] = pt(s.segment.a, d).split(',');
-          const [x2, y2] = pt(s.segment.b, d).split(',');
-          body.push(
-            `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${f(groutWidth * k)}" stroke-linecap="round"/>`,
-          );
+          body.push(line(s.segment.a, s.segment.b, d, color, k, 'round'));
         }
       }
     }
+    // Interlace: the band on top at each crossing, drawn again.
+    if (look === 'interlace')
+      for (const d of shifts) {
+        const zero = { x: 0, y: 0 };
+        for (const p of patchesAt(model.pattern, d.i, d.j, groutWidth * 4)) {
+          if (!inView([p.a, p.b], zero)) continue;
+          body.push(line(p.a, p.b, zero, INK, 4, 'butt'));
+          body.push(line(p.inA, p.inB, zero, BAND, 2.4, 'butt'));
+        }
+      }
   }
   const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
   return [

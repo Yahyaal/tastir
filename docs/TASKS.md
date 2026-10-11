@@ -106,7 +106,7 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 - [ ] *(Recommended to drop, see the review above.)* **2.2 Tazhib / Illumination (Gold Leaf & Lapis) style.** Add `illumination` to `WallStyle`. Gilded gold-leaf star rosettes with SVG metallic gradients, deep ultramarine/lapis lazuli backgrounds, and fine black *tahrir* pen outlines.
   *Done when:* Player wall dropdown includes `Illumination`, applying gold metallic gradients and lapis ground; tests pass.
 
-- [ ] **2.3 True Interlace (Woven / Lacería) style.** Add `interlace` to `WallStyle`. Ribbons weave in an alternating over-and-under pattern at crossings instead of merging into a flat band, with seam incisions and subtle under-crossing drop shadows.
+- [ ] *(Built on `app/interlace`, waiting for the owner's look.)* **2.3 True Interlace (Woven / Lacería) style.** Add `interlace` to `WallStyle`. Ribbons weave in an alternating over-and-under pattern at crossings instead of merging into a flat band, with seam incisions and subtle under-crossing drop shadows.
   *Done when:* Player wall dropdown includes `Interlace`, displaying alternating over/under ribbon layers at intersections; tests pass.
 
 - [ ] *(Recommended to drop, see the review above.)* **2.4 Carved Stucco / Yesería (Bas-Relief & Chiseled Stone) style.** Add `relief` to `WallStyle`. 2.5D architectural relief using SVG lighting filters (`feSpecularLighting`, `feDiffuseLighting`) or beveled facet gradients.

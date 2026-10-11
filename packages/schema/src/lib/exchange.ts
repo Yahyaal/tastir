@@ -25,7 +25,7 @@ export const SharedDesignShape = z.strictObject({
   name: z.string(),
   inked: z.array(z.string()).optional(),
   coloring: ColoringShape,
-  look: z.enum(['tiles', 'strapwork', 'lines']),
+  look: z.enum(['tiles', 'strapwork', 'interlace', 'lines']),
   grout: z.number().min(0).max(100),
 });
 export const SharedShape = z
