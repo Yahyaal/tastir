@@ -9,6 +9,7 @@ export interface Preview {
   readonly fold: number;
   readonly steps: number;
   readonly photos: boolean;
+  readonly verification?: import('@tastir/schema').Tutorial['verification'];
   readonly thumbnail: string;
 }
 export interface Entry {

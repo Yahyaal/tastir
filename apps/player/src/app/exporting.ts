@@ -1,6 +1,10 @@
+import { jaliTextureSvg } from './jaliTexture';
+import type { JaliAppearance } from '@tastir/schema';
 import type { Vec } from '@tastir/engine';
 import type { Model } from './model';
 import type { WallStyle } from './Wall';
+import { strapWidths } from './drawing';
+import { DEFAULT_JALI, jaliLayers, jaliLight, latticeWidth } from './jali';
 
 const INK = '#23201c';
 const BAND = '#f7f2e6';
@@ -9,6 +13,7 @@ const f = (n: number) => String(Math.round(n * 1e5) / 1e5);
 export interface WallOptions {
   readonly look?: WallStyle;
   readonly grout?: number;
+  readonly jali?: JaliAppearance;
   /** How many tiles across and down. */
   readonly across?: number;
   readonly down?: number;
@@ -32,6 +37,7 @@ export function wallSvg(
   const {
     look = 'tiles',
     grout = 1,
+    jali: appearance = DEFAULT_JALI,
     across = 4,
     down = 4,
     scale = 100,
@@ -55,7 +61,11 @@ export function wallSvg(
   };
   const w = view.maxX - view.minX;
   const h = view.maxY - view.minY;
-  const groutWidth = 0.012 * (cellW / 2) * grout;
+  const jali = look === 'jali';
+  const groutWidth = strapWidths(
+    model,
+    jali ? latticeWidth(grout) : grout,
+  ).grout;
   // Every shift of the cell whose pieces may reach into the view.
   const shifts: (Vec & { i: number; j: number })[] = [];
   const reach = Math.ceil(Math.max(across, down) / 2) + 2;
@@ -79,11 +89,15 @@ export function wallSvg(
         p.y + d.y < view.maxY + cellH,
     );
   const body: string[] = [];
+  if (jali)
+    body.push(
+      `<rect class="jali-ground" x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}" fill="url(#jali-light)"/>`,
+    );
   if (look === 'lines')
     body.push(
       `<rect x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}" fill="#ffffff"/>`,
     );
-  for (const d of shifts) {
+  for (const d of jali ? [] : shifts) {
     for (const [k, p] of pieces.entries()) {
       if (!inView(p.polygon, d)) continue;
       const fill =
@@ -98,6 +112,34 @@ export function wallSvg(
         `<polygon data-type="${p.type}" points="${p.polygon.map((q) => pt(q, d)).join(' ')}" fill="${fill}" stroke="${stroke}" stroke-width="${f(width)}" stroke-linejoin="round"/>`,
       );
     }
+  }
+  if (jali) {
+    const path = shifts
+      .flatMap((d) =>
+        ink.flatMap((s) =>
+          inView([s.segment.a, s.segment.b], d)
+            ? [
+                `M${pt(s.segment.a, d).replace(',', ' ')}L${pt(s.segment.b, d).replace(',', ' ')}`,
+              ]
+            : [],
+        ),
+      )
+      .join('');
+    body.push(
+      `<g class="jali-framework" data-material="${appearance.material}" data-finish="${appearance.finish}" fill="none">`,
+    );
+    body.push(
+      `<defs>${jaliTextureSvg('jali-texture', appearance, groutWidth)}</defs>`,
+    );
+    for (const layer of jaliLayers(appearance)) {
+      body.push(
+        `<path data-layer="${layer.name}" d="${path}" stroke="${layer.color}" stroke-width="${f(layer.width * groutWidth)}" stroke-linecap="round" stroke-linejoin="round"${layer.dash ? ` stroke-dasharray="${layer.dash.map((n) => f(n * groutWidth)).join(' ')}"` : ''} transform="translate(${f(layer.x * groutWidth)} ${f(layer.y * groutWidth)})"/>`,
+      );
+    }
+    body.push(
+      `<path data-layer="texture" d="${path}" stroke="url(#jali-texture)" stroke-width="${f(5.1 * groutWidth)}" stroke-linecap="round" stroke-linejoin="round" transform="translate(${f(0.24 * groutWidth)} ${f(0.24 * groutWidth)})"/>`,
+    );
+    body.push('</g>');
   }
   if (look === 'strapwork') {
     for (const [color, k] of [
@@ -120,6 +162,15 @@ export function wallSvg(
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(w * scale)}" height="${Math.round(h * scale)}" viewBox="${f(view.minX)} ${f(-view.maxY)} ${f(w)} ${f(h)}">`,
     `<title>${esc(title)}</title>`,
+    ...(jali
+      ? [
+          `<defs><linearGradient id="jali-light" x1="0" y1="0" x2="0.8" y2="1">${jaliLight(
+            appearance.background,
+          )
+            .map((s) => `<stop offset="${s.offset}" stop-color="${s.color}"/>`)
+            .join('')}</linearGradient></defs>`,
+        ]
+      : []),
     `<clipPath id="wall"><rect x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}"/></clipPath>`,
     `<g clip-path="url(#wall)">`,
     ...body,

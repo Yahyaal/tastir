@@ -20,7 +20,9 @@ import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors, tutorialColoring, type Coloring } from './coloring';
 import { placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
+import type { JaliAppearance } from '@tastir/schema';
 import type { WallStyle } from './Wall';
+import { JaliFramework, JaliGround, latticeWidth } from './jali';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
@@ -1114,6 +1116,8 @@ export function Thumbnail({
   model,
   coloring = tutorialColoring(model),
   look = model.tutorial.pattern.look,
+  grout = 1,
+  jali: appearance,
   coloredUpTo,
   activeColorIndex,
   view: givenView,
@@ -1123,6 +1127,9 @@ export function Thumbnail({
   coloring?: Coloring;
   /** A learner's wall style; else the tutorial's. */
   look?: WallStyle;
+  /** Saved lattice, band or grout width. */
+  grout?: number;
+  jali?: JaliAppearance;
   /** If set, only colors with index < coloredUpTo receive their color; others show blueprint tone. */
   coloredUpTo?: number;
   /** Currently active color index being animated/rippled in quick succession. */
@@ -1130,6 +1137,7 @@ export function Thumbnail({
   /** If set, renders within this camera view (e.g. locked to fullView) rather than tiling view. */
   view?: Rect;
 }) {
+  const lightId = `jali-thumb-${useId().replace(/:/g, '')}`;
   const reach = 2;
   const { view: defaultView } = tiling(model, {
     halfWide: 1,
@@ -1144,7 +1152,8 @@ export function Thumbnail({
   const fill = model.tutorial.pattern.placements
     ? placeFills(model, coloring)
     : undefined;
-  const widths = strapWidths(model);
+  const jali = look === 'jali';
+  const widths = strapWidths(model, jali ? latticeWidth(grout) : grout);
   // As the wall first shows it: strapwork bands, tiles with grout, or
   // only the lines.
   const strap = look === 'strapwork';
@@ -1164,7 +1173,7 @@ export function Thumbnail({
 
   // When coloredUpTo is defined (e.g. progressive coloring in hero), render individual pieces
   // grouped by UNIQUE COLOR, rippling strictly from the middle (center rosette) outward.
-  if (coloredUpTo !== undefined) {
+  if (coloredUpTo !== undefined && !jali) {
     const palette = orderedPaletteColors(model, coloring, view);
     const colorIndexMap = new Map<string, number>();
     palette.forEach((p, idx) => colorIndexMap.set(p.color, idx));
@@ -1316,24 +1325,41 @@ export function Thumbnail({
         x: cell.u.x * i + cell.v.x * j,
         y: cell.u.y * i + cell.v.y * j,
       };
-      model.pattern.pieces.forEach((p, k) => {
-        const polygon = p.polygon.map((q) => move(q, d));
-        if (!meets(polygon)) return;
-        const color = lines
-          ? 'none'
-          : fill
-            ? fill(k, i, j)
-            : (colors[p.type] ?? '#999999');
-        const list = byColor.get(color) ?? [];
-        list.push(poly(polygon));
-        byColor.set(color, list);
-      });
+      if (!jali)
+        model.pattern.pieces.forEach((p, k) => {
+          const polygon = p.polygon.map((q) => move(q, d));
+          if (!meets(polygon)) return;
+          const color = lines
+            ? 'none'
+            : fill
+              ? fill(k, i, j)
+              : (colors[p.type] ?? '#999999');
+          const list = byColor.get(color) ?? [];
+          list.push(poly(polygon));
+          byColor.set(color, list);
+        });
       for (const s of model.pattern.ink) {
         const a = move(s.segment.a, d);
         const b = move(s.segment.b, d);
         if (meets([a, b])) strokes.push(`M${sx(a)} ${sy(a)}L${sx(b)} ${sy(b)}`);
       }
     }
+  }
+  if (jali) {
+    return (
+      <svg
+        className="thumbnail style-jali"
+        viewBox={viewBox(view)}
+        aria-hidden="true"
+      >
+        <JaliGround id={lightId} view={view} appearance={appearance} />
+        <JaliFramework
+          path={strokes.join('')}
+          width={widths.grout}
+          appearance={appearance}
+        />
+      </svg>
+    );
   }
   return (
     <svg className="thumbnail" viewBox={viewBox(view)} aria-hidden="true">

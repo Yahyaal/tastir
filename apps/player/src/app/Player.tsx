@@ -1,3 +1,5 @@
+import { DEFAULT_JALI, sameJali } from './jali';
+import { JaliControls } from './JaliControls';
 import { ExploreNext } from './ExploreNext';
 import {
   useCallback,
@@ -122,7 +124,7 @@ function keptColoring(address: string) {
 /** Whether a saved design holds just what the player shows now. */
 function sameDesign(
   design: Design,
-  now: Pick<Design, 'inked' | 'coloring' | 'look' | 'grout'>,
+  now: Pick<Design, 'inked' | 'coloring' | 'look' | 'grout' | 'jali'>,
 ): boolean {
   const sorted = (chosen: Readonly<Record<string, string>>) =>
     JSON.stringify(Object.entries(chosen).sort(([a], [b]) => (a < b ? -1 : 1)));
@@ -132,7 +134,8 @@ function sameDesign(
     design.coloring.palette === now.coloring.palette &&
     sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
     design.look === now.look &&
-    design.grout === now.grout
+    design.grout === now.grout &&
+    sameJali(design.jali, now.jali)
   );
 }
 
@@ -225,6 +228,7 @@ export function Player({
     opened?.look ?? tutorial.pattern.look ?? 'tiles',
   );
   const [grout, setGrout] = useState(opened?.grout ?? 1);
+  const [jali, setJali] = useState(opened?.jali ?? DEFAULT_JALI);
   // The design being worked on: the one opened, or the last one saved.
   const [design, setDesign] = useState(opened);
   const designFields = () => ({
@@ -233,6 +237,9 @@ export function Player({
     coloring: colorHistory.now,
     look: wallStyle,
     grout,
+    ...(wallStyle === 'jali' || design?.jali !== undefined || !sameJali(jali)
+      ? { jali }
+      : {}),
   });
   // A design opened or saved, changed since: Save is offered, and leaving
   // asks first.
@@ -293,7 +300,7 @@ export function Player({
   const [comparing, setComparing] = useState(start === 'result');
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
-    wallSvg(inking.shown, colors, { look: wallStyle, grout, fill });
+    wallSvg(inking.shown, colors, { look: wallStyle, grout, fill, jali });
   const svgRef = useRef<SVGSVGElement>(null);
   const running = useRef<Animation[]>([]);
   const reversing = useRef(false);
@@ -474,6 +481,7 @@ export function Player({
         repeat={colorRepeat(inking.shown)}
         look={wallStyle}
         grout={grout}
+        jali={jali}
         hovered={hovered}
         onHover={setHovered}
         onPick={(type, at) => {
@@ -617,6 +625,12 @@ export function Player({
             <div className="text">
               <p className="label">{label}</p>
               {hint ? <p className="stage-hint">{hint}</p> : null}
+              {tutorial.verification?.status === 'unverified' ? (
+                <details className="verification-note">
+                  <summary>Historical match unverified</summary>
+                  <p>{tutorial.verification.note}</p>
+                </details>
+              ) : null}
               {stage.kind === 'color' && narrow ? saveDesign : null}
               <p className="instruction" aria-live="polite">
                 {text}
@@ -729,7 +743,11 @@ export function Player({
                   Style
                   <select
                     value={wallStyle}
-                    onChange={(e) => setWallStyle(e.target.value as WallStyle)}
+                    onChange={(e) => {
+                      const style = e.target.value as WallStyle;
+                      setWallStyle(style);
+                      if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                    }}
                   >
                     {WALL_STYLES.map((s) => (
                       <option key={s} value={s}>
@@ -739,53 +757,68 @@ export function Player({
                   </select>
                 </label>
                 <label>
-                  {wallStyle === 'strapwork' ? 'Band' : 'Grout'}
+                  {wallStyle === 'jali'
+                    ? 'Lattice'
+                    : wallStyle === 'strapwork'
+                      ? 'Band'
+                      : 'Grout'}
                   <input
                     type="range"
-                    min={0}
+                    min={wallStyle === 'jali' ? 0.5 : 0}
                     max={3}
                     step={0.25}
-                    value={grout}
+                    value={wallStyle === 'jali' ? Math.max(0.5, grout) : grout}
                     onChange={(e) => setGrout(Number(e.target.value))}
                   />
                 </label>
               </div>
               <p className="hint">
+                {wallStyle === 'jali'
+                  ? 'An open screen. Switch styles to see your tile colors. '
+                  : ''}
                 Drag to move along the wall, scroll to zoom.
               </p>
             </section>
-            <section>
-              <h2>Colors</h2>
-              <PiecePanel
-                model={inking.shown}
-                colors={colors}
-                history={colorHistory}
-                dispatch={colorDispatch}
-                hovered={hovered}
-                onHover={setHovered}
-                selected={selected}
-                onSelect={(type) => {
-                  setSelected(type);
-                  setPlace(undefined);
-                }}
-                place={
-                  fill && place
-                    ? {
-                        key: placeKey(
-                          inking.shown,
-                          place.piece,
-                          place.i,
-                          place.j,
-                        ),
-                        color: fill(place.piece, place.i, place.j),
-                      }
-                    : undefined
-                }
-                onReset={() =>
-                  colorDispatch({ kind: 'reset', to: tutorialColoring(model) })
-                }
-              />
-            </section>
+            {wallStyle === 'jali' ? (
+              <JaliControls appearance={jali} onChange={setJali} />
+            ) : null}
+            {wallStyle !== 'jali' ? (
+              <section>
+                <h2>Colors</h2>
+                <PiecePanel
+                  model={inking.shown}
+                  colors={colors}
+                  history={colorHistory}
+                  dispatch={colorDispatch}
+                  hovered={hovered}
+                  onHover={setHovered}
+                  selected={selected}
+                  onSelect={(type) => {
+                    setSelected(type);
+                    setPlace(undefined);
+                  }}
+                  place={
+                    fill && place
+                      ? {
+                          key: placeKey(
+                            inking.shown,
+                            place.piece,
+                            place.i,
+                            place.j,
+                          ),
+                          color: fill(place.piece, place.i, place.j),
+                        }
+                      : undefined
+                  }
+                  onReset={() =>
+                    colorDispatch({
+                      kind: 'reset',
+                      to: tutorialColoring(model),
+                    })
+                  }
+                />
+              </section>
+            ) : null}
             <section>
               <h2>Take it with you</h2>
               {sharedView ? null : (

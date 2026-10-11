@@ -12,6 +12,10 @@
       "note": "A ten-pointed star and decagon pattern repeated across a rectangular cell."
     }
   ],
+  "verification": {
+    "status": "unverified",
+    "note": "A ten-fold rectangular construction study. It has not been verified against a historical panel and is not a reconstruction of the Darb-e Imam spandrel."
+  },
   "given": {
     "O": "The centre of the decagram.",
     "A": "Any point to the right of O. OA is the radius of the decagram\u2019s circle."

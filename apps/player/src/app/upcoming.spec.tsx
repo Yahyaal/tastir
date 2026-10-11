@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import App from './app';
 import { UpcomingPatterns } from './UpcomingPatterns';
+import { UPCOMING_PATTERNS } from './upcoming-patterns';
 
 /** Moves the address to `hash`, as clicking a link would. */
 function go(hash: string) {
@@ -15,6 +16,24 @@ afterEach(() => {
 });
 
 describe('Upcoming patterns page', () => {
+  it('keeps the historical Darb-e Imam target separate from the rectangular study', () => {
+    const target = UPCOMING_PATTERNS.find(
+      (p) => p.id === 'darb-e-imam-decagram',
+    )!;
+    expect(target.status).toBe('Researching');
+    expect(target.source.name).toContain('Figure 3');
+    expect(target.drawnUrl).toBeUndefined();
+    expect(target.drawingSteps).toEqual([]);
+    const { container } = render(<UpcomingPatterns />);
+    const card = [...container.querySelectorAll('.upcoming-card')].find((c) =>
+      c.textContent?.includes(target.title),
+    )!;
+    expect(card.textContent).toContain('Schematic ten-fold preview');
+    expect(card.textContent).toContain(
+      'Drawing instructions are still under research.',
+    );
+    expect(card.querySelector('.drawing-guide-toggle')).toBeNull();
+  });
   it('replaces missing private card pictures with the blueprint and retains the source', () => {
     const { container } = render(<UpcomingPatterns />);
     const images = [

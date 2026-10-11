@@ -152,5 +152,29 @@ describe('the wall controls', () => {
         .querySelector('polygon.wall-piece')
         ?.getAttribute('stroke-width'),
     ).toBe('0');
+    fireEvent.change(screen.getByLabelText(/Style/), {
+      target: { value: 'jali' },
+    });
+    expect(
+      document.querySelector('svg.wall')?.classList.contains('style-jali'),
+    ).toBe(true);
+    expect((screen.getByLabelText('Lattice') as HTMLInputElement).value).toBe(
+      '0.5',
+    );
+    expect(screen.queryByRole('heading', { name: 'Colors' })).toBeNull();
+    fireEvent.change(screen.getByLabelText('Lattice'), {
+      target: { value: '2' },
+    });
+    expect(
+      Number(
+        document
+          .querySelector('[data-layer="stone"]')
+          ?.getAttribute('stroke-width'),
+      ),
+    ).toBeCloseTo(0.024 * 5.4, 9);
+    fireEvent.change(screen.getByLabelText(/Style/), {
+      target: { value: 'tiles' },
+    });
+    expect(screen.getByRole('heading', { name: 'Colors' })).toBeTruthy();
   });
 });
