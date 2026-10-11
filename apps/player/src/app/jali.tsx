@@ -3,13 +3,36 @@ import type { JaliAppearance } from '@tastir/schema';
 import type { Rect } from './camera';
 
 export const JALI_MATERIALS = [
-  { material: 'stone', name: 'Stone', color: '#e6dcc7' },
-  { material: 'wood', name: 'Wood', color: '#96603c' },
-  { material: 'gold', name: 'Gold', color: '#d6ac46' },
-  { material: 'silver', name: 'Silver', color: '#bfc8d0' },
+  { material: 'stone', name: 'Stone' },
+  { material: 'wood', name: 'Wood' },
+  { material: 'metal', name: 'Metal' },
+] as const;
+export const JALI_FINISHES = [
+  {
+    material: 'stone',
+    finish: 'limestone',
+    name: 'Limestone',
+    color: '#e6dcc7',
+  },
+  { material: 'stone', finish: 'marble', name: 'Marble', color: '#f0eee8' },
+  {
+    material: 'stone',
+    finish: 'sandstone',
+    name: 'Sandstone',
+    color: '#c9ad7f',
+  },
+  { material: 'stone', finish: 'slate', name: 'Slate', color: '#66717a' },
+  { material: 'wood', finish: 'oak', name: 'Oak', color: '#96603c' },
+  { material: 'wood', finish: 'walnut', name: 'Walnut', color: '#593d2b' },
+  { material: 'wood', finish: 'cedar', name: 'Cedar', color: '#b46b46' },
+  { material: 'metal', finish: 'silver', name: 'Silver', color: '#bfc8d0' },
+  { material: 'metal', finish: 'gold', name: 'Gold', color: '#d6ac46' },
+  { material: 'metal', finish: 'bronze', name: 'Bronze', color: '#a77b43' },
+  { material: 'metal', finish: 'copper', name: 'Copper', color: '#bd7656' },
 ] as const;
 export const DEFAULT_JALI: JaliAppearance = {
   material: 'stone',
+  finish: 'limestone',
   framework: '#e6dcc7',
   background: '#708d87',
 };
@@ -29,6 +52,7 @@ function mix(color: string, target: string, amount: number): string {
 export function sameJali(a = DEFAULT_JALI, b = DEFAULT_JALI): boolean {
   return (
     a.material === b.material &&
+    a.finish === b.finish &&
     a.framework.toLowerCase() === b.framework.toLowerCase() &&
     a.background.toLowerCase() === b.background.toLowerCase()
   );
@@ -65,7 +89,7 @@ export function jaliLayers(
   appearance: JaliAppearance = DEFAULT_JALI,
 ): readonly Layer[] {
   const { material, framework: color } = appearance;
-  const metal = material === 'gold' || material === 'silver';
+  const metal = material === 'metal';
   const layers: Layer[] =
     material === 'stone' && color.toLowerCase() === DEFAULT_JALI.framework
       ? JALI_LAYERS.map((layer) => ({ ...layer }))
@@ -184,6 +208,7 @@ export function JaliFramework({
     <g
       className="jali-framework"
       data-material={appearance.material}
+      data-finish={appearance.finish}
       fill="none"
       pointerEvents="none"
     >

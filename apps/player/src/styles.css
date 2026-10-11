@@ -848,79 +848,49 @@ main.stage .drawing:not(.wall) {
   gap: 12px;
 }
 
-.inline-color {
-  display: grid;
-  gap: 6px;
-  min-width: 0;
-}
-
-.inline-color-value {
+.jali-color-row {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 12px;
 }
-
-.inline-color-value input {
-  width: 8em;
+.jali-color-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  background: #0008;
+}
+.jali-color-dialog.player {
+  min-height: 0;
+  height: auto;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  display: grid;
+  gap: 16px;
+  width: min(320px, 100%);
   min-width: 0;
   box-sizing: border-box;
-  padding: 6px 8px;
-  color: var(--on-lapis);
+  padding: 16px;
   background: var(--lapis-deep);
+  color: var(--on-lapis);
   border: 1px solid var(--lapis-line);
-  border-radius: 6px;
-  font-family: monospace;
+  border-radius: 10px;
 }
-
-.inline-color-swatch {
-  width: 40px;
-  height: 32px;
-  padding: 0;
-  border: 1px solid var(--on-lapis-muted);
-  cursor: pointer;
+.jali-color-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
-
-.inline-color-swatch[aria-pressed='true'] {
-  outline: 2px solid var(--saffron);
-  outline-offset: 2px;
+.jali-color-heading h2 {
+  margin: 0;
+  font-size: 1.1rem;
 }
-
-.inline-color-picker {
-  display: grid;
-  gap: 10px;
-  min-width: 0;
-  padding: 10px;
-  border: 1px solid var(--lapis-line);
-  border-radius: 8px;
-}
-
-.inline-color-presets {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 8px;
-}
-
-.inline-color-presets button {
-  width: 100%;
-  min-width: 0;
-}
-
-.jali-controls .inline-color-channel {
-  display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 28px;
-  gap: 8px;
-  font-size: 0.85rem;
-}
-
-.inline-color-channel input {
-  width: 100%;
-  min-width: 0;
-  accent-color: var(--saffron);
-}
-
-.inline-color-channel output {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
+.jali-color-dialog .any-color {
+  display: block;
 }
 
 .export-tools button {

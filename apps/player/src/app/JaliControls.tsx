@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import type { JaliAppearance } from '@tastir/schema';
-import { DEFAULT_JALI, JALI_MATERIALS, sameJali } from './jali';
-import { InlineColorPicker } from './InlineColorPicker';
+import { DEFAULT_JALI, JALI_FINISHES, JALI_MATERIALS, sameJali } from './jali';
+import { JaliColorChooser } from './JaliColorChooser';
 
 export function JaliControls({
   appearance,
@@ -9,6 +10,10 @@ export function JaliControls({
   appearance: JaliAppearance;
   onChange: (appearance: JaliAppearance) => void;
 }) {
+  const [choosing, setChoosing] = useState<'framework' | 'background'>();
+  const finishes = JALI_FINISHES.filter(
+    (p) => p.material === appearance.material,
+  );
   return (
     <section>
       <h2>Jali finish</h2>
@@ -18,13 +23,14 @@ export function JaliControls({
           <select
             value={appearance.material}
             onChange={(e) => {
-              const preset = JALI_MATERIALS.find(
+              const preset = JALI_FINISHES.find(
                 (p) => p.material === e.target.value,
               );
               if (preset)
                 onChange({
                   ...appearance,
                   material: preset.material,
+                  finish: preset.finish,
                   framework: preset.color,
                 });
             }}
@@ -36,20 +42,50 @@ export function JaliControls({
             ))}
           </select>
         </label>
-        <InlineColorPicker
-          label="Framework color"
-          color={appearance.framework}
-          onChange={(framework) => onChange({ ...appearance, framework })}
-        />
-        <InlineColorPicker
-          label="Background color"
-          color={appearance.background}
-          onChange={(background) => onChange({ ...appearance, background })}
-        />
+        <label>
+          Finish
+          <select
+            value={appearance.finish}
+            onChange={(e) => {
+              const preset = finishes.find((p) => p.finish === e.target.value);
+              if (preset)
+                onChange({
+                  ...appearance,
+                  finish: preset.finish,
+                  framework: preset.color,
+                });
+              else {
+                onChange({ ...appearance, finish: 'custom' });
+                setChoosing('framework');
+              }
+            }}
+          >
+            {finishes.map((p) => (
+              <option key={p.finish} value={p.finish}>
+                {p.name}
+              </option>
+            ))}
+            <option value="custom">Custom color</option>
+          </select>
+        </label>
+        {(['framework', 'background'] as const).map((key) => (
+          <div key={key} className="jali-color-row">
+            <span>
+              {key === 'framework' ? 'Framework color' : 'Background color'}
+            </span>
+            <button
+              type="button"
+              className="swatch-button"
+              style={{ background: appearance[key] }}
+              aria-label={`Choose ${key} color`}
+              aria-haspopup="dialog"
+              onClick={() => setChoosing(key)}
+            />
+          </div>
+        ))}
       </div>
       <p className="hint">
-        Materials set a starting framework color. Adjust either color to make it
-        your own.
+        Choose a finish, or use your own color. The background is independent.
       </p>
       <button
         type="button"
@@ -59,6 +95,34 @@ export function JaliControls({
       >
         Reset Jali finish
       </button>
+      {choosing ? (
+        <JaliColorChooser
+          label={
+            choosing === 'framework' ? 'Framework color' : 'Background color'
+          }
+          color={appearance[choosing]}
+          onClose={() => setChoosing(undefined)}
+          swatches={
+            choosing === 'framework'
+              ? finishes.map((p) => ({ name: p.name, color: p.color }))
+              : undefined
+          }
+          onChange={(color) =>
+            onChange({
+              ...appearance,
+              [choosing]: color,
+              ...(choosing === 'framework'
+                ? {
+                    finish:
+                      finishes.find(
+                        (p) => p.color.toLowerCase() === color.toLowerCase(),
+                      )?.finish ?? 'custom',
+                  }
+                : {}),
+            })
+          }
+        />
+      ) : null}
     </section>
   );
 }

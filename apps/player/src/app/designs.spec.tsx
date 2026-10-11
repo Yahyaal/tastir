@@ -125,13 +125,16 @@ it('preserves custom Jali finishes and rejects damaged finish settings without d
   const legacy = addDesign(fields);
   const jali = {
     material: 'wood' as const,
+    finish: 'custom' as const,
     framework: '#864b31',
     background: '#234a79',
   };
   const saved = addDesign({ ...fields, look: 'jali', jali });
   expect(getDesign(saved!.id)?.jali).toEqual(jali);
-  updateDesign(saved!.id, { jali: { ...jali, material: 'silver' } });
-  expect(getDesign(saved!.id)?.jali?.material).toBe('silver');
+  updateDesign(saved!.id, {
+    jali: { ...jali, material: 'metal', finish: 'silver' },
+  });
+  expect(getDesign(saved!.id)?.jali?.material).toBe('metal');
   const raw = JSON.parse(
     window.localStorage.getItem('tastir.designs')!,
   ) as unknown[];
@@ -145,3 +148,28 @@ it('preserves custom Jali finishes and rejects damaged finish settings without d
   expect(listDesigns()).toHaveLength(2);
   expect(getDesign(legacy!.id)).toEqual(legacy);
 });
+
+it.each(['gold', 'silver', 'wood', 'stone'])(
+  'migrates stored legacy %s without altering its colors',
+  (material) => {
+    const saved = addDesign(fields)!;
+    const legacy = { material, framework: '#864b31', background: '#234a79' };
+    window.localStorage.setItem(
+      'tastir.designs',
+      JSON.stringify([{ ...saved, look: 'jali', jali: legacy }]),
+    );
+    const migrated = getDesign(saved.id)!.jali!;
+    expect(migrated.framework).toBe(legacy.framework);
+    expect(migrated.background).toBe(legacy.background);
+    expect(migrated.material).toBe(
+      ['gold', 'silver'].includes(material) ? 'metal' : material,
+    );
+    expect(migrated.finish).toBe(
+      material === 'stone'
+        ? 'limestone'
+        : material === 'wood'
+          ? 'oak'
+          : material,
+    );
+  },
+);

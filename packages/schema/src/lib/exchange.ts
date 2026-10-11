@@ -21,12 +21,58 @@ export const ColoringShape = z.strictObject({
   palette: z.string(),
   chosen: z.record(z.string(), z.string()),
 });
-/** Optional on older designs, which retain the original stone finish. */
-export const JaliAppearanceShape = z.strictObject({
-  material: z.enum(['stone', 'wood', 'gold', 'silver']),
-  framework: z.string().regex(/^#[0-9a-fA-F]{6}$/),
-  background: z.string().regex(/^#[0-9a-fA-F]{6}$/),
-});
+/** Read old four-material designs as the new material families. */
+const FINISHES = {
+  stone: ['limestone', 'marble', 'sandstone', 'slate', 'custom'],
+  wood: ['oak', 'walnut', 'cedar', 'custom'],
+  metal: ['silver', 'gold', 'bronze', 'copper', 'custom'],
+} as const;
+export const JaliAppearanceShape = z
+  .strictObject({
+    material: z.enum(['stone', 'wood', 'metal', 'gold', 'silver']),
+    finish: z
+      .enum([
+        'limestone',
+        'marble',
+        'sandstone',
+        'slate',
+        'oak',
+        'walnut',
+        'cedar',
+        'silver',
+        'gold',
+        'bronze',
+        'copper',
+        'custom',
+      ])
+      .optional(),
+    framework: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+    background: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  })
+  .transform((value) => {
+    const legacyMetal =
+      value.material === 'gold' || value.material === 'silver';
+    const material = legacyMetal
+      ? 'metal'
+      : (value.material as 'stone' | 'wood' | 'metal');
+    const finish =
+      value.finish ??
+      (legacyMetal
+        ? (value.material as 'gold' | 'silver')
+        : material === 'stone'
+          ? 'limestone'
+          : material === 'wood'
+            ? 'oak'
+            : 'silver');
+    return { ...value, material, finish };
+  })
+  .refine(
+    (value) =>
+      (FINISHES[value.material] as readonly string[]).includes(value.finish),
+    {
+      message: 'Choose a finish from the selected material family.',
+    },
+  );
 export type JaliAppearance = z.infer<typeof JaliAppearanceShape>;
 export const SharedDesignShape = z.strictObject({
   name: z.string(),

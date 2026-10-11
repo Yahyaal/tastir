@@ -6,7 +6,7 @@ import { Thumbnail } from './drawing';
 import { wallSvg } from './exporting';
 import { loadModel } from './model';
 import { Wall } from './Wall';
-import { DEFAULT_JALI, JALI_MATERIALS } from './jali';
+import { DEFAULT_JALI, JALI_FINISHES } from './jali';
 
 describe.each([example, zellige])('Jali: $id', (json) => {
   const model = loadModel(json);
@@ -76,12 +76,13 @@ describe.each([example, zellige])('Jali: $id', (json) => {
     },
   );
 
-  it.each(JALI_MATERIALS)(
+  it.each(JALI_FINISHES)(
     'matches custom $material finishes in wall, preview and SVG',
-    ({ material }) => {
+    ({ material, finish }) => {
       const jali = {
         ...DEFAULT_JALI,
         material,
+        finish,
         framework: '#864b31',
         background: '#234a79',
       };
@@ -106,6 +107,9 @@ describe.each([example, zellige])('Jali: $id', (json) => {
             .querySelector('.jali-framework')
             ?.getAttribute('data-material'),
         ).toBe(material);
+        expect(
+          target.querySelector('.jali-framework')?.getAttribute('data-finish'),
+        ).toBe(finish);
         expect(target.querySelectorAll('polygon, filter')).toHaveLength(0);
         for (const layer of wall.querySelectorAll('.jali-framework path')) {
           const other = target.querySelector(
@@ -156,7 +160,7 @@ describe.each([example, zellige])('Jali: $id', (json) => {
         material === 'wood' ? 2 : 0,
       );
       expect(wall.querySelector('[data-layer="gleam"]') !== null).toBe(
-        material === 'gold' || material === 'silver',
+        material === 'metal',
       );
     },
   );

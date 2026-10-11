@@ -1,3 +1,4 @@
+import { JALI_FINISHES } from '../app/jali';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import {
   decodeShared,
@@ -81,7 +82,7 @@ it('refuses to create a link its reader would reject as too large', async () => 
   ).rejects.toThrow('pattern file');
 });
 
-it.each(['stone', 'wood', 'gold', 'silver'] as const)(
+it.each(['stone', 'wood', 'metal'] as const)(
   'round trips a custom %s finish and rejects malformed settings',
   async (material) => {
     const shared = {
@@ -91,12 +92,21 @@ it.each(['stone', 'wood', 'gold', 'silver'] as const)(
         coloring: { palette: 'Fès tile', chosen: {} },
         look: 'jali' as const,
         grout: 1,
-        jali: { material, framework: '#864b31', background: '#234a79' },
+        jali: {
+          material,
+          finish: 'custom' as const,
+          framework: '#864b31',
+          background: '#234a79',
+        },
       },
     };
     expect(await decodeShared(await encodeShared(shared))).toEqual(shared);
     for (const bad of [
       { ...shared.design.jali, material: 'plastic' },
+      {
+        ...shared.design.jali,
+        finish: material === 'wood' ? 'marble' : 'walnut',
+      },
       { ...shared.design.jali, framework: '#fff' },
       { ...shared.design.jali, background: '" onload="bad' },
     ]) {
@@ -106,5 +116,46 @@ it.each(['stone', 'wood', 'gold', 'silver'] as const)(
         ),
       ).toBeUndefined();
     }
+  },
+);
+
+it.each(['gold', 'silver', 'wood', 'stone'])(
+  'reads legacy shared %s finishes without changing colors',
+  async (material) => {
+    const jali = { material, framework: '#864b31', background: '#234a79' };
+    const decoded = await decodeShared(
+      link({
+        library: 'eight-fold-star-and-cross',
+        design: {
+          name: 'Old Jali',
+          coloring: { palette: 'Fès tile', chosen: {} },
+          look: 'jali',
+          grout: 1,
+          jali,
+        },
+      }),
+    );
+    expect(decoded?.design?.jali).toMatchObject({
+      framework: jali.framework,
+      background: jali.background,
+      material: ['gold', 'silver'].includes(material) ? 'metal' : material,
+    });
+  },
+);
+
+it.each(JALI_FINISHES)(
+  'retains the $finish preset in a shared design',
+  async ({ material, finish, color }) => {
+    const shared = {
+      library: 'eight-fold-star-and-cross',
+      design: {
+        name: 'Preset',
+        coloring: { palette: 'Fès tile', chosen: {} },
+        look: 'jali' as const,
+        grout: 1,
+        jali: { material, finish, framework: color, background: '#708d87' },
+      },
+    };
+    expect(await decodeShared(await encodeShared(shared))).toEqual(shared);
   },
 );

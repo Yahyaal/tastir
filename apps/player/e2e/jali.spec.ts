@@ -3,7 +3,33 @@ import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 async function setColor(page: Page, label: string, color: string) {
-  await page.getByRole('textbox', { name: label, exact: true }).fill(color);
+  await page
+    .getByRole('button', { name: `Choose ${label.toLowerCase()}`, exact: true })
+    .click();
+  await page
+    .getByRole('dialog', { name: label, exact: true })
+    .locator('input[type=color]')
+    .evaluate((node, value) => {
+      const input = node as HTMLInputElement;
+      Object.getOwnPropertyDescriptor(
+        HTMLInputElement.prototype,
+        'value',
+      )!.set!.call(input, value);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }, color);
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+}
+async function expectColor(page: Page, label: string, color: string) {
+  await page
+    .getByRole('button', { name: `Choose ${label.toLowerCase()}`, exact: true })
+    .click();
+  await expect(
+    page
+      .getByRole('dialog', { name: label, exact: true })
+      .locator('input[type=color]'),
+  ).toHaveValue(color);
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
 }
 
 for (const id of [
@@ -38,7 +64,7 @@ for (const id of [
       name: 'Material',
       exact: true,
     });
-    for (const finish of ['wood', 'gold', 'silver', 'stone']) {
+    for (const finish of ['wood', 'metal', 'stone']) {
       await material.selectOption(finish);
       await expect(wall.locator('.jali-framework')).toHaveAttribute(
         'data-material',
@@ -48,9 +74,7 @@ for (const id of [
         finish === 'wood' ? 6 : finish === 'stone' ? 4 : 5,
       );
       await expect(wall.locator('polygon, filter')).toHaveCount(0);
-      await expect(
-        page.getByLabel('Background color', { exact: true }),
-      ).toHaveValue('#708d87');
+      await expectColor(page, 'Background color', '#708d87');
       if (info.project.name === 'desktop') {
         await wall.screenshot({
           path: resolve(`docs/review/jali/${id}-${finish}.png`),
@@ -74,12 +98,8 @@ for (const id of [
     await page
       .getByRole('button', { name: 'Reset Jali finish', exact: true })
       .click();
-    await expect(
-      page.getByLabel('Framework color', { exact: true }),
-    ).toHaveValue('#e6dcc7');
-    await expect(
-      page.getByLabel('Background color', { exact: true }),
-    ).toHaveValue('#708d87');
+    await expectColor(page, 'Framework color', '#e6dcc7');
+    await expectColor(page, 'Background color', '#708d87');
     const before = await wall.getAttribute('viewBox');
     await wall.hover();
     await page.mouse.wheel(0, -150);
@@ -139,16 +159,12 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await expect(
     page.getByRole('combobox', { name: 'Material', exact: true }),
   ).toHaveValue('wood');
-  await expect(page.getByLabel('Framework color', { exact: true })).toHaveValue(
-    '#864b31',
-  );
-  await expect(
-    page.getByLabel('Background color', { exact: true }),
-  ).toHaveValue('#234a79');
+  await expectColor(page, 'Framework color', '#864b31');
+  await expectColor(page, 'Background color', '#234a79');
   // Finish edits participate in the saved-design dirty state.
   await page
     .getByRole('combobox', { name: 'Material', exact: true })
-    .selectOption('gold');
+    .selectOption('metal');
   await expect(
     page.getByRole('button', { name: 'Save', exact: true }),
   ).toBeEnabled();
@@ -172,12 +188,8 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await expect(
     other.getByRole('combobox', { name: 'Material', exact: true }),
   ).toHaveValue('wood');
-  await expect(
-    other.getByLabel('Framework color', { exact: true }),
-  ).toHaveValue('#864b31');
-  await expect(
-    other.getByLabel('Background color', { exact: true }),
-  ).toHaveValue('#234a79');
+  await expectColor(other, 'Framework color', '#864b31');
+  await expectColor(other, 'Background color', '#234a79');
   await other.close();
 
   for (const extension of ['SVG', 'PNG']) {
@@ -274,10 +286,6 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await expect(
     page.getByRole('combobox', { name: 'Material', exact: true }),
   ).toHaveValue('stone');
-  await expect(page.getByLabel('Framework color', { exact: true })).toHaveValue(
-    '#e6dcc7',
-  );
-  await expect(
-    page.getByLabel('Background color', { exact: true }),
-  ).toHaveValue('#708d87');
+  await expectColor(page, 'Framework color', '#e6dcc7');
+  await expectColor(page, 'Background color', '#708d87');
 });

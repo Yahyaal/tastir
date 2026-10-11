@@ -1,14 +1,14 @@
-# Jali colors and materials — Tasks 2.1a and 2.1b, 11 October 2026
+# Jali colors and materials — Tasks 2.1a–2.1c, 11 October 2026
 
-Implementation is on `codex/jali` in `/home/yahya/Documents/projects/Tastir-jali`. Other worktrees and main are unchanged. The requested controls are implemented and available for review; the task checkboxes remain open because the full test suite has the baseline speed failures described below.
+Implementation is on `codex/jali` in `/home/yahya/Documents/projects/Tastir-jali`. Other worktrees and main are unchanged. The requested controls are implemented and available for review. Tasks 2.1a–2.1c now pass the full suite and are checked complete. Earlier speed-check failures are retained below as historical validation results.
 
-At Color, choose Style → Jali. Jali finish offers Stone, Wood, Gold and Silver, independent Framework color and Background color pickers, and Reset Jali finish. Selecting a material sets its starting framework color and preserves the background. Reset restores the original stone appearance and courtyard background, preserving the lattice width and tile colors.
+At Color, choose Style → Jali. Choose Stone, Wood or Metal, then a finish within that family or Custom color. Independent Framework color and Background color pickers and Reset Jali finish are available. Selecting a material sets its starting framework color and preserves the background. Reset restores the original stone appearance and courtyard background, preserving the lattice width and tile colors.
 
 Stone retains the owner-approved bevels. Custom colors derive the bevel and shadow colors from the framework. Wood adds two fine, broken grain strokes; gold and silver use stronger bevel contrast and a narrow polished highlight. These are stylized vector finishes. A single continuous background gradient derives from the chosen background color; apertures remain open. The renderer uses four to six bundled paths and no lighting filters, including on both dense Bou Inania patterns.
 
 Optional validated finish metadata preserves older saved designs and share links with the original defaults. Saving, reopening, sharing, keeping a shared copy, My designs thumbnails, SVG and PNG retain material and colors. Finish changes participate in the unsaved-design check. Reset followed by switching to Tiles and saving replaces the previously saved finish instead of leaving old settings behind. Existing palettes, geometry and tutorials are unchanged.
 
-## Validation
+## Earlier validation (before the owner correction)
 
 - `pnpm lint`: exit 0.
 - `pnpm typecheck`: exit 0.
@@ -20,7 +20,7 @@ Optional validated finish metadata preserves older saved designs and share links
 - `pnpm exec playwright test apps/player/e2e/jali.spec.ts --max-failures=1`: 15 browser checks across desktop, tablet and phone. They cover four patterns, all materials, independent colors, reset, pan/zoom, saved-design dirty state, reload, share, thumbnails, SVG/PNG, restored tile colors, and saving a reset after switching styles.
 - Phone layout: 390 px viewport and 390 px document width; controls do not introduce horizontal overflow.
 
-Screenshots are regenerated under ignored `docs/review/jali/`. The review page's Star and cross card shows labelled Stone, Wood, Gold and Silver previews. Its Progress section describes the new controls and the outstanding full-suite timing result.
+Screenshots are regenerated under ignored `docs/review/jali/`. The review page’s Star and cross card shows the material controls, desktop/phone color chooser and all eleven finish previews. Its Progress section describes the new controls and the outstanding full-suite timing result.
 
 ## Try it
 
@@ -35,7 +35,7 @@ pnpm exec vite --config apps/player/vite.config.mts --port 4292 --strictPort
 
 Open `http://localhost:4292/#/review` for the labelled finish pictures. The owner's existing port 4290 server is separate.
 
-## Right-edge picker fix
+## Earlier right-edge picker attempt (superseded)
 
 The owner reported that the browser-native color popup was cut off at the right edge. Jali now uses an editor that expands inside the side panel instead of opening a native popup. Click either color swatch to show preset swatches and RGB sliders, or type a complete six-digit hex color in its field. Incomplete/invalid text never changes the saved color; leaving the field restores the current value. Escape closes the editor and returns focus to its opener.
 
@@ -44,3 +44,29 @@ Focused unit checks: 21 pass, including the three new editor tests. The combined
 Suggested future finishes are sandstone with fine grain, marble with subtle veining, and aged bronze with patina. These remain proposals. The Met's [red sandstone screen](https://www.metmuseum.org/art/collection/search/453343) and [marble screen](https://www.metmuseum.org/art/collection/search/453241) provide historical references for the first two; bronze is suggested as a decorative finish.
 
 The full `pnpm test` rerun for the picker fix passes schema and player, with 670 engine checks passing and the same two existing 300 ms Bou Inania preparation checks failing. The full-suite validation gate remains open; the engine and its timing thresholds are unchanged.
+
+
+## Owner correction: familiar picker and grouped materials
+
+The owner asked why Jali differed from the other styles and requested a material family followed by finish choices. The inline RGB/hex editor is removed. The color chooser now reuses the existing swatch button styles and native Any color input, in a compact centered dialog. The native input sits at the dialog’s left edge, away from the browser’s right edge. Close or Escape restores focus to the opener; keyboard focus stays within the chooser while it is open.
+
+| Material | Finish presets |
+| --- | --- |
+| Stone | Limestone, Marble, Sandstone, Slate |
+| Wood | Oak, Walnut, Cedar |
+| Metal | Silver, Gold, Bronze, Copper |
+
+Every family includes Custom color. Finish selection updates the framework color while preserving the background. Custom framework colors retain the family’s bevel, grain or polished treatment. These are stylized vector/color finishes, without new marble veins, sandstone grain or bronze patina. Reset restores the original stone finish and both original colors. Width and tile colors stay independent.
+
+The schema now stores the material family and finish, rejects a finish from another family, and reads older gold/silver settings as Metal with the corresponding finish. Older stone/wood settings acquire their original finish names. Migration preserves framework/background colors and the drawing treatment. Storage readers apply this normalization, as do shared-link readers. Thumbnails and SVGs include matching material and finish attributes.
+
+Validation for this correction:
+
+- Initial focused checks: 66 tests pass, including every preset’s render/export agreement, all family options, custom/background independence, old stored/shared settings and malformed metadata. Eleven additional preset share round-trip checks are included in the final full suite.
+- `pnpm lint`, `pnpm typecheck`, `pnpm build`: exit 0 after the final code changes. A later simultaneous build/typecheck run removed declaration outputs while TypeScript was using them; rebuilding declarations with `pnpm exec tsc --build apps/player/tsconfig.json --emitDeclarationOnly --force` and rerunning `pnpm typecheck` alone resolves that generated-output race. Run build and typecheck sequentially in this worktree.
+- Browser checks: 18 pass across desktop, tablet and phone (49.9 seconds). Cover every preset, custom colors, chooser bounds, native-input placement, Escape/focus return, saves, shares, thumbnails, pan/zoom, SVG/PNG downloads and reset while another style is active.
+- First browser pass exposed the chooser inheriting the full player height; fixed before the final pass. Its custom-selector focus check now focuses the select before making the choice, matching keyboard use.
+- Headless browser checks exercise the native input’s value/change events and its position. They cannot inspect the operating system’s native color popup; click Any color in your browser as the final visual check.
+- Final `pnpm test`: exit 0, schema, engine and player targets pass (3 minutes 18 seconds). The two Bou Inania timing checks pass on this run without changes to engine code or budgets. Earlier runs, including the pre-change baseline, failed them; this result does not establish that the timing checks are stable on every machine.
+
+Current screenshots: `material-controls-desktop.png`, `color-chooser-desktop.png`, `color-chooser-phone.png` and `finish-<name>.png` under ignored `docs/review/jali/`, visible at `http://localhost:4292/#/review`. Use `http://localhost:4292/#/eight-fold-star-and-cross/result` → Style → Jali to try the controls. Choose Material, then Finish; choose Custom color or either color swatch to open the familiar chooser. Existing port 4290 serves a separate worktree.

@@ -67,7 +67,14 @@ const designs = store(KEY, isDesign);
  * blocked (a private window) and a store can be corrupt; both read as none.
  */
 export const listDesigns = (): Design[] =>
-  designs.list().sort((a, b) => b.updated.localeCompare(a.updated));
+  designs
+    .list()
+    .map((design) =>
+      design.jali
+        ? { ...design, jali: JaliAppearanceShape.parse(design.jali) }
+        : design,
+    )
+    .sort((a, b) => b.updated.localeCompare(a.updated));
 
 export const getDesign = (id: string): Design | undefined =>
   listDesigns().find((d) => d.id === id);

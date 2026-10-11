@@ -125,7 +125,7 @@ export function wallSvg(
       )
       .join('');
     body.push(
-      `<g class="jali-framework" data-material="${appearance.material}" fill="none">`,
+      `<g class="jali-framework" data-material="${appearance.material}" data-finish="${appearance.finish}" fill="none">`,
     );
     for (const layer of jaliLayers(appearance)) {
       body.push(

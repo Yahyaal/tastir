@@ -1404,18 +1404,36 @@ export const PATTERNS: readonly Pattern[] = [
           'Jali B — the approved stone finish on Bou Inania. Color and material controls are now available at Color.',
       },
       {
-        src: 'renders/jali/inline-picker-desktop.png',
+        src: 'renders/jali/material-controls-desktop.png',
         caption:
-          'Jali color controls on desktop: the picker expands inside the panel, avoiding the browser’s clipped native popup.',
+          'Choose Stone, Wood or Metal first, then a finish from that family or Custom color.',
       },
       {
-        src: 'renders/jali/inline-picker-phone.png',
+        src: 'renders/jali/color-chooser-desktop.png',
         caption:
-          'The same picker on a phone: swatches, RGB sliders and hex entry stay inside the panel.',
+          'The familiar swatches and Any color chooser, centered away from the right edge.',
       },
-      ...(['stone', 'wood', 'gold', 'silver'] as const).map((material) => ({
-        src: `renders/jali/eight-fold-star-and-cross-${material}.png`,
-        caption: `Jali ${material} preset — all four finishes support independent framework and background colors.`,
+      {
+        src: 'renders/jali/color-chooser-phone.png',
+        caption: 'The same compact color chooser on a phone.',
+      },
+      ...(
+        [
+          'limestone',
+          'marble',
+          'sandstone',
+          'slate',
+          'oak',
+          'walnut',
+          'cedar',
+          'silver',
+          'gold',
+          'bronze',
+          'copper',
+        ] as const
+      ).map((finish) => ({
+        src: `renders/jali/finish-${finish}.png`,
+        caption: `Jali ${finish} preset — framework color can be customized while keeping the material treatment.`,
       })),
       {
         src: 'renders/eight-fold-star-and-cross/compare-wall.png',
@@ -1481,8 +1499,8 @@ export const PROGRESS: {
       link: { label: 'See the library', href: '/#/' },
     },
     {
-      title: 'Jali: colors and four material finishes',
-      text: 'At Color, choose Style → Jali. The ink becomes a marble-colored framework with clear openings and a continuous backlit ground. Lattice adjusts its width. Saving, sharing, My designs previews, SVG and PNG keep the style and width; switching to Tiles restores your colors. The owner approved the appearance and the follow-ups on 11 October. Jali finish now has Stone, Wood, Gold and Silver presets, independent framework/background colors, and Reset Jali finish. Material selection changes only the framework starting color. Saving, sharing, previews and downloads retain the finish. Older designs keep their stone appearance. Jali acceptance checks pass; the full suite still fails two existing engine speed budgets, reproduced at the pre-change commit. See the testing report in Notes.',
+      title: 'Jali: three material families and eleven finishes',
+      text: 'At Color, choose Style → Jali. The ink becomes a marble-colored framework with clear openings and a continuous backlit ground. Lattice adjusts its width. Saving, sharing, My designs previews, SVG and PNG keep the style and width; switching to Tiles restores your colors. The owner approved the appearance and the follow-ups on 11 October. Jali finish now has Stone, Wood and Metal families, with eleven finish presets and Custom color in each family. Independent framework/background colors use familiar swatches and Any color in a compact centered chooser. Reset restores the original stone appearance. Material selection changes only the framework starting color. Saving, sharing, previews and downloads retain the finish. Older designs keep their stone appearance. All 18 Jali browser checks, lint, typecheck, build and the final full test suite pass. The two previously failing Bou Inania timing checks pass on this run, without changing the engine or thresholds. See the testing report in Notes.',
       link: {
         label: 'Try Jali at Color',
         href: '/#/eight-fold-star-and-cross/result',
@@ -1691,21 +1709,13 @@ export const PROGRESS: {
   ],
   now: {
     title: 'Try the new Jali colors and materials',
-    text: 'On the codex/jali preview, choose Style → Jali at Color. Try the four material presets, adjust framework and background independently, and reset the finish. Labelled preset pictures are on the Star and cross card. Click a framework or background swatch to open its color editor inside the panel; the picker stays within the page. All settings travel with saved designs, share links and downloads.',
+    text: 'On the codex/jali preview, choose Style → Jali at Color. Choose Stone, Wood or Metal, then try the finishes within that family or Custom color. Adjust framework and background independently, and reset the finish. Labelled preset pictures are on the Star and cross card. Click either color swatch for the familiar swatches and Any color chooser. It opens near the center of the page, away from the browser’s right edge. All settings travel with saved designs, share links and downloads.',
     link: {
       label: 'Open Jali controls',
       href: '/#/eight-fold-star-and-cross/result',
     },
   },
   next: [
-    {
-      title: 'More Jali finishes (proposed)',
-      text: 'Sandstone with fine grain, veined marble, and aged bronze with patina would add useful textures beyond a color change. The first two have historical jali references; bronze would be a decorative finish. These suggestions are not implemented.',
-      link: {
-        label: 'A red sandstone jali at The Met',
-        href: 'https://www.metmuseum.org/art/collection/search/453343',
-      },
-    },
     {
       title: 'More designs per family',
       text: 'At least one more for each family: an Alhambra panel from Wichmann’s line drawings, an Ibn Tulun window grille with a published construction, and an eight-fold star-and-octagon variant, each with a photo.',
