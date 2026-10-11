@@ -13,6 +13,8 @@ These are the owner's standing wishes about how work is shown and discussed. Eac
 - **Tell the owner how to see visual work:** the address to open, and what they should see there.
 - **Say "done" only when it is done,** then suggest the next goal.
 
+The owner’s 11 October Jali correction: minimize clicks. Show material choices as buttons and finish colors as directly visible swatches. A Custom color button must open the color picker directly; do not insert another dialog or dropdown when a few visible choices suffice. Apply this principle to later UI work.
+
 ## Doing the work
 
 - **When the owner is near the Claude limit, orchestrate.** Plan, review and write self-contained prompts for Gemini in Antigravity in `docs/prompts/<date>.md`, and do not spawn builder or tester agents. *Why (8 October):* the owner is close to the weekly limit and asked for this; prompts in chat are hard to copy, so they go in a file the owner points Antigravity at.

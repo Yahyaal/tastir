@@ -3,33 +3,18 @@ import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 async function setColor(page: Page, label: string, color: string) {
-  await page
-    .getByRole('button', { name: `Choose ${label.toLowerCase()}`, exact: true })
-    .click();
-  await page
-    .getByRole('dialog', { name: label, exact: true })
-    .locator('input[type=color]')
-    .evaluate((node, value) => {
-      const input = node as HTMLInputElement;
-      Object.getOwnPropertyDescriptor(
-        HTMLInputElement.prototype,
-        'value',
-      )!.set!.call(input, value);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
-    }, color);
-  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page.getByLabel(label, { exact: true }).evaluate((node, value) => {
+    const input = node as HTMLInputElement;
+    Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value',
+    )!.set!.call(input, value);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }, color);
 }
 async function expectColor(page: Page, label: string, color: string) {
-  await page
-    .getByRole('button', { name: `Choose ${label.toLowerCase()}`, exact: true })
-    .click();
-  await expect(
-    page
-      .getByRole('dialog', { name: label, exact: true })
-      .locator('input[type=color]'),
-  ).toHaveValue(color);
-  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await expect(page.getByLabel(label, { exact: true })).toHaveValue(color);
 }
 
 for (const id of [
@@ -60,12 +45,14 @@ for (const id of [
       mkdirSync(resolve('docs/review/jali'), { recursive: true });
       await wall.screenshot({ path: resolve(`docs/review/jali/${id}.png`) });
     }
-    const material = page.getByRole('combobox', {
-      name: 'Material',
-      exact: true,
-    });
     for (const finish of ['wood', 'metal', 'stone']) {
-      await material.selectOption(finish);
+      await page
+        .getByRole('button', {
+          name:
+            finish === 'wood' ? 'Wood' : finish === 'metal' ? 'Metal' : 'Stone',
+          exact: true,
+        })
+        .click();
       await expect(wall.locator('.jali-framework')).toHaveAttribute(
         'data-material',
         finish,
@@ -132,9 +119,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await page
     .getByRole('combobox', { name: 'Style', exact: true })
     .selectOption('jali');
-  await page
-    .getByRole('combobox', { name: 'Material', exact: true })
-    .selectOption('wood');
+  await page.getByRole('button', { name: 'Wood', exact: true }).click();
   await setColor(page, 'Framework color', '#864b31');
   await setColor(page, 'Background color', '#234a79');
   const lattice = page.getByLabel('Lattice', { exact: true });
@@ -157,20 +142,16 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   ).toHaveValue('jali');
   await expect(lattice).toHaveValue('2');
   await expect(
-    page.getByRole('combobox', { name: 'Material', exact: true }),
-  ).toHaveValue('wood');
+    page.getByRole('button', { name: 'Wood', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
   await expectColor(page, 'Framework color', '#864b31');
   await expectColor(page, 'Background color', '#234a79');
   // Finish edits participate in the saved-design dirty state.
-  await page
-    .getByRole('combobox', { name: 'Material', exact: true })
-    .selectOption('metal');
+  await page.getByRole('button', { name: 'Metal', exact: true }).click();
   await expect(
     page.getByRole('button', { name: 'Save', exact: true }),
   ).toBeEnabled();
-  await page
-    .getByRole('combobox', { name: 'Material', exact: true })
-    .selectOption('wood');
+  await page.getByRole('button', { name: 'Wood', exact: true }).click();
   await setColor(page, 'Framework color', '#864b31');
   await expect(
     page.getByRole('button', { name: 'Saved', exact: true }),
@@ -186,8 +167,8 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   ).toHaveValue('jali');
   await expect(other.getByLabel('Lattice', { exact: true })).toHaveValue('2');
   await expect(
-    other.getByRole('combobox', { name: 'Material', exact: true }),
-  ).toHaveValue('wood');
+    other.getByRole('button', { name: 'Wood', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
   await expectColor(other, 'Framework color', '#864b31');
   await expectColor(other, 'Background color', '#234a79');
   await other.close();
@@ -284,8 +265,8 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     .getByRole('combobox', { name: 'Style', exact: true })
     .selectOption('jali');
   await expect(
-    page.getByRole('combobox', { name: 'Material', exact: true }),
-  ).toHaveValue('stone');
+    page.getByRole('button', { name: 'Stone', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
   await expectColor(page, 'Framework color', '#e6dcc7');
   await expectColor(page, 'Background color', '#708d87');
 });

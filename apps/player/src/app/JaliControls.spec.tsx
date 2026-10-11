@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { useState } from 'react';
 import { DEFAULT_JALI, JALI_FINISHES } from './jali';
 import { JaliControls } from './JaliControls';
@@ -15,84 +15,120 @@ function Finish() {
 const appearance = () =>
   JSON.parse(screen.getByTestId('appearance').textContent!);
 
-it('offers three families and only their own finishes, preserving the background', () => {
+it('changes family and finish directly, showing only that family’s presets', () => {
   render(<Finish />);
-  const material = screen.getByRole('combobox', { name: 'Material' });
-  expect(
-    [...material.querySelectorAll('option')].map((o) => o.textContent),
-  ).toEqual(['Stone', 'Wood', 'Metal']);
+  expect(screen.queryByRole('combobox')).toBeNull();
   for (const preset of JALI_FINISHES) {
-    fireEvent.change(material, { target: { value: preset.material } });
-    const finish = screen.getByRole('combobox', { name: 'Finish' });
-    expect([...finish.querySelectorAll('option')].map((o) => o.value)).toEqual([
-      ...JALI_FINISHES.filter((p) => p.material === preset.material).map(
-        (p) => p.finish,
+    fireEvent.click(
+      screen.getByRole('button', {
+        name:
+          preset.material === 'stone'
+            ? 'Stone'
+            : preset.material === 'wood'
+              ? 'Wood'
+              : 'Metal',
+      }),
+    );
+    const finishes = screen.getByRole('group', { name: 'Framework finishes' });
+    expect(
+      within(finishes)
+        .getAllByRole('button')
+        .map((b) => b.textContent),
+    ).toEqual(
+      JALI_FINISHES.filter((p) => p.material === preset.material).map(
+        (p) => p.name,
       ),
-      'custom',
-    ]);
-    fireEvent.change(finish, { target: { value: preset.finish } });
+    );
+    fireEvent.click(
+      within(finishes).getByRole('button', { name: preset.name }),
+    );
     expect(appearance()).toEqual({
       material: preset.material,
       finish: preset.finish,
       framework: preset.color,
       background: DEFAULT_JALI.background,
     });
+    expect(
+      within(finishes)
+        .getByRole('button', { name: preset.name })
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
   }
 });
 
-it('uses familiar swatches and native Any color, retains the family, and restores focus', () => {
-  render(<Finish />);
-  fireEvent.change(screen.getByRole('combobox', { name: 'Material' }), {
-    target: { value: 'metal' },
+it('opens the native picker in one click without a modal and keeps custom wood colors when clicking Wood again', () => {
+  const showPicker = vi.fn();
+  const descriptor = Object.getOwnPropertyDescriptor(
+    HTMLInputElement.prototype,
+    'showPicker',
+  );
+  Object.defineProperty(HTMLInputElement.prototype, 'showPicker', {
+    configurable: true,
+    value: showPicker,
   });
-  const opener = screen.getByRole('button', { name: 'Choose framework color' });
-  opener.focus();
-  fireEvent.click(opener);
-  expect(screen.getByRole('dialog', { name: 'Framework color' })).toBeTruthy();
-  const input = screen.getByLabelText('Framework color', {
-    selector: 'input',
-  }) as HTMLInputElement;
-  expect(input.type).toBe('color');
-  fireEvent.click(screen.getByRole('button', { name: 'Bronze (#a77b43)' }));
-  expect(appearance().finish).toBe('bronze');
-  fireEvent.change(input, { target: { value: '#864b31' } });
-  expect(appearance()).toMatchObject({
-    material: 'metal',
-    finish: 'custom',
-    framework: '#864b31',
-  });
-  fireEvent.keyDown(window, { key: 'Escape' });
-  expect(screen.queryByRole('dialog')).toBeNull();
-  expect(document.activeElement).toBe(opener);
+  try {
+    render(<Finish />);
+    fireEvent.click(screen.getByRole('button', { name: 'Wood' }));
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'Custom framework color',
+      }),
+    );
+    expect(showPicker).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    fireEvent.change(
+      screen.getByLabelText('Framework color', { selector: 'input' }),
+      { target: { value: '#864b31' } },
+    );
+    expect(appearance()).toMatchObject({
+      material: 'wood',
+      finish: 'custom',
+      framework: '#864b31',
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Wood' }));
+    expect(appearance()).toMatchObject({
+      material: 'wood',
+      finish: 'custom',
+      framework: '#864b31',
+    });
+    expect(
+      screen
+        .getByRole('button', { name: 'Custom framework color' })
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
+  } finally {
+    if (descriptor)
+      Object.defineProperty(
+        HTMLInputElement.prototype,
+        'showPicker',
+        descriptor,
+      );
+    else Reflect.deleteProperty(HTMLInputElement.prototype, 'showPicker');
+  }
 });
 
-it('opens Custom color, keeps background independent and resets both colors and the finish', () => {
+it('chooses background presets immediately, keeps custom colors independent, and resets', () => {
   render(<Finish />);
-  fireEvent.change(screen.getByRole('combobox', { name: 'Finish' }), {
-    target: { value: 'custom' },
-  });
-  fireEvent.change(
-    screen.getByLabelText('Framework color', { selector: 'input' }),
-    {
-      target: { value: '#864b31' },
-    },
-  );
-  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Wood' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Walnut' }));
   fireEvent.click(
-    screen.getByRole('button', { name: 'Choose background color' }),
-  );
-  fireEvent.change(
-    screen.getByLabelText('Background color', { selector: 'input' }),
-    {
-      target: { value: '#234a79' },
-    },
+    screen.getByRole('button', { name: 'Night blue background' }),
   );
   expect(appearance()).toMatchObject({
-    framework: '#864b31',
+    material: 'wood',
+    finish: 'walnut',
+    framework: '#593d2b',
     background: '#234a79',
-    finish: 'custom',
   });
-  fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+  fireEvent.change(
+    screen.getByLabelText('Background color', { selector: 'input' }),
+    { target: { value: '#314253' } },
+  );
+  expect(appearance()).toMatchObject({
+    finish: 'walnut',
+    framework: '#593d2b',
+    background: '#314253',
+  });
   fireEvent.click(screen.getByRole('button', { name: 'Reset Jali finish' }));
   expect(appearance()).toEqual(DEFAULT_JALI);
 });

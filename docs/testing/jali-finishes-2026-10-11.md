@@ -46,7 +46,7 @@ Suggested future finishes are sandstone with fine grain, marble with subtle vein
 The full `pnpm test` rerun for the picker fix passes schema and player, with 670 engine checks passing and the same two existing 300 ms Bou Inania preparation checks failing. The full-suite validation gate remains open; the engine and its timing thresholds are unchanged.
 
 
-## Owner correction: familiar picker and grouped materials
+## Earlier owner correction: grouped materials and centered dialog (superseded)
 
 The owner asked why Jali differed from the other styles and requested a material family followed by finish choices. The inline RGB/hex editor is removed. The color chooser now reuses the existing swatch button styles and native Any color input, in a compact centered dialog. The native input sits at the dialog’s left edge, away from the browser’s right edge. Close or Escape restores focus to the opener; keyboard focus stays within the chooser while it is open.
 
@@ -70,3 +70,20 @@ Validation for this correction:
 - Final `pnpm test`: exit 0, schema, engine and player targets pass (3 minutes 18 seconds). The two Bou Inania timing checks pass on this run without changes to engine code or budgets. Earlier runs, including the pre-change baseline, failed them; this result does not establish that the timing checks are stable on every machine.
 
 Current screenshots: `material-controls-desktop.png`, `color-chooser-desktop.png`, `color-chooser-phone.png` and `finish-<name>.png` under ignored `docs/review/jali/`, visible at `http://localhost:4292/#/review`. Use `http://localhost:4292/#/eight-fold-star-and-cross/result` → Style → Jali to try the controls. Choose Material, then Finish; choose Custom color or either color swatch to open the familiar chooser. Existing port 4290 serves a separate worktree.
+
+
+## Owner correction: direct material buttons and visible finish swatches
+
+The owner rejected the material/finish dropdowns and the extra color dialog because they required too many clicks. Material is now a three-button selector. Clicking Wood reveals Oak, Walnut and Cedar buttons with visible color samples; Stone and Metal reveal their own finishes. A finish applies immediately with one click, and the selected finish is marked. Clicking the already-selected material leaves a custom color intact.
+
+Each family’s Custom color button opens the browser-native color picker directly. It uses an invisible native input anchored near the center of the viewport, so the native popup is not attached to the far-right panel. No intermediate dialog, dropdown or second button is involved. Canceling the picker leaves the appearance unchanged. Background presets apply directly, with a separate one-click custom button. Material, custom-color and background targets are at least 44 px tall. Existing save/share/export data and rendering are unchanged.
+
+The review page now shows the directly visible controls for all three materials, plus Wood on a phone. Screenshots are `direct-<material>-<viewport>.png` under `docs/review/jali/`.
+
+Validation for the direct controls:
+
+- `pnpm test`: exit 0 (1 minute 50 seconds). Player tests ran again; unchanged engine/schema results were reused from the prior successful run.
+- `pnpm lint`, `pnpm typecheck`, `pnpm build`: exit 0. Typecheck found unsupported `exact` options in the new Testing Library queries; removed them before the passing run. Build ran after typecheck to avoid the previously documented output race.
+- All 18 browser checks pass (43.9 seconds), covering desktop/tablet/phone, every material/finish, immediate preset changes, one-click and keyboard native-picker requests, custom color independence, save/share/thumbnails/SVG/PNG, pan/zoom and reset.
+- A final native-picker follow-up passes all three viewport checks (10.6 seconds), calling the real native picker and canceling with Escape before counting direct click/keyboard requests. No runtime errors or changed color on cancel.
+- Desktop and phone screenshots inspected: directly visible material buttons and labelled finish swatches, with no material/finish dropdowns or intermediate chooser dialog. Headless checks observe the native picker request from the actual button click and keyboard activation; the OS popup itself still needs the owner’s visual check.

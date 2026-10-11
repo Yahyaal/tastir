@@ -104,7 +104,7 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 
 - [x] **2.1a Jali foreground and background colors (11 October).** Keep clear apertures; allow independent framework and background color choices. Derive the bevel/shadow from the framework color and preserve the choices in saved designs, share links, thumbnails and exports.
   *Done when:* The user can change either color independently, restore defaults and reopen/export the same appearance without losing tile colors.
-  *Picker follow-up:* The browser-native popup could be cut off at the right edge. The owner asked for the same interaction as other styles. Jali now uses familiar swatches and native Any color in a compact centered chooser, away from the right edge; the separate RGB/hex editor is removed.
+  *Picker follow-up:* The browser-native popup could be cut off at the right edge. The owner asked for the same interaction as other styles. Jali now uses material buttons and directly visible finish swatches. Each finish applies with one click; Custom color opens the native picker directly with a centered anchor. The separate RGB/hex editor, material/finish dropdowns and extra chooser dialog are removed.
 
 - [x] **2.1b Material finishes (11 October).** Keep style separate from material. Offer Stone, Wood and Metal families with finish presets and a custom color option, with restrained shading and wood grain; avoid turning every material into another wall style.
   *Done when:* Each finish has a distinct visible treatment, survives saving/sharing/exporting and stays responsive on the dense Bou Inania patterns.

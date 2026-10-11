@@ -838,59 +838,85 @@ main.stage .drawing:not(.wall) {
 .jali-controls {
   display: grid;
   gap: 10px;
-  margin-bottom: 10px;
-}
-
-.jali-controls label {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.jali-color-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.jali-color-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: grid;
-  place-items: center;
-  padding: 12px;
-  background: #0008;
-}
-.jali-color-dialog.player {
-  min-height: 0;
-  height: auto;
-  max-height: calc(100dvh - 24px);
-  overflow-y: auto;
-  display: grid;
-  gap: 16px;
-  width: min(320px, 100%);
   min-width: 0;
-  box-sizing: border-box;
-  padding: 16px;
+}
+.jali-materials {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border-radius: 8px;
   background: var(--lapis-deep);
-  color: var(--on-lapis);
-  border: 1px solid var(--lapis-line);
-  border-radius: 10px;
 }
-.jali-color-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+.player .jali-materials button {
+  min-height: 44px;
+  padding: 6px;
+  border-color: transparent;
+  background: transparent;
 }
-.jali-color-heading h2 {
-  margin: 0;
-  font-size: 1.1rem;
+.player .jali-materials button[aria-pressed='true'] {
+  color: var(--lapis-deep);
+  background: var(--saffron);
 }
-.jali-color-dialog .any-color {
+.jali-finishes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(58px, 1fr));
+  gap: 6px;
+}
+.player .jali-finish-button {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 6px;
+  background: transparent;
+  font-size: 0.72rem;
+}
+.player .jali-finish-button[aria-pressed='true'],
+.player .jali-custom-button[aria-pressed='true'] {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 1px var(--saffron);
+}
+.jali-finish-swatch {
   display: block;
+  height: 28px;
+  border-radius: 3px;
+  border: 1px solid #ffffff30;
+}
+.player .jali-custom-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 10px;
+  background: transparent;
+}
+.jali-custom-swatch {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--on-lapis-muted);
+  border-radius: 4px;
+}
+.jali-controls .chooser .swatch-button {
+  width: 44px;
+  height: 44px;
+}
+
+.jali-background-heading {
+  margin: 4px 0 0;
+  font: inherit;
+  color: var(--on-lapis-muted);
+}
+/* Invisible native anchor: one button click opens the browser picker near the
+   middle of the viewport, even when the side panel is at the far right. */
+.jali-native-color {
+  position: fixed;
+  left: max(12px, calc(50vw - 130px));
+  top: max(12px, calc(50dvh - 150px));
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .export-tools button {
