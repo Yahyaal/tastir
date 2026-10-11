@@ -34,3 +34,13 @@ pnpm exec vite --config apps/player/vite.config.mts --port 4292 --strictPort
 ```
 
 Open `http://localhost:4292/#/review` for the labelled finish pictures. The owner's existing port 4290 server is separate.
+
+## Right-edge picker fix
+
+The owner reported that the browser-native color popup was cut off at the right edge. Jali now uses an editor that expands inside the side panel instead of opening a native popup. Click either color swatch to show preset swatches and RGB sliders, or type a complete six-digit hex color in its field. Incomplete/invalid text never changes the saved color; leaving the field restores the current value. Escape closes the editor and returns focus to its opener.
+
+Focused unit checks: 21 pass, including the three new editor tests. The combined browser suites pass 18 checks across desktop, tablet and phone, covering both editors' bounds, keyboard slider edits and Escape focus, plus the original save/share/export and material cases. After the final input styling, all three layout checks pass again against a fresh build. Screenshots are `inline-picker-desktop.png`, `inline-picker-tablet.png` and `inline-picker-phone.png` under `docs/review/jali/`, with desktop/phone pictures on the review card. Lint, typecheck and production build pass.
+
+Suggested future finishes are sandstone with fine grain, marble with subtle veining, and aged bronze with patina. These remain proposals. The Met's [red sandstone screen](https://www.metmuseum.org/art/collection/search/453343) and [marble screen](https://www.metmuseum.org/art/collection/search/453241) provide historical references for the first two; bronze is suggested as a decorative finish.
+
+The full `pnpm test` rerun for the picker fix passes schema and player, with 670 engine checks passing and the same two existing 300 ms Bou Inania preparation checks failing. The full-suite validation gate remains open; the engine and its timing thresholds are unchanged.

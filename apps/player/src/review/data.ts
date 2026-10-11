@@ -1403,6 +1403,16 @@ export const PATTERNS: readonly Pattern[] = [
         caption:
           'Jali B — the approved stone finish on Bou Inania. Color and material controls are now available at Color.',
       },
+      {
+        src: 'renders/jali/inline-picker-desktop.png',
+        caption:
+          'Jali color controls on desktop: the picker expands inside the panel, avoiding the browser’s clipped native popup.',
+      },
+      {
+        src: 'renders/jali/inline-picker-phone.png',
+        caption:
+          'The same picker on a phone: swatches, RGB sliders and hex entry stay inside the panel.',
+      },
       ...(['stone', 'wood', 'gold', 'silver'] as const).map((material) => ({
         src: `renders/jali/eight-fold-star-and-cross-${material}.png`,
         caption: `Jali ${material} preset — all four finishes support independent framework and background colors.`,
@@ -1681,13 +1691,21 @@ export const PROGRESS: {
   ],
   now: {
     title: 'Try the new Jali colors and materials',
-    text: 'On the codex/jali preview, choose Style → Jali at Color. Try the four material presets, adjust framework and background independently, and reset the finish. Labelled preset pictures are on the Star and cross card. All settings travel with saved designs, share links and downloads.',
+    text: 'On the codex/jali preview, choose Style → Jali at Color. Try the four material presets, adjust framework and background independently, and reset the finish. Labelled preset pictures are on the Star and cross card. Click a framework or background swatch to open its color editor inside the panel; the picker stays within the page. All settings travel with saved designs, share links and downloads.',
     link: {
       label: 'Open Jali controls',
       href: '/#/eight-fold-star-and-cross/result',
     },
   },
   next: [
+    {
+      title: 'More Jali finishes (proposed)',
+      text: 'Sandstone with fine grain, veined marble, and aged bronze with patina would add useful textures beyond a color change. The first two have historical jali references; bronze would be a decorative finish. These suggestions are not implemented.',
+      link: {
+        label: 'A red sandstone jali at The Met',
+        href: 'https://www.metmuseum.org/art/collection/search/453343',
+      },
+    },
     {
       title: 'More designs per family',
       text: 'At least one more for each family: an Alhambra panel from Wichmann’s line drawings, an Ibn Tulun window grille with a published construction, and an eight-fold star-and-octagon variant, each with a photo.',

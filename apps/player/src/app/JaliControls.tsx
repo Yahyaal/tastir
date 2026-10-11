@@ -1,5 +1,6 @@
 import type { JaliAppearance } from '@tastir/schema';
 import { DEFAULT_JALI, JALI_MATERIALS, sameJali } from './jali';
+import { InlineColorPicker } from './InlineColorPicker';
 
 export function JaliControls({
   appearance,
@@ -35,26 +36,16 @@ export function JaliControls({
             ))}
           </select>
         </label>
-        <label>
-          Framework color
-          <input
-            type="color"
-            value={appearance.framework}
-            onChange={(e) =>
-              onChange({ ...appearance, framework: e.target.value })
-            }
-          />
-        </label>
-        <label>
-          Background color
-          <input
-            type="color"
-            value={appearance.background}
-            onChange={(e) =>
-              onChange({ ...appearance, background: e.target.value })
-            }
-          />
-        </label>
+        <InlineColorPicker
+          label="Framework color"
+          color={appearance.framework}
+          onChange={(framework) => onChange({ ...appearance, framework })}
+        />
+        <InlineColorPicker
+          label="Background color"
+          color={appearance.background}
+          onChange={(background) => onChange({ ...appearance, background })}
+        />
       </div>
       <p className="hint">
         Materials set a starting framework color. Adjust either color to make it

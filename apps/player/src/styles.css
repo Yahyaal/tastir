@@ -848,11 +848,79 @@ main.stage .drawing:not(.wall) {
   gap: 12px;
 }
 
-.jali-controls input[type='color'] {
-  width: 64px;
-  height: 36px;
-  padding: 3px;
+.inline-color {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.inline-color-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inline-color-value input {
+  width: 8em;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  color: var(--on-lapis);
+  background: var(--lapis-deep);
+  border: 1px solid var(--lapis-line);
+  border-radius: 6px;
+  font-family: monospace;
+}
+
+.inline-color-swatch {
+  width: 40px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--on-lapis-muted);
   cursor: pointer;
+}
+
+.inline-color-swatch[aria-pressed='true'] {
+  outline: 2px solid var(--saffron);
+  outline-offset: 2px;
+}
+
+.inline-color-picker {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--lapis-line);
+  border-radius: 8px;
+}
+
+.inline-color-presets {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.inline-color-presets button {
+  width: 100%;
+  min-width: 0;
+}
+
+.jali-controls .inline-color-channel {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 28px;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.inline-color-channel input {
+  width: 100%;
+  min-width: 0;
+  accent-color: var(--saffron);
+}
+
+.inline-color-channel output {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .export-tools button {

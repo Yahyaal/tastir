@@ -104,10 +104,13 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 
 - [ ] **2.1a Jali foreground and background colors (implemented, 11 October; full-suite validation pending).** Keep clear apertures; allow independent framework and background color choices. Derive the bevel/shadow from the framework color and preserve the choices in saved designs, share links, thumbnails and exports.
   *Done when:* The user can change either color independently, restore defaults and reopen/export the same appearance without losing tile colors.
+  *Picker follow-up:* The browser-native popup could be cut off at the right edge. The Jali picker now expands inside the panel with swatches, RGB sliders and a validated hex field; desktop, tablet and phone checks cover its bounds.
 
 - [ ] **2.1b Material finishes (implemented; full-suite validation pending).** Keep style separate from material. Offer stone, wood, gold and silver finishes for Jali, with restrained shading and wood grain; avoid turning every material into another wall style.
   *Done when:* Each finish has a distinct visible treatment, survives saving/sharing/exporting and stays responsive on the dense Bou Inania patterns.
   *Implemented:* Independent color pickers and reset; stone bevels, restrained wood grain, and polished gold/silver highlights. Material presets change the framework starting color and preserve the background. Older designs keep the original stone finish. Jali acceptance checks pass. The full suite is held by two existing Bou Inania engine speed checks, also reproduced at the pre-change commit; these tasks remain unchecked until that validation gate clears. See [the finish checks](testing/jali-finishes-2026-10-11.md).
+
+- [ ] **2.1c Additional Jali finishes (proposed, not implemented).** Prioritize sandstone with fine grain, marble with restrained veining, and aged bronze with patina. Keep these visibly distinct from changing a flat framework color. The Met documents historical [red sandstone](https://www.metmuseum.org/art/collection/search/453343) and [marble](https://www.metmuseum.org/art/collection/search/453241) screens; aged bronze is a proposed decorative finish, not a verified historical attribution.
 
 - [ ] **2.2 Tazhib / Illumination (Gold Leaf & Lapis) style.** Add `illumination` to `WallStyle`. Gilded gold-leaf star rosettes with SVG metallic gradients, deep ultramarine/lapis lazuli backgrounds, and fine black *tahrir* pen outlines.
   *Done when:* Player wall dropdown includes `Illumination`, applying gold metallic gradients and lapis ground; tests pass.

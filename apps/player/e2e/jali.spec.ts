@@ -3,15 +3,7 @@ import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 async function setColor(page: Page, label: string, color: string) {
-  await page.getByLabel(label, { exact: true }).evaluate((node, value) => {
-    const input = node as HTMLInputElement;
-    Object.getOwnPropertyDescriptor(
-      HTMLInputElement.prototype,
-      'value',
-    )!.set!.call(input, value);
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  }, color);
+  await page.getByRole('textbox', { name: label, exact: true }).fill(color);
 }
 
 for (const id of [
