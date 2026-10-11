@@ -5,21 +5,38 @@ import type { Vec } from './vec.js';
 /**
  * Interlace: the pattern's bands woven over and under, as in lacería.
  *
- * The ink is a net of straight bands. Where two bands cross and both run
- * straight on, one goes over the other; where a band bends (a star's
- * point) nothing crosses. Walking along any band, it goes over, under,
- * over, ... at the crossings it passes. That alternation is a set of
- * equations between neighbouring crossings ("this one's top band is the
- * other's bottom one"), solved once for every crossing of the repeat.
+ * The rule is the classic one for woven knots: follow any band and it
+ * goes over, under, over, ... at the crossings it passes. It is the same
+ * as colouring the pieces like a chessboard, two colours with neighbours
+ * across a band always different, and letting the band with the dark
+ * piece on its right go over. That colouring exists for any net of whole
+ * bands, so the rule holds everywhere at once; nothing is decided by
+ * looking at one place.
+ *
+ * The ink is first read as bands. At each point where ink meets, a band
+ * runs straight on through the opposite direction, or turns when only two
+ * directions meet (a star's point). A point where exactly two bands run
+ * straight through is a crossing, and each crossing is one unknown: which
+ * band is on top. Between two crossings next along a band the top swaps,
+ * which is an equation between two unknowns, solved once for every
+ * crossing of the repeat. Where the band passes a point where k other
+ * bands cross it together, it swaps k times there (once per band), and
+ * where another band only ends against it (a T), it does not swap.
  *
  * Some nets alternate only over two tiles, not one (a band can pass an
  * odd number of crossings before it comes back to the same place in the
  * next tile). Then the answer repeats after two tiles along that slide,
  * and `repeat` says so.
  *
- * Points where three or more bands cross, or where bands meet without
- * running straight on, cannot alternate cleanly: they stay flat, and the
- * bands through them are not tied to their neighbours there.
+ * Points where three or more bands cross, where a band ends against
+ * another, or where bands only touch, are drawn as they are: `flat`.
+ *
+ * For drawing, each crossing carries the path of its top band either way
+ * (`ahead`, `behind`), following the band through its bends and straight
+ * on through points where ink was only cut, to halfway to the next point
+ * that needs the band as it is. The player redraws the top band along
+ * that path, as long as the band's width needs, so the band underneath
+ * seems to pass below it.
  */
 
 /** A crossing of two bands, with the band on top. */
@@ -33,9 +50,11 @@ export interface WeaveCrossing {
   readonly over: Vec;
   /** The direction of the band underneath (a unit vector). */
   readonly under: Vec;
-  /** How far the top band runs straight either way before its next
-   * meeting with another band (or bend), the shorter side. */
-  readonly room: number;
+  /** The top band from the crossing along `over`, then along minus
+   * `over`: each path starts at `at` and follows the band, through its
+   * bends, as far as this crossing may redraw it. */
+  readonly ahead: readonly Vec[];
+  readonly behind: readonly Vec[];
 }
 
 export interface Weave {
@@ -43,26 +62,37 @@ export interface Weave {
   readonly repeat: readonly [number, number];
   /** Every crossing of the repeat, each once. */
   readonly crossings: readonly WeaveCrossing[];
-  /** Points where three or more bands meet, left flat (one per tile). */
+  /** Points where bands meet but none goes over another (one per tile). */
   readonly flat: readonly Vec[];
+  /** How many steps along a band fail to swap over and under. Zero for a
+   * net of whole bands; a band that ends inside the pattern can make it
+   * more, and those steps are left as they fall. */
+  readonly broken: number;
 }
 
 const EPS = 1e-7;
 const SNAP = 1e-6;
+/** Directions this close are the same. */
+const SAME = 1e-6;
+
+interface Out {
+  readonly dir: Vec;
+  /** The vertex reached and the slide of the tile it is in. */
+  readonly to: number;
+  readonly di: number;
+  readonly dj: number;
+  readonly len: number;
+}
 
 interface Vertex {
-  /** Its place, in the central tile (lattice coordinates in [0, 1)). */
+  /** Its place, in the central tile. */
   readonly at: Vec;
-  /** The bands leaving it: direction, the vertex reached, the slide of
-   * the tile that vertex is in, and the distance to it. */
-  readonly out: {
-    dir: Vec;
-    to: number;
-    di: number;
-    dj: number;
-    len: number;
-  }[];
+  /** The bands leaving it. */
+  readonly out: Out[];
 }
+
+const same = (a: Vec, b: Vec) =>
+  Math.abs(a.x - b.x) < SAME && Math.abs(a.y - b.y) < SAME;
 
 /** The weave of a pattern's ink in its tile. */
 export function weave(ink: readonly Segment[], cell: Cell): Weave {
@@ -201,32 +231,63 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
   // The vertices of the central tile, each with the bands leaving it.
   const place = (p: Vec) => {
     const { s, t } = lattice(p);
-    const i = wrap(s);
-    const j = wrap(t);
-    return { i, j };
+    return { i: wrap(s), j: wrap(t) };
   };
   const vertices: Vertex[] = [];
+  const vertexGrid = new Map<string, number[]>();
+  /** The vertex at a central point, if there is one already. */
+  const vertexNear = (q: Vec) => {
+    const bx = Math.floor(q.x / (4 * SNAP));
+    const by = Math.floor(q.y / (4 * SNAP));
+    for (let ox = -1; ox <= 1; ox++)
+      for (let oy = -1; oy <= 1; oy++)
+        for (const k of vertexGrid.get(`${bx + ox},${by + oy}`) ?? []) {
+          const at = (vertices[k] as Vertex).at;
+          if (Math.abs(at.x - q.x) <= SNAP && Math.abs(at.y - q.y) <= SNAP)
+            return k;
+        }
+    return undefined;
+  };
   /** The central tile's copy of a point: its vertex and its slide. */
   const homeOf = new Map<number, { k: number; di: number; dj: number }>();
-  const homes = new Map<string, number>();
   const home = (id: number) => {
     const found = homeOf.get(id);
     if (found) return found;
     const p = points[id] as Vec;
     const { i, j } = place(p);
-    const q = {
-      x: p.x - u.x * i - v.x * j,
-      y: p.y - u.y * i - v.y * j,
-    };
-    // The same central point from another copy: merged within SNAP.
-    const near = pointId(q);
-    let k = homes.get(String(near));
-    if (k === undefined) {
-      k = vertices.length;
-      homes.set(String(near), k);
-      vertices.push({ at: q, out: [] });
+    const q = { x: p.x - u.x * i - v.x * j, y: p.y - u.y * i - v.y * j };
+    // A point on the tile's edge may land on either side of it: the copy
+    // one slide over is the same vertex.
+    let out: { k: number; di: number; dj: number } | undefined;
+    for (const [a, b] of [
+      [0, 0],
+      [1, 0],
+      [-1, 0],
+      [0, 1],
+      [0, -1],
+      [1, 1],
+      [1, -1],
+      [-1, 1],
+      [-1, -1],
+    ] as const) {
+      const k = vertexNear({
+        x: q.x + u.x * a + v.x * b,
+        y: q.y + u.y * a + v.y * b,
+      });
+      if (k !== undefined) {
+        out = { k, di: i - a, dj: j - b };
+        break;
+      }
     }
-    const out = { k, di: i, dj: j };
+    if (!out) {
+      const k = vertices.length;
+      vertices.push({ at: q, out: [] });
+      const key = bucket(q.x, q.y);
+      const list = vertexGrid.get(key);
+      if (list) list.push(k);
+      else vertexGrid.set(key, [k]);
+      out = { k, di: i, dj: j };
+    }
     homeOf.set(id, out);
     return out;
   };
@@ -244,36 +305,33 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
       const vx = vertices[h.k] as Vertex;
       // Each band once: copies of the tile give the same edge again.
       const dir = { x: (pb.x - pa.x) / len, y: (pb.y - pa.y) / len };
-      if (
-        vx.out.some(
-          (o) =>
-            Math.abs(o.dir.x - dir.x) < 1e-6 &&
-            Math.abs(o.dir.y - dir.y) < 1e-6,
-        )
-      )
-        continue;
+      if (vx.out.some((o) => same(o.dir, dir))) continue;
       vx.out.push({ dir, to: t.k, di: t.di, dj: t.dj, len });
     }
 
-  // Which bands at a vertex run straight on: the pairs of opposite ones.
-  // A crossing has exactly two pairs; a bend has two bands, not opposite.
-  const straight = vertices.map((vx) => {
-    const pair = vx.out.map((o) =>
-      vx.out.findIndex(
-        (p) =>
-          Math.abs(p.dir.x + o.dir.x) < 1e-6 &&
-          Math.abs(p.dir.y + o.dir.y) < 1e-6,
-      ),
-    );
-    return pair;
-  });
-  const kind = vertices.map((vx, k) => {
-    const pair = straight[k] as number[];
-    const n = vx.out.length;
-    if (n === 4 && pair.every((p) => p >= 0)) return 'cross';
-    if (n === 2) return 'bend';
-    return n > 2 ? 'flat' : 'end';
-  });
+  // How the bands go through each vertex. A band runs straight on where
+  // the opposite direction leaves too; `opposite[k][o]` is that band,
+  // else -1. Two directions that are not opposite make a bend.
+  const opposite = vertices.map((vx) =>
+    vx.out.map((o) =>
+      vx.out.findIndex((p) => same(p.dir, { x: -o.dir.x, y: -o.dir.y })),
+    ),
+  );
+  /** How many bands run straight through each vertex. */
+  const through = opposite.map((a) => a.filter((x) => x >= 0).length / 2);
+  /** A crossing: exactly two bands straight through, and nothing else. */
+  const isCross = vertices.map(
+    (vx, k) => vx.out.length === 4 && through[k] === 2,
+  );
+  // Flat: where bands meet and nothing weaves (a T, three or more bands
+  // at one point, bands that only touch, or a band's end).
+  const flat = vertices
+    .filter(
+      (vx, k) =>
+        !isCross[k] && !(vx.out.length === 2 && (through[k] as number) <= 1),
+    )
+    .map((vx) => vx.at);
+
   /** The two lines through each crossing, 0 and 1: a band and the one
    * opposite it make a line, and line 0 is the one at the smaller angle
    * in [0°, 180°). */
@@ -284,17 +342,12 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
     return a;
   };
   const labels = vertices.map((vx, k) => {
-    if (kind[k] !== 'cross') return [];
-    const pair = straight[k] as number[];
-    const first = [0, pair[0] as number];
-    const firstAngle = Math.min(
-      ...first.map((i) => ang((vx.out[i] as Vertex['out'][number]).dir)),
-    );
+    if (!isCross[k]) return [];
+    const first = [0, (opposite[k] as number[])[0] as number];
+    const smallest = (is: number[]) =>
+      Math.min(...is.map((i) => ang((vx.out[i] as Out).dir)));
     const other = [0, 1, 2, 3].filter((i) => !first.includes(i));
-    const otherAngle = Math.min(
-      ...other.map((i) => ang((vx.out[i] as Vertex['out'][number]).dir)),
-    );
-    const firstLine = firstAngle < otherAngle ? 0 : 1;
+    const firstLine = smallest(first) < smallest(other) ? 0 : 1;
     return [0, 1, 2, 3].map((i) =>
       first.includes(i) ? firstLine : 1 - firstLine,
     );
@@ -303,77 +356,149 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
   const lineAt = (k: number, dir: Vec) => {
     const vx = vertices[k] as Vertex;
     const i = vx.out.findIndex(
-      (o) => Math.abs(o.dir.x * dir.y - o.dir.y * dir.x) < 1e-6,
+      (o) => Math.abs(o.dir.x * dir.y - o.dir.y * dir.x) < SAME,
     );
     return (labels[k] as number[])[i] as number;
   };
 
   /**
-   * From a crossing along one of its bands to the next crossing: the
-   * crossing reached, its slide, the line the band arrives on there, and
-   * the length of the straight run from the start (the first edge).
+   * From a crossing along one of its bands: the next crossing (its vertex,
+   * slide and the line the band arrives on), how many times the band
+   * swaps on the way at points where several bands cross at once, and the
+   * path of the band, as far as this crossing may redraw it: halfway to
+   * the next crossing or to a point where several bands cross, or all the
+   * way to where the band ends. A band that ends (`open`) has no next
+   * crossing.
    */
-  const walk = (o: Vertex['out'][number]) => {
-    let at = o.to;
-    let di = o.di;
-    let dj = o.dj;
-    let dir = o.dir;
-    for (let steps = 0; steps < 10_000; steps++) {
-      const kd = kind[at];
-      if (kd === 'cross') return { k: at, di, dj, line: lineAt(at, dir) };
-      if (kd !== 'bend') return undefined;
+  const walk = (start: number, first: Out) => {
+    const path: Vec[] = [(vertices[start] as Vertex).at];
+    /** The path's length, and where its drawing must stop. */
+    let length = 0;
+    let stop: number | undefined;
+    let at = start;
+    let di = 0;
+    let dj = 0;
+    let step = first;
+    let swaps = 0;
+    const result = (
+      next: { k: number; di: number; dj: number; line: number } | undefined,
+      reach: number,
+    ) => ({ next, swaps, path: cut(path, reach), open: !next });
+    for (let n = 0; n < 4 * vertices.length + 8; n++) {
+      const dir = step.dir;
+      at = step.to;
+      di += step.di;
+      dj += step.dj;
       const vx = vertices[at] as Vertex;
-      // Leave by the other band: not the one back the way we came.
-      const back = { x: -dir.x, y: -dir.y };
-      const next = vx.out.find(
-        (n) =>
-          Math.abs(n.dir.x - back.x) > 1e-6 ||
-          Math.abs(n.dir.y - back.y) > 1e-6,
+      if (stop === undefined) {
+        length += step.len;
+        path.push({
+          x: vx.at.x + u.x * di + v.x * dj,
+          y: vx.at.y + u.y * di + v.y * dj,
+        });
+      }
+      if (isCross[at])
+        return result(
+          { k: at, di, dj, line: lineAt(at, dir) },
+          (stop ?? length) / 2,
+        );
+      // On along the band: straight through, or round a bend.
+      const straight = vx.out.find((p) => same(p.dir, dir));
+      if (straight) {
+        // Several bands crossing here at once: the band swaps once for
+        // each other band, and the point is drawn flat, so the path stops.
+        const others = (through[at] as number) - 1;
+        if (others >= 1) {
+          swaps += others;
+          stop ??= length;
+        }
+        step = straight;
+        continue;
+      }
+      // Round a bend: the two directions here that no band runs straight
+      // through, when there are just two (another band may run straight
+      // through the same point, touching the bend).
+      const loose = vx.out.filter(
+        (_, x) => (opposite[at] as number[])[x] === -1,
       );
-      if (!next) return undefined;
-      at = next.to;
-      di += next.di;
-      dj += next.dj;
-      dir = next.dir;
+      if (loose.length === 2) {
+        const back = { x: -dir.x, y: -dir.y };
+        const turn = loose.find((p) => !same(p.dir, back));
+        if (turn && loose.some((p) => same(p.dir, back))) {
+          step = turn;
+          continue;
+        }
+      }
+      // The band ends here, alone or against another band.
+      return result(undefined, stop === undefined ? length : stop / 2);
     }
-    return undefined;
+    return result(undefined, (stop ?? length) / 2);
   };
 
-  const crossings = vertices
-    .map((_, k) => k)
-    .filter((k) => kind[k] === 'cross');
-  const flat = vertices.filter((_, k) => kind[k] === 'flat').map((x) => x.at);
+  const crossings = vertices.map((_, k) => k).filter((k) => isCross[k]);
 
   // The links: crossing a (line la) and crossing b at slide (di, dj)
-  // (line lb) are next along a band, so exactly one of the two has that
-  // band on top.
-  const links: {
+  // (line lb) are next along a band, with `swaps` more swaps between.
+  interface Link {
     a: number;
     la: number;
     b: number;
     lb: number;
     di: number;
     dj: number;
-  }[] = [];
+    swaps: number;
+  }
+  const links: Link[] = [];
+  /** The path of each band out of each crossing, by its out index. */
+  const paths = new Map<number, Vec[][]>();
+  /** Bands that end somewhere: their crossings, as k * 2 + line. */
+  const ends = new Set<number>();
   for (const a of crossings) {
     const vx = vertices[a] as Vertex;
+    const mine: Vec[][] = [];
     for (const o of vx.out) {
-      const to = walk(o);
-      if (!to) continue;
-      links.push({
-        a,
-        la: lineAt(a, o.dir),
-        b: to.k,
-        lb: to.line,
-        di: to.di,
-        dj: to.dj,
-      });
+      const w = walk(a, o);
+      mine.push(w.path);
+      const la = lineAt(a, o.dir);
+      if (w.next)
+        links.push({
+          a,
+          la,
+          b: w.next.k,
+          lb: w.next.line,
+          di: w.next.di,
+          dj: w.next.dj,
+          swaps: w.swaps,
+        });
+      else ends.add(a * 2 + la);
     }
+    paths.set(a, mine);
   }
 
-  // Solve over the smallest repeat that works: each crossing of the repeat
-  // is one unknown (which line is on top), and the links say two unknowns
-  // differ or agree. Union-find with parity.
+  // Whole bands first: a band that never ends is a loop or runs on for
+  // ever, and those always weave (the chessboard colouring). A band that
+  // ends can ask for a swap the others have already settled; its links
+  // go last, and one that disagrees is left as it falls and counted.
+  const strand = new UnionFind(vertices.length * 2);
+  for (const l of links) strand.union(l.a * 2 + l.la, l.b * 2 + l.lb, 0);
+  const endsAt = new Set([...ends].map((x) => strand.find(x)[0]));
+  const isOpen = (l: Link) => endsAt.has(strand.find(l.a * 2 + l.la)[0]);
+  const ordered = [
+    ...links.filter((l) => !isOpen(l)),
+    ...links.filter((l) => isOpen(l)),
+  ];
+
+  // Solve over the smallest repeat that works: each crossing of the
+  // repeat is one unknown (which line is on top), and each link says two
+  // unknowns differ or agree.
+  let best:
+    | {
+        m: number;
+        n: number;
+        broken: number;
+        top: (k: number, i: number, j: number) => number;
+      }
+    | undefined;
   for (const [m, n] of [
     [1, 1],
     [2, 1],
@@ -382,81 +507,117 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
   ] as const) {
     const id = (k: number, i: number, j: number) =>
       (k * m + (((i % m) + m) % m)) * n + (((j % n) + n) % n);
-    const size = crossings.length ? Math.max(...crossings) + 1 : 0;
-    const parent = Array.from({ length: size * m * n }, (_, x) => x);
-    const parity = new Array<number>(size * m * n).fill(0);
-    const find = (x: number): [number, number] => {
-      let p = 0;
-      let r = x;
-      while (parent[r] !== r) {
-        p ^= parity[r] as number;
-        r = parent[r] as number;
-      }
-      // Path compression with parity.
-      let y = x;
-      let py = p;
-      while (parent[y] !== y) {
-        const next = parent[y] as number;
-        const pn = py ^ (parity[y] as number);
-        parent[y] = r;
-        parity[y] = py;
-        y = next;
-        py = pn;
-      }
-      return [r, p];
-    };
-    let ok = true;
-    for (let i = 0; i < m && ok; i++)
-      for (let j = 0; j < n && ok; j++)
-        for (const l of links) {
-          // top(a) is la xor (unknown a): the band is on top at a when
-          // unknown a equals la. It must be on top at exactly one end:
-          // (xa == la) != (xb == lb), so xa ^ xb = 1 ^ la ^ lb.
-          const want = 1 ^ l.la ^ l.lb;
-          const [ra, pa] = find(id(l.a, i, j));
-          const [rb, pb] = find(id(l.b, i + l.di, j + l.dj));
-          if (ra === rb) {
-            if ((pa ^ pb) !== want) {
-              ok = false;
-              break;
-            }
-          } else {
-            parent[ra] = rb;
-            parity[ra] = pa ^ pb ^ want;
-          }
-        }
-    if (!ok) continue;
-    const out: WeaveCrossing[] = [];
+    const uf = new UnionFind(vertices.length * m * n);
+    let broken = 0;
     for (let i = 0; i < m; i++)
       for (let j = 0; j < n; j++)
-        for (const k of crossings) {
-          const vx = vertices[k] as Vertex;
-          const [, p] = find(id(k, i, j));
-          const lines = [0, 1].map((line) =>
-            vx.out.filter((o) => lineAt(k, o.dir) === line),
-          );
-          const top = lines[p] ?? [];
-          const bottom = lines[1 - p] ?? [];
-          const over = top[0]?.dir as Vec;
-          const under = bottom[0]?.dir as Vec;
-          out.push({
-            at: {
-              x: vx.at.x + u.x * i + v.x * j,
-              y: vx.at.y + u.y * i + v.y * j,
-            },
-            i,
-            j,
-            over,
-            under,
-            room: Math.min(...top.map((o) => o.len)),
-          });
+        for (const l of ordered) {
+          // top(a) is la xor (unknown a): the band is on top at a when
+          // unknown a equals la. It swaps 1 + swaps times on the way to b:
+          // (xa == la) xor (xb == lb) = 1 xor swaps, so
+          // xa ^ xb = 1 ^ swaps ^ la ^ lb (mod 2).
+          const want = (1 ^ l.swaps ^ l.la ^ l.lb) & 1;
+          if (!uf.union(id(l.a, i, j), id(l.b, i + l.di, j + l.dj), want))
+            broken++;
         }
-    return { repeat: [m, n], crossings: out, flat };
+    if (!best || broken < best.broken)
+      best = {
+        m,
+        n,
+        broken,
+        top: (k, i, j) => uf.find(id(k, i, j))[1],
+      };
+    if (broken === 0) break;
   }
-  // No repeat up to two tiles each way alternates: leave it all flat.
-  return {
-    repeat: [1, 1],
-    crossings: [],
-    flat: [...flat, ...crossings.map((k) => (vertices[k] as Vertex).at)],
-  };
+
+  const out: WeaveCrossing[] = [];
+  const { m, n, broken, top } = best as NonNullable<typeof best>;
+  for (let i = 0; i < m; i++)
+    for (let j = 0; j < n; j++)
+      for (const k of crossings) {
+        const vx = vertices[k] as Vertex;
+        const line = top(k, i, j);
+        const ups = vx.out
+          .map((o, x) => ({ o, x }))
+          .filter(({ o }) => lineAt(k, o.dir) === line);
+        const downs = vx.out.filter((o) => lineAt(k, o.dir) !== line);
+        const shift = (q: Vec) => ({
+          x: q.x + u.x * i + v.x * j,
+          y: q.y + u.y * i + v.y * j,
+        });
+        const [fore, back] = ups;
+        const mine = paths.get(k) as Vec[][];
+        out.push({
+          at: shift(vx.at),
+          i,
+          j,
+          over: (fore as { o: Out }).o.dir,
+          under: (downs[0] as Out).dir,
+          ahead: (mine[(fore as { x: number }).x] as Vec[]).map(shift),
+          behind: (mine[(back as { x: number }).x] as Vec[]).map(shift),
+        });
+      }
+  return { repeat: [m, n], crossings: out, flat, broken };
+}
+
+/** A path's first `length`, cut part way along a piece if need be. */
+function cut(path: readonly Vec[], length: number): Vec[] {
+  const out: Vec[] = [path[0] as Vec];
+  let left = length;
+  for (let i = 1; i < path.length; i++) {
+    const a = path[i - 1] as Vec;
+    const b = path[i] as Vec;
+    const d = Math.hypot(b.x - a.x, b.y - a.y);
+    if (d >= left) {
+      if (left > 0)
+        out.push({
+          x: a.x + ((b.x - a.x) * left) / d,
+          y: a.y + ((b.y - a.y) * left) / d,
+        });
+      return out;
+    }
+    out.push(b);
+    left -= d;
+  }
+  return out;
+}
+
+/** Union-find where each member carries a parity against its root. */
+class UnionFind {
+  private readonly parent: number[];
+  private readonly parity: number[];
+  constructor(size: number) {
+    this.parent = Array.from({ length: size }, (_, x) => x);
+    this.parity = new Array<number>(size).fill(0);
+  }
+  /** The root of x and x's parity against it. */
+  find(x: number): [number, number] {
+    let p = 0;
+    let r = x;
+    while (this.parent[r] !== r) {
+      p ^= this.parity[r] as number;
+      r = this.parent[r] as number;
+    }
+    // Path compression, keeping each parity against the root.
+    let y = x;
+    let py = p;
+    while (this.parent[y] !== y) {
+      const next = this.parent[y] as number;
+      const pn = py ^ (this.parity[y] as number);
+      this.parent[y] = r;
+      this.parity[y] = py;
+      y = next;
+      py = pn;
+    }
+    return [r, p];
+  }
+  /** Ask that x and y differ by `want`; false if they already disagree. */
+  union(x: number, y: number, want: number): boolean {
+    const [rx, px] = this.find(x);
+    const [ry, py] = this.find(y);
+    if (rx === ry) return (px ^ py) === want;
+    this.parent[rx] = ry;
+    this.parity[rx] = px ^ py ^ want;
+    return true;
+  }
 }

@@ -29,6 +29,15 @@ const unit = (a: Vec2) => {
   return { x: a.x / l, y: a.y / l };
 };
 
+const pathLength = (path: readonly Vec2[]) =>
+  path
+    .slice(1)
+    .reduce(
+      (sum, q, k) =>
+        sum + Math.hypot(...Object.values(sub(q, path[k] as Vec2))),
+      0,
+    );
+
 /**
  * Checks the weave from the ink alone, by following each band: from every
  * crossing, along its top band and along its bottom band, past bends, to
@@ -160,6 +169,68 @@ describe('weave', () => {
     expect(horizontalOnTop(0, 0)).not.toBe(horizontalOnTop(0, 1));
   });
 
+  it('follows a band through points where its ink was only cut', () => {
+    // The same grid as above, each line cut into many short pieces.
+    const pieces = (a: Vec2, b: Vec2, n: number) =>
+      Array.from({ length: n }, (_, k) =>
+        segment(
+          { x: a.x + ((b.x - a.x) * k) / n, y: a.y + ((b.y - a.y) * k) / n },
+          {
+            x: a.x + ((b.x - a.x) * (k + 1)) / n,
+            y: a.y + ((b.y - a.y) * (k + 1)) / n,
+          },
+        ),
+      );
+    const w = weave(
+      [
+        ...pieces({ x: 0, y: 0.5 }, { x: 1, y: 0.5 }, 7),
+        ...pieces({ x: 0.5, y: 0 }, { x: 0.5, y: 1 }, 9),
+      ],
+      square,
+    );
+    expect(w.repeat).toEqual([2, 2]);
+    expect(w.crossings).toHaveLength(4);
+    expect(w.flat).toEqual([]);
+    // The next crossing along every band is one tile away: each crossing
+    // may redraw its top band halfway there, either way.
+    for (const c of w.crossings) {
+      expect(pathLength(c.ahead)).toBeCloseTo(0.5, 9);
+      expect(pathLength(c.behind)).toBeCloseTo(0.5, 9);
+    }
+  });
+
+  it('follows the top band round its bends', () => {
+    // A square grid of zigzags: two bands cross at (0.5, 0.5), each with a
+    // bend a short way off; the paths turn there.
+    const w = weave(
+      [
+        segment({ x: 0, y: 0.5 }, { x: 0.45, y: 0.5 }),
+        segment({ x: 0.45, y: 0.5 }, { x: 0.6, y: 0.5 }),
+        segment({ x: 0.6, y: 0.5 }, { x: 0.7, y: 0.6 }),
+        segment({ x: 0.7, y: 0.6 }, { x: 0.8, y: 0.5 }),
+        segment({ x: 0.8, y: 0.5 }, { x: 1, y: 0.5 }),
+        segment({ x: 0.5, y: 0 }, { x: 0.5, y: 1 }),
+      ],
+      square,
+    );
+    // Where the horizontal band is on top, its path to the right goes
+    // up and down the bend, halfway along the band to the next crossing
+    // (one tile on, the band being 0.8 + 0.2√2 long in each tile).
+    const along = w.crossings.find((c) => Math.abs(c.over.y) < 1e-9);
+    const right = along && (along.over.x > 0 ? along.ahead : along.behind);
+    const start = right?.[0] as Vec2;
+    expect(right?.map((q) => sub(q, start))).toContainEqual(
+      expect.objectContaining({
+        x: expect.closeTo(0.2, 9),
+        y: expect.closeTo(0.1, 9),
+      }),
+    );
+    expect(pathLength(right ?? [])).toBeCloseTo(
+      (0.8 + 0.2 * Math.SQRT2) / 2,
+      9,
+    );
+  });
+
   it('leaves a point where three bands cross flat', () => {
     const w = weave(
       [
@@ -194,10 +265,21 @@ describe('weave', () => {
         p.ink.map((s) => s.segment),
         p.cell,
       );
+      // Every crossing is woven, with no step along a band left unswapped.
+      expect(w.broken).toBe(0);
+      // Each top band can be redrawn some way either side of its crossing:
+      // its paths follow it past bends and cuts in the ink (Bou Inania's
+      // ink is cut every few hundredths), so they are never tiny.
+      const xs = p.cell.corners.map((q) => q.x);
+      const size = Math.max(...xs) - Math.min(...xs);
       for (const c of w.crossings) {
         expect(Math.hypot(c.over.x, c.over.y)).toBeCloseTo(1, 9);
         expect(parallel(c.over, c.under)).toBe(false);
-        expect(c.room).toBeGreaterThan(0);
+        for (const path of [c.ahead, c.behind]) {
+          expect(path[0]).toEqual(c.at);
+          expect(pathLength(path)).toBeGreaterThan(size * 0.01);
+        }
+        expect(parallel(sub(c.ahead[1] as Vec2, c.at), c.over)).toBe(true);
       }
       // Followed from the ink alone, each band swaps from crossing to
       // crossing; every tutorial with crossings has bands to follow.

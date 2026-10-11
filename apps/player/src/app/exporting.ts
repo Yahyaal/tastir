@@ -2,7 +2,7 @@ import { jaliTextureSvg } from './jaliTexture';
 import type { JaliAppearance } from '@tastir/schema';
 import type { Vec } from '@tastir/engine';
 import type { Model } from './model';
-import { patchesAt } from './interlace';
+import { patchesAt, patchPath } from './interlace';
 import { banded, type WallStyle } from './Wall';
 import { strapWidths } from './drawing';
 import { DEFAULT_JALI, jaliLayers, jaliLight, latticeWidth } from './jali';
@@ -171,9 +171,14 @@ export function wallSvg(
       for (const d of shifts) {
         const zero = { x: 0, y: 0 };
         for (const p of patchesAt(model.pattern, d.i, d.j, groutWidth * 4)) {
-          if (!inView([p.a, p.b], zero)) continue;
-          body.push(line(p.a, p.b, zero, INK, 4, 'butt'));
-          body.push(line(p.inA, p.inB, zero, BAND, 2.4, 'butt'));
+          if (!inView(p.band, zero)) continue;
+          for (const [ps, color, k] of [
+            [p.edge, INK, 4],
+            [p.band, BAND, 2.4],
+          ] as const)
+            body.push(
+              `<path d="${patchPath(ps, (q) => pt(q, zero).replace(',', ' '))}" fill="none" stroke="${color}" stroke-width="${f(groutWidth * k)}" stroke-linecap="butt" stroke-linejoin="round"/>`,
+            );
         }
       }
   }

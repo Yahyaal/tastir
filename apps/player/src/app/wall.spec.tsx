@@ -128,6 +128,38 @@ describe('the wall', () => {
       expect(over?.getAttribute('d')?.split('M').length).toBe(9 * 2 + 1);
       expect(over?.getAttribute('stroke-linecap')).toBe('butt');
     }
+    // Each piece lies on the bands it is redrawing, in the copy of the
+    // tile it belongs to (not slid a second time).
+    const pairs = (d: string) =>
+      d
+        .split('M')
+        .filter(Boolean)
+        .map((run) =>
+          run.split('L').map((q) => {
+            const [x, y] = q.trim().split(/\s+/).map(Number);
+            return { x: x as number, y: y as number };
+          }),
+        );
+    const bands = pairs(
+      container.querySelector('.band-out path')?.getAttribute('d') ?? '',
+    );
+    const onBand = (q: { x: number; y: number }) =>
+      bands.some(([a, b]) => {
+        if (!a || !b) return false;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const t = ((q.x - a.x) * dx + (q.y - a.y) * dy) / (dx * dx + dy * dy);
+        const gap = Math.abs((q.x - a.x) * dy - (q.y - a.y) * dx);
+        return t > -1e-6 && t < 1 + 1e-6 && gap / Math.hypot(dx, dy) < 1e-6;
+      });
+    const patches = pairs(
+      container.querySelector('path.over-out')?.getAttribute('d') ?? '',
+    );
+    expect(patches.length).toBe(9 * 2);
+    for (const run of patches)
+      // Its inner points (the crossing among them); its ends may reach
+      // a little into a copy of the tile the test does not draw.
+      for (const q of run.slice(1, -1)) expect(onBand(q)).toBe(true);
     expect(
       container
         .querySelector('svg.wall')
