@@ -51,3 +51,10 @@ More Alhambra panels from Wichmann's Tiling Search, each paired with David Wade'
   3. Eight-fold squares: variants of the star and cross (star and octagon, khatam patterns) with photos.
 - [ ] **Format idea: ink along a line between crossings.** Let an ink path name a line and the lines it runs between, so tutorials need no step that only marks turning points (four-fold ring of circles has two such steps, 360 marks).
 - [ ] **User-made designs (future).** Note what the player needs so learners can generate new designs from a construction.
+
+## Owner decisions, 11 October 2026
+
+- [x] Publish `eight-fold-khatam` as an unverified Safavid study and `eight-fold-star-and-octagon` as an intermediate Mughal study on `codex/jali`; historical matches remain unverified. This replaces the previous requirement to hold these two drawings out of the library.
+- [x] Keep `ten-pointed-star-decagon-rect` with an explicit unverified historical-match label.
+- [ ] Reconstruct the authentic Darb-e Imam spandrel separately. The existing Upcoming target `darb-e-imam-decagram` now cites Lu & Steinhardt (2007), Figure 3. Use their reference photograph and subdivision diagrams to define a bounded panel, then check an overlay. The generic rectangular study is not that panel.
+- [ ] Future community contributions: the owner wants people to contribute designs and grow the library. Plan a submission/review workflow that keeps construction studies distinct from verified historical reconstructions.

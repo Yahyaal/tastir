@@ -44,6 +44,12 @@ The two new eight-fold tutorials stay on `patterns/khatam`: neither overlay matc
 
 **Next for Claude:** the follow-ups in [the afternoon prompts](prompts/team-2026-10-10b.md): Ink under one second in the browser, the two eight-fold tutorials, and Grok's empty crop pull request.
 
+### Owner review decisions, 11 October 2026
+
+On `codex/jali`, the owner approved the Jali appearance and suggested separate background/framework colors and material finishes. These controls are proposed next work, not implemented yet. The owner also approved keeping `eight-fold-khatam` as an unverified Safavid study, publishing `eight-fold-star-and-octagon` at intermediate level, and keeping `ten-pointed-star-decagon-rect` as an unverified rectangular study. Both eight-fold tutorials are now included on this branch, and all three studies show their historical verification status in the library and player. This overrides the older hold instructions for these drawings; it does not establish a photographic match.
+
+The authentic Darb-e Imam spandrel was already in Upcoming. Its entry now points to Lu & Steinhardt’s Figure 3, removes the unrelated rectangular instructions and generated finished drawing, and labels the remaining preview as schematic. The owner wants public contributions to grow the library later; publishing a construction study and verifying its historical match remain separate decisions. All four review questions are resolved. See [the recorded answers](testing/review-decisions-2026-10-11.md).
+
 ### What is built (6–8 October)
 
 **Added on 11 October, branch `codex/jali`:** Task 2.1 adds a Jali stone-screen appearance to the finished wall. Choose Style → Jali at Color, then adjust Lattice. Saved designs, share links, thumbnails and SVG/PNG preserve it; changing back to Tiles restores the colors. The review page has labelled screenshots and an appearance question. See [the implementation and testing report](testing/jali-2026-10-11.md). Geometry and tutorial content are unchanged.

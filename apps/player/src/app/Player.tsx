@@ -617,6 +617,12 @@ export function Player({
             <div className="text">
               <p className="label">{label}</p>
               {hint ? <p className="stage-hint">{hint}</p> : null}
+              {tutorial.verification?.status === 'unverified' ? (
+                <details className="verification-note">
+                  <summary>Historical match unverified</summary>
+                  <p>{tutorial.verification.note}</p>
+                </details>
+              ) : null}
               {stage.kind === 'color' && narrow ? saveDesign : null}
               <p className="instruction" aria-live="polite">
                 {text}

@@ -38,13 +38,15 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'eight-fold-khatam',
     title: 'Eight-fold khatam',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You (11 October): Keep this as an unverified Safavid khatam drawing. It is now in the library with a historical-match label; future community contributions may provide a matching reference.',
     summary:
-      'Eight-pointed khatam stars with crossing diagonal bands, credited to Al-Hakim Mosque in Isfahan. Free Sikandra photo dropped due to band lattice mismatch; do not ship without verified photo.',
+      'A Safavid khatam construction study after Sandy Kurt, kept in the library without claiming a verified match to the Hakim Mosque woodwork.',
     story: [
       'The construction follows Sandy Kurt’s tutorial “4fold Pattern from Al-Hakim Mosque, Isfahan” (steps 4–9), establishing a unit circle divided into eight parts, static and dynamic squares, radius-0.5 circles, and diagonal facet lines.',
       'We tested a 1 px red overlay (photo-overlay.png) against the free Wikimedia Commons candidate from the carved sandstone jali at Akbar’s Tomb in Sikandra (CC BY-SA 4.0 by LBM1948). While the eight-pointed stars align with the star voids, the band lattice does not match: the Sikandra jali features diamond (45°) and cartouche voids where our construction builds small squares, green hexagons, and white kites.',
-      'The only free Commons candidate of the Al-Hakim Mosque minbar woodwork (“Rotten green design.jpg”) shows a damaged panel with the central star completely rotted away and missing, and continuous strap planks rather than mosaic tile facets. With no free photo matching line-for-line, we drop the Sikandra photo and recommend not shipping this tutorial until an authentic, matching panel photo is found.',
+      'The only free Commons candidate of the Al-Hakim Mosque minbar woodwork (“Rotten green design.jpg”) shows a damaged panel with the central star completely rotted away and missing, and continuous strap planks rather than mosaic tile facets. No matching free photo was found. The owner approved keeping the drawing as an unverified study on 11 October; the mismatching Sikandra photo is not shipped with it.',
     ],
     pictures: [
       {
@@ -61,9 +63,7 @@ export const PATTERNS: readonly Pattern[] = [
         caption: 'The static tile pieces.',
       },
     ],
-    asks: [
-      'Should we drop eight-fold-khatam from the library until a verified matching photo of the Hakim Mosque woodwork or another authentic panel is found?',
-    ],
+    asks: [],
     sources: [
       {
         label: 'Sandy Kurt, 4fold Pattern from Al-Hakim Mosque, Isfahan',
@@ -75,19 +75,21 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'eight-fold-star-and-octagon',
     title: 'Eight-fold star and octagon',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You (11 October): Ship this Mughal star-and-octagon drawing at intermediate level. It is now in the library; its historical photo match remains unverified.',
     summary:
-      'Eight-pointed stars alternating with regular octagons and small squares, from the Tomb of I’timād-ud-Daulah in Agra.',
+      'An intermediate Mughal star-and-octagon study after Sandy Kurt. The monument photograph is a historical reference, not a verified match.',
     story: [
       'From the pietra dura marble inlay panels on the exterior wall of the Tomb of I’timād-ud-Daulah in Agra (Mughal, 1622–1628 CE), documented in Sandy Kurt’s tutorial “4fold Pattern from the Tomb of Itimud ad-Daula”.',
       'The construction establishes a circle divided into eight parts, static and dynamic squares, and small circles of radius 0.5 at the centre and axes. The dynamic square tile carries an eight-pointed star at the centre and corner points that tile with regular octagons and small squares, forming clean eight-pointed stars across the wall with no stray lines.',
-      'We verified the tutorial line-for-line against a straight-on Wikimedia Commons photo of the exterior wall panel (CC BY-SA 4.0 by Sabyasachi Paldas). In the 1 px red overlay (photo-overlay.png), every band and star outline aligns exactly with the marble inlay lines.',
+      'The earlier line-for-line verification claim was rejected in the 10 October team review: the repeat orientation and alignment do not match the monument panel. The owner approved publishing the intermediate drawing on 11 October. Historical verification remains pending.',
     ],
     pictures: [
       {
         src: 'renders/eight-fold-star-and-octagon/photo-overlay.png',
         caption:
-          'Our lines (red, 1 px) overlaid on the Tomb of I’timād-ud-Daulah marble inlay panel (CC BY-SA 4.0 by Sabyasachi Paldas): an exact line-for-line match.',
+          'Our lines (red, 1 px) overlaid on the Tomb of I’timād-ud-Daulah marble inlay panel (CC BY-SA 4.0 by Sabyasachi Paldas): the historical match remains unverified.',
       },
       {
         src: 'renders/eight-fold-star-and-octagon/wall.png',
@@ -99,9 +101,7 @@ export const PATTERNS: readonly Pattern[] = [
         caption: 'The dynamic square tile pieces.',
       },
     ],
-    asks: [
-      'Should we ship this Mughal eight-fold star and octagon panel in the library with level intermediate?',
-    ],
+    asks: [],
     sources: [
       {
         label: 'Sandy Kurt, 4fold Pattern from the Tomb of Itimud ad-Daula',
@@ -118,21 +118,22 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'ten-pointed-star-decagon-rect',
     title: 'Ten-pointed star and decagon, rectangular repeat',
     fold: 10,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You (11 October): Keep this as an unverified ten-fold rectangular repeat. Research the authentic Darb-e Imam pattern separately in Upcoming.',
     summary:
-      'A ten-pointed star with concentric decagonal rings repeated in a rectangular cell. Previously claimed as Darb-e Imam, but needs review.',
+      'A ten-pointed star and decagon construction study in a rectangular repeat, kept with an unverified historical-match label.',
     story: [
       'This tutorial was drafted as a 10-fold pattern repeated across a rectangular tile. It was previously labeled as the Darb-e Imam portal girih tiling, but that shrine portal features a famous two-level quasi-crystalline girih pattern which this rectangular repeat is not, and it was never verified against a monument photograph.',
       'We renamed it to accurately describe what it is: "Ten-pointed star and decagon, rectangular repeat", and removed claims of being Darb-e Imam, world-renowned, or quasicrystalline.',
-      'The construction itself builds cleanly with ruler and compass (10 steps) and tiles periodically, but should be judged by the owner before remaining in the library.',
+      'The construction itself builds cleanly with ruler and compass (10 steps) and tiles periodically, and the owner approved keeping it as an unverified study on 11 October.',
     ],
     pictures: [],
-    asks: [
-      'Should we keep this tutorial as an unverified 10-fold rectangular repeat, or replace it with an authentic reconstruction of the actual Darb-e Imam portal or another verified 10-fold pattern?',
-    ],
+    asks: [],
     sources: [
       {
-        label: 'Darb-e Imam decagram study (Lu & Steinhardt, Science 2007)',
+        label:
+          'Separate upcoming Darb-e Imam reference (Lu & Steinhardt, Science 2007)',
         url: 'https://doi.org/10.1126/science.1135491',
       },
     ],
@@ -1393,6 +1394,16 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/jali/eight-fold-star-and-cross.png',
+        caption:
+          'Jali A — the owner approved this stone-screen appearance on 11 October.',
+      },
+      {
+        src: 'renders/jali/bou-inania-rosette.png',
+        caption:
+          'Jali B — the same finish on Bou Inania; background and framework color controls are proposed next.',
+      },
+      {
         src: 'renders/eight-fold-star-and-cross/compare-wall.png',
         caption: 'Left: the Kashan tiles. Right: our wall.',
       },
@@ -1425,71 +1436,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'jali-style-appearance',
-    text: 'How does the Jali stone screen look in A and B? Open either pattern at Color and choose Style → Jali to try the lattice width.',
-    choices: ['Looks good', 'Wider stone bands', 'Narrower stone bands'],
-    pictures: [
-      {
-        src: 'renders/jali/eight-fold-star-and-cross.png',
-        caption:
-          'A — Star and cross: open spaces, a marble-colored framework and light behind the screen.',
-      },
-      {
-        src: 'renders/jali/bou-inania-rosette.png',
-        caption:
-          'B — Bou Inania: the same stone finish on a dense repeat, with unchanged geometry.',
-      },
-    ],
-    card: 'eight-fold-star-and-cross',
-  },
-  {
-    id: 'eight-fold-khatam',
-    text: 'Should we drop eight-fold-khatam from the library until a verified matching photo of the Hakim Mosque woodwork or another authentic panel is found?',
-    choices: [
-      'Drop until verified matching photo is found',
-      'Keep as unverified Safavid khatam drawing',
-      'Remove from library permanently',
-    ],
-    pictures: [
-      {
-        src: 'renders/eight-fold-khatam/photo-overlay.png',
-        caption:
-          'Our lines (red) overlaid on the Sikandra jali: stars match, band lattice mismatches.',
-      },
-    ],
-    card: 'eight-fold-khatam',
-  },
-  {
-    id: 'eight-fold-star-and-octagon',
-    text: 'Should we ship this Mughal eight-fold star and octagon panel in the library with level intermediate?',
-    choices: [
-      'Ship with level intermediate',
-      'Revise construction',
-      'Remove from library',
-    ],
-    pictures: [
-      {
-        src: 'renders/eight-fold-star-and-octagon/photo-overlay.png',
-        caption:
-          'Our lines (red) overlaid on the Tomb of I’timād-ud-Daulah panel.',
-      },
-    ],
-    card: 'eight-fold-star-and-octagon',
-  },
-  {
-    id: 'ten-pointed-star-decagon-rect',
-    text: 'Should we keep this tutorial as an unverified 10-fold rectangular repeat, or replace it with an authentic reconstruction of the actual Darb-e Imam portal or another verified 10-fold pattern?',
-    choices: [
-      'Keep as unverified 10-fold rectangular repeat',
-      'Replace with authentic Darb-e Imam or verified 10-fold pattern',
-      'Remove from library',
-    ],
-    pictures: [],
-    card: 'ten-pointed-star-decagon-rect',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -1515,8 +1462,13 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Review decisions: keep the construction studies',
+      text: 'The khatam and star-and-octagon drawings are now playable, with their source credits and historical-match labels. Star and octagon is intermediate. The ten-fold rectangular study stays; authentic Darb-e Imam research stays in Upcoming. Approval to teach a drawing is separate from verifying its match to a monument. Future community contributions are part of the owner’s longer-term plan.',
+      link: { label: 'See the library', href: '/#/' },
+    },
+    {
       title: 'Jali: a pierced stone-screen style',
-      text: 'At Color, choose Style → Jali. The ink becomes a marble-colored framework with clear openings and a continuous backlit ground. Lattice adjusts its width. Saving, sharing, My designs previews, SVG and PNG keep the style and width; switching to Tiles restores your colors. Pictures A and B above show the new finish.',
+      text: 'At Color, choose Style → Jali. The ink becomes a marble-colored framework with clear openings and a continuous backlit ground. Lattice adjusts its width. Saving, sharing, My designs previews, SVG and PNG keep the style and width; switching to Tiles restores your colors. The owner approved the appearance on 11 October and proposed adjustable background/framework colors and material finishes next.',
       link: {
         label: 'Try Jali at Color',
         href: '/#/eight-fold-star-and-cross/result',

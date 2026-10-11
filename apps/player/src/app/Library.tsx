@@ -445,6 +445,7 @@ function CardView({
   const photos = preview?.photos ?? Boolean(model?.tutorial.photos?.length);
   const title = preview?.title ?? model?.tutorial.title ?? id;
   const level = preview?.level ?? model?.tutorial.level;
+  const verification = preview?.verification ?? model?.tutorial.verification;
   return (
     <li className="card-item">
       <a className="card" href={`#/${id}`}>
@@ -463,6 +464,11 @@ function CardView({
           <div className={error ? 'thumbnail broken' : 'thumbnail waiting'} />
         )}
         <h3>{title}</h3>
+        {verification?.status === 'unverified' ? (
+          <span className="verification-label" title={verification.note}>
+            Historical match unverified
+          </span>
+        ) : null}
         {ARABIC_TITLES[id] ? (
           <span className="card-arabic" lang="ar" dir="rtl">
             {ARABIC_TITLES[id]}

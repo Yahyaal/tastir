@@ -350,6 +350,13 @@ export const TutorialShape = z.strictObject({
   style: z.string().min(1),
   level: z.enum(['beginner', 'intermediate', 'advanced']),
   credits: z.array(Credit),
+  /** Historical verification is separate from approval to teach the drawing. */
+  verification: z
+    .strictObject({
+      status: z.enum(['unverified', 'verified']),
+      note: z.string().min(1),
+    })
+    .optional(),
   photos: z.array(Photo).optional(),
   given: z.strictObject({ O: z.string().min(1), A: z.string().min(1) }),
   steps: z.array(Step).min(1),

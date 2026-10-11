@@ -56,6 +56,7 @@ async function main() {
       fold: t.fold,
       steps: shownSteps(withHelpers(model, false).tutorial).length,
       photos: Boolean(t.photos?.length),
+      ...(t.verification ? { verification: t.verification } : {}),
       thumbnail: `thumbnails/${filename}`,
     });
   }
@@ -66,7 +67,10 @@ async function main() {
     if (/\.(svg|webp)$/.test(name) && !used.has(name))
       unlinkSync(resolve(thumbnails, name));
   }
-  writeFileSync(out, 'export default ' + JSON.stringify(catalog) + ';\n');
+  writeFileSync(
+    out,
+    'export default ' + JSON.stringify(catalog) + ' as const;\n',
+  );
   console.log(`Prepared ${catalog.length} library previews.`);
 }
 void main().catch((error) => {

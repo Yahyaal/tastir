@@ -31,6 +31,8 @@ export interface UpcomingPattern {
   readonly photoCaption?: string;
   readonly drawnUrl?: string;
   readonly drawnCaption?: string;
+  /** When the blueprint is only a schematic, rather than a reconstruction. */
+  readonly previewNote?: string;
   readonly drawingSteps: readonly DrawingStep[];
   readonly source: {
     readonly name: string;
@@ -137,13 +139,13 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
     period: '1453 CE',
     monument: 'Darb-e Imam Shrine Portal',
     location: 'Isfahan, Iran',
-    medium: 'Cut-tile glazed mosaic (haft-rangi & moarraq)',
+    medium: 'Geometric tile mosaic',
     phase: 'Phase 1 · Immediate',
     status: 'Researching',
     summary:
-      'Centered on a 10-pointed star with concentric rings of pentagons, bowties, and decagons. Researching authentic girih construction.',
+      'Research target: the two-scale girih pattern on the Darb-e Imam spandrel, documented in Figure 3 of Lu and Steinhardt (2007). This historical panel is separate from our unverified ten-fold rectangular study.',
     constructionNotes:
-      'Constructed using golden-ratio circle divisions (36° intervals) with nested decagons and pentagonal compass crossings.',
+      'Reconstruct a bounded panel from the published photograph and girih subdivision diagrams, then verify the linework against the reference. A repeating rectangular cell is not a verified construction of this panel.',
     photo: {
       file: 'darb-e-imam-portal.jpg',
       caption:
@@ -153,46 +155,12 @@ export const UPCOMING_PATTERNS: readonly UpcomingPattern[] = [
       url: 'https://doi.org/10.1126/science.1135491',
       private: true,
     },
-    drawnUrl: 'upcoming/darb-e-imam-decagram-drawn.png',
-    drawnCaption:
-      'Finished 10-fold Girih decagram tiling render in the Tastir atelier',
-    drawingSteps: [
-      {
-        step: 1,
-        title: 'Euclidean Golden Section & 10 Points',
-        instruction:
-          'Draw base circle c about O and rule perpendicular axes. Find midpoint M(-0.5, 0), swing arc through (0, 1) down to horizontal axis at golden section point F = (\u221a5 - 1)/2. Step distance OF around circumference to obtain 10 exact points.',
-        geometry:
-          'Golden ratio \u03c6 = (\u221a5 + 1)/2, chord length = 2 \u00b7 sin(18\u00b0) = \u03c6 - 1',
-      },
-      {
-        step: 2,
-        title: '{10/3} Star Chords & Girih Decagram',
-        instruction:
-          'Rule 10 chords connecting each vertex Pi to Pi+3 (skipping 2 vertices, 108\u00b0 apart). Their intersections form the central 10-pointed star with sharp 36\u00b0 points.',
-        geometry:
-          '10-pointed star polygon {10/3}, inner crossing radius r = 0.5257 R',
-      },
-      {
-        step: 3,
-        title: 'Surrounding Kites & Interstitial Bowties',
-        instruction:
-          'Rule decagon perimeter chords. Trace star lines outward to form 10 surrounding kites, 10 interstitial darts, and elongated hexagons (Shesh Band).',
-        geometry:
-          'Concentric decagon side s = 2 \u00b7 sin(18\u00b0), kite angle = 72\u00b0',
-      },
-      {
-        step: 4,
-        title: 'Rectangular Periodic Tile Closure',
-        instruction:
-          'Establish rectangular tile corners at outer crossings 54\u00b0, 126\u00b0, 234\u00b0, and 306\u00b0. The width w = \u221a5 and height h = \u221a(5 + 2\u221a5) allow periodic plane tiling with 10-fold core symmetry.',
-        geometry:
-          'Rectangular cell w = 2.236 R, h = 3.078 R, area = 6.882 R\u00b2',
-      },
-    ],
+    previewNote:
+      'Schematic ten-fold preview; the historical spandrel reconstruction and its drawing steps are still under research.',
+    drawingSteps: [],
 
     source: {
-      name: 'Lu & Steinhardt (Science 2007) / Peter J. Lu',
+      name: 'Lu & Steinhardt, Science (2007), Figure 3',
       url: 'https://doi.org/10.1126/science.1135491',
       citation:
         'Decagonal and Quasi-crystalline Tilings in Medieval Islamic Architecture',

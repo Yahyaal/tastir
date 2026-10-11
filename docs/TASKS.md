@@ -102,6 +102,12 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
   *Done when:* Player wall dropdown includes `Jali`, rendering open voids with a structural framework; tests and preview snapshots pass.
   *Implemented 11 October:* Marble-colored stone bands with directional bevels, clear apertures and a continuous backlit ground. Shared appearance settings keep the live wall, saved previews and SVG/PNG consistent. Lattice controls width; colors are preserved when switching styles. Screenshots and owner feedback are at `#/review`; reproduction and checks are in [the Jali report](testing/jali-2026-10-11.md).
 
+- [ ] **2.1a Jali foreground and background colors (proposed after owner review, 11 October).** Keep clear apertures; allow independent framework and background color choices. Derive the bevel/shadow from the framework color and preserve the choices in saved designs, share links, thumbnails and exports.
+  *Done when:* The user can change either color independently, restore defaults and reopen/export the same appearance without losing tile colors.
+
+- [ ] **2.1b Material finishes (proposed).** Keep style separate from material. Offer stone, wood, gold and silver finishes for Jali, with restrained shading and wood grain; avoid turning every material into another wall style.
+  *Done when:* Each finish has a distinct visible treatment, survives saving/sharing/exporting and stays responsive on the dense Bou Inania patterns.
+
 - [ ] **2.2 Tazhib / Illumination (Gold Leaf & Lapis) style.** Add `illumination` to `WallStyle`. Gilded gold-leaf star rosettes with SVG metallic gradients, deep ultramarine/lapis lazuli backgrounds, and fine black *tahrir* pen outlines.
   *Done when:* Player wall dropdown includes `Illumination`, applying gold metallic gradients and lapis ground; tests pass.
 
