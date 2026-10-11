@@ -112,6 +112,61 @@ describe('the wall', () => {
     ).toBe('none');
   });
 
+  it('weaves the bands for interlace: the top band drawn again at each crossing', () => {
+    const { container } = render(
+      <Wall model={model} colors={colors} look="interlace" />,
+    );
+    // The bands as strapwork draws them…
+    expect(
+      container.querySelector('.band-out path')?.getAttribute('d')?.split('M')
+        .length,
+    ).toBe(9 * 16 + 1);
+    // …and a piece of top band at each of the tile's two crossings, in
+    // the tile and its neighbours, edges and middle, with square ends.
+    for (const layer of ['out', 'in']) {
+      const over = container.querySelector(`path.over-${layer}`);
+      expect(over?.getAttribute('d')?.split('M').length).toBe(9 * 2 + 1);
+      expect(over?.getAttribute('stroke-linecap')).toBe('butt');
+    }
+    // Each piece lies on the bands it is redrawing, in the copy of the
+    // tile it belongs to (not slid a second time).
+    const pairs = (d: string) =>
+      d
+        .split('M')
+        .filter(Boolean)
+        .map((run) =>
+          run.split('L').map((q) => {
+            const [x, y] = q.trim().split(/\s+/).map(Number);
+            return { x: x as number, y: y as number };
+          }),
+        );
+    const bands = pairs(
+      container.querySelector('.band-out path')?.getAttribute('d') ?? '',
+    );
+    const onBand = (q: { x: number; y: number }) =>
+      bands.some(([a, b]) => {
+        if (!a || !b) return false;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const t = ((q.x - a.x) * dx + (q.y - a.y) * dy) / (dx * dx + dy * dy);
+        const gap = Math.abs((q.x - a.x) * dy - (q.y - a.y) * dx);
+        return t > -1e-6 && t < 1 + 1e-6 && gap / Math.hypot(dx, dy) < 1e-6;
+      });
+    const patches = pairs(
+      container.querySelector('path.over-out')?.getAttribute('d') ?? '',
+    );
+    expect(patches.length).toBe(9 * 2);
+    for (const run of patches)
+      // Its inner points (the crossing among them); its ends may reach
+      // a little into a copy of the tile the test does not draw.
+      for (const q of run.slice(1, -1)) expect(onBand(q)).toBe(true);
+    expect(
+      container
+        .querySelector('svg.wall')
+        ?.classList.contains('style-interlace'),
+    ).toBe(true);
+  });
+
   it('pans when dragged and zooms with the wheel', () => {
     const { container } = render(<Wall model={model} colors={colors} />);
     const svg = container.querySelector('svg.wall') as SVGSVGElement;
@@ -152,5 +207,29 @@ describe('the wall controls', () => {
         .querySelector('polygon.wall-piece')
         ?.getAttribute('stroke-width'),
     ).toBe('0');
+    fireEvent.change(screen.getByLabelText(/Style/), {
+      target: { value: 'jali' },
+    });
+    expect(
+      document.querySelector('svg.wall')?.classList.contains('style-jali'),
+    ).toBe(true);
+    expect((screen.getByLabelText('Lattice') as HTMLInputElement).value).toBe(
+      '0.5',
+    );
+    expect(screen.queryByRole('heading', { name: 'Colors' })).toBeNull();
+    fireEvent.change(screen.getByLabelText('Lattice'), {
+      target: { value: '2' },
+    });
+    expect(
+      Number(
+        document
+          .querySelector('[data-layer="stone"]')
+          ?.getAttribute('stroke-width'),
+      ),
+    ).toBeCloseTo(0.024 * 5.4, 9);
+    fireEvent.change(screen.getByLabelText(/Style/), {
+      target: { value: 'tiles' },
+    });
+    expect(screen.getByRole('heading', { name: 'Colors' })).toBeTruthy();
   });
 });

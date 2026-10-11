@@ -493,44 +493,51 @@ function UpcomingCard({
         <div className="card-construction">
           <span className="construction-label">Construction Archetype:</span>
           <p>{pattern.constructionNotes}</p>
+          {pattern.previewNote ? (
+            <p className="hint">{pattern.previewNote}</p>
+          ) : null}
         </div>
       </div>
 
       {/* Step-by-Step Drawing Instructions Section */}
-      <div className="card-drawing-guide">
-        <button
-          type="button"
-          className={`drawing-guide-toggle ${showInstructions ? 'open' : ''}`}
-          onClick={() => setShowInstructions((prev) => !prev)}
-          aria-expanded={showInstructions}
-        >
-          <span className="toggle-label">
-            <span className="compass-icon">✦</span> How to Draw · Compass &
-            Straightedge ({pattern.drawingSteps?.length ?? 4} Steps)
-          </span>
-          <span className="toggle-indicator">
-            {showInstructions ? 'Hide instructions ▴' : 'View instructions ▾'}
-          </span>
-        </button>
+      {pattern.drawingSteps.length ? (
+        <div className="card-drawing-guide">
+          <button
+            type="button"
+            className={`drawing-guide-toggle ${showInstructions ? 'open' : ''}`}
+            onClick={() => setShowInstructions((prev) => !prev)}
+            aria-expanded={showInstructions}
+          >
+            <span className="toggle-label">
+              <span className="compass-icon">✦</span> How to Draw · Compass &
+              Straightedge ({pattern.drawingSteps?.length ?? 4} Steps)
+            </span>
+            <span className="toggle-indicator">
+              {showInstructions ? 'Hide instructions ▴' : 'View instructions ▾'}
+            </span>
+          </button>
 
-        {showInstructions && pattern.drawingSteps && (
-          <ol className="drawing-steps-list">
-            {pattern.drawingSteps.map((step) => (
-              <li key={step.step} className="drawing-step-card">
-                <div className="step-card-header">
-                  <span className="step-badge">Step {step.step}</span>
-                  <h4 className="step-title">{step.title}</h4>
-                </div>
-                <p className="step-instruction">{step.instruction}</p>
-                <div className="step-geometry-tag">
-                  <span className="geo-icon">📐</span>
-                  <span className="geo-formula">{step.geometry}</span>
-                </div>
-              </li>
-            ))}
-          </ol>
-        )}
-      </div>
+          {showInstructions && pattern.drawingSteps && (
+            <ol className="drawing-steps-list">
+              {pattern.drawingSteps.map((step) => (
+                <li key={step.step} className="drawing-step-card">
+                  <div className="step-card-header">
+                    <span className="step-badge">Step {step.step}</span>
+                    <h4 className="step-title">{step.title}</h4>
+                  </div>
+                  <p className="step-instruction">{step.instruction}</p>
+                  <div className="step-geometry-tag">
+                    <span className="geo-icon">📐</span>
+                    <span className="geo-formula">{step.geometry}</span>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      ) : (
+        <p className="hint">Drawing instructions are still under research.</p>
+      )}
 
       <footer className="card-footer">
         <div className="card-source">
@@ -606,7 +613,8 @@ function UpcomingLightbox({
       : mode === 'drawn'
         ? (pattern.drawnCaption ??
           `Finished masterwork tiling: ${pattern.title}`)
-        : `Geometric blueprint: ${pattern.fold}-fold symmetry analysis`;
+        : (pattern.previewNote ??
+          `Geometric blueprint: ${pattern.fold}-fold symmetry analysis`);
 
   const isPlayable = pattern.status === 'Playable now';
 

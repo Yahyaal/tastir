@@ -13,6 +13,10 @@
       "note": "The construction follows her nineteen steps, and the lines inked are those of her finished drawing; the step text is our own."
     }
   ],
+  "verification": {
+    "status": "unverified",
+    "note": "Sandy Kurt's wheel with the space between four wheels filled by the middle of the wheel, an idea of our own. It has not been matched to a historical panel."
+  },
   "given": {
     "O": "The centre of the wheel.",
     "A": "Any point to the right of O. The distance OA is the radius of the main circle, and the unit for every length."

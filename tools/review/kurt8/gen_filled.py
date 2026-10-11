@@ -118,6 +118,14 @@ t["title"] = "Eight-fold zellige wheel, filled"
 # The wall turns into itself by a quarter turn about O, not an eighth: the
 # middle at the corner sits where an eighth turn finds the wheel's ring.
 t["fold"] = 4
+# Our own design: say so in the library, as for the other studies.
+t["verification"] = {
+    "status": "unverified",
+    "note": (
+        "Sandy Kurt's wheel with the space between four wheels filled by the middle of the wheel, "
+        "an idea of our own. It has not been matched to a historical panel."
+    ),
+}
 t["steps"].append(
     {
         "id": len(t["steps"]) + 1,

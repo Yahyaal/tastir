@@ -30,6 +30,25 @@ function problems(input: unknown): string[] {
 }
 
 describe('the example tutorial', () => {
+  it('preserves historical verification metadata and rejects unsupported statuses', () => {
+    const input = {
+      ...example,
+      verification: { status: 'unverified', note: 'Historical match pending.' },
+    };
+    expect(parseTutorial(input).verification).toEqual(input.verification);
+    expect(
+      safeParseTutorial({
+        ...input,
+        verification: { status: 'approved', note: 'Owner likes it.' },
+      }).success,
+    ).toBe(false);
+    expect(
+      safeParseTutorial({
+        ...input,
+        verification: { status: 'unverified', note: '' },
+      }).success,
+    ).toBe(false);
+  });
   it('parses', () => {
     const t = parseTutorial(example);
     expect(t.steps).toHaveLength(6);

@@ -32,6 +32,10 @@ A useful test for any reconstruction: every line in the finished pattern must pa
 
 **Tangency in floating point.** A tangent line meets a circle in one point, but the discriminant comes out as a tiny positive or negative number. Treat a discriminant within tolerance of zero as exactly one point.
 
+**Interlace measured to the next cut, not the next crossing.** The ink of a tutorial is cut into short pieces wherever a construction line or another piece's corner touches it; in Bou Inania some pieces are a hundredth of the tile. The first interlace redrew a straight bit of the top band at each crossing, no longer than half the ink piece it started on, so in Bou Inania almost every patch shrank to nothing and the bands looked merged. Follow the band instead, straight on through cuts and round its bends, and measure to the next crossing. The over and under itself is one rule for the whole net (the band swaps at every crossing it passes, which is the chessboard colouring of the pieces); never decide it, or how far to draw it, from one place alone.
+
+**A patch slid to its tile twice.** `patchesAt(pattern, i, j)` already returns points in the tile at slide (i, j). The live wall added the slide again, so near the tile's seams the patches fell outside the drawn tile and were cut in half: one side of a crossing looked woven and the other merged.
+
 ## Known values for tests
 
 With the main circle of radius 1 divided into 8 by a static and a dynamic square:

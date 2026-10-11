@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { calculate, type Input, type Job, type Output } from './alongWork';
+import { measure, type Timings } from './timing';
 
 /** One worker per job. While it is busy retain only the newest request,
  * so rapid edits cannot queue minutes of obsolete work. Geometry caches
@@ -27,7 +28,7 @@ export function useAlongWork<K extends Job>(
   useEffect(() => {
     if (!threaded || !active) return;
     let worker: Worker | undefined;
-    let running: { id: number; input: Input<K> } | undefined;
+    let running: { id: number; input: Input<K>; sent: number } | undefined;
     let pending: Input<K> | undefined;
     let next = 0;
     let live = true;
@@ -42,7 +43,7 @@ export function useAlongWork<K extends Job>(
       worker = undefined;
     };
     const send = (value: Input<K>) => {
-      running = { id: next++, input: value };
+      running = { id: next++, input: value, sent: performance.now() };
       try {
         if (!worker) {
           worker = new Worker(new URL('./along.worker.ts', import.meta.url), {
@@ -54,10 +55,25 @@ export function useAlongWork<K extends Job>(
             id: number;
             value?: Output<K>;
             error?: string;
+            timings?: Timings;
+            posted?: number;
           }>) => {
             if (!live || data.id !== running?.id) return;
             clearTimeout(timeout);
-            setReply({ input: running.input, ...data });
+            const now = performance.now();
+            if (data.timings)
+              measure(job, {
+                ...data.timings,
+                ...(data.posted !== undefined
+                  ? { back: performance.timeOrigin + now - data.posted }
+                  : {}),
+                round: now - running.sent,
+              });
+            setReply({
+              input: running.input,
+              value: data.value,
+              error: data.error,
+            });
             running = undefined;
             const latest = pending;
             pending = undefined;
@@ -75,7 +91,9 @@ export function useAlongWork<K extends Job>(
             fail('The drawing took too long. Go back a step and try again.'),
           60_000,
         );
+        const posting = performance.now();
         worker.postMessage({ id: running.id, job, input: value });
+        measure(job, { post: performance.now() - posting });
       } catch (e) {
         fail(e instanceof Error ? e.message : String(e));
       }

@@ -28,8 +28,8 @@ Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified
 | Tutorial | Fold | Steps | Status | Notes |
 | --- | --- | --- | --- | --- |
 | eight-fold-star-and-cross | 8 | 6 | verified | Matches the Kashan star-and-cross lustre tiles (1297–98). |
-| eight-fold-khatam | 4 | 9 | not verified (10 Oct) | Eight-pointed khatam stars with crossing diagonal bands, credited to Al-Hakim Mosque in Isfahan from Sandy Kurt's tutorial. Sikandra jali photo dropped: band lattice mismatch (diamond voids vs small squares). Hakim Mosque photo on Commons is broken/rotted out. Do not ship without verified photo. |
-| eight-fold-star-and-octagon | 4 | 9 | verified (10 Oct) | Eight-pointed stars alternating with regular octagons and small squares, from the marble inlay of the Tomb of I'timād-ud-Daulah in Agra (Mughal, 1622–1628 CE), from Sandy Kurt's tutorial. Verified line-for-line with 1 px overlay against Wikimedia Commons photo by Sabyasachi Paldas (stray cell-boundary diagonals removed). |
+| eight-fold-khatam | 4 | 9 | approved, historical match unverified (11 Oct) | Owner chose to keep the Safavid khatam study after Sandy Kurt. Public card/player label says the historical match is unverified. The mismatching Sikandra photo is not shipped. Future contributions may supply a matching reference. |
+| eight-fold-star-and-octagon | 4 | 9 | approved, historical match unverified (11 Oct) | Owner chose to ship the Mughal study after Sandy Kurt at intermediate level. The earlier exact-match claim was rejected in the 10 October review. The free photo is retained as a clearly labelled historical reference. |
 | eight-fold-zellige | 8 | 11 | approved | Design D, kept by the owner. |
 | kurt-eight-fold-zellige | 8 | 18 | approved | Design C, Sandy Kurt's zellige wheel. Simplified from 19 steps (563 elements) to 18 steps (347 elements) using along. |
 | kurt-eight-fold-zellige-shifted | 8 | 20 | approved | The same with rows shifted by half a wheel. Simplified from 20 steps (570 elements) to 19 steps (354 elements) using along. On 11 October the slanted tile became a hexagon round each wheel (the owner's idea): upright sides on the square, roofs halfway to the next row's wheels, built in a new step 20; the wall and the pieces are unchanged. |
@@ -58,3 +58,9 @@ Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified
 | Tutorial | Fold | Steps | Status | Notes |
 | --- | --- | --- | --- | --- |
 | sixteen-fold-rosette | 16 | 10 | approved | Design F, kept as the beginner version; the real Bou Inania sixteen-fold rosettes are much richer. |
+
+## Ten-fold studies
+
+| Tutorial | Fold | Steps | Status | Notes |
+| --- | --- | --- | --- | --- |
+| ten-pointed-star-decagon-rect | 10 | 10 | approved, historical match unverified (11 Oct) | Owner chose to keep this rectangular study. It is not the Darb-e Imam spandrel reconstruction; that historical target remains in Upcoming. |

@@ -1,16 +1,25 @@
+import type { JaliAppearance } from '@tastir/schema';
 import { pieceAt, rectangularPeriod, type Vec } from '@tastir/engine';
 import { useId, useLayoutEffect, useMemo, useRef } from 'react';
 import { fit, viewBox, width } from './camera';
 import { STRAP_BAND, STRAP_EDGE, strapWidths, tiling } from './drawing';
+import { patchesAt, patchPath, weaveRepeat } from './interlace';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
+import { JaliFramework, JaliGround, latticeWidth } from './jali';
 
-export type WallStyle = 'tiles' | 'strapwork' | 'lines';
+export type WallStyle = 'tiles' | 'strapwork' | 'interlace' | 'lines' | 'jali';
 export const WALL_STYLES: readonly WallStyle[] = [
   'tiles',
   'strapwork',
+  'interlace',
   'lines',
+  'jali',
 ];
+
+/** Whether a style draws the ink as bands (interlace weaves them). */
+export const banded = (style: WallStyle | undefined) =>
+  style === 'strapwork' || style === 'interlace';
 
 const INK = STRAP_EDGE;
 const BAND = STRAP_BAND;
@@ -62,6 +71,7 @@ export function Wall({
   repeat = [1, 1],
   look: style = 'tiles',
   grout = 1,
+  jali: appearance,
   hovered,
   onHover,
   onPick,
@@ -77,6 +87,7 @@ export function Wall({
   look?: WallStyle;
   /** Grout (or band) width, as a multiple of the normal width. */
   grout?: number;
+  jali?: JaliAppearance;
   /** The piece type to highlight on every copy, if any. */
   hovered?: number;
   onHover?: (type: number | undefined) => void;
@@ -91,43 +102,68 @@ export function Wall({
   const svgRef = useRef<SVGSVGElement>(null);
   const start = useMemo(() => tiling(model).view, [model]);
   const camera = useCamera(start, svgRef);
-  const [rm, rn] = repeat;
-  const tile = useMemo(() => tileFrame(model, [rm, rn]), [model, rm, rn]);
   const { pattern } = model;
+  // The weave may repeat after two tiles: the wall's tile holds whole
+  // repeats of both the colouring and the weave.
+  const [wm, wn] = useMemo(
+    (): readonly [number, number] =>
+      style === 'interlace' ? weaveRepeat(pattern) : [1, 1],
+    [style, pattern],
+  );
+  const rm = lcm(repeat[0], wm);
+  const rn = lcm(repeat[1], wn);
+  const tile = useMemo(() => tileFrame(model, [rm, rn]), [model, rm, rn]);
   // Grout in proportion to the tile, so every pattern gets the same look.
-  const groutWidth = strapWidths(model, grout).grout;
+  const jali = style === 'jali';
+  const groutWidth = strapWidths(
+    model,
+    jali ? latticeWidth(grout) : grout,
+  ).grout;
 
   // The pieces and ink strokes in tile coordinates, with neighbours' copies.
   const shifted = useMemo(() => {
     const out: { type: number; corners: Vec[]; fill: string }[] = [];
     const lines: [Vec, Vec][] = [];
+    const over: Vec[][] = [];
+    const overIn: Vec[][] = [];
     const { u, v } = pattern.cell;
     for (let i = -tile.reach; i <= tile.reach; i++) {
       for (let j = -tile.reach; j <= tile.reach; j++) {
         const dx = u.x * i + v.x * j;
         const dy = u.y * i + v.y * j;
         const move = (p: Vec) => tile.toTile({ x: p.x + dx, y: p.y + dy });
-        pattern.pieces.forEach((piece, k) => {
-          out.push({
-            type: piece.type,
-            corners: piece.polygon.map(move),
-            fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
+        if (!jali)
+          pattern.pieces.forEach((piece, k) => {
+            out.push({
+              type: piece.type,
+              corners: piece.polygon.map(move),
+              fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
+            });
           });
-        });
         for (const s of pattern.ink)
           lines.push([move(s.segment.a), move(s.segment.b)]);
+        // The patches are already placed in tile (i, j).
+        if (style === 'interlace')
+          for (const p of patchesAt(pattern, i, j, groutWidth * 4)) {
+            over.push(p.edge.map(tile.toTile));
+            overIn.push(p.band.map(tile.toTile));
+          }
       }
     }
-    return { pieces: out, lines };
-  }, [pattern, tile, fill, colors]);
+    return { pieces: out, lines, over, overIn };
+  }, [pattern, tile, fill, colors, jali, style, groutWidth]);
   const bandPath = useMemo(
     () =>
       shifted.lines.map(([a, b]) => `M${a.x} ${a.y}L${b.x} ${b.y}`).join(''),
     [shifted],
   );
+  const overPath = useMemo(() => {
+    const d = (list: Vec[][]) => list.map((ps) => patchPath(ps)).join('');
+    return { out: d(shifted.over), in: d(shifted.overIn) };
+  }, [shifted]);
 
   const pieceClass = (type: number) =>
-    hovered === undefined
+    hovered === undefined || jali
       ? 'wall-piece'
       : hovered === type
         ? 'wall-piece hl'
@@ -163,7 +199,7 @@ export function Wall({
   // veils fade from the centre outwards, then the next type's. Once faded
   // the veil stays, invisible and ignoring the pointer.
   const veil = useMemo(() => {
-    if (!enter) return [];
+    if (!enter || jali) return [];
     const { shifts } = tiling(model);
     const view = start;
     const out: { type: number; pts: string; dist: number }[] = [];
@@ -189,7 +225,7 @@ export function Wall({
       }
     }
     return out;
-  }, [enter, model, pattern, start]);
+  }, [enter, jali, model, pattern, start]);
 
   const veilRef = useRef<SVGGElement>(null);
   useLayoutEffect(() => {
@@ -233,10 +269,12 @@ export function Wall({
       preserveAspectRatio="xMidYMid slice"
       role="img"
       aria-label="The pattern repeated as a wall"
-      onPointerMove={(e) => onHover?.(typeAt(e.clientX, e.clientY)?.type)}
+      onPointerMove={(e) => {
+        if (!jali) onHover?.(typeAt(e.clientX, e.clientY)?.type);
+      }}
       onPointerLeave={() => onHover?.(undefined)}
       onClick={(e) => {
-        if (camera.wasDrag()) return;
+        if (camera.wasDrag() || jali) return;
         const hit = typeAt(e.clientX, e.clientY);
         if (hit) onPick?.(hit.type, hit.place);
       }}
@@ -259,7 +297,7 @@ export function Wall({
               className={pieceClass(p.type)}
               style={{ '--type': p.type } as React.CSSProperties}
               points={pts(p.corners)}
-              fill={style === 'lines' ? 'none' : p.fill}
+              fill={style === 'lines' || jali ? 'none' : p.fill}
               stroke={
                 style === 'tiles' ? INK : style === 'lines' ? INK : 'none'
               }
@@ -267,7 +305,7 @@ export function Wall({
               strokeLinejoin="round"
             />
           ))}
-          {style === 'strapwork'
+          {banded(style)
             ? (['out', 'in'] as const).map((layer) => (
                 <g key={layer} className={`band-${layer}`}>
                   {/* Every band line in one path, so a wall of hundreds of
@@ -284,8 +322,46 @@ export function Wall({
                 </g>
               ))
             : null}
+          {/* Interlace: the band on top at each crossing, drawn again over
+              the one below, with square ends so it joins its own band. */}
+          {style === 'interlace' && overPath.out
+            ? (['out', 'in'] as const).map((layer) => (
+                <path
+                  key={layer}
+                  className={`over-${layer}`}
+                  d={overPath[layer]}
+                  fill="none"
+                  stroke={layer === 'out' ? INK : BAND}
+                  strokeWidth={
+                    layer === 'out' ? groutWidth * 4 : groutWidth * 2.4
+                  }
+                  strokeLinecap="butt"
+                  strokeLinejoin="round"
+                />
+              ))
+            : null}
+          {jali ? (
+            <JaliFramework
+              appearance={appearance}
+              path={bandPath}
+              width={groutWidth}
+              toLocalOffset={(x, y) =>
+                tile.toTile({
+                  x: pattern.cell.origin.x + x,
+                  y: pattern.cell.origin.y - y,
+                })
+              }
+            />
+          ) : null}
         </pattern>
       </defs>
+      {jali ? (
+        <JaliGround
+          id={`jali-light-${id}`}
+          view={cover}
+          appearance={appearance}
+        />
+      ) : null}
       <rect
         x={cover.minX}
         y={-cover.maxY}
@@ -316,6 +392,14 @@ export function Wall({
       ) : null}
     </svg>
   );
+}
+
+/** The least common multiple of two small whole numbers. */
+function lcm(a: number, b: number): number {
+  let x = a;
+  let y = b;
+  while (y) [x, y] = [y, x % y];
+  return (a / x) * b;
 }
 
 /** The colouring: each piece's fade, one type after another, and how long

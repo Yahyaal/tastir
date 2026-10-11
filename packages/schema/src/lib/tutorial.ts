@@ -350,6 +350,13 @@ export const TutorialShape = z.strictObject({
   style: z.string().min(1),
   level: z.enum(['beginner', 'intermediate', 'advanced']),
   credits: z.array(Credit),
+  /** Historical verification is separate from approval to teach the drawing. */
+  verification: z
+    .strictObject({
+      status: z.enum(['unverified', 'verified']),
+      note: z.string().min(1),
+    })
+    .optional(),
   photos: z.array(Photo).optional(),
   given: z.strictObject({ O: z.string().min(1), A: z.string().min(1) }),
   steps: z.array(Step).min(1),
@@ -373,7 +380,7 @@ export const TutorialShape = z.strictObject({
      * tiles with grout (the default), or strapwork, where the lines are
      * bands woven between the pieces (carved wood and plaster, Fès zellige).
      */
-    look: z.enum(['tiles', 'strapwork', 'lines']).optional(),
+    look: z.enum(['tiles', 'strapwork', 'interlace', 'lines']).optional(),
     colors: z.record(Name, z.string().min(1)),
     placements: Placements.optional(),
   }),
