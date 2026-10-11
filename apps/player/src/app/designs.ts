@@ -1,6 +1,8 @@
+import { JaliAppearanceShape, type JaliAppearance } from '@tastir/schema';
 import type { Coloring } from './coloring';
 import { newId, now, store } from './storage';
 import type { WallStyle } from './Wall';
+import { WALL_STYLES } from './Wall';
 
 /**
  * A learner's design: a tutorial with their own inking and colors. It keeps
@@ -18,6 +20,7 @@ export interface Design {
   readonly coloring: Coloring;
   readonly look: WallStyle;
   readonly grout: number;
+  readonly jali?: JaliAppearance;
   /** When it was first saved and last changed, as ISO dates. */
   readonly created: string;
   readonly updated: string;
@@ -27,7 +30,7 @@ export interface Design {
 export type DesignFields = Omit<Design, 'id' | 'created' | 'updated'>;
 
 const KEY = 'tastir.designs';
-const LOOKS: readonly string[] = ['tiles', 'strapwork', 'interlace', 'lines'];
+const LOOKS: readonly string[] = WALL_STYLES;
 
 const isStrings = (x: unknown): x is string[] =>
   Array.isArray(x) && x.every((s) => typeof s === 'string');
@@ -50,6 +53,8 @@ function isDesign(x: unknown): x is Design {
     Object.values(c['chosen']).every((v) => typeof v === 'string') &&
     LOOKS.includes(d['look'] as string) &&
     typeof d['grout'] === 'number' &&
+    (d['jali'] === undefined ||
+      JaliAppearanceShape.safeParse(d['jali']).success) &&
     typeof d['created'] === 'string' &&
     typeof d['updated'] === 'string'
   );
@@ -62,7 +67,14 @@ const designs = store(KEY, isDesign);
  * blocked (a private window) and a store can be corrupt; both read as none.
  */
 export const listDesigns = (): Design[] =>
-  designs.list().sort((a, b) => b.updated.localeCompare(a.updated));
+  designs
+    .list()
+    .map((design) =>
+      design.jali
+        ? { ...design, jali: JaliAppearanceShape.parse(design.jali) }
+        : design,
+    )
+    .sort((a, b) => b.updated.localeCompare(a.updated));
 
 export const getDesign = (id: string): Design | undefined =>
   listDesigns().find((d) => d.id === id);

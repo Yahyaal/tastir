@@ -1,5 +1,9 @@
 import { act, render, screen, within } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
+import khatam from '@tutorials/eight-fold-khatam.json';
+import octagons from '@tutorials/eight-fold-star-and-octagon.json';
+import rectangular from '@tutorials/ten-pointed-star-decagon-rect.json';
+import { parseTutorial } from '@tastir/schema';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import App from './app';
@@ -24,6 +28,22 @@ afterEach(() => {
 });
 
 describe('the library', () => {
+  it.each([khatam, octagons, rectangular].map(parseTutorial))(
+    'labels the approved study $id without asserting a historical match',
+    async (json) => {
+      const entries = entriesOf({
+        [`../../../../tutorials/${json.id}.json`]: json,
+      });
+      render(<App entries={entries} />);
+      expect(
+        await screen.findByText('Historical match unverified'),
+      ).toBeTruthy();
+      expect(screen.getByRole('heading', { name: json.title })).toBeTruthy();
+      expect(document.querySelector('.card .level')?.textContent).toBe(
+        json.level === 'intermediate' ? 'Intermediate' : 'Advanced',
+      );
+    },
+  );
   it('lists every file in tutorials/', () => {
     const files = readdirSync(TUTORIALS)
       .filter((f) => f.endsWith('.json'))

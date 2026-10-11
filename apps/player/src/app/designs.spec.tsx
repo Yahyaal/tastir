@@ -38,6 +38,19 @@ describe('the design store', () => {
     expect(raw).toHaveLength(1);
   });
 
+  it('keeps Jali and its lattice width when saved and updated', () => {
+    const saved = addDesign({ ...fields, look: 'jali', grout: 2 });
+    expect(getDesign(saved?.id ?? '')).toMatchObject({
+      look: 'jali',
+      grout: 2,
+    });
+    updateDesign(saved?.id ?? '', { grout: 0.75 });
+    expect(getDesign(saved?.id ?? '')).toMatchObject({
+      look: 'jali',
+      grout: 0.75,
+    });
+  });
+
   it('keeps the tutorial’s own inking as no pieces', () => {
     const saved = addDesign({ ...fields, inked: undefined });
     expect(getDesign(saved?.id ?? '')?.inked).toBeUndefined();
@@ -107,3 +120,56 @@ describe('the design store', () => {
     set.mockRestore();
   });
 });
+
+it('preserves custom Jali finishes and rejects damaged finish settings without dropping old designs', () => {
+  const legacy = addDesign(fields);
+  const jali = {
+    material: 'wood' as const,
+    finish: 'custom' as const,
+    framework: '#864b31',
+    background: '#234a79',
+  };
+  const saved = addDesign({ ...fields, look: 'jali', jali });
+  expect(getDesign(saved!.id)?.jali).toEqual(jali);
+  updateDesign(saved!.id, {
+    jali: { ...jali, material: 'metal', finish: 'silver' },
+  });
+  expect(getDesign(saved!.id)?.jali?.material).toBe('metal');
+  const raw = JSON.parse(
+    window.localStorage.getItem('tastir.designs')!,
+  ) as unknown[];
+  window.localStorage.setItem(
+    'tastir.designs',
+    JSON.stringify([
+      ...raw,
+      { ...saved, id: 'broken', jali: { ...jali, framework: 'url(#bad)' } },
+    ]),
+  );
+  expect(listDesigns()).toHaveLength(2);
+  expect(getDesign(legacy!.id)).toEqual(legacy);
+});
+
+it.each(['gold', 'silver', 'wood', 'stone'])(
+  'migrates stored legacy %s without altering its colors',
+  (material) => {
+    const saved = addDesign(fields)!;
+    const legacy = { material, framework: '#864b31', background: '#234a79' };
+    window.localStorage.setItem(
+      'tastir.designs',
+      JSON.stringify([{ ...saved, look: 'jali', jali: legacy }]),
+    );
+    const migrated = getDesign(saved.id)!.jali!;
+    expect(migrated.framework).toBe(legacy.framework);
+    expect(migrated.background).toBe(legacy.background);
+    expect(migrated.material).toBe(
+      ['gold', 'silver'].includes(material) ? 'metal' : material,
+    );
+    expect(migrated.finish).toBe(
+      material === 'stone'
+        ? 'limestone'
+        : material === 'wood'
+          ? 'oak'
+          : material,
+    );
+  },
+);

@@ -112,6 +112,7 @@ export function openShared(shared: Shared, library: readonly Entry[]): Opened {
     coloring: d?.coloring ?? { palette: 'Fès tile', chosen: {} },
     look: d?.look ?? 'tiles',
     grout: d?.grout ?? 1,
+    ...(d?.jali ? { jali: d.jali } : {}),
   };
   return {
     json,
