@@ -970,6 +970,36 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'kurt-eight-fold-zellige-filled',
+    title: 'Eight-fold zellige wheel, filled (new)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Kurt’s wheel on the square tile, with the space between four wheels filled by the middle of the wheel in its own colours.',
+    story: [
+      'You saw that the empty space between four wheels is exactly the middle of a wheel. It is: the space reaches 0.707 from its centre, and so does the middle of the wheel out to its bands. Drawn there, it leaves no ground at all and makes no new shapes (first picture).',
+      'The space is centred on the tile corner, which is the mirror image of the wheel’s centre across the side of the standing square from step 4. So the new step 19 rules that side and draws the middle again as its mirror image.',
+      'You asked for the middle at the corner to have different colours from the wheel’s own middle. It takes the colours the wheel does not use in the same places: wine-red star, rosette and kites, cream petals, green octagons and blue bands. In the colour stage, click one of its pieces to change all the corner pieces like it.',
+      'The wall now turns into itself by a quarter turn about the wheel’s centre, not an eighth, so the tutorial is listed with the four-fold patterns, as the Bou Inania wall is.',
+    ],
+    pictures: [
+      {
+        src: 'renders/kurt-eight-fold-zellige-filled/wall.png',
+        caption:
+          'The filled wall (in the review renderer’s colours, not the tutorial’s): every space between four wheels holds the middle of a wheel.',
+      },
+    ],
+    asks: [
+      'Open it at the colour stage (link in the question at the top) and say whether the corner colours work.',
+    ],
+    sources: [
+      {
+        label: 'Sandy Kurt: free tutorials page (“8fold zellige” PDF)',
+        url: 'https://sandykurt.com/free-tutorials',
+      },
+    ],
+  },
+  {
     id: 'eight-fold-zellige',
     title: 'Eight-fold rosette (existed before tonight)',
     fold: 8,
@@ -1427,6 +1457,24 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
+    id: 'kurt-filled-colours',
+    text: 'The filled zellige wheel: do the colours of the middle at the tile corner work? Open /#/kurt-eight-fold-zellige-filled/result to see them.',
+    choices: [
+      'Keep these colours',
+      'Closer to the wheel’s own',
+      'I will choose them',
+    ],
+    pictures: [
+      {
+        src: 'renders/kurt-eight-fold-zellige-filled/wall.png',
+        caption:
+          'The filled wall, in the review renderer’s colours; the tutorial’s own are in the player.',
+      },
+    ],
+    card: 'kurt-eight-fold-zellige-filled',
+    also: ['kurt-eight-fold-zellige'],
+  },
+  {
     id: 'eight-fold-khatam',
     text: 'Should we drop eight-fold-khatam from the library until a verified matching photo of the Hakim Mosque woodwork or another authentic panel is found?',
     choices: [
@@ -1493,9 +1541,17 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '8 October 2026',
+  updated: '11 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Zellige wheel: a hexagon tile, and the gaps filled',
+      text: 'Your two ideas from the feedback document. The shifted rows now repeat a hexagon round each wheel instead of a slanted box, so the dotted tile no longer cuts wheels in half; the wall is unchanged. And a new tutorial fills the space between four wheels with the middle of the wheel, in its own colours (question at the top).',
+      link: {
+        label: 'Eight-fold zellige wheel, filled',
+        href: '/#/kurt-eight-fold-zellige-filled/result',
+      },
+    },
     {
       title: 'UI redesign merged: Islamic geometric atelier',
       text: 'The new look is merged across the entire app. The home page introduces the drafting atelier with the calligraphic Arabic brand mark (تسطير), curated Moroccan dossiers, and a transparent Upcoming Masterwork Queue with CC credits. Draw along, editor, and review were restyled to the unified dark atelier theme, the step colour legend matches the orange and blue drawn elements, and board stability across stages was measured at 0 px movement across desktop, tablet, and mobile.',

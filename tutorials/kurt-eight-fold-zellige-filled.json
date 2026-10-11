@@ -1,0 +1,2581 @@
+{
+  "format": 0,
+  "id": "kurt-eight-fold-zellige-filled",
+  "title": "Eight-fold zellige wheel, filled",
+  "fold": 4,
+  "style": "Moroccan",
+  "level": "advanced",
+  "credits": [
+    {
+      "source": "8fold Zellige (free PDF tutorial)",
+      "creator": "Sandy Kurt",
+      "url": "https://sandykurt.com/free-tutorials",
+      "note": "The construction follows her nineteen steps, and the lines inked are those of her finished drawing; the step text is our own."
+    }
+  ],
+  "given": {
+    "O": "The centre of the wheel.",
+    "A": "Any point to the right of O. The distance OA is the radius of the main circle, and the unit for every length."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a circle around the centre. Its radius is the unit for the whole pattern.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw the horizontal through the centre and the vertical at right angles to it. They cut the circle at four points.",
+      "create": {
+        "h": {"line": {"through": ["O", "A"]}},
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "E": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
+        "N": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "W": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "Sp": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Halve each right angle to get the two diagonals. The circle is now divided into eight.",
+      "create": {
+        "d1": {"line": {"through": "O", "bisects": ["E", "O", "N"]}},
+        "d2": {"line": {"through": "O", "bisects": ["N", "O", "W"]}},
+        "NE": {"point": {"meet": ["c", "d1"], "pick": {"angle": 45}}},
+        "NW": {"point": {"meet": ["c", "d2"], "pick": {"angle": 135}}},
+        "SW": {"point": {"meet": ["c", "d1"], "pick": {"angle": 225}}},
+        "SE": {"point": {"meet": ["c", "d2"], "pick": {"angle": 315}}}
+      },
+      "highlight": ["h", "v"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw the two squares inside the circle: one standing on its corners at the ends of the horizontal and vertical, one lying flat with its corners on the diagonals. They cross at eight points.",
+      "create": {
+        "dyn": {"polygon": ["E", "N", "W", "Sp"]},
+        "sta": {"polygon": ["NE", "NW", "SW", "SE"]},
+        "k0": {"point": {"meet": ["dyn", "sta"], "pick": {"angle": 22.5}}},
+        "k1": {"point": {"meet": ["dyn", "sta"], "pick": {"angle": 67.5}}},
+        "k2": {"point": {"meet": ["dyn", "sta"], "pick": {"angle": 112.5}}},
+        "k3": {"point": {"meet": ["dyn", "sta"], "pick": {"angle": 157.5}}},
+        "k4": {"point": {"meet": ["dyn", "sta"], "pick": {"angle": 202.5}}},
+        "k5": {"point": {"meet": ["dyn", "sta"], "pick": {"angle": 247.5}}},
+        "k6": {"point": {"meet": ["dyn", "sta"], "pick": {"angle": 292.5}}},
+        "k7": {"point": {"meet": ["dyn", "sta"], "pick": {"angle": 337.5}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Rule a line through the centre and each crossing of the squares. With the first lines, the circle is divided into sixteen.",
+      "create": {
+        "r0": {"line": {"through": ["O", "k0"]}},
+        "r1": {"line": {"through": ["O", "k1"]}},
+        "r2": {"line": {"through": ["O", "k2"]}},
+        "r3": {"line": {"through": ["O", "k3"]}}
+      },
+      "highlight": ["k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Put the compass on the crossing just above the horizontal on the right and open it until the circle just touches the horizontal and the diagonal. Keep that opening and draw the same circle on the other seven crossings and on the centre.",
+      "create": {
+        "ring0": {"circle": {"centre": "k0", "tangentTo": ["h", "d1"]}},
+        "ring1": {"circle": {"centre": "k1", "radiusOf": "ring0"}},
+        "ring2": {"circle": {"centre": "k2", "radiusOf": "ring0"}},
+        "ring3": {"circle": {"centre": "k3", "radiusOf": "ring0"}},
+        "ring4": {"circle": {"centre": "k4", "radiusOf": "ring0"}},
+        "ring5": {"circle": {"centre": "k5", "radiusOf": "ring0"}},
+        "ring6": {"circle": {"centre": "k6", "radiusOf": "ring0"}},
+        "ring7": {"circle": {"centre": "k7", "radiusOf": "ring0"}},
+        "ringO": {"circle": {"centre": "O", "radiusOf": "ring0"}}
+      },
+      "highlight": ["k0", "h", "d1"],
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "Join the centres of the ring circles with two horizontal and two vertical lines, then with four diagonal lines. Each line runs through two centres.",
+      "create": {
+        "g6a": {"line": {"through": ["k0", "k3"]}},
+        "g6b": {"line": {"through": ["k4", "k7"]}},
+        "g6c": {"line": {"through": ["k1", "k6"]}},
+        "g6d": {"line": {"through": ["k2", "k5"]}},
+        "g7a": {"line": {"through": ["k0", "k5"]}},
+        "g7b": {"line": {"through": ["k1", "k4"]}},
+        "g7c": {"line": {"through": ["k2", "k7"]}},
+        "g7d": {"line": {"through": ["k3", "k6"]}}
+      },
+      "highlight": ["k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"],
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Where the upper horizontal line crosses the steep line through the centre, put the compass and draw the circle that just touches the vertical and the diagonal.",
+      "create": {
+        "m8": {"point": {"meet": ["g6a", "r1"]}},
+        "c8": {"circle": {"centre": "m8", "tangentTo": ["v", "d1"]}}
+      },
+      "highlight": ["g6a", "r1"],
+      "animate": "compass"
+    },
+    {
+      "id": 9,
+      "text": "Put the compass on the centre and draw the circle that just touches that small circle on its near side. With the same opening, draw a circle around each of the eight crossings of the squares.",
+      "create": {
+        "c9": {"circle": {"centre": "O", "tangentTo": ["c8"], "touch": "near"}},
+        "c10_0": {"circle": {"centre": "k0", "radiusOf": "c9"}},
+        "c10_1": {"circle": {"centre": "k1", "radiusOf": "c9"}},
+        "c10_2": {"circle": {"centre": "k2", "radiusOf": "c9"}},
+        "c10_3": {"circle": {"centre": "k3", "radiusOf": "c9"}},
+        "c10_4": {"circle": {"centre": "k4", "radiusOf": "c9"}},
+        "c10_5": {"circle": {"centre": "k5", "radiusOf": "c9"}},
+        "c10_6": {"circle": {"centre": "k6", "radiusOf": "c9"}},
+        "c10_7": {"circle": {"centre": "k7", "radiusOf": "c9"}}
+      },
+      "highlight": ["c8"],
+      "animate": "compass"
+    },
+    {
+      "id": 10,
+      "text": "Where two of the diagonal lines cross on the horizontal, draw the circle that just touches the ring circles around it. Draw the same circle at the seven other places where two of the joining lines cross on the vertical or the diagonals.",
+      "create": {
+        "s0": {"point": {"meet": ["g7a", "g7c"]}},
+        "s1": {"point": {"meet": ["g6a", "g6c"]}},
+        "s2": {"point": {"meet": ["g7b", "g7c"]}},
+        "s3": {"point": {"meet": ["g6a", "g6d"]}},
+        "s4": {"point": {"meet": ["g7b", "g7d"]}},
+        "s5": {"point": {"meet": ["g6b", "g6d"]}},
+        "s6": {"point": {"meet": ["g7a", "g7d"]}},
+        "s7": {"point": {"meet": ["g6b", "g6c"]}},
+        "sm0": {"circle": {"centre": "s0", "tangentTo": ["ring0"], "touch": "near"}},
+        "sm1": {"circle": {"centre": "s1", "radiusOf": "sm0"}},
+        "sm2": {"circle": {"centre": "s2", "radiusOf": "sm0"}},
+        "sm3": {"circle": {"centre": "s3", "radiusOf": "sm0"}},
+        "sm4": {"circle": {"centre": "s4", "radiusOf": "sm0"}},
+        "sm5": {"circle": {"centre": "s5", "radiusOf": "sm0"}},
+        "sm6": {"circle": {"centre": "s6", "radiusOf": "sm0"}},
+        "sm7": {"circle": {"centre": "s7", "radiusOf": "sm0"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 11,
+      "text": "Join every ring-circle centre to the centre two places round. The eight lines make two more squares, turned a sixteenth of a turn from the first two.",
+      "create": {
+        "q0": {"line": {"through": ["k0", "k2"]}},
+        "q1": {"line": {"through": ["k1", "k3"]}},
+        "q2": {"line": {"through": ["k2", "k4"]}},
+        "q3": {"line": {"through": ["k3", "k5"]}},
+        "q4": {"line": {"through": ["k4", "k6"]}},
+        "q5": {"line": {"through": ["k5", "k7"]}},
+        "q6": {"line": {"through": ["k6", "k0"]}},
+        "q7": {"line": {"through": ["k7", "k1"]}}
+      },
+      "highlight": ["k0", "k1", "k2", "k3", "k4", "k5", "k6", "k7"],
+      "animate": "ruler"
+    },
+    {
+      "id": 12,
+      "text": "Mark where the circles around the crossings of the squares cut the new lines, and through those points rule vertical lines, in pairs.",
+      "create": {
+        "x0_m7820": {"point": {"meet": ["c10_3", "q3"], "pick": {"farthest": "k5"}}},
+        "l0_m7820": {"line": {"through": "x0_m7820", "perpendicularTo": "h"}},
+        "x0_m6322": {"point": {"meet": ["c10_3", "q3"], "pick": {"nearest": "k5"}}},
+        "l0_m6322": {"line": {"through": "x0_m6322", "perpendicularTo": "h"}},
+        "x0_m3678": {"point": {"meet": ["c10_2", "q2"], "pick": {"nearest": "k4"}}},
+        "l0_m3678": {"line": {"through": "x0_m3678", "perpendicularTo": "h"}},
+        "x0_m2180": {"point": {"meet": ["c10_2", "q2"], "pick": {"farthest": "k4"}}},
+        "l0_m2180": {"line": {"through": "x0_m2180", "perpendicularTo": "h"}},
+        "x0_2180": {"point": {"meet": ["c10_1", "q7"], "pick": {"farthest": "k7"}}},
+        "l0_2180": {"line": {"through": "x0_2180", "perpendicularTo": "h"}},
+        "x0_3678": {"point": {"meet": ["c10_1", "q7"], "pick": {"nearest": "k7"}}},
+        "l0_3678": {"line": {"through": "x0_3678", "perpendicularTo": "h"}},
+        "x0_6322": {"point": {"meet": ["c10_0", "q6"], "pick": {"nearest": "k6"}}},
+        "l0_6322": {"line": {"through": "x0_6322", "perpendicularTo": "h"}},
+        "x0_7820": {"point": {"meet": ["c10_0", "q6"], "pick": {"farthest": "k6"}}},
+        "l0_7820": {"line": {"through": "x0_7820", "perpendicularTo": "h"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 13,
+      "text": "Mark where the circles around the crossings of the squares cut the new lines, and through those points rule horizontal lines, in pairs.",
+      "create": {
+        "x90_m7820": {"point": {"meet": ["c10_5", "q5"], "pick": {"farthest": "k7"}}},
+        "l90_m7820": {"line": {"through": "x90_m7820", "perpendicularTo": "v"}},
+        "x90_m6322": {"point": {"meet": ["c10_5", "q5"], "pick": {"nearest": "k7"}}},
+        "l90_m6322": {"line": {"through": "x90_m6322", "perpendicularTo": "v"}},
+        "x90_m3678": {"point": {"meet": ["c10_4", "q4"], "pick": {"nearest": "k6"}}},
+        "l90_m3678": {"line": {"through": "x90_m3678", "perpendicularTo": "v"}},
+        "x90_m2180": {"point": {"meet": ["c10_4", "q4"], "pick": {"farthest": "k6"}}},
+        "l90_m2180": {"line": {"through": "x90_m2180", "perpendicularTo": "v"}},
+        "x90_2180": {"point": {"meet": ["c10_0", "q0"], "pick": {"farthest": "k2"}}},
+        "l90_2180": {"line": {"through": "x90_2180", "perpendicularTo": "v"}},
+        "x90_3678": {"point": {"meet": ["c10_0", "q0"], "pick": {"nearest": "k2"}}},
+        "l90_3678": {"line": {"through": "x90_3678", "perpendicularTo": "v"}},
+        "x90_6322": {"point": {"meet": ["c10_1", "q1"], "pick": {"nearest": "k3"}}},
+        "l90_6322": {"line": {"through": "x90_6322", "perpendicularTo": "v"}},
+        "x90_7820": {"point": {"meet": ["c10_1", "q1"], "pick": {"farthest": "k3"}}},
+        "l90_7820": {"line": {"through": "x90_7820", "perpendicularTo": "v"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 14,
+      "text": "Mark where the circles around the crossings of the squares cut the new lines, and through those points rule slanting up to the left lines, in pairs.",
+      "create": {
+        "x45_m7820": {"point": {"meet": ["c10_4", "q4"], "pick": {"farthest": "k6"}}},
+        "l45_m7820": {"line": {"through": "x45_m7820", "perpendicularTo": "d1"}},
+        "x45_m6322": {"point": {"meet": ["c10_4", "q4"], "pick": {"nearest": "k6"}}},
+        "l45_m6322": {"line": {"through": "x45_m6322", "perpendicularTo": "d1"}},
+        "x45_m3678": {"point": {"meet": ["c10_3", "q3"], "pick": {"farthest": "x0_m7820"}}},
+        "l45_m3678": {"line": {"through": "x45_m3678", "perpendicularTo": "d1"}},
+        "x45_m2180": {"point": {"meet": ["c10_3", "q3"], "pick": {"nearest": "x0_m7820"}}},
+        "l45_m2180": {"line": {"through": "x45_m2180", "perpendicularTo": "d1"}},
+        "x45_2180": {"point": {"meet": ["c10_2", "q0"], "pick": {"farthest": "k0"}}},
+        "l45_2180": {"line": {"through": "x45_2180", "perpendicularTo": "d1"}},
+        "x45_3678": {"point": {"meet": ["c10_2", "q0"], "pick": {"nearest": "k0"}}},
+        "l45_3678": {"line": {"through": "x45_3678", "perpendicularTo": "d1"}},
+        "x45_6322": {"point": {"meet": ["c10_0", "q0"], "pick": {"farthest": "x90_2180"}}},
+        "l45_6322": {"line": {"through": "x45_6322", "perpendicularTo": "d1"}},
+        "x45_7820": {"point": {"meet": ["c10_0", "q0"], "pick": {"nearest": "x90_2180"}}},
+        "l45_7820": {"line": {"through": "x45_7820", "perpendicularTo": "d1"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 15,
+      "text": "Mark where the circles around the crossings of the squares cut the new lines, and through those points rule slanting up to the right lines, in pairs.",
+      "create": {
+        "x135_m7820": {"point": {"meet": ["c10_6", "q6"], "pick": {"farthest": "k0"}}},
+        "l135_m7820": {"line": {"through": "x135_m7820", "perpendicularTo": "d2"}},
+        "x135_m6322": {"point": {"meet": ["c10_6", "q6"], "pick": {"nearest": "k0"}}},
+        "l135_m6322": {"line": {"through": "x135_m6322", "perpendicularTo": "d2"}},
+        "x135_m3678": {"point": {"meet": ["c10_0", "q6"], "pick": {"nearest": "k6"}}},
+        "l135_m3678": {"line": {"through": "x135_m3678", "perpendicularTo": "d2"}},
+        "x135_m2180": {"point": {"meet": ["c10_0", "q6"], "pick": {"farthest": "k6"}}},
+        "l135_m2180": {"line": {"through": "x135_m2180", "perpendicularTo": "d2"}},
+        "x135_2180": {"point": {"meet": ["c10_1", "q1"], "pick": {"farthest": "k3"}}},
+        "l135_2180": {"line": {"through": "x135_2180", "perpendicularTo": "d2"}},
+        "x135_3678": {"point": {"meet": ["c10_1", "q1"], "pick": {"nearest": "k3"}}},
+        "l135_3678": {"line": {"through": "x135_3678", "perpendicularTo": "d2"}},
+        "x135_6322": {"point": {"meet": ["c10_2", "q2"], "pick": {"nearest": "x0_m3678"}}},
+        "l135_6322": {"line": {"through": "x135_6322", "perpendicularTo": "d2"}},
+        "x135_7820": {"point": {"meet": ["c10_2", "q2"], "pick": {"farthest": "x0_m3678"}}},
+        "l135_7820": {"line": {"through": "x135_7820", "perpendicularTo": "d2"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 16,
+      "text": "Draw an octagon inside each ring circle, each small circle and the centre circle, with its corners where the circle meets lines through its centre parallel to the horizontal, the vertical and the diagonals.",
+      "textWithoutHelpers": "Draw an octagon inside each ring circle, each small circle and the centre circle, with its corners on the circle at the horizontal, the vertical and the diagonals through its centre.",
+      "create": {
+        "oK0_0": {"point": {"meet": ["ring0", "g6a"], "pick": {"farthest": "k3"}}},
+        "oK0_1": {"point": {"meet": ["ring0", "g7a"], "pick": {"farthest": "k5"}}},
+        "pK0_90": {"line": {"through": "k0", "parallelTo": "v"}},
+        "oK0_2": {"point": {"meet": ["ring0", "pK0_90"], "pick": {"nearest": "NE"}}},
+        "pK0_135": {"line": {"through": "k0", "parallelTo": "d2"}},
+        "oK0_3": {"point": {"meet": ["ring0", "pK0_135"], "pick": {"farthest": "A"}}},
+        "oK0_4": {"point": {"meet": ["ring0", "g6a"], "pick": {"nearest": "k3"}}},
+        "oK0_5": {"point": {"meet": ["ring0", "g7a"], "pick": {"nearest": "k5"}}},
+        "oK0_6": {"point": {"meet": ["ring0", "pK0_90"], "pick": {"farthest": "NE"}}},
+        "oK0_7": {"point": {"meet": ["ring0", "pK0_135"], "pick": {"nearest": "A"}}},
+        "octK0": {"polygon": ["oK0_0", "oK0_1", "oK0_2", "oK0_3", "oK0_4", "oK0_5", "oK0_6", "oK0_7"]},
+        "pK1_0": {"line": {"through": "k1", "parallelTo": "h"}},
+        "oK1_0": {"point": {"meet": ["ring1", "pK1_0"], "pick": {"nearest": "NE"}}},
+        "oK1_1": {"point": {"meet": ["ring1", "g7b"], "pick": {"farthest": "k4"}}},
+        "oK1_2": {"point": {"meet": ["ring1", "g6c"], "pick": {"farthest": "k6"}}},
+        "oK1_3": {"point": {"meet": ["ring1", "pK0_135"], "pick": {"farthest": "A"}}},
+        "oK1_4": {"point": {"meet": ["ring1", "pK1_0"], "pick": {"farthest": "NE"}}},
+        "oK1_5": {"point": {"meet": ["ring1", "g7b"], "pick": {"nearest": "k4"}}},
+        "oK1_6": {"point": {"meet": ["ring1", "g6c"], "pick": {"nearest": "k6"}}},
+        "oK1_7": {"point": {"meet": ["ring1", "pK0_135"], "pick": {"nearest": "A"}}},
+        "octK1": {"polygon": ["oK1_0", "oK1_1", "oK1_2", "oK1_3", "oK1_4", "oK1_5", "oK1_6", "oK1_7"]},
+        "oK2_0": {"point": {"meet": ["ring2", "pK1_0"], "pick": {"nearest": "NE"}}},
+        "pK2_45": {"line": {"through": "k2", "parallelTo": "d1"}},
+        "oK2_1": {"point": {"meet": ["ring2", "pK2_45"], "pick": {"farthest": "W"}}},
+        "oK2_2": {"point": {"meet": ["ring2", "g6d"], "pick": {"farthest": "k5"}}},
+        "oK2_3": {"point": {"meet": ["ring2", "g7c"], "pick": {"farthest": "s0"}}},
+        "oK2_4": {"point": {"meet": ["ring2", "pK1_0"], "pick": {"farthest": "NE"}}},
+        "oK2_5": {"point": {"meet": ["ring2", "pK2_45"], "pick": {"nearest": "W"}}},
+        "oK2_6": {"point": {"meet": ["ring2", "g6d"], "pick": {"nearest": "k5"}}},
+        "oK2_7": {"point": {"meet": ["ring2", "g7c"], "pick": {"nearest": "s0"}}},
+        "octK2": {"polygon": ["oK2_0", "oK2_1", "oK2_2", "oK2_3", "oK2_4", "oK2_5", "oK2_6", "oK2_7"]},
+        "oK3_0": {"point": {"meet": ["ring3", "g6a"], "pick": {"nearest": "k0"}}},
+        "oK3_1": {"point": {"meet": ["ring3", "pK2_45"], "pick": {"nearest": "N"}}},
+        "pK3_90": {"line": {"through": "k3", "parallelTo": "v"}},
+        "oK3_2": {"point": {"meet": ["ring3", "pK3_90"], "pick": {"nearest": "NW"}}},
+        "oK3_3": {"point": {"meet": ["ring3", "g7d"], "pick": {"farthest": "k6"}}},
+        "oK3_4": {"point": {"meet": ["ring3", "g6a"], "pick": {"farthest": "k0"}}},
+        "oK3_5": {"point": {"meet": ["ring3", "pK2_45"], "pick": {"farthest": "N"}}},
+        "oK3_6": {"point": {"meet": ["ring3", "pK3_90"], "pick": {"farthest": "NW"}}},
+        "oK3_7": {"point": {"meet": ["ring3", "g7d"], "pick": {"nearest": "k6"}}},
+        "octK3": {"polygon": ["oK3_0", "oK3_1", "oK3_2", "oK3_3", "oK3_4", "oK3_5", "oK3_6", "oK3_7"]},
+        "oK4_0": {"point": {"meet": ["ring4", "g6b"], "pick": {"nearest": "k7"}}},
+        "oK4_1": {"point": {"meet": ["ring4", "g7b"], "pick": {"nearest": "k1"}}},
+        "oK4_2": {"point": {"meet": ["ring4", "pK3_90"], "pick": {"nearest": "NW"}}},
+        "pK4_135": {"line": {"through": "k4", "parallelTo": "d2"}},
+        "oK4_3": {"point": {"meet": ["ring4", "pK4_135"], "pick": {"nearest": "W"}}},
+        "oK4_4": {"point": {"meet": ["ring4", "g6b"], "pick": {"farthest": "k7"}}},
+        "oK4_5": {"point": {"meet": ["ring4", "g7b"], "pick": {"farthest": "k1"}}},
+        "oK4_6": {"point": {"meet": ["ring4", "pK3_90"], "pick": {"farthest": "NW"}}},
+        "oK4_7": {"point": {"meet": ["ring4", "pK4_135"], "pick": {"farthest": "W"}}},
+        "octK4": {"polygon": ["oK4_0", "oK4_1", "oK4_2", "oK4_3", "oK4_4", "oK4_5", "oK4_6", "oK4_7"]},
+        "pK5_0": {"line": {"through": "k5", "parallelTo": "h"}},
+        "oK5_0": {"point": {"meet": ["ring5", "pK5_0"], "pick": {"farthest": "SW"}}},
+        "oK5_1": {"point": {"meet": ["ring5", "g7a"], "pick": {"nearest": "k0"}}},
+        "oK5_2": {"point": {"meet": ["ring5", "g6d"], "pick": {"nearest": "k2"}}},
+        "oK5_3": {"point": {"meet": ["ring5", "pK4_135"], "pick": {"nearest": "W"}}},
+        "oK5_4": {"point": {"meet": ["ring5", "pK5_0"], "pick": {"nearest": "SW"}}},
+        "oK5_5": {"point": {"meet": ["ring5", "g7a"], "pick": {"farthest": "k0"}}},
+        "oK5_6": {"point": {"meet": ["ring5", "g6d"], "pick": {"farthest": "k2"}}},
+        "oK5_7": {"point": {"meet": ["ring5", "pK4_135"], "pick": {"farthest": "W"}}},
+        "octK5": {"polygon": ["oK5_0", "oK5_1", "oK5_2", "oK5_3", "oK5_4", "oK5_5", "oK5_6", "oK5_7"]},
+        "oK6_0": {"point": {"meet": ["ring6", "pK5_0"], "pick": {"farthest": "SW"}}},
+        "pK6_45": {"line": {"through": "k6", "parallelTo": "d1"}},
+        "oK6_1": {"point": {"meet": ["ring6", "pK6_45"], "pick": {"farthest": "Sp"}}},
+        "oK6_2": {"point": {"meet": ["ring6", "g6c"], "pick": {"nearest": "k1"}}},
+        "oK6_3": {"point": {"meet": ["ring6", "g7d"], "pick": {"nearest": "k3"}}},
+        "oK6_4": {"point": {"meet": ["ring6", "pK5_0"], "pick": {"nearest": "SW"}}},
+        "oK6_5": {"point": {"meet": ["ring6", "pK6_45"], "pick": {"nearest": "Sp"}}},
+        "oK6_6": {"point": {"meet": ["ring6", "g6c"], "pick": {"farthest": "k1"}}},
+        "oK6_7": {"point": {"meet": ["ring6", "g7d"], "pick": {"farthest": "k3"}}},
+        "octK6": {"polygon": ["oK6_0", "oK6_1", "oK6_2", "oK6_3", "oK6_4", "oK6_5", "oK6_6", "oK6_7"]},
+        "oK7_0": {"point": {"meet": ["ring7", "g6b"], "pick": {"farthest": "k4"}}},
+        "oK7_1": {"point": {"meet": ["ring7", "pK6_45"], "pick": {"nearest": "A"}}},
+        "oK7_2": {"point": {"meet": ["ring7", "pK0_90"], "pick": {"nearest": "NE"}}},
+        "oK7_3": {"point": {"meet": ["ring7", "g7c"], "pick": {"nearest": "k2"}}},
+        "oK7_4": {"point": {"meet": ["ring7", "g6b"], "pick": {"nearest": "k4"}}},
+        "oK7_5": {"point": {"meet": ["ring7", "pK6_45"], "pick": {"farthest": "A"}}},
+        "oK7_6": {"point": {"meet": ["ring7", "pK0_90"], "pick": {"farthest": "NE"}}},
+        "oK7_7": {"point": {"meet": ["ring7", "g7c"], "pick": {"farthest": "k2"}}},
+        "octK7": {"polygon": ["oK7_0", "oK7_1", "oK7_2", "oK7_3", "oK7_4", "oK7_5", "oK7_6", "oK7_7"]},
+        "oS0_0": {"point": {"meet": ["sm0", "h"], "pick": {"farthest": "O"}}},
+        "oS0_1": {"point": {"meet": ["sm0", "g7a"], "pick": {"nearest": "k0"}}},
+        "pS0_90": {"line": {"through": "s0", "parallelTo": "v"}},
+        "oS0_2": {"point": {"meet": ["sm0", "pS0_90"], "pick": {"nearest": "x90_7820"}}},
+        "oS0_3": {"point": {"meet": ["sm0", "g7c"], "pick": {"farthest": "k7"}}},
+        "oS0_4": {"point": {"meet": ["sm0", "h"], "pick": {"nearest": "O"}}},
+        "oS0_5": {"point": {"meet": ["sm0", "g7a"], "pick": {"farthest": "k0"}}},
+        "oS0_6": {"point": {"meet": ["sm0", "pS0_90"], "pick": {"farthest": "x90_7820"}}},
+        "oS0_7": {"point": {"meet": ["sm0", "g7c"], "pick": {"nearest": "k7"}}},
+        "octS0": {"polygon": ["oS0_0", "oS0_1", "oS0_2", "oS0_3", "oS0_4", "oS0_5", "oS0_6", "oS0_7"]},
+        "oS1_0": {"point": {"meet": ["sm1", "g6a"], "pick": {"nearest": "k0"}}},
+        "oS1_1": {"point": {"meet": ["sm1", "d1"], "pick": {"farthest": "O"}}},
+        "oS1_2": {"point": {"meet": ["sm1", "g6c"], "pick": {"nearest": "k1"}}},
+        "pS1_135": {"line": {"through": "s1", "parallelTo": "d2"}},
+        "oS1_3": {"point": {"meet": ["sm1", "pS1_135"], "pick": {"nearest": "x0_m2180"}}},
+        "oS1_4": {"point": {"meet": ["sm1", "g6a"], "pick": {"farthest": "k0"}}},
+        "oS1_5": {"point": {"meet": ["sm1", "d1"], "pick": {"nearest": "O"}}},
+        "oS1_6": {"point": {"meet": ["sm1", "g6c"], "pick": {"farthest": "k1"}}},
+        "oS1_7": {"point": {"meet": ["sm1", "pS1_135"], "pick": {"farthest": "x0_m2180"}}},
+        "octS1": {"polygon": ["oS1_0", "oS1_1", "oS1_2", "oS1_3", "oS1_4", "oS1_5", "oS1_6", "oS1_7"]},
+        "pS2_0": {"line": {"through": "s2", "parallelTo": "h"}},
+        "oS2_0": {"point": {"meet": ["sm2", "pS2_0"], "pick": {"farthest": "x0_m7820"}}},
+        "oS2_1": {"point": {"meet": ["sm2", "g7b"], "pick": {"nearest": "k1"}}},
+        "oS2_2": {"point": {"meet": ["sm2", "v"], "pick": {"farthest": "O"}}},
+        "oS2_3": {"point": {"meet": ["sm2", "g7c"], "pick": {"nearest": "k2"}}},
+        "oS2_4": {"point": {"meet": ["sm2", "pS2_0"], "pick": {"nearest": "x0_m7820"}}},
+        "oS2_5": {"point": {"meet": ["sm2", "g7b"], "pick": {"farthest": "k1"}}},
+        "oS2_6": {"point": {"meet": ["sm2", "v"], "pick": {"nearest": "O"}}},
+        "oS2_7": {"point": {"meet": ["sm2", "g7c"], "pick": {"farthest": "k2"}}},
+        "octS2": {"polygon": ["oS2_0", "oS2_1", "oS2_2", "oS2_3", "oS2_4", "oS2_5", "oS2_6", "oS2_7"]},
+        "oS3_0": {"point": {"meet": ["sm3", "g6a"], "pick": {"nearest": "k0"}}},
+        "pS3_45": {"line": {"through": "s3", "parallelTo": "d1"}},
+        "oS3_1": {"point": {"meet": ["sm3", "pS3_45"], "pick": {"nearest": "x0_2180"}}},
+        "oS3_2": {"point": {"meet": ["sm3", "g6d"], "pick": {"nearest": "k2"}}},
+        "oS3_3": {"point": {"meet": ["sm3", "d2"], "pick": {"farthest": "O"}}},
+        "oS3_4": {"point": {"meet": ["sm3", "g6a"], "pick": {"farthest": "k0"}}},
+        "oS3_5": {"point": {"meet": ["sm3", "pS3_45"], "pick": {"farthest": "x0_2180"}}},
+        "oS3_6": {"point": {"meet": ["sm3", "g6d"], "pick": {"farthest": "k2"}}},
+        "oS3_7": {"point": {"meet": ["sm3", "d2"], "pick": {"nearest": "O"}}},
+        "octS3": {"polygon": ["oS3_0", "oS3_1", "oS3_2", "oS3_3", "oS3_4", "oS3_5", "oS3_6", "oS3_7"]},
+        "oS4_0": {"point": {"meet": ["sm4", "h"], "pick": {"nearest": "O"}}},
+        "oS4_1": {"point": {"meet": ["sm4", "g7b"], "pick": {"nearest": "k1"}}},
+        "pS4_90": {"line": {"through": "s4", "parallelTo": "v"}},
+        "oS4_2": {"point": {"meet": ["sm4", "pS4_90"], "pick": {"farthest": "x90_m7820"}}},
+        "oS4_3": {"point": {"meet": ["sm4", "g7d"], "pick": {"nearest": "k3"}}},
+        "oS4_4": {"point": {"meet": ["sm4", "h"], "pick": {"farthest": "O"}}},
+        "oS4_5": {"point": {"meet": ["sm4", "g7b"], "pick": {"farthest": "k1"}}},
+        "oS4_6": {"point": {"meet": ["sm4", "pS4_90"], "pick": {"nearest": "x90_m7820"}}},
+        "oS4_7": {"point": {"meet": ["sm4", "g7d"], "pick": {"farthest": "k3"}}},
+        "octS4": {"polygon": ["oS4_0", "oS4_1", "oS4_2", "oS4_3", "oS4_4", "oS4_5", "oS4_6", "oS4_7"]},
+        "oS5_0": {"point": {"meet": ["sm5", "g6b"], "pick": {"farthest": "k4"}}},
+        "oS5_1": {"point": {"meet": ["sm5", "d1"], "pick": {"nearest": "NE"}}},
+        "oS5_2": {"point": {"meet": ["sm5", "g6d"], "pick": {"nearest": "s3"}}},
+        "pS5_135": {"line": {"through": "s5", "parallelTo": "d2"}},
+        "oS5_3": {"point": {"meet": ["sm5", "pS5_135"], "pick": {"farthest": "x135_m7820"}}},
+        "oS5_4": {"point": {"meet": ["sm5", "g6b"], "pick": {"nearest": "k4"}}},
+        "oS5_5": {"point": {"meet": ["sm5", "d1"], "pick": {"farthest": "NE"}}},
+        "oS5_6": {"point": {"meet": ["sm5", "g6d"], "pick": {"farthest": "s3"}}},
+        "oS5_7": {"point": {"meet": ["sm5", "pS5_135"], "pick": {"nearest": "x135_m7820"}}},
+        "octS5": {"polygon": ["oS5_0", "oS5_1", "oS5_2", "oS5_3", "oS5_4", "oS5_5", "oS5_6", "oS5_7"]},
+        "pS6_0": {"line": {"through": "s6", "parallelTo": "h"}},
+        "oS6_0": {"point": {"meet": ["sm6", "pS6_0"], "pick": {"farthest": "x90_m3678"}}},
+        "oS6_1": {"point": {"meet": ["sm6", "g7a"], "pick": {"nearest": "k0"}}},
+        "oS6_2": {"point": {"meet": ["sm6", "v"], "pick": {"nearest": "O"}}},
+        "oS6_3": {"point": {"meet": ["sm6", "g7d"], "pick": {"nearest": "s4"}}},
+        "oS6_4": {"point": {"meet": ["sm6", "pS6_0"], "pick": {"nearest": "x90_m3678"}}},
+        "oS6_5": {"point": {"meet": ["sm6", "g7a"], "pick": {"farthest": "k0"}}},
+        "oS6_6": {"point": {"meet": ["sm6", "v"], "pick": {"farthest": "O"}}},
+        "oS6_7": {"point": {"meet": ["sm6", "g7d"], "pick": {"farthest": "s4"}}},
+        "octS6": {"polygon": ["oS6_0", "oS6_1", "oS6_2", "oS6_3", "oS6_4", "oS6_5", "oS6_6", "oS6_7"]},
+        "oS7_0": {"point": {"meet": ["sm7", "g6b"], "pick": {"farthest": "k4"}}},
+        "pS7_45": {"line": {"through": "s7", "parallelTo": "d1"}},
+        "oS7_1": {"point": {"meet": ["sm7", "pS7_45"], "pick": {"nearest": "x90_2180"}}},
+        "oS7_2": {"point": {"meet": ["sm7", "g6c"], "pick": {"farthest": "k6"}}},
+        "oS7_3": {"point": {"meet": ["sm7", "d2"], "pick": {"nearest": "O"}}},
+        "oS7_4": {"point": {"meet": ["sm7", "g6b"], "pick": {"nearest": "k4"}}},
+        "oS7_5": {"point": {"meet": ["sm7", "pS7_45"], "pick": {"farthest": "x90_2180"}}},
+        "oS7_6": {"point": {"meet": ["sm7", "g6c"], "pick": {"nearest": "k6"}}},
+        "oS7_7": {"point": {"meet": ["sm7", "d2"], "pick": {"farthest": "O"}}},
+        "octS7": {"polygon": ["oS7_0", "oS7_1", "oS7_2", "oS7_3", "oS7_4", "oS7_5", "oS7_6", "oS7_7"]},
+        "oO0_0": {"point": {"meet": ["ringO", "h"], "pick": {"nearest": "A"}}},
+        "oO0_1": {"point": {"meet": ["ringO", "d1"], "pick": {"nearest": "NE"}}},
+        "oO0_2": {"point": {"meet": ["ringO", "v"], "pick": {"nearest": "N"}}},
+        "oO0_3": {"point": {"meet": ["ringO", "d2"], "pick": {"nearest": "NW"}}},
+        "oO0_4": {"point": {"meet": ["ringO", "h"], "pick": {"farthest": "A"}}},
+        "oO0_5": {"point": {"meet": ["ringO", "d1"], "pick": {"farthest": "NE"}}},
+        "oO0_6": {"point": {"meet": ["ringO", "v"], "pick": {"farthest": "N"}}},
+        "oO0_7": {"point": {"meet": ["ringO", "d2"], "pick": {"farthest": "NW"}}},
+        "octO0": {"polygon": ["oO0_0", "oO0_1", "oO0_2", "oO0_3", "oO0_4", "oO0_5", "oO0_6", "oO0_7"]}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 17,
+      "text": "For the star in the middle, mark where the circle around the centre crosses the sixteen lines through the centre, and join the marks three places apart with lines in pairs.",
+      "create": {
+        "z0": {"point": {"meet": ["c9", "h"], "pick": {"angle": 0}}},
+        "z1": {"point": {"meet": ["c9", "r0"], "pick": {"angle": 22.5}}},
+        "z2": {"point": {"meet": ["c9", "d1"], "pick": {"angle": 45}}},
+        "z3": {"point": {"meet": ["c9", "r1"], "pick": {"angle": 67.5}}},
+        "z4": {"point": {"meet": ["c9", "v"], "pick": {"angle": 90}}},
+        "z5": {"point": {"meet": ["c9", "r2"], "pick": {"angle": 112.5}}},
+        "z6": {"point": {"meet": ["c9", "d2"], "pick": {"angle": 135}}},
+        "z7": {"point": {"meet": ["c9", "r3"], "pick": {"angle": 157.5}}},
+        "z8": {"point": {"meet": ["c9", "h"], "pick": {"angle": 180}}},
+        "z9": {"point": {"meet": ["c9", "r0"], "pick": {"angle": 202.5}}},
+        "z10": {"point": {"meet": ["c9", "d1"], "pick": {"angle": 225}}},
+        "z11": {"point": {"meet": ["c9", "r1"], "pick": {"angle": 247.5}}},
+        "z12": {"point": {"meet": ["c9", "v"], "pick": {"angle": 270}}},
+        "z13": {"point": {"meet": ["c9", "r2"], "pick": {"angle": 292.5}}},
+        "z14": {"point": {"meet": ["c9", "d2"], "pick": {"angle": 315}}},
+        "z15": {"point": {"meet": ["c9", "r3"], "pick": {"angle": 337.5}}},
+        "rs0": {"line": {"through": ["z3", "z13"]}},
+        "rs45": {"line": {"through": ["z5", "z15"]}},
+        "rs90": {"line": {"through": ["z7", "z1"]}},
+        "rs135": {"line": {"through": ["z9", "z3"]}},
+        "rs180": {"line": {"through": ["z11", "z5"]}},
+        "rs225": {"line": {"through": ["z13", "z7"]}},
+        "rs270": {"line": {"through": ["z15", "z9"]}},
+        "rs315": {"line": {"through": ["z1", "z11"]}}
+      },
+      "highlight": ["c9"],
+      "animate": "ruler"
+    },
+    {
+      "id": 18,
+      "text": "Draw the square that just touches the main circle: a line at right angles to the horizontal at each side, and at right angles to the vertical at the top and bottom. This square is the tile that repeats.",
+      "textWithoutHelpers": "Mark the square that just touches the main circle at the top, the bottom and the sides: this square is the tile that repeats. Its corners are crossings already on the board.",
+      "create": {
+        "tE": {"line": {"through": "E", "perpendicularTo": "h"}},
+        "tW": {"line": {"through": "W", "perpendicularTo": "h"}},
+        "tN": {"line": {"through": "N", "perpendicularTo": "v"}},
+        "tS": {"line": {"through": "Sp", "perpendicularTo": "v"}},
+        "t1": {"point": {"meet": ["tE", "tN"]}},
+        "t2": {"point": {"meet": ["tN", "tW"]}},
+        "t3": {"point": {"meet": ["tW", "tS"]}},
+        "t4": {"point": {"meet": ["tS", "tE"]}},
+        "tile": {"polygon": ["t1", "t2", "t3", "t4"]}
+      },
+      "highlight": ["E", "N", "W", "Sp"],
+      "animate": "ruler"
+    },
+    {
+      "id": 19,
+      "text": "The gap at each corner of the tile, between four wheels, is exactly the middle of a wheel: the star, the eight octagons and the bands around them. Rule the side of the standing square from the right of the circle to the top, and draw the middle again as its mirror image across that line. Its centre lands on the corner of the tile.",
+      "create": {
+        "mEN": {"line": {"through": ["E", "N"]}},
+        "corner": {
+          "repeat": {
+            "of": [
+              "l45_m6322",
+              "r1",
+              "octK5",
+              "x90_m3678",
+              "octK4",
+              "oK6_5",
+              "l0_m6322",
+              "l90_m6322",
+              "r2",
+              "octK6",
+              "x90_m6322",
+              "oK7_6",
+              "l135_m6322",
+              "oK0_7",
+              "octK7",
+              "x135_m6322",
+              "l0_6322",
+              "x0_6322",
+              "octK0",
+              "oK6_0",
+              "r0",
+              "l45_6322",
+              "x0_3678",
+              "octK1",
+              "x90_3678",
+              "l90_6322",
+              "x45_3678",
+              "octK2",
+              "x90_6322",
+              "l135_6322",
+              "octK3",
+              "x0_m3678",
+              "oK4_3",
+              "x0_m6322",
+              "oK5_4",
+              "rs45",
+              "octO0",
+              "rs90",
+              "rs135",
+              "oK4_6",
+              "r3",
+              "rs180",
+              "oK2_1",
+              "rs225",
+              "oK3_2",
+              "rs270",
+              "rs315",
+              "rs0",
+              "oK1_3",
+              "oK6_4",
+              "l45_m3678",
+              "oS6_7",
+              "oS6_0",
+              "octS6",
+              "oS7_4",
+              "oO0_7",
+              "octS7",
+              "oO0_0",
+              "oS0_3",
+              "octS0",
+              "oS1_7",
+              "oS1_0",
+              "octS1",
+              "l90_3678",
+              "oS3_3",
+              "oK1_7",
+              "oK7_5",
+              "l90_m3678",
+              "oS7_0",
+              "oS7_1",
+              "oS0_5",
+              "oO0_1",
+              "oS1_4",
+              "oS2_0",
+              "oS2_1",
+              "octS2",
+              "l135_3678",
+              "oS4_4",
+              "oK2_0",
+              "oK7_2",
+              "l135_m3678",
+              "oS0_1",
+              "oS0_2",
+              "oS1_6",
+              "oO0_2",
+              "oS2_5",
+              "oS3_1",
+              "oS3_2",
+              "octS3",
+              "l0_m3678",
+              "oS5_5",
+              "oK3_1",
+              "oK4_2",
+              "oS6_6",
+              "oS4_3",
+              "oS4_2",
+              "octS4",
+              "oS3_6",
+              "oO0_3",
+              "oS2_7",
+              "oS1_3",
+              "oS1_2",
+              "l0_3678",
+              "oK5_3",
+              "oS7_7",
+              "oS5_4",
+              "oS5_3",
+              "octS5",
+              "oS4_7",
+              "oO0_4",
+              "oS3_0",
+              "oS2_4",
+              "oS2_3",
+              "l45_3678",
+              "oS0_0",
+              "oS6_5",
+              "oS6_4",
+              "oS5_0",
+              "oO0_5",
+              "oS4_1",
+              "oS3_5",
+              "oS3_4",
+              "oS7_6",
+              "oS7_5",
+              "oS6_1",
+              "oO0_6",
+              "oS5_2",
+              "oS4_6",
+              "oS4_5",
+              "oS5_6",
+              "oS5_7",
+              "oS6_3",
+              "oS7_2",
+              "oS0_6",
+              "oS0_7",
+              "l90_m2180",
+              "x90_m2180",
+              "l45_2180",
+              "x45_2180",
+              "l135_m2180",
+              "x90_m7820",
+              "l90_2180",
+              "oS1_1",
+              "l0_2180",
+              "x135_m7820",
+              "l135_2180",
+              "oS2_2",
+              "l0_m2180",
+              "l45_m2180",
+              "x90_2180",
+              "x90_7820",
+              "x0_7820",
+              "x0_m2180",
+              "x0_m7820",
+              "x0_2180"
+            ],
+            "by": "mirror:mEN"
+          }
+        }
+      },
+      "textWithoutHelpers": "The gap at each corner of the tile, between four wheels, is exactly the middle of a wheel: the star, the eight octagons and the bands around them. Draw the middle again around the corner of the tile, as the mirror image of the one at the centre.",
+      "highlight": ["E", "N", "t1"],
+      "animate": "ruler"
+    }
+  ],
+  "ink": {
+    "text": "Go over the lines of the finished wheel, then over the middle again at the corner of the tile: the octagons, the bands between them and the star.",
+    "paths": [
+      {
+        "along": "l0_m2180",
+        "from": {"cross": "octK5", "pick": {"farthest": "x0_m2180"}},
+        "to": "l135_m3678"
+      },
+      {
+        "along": "l0_m2180",
+        "from": "l45_m6322",
+        "to": {"cross": "octK5", "pick": {"nearest": "x0_m2180"}}
+      },
+      {
+        "along": "l0_m2180",
+        "from": {"cross": "octK2", "pick": {"nearest": "oS5_7"}},
+        "to": "l135_6322"
+      },
+      {
+        "along": "l0_m2180",
+        "from": "l45_3678",
+        "to": {"cross": "octK2", "pick": {"farthest": "oS5_7"}}
+      },
+      {
+        "along": "l45_m2180",
+        "from": {"cross": "octK6", "pick": {"farthest": "x0_m7820"}},
+        "to": "l0_3678"
+      },
+      {
+        "along": "l45_m2180",
+        "from": "l90_m6322",
+        "to": {"cross": "octK6", "pick": {"nearest": "x0_m7820"}}
+      },
+      {
+        "along": "l45_m2180",
+        "from": {"cross": "octK3", "pick": {"nearest": "oS6_0"}},
+        "to": "l0_m6322"
+      },
+      {
+        "along": "l45_m2180",
+        "from": "l90_3678",
+        "to": {"cross": "octK3", "pick": {"farthest": "oS6_0"}}
+      },
+      {
+        "along": "l90_m2180",
+        "from": {"cross": "octK7", "pick": {"farthest": "x90_m2180"}},
+        "to": "l45_3678"
+      },
+      {
+        "along": "l90_m2180",
+        "from": "l135_m6322",
+        "to": {"cross": "octK7", "pick": {"nearest": "x90_m2180"}}
+      },
+      {
+        "along": "l90_m2180",
+        "from": {"cross": "octK4", "pick": {"nearest": "oS7_1"}},
+        "to": "l45_m6322"
+      },
+      {
+        "along": "l90_m2180",
+        "from": "l135_3678",
+        "to": {"cross": "octK4", "pick": {"farthest": "oS7_1"}}
+      },
+      {
+        "along": "l135_m2180",
+        "from": {"cross": "octK5", "pick": {"farthest": "x0_7820"}},
+        "to": "l0_m3678"
+      },
+      {
+        "along": "l135_m2180",
+        "from": "l90_m6322",
+        "to": {"cross": "octK5", "pick": {"nearest": "x0_7820"}}
+      },
+      {
+        "along": "l135_m2180",
+        "from": {"cross": "octK0", "pick": {"nearest": "x90_m7820"}},
+        "to": "l0_6322"
+      },
+      {
+        "along": "l135_m2180",
+        "from": "l90_3678",
+        "to": {"cross": "octK0", "pick": {"farthest": "x90_m7820"}}
+      },
+      {
+        "along": "l0_2180",
+        "from": {"cross": "octK6", "pick": {"farthest": "x0_2180"}},
+        "to": "l45_m3678"
+      },
+      {
+        "along": "l0_2180",
+        "from": "l135_m6322",
+        "to": {"cross": "octK6", "pick": {"nearest": "x0_2180"}}
+      },
+      {
+        "along": "l0_2180",
+        "from": {"cross": "octK1", "pick": {"nearest": "x135_m7820"}},
+        "to": "l45_6322"
+      },
+      {
+        "along": "l0_2180",
+        "from": "l135_3678",
+        "to": {"cross": "octK1", "pick": {"farthest": "x135_m7820"}}
+      },
+      {
+        "along": "l45_2180",
+        "from": {"cross": "octK7", "pick": {"farthest": "x45_2180"}},
+        "to": "l90_m3678"
+      },
+      {
+        "along": "l45_2180",
+        "from": "l0_6322",
+        "to": {"cross": "octK7", "pick": {"nearest": "x45_2180"}}
+      },
+      {
+        "along": "l45_2180",
+        "from": {"cross": "octK2", "pick": {"nearest": "oS0_6"}},
+        "to": "l90_6322"
+      },
+      {
+        "along": "l45_2180",
+        "from": "l0_m3678",
+        "to": {"cross": "octK2", "pick": {"farthest": "oS0_6"}}
+      },
+      {
+        "along": "l90_2180",
+        "from": {"cross": "octK0", "pick": {"farthest": "oS3_5"}},
+        "to": "l135_m3678"
+      },
+      {
+        "along": "l90_2180",
+        "from": "l45_6322",
+        "to": {"cross": "octK0", "pick": {"nearest": "oS3_5"}}
+      },
+      {
+        "along": "l90_2180",
+        "from": {"cross": "octK3", "pick": {"nearest": "x90_2180"}},
+        "to": "l135_6322"
+      },
+      {
+        "along": "l90_2180",
+        "from": "l45_m3678",
+        "to": {"cross": "octK3", "pick": {"farthest": "x90_2180"}}
+      },
+      {
+        "along": "l135_2180",
+        "from": {"cross": "octK4", "pick": {"farthest": "x90_7820"}},
+        "to": "l90_m3678"
+      },
+      {
+        "along": "l135_2180",
+        "from": "l0_m6322",
+        "to": {"cross": "octK4", "pick": {"nearest": "x90_7820"}}
+      },
+      {
+        "along": "l135_2180",
+        "from": {"cross": "octK1", "pick": {"nearest": "oS4_6"}},
+        "to": "l90_6322"
+      },
+      {
+        "along": "l135_2180",
+        "from": "l0_3678",
+        "to": {"cross": "octK1", "pick": {"farthest": "oS4_6"}}
+      },
+      {
+        "along": "l45_m6322",
+        "from": {"cross": "octK5", "pick": {"farthest": "x90_m3678"}},
+        "to": "l0_m2180"
+      },
+      {
+        "along": "l45_m6322",
+        "from": "r1",
+        "to": {"cross": "octK5", "pick": {"nearest": "x90_m3678"}}
+      },
+      {
+        "along": "l45_m6322",
+        "from": {"cross": "octK4", "pick": {"nearest": "oK6_5"}},
+        "to": "l0_m6322"
+      },
+      {
+        "along": "l45_m6322",
+        "from": "l90_m2180",
+        "to": {"cross": "octK4", "pick": {"farthest": "oK6_5"}}
+      },
+      {
+        "along": "l90_m6322",
+        "from": {"cross": "octK6", "pick": {"farthest": "x90_m6322"}},
+        "to": "l45_m2180"
+      },
+      {
+        "along": "l90_m6322",
+        "from": "r2",
+        "to": {"cross": "octK6", "pick": {"nearest": "x90_m6322"}}
+      },
+      {
+        "along": "l90_m6322",
+        "from": {"cross": "octK5", "pick": {"nearest": "oK7_6"}},
+        "to": "l45_m6322"
+      },
+      {
+        "along": "l90_m6322",
+        "from": "l135_m2180",
+        "to": {"cross": "octK5", "pick": {"farthest": "oK7_6"}}
+      },
+      {
+        "along": "l135_m6322",
+        "from": {"cross": "octK6", "pick": {"farthest": "oK0_7"}},
+        "to": "l0_2180"
+      },
+      {
+        "along": "l135_m6322",
+        "from": "l90_m6322",
+        "to": {"cross": "octK6", "pick": {"nearest": "oK0_7"}}
+      },
+      {
+        "along": "l135_m6322",
+        "from": {"cross": "octK7", "pick": {"nearest": "x135_m6322"}},
+        "to": "l0_6322"
+      },
+      {
+        "along": "l135_m6322",
+        "from": "l90_m2180",
+        "to": {"cross": "octK7", "pick": {"farthest": "x135_m6322"}}
+      },
+      {
+        "along": "l0_6322",
+        "from": {"cross": "octK7", "pick": {"farthest": "x0_6322"}},
+        "to": "l45_2180"
+      },
+      {
+        "along": "l0_6322",
+        "from": "l135_m6322",
+        "to": {"cross": "octK7", "pick": {"nearest": "x0_6322"}}
+      },
+      {"along": "l0_6322", "from": {"cross": "octK0", "pick": {"nearest": "oK6_0"}}, "to": "r0"},
+      {
+        "along": "l0_6322",
+        "from": "l135_m2180",
+        "to": {"cross": "octK0", "pick": {"farthest": "oK6_0"}}
+      },
+      {
+        "along": "l45_6322",
+        "from": {"cross": "octK0", "pick": {"farthest": "x0_3678"}},
+        "to": "l90_2180"
+      },
+      {
+        "along": "l45_6322",
+        "from": "l0_6322",
+        "to": {"cross": "octK0", "pick": {"nearest": "x0_3678"}}
+      },
+      {"along": "l45_6322", "from": {"cross": "octK1", "pick": {"nearest": "x90_3678"}}, "to": "r1"},
+      {
+        "along": "l45_6322",
+        "from": "l0_2180",
+        "to": {"cross": "octK1", "pick": {"farthest": "x90_3678"}}
+      },
+      {
+        "along": "l90_6322",
+        "from": {"cross": "octK1", "pick": {"farthest": "x45_3678"}},
+        "to": "l135_2180"
+      },
+      {
+        "along": "l90_6322",
+        "from": "l45_6322",
+        "to": {"cross": "octK1", "pick": {"nearest": "x45_3678"}}
+      },
+      {"along": "l90_6322", "from": {"cross": "octK2", "pick": {"nearest": "x90_6322"}}, "to": "r2"},
+      {
+        "along": "l90_6322",
+        "from": "l45_2180",
+        "to": {"cross": "octK2", "pick": {"farthest": "x90_6322"}}
+      },
+      {
+        "along": "l135_6322",
+        "from": {"cross": "octK3", "pick": {"farthest": "x0_m3678"}},
+        "to": "l90_2180"
+      },
+      {
+        "along": "l135_6322",
+        "from": "l0_m6322",
+        "to": {"cross": "octK3", "pick": {"nearest": "x0_m3678"}}
+      },
+      {
+        "along": "l135_6322",
+        "from": {"cross": "octK2", "pick": {"nearest": "oK4_3"}},
+        "to": "l90_6322"
+      },
+      {
+        "along": "l135_6322",
+        "from": "l0_m2180",
+        "to": {"cross": "octK2", "pick": {"farthest": "oK4_3"}}
+      },
+      {
+        "along": "l0_m6322",
+        "from": {"cross": "octK4", "pick": {"farthest": "x0_m6322"}},
+        "to": "l135_2180"
+      },
+      {
+        "along": "l0_m6322",
+        "from": "l45_m6322",
+        "to": {"cross": "octK4", "pick": {"nearest": "x0_m6322"}}
+      },
+      {
+        "along": "l0_m6322",
+        "from": {"cross": "octK3", "pick": {"nearest": "oK5_4"}},
+        "to": "l135_6322"
+      },
+      {
+        "along": "l0_m6322",
+        "from": "l45_m2180",
+        "to": {"cross": "octK3", "pick": {"farthest": "oK5_4"}}
+      },
+      {
+        "along": "l135_m3678",
+        "from": {"cross": "octK5", "pick": {"farthest": "x0_6322"}},
+        "to": "l90_m7820"
+      },
+      {
+        "along": "l135_m3678",
+        "from": "l0_m2180",
+        "to": {"cross": "octK5", "pick": {"nearest": "x0_6322"}}
+      },
+      {
+        "along": "l135_m3678",
+        "from": {"cross": "octK0", "pick": {"nearest": "x90_m6322"}},
+        "to": "l90_2180"
+      },
+      {
+        "along": "l135_m3678",
+        "from": "l0_7820",
+        "to": {"cross": "octK0", "pick": {"farthest": "x90_m6322"}}
+      },
+      {
+        "along": "l0_3678",
+        "from": {"cross": "octK6", "pick": {"farthest": "x0_3678"}},
+        "to": "l135_m7820"
+      },
+      {
+        "along": "l0_3678",
+        "from": "l45_m2180",
+        "to": {"cross": "octK6", "pick": {"nearest": "x0_3678"}}
+      },
+      {
+        "along": "l0_3678",
+        "from": {"cross": "octK1", "pick": {"nearest": "x135_m6322"}},
+        "to": "l135_2180"
+      },
+      {
+        "along": "l0_3678",
+        "from": "l45_7820",
+        "to": {"cross": "octK1", "pick": {"farthest": "x135_m6322"}}
+      },
+      {
+        "along": "l45_3678",
+        "from": {"cross": "octK7", "pick": {"farthest": "x45_3678"}},
+        "to": "l0_7820"
+      },
+      {
+        "along": "l45_3678",
+        "from": "l90_m2180",
+        "to": {"cross": "octK7", "pick": {"nearest": "x45_3678"}}
+      },
+      {
+        "along": "l45_3678",
+        "from": {"cross": "octK2", "pick": {"nearest": "oS0_0"}},
+        "to": "l0_m2180"
+      },
+      {
+        "along": "l45_3678",
+        "from": "l90_7820",
+        "to": {"cross": "octK2", "pick": {"farthest": "oS0_0"}}
+      },
+      {
+        "along": "l90_3678",
+        "from": {"cross": "octK0", "pick": {"farthest": "oS3_3"}},
+        "to": "l45_7820"
+      },
+      {
+        "along": "l90_3678",
+        "from": "l135_m2180",
+        "to": {"cross": "octK0", "pick": {"nearest": "oS3_3"}}
+      },
+      {
+        "along": "l90_3678",
+        "from": {"cross": "octK3", "pick": {"nearest": "x90_3678"}},
+        "to": "l45_m2180"
+      },
+      {
+        "along": "l90_3678",
+        "from": "l135_7820",
+        "to": {"cross": "octK3", "pick": {"farthest": "x90_3678"}}
+      },
+      {
+        "along": "l135_3678",
+        "from": {"cross": "octK4", "pick": {"farthest": "x90_6322"}},
+        "to": "l0_m7820"
+      },
+      {
+        "along": "l135_3678",
+        "from": "l90_m2180",
+        "to": {"cross": "octK4", "pick": {"nearest": "x90_6322"}}
+      },
+      {
+        "along": "l135_3678",
+        "from": {"cross": "octK1", "pick": {"nearest": "oS4_4"}},
+        "to": "l0_2180"
+      },
+      {
+        "along": "l135_3678",
+        "from": "l90_7820",
+        "to": {"cross": "octK1", "pick": {"farthest": "oS4_4"}}
+      },
+      {
+        "along": "l0_m3678",
+        "from": {"cross": "octK5", "pick": {"farthest": "x0_m3678"}},
+        "to": "l45_m7820"
+      },
+      {
+        "along": "l0_m3678",
+        "from": "l135_m2180",
+        "to": {"cross": "octK5", "pick": {"nearest": "x0_m3678"}}
+      },
+      {
+        "along": "l0_m3678",
+        "from": {"cross": "octK2", "pick": {"nearest": "oS5_5"}},
+        "to": "l45_2180"
+      },
+      {
+        "along": "l0_m3678",
+        "from": "l135_7820",
+        "to": {"cross": "octK2", "pick": {"farthest": "oS5_5"}}
+      },
+      {
+        "along": "l45_m3678",
+        "from": {"cross": "octK6", "pick": {"farthest": "x0_m6322"}},
+        "to": "l90_m7820"
+      },
+      {
+        "along": "l45_m3678",
+        "from": "l0_2180",
+        "to": {"cross": "octK6", "pick": {"nearest": "x0_m6322"}}
+      },
+      {
+        "along": "l45_m3678",
+        "from": {"cross": "octK3", "pick": {"nearest": "oS6_6"}},
+        "to": "l90_2180"
+      },
+      {
+        "along": "l45_m3678",
+        "from": "l0_m7820",
+        "to": {"cross": "octK3", "pick": {"farthest": "oS6_6"}}
+      },
+      {
+        "along": "l90_m3678",
+        "from": {"cross": "octK7", "pick": {"farthest": "x90_m3678"}},
+        "to": "l135_m7820"
+      },
+      {
+        "along": "l90_m3678",
+        "from": "l45_2180",
+        "to": {"cross": "octK7", "pick": {"nearest": "x90_m3678"}}
+      },
+      {
+        "along": "l90_m3678",
+        "from": {"cross": "octK4", "pick": {"nearest": "oS7_7"}},
+        "to": "l135_2180"
+      },
+      {
+        "along": "l90_m3678",
+        "from": "l45_m7820",
+        "to": {"cross": "octK4", "pick": {"farthest": "oS7_7"}}
+      },
+      {"along": "rs45", "from": {"cross": "octO0", "pick": {"nearest": "oK7_6"}}, "to": "r0"},
+      {"along": "rs45", "from": "r1", "to": {"cross": "octO0", "pick": {"farthest": "oK7_6"}}},
+      {"along": "rs90", "from": {"cross": "octO0", "pick": {"nearest": "oK0_7"}}, "to": "rs45"},
+      {"along": "rs90", "from": "rs135", "to": {"cross": "octO0", "pick": {"farthest": "oK0_7"}}},
+      {"along": "rs135", "from": {"cross": "octO0", "pick": {"nearest": "oK4_6"}}, "to": "r3"},
+      {"along": "rs135", "from": "rs90", "to": {"cross": "octO0", "pick": {"farthest": "oK4_6"}}},
+      {"along": "rs180", "from": {"cross": "octO0", "pick": {"farthest": "oK2_1"}}, "to": "rs225"},
+      {"along": "rs180", "from": "rs135", "to": {"cross": "octO0", "pick": {"nearest": "oK2_1"}}},
+      {"along": "rs225", "from": {"cross": "octO0", "pick": {"farthest": "oK3_2"}}, "to": "r1"},
+      {"along": "rs225", "from": "rs180", "to": {"cross": "octO0", "pick": {"nearest": "oK3_2"}}},
+      {"along": "rs270", "from": {"cross": "octO0", "pick": {"farthest": "oK4_3"}}, "to": "rs315"},
+      {"along": "rs270", "from": "rs225", "to": {"cross": "octO0", "pick": {"nearest": "oK4_3"}}},
+      {"along": "rs315", "from": {"cross": "octO0", "pick": {"nearest": "oK5_4"}}, "to": "rs270"},
+      {"along": "rs315", "from": "r3", "to": {"cross": "octO0", "pick": {"farthest": "oK5_4"}}},
+      {"along": "rs0", "from": {"cross": "octO0", "pick": {"farthest": "oK1_3"}}, "to": "rs315"},
+      {"along": "rs0", "from": "rs45", "to": {"cross": "octO0", "pick": {"nearest": "oK1_3"}}},
+      {
+        "along": "octK5",
+        "from": "oK5_7",
+        "to": {"cross": "l45_m6322", "pick": {"farthest": "x90_m3678"}}
+      },
+      {"along": "octK5", "from": {"cross": "l90_m7820", "pick": {"nearest": "SE"}}, "to": "oK6_4"},
+      {
+        "along": "octK6",
+        "from": "oK6_4",
+        "to": {"cross": "l90_m6322", "pick": {"nearest": "x90_m6322"}}
+      },
+      {
+        "along": "octK6",
+        "from": {"cross": "l45_m3678", "pick": {"nearest": "x0_m6322"}},
+        "to": "oS6_7"
+      },
+      {"through": ["oS6_7", "oS6_0"]},
+      {"through": ["oS7_4", "oO0_7"]},
+      {"along": "octO0", "from": "oO0_7", "to": {"cross": "rs45", "pick": {"nearest": "oK7_6"}}},
+      {"along": "octO0", "from": {"cross": "rs270", "pick": {"farthest": "oK4_3"}}, "to": "oO0_0"},
+      {"through": ["oO0_0", "oS0_3"]},
+      {"through": ["oS1_7", "oS1_0"]},
+      {"along": "octK0", "from": "oS1_0", "to": {"cross": "l90_3678", "pick": {"nearest": "oS3_3"}}},
+      {
+        "along": "octK0",
+        "from": {"cross": "l45_6322", "pick": {"nearest": "x0_3678"}},
+        "to": "oK1_7"
+      },
+      {
+        "along": "octK1",
+        "from": "oK1_7",
+        "to": {"cross": "l45_7820", "pick": {"nearest": "x90_2180"}}
+      },
+      {
+        "along": "octK1",
+        "from": {"cross": "l90_6322", "pick": {"farthest": "x45_3678"}},
+        "to": "oK1_0"
+      },
+      {
+        "along": "octK6",
+        "from": "oK6_0",
+        "to": {"cross": "l90_m6322", "pick": {"farthest": "x90_m6322"}}
+      },
+      {"along": "octK6", "from": {"cross": "l135_m7820", "pick": {"nearest": "A"}}, "to": "oK7_5"},
+      {
+        "along": "octK7",
+        "from": "oK7_5",
+        "to": {"cross": "l135_m6322", "pick": {"nearest": "x135_m6322"}}
+      },
+      {
+        "along": "octK7",
+        "from": {"cross": "l90_m3678", "pick": {"nearest": "x90_m3678"}},
+        "to": "oS7_0"
+      },
+      {"through": ["oS7_0", "oS7_1"]},
+      {"through": ["oS0_5", "oO0_0"]},
+      {"along": "octO0", "from": "oO0_0", "to": {"cross": "rs90", "pick": {"nearest": "oK0_7"}}},
+      {"along": "octO0", "from": {"cross": "rs315", "pick": {"farthest": "oK5_4"}}, "to": "oO0_1"},
+      {"through": ["oO0_1", "oS1_4"]},
+      {"through": ["oS2_0", "oS2_1"]},
+      {
+        "along": "octK1",
+        "from": "oS2_1",
+        "to": {"cross": "l135_3678", "pick": {"nearest": "oS4_4"}}
+      },
+      {
+        "along": "octK1",
+        "from": {"cross": "l90_6322", "pick": {"nearest": "x45_3678"}},
+        "to": "oK2_0"
+      },
+      {
+        "along": "octK2",
+        "from": "oK2_0",
+        "to": {"cross": "l90_7820", "pick": {"nearest": "x90_7820"}}
+      },
+      {
+        "along": "octK2",
+        "from": {"cross": "l135_6322", "pick": {"farthest": "oK4_3"}},
+        "to": "oK2_1"
+      },
+      {
+        "along": "octK7",
+        "from": "oK7_1",
+        "to": {"cross": "l135_m6322", "pick": {"farthest": "x135_m6322"}}
+      },
+      {
+        "along": "octK7",
+        "from": {"cross": "l0_7820", "pick": {"nearest": "x0_7820"}},
+        "to": "oK7_2"
+      },
+      {"along": "octK0", "from": "oK7_2", "to": {"cross": "l0_6322", "pick": {"nearest": "oK6_0"}}},
+      {
+        "along": "octK0",
+        "from": {"cross": "l135_m3678", "pick": {"nearest": "x90_m6322"}},
+        "to": "oS0_1"
+      },
+      {"through": ["oS0_1", "oS0_2"]},
+      {"through": ["oS1_6", "oO0_1"]},
+      {"along": "octO0", "from": "oO0_1", "to": {"cross": "rs135", "pick": {"farthest": "oK4_6"}}},
+      {"along": "octO0", "from": {"cross": "rs0", "pick": {"nearest": "oK1_3"}}, "to": "oO0_2"},
+      {"through": ["oO0_2", "oS2_5"]},
+      {"through": ["oS3_1", "oS3_2"]},
+      {"along": "octK2", "from": "oS3_2", "to": {"cross": "l0_m3678", "pick": {"nearest": "oS5_5"}}},
+      {
+        "along": "octK2",
+        "from": {"cross": "l135_6322", "pick": {"nearest": "oK4_3"}},
+        "to": "oK3_1"
+      },
+      {
+        "along": "octK3",
+        "from": "oK3_1",
+        "to": {"cross": "l135_7820", "pick": {"nearest": "x0_m2180"}}
+      },
+      {
+        "along": "octK3",
+        "from": {"cross": "l0_m6322", "pick": {"farthest": "oK5_4"}},
+        "to": "oK3_2"
+      },
+      {
+        "along": "octK4",
+        "from": "oK4_3",
+        "to": {"cross": "l45_m6322", "pick": {"farthest": "oK6_5"}}
+      },
+      {
+        "along": "octK4",
+        "from": {"cross": "l0_m7820", "pick": {"nearest": "x0_m7820"}},
+        "to": "oK4_2"
+      },
+      {"along": "octK3", "from": "oK4_2", "to": {"cross": "l0_m6322", "pick": {"nearest": "oK5_4"}}},
+      {
+        "along": "octK3",
+        "from": {"cross": "l45_m3678", "pick": {"nearest": "oS6_6"}},
+        "to": "oS4_3"
+      },
+      {"through": ["oS4_3", "oS4_2"]},
+      {"through": ["oS3_6", "oO0_3"]},
+      {"along": "octO0", "from": "oO0_3", "to": {"cross": "rs45", "pick": {"farthest": "oK7_6"}}},
+      {"along": "octO0", "from": {"cross": "rs180", "pick": {"nearest": "oK2_1"}}, "to": "oO0_2"},
+      {"through": ["oO0_2", "oS2_7"]},
+      {"through": ["oS1_3", "oS1_2"]},
+      {
+        "along": "octK1",
+        "from": "oS1_2",
+        "to": {"cross": "l0_3678", "pick": {"nearest": "x135_m6322"}}
+      },
+      {
+        "along": "octK1",
+        "from": {"cross": "l45_6322", "pick": {"nearest": "x90_3678"}},
+        "to": "oK1_7"
+      },
+      {
+        "along": "octK0",
+        "from": "oK1_7",
+        "to": {"cross": "l45_7820", "pick": {"nearest": "x0_2180"}}
+      },
+      {"along": "octK0", "from": {"cross": "l0_6322", "pick": {"farthest": "oK6_0"}}, "to": "oK0_2"},
+      {
+        "along": "octK5",
+        "from": "oK5_4",
+        "to": {"cross": "l90_m6322", "pick": {"farthest": "oK7_6"}}
+      },
+      {
+        "along": "octK5",
+        "from": {"cross": "l45_m7820", "pick": {"nearest": "x90_m2180"}},
+        "to": "oK5_3"
+      },
+      {
+        "along": "octK4",
+        "from": "oK5_3",
+        "to": {"cross": "l45_m6322", "pick": {"nearest": "oK6_5"}}
+      },
+      {
+        "along": "octK4",
+        "from": {"cross": "l90_m3678", "pick": {"nearest": "oS7_7"}},
+        "to": "oS5_4"
+      },
+      {"through": ["oS5_4", "oS5_3"]},
+      {"through": ["oS4_7", "oO0_4"]},
+      {"along": "octO0", "from": "oO0_4", "to": {"cross": "rs90", "pick": {"farthest": "oK0_7"}}},
+      {"along": "octO0", "from": {"cross": "rs225", "pick": {"nearest": "oK3_2"}}, "to": "oO0_3"},
+      {"through": ["oO0_3", "oS3_0"]},
+      {"through": ["oS2_4", "oS2_3"]},
+      {"along": "octK2", "from": "oS2_3", "to": {"cross": "l45_3678", "pick": {"nearest": "oS0_0"}}},
+      {
+        "along": "octK2",
+        "from": {"cross": "l90_6322", "pick": {"nearest": "x90_6322"}},
+        "to": "oK2_0"
+      },
+      {
+        "along": "octK1",
+        "from": "oK2_0",
+        "to": {"cross": "l90_7820", "pick": {"nearest": "x45_2180"}}
+      },
+      {
+        "along": "octK1",
+        "from": {"cross": "l45_6322", "pick": {"farthest": "x90_3678"}},
+        "to": "oK1_3"
+      },
+      {
+        "along": "octK6",
+        "from": "oK6_5",
+        "to": {"cross": "l135_m6322", "pick": {"farthest": "oK0_7"}}
+      },
+      {
+        "along": "octK6",
+        "from": {"cross": "l90_m7820", "pick": {"nearest": "x90_m7820"}},
+        "to": "oK6_4"
+      },
+      {
+        "along": "octK5",
+        "from": "oK6_4",
+        "to": {"cross": "l90_m6322", "pick": {"nearest": "oK7_6"}}
+      },
+      {
+        "along": "octK5",
+        "from": {"cross": "l135_m3678", "pick": {"nearest": "x0_6322"}},
+        "to": "oS6_5"
+      },
+      {"through": ["oS6_5", "oS6_4"]},
+      {"through": ["oS5_0", "oO0_5"]},
+      {"along": "octO0", "from": "oO0_5", "to": {"cross": "rs135", "pick": {"nearest": "oK4_6"}}},
+      {"along": "octO0", "from": {"cross": "rs270", "pick": {"nearest": "oK4_3"}}, "to": "oO0_4"},
+      {"through": ["oO0_4", "oS4_1"]},
+      {"through": ["oS3_5", "oS3_4"]},
+      {
+        "along": "octK3",
+        "from": "oS3_4",
+        "to": {"cross": "l90_3678", "pick": {"nearest": "x90_3678"}}
+      },
+      {
+        "along": "octK3",
+        "from": {"cross": "l135_6322", "pick": {"nearest": "x0_m3678"}},
+        "to": "oK3_1"
+      },
+      {"along": "octK2", "from": "oK3_1", "to": {"cross": "l135_7820", "pick": {"nearest": "W"}}},
+      {
+        "along": "octK2",
+        "from": {"cross": "l90_6322", "pick": {"farthest": "x90_6322"}},
+        "to": "oK2_4"
+      },
+      {
+        "along": "octK7",
+        "from": "oK7_6",
+        "to": {"cross": "l0_6322", "pick": {"farthest": "x0_6322"}}
+      },
+      {
+        "along": "octK7",
+        "from": {"cross": "l135_m7820", "pick": {"nearest": "x135_m7820"}},
+        "to": "oK7_5"
+      },
+      {
+        "along": "octK6",
+        "from": "oK7_5",
+        "to": {"cross": "l135_m6322", "pick": {"nearest": "oK0_7"}}
+      },
+      {
+        "along": "octK6",
+        "from": {"cross": "l0_3678", "pick": {"nearest": "x0_3678"}},
+        "to": "oS7_6"
+      },
+      {"through": ["oS7_6", "oS7_5"]},
+      {"through": ["oS6_1", "oO0_6"]},
+      {"along": "octO0", "from": "oO0_6", "to": {"cross": "rs180", "pick": {"farthest": "oK2_1"}}},
+      {"along": "octO0", "from": {"cross": "rs315", "pick": {"nearest": "oK5_4"}}, "to": "oO0_5"},
+      {"through": ["oO0_5", "oS5_2"]},
+      {"through": ["oS4_6", "oS4_5"]},
+      {
+        "along": "octK4",
+        "from": "oS4_5",
+        "to": {"cross": "l135_3678", "pick": {"nearest": "x90_6322"}}
+      },
+      {
+        "along": "octK4",
+        "from": {"cross": "l0_m6322", "pick": {"nearest": "x0_m6322"}},
+        "to": "oK4_2"
+      },
+      {"along": "octK3", "from": "oK4_2", "to": {"cross": "l0_m7820", "pick": {"nearest": "SW"}}},
+      {
+        "along": "octK3",
+        "from": {"cross": "l135_6322", "pick": {"farthest": "x0_m3678"}},
+        "to": "oK3_5"
+      },
+      {
+        "along": "octK4",
+        "from": "oK4_6",
+        "to": {"cross": "l0_m6322", "pick": {"farthest": "x0_m6322"}}
+      },
+      {"along": "octK4", "from": {"cross": "l45_m7820", "pick": {"nearest": "Sp"}}, "to": "oK5_3"},
+      {
+        "along": "octK5",
+        "from": "oK5_3",
+        "to": {"cross": "l45_m6322", "pick": {"nearest": "x90_m3678"}}
+      },
+      {
+        "along": "octK5",
+        "from": {"cross": "l0_m3678", "pick": {"nearest": "x0_m3678"}},
+        "to": "oS5_6"
+      },
+      {"through": ["oS5_6", "oS5_7"]},
+      {"through": ["oS6_3", "oO0_6"]},
+      {"along": "octO0", "from": "oO0_6", "to": {"cross": "rs0", "pick": {"farthest": "oK1_3"}}},
+      {"along": "octO0", "from": {"cross": "rs225", "pick": {"farthest": "oK3_2"}}, "to": "oO0_7"},
+      {"through": ["oO0_7", "oS7_2"]},
+      {"through": ["oS0_6", "oS0_7"]},
+      {
+        "along": "octK7",
+        "from": "oS0_7",
+        "to": {"cross": "l45_3678", "pick": {"nearest": "x45_3678"}}
+      },
+      {
+        "along": "octK7",
+        "from": {"cross": "l0_6322", "pick": {"nearest": "x0_6322"}},
+        "to": "oK7_2"
+      },
+      {"along": "octK0", "from": "oK7_2", "to": {"cross": "l0_7820", "pick": {"nearest": "SE"}}},
+      {
+        "along": "octK0",
+        "from": {"cross": "l45_6322", "pick": {"farthest": "x0_3678"}},
+        "to": "oK0_7"
+      },
+      {"through": ["oS5_7", "oS5_0"]},
+      {"through": ["oS2_7", "oS2_0"]},
+      {"through": ["oS6_0", "oS6_1"]},
+      {"through": ["oS3_0", "oS3_1"]},
+      {"through": ["oS7_1", "oS7_2"]},
+      {"through": ["oS4_1", "oS4_2"]},
+      {"through": ["oS5_3", "oS5_2"]},
+      {"through": ["oS0_3", "oS0_2"]},
+      {"through": ["oS6_4", "oS6_3"]},
+      {"through": ["oS1_4", "oS1_3"]},
+      {"through": ["oS7_5", "oS7_4"]},
+      {"through": ["oS2_5", "oS2_4"]},
+      {"through": ["oS0_6", "oS0_5"]},
+      {"through": ["oS3_6", "oS3_5"]},
+      {"through": ["oS4_6", "oS4_7"]},
+      {"through": ["oS1_6", "oS1_7"]},
+      {
+        "along": "octK6",
+        "from": "oK6_7",
+        "to": {"cross": "l45_m2180", "pick": {"farthest": "x0_m7820"}}
+      },
+      {
+        "along": "octK6",
+        "from": {"cross": "l90_m7820", "pick": {"farthest": "x90_m7820"}},
+        "to": "oK6_0"
+      },
+      {
+        "along": "octK0",
+        "from": "oK0_7",
+        "to": {"cross": "l45_7820", "pick": {"farthest": "x0_2180"}}
+      },
+      {
+        "along": "octK0",
+        "from": {"cross": "l90_2180", "pick": {"farthest": "oS3_5"}},
+        "to": "oK0_0"
+      },
+      {
+        "along": "octK7",
+        "from": "oK7_0",
+        "to": {"cross": "l90_m2180", "pick": {"farthest": "x90_m2180"}}
+      },
+      {
+        "along": "octK7",
+        "from": {"cross": "l135_m7820", "pick": {"farthest": "x135_m7820"}},
+        "to": "oK7_1"
+      },
+      {
+        "along": "octK1",
+        "from": "oK1_0",
+        "to": {"cross": "l90_7820", "pick": {"farthest": "x45_2180"}}
+      },
+      {
+        "along": "octK1",
+        "from": {"cross": "l135_2180", "pick": {"farthest": "oS4_6"}},
+        "to": "oK1_1"
+      },
+      {
+        "along": "octK0",
+        "from": "oK0_1",
+        "to": {"cross": "l135_m2180", "pick": {"farthest": "x90_m7820"}}
+      },
+      {"along": "octK0", "from": {"cross": "l0_7820", "pick": {"farthest": "SE"}}, "to": "oK0_2"},
+      {"along": "octK2", "from": "oK2_1", "to": {"cross": "l135_7820", "pick": {"farthest": "W"}}},
+      {
+        "along": "octK2",
+        "from": {"cross": "l0_m2180", "pick": {"farthest": "oS5_7"}},
+        "to": "oK2_2"
+      },
+      {
+        "along": "octK3",
+        "from": "oK3_3",
+        "to": {"cross": "l45_m2180", "pick": {"farthest": "oS6_0"}}
+      },
+      {"along": "octK3", "from": {"cross": "l0_m7820", "pick": {"farthest": "SW"}}, "to": "oK3_2"},
+      {
+        "along": "octK1",
+        "from": "oK1_3",
+        "to": {"cross": "l45_7820", "pick": {"farthest": "x90_2180"}}
+      },
+      {
+        "along": "octK1",
+        "from": {"cross": "l0_2180", "pick": {"farthest": "x135_m7820"}},
+        "to": "oK1_2"
+      },
+      {
+        "along": "octK4",
+        "from": "oK4_4",
+        "to": {"cross": "l90_m2180", "pick": {"farthest": "oS7_1"}}
+      },
+      {"along": "octK4", "from": {"cross": "l45_m7820", "pick": {"farthest": "Sp"}}, "to": "oK4_3"},
+      {
+        "along": "octK2",
+        "from": "oK2_4",
+        "to": {"cross": "l90_7820", "pick": {"farthest": "x90_7820"}}
+      },
+      {
+        "along": "octK2",
+        "from": {"cross": "l45_2180", "pick": {"farthest": "oS0_6"}},
+        "to": "oK2_3"
+      },
+      {
+        "along": "octK5",
+        "from": "oK5_5",
+        "to": {"cross": "l135_m2180", "pick": {"farthest": "x0_7820"}}
+      },
+      {"along": "octK5", "from": {"cross": "l90_m7820", "pick": {"farthest": "SE"}}, "to": "oK5_4"},
+      {
+        "along": "octK3",
+        "from": "oK3_5",
+        "to": {"cross": "l135_7820", "pick": {"farthest": "x0_m2180"}}
+      },
+      {
+        "along": "octK3",
+        "from": {"cross": "l90_2180", "pick": {"farthest": "x90_2180"}},
+        "to": "oK3_4"
+      },
+      {
+        "along": "octK6",
+        "from": "oK6_6",
+        "to": {"cross": "l0_2180", "pick": {"farthest": "x0_2180"}}
+      },
+      {"along": "octK6", "from": {"cross": "l135_m7820", "pick": {"farthest": "A"}}, "to": "oK6_5"},
+      {
+        "along": "octK4",
+        "from": "oK4_6",
+        "to": {"cross": "l0_m7820", "pick": {"farthest": "x0_m7820"}}
+      },
+      {
+        "along": "octK4",
+        "from": {"cross": "l135_2180", "pick": {"farthest": "x90_7820"}},
+        "to": "oK4_5"
+      },
+      {
+        "along": "octK5",
+        "from": "oK5_6",
+        "to": {"cross": "l0_m2180", "pick": {"farthest": "x0_m2180"}}
+      },
+      {
+        "along": "octK5",
+        "from": {"cross": "l45_m7820", "pick": {"farthest": "x90_m2180"}},
+        "to": "oK5_7"
+      },
+      {
+        "along": "octK7",
+        "from": "oK7_6",
+        "to": {"cross": "l0_7820", "pick": {"farthest": "x0_7820"}}
+      },
+      {
+        "along": "octK7",
+        "from": {"cross": "l45_2180", "pick": {"farthest": "x45_2180"}},
+        "to": "oK7_7"
+      },
+      {
+        "along": "l45_m7820",
+        "from": {"cross": "octK5", "pick": {"farthest": "x90_m2180"}},
+        "to": "l90_m7820"
+      },
+      {
+        "along": "l45_m7820",
+        "from": "l0_m3678",
+        "to": {"cross": "octK5", "pick": {"nearest": "x90_m2180"}}
+      },
+      {
+        "along": "l45_m7820",
+        "from": {"cross": "octK4", "pick": {"nearest": "Sp"}},
+        "to": "l90_m3678"
+      },
+      {
+        "along": "l45_m7820",
+        "from": "l0_m7820",
+        "to": {"cross": "octK4", "pick": {"farthest": "Sp"}}
+      },
+      {
+        "along": "l90_m7820",
+        "from": {"cross": "octK6", "pick": {"farthest": "x90_m7820"}},
+        "to": "l135_m7820"
+      },
+      {
+        "along": "l90_m7820",
+        "from": "l45_m3678",
+        "to": {"cross": "octK6", "pick": {"nearest": "x90_m7820"}}
+      },
+      {
+        "along": "l90_m7820",
+        "from": {"cross": "octK5", "pick": {"nearest": "SE"}},
+        "to": "l135_m3678"
+      },
+      {
+        "along": "l90_m7820",
+        "from": "l45_m7820",
+        "to": {"cross": "octK5", "pick": {"farthest": "SE"}}
+      },
+      {
+        "along": "l135_m7820",
+        "from": {"cross": "octK6", "pick": {"farthest": "A"}},
+        "to": "l90_m7820"
+      },
+      {"along": "l135_m7820", "from": "l0_3678", "to": {"cross": "octK6", "pick": {"nearest": "A"}}},
+      {
+        "along": "l135_m7820",
+        "from": {"cross": "octK7", "pick": {"nearest": "x135_m7820"}},
+        "to": "l90_m3678"
+      },
+      {
+        "along": "l135_m7820",
+        "from": "l0_7820",
+        "to": {"cross": "octK7", "pick": {"farthest": "x135_m7820"}}
+      },
+      {
+        "along": "l0_7820",
+        "from": {"cross": "octK7", "pick": {"farthest": "x0_7820"}},
+        "to": "l135_m7820"
+      },
+      {
+        "along": "l0_7820",
+        "from": "l45_3678",
+        "to": {"cross": "octK7", "pick": {"nearest": "x0_7820"}}
+      },
+      {
+        "along": "l0_7820",
+        "from": {"cross": "octK0", "pick": {"nearest": "SE"}},
+        "to": "l135_m3678"
+      },
+      {"along": "l0_7820", "from": "l45_7820", "to": {"cross": "octK0", "pick": {"farthest": "SE"}}},
+      {
+        "along": "l45_7820",
+        "from": {"cross": "octK0", "pick": {"farthest": "x0_2180"}},
+        "to": "l0_7820"
+      },
+      {
+        "along": "l45_7820",
+        "from": "l90_3678",
+        "to": {"cross": "octK0", "pick": {"nearest": "x0_2180"}}
+      },
+      {
+        "along": "l45_7820",
+        "from": {"cross": "octK1", "pick": {"nearest": "x90_2180"}},
+        "to": "l0_3678"
+      },
+      {
+        "along": "l45_7820",
+        "from": "l90_7820",
+        "to": {"cross": "octK1", "pick": {"farthest": "x90_2180"}}
+      },
+      {
+        "along": "l90_7820",
+        "from": {"cross": "octK1", "pick": {"farthest": "x45_2180"}},
+        "to": "l45_7820"
+      },
+      {
+        "along": "l90_7820",
+        "from": "l135_3678",
+        "to": {"cross": "octK1", "pick": {"nearest": "x45_2180"}}
+      },
+      {
+        "along": "l90_7820",
+        "from": {"cross": "octK2", "pick": {"nearest": "x90_7820"}},
+        "to": "l45_3678"
+      },
+      {
+        "along": "l90_7820",
+        "from": "l135_7820",
+        "to": {"cross": "octK2", "pick": {"farthest": "x90_7820"}}
+      },
+      {
+        "along": "l135_7820",
+        "from": {"cross": "octK3", "pick": {"farthest": "x0_m2180"}},
+        "to": "l0_m7820"
+      },
+      {
+        "along": "l135_7820",
+        "from": "l90_3678",
+        "to": {"cross": "octK3", "pick": {"nearest": "x0_m2180"}}
+      },
+      {"along": "l135_7820", "from": {"cross": "octK2", "pick": {"nearest": "W"}}, "to": "l0_m3678"},
+      {
+        "along": "l135_7820",
+        "from": "l90_7820",
+        "to": {"cross": "octK2", "pick": {"farthest": "W"}}
+      },
+      {
+        "along": "l0_m7820",
+        "from": {"cross": "octK4", "pick": {"farthest": "x0_m7820"}},
+        "to": "l45_m7820"
+      },
+      {
+        "along": "l0_m7820",
+        "from": "l135_3678",
+        "to": {"cross": "octK4", "pick": {"nearest": "x0_m7820"}}
+      },
+      {
+        "along": "l0_m7820",
+        "from": {"cross": "octK3", "pick": {"nearest": "SW"}},
+        "to": "l45_m3678"
+      },
+      {
+        "along": "l0_m7820",
+        "from": "l135_7820",
+        "to": {"cross": "octK3", "pick": {"farthest": "SW"}}
+      },
+      {"through": ["oS7_7", "oS7_0"]},
+      {
+        "along": "octK7",
+        "from": "oS7_0",
+        "to": {"cross": "l90_m2180", "pick": {"nearest": "x90_m2180"}}
+      },
+      {
+        "along": "octK7",
+        "from": {"cross": "l45_2180", "pick": {"nearest": "x45_2180"}},
+        "to": "oS0_7"
+      },
+      {"through": ["oS0_7", "oS0_0"]},
+      {"through": ["oS0_0", "oS0_1"]},
+      {
+        "along": "octK0",
+        "from": "oS0_1",
+        "to": {"cross": "l135_m2180", "pick": {"nearest": "x90_m7820"}}
+      },
+      {"along": "octK0", "from": {"cross": "l90_2180", "pick": {"nearest": "oS3_5"}}, "to": "oS1_0"},
+      {"through": ["oS1_0", "oS1_1"]},
+      {"through": ["oS1_1", "oS1_2"]},
+      {
+        "along": "octK1",
+        "from": "oS1_2",
+        "to": {"cross": "l0_2180", "pick": {"nearest": "x135_m7820"}}
+      },
+      {
+        "along": "octK1",
+        "from": {"cross": "l135_2180", "pick": {"nearest": "oS4_6"}},
+        "to": "oS2_1"
+      },
+      {"through": ["oS2_1", "oS2_2"]},
+      {"through": ["oS3_3", "oS3_2"]},
+      {"along": "octK2", "from": "oS3_2", "to": {"cross": "l0_m2180", "pick": {"nearest": "oS5_7"}}},
+      {"along": "octK2", "from": {"cross": "l45_2180", "pick": {"nearest": "oS0_6"}}, "to": "oS2_3"},
+      {"through": ["oS2_3", "oS2_2"]},
+      {"through": ["oS4_4", "oS4_3"]},
+      {
+        "along": "octK3",
+        "from": "oS4_3",
+        "to": {"cross": "l45_m2180", "pick": {"nearest": "oS6_0"}}
+      },
+      {
+        "along": "octK3",
+        "from": {"cross": "l90_2180", "pick": {"nearest": "x90_2180"}},
+        "to": "oS3_4"
+      },
+      {"through": ["oS3_4", "oS3_3"]},
+      {"through": ["oS5_5", "oS5_4"]},
+      {
+        "along": "octK4",
+        "from": "oS5_4",
+        "to": {"cross": "l90_m2180", "pick": {"nearest": "oS7_1"}}
+      },
+      {
+        "along": "octK4",
+        "from": {"cross": "l135_2180", "pick": {"nearest": "x90_7820"}},
+        "to": "oS4_5"
+      },
+      {"through": ["oS4_5", "oS4_4"]},
+      {"through": ["oS6_6", "oS6_5"]},
+      {
+        "along": "octK5",
+        "from": "oS6_5",
+        "to": {"cross": "l135_m2180", "pick": {"nearest": "x0_7820"}}
+      },
+      {
+        "along": "octK5",
+        "from": {"cross": "l0_m2180", "pick": {"nearest": "x0_m2180"}},
+        "to": "oS5_6"
+      },
+      {"through": ["oS5_6", "oS5_5"]},
+      {"through": ["oS6_6", "oS6_7"]},
+      {
+        "along": "octK6",
+        "from": "oS6_7",
+        "to": {"cross": "l45_m2180", "pick": {"nearest": "x0_m7820"}}
+      },
+      {
+        "along": "octK6",
+        "from": {"cross": "l0_2180", "pick": {"nearest": "x0_2180"}},
+        "to": "oS7_6"
+      },
+      {"through": ["oS7_6", "oS7_7"]},
+      {
+        "along": "octK1",
+        "from": "oK1_1",
+        "to": {"cross": "l135_3678", "pick": {"farthest": "oS4_4"}}
+      },
+      {
+        "along": "octK1",
+        "from": {"cross": "l0_3678", "pick": {"farthest": "x135_m6322"}},
+        "to": "oK1_2"
+      },
+      {
+        "along": "octK2",
+        "from": "oK2_3",
+        "to": {"cross": "l45_3678", "pick": {"farthest": "oS0_0"}}
+      },
+      {
+        "along": "octK2",
+        "from": {"cross": "l0_m3678", "pick": {"farthest": "oS5_5"}},
+        "to": "oK2_2"
+      },
+      {
+        "along": "octK3",
+        "from": "oK3_4",
+        "to": {"cross": "l90_3678", "pick": {"farthest": "x90_3678"}}
+      },
+      {
+        "along": "octK3",
+        "from": {"cross": "l45_m3678", "pick": {"farthest": "oS6_6"}},
+        "to": "oK3_3"
+      },
+      {
+        "along": "octK4",
+        "from": "oK4_5",
+        "to": {"cross": "l135_3678", "pick": {"farthest": "x90_6322"}}
+      },
+      {
+        "along": "octK4",
+        "from": {"cross": "l90_m3678", "pick": {"farthest": "oS7_7"}},
+        "to": "oK4_4"
+      },
+      {
+        "along": "octK5",
+        "from": "oK5_6",
+        "to": {"cross": "l0_m3678", "pick": {"farthest": "x0_m3678"}}
+      },
+      {
+        "along": "octK5",
+        "from": {"cross": "l135_m3678", "pick": {"farthest": "x0_6322"}},
+        "to": "oK5_5"
+      },
+      {
+        "along": "octK6",
+        "from": "oK6_6",
+        "to": {"cross": "l0_3678", "pick": {"farthest": "x0_3678"}}
+      },
+      {
+        "along": "octK6",
+        "from": {"cross": "l45_m3678", "pick": {"farthest": "x0_m6322"}},
+        "to": "oK6_7"
+      },
+      {
+        "along": "octK7",
+        "from": "oK7_7",
+        "to": {"cross": "l45_3678", "pick": {"farthest": "x45_3678"}}
+      },
+      {
+        "along": "octK7",
+        "from": {"cross": "l90_m3678", "pick": {"farthest": "x90_m3678"}},
+        "to": "oK7_0"
+      },
+      {
+        "along": "octK0",
+        "from": "oK0_0",
+        "to": {"cross": "l90_3678", "pick": {"farthest": "oS3_3"}}
+      },
+      {
+        "along": "octK0",
+        "from": {"cross": "l135_m3678", "pick": {"farthest": "x90_m6322"}},
+        "to": "oK0_1"
+      },
+      {
+        "along": "l45_m6322@1",
+        "from": "r1@1",
+        "to": {"cross": "octK5@1", "pick": {"nearest": "x90_m3678@1"}}
+      },
+      {
+        "along": "l45_m6322@1",
+        "from": {"cross": "octK4@1", "pick": {"nearest": "oK6_5@1"}},
+        "to": "l0_m6322@1"
+      },
+      {
+        "along": "l90_m6322@1",
+        "from": "r2@1",
+        "to": {"cross": "octK6@1", "pick": {"nearest": "x90_m6322@1"}}
+      },
+      {
+        "along": "l90_m6322@1",
+        "from": {"cross": "octK5@1", "pick": {"nearest": "oK7_6@1"}},
+        "to": "l45_m6322@1"
+      },
+      {
+        "along": "l135_m6322@1",
+        "from": "l90_m6322@1",
+        "to": {"cross": "octK6@1", "pick": {"nearest": "oK0_7@1"}}
+      },
+      {
+        "along": "l135_m6322@1",
+        "from": {"cross": "octK7@1", "pick": {"nearest": "x135_m6322@1"}},
+        "to": "l0_6322@1"
+      },
+      {
+        "along": "l0_6322@1",
+        "from": "l135_m6322@1",
+        "to": {"cross": "octK7@1", "pick": {"nearest": "x0_6322@1"}}
+      },
+      {
+        "along": "l0_6322@1",
+        "from": {"cross": "octK0@1", "pick": {"nearest": "oK6_0@1"}},
+        "to": "r0@1"
+      },
+      {
+        "along": "l45_6322@1",
+        "from": "l0_6322@1",
+        "to": {"cross": "octK0@1", "pick": {"nearest": "x0_3678@1"}}
+      },
+      {
+        "along": "l45_6322@1",
+        "from": {"cross": "octK1@1", "pick": {"nearest": "x90_3678@1"}},
+        "to": "r1@1"
+      },
+      {
+        "along": "l90_6322@1",
+        "from": "l45_6322@1",
+        "to": {"cross": "octK1@1", "pick": {"nearest": "x45_3678@1"}}
+      },
+      {
+        "along": "l90_6322@1",
+        "from": {"cross": "octK2@1", "pick": {"nearest": "x90_6322@1"}},
+        "to": "r2@1"
+      },
+      {
+        "along": "l135_6322@1",
+        "from": "l0_m6322@1",
+        "to": {"cross": "octK3@1", "pick": {"nearest": "x0_m3678@1"}}
+      },
+      {
+        "along": "l135_6322@1",
+        "from": {"cross": "octK2@1", "pick": {"nearest": "oK4_3@1"}},
+        "to": "l90_6322@1"
+      },
+      {
+        "along": "l0_m6322@1",
+        "from": "l45_m6322@1",
+        "to": {"cross": "octK4@1", "pick": {"nearest": "x0_m6322@1"}}
+      },
+      {
+        "along": "l0_m6322@1",
+        "from": {"cross": "octK3@1", "pick": {"nearest": "oK5_4@1"}},
+        "to": "l135_6322@1"
+      },
+      {
+        "along": "rs45@1",
+        "from": {"cross": "octO0@1", "pick": {"nearest": "oK7_6@1"}},
+        "to": "r0@1"
+      },
+      {
+        "along": "rs45@1",
+        "from": "r1@1",
+        "to": {"cross": "octO0@1", "pick": {"farthest": "oK7_6@1"}}
+      },
+      {
+        "along": "rs90@1",
+        "from": {"cross": "octO0@1", "pick": {"nearest": "oK0_7@1"}},
+        "to": "rs45@1"
+      },
+      {
+        "along": "rs90@1",
+        "from": "rs135@1",
+        "to": {"cross": "octO0@1", "pick": {"farthest": "oK0_7@1"}}
+      },
+      {
+        "along": "rs135@1",
+        "from": {"cross": "octO0@1", "pick": {"nearest": "oK4_6@1"}},
+        "to": "r3@1"
+      },
+      {
+        "along": "rs135@1",
+        "from": "rs90@1",
+        "to": {"cross": "octO0@1", "pick": {"farthest": "oK4_6@1"}}
+      },
+      {
+        "along": "rs180@1",
+        "from": {"cross": "octO0@1", "pick": {"farthest": "oK2_1@1"}},
+        "to": "rs225@1"
+      },
+      {
+        "along": "rs180@1",
+        "from": "rs135@1",
+        "to": {"cross": "octO0@1", "pick": {"nearest": "oK2_1@1"}}
+      },
+      {
+        "along": "rs225@1",
+        "from": {"cross": "octO0@1", "pick": {"farthest": "oK3_2@1"}},
+        "to": "r1@1"
+      },
+      {
+        "along": "rs225@1",
+        "from": "rs180@1",
+        "to": {"cross": "octO0@1", "pick": {"nearest": "oK3_2@1"}}
+      },
+      {
+        "along": "rs270@1",
+        "from": {"cross": "octO0@1", "pick": {"farthest": "oK4_3@1"}},
+        "to": "rs315@1"
+      },
+      {
+        "along": "rs270@1",
+        "from": "rs225@1",
+        "to": {"cross": "octO0@1", "pick": {"nearest": "oK4_3@1"}}
+      },
+      {
+        "along": "rs315@1",
+        "from": {"cross": "octO0@1", "pick": {"nearest": "oK5_4@1"}},
+        "to": "rs270@1"
+      },
+      {
+        "along": "rs315@1",
+        "from": "r3@1",
+        "to": {"cross": "octO0@1", "pick": {"farthest": "oK5_4@1"}}
+      },
+      {
+        "along": "rs0@1",
+        "from": {"cross": "octO0@1", "pick": {"farthest": "oK1_3@1"}},
+        "to": "rs315@1"
+      },
+      {
+        "along": "rs0@1",
+        "from": "rs45@1",
+        "to": {"cross": "octO0@1", "pick": {"nearest": "oK1_3@1"}}
+      },
+      {
+        "along": "octK6@1",
+        "from": "oK6_4@1",
+        "to": {"cross": "l90_m6322@1", "pick": {"nearest": "x90_m6322@1"}}
+      },
+      {
+        "along": "octK6@1",
+        "from": {"cross": "l45_m3678@1", "pick": {"nearest": "x0_m6322@1"}},
+        "to": "oS6_7@1"
+      },
+      {"through": ["oS6_7@1", "oS6_0@1"]},
+      {"through": ["oS7_4@1", "oO0_7@1"]},
+      {
+        "along": "octO0@1",
+        "from": "oO0_7@1",
+        "to": {"cross": "rs45@1", "pick": {"nearest": "oK7_6@1"}}
+      },
+      {
+        "along": "octO0@1",
+        "from": {"cross": "rs270@1", "pick": {"farthest": "oK4_3@1"}},
+        "to": "oO0_0@1"
+      },
+      {"through": ["oO0_0@1", "oS0_3@1"]},
+      {"through": ["oS1_7@1", "oS1_0@1"]},
+      {
+        "along": "octK0@1",
+        "from": "oS1_0@1",
+        "to": {"cross": "l90_3678@1", "pick": {"nearest": "oS3_3@1"}}
+      },
+      {
+        "along": "octK0@1",
+        "from": {"cross": "l45_6322@1", "pick": {"nearest": "x0_3678@1"}},
+        "to": "oK1_7@1"
+      },
+      {
+        "along": "octK7@1",
+        "from": "oK7_5@1",
+        "to": {"cross": "l135_m6322@1", "pick": {"nearest": "x135_m6322@1"}}
+      },
+      {
+        "along": "octK7@1",
+        "from": {"cross": "l90_m3678@1", "pick": {"nearest": "x90_m3678@1"}},
+        "to": "oS7_0@1"
+      },
+      {"through": ["oS7_0@1", "oS7_1@1"]},
+      {"through": ["oS0_5@1", "oO0_0@1"]},
+      {
+        "along": "octO0@1",
+        "from": "oO0_0@1",
+        "to": {"cross": "rs90@1", "pick": {"nearest": "oK0_7@1"}}
+      },
+      {
+        "along": "octO0@1",
+        "from": {"cross": "rs315@1", "pick": {"farthest": "oK5_4@1"}},
+        "to": "oO0_1@1"
+      },
+      {"through": ["oO0_1@1", "oS1_4@1"]},
+      {"through": ["oS2_0@1", "oS2_1@1"]},
+      {
+        "along": "octK1@1",
+        "from": "oS2_1@1",
+        "to": {"cross": "l135_3678@1", "pick": {"nearest": "oS4_4@1"}}
+      },
+      {
+        "along": "octK1@1",
+        "from": {"cross": "l90_6322@1", "pick": {"nearest": "x45_3678@1"}},
+        "to": "oK2_0@1"
+      },
+      {
+        "along": "octK0@1",
+        "from": "oK7_2@1",
+        "to": {"cross": "l0_6322@1", "pick": {"nearest": "oK6_0@1"}}
+      },
+      {
+        "along": "octK0@1",
+        "from": {"cross": "l135_m3678@1", "pick": {"nearest": "x90_m6322@1"}},
+        "to": "oS0_1@1"
+      },
+      {"through": ["oS0_1@1", "oS0_2@1"]},
+      {"through": ["oS1_6@1", "oO0_1@1"]},
+      {
+        "along": "octO0@1",
+        "from": "oO0_1@1",
+        "to": {"cross": "rs135@1", "pick": {"farthest": "oK4_6@1"}}
+      },
+      {
+        "along": "octO0@1",
+        "from": {"cross": "rs0@1", "pick": {"nearest": "oK1_3@1"}},
+        "to": "oO0_2@1"
+      },
+      {"through": ["oO0_2@1", "oS2_5@1"]},
+      {"through": ["oS3_1@1", "oS3_2@1"]},
+      {
+        "along": "octK2@1",
+        "from": "oS3_2@1",
+        "to": {"cross": "l0_m3678@1", "pick": {"nearest": "oS5_5@1"}}
+      },
+      {
+        "along": "octK2@1",
+        "from": {"cross": "l135_6322@1", "pick": {"nearest": "oK4_3@1"}},
+        "to": "oK3_1@1"
+      },
+      {
+        "along": "octK3@1",
+        "from": "oK4_2@1",
+        "to": {"cross": "l0_m6322@1", "pick": {"nearest": "oK5_4@1"}}
+      },
+      {
+        "along": "octK3@1",
+        "from": {"cross": "l45_m3678@1", "pick": {"nearest": "oS6_6@1"}},
+        "to": "oS4_3@1"
+      },
+      {"through": ["oS4_3@1", "oS4_2@1"]},
+      {"through": ["oS3_6@1", "oO0_3@1"]},
+      {
+        "along": "octO0@1",
+        "from": "oO0_3@1",
+        "to": {"cross": "rs45@1", "pick": {"farthest": "oK7_6@1"}}
+      },
+      {
+        "along": "octO0@1",
+        "from": {"cross": "rs180@1", "pick": {"nearest": "oK2_1@1"}},
+        "to": "oO0_2@1"
+      },
+      {"through": ["oO0_2@1", "oS2_7@1"]},
+      {"through": ["oS1_3@1", "oS1_2@1"]},
+      {
+        "along": "octK1@1",
+        "from": "oS1_2@1",
+        "to": {"cross": "l0_3678@1", "pick": {"nearest": "x135_m6322@1"}}
+      },
+      {
+        "along": "octK1@1",
+        "from": {"cross": "l45_6322@1", "pick": {"nearest": "x90_3678@1"}},
+        "to": "oK1_7@1"
+      },
+      {
+        "along": "octK4@1",
+        "from": "oK5_3@1",
+        "to": {"cross": "l45_m6322@1", "pick": {"nearest": "oK6_5@1"}}
+      },
+      {
+        "along": "octK4@1",
+        "from": {"cross": "l90_m3678@1", "pick": {"nearest": "oS7_7@1"}},
+        "to": "oS5_4@1"
+      },
+      {"through": ["oS5_4@1", "oS5_3@1"]},
+      {"through": ["oS4_7@1", "oO0_4@1"]},
+      {
+        "along": "octO0@1",
+        "from": "oO0_4@1",
+        "to": {"cross": "rs90@1", "pick": {"farthest": "oK0_7@1"}}
+      },
+      {
+        "along": "octO0@1",
+        "from": {"cross": "rs225@1", "pick": {"nearest": "oK3_2@1"}},
+        "to": "oO0_3@1"
+      },
+      {"through": ["oO0_3@1", "oS3_0@1"]},
+      {"through": ["oS2_4@1", "oS2_3@1"]},
+      {
+        "along": "octK2@1",
+        "from": "oS2_3@1",
+        "to": {"cross": "l45_3678@1", "pick": {"nearest": "oS0_0@1"}}
+      },
+      {
+        "along": "octK2@1",
+        "from": {"cross": "l90_6322@1", "pick": {"nearest": "x90_6322@1"}},
+        "to": "oK2_0@1"
+      },
+      {
+        "along": "octK5@1",
+        "from": "oK6_4@1",
+        "to": {"cross": "l90_m6322@1", "pick": {"nearest": "oK7_6@1"}}
+      },
+      {
+        "along": "octK5@1",
+        "from": {"cross": "l135_m3678@1", "pick": {"nearest": "x0_6322@1"}},
+        "to": "oS6_5@1"
+      },
+      {"through": ["oS6_5@1", "oS6_4@1"]},
+      {"through": ["oS5_0@1", "oO0_5@1"]},
+      {
+        "along": "octO0@1",
+        "from": "oO0_5@1",
+        "to": {"cross": "rs135@1", "pick": {"nearest": "oK4_6@1"}}
+      },
+      {
+        "along": "octO0@1",
+        "from": {"cross": "rs270@1", "pick": {"nearest": "oK4_3@1"}},
+        "to": "oO0_4@1"
+      },
+      {"through": ["oO0_4@1", "oS4_1@1"]},
+      {"through": ["oS3_5@1", "oS3_4@1"]},
+      {
+        "along": "octK3@1",
+        "from": "oS3_4@1",
+        "to": {"cross": "l90_3678@1", "pick": {"nearest": "x90_3678@1"}}
+      },
+      {
+        "along": "octK3@1",
+        "from": {"cross": "l135_6322@1", "pick": {"nearest": "x0_m3678@1"}},
+        "to": "oK3_1@1"
+      },
+      {
+        "along": "octK6@1",
+        "from": "oK7_5@1",
+        "to": {"cross": "l135_m6322@1", "pick": {"nearest": "oK0_7@1"}}
+      },
+      {
+        "along": "octK6@1",
+        "from": {"cross": "l0_3678@1", "pick": {"nearest": "x0_3678@1"}},
+        "to": "oS7_6@1"
+      },
+      {"through": ["oS7_6@1", "oS7_5@1"]},
+      {"through": ["oS6_1@1", "oO0_6@1"]},
+      {
+        "along": "octO0@1",
+        "from": "oO0_6@1",
+        "to": {"cross": "rs180@1", "pick": {"farthest": "oK2_1@1"}}
+      },
+      {
+        "along": "octO0@1",
+        "from": {"cross": "rs315@1", "pick": {"nearest": "oK5_4@1"}},
+        "to": "oO0_5@1"
+      },
+      {"through": ["oO0_5@1", "oS5_2@1"]},
+      {"through": ["oS4_6@1", "oS4_5@1"]},
+      {
+        "along": "octK4@1",
+        "from": "oS4_5@1",
+        "to": {"cross": "l135_3678@1", "pick": {"nearest": "x90_6322@1"}}
+      },
+      {
+        "along": "octK4@1",
+        "from": {"cross": "l0_m6322@1", "pick": {"nearest": "x0_m6322@1"}},
+        "to": "oK4_2@1"
+      },
+      {
+        "along": "octK5@1",
+        "from": "oK5_3@1",
+        "to": {"cross": "l45_m6322@1", "pick": {"nearest": "x90_m3678@1"}}
+      },
+      {
+        "along": "octK5@1",
+        "from": {"cross": "l0_m3678@1", "pick": {"nearest": "x0_m3678@1"}},
+        "to": "oS5_6@1"
+      },
+      {"through": ["oS5_6@1", "oS5_7@1"]},
+      {"through": ["oS6_3@1", "oO0_6@1"]},
+      {
+        "along": "octO0@1",
+        "from": "oO0_6@1",
+        "to": {"cross": "rs0@1", "pick": {"farthest": "oK1_3@1"}}
+      },
+      {
+        "along": "octO0@1",
+        "from": {"cross": "rs225@1", "pick": {"farthest": "oK3_2@1"}},
+        "to": "oO0_7@1"
+      },
+      {"through": ["oO0_7@1", "oS7_2@1"]},
+      {"through": ["oS0_6@1", "oS0_7@1"]},
+      {
+        "along": "octK7@1",
+        "from": "oS0_7@1",
+        "to": {"cross": "l45_3678@1", "pick": {"nearest": "x45_3678@1"}}
+      },
+      {
+        "along": "octK7@1",
+        "from": {"cross": "l0_6322@1", "pick": {"nearest": "x0_6322@1"}},
+        "to": "oK7_2@1"
+      },
+      {"through": ["oS5_7@1", "oS5_0@1"]},
+      {"through": ["oS2_7@1", "oS2_0@1"]},
+      {"through": ["oS6_0@1", "oS6_1@1"]},
+      {"through": ["oS3_0@1", "oS3_1@1"]},
+      {"through": ["oS7_1@1", "oS7_2@1"]},
+      {"through": ["oS4_1@1", "oS4_2@1"]},
+      {"through": ["oS5_3@1", "oS5_2@1"]},
+      {"through": ["oS0_3@1", "oS0_2@1"]},
+      {"through": ["oS6_4@1", "oS6_3@1"]},
+      {"through": ["oS1_4@1", "oS1_3@1"]},
+      {"through": ["oS7_5@1", "oS7_4@1"]},
+      {"through": ["oS2_5@1", "oS2_4@1"]},
+      {"through": ["oS0_6@1", "oS0_5@1"]},
+      {"through": ["oS3_6@1", "oS3_5@1"]},
+      {"through": ["oS4_6@1", "oS4_7@1"]},
+      {"through": ["oS1_6@1", "oS1_7@1"]},
+      {"through": ["oS7_7@1", "oS7_0@1"]},
+      {
+        "along": "octK7@1",
+        "from": "oS7_0@1",
+        "to": {"cross": "l90_m2180@1", "pick": {"nearest": "x90_m2180@1"}}
+      },
+      {
+        "along": "octK7@1",
+        "from": {"cross": "l45_2180@1", "pick": {"nearest": "x45_2180@1"}},
+        "to": "oS0_7@1"
+      },
+      {"through": ["oS0_7@1", "oS0_0@1"]},
+      {"through": ["oS0_0@1", "oS0_1@1"]},
+      {
+        "along": "octK0@1",
+        "from": "oS0_1@1",
+        "to": {"cross": "l135_m2180@1", "pick": {"nearest": "x90_m7820@1"}}
+      },
+      {
+        "along": "octK0@1",
+        "from": {"cross": "l90_2180@1", "pick": {"nearest": "oS3_5@1"}},
+        "to": "oS1_0@1"
+      },
+      {"through": ["oS1_0@1", "oS1_1@1"]},
+      {"through": ["oS1_1@1", "oS1_2@1"]},
+      {
+        "along": "octK1@1",
+        "from": "oS1_2@1",
+        "to": {"cross": "l0_2180@1", "pick": {"nearest": "x135_m7820@1"}}
+      },
+      {
+        "along": "octK1@1",
+        "from": {"cross": "l135_2180@1", "pick": {"nearest": "oS4_6@1"}},
+        "to": "oS2_1@1"
+      },
+      {"through": ["oS2_1@1", "oS2_2@1"]},
+      {"through": ["oS3_3@1", "oS3_2@1"]},
+      {
+        "along": "octK2@1",
+        "from": "oS3_2@1",
+        "to": {"cross": "l0_m2180@1", "pick": {"nearest": "oS5_7@1"}}
+      },
+      {
+        "along": "octK2@1",
+        "from": {"cross": "l45_2180@1", "pick": {"nearest": "oS0_6@1"}},
+        "to": "oS2_3@1"
+      },
+      {"through": ["oS2_3@1", "oS2_2@1"]},
+      {"through": ["oS4_4@1", "oS4_3@1"]},
+      {
+        "along": "octK3@1",
+        "from": "oS4_3@1",
+        "to": {"cross": "l45_m2180@1", "pick": {"nearest": "oS6_0@1"}}
+      },
+      {
+        "along": "octK3@1",
+        "from": {"cross": "l90_2180@1", "pick": {"nearest": "x90_2180@1"}},
+        "to": "oS3_4@1"
+      },
+      {"through": ["oS3_4@1", "oS3_3@1"]},
+      {"through": ["oS5_5@1", "oS5_4@1"]},
+      {
+        "along": "octK4@1",
+        "from": "oS5_4@1",
+        "to": {"cross": "l90_m2180@1", "pick": {"nearest": "oS7_1@1"}}
+      },
+      {
+        "along": "octK4@1",
+        "from": {"cross": "l135_2180@1", "pick": {"nearest": "x90_7820@1"}},
+        "to": "oS4_5@1"
+      },
+      {"through": ["oS4_5@1", "oS4_4@1"]},
+      {"through": ["oS6_6@1", "oS6_5@1"]},
+      {
+        "along": "octK5@1",
+        "from": "oS6_5@1",
+        "to": {"cross": "l135_m2180@1", "pick": {"nearest": "x0_7820@1"}}
+      },
+      {
+        "along": "octK5@1",
+        "from": {"cross": "l0_m2180@1", "pick": {"nearest": "x0_m2180@1"}},
+        "to": "oS5_6@1"
+      },
+      {"through": ["oS5_6@1", "oS5_5@1"]},
+      {"through": ["oS6_6@1", "oS6_7@1"]},
+      {
+        "along": "octK6@1",
+        "from": "oS6_7@1",
+        "to": {"cross": "l45_m2180@1", "pick": {"nearest": "x0_m7820@1"}}
+      },
+      {
+        "along": "octK6@1",
+        "from": {"cross": "l0_2180@1", "pick": {"nearest": "x0_2180@1"}},
+        "to": "oS7_6@1"
+      },
+      {"through": ["oS7_6@1", "oS7_7@1"]}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Repeat the tile edge to edge. Neighbouring wheels meet at the corners of their large octagons, and the middle drawn at the corner fills the space between four wheels.",
+    "palette": "Fès tile",
+    "colors": {
+      "joint": "b",
+      "octagon": "c",
+      "star": "a",
+      "rosette": "a",
+      "petal": "b",
+      "band": "c",
+      "kite": "a"
+    },
+    "placements": {
+      "repeat": [1, 1],
+      "rules": [
+        {"piece": "octagon", "nth": 0, "color": "b"},
+        {"piece": "octagon", "nth": 1, "color": "b"},
+        {"piece": "octagon", "nth": 2, "color": "b"},
+        {"piece": "octagon", "nth": 3, "color": "b"},
+        {"piece": "octagon", "nth": 4, "color": "b"},
+        {"piece": "octagon", "nth": 13, "color": "b"},
+        {"piece": "octagon", "nth": 14, "color": "b"},
+        {"piece": "octagon", "nth": 15, "color": "b"},
+        {"piece": "star", "nth": 0, "color": "d"},
+        {"piece": "star", "nth": 1, "color": "d"},
+        {"piece": "star", "nth": 2, "color": "d"},
+        {"piece": "star", "nth": 3, "color": "d"},
+        {"piece": "star", "nth": 12, "color": "d"},
+        {"piece": "star", "nth": 13, "color": "d"},
+        {"piece": "star", "nth": 14, "color": "d"},
+        {"piece": "star", "nth": 15, "color": "d"},
+        {"piece": "rosette", "nth": 0, "color": "d"},
+        {"piece": "petal", "nth": 0, "color": "ground"},
+        {"piece": "petal", "nth": 1, "color": "ground"},
+        {"piece": "petal", "nth": 4, "color": "ground"},
+        {"piece": "petal", "nth": 7, "color": "ground"},
+        {"piece": "petal", "nth": 8, "color": "ground"},
+        {"piece": "petal", "nth": 9, "color": "ground"},
+        {"piece": "petal", "nth": 10, "color": "ground"},
+        {"piece": "petal", "nth": 11, "color": "ground"},
+        {"piece": "petal", "nth": 14, "color": "ground"},
+        {"piece": "petal", "nth": 19, "color": "ground"},
+        {"piece": "petal", "nth": 20, "color": "ground"},
+        {"piece": "petal", "nth": 23, "color": "ground"},
+        {"piece": "petal", "nth": 26, "color": "ground"},
+        {"piece": "petal", "nth": 55, "color": "ground"},
+        {"piece": "petal", "nth": 58, "color": "ground"},
+        {"piece": "petal", "nth": 61, "color": "ground"},
+        {"piece": "petal", "nth": 62, "color": "ground"},
+        {"piece": "petal", "nth": 67, "color": "ground"},
+        {"piece": "petal", "nth": 70, "color": "ground"},
+        {"piece": "petal", "nth": 71, "color": "ground"},
+        {"piece": "petal", "nth": 72, "color": "ground"},
+        {"piece": "petal", "nth": 73, "color": "ground"},
+        {"piece": "petal", "nth": 74, "color": "ground"},
+        {"piece": "petal", "nth": 77, "color": "ground"},
+        {"piece": "band", "nth": 0, "color": "a"},
+        {"piece": "band", "nth": 1, "color": "a"},
+        {"piece": "band", "nth": 3, "color": "a"},
+        {"piece": "band", "nth": 4, "color": "a"},
+        {"piece": "band", "nth": 7, "color": "a"},
+        {"piece": "band", "nth": 10, "color": "a"},
+        {"piece": "band", "nth": 13, "color": "a"},
+        {"piece": "band", "nth": 14, "color": "a"},
+        {"piece": "kite", "nth": 0, "color": "d"},
+        {"piece": "kite", "nth": 1, "color": "d"},
+        {"piece": "kite", "nth": 2, "color": "d"},
+        {"piece": "kite", "nth": 3, "color": "d"},
+        {"piece": "kite", "nth": 76, "color": "d"},
+        {"piece": "kite", "nth": 77, "color": "d"},
+        {"piece": "kite", "nth": 78, "color": "d"},
+        {"piece": "kite", "nth": 79, "color": "d"}
+      ]
+    }
+  },
+  "expect": {
+    "note": "Golden values in units of OA, computed by the engine. The middle drawn at the tile corner fills the space between four wheels exactly, so no ground is left and every shape is one of the wheel's own. The kites and the thin star between wheels are small by design.",
+    "pieceTypes": 7,
+    "pieces": [
+      {"name": "joint", "vertices": 32, "area": 0.11909, "perCell": 2, "small": true},
+      {"name": "octagon", "vertices": 8, "area": 0.04163, "perCell": 16},
+      {"name": "star", "vertices": 14, "area": 0.03408, "perCell": 16},
+      {"name": "rosette", "vertices": 16, "area": 0.02629, "perCell": 10},
+      {"name": "petal", "vertices": 6, "area": 0.02007, "perCell": 80},
+      {"name": "band", "vertices": 10, "area": 0.01937, "perCell": 16},
+      {"name": "kite", "vertices": 4, "area": 0.00465, "perCell": 80, "small": true}
+    ],
+    "cellArea": 4
+  }
+}
