@@ -6,23 +6,10 @@ import {
   type PieceType,
   type Scene,
 } from '@tastir/engine';
-import type { Tutorial } from '@tastir/schema';
-import { checkInk, prepareInk, type Ready } from './inkWork';
-import type { Model } from '../app/model';
-import type { Draft } from '../editor/document';
 
+// The ink stage's work has a worker of its own (useInkWork), which keeps
+// the prepared board.
 export const jobs = {
-  prepare: ({ model, draft }: { model: Model; draft: Draft }) =>
-    prepareInk(model, draft),
-  ink: ({
-    ready,
-    chosen,
-    tutorial,
-  }: {
-    ready: Ready;
-    chosen: ReadonlySet<string>;
-    tutorial: Tutorial;
-  }) => checkInk(ready, chosen, tutorial),
   steps: ({
     scene,
     board,

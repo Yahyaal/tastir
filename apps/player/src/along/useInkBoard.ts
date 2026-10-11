@@ -14,8 +14,8 @@ import { withoutDuplicates } from './dedupe';
 import { withTutorialInk } from './drawForMe';
 import { readyToInk, samePieces } from './inking';
 import { strokeBetween, strokeThrough } from './pen';
-
-import { useAlongWork } from './useAlongWork';
+import { mirrorOf } from './inkWork';
+import { useInkWork } from './useInkWork';
 export type { InkCheck } from './inkWork';
 
 /**
@@ -31,14 +31,21 @@ export function useInkBoard(
   active: boolean,
   chosen: ReadonlySet<string>,
   setChosen: (s: ReadonlySet<string>) => void,
+  /** On the last construction step: the ink is prepared ahead. */
+  soon = false,
 ) {
   const { tutorial } = model;
-  const preparing = useAlongWork(
-    'prepare',
-    useMemo(() => ({ model, draft }), [model, draft]),
-    active || model.scene.elements.size > 300,
+  // The same board object whether or not inking has begun, so pressing
+  // Ink keeps the prepare that started on the last construction step.
+  const board = useMemo(() => ({ model, draft }), [model, draft]);
+  const work = useInkWork(
+    active || soon ? board : undefined,
+    useMemo(
+      () => (active ? { chosen, tutorial } : undefined),
+      [active, chosen, tutorial],
+    ),
   );
-  const ready = active ? preparing.value : undefined;
+  const ready = active ? work.ready : undefined;
   // The copies round the centre are a choice, off at first: a stroke
   // inks only what the learner drew.
   const [copies, setCopies] = useState(false);
@@ -51,34 +58,29 @@ export function useInkBoard(
     return () => window.clearTimeout(t);
   }, [fresh]);
 
-  const checking = useAlongWork(
-    'ink',
-    useMemo(
-      () =>
-        ready && !('reason' in ready) ? { ready, chosen, tutorial } : undefined,
-      [ready, chosen, tutorial],
-    ),
-  );
-  const result = checking.value;
+  const result = active ? work.result : undefined;
 
   // Hints at the ink: what is still missing, one piece kind at a time.
   const [hintLevel, setHintLevel] = useState(0);
   const hint = useMemo(() => {
     if (!ready || 'reason' in ready || !hintLevel) return undefined;
+    // The hints name the pattern's pieces: they wait for it to come.
+    const { pattern } = ready;
+    if (!pattern) return undefined;
     const missing = [...ready.classic].filter((id) => !chosen.has(id));
     const extra = [...chosen].filter((id) => !ready.classic.has(id));
     // The first kind of piece the learner's ink does not close yet.
     const have = new Set(
       (result?.types ?? []).map((t) => `${t.vertices},${t.area.toFixed(4)}`),
     );
-    const kind = ready.pattern.types.findIndex(
+    const kind = pattern.types.findIndex(
       (t) => !have.has(`${t.vertices},${t.area.toFixed(4)}`),
     );
     const around = (id: string) => {
       const piece = ready.pieces.find((q) => q.id === id);
       if (!piece || kind < 0) return false;
       const { u, v } = ready.cell;
-      return ready.pattern.pieces
+      return pattern.pieces
         .filter((q) => q.type === kind)
         .some((q) =>
           [-1, 0, 1].some((i) =>
@@ -101,13 +103,13 @@ export function useInkBoard(
     const erasing = !missing.length && extra.length > 0;
     const focus = erasing ? extra : forKind.length ? forKind : missing;
     const first = ready.pieces.find((q) => q.id === focus[0]);
-    const kindName = kind >= 0 ? ready.pattern.types[kind]?.name : undefined;
+    const kindName = kind >= 0 ? pattern.types[kind]?.name : undefined;
     // A missing stroke: its start and end dots are ringed.
     const stroke =
       !erasing && first && hintLevel >= 2
         ? strokeThrough(ready.graph, first.id, new Set(missing))
         : undefined;
-    const dotAt = (k: string) => ready.graph.dots.get(k)?.at;
+    const dotAt = (k: string) => ready.graph.dot(k)?.at;
     const ends = stroke
       ? [dotAt(stroke.from), dotAt(stroke.to)].filter(
           (v): v is Vec => v !== undefined,
@@ -146,11 +148,12 @@ export function useInkBoard(
   /** The bits with their copies round the centre, when copies are on. */
   const withCopies = (ids: readonly string[]): string[] => {
     if (!ready || 'reason' in ready || !copies) return [...ids];
+    // Until the worker's answer comes, the same answer found here.
+    const mirror =
+      ready.mirror ?? mirrorOf(ready.inkable, ready.classic, tutorial.chiral);
     return [
       ...new Set(
-        ids.flatMap((id) =>
-          imagesOf(ready.inkable, id, tutorial.fold, ready.mirror),
-        ),
+        ids.flatMap((id) => imagesOf(ready.inkable, id, tutorial.fold, mirror)),
       ),
     ];
   };
@@ -244,16 +247,16 @@ export function useInkBoard(
 
   return {
     ready,
-    pending: active && preparing.pending,
-    checking: checking.pending,
-    error: preparing.error ?? checking.error,
+    pending: active && work.preparing,
+    checking: active && work.checking,
+    error: active ? (work.prepareError ?? work.checkError) : undefined,
     result,
     hint,
     hintLevel,
     setHintLevel,
     /** The kinds of piece the ink does not close yet, by name. */
     missingKinds: (() => {
-      if (!ready || 'reason' in ready || !result) return [];
+      if (!ready || 'reason' in ready || !ready.pattern || !result) return [];
       const have = new Set(
         result.types.map((t) => `${t.vertices},${t.area.toFixed(4)}`),
       );
@@ -261,7 +264,6 @@ export function useInkBoard(
         .filter((t) => !have.has(`${t.vertices},${t.area.toFixed(4)}`))
         .map((t) => t.name ?? `${t.vertices}-cornered piece`);
     })(),
-    mirror: ready && !('reason' in ready) ? ready.mirror : true,
     stroke,
     /** Erases one bit (and its copies when copies are on). */
     erase: (id: string) => apply([id], false),
