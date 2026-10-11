@@ -1214,6 +1214,10 @@ main.stage .drawing:not(.wall) {
   cursor: pointer;
 }
 
+.wall.style-jali {
+  cursor: grab;
+}
+
 /* Transitions between the last step, the ink, the repeat and the colour.
    They play only on the way forward, and never with Reduce motion. */
 

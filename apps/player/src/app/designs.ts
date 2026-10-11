@@ -1,6 +1,7 @@
 import type { Coloring } from './coloring';
 import { newId, now, store } from './storage';
 import type { WallStyle } from './Wall';
+import { WALL_STYLES } from './Wall';
 
 /**
  * A learner's design: a tutorial with their own inking and colors. It keeps
@@ -27,7 +28,7 @@ export interface Design {
 export type DesignFields = Omit<Design, 'id' | 'created' | 'updated'>;
 
 const KEY = 'tastir.designs';
-const LOOKS: readonly string[] = ['tiles', 'strapwork', 'lines'];
+const LOOKS: readonly string[] = WALL_STYLES;
 
 const isStrings = (x: unknown): x is string[] =>
   Array.isArray(x) && x.every((s) => typeof s === 'string');

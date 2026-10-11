@@ -34,18 +34,21 @@ it('rejects an unknown encoding and truncated payload', async () => {
   expect(await decodeShared(link({ library: 'star' }, 'x'))).toBeUndefined();
   expect(await decodeShared('jeyJsaWJyYXJ5Ijo')).toBeUndefined();
 });
-it('round trips compressed Unicode designs', async () => {
-  const shared = {
-    library: 'eight-fold-star-and-cross',
-    design: {
-      name: 'تسطير — My pattern',
-      coloring: { palette: 'Fès tile', chosen: { star: '#ffffff' } },
-      look: 'tiles' as const,
-      grout: 1,
-    },
-  };
-  expect(await decodeShared(await encodeShared(shared))).toEqual(shared);
-});
+it.each(['tiles', 'jali'] as const)(
+  'round trips compressed Unicode %s designs',
+  async (look) => {
+    const shared = {
+      library: 'eight-fold-star-and-cross',
+      design: {
+        name: 'تسطير — My pattern',
+        coloring: { palette: 'Fès tile', chosen: { star: '#ffffff' } },
+        look,
+        grout: 1,
+      },
+    };
+    expect(await decodeShared(await encodeShared(shared))).toEqual(shared);
+  },
+);
 it('preserves an unfinished draft but refuses unsupported file versions', () => {
   const tutorial = emptyDraft('my-pattern', 'My pattern');
   expect(

@@ -38,6 +38,19 @@ describe('the design store', () => {
     expect(raw).toHaveLength(1);
   });
 
+  it('keeps Jali and its lattice width when saved and updated', () => {
+    const saved = addDesign({ ...fields, look: 'jali', grout: 2 });
+    expect(getDesign(saved?.id ?? '')).toMatchObject({
+      look: 'jali',
+      grout: 2,
+    });
+    updateDesign(saved?.id ?? '', { grout: 0.75 });
+    expect(getDesign(saved?.id ?? '')).toMatchObject({
+      look: 'jali',
+      grout: 0.75,
+    });
+  });
+
   it('keeps the tutorial’s own inking as no pieces', () => {
     const saved = addDesign({ ...fields, inked: undefined });
     expect(getDesign(saved?.id ?? '')?.inked).toBeUndefined();

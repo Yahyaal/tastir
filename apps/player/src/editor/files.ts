@@ -1,3 +1,4 @@
+import type { WallStyle } from '../app/Wall';
 import {
   BasedOnShape,
   DraftShape,
@@ -102,7 +103,7 @@ export interface Shared {
     readonly name: string;
     readonly inked?: readonly string[];
     readonly coloring: { palette: string; chosen: Record<string, string> };
-    readonly look: 'tiles' | 'strapwork' | 'lines';
+    readonly look: WallStyle;
     readonly grout: number;
   };
 }

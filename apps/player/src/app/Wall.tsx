@@ -4,12 +4,14 @@ import { fit, viewBox, width } from './camera';
 import { STRAP_BAND, STRAP_EDGE, strapWidths, tiling } from './drawing';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
+import { JaliFramework, JaliGround, latticeWidth } from './jali';
 
-export type WallStyle = 'tiles' | 'strapwork' | 'lines';
+export type WallStyle = 'tiles' | 'strapwork' | 'lines' | 'jali';
 export const WALL_STYLES: readonly WallStyle[] = [
   'tiles',
   'strapwork',
   'lines',
+  'jali',
 ];
 
 const INK = STRAP_EDGE;
@@ -95,7 +97,11 @@ export function Wall({
   const tile = useMemo(() => tileFrame(model, [rm, rn]), [model, rm, rn]);
   const { pattern } = model;
   // Grout in proportion to the tile, so every pattern gets the same look.
-  const groutWidth = strapWidths(model, grout).grout;
+  const jali = style === 'jali';
+  const groutWidth = strapWidths(
+    model,
+    jali ? latticeWidth(grout) : grout,
+  ).grout;
 
   // The pieces and ink strokes in tile coordinates, with neighbours' copies.
   const shifted = useMemo(() => {
@@ -107,19 +113,20 @@ export function Wall({
         const dx = u.x * i + v.x * j;
         const dy = u.y * i + v.y * j;
         const move = (p: Vec) => tile.toTile({ x: p.x + dx, y: p.y + dy });
-        pattern.pieces.forEach((piece, k) => {
-          out.push({
-            type: piece.type,
-            corners: piece.polygon.map(move),
-            fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
+        if (!jali)
+          pattern.pieces.forEach((piece, k) => {
+            out.push({
+              type: piece.type,
+              corners: piece.polygon.map(move),
+              fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
+            });
           });
-        });
         for (const s of pattern.ink)
           lines.push([move(s.segment.a), move(s.segment.b)]);
       }
     }
     return { pieces: out, lines };
-  }, [pattern, tile, fill, colors]);
+  }, [pattern, tile, fill, colors, jali]);
   const bandPath = useMemo(
     () =>
       shifted.lines.map(([a, b]) => `M${a.x} ${a.y}L${b.x} ${b.y}`).join(''),
@@ -127,7 +134,7 @@ export function Wall({
   );
 
   const pieceClass = (type: number) =>
-    hovered === undefined
+    hovered === undefined || jali
       ? 'wall-piece'
       : hovered === type
         ? 'wall-piece hl'
@@ -163,7 +170,7 @@ export function Wall({
   // veils fade from the centre outwards, then the next type's. Once faded
   // the veil stays, invisible and ignoring the pointer.
   const veil = useMemo(() => {
-    if (!enter) return [];
+    if (!enter || jali) return [];
     const { shifts } = tiling(model);
     const view = start;
     const out: { type: number; pts: string; dist: number }[] = [];
@@ -189,7 +196,7 @@ export function Wall({
       }
     }
     return out;
-  }, [enter, model, pattern, start]);
+  }, [enter, jali, model, pattern, start]);
 
   const veilRef = useRef<SVGGElement>(null);
   useLayoutEffect(() => {
@@ -233,10 +240,12 @@ export function Wall({
       preserveAspectRatio="xMidYMid slice"
       role="img"
       aria-label="The pattern repeated as a wall"
-      onPointerMove={(e) => onHover?.(typeAt(e.clientX, e.clientY)?.type)}
+      onPointerMove={(e) => {
+        if (!jali) onHover?.(typeAt(e.clientX, e.clientY)?.type);
+      }}
       onPointerLeave={() => onHover?.(undefined)}
       onClick={(e) => {
-        if (camera.wasDrag()) return;
+        if (camera.wasDrag() || jali) return;
         const hit = typeAt(e.clientX, e.clientY);
         if (hit) onPick?.(hit.type, hit.place);
       }}
@@ -259,7 +268,7 @@ export function Wall({
               className={pieceClass(p.type)}
               style={{ '--type': p.type } as React.CSSProperties}
               points={pts(p.corners)}
-              fill={style === 'lines' ? 'none' : p.fill}
+              fill={style === 'lines' || jali ? 'none' : p.fill}
               stroke={
                 style === 'tiles' ? INK : style === 'lines' ? INK : 'none'
               }
@@ -284,8 +293,21 @@ export function Wall({
                 </g>
               ))
             : null}
+          {jali ? (
+            <JaliFramework
+              path={bandPath}
+              width={groutWidth}
+              toLocalOffset={(x, y) =>
+                tile.toTile({
+                  x: pattern.cell.origin.x + x,
+                  y: pattern.cell.origin.y - y,
+                })
+              }
+            />
+          ) : null}
         </pattern>
       </defs>
+      {jali ? <JaliGround id={`jali-light-${id}`} view={cover} /> : null}
       <rect
         x={cover.minX}
         y={-cover.maxY}

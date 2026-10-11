@@ -98,8 +98,9 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 - [x] **2.0 Dotted in-progress polygon preview in Draw-Along & Editor.** When using the `polygon` or `tile` tool, render live dotted SVG lines connecting the corners clicked so far ($P_0 \to P_1 \to \dots \to P_{k-1}$), plus a rubber-band dotted line to the active pointer or hovered crossing.
   *Done when:* Clicking corners shows dotted connected edges and a responsive rubber-band to the cursor; tests verify SVG rendering and closing behavior.
 
-- [ ] **2.1 Jali / Lattice (Pierced Screen) style.** Add `jali` to `WallStyle`. The strapwork forms a solid architectural screen (carved marble/sandstone/wood) while piece apertures are cut out (transparent or translucent) showing a soft ambient/backlit ground.
+- [x] **2.1 Jali / Lattice (Pierced Screen) style.** Add `jali` to `WallStyle`. The strapwork forms a solid architectural screen (carved marble/sandstone/wood) while piece apertures are cut out (transparent or translucent) showing a soft ambient/backlit ground.
   *Done when:* Player wall dropdown includes `Jali`, rendering open voids with a structural framework; tests and preview snapshots pass.
+  *Implemented 11 October:* Marble-colored stone bands with directional bevels, clear apertures and a continuous backlit ground. Shared appearance settings keep the live wall, saved previews and SVG/PNG consistent. Lattice controls width; colors are preserved when switching styles. Screenshots and owner feedback are at `#/review`; reproduction and checks are in [the Jali report](testing/jali-2026-10-11.md).
 
 - [ ] **2.2 Tazhib / Illumination (Gold Leaf & Lapis) style.** Add `illumination` to `WallStyle`. Gilded gold-leaf star rosettes with SVG metallic gradients, deep ultramarine/lapis lazuli backgrounds, and fine black *tahrir* pen outlines.
   *Done when:* Player wall dropdown includes `Illumination`, applying gold metallic gradients and lapis ground; tests pass.

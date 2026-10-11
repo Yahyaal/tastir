@@ -1427,6 +1427,24 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
+    id: 'jali-style-appearance',
+    text: 'How does the Jali stone screen look in A and B? Open either pattern at Color and choose Style → Jali to try the lattice width.',
+    choices: ['Looks good', 'Wider stone bands', 'Narrower stone bands'],
+    pictures: [
+      {
+        src: 'renders/jali/eight-fold-star-and-cross.png',
+        caption:
+          'A — Star and cross: open spaces, a marble-colored framework and light behind the screen.',
+      },
+      {
+        src: 'renders/jali/bou-inania-rosette.png',
+        caption:
+          'B — Bou Inania: the same stone finish on a dense repeat, with unchanged geometry.',
+      },
+    ],
+    card: 'eight-fold-star-and-cross',
+  },
+  {
     id: 'eight-fold-khatam',
     text: 'Should we drop eight-fold-khatam from the library until a verified matching photo of the Hakim Mosque woodwork or another authentic panel is found?',
     choices: [
@@ -1493,9 +1511,17 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '8 October 2026',
+  updated: '11 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Jali: a pierced stone-screen style',
+      text: 'At Color, choose Style → Jali. The ink becomes a marble-colored framework with clear openings and a continuous backlit ground. Lattice adjusts its width. Saving, sharing, My designs previews, SVG and PNG keep the style and width; switching to Tiles restores your colors. Pictures A and B above show the new finish.',
+      link: {
+        label: 'Try Jali at Color',
+        href: '/#/eight-fold-star-and-cross/result',
+      },
+    },
     {
       title: 'UI redesign merged: Islamic geometric atelier',
       text: 'The new look is merged across the entire app. The home page introduces the drafting atelier with the calligraphic Arabic brand mark (تسطير), curated Moroccan dossiers, and a transparent Upcoming Masterwork Queue with CC credits. Draw along, editor, and review were restyled to the unified dark atelier theme, the step colour legend matches the orange and blue drawn elements, and board stability across stages was measured at 0 px movement across desktop, tablet, and mobile.',

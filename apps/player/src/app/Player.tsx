@@ -729,7 +729,11 @@ export function Player({
                   Style
                   <select
                     value={wallStyle}
-                    onChange={(e) => setWallStyle(e.target.value as WallStyle)}
+                    onChange={(e) => {
+                      const style = e.target.value as WallStyle;
+                      setWallStyle(style);
+                      if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                    }}
                   >
                     {WALL_STYLES.map((s) => (
                       <option key={s} value={s}>
@@ -739,53 +743,65 @@ export function Player({
                   </select>
                 </label>
                 <label>
-                  {wallStyle === 'strapwork' ? 'Band' : 'Grout'}
+                  {wallStyle === 'jali'
+                    ? 'Lattice'
+                    : wallStyle === 'strapwork'
+                      ? 'Band'
+                      : 'Grout'}
                   <input
                     type="range"
-                    min={0}
+                    min={wallStyle === 'jali' ? 0.5 : 0}
                     max={3}
                     step={0.25}
-                    value={grout}
+                    value={wallStyle === 'jali' ? Math.max(0.5, grout) : grout}
                     onChange={(e) => setGrout(Number(e.target.value))}
                   />
                 </label>
               </div>
               <p className="hint">
+                {wallStyle === 'jali'
+                  ? 'A stone screen with open spaces. Switch styles to see your colors. '
+                  : ''}
                 Drag to move along the wall, scroll to zoom.
               </p>
             </section>
-            <section>
-              <h2>Colors</h2>
-              <PiecePanel
-                model={inking.shown}
-                colors={colors}
-                history={colorHistory}
-                dispatch={colorDispatch}
-                hovered={hovered}
-                onHover={setHovered}
-                selected={selected}
-                onSelect={(type) => {
-                  setSelected(type);
-                  setPlace(undefined);
-                }}
-                place={
-                  fill && place
-                    ? {
-                        key: placeKey(
-                          inking.shown,
-                          place.piece,
-                          place.i,
-                          place.j,
-                        ),
-                        color: fill(place.piece, place.i, place.j),
-                      }
-                    : undefined
-                }
-                onReset={() =>
-                  colorDispatch({ kind: 'reset', to: tutorialColoring(model) })
-                }
-              />
-            </section>
+            {wallStyle !== 'jali' ? (
+              <section>
+                <h2>Colors</h2>
+                <PiecePanel
+                  model={inking.shown}
+                  colors={colors}
+                  history={colorHistory}
+                  dispatch={colorDispatch}
+                  hovered={hovered}
+                  onHover={setHovered}
+                  selected={selected}
+                  onSelect={(type) => {
+                    setSelected(type);
+                    setPlace(undefined);
+                  }}
+                  place={
+                    fill && place
+                      ? {
+                          key: placeKey(
+                            inking.shown,
+                            place.piece,
+                            place.i,
+                            place.j,
+                          ),
+                          color: fill(place.piece, place.i, place.j),
+                        }
+                      : undefined
+                  }
+                  onReset={() =>
+                    colorDispatch({
+                      kind: 'reset',
+                      to: tutorialColoring(model),
+                    })
+                  }
+                />
+              </section>
+            ) : null}
             <section>
               <h2>Take it with you</h2>
               {sharedView ? null : (
