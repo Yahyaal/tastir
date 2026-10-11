@@ -3407,8 +3407,8 @@
     },
     {
       "id": 18,
-      "text": "Draw the square that just touches the main circle: a line at right angles to the horizontal at each side, and at right angles to the vertical at the top and bottom. This square is the tile that repeats.",
-      "textWithoutHelpers": "Mark the square that just touches the main circle at the top, the bottom and the sides: this square is the tile that repeats. Its corners are crossings already on the board.",
+      "text": "Draw the square that just touches the main circle: a line at right angles to the horizontal at each side, and at right angles to the vertical at the top and bottom. Its two upright sides will be sides of the tile.",
+      "textWithoutHelpers": "Mark the square that just touches the main circle at the top, the bottom and the sides. Its corners are crossings already on the board, and its two upright sides will be sides of the tile.",
       "create": {
         "tE": {
           "line": {
@@ -3485,8 +3485,8 @@
     },
     {
       "id": 19,
-      "text": "Now set the rows: each row sits half a wheel along from the one below, as close as the wheels allow. Put the compass on the centre of the small circle above the middle and draw the circle through the middle; where it crosses the vertical again is the bottom of the next row. Rule the horizontal there, and through the bottom-right corner of the square rule a line parallel to the line from the bottom-left corner to that mark. The slanted box between them is the tile.",
-      "textWithoutHelpers": "Now set the rows: each row sits half a wheel along from the one below, as close as the wheels allow. Put the compass on the centre of the small circle above the middle and draw the circle through the middle; where it crosses the vertical again is the bottom of the next row. Rule the horizontal there, and through the bottom-right corner of the square rule a line parallel to the slant from the bottom-left corner to that mark. The slanted box between them is the tile.",
+      "text": "Now set the rows: each row sits half a wheel along from the one below, as close as the wheels allow. Put the compass on the centre of the small circle above the middle and draw the circle through the middle; where it crosses the vertical again is the bottom of the next row. Rule the slant from the bottom-left corner of the square to that mark, and the same slant through the centre: where it meets the right side of the square is the centre of the wheel above and to the right.",
+      "textWithoutHelpers": "Now set the rows: each row sits half a wheel along from the one below, as close as the wheels allow. Put the compass on the centre of the small circle above the middle and draw the circle through the middle; where it crosses the vertical again is the bottom of the next row. Rule the slant from the bottom-left corner of the square to that mark, and the same slant through the centre: where it meets the right side of the square is the centre of the wheel above and to the right.",
       "create": {
         "cRow": {
           "circle": {
@@ -3505,12 +3505,6 @@
             }
           }
         },
-        "hUp": {
-          "line": {
-            "through": "Up",
-            "parallelTo": "h"
-          }
-        },
         "sideL": {
           "line": {
             "through": [
@@ -3519,34 +3513,196 @@
             ]
           }
         },
-        "sideR": {
+        "oSlant": {
           "line": {
-            "through": "t4",
+            "through": "O",
             "parallelTo": "sideL"
           }
         },
-        "Rr": {
+        "uR": {
           "point": {
             "meet": [
-              "sideR",
-              "hUp"
+              "oSlant",
+              "tE"
             ]
           }
-        },
-        "shifted": {
-          "polygon": [
-            "t3",
-            "t4",
-            "Rr",
-            "Up"
-          ]
         }
       },
       "highlight": [
         "s2",
-        "v"
+        "v",
+        "t3",
+        "tE"
       ],
       "animate": "compass"
+    },
+    {
+      "id": 20,
+      "text": "The tile is a hexagon around the wheel: its upright sides lie on the square, and its pointed roof runs halfway to the wheels of the next row.",
+      "parts": [
+        {
+          "text": "Put the compass on the centre and open it to the centre of the wheel above and to the right. Draw the circle, then the same circle from that centre back.",
+          "create": {
+            "cMidA": {
+              "circle": {
+                "centre": "O",
+                "through": "uR"
+              }
+            },
+            "cMidB": {
+              "circle": {
+                "centre": "uR",
+                "through": "O"
+              }
+            }
+          },
+          "highlight": [
+            "O",
+            "uR"
+          ],
+          "animate": "compass"
+        },
+        {
+          "text": "Rule the line through the two crossings of those circles. It runs halfway between the two wheels and is the right half of the roof: mark where it meets the vertical and the right side of the square.",
+          "create": {
+            "m1": {
+              "point": {
+                "meet": [
+                  "cMidA",
+                  "cMidB"
+                ],
+                "pick": {
+                  "angle": 135
+                }
+              }
+            },
+            "m2": {
+              "point": {
+                "meet": [
+                  "cMidA",
+                  "cMidB"
+                ],
+                "pick": {
+                  "angle": 0
+                }
+              }
+            },
+            "roof": {
+              "line": {
+                "through": [
+                  "m1",
+                  "m2"
+                ]
+              }
+            },
+            "hTop": {
+              "point": {
+                "meet": [
+                  "roof",
+                  "v"
+                ]
+              }
+            },
+            "hR1": {
+              "point": {
+                "meet": [
+                  "roof",
+                  "tE"
+                ]
+              }
+            }
+          },
+          "highlight": [
+            "v",
+            "tE"
+          ],
+          "animate": "ruler"
+        },
+        {
+          "text": "With the compass on the centre, swing a circle through the corner on the right side: it marks the other three corners on the upright sides. Swing one through the top corner to mark the bottom one.",
+          "create": {
+            "cSide": {
+              "circle": {
+                "centre": "O",
+                "through": "hR1"
+              }
+            },
+            "hR2": {
+              "point": {
+                "meet": [
+                  "cSide",
+                  "tE"
+                ],
+                "pick": {
+                  "farthest": "hR1"
+                }
+              }
+            },
+            "hL1": {
+              "point": {
+                "meet": [
+                  "cSide",
+                  "tW"
+                ],
+                "pick": {
+                  "nearest": "hR1"
+                }
+              }
+            },
+            "hL2": {
+              "point": {
+                "meet": [
+                  "cSide",
+                  "tW"
+                ],
+                "pick": {
+                  "farthest": "hR1"
+                }
+              }
+            },
+            "cTop": {
+              "circle": {
+                "centre": "O",
+                "through": "hTop"
+              }
+            },
+            "hBot": {
+              "point": {
+                "meet": [
+                  "cTop",
+                  "v"
+                ],
+                "pick": {
+                  "farthest": "hTop"
+                }
+              }
+            }
+          },
+          "highlight": [
+            "hR1",
+            "hTop",
+            "tE",
+            "tW"
+          ],
+          "animate": "compass"
+        },
+        {
+          "text": "Join the six corners. This hexagon is the tile that repeats.",
+          "create": {
+            "hexTile": {
+              "polygon": [
+                "hR1",
+                "hTop",
+                "hL1",
+                "hL2",
+                "hBot",
+                "hR2"
+              ]
+            }
+          },
+          "animate": "ruler"
+        }
+      ]
     }
   ],
   "ink": {
@@ -6819,8 +6975,8 @@
     ]
   },
   "pattern": {
-    "cell": "shifted",
-    "text": "Repeat the slanted tile edge to edge. Each row of wheels sits half a wheel along from the row below and as close as it can come, the large octagons of neighbouring rows meeting corner to corner.",
+    "cell": "hexTile",
+    "text": "Repeat the hexagon side to side. Each row of wheels sits half a wheel along from the row below and as close as it can come, the large octagons of neighbouring rows meeting corner to corner.",
     "palette": "Fès tile",
     "colors": {
       "ground": "ground",
