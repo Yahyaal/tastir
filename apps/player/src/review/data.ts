@@ -976,18 +976,18 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 4,
     status: 'decide',
     summary:
-      'Kurt’s wheel on the square tile, with the space between four wheels filled by the middle of the wheel in its own colours.',
+      'Kurt’s wheel repeated so that the wheels overlap and each one’s middle fills the space between four others; every other wheel’s middle has its own colours.',
     story: [
-      'You saw that the empty space between four wheels is exactly the middle of a wheel. It is: the space reaches 0.707 from its centre, and so does the middle of the wheel out to its bands. Drawn there, it leaves no ground at all and makes no new shapes (first picture).',
-      'The space is centred on the tile corner, which is the mirror image of the wheel’s centre across the side of the standing square from step 4. So the new step 19 rules that side and draws the middle again as its mirror image.',
-      'You asked for the middle at the corner to have different colours from the wheel’s own middle. It takes the colours the wheel does not use in the same places: wine-red star, rosette and kites, cream petals, green octagons and blue bands. In the colour stage, click one of its pieces to change all the corner pieces like it.',
-      'The wall now turns into itself by a quarter turn about the wheel’s centre, not an eighth, so the tutorial is listed with the four-fold patterns, as the Bou Inania wall is.',
+      'You saw that the empty space between four wheels is exactly the middle of a wheel. It is, and more: it is the middle of another wheel. Repeat the plain wheel on the standing square from step 4 (half the old square tile, turned 45°) and the wheels overlap, each one’s middle filling the space between four others and their rings running along the same lines.',
+      'So the tutorial draws nothing beyond the plain wheel: step 18 marks the standing square as the tile. My first version drew a mirrored copy of the middle at the tile corner instead. It gave the same wall but was much heavier and slow in your browser; this one is as light as the plain wheel.',
+      'You asked for the middle in the space to have different colours. Every other wheel now has its middle in its own colours: cream octagons, wine-red stars and rosette, and blue bands. In the colour stage, click one of its pieces to change all the pieces placed like it.',
+      'The coloured wall turns into itself by a quarter turn about the wheel’s centre, not an eighth, so the tutorial is listed with the four-fold patterns, as the Bou Inania wall is.',
     ],
     pictures: [
       {
         src: 'renders/kurt-eight-fold-zellige-filled/wall.png',
         caption:
-          'The filled wall (in the review renderer’s colours, not the tutorial’s): every space between four wheels holds the middle of a wheel.',
+          'The filled wall (in the review renderer’s colours, not the tutorial’s): every space between four wheels holds the middle of another wheel.',
       },
     ],
     asks: [
@@ -1509,7 +1509,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'kurt-filled-colours',
-    text: 'The filled zellige wheel: do the colours of the middle at the tile corner work? Open /#/kurt-eight-fold-zellige-filled/result to see them.',
+    text: 'The filled zellige wheel, rebuilt simpler: do the colours of every other wheel’s middle work? Open /#/kurt-eight-fold-zellige-filled/result to see them.',
     choices: [
       'Keep these colours',
       'Closer to the wheel’s own',
@@ -1552,7 +1552,7 @@ export const PROGRESS: {
   done: [
     {
       title: 'Zellige wheel: a hexagon tile, and the gaps filled',
-      text: 'Your two ideas from the feedback document. The shifted rows now repeat a hexagon round each wheel instead of a slanted box, so the dotted tile no longer cuts wheels in half; the wall is unchanged. And a new tutorial fills the space between four wheels with the middle of the wheel, in its own colours (question at the top).',
+      text: 'Your two ideas from the feedback document. The shifted rows now repeat a hexagon round each wheel instead of a slanted box, so the dotted tile no longer cuts wheels in half; the wall is unchanged. And a new tutorial fills the space between four wheels: rebuilt your way after the first version was slow, the plain wheel now repeats on the standing square so the wheels overlap and each one’s middle fills the space, with every other middle in its own colours (question at the top).',
       link: {
         label: 'Eight-fold zellige wheel, filled',
         href: '/#/kurt-eight-fold-zellige-filled/result',
