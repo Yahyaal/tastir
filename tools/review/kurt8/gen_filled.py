@@ -1,163 +1,132 @@
 """Builds tutorials/kurt-eight-fold-zellige-filled.json from the plain wheel.
 
-The gap between four wheels, at a corner of the square tile, is exactly the
-middle of the wheel (everything out to the bands, 0.707 of OA from the
-centre). Its centre is the mirror image of O across the side of the standing
-square from E to N, so one step mirrors the elements the middle's ink runs
-along, and the ink gets a mirrored copy of every path of the middle.
+The space between four wheels on the square tile is exactly the middle of a
+wheel. So the filled wall is the plain wheel repeated on the standing square
+of step 4 (half the square tile, turned 45°): each wheel's centre lands in
+the space between four others, and the rings of neighbouring wheels overlap
+on the same lines. Nothing is drawn beyond the plain wheel.
 
-  npx tsx --conditions=@tastir/source tools/review/kurt8/medallion.ts > far.json
-  python3 tools/review/kurt8/gen_filled.py far.json
+Every other wheel (the ones in the spaces of the square tiling) takes its
+own colours for the middle: a 2 × 2 colour repeat, by cell, for the
+octagons, stars and bands, and by place in the cell for the centre rosette.
+
+  python3 tools/review/kurt8/gen_filled.py
   python3 tools/review/format_tutorial.py tutorials/kurt-eight-fold-zellige-filled.json
 """
 
 import copy
 import json
-import sys
+import subprocess
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 SRC = ROOT / "tutorials" / "kurt-eight-fold-zellige.json"
-OUT = ROOT / "tutorials" / "kurt-eight-fold-zellige-filled.json"
-# Paths that stay within this distance of O make the middle of the wheel.
-REACH = 0.708
+ID = "kurt-eight-fold-zellige-filled"
+OUT = ROOT / "tutorials" / f"{ID}.json"
 
-far = json.load(open(sys.argv[1]))
-# The plain wheel's elements as drawn (pnpm review kurt-eight-fold-zellige).
-drawn = json.load(open(ROOT / "docs" / "review" / "kurt-eight-fold-zellige" / "dump.json"))
-drawn = {e["name"]: e for e in drawn["steps"][-1]["elements"]}
-
-
-def carries(name, a, b):
-    """Whether element `name` has a straight side or line through points a and b."""
-    e = drawn[name]
-    pa, pb = drawn[a], drawn[b]
-    if e["kind"] == "line":
-        return all(
-            abs((p["x"] - e["x"]) * e["dy"] - (p["y"] - e["y"]) * e["dx"]) < 1e-9 for p in (pa, pb)
-        )
-    if e["kind"] != "polygon":
-        return False
-    vs = e["vertices"]
-    for (px, py), (qx, qy) in zip(vs, vs[1:] + vs[:1]):
-
-        def on(r):
-            cr = (qx - px) * (r["y"] - py) - (qy - py) * (r["x"] - px)
-            return (
-                abs(cr) < 1e-9
-                and min(px, qx) - 1e-9 <= r["x"] <= max(px, qx) + 1e-9
-                and min(py, qy) - 1e-9 <= r["y"] <= max(py, qy) + 1e-9
-            )
-
-        if on(pa) and on(pb):
-            return True
-    return False
-
+# The middle of the second set of wheels: colours the plain wheel does not
+# use for these shapes.
+WHEEL = {"joint": "b", "octagon": "c", "star": "a", "rosette": "a", "petal": "b", "band": "c", "kite": "a"}
+OTHER = {"octagon": "ground", "star": "d", "band": "a", "rosette": "d"}
+SMALL = {"joint", "kite"}
 
 src = json.load(open(SRC))
 t = copy.deepcopy(src)
-
-middle = [x["path"] for x in far if x["far"] < REACH]
-paths = [src["ink"]["paths"][i] for i in middle]
-
-kinds = {}
-for step in src["steps"]:
-    for parts in [step.get("create", {})] + [p["create"] for p in step.get("parts", [])]:
-        for name, el in parts.items():
-            kinds[name] = el
-
-names = []
-
-
-def use(name):
-    if name not in names:
-        names.append(name)
-
-
-def end(v):
-    if isinstance(v, str):
-        use(v)
-    else:
-        use(v["cross"])
-        for k in ("nearest", "farthest"):
-            if k in v["pick"]:
-                use(v["pick"][k])
-
-
-for p in paths:
-    if "along" in p:
-        use(p["along"])
-        end(p["from"])
-        end(p["to"])
-    else:
-        pts = p["through"] + ([p["through"][0]] if p.get("closed") else [])
-        for q in pts:
-            use(q)
-        # The side each pair runs along: a polygon side or a line through both.
-        for a, b in zip(pts, pts[1:]):
-            # Polygons first: an octagon's side is the line the ink means.
-            ordered = sorted(drawn, key=lambda n: drawn[n]["kind"] != "polygon")
-            carrier = next((n for n in ordered if carries(n, a, b)), None)
-            if carrier is None:
-                sys.exit(f"nothing carries {a}–{b}")
-            use(carrier)
-
-
-def mirrored(v):
-    if isinstance(v, str):
-        return v + "@1"
-    if isinstance(v, list):
-        return [mirrored(x) for x in v]
-    if isinstance(v, dict):
-        return {k: (x if k == "closed" else mirrored(x)) for k, x in v.items()}
-    return v
-
-
-t["id"] = "kurt-eight-fold-zellige-filled"
+t["id"] = ID
 t["title"] = "Eight-fold zellige wheel, filled"
-# The wall turns into itself by a quarter turn about O, not an eighth: the
-# middle at the corner sits where an eighth turn finds the wheel's ring.
+# The two sets of wheels are coloured differently, so the coloured wall only
+# turns into itself by a quarter turn about O.
 t["fold"] = 4
-# Our own design: say so in the library, as for the other studies.
 t["verification"] = {
     "status": "unverified",
     "note": (
-        "Sandy Kurt's wheel with the space between four wheels filled by the middle of the wheel, "
+        "Sandy Kurt's wheel repeated so that each wheel's middle fills the space between four others, "
         "an idea of our own. It has not been matched to a historical panel."
     ),
 }
-t["steps"].append(
-    {
-        "id": len(t["steps"]) + 1,
-        "text": (
-            "The gap at each corner of the tile, between four wheels, is exactly the middle of a wheel: "
-            "the star, the eight octagons and the bands around them. Rule the side of the standing square "
-            "from the right of the circle to the top, and draw the middle again as its mirror image across "
-            "that line. Its centre lands on the corner of the tile."
-        ),
-        "create": {
-            "mEN": {"line": {"through": ["E", "N"]}},
-            "corner": {"repeat": {"of": names, "by": "mirror:mEN"}},
-        },
-        "textWithoutHelpers": (
-            "The gap at each corner of the tile, between four wheels, is exactly the middle of a wheel: "
-            "the star, the eight octagons and the bands around them. Draw the middle again around the "
-            "corner of the tile, as the mirror image of the one at the centre."
-        ),
-        "highlight": ["E", "N", "t1"],
-        "animate": "ruler",
-    }
+t = {k: t[k] for k in ["format", "id", "title", "fold", "style", "level", "credits", "verification"] + [
+    k for k in t if k not in ("format", "id", "title", "fold", "style", "level", "credits", "verification")
+]}
+t["credits"][0]["note"] = (
+    "The wheel follows her nineteen steps and her finished drawing; repeating it so that the wheels "
+    "overlap and fill the spaces between them is our own. The step text is our own."
 )
-t["ink"] = {
+last = t["steps"][-1]
+assert last["id"] == 18
+t["steps"][-1] = {
+    "id": 18,
     "text": (
-        "Go over the lines of the finished wheel, then over the middle again at the corner of the tile: "
-        "the octagons, the bands between them and the star."
+        "The tile is the standing square from step 4, with its corners at the ends of the horizontal "
+        "and the vertical. Copies of it, side to side, put a wheel on every corner: each wheel's middle "
+        "fills the space between four others, and the rings of neighbouring wheels run along the same lines."
     ),
-    "paths": src["ink"]["paths"] + [mirrored(p) for p in paths],
+    "create": {"tile": {"polygon": ["E", "N", "W", "Sp"]}},
+    "highlight": ["E", "N", "W", "Sp"],
+    "animate": "ruler",
 }
+t["pattern"]["cell"] = "tile"
 t["pattern"]["text"] = (
-    "Repeat the tile edge to edge. Neighbouring wheels meet at the corners of their large octagons, "
-    "and the middle drawn at the corner fills the space between four wheels."
+    "Repeat the standing square side to side. The wheels overlap: each one's middle fills the space "
+    "between four others, and every other wheel has its middle in its own colours."
 )
+t["pattern"]["colors"] = WHEEL
+t["pattern"].pop("placements", None)
 json.dump(t, open(OUT, "w"), indent=2, ensure_ascii=False)
-print(f"{len(middle)} paths, {len(names)} elements mirrored")
+
+# Golden values and the rosette's place, from the engine.
+with tempfile.TemporaryDirectory() as tmp:
+    out = Path(tmp) / "dump.json"
+    subprocess.run(
+        ["npx", "tsx", "--conditions=@tastir/source", "tools/review/dump.ts", ID, str(out)],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+    )
+    dump = json.load(open(out))
+names = [ty["name"] for ty in dump["types"]]
+cell = dump["cell"]
+(ox, oy), (ux, uy), (vx, vy) = cell["corners"][0], cell["u"], cell["v"]
+det = ux * vy - uy * vx
+
+
+def slides(poly):
+    cx = sum(p[0] for p in poly) / len(poly)
+    cy = sum(p[1] for p in poly) / len(poly)
+    dx, dy = cx - ox, cy - oy
+    return ((dx * vy - dy * vx) / det, (ux * dy - uy * dx) / det), (cx, cy)
+
+
+pieces = [(names[p["type"]], *slides(p["polygon"])) for p in dump["pieces"]]
+rosettes = sorted((b, a, abs(cx) + abs(cy)) for n, (a, b), (cx, cy) in pieces if n == "rosette")
+# nth counts along the second slide, then the first, as the player does.
+centre = next(i for i, (_, _, r) in enumerate(rosettes) if r < 1e-6)
+
+rules = []
+for i, j in ((1, 0), (0, 1)):
+    for name, colour in OTHER.items():
+        rule = {"piece": name, "cell": [i, j], "color": colour}
+        if name == "rosette":
+            rule["nth"] = centre
+        rules.append(rule)
+t["pattern"]["placements"] = {"repeat": [2, 2], "rules": rules}
+t["expect"] = {
+    "note": (
+        "Golden values in units of OA, computed by the engine. The tile is half the plain wheel's, "
+        "and every piece is one of the wheel's own. The kites and the thin star between wheels are small by design."
+    ),
+    "pieceTypes": len(dump["types"]),
+    "pieces": [
+        {
+            "name": ty["name"],
+            "vertices": ty["vertices"],
+            "area": ty["area"],
+            "perCell": ty["perCell"],
+            **({"small": True} if ty["name"] in SMALL else {}),
+        }
+        for ty in dump["types"]
+    ],
+    "cellArea": 2,
+}
+json.dump(t, open(OUT, "w"), indent=2, ensure_ascii=False)
+print(f"{len(dump['types'])} piece types, centre rosette nth {centre}")
