@@ -58,7 +58,7 @@ import { guidanceFor } from './guidance';
 import { hintFor } from './hints';
 import { namesIn, placeKey, readableAt, readableNames } from './names';
 import { withTutorialNames } from './naming';
-import { dotNear, reachable, type PenGraph } from './pen';
+import { dotNear, reachable } from './pen';
 import { forgetProgress, getProgress, keepProgress } from './progress';
 import { fillCopies, snapped, wallSegments, type Copy } from './repeat';
 import { RepeatBoard, TargetWall } from './RepeatBoard';
@@ -150,18 +150,6 @@ const INK_COPIES =
 const INK_FOR_ME =
   'Ink your board the way the tutorial inks it, to see the pattern or to start from it.';
 const INK_CLEAR = 'Take all the ink off your board.';
-
-const penDotCache = new WeakMap<PenGraph, Vec[]>();
-
-/** Every dot the pen can go down on (computed once per board). */
-function penDotsOf(g: PenGraph): Vec[] {
-  let found = penDotCache.get(g);
-  if (!found) {
-    found = [...g.dots.values()].map((d) => d.at);
-    penDotCache.set(g, found);
-  }
-  return found;
-}
 
 /** Whether the pointer is a finger (a touch screen), so the words say
  * tap rather than click. */
@@ -400,13 +388,14 @@ export function DrawAlong({
     index >= shown.length,
     chosen,
     setChosen,
+    index >= shown.length - 1,
   );
   const ready = ink.ready && !('reason' in ink.ready) ? ink.ready : undefined;
   // The learner's inked tile, as it repeats: its bits.
   const tileInk = useMemo((): Segment[] => {
     if (!ready) return [];
     return [...chosen].flatMap((id) => {
-      const p = ready.graph.bits.get(id);
+      const p = ready.graph.bit(id);
       return p ? [p.segment] : [];
     });
   }, [ready, chosen]);
@@ -867,14 +856,14 @@ export function DrawAlong({
           glow={hint?.glow}
           rings={inking ? ink.hint?.ring : hint?.rings}
           pen={
-            inking && ready && pen && ready.graph.dots.get(pen)
+            inking && ready && pen && ready.graph.dot(pen)
               ? {
-                  at: ready.graph.dots.get(pen)?.at as Vec,
+                  at: ready.graph.dot(pen)?.at as Vec,
                   reach: reachable(ready.graph, pen).map((d) => d.at),
                 }
               : undefined
           }
-          penDots={inking && ready ? penDotsOf(ready.graph) : undefined}
+          penDots={inking && ready ? ready.graph.dots() : undefined}
           numbered={inking && Boolean(ink.hint?.stroke)}
           dashed={hint?.dashed}
           camera={camera}

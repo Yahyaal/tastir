@@ -75,7 +75,8 @@ outside the safe indexing range keep the original scan.
 - Additional cases cover clipping boundaries, tangencies, overlap,
   irregular segment networks, hash collisions, and merging representatives.
 - Isolated speed tests enforce both 300 ms inking budgets and the one-second
-  crossing budget on both Bou Inania tutorials.
+  crossing budget on both Bou Inania tutorials. They run with `pnpm test:perf`,
+  not in `pnpm test`, because a busy machine would fail them at random.
 - Production browser checks at 1280×800 complete every visible construction
   step, ink, repeat, fill the wall, enter coloring, and change a piece color.
   Both flows completed with no page errors. Rendered walls were inspected.
