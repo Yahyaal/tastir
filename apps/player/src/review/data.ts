@@ -1401,8 +1401,12 @@ export const PATTERNS: readonly Pattern[] = [
       {
         src: 'renders/jali/bou-inania-rosette.png',
         caption:
-          'Jali B — the same finish on Bou Inania; background and framework color controls are proposed next.',
+          'Jali B — the approved stone finish on Bou Inania. Color and material controls are now available at Color.',
       },
+      ...(['stone', 'wood', 'gold', 'silver'] as const).map((material) => ({
+        src: `renders/jali/eight-fold-star-and-cross-${material}.png`,
+        caption: `Jali ${material} preset — all four finishes support independent framework and background colors.`,
+      })),
       {
         src: 'renders/eight-fold-star-and-cross/compare-wall.png',
         caption: 'Left: the Kashan tiles. Right: our wall.',
@@ -1467,8 +1471,8 @@ export const PROGRESS: {
       link: { label: 'See the library', href: '/#/' },
     },
     {
-      title: 'Jali: a pierced stone-screen style',
-      text: 'At Color, choose Style → Jali. The ink becomes a marble-colored framework with clear openings and a continuous backlit ground. Lattice adjusts its width. Saving, sharing, My designs previews, SVG and PNG keep the style and width; switching to Tiles restores your colors. The owner approved the appearance on 11 October and proposed adjustable background/framework colors and material finishes next.',
+      title: 'Jali: colors and four material finishes',
+      text: 'At Color, choose Style → Jali. The ink becomes a marble-colored framework with clear openings and a continuous backlit ground. Lattice adjusts its width. Saving, sharing, My designs previews, SVG and PNG keep the style and width; switching to Tiles restores your colors. The owner approved the appearance and the follow-ups on 11 October. Jali finish now has Stone, Wood, Gold and Silver presets, independent framework/background colors, and Reset Jali finish. Material selection changes only the framework starting color. Saving, sharing, previews and downloads retain the finish. Older designs keep their stone appearance. Jali acceptance checks pass; the full suite still fails two existing engine speed budgets, reproduced at the pre-change commit. See the testing report in Notes.',
       link: {
         label: 'Try Jali at Color',
         href: '/#/eight-fold-star-and-cross/result',
@@ -1676,9 +1680,12 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'The owner’s look at the new look and Draw along',
-    text: 'The UI redesign is merged into main and running on the dev server. Draw along, the editor, and the new atelier look are ready for your review. Take a look at the home page, the Moroccan dossier, and try drawing the Comares bones and Eight-fold star and cross.',
-    link: { label: 'Home page', href: '/#/' },
+    title: 'Try the new Jali colors and materials',
+    text: 'On the codex/jali preview, choose Style → Jali at Color. Try the four material presets, adjust framework and background independently, and reset the finish. Labelled preset pictures are on the Star and cross card. All settings travel with saved designs, share links and downloads.',
+    link: {
+      label: 'Open Jali controls',
+      href: '/#/eight-fold-star-and-cross/result',
+    },
   },
   next: [
     {

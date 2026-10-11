@@ -1,6 +1,18 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+
+async function setColor(page: Page, label: string, color: string) {
+  await page.getByLabel(label, { exact: true }).evaluate((node, value) => {
+    const input = node as HTMLInputElement;
+    Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      'value',
+    )!.set!.call(input, value);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }, color);
+}
 
 for (const id of [
   'eight-fold-star-and-cross',
@@ -30,6 +42,52 @@ for (const id of [
       mkdirSync(resolve('docs/review/jali'), { recursive: true });
       await wall.screenshot({ path: resolve(`docs/review/jali/${id}.png`) });
     }
+    const material = page.getByRole('combobox', {
+      name: 'Material',
+      exact: true,
+    });
+    for (const finish of ['wood', 'gold', 'silver', 'stone']) {
+      await material.selectOption(finish);
+      await expect(wall.locator('.jali-framework')).toHaveAttribute(
+        'data-material',
+        finish,
+      );
+      await expect(wall.locator('.jali-framework path')).toHaveCount(
+        finish === 'wood' ? 6 : finish === 'stone' ? 4 : 5,
+      );
+      await expect(wall.locator('polygon, filter')).toHaveCount(0);
+      await expect(
+        page.getByLabel('Background color', { exact: true }),
+      ).toHaveValue('#708d87');
+      if (info.project.name === 'desktop') {
+        await wall.screenshot({
+          path: resolve(`docs/review/jali/${id}-${finish}.png`),
+        });
+      }
+    }
+    await setColor(page, 'Framework color', '#864b31');
+    const strokes = await wall
+      .locator('.jali-framework path')
+      .evaluateAll((paths) => paths.map((p) => p.getAttribute('stroke')));
+    await setColor(page, 'Background color', '#234a79');
+    expect(
+      await wall
+        .locator('.jali-framework path')
+        .evaluateAll((paths) => paths.map((p) => p.getAttribute('stroke'))),
+    ).toEqual(strokes);
+    await expect(wall.locator('stop[offset="48%"]')).toHaveAttribute(
+      'stop-color',
+      '#234a79',
+    );
+    await page
+      .getByRole('button', { name: 'Reset Jali finish', exact: true })
+      .click();
+    await expect(
+      page.getByLabel('Framework color', { exact: true }),
+    ).toHaveValue('#e6dcc7');
+    await expect(
+      page.getByLabel('Background color', { exact: true }),
+    ).toHaveValue('#708d87');
     const before = await wall.getAttribute('viewBox');
     await wall.hover();
     await page.mouse.wheel(0, -150);
@@ -62,6 +120,11 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await page
     .getByRole('combobox', { name: 'Style', exact: true })
     .selectOption('jali');
+  await page
+    .getByRole('combobox', { name: 'Material', exact: true })
+    .selectOption('wood');
+  await setColor(page, 'Framework color', '#864b31');
+  await setColor(page, 'Background color', '#234a79');
   const lattice = page.getByLabel('Lattice', { exact: true });
   await lattice.fill('2');
   await lattice.dispatchEvent('input');
@@ -81,6 +144,29 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     page.getByRole('combobox', { name: 'Style', exact: true }),
   ).toHaveValue('jali');
   await expect(lattice).toHaveValue('2');
+  await expect(
+    page.getByRole('combobox', { name: 'Material', exact: true }),
+  ).toHaveValue('wood');
+  await expect(page.getByLabel('Framework color', { exact: true })).toHaveValue(
+    '#864b31',
+  );
+  await expect(
+    page.getByLabel('Background color', { exact: true }),
+  ).toHaveValue('#234a79');
+  // Finish edits participate in the saved-design dirty state.
+  await page
+    .getByRole('combobox', { name: 'Material', exact: true })
+    .selectOption('gold');
+  await expect(
+    page.getByRole('button', { name: 'Save', exact: true }),
+  ).toBeEnabled();
+  await page
+    .getByRole('combobox', { name: 'Material', exact: true })
+    .selectOption('wood');
+  await setColor(page, 'Framework color', '#864b31');
+  await expect(
+    page.getByRole('button', { name: 'Saved', exact: true }),
+  ).toBeDisabled();
   await page.getByRole('button', { name: 'Copy a share link' }).click();
   const address = await page
     .getByRole('textbox', { name: 'Share link' })
@@ -91,6 +177,15 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     other.getByRole('combobox', { name: 'Style', exact: true }),
   ).toHaveValue('jali');
   await expect(other.getByLabel('Lattice', { exact: true })).toHaveValue('2');
+  await expect(
+    other.getByRole('combobox', { name: 'Material', exact: true }),
+  ).toHaveValue('wood');
+  await expect(
+    other.getByLabel('Framework color', { exact: true }),
+  ).toHaveValue('#864b31');
+  await expect(
+    other.getByLabel('Background color', { exact: true }),
+  ).toHaveValue('#234a79');
   await other.close();
 
   for (const extension of ['SVG', 'PNG']) {
@@ -110,7 +205,15 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
         const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
         return (
           !doc.querySelector('parsererror') &&
-          doc.querySelectorAll('.jali-framework path').length === 4 &&
+          doc.querySelectorAll('.jali-framework path').length === 6 &&
+          doc
+            .querySelector('.jali-framework')
+            ?.getAttribute('data-material') === 'wood' &&
+          doc.querySelector('[data-layer="wood"]')?.getAttribute('stroke') ===
+            '#864b31' &&
+          doc
+            .querySelector('stop[offset="48%"]')
+            ?.getAttribute('stop-color') === '#234a79' &&
           doc.querySelectorAll('polygon').length === 0
         );
       }, data.toString());
@@ -139,6 +242,18 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     .click();
   const preview = page.locator('.thumbnail.style-jali');
   await expect(preview).toBeVisible();
+  await expect(preview.locator('.jali-framework')).toHaveAttribute(
+    'data-material',
+    'wood',
+  );
+  await expect(preview.locator('[data-layer="wood"]')).toHaveAttribute(
+    'stroke',
+    '#864b31',
+  );
+  await expect(preview.locator('stop[offset="48%"]')).toHaveAttribute(
+    'stop-color',
+    '#234a79',
+  );
   const widths = await preview
     .locator('.jali-framework path')
     .evaluateAll((paths) => paths.map((p) => p.getAttribute('stroke-width')));
@@ -152,4 +267,25 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
       .locator('.wall .jali-framework path')
       .evaluateAll((paths) => paths.map((p) => p.getAttribute('stroke-width'))),
   ).toEqual(widths);
+  // Reset must also replace the saved finish if another style is active at save time.
+  await page
+    .getByRole('button', { name: 'Reset Jali finish', exact: true })
+    .click();
+  await page
+    .getByRole('combobox', { name: 'Style', exact: true })
+    .selectOption('tiles');
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await page.reload();
+  await page
+    .getByRole('combobox', { name: 'Style', exact: true })
+    .selectOption('jali');
+  await expect(
+    page.getByRole('combobox', { name: 'Material', exact: true }),
+  ).toHaveValue('stone');
+  await expect(page.getByLabel('Framework color', { exact: true })).toHaveValue(
+    '#e6dcc7',
+  );
+  await expect(
+    page.getByLabel('Background color', { exact: true }),
+  ).toHaveValue('#708d87');
 });

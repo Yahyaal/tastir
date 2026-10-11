@@ -120,3 +120,28 @@ describe('the design store', () => {
     set.mockRestore();
   });
 });
+
+it('preserves custom Jali finishes and rejects damaged finish settings without dropping old designs', () => {
+  const legacy = addDesign(fields);
+  const jali = {
+    material: 'wood' as const,
+    framework: '#864b31',
+    background: '#234a79',
+  };
+  const saved = addDesign({ ...fields, look: 'jali', jali });
+  expect(getDesign(saved!.id)?.jali).toEqual(jali);
+  updateDesign(saved!.id, { jali: { ...jali, material: 'silver' } });
+  expect(getDesign(saved!.id)?.jali?.material).toBe('silver');
+  const raw = JSON.parse(
+    window.localStorage.getItem('tastir.designs')!,
+  ) as unknown[];
+  window.localStorage.setItem(
+    'tastir.designs',
+    JSON.stringify([
+      ...raw,
+      { ...saved, id: 'broken', jali: { ...jali, framework: 'url(#bad)' } },
+    ]),
+  );
+  expect(listDesigns()).toHaveLength(2);
+  expect(getDesign(legacy!.id)).toEqual(legacy);
+});

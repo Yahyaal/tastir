@@ -21,12 +21,20 @@ export const ColoringShape = z.strictObject({
   palette: z.string(),
   chosen: z.record(z.string(), z.string()),
 });
+/** Optional on older designs, which retain the original stone finish. */
+export const JaliAppearanceShape = z.strictObject({
+  material: z.enum(['stone', 'wood', 'gold', 'silver']),
+  framework: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+  background: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+});
+export type JaliAppearance = z.infer<typeof JaliAppearanceShape>;
 export const SharedDesignShape = z.strictObject({
   name: z.string(),
   inked: z.array(z.string()).optional(),
   coloring: ColoringShape,
   look: z.enum(['tiles', 'strapwork', 'lines', 'jali']),
   grout: z.number().min(0).max(100),
+  jali: JaliAppearanceShape.optional(),
 });
 export const SharedShape = z
   .strictObject({

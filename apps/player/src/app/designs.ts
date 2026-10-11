@@ -1,3 +1,4 @@
+import { JaliAppearanceShape, type JaliAppearance } from '@tastir/schema';
 import type { Coloring } from './coloring';
 import { newId, now, store } from './storage';
 import type { WallStyle } from './Wall';
@@ -19,6 +20,7 @@ export interface Design {
   readonly coloring: Coloring;
   readonly look: WallStyle;
   readonly grout: number;
+  readonly jali?: JaliAppearance;
   /** When it was first saved and last changed, as ISO dates. */
   readonly created: string;
   readonly updated: string;
@@ -51,6 +53,8 @@ function isDesign(x: unknown): x is Design {
     Object.values(c['chosen']).every((v) => typeof v === 'string') &&
     LOOKS.includes(d['look'] as string) &&
     typeof d['grout'] === 'number' &&
+    (d['jali'] === undefined ||
+      JaliAppearanceShape.safeParse(d['jali']).success) &&
     typeof d['created'] === 'string' &&
     typeof d['updated'] === 'string'
   );

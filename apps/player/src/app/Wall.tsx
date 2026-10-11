@@ -1,3 +1,4 @@
+import type { JaliAppearance } from '@tastir/schema';
 import { pieceAt, rectangularPeriod, type Vec } from '@tastir/engine';
 import { useId, useLayoutEffect, useMemo, useRef } from 'react';
 import { fit, viewBox, width } from './camera';
@@ -64,6 +65,7 @@ export function Wall({
   repeat = [1, 1],
   look: style = 'tiles',
   grout = 1,
+  jali: appearance,
   hovered,
   onHover,
   onPick,
@@ -79,6 +81,7 @@ export function Wall({
   look?: WallStyle;
   /** Grout (or band) width, as a multiple of the normal width. */
   grout?: number;
+  jali?: JaliAppearance;
   /** The piece type to highlight on every copy, if any. */
   hovered?: number;
   onHover?: (type: number | undefined) => void;
@@ -295,6 +298,7 @@ export function Wall({
             : null}
           {jali ? (
             <JaliFramework
+              appearance={appearance}
               path={bandPath}
               width={groutWidth}
               toLocalOffset={(x, y) =>
@@ -307,7 +311,13 @@ export function Wall({
           ) : null}
         </pattern>
       </defs>
-      {jali ? <JaliGround id={`jali-light-${id}`} view={cover} /> : null}
+      {jali ? (
+        <JaliGround
+          id={`jali-light-${id}`}
+          view={cover}
+          appearance={appearance}
+        />
+      ) : null}
       <rect
         x={cover.minX}
         y={-cover.maxY}

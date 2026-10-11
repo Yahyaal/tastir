@@ -835,6 +835,26 @@ main.stage .drawing:not(.wall) {
   accent-color: var(--saffron);
 }
 
+.jali-controls {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.jali-controls label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.jali-controls input[type='color'] {
+  width: 64px;
+  height: 36px;
+  padding: 3px;
+  cursor: pointer;
+}
+
 .export-tools button {
   padding: 4px 6px;
 }

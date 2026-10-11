@@ -6,6 +6,7 @@ import { Thumbnail } from './drawing';
 import { wallSvg } from './exporting';
 import { loadModel } from './model';
 import { Wall } from './Wall';
+import { DEFAULT_JALI, JALI_MATERIALS } from './jali';
 
 describe.each([example, zellige])('Jali: $id', (json) => {
   const model = loadModel(json);
@@ -72,6 +73,91 @@ describe.each([example, zellige])('Jali: $id', (json) => {
       // The ground is painted once behind the repeating screen, not in each tile.
       expect(wall.querySelector('pattern .jali-ground')).toBeNull();
       expect(wall.querySelectorAll('.jali-ground')).toHaveLength(1);
+    },
+  );
+
+  it.each(JALI_MATERIALS)(
+    'matches custom $material finishes in wall, preview and SVG',
+    ({ material }) => {
+      const jali = {
+        ...DEFAULT_JALI,
+        material,
+        framework: '#864b31',
+        background: '#234a79',
+      };
+      const { container } = render(
+        <>
+          <Wall model={model} colors={colors} look="jali" jali={jali} />
+          <Thumbnail model={model} look="jali" jali={jali} />
+        </>,
+      );
+      const exported = new DOMParser().parseFromString(
+        wallSvg(model, colors, { look: 'jali', jali }),
+        'image/svg+xml',
+      );
+      expect(exported.querySelector('parsererror')).toBeNull();
+      const wall = container.querySelector('svg.wall')!;
+      for (const target of [
+        container.querySelector('svg.thumbnail')!,
+        exported.documentElement,
+      ]) {
+        expect(
+          target
+            .querySelector('.jali-framework')
+            ?.getAttribute('data-material'),
+        ).toBe(material);
+        expect(target.querySelectorAll('polygon, filter')).toHaveLength(0);
+        for (const layer of wall.querySelectorAll('.jali-framework path')) {
+          const other = target.querySelector(
+            `[data-layer="${layer.getAttribute('data-layer')}"]`,
+          )!;
+          expect(other).not.toBeNull();
+          for (const attribute of ['stroke'])
+            expect(other.getAttribute(attribute)).toBe(
+              layer.getAttribute(attribute),
+            );
+          const dash = layer.getAttribute('stroke-dasharray');
+          if (dash) {
+            const exportedDash = other
+              .getAttribute('stroke-dasharray')!
+              .split(' ')
+              .map(Number);
+            dash
+              .split(' ')
+              .map(Number)
+              .forEach((n, i) => expect(exportedDash[i]).toBeCloseTo(n, 5));
+          } else expect(other.getAttribute('stroke-dasharray')).toBeNull();
+          expect(Number(other.getAttribute('stroke-width'))).toBeCloseTo(
+            Number(layer.getAttribute('stroke-width')),
+            5,
+          );
+        }
+        expect(
+          [...target.querySelectorAll('stop')].map((s) =>
+            s.getAttribute('stop-color'),
+          ),
+        ).toEqual(
+          [...wall.querySelectorAll('stop')].map((s) =>
+            s.getAttribute('stop-color'),
+          ),
+        );
+        expect(
+          target
+            .querySelector('stop[offset="48%"]')
+            ?.getAttribute('stop-color'),
+        ).toBe('#234a79');
+      }
+      expect(
+        wall
+          .querySelector(`[data-layer="${material}"]`)
+          ?.getAttribute('stroke'),
+      ).toBe('#864b31');
+      expect(wall.querySelectorAll('[stroke-dasharray]')).toHaveLength(
+        material === 'wood' ? 2 : 0,
+      );
+      expect(wall.querySelector('[data-layer="gleam"]') !== null).toBe(
+        material === 'gold' || material === 'silver',
+      );
     },
   );
 

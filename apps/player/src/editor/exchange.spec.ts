@@ -80,3 +80,31 @@ it('refuses to create a link its reader would reject as too large', async () => 
     encodeShared({ library: 'x'.repeat(MAX_FILE_BYTES) }),
   ).rejects.toThrow('pattern file');
 });
+
+it.each(['stone', 'wood', 'gold', 'silver'] as const)(
+  'round trips a custom %s finish and rejects malformed settings',
+  async (material) => {
+    const shared = {
+      library: 'eight-fold-star-and-cross',
+      design: {
+        name: 'My Jali',
+        coloring: { palette: 'Fès tile', chosen: {} },
+        look: 'jali' as const,
+        grout: 1,
+        jali: { material, framework: '#864b31', background: '#234a79' },
+      },
+    };
+    expect(await decodeShared(await encodeShared(shared))).toEqual(shared);
+    for (const bad of [
+      { ...shared.design.jali, material: 'plastic' },
+      { ...shared.design.jali, framework: '#fff' },
+      { ...shared.design.jali, background: '" onload="bad' },
+    ]) {
+      expect(
+        await decodeShared(
+          link({ ...shared, design: { ...shared.design, jali: bad } }),
+        ),
+      ).toBeUndefined();
+    }
+  },
+);

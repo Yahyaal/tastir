@@ -20,6 +20,7 @@ import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors, tutorialColoring, type Coloring } from './coloring';
 import { placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
+import type { JaliAppearance } from '@tastir/schema';
 import type { WallStyle } from './Wall';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
 
@@ -1116,6 +1117,7 @@ export function Thumbnail({
   coloring = tutorialColoring(model),
   look = model.tutorial.pattern.look,
   grout = 1,
+  jali: appearance,
   coloredUpTo,
   activeColorIndex,
   view: givenView,
@@ -1127,6 +1129,7 @@ export function Thumbnail({
   look?: WallStyle;
   /** Saved lattice, band or grout width. */
   grout?: number;
+  jali?: JaliAppearance;
   /** If set, only colors with index < coloredUpTo receive their color; others show blueprint tone. */
   coloredUpTo?: number;
   /** Currently active color index being animated/rippled in quick succession. */
@@ -1349,8 +1352,12 @@ export function Thumbnail({
         viewBox={viewBox(view)}
         aria-hidden="true"
       >
-        <JaliGround id={lightId} view={view} />
-        <JaliFramework path={strokes.join('')} width={widths.grout} />
+        <JaliGround id={lightId} view={view} appearance={appearance} />
+        <JaliFramework
+          path={strokes.join('')}
+          width={widths.grout}
+          appearance={appearance}
+        />
       </svg>
     );
   }

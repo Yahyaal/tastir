@@ -1,5 +1,6 @@
 import type { WallStyle } from '../app/Wall';
 import {
+  type JaliAppearance,
   BasedOnShape,
   DraftShape,
   SharedShape,
@@ -105,6 +106,7 @@ export interface Shared {
     readonly coloring: { palette: string; chosen: Record<string, string> };
     readonly look: WallStyle;
     readonly grout: number;
+    readonly jali?: JaliAppearance;
   };
 }
 

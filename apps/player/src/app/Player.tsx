@@ -1,3 +1,5 @@
+import { DEFAULT_JALI, sameJali } from './jali';
+import { JaliControls } from './JaliControls';
 import { ExploreNext } from './ExploreNext';
 import {
   useCallback,
@@ -122,7 +124,7 @@ function keptColoring(address: string) {
 /** Whether a saved design holds just what the player shows now. */
 function sameDesign(
   design: Design,
-  now: Pick<Design, 'inked' | 'coloring' | 'look' | 'grout'>,
+  now: Pick<Design, 'inked' | 'coloring' | 'look' | 'grout' | 'jali'>,
 ): boolean {
   const sorted = (chosen: Readonly<Record<string, string>>) =>
     JSON.stringify(Object.entries(chosen).sort(([a], [b]) => (a < b ? -1 : 1)));
@@ -132,7 +134,8 @@ function sameDesign(
     design.coloring.palette === now.coloring.palette &&
     sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
     design.look === now.look &&
-    design.grout === now.grout
+    design.grout === now.grout &&
+    sameJali(design.jali, now.jali)
   );
 }
 
@@ -225,6 +228,7 @@ export function Player({
     opened?.look ?? tutorial.pattern.look ?? 'tiles',
   );
   const [grout, setGrout] = useState(opened?.grout ?? 1);
+  const [jali, setJali] = useState(opened?.jali ?? DEFAULT_JALI);
   // The design being worked on: the one opened, or the last one saved.
   const [design, setDesign] = useState(opened);
   const designFields = () => ({
@@ -233,6 +237,9 @@ export function Player({
     coloring: colorHistory.now,
     look: wallStyle,
     grout,
+    ...(wallStyle === 'jali' || design?.jali !== undefined || !sameJali(jali)
+      ? { jali }
+      : {}),
   });
   // A design opened or saved, changed since: Save is offered, and leaving
   // asks first.
@@ -293,7 +300,7 @@ export function Player({
   const [comparing, setComparing] = useState(start === 'result');
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
-    wallSvg(inking.shown, colors, { look: wallStyle, grout, fill });
+    wallSvg(inking.shown, colors, { look: wallStyle, grout, fill, jali });
   const svgRef = useRef<SVGSVGElement>(null);
   const running = useRef<Animation[]>([]);
   const reversing = useRef(false);
@@ -474,6 +481,7 @@ export function Player({
         repeat={colorRepeat(inking.shown)}
         look={wallStyle}
         grout={grout}
+        jali={jali}
         hovered={hovered}
         onHover={setHovered}
         onPick={(type, at) => {
@@ -766,11 +774,14 @@ export function Player({
               </div>
               <p className="hint">
                 {wallStyle === 'jali'
-                  ? 'A stone screen with open spaces. Switch styles to see your colors. '
+                  ? 'An open screen. Switch styles to see your tile colors. '
                   : ''}
                 Drag to move along the wall, scroll to zoom.
               </p>
             </section>
+            {wallStyle === 'jali' ? (
+              <JaliControls appearance={jali} onChange={setJali} />
+            ) : null}
             {wallStyle !== 'jali' ? (
               <section>
                 <h2>Colors</h2>

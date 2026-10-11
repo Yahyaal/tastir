@@ -1,8 +1,9 @@
+import type { JaliAppearance } from '@tastir/schema';
 import type { Vec } from '@tastir/engine';
 import type { Model } from './model';
 import type { WallStyle } from './Wall';
 import { strapWidths } from './drawing';
-import { JALI_LAYERS, JALI_LIGHT, latticeWidth } from './jali';
+import { DEFAULT_JALI, jaliLayers, jaliLight, latticeWidth } from './jali';
 
 const INK = '#23201c';
 const BAND = '#f7f2e6';
@@ -11,6 +12,7 @@ const f = (n: number) => String(Math.round(n * 1e5) / 1e5);
 export interface WallOptions {
   readonly look?: WallStyle;
   readonly grout?: number;
+  readonly jali?: JaliAppearance;
   /** How many tiles across and down. */
   readonly across?: number;
   readonly down?: number;
@@ -34,6 +36,7 @@ export function wallSvg(
   const {
     look = 'tiles',
     grout = 1,
+    jali: appearance = DEFAULT_JALI,
     across = 4,
     down = 4,
     scale = 100,
@@ -121,10 +124,12 @@ export function wallSvg(
         ),
       )
       .join('');
-    body.push('<g class="jali-framework" fill="none">');
-    for (const layer of JALI_LAYERS) {
+    body.push(
+      `<g class="jali-framework" data-material="${appearance.material}" fill="none">`,
+    );
+    for (const layer of jaliLayers(appearance)) {
       body.push(
-        `<path data-layer="${layer.name}" d="${path}" stroke="${layer.color}" stroke-width="${f(layer.width * groutWidth)}" stroke-linecap="round" stroke-linejoin="round" transform="translate(${f(layer.x * groutWidth)} ${f(layer.y * groutWidth)})"/>`,
+        `<path data-layer="${layer.name}" d="${path}" stroke="${layer.color}" stroke-width="${f(layer.width * groutWidth)}" stroke-linecap="round" stroke-linejoin="round"${layer.dash ? ` stroke-dasharray="${layer.dash.map((n) => f(n * groutWidth)).join(' ')}"` : ''} transform="translate(${f(layer.x * groutWidth)} ${f(layer.y * groutWidth)})"/>`,
       );
     }
     body.push('</g>');
@@ -152,7 +157,11 @@ export function wallSvg(
     `<title>${esc(title)}</title>`,
     ...(jali
       ? [
-          `<defs><linearGradient id="jali-light" x1="0" y1="0" x2="0.8" y2="1">${JALI_LIGHT.map((s) => `<stop offset="${s.offset}" stop-color="${s.color}"/>`).join('')}</linearGradient></defs>`,
+          `<defs><linearGradient id="jali-light" x1="0" y1="0" x2="0.8" y2="1">${jaliLight(
+            appearance.background,
+          )
+            .map((s) => `<stop offset="${s.offset}" stop-color="${s.color}"/>`)
+            .join('')}</linearGradient></defs>`,
         ]
       : []),
     `<clipPath id="wall"><rect x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}"/></clipPath>`,
