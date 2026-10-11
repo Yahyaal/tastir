@@ -20,7 +20,7 @@ import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors, tutorialColoring, type Coloring } from './coloring';
 import { placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
-import { patchesAt } from './interlace';
+import { patchesAt, patchPath } from './interlace';
 import type { JaliAppearance } from '@tastir/schema';
 import type { WallStyle } from './Wall';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
@@ -1177,10 +1177,11 @@ export function Thumbnail({
   const overIn: string[] = [];
   const overAt = (i: number, j: number) => {
     if (!woven) return;
+    const place = (q: Vec) => `${sx(q)} ${sy(q)}`;
     for (const p of patchesAt(model.pattern, i, j, widths.edge))
-      if (meets([p.a, p.b])) {
-        over.push(`M${sx(p.a)} ${sy(p.a)}L${sx(p.b)} ${sy(p.b)}`);
-        overIn.push(`M${sx(p.inA)} ${sy(p.inA)}L${sx(p.inB)} ${sy(p.inB)}`);
+      if (meets(p.band)) {
+        over.push(patchPath(p.edge, place));
+        overIn.push(patchPath(p.band, place));
       }
   };
   const overLayers = () =>
@@ -1193,6 +1194,7 @@ export function Thumbnail({
           stroke={layer === 'edge' ? STRAP_EDGE : STRAP_BAND}
           strokeWidth={widths[layer]}
           strokeLinecap="butt"
+          strokeLinejoin="round"
         />
       ) : null,
     );

@@ -3,7 +3,7 @@ import { pieceAt, rectangularPeriod, type Vec } from '@tastir/engine';
 import { useId, useLayoutEffect, useMemo, useRef } from 'react';
 import { fit, viewBox, width } from './camera';
 import { STRAP_BAND, STRAP_EDGE, strapWidths, tiling } from './drawing';
-import { patchesAt, weaveRepeat } from './interlace';
+import { patchesAt, patchPath, weaveRepeat } from './interlace';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
@@ -124,8 +124,8 @@ export function Wall({
   const shifted = useMemo(() => {
     const out: { type: number; corners: Vec[]; fill: string }[] = [];
     const lines: [Vec, Vec][] = [];
-    const over: [Vec, Vec][] = [];
-    const overIn: [Vec, Vec][] = [];
+    const over: Vec[][] = [];
+    const overIn: Vec[][] = [];
     const { u, v } = pattern.cell;
     for (let i = -tile.reach; i <= tile.reach; i++) {
       for (let j = -tile.reach; j <= tile.reach; j++) {
@@ -142,10 +142,11 @@ export function Wall({
           });
         for (const s of pattern.ink)
           lines.push([move(s.segment.a), move(s.segment.b)]);
+        // The patches are already placed in tile (i, j).
         if (style === 'interlace')
           for (const p of patchesAt(pattern, i, j, groutWidth * 4)) {
-            over.push([move(p.a), move(p.b)]);
-            overIn.push([move(p.inA), move(p.inB)]);
+            over.push(p.edge.map(tile.toTile));
+            overIn.push(p.band.map(tile.toTile));
           }
       }
     }
@@ -157,8 +158,7 @@ export function Wall({
     [shifted],
   );
   const overPath = useMemo(() => {
-    const d = (list: [Vec, Vec][]) =>
-      list.map(([a, b]) => `M${a.x} ${a.y}L${b.x} ${b.y}`).join('');
+    const d = (list: Vec[][]) => list.map((ps) => patchPath(ps)).join('');
     return { out: d(shifted.over), in: d(shifted.overIn) };
   }, [shifted]);
 
@@ -336,6 +336,7 @@ export function Wall({
                     layer === 'out' ? groutWidth * 4 : groutWidth * 2.4
                   }
                   strokeLinecap="butt"
+                  strokeLinejoin="round"
                 />
               ))
             : null}
