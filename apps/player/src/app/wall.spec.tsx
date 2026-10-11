@@ -112,6 +112,29 @@ describe('the wall', () => {
     ).toBe('none');
   });
 
+  it('weaves the bands for interlace: the top band drawn again at each crossing', () => {
+    const { container } = render(
+      <Wall model={model} colors={colors} look="interlace" />,
+    );
+    // The bands as strapwork draws them…
+    expect(
+      container.querySelector('.band-out path')?.getAttribute('d')?.split('M')
+        .length,
+    ).toBe(9 * 16 + 1);
+    // …and a piece of top band at each of the tile's two crossings, in
+    // the tile and its neighbours, edges and middle, with square ends.
+    for (const layer of ['out', 'in']) {
+      const over = container.querySelector(`path.over-${layer}`);
+      expect(over?.getAttribute('d')?.split('M').length).toBe(9 * 2 + 1);
+      expect(over?.getAttribute('stroke-linecap')).toBe('butt');
+    }
+    expect(
+      container
+        .querySelector('svg.wall')
+        ?.classList.contains('style-interlace'),
+    ).toBe(true);
+  });
+
   it('pans when dragged and zooms with the wheel', () => {
     const { container } = render(<Wall model={model} colors={colors} />);
     const svg = container.querySelector('svg.wall') as SVGSVGElement;

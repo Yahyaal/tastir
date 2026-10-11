@@ -20,26 +20,11 @@ export default defineConfig(() => ({
       reportsDirectory: './test-output/vitest/coverage',
       provider: 'v8' as const,
     },
-    // The speed targets are timed alone, after everything else, so the
-    // golden tests (which grow with every tutorial) do not share the CPU.
-    projects: [
-      {
-        extends: true as const,
-        test: {
-          name: 'engine',
-          include,
-          exclude: perf,
-          sequence: { groupOrder: 0 },
-        },
-      },
-      {
-        extends: true as const,
-        test: {
-          name: 'engine-speed',
-          include: perf,
-          sequence: { groupOrder: 1 },
-        },
-      },
-    ],
+    // The speed targets fail at random on a busy machine, so `pnpm test`
+    // leaves them out: `pnpm test:perf` runs them alone, with nothing else
+    // sharing the CPU. The exact-equivalence specs stay in `pnpm test`.
+    ...(process.env['TASTIR_PERF'] === '1'
+      ? { name: 'engine-speed', include: perf }
+      : { name: 'engine', include, exclude: perf }),
   },
 }));

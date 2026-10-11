@@ -44,7 +44,7 @@ import { ShareLink } from './Sharing';
 import { useCamera } from './useCamera';
 import { useInking } from './useInking';
 import { useModalFocus } from './useModalFocus';
-import { Wall, WALL_STYLES, type WallStyle } from './Wall';
+import { banded, Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
 import { setStayGuard } from './routing';
@@ -759,7 +759,7 @@ export function Player({
                 <label>
                   {wallStyle === 'jali'
                     ? 'Lattice'
-                    : wallStyle === 'strapwork'
+                    : banded(wallStyle)
                       ? 'Band'
                       : 'Grout'}
                   <input
