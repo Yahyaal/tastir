@@ -45,43 +45,49 @@ const centreOf = (ps: readonly Vec[]): Vec => {
 };
 
 /**
- * A piece's fold when it is a regular polygon or star (its corners evenly
- * spaced round its centre, at one radius or two alternating), else 0.
+ * A piece's fold: the most times it turns into itself about its centre in
+ * a full turn (a regular star or polygon, but also a cross or a pinwheel
+ * star), or 1.
  */
 export function foldOf(piece: Piece): number {
   const ps = piece.polygon;
   const n = ps.length;
-  if (n < 3) return 0;
+  if (n < 3) return 1;
   const c = centreOf(ps);
-  const r = ps.map((p) => Math.hypot(p.x - c.x, p.y - c.y));
-  const a = ps
-    .map((p) => Math.atan2(p.y - c.y, p.x - c.x))
-    .sort((x, y) => x - y);
-  const step = (2 * Math.PI) / n;
-  for (let k = 0; k < n; k++) {
-    const next =
-      k + 1 < n ? (a[k + 1] as number) : (a[0] as number) + 2 * Math.PI;
-    if (Math.abs(next - (a[k] as number) - step) > 0.03) return 0;
+  const size = Math.max(...ps.map((p) => Math.hypot(p.x - c.x, p.y - c.y)));
+  const tol = 0.02 * size;
+  for (let k = n; k >= 2; k--) {
+    if (n % k !== 0) continue;
+    const a = (2 * Math.PI) / k;
+    const cos = Math.cos(a);
+    const sin = Math.sin(a);
+    const turned = ps.map((p) => ({
+      x: c.x + (p.x - c.x) * cos - (p.y - c.y) * sin,
+      y: c.y + (p.x - c.x) * sin + (p.y - c.y) * cos,
+    }));
+    if (
+      turned.every((q) =>
+        ps.some((p) => Math.hypot(p.x - q.x, p.y - q.y) <= tol),
+      )
+    )
+      return k;
   }
-  const near = (x: number, y: number) =>
-    Math.abs(x - y) <= 0.02 * Math.max(x, y);
-  if (r.every((x) => near(x, r[0] as number))) return n;
-  if (n % 2 === 0 && r.every((x, k) => near(x, r[(k + 2) % n] as number)))
-    return n / 2;
-  return 0;
+  return 1;
 }
 
 /**
  * The type whose pieces are the rosettes' centres: the regular one with
- * the most fold (five at least), a star before a plain polygon of the same
- * fold (the octagon round an eight-pointed star is a ring, not the
- * centre), the larger first.
+ * the most fold, a star before a plain polygon of the same fold (the
+ * octagon round an eight-pointed star is a ring, not the centre), the
+ * larger first. A cross, a four-pointed star or even a shape that turns
+ * into itself only twice counts when nothing turns more, as on the Nasrid
+ * walls built of them, so their stars still take turns.
  */
 export function centreType(pattern: Pattern): number | undefined {
   let best: { t: number; score: number; area: number } | undefined;
   for (const piece of pattern.pieces) {
     const fold = foldOf(piece);
-    if (fold < 5) continue;
+    if (fold < 2) continue;
     const score = fold + (piece.polygon.length === 2 * fold ? 0.5 : 0);
     const area = pattern.types[piece.type]?.area ?? 0;
     if (
@@ -183,7 +189,7 @@ const cache = new WeakMap<Pattern, Rings | null>();
 
 /**
  * The rings of a pattern, or undefined when it has no rosette to colour
- * round (no regular star or polygon of five or more points).
+ * round (no piece turns into itself).
  */
 export function ringsOf(pattern: Pattern): Rings | undefined {
   const hit = cache.get(pattern);

@@ -1,6 +1,7 @@
 import type { Pattern } from '@tastir/engine';
 import type { Tutorial } from '@tastir/schema';
 import type { Slot } from '../app/coloring';
+import { ringsOf, type RingRole } from '../app/rings';
 
 /**
  * The colours proposed for every tutorial (owner's pick on #/plan/colors,
@@ -127,4 +128,51 @@ export function proposal(tutorial: Tutorial, pattern: Pattern): Proposal {
     if (t.name) colors[t.name] = slots[i] ?? 'ground';
   });
   return { palette, colors, kept: false };
+}
+
+/**
+ * Hand corrections to colouring by rings, by tutorial: a role for a whole
+ * shape (`petal`) or one ring of it (`petal@2`), as in `pattern.rings`.
+ */
+export const RING_FIXES: Readonly<
+  Record<string, Readonly<Record<string, RingRole>>>
+> = {};
+
+/**
+ * Tutorials kept by shape though rings would find a centre: the Comares
+ * bones are one shape, white lying across and coloured standing up as on
+ * the photo, and rings lose that.
+ */
+const BY_SHAPE: ReadonlySet<string> = new Set(['alhambra-comares-bones']);
+
+/** What colouring by rings changes in a tutorial's `pattern`. */
+export interface RingProposal {
+  readonly how: 'rings' | 'shape';
+  readonly pattern: Partial<Tutorial['pattern']>;
+}
+
+/**
+ * The colouring proposed now (Colours 4): the tradition's glazes, by
+ * rings where the pattern has a rosette, else by shape as in `proposal`.
+ */
+export function ringProposal(
+  tutorial: Tutorial,
+  pattern: Pattern,
+): RingProposal {
+  if (ringsOf(pattern) && !BY_SHAPE.has(tutorial.id)) {
+    const fixes = RING_FIXES[tutorial.id];
+    return {
+      how: 'rings',
+      pattern: {
+        palette: traditionPalette(tutorial.style),
+        rings: fixes ? { colors: { ...fixes } } : true,
+        placements: undefined,
+      },
+    };
+  }
+  const p = proposal(tutorial, pattern);
+  return {
+    how: 'shape',
+    pattern: { palette: p.palette, colors: { ...p.colors } },
+  };
 }

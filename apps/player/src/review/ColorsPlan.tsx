@@ -10,7 +10,12 @@ import {
 import { Thumbnail } from '../app/drawing';
 import { LIBRARY } from '../app/library';
 import { PROGRESS_TEXT, useModel } from '../app/workerClient';
-import { proposal, roleSlots, traditionPalette } from './colorProposal';
+import {
+  proposal,
+  ringProposal,
+  roleSlots,
+  traditionPalette,
+} from './colorProposal';
 import './review.css';
 import './plan.css';
 
@@ -173,18 +178,14 @@ function Proposed({ id }: { id: string }) {
   const { model, progress } = useModel(entry?.json);
   const proposed = useMemo(() => {
     if (!model) return undefined;
-    const p = proposal(model.tutorial, model.pattern);
+    const p = ringProposal(model.tutorial, model.pattern);
     return {
-      kept: p.kept,
+      how: p.how,
       model: {
         ...model,
         tutorial: {
           ...model.tutorial,
-          pattern: {
-            ...model.tutorial.pattern,
-            palette: p.palette,
-            colors: { ...p.colors },
-          },
+          pattern: { ...model.tutorial.pattern, ...p.pattern },
         },
       },
     };
@@ -193,11 +194,9 @@ function Proposed({ id }: { id: string }) {
     <figure className="colors-proposed" id={`colors-${id}`}>
       <figcaption>
         {entry?.preview?.title ?? model?.tutorial.title ?? id}
-        {proposed?.kept && (
+        {proposed && (
           <small>
-            {proposed.kept === 'photo'
-              ? 'coloured from its photo: palette only'
-              : 'its own colours kept: palette only'}
+            {proposed.how === 'rings' ? 'by rings' : 'no rosette: by shape'}
           </small>
         )}
       </figcaption>
@@ -396,9 +395,9 @@ export function ColorsPlan() {
       <p>
         You picked C and D, then said something was still missing in how the
         colours are spread and mixed. The first section below is what your
-        pictures of real zellige do differently, and column F colours that
-        way. You said F is the missing thing, so it is now built into the app;
-        next every tutorial is recoloured with it. The older sections follow.
+        pictures of real zellige do differently, and column F colours that way.
+        You said F is the missing thing, so it is now built into the app; next
+        every tutorial is recoloured with it. The older sections follow.
       </p>
 
       <h2 className="group">What real zellige does: colour by ring</h2>
@@ -540,19 +539,16 @@ export function ColorsPlan() {
         show the direction, not the final colours.
       </p>
 
-      <h2 className="group">Your pick: every tutorial, today and proposed</h2>
+      <h2 className="group">Every tutorial, today and coloured by rings</h2>
       <p>
-        You chose C and D. D already keeps C’s light, mid and dark steps, so
-        each tradition now has one palette with the same roles: a light ground,
-        a dark, a strong accent and a second colour. Each tutorial below shows
-        today on the left and the proposal on the right. The Alhambra tutorials
-        and the Bou Inania wall were coloured by hand from photos of the real
-        walls, so they keep that colouring and only take their tradition’s
-        palette. The others are coloured by the role rule, except Kurt’s three
-        wheels and the Bou Inania rosette, where the rule went wrong (it took
-        the wheels’ large ground for the star, and turned the rosette honey all
-        over), so they keep their own colours in the new palette. Name any that
-        still look wrong; nothing changes in the tutorials until you agree.
+        Each tutorial shows today on the left and the proposal on the right, in
+        its tradition’s glazes and coloured by rings. Where no piece turns into
+        itself four times or more, the most symmetric shape is taken as the
+        centre (crosses on the Comares lattice and the Infantas crosses, the
+        Mexuar stars), so even those take turns. The Comares bones keep their
+        photo colouring, white across and coloured up, which rings would lose.
+        Name any that still look wrong; nothing changes in the tutorials until
+        you agree.
       </p>
       <EveryTutorial />
 

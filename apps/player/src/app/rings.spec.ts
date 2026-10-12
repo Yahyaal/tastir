@@ -100,10 +100,28 @@ describe('colouring by rings', () => {
     }
   });
 
-  it('colours by shape when there is no rosette', () => {
+  it('takes a cross as the centre when no star turns more, as on Nasrid walls', () => {
     const lattice = byRings(latticeJson);
-    expect(ringsOf(lattice.pattern)).toBeUndefined();
-    expect(byPlace(lattice)).toBe(false);
+    expect(ringsOf(lattice.pattern)?.families).toBe(2);
+    expect(byPlace(lattice)).toBe(true);
+  });
+
+  it('colours by shape when no piece turns into itself', () => {
+    const scalene = {
+      ...rosette.pattern,
+      pieces: [
+        {
+          type: 0,
+          polygon: [
+            { x: 0, y: 0 },
+            { x: 3, y: 0 },
+            { x: 0, y: 1 },
+          ],
+        },
+      ],
+    };
+    expect(centreType(scalene)).toBeUndefined();
+    expect(ringsOf(scalene)).toBeUndefined();
   });
 
   it('follows the tutorial’s corrections, for a shape or one ring of it', () => {

@@ -64,7 +64,7 @@ export const GLAZES: Readonly<Record<string, Glaze>> = {
     families: [
       ['#efe3c6', '#b5813f'],
       ['#b5813f', '#efe3c6'],
-      ['#d2a86a', '#4a2c18'],
+      ['#d9c08e', '#9a6a38'],
     ],
   },
 };

@@ -1507,7 +1507,35 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'colours-rings-all',
+    text: 'Every tutorial coloured by rings: left today, right proposed, one picture per tradition. Shall I write these colours into the tutorials? Name any that still look wrong. Live at /#/plan/colors, under “Every tutorial”.',
+    choices: ['Yes, all of them', 'Yes, except the ones I name', 'Not yet'],
+    pictures: [
+      {
+        src: 'renders/colors/rings-0.png',
+        caption:
+          'Nasrid. Your seven are all by rings now, so the Mexuar stars, the frets and the Sala de los Reyes panels take turns between teal and honey. The Comares bones keep their photo colouring, white across and coloured up.',
+      },
+      {
+        src: 'renders/colors/rings-1.png',
+        caption:
+          'Marinid zellige: Kurt’s wheels alternate green and red rosettes, the Bou Inania rosette rings out in blue, honey and green.',
+      },
+      {
+        src: 'renders/colors/rings-2.png',
+        caption: 'Timurid tile: turquoise, ochre and cobalt.',
+      },
+      {
+        src: 'renders/colors/rings-3.png',
+        caption:
+          'Mamluk wood: ivory, light and mid woods and ebony. On six-fold patterns three rosettes take turns.',
+      },
+    ],
+    card: 'eight-fold-zellige',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
