@@ -23,15 +23,18 @@ export interface Glaze {
  * glaze oxides from studies of Marinid zellige).
  */
 export const GLAZES: Readonly<Record<string, Glaze>> = {
-  // Fès zellige: tin white, manganese black, cobalt, copper green, iron
-  // honey, oxblood, turquoise and orange.
+  // Marinid Fès, 14th century (Bou Inania, Attarine): tin white,
+  // manganese black, copper green, cobalt blue, iron honey and turquoise,
+  // and no red, which came into zellij only in the 19th century
+  // (Marçais; Cambazard-Amahan). Fès is blue and green, so the rosettes
+  // take turns between green and blue, and honey is their second colour.
   'Marinid zellige': {
     white: '#f3efe6',
-    black: '#1b1714',
+    black: '#1e1a17',
     families: [
-      ['#1f3c8f', '#13794a'],
-      ['#e0a42a', '#9a2a2c'],
-      ['#1d8fa3', '#c8622a'],
+      ['#13794a', '#e0a42a'],
+      ['#1f3c8f', '#1d8fa3'],
+      ['#1d8fa3', '#13794a'],
     ],
   },
   // The glazed tile of the Alhambra's dados: white, black, teal, honey
@@ -65,6 +68,27 @@ export const GLAZES: Readonly<Record<string, Glaze>> = {
       ['#efe3c6', '#b5813f'],
       ['#b5813f', '#efe3c6'],
       ['#d9c08e', '#9a6a38'],
+    ],
+  },
+  // Almohad, 12th century: the minarets of the Kutubiyya and the Kasbah
+  // mosque in Marrakesh have bands of green and white tile (Marçais).
+  Almohad: {
+    white: '#f1ede2',
+    black: '#0f3d27',
+    families: [
+      ['#1d6b43', '#f1ede2'],
+      ['#2e8a58', '#f1ede2'],
+    ],
+  },
+  // Moroccan workshops of the 19th and 20th centuries, which added red,
+  // a bright yellow and a dark blue to the old colours (Cambazard-Amahan).
+  'Modern Moroccan': {
+    white: '#f4f1ea',
+    black: '#1a1716',
+    families: [
+      ['#b3261e', '#f2c230'],
+      ['#1b2a6b', '#1f7a3a'],
+      ['#1f7a3a', '#b3261e'],
     ],
   },
 };

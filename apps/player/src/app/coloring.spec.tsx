@@ -55,6 +55,8 @@ describe('the coloring history', () => {
       'Alhambra',
       'Timurid tile',
       'Mamluk wood',
+      'Almohad',
+      'Modern Moroccan',
       'Fès tile',
       'Marrakech',
       'Chefchaouen',

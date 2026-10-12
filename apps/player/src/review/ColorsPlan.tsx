@@ -400,6 +400,30 @@ export function ColorsPlan() {
         every tutorial is recoloured with it. The older sections follow.
       </p>
 
+      <h2 className="group">Colours by era and city</h2>
+      <p>
+        <b>Marinid Fès, 14th century</b> (Bou Inania, Attarine): tin white,
+        manganese black, copper green, cobalt blue, iron honey and turquoise.
+        Fès is tied to blue and green (the cobalt “bleu de Fès” pottery, the
+        blue and green faces of Bab Boujloud), so the Marinid zellige palette
+        lets rosettes take turns between green and blue, with honey second.
+        <b> Nasrid Alhambra, 14th century:</b> a 2026 study of its glazes found
+        white, blue, green-turquoise, black and honey.{' '}
+        <b>Almohad, 12th century:</b> the Kutubiyya and Kasbah minarets in
+        Marrakesh have bands of green and white tile only.{' '}
+        <b>Saadian Marrakesh, 16th century:</b> older zellij had a coloured
+        ground with white strapwork, and the Saadians reversed it, colouring the
+        strapwork on a white ground. <b>Red</b>, with a bright yellow and a dark
+        blue, entered zellij only in the 19th and 20th centuries
+        (Cambazard-Amahan), so it is a separate Modern Moroccan palette.
+        Marrakech is the red city for its rammed-earth walls of iron-rich soil,
+        not for its tiles; its Saadian zellige (Ben Youssef) is cobalt, green
+        and ochre. Sources: the Wikipedia article on zellij (citing Marçais
+        1954, Bloom and Blair 2009, Cambazard-Amahan 1992), the University of
+        Granada study of Nasrid glazes, and studies of Marinid glaze oxides
+        (CeROArt).
+      </p>
+
       <h2 className="group">What real zellige does: colour by ring</h2>
       <Findings />
       <p className="colors-compare">
