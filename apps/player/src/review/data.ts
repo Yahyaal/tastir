@@ -1548,7 +1548,7 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '11 October 2026',
+  updated: '12 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
@@ -1782,21 +1782,25 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Inspect the Jali material textures',
-    text: 'On the codex/jali preview, choose Style → Jali and click a finish. Texture applies immediately and appears on the finish swatches. The Star and cross card has normal-size before/after pictures, close-ups and dense Bou Inania on a phone. First inspection found wood too evenly striped and sandstone too pitted; both were softened before the final captures. The pattern stays readable at normal size; zoom in to inspect the grain, veins or brushed surface. Custom colors keep the material texture and the direct one-click picker.',
+    title: 'Smoother animations on the filled wheel',
+    text: 'The filled zellige wheel was slow to ink, repeat and colour, and once crashed a browser. Work in progress makes the colour arrive as a quick painted cover over the wall and keeps the repeat from restarting its copies. It is not finished or committed yet; when it is, this card will say what to look at.',
     link: {
-      label: 'Open Jali controls',
-      href: '/#/eight-fold-star-and-cross/result',
+      label: 'Eight-fold zellige wheel, filled',
+      href: '/#/kurt-eight-fold-zellige-filled',
     },
   },
   next: [
     {
-      title: 'More designs per family',
-      text: 'At least one more for each family: an Alhambra panel from Wichmann’s line drawings, an Ibn Tulun window grille with a published construction, and an eight-fold star-and-octagon variant, each with a photo.',
+      title: 'Ink in under a second',
+      text: 'Pressing Ink in draw along on Bou Inania now takes about a third of the time it did, but still around three seconds on a slow machine. The goal is under one second on both Bou Inania tutorials.',
     },
     {
-      title: 'Inking along a line',
-      text: 'A small format change: an ink path can name a line and the two lines it runs between, so tutorials no longer need steps that only mark turning points (the four-fold ring has two such steps, 360 marks).',
+      title: 'Your answers on four wall styles',
+      text: 'Gemini added six wall styles without asking. Jali and interlace are built; I recommend dropping the other four (illumination, carved stucco, wood marquetry, blueprint) because they are skins that teach nothing about the geometry. Say if you want any of them.',
+    },
+    {
+      title: 'More designs per family',
+      text: 'At least one more for each family: an Alhambra panel from Wichmann’s line drawings, an Ibn Tulun window grille with a published construction, and an eight-fold variant, each with a photo.',
     },
     {
       title: 'Córdoba Synagogue, one more try',

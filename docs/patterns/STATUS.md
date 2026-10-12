@@ -1,6 +1,6 @@
 # Pattern status
 
-Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified** means the tiled pattern was compared with a photo of the real pattern and the line structure matches. **Approved** means it matches a published drawing or the owner's chosen source, and the owner decided to keep it on the review page; the card there gives the reason. The review page (`#/review`) has a card for most patterns with pictures and the owner's decisions, and each early pattern's log is in `docs/patterns/<id>.md`.
+Every tutorial in the library (`tutorials/`), updated 12 October 2026. **Verified** means the tiled pattern was compared with a photo of the real pattern and the line structure matches. **Approved** means it matches a published drawing or the owner's chosen source, and the owner decided to keep it on the review page; the card there gives the reason. The review page (`#/review`) has a card for most patterns with pictures and the owner's decisions, and each early pattern's log is in `docs/patterns/<id>.md`.
 
 ## Twelve-fold
 
@@ -12,6 +12,7 @@ Every tutorial in the library (`tutorials/`), updated 5 October 2026. **Verified
 | twelve-fold-rosette-mian-hex | 12 | 11 | approved | The same rosette on a hexagonal tile. |
 | minbar-doors-cairo | 12 | 11 | verified (5 Oct) | Design H2, the Met's minbar doors from Cairo (about 1325–30): Samira Mian's rosette on her hexagonal tile, inked as on the doors (small star and kites, shields ending flat on the lines touching the circle, triangles between rosettes). Checked against the museum's photo (`tools/review/design_h2/`). |
 | mian-stellated-rosettes | 4 | 13 | verified (5 Oct) | Her activity 8: stellated rosettes, with hexagons and an octagon at the corners. It is Design H1, the woodwork of the al-Maridani minbar in Cairo: every inlay of the photo was measured and lies in one piece of this pattern (`tools/review/design_h/`, tools 9 and 10). The minbar of al-Nasir Muhammad in the Citadel has the same design (`tools/review/design_h3/`). |
+| mian-stellated-hex | 12 | 10 | added (8 Oct), not reviewed | Samira Mian's stellated rosette on a hexagonal tile, added during the UI redesign (commit d2c1599). No photo, and nobody has checked it against her drawing or asked the owner yet. |
 | twelve-fold-dodecagrams | 6 | 8 | approved | Matches the Tuts+ drawing; kept as a beginner design. No photo of a real example. |
 | ibn-tulun-window | 6 | 10 | verified | Matches a window grille of the Mosque of Ibn Tulun. |
 

@@ -6,75 +6,36 @@ This page is the way into the project for the owner and for every new Claude Cod
 
 Tastir teaches Islamic geometric patterns one ruler or compass step at a time. The current goal is a rich library: every pattern family with several real designs, each verified against a photo or a published drawing of a real example, drawn exactly with ruler and compass, and shown well by the player (inking by hand, the repeat built tile by tile, colouring piece by piece). Later, learners should be able to make their own designs from a construction.
 
-## Where things stand (8 October 2026)
+## Where things stand (12 October 2026)
 
-**Read this first if you are a fresh session.** The owner is close to the weekly Claude limit, so Claude now works as an **orchestrator**: it reviews, plans and writes prompts, and **Gemini in Antigravity does the building**. Prompts for Gemini go in `docs/prompts/`, one dated file per batch, each prompt self-contained (it repeats the project's rules), because the owner points Antigravity at the file. Do not spawn builder or tester agents unless the owner asks; they use a lot of the limit.
+**Read this first if you are a fresh session.** The dated record of how we got here is in [the history](HISTORY.md); this section only says what is true now.
 
-### In flight right now (9 October)
+**How work is done.** Other tools build on their own branches and Claude reviews before the owner merges; nobody pushes `main`. Prompts for them go in `docs/prompts/`, one dated file per batch, each self-contained. Lately Claude cloud sessions and Codex have done the building (Gemini hit its weekly limit on 10 October). Do not spawn builder or tester agents unless the owner asks, because they use a lot of the limit.
 
-The second Gemini batch is done and Claude reviewed it on 9 October: checks pass; draw along now fits 1280×800, 1366×768 and 1024×768 without scrolling, and the board never moved through steps, a reload ("Welcome back" is now an overlay), Ink and Repeat (measured on the Comares bones); no 404s on `#/upcoming`; the al-Maridani caption says cropped; the Upcoming intro promises nothing. The independent tester's pass (Prompt 6) was not run; Grok's outsider test below replaces it. Small leftover: the "Welcome back" overlay slightly covers the top of Back and Next at 1280×800.
+**The library** has 39 tutorials; [Pattern status](patterns/STATUS.md) says how each was checked. Three are construction studies whose match to a real monument is not verified, and the player says so: `eight-fold-khatam`, `eight-fold-star-and-octagon` and `ten-pointed-star-decagon-rect` (owner's decision of 11 October, recorded in [the review decisions](testing/review-decisions-2026-10-11.md)).
 
-Three tools now work at once, from [`docs/prompts/team-2026-10-09.md`](prompts/team-2026-10-09.md), each in its own area and branch (nobody pushes `main`; the owner merges after Claude reviews):
-- **Codex** (worktree `../Tastir-learning-reliability`): draw along for every tutorial, not only beginners, and the "Draw along" button on all cards.
-- **Gemini** (worktree `../Tastir-patterns`, branch `patterns/khatam`): two new eight-fold designs (star and octagon, khatam) verified against free photos.
-- **Grok** (its own computer, a fresh GitHub clone): an outsider's test reported as GitHub issues, a hunt for free photos (`docs/research-candidates.md`), and a review of the Arabic titles, in one pull request `grok/free-photos`.
+**The player** draws each step, inks the pattern, builds the repeat tile by tile and colours it. Learners can also draw along on every tutorial, save their own designs, edit and share them (the build log is [Your own patterns](USER-PATTERNS.md)). The finished wall has five styles: tiles, strapwork, lines, Jali (a pierced screen in stone, wood or metal finishes) and interlace (bands woven over and under by one rule).
 
-**Reviewed on the evening of 9 October.** Codex's branch is merged: draw along works on all 36 tutorials and every card, and the boards hold still at every stage. It also disabled GitHub Actions at the owner's request, because there is no GitHub Pages site yet. Grok (running in Cursor) did the owner's Bou Inania request as pull request #2, and it is merged. It confirmed the owner's reading that the rosette is twelve-fold, not sixteen. The simpler wall has 18 steps, none hidden, and the ring round each corner star is now cut where the rosette rims cross it, as the photo shows. The owner has not looked at it by eye yet. From pull request #1 only the Arabic review (`docs/arabic-titles-review.md`) was taken. Its photo table and the outsider test (no issues were opened) went back in [the follow-up prompts](prompts/team-2026-10-09b.md), along with four follow-ups for Codex and a prompt for another model to speed up the engine (inking on Bou Inania spends about 5 s in `inkPieces` and `computePattern`). The review page's pictures looked missing because the dev server on port 4200 ran from Gemini's worktree, whose git-ignored `docs/review/` holds render folders for only 9 of 43 tutorials. Codex's first follow-up makes those renders fall back to the main tree.
+**Merged on 11 and 12 October:**
+- Jali with colours, material finishes and textures (Codex, pull request #5; tasks 2.1–2.1d in [the tasks](TASKS.md)).
+- Interlace (task 2.3, pull requests #4 and #7), rebuilt after the owner found crossings in Barca stars and Bou Inania that were not woven.
+- Ink speed: the prepared ink stays in its worker, and only small typed arrays cross to the page. Pressing Ink on Bou Inania went from 9.6 s to 2.9 s on a slow cloud machine, so it is faster but not yet under one second. Timing tests now run in `pnpm test:perf`, not `pnpm test`.
+- The owner's feedback on the zellige wheel: the shifted wheel repeats on a hexagon, and a new `kurt-eight-fold-zellige-filled` fills the space between four wheels by overlapping them, with the cross where four meet filled too (pull requests #6, #8, #9).
 
-**Reviewed on 10 October.** Merged:
-- Codex's four follow-ups.
-- Gemini's 45° turn of Arrayanes and Barca.
-- Grok's photo table: the five Alhambra rows are honest "no match" results.
+**Not committed yet.** The working tree on `main` holds unfinished work on smoother, faster stage animations for the filled wheel: a canvas colour reveal (`apps/player/src/app/ColorReveal.tsx`), a lighter wall, a browser test (`apps/player/e2e/animated-player.spec.ts`) and a benchmark (`tools/bench-player.mts`). It was left by an earlier session. Finish it or set it aside before starting other player work.
 
-Sent back in [the 10 October prompts](prompts/team-2026-10-10.md):
-- **Gemini's photo swap** (uncommitted). It replaced David Wade's photos on five Alhambra tutorials and called all five "verified line-for-line"; only the Reyes stars photo matches.
-- **Gemini's two new eight-fold tutorials.** They have no real overlays, and each takes steps 4–9 from Sandy Kurt.
-- **Grok's crop pull request #3**, which contains no crop.
-- **Grok's outsider test**, still not done.
-- **Codex's empty band** above the boards.
+## Open decisions and things still to do
 
-The engine prompt has not been started.
-
-**Reviewed on the afternoon of 10 October.** Merged:
-- The engine speed-up (identical results; Bou Inania crossings 27 s → 0.07 s).
-- Codex's taller boards and app follow-ups.
-- Gemini's photo audit (only the Reyes stars free photo kept) and its four simplified tutorials (Bou Inania rosette 1,840 → 465 elements).
-
-The two new eight-fold tutorials stay on `patterns/khatam`: neither overlay matches its photo. Gemini hit its weekly limit.
-
-**Next for Claude:** the follow-ups in [the afternoon prompts](prompts/team-2026-10-10b.md): Ink under one second in the browser, the two eight-fold tutorials, and Grok's empty crop pull request.
-
-### Owner review decisions, 11 October 2026
-
-On `codex/jali`, the owner approved the Jali appearance and suggested separate background/framework colors and material finishes. The owner then approved implementing these controls. Tasks 2.1a and 2.1b now add independent framework/background color pickers, reset, and Stone/Wood/Metal families and eleven finish presets; saving, sharing, thumbnails and SVG/PNG retain them. Older designs keep the original stone defaults. The owner requested fewer clicks and directly visible choices. Material buttons reveal labelled finish swatches, each applied with one click. Custom color buttons open the native picker directly, anchored away from the right edge. Background presets and its custom button are also directly available; material/finish dropdowns and the extra chooser dialog are removed. Stone includes limestone, marble, sandstone and slate; Wood includes oak, walnut and cedar; Metal includes silver, gold, bronze and copper. Each family allows Custom color. Legacy gold/silver designs migrate to Metal with their colors preserved. Task 2.1d adds restrained SVG textures to the framework and finish swatches: stone grain/veins, wood grain, brushed or hammered metal. Desktop/phone and dense-pattern screenshots were inspected; wood and sandstone were softened after the first pass. Full tests, lint/typecheck/build and 24 browser checks pass. See [the texture report](testing/jali-textures-2026-10-11.md). Tasks 2.1a–2.1c pass the final full test suite, lint, typecheck, build and all 18 Jali browser checks. See [the finish report](testing/jali-finishes-2026-10-11.md). The owner also approved keeping `eight-fold-khatam` as an unverified Safavid study, publishing `eight-fold-star-and-octagon` at intermediate level, and keeping `ten-pointed-star-decagon-rect` as an unverified rectangular study. Both eight-fold tutorials are now included on this branch, and all three studies show their historical verification status in the library and player. This overrides the older hold instructions for these drawings; it does not establish a photographic match.
-
-The authentic Darb-e Imam spandrel was already in Upcoming. Its entry now points to Lu & Steinhardt’s Figure 3, removes the unrelated rectangular instructions and generated finished drawing, and labels the remaining preview as schematic. The owner wants public contributions to grow the library later; publishing a construction study and verifying its historical match remain separate decisions. All four review questions are resolved. See [the recorded answers](testing/review-decisions-2026-10-11.md).
-
-### What is built (6–8 October)
-
-**Added on 11 October, branch `codex/jali`:** Task 2.1 adds a Jali stone-screen appearance to the finished wall. Choose Style → Jali at Color, then adjust Lattice. Saved designs, share links, thumbnails and SVG/PNG preserve it; changing back to Tiles restores the colors. The review page has labelled screenshots and an appearance question. See [the implementation and testing report](testing/jali-2026-10-11.md). Geometry and tutorial content are unchanged.
-
-- **UI redesign & Islamic geometric drafting atelier**: Dark atelier theme across Home, Player, Draw along, Editor, and Review. Calligraphic brand mark (تسطير), Moroccan tradition cards and dossiers, upcoming masterwork queue with honest claims and CC credits, and colour legends that match the artwork.
-- **Your own patterns** (plan at `#/plan`, tasks 1.1–5.5 in [the build log](USER-PATTERNS.md)): My designs (save your inking and colours), the editor (`#/edit/<id>`: copy a tutorial at any step, or start from nothing; ten ruler and compass tools; symmetry mode; tile, ink, play), building blocks, pattern files and share links. The owner removed the rosette block (it did not look like our rosettes) and asked to focus on beginner patterns; "Send it to the library" is hidden until there is a form.
-- **Draw along** (the owner's idea; plan at `#/plan/draw-along`, tasks 6.1–6.16): `#/<tutorial>/draw` on every beginner card and in the player. The learner draws on the left while the tutorial shows the step on the right; the two halves line up and the board never moves; Next is always open; each step is ticked when it is on the board, however it was drawn; hints in three levels and "Draw it for me". Ink with a **pen** (click a dot, then a dot on the same line; copies round the centre are an option, off by default), then **repeat it yourself** (place copies by clicking ghosts or dragging; they snap edge to edge) and colour it if you want; it is kept under My patterns.
-- **Helper lines** (construction the pattern never runs along) are **hidden by default**, with a "Show helper lines" setting in the player and in draw along. A helper line that is the only way to find a needed point stays shown and still counts. Steps whose text mentions hidden lines carry a `textWithoutHelpers` (format, schema and a test that none is missing).
-- The review page puts its questions first, above Progress, and its links to cards stay on the page.
-
-### Open decisions and things still to do
-
-- **The owner's look** at the new atelier look and draw along on a real browser, especially the Comares bones and repeat it yourself.
-- **Where learners send library files**: hidden for now; needs a form or an address the owner chooses.
-- **Step texts** were given `textWithoutHelpers` by an agent; the owner has not read them yet.
-- **Arabic titles** from the redesign need a native reader (cataloged in `docs/prompts/arabic-titles.md`).
-- After all that, the earlier next goal: more Alhambra panels from Brian Wichmann's Tiling Search, each checked against David Wade's photo (candidates and method in [the queue](patterns/QUEUE.md)).
-
-### Older work (to 5 October)
-
-There are 36 tutorials in the library. Each one's status, with what was checked, is in [Pattern status](patterns/STATUS.md). The Alhambra family grew from Brian Wichmann's drawings checked against David Wade's photos; Samira Mian's rosettes and the Cairo minbars are verified; the Bou Inania rosette and wall were judged right by the owner on 5 October.
+The prioritised list is the **Next** section of the review page (`PROGRESS` in `apps/player/src/review/data.ts`), and the pattern work is in [the queue](patterns/QUEUE.md). The owner still has to:
+- answer the question on the review page about the filled wheel's colours, and look at the interlace fix;
+- decide on the four wall styles Claude recommended dropping (tasks 2.2, 2.4, 2.5 and 2.6);
+- look at the atelier look and draw along in a real browser, and read the agent-written `textWithoutHelpers` step texts;
+- choose where learners send library files (hidden until there is a form or an address);
+- find a native reader for the Arabic titles ([the review](arabic-titles-review.md) lists them).
 
 ## The next goal
 
-The owner's look at the new atelier look and draw along, then Arabic subtitles verification, then more Alhambra panels from [the queue](patterns/QUEUE.md).
+Finish the filled wheel's animation work and get the owner's look at it, then bring Ink under one second, then more Alhambra panels from [the queue](patterns/QUEUE.md).
 
 ## How a session works
 
@@ -90,7 +51,9 @@ The owner's look at the new atelier look and draw along, then Arabic subtitles v
 | Document | What it holds |
 | --- | --- |
 | [How to work with the owner](WORKING-WITH-OWNER.md) | How the owner wants to be shown work and asked questions, and the process mistakes made so far |
-| [Prompts for Gemini](prompts/) | One dated file per batch of work handed to Gemini in Antigravity |
+| [History](HISTORY.md) | The dated record of reviews, merges and owner decisions since 8 October |
+| [Prompts](prompts/) | One dated file per batch of work handed to Gemini, Codex, Grok or a Claude cloud session |
+| `docs/testing/` | Test and inspection reports for merged work (draw along, Jali, review decisions) |
 | [Your own patterns](USER-PATTERNS.md) | The build log for user-made patterns: tasks, tester reports, lessons |
 | [Work queue](patterns/QUEUE.md) | Every piece of pattern work, done and left, with the detail needed to resume it |
 | [Pattern status](patterns/STATUS.md) | Every tutorial in the library and how it was verified |

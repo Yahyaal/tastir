@@ -10,7 +10,7 @@ More Alhambra panels from Wichmann's Tiling Search, each paired with David Wade'
 
 ## All work
 
-- [x] **Free photos still needed (owner, 2026-10-06).** Completed 2026-10-09: All 5 Alhambra tutorials (`alhambra-bath-stars`, `alhambra-barca-stars`, `alhambra-reyes-stars`, `alhambra-reyes-fret`, `alhambra-comares-frames`) have had their private Wade placeholder photos replaced with high-quality, open-licensed photographs (CC BY, CC BY-SA, Public Domain). Each photo was mathematically verified against the tutorial drawing via homography overlay (`3_overlay_photo.py`), cropped to an 800×800 square JPEG at quality 95, installed into `apps/player/public/photos/`, and referenced in the tutorial JSON files with full credits and license URLs. All eleven Alhambra tutorials now ship verified free open photos.
+- [x] **Free photos still needed (owner, 2026-10-06).** Audited 2026-10-10: of the five Alhambra tutorials whose David Wade photo was replaced, only `alhambra-reyes-stars` has a free photo that matches line for line; the other four free candidates were dropped and those tutorials keep their private Wade comparison. A free photo for `alhambra-bath-stars`, `alhambra-barca-stars`, `alhambra-reyes-fret` and `alhambra-comares-frames` is still wanted (see `docs/research-candidates.md`).
 
 - [x] **Clear steps (owner, 5 October 2026, approved all six).** Done 6 October 2026: tasks 1.12–1.17, merged into main. Every pure “Mark the corners” step is hidden, the new Alhambra tutorials' included; a new tutorial's marking step should say `"hidden": true` too. Tasks 1.12–1.17 in `docs/TASKS.md`, done in order on branch `review-screenshots` in the worktree `../Tastir-review` (another session works on main). One commit per task; run `pnpm test`, `pnpm lint`, `pnpm typecheck` first. Dev server for the owner: `cd apps/player && npx vite --port 4201` in the worktree, review page card `ux-steps`. After a usage limit, continue from the first unticked task. When all six are done, merge main into the branch, then the branch into main, and update the review card and Progress.
 
@@ -49,7 +49,7 @@ More Alhambra panels from Wichmann's Tiling Search, each paired with David Wade'
   1. Alhambra grids: Wichmann's tilingsearch (tilingsearch.mit.edu/contents/<id>.pdf, line drawings) lists many Alhambra panels whose angles are all multiples of 45°; read them with `starread.py`/`gridread.py` and pair each with a Wikimedia Commons photo of the same panel for verification.
   2. Six-fold: the Mosque of Ibn Tulun has over a hundred different window grilles; find ones with a published construction (Mamoot, drawingislamicgeometricdesigns.com, Riding) and a Commons photo.
   3. Eight-fold squares: variants of the star and cross (star and octagon, khatam patterns) with photos.
-- [ ] **Format idea: ink along a line between crossings.** Let an ink path name a line and the lines it runs between, so tutorials need no step that only marks turning points (four-fold ring of circles has two such steps, 360 marks).
+- [x] **Format idea: ink along a line between crossings.** Done: ink paths can run `along` a line (`docs/tutorial-format.md`, Ink), and four heavy tutorials were simplified with it on 10 October. Let an ink path name a line and the lines it runs between, so tutorials need no step that only marks turning points (four-fold ring of circles has two such steps, 360 marks).
 - [ ] **User-made designs (future).** Note what the player needs so learners can generate new designs from a construction.
 
 ## Owner decisions, 11 October 2026
