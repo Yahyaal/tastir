@@ -68,6 +68,14 @@ export function useCamera(
   const goTo = useCallback(
     (target: Rect) => {
       stopGlide();
+      const from = current.current;
+      if (
+        from.minX === target.minX &&
+        from.maxX === target.maxX &&
+        from.minY === target.minY &&
+        from.maxY === target.maxY
+      )
+        return;
       if (
         instant ||
         typeof requestAnimationFrame !== 'function' ||
@@ -77,7 +85,6 @@ export function useCamera(
         setView(target);
         return;
       }
-      const from = current.current;
       const start = performance.now();
       const tick = (now: number) => {
         const t = Math.min(1, (now - start) / GLIDE_MS);
@@ -92,11 +99,12 @@ export function useCamera(
   // A new stage or a new frame takes the view there.
   const frameKey = `${stage}:${frame.minX},${frame.minY},${frame.maxX},${frame.maxY}`;
   useEffect(() => {
+    if (!active) return;
     goTo(frame);
     return stopGlide;
     // The key stands for the frame's value.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frameKey, goTo]);
+  }, [frameKey, goTo, active]);
 
   // (Listeners are attached again at each stage, as a stage may swap the
   // drawing for another.)

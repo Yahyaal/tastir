@@ -1,6 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import zellige from '@tutorials/eight-fold-zellige.json';
+import filled from '@tutorials/kurt-eight-fold-zellige-filled.json';
+import { colorRepeat, placeFills } from './placement';
+import { tutorialColoring } from './coloring';
 import { Play } from './app';
 import { pieceColors } from './coloring';
 import { loadModel } from './model';
@@ -48,12 +51,18 @@ const clip = (ps: P[], w: number, h: number): P[] =>
 describe.each([
   ['the star and cross', example],
   ['the eight-fold rosette', zellige],
+  ['the filled zellige wheel', filled],
 ])('the wall tile for %s', (_, json) => {
   const model = loadModel(json);
 
   it('holds every piece that reaches into the tile, covering it exactly once', () => {
     const { container } = render(
-      <Wall model={model} colors={pieceColors(model)} />,
+      <Wall
+        model={model}
+        colors={pieceColors(model)}
+        repeat={colorRepeat(model)}
+        fill={placeFills(model, tutorialColoring(model))}
+      />,
     );
     const pattern = container.querySelector('pattern') as SVGPatternElement;
     const w = Number(pattern.getAttribute('width'));
@@ -62,6 +71,17 @@ describe.each([
       .map((p) => area(clip(parse(p.getAttribute('points')), w, h)))
       .reduce((s, a) => s + a, 0);
     expect(covered).toBeCloseTo(w * h, 9);
+    // Off-tile copies used to multiply the cost of every hover and pan.
+    const polygons = [...pattern.querySelectorAll('polygon.wall-piece')];
+    if (json === filled) expect(polygons.length).toBeLessThan(600);
+    for (const polygon of polygons) {
+      const corners = parse(polygon.getAttribute('points'));
+      const margin = Number(polygon.getAttribute('stroke-width'));
+      expect(corners.some((p) => p.x >= -margin)).toBe(true);
+      expect(corners.some((p) => p.x <= w + margin)).toBe(true);
+      expect(corners.some((p) => p.y >= -margin)).toBe(true);
+      expect(corners.some((p) => p.y <= h + margin)).toBe(true);
+    }
   });
 });
 

@@ -15,6 +15,7 @@ async function openStage(page: Page, button: Locator) {
 for (const id of [
   'bou-inania-rosette',
   'kurt-eight-fold-zellige',
+  'kurt-eight-fold-zellige-filled',
   'kurt-eight-fold-zellige-shifted',
 ]) {
   test(`${id}: stages open promptly while geometry runs in the background`, async ({

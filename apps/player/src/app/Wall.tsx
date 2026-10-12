@@ -1,11 +1,12 @@
 import type { JaliAppearance } from '@tastir/schema';
 import { pieceAt, rectangularPeriod, type Vec } from '@tastir/engine';
-import { useId, useLayoutEffect, useMemo, useRef } from 'react';
+import { useId, useMemo, useRef } from 'react';
 import { fit, viewBox, width } from './camera';
 import { STRAP_BAND, STRAP_EDGE, strapWidths, tiling } from './drawing';
 import { patchesAt, patchPath, weaveRepeat } from './interlace';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
+import { ColorReveal } from './ColorReveal';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
 
 export type WallStyle = 'tiles' | 'strapwork' | 'interlace' | 'lines' | 'jali';
@@ -122,7 +123,7 @@ export function Wall({
 
   // The pieces and ink strokes in tile coordinates, with neighbours' copies.
   const shifted = useMemo(() => {
-    const out: { type: number; corners: Vec[]; fill: string }[] = [];
+    const out: { type: number; points: string; fill: string }[] = [];
     const lines: [Vec, Vec][] = [];
     const over: Vec[][] = [];
     const overIn: Vec[][] = [];
@@ -134,9 +135,20 @@ export function Wall({
         const move = (p: Vec) => tile.toTile({ x: p.x + dx, y: p.y + dy });
         if (!jali)
           pattern.pieces.forEach((piece, k) => {
+            const corners = piece.polygon.map(move);
+            // The SVG pattern clips to this rectangle. Keep a stroke-width
+            // margin so grout just outside an edge can still paint into it.
+            const margin = groutWidth;
+            if (
+              corners.every((p) => p.x < -margin) ||
+              corners.every((p) => p.x > tile.lu + margin) ||
+              corners.every((p) => p.y < -margin) ||
+              corners.every((p) => p.y > tile.lv + margin)
+            )
+              return;
             out.push({
               type: piece.type,
-              corners: piece.polygon.map(move),
+              points: pts(corners),
               fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
             });
           });
@@ -162,12 +174,31 @@ export function Wall({
     return { out: d(shifted.over), in: d(shifted.overIn) };
   }, [shifted]);
 
-  const pieceClass = (type: number) =>
-    hovered === undefined || jali
-      ? 'wall-piece'
-      : hovered === type
-        ? 'wall-piece hl'
-        : 'wall-piece dim';
+  // Camera changes only move the covering rectangle; the tile's SVG
+  // children can be reused without rebuilding every polygon on each frame.
+  const pieceNodes = useMemo(
+    () =>
+      shifted.pieces.map((p, i) => (
+        <polygon
+          key={i}
+          data-type={p.type}
+          className={
+            hovered === undefined || jali
+              ? 'wall-piece'
+              : hovered === p.type
+                ? 'wall-piece hl'
+                : 'wall-piece dim'
+          }
+          style={{ '--type': p.type } as React.CSSProperties}
+          points={p.points}
+          fill={style === 'lines' || jali ? 'none' : p.fill}
+          stroke={style === 'tiles' || style === 'lines' ? INK : 'none'}
+          strokeWidth={style === 'lines' ? groutWidth * 0.8 : groutWidth}
+          strokeLinejoin="round"
+        />
+      )),
+    [shifted, hovered, jali, style, groutWidth],
+  );
 
   /** The piece type under a screen position. */
   const typeAt = (clientX: number, clientY: number) => {
@@ -192,73 +223,6 @@ export function Wall({
     const j = Math.round((u.x * hit.shift.y - u.y * hit.shift.x) / det);
     return { type: piece.type, place: { piece: hit.index, i, j } };
   };
-
-  // The pieces sit in an SVG pattern, where CSS animations do not play, so
-  // the colouring is a white veil over the wall: one copy of every piece
-  // in the first view. Like a hand with one colour at a time, each type's
-  // veils fade from the centre outwards, then the next type's. Once faded
-  // the veil stays, invisible and ignoring the pointer.
-  const veil = useMemo(() => {
-    if (!enter || jali) return [];
-    const { shifts } = tiling(model);
-    const view = start;
-    const out: { type: number; pts: string; dist: number }[] = [];
-    for (const d of shifts) {
-      for (const p of pattern.pieces) {
-        const moved = p.polygon.map((q) => ({ x: q.x + d.x, y: q.y + d.y }));
-        if (
-          moved.every((q) => q.x < view.minX) ||
-          moved.every((q) => q.x > view.maxX) ||
-          moved.every((q) => q.y < view.minY) ||
-          moved.every((q) => q.y > view.maxY)
-        )
-          continue;
-        const c = moved.reduce((a, q) => ({ x: a.x + q.x, y: a.y + q.y }), {
-          x: 0,
-          y: 0,
-        });
-        out.push({
-          type: p.type,
-          pts: moved.map((q) => `${q.x},${-q.y}`).join(' '),
-          dist: Math.hypot(c.x, c.y) / moved.length,
-        });
-      }
-    }
-    return out;
-  }, [enter, jali, model, pattern, start]);
-
-  const veilRef = useRef<SVGGElement>(null);
-  useLayoutEffect(() => {
-    const g = veilRef.current;
-    if (!g || !veil.length) return;
-    const nodes = [...g.querySelectorAll<SVGPolygonElement>('polygon')];
-    if (nodes.some((n) => typeof n.animate !== 'function')) {
-      g.style.display = 'none';
-      return;
-    }
-    const far = Math.max(...veil.map((v) => v.dist)) || 1;
-    const byType = pattern.types.map(() => [] as number[]);
-    veil.forEach((v, i) => byType[v.type]?.push(i));
-    const anims: Animation[] = [];
-    let k = 0;
-    byType.forEach((list, order) => {
-      for (const i of list) {
-        const v = veil[i];
-        const node = nodes[k++];
-        if (!v || !node) continue;
-        anims.push(
-          node.animate([{ opacity: 1 }, { opacity: 0 }], {
-            duration: COLOR_FILL_MS,
-            delay:
-              400 + order * COLOR_TYPE_MS + (v.dist / far) * COLOR_SPREAD_MS,
-            easing: 'ease-out',
-            fill: 'both',
-          }),
-        );
-      }
-    });
-    return () => anims.forEach((a) => a.cancel());
-  }, [veil, pattern]);
 
   const cover = fit(camera.view, 1);
   return (
@@ -290,21 +254,7 @@ export function Wall({
           {style === 'lines' ? (
             <rect width={tile.lu} height={tile.lv} fill="#fff" />
           ) : null}
-          {shifted.pieces.map((p, i) => (
-            <polygon
-              key={i}
-              data-type={p.type}
-              className={pieceClass(p.type)}
-              style={{ '--type': p.type } as React.CSSProperties}
-              points={pts(p.corners)}
-              fill={style === 'lines' || jali ? 'none' : p.fill}
-              stroke={
-                style === 'tiles' ? INK : style === 'lines' ? INK : 'none'
-              }
-              strokeWidth={style === 'lines' ? groutWidth * 0.8 : groutWidth}
-              strokeLinejoin="round"
-            />
-          ))}
+          {pieceNodes}
           {banded(style)
             ? (['out', 'in'] as const).map((layer) => (
                 <g key={layer} className={`band-${layer}`}>
@@ -369,26 +319,8 @@ export function Wall({
         height={cover.maxY - cover.minY}
         fill={`url(#wall-${id})`}
       />
-      {veil.length ? (
-        <g ref={veilRef} className="color-veil" aria-hidden="true">
-          {pattern.types.map((_, type) => (
-            <g
-              key={type}
-              className="veil-type"
-              data-type={type}
-              fill="#fff"
-              stroke={INK}
-              strokeWidth={groutWidth}
-              strokeLinejoin="round"
-            >
-              {veil
-                .filter((v) => v.type === type)
-                .map((v, i) => (
-                  <polygon key={i} points={v.pts} />
-                ))}
-            </g>
-          ))}
-        </g>
+      {enter && !jali ? (
+        <ColorReveal pattern={pattern} view={start} groutWidth={groutWidth} />
       ) : null}
     </svg>
   );
@@ -401,9 +333,3 @@ function lcm(a: number, b: number): number {
   while (y) [x, y] = [y, x % y];
   return (a / x) * b;
 }
-
-/** The colouring: each piece's fade, one type after another, and how long
- * one type takes to spread from the centre to the edge of the view. */
-const COLOR_FILL_MS = 350;
-const COLOR_TYPE_MS = 1100;
-const COLOR_SPREAD_MS = 800;

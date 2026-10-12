@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  renderHook,
+  screen,
+} from '@testing-library/react';
 import bou from '@tutorials/bou-inania-rosette.json';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import { Play } from './app';
@@ -17,6 +23,7 @@ import {
   type Rect,
 } from './camera';
 import { loadModel } from './model';
+import { useCamera } from './useCamera';
 
 const model = loadModel(example);
 const contains = (outer: Rect, inner: Rect) =>
@@ -190,6 +197,23 @@ describe('the camera in the player', () => {
       vi.useRealTimers();
     }
   });
+});
+
+it('does not schedule frame updates when the camera is already in place', () => {
+  const schedule = vi.spyOn(window, 'requestAnimationFrame');
+  try {
+    const frame = fullView(model);
+    const ref = { current: null };
+    const { result, rerender } = renderHook(
+      ({ stage }) => useCamera(frame, ref, { stage }),
+      { initialProps: { stage: 0 } },
+    );
+    act(() => result.current.goTo({ ...frame }));
+    rerender({ stage: 1 });
+    expect(schedule).not.toHaveBeenCalled();
+  } finally {
+    schedule.mockRestore();
+  }
 });
 
 describe('zoom limits', () => {

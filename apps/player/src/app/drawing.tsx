@@ -519,7 +519,7 @@ export function Construction({
       !carriers.has(el.name);
     return (
       <>
-        <g>
+        <g className="construction-guides" stroke="var(--faint)">
           {shown.map((el) => (
             <Shape
               key={el.name}
@@ -742,7 +742,7 @@ export function RepeatedInk({
   enter?: boolean;
   speed?: number;
 }) {
-  const { view } = tiling(model);
+  const { view } = useMemo(() => tiling(model), [model]);
   const { cell, ink } = model.pattern;
   const { row, next } = useMemo(() => rowBasis(model), [model]);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -773,6 +773,18 @@ export function RepeatedInk({
       }
     return out;
   }, [row, next, view]);
+
+  // All tiles in a later row move together. Animate that row once instead
+  // of maintaining identical transforms, opacity, and color on every tile.
+  const rows = useMemo(() => {
+    const groups = new Map<number, typeof copies>();
+    for (const copy of copies) {
+      const list = groups.get(copy.j) ?? [];
+      list.push(copy);
+      groups.set(copy.j, list);
+    }
+    return [...groups];
+  }, [copies]);
 
   // The row is built first, then the rows; the camera pulls back from the
   // tile while the row grows.
@@ -818,12 +830,11 @@ export function RepeatedInk({
     };
     camera();
     let end = rowsStart;
-    for (const node of svg.querySelectorAll<SVGGElement>('[data-copy]')) {
+    for (const node of svg.querySelectorAll<SVGGElement>('[data-slide]')) {
       if (typeof node.animate !== 'function') continue;
-      const [i, j] = (node.dataset['copy'] ?? '0,0').split(',').map(Number) as [
-        number,
-        number,
-      ];
+      const [i, j] = (node.dataset['slide'] ?? '0,0')
+        .split(',')
+        .map(Number) as [number, number];
       if (i === 0 && j === 0) continue;
       const d = { x: i * row.x + j * next.x, y: i * row.y + j * next.y };
       let frames: Keyframe[];
@@ -925,6 +936,15 @@ export function RepeatedInk({
         {/* The tile's ink, drawn once and reused by every copy, so a
             pattern with hundreds of lines stays light. */}
         <path id={inkId} className="tile-ink" d={inkPath} />
+        {enter ? (
+          <polygon
+            id={`${inkId}-outline`}
+            className="copy-outline"
+            points={points(cell.corners)}
+            stroke={TILE_COLOR}
+            vectorEffect="non-scaling-stroke"
+          />
+        ) : null}
       </defs>
       <g className="tile-borders">
         {copies.map(({ d }, k) => (
@@ -937,35 +957,30 @@ export function RepeatedInk({
           />
         ))}
       </g>
-      {copies.map(({ i, j, d }) => (
+      {rows.map(([j, tiles]) => (
         <g
-          key={`${i},${j}`}
-          data-copy={`${i},${j}`}
-          className={isOrigin(d) ? 'ink original' : 'ink'}
-          transform={`translate(${d.x} ${-d.y})`}
+          key={j}
+          className="ink"
+          data-slide={j === 0 ? undefined : `0,${j}`}
+          transform={`translate(${j * next.x} ${-j * next.y})`}
         >
-          {enter ? (
-            <polygon
-              className="copy-outline"
-              points={points(cell.corners)}
-              stroke={TILE_COLOR}
-              vectorEffect="non-scaling-stroke"
-            />
-          ) : null}
-          {isOrigin(d) ? (
-            ink.map((s, k) => (
-              <line
-                key={k}
-                x1={sx(s.segment.a)}
-                y1={sy(s.segment.a)}
-                x2={sx(s.segment.b)}
-                y2={sy(s.segment.b)}
-                vectorEffect="non-scaling-stroke"
-              />
-            ))
-          ) : (
-            <use href={`#${inkId}`} />
-          )}
+          {tiles.map(({ i, d }) => (
+            <g
+              key={i}
+              data-copy={`${i},${j}`}
+              data-slide={j === 0 ? `${i},0` : undefined}
+              className={isOrigin(d) ? 'ink original' : undefined}
+              transform={`translate(${i * row.x} ${-i * row.y})`}
+            >
+              {enter ? (
+                <use
+                  className="copy-outline-instance"
+                  href={`#${inkId}-outline`}
+                />
+              ) : null}
+              <use href={`#${inkId}`} />
+            </g>
+          ))}
         </g>
       ))}
     </svg>

@@ -107,7 +107,9 @@ describe('the player', () => {
     expect(label()).toBe('Repeat');
     expect(screen.getByText(/Repeat the tile edge to edge/)).toBeTruthy();
     // One original star in color, copies of it in every other tile.
-    expect(container.querySelectorAll('.ink.original line')).toHaveLength(16);
+    expect(
+      container.querySelector('.ink.original use')?.getAttribute('href'),
+    ).toBe(`#${container.querySelector('defs path.tile-ink')?.id}`);
     // The copies reuse one drawing of the tile's ink.
     expect(
       container.querySelectorAll('.ink:not(.original) use').length,

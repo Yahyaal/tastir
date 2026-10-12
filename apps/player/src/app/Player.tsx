@@ -212,7 +212,10 @@ export function Player({
       future: [],
     }),
   );
-  const colors = pieceColors(inking.shown, colorHistory.now);
+  const colors = useMemo(
+    () => pieceColors(inking.shown, colorHistory.now),
+    [inking.shown, colorHistory.now],
+  );
   // Fills by placement, when the tutorial colors same shapes differently.
   const fill = useMemo(
     () =>

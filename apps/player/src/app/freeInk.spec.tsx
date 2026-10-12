@@ -36,7 +36,15 @@ describe('free inking', () => {
     expect(inked()).toHaveLength(15);
     expect(screen.getByText(/Your own pattern/)).toBeTruthy();
     click('Next'); // repeat
-    expect(document.querySelectorAll('.ink.original line')).toHaveLength(15);
+    expect(
+      document.querySelector('.ink.original use')?.getAttribute('href'),
+    ).toBe(`#${document.querySelector('defs path.tile-ink')?.id}`);
+    expect(
+      document
+        .querySelector('defs path.tile-ink')
+        ?.getAttribute('d')
+        ?.split('M').length,
+    ).toBe(16);
     click('Next'); // color: with one stroke gone, the star and cross merge
     expect(legend()).not.toContain('Recolor every star');
     click('Back');

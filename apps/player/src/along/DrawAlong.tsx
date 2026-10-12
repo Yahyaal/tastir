@@ -401,7 +401,10 @@ export function DrawAlong({
   }, [ready, chosen]);
   // At the colour stage: the pieces of the learner's own wall, each of
   // the pattern's kind it has the shape of (the ground where none).
-  const colors = pieceColors(model, colorHistory.now);
+  const colors = useMemo(
+    () => pieceColors(model, colorHistory.now),
+    [model, colorHistory.now],
+  );
   const ground =
     (PALETTES[colorHistory.now.palette] ?? PALETTES[DEFAULT_PALETTE])?.ground ??
     '#eee';

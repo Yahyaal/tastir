@@ -1208,27 +1208,14 @@ main.stage .drawing:not(.wall) {
   animation: tile-in 0.5s ease-out 1.5s both;
 }
 
-.ink.next-tiles > g {
-  opacity: 0.6;
-  animation: next-tile-in 0.45s ease-out both;
-  animation-delay: calc(2.1s + var(--k) * 0.2s);
-}
-
 @keyframes tile-in {
   from {
     opacity: 0;
   }
 }
 
-@keyframes next-tile-in {
-  from {
-    opacity: 0;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .ink.own-tile,
-  .ink.next-tiles > g {
+  .ink.own-tile {
     animation: none;
   }
 }
@@ -1320,16 +1307,24 @@ main.stage .drawing:not(.wall) {
 /* Construction to ink: the construction holds, then fades back slowly
    while the pen inks the pattern (playInk in animation.ts). */
 .ink-enter .el.faint {
-  animation: construction-recede 2.5s ease-in-out 0.3s both;
+  stroke: inherit;
+}
+
+/* All guides share one clock, rather than an animation per shape. */
+.ink-enter .construction-guides {
+  animation: construction-recede 2.5s ease-in-out 0.3s backwards;
 }
 
 @keyframes construction-recede {
   from {
     stroke: var(--old);
   }
+  to {
+    stroke: var(--faint);
+  }
 }
 
-/* Repeat to colour: the wall starts as lines on white, and each piece type
+/* Repeat to colour: the wall starts as ink on the drafting background, and each piece type
    floods in with its colour, one type after another. */
 .color-veil {
   pointer-events: none;

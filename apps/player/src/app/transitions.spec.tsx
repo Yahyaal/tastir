@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import json from '@tutorials/six-fold-hammerhead.json';
 import shiftedJson from '@tutorials/kurt-eight-fold-zellige-shifted.json';
 import squareJson from '@tutorials/kurt-eight-fold-zellige.json';
+import filledJson from '@tutorials/kurt-eight-fold-zellige-filled.json';
 import { rulerOrder } from './animation';
 import mianJson from '@tutorials/twelve-fold-rosette-mian.json';
 import { pieceColors } from './coloring';
@@ -91,28 +92,78 @@ describe('the move to the repeat', () => {
     expect(Math.abs(along)).toBeCloseTo(0.5, 6);
   });
 
+  it('keeps the repeat running through unrelated parent renders', () => {
+    const cancel = vi.fn();
+    const animate = vi.fn(() => ({ cancel }) as unknown as Animation);
+    const original = Element.prototype.animate;
+    Element.prototype.animate = animate;
+    try {
+      const m = loadModel(filledJson);
+      const { rerender, unmount } = render(<RepeatedInk model={m} enter />);
+      const started = animate.mock.calls.length;
+      expect(started).toBeGreaterThan(0);
+      rerender(<RepeatedInk model={m} enter />);
+      expect(animate).toHaveBeenCalledTimes(started);
+      expect(cancel).not.toHaveBeenCalled();
+      unmount();
+      expect(cancel).toHaveBeenCalledTimes(started);
+    } finally {
+      Element.prototype.animate = original;
+    }
+  });
+
+  it('moves each later row once while preserving every copy position', () => {
+    const m = loadModel(filledJson);
+    const { row, next } = rowBasis(m);
+    const { container } = render(<RepeatedInk model={m} enter />);
+    const copies = [...container.querySelectorAll<SVGGElement>('[data-copy]')];
+    const slides = [...container.querySelectorAll('[data-slide]')];
+    expect(slides.length).toBeLessThan(copies.length / 2);
+    expect(container.querySelectorAll('polygon.copy-outline')).toHaveLength(1);
+    const translate = (el: Element) => {
+      const [x, y] = (el.getAttribute('transform') ?? '')
+        .slice(10, -1)
+        .split(' ')
+        .map(Number);
+      return { x: x ?? 0, y: y ?? 0 };
+    };
+    for (const copy of copies) {
+      const [i = 0, j = 0] = (copy.dataset['copy'] ?? '')
+        .split(',')
+        .map(Number);
+      const local = translate(copy);
+      const parent = translate(copy.parentElement!);
+      expect(local.x + parent.x).toBeCloseTo(i * row.x + j * next.x, 9);
+      expect(local.y + parent.y).toBeCloseTo(-i * row.y - j * next.y, 9);
+    }
+  });
+
   it('marks each copy by its place in the row and its row', () => {
     const { container } = render(<RepeatedInk model={model} enter />);
     const original = container.querySelector('.ink.original');
     expect(original?.getAttribute('data-copy')).toBe('0,0');
     expect(container.querySelector('[data-copy="1,0"]')).toBeTruthy();
     expect(container.querySelector('[data-copy="0,1"]')).toBeTruthy();
-    expect(container.querySelectorAll('[data-copy] .copy-outline').length).toBe(
-      container.querySelectorAll('[data-copy]').length,
-    );
+    expect(
+      container.querySelectorAll('[data-copy] .copy-outline-instance').length,
+    ).toBe(container.querySelectorAll('[data-copy]').length);
   });
 });
 
 describe('the move to colour', () => {
-  it('veils the wall in white, one group for each piece type', () => {
+  it('uses one temporary bitmap cover, with the vector wall underneath', () => {
+    const m = loadModel(filledJson);
     const { container } = render(
-      <Wall model={model} colors={pieceColors(model)} enter />,
+      <Wall model={m} colors={pieceColors(m)} enter />,
     );
-    const groups = [...container.querySelectorAll<SVGGElement>('.veil-type')];
-    expect(groups.map((g) => g.dataset['type'])).toEqual(
-      model.pattern.types.map((_, i) => String(i)),
-    );
-    expect(groups.every((g) => g.querySelector('polygon'))).toBe(true);
+    expect(container.querySelectorAll('.color-veil canvas')).toHaveLength(1);
+    expect(
+      container.querySelectorAll('pattern polygon.wall-piece').length,
+    ).toBeGreaterThan(0);
+    // Without canvas support the cover stays transparent, so the vector
+    // result remains usable (including in jsdom).
+    const canvas = container.querySelector('canvas') as HTMLCanvasElement;
+    expect(canvas.style.opacity).toBe('0');
   });
 
   it('has no veil without it', () => {
