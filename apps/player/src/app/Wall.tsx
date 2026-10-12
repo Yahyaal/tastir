@@ -73,7 +73,6 @@ export function Wall({
   look: style = 'tiles',
   grout = 1,
   jali: appearance,
-  hovered,
   onHover,
   onPick,
   enter = false,
@@ -89,8 +88,8 @@ export function Wall({
   /** Grout (or band) width, as a multiple of the normal width. */
   grout?: number;
   jali?: JaliAppearance;
-  /** The piece type to highlight on every copy, if any. */
-  hovered?: number;
+  /** Tells which piece type is under the pointer (the wall itself does
+   * not change: the piece panel marks the type). */
   onHover?: (type: number | undefined) => void;
   onPick?: (
     type: number,
@@ -182,13 +181,7 @@ export function Wall({
         <polygon
           key={i}
           data-type={p.type}
-          className={
-            hovered === undefined || jali
-              ? 'wall-piece'
-              : hovered === p.type
-                ? 'wall-piece hl'
-                : 'wall-piece dim'
-          }
+          className="wall-piece"
           style={{ '--type': p.type } as React.CSSProperties}
           points={p.points}
           fill={style === 'lines' || jali ? 'none' : p.fill}
@@ -197,7 +190,7 @@ export function Wall({
           strokeLinejoin="round"
         />
       )),
-    [shifted, hovered, jali, style, groutWidth],
+    [shifted, jali, style, groutWidth],
   );
 
   /** The piece type under a screen position. */
