@@ -980,6 +980,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'You saw that the empty space between four wheels is exactly the middle of a wheel. It is, and more: it is the middle of another wheel. Repeat the plain wheel on the standing square from step 4 (half the old square tile, turned 45°) and the wheels overlap, each one’s middle filling the space between four others and their rings running along the same lines.',
       'So the tutorial draws nothing beyond the plain wheel: step 18 marks the standing square as the tile. My first version drew a mirrored copy of the middle at the tile corner instead. It gave the same wall but was much heavier and slow in your browser; this one is as light as the plain wheel.',
+      'You then saw a cross still empty where four wheels meet. Step 19 carries the sides of the four octagons that bite into it on through the cross. They close an octagon in the middle, the same as the wheel’s own, and what is left of each arm is one of the wheel’s small five-pointed bands, so the cross becomes an octagon ringed by four stars and no new shape appears.',
       'You asked for the middle in the space to have different colours. Every other wheel now has its middle in its own colours: cream octagons, wine-red stars and rosette, and blue bands. In the colour stage, click one of its pieces to change all the pieces placed like it.',
       'The coloured wall turns into itself by a quarter turn about the wheel’s centre, not an eighth, so the tutorial is listed with the four-fold patterns, as the Bou Inania wall is.',
     ],

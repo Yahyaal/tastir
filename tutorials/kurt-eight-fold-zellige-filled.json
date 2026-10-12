@@ -490,10 +490,23 @@
       "create": {"tile": {"polygon": ["E", "N", "W", "Sp"]}},
       "highlight": ["E", "N", "W", "Sp"],
       "animate": "ruler"
+    },
+    {
+      "id": 19,
+      "text": "Where four wheels meet there is still an empty cross. Through the two inner corners of the octagons that bite into it at the tile's right corner, rule the lines that carry their sides on into the cross: through each corner, one parallel to each of the two nearest lines through the centre at a sixteenth of a turn. Do the same at the other three corners of the tile.",
+      "create": {
+        "jN1": {"line": {"through": "oK0_7", "parallelTo": "r0"}},
+        "jN2": {"line": {"through": "oK0_7", "parallelTo": "r1"}},
+        "jS2": {"line": {"through": "oK7_1", "parallelTo": "r2"}},
+        "jS1": {"line": {"through": "oK7_1", "parallelTo": "r3"}},
+        "joints": {"repeat": {"of": ["jN1", "jN2", "jS2", "jS1"], "by": "rot4"}}
+      },
+      "highlight": ["oK0_7", "oK7_1", "r0", "r1", "r2", "r3"],
+      "animate": "ruler"
     }
   ],
   "ink": {
-    "text": "Go over the lines of the finished wheel: the octagons, the bands between them and the star in the middle.",
+    "text": "Go over the lines of the finished wheel: the octagons, the bands between them and the star in the middle. Then, at each corner of the tile, the two sides of the octagon in the cross.",
     "paths": [
       {
         "along": "l0_m2180",
@@ -1762,46 +1775,87 @@
         "along": "octK0",
         "from": {"cross": "l135_m3678", "pick": {"farthest": "x90_m6322"}},
         "to": "oK0_1"
-      }
+      },
+      {"along": "jN2", "from": "jN1", "to": "jS2"},
+      {"along": "jS2", "from": "jN2", "to": "jS1"},
+      {"along": "jN2@1", "from": "jN1@1", "to": "jS2@1"},
+      {"along": "jS2@1", "from": "jN2@1", "to": "jS1@1"},
+      {"along": "jN2@2", "from": "jN1@2", "to": "jS2@2"},
+      {"along": "jS2@2", "from": "jN2@2", "to": "jS1@2"},
+      {"along": "jN2@3", "from": "jN1@3", "to": "jS2@3"},
+      {"along": "jS2@3", "from": "jN2@3", "to": "jS1@3"}
     ]
   },
   "pattern": {
     "cell": "tile",
-    "text": "Repeat the standing square side to side. The wheels overlap: each one's middle fills the space between four others, and every other wheel has its middle in its own colours.",
+    "text": "Repeat the standing square side to side. The wheels overlap: each one's middle fills the space between four others, an octagon fills each cross where four wheels meet, and every other wheel has its middle in its own colours.",
     "palette": "Fès tile",
-    "colors": {
-      "joint": "b",
-      "octagon": "c",
-      "star": "a",
-      "rosette": "a",
-      "petal": "b",
-      "band": "c",
-      "kite": "a"
-    },
+    "colors": {"octagon": "c", "star": "a", "rosette": "a", "petal": "b", "band": "c", "kite": "a"},
     "placements": {
       "repeat": [2, 2],
       "rules": [
-        {"piece": "octagon", "cell": [1, 0], "color": "ground"},
-        {"piece": "star", "cell": [1, 0], "color": "d"},
-        {"piece": "band", "cell": [1, 0], "color": "a"},
-        {"piece": "rosette", "cell": [1, 0], "color": "d", "nth": 3},
-        {"piece": "octagon", "cell": [0, 1], "color": "ground"},
-        {"piece": "star", "cell": [0, 1], "color": "d"},
-        {"piece": "band", "cell": [0, 1], "color": "a"},
-        {"piece": "rosette", "cell": [0, 1], "color": "d", "nth": 3}
+        {"piece": "octagon", "cell": [1, 0], "nth": 1, "color": "ground"},
+        {"piece": "octagon", "cell": [1, 0], "nth": 2, "color": "ground"},
+        {"piece": "octagon", "cell": [1, 0], "nth": 3, "color": "ground"},
+        {"piece": "octagon", "cell": [1, 0], "nth": 4, "color": "ground"},
+        {"piece": "octagon", "cell": [1, 0], "nth": 5, "color": "ground"},
+        {"piece": "octagon", "cell": [1, 0], "nth": 6, "color": "ground"},
+        {"piece": "octagon", "cell": [1, 0], "nth": 7, "color": "ground"},
+        {"piece": "octagon", "cell": [1, 0], "nth": 8, "color": "ground"},
+        {"piece": "star", "cell": [1, 0], "nth": 0, "color": "d"},
+        {"piece": "star", "cell": [1, 0], "nth": 1, "color": "d"},
+        {"piece": "star", "cell": [1, 0], "nth": 2, "color": "d"},
+        {"piece": "star", "cell": [1, 0], "nth": 3, "color": "d"},
+        {"piece": "star", "cell": [1, 0], "nth": 4, "color": "d"},
+        {"piece": "star", "cell": [1, 0], "nth": 5, "color": "d"},
+        {"piece": "star", "cell": [1, 0], "nth": 6, "color": "d"},
+        {"piece": "star", "cell": [1, 0], "nth": 7, "color": "d"},
+        {"piece": "band", "cell": [1, 0], "nth": 0, "color": "a"},
+        {"piece": "band", "cell": [1, 0], "nth": 3, "color": "a"},
+        {"piece": "band", "cell": [1, 0], "nth": 4, "color": "a"},
+        {"piece": "band", "cell": [1, 0], "nth": 5, "color": "a"},
+        {"piece": "band", "cell": [1, 0], "nth": 6, "color": "a"},
+        {"piece": "band", "cell": [1, 0], "nth": 7, "color": "a"},
+        {"piece": "band", "cell": [1, 0], "nth": 8, "color": "a"},
+        {"piece": "band", "cell": [1, 0], "nth": 11, "color": "a"},
+        {"piece": "rosette", "cell": [1, 0], "nth": 3, "color": "d"},
+        {"piece": "octagon", "cell": [0, 1], "nth": 1, "color": "ground"},
+        {"piece": "octagon", "cell": [0, 1], "nth": 2, "color": "ground"},
+        {"piece": "octagon", "cell": [0, 1], "nth": 3, "color": "ground"},
+        {"piece": "octagon", "cell": [0, 1], "nth": 4, "color": "ground"},
+        {"piece": "octagon", "cell": [0, 1], "nth": 5, "color": "ground"},
+        {"piece": "octagon", "cell": [0, 1], "nth": 6, "color": "ground"},
+        {"piece": "octagon", "cell": [0, 1], "nth": 7, "color": "ground"},
+        {"piece": "octagon", "cell": [0, 1], "nth": 8, "color": "ground"},
+        {"piece": "star", "cell": [0, 1], "nth": 0, "color": "d"},
+        {"piece": "star", "cell": [0, 1], "nth": 1, "color": "d"},
+        {"piece": "star", "cell": [0, 1], "nth": 2, "color": "d"},
+        {"piece": "star", "cell": [0, 1], "nth": 3, "color": "d"},
+        {"piece": "star", "cell": [0, 1], "nth": 4, "color": "d"},
+        {"piece": "star", "cell": [0, 1], "nth": 5, "color": "d"},
+        {"piece": "star", "cell": [0, 1], "nth": 6, "color": "d"},
+        {"piece": "star", "cell": [0, 1], "nth": 7, "color": "d"},
+        {"piece": "band", "cell": [0, 1], "nth": 0, "color": "a"},
+        {"piece": "band", "cell": [0, 1], "nth": 3, "color": "a"},
+        {"piece": "band", "cell": [0, 1], "nth": 4, "color": "a"},
+        {"piece": "band", "cell": [0, 1], "nth": 5, "color": "a"},
+        {"piece": "band", "cell": [0, 1], "nth": 6, "color": "a"},
+        {"piece": "band", "cell": [0, 1], "nth": 7, "color": "a"},
+        {"piece": "band", "cell": [0, 1], "nth": 8, "color": "a"},
+        {"piece": "band", "cell": [0, 1], "nth": 11, "color": "a"},
+        {"piece": "rosette", "cell": [0, 1], "nth": 3, "color": "d"}
       ]
     }
   },
   "expect": {
-    "note": "Golden values in units of OA, computed by the engine. The tile is half the plain wheel's, and every piece is one of the wheel's own. The kites and the thin star between wheels are small by design.",
-    "pieceTypes": 7,
+    "note": "Golden values in units of OA, computed by the engine. The tile is half the plain wheel's, and every piece is one of the wheel's own: the cross where four wheels meet is an octagon and four bands. The kites are small by design.",
+    "pieceTypes": 6,
     "pieces": [
-      {"name": "joint", "vertices": 32, "area": 0.11909, "perCell": 1, "small": true},
-      {"name": "octagon", "vertices": 8, "area": 0.04163, "perCell": 8},
+      {"name": "octagon", "vertices": 8, "area": 0.04163, "perCell": 9},
       {"name": "star", "vertices": 14, "area": 0.03408, "perCell": 8},
       {"name": "rosette", "vertices": 16, "area": 0.02629, "perCell": 5},
       {"name": "petal", "vertices": 6, "area": 0.02007, "perCell": 40},
-      {"name": "band", "vertices": 10, "area": 0.01937, "perCell": 8},
+      {"name": "band", "vertices": 10, "area": 0.01937, "perCell": 12},
       {"name": "kite", "vertices": 4, "area": 0.00465, "perCell": 40, "small": true}
     ],
     "cellArea": 2
