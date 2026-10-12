@@ -8,6 +8,7 @@ These are the owner's standing wishes about how work is shown and discussed. Eac
 - **Never ask the owner to judge something they cannot see.** If something needs their eye, put a picture on the page with the part marked; otherwise do not raise it. *Why (5 October):* a seam choice in the Bou Inania tile was described in words only, and the owner had no idea what it meant.
 - **Questions come first on the review page.** Nothing sits above them except what the owner needs to answer them; Progress and everything else come after. *Why (7 October):* the owner found the questions below Progress.
 - **Questions are short, most important first, and point at pictures.** Name designs with letters (Design A, B…) and mark the parts meant in colour on the picture. *Why:* a question that described a design in words ("two-square stars… ringed by pentagons") was not understood.
+- **Render a question's picture before asking it.** The pictures under `docs/review/` are not in git, so a question can point at a file that is not there. *Why (12 October):* the filled-wheel colour question showed no picture and the owner could not answer it.
 - **Explain the way the owner writes:** short connected sentences, each decision with its reason. No fragment lists, no options that were rejected, no jargon without a plain explanation.
 - **Keep the Progress section current** (`PROGRESS` in `data.ts`: now, done, next, waiting) after every piece of work.
 - **Tell the owner how to see visual work:** the address to open, and what they should see there.
@@ -37,4 +38,4 @@ The owner’s 11 October Jali correction: minimize clicks. Show material choices
 - Many designs per pattern family, not one. A single construction can give many designs.
 - Later, learners make their own designs from a construction (free inking already exists in the player).
 - Every design is checked against a real example, and specific sources are credited in the tutorial.
-- Palettes: the owner does not like how the patterns are coloured but has not chosen a fix. On 12 October Claude wrote how colouring works, what goes wrong and four suggestions at `#/plan/colors` (question first on the review page). The last rework was disliked and reverted, so change no palette or tutorial colours until the owner picks a direction there.
+- Palettes: on 12 October the owner picked columns C and D on `#/plan/colors`: a palette per tradition with clear light, mid and dark steps, and colour by role. Show the new colours on the review page before changing the tutorials' palettes.

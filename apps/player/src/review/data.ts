@@ -974,7 +974,7 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'kurt-eight-fold-zellige-filled',
     title: 'Eight-fold zellige wheel, filled (new)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
     summary:
       'Kurt’s wheel repeated so that the wheels overlap and each one’s middle fills the space between four others; every other wheel’s middle has its own colours.',
     story: [
@@ -992,7 +992,7 @@ export const PATTERNS: readonly Pattern[] = [
       },
     ],
     asks: [
-      'Open it at the colour stage (link in the question at the top) and say whether the corner colours work.',
+      'Nothing for now: the wheel is recoloured with the new tradition palettes, and you choose its colours from those pictures.',
     ],
     sources: [
       {
@@ -1507,46 +1507,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'colours-direction',
-    text: 'Colours: which column, A to E, is closest to what you want? Each column adds one change to the one before. The full explanation and live pictures are at /#/plan/colors.',
-    choices: [
-      'A (keep today’s)',
-      'B (by role)',
-      'C (light, mid and dark)',
-      'D (each tradition’s colours)',
-      'E (D with wider grout)',
-      'None yet',
-    ],
-    pictures: [
-      {
-        src: 'renders/colors/table.png',
-        caption:
-          'Six patterns in five colourings. A is today; B colours by role; C adds clear light, mid and dark; D uses each tradition’s colours; E widens the grout.',
-      },
-    ],
-    card: 'eight-fold-zellige',
-  },
-  {
-    id: 'kurt-filled-colours',
-    text: 'The filled zellige wheel, rebuilt simpler: do the colours of every other wheel’s middle work? Open /#/kurt-eight-fold-zellige-filled/result to see them.',
-    choices: [
-      'Keep these colours',
-      'Closer to the wheel’s own',
-      'I will choose them',
-    ],
-    pictures: [
-      {
-        src: 'renders/kurt-eight-fold-zellige-filled/wall.png',
-        caption:
-          'The filled wall, in the review renderer’s colours; the tutorial’s own are in the player.',
-      },
-    ],
-    card: 'kurt-eight-fold-zellige-filled',
-    also: ['kurt-eight-fold-zellige'],
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -1812,9 +1773,9 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Colours: how they work now, and suggestions',
-    text: 'You asked how palettes and colouring are decided. The page explains it, what I think goes wrong (four colours of the same darkness, too many colours spread evenly, colour by shape rather than role, every card alike) and four changes side by side on six patterns. Nothing in the app has changed; the question is first on this page.',
-    link: { label: 'Read the colour notes', href: '/#/plan/colors' },
+    title: 'Colours: your pick, C and D',
+    text: 'You chose C (clear light, mid and dark) and D (each tradition’s colours). D already keeps C’s light, mid and dark steps, so the plan is D everywhere: a palette per tradition, and each tutorial coloured by role. The filled wheel’s question had no picture and was unclear, so it is dropped; the wheel is recoloured with the rest and you choose from the new pictures.',
+    link: { label: 'The colour notes', href: '/#/plan/colors' },
   },
   next: [
     {
