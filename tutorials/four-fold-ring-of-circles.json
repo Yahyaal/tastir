@@ -2979,13 +2979,9 @@
   "pattern": {
     "cell": "cell",
     "text": "Repeat the tile edge to edge. The corners of four tiles close into another eight-pointed star, and the bands cross between the stars as in a carved stone screen.",
-    "palette": "F\u00e8s tile",
-    "colors": {
-      "star": "a",
-      "bowtie": "b",
-      "dart": "c",
-      "square": "ground"
-    }
+    "palette": "Timurid tile",
+    "colors": {"star": "a", "bowtie": "b", "dart": "c", "square": "ground"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values computed by the engine; the pattern matches Sandy Kurt's drawing but no photo of a real example was found.",

@@ -158,8 +158,9 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the tile edge to edge. Stepped stars meet at small crossed squares, as in the tile panel of the Mexuar.",
-    "palette": "Fès tile",
-    "colors": {"star": "a", "triangle": "c"}
+    "palette": "Alhambra",
+    "colors": {"star": "a", "triangle": "c"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values in grid squares (OA = one square), computed by the engine; the pieces fill the tile.",

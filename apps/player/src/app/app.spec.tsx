@@ -94,7 +94,7 @@ describe('the player', () => {
     );
     expect(
       screen.getByText(
-        'Color the pieces by shape, so every star matches every other star and every cross matches every other cross. Each tile holds one star and one cross.',
+        'Color the pieces ring by ring, as on real zellige: round each rosette the pieces take their colors by how far they sit from its centre, not by their shape, and neighbouring rosettes take turns. Click a piece to recolor its whole ring. Each tile holds one star and one cross.',
       ),
     ).toBeTruthy();
     // Every copy of the cell has one star and one cross.

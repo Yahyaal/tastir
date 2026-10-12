@@ -7,6 +7,7 @@ import {
 } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import App, { Play } from './app';
+import { PALETTES } from './coloring';
 import { addDesign, listDesigns } from './designs';
 
 const label = () => document.querySelector('.label')?.textContent;
@@ -135,7 +136,9 @@ describe('saving a design', () => {
     expect(
       screen.getByRole('button', { name: 'Recolor every star' }),
     ).toBeTruthy();
-    expect(fills()).toContain('#b5452f');
+    const marrakech = Object.values(PALETTES['Marrakech'] ?? {});
+    expect(fills().length).toBeGreaterThan(0);
+    for (const fill of fills()) expect(marrakech).toContain(fill);
   });
 
   it('says plainly when a design is not here, with the ways on', () => {

@@ -168,8 +168,9 @@
   "pattern": {
     "cell": "hex",
     "text": "Repeat the hexagon side to side. The lines that leave one tile carry straight on into the next, and three large stars meet point to point at every corner of the hexagons.",
-    "palette": "Fès tile",
-    "colors": {"star": "a", "hexagon": "b", "chevron": "ground", "rhombus": "c", "triangle": "ground"}
+    "palette": "Mamluk wood",
+    "colors": {"star": "a", "hexagon": "b", "chevron": "ground", "rhombus": "c", "triangle": "ground"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values, in units of OA, computed by the engine and checked for six-fold symmetry, no slivers, and pieces that exactly fill the rhombus tile of area 3·sin 60°.",

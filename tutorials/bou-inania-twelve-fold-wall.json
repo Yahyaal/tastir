@@ -2797,28 +2797,29 @@
   ]
  },
  "pattern": {
-  "cell": "tile",
-  "text": "Repeat the square tile edge to edge: rosettes on a square grid, stars at the corners.",
-  "palette": "Alhambra",
-  "look": "strapwork",
-  "colors": {
-   "centre": "b",
-   "arrowhead": "a",
-   "cross": "a",
-   "arrow": "d",
-   "petal": "a",
-   "cornerstar": "b",
-   "shield": "a",
-   "pentagon": "c",
-   "arm": "a",
-   "star": "a",
-   "gap": "ground",
-   "diamond": "a",
-   "kite": "a",
-   "chip": "ground",
-   "ringbend": "c",
-   "ringaxis": "c"
-  }
+   "cell": "tile",
+   "text": "Repeat the square tile edge to edge: rosettes on a square grid, stars at the corners.",
+   "palette": "Marinid zellige",
+   "look": "strapwork",
+   "colors": {
+     "centre": "b",
+     "arrowhead": "a",
+     "cross": "a",
+     "arrow": "d",
+     "petal": "a",
+     "cornerstar": "b",
+     "shield": "a",
+     "pentagon": "c",
+     "arm": "a",
+     "star": "a",
+     "gap": "ground",
+     "diamond": "a",
+     "kite": "a",
+     "chip": "ground",
+     "ringbend": "c",
+     "ringaxis": "c"
+   },
+   "rings": true
  },
  "expect": {
   "pieceTypes": 16,

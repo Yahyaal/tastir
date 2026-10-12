@@ -496,7 +496,8 @@
     "text": "Repeat the square cell edge to edge: the frets lock into a pinwheel round each cross, with a small diamond at every crossing.",
     "palette": "Alhambra",
     "look": "strapwork",
-    "colors": {"bar": "ground", "cross": "c", "fret": "c", "small_cross": "ground", "diamond": "a"}
+    "colors": {"bar": "ground", "cross": "c", "fret": "c", "small_cross": "ground", "diamond": "a"},
+    "rings": true
   },
   "expect": {
     "pieceTypes": 5,

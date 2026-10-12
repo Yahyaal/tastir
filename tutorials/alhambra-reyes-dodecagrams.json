@@ -385,7 +385,8 @@
       "hexagon": "ground",
       "small_hexagon": "ground",
       "kite": "ground"
-    }
+    },
+    "rings": true
   },
   "expect": {
     "pieceTypes": 6,

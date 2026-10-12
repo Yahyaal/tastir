@@ -470,19 +470,7 @@
       "dart": "b",
       "small_kite": "a"
     },
-    "placements": {
-      "repeat": [1, 1],
-      "rules": [
-        {"piece": "kite", "nth": 1, "color": "a"},
-        {"piece": "kite", "nth": 2, "color": "a"},
-        {"piece": "kite", "nth": 4, "color": "a"},
-        {"piece": "kite", "nth": 7, "color": "a"},
-        {"piece": "kite", "nth": 8, "color": "a"},
-        {"piece": "kite", "nth": 11, "color": "a"},
-        {"piece": "kite", "nth": 13, "color": "a"},
-        {"piece": "kite", "nth": 14, "color": "a"}
-      ]
-    }
+    "rings": true
   },
   "expect": {
     "pieceTypes": 6,

@@ -192,8 +192,9 @@
   "pattern": {
     "cell": "shifted",
     "text": "Repeat the slanted tile edge to edge. Each row sits half a rosette along from the row below and as close as it can come: the squares of neighbouring rows meet edge to edge, and the gaps between them close into pieces of their own.",
-    "palette": "Fès tile",
-    "colors": {"chevron": "c", "arrow": "a", "blade": "b", "star": "c", "dart": "ground"}
+    "palette": "Alhambra",
+    "colors": {"chevron": "c", "arrow": "a", "blade": "b", "star": "c", "dart": "ground"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values in units of OA. Rows half a rosette apart sideways and √2 apart upward (the owner's suggestion, brought as close as the squares allow); the gaps close into chevrons.",

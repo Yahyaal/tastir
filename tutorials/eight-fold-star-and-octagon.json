@@ -205,8 +205,9 @@
   "pattern": {
     "cell": "dynamic",
     "text": "Repeat the dynamic tile. The eight-pointed stars and corner squares tile with regular octagons in between, forming the Mughal inlay pattern.",
-    "palette": "Fès tile",
-    "colors": {"star": "a", "corner_square": "c", "octagon_arm": "ground"}
+    "palette": "Timurid tile",
+    "colors": {"star": "a", "corner_square": "c", "octagon_arm": "ground"},
+    "rings": true
   },
   "expect": {
     "pieceTypes": 3,

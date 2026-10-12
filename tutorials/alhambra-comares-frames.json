@@ -384,7 +384,7 @@
       "small_piece": "b",
       "diamond": "b"
     },
-    "placements": {"repeat": [1, 1], "rules": [{"piece": "star", "nth": 1, "color": "c"}]}
+    "rings": true
   },
   "expect": {
     "pieceTypes": 6,

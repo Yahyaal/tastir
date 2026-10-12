@@ -221,6 +221,7 @@ describe('rejected tutorials', () => {
 
   it('rejects a placement rule for an unknown piece or outside its repeat', () => {
     const input = variant((t) => {
+      delete t.pattern.rings;
       t.pattern.placements = {
         repeat: [2, 2],
         rules: [

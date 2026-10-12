@@ -176,8 +176,9 @@
   "pattern": {
     "cell": "cell",
     "text": "Repeat the tile edge to edge. Neighbouring rosettes touch at the points of their standing squares, and the space between four rosettes is left as ground.",
-    "palette": "Fès tile",
-    "colors": {"ground": "ground", "arrow": "a", "blade": "b", "star": "c", "dart": "ground"}
+    "palette": "Alhambra",
+    "colors": {"ground": "ground", "arrow": "a", "blade": "b", "star": "c", "dart": "ground"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values for the square repeat, computed by the engine. The repeat itself is not attested by a photo.",

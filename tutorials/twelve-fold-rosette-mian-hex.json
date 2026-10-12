@@ -285,9 +285,10 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the hexagon side to side. The outline lines run on into the neighbouring tiles and close the shapes between the rosettes.",
-    "palette": "Fès tile",
+    "palette": "Mamluk wood",
     "look": "strapwork",
-    "colors": {"star": "c", "outer": "b", "kite": "d", "bow": "ground", "petal": "d"}
+    "colors": {"star": "c", "outer": "b", "kite": "d", "bow": "ground", "petal": "d"},
+    "rings": true
   },
   "expect": {
     "pieceTypes": 5,

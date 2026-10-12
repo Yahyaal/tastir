@@ -233,7 +233,8 @@
     "cell": "tile",
     "text": "Repeat the square cell edge to edge: a large square in each gap of the band grid, and a small star where the bands cross.",
     "palette": "Alhambra",
-    "colors": { "square": "c", "band": "ground", "star": "d" }
+    "colors": {"square": "c", "band": "ground", "star": "d"},
+    "rings": true
   },
   "expect": {
     "pieceTypes": 3,

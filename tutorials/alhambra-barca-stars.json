@@ -339,7 +339,8 @@
     "text": "Repeat the square cell edge to edge: large stars on the grid, a small square where four cells meet, and the bands interlaced between them.",
     "palette": "Alhambra",
     "look": "strapwork",
-    "colors": { "star": "d", "fork": "a", "bar": "b", "square": "a" }
+    "colors": {"star": "d", "fork": "a", "bar": "b", "square": "a"},
+    "rings": true
   },
   "expect": {
     "pieceTypes": 4,

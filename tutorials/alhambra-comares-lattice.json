@@ -179,8 +179,9 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the tile edge to edge. Long bands cross on the diagonals and close into two kinds of twelve-sided pieces, as in a second panel of the Hall of Comares.",
-    "palette": "Fès tile",
-    "colors": {"large": "a", "small": "b"}
+    "palette": "Alhambra",
+    "colors": {"large": "a", "small": "b"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values in grid squares (OA = one square), computed by the engine; the pieces fill the tile.",

@@ -136,8 +136,9 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the small tile side to side. Each corner hexagon is completed by the two tiles that share it, so every hexagon touches three stars, and hexagons meet only at their corners, where two star points fit between them.",
-    "palette": "Fès tile",
-    "colors": {"star": "a", "hexagon": "b"}
+    "palette": "Timurid tile",
+    "colors": {"star": "a", "hexagon": "b"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values, in units of OA, computed by the engine and checked for six-fold symmetry, no slivers, and pieces that exactly fill the tile. The hexagons have side 1/3 and the star's points reach 1/√3.",

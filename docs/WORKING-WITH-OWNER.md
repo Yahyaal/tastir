@@ -38,4 +38,4 @@ The owner’s 11 October Jali correction: minimize clicks. Show material choices
 - Many designs per pattern family, not one. A single construction can give many designs.
 - Later, learners make their own designs from a construction (free inking already exists in the player).
 - Every design is checked against a real example, and specific sources are credited in the tutorial.
-- Palettes: on 12 October the owner picked columns C and D on `#/plan/colors`: a palette per tradition with clear light, mid and dark steps, and colour by role. Show the new colours on the review page before changing the tutorials' palettes.
+- Palettes: on 12 October the owner chose colouring by rings (`pattern.rings`, `apps/player/src/app/rings.ts`) in four glaze palettes, from their own pictures of real zellige (kept private in `docs/research/zellige/`). Every tutorial now uses it except the Comares bones and Infantas plaster stars. The owner may name more to look at again; show any colour change as before and after on the review page first.

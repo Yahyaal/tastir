@@ -814,15 +814,9 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the rectangle edge to edge: the decagrams meet at their corners and interlace across the Persian Girih tilework.",
-    "palette": "Isfahan",
-    "colors": {
-      "star": "c",
-      "hexagon": "a",
-      "bowtie": "b",
-      "kite": "d",
-      "dart": "b",
-      "corner": "a"
-    }
+    "palette": "Timurid tile",
+    "colors": {"star": "c", "hexagon": "a", "bowtie": "b", "kite": "d", "dart": "b", "corner": "a"},
+    "rings": true
   },
   "expect": {
     "pieceTypes": 6,

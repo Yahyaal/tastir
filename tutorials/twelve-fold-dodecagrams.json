@@ -142,8 +142,9 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the hexagon side to side. Neighbouring stars touch point to point, and the space between three stars stays open.",
-    "palette": "Fès tile",
-    "colors": {"star": "a", "ground": "b", "rhombus": "c"}
+    "palette": "Timurid tile",
+    "colors": {"star": "a", "ground": "b", "rhombus": "c"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values computed by the engine; the pattern matches the Tuts+ drawing but no photo of a real example was found.",

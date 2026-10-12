@@ -6756,7 +6756,7 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the tile edge to edge. Neighbouring wheels meet at the corners of their large octagons.",
-    "palette": "Fès tile",
+    "palette": "Marinid zellige",
     "colors": {
       "ground": "ground",
       "joint": "b",
@@ -6766,7 +6766,8 @@
       "petal": "b",
       "band": "c",
       "kite": "a"
-    }
+    },
+    "rings": true
   },
   "expect": {
     "note": "Golden values in units of OA (the main circle's radius), computed by the engine. The kites and the thin star between wheels are small by design.",

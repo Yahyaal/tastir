@@ -456,14 +456,9 @@
   "pattern": {
     "cell": "static",
     "text": "Repeat the static tile to fill the wall.",
-    "palette": "Isfahan",
-    "colors": {
-      "khatam_star": "c",
-      "cross_arm": "a",
-      "petal": "b",
-      "square": "d",
-      "shield": "ground"
-    }
+    "palette": "Timurid tile",
+    "colors": {"khatam_star": "c", "cross_arm": "a", "petal": "b", "square": "d", "shield": "ground"},
+    "rings": true
   },
   "expect": {
     "pieceTypes": 5,

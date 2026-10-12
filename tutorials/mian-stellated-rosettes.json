@@ -660,7 +660,7 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the square cell edge to edge: rosettes meet on the sides, and an octagon ringed by four hexagons opens at every corner.",
-    "palette": "Fès tile",
+    "palette": "Mamluk wood",
     "look": "strapwork",
     "colors": {
       "star": "c",
@@ -671,7 +671,8 @@
       "hexagon": "d",
       "petal": "d",
       "kite2": "b"
-    }
+    },
+    "rings": true
   },
   "expect": {
     "pieceTypes": 8,

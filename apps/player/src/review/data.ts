@@ -1507,35 +1507,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'colours-rings-all',
-    text: 'Every tutorial coloured by rings: left today, right proposed, one picture per tradition. Shall I write these colours into the tutorials? Name any that still look wrong. Live at /#/plan/colors, under “Every tutorial”.',
-    choices: ['Yes, all of them', 'Yes, except the ones I name', 'Not yet'],
-    pictures: [
-      {
-        src: 'renders/colors/rings-0.png',
-        caption:
-          'Nasrid. Your seven are all by rings now, so the Mexuar stars, the frets and the Sala de los Reyes panels take turns between teal and honey. The Comares bones keep their photo colouring, white across and coloured up.',
-      },
-      {
-        src: 'renders/colors/rings-1.png',
-        caption:
-          'Marinid zellige: Kurt’s wheels alternate green and red rosettes, the Bou Inania rosette rings out in blue, honey and green.',
-      },
-      {
-        src: 'renders/colors/rings-2.png',
-        caption: 'Timurid tile: turquoise, ochre and cobalt.',
-      },
-      {
-        src: 'renders/colors/rings-3.png',
-        caption:
-          'Mamluk wood: ivory, light and mid woods and ebony. On six-fold patterns three rosettes take turns.',
-      },
-    ],
-    card: 'eight-fold-zellige',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -1801,8 +1773,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Colours: colouring by ring is in the app',
-    text: 'You said F was the missing thing. It is now built into the player: a tutorial turns it on with pattern.rings, the four tradition palettes are real glazes, two rings of one colour never touch, and at the colour stage a click repaints a whole ring. No tutorial uses it yet; next I recolour every tutorial with it, look hard at the seven you named, and show you each before and after.',
+    title: 'Colours: every tutorial is coloured by rings',
+    text: 'You said yes, so every tutorial now uses its tradition’s glazes and colours ring by ring round each rosette, with neighbouring rosettes taking turns. Only the Comares bones and the Infantas plaster stars keep their photo colouring by placement. Open any pattern at its result to see it, and name any that still look wrong.',
     link: { label: 'The colour notes', href: '/#/plan/colors' },
   },
   next: [

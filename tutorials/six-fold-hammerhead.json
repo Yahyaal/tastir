@@ -157,8 +157,9 @@
   "pattern": {
     "cell": "flat",
     "text": "Repeat the hexagon lying on its side, side to side. The middles of the standing hexagon's sides line up with the next tiles' hammerhead lines into long straight lines, and between them new diamonds, triangles, kites and rectangles appear.",
-    "palette": "Fès tile",
-    "colors": {"hammerhead": "a", "star": "b", "kite": "ground", "triangle": "c", "rhombus": "ground"}
+    "palette": "Mamluk wood",
+    "colors": {"hammerhead": "a", "star": "b", "kite": "ground", "triangle": "c", "rhombus": "ground"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values, in units of OA, computed by the engine and checked for six-fold symmetry, no slivers, and pieces that exactly fill the flat hexagon of area 3√3/2.",

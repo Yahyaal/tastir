@@ -313,9 +313,10 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the hexagon side to side: the shields meet back to back on the tile’s sides, and a triangle opens between every three rosettes. On the doors a small five-pointed star is inlaid at each corner of the triangles.",
-    "palette": "Fès tile",
+    "palette": "Mamluk wood",
     "look": "strapwork",
-    "colors": {"star": "c", "shield": "a", "triangle": "d", "kite": "b"}
+    "colors": {"star": "c", "shield": "a", "triangle": "d", "kite": "b"},
+    "rings": true
   },
   "expect": {
     "pieceTypes": 4,

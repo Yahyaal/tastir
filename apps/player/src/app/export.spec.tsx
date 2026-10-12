@@ -1,10 +1,21 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import example from '@tutorials/eight-fold-star-and-cross.json';
+import starAndCross from '@tutorials/eight-fold-star-and-cross.json';
 import zellige from '@tutorials/eight-fold-zellige.json';
 import { Play } from './app';
 import { pieceColors } from './coloring';
 import { wallSvg } from './exporting';
 import { loadModel } from './model';
+
+/** A tutorial file as plain JSON. */
+type Loose = { pattern: Record<string, unknown> };
+
+/** The star and cross coloured by shape in Fès tile, as a pattern with no
+ * rosette is coloured: the colour stage's shape mode. */
+const { rings: _rings, ...byShape } = (starAndCross as Loose).pattern;
+const example = {
+  ...(starAndCross as Loose),
+  pattern: { ...byShape, palette: 'Fès tile' },
+};
 
 const parse = (svg: string) =>
   new DOMParser().parseFromString(svg, 'image/svg+xml');

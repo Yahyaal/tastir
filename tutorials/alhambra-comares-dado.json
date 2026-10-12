@@ -164,7 +164,7 @@
     "text": "Repeat the square cell edge to edge: octagons on the grid, a long hexagon between each two, and five small squares in a cross where four cells meet.",
     "palette": "Alhambra",
     "colors": {"octagon": "ground", "hexagon": "c", "square": "a"},
-    "placements": {"repeat": [1, 1], "rules": [{"piece": "square", "nth": 0, "color": "ground"}]}
+    "rings": true
   },
   "expect": {
     "pieceTypes": 3,

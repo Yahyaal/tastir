@@ -134,8 +134,9 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the tile edge to edge. Notched eight-pointed stars and crosses alternate, as in a tile panel of the Hall of Comares.",
-    "palette": "Fès tile",
-    "colors": {"star": "a", "cross": "b"}
+    "palette": "Alhambra",
+    "colors": {"star": "a", "cross": "b"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values in grid squares (OA = one square), computed by the engine; the pieces fill the tile.",

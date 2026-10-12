@@ -7,6 +7,9 @@ import { loadModel } from './model';
 import { colorRepeat, nthOf, placeFills, placeKey, turnOf } from './placement';
 import { Wall } from './Wall';
 
+/** A tutorial file as plain JSON. */
+type Loose = { pattern: Record<string, unknown> };
+
 const bones = loadModel(bonesJson);
 const alhambra = PALETTES['Alhambra'] as Record<string, string>;
 
@@ -81,8 +84,9 @@ describe('colors by placement', () => {
     expect(fill(1, 1, 0)).toBe('#00ff00');
   });
 
-  it('keeps one color per shape when the tutorial has no placements', () => {
-    const m = loadModel(hammerJson);
+  it('keeps one color per shape when the tutorial has no placements or rings', () => {
+    const { rings: _rings, ...byShape } = (hammerJson as Loose).pattern;
+    const m = loadModel({ ...(hammerJson as Loose), pattern: byShape });
     expect(colorRepeat(m)).toEqual([1, 1]);
     expect(placeKey(m, 0, 3, 5)).toBe(
       typeKey(m.pattern.types[m.pattern.pieces[0]!.type]!),

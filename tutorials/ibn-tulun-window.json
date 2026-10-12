@@ -291,8 +291,9 @@
   "pattern": {
     "cell": "flat",
     "text": "Repeat the hexagon through the six noses side to side. Three fish meet nose to nose at every corner, their fins closing into a three-armed opening, and the small squares where the two stars cross run on into the next tile.",
-    "palette": "Fès tile",
-    "colors": {"star": "a", "triad": "b", "chevron": "c", "heart": "ground", "square": "ground"}
+    "palette": "Mamluk wood",
+    "colors": {"star": "a", "triad": "b", "chevron": "c", "heart": "ground", "square": "ground"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values, in units of OA, computed by the engine and checked for six-fold symmetry, no slivers, and pieces that exactly fill the hexagon through the six noses.",

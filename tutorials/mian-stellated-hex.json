@@ -1541,15 +1541,9 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the hexagon side to side like honeycomb: rosettes meet on the sides, and star tips interlace across the hexagonal joints.",
-    "palette": "Fès tile",
-    "colors": {
-      "star": "c",
-      "kite": "b",
-      "hexagon": "d",
-      "floret": "a",
-      "petal": "d",
-      "kite2": "b"
-    }
+    "palette": "Mamluk wood",
+    "colors": {"star": "c", "kite": "b", "hexagon": "d", "floret": "a", "petal": "d", "kite2": "b"},
+    "rings": true
   },
   "expect": {
     "pieceTypes": 6,

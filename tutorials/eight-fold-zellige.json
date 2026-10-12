@@ -754,13 +754,14 @@
   "pattern": {
     "cell": "cell",
     "text": "Repeat the tile edge to edge. Each rosette meets its neighbours point to point, and where four tiles meet, the lines close into an octagon inside a second eight-pointed star.",
-    "palette": "Fès tile",
+    "palette": "Marinid zellige",
     "colors": {
       "star": "a",
       "octagon": "c",
       "petal": "ground",
       "link": "b"
-    }
+    },
+    "rings": true
   },
   "expect": {
     "note": "Golden values, in units of OA, computed by the engine and checked for eight-fold symmetry, no slivers, and pieces that exactly fill the tile.",

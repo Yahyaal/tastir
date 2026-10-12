@@ -743,12 +743,13 @@
   "pattern": {
     "cell": "cell",
     "text": "Repeat the tile edge to edge. Each rosette touches its four neighbours at the tips of its petals, and the ground between them is one piece.",
-    "palette": "Fès tile",
+    "palette": "Marinid zellige",
     "colors": {
       "star": "a",
       "petal": "b",
       "ground": "ground"
-    }
+    },
+    "rings": true
   },
   "expect": {
     "note": "Golden values, in units of OA, computed by the engine and checked for sixteen-fold symmetry, no slivers, and pieces that exactly fill the tile.",

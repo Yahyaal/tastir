@@ -6977,7 +6977,7 @@
   "pattern": {
     "cell": "hexTile",
     "text": "Repeat the hexagon side to side. Each row of wheels sits half a wheel along from the row below and as close as it can come, the large octagons of neighbouring rows meeting corner to corner.",
-    "palette": "Fès tile",
+    "palette": "Marinid zellige",
     "colors": {
       "ground": "ground",
       "joint": "b",
@@ -6987,7 +6987,8 @@
       "petal": "b",
       "band": "c",
       "kite": "a"
-    }
+    },
+    "rings": true
   },
   "expect": {
     "note": "Golden values in units of OA. Rows half a wheel apart sideways and 2√2 − 1 apart upward (the owner's suggestion, as close as the wheels allow); the kites and the joint star are small by design.",

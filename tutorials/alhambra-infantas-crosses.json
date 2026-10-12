@@ -163,8 +163,9 @@
   "pattern": {
     "cell": "tile",
     "text": "Repeat the tile edge to edge. Crosses and pinwheel shapes lock together, as in the tile panel of the Torre de las Infantas.",
-    "palette": "Fès tile",
-    "colors": {"pinwheel": "ground", "cross": "a"}
+    "palette": "Alhambra",
+    "colors": {"pinwheel": "ground", "cross": "a"},
+    "rings": true
   },
   "expect": {
     "note": "Golden values in grid squares (OA = one square), computed by the engine; the pieces fill the tile of 18 squares.",
