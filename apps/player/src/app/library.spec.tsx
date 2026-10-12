@@ -220,6 +220,24 @@ describe('the address', () => {
     expect(next.textContent).toContain('star and octagon');
   }, 30000);
 
+  it('lists every pattern in a side menu, with this one marked', () => {
+    render(<App />);
+    go('#/eight-fold-star-and-cross');
+    act(() => screen.getByRole('button', { name: 'Patterns' }).click());
+    const menu = screen.getByRole('dialog', { name: 'Patterns' });
+    expect(within(menu).getAllByRole('link').length).toBe(LIBRARY.length);
+    expect(
+      within(menu)
+        .getByRole('link', { name: 'Eight-fold star and cross' })
+        .getAttribute('aria-current'),
+    ).toBe('page');
+    expect(within(menu).getByRole('heading', { name: '8-fold' })).toBeTruthy();
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    });
+    expect(screen.queryByRole('dialog', { name: 'Patterns' })).toBeNull();
+  }, 30000);
+
   it('opens the tutorial in the address on load', () => {
     window.location.hash = '#/eight-fold-star-and-cross';
     render(<App />);

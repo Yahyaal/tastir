@@ -18,6 +18,9 @@ const KEY = 'tastir.library';
 
 interface Kept extends LibraryFilters {
   readonly scroll?: number;
+  /** The first card in sight (its address) and its height on the screen. */
+  readonly anchor?: string;
+  readonly offset?: number;
 }
 
 function read(): Kept {
@@ -56,13 +59,46 @@ export function keepFilters({ style, level, fold }: LibraryFilters) {
   write({ style, level, fold });
 }
 
-export function keptScroll(): number {
-  const { scroll } = read();
-  return typeof scroll === 'number' && scroll > 0 ? scroll : 0;
+/** Where the learner was in the library, if anywhere. */
+export interface Place {
+  readonly scroll: number;
+  readonly anchor?: string;
+  readonly offset?: number;
 }
 
-export function keepScroll(y: number) {
-  write({ scroll: y });
+export function keptPlace(): Place | undefined {
+  const { scroll, anchor, offset } = read();
+  if (typeof scroll !== 'number' || scroll <= 0) return undefined;
+  return {
+    scroll,
+    ...(typeof anchor === 'string' && typeof offset === 'number'
+      ? { anchor, offset }
+      : {}),
+  };
+}
+
+/**
+ * Keeps the library's place as the learner leaves it: the scroll, and the
+ * first card in sight with its height on the screen. Parts of the page above
+ * the cards can finish loading after the way back, so the card, not the
+ * pixel count, says where the learner was.
+ */
+export function keepPlace() {
+  const card = cards().find((c) => c.getBoundingClientRect().bottom > 0);
+  write({
+    scroll: window.scrollY,
+    anchor: card?.getAttribute('href') ?? undefined,
+    offset: card?.getBoundingClientRect().top,
+  });
+}
+
+/** The library card with this address, if it is on the page. */
+export function cardAt(anchor: string): HTMLElement | undefined {
+  return cards().find((c) => c.getAttribute('href') === anchor);
+}
+
+function cards() {
+  return [...document.querySelectorAll<HTMLElement>('.cards .card')];
 }
 
 /** What the library needs to know about a tutorial before it is loaded. */

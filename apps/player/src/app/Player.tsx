@@ -35,7 +35,7 @@ import {
   type Stage,
 } from './model';
 import { Original } from './Original';
-import { NextPattern, PreviousPattern } from './PatternNav';
+import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
 import { PiecePanel } from './PiecePanel';
 import { colorRepeat, placeFills, placeKey } from './placement';
 import { PrintSheet, type Paper } from './PrintSheet';
@@ -528,6 +528,7 @@ export function Player({
         <PrintSheet model={inking.shown} paper={paper} onDone={stopPrinting} />
       ) : null}
       <header className="topbar">
+        {browsing ? <PatternMenu id={address} /> : null}
         <a
           className="home"
           href="#/"

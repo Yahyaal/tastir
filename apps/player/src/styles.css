@@ -280,17 +280,24 @@ a.button.primary:hover {
 /* The patterns before and after this one, named by their titles so they
    are not mistaken for the step buttons. Phones show Previous and Next. */
 .topbar .neighbour {
+  display: inline-flex;
   flex: 0 1 auto;
-  max-width: 15rem;
-  overflow: hidden;
+  gap: 4px;
+  min-width: 0;
+  max-width: 12rem;
   padding: 6px 12px;
   border: 1px solid var(--theme-border);
   border-radius: 999px;
   color: var(--on-lapis-muted);
   font-size: 0.85rem;
   text-decoration: none;
-  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* The title shortens; the arrow stays. */
+.topbar .neighbour-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .topbar .neighbour:hover,
@@ -301,6 +308,133 @@ a.button.primary:hover {
 
 .topbar .neighbour-short {
   display: none;
+}
+
+/* Every pattern in a panel from the left (PatternMenu), so the learner
+   can change pattern without going back to the library. */
+.topbar .menu-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: none;
+  color: var(--on-lapis-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.topbar .menu-button:hover,
+.topbar .menu-button:focus-visible {
+  border-color: var(--theme-border-hover);
+  color: var(--on-lapis);
+}
+
+.pattern-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(3, 8, 18, 0.6);
+}
+
+.pattern-menu {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: min(340px, 100%);
+  overflow-y: auto;
+  padding: 0 0 24px;
+  box-sizing: border-box;
+  background: var(--theme-bg-surface);
+  border-right: 1px solid var(--theme-border);
+  color: var(--on-lapis);
+  animation: pattern-menu-in 0.18s ease-out;
+}
+
+@keyframes pattern-menu-in {
+  from {
+    transform: translateX(-24px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pattern-menu {
+    animation: none;
+  }
+}
+
+.pattern-menu header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--theme-bg-surface);
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.pattern-menu h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.25rem;
+}
+
+.pattern-menu h3 {
+  margin: 16px 16px 6px;
+  color: var(--on-lapis-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pattern-menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pattern-menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 16px;
+  color: var(--on-lapis);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.pattern-menu a:hover,
+.pattern-menu a:focus-visible {
+  background: var(--theme-bg-raised);
+}
+
+.pattern-menu a[aria-current='page'] {
+  background: var(--theme-accent-muted);
+  box-shadow: inset 3px 0 0 var(--saffron);
+}
+
+.pattern-menu img,
+.pattern-menu .no-thumbnail {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  background: var(--theme-bg-card);
+}
+
+/* Narrower screens keep the room for the pattern's own title. */
+@media (max-width: 1200px) {
+  .topbar .neighbour-title {
+    display: none;
+  }
+
+  .topbar .neighbour-short {
+    display: inline;
+  }
 }
 
 /* The view settings, folded into one menu. */
@@ -2458,12 +2592,8 @@ main.stage .drawing:not(.wall) {
     display: none;
   }
 
-  .topbar .neighbour-title {
-    display: none;
-  }
-
-  .topbar .neighbour-short {
-    display: inline;
+  .pattern-menu {
+    width: 100%;
   }
 
   .view-menu {

@@ -6,7 +6,8 @@ import {
   filtered,
   keepFilters,
   keptFilters,
-  keptScroll,
+  cardAt,
+  keptPlace,
 } from './browsing';
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { Thumbnail } from './drawing';
@@ -363,35 +364,41 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
 
 /**
  * Coming back to the library puts the page where the learner left it (the
- * router keeps the place on the way out). Cards and shelves may still be
- * filling in, so it tries again each frame for a moment, and stops as soon
- * as the learner scrolls or types themselves.
+ * router keeps the place on the way out): the same card at the same height
+ * on the screen. Parts of the page may still be filling in, so it corrects
+ * each frame for a moment, and stops as soon as the learner scrolls or
+ * types themselves.
  */
 function useReturnToScroll() {
   useLayoutEffect(() => {
-    const y = keptScroll();
-    if (!y || typeof window.scrollTo !== 'function') return;
+    const place = keptPlace();
+    if (!place || typeof window.scrollTo !== 'function') return;
     const until = performance.now() + 1500;
     let frame = 0;
+    const events = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
     const stop = () => {
       if (typeof cancelAnimationFrame === 'function')
         cancelAnimationFrame(frame);
-      for (const kind of ['wheel', 'touchstart', 'keydown', 'pointerdown'])
-        window.removeEventListener(kind, stop);
+      for (const kind of events) window.removeEventListener(kind, stop);
     };
-    for (const kind of ['wheel', 'touchstart', 'keydown', 'pointerdown'])
+    for (const kind of events)
       window.addEventListener(kind, stop, { passive: true });
-    const go = () => {
-      window.scrollTo(0, y);
+    window.scrollTo(0, place.scroll);
+    const settle = () => {
+      const card = place.anchor ? cardAt(place.anchor) : undefined;
+      if (card && place.offset !== undefined) {
+        const off = card.getBoundingClientRect().top - place.offset;
+        if (Math.abs(off) > 1) window.scrollTo(0, window.scrollY + off);
+      } else if (Math.abs(window.scrollY - place.scroll) > 1)
+        window.scrollTo(0, place.scroll);
       if (
-        Math.abs(window.scrollY - y) > 1 &&
         performance.now() < until &&
         typeof requestAnimationFrame === 'function'
       )
-        frame = requestAnimationFrame(go);
+        frame = requestAnimationFrame(settle);
       else stop();
     };
-    go();
+    settle();
     return stop;
   }, []);
 }

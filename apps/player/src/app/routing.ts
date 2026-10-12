@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { keepScroll } from './browsing';
+import { keepPlace } from './browsing';
 /**
  * Set by a player whose design has unsaved changes: called when the
  * address changes, it may put the address back and ask first (true).
@@ -23,7 +23,7 @@ export function useRoute(): string {
       if (stayGuard?.(`#/${read()}`)) return;
       // Leaving the library: keep its place for the way back. The page
       // still shows it here, before the new route renders.
-      if (last === '') keepScroll(window.scrollY);
+      if (last === '') keepPlace();
       last = read();
       setRoute(last);
       window.scrollTo?.(0, 0);
