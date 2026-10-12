@@ -25,6 +25,7 @@ function go(hash: string) {
 
 afterEach(() => {
   window.location.hash = '';
+  window.sessionStorage.clear();
 });
 
 describe('the library', () => {
@@ -146,6 +147,52 @@ describe('the library', () => {
     expect(
       screen.getByText(/Cannot be played: Step 2, element "E"/),
     ).toBeTruthy();
+  });
+});
+
+describe('coming back to the library', () => {
+  const twoStars = () =>
+    entriesOf({
+      '../../../../tutorials/eight-fold-star-and-cross.json': example,
+      '../../../../tutorials/another-star.json': {
+        ...(structuredClone(example) as object),
+        id: 'another-star',
+        title: 'Another star',
+        style: 'Nasrid',
+      },
+    });
+
+  it('keeps the filters the learner chose', () => {
+    const entries = twoStars();
+    const { unmount } = render(<App entries={entries} />);
+    act(() => screen.getByRole('button', { name: 'Nasrid' }).click());
+    unmount();
+    render(<App entries={entries} />);
+    expect(
+      screen
+        .getByRole('button', { name: 'Nasrid' })
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
+    expect(document.querySelectorAll('.cards > li').length).toBe(1);
+  });
+
+  it('returns to the place on the page it left from', () => {
+    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    let y = 1234;
+    const scrollY = vi
+      .spyOn(window, 'scrollY', 'get')
+      .mockImplementation(() => y);
+    try {
+      render(<App entries={twoStars()} />);
+      go('#/eight-fold-star-and-cross');
+      expect(scrollTo).toHaveBeenLastCalledWith(0, 0);
+      y = 0;
+      go('#/');
+      expect(scrollTo).toHaveBeenLastCalledWith(0, 1234);
+    } finally {
+      scrollTo.mockRestore();
+      scrollY.mockRestore();
+    }
   });
 });
 

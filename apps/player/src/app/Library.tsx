@@ -1,6 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { listPatterns } from '../editor/patterns';
 import { NewPattern, PatternShelf } from '../editor/PatternShelf';
+import {
+  aboutOf,
+  filtered,
+  keepFilters,
+  keptFilters,
+  keptScroll,
+} from './browsing';
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { Thumbnail } from './drawing';
 import { type Entry } from './library';
@@ -9,24 +16,6 @@ import { Shelf } from './Shelf';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
 import { HeroDrawing } from './Hero';
-/** What the library needs to know about a tutorial before it is loaded. */
-function aboutOf(json: unknown): {
-  style?: string;
-  level?: string;
-  fold?: number;
-} {
-  const t = (json ?? {}) as {
-    style?: unknown;
-    level?: unknown;
-    fold?: unknown;
-  };
-  return {
-    ...(typeof t.style === 'string' ? { style: t.style } : {}),
-    ...(typeof t.level === 'string' ? { level: t.level } : {}),
-    ...(typeof t.fold === 'number' ? { fold: t.fold } : {}),
-  };
-}
-
 const LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
 const capital = (s: string) => (s ? s[0]?.toUpperCase() + s.slice(1) : s);
 
@@ -113,9 +102,11 @@ const TRADITIONS: Record<
 
 /** Every tutorial, with a picture of the finished pattern. */
 export function Library({ entries }: { entries: readonly Entry[] }) {
-  const [style, setStyle] = useState<string>();
-  const [level, setLevel] = useState<string>();
-  const [fold, setFold] = useState<number>();
+  const [style, setStyle] = useState(() => keptFilters().style);
+  const [level, setLevel] = useState(() => keptFilters().level);
+  const [fold, setFold] = useState(() => keptFilters().fold);
+  useEffect(() => keepFilters({ style, level, fold }), [style, level, fold]);
+  useReturnToScroll();
   const [designs, setDesigns] = useState(listDesigns);
   const [patterns, setPatterns] = useState(listPatterns);
   const styles = [
@@ -126,14 +117,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   const folds = [
     ...new Set(entries.flatMap((e) => aboutOf(e.preview ?? e.json).fold ?? [])),
   ].sort((a, b) => a - b);
-  const shown = entries.filter((e) => {
-    const about = aboutOf(e.preview ?? e.json);
-    return (
-      (!style || about.style === style) &&
-      (!level || about.level === level) &&
-      (!fold || about.fold === fold)
-    );
-  });
+  const shown = filtered(entries, { style, level, fold });
   const hero = entries.find((e) => e.id === HERO) ?? entries[0];
   const first = entries.find((e) => e.id === FIRST) ?? entries[0];
   return (
@@ -375,6 +359,41 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
       </footer>
     </div>
   );
+}
+
+/**
+ * Coming back to the library puts the page where the learner left it (the
+ * router keeps the place on the way out). Cards and shelves may still be
+ * filling in, so it tries again each frame for a moment, and stops as soon
+ * as the learner scrolls or types themselves.
+ */
+function useReturnToScroll() {
+  useLayoutEffect(() => {
+    const y = keptScroll();
+    if (!y || typeof window.scrollTo !== 'function') return;
+    const until = performance.now() + 1500;
+    let frame = 0;
+    const stop = () => {
+      if (typeof cancelAnimationFrame === 'function')
+        cancelAnimationFrame(frame);
+      for (const kind of ['wheel', 'touchstart', 'keydown', 'pointerdown'])
+        window.removeEventListener(kind, stop);
+    };
+    for (const kind of ['wheel', 'touchstart', 'keydown', 'pointerdown'])
+      window.addEventListener(kind, stop, { passive: true });
+    const go = () => {
+      window.scrollTo(0, y);
+      if (
+        Math.abs(window.scrollY - y) > 1 &&
+        performance.now() < until &&
+        typeof requestAnimationFrame === 'function'
+      )
+        frame = requestAnimationFrame(go);
+      else stop();
+    };
+    go();
+    return stop;
+  }, []);
 }
 
 function Chip({

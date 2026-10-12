@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { keepScroll } from './browsing';
 /**
  * Set by a player whose design has unsaved changes: called when the
  * address changes, it may put the address back and ask first (true).
@@ -17,9 +18,14 @@ export function useRoute(): string {
   };
   const [route, setRoute] = useState(read);
   useEffect(() => {
+    let last = read();
     const onChange = () => {
       if (stayGuard?.(`#/${read()}`)) return;
-      setRoute(read());
+      // Leaving the library: keep its place for the way back. The page
+      // still shows it here, before the new route renders.
+      if (last === '') keepScroll(window.scrollY);
+      last = read();
+      setRoute(last);
       window.scrollTo?.(0, 0);
     };
     window.addEventListener('hashchange', onChange);
