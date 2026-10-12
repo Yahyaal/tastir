@@ -107,25 +107,27 @@ describe('coloring in the player', () => {
     expect(starFills()).toEqual(new Set([PALETTES.Chefchaouen?.a]));
   });
 
-  it('highlights every copy of the piece under the pointer', () => {
+  it('marks the piece under the pointer in the list, not on the wall', () => {
     atColor();
+    const row = (name: string) =>
+      screen.getByRole('button', { name: `Recolor every ${name}` })
+        .parentElement as Element;
     fireEvent.pointerMove(document.querySelector('svg.wall') as Element);
-    const lit = [...document.querySelectorAll('.wall .wall-piece.hl')];
-    expect(lit.length).toBe(
-      document.querySelectorAll('.wall .wall-piece[data-type="0"]').length,
-    );
-    expect(lit.every((p) => p.getAttribute('data-type') === '0')).toBe(true);
-    expect(document.querySelectorAll('.wall .wall-piece.dim').length).toBe(
-      document.querySelectorAll('.wall .wall-piece[data-type="1"]').length,
-    );
-    fireEvent.pointerEnter(
-      screen.getByRole('button', { name: 'Recolor every cross' }),
-    );
+    // The wall keeps every piece as it is: nothing dims or lights up.
     expect(
-      [...document.querySelectorAll('.wall .wall-piece.hl')].every(
-        (p) => p.getAttribute('data-type') === '1',
+      [...document.querySelectorAll('.wall .wall-piece')].every(
+        (p) => p.getAttribute('class') === 'wall-piece',
       ),
     ).toBe(true);
+    expect(row('star').className).toBe('hovered');
+    fireEvent.pointerEnter(row('cross'));
+    expect(row('cross').className).toBe('hovered');
+    expect(row('star').className).toBe('');
+    // The selected type keeps its own box, even under the pointer.
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Recolor every cross' }),
+    );
+    expect(row('cross').className).toBe('active');
   });
 });
 

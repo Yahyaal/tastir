@@ -97,7 +97,9 @@ export function PiecePanel({
         {types.map((t, i) => (
           <li
             key={typeKey(t)}
-            className={i === hovered || i === selected ? 'active' : undefined}
+            className={
+              i === selected ? 'active' : i === hovered ? 'hovered' : undefined
+            }
             onPointerEnter={() => onHover(i)}
           >
             <button

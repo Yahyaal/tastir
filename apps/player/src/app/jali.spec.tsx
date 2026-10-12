@@ -54,14 +54,7 @@ describe.each([example, zellige])('Jali: $id', (json) => {
     (grout) => {
       const { container } = render(
         <>
-          <Wall
-            model={model}
-            colors={colors}
-            look="jali"
-            grout={grout}
-            enter
-            hovered={0}
-          />
+          <Wall model={model} colors={colors} look="jali" grout={grout} enter />
           <Thumbnail model={model} look="jali" grout={grout} />
         </>,
       );
