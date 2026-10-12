@@ -1507,7 +1507,36 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'colours-originals',
+    text: 'Like the original: each tutorial with a photo, its photo, today and the proposed look. Shall I write these into the tutorials? Name any that still look wrong. Live at /#/plan/colors, at the top.',
+    choices: ['Yes, all of them', 'Yes, except the ones I name', 'Not yet'],
+    pictures: [
+      {
+        src: 'renders/colors/orig-0.png',
+        caption:
+          'The Comares dado (beige octagons, brown hexagons, a cross of black squares round a white one), the squares and stars, the Comares bones and the framed stars.',
+      },
+      {
+        src: 'renders/colors/orig-1.png',
+        caption:
+          'The two plaster frets, carved, and the two Sala de los Reyes tile panels. The twelve-pointed stars are the least sure: the photo is small and blurred.',
+      },
+      {
+        src: 'renders/colors/orig-2.png',
+        caption:
+          'The carved wooden bath stars, the Barca stars (black and white photo, so Alhambra glazes), the Bou Inania wall and the Itimad marble inlay.',
+      },
+      {
+        src: 'renders/colors/orig-3.png',
+        caption:
+          'The two Cairo minbars: wooden bands, carved, with ivory edges on the stellated rosettes.',
+      },
+    ],
+    card: 'eight-fold-zellige',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;

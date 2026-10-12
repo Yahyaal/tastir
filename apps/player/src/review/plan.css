@@ -620,3 +620,14 @@
   margin-top: 6px;
   font-size: 0.9rem;
 }
+
+.colors-originals td img {
+  display: block;
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+}
+.colors-originals td .thumbnail {
+  width: 220px !important;
+  height: 220px !important;
+}
