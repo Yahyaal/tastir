@@ -97,3 +97,33 @@ export function filtered(
     );
   });
 }
+
+/** A tutorial's title before it is loaded. */
+export function titleOf(entry: Entry): string {
+  const json = entry.json as { title?: unknown } | undefined;
+  return (
+    entry.preview?.title ??
+    (typeof json?.title === 'string' ? json.title : entry.id)
+  );
+}
+
+/**
+ * The patterns before and after this one, in the order the library shows
+ * them under the learner's filters. A pattern the filters hide (opened from
+ * a link) walks the whole library instead. There is nothing before the
+ * first or after the last.
+ */
+export function neighbours(
+  entries: readonly Entry[],
+  id: string,
+  filters: LibraryFilters,
+): { previous?: Entry; next?: Entry } {
+  const shown = filtered(entries, filters);
+  const list = shown.some((e) => e.id === id) ? shown : entries;
+  const k = list.findIndex((e) => e.id === id);
+  if (k < 0) return {};
+  return {
+    ...(list[k - 1] ? { previous: list[k - 1] } : {}),
+    ...(list[k + 1] ? { next: list[k + 1] } : {}),
+  };
+}

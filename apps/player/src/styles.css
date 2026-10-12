@@ -277,6 +277,32 @@ a.button.primary:hover {
   letter-spacing: 0.01em;
 }
 
+/* The patterns before and after this one, named by their titles so they
+   are not mistaken for the step buttons. Phones show Previous and Next. */
+.topbar .neighbour {
+  flex: 0 1 auto;
+  max-width: 15rem;
+  overflow: hidden;
+  padding: 6px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  color: var(--on-lapis-muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.topbar .neighbour:hover,
+.topbar .neighbour:focus-visible {
+  border-color: var(--theme-border-hover);
+  color: var(--on-lapis);
+}
+
+.topbar .neighbour-short {
+  display: none;
+}
+
 /* The view settings, folded into one menu. */
 .view-menu {
   position: relative;
@@ -2430,6 +2456,14 @@ main.stage .drawing:not(.wall) {
 
   .topbar .wordmark {
     display: none;
+  }
+
+  .topbar .neighbour-title {
+    display: none;
+  }
+
+  .topbar .neighbour-short {
+    display: inline;
   }
 
   .view-menu {

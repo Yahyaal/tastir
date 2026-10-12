@@ -177,7 +177,9 @@ describe('coming back to the library', () => {
   });
 
   it('returns to the place on the page it left from', () => {
-    const scrollTo = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+    const scrollTo = vi
+      .spyOn(window, 'scrollTo')
+      .mockImplementation(() => undefined);
     let y = 1234;
     const scrollY = vi
       .spyOn(window, 'scrollY', 'get')
@@ -207,6 +209,16 @@ describe('the address', () => {
     go('#/');
     expect(screen.getByRole('heading', { name: 'Tastir' })).toBeTruthy();
   }, 30000); // with the library; a busy machine can push it past the default 5 s. // The library computes every tutorial in tutorials/, so this grows
+
+  it('links the patterns before and after it, by title', () => {
+    render(<App />);
+    go('#/eight-fold-star-and-cross');
+    const previous = screen.getByRole('link', { name: /^Previous pattern: / });
+    const next = screen.getByRole('link', { name: /^Next pattern: / });
+    expect(previous.getAttribute('href')).toBe('#/eight-fold-khatam');
+    expect(next.getAttribute('href')).toBe('#/eight-fold-star-and-octagon');
+    expect(next.textContent).toContain('star and octagon');
+  }, 30000);
 
   it('opens the tutorial in the address on load', () => {
     window.location.hash = '#/eight-fold-star-and-cross';

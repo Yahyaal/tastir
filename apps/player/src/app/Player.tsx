@@ -35,6 +35,7 @@ import {
   type Stage,
 } from './model';
 import { Original } from './Original';
+import { NextPattern, PreviousPattern } from './PatternNav';
 import { PiecePanel } from './PiecePanel';
 import { colorRepeat, placeFills, placeKey } from './placement';
 import { PrintSheet, type Paper } from './PrintSheet';
@@ -176,6 +177,8 @@ export function Player({
   const mine = address.startsWith('mine/');
   // A pattern opened from a share link: shown, not saved, until kept.
   const sharedView = address === 'shared';
+  // Library tutorials only: own and shared patterns are not in its order.
+  const browsing = !mine && !sharedView;
   const start = opened ? 'result' : asked;
   const stages = useMemo(() => stagesOf(tutorial), [tutorial]);
   const [index, setIndex] = useState(() =>
@@ -547,7 +550,9 @@ export function Player({
           </span>
           <span>All patterns</span>
         </a>
+        {browsing ? <PreviousPattern id={address} /> : null}
         <h1>{tutorial.title}</h1>
+        {browsing ? <NextPattern id={address} /> : null}
         {mine ? (
           <a
             className="edit-link"
