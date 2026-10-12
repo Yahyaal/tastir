@@ -38,15 +38,18 @@ describe('the coloring history', () => {
     expect(colorReducer(start, { kind: 'undo' })).toBe(start);
   });
 
-  it('has the seven preset palettes, each filling every slot', () => {
+  it('has the tradition palettes first, then the older ones, each filling every slot', () => {
     expect(Object.keys(PALETTES)).toEqual([
+      'Marinid zellige',
+      'Alhambra',
+      'Timurid tile',
+      'Mamluk wood',
       'Fès tile',
       'Marrakech',
       'Chefchaouen',
       'Tétouan',
       'Isfahan',
       'Kashan',
-      'Alhambra',
     ]);
     for (const p of Object.values(PALETTES))
       expect(Object.keys(p)).toEqual(['a', 'b', 'c', 'd', 'ground']);

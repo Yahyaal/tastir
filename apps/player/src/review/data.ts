@@ -1507,7 +1507,35 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'colours-proposal',
+    text: 'The new colours for every tutorial: left today, right proposed, one picture per tradition. Shall I write them into the tutorials? Name any that still look wrong. Live at /#/plan/colors, under “Your pick”.',
+    choices: ['Yes, all of them', 'Yes, except the ones I name', 'Not yet'],
+    pictures: [
+      {
+        src: 'renders/colors/group-0.png',
+        caption:
+          'Nasrid, in the Alhambra palette. The tutorials coloured from photos keep their colouring; the others are coloured by role.',
+      },
+      {
+        src: 'renders/colors/group-1.png',
+        caption:
+          'Marinid zellige. Kurt’s wheels and the Bou Inania rosette keep their own colours in the new palette.',
+      },
+      {
+        src: 'renders/colors/group-2.png',
+        caption: 'Timurid tile: Timurid, Safavid, Seljuk and Mughal patterns.',
+      },
+      {
+        src: 'renders/colors/group-3.png',
+        caption:
+          'Mamluk wood: the Cairo minbars, Samira Mian’s rosettes and Ibn Tulun.',
+      },
+    ],
+    card: 'eight-fold-zellige',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
@@ -1773,8 +1801,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Colours: your pick, C and D',
-    text: 'You chose C (clear light, mid and dark) and D (each tradition’s colours). D already keeps C’s light, mid and dark steps, so the plan is D everywhere: a palette per tradition, and each tutorial coloured by role. The filled wheel’s question had no picture and was unclear, so it is dropped; the wheel is recoloured with the rest and you choose from the new pictures.',
+    title: 'Colours: every tutorial in its tradition’s palette',
+    text: 'You chose C and D. The app now has four tradition palettes (Marinid zellige, Alhambra, Timurid tile, Mamluk wood), each with a light ground, a dark, an accent and a second colour. The question at the top shows every tutorial today and proposed; nothing in the tutorials has changed yet.',
     link: { label: 'The colour notes', href: '/#/plan/colors' },
   },
   next: [

@@ -6,8 +6,47 @@ export const SLOTS = ['a', 'b', 'c', 'd', 'ground'] as const;
 export type Slot = (typeof SLOTS)[number];
 export type Palette = Readonly<Record<Slot, string>>;
 
-/** Preset palettes, named after the places whose tilework they recall. */
+/**
+ * Preset palettes. The first four are a tradition's colours, each with
+ * clear steps of lightness and the same slot for the same role: `a` the
+ * dark, `b` the strong accent, `c` the second colour, `d` a rarer one and
+ * `ground` the light. The older palettes, named after places, stay so
+ * saved designs keep their colours.
+ */
 export const PALETTES: Readonly<Record<string, Palette>> = {
+  // Fès zellige of the Marinid madrasas: white, black, green, honey, blue.
+  'Marinid zellige': {
+    a: '#22201d',
+    b: '#1e6b4e',
+    c: '#c08a2e',
+    d: '#2a4f86',
+    ground: '#f2ede1',
+  },
+  // The glazed tile of the Alhambra's dados: white, black, teal, honey
+  // brown and a deep blue.
+  Alhambra: {
+    a: '#1f1c1a',
+    b: '#1f7f86',
+    c: '#a5652b',
+    d: '#2b4f8f',
+    ground: '#f1ece1',
+  },
+  // Timurid and Persian tile: white, cobalt, turquoise, ochre, green.
+  'Timurid tile': {
+    a: '#12335f',
+    b: '#1b9aa8',
+    c: '#d9a63b',
+    d: '#4c7a3d',
+    ground: '#f4f1ea',
+  },
+  // Mamluk woodwork: ebony, two woods, walnut, ivory.
+  'Mamluk wood': {
+    a: '#2b1d14',
+    b: '#7a4a26',
+    c: '#b98a52',
+    d: '#5a3a22',
+    ground: '#efe3c6',
+  },
   'Fès tile': {
     a: '#1d5c7c',
     b: '#2f7d4f',
@@ -49,15 +88,6 @@ export const PALETTES: Readonly<Record<string, Palette>> = {
     c: '#c46b3a',
     d: '#e9d8a6',
     ground: '#fbf7ee',
-  },
-  // The glazed tile of the Alhambra's dados: white, black, teal, honey
-  // brown and a deep blue.
-  Alhambra: {
-    a: '#1f1c1a',
-    b: '#1f7f86',
-    c: '#a5652b',
-    d: '#2b4f8f',
-    ground: '#f1ece1',
   },
 };
 

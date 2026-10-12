@@ -571,3 +571,31 @@
   stroke: #f4f1ea;
   stroke-width: 3px;
 }
+
+.colors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+.colors-proposed {
+  margin: 0;
+}
+.colors-proposed figcaption small {
+  display: block;
+  color: var(--muted);
+}
+.colors-proposed > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.colors-proposed .thumbnail {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+}
+.colors-proposed .colors-waiting {
+  width: auto;
+  height: 140px;
+}

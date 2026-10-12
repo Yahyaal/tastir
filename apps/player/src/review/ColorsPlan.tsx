@@ -1,9 +1,10 @@
 import type { Model } from '../app/model';
 import { useMemo } from 'react';
-import { PALETTES, typeKey, type Coloring } from '../app/coloring';
+import { PALETTES, typeKey, type Coloring, type Slot } from '../app/coloring';
 import { Thumbnail } from '../app/drawing';
 import { LIBRARY } from '../app/library';
 import { PROGRESS_TEXT, useModel } from '../app/workerClient';
+import { proposal, roleSlots, traditionPalette } from './colorProposal';
 import './review.css';
 import './plan.css';
 
@@ -87,65 +88,26 @@ function lightness(hex: string): number {
   return Math.round(y > 0.008856 ? 116 * Math.cbrt(y) - 16 : 903.3 * y);
 }
 
-/**
- * Colour by role: the star (the type with most corners) takes the accent,
- * the type covering most of the wall is the ground (light; dark under
- * strapwork, whose bands are already light), and every other type takes
- * the first colour none of its neighbours has, from dark, second, accent.
- */
+/** Colour by role (roleSlots), in a scheme's colours. */
 function byRole(model: Model, scheme: Scheme): Coloring {
-  const { pieces, types, cell } = model.pattern;
-  // Which types touch: pieces sharing an edge, over the cell's neighbours.
-  const key = (x: number, y: number) => `${x.toFixed(3)},${y.toFixed(3)}`;
-  const edges = new Map<string, Set<number>>();
-  for (let i = -1; i <= 1; i++)
-    for (let j = -1; j <= 1; j++) {
-      const dx = i * cell.u.x + j * cell.v.x;
-      const dy = i * cell.u.y + j * cell.v.y;
-      for (const piece of pieces) {
-        const ps = piece.polygon;
-        ps.forEach((p, k) => {
-          const q = ps[(k + 1) % ps.length] ?? p;
-          const a = key(p.x + dx, p.y + dy);
-          const b = key(q.x + dx, q.y + dy);
-          const edge = a < b ? `${a}|${b}` : `${b}|${a}`;
-          edges.set(edge, (edges.get(edge) ?? new Set()).add(piece.type));
-        });
-      }
-    }
-  const touches = types.map(() => new Set<number>());
-  for (const set of edges.values())
-    for (const a of set) for (const b of set) if (a !== b) touches[a]?.add(b);
-
-  const cover = (t: number) => (types[t]?.area ?? 0) * (types[t]?.perCell ?? 0);
-  const order = types.map((_, t) => t);
-  const star = [...order].sort(
-    (a, b) =>
-      (types[b]?.vertices ?? 0) - (types[a]?.vertices ?? 0) ||
-      cover(b) - cover(a),
-  )[0];
-  const ground = [...order]
-    .filter((t) => t !== star)
-    .sort((a, b) => cover(b) - cover(a))[0];
-  const strap = model.tutorial.pattern.look === 'strapwork';
-  const color = new Map<number, string>();
-  if (star !== undefined) color.set(star, scheme.accent);
-  if (ground !== undefined)
-    color.set(ground, strap ? scheme.dark : scheme.light);
-  const choices = strap
-    ? [scheme.second, scheme.accent, scheme.light]
-    : [scheme.dark, scheme.second, scheme.accent];
-  for (const t of [...order].sort((a, b) => cover(b) - cover(a))) {
-    if (color.has(t)) continue;
-    const near = [...(touches[t] ?? [])].map((n) => color.get(n));
-    const clashes = (c: string) => near.filter((n) => n === c).length;
-    const best = [...choices].sort((a, b) => clashes(a) - clashes(b))[0];
-    color.set(t, best ?? scheme.second);
-  }
+  const slots = roleSlots(
+    model.pattern,
+    model.tutorial.pattern.look === 'strapwork',
+  );
+  const colour: Record<Slot, string> = {
+    a: scheme.dark,
+    b: scheme.accent,
+    c: scheme.second,
+    d: scheme.second,
+    ground: scheme.light,
+  };
   return {
     palette: 'Fès tile',
     chosen: Object.fromEntries(
-      types.map((t, i) => [typeKey(t), color.get(i) ?? scheme.light]),
+      model.pattern.types.map((t, i) => [
+        typeKey(t),
+        colour[slots[i] ?? 'ground'],
+      ]),
     ),
   };
 }
@@ -196,6 +158,84 @@ function Row({ id, tradition }: { id: string; tradition: Scheme }) {
             </td>
           ))}
     </tr>
+  );
+}
+
+/** One tutorial today and with the proposed colours. */
+function Proposed({ id }: { id: string }) {
+  const entry = LIBRARY.find((e) => e.id === id);
+  const { model, progress } = useModel(entry?.json);
+  const proposed = useMemo(() => {
+    if (!model) return undefined;
+    const p = proposal(model.tutorial, model.pattern);
+    return {
+      kept: p.kept,
+      model: {
+        ...model,
+        tutorial: {
+          ...model.tutorial,
+          pattern: {
+            ...model.tutorial.pattern,
+            palette: p.palette,
+            colors: { ...p.colors },
+          },
+        },
+      },
+    };
+  }, [model]);
+  return (
+    <figure className="colors-proposed" id={`colors-${id}`}>
+      <figcaption>
+        {entry?.preview?.title ?? model?.tutorial.title ?? id}
+        {proposed?.kept && (
+          <small>
+            {proposed.kept === 'photo'
+              ? 'coloured from its photo: palette only'
+              : 'its own colours kept: palette only'}
+          </small>
+        )}
+      </figcaption>
+      {model && proposed ? (
+        <div>
+          <Thumbnail model={model} />
+          <Thumbnail model={proposed.model} />
+        </div>
+      ) : (
+        <div className="colors-waiting">
+          {PROGRESS_TEXT[progress ?? 'checking']}
+        </div>
+      )}
+    </figure>
+  );
+}
+
+/** Every tutorial, grouped by the palette of its tradition. */
+function EveryTutorial() {
+  const groups = new Map<string, string[]>();
+  for (const e of LIBRARY) {
+    const palette = traditionPalette(e.preview?.style);
+    groups.set(palette, [...(groups.get(palette) ?? []), e.id]);
+  }
+  return (
+    <>
+      {[...groups].map(([palette, ids]) => (
+        <section key={palette}>
+          <h3>
+            {palette === 'Alhambra' ? 'Nasrid (Alhambra palette)' : palette}{' '}
+            <Swatches
+              colours={(['ground', 'b', 'c', 'a', 'd'] as const).map(
+                (k) => (PALETTES[palette] as Record<Slot, string>)[k],
+              )}
+            />
+          </h3>
+          <div className="colors-grid">
+            {ids.map((id) => (
+              <Proposed key={id} id={id} />
+            ))}
+          </div>
+        </section>
+      ))}
+    </>
   );
 }
 
@@ -344,6 +384,22 @@ export function ColorsPlan() {
         wall, and on a few patterns it will pick something odd. It is there to
         show the direction, not the final colours.
       </p>
+
+      <h2 className="group">Your pick: every tutorial, today and proposed</h2>
+      <p>
+        You chose C and D. D already keeps C’s light, mid and dark steps, so
+        each tradition now has one palette with the same roles: a light ground,
+        a dark, a strong accent and a second colour. Each tutorial below shows
+        today on the left and the proposal on the right. The Alhambra tutorials
+        and the Bou Inania wall were coloured by hand from photos of the real
+        walls, so they keep that colouring and only take their tradition’s
+        palette. The others are coloured by the role rule, except Kurt’s three
+        wheels and the Bou Inania rosette, where the rule went wrong (it took
+        the wheels’ large ground for the star, and turned the rosette honey all
+        over), so they keep their own colours in the new palette. Name any that
+        still look wrong; nothing changes in the tutorials until you agree.
+      </p>
+      <EveryTutorial />
 
       <h2 className="group">What I would do next, if you agree</h2>
       <p>
