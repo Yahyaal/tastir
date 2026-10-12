@@ -1,3 +1,4 @@
+import { ViewSwitch } from '../app/ViewSwitch';
 import {
   distance,
   figureOn,
@@ -1028,9 +1029,7 @@ export function DrawAlong({
           />
           Show helper lines
         </label>
-        <a className="edit-link" href={`#/${address}`}>
-          Watch it drawn
-        </a>
+        <ViewSwitch id={address} view="draw" />
       </header>
       <nav className="along-steps" aria-label="Steps">
         <span className="along-steps-label">Steps</span>

@@ -238,6 +238,36 @@ describe('the address', () => {
     expect(screen.queryByRole('dialog', { name: 'Patterns' })).toBeNull();
   }, 30000);
 
+  it('switches to the result in place, and keeps it for the next pattern', () => {
+    render(<App />);
+    go('#/eight-fold-star-and-cross');
+    const views = screen.getByRole('navigation', {
+      name: 'How to see this pattern',
+    });
+    expect(
+      within(views)
+        .getByRole('link', { name: 'Watch it drawn' })
+        .getAttribute('aria-current'),
+    ).toBe('page');
+    act(() => within(views).getByRole('link', { name: 'Result' }).click());
+    expect(window.location.hash).toBe('#/eight-fold-star-and-cross/result');
+    expect(
+      within(views)
+        .getByRole('link', { name: 'Result' })
+        .getAttribute('aria-current'),
+    ).toBe('page');
+    expect(
+      screen
+        .getByRole('link', { name: /^Next pattern: / })
+        .getAttribute('href'),
+    ).toBe('#/eight-fold-star-and-octagon/result');
+    expect(
+      within(views)
+        .getByRole('link', { name: 'Draw along' })
+        .getAttribute('href'),
+    ).toBe('#/eight-fold-star-and-cross/draw');
+  }, 30000);
+
   it('opens the tutorial in the address on load', () => {
     window.location.hash = '#/eight-fold-star-and-cross';
     render(<App />);

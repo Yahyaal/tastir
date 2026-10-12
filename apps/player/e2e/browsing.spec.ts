@@ -84,3 +84,30 @@ test('the side menu opens another pattern', async ({ page }) => {
   );
   expect(overflow).toBeLessThanOrEqual(0);
 });
+
+test('the view switch moves between watching, the result and drawing along', async ({
+  page,
+}) => {
+  await page.goto('/#/eight-fold-star-and-cross');
+  const views = page.getByRole('navigation', {
+    name: 'How to see this pattern',
+  });
+  await views.getByRole('link', { name: 'Result' }).click();
+  await expect(page).toHaveURL(/#\/eight-fold-star-and-cross\/result$/);
+  await expect(page.locator('svg.wall')).toBeVisible();
+  // From a result, the next pattern opens at its result.
+  await page.getByRole('link', { name: /^Next pattern/ }).click();
+  await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon\/result$/);
+  await expect(page.locator('svg.wall')).toBeVisible();
+  await views.getByRole('link', { name: 'Draw along' }).click();
+  await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon\/draw$/);
+  await views.getByRole('link', { name: 'Result' }).click();
+  await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon\/result$/);
+  await views.getByRole('link', { name: 'Watch it drawn' }).click();
+  await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon$/);
+  await expect(page.locator('svg.wall')).toHaveCount(0);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - window.innerWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(0);
+});

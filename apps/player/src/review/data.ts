@@ -1552,6 +1552,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'One switch: watch it drawn, result, draw along',
+      text: 'The top bar of the player and of draw along has the same three choices as the library cards. Watch and Result switch in place without loading the pattern again, and the address follows, so a reload opens the same view. Previous, Next and the Patterns menu keep the view you are in: from a result, Next shows the next pattern’s result.',
+      link: { label: 'Try it', href: '/#/alhambra-barca-stars/result' },
+    },
+    {
       title: 'Browsing: your place kept, previous and next, a pattern menu',
       text: 'Going back to the library, by Back or “All patterns”, puts you on the same card with the same filters. In the player, the buttons beside the title open the pattern before or after this one in the library’s order (only the filtered ones if you filtered), and “Patterns” at the top left opens every pattern in a side menu.',
       link: { label: 'Try it', href: '/#/alhambra-barca-stars' },

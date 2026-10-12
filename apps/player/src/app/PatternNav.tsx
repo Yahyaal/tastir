@@ -2,6 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { aboutOf, keptFilters, neighbours, titleOf } from './browsing';
 import { LIBRARY, type Entry } from './library';
 import { useModalFocus } from './useModalFocus';
+import { viewAddress, type View } from './ViewSwitch';
 
 /**
  * Links to the patterns before and after this one in the library's order,
@@ -15,15 +16,17 @@ export function NeighbourLink({
   id,
   title,
   direction,
+  view,
 }: {
   id: string;
   title: string;
   direction: 'previous' | 'next';
+  view: View;
 }) {
   return (
     <a
       className={`neighbour ${direction}`}
-      href={`#/${id}`}
+      href={viewAddress(id, view)}
       aria-label={`${direction === 'previous' ? 'Previous' : 'Next'} pattern: ${title}`}
       title={title}
     >
@@ -37,21 +40,28 @@ export function NeighbourLink({
   );
 }
 
-export function PreviousPattern({ id }: { id: string }) {
+/** The views keep: from a result, the next pattern opens at its result. */
+export function PreviousPattern({ id, view }: { id: string; view: View }) {
   const { previous } = useNeighbours(id);
   return previous ? (
     <NeighbourLink
       id={previous.id}
       title={titleOf(previous)}
       direction="previous"
+      view={view}
     />
   ) : null;
 }
 
-export function NextPattern({ id }: { id: string }) {
+export function NextPattern({ id, view }: { id: string; view: View }) {
   const { next } = useNeighbours(id);
   return next ? (
-    <NeighbourLink id={next.id} title={titleOf(next)} direction="next" />
+    <NeighbourLink
+      id={next.id}
+      title={titleOf(next)}
+      direction="next"
+      view={view}
+    />
   ) : null;
 }
 
@@ -70,7 +80,7 @@ function byFold(entries: readonly Entry[]) {
  * so the learner can change pattern without going back to the library.
  * Escape, a click outside or choosing a pattern closes it.
  */
-export function PatternMenu({ id }: { id: string }) {
+export function PatternMenu({ id, view }: { id: string; view: View }) {
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -94,12 +104,22 @@ export function PatternMenu({ id }: { id: string }) {
         </svg>
         Patterns
       </button>
-      {open ? <MenuPanel id={id} onClose={() => setOpen(false)} /> : null}
+      {open ? (
+        <MenuPanel id={id} view={view} onClose={() => setOpen(false)} />
+      ) : null}
     </>
   );
 }
 
-function MenuPanel({ id, onClose }: { id: string; onClose: () => void }) {
+function MenuPanel({
+  id,
+  view,
+  onClose,
+}: {
+  id: string;
+  view: View;
+  onClose: () => void;
+}) {
   const panel = useRef<HTMLElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   useModalFocus(panel, close, onClose, '.topbar', '.menu-button');
@@ -139,7 +159,7 @@ function MenuPanel({ id, onClose }: { id: string; onClose: () => void }) {
               {entries.map((e) => (
                 <li key={e.id}>
                   <a
-                    href={`#/${e.id}`}
+                    href={viewAddress(e.id, view)}
                     aria-current={e.id === id ? 'page' : undefined}
                     onClick={onClose}
                   >

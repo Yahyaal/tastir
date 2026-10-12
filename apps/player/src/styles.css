@@ -426,14 +426,62 @@ a.button.primary:hover {
   background: var(--theme-bg-card);
 }
 
-/* Narrower screens keep the room for the pattern's own title. */
-@media (max-width: 1200px) {
+/* Watch it drawn · Result · Draw along (ViewSwitch): one control in the
+   player and in draw along, the current view filled. */
+.view-switch {
+  display: inline-flex;
+  flex: none;
+  padding: 3px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+}
+
+.view-switch a {
+  padding: 5px 12px;
+  border-radius: 999px;
+  color: var(--on-lapis-muted);
+  font-size: 0.85rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.view-switch a:hover,
+.view-switch a:focus-visible {
+  color: var(--on-lapis);
+  background: var(--theme-bg-raised);
+}
+
+.view-switch a[aria-current='page'] {
+  background: var(--saffron);
+  color: var(--theme-bg-canvas);
+}
+
+/* Narrower screens keep the room for the pattern's own title: the
+   previous and next links show "Previous" and "Next" (their titles stay
+   in the tooltip), and below 1180 px the title takes its own line. */
+@media (max-width: 1440px) {
   .topbar .neighbour-title {
     display: none;
   }
 
   .topbar .neighbour-short {
     display: inline;
+  }
+}
+
+@media (max-width: 1180px) {
+  .player:not(.along) .topbar {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .player:not(.along) .topbar h1 {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .player:not(.along) .topbar .view-menu {
+    margin-left: auto;
   }
 }
 
@@ -2594,6 +2642,17 @@ main.stage .drawing:not(.wall) {
 
   .pattern-menu {
     width: 100%;
+  }
+
+  .view-switch {
+    order: 4;
+    flex-basis: 100%;
+    box-sizing: border-box;
+  }
+
+  .view-switch a {
+    flex: 1;
+    text-align: center;
   }
 
   .view-menu {

@@ -37,6 +37,7 @@ import {
 import { Original } from './Original';
 import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
 import { PiecePanel } from './PiecePanel';
+import { ViewSwitch, viewAddress, type View } from './ViewSwitch';
 import { colorRepeat, placeFills, placeKey } from './placement';
 import { PrintSheet, type Paper } from './PrintSheet';
 import { useRemembered } from './remembered';
@@ -512,6 +513,29 @@ export function Player({
 
   const colorStage = stage.kind === 'color';
 
+  // Watching and the result are both this page: the finished wall is the
+  // result, every stage before it is watching. The switch shows either in
+  // place, and the address follows (a library tutorial's own address only,
+  // not a design's), so a reload or a shared link opens the same view.
+  const view: View = colorStage ? 'result' : 'watch';
+  const show = (to: View) => {
+    if (to === 'draw') return false;
+    if (to === 'result') {
+      jump(last);
+      setComparing(true);
+    } else jump(0);
+    return true;
+  };
+  const shownView = useRef(view);
+  useEffect(() => {
+    if (shownView.current === view) return;
+    shownView.current = view;
+    if (!browsing || design) return;
+    const want = viewAddress(address, view);
+    if (window.location.hash !== want)
+      window.history.replaceState(window.history.state, '', want);
+  }, [view, browsing, design, address]);
+
   return (
     <div className={colorStage ? 'player at-color' : 'player'}>
       {leaving !== undefined && changed ? (
@@ -528,7 +552,7 @@ export function Player({
         <PrintSheet model={inking.shown} paper={paper} onDone={stopPrinting} />
       ) : null}
       <header className="topbar">
-        {browsing ? <PatternMenu id={address} /> : null}
+        {browsing ? <PatternMenu id={address} view={view} /> : null}
         <a
           className="home"
           href="#/"
@@ -551,9 +575,9 @@ export function Player({
           </span>
           <span>All patterns</span>
         </a>
-        {browsing ? <PreviousPattern id={address} /> : null}
+        {browsing ? <PreviousPattern id={address} view={view} /> : null}
         <h1>{tutorial.title}</h1>
-        {browsing ? <NextPattern id={address} /> : null}
+        {browsing ? <NextPattern id={address} view={view} /> : null}
         {mine ? (
           <a
             className="edit-link"
@@ -561,14 +585,9 @@ export function Player({
           >
             Edit this pattern
           </a>
-        ) : !sharedView ? (
-          <a
-            className="edit-link"
-            href={`#/${address}/draw`}
-            title="Draw it yourself, step by step, beside the tutorial"
-          >
-            Draw along
-          </a>
+        ) : null}
+        {browsing ? (
+          <ViewSwitch id={address} view={view} onShow={show} />
         ) : null}
         <details className="view-menu">
           <summary>View settings</summary>
