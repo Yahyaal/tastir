@@ -5,6 +5,14 @@ import { Thumbnail } from '../app/drawing';
 import { LIBRARY } from '../app/library';
 import { PROGRESS_TEXT, useModel } from '../app/workerClient';
 import { proposal, roleSlots, traditionPalette } from './colorProposal';
+import {
+  FES_GLAZE,
+  NASRID_GLAZE,
+  ringColoring,
+  TIMURID_GLAZE,
+  WOOD_GLAZE,
+  type Glaze,
+} from './ringColoring';
 import './review.css';
 import './plan.css';
 
@@ -239,6 +247,117 @@ function EveryTutorial() {
   );
 }
 
+/** A private reference picture from docs/research/zellige (dev server only). */
+const ref = (file: string) =>
+  `/__review/research/zellige/${encodeURIComponent(file)}`;
+
+/** What the owner's pictures of real walls show, each beside one. */
+const FINDINGS: readonly { file: string; title: string; text: string }[] = [
+  {
+    file: 'fez-medina-mosaic-tile-1882bmosaic-tile-492579.webp',
+    title: 'Colour goes by ring, not by shape.',
+    text: 'Round each rosette the centre is one colour, the ring of petals another, the next ring white, the next a third colour. The same shape changes colour by how far it sits from the centre. Ours colours every piece of one shape alike, so a wheel never gets its rings.',
+  },
+  {
+    file: '4064244051_3fc2d88c17_b.jpg',
+    title: 'Neighbouring rosettes take turns.',
+    text: 'Here the rosettes go red, green, red, green; in other pictures green and blue, or teal and orange. Ours repeats one rosette in the same colours everywhere.',
+  },
+  {
+    file: 'images (3).jpeg',
+    title: 'Black and white are everywhere, in small pieces.',
+    text: 'Measured on the photos, light covers about 35 to 45% of the wall and black 15 to 30%, mostly as hundreds of tiny stars and chips. Colours rarely touch: white or black runs between them.',
+  },
+  {
+    file: '14313115194_d0bc023f94_k.jpg',
+    title: 'Each centre is a spark.',
+    text: 'An orange centre in a blue rosette, a green one in a red rosette: a small hot spot of the other colour at the middle is what draws the eye.',
+  },
+  {
+    file: 'multicolored-mosaic-moroccan-zellige-seamless-260nw-672168502.webp',
+    title: 'One cool and one warm colour, and clear glazes.',
+    text: 'A wall pairs a cool and a warm colour, blue with honey, green with honey, teal with orange, with white and black round them. The glazes come from a few oxides (cobalt blue, copper green, iron honey, manganese black on tin white) and are clearer than ours.',
+  },
+];
+
+function Findings() {
+  return (
+    <div className="colors-findings">
+      {FINDINGS.map((f, k) => (
+        <figure key={f.file}>
+          <img src={ref(f.file)} alt="" loading="lazy" />
+          <figcaption>
+            <b>
+              {k + 1}. {f.title}
+            </b>{' '}
+            {f.text}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
+const GLAZE: Readonly<Record<string, Glaze>> = {
+  'Marinid zellige': FES_GLAZE,
+  Alhambra: NASRID_GLAZE,
+  'Timurid tile': TIMURID_GLAZE,
+  'Mamluk wood': WOOD_GLAZE,
+};
+
+const RING_COLUMNS = [
+  { letter: 'A', name: 'Today' },
+  { letter: 'D', name: 'The current proposal (your pick)' },
+  { letter: 'F', name: 'By ring, rosettes taking turns, real glazes' },
+] as const;
+
+function RingRow({ id }: { id: string }) {
+  const entry = LIBRARY.find((e) => e.id === id);
+  const { model, progress } = useModel(entry?.json);
+  const pictures = useMemo(() => {
+    if (!model) return [];
+    const p = proposal(model.tutorial, model.pattern);
+    const palette = traditionPalette(model.tutorial.style);
+    const proposed: Model = {
+      ...model,
+      tutorial: {
+        ...model.tutorial,
+        pattern: {
+          ...model.tutorial.pattern,
+          palette: p.palette,
+          colors: { ...p.colors },
+        },
+      },
+    };
+    const ring = ringColoring(model, GLAZE[palette] ?? FES_GLAZE);
+    return [{ model }, { model: proposed }, ring];
+  }, [model]);
+  return (
+    <tr>
+      <th scope="row">
+        {model?.tutorial.title ?? id}
+        <small>{model?.tutorial.style}</small>
+      </th>
+      {model
+        ? pictures.map((c, k) => (
+            <td key={k}>
+              <Thumbnail
+                model={c.model}
+                {...('coloring' in c && c.coloring
+                  ? { coloring: c.coloring }
+                  : {})}
+              />
+            </td>
+          ))
+        : RING_COLUMNS.map((c) => (
+            <td key={c.letter} className="colors-waiting">
+              {PROGRESS_TEXT[progress ?? 'checking']}
+            </td>
+          ))}
+    </tr>
+  );
+}
+
 /** Colour swatches, each with its lightness (0 black, 100 white). */
 function Swatches({ colours }: { colours: readonly string[] }) {
   return (
@@ -265,7 +384,7 @@ export function ColorsPlan() {
         </span>
       </nav>
       <header className="review-head">
-        <h1>Colour: how it works now, and what I suggest</h1>
+        <h1>Colour: what real zellige does, and how to get there</h1>
         <p className="lede">
           You said the colours do not look right but you are not sure how to fix
           them. Below is how the app colours a pattern today, what I think goes
@@ -277,10 +396,49 @@ export function ColorsPlan() {
 
       <h2 className="group">Your question</h2>
       <p>
-        Look at the table further down and tell me which column is closest to
-        what you want, A to E, or what is still wrong with all of them. If you
-        like D, the next question is whether each tradition should keep its own
-        colours in the library, which is what I recommend.
+        You picked C and D, then said something is still missing in how the
+        colours are spread and mixed. The first section below is what your
+        pictures of real zellige do differently, and a first rough try at
+        colouring that way (column F). Tell me whether F is the missing thing,
+        even where it gets details wrong. The older sections follow.
+      </p>
+
+      <h2 className="group">What real zellige does: colour by ring</h2>
+      <Findings />
+      <p className="colors-compare">
+        {[FES_GLAZE, NASRID_GLAZE, TIMURID_GLAZE, WOOD_GLAZE].map((g) => (
+          <span key={g.name}>
+            <span>{g.name}</span>{' '}
+            <Swatches colours={[g.white, g.black, ...g.families.flat()]} />
+          </span>
+        ))}
+      </p>
+      <div className="colors-table-wrap">
+        <table className="colors-table">
+          <thead>
+            <tr>
+              <th />
+              {RING_COLUMNS.map((c) => (
+                <th key={c.letter} scope="col">
+                  <b>{c.letter}</b>
+                  <small>{c.name}</small>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {SAMPLES.map((s) => (
+              <RingRow key={s.id} id={s.id} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p>
+        F is automatic and rough. It finds the rosette centres as the regular
+        stars with the most points, so on a pattern with no clear rosette it
+        guesses. It does not yet keep two colours from touching. If F is the
+        right direction, the next step is to build it properly into the app,
+        with your corrections winning, and recolour every tutorial with it.
       </p>
 
       <h2 className="group">How colouring works today</h2>

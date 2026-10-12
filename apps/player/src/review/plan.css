@@ -599,3 +599,24 @@
   width: auto;
   height: 140px;
 }
+
+.colors-findings {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 0 0 16px;
+}
+.colors-findings figure {
+  margin: 0;
+}
+.colors-findings img {
+  display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.colors-findings figcaption {
+  margin-top: 6px;
+  font-size: 0.9rem;
+}

@@ -1509,6 +1509,23 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
+    id: 'colours-ring',
+    text: 'Colour by ring: is column F the thing that was missing, even where it gets details wrong? It colours each rosette by its rings, lets neighbouring rosettes take turns, makes tiny pieces black and uses real glaze colours. What your pictures show and why is at /#/plan/colors, at the top.',
+    choices: [
+      'Yes, build it properly',
+      'Closer, but not yet',
+      'No, D was better',
+    ],
+    pictures: [
+      {
+        src: 'renders/colors/ring-table.png',
+        caption:
+          'Six patterns: A today, D the current proposal, F by ring. Kurt’s wheel (row 4) alternates green and red rosettes, as on your picture of a real wall.',
+      },
+    ],
+    card: 'eight-fold-zellige',
+  },
+  {
     id: 'colours-proposal',
     text: 'The new colours for every tutorial: left today, right proposed, one picture per tradition. Shall I write them into the tutorials? Name any that still look wrong. Live at /#/plan/colors, under “Your pick”.',
     choices: ['Yes, all of them', 'Yes, except the ones I name', 'Not yet'],
@@ -1801,8 +1818,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Colours: every tutorial in its tradition’s palette',
-    text: 'You chose C and D. The app now has four tradition palettes (Marinid zellige, Alhambra, Timurid tile, Mamluk wood), each with a light ground, a dark, an accent and a second colour. The question at the top shows every tutorial today and proposed; nothing in the tutorials has changed yet.',
+    title: 'Colours: what real zellige does',
+    text: 'From your pictures: real walls colour by ring round each rosette, let neighbouring rosettes take turns, scatter black and white in small pieces and put a spark at each centre. A first rough try (column F) is at the top of the colour notes; the first question asks whether it is the missing thing. Nothing in the tutorials has changed.',
     link: { label: 'The colour notes', href: '/#/plan/colors' },
   },
   next: [
