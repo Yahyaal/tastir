@@ -1,18 +1,16 @@
 import type { Model } from '../app/model';
 import { useMemo } from 'react';
-import { PALETTES, typeKey, type Coloring, type Slot } from '../app/coloring';
+import {
+  GLAZES,
+  PALETTES,
+  typeKey,
+  type Coloring,
+  type Slot,
+} from '../app/coloring';
 import { Thumbnail } from '../app/drawing';
 import { LIBRARY } from '../app/library';
 import { PROGRESS_TEXT, useModel } from '../app/workerClient';
 import { proposal, roleSlots, traditionPalette } from './colorProposal';
-import {
-  FES_GLAZE,
-  NASRID_GLAZE,
-  ringColoring,
-  TIMURID_GLAZE,
-  WOOD_GLAZE,
-  type Glaze,
-} from './ringColoring';
 import './review.css';
 import './plan.css';
 
@@ -298,13 +296,6 @@ function Findings() {
   );
 }
 
-const GLAZE: Readonly<Record<string, Glaze>> = {
-  'Marinid zellige': FES_GLAZE,
-  Alhambra: NASRID_GLAZE,
-  'Timurid tile': TIMURID_GLAZE,
-  'Mamluk wood': WOOD_GLAZE,
-};
-
 const RING_COLUMNS = [
   { letter: 'A', name: 'Today' },
   { letter: 'D', name: 'The current proposal (your pick)' },
@@ -329,8 +320,20 @@ function RingRow({ id }: { id: string }) {
         },
       },
     };
-    const ring = ringColoring(model, GLAZE[palette] ?? FES_GLAZE);
-    return [{ model }, { model: proposed }, ring];
+    // The app's own colouring by rings, in the tradition's glazes.
+    const ring: Model = {
+      ...model,
+      tutorial: {
+        ...model.tutorial,
+        pattern: {
+          ...model.tutorial.pattern,
+          palette,
+          rings: true,
+          placements: undefined,
+        },
+      },
+    };
+    return [{ model }, { model: proposed }, { model: ring }];
   }, [model]);
   return (
     <tr>
@@ -341,12 +344,7 @@ function RingRow({ id }: { id: string }) {
       {model
         ? pictures.map((c, k) => (
             <td key={k}>
-              <Thumbnail
-                model={c.model}
-                {...('coloring' in c && c.coloring
-                  ? { coloring: c.coloring }
-                  : {})}
-              />
+              <Thumbnail model={c.model} />
             </td>
           ))
         : RING_COLUMNS.map((c) => (
@@ -362,7 +360,7 @@ function RingRow({ id }: { id: string }) {
 function Swatches({ colours }: { colours: readonly string[] }) {
   return (
     <span className="colors-swatches">
-      {colours.map((c) => (
+      {[...new Set(colours)].map((c) => (
         <span key={c} className="colors-swatch">
           <span style={{ background: c }} />
           <small>{lightness(c)}</small>
@@ -394,21 +392,21 @@ export function ColorsPlan() {
         </p>
       </header>
 
-      <h2 className="group">Your question</h2>
+      <h2 className="group">Where this stands</h2>
       <p>
-        You picked C and D, then said something is still missing in how the
+        You picked C and D, then said something was still missing in how the
         colours are spread and mixed. The first section below is what your
-        pictures of real zellige do differently, and a first rough try at
-        colouring that way (column F). Tell me whether F is the missing thing,
-        even where it gets details wrong. The older sections follow.
+        pictures of real zellige do differently, and column F colours that
+        way. You said F is the missing thing, so it is now built into the app;
+        next every tutorial is recoloured with it. The older sections follow.
       </p>
 
       <h2 className="group">What real zellige does: colour by ring</h2>
       <Findings />
       <p className="colors-compare">
-        {[FES_GLAZE, NASRID_GLAZE, TIMURID_GLAZE, WOOD_GLAZE].map((g) => (
-          <span key={g.name}>
-            <span>{g.name}</span>{' '}
+        {Object.entries(GLAZES).map(([name, g]) => (
+          <span key={name}>
+            <span>{name}</span>{' '}
             <Swatches colours={[g.white, g.black, ...g.families.flat()]} />
           </span>
         ))}
@@ -434,11 +432,10 @@ export function ColorsPlan() {
         </table>
       </div>
       <p>
-        F is automatic and rough. It finds the rosette centres as the regular
-        stars with the most points, so on a pattern with no clear rosette it
-        guesses. It does not yet keep two colours from touching. If F is the
-        right direction, the next step is to build it properly into the app,
-        with your corrections winning, and recolour every tutorial with it.
+        You said F is the missing thing, and it is now the app’s own colouring
+        by rings: two rings of one colour never touch, and a pattern with no
+        rosette (the Comares lattice) is coloured by shape. Next, every tutorial
+        is recoloured with it and checked by eye.
       </p>
 
       <h2 className="group">How colouring works today</h2>

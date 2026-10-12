@@ -235,6 +235,20 @@ describe('rejected tutorials', () => {
     ]);
   });
 
+  it('rejects a ring correction for an unknown piece, and rings with placements', () => {
+    const input = variant((t) => {
+      t.pattern.rings = { colors: { star: 'spark', 'kite@2': 'white' } };
+      t.pattern.placements = {
+        repeat: [1, 1],
+        rules: [{ piece: 'star', color: 'a' }],
+      };
+    });
+    expect(problems(input)).toEqual([
+      'pattern.rings: colour by rings or by placements, not both',
+      'pattern.rings.colors.kite@2: "kite" is not a piece named in expect.pieces',
+    ]);
+  });
+
   it('throws one error listing every problem', () => {
     const input = variant((t) => {
       t.steps[1].create.E.point.pick = { nth: 2 };

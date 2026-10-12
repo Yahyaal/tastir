@@ -212,7 +212,11 @@ export function useInkBoard(
       if (!('tutorial' in made)) return { reason: made.reason };
       if (!samePieces(made.tutorial, tutorial))
         return { reason: 'The drawing does not close the pattern’s pieces.' };
-      const { placements: _placements, ...byShape } = made.tutorial.pattern;
+      const {
+        placements: _placements,
+        rings: _rings,
+        ...byShape
+      } = made.tutorial.pattern;
       const file = {
         ...made.tutorial,
         ...(byKind ? { pattern: byShape } : {}),

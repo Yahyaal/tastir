@@ -7,46 +7,87 @@ export type Slot = (typeof SLOTS)[number];
 export type Palette = Readonly<Record<Slot, string>>;
 
 /**
- * Preset palettes. The first four are a tradition's colours, each with
- * clear steps of lightness and the same slot for the same role: `a` the
- * dark, `b` the strong accent, `c` the second colour, `d` a rarer one and
- * `ground` the light. The older palettes, named after places, stay so
- * saved designs keep their colours.
+ * A tradition's glazes: a white, a black and colour families, each a main
+ * and a second colour. Colouring by rings gives each rosette one family,
+ * so neighbouring rosettes take turns between them; the first family is
+ * cool and the second warm.
  */
-export const PALETTES: Readonly<Record<string, Palette>> = {
-  // Fès zellige of the Marinid madrasas: white, black, green, honey, blue.
+export interface Glaze {
+  readonly white: string;
+  readonly black: string;
+  readonly families: readonly (readonly [string, string])[];
+}
+
+/**
+ * The tradition palettes, from real glazes (owner's pictures, October 2026;
+ * glaze oxides from studies of Marinid zellige).
+ */
+export const GLAZES: Readonly<Record<string, Glaze>> = {
+  // Fès zellige: tin white, manganese black, cobalt, copper green, iron
+  // honey, oxblood, turquoise and orange.
   'Marinid zellige': {
-    a: '#22201d',
-    b: '#1e6b4e',
-    c: '#c08a2e',
-    d: '#2a4f86',
-    ground: '#f2ede1',
+    white: '#f3efe6',
+    black: '#1b1714',
+    families: [
+      ['#1f3c8f', '#13794a'],
+      ['#e0a42a', '#9a2a2c'],
+      ['#1d8fa3', '#c8622a'],
+    ],
   },
   // The glazed tile of the Alhambra's dados: white, black, teal, honey
-  // brown and a deep blue.
+  // brown, deep blue and green.
   Alhambra: {
-    a: '#1f1c1a',
-    b: '#1f7f86',
-    c: '#a5652b',
-    d: '#2b4f8f',
-    ground: '#f1ece1',
+    white: '#f2eee4',
+    black: '#1d1a18',
+    families: [
+      ['#1f7f86', '#2b4f8f'],
+      ['#b8702c', '#2f7a3c'],
+      ['#2b4f8f', '#d8a640'],
+    ],
   },
-  // Timurid and Persian tile: white, cobalt, turquoise, ochre, green.
+  // Timurid and Persian tile: white, deep cobalt, turquoise, ochre, blue,
+  // brick.
   'Timurid tile': {
-    a: '#12335f',
-    b: '#1b9aa8',
-    c: '#d9a63b',
-    d: '#4c7a3d',
-    ground: '#f4f1ea',
+    white: '#f5f2ea',
+    black: '#14305c',
+    families: [
+      ['#1aa3b5', '#2a59b0'],
+      ['#dba73a', '#a33d2b'],
+      ['#2a59b0', '#dba73a'],
+    ],
   },
-  // Mamluk woodwork: ebony, two woods, walnut, ivory.
+  // Mamluk woodwork: the panels are wood, so a mid wood plays the part
+  // white plays in tile, with ebony, ivory and a light wood inlaid.
   'Mamluk wood': {
-    a: '#2b1d14',
-    b: '#7a4a26',
-    c: '#b98a52',
-    d: '#5a3a22',
-    ground: '#efe3c6',
+    white: '#7a4a26',
+    black: '#24170f',
+    families: [
+      ['#efe3c6', '#b5813f'],
+      ['#b5813f', '#efe3c6'],
+      ['#d2a86a', '#4a2c18'],
+    ],
   },
+};
+
+/** A glaze's colours as slots, for colouring by shape. */
+const slotsOf = (g: Glaze): Palette => ({
+  a: g.black,
+  b: g.families[0]?.[0] ?? g.black,
+  c: g.families[1]?.[0] ?? g.black,
+  d: g.families[0]?.[1] ?? g.black,
+  ground: g.white,
+});
+
+/**
+ * Preset palettes: the tradition palettes first, each slot with one role
+ * (`a` the black, `b` the cool colour, `c` the warm one, `d` a second cool
+ * one, `ground` the white), then the older palettes named after places,
+ * kept so saved designs keep their colours.
+ */
+export const PALETTES: Readonly<Record<string, Palette>> = {
+  ...Object.fromEntries(
+    Object.entries(GLAZES).map(([name, g]) => [name, slotsOf(g)]),
+  ),
   'Fès tile': {
     a: '#1d5c7c',
     b: '#2f7d4f',
@@ -92,6 +133,39 @@ export const PALETTES: Readonly<Record<string, Palette>> = {
 };
 
 export const DEFAULT_PALETTE = 'Fès tile';
+
+/** CIE lightness of a colour, 0 (black) to 100 (white). */
+export function lightness(hex: string): number {
+  const channel = (k: number) => {
+    const c = parseInt(hex.slice(1 + 2 * k, 3 + 2 * k), 16) / 255;
+    return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  const y = 0.2126 * channel(0) + 0.7152 * channel(1) + 0.0722 * channel(2);
+  return y > 0.008856 ? 116 * Math.cbrt(y) - 16 : 903.3 * y;
+}
+
+/**
+ * A palette's glazes: a tradition's own, or for an older palette its
+ * ground as the white, its darkest colour as the black and the other
+ * three paired into families.
+ */
+export function glazeOf(name: string): Glaze {
+  const own = GLAZES[name];
+  if (own) return own;
+  const p = PALETTES[name] ?? (PALETTES[DEFAULT_PALETTE] as Palette);
+  const [black, x, y, z] = [p.a, p.b, p.c, p.d].sort(
+    (u, v) => lightness(u) - lightness(v),
+  ) as [string, string, string, string];
+  return {
+    white: p.ground,
+    black,
+    families: [
+      [x, y],
+      [z, x],
+      [y, z],
+    ],
+  };
+}
 
 /**
  * A piece type's key: its shape, so a color stays with the shape when the

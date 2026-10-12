@@ -1507,52 +1507,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'colours-ring',
-    text: 'Colour by ring: is column F the thing that was missing, even where it gets details wrong? It colours each rosette by its rings, lets neighbouring rosettes take turns, makes tiny pieces black and uses real glaze colours. What your pictures show and why is at /#/plan/colors, at the top.',
-    choices: [
-      'Yes, build it properly',
-      'Closer, but not yet',
-      'No, D was better',
-    ],
-    pictures: [
-      {
-        src: 'renders/colors/ring-table.png',
-        caption:
-          'Six patterns: A today, D the current proposal, F by ring. Kurt’s wheel (row 4) alternates green and red rosettes, as on your picture of a real wall.',
-      },
-    ],
-    card: 'eight-fold-zellige',
-  },
-  {
-    id: 'colours-proposal',
-    text: 'The new colours for every tutorial: left today, right proposed, one picture per tradition. Shall I write them into the tutorials? Name any that still look wrong. Live at /#/plan/colors, under “Your pick”.',
-    choices: ['Yes, all of them', 'Yes, except the ones I name', 'Not yet'],
-    pictures: [
-      {
-        src: 'renders/colors/group-0.png',
-        caption:
-          'Nasrid, in the Alhambra palette. The tutorials coloured from photos keep their colouring; the others are coloured by role.',
-      },
-      {
-        src: 'renders/colors/group-1.png',
-        caption:
-          'Marinid zellige. Kurt’s wheels and the Bou Inania rosette keep their own colours in the new palette.',
-      },
-      {
-        src: 'renders/colors/group-2.png',
-        caption: 'Timurid tile: Timurid, Safavid, Seljuk and Mughal patterns.',
-      },
-      {
-        src: 'renders/colors/group-3.png',
-        caption:
-          'Mamluk wood: the Cairo minbars, Samira Mian’s rosettes and Ibn Tulun.',
-      },
-    ],
-    card: 'eight-fold-zellige',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -1818,8 +1773,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Colours: what real zellige does',
-    text: 'From your pictures: real walls colour by ring round each rosette, let neighbouring rosettes take turns, scatter black and white in small pieces and put a spark at each centre. A first rough try (column F) is at the top of the colour notes; the first question asks whether it is the missing thing. Nothing in the tutorials has changed.',
+    title: 'Colours: colouring by ring is in the app',
+    text: 'You said F was the missing thing. It is now built into the player: a tutorial turns it on with pattern.rings, the four tradition palettes are real glazes, two rings of one colour never touch, and at the colour stage a click repaints a whole ring. No tutorial uses it yet; next I recolour every tutorial with it, look hard at the seven you named, and show you each before and after.',
     link: { label: 'The colour notes', href: '/#/plan/colors' },
   },
   next: [

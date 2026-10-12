@@ -1,6 +1,7 @@
 import type { Piece, Vec } from '@tastir/engine';
 import {
   DEFAULT_PALETTE,
+  glazeOf,
   PALETTES,
   slotOf,
   typeKey,
@@ -8,6 +9,7 @@ import {
   type Palette,
 } from './coloring';
 import type { Model } from './model';
+import { ringsOf, type RingRole, type Rings } from './rings';
 
 /**
  * Coloring by where a piece sits (the tutorial's pattern.placements): the
@@ -16,9 +18,25 @@ import type { Model } from './model';
  * piece of a shape shares one color, as before.
  */
 
+/**
+ * The tutorial's rings (pattern.rings, see rings.ts), or undefined when it
+ * does not colour by rings or the pattern has no rosette to colour round.
+ */
+export function ringsFor(model: Model): Rings | undefined {
+  return model.tutorial.pattern.rings ? ringsOf(model.pattern) : undefined;
+}
+
+/** Whether pieces of one shape can differ in colour: by placement or ring. */
+export function byPlace(model: Model): boolean {
+  return !!model.tutorial.pattern.placements || !!ringsFor(model);
+}
+
 /** How many cells along each slide the coloring repeats after. */
 export function colorRepeat(model: Model): readonly [number, number] {
-  return model.tutorial.pattern.placements?.repeat ?? [1, 1];
+  return (
+    ringsFor(model)?.repeat ??
+    model.tutorial.pattern.placements?.repeat ?? [1, 1]
+  );
 }
 
 const mod = (a: number, n: number) => ((a % n) + n) % n;
@@ -95,6 +113,8 @@ export function placeKey(
   const p = model.pattern.pieces[piece];
   const t = p ? model.pattern.types[p.type] : undefined;
   if (!t) return '';
+  const rings = ringsFor(model);
+  if (rings) return `${typeKey(t)}#${rings.place(piece, i, j).ring}`;
   if (!model.tutorial.pattern.placements) return typeKey(t);
   const [m, n] = colorRepeat(model);
   return `${typeKey(t)}#${piece}@${mod(i, m)},${mod(j, n)}`;
@@ -117,6 +137,8 @@ export function placeFills(
   const palette =
     PALETTES[coloring.palette] ?? (PALETTES[DEFAULT_PALETTE] as Palette);
   const placements = model.tutorial.pattern.placements;
+  const rings = ringsFor(model);
+  if (rings) return ringFills(model, coloring, rings);
   const nth = nthOf(model);
   const turns = model.pattern.pieces.map((p) => turnOf(p.polygon));
   const [m, n] = colorRepeat(model);
@@ -149,6 +171,52 @@ export function placeFills(
           fill = resolve(palette, rule.color);
         }
       }
+    }
+    cache.set(key, fill);
+    return fill;
+  };
+}
+
+/**
+ * The fill for every placement when the tutorial colours by rings: a
+ * colour chosen for that ring, else for its whole shape, else the role the
+ * tutorial gives its ring or shape, else the ring's own role, in the
+ * palette's glazes.
+ */
+function ringFills(
+  model: Model,
+  coloring: Coloring,
+  rings: Rings,
+): (piece: number, i: number, j: number) => string {
+  const glaze = glazeOf(coloring.palette);
+  const fixes = model.tutorial.pattern.rings;
+  const fixed = fixes === true || !fixes ? {} : fixes.colors;
+  const families = Math.max(1, Math.min(rings.families, glaze.families.length));
+  const colour = (role: RingRole, family: number): string => {
+    const f = family < 0 ? 0 : family % families;
+    if (role === 'white') return glaze.white;
+    if (role === 'black') return glaze.black;
+    if (role === 'spark')
+      return glaze.families[(f + 1) % families]?.[0] ?? glaze.black;
+    return glaze.families[f]?.[role === 'main' ? 0 : 1] ?? glaze.black;
+  };
+  const cache = new Map<string, string>();
+  return (piece, i, j) => {
+    const key = placeKey(model, piece, i, j);
+    const hit = cache.get(key);
+    if (hit) return hit;
+    const p = model.pattern.pieces[piece] as Piece;
+    const t = model.pattern.types[p.type];
+    let fill = '#999999';
+    if (t) {
+      const at = rings.place(piece, i, j);
+      const name = t.name ?? '';
+      const role =
+        (at.n ? fixed[`${name}@${at.n}`] : undefined) ?? fixed[name] ?? at.role;
+      fill =
+        coloring.chosen[key] ??
+        coloring.chosen[typeKey(t)] ??
+        colour(role, at.family);
     }
     cache.set(key, fill);
     return fill;

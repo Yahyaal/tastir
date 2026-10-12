@@ -338,6 +338,26 @@ const Placements = z.strictObject({
     .min(1),
 });
 
+/**
+ * Colouring by ring round each rosette: `true`, or hand corrections that
+ * give a whole shape (`petal`) or one ring of it (`petal@2`, its second
+ * ring out from the centre) a role.
+ */
+const Rings = z.union([
+  z.literal(true),
+  z.strictObject({
+    colors: z.record(
+      z
+        .string()
+        .regex(
+          /^[A-Za-z][A-Za-z0-9_]*(@[1-9]\d*)?$/,
+          'a ring is a piece name, or a piece name and @ and its ring',
+        ),
+      z.enum(['white', 'black', 'main', 'second', 'spark']),
+    ),
+  }),
+]);
+
 export const TutorialShape = z.strictObject({
   format: z.literal(0),
   id: z
@@ -383,6 +403,7 @@ export const TutorialShape = z.strictObject({
     look: z.enum(['tiles', 'strapwork', 'interlace', 'lines']).optional(),
     colors: z.record(Name, z.string().min(1)),
     placements: Placements.optional(),
+    rings: Rings.optional(),
   }),
   expect: Expect,
 });

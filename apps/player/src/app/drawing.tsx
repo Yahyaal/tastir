@@ -18,7 +18,7 @@ import {
 } from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
 import { pieceColors, tutorialColoring, type Coloring } from './coloring';
-import { placeFills } from './placement';
+import { byPlace, placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
 import { patchesAt, patchPath } from './interlace';
 import type { JaliAppearance } from '@tastir/schema';
@@ -1071,9 +1071,7 @@ export function orderedPaletteColors(
   const activeView = view ?? defaultView;
   const { cell } = model.pattern;
   const colors = pieceColors(model, coloring);
-  const fill = model.tutorial.pattern.placements
-    ? placeFills(model, coloring)
-    : undefined;
+  const fill = byPlace(model) ? placeFills(model, coloring) : undefined;
   const widths = strapWidths(model);
   const seen = fit(activeView, 1 + widths.edge);
   const meets = (ps: readonly Vec[]) =>
@@ -1165,9 +1163,7 @@ export function Thumbnail({
   const colors = pieceColors(model, coloring);
   // Pieces of one shape can take different colors by where they sit (the
   // Comares bones); the wall's own rule then colors each copy.
-  const fill = model.tutorial.pattern.placements
-    ? placeFills(model, coloring)
-    : undefined;
+  const fill = byPlace(model) ? placeFills(model, coloring) : undefined;
   const jali = look === 'jali';
   const widths = strapWidths(model, jali ? latticeWidth(grout) : grout);
   // As the wall first shows it: strapwork bands, tiles with grout, or

@@ -38,7 +38,13 @@ import { Original } from './Original';
 import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
 import { PiecePanel } from './PiecePanel';
 import { ViewSwitch, viewAddress, type View } from './ViewSwitch';
-import { colorRepeat, placeFills, placeKey } from './placement';
+import {
+  byPlace,
+  colorRepeat,
+  placeFills,
+  placeKey,
+  ringsFor,
+} from './placement';
 import { PrintSheet, type Paper } from './PrintSheet';
 import { useRemembered } from './remembered';
 import { SaveDesign } from './SaveDesign';
@@ -85,6 +91,8 @@ function colorText(model: Model): string {
   const held = model.pattern.types.map(
     (t, i) => `${count(t.perCell)} ${plural(nameOf(model, i), t.perCell)}`,
   );
+  if (ringsFor(model))
+    return `Color the pieces ring by ring, as on real zellige: round each rosette the pieces take their colors by how far they sit from its centre, not by their shape, and neighbouring rosettes take turns. Click a piece to recolor its whole ring. Each tile holds ${joinAnd(held)}.`;
   if (model.tutorial.pattern.placements) {
     const [m, n] = model.tutorial.pattern.placements.repeat;
     const block =
@@ -223,7 +231,7 @@ export function Player({
   // Fills by placement, when the tutorial colors same shapes differently.
   const fill = useMemo(
     () =>
-      inking.shown.tutorial.pattern.placements
+      byPlace(inking.shown)
         ? placeFills(inking.shown, colorHistory.now)
         : undefined,
     [inking.shown, colorHistory.now],
@@ -476,9 +484,11 @@ export function Player({
     picture = <RepeatedInk model={inking.shown} enter={enter} speed={speed} />;
   } else {
     label = 'Color';
-    hint = tutorial.pattern.placements
-      ? 'Colors by where each piece sits.'
-      : 'One color for each shape of piece.';
+    hint = ringsFor(inking.shown)
+      ? 'Colors ring by ring round each rosette.'
+      : tutorial.pattern.placements
+        ? 'Colors by where each piece sits.'
+        : 'One color for each shape of piece.';
     text = colorText(inking.shown);
     picture = (
       <Wall

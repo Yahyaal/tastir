@@ -244,6 +244,22 @@ export function checkReferences(t: Tutorial): Issue[] {
       });
     }
   });
+  const rings = t.pattern.rings;
+  if (rings && placements) {
+    issues.push({
+      path: 'pattern.rings',
+      message: 'colour by rings or by placements, not both',
+    });
+  }
+  for (const key of Object.keys(rings === true ? {} : (rings?.colors ?? {}))) {
+    const name = key.split('@')[0] ?? key;
+    if (!pieceNames.has(name)) {
+      issues.push({
+        path: `pattern.rings.colors.${key}`,
+        message: `"${name}" is not a piece named in expect.pieces`,
+      });
+    }
+  }
   for (const name of Object.keys(t.expect.crossings ?? {})) {
     use(`expect.crossings.${name}`, name, ['points']);
   }
