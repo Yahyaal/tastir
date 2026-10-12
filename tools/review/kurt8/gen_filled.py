@@ -4,11 +4,12 @@ The space between four wheels on the square tile is exactly the middle of a
 wheel. So the filled wall is the plain wheel repeated on the standing square
 of step 4 (half the square tile, turned 45°): each wheel's centre lands in
 the space between four others, and the rings of neighbouring wheels overlap
-on the same lines. Nothing is drawn beyond the plain wheel.
+on the same lines.
 
 Every other wheel (the ones in the spaces of the square tiling) takes its
-own colours for the middle: a 2 × 2 colour repeat, by cell, for the
-octagons, stars and bands, and by place in the cell for the centre rosette.
+own colours for the middle: a 2 × 2 colour repeat, by cell and by place
+in the cell. The cross where four wheels meet is filled by an octagon and
+four bands like the wheel's own (step 19).
 
   python3 tools/review/kurt8/gen_filled.py
   python3 tools/review/format_tutorial.py tutorials/kurt-eight-fold-zellige-filled.json
@@ -27,9 +28,9 @@ OUT = ROOT / "tutorials" / f"{ID}.json"
 
 # The middle of the second set of wheels: colours the plain wheel does not
 # use for these shapes.
-WHEEL = {"joint": "b", "octagon": "c", "star": "a", "rosette": "a", "petal": "b", "band": "c", "kite": "a"}
+WHEEL = {"octagon": "c", "star": "a", "rosette": "a", "petal": "b", "band": "c", "kite": "a"}
 OTHER = {"octagon": "ground", "star": "d", "band": "a", "rosette": "d"}
-SMALL = {"joint", "kite"}
+SMALL = {"kite"}
 
 src = json.load(open(SRC))
 t = copy.deepcopy(src)
@@ -65,10 +66,46 @@ t["steps"][-1] = {
     "highlight": ["E", "N", "W", "Sp"],
     "animate": "ruler",
 }
+# The space where four wheels meet (a cross) is filled by ruling on the four
+# lines its notches run along: they close an octagon like the wheel's own in
+# the middle, and what is left of each arm is one of the wheel's bands. Ruled
+# at the tile's right corner, then turned to the other three corners.
+t["steps"].append(
+    {
+        "id": 19,
+        "text": (
+            "Where four wheels meet there is still an empty cross. Through the two inner corners of the "
+            "octagons that bite into it at the tile's right corner, rule the lines that carry their sides on "
+            "into the cross: through each corner, one parallel to each of the two nearest lines through the "
+            "centre at a sixteenth of a turn. Do the same at the other three corners of the tile."
+        ),
+        "create": {
+            "jN1": {"line": {"through": "oK0_7", "parallelTo": "r0"}},
+            "jN2": {"line": {"through": "oK0_7", "parallelTo": "r1"}},
+            "jS2": {"line": {"through": "oK7_1", "parallelTo": "r2"}},
+            "jS1": {"line": {"through": "oK7_1", "parallelTo": "r3"}},
+            "joints": {"repeat": {"of": ["jN1", "jN2", "jS2", "jS1"], "by": "rot4"}},
+        },
+        "highlight": ["oK0_7", "oK7_1", "r0", "r1", "r2", "r3"],
+        "animate": "ruler",
+    }
+)
+# Each corner gets two sides of the octagon in the cross: the quarter of it
+# inside the tile. The other quarters come from the neighbouring tiles.
+for k in ["", "@1", "@2", "@3"]:
+    t["ink"]["paths"] += [
+        {"along": "jN2" + k, "from": "jN1" + k, "to": "jS2" + k},
+        {"along": "jS2" + k, "from": "jN2" + k, "to": "jS1" + k},
+    ]
+t["ink"]["text"] = (
+    "Go over the lines of the finished wheel: the octagons, the bands between them and the star in the "
+    "middle. Then, at each corner of the tile, the two sides of the octagon in the cross."
+)
 t["pattern"]["cell"] = "tile"
 t["pattern"]["text"] = (
     "Repeat the standing square side to side. The wheels overlap: each one's middle fills the space "
-    "between four others, and every other wheel has its middle in its own colours."
+    "between four others, an octagon fills each cross where four wheels meet, and every other wheel has "
+    "its middle in its own colours."
 )
 t["pattern"]["colors"] = WHEEL
 t["pattern"].pop("placements", None)
@@ -98,22 +135,26 @@ def slides(poly):
 
 
 pieces = [(names[p["type"]], *slides(p["polygon"])) for p in dump["pieces"]]
-rosettes = sorted((b, a, abs(cx) + abs(cy)) for n, (a, b), (cx, cy) in pieces if n == "rosette")
-# nth counts along the second slide, then the first, as the player does.
-centre = next(i for i, (_, _, r) in enumerate(rosettes) if r < 1e-6)
+
+
+def middle(name):
+    """The places (nth) of the pieces of this shape in the wheel's middle:
+    nth counts along the second slide, then the first, as the player does."""
+    same = sorted((b, a, (cx * cx + cy * cy) ** 0.5) for n, (a, b), (cx, cy) in pieces if n == name)
+    return [i for i, (_, _, r) in enumerate(same) if r < 0.65]
+
 
 rules = []
 for i, j in ((1, 0), (0, 1)):
     for name, colour in OTHER.items():
-        rule = {"piece": name, "cell": [i, j], "color": colour}
-        if name == "rosette":
-            rule["nth"] = centre
-        rules.append(rule)
+        for nth in middle(name):
+            rules.append({"piece": name, "cell": [i, j], "nth": nth, "color": colour})
 t["pattern"]["placements"] = {"repeat": [2, 2], "rules": rules}
 t["expect"] = {
     "note": (
         "Golden values in units of OA, computed by the engine. The tile is half the plain wheel's, "
-        "and every piece is one of the wheel's own. The kites and the thin star between wheels are small by design."
+        "and every piece is one of the wheel's own: the cross where four wheels meet is an octagon and four "
+        "bands. The kites are small by design."
     ),
     "pieceTypes": len(dump["types"]),
     "pieces": [
@@ -129,4 +170,4 @@ t["expect"] = {
     "cellArea": 2,
 }
 json.dump(t, open(OUT, "w"), indent=2, ensure_ascii=False)
-print(f"{len(dump['types'])} piece types, centre rosette nth {centre}")
+print(f"{len(dump['types'])} piece types, {len(rules)} colour rules")
