@@ -1552,6 +1552,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Browsing: your place kept, previous and next, a pattern menu',
+      text: 'Going back to the library, by Back or “All patterns”, puts you on the same card with the same filters. In the player, the buttons beside the title open the pattern before or after this one in the library’s order (only the filtered ones if you filtered), and “Patterns” at the top left opens every pattern in a side menu.',
+      link: { label: 'Try it', href: '/#/alhambra-barca-stars' },
+    },
+    {
       title: 'Zellige wheel: a hexagon tile, and the gaps filled',
       text: 'Your two ideas from the feedback document. The shifted rows now repeat a hexagon round each wheel instead of a slanted box, so the dotted tile no longer cuts wheels in half; the wall is unchanged. And a new tutorial fills the space between four wheels: rebuilt your way after the first version was slow, the plain wheel now repeats on the standing square so the wheels overlap and each one’s middle fills the space, with every other middle in its own colours (question at the top).',
       link: {
