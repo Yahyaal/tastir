@@ -990,6 +990,12 @@ main.stage .drawing:not(.wall) {
   box-shadow: 0 0 10px var(--theme-accent-muted);
 }
 
+/* The type under the pointer, on the wall or in this list: a box of its
+   own colour, so it is not mistaken for the one selected. */
+.player .piece-types li.hovered .piece-button {
+  border-color: var(--theme-accent-cobalt);
+}
+
 .piece-button small {
   display: block;
   color: var(--theme-text-muted);
@@ -1284,16 +1290,6 @@ main.stage .drawing:not(.wall) {
   stroke-width: 3px;
   stroke-dasharray: none;
   stroke-linecap: round;
-}
-
-/* Wall pieces sit in an SVG pattern, where widths are in tile units: the
-   stroke width comes from the attribute, never from CSS. */
-.wall-piece.dim {
-  opacity: 0.35;
-}
-
-.wall-piece.hl {
-  stroke: var(--current);
 }
 
 .wall {

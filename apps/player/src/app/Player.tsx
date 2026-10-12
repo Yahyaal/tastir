@@ -482,7 +482,6 @@ export function Player({
         look={wallStyle}
         grout={grout}
         jali={jali}
-        hovered={hovered}
         onHover={setHovered}
         onPick={(type, at) => {
           setSelected(type);
