@@ -299,7 +299,8 @@ export function Review() {
         <span>
           <a href="#/notes">Project notes</a> ·{' '}
           <a href="#/plan">Plan: your own patterns</a> ·{' '}
-          <a href="#/plan/draw-along">Plan: draw along</a>
+          <a href="#/plan/draw-along">Plan: draw along</a> ·{' '}
+          <a href="#/plan/colors">Colours</a>
         </span>
         <button type="button" onClick={copy}>
           {copied ? 'Copied ✓' : 'Copy my answers'}

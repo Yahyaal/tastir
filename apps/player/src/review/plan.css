@@ -489,3 +489,85 @@
 .plan-shot.narrow {
   max-width: 520px;
 }
+
+/* The colour notes (#/plan/colors): swatches and the A-E table. */
+.colors-compare {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.colors-swatches {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.colors-swatch {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.colors-swatch > span {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 4px;
+}
+
+.colors-table-wrap {
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.colors-table {
+  border-collapse: collapse;
+}
+
+.colors-table th,
+.colors-table td {
+  padding: 6px;
+  vertical-align: top;
+  text-align: left;
+}
+
+.colors-table thead th b {
+  display: block;
+  font-size: 1.2rem;
+}
+
+.colors-table small {
+  display: block;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.colors-table tbody th {
+  width: 120px;
+  font-size: 0.9rem;
+}
+
+.colors-table td .thumbnail,
+.colors-table td svg {
+  display: block;
+  width: 140px;
+  height: 140px;
+}
+
+.colors-waiting {
+  width: 140px;
+  height: 140px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* Column E: tile grout as wide as on cut zellige (the thumbnail's grout
+   line has a fixed width; strapwork bands widen through the grout prop). */
+.colors-wide .thumbnail .piece:not(.strap) {
+  stroke: #f4f1ea;
+  stroke-width: 3px;
+}

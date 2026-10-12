@@ -37,4 +37,4 @@ The owner’s 11 October Jali correction: minimize clicks. Show material choices
 - Many designs per pattern family, not one. A single construction can give many designs.
 - Later, learners make their own designs from a construction (free inking already exists in the player).
 - Every design is checked against a real example, and specific sources are credited in the tutorial.
-- Palettes: the owner wants a separate conversation about colour palettes some time. The last rework was disliked and reverted, so do not change palettes until then.
+- Palettes: the owner does not like how the patterns are coloured but has not chosen a fix. On 12 October Claude wrote how colouring works, what goes wrong and four suggestions at `#/plan/colors` (question first on the review page). The last rework was disliked and reverted, so change no palette or tutorial colours until the owner picks a direction there.

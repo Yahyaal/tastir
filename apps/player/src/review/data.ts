@@ -1509,6 +1509,26 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
+    id: 'colours-direction',
+    text: 'Colours: which column, A to E, is closest to what you want? Each column adds one change to the one before. The full explanation and live pictures are at /#/plan/colors.',
+    choices: [
+      'A (keep today’s)',
+      'B (by role)',
+      'C (light, mid and dark)',
+      'D (each tradition’s colours)',
+      'E (D with wider grout)',
+      'None yet',
+    ],
+    pictures: [
+      {
+        src: 'renders/colors/table.png',
+        caption:
+          'Six patterns in five colourings. A is today; B colours by role; C adds clear light, mid and dark; D uses each tradition’s colours; E widens the grout.',
+      },
+    ],
+    card: 'eight-fold-zellige',
+  },
+  {
     id: 'kurt-filled-colours',
     text: 'The filled zellige wheel, rebuilt simpler: do the colours of every other wheel’s middle work? Open /#/kurt-eight-fold-zellige-filled/result to see them.',
     choices: [
@@ -1792,12 +1812,9 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Smoother animations on the filled wheel',
-    text: 'The filled zellige wheel was slow to ink, repeat and colour, and once crashed a browser. Work in progress makes the colour arrive as a quick painted cover over the wall and keeps the repeat from restarting its copies. It is not finished or committed yet; when it is, this card will say what to look at.',
-    link: {
-      label: 'Eight-fold zellige wheel, filled',
-      href: '/#/kurt-eight-fold-zellige-filled',
-    },
+    title: 'Colours: how they work now, and suggestions',
+    text: 'You asked how palettes and colouring are decided. The page explains it, what I think goes wrong (four colours of the same darkness, too many colours spread evenly, colour by shape rather than role, every card alike) and four changes side by side on six patterns. Nothing in the app has changed; the question is first on this page.',
+    link: { label: 'Read the colour notes', href: '/#/plan/colors' },
   },
   next: [
     {

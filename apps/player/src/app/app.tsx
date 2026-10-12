@@ -34,6 +34,15 @@ const Plan = import.meta.env.DEV
   ? lazy(() => import('../review/Plan').then((m) => ({ default: m.Plan })))
   : undefined;
 
+/** Colour: how it works and suggestions (#/plan/colors), dev server only. */
+const ColorsPlan = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/ColorsPlan').then((m) => ({
+        default: m.ColorsPlan,
+      })),
+    )
+  : undefined;
+
 /** The plan for drawing along (#/plan/draw-along), dev server only. */
 const DrawAlongPlan = import.meta.env.DEV
   ? lazy(() =>
@@ -88,6 +97,15 @@ export function App({
       </Suspense>
     ) : (
       <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'plan/colors') {
+    return ColorsPlan ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <ColorsPlan />
+      </Suspense>
+    ) : (
+      <Broken message="The colour notes only exist on the dev server (pnpm dev)." />
     );
   }
   if (route === 'plan/draw-along') {
