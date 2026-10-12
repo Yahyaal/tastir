@@ -1,6 +1,7 @@
 import { useState, type Dispatch } from 'react';
 import {
-  PALETTES,
+  paletteNames,
+  paletteOf,
   SLOTS,
   typeKey,
   type ColorAction,
@@ -50,7 +51,7 @@ export function PiecePanel({
   const { types } = model.pattern;
   const nameOf = (i: number) =>
     types[i]?.name ?? `${types[i]?.vertices ?? 0}-corner piece`;
-  const palette = PALETTES[history.now.palette] ?? {};
+  const palette = paletteOf(model, history.now.palette);
   const chosenType = selected === undefined ? undefined : types[selected];
   const here = place && onlyHere ? place : undefined;
   const current =
@@ -68,7 +69,7 @@ export function PiecePanel({
               dispatch({ kind: 'palette', palette: e.target.value })
             }
           >
-            {Object.keys(PALETTES).map((name) => (
+            {paletteNames(model).map((name) => (
               <option key={name}>{name}</option>
             ))}
           </select>

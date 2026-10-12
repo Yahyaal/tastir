@@ -17,7 +17,13 @@ import {
   TILE_COLOR,
 } from './animation';
 import { fit, fullView, viewBox, width, type Rect } from './camera';
-import { pieceColors, tutorialColoring, type Coloring } from './coloring';
+import {
+  DEFAULT_FINISH,
+  finishOf,
+  pieceColors,
+  tutorialColoring,
+  type Coloring,
+} from './coloring';
 import { byPlace, placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
 import { patchesAt, patchPath } from './interlace';
@@ -1032,9 +1038,37 @@ export function PieceShape({
   );
 }
 
+/**
+ * A carved line or band: its shadow offset down and right, and a light
+ * edge offset up and left, both under the line itself.
+ */
+export function relief(d: string, width: number) {
+  const o = width * 0.3;
+  return (
+    <g className="relief">
+      <path
+        d={d}
+        fill="none"
+        stroke="rgba(0, 0, 0, 0.35)"
+        strokeWidth={width}
+        strokeLinecap="round"
+        transform={`translate(${o} ${o})`}
+      />
+      <path
+        d={d}
+        fill="none"
+        stroke="rgba(255, 255, 255, 0.4)"
+        strokeWidth={width}
+        strokeLinecap="round"
+        transform={`translate(${-o} ${-o})`}
+      />
+    </g>
+  );
+}
+
 /** The strapwork look's colours: a light band with dark edges. */
-export const STRAP_EDGE = '#23201c';
-export const STRAP_BAND = '#f7f2e6';
+export const STRAP_EDGE = DEFAULT_FINISH.lines;
+export const STRAP_BAND = DEFAULT_FINISH.band;
 
 /**
  * Grout and band widths in proportion to the tile, so every pattern gets the
@@ -1161,6 +1195,7 @@ export function Thumbnail({
   const view = givenView ?? defaultView;
   const { cell } = model.pattern;
   const colors = pieceColors(model, coloring);
+  const finish = finishOf(model, coloring);
   // Pieces of one shape can take different colors by where they sit (the
   // Comares bones); the wall's own rule then colors each copy.
   const fill = byPlace(model) ? placeFills(model, coloring) : undefined;
@@ -1202,7 +1237,7 @@ export function Thumbnail({
           key={`over-${layer}`}
           d={(layer === 'edge' ? over : overIn).join('')}
           fill="none"
-          stroke={layer === 'edge' ? STRAP_EDGE : STRAP_BAND}
+          stroke={layer === 'edge' ? finish.lines : finish.band}
           strokeWidth={widths[layer]}
           strokeLinecap="butt"
           strokeLinejoin="round"
@@ -1337,7 +1372,7 @@ export function Thumbnail({
             key={layer}
             d={strokes.join('')}
             fill="none"
-            stroke={layer === 'edge' ? STRAP_EDGE : STRAP_BAND}
+            stroke={layer === 'edge' ? finish.lines : finish.band}
             strokeWidth={widths[layer]}
             strokeLinecap="round"
           />
@@ -1415,17 +1450,29 @@ export function Thumbnail({
           vectorEffect="non-scaling-stroke"
         />
       ))}
+      {finish.carved && !woven
+        ? relief(strokes.join(''), strap ? widths.edge : widths.grout)
+        : null}
       {(strap ? (['edge', 'band'] as const) : []).map((layer) => (
         <path
           key={layer}
           d={strokes.join('')}
           fill="none"
-          stroke={layer === 'edge' ? STRAP_EDGE : STRAP_BAND}
+          stroke={layer === 'edge' ? finish.lines : finish.band}
           strokeWidth={widths[layer]}
           strokeLinecap="round"
         />
       ))}
       {overLayers()}
+      {!strap && !lines && finish !== DEFAULT_FINISH && (
+        <path
+          d={strokes.join('')}
+          fill="none"
+          stroke={finish.lines}
+          strokeWidth={widths.grout}
+          strokeLinecap="round"
+        />
+      )}
       {!strap && coloredUpTo !== undefined && strokes.length > 0 && (
         <path
           className="thumbnail-lines"

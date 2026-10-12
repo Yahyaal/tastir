@@ -1,8 +1,7 @@
 import type { Piece, Vec } from '@tastir/engine';
 import {
-  DEFAULT_PALETTE,
   glazeOf,
-  PALETTES,
+  paletteOf,
   slotOf,
   typeKey,
   type Coloring,
@@ -134,8 +133,7 @@ export function placeFills(
   model: Model,
   coloring: Coloring,
 ): (piece: number, i: number, j: number) => string {
-  const palette =
-    PALETTES[coloring.palette] ?? (PALETTES[DEFAULT_PALETTE] as Palette);
+  const palette = paletteOf(model, coloring.palette);
   const placements = model.tutorial.pattern.placements;
   const rings = ringsFor(model);
   if (rings) return ringFills(model, coloring, rings);
@@ -188,7 +186,7 @@ function ringFills(
   coloring: Coloring,
   rings: Rings,
 ): (piece: number, i: number, j: number) => string {
-  const glaze = glazeOf(coloring.palette);
+  const glaze = glazeOf(coloring.palette, model);
   const fixes = model.tutorial.pattern.rings;
   const fixed = fixes === true || !fixes ? {} : fixes.colors;
   const families = Math.max(1, Math.min(rings.families, glaze.families.length));

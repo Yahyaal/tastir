@@ -5,10 +5,9 @@ import type { Model } from './model';
 import { patchesAt, patchPath } from './interlace';
 import { banded, type WallStyle } from './Wall';
 import { strapWidths } from './drawing';
+import { DEFAULT_FINISH, type Finish } from './coloring';
 import { DEFAULT_JALI, jaliLayers, jaliLight, latticeWidth } from './jali';
 
-const INK = '#23201c';
-const BAND = '#f7f2e6';
 const f = (n: number) => String(Math.round(n * 1e5) / 1e5);
 
 export interface WallOptions {
@@ -23,6 +22,8 @@ export interface WallOptions {
   readonly title?: string;
   /** The fill for each placement, when same shapes take different colors. */
   readonly fill?: (piece: number, i: number, j: number) => string;
+  /** The colours of the lines and bands. */
+  readonly finish?: Finish;
 }
 
 /**
@@ -44,7 +45,10 @@ export function wallSvg(
     scale = 100,
     title = model.tutorial.title,
     fill: placed,
+    finish = DEFAULT_FINISH,
   } = options;
+  const INK = finish.lines;
+  const BAND = finish.band;
   const { cell, pieces, ink } = model.pattern;
   const xs = cell.corners.map((p) => p.x);
   const ys = cell.corners.map((p) => p.y);

@@ -13,8 +13,7 @@ import { StepInstruction } from './StepInstruction';
 import { fullView, growingFrame, type Rect } from '../app/camera';
 import {
   colorReducer,
-  DEFAULT_PALETTE,
-  PALETTES,
+  paletteOf,
   pieceColors,
   tutorialColoring,
   type History as ColorHistory,
@@ -406,9 +405,7 @@ export function DrawAlong({
     () => pieceColors(model, colorHistory.now),
     [model, colorHistory.now],
   );
-  const ground =
-    (PALETTES[colorHistory.now.palette] ?? PALETTES[DEFAULT_PALETTE])?.ground ??
-    '#eee';
+  const ground = paletteOf(model, colorHistory.now.palette).ground;
   const makingWall = useAlongWork(
     'wall',
     useMemo(

@@ -2,7 +2,8 @@ import type { JaliAppearance } from '@tastir/schema';
 import { pieceAt, rectangularPeriod, type Vec } from '@tastir/engine';
 import { useId, useMemo, useRef } from 'react';
 import { fit, viewBox, width } from './camera';
-import { STRAP_BAND, STRAP_EDGE, strapWidths, tiling } from './drawing';
+import { DEFAULT_FINISH, type Finish } from './coloring';
+import { relief, strapWidths, tiling } from './drawing';
 import { patchesAt, patchPath, weaveRepeat } from './interlace';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
@@ -21,9 +22,6 @@ export const WALL_STYLES: readonly WallStyle[] = [
 /** Whether a style draws the ink as bands (interlace weaves them). */
 export const banded = (style: WallStyle | undefined) =>
   style === 'strapwork' || style === 'interlace';
-
-const INK = STRAP_EDGE;
-const BAND = STRAP_BAND;
 
 /**
  * Maps the tutorial frame into the tile's own frame and back. The SVG
@@ -73,6 +71,7 @@ export function Wall({
   look: style = 'tiles',
   grout = 1,
   jali: appearance,
+  finish = DEFAULT_FINISH,
   onHover,
   onPick,
   enter = false,
@@ -88,6 +87,8 @@ export function Wall({
   /** Grout (or band) width, as a multiple of the normal width. */
   grout?: number;
   jali?: JaliAppearance;
+  /** The colours of the lines and bands, and whether they are carved. */
+  finish?: Finish;
   /** Tells which piece type is under the pointer (the wall itself does
    * not change: the piece panel marks the type). */
   onHover?: (type: number | undefined) => void;
@@ -185,12 +186,14 @@ export function Wall({
           style={{ '--type': p.type } as React.CSSProperties}
           points={p.points}
           fill={style === 'lines' || jali ? 'none' : p.fill}
-          stroke={style === 'tiles' || style === 'lines' ? INK : 'none'}
+          stroke={
+            style === 'tiles' || style === 'lines' ? finish.lines : 'none'
+          }
           strokeWidth={style === 'lines' ? groutWidth * 0.8 : groutWidth}
           strokeLinejoin="round"
         />
       )),
-    [shifted, jali, style, groutWidth],
+    [shifted, jali, style, groutWidth, finish],
   );
 
   /** The piece type under a screen position. */
@@ -248,6 +251,11 @@ export function Wall({
             <rect width={tile.lu} height={tile.lv} fill="#fff" />
           ) : null}
           {pieceNodes}
+          {/* Carved: each line or band in relief, a shadow below it and a
+              light edge above (light from the top left). */}
+          {finish.carved && !jali && style !== 'interlace'
+            ? relief(bandPath, banded(style) ? groutWidth * 4 : groutWidth)
+            : null}
           {banded(style)
             ? (['out', 'in'] as const).map((layer) => (
                 <g key={layer} className={`band-${layer}`}>
@@ -256,7 +264,7 @@ export function Wall({
                   <path
                     d={bandPath}
                     fill="none"
-                    stroke={layer === 'out' ? INK : BAND}
+                    stroke={layer === 'out' ? finish.lines : finish.band}
                     strokeWidth={
                       layer === 'out' ? groutWidth * 4 : groutWidth * 2.4
                     }
@@ -274,7 +282,7 @@ export function Wall({
                   className={`over-${layer}`}
                   d={overPath[layer]}
                   fill="none"
-                  stroke={layer === 'out' ? INK : BAND}
+                  stroke={layer === 'out' ? finish.lines : finish.band}
                   strokeWidth={
                     layer === 'out' ? groutWidth * 4 : groutWidth * 2.4
                   }

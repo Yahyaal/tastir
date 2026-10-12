@@ -168,15 +168,10 @@ export function lightness(hex: string): number {
   return y > 0.008856 ? 116 * Math.cbrt(y) - 16 : 903.3 * y;
 }
 
-/**
- * A palette's glazes: a tradition's own, or for an older palette its
- * ground as the white, its darkest colour as the black and the other
- * three paired into families.
- */
-export function glazeOf(name: string): Glaze {
-  const own = GLAZES[name];
-  if (own) return own;
-  const p = PALETTES[name] ?? (PALETTES[DEFAULT_PALETTE] as Palette);
+/** A palette's glazes, for one with no glazes of its own: its ground as
+ * the white, its darkest colour as the black and the other three paired
+ * into families. */
+function glazeFrom(p: Palette): Glaze {
   const [black, x, y, z] = [p.a, p.b, p.c, p.d].sort(
     (u, v) => lightness(u) - lightness(v),
   ) as [string, string, string, string];
@@ -188,6 +183,55 @@ export function glazeOf(name: string): Glaze {
       [z, x],
       [y, z],
     ],
+  };
+}
+
+/** A palette's glazes: a tradition's own, or made from its colours. */
+export function glazeOf(name: string, model?: Model): Glaze {
+  return GLAZES[name] ?? glazeFrom(paletteOf(model, name));
+}
+
+/** The palette of a tutorial's photo, offered first when it has one. */
+export const ORIGINAL = 'The original';
+
+/** A palette by name: a preset, or the original of the tutorial. */
+export function paletteOf(model: Model | undefined, name: string): Palette {
+  const original = model?.tutorial.pattern.original;
+  if (name === ORIGINAL && original) return original.palette;
+  return PALETTES[name] ?? (PALETTES[DEFAULT_PALETTE] as Palette);
+}
+
+/** The palettes a tutorial offers: its original first, then the presets. */
+export function paletteNames(model: Model): string[] {
+  return [
+    ...(model.tutorial.pattern.original ? [ORIGINAL] : []),
+    ...Object.keys(PALETTES),
+  ];
+}
+
+/** How the wall's lines and bands look: their colours, and whether they
+ * are carved (drawn in relief, with a light and a shadow edge). */
+export interface Finish {
+  readonly lines: string;
+  readonly band: string;
+  readonly carved: boolean;
+}
+
+/** Dark lines and light bands, as glazed tile. */
+export const DEFAULT_FINISH: Finish = {
+  lines: '#23201c',
+  band: '#f7f2e6',
+  carved: false,
+};
+
+/** The finish under a coloring: the original's with its own palette. */
+export function finishOf(model: Model, coloring: Coloring): Finish {
+  const original = model.tutorial.pattern.original;
+  if (coloring.palette !== ORIGINAL || !original) return DEFAULT_FINISH;
+  return {
+    lines: original.lines ?? DEFAULT_FINISH.lines,
+    band: original.band ?? DEFAULT_FINISH.band,
+    carved: original.carved ?? false,
   };
 }
 
@@ -203,9 +247,12 @@ export interface Coloring {
   readonly chosen: Readonly<Record<string, string>>;
 }
 
+/** A tutorial's own coloring: its original when it has a photo's, else
+ * its palette. */
 export const tutorialColoring = (model: Model): Coloring => ({
-  palette:
-    model.tutorial.pattern.palette && PALETTES[model.tutorial.pattern.palette]
+  palette: model.tutorial.pattern.original
+    ? ORIGINAL
+    : model.tutorial.pattern.palette && PALETTES[model.tutorial.pattern.palette]
       ? model.tutorial.pattern.palette
       : DEFAULT_PALETTE,
   chosen: {},
@@ -224,8 +271,7 @@ export function pieceColors(
   model: Model,
   coloring: Coloring = tutorialColoring(model),
 ): string[] {
-  const palette =
-    PALETTES[coloring.palette] ?? (PALETTES[DEFAULT_PALETTE] as Palette);
+  const palette = paletteOf(model, coloring.palette);
   return model.pattern.types.map(
     (t, i) => coloring.chosen[typeKey(t)] ?? palette[slotOf(model, t, i)],
   );

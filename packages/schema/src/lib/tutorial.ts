@@ -358,6 +358,29 @@ const Rings = z.union([
   }),
 ]);
 
+const Hex = z
+  .string()
+  .regex(/^#[0-9a-f]{6}$/, 'a colour is # and six hex digits');
+
+/**
+ * The look of the original in the tutorial's photo: a palette picked from
+ * the photo, the colour of the lines (grout, or the edges of the bands),
+ * the colour of the bands, and whether it is carved (plaster or wood), so
+ * the lines and bands are drawn in relief.
+ */
+const Original = z.strictObject({
+  palette: z.strictObject({
+    a: Hex,
+    b: Hex,
+    c: Hex,
+    d: Hex,
+    ground: Hex,
+  }),
+  lines: Hex.optional(),
+  band: Hex.optional(),
+  carved: z.boolean().optional(),
+});
+
 export const TutorialShape = z.strictObject({
   format: z.literal(0),
   id: z
@@ -404,6 +427,7 @@ export const TutorialShape = z.strictObject({
     colors: z.record(Name, z.string().min(1)),
     placements: Placements.optional(),
     rings: Rings.optional(),
+    original: Original.optional(),
   }),
   expect: Expect,
 });

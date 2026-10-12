@@ -16,6 +16,7 @@ import { planStep, play, playInk } from './animation';
 import { fullView, growingFrame, width } from './camera';
 import {
   colorReducer,
+  finishOf,
   pieceColors,
   tutorialColoring,
   type History,
@@ -315,7 +316,13 @@ export function Player({
   const [comparing, setComparing] = useState(start === 'result');
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
-    wallSvg(inking.shown, colors, { look: wallStyle, grout, fill, jali });
+    wallSvg(inking.shown, colors, {
+      look: wallStyle,
+      grout,
+      fill,
+      jali,
+      finish: finishOf(inking.shown, colorHistory.now),
+    });
   const svgRef = useRef<SVGSVGElement>(null);
   const running = useRef<Animation[]>([]);
   const reversing = useRef(false);
@@ -495,6 +502,7 @@ export function Player({
         model={inking.shown}
         colors={colors}
         fill={fill}
+        finish={finishOf(inking.shown, colorHistory.now)}
         repeat={colorRepeat(inking.shown)}
         look={wallStyle}
         grout={grout}
