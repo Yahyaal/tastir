@@ -355,6 +355,10 @@ const Rings = z.union([
         ),
       z.enum(['white', 'black', 'main', 'second', 'spark']),
     ),
+    // How many rosettes take turns before the wall repeats: 1 colours
+    // every rosette alike. Left out, neighbours take turns as the lattice
+    // allows.
+    rosettes: z.int().min(1).max(6).optional(),
   }),
 ]);
 

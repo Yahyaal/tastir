@@ -1247,6 +1247,115 @@ main.stage .drawing:not(.wall) {
   vertical-align: middle;
 }
 
+/* The colour panel: palettes as strips, the way of colouring, and the
+   rosettes ring by ring. */
+.palette-strips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.player .palette-strips button,
+.player .colour-methods button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 6px 8px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  text-align: left;
+  font-size: 0.8rem;
+}
+
+.player .palette-strips button[aria-pressed='true'],
+.player .colour-methods button[aria-pressed='true'] {
+  border-color: var(--saffron);
+  box-shadow: 0 0 10px var(--theme-accent-muted);
+}
+
+.palette-strip {
+  display: flex;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.palette-strip span {
+  width: 16px;
+  height: 14px;
+}
+
+.colour-methods {
+  display: flex;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.player .colour-methods button {
+  flex-direction: row;
+  font-size: 0.9rem;
+}
+
+.rosette-card {
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  padding: 8px;
+  margin: 8px 0;
+}
+
+.rosette-card header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rosette-card h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.rosette-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.rosette-actions button {
+  padding: 3px 8px;
+  font-size: 0.8rem;
+}
+
+.ring-rows {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 6px;
+}
+
+/* The ring open for colouring takes the whole width, for its swatches. */
+.ring-rows li.active {
+  grid-column: 1 / -1;
+}
+
+.player .ring-rows li.active .piece-button {
+  border-color: var(--saffron);
+  box-shadow: 0 0 10px var(--theme-accent-muted);
+}
+
+.ring-rows .chooser {
+  padding: 6px 0 2px 6px;
+}
+
+.rosette-count small {
+  color: var(--theme-text-muted);
+}
+
 /* ------------------------------------------------------------------ */
 /* What is drawn on the plate */
 

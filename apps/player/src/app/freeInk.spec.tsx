@@ -46,14 +46,14 @@ describe('free inking', () => {
         ?.split('M').length,
     ).toBe(16);
     click('Next'); // color: with one stroke gone, the star and cross merge
-    expect(legend()).not.toContain('Recolor every star');
+    expect(legend()).not.toContain('Recolor ring 1, the stars');
     click('Back');
     click('Back');
     click('Back to the classic');
     expect(inked()).toHaveLength(16);
     click('Next');
     click('Next');
-    expect(legend()).toEqual(['Recolor every star', 'Recolor every cross']);
+    expect(legend()).toContain('Recolor ring 1, the stars');
   });
 
   it('inks a new piece with a click', () => {

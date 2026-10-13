@@ -111,8 +111,9 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
 }, info) => {
   await page.goto('/#/eight-fold-star-and-cross/result');
   await page
-    .getByLabel('Palette', { exact: false })
-    .selectOption('Chefchaouen');
+    .getByRole('group', { name: 'Palette' })
+    .getByRole('button', { name: 'Chefchaouen', exact: true })
+    .click();
   const colors = await page
     .locator('.wall-piece')
     .evaluateAll((pieces) => pieces.map((p) => p.getAttribute('fill')));
@@ -212,9 +213,11 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await page
     .getByRole('combobox', { name: 'Style', exact: true })
     .selectOption('tiles');
-  await expect(page.getByLabel('Palette', { exact: false })).toHaveValue(
-    'Chefchaouen',
-  );
+  await expect(
+    page
+      .getByRole('group', { name: 'Palette' })
+      .getByRole('button', { name: 'Chefchaouen', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
   expect(
     await page
       .locator('.wall-piece')

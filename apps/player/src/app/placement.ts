@@ -5,10 +5,11 @@ import {
   slotOf,
   typeKey,
   type Coloring,
+  type Method,
   type Palette,
 } from './coloring';
 import type { Model } from './model';
-import { ringsOf, type RingRole, type Rings } from './rings';
+import { ringsOf, withRosettes, type RingRole, type Rings } from './rings';
 
 /**
  * Coloring by where a piece sits (the tutorial's pattern.placements): the
@@ -22,7 +23,58 @@ import { ringsOf, type RingRole, type Rings } from './rings';
  * does not colour by rings or the pattern has no rosette to colour round.
  */
 export function ringsFor(model: Model): Rings | undefined {
-  return model.tutorial.pattern.rings ? ringsOf(model.pattern) : undefined;
+  const asked = model.tutorial.pattern.rings;
+  const rings = asked ? ringsOf(model.pattern) : undefined;
+  if (!rings || asked === true || asked?.rosettes === undefined) return rings;
+  return withRosettes(rings, asked.rosettes);
+}
+
+/** The ways a pattern can be coloured, the tutorial's own first. */
+export function methodsOf(model: Model): Method[] {
+  const own = ownMethod(model);
+  const all: Method[] = [own];
+  if (own !== 'rings' && ringsOf(model.pattern)) all.push('rings');
+  if (own !== 'shape') all.push('shape');
+  return all;
+}
+
+const ownMethod = (model: Model): Method =>
+  model.tutorial.pattern.rings
+    ? 'rings'
+    : model.tutorial.pattern.placements
+      ? 'place'
+      : 'shape';
+
+/** The way a coloring colours a pattern: its own, else the tutorial's. */
+export const methodOf = (model: Model, coloring: Coloring): Method =>
+  coloring.method ?? ownMethod(model);
+
+/**
+ * The model as a coloring colours it: the way the learner chose (ring by
+ * ring, by shape, or by the tutorial's placements) and how many rosettes
+ * take turns. A coloring that changed neither is the tutorial's own.
+ */
+export function colouredModel(model: Model, coloring: Coloring): Model {
+  if (coloring.method === undefined && coloring.rosettes === undefined)
+    return model;
+  const { rings, placements, ...rest } = model.tutorial.pattern;
+  const method = methodOf(model, coloring);
+  const fixes = rings && rings !== true ? rings : { colors: {} };
+  const pattern =
+    method === 'rings'
+      ? {
+          ...rest,
+          rings: {
+            ...fixes,
+            ...(coloring.rosettes === undefined
+              ? {}
+              : { rosettes: coloring.rosettes }),
+          },
+        }
+      : method === 'place' && placements
+        ? { ...rest, placements }
+        : rest;
+  return { ...model, tutorial: { ...model.tutorial, pattern } };
 }
 
 /** Whether pieces of one shape can differ in colour: by placement or ring. */
@@ -196,7 +248,9 @@ function ringFills(
     if (role === 'black') return glaze.black;
     if (role === 'spark')
       return (
-        glaze.families[(f + 1) % Math.max(1, rings.rosettes)]?.[0] ??
+        // The next rosette's main colour; with every rosette alike, the
+        // colour a second rosette would take.
+        glaze.families[(f + 1) % Math.max(2, rings.rosettes)]?.[0] ??
         glaze.black
       );
     return glaze.families[f]?.[role === 'main' ? 0 : 1] ?? glaze.black;

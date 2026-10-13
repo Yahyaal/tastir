@@ -51,6 +51,10 @@ function isDesign(x: unknown): x is Design {
     typeof c['chosen'] === 'object' &&
     c['chosen'] !== null &&
     Object.values(c['chosen']).every((v) => typeof v === 'string') &&
+    (c['method'] === undefined ||
+      ['rings', 'shape', 'place'].includes(c['method'] as string)) &&
+    (c['rosettes'] === undefined ||
+      (Number.isInteger(c['rosettes']) && (c['rosettes'] as number) >= 1)) &&
     LOOKS.includes(d['look'] as string) &&
     typeof d['grout'] === 'number' &&
     (d['jali'] === undefined ||

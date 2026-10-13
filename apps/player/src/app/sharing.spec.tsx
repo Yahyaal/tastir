@@ -30,9 +30,7 @@ async function shareFrom(
 ): Promise<{ hash: string; colored: (string | null)[] }> {
   go(hash);
   render(<App />);
-  fireEvent.change(screen.getByLabelText(/Palette/), {
-    target: { value: 'Chefchaouen' },
-  });
+  fireEvent.click(screen.getByRole('button', { name: 'Chefchaouen' }));
   fireEvent.change(screen.getByLabelText('Style'), {
     target: { value: 'strapwork' },
   });

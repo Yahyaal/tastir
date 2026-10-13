@@ -117,9 +117,7 @@ describe('coloring in the player', () => {
 
   it('switches palette', () => {
     atColor();
-    fireEvent.change(screen.getByLabelText(/Palette/), {
-      target: { value: 'Chefchaouen' },
-    });
+    fireEvent.click(screen.getByRole('button', { name: 'Chefchaouen' }));
     expect(starFills()).toEqual(new Set([PALETTES.Chefchaouen?.a]));
   });
 

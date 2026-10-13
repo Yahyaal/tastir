@@ -37,11 +37,12 @@ import {
 } from './model';
 import { Original } from './Original';
 import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
-import { PiecePanel } from './PiecePanel';
+import { ColourPanel } from './ColourPanel';
 import { ViewSwitch, viewAddress, type View } from './ViewSwitch';
 import {
   byPlace,
   colorRepeat,
+  colouredModel,
   placeFills,
   placeKey,
   ringsFor,
@@ -143,6 +144,8 @@ function sameDesign(
     JSON.stringify(design.inked ?? null) ===
       JSON.stringify(now.inked ?? null) &&
     design.coloring.palette === now.coloring.palette &&
+    design.coloring.method === now.coloring.method &&
+    design.coloring.rosettes === now.coloring.rosettes &&
     sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
     design.look === now.look &&
     design.grout === now.grout &&
@@ -225,17 +228,21 @@ export function Player({
       future: [],
     }),
   );
-  const colors = useMemo(
-    () => pieceColors(inking.shown, colorHistory.now),
+  // The pattern as the learner colours it: ring by ring, by shape or by
+  // place, with as many rosettes taking turns as they chose.
+  const coloured = useMemo(
+    () => colouredModel(inking.shown, colorHistory.now),
     [inking.shown, colorHistory.now],
+  );
+  const colors = useMemo(
+    () => pieceColors(coloured, colorHistory.now),
+    [coloured, colorHistory.now],
   );
   // Fills by placement, when the tutorial colors same shapes differently.
   const fill = useMemo(
     () =>
-      byPlace(inking.shown)
-        ? placeFills(inking.shown, colorHistory.now)
-        : undefined,
-    [inking.shown, colorHistory.now],
+      byPlace(coloured) ? placeFills(coloured, colorHistory.now) : undefined,
+    [coloured, colorHistory.now],
   );
   const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
   const [hovered, setHovered] = useState<number>();
@@ -491,19 +498,19 @@ export function Player({
     picture = <RepeatedInk model={inking.shown} enter={enter} speed={speed} />;
   } else {
     label = 'Color';
-    hint = ringsFor(inking.shown)
+    hint = ringsFor(coloured)
       ? 'Colors ring by ring round each rosette.'
-      : tutorial.pattern.placements
+      : coloured.tutorial.pattern.placements
         ? 'Colors by where each piece sits.'
         : 'One color for each shape of piece.';
-    text = colorText(inking.shown);
+    text = colorText(coloured);
     picture = (
       <Wall
-        model={inking.shown}
+        model={coloured}
         colors={colors}
         fill={fill}
-        finish={finishOf(inking.shown, colorHistory.now)}
-        repeat={colorRepeat(inking.shown)}
+        finish={finishOf(coloured, colorHistory.now)}
+        repeat={colorRepeat(coloured)}
         look={wallStyle}
         grout={grout}
         jali={jali}
@@ -830,9 +837,11 @@ export function Player({
             {wallStyle !== 'jali' ? (
               <section>
                 <h2>Colors</h2>
-                <PiecePanel
-                  model={inking.shown}
+                <ColourPanel
+                  model={coloured}
+                  base={inking.shown}
                   colors={colors}
+                  fill={fill}
                   history={colorHistory}
                   dispatch={colorDispatch}
                   hovered={hovered}
@@ -846,7 +855,7 @@ export function Player({
                     fill && place
                       ? {
                           key: placeKey(
-                            inking.shown,
+                            coloured,
                             place.piece,
                             place.i,
                             place.j,

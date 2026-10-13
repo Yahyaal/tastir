@@ -241,10 +241,18 @@ export function finishOf(model: Model, coloring: Coloring): Finish {
  */
 export const typeKey = (t: PieceType) => `${t.vertices}:${t.area.toFixed(4)}`;
 
-/** A coloring: a palette plus colors chosen for single piece types. */
+/** How a wall is coloured: ring by ring round each rosette, one colour
+ * per shape, or by where each piece sits (a tutorial's placements). */
+export type Method = 'rings' | 'shape' | 'place';
+
+/** A coloring: a palette plus colors chosen for single piece types or
+ * rings, and, when the learner changed them, how the wall is coloured and
+ * how many rosettes take turns before it repeats. */
 export interface Coloring {
   readonly palette: string;
   readonly chosen: Readonly<Record<string, string>>;
+  readonly method?: Method;
+  readonly rosettes?: number;
 }
 
 /** A tutorial's own coloring: its original when it has a photo's, else
@@ -315,7 +323,7 @@ export function colorReducer(h: History, action: ColorAction): History {
     }
     case 'palette':
       // A new palette recolors everything; single choices are dropped.
-      return change({ palette: action.palette, chosen: {} });
+      return change({ ...h.now, palette: action.palette, chosen: {} });
     case 'reset':
       return change(action.to);
     case 'undo': {

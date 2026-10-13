@@ -109,7 +109,10 @@ test('unsaved changes confirmation keeps focus and Escape preserves the design',
   await expect(
     page.getByText('Saved as “Unsaved wall”.', { exact: false }),
   ).toBeVisible();
-  await page.getByLabel('Palette', { exact: false }).selectOption('Marrakech');
+  await page
+    .getByRole('group', { name: 'Palette' })
+    .getByRole('button', { name: 'Marrakech', exact: true })
+    .click();
   const address = page.url();
   const home = page.getByRole('link', { name: /All patterns/ });
   await home.focus();
@@ -129,9 +132,11 @@ test('unsaved changes confirmation keeps focus and Escape preserves the design',
   await expect(dialog).toHaveCount(0);
   await expect(home).toBeFocused();
   await expect(page).toHaveURL(address);
-  await expect(page.getByLabel('Palette', { exact: false })).toHaveValue(
-    'Marrakech',
-  );
+  await expect(
+    page
+      .getByRole('group', { name: 'Palette' })
+      .getByRole('button', { name: 'Marrakech', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
   expect(await page.evaluate(() => document.body.style.overflow)).toBe(
     overflow,
   );
@@ -392,8 +397,9 @@ test('a finished wall can be saved, shared, reopened, and used for a variation',
 }) => {
   await page.goto(route(`${star}/result`));
   await page
-    .getByLabel('Palette', { exact: false })
-    .selectOption('Chefchaouen');
+    .getByRole('group', { name: 'Palette' })
+    .getByRole('button', { name: 'Chefchaouen', exact: true })
+    .click();
   await page
     .getByRole('button', { name: 'Save as my design', exact: true })
     .click();
@@ -411,14 +417,18 @@ test('a finished wall can be saved, shared, reopened, and used for a variation',
   const other = await context.newPage();
   await other.goto(link);
   await expect(other.getByText(/A pattern shared with you/)).toBeVisible();
-  await expect(other.getByLabel('Palette', { exact: false })).toHaveValue(
-    'Chefchaouen',
-  );
+  await expect(
+    other
+      .getByRole('group', { name: 'Palette' })
+      .getByRole('button', { name: 'Chefchaouen', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
   await other.close();
   await page.reload();
-  await expect(page.getByLabel('Palette', { exact: false })).toHaveValue(
-    'Chefchaouen',
-  );
+  await expect(
+    page
+      .getByRole('group', { name: 'Palette' })
+      .getByRole('button', { name: 'Chefchaouen', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
   await page
     .getByRole('button', { name: 'Make a variation', exact: true })
     .click();

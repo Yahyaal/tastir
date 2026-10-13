@@ -562,3 +562,44 @@ function findRings(pattern: Pattern): Rings | undefined {
     },
   };
 }
+
+const fewer = new WeakMap<Rings, Map<number, Rings>>();
+
+/**
+ * The rings when only `count` rosettes take turns before the wall repeats
+ * (1: every rosette alike), fewer than the lattice gives: the rosettes'
+ * families fold onto the first `count`, and the filler stars' family comes
+ * next. More than the lattice gives is the rings as they are.
+ */
+export function withRosettes(rings: Rings, count: number): Rings {
+  const k = Math.max(1, Math.floor(count));
+  if (k >= rings.rosettes) return rings;
+  const kept = fewer.get(rings) ?? new Map<number, Rings>();
+  fewer.set(rings, kept);
+  const hit = kept.get(k);
+  if (hit) return hit;
+  const family = (f: number) =>
+    f < 0 ? f : f < rings.rosettes ? f % k : k + (f - rings.rosettes);
+  // A ring's key ends in its family (`orbit/family`).
+  const key = (ring: string) => {
+    const cut = ring.lastIndexOf('/');
+    return `${ring.slice(0, cut)}/${family(Number(ring.slice(cut + 1)))}`;
+  };
+  const pairs = new Map<string, [string, string]>();
+  for (const [near, far] of rings.touching) {
+    const pair: [string, string] = [key(near), key(far)];
+    if (pair[0] !== pair[1]) pairs.set(pair.join('|'), pair);
+  }
+  const folded: Rings = {
+    repeat: rings.repeat,
+    families: rings.families - rings.rosettes + k,
+    rosettes: k,
+    touching: [...pairs.values()],
+    place(piece, i, j) {
+      const at = rings.place(piece, i, j);
+      return { ...at, ring: key(at.ring), family: family(at.family) };
+    },
+  };
+  kept.set(k, folded);
+  return folded;
+}

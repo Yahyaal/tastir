@@ -33,6 +33,7 @@ export function PiecePanel({
   onSelect,
   onReset,
   place,
+  tools = true,
 }: {
   model: Model;
   colors: readonly string[];
@@ -46,6 +47,9 @@ export function PiecePanel({
   /** The placement clicked on the wall, when the tutorial colors by
    * placement: its color key and its color now. */
   place?: { key: string; color: string };
+  /** Whether to show the palette, undo, redo and reset (the colour
+   * panel shows its own). */
+  tools?: boolean;
 }) {
   const [onlyHere, setOnlyHere] = useState(true);
   const { types } = model.pattern;
@@ -60,40 +64,42 @@ export function PiecePanel({
     here ? here.key : typeKey(t);
   return (
     <div className="piece-panel">
-      <div className="color-tools">
-        <label>
-          Palette{' '}
-          <select
-            value={history.now.palette}
-            onChange={(e) =>
-              dispatch({ kind: 'palette', palette: e.target.value })
-            }
+      {tools ? (
+        <div className="color-tools">
+          <label>
+            Palette{' '}
+            <select
+              value={history.now.palette}
+              onChange={(e) =>
+                dispatch({ kind: 'palette', palette: e.target.value })
+              }
+            >
+              {paletteNames(model).map((name) => (
+                <option key={name}>{name}</option>
+              ))}
+            </select>
+          </label>
+          <button
+            type="button"
+            className="quiet"
+            disabled={!history.past.length}
+            onClick={() => dispatch({ kind: 'undo' })}
           >
-            {paletteNames(model).map((name) => (
-              <option key={name}>{name}</option>
-            ))}
-          </select>
-        </label>
-        <button
-          type="button"
-          className="quiet"
-          disabled={!history.past.length}
-          onClick={() => dispatch({ kind: 'undo' })}
-        >
-          Undo
-        </button>
-        <button
-          type="button"
-          className="quiet"
-          disabled={!history.future.length}
-          onClick={() => dispatch({ kind: 'redo' })}
-        >
-          Redo
-        </button>
-        <button type="button" className="quiet" onClick={onReset}>
-          Reset
-        </button>
-      </div>
+            Undo
+          </button>
+          <button
+            type="button"
+            className="quiet"
+            disabled={!history.future.length}
+            onClick={() => dispatch({ kind: 'redo' })}
+          >
+            Redo
+          </button>
+          <button type="button" className="quiet" onClick={onReset}>
+            Reset
+          </button>
+        </div>
+      ) : null}
       <ul className="piece-types" onPointerLeave={() => onHover(undefined)}>
         {types.map((t, i) => (
           <li

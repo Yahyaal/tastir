@@ -16,6 +16,8 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 **The player** draws each step, inks the pattern, builds the repeat tile by tile and colours it. Learners can also draw along on every tutorial, save their own designs, edit and share them (the build log is [Your own patterns](USER-PATTERNS.md)). The finished wall has five styles: tiles, strapwork, lines, Jali (a pierced screen in stone, wood or metal finishes) and interlace (bands woven over and under by one rule).
 
+**The colour stage** (12 October) colours a pattern with rosettes ring by ring: each rosette is a card of its rings from the centre out, a second rosette starts as the first with its colours swapped or the same, and every rosette can be coloured alike instead. A click on the wall opens that piece's ring. The palettes show as strips of their colours, and the learner can switch to colouring by shape. Saved designs and share links keep the way of colouring and the number of rosettes (`Coloring.method` and `Coloring.rosettes`).
+
 **Merged on 11 and 12 October:**
 - Jali with colours, material finishes and textures (Codex, pull request #5; tasks 2.1–2.1d in [the tasks](TASKS.md)).
 - Interlace (task 2.3, pull requests #4 and #7), rebuilt after the owner found crossings in Barca stars and Bou Inania that were not woven.

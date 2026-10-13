@@ -279,6 +279,11 @@ export function ColourStagePlan() {
       <section className="stage-note">
         <h2>Your note on the Bou Inania rosette (12 October)</h2>
         <p>
+          <b>Built:</b> try it on the{' '}
+          <a href="#/bou-inania-rosette">Bou Inania rosette</a>, at its Color
+          step. The mock below is the earlier plan.
+        </p>
+        <p>
           <b>The 4 odd shields were a bug, now fixed.</b> The small
           four-pointed star between the rosettes sits nearer most of a
           rosette’s outer shields than the rosette’s own centre, so it took 12

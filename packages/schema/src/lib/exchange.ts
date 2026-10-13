@@ -20,6 +20,8 @@ export const BasedOnShape = z.strictObject({
 export const ColoringShape = z.strictObject({
   palette: z.string(),
   chosen: z.record(z.string(), z.string()),
+  method: z.enum(['rings', 'shape', 'place']).optional(),
+  rosettes: z.int().min(1).max(6).optional(),
 });
 /** Read old four-material designs as the new material families. */
 const FINISHES = {

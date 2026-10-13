@@ -68,13 +68,15 @@ describe('saving a design', () => {
     click('Next');
     click('Next');
     expect(label()).toBe('Color');
-    fireEvent.change(screen.getByLabelText(/Palette/), {
-      target: { value: 'Chefchaouen' },
-    });
+    fireEvent.click(screen.getByRole('button', { name: 'Chefchaouen' }));
     fireEvent.click(
-      screen.getAllByRole('button', { name: /^Recolor every/ })[0] as Element,
+      screen.getAllByRole('button', { name: /^Recolor ring/ })[0] as Element,
     );
-    click(/third color/);
+    fireEvent.click(
+      screen
+        .getByRole('group', { name: /^Colors for the/ })
+        .querySelectorAll('.swatch-button')[2] as Element,
+    );
     const colored = fills();
     fireEvent.change(screen.getByLabelText('Style'), {
       target: { value: 'strapwork' },
@@ -134,7 +136,7 @@ describe('saving a design', () => {
     expect(screen.getByText(/The tutorial has changed/)).toBeTruthy();
     // The star and cross, in the design's own palette.
     expect(
-      screen.getByRole('button', { name: 'Recolor every star' }),
+      screen.getAllByRole('button', { name: 'Recolor ring 1, the stars' })[0],
     ).toBeTruthy();
     const marrakech = Object.values(PALETTES['Marrakech'] ?? {});
     expect(fills().length).toBeGreaterThan(0);
@@ -209,9 +211,7 @@ describe('saving a design', () => {
       'disabled',
       true,
     );
-    fireEvent.change(screen.getByLabelText(/Palette/), {
-      target: { value: 'Marrakech' },
-    });
+    fireEvent.click(screen.getByRole('button', { name: 'Marrakech' }));
     expect(screen.getByText(/Unsaved changes/)).toBeTruthy();
     const home = screen.getByRole('link', { name: /All patterns/ });
     home.focus();
@@ -234,10 +234,11 @@ describe('saving a design', () => {
     expect(screen.queryByRole('alertdialog')).toBeNull();
     expect(document.activeElement).toBe(home);
     expect(document.body.style.overflow).toBe(overflow);
-    expect(screen.getByLabelText(/Palette/)).toHaveProperty(
-      'value',
-      'Marrakech',
-    );
+    expect(
+      screen
+        .getByRole('button', { name: 'Marrakech' })
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
     // The browser's Back asks too, and puts the design's address back.
     go('#/');
     expect(
