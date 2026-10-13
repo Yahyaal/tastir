@@ -219,7 +219,8 @@ test('Upcoming inspection keeps keyboard focus inside and returns to its card', 
 test('player shortcuts respect controls and still work on the page', async ({
   page,
 }) => {
-  await page.goto(route(star));
+  await page.goto(route(`${star}/watch`));
+  await page.getByRole('button', { name: 'Pause', exact: true }).click();
   await expect(page.locator('.label')).toHaveText('Step 1 of 6');
   await page.getByRole('button', { name: 'Next', exact: true }).press('Space');
   await expect(page.locator('.label')).toHaveText('Step 2 of 6');

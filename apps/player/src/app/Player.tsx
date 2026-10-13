@@ -207,6 +207,11 @@ export function Player({
   );
   const last = stages.length - 1;
   const [speed, setSpeed] = useState(1);
+  const [playing, setPlaying] = useState(start === 'beginning');
+  const plateRef = useRef<HTMLElement>(null);
+  const clock = useRef<{ index: number; remaining: number } | undefined>(
+    undefined,
+  );
   const [reduced, setReduced] = useState(prefersReducedMotion);
   const [showNames, setShowNames] = useRemembered<boolean>('showNames', false);
   const [inkMode, setInkMode] = useRemembered<InkMode>('inkMode', 'end');
@@ -362,6 +367,7 @@ export function Player({
     stage: index,
     instant: reduced,
     active: onConstruction,
+    paused: !playing && clock.current?.index === index,
   });
 
   useLayoutEffect(() => {
@@ -386,20 +392,29 @@ export function Player({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, stage, model, reduced, speed, frame, asYouGo]);
 
-  const next = useCallback(() => {
+  const advance = useCallback(() => {
     if (reversing.current) return settle();
     settle();
     if (index === last) return;
+    if (index + 1 === last) setPlaying(false);
     animateNext.current = true;
     setForward(true);
     setIndex(index + 1);
   }, [index, last]);
 
+  const next = useCallback(() => {
+    setPlaying(false);
+    clock.current = undefined;
+    advance();
+  }, [advance]);
+
   const back = useCallback(() => {
+    setPlaying(false);
     // A second Back while undrawing finishes the undrawing at once.
     if (reversing.current) return settle();
     settle();
     if (index === 0) return;
+    clock.current = undefined;
     setForward(false);
     const undraw =
       stage.kind === 'step' && !reduced
@@ -418,6 +433,73 @@ export function Player({
       setIndex(index - 1);
     });
   }, [index, stage, model, reduced, speed, asYouGo]);
+
+  const togglePlayback = useCallback(() => {
+    if (index === last) {
+      clock.current = undefined;
+      animateNext.current = true;
+      setForward(true);
+      setIndex(0);
+    }
+    setPlaying((was) => !was);
+  }, [index, last]);
+
+  // Use the longest active animation as the stage's movie time, including
+  // the repeat's slides. Keep the remaining time when playback is paused.
+  useEffect(() => {
+    const animations = [
+      ...new Set([
+        ...running.current,
+        ...(plateRef.current?.getAnimations?.({ subtree: true }) ?? []),
+      ]),
+    ];
+    for (const animation of animations) {
+      if (animation.playState === 'finished' || animation.playState === 'idle')
+        continue;
+      if (playing || reversing.current || clock.current?.index !== index)
+        animation.play?.();
+      else animation.pause?.();
+    }
+    if (!playing || index === last || inking.editing) return;
+    if (clock.current?.index !== index) {
+      const duration = Math.max(
+        0,
+        ...animations.map((animation) => {
+          if (
+            animation.playState === 'finished' ||
+            animation.playState === 'idle'
+          )
+            return 0;
+          const end = animation.effect?.getComputedTiming().endTime;
+          const elapsed =
+            typeof animation.currentTime === 'number'
+              ? animation.currentTime
+              : 0;
+          return typeof end === 'number' && Number.isFinite(end)
+            ? Math.max(0, end - elapsed)
+            : 0;
+        }),
+      );
+      clock.current = { index, remaining: duration + 1000 / speed };
+    }
+    const current = clock.current;
+    const started = performance.now();
+    const timer = window.setTimeout(advance, current.remaining);
+    return () => {
+      window.clearTimeout(timer);
+      current.remaining = Math.max(
+        0,
+        current.remaining - (performance.now() - started),
+      );
+    };
+  }, [playing, index, last, speed, advance, inking.editing, forward]);
+
+  useEffect(
+    () => () => {
+      running.current.forEach((animation) => animation.cancel?.());
+    },
+    [],
+  );
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -438,11 +520,15 @@ export function Player({
       )
         return;
       if (e.key === 'ArrowLeft') back();
-      if (e.key === 'ArrowRight' || e.key === ' ') next();
+      if (e.key === 'ArrowRight') next();
+      if (e.key === ' ') {
+        e.preventDefault();
+        togglePlayback();
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [back, next]);
+  }, [back, next, togglePlayback]);
 
   const shown = shownSteps(tutorial);
   const beats = beatsOf(tutorial);
@@ -495,7 +581,14 @@ export function Player({
     text =
       tutorial.pattern.text ??
       'Repeat the tile edge to edge, with the same lines in every copy.';
-    picture = <RepeatedInk model={inking.shown} enter={enter} speed={speed} />;
+    picture = (
+      <RepeatedInk
+        model={inking.shown}
+        enter={enter}
+        speed={speed}
+        paused={!playing && clock.current?.index === index}
+      />
+    );
   } else {
     label = 'Color';
     hint = ringsFor(coloured)
@@ -529,7 +622,9 @@ export function Player({
 
   /** Jumps straight to a stage from the journey, without playing it in. */
   const jump = (to: number) => {
+    setPlaying(false);
     if (to === index) return;
+    clock.current = undefined;
     settle();
     reversing.current = false;
     setForward(false);
@@ -548,7 +643,15 @@ export function Player({
     if (to === 'result') {
       jump(last);
       setComparing(true);
-    } else jump(0);
+    } else {
+      settle();
+      clock.current = undefined;
+      reversing.current = false;
+      animateNext.current = true;
+      setForward(true);
+      setIndex(0);
+      setPlaying(true);
+    }
     return true;
   };
   const shownView = useRef(view);
@@ -668,7 +771,7 @@ export function Player({
       {banner}
       <div className={colorStage ? 'workspace with-panel' : 'workspace'}>
         <Journey stages={stages} index={index} onJump={jump} />
-        <section className="plate-area">
+        <section ref={plateRef} className="plate-area">
           <main className={showOriginal ? 'stage comparing' : 'stage'}>
             {showOriginal ? <Original photos={photos} /> : null}
             {picture}
@@ -709,7 +812,10 @@ export function Player({
                     type="button"
                     className="secondary"
                     aria-pressed={inking.editing}
-                    onClick={() => inking.setEditing(!inking.editing)}
+                    onClick={() => {
+                      setPlaying(false);
+                      inking.setEditing(!inking.editing);
+                    }}
                   >
                     {inking.editing ? 'Done' : 'Make your own'}
                   </button>
@@ -746,6 +852,13 @@ export function Player({
                 disabled={index === 0}
               >
                 Back
+              </button>
+              <button
+                type="button"
+                className="secondary"
+                onClick={togglePlayback}
+              >
+                {playing ? 'Pause' : index === last ? 'Replay' : 'Play'}
               </button>
               <button
                 type="button"

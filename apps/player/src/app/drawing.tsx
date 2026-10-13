@@ -743,11 +743,15 @@ export function RepeatedInk({
   model,
   enter = false,
   speed = 1,
+  paused = false,
 }: {
   model: Model;
   enter?: boolean;
   speed?: number;
+  paused?: boolean;
 }) {
+  const pauseRef = useRef(paused);
+  pauseRef.current = paused;
   const { view } = useMemo(() => tiling(model), [model]);
   const { cell, ink } = model.pattern;
   const { row, next } = useMemo(() => rowBasis(model), [model]);
@@ -817,10 +821,14 @@ export function RepeatedInk({
     // The camera moves on the same clock as the copies (an SVG <animate>
     // starts at mount, before a slow first render has finished).
     let frame = 0;
-    const t0 = performance.now();
+    let previous = performance.now();
+    let elapsed = 0;
     const ease = (t: number) => 1 - (1 - t) ** 3;
     const camera = () => {
-      const t = Math.min(1, (performance.now() - t0) / rowsStart);
+      const now = performance.now();
+      if (!pauseRef.current) elapsed += now - previous;
+      previous = now;
+      const t = Math.min(1, elapsed / rowsStart);
       const e = ease(t);
       const mix = (a: number, b: number) => a + (b - a) * e;
       svg.setAttribute(

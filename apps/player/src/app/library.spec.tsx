@@ -74,11 +74,11 @@ describe('the library', () => {
       // the first step, see the finished result, or draw it along.
       expect(links).toEqual([
         '#/another-star',
-        '#/another-star',
+        '#/another-star/watch',
         '#/another-star/result',
         '#/another-star/draw',
         '#/eight-fold-star-and-cross',
-        '#/eight-fold-star-and-cross',
+        '#/eight-fold-star-and-cross/watch',
         '#/eight-fold-star-and-cross/result',
         '#/eight-fold-star-and-cross/draw',
       ]);
@@ -205,7 +205,7 @@ describe('the address', () => {
     expect(
       screen.getByRole('heading', { name: 'Eight-fold star and cross' }),
     ).toBeTruthy();
-    expect(document.querySelector('.label')?.textContent).toBe('Step 1 of 6');
+    expect(document.querySelector('.label')?.textContent).toBe('Color');
     go('#/');
     expect(screen.getByRole('heading', { name: 'Tastir' })).toBeTruthy();
   }, 30000); // with the library; a busy machine can push it past the default 5 s. // The library computes every tutorial in tutorials/, so this grows
@@ -215,8 +215,10 @@ describe('the address', () => {
     go('#/eight-fold-star-and-cross');
     const previous = screen.getByRole('link', { name: /^Previous pattern: / });
     const next = screen.getByRole('link', { name: /^Next pattern: / });
-    expect(previous.getAttribute('href')).toBe('#/eight-fold-khatam');
-    expect(next.getAttribute('href')).toBe('#/eight-fold-star-and-octagon');
+    expect(previous.getAttribute('href')).toBe('#/eight-fold-khatam/result');
+    expect(next.getAttribute('href')).toBe(
+      '#/eight-fold-star-and-octagon/result',
+    );
     expect(next.textContent).toContain('star and octagon');
   }, 30000);
 
@@ -240,7 +242,7 @@ describe('the address', () => {
 
   it('switches to the result in place, and keeps it for the next pattern', () => {
     render(<App />);
-    go('#/eight-fold-star-and-cross');
+    go('#/eight-fold-star-and-cross/watch');
     const views = screen.getByRole('navigation', {
       name: 'How to see this pattern',
     });
@@ -271,18 +273,22 @@ describe('the address', () => {
   it('opens the tutorial in the address on load', () => {
     window.location.hash = '#/eight-fold-star-and-cross';
     render(<App />);
-    expect(document.querySelector('.label')?.textContent).toBe('Step 1 of 6');
+    expect(document.querySelector('.label')?.textContent).toBe('Color');
   });
 
-  it('opens at the finished wall with /result, beside the original', () => {
-    window.location.hash = '#/minbar-doors-cairo/result';
-    render(<App />);
-    expect(document.querySelector('.label')?.textContent).toBe('Color');
-    expect(screen.getByRole('figure', { name: 'The original' })).toBeTruthy();
-    expect(
-      screen.getByRole('button', { name: 'Hide the original' }),
-    ).toBeTruthy();
-  }, 15000);
+  it.each(['', '/result'])(
+    'opens at the finished wall with %s, beside the original',
+    (suffix) => {
+      window.location.hash = `#/minbar-doors-cairo${suffix}`;
+      render(<App />);
+      expect(document.querySelector('.label')?.textContent).toBe('Color');
+      expect(screen.getByRole('figure', { name: 'The original' })).toBeTruthy();
+      expect(
+        screen.getByRole('button', { name: 'Hide the original' }),
+      ).toBeTruthy();
+    },
+    15000,
+  );
 
   it('opens at the finished wall alone when there is no photo', () => {
     window.location.hash = '#/eight-fold-star-and-cross/result';
