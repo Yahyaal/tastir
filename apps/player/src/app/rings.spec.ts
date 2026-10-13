@@ -194,5 +194,14 @@ describe('filler stars', () => {
     // One ring round each of the two rosette families, none to the filler.
     expect([...families].sort()).toEqual([0, 1]);
     expect(ringsSeen.size).toBe(2);
+    // The shields as near the filler star as the rosette go with the
+    // rosette too: none is left between rosettes.
+    const shields = bou.pattern.pieces
+      .map((p, k) => ({ p, k }))
+      .filter(({ p }) => bou.pattern.types[p.type]?.name === 'shield');
+    const between = shields.filter(
+      ({ k }) => rings?.place(k, 0, 0).family === -1,
+    );
+    expect(between).toHaveLength(0);
   }, 30000);
 });

@@ -443,7 +443,10 @@ function findRings(pattern: Pattern): Rings | undefined {
         }
     for (const [id, o] of own) {
       const p = places[id] as Place;
-      if (p.family !== fam.count || !kept.has(o.ring)) continue;
+      // A piece as near a filler star's middle as a rosette's centre (the
+      // shields round the Bou Inania rosette) goes with the rosette too.
+      const tied = p.family < 0;
+      if (!tied && (p.family !== fam.count || !kept.has(o.ring))) continue;
       places[id] = { ...p, d: o.d, family: o.family, orbit: `${o.ring}:in` };
     }
   }
