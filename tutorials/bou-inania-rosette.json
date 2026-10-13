@@ -2774,62 +2774,14 @@
     },
     {
       "id": 14,
-      "text": "The panel: the frame’s square, with its band on all four sides. It repeats by sliding one band less than its width, so each copy’s band lies on its neighbour’s band. The repeating tile is the square between the frame’s left and bottom sides and the big figure’s right and top sides: it holds the band on two sides only.",
+      "text": "The tile: the square through the centres of the four corner stars. It holds the rosette in the middle, half the band on every side and a quarter of a corner star at each corner, so its copies sit edge to edge and their halves join into whole bands and whole stars.",
       "create": {
-        "M1460": {
-          "point": {
-            "meet": [
-              "r45",
-              "F@2"
-            ]
-          }
-        },
-        "PN1": {
-          "point": {
-            "meet": [
-              "F",
-              "F@1"
-            ]
-          }
-        },
-        "PN2": {
-          "point": {
-            "meet": [
-              "F@1",
-              "F@2"
-            ]
-          }
-        },
-        "PN3": {
-          "point": {
-            "meet": [
-              "F@3",
-              "F"
-            ]
-          }
-        },
-        "panel": {
-          "polygon": [
-            "PN1",
-            "PN2",
-            "M1460",
-            "PN3"
-          ]
-        },
-        "K21": {
-          "point": {
-            "meet": [
-              "r45",
-              "E"
-            ]
-          }
-        },
         "tile": {
           "polygon": [
-            "K21",
-            "K16",
-            "M1460",
-            "K19"
+            "Sa",
+            "Sb",
+            "Sc",
+            "Sd"
           ]
         }
       },
@@ -2837,7 +2789,7 @@
     }
   ],
   "ink": {
-    "text": "Ink the twelve-pointed star and its petals, the ring of small stars and pentagons, the ring round the shields, and the bands and corner stars out to the frame. At the end, the panels around it slide out in blue, each overlapping this one by a band: each of their lines meets this tile’s edge just where one of its own lines carries on, and the band breaks there to let it through.",
+    "text": "Ink the twelve-pointed star and its petals, the ring of small stars and pentagons, the ring round the shields, and the bands and corner stars out to the edge of the tile, which cuts the band down the middle and each corner star into quarters.",
     "paths": [
       {
         "along": "F@2",
@@ -10343,8 +10295,8 @@
   },
   "pattern": {
     "cell": "tile",
-    "panel": "panel",
-    "text": "Repeat the square edge to edge: neighbouring tiles share the frame band, and the corner pieces of four tiles meet in an eight-pointed star.",
+    "panel": "tile",
+    "text": "Repeat the square edge to edge: each tile’s half band meets its neighbour’s in a whole band, and the quarters of four tiles meet in an eight-pointed star.",
     "palette": "Marinid zellige",
     "look": "strapwork",
     "colors": {

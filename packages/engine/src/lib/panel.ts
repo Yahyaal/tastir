@@ -7,11 +7,10 @@ import { segment } from './shapes.js';
 import { add, cross, dot, length, scale, sub, type Vec } from './vec.js';
 
 /**
- * The whole panel a craftsman draws, for a tile that carries a shared band
- * on only two of its sides: a larger convex polygon round the tile, and the
- * ink of the tile and its copies inside it. It is only shown (traced in the
- * ink stage); the tile stays the repeating cell, so its copies overlap by
- * the difference.
+ * What the ink stage traces in place of the tile: a convex polygon holding
+ * the tile (the tile itself, for one whose bands cross its edges), and the
+ * ink of the tile and its copies inside it. It is only shown; the tile
+ * stays the repeating cell.
  */
 export interface Panel {
   readonly corners: readonly Vec[];

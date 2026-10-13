@@ -131,6 +131,60 @@ export function wallSegments(
 }
 
 /**
+ * The copies round the tile and the copies placed, not placed themselves:
+ * with them, a piece across the edge of a placed tile closes, and the
+ * board shows the part of it inside.
+ */
+export function surrounding(cell: Cell, copies: readonly Copy[]): Copy[] {
+  const { u, v } = cell;
+  const slides = [u, v, plus(u, v), { x: u.x - v.x, y: u.y - v.y }].flatMap(
+    (d) => [d, { x: -d.x, y: -d.y }],
+  );
+  const placed = [{ x: 0, y: 0 }, ...copies.map((c) => c.at)];
+  const out: Copy[] = [];
+  for (const p of placed)
+    for (const d of slides) {
+      const at = plus(p, d);
+      if (![...placed, ...out.map((c) => c.at)].some((q) => same(q, at)))
+        out.push({ at });
+    }
+  return out;
+}
+
+/** Whether a piece shows on the placed tiles: a corner or its middle
+ * inside one of them. */
+export function onTiles(
+  cell: Cell,
+  copies: readonly Copy[],
+  polygon: readonly Vec[],
+): boolean {
+  const n = polygon.length;
+  const mid = {
+    x: polygon.reduce((t, q) => t + q.x, 0) / n,
+    y: polygon.reduce((t, q) => t + q.y, 0) / n,
+  };
+  return [{ x: 0, y: 0 }, ...copies.map((c) => c.at)].some((d) =>
+    [mid, ...polygon].some((q) =>
+      inside({ x: q.x - d.x, y: q.y - d.y }, cell.corners),
+    ),
+  );
+}
+
+/** Whether a point lies strictly inside a convex outline. */
+function inside(q: Vec, outline: readonly Vec[]): boolean {
+  let sign = 0;
+  for (let k = 0; k < outline.length; k++) {
+    const a = outline[k] as Vec;
+    const b = outline[(k + 1) % outline.length] as Vec;
+    const c = (b.x - a.x) * (q.y - a.y) - (b.y - a.y) * (q.x - a.x);
+    if (Math.abs(c) < EPS) return false;
+    if (sign === 0) sign = Math.sign(c);
+    else if (Math.sign(c) !== sign) return false;
+  }
+  return true;
+}
+
+/**
  * Where a dragged copy lands: the nearest free place on the tile's lattice
  * when it is within a sixth of the tile, so it joins its neighbours;
  * otherwise exactly where it was dropped, loose.

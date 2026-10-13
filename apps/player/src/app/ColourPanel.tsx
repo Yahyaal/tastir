@@ -46,6 +46,7 @@ export function ColourPanel({
   onSelect,
   onReset,
   place,
+  oneTile = false,
 }: {
   /** The model as the coloring colours it (colouredModel). */
   model: Model;
@@ -65,6 +66,8 @@ export function ColourPanel({
   onReset: () => void;
   /** The placement clicked on the wall: its colour key and colour. */
   place?: { key: string; color: string };
+  /** Coloring the one tile, before it is repeated: its size is fixed. */
+  oneTile?: boolean;
 }) {
   const now = history.now;
   const methods = methodsOf(base);
@@ -148,6 +151,7 @@ export function ColourPanel({
           onBrush={onBrush}
           history={history}
           dispatch={dispatch}
+          oneTile={oneTile}
         />
       ) : (
         <PiecePanel
@@ -179,6 +183,7 @@ function Rosettes({
   onBrush,
   history,
   dispatch,
+  oneTile,
 }: {
   model: Model;
   fill: Fill;
@@ -186,6 +191,7 @@ function Rosettes({
   onBrush: (colour: string) => void;
   history: History;
   dispatch: Dispatch<ColorAction>;
+  oneTile: boolean;
 }) {
   const now = history.now;
   const { now: count, turns, options } = rosetteCounts(model);
@@ -209,8 +215,7 @@ function Rosettes({
   return (
     <div className="rosettes">
       <p className="hint">
-        Pick a colour, then click a piece of the unit or the wall: its whole
-        ring takes the colour.
+        Pick a color, then click a piece: its whole ring takes the color.
       </p>
       <div className="chooser brush" role="group" aria-label="Paint with">
         {swatchesOf(model, now.palette).map((c) => (
@@ -233,7 +238,7 @@ function Rosettes({
           />
         </label>
       </div>
-      {options.length > 1 ? (
+      {options.length > 1 && !oneTile ? (
         <div className="rosette-count">
           <span className="color-tools">
             <button

@@ -13,7 +13,7 @@ import bones from '@tutorials/alhambra-comares-bones.json';
 import App from '../app/app';
 import { listPatterns } from '../editor/patterns';
 import { listDesigns } from '../app/designs';
-import { dropAt, snapped } from './repeat';
+import { dropAt, onTiles, snapped, surrounding } from './repeat';
 import { TOOLS } from '../editor/tools';
 
 /** Clicks the board at a point of the frame (x right, y up). */
@@ -784,6 +784,42 @@ describe('drawing along', () => {
     expect(
       dropAt(cell, [...copies, { at: { x: 5, y: 5 } }], 1, { x: 2.1, y: 0 }),
     ).toEqual({ x: 2.1, y: 0 });
+  });
+
+  it('closes the pieces across a tile’s edge with the copies round it, and shows the part on the tiles', () => {
+    const cell = {
+      origin: { x: -1, y: -1 },
+      u: { x: 2, y: 0 },
+      v: { x: 0, y: 2 },
+      corners: [
+        { x: -1, y: -1 },
+        { x: 1, y: -1 },
+        { x: 1, y: 1 },
+        { x: -1, y: 1 },
+      ],
+      area: 4,
+    };
+    // Round the tile alone: its eight neighbours.
+    expect(surrounding(cell, [])).toHaveLength(8);
+    // Round the tile and one copy beside it: ten, none of them placed.
+    const copies = [{ at: { x: 2, y: 0 } }];
+    const round = surrounding(cell, copies);
+    expect(round).toHaveLength(10);
+    expect(round.some((c) => c.at.x === 2 && c.at.y === 0)).toBe(false);
+    // A piece across the tile's edge shows; one wholly beyond it does not.
+    const across = [
+      { x: 0.8, y: 0 },
+      { x: 1.2, y: 0.2 },
+      { x: 1.2, y: -0.2 },
+    ];
+    expect(onTiles(cell, [], across)).toBe(true);
+    expect(
+      onTiles(
+        cell,
+        [],
+        across.map((p) => ({ x: p.x + 1, y: p.y })),
+      ),
+    ).toBe(false);
   });
 
   it('shows dotted preview lines while drawing a polygon and closes on clicking the first point', () => {

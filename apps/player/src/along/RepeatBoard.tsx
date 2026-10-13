@@ -1,5 +1,5 @@
 import type { Cell, Segment, Vec } from '@tastir/engine';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { viewBox, width, type Rect } from '../app/camera';
 import type { Model } from '../app/model';
 import { dropAt, ghostsOf, type Copy } from './repeat';
@@ -56,6 +56,8 @@ export function RepeatBoard({
     [ink],
   );
   const unit = width(view) / 400;
+  // Each tile's ink, and the pieces, are cut at the tiles' edges.
+  const clip = useId();
   const ghosts = pieces && !building ? [] : ghostsOf(cell, copies);
   // A copy being dragged, and where it is now.
   const [drag, setDrag] = useState<{ index: number; at: Vec }>();
@@ -144,18 +146,30 @@ export function RepeatBoard({
       aria-label="Your wall"
     >
       <g transform="scale(1,-1)" style={{ strokeWidth: unit * 1.5 }}>
-        {pieces?.map((p, i) => (
-          <polygon
-            key={`p${i}`}
-            className="wall-piece"
-            data-type={p.type}
-            points={pts(p.polygon)}
-            fill={p.fill}
-            onClick={() => {
-              if (!wasDrag() && p.type >= 0) onPick?.(p.type);
-            }}
-          />
-        ))}
+        <defs>
+          <clipPath id={`${clip}tile`}>
+            <polygon points={pts(cell.corners)} />
+          </clipPath>
+          <clipPath id={`${clip}tiles`}>
+            {placed.map(({ at, index }) => (
+              <polygon key={index} points={pts(cell.corners, at)} />
+            ))}
+          </clipPath>
+        </defs>
+        <g clipPath={`url(#${clip}tiles)`}>
+          {pieces?.map((p, i) => (
+            <polygon
+              key={`p${i}`}
+              className="wall-piece"
+              data-type={p.type}
+              points={pts(p.polygon)}
+              fill={p.fill}
+              onClick={() => {
+                if (!wasDrag() && p.type >= 0) onPick?.(p.type);
+              }}
+            />
+          ))}
+        </g>
         {ghosts.map((g, i) => (
           <polygon
             key={`g${i}`}
@@ -200,7 +214,11 @@ export function RepeatBoard({
                   }}
                 />
               )}
-              <path className="wall-ink" d={inkPath} />
+              <path
+                className="wall-ink"
+                d={inkPath}
+                clipPath={`url(#${clip}tile)`}
+              />
             </g>
           );
         })}

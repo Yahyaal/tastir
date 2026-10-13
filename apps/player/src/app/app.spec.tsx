@@ -95,7 +95,7 @@ describe('the player', () => {
     );
     expect(
       screen.getByText(
-        'Color the pieces ring by ring, as on real zellige: round each rosette the pieces take their colors by how far they sit from its centre, not by their shape, and neighbouring rosettes take turns. Click a piece to recolor its whole ring. Each tile holds one star and one cross.',
+        'Color ring by ring, as on real zellige: pick a color, then click a piece, and its whole ring round the rosette takes the color.',
       ),
     ).toBeTruthy();
     // Two rosettes take turns, each coloured ring by ring with the brush.
@@ -297,15 +297,15 @@ describe('the player', () => {
     ).toBeTruthy();
   });
 
-  it('inks the one tile even when the tutorial names a panel', () => {
+  it('inks the one tile cut at its edges when the tutorial names a panel', () => {
     const { container } = render(<Play json={bouInania} />);
     fireEvent.click(screen.getByRole('button', { name: 'Go to ink' }));
     const model = loadModel(bouInania);
     const panel = model.pattern.panel;
     expect(panel).toBeDefined();
-    // The tile's strokes and outline, not the panel's.
+    // The tile and its copies' ink, clipped to the tile's own outline.
     expect(container.querySelectorAll('[data-ink]')).toHaveLength(
-      model.pattern.ink.length,
+      panel?.ink.length ?? 0,
     );
     expect(container.querySelector('[data-tile]')?.getAttribute('points')).toBe(
       model.pattern.cell.corners.map((p) => `${p.x},${-p.y}`).join(' '),

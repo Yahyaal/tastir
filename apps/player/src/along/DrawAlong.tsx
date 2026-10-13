@@ -60,7 +60,14 @@ import { namesIn, placeKey, readableAt, readableNames } from './names';
 import { withTutorialNames } from './naming';
 import { dotNear, reachable } from './pen';
 import { forgetProgress, getProgress, keepProgress } from './progress';
-import { fillCopies, snapped, wallSegments, type Copy } from './repeat';
+import {
+  fillCopies,
+  onTiles,
+  snapped,
+  surrounding,
+  wallSegments,
+  type Copy,
+} from './repeat';
 import { RepeatBoard, TargetWall } from './RepeatBoard';
 import { useAlongWork } from './useAlongWork';
 import { useHistory } from './useHistory';
@@ -410,6 +417,11 @@ export function DrawAlong({
     [model, colorHistory.now],
   );
   const ground = paletteOf(model, colorHistory.now.palette).ground;
+  // The copies on the board: none while the tile alone is coloured.
+  const onBoard = useMemo(
+    () => (coloring && colourFirst ? [] : copies),
+    [coloring, colourFirst, copies],
+  );
   const makingWall = useAlongWork(
     'wall',
     useMemo(
@@ -417,25 +429,27 @@ export function DrawAlong({
         colouredWall && ready
           ? {
               // Coloured first, the tile alone: the unit the copies take.
-              segments: wallSegments(
-                tileInk,
-                coloring && colourFirst ? [] : copies,
-              ),
+              // The copies round them close the pieces across their edges.
+              segments: wallSegments(tileInk, [
+                ...onBoard,
+                ...surrounding(ready.cell, onBoard),
+              ]),
               types: model.pattern.types,
             }
           : undefined,
-      [
-        colouredWall,
-        coloring,
-        colourFirst,
-        ready,
-        tileInk,
-        copies,
-        model.pattern.types,
-      ],
+      [colouredWall, ready, tileInk, onBoard, model.pattern.types],
     ),
   );
-  const wall = makingWall.value ?? [];
+  // The pieces that show on the tiles laid.
+  const wall = useMemo(
+    () =>
+      ready
+        ? (makingWall.value ?? []).filter((p) =>
+            onTiles(ready.cell, onBoard, p.polygon),
+          )
+        : [],
+    [makingWall.value, ready, onBoard],
+  );
   const [keepFailed, setKeepFailed] = useState<string>();
   /** Keeps the drawing as one of the learner's patterns, with the wall
    * they laid and, when they coloured it, its colours. */
@@ -821,7 +835,7 @@ export function DrawAlong({
           wasDrag={camera.wasDrag}
           cell={ready.cell}
           ink={tileInk}
-          copies={coloring && colourFirst ? [] : copies}
+          copies={onBoard}
           arrived={arrived}
           erasing={removing}
           building={repeating}

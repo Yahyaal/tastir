@@ -9,14 +9,15 @@ describe('the panel', () => {
   const pattern = computePattern(evaluate(tutorial), tutorial);
   const panel = pattern.panel as Panel;
 
-  it('is the frame’s square: the tile and one more band on its right and top', () => {
+  it('is the tile itself, centred on the rosette', () => {
+    expect(panel.corners).toEqual(pattern.cell.corners);
     const xs = panel.corners.map((p) => p.x);
     const ys = panel.corners.map((p) => p.y);
-    const side = Math.max(...xs) - Math.min(...xs);
-    expect(Math.max(...ys) - Math.min(...ys)).toBeCloseTo(side, 9);
-    const tile = Math.abs(pattern.cell.u.x);
-    expect(side).toBeGreaterThan(tile);
-    expect(side - tile).toBeLessThan(0.2 * tile); // one band
+    const o = evaluate(tutorial).elements.get('O')?.geometry;
+    expect(o?.kind).toBe('point');
+    if (o?.kind !== 'point') return;
+    expect((Math.min(...xs) + Math.max(...xs)) / 2).toBeCloseTo(o.at.x, 9);
+    expect((Math.min(...ys) + Math.max(...ys)) / 2).toBeCloseTo(o.at.y, 9);
   });
 
   it('holds its ink inside, as single strokes along each line', () => {
@@ -34,35 +35,44 @@ describe('the panel', () => {
     expect(panel.ink.length).toBeLessThan(pattern.ink.length);
   });
 
-  it('carries every stroke of the tile', () => {
+  it('looks the same turned a quarter: half a band on every side', () => {
+    const xs = panel.corners.map((p) => p.x);
+    const ys = panel.corners.map((p) => p.y);
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+    const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+    // Within half a percent of the tile: where a strap crosses the band,
+    // the tutorial's line and its continuation from the next copy are
+    // two construction lines 0.006 apart, too close to see.
+    const near = 0.005 * (Math.max(...xs) - Math.min(...xs));
     const on = (p: { x: number; y: number }) =>
       panel.ink.some(({ segment: { a, b } }) => {
-        const ab = Math.hypot(b.x - a.x, b.y - a.y);
-        const ap = Math.hypot(p.x - a.x, p.y - a.y);
-        const pb = Math.hypot(b.x - p.x, b.y - p.y);
-        return ap + pb - ab < 1e-9;
+        const d = { x: b.x - a.x, y: b.y - a.y };
+        const t = Math.max(
+          0,
+          Math.min(
+            1,
+            ((p.x - a.x) * d.x + (p.y - a.y) * d.y) / (d.x ** 2 + d.y ** 2),
+          ),
+        );
+        return Math.hypot(a.x + t * d.x - p.x, a.y + t * d.y - p.y) < near;
       });
-    const lost = pattern.ink.filter(({ segment: { a, b } }) => {
-      const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-      return !on(mid);
+    const lost = panel.ink.filter(({ segment: { a, b } }) => {
+      const mid = { x: (a.x + b.x) / 2 - cx, y: (a.y + b.y) / 2 - cy };
+      return !on({ x: cx - mid.y, y: cy + mid.x });
     });
     expect(lost).toEqual([]);
   });
 
   it('must hold the whole tile', () => {
-    const broken = {
-      ...tutorial,
-      pattern: { ...tutorial.pattern, panel: 'tile' },
-    } as Tutorial;
-    // The tile holds itself; a smaller square does not hold the tile.
-    expect(() => computePattern(evaluate(broken), broken)).not.toThrow();
+    // The tile holds itself; a smaller figure does not hold the tile.
     const small = structuredClone(tutorial) as Tutorial;
     const step = small.steps.find(
       (s) => s.id === 14,
     ) as (typeof small.steps)[number];
     (step.create as Record<string, unknown>)['panel'] = {
-      polygon: ['K21', 'K16', 'M1460', 'PN3'],
+      polygon: ['Sa', 'Sb', 'Sc'],
     };
+    small.pattern = { ...small.pattern, panel: 'panel' };
     expect(() => computePattern(evaluate(small), small)).toThrow(TutorialError);
   });
 });

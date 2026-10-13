@@ -25,6 +25,7 @@ import { type Design } from './designs';
 import { Construction, RepeatedInk } from './drawing';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
 import {
+  asPanel,
   beatsOf,
   hiddenBeats,
   shownSteps,
@@ -38,7 +39,7 @@ import { Original } from './Original';
 import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
 import { ColourPanel } from './ColourPanel';
 import { Tiles } from './Tiles';
-import { brushOf } from './rosettes';
+import { brushOf, refamily, rosetteCounts } from './rosettes';
 import { ViewSwitch, viewAddress, type View } from './ViewSwitch';
 import {
   byPlace,
@@ -47,7 +48,6 @@ import {
   placeFills,
   placeKey,
   ringsFor,
-  unitRepeat,
 } from './placement';
 import { PrintSheet, type Paper } from './PrintSheet';
 import { useRemembered } from './remembered';
@@ -96,7 +96,7 @@ function colorText(model: Model): string {
     (t, i) => `${count(t.perCell)} ${plural(nameOf(model, i), t.perCell)}`,
   );
   if (ringsFor(model))
-    return `Color the pieces ring by ring, as on real zellige: round each rosette the pieces take their colors by how far they sit from its centre, not by their shape, and neighbouring rosettes take turns. Click a piece to recolor its whole ring. Each tile holds ${joinAnd(held)}.`;
+    return 'Color ring by ring, as on real zellige: pick a color, then click a piece, and its whole ring round the rosette takes the color.';
   if (model.tutorial.pattern.placements) {
     const [m, n] = model.tutorial.pattern.placements.repeat;
     const block =
@@ -228,8 +228,12 @@ export function Player({
   const asYouGo = inkMode === 'asYouGo';
 
   const inking = useInking(model, opened?.inked);
-  // The ink stage shows the one unit the ink makes.
-  const inkModel = inking.shown;
+  // The ink stage shows the one unit the ink makes: the whole panel, when
+  // the tutorial names one.
+  const inkModel = useMemo(
+    () => (inking.editing ? inking.shown : asPanel(inking.shown)),
+    [inking.editing, inking.shown],
+  );
   const [colorHistory, colorDispatch] = useReducer(
     colorReducer,
     model,
@@ -390,7 +394,7 @@ export function Player({
     if (reduced) return;
     if (stage.kind === 'ink') {
       if (!inking.editing && inking.isClassic && !asYouGo)
-        running.current = playInk(svgRef.current, model, speed, {
+        running.current = playInk(svgRef.current, asPanel(model), speed, {
           lengthScale: width(camera.view) / width(frame),
         });
       return;
@@ -451,6 +455,21 @@ export function Player({
   // learner picks first.
   const after = (colour: boolean) => {
     setColourFirst(colour);
+    // Coloured first, the one tile is the unit: one rosette, so every
+    // copy of it takes the same colours.
+    const count = rosetteCounts(coloured).now;
+    if (colour && count > 1) {
+      const now = colorHistory.now;
+      colorDispatch({
+        kind: 'reset',
+        to: {
+          palette: now.palette,
+          chosen: refamily(now.chosen, count, 1),
+          ...(now.method ? { method: now.method } : {}),
+          rosettes: 1,
+        },
+      });
+    }
     next();
   };
 
@@ -668,9 +687,8 @@ export function Player({
           ? 'Colors by where each piece sits.'
           : 'One color for each shape of piece.';
       text = colorText(coloured);
-      // Coloured first, the unit alone: the tiles the colours repeat
-      // after, so every rosette that takes turns is there to colour.
-      picture = tiles(colourFirst ? unitRepeat(coloured) : copies);
+      // Coloured first, the one tile the ink made.
+      picture = tiles(colourFirst ? [1, 1] : copies);
     }
   }
 
@@ -684,6 +702,46 @@ export function Player({
 
   const photos = tutorial.photos ?? [];
   const showOriginal = comparing && onWall && photos.length > 0;
+  // The colours, at the top of the panel while colouring, so they are the
+  // first thing in view.
+  const colorsSection =
+    !onWall || wallStyle !== 'jali' ? (
+      <section>
+        <h2>Colors</h2>
+        <ColourPanel
+          model={coloured}
+          base={inking.shown}
+          colors={colors}
+          fill={fill}
+          brush={brushOf(coloured, colorHistory.now.palette, brush)}
+          onBrush={setBrush}
+          history={colorHistory}
+          dispatch={colorDispatch}
+          hovered={hovered}
+          onHover={setHovered}
+          selected={selected}
+          onSelect={(type) => {
+            setSelected(type);
+            setPlace(undefined);
+          }}
+          place={
+            fill && place
+              ? {
+                  key: placeKey(coloured, place.piece, place.i, place.j),
+                  color: fill(place.piece, place.i, place.j),
+                }
+              : undefined
+          }
+          oneTile={colourFirst && stage.kind === 'color'}
+          onReset={() =>
+            colorDispatch({
+              kind: 'reset',
+              to: tutorialColoring(model),
+            })
+          }
+        />
+      </section>
+    ) : null;
 
   /** Jumps straight to a stage from the journey, without playing it in. */
   const jump = (to: number) => {
@@ -969,6 +1027,7 @@ export function Player({
         </section>
         {colorStage ? (
           <aside className="side-panel" aria-label="The wall">
+            {stage.kind === 'color' ? colorsSection : null}
             {!mine && !sharedView ? (
               <ExploreNext tutorial={full.tutorial} />
             ) : null}
@@ -1047,47 +1106,7 @@ export function Player({
             {onWall && wallStyle === 'jali' ? (
               <JaliControls appearance={jali} onChange={setJali} />
             ) : null}
-            {!onWall || wallStyle !== 'jali' ? (
-              <section>
-                <h2>Colors</h2>
-                <ColourPanel
-                  model={coloured}
-                  base={inking.shown}
-                  colors={colors}
-                  fill={fill}
-                  brush={brushOf(coloured, colorHistory.now.palette, brush)}
-                  onBrush={setBrush}
-                  history={colorHistory}
-                  dispatch={colorDispatch}
-                  hovered={hovered}
-                  onHover={setHovered}
-                  selected={selected}
-                  onSelect={(type) => {
-                    setSelected(type);
-                    setPlace(undefined);
-                  }}
-                  place={
-                    fill && place
-                      ? {
-                          key: placeKey(
-                            coloured,
-                            place.piece,
-                            place.i,
-                            place.j,
-                          ),
-                          color: fill(place.piece, place.i, place.j),
-                        }
-                      : undefined
-                  }
-                  onReset={() =>
-                    colorDispatch({
-                      kind: 'reset',
-                      to: tutorialColoring(model),
-                    })
-                  }
-                />
-              </section>
-            ) : null}
+            {stage.kind === 'color' ? null : colorsSection}
             <section>
               <h2>Take it with you</h2>
               {sharedView ? null : (

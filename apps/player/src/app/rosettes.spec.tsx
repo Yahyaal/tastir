@@ -70,29 +70,26 @@ describe('colouring rosette by rosette', () => {
 });
 
 describe('colouring the unit before repeating it', () => {
-  it('paints a whole ring of one rosette with a click', () => {
+  it('colours the one tile, a ring at a click', () => {
     atUnit();
-    // Two rosettes take turns: the unit holds the tiles they repeat after.
-    expect(centres()).toHaveLength(4);
+    // The tile alone: one rosette, with no size to change.
+    expect(centres()).toHaveLength(1);
+    expect(screen.queryByRole('button', { name: /the unit$/ })).toBeNull();
     fireEvent.change(screen.getByLabelText(/Any color/), {
       target: { value: '#123456' },
     });
     fireEvent.click(
       unit().querySelector(`.tile-piece[data-type="${star}"]`) as Element,
     );
-    const painted = centres().filter((c) => c === '#123456');
-    // Rosette A, twice in the unit; B keeps its colour.
-    expect(painted).toHaveLength(2);
+    expect(centres()).toEqual(['#123456']);
   });
 
-  it('halves the unit to one tile, and doubles it again', () => {
+  it('repeats the tile with every copy alike', () => {
     atUnit();
-    fireEvent.click(button('Halve the unit'));
-    expect(centres()).toHaveLength(1);
-    fireEvent.click(button('Double the unit'));
-    // From one, the second rosette is the first with its colours swapped.
-    const [a, b] = centres();
-    expect(a).not.toBe(b);
+    fireEvent.click(button('Next'));
+    fireEvent.click(button('2 × 2'));
+    expect(new Set(centres())).toHaveProperty('size', 1);
+    expect(centres()).toHaveLength(4);
   });
 
   it('then repeats the coloured unit as many times as asked', () => {
