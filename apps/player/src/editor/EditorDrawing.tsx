@@ -6,6 +6,7 @@ import {
   type Vec,
 } from '@tastir/engine';
 import { useMemo, useRef, useState } from 'react';
+import { InkRaster } from './InkRaster';
 import { viewBox, width, type Rect } from '../app/camera';
 import { useCamera } from '../app/useCamera';
 import {
@@ -301,6 +302,11 @@ export function EditorDrawing({
   const allDots = useMemo(() => {
     if (!penDots) return undefined;
     const r = unit * 2.2;
+    if (
+      penDots.length > 1000 &&
+      typeof CanvasRenderingContext2D !== 'undefined'
+    )
+      return <InkRaster view={view} dots={penDots} radius={r} />;
     if (penDots.length > 1000)
       return (
         <path
@@ -316,7 +322,7 @@ export function EditorDrawing({
     return penDots.map((d, i) => (
       <circle key={`pd${i}`} className="pen-dot" cx={d.x} cy={d.y} r={r} />
     ));
-  }, [penDots, unit]);
+  }, [penDots, unit, view]);
   // A large construction has hundreds of thousands of selectable bits.
   // They still remain separate in the geometry; equal-style strokes can
   // share an SVG path instead of creating one DOM node per bit.
@@ -325,41 +331,61 @@ export function EditorDrawing({
   const inkGlow = ink?.glow;
   const inkDashed = ink?.dashed;
   const inkFresh = ink?.fresh;
-  const inkDrawing = useMemo(() => {
+  const inkLayers = useMemo(() => {
     if (!inkPieces) return undefined;
     const classes = (id: string) =>
-      [
-        'ink-piece',
-        inkChosen?.has(id) ? 'inked' : '',
-        inkGlow?.has(id) ? 'glow' : '',
-        inkDashed?.has(id) ? 'answer' : '',
-        inkFresh?.has(id) ? 'fresh' : '',
-      ]
-        .filter(Boolean)
-        .join(' ');
+      'ink-piece' +
+      (inkChosen?.has(id) ? ' inked' : '') +
+      (inkGlow?.has(id) ? ' glow' : '') +
+      (inkDashed?.has(id) ? ' answer' : '') +
+      (inkFresh?.has(id) ? ' fresh' : '');
     if (inkPieces.length <= 1000)
-      return inkPieces.map((p) => (
+      return inkPieces.map((piece) => ({
+        cls: classes(piece.id),
+        pieces: [piece],
+        raster: false,
+        path: undefined,
+      }));
+    const groups = new Map<string, InkPiece[]>();
+    for (const piece of inkPieces) {
+      const cls = classes(piece.id);
+      const group = groups.get(cls);
+      if (group) group.push(piece);
+      else groups.set(cls, [piece]);
+    }
+    const raster =
+      inkPieces.length > 1000 &&
+      typeof CanvasRenderingContext2D !== 'undefined';
+    return [...groups].map(([cls, pieces]) => ({
+      cls,
+      pieces,
+      raster: raster && cls === 'ink-piece',
+      path:
+        inkPieces.length > 1000 && !(raster && cls === 'ink-piece')
+          ? pieces
+              .map(({ segment: { a, b } }) => `M${a.x},${a.y}L${b.x},${b.y}`)
+              .join('')
+          : undefined,
+    }));
+  }, [inkPieces, inkChosen, inkGlow, inkDashed, inkFresh]);
+  const inkDrawing = inkLayers?.map(({ cls, pieces, raster, path }) =>
+    raster ? (
+      <InkRaster key={cls} view={view} pieces={pieces} />
+    ) : path !== undefined ? (
+      <path key={cls} className={cls} d={path} />
+    ) : (
+      pieces.map((p) => (
         <line
           key={p.id}
-          className={classes(p.id)}
+          className={cls}
           x1={p.segment.a.x}
           y1={p.segment.a.y}
           x2={p.segment.b.x}
           y2={p.segment.b.y}
         />
-      ));
-    const paths = new Map<string, string[]>();
-    for (const p of inkPieces) {
-      const cls = classes(p.id);
-      const { a, b } = p.segment;
-      const path = paths.get(cls) ?? [];
-      path.push(`M${a.x},${a.y}L${b.x},${b.y}`);
-      paths.set(cls, path);
-    }
-    return [...paths].map(([cls, parts]) => (
-      <path key={cls} className={cls} d={parts.join('')} />
-    ));
-  }, [inkPieces, inkChosen, inkGlow, inkDashed, inkFresh]);
+      ))
+    ),
+  );
 
   const toolId = typeof tool === 'string' ? tool : tool?.id;
   const polyPoints = useMemo(() => {
@@ -382,9 +408,7 @@ export function EditorDrawing({
   const ring = (t: Target, i: number | string, cls: string) => {
     if (t.kind !== 'point') return null;
     const isFirstPolyTarget =
-      (toolId === 'polygon' || toolId === 'tile') &&
-      i === 0 &&
-      isClosingHover;
+      (toolId === 'polygon' || toolId === 'tile') && i === 0 && isClosingHover;
     return (
       <circle
         key={`${cls}${i}`}
@@ -504,10 +528,7 @@ export function EditorDrawing({
           {polyPoints.length >= 2 && polyEnd ? (
             <polygon
               className="polygon-preview"
-              points={[
-                ...polyPoints,
-                ...(isClosingHover ? [] : [polyEnd]),
-              ]
+              points={[...polyPoints, ...(isClosingHover ? [] : [polyEnd])]
                 .map((p) => `${p.x},${p.y}`)
                 .join(' ')}
             />
