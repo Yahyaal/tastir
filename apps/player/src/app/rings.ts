@@ -366,14 +366,19 @@ function findRings(pattern: Pattern): Rings | undefined {
     Math.sqrt(
       Math.abs(cell.area) / Math.max(1, centres.length + fillers.length),
     ) || 1;
-  const squares = new Map<string, { at: Vec; family: number }[]>();
-  for (const x of around) {
-    const key = `${Math.floor(x.at.x / side)},${Math.floor(x.at.y / side)}`;
-    const list = squares.get(key) ?? [];
-    list.push(x);
-    squares.set(key, list);
-  }
-  const nearest = (c: Vec) => {
+  const gridOf = (list: readonly { at: Vec; family: number }[]) => {
+    const grid = new Map<string, { at: Vec; family: number }[]>();
+    for (const x of list) {
+      const key = `${Math.floor(x.at.x / side)},${Math.floor(x.at.y / side)}`;
+      const near = grid.get(key) ?? [];
+      near.push(x);
+      grid.set(key, near);
+    }
+    return grid;
+  };
+  const allSquares = gridOf(around);
+  const rosetteSquares = gridOf(around.filter((x) => x.family < fam.count));
+  const nearest = (c: Vec, squares = allSquares) => {
     const gx = Math.floor(c.x / side);
     const gy = Math.floor(c.y / side);
     let first = { d: Infinity, f: 0 };
@@ -417,6 +422,31 @@ function findRings(pattern: Pattern): Rings | undefined {
           }`,
         };
       }
+
+  // A rosette's ring stays whole: when a filler star's middle is nearer
+  // some pieces of a ring round a rosette than the rosette's own centre
+  // (the outer shields of the Bou Inania rosette), those pieces still go
+  // with their rosette, so the ring takes one colour all round.
+  if (fillers.length) {
+    const own = new Map<number, { d: number; family: number; ring: string }>();
+    const kept = new Set<string>();
+    for (let k = 0; k < pieces.length; k++)
+      for (let i = 0; i < m; i++)
+        for (let j = 0; j < n; j++) {
+          const id = placeId(k, i, j);
+          const c = at(centreOf((pieces[k] as Piece).polygon), i, j);
+          const { first, other } = nearest(c, rosetteSquares);
+          if (other - first.d < 5 * eps) continue;
+          const ring = `${(pieces[k] as Piece).type}:${Math.round(first.d / (20 * eps))}`;
+          own.set(id, { d: first.d, family: first.f, ring });
+          if ((places[id] as Place).orbit.endsWith(':in')) kept.add(ring);
+        }
+    for (const [id, o] of own) {
+      const p = places[id] as Place;
+      if (p.family !== fam.count || !kept.has(o.ring)) continue;
+      places[id] = { ...p, d: o.d, family: o.family, orbit: `${o.ring}:in` };
+    }
+  }
 
   // The rings, nearest the centre first, and their roles: the centre a
   // spark, then outward main colour, second colour, white, and again.

@@ -174,4 +174,25 @@ describe('filler stars', () => {
     // The rosettes' two families, and the fillers' own.
     expect(rings?.families).toBe(3);
   }, 30000);
+
+  it('keeps the rosette’s outer shields with their rosette, though the filler star is nearer', async () => {
+    const bou = byRings(
+      (await import('@tutorials/bou-inania-rosette.json')).default,
+    );
+    const rings = ringsOf(bou.pattern);
+    const families = new Set<number>();
+    const ringsSeen = new Set<string>();
+    bou.pattern.pieces.forEach((p, k) => {
+      if (bou.pattern.types[p.type]?.name !== 'shield2') return;
+      for (let i = 0; i < 2; i++)
+        for (let j = 0; j < 2; j++) {
+          const at = rings?.place(k, i, j);
+          families.add(at?.family ?? -9);
+          ringsSeen.add(at?.ring ?? '');
+        }
+    });
+    // One ring round each of the two rosette families, none to the filler.
+    expect([...families].sort()).toEqual([0, 1]);
+    expect(ringsSeen.size).toBe(2);
+  }, 30000);
 });
