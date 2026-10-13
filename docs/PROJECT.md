@@ -24,7 +24,7 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 - Ink speed: the prepared ink stays in its worker, and only small typed arrays cross to the page. Pressing Ink on Bou Inania went from 9.6 s to 2.9 s on a slow cloud machine, so it is faster but not yet under one second. Timing tests now run in `pnpm test:perf`, not `pnpm test`.
 - The owner's feedback on the zellige wheel: the shifted wheel repeats on a hexagon, and a new `kurt-eight-fold-zellige-filled` fills the space between four wheels by overlapping them, with the cross where four meet filled too (pull requests #6, #8, #9).
 
-**Not committed yet.** The working tree on `main` holds unfinished work on smoother, faster stage animations for the filled wheel: a canvas colour reveal (`apps/player/src/app/ColorReveal.tsx`), a lighter wall, a browser test (`apps/player/e2e/animated-player.spec.ts`) and a benchmark (`tools/bench-player.mts`). It was left by an earlier session. Finish it or set it aside before starting other player work.
+**With Codex (13 October):** Ink under one second, the last step, on the branch `app/ink-speed-2` ([the task](prompts/codex-2026-10-13.md)). Claude is building the colour stage's single-unit view on `main`.
 
 ## Open decisions and things still to do
 
@@ -37,7 +37,7 @@ The prioritised list is the **Next** section of the review page (`PROGRESS` in `
 
 ## The next goal
 
-Finish the filled wheel's animation work and get the owner's look at it, then bring Ink under one second, then more Alhambra panels from [the queue](patterns/QUEUE.md).
+Build the colour stage's single-unit view while Codex brings Ink under one second, then more Alhambra panels from [the queue](patterns/QUEUE.md).
 
 ## How a session works
 
