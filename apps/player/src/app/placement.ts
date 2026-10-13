@@ -195,27 +195,51 @@ function ringFills(
     if (role === 'white') return glaze.white;
     if (role === 'black') return glaze.black;
     if (role === 'spark')
-      return glaze.families[(f + 1) % families]?.[0] ?? glaze.black;
+      return (
+        glaze.families[(f + 1) % Math.max(1, rings.rosettes)]?.[0] ??
+        glaze.black
+      );
     return glaze.families[f]?.[role === 'main' ? 0 : 1] ?? glaze.black;
   };
+  // Each ring's colour from its role (or the tutorial's correction), the
+  // same for every piece of it.
+  const ringColour = new Map<string, string>();
+  const { pieces, types } = model.pattern;
+  const [m, n] = rings.repeat;
+  for (let k = 0; k < pieces.length; k++)
+    for (let i = 0; i < m; i++)
+      for (let j = 0; j < n; j++) {
+        const at = rings.place(k, i, j);
+        if (ringColour.has(at.ring)) continue;
+        const name = types[(pieces[k] as Piece).type]?.name ?? '';
+        const role =
+          (at.n ? fixed[`${name}@${at.n}`] : undefined) ??
+          fixed[name] ??
+          at.role;
+        ringColour.set(at.ring, colour(role, at.family));
+      }
+  // Two touching rings never share a colour (other than white or black):
+  // the farther one turns white.
+  const plain = new Set([glaze.white, glaze.black]);
+  for (const [near, far] of rings.touching) {
+    const c = ringColour.get(far);
+    if (c && !plain.has(c) && c === ringColour.get(near))
+      ringColour.set(far, glaze.white);
+  }
   const cache = new Map<string, string>();
   return (piece, i, j) => {
     const key = placeKey(model, piece, i, j);
     const hit = cache.get(key);
     if (hit) return hit;
-    const p = model.pattern.pieces[piece] as Piece;
-    const t = model.pattern.types[p.type];
+    const p = pieces[piece] as Piece;
+    const t = types[p.type];
     let fill = '#999999';
-    if (t) {
-      const at = rings.place(piece, i, j);
-      const name = t.name ?? '';
-      const role =
-        (at.n ? fixed[`${name}@${at.n}`] : undefined) ?? fixed[name] ?? at.role;
+    if (t)
       fill =
         coloring.chosen[key] ??
         coloring.chosen[typeKey(t)] ??
-        colour(role, at.family);
-    }
+        ringColour.get(rings.place(piece, i, j).ring) ??
+        glaze.white;
     cache.set(key, fill);
     return fill;
   };

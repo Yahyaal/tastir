@@ -45,7 +45,7 @@ describe('colouring by rings', () => {
   it('lets neighbouring rosettes take turns, two families on a square lattice', () => {
     const rings = ringsOf(rosette.pattern);
     expect(rings?.repeat).toEqual([2, 2]);
-    expect(rings?.families).toBe(2);
+    expect(rings?.rosettes).toBe(2);
     const star = pieceOf(rosette, 'star');
     const fill = placeFills(rosette, tutorialColoring(rosette));
     // The star is a spark of the other family's main colour.
@@ -164,4 +164,14 @@ describe('colouring by rings', () => {
     expect(g.white).toBe('#f2ead8');
     expect(g.families).toHaveLength(3);
   });
+});
+
+describe('filler stars', () => {
+  it('gives the star between four Bou Inania rosettes rings of its own', async () => {
+    const bou = (await import('@tutorials/bou-inania-rosette.json')).default;
+    const rings = ringsOf(byRings(bou).pattern);
+    expect(rings?.rosettes).toBe(2);
+    // The rosettes' two families, and the fillers' own.
+    expect(rings?.families).toBe(3);
+  }, 30000);
 });

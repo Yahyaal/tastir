@@ -28,8 +28,14 @@ export interface RingPlace {
 export interface Rings {
   /** How many cells along each slide the families repeat after. */
   readonly repeat: readonly [number, number];
-  /** How many families take turns. */
+  /** How many families there are: the rosettes', and one more for the
+   * filler stars between them when there are any. */
   readonly families: number;
+  /** How many families the rosettes take turns between. */
+  readonly rosettes: number;
+  /** Rings that touch, by their keys, the one farther from its centre
+   * second. */
+  readonly touching: readonly (readonly [string, string])[];
   /** A piece of the cell, in cell (i, j) of the repeat (any integers). */
   place(piece: number, i: number, j: number): RingPlace;
 }
@@ -185,6 +191,103 @@ function familiesOf(
   return { repeat: [1, 1], count: 1, of: centres.map(() => [[0]]) };
 }
 
+/**
+ * The middles of the filler stars: the points of the rosettes' lattice
+ * (halfway and a third of the way between rosettes, along and across) that are away from every rosette centre and round
+ * which the nearby pieces turn into themselves three or more times.
+ */
+function fillerCentres(pattern: Pattern, centres: readonly Vec[]): Vec[] {
+  const { cell, pieces } = pattern;
+  const scale = Math.sqrt(Math.abs(cell.area)) || 1;
+  const tol = 0.02 * scale;
+  // Measured from a rosette centre, which the lattice repeats; the cell's
+  // own corner need not be one of its points.
+  const base = centres[0] ?? cell.origin;
+  const at = (a: number, b: number): Vec => ({
+    x: base.x + a * cell.u.x + b * cell.v.x,
+    y: base.y + a * cell.u.y + b * cell.v.y,
+  });
+  const shifted: { type: number; at: Vec }[] = [];
+  const rosettes: Vec[] = [];
+  for (let i = -2; i <= 2; i++)
+    for (let j = -2; j <= 2; j++) {
+      const d = {
+        x: i * cell.u.x + j * cell.v.x,
+        y: i * cell.u.y + j * cell.v.y,
+      };
+      for (const p of pieces) {
+        const c = centreOf(p.polygon);
+        shifted.push({ type: p.type, at: { x: c.x + d.x, y: c.y + d.y } });
+      }
+      for (const c of centres) rosettes.push({ x: c.x + d.x, y: c.y + d.y });
+    }
+  let spacing = Infinity;
+  for (const a of rosettes)
+    for (const b of rosettes) {
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d > tol) spacing = Math.min(spacing, d);
+    }
+  if (!Number.isFinite(spacing)) spacing = scale;
+  // The pieces by grid square, so looking one up near a point is quick.
+  const grid = new Map<string, { type: number; at: Vec }[]>();
+  const square = (x: number, y: number) =>
+    `${Math.floor(x / (4 * tol))},${Math.floor(y / (4 * tol))}`;
+  for (const s of shifted) {
+    const key = square(s.at.x, s.at.y);
+    const list = grid.get(key) ?? [];
+    list.push(s);
+    grid.set(key, list);
+  }
+  const pieceNear = (type: number, x: number, y: number) => {
+    const gx = Math.floor(x / (4 * tol));
+    const gy = Math.floor(y / (4 * tol));
+    for (let i = gx - 1; i <= gx + 1; i++)
+      for (let j = gy - 1; j <= gy + 1; j++)
+        for (const o of grid.get(`${i},${j}`) ?? [])
+          if (o.type === type && Math.hypot(o.at.x - x, o.at.y - y) < tol)
+            return true;
+    return false;
+  };
+  const fractions = [0, 1 / 3, 1 / 2, 2 / 3];
+  const found: Vec[] = [];
+  for (const a of fractions)
+    for (const b of fractions) {
+      const c = at(a, b);
+      if (
+        rosettes.some((r) => Math.hypot(r.x - c.x, r.y - c.y) < 0.2 * spacing)
+      )
+        continue;
+      const near = shifted.filter(
+        (s) => Math.hypot(s.at.x - c.x, s.at.y - c.y) < 0.45 * spacing,
+      );
+      if (near.length < 3) continue;
+      const turns = [6, 4, 3].find((k) => {
+        const cos = Math.cos((2 * Math.PI) / k);
+        const sin = Math.sin((2 * Math.PI) / k);
+        return near.every((s) => {
+          const x = c.x + (s.at.x - c.x) * cos - (s.at.y - c.y) * sin;
+          const y = c.y + (s.at.x - c.x) * sin + (s.at.y - c.y) * cos;
+          return pieceNear(s.type, x, y);
+        });
+      });
+      if (turns === undefined) continue;
+      // The same point again one cell along is the same filler.
+      const det = cell.u.x * cell.v.y - cell.u.y * cell.v.x;
+      const same = found.some((f) => {
+        const dx = c.x - f.x;
+        const dy = c.y - f.y;
+        const i = (dx * cell.v.y - dy * cell.v.x) / det;
+        const j = (cell.u.x * dy - cell.u.y * dx) / det;
+        return (
+          Math.abs(i - Math.round(i)) < 1e-6 &&
+          Math.abs(j - Math.round(j)) < 1e-6
+        );
+      });
+      if (!same) found.push(c);
+    }
+  return found;
+}
+
 const cache = new WeakMap<Pattern, Rings | null>();
 
 /**
@@ -215,7 +318,15 @@ function findRings(pattern: Pattern): Rings | undefined {
     y: p.y + i * cell.u.y + j * cell.v.y,
   });
 
-  // Every rosette centre round the repeat, with its family.
+  // The middles of the stars that fill the space between rosettes (the
+  // four-pointed star between the Bou Inania rosettes): points of the
+  // lattice, away from every rosette, round which the pieces turn into
+  // themselves. Their pieces take rings of their own, in a family of
+  // their own, instead of each taking the nearest rosette's colour.
+  const fillers = fillerCentres(pattern, centres);
+  const familyCount = fam.count + (fillers.length ? 1 : 0);
+
+  // Every centre round the repeat, with its family.
   const around: { at: Vec; family: number }[] = [];
   centres.forEach((c, k) => {
     for (let i = -2; i < m + 2; i++)
@@ -225,6 +336,10 @@ function findRings(pattern: Pattern): Rings | undefined {
           family: fam.of[k]?.[mod(i, m)]?.[mod(j, n)] ?? 0,
         });
   });
+  for (const c of fillers)
+    for (let i = -2; i < m + 2; i++)
+      for (let j = -2; j < n + 2; j++)
+        around.push({ at: at(c, i, j), family: fam.count });
 
   const cover = (t: number) => (types[t]?.area ?? 0) * (types[t]?.perCell ?? 0);
   const total = types.reduce((s, _, t) => s + cover(t), 0);
@@ -244,6 +359,44 @@ function findRings(pattern: Pattern): Rings | undefined {
     family: number;
     orbit: string;
   }
+  // The centres by grid square, a square about one rosette apart, so the
+  // nearest centre and the nearest of another family are found by looking
+  // round a piece's square, wider until both are found.
+  const side =
+    Math.sqrt(
+      Math.abs(cell.area) / Math.max(1, centres.length + fillers.length),
+    ) || 1;
+  const squares = new Map<string, { at: Vec; family: number }[]>();
+  for (const x of around) {
+    const key = `${Math.floor(x.at.x / side)},${Math.floor(x.at.y / side)}`;
+    const list = squares.get(key) ?? [];
+    list.push(x);
+    squares.set(key, list);
+  }
+  const nearest = (c: Vec) => {
+    const gx = Math.floor(c.x / side);
+    const gy = Math.floor(c.y / side);
+    let first = { d: Infinity, f: 0 };
+    let other = Infinity;
+    for (let r = 1; r <= 6; r++) {
+      first = { d: Infinity, f: 0 };
+      other = Infinity;
+      const seen: { d: number; f: number }[] = [];
+      for (let i = gx - r; i <= gx + r; i++)
+        for (let j = gy - r; j <= gy + r; j++)
+          for (const x of squares.get(`${i},${j}`) ?? [])
+            seen.push({
+              d: Math.hypot(x.at.x - c.x, x.at.y - c.y),
+              f: x.family,
+            });
+      for (const x of seen) if (x.d < first.d) first = x;
+      for (const x of seen) if (x.f !== first.f) other = Math.min(other, x.d);
+      // Every centre within r squares is seen, so both are sure once the
+      // farther of them is no more than r - 1 squares away.
+      if (Math.max(first.d, other) <= (r - 1) * side) break;
+    }
+    return { first, other };
+  };
   const places: Place[] = [];
   const placeId = (k: number, i: number, j: number) =>
     (k * m + mod(i, m)) * n + mod(j, n);
@@ -252,22 +405,16 @@ function findRings(pattern: Pattern): Rings | undefined {
       for (let j = 0; j < n; j++) {
         const p = pieces[k] as Piece;
         const c = at(centreOf(p.polygon), i, j);
-        let first = { d: Infinity, f: 0 };
-        for (const x of around) {
-          const d = Math.hypot(x.at.x - c.x, x.at.y - c.y);
-          if (d < first.d) first = { d, f: x.family };
-        }
-        let other = Infinity;
-        for (const x of around)
-          if (x.family !== first.f)
-            other = Math.min(other, Math.hypot(x.at.x - c.x, x.at.y - c.y));
+        const { first, other } = nearest(c);
         const family = other - first.d < 5 * eps ? -1 : first.f;
         const ring = Math.round(first.d / (20 * eps));
         places[placeId(k, i, j)] = {
           type: p.type,
           d: first.d,
           family,
-          orbit: `${p.type}:${ring}:${family < 0 ? 'between' : 'in'}`,
+          orbit: `${p.type}:${ring}:${
+            family < 0 ? 'between' : family === fam.count ? 'filler' : 'in'
+          }`,
         };
       }
 
@@ -280,8 +427,13 @@ function findRings(pattern: Pattern): Rings | undefined {
   for (const p of places)
     if (!orbits.has(p.orbit))
       orbits.set(p.orbit, { type: p.type, d: p.d, between: p.family < 0 });
+  const filler = (key: string) => key.endsWith(':filler');
   const inRings = [...orbits]
-    .filter(([, o]) => !o.between && !tiny(o.type))
+    .filter(([key, o]) => !o.between && !tiny(o.type) && !filler(key))
+    .sort((a, b) => a[1].d - b[1].d)
+    .map(([key]) => key);
+  const fillerRings = [...orbits]
+    .filter(([key, o]) => !o.between && !tiny(o.type) && filler(key))
     .sort((a, b) => a[1].d - b[1].d)
     .map(([key]) => key);
   const betweenRings = [...orbits]
@@ -293,7 +445,11 @@ function findRings(pattern: Pattern): Rings | undefined {
     if (tiny(o.type)) role.set(key, 'black');
     else if (o.between)
       role.set(key, betweenRings.indexOf(key) % 2 === 0 ? 'white' : 'black');
-    else if (o.type === centre) role.set(key, 'spark');
+    else if (filler(key)) {
+      // Outward from the filler's middle: its own colour, the second, white.
+      const step = mod(fillerRings.indexOf(key), 3);
+      role.set(key, step === 0 ? 'main' : step === 1 ? 'second' : 'white');
+    } else if (o.type === centre) role.set(key, 'spark');
     else {
       const r = inRings.indexOf(key) - 1;
       const step = mod(r, 3);
@@ -345,14 +501,30 @@ function findRings(pattern: Pattern): Rings | undefined {
     own.forEach(([key], r) => numbers.set(key, r + 1));
   }
 
+  // Rings that touch, as their keys, the farther from its centre second:
+  // the colours a palette gives them are checked again when filling, as
+  // two families' colours can be the same in some palettes.
+  const ringKey = (p: Place) => `${p.orbit}/${p.family}`;
+  const touchingPairs = new Map<string, [string, string]>();
+  for (const list of sides.values()) {
+    if (list.length < 2) continue;
+    const [p, q] = list.map((id) => places[id] as Place);
+    if (!p || !q || ringKey(p) === ringKey(q)) continue;
+    const [near, far] = p.d <= q.d ? [p, q] : [q, p];
+    const pair: [string, string] = [ringKey(near), ringKey(far)];
+    touchingPairs.set(pair.join('|'), pair);
+  }
+
   return {
     repeat: [m, n],
-    families: fam.count,
+    families: familyCount,
+    rosettes: fam.count,
+    touching: [...touchingPairs.values()],
     place(piece, i, j) {
       const p = places[placeId(piece, i, j)] as Place;
       const number = numbers.get(p.orbit) ?? 0;
       return {
-        ring: `${p.orbit}/${p.family}`,
+        ring: ringKey(p),
         n: number,
         family: p.family,
         role: role.get(p.orbit) ?? 'white',
