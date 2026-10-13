@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { Model } from './model';
-import { unitPieces } from './rosettes';
+import { placeKey } from './placement';
+import { rosetteCards, unitPieces } from './rosettes';
 
 /**
  * The unit before it repeats, drawn large on a plain ground: one whole
@@ -22,6 +23,20 @@ export function Unit({
   ) => void;
 }) {
   const pieces = useMemo(() => unitPieces(model), [model]);
+  // Each ring's number round its rosette, to name the pieces.
+  const ringOf = useMemo(
+    () =>
+      new Map(
+        rosetteCards(model).flatMap((c) =>
+          c.rows.map((r, n) => [r.key, n + 1] as const),
+        ),
+      ),
+    [model],
+  );
+  const nameOf = (type: number) => {
+    const t = model.pattern.types[type];
+    return t?.name ?? `${t?.vertices ?? 0}-corner piece`;
+  };
   const box = useMemo(() => {
     const xs = pieces.flatMap((p) => p.polygon.map((q) => q.x));
     const ys = pieces.flatMap((p) => p.polygon.map((q) => q.y));
@@ -30,7 +45,8 @@ export function Unit({
     const w = Math.max(...xs) - minX;
     const h = Math.max(...ys) - minY;
     const pad = 0.04 * Math.max(w, h);
-    return `${minX - pad} ${minY - pad} ${w + 2 * pad} ${h + 2 * pad}`;
+    // Drawn y up, as the wall is.
+    return `${minX - pad} ${-(minY + h) - pad} ${w + 2 * pad} ${h + 2 * pad}`;
   }, [pieces]);
   if (!pieces.length) return null;
   return (
@@ -41,17 +57,21 @@ export function Unit({
       aria-label="The unit that repeats"
       onPointerLeave={() => onHover?.(undefined)}
     >
-      {pieces.map((p) => (
-        <polygon
-          key={`${p.piece}@${p.i},${p.j}`}
-          className="unit-piece"
-          data-type={p.type}
-          points={p.polygon.map((q) => `${q.x},${q.y}`).join(' ')}
-          fill={fill(p.piece, p.i, p.j)}
-          onPointerEnter={() => onHover?.(p.type)}
-          onClick={() => onPick?.(p.type, { piece: p.piece, i: p.i, j: p.j })}
-        />
-      ))}
+      <g transform="scale(1,-1)">
+        {pieces.map((p) => (
+          <polygon
+            key={`${p.piece}@${p.i},${p.j}`}
+            className="unit-piece"
+            role="button"
+            aria-label={`Paint ring ${ringOf.get(placeKey(model, p.piece, p.i, p.j)) ?? '?'}, the ${nameOf(p.type)}s`}
+            data-type={p.type}
+            points={p.polygon.map((q) => `${q.x},${q.y}`).join(' ')}
+            fill={fill(p.piece, p.i, p.j)}
+            onPointerEnter={() => onHover?.(p.type)}
+            onClick={() => onPick?.(p.type, { piece: p.piece, i: p.i, j: p.j })}
+          />
+        ))}
+      </g>
     </svg>
   );
 }

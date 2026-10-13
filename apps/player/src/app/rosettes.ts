@@ -81,6 +81,23 @@ export function rosetteCards(model: Model): RosetteCard[] {
   return families.map(card).filter((c) => c.rows.length);
 }
 
+/** A palette's colours to paint with: its white, black and glazes. */
+export function swatchesOf(model: Model, palette: string): string[] {
+  const g = glazeOf(palette, model);
+  return [...new Set([g.white, g.black, ...g.families.flat()])];
+}
+
+/** The colour a click paints with: the one picked, else the palette's
+ * first glaze. */
+export function brushOf(
+  model: Model,
+  palette: string,
+  picked: string | undefined,
+): string {
+  const all = swatchesOf(model, palette);
+  return picked ?? all[2] ?? all[0] ?? '#ffffff';
+}
+
 /** How many rosettes the unit holds now, how many take turns by default
  * (the lattice's own number), and the numbers it can hold. */
 export function rosetteCounts(model: Model): {

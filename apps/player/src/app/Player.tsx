@@ -38,7 +38,8 @@ import {
 import { Original } from './Original';
 import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
 import { ColourPanel } from './ColourPanel';
-import { Unit } from './Unit';
+import { UnitBoard } from './UnitBoard';
+import { brushOf } from './rosettes';
 import { ViewSwitch, viewAddress, type View } from './ViewSwitch';
 import {
   byPlace,
@@ -253,6 +254,10 @@ export function Player({
   const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
   // The colour stage shows the whole wall, or only the unit that repeats.
   const [colourView, setColourView] = useState<'wall' | 'unit'>('wall');
+  // The colour a click paints with, when colouring ring by ring.
+  const [brush, setBrush] = useState<string>();
+  // A new palette starts the brush on its own first glaze.
+  useEffect(() => setBrush(undefined), [colorHistory.now.palette]);
   const [hovered, setHovered] = useState<number>();
   const [selected, setSelected] = useState<number>();
   const [wallStyle, setWallStyle] = useState<WallStyle>(
@@ -600,10 +605,19 @@ export function Player({
         ? 'Colors by where each piece sits.'
         : 'One color for each shape of piece.';
     text = colorText(coloured);
+    // Ring by ring, a click paints the piece's ring with the brush; by
+    // shape or place, it opens the piece in the panel.
+    const paints = !!fill && !!ringsFor(coloured);
     const pick = (
       type: number,
       at: { piece: number; i: number; j: number },
     ) => {
+      if (paints)
+        return colorDispatch({
+          kind: 'paint',
+          type: placeKey(coloured, at.piece, at.i, at.j),
+          color: brushOf(coloured, colorHistory.now.palette, brush),
+        });
       setSelected(type);
       setPlace(at);
     };
@@ -626,7 +640,13 @@ export function Player({
     picture = unit ? (
       <>
         {viewSwitch}
-        <Unit model={coloured} fill={fill} onHover={setHovered} onPick={pick} />
+        <UnitBoard
+          key={colorRepeat(coloured).join('x')}
+          model={coloured}
+          fill={fill}
+          onHover={setHovered}
+          onPick={pick}
+        />
       </>
     ) : (
       <>
@@ -986,6 +1006,8 @@ export function Player({
                   base={inking.shown}
                   colors={colors}
                   fill={fill}
+                  brush={brushOf(coloured, colorHistory.now.palette, brush)}
+                  onBrush={setBrush}
                   history={colorHistory}
                   dispatch={colorDispatch}
                   hovered={hovered}

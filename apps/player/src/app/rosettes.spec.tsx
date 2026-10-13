@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import starAndCross from '@tutorials/eight-fold-star-and-cross.json';
 import zellige from '@tutorials/eight-fold-zellige.json';
 import { Play } from './app';
@@ -20,14 +20,24 @@ function atColor(json: unknown = starAndCross) {
   expect(document.querySelector('.label')?.textContent).toBe('Color');
 }
 
-/** A card's ring colours, from the centre out. */
-const ringColours = (card: string) =>
-  [
-    ...within(screen.getByRole('region', { name: card })).getAllByRole(
-      'button',
-      { name: /^Recolor ring/ },
-    ),
-  ].map((b) => b.querySelector('polygon')?.getAttribute('fill'));
+const star = loadModel(zellige).pattern.types.findIndex(
+  (t) => t.name === 'star',
+);
+const button = (name: string | RegExp) => screen.getByRole('button', { name });
+const unit = () => screen.getByRole('img', { name: 'The unit that repeats' });
+/** The unit's centre stars' fills, rosette by rosette. */
+const centres = () =>
+  [...unit().querySelectorAll(`.unit-piece[data-type="${star}"]`)].map((p) =>
+    p.getAttribute('fill'),
+  );
+const wall = () => screen.getByRole('img', { name: 'Your wall of units' });
+const copies = () => wall().querySelectorAll('.unit-copy').length;
+
+/** The zellige at its colour stage, with the unit and its wall shown. */
+function atUnit() {
+  atColor(zellige);
+  fireEvent.click(button(/^Unit$/));
+}
 
 describe('colouring rosette by rosette', () => {
   it('colours every rosette alike with one rosette in the repeat', () => {
@@ -48,118 +58,79 @@ describe('colouring rosette by rosette', () => {
     });
   });
 
-  it('makes one rosette, then adds a second with its colours swapped', () => {
-    atColor(zellige);
-    const a = ringColours('Rosette A');
-    expect(a.length).toBeGreaterThan(1);
-    fireEvent.click(screen.getByRole('button', { name: '1 rosette' }));
-    expect(screen.queryByRole('region', { name: 'Rosette B' })).toBeNull();
-    const one = ringColours('Every rosette');
-    fireEvent.click(screen.getByRole('button', { name: '2 rosettes' }));
-    const b = ringColours('Rosette B');
-    // The centre and the first ring colour round it change places.
-    expect(b[0]).not.toBe(one[0]);
-    expect(one).toContain(b[0]);
-    expect(b).toContain(one[0]);
-    fireEvent.click(screen.getByRole('button', { name: 'Same as A' }));
-    expect(ringColours('Rosette B')).toEqual(ringColours('Rosette A'));
-  });
-
-  it('paints one ring of one rosette from its row', () => {
+  it('switches to colouring by shape, and back', () => {
     atColor();
-    fireEvent.click(
-      within(screen.getByRole('region', { name: 'Rosette B' })).getAllByRole(
-        'button',
-        { name: /^Recolor ring/ },
-      )[0] as Element,
-    );
+    fireEvent.click(button('By shape'));
+    expect(button('Recolor every star')).toBeTruthy();
+    expect(screen.queryByRole('group', { name: 'Paint with' })).toBeNull();
+    fireEvent.click(button('Ring by ring'));
+    expect(screen.getByRole('group', { name: 'Paint with' })).toBeTruthy();
+  });
+});
+
+describe('the unit and its wall', () => {
+  it('paints a whole ring of one rosette with a click on the unit', () => {
+    atUnit();
+    expect(centres()).toHaveLength(2);
     fireEvent.change(screen.getByLabelText(/Any color/), {
       target: { value: '#123456' },
     });
-    expect(ringColours('Rosette B')[0]).toBe('#123456');
-    expect(ringColours('Rosette A')[0]).not.toBe('#123456');
-  });
-
-  it('switches to colouring by shape, and back', () => {
-    atColor();
-    fireEvent.click(screen.getByRole('button', { name: 'By shape' }));
-    expect(screen.getByRole('button', { name: 'Recolor every star' }));
-    expect(screen.queryByRole('region', { name: 'Rosette A' })).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Ring by ring' }));
-    expect(screen.getByRole('region', { name: 'Rosette A' })).toBeTruthy();
-  });
-});
-
-describe('the unit that repeats', () => {
-  it('draws one whole rosette of each family, and switches back to the wall', () => {
-    atColor(zellige);
-    fireEvent.click(screen.getByRole('button', { name: /^Unit$/ }));
-    const unit = screen.getByRole('img', { name: 'The unit that repeats' });
-    const loaded = loadModel(zellige);
-    const star = loaded.pattern.types.findIndex((t) => t.name === 'star');
-    // Two rosettes take turns: one centre star each.
+    fireEvent.click(
+      unit().querySelector(`.unit-piece[data-type="${star}"]`) as Element,
+    );
+    const [a, b] = centres();
+    expect(a).toBe('#123456');
+    expect(b).not.toBe('#123456');
+    // The wall's copies of that rosette follow.
     expect(
-      unit.querySelectorAll(`.unit-piece[data-type="${star}"]`),
-    ).toHaveLength(2);
-    fireEvent.click(screen.getByRole('button', { name: '1 rosette' }));
-    expect(
-      screen
-        .getByRole('img', { name: 'The unit that repeats' })
-        .querySelectorAll(`.unit-piece[data-type="${star}"]`),
-    ).toHaveLength(1);
-    fireEvent.click(screen.getByRole('button', { name: /^Wall$/ }));
-    expect(
-      screen.queryByRole('img', { name: 'The unit that repeats' }),
-    ).toBeNull();
+      wall().querySelectorAll(`.unit-piece[fill="#123456"]`).length,
+    ).toBeGreaterThan(0);
   });
 
-  it('opens a piece’s ring when it is clicked in the unit', () => {
-    atColor(zellige);
-    fireEvent.click(screen.getByRole('button', { name: /^Unit$/ }));
-    const piece = document.querySelector('.unit-piece') as Element;
-    fireEvent.click(piece);
-    expect(document.querySelector('.ring-rows li.active')).toBeTruthy();
-  });
-});
-
-describe('a unit of four rosettes', () => {
-  it('offers one, two or four rosettes on a square lattice', () => {
-    expect(rosetteOptions(loadModel(zellige).pattern)).toEqual([1, 2, 4]);
+  it('halves the unit to one rosette, and doubles it to two, then four', () => {
+    atUnit();
+    fireEvent.click(button('Halve the unit'));
+    expect(centres()).toHaveLength(1);
+    fireEvent.click(button('Double the unit'));
+    expect(centres()).toHaveLength(2);
+    // From one, the second rosette is the first with its colours swapped.
+    const [a, b] = centres();
+    expect(a).not.toBe(b);
+    fireEvent.click(button('Double the unit'));
+    expect(centres()).toHaveLength(4);
+    expect(button(/^Grow the unit$/).hasAttribute('disabled')).toBe(true);
   });
 
   it('keeps the wall as it was when two that take turns become four, then lets each change', () => {
-    atColor(zellige);
-    const a = ringColours('Rosette A');
-    const b = ringColours('Rosette B');
-    fireEvent.click(screen.getByRole('button', { name: '4 rosettes' }));
-    // A and B keep their colours, C was a B, and D an A.
-    expect(ringColours('Rosette A')).toEqual(a);
-    expect(ringColours('Rosette B')).toEqual(b);
-    expect(ringColours('Rosette C')).toEqual(b);
-    expect(ringColours('Rosette D')).toEqual(a);
-    fireEvent.click(
-      within(screen.getByRole('region', { name: 'Rosette D' })).getAllByRole(
-        'button',
-        { name: /^Recolor ring/ },
-      )[0] as Element,
-    );
+    atUnit();
+    const fills = () =>
+      [...wall().querySelectorAll('.unit-copy.first .unit-piece')].map((p) =>
+        p.getAttribute('fill'),
+      );
+    const before = fills();
+    fireEvent.click(button('Double the unit'));
+    expect(fills()).toEqual(before);
     fireEvent.change(screen.getByLabelText(/Any color/), {
       target: { value: '#123456' },
     });
-    expect(ringColours('Rosette D')[0]).toBe('#123456');
-    expect(ringColours('Rosette A')[0]).not.toBe('#123456');
-    // The unit shows the four, two by two.
-    fireEvent.click(screen.getByRole('button', { name: /^Unit$/ }));
-    const star = loadModel(zellige).pattern.types.findIndex(
-      (t) => t.name === 'star',
-    );
-    expect(
-      screen
-        .getByRole('img', { name: 'The unit that repeats' })
-        .querySelectorAll(`.unit-piece[data-type="${star}"]`),
-    ).toHaveLength(4);
-    // Back to two: C and D are gone.
-    fireEvent.click(screen.getByRole('button', { name: '2 rosettes' }));
-    expect(screen.queryByRole('region', { name: 'Rosette C' })).toBeNull();
+    const stars = unit().querySelectorAll(`.unit-piece[data-type="${star}"]`);
+    fireEvent.click(stars[3] as Element);
+    expect(centres().filter((c) => c === '#123456')).toHaveLength(1);
+  });
+
+  it('builds the wall from copies: a ghost places one, and the wall fills and clears', () => {
+    atUnit();
+    expect(copies()).toBe(1);
+    fireEvent.click(wall().querySelector('.unit-ghost') as Element);
+    expect(copies()).toBe(2);
+    fireEvent.click(button('Fill the wall for me'));
+    // The first and every place round it, on a square lattice.
+    expect(copies()).toBe(9);
+    fireEvent.click(button('Clear the copies'));
+    expect(copies()).toBe(1);
+  });
+
+  it('offers one, two or four rosettes on a square lattice', () => {
+    expect(rosetteOptions(loadModel(zellige).pattern)).toEqual([1, 2, 4]);
   });
 });

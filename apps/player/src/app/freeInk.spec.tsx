@@ -6,11 +6,18 @@ const label = () => document.querySelector('.label')?.textContent;
 const click = (name: string) =>
   fireEvent.click(screen.getByRole('button', { name }));
 const inked = () => document.querySelectorAll('.free-ink .piece-line.inked');
-/** The piece types the color stage lists, by their buttons. */
-const legend = () =>
-  [...document.querySelectorAll('.piece-button')].map((b) =>
-    b.getAttribute('aria-label'),
+/** The pieces the color stage names: its buttons, and the unit's pieces
+ * when it is coloured ring by ring. */
+const legend = () => {
+  const unit = screen.queryByRole('button', { name: /^Unit$/ });
+  if (unit) fireEvent.click(unit);
+  const out = [...document.querySelectorAll('.piece-button, .unit-piece')].map(
+    (b) => b.getAttribute('aria-label'),
   );
+  const wall = screen.queryByRole('button', { name: /^Wall$/ });
+  if (wall) fireEvent.click(wall);
+  return out;
+};
 
 /** Opens the star and cross at its ink stage, with reduced motion. */
 function atInk() {
@@ -46,14 +53,14 @@ describe('free inking', () => {
         ?.split('M').length,
     ).toBe(16);
     click('Next'); // color: with one stroke gone, the star and cross merge
-    expect(legend()).not.toContain('Recolor ring 1, the stars');
+    expect(legend()).not.toContain('Paint ring 1, the stars');
     click('Back');
     click('Back');
     click('Back to the classic');
     expect(inked()).toHaveLength(16);
     click('Next');
     click('Next');
-    expect(legend()).toContain('Recolor ring 1, the stars');
+    expect(legend()).toContain('Paint ring 1, the stars');
   });
 
   it('inks a new piece with a click', () => {

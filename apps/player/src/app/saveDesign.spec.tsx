@@ -70,13 +70,15 @@ describe('saving a design', () => {
     expect(label()).toBe('Color');
     fireEvent.click(screen.getByRole('button', { name: 'Chefchaouen' }));
     fireEvent.click(
-      screen.getAllByRole('button', { name: /^Recolor ring/ })[0] as Element,
-    );
-    fireEvent.click(
       screen
-        .getByRole('group', { name: /^Colors for the/ })
+        .getByRole('group', { name: 'Paint with' })
         .querySelectorAll('.swatch-button')[2] as Element,
     );
+    click(/^Unit$/);
+    fireEvent.click(
+      screen.getAllByRole('button', { name: /^Paint ring/ })[0] as Element,
+    );
+    click(/^Wall$/);
     const colored = fills();
     fireEvent.change(screen.getByLabelText('Style'), {
       target: { value: 'strapwork' },
@@ -135,9 +137,11 @@ describe('saving a design', () => {
     expect(label()).toBe('Color');
     expect(screen.getByText(/The tutorial has changed/)).toBeTruthy();
     // The star and cross, in the design's own palette.
+    click(/^Unit$/);
     expect(
-      screen.getAllByRole('button', { name: 'Recolor ring 1, the stars' })[0],
+      screen.getAllByRole('button', { name: 'Paint ring 1, the stars' })[0],
     ).toBeTruthy();
+    click(/^Wall$/);
     const marrakech = Object.values(PALETTES['Marrakech'] ?? {});
     expect(fills().length).toBeGreaterThan(0);
     for (const fill of fills()) expect(marrakech).toContain(fill);

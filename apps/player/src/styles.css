@@ -4221,3 +4221,86 @@ svg.unit {
 .unit-piece:hover {
   filter: brightness(1.12);
 }
+
+/* Colouring the unit: the unit on the left, the wall of its copies on the
+   right, as the tile is repeated in drawing along. */
+.unit-board {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 52px 12px 12px;
+  min-width: 0;
+}
+
+.unit-half {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.unit-half svg {
+  flex: 1;
+  min-height: 0;
+  border-radius: 8px;
+}
+
+.unit-hint {
+  margin: 0;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--theme-text-secondary);
+  font-size: 0.85rem;
+}
+
+svg.unit-wall {
+  width: 100%;
+  background: var(--theme-bg-raised);
+}
+
+.unit-copy:not(.first) {
+  animation: unit-arrive 0.3s ease-out;
+}
+
+@keyframes unit-arrive {
+  from {
+    opacity: 0.3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .unit-copy:not(.first) {
+    animation: none;
+  }
+}
+
+.unit-ghost {
+  fill: var(--saffron);
+  fill-opacity: 0.04;
+  stroke: var(--saffron);
+  stroke-opacity: 0.18;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+}
+
+.unit-ghost:hover {
+  fill-opacity: 0.14;
+}
+
+@media (max-width: 720px) {
+  .unit-board {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+.chooser.brush .swatch-button[aria-pressed='true'] {
+  outline: 2px solid var(--saffron);
+  outline-offset: 2px;
+}

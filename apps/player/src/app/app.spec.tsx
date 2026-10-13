@@ -97,9 +97,9 @@ describe('the player', () => {
         'Color the pieces ring by ring, as on real zellige: round each rosette the pieces take their colors by how far they sit from its centre, not by their shape, and neighbouring rosettes take turns. Click a piece to recolor its whole ring. Each tile holds one star and one cross.',
       ),
     ).toBeTruthy();
-    // Two rosettes take turns, each coloured ring by ring.
-    expect(screen.getByRole('region', { name: 'Rosette A' })).toBeTruthy();
-    expect(screen.getByRole('region', { name: 'Rosette B' })).toBeTruthy();
+    // Two rosettes take turns, each coloured ring by ring with the brush.
+    expect(screen.getByRole('group', { name: 'Paint with' })).toBeTruthy();
+    expect(screen.getByText(/2 rosettes take turns/)).toBeTruthy();
     back();
     expect(label()).toBe('Repeat');
     expect(screen.getByText(/Repeat the tile edge to edge/)).toBeTruthy();
