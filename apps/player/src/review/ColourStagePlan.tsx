@@ -276,6 +276,37 @@ export function ColourStagePlan() {
           has changed yet.
         </p>
       </header>
+      <section className="stage-note">
+        <h2>Your note on the Bou Inania rosette (12 October)</h2>
+        <p>
+          <b>The 4 odd shields were a bug, now fixed.</b> The small
+          four-pointed star between the rosettes sits nearer most of a
+          rosette’s outer shields than the rosette’s own centre, so it took 12
+          of the 16 as its own and only 4 followed the rosette. Each rosette now
+          keeps its whole ring, so the shields round it are one colour and
+          painting one paints them all.
+        </p>
+        <p>
+          <b>I like your idea and would build it in place of C</b>, because it
+          is how the pattern is made: a rosette is the thing you colour, and the
+          wall is that rosette repeated with its colours turned. You click a
+          rosette on the wall to pick it and paint its rings from the centre
+          out. “Add a rosette” then makes a second one that starts as a copy
+          with the colours swapped, which you keep or change ring by ring. The
+          rosettes you have made are the unit that repeats, and the filler star
+          gets a small card of its own. The app already knows which rosettes
+          take turns, so this is mostly a new panel. One limit is the grid: it
+          offers only the unit sizes that tile without two alike rosettes
+          touching, such as 1 or 2 on a square grid and 1 or 3 on a hexagonal
+          one.
+        </p>
+        <p>
+          <b>On the shield colour</b>, the outer shields take the rosette’s
+          main colour, the same as its petals, so the blue-star rosette has
+          green shields. With the new panel you choose this yourself; if you
+          want blue shields round a blue star by default too, say so.
+        </p>
+      </section>
       <ol className="stage-plan-list">
         <li>
           <b>A. Palettes as colour strips.</b> Each palette shows all its
