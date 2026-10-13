@@ -277,6 +277,27 @@ export function ColourStagePlan() {
         </p>
       </header>
       <section className="stage-note">
+        <h2>Your second note (13 October)</h2>
+        <p>
+          <b>The shields are fixed.</b> They sat exactly as far from the filler
+          star as from the rosette, so they were put “between the rosettes”.
+          Now a rosette wins that tie, and each rosette card has its own shield
+          ring, honey round rosette A and turquoise round B to start with.
+        </p>
+        <p>
+          <b>The single unit is not built yet, and I would build it next.</b> A
+          switch above the picture changes it from “Wall” to “Unit”. The unit
+          view draws only the rosettes of one repeat, large on a plain ground.
+          When every rosette is alike, that is one rosette. When two take
+          turns, it is A and B side by side with the filler star between them.
+          Each rosette is drawn whole, because one rosette spreads over several
+          tiles of the construction. You colour it by clicking pieces, the same
+          as now. “Add a rosette” puts the copy beside A, and you keep its
+          colours or change them ring by ring. Switching back to “Wall” repeats
+          that unit everywhere. Say OK on this and I will start.
+        </p>
+      </section>
+      <section className="stage-note">
         <h2>Your note on the Bou Inania rosette (12 October)</h2>
         <p>
           <b>Built:</b> try it on the{' '}
