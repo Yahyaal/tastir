@@ -1509,31 +1509,14 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
-    id: 'colours-originals',
-    text: 'Like the original: each tutorial with a photo, its photo, today and the proposed look. Shall I write these into the tutorials? Name any that still look wrong. Live at /#/plan/colors, at the top.',
-    choices: ['Yes, all of them', 'Yes, except the ones I name', 'Not yet'],
-    pictures: [
-      {
-        src: 'renders/colors/orig-0.png',
-        caption:
-          'The Comares dado (beige octagons, brown hexagons, a cross of black squares round a white one), the squares and stars, the Comares bones and the framed stars.',
-      },
-      {
-        src: 'renders/colors/orig-1.png',
-        caption:
-          'The two plaster frets, carved, and the two Sala de los Reyes tile panels. The twelve-pointed stars are the least sure: the photo is small and blurred.',
-      },
-      {
-        src: 'renders/colors/orig-2.png',
-        caption:
-          'The carved wooden bath stars, the Barca stars (black and white photo, so Alhambra glazes), the Bou Inania wall and the Itimad marble inlay.',
-      },
-      {
-        src: 'renders/colors/orig-3.png',
-        caption:
-          'The two Cairo minbars: wooden bands, carved, with ivory edges on the stellated rosettes.',
-      },
+    id: 'colour-stage',
+    text: 'Your own colours: try the mock of the new colours panel at /#/plan/colour-stage (palettes as colour strips, ring by ring or by shape, one row per ring, saved with your design). Shall I build it into the player like this?',
+    choices: [
+      'Yes, build it',
+      'Yes, with changes I name',
+      'No, something else',
     ],
+    pictures: [],
     card: 'eight-fold-zellige',
   },
 ];
@@ -1802,9 +1785,9 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Colours: every tutorial is coloured by rings',
-    text: 'You said yes, so every tutorial now uses its tradition’s glazes and colours ring by ring round each rosette, with neighbouring rosettes taking turns. Only the Comares bones and the Infantas plaster stars keep their photo colouring by placement. Open any pattern at its result to see it, and name any that still look wrong.',
-    link: { label: 'The colour notes', href: '/#/plan/colors' },
+    title: 'Colours: your own, at the colour stage',
+    text: 'Copying the photos made most walls dull, so every tutorial stays coloured by rings, and the filler star between rosettes now rings out in its own colours. Next is the colour stage: try the working mock and answer the question at the top.',
+    link: { label: 'Try the mock', href: '/#/plan/colour-stage' },
   },
   next: [
     {

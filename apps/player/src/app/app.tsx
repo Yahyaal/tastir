@@ -43,6 +43,15 @@ const ColorsPlan = import.meta.env.DEV
     )
   : undefined;
 
+/** The colour stage mock (#/plan/colour-stage), dev server only. */
+const ColourStagePlan = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/ColourStagePlan').then((m) => ({
+        default: m.ColourStagePlan,
+      })),
+    )
+  : undefined;
+
 /** The plan for drawing along (#/plan/draw-along), dev server only. */
 const DrawAlongPlan = import.meta.env.DEV
   ? lazy(() =>
@@ -106,6 +115,15 @@ export function App({
       </Suspense>
     ) : (
       <Broken message="The colour notes only exist on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'plan/colour-stage') {
+    return ColourStagePlan ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <ColourStagePlan />
+      </Suspense>
+    ) : (
+      <Broken message="The colour stage plan only exists on the dev server (pnpm dev)." />
     );
   }
   if (route === 'plan/draw-along') {

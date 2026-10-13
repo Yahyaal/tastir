@@ -631,3 +631,122 @@
   width: 220px !important;
   height: 220px !important;
 }
+
+.stage-plan-list li {
+  margin-bottom: 8px;
+}
+.stage-mock {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 20px;
+  align-items: start;
+  margin-top: 16px;
+}
+@media (max-width: 900px) {
+  .stage-mock {
+    grid-template-columns: 1fr;
+  }
+}
+.stage-wall .thumbnail {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 6px;
+}
+.stage-panel h3 {
+  margin: 16px 0 8px;
+}
+.stage-panel h4 {
+  margin: 10px 0 4px;
+}
+.stage-panel ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.stage-panel li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+.stage-letter {
+  display: inline-block;
+  min-width: 1.4em;
+  color: var(--accent, #f59e0b);
+}
+.stage-palettes {
+  display: grid;
+  gap: 6px;
+}
+.stage-palettes button,
+.stage-how button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.stage-palettes button[aria-pressed='true'],
+.stage-how button[aria-pressed='true'] {
+  border-color: var(--accent, #f59e0b);
+  outline: 1px solid var(--accent, #f59e0b);
+}
+.stage-how {
+  display: flex;
+  gap: 8px;
+}
+.stage-strip {
+  display: flex;
+}
+.stage-strip span {
+  width: 18px;
+  height: 18px;
+}
+.stage-ring-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  flex: none;
+}
+.stage-ring-name {
+  min-width: 80px;
+}
+.stage-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  align-items: center;
+}
+.stage-swatches button {
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  padding: 0;
+  cursor: pointer;
+}
+.stage-swatches button[aria-pressed='true'] {
+  outline: 2px solid var(--accent, #f59e0b);
+}
+.stage-swatches input[type='color'] {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: none;
+}
+.stage-turns {
+  display: block;
+  margin-bottom: 4px;
+}
+.stage-wall {
+  position: sticky;
+  top: 16px;
+}

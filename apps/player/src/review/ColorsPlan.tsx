@@ -9,8 +9,6 @@ import {
 } from '../app/coloring';
 import { Thumbnail } from '../app/drawing';
 import { LIBRARY } from '../app/library';
-import { photoSrc } from '../app/Original';
-import { ORIGINALS } from './originals';
 import { PROGRESS_TEXT, useModel } from '../app/workerClient';
 import {
   proposal,
@@ -357,46 +355,6 @@ function RingRow({ id }: { id: string }) {
   );
 }
 
-/** One tutorial's photo, today, and its proposed original look. */
-function OriginalRow({ id }: { id: string }) {
-  const entry = LIBRARY.find((e) => e.id === id);
-  const { model, progress } = useModel(entry?.json);
-  const patch = ORIGINALS[id];
-  const proposed = useMemo((): Model | undefined => {
-    if (!model || !patch) return undefined;
-    const { rings: _rings, ...pattern } = model.tutorial.pattern;
-    return {
-      ...model,
-      tutorial: {
-        ...model.tutorial,
-        pattern: { ...pattern, ...patch } as Model['tutorial']['pattern'],
-      },
-    };
-  }, [model, patch]);
-  const photo = model?.tutorial.photos?.[0];
-  const src = photo ? photoSrc(photo, true) : undefined;
-  return (
-    <tr id={`original-${id}`}>
-      <th scope="row">{model?.tutorial.title ?? id}</th>
-      <td>{src ? <img src={src} alt="" loading="lazy" /> : null}</td>
-      {model && proposed ? (
-        <>
-          <td>
-            <Thumbnail model={model} />
-          </td>
-          <td>
-            <Thumbnail model={proposed} />
-          </td>
-        </>
-      ) : (
-        <td colSpan={2} className="colors-waiting">
-          {PROGRESS_TEXT[progress ?? 'checking']}
-        </td>
-      )}
-    </tr>
-  );
-}
-
 /** Colour swatches, each with its lightness (0 black, 100 white). */
 function Swatches({ colours }: { colours: readonly string[] }) {
   return (
@@ -432,39 +390,6 @@ export function ColorsPlan() {
           app yet.
         </p>
       </header>
-
-      <h2 className="group">Like the original</h2>
-      <p>
-        A tutorial with a photo of the real pattern should open looking like it.
-        Each row is the photo, the tutorial today, and the proposed original
-        look: the photo’s style, colours picked from the photo with its exposure
-        and colour cast corrected against a piece known to be white glaze,
-        plaster or ivory, and a carved finish for plaster and wood. The proposal
-        opens as the palette “The original”; every other palette stays. The
-        Barca photo and the Sala de los Reyes fret photo are black and white:
-        the Barca keeps the Alhambra glazes in the photo’s light and dark, and
-        the fret takes the plaster colours of the Leones fret, in the same
-        palace. The stellated rosettes take the colours of the al-Nasir Muhammad
-        minbar, as the al-Maridani photo is black and white. Nothing changes in
-        the tutorials until you agree.
-      </p>
-      <div className="colors-table-wrap">
-        <table className="colors-table colors-originals">
-          <thead>
-            <tr>
-              <th />
-              <th scope="col">Photo</th>
-              <th scope="col">Today</th>
-              <th scope="col">Proposed</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.keys(ORIGINALS).map((id) => (
-              <OriginalRow key={id} id={id} />
-            ))}
-          </tbody>
-        </table>
-      </div>
 
       <h2 className="group">Where this stands</h2>
       <p>
