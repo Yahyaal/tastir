@@ -2,6 +2,7 @@ import {
   cellOf,
   classicSelection,
   computePattern,
+  hiddenHelpers,
   inkPieces,
   strokesOf,
   type Cell,
@@ -11,8 +12,9 @@ import {
   type Scene,
 } from '@tastir/engine';
 import type { Tutorial } from '@tastir/schema';
-import { asPanel, type Model } from '../app/model';
-import { check, type Draft } from '../editor/document';
+import { asPanel, shownBeats, type Model } from '../app/model';
+import { check, emptyDraft, type Draft } from '../editor/document';
+import { drawForMe } from './drawForMe';
 import { imagesOf, type Inkable } from '../editor/finish';
 import { readyToInk, samePieces } from './inking';
 import { buffersOf, penParts, PenGraph, type PenParts } from './pen';
@@ -134,6 +136,25 @@ export interface InkCheck {
 // by the ink stage. Cache by exact curve geometry, not names or step ids.
 const prepared = new Map<string, Prepared>();
 
+/** Warm the tutorial's expected construction without transferring its cached arrays.
+ * Actual learner boards are still prepared by geometry, including any extras. */
+export function warmInk(model: Model): Prepared | { reason: string } {
+  const { tutorial, scene } = model;
+  const optional =
+    model.helperView?.optional ??
+    model.optionalHelpers ??
+    hiddenHelpers(scene, tutorial);
+  const shapes = new Set([tutorial.pattern.cell]);
+  let draft = emptyDraft(`${tutorial.id}-along`, tutorial.title);
+  for (const beat of shownBeats(tutorial))
+    draft =
+      drawForMe(tutorial, scene, draft, beat, 'Drawn.', shapes, optional) ??
+      draft;
+  const ready = prepareInk(model, draft);
+  if (!('reason' in ready)) finishInk(ready);
+  return ready;
+}
+
 /** A board's bits, the tutorial's ink on them and the pen's graph. */
 export function prepareInk(
   model: Model,
@@ -243,7 +264,9 @@ export class InkSession {
       scene: ready.scene,
       cell: ready.cell,
       classic: [...ready.classic],
-      parts: ready.parts,
+      // Transfer a copy: detaching the cached arrays would break the next
+      // prepare of this geometry (for example after undo or a named point).
+      parts: structuredClone(ready.parts),
     };
   }
 

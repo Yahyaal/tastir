@@ -20,6 +20,10 @@ Read `CLAUDE.md`, `docs/tutorial-format.md`, `docs/geometry-notes.md`, `docs/pat
 4. **Expect.** Copy the piece types `pnpm review` prints into `expect`, naming each piece, and give each a palette key in `pattern.colors` (`a`, `b`, `c`, `ground`, as the existing tutorials do).
 5. **Verify.** Compare `wall.png` with the real photo. The status is **verified** only when the line structure matches the photo (same stars, same pieces, same way they meet); otherwise **needs review** with what differs, or **abandoned** with the reason.
 
+## Check the player before shipping
+
+For a new rosette or a change that adds construction lines, crossings, helpers or repeat copies, follow the [Ink performance checklist](../testing/ink-performance.md). Golden tests establish geometry correctness; they do not show that the browser paints promptly or that a learner can ink by hand. Exercise construction → Ink → Repeat, compare the complete tile and wall, and record browser timings for dense patterns alongside the geometry checks.
+
 ## Rules
 
 - Step text is in our own words. Credit every source whose specific sequence you followed in the tutorial's `credits` (`source`, `creator`, `url`, `note`, `steps`).

@@ -38,8 +38,13 @@ export function useInkBoard(
   // The same board object whether or not inking has begun, so pressing
   // Ink keeps the prepare that started on the last construction step.
   const board = useMemo(() => ({ model, draft }), [model, draft]);
+  const anticipated = useMemo(() => ({ model }), [model]);
   const work = useInkWork(
-    active || soon ? board : undefined,
+    active || soon
+      ? board
+      : typeof Worker !== 'undefined'
+        ? anticipated
+        : undefined,
     useMemo(
       () => (active ? { chosen, tutorial } : undefined),
       [active, chosen, tutorial],

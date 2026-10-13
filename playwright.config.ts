@@ -1,5 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Separate worktrees can run browser checks without sharing a preview server.
+const port = process.env['TASTIR_BROWSER_PORT'] ?? '4392';
+const baseURL = `http://localhost:${port}`;
+
 export default defineConfig({
   testDir: './apps/player/e2e',
   fullyParallel: false,
@@ -10,7 +14,7 @@ export default defineConfig({
   retries: 0,
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://localhost:4392',
+    baseURL,
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     reducedMotion: 'reduce',
@@ -42,9 +46,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command:
-      'pnpm exec vite preview --config apps/player/vite.config.mts --port 4392 --strictPort',
-    url: 'http://localhost:4392',
+    command: `pnpm exec vite preview --config apps/player/vite.config.mts --port ${port} --strictPort`,
+    url: baseURL,
     reuseExistingServer: false,
     timeout: 30_000,
   },

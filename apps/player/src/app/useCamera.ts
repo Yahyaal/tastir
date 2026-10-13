@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import type { Vec } from '@tastir/engine';
 import { between, centreOf, panBy, width, zoomAt, type Rect } from './camera';
 
@@ -103,7 +109,7 @@ export function useCamera(
 
   // A new stage or a new frame takes the view there.
   const frameKey = `${stage}:${frame.minX},${frame.minY},${frame.maxX},${frame.maxY}`;
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!active) return;
     goTo(frame);
     return stopGlide;
