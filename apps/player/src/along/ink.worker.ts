@@ -1,4 +1,4 @@
-import { InkSession, transfers } from './inkWork';
+import { InkSession, transfers, warmInk } from './inkWork';
 import { takeTimings } from './timing';
 import type { InkReply, InkRequest } from './useInkWork';
 
@@ -29,6 +29,16 @@ onmessage = ({ data }: MessageEvent<InkRequest>) => {
         id,
         part,
         value: session.check(board, chosen, tutorial),
+      });
+    }
+    if (!data.input.draft) {
+      const ready = warmInk(data.input.model);
+      // A warm-up has no board for the page. Keep the transferable arrays
+      // here for the actual board's geometry-cache lookup.
+      return reply(start, {
+        id,
+        part,
+        ...('reason' in ready ? { value: ready } : {}),
       });
     }
     const sent = session.prepare(data.input.model, data.input.draft);
