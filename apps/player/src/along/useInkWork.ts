@@ -15,7 +15,8 @@ import { measure, type Timings } from './timing';
 /** A board to prepare for inking. */
 export interface PrepareInput {
   readonly model: Model;
-  readonly draft: Draft;
+  /** Missing while warming the tutorial construction, before the learner inks. */
+  readonly draft?: Draft;
 }
 
 /** The learner's ink, to check against a prepared board. */
@@ -78,7 +79,7 @@ export function useInkWork(
     [threaded],
   );
   const directReady = useMemo((): Reply<PrepareInput, Prepared> | undefined => {
-    if (!session || !prepare) return undefined;
+    if (!session || !prepare?.draft) return undefined;
     try {
       const sent = session.prepare(prepare.model, prepare.draft);
       return {

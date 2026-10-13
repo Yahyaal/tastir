@@ -399,7 +399,7 @@ export function DrawAlong({
     index >= shown.length,
     chosen,
     setChosen,
-    index >= shown.length - 1,
+    index >= shown.length - 1 && Boolean(here?.done),
   );
   const ready = ink.ready && !('reason' in ink.ready) ? ink.ready : undefined;
   // The learner's inked tile, as it repeats: its bits.
