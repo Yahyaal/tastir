@@ -16,7 +16,7 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 **The player** draws each step, inks the pattern, builds the repeat tile by tile and colours it. Learners can also draw along on every tutorial, save their own designs, edit and share them (the build log is [Your own patterns](USER-PATTERNS.md)). The finished wall has five styles: tiles, strapwork, lines, Jali (a pierced screen in stone, wood or metal finishes) and interlace (bands woven over and under by one rule).
 
-**The colour stage** (12 October) colours a pattern with rosettes ring by ring: each rosette is a card of its rings from the centre out, a second rosette starts as the first with its colours swapped or the same, and every rosette can be coloured alike instead. A click on the wall opens that piece's ring. The palettes show as strips of their colours, and the learner can switch to colouring by shape. Saved designs and share links keep the way of colouring and the number of rosettes (`Coloring.method` and `Coloring.rosettes`).
+**The colour stage** (12 October) colours a pattern with rosettes ring by ring: each rosette is a card of its rings from the centre out, a second rosette starts as the first with its colours swapped or the same, and every rosette can be coloured alike instead. A click on the wall opens that piece's ring. A Wall / Unit switch over the picture shows only the unit that repeats: one whole rosette of each family and the filler stars round them, drawn large (13 October). The palettes show as strips of their colours, and the learner can switch to colouring by shape. Saved designs and share links keep the way of colouring and the number of rosettes (`Coloring.method` and `Coloring.rosettes`).
 
 **Merged on 11 and 12 October:**
 - Jali with colours, material finishes and textures (Codex, pull request #5; tasks 2.1–2.1d in [the tasks](TASKS.md)).
@@ -24,7 +24,7 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 - Ink speed: the prepared ink stays in its worker, and only small typed arrays cross to the page. Pressing Ink on Bou Inania went from 9.6 s to 2.9 s on a slow cloud machine, so it is faster but not yet under one second. Timing tests now run in `pnpm test:perf`, not `pnpm test`.
 - The owner's feedback on the zellige wheel: the shifted wheel repeats on a hexagon, and a new `kurt-eight-fold-zellige-filled` fills the space between four wheels by overlapping them, with the cross where four meet filled too (pull requests #6, #8, #9).
 
-**With Codex (13 October):** Ink under one second, the last step, on the branch `app/ink-speed-2` ([the task](prompts/codex-2026-10-13.md)). Claude is building the colour stage's single-unit view on `main`.
+**With Codex (13 October):** Ink under one second, the last step, on the branch `app/ink-speed-2` ([the task](prompts/codex-2026-10-13.md)). 
 
 ## Open decisions and things still to do
 
@@ -37,7 +37,7 @@ The prioritised list is the **Next** section of the review page (`PROGRESS` in `
 
 ## The next goal
 
-Build the colour stage's single-unit view while Codex brings Ink under one second, then more Alhambra panels from [the queue](patterns/QUEUE.md).
+Get the owner's look at the colour stage's unit view while Codex brings Ink under one second, then more Alhambra panels from [the queue](patterns/QUEUE.md).
 
 ## How a session works
 

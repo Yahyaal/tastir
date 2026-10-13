@@ -602,6 +602,7 @@ a.button.primary:hover {
 
 /* The plate: the obsidian drafting stage framed by an architectural hairline and subtle grid. */
 .stage {
+  position: relative;
   flex: 1;
   min-height: 58vh;
   display: flex;
@@ -4159,4 +4160,51 @@ main.stage .drawing:not(.wall) {
 .explore-next ul {
   padding-left: 1.2rem;
   line-height: 1.6;
+}
+
+/* The colour stage's switch between the wall and the unit that repeats,
+   over the picture's top left corner. */
+.view-unit {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+}
+
+.player .view-unit button {
+  padding: 4px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-text-primary);
+}
+
+.player .view-unit button[aria-pressed='true'] {
+  background: var(--saffron);
+  color: #1a1408;
+}
+
+/* The unit, large on a plain ground. */
+svg.unit {
+  width: 100%;
+  height: 100%;
+  background: var(--theme-bg-raised);
+}
+
+.unit-piece {
+  stroke: #23201c;
+  stroke-width: 1.2px;
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+  cursor: pointer;
+}
+
+.unit-piece:hover {
+  filter: brightness(1.12);
 }

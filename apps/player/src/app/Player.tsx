@@ -38,6 +38,7 @@ import {
 import { Original } from './Original';
 import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
 import { ColourPanel } from './ColourPanel';
+import { Unit } from './Unit';
 import { ViewSwitch, viewAddress, type View } from './ViewSwitch';
 import {
   byPlace,
@@ -250,6 +251,8 @@ export function Player({
     [coloured, colorHistory.now],
   );
   const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
+  // The colour stage shows the whole wall, or only the unit that repeats.
+  const [colourView, setColourView] = useState<'wall' | 'unit'>('wall');
   const [hovered, setHovered] = useState<number>();
   const [selected, setSelected] = useState<number>();
   const [wallStyle, setWallStyle] = useState<WallStyle>(
@@ -597,23 +600,51 @@ export function Player({
         ? 'Colors by where each piece sits.'
         : 'One color for each shape of piece.';
     text = colorText(coloured);
-    picture = (
-      <Wall
-        model={coloured}
-        colors={colors}
-        fill={fill}
-        finish={finishOf(coloured, colorHistory.now)}
-        repeat={colorRepeat(coloured)}
-        look={wallStyle}
-        grout={grout}
-        jali={jali}
-        onHover={setHovered}
-        onPick={(type, at) => {
-          setSelected(type);
-          setPlace(at);
-        }}
-        enter={enter}
-      />
+    const pick = (
+      type: number,
+      at: { piece: number; i: number; j: number },
+    ) => {
+      setSelected(type);
+      setPlace(at);
+    };
+    // With rosettes, the learner can colour just the unit that repeats.
+    const unit = colourView === 'unit' && fill && ringsFor(coloured);
+    const viewSwitch = ringsFor(coloured) ? (
+      <div className="view-unit" role="group" aria-label="Show">
+        {(['wall', 'unit'] as const).map((v) => (
+          <button
+            key={v}
+            type="button"
+            aria-pressed={colourView === v}
+            onClick={() => setColourView(v)}
+          >
+            {v === 'wall' ? 'Wall' : 'Unit'}
+          </button>
+        ))}
+      </div>
+    ) : null;
+    picture = unit ? (
+      <>
+        {viewSwitch}
+        <Unit model={coloured} fill={fill} onHover={setHovered} onPick={pick} />
+      </>
+    ) : (
+      <>
+        {viewSwitch}
+        <Wall
+          model={coloured}
+          colors={colors}
+          fill={fill}
+          finish={finishOf(coloured, colorHistory.now)}
+          repeat={colorRepeat(coloured)}
+          look={wallStyle}
+          grout={grout}
+          jali={jali}
+          onHover={setHovered}
+          onPick={pick}
+          enter={enter}
+        />
+      </>
     );
   }
 

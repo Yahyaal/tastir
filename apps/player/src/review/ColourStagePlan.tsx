@@ -294,7 +294,8 @@ export function ColourStagePlan() {
           tiles of the construction. You colour it by clicking pieces, the same
           as now. “Add a rosette” puts the copy beside A, and you keep its
           colours or change them ring by ring. Switching back to “Wall” repeats
-          that unit everywhere. Say OK on this and I will start.
+          that unit everywhere. <b>Built 13 October:</b> the switch is at the
+          top left of the picture in the Color step.
         </p>
       </section>
       <section className="stage-note">

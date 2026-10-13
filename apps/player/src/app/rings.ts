@@ -38,6 +38,9 @@ export interface Rings {
   readonly touching: readonly (readonly [string, string])[];
   /** A piece of the cell, in cell (i, j) of the repeat (any integers). */
   place(piece: number, i: number, j: number): RingPlace;
+  /** The middles of the rosettes and filler stars round the repeat (two
+   * cells beyond it each way), with their families. */
+  readonly centres: readonly { readonly at: Vec; readonly family: number }[];
 }
 
 const mod = (a: number, n: number) => ((a % n) + n) % n;
@@ -570,6 +573,7 @@ function findRings(pattern: Pattern): Rings | undefined {
     families: familyCount,
     rosettes: fam.count,
     touching: [...touchingPairs.values()],
+    centres: around,
     place(piece, i, j) {
       const p = places[placeId(piece, i, j)] as Place;
       const number = numbers.get(p.orbit) ?? 0;
@@ -615,6 +619,7 @@ export function withRosettes(rings: Rings, count: number): Rings {
     families: rings.families - rings.rosettes + k,
     rosettes: k,
     touching: [...pairs.values()],
+    centres: rings.centres.map((c) => ({ ...c, family: family(c.family) })),
     place(piece, i, j) {
       const at = rings.place(piece, i, j);
       return { ...at, ring: key(at.ring), family: family(at.family) };

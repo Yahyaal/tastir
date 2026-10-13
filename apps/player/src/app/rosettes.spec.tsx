@@ -90,3 +90,37 @@ describe('colouring rosette by rosette', () => {
     expect(screen.getByRole('region', { name: 'Rosette A' })).toBeTruthy();
   });
 });
+
+describe('the unit that repeats', () => {
+  it('draws one whole rosette of each family, and switches back to the wall', () => {
+    atColor(zellige);
+    fireEvent.click(screen.getByRole('button', { name: /^Unit$/ }));
+    const unit = screen.getByRole('img', { name: 'The unit that repeats' });
+    const loaded = loadModel(zellige);
+    const star = loaded.pattern.types.findIndex((t) => t.name === 'star');
+    // Two rosettes take turns: one centre star each.
+    expect(
+      unit.querySelectorAll(`.unit-piece[data-type="${star}"]`),
+    ).toHaveLength(2);
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Colour every rosette alike' }),
+    );
+    expect(
+      screen
+        .getByRole('img', { name: 'The unit that repeats' })
+        .querySelectorAll(`.unit-piece[data-type="${star}"]`),
+    ).toHaveLength(1);
+    fireEvent.click(screen.getByRole('button', { name: /^Wall$/ }));
+    expect(
+      screen.queryByRole('img', { name: 'The unit that repeats' }),
+    ).toBeNull();
+  });
+
+  it('opens a piece’s ring when it is clicked in the unit', () => {
+    atColor(zellige);
+    fireEvent.click(screen.getByRole('button', { name: /^Unit$/ }));
+    const piece = document.querySelector('.unit-piece') as Element;
+    fireEvent.click(piece);
+    expect(document.querySelector('.ring-rows li.active')).toBeTruthy();
+  });
+});
