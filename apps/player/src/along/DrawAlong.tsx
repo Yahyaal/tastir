@@ -250,6 +250,10 @@ export function DrawAlong({
   const repeating = index === shown.length + 1;
   const coloring = index === shown.length + 2;
   const afterInk = repeating || coloring;
+  // After the ink the learner colours their tile first, or repeats it
+  // first: coloured first, the repeat lays coloured copies.
+  const [colourFirst, setColourFirst] = useState(false);
+  const colouredWall = coloring || (repeating && colourFirst);
   const beat = shown[Math.min(index, shown.length - 1)] ?? 1;
   const info = beats[beat - 1];
 
@@ -410,13 +414,25 @@ export function DrawAlong({
     'wall',
     useMemo(
       () =>
-        coloring && ready
+        colouredWall && ready
           ? {
-              segments: wallSegments(tileInk, copies),
+              // Coloured first, the tile alone: the unit the copies take.
+              segments: wallSegments(
+                tileInk,
+                coloring && colourFirst ? [] : copies,
+              ),
               types: model.pattern.types,
             }
           : undefined,
-      [coloring, ready, tileInk, copies, model.pattern.types],
+      [
+        colouredWall,
+        coloring,
+        colourFirst,
+        ready,
+        tileInk,
+        copies,
+        model.pattern.types,
+      ],
     ),
   );
   const wall = makingWall.value ?? [];
@@ -805,10 +821,11 @@ export function DrawAlong({
           wasDrag={camera.wasDrag}
           cell={ready.cell}
           ink={tileInk}
-          copies={copies}
+          copies={coloring && colourFirst ? [] : copies}
           arrived={arrived}
           erasing={removing}
-          {...(coloring
+          building={repeating}
+          {...(colouredWall
             ? {
                 pieces: wall.map((p) => ({
                   polygon: p.polygon,
@@ -1072,32 +1089,38 @@ export function DrawAlong({
               Ink
             </button>
           </li>
-          {(['Repeat', 'Color'] as const).map((name, k) => (
-            <li key={name}>
-              <button
-                type="button"
-                className={[
-                  'along-dot',
-                  index === shown.length + 1 + k ? 'on' : '',
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-                aria-current={
-                  index === shown.length + 1 + k ? 'step' : undefined
-                }
-                aria-label={name}
-                disabled={!ink.result?.matches}
-                title={
-                  ink.result?.matches
-                    ? undefined
-                    : 'Opens once your ink closes the pattern’s pieces'
-                }
-                onClick={() => go(shown.length + 1 + k)}
-              >
-                {name}
-              </button>
-            </li>
-          ))}
+          {(colourFirst
+            ? (['Color', 'Repeat'] as const)
+            : (['Repeat', 'Color'] as const)
+          ).map((name) => {
+            const k = name === 'Repeat' ? 0 : 1;
+            return (
+              <li key={name}>
+                <button
+                  type="button"
+                  className={[
+                    'along-dot',
+                    index === shown.length + 1 + k ? 'on' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  aria-current={
+                    index === shown.length + 1 + k ? 'step' : undefined
+                  }
+                  aria-label={name}
+                  disabled={!ink.result?.matches}
+                  title={
+                    ink.result?.matches
+                      ? undefined
+                      : 'Opens once your ink closes the pattern’s pieces'
+                  }
+                  onClick={() => go(shown.length + 1 + k)}
+                >
+                  {name}
+                </button>
+              </li>
+            );
+          })}
         </ol>
         {phone ? (
           <button
@@ -1241,11 +1264,26 @@ export function DrawAlong({
                     on: inking,
                     buttons: [
                       <button
+                        key="c"
+                        type="button"
+                        className="secondary"
+                        disabled={!ink.result?.matches}
+                        onClick={() => {
+                          setColourFirst(true);
+                          go(shown.length + 2);
+                        }}
+                      >
+                        Color it
+                      </button>,
+                      <button
                         key="r"
                         type="button"
                         className="next"
                         disabled={!ink.result?.matches}
-                        onClick={() => go(shown.length + 1)}
+                        onClick={() => {
+                          setColourFirst(false);
+                          go(shown.length + 1);
+                        }}
                       >
                         Repeat it
                       </button>,
@@ -1253,37 +1291,59 @@ export function DrawAlong({
                   },
                   {
                     on: repeating,
-                    buttons: [
-                      <button
-                        key="c"
-                        type="button"
-                        className="secondary"
-                        onClick={() => go(shown.length + 2)}
-                      >
-                        Color it
-                      </button>,
-                      <button
-                        key="k"
-                        type="button"
-                        className="next"
-                        onClick={() => keepIt(false)}
-                      >
-                        Keep it as it is
-                      </button>,
-                    ],
+                    buttons: colourFirst
+                      ? [
+                          <button
+                            key="k"
+                            type="button"
+                            className="next"
+                            onClick={() => keepIt(true)}
+                          >
+                            Keep it
+                          </button>,
+                        ]
+                      : [
+                          <button
+                            key="c"
+                            type="button"
+                            className="secondary"
+                            onClick={() => go(shown.length + 2)}
+                          >
+                            Color it
+                          </button>,
+                          <button
+                            key="k"
+                            type="button"
+                            className="next"
+                            onClick={() => keepIt(false)}
+                          >
+                            Keep it as it is
+                          </button>,
+                        ],
                   },
                   {
                     on: coloring,
-                    buttons: [
-                      <button
-                        key="k"
-                        type="button"
-                        className="next"
-                        onClick={() => keepIt(true)}
-                      >
-                        Keep it
-                      </button>,
-                    ],
+                    buttons: colourFirst
+                      ? [
+                          <button
+                            key="r"
+                            type="button"
+                            className="next"
+                            onClick={() => go(shown.length + 1)}
+                          >
+                            Repeat it
+                          </button>,
+                        ]
+                      : [
+                          <button
+                            key="k"
+                            type="button"
+                            className="next"
+                            onClick={() => keepIt(true)}
+                          >
+                            Keep it
+                          </button>,
+                        ],
                   },
                 ].map((layer, i) => (
                   <span

@@ -16,7 +16,7 @@ import {
   RULER_COLOR,
   TILE_COLOR,
 } from './animation';
-import { fit, fullView, viewBox, width, type Rect } from './camera';
+import { boxOf, fit, fullView, viewBox, width, type Rect } from './camera';
 import {
   DEFAULT_FINISH,
   finishOf,
@@ -308,57 +308,6 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
 }
 
 /**
- * At the end of the ink: the ink of the eight tiles around this one, faint
- * and in blue, so the learner sees each of their lines meet this tile's
- * edge where one of its own lines carries on (each is copied off the
- * finished tile, or a corner off the side copy before it, and slides out to
- * its place, round the tile; see playInk).
- */
-function NextTiles({ model }: { model: Model }) {
-  const { u, v } = model.pattern.cell;
-  const at = (i: number, j: number): Vec => ({
-    x: i * u.x + j * v.x,
-    y: i * u.y + j * v.y,
-  });
-  // Round the tile like a hand, starting on the left and going clockwise
-  // on screen: each side's copy comes off the tile, then the corner after
-  // it comes off that side's copy (left, top-left, top, top-right...).
-  const clockwise = (p: Vec) =>
-    (Math.atan2(-p.y, p.x) - Math.PI + 4 * Math.PI) % (2 * Math.PI);
-  const sides = [at(-1, 0), at(0, 1), at(1, 0), at(0, -1)].sort(
-    (p, q) => clockwise(p) - clockwise(q),
-  );
-  const shifts: { to: Vec; from: Vec }[] = sides.flatMap((side, k) => {
-    const after = sides[(k + 1) % 4] as Vec;
-    return [
-      { to: side, from: at(0, 0) },
-      { to: { x: side.x + after.x, y: side.y + after.y }, from: side },
-    ];
-  });
-  const d = model.pattern.ink
-    .map(
-      (s) =>
-        `M${sx(s.segment.a)} ${sy(s.segment.a)}L${sx(s.segment.b)} ${sy(s.segment.b)}`,
-    )
-    .join('');
-  return (
-    <g className="ink next-tiles" aria-label="The next tiles">
-      {shifts.map(({ to, from }, k) => (
-        <g
-          key={k}
-          data-next-tile={k}
-          data-shift={`${to.x} ${-to.y}`}
-          data-from={`${from.x} ${-from.y}`}
-          transform={`translate(${to.x} ${-to.y})`}
-        >
-          <path className="tile-ink" d={d} />
-        </g>
-      ))}
-    </g>
-  );
-}
-
-/**
  * The points the ink turns at or ends at (not those where it runs straight
  * on), each with the first ruler line of the ink order that reaches it, so
  * the ink stage can show a line's points just before the pen joins them.
@@ -593,7 +542,6 @@ export function Construction({
                 data-ink={i}
               />
             ))}
-            <NextTiles model={model} />
             {enter && pen ? <InkDots model={model} size={size} /> : null}
           </g>
         ) : (
@@ -741,20 +689,36 @@ const ROWS_STEP_MS = 900;
  */
 export function RepeatedInk({
   model,
+  count,
   enter = false,
   speed = 1,
   paused = false,
 }: {
   model: Model;
+  /** Only so many copies along the row and up, else the whole wall. */
+  count?: readonly [number, number];
   enter?: boolean;
   speed?: number;
   paused?: boolean;
 }) {
   const pauseRef = useRef(paused);
   pauseRef.current = paused;
-  const { view } = useMemo(() => tiling(model), [model]);
   const { cell, ink } = model.pattern;
   const { row, next } = useMemo(() => rowBasis(model), [model]);
+  const [cm, cn] = count ?? [0, 0];
+  const view = useMemo(() => {
+    if (!cm) return tiling(model).view;
+    // Just the copies asked for, with a margin.
+    const corners = [];
+    for (let i = 0; i < cm; i++)
+      for (let j = 0; j < cn; j++)
+        for (const c of cell.corners)
+          corners.push({
+            x: c.x + i * row.x + j * next.x,
+            y: c.y + i * row.y + j * next.y,
+          });
+    return fit(boxOf(corners) ?? tiling(model).view, 0.06);
+  }, [model, cm, cn, cell, row, next]);
   const svgRef = useRef<SVGSVGElement>(null);
   const inkId = `tile-ink-${useId().replace(/:/g, '')}`;
   const inkPath = useMemo(
@@ -779,10 +743,11 @@ export function RepeatedInk({
     for (let j = -12; j <= 12; j++)
       for (let i = -24; i <= 24; i++) {
         const d = { x: i * row.x + j * next.x, y: i * row.y + j * next.y };
-        if (inView(d)) out.push({ i, j, d });
+        const asked = !cm || (i >= 0 && i < cm && j >= 0 && j < cn);
+        if (asked && inView(d)) out.push({ i, j, d });
       }
     return out;
-  }, [row, next, view]);
+  }, [row, next, view, cm, cn]);
 
   // All tiles in a later row move together. Animate that row once instead
   // of maintaining identical transforms, opacity, and color on every tile.
@@ -942,7 +907,7 @@ export function RepeatedInk({
       ref={svgRef}
       className="drawing wall"
       viewBox={viewBox(view)}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio={cm ? 'xMidYMid meet' : 'xMidYMid slice'}
       role="img"
       aria-label="The inked tile repeated edge to edge"
     >

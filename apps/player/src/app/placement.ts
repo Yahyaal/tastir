@@ -98,6 +98,29 @@ export function colorRepeat(model: Model): readonly [number, number] {
 const mod = (a: number, n: number) => ((a % n) + n) % n;
 
 /**
+ * The fewest cells the colours repeat after: the colour repeat, or a
+ * part of it when every piece takes the same colour key there as in the
+ * cell that many cells back (one rosette in a repeat of two by two folds
+ * to one cell).
+ */
+export function unitRepeat(model: Model): readonly [number, number] {
+  const [m, n] = colorRepeat(model);
+  const { pieces } = model.pattern;
+  const repeats = (a: number, b: number) => {
+    for (let i = 0; i < m; i++)
+      for (let j = 0; j < n; j++)
+        for (let k = 0; k < pieces.length; k++)
+          if (placeKey(model, k, i, j) !== placeKey(model, k, i % a, j % b))
+            return false;
+    return true;
+  };
+  for (let a = 1; a <= m; a++)
+    for (let b = 1; b <= n; b++)
+      if (m % a === 0 && n % b === 0 && repeats(a, b)) return [a, b];
+  return [m, n];
+}
+
+/**
  * A piece's turn: the direction of its long axis, in degrees from the
  * horizontal in [0, 180), or undefined for a piece with no long axis (a
  * square, a regular star).

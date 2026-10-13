@@ -64,9 +64,9 @@ describe('saving a design', () => {
       `#/eight-fold-star-and-cross/design/${saved?.id}`,
     );
 
-    // Recolor at the wall and save again: the same design is updated.
-    click('Next');
-    click('Next');
+    // Recolor the unit, then repeat it, and save again: the same design
+    // is updated.
+    click('Color it');
     expect(label()).toBe('Color');
     fireEvent.click(screen.getByRole('button', { name: 'Chefchaouen' }));
     fireEvent.click(
@@ -74,11 +74,11 @@ describe('saving a design', () => {
         .getByRole('group', { name: 'Paint with' })
         .querySelectorAll('.swatch-button')[2] as Element,
     );
-    click(/^Unit$/);
     fireEvent.click(
       screen.getAllByRole('button', { name: /^Paint ring/ })[0] as Element,
     );
-    click(/^Wall$/);
+    click('Next');
+    expect(label()).toBe('Repeat');
     const colored = fills();
     fireEvent.change(screen.getByLabelText('Style'), {
       target: { value: 'strapwork' },
@@ -136,12 +136,8 @@ describe('saving a design', () => {
     go(`#/eight-fold-star-and-cross/design/${old?.id}`);
     expect(label()).toBe('Color');
     expect(screen.getByText(/The tutorial has changed/)).toBeTruthy();
-    // The star and cross, in the design's own palette.
-    click(/^Unit$/);
-    expect(
-      screen.getAllByRole('button', { name: 'Paint ring 1, the stars' })[0],
-    ).toBeTruthy();
-    click(/^Wall$/);
+    // The star and cross, in the design's own palette, ring by ring.
+    expect(screen.getByRole('group', { name: 'Paint with' })).toBeTruthy();
     const marrakech = Object.values(PALETTES['Marrakech'] ?? {});
     expect(fills().length).toBeGreaterThan(0);
     for (const fill of fills()) expect(marrakech).toContain(fill);

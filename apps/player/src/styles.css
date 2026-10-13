@@ -1504,10 +1504,6 @@ main.stage .drawing:not(.wall) {
   stroke-linecap: round;
 }
 
-.ink.next-tiles {
-  stroke: var(--current);
-}
-
 /* The tile's ink, drawn once in the repeat and reused by every copy. */
 .tile-ink {
   fill: none;
@@ -1515,10 +1511,6 @@ main.stage .drawing:not(.wall) {
   stroke-width: 3px;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
-}
-
-.ink.next-tiles > g {
-  opacity: 0.6;
 }
 
 /* The crossings a ring of the ink joins: shown just before it is inked
@@ -4175,129 +4167,33 @@ main.stage .drawing:not(.wall) {
   line-height: 1.6;
 }
 
-/* The colour stage's switch between the wall and the unit that repeats,
-   over the picture's top left corner. */
-.view-unit {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 2;
-  display: flex;
-  gap: 2px;
-  padding: 2px;
-  border-radius: 999px;
-  background: var(--theme-bg-surface);
-  border: 1px solid var(--theme-border);
-}
-
-.player .view-unit button {
-  padding: 4px 14px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--theme-text-primary);
-}
-
-.player .view-unit button[aria-pressed='true'] {
-  background: var(--saffron);
-  color: #1a1408;
-}
-
-/* The unit, large on a plain ground. */
-svg.unit {
-  width: 100%;
-  height: 100%;
+/* A few coloured tiles: the unit alone, or the copies asked for. */
+svg.tiles {
   background: var(--theme-bg-raised);
 }
 
-.unit-piece {
-  stroke: #23201c;
+.tile-piece {
   stroke-width: 1.2px;
   vector-effect: non-scaling-stroke;
   stroke-linejoin: round;
   cursor: pointer;
 }
 
-.unit-piece:hover {
+.tile-piece:hover {
   filter: brightness(1.12);
 }
 
-/* Colouring the unit: the unit on the left, the wall of its copies on the
-   right, as the tile is repeated in drawing along. */
-.unit-board {
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 52px 12px 12px;
-  min-width: 0;
-}
-
-.unit-half {
+/* How many copies the repeat lays. */
+.copies {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-  min-height: 0;
-}
-
-.unit-half svg {
-  flex: 1;
-  min-height: 0;
-  border-radius: 8px;
-}
-
-.unit-hint {
-  margin: 0;
-  min-height: 30px;
-  display: flex;
-  align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  color: var(--theme-text-secondary);
-  font-size: 0.85rem;
+  gap: 6px;
+  margin-top: 10px;
 }
 
-svg.unit-wall {
-  width: 100%;
-  background: var(--theme-bg-raised);
-}
-
-.unit-copy:not(.first) {
-  animation: unit-arrive 0.3s ease-out;
-}
-
-@keyframes unit-arrive {
-  from {
-    opacity: 0.3;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .unit-copy:not(.first) {
-    animation: none;
-  }
-}
-
-.unit-ghost {
-  fill: var(--saffron);
-  fill-opacity: 0.04;
-  stroke: var(--saffron);
-  stroke-opacity: 0.18;
-  stroke-width: 1px;
-  vector-effect: non-scaling-stroke;
-  cursor: pointer;
-}
-
-.unit-ghost:hover {
-  fill-opacity: 0.14;
-}
-
-@media (max-width: 720px) {
-  .unit-board {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
-  }
+.player .copies button[aria-pressed='true'] {
+  background: var(--saffron);
+  color: #1a1408;
 }
 
 .chooser.brush .swatch-button[aria-pressed='true'] {

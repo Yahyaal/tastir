@@ -212,7 +212,9 @@ describe('the wall controls', () => {
     render(<Play json={example} />);
     fireEvent.click(screen.getByLabelText('Reduce motion'));
     for (let i = 0; i < 8; i++)
-      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+      fireEvent.click(
+        screen.getByRole('button', { name: /^(Next|Repeat it)$/ }),
+      );
     fireEvent.change(screen.getByLabelText(/Style/), {
       target: { value: 'lines' },
     });

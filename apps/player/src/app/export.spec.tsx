@@ -59,7 +59,9 @@ describe('export in the player', () => {
     render(<Play json={example} />);
     fireEvent.click(screen.getByLabelText('Reduce motion'));
     for (let i = 0; i < 8; i++)
-      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+      fireEvent.click(
+        screen.getByRole('button', { name: /^(Next|Repeat it)$/ }),
+      );
   }
 
   it('downloads the colored wall as SVG, named after the tutorial', async () => {

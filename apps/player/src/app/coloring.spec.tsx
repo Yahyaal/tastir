@@ -74,7 +74,7 @@ function atColor() {
   render(<Play json={example} />);
   fireEvent.click(screen.getByLabelText('Reduce motion'));
   for (let i = 0; i < 8; i++)
-    fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+    fireEvent.click(screen.getByRole('button', { name: /^(Next|Repeat it)$/ }));
   expect(document.querySelector('.label')?.textContent).toBe('Color');
 }
 /** The fills of every star on the wall (type 0, the largest). */
@@ -150,7 +150,9 @@ describe('the color text', () => {
     render(<Play json={example} />);
     fireEvent.click(screen.getByLabelText('Reduce motion'));
     for (let i = 0; i < 8; i++)
-      fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+      fireEvent.click(
+        screen.getByRole('button', { name: /^(Next|Repeat it)$/ }),
+      );
     expect(
       screen.getByText(/Each tile holds one star and one cross\./),
     ).toBeTruthy();

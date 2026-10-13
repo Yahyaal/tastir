@@ -24,6 +24,7 @@ export function RepeatBoard({
   copies,
   arrived,
   erasing,
+  building = false,
   pieces,
   onPlace,
   onMove,
@@ -40,6 +41,9 @@ export function RepeatBoard({
   /** The copy that just arrived, and where it slid in from. */
   arrived?: { index: number; from: Vec };
   erasing: boolean;
+  /** Copies can still be placed, though the pieces are coloured (the
+   * learner coloured their tile before repeating it). */
+  building?: boolean;
   /** At the colour stage: the wall's pieces and their fills. */
   pieces?: readonly { polygon: readonly Vec[]; fill: string; type: number }[];
   onPlace: (at: Vec, from: Vec) => void;
@@ -52,7 +56,7 @@ export function RepeatBoard({
     [ink],
   );
   const unit = width(view) / 400;
-  const ghosts = pieces ? [] : ghostsOf(cell, copies);
+  const ghosts = pieces && !building ? [] : ghostsOf(cell, copies);
   // A copy being dragged, and where it is now.
   const [drag, setDrag] = useState<{ index: number; at: Vec }>();
   const dragRef = useRef(drag);

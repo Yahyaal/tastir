@@ -668,6 +668,40 @@ describe('drawing along', () => {
     ).toBe(before - 1);
   });
 
+  it('colours the tile first, then repeats it with its colours', () => {
+    openAlong();
+    for (let i = 0; i < 6; i++) {
+      click('Draw it for me');
+      click(i < 5 ? 'Next' : 'Ink it');
+    }
+    click('Ink it for me');
+    click('Color it');
+    const wall = () => screen.getByRole('img', { name: 'Your wall' });
+    // The tile alone: no copies, and nothing to place yet.
+    expect(wall().querySelectorAll('.copy')).toHaveLength(1);
+    expect(wall().querySelectorAll('.ghost')).toHaveLength(0);
+    const kinds = () =>
+      [...wall().querySelectorAll('.wall-piece')].filter(
+        (p) => p.getAttribute('data-type') !== '-1',
+      );
+    fireEvent.click(kinds()[0] as Element);
+    fireEvent.click(
+      document.querySelectorAll('.along-colors .swatch-button')[3] as Element,
+    );
+    const colour = kinds()[0]?.getAttribute('fill');
+    // Then the repeat: ghosts to place coloured copies.
+    click('Repeat it');
+    expect(
+      [...document.querySelectorAll('.along-dot')].map((d) => d.textContent),
+    ).toEqual(expect.arrayContaining(['Ink', 'Color', 'Repeat']));
+    const ghosts = () => wall().querySelectorAll('.ghost');
+    expect(ghosts()).toHaveLength(4);
+    fireEvent.click(ghosts()[0] as Element);
+    expect(wall().querySelectorAll('.copy')).toHaveLength(2);
+    expect(kinds().length).toBeGreaterThan(1);
+    expect(kinds().some((p) => p.getAttribute('fill') === colour)).toBe(true);
+  });
+
   it('opens the colour chooser on clicking a piece of the colour board and recolours every piece of that kind', () => {
     openAlong();
     for (let i = 0; i < 6; i++) {
@@ -772,18 +806,26 @@ describe('drawing along', () => {
 
     // Click 1st corner at (1, 0)
     clickAt(1, 0);
-    expect(board.querySelectorAll('.polygon-band:not(.rubber)')).toHaveLength(0);
+    expect(board.querySelectorAll('.polygon-band:not(.rubber)')).toHaveLength(
+      0,
+    );
 
     // Click 2nd corner at (0, 1)
     clickAt(0, 1);
-    expect(board.querySelectorAll('.polygon-band:not(.rubber)')).toHaveLength(1);
+    expect(board.querySelectorAll('.polygon-band:not(.rubber)')).toHaveLength(
+      1,
+    );
 
     // Click 3rd corner at (-1, 0)
     clickAt(-1, 0);
-    expect(board.querySelectorAll('.polygon-band:not(.rubber)')).toHaveLength(2);
+    expect(board.querySelectorAll('.polygon-band:not(.rubber)')).toHaveLength(
+      2,
+    );
 
     // Move pointer near the first corner (1, 0) to check closing indication
-    const [vx = 0, vy = 0, vw = 1, vh = 1] = (board.getAttribute('viewBox') ?? '')
+    const [vx = 0, vy = 0, vw = 1, vh = 1] = (
+      board.getAttribute('viewBox') ?? ''
+    )
       .split(' ')
       .map(Number);
     const s = Math.min(400 / vw, 400 / vh);
@@ -802,4 +844,3 @@ describe('drawing along', () => {
     expect(board.querySelectorAll('.polygon-preview')).toHaveLength(0);
   });
 });
-

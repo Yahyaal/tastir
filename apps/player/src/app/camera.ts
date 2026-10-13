@@ -111,6 +111,10 @@ export const MIN_GROWING = 0.45;
 /** The whole drawing with a margin: what Fit shows. */
 export const fullView = (model: Model): Rect => fit(drawingBox(model));
 
+/** The tile alone, with a small margin: the unit the ink makes. */
+export const tileView = (model: Model): Rect =>
+  fit(boxOf(model.pattern.cell.corners) ?? drawingBox(model), 0.06);
+
 /**
  * The view for a step: its new elements and the elements they are built
  * from, never smaller than MIN_FRAME of the whole drawing, with a margin.

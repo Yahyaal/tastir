@@ -13,7 +13,7 @@ import {
 import { copyUpTo } from '../editor/document';
 import { addPattern, freeTitle, getPattern } from '../editor/patterns';
 import { planStep, play, playInk } from './animation';
-import { fullView, growingFrame, width } from './camera';
+import { fullView, growingFrame, tileView, width } from './camera';
 import {
   colorReducer,
   finishOf,
@@ -25,7 +25,6 @@ import { type Design } from './designs';
 import { Construction, RepeatedInk } from './drawing';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
 import {
-  asPanel,
   beatsOf,
   hiddenBeats,
   shownSteps,
@@ -38,7 +37,7 @@ import {
 import { Original } from './Original';
 import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
 import { ColourPanel } from './ColourPanel';
-import { UnitBoard } from './UnitBoard';
+import { Tiles } from './Tiles';
 import { brushOf } from './rosettes';
 import { ViewSwitch, viewAddress, type View } from './ViewSwitch';
 import {
@@ -48,6 +47,7 @@ import {
   placeFills,
   placeKey,
   ringsFor,
+  unitRepeat,
 } from './placement';
 import { PrintSheet, type Paper } from './PrintSheet';
 import { useRemembered } from './remembered';
@@ -195,7 +195,15 @@ export function Player({
   // Library tutorials only: own and shared patterns are not in its order.
   const browsing = !mine && !sharedView;
   const start = opened ? 'result' : asked;
-  const stages = useMemo(() => stagesOf(tutorial), [tutorial]);
+  // After the ink the learner colours the unit first, or repeats it first.
+  const [colourFirst, setColourFirst] = useState(false);
+  const stages = useMemo(
+    () => stagesOf(tutorial, colourFirst),
+    [tutorial, colourFirst],
+  );
+  // How many copies of the tile the repeat lays: so many along each
+  // slide, or the whole wall.
+  const [copies, setCopies] = useState<Copies>('wall');
   const [index, setIndex] = useState(() =>
     start === 'result'
       ? stagesOf(tutorial).length - 1
@@ -220,11 +228,8 @@ export function Player({
   const asYouGo = inkMode === 'asYouGo';
 
   const inking = useInking(model, opened?.inked);
-  // The ink stage traces the whole panel, when the tutorial names one.
-  const inkModel = useMemo(
-    () => (inking.editing ? inking.shown : asPanel(inking.shown)),
-    [inking.editing, inking.shown],
-  );
+  // The ink stage shows the one unit the ink makes.
+  const inkModel = inking.shown;
   const [colorHistory, colorDispatch] = useReducer(
     colorReducer,
     model,
@@ -252,8 +257,6 @@ export function Player({
     [coloured, colorHistory.now],
   );
   const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
-  // The colour stage shows the whole wall, or only the unit that repeats.
-  const [colourView, setColourView] = useState<'wall' | 'unit'>('wall');
   // The colour a click paints with, when colouring ring by ring.
   const [brush, setBrush] = useState<string>();
   // A new palette starts the brush on its own first glaze.
@@ -367,7 +370,9 @@ export function Player({
     () =>
       stage.kind === 'step'
         ? growingFrame(model, stage.beat, hidden)
-        : fullView(model),
+        : stage.kind === 'ink'
+          ? tileView(model)
+          : fullView(model),
     [model, stage, hidden],
   );
   const onConstruction = stage.kind === 'step' || stage.kind === 'ink';
@@ -385,7 +390,7 @@ export function Player({
     if (reduced) return;
     if (stage.kind === 'ink') {
       if (!inking.editing && inking.isClassic && !asYouGo)
-        running.current = playInk(svgRef.current, asPanel(model), speed, {
+        running.current = playInk(svgRef.current, model, speed, {
           lengthScale: width(camera.view) / width(frame),
         });
       return;
@@ -441,6 +446,13 @@ export function Player({
       setIndex(index - 1);
     });
   }, [index, stage, model, reduced, speed, asYouGo]);
+
+  // From the ink, on to colouring the unit or repeating it, whichever the
+  // learner picks first.
+  const after = (colour: boolean) => {
+    setColourFirst(colour);
+    next();
+  };
 
   const togglePlayback = useCallback(() => {
     if (index === last) {
@@ -583,28 +595,7 @@ export function Player({
         enter={enter && !inking.editing}
       />
     );
-  } else if (stage.kind === 'repeat') {
-    label = 'Repeat';
-    hint = 'Copies of the tile, laid edge to edge.';
-    text =
-      tutorial.pattern.text ??
-      'Repeat the tile edge to edge, with the same lines in every copy.';
-    picture = (
-      <RepeatedInk
-        model={inking.shown}
-        enter={enter}
-        speed={speed}
-        paused={!playing && clock.current?.index === index}
-      />
-    );
   } else {
-    label = 'Color';
-    hint = ringsFor(coloured)
-      ? 'Colors ring by ring round each rosette.'
-      : coloured.tutorial.pattern.placements
-        ? 'Colors by where each piece sits.'
-        : 'One color for each shape of piece.';
-    text = colorText(coloured);
     // Ring by ring, a click paints the piece's ring with the brush; by
     // shape or place, it opens the piece in the panel.
     const paints = !!fill && !!ringsFor(coloured);
@@ -621,36 +612,9 @@ export function Player({
       setSelected(type);
       setPlace(at);
     };
-    // With rosettes, the learner can colour just the unit that repeats.
-    const unit = colourView === 'unit' && fill && ringsFor(coloured);
-    const viewSwitch = ringsFor(coloured) ? (
-      <div className="view-unit" role="group" aria-label="Show">
-        {(['wall', 'unit'] as const).map((v) => (
-          <button
-            key={v}
-            type="button"
-            aria-pressed={colourView === v}
-            onClick={() => setColourView(v)}
-          >
-            {v === 'wall' ? 'Wall' : 'Unit'}
-          </button>
-        ))}
-      </div>
-    ) : null;
-    picture = unit ? (
-      <>
-        {viewSwitch}
-        <UnitBoard
-          key={colorRepeat(coloured).join('x')}
-          model={coloured}
-          fill={fill}
-          onHover={setHovered}
-          onPick={pick}
-        />
-      </>
-    ) : (
-      <>
-        {viewSwitch}
+    // The coloured tiles: so many copies, or the whole wall.
+    const tiles = (count: Copies) =>
+      count === 'wall' ? (
         <Wall
           model={coloured}
           colors={colors}
@@ -664,12 +628,62 @@ export function Player({
           onPick={pick}
           enter={enter}
         />
-      </>
-    );
+      ) : (
+        <Tiles
+          model={coloured}
+          count={count}
+          fill={(k, i, j) =>
+            fill
+              ? fill(k, i, j)
+              : (colors[coloured.pattern.pieces[k]?.type ?? 0] ?? '#999999')
+          }
+          lines={finishOf(coloured, colorHistory.now).lines}
+          onHover={setHovered}
+          onPick={pick}
+        />
+      );
+    if (stage.kind === 'repeat') {
+      label = 'Repeat';
+      hint = 'Copies of the tile, laid edge to edge.';
+      text =
+        tutorial.pattern.text ??
+        'Repeat the tile edge to edge, with the same lines in every copy.';
+      picture = colourFirst ? (
+        tiles(copies)
+      ) : (
+        <RepeatedInk
+          key={String(copies)}
+          model={inking.shown}
+          count={copies === 'wall' ? undefined : copies}
+          enter={enter}
+          speed={speed}
+          paused={!playing && clock.current?.index === index}
+        />
+      );
+    } else {
+      label = 'Color';
+      hint = ringsFor(coloured)
+        ? 'Colors ring by ring round each rosette.'
+        : coloured.tutorial.pattern.placements
+          ? 'Colors by where each piece sits.'
+          : 'One color for each shape of piece.';
+      text = colorText(coloured);
+      // Coloured first, the unit alone: the tiles the colours repeat
+      // after, so every rosette that takes turns is there to colour.
+      picture = tiles(colourFirst ? unitRepeat(coloured) : copies);
+    }
   }
 
+  // The colours are chosen at the colour stage and kept to the end, where
+  // the finished wall is saved and shared.
+  const colorStage = stage.kind === 'color' || index === last;
+  // The whole wall is shown, with its styles.
+  const onWall =
+    copies === 'wall' &&
+    (colourFirst ? stage.kind === 'repeat' : stage.kind === 'color');
+
   const photos = tutorial.photos ?? [];
-  const showOriginal = comparing && stage.kind === 'color' && photos.length > 0;
+  const showOriginal = comparing && onWall && photos.length > 0;
 
   /** Jumps straight to a stage from the journey, without playing it in. */
   const jump = (to: number) => {
@@ -682,13 +696,11 @@ export function Player({
     setIndex(to);
   };
 
-  const colorStage = stage.kind === 'color';
-
   // Watching and the result are both this page: the finished wall is the
   // result, every stage before it is watching. The switch shows either in
   // place, and the address follows (a library tutorial's own address only,
   // not a design's), so a reload or a shared link opens the same view.
-  const view: View = colorStage ? 'result' : 'watch';
+  const view: View = index === last ? 'result' : 'watch';
   const show = (to: View) => {
     if (to === 'draw') return false;
     if (to === 'result') {
@@ -837,7 +849,7 @@ export function Player({
                   <p>{tutorial.verification.note}</p>
                 </details>
               ) : null}
-              {stage.kind === 'color' && narrow ? saveDesign : null}
+              {colorStage && narrow ? saveDesign : null}
               <p className="instruction" aria-live="polite">
                 {text}
               </p>
@@ -885,6 +897,20 @@ export function Player({
                 </div>
               ) : null}
               {stage.kind === 'ink' ? saveDesign : null}
+              {stage.kind === 'repeat' ? (
+                <div className="copies" role="group" aria-label="Copies">
+                  {COPIES.map((c) => (
+                    <button
+                      key={String(c)}
+                      type="button"
+                      aria-pressed={String(c) === String(copies)}
+                      onClick={() => setCopies(c)}
+                    >
+                      {c === 'wall' ? 'The whole wall' : `${c[0]} × ${c[1]}`}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
             </div>
             <nav aria-label="Steps">
               {onConstruction ? (
@@ -911,14 +937,33 @@ export function Player({
               >
                 {playing ? 'Pause' : index === last ? 'Replay' : 'Play'}
               </button>
-              <button
-                type="button"
-                className="next"
-                onClick={next}
-                disabled={index === last}
-              >
-                Next
-              </button>
+              {stage.kind === 'ink' ? (
+                <>
+                  <button
+                    type="button"
+                    className="secondary"
+                    onClick={() => after(true)}
+                  >
+                    Color it
+                  </button>
+                  <button
+                    type="button"
+                    className="next"
+                    onClick={() => after(false)}
+                  >
+                    Repeat it
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  className="next"
+                  onClick={next}
+                  disabled={index === last}
+                >
+                  Next
+                </button>
+              )}
             </nav>
           </footer>
         </section>
@@ -933,7 +978,7 @@ export function Player({
                 {saveDesign}
               </section>
             )}
-            {photos.length ? (
+            {photos.length && onWall ? (
               <section>
                 <h2>The original</h2>
                 <button
@@ -952,53 +997,57 @@ export function Player({
                 </p>
               </section>
             ) : null}
-            <section>
-              <h2>The wall</h2>
-              <div className="wall-tools">
-                <label>
-                  Style
-                  <select
-                    value={wallStyle}
-                    onChange={(e) => {
-                      const style = e.target.value as WallStyle;
-                      setWallStyle(style);
-                      if (style === 'jali' && grout < 0.5) setGrout(0.5);
-                    }}
-                  >
-                    {WALL_STYLES.map((s) => (
-                      <option key={s} value={s}>
-                        {s[0]?.toUpperCase() + s.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
+            {onWall ? (
+              <section>
+                <h2>The wall</h2>
+                <div className="wall-tools">
+                  <label>
+                    Style
+                    <select
+                      value={wallStyle}
+                      onChange={(e) => {
+                        const style = e.target.value as WallStyle;
+                        setWallStyle(style);
+                        if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                      }}
+                    >
+                      {WALL_STYLES.map((s) => (
+                        <option key={s} value={s}>
+                          {s[0]?.toUpperCase() + s.slice(1)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    {wallStyle === 'jali'
+                      ? 'Lattice'
+                      : banded(wallStyle)
+                        ? 'Band'
+                        : 'Grout'}
+                    <input
+                      type="range"
+                      min={wallStyle === 'jali' ? 0.5 : 0}
+                      max={3}
+                      step={0.25}
+                      value={
+                        wallStyle === 'jali' ? Math.max(0.5, grout) : grout
+                      }
+                      onChange={(e) => setGrout(Number(e.target.value))}
+                    />
+                  </label>
+                </div>
+                <p className="hint">
                   {wallStyle === 'jali'
-                    ? 'Lattice'
-                    : banded(wallStyle)
-                      ? 'Band'
-                      : 'Grout'}
-                  <input
-                    type="range"
-                    min={wallStyle === 'jali' ? 0.5 : 0}
-                    max={3}
-                    step={0.25}
-                    value={wallStyle === 'jali' ? Math.max(0.5, grout) : grout}
-                    onChange={(e) => setGrout(Number(e.target.value))}
-                  />
-                </label>
-              </div>
-              <p className="hint">
-                {wallStyle === 'jali'
-                  ? 'An open screen. Switch styles to see your tile colors. '
-                  : ''}
-                Drag to move along the wall, scroll to zoom.
-              </p>
-            </section>
-            {wallStyle === 'jali' ? (
+                    ? 'An open screen. Switch styles to see your tile colors. '
+                    : ''}
+                  Drag to move along the wall, scroll to zoom.
+                </p>
+              </section>
+            ) : null}
+            {onWall && wallStyle === 'jali' ? (
               <JaliControls appearance={jali} onChange={setJali} />
             ) : null}
-            {wallStyle !== 'jali' ? (
+            {!onWall || wallStyle !== 'jali' ? (
               <section>
                 <h2>Colors</h2>
                 <ColourPanel
@@ -1211,6 +1260,10 @@ const PHASE_MARKS: Record<'ink' | 'repeat' | 'color', React.ReactNode> = {
     </svg>
   ),
 };
+
+/** How many copies the repeat lays, along each slide, or the whole wall. */
+type Copies = readonly [number, number] | 'wall';
+const COPIES: readonly Copies[] = [[2, 1], [2, 2], [3, 3], 'wall'];
 
 const PHASE_NAMES = { ink: 'Ink', repeat: 'Repeat', color: 'Color' } as const;
 

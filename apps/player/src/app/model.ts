@@ -107,7 +107,8 @@ export function asPanel(model: Model): Model {
 
 /**
  * A stage of the player: each construction step, then the ink, then the
- * inked tile repeated edge to edge, then the pieces colored.
+ * inked tile repeated edge to edge and the pieces colored, in the order
+ * the learner chooses.
  */
 export type Stage =
   /** A beat of the construction: a step, or one part of a step. */
@@ -195,12 +196,14 @@ export function hiddenBeats(tutorial: Tutorial): ReadonlySet<number> {
   );
 }
 
-export function stagesOf(tutorial: Tutorial): Stage[] {
+export function stagesOf(tutorial: Tutorial, colourFirst = false): Stage[] {
+  const after: Stage[] = colourFirst
+    ? [{ kind: 'color' }, { kind: 'repeat' }]
+    : [{ kind: 'repeat' }, { kind: 'color' }];
   return [
     ...shownBeats(tutorial).map((beat): Stage => ({ kind: 'step', beat })),
     { kind: 'ink' },
-    { kind: 'repeat' },
-    { kind: 'color' },
+    ...after,
   ];
 }
 

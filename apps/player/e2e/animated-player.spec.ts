@@ -27,20 +27,10 @@ test('filled wheel animations stay continuous through ink, repeat, and color', a
       .locator('.el.faint')
       .evaluateAll((nodes) => nodes.flatMap((n) => n.getAnimations()).length),
   ).toBe(0);
-  const neighbours = page.locator('[data-next-tile]');
-  await expect(neighbours).toHaveCount(8);
-  // CSS must not run a second opacity animation beneath the pen sequence.
-  expect(
-    await neighbours.first().evaluate((n) => getComputedStyle(n).animationName),
-  ).toBe('none');
-  await page.evaluate(() =>
-    document.getAnimations().forEach((a) => a.finish()),
-  );
-  expect(
-    await neighbours.first().evaluate((n) => getComputedStyle(n).opacity),
-  ).toBe('0.6');
+  // The ink shows the one tile, with no tiles round it.
+  await expect(page.locator('[data-next-tile]')).toHaveCount(0);
 
-  await page.getByRole('button', { name: 'Next', exact: true }).click();
+  await page.getByRole('button', { name: 'Repeat it', exact: true }).click();
   const copy = page.locator('[data-copy="3,0"]');
   const slideStart = () =>
     copy.evaluate((node) => {

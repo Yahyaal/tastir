@@ -5,8 +5,9 @@ import { parseTutorial } from '@tastir/schema';
 import { Play } from './app';
 import { loadModel } from './model';
 
+/** Next, or at the ink, Repeat it (the order the player plays in). */
 const next = () =>
-  fireEvent.click(screen.getByRole('button', { name: 'Next' }));
+  fireEvent.click(screen.getByRole('button', { name: /^(Next|Repeat it)$/ }));
 const back = () =>
   fireEvent.click(screen.getByRole('button', { name: 'Back' }));
 const label = () => document.querySelector('.label')?.textContent;
@@ -265,32 +266,49 @@ describe('the player', () => {
     ]);
   });
 
-  it('draws only the tile on its step, and the tiles around it with the ink', () => {
+  it('draws only the tile on its step, and only the tile with the ink', () => {
     const { container } = render(<Play json={example} />);
     for (let i = 0; i < 5; i++) next(); // step 6 draws the tile
     expect(label()).toBe('Step 6 of 6');
     expect(container.querySelectorAll('[data-next-tile]')).toHaveLength(0);
     expect(container.querySelectorAll('[data-ink]')).toHaveLength(0);
-    next(); // the ink stage: the ink, then the tiles around it
+    next(); // the ink stage: the ink of the one tile, nothing round it
     expect(container.querySelectorAll('[data-ink]').length).toBeGreaterThan(0);
-    expect(container.querySelectorAll('[data-next-tile]')).toHaveLength(8);
+    expect(container.querySelectorAll('[data-next-tile]')).toHaveLength(0);
     // The points the ink turns at: the star's 8 points and 8 inner
     // corners, each shown with the first ruler line that reaches it.
     expect(container.querySelectorAll('[data-dot-line]')).toHaveLength(16);
   });
 
-  it('traces the whole panel when the tutorial names one', () => {
+  it('colours the unit first when asked at the ink, then repeats it', () => {
+    render(<Play json={example} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Go to ink' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Color it' }));
+    expect(label()).toBe('Color');
+    const phases = [...document.querySelectorAll('.phase-name')].map(
+      (p) => p.textContent,
+    );
+    expect(phases).toEqual(['Ink', 'Color', 'Repeat']);
+    next();
+    expect(label()).toBe('Repeat');
+    fireEvent.click(screen.getByRole('button', { name: '2 × 2' }));
+    expect(
+      screen.getByRole('img', { name: 'The unit repeated 2 by 2' }),
+    ).toBeTruthy();
+  });
+
+  it('inks the one tile even when the tutorial names a panel', () => {
     const { container } = render(<Play json={bouInania} />);
     fireEvent.click(screen.getByRole('button', { name: 'Go to ink' }));
     const model = loadModel(bouInania);
     const panel = model.pattern.panel;
     expect(panel).toBeDefined();
-    // The panel's strokes, not the tile's, and its outline as the tile's.
+    // The tile's strokes and outline, not the panel's.
     expect(container.querySelectorAll('[data-ink]')).toHaveLength(
-      panel?.ink.length ?? 0,
+      model.pattern.ink.length,
     );
     expect(container.querySelector('[data-tile]')?.getAttribute('points')).toBe(
-      panel?.corners.map((p) => `${p.x},${-p.y}`).join(' '),
+      model.pattern.cell.corners.map((p) => `${p.x},${-p.y}`).join(' '),
     );
     // The repeat keeps the tile.
     next();
