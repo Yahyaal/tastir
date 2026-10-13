@@ -178,15 +178,18 @@ export function App({
       return <Broken message={`There is no tutorial called "${id}".`} />;
     return <DrawAlongPage key={route} json={entry.json} address={id} />;
   }
-  // #/id plays from the first step; #/id/result opens at the finished wall;
+  // #/id and #/id/result open at the finished wall; #/id/watch autoplays;
   // #/id/repeat at the repeat, where drawing along goes on.
   const result = route.endsWith('/result');
   const repeat = route.endsWith('/repeat');
+  const watch = route.endsWith('/watch');
   const id = result
     ? route.slice(0, -'/result'.length)
     : repeat
       ? route.slice(0, -'/repeat'.length)
-      : route;
+      : watch
+        ? route.slice(0, -'/watch'.length)
+        : route;
   const entry = entries.find((e) => e.id === id);
   if (!entry)
     return <Broken message={`There is no tutorial called "${route}".`} />;
@@ -194,7 +197,7 @@ export function App({
     <Play
       key={route}
       json={entry.json}
-      start={result ? 'result' : repeat ? 'repeat' : 'beginning'}
+      start={watch ? 'beginning' : repeat ? 'repeat' : 'result'}
       address={id}
     />
   );

@@ -56,9 +56,9 @@ test('next and previous follow the filtered library', async ({ page }) => {
     page.getByRole('link', { name: /^Previous pattern/ }),
   ).toHaveCount(0);
   await page.getByRole('link', { name: /^Next pattern/ }).click();
-  await expect(page).toHaveURL(new RegExp(`${ids[1]}$`));
+  await expect(page).toHaveURL(new RegExp(`${ids[1]}/result$`));
   await page.getByRole('link', { name: /^Previous pattern/ }).click();
-  await expect(page).toHaveURL(new RegExp(`${ids[0]}$`));
+  await expect(page).toHaveURL(new RegExp(`${ids[0]}/result$`));
   // The filter is still on when the learner goes back.
   await page.locator('.topbar .home').click();
   await expect(
@@ -72,7 +72,7 @@ test('the side menu opens another pattern', async ({ page }) => {
   const menu = page.getByRole('dialog', { name: 'Patterns' });
   await expect(menu.locator('[aria-current="page"]')).toBeInViewport();
   await menu.getByRole('link', { name: 'Six-fold snowflake' }).click();
-  await expect(page).toHaveURL(/#\/six-fold-snowflake$/);
+  await expect(page).toHaveURL(/#\/six-fold-snowflake\/result$/);
   await expect(menu).toHaveCount(0);
   await expect(page.locator('.topbar h1')).toHaveText('Six-fold snowflake');
   // Escape closes it, and the top bar fits the screen.
@@ -88,7 +88,7 @@ test('the side menu opens another pattern', async ({ page }) => {
 test('the view switch moves between watching, the result and drawing along', async ({
   page,
 }) => {
-  await page.goto('/#/eight-fold-star-and-cross');
+  await page.goto('/#/eight-fold-star-and-cross/watch');
   const views = page.getByRole('navigation', {
     name: 'How to see this pattern',
   });
@@ -104,7 +104,7 @@ test('the view switch moves between watching, the result and drawing along', asy
   await views.getByRole('link', { name: 'Result' }).click();
   await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon\/result$/);
   await views.getByRole('link', { name: 'Watch it drawn' }).click();
-  await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon$/);
+  await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon\/watch$/);
   await expect(page.locator('svg.wall')).toHaveCount(0);
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - window.innerWidth,

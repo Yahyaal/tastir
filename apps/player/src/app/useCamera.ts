@@ -52,8 +52,10 @@ const svgsOf = (refs: SvgRef | readonly SvgRef[]): SVGSVGElement[] =>
 export function useCamera(
   frame: Rect,
   svgRef: SvgRef | readonly SvgRef[],
-  { stage = 0, instant = false, active = true } = {},
+  { stage = 0, instant = false, active = true, paused = false } = {},
 ) {
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
   const [view, setView] = useState(frame);
   const current = useRef(view);
   current.current = view;
@@ -85,9 +87,12 @@ export function useCamera(
         setView(target);
         return;
       }
-      const start = performance.now();
+      let previous = performance.now();
+      let elapsed = 0;
       const tick = (now: number) => {
-        const t = Math.min(1, (now - start) / GLIDE_MS);
+        if (!pausedRef.current) elapsed += now - previous;
+        previous = now;
+        const t = Math.min(1, elapsed / GLIDE_MS);
         setView(between(from, target, ease(t)));
         if (t < 1) glide.current = requestAnimationFrame(tick);
       };

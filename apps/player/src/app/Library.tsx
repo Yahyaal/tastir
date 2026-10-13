@@ -519,7 +519,7 @@ function CardView({
       </a>
       {preview || model ? (
         <div className="card-actions">
-          <a className="button watch" href={`#/${id}`}>
+          <a className="button watch" href={`#/${id}/watch`}>
             <svg
               aria-hidden="true"
               className="action-icon"

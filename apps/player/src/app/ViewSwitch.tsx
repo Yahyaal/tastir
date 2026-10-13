@@ -3,7 +3,7 @@ export type View = 'watch' | 'result' | 'draw';
 
 /** The address of a pattern in a view. */
 export function viewAddress(id: string, view: View): string {
-  return `#/${id}${view === 'result' ? '/result' : view === 'draw' ? '/draw' : ''}`;
+  return `#/${id}${view === 'result' ? '/result' : view === 'draw' ? '/draw' : '/watch'}`;
 }
 
 const NAMES: Record<View, string> = {
