@@ -378,6 +378,7 @@ function findRings(pattern: Pattern): Rings | undefined {
   };
   const allSquares = gridOf(around);
   const rosetteSquares = gridOf(around.filter((x) => x.family < fam.count));
+  const fillerSquares = gridOf(around.filter((x) => x.family === fam.count));
   const nearest = (c: Vec, squares = allSquares) => {
     const gx = Math.floor(c.x / side);
     const gy = Math.floor(c.y / side);
@@ -436,10 +437,26 @@ function findRings(pattern: Pattern): Rings | undefined {
           const id = placeId(k, i, j);
           const c = at(centreOf((pieces[k] as Piece).polygon), i, j);
           const { first, other } = nearest(c, rosetteSquares);
-          if (other - first.d < 5 * eps) continue;
-          const ring = `${(pieces[k] as Piece).type}:${Math.round(first.d / (20 * eps))}`;
+          const p = places[id] as Place;
+          const type = (pieces[k] as Piece).type;
+          if (other - first.d < 5 * eps) {
+            // Between two rosettes and as near a filler star's middle (the
+            // hourglass where two Bou Inania rosettes meet): the filler's.
+            const filler = nearest(c, fillerSquares).first.d;
+            if (p.family < 0 && filler - first.d < 5 * eps)
+              places[id] = {
+                ...p,
+                d: filler,
+                family: fam.count,
+                orbit: `${type}:${Math.round(filler / (20 * eps))}:filler`,
+              };
+            continue;
+          }
+          const ring = `${type}:${Math.round(first.d / (20 * eps))}`;
           own.set(id, { d: first.d, family: first.f, ring });
-          if ((places[id] as Place).orbit.endsWith(':in')) kept.add(ring);
+          // A piece tied between a rosette and a filler goes with the
+          // rosette below, so its ring is the rosette's too.
+          if (p.orbit.endsWith(':in') || p.family < 0) kept.add(ring);
         }
     for (const [id, o] of own) {
       const p = places[id] as Place;

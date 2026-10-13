@@ -199,9 +199,18 @@ describe('filler stars', () => {
     const shields = bou.pattern.pieces
       .map((p, k) => ({ p, k }))
       .filter(({ p }) => bou.pattern.types[p.type]?.name === 'shield');
-    const between = shields.filter(
-      ({ k }) => rings?.place(k, 0, 0).family === -1,
+    // Every shield, the diagonal ones by the filler star too, is one ring
+    // of its rosette.
+    expect(
+      new Set(shields.map(({ k }) => rings?.place(k, 0, 0).ring)).size,
+    ).toBe(1);
+    expect(shields.every(({ k }) => rings?.place(k, 0, 0).family === 0)).toBe(
+      true,
     );
-    expect(between).toHaveLength(0);
+    // The hourglass where two rosettes meet is the filler star's.
+    const hourglass = bou.pattern.pieces.findIndex(
+      (p) => bou.pattern.types[p.type]?.name === 'hourglass',
+    );
+    expect(rings?.place(hourglass, 0, 0).family).toBe(rings?.rosettes);
   }, 30000);
 });
