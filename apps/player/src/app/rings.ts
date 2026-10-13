@@ -292,27 +292,68 @@ function fillerCentres(pattern: Pattern, centres: readonly Vec[]): Vec[] {
 }
 
 const cache = new WeakMap<Pattern, Rings | null>();
+const ownCache = new WeakMap<Pattern, Rings | null>();
 
 /**
  * The rings of a pattern, or undefined when it has no rosette to colour
- * round (no piece turns into itself).
+ * round (no piece turns into itself). With `own`, every rosette of the
+ * repeat is a family of its own (see eachOwn), when the lattice allows.
  */
-export function ringsOf(pattern: Pattern): Rings | undefined {
-  const hit = cache.get(pattern);
+export function ringsOf(pattern: Pattern, own = false): Rings | undefined {
+  const store = own ? ownCache : cache;
+  const hit = store.get(pattern);
   if (hit !== undefined) return hit ?? undefined;
-  const found = findRings(pattern);
-  cache.set(pattern, found ?? null);
+  const found = findRings(pattern, own);
+  store.set(pattern, found ?? null);
   return found;
 }
 
-function findRings(pattern: Pattern): Rings | undefined {
+/** The most rosettes a unit holds with each rosette of the repeat its own
+ * family: four (A B over C D) on a square lattice, where two take turns
+ * over 2×2 cells with one rosette each. */
+const OWN_MOST = 4;
+
+/**
+ * Every rosette of the repeat a family of its own, so a learner can colour
+ * each one as they like: only where two take turns over a repeat of at
+ * most four rosettes; else the families as they are.
+ */
+function eachOwn(
+  fam: ReturnType<typeof familiesOf>,
+): ReturnType<typeof familiesOf> {
+  const [m, n] = fam.repeat;
+  const nodes = fam.of.length * m * n;
+  if (fam.count !== 2 || nodes > OWN_MOST) return fam;
+  return {
+    repeat: fam.repeat,
+    count: nodes,
+    of: fam.of.map((_, k) =>
+      Array.from({ length: m }, (_, i) =>
+        Array.from({ length: n }, (_, j) => (k * m + i) * n + j),
+      ),
+    ),
+  };
+}
+
+/** How many rosettes a unit can hold before the wall repeats: one (every
+ * rosette alike), the lattice's own number taking turns, and each rosette
+ * of the repeat its own where that is more. */
+export function rosetteOptions(pattern: Pattern): number[] {
+  const most = ringsOf(pattern)?.rosettes;
+  if (most === undefined) return [];
+  const own = ringsOf(pattern, true)?.rosettes ?? most;
+  return [...new Set([1, most, own])];
+}
+
+function findRings(pattern: Pattern, own: boolean): Rings | undefined {
   const { cell, pieces, types } = pattern;
   const centre = centreType(pattern);
   if (centre === undefined) return undefined;
   const centres = pieces
     .filter((p) => p.type === centre)
     .map((p) => centreOf(p.polygon));
-  const fam = familiesOf(pattern, centres);
+  const lattice = familiesOf(pattern, centres);
+  const fam = own ? eachOwn(lattice) : lattice;
   const [m, n] = fam.repeat;
   const scale = Math.sqrt(Math.abs(cell.area)) || 1;
   const eps = 1e-3 * scale;

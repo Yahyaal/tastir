@@ -15,6 +15,7 @@ import { methodOf, methodsOf } from './placement';
 import {
   copyRosette,
   refamily,
+  regrow,
   rosetteCards,
   rosetteCounts,
   type RosetteCard,
@@ -186,7 +187,7 @@ function Rosettes({
 }) {
   const now = history.now;
   const cards = rosetteCards(model);
-  const { now: count, most } = rosetteCounts(model);
+  const { now: count, turns, options } = rosetteCounts(model);
   const [open, setOpen] = useState<string>();
   // A piece clicked on the wall opens its ring here.
   useEffect(() => {
@@ -200,7 +201,7 @@ function Rosettes({
         chosen,
         ...(now.method ? { method: now.method } : {}),
         // The lattice's own number is the default, so it is not kept.
-        ...(n === most ? {} : { rosettes: n }),
+        ...(n === turns ? {} : { rosettes: n }),
       },
     });
   const copy = (to: number, reverse: boolean) =>
@@ -228,40 +229,41 @@ function Rosettes({
         Colour a rosette ring by ring, from the centre out. Click a piece on the
         wall to open its ring.
       </p>
-      {most > 1 ? (
-        <p className="rosette-count">
-          {count < most ? (
-            <button
-              type="button"
-              onClick={() =>
-                rosettes(most, {
-                  ...refamily(now.chosen, count, most),
-                  ...Object.assign(
-                    {},
-                    ...Array.from({ length: most - 1 }, (_, k) =>
-                      copyRosette(model, now, fill, 0, k + 1, k % 2 === 0),
-                    ),
-                  ),
-                })
-              }
-            >
-              Add a rosette
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="quiet"
-              onClick={() => rosettes(1, refamily(now.chosen, count, 1))}
-            >
-              Colour every rosette alike
-            </button>
-          )}{' '}
+      {options.length > 1 ? (
+        <div className="rosette-count">
+          <span id="rosette-count-label">Rosettes in the unit</span>
+          <span
+            className="colour-methods"
+            role="group"
+            aria-labelledby="rosette-count-label"
+          >
+            {options.map((n) => (
+              <button
+                key={n}
+                type="button"
+                aria-pressed={n === count}
+                aria-label={n === 1 ? '1 rosette' : `${n} rosettes`}
+                onClick={() =>
+                  rosettes(
+                    n,
+                    n > count
+                      ? regrow(model, now, fill, count, n)
+                      : refamily(now.chosen, count, n),
+                  )
+                }
+              >
+                {n}
+              </button>
+            ))}
+          </span>
           <small>
             {count === 1
               ? 'Every rosette takes the same colours.'
-              : `${count} rosettes take turns, so no two alike touch.`}
+              : count === turns
+                ? `${count} rosettes take turns, so no two alike touch.`
+                : `Each of the ${count} rosettes of the repeat has its own colours.`}
           </small>
-        </p>
+        </div>
       ) : null}
       {cards.map((c) => (
         <section

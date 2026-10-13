@@ -26,6 +26,11 @@ export function ringsFor(model: Model): Rings | undefined {
   const asked = model.tutorial.pattern.rings;
   const rings = asked ? ringsOf(model.pattern) : undefined;
   if (!rings || asked === true || asked?.rosettes === undefined) return rings;
+  // More rosettes than take turns: each rosette of the repeat its own.
+  if (asked.rosettes > rings.rosettes) {
+    const own = ringsOf(model.pattern, true);
+    if (own && own.rosettes === asked.rosettes) return own;
+  }
   return withRosettes(rings, asked.rosettes);
 }
 

@@ -2,7 +2,7 @@ import type { Vec } from '@tastir/engine';
 import { glazeOf, type Coloring } from './coloring';
 import type { Model } from './model';
 import { placeKey, ringsFor } from './placement';
-import { ringsOf } from './rings';
+import { ringsOf, rosetteOptions } from './rings';
 
 /**
  * The colour stage's rosettes: each rosette of the repeat with its rings
@@ -81,13 +81,66 @@ export function rosetteCards(model: Model): RosetteCard[] {
   return families.map(card).filter((c) => c.rows.length);
 }
 
-/** How many rosettes take turns now, and how many the lattice gives. */
-export function rosetteCounts(model: Model): { now: number; most: number } {
+/** How many rosettes the unit holds now, how many take turns by default
+ * (the lattice's own number), and the numbers it can hold. */
+export function rosetteCounts(model: Model): {
+  now: number;
+  turns: number;
+  options: number[];
+} {
   return {
     now: ringsFor(model)?.rosettes ?? 1,
-    most: ringsOf(model.pattern)?.rosettes ?? 1,
+    turns: ringsOf(model.pattern)?.rosettes ?? 1,
+    options: rosetteOptions(model.pattern),
   };
 }
+
+/**
+ * The colours chosen for a unit of `to` rosettes from one of `from`: the
+ * filler star's rings move after the rosettes, rosettes that are gone are
+ * dropped, every ring keeps the colour it shows, and each new rosette
+ * starts as one already there. Going from
+ * one rosette, every other one is the first swapped and the last (the
+ * same as the first on the wall) is the first; going from two that take
+ * turns to each its own, each new one copies the rosette it was, so the
+ * wall looks the same until the learner changes it.
+ */
+export function regrow(
+  model: Model,
+  coloring: Coloring,
+  fill: (piece: number, i: number, j: number) => string,
+  from: number,
+  to: number,
+): Record<string, string> {
+  // Every ring keeps the colour it shows now: with more rosettes the
+  // default colours of the rosettes and the filler star change.
+  const now = Object.fromEntries(
+    rosetteCards(model).flatMap((c) =>
+      c.rows.map((r) => [r.key, fill(r.piece, r.i, r.j)]),
+    ),
+  );
+  let chosen = refamily({ ...now, ...coloring.chosen }, from, to);
+  for (let f = from; f < to; f++) {
+    // From one rosette: B, and C beside A in a unit of four, are A
+    // swapped; D, across from A, is A; a third rosette of three that all
+    // touch keeps its own colours. From two taking turns over 2×2 cells
+    // (A B / B A): C was B and D was A.
+    const from1 =
+      f === 1 || (to === OWN_FOUR && f === 2) ? [0, true] : undefined;
+    const [source, reverse] =
+      from === 1
+        ? (from1 ?? (to === OWN_FOUR ? [0, false] : [undefined, false]))
+        : [(f + 1) % 2, false];
+    if (source === undefined) continue;
+    chosen = {
+      ...chosen,
+      ...copyRosette(model, coloring, fill, source as number, f, !!reverse),
+    };
+  }
+  return chosen;
+}
+
+const OWN_FOUR = 4;
 
 /**
  * The colours chosen, kept for a new number of rosettes: rings of
@@ -222,7 +275,10 @@ export function unitPieces(model: Model): UnitPiece[] {
         for (const x of rings.centres)
           if (x.family === f && (!own || dist(x.at, c) < dist(own, c)))
             own = x.at;
-        if (own && isOwner(own))
+        // Past the centres listed round the repeat, the nearest listed
+        // centre of the family can be far off: a piece is a rosette's
+        // only within a rosette's spacing of its centre.
+        if (own && isOwner(own) && dist(own, c) <= spacing)
           out.push({ piece: k, i, j, type: p.type, polygon });
       });
     }

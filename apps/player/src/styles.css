@@ -1353,7 +1353,20 @@ main.stage .drawing:not(.wall) {
   padding: 6px 0 2px 6px;
 }
 
+.rosette-count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin: 8px 0;
+}
+
+.rosette-count .colour-methods {
+  margin: 0;
+}
+
 .rosette-count small {
+  flex-basis: 100%;
   color: var(--theme-text-muted);
 }
 
