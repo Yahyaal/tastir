@@ -89,11 +89,10 @@ describe('from a copy to a played pattern', () => {
     const play = screen.getByRole('link', { name: /Play/ });
     expect(play.getAttribute('href')).toBe(`#/mine/${id}`);
 
-    // Played like any tutorial, to the wall: octagons and the four-pointed
-    // stars between them.
+    // Played like any tutorial, opening at the wall: octagons and the
+    // four-pointed stars between them.
     go(`#/mine/${id}`);
-    expect(document.querySelector('.label')?.textContent).toBe('Step 1 of 9');
-    click('Go to color');
+    expect(document.querySelector('.label')?.textContent).toBe('Color');
     expect(
       [...document.querySelectorAll('.piece-button')].map((b) =>
         b.getAttribute('aria-label'),
