@@ -376,8 +376,8 @@ export function Player({
       </p>
     ) : (
       <p className="hint draft-note refused" role="alert">
-        This browser cannot keep your changes: save them as a design before you
-        leave, or they are lost.
+        This browser cannot keep your changes. Use “Copy a share link” and keep
+        the link before you leave.
       </p>
     );
   const saveDesign = sharedView ? (

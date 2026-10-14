@@ -1816,6 +1816,14 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Storage recovery: the warning points to a share link',
+      text: 'When browser storage is blocked or full, the warning now says to use “Copy a share link” and keep the link before leaving. A named save uses the same storage, so it cannot solve that failure. Desktop and phone browser checks confirmed that the share link restores the palette, painted ring, style and band width in a fresh browser.',
+      link: {
+        label: 'See the corrected warning',
+        href: '/__review/renders/storage-recovery-warning/desktop.png',
+      },
+    },
+    {
       title: 'Redesign reviewed: keep the direction and refine the workflows',
       text: 'The paper and ink themes, lesson layout, single-board guide, smaller initial tool set, and paint colors before palettes improve the app. All 39 results opened, and the main drawing, saving and sharing flows worked. The illustrated review compares the old and new screens and shows the next fixes: the tablet result grows too tall and opens at the bottom, a first color edit can still be lost, and the phone needs its next drawing prompt beside the board.',
       link: {
