@@ -26,6 +26,9 @@ export function HeroDrawing({ entry }: { entry: Entry }) {
   );
 }
 
+/** The palette the hero colours with. */
+const HERO_PALETTE = 'Fès tile';
+
 /** How long the hero holds the finished, colored pattern. */
 const HERO_HOLD_MS = 4500;
 const HERO_SPEED = 1.6;
@@ -44,9 +47,15 @@ function HeroPlay({ model }: { model: Model }) {
   const panelModel = useMemo(() => asPanel(model), [model]);
   const n = beats.length;
 
+  // The hero colours the pattern brightly, whatever the tutorial's own
+  // palette (the twelve-fold rosette is Mamluk wood, all browns).
+  const coloring = useMemo(
+    () => ({ ...tutorialColoring(model), palette: HERO_PALETTE, chosen: {} }),
+    [model],
+  );
   const palette = useMemo(
-    () => orderedPaletteColors(model, tutorialColoring(model), view),
-    [model, view],
+    () => orderedPaletteColors(model, coloring, view),
+    [model, coloring, view],
   );
   const colorSteps = palette.length;
   const total = n + colorSteps + 3;
@@ -118,10 +127,11 @@ function HeroPlay({ model }: { model: Model }) {
     <>
       <div className={`plate-frame ${isColoring ? 'coloring-active' : ''}`}>
         {reduced ? (
-          <Thumbnail model={model} view={view} />
+          <Thumbnail model={model} coloring={coloring} view={view} />
         ) : isFinished ? (
           <Thumbnail
             model={model}
+            coloring={coloring}
             view={view}
             coloredUpTo={colorSteps}
             activeColorIndex={-1}
@@ -129,6 +139,7 @@ function HeroPlay({ model }: { model: Model }) {
         ) : isColoring ? (
           <Thumbnail
             model={model}
+            coloring={coloring}
             view={view}
             coloredUpTo={coloredUpTo}
             activeColorIndex={colorIndex}
@@ -137,6 +148,7 @@ function HeroPlay({ model }: { model: Model }) {
           <>
             <Thumbnail
               model={model}
+              coloring={coloring}
               view={view}
               coloredUpTo={0}
               activeColorIndex={-1}
