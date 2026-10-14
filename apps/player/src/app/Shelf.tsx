@@ -37,7 +37,7 @@ export function Shelf({
   return (
     <section aria-labelledby="my-designs" className="shelf">
       <div className="collection-head">
-        <h2 id="my-designs">My designs</h2>
+        <h3 id="my-designs">My designs</h3>
         <p>Your own inking and colors, kept in this browser.</p>
       </div>
       {unreadableNow() || unreadableKept() ? (
@@ -90,7 +90,7 @@ function DesignCard({
       ) : (
         <div className="card">
           <div className="thumbnail broken" />
-          <h3 title={design.name}>{design.name}</h3>
+          <h4 title={design.name}>{design.name}</h4>
           <p className="error">
             {design.tutorial.startsWith('mine/')
               ? own === undefined
@@ -124,7 +124,7 @@ function DesignLink({ design, entry }: { design: Design; entry: Entry }) {
       ) : (
         <div className={error ? 'thumbnail broken' : 'thumbnail waiting'} />
       )}
-      <h3 title={design.name}>{design.name}</h3>
+      <h4 title={design.name}>{design.name}</h4>
       {error ? (
         <p className="error">Cannot be played: {error}</p>
       ) : (

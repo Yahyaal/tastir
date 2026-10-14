@@ -236,34 +236,15 @@ describe('the way in', () => {
     ).toBe('#/eight-fold-star-and-cross/watch');
   });
 
-  it('offers to continue the lesson left partway, and not one finished', () => {
+  it('lists the lessons left partway under Your work, the latest first', () => {
     const { unmount } = render(<App entries={entries()} />);
-    expect(screen.queryByText('Continue where you left off')).toBeNull();
+    expect(screen.queryByRole('region', { name: 'Your work' })).toBeNull();
     unmount();
     window.localStorage.setItem(
-      'tastir.lastLesson',
+      'tastir.lessonAt.eight-fold-star-and-cross',
       JSON.stringify({
-        address: 'eight-fold-star-and-cross',
+        index: 3,
         label: 'Step 3 of 6',
-      }),
-    );
-    render(<App entries={entries()} />);
-    const strip = screen.getByRole('link', {
-      name: /Continue where you left off/,
-    });
-    expect(strip.getAttribute('href')).toBe(
-      '#/eight-fold-star-and-cross/watch',
-    );
-    expect(within(strip).getByText(/Watching · Step 3 of 6/)).toBeTruthy();
-    expect(within(strip).getByText('Eight-fold star and cross')).toBeTruthy();
-  });
-
-  it('offers a drawing left partway when it is the latest, and opens its board', () => {
-    window.localStorage.setItem(
-      'tastir.lastLesson',
-      JSON.stringify({
-        address: 'eight-fold-star-and-cross',
-        label: 'Step 5 of 6',
         at: '2026-10-13T10:00:00.000Z',
       }),
     );
@@ -273,19 +254,34 @@ describe('the way in', () => {
         {
           tutorial: 'eight-fold-star-and-cross',
           board: { steps: [{}] },
-          index: 2,
+          index: 1,
           inked: [],
-          label: 'Step 3 of 6',
+          label: 'Step 2 of 6',
           updated: '2026-10-14T10:00:00.000Z',
         },
       ]),
     );
     render(<App entries={entries()} />);
-    const strip = screen.getByRole('link', {
-      name: /Continue where you left off/,
-    });
-    expect(strip.getAttribute('href')).toBe('#/eight-fold-star-and-cross/draw');
-    expect(within(strip).getByText(/Drawing along · Step 3 of 6/)).toBeTruthy();
+    const work = screen.getByRole('region', { name: 'In progress' });
+    const links = within(work).getAllByRole('link');
+    // The drawing was left last: it comes first, and opens its board.
+    expect(links.map((l) => l.getAttribute('href'))).toEqual([
+      '#/eight-fold-star-and-cross/draw',
+      '#/eight-fold-star-and-cross/watch',
+    ]);
+    expect(
+      within(links[0] as HTMLElement).getByText(/Drawing along · Step 2 of 6/),
+    ).toBeTruthy();
+    expect(
+      within(links[1] as HTMLElement).getByText(/Watching · Step 3 of 6/),
+    ).toBeTruthy();
+    // Something in progress: Your work comes before the welcome.
+    const yours = screen.getByRole('region', { name: 'Your work' });
+    const hero = document.querySelector('.hero') as HTMLElement;
+    expect(
+      yours.compareDocumentPosition(hero) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Your work (2)' })).toBeTruthy();
   });
 
   it('keeps the review page and project notes in the footer', () => {

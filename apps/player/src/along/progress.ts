@@ -51,6 +51,9 @@ export const getProgress = (tutorial: string): Progress | undefined =>
 /** The drawing left most recently, if any (the list is newest first). */
 export const latestProgress = (): Progress | undefined => progress.list()[0];
 
+/** Every drawing kept in this browser, the most recent first. */
+export const allProgress = (): Progress[] => progress.list();
+
 /** Keeps a tutorial's progress; false when the browser refuses. */
 export function keepProgress(p: Omit<Progress, 'updated'>): boolean {
   const others = progress.list().filter((q) => q.tutorial !== p.tutorial);

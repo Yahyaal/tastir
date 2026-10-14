@@ -43,10 +43,11 @@ describe('new pattern', () => {
         window.location.hash = '';
         window.dispatchEvent(new HashChangeEvent('hashchange'));
       });
-      const shelf = screen.getByRole('region', { name: 'My patterns' });
-      expect(shelf.querySelector('.new-pattern button')?.textContent).toBe(
-        'New pattern',
-      );
+      // The pattern is on the shelf, and New pattern stays in the header.
+      expect(screen.getByRole('region', { name: 'My patterns' })).toBeTruthy();
+      expect(
+        document.querySelector('.masthead .new-pattern button')?.textContent,
+      ).toBe('New pattern');
     },
   );
 });

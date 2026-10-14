@@ -51,9 +51,7 @@ describe('the fixes from the editor report', () => {
     ).toBe(`#/edit/${a?.id}`);
     // Not tiled or inked yet: no Play.
     expect(within(shelf).queryByRole('link', { name: 'Play' })).toBeNull();
-    expect(
-      screen.getByRole('button', { name: 'My patterns (1)' }),
-    ).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Your work (1)' })).toBeTruthy();
     fireEvent.click(within(shelf).getByRole('button', { name: 'Rename' }));
     fireEvent.change(within(shelf).getByLabelText(/New name/), {
       target: { value: 'Octagons' },

@@ -90,7 +90,7 @@ test('home navigation fits narrow phones before and after saving a design', asyn
   ).toBeVisible();
   await page.goto('/');
   await expect(
-    page.getByRole('button', { name: 'My designs (1)' }),
+    page.getByRole('button', { name: 'Your work (1)' }),
   ).toBeVisible();
   await fits();
 });

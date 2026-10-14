@@ -41,9 +41,8 @@ export function PatternShelf({
   return (
     <section aria-labelledby="my-patterns" className="shelf">
       <div className="collection-head">
-        <h2 id="my-patterns">My patterns</h2>
+        <h3 id="my-patterns">My patterns</h3>
         <p>Your own constructions, kept in this browser.</p>
-        <NewPattern />
       </div>
       <ul className="cards">
         {patterns.map((p) => (
@@ -205,7 +204,7 @@ function PatternCard({
         ) : (
           <div className="thumbnail waiting" />
         )}
-        <h3 title={tutorial.title}>{tutorial.title}</h3>
+        <h4 title={tutorial.title}>{tutorial.title}</h4>
         <p className="meta">
           {/* As the player counts them: steps that only name points for
               the ink are hidden there. */}

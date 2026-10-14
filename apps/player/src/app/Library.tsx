@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { listPatterns } from '../editor/patterns';
-import { NewPattern, PatternShelf } from '../editor/PatternShelf';
+import { NewPattern } from '../editor/PatternShelf';
 import {
   aboutOf,
   filtered,
@@ -12,12 +12,10 @@ import {
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { ActionIcon } from './actionIcons';
 import { ZelligeBand } from './ZelligeBand';
+import { workInProgress, YourWork } from './YourWork';
 import { Thumbnail } from './drawing';
 import { type Entry } from './library';
-import { latestProgress } from '../along/progress';
-import { lastLesson } from './lessons';
 import { shownSteps } from './model';
-import { Shelf } from './Shelf';
 import { ThemeSwitch } from './theme';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
@@ -115,6 +113,26 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   useReturnToScroll();
   const [designs, setDesigns] = useState(listDesigns);
   const [patterns, setPatterns] = useState(listPatterns);
+  const [inProgress] = useState(() => workInProgress(entries));
+  const designNote = unreadableKept() || unreadableNow();
+  const workCount = inProgress.length + designs.length + patterns.length;
+  // The learner's own work: above the welcome when a lesson waits to be
+  // continued (the likeliest next click), below it otherwise.
+  const yourWork =
+    workCount || designNote ? (
+      <YourWork
+        entries={entries}
+        inProgress={inProgress}
+        designs={designs}
+        designNote={designNote}
+        patterns={patterns}
+        onDesigns={() => setDesigns(listDesigns())}
+        onPatterns={() => {
+          setPatterns(listPatterns());
+          setDesigns(listDesigns());
+        }}
+      />
+    ) : null;
   const styles = [
     ...new Set(
       entries.flatMap((e) => aboutOf(e.preview ?? e.json).style ?? []),
@@ -187,45 +205,30 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             <span>Upcoming patterns</span>
             <span className="nav-badge highlight">24</span>
           </a>
-          {designs.length ? (
+          {workCount ? (
             <button
               type="button"
               className="nav-item jump-link"
-              aria-label={`My designs (${designs.length})`}
+              aria-label={`Your work (${workCount})`}
               onClick={() =>
                 document
-                  .getElementById('my-designs')
+                  .getElementById('your-work')
                   ?.scrollIntoView?.({ behavior: 'smooth' })
               }
             >
-              <span>My designs</span>{' '}
-              <span className="nav-badge">({designs.length})</span>
-            </button>
-          ) : null}
-          {patterns.length ? (
-            <button
-              type="button"
-              className="nav-item jump-link"
-              aria-label={`My patterns (${patterns.length})`}
-              onClick={() =>
-                document
-                  .getElementById('my-patterns')
-                  ?.scrollIntoView?.({ behavior: 'smooth' })
-              }
-            >
-              <span>My patterns</span>{' '}
-              <span className="nav-badge">({patterns.length})</span>
+              <span>Your work</span>{' '}
+              <span className="nav-badge">({workCount})</span>
             </button>
           ) : null}
         </nav>
 
         <div className="masthead-actions">
-          {patterns.length ? null : <NewPattern />}
+          <NewPattern />
           <ThemeSwitch />
         </div>
       </header>
       <ZelligeBand />
-      <ContinueLesson entries={entries} />
+      {inProgress.length ? yourWork : null}
       <section className="hero">
         {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}
         <div className="hero-copy">
@@ -264,22 +267,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           ) : null}
         </div>
       </section>
-      {designs.length || unreadableKept() || unreadableNow() ? (
-        <Shelf
-          designs={designs}
-          entries={entries}
-          onChange={() => setDesigns(listDesigns())}
-        />
-      ) : null}
-      {patterns.length ? (
-        <PatternShelf
-          patterns={patterns}
-          onChange={() => {
-            setPatterns(listPatterns());
-            setDesigns(listDesigns());
-          }}
-        />
-      ) : null}
+      {inProgress.length ? null : yourWork}
       <ZelligeBand />
       <section aria-labelledby="collection">
         <div className="collection-head">
@@ -460,72 +448,6 @@ function useReturnToScroll() {
     return stop;
   }, []);
 }
-
-/**
- * The lesson the learner left partway, offered at the top of the library:
- * its picture, its name, whether they were watching it or drawing it along,
- * and how far they got. Of the two, the one left most recently. Only
- * library lessons are offered; the learner's own patterns have their shelf,
- * and a drawing already kept as one of them is done.
- */
-function ContinueLesson({ entries }: { entries: readonly Entry[] }) {
-  const watch = lastLesson();
-  const drawn = latestProgress();
-  const drawing =
-    drawn && drawn.board.steps.length > 0 && !drawn.kept?.pattern
-      ? drawn
-      : undefined;
-  const pick =
-    drawing && (!watch || (watch.at ?? '') < drawing.updated)
-      ? {
-          address: drawing.tutorial,
-          mode: 'Drawing along',
-          action: 'draw' as const,
-          label: drawing.label ?? '',
-          href: `#/${drawing.tutorial}/draw`,
-        }
-      : watch
-        ? {
-            address: watch.address,
-            mode: 'Watching',
-            action: 'watch' as const,
-            label: watch.label,
-            href: `#/${watch.address}/watch`,
-          }
-        : undefined;
-  const entry = pick && entries.find((e) => e.id === pick.address);
-  if (!pick || !entry) return null;
-  const title = entry.preview?.title ?? aboutTitle(entry.json) ?? entry.id;
-  return (
-    <a className="continue-lesson" href={pick.href}>
-      {entry.preview ? (
-        <img
-          src={import.meta.env.BASE_URL + entry.preview.thumbnail}
-          alt=""
-          width="56"
-          height="56"
-        />
-      ) : null}
-      <span className="continue-text">
-        <span className="continue-eyebrow">Continue where you left off</span>
-        <span className="continue-title">{title}</span>
-        <span className="continue-step">
-          {pick.mode}
-          {pick.label ? ` · ${pick.label}` : ''}
-        </span>
-      </span>
-      <span className={`continue-go act-${pick.action}`}>
-        <ActionIcon action={pick.action} />
-        Continue
-      </span>
-    </a>
-  );
-}
-
-const aboutTitle = (json: unknown): string | undefined => {
-  const title = (json as { title?: unknown } | undefined)?.title;
-  return typeof title === 'string' ? title : undefined;
-};
 
 /** Words joined as English lists them: “a”, “a and b”, “a, b and c”. */
 function andList(words: readonly string[]): string {

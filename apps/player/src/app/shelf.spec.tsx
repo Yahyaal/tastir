@@ -49,7 +49,7 @@ describe('the shelf of my designs', () => {
     const a = design('Blue one');
     design('Strapwork', { look: 'strapwork' });
     render(<App entries={entries} />);
-    const cards = within(shelf()).getAllByRole('heading', { level: 3 });
+    const cards = within(shelf()).getAllByRole('heading', { level: 4 });
     expect(cards.map((h) => h.textContent)).toEqual(['Strapwork', 'Blue one']);
     // Drawn in the design's own colors, not the tutorial's.
     const fills = [...shelf().querySelectorAll('.thumbnail path.piece')].map(
@@ -147,7 +147,19 @@ describe('the shelf of my designs', () => {
     design('One');
     design('Two');
     render(<App entries={entries} />);
-    expect(screen.getByRole('button', { name: 'My designs (2)' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Your work (2)' })).toBeTruthy();
+  });
+
+  it('puts Your work after the welcome when nothing is in progress', () => {
+    design('One');
+    render(<App entries={entries} />);
+    const yours = screen.getByRole('region', { name: 'Your work' });
+    const hero = document.querySelector('.hero') as HTMLElement;
+    expect(
+      hero.compareDocumentPosition(yours) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    // One kind of work: no tabs.
+    expect(within(yours).queryByRole('group', { name: 'Show' })).toBeNull();
   });
 
   it('keeps an unreadable store aside before writing, and says so', () => {

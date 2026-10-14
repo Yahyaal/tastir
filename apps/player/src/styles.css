@@ -2757,7 +2757,8 @@ main.stage .drawing:not(.wall) {
 }
 
 /* A long name is cut, not wrapped, so every card keeps its shape. */
-.shelf .card h3 {
+.shelf .card h3,
+.shelf .card h4 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2979,7 +2980,8 @@ main.stage .drawing:not(.wall) {
   border-color: var(--theme-border-hover);
 }
 
-.card h3 {
+.card h3,
+.card h4 {
   margin: 14px 2px 6px;
   font-family: var(--display);
   font-weight: 400;
@@ -2988,7 +2990,8 @@ main.stage .drawing:not(.wall) {
   color: var(--theme-text-primary);
 }
 
-.card:hover h3 {
+.card:hover h3,
+.card:hover h4 {
   text-decoration: underline;
   text-decoration-color: var(--saffron);
   text-underline-offset: 4px;
@@ -4914,7 +4917,8 @@ svg.tiles {
   }
 }
 
-.card h3 {
+.card h3,
+.card h4 {
   margin-bottom: 2px;
 }
 
@@ -5113,4 +5117,61 @@ svg.tiles {
 .continue-go.act-draw {
   background: var(--act-draw);
   color: var(--on-act);
+}
+
+/* Your work: the lessons in progress, the designs and the patterns, in
+   one section with tabs when there is more than one kind. */
+.your-work {
+  margin-bottom: 32px;
+}
+
+.your-work > .collection-head {
+  align-items: center;
+}
+
+.work-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.your-work .shelf {
+  margin-top: 12px;
+}
+
+.your-work .shelf h3 {
+  margin: 0;
+  font-family: var(--text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-label);
+}
+
+.work-card .card {
+  gap: 2px;
+}
+
+.work-kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+.card .work-kind.act-watch {
+  color: var(--act-watch);
+}
+
+.card .work-kind.act-draw {
+  color: var(--act-draw);
+}
+
+.work-card .continue-go {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-weight: 600;
 }
