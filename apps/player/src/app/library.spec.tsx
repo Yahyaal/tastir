@@ -189,8 +189,38 @@ describe('the way in', () => {
     expect(strip.getAttribute('href')).toBe(
       '#/eight-fold-star-and-cross/watch',
     );
-    expect(within(strip).getByText('Step 3 of 6')).toBeTruthy();
+    expect(within(strip).getByText(/Watching · Step 3 of 6/)).toBeTruthy();
     expect(within(strip).getByText('Eight-fold star and cross')).toBeTruthy();
+  });
+
+  it('offers a drawing left partway when it is the latest, and opens its board', () => {
+    window.localStorage.setItem(
+      'tastir.lastLesson',
+      JSON.stringify({
+        address: 'eight-fold-star-and-cross',
+        label: 'Step 5 of 6',
+        at: '2026-10-13T10:00:00.000Z',
+      }),
+    );
+    window.localStorage.setItem(
+      'tastir.along',
+      JSON.stringify([
+        {
+          tutorial: 'eight-fold-star-and-cross',
+          board: { steps: [{}] },
+          index: 2,
+          inked: [],
+          label: 'Step 3 of 6',
+          updated: '2026-10-14T10:00:00.000Z',
+        },
+      ]),
+    );
+    render(<App entries={entries()} />);
+    const strip = screen.getByRole('link', {
+      name: /Continue where you left off/,
+    });
+    expect(strip.getAttribute('href')).toBe('#/eight-fold-star-and-cross/draw');
+    expect(within(strip).getByText(/Drawing along · Step 3 of 6/)).toBeTruthy();
   });
 
   it('keeps the review page and project notes in the footer', () => {

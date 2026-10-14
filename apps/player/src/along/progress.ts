@@ -22,6 +22,9 @@ export interface Progress {
     readonly palette: string;
     readonly chosen: Readonly<Record<string, string>>;
   };
+  /** Where the learner is, as the steps name it (“Step 3 of 6”, “Ink”),
+   * for the library's Continue. */
+  readonly label?: string;
   readonly updated: string;
 }
 
@@ -44,6 +47,9 @@ const progress = store('tastir.along', isProgress);
 /** The progress kept for a tutorial, if any; never throws. */
 export const getProgress = (tutorial: string): Progress | undefined =>
   progress.list().find((p) => p.tutorial === tutorial);
+
+/** The drawing left most recently, if any (the list is newest first). */
+export const latestProgress = (): Progress | undefined => progress.list()[0];
 
 /** Keeps a tutorial's progress; false when the browser refuses. */
 export function keepProgress(p: Omit<Progress, 'updated'>): boolean {

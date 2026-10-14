@@ -360,6 +360,14 @@ export function DrawAlong({
   );
 
   // Every change is kept, so leaving and coming back loses nothing.
+  // Where the learner is, named for the library's Continue.
+  const progressLabel = inking
+    ? 'Ink'
+    : repeating
+      ? 'Repeat'
+      : coloring
+        ? 'Color'
+        : `Step ${shownIds.indexOf(info?.step ?? 0) + 1} of ${shownIds.length}`;
   const [kept, setKept] = useState(true);
   useEffect(() => {
     setKept(
@@ -367,6 +375,7 @@ export function DrawAlong({
         tutorial: address,
         board: draft,
         index,
+        label: progressLabel,
         inked: [...chosen],
         copies: copyHistory.now.map((c) => c.at),
         coloring: colorHistory.now,
@@ -381,6 +390,7 @@ export function DrawAlong({
     copyHistory.now,
     colorHistory.now,
     keptIds,
+    progressLabel,
   ]);
   const [restarting, setRestarting] = useState(false);
   const [welcome, setWelcome] = useState(

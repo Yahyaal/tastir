@@ -15,6 +15,8 @@ export interface LastLesson {
   readonly address: string;
   /** The step as the lesson names it, such as “Step 9 of 22”. */
   readonly label: string;
+  /** When it was left, as an ISO date. */
+  readonly at?: string;
 }
 
 /** Where the learner left a lesson: a step or the ink, never the end. */
@@ -54,7 +56,10 @@ export function keepLessonAt(
       return;
     }
     storage.setItem(atKey(address), JSON.stringify(at));
-    storage.setItem(LAST, JSON.stringify({ address, label }));
+    storage.setItem(
+      LAST,
+      JSON.stringify({ address, label, at: new Date().toISOString() }),
+    );
   } catch {
     // Not remembered; the lesson opens at step 1 next time.
   }

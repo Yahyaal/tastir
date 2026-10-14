@@ -12,6 +12,7 @@ import {
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { Thumbnail } from './drawing';
 import { type Entry } from './library';
+import { latestProgress } from '../along/progress';
 import { lastLesson } from './lessons';
 import { shownSteps } from './model';
 import { Shelf } from './Shelf';
@@ -421,16 +422,39 @@ function useReturnToScroll() {
 
 /**
  * The lesson the learner left partway, offered at the top of the library:
- * its picture, its name and how far they got. Only library lessons are
- * offered; the learner's own patterns have their own shelf.
+ * its picture, its name, whether they were watching it or drawing it along,
+ * and how far they got. Of the two, the one left most recently. Only
+ * library lessons are offered; the learner's own patterns have their shelf,
+ * and a drawing already kept as one of them is done.
  */
 function ContinueLesson({ entries }: { entries: readonly Entry[] }) {
-  const last = lastLesson();
-  const entry = last && entries.find((e) => e.id === last.address);
-  if (!last || !entry) return null;
+  const watch = lastLesson();
+  const drawn = latestProgress();
+  const drawing =
+    drawn && drawn.board.steps.length > 0 && !drawn.kept?.pattern
+      ? drawn
+      : undefined;
+  const pick =
+    drawing && (!watch || (watch.at ?? '') < drawing.updated)
+      ? {
+          address: drawing.tutorial,
+          mode: 'Drawing along',
+          label: drawing.label ?? '',
+          href: `#/${drawing.tutorial}/draw`,
+        }
+      : watch
+        ? {
+            address: watch.address,
+            mode: 'Watching',
+            label: watch.label,
+            href: `#/${watch.address}/watch`,
+          }
+        : undefined;
+  const entry = pick && entries.find((e) => e.id === pick.address);
+  if (!pick || !entry) return null;
   const title = entry.preview?.title ?? aboutTitle(entry.json) ?? entry.id;
   return (
-    <a className="continue-lesson" href={`#/${entry.id}/watch`}>
+    <a className="continue-lesson" href={pick.href}>
       {entry.preview ? (
         <img
           src={import.meta.env.BASE_URL + entry.preview.thumbnail}
@@ -442,9 +466,10 @@ function ContinueLesson({ entries }: { entries: readonly Entry[] }) {
       <span className="continue-text">
         <span className="continue-eyebrow">Continue where you left off</span>
         <span className="continue-title">{title}</span>
-        {last.label ? (
-          <span className="continue-step">{last.label}</span>
-        ) : null}
+        <span className="continue-step">
+          {pick.mode}
+          {pick.label ? ` · ${pick.label}` : ''}
+        </span>
       </span>
       <span className="continue-go">Continue</span>
     </a>
