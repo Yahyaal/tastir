@@ -231,6 +231,49 @@ export const PATTERNS: readonly Pattern[] = [
     sources: [],
   },
   {
+    id: 'redesign-review',
+    title: 'Codex’s review of the redesign: what I think',
+    fold: 8,
+    status: 'decided',
+    decision:
+      'You (14 October): agreed with my two pushbacks (no tool chosen for the learner; the wall pinned instead of a second preview), and asked for the four “fix first” items, 1 to 4, one commit each. All four are done: 1 the result fits a tablet and the timeline never scrolls the page; 2 the browser tests follow the redesign (148 pass), and two faults they found are fixed (the draw-along board moved at a step without tools; the ink bitmap fell a pixel short at a close zoom); 3 changes before a design is named are kept in this browser and come back; 4 the editor starts with copies and whole-line inking off. Items 5 to 10 wait for your go.',
+    summary:
+      'Codex reviewed the redesign and found nine things to improve. I agree with almost all of them, push back on two details, and found one more problem myself.',
+    story: [
+      'I checked Codex’s two strongest claims myself, and both are true. At tablet width the finished pattern opens scrolled to the bottom with the drawing 2,027 px tall (A); that is my mistake from R2 and R3. And the editor still starts with symmetric and whole-line inking switched on, which breaks your 8 October rule that anything doing more than the click shows it first or starts off. I also found that 46 of the browser tests fail: I never ran that suite during the redesign. Many of them still expect the old design (two boards, cards opening the result), but some may be real problems, so each needs a look.',
+      'Fix first, in this order. 1, the tablet: below 1,100 px the colour panel goes under the wall, the drawing keeps a bounded height, and the timeline scrolls only its own row, never the page. 2, the browser tests: update the ones that test the old design, and fix any real fault the others show. 3, first colours kept: an unnamed design is kept as a draft in this browser as soon as it changes, as draw along already does, and comes back when you return. 4, the editor starts with symmetric and whole-line inking off.',
+      'Next. 5, the phone’s draw along: one short live prompt in the bottom bar (“Tap the centre O”, then “Tap E”). Here I push back on one detail: Codex suggests choosing the tool for the learner, but choosing the compass or ruler is part of learning the construction, and we decided that no tool is chosen at first. Instead, the suggested tool should look clearly different from a chosen one. 6, the end of the lesson: “Your pattern is ready” with Save and Share at the top of the panel, and Make a variation and other patterns after them. 7, painting: when you point at a ring in the panel, that ring lights up on the wall. I would not add a second small preview; on a phone the wall stays pinned at the top while the panel scrolls. 8, larger tool buttons on phones (44 px) and colour names instead of hex codes for screen readers. I would leave choosing points with the keyboard for later, if ever: it is a lot of work, and you now have the arrow keys for Back and Next.',
+      'Later. 9, Continue on the home page also offers a draw-along you left partway. 10, the library: a Clear all button, and the empty message names the filters chosen (it still says “both choices” with three filters). A search box can wait until the library is bigger; with 39 patterns the filters find them quickly.',
+    ],
+    pictures: [
+      {
+        src: 'renders/redesign-review-2026-10-14/tablet-color-initial.png',
+        caption:
+          'A. The finished pattern at 1024 × 768 (Codex’s picture): opened at the bottom of the page, the drawing far taller than the screen.',
+      },
+      {
+        src: 'renders/redesign-review-2026-10-14/phone-light-star-draw.png',
+        caption:
+          'B. Draw along on a phone (Codex’s picture): the board first, but what to tap is below it, partly under the bar.',
+      },
+      {
+        src: 'renders/redesign-review-2026-10-14/phone-light-star-result.png',
+        caption:
+          'C. The end of a lesson on a phone (Codex’s picture): Save is far down the page.',
+      },
+    ],
+    asks: [
+      'Shall I do the four “fix first” items (1–4) now, one commit each?',
+      'Do you agree with my two pushbacks (no tool chosen for the learner; no second preview while painting)?',
+    ],
+    sources: [
+      {
+        label: 'Codex’s review',
+        url: '/__review/renders/redesign-review-2026-10-14/index.html',
+      },
+    ],
+  },
+  {
     id: 'redesign',
     title: 'The new look: plaster, zellige and ink, in light and dark',
     fold: 8,
@@ -1739,9 +1782,17 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '13 October 2026',
+  updated: '14 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Redesign reviewed: keep the direction and refine the workflows',
+      text: 'The paper and ink themes, lesson layout, single-board guide, smaller initial tool set, and paint colors before palettes improve the app. All 39 results opened, and the main drawing, saving and sharing flows worked. The illustrated review compares the old and new screens and shows the next fixes: the tablet result grows too tall and opens at the bottom, a first color edit can still be lost, and the phone needs its next drawing prompt beside the board.',
+      link: {
+        label: 'Read the redesign review and comparisons',
+        href: '/__review/renders/redesign-review-2026-10-14/index.html',
+      },
+    },
     },
     {
       title: 'One switch: watch it drawn, result, draw along',
@@ -1984,8 +2035,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'R6 done: the phone, and with it the redesign',
-    text: 'On a phone the drawing comes first: the lesson’s header fits one row (Previous and Next pattern are in the ☰ Patterns menu), the step’s words sit under the drawing above the Back and Next bar, draw along shows your board first with Back and Next fixed at the bottom, and the home page starts with its words and Start button. All six tasks of the redesign are done.',
+    title: 'Codex’s review: the four fixes are done',
+    text: 'The finished pattern fits a tablet and opens at the top; the browser tests all pass again (148), after fixing two faults they found; your first colours are kept in this browser until you save them (open a pattern’s result, change the palette, leave and come back); and the editor starts with copies and whole lines off. Next, if you agree: items 5 to 8 of the review (a short tap prompt on the phone, “Your pattern is ready” with Save, the ring lighting up on the wall, larger tool buttons).',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [
