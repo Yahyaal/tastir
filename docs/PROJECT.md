@@ -26,7 +26,7 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 **With Codex (13 October):** Ink under one second, the last step, on the branch `app/ink-speed-2` ([the task](prompts/codex-2026-10-13.md)). 
 
-**The redesign (13 October).** The owner approved a new look, plaster, zellige and ink in a light and a dark theme, drawn on the design canvas https://claude.ai/artifact/McyS36FxVoDKxVCUKNZmX1. The plan is the `redesign` card on the review page: R1 themes, R2 the lesson (arch frame, a four-chapter timeline), R3 the colour panel (paint colours first; this is also how the colour-stage mock gets built), R4 the home page, R5 draw along on one board with a faint guide (the owner chose this over two boards), R6 the phone. The step colours keep the owner's four roles, and palettes stay as visible strips. R1 to R5 are done (draw along uses one board with the step as a faint guide at the steps and the ink, as the owner chose on 13 October, replacing the two boards side by side). Every colour is a variable in `apps/player/src/styles.css` with a light value on `:root` and a dark one on `:root[data-theme='dark']`, and `src/app/theme.tsx` holds the switch. New CSS must use those variables, never a fixed colour, or it breaks one of the themes.
+**The redesign (13 October).** The owner approved a new look, plaster, zellige and ink in a light and a dark theme, drawn on the design canvas https://claude.ai/artifact/McyS36FxVoDKxVCUKNZmX1. The plan is the `redesign` card on the review page: R1 themes, R2 the lesson (arch frame, a four-chapter timeline), R3 the colour panel (paint colours first; this is also how the colour-stage mock gets built), R4 the home page, R5 draw along on one board with a faint guide (the owner chose this over two boards), R6 the phone. The step colours keep the owner's four roles, and palettes stay as visible strips. R1 to R6 are done (on a phone the drawing comes first, R6; draw along uses one board with the step as a faint guide at the steps and the ink, as the owner chose on 13 October, replacing the two boards side by side). Every colour is a variable in `apps/player/src/styles.css` with a light value on `:root` and a dark one on `:root[data-theme='dark']`, and `src/app/theme.tsx` holds the switch. New CSS must use those variables, never a fixed colour, or it breaks one of the themes.
 
 ## Open decisions and things still to do
 
@@ -39,7 +39,7 @@ The prioritised list is the **Next** section of the review page (`PROGRESS` in `
 
 ## The next goal
 
-The redesign: R6 (the phone) after the owner has looked at R5. More Alhambra panels from [the queue](patterns/QUEUE.md) after that.
+The redesign is done (R1 to R6, 13–14 October). Next: the owner’s look at it, then more Alhambra panels from [the queue](patterns/QUEUE.md).
 
 ## How a session works
 

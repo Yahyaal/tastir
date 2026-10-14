@@ -836,3 +836,91 @@
 .along-kept-actions .quiet {
   margin-left: auto;
 }
+
+/* The phone (R6): the board first, the tools under it, then the step's
+   words with Back and Next, then the hints. */
+@media (max-width: 760px) {
+  .along-grid > .along-plate {
+    order: 1;
+  }
+
+  .along-grid > .along-tools {
+    order: 2;
+  }
+
+  .along-grid > .along-text-row {
+    order: 3;
+  }
+
+  .along-grid > .along-hints {
+    order: 4;
+  }
+
+  .along-grid > .caption {
+    order: 5;
+  }
+
+  .along-plate,
+  .along .along-plate,
+  .along .stage {
+    height: 52vh;
+    min-height: 52vh;
+    max-height: 52vh;
+  }
+
+  .along .topbar h1 {
+    font-size: 1.05rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .along-helpers {
+    font-size: 0.8rem;
+  }
+
+  /* Back and Next stay at the bottom of the screen, as in the lesson. */
+  .player.along {
+    padding-bottom: 88px;
+  }
+
+  .along-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 15;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    background: var(--lapis-deep);
+    border-top: 1px solid var(--lapis-line);
+  }
+
+  .along-nav-normal {
+    flex: 1;
+  }
+
+  .along-nav-normal > button,
+  .along-nav-normal > .along-stack {
+    flex: 1;
+  }
+
+  .along-nav-normal {
+    align-items: center;
+  }
+
+  .along-nav-normal .along-layer {
+    display: flex;
+    gap: 10px;
+  }
+
+  .along-nav-normal .along-layer > button {
+    flex: 1;
+    white-space: nowrap;
+  }
+
+  .player.along .along-nav button,
+  .player.along .along-nav .next {
+    min-height: 48px;
+    border-radius: 999px;
+  }
+}

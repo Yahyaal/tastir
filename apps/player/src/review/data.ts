@@ -236,7 +236,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 8,
     status: 'decided',
     decision:
-      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. R1 to R5 are built: the pictures marked R1 to R5 show them.',
+      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. All six are built (13 and 14 October): the pictures marked R1 to R6 show them.',
     summary:
       'The plan for building the redesign you approved into the player, one task at a time, with a light and a dark mode.',
     story: [
@@ -252,6 +252,15 @@ export const PATTERNS: readonly Pattern[] = [
       'Each task is one commit, shown here before and after in both themes, with all tests, lint and typecheck passing. Tests that look for labels that change are updated in the same commit, never deleted.',
     ],
     pictures: [
+      {
+        src: 'renders/redesign/R6-phone-after.png',
+        caption:
+          'R6. On a phone, after: the home page’s words and Start button first; the lesson’s header on one row (back, ☰, the title, ⋯ settings, the moon) with the step under the drawing; the colour tools right under the wall; draw along with your board first, the tools under it, and Back and Next fixed at the bottom.',
+      },
+      {
+        src: 'renders/redesign/R6-phone-before.png',
+        caption: 'R6. The same four screens before.',
+      },
       {
         src: 'renders/redesign/Along-kept.png',
         caption:
@@ -1975,16 +1984,11 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Draw along: your three points',
-    text: 'Keep did keep your pattern, but the only sign was a small line of text; now a box over the board says it was kept, with Play it, Make a variation and My patterns, and the button says Kept ✓ until you change something. The guide now shows only the points a step starts from; the crossings it makes appear once you draw the lines. And ← and → are Back and Next, as in the lesson. R1 to R5 of the redesign are done; R6, the phone, is next.',
+    title: 'R6 done: the phone, and with it the redesign',
+    text: 'On a phone the drawing comes first: the lesson’s header fits one row (Previous and Next pattern are in the ☰ Patterns menu), the step’s words sit under the drawing above the Back and Next bar, draw along shows your board first with Back and Next fixed at the bottom, and the home page starts with its words and Start button. All six tasks of the redesign are done.',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [
-    {
-      title: 'R6: the phone',
-      text: 'The drawing first on every screen, with the step and its buttons in a panel at the bottom, and a header that fits.',
-      link: { label: 'The plan', href: '#redesign' },
-    },
     {
       title: 'Ink in under a second',
       text: 'Pressing Ink in draw along on Bou Inania now takes about a third of the time it did, but still around three seconds on a slow machine. The goal is under one second on both Bou Inania tutorials.',

@@ -4665,3 +4665,125 @@ svg.tiles {
   outline: 2px solid var(--saffron);
   outline-offset: 2px;
 }
+
+/* ------------------------------------------------------------------ */
+/* The phone (R6): the drawing first, a header that fits in one row,
+   and the step's words and buttons just under the drawing, above the
+   Back and Next bar. */
+
+@media (max-width: 760px) {
+  /* One row: back, Patterns, the title, settings, light or dark. */
+  .player:not(.along) .topbar {
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    padding: 8px 0;
+  }
+
+  .player:not(.along) .topbar h1 {
+    order: 0;
+    flex: 1 1 0;
+    flex-basis: 0;
+    min-width: 0;
+    font-size: 1.05rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Back to the library as an arrow; the words stay for screen readers. */
+  .player .topbar .home {
+    order: -2;
+    font-size: 0;
+    min-width: 36px;
+    min-height: 40px;
+    justify-content: center;
+  }
+
+  .player .topbar .home::before {
+    content: '←';
+    font-size: 1.25rem;
+    color: var(--theme-text-primary);
+  }
+
+  /* Patterns as its icon alone; the word stays for screen readers. */
+  .player:not(.along) .topbar .menu-button {
+    order: -1;
+    min-width: 40px;
+    min-height: 40px;
+    justify-content: center;
+    padding: 0;
+    font-size: 0;
+  }
+
+  .player:not(.along) .topbar .menu-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* The patterns before and after are in the Patterns menu. */
+  .player .topbar .neighbour {
+    display: none;
+  }
+
+  .player:not(.along) .topbar .view-menu {
+    margin-left: 0;
+  }
+
+  .player .topbar .view-menu summary {
+    font-size: 0;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+  }
+
+  .player .topbar .view-menu summary::before {
+    content: '⋯';
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+
+  .player .topbar .theme-switch {
+    width: 40px;
+    height: 40px;
+  }
+
+  .player:not(.along) .view-switch {
+    order: 5;
+  }
+
+  /* The drawing a little shorter, so the step's words show under it. */
+  .player:not(.along) .stage {
+    min-height: 0;
+    height: 46vh;
+    border-width: 6px;
+    border-radius: 18px;
+  }
+
+  .player:not(.along) .caption {
+    gap: 8px;
+  }
+
+  .player:not(.along) .caption .label {
+    margin-bottom: 2px;
+  }
+
+  /* Home: the words and the way in first, the drawing after them. */
+  .hero .hero-copy {
+    order: -1;
+  }
+
+  .hero h2 {
+    font-size: 2rem;
+  }
+
+  .continue-lesson {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .continue-go {
+    padding: 8px 14px;
+  }
+}
