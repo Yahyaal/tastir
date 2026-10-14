@@ -236,7 +236,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 8,
     status: 'decided',
     decision:
-      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. R1 to R4 are built: the pictures marked R1 to R4 show them.',
+      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. R1 to R5 are built: the pictures marked R1 to R5 show them.',
     summary:
       'The plan for building the redesign you approved into the player, one task at a time, with a light and a dark mode.',
     story: [
@@ -252,6 +252,26 @@ export const PATTERNS: readonly Pattern[] = [
       'Each task is one commit, shown here before and after in both themes, with all tests, lint and typecheck passing. Tests that look for labels that change are updated in the same commit, never deleted.',
     ],
     pictures: [
+      {
+        src: 'renders/redesign/R5-step1-light.png',
+        caption:
+          'R5. Draw along on one board: your board takes the whole width, and the step to copy lies over it as a faint dashed guide (here the first circle, through O and E). Only the step’s tool shows, Compass, with More tools beside it.',
+      },
+      {
+        src: 'renders/redesign/R5-step5-dark.png',
+        caption:
+          'R5. Step 5, dark: the static square dashed through the points on your board, and only Polygon among the tools.',
+      },
+      {
+        src: 'renders/redesign/R5-ink-light.png',
+        caption:
+          'R5. The ink: the pattern’s ink, faint, on your board to trace over.',
+      },
+      {
+        src: 'renders/redesign/R5-repeat-light.png',
+        caption:
+          'R5. The repeat and the colours keep two halves: your wall, and the wall to aim for (or the colours).',
+      },
       {
         src: 'renders/redesign/Fix-bou-repeat-2x2.png',
         caption:
@@ -1945,14 +1965,14 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Fixed: Bou Inania’s repeat and its move into colour',
-    text: 'The repeat now copies the same tile the ink shows (the rosette with half a band on every side); before, it copied the cell’s whole ink, which was a different tile. And the move into colour no longer lays a shifted copy over the wall: the pieces take their colour ring by ring from the centre of each rosette outward. R1 to R4 of the redesign are done; R5 is next.',
+    title: 'R5 done: draw along on one board',
+    text: 'At the steps and the ink there is one board: the step to copy lies over your drawing as a faint dashed guide, in the same view, and only the tools the step uses show, with the rest under More tools (Symmetry, Undo and Redo always show). The repeat and the colours keep their two halves. Earlier today: Bou Inania’s repeat now copies the tile the ink shows, and colour fills ring by ring from each rosette’s centre.',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [
     {
-      title: 'R5: draw along on one board',
-      text: 'Your drawing and the step to copy on one board, the step as a faint guide; only the tools the step needs, the rest under More tools; the instruction above the board.',
+      title: 'R6: the phone',
+      text: 'The drawing first on every screen, with the step and its buttons in a panel at the bottom, and a header that fits.',
       link: { label: 'The plan', href: '#redesign' },
     },
     {

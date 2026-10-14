@@ -56,7 +56,7 @@ import {
 import './along.css';
 import { drawForMe } from './drawForMe';
 import { guidanceFor } from './guidance';
-import { hintFor } from './hints';
+import { hintFor, toolsFor } from './hints';
 import { namesIn, placeKey, readableAt, readableNames } from './names';
 import { withTutorialNames } from './naming';
 import { dotNear, reachable } from './pen';
@@ -593,6 +593,11 @@ export function DrawAlong({
     setTargets(clicks);
   };
   const want = tool && wantAt(tool, targets.length);
+  // The tools this step draws with; the others wait under More tools.
+  const stepTools = useMemo(
+    () => toolsFor(tutorial, neededAt(model.scene, beat)),
+    [tutorial, model.scene, beat],
+  );
   const ask = !tool
     ? (guidance?.words ??
       'Choose a tool above to draw with. Hold the pointer over a tool to see what it does.')
@@ -827,8 +832,42 @@ export function DrawAlong({
                     }`
                   : 'Your ink closes no pieces yet.');
 
+  // At the steps and the ink, one board: the step to copy is laid over the
+  // learner's drawing as a faint guide, in the same view, and every click
+  // goes through it to the board.
+  const oneBoard = !afterInk;
+  const guide = oneBoard ? (
+    <div
+      className={inking ? 'along-guide inking' : 'along-guide'}
+      aria-label="The step to copy, as a faint guide"
+      role="img"
+    >
+      {inking ? (
+        <Construction
+          model={asPanel(model)}
+          upTo={beats.length}
+          view={camera.view}
+          frame={frame}
+          svgRef={stepRef}
+          ink
+          pen={false}
+        />
+      ) : (
+        <Construction
+          model={model}
+          upTo={beat}
+          view={camera.view}
+          frame={frame}
+          svgRef={stepRef}
+          names={stepNames}
+          optional={showHelpers ? optional : undefined}
+        />
+      )}
+    </div>
+  ) : null;
   const boardHalf = (
-    <main className="stage along-plate" hidden={phone && showStep}>
+    <main className="stage along-plate" hidden={phone && showStep && afterInk}>
+      {guide}
       {afterInk && ready ? (
         <RepeatBoard
           view={camera.view}
@@ -970,7 +1009,7 @@ export function DrawAlong({
       )}
     </main>
   );
-  const stepHalf = (
+  const stepHalf = oneBoard ? null : (
     <main
       className="stage along-plate along-step"
       hidden={phone && !showStep}
@@ -994,27 +1033,7 @@ export function DrawAlong({
         </div>
       ) : repeating ? (
         <TargetWall model={model} view={camera.view} svgRef={stepRef} />
-      ) : inking ? (
-        <Construction
-          model={asPanel(model)}
-          upTo={beats.length}
-          view={camera.view}
-          frame={frame}
-          svgRef={stepRef}
-          ink
-          pen={false}
-        />
-      ) : (
-        <Construction
-          model={model}
-          upTo={beat}
-          view={camera.view}
-          frame={frame}
-          svgRef={stepRef}
-          names={stepNames}
-          optional={showHelpers ? optional : undefined}
-        />
-      )}
+      ) : null}
       {coloring ? null : (
         <button
           type="button"
@@ -1138,7 +1157,7 @@ export function DrawAlong({
             );
           })}
         </ol>
-        {phone ? (
+        {phone && afterInk ? (
           <button
             type="button"
             className="secondary along-swap"
@@ -1156,7 +1175,7 @@ export function DrawAlong({
           </button>
         ) : null}
       </nav>
-      <div className="along-grid">
+      <div className={oneBoard ? 'along-grid one-board' : 'along-grid'}>
         <section className="along-text-row" aria-label="The step to copy">
           <div className="along-text">
             {/* A fixed three-line instruction box keeps the drawings still
@@ -1566,6 +1585,7 @@ export function DrawAlong({
                 onUndo={undo}
                 onRedo={redo}
                 hinted={hint?.tool ?? guidance?.tool}
+                only={stepTools.length ? stepTools : undefined}
               />
             </div>
           </div>

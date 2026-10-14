@@ -31,12 +31,14 @@ function clickAt(x: number, y: number) {
   });
 }
 
-const tool = (name: string) =>
-  fireEvent.click(
-    within(screen.getByRole('toolbar', { name: 'Tools' })).getByRole('button', {
-      name: new RegExp(name),
-    }),
-  );
+/** Chooses a tool; one this step does not use is under More tools. */
+const tool = (name: string) => {
+  const bar = () => within(screen.getByRole('toolbar', { name: 'Tools' }));
+  const more = bar().queryByRole('button', { name: 'More tools' });
+  if (!bar().queryByRole('button', { name: new RegExp(name) }) && more)
+    fireEvent.click(more);
+  fireEvent.click(bar().getByRole('button', { name: new RegExp(name) }));
+};
 const click = (name: string | RegExp) =>
   fireEvent.click(screen.getByRole('button', { name }));
 const steps = () => screen.getByRole('navigation', { name: 'Steps' });
@@ -174,9 +176,44 @@ describe('drawing along', () => {
     );
   });
 
+  it('lays the step to copy over the board as a faint guide, on one board', () => {
+    openAlong();
+    const guide = screen.getByRole('img', {
+      name: 'The step to copy, as a faint guide',
+    });
+    // The guide sits on the learner's board, in the same view, and only
+    // shows; there is no second board beside it.
+    const board = guide.closest('.along-plate') as HTMLElement;
+    expect(board.querySelector('.editor-drawing')).toBeTruthy();
+    expect(guide.querySelector('svg')?.getAttribute('viewBox')).toBe(
+      board.querySelector('.editor-drawing')?.getAttribute('viewBox'),
+    );
+    expect(document.querySelector('.along-step')).toBeNull();
+    expect(guide.querySelector('.el.current')).toBeTruthy();
+  });
+
+  it('shows the step’s own tools first, and every tool under More tools', () => {
+    openAlong();
+    const bar = screen.getByRole('toolbar', { name: 'Tools' });
+    // Step 1 draws a circle: the compass, and the rest a click away.
+    expect(
+      within(bar)
+        .getAllByRole('button')
+        .filter((b) => b.classList.contains('tool') && !b.closest('label'))
+        .map((b) => b.textContent),
+    ).toContain('◯Compass');
+    expect(within(bar).queryByRole('button', { name: /Ruler/ })).toBeNull();
+    fireEvent.click(within(bar).getByRole('button', { name: 'More tools' }));
+    expect(within(bar).getByRole('button', { name: /Ruler/ })).toBeTruthy();
+    expect(
+      within(bar).getByRole('button', { name: 'Fewer tools' }),
+    ).toBeTruthy();
+  });
+
   it('says what every tool does, in a tooltip and to a screen reader', () => {
     openAlong();
     const bar = screen.getByRole('toolbar', { name: 'Tools' });
+    fireEvent.click(within(bar).getByRole('button', { name: 'More tools' }));
     for (const t of TOOLS) {
       const button = within(bar).getByRole('button', {
         name: new RegExp(t.label),

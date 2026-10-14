@@ -48,6 +48,22 @@ export function toolFor(spec: ElementSpec, isTile: boolean): ToolId {
   return 'point';
 }
 
+/** The tools a step's figures are drawn with, each once, in the step's order. */
+export function toolsFor(
+  tutorial: Tutorial,
+  needed: readonly { readonly name: string }[],
+): ToolId[] {
+  const specs = specsOf(tutorial);
+  const out: ToolId[] = [];
+  for (const n of needed) {
+    const base = n.name.replace(/@\d+$/, '');
+    const spec = specs.get(base);
+    const tool = spec && toolFor(spec, base === tutorial.pattern.cell);
+    if (tool && !out.includes(tool)) out.push(tool);
+  }
+  return out;
+}
+
 /** How many turns make a copy (×4), or that it is a mirror image. */
 function turnOf(
   tutorial: Tutorial,

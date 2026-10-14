@@ -751,3 +751,47 @@
 .along.dense .mark.current {
   filter: none;
 }
+
+/* One board at the steps and the ink: the learner's board takes the whole
+   width, and the step to copy lies over it as a faint guide, in the same
+   view. Clicks go through the guide to the board. */
+.along-grid.one-board > .along-plate {
+  grid-column: 1 / -1;
+}
+
+.along-guide {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  pointer-events: none;
+}
+
+.along-guide > .drawing {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* Only what this step adds: the earlier steps are the learner's own lines. */
+.along-guide .el:not(.current),
+.along-guide .mark:not(.current):not(.used),
+.along-guide text {
+  display: none;
+}
+
+.along-guide .el.current {
+  opacity: 0.6;
+  stroke-dasharray: 6 6;
+}
+
+/* At the ink, the pattern's ink only, faint, to trace over. */
+.along-guide.inking .el,
+.along-guide.inking .mark,
+.along-guide.inking .tile-outline {
+  display: none;
+}
+
+.along-guide.inking .ink {
+  opacity: 0.35;
+}
