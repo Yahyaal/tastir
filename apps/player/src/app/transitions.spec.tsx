@@ -3,12 +3,14 @@ import json from '@tutorials/six-fold-hammerhead.json';
 import shiftedJson from '@tutorials/kurt-eight-fold-zellige-shifted.json';
 import squareJson from '@tutorials/kurt-eight-fold-zellige.json';
 import filledJson from '@tutorials/kurt-eight-fold-zellige-filled.json';
+import starJson from '@tutorials/eight-fold-star-and-cross.json';
+import bouJson from '@tutorials/bou-inania-rosette.json';
 import { rulerOrder } from './animation';
 import mianJson from '@tutorials/twelve-fold-rosette-mian.json';
 import { pieceColors } from './coloring';
 import { Construction, RepeatedInk, rowBasis } from './drawing';
 import { loadModel } from './model';
-import { Wall } from './Wall';
+import { fillDelays, Wall } from './Wall';
 
 const model = loadModel(json);
 const steps = model.tutorial.steps.length;
@@ -151,25 +153,49 @@ describe('the move to the repeat', () => {
 });
 
 describe('the move to colour', () => {
-  it('uses one temporary bitmap cover, with the vector wall underneath', () => {
-    const m = loadModel(filledJson);
+  it('colours the wall’s own pieces ring by ring, from the centres out', () => {
+    const m = loadModel(starJson);
     const { container } = render(
       <Wall model={m} colors={pieceColors(m)} enter />,
     );
-    expect(container.querySelectorAll('.color-veil canvas')).toHaveLength(1);
-    expect(
-      container.querySelectorAll('pattern polygon.wall-piece').length,
-    ).toBeGreaterThan(0);
-    // Without canvas support the cover stays transparent, so the vector
-    // result remains usable (including in jsdom).
-    const canvas = container.querySelector('canvas') as HTMLCanvasElement;
-    expect(canvas.style.opacity).toBe('0');
+    // No cover over the wall: the pieces themselves take their colour.
+    expect(container.querySelector('canvas')).toBeNull();
+    const pieces = [
+      ...container.querySelectorAll<SVGPolygonElement>(
+        'pattern polygon.wall-piece',
+      ),
+    ];
+    expect(pieces.length).toBeGreaterThan(0);
+    const delayOf = (type: string) =>
+      new Set(
+        pieces
+          .filter((p) => m.pattern.types[Number(p.dataset.type)]?.name === type)
+          .map((p) => Number(p.dataset.delay)),
+      );
+    // Every star at once, first; every cross after them, together.
+    expect([...delayOf('star')]).toEqual([0]);
+    const cross = [...delayOf('cross')];
+    expect(cross).toHaveLength(1);
+    expect(cross[0]).toBeGreaterThan(0);
+    expect(pieces[0]?.style.animationDelay).toMatch(/ms$/);
   });
 
-  it('has no veil without it', () => {
+  it('orders Bou Inania’s rings from the middle of each rosette outward', () => {
+    const m = loadModel(bouJson);
+    const delays = fillDelays(m.pattern);
+    const rings = [...new Set(delays)];
+    expect(rings.length).toBeGreaterThan(5);
+    // The pieces round the middle come first, and the whole move stays short.
+    expect(Math.min(...delays)).toBe(0);
+    expect(Math.max(...delays)).toBeLessThanOrEqual(3600);
+  });
+
+  it('shows the finished colours at once without it', () => {
     const { container } = render(
       <Wall model={model} colors={pieceColors(model)} />,
     );
-    expect(container.querySelector('.color-veil')).toBeNull();
+    const piece = container.querySelector<SVGPolygonElement>('.wall-piece');
+    expect(piece?.dataset.delay).toBeUndefined();
+    expect(piece?.style.animationDelay).toBe('');
   });
 });

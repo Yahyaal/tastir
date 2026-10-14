@@ -253,6 +253,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/redesign/Fill-bou-frames.png',
+        caption:
+          'The move into colour on Bou Inania, a frame every half second or so: each rosette starts at its centre star and fills ring by ring outward. The old cover, which sat slightly off the wall, is gone.',
+      },
+      {
         src: 'renders/redesign/R4-home-dark.png',
         caption:
           'R4. The home page, dark: the header fits one row, a strip offers to continue the lesson left partway (here Bou Inania at step 9), and Start with the star and cross opens step 1, with its level and length beside it.',
@@ -1935,8 +1940,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'R4 done: the home page',
-    text: 'Start with the star and cross now opens step 1. A strip at the top offers to continue the lesson you left partway. The filters fit in one row (symmetry buttons, level and tradition menus), a whole card opens its lesson, with See the result and Draw along under it, and the Review page and Project notes links sit in the footer. R1 to R3 are done too.',
+    title: 'Fixed: the move into colour',
+    text: 'You found the colour stage unnatural, and on Bou Inania pieces seemed stacked and shifted. The cause was a blank copy of the pattern laid over the wall that did not line up with it. It is gone: the wall’s own pieces start blank and take their colour ring by ring from the centre of each rosette outward, about 3.5 seconds on Bou Inania (none with Reduce motion). R1 to R4 of the redesign are done; R5 is next.',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [

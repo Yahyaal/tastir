@@ -1,5 +1,10 @@
 import type { JaliAppearance } from '@tastir/schema';
-import { pieceAt, rectangularPeriod, type Vec } from '@tastir/engine';
+import {
+  pieceAt,
+  rectangularPeriod,
+  type Pattern,
+  type Vec,
+} from '@tastir/engine';
 import { useId, useMemo, useRef } from 'react';
 import { fit, viewBox, width } from './camera';
 import { DEFAULT_FINISH, type Finish } from './coloring';
@@ -7,7 +12,7 @@ import { relief, strapWidths, tiling } from './drawing';
 import { patchesAt, patchPath, weaveRepeat } from './interlace';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
-import { ColorReveal } from './ColorReveal';
+import { ringsOf } from './rings';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
 
 export type WallStyle = 'tiles' | 'strapwork' | 'interlace' | 'lines' | 'jali';
@@ -57,6 +62,40 @@ function tileFrame(model: Model, [m, n]: readonly [number, number] = [1, 1]) {
 
 const pts = (ps: readonly Vec[]) => ps.map((p) => `${p.x},${p.y}`).join(' ');
 
+/** The whole move into colour lasts about this long, however many rings. */
+const FILL_MS = 3600;
+/** The most time between one ring and the next. */
+const RING_MS = 400;
+
+/**
+ * When each piece takes its colour as the wall comes in, in milliseconds:
+ * ring by ring from the middle of each rosette (and of each filler star)
+ * outward. A piece's ring is its distance from the nearest such middle;
+ * a pattern without rosettes counts out from the cell's origin. Every copy of
+ * a piece is the same distance from its own middle, so the cell's pieces
+ * are enough.
+ */
+export function fillDelays(pattern: Pattern): number[] {
+  const { u, v, origin } = pattern.cell;
+  const centres = ringsOf(pattern)?.centres.map((c) => c.at) ?? [origin];
+  const size = Math.hypot(u.x, u.y) + Math.hypot(v.x, v.y);
+  const distances = pattern.pieces.map(({ polygon }) => {
+    const n = polygon.length;
+    const mid = polygon.reduce(
+      (a, p) => ({ x: a.x + p.x / n, y: a.y + p.y / n }),
+      { x: 0, y: 0 },
+    );
+    const d = Math.min(
+      ...centres.map((c) => Math.hypot(c.x - mid.x, c.y - mid.y)),
+    );
+    // Pieces of one ring sit at the same distance, up to rounding.
+    return Math.round((d / size) * 2000);
+  });
+  const rings = [...new Set(distances)].sort((a, b) => a - b);
+  const step = Math.min(RING_MS, FILL_MS / Math.max(1, rings.length));
+  return distances.map((d) => Math.round(rings.indexOf(d) * step));
+}
+
 /**
  * The colored pattern repeated without end: one SVG pattern tile holds the
  * cell's pieces (and their copies from the neighbouring cells, so pieces
@@ -96,7 +135,8 @@ export function Wall({
     type: number,
     place: { piece: number; i: number; j: number },
   ) => void;
-  /** Play the move into colour: each piece type floods in, one by one. */
+  /** Play the move into colour: each piece takes its colour in turn,
+   * ring by ring from the middles of the rosettes outward. */
   enter?: boolean;
 }) {
   const id = useId().replace(/:/g, '');
@@ -123,7 +163,12 @@ export function Wall({
 
   // The pieces and ink strokes in tile coordinates, with neighbours' copies.
   const shifted = useMemo(() => {
-    const out: { type: number; points: string; fill: string }[] = [];
+    const out: {
+      type: number;
+      piece: number;
+      points: string;
+      fill: string;
+    }[] = [];
     const lines: [Vec, Vec][] = [];
     const over: Vec[][] = [];
     const overIn: Vec[][] = [];
@@ -148,6 +193,7 @@ export function Wall({
               return;
             out.push({
               type: piece.type,
+              piece: k,
               points: pts(corners),
               fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
             });
@@ -174,6 +220,12 @@ export function Wall({
     return { out: d(shifted.over), in: d(shifted.overIn) };
   }, [shifted]);
 
+  // Coming in, each piece takes its colour in turn, from the middles out.
+  const delays = useMemo(
+    () => (enter ? fillDelays(pattern) : undefined),
+    [enter, pattern],
+  );
+
   // Camera changes only move the covering rectangle; the tile's SVG
   // children can be reused without rebuilding every polygon on each frame.
   const pieceNodes = useMemo(
@@ -182,8 +234,16 @@ export function Wall({
         <polygon
           key={i}
           data-type={p.type}
+          data-delay={delays?.[p.piece]}
           className="wall-piece"
-          style={{ '--type': p.type } as React.CSSProperties}
+          style={
+            {
+              '--type': p.type,
+              ...(delays
+                ? { animationDelay: `${delays[p.piece] ?? 0}ms` }
+                : {}),
+            } as React.CSSProperties
+          }
           points={p.points}
           fill={style === 'lines' || jali ? 'none' : p.fill}
           stroke={
@@ -193,7 +253,7 @@ export function Wall({
           strokeLinejoin="round"
         />
       )),
-    [shifted, jali, style, groutWidth, finish],
+    [shifted, jali, style, groutWidth, finish, delays],
   );
 
   /** The piece type under a screen position. */
@@ -320,9 +380,6 @@ export function Wall({
         height={cover.maxY - cover.minY}
         fill={`url(#wall-${id})`}
       />
-      {enter && !jali ? (
-        <ColorReveal pattern={pattern} view={start} groutWidth={groutWidth} />
-      ) : null}
     </svg>
   );
 }

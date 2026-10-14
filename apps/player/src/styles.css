@@ -1893,10 +1893,23 @@ main.stage .drawing:not(.wall) {
   }
 }
 
-/* Repeat to colour: the wall starts as ink on the drafting background, and each piece type
-   floods in with its colour, one type after another. */
-.color-veil {
-  pointer-events: none;
+/* Repeat to colour: the wall starts as blank paper pieces in their lines,
+   and each piece takes its colour in turn, ring by ring from the middle of
+   each rosette outward (the delays come from fillDelays in Wall.tsx). */
+.wall.color-enter .wall-piece:not([fill='none']) {
+  animation: piece-colour 500ms ease-out both;
+}
+
+@keyframes piece-colour {
+  from {
+    fill: var(--paper);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wall.color-enter .wall-piece {
+    animation: none;
+  }
 }
 
 /* Ink by ruler: the ruler shows only while it is laid (playInk). */
