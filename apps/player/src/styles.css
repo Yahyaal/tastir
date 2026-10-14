@@ -1520,6 +1520,106 @@ main.stage .drawing:not(.wall) {
   color: var(--theme-text-muted);
 }
 
+/* At the color stage the colour tools come first in the column beside
+   the wall, and the step's words and buttons after them. */
+.player.at-color .lesson-side > .side-panel {
+  order: -1;
+}
+
+.player.at-color .caption .instruction {
+  font-size: 1rem;
+}
+
+/* The panel in steps: 1 pick a colour, 2 click a piece, then the
+   palettes. Each step is labelled like the lesson's own step label. */
+.colour-step {
+  display: grid;
+  gap: 10px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.colour-step:last-child {
+  border-bottom: 0;
+  margin-bottom: 0;
+}
+
+.colour-step h3 {
+  margin: 0;
+  font-family: var(--text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-label);
+}
+
+.colour-step .hint {
+  margin: -4px 0 0;
+  color: var(--theme-text-muted);
+}
+
+.player .chooser.brush .swatch-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.chooser.brush .any-color input {
+  width: 44px;
+  height: 44px;
+  padding: 3px;
+  border: 1.5px dashed var(--theme-border-hover);
+  border-radius: 12px;
+  background: var(--theme-bg-surface);
+  cursor: pointer;
+}
+
+.ring-card h4 {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--theme-text-secondary);
+}
+
+.ring-pieces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.player .ring-piece {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 4px;
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  background: var(--theme-bg-surface);
+}
+
+.player .ring-piece:hover {
+  border-color: var(--theme-border-hover);
+  background: var(--theme-bg-raised);
+}
+
+.ring-piece .piece-shape {
+  width: 100%;
+  height: 100%;
+}
+
+/* Read by screen readers, not shown. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ------------------------------------------------------------------ */
 /* What is drawn on the plate */
 

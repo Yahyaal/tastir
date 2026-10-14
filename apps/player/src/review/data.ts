@@ -236,7 +236,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 8,
     status: 'decided',
     decision:
-      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. R1 and R2 are built: the pictures marked R1 and R2 show them.',
+      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. R1 to R3 are built: the pictures marked R1, R2 and R3 show them.',
     summary:
       'The plan for building the redesign you approved into the player, one task at a time, with a light and a dark mode.',
     story: [
@@ -252,6 +252,26 @@ export const PATTERNS: readonly Pattern[] = [
       'Each task is one commit, shown here before and after in both themes, with all tests, lint and typecheck passing. Tests that look for labels that change are updated in the same commit, never deleted.',
     ],
     pictures: [
+      {
+        src: 'renders/redesign/R3-bou-light.png',
+        caption:
+          'R3. The colour panel on Bou Inania: 1 pick a colour (Undo beside it), 2 click a piece on the wall or here. Every ring of each rosette and of the filler stars is a small piece in its colour; a click paints the whole ring.',
+      },
+      {
+        src: 'renders/redesign/R3-bou-dark-palettes.png',
+        caption:
+          'R3. Further down: the size of the unit, then the palettes as strips of their colours, one click each.',
+      },
+      {
+        src: 'renders/redesign/R3-star-light.png',
+        caption:
+          'R3. The star and cross: two rosettes and the crosses between them, one piece each.',
+      },
+      {
+        src: 'renders/redesign/R3-comares-dark.png',
+        caption:
+          'R3. Comares bones is coloured by place, not by rings, so it keeps its list of pieces; the step’s words and buttons come after the panel at this stage.',
+      },
       {
         src: 'renders/redesign/R2-step-light.png',
         caption:
@@ -1896,14 +1916,14 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'R2 done: the lesson',
-    text: 'The drawing sits in a cedar frame with the step beside it, Back and Next are the big buttons (Play is a quiet link under them, Fit is on the drawing), and one timeline of khatam stars along the bottom replaces the grid of step numbers. A lesson you leave reopens at that step, with Start from step 1 beside it; reaching the end forgets it. R1, the two themes, is done too.',
+    title: 'R3 done: the colour panel',
+    text: 'At the colour stage the panel comes first beside the wall: pick a colour (Undo, Redo and Reset beside it), then click a piece on the wall or one of the small pieces in the panel, one per ring, and the whole ring takes the colour. The palettes follow as strips. Patterns coloured by shape or by place keep their list of pieces. R1 (themes) and R2 (the lesson) are done too.',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [
     {
-      title: 'R3: the colour panel',
-      text: 'Paint colours first, then the pieces by ring, then the palettes as strips, with Undo beside them; this is also how the colour-stage mock gets built.',
+      title: 'R4: the home page',
+      text: 'The starter button opens step 1, a strip offers to continue the last lesson, the filters fit in one row, a whole card opens its lesson, and the Review page and Project notes links move to a footer.',
       link: { label: 'The plan', href: '#redesign' },
     },
     {

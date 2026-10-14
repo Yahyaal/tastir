@@ -59,6 +59,43 @@ describe('colouring rosette by rosette', () => {
     });
   });
 
+  it('paints a ring from its piece in the panel, as from the wall', () => {
+    atColor();
+    const paint = screen.getByRole('group', { name: 'Paint with' });
+    const first = paint.querySelector('button') as HTMLButtonElement;
+    const colour = first.getAttribute('aria-label') ?? '';
+    fireEvent.click(first);
+    const ring = button('Rosette A, ring 1');
+    expect(ring.querySelector('polygon')?.getAttribute('fill')).not.toBe(
+      colour,
+    );
+    fireEvent.click(ring);
+    expect(
+      button('Rosette A, ring 1')
+        .querySelector('polygon')
+        ?.getAttribute('fill'),
+    ).toBe(colour);
+    // One undo step, like a click on the wall.
+    fireEvent.click(button('Undo'));
+    expect(
+      button('Rosette A, ring 1')
+        .querySelector('polygon')
+        ?.getAttribute('fill'),
+    ).not.toBe(colour);
+  });
+
+  it('puts the colours to paint with before the palettes', () => {
+    atColor();
+    const panel = document.querySelector('.colour-panel') as HTMLElement;
+    const paint = screen.getByRole('group', { name: 'Paint with' });
+    const palettes = screen.getByRole('group', { name: 'Palette' });
+    expect(panel.contains(paint) && panel.contains(palettes)).toBe(true);
+    expect(
+      paint.compareDocumentPosition(palettes) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
   it('switches to colouring by shape, and back', () => {
     atColor();
     fireEvent.click(button('By shape'));

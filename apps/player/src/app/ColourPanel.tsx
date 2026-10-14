@@ -1,4 +1,5 @@
 import { type Dispatch } from 'react';
+import { PieceShape } from './drawing';
 import {
   GLAZES,
   paletteNames,
@@ -16,6 +17,7 @@ import {
   rosetteCards,
   rosetteCounts,
   swatchesOf,
+  type RosetteCard,
 } from './rosettes';
 
 const METHOD_NAMES: Record<Method, string> = {
@@ -72,53 +74,34 @@ export function ColourPanel({
   const now = history.now;
   const methods = methodsOf(base);
   const method = methodOf(base, now);
+  const rings = method === 'rings' && !!fill && rosetteCards(model).length > 0;
+  const tools = (
+    <div className="color-tools">
+      <button
+        type="button"
+        className="quiet"
+        disabled={!history.past.length}
+        onClick={() => dispatch({ kind: 'undo' })}
+      >
+        Undo
+      </button>
+      <button
+        type="button"
+        className="quiet"
+        disabled={!history.future.length}
+        onClick={() => dispatch({ kind: 'redo' })}
+      >
+        Redo
+      </button>
+      <button type="button" className="quiet" onClick={onReset}>
+        Reset
+      </button>
+    </div>
+  );
+  // The tools come first, then the palettes: what the learner paints with
+  // is in view before the choice of glazes.
   return (
     <div className="piece-panel colour-panel">
-      <div className="palette-strips" role="group" aria-label="Palette">
-        {paletteNames(model).map((name) => {
-          const g = GLAZES[name];
-          const p = paletteOf(model, name);
-          const strip = g
-            ? [g.white, g.black, ...g.families.flat()]
-            : [p.ground, p.a, p.b, p.c, p.d];
-          return (
-            <button
-              key={name}
-              type="button"
-              aria-pressed={name === now.palette}
-              onClick={() => dispatch({ kind: 'palette', palette: name })}
-            >
-              <span className="palette-strip" aria-hidden="true">
-                {[...new Set(strip)].map((c) => (
-                  <span key={c} style={{ background: c }} />
-                ))}
-              </span>
-              {name}
-            </button>
-          );
-        })}
-      </div>
-      <div className="color-tools">
-        <button
-          type="button"
-          className="quiet"
-          disabled={!history.past.length}
-          onClick={() => dispatch({ kind: 'undo' })}
-        >
-          Undo
-        </button>
-        <button
-          type="button"
-          className="quiet"
-          disabled={!history.future.length}
-          onClick={() => dispatch({ kind: 'redo' })}
-        >
-          Redo
-        </button>
-        <button type="button" className="quiet" onClick={onReset}>
-          Reset
-        </button>
-      </div>
       {methods.length > 1 ? (
         <div className="colour-methods" role="group" aria-label="Colour">
           {methods.map((m) => (
@@ -143,7 +126,7 @@ export function ColourPanel({
           ))}
         </div>
       ) : null}
-      {method === 'rings' && fill && rosetteCards(model).length ? (
+      {rings && fill ? (
         <Rosettes
           model={model}
           fill={fill}
@@ -152,24 +135,66 @@ export function ColourPanel({
           history={history}
           dispatch={dispatch}
           oneTile={oneTile}
+          tools={tools}
         />
       ) : (
-        <PiecePanel
-          model={model}
-          colors={colors}
-          history={history}
-          dispatch={dispatch}
-          hovered={hovered}
-          onHover={onHover}
-          selected={selected}
-          onSelect={onSelect}
-          onReset={onReset}
-          place={place}
-          tools={false}
-        />
+        <>
+          <PiecePanel
+            model={model}
+            colors={colors}
+            history={history}
+            dispatch={dispatch}
+            hovered={hovered}
+            onHover={onHover}
+            selected={selected}
+            onSelect={onSelect}
+            onReset={onReset}
+            place={place}
+            tools={false}
+          />
+          {tools}
+        </>
       )}
+      <div className="colour-step">
+        <h3>Palette</h3>
+        <div className="palette-strips" role="group" aria-label="Palette">
+          {paletteNames(model).map((name) => {
+            const g = GLAZES[name];
+            const p = paletteOf(model, name);
+            const strip = g
+              ? [g.white, g.black, ...g.families.flat()]
+              : [p.ground, p.a, p.b, p.c, p.d];
+            return (
+              <button
+                key={name}
+                type="button"
+                aria-pressed={name === now.palette}
+                onClick={() => dispatch({ kind: 'palette', palette: name })}
+              >
+                <span className="palette-strip" aria-hidden="true">
+                  {[...new Set(strip)].map((c) => (
+                    <span key={c} style={{ background: c }} />
+                  ))}
+                </span>
+                {name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
+}
+
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+/** A rosette card's name: its letter, the filler stars, or between them. */
+function cardName(card: RosetteCard, rosettes: number): string {
+  if (card.kind === 'between') return 'Between the rosettes';
+  if (card.kind === 'filler') return 'Filler stars';
+  return rosettes > 1
+    ? `Rosette ${LETTERS[card.family] ?? card.family + 1}`
+    : 'The rosette';
 }
 
 /**
@@ -184,6 +209,7 @@ function Rosettes({
   history,
   dispatch,
   oneTile,
+  tools,
 }: {
   model: Model;
   fill: Fill;
@@ -192,6 +218,8 @@ function Rosettes({
   history: History;
   dispatch: Dispatch<ColorAction>;
   oneTile: boolean;
+  /** Undo, Redo and Reset, beside the colours. */
+  tools: React.ReactNode;
 }) {
   const now = history.now;
   const { now: count, turns, options } = rosetteCounts(model);
@@ -212,63 +240,102 @@ function Rosettes({
   const at = options.indexOf(count);
   const bigger = options[at + 1];
   const smaller = options[at - 1];
+  const cards = rosetteCards(model);
   return (
     <div className="rosettes">
-      <p className="hint">
-        Pick a color, then click a piece: its whole ring takes the color.
-      </p>
-      <div className="chooser brush" role="group" aria-label="Paint with">
-        {swatchesOf(model, now.palette).map((c) => (
-          <button
-            key={c}
-            type="button"
-            className={c === brush ? 'swatch-button current' : 'swatch-button'}
-            style={{ background: c }}
-            aria-label={c}
-            aria-pressed={c === brush}
-            onClick={() => onBrush(c)}
-          />
-        ))}
-        <label className="any-color">
-          Any color{' '}
-          <input
-            type="color"
-            value={brush}
-            onChange={(e) => onBrush(e.target.value)}
-          />
-        </label>
-      </div>
-      {options.length > 1 && !oneTile ? (
-        <div className="rosette-count">
-          <span className="color-tools">
+      <div className="colour-step">
+        <h3>1 · Pick a color</h3>
+        <div className="chooser brush" role="group" aria-label="Paint with">
+          {swatchesOf(model, now.palette).map((c) => (
             <button
+              key={c}
               type="button"
-              className="quiet"
-              disabled={bigger === undefined}
-              onClick={() => bigger && resize(bigger)}
-            >
-              {bigger === 2 * count ? 'Double the unit' : 'Grow the unit'}
-            </button>
-            <button
-              type="button"
-              className="quiet"
-              disabled={smaller === undefined}
-              onClick={() => smaller && resize(smaller)}
-            >
-              {2 * (smaller ?? 0) === count
-                ? 'Halve the unit'
-                : 'Shrink the unit'}
-            </button>
-          </span>
-          <small>
-            {count === 1
-              ? 'One rosette: every rosette takes the same colours.'
-              : count === turns
-                ? `${count} rosettes take turns, so no two alike touch.`
-                : `${count} rosettes, each with its own colours.`}
-          </small>
+              className={
+                c === brush ? 'swatch-button current' : 'swatch-button'
+              }
+              style={{ background: c }}
+              aria-label={c}
+              aria-pressed={c === brush}
+              onClick={() => onBrush(c)}
+            />
+          ))}
+          <label className="any-color">
+            <span className="visually-hidden">Any color</span>
+            <input
+              type="color"
+              value={brush}
+              onChange={(e) => onBrush(e.target.value)}
+            />
+          </label>
         </div>
-      ) : null}
+        {tools}
+      </div>
+      <div className="colour-step">
+        <h3>2 · Click a piece on the wall, or here</h3>
+        <p className="hint">
+          Its whole ring round the rosette takes the color.
+        </p>
+        {cards.map((card) => (
+          <div key={card.family} className="ring-card">
+            <h4>{cardName(card, count)}</h4>
+            <div
+              className="ring-pieces"
+              role="group"
+              aria-label={cardName(card, count)}
+            >
+              {card.rows.map((row, n) => (
+                <button
+                  key={row.key}
+                  type="button"
+                  className="ring-piece"
+                  aria-label={`${cardName(card, count)}, ring ${n + 1}`}
+                  title={`Ring ${n + 1}`}
+                  onClick={() =>
+                    dispatch({ kind: 'paint', type: row.key, color: brush })
+                  }
+                >
+                  <PieceShape
+                    model={model}
+                    type={row.type}
+                    color={fill(row.piece, row.i, row.j)}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+        {options.length > 1 && !oneTile ? (
+          <div className="rosette-count">
+            <span className="color-tools">
+              <button
+                type="button"
+                className="quiet"
+                disabled={bigger === undefined}
+                onClick={() => bigger && resize(bigger)}
+              >
+                {bigger === 2 * count ? 'Double the unit' : 'Grow the unit'}
+              </button>
+              <button
+                type="button"
+                className="quiet"
+                disabled={smaller === undefined}
+                onClick={() => smaller && resize(smaller)}
+              >
+                {2 * (smaller ?? 0) === count
+                  ? 'Halve the unit'
+                  : 'Shrink the unit'}
+              </button>
+            </span>
+            <small>
+              {count === 1
+                ? 'One rosette: every rosette takes the same colours.'
+                : count === turns
+                  ? `${count} rosettes take turns, so no two alike touch.`
+                  : `${count} rosettes, each with its own colours.`}
+            </small>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
