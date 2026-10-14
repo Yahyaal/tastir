@@ -937,3 +937,11 @@
     min-height: 0;
   }
 }
+
+/* On a phone the hint buttons are as easy to tap as the tools. */
+@media (max-width: 760px) {
+  .along-hints button {
+    min-height: 44px;
+    padding: 0 16px;
+  }
+}

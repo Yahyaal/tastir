@@ -1,4 +1,5 @@
 import { type Dispatch } from 'react';
+import { colourName } from './colourNames';
 import { PieceShape } from './drawing';
 import {
   GLAZES,
@@ -254,7 +255,9 @@ function Rosettes({
                 c === brush ? 'swatch-button current' : 'swatch-button'
               }
               style={{ background: c }}
-              aria-label={c}
+              aria-label={colourName(c)}
+              title={`${colourName(c)} ${c}`}
+              data-color={c}
               aria-pressed={c === brush}
               onClick={() => onBrush(c)}
             />

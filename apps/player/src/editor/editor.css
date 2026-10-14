@@ -769,3 +769,13 @@
     display: contents;
   }
 }
+
+/* On a phone the tools are big enough to tap without aiming. */
+@media (max-width: 760px) {
+  .player .editor-tools .tool {
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 0.9rem;
+    border-radius: 10px;
+  }
+}

@@ -63,7 +63,9 @@ describe('colouring rosette by rosette', () => {
     atColor();
     const paint = screen.getByRole('group', { name: 'Paint with' });
     const first = paint.querySelector('button') as HTMLButtonElement;
-    const colour = first.getAttribute('aria-label') ?? '';
+    const colour = first.dataset['color'] ?? '';
+    // Read out as a name, not a code.
+    expect(first.getAttribute('aria-label')).not.toMatch(/^#/);
     fireEvent.click(first);
     const ring = button('Rosette A, ring 1');
     expect(ring.querySelector('polygon')?.getAttribute('fill')).not.toBe(
