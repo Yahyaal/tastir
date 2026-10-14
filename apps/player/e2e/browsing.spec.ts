@@ -59,7 +59,7 @@ test('next and previous follow the filtered library', async ({
   await expect(
     page.getByRole('link', { name: /^Previous pattern/ }),
   ).toHaveCount(0);
-  // A card opens the lesson; next and previous keep watching.
+  // A card opens the result; next and previous keep showing results.
   await page.getByRole('link', { name: /^Next pattern/ }).click();
   await expect(page).toHaveURL(new RegExp(`${ids[1]}$`));
   await page.getByRole('link', { name: /^Previous pattern/ }).click();

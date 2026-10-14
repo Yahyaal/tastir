@@ -575,13 +575,15 @@ function CardView({
   error?: string;
   progress?: import('./workerClient').Progress;
 }) {
-  const photos = preview?.photos ?? Boolean(model?.tutorial.photos?.length);
   const title = preview?.title ?? model?.tutorial.title ?? id;
   const level = preview?.level ?? model?.tutorial.level;
   const verification = preview?.verification ?? model?.tutorial.verification;
   return (
     <li className="card-item">
-      <a className="card" href={`#/${id}/watch`}>
+      {/* The card opens the finished pattern (beside its photo, when there
+          is one), so the learner sees it whole before choosing to watch it
+          drawn or draw it along. */}
+      <a className="card" href={`#/${id}/result`}>
         {preview ? (
           <img
             className="thumbnail"
@@ -626,8 +628,8 @@ function CardView({
       </a>
       {preview || model ? (
         <div className="card-actions">
-          <a className="card-link" href={`#/${id}/result`}>
-            {photos ? 'Result and original' : 'See the result'}
+          <a className="card-link" href={`#/${id}/watch`}>
+            Watch it drawn
           </a>
           <a
             className="card-link"

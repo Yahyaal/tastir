@@ -78,18 +78,18 @@ describe('the library', () => {
       const links = within(document.querySelector('.cards') as HTMLElement)
         .getAllByRole('link')
         .map((c) => c.getAttribute('href'));
-      // The whole card opens the lesson at its first step; two quiet links
-      // under it show the finished result or draw it along.
+      // The whole card opens the finished pattern; two quiet links under it
+      // watch it drawn from the first step or draw it along.
       expect(links).toEqual([
-        '#/another-star/watch',
         '#/another-star/result',
+        '#/another-star/watch',
         '#/another-star/draw',
-        '#/eight-fold-star-and-cross/watch',
         '#/eight-fold-star-and-cross/result',
+        '#/eight-fold-star-and-cross/watch',
         '#/eight-fold-star-and-cross/draw',
       ]);
       expect(
-        screen.getAllByRole('link', { name: 'See the result' }),
+        screen.getAllByRole('link', { name: 'Watch it drawn' }),
       ).toHaveLength(2);
       expect(screen.getAllByRole('link', { name: 'Draw along' })).toHaveLength(
         2,

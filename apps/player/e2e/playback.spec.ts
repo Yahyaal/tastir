@@ -2,15 +2,11 @@ import { expect, test } from '@playwright/test';
 
 test.use({ reducedMotion: 'no-preference' });
 
-test('a card’s Result and original link opens the result beside the photo', async ({
+test('a pattern card opens the result beside the photo of the original', async ({
   page,
 }) => {
   await page.goto('/');
-  // The card itself opens the lesson; the result is the link under it.
-  await expect(
-    page.locator('.card[href="#/minbar-doors-cairo/watch"]'),
-  ).toBeVisible();
-  await page.locator('.card-link[href="#/minbar-doors-cairo/result"]').click();
+  await page.locator('.card[href="#/minbar-doors-cairo/result"]').click();
   await expect(page.locator('.label')).toHaveText('Color');
   await expect(
     page.getByRole('figure', { name: 'The original' }),
