@@ -35,3 +35,24 @@ test('going to a late step scrolls the timeline, not the page', async ({
     page.getByRole('button', { name: 'Go to step 20' }),
   ).toBeInViewport();
 });
+
+test('draw along says what to tap in view, beside the board', async ({
+  page,
+}, info) => {
+  await page.goto('/#/eight-fold-star-and-cross/draw');
+  const prompt = page.locator('.along-board-caption .instruction');
+  await expect(prompt).toContainText(/Choose Compass/);
+  await expect(prompt).toBeInViewport();
+  // On a phone the prompt sits above the fixed Back and Next bar.
+  if (info.project.name === 'phone') {
+    const said = await prompt.boundingBox();
+    const bar = await page.locator('.along-nav').boundingBox();
+    expect(said!.y + said!.height).toBeLessThanOrEqual(bar!.y);
+  }
+  // The suggested tool is marked, but not chosen.
+  const compass = page
+    .getByRole('toolbar', { name: 'Tools' })
+    .getByRole('button', { name: /Compass/ });
+  await expect(compass).toHaveClass(/hinted/);
+  await expect(compass).toHaveAttribute('aria-pressed', 'false');
+});

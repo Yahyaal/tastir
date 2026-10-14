@@ -408,8 +408,11 @@
   vector-effect: non-scaling-stroke;
 }
 
-.player .editor-tools .tool.hinted {
-  box-shadow: 0 0 0 3px var(--saffron);
+/* The tool a hint suggests: a dashed orange outline, never filled, so it
+   is not mistaken for the tool chosen (filled blue). */
+.player .editor-tools .tool.hinted:not(.on) {
+  border: 2px dashed var(--current);
+  box-shadow: none;
 }
 
 @media (max-width: 760px) {
@@ -844,6 +847,15 @@
     order: 1;
   }
 
+  /* What to tap next, straight under the board, beside its points. */
+  .along-grid > .along-board-caption {
+    order: 1;
+  }
+
+  .along-board-caption h2 {
+    display: none;
+  }
+
   .along-grid > .along-tools {
     order: 2;
   }
@@ -856,7 +868,7 @@
     order: 4;
   }
 
-  .along-grid > .caption {
+  .along-grid > .along-step-caption {
     order: 5;
   }
 

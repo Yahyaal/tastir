@@ -1850,21 +1850,15 @@ export function DrawAlong({
             </p>
           ) : inking ? (
             <p className="dot-key">
-              The pattern, inked as the tutorial inks it.
+              Faint grey: the pattern’s ink, to trace over on your board.
             </p>
           ) : (
             <p className="dot-key">
-              <span className="new">orange: what this step makes</span>
-              <span className="used">blue: what it works from</span>
-              <span className="helper">
-                dashed: helper lines that only help find points; the pattern
-                never runs along them
+              <span className="new">
+                faint orange dashes: the step to copy; draw over them
               </span>
-              {showHelpers ? (
-                <span className="helper optional">
-                  light dashed: optional, as nothing needs their points
-                </span>
-              ) : null}
+              <span className="used">blue: the points it starts from</span>
+              <span>solid lines: your drawing</span>
             </p>
           )}
         </footer>
