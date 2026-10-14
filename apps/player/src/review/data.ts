@@ -1823,6 +1823,13 @@ export const PROGRESS: {
         href: '/__review/renders/redesign-review-2026-10-14/index.html',
       },
     },
+    {
+      title: 'App usability review: a clearer first lesson and easier coloring',
+      text: 'The review covers the library, watching and drawing, the editor, coloring, styles, saving, sharing and exports at desktop, tablet and phone sizes. All 39 results opened. The illustrated report has 18 improvements in priority order, with current screenshots and a proposed learner journey. Start with the starter button, recovery before a first save, controls near the mobile drawing, and guidance for each click.',
+      link: {
+        label: 'Read the illustrated usability review',
+        href: '/__review/renders/ux-audit-2026-10-13/index.html',
+      },
     },
     {
       title: 'One switch: watch it drawn, result, draw along',
