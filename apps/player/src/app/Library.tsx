@@ -10,6 +10,8 @@ import {
   keptPlace,
 } from './browsing';
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
+import { ActionIcon } from './actionIcons';
+import { ZelligeBand } from './ZelligeBand';
 import { Thumbnail } from './drawing';
 import { type Entry } from './library';
 import { latestProgress } from '../along/progress';
@@ -122,6 +124,16 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
     ...new Set(entries.flatMap((e) => aboutOf(e.preview ?? e.json).fold ?? [])),
   ].sort((a, b) => a - b);
   const shown = filtered(entries, { style, level, fold });
+  // A card's level, symmetry or tradition shows every pattern like it,
+  // with the list brought into view under its filters.
+  const filterBy = (facet: Facet) => {
+    if ('level' in facet) setLevel(facet.level);
+    if ('fold' in facet) setFold(facet.fold);
+    if ('style' in facet) setStyle(facet.style);
+    document
+      .getElementById('collection')
+      ?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+  };
   const clear = () => {
     setStyle(undefined);
     setLevel(undefined);
@@ -212,6 +224,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           <ThemeSwitch />
         </div>
       </header>
+      <ZelligeBand />
       <ContinueLesson entries={entries} />
       <section className="hero">
         {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}
@@ -235,7 +248,11 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           </ol>
           {first ? (
             <p className="hero-start">
-              <a className="button primary" href={`#/${first.id}/watch`}>
+              <a
+                className="button primary act-watch"
+                href={`#/${first.id}/watch`}
+              >
+                <ActionIcon action="watch" />
                 Start with the star and cross
               </a>
               {first.preview ? (
@@ -263,6 +280,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           }}
         />
       ) : null}
+      <ZelligeBand />
       <section aria-labelledby="collection">
         <div className="collection-head">
           <h2 id="collection">The patterns</h2>
@@ -361,7 +379,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
         {shown.length ? (
           <ul className="cards">
             {shown.map((entry) => (
-              <Card key={entry.id} entry={entry} />
+              <Card key={entry.id} entry={entry} onFilter={filterBy} />
             ))}
           </ul>
         ) : (
@@ -462,6 +480,7 @@ function ContinueLesson({ entries }: { entries: readonly Entry[] }) {
       ? {
           address: drawing.tutorial,
           mode: 'Drawing along',
+          action: 'draw' as const,
           label: drawing.label ?? '',
           href: `#/${drawing.tutorial}/draw`,
         }
@@ -469,6 +488,7 @@ function ContinueLesson({ entries }: { entries: readonly Entry[] }) {
         ? {
             address: watch.address,
             mode: 'Watching',
+            action: 'watch' as const,
             label: watch.label,
             href: `#/${watch.address}/watch`,
           }
@@ -494,7 +514,10 @@ function ContinueLesson({ entries }: { entries: readonly Entry[] }) {
           {pick.label ? ` · ${pick.label}` : ''}
         </span>
       </span>
-      <span className="continue-go">Continue</span>
+      <span className={`continue-go act-${pick.action}`}>
+        <ActionIcon action={pick.action} />
+        Continue
+      </span>
     </a>
   );
 }
@@ -526,41 +549,40 @@ function Chip({
   );
 }
 
-const ARABIC_TITLES: Record<string, string> = {
-  'eight-fold-star-and-cross': 'خاتم سليمان وثماني',
-  'eight-fold-zellige': 'زليج ثماني مغربي',
-  'bou-inania-rosette': 'خاتم الاثني عشر البوعنانية بفاس',
-  'bou-inania-twelve-fold-wall': 'حائط اثنا عشري بالبوعنانية',
-  'sixteen-fold-rosette': 'طاسة الستة عشر المرينية',
-  'twelve-fold-rosette-mian': 'روزيتا اثنا عشرية',
-  'twelve-fold-rosette-mian-hex': 'روزيتا اثنا عشرية بتكرار سداسي',
-  'twelve-fold-dodecagrams': 'اثنا عشري نجمي',
-  'alhambra-comares-stars': 'نجوم قاعة قمارش بقصر الحمراء',
-  'alhambra-reyes-dodecagrams': 'اثنا عشري قاعة الملوك بالحمراء',
-  'alhambra-reyes-stars': 'نجوم قاعة الملوك بالحمراء',
-  'alhambra-mexuar-stars': 'نجوم المشور بقصر الحمراء',
-  'alhambra-barca-stars': 'نجوم قاعة البركة بالحمراء',
-  'alhambra-bath-stars': 'نجوم حمامات قصر الحمراء',
-  'alhambra-arrayanes-squares': 'مربعات صحن الريحان بالحمراء',
-  'ibn-tulun-window': 'شمسية جامع ابن طولون بالقاهرة',
-  'minbar-doors-cairo': 'مصاريع منبر قاهري مملوكي',
-  'four-fold-ring-of-circles': 'حلقة الدوائر الرباعية',
-  'six-fold-star-and-hexagons': 'نجمة مسدسة ومسدسات',
-  'six-fold-snowflake': 'ندفة الثلج المسدسة',
-  'six-fold-hammerhead': 'مطرقة مسدسة تيمورية',
-};
+/** A filter a card's facts set: its level, its symmetry or its tradition. */
+type Facet = { level: string } | { fold: number } | { style: string };
 
 /** One tutorial in the library, loaded in the worker. */
-function Card({ entry }: { entry: Entry }) {
+function Card({
+  entry,
+  onFilter,
+}: {
+  entry: Entry;
+  onFilter: (facet: Facet) => void;
+}) {
   return entry.preview ? (
-    <CardView id={entry.id} preview={entry.preview} />
+    <CardView id={entry.id} preview={entry.preview} onFilter={onFilter} />
   ) : (
-    <LiveCard entry={entry} />
+    <LiveCard entry={entry} onFilter={onFilter} />
   );
 }
-function LiveCard({ entry: { id, json } }: { entry: Entry }) {
+function LiveCard({
+  entry: { id, json },
+  onFilter,
+}: {
+  entry: Entry;
+  onFilter: (facet: Facet) => void;
+}) {
   const { model, error, progress } = useModel(json);
-  return <CardView id={id} model={model} error={error} progress={progress} />;
+  return (
+    <CardView
+      id={id}
+      model={model}
+      error={error}
+      progress={progress}
+      onFilter={onFilter}
+    />
+  );
 }
 function CardView({
   id,
@@ -568,22 +590,33 @@ function CardView({
   model,
   error,
   progress,
+  onFilter,
 }: {
   id: string;
   preview?: import('./library').Preview;
   model?: import('./model').Model;
   error?: string;
   progress?: import('./workerClient').Progress;
+  onFilter: (facet: Facet) => void;
 }) {
-  const title = preview?.title ?? model?.tutorial.title ?? id;
-  const level = preview?.level ?? model?.tutorial.level;
-  const verification = preview?.verification ?? model?.tutorial.verification;
+  const t = model?.tutorial;
+  const title = preview?.short ?? t?.short ?? preview?.title ?? t?.title ?? id;
+  const subtitle = preview?.subtitle ?? t?.subtitle;
+  const fullTitle = preview?.title ?? t?.title ?? id;
+  const level = preview?.level ?? t?.level;
+  const fold = preview?.fold ?? t?.fold;
+  const style = preview?.style ?? t?.style;
+  const verification = preview?.verification ?? t?.verification;
   return (
     <li className="card-item">
       {/* The card opens the finished pattern (beside its photo, when there
           is one), so the learner sees it whole before choosing to watch it
           drawn or draw it along. */}
-      <a className="card" href={`#/${id}/result`}>
+      <a
+        className="card"
+        href={`#/${id}/result`}
+        title={title === fullTitle ? undefined : fullTitle}
+      >
         {preview ? (
           <img
             className="thumbnail"
@@ -598,47 +631,77 @@ function CardView({
         ) : (
           <div className={error ? 'thumbnail broken' : 'thumbnail waiting'} />
         )}
+        <span className="card-see">
+          <ActionIcon action="result" />
+          See it
+        </span>
         <h3>{title}</h3>
+        {subtitle ? <p className="card-subtitle">{subtitle}</p> : null}
         {verification?.status === 'unverified' ? (
           <span className="verification-label" title={verification.note}>
             Historical match unverified
           </span>
         ) : null}
-        {ARABIC_TITLES[id] ? (
-          <span className="card-arabic" lang="ar" dir="rtl">
-            {ARABIC_TITLES[id]}
-          </span>
-        ) : null}
-        {preview || model ? (
-          <p className="meta">
-            <span className="level">{capital(level ?? '')}</span>
-            <span>
-              {preview?.steps ??
-                (model ? shownSteps(model.tutorial).length : 0)}{' '}
-              steps
-            </span>
-            <span>{preview?.fold ?? model?.tutorial.fold}-fold</span>
-            <span>{preview?.style ?? model?.tutorial.style}</span>
-          </p>
-        ) : error ? (
+        {preview || model ? null : error ? (
           <p className="error">Cannot be played: {error}</p>
         ) : (
           <p>{PROGRESS_TEXT[progress ?? 'checking']}</p>
         )}
       </a>
       {preview || model ? (
-        <div className="card-actions">
-          <a className="card-link" href={`#/${id}/watch`}>
-            Watch it drawn
-          </a>
-          <a
-            className="card-link"
-            href={`#/${id}/draw`}
-            title="Draw it yourself, step by step"
-          >
-            Draw along
-          </a>
-        </div>
+        <>
+          {/* Its facts filter the library: every pattern of that level,
+              that symmetry, that tradition. */}
+          <div className="meta">
+            {level ? (
+              <button
+                type="button"
+                className={`level fact level-${level}`}
+                title={`Show every ${level} pattern`}
+                onClick={() => onFilter({ level })}
+              >
+                {capital(level)}
+              </button>
+            ) : null}
+            <span className="steps">
+              {preview?.steps ?? (t ? shownSteps(t).length : 0)} steps
+            </span>
+            {fold ? (
+              <button
+                type="button"
+                className="fact"
+                title={`Show every ${fold}-fold pattern`}
+                onClick={() => onFilter({ fold })}
+              >
+                {fold}-fold
+              </button>
+            ) : null}
+            {style ? (
+              <button
+                type="button"
+                className="fact"
+                title={`Show every ${style} pattern`}
+                onClick={() => onFilter({ style })}
+              >
+                {style}
+              </button>
+            ) : null}
+          </div>
+          <div className="card-actions">
+            <a className="card-link act-watch" href={`#/${id}/watch`}>
+              <ActionIcon action="watch" />
+              Watch it drawn
+            </a>
+            <a
+              className="card-link act-draw"
+              href={`#/${id}/draw`}
+              title="Draw it yourself, step by step"
+            >
+              <ActionIcon action="draw" />
+              Draw along
+            </a>
+          </div>
+        </>
       ) : null}
     </li>
   );

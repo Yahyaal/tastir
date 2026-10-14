@@ -2,6 +2,8 @@
   "format": 0,
   "id": "mian-stellated-hex",
   "title": "Stellated twelve-fold rosette, hexagonal tile (Samira Mian)",
+  "short": "Stellated rosette, hexagonal tile",
+  "subtitle": "Samira Mian’s construction",
   "fold": 12,
   "style": "Mamluk",
   "level": "advanced",

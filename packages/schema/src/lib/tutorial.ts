@@ -391,6 +391,10 @@ export const TutorialShape = z.strictObject({
     .string()
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'an id is lower-case words joined by -'),
   title: z.string().min(1),
+  /** A shorter name for cards and menus, where the title is long. */
+  short: z.string().min(1).optional(),
+  /** A second line under the short name: the place, or whose construction. */
+  subtitle: z.string().min(1).optional(),
   fold: z.int().min(3),
   /** The pattern turns into itself but has no mirror symmetry (a pinwheel). */
   chiral: z.boolean().optional(),

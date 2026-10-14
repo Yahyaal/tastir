@@ -16,7 +16,9 @@ for (const [id, level] of [
     await expect(card.locator('.verification-label')).toHaveText(
       'Historical match unverified',
     );
-    await expect(card.locator('.level')).toHaveText(level!);
+    await expect(
+      page.locator('.card-item', { has: card }).locator('.level'),
+    ).toHaveText(level!);
     await page.goto(`/#/${id}/result`);
     await expect(page.locator('svg.wall')).toBeVisible();
     await page.locator('.verification-note summary').click();

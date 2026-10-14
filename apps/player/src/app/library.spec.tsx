@@ -47,8 +47,13 @@ describe('the library', () => {
       expect(
         await screen.findByText('Historical match unverified'),
       ).toBeTruthy();
-      expect(screen.getByRole('heading', { name: json.title })).toBeTruthy();
-      expect(document.querySelector('.card .level')?.textContent).toBe(
+      // The card shows the short name where the tutorial has one.
+      expect(
+        screen.getByRole('heading', {
+          name: (json as { short?: string }).short ?? json.title,
+        }),
+      ).toBeTruthy();
+      expect(document.querySelector('.card-item .level')?.textContent).toBe(
         json.level === 'intermediate' ? 'Intermediate' : 'Advanced',
       );
     },
@@ -148,6 +153,58 @@ describe('the library', () => {
     act(() => screen.getAllByRole('button', { name: 'Clear all' })[0]?.click());
     expect(cards()).toBe(2);
     expect(screen.queryByRole('button', { name: 'Clear all' })).toBeNull();
+  });
+
+  it('filters by a card’s level, symmetry or tradition when it is clicked', () => {
+    const extra = {
+      ...(structuredClone(example) as object),
+      id: 'another-star',
+      title: 'Another star',
+      style: 'Nasrid',
+      level: 'advanced',
+    };
+    const entries = entriesOf({
+      '../../../../tutorials/eight-fold-star-and-cross.json': example,
+      '../../../../tutorials/another-star.json': extra,
+    });
+    render(<App entries={entries} />);
+    const cards = () => document.querySelectorAll('.cards > li').length;
+    expect(cards()).toBe(2);
+    act(() => screen.getByRole('button', { name: 'Advanced' }).click());
+    expect(cards()).toBe(1);
+    expect(
+      (screen.getByRole('combobox', { name: 'Level' }) as HTMLSelectElement)
+        .value,
+    ).toBe('advanced');
+    act(() => screen.getByRole('button', { name: 'Clear all' }).click());
+    act(() => screen.getAllByRole('button', { name: 'Nasrid' })[0]?.click());
+    expect(cards()).toBe(1);
+  });
+
+  it('shows a short name and the line under it, with the full title on hover', () => {
+    const named = {
+      ...(structuredClone(example) as object),
+      id: 'long-star',
+      title: 'Squares and stars of the Patio de los Arrayanes (Alhambra)',
+      short: 'Squares and stars',
+      subtitle: 'Patio de los Arrayanes, Alhambra',
+    };
+    render(
+      <App
+        entries={entriesOf({
+          '../../../../tutorials/long-star.json': named,
+        })}
+      />,
+    );
+    expect(
+      screen.getByRole('heading', { name: 'Squares and stars' }),
+    ).toBeTruthy();
+    expect(screen.getByText('Patio de los Arrayanes, Alhambra')).toBeTruthy();
+    expect(document.querySelector('.card')?.getAttribute('title')).toBe(
+      'Squares and stars of the Patio de los Arrayanes (Alhambra)',
+    );
+    // No Arabic on the cards.
+    expect(document.querySelector('.cards [lang="ar"]')).toBeNull();
   });
 
   it('keeps a card for a tutorial that cannot be played, with the reason', () => {

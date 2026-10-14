@@ -4,6 +4,10 @@ import catalog from '../generated/catalog';
 /** Library metadata and previews are prepared at build time; geometry loads on demand. */
 export interface Preview {
   readonly title: string;
+  /** A shorter name for the card, and the line under it (tutorial.short,
+   * tutorial.subtitle). */
+  readonly short?: string;
+  readonly subtitle?: string;
   readonly style: string;
   readonly level: string;
   readonly fold: number;

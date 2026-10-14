@@ -16,6 +16,10 @@ The complete worked example is `tutorials/eight-fold-star-and-cross.json`. Read 
 
 Every tutorial starts from two given points, `O` and `A`. They define the frame that `pick` rules use: `O` is the origin, the direction from `O` to `A` is 0°, and angles grow counter-clockwise with y pointing up. The player may place `O` and `A` anywhere on screen; angles are only ever used to choose between candidate points, never to position anything.
 
+## Names
+
+`title` is the pattern's full name, shown on its lesson. A long title can have a `short` name for the library's cards and menus, and a `subtitle`, the line under it: the place (“Sala de los Reyes, Alhambra”) or whose construction it is (“Samira Mian’s construction”). Both are optional; without them the card shows the title.
+
 ## Elements
 
 Each entry in a step's `create` map is `"name": { "<kind>": { ... } }`.

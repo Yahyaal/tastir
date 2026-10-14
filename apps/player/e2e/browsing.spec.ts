@@ -50,7 +50,10 @@ test('next and previous follow the filtered library', async ({
   // On a phone the patterns before and after are in the Patterns menu.
   test.skip(info.project.name === 'phone');
   await page.goto('/#/');
-  await page.getByRole('button', { name: '8-fold', exact: true }).click();
+  await page
+    .getByRole('group', { name: 'Symmetry' })
+    .getByRole('button', { name: '8-fold', exact: true })
+    .click();
   const ids = await page
     .locator('.cards .card')
     .evaluateAll((cards) => cards.map((c) => c.getAttribute('href')));
@@ -67,7 +70,9 @@ test('next and previous follow the filtered library', async ({
   // The filter is still on when the learner goes back.
   await page.locator('.topbar .home').click();
   await expect(
-    page.getByRole('button', { name: '8-fold', exact: true }),
+    page
+      .getByRole('group', { name: 'Symmetry' })
+      .getByRole('button', { name: '8-fold', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');
 });
 

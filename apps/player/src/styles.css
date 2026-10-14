@@ -39,6 +39,15 @@
   --theme-frame: #6b4a2f; /* Cedar: the frame round the drawing */
   --theme-cyan: var(--theme-accent-cobalt);
 
+  /* The four things a learner does with a pattern, each its own colour
+     everywhere (src/app/actionIcons.tsx): see the result, watch it drawn,
+     draw it along, make one's own. Text on them uses --on-act. */
+  --act-result: #9a6410;
+  --act-watch: #1f4e8c;
+  --act-draw: #1e6b52;
+  --act-make: #a3452a;
+  --on-act: #ffffff;
+
   /* Shadows: brown and soft on plaster, black and deep at night */
   --shadow: #3c2814;
   --shadow-k: 0.3;
@@ -106,6 +115,12 @@
 
   --shadow: #000000;
   --shadow-k: 1;
+
+  --act-result: #e3ad45;
+  --act-watch: #6a9bdb;
+  --act-draw: #4cc49a;
+  --act-make: #e8875f;
+  --on-act: #0f1820;
 
   --malachite: #2fa37a;
 
@@ -4840,4 +4855,249 @@ svg.tiles {
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
+}
+
+/* ------------------------------------------------------------------ */
+/* The home page's cards: what each click does, by colour and icon. The
+   picture opens the result (saffron eye), Watch it drawn is blue, Draw
+   along green; the level, symmetry and tradition filter the library. */
+
+.card {
+  position: relative;
+}
+
+.card-see {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: var(--act-result);
+  color: var(--on-act);
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px
+    color-mix(in srgb, var(--shadow) calc(30% * var(--shadow-k)), transparent);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.card:hover .card-see,
+.card:focus-visible .card-see {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: none) {
+  .card-see {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.card h3 {
+  margin-bottom: 2px;
+}
+
+.card .card-subtitle {
+  margin: 0 2px 8px;
+  font-size: 0.85rem;
+  color: var(--theme-text-muted);
+}
+
+.card-item > .meta {
+  gap: 6px;
+  margin: 4px 0 0;
+}
+
+.meta .steps {
+  padding: 0 4px;
+}
+
+.meta .steps::before,
+.card-item > .meta span + span::before {
+  content: none;
+}
+
+/* The facts are buttons: a click shows every pattern like it. */
+.library .meta .fact {
+  min-height: 30px;
+  padding: 2px 10px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  font: 600 0.78rem var(--text);
+  cursor: pointer;
+}
+
+.library .meta .fact:hover {
+  background: var(--theme-bg-raised);
+  color: var(--theme-text-primary);
+}
+
+.library .meta .level-beginner {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--malachite) 16%, transparent);
+  color: var(--act-draw);
+}
+
+.library .meta .level-intermediate {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--act-result) 18%, transparent);
+  color: var(--act-result);
+}
+
+.library .meta .level-advanced {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--act-make) 16%, transparent);
+  color: var(--act-make);
+}
+
+/* Watch it drawn and Draw along: two buttons in their own colours. */
+.card-actions:has(.card-link) {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.library .card-link {
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 0 6px;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.library .card-link .action-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.library .card-link.act-watch {
+  color: var(--act-watch);
+}
+
+.library .card-link.act-draw {
+  color: var(--act-draw);
+}
+
+.library .card-link.act-watch:hover,
+.library .card-link.act-watch:focus-visible {
+  background: var(--act-watch);
+  border-color: var(--act-watch);
+  color: var(--on-act);
+}
+
+.library .card-link.act-draw:hover,
+.library .card-link.act-draw:focus-visible {
+  background: var(--act-draw);
+  border-color: var(--act-draw);
+  color: var(--on-act);
+}
+
+/* The zellige band: blue stars on green, on the page's own ground. */
+.zellige-band {
+  display: block;
+  margin: 0 0 24px;
+  border-radius: 4px;
+}
+
+.zellige-band .band-ground {
+  fill: var(--theme-bg-canvas);
+}
+
+.zellige-band .band-a {
+  fill: var(--act-watch);
+}
+
+.zellige-band .band-b {
+  fill: var(--act-draw);
+}
+
+/* The view switch: each way to see the pattern in its colour and icon. */
+.view-switch a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.view-switch a .action-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.view-switch a.act-result .action-icon {
+  color: var(--act-result);
+}
+
+.view-switch a.act-watch .action-icon {
+  color: var(--act-watch);
+}
+
+.view-switch a.act-draw .action-icon {
+  color: var(--act-draw);
+}
+
+.view-switch a[aria-current='page'].act-result {
+  background: var(--act-result);
+}
+
+.view-switch a[aria-current='page'].act-watch {
+  background: var(--act-watch);
+}
+
+.view-switch a[aria-current='page'].act-draw {
+  background: var(--act-draw);
+}
+
+.view-switch a[aria-current='page'],
+.view-switch a[aria-current='page'] .action-icon {
+  color: var(--on-act);
+}
+
+/* The way in, in the colour of watching; making one's own in terracotta;
+   Continue in the colour of what is continued. */
+.library .button.primary.act-watch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--act-watch);
+  border-color: var(--act-watch);
+  color: var(--on-act);
+}
+
+.library .button.primary.new-pattern-btn,
+.library .button.primary.new-pattern-btn:hover {
+  background: var(--act-make);
+  border-color: var(--act-make);
+  color: var(--on-act);
+}
+
+.continue-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.continue-go.act-watch {
+  background: var(--act-watch);
+  color: var(--on-act);
+}
+
+.continue-go.act-draw {
+  background: var(--act-draw);
+  color: var(--on-act);
 }

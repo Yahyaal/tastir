@@ -51,6 +51,8 @@ async function main() {
     catalog.push({
       id,
       title: t.title,
+      ...(t.short ? { short: t.short } : {}),
+      ...(t.subtitle ? { subtitle: t.subtitle } : {}),
       style: t.style,
       level: t.level,
       fold: t.fold,

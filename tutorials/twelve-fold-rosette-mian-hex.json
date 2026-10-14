@@ -2,6 +2,8 @@
   "format": 0,
   "id": "twelve-fold-rosette-mian-hex",
   "title": "Twelve-fold rosette (Samira Mian’s construction), hexagonal tile",
+  "short": "Twelve-fold rosette, hexagonal tile",
+  "subtitle": "Samira Mian’s construction",
   "fold": 12,
   "style": "Mamluk",
   "level": "beginner",

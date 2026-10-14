@@ -1,3 +1,5 @@
+import { ActionIcon } from './actionIcons';
+
 /** The three ways to see a pattern, as on the library's cards. */
 export type View = 'watch' | 'result' | 'draw';
 
@@ -32,12 +34,14 @@ export function ViewSwitch({
       {(['watch', 'result', 'draw'] as const).map((v) => (
         <a
           key={v}
+          className={`act-${v}`}
           href={viewAddress(id, v)}
           aria-current={v === view ? 'page' : undefined}
           onClick={(e) => {
             if (onShow?.(v)) e.preventDefault();
           }}
         >
+          <ActionIcon action={v} />
           {NAMES[v]}
         </a>
       ))}
