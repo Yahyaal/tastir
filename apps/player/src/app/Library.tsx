@@ -122,6 +122,21 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
     ...new Set(entries.flatMap((e) => aboutOf(e.preview ?? e.json).fold ?? [])),
   ].sort((a, b) => a - b);
   const shown = filtered(entries, { style, level, fold });
+  const clear = () => {
+    setStyle(undefined);
+    setLevel(undefined);
+    setFold(undefined);
+  };
+  // The filters chosen, in words: “8-fold, for beginners and Nasrid”.
+  const chosenWords = andList(
+    [
+      fold ? `${fold}-fold` : '',
+      level
+        ? `for ${level === 'beginner' ? 'beginners' : `the ${level} level`}`
+        : '',
+      style ? `from the ${style} tradition` : '',
+    ].filter(Boolean),
+  );
   const hero = entries.find((e) => e.id === HERO) ?? entries[0];
   const first = entries.find((e) => e.id === FIRST) ?? entries[0];
   return (
@@ -301,6 +316,11 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
               ))}
             </select>
           </label>
+          {style || level || fold ? (
+            <button type="button" className="clear-filters" onClick={clear}>
+              Clear all
+            </button>
+          ) : null}
         </div>
         {style && TRADITIONS[style] ? (
           <aside
@@ -346,7 +366,10 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           </ul>
         ) : (
           <p className="empty">
-            No pattern matches both choices. Choose another tradition or level.
+            No pattern is {chosenWords}.{' '}
+            <button type="button" className="clear-filters" onClick={clear}>
+              Clear all
+            </button>
           </p>
         )}
       </section>
@@ -480,6 +503,12 @@ const aboutTitle = (json: unknown): string | undefined => {
   const title = (json as { title?: unknown } | undefined)?.title;
   return typeof title === 'string' ? title : undefined;
 };
+
+/** Words joined as English lists them: “a”, “a and b”, “a, b and c”. */
+function andList(words: readonly string[]): string {
+  if (words.length < 2) return words[0] ?? '';
+  return `${words.slice(0, -1).join(', ')} and ${words.at(-1)}`;
+}
 
 function Chip({
   on,

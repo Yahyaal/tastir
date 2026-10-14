@@ -4827,3 +4827,17 @@ svg.tiles {
     scroll-padding-top: calc(34vh + 24px);
   }
 }
+
+/* Clear all: one click back to every pattern. */
+.library .clear-filters {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--saffron);
+  font: 600 0.9rem var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}

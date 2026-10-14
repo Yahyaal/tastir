@@ -137,9 +137,17 @@ describe('the library', () => {
     choose('Tradition', 'Nasrid');
     expect(cards()).toBe(1);
     choose('Level', 'beginner');
-    expect(screen.getByText(/No pattern matches both choices/)).toBeTruthy();
+    // The empty library names what was chosen, and Clear all undoes it.
+    expect(
+      screen.getByText(
+        /No pattern is for beginners and from the Nasrid tradition/,
+      ),
+    ).toBeTruthy();
     choose('Tradition', '');
     expect(cards()).toBe(1);
+    act(() => screen.getAllByRole('button', { name: 'Clear all' })[0]?.click());
+    expect(cards()).toBe(2);
+    expect(screen.queryByRole('button', { name: 'Clear all' })).toBeNull();
   });
 
   it('keeps a card for a tutorial that cannot be played, with the reason', () => {
