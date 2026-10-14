@@ -86,6 +86,28 @@ describe('colouring rosette by rosette', () => {
     ).not.toBe(colour);
   });
 
+  it('lights a ring on the wall while it is pointed at in the panel', () => {
+    atColor();
+    const wall = document.querySelector('svg.wall') as SVGElement;
+    expect(wall.classList.contains('lighting')).toBe(false);
+    const ring = button('Rosette A, ring 1');
+    fireEvent.pointerEnter(ring);
+    expect(wall.classList.contains('lighting')).toBe(true);
+    const lit = wall.querySelectorAll('.wall-piece.lit');
+    expect(lit.length).toBeGreaterThan(0);
+    // Rosette A's centre stars only: fewer than all the stars.
+    expect(lit.length).toBeLessThan(
+      wall.querySelectorAll(
+        `.wall-piece[data-type="${lit[0]?.getAttribute('data-type')}"]`,
+      ).length,
+    );
+    fireEvent.pointerLeave(ring);
+    expect(wall.classList.contains('lighting')).toBe(false);
+    // The keyboard too.
+    fireEvent.focus(button('Rosette B, ring 1'));
+    expect(wall.querySelectorAll('.wall-piece.lit').length).toBeGreaterThan(0);
+  });
+
   it('puts the colours to paint with before the palettes', () => {
     atColor();
     const panel = document.querySelector('.colour-panel') as HTMLElement;

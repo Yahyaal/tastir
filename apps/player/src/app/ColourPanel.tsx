@@ -50,6 +50,7 @@ export function ColourPanel({
   onReset,
   place,
   oneTile = false,
+  onLight,
 }: {
   /** The model as the coloring colours it (colouredModel). */
   model: Model;
@@ -71,6 +72,8 @@ export function ColourPanel({
   place?: { key: string; color: string };
   /** Coloring the one tile, before it is repeated: its size is fixed. */
   oneTile?: boolean;
+  /** Lights a ring on the wall while the learner points at it here. */
+  onLight?: (ring: string | undefined) => void;
 }) {
   const now = history.now;
   const methods = methodsOf(base);
@@ -137,6 +140,7 @@ export function ColourPanel({
           dispatch={dispatch}
           oneTile={oneTile}
           tools={tools}
+          onLight={onLight}
         />
       ) : (
         <>
@@ -211,6 +215,7 @@ function Rosettes({
   dispatch,
   oneTile,
   tools,
+  onLight,
 }: {
   model: Model;
   fill: Fill;
@@ -221,6 +226,7 @@ function Rosettes({
   oneTile: boolean;
   /** Undo, Redo and Reset, beside the colours. */
   tools: React.ReactNode;
+  onLight?: (ring: string | undefined) => void;
 }) {
   const now = history.now;
   const { now: count, turns, options } = rosetteCounts(model);
@@ -293,6 +299,10 @@ function Rosettes({
                   className="ring-piece"
                   aria-label={`${cardName(card, count)}, ring ${n + 1}`}
                   title={`Ring ${n + 1}`}
+                  onPointerEnter={() => onLight?.(row.key)}
+                  onPointerLeave={() => onLight?.(undefined)}
+                  onFocus={() => onLight?.(row.key)}
+                  onBlur={() => onLight?.(undefined)}
                   onClick={() =>
                     dispatch({ kind: 'paint', type: row.key, color: brush })
                   }

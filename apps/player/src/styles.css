@@ -4786,3 +4786,29 @@ svg.tiles {
 .side-panel section.ready h2 {
   color: var(--malachite);
 }
+
+/* A ring pointed at in the colour panel: its pieces stay bright on the
+   wall, every other piece dims, so the learner sees which ring it is. */
+.wall.lighting .wall-piece:not(.lit) {
+  opacity: 0.3;
+}
+
+.wall.lighting .wall-piece.lit {
+  stroke: var(--current);
+}
+
+/* On a phone, at the colour stage, the wall stays pinned at the top while
+   the colour panel scrolls under it. */
+@media (max-width: 760px) {
+  .player.at-color .plate-area {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+    padding: 4px 0 8px;
+    background: var(--theme-bg-canvas);
+  }
+
+  .player.at-color:not(.along) .stage {
+    height: 34vh;
+  }
+}

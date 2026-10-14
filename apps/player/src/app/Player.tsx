@@ -290,6 +290,8 @@ export function Player({
   // A new palette starts the brush on its own first glaze.
   useEffect(() => setBrush(undefined), [colorHistory.now.palette]);
   const [hovered, setHovered] = useState<number>();
+  // The ring pointed at in the colour panel, lit on the wall.
+  const [lit, setLit] = useState<string>();
   const [selected, setSelected] = useState<number>();
   const [wallStyle, setWallStyle] = useState<WallStyle>(
     opened?.look ?? draft?.look ?? tutorial.pattern.look ?? 'tiles',
@@ -710,6 +712,7 @@ export function Player({
           onHover={setHovered}
           onPick={pick}
           enter={enter}
+          lit={lit}
         />
       ) : (
         <Tiles
@@ -823,6 +826,7 @@ export function Player({
               : undefined
           }
           oneTile={colourFirst && stage.kind === 'color'}
+          onLight={setLit}
           onReset={() =>
             colorDispatch({
               kind: 'reset',

@@ -12,6 +12,7 @@ import { relief, strapWidths, tiling } from './drawing';
 import { patchesAt, patchPath, weaveRepeat } from './interlace';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
+import { placeKey } from './placement';
 import { ringsOf } from './rings';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
 
@@ -114,6 +115,7 @@ export function Wall({
   onHover,
   onPick,
   enter = false,
+  lit,
 }: {
   model: Model;
   colors: readonly string[];
@@ -135,6 +137,9 @@ export function Wall({
     type: number,
     place: { piece: number; i: number; j: number },
   ) => void;
+  /** A ring's colour key (placeKey): its pieces are lit on the wall and the
+   * others dimmed, while the learner points at the ring in the panel. */
+  lit?: string;
   /** Play the move into colour: each piece takes its colour in turn,
    * ring by ring from the middles of the rosettes outward. */
   enter?: boolean;
@@ -166,6 +171,8 @@ export function Wall({
     const out: {
       type: number;
       piece: number;
+      i: number;
+      j: number;
       points: string;
       fill: string;
     }[] = [];
@@ -194,6 +201,8 @@ export function Wall({
             out.push({
               type: piece.type,
               piece: k,
+              i,
+              j,
               points: pts(corners),
               fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
             });
@@ -226,6 +235,19 @@ export function Wall({
     [enter, pattern],
   );
 
+  // The pieces of the ring pointed at in the panel.
+  const litPieces = useMemo(
+    () =>
+      lit === undefined
+        ? undefined
+        : new Set(
+            shifted.pieces.flatMap((p, n) =>
+              placeKey(model, p.piece, p.i, p.j) === lit ? [n] : [],
+            ),
+          ),
+    [lit, shifted, model],
+  );
+
   // Camera changes only move the covering rectangle; the tile's SVG
   // children can be reused without rebuilding every polygon on each frame.
   const pieceNodes = useMemo(
@@ -235,7 +257,7 @@ export function Wall({
           key={i}
           data-type={p.type}
           data-delay={delays?.[p.piece]}
-          className="wall-piece"
+          className={litPieces?.has(i) ? 'wall-piece lit' : 'wall-piece'}
           style={
             {
               '--type': p.type,
@@ -253,7 +275,7 @@ export function Wall({
           strokeLinejoin="round"
         />
       )),
-    [shifted, jali, style, groutWidth, finish, delays],
+    [shifted, jali, style, groutWidth, finish, delays, litPieces],
   );
 
   /** The piece type under a screen position. */
@@ -284,7 +306,7 @@ export function Wall({
   return (
     <svg
       ref={svgRef}
-      className={`drawing wall style-${style}${enter ? ' color-enter' : ''}`}
+      className={`drawing wall style-${style}${enter ? ' color-enter' : ''}${litPieces ? ' lighting' : ''}`}
       viewBox={viewBox(camera.view)}
       preserveAspectRatio="xMidYMid slice"
       role="img"
