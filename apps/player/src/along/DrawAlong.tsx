@@ -350,6 +350,10 @@ export function DrawAlong({
   const [selectedKind, setSelectedKind] = useState<number>();
   const [hoveredKind, setHoveredKind] = useState<number>();
   const [keptAs, setKeptAs] = useState<string>();
+  // The kept pattern's name, and the wall and colours as they were kept, so
+  // Keep says Kept until something changes.
+  const [keptName, setKeptName] = useState<string>();
+  const [keptState, setKeptState] = useState<string>();
   // The pattern and design kept on an earlier visit, which a keep updates.
   const [keptIds, setKeptIds] = useState<{ pattern?: string; design?: string }>(
     () => saved?.kept ?? {},
@@ -454,6 +458,10 @@ export function DrawAlong({
   const [keepFailed, setKeepFailed] = useState<string>();
   /** Keeps the drawing as one of the learner's patterns, with the wall
    * they laid and, when they coloured it, its colours. */
+  const keepState = () =>
+    JSON.stringify([[...chosen], copies.map((c) => c.at), colorHistory.now]);
+  const [keptOpen, setKeptOpen] = useState(false);
+  const unchanged = keptAs !== undefined && keptState === keepState();
   const keepIt = (withColors: boolean) => {
     // A second keep updates the pattern (and design) kept before.
     const kept = ink.keep(keptIds.pattern, withColors);
@@ -482,6 +490,9 @@ export function DrawAlong({
     }
     setKeptIds({ pattern: id, ...(design ? { design } : {}) });
     setKeptAs(id);
+    setKeptName(kept.pattern.tutorial.title);
+    setKeptState(keepState());
+    setKeptOpen(true);
   };
 
   // Hints grow a level with each press; a new step starts without one.
@@ -628,8 +639,36 @@ export function DrawAlong({
     readAt.get(placeKey(p.at)) ??
     (model.scene.elements.has(p.name) || /^P\d+$/.test(p.name) ? '' : p.name);
 
+  // Back and Next for the arrow keys; go is set further down.
+  const goRef = useRef<(to: number) => void>(() => undefined);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // ← and → are Back and Next, as in the lesson, unless a control that
+      // takes keys has the focus, or a question waits for an answer.
+      if (
+        (e.key === 'ArrowLeft' || e.key === 'ArrowRight') &&
+        !e.defaultPrevented &&
+        !e.altKey &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.shiftKey &&
+        !welcome &&
+        !restarting &&
+        !(
+          e.target instanceof Element &&
+          e.target.closest(
+            'input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="dialog"], [role="alertdialog"]',
+          )
+        )
+      ) {
+        const forward = e.key === 'ArrowRight';
+        // Forward only where Next is offered: through the steps, and from
+        // the ink once its pieces close.
+        if (!forward) goRef.current(index - 1);
+        else if (index < shown.length || (inking && ink.result?.matches))
+          goRef.current(index + 1);
+        return;
+      }
       if (e.key === 'Escape') {
         setTargets([]);
         setChoices(undefined);
@@ -648,7 +687,18 @@ export function DrawAlong({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [undo, redo, inkUndo, inkRedo, inking]);
+  }, [
+    undo,
+    redo,
+    inkUndo,
+    inkRedo,
+    inking,
+    index,
+    welcome,
+    restarting,
+    ink.result,
+    shown.length,
+  ]);
 
   // One view for both halves: the step's calm frame, as the player
   // shows it; Fit shows the whole pattern.
@@ -769,6 +819,9 @@ export function DrawAlong({
     setTargets([]);
     setChoices(undefined);
   };
+  goRef.current = go;
+  const keepLabel = (first: string) =>
+    !keptAs ? first : unchanged ? 'Kept ✓' : 'Keep the changes';
   const number = shownIds.indexOf(info?.step ?? 0) + 1;
   const last = index === shown.length - 1;
   // A step whose figures are all helper lines needs nothing drawn.
@@ -868,6 +921,38 @@ export function DrawAlong({
   const boardHalf = (
     <main className="stage along-plate" hidden={phone && showStep && afterInk}>
       {guide}
+      {keptAs && keptOpen && afterInk ? (
+        <div className="along-kept" role="status">
+          <p>
+            <b>✓ Kept in My patterns</b> as “{keptName}”.
+          </p>
+          <div className="along-kept-actions">
+            <a
+              className="button primary"
+              href={
+                keptIds.design
+                  ? `#/mine/${keptAs}/design/${keptIds.design}`
+                  : `#/mine/${keptAs}`
+              }
+            >
+              Play it
+            </a>
+            <a className="button secondary" href={`#/edit/${keptAs}`}>
+              Make a variation
+            </a>
+            <a className="button secondary" href="#/">
+              My patterns
+            </a>
+            <button
+              type="button"
+              className="quiet"
+              onClick={() => setKeptOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      ) : null}
       {afterInk && ready ? (
         <RepeatBoard
           view={camera.view}
@@ -1333,8 +1418,9 @@ export function DrawAlong({
                             type="button"
                             className="next"
                             onClick={() => keepIt(true)}
+                            disabled={unchanged}
                           >
-                            Keep it
+                            {keepLabel('Keep it')}
                           </button>,
                         ]
                       : [
@@ -1351,8 +1437,9 @@ export function DrawAlong({
                             type="button"
                             className="next"
                             onClick={() => keepIt(false)}
+                            disabled={unchanged}
                           >
-                            Keep it as it is
+                            {keepLabel('Keep it as it is')}
                           </button>,
                         ],
                   },
@@ -1375,8 +1462,9 @@ export function DrawAlong({
                             type="button"
                             className="next"
                             onClick={() => keepIt(true)}
+                            disabled={unchanged}
                           >
-                            Keep it
+                            {keepLabel('Keep it')}
                           </button>,
                         ],
                   },

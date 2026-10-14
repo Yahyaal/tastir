@@ -10,6 +10,8 @@ import example from '@tutorials/eight-fold-star-and-cross.json';
 import dado from '@tutorials/alhambra-comares-dado.json';
 import infantas from '@tutorials/alhambra-infantas-crosses.json';
 import bones from '@tutorials/alhambra-comares-bones.json';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import App from '../app/app';
 import { listPatterns } from '../editor/patterns';
 import { listDesigns } from '../app/designs';
@@ -192,6 +194,39 @@ describe('drawing along', () => {
     expect(guide.querySelector('.el.current')).toBeTruthy();
   });
 
+  it('goes back and on with the arrow keys, but not while a menu has the keys', () => {
+    openAlong();
+    const step = () =>
+      document.querySelector('.along-dot[aria-current="step"]')?.textContent;
+    expect(step()).toBe('1');
+    fireEvent.keyDown(window, { key: 'ArrowRight' });
+    fireEvent.keyDown(window, { key: 'ArrowRight' });
+    expect(step()).toBe('3');
+    fireEvent.keyDown(window, { key: 'ArrowLeft' });
+    expect(step()).toBe('2');
+    // A select takes its own arrow keys.
+    const symmetry = screen.getByRole('combobox');
+    fireEvent.keyDown(symmetry, { key: 'ArrowRight' });
+    expect(step()).toBe('2');
+  });
+
+  it('shows only the points a step starts from in its guide', () => {
+    openAlong();
+    click('Draw it for me');
+    click('Next');
+    const guide = screen.getByRole('img', {
+      name: 'The step to copy, as a faint guide',
+    });
+    expect(guide.querySelector('.mark.used')).toBeTruthy();
+    // The crossings the step's lines make wait until they are drawn: the
+    // guide's style shows only the points it starts from (jsdom does not
+    // apply style sheets, so the rule itself is checked).
+    const alongCss = readFileSync(join(__dirname, 'along.css'), 'utf8');
+    expect(alongCss.replace(/\s+/g, ' ')).toContain(
+      '.along-guide .mark:not(.used), .along-guide text { display: none; }',
+    );
+  });
+
   it('shows the step’s own tools first, and every tool under More tools', () => {
     openAlong();
     const bar = screen.getByRole('toolbar', { name: 'Tools' });
@@ -302,9 +337,16 @@ describe('drawing along', () => {
     expect(kept?.basedOn?.tutorial).toBe('eight-fold-star-and-cross');
     expect(kept?.tutorial.title).toBe('My Eight-fold star and cross');
     expect(kept?.tutorial.credits.at(-1)?.note).toMatch(/Drawn along/);
+    // Kept is said plainly over the board, with the ways on.
     expect(
-      screen.getByRole('link', { name: 'Play it' }).getAttribute('href'),
-    ).toBe(`#/mine/${kept?.id}`);
+      screen.getByText(/Kept in My patterns/).closest('.along-kept'),
+    ).toBeTruthy();
+    for (const link of screen.getAllByRole('link', { name: 'Play it' }))
+      expect(link.getAttribute('href')).toBe(`#/mine/${kept?.id}`);
+    expect(
+      (screen.getByRole('button', { name: 'Kept ✓' }) as HTMLButtonElement)
+        .disabled,
+    ).toBe(true);
     expect(kept?.tutorial.expect?.pieces.map((p) => p.name).sort()).toEqual([
       'cross',
       'star',
@@ -679,7 +721,10 @@ describe('drawing along', () => {
 
     // Keeping twice updates one pattern, and its colours are its design.
     click('Keep it');
-    click('Keep it');
+    fireEvent.click(
+      document.querySelectorAll('.along-colors .swatch-button')[3] as Element,
+    );
+    click('Keep the changes');
     expect(listPatterns()).toHaveLength(1);
     const kept = listPatterns()[0];
     expect(kept?.tutorial.title).toBe('My Eight-fold star and cross');
@@ -784,7 +829,15 @@ describe('drawing along', () => {
     click('Repeat it');
     click('Color it');
     click('Keep it');
-    click('Keep it');
+    // Kept, until something changes: then Keep keeps the changes.
+    expect(
+      (screen.getByRole('button', { name: 'Kept ✓' }) as HTMLButtonElement)
+        .disabled,
+    ).toBe(true);
+    fireEvent.change(screen.getByRole('combobox', { name: /Palette/ }), {
+      target: { value: 'Alhambra' },
+    });
+    click('Keep the changes');
     const patterns = listPatterns();
     expect(patterns).toHaveLength(1);
     expect(patterns[0]?.tutorial.title).toBe('My Eight-fold star and cross');

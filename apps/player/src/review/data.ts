@@ -253,6 +253,16 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/redesign/Along-kept.png',
+        caption:
+          'Draw along, after Keep: “Kept in My patterns as …”, with Play it, Make a variation and My patterns, over the board. The button says Kept ✓ until something changes, then Keep the changes.',
+      },
+      {
+        src: 'renders/redesign/Along-guide-points.png',
+        caption:
+          'Draw along, step 5: the guide shows only the points the step starts from (blue); the crossings its lines make appear on your board once you draw them.',
+      },
+      {
         src: 'renders/redesign/R5-step1-light.png',
         caption:
           'R5. Draw along on one board: your board takes the whole width, and the step to copy lies over it as a faint dashed guide (here the first circle, through O and E). Only the step’s tool shows, Compass, with More tools beside it.',
@@ -1965,8 +1975,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'R5 done: draw along on one board',
-    text: 'At the steps and the ink there is one board: the step to copy lies over your drawing as a faint dashed guide, in the same view, and only the tools the step uses show, with the rest under More tools (Symmetry, Undo and Redo always show). The repeat and the colours keep their two halves. Earlier today: Bou Inania’s repeat now copies the tile the ink shows, and colour fills ring by ring from each rosette’s centre.',
+    title: 'Draw along: your three points',
+    text: 'Keep did keep your pattern, but the only sign was a small line of text; now a box over the board says it was kept, with Play it, Make a variation and My patterns, and the button says Kept ✓ until you change something. The guide now shows only the points a step starts from; the crossings it makes appear once you draw the lines. And ← and → are Back and Next, as in the lesson. R1 to R5 of the redesign are done; R6, the phone, is next.',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [

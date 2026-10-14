@@ -773,9 +773,12 @@
   height: 100%;
 }
 
-/* Only what this step adds: the earlier steps are the learner's own lines. */
+/* Only what this step adds: the earlier steps are the learner's own lines.
+   Of the points, only those the step starts from (blue); the crossings its
+   new lines make show on the learner's board once they are drawn, so a
+   point to use is never mistaken for one still to come. */
 .along-guide .el:not(.current),
-.along-guide .mark:not(.current):not(.used),
+.along-guide .mark:not(.used),
 .along-guide text {
   display: none;
 }
@@ -794,4 +797,42 @@
 
 .along-guide.inking .ink {
   opacity: 0.35;
+}
+
+/* Kept: said plainly over the board, with the ways on. */
+.along-kept {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  z-index: 3;
+  transform: translateX(-50%);
+  display: grid;
+  gap: 12px;
+  width: min(520px, calc(100% - 32px));
+  padding: 16px 20px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 16px;
+  background: var(--theme-bg-surface);
+  box-shadow: 0 12px 32px
+    color-mix(in srgb, var(--shadow) calc(45% * var(--shadow-k)), transparent);
+}
+
+.along-kept p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.along-kept b {
+  color: var(--malachite);
+}
+
+.along-kept-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.along-kept-actions .quiet {
+  margin-left: auto;
 }
