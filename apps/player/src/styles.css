@@ -656,39 +656,45 @@ a.button.primary:hover {
     min-height: 0;
   }
 
-  .side-panel {
-    max-height: 100%;
+  .lesson-side {
     overflow-y: auto;
     padding-right: 4px;
   }
-
-  .journey {
-    max-height: 100%;
-    overflow-y: auto;
-  }
 }
 
-/* Journey on the left, the plate in the middle, colors on the right. */
+/* The drawing on the left, in its cedar frame; the step and its buttons
+   (and, at the color stage, the color panel) beside it; the timeline of
+   steps along the bottom. */
 .workspace {
   flex: 1;
   display: grid;
-  grid-template-columns: 148px minmax(0, 1fr);
-  gap: 20px;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 16px 24px;
   min-height: 0;
 }
 
-.workspace.with-panel {
-  grid-template-columns: 148px minmax(0, 1fr) 300px;
+.workspace > .journey {
+  grid-column: 1 / -1;
 }
 
 .plate-area {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  gap: 14px;
+  min-height: 0;
 }
 
-/* The plate: the obsidian drafting stage framed by an architectural hairline and subtle grid. */
+.lesson-side {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* The plate: paper in a cedar frame, with a faint drafting grid. */
 .stage {
   position: relative;
   flex: 1;
@@ -699,14 +705,37 @@ a.button.primary:hover {
   background-image:
     linear-gradient(to right, var(--theme-grid-line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--theme-grid-line) 1px, transparent 1px);
-  border-radius: 14px;
-  border: 1px solid var(--theme-border);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--theme-accent) 6%, transparent),
-    0 16px 44px
-      color-mix(in srgb, var(--shadow) calc(60% * var(--shadow-k)), transparent);
+  border-radius: 22px;
+  border: 8px solid var(--theme-frame);
+  box-shadow: 0 16px 44px
+    color-mix(in srgb, var(--shadow) calc(40% * var(--shadow-k)), transparent);
   overflow: hidden;
   color: var(--theme-text-primary);
+}
+
+/* Fit: back to the whole drawing, in the frame's corner. */
+.player .plate-area .fit {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid var(--theme-border-hover);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+}
+
+.player .plate-area .fit svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
 }
 
 .drawing {
@@ -723,20 +752,34 @@ main.stage .drawing:not(.wall) {
   cursor: grabbing;
 }
 
-/* The journey: every step of the construction, then ink, repeat, color. */
+/* The timeline: the construction's steps, then ink, repeat and color,
+   each in a khatam star. Green is done, orange is where the learner is. */
 .journey {
-  align-self: start;
-  position: sticky;
-  top: 12px;
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 12px 4px 4px;
+  border-top: 1px solid var(--theme-border);
+  overflow-x: auto;
   font-size: 0.85rem;
 }
 
-.journey h2 {
-  margin: 0 0 8px;
-  font-family: var(--display);
-  font-weight: 400;
-  font-size: 0.95rem;
-  color: var(--theme-text-muted);
+.journey .chapter {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.journey h2,
+.journey .phase-name {
+  margin: 0;
+  font-family: var(--text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-label);
 }
 
 .journey ol {
@@ -745,141 +788,129 @@ main.stage .drawing:not(.wall) {
   padding: 0;
 }
 
-.journey .steps {
-  display: grid;
-  grid-template-columns: repeat(4, 28px);
-  gap: 6px;
-  margin-bottom: 14px;
+.journey .steps,
+.journey .phases {
+  display: flex;
+  gap: 2px;
 }
 
 .journey .phases {
-  display: grid;
-  gap: 6px;
-  border-left: 1px solid var(--theme-border);
-  margin-left: 13px;
-  padding-left: 0;
+  gap: 20px;
 }
 
-.journey button {
-  font-size: 0.8rem;
+.player .journey button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--theme-text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
-.player .journey .step-dot {
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--theme-text-muted);
-  border: 1px solid var(--theme-border);
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  font-variant-numeric: tabular-nums;
-  transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.player .journey .step-dot:hover:not(:disabled) {
-  border-color: var(--theme-border-hover);
-  color: var(--theme-text-primary);
-}
-
-.player .journey .step-dot.done {
-  background: color-mix(in srgb, var(--theme-accent-cobalt) 12%, transparent);
-  color: var(--theme-accent);
-  border-color: color-mix(in srgb, var(--theme-accent-cobalt) 40%, transparent);
-}
-
-.player .journey .step-dot[aria-current='step'] {
-  background: var(--saffron);
-  color: var(--theme-bg-canvas);
-  border-color: var(--saffron);
-  box-shadow: 0 0 12px var(--theme-accent-muted);
-  font-weight: 700;
+.player .journey .step-dot,
+.player .journey .phase-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
 }
 
 .player .journey .phase {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  margin-left: -14px;
-  padding: 4px 8px 4px 0;
-  background: transparent;
-  border: 0;
-  border-radius: 6px;
-  color: var(--theme-text-muted);
-  text-align: left;
-  font-size: 0.9rem;
-  transition: all 150ms ease;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
 
-.phase-mark {
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  border: 1px solid var(--theme-border);
-  background: var(--theme-bg-surface);
-  display: grid;
-  place-items: center;
-  transition: all 150ms ease;
+.journey .khatam {
+  position: absolute;
+  inset: 4px;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  fill: var(--theme-bg-card);
+  stroke: var(--theme-border-hover);
+  stroke-width: 1.2;
+  transition:
+    transform 150ms ease,
+    fill 150ms ease;
 }
 
-.phase-mark svg {
-  width: 14px;
-  height: 14px;
+.journey .step-number,
+.journey .phase-mark > svg:not(.khatam) {
+  position: relative;
+}
+
+.journey .phase-mark > svg:not(.khatam) {
+  width: 13px;
+  height: 13px;
+}
+
+.player .journey button:hover,
+.player .journey button:focus {
+  background: none;
+}
+
+.player .journey button:hover .khatam {
+  stroke: var(--theme-text-primary);
+}
+
+.player .journey .done {
+  color: var(--theme-bg-canvas);
+}
+
+.journey .done .khatam {
+  fill: var(--malachite);
+  stroke: var(--malachite);
+}
+
+.player .journey [aria-current='step'] {
+  color: #1c2733;
+}
+
+.player .journey .phase[aria-current='step'] .phase-name {
+  color: var(--theme-text-primary);
+}
+
+.journey [aria-current='step'] .khatam {
+  fill: var(--current);
+  stroke: var(--current);
+  transform: scale(1.18);
 }
 
 .player .journey .phase.done {
-  color: var(--on-lapis);
+  color: var(--theme-bg-canvas);
 }
 
-.player .journey .phase.done .phase-mark {
-  background: var(--lapis-raised);
-  border-color: var(--lapis-raised);
-}
-
-.player .journey [aria-current='step'],
-.player .journey [aria-current='step'] .phase-mark {
-  color: var(--lapis-deep);
-  background: var(--saffron);
-  border-color: var(--saffron);
-}
-
-.player .journey .phase[aria-current='step'] {
-  background: transparent;
-  color: var(--saffron);
-  font-weight: 700;
-}
-
-.player .journey button:hover:not([aria-current='step']) {
-  border-color: var(--on-lapis);
-  color: var(--on-lapis);
-}
-
-/* What the step says, under the plate. */
+/* The step, beside the drawing. */
 .caption {
   display: flex;
-  gap: 24px;
-  align-items: flex-end;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.text {
-  max-width: 68ch;
+.workspace:not(.with-panel) .caption {
+  flex: 1;
 }
 
 .text p {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   line-height: 1.5;
 }
 
 .label {
-  margin: 0 0 2px;
-  font-family: var(--display);
-  font-size: 1rem;
-  color: var(--saffron);
+  margin: 0 0 6px;
+  font-family: var(--text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-label);
 }
 
 .stage-hint {
@@ -889,27 +920,46 @@ main.stage .drawing:not(.wall) {
 }
 
 .instruction {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 1.5;
 }
 
 .text .instruction {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
+.resumed {
+  font-size: 0.9rem;
+  color: var(--theme-text-muted);
+}
+
+.player .resumed button.quiet {
+  padding: 0;
+  color: var(--saffron);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Back and Next are the big buttons; Play sits quietly under them. */
 .caption nav {
   display: flex;
-  gap: 8px;
-  flex-shrink: 0;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
 }
 
 .caption nav button:not(.quiet) {
-  min-width: 96px;
-  padding: 10px 20px;
+  flex: 1;
+  min-width: 0;
+  min-height: 52px;
+  padding: 10px 16px;
+  white-space: nowrap;
+  border-radius: 999px;
+  font-size: 1rem;
 }
 
 .caption nav .next {
+  flex: 2;
   background: var(--saffron);
   border-color: var(--saffron);
   color: var(--lapis-deep);
@@ -918,6 +968,15 @@ main.stage .drawing:not(.wall) {
 
 .caption nav .next:hover:not(:disabled) {
   background: var(--saffron-hover);
+}
+
+.player .caption nav .playback {
+  order: 3;
+  flex-basis: 100%;
+  min-height: 44px;
+  color: var(--saffron);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 .ink-tools {
@@ -2827,12 +2886,9 @@ main.stage .drawing:not(.wall) {
 /* Narrow screens */
 
 @media (max-width: 1100px) {
+  .workspace,
   .workspace.with-panel {
-    grid-template-columns: 148px minmax(0, 1fr);
-  }
-
-  .workspace.with-panel .side-panel {
-    grid-column: 2;
+    grid-template-columns: minmax(0, 1fr) 300px;
   }
 
   /* The panel goes under the wall here, so the page grows and scrolls
@@ -2843,7 +2899,7 @@ main.stage .drawing:not(.wall) {
     min-height: 100vh;
   }
 
-  .player.at-color .side-panel {
+  .player.at-color .lesson-side {
     max-height: none;
     overflow: visible;
   }
@@ -2898,43 +2954,18 @@ main.stage .drawing:not(.wall) {
   .workspace,
   .workspace.with-panel {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
   }
 
-  .workspace.with-panel .side-panel {
-    grid-column: 1;
+  /* The timeline becomes a strip above the plate. */
+  .workspace > .journey {
+    order: -1;
+    border-top: 0;
+    padding-top: 0;
   }
 
-  /* The journey becomes a thin strip above the plate. */
-  .journey {
-    position: static;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    overflow-x: auto;
-    padding-bottom: 4px;
-  }
-
-  .journey h2 {
-    display: none;
-  }
-
-  .journey .steps {
-    display: flex;
-    margin: 0;
-  }
-
-  .journey .phases {
-    display: flex;
-    border: 0;
-    margin: 0;
-  }
-
-  .player .journey .phase {
-    margin: 0;
-  }
-
-  .player .journey .phase .phase-name {
-    display: none;
+  .lesson-side {
+    overflow: visible;
   }
 
   .stage {
@@ -2966,6 +2997,11 @@ main.stage .drawing:not(.wall) {
     min-width: 0;
     flex: 1;
     padding-inline: 12px;
+  }
+
+  .player .caption nav .playback {
+    order: 0;
+    flex-basis: auto;
   }
 
   .hero {

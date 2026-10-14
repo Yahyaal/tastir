@@ -29,6 +29,36 @@ describe('the player', () => {
     ).toContain('done');
   });
 
+  it('reopens at the step the learner left, and starts over when asked', () => {
+    const first = render(<Play json={example} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Go to step 3' }));
+    first.unmount();
+    render(<Play json={example} />);
+    expect(label()).toBe('Step 3 of 6');
+    expect(screen.getByText(/Continued where you left off/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Start from step 1' }));
+    expect(label()).toBe('Step 1 of 6');
+    expect(screen.queryByText(/Continued where you left off/)).toBeNull();
+  });
+
+  it('forgets the step once the learner reaches the end', () => {
+    const first = render(<Play json={example} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Go to step 4' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Go to color' }));
+    first.unmount();
+    render(<Play json={example} />);
+    expect(label()).toBe('Step 1 of 6');
+  });
+
+  it('keeps the step when the finished wall is only opened, not reached', () => {
+    const first = render(<Play json={example} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Go to step 5' }));
+    first.unmount();
+    render(<Play json={example} start="result" />).unmount();
+    render(<Play json={example} />);
+    expect(label()).toBe('Step 5 of 6');
+  });
+
   it('starts at step 1 with its text, and Back disabled', () => {
     render(<Play json={example} />);
     expect(

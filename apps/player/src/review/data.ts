@@ -236,7 +236,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 8,
     status: 'decided',
     decision:
-      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. R1 is built: the pictures marked R1 show it in both themes.',
+      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. R1 and R2 are built: the pictures marked R1 and R2 show them.',
     summary:
       'The plan for building the redesign you approved into the player, one task at a time, with a light and a dark mode.',
     story: [
@@ -252,6 +252,34 @@ export const PATTERNS: readonly Pattern[] = [
       'Each task is one commit, shown here before and after in both themes, with all tests, lint and typecheck passing. Tests that look for labels that change are updated in the same commit, never deleted.',
     ],
     pictures: [
+      {
+        src: 'renders/redesign/R2-step-light.png',
+        caption:
+          'R2. A lesson at step 4: the drawing in its cedar frame, the step beside it with Back and Next, and the timeline of khatam stars along the bottom (green done, orange here).',
+      },
+      {
+        src: 'renders/redesign/R2-step-dark.png',
+        caption: 'R2. The same step, dark.',
+      },
+      {
+        src: 'renders/redesign/R2-resumed-dark.png',
+        caption:
+          'R2. Bou Inania opened again after leaving it at step 9: “Continued where you left off”, with Start from step 1 beside it. The 22 steps fit on one row.',
+      },
+      {
+        src: 'renders/redesign/R2-ink-light.png',
+        caption: 'R2. The ink: Color it and Repeat it stay the two ways on.',
+      },
+      {
+        src: 'renders/redesign/R2-color-light.png',
+        caption:
+          'R2. The color stage: the step and its buttons sit above the color panel, which R3 rebuilds.',
+      },
+      {
+        src: 'renders/redesign/R2-phone.png',
+        caption:
+          'R2. On a phone the timeline sits above the drawing and scrolls sideways. R6 tidies the rest of the phone.',
+      },
       {
         src: 'renders/redesign/R1-home-light.png',
         caption:
@@ -1868,14 +1896,14 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'R1 done: the light and dark themes',
-    text: 'Every page now has a light (plaster) and a dark (night) theme, with the new fonts and a sun and moon button in the headers. The app starts in your device’s setting and remembers your choice. Only colours and fonts changed; the layouts come in R2 to R6. Press the moon in any header to switch.',
+    title: 'R2 done: the lesson',
+    text: 'The drawing sits in a cedar frame with the step beside it, Back and Next are the big buttons (Play is a quiet link under them, Fit is on the drawing), and one timeline of khatam stars along the bottom replaces the grid of step numbers. A lesson you leave reopens at that step, with Start from step 1 beside it; reaching the end forgets it. R1, the two themes, is done too.',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [
     {
-      title: 'R2: the lesson',
-      text: 'The drawing in the arch with the step text beside it, and one timeline in four chapters (Construct, Ink, Repeat, Colour) in place of the grid of step numbers.',
+      title: 'R3: the colour panel',
+      text: 'Paint colours first, then the pieces by ring, then the palettes as strips, with Undo beside them; this is also how the colour-stage mock gets built.',
       link: { label: 'The plan', href: '#redesign' },
     },
     {

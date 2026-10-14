@@ -205,20 +205,41 @@ export function Player({
   // How many copies of the tile the repeat lays: so many along each
   // slide, or the whole wall.
   const [copies, setCopies] = useState<Copies>('wall');
-  const [index, setIndex] = useState(() =>
-    start === 'result'
-      ? stagesOf(tutorial).length - 1
-      : start === 'repeat'
-        ? stagesOf(tutorial).length - 2
-        : 0,
+  // Watching again, the lesson opens at the step the learner left.
+  const [resumedAt, setResumedAt] = useState(() =>
+    start === 'beginning' && !sharedView
+      ? lessonAt(address, stagesOf(tutorial))
+      : undefined,
   );
+  const [index, setIndex] = useState(
+    () =>
+      resumedAt ??
+      (start === 'result'
+        ? stagesOf(tutorial).length - 1
+        : start === 'repeat'
+          ? stagesOf(tutorial).length - 2
+          : 0),
+  );
+  const openedAt = useRef(index);
   const stage = useMemo(
     (): Stage => stages[index] ?? { kind: 'color' },
     [stages, index],
   );
   const last = stages.length - 1;
   const [speed, setSpeed] = useState(1);
-  const [playing, setPlaying] = useState(start === 'beginning');
+  const [playing, setPlaying] = useState(
+    start === 'beginning' && resumedAt === undefined,
+  );
+  // The step is remembered as the learner goes, and forgotten once they
+  // reach the end, so the next visit starts again from step 1.
+  useEffect(() => {
+    if (sharedView) return;
+    if (resumedAt !== undefined && index !== resumedAt) setResumedAt(undefined);
+    if ((stage.kind === 'step' || stage.kind === 'ink') && index > 0)
+      keepLessonAt(address, index);
+    else if (index === 0 || (index === last && index !== openedAt.current))
+      keepLessonAt(address, undefined);
+  }, [address, index, last, resumedAt, sharedView, stage.kind]);
   const plateRef = useRef<HTMLElement>(null);
   const clock = useRef<{ index: number; remaining: number } | undefined>(
     undefined,
@@ -893,14 +914,40 @@ export function Player({
       </header>
       {banner}
       <div className={colorStage ? 'workspace with-panel' : 'workspace'}>
-        <Journey stages={stages} index={index} onJump={jump} />
         <section ref={plateRef} className="plate-area">
           <main className={showOriginal ? 'stage comparing' : 'stage'}>
             {showOriginal ? <Original photos={photos} /> : null}
             {picture}
           </main>
+          {onConstruction ? (
+            <button
+              type="button"
+              className="fit"
+              aria-label="Fit"
+              title="Show the whole drawing"
+              onClick={() => camera.goTo(fullView(model))}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+              </svg>
+            </button>
+          ) : null}
+        </section>
+        <div className="lesson-side">
           <footer className="caption">
             <div className="text">
+              {resumedAt !== undefined ? (
+                <p className="resumed">
+                  Continued where you left off.{' '}
+                  <button
+                    type="button"
+                    className="quiet"
+                    onClick={() => show('watch')}
+                  >
+                    Start from step 1
+                  </button>
+                </p>
+              ) : null}
               <p className="label">{label}</p>
               {hint ? <p className="stage-hint">{hint}</p> : null}
               {tutorial.verification?.status === 'unverified' ? (
@@ -973,15 +1020,13 @@ export function Player({
               ) : null}
             </div>
             <nav aria-label="Steps">
-              {onConstruction ? (
-                <button
-                  type="button"
-                  className="quiet"
-                  onClick={() => camera.goTo(fullView(model))}
-                >
-                  Fit
-                </button>
-              ) : null}
+              <button
+                type="button"
+                className="quiet playback"
+                onClick={togglePlayback}
+              >
+                {playing ? 'Pause' : index === last ? 'Replay' : 'Play'}
+              </button>
               <button
                 type="button"
                 className="secondary"
@@ -989,13 +1034,6 @@ export function Player({
                 disabled={index === 0}
               >
                 Back
-              </button>
-              <button
-                type="button"
-                className="secondary"
-                onClick={togglePlayback}
-              >
-                {playing ? 'Pause' : index === last ? 'Replay' : 'Play'}
               </button>
               {stage.kind === 'ink' ? (
                 <>
@@ -1026,141 +1064,142 @@ export function Player({
               )}
             </nav>
           </footer>
-        </section>
-        {colorStage ? (
-          <aside className="side-panel" aria-label="The wall">
-            {stage.kind === 'color' ? colorsSection : null}
-            {!mine && !sharedView ? (
-              <ExploreNext tutorial={full.tutorial} />
-            ) : null}
-            {narrow ? null : (
-              <section>
-                <h2>My design</h2>
-                {saveDesign}
-              </section>
-            )}
-            {photos.length && onWall ? (
-              <section>
-                <h2>The original</h2>
-                <button
-                  type="button"
-                  className="compare-toggle"
-                  aria-pressed={comparing}
-                  onClick={() => setComparing(!comparing)}
-                >
-                  {comparing
-                    ? 'Hide the original'
-                    : 'Compare with the original'}
-                </button>
-                <p className="hint">
-                  A photo of the real pattern, beside the wall. Click it to see
-                  it at full size.
-                </p>
-              </section>
-            ) : null}
-            {onWall ? (
-              <section>
-                <h2>The wall</h2>
-                <div className="wall-tools">
-                  <label>
-                    Style
-                    <select
-                      value={wallStyle}
-                      onChange={(e) => {
-                        const style = e.target.value as WallStyle;
-                        setWallStyle(style);
-                        if (style === 'jali' && grout < 0.5) setGrout(0.5);
-                      }}
-                    >
-                      {WALL_STYLES.map((s) => (
-                        <option key={s} value={s}>
-                          {s[0]?.toUpperCase() + s.slice(1)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    {wallStyle === 'jali'
-                      ? 'Lattice'
-                      : banded(wallStyle)
-                        ? 'Band'
-                        : 'Grout'}
-                    <input
-                      type="range"
-                      min={wallStyle === 'jali' ? 0.5 : 0}
-                      max={3}
-                      step={0.25}
-                      value={
-                        wallStyle === 'jali' ? Math.max(0.5, grout) : grout
-                      }
-                      onChange={(e) => setGrout(Number(e.target.value))}
-                    />
-                  </label>
-                </div>
-                <p className="hint">
-                  {wallStyle === 'jali'
-                    ? 'An open screen. Switch styles to see your tile colors. '
-                    : ''}
-                  Drag to move along the wall, scroll to zoom.
-                </p>
-              </section>
-            ) : null}
-            {onWall && wallStyle === 'jali' ? (
-              <JaliControls appearance={jali} onChange={setJali} />
-            ) : null}
-            {stage.kind === 'color' ? null : colorsSection}
-            <section>
-              <h2>Take it with you</h2>
-              {sharedView ? null : (
-                <ShareLink
-                  address={address}
-                  name={design?.name ?? tutorial.title}
-                  fields={() => {
-                    const { tutorial: _t, ...rest } = designFields();
-                    return rest;
-                  }}
-                />
+          {colorStage ? (
+            <aside className="side-panel" aria-label="The wall">
+              {stage.kind === 'color' ? colorsSection : null}
+              {!mine && !sharedView ? (
+                <ExploreNext tutorial={full.tutorial} />
+              ) : null}
+              {narrow ? null : (
+                <section>
+                  <h2>My design</h2>
+                  {saveDesign}
+                </section>
               )}
-              <div className="export-tools">
-                <button
-                  type="button"
-                  className="quiet"
-                  onClick={() =>
-                    download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
-                  }
-                >
-                  Download SVG
-                </button>
-                <button
-                  type="button"
-                  className="quiet"
-                  onClick={() =>
-                    void pngBlob(exportSvg()).then((png) =>
-                      download(png, `${tutorial.id}.png`),
-                    )
-                  }
-                >
-                  Download PNG
-                </button>
-                <select
-                  aria-label="Paper"
-                  value={paper}
-                  onChange={(e) => setPaper(e.target.value as Paper)}
-                >
-                  <option>A4</option>
-                  <option>Letter</option>
-                </select>
-                <button
-                  type="button"
-                  className="quiet"
-                  onClick={() => setPrinting(true)}
-                >
-                  Print line sheet
-                </button>
-              </div>
-            </section>
-          </aside>
-        ) : null}
+              {photos.length && onWall ? (
+                <section>
+                  <h2>The original</h2>
+                  <button
+                    type="button"
+                    className="compare-toggle"
+                    aria-pressed={comparing}
+                    onClick={() => setComparing(!comparing)}
+                  >
+                    {comparing
+                      ? 'Hide the original'
+                      : 'Compare with the original'}
+                  </button>
+                  <p className="hint">
+                    A photo of the real pattern, beside the wall. Click it to
+                    see it at full size.
+                  </p>
+                </section>
+              ) : null}
+              {onWall ? (
+                <section>
+                  <h2>The wall</h2>
+                  <div className="wall-tools">
+                    <label>
+                      Style
+                      <select
+                        value={wallStyle}
+                        onChange={(e) => {
+                          const style = e.target.value as WallStyle;
+                          setWallStyle(style);
+                          if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                        }}
+                      >
+                        {WALL_STYLES.map((s) => (
+                          <option key={s} value={s}>
+                            {s[0]?.toUpperCase() + s.slice(1)}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>
+                      {wallStyle === 'jali'
+                        ? 'Lattice'
+                        : banded(wallStyle)
+                          ? 'Band'
+                          : 'Grout'}
+                      <input
+                        type="range"
+                        min={wallStyle === 'jali' ? 0.5 : 0}
+                        max={3}
+                        step={0.25}
+                        value={
+                          wallStyle === 'jali' ? Math.max(0.5, grout) : grout
+                        }
+                        onChange={(e) => setGrout(Number(e.target.value))}
+                      />
+                    </label>
+                  </div>
+                  <p className="hint">
+                    {wallStyle === 'jali'
+                      ? 'An open screen. Switch styles to see your tile colors. '
+                      : ''}
+                    Drag to move along the wall, scroll to zoom.
+                  </p>
+                </section>
+              ) : null}
+              {onWall && wallStyle === 'jali' ? (
+                <JaliControls appearance={jali} onChange={setJali} />
+              ) : null}
+              {stage.kind === 'color' ? null : colorsSection}
+              <section>
+                <h2>Take it with you</h2>
+                {sharedView ? null : (
+                  <ShareLink
+                    address={address}
+                    name={design?.name ?? tutorial.title}
+                    fields={() => {
+                      const { tutorial: _t, ...rest } = designFields();
+                      return rest;
+                    }}
+                  />
+                )}
+                <div className="export-tools">
+                  <button
+                    type="button"
+                    className="quiet"
+                    onClick={() =>
+                      download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
+                    }
+                  >
+                    Download SVG
+                  </button>
+                  <button
+                    type="button"
+                    className="quiet"
+                    onClick={() =>
+                      void pngBlob(exportSvg()).then((png) =>
+                        download(png, `${tutorial.id}.png`),
+                      )
+                    }
+                  >
+                    Download PNG
+                  </button>
+                  <select
+                    aria-label="Paper"
+                    value={paper}
+                    onChange={(e) => setPaper(e.target.value as Paper)}
+                  >
+                    <option>A4</option>
+                    <option>Letter</option>
+                  </select>
+                  <button
+                    type="button"
+                    className="quiet"
+                    onClick={() => setPrinting(true)}
+                  >
+                    Print line sheet
+                  </button>
+                </div>
+              </section>
+            </aside>
+          ) : null}
+        </div>
+        <Journey stages={stages} index={index} onJump={jump} />
       </div>
     </div>
   );
@@ -1288,9 +1327,51 @@ const COPIES: readonly Copies[] = [[2, 1], [2, 2], [3, 3], 'wall'];
 
 const PHASE_NAMES = { ink: 'Ink', repeat: 'Repeat', color: 'Color' } as const;
 
+/** Where the learner left a lesson: a step or the ink, never the end. */
+function lessonAt(
+  address: string,
+  stages: readonly Stage[],
+): number | undefined {
+  try {
+    const saved: unknown = JSON.parse(
+      window.localStorage.getItem(`tastir.lessonAt.${address}`) ?? 'null',
+    );
+    const kind = typeof saved === 'number' ? stages[saved]?.kind : undefined;
+    return typeof saved === 'number' &&
+      saved > 0 &&
+      (kind === 'step' || kind === 'ink')
+      ? saved
+      : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Remembers (or, with undefined, forgets) where the learner is. */
+function keepLessonAt(address: string, at: number | undefined) {
+  try {
+    const key = `tastir.lessonAt.${address}`;
+    if (at === undefined) window.localStorage.removeItem(key);
+    else window.localStorage.setItem(key, JSON.stringify(at));
+  } catch {
+    // Not remembered; the lesson opens at step 1 next time.
+  }
+}
+
+/** The eight-pointed khatam star each step and phase sits in. */
+function Khatam() {
+  return (
+    <svg className="khatam" viewBox="0 0 24 24" aria-hidden="true">
+      <polygon points="23,12 19.8,15.2 19.8,19.8 15.2,19.8 12,23 8.8,19.8 4.2,19.8 4.2,15.2 1,12 4.2,8.8 4.2,4.2 8.8,4.2 12,1 15.2,4.2 19.8,4.2 19.8,8.8" />
+    </svg>
+  );
+}
+
 /**
- * Where the learner is: every step of the construction, then the ink, the
- * repeat and the color. Each can be clicked to go straight there.
+ * Where the learner is, under the drawing: the steps of the construction,
+ * then the ink, the repeat and the color, in the order the learner takes
+ * them. Each sits in a khatam star (green when done, orange where the
+ * learner is) and can be clicked to go straight there.
  */
 function Journey({
   stages,
@@ -1303,37 +1384,50 @@ function Journey({
 }) {
   const steps = stages.flatMap((s, i) => (s.kind === 'step' ? [i] : []));
   const state = (i: number) => (i < index ? 'done' : undefined);
+  const current = useRef<HTMLButtonElement>(null);
+  // A long construction scrolls along; the step in view follows the learner.
+  useEffect(() => {
+    current.current?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+  }, [index]);
   return (
     <nav className="journey" aria-label="Where you are">
-      <h2>Construction</h2>
-      <ol className="steps">
-        {steps.map((i, n) => (
-          <li key={i}>
-            <button
-              type="button"
-              className={['step-dot', state(i)].filter(Boolean).join(' ')}
-              aria-current={i === index ? 'step' : undefined}
-              aria-label={`Go to step ${n + 1}`}
-              onClick={() => onJump(i)}
-            >
-              {n + 1}
-            </button>
-          </li>
-        ))}
-      </ol>
+      <div className="chapter construct">
+        <h2>Construct</h2>
+        <ol className="steps">
+          {steps.map((i, n) => (
+            <li key={i}>
+              <button
+                ref={i === index ? current : undefined}
+                type="button"
+                className={['step-dot', state(i)].filter(Boolean).join(' ')}
+                aria-current={i === index ? 'step' : undefined}
+                aria-label={`Go to step ${n + 1}`}
+                onClick={() => onJump(i)}
+              >
+                <Khatam />
+                <span className="step-number">{n + 1}</span>
+              </button>
+            </li>
+          ))}
+        </ol>
+      </div>
       <ol className="phases">
         {stages.map((s, i) =>
           s.kind === 'step' ? null : (
-            <li key={s.kind}>
+            <li key={s.kind} className="chapter">
               <button
+                ref={i === index ? current : undefined}
                 type="button"
                 className={['phase', state(i)].filter(Boolean).join(' ')}
                 aria-current={i === index ? 'step' : undefined}
                 aria-label={`Go to ${PHASE_NAMES[s.kind].toLowerCase()}`}
                 onClick={() => onJump(i)}
               >
-                <span className="phase-mark">{PHASE_MARKS[s.kind]}</span>
                 <span className="phase-name">{PHASE_NAMES[s.kind]}</span>
+                <span className="phase-mark">
+                  <Khatam />
+                  {PHASE_MARKS[s.kind]}
+                </span>
               </button>
             </li>
           ),
