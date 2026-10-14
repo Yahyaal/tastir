@@ -154,6 +154,19 @@ html:has(.player, .library) body {
   outline-offset: 2px;
 }
 
+/* Menus' lists in the page's own colours: a select with a see-through
+   background otherwise opens a white list with light text in the dark
+   theme. */
+select {
+  color-scheme: inherit;
+}
+
+select option,
+select optgroup {
+  background-color: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+}
+
 /* The sun and moon button in every header (src/app/theme.tsx). */
 .theme-switch {
   flex: none;
