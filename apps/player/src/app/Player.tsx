@@ -24,6 +24,7 @@ import {
   type History,
 } from './coloring';
 import { type Design } from './designs';
+import { draftOf, forgetDraft, keepDraft } from './drafts';
 import { Construction, RepeatedInk } from './drawing';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
 import {
@@ -240,7 +241,13 @@ export function Player({
   const [inkMode, setInkMode] = useRemembered<InkMode>('inkMode', 'end');
   const asYouGo = inkMode === 'asYouGo';
 
-  const inking = useInking(model, opened?.inked);
+  // A design not yet named, kept from the learner's first change: it comes
+  // back when they return, until they save it or go back to the pattern's
+  // own colours.
+  const [draft] = useState(() =>
+    opened || sharedView ? undefined : draftOf(address),
+  );
+  const inking = useInking(model, opened?.inked ?? draft?.inked);
   // The ink stage shows the one unit the ink makes: the whole panel, when
   // the tutorial names one.
   const inkModel = useMemo(
@@ -253,7 +260,11 @@ export function Player({
     (m): History => ({
       past: [],
       // A pattern drawn along and coloured keeps its colours.
-      now: opened?.coloring ?? keptColoring(address) ?? tutorialColoring(m),
+      now:
+        opened?.coloring ??
+        draft?.coloring ??
+        keptColoring(address) ??
+        tutorialColoring(m),
       future: [],
     }),
   );
@@ -281,10 +292,10 @@ export function Player({
   const [hovered, setHovered] = useState<number>();
   const [selected, setSelected] = useState<number>();
   const [wallStyle, setWallStyle] = useState<WallStyle>(
-    opened?.look ?? tutorial.pattern.look ?? 'tiles',
+    opened?.look ?? draft?.look ?? tutorial.pattern.look ?? 'tiles',
   );
-  const [grout, setGrout] = useState(opened?.grout ?? 1);
-  const [jali, setJali] = useState(opened?.jali ?? DEFAULT_JALI);
+  const [grout, setGrout] = useState(opened?.grout ?? draft?.grout ?? 1);
+  const [jali, setJali] = useState(opened?.jali ?? draft?.jali ?? DEFAULT_JALI);
   // The design being worked on: the one opened, or the last one saved.
   const [design, setDesign] = useState(opened);
   const designFields = () => ({
@@ -297,6 +308,33 @@ export function Player({
       ? { jali }
       : {}),
   });
+  // Until it has a name, every change is kept as a draft; back to the
+  // pattern's own, there is nothing to keep.
+  const [draftKept, setDraftKept] = useState<boolean>();
+  const own = useMemo(
+    (): Design => ({
+      id: '',
+      name: '',
+      tutorial: address,
+      coloring: tutorialColoring(model),
+      look: tutorial.pattern.look ?? 'tiles',
+      grout: 1,
+      created: '',
+      updated: '',
+    }),
+    [address, model, tutorial.pattern.look],
+  );
+  const draftFields = designFields();
+  const draftKey = JSON.stringify(draftFields);
+  useEffect(() => {
+    if (design || sharedView) return;
+    if (sameDesign(own, draftFields)) {
+      forgetDraft(address);
+      setDraftKept(undefined);
+    } else setDraftKept(keepDraft(draftFields));
+    // The fields change with every render; their contents are the key.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftKey, design, sharedView, own, address]);
   // A design opened or saved, changed since: Save is offered, and leaving
   // asks first.
   const changed = design !== undefined && !sameDesign(design, designFields());
@@ -328,6 +366,18 @@ export function Player({
     window.addEventListener('beforeunload', onUnload);
     return () => window.removeEventListener('beforeunload', onUnload);
   }, [changed]);
+  const draftNote =
+    design || sharedView || draftKept === undefined ? null : draftKept ? (
+      <p className="hint draft-note" role="status">
+        {draft ? 'Your changes from last time are back. ' : ''}Your changes are
+        kept in this browser until you save them as a design.
+      </p>
+    ) : (
+      <p className="hint draft-note refused" role="alert">
+        This browser cannot keep your changes: save them as a design before you
+        leave, or they are lost.
+      </p>
+    );
   const saveDesign = sharedView ? (
     <p className="hint">
       Shared with you. Keep a copy (at the top) to save it in this browser.
@@ -341,6 +391,7 @@ export function Player({
       fields={designFields}
       onSaved={(saved) => {
         setDesign(saved);
+        forgetDraft(address);
         // Its own address, so a reload or a bookmark opens the design.
         window.history.replaceState(
           null,
@@ -960,7 +1011,12 @@ export function Player({
                   <p>{tutorial.verification.note}</p>
                 </details>
               ) : null}
-              {colorStage && narrow ? saveDesign : null}
+              {colorStage && narrow ? (
+                <>
+                  {saveDesign}
+                  {draftNote}
+                </>
+              ) : null}
               <p className="instruction" aria-live="polite">
                 {text}
               </p>
@@ -1078,6 +1134,7 @@ export function Player({
                 <section>
                   <h2>My design</h2>
                   {saveDesign}
+                  {draftNote}
                 </section>
               )}
               {photos.length && onWall ? (

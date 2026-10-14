@@ -36,7 +36,7 @@ const isStrings = (x: unknown): x is string[] =>
   Array.isArray(x) && x.every((s) => typeof s === 'string');
 
 /** Whether a stored entry is a whole design; anything else is dropped. */
-function isDesign(x: unknown): x is Design {
+export function isDesign(x: unknown): x is Design {
   if (typeof x !== 'object' || x === null) return false;
   const d = x as Record<string, unknown>;
   const c = d['coloring'] as Record<string, unknown> | null | undefined;
