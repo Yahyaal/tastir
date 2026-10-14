@@ -119,10 +119,17 @@ describe('the player', () => {
       'Repeat',
       'Color',
     ]);
-    expect(screen.getByRole('button', { name: 'Next' })).toHaveProperty(
-      'disabled',
-      true,
+    // At the end the pattern is ready: Next becomes the way to Save, and
+    // Save and Share come first in the panel.
+    expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
+    const ready = screen.getByRole('region', {
+      name: 'Your pattern is ready',
+    });
+    expect(ready.querySelector('button')?.textContent).toMatch(
+      /Save as my design/,
     );
+    fireEvent.click(screen.getByRole('button', { name: 'Save my design' }));
+    expect(document.activeElement).toBe(ready.querySelector('button'));
     expect(
       screen.getByText(
         'Color ring by ring, as on real zellige: pick a color, then click a piece, and its whole ring round the rosette takes the color.',

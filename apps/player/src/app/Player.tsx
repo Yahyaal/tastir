@@ -772,6 +772,19 @@ export function Player({
   // The colours are chosen at the colour stage and kept to the end, where
   // the finished wall is saved and shared.
   const colorStage = stage.kind === 'color' || index === last;
+  // At the end: the pattern is ready, and Save and Share come first.
+  const ready = index === last;
+  const readyRef = useRef<HTMLElement>(null);
+  const shareLink = sharedView ? null : (
+    <ShareLink
+      address={address}
+      name={design?.name ?? tutorial.title}
+      fields={() => {
+        const { tutorial: _t, ...rest } = designFields();
+        return rest;
+      }}
+    />
+  );
   // The whole wall is shown, with its styles.
   const onWall =
     copies === 'wall' &&
@@ -1011,7 +1024,7 @@ export function Player({
                   <p>{tutorial.verification.note}</p>
                 </details>
               ) : null}
-              {colorStage && narrow ? (
+              {colorStage && narrow && !ready ? (
                 <>
                   {saveDesign}
                   {draftNote}
@@ -1116,21 +1129,44 @@ export function Player({
                 <button
                   type="button"
                   className="next"
-                  onClick={next}
-                  disabled={index === last}
+                  onClick={
+                    ready
+                      ? () => {
+                          const card = readyRef.current;
+                          card?.scrollIntoView?.({ block: 'nearest' });
+                          card
+                            ?.querySelector<HTMLElement>('button, input')
+                            ?.focus();
+                        }
+                      : next
+                  }
+                  disabled={ready && sharedView}
                 >
-                  Next
+                  {ready ? 'Save my design' : 'Next'}
                 </button>
               )}
             </nav>
           </footer>
           {colorStage ? (
             <aside className="side-panel" aria-label="The wall">
-              {stage.kind === 'color' ? colorsSection : null}
-              {!mine && !sharedView ? (
-                <ExploreNext tutorial={full.tutorial} />
+              {ready ? (
+                <section
+                  ref={readyRef}
+                  className="ready"
+                  aria-labelledby="ready-title"
+                >
+                  <h2 id="ready-title">Your pattern is ready</h2>
+                  <p className="hint">
+                    Save it to find it on the home page under My designs, or
+                    share a link to it. You can still change its colours below.
+                  </p>
+                  {saveDesign}
+                  {draftNote}
+                  {shareLink}
+                </section>
               ) : null}
-              {narrow ? null : (
+              {stage.kind === 'color' ? colorsSection : null}
+              {narrow || ready ? null : (
                 <section>
                   <h2>My design</h2>
                   {saveDesign}
@@ -1209,16 +1245,7 @@ export function Player({
               {stage.kind === 'color' ? null : colorsSection}
               <section>
                 <h2>Take it with you</h2>
-                {sharedView ? null : (
-                  <ShareLink
-                    address={address}
-                    name={design?.name ?? tutorial.title}
-                    fields={() => {
-                      const { tutorial: _t, ...rest } = designFields();
-                      return rest;
-                    }}
-                  />
-                )}
+                {ready ? null : shareLink}
                 <div className="export-tools">
                   <button
                     type="button"
@@ -1257,6 +1284,9 @@ export function Player({
                   </button>
                 </div>
               </section>
+              {!mine && !sharedView ? (
+                <ExploreNext tutorial={full.tutorial} />
+              ) : null}
             </aside>
           ) : null}
         </div>

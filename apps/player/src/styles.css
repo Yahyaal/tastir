@@ -4774,3 +4774,15 @@ svg.tiles {
     padding: 8px 14px;
   }
 }
+
+/* The end of a lesson: the pattern is ready, Save and Share first. */
+.side-panel section.ready {
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--malachite) 45%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--malachite) 8%, var(--theme-bg-surface));
+}
+
+.side-panel section.ready h2 {
+  color: var(--malachite);
+}
