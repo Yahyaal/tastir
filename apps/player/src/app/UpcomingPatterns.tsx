@@ -8,6 +8,7 @@ import {
   type UpcomingPattern,
   type UpcomingPhase,
 } from './upcoming-patterns';
+import { ThemeSwitch } from './theme';
 import { UpcomingIllustration } from './UpcomingIllustrations';
 
 export function UpcomingPatterns() {
@@ -87,6 +88,7 @@ export function UpcomingPatterns() {
           </span>
           <span className="library-crumb">All patterns</span>
         </a>
+        <ThemeSwitch />
       </header>
 
       <main className="upcoming-content">

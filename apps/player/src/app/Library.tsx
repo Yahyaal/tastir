@@ -14,6 +14,7 @@ import { Thumbnail } from './drawing';
 import { type Entry } from './library';
 import { shownSteps } from './model';
 import { Shelf } from './Shelf';
+import { ThemeSwitch } from './theme';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
 import { HeroDrawing } from './Hero';
@@ -191,6 +192,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
 
         <div className="masthead-actions">
           {patterns.length ? null : <NewPattern />}
+          <ThemeSwitch />
           {import.meta.env.DEV ? (
             <div className="dev-links" aria-label="Developer quick links">
               <span className="dev-tag">⚡ DEV</span>

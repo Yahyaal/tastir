@@ -1,6 +1,7 @@
 import { distance, type Vec } from '@tastir/engine';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRemembered } from '../app/remembered';
+import { ThemeSwitch } from '../app/theme';
 import { AboutPanel } from './AboutPanel';
 import {
   addBlock,
@@ -398,6 +399,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
             ? 'Kept in this browser'
             : 'Not kept: this browser’s storage is blocked or full'}
         </p>
+        <ThemeSwitch />
       </header>
       <div className="workspace with-panel">
         <nav className="editor-steps" aria-label="Steps">

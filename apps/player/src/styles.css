@@ -1,29 +1,49 @@
 /*
- * Tastir: Cobalt & Honey Gold Architectural Design System.
- * An editorial, museum-grade dark aesthetic for Islamic geometric constructions.
- * Deep starry midnight canvas, lapis-toned surfaces, and radiant honey gold accents.
+ * Tastir: plaster, zellige and ink.
+ * A drafting table in a Fès courtyard. The light theme is warm plaster with
+ * ink lines drawn as on paper; the dark theme keeps every role on a deep ink
+ * ground. Zellige colours appear only on coloured pieces and on the step
+ * being drawn. Every colour below has a light and a dark value; the page
+ * picks one with data-theme on <html> (src/app/theme.tsx).
  */
 :root {
-  /* Design System: Cobalt & Honey Gold */
-  --theme-bg-canvas: #070f1e; /* Deep starry midnight navy (60% canvas) */
-  --theme-bg-surface: #0c1b33; /* Lapis architectural slate */
-  --theme-bg-card: #091529; /* Deep obsidian navy */
-  --theme-bg-raised: #132748; /* Elevated lapis interactive state */
-  --theme-border: #172f57; /* Hairline divider */
-  --theme-border-hover: #22447d; /* Active/hover border */
-  --theme-border-gold: rgba(245, 158, 11, 0.4);
+  color-scheme: light;
 
-  --theme-text-primary: #f8fafc; /* Crisp soft white (WCAG AAA) */
-  --theme-text-secondary: #cbd5e1; /* Muted slate white */
-  --theme-text-muted: #94a3b8; /* Gentle architectural slate */
+  /* Grounds and surfaces */
+  --theme-bg-canvas: #f4ede1; /* Plaster: the page */
+  --theme-bg-surface: #fbf8f2; /* Paper: cards and panels */
+  --theme-bg-card: #fbf8f2; /* The drawing board */
+  --theme-bg-raised: #efe6d6; /* Hover and pressed */
+  --theme-border: #e2d6c3; /* Hairline */
+  --theme-border-hover: #c9b89c; /* Hover and strong borders */
+  --theme-border-gold: color-mix(in srgb, var(--theme-accent) 40%, transparent);
 
-  --theme-accent: #f59e0b; /* Radiant Honey Gold (10% budget) */
-  --theme-accent-hover: #d97706; /* Warm amber hover */
-  --theme-accent-muted: rgba(245, 158, 11, 0.18); /* Soft gold glow */
-  --theme-accent-cobalt: #2563eb; /* Royal Fez cobalt secondary accent */
-  --theme-grid-line: rgba(245, 158, 11, 0.035); /* 32px subtle drafting grid */
+  /* Text */
+  --theme-text-primary: #1c2733; /* Ink */
+  --theme-text-secondary: #3a4652;
+  --theme-text-muted: #4e5a66;
+  --theme-label: #6b4a2f; /* Cedar: small section labels */
+  --theme-danger: #a33a22;
 
-  /* Semantic Mappings for Tastir components */
+  /* Actions: Fès blue. Text on it uses the page colour, which is light on
+     the light theme's dark blue and dark on the dark theme's light blue. */
+  --theme-accent: #1f4e8c;
+  --theme-accent-hover: #163a69;
+  --theme-accent-muted: color-mix(
+    in srgb,
+    var(--theme-accent) 14%,
+    transparent
+  );
+  --theme-accent-cobalt: #1d7480; /* Turquoise: information */
+  --theme-grid-line: color-mix(in srgb, #6b4a2f 7%, transparent);
+  --theme-frame: #6b4a2f; /* Cedar: the frame round the drawing */
+  --theme-cyan: var(--theme-accent-cobalt);
+
+  /* Shadows: brown and soft on plaster, black and deep at night */
+  --shadow: #3c2814;
+  --shadow-k: 0.3;
+
+  /* Older names the components use */
   --lapis: var(--theme-bg-surface);
   --lapis-deep: var(--theme-bg-canvas);
   --lapis-raised: var(--theme-bg-raised);
@@ -31,35 +51,70 @@
   --lapis-hover: var(--theme-border-hover);
   --on-lapis: var(--theme-text-primary);
   --on-lapis-muted: var(--theme-text-muted);
-
-  /* The stage (plate) is now an obsidian drafting stage */
   --gesso: var(--theme-bg-card);
   --gesso-edge: var(--theme-border);
-  --graphite: #f8fafc;
+  --graphite: var(--theme-text-primary);
   --saffron: var(--theme-accent);
   --saffron-hover: var(--theme-accent-hover);
-  --malachite: #10b981;
+  --malachite: #1e6b52; /* Zellige green */
+  --accent: var(--theme-accent);
 
-  /* Geometry Canvas Stroke System calibrated for Dark Mode */
-  --ink: #f8fafc; /* Finished pattern ink: crisp ivory/bone white */
-  --old: #475569; /* Prior construction lines: subtle slate */
-  --faint: #1e3a5f; /* Guide circles/lines: deep architectural midnight slate */
-  --current: #f59e0b; /* Active step being drawn: glowing Honey Gold */
-  --used: #38bdf8; /* Reference intersections/elements: brilliant sky cyan */
-  --fresh: var(--malachite); /* Newly inked lines: emerald malachite */
-  --paper: var(--theme-bg-card); /* Background behind the drawing */
-  --muted: #64748b; /* Muted construction labels */
+  /* The drawing: the four step roles (grey earlier lines, orange new lines,
+     blue what the step uses, green new ink) and the finished ink */
+  --ink: #1c2733;
+  --old: #9aa6b1;
+  --faint: #d6ccbb;
+  --current: #c98112;
+  --used: #1f4e8c;
+  --fresh: var(--malachite);
+  --paper: var(--theme-bg-card);
+  --muted: #6b7680;
 
   /* Typography */
-  --display: 'Amiri', 'Marcellus', 'Iowan Old Style', Georgia, serif;
-  --text:
-    'Plus Jakarta Sans', 'Atkinson Hyperlegible', system-ui, -apple-system,
-    sans-serif;
+  --display: 'Marcellus', 'Reem Kufi', 'Iowan Old Style', Georgia, serif;
+  --text: 'Manrope', 'Reem Kufi', system-ui, -apple-system, sans-serif;
+  --sans: var(--text);
+  --arabic: 'Reem Kufi', 'Noto Kufi Arabic', sans-serif;
   --mono: 'JetBrains Mono', monospace;
 
   font-family: var(--text);
   color: var(--theme-text-primary);
   background: var(--theme-bg-canvas);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --theme-bg-canvas: #0f1820; /* Night: the page */
+  --theme-bg-surface: #16212b;
+  --theme-bg-card: #14202a;
+  --theme-bg-raised: #1f2c37;
+  --theme-border: #26343f;
+  --theme-border-hover: #3a4a58;
+
+  --theme-text-primary: #f1e9dc;
+  --theme-text-secondary: #cfc6b8;
+  --theme-text-muted: #a9b4be;
+  --theme-label: #d9a86a; /* Brass */
+  --theme-danger: #f0a68a;
+
+  --theme-accent: #6a9bdb;
+  --theme-accent-hover: #8db4ea;
+  --theme-accent-cobalt: #4fb3bf;
+  --theme-grid-line: color-mix(in srgb, #f1e9dc 4%, transparent);
+  --theme-frame: #8a6440;
+
+  --shadow: #000000;
+  --shadow-k: 1;
+
+  --malachite: #2fa37a;
+
+  --ink: #f1e9dc;
+  --old: #5b6b79;
+  --faint: #2c3a47;
+  --current: #e3ad45;
+  --used: #6fa8e8;
+  --muted: #7d8a96;
 }
 
 * {
@@ -82,6 +137,36 @@ html:has(.player, .library) body {
 :focus-visible {
   outline: 2px solid var(--saffron);
   outline-offset: 2px;
+}
+
+/* The sun and moon button in every header (src/app/theme.tsx). */
+.theme-switch {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border-hover);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  cursor: pointer;
+}
+
+.theme-switch:hover {
+  background: var(--theme-bg-raised);
+}
+
+.upcoming-topbar .theme-switch {
+  margin-left: auto;
+}
+
+/* The home header is full; a smaller switch keeps it on one row. */
+.masthead-actions .theme-switch {
+  width: 36px;
+  height: 36px;
 }
 
 a {
@@ -133,7 +218,7 @@ input {
 
 .error {
   white-space: pre-wrap;
-  color: #fca5a5;
+  color: var(--theme-danger);
 }
 
 /* ------------------------------------------------------------------ */
@@ -166,7 +251,7 @@ input {
 .library .button.secondary:hover {
   border-color: var(--theme-border-hover);
   color: var(--theme-text-primary);
-  background: rgba(37, 99, 235, 0.08);
+  background: color-mix(in srgb, var(--theme-accent-cobalt) 8%, transparent);
 }
 
 .player button.quiet {
@@ -214,13 +299,15 @@ a.button.primary {
   font-weight: 600;
   font-size: 0.95rem;
   padding: 10px 22px;
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 4px 14px
+    color-mix(in srgb, var(--theme-accent) 20%, transparent);
 }
 
 a.button.primary:hover {
   background: var(--saffron-hover);
   border-color: var(--saffron-hover);
-  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 6px 20px
+    color-mix(in srgb, var(--theme-accent) 30%, transparent);
 }
 
 /* ------------------------------------------------------------------ */
@@ -335,7 +422,7 @@ a.button.primary:hover {
   position: fixed;
   inset: 0;
   z-index: 50;
-  background: rgba(3, 8, 18, 0.6);
+  background: color-mix(in srgb, var(--theme-bg-surface) 60%, transparent);
 }
 
 .pattern-menu {
@@ -528,7 +615,8 @@ a.button.primary:hover {
   background: var(--lapis-deep);
   border: 1px solid var(--lapis-line);
   border-radius: 12px;
-  box-shadow: 0 18px 40px rgba(5, 9, 30, 0.45);
+  box-shadow: 0 18px 40px
+    color-mix(in srgb, var(--shadow) calc(45% * var(--shadow-k)), transparent);
 }
 
 .view-menu label {
@@ -614,8 +702,9 @@ a.button.primary:hover {
   border-radius: 14px;
   border: 1px solid var(--theme-border);
   box-shadow:
-    inset 0 0 0 1px rgba(245, 158, 11, 0.06),
-    0 16px 44px rgba(3, 7, 18, 0.6);
+    inset 0 0 0 1px color-mix(in srgb, var(--theme-accent) 6%, transparent),
+    0 16px 44px
+      color-mix(in srgb, var(--shadow) calc(60% * var(--shadow-k)), transparent);
   overflow: hidden;
   color: var(--theme-text-primary);
 }
@@ -696,9 +785,9 @@ main.stage .drawing:not(.wall) {
 }
 
 .player .journey .step-dot.done {
-  background: rgba(37, 99, 235, 0.12);
-  color: #93c5fd;
-  border-color: rgba(37, 99, 235, 0.4);
+  background: color-mix(in srgb, var(--theme-accent-cobalt) 12%, transparent);
+  color: var(--theme-accent);
+  border-color: color-mix(in srgb, var(--theme-accent-cobalt) 40%, transparent);
 }
 
 .player .journey .step-dot[aria-current='step'] {
@@ -828,7 +917,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .caption nav .next:hover:not(:disabled) {
-  background: #f0ba4b;
+  background: var(--saffron-hover);
 }
 
 .ink-tools {
@@ -865,7 +954,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .copy-here .refused {
-  color: #ffb4a6;
+  color: var(--theme-danger);
 }
 
 /* Saving the learner's inking and colors as a design. */
@@ -915,7 +1004,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .design-tools .hint.refused {
-  color: #ffb4a6;
+  color: var(--theme-danger);
 }
 
 .design-tools .unsaved-note {
@@ -938,7 +1027,7 @@ main.stage .drawing:not(.wall) {
   display: grid;
   place-items: center;
   padding: 16px;
-  background: rgba(15, 21, 48, 0.6);
+  background: color-mix(in srgb, var(--theme-bg-surface) 60%, transparent);
 }
 
 .leave-check {
@@ -947,7 +1036,8 @@ main.stage .drawing:not(.wall) {
   border: 2px solid var(--saffron);
   border-radius: 10px;
   background: var(--lapis-deep);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 12px 40px
+    color-mix(in srgb, var(--shadow) calc(45% * var(--shadow-k)), transparent);
 }
 
 .leave-check p {
@@ -1091,7 +1181,8 @@ main.stage .drawing:not(.wall) {
   display: block;
   height: 28px;
   border-radius: 3px;
-  border: 1px solid #ffffff30;
+  border: 1px solid
+    color-mix(in srgb, var(--theme-text-primary) 19%, transparent);
 }
 .player .jali-custom-button {
   display: inline-flex;
@@ -1752,7 +1843,7 @@ main.stage .drawing:not(.wall) {
   position: fixed;
   inset: 0;
   z-index: 50;
-  background: #0d1230;
+  background: var(--theme-bg-canvas);
   display: flex;
   flex-direction: column;
   color: var(--on-lapis);
@@ -1821,7 +1912,11 @@ main.stage .drawing:not(.wall) {
   justify-content: space-between;
   gap: 20px;
   padding: 16px 0;
-  border-bottom: 1px solid var(--theme-border, rgba(255, 255, 255, 0.08));
+  border-bottom: 1px solid
+    var(
+      --theme-border,
+      color-mix(in srgb, var(--theme-text-primary) 8%, transparent)
+    );
   margin-bottom: 28px;
   flex-wrap: wrap;
 }
@@ -1844,7 +1939,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .brand-arabic {
-  font-family: 'Amiri', serif;
+  font-family: var(--arabic);
   font-size: 1.05em;
   color: var(--saffron);
   letter-spacing: 0;
@@ -1857,8 +1952,8 @@ main.stage .drawing:not(.wall) {
   font-weight: 600;
   letter-spacing: 0.14em;
   color: var(--saffron);
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.28);
+  background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 28%, transparent);
   padding: 2px 8px;
   border-radius: 4px;
   text-transform: uppercase;
@@ -1868,10 +1963,14 @@ main.stage .drawing:not(.wall) {
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(15, 23, 42, 0.55);
+  background: color-mix(in srgb, var(--theme-bg-surface) 55%, transparent);
   padding: 4px;
   border-radius: 9999px;
-  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.08));
+  border: 1px solid
+    var(
+      --theme-border,
+      color-mix(in srgb, var(--theme-text-primary) 8%, transparent)
+    );
   backdrop-filter: blur(8px);
 }
 
@@ -1900,7 +1999,7 @@ main.stage .drawing:not(.wall) {
 
 .masthead-nav .nav-item:hover {
   color: var(--theme-text-primary, #f8fafc);
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--theme-text-primary) 6%, transparent);
 }
 
 .masthead-nav .nav-badge {
@@ -1911,27 +2010,27 @@ main.stage .drawing:not(.wall) {
   border-radius: 9999px;
   font-size: 0.7rem;
   font-family: var(--mono);
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--theme-text-primary) 8%, transparent);
   color: var(--theme-text-muted, #64748b);
   transition: all 140ms ease;
 }
 
 .masthead-nav .nav-item:hover .nav-badge {
-  background: rgba(255, 255, 255, 0.14);
+  background: color-mix(in srgb, var(--theme-text-primary) 14%, transparent);
   color: var(--theme-text-primary, #f8fafc);
 }
 
 .masthead-nav .nav-badge.highlight {
-  background: rgba(245, 158, 11, 0.18);
+  background: color-mix(in srgb, var(--theme-accent) 18%, transparent);
   color: var(--saffron);
   font-weight: 600;
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 25%, transparent);
 }
 
 .masthead-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -1939,8 +2038,8 @@ main.stage .drawing:not(.wall) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(15, 23, 42, 0.65);
-  border: 1px solid rgba(245, 158, 11, 0.25);
+  background: color-mix(in srgb, var(--theme-bg-surface) 65%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 25%, transparent);
   border-radius: 9999px;
   padding: 3px 10px;
   font-size: 0.76rem;
@@ -1993,7 +2092,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .eyebrow-arabic {
-  font-family: 'Amiri', serif;
+  font-family: var(--arabic);
   font-size: 0.98rem;
   text-transform: none;
   letter-spacing: 0;
@@ -2004,7 +2103,7 @@ main.stage .drawing:not(.wall) {
 .tradition-dossier {
   background: linear-gradient(
     135deg,
-    rgba(245, 158, 11, 0.05) 0%,
+    color-mix(in srgb, var(--theme-accent) 5%, transparent) 0%,
     var(--theme-bg-surface) 100%
   );
   border: 1px solid var(--theme-border-hover);
@@ -2052,7 +2151,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .dossier-ar {
-  font-family: 'Amiri', serif;
+  font-family: var(--arabic);
   font-size: 1.05rem;
   color: var(--saffron);
   letter-spacing: 0;
@@ -2074,7 +2173,7 @@ main.stage .drawing:not(.wall) {
 .dossier-clear:hover {
   border-color: var(--saffron);
   color: var(--saffron);
-  background: rgba(245, 158, 11, 0.08);
+  background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
 }
 
 .dossier-body {
@@ -2145,8 +2244,9 @@ main.stage .drawing:not(.wall) {
   border: 1px solid var(--theme-border);
   box-shadow:
     0 0 0 6px var(--theme-bg-canvas),
-    0 0 0 8px rgba(245, 158, 11, 0.25),
-    0 24px 54px rgba(3, 7, 18, 0.7);
+    0 0 0 8px color-mix(in srgb, var(--theme-accent) 25%, transparent),
+    0 24px 54px
+      color-mix(in srgb, var(--shadow) calc(70% * var(--shadow-k)), transparent);
   overflow: hidden;
   display: grid;
 }
@@ -2221,17 +2321,20 @@ main.stage .drawing:not(.wall) {
   align-items: center;
   gap: 6px;
   padding: 3px 8px;
-  background: rgba(15, 23, 42, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--theme-bg-surface) 55%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--theme-text-primary) 12%, transparent);
   border-radius: 999px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 2px 8px
+    color-mix(in srgb, var(--shadow) calc(25% * var(--shadow-k)), transparent);
 }
 
 .hero-color-chip {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border: 1.5px solid
+    color-mix(in srgb, var(--theme-text-primary) 25%, transparent);
   opacity: 0.3;
   transform: scale(0.85);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2240,16 +2343,16 @@ main.stage .drawing:not(.wall) {
 .hero-color-chip.active {
   opacity: 1;
   transform: scale(1.15);
-  border-color: #ffffff;
+  border-color: var(--theme-text-primary);
   box-shadow:
     0 0 8px currentColor,
-    0 0 2px rgba(255, 255, 255, 0.9);
+    0 0 2px color-mix(in srgb, var(--theme-text-primary) 90%, transparent);
 }
 
 .hero-progress-track {
   flex: 1;
   height: 5px;
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--theme-text-primary) 10%, transparent);
   border-radius: 999px;
   overflow: hidden;
   position: relative;
@@ -2257,10 +2360,16 @@ main.stage .drawing:not(.wall) {
 
 .hero-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #d97706, #0284c7, #10b981);
+  background: linear-gradient(
+    90deg,
+    var(--current),
+    var(--used),
+    var(--malachite)
+  );
   border-radius: 999px;
   transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 8px
+    color-mix(in srgb, var(--theme-accent-cobalt) 60%, transparent);
 }
 
 .hero-copy h2 {
@@ -2432,8 +2541,12 @@ main.stage .drawing:not(.wall) {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background: rgba(15, 23, 42, 0.45);
-  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.08));
+  background: color-mix(in srgb, var(--theme-bg-surface) 45%, transparent);
+  border: 1px solid
+    var(
+      --theme-border,
+      color-mix(in srgb, var(--theme-text-primary) 8%, transparent)
+    );
   border-radius: 12px;
   padding: 14px 18px;
   margin-bottom: 24px;
@@ -2465,26 +2578,33 @@ main.stage .drawing:not(.wall) {
 .library .chip {
   padding: 4px 12px;
   font-size: 0.8rem;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--theme-text-primary) 4%, transparent);
   color: var(--theme-text-secondary, #94a3b8);
-  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.08));
+  border: 1px solid
+    var(
+      --theme-border,
+      color-mix(in srgb, var(--theme-text-primary) 8%, transparent)
+    );
   border-radius: 9999px;
   cursor: pointer;
   transition: all 140ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .library .chip:hover {
-  border-color: var(--theme-border-hover, rgba(255, 255, 255, 0.2));
+  border-color: var(
+    --theme-border-hover,
+    color-mix(in srgb, var(--theme-text-primary) 20%, transparent)
+  );
   color: var(--theme-text-primary, #f8fafc);
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--theme-text-primary) 8%, transparent);
 }
 
 .library .chip[aria-pressed='true'] {
-  background: rgba(245, 158, 11, 0.16);
+  background: color-mix(in srgb, var(--theme-accent) 16%, transparent);
   color: var(--saffron);
   border-color: var(--saffron);
   font-weight: 600;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.15);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent) 15%, transparent);
 }
 
 .cards {
@@ -2510,7 +2630,8 @@ main.stage .drawing:not(.wall) {
 
 .card-item:hover {
   border-color: var(--theme-border-hover);
-  box-shadow: 0 12px 32px rgba(3, 7, 18, 0.45);
+  box-shadow: 0 12px 32px
+    color-mix(in srgb, var(--shadow) calc(45% * var(--shadow-k)), transparent);
 }
 
 .card {
@@ -2562,7 +2683,7 @@ main.stage .drawing:not(.wall) {
 
 .card-arabic {
   display: block;
-  font-family: 'Amiri', serif;
+  font-family: var(--arabic);
   font-size: 0.95rem;
   color: var(--saffron);
   margin: -2px 2px 6px;
@@ -2644,7 +2765,7 @@ main.stage .drawing:not(.wall) {
 .card-actions .button.result:hover {
   border-color: var(--theme-border-hover);
   color: var(--theme-text-primary);
-  background: rgba(37, 99, 235, 0.08);
+  background: color-mix(in srgb, var(--theme-accent-cobalt) 8%, transparent);
 }
 
 /* Drawing along: the third way in, on beginner patterns. */
@@ -2657,7 +2778,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .card-actions .button.draw:hover {
-  background: #f0ba4b;
+  background: var(--saffron-hover);
 }
 
 .thumbnail {
@@ -2942,13 +3063,14 @@ main.stage .drawing:not(.wall) {
   font-size: 0.82rem;
   font-weight: 600;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
-  border: 1px solid rgba(245, 158, 11, 0.6);
-  color: #0b1329;
+  background: var(--theme-accent);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 60%, transparent);
+  color: var(--theme-bg-canvas);
   cursor: pointer;
   box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    0 1px 3px
+      color-mix(in srgb, var(--shadow) calc(30% * var(--shadow-k)), transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--theme-text-primary) 25%, transparent);
   transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
   text-decoration: none;
 }
@@ -2956,8 +3078,9 @@ main.stage .drawing:not(.wall) {
 .library .new-pattern .button.primary:hover,
 .new-pattern .button.primary:hover,
 .library .new-pattern .button:not(.secondary):hover {
-  background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
-  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35);
+  background: var(--theme-accent-hover);
+  box-shadow: 0 3px 10px
+    color-mix(in srgb, var(--theme-accent) 35%, transparent);
   transform: translateY(-1px);
 }
 
@@ -2971,8 +3094,12 @@ main.stage .drawing:not(.wall) {
   font-size: 0.82rem;
   font-weight: 500;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid var(--theme-border, rgba(255, 255, 255, 0.12));
+  background: color-mix(in srgb, var(--theme-text-primary) 4%, transparent);
+  border: 1px solid
+    var(
+      --theme-border,
+      color-mix(in srgb, var(--theme-text-primary) 12%, transparent)
+    );
   color: var(--on-lapis-muted, #94a3b8);
   cursor: pointer;
   transition: all 150ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -2981,15 +3108,15 @@ main.stage .drawing:not(.wall) {
 
 .library .new-pattern .open-file:hover,
 .new-pattern .open-file:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(245, 158, 11, 0.45);
+  background: color-mix(in srgb, var(--theme-text-primary) 8%, transparent);
+  border-color: color-mix(in srgb, var(--theme-accent) 45%, transparent);
   color: var(--on-lapis, #f8fafc);
   transform: translateY(-1px);
 }
 
 .new-pattern .refused {
   font-size: 0.8rem;
-  color: #ffb4a6;
+  color: var(--theme-danger);
 }
 
 .new-pattern .open-file input {
@@ -3031,7 +3158,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .shared-banner .refused {
-  color: #ffb4a6;
+  color: var(--theme-danger);
   font-size: 0.85rem;
 }
 
@@ -3064,7 +3191,8 @@ main.stage .drawing:not(.wall) {
   color: var(--saffron);
   text-decoration: none;
   letter-spacing: 0.03em;
-  border-bottom: 1px dashed rgba(245, 158, 11, 0.4);
+  border-bottom: 1px dashed
+    color-mix(in srgb, var(--theme-accent) 40%, transparent);
   padding-bottom: 2px;
   transition: all 120ms ease;
 }
@@ -3175,7 +3303,7 @@ main.stage .drawing:not(.wall) {
 
 .upcoming-search:focus {
   border-color: var(--saffron);
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent) 20%, transparent);
 }
 
 .upcoming-reset-btn {
@@ -3195,7 +3323,7 @@ main.stage .drawing:not(.wall) {
 .upcoming-reset-btn:hover {
   border-color: var(--saffron);
   color: var(--saffron);
-  background: rgba(245, 158, 11, 0.06);
+  background: color-mix(in srgb, var(--theme-accent) 6%, transparent);
 }
 
 .upcoming-filter-groups {
@@ -3244,11 +3372,11 @@ main.stage .drawing:not(.wall) {
 }
 
 .upcoming-chip.active {
-  background: rgba(245, 158, 11, 0.12);
+  background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
   border-color: var(--saffron);
   color: var(--saffron);
   font-weight: 600;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.18);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent) 18%, transparent);
 }
 
 .upcoming-metrics {
@@ -3302,7 +3430,8 @@ main.stage .drawing:not(.wall) {
   border-color: var(--theme-border-hover);
   background: var(--theme-bg-raised);
   transform: translateY(-2px);
-  box-shadow: 0 12px 36px rgba(3, 7, 18, 0.55);
+  box-shadow: 0 12px 36px
+    color-mix(in srgb, var(--shadow) calc(55% * var(--shadow-k)), transparent);
 }
 
 .card-top-meta {
@@ -3311,7 +3440,8 @@ main.stage .drawing:not(.wall) {
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  border-bottom: 1px solid rgba(23, 47, 87, 0.6);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--theme-border) 60%, transparent);
   padding-bottom: 12px;
 }
 
@@ -3328,8 +3458,8 @@ main.stage .drawing:not(.wall) {
   font-weight: 600;
   letter-spacing: 0.06em;
   color: var(--saffron);
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
   padding: 2px 7px;
   border-radius: 4px;
 }
@@ -3349,23 +3479,23 @@ main.stage .drawing:not(.wall) {
   font-family: var(--mono);
   font-size: 0.68rem;
   letter-spacing: 0.04em;
-  color: #10b981;
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  color: var(--malachite);
+  background: color-mix(in srgb, var(--malachite) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--malachite) 25%, transparent);
   padding: 2px 7px;
   border-radius: 4px;
 }
 
 .card-status-badge.playable {
   color: var(--saffron);
-  background: rgba(230, 168, 34, 0.15);
-  border-color: rgba(230, 168, 34, 0.5);
+  background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
+  border-color: color-mix(in srgb, var(--theme-accent) 50%, transparent);
   font-weight: 600;
-  box-shadow: 0 0 8px rgba(230, 168, 34, 0.2);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--theme-accent) 20%, transparent);
 }
 
 .card-arabic-title {
-  font-family: 'Amiri', serif;
+  font-family: var(--arabic);
   font-size: 1.05rem;
   color: var(--saffron);
   max-width: 100%;
@@ -3423,7 +3553,8 @@ main.stage .drawing:not(.wall) {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  border-top: 1px dashed rgba(23, 47, 87, 0.6);
+  border-top: 1px dashed
+    color-mix(in srgb, var(--theme-border) 60%, transparent);
   padding-top: 12px;
 }
 
@@ -3463,7 +3594,7 @@ main.stage .drawing:not(.wall) {
 
 .card-footer {
   margin-top: auto;
-  border-top: 1px solid rgba(23, 47, 87, 0.6);
+  border-top: 1px solid color-mix(in srgb, var(--theme-border) 60%, transparent);
   padding-top: 12px;
 }
 
@@ -3482,9 +3613,9 @@ main.stage .drawing:not(.wall) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(230, 168, 34, 0.12);
+  background: color-mix(in srgb, var(--theme-accent) 12%, transparent);
   color: var(--saffron);
-  border: 1px solid rgba(230, 168, 34, 0.4);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 40%, transparent);
   padding: 6px 12px;
   border-radius: 6px;
   font-family: var(--mono);
@@ -3499,7 +3630,7 @@ main.stage .drawing:not(.wall) {
   background: var(--saffron);
   color: var(--theme-bg-canvas);
   border-color: var(--saffron);
-  box-shadow: 0 0 12px rgba(230, 168, 34, 0.35);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--theme-accent) 35%, transparent);
 }
 
 .source-label {
@@ -3559,8 +3690,8 @@ main.stage .drawing:not(.wall) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #081326;
-  border: 1px solid rgba(240, 184, 50, 0.18);
+  background: var(--theme-bg-surface);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 18%, transparent);
   border-radius: 10px;
   padding: 10px 10px 10px;
   overflow: hidden;
@@ -3571,8 +3702,9 @@ main.stage .drawing:not(.wall) {
 }
 
 .upcoming-card:hover .card-visual-section {
-  border-color: rgba(240, 184, 50, 0.45);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  border-color: color-mix(in srgb, var(--theme-accent) 45%, transparent);
+  box-shadow: 0 4px 24px
+    color-mix(in srgb, var(--shadow) calc(50% * var(--shadow-k)), transparent);
 }
 
 .card-media-tabs {
@@ -3588,23 +3720,24 @@ main.stage .drawing:not(.wall) {
   font-weight: 600;
   border-radius: 6px;
   padding: 3px 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid
+    color-mix(in srgb, var(--theme-text-primary) 12%, transparent);
+  background: color-mix(in srgb, var(--theme-bg-surface) 60%, transparent);
   color: var(--theme-text-muted);
   cursor: pointer;
   transition: all 150ms ease;
 }
 
 .media-tab:hover:not(.active) {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--theme-text-primary) 10%, transparent);
   color: var(--theme-text-primary);
 }
 
 .media-tab.active {
-  background: #d97706;
-  color: #ffffff;
-  border-color: #d97706;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.4);
+  background: var(--theme-accent);
+  color: var(--theme-bg-canvas);
+  border-color: var(--theme-accent);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 40%, transparent);
 }
 
 .card-media-viewport {
@@ -3616,7 +3749,7 @@ main.stage .drawing:not(.wall) {
   position: relative;
   overflow: hidden;
   border-radius: 8px;
-  background: #040914;
+  background: var(--theme-bg-card);
 }
 
 .card-media-interactive,
@@ -3649,7 +3782,7 @@ main.stage .drawing:not(.wall) {
 .card-media-hover-bar {
   position: absolute;
   inset: 0;
-  background: rgba(8, 16, 34, 0.6);
+  background: color-mix(in srgb, var(--theme-bg-surface) 60%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3670,10 +3803,11 @@ main.stage .drawing:not(.wall) {
   font-weight: 600;
   padding: 6px 14px;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.88);
-  color: #f8fafc;
-  border: 1px solid rgba(240, 184, 50, 0.45);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  background: color-mix(in srgb, var(--theme-bg-surface) 88%, transparent);
+  color: var(--theme-text-primary);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 45%, transparent);
+  box-shadow: 0 4px 16px
+    color-mix(in srgb, var(--shadow) calc(60% * var(--shadow-k)), transparent);
   transform: translateY(4px);
   transition: transform 200ms ease;
 }
@@ -3694,7 +3828,10 @@ main.stage .drawing:not(.wall) {
   width: 100%;
   height: auto;
   display: block;
-  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(
+    0 4px 16px
+      color-mix(in srgb, var(--shadow) calc(45% * var(--shadow-k)), transparent)
+  );
   transition: transform 220ms ease;
 }
 
@@ -3707,7 +3844,11 @@ main.stage .drawing:not(.wall) {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(5, 10, 24, 0.94);
+  background: color-mix(
+    in srgb,
+    var(--theme-bg-surface) calc(0.94 * 100%),
+    transparent
+  );
   backdrop-filter: blur(14px);
   display: flex;
   flex-direction: column;
@@ -3730,8 +3871,13 @@ main.stage .drawing:not(.wall) {
   justify-content: space-between;
   gap: 16px;
   padding: 14px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(10, 18, 38, 0.85);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--theme-text-primary) 10%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--theme-bg-surface) calc(0.85 * 100%),
+    transparent
+  );
 }
 
 .lightbox-title-area h3 {
@@ -3747,7 +3893,7 @@ main.stage .drawing:not(.wall) {
 .lightbox-title-area .arabic-sub {
   font-family: var(--arabic);
   font-size: 1.15rem;
-  color: #f0b832;
+  color: var(--theme-label);
 }
 
 .lightbox-provenance {
@@ -3765,10 +3911,11 @@ main.stage .drawing:not(.wall) {
 .lightbox-tabs {
   display: flex;
   gap: 4px;
-  background: rgba(15, 23, 42, 0.7);
+  background: color-mix(in srgb, var(--theme-bg-surface) 70%, transparent);
   padding: 3px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 1px solid
+    color-mix(in srgb, var(--theme-text-primary) 14%, transparent);
 }
 
 .lightbox-tab {
@@ -3785,13 +3932,13 @@ main.stage .drawing:not(.wall) {
 
 .lightbox-tab:hover:not(.active) {
   color: var(--theme-text-primary);
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--theme-text-primary) 8%, transparent);
 }
 
 .lightbox-tab.active {
-  background: #d97706;
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.45);
+  background: var(--theme-accent);
+  color: var(--theme-bg-canvas);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 45%, transparent);
 }
 
 .lightbox-zoom-btn {
@@ -3799,15 +3946,16 @@ main.stage .drawing:not(.wall) {
   font-size: 0.78rem;
   font-weight: 600;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid
+    color-mix(in srgb, var(--theme-text-primary) 20%, transparent);
+  background: color-mix(in srgb, var(--theme-text-primary) 6%, transparent);
   color: var(--theme-text-primary);
   cursor: pointer;
   transition: background 140ms ease;
 }
 
 .lightbox-zoom-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: color-mix(in srgb, var(--theme-text-primary) 14%, transparent);
 }
 
 .lightbox-close-btn {
@@ -3815,16 +3963,25 @@ main.stage .drawing:not(.wall) {
   font-size: 0.82rem;
   font-weight: 700;
   border-radius: 6px;
-  border: 1px solid rgba(244, 63, 94, 0.4);
-  background: rgba(244, 63, 94, 0.15);
-  color: #fecdd3;
+  border: 1px solid
+    color-mix(in srgb, var(--theme-danger) calc(0.4 * 100%), transparent);
+  background: color-mix(
+    in srgb,
+    var(--theme-danger) calc(0.15 * 100%),
+    transparent
+  );
+  color: var(--theme-danger);
   cursor: pointer;
   transition: all 140ms ease;
 }
 
 .lightbox-close-btn:hover {
-  background: rgba(244, 63, 94, 0.4);
-  color: #ffffff;
+  background: color-mix(
+    in srgb,
+    var(--theme-danger) calc(0.4 * 100%),
+    transparent
+  );
+  color: var(--theme-text-primary);
 }
 
 .lightbox-stage {
@@ -3848,7 +4005,8 @@ main.stage .drawing:not(.wall) {
   max-height: 100%;
   object-fit: contain;
   border-radius: 8px;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 12px 48px
+    color-mix(in srgb, var(--shadow) calc(75% * var(--shadow-k)), transparent);
   cursor: zoom-in;
   transition: transform 200ms ease;
 }
@@ -3875,8 +4033,13 @@ main.stage .drawing:not(.wall) {
   justify-content: space-between;
   gap: 24px;
   padding: 14px 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(10, 18, 38, 0.88);
+  border-top: 1px solid
+    color-mix(in srgb, var(--theme-text-primary) 10%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--theme-bg-surface) calc(0.88 * 100%),
+    transparent
+  );
 }
 
 .lightbox-footer-info {
@@ -3887,7 +4050,7 @@ main.stage .drawing:not(.wall) {
   margin: 0;
   font-size: 0.88rem;
   font-weight: 600;
-  color: #f0b832;
+  color: var(--theme-label);
 }
 
 .lightbox-summary {
@@ -3907,12 +4070,13 @@ main.stage .drawing:not(.wall) {
 .lightbox-play-btn {
   padding: 8px 18px;
   border-radius: 6px;
-  background: linear-gradient(135deg, #d97706, #b45309);
-  color: #ffffff;
+  background: var(--theme-accent);
+  color: var(--theme-bg-canvas);
   font-size: 0.85rem;
   font-weight: 700;
   text-decoration: none;
-  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
+  box-shadow: 0 4px 14px
+    color-mix(in srgb, var(--theme-accent) 40%, transparent);
   transition:
     transform 140ms ease,
     box-shadow 140ms ease;
@@ -3920,14 +4084,16 @@ main.stage .drawing:not(.wall) {
 
 .lightbox-play-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.5);
+  box-shadow: 0 6px 18px
+    color-mix(in srgb, var(--theme-accent) 50%, transparent);
 }
 
 .lightbox-secondary-btn {
   padding: 8px 16px;
   border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid
+    color-mix(in srgb, var(--theme-text-primary) 20%, transparent);
+  background: color-mix(in srgb, var(--theme-text-primary) 6%, transparent);
   color: var(--theme-text-primary);
   font-size: 0.85rem;
   font-weight: 600;
@@ -3936,7 +4102,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .lightbox-secondary-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--theme-text-primary) 12%, transparent);
 }
 
 .card-visual-footer {
@@ -3954,9 +4120,9 @@ main.stage .drawing:not(.wall) {
   letter-spacing: 0.05em;
   padding: 2px 7px;
   border-radius: 4px;
-  background: rgba(23, 47, 87, 0.55);
+  background: color-mix(in srgb, var(--theme-border) 55%, transparent);
   color: var(--theme-text-muted);
-  border: 1px solid rgba(240, 184, 50, 0.16);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 16%, transparent);
 }
 
 .visual-badge sub {
@@ -3966,7 +4132,8 @@ main.stage .drawing:not(.wall) {
 /* Step-by-Step Drawing Guide Drawer */
 
 .card-drawing-guide {
-  border-top: 1px dashed rgba(23, 47, 87, 0.6);
+  border-top: 1px dashed
+    color-mix(in srgb, var(--theme-border) 60%, transparent);
   padding-top: 10px;
   display: flex;
   flex-direction: column;
@@ -3974,8 +4141,8 @@ main.stage .drawing:not(.wall) {
 }
 
 .drawing-guide-toggle {
-  background: rgba(230, 168, 34, 0.08);
-  border: 1px solid rgba(230, 168, 34, 0.28);
+  background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 28%, transparent);
   border-radius: 6px;
   padding: 8px 12px;
   color: var(--saffron);
@@ -3993,10 +4160,10 @@ main.stage .drawing:not(.wall) {
 
 .drawing-guide-toggle:hover,
 .drawing-guide-toggle.open {
-  background: rgba(230, 168, 34, 0.16);
-  border-color: rgba(230, 168, 34, 0.55);
+  background: color-mix(in srgb, var(--theme-accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--theme-accent) 55%, transparent);
   color: var(--saffron-hover);
-  box-shadow: 0 0 10px rgba(230, 168, 34, 0.15);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--theme-accent) 15%, transparent);
 }
 
 .toggle-label {
@@ -4061,7 +4228,7 @@ main.stage .drawing:not(.wall) {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  background: rgba(230, 168, 34, 0.18);
+  background: color-mix(in srgb, var(--theme-accent) 18%, transparent);
   color: var(--saffron);
   padding: 1px 6px;
   border-radius: 3px;
@@ -4091,10 +4258,10 @@ main.stage .drawing:not(.wall) {
   font-family: var(--mono);
   font-size: 0.7rem;
   color: var(--saffron);
-  background: rgba(7, 15, 30, 0.65);
+  background: color-mix(in srgb, var(--theme-bg-surface) 65%, transparent);
   padding: 2px 7px;
   border-radius: 4px;
-  border: 1px solid rgba(230, 168, 34, 0.18);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 18%, transparent);
   margin-top: 2px;
   width: fit-content;
 }
@@ -4104,7 +4271,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .geo-formula {
-  color: #93c5fd;
+  color: var(--theme-accent);
   letter-spacing: 0.02em;
 }
 
@@ -4116,16 +4283,29 @@ main.stage .drawing:not(.wall) {
 }
 
 .card-play-action-btn.secondary {
-  background: rgba(42, 161, 152, 0.12);
+  background: color-mix(
+    in srgb,
+    var(--theme-accent-cobalt) calc(0.12 * 100%),
+    transparent
+  );
   color: var(--theme-cyan);
-  border-color: rgba(42, 161, 152, 0.4);
+  border-color: color-mix(
+    in srgb,
+    var(--theme-accent-cobalt) calc(0.4 * 100%),
+    transparent
+  );
 }
 
 .card-play-action-btn.secondary:hover {
   background: var(--theme-cyan);
   color: var(--theme-bg-canvas);
   border-color: var(--theme-cyan);
-  box-shadow: 0 0 12px rgba(42, 161, 152, 0.35);
+  box-shadow: 0 0 12px
+    color-mix(
+      in srgb,
+      var(--theme-accent-cobalt) calc(0.35 * 100%),
+      transparent
+    );
 }
 
 .card-photo-credit {
@@ -4193,7 +4373,7 @@ svg.tiles {
 
 .player .copies button[aria-pressed='true'] {
   background: var(--saffron);
-  color: #1a1408;
+  color: var(--theme-bg-canvas);
 }
 
 .chooser.brush .swatch-button[aria-pressed='true'] {

@@ -21,8 +21,8 @@ export const INK_STEP_MS = 700;
 export const STEP_MS = 800;
 /** The flash of the highlighted elements before a step draws. */
 export const FLASH_MS = 600;
-/** The accent the current step is drawn in (--current in styles.css). */
-const ACCENT = '#f59e0b';
+/** The accent the current step is drawn in: --current, so it follows the theme. */
+const ACCENT = 'var(--current)';
 /** The share of a step spent drawing lines and circles; points pop after. */
 const DRAW_SHARE = 0.75;
 
@@ -175,8 +175,7 @@ function screenLength(node: SVGElement, lengthScale: number): number {
   if (node.tagName.toLowerCase() === 'circle') {
     const circle = node as SVGCircleElement;
     const r =
-      circle.r?.baseVal?.value ??
-      parseFloat(circle.getAttribute('r') ?? '0');
+      circle.r?.baseVal?.value ?? parseFloat(circle.getAttribute('r') ?? '0');
     if (r > 0) {
       // SVG circles in Chromium report getTotalLength() as the perimeter of an
       // inscribed square (4*sqrt(2)*r ~ 5.65r instead of 2*PI*r ~ 6.28r).
@@ -236,13 +235,23 @@ function keyframes(
       { ...dashAt(0), opacity: 0, offset: 0 },
       { ...dashAt(0), opacity: 1, offset: 0.0001 },
       { ...dashAt(w), opacity: 1, offset: 0.98 },
-      { strokeDasharray: `${len} 0`, strokeDashoffset: 0, opacity: 1, offset: 1 },
+      {
+        strokeDasharray: `${len} 0`,
+        strokeDashoffset: 0,
+        opacity: 1,
+        offset: 1,
+      },
     ];
   }
   const dash = `${len} ${len}`;
   return [
     { opacity: 0, strokeDasharray: dash, strokeDashoffset: len, offset: 0 },
-    { opacity: 1, strokeDasharray: dash, strokeDashoffset: len, offset: 0.0001 },
+    {
+      opacity: 1,
+      strokeDasharray: dash,
+      strokeDashoffset: len,
+      offset: 0.0001,
+    },
     { opacity: 1, strokeDasharray: dash, strokeDashoffset: 0, offset: 1 },
   ];
 }
@@ -456,10 +465,10 @@ export function rulerOrder(model: Model): RulerLine[] {
   return out;
 }
 
-/** The pale blue of the ruler and of a parallel line it is laid against. */
-export const RULER_COLOR = '#3b82f6';
+/** The blue of the ruler and of a parallel line it is laid against (--used). */
+export const RULER_COLOR = 'var(--used)';
 /** The tile's outline. */
-export const TILE_COLOR = '#10b981';
+export const TILE_COLOR = 'var(--malachite)';
 
 /**
  * Inks the pattern with a ruler: for each line of rulerOrder, the ruler

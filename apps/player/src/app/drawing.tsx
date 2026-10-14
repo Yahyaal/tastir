@@ -514,7 +514,7 @@ export function Construction({
                 y1={sy(r.from)}
                 x2={sx(r.to)}
                 y2={sy(r.to)}
-                stroke={RULER_COLOR}
+                style={{ stroke: RULER_COLOR }}
                 strokeWidth={12}
                 strokeLinecap="round"
                 vectorEffect="non-scaling-stroke"
@@ -528,7 +528,7 @@ export function Construction({
               className="tile-outline"
               data-tile
               points={points(model.pattern.cell.corners)}
-              stroke={TILE_COLOR}
+              style={{ stroke: TILE_COLOR }}
               vectorEffect="non-scaling-stroke"
             />
             {model.pattern.ink.map((s, i) => (
@@ -920,7 +920,7 @@ export function RepeatedInk({
             id={`${inkId}-outline`}
             className="copy-outline"
             points={points(cell.corners)}
-            stroke={TILE_COLOR}
+            style={{ stroke: TILE_COLOR }}
             vectorEffect="non-scaling-stroke"
           />
         ) : null}
@@ -966,8 +966,8 @@ export function RepeatedInk({
   );
 }
 
-/** The accent for things in motion (--current in styles.css). */
-const ACCENT_COLOR = '#f59e0b';
+/** The accent for things in motion: --current, so it follows the theme. */
+const ACCENT_COLOR = 'var(--current)';
 
 /** One piece type's shape, small, for the piece panel. */
 export function PieceShape({

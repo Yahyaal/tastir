@@ -231,6 +231,100 @@ export const PATTERNS: readonly Pattern[] = [
     sources: [],
   },
   {
+    id: 'redesign',
+    title: 'The new look: plaster, zellige and ink, in light and dark',
+    fold: 8,
+    status: 'decided',
+    decision:
+      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. R1 is built: the pictures marked R1 show it in both themes.',
+    summary:
+      'The plan for building the redesign you approved into the player, one task at a time, with a light and a dark mode.',
+    story: [
+      'The look moves from the dark blueprint to a drafting table in a Fès courtyard. The ground is warm plaster, the drawing is ink on paper inside a cedar arch, and the zellige colours appear only on coloured pieces and on the step being drawn. Steps are marked by eight-pointed khatam stars (pictures A, C, E). The dark mode keeps every piece of that on a deep ink ground, with brass labels and a lighter cedar frame (B, D). A sun and moon button in every header switches between them; the app starts in the device’s setting and remembers your choice in this browser. Every screen is on the design canvas: https://claude.ai/artifact/McyS36FxVoDKxVCUKNZmX1',
+      'Two things from your earlier decisions stay as they are. The step colours keep the four roles you chose for Bou Inania (grey for earlier lines, orange for new lines, blue for what the step uses, green for new ink that turns black), so the red-brown points in the mocks become blue. The palettes stay visible as one-click colour strips, following your 11 October rule of no dropdown where the choices fit on screen; they move below the paint colours instead of above them.',
+      'The plan also takes in the usability review written today (docs/UX-REVIEW-2026-10-13.md), because most of its first fixes are the same screens: the starter button opening step 1, the controls staying beside the drawing on a phone, one tool at a time in draw along, and the colour tools first.',
+      'R1, the themes. I will give styles.css, along.css, editor.css and review.css one set of colour names with a light and a dark value each, switch the fonts to Marcellus, Manrope and Reem Kufi, and add the switch to the headers. Nothing moves on the page in this task, so you can check the colours alone.',
+      'R2, the lesson. The drawing sits in the arch with the step text beside it, and one timeline under it in four chapters (Construct, Ink, Repeat, Colour) replaces the grid of step numbers. Back and Next are the only big buttons, and a lesson reopens at the step you left.',
+      'R3, the colour panel: paint colours first, then the pieces by ring, then the palettes as strips, with Undo beside them.',
+      'R4, the home page: the starter button opens step 1, a strip offers to continue the last lesson, the filters fit in one row, a whole card opens its lesson, and the Review page and Project notes links move to a footer that only the dev server shows.',
+      'R5, draw along: only the tools the step needs are shown, the rest under More tools, and the instruction sits above the board (the last question on this page decides one board or two).',
+      'R6, the phone: the drawing first, with the step text and buttons in a panel at the bottom.',
+      'Each task is one commit, shown here before and after in both themes, with all tests, lint and typecheck passing. Tests that look for labels that change are updated in the same commit, never deleted.',
+    ],
+    pictures: [
+      {
+        src: 'renders/redesign/R1-home-light.png',
+        caption:
+          'R1. The home page in the light theme. The switch (the moon) sits by New pattern; the header wraps onto two rows until R4 moves the Review page and Project notes links to a footer.',
+      },
+      {
+        src: 'renders/redesign/R1-home-dark.png',
+        caption: 'R1. The same, dark.',
+      },
+      {
+        src: 'renders/redesign/R1-step-light.png',
+        caption:
+          'R1. A lesson step, light: orange is the new line, blue what it works from, as before.',
+      },
+      {
+        src: 'renders/redesign/R1-step-dark.png',
+        caption: 'R1. The same step, dark.',
+      },
+      {
+        src: 'renders/redesign/R1-result-light.png',
+        caption: 'R1. The colour stage, light. The tile colours are unchanged.',
+      },
+      {
+        src: 'renders/redesign/R1-result-dark.png',
+        caption: 'R1. The colour stage, dark.',
+      },
+      {
+        src: 'renders/redesign/R1-draw-light.png',
+        caption: 'R1. Draw along, light (one board comes in R5).',
+      },
+      {
+        src: 'renders/redesign/R1-draw-dark.png',
+        caption: 'R1. Draw along, dark.',
+      },
+      {
+        src: 'renders/redesign/A-home-light.png',
+        caption: 'A. Home, light.',
+      },
+      {
+        src: 'renders/redesign/B-home-dark.png',
+        caption: 'B. Home, dark.',
+      },
+      {
+        src: 'renders/redesign/C-lesson-light.png',
+        caption:
+          'C. A lesson at step 4: the arch, the step text, and the four-chapter timeline.',
+      },
+      {
+        src: 'renders/redesign/D-lesson-dark.png',
+        caption: 'D. The same step, dark.',
+      },
+      {
+        src: 'renders/redesign/E-colour-light.png',
+        caption:
+          'E. The colour stage: paint colours first, then the pieces by ring.',
+      },
+      {
+        src: 'renders/redesign/F-draw-along-today.png',
+        caption: 'F. Draw along today: two boards side by side.',
+      },
+      {
+        src: 'renders/redesign/G-draw-along-one-board.png',
+        caption:
+          'G. Draw along on one board: the line to draw shows as a faint dotted guide.',
+      },
+    ],
+    asks: [
+      'Shall I start with R1, the light and dark themes?',
+      'Draw along: two boards side by side (F) or one board with a faint guide (G)?',
+    ],
+    sources: [],
+  },
+  {
     id: 'ux-steps',
     title: 'Making long tutorials easy to follow (Bou Inania, step 13)',
     fold: 12,
@@ -1507,19 +1601,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'colour-stage',
-    text: 'Your own colours: try the mock of the new colours panel at /#/plan/colour-stage (palettes as colour strips, ring by ring or by shape, one row per ring, saved with your design). Shall I build it into the player like this?',
-    choices: [
-      'Yes, build it',
-      'Yes, with changes I name',
-      'No, something else',
-    ],
-    pictures: [],
-    card: 'eight-fold-zellige',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -1541,9 +1623,10 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '12 October 2026',
+  updated: '13 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    },
     {
       title: 'One switch: watch it drawn, result, draw along',
       text: 'The top bar of the player and of draw along has the same three choices as the library cards. Watch and Result switch in place without loading the pattern again, and the address follows, so a reload opens the same view. Previous, Next and the Patterns menu keep the view you are in: from a result, Next shows the next pattern’s result.',
@@ -1785,11 +1868,16 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Colours: your own, at the colour stage',
-    text: 'Copying the photos made most walls dull, so every tutorial stays coloured by rings, and the filler star between rosettes now rings out in its own colours. Next is the colour stage: try the working mock and answer the question at the top.',
-    link: { label: 'Try the mock', href: '/#/plan/colour-stage' },
+    title: 'R1 done: the light and dark themes',
+    text: 'Every page now has a light (plaster) and a dark (night) theme, with the new fonts and a sun and moon button in the headers. The app starts in your device’s setting and remembers your choice. Only colours and fonts changed; the layouts come in R2 to R6. Press the moon in any header to switch.',
+    link: { label: 'Before and after', href: '#redesign' },
   },
   next: [
+    {
+      title: 'R2: the lesson',
+      text: 'The drawing in the arch with the step text beside it, and one timeline in four chapters (Construct, Ink, Repeat, Colour) in place of the grid of step numbers.',
+      link: { label: 'The plan', href: '#redesign' },
+    },
     {
       title: 'Ink in under a second',
       text: 'Pressing Ink in draw along on Bou Inania now takes about a third of the time it did, but still around three seconds on a slow machine. The goal is under one second on both Bou Inania tutorials.',

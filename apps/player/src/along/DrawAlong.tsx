@@ -1,3 +1,4 @@
+import { ThemeSwitch } from '../app/theme';
 import { ViewSwitch } from '../app/ViewSwitch';
 import {
   distance,
@@ -1058,6 +1059,7 @@ export function DrawAlong({
           Show helper lines
         </label>
         <ViewSwitch id={address} view="draw" />
+        <ThemeSwitch />
       </header>
       <nav className="along-steps" aria-label="Steps">
         <span className="along-steps-label">Steps</span>

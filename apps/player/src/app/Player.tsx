@@ -1,6 +1,7 @@
 import { DEFAULT_JALI, sameJali } from './jali';
 import { JaliControls } from './JaliControls';
 import { ExploreNext } from './ExploreNext';
+import { ThemeSwitch } from './theme';
 import {
   useCallback,
   useEffect,
@@ -888,6 +889,7 @@ export function Player({
             </label>
           </div>
         </details>
+        <ThemeSwitch />
       </header>
       {banner}
       <div className={colorStage ? 'workspace with-panel' : 'workspace'}>

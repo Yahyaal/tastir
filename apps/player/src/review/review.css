@@ -140,7 +140,8 @@
   border-radius: 12px;
   padding: 20px 24px;
   margin: 20px 0;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 14px
+    color-mix(in srgb, var(--shadow) calc(25% * var(--shadow-k)), transparent);
 }
 
 .review-card.decide {
@@ -194,21 +195,22 @@
 }
 
 .review .badge.decide {
-  background: rgba(245, 158, 11, 0.15);
+  background: color-mix(in srgb, var(--theme-accent) 15%, transparent);
   color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 30%, transparent);
 }
 
 .review .badge.verified {
-  background: rgba(16, 185, 129, 0.15);
+  background: color-mix(in srgb, var(--malachite) 15%, transparent);
   color: #34d399;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid color-mix(in srgb, var(--malachite) 30%, transparent);
 }
 
 .review .badge.decided {
-  background: rgba(59, 130, 246, 0.15);
+  background: color-mix(in srgb, var(--theme-accent-cobalt) 15%, transparent);
   color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid
+    color-mix(in srgb, var(--theme-accent-cobalt) 30%, transparent);
 }
 
 .review .fold {
@@ -254,20 +256,21 @@
 }
 
 .review .asks {
-  background: rgba(245, 158, 11, 0.08);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--theme-accent) 20%, transparent);
   border-radius: 8px;
   padding: 4px 18px 12px;
 }
 
 .review-card.verified .asks {
-  background: rgba(16, 185, 129, 0.08);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: color-mix(in srgb, var(--malachite) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--malachite) 20%, transparent);
 }
 
 .review .asks.decided {
-  background: rgba(59, 130, 246, 0.08);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: color-mix(in srgb, var(--theme-accent-cobalt) 8%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--theme-accent-cobalt) 20%, transparent);
   margin-bottom: 12px;
 }
 
@@ -354,7 +357,8 @@
   border-radius: 10px;
   padding: 16px 20px;
   margin: 16px 0;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 14px
+    color-mix(in srgb, var(--shadow) calc(25% * var(--shadow-k)), transparent);
   color: var(--theme-text-primary);
 }
 
@@ -444,7 +448,7 @@
   margin-top: 10px;
   padding: 8px 14px 10px;
   border-left: 4px solid var(--saffron);
-  background: rgba(245, 158, 11, 0.08);
+  background: color-mix(in srgb, var(--theme-accent) 8%, transparent);
   border-radius: 0 8px 8px 0;
 }
 
