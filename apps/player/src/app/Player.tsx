@@ -1,6 +1,7 @@
 import { DEFAULT_JALI, sameJali } from './jali';
 import { JaliControls } from './JaliControls';
 import { ExploreNext } from './ExploreNext';
+import { keepLessonAt, lessonAt } from './lessons';
 import { ThemeSwitch } from './theme';
 import {
   useCallback,
@@ -230,16 +231,6 @@ export function Player({
   const [playing, setPlaying] = useState(
     start === 'beginning' && resumedAt === undefined,
   );
-  // The step is remembered as the learner goes, and forgotten once they
-  // reach the end, so the next visit starts again from step 1.
-  useEffect(() => {
-    if (sharedView) return;
-    if (resumedAt !== undefined && index !== resumedAt) setResumedAt(undefined);
-    if ((stage.kind === 'step' || stage.kind === 'ink') && index > 0)
-      keepLessonAt(address, index);
-    else if (index === 0 || (index === last && index !== openedAt.current))
-      keepLessonAt(address, undefined);
-  }, [address, index, last, resumedAt, sharedView, stage.kind]);
   const plateRef = useRef<HTMLElement>(null);
   const clock = useRef<{ index: number; remaining: number } | undefined>(
     undefined,
@@ -713,6 +704,17 @@ export function Player({
       picture = tiles(colourFirst ? [1, 1] : copies);
     }
   }
+
+  // The step is remembered as the learner goes, and forgotten once they
+  // reach the end, so the next visit starts again from step 1.
+  useEffect(() => {
+    if (sharedView) return;
+    if (resumedAt !== undefined && index !== resumedAt) setResumedAt(undefined);
+    if ((stage.kind === 'step' || stage.kind === 'ink') && index > 0)
+      keepLessonAt(address, index, label);
+    else if (index === 0 || (index === last && index !== openedAt.current))
+      keepLessonAt(address, undefined);
+  }, [address, index, label, last, resumedAt, sharedView, stage.kind]);
 
   // The colours are chosen at the colour stage and kept to the end, where
   // the finished wall is saved and shared.
@@ -1326,37 +1328,6 @@ type Copies = readonly [number, number] | 'wall';
 const COPIES: readonly Copies[] = [[2, 1], [2, 2], [3, 3], 'wall'];
 
 const PHASE_NAMES = { ink: 'Ink', repeat: 'Repeat', color: 'Color' } as const;
-
-/** Where the learner left a lesson: a step or the ink, never the end. */
-function lessonAt(
-  address: string,
-  stages: readonly Stage[],
-): number | undefined {
-  try {
-    const saved: unknown = JSON.parse(
-      window.localStorage.getItem(`tastir.lessonAt.${address}`) ?? 'null',
-    );
-    const kind = typeof saved === 'number' ? stages[saved]?.kind : undefined;
-    return typeof saved === 'number' &&
-      saved > 0 &&
-      (kind === 'step' || kind === 'ink')
-      ? saved
-      : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
-/** Remembers (or, with undefined, forgets) where the learner is. */
-function keepLessonAt(address: string, at: number | undefined) {
-  try {
-    const key = `tastir.lessonAt.${address}`;
-    if (at === undefined) window.localStorage.removeItem(key);
-    else window.localStorage.setItem(key, JSON.stringify(at));
-  } catch {
-    // Not remembered; the lesson opens at step 1 next time.
-  }
-}
 
 /** The eight-pointed khatam star each step and phase sits in. */
 function Khatam() {

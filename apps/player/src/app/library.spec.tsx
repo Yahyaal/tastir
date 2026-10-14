@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import khatam from '@tutorials/eight-fold-khatam.json';
 import octagons from '@tutorials/eight-fold-star-and-octagon.json';
@@ -27,6 +27,14 @@ afterEach(() => {
   window.location.hash = '';
   window.sessionStorage.clear();
 });
+
+/** Picks an option in one of the library's menus (Level, Tradition). */
+const choose = (menu: string, value: string) =>
+  act(() => {
+    fireEvent.change(screen.getByRole('combobox', { name: menu }), {
+      target: { value },
+    });
+  });
 
 describe('the library', () => {
   it.each([khatam, octagons, rectangular].map(parseTutorial))(
@@ -70,24 +78,22 @@ describe('the library', () => {
       const links = within(document.querySelector('.cards') as HTMLElement)
         .getAllByRole('link')
         .map((c) => c.getAttribute('href'));
-      // Each card opens the tutorial, and has two buttons: watch it drawn from
-      // the first step, see the finished result, or draw it along.
+      // The whole card opens the lesson at its first step; two quiet links
+      // under it show the finished result or draw it along.
       expect(links).toEqual([
-        '#/another-star',
         '#/another-star/watch',
         '#/another-star/result',
         '#/another-star/draw',
-        '#/eight-fold-star-and-cross',
         '#/eight-fold-star-and-cross/watch',
         '#/eight-fold-star-and-cross/result',
         '#/eight-fold-star-and-cross/draw',
       ]);
       expect(
-        screen.getAllByRole('link', { name: 'Watch it drawn' }),
-      ).toHaveLength(2);
-      expect(
         screen.getAllByRole('link', { name: 'See the result' }),
       ).toHaveLength(2);
+      expect(screen.getAllByRole('link', { name: 'Draw along' })).toHaveLength(
+        2,
+      );
       expect(
         screen.getByRole('heading', { name: 'Another star' }),
       ).toBeTruthy();
@@ -128,11 +134,11 @@ describe('the library', () => {
     render(<App entries={entries} />);
     const cards = () => document.querySelectorAll('.cards > li').length;
     expect(cards()).toBe(2);
-    act(() => screen.getByRole('button', { name: 'Nasrid' }).click());
+    choose('Tradition', 'Nasrid');
     expect(cards()).toBe(1);
-    act(() => screen.getByRole('button', { name: 'Beginner' }).click());
+    choose('Level', 'beginner');
     expect(screen.getByText(/No pattern matches both choices/)).toBeTruthy();
-    act(() => screen.getByRole('button', { name: 'All' }).click());
+    choose('Tradition', '');
     expect(cards()).toBe(1);
   });
 
@@ -147,6 +153,55 @@ describe('the library', () => {
     expect(
       screen.getByText(/Cannot be played: Step 2, element "E"/),
     ).toBeTruthy();
+  });
+});
+
+describe('the way in', () => {
+  const entries = () =>
+    entriesOf({
+      '../../../../tutorials/eight-fold-star-and-cross.json': example,
+    });
+
+  it('starts the first lesson at step 1', () => {
+    render(<App entries={entries()} />);
+    expect(
+      screen
+        .getByRole('link', { name: 'Start with the star and cross' })
+        .getAttribute('href'),
+    ).toBe('#/eight-fold-star-and-cross/watch');
+  });
+
+  it('offers to continue the lesson left partway, and not one finished', () => {
+    const { unmount } = render(<App entries={entries()} />);
+    expect(screen.queryByText('Continue where you left off')).toBeNull();
+    unmount();
+    window.localStorage.setItem(
+      'tastir.lastLesson',
+      JSON.stringify({
+        address: 'eight-fold-star-and-cross',
+        label: 'Step 3 of 6',
+      }),
+    );
+    render(<App entries={entries()} />);
+    const strip = screen.getByRole('link', {
+      name: /Continue where you left off/,
+    });
+    expect(strip.getAttribute('href')).toBe(
+      '#/eight-fold-star-and-cross/watch',
+    );
+    expect(within(strip).getByText('Step 3 of 6')).toBeTruthy();
+    expect(within(strip).getByText('Eight-fold star and cross')).toBeTruthy();
+  });
+
+  it('keeps the review page and project notes in the footer', () => {
+    render(<App entries={entries()} />);
+    const footer = document.querySelector('.site-footer') as HTMLElement;
+    expect(
+      within(footer).getByRole('link', { name: /Review page/ }),
+    ).toBeTruthy();
+    expect(
+      document.querySelector('.masthead')?.querySelector('.dev-links'),
+    ).toBeNull();
   });
 });
 
@@ -165,14 +220,13 @@ describe('coming back to the library', () => {
   it('keeps the filters the learner chose', () => {
     const entries = twoStars();
     const { unmount } = render(<App entries={entries} />);
-    act(() => screen.getByRole('button', { name: 'Nasrid' }).click());
+    choose('Tradition', 'Nasrid');
     unmount();
     render(<App entries={entries} />);
     expect(
-      screen
-        .getByRole('button', { name: 'Nasrid' })
-        .getAttribute('aria-pressed'),
-    ).toBe('true');
+      (screen.getByRole('combobox', { name: 'Tradition' }) as HTMLSelectElement)
+        .value,
+    ).toBe('Nasrid');
     expect(document.querySelectorAll('.cards > li').length).toBe(1);
   });
 

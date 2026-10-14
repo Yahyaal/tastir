@@ -12,6 +12,7 @@ import {
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { Thumbnail } from './drawing';
 import { type Entry } from './library';
+import { lastLesson } from './lessons';
 import { shownSteps } from './model';
 import { Shelf } from './Shelf';
 import { ThemeSwitch } from './theme';
@@ -193,28 +194,9 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
         <div className="masthead-actions">
           {patterns.length ? null : <NewPattern />}
           <ThemeSwitch />
-          {import.meta.env.DEV ? (
-            <div className="dev-links" aria-label="Developer quick links">
-              <span className="dev-tag">⚡ DEV</span>
-              <a
-                href="#/review"
-                className="dev-link"
-                title="Progress, decisions and questions"
-              >
-                <strong>Review page</strong>
-              </a>
-              <span className="dev-sep">/</span>
-              <a
-                href="#/notes"
-                className="dev-link"
-                title="Goal, queue, status and lessons"
-              >
-                <strong>Project notes</strong>
-              </a>
-            </div>
-          ) : null}
         </div>
       </header>
+      <ContinueLesson entries={entries} />
       <section className="hero">
         {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}
         <div className="hero-copy">
@@ -236,9 +218,16 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             <li>Repeat the tile into a wall and color it.</li>
           </ol>
           {first ? (
-            <a className="button primary" href={`#/${first.id}`}>
-              Start with the star and cross
-            </a>
+            <p className="hero-start">
+              <a className="button primary" href={`#/${first.id}/watch`}>
+                Start with the star and cross
+              </a>
+              {first.preview ? (
+                <span className="hero-start-meta">
+                  {capital(first.preview.level)} · {first.preview.steps} steps
+                </span>
+              ) : null}
+            </p>
           ) : null}
         </div>
       </section>
@@ -273,19 +262,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           </div>
         </div>
         <div className="filters">
-          <fieldset className="filter-group">
-            <legend>Tradition</legend>
-            <Chip on={!style} onClick={() => setStyle(undefined)}>
-              All
-            </Chip>
-            {styles.map((s) => (
-              <Chip key={s} on={style === s} onClick={() => setStyle(s)}>
-                {s}
-              </Chip>
-            ))}
-          </fieldset>
-          <fieldset className="filter-group">
-            <legend>Symmetry</legend>
+          <div className="filter-group" role="group" aria-label="Symmetry">
             <Chip on={!fold} onClick={() => setFold(undefined)}>
               Any fold
             </Chip>
@@ -294,18 +271,35 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
                 {f}-fold
               </Chip>
             ))}
-          </fieldset>
-          <fieldset className="filter-group">
-            <legend>Level</legend>
-            <Chip on={!level} onClick={() => setLevel(undefined)}>
-              Any
-            </Chip>
-            {LEVELS.map((l) => (
-              <Chip key={l} on={level === l} onClick={() => setLevel(l)}>
-                {capital(l)}
-              </Chip>
-            ))}
-          </fieldset>
+          </div>
+          <label className="filter-select">
+            Level
+            <select
+              value={level ?? ''}
+              onChange={(e) => setLevel(e.target.value || undefined)}
+            >
+              <option value="">Any</option>
+              {LEVELS.map((l) => (
+                <option key={l} value={l}>
+                  {capital(l)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="filter-select">
+            Tradition
+            <select
+              value={style ?? ''}
+              onChange={(e) => setStyle(e.target.value || undefined)}
+            >
+              <option value="">All</option>
+              {styles.map((st) => (
+                <option key={st} value={st}>
+                  {st}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
         {style && TRADITIONS[style] ? (
           <aside
@@ -359,6 +353,26 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
         Tastir draws every point from crossings of earlier circles and lines, as
         with a real compass and ruler. Sources and photographers are named with
         each pattern.
+        {import.meta.env.DEV ? (
+          <div className="dev-links" aria-label="Developer quick links">
+            <span className="dev-tag">Dev</span>
+            <a
+              href="#/review"
+              className="dev-link"
+              title="Progress, decisions and questions"
+            >
+              <strong>Review page</strong>
+            </a>
+            <span className="dev-sep">/</span>
+            <a
+              href="#/notes"
+              className="dev-link"
+              title="Goal, queue, status and lessons"
+            >
+              <strong>Project notes</strong>
+            </a>
+          </div>
+        ) : null}
       </footer>
     </div>
   );
@@ -404,6 +418,43 @@ function useReturnToScroll() {
     return stop;
   }, []);
 }
+
+/**
+ * The lesson the learner left partway, offered at the top of the library:
+ * its picture, its name and how far they got. Only library lessons are
+ * offered; the learner's own patterns have their own shelf.
+ */
+function ContinueLesson({ entries }: { entries: readonly Entry[] }) {
+  const last = lastLesson();
+  const entry = last && entries.find((e) => e.id === last.address);
+  if (!last || !entry) return null;
+  const title = entry.preview?.title ?? aboutTitle(entry.json) ?? entry.id;
+  return (
+    <a className="continue-lesson" href={`#/${entry.id}/watch`}>
+      {entry.preview ? (
+        <img
+          src={import.meta.env.BASE_URL + entry.preview.thumbnail}
+          alt=""
+          width="56"
+          height="56"
+        />
+      ) : null}
+      <span className="continue-text">
+        <span className="continue-eyebrow">Continue where you left off</span>
+        <span className="continue-title">{title}</span>
+        {last.label ? (
+          <span className="continue-step">{last.label}</span>
+        ) : null}
+      </span>
+      <span className="continue-go">Continue</span>
+    </a>
+  );
+}
+
+const aboutTitle = (json: unknown): string | undefined => {
+  const title = (json as { title?: unknown } | undefined)?.title;
+  return typeof title === 'string' ? title : undefined;
+};
 
 function Chip({
   on,
@@ -476,7 +527,7 @@ function CardView({
   const verification = preview?.verification ?? model?.tutorial.verification;
   return (
     <li className="card-item">
-      <a className="card" href={`#/${id}`}>
+      <a className="card" href={`#/${id}/watch`}>
         {preview ? (
           <img
             className="thumbnail"
@@ -521,62 +572,13 @@ function CardView({
       </a>
       {preview || model ? (
         <div className="card-actions">
-          <a className="button watch" href={`#/${id}/watch`}>
-            <svg
-              aria-hidden="true"
-              className="action-icon"
-              viewBox="0 0 16 16"
-              width="13"
-              height="13"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-            >
-              <circle cx="8" cy="8" r="6" />
-              <path d="M8 2v4M8 10v4M2 8h4M10 8h4" />
-            </svg>
-            Watch it drawn
-          </a>
-          <a className="button result" href={`#/${id}/result`}>
-            {photos ? (
-              <>
-                <svg
-                  aria-hidden="true"
-                  className="action-icon"
-                  viewBox="0 0 16 16"
-                  width="13"
-                  height="13"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                >
-                  <rect x="2" y="3" width="12" height="10" rx="1.5" />
-                  <circle cx="8" cy="8" r="2.5" />
-                </svg>
-                Result and original
-              </>
-            ) : (
-              <>
-                <svg
-                  aria-hidden="true"
-                  className="action-icon"
-                  viewBox="0 0 16 16"
-                  width="13"
-                  height="13"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                >
-                  <path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z" />
-                </svg>
-                See the result
-              </>
-            )}
+          <a className="card-link" href={`#/${id}/result`}>
+            {photos ? 'Result and original' : 'See the result'}
           </a>
           <a
-            className="button draw"
+            className="card-link"
             href={`#/${id}/draw`}
-            title="Draw it yourself, step by step, beside the tutorial"
+            title="Draw it yourself, step by step"
           >
             Draw along
           </a>

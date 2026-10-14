@@ -236,7 +236,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 8,
     status: 'decided',
     decision:
-      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. R1 to R3 are built: the pictures marked R1, R2 and R3 show them.',
+      'You (13 October): start R1; draw along moves to one board with a faint guide (G), built in R5. On the colours panel mock you asked for my suggestion: I will build it as part of R3, because the mock and R3 are the same panel. Its palettes as colour strips, ring by ring or by shape, one row per ring and saving with the design all stay; R3 only puts the paint colours above the palettes. You can refine it once it is in the player. R1 to R4 are built: the pictures marked R1 to R4 show them.',
     summary:
       'The plan for building the redesign you approved into the player, one task at a time, with a light and a dark mode.',
     story: [
@@ -252,6 +252,25 @@ export const PATTERNS: readonly Pattern[] = [
       'Each task is one commit, shown here before and after in both themes, with all tests, lint and typecheck passing. Tests that look for labels that change are updated in the same commit, never deleted.',
     ],
     pictures: [
+      {
+        src: 'renders/redesign/R4-home-dark.png',
+        caption:
+          'R4. The home page, dark: the header fits one row, a strip offers to continue the lesson left partway (here Bou Inania at step 9), and Start with the star and cross opens step 1, with its level and length beside it.',
+      },
+      {
+        src: 'renders/redesign/R4-home-light.png',
+        caption: 'R4. The same, light, with no lesson left partway.',
+      },
+      {
+        src: 'renders/redesign/R4-cards-dark.png',
+        caption:
+          'R4. The filters in one row: symmetry as buttons, level and tradition as menus. A whole card opens its lesson at step 1; See the result and Draw along are quiet links under it.',
+      },
+      {
+        src: 'renders/redesign/R4-footer-light.png',
+        caption:
+          'R4. The Review page and Project notes links, now in the footer (the dev server only).',
+      },
       {
         src: 'renders/redesign/R3-bou-light.png',
         caption:
@@ -1916,14 +1935,14 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'R3 done: the colour panel',
-    text: 'At the colour stage the panel comes first beside the wall: pick a colour (Undo, Redo and Reset beside it), then click a piece on the wall or one of the small pieces in the panel, one per ring, and the whole ring takes the colour. The palettes follow as strips. Patterns coloured by shape or by place keep their list of pieces. R1 (themes) and R2 (the lesson) are done too.',
+    title: 'R4 done: the home page',
+    text: 'Start with the star and cross now opens step 1. A strip at the top offers to continue the lesson you left partway. The filters fit in one row (symmetry buttons, level and tradition menus), a whole card opens its lesson, with See the result and Draw along under it, and the Review page and Project notes links sit in the footer. R1 to R3 are done too.',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [
     {
-      title: 'R4: the home page',
-      text: 'The starter button opens step 1, a strip offers to continue the last lesson, the filters fit in one row, a whole card opens its lesson, and the Review page and Project notes links move to a footer.',
+      title: 'R5: draw along on one board',
+      text: 'Your drawing and the step to copy on one board, the step as a faint guide; only the tools the step needs, the rest under More tools; the instruction above the board.',
       link: { label: 'The plan', href: '#redesign' },
     },
     {

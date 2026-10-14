@@ -2580,6 +2580,79 @@ main.stage .drawing:not(.wall) {
 }
 
 /* The collection: tiles on a wall, with grout between them. */
+/* The way in: the first lesson, with its level and length beside it. */
+.hero-start {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+  margin: 8px 0 0;
+}
+
+.hero-start-meta {
+  color: var(--theme-text-muted);
+  font-size: 0.95rem;
+}
+
+/* The lesson left partway, offered under the hero. */
+.continue-lesson {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0 0 28px;
+  padding: 14px 18px;
+  border: 1px solid var(--theme-border);
+  border-radius: 16px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  text-decoration: none;
+}
+
+.continue-lesson:hover {
+  border-color: var(--theme-border-hover);
+}
+
+.continue-lesson img {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+}
+
+.continue-text {
+  flex: 1;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.continue-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-label);
+}
+
+.continue-title {
+  font-family: var(--display);
+  font-size: 1.3rem;
+}
+
+.continue-step {
+  color: var(--theme-text-muted);
+  font-size: 0.9rem;
+}
+
+.continue-go {
+  flex: none;
+  padding: 10px 22px;
+  border-radius: 999px;
+  background: var(--theme-text-primary);
+  color: var(--theme-bg-canvas);
+  font-weight: 600;
+}
+
 .collection-head {
   display: flex;
   flex-wrap: wrap;
@@ -2698,8 +2771,9 @@ main.stage .drawing:not(.wall) {
 
 .filters {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
   background: color-mix(in srgb, var(--theme-bg-surface) 45%, transparent);
   border: 1px solid
     var(
@@ -2720,6 +2794,45 @@ main.stage .drawing:not(.wall) {
   border: 0;
   margin: 0;
   padding: 0;
+}
+
+/* Symmetry as one row of buttons; level and tradition as menus beside it. */
+.filter-group[role='group'] {
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--theme-bg-raised);
+}
+
+.library .filter-group[role='group'] .chip {
+  min-height: 36px;
+  border-color: transparent;
+  background: transparent;
+}
+
+.library .filter-group[role='group'] .chip[aria-pressed='true'] {
+  background: var(--theme-text-primary);
+  color: var(--theme-bg-canvas);
+}
+
+.filter-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-muted);
+  font-size: 0.85rem;
+}
+
+.filter-select select {
+  border: 0;
+  background: transparent;
+  color: var(--theme-text-primary);
+  font: 600 0.9rem var(--text);
+  cursor: pointer;
 }
 
 .filter-group legend {
@@ -2898,6 +3011,25 @@ main.stage .drawing:not(.wall) {
   text-align: center;
 }
 
+/* Under a card: the result and draw along, as quiet links (the card itself
+   opens the lesson). */
+.card-actions:has(.card-link) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+}
+
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--saffron);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
 .card-actions .action-icon {
   flex: none;
   opacity: 0.9;
@@ -2964,6 +3096,10 @@ main.stage .drawing:not(.wall) {
 }
 
 .site-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
   margin-top: 64px;
   padding-top: 20px;
   border-top: 1px solid var(--lapis-line);
