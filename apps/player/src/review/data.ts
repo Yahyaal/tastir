@@ -236,7 +236,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 8,
     status: 'decided',
     decision:
-      'You (14 October): agreed with my two pushbacks (no tool chosen for the learner; the wall pinned instead of a second preview), and asked for the four “fix first” items, 1 to 4, one commit each. All four are done: 1 the result fits a tablet and the timeline never scrolls the page; 2 the browser tests follow the redesign (148 pass), and two faults they found are fixed (the draw-along board moved at a step without tools; the ink bitmap fell a pixel short at a close zoom); 3 changes before a design is named are kept in this browser and come back; 4 the editor starts with copies and whole-line inking off. Then you asked for 5 to 8, also done: 5 the phone says what to tap beside the board, and a suggested tool is dashed, not chosen; 6 “Your pattern is ready” with Save first at the end; 7 a ring pointed at in the panel lights up on the wall, and on a phone the wall stays pinned while the panel scrolls; 8 tools 44 px on phones, and colours named instead of hex codes. Items 9 and 10 (Continue for draw along, Clear all filters) wait for your go.',
+      'You (14 October): agreed with my two pushbacks (no tool chosen for the learner; the wall pinned instead of a second preview), and asked for the four “fix first” items, 1 to 4, one commit each. All four are done: 1 the result fits a tablet and the timeline never scrolls the page; 2 the browser tests follow the redesign (148 pass), and two faults they found are fixed (the draw-along board moved at a step without tools; the ink bitmap fell a pixel short at a close zoom); 3 changes before a design is named are kept in this browser and come back; 4 the editor starts with copies and whole-line inking off. Then you asked for 5 to 8, also done: 5 the phone says what to tap beside the board, and a suggested tool is dashed, not chosen; 6 “Your pattern is ready” with Save first at the end; 7 a ring pointed at in the panel lights up on the wall, and on a phone the wall stays pinned while the panel scrolls; 8 tools 44 px on phones, and colours named instead of hex codes. Then 9 and 10, done too: Continue also offers a drawing left partway, and the library has Clear all with an empty message that names the filters. All ten items of the review are done.',
     summary:
       'Codex reviewed the redesign and found nine things to improve. I agree with almost all of them, push back on two details, and found one more problem myself.',
     story: [
@@ -246,6 +246,16 @@ export const PATTERNS: readonly Pattern[] = [
       'Later. 9, Continue on the home page also offers a draw-along you left partway. 10, the library: a Clear all button, and the empty message names the filters chosen (it still says “both choices” with three filters). A search box can wait until the library is bigger; with 39 patterns the filters find them quickly.',
     ],
     pictures: [
+      {
+        src: 'renders/redesign/Review9-continue-drawing.png',
+        caption:
+          '9. Continue offers the drawing you left most recently (“Drawing along · Step 2 of 6”) and opens your board.',
+      },
+      {
+        src: 'renders/redesign/Review10-clear-all.png',
+        caption:
+          '10. No pattern left by the filters: the message names them, with Clear all beside it and beside the filters.',
+      },
       {
         src: 'renders/redesign/Review5-phone-prompt.png',
         caption:
@@ -2055,8 +2065,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Codex’s review: items 1 to 8 are done',
-    text: 'On a phone, draw along says what to tap right under the board; a lesson ends with “Your pattern is ready” and Save first; pointing at a ring in the colour panel lights it on the wall, and on a phone the wall stays pinned while you colour; tools are 44 px on phones and colours have names. The browser tests found four phone faults on the way, now fixed (the pinned wall covered the panel beside the photo of the original). All 151 browser tests pass. Left from the review: 9 and 10.',
+    title: 'Codex’s review: all ten items are done',
+    text: 'The last two: the home page’s Continue now also offers a drawing you left partway (it says Drawing along or Watching, and opens the board or the lesson where you were), and the library has Clear all beside the filters, with an empty result that names what was chosen. All 151 browser tests and 664 unit tests pass.',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [
