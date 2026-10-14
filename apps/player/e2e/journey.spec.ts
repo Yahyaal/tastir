@@ -481,30 +481,43 @@ const beginners = tutorialFiles
   .map((f) => JSON.parse(readFileSync(resolve(tutorials, f), 'utf8')))
   .filter((t) => t.level === 'beginner');
 for (const tutorial of beginners) {
-  test(`${tutorial.id}: boards stay aligned and fit through construction and ink`, async ({
+  test(`${tutorial.id}: the board holds still and fits, with the guide on it, through construction and ink`, async ({
     page,
   }, info) => {
     await page.goto(route(`${tutorial.id}/draw`));
     await expect(page.locator('.along-grid')).toBeVisible();
     await page.evaluate(() => document.fonts.ready);
+    // One board: the learner's drawing, with the step to copy laid over it.
     const before = await boardBounds(page);
+    expect(before).toHaveLength(1);
     if (info.project.name !== 'phone')
       expect(before[0]!.bottom).toBeLessThanOrEqual(
         page.viewportSize()!.height,
       );
-    if (info.project.name !== 'phone')
-      expect(before[0]).toMatchObject({
-        y: before[1]!.y,
-        width: before[1]!.width,
-        height: before[1]!.height,
+    const guideOnBoard = () =>
+      page.locator('.along-plate').evaluate((plate) => {
+        const board = plate.querySelector('.editor-drawing');
+        const guide = plate.querySelector('.along-guide svg');
+        if (!board || !guide) return Infinity;
+        const a = board.getBoundingClientRect();
+        const b = guide.getBoundingClientRect();
+        return Math.max(
+          Math.abs(a.x - b.x),
+          Math.abs(a.y - b.y),
+          Math.abs(a.width - b.width),
+          Math.abs(a.height - b.height),
+        );
       });
+    expect(await guideOnBoard()).toBeLessThanOrEqual(1);
     const steps = page.locator('.along-steps button[aria-label^="Step "]');
     for (let i = 0; i < (await steps.count()); i++) {
       await steps.nth(i).click();
       expect(await boardBounds(page)).toEqual(before);
+      expect(await guideOnBoard()).toBeLessThanOrEqual(1);
     }
     await page.getByRole('button', { name: 'Ink', exact: true }).click();
     expect(await boardBounds(page)).toEqual(before);
+    expect(await guideOnBoard()).toBeLessThanOrEqual(1);
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth,

@@ -924,3 +924,16 @@
     border-radius: 999px;
   }
 }
+
+/* The tool bar always keeps room for two rows, so a tool chosen from More
+   tools, or a step with two tools, never moves the board. */
+.along-grid.one-board .along-tools .editor-tools[aria-label='Tools'] {
+  min-height: 51px;
+  align-content: flex-start;
+}
+
+@media (max-width: 760px) {
+  .along-grid.one-board .along-tools .editor-tools[aria-label='Tools'] {
+    min-height: 0;
+  }
+}

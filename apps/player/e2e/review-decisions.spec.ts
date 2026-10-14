@@ -11,7 +11,8 @@ for (const [id, level] of [
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto('/');
-    const card = page.locator(`.card[href="#/${id}"]`);
+    // A card opens its lesson at step 1.
+    const card = page.locator(`.card[href="#/${id}/watch"]`);
     await expect(card.locator('.verification-label')).toHaveText(
       'Historical match unverified',
     );

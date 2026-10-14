@@ -38,42 +38,53 @@ export function ToolBar({
   children?: React.ReactNode;
 }) {
   const [more, setMore] = useState(false);
-  const shown = TOOLS.filter(
-    (t) =>
-      !only || more || only.includes(t.id) || t.id === tool || t.id === hinted,
+  const main = (t: (typeof TOOLS)[number]) =>
+    !only || only.includes(t.id) || t.id === tool || t.id === hinted;
+  const button = (t: (typeof TOOLS)[number], close = false) => (
+    <button
+      key={t.id}
+      type="button"
+      className={[
+        'tool',
+        t.id === tool ? 'on' : '',
+        t.id === hinted ? 'hinted' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      aria-pressed={t.id === tool}
+      title={t.does}
+      aria-description={t.does}
+      onClick={() => {
+        onTool(t.id);
+        if (close) setMore(false);
+      }}
+    >
+      <b aria-hidden="true">{t.icon}</b>
+      {t.label}
+    </button>
   );
-  const hiding = only !== undefined && shown.length < TOOLS.length;
+  const others = TOOLS.filter((t) => !main(t));
   return (
     <div className="editor-tools" role="toolbar" aria-label="Tools">
-      {shown.map((t) => (
-        <button
-          key={t.id}
-          type="button"
-          className={[
-            'tool',
-            t.id === tool ? 'on' : '',
-            t.id === hinted ? 'hinted' : '',
-          ]
-            .filter(Boolean)
-            .join(' ')}
-          aria-pressed={t.id === tool}
-          title={t.does}
-          aria-description={t.does}
-          onClick={() => onTool(t.id)}
-        >
-          <b aria-hidden="true">{t.icon}</b>
-          {t.label}
-        </button>
-      ))}
-      {only ? (
-        <button
-          type="button"
-          className="tool more-tools"
-          aria-expanded={!hiding}
-          onClick={() => setMore(!more)}
-        >
-          {hiding ? 'More tools' : 'Fewer tools'}
-        </button>
+      {TOOLS.filter(main).map((t) => button(t))}
+      {/* The other tools open below the bar, over the board, so the board
+          never moves when they show. */}
+      {only && others.length ? (
+        <span className="more-tools-wrap">
+          <button
+            type="button"
+            className="tool more-tools"
+            aria-expanded={more}
+            onClick={() => setMore(!more)}
+          >
+            {more ? 'Fewer tools' : 'More tools'}
+          </button>
+          {more ? (
+            <span className="more-tools-menu">
+              {others.map((t) => button(t, true))}
+            </span>
+          ) : null}
+        </span>
       ) : null}
       <label className="tool symmetry" title={SYMMETRY_DOES}>
         Symmetry

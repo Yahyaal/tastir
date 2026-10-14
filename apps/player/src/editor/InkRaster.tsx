@@ -50,12 +50,18 @@ export const InkRaster = memo(function InkRaster({
       // Include the letterboxed area: SVG geometry is visible there too.
       const left = view.minX - (bounds.width / scale - w) / 2;
       const top = view.maxY + (bounds.height / scale - h) / 2;
-      node.setAttribute('x', String(left));
-      node.setAttribute('y', String(-top));
-      node.setAttribute('width', String(bounds.width / scale));
-      node.setAttribute('height', String(bounds.height / scale));
-      surface.width = Math.ceil(bounds.width * ratio);
-      surface.height = Math.ceil(bounds.height * ratio);
+      // Laid out in screen pixels and scaled down to the drawing's units:
+      // the browser rounds a foreignObject's layout to 1/64 of a unit, which
+      // at a close zoom (one unit ≈ 90 px) left the bitmap a pixel short.
+      node.setAttribute('x', String(left * scale));
+      node.setAttribute('y', String(-top * scale));
+      node.setAttribute('width', String(bounds.width));
+      node.setAttribute('height', String(bounds.height));
+      node.setAttribute('transform', `scale(${1 / scale},${-1 / scale})`);
+      // The nearest whole pixel: rounding up could leave the bitmap more
+      // than a pixel off the board when its width falls on a fraction.
+      surface.width = Math.max(1, Math.round(bounds.width * ratio));
+      surface.height = Math.max(1, Math.round(bounds.height * ratio));
       const ctx = surface.getContext('2d');
       if (!ctx) return;
       ctx.scale(ratio, ratio);

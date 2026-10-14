@@ -44,7 +44,11 @@ test('"All patterns" returns to the same place too', async ({ page }) => {
   await expectSamePlace(page, card, top);
 });
 
-test('next and previous follow the filtered library', async ({ page }) => {
+test('next and previous follow the filtered library', async ({
+  page,
+}, info) => {
+  // On a phone the patterns before and after are in the Patterns menu.
+  test.skip(info.project.name === 'phone');
   await page.goto('/#/');
   await page.getByRole('button', { name: '8-fold', exact: true }).click();
   const ids = await page
@@ -55,10 +59,11 @@ test('next and previous follow the filtered library', async ({ page }) => {
   await expect(
     page.getByRole('link', { name: /^Previous pattern/ }),
   ).toHaveCount(0);
+  // A card opens the lesson; next and previous keep watching.
   await page.getByRole('link', { name: /^Next pattern/ }).click();
-  await expect(page).toHaveURL(new RegExp(`${ids[1]}/result$`));
+  await expect(page).toHaveURL(new RegExp(`${ids[1]}$`));
   await page.getByRole('link', { name: /^Previous pattern/ }).click();
-  await expect(page).toHaveURL(new RegExp(`${ids[0]}/result$`));
+  await expect(page).toHaveURL(new RegExp(`${ids[0]}$`));
   // The filter is still on when the learner goes back.
   await page.locator('.topbar .home').click();
   await expect(
@@ -87,7 +92,8 @@ test('the side menu opens another pattern', async ({ page }) => {
 
 test('the view switch moves between watching, the result and drawing along', async ({
   page,
-}) => {
+}, info) => {
+  const phone = info.project.name === 'phone';
   await page.goto('/#/eight-fold-star-and-cross/watch');
   const views = page.getByRole('navigation', {
     name: 'How to see this pattern',
@@ -95,8 +101,15 @@ test('the view switch moves between watching, the result and drawing along', asy
   await views.getByRole('link', { name: 'Result' }).click();
   await expect(page).toHaveURL(/#\/eight-fold-star-and-cross\/result$/);
   await expect(page.locator('svg.wall')).toBeVisible();
-  // From a result, the next pattern opens at its result.
-  await page.getByRole('link', { name: /^Next pattern/ }).click();
+  // From a result, the next pattern opens at its result (on a phone,
+  // from the Patterns menu, which keeps the view too).
+  if (phone) {
+    await page.getByRole('button', { name: 'Patterns' }).click();
+    await page
+      .getByRole('dialog', { name: 'Patterns' })
+      .getByRole('link', { name: 'Eight-fold star and octagon' })
+      .click();
+  } else await page.getByRole('link', { name: /^Next pattern/ }).click();
   await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon\/result$/);
   await expect(page.locator('svg.wall')).toBeVisible();
   await views.getByRole('link', { name: 'Draw along' }).click();

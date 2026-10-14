@@ -1673,7 +1673,7 @@ export function DrawAlong({
                 onUndo={undo}
                 onRedo={redo}
                 hinted={hint?.tool ?? guidance?.tool}
-                only={stepTools.length ? stepTools : undefined}
+                only={stepTools}
               />
             </div>
           </div>

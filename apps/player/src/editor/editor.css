@@ -737,3 +737,35 @@
   height: 4.4em;
   overflow-y: auto;
 }
+
+/* More tools: the tools a step does not use, in a panel below the bar
+   (over the board, so nothing moves); on a phone they join the row. */
+.more-tools-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.more-tools-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: max-content;
+  max-width: min(440px, 80vw);
+  padding: 8px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 12px;
+  background: var(--theme-bg-surface);
+  box-shadow: 0 12px 28px
+    color-mix(in srgb, var(--shadow) calc(40% * var(--shadow-k)), transparent);
+}
+
+@media (max-width: 760px) {
+  .more-tools-wrap,
+  .more-tools-menu {
+    display: contents;
+  }
+}
