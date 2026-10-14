@@ -253,6 +253,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/redesign/Fix-bou-repeat-2x2.png',
+        caption:
+          'Bou Inania’s repeat, 2 × 2: four copies of the tile the ink shows, one rosette with half a band on every side, so the halves meet in whole bands and the corner quarters in eight-pointed stars.',
+      },
+      {
         src: 'renders/redesign/Fill-bou-frames.png',
         caption:
           'The move into colour on Bou Inania, a frame every half second or so: each rosette starts at its centre star and fills ring by ring outward. The old cover, which sat slightly off the wall, is gone.',
@@ -1940,8 +1945,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Fixed: the move into colour',
-    text: 'You found the colour stage unnatural, and on Bou Inania pieces seemed stacked and shifted. The cause was a blank copy of the pattern laid over the wall that did not line up with it. It is gone: the wall’s own pieces start blank and take their colour ring by ring from the centre of each rosette outward, about 3.5 seconds on Bou Inania (none with Reduce motion). R1 to R4 of the redesign are done; R5 is next.',
+    title: 'Fixed: Bou Inania’s repeat and its move into colour',
+    text: 'The repeat now copies the same tile the ink shows (the rosette with half a band on every side); before, it copied the cell’s whole ink, which was a different tile. And the move into colour no longer lays a shifted copy over the wall: the pieces take their colour ring by ring from the centre of each rosette outward. R1 to R4 of the redesign are done; R5 is next.',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [

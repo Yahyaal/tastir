@@ -685,7 +685,9 @@ export function Player({
       ) : (
         <RepeatedInk
           key={String(copies)}
-          model={inking.shown}
+          // The tile the ink showed (the tutorial's panel), so the copies
+          // are that tile; ink of the learner's own is repeated by its cell.
+          model={inking.isClassic ? asPanel(inking.shown) : inking.shown}
           count={copies === 'wall' ? undefined : copies}
           enter={enter}
           speed={speed}

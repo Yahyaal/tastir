@@ -340,14 +340,19 @@ describe('the player', () => {
     expect(container.querySelector('[data-tile]')?.getAttribute('points')).toBe(
       model.pattern.cell.corners.map((p) => `${p.x},${-p.y}`).join(' '),
     );
-    // The repeat keeps the tile.
+    // The repeat copies that same tile: its ink cut at the tile's edges,
+    // inside the same outline, not the cell's whole ink.
     next();
     expect(
       container
         .querySelector('defs path.tile-ink')
         ?.getAttribute('d')
         ?.split('M').length,
-    ).toBe(model.pattern.ink.length + 1);
+    ).toBe((panel?.ink.length ?? 0) + 1);
+    expect(panel?.ink.length).not.toBe(model.pattern.ink.length);
+    expect(
+      container.querySelector('.copy-outline')?.getAttribute('points'),
+    ).toBe((panel?.corners ?? []).map((p) => `${p.x},${-p.y}`).join(' '));
   }, 30000);
 
   it('skips a hidden step: never shown, never drawn, left out of the count', () => {
