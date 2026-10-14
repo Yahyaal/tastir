@@ -155,12 +155,16 @@ export function NewPattern() {
   );
 }
 
-function PatternCard({
+/** A pattern's card; without actions (the home page's row) it is only
+ * the link to the editor. */
+export function PatternCard({
   pattern,
   onChange,
+  actions = true,
 }: {
   pattern: UserPattern;
   onChange: () => void;
+  actions?: boolean;
 }) {
   const { tutorial } = pattern;
   const [doing, setDoing] = useState<'rename' | 'delete'>();
@@ -215,7 +219,7 @@ function PatternCard({
           {pattern.basedOn ? <span>from {pattern.basedOn.title}</span> : null}
         </p>
       </a>
-      {doing === 'rename' ? (
+      {!actions ? null : doing === 'rename' ? (
         <form
           className="card-actions design-rename"
           onSubmit={(e) => {

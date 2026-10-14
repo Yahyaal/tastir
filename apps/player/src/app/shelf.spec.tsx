@@ -40,6 +40,11 @@ afterEach(() => {
 });
 
 describe('the shelf of my designs', () => {
+  // Designs are managed on #/work; the home page shows one row of them.
+  beforeEach(() => {
+    window.location.hash = '#/work';
+  });
+
   it('is not shown until there is a design', () => {
     render(<App entries={entries} />);
     expect(screen.queryByRole('region', { name: 'My designs' })).toBeNull();
@@ -143,14 +148,36 @@ describe('the shelf of my designs', () => {
     expect(design('x'.repeat(300))?.name).toHaveLength(60);
   });
 
-  it('jumps to the shelf from the top of the home page', () => {
-    design('One');
-    design('Two');
+  it('shows one row of them on the home page, and links to the rest', () => {
+    window.location.hash = '';
+    for (const n of ['One', 'Two', 'Three', 'Four', 'Five']) design(n);
     render(<App entries={entries} />);
-    expect(screen.getByRole('button', { name: 'Your work (2)' })).toBeTruthy();
+    expect(
+      screen.getByRole('link', { name: 'Your work (5)' }).getAttribute('href'),
+    ).toBe('#/work');
+    const yours = screen.getByRole('region', { name: 'Your work' });
+    // The four latest, without rename or delete (those are on #/work).
+    expect(
+      within(yours)
+        .getAllByRole('heading', { level: 4 })
+        .map((h) => h.textContent),
+    ).toEqual(['Five', 'Four', 'Three', 'Two']);
+    expect(within(yours).queryByRole('button', { name: 'Rename' })).toBeNull();
+    expect(
+      within(yours).getByRole('link', { name: /See all \(5\)/ }),
+    ).toHaveProperty('hash', '#/work');
+  });
+
+  it('says what goes on #/work while there is nothing yet', () => {
+    render(<App entries={entries} />);
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Your work' }),
+    ).toBeTruthy();
+    expect(screen.getByText(/Nothing here yet/)).toBeTruthy();
   });
 
   it('puts Your work after the welcome when nothing is in progress', () => {
+    window.location.hash = '';
     design('One');
     render(<App entries={entries} />);
     const yours = screen.getByRole('region', { name: 'Your work' });
@@ -158,7 +185,7 @@ describe('the shelf of my designs', () => {
     expect(
       hero.compareDocumentPosition(yours) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    // One kind of work: no tabs.
+    // A row of cards, without tabs.
     expect(within(yours).queryByRole('group', { name: 'Show' })).toBeNull();
   });
 

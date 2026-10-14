@@ -262,8 +262,9 @@ describe('the way in', () => {
       ]),
     );
     render(<App entries={entries()} />);
-    const work = screen.getByRole('region', { name: 'In progress' });
-    const links = within(work).getAllByRole('link');
+    // One row on the home page: the lessons in progress come first.
+    const yours = screen.getByRole('region', { name: 'Your work' });
+    const links = [...yours.querySelectorAll<HTMLElement>('.cards a.card')];
     // The drawing was left last: it comes first, and opens its board.
     expect(links.map((l) => l.getAttribute('href'))).toEqual([
       '#/eight-fold-star-and-cross/draw',
@@ -276,12 +277,16 @@ describe('the way in', () => {
       within(links[1] as HTMLElement).getByText(/Watching · Step 3 of 6/),
     ).toBeTruthy();
     // Something in progress: Your work comes before the welcome.
-    const yours = screen.getByRole('region', { name: 'Your work' });
     const hero = document.querySelector('.hero') as HTMLElement;
     expect(
       yours.compareDocumentPosition(hero) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Your work (2)' })).toBeTruthy();
+    expect(
+      within(yours).getByRole('link', { name: /See all \(2\)/ }),
+    ).toHaveProperty('hash', '#/work');
+    expect(
+      screen.getByRole('link', { name: 'Your work (2)' }).getAttribute('href'),
+    ).toBe('#/work');
   });
 
   it('keeps the review page and project notes in the footer', () => {

@@ -226,7 +226,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   // The saved screen's thumbnail still uses the saved style and width.
   await page.goto('/');
   await page
-    .getByRole('button', { name: 'Your work (1)', exact: true })
+    .getByRole('link', { name: 'Your work (1)', exact: true })
     .click();
   const preview = page.locator('.thumbnail.style-jali');
   await expect(preview).toBeVisible();

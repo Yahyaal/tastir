@@ -36,6 +36,7 @@ describe('the fixes from the phase 2 report', () => {
       look: 'tiles',
       grout: 1,
     });
+    window.location.hash = '#/work';
     render(<App />);
     const shelf = screen.getByRole('region', { name: 'My patterns' });
     fireEvent.click(within(shelf).getByRole('button', { name: 'Delete' }));

@@ -5153,6 +5153,48 @@ svg.tiles {
   gap: 2px;
 }
 
+.your-work .see-all {
+  font-weight: 600;
+  color: var(--theme-accent);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.your-work .see-all:hover {
+  text-decoration: underline;
+}
+
+/* The home page's row: one line of cards, a strip to swipe on a phone. */
+.work-row .cards {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .work-row .cards {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(220px, 70%);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+  }
+
+  .work-row .card-item {
+    scroll-snap-align: start;
+  }
+}
+
+.work-page .your-work h1 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 2.2rem;
+}
+
+.work-empty {
+  color: var(--theme-text-muted);
+}
+
 .work-kind {
   display: inline-flex;
   align-items: center;

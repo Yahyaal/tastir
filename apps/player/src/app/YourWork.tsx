@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { allProgress } from '../along/progress';
-import { PatternShelf } from '../editor/PatternShelf';
-import type { UserPattern } from '../editor/patterns';
+import { PatternCard, PatternShelf } from '../editor/PatternShelf';
+import { listPatterns, type UserPattern } from '../editor/patterns';
 import { ActionIcon } from './actionIcons';
-import type { Design } from './designs';
+import {
+  listDesigns,
+  unreadableKept,
+  unreadableNow,
+  type Design,
+} from './designs';
 import { lessonsInProgress } from './lessons';
 import type { Entry } from './library';
-import { Shelf } from './Shelf';
+import { DesignCard, Shelf } from './Shelf';
+import { ThemeSwitch } from './theme';
 
 /** A lesson left partway: watched, or drawn along. */
 export interface InProgress {
@@ -44,6 +50,117 @@ export function workInProgress(entries: readonly Entry[]): InProgress[] {
     .sort((a, b) => b.at.localeCompare(a.at));
 }
 
+/** How many cards the home page's row shows: one line on a wide screen. */
+export const ROW = 4;
+
+/**
+ * The home page's look at the learner's work: one row, the lessons in
+ * progress first (the likeliest next click), then the designs and
+ * patterns most recently changed, and a link to the whole of it.
+ */
+export function WorkRow({
+  entries,
+  inProgress,
+  designs,
+  patterns,
+}: {
+  entries: readonly Entry[];
+  inProgress: readonly InProgress[];
+  designs: readonly Design[];
+  patterns: readonly UserPattern[];
+}) {
+  const made = [
+    ...designs.map((d) => ({ at: d.updated, design: d })),
+    ...patterns.map((p) => ({ at: p.updated, pattern: p })),
+  ].sort((a, b) => b.at.localeCompare(a.at));
+  const lessons = inProgress.slice(0, ROW);
+  const kept = made.slice(0, ROW - lessons.length);
+  const count = inProgress.length + designs.length + patterns.length;
+  return (
+    <section aria-labelledby="your-work" className="your-work work-row">
+      <div className="collection-head">
+        <h2 id="your-work">Your work</h2>
+        <a className="see-all" href="#/work">
+          See all ({count}) <span aria-hidden="true">→</span>
+        </a>
+      </div>
+      <ul className="cards">
+        {lessons.map((w) => (
+          <ProgressCard
+            key={`${w.mode}:${w.address}`}
+            work={w}
+            entry={entries.find((e) => e.id === w.address)}
+          />
+        ))}
+        {kept.map((k) =>
+          'design' in k ? (
+            <DesignCard
+              key={k.design.id}
+              design={k.design}
+              entry={entries.find((e) => e.id === k.design.tutorial)}
+              onChange={() => undefined}
+              actions={false}
+            />
+          ) : (
+            <PatternCard
+              key={k.pattern.id}
+              pattern={k.pattern}
+              onChange={() => undefined}
+              actions={false}
+            />
+          ),
+        )}
+      </ul>
+    </section>
+  );
+}
+
+/** #/work: all of the learner's work, with rename and delete. */
+export function WorkPage({ entries }: { entries: readonly Entry[] }) {
+  const [designs, setDesigns] = useState(listDesigns);
+  const [patterns, setPatterns] = useState(listPatterns);
+  const [inProgress] = useState(() => workInProgress(entries));
+  return (
+    <div className="upcoming-page work-page">
+      <header className="upcoming-topbar">
+        <a className="home" href="#/">
+          <span className="back-arrow" aria-hidden="true">
+            ←
+          </span>
+          <span className="wordmark">
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
+          </span>
+          <span className="library-crumb">All patterns</span>
+        </a>
+        <ThemeSwitch />
+      </header>
+      <main className="upcoming-content">
+        <YourWork
+          heading={1}
+          entries={entries}
+          inProgress={inProgress}
+          designs={designs}
+          designNote={unreadableKept() || unreadableNow()}
+          patterns={patterns}
+          onDesigns={() => setDesigns(listDesigns())}
+          onPatterns={() => {
+            setPatterns(listPatterns());
+            setDesigns(listDesigns());
+          }}
+        />
+      </main>
+    </div>
+  );
+}
+
 type Tab = 'all' | 'progress' | 'designs' | 'patterns';
 
 /**
@@ -52,6 +169,7 @@ type Tab = 'all' | 'progress' | 'designs' | 'patterns';
  * they made. Tabs pick one kind when there is more than one.
  */
 export function YourWork({
+  heading = 2,
   entries,
   inProgress,
   designs,
@@ -60,6 +178,7 @@ export function YourWork({
   onDesigns,
   onPatterns,
 }: {
+  heading?: 1 | 2;
   entries: readonly Entry[];
   inProgress: readonly InProgress[];
   designs: readonly Design[];
@@ -84,10 +203,11 @@ export function YourWork({
     designs: 'My designs',
     patterns: 'My patterns',
   } as const;
+  const Heading = heading === 1 ? 'h1' : 'h2';
   return (
     <section aria-labelledby="your-work" className="your-work">
       <div className="collection-head">
-        <h2 id="your-work">Your work</h2>
+        <Heading id="your-work">Your work</Heading>
         {kinds.length > 1 ? (
           <div className="work-tabs" role="group" aria-label="Show">
             {(['all', ...kinds] as Tab[]).map((t) => (
@@ -104,6 +224,13 @@ export function YourWork({
           </div>
         ) : null}
       </div>
+      {kinds.length || designNote ? null : (
+        <p className="work-empty">
+          Nothing here yet. The lessons you leave partway, the designs you save
+          and the patterns you make are kept here, in this browser.{' '}
+          <a href="#/">Choose a pattern to start</a>.
+        </p>
+      )}
       {inProgress.length && shows('progress') ? (
         <section aria-labelledby="in-progress" className="shelf">
           <div className="collection-head">

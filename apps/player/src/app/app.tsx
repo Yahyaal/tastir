@@ -5,6 +5,7 @@ import { playable } from '../editor/patterns';
 import { getDesign } from './designs';
 import { LIBRARY, type Entry } from './library';
 import { Library } from './Library';
+import { WorkPage } from './YourWork';
 import { Broken, MissingDesign, Play } from './Player';
 import { useRoute } from './routing';
 import { openShared, useShared } from './Sharing';
@@ -88,6 +89,7 @@ export function App({
     [own, library],
   );
   if (!route) return <Library entries={library} />;
+  if (route === 'work') return <WorkPage entries={library} />;
   if (route === 'upcoming') {
     return (
       <Suspense

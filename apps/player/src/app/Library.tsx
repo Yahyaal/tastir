@@ -12,7 +12,7 @@ import {
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { ActionIcon } from './actionIcons';
 import { ZelligeBand } from './ZelligeBand';
-import { workInProgress, YourWork } from './YourWork';
+import { workInProgress, WorkRow } from './YourWork';
 import { Thumbnail } from './drawing';
 import { type Entry } from './library';
 import { shownSteps } from './model';
@@ -111,28 +111,22 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   const [fold, setFold] = useState(() => keptFilters().fold);
   useEffect(() => keepFilters({ style, level, fold }), [style, level, fold]);
   useReturnToScroll();
-  const [designs, setDesigns] = useState(listDesigns);
-  const [patterns, setPatterns] = useState(listPatterns);
+  const [designs] = useState(listDesigns);
+  const [patterns] = useState(listPatterns);
   const [inProgress] = useState(() => workInProgress(entries));
   const designNote = unreadableKept() || unreadableNow();
   const workCount = inProgress.length + designs.length + patterns.length;
-  // The learner's own work: above the welcome when a lesson waits to be
-  // continued (the likeliest next click), below it otherwise.
-  const yourWork =
-    workCount || designNote ? (
-      <YourWork
-        entries={entries}
-        inProgress={inProgress}
-        designs={designs}
-        designNote={designNote}
-        patterns={patterns}
-        onDesigns={() => setDesigns(listDesigns())}
-        onPatterns={() => {
-          setPatterns(listPatterns());
-          setDesigns(listDesigns());
-        }}
-      />
-    ) : null;
+  // The learner's own work, one row of it: above the welcome when a
+  // lesson waits to be continued (the likeliest next click), below it
+  // otherwise. All of it is on #/work.
+  const yourWork = workCount ? (
+    <WorkRow
+      entries={entries}
+      inProgress={inProgress}
+      designs={designs}
+      patterns={patterns}
+    />
+  ) : null;
   const styles = [
     ...new Set(
       entries.flatMap((e) => aboutOf(e.preview ?? e.json).style ?? []),
@@ -205,20 +199,15 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             <span>Upcoming patterns</span>
             <span className="nav-badge highlight">24</span>
           </a>
-          {workCount ? (
-            <button
-              type="button"
+          {workCount || designNote ? (
+            <a
               className="nav-item jump-link"
+              href="#/work"
               aria-label={`Your work (${workCount})`}
-              onClick={() =>
-                document
-                  .getElementById('your-work')
-                  ?.scrollIntoView?.({ behavior: 'smooth' })
-              }
             >
               <span>Your work</span>{' '}
               <span className="nav-badge">({workCount})</span>
-            </button>
+            </a>
           ) : null}
         </nav>
 

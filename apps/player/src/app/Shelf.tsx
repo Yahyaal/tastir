@@ -64,14 +64,18 @@ export function Shelf({
   );
 }
 
-function DesignCard({
+/** A design's card; without actions (the home page's row) it is only
+ * the link to its wall. */
+export function DesignCard({
   design,
   entry,
   onChange,
+  actions = true,
 }: {
   design: Design;
   entry?: Entry;
   onChange: () => void;
+  actions?: boolean;
 }) {
   // A design of the learner's own pattern (mine/<id>) is drawn from the
   // pattern kept in this browser.
@@ -100,7 +104,7 @@ function DesignCard({
           </p>
         </div>
       )}
-      <DesignActions design={design} onChange={onChange} />
+      {actions ? <DesignActions design={design} onChange={onChange} /> : null}
     </li>
   );
 }

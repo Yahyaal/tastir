@@ -42,8 +42,9 @@ afterEach(() => {
 });
 
 describe('the fixes from the editor report', () => {
-  it('lists my patterns on the home page, with edit, play, rename and delete', () => {
+  it('lists my patterns on Your work, with edit, play, rename and delete', () => {
     const a = addPattern(copyUpTo(star, 3));
+    window.location.hash = '#/work';
     render(<App />);
     const shelf = screen.getByRole('region', { name: 'My patterns' });
     expect(
@@ -51,7 +52,6 @@ describe('the fixes from the editor report', () => {
     ).toBe(`#/edit/${a?.id}`);
     // Not tiled or inked yet: no Play.
     expect(within(shelf).queryByRole('link', { name: 'Play' })).toBeNull();
-    expect(screen.getByRole('button', { name: 'Your work (1)' })).toBeTruthy();
     fireEvent.click(within(shelf).getByRole('button', { name: 'Rename' }));
     fireEvent.change(within(shelf).getByLabelText(/New name/), {
       target: { value: 'Octagons' },
@@ -73,6 +73,7 @@ describe('the fixes from the editor report', () => {
       pattern: star.pattern,
       ink: { paths: [{ through: ['E', 'k.1'] }] },
     });
+    window.location.hash = '#/work';
     render(<App entries={[]} />);
     const shelf = screen.getByRole('region', { name: 'My patterns' });
     expect(
