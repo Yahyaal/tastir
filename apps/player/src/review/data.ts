@@ -236,7 +236,7 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 8,
     status: 'decided',
     decision:
-      'You (14 October): agreed with my two pushbacks (no tool chosen for the learner; the wall pinned instead of a second preview), and asked for the four “fix first” items, 1 to 4, one commit each. All four are done: 1 the result fits a tablet and the timeline never scrolls the page; 2 the browser tests follow the redesign (148 pass), and two faults they found are fixed (the draw-along board moved at a step without tools; the ink bitmap fell a pixel short at a close zoom); 3 changes before a design is named are kept in this browser and come back; 4 the editor starts with copies and whole-line inking off. Items 5 to 10 wait for your go.',
+      'You (14 October): agreed with my two pushbacks (no tool chosen for the learner; the wall pinned instead of a second preview), and asked for the four “fix first” items, 1 to 4, one commit each. All four are done: 1 the result fits a tablet and the timeline never scrolls the page; 2 the browser tests follow the redesign (148 pass), and two faults they found are fixed (the draw-along board moved at a step without tools; the ink bitmap fell a pixel short at a close zoom); 3 changes before a design is named are kept in this browser and come back; 4 the editor starts with copies and whole-line inking off. Then you asked for 5 to 8, also done: 5 the phone says what to tap beside the board, and a suggested tool is dashed, not chosen; 6 “Your pattern is ready” with Save first at the end; 7 a ring pointed at in the panel lights up on the wall, and on a phone the wall stays pinned while the panel scrolls; 8 tools 44 px on phones, and colours named instead of hex codes. Items 9 and 10 (Continue for draw along, Clear all filters) wait for your go.',
     summary:
       'Codex reviewed the redesign and found nine things to improve. I agree with almost all of them, push back on two details, and found one more problem myself.',
     story: [
@@ -246,6 +246,26 @@ export const PATTERNS: readonly Pattern[] = [
       'Later. 9, Continue on the home page also offers a draw-along you left partway. 10, the library: a Clear all button, and the empty message names the filters chosen (it still says “both choices” with three filters). A search box can wait until the library is bigger; with 39 patterns the filters find them quickly.',
     ],
     pictures: [
+      {
+        src: 'renders/redesign/Review5-phone-prompt.png',
+        caption:
+          '5. Draw along on a phone: what to tap sits right under the board, above the bar; the suggested tool (Compass) has a dashed outline and is not chosen for you.',
+      },
+      {
+        src: 'renders/redesign/Review6-ready.png',
+        caption:
+          '6. The end of a lesson: “Your pattern is ready” comes first, with Save and Copy a share link; the colours follow. The bottom button says Save my design.',
+      },
+      {
+        src: 'renders/redesign/Review7-ring-lit.png',
+        caption:
+          '7. Pointing at Rosette A’s ring 4 (the small stars) in the panel: those stars stay bright on the wall and the rest fades.',
+      },
+      {
+        src: 'renders/redesign/Review7-phone-pinned.png',
+        caption:
+          '7. On a phone, scrolled down to the palettes: the wall stays pinned at the top.',
+      },
       {
         src: 'renders/redesign-review-2026-10-14/tablet-color-initial.png',
         caption:
@@ -2035,8 +2055,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Codex’s review: the four fixes are done',
-    text: 'The finished pattern fits a tablet and opens at the top; the browser tests all pass again (148), after fixing two faults they found; your first colours are kept in this browser until you save them (open a pattern’s result, change the palette, leave and come back); and the editor starts with copies and whole lines off. Next, if you agree: items 5 to 8 of the review (a short tap prompt on the phone, “Your pattern is ready” with Save, the ring lighting up on the wall, larger tool buttons).',
+    title: 'Codex’s review: items 1 to 8 are done',
+    text: 'On a phone, draw along says what to tap right under the board; a lesson ends with “Your pattern is ready” and Save first; pointing at a ring in the colour panel lights it on the wall, and on a phone the wall stays pinned while you colour; tools are 44 px on phones and colours have names. The browser tests found four phone faults on the way, now fixed (the pinned wall covered the panel beside the photo of the original). All 151 browser tests pass. Left from the review: 9 and 10.',
     link: { label: 'Before and after', href: '#redesign' },
   },
   next: [
