@@ -3139,19 +3139,6 @@ main.stage .drawing:not(.wall) {
   .workspace.with-panel {
     grid-template-columns: minmax(0, 1fr) 300px;
   }
-
-  /* The panel goes under the wall here, so the page grows and scrolls
-     rather than squeezing the wall and the panel into one screen, where
-     they were drawn over each other. */
-  .player.at-color {
-    height: auto;
-    min-height: 100vh;
-  }
-
-  .player.at-color .lesson-side {
-    max-height: none;
-    overflow: visible;
-  }
 }
 
 @media (max-width: 760px) {

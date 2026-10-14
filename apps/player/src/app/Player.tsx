@@ -1358,9 +1358,16 @@ function Journey({
   const steps = stages.flatMap((s, i) => (s.kind === 'step' ? [i] : []));
   const state = (i: number) => (i < index ? 'done' : undefined);
   const current = useRef<HTMLButtonElement>(null);
-  // A long construction scrolls along; the step in view follows the learner.
+  // A long construction scrolls along; the step in view follows the
+  // learner. Only the timeline's own row moves, never the page.
   useEffect(() => {
-    current.current?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+    const star = current.current;
+    const row = star?.closest<HTMLElement>('.journey');
+    if (!star || !row) return;
+    const box = row.getBoundingClientRect();
+    const at = star.getBoundingClientRect();
+    if (at.left < box.left) row.scrollLeft -= box.left - at.left + 8;
+    else if (at.right > box.right) row.scrollLeft += at.right - box.right + 8;
   }, [index]);
   return (
     <nav className="journey" aria-label="Where you are">
