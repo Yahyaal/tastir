@@ -4800,7 +4800,9 @@ svg.tiles {
 /* On a phone, at the colour stage, the wall stays pinned at the top while
    the colour panel scrolls under it. */
 @media (max-width: 760px) {
-  .player.at-color .plate-area {
+  /* Only the wall alone: beside the photo of the original the pair is
+     taller than the screen, and pinned it would cover everything. */
+  .player.at-color .plate-area:has(> .stage:not(.comparing)) {
     position: sticky;
     top: 0;
     z-index: 6;
@@ -4808,7 +4810,20 @@ svg.tiles {
     background: var(--theme-bg-canvas);
   }
 
-  .player.at-color:not(.along) .stage {
+  .player.at-color:not(.along) .stage:not(.comparing) {
     height: 34vh;
+  }
+}
+
+/* On a phone, a control brought into view (by the keyboard, or a link)
+   stops clear of the fixed Back and Next bar, and at the colour stage clear
+   of the wall pinned at the top. */
+@media (max-width: 760px) {
+  html {
+    scroll-padding-bottom: 96px;
+  }
+
+  html:has(.player.at-color .stage:not(.comparing)) {
+    scroll-padding-top: calc(34vh + 24px);
   }
 }

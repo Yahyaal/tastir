@@ -342,7 +342,7 @@ test('a missing original photo keeps its source link and shows no broken image',
 test('a beginner draws the first circle, gets a completed step, and resumes', async ({
   page,
   hasTouch,
-}) => {
+}, info) => {
   await page.goto(route(`${star}/draw`));
   await expect(
     page.getByText(/Choose Compass, (click|tap) O, then E\./),
@@ -376,12 +376,17 @@ test('a beginner draws the first circle, gets a completed step, and resumes', as
     name: 'Continue drawing',
     exact: true,
   });
-  const resumeBox = await resume.boundingBox();
-  const instructionBox = await page.locator('.along-text-row').boundingBox();
-  expect(resumeBox!.y).toBeGreaterThanOrEqual(instructionBox!.y);
-  expect(resumeBox!.y + resumeBox!.height).toBeLessThanOrEqual(
-    instructionBox!.y + instructionBox!.height,
-  );
+  // On a phone the step's buttons are in the fixed bar at the bottom;
+  // elsewhere they sit in the step's own row.
+  if (info.project.name === 'phone') await expect(resume).toBeInViewport();
+  else {
+    const resumeBox = await resume.boundingBox();
+    const instructionBox = await page.locator('.along-text-row').boundingBox();
+    expect(resumeBox!.y).toBeGreaterThanOrEqual(instructionBox!.y);
+    expect(resumeBox!.y + resumeBox!.height).toBeLessThanOrEqual(
+      instructionBox!.y + instructionBox!.height,
+    );
+  }
   await page
     .getByRole('button', { name: 'Continue drawing', exact: true })
     .click();

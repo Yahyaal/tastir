@@ -411,7 +411,8 @@
 /* The tool a hint suggests: a dashed orange outline, never filled, so it
    is not mistaken for the tool chosen (filled blue). */
 .player .editor-tools .tool.hinted:not(.on) {
-  border: 2px dashed var(--current);
+  outline: 2px dashed var(--current);
+  outline-offset: -1px;
   box-shadow: none;
 }
 
