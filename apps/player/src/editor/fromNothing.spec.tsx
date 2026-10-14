@@ -110,8 +110,16 @@ describe('a pattern from nothing', () => {
     expect(members(4)).toHaveLength(3);
     expect(saved?.steps[1]?.text).toMatch(/in steps of 90°/);
     expect(document.querySelectorAll('.editor-step.broken')).toHaveLength(0);
-    // Ink one tip of the star: its turned and mirrored copies make all 16.
+    // Ink one tip of the star: its turned and mirrored copies make all 16
+    // (copies and whole lines are switched on by hand; both start off).
     fireEvent.click(screen.getByRole('button', { name: 'Ink' }));
+    // A click inks only what it shows unless asked: both start off.
+    for (const option of ['Keep it symmetric', 'Whole lines between points'])
+      expect((screen.getByLabelText(option) as HTMLInputElement).checked).toBe(
+        false,
+      );
+    fireEvent.click(screen.getByLabelText('Keep it symmetric'));
+    fireEvent.click(screen.getByLabelText('Whole lines between points'));
     clickAt(0.854, 0.146);
     expect(document.querySelectorAll('.ink-piece.inked')).toHaveLength(16);
 

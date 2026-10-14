@@ -302,8 +302,17 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   // which of them are inked now.
   const [mode, setMode] = useState<'construct' | 'ink'>('construct');
   const [panel, setPanel] = useState<'step' | 'about' | 'blocks'>('step');
-  const [symmetric, setSymmetric] = useState(true);
-  const [wholeRuns, setWholeRuns] = useState(true);
+  // An ink click changes one bit of line unless the learner asks for more:
+  // copies round the centre and whole lines are switched on by hand (and
+  // remembered), never by default, so a click does only what it shows.
+  const [symmetric, setSymmetric] = useRemembered<boolean>(
+    'editorInkSymmetric',
+    false,
+  );
+  const [wholeRuns, setWholeRuns] = useRemembered<boolean>(
+    'editorInkWholeRuns',
+    false,
+  );
   const cellName = draft.pattern?.cell;
   const inkable = useMemo(
     () =>

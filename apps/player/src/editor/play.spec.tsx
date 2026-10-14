@@ -82,8 +82,11 @@ describe('from a copy to a played pattern', () => {
     expect(document.querySelectorAll('.editor-step')).toHaveLength(9);
     expect(screen.getByText(/is the tile that repeats/)).toBeTruthy();
 
-    // Ink one side of the octagon: symmetry inks all eight.
+    // Ink one side of the octagon: symmetry inks all eight (copies and
+    // whole lines are switched on by hand; both start off).
     click('Ink');
+    fireEvent.click(screen.getByLabelText('Keep it symmetric'));
+    fireEvent.click(screen.getByLabelText('Whole lines between points'));
     clickAt(0.8536, 0.3536);
     expect(document.querySelectorAll('.ink-piece.inked')).toHaveLength(8);
     const play = screen.getByRole('link', { name: /Play/ });
