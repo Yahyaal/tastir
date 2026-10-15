@@ -143,8 +143,10 @@ export function filtered(
 
 /** A tutorial's title before it is loaded. */
 export function titleOf(entry: Entry): string {
-  const json = entry.json as { title?: unknown } | undefined;
+  const json = entry.json as { title?: unknown; short?: unknown } | undefined;
   return (
+    entry.preview?.short ??
+    (typeof json?.short === 'string' ? json.short : undefined) ??
     entry.preview?.title ??
     (typeof json?.title === 'string' ? json.title : entry.id)
   );

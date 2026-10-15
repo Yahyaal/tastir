@@ -39,6 +39,7 @@ import {
   type Stage,
 } from './model';
 import { Original } from './Original';
+import { LessonTitle, byOf, stepSources } from './LessonTitle';
 import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
 import { ColourPanel } from './ColourPanel';
 import { Tiles } from './Tiles';
@@ -645,8 +646,11 @@ export function Player({
   let hint: string | undefined;
   let text: string;
   let picture: React.ReactNode;
+  // The tutorials this step follows, to check the drawing against.
+  let sources: ReturnType<typeof stepSources> = [];
   if (stage.kind === 'step') {
     const beat = beats[stage.beat - 1];
+    sources = beat ? stepSources(tutorial, beat.step) : [];
     const number = shown.indexOf(beat?.step ?? 0) + 1;
     label = beat?.parts
       ? `Step ${number} · ${beat.part} of ${beat.parts}`
@@ -947,7 +951,7 @@ export function Player({
           <span>All patterns</span>
         </a>
         {browsing ? <PreviousPattern id={address} view={view} /> : null}
-        <h1>{tutorial.title}</h1>
+        <LessonTitle tutorial={tutorial} />
         {browsing ? <NextPattern id={address} view={view} /> : null}
         {mine ? (
           <a
@@ -961,7 +965,22 @@ export function Player({
           <ViewSwitch id={address} view={view} onShow={show} />
         ) : null}
         <details className="view-menu">
-          <summary>View settings</summary>
+          <summary aria-label="View settings" title="View settings">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </summary>
           <div className="controls">
             <label>
               Speed
@@ -1065,6 +1084,25 @@ export function Player({
               <p className="instruction" aria-live="polite">
                 {text}
               </p>
+              {sources.length ? (
+                <p className="step-source">
+                  This step follows{' '}
+                  {sources.map((c, i) => (
+                    <span key={c.url}>
+                      {i ? ' and ' : ''}
+                      <a
+                        href={c.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        title={c.source}
+                      >
+                        {byOf(c)}’s tutorial <span aria-hidden="true">↗</span>
+                      </a>
+                    </span>
+                  ))}
+                  .
+                </p>
+              ) : null}
               {stage.kind === 'step' ? (
                 <p className="dot-key">
                   <span className="new">orange: what this step makes</span>

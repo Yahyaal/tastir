@@ -381,7 +381,7 @@ a.button.primary:hover {
   color: var(--on-lapis);
 }
 
-.topbar h1 {
+.topbar .lesson-title {
   flex: 1;
   min-width: 0;
   margin: 0;
@@ -390,6 +390,54 @@ a.button.primary:hover {
   font-size: 1.45rem;
   line-height: 1.2;
   letter-spacing: 0.01em;
+}
+
+.lesson-title h1 {
+  margin: 0;
+  font: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Under the name: the place or whose construction, and the tutorial it
+   was drawn from, to check the drawing against. */
+.lesson-sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin: 2px 0 0;
+  font-family: var(--text);
+  font-size: 0.8rem;
+  letter-spacing: 0;
+  color: var(--theme-text-muted);
+}
+
+.lesson-sub a,
+.step-source a {
+  color: var(--theme-accent);
+  text-decoration: none;
+}
+
+.lesson-sub a:hover,
+.step-source a:hover {
+  text-decoration: underline;
+}
+
+.step-source {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--theme-text-muted);
+}
+
+/* View settings: a gear. */
+.view-menu summary[aria-label] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
 }
 
 /* The patterns before and after this one, named by their titles so they
@@ -590,7 +638,7 @@ a.button.primary:hover {
     row-gap: 8px;
   }
 
-  .player:not(.along) .topbar h1 {
+  .player:not(.along) .topbar .lesson-title {
     order: 3;
     flex-basis: 100%;
   }
@@ -3270,7 +3318,7 @@ main.stage .drawing:not(.wall) {
     gap: 6px 12px;
   }
 
-  .topbar h1 {
+  .topbar .lesson-title {
     order: 3;
     flex-basis: 100%;
     font-size: 1.2rem;
@@ -4781,7 +4829,7 @@ svg.tiles {
     padding: 8px 0;
   }
 
-  .player:not(.along) .topbar h1 {
+  .player:not(.along) .topbar .lesson-title {
     order: 0;
     flex: 1 1 0;
     flex-basis: 0;
@@ -4829,21 +4877,6 @@ svg.tiles {
 
   .player:not(.along) .topbar .view-menu {
     margin-left: 0;
-  }
-
-  .player .topbar .view-menu summary {
-    font-size: 0;
-    padding: 0;
-    width: 40px;
-    height: 40px;
-    display: grid;
-    place-items: center;
-  }
-
-  .player .topbar .view-menu summary::before {
-    content: '⋯';
-    font-size: 1.3rem;
-    line-height: 1;
   }
 
   .player .topbar .theme-switch {

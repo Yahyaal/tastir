@@ -73,6 +73,7 @@ import { RepeatBoard, TargetWall } from './RepeatBoard';
 import { useAlongWork } from './useAlongWork';
 import { useHistory } from './useHistory';
 import { useInkBoard } from './useInkBoard';
+import { LessonTitle } from '../app/LessonTitle';
 
 /** The draw-along page (#/<tutorial>/draw), once the tutorial is loaded. */
 export function DrawAlongPage({
@@ -1160,7 +1161,7 @@ export function DrawAlong({
           </span>
           <span>All patterns</span>
         </a>
-        <h1>Draw along: {tutorial.title}</h1>
+        <LessonTitle tutorial={tutorial} prefix="Draw along: " />
         <label
           className="along-helpers"
           title="Construction lines the pattern never runs along: they only help find points. Hidden, the drawing looks as simple as it is."
