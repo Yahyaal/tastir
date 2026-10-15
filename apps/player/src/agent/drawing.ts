@@ -10,6 +10,7 @@ import {
   type Construction,
   type Construct,
   type DrawingSegment,
+  type RepeatSettings,
   type EditSegments,
 } from '@tastir/agent-protocol';
 import { addStep, check, copyUpTo, type Draft } from '../editor/document';
@@ -17,6 +18,7 @@ import { addStep, check, copyUpTo, type Draft } from '../editor/document';
 interface DrawingContent {
   segments: DrawingSegment[];
   constructions: Construction[];
+  repeat: RepeatSettings | null;
 }
 export interface DrawingHistory extends DrawingContent {
   revision: number;
@@ -29,6 +31,7 @@ export const emptyDrawing = (): DrawingHistory => ({
   nextId: 1,
   segments: [],
   constructions: [],
+  repeat: null,
   past: [],
   future: [],
 });
@@ -100,6 +103,7 @@ export function editSegments(
     revision: history.revision + 1,
     nextId,
     segments,
+    repeat: null,
     past: [...history.past.slice(-49), contentOf(history)],
     future: [],
   };
@@ -170,6 +174,7 @@ export function drawingPieces(
 const contentOf = (history: DrawingHistory): DrawingContent => ({
   segments: history.segments,
   constructions: history.constructions,
+  repeat: history.repeat,
 });
 
 export function constructionSpec(operation: Construction): ElementSpec {
@@ -305,6 +310,11 @@ export function construct(
       'Use valid named references to earlier construction elements.',
     );
   const scene = constructionScene(tutorial, operations);
+  for (const name of history.repeat?.vertices ?? [])
+    if (scene.elements.get(name)?.geometry.kind !== 'point')
+      throw new Error(
+        `The repeat tile still needs “${name}”. Change its tile first.`,
+      );
   // This also rejects removing a point still used by a finite side.
   if (draft.ink) inkStrokes(sceneForDrawing(draft), draft as Tutorial);
   if (scene.elements.size > 5000)
@@ -325,4 +335,18 @@ function sceneForDrawing(draft: Draft): Scene {
   const failed = [...result.status.values()].find((s) => !s.ok);
   if (failed && !failed.ok) throw new Error(failed.reason);
   return result.scene;
+}
+
+/** Shared history for repeat and color changes, using the same revision guards. */
+export function changeRepeat(
+  history: DrawingHistory,
+  repeat: RepeatSettings,
+): DrawingHistory {
+  return {
+    ...history,
+    repeat,
+    revision: history.revision + 1,
+    past: [...history.past.slice(-49), contentOf(history)],
+    future: [],
+  };
 }

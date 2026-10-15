@@ -116,7 +116,12 @@ export function Wall({
   onPick,
   enter = false,
   lit,
+  boardRef,
+  boardCamera,
 }: {
+  /** Optional shared board for image capture and annotations in the assistant. */
+  boardRef?: React.RefObject<SVGSVGElement | null>;
+  boardCamera?: ReturnType<typeof useCamera>;
   model: Model;
   colors: readonly string[];
   /** The fill for each placement (piece, and the cell it is copied to),
@@ -145,9 +150,11 @@ export function Wall({
   enter?: boolean;
 }) {
   const id = useId().replace(/:/g, '');
-  const svgRef = useRef<SVGSVGElement>(null);
+  const ownRef = useRef<SVGSVGElement>(null);
+  const svgRef = boardRef ?? ownRef;
   const start = useMemo(() => tiling(model).view, [model]);
-  const camera = useCamera(start, svgRef);
+  const ownCamera = useCamera(start, svgRef, { active: !boardCamera });
+  const camera = boardCamera ?? ownCamera;
   const { pattern } = model;
   // The weave may repeat after two tiles: the wall's tile holds whole
   // repeats of both the colouring and the weave.
@@ -308,7 +315,7 @@ export function Wall({
       ref={svgRef}
       className={`drawing wall style-${style}${enter ? ' color-enter' : ''}${litPieces ? ' lighting' : ''}`}
       viewBox={viewBox(camera.view)}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio={boardCamera ? 'xMidYMid meet' : 'xMidYMid slice'}
       role="img"
       aria-label="The pattern repeated as a wall"
       onPointerMove={(e) => {

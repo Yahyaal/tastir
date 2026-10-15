@@ -77,6 +77,45 @@ describe('pointing contracts', () => {
       }).success,
     ).toBe(false);
   });
+  it('accepts named tiles and bounded hex colors without arbitrary styling or coordinates', () => {
+    const args = {
+      snapshotId: 'snapshot',
+      documentRevision: '1',
+      label: 'Repeat',
+    };
+    expect(
+      CallShape.safeParse({
+        id: 'tile',
+        name: 'set_tile',
+        arguments: { ...args, vertices: ['N', 'E', 'S', 'W'] },
+      }).success,
+    ).toBe(true);
+    const paint = {
+      id: 'paint',
+      name: 'paint_pattern',
+      arguments: {
+        ...args,
+        palette: null,
+        colors: [{ typeId: 'square', color: '#2453a6' }],
+      },
+    };
+    expect(CallShape.safeParse(paint).success).toBe(true);
+    for (const color of [
+      'red',
+      '#abc',
+      'url(https://example.com)',
+      '#12345678',
+    ])
+      expect(
+        CallShape.safeParse({
+          ...paint,
+          arguments: {
+            ...paint.arguments,
+            colors: [{ typeId: 'square', color }],
+          },
+        }).success,
+      ).toBe(false);
+  });
   it('accepts a known target only on its original view', () => {
     expect(checkHighlight(call, snapshot, 'view-1').ok).toBe(true);
     expect(checkHighlight(call, snapshot, 'view-2').ok).toBe(false);

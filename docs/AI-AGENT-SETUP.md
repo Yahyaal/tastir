@@ -1,6 +1,6 @@
 # Try the local drawing assistant
 
-The current implementation lives on `codex/ai-agent-construction`, following the connection and editable-side milestones. It connects a local companion to ChatGPT, sends an image of a real Tastir construction, highlights named objects, constructs ruler lines, compass circles and intersection points, and draws editable straight sides between named points. The owner connected ChatGPT, and a live image, highlighting and final-reply check passed on 15 October 2026.
+The current implementation lives on `codex/ai-agent-repeat-color`, following the connection, editable-side and ruler-and-compass milestones. It connects a local companion to ChatGPT, sends an image of a real Tastir construction, highlights named objects, constructs ruler lines, compass circles and intersection points, draws editable straight sides between named points, repeats closed ink, and colors its shape types. The owner connected ChatGPT, and a live image, highlighting and final-reply check passed on 15 October 2026.
 
 ## Start it
 
@@ -52,15 +52,25 @@ Manage usage opens ChatGPT's usage settings. Requests consume the existing plan 
 
 To choose another app port, set `TASTIR_AGENT_APP_PORT`, for example `TASTIR_AGENT_APP_PORT=4295 pnpm dev:agent`. `TASTIR_AGENT_DATA_DIR` can select a separate private account directory; keep it outside the checkout. The companion chooses an available loopback port automatically and pairs only with the app started by this command.
 
+## Repeat and color a drawing
+
+On the default Eight-fold star and octagon construction, press **Use repeat and color request**, then **Send current view**. It asks for an inner square, an outer square and four connecting sides, then repeats the outer tile and colors the inner square blue and its surrounding quadrilaterals gold. Each tool edit is a separate Undo entry. Use Construction and Repeated wall to switch views; both can pan and zoom. The assistant can point at visible polygon copies on the wall.
+
+Below the board, choose a preset palette with one click or use the visible color picker beside a shape name. A shape color affects every piece of that shape. A palette clears custom colors before applying its own colors. **Keep in My patterns → Open in editor → ▶ Play** preserves the named construction, finite ink, tile, expected pieces, palette and exact custom colors in the ordinary Tastir tutorial format.
+
+A tile uses four distinct named corners of a parallelogram, or six corners of a convex centrally symmetric hexagon, in boundary order. The engine must support its rectangular period. Finite ink must stay inside that tile and close pieces that cover it exactly, without loose ends or slivers. Choosing a tile adds an outline; it does not ink its boundary for you. Editing sides clears their tile and colors as part of the same Undo entry; Undo restores both. Removing a construction point still used by the tile is rejected.
+
+This step colors by shape type. Individual copies, rings, automatic navigation, agent saving and full application screen capture remain later work. Showing Construction before sending a geometry request makes its named points available again. Save before switching construction or refreshing the page.
+
 ## What is tested
 
 The automated tests cover PKCE and callback validation, signed identity verification, explicit plan consent, rotating refresh tokens, disconnect during refresh, protected account storage, loopback request pairing, completed streaming responses, late usage errors, browser tool acknowledgements, stale views and Stop.
 
 Browser checks use simulated account and model responses. They send a real board PNG and check its pixels, exercise the real annotation UI, and verify canvas layers survive capture. They do not spend ChatGPT usage or establish live account eligibility. Desktop, tablet and phone checks run with `pnpm test:agent:browser`; the usual `pnpm check` also covers the existing application.
 
-The capture currently supports construction SVG and embedded canvas layers. Full-tab capture and verification of the finished Jali and colored-wall views belong to the later visual integration phase. The run budget is three model responses and two minutes, including time waiting for tool results. Stop or an error can leave a previously acknowledged annotation visible; Clear assistant highlight removes it.
+The capture supports construction SVG, embedded canvas layers and the repeated colored wall. Full-tab capture and finished Jali verification remain later work. The run budget is six model responses and two minutes, including time waiting for tool results. Stop or an error can leave a previously acknowledged annotation visible; Clear assistant highlight removes it.
 
-The integration uses streaming requests with response storage disabled and app-defined highlighting and segment-editing tools. Public hosted distribution needs a separate availability review. [Inference contract](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference), [preview limitations](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations)
+The integration uses streaming requests with response storage disabled and app-defined highlighting, construction, segment-editing, tile and coloring tools. Public hosted distribution needs a separate availability review. [Inference contract](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference), [preview limitations](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations)
 
 ## Verification on 15 October 2026
 
@@ -91,3 +101,12 @@ On `codex/ai-agent-construction`, a live GPT-6.1-Sol request started from O and 
 All eight drawing and construction geometry tests passed, including exact intersection locations, atomic rejection, named dependencies, saved drafts and history. The runtime now tests fresh-observation requirements for both construction and finite-side tools. All 36 assistant browser checks passed across desktop, tablet and phone; they cover a construction-to-ink continuation, saved editor copies, blocked dependent deletion, ambiguous crossings, stale observations and Stop. The workspace pnpm test, pnpm lint and pnpm typecheck passed.
 
 Responsive screenshots use simulated responses: [phone](/__review/renders/agent-construction/phone-simulated.png), [tablet](/__review/renders/agent-construction/tablet-simulated.png), and [dark desktop](/__review/renders/agent-construction/dark-desktop-simulated.png). They showed no horizontal overflow or page errors. These layout checks are separate from the live request above.
+
+
+## Repeat and color verification on 15 October 2026
+
+On `codex/ai-agent-repeat-color`, a live GPT-6.1-Sol request made exactly one edit_segments call for 12 sides, then set_tile for N–E–S–W, then paint_pattern for square #2453a6 and quadrilateral #dda83b, then completed its final response. All three successful mutations returned fresh observations and real PNGs. The UI displayed 12 sides, the repeated wall and both exact colors, with no page errors. [Actual live result, account masked](/__review/renders/agent-repeat-color/live-repeat.png).
+
+The five repeat/color tests check exact area coverage, translated polygon placements, a hexagonal tile, rejected open and disconnected ink, malformed tiles, loose ends, invalid colors, Undo/Redo and a normal tutorial save/load round trip. The runtime's 30 tests cover fresh-observation requirements for all four mutation tools and the six-response limit. All 42 assistant browser checks passed on desktop, tablet and phone, followed by six targeted checks of manual palette/color edits, Undo, stale tile/color rejection and saved player colors after the last test additions. Pixel checks confirm that the captured wall contains both requested colors. The workspace pnpm test, pnpm lint, pnpm typecheck and pnpm build passed; production JavaScript excludes the local assistant tools and UI.
+
+The responsive views use simulated provider responses: [phone](/__review/renders/agent-repeat-color/phone-simulated.png), [tablet](/__review/renders/agent-repeat-color/tablet-simulated.png), and [dark desktop](/__review/renders/agent-repeat-color/desktop-dark-simulated.png). They showed no page errors or horizontal overflow and displayed the real repeated wall. These layout checks are separate from the live account result above.

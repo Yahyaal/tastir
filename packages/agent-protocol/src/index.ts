@@ -29,6 +29,28 @@ export const TargetShape = z.strictObject({
   kind: z.enum(['point', 'line', 'circle', 'polygon']),
   geometry: z.record(z.string(), z.unknown()),
 });
+const HexColor = z.string().regex(/^#[0-9a-fA-F]{6}$/);
+export const RepeatShape = z.strictObject({
+  vertices: z.array(Id).min(4).max(6),
+  palette: Id,
+  colors: z.record(Id, HexColor),
+});
+export type RepeatSettings = z.infer<typeof RepeatShape>;
+export const SetTileShape = z.strictObject({
+  snapshotId: Id,
+  documentRevision: Id,
+  label: z.string().min(1).max(160),
+  vertices: z.array(Id).min(4).max(6),
+});
+export type SetTile = z.infer<typeof SetTileShape>;
+export const PaintPatternShape = z.strictObject({
+  snapshotId: Id,
+  documentRevision: Id,
+  label: z.string().min(1).max(160),
+  palette: Id.nullable(),
+  colors: z.array(z.strictObject({ typeId: Id, color: HexColor })).max(128),
+});
+export type PaintPattern = z.infer<typeof PaintPatternShape>;
 export const SnapshotShape = z.strictObject({
   id: Id,
   documentId: Id,
@@ -39,6 +61,24 @@ export const SnapshotShape = z.strictObject({
   targets: z.array(TargetShape).min(1).max(5000),
   segments: z.array(SegmentShape).max(128).default([]),
   constructions: z.array(ConstructionShape).max(128).default([]),
+  repeat: z
+    .strictObject({
+      vertices: z.array(Id).min(4).max(6),
+      palette: Id,
+      types: z
+        .array(
+          z.strictObject({
+            id: Id,
+            color: HexColor,
+            perCell: z.number().int().positive(),
+          }),
+        )
+        .max(128),
+    })
+    .nullable()
+    .default(null),
+  mode: z.enum(['construction', 'repeat']).default('construction'),
+  palettes: z.array(Id).max(50).default([]),
   image: z
     .string()
     .max(4_000_000)
@@ -73,6 +113,16 @@ export const ConstructShape = z.strictObject({
 });
 export type Construct = z.infer<typeof ConstructShape>;
 export const CallShape = z.discriminatedUnion('name', [
+  z.strictObject({
+    id: Id,
+    name: z.literal('set_tile'),
+    arguments: SetTileShape,
+  }),
+  z.strictObject({
+    id: Id,
+    name: z.literal('paint_pattern'),
+    arguments: PaintPatternShape,
+  }),
   HighlightCallShape,
   z.strictObject({
     id: Id,
@@ -157,8 +207,62 @@ export const DRAWING_TOOLS = {
   type: 'namespace',
   name: 'tastir',
   description:
-    'Construct ruler-and-compass geometry, draw finite sides and highlight objects in Tastir.',
+    'Construct ruler-and-compass geometry, draw finite sides, repeat and color closed patterns, and highlight objects in Tastir.',
   tools: [
+    {
+      type: 'function',
+      name: 'set_tile',
+      strict: true,
+      description:
+        'Repeat the current finite ink using four or six named POINT IDs in boundary order. Four corners must form a parallelogram; six a convex centrally symmetric hexagon. The ink must already close pieces and cover the tile without gaps or loose ends. This adds a tile outline, not ink sides. Success shows the repeated wall and returns fresh piece type IDs for coloring. Replaces an earlier tile and resets its colors. One Undo restores the previous tile.',
+      parameters: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          snapshotId: { type: 'string' },
+          documentRevision: { type: 'string' },
+          label: { type: 'string' },
+          vertices: { type: 'array', items: { type: 'string' } },
+        },
+        required: ['snapshotId', 'documentRevision', 'label', 'vertices'],
+      },
+    },
+    {
+      type: 'function',
+      name: 'paint_pattern',
+      strict: true,
+      description:
+        'Color a validated repeating pattern. Use typeId from observation.repeat.types and #RRGGBB colors; all pieces of that shape take that color. palette:null keeps existing colors. A named palette from observation.palettes resets custom colors before applying colors in this call. Use empty colors to apply just a palette. One batch is one Undo. A fresh image follows success.',
+      parameters: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          snapshotId: { type: 'string' },
+          documentRevision: { type: 'string' },
+          label: { type: 'string' },
+          palette: { type: ['string', 'null'] },
+          colors: {
+            type: 'array',
+            items: {
+              type: 'object',
+              additionalProperties: false,
+              properties: {
+                typeId: { type: 'string' },
+                color: { type: 'string' },
+              },
+              required: ['typeId', 'color'],
+            },
+          },
+        },
+        required: [
+          'snapshotId',
+          'documentRevision',
+          'label',
+          'palette',
+          'colors',
+        ],
+      },
+    },
     {
       type: 'function',
       name: 'construct',
@@ -239,7 +343,7 @@ export const DRAWING_TOOLS = {
       type: 'function',
       name: 'edit_segments',
       description:
-        'Add or remove finite straight segments as one undoable edit. Use exact named POINT IDs from the latest observation. To draw a square, add its four sides in ONE call. remove contains IDs from observation.segments. Return results and a fresh board image before making further edits. Cannot create new points or arbitrary coordinates.',
+        'Add or remove finite straight segments as one undoable edit. Changing ink clears its tile and colors; Undo restores them. Use exact named POINT IDs from the latest observation. To draw a square, add its four sides in ONE call. remove contains IDs from observation.segments. Return results and a fresh board image before making further edits. Cannot create new points or arbitrary coordinates.',
       strict: true,
       parameters: {
         type: 'object',

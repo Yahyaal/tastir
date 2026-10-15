@@ -1816,6 +1816,14 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'AI agent: repeating tiles and coloring are working',
+      text: 'On codex/ai-agent-repeat-color, the assistant can turn finite ink into a checked four- or six-corner tile, show the infinite wall and color each shape type. The live GPT-6.1-Sol request drew 12 sides, repeated N–E–S–W and painted the inner squares cobalt blue and surrounding quadrilaterals gold. Each change returned a fresh image before the next response. Undo/Redo cover tile and color edits, and Keep in My patterns preserves a normal playable tutorial with the same colors. All workspace tests, lint, TypeScript checks, production build and 42 assistant browser checks passed. The picture is the actual live result with the saved account hidden.',
+      link: {
+        label: 'See the live colored repeat',
+        href: '/__review/renders/agent-repeat-color/live-repeat.png',
+      },
+    },
+    {
       title: 'AI agent: new ruler-and-compass geometry is working',
       text: 'On codex/ai-agent-construction, the assistant can start from just O and A, add named lines and circles, and mark chosen intersections. In the live check it created C0, C1, Top, Bottom and Axis, then used the new points for a finite side. Each edit sent a fresh image before the model continued. Undo removed the side first and the construction batch second; Redo restored both. Saving preserves the complete editable draft. All geometry tests, workspace tests, lint, TypeScript checks and 36 assistant browser checks passed. The picture shows the actual live result with the account hidden.',
       link: {
@@ -2119,14 +2127,14 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI agent: try the compass construction',
-    text: 'Open the assistant and choose Start from O and A. Press Use compass request, then Send current view. It should draw two circles, mark Top and Bottom, and draw their ruler line. You can then ask for a finite side between the new points. Undo and Redo cover each edit; Keep in My patterns preserves the full construction. The connected ChatGPT request and automated checks passed.',
-    link: { label: 'Open the setup guide', href: '/#/notes/agent-setup' },
+    title: 'AI agent: try the colored repeat',
+    text: 'Open the local assistant on Eight-fold star and octagon. Press Use repeat and color request, then Send current view. It should draw the closed design, show blue squares and gold quadrilaterals repeated across the wall, and finish its reply. The palette buttons and shape color pickers are below the board. Undo restores each edit. Keep in My patterns, Open in editor, then Play preserves the same colored pattern. Coloring currently applies to every piece of one shape; individual copies and rings come later.',
+    link: { label: 'Open the local assistant', href: '/#/agent' },
   },
   next: [
     {
-      title: 'AI agent: closed motifs, repeating tiles and coloring',
-      text: 'Ruler lines, compass circles, intersection points and finite ink now work together from a blank start. Next, let the assistant turn a closed motif into a repeating tile, validate its pieces and seams, and color the result. Extend app commands and the visual assistant into regular screens as those capabilities become available.',
+      title: 'AI agent: navigation and the normal editor/player',
+      text: 'Construction, finite ink, checked repeats and shape coloring now work in the local workspace. Next, add navigation to requested places and bring the visual assistant into normal editor and player screens. Individual placement and ring colors, broader construction tools and automatic saving remain later phases.',
       link: { label: 'Read the remaining phases', href: '/#/notes/agent' },
     },
     {

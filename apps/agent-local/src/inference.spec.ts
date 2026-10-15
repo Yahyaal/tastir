@@ -227,7 +227,7 @@ describe('completed streaming responses', () => {
 });
 
 describe('image and tool execution loop', () => {
-  it.each(['edit_segments', 'construct'] as const)(
+  it.each(['edit_segments', 'construct', 'set_tile', 'paint_pattern'] as const)(
     'continues %s only with a fresh same-document observation after acknowledgement',
     async (name) => {
       const edit = {
@@ -237,18 +237,27 @@ describe('image and tool execution loop', () => {
           snapshotId: snapshot.id,
           documentRevision: snapshot.documentRevision,
           label: 'Draw one side',
-          add:
-            name === 'construct'
-              ? [
-                  {
-                    kind: 'circle',
-                    name: 'NewCircle',
-                    centre: 'O',
-                    through: 'A',
-                  },
-                ]
-              : [{ from: 'O', to: 'A' }],
-          remove: [],
+          ...(name === 'set_tile'
+            ? { vertices: ['N', 'E', 'S', 'W'] }
+            : name === 'paint_pattern'
+              ? {
+                  palette: null,
+                  colors: [{ typeId: 'square', color: '#2453a6' }],
+                }
+              : {
+                  add:
+                    name === 'construct'
+                      ? [
+                          {
+                            kind: 'circle',
+                            name: 'NewCircle',
+                            centre: 'O',
+                            through: 'A',
+                          },
+                        ]
+                      : [{ from: 'O', to: 'A' }],
+                  remove: [],
+                }),
         }),
       };
       const bodies: Record<string, unknown>[] = [];
@@ -352,6 +361,48 @@ describe('image and tool execution loop', () => {
       }
     },
   );
+  it('allows six bounded responses and cancels before a seventh inference', async () => {
+    let inferences = 0;
+    const send = vi.fn<typeof fetch>().mockImplementation(async (url) => {
+      if (String(url).endsWith('/models'))
+        return Response.json({
+          models: [
+            { slug: 'model', display_name: 'Model', visibility: 'list' },
+          ],
+        });
+      inferences++;
+      return sparseStream([tool]);
+    });
+    const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
+    try {
+      const first = await runtime.start(
+        'tab',
+        'model',
+        'Point at O',
+        snapshot,
+        new AbortController().signal,
+      );
+      for (let i = 1; i < 6; i++)
+        await runtime.resume(
+          'tab',
+          first.runId,
+          [{ callId: 'call-1', ok: true, message: 'Displayed' }],
+          new AbortController().signal,
+        );
+      expect(inferences).toBe(6);
+      await expect(
+        runtime.resume(
+          'tab',
+          first.runId,
+          [{ callId: 'call-1', ok: true, message: 'Displayed' }],
+          new AbortController().signal,
+        ),
+      ).rejects.toMatchObject({ code: 'run_limit' });
+      expect(inferences).toBe(6);
+    } finally {
+      runtime.cancelAll();
+    }
+  });
   it('an old cancellation cannot stop the next request in the same tab', async () => {
     const send = vi.fn<typeof fetch>().mockImplementation(async (url) =>
       String(url).endsWith('/models')

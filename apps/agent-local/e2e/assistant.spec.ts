@@ -587,3 +587,239 @@ test('board capture includes canvas layers and omits assistant annotations', asy
     .toBuffer();
   expect([...pixel]).toEqual([220, 0, 0]);
 });
+
+test('draws, repeats and colors with fresh wall images, Undo and a saved playable pattern', async ({
+  page,
+}) => {
+  await connected(page);
+  const outer = ['N', 'E', 'S', 'W'],
+    inner = ['jN', 'jE', 'jS', 'jW'];
+  const loop = (points: string[]) =>
+    points.map((from, i) => ({ from, to: points[(i + 1) % 4] }));
+  let beforeImage = '';
+  let stage = 0;
+  await page.route('**/__agent/turn/start', async (route) => {
+    const { snapshot } = route.request().postDataJSON();
+    beforeImage = snapshot.image;
+    await route.fulfill({
+      json: {
+        runId,
+        text: '',
+        calls: [
+          {
+            id: 'ink',
+            name: 'edit_segments',
+            arguments: {
+              snapshotId: snapshot.id,
+              documentRevision: snapshot.documentRevision,
+              label: 'Nested squares with links',
+              add: [
+                ...loop(outer),
+                ...loop(inner),
+                ...outer.map((from, i) => ({ from, to: inner[i] })),
+              ],
+              remove: [],
+            },
+          },
+        ],
+      },
+    });
+  });
+  await page.route('**/__agent/turn/continue', async (route) => {
+    const { snapshot, results } = route.request().postDataJSON();
+    expect(results[0].ok).toBe(true);
+    if (!snapshot) {
+      await route.fulfill({
+        json: { runId, text: 'Repeated and colored.', calls: [] },
+      });
+      return;
+    }
+    expect(snapshot.image).not.toBe(beforeImage);
+    beforeImage = snapshot.image;
+    stage++;
+    let calls: unknown[] = [];
+    if (stage === 1)
+      calls = [
+        {
+          id: 'tile',
+          name: 'set_tile',
+          arguments: {
+            snapshotId: snapshot.id,
+            documentRevision: snapshot.documentRevision,
+            label: 'Repeat the tile',
+            vertices: outer,
+          },
+        },
+      ];
+    if (stage === 2) {
+      expect(snapshot.mode).toBe('repeat');
+      expect(snapshot.repeat.types.map((t: { id: string }) => t.id)).toEqual([
+        'square',
+        'quadrilateral',
+      ]);
+      expect(
+        snapshot.targets.every((t: { kind: string }) => t.kind === 'polygon'),
+      ).toBe(true);
+      await expect(
+        page.getByRole('img', { name: 'The pattern repeated as a wall' }),
+      ).toBeVisible();
+      calls = [
+        {
+          id: 'paint',
+          name: 'paint_pattern',
+          arguments: {
+            snapshotId: snapshot.id,
+            documentRevision: snapshot.documentRevision,
+            label: 'Blue and gold',
+            palette: null,
+            colors: [
+              { typeId: 'square', color: '#2453a6' },
+              { typeId: 'quadrilateral', color: '#dda83b' },
+            ],
+          },
+        },
+      ];
+    }
+    if (stage === 3) {
+      expect(
+        snapshot.repeat.types.map((t: { color: string }) => t.color),
+      ).toEqual(['#2453a6', '#dda83b']);
+      const pixels = await sharp(
+        Buffer.from(snapshot.image.split(',')[1], 'base64'),
+      )
+        .removeAlpha()
+        .raw()
+        .toBuffer();
+      let blue = 0,
+        gold = 0;
+      for (let i = 0; i < pixels.length; i += 3) {
+        if (pixels[i] === 36 && pixels[i + 1] === 83 && pixels[i + 2] === 166)
+          blue++;
+        if (pixels[i] === 221 && pixels[i + 1] === 168 && pixels[i + 2] === 59)
+          gold++;
+      }
+      expect(blue).toBeGreaterThan(1000);
+      expect(gold).toBeGreaterThan(1000);
+      calls = [
+        {
+          id: 'point',
+          name: 'highlight_target',
+          arguments: {
+            snapshotId: snapshot.id,
+            targetId: snapshot.targets[0].id,
+            label: 'A repeated piece',
+          },
+        },
+      ];
+    }
+    await route.fulfill({
+      json: { runId, text: calls.length ? '' : 'Repeated and colored.', calls },
+    });
+  });
+  await page.goto('/#/agent');
+  await page
+    .getByRole('button', { name: 'Use repeat and color request' })
+    .click();
+  await page.getByRole('button', { name: 'Send current view' }).click();
+  await expect(page.locator('.agent-answer')).toHaveText(
+    'Repeated and colored.',
+  );
+  await expect(page.locator('.agent-mark polygon')).toBeVisible();
+  await expect(page.getByLabel('Color square', { exact: true })).toHaveValue(
+    '#2453a6',
+  );
+  await page.getByRole('button', { name: 'Undo drawing edit' }).click();
+  await expect(
+    page.getByLabel('Color square', { exact: true }),
+  ).not.toHaveValue('#2453a6');
+  await page.getByRole('button', { name: 'Undo drawing edit' }).click();
+  await expect(
+    page.getByRole('img', { name: 'The construction so far' }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Redo drawing edit' }).click();
+  await page.getByRole('button', { name: 'Redo drawing edit' }).click();
+  await expect(page.getByLabel('Color square', { exact: true })).toHaveValue(
+    '#2453a6',
+  );
+  await page.getByRole('button', { name: 'Alhambra', exact: true }).click();
+  await expect(
+    page.getByLabel('Color square', { exact: true }),
+  ).not.toHaveValue('#2453a6');
+  await page.getByRole('button', { name: 'Undo drawing edit' }).click();
+  await expect(page.getByLabel('Color square', { exact: true })).toHaveValue(
+    '#2453a6',
+  );
+  await page.getByLabel('Color square', { exact: true }).fill('#257d63');
+  await expect(page.getByLabel('Color square', { exact: true })).toHaveValue(
+    '#257d63',
+  );
+  await page.getByRole('button', { name: 'Undo drawing edit' }).click();
+  await expect(page.getByLabel('Color square', { exact: true })).toHaveValue(
+    '#2453a6',
+  );
+  await page.getByRole('button', { name: 'Keep in My patterns' }).click();
+  await page.getByRole('link', { name: 'Open in editor' }).click();
+  await expect(
+    page.getByRole('link', { name: '▶ Play', exact: true }),
+  ).toBeVisible();
+  await page.getByRole('link', { name: '▶ Play', exact: true }).click();
+  // Saved tutorial uses real placement rules, including direct hex colors.
+  await expect(page.locator('svg.wall')).toBeVisible();
+  await expect(
+    page.locator('svg.wall polygon[fill="#2453a6"]').first(),
+  ).toBeAttached();
+  await expect(
+    page.locator('svg.wall polygon[fill="#dda83b"]').first(),
+  ).toBeAttached();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+});
+
+test('stale tile and color commands cannot mutate the drawing', async ({
+  page,
+}) => {
+  await connected(page);
+  let command = 'set_tile';
+  await page.route('**/__agent/turn/start', async (route) => {
+    const { snapshot } = route.request().postDataJSON();
+    await route.fulfill({
+      json: {
+        runId,
+        text: '',
+        calls: [
+          {
+            id: 'stale',
+            name: command,
+            arguments: {
+              snapshotId: snapshot.id,
+              documentRevision: 'old',
+              label: 'Stale edit',
+              ...(command === 'set_tile'
+                ? { vertices: ['N', 'E', 'S', 'W'] }
+                : { palette: 'Alhambra', colors: [] }),
+            },
+          },
+        ],
+      },
+    });
+  });
+  await page.route('**/__agent/turn/continue', async (route) => {
+    expect(route.request().postDataJSON().results[0].ok).toBe(false);
+    await route.fulfill({
+      json: { runId, text: 'Rejected stale edit.', calls: [] },
+    });
+  });
+  await page.goto('/#/agent');
+  for (command of ['set_tile', 'paint_pattern']) {
+    await page.getByRole('button', { name: 'Send current view' }).click();
+    await expect(page.locator('.agent-answer')).toHaveText(
+      'Rejected stale edit.',
+    );
+    await expect(
+      page.getByRole('img', { name: 'The pattern repeated as a wall' }),
+    ).toHaveCount(0);
+  }
+});

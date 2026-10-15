@@ -21,7 +21,6 @@ import { emptyDraft, check, type Draft } from '../editor/document';
 import { ThemeSwitch } from '../app/theme';
 import { addPattern, savePattern } from '../editor/patterns';
 import {
-  drawingDraft,
   constructionScene,
   construct,
   constructionText,
@@ -32,6 +31,18 @@ import {
   type DrawingHistory,
 } from './drawing';
 import { AgentClient } from './client';
+import { Wall } from '../app/Wall';
+import { PALETTES } from '../app/coloring';
+import {
+  setTile,
+  paintPattern,
+  repeatModel,
+  savedDrawing,
+  repeatObservation,
+  repeatColors,
+  repeatTargets,
+  repeatTargetId,
+} from './repeat';
 import { captureBoard } from './capture';
 import { geometryVisible, visibleBox } from './visibility';
 import './agent.css';
@@ -59,8 +70,8 @@ export function AgentLab() {
       <p className="agent-intro">
         Ask about this construction, point at an object, or draw straight sides
         between named points. Add ruler lines, compass circles and intersection
-        points, undo an edit, or keep your drawing in My patterns. Coloring
-        comes later.
+        points, repeat a closed pattern, color its shapes, undo an edit, or keep
+        the result in My patterns.
       </p>
       <label className="agent-pattern">
         Construction{' '}
@@ -127,7 +138,7 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
   const [models, setModels] = useState<ModelChoice[]>([]);
   const [modelId, setModelId] = useState('');
   const [selected, setSelected] = useState('O');
-  const [mark, setMark] = useState<Highlight>();
+  const [mark, setMark] = useState<Highlight & { geometry: Geometry }>();
   const [prompt, setPrompt] = useState(
     'Explain the selected object and point to it.',
   );
@@ -138,6 +149,17 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
   const [proof, setProof] = useState<false | 'point' | 'draw'>(false);
   const [drawing, setDrawing] = useState(emptyDrawing);
   const drawingRef = useRef(drawing);
+  const [showRepeat, setShowRepeat] = useState(true);
+  const [tilePoints, setTilePoints] = useState('');
+  const repeated = useMemo(
+    () => repeatModel(model.tutorial, drawing),
+    [model, drawing],
+  );
+  const wallColors = useMemo(
+    () => (repeated ? repeatColors(repeated) : undefined),
+    [repeated],
+  );
+  const wallVisible = !!repeated && showRepeat;
   const [saved, setSaved] = useState<{ id: string; revision: number }>();
   const publish = (next: DrawingHistory) => {
     drawingRef.current = next;
@@ -159,24 +181,42 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
   const [profileId, setProfileId] = useState('');
   const svgRef = useRef<SVGSVGElement>(null);
   const frame = useMemo(() => frameOf(model.scene), [model]);
-  const camera = useCamera(frame, svgRef);
+  const camera = useCamera(frame, svgRef, { stage: wallVisible ? 1 : 0 });
   const [documentRevision] = useState(() => crypto.randomUUID());
   const controller = useRef<AbortController | null>(null);
   const generation = useRef(0);
   const currentView = useRef({ view: camera.view, selected });
-  const targets = useMemo(() => targetsOf(scene), [scene]);
+  const constructionTargets = useMemo(() => targetsOf(scene), [scene]);
+  const targets = useMemo(() => {
+    if (!wallVisible || !repeated) return constructionTargets;
+    const bounds = svgRef.current?.getBoundingClientRect();
+    try {
+      return repeatTargets(
+        repeated,
+        visibleBox(camera.view, bounds?.width || 1000, bounds?.height || 600),
+      );
+    } catch {
+      return [];
+    }
+  }, [wallVisible, repeated, constructionTargets, camera.view]);
 
   const revision = () =>
     JSON.stringify([
       `${documentRevision}:${drawingRef.current.revision}`,
       viewBox(currentView.current.view),
+      svgRef.current?.getAttribute('data-agent-mode'),
       currentView.current.selected,
       svgRef.current?.getBoundingClientRect().width,
       svgRef.current?.getBoundingClientRect().height,
       document.documentElement.dataset['theme'] ?? 'light',
     ]);
   useLayoutEffect(() => {
-    if (!scene.elements.has(selected)) setSelected('O');
+    if (!targets.some((t) => t.id === selected))
+      setSelected(targets[0]?.id ?? 'O');
+    svgRef.current?.setAttribute(
+      'data-agent-mode',
+      wallVisible ? 'repeat' : 'construction',
+    );
     currentView.current = { view: camera.view, selected };
   });
 
@@ -199,9 +239,17 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
       model.tutorial,
       drawingRef.current.constructions,
     );
-    const visible = targetsOf(currentScene).filter((target) =>
-      geometryVisible(currentScene.elements.get(target.id)!.geometry, box),
-    );
+    const currentRepeat = repeatModel(model.tutorial, drawingRef.current);
+    const inRepeat = svg.getAttribute('data-agent-mode') === 'repeat';
+    const visible =
+      inRepeat && currentRepeat
+        ? repeatTargets(currentRepeat, box)
+        : targetsOf(currentScene).filter((target) =>
+            geometryVisible(
+              currentScene.elements.get(target.id)!.geometry,
+              box,
+            ),
+          );
     if (!visible.length)
       throw new Error(
         'No named objects are visible here. Use Fit, then send the view again.',
@@ -220,6 +268,12 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
       targets: visible,
       segments: drawingRef.current.segments,
       constructions: drawingRef.current.constructions,
+      repeat:
+        currentRepeat && drawingRef.current.repeat
+          ? repeatObservation(currentRepeat, drawingRef.current.repeat)
+          : null,
+      mode: inRepeat ? 'repeat' : 'construction',
+      palettes: Object.keys(PALETTES),
       image,
     });
   };
@@ -396,7 +450,12 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
           if (call.name === 'highlight_target') {
             const result = checkHighlight(call, snapshot, revision());
             if (result.ok) {
-              setMark(call.arguments);
+              setMark({
+                ...call.arguments,
+                geometry: snapshot.targets.find(
+                  (t) => t.id === call.arguments.targetId,
+                )!.geometry as unknown as Geometry,
+              });
               pointed = true;
             }
             return result;
@@ -448,17 +507,51 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
                 available.add(operation.name);
               }
             }
-            const next =
-              call.name === 'construct'
-                ? construct(drawingRef.current, call.arguments, model.tutorial)
-                : editSegments(
-                    drawingRef.current,
-                    call.arguments,
-                    constructionScene(
-                      model.tutorial,
-                      drawingRef.current.constructions,
+            let next: DrawingHistory;
+            if (call.name === 'set_tile') {
+              if (
+                call.arguments.vertices.some(
+                  (id) =>
+                    !snapshot.targets.some(
+                      (t) => t.id === id && t.kind === 'point',
                     ),
-                  );
+                )
+              )
+                throw new Error(
+                  'Tile corners must be visible named points. Show Construction and send the view again.',
+                );
+              next = setTile(
+                drawingRef.current,
+                { vertices: call.arguments.vertices },
+                model.tutorial,
+              );
+              setShowRepeat(true);
+            } else if (call.name === 'paint_pattern') {
+              next = paintPattern(
+                drawingRef.current,
+                {
+                  palette: call.arguments.palette,
+                  colors: call.arguments.colors,
+                },
+                model.tutorial,
+              );
+              setShowRepeat(true);
+            } else if (call.name === 'construct') {
+              next = construct(
+                drawingRef.current,
+                call.arguments,
+                model.tutorial,
+              );
+            } else {
+              next = editSegments(
+                drawingRef.current,
+                call.arguments,
+                constructionScene(
+                  model.tutorial,
+                  drawingRef.current.constructions,
+                ),
+              );
+            }
             publish(next);
             setMark(undefined);
             pointed = false;
@@ -467,7 +560,7 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
             return {
               callId: call.id,
               ok: true,
-              message: `Applied “${call.arguments.label}”: added ${call.arguments.add.length}, removed ${call.arguments.remove.length} ${call.name === 'construct' ? 'construction elements' : 'segments'}. The drawing now has ${next.constructions.length} construction elements and ${next.segments.length} sides. Undo restores the entire edit.`,
+              message: `Applied “${call.arguments.label}”. The drawing has ${next.constructions.length} new construction elements, ${next.segments.length} sides${next.repeat ? ', and a colored repeating tile' : ''}. Undo restores this entire edit.`,
             };
           } catch (e) {
             return {
@@ -557,11 +650,7 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
     stop();
     setError('');
     try {
-      const draft = drawingDraft(
-        model.tutorial,
-        drawingRef.current.segments,
-        drawingRef.current.constructions,
-      );
+      const draft = savedDrawing(model.tutorial, drawingRef.current);
       const pattern = saved
         ? savePattern(saved.id, draft)
         : addPattern(
@@ -585,9 +674,19 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
   };
 
   const selectedGeometry = scene.elements.get(selected)?.geometry;
-  const markedGeometry = mark
-    ? scene.elements.get(mark.targetId)?.geometry
-    : undefined;
+  const markedGeometry = mark?.geometry;
+  const manualRepeat = (action: () => DrawingHistory) => {
+    stop();
+    setError('');
+    setAnswer('');
+    setMark(undefined);
+    try {
+      publish(action());
+      setShowRepeat(true);
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
   const point =
     markedGeometry?.kind === 'point' ? markedGeometry.at : undefined;
   return (
@@ -610,30 +709,79 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
             ))}
           </select>
         </label>
-        <div className="agent-board">
-          <EditorDrawing
-            scene={scene}
-            fitTo={frameOf(scene)}
-            current={new Set(drawing.constructions.map((op) => op.name))}
-            ink={{ pieces, chosen }}
-            targets={[]}
-            svgRef={svgRef}
-            camera={camera}
-            glow={new Set([selected])}
-            rings={
-              selectedGeometry?.kind === 'point' ? [selectedGeometry.at] : []
-            }
-            onHover={() => undefined}
-            onClick={(at, reach) => {
-              const found =
-                snap(scene, at, reach, 'point') ??
-                snap(scene, at, reach, 'curve');
-              if (found?.name) {
-                setSelected(found.name);
+        {repeated ? (
+          <div className="agent-actions" aria-label="Board view">
+            <button
+              type="button"
+              aria-pressed={!wallVisible}
+              onClick={() => {
+                stop();
                 setMark(undefined);
+                setShowRepeat(false);
+              }}
+            >
+              Construction
+            </button>
+            <button
+              type="button"
+              aria-pressed={wallVisible}
+              onClick={() => {
+                stop();
+                setMark(undefined);
+                setShowRepeat(true);
+              }}
+            >
+              Repeated wall
+            </button>
+          </div>
+        ) : null}
+        <div className="agent-board">
+          {wallVisible && repeated && wallColors ? (
+            <>
+              <Wall
+                model={repeated}
+                colors={wallColors.colors}
+                fill={wallColors.fill}
+                boardRef={svgRef}
+                boardCamera={camera}
+                onPick={(_type, place) => {
+                  setSelected(repeatTargetId(place.piece, place.i, place.j));
+                  setMark(undefined);
+                }}
+              />
+              <button
+                type="button"
+                className="agent-wall-fit"
+                onClick={() => camera.goTo(frame)}
+              >
+                Fit
+              </button>
+            </>
+          ) : (
+            <EditorDrawing
+              scene={scene}
+              fitTo={frameOf(scene)}
+              current={new Set(drawing.constructions.map((op) => op.name))}
+              ink={{ pieces, chosen }}
+              targets={[]}
+              svgRef={svgRef}
+              camera={camera}
+              glow={new Set([selected])}
+              rings={
+                selectedGeometry?.kind === 'point' ? [selectedGeometry.at] : []
               }
-            }}
-          />
+              onHover={() => undefined}
+              onClick={(at, reach) => {
+                const found =
+                  snap(scene, at, reach, 'point') ??
+                  snap(scene, at, reach, 'curve');
+                if (found?.name) {
+                  setSelected(found.name);
+                  setMark(undefined);
+                }
+              }}
+            />
+          )}
           {markedGeometry ? (
             <div className="agent-mark" data-agent-annotation>
               <svg viewBox={viewBox(camera.view)} aria-hidden="true">
@@ -657,7 +805,7 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
         </div>
         <p className="agent-caption">
           Click a point or line, or choose an object above. You can pan, zoom
-          and use Fit. The blue selection is included in the board image.
+          and use Fit. The current board is included in the image.
         </p>
         {mark ? (
           <button type="button" onClick={() => setMark(undefined)}>
@@ -700,6 +848,95 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
               : 'Keep your edits before leaving this construction. '}
             {saved ? <a href={`#/edit/${saved.id}`}>Open in editor</a> : null}
           </p>
+          <p className="agent-caption">
+            Editing sides clears their tile and colors. Undo restores both.
+          </p>
+          <section className="agent-repeat" aria-label="Repeat and color">
+            <h3>Repeat and color</h3>
+            <label>
+              Tile corners in boundary order
+              <input
+                value={tilePoints}
+                onChange={(e) => setTilePoints(e.target.value)}
+                placeholder="jW, jN, jE, jS"
+              />
+            </label>
+            <button
+              type="button"
+              disabled={!drawing.segments.length}
+              onClick={() =>
+                manualRepeat(() =>
+                  setTile(
+                    drawingRef.current,
+                    { vertices: tilePoints.split(/[\s,]+/).filter(Boolean) },
+                    model.tutorial,
+                  ),
+                )
+              }
+            >
+              Use as repeat tile
+            </button>
+            {repeated && drawing.repeat ? (
+              <>
+                <p className="agent-caption">
+                  Tile: {drawing.repeat.vertices.join(' → ')}. Colors apply to
+                  every piece of the same shape.
+                </p>
+                <div className="agent-actions" aria-label="Palettes">
+                  {Object.keys(PALETTES).map((palette) => (
+                    <button
+                      key={palette}
+                      type="button"
+                      aria-pressed={drawing.repeat?.palette === palette}
+                      onClick={() =>
+                        manualRepeat(() =>
+                          paintPattern(
+                            drawingRef.current,
+                            { palette, colors: [] },
+                            model.tutorial,
+                          ),
+                        )
+                      }
+                    >
+                      {palette}
+                    </button>
+                  ))}
+                </div>
+                {repeatObservation(repeated, drawing.repeat).types.map(
+                  (type) => (
+                    <label key={type.id} className="agent-shape-color">
+                      {type.id} · {type.perCell} per tile
+                      <input
+                        type="color"
+                        aria-label={`Color ${type.id}`}
+                        value={type.color}
+                        onChange={(e) =>
+                          manualRepeat(() =>
+                            paintPattern(
+                              drawingRef.current,
+                              {
+                                palette: null,
+                                colors: [
+                                  { typeId: type.id, color: e.target.value },
+                                ],
+                              },
+                              model.tutorial,
+                            ),
+                          )
+                        }
+                      />
+                    </label>
+                  ),
+                )}
+              </>
+            ) : (
+              <p className="agent-caption">
+                Choose four or six named points around a closed drawing. The
+                tile adds an outline; ink its sides explicitly when the design
+                needs them.
+              </p>
+            )}
+          </section>
           {drawing.segments.map((side, index) => (
             <div className="agent-side" key={side.id}>
               <span>Side {index + 1}</span>
@@ -721,7 +958,7 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
                     })
                   }
                 >
-                  {targets
+                  {constructionTargets
                     .filter((target) => target.kind === 'point')
                     .map((target) => (
                       <option key={target.id} value={target.id}>
@@ -796,6 +1033,21 @@ function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
             disabled={!!activity}
           >
             Use square request
+          </button>
+        ) : null}
+        {['N', 'E', 'S', 'W', 'jN', 'jE', 'jS', 'jW'].every((id) =>
+          model.scene.elements.has(id),
+        ) ? (
+          <button
+            type="button"
+            disabled={!!activity}
+            onClick={() =>
+              setPrompt(
+                'Draw two closed squares N–E–S–W–N and jN–jE–jS–jW–jN, and join N to jN, E to jE, S to jS, W to jW. Add all 12 sides in one edit. Then use N, E, S, W as the repeat tile. Color the inner square cobalt blue (#2453a6) and the surrounding quadrilaterals gold (#dda83b).',
+              )
+            }
+          >
+            Use repeat and color request
           </button>
         ) : null}
         <p>
