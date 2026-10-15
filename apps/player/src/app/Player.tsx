@@ -912,7 +912,16 @@ export function Player({
   }, [view, browsing, design, address]);
 
   return (
-    <div className={colorStage ? 'player at-color' : 'player'}>
+    <div
+      className={colorStage ? 'player at-color' : 'player'}
+      data-tastir-screen={
+        import.meta.env.DEV
+          ? design
+            ? `${address}/design/${design.id}`
+            : viewAddress(address, view).slice(2)
+          : undefined
+      }
+    >
       {leaving !== undefined && changed ? (
         <LeaveConfirmation
           name={design?.name}

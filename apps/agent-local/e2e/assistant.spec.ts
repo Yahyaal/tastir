@@ -764,12 +764,12 @@ test('draws, repeats and colors with fresh wall images, Undo and a saved playabl
   ).toBeVisible();
   await page.getByRole('link', { name: '▶ Play', exact: true }).click();
   // Saved tutorial uses real placement rules, including direct hex colors.
-  await expect(page.locator('svg.wall')).toBeVisible();
+  await expect(page.locator('[data-tastir-page] svg.wall')).toBeVisible();
   await expect(
-    page.locator('svg.wall polygon[fill="#2453a6"]').first(),
+    page.locator('[data-tastir-page] svg.wall polygon[fill="#2453a6"]').first(),
   ).toBeAttached();
   await expect(
-    page.locator('svg.wall polygon[fill="#dda83b"]').first(),
+    page.locator('[data-tastir-page] svg.wall polygon[fill="#dda83b"]').first(),
   ).toBeAttached();
   expect(
     await page.evaluate(

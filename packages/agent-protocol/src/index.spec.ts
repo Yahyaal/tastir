@@ -116,6 +116,39 @@ describe('pointing contracts', () => {
         }).success,
       ).toBe(false);
   });
+  it('accepts navigation by destination ID and an imageless screen observation', () => {
+    const call = {
+      id: 'go',
+      name: 'navigate',
+      arguments: {
+        snapshotId: 'snapshot',
+        documentRevision: '1',
+        destinationId: 'work',
+        label: 'Your work',
+      },
+    };
+    expect(CallShape.safeParse(call).success).toBe(true);
+    expect(
+      CallShape.safeParse({
+        ...call,
+        arguments: { ...call.arguments, url: 'https://example.com' },
+      }).success,
+    ).toBe(false);
+    expect(
+      SnapshotShape.safeParse({
+        ...snapshot,
+        image: null,
+        targets: [],
+        mode: 'screen',
+        screen: {
+          route: 'work',
+          title: 'Your work',
+          description: 'Saved work',
+          destinations: [],
+        },
+      }).success,
+    ).toBe(true);
+  });
   it('accepts a known target only on its original view', () => {
     expect(checkHighlight(call, snapshot, 'view-1').ok).toBe(true);
     expect(checkHighlight(call, snapshot, 'view-2').ok).toBe(false);

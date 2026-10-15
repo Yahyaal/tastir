@@ -1816,6 +1816,14 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'AI agent: navigation preserves your drawing',
+      text: 'On codex/ai-agent-navigation, ask the assistant to open Your work, a library wall or construction, drawing along, or an available saved pattern, editor or design. It waits for the destination to display and receives the new page before finishing. The live GPT-6.1-Sol check drew four sides, opened Your work, then returned to the same drawing; Undo still removed the whole square. The panel stays available on ordinary pages, with compact account settings and a phone layout. Unsaved-design questions stay in control. If a saved copy changes in the editor, Keep as new pattern preserves both versions. Workspace tests, lint, TypeScript, production build and all 57 assistant browser checks passed. The picture is the actual return to the drawing, with the account hidden.',
+      link: {
+        label: 'See the live return to the drawing',
+        href: '/__review/renders/agent-navigation/live-return.png',
+      },
+    },
+    {
       title: 'AI agent: repeating tiles and coloring are working',
       text: 'On codex/ai-agent-repeat-color, the assistant can turn finite ink into a checked four- or six-corner tile, show the infinite wall and color each shape type. The live GPT-6.1-Sol request drew 12 sides, repeated N–E–S–W and painted the inner squares cobalt blue and surrounding quadrilaterals gold. Each change returned a fresh image before the next response. Undo/Redo cover tile and color edits, and Keep in My patterns preserves a normal playable tutorial with the same colors. All workspace tests, lint, TypeScript checks, production build and 42 assistant browser checks passed. The picture is the actual live result with the saved account hidden.',
       link: {
@@ -2127,14 +2135,14 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI agent: try the colored repeat',
-    text: 'Open the local assistant on Eight-fold star and octagon. Press Use repeat and color request, then Send current view. It should draw the closed design, show blue squares and gold quadrilaterals repeated across the wall, and finish its reply. The palette buttons and shape color pickers are below the board. Undo restores each edit. Keep in My patterns, Open in editor, then Play preserves the same colored pattern. Coloring currently applies to every piece of one shape; individual copies and rings come later.',
-    link: { label: 'Open the local assistant', href: '/#/agent' },
+    title: 'AI agent: ask it to take you somewhere',
+    text: 'Open the local assistant, press Use navigation request, then Send current view. Or press Open drawing assistant on an ordinary page and ask for Your work, a tutorial wall, its construction, drawing along, or a saved pattern by name. Say Return to the assistant workspace to recover the same drawing and Undo history. Account and model opens the connection choices on normal pages. Questions and navigation work there; geometry tools and pointing remain in the workspace. Screenshots and test details are in the setup guide.',
+    link: { label: 'Open the setup guide', href: '/#/notes/agent-setup' },
   },
   next: [
     {
-      title: 'AI agent: navigation and the normal editor/player',
-      text: 'Construction, finite ink, checked repeats and shape coloring now work in the local workspace. Next, add navigation to requested places and bring the visual assistant into normal editor and player screens. Individual placement and ring colors, broader construction tools and automatic saving remain later phases.',
+      title: 'AI agent: pointing and editing in normal screens',
+      text: 'Navigation and page questions now work alongside normal screens, and returning keeps the workspace drawing. Next, register the current editor/player geometry and controls so the assistant can point at and edit the same pattern you are using. Ring and individual placement colors, broader construction tools and automatic saving remain later phases.',
       link: { label: 'Read the remaining phases', href: '/#/notes/agent' },
     },
     {

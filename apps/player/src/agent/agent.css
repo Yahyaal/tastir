@@ -242,3 +242,56 @@
   border-radius: 8px;
   font: inherit;
 }
+
+.agent-launch {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 49;
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  color: var(--theme-text-primary);
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 18px
+    color-mix(in srgb, var(--theme-text-primary) 12%, transparent);
+}
+.agent-dock {
+  position: fixed;
+  z-index: 48;
+  right: 16px;
+  top: 88px;
+  bottom: 78px;
+  width: min(380px, calc(100vw - 32px));
+  overflow: auto;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  background: var(--theme-bg-surface);
+  box-shadow: 0 8px 32px
+    color-mix(in srgb, var(--theme-text-primary) 18%, transparent);
+}
+.agent-dock .agent-lab {
+  padding: 0;
+}
+.agent-dock .agent-workspace {
+  display: block;
+}
+.agent-dock [hidden],
+.agent-host[hidden] {
+  display: none !important;
+}
+.agent-dock .agent-panel {
+  border: 0;
+}
+
+@media (max-width: 760px) {
+  .agent-dock {
+    top: auto;
+    max-height: 52dvh;
+  }
+}
+
+.agent-dock .agent-connection {
+  margin-block: 8px;
+}

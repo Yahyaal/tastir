@@ -361,6 +361,90 @@ describe('image and tool execution loop', () => {
       }
     },
   );
+  it('requires the actual navigation destination and supports text-only page continuations', async () => {
+    const initial = SnapshotShape.parse({
+      ...snapshot,
+      screen: {
+        route: 'agent',
+        title: 'Drawing',
+        description: '',
+        destinations: [
+          { id: 'work', title: 'Your work', route: 'work', kind: 'work' },
+        ],
+      },
+    });
+    const navigation = {
+      ...tool,
+      name: 'navigate',
+      arguments: JSON.stringify({
+        snapshotId: initial.id,
+        documentRevision: initial.documentRevision,
+        destinationId: 'work',
+        label: 'Open work',
+      }),
+    };
+    const bodies: Record<string, unknown>[] = [];
+    const send = vi.fn<typeof fetch>().mockImplementation(async (url, init) => {
+      if (String(url).endsWith('/models'))
+        return Response.json({
+          models: [
+            { slug: 'model', display_name: 'Model', visibility: 'list' },
+          ],
+        });
+      bodies.push(JSON.parse(String(init!.body)));
+      return bodies.length === 1
+        ? sparseStream([navigation])
+        : sparseStream([
+            {
+              type: 'message',
+              content: [{ type: 'output_text', text: 'Your work is open.' }],
+            },
+          ]);
+    });
+    const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
+    const signal = new AbortController().signal;
+    try {
+      const first = await runtime.start(
+        'tab',
+        'model',
+        'Open Your work',
+        initial,
+        signal,
+      );
+      const results = [
+        { callId: 'call-1', ok: true, message: 'Displayed Your work' },
+      ];
+      await expect(
+        runtime.resume('tab', first.runId, results, signal),
+      ).rejects.toMatchObject({ code: 'observation_missing' });
+      const fresh = SnapshotShape.parse({
+        ...initial,
+        id: 'fresh',
+        documentId: 'screen:work',
+        documentRevision: 'page:work',
+        viewRevision: 'page:work',
+        mode: 'screen',
+        image: null,
+        targets: [],
+        screen: { ...initial.screen!, route: 'work' },
+      });
+      await expect(
+        runtime.resume('tab', first.runId, results, signal, {
+          ...fresh,
+          screen: { ...fresh.screen!, route: 'unknown' },
+        }),
+      ).rejects.toMatchObject({ code: 'observation_missing' });
+      expect(
+        (await runtime.resume('tab', first.runId, results, signal, fresh)).text,
+      ).toBe('Your work is open.');
+      const input = bodies[1]!['input'] as { content?: { type: string }[] }[];
+      expect(input.at(-1)?.content?.map((p) => p.type)).toEqual(['input_text']);
+      const groups = bodies[1]!['tools'] as { tools: { name: string }[] }[];
+      expect(groups[0]!.tools.map((t) => t.name)).toEqual(['navigate']);
+    } finally {
+      runtime.cancelAll();
+    }
+  });
   it('allows six bounded responses and cancels before a seventh inference', async () => {
     let inferences = 0;
     const send = vi.fn<typeof fetch>().mockImplementation(async (url) => {

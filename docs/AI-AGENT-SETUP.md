@@ -1,6 +1,6 @@
 # Try the local drawing assistant
 
-The current implementation lives on `codex/ai-agent-repeat-color`, following the connection, editable-side and ruler-and-compass milestones. It connects a local companion to ChatGPT, sends an image of a real Tastir construction, highlights named objects, constructs ruler lines, compass circles and intersection points, draws editable straight sides between named points, repeats closed ink, and colors its shape types. The owner connected ChatGPT, and a live image, highlighting and final-reply check passed on 15 October 2026.
+The current implementation lives on `codex/ai-agent-navigation`, following the connection, editable-side, ruler-and-compass and repeat/color milestones. It connects a local companion to ChatGPT, sends an image of a real Tastir construction, highlights named objects, constructs ruler lines, compass circles and intersection points, draws editable straight sides between named points, repeats closed ink, colors its shape types, and opens real Tastir destinations. The owner connected ChatGPT, and a live image, highlighting and final-reply check passed on 15 October 2026.
 
 ## Start it
 
@@ -60,7 +60,17 @@ Below the board, choose a preset palette with one click or use the visible color
 
 A tile uses four distinct named corners of a parallelogram, or six corners of a convex centrally symmetric hexagon, in boundary order. The engine must support its rectangular period. Finite ink must stay inside that tile and close pieces that cover it exactly, without loose ends or slivers. Choosing a tile adds an outline; it does not ink its boundary for you. Editing sides clears their tile and colors as part of the same Undo entry; Undo restores both. Removing a construction point still used by the tile is rejected.
 
-This step colors by shape type. Individual copies, rings, automatic navigation, agent saving and full application screen capture remain later work. Showing Construction before sending a geometry request makes its named points available again. Save before switching construction or refreshing the page.
+This step colors by shape type. Individual copies, rings, agent saving and full application screen capture remain later work. Showing Construction before sending a geometry request makes its named points available again. Save before switching construction or refreshing the page.
+
+## Ask the assistant to take you somewhere
+
+On the local companion, open the assistant workspace and press **Use navigation request**, then **Send current view**. You can also open **Open drawing assistant** from the library, Your work, a normal tutorial, the editor or drawing along. Ask for a place by name: “Open Your work”, “Show me the Star and cross wall”, “Watch the hexagon construction”, “Draw along with that pattern”, or “Open my last saved design”. The current destination list includes library wall/watch/draw-along routes and the latest 100 saved patterns and 100 saved designs. Only finished patterns offer a wall; drafts offer their editor.
+
+The assistant waits for the destination to render and receives its current page context before finishing its reply. The side panel stays open as you browse. On connected ordinary pages, **Account and model** expands its connection and model choices. Close it with its button or Escape. On phones it sits in the lower half of the screen. **Return to the assistant workspace** brings back the same drawing, tile, colors and Undo history while this tab remains open. Keep in My patterns still saves to browser storage; navigating does not save or discard work for you.
+
+The normal player's unsaved-design question remains in control. The assistant cannot choose Save, Stay or Leave without saving for you. Resolve that question and send the current view again. If you change a kept pattern in the normal editor, the assistant detects the different saved copy. **Keep as new pattern** preserves the workspace as a separate record and keeps the editor's changes.
+
+On ordinary pages, this milestone supports questions and navigation. It sends a bounded excerpt of page text, destination titles, and the visible drawing SVG as a PNG when a board is available. Pages without a drawing send text only. It does not capture the whole tab or register normal-page pointing/editing targets. Use the workspace for geometry tools and pointing. Edits made in the normal editor do not automatically change the separate assistant workspace. Refreshing or changing the workspace's source construction still requires keeping your drawing first.
 
 ## What is tested
 
@@ -110,3 +120,14 @@ On `codex/ai-agent-repeat-color`, a live GPT-6.1-Sol request made exactly one ed
 The five repeat/color tests check exact area coverage, translated polygon placements, a hexagonal tile, rejected open and disconnected ink, malformed tiles, loose ends, invalid colors, Undo/Redo and a normal tutorial save/load round trip. The runtime's 30 tests cover fresh-observation requirements for all four mutation tools and the six-response limit. All 42 assistant browser checks passed on desktop, tablet and phone, followed by six targeted checks of manual palette/color edits, Undo, stale tile/color rejection and saved player colors after the last test additions. Pixel checks confirm that the captured wall contains both requested colors. The workspace pnpm test, pnpm lint, pnpm typecheck and pnpm build passed; production JavaScript excludes the local assistant tools and UI.
 
 The responsive views use simulated provider responses: [phone](/__review/renders/agent-repeat-color/phone-simulated.png), [tablet](/__review/renders/agent-repeat-color/tablet-simulated.png), and [dark desktop](/__review/renders/agent-repeat-color/desktop-dark-simulated.png). They showed no page errors or horizontal overflow and displayed the real repeated wall. These layout checks are separate from the live account result above.
+
+
+## Navigation verification on 15 October 2026
+
+On `codex/ai-agent-navigation`, a live GPT-6.1-Sol request called edit_segments for the four sides jW–jN–jE–jS, then navigate for Your work. The destination rendered, and the runtime continued with its text-only page observation and completed the reply. A second request navigated back to the workspace, sent its real board PNG and completed the reply with the same four sides intact. One Undo removed the whole square. Both runs displayed the navigation success indicator, with no page errors. Actual views: [Your work](/__review/renders/agent-navigation/live-your-work.png), [return to the drawing, account masked](/__review/renders/agent-navigation/live-return.png).
+
+All 57 assistant browser checks passed across desktop, tablet and phone. They cover real route transitions, returned tile/history state, saved editor/player destinations, stale and stopped navigation, normal unsaved-design guards and keeping an externally edited copy intact. The four navigation unit tests and runtime's 31 tests passed, including destination validation, deleted records, in-place saved-design addresses, fresh destination acknowledgements and text-only continuations. The workspace pnpm test, pnpm lint, pnpm typecheck and pnpm build passed. Production JavaScript excludes the assistant navigation UI and tool contract.
+
+The selected production journey, browsing and layout suites initially produced 97 passed, one configured skip and one tablet filter-state failure. That filter check then passed three isolated repetitions; the complete browsing suite subsequently passed with 14 checks and one configured skip. The final compact-panel checks cover the six affected assistant flows on all three sizes; a concurrent test-output cleanup interrupted one tablet trace write, and that case passed its isolated rerun. These test-run issues are recorded separately from the successful live account flow.
+
+Responsive pictures use simulated provider replies with the real app UI: [phone](/__review/renders/agent-navigation/phone-simulated.png), [tablet](/__review/renders/agent-navigation/tablet-simulated.png), and [dark desktop](/__review/renders/agent-navigation/desktop-dark-simulated.png). All three show the real tutorial wall, with no page errors or horizontal overflow. The phone panel fits within the lower 52% of the viewport and keeps its request controls above its internal scroll area.

@@ -51,39 +51,84 @@ export const PaintPatternShape = z.strictObject({
   colors: z.array(z.strictObject({ typeId: Id, color: HexColor })).max(128),
 });
 export type PaintPattern = z.infer<typeof PaintPatternShape>;
-export const SnapshotShape = z.strictObject({
+export const DestinationShape = z.strictObject({
   id: Id,
-  documentId: Id,
-  documentRevision: Id,
-  viewRevision: z.string().min(1).max(2000),
-  title: z.string().max(300),
-  selected: Id.nullable(),
-  targets: z.array(TargetShape).min(1).max(5000),
-  segments: z.array(SegmentShape).max(128).default([]),
-  constructions: z.array(ConstructionShape).max(128).default([]),
-  repeat: z
-    .strictObject({
-      vertices: z.array(Id).min(4).max(6),
-      palette: Id,
-      types: z
-        .array(
-          z.strictObject({
-            id: Id,
-            color: HexColor,
-            perCell: z.number().int().positive(),
-          }),
-        )
-        .max(128),
-    })
-    .nullable()
-    .default(null),
-  mode: z.enum(['construction', 'repeat']).default('construction'),
-  palettes: z.array(Id).max(50).default([]),
-  image: z
-    .string()
-    .max(4_000_000)
-    .regex(/^data:image\/png;base64,[A-Za-z0-9+/]+=*$/),
+  title: z.string().min(1).max(300),
+  route: z.string().max(500),
+  kind: z.enum([
+    'library',
+    'work',
+    'assistant',
+    'wall',
+    'watch',
+    'draw',
+    'editor',
+  ]),
 });
+export type Destination = z.infer<typeof DestinationShape>;
+export const ScreenShape = z.strictObject({
+  route: z.string().max(500),
+  title: z.string().max(300),
+  description: z.string().max(2000),
+  destinations: z.array(DestinationShape).max(500),
+});
+export const NavigateShape = z.strictObject({
+  snapshotId: Id,
+  documentRevision: Id,
+  destinationId: Id,
+  label: z.string().min(1).max(160),
+});
+export type Navigate = z.infer<typeof NavigateShape>;
+export const SnapshotShape = z
+  .strictObject({
+    id: Id,
+    documentId: Id,
+    documentRevision: Id,
+    viewRevision: z.string().min(1).max(2000),
+    title: z.string().max(300),
+    selected: Id.nullable(),
+    targets: z.array(TargetShape).max(5000),
+    segments: z.array(SegmentShape).max(128).default([]),
+    constructions: z.array(ConstructionShape).max(128).default([]),
+    repeat: z
+      .strictObject({
+        vertices: z.array(Id).min(4).max(6),
+        palette: Id,
+        types: z
+          .array(
+            z.strictObject({
+              id: Id,
+              color: HexColor,
+              perCell: z.number().int().positive(),
+            }),
+          )
+          .max(128),
+      })
+      .nullable()
+      .default(null),
+    mode: z.enum(['construction', 'repeat', 'screen']).default('construction'),
+    palettes: z.array(Id).max(50).default([]),
+    screen: ScreenShape.nullable().default(null),
+    image: z
+      .string()
+      .max(4_000_000)
+      .regex(/^data:image\/png;base64,[A-Za-z0-9+/]+=*$/)
+      .nullable(),
+  })
+  .superRefine((snapshot, ctx) => {
+    if (snapshot.mode !== 'screen' && !snapshot.image)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['image'],
+        message: 'A drawing observation needs its board image.',
+      });
+    if (snapshot.mode === 'screen' && !snapshot.screen)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['screen'],
+        message: 'A page observation needs its current route and destinations.',
+      });
+  });
 export type Snapshot = z.infer<typeof SnapshotShape>;
 export const HighlightShape = z.strictObject({
   snapshotId: Id,
@@ -113,6 +158,11 @@ export const ConstructShape = z.strictObject({
 });
 export type Construct = z.infer<typeof ConstructShape>;
 export const CallShape = z.discriminatedUnion('name', [
+  z.strictObject({
+    id: Id,
+    name: z.literal('navigate'),
+    arguments: NavigateShape,
+  }),
   z.strictObject({
     id: Id,
     name: z.literal('set_tile'),
@@ -209,6 +259,24 @@ export const DRAWING_TOOLS = {
   description:
     'Construct ruler-and-compass geometry, draw finite sides, repeat and color closed patterns, and highlight objects in Tastir.',
   tools: [
+    {
+      type: 'function',
+      name: 'navigate',
+      strict: true,
+      description:
+        'Open a Tastir destination from the latest observation.screen.destinations. Use its exact destinationId; never invent a route or URL. This preserves the assistant workspace and respects unsaved-change questions in the normal player. The browser confirms the destination actually rendered before returning a fresh screen observation. No automatic saving or discarding. Use assistant destination to return to the editable drawing workspace. On normal screens only navigation and questions are supported.',
+      parameters: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          snapshotId: { type: 'string' },
+          documentRevision: { type: 'string' },
+          destinationId: { type: 'string' },
+          label: { type: 'string' },
+        },
+        required: ['snapshotId', 'documentRevision', 'destinationId', 'label'],
+      },
+    },
     {
       type: 'function',
       name: 'set_tile',
