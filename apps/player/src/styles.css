@@ -2092,6 +2092,10 @@ main.stage .drawing:not(.wall) {
   stroke-width: 2.5px;
   stroke-dasharray: 1 6;
   stroke-linecap: round;
+}
+
+/* Shown only while the repeat animates them, then gone. */
+.copy-outline-instance {
   opacity: 0;
 }
 

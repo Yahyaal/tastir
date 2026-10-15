@@ -696,7 +696,14 @@ export function RepeatedInk({
   view: givenView,
   from,
   markOriginal = true,
+  borders = true,
+  outlineFadeMs = 1200,
 }: {
+  /** Whether the finished wall shows the tiles' borders (the lesson); the
+   * hero lets the outlines fade and leaves the wall plain. */
+  borders?: boolean;
+  /** How slowly the copies' outlines fade once the wall is built. */
+  outlineFadeMs?: number;
   /** Whether the first tile stands out in the accent (the lesson); the
    * hero keeps it the colour of the ink it was just drawn in. */
   markOriginal?: boolean;
@@ -881,9 +888,11 @@ export function RepeatedInk({
     }
     // Each copy carries the tile's green outline while the wall is built;
     // once it is complete the outlines fade away.
-    const fade = 1200 / speed;
-    for (const outline of svg.querySelectorAll<SVGPolygonElement>(
-      '.copy-outline',
+    // Each copy's own instance: an animation on the shared outline in
+    // <defs> does not reach the copies drawn from it.
+    const fade = outlineFadeMs / speed;
+    for (const outline of svg.querySelectorAll<SVGUseElement>(
+      '.copy-outline-instance',
     )) {
       if (typeof outline.animate !== 'function') continue;
       anims.push(
@@ -914,7 +923,7 @@ export function RepeatedInk({
       svg.setAttribute('viewBox', viewBox(view));
       anims.forEach((a) => a.cancel());
     };
-  }, [enter, copies, row, next, speed, rowsStart, close, view]);
+  }, [enter, copies, row, next, speed, rowsStart, close, view, outlineFadeMs]);
 
   return (
     <svg
@@ -939,7 +948,7 @@ export function RepeatedInk({
           />
         ) : null}
       </defs>
-      <g className="tile-borders">
+      <g className="tile-borders" display={borders ? undefined : 'none'}>
         {copies.map(({ d }, k) => (
           <polygon
             key={k}

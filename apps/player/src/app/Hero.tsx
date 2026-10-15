@@ -181,6 +181,8 @@ function HeroPlay({ model }: { model: Model }) {
             from={view}
             view={wallView}
             markOriginal={false}
+            borders={false}
+            outlineFadeMs={2600}
           />
         ) : k === n || isFadingLines ? (
           // One drawing through the ink and the fade, so it is not drawn
