@@ -5096,10 +5096,11 @@ svg.tiles {
   color: var(--on-act);
 }
 
+/* Making one's own is drawing too: green, like Draw along. */
 .library .button.primary.new-pattern-btn,
 .library .button.primary.new-pattern-btn:hover {
-  background: var(--act-make);
-  border-color: var(--act-make);
+  background: var(--act-draw);
+  border-color: var(--act-draw);
   color: var(--on-act);
 }
 
