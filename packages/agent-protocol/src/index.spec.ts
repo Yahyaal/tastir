@@ -22,6 +22,32 @@ const call = HighlightCallShape.parse({
 });
 
 describe('pointing contracts', () => {
+  it('allows relational construction operations and rejects raw coordinates or an unspecified intersection rule', () => {
+    const command = {
+      id: 'build',
+      name: 'construct',
+      arguments: {
+        snapshotId: 'snapshot',
+        documentRevision: '1',
+        label: 'Circle',
+        remove: [],
+        add: [{ kind: 'circle', name: 'C', centre: 'O', through: 'A' }],
+      },
+    };
+    expect(CallShape.safeParse(command).success).toBe(true);
+    for (const operation of [
+      { kind: 'point', name: 'P', x: 1, y: 2 },
+      { kind: 'circle', name: 'C', centre: 'O', radius: 1 },
+      { kind: 'intersection', name: 'P', first: 'C', second: 'L' },
+      { kind: 'line', name: 'bad.name', from: 'O', to: 'A' },
+    ])
+      expect(
+        CallShape.safeParse({
+          ...command,
+          arguments: { ...command.arguments, add: [operation] },
+        }).success,
+      ).toBe(false);
+  });
   it('accepts only bounded drawing edits made from named references', () => {
     const edit = {
       id: 'edit',

@@ -164,6 +164,22 @@
 .agent-side select {
   flex: 1;
 }
+.agent-constructions {
+  list-style: none;
+  padding: 0;
+}
+.agent-constructions li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+.agent-constructions li span {
+  flex: 1;
+  min-width: 140px;
+  overflow-wrap: anywhere;
+}
 @media (max-width: 760px) {
   .agent-lab {
     padding: 12px;

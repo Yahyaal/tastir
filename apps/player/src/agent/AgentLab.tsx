@@ -9,7 +9,7 @@ import {
   type EditSegments,
   type ToolResult,
 } from '@tastir/agent-protocol';
-import type { Geometry } from '@tastir/engine';
+import type { Geometry, Scene } from '@tastir/engine';
 import { EditorDrawing, frameOf } from '../editor/EditorDrawing';
 import '../editor/editor.css';
 import { snap } from '../editor/tools';
@@ -17,11 +17,14 @@ import { LIBRARY } from '../app/library';
 import { viewBox, width } from '../app/camera';
 import { useCamera } from '../app/useCamera';
 import { useModel } from '../app/workerClient';
-import type { Model } from '../app/model';
+import { emptyDraft, check, type Draft } from '../editor/document';
 import { ThemeSwitch } from '../app/theme';
 import { addPattern, savePattern } from '../editor/patterns';
 import {
   drawingDraft,
+  constructionScene,
+  construct,
+  constructionText,
   drawingPieces,
   editSegments,
   emptyDrawing,
@@ -41,6 +44,11 @@ export function AgentLab() {
   );
   const entry = LIBRARY.find((item) => item.id === id);
   const loading = useModel(entry?.json);
+  const blank = useMemo(() => {
+    const tutorial = emptyDraft('agent-blank', 'My compass construction');
+    return { tutorial, scene: check(tutorial).scene };
+  }, []);
+  const active = id === 'agent-blank' ? blank : loading.model;
   return (
     <main className="agent-lab">
       <header className="agent-head">
@@ -50,12 +58,14 @@ export function AgentLab() {
       </header>
       <p className="agent-intro">
         Ask about this construction, point at an object, or draw straight sides
-        between named points. Edit the sides below, undo an edit, or keep your
-        drawing in My patterns. New points and coloring come later.
+        between named points. Add ruler lines, compass circles and intersection
+        points, undo an edit, or keep your drawing in My patterns. Coloring
+        comes later.
       </p>
       <label className="agent-pattern">
         Construction{' '}
         <select value={id} onChange={(event) => setId(event.target.value)}>
+          <option value="agent-blank">Start from O and A</option>
           {LIBRARY.map((item) => (
             <option key={item.id} value={item.id}>
               {item.preview?.title ?? item.id}
@@ -63,8 +73,8 @@ export function AgentLab() {
           ))}
         </select>
       </label>
-      {loading.model ? (
-        <Workspace key={id} model={loading.model} />
+      {active ? (
+        <Workspace key={id} model={active} />
       ) : (
         <p role="status">{loading.error ?? 'Loading the construction…'}</p>
       )}
@@ -101,7 +111,16 @@ function Annotation({ geometry }: { geometry: Geometry }) {
   return null;
 }
 
-function Workspace({ model }: { model: Model }) {
+const targetsOf = (scene: Scene) =>
+  [...scene.elements.values()]
+    .filter((element) => element.geometry.kind !== 'group')
+    .map((element) => ({
+      id: element.name,
+      kind: element.geometry.kind as 'point' | 'line' | 'circle' | 'polygon',
+      geometry: element.geometry as unknown as Record<string, unknown>,
+    }));
+
+function Workspace({ model }: { model: { tutorial: Draft; scene: Scene } }) {
   const [client] = useState(() => new AgentClient());
   const [connection, setConnection] = useState<ConnectionStatus>();
   const [polling, setPolling] = useState(false);
@@ -125,8 +144,13 @@ function Workspace({ model }: { model: Model }) {
     setDrawing(next);
   };
   const pieces = useMemo(
-    () => drawingPieces(model.tutorial, drawing.segments),
-    [model, drawing.segments],
+    () =>
+      drawingPieces(model.tutorial, drawing.segments, drawing.constructions),
+    [model, drawing.segments, drawing.constructions],
+  );
+  const scene = useMemo(
+    () => constructionScene(model.tutorial, drawing.constructions),
+    [model, drawing.constructions],
   );
   const chosen = useMemo(
     () => new Set(pieces.map((piece) => piece.id)),
@@ -140,18 +164,7 @@ function Workspace({ model }: { model: Model }) {
   const controller = useRef<AbortController | null>(null);
   const generation = useRef(0);
   const currentView = useRef({ view: camera.view, selected });
-  const targets = useMemo(
-    () =>
-      [...model.scene.elements.values()]
-        .filter((element) => element.geometry.kind !== 'group')
-        .map((element) => ({
-          id: element.name,
-          kind: element.geometry.kind as
-            'point' | 'line' | 'circle' | 'polygon',
-          geometry: element.geometry as unknown as Record<string, unknown>,
-        })),
-    [model],
-  );
+  const targets = useMemo(() => targetsOf(scene), [scene]);
 
   const revision = () =>
     JSON.stringify([
@@ -163,6 +176,7 @@ function Workspace({ model }: { model: Model }) {
       document.documentElement.dataset['theme'] ?? 'light',
     ]);
   useLayoutEffect(() => {
+    if (!scene.elements.has(selected)) setSelected('O');
     currentView.current = { view: camera.view, selected };
   });
 
@@ -181,8 +195,12 @@ function Workspace({ model }: { model: Model }) {
       bounds.width,
       bounds.height,
     );
-    const visible = targets.filter((target) =>
-      geometryVisible(model.scene.elements.get(target.id)!.geometry, box),
+    const currentScene = constructionScene(
+      model.tutorial,
+      drawingRef.current.constructions,
+    );
+    const visible = targetsOf(currentScene).filter((target) =>
+      geometryVisible(currentScene.elements.get(target.id)!.geometry, box),
     );
     if (!visible.length)
       throw new Error(
@@ -201,6 +219,7 @@ function Workspace({ model }: { model: Model }) {
         : null,
       targets: visible,
       segments: drawingRef.current.segments,
+      constructions: drawingRef.current.constructions,
       image,
     });
   };
@@ -394,6 +413,7 @@ function Workspace({ model }: { model: Model }) {
                 'The drawing or view changed. Ask for a new image before editing.',
             };
           if (
+            call.name === 'edit_segments' &&
             call.arguments.add.some((side) =>
               [side.from, side.to].some(
                 (id) =>
@@ -410,11 +430,35 @@ function Workspace({ model }: { model: Model }) {
                 'Use named points in the current observation as endpoints.',
             };
           try {
-            const next = editSegments(
-              drawingRef.current,
-              call.arguments,
-              model.scene,
-            );
+            if (call.name === 'construct') {
+              const available = new Set(
+                snapshot.targets.map((target) => target.id),
+              );
+              for (const operation of call.arguments.add) {
+                const refs =
+                  operation.kind === 'line'
+                    ? [operation.from, operation.to]
+                    : operation.kind === 'circle'
+                      ? [operation.centre, operation.through]
+                      : [operation.first, operation.second];
+                if (refs.some((name) => !available.has(name)))
+                  throw new Error(
+                    'Use names from the current observation or earlier operations in this batch.',
+                  );
+                available.add(operation.name);
+              }
+            }
+            const next =
+              call.name === 'construct'
+                ? construct(drawingRef.current, call.arguments, model.tutorial)
+                : editSegments(
+                    drawingRef.current,
+                    call.arguments,
+                    constructionScene(
+                      model.tutorial,
+                      drawingRef.current.constructions,
+                    ),
+                  );
             publish(next);
             setMark(undefined);
             pointed = false;
@@ -423,13 +467,13 @@ function Workspace({ model }: { model: Model }) {
             return {
               callId: call.id,
               ok: true,
-              message: `Applied “${call.arguments.label}”: added ${call.arguments.add.length}, removed ${call.arguments.remove.length} segments. The drawing now has ${next.segments.length} segments. Undo restores the entire edit.`,
+              message: `Applied “${call.arguments.label}”: added ${call.arguments.add.length}, removed ${call.arguments.remove.length} ${call.name === 'construct' ? 'construction elements' : 'segments'}. The drawing now has ${next.constructions.length} construction elements and ${next.segments.length} sides. Undo restores the entire edit.`,
             };
           } catch (e) {
             return {
               callId: call.id,
               ok: false,
-              message: (e as Error).message,
+              message: (e as Error).message.slice(0, 500),
             };
           }
         });
@@ -479,7 +523,7 @@ function Workspace({ model }: { model: Model }) {
     setError('');
     setAnswer('');
     try {
-      publish(editSegments(drawingRef.current, edit, model.scene));
+      publish(editSegments(drawingRef.current, edit, scene));
       setMark(undefined);
     } catch (e) {
       setError((e as Error).message);
@@ -492,18 +536,44 @@ function Workspace({ model }: { model: Model }) {
     setMark(undefined);
     publish(travelDrawing(drawingRef.current, direction));
   };
+  const removeConstruction = (name: string) => {
+    stop();
+    setError('');
+    setAnswer('');
+    setMark(undefined);
+    try {
+      publish(
+        construct(
+          drawingRef.current,
+          { add: [], remove: [name] },
+          model.tutorial,
+        ),
+      );
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
   const keepDrawing = () => {
     stop();
     setError('');
     try {
-      const draft = drawingDraft(model.tutorial, drawingRef.current.segments);
+      const draft = drawingDraft(
+        model.tutorial,
+        drawingRef.current.segments,
+        drawingRef.current.constructions,
+      );
       const pattern = saved
         ? savePattern(saved.id, draft)
-        : addPattern(draft, {
-            tutorial: model.tutorial.id,
-            title: model.tutorial.title,
-            step: model.tutorial.steps.at(-1)?.id ?? 0,
-          });
+        : addPattern(
+            draft,
+            model.tutorial.id === 'agent-blank'
+              ? undefined
+              : {
+                  tutorial: model.tutorial.id,
+                  title: model.tutorial.title,
+                  step: model.tutorial.steps.at(-1)?.id ?? 0,
+                },
+          );
       if (!pattern)
         throw new Error(
           'This browser could not keep the drawing. Keep this page open and try again.',
@@ -514,9 +584,9 @@ function Workspace({ model }: { model: Model }) {
     }
   };
 
-  const selectedGeometry = model.scene.elements.get(selected)?.geometry;
+  const selectedGeometry = scene.elements.get(selected)?.geometry;
   const markedGeometry = mark
-    ? model.scene.elements.get(mark.targetId)?.geometry
+    ? scene.elements.get(mark.targetId)?.geometry
     : undefined;
   const point =
     markedGeometry?.kind === 'point' ? markedGeometry.at : undefined;
@@ -542,7 +612,9 @@ function Workspace({ model }: { model: Model }) {
         </label>
         <div className="agent-board">
           <EditorDrawing
-            scene={model.scene}
+            scene={scene}
+            fitTo={frameOf(scene)}
+            current={new Set(drawing.constructions.map((op) => op.name))}
             ink={{ pieces, chosen }}
             targets={[]}
             svgRef={svgRef}
@@ -554,8 +626,8 @@ function Workspace({ model }: { model: Model }) {
             onHover={() => undefined}
             onClick={(at, reach) => {
               const found =
-                snap(model.scene, at, reach, 'point') ??
-                snap(model.scene, at, reach, 'curve');
+                snap(scene, at, reach, 'point') ??
+                snap(scene, at, reach, 'curve');
               if (found?.name) {
                 setSelected(found.name);
                 setMark(undefined);
@@ -593,7 +665,10 @@ function Workspace({ model }: { model: Model }) {
           </button>
         ) : null}
         <section className="agent-edits" aria-label="Editable sides">
-          <h2>Your drawing · {drawing.segments.length} sides</h2>
+          <h2>
+            Your drawing · {drawing.segments.length}{' '}
+            {drawing.segments.length === 1 ? 'side' : 'sides'}
+          </h2>
           <div className="agent-actions">
             <button
               type="button"
@@ -611,7 +686,9 @@ function Workspace({ model }: { model: Model }) {
             </button>
             <button
               type="button"
-              disabled={!drawing.segments.length}
+              disabled={
+                !drawing.segments.length && !drawing.constructions.length
+              }
               onClick={keepDrawing}
             >
               Keep in My patterns
@@ -662,10 +739,54 @@ function Workspace({ model }: { model: Model }) {
               </button>
             </div>
           ))}
+          {drawing.constructions.length ? (
+            <section aria-label="New construction">
+              <h3>
+                New construction · {drawing.constructions.length} elements
+              </h3>
+              <ul className="agent-constructions">
+                {drawing.constructions.map((operation) => (
+                  <li key={operation.name}>
+                    <span>{constructionText(operation)}</span>
+                    <button
+                      type="button"
+                      aria-label={`Select ${operation.name}`}
+                      onClick={() => {
+                        setSelected(operation.name);
+                        setMark(undefined);
+                      }}
+                    >
+                      Select
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={`Remove ${operation.name}`}
+                      onClick={() => removeConstruction(operation.name)}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
         </section>
       </section>
       <aside className="agent-panel" aria-label="Assistant">
         <h2>Assistant</h2>
+        {model.tutorial.id === 'agent-blank' ? (
+          <button
+            type="button"
+            disabled={!!activity}
+            onClick={() =>
+              setPrompt(
+                'Draw a circle C0 centred at O through A, then a circle C1 centred at A through O. Mark their upper intersection as Top and lower intersection as Bottom. Draw a ruler line Axis through Top and Bottom. Make this in one construction batch.',
+              )
+            }
+          >
+            Use compass request
+          </button>
+        ) : null}
         {['jW', 'jN', 'jE', 'jS'].every((id) =>
           model.scene.elements.has(id),
         ) ? (

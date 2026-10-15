@@ -1,6 +1,6 @@
 # AI agent for Tastir
 
-Detailed implementation plan, 15 October 2026. The owner wants an agent that answers questions, navigates Tastir, draws and colors its own patterns from instructions, sees the current view, and points things out on screen. The Phase 0 connection workspace is implemented on `codex/ai-agent-phase-0`; its first live account check passed after fixing the stream reader. [Try the local assistant](AI-AGENT-SETUP.md). The first editable-segment milestone is implemented on `codex/ai-agent-drawing`; the remaining capabilities below are planned work.
+Detailed implementation plan, 15 October 2026. The owner wants an agent that answers questions, navigates Tastir, draws and colors its own patterns from instructions, sees the current view, and points things out on screen. The Phase 0 connection workspace is implemented on `codex/ai-agent-phase-0`; its first live account check passed after fixing the stream reader. [Try the local assistant](AI-AGENT-SETUP.md). The first editable-segment milestone is implemented on `codex/ai-agent-drawing`; the ruler-and-compass milestone on `codex/ai-agent-construction` now also creates new geometry from O and A. The remaining capabilities below are planned work.
 
 ## The experience we are building
 
@@ -163,6 +163,8 @@ Phase 0 is a capability test, not the finished product. The complete local relea
 
 **First drawing milestone (15 October).** After confirming the connection, the owner approved drawing jW–jN–jE–jS as four editable sides. `codex/ai-agent-drawing` adds a bounded segment-editing command, shared manual editing and Undo/Redo, fresh images after mutations and saving a copy through the existing editor format. This is a first part of the command and drawing phases: it uses existing named points, and does not yet create new points, circles, complete original patterns or color them. One requested square is one undoable edit.
 
+**Ruler-and-compass milestone (15 October).** `codex/ai-agent-construction` starts from O and A or extends a library construction. A bounded ordered batch creates named lines, circles and chosen intersections through the existing editor and engine; subsequent model calls can use those new points for finite ink. Undo/Redo, dependency checks, fresh images, source-preserving editor copies and construction-only saving are implemented. A live request completed construction, inking and its final response. Tile choice, finished repeating motifs and coloring remain later work.
+
 ## Proposed files
 
 | Location | Responsibility |
@@ -199,4 +201,4 @@ During implementation, run lint, typecheck, unit tests, build and Chromium check
 
 ## Next step
 
-Phase 0's first live check passed on the owner's connected account: a current board image and named selection produced a displayed, acknowledged highlight and a completed final reply. The connection workspace and shared observation contracts are implemented. The first segment-editing command now draws an editable square between existing points, refreshes the observation and supports Undo/Redo and editor-copy saving. Next, extend the command interface to new ruler and compass geometry, then original pattern creation and coloring in the sequence above. The initial live success is a capability check; the broader evaluation set remains later work.
+Phase 0's first live check passed on the owner's connected account: a current board image and named selection produced a displayed, acknowledged highlight and a completed final reply. The connection workspace and shared observation contracts are implemented. The first segment-editing command now draws an editable square between existing points, refreshes the observation and supports Undo/Redo and editor-copy saving. The next milestone now also creates new ruler-and-compass geometry from O and A, feeds the resulting points into finite ink and saves the full draft. Next, connect closed motifs to tile choice, repeat diagnostics and coloring in the sequence above. The initial live success is a capability check; the broader evaluation set remains later work.

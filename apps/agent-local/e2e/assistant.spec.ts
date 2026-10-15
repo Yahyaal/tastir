@@ -1,5 +1,6 @@
 import { test, expect, type Page, type Route } from '@playwright/test';
 import sharp from 'sharp';
+import type { Construction } from '@tastir/agent-protocol';
 
 const runId = '55c4c0a2-487f-4c25-a25d-79518ef86021';
 async function connected(page: Page) {
@@ -40,6 +41,219 @@ const squareCall = (snapshot: { id: string; documentRevision: string }) => ({
     })),
   },
 });
+
+const compassOperations: Construction[] = [
+  { kind: 'circle', name: 'C0', centre: 'O', through: 'A' },
+  { kind: 'circle', name: 'C1', centre: 'A', through: 'O' },
+  { kind: 'intersection', name: 'Top', first: 'C0', second: 'C1', angle: 90 },
+  {
+    kind: 'intersection',
+    name: 'Bottom',
+    first: 'C0',
+    second: 'C1',
+    angle: 270,
+  },
+  { kind: 'line', name: 'Axis', from: 'Top', to: 'Bottom' },
+];
+const constructionCall = (
+  snapshot: { id: string; documentRevision: string },
+  add = compassOperations,
+) => ({
+  id: 'construct-call',
+  name: 'construct',
+  arguments: {
+    snapshotId: snapshot.id,
+    documentRevision: snapshot.documentRevision,
+    label: 'Compass construction',
+    add,
+    remove: [],
+  },
+});
+
+test('constructs from O and A, uses new intersections for ink, protects dependencies and saves the full editor draft', async ({
+  page,
+}) => {
+  await connected(page);
+  let image = '';
+  let continuation = 0;
+  await page.route('**/__agent/turn/start', async (route) => {
+    const { snapshot } = route.request().postDataJSON();
+    expect(snapshot.targets.map((t: { id: string }) => t.id)).toEqual([
+      'O',
+      'A',
+    ]);
+    image = snapshot.image;
+    await route.fulfill({
+      json: { runId, text: '', calls: [constructionCall(snapshot)] },
+    });
+  });
+  await page.route('**/__agent/turn/continue', async (route) => {
+    const body = route.request().postDataJSON();
+    expect(body.results[0].ok).toBe(true);
+    expect(body.snapshot.image).not.toBe(image);
+    image = body.snapshot.image;
+    expect(
+      body.snapshot.targets.some((t: { id: string }) => t.id === 'Top'),
+    ).toBe(true);
+    expect(body.snapshot.constructions).toHaveLength(5);
+    if (++continuation === 1) {
+      expect(await page.locator('.agent-constructions li').count()).toBe(5);
+      await route.fulfill({
+        json: {
+          runId,
+          text: '',
+          calls: [
+            {
+              id: 'ink-call',
+              name: 'edit_segments',
+              arguments: {
+                snapshotId: body.snapshot.id,
+                documentRevision: body.snapshot.documentRevision,
+                label: 'Join the new points',
+                add: [{ from: 'Top', to: 'Bottom' }],
+                remove: [],
+              },
+            },
+          ],
+        },
+      });
+    } else {
+      expect(body.snapshot.segments).toHaveLength(1);
+      await route.fulfill({
+        json: {
+          runId,
+          text: 'The compass construction and its side are drawn.',
+          calls: [],
+        },
+      });
+    }
+  });
+  await page.goto('/#/agent');
+  await page
+    .getByRole('combobox', { name: 'Construction', exact: true })
+    .selectOption('agent-blank');
+  await page.getByRole('button', { name: 'Use compass request' }).click();
+  await page.getByRole('button', { name: 'Send current view' }).click();
+  await expect(page.locator('.agent-answer')).toHaveText(
+    'The compass construction and its side are drawn.',
+  );
+  await expect(page.locator('.ink-piece.inked')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Remove C0', exact: true }).click();
+  await expect(page.locator('.agent-error')).toBeVisible();
+  await expect(page.locator('.agent-constructions li')).toHaveCount(5);
+  await expect(page.locator('.ink-piece.inked')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Keep in My patterns' }).click();
+  const [saved] = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('tastir.patterns') ?? '[]'),
+  );
+  expect(saved.tutorial.steps).toHaveLength(6);
+  expect(saved.tutorial.ink.paths).toEqual([{ through: ['Top', 'Bottom'] }]);
+  expect(saved).not.toHaveProperty('basedOn');
+  await page.getByRole('button', { name: 'Select Top', exact: true }).click();
+  await page.getByRole('button', { name: 'Undo drawing edit' }).click();
+  await expect(page.locator('.ink-piece.inked')).toHaveCount(0);
+  await expect(page.locator('.agent-constructions li')).toHaveCount(5);
+  await page.getByRole('button', { name: 'Undo drawing edit' }).click();
+  await expect(page.locator('.agent-constructions li')).toHaveCount(0);
+  await expect(
+    page.getByRole('combobox', { name: 'Selected object', exact: true }),
+  ).toHaveValue('O');
+  await page.getByRole('button', { name: 'Redo drawing edit' }).click();
+  await expect(page.locator('.agent-constructions li')).toHaveCount(5);
+  await page.getByRole('link', { name: 'Open in editor' }).click();
+  await expect(
+    page.getByRole('img', { name: 'The construction so far' }),
+  ).toBeVisible();
+});
+
+test('an ambiguous intersection rejects the entire construction batch', async ({
+  page,
+}) => {
+  await connected(page);
+  await page.route('**/__agent/turn/start', async (route) => {
+    const { snapshot } = route.request().postDataJSON();
+    await route.fulfill({
+      json: {
+        runId,
+        text: '',
+        calls: [
+          constructionCall(snapshot, [
+            ...compassOperations.slice(0, 2),
+            {
+              kind: 'intersection',
+              name: 'P',
+              first: 'C0',
+              second: 'C1',
+              angle: null,
+            },
+          ]),
+        ],
+      },
+    });
+  });
+  await page.route('**/__agent/turn/continue', async (route) => {
+    expect(route.request().postDataJSON().results[0].ok).toBe(false);
+    await route.fulfill({
+      json: { runId, text: 'Choose which crossing to use.', calls: [] },
+    });
+  });
+  await page.goto('/#/agent');
+  await page
+    .getByRole('combobox', { name: 'Construction', exact: true })
+    .selectOption('agent-blank');
+  await page.getByRole('button', { name: 'Send current view' }).click();
+  await expect(page.locator('.agent-answer')).toHaveText(
+    'Choose which crossing to use.',
+  );
+  await expect(page.locator('.agent-constructions li')).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: 'Undo drawing edit' }),
+  ).toBeDisabled();
+});
+
+for (const intervention of ['selection', 'stop'] as const) {
+  test(`a ${intervention} change prevents a delayed construction batch`, async ({
+    page,
+  }) => {
+    await connected(page);
+    let pending: Route | undefined;
+    await page.route('**/__agent/turn/start', (route) => {
+      pending = route;
+    });
+    await page.route('**/__agent/turn/continue', async (route) => {
+      expect(route.request().postDataJSON().results[0].ok).toBe(false);
+      await route.fulfill({
+        json: { runId, text: 'Send the current view again.', calls: [] },
+      });
+    });
+    await page.goto('/#/agent');
+    await page
+      .getByRole('combobox', { name: 'Construction', exact: true })
+      .selectOption('agent-blank');
+    await page.getByRole('button', { name: 'Send current view' }).click();
+    await expect.poll(() => !!pending).toBe(true);
+    const { snapshot } = pending!.request().postDataJSON();
+    if (intervention === 'stop')
+      await page.getByRole('button', { name: 'Stop', exact: true }).click();
+    else
+      await page
+        .getByRole('combobox', { name: 'Selected object', exact: true })
+        .selectOption('A');
+    await pending!
+      .fulfill({
+        json: { runId, text: '', calls: [constructionCall(snapshot)] },
+      })
+      .catch(() => undefined);
+    if (intervention === 'selection')
+      await expect(page.locator('.agent-answer')).toHaveText(
+        'Send the current view again.',
+      );
+    await expect(page.locator('.agent-constructions li')).toHaveCount(0);
+    await expect(
+      page.getByRole('button', { name: 'Undo drawing edit' }),
+    ).toBeDisabled();
+  });
+}
 
 test('draws four editable sides, sends the resulting image, undoes in one step and keeps an editor copy', async ({
   page,

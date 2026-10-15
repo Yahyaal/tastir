@@ -4,21 +4,31 @@ import {
   type InkPiece,
   type Scene,
 } from '@tastir/engine';
-import type { Tutorial } from '@tastir/schema';
-import type { DrawingSegment, EditSegments } from '@tastir/agent-protocol';
+import { DraftShape, type ElementSpec, type Tutorial } from '@tastir/schema';
+import {
+  ConstructShape,
+  type Construction,
+  type Construct,
+  type DrawingSegment,
+  type EditSegments,
+} from '@tastir/agent-protocol';
 import { addStep, check, copyUpTo, type Draft } from '../editor/document';
 
-export interface DrawingHistory {
+interface DrawingContent {
+  segments: DrawingSegment[];
+  constructions: Construction[];
+}
+export interface DrawingHistory extends DrawingContent {
   revision: number;
   nextId: number;
-  segments: DrawingSegment[];
-  past: DrawingSegment[][];
-  future: DrawingSegment[][];
+  past: DrawingContent[];
+  future: DrawingContent[];
 }
 export const emptyDrawing = (): DrawingHistory => ({
   revision: 0,
   nextId: 1,
   segments: [],
+  constructions: [],
   past: [],
   future: [],
 });
@@ -86,10 +96,11 @@ export function editSegments(
     );
   }
   return {
+    ...history,
     revision: history.revision + 1,
     nextId,
     segments,
-    past: [...history.past.slice(-49), history.segments],
+    past: [...history.past.slice(-49), contentOf(history)],
     future: [],
   };
 }
@@ -103,24 +114,25 @@ export function travelDrawing(
   return {
     ...history,
     revision: history.revision + 1,
-    segments: before,
+    ...before,
     past:
       direction === 'undo'
         ? history.past.slice(0, -1)
-        : [...history.past, history.segments],
+        : [...history.past, contentOf(history)],
     future:
       direction === 'undo'
-        ? [history.segments, ...history.future]
+        ? [contentOf(history), ...history.future]
         : history.future.slice(1),
   };
 }
 
 /** Export through the existing editor document and engine ink format, without coordinates. */
 export function drawingDraft(
-  tutorial: Tutorial,
+  tutorial: Draft,
   segments: readonly DrawingSegment[],
+  constructions: readonly Construction[] = [],
 ): Draft {
-  let draft = copyUpTo(tutorial, tutorial.steps.at(-1)?.id ?? 0);
+  let draft = constructionDraft(tutorial, constructions);
   const names = new Set(check(draft).scene.elements.keys());
   for (const s of segments) {
     let name = s.id;
@@ -131,6 +143,7 @@ export function drawingDraft(
       create: { [name]: { line: { through: [s.from, s.to] } } },
     });
   }
+  if (!segments.length) return draft;
   return {
     ...draft,
     ink: { paths: segments.map((s) => ({ through: [s.from, s.to] })) },
@@ -139,11 +152,12 @@ export function drawingDraft(
 
 /** The same engine strokes used by saved patterns are drawn inside the captured SVG. */
 export function drawingPieces(
-  tutorial: Tutorial,
+  tutorial: Draft,
   segments: readonly DrawingSegment[],
+  constructions: readonly Construction[] = [],
 ): InkPiece[] {
   if (!segments.length) return [];
-  const draft = drawingDraft(tutorial, segments);
+  const draft = drawingDraft(tutorial, segments, constructions);
   const checked = check(draft);
   if ([...checked.status.values()].some((s) => !s.ok))
     throw new Error('The drawing could not be evaluated.');
@@ -151,4 +165,164 @@ export function drawingPieces(
     id: segments[i]!.id,
     segment: s.segment,
   }));
+}
+
+const contentOf = (history: DrawingHistory): DrawingContent => ({
+  segments: history.segments,
+  constructions: history.constructions,
+});
+
+export function constructionSpec(operation: Construction): ElementSpec {
+  switch (operation.kind) {
+    case 'line':
+      return { line: { through: [operation.from, operation.to] } };
+    case 'circle':
+      return {
+        circle: { centre: operation.centre, through: operation.through },
+      };
+    case 'intersection':
+      return {
+        point: {
+          meet: [operation.first, operation.second],
+          ...(operation.angle === null
+            ? {}
+            : { pick: { angle: operation.angle } }),
+        },
+      };
+  }
+}
+
+export function constructionText(operation: Construction): string {
+  switch (operation.kind) {
+    case 'line':
+      return `Line ${operation.name} through ${operation.from} and ${operation.to}.`;
+    case 'circle':
+      return `Circle ${operation.name} about ${operation.centre} through ${operation.through}.`;
+    case 'intersection':
+      return `Point ${operation.name} where ${operation.first} and ${operation.second} meet${operation.angle === null ? '' : `, chosen toward ${operation.angle}° about O`}.`;
+  }
+}
+
+export function constructionDraft(
+  tutorial: Draft,
+  operations: readonly Construction[],
+): Draft {
+  // copyUpTo only reads construction metadata and steps; an unfinished draft is sufficient.
+  let draft: Draft =
+    tutorial.id === 'agent-blank'
+      ? {
+          ...tutorial,
+          id: 'my-compass-construction',
+          steps: [...tutorial.steps],
+        }
+      : copyUpTo(tutorial as Tutorial, tutorial.steps.at(-1)?.id ?? 0);
+  for (const operation of operations)
+    draft = addStep(draft, {
+      text: constructionText(operation),
+      create: { [operation.name]: constructionSpec(operation) },
+    });
+  return draft;
+}
+
+export function constructionScene(
+  tutorial: Draft,
+  operations: readonly Construction[],
+): Scene {
+  const result = check(constructionDraft(tutorial, operations));
+  const failed = [...result.status.values()].find((s) => !s.ok);
+  if (failed && !failed.ok) throw new Error(failed.reason);
+  for (const element of result.scene.elements.values()) {
+    const geometry = element.geometry;
+    const values =
+      geometry.kind === 'point'
+        ? [geometry.at.x, geometry.at.y]
+        : geometry.kind === 'circle'
+          ? [
+              geometry.circle.centre.x,
+              geometry.circle.centre.y,
+              geometry.circle.radius,
+            ]
+          : geometry.kind === 'line'
+            ? [
+                geometry.line.point.x,
+                geometry.line.point.y,
+                geometry.line.dir.x,
+                geometry.line.dir.y,
+              ]
+            : [];
+    if (values.some((value) => !Number.isFinite(value)))
+      throw new Error('The construction produced invalid geometry.');
+  }
+  return result.scene;
+}
+
+/** Validate references, names and the entire dependent drawing before committing anything. */
+export function construct(
+  history: DrawingHistory,
+  request: Pick<Construct, 'add' | 'remove'>,
+  tutorial: Draft,
+): DrawingHistory {
+  const edit = ConstructShape.pick({ add: true, remove: true }).parse({
+    add: request.add,
+    remove: request.remove,
+  });
+  if (!edit.add.length && !edit.remove.length)
+    throw new Error('The edit contains no changes.');
+  const remove = new Set(edit.remove);
+  if (
+    remove.size !== edit.remove.length ||
+    edit.remove.some(
+      (name) => !history.constructions.some((op) => op.name === name),
+    )
+  )
+    throw new Error(
+      'Remove only construction elements added in this workspace.',
+    );
+  const operations = history.constructions.filter((op) => !remove.has(op.name));
+  if (operations.length + edit.add.length > 128)
+    throw new Error('This workspace holds at most 128 construction elements.');
+  // Include every original name, even if off screen, to prevent overwrites.
+  const names = new Set(
+    constructionScene(tutorial, operations).elements.keys(),
+  );
+  for (const operation of edit.add) {
+    if (names.has(operation.name))
+      throw new Error(
+        `The name “${operation.name}” already exists. Choose a new name.`,
+      );
+    // An existing side may have the same generated carrier name on export.
+    if (history.segments.some((side) => side.id === operation.name))
+      throw new Error(
+        'That name belongs to an existing side. Choose another name.',
+      );
+    names.add(operation.name);
+    operations.push(operation);
+  }
+  const draft = drawingDraft(tutorial, history.segments, operations);
+  const parsed = DraftShape.safeParse(draft);
+  if (!parsed.success)
+    throw new Error(
+      'Use valid named references to earlier construction elements.',
+    );
+  const scene = constructionScene(tutorial, operations);
+  // This also rejects removing a point still used by a finite side.
+  if (draft.ink) inkStrokes(sceneForDrawing(draft), draft as Tutorial);
+  if (scene.elements.size > 5000)
+    throw new Error(
+      'The construction has too many elements for this workspace.',
+    );
+  return {
+    ...history,
+    revision: history.revision + 1,
+    constructions: operations,
+    past: [...history.past.slice(-49), contentOf(history)],
+    future: [],
+  };
+}
+
+function sceneForDrawing(draft: Draft): Scene {
+  const result = check(draft);
+  const failed = [...result.status.values()].find((s) => !s.ok);
+  if (failed && !failed.ok) throw new Error(failed.reason);
+  return result.scene;
 }

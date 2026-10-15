@@ -1816,6 +1816,14 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'AI agent: new ruler-and-compass geometry is working',
+      text: 'On codex/ai-agent-construction, the assistant can start from just O and A, add named lines and circles, and mark chosen intersections. In the live check it created C0, C1, Top, Bottom and Axis, then used the new points for a finite side. Each edit sent a fresh image before the model continued. Undo removed the side first and the construction batch second; Redo restored both. Saving preserves the complete editable draft. All geometry tests, workspace tests, lint, TypeScript checks and 36 assistant browser checks passed. The picture shows the actual live result with the account hidden.',
+      link: {
+        label: 'See the live compass construction',
+        href: '/__review/renders/agent-construction/live-construction.png',
+      },
+    },
+    {
       title: 'AI agent: editable square with Undo is working',
       text: 'On codex/ai-agent-drawing, ChatGPT can join existing named points into finite sides and remove sides it added. A live request drew jW–jN–jE–jS as four sides in one edit, received the updated image and completed its reply. One Undo removed all four sides; Redo restored them. Change endpoints or remove a side below the board. Keep in My patterns saves an editable copy. New points, compass circles and coloring remain later work. The picture is the actual live result with the account label hidden.',
       link: {
@@ -2111,14 +2119,14 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI agent: try drawing and editing the square',
-    text: 'Open the assistant, choose Eight-fold star and octagon, press Use square request, then Send current view. Four dark sides should appear. Undo drawing edit removes the entire square; Redo restores it. Endpoint selectors edit individual sides, and Keep in My patterns saves them. Automated checks and the live ChatGPT drawing check passed.',
+    title: 'AI agent: try the compass construction',
+    text: 'Open the assistant and choose Start from O and A. Press Use compass request, then Send current view. It should draw two circles, mark Top and Bottom, and draw their ruler line. You can then ask for a finite side between the new points. Undo and Redo cover each edit; Keep in My patterns preserves the full construction. The connected ChatGPT request and automated checks passed.',
     link: { label: 'Open the setup guide', href: '/#/notes/agent-setup' },
   },
   next: [
     {
-      title: 'AI agent: new points and compass circles, then full patterns',
-      text: 'The first revisioned drawing command now works between existing named points. Extend it to ruler and compass steps that create new geometry, with evaluation and repair. Then connect complete original constructions, inking, repeat, coloring and coordinated saving, and extend the assistant into the regular app screens.',
+      title: 'AI agent: closed motifs, repeating tiles and coloring',
+      text: 'Ruler lines, compass circles, intersection points and finite ink now work together from a blank start. Next, let the assistant turn a closed motif into a repeating tile, validate its pieces and seams, and color the result. Extend app commands and the visual assistant into regular screens as those capabilities become available.',
       link: { label: 'Read the remaining phases', href: '/#/notes/agent' },
     },
     {

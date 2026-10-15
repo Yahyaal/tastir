@@ -1,6 +1,6 @@
 # Try the local drawing assistant
 
-The current implementation lives on `codex/ai-agent-drawing`, following the connection workspace on `codex/ai-agent-phase-0`. It connects a local companion to ChatGPT, sends an image of a real Tastir construction, highlights named objects, and draws editable straight sides between existing points. The owner connected ChatGPT, and a live image, highlighting and final-reply check passed on 15 October 2026.
+The current implementation lives on `codex/ai-agent-construction`, following the connection and editable-side milestones. It connects a local companion to ChatGPT, sends an image of a real Tastir construction, highlights named objects, constructs ruler lines, compass circles and intersection points, and draws editable straight sides between named points. The owner connected ChatGPT, and a live image, highlighting and final-reply check passed on 15 October 2026.
 
 ## Start it
 
@@ -30,7 +30,17 @@ After a model edit, the browser waits for the drawing to render, captures a fres
 
 Keep in My patterns saves an editable copy in this browser, using Tastir's existing construction steps and ink paths. Open in editor opens that copy with its source credit. Keep again updates the same copy. Workspace edits and Undo history last only while this construction stays open, so keep changes before leaving or refreshing. The workspace allows 128 sides, 32 additions per edit and the last 50 edits in Undo history.
 
-The assistant still cannot create new points or circles, color patterns, operate other screens, capture the whole tab, or retain a conversation between separate requests. Those remain in the [implementation plan](AI-AGENT-PLAN.md). Drawing can currently use only named points in the current observation; use Fit if a needed point is outside the view.
+The assistant still cannot color patterns, choose a repeating tile, operate other screens, capture the whole tab, or retain a conversation between separate requests. Those remain in the [implementation plan](AI-AGENT-PLAN.md). Drawing can currently use only named points in the current observation; use Fit if a needed point is outside the view.
+
+## Construct from O and A
+
+Choose Start from O and A in Construction, then Use compass request and Send current view. This starts with only the given centre O and the unit point A. The sample asks for circle C0 about O through A, circle C1 about A through O, their upper intersection Top and lower intersection Bottom, and the ruler line Axis through those new points.
+
+You can append “Finally add one finite side from Top to Bottom” to exercise construction and inking in one request, or ask for that side afterward. The model receives a new image and named geometry after each edit, so later calls can reference the new points. Lines extend across the drawing; finite sides are the darker ink between named endpoints. Fit frames the current construction if it grows outside the view.
+
+Construction batches contain up to 16 ordered operations and the workspace holds up to 128 added construction elements. A line references two named points; a circle references its centre and a point on its circumference. A new point references two earlier curves. For multiple crossings, the model must give an explicit angle rule about O; otherwise an ambiguous crossing rejects the whole batch. New geometry has unique names and never uses raw coordinates. Missing references, coincident endpoints, zero-radius circles and impossible intersections also reject the whole batch.
+
+The New construction list describes each new element. Select finds it in the object selector; Remove deletes it only if the remaining construction and ink still work. Undo and Redo cover both construction and sides in order. A construction-only draft can be kept before drawing any finite sides. Keep in My patterns preserves every construction dependency; a blank-start draft has no copied-library credit. Workspace changes still need keeping before leaving or refreshing.
 
 ## Accounts and local storage
 
@@ -72,3 +82,12 @@ On `codex/ai-agent-drawing`, a live GPT-6.1-Sol request drew jW–jN–jE–jS w
 The four geometry tests check equal side lengths, right angles, closure, atomic rejection, manual replacement, Undo/Redo revisions and a valid editor draft with four engine ink strokes. The local runtime's 26 tests cover tool continuation with the required fresh same-document observation. The 24 assistant browser checks passed across desktop, tablet and phone, including manual editing, saving and reopening an editor copy, stale observations and Stop. The workspace pnpm test, pnpm lint and pnpm typecheck passed.
 
 Responsive views use simulated model responses: [phone](/__review/renders/agent-drawing/phone-simulated.png), [tablet](/__review/renders/agent-drawing/tablet-simulated.png), and [dark desktop](/__review/renders/agent-drawing/desktop-dark-simulated.png). They are layout checks; the separately labeled live result above proves the connected-account drawing round trip.
+
+
+## Ruler and compass verification on 15 October 2026
+
+On `codex/ai-agent-construction`, a live GPT-6.1-Sol request started from O and A, created the two circles, Top, Bottom and Axis in one construct call, then used Top and Bottom in an edit_segments call. Both successful edits sent fresh images and observations before the next model response. The final explanation completed with five construction elements and one finite side visible. The first Undo removed only the side; the second removed the whole construction batch. Two Redos restored both. [Actual live result, account masked](/__review/renders/agent-construction/live-construction.png).
+
+All eight drawing and construction geometry tests passed, including exact intersection locations, atomic rejection, named dependencies, saved drafts and history. The runtime now tests fresh-observation requirements for both construction and finite-side tools. All 36 assistant browser checks passed across desktop, tablet and phone; they cover a construction-to-ink continuation, saved editor copies, blocked dependent deletion, ambiguous crossings, stale observations and Stop. The workspace pnpm test, pnpm lint and pnpm typecheck passed.
+
+Responsive screenshots use simulated responses: [phone](/__review/renders/agent-construction/phone-simulated.png), [tablet](/__review/renders/agent-construction/tablet-simulated.png), and [dark desktop](/__review/renders/agent-construction/dark-desktop-simulated.png). They showed no horizontal overflow or page errors. These layout checks are separate from the live request above.
