@@ -702,8 +702,89 @@ a.button.primary:hover {
   min-height: 0;
 }
 
-.workspace > .journey {
+.workspace > .journey-row {
   grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  min-width: 0;
+  border-top: 1px solid var(--theme-border);
+}
+
+.journey-row > .journey {
+  flex: 1 1 auto;
+  min-width: 0;
+  border-top: 0;
+}
+
+/* The end of a lesson, where Next was: Save and Share. What they say
+   floats above them for a moment. */
+.end-actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 4px 6px;
+}
+
+.end-actions .design-tools,
+.end-actions .share-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.end-actions .design-buttons,
+.end-actions .design-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.end-actions .design-buttons > span {
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: var(--theme-text-secondary);
+}
+
+.end-actions p.hint,
+.end-actions .share-link input {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  width: max-content;
+  max-width: 320px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  background: var(--theme-bg-surface);
+  box-shadow: 0 6px 18px rgb(0 0 0 / calc(14% * var(--shadow-k)));
+  z-index: 8;
+}
+
+.end-actions .share-link input {
+  width: 320px;
+}
+
+/* Save looks like the Next it replaces. */
+.player .end-actions button {
+  padding: 8px 16px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.player .end-actions button.primary {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+}
+
+.player .end-actions button.primary:hover:not(:disabled) {
+  background: var(--saffron-hover);
 }
 
 .plate-area {
@@ -3225,9 +3306,12 @@ main.stage .drawing:not(.wall) {
   }
 
   /* The timeline becomes a strip above the plate. */
-  .workspace > .journey {
+  .workspace > .journey-row {
     order: -1;
     border-top: 0;
+  }
+
+  .workspace > .journey-row > .journey {
     padding-top: 0;
   }
 
@@ -4804,18 +4888,6 @@ svg.tiles {
   .continue-go {
     padding: 8px 14px;
   }
-}
-
-/* The end of a lesson: the pattern is ready, Save and Share first. */
-.side-panel section.ready {
-  padding: 16px;
-  border: 1px solid color-mix(in srgb, var(--malachite) 45%, transparent);
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--malachite) 8%, var(--theme-bg-surface));
-}
-
-.side-panel section.ready h2 {
-  color: var(--malachite);
 }
 
 /* A ring pointed at in the colour panel: its pieces stay bright on the

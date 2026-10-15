@@ -115,22 +115,28 @@ const prefersReducedMotion = () =>
   typeof window.matchMedia === 'function' &&
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/** Whether the screen is narrow enough that the panel goes below the wall
- * (styles.css, max-width 1100px). */
-function useNarrow(): boolean {
-  const query = '(max-width: 1100px)';
+/** Whether the screen matches a media query, following it as it changes. */
+function useMedia(query: string): boolean {
   const read = () =>
     typeof window.matchMedia === 'function' && window.matchMedia(query).matches;
-  const [narrow, setNarrow] = useState(read);
+  const [matches, setMatches] = useState(read);
   useEffect(() => {
     if (typeof window.matchMedia !== 'function') return;
     const list = window.matchMedia(query);
-    const onChange = () => setNarrow(list.matches);
+    const onChange = () => setMatches(list.matches);
     list.addEventListener?.('change', onChange);
     return () => list.removeEventListener?.('change', onChange);
-  }, []);
-  return narrow;
+  }, [query]);
+  return matches;
 }
+
+/** Whether the screen is narrow enough that the panel goes below the wall
+ * (styles.css, max-width 1100px). */
+const useNarrow = () => useMedia('(max-width: 1100px)');
+
+/** Whether Back and Next are the fixed bar of a phone (styles.css,
+ * max-width 760px). */
+const usePhone = () => useMedia('(max-width: 760px)');
 
 /** The colours a learner gave their own pattern when drawing along. */
 function keptColoring(address: string) {
@@ -361,6 +367,7 @@ export function Player({
   // At the color stage the design sits at the top of the panel, or, where
   // the panel goes below the wall, under the wall so it is in view.
   const narrow = useNarrow();
+  const phone = usePhone();
   useEffect(() => {
     if (!changed) return;
     // Reloading or closing the tab: the browser's own question.
@@ -380,6 +387,12 @@ export function Player({
         the link before you leave.
       </p>
     );
+  const keepSaved = (saved: Design) => {
+    setDesign(saved);
+    forgetDraft(address);
+    // Its own address, so a reload or a bookmark opens the design.
+    window.history.replaceState(null, '', `#/${address}/design/${saved.id}`);
+  };
   const saveDesign = sharedView ? (
     <p className="hint">
       Shared with you. Keep a copy (at the top) to save it in this browser.
@@ -391,16 +404,7 @@ export function Player({
       lost={inking.lost}
       changed={changed}
       fields={designFields}
-      onSaved={(saved) => {
-        setDesign(saved);
-        forgetDraft(address);
-        // Its own address, so a reload or a bookmark opens the design.
-        window.history.replaceState(
-          null,
-          '',
-          `#/${address}/design/${saved.id}`,
-        );
-      }}
+      onSaved={keepSaved}
     />
   );
   const [paper, setPaper] = useState<Paper>('A4');
@@ -778,6 +782,30 @@ export function Player({
   // At the end: the pattern is ready, and Save and Share come first.
   const ready = index === last;
   const readyRef = useRef<HTMLElement>(null);
+  // The same, in the step bar at the end: buttons with tooltips, and
+  // what they say shown briefly above them.
+  const endSave = sharedView ? null : (
+    <SaveDesign
+      compact
+      title={tutorial.title}
+      design={design}
+      lost={inking.lost}
+      changed={changed}
+      fields={designFields}
+      onSaved={keepSaved}
+    />
+  );
+  const endShare = sharedView ? null : (
+    <ShareLink
+      compact
+      address={address}
+      name={design?.name ?? tutorial.title}
+      fields={() => {
+        const { tutorial: _t, ...rest } = designFields();
+        return rest;
+      }}
+    />
+  );
   const shareLink = sharedView ? null : (
     <ShareLink
       address={address}
@@ -1136,7 +1164,9 @@ export function Player({
                   onClick={
                     ready
                       ? () => {
-                          const card = readyRef.current;
+                          const card =
+                            readyRef.current ??
+                            document.querySelector<HTMLElement>('.end-actions');
                           card?.scrollIntoView?.({ block: 'nearest' });
                           card
                             ?.querySelector<HTMLElement>('button, input')
@@ -1153,23 +1183,18 @@ export function Player({
           </footer>
           {colorStage ? (
             <aside className="side-panel" aria-label="The wall">
-              {ready ? (
-                <section
-                  ref={readyRef}
-                  className="ready"
-                  aria-labelledby="ready-title"
-                >
-                  <h2 id="ready-title">Your pattern is ready</h2>
-                  <p className="hint">
-                    Save it to find it on the home page under My designs, or
-                    share a link to it. You can still change its colours below.
-                  </p>
+              {/* At the end on a computer or tablet, Save and Share are in the step
+                  bar, where Next was; only a note about changes stays here. */}
+              {ready && !phone ? draftNote : null}
+              {stage.kind === 'color' ? colorsSection : null}
+              {ready && phone ? (
+                <section ref={readyRef}>
+                  <h2>My design</h2>
                   {saveDesign}
                   {draftNote}
                   {shareLink}
                 </section>
               ) : null}
-              {stage.kind === 'color' ? colorsSection : null}
               {narrow || ready ? null : (
                 <section>
                   <h2>My design</h2>
@@ -1294,7 +1319,15 @@ export function Player({
             </aside>
           ) : null}
         </div>
-        <Journey stages={stages} index={index} onJump={jump} />
+        <div className="journey-row">
+          <Journey stages={stages} index={index} onJump={jump} />
+          {colorStage && ready && !phone ? (
+            <div className="end-actions" role="group" aria-label="Your design">
+              {endSave}
+              {endShare}
+            </div>
+          ) : null}
+        </div>
       </div>
     </div>
   );

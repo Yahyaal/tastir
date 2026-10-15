@@ -14,7 +14,11 @@ export function ShareLink({
   address,
   fields,
   name,
+  compact = false,
 }: {
+  /** In the step bar: the explanation is a tooltip, and “Copied” shows
+   * for a few seconds (the link itself only when it could not be copied). */
+  compact?: boolean;
   /** Where the tutorial lives: a library id, or mine/<id>. */
   address: string;
   /** The design as the player has it now. */
@@ -23,6 +27,15 @@ export function ShareLink({
 }) {
   const [link, setLink] = useState<string>();
   const [said, setSaid] = useState<string>();
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (!compact || !copied) return;
+    const t = setTimeout(() => {
+      setSaid(undefined);
+      setCopied(false);
+    }, 5000);
+    return () => clearTimeout(t);
+  }, [compact, copied]);
   const make = async () => {
     const own = /^mine\/(.+)$/.exec(address)?.[1];
     const pattern = own ? getPattern(own) : undefined;
@@ -39,6 +52,7 @@ export function ShareLink({
       design: { name, ...(inked ? { inked } : {}), ...rest },
     };
     setLink(undefined);
+    setCopied(false);
     let code: string;
     try {
       code = await encodeShared(shared);
@@ -55,13 +69,19 @@ export function ShareLink({
     try {
       await navigator.clipboard.writeText(url);
       setSaid('Copied. Anyone who opens it sees this wall, in any browser.');
+      setCopied(true);
     } catch {
       setSaid('Copy the link below; anyone who opens it sees this wall.');
     }
   };
   return (
     <div className="share-link">
-      <button type="button" className="quiet" onClick={() => void make()}>
+      <button
+        type="button"
+        className={compact ? 'secondary' : 'quiet'}
+        title={compact ? 'Anyone with the link sees this design' : undefined}
+        onClick={() => void make()}
+      >
         Copy a share link
       </button>
       {said ? (
@@ -69,7 +89,7 @@ export function ShareLink({
           {said}
         </p>
       ) : null}
-      {link ? (
+      {link && !(compact && copied) ? (
         <input
           type="text"
           readOnly

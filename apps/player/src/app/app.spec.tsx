@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import bouInania from '@tutorials/bou-inania-rosette.json';
 import { parseTutorial } from '@tastir/schema';
@@ -119,15 +119,22 @@ describe('the player', () => {
       'Repeat',
       'Color',
     ]);
-    // At the end the pattern is ready: Next becomes the way to Save, and
-    // Save and Share come first in the panel.
+    // At the end the pattern is ready: Save and Share take Next's place
+    // in the step bar, each with a tooltip.
     expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
-    const ready = screen.getByRole('region', {
-      name: 'Your pattern is ready',
-    });
-    expect(ready.querySelector('button')?.textContent).toMatch(
-      /Save as my design/,
-    );
+    const ready = screen.getByRole('group', { name: 'Your design' });
+    expect(
+      within(ready)
+        .getAllByRole('button')
+        .map((b) => [b.textContent, b.title]),
+    ).toEqual([
+      [
+        'Save as my design',
+        'Keeps your colours in this browser, under Your work',
+      ],
+      ['Copy a share link', 'Anyone with the link sees this design'],
+    ]);
+    expect(screen.queryByText(/Your pattern is ready/)).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Save my design' }));
     expect(document.activeElement).toBe(ready.querySelector('button'));
     expect(

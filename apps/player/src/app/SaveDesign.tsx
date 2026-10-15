@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   addDesign,
   NAME_LIMIT,
@@ -22,6 +22,7 @@ export function SaveDesign({
   onSaved,
   lost = false,
   changed = false,
+  compact = false,
 }: {
   /** The tutorial's title, the name a new design starts with. */
   title: string;
@@ -34,17 +35,25 @@ export function SaveDesign({
   lost?: boolean;
   /** Whether the design has changes that are not saved yet. */
   changed?: boolean;
+  /** In the step bar: the explanation is a tooltip, and “Saved” shows for
+   * a few seconds. */
+  compact?: boolean;
 }) {
   const [naming, setNaming] = useState(false);
   const [name, setName] = useState('');
   const [said, setSaid] = useState<{ text: string; refused?: boolean }>();
+  useEffect(() => {
+    if (!compact || !said || said.refused) return;
+    const t = setTimeout(() => setSaid(undefined), 5000);
+    return () => clearTimeout(t);
+  }, [compact, said]);
 
   const keep = (saved: Design | undefined) => {
     if (!saved) return setSaid({ text: REFUSED, refused: true });
     onSaved(saved);
     setNaming(false);
     setSaid({
-      text: `Saved as “${saved.name}”. It is on the home page, under My designs.`,
+      text: `Saved as “${saved.name}”. It is on the home page, under Your work.`,
     });
   };
   const ask = () => {
@@ -120,10 +129,21 @@ export function SaveDesign({
         </div>
       ) : (
         <div className="design-buttons">
-          <button type="button" className="secondary" onClick={ask}>
+          <button
+            type="button"
+            className={compact ? 'primary' : 'secondary'}
+            title={
+              compact
+                ? 'Keeps your colours in this browser, under Your work'
+                : undefined
+            }
+            onClick={ask}
+          >
             Save as my design
           </button>
-          <span>Keeps your inking and colors in this browser.</span>
+          {compact ? null : (
+            <span>Keeps your inking and colors in this browser.</span>
+          )}
         </div>
       )}
       {design && changed && !naming ? (
