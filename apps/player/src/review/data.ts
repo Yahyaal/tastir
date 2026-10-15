@@ -1812,9 +1812,19 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '14 October 2026',
+  updated: '15 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'AI agent: detailed implementation plan',
+      text: 'The plan covers ChatGPT sign-in for a local companion, seeing the current drawing and interface, pointing at shapes and controls, original editable constructions, inking, repeats, coloring and saving. It maps the existing engine and editor to proposed tools, with revisions, undo, visual checks and a phased acceptance suite. The plan is written; the agent itself is not built yet.',
+      link: { label: 'Read the AI agent plan', href: '/#/notes/agent' },
+    },
+    {
+      title: 'Codex’s review: all ten items are done',
+      text: 'Continue offers a drawing left partway and opens where it was left. The library has Clear all beside its filters, and an empty result names what was chosen. The earlier review finished with 151 browser tests and 664 unit tests passing.',
+      link: { label: 'Before and after', href: '#redesign' },
+    },
     {
       title: 'Storage recovery: the warning points to a share link',
       text: 'When browser storage is blocked or full, the warning now says to use “Copy a share link” and keep the link before leaving. A named save uses the same storage, so it cannot solve that failure. Desktop and phone browser checks confirmed that the share link restores the palette, painted ring, style and band width in a fresh browser.',
@@ -2080,11 +2090,16 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Codex’s review: all ten items are done',
-    text: 'The last two: the home page’s Continue now also offers a drawing you left partway (it says Drawing along or Watching, and opens the board or the lesson where you were), and the library has Clear all beside the filters, with an empty result that names what was chosen. All 151 browser tests and 664 unit tests pass.',
-    link: { label: 'Before and after', href: '#redesign' },
+    title: 'AI agent plan ready to read',
+    text: 'The first proposed task proves that your ChatGPT account can complete a request with a current drawing image and a tool call that points at the selected object. The complete local release then adds original construction, inking, repeats, coloring, visual repair and saving.',
+    link: { label: 'Read the detailed plan', href: '/#/notes/agent' },
   },
   next: [
+    {
+      title: 'AI agent: prove the local connection',
+      text: 'The proposed first implementation task checks ChatGPT sign-in, model access, a current drawing image and one completed highlighting tool call on the owner’s account. It is the first phase of the plan, before building original pattern generation and coloring.',
+      link: { label: 'Read Phase 0', href: '/#/notes/agent' },
+    },
     {
       title: 'Ink in under a second',
       text: 'Pressing Ink in draw along on Bou Inania now takes about a third of the time it did, but still around three seconds on a slow machine. The goal is under one second on both Bou Inania tutorials.',
