@@ -282,14 +282,10 @@ function ProgressCard({ work, entry }: { work: InProgress; entry?: Entry }) {
           <div className="thumbnail waiting" />
         )}
         <h4>{title}</h4>
-        <p className={`work-kind act-${work.mode}`}>
-          <ActionIcon action={work.mode} />
-          {draw ? 'Drawing along' : 'Watching'}
-          {work.label ? ` · ${work.label}` : ''}
-        </p>
+        {work.label ? <p className="meta">{work.label}</p> : null}
         <span className={`continue-go act-${work.mode}`}>
           <ActionIcon action={work.mode} />
-          Continue
+          {draw ? 'Continue drawing' : 'Continue watching'}
         </span>
       </a>
     </li>

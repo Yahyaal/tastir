@@ -5196,21 +5196,6 @@ svg.tiles {
   color: var(--theme-text-muted);
 }
 
-.work-kind {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-}
-
-.card .work-kind.act-watch {
-  color: var(--act-watch);
-}
-
-.card .work-kind.act-draw {
-  color: var(--act-draw);
-}
-
 .work-card .continue-go {
   align-self: flex-start;
   margin-top: auto;

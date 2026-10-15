@@ -271,10 +271,12 @@ describe('the way in', () => {
       '#/eight-fold-star-and-cross/watch',
     ]);
     expect(
-      within(links[0] as HTMLElement).getByText(/Drawing along · Step 2 of 6/),
+      within(links[0] as HTMLElement).getByText('Step 2 of 6'),
     ).toBeTruthy();
+    expect(links[0]?.textContent).toContain('Continue drawing');
+    expect(links[1]?.textContent).toContain('Continue watching');
     expect(
-      within(links[1] as HTMLElement).getByText(/Watching · Step 3 of 6/),
+      within(links[1] as HTMLElement).getByText('Step 3 of 6'),
     ).toBeTruthy();
     // Something in progress: Your work comes before the welcome.
     const hero = document.querySelector('.hero') as HTMLElement;
