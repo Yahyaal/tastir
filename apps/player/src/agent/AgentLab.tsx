@@ -6,6 +6,8 @@ import {
   type Highlight,
   type ModelChoice,
   type Snapshot,
+  type EditSegments,
+  type ToolResult,
 } from '@tastir/agent-protocol';
 import type { Geometry } from '@tastir/engine';
 import { EditorDrawing, frameOf } from '../editor/EditorDrawing';
@@ -17,6 +19,15 @@ import { useCamera } from '../app/useCamera';
 import { useModel } from '../app/workerClient';
 import type { Model } from '../app/model';
 import { ThemeSwitch } from '../app/theme';
+import { addPattern, savePattern } from '../editor/patterns';
+import {
+  drawingDraft,
+  drawingPieces,
+  editSegments,
+  emptyDrawing,
+  travelDrawing,
+  type DrawingHistory,
+} from './drawing';
 import { AgentClient } from './client';
 import { captureBoard } from './capture';
 import { geometryVisible, visibleBox } from './visibility';
@@ -38,9 +49,9 @@ export function AgentLab() {
         <ThemeSwitch />
       </header>
       <p className="agent-intro">
-        First connection test: let the assistant see this construction, answer a
-        question, and point at an object. Drawing new patterns and coloring come
-        next.
+        Ask about this construction, point at an object, or draw straight sides
+        between named points. Edit the sides below, undo an edit, or keep your
+        drawing in My patterns. New points and coloring come later.
       </p>
       <label className="agent-pattern">
         Construction{' '}
@@ -105,7 +116,22 @@ function Workspace({ model }: { model: Model }) {
   const [activity, setActivity] = useState('');
   const [error, setError] = useState('');
   const [sentImage, setSentImage] = useState('');
-  const [proof, setProof] = useState(false);
+  const [proof, setProof] = useState<false | 'point' | 'draw'>(false);
+  const [drawing, setDrawing] = useState(emptyDrawing);
+  const drawingRef = useRef(drawing);
+  const [saved, setSaved] = useState<{ id: string; revision: number }>();
+  const publish = (next: DrawingHistory) => {
+    drawingRef.current = next;
+    setDrawing(next);
+  };
+  const pieces = useMemo(
+    () => drawingPieces(model.tutorial, drawing.segments),
+    [model, drawing.segments],
+  );
+  const chosen = useMemo(
+    () => new Set(pieces.map((piece) => piece.id)),
+    [pieces],
+  );
   const [profileId, setProfileId] = useState('');
   const svgRef = useRef<SVGSVGElement>(null);
   const frame = useMemo(() => frameOf(model.scene), [model]);
@@ -129,7 +155,7 @@ function Workspace({ model }: { model: Model }) {
 
   const revision = () =>
     JSON.stringify([
-      documentRevision,
+      `${documentRevision}:${drawingRef.current.revision}`,
       viewBox(currentView.current.view),
       currentView.current.selected,
       svgRef.current?.getBoundingClientRect().width,
@@ -139,6 +165,45 @@ function Workspace({ model }: { model: Model }) {
   useLayoutEffect(() => {
     currentView.current = { view: camera.view, selected };
   });
+
+  const snapshotOfView = async (): Promise<Snapshot> => {
+    const svg = svgRef.current;
+    if (!svg) throw new Error('The drawing is not ready. Try again.');
+    const capturedRevision = revision();
+    const image = await captureBoard(svg);
+    if (revision() !== capturedRevision)
+      throw new Error(
+        'The drawing view changed during capture. Send it again.',
+      );
+    const bounds = svg.getBoundingClientRect();
+    const box = visibleBox(
+      currentView.current.view,
+      bounds.width,
+      bounds.height,
+    );
+    const visible = targets.filter((target) =>
+      geometryVisible(model.scene.elements.get(target.id)!.geometry, box),
+    );
+    if (!visible.length)
+      throw new Error(
+        'No named objects are visible here. Use Fit, then send the view again.',
+      );
+    return SnapshotShape.parse({
+      id: crypto.randomUUID(),
+      documentId: model.tutorial.id,
+      documentRevision: `${documentRevision}:${drawingRef.current.revision}`,
+      viewRevision: capturedRevision,
+      title: model.tutorial.title,
+      selected: visible.some(
+        (target) => target.id === currentView.current.selected,
+      )
+        ? currentView.current.selected
+        : null,
+      targets: visible,
+      segments: drawingRef.current.segments,
+      image,
+    });
+  };
 
   const refreshStatus = async () => {
     const next = await client.status();
@@ -278,41 +343,9 @@ function Workspace({ model }: { model: Model }) {
       await new Promise<void>((resolve) =>
         requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
       );
-      const capturedRevision = revision();
-      const image = await captureBoard(svgRef.current);
+      let snapshot = await snapshotOfView();
       if (!isCurrent()) return;
-      if (revision() !== capturedRevision)
-        throw new Error(
-          'The drawing view changed during capture. Send it again.',
-        );
-      const bounds = svgRef.current.getBoundingClientRect();
-      const box = visibleBox(
-        currentView.current.view,
-        bounds.width,
-        bounds.height,
-      );
-      const visible = targets.filter((target) =>
-        geometryVisible(model.scene.elements.get(target.id)!.geometry, box),
-      );
-      if (!visible.length)
-        throw new Error(
-          'No named objects are visible here. Use Fit, then send the view again.',
-        );
-      const snapshot: Snapshot = SnapshotShape.parse({
-        id: crypto.randomUUID(),
-        documentId: model.tutorial.id,
-        documentRevision,
-        viewRevision: capturedRevision,
-        title: model.tutorial.title,
-        selected: visible.some(
-          (target) => target.id === currentView.current.selected,
-        )
-          ? currentView.current.selected
-          : null,
-        targets: visible,
-        image,
-      });
-      setSentImage(image);
+      setSentImage(snapshot.image);
       setActivity('Asking with your ChatGPT plan…');
       let reply = await client.start(
         modelId,
@@ -321,6 +354,7 @@ function Workspace({ model }: { model: Model }) {
         abort.signal,
       );
       let pointed = false;
+      let drawn = false;
       const text: string[] = [];
       while (isCurrent()) {
         if (reply.text) text.push(reply.text);
@@ -328,40 +362,104 @@ function Workspace({ model }: { model: Model }) {
           setAnswer(
             text.join('\n\n') || 'The request completed without a text answer.',
           );
-          setProof(pointed);
+          setProof(drawn ? 'draw' : pointed ? 'point' : false);
           break;
         }
-        const results = reply.calls.map((call) => {
-          const result =
-            reply.calls.length > 1
-              ? {
-                  callId: call.id,
-                  ok: false,
-                  message:
-                    'This connection test can display one highlight at a time. Request just one target.',
-                }
-              : checkHighlight(call, snapshot, revision());
-          if (result.ok) {
-            setMark(call.arguments);
-            pointed = true;
+        let edited = false;
+        const results: ToolResult[] = reply.calls.map((call) => {
+          if (reply.calls.length > 1)
+            return {
+              callId: call.id,
+              ok: false,
+              message:
+                'Use one tool call per response. Put all sides of a shape in one edit_segments call.',
+            };
+          if (call.name === 'highlight_target') {
+            const result = checkHighlight(call, snapshot, revision());
+            if (result.ok) {
+              setMark(call.arguments);
+              pointed = true;
+            }
+            return result;
           }
-          return result;
+          if (
+            call.arguments.snapshotId !== snapshot.id ||
+            call.arguments.documentRevision !== snapshot.documentRevision ||
+            revision() !== snapshot.viewRevision
+          )
+            return {
+              callId: call.id,
+              ok: false,
+              message:
+                'The drawing or view changed. Ask for a new image before editing.',
+            };
+          if (
+            call.arguments.add.some((side) =>
+              [side.from, side.to].some(
+                (id) =>
+                  !snapshot.targets.some(
+                    (t) => t.id === id && t.kind === 'point',
+                  ),
+              ),
+            )
+          )
+            return {
+              callId: call.id,
+              ok: false,
+              message:
+                'Use named points in the current observation as endpoints.',
+            };
+          try {
+            const next = editSegments(
+              drawingRef.current,
+              call.arguments,
+              model.scene,
+            );
+            publish(next);
+            setMark(undefined);
+            pointed = false;
+            edited = true;
+            drawn = true;
+            return {
+              callId: call.id,
+              ok: true,
+              message: `Applied “${call.arguments.label}”: added ${call.arguments.add.length}, removed ${call.arguments.remove.length} segments. The drawing now has ${next.segments.length} segments. Undo restores the entire edit.`,
+            };
+          } catch (e) {
+            return {
+              callId: call.id,
+              ok: false,
+              message: (e as Error).message,
+            };
+          }
         });
-        // Acknowledge only after React has had an opportunity to paint the mark.
         await new Promise<void>((resolve) =>
           requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
         );
         if (!isCurrent()) return;
-        for (const result of results)
-          if (result.ok && revision() !== capturedRevision) {
-            result.ok = false;
-            result.message =
-              'The view changed before the mark was displayed. Send a new view.';
-            pointed = false;
-            setMark(undefined);
-          }
-        setActivity('Checking the highlighting result…');
-        reply = await client.resume(reply.runId, results, abort.signal);
+        if (!edited) {
+          for (const result of results)
+            if (result.ok && revision() !== snapshot.viewRevision) {
+              result.ok = false;
+              result.message =
+                'The view changed before the mark was displayed. Send a new view.';
+              pointed = false;
+              setMark(undefined);
+            }
+        }
+        let fresh: Snapshot | undefined;
+        if (edited) {
+          fresh = await snapshotOfView();
+          if (!isCurrent()) return;
+          snapshot = fresh;
+          setSentImage(fresh.image);
+        }
+        setActivity(
+          edited
+            ? 'Checking the updated drawing…'
+            : 'Checking the highlighting result…',
+        );
+        reply = await client.resume(reply.runId, results, abort.signal, fresh);
       }
     } catch (e) {
       if (isCurrent()) {
@@ -373,6 +471,46 @@ function Workspace({ model }: { model: Model }) {
         setActivity('');
         controller.current = null;
       }
+    }
+  };
+
+  const manualEdit = (edit: Pick<EditSegments, 'add' | 'remove'>) => {
+    stop();
+    setError('');
+    setAnswer('');
+    try {
+      publish(editSegments(drawingRef.current, edit, model.scene));
+      setMark(undefined);
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+  const travel = (direction: 'undo' | 'redo') => {
+    stop();
+    setError('');
+    setAnswer('');
+    setMark(undefined);
+    publish(travelDrawing(drawingRef.current, direction));
+  };
+  const keepDrawing = () => {
+    stop();
+    setError('');
+    try {
+      const draft = drawingDraft(model.tutorial, drawingRef.current.segments);
+      const pattern = saved
+        ? savePattern(saved.id, draft)
+        : addPattern(draft, {
+            tutorial: model.tutorial.id,
+            title: model.tutorial.title,
+            step: model.tutorial.steps.at(-1)?.id ?? 0,
+          });
+      if (!pattern)
+        throw new Error(
+          'This browser could not keep the drawing. Keep this page open and try again.',
+        );
+      setSaved({ id: pattern.id, revision: drawingRef.current.revision });
+    } catch (e) {
+      setError((e as Error).message);
     }
   };
 
@@ -405,6 +543,7 @@ function Workspace({ model }: { model: Model }) {
         <div className="agent-board">
           <EditorDrawing
             scene={model.scene}
+            ink={{ pieces, chosen }}
             targets={[]}
             svgRef={svgRef}
             camera={camera}
@@ -453,9 +592,91 @@ function Workspace({ model }: { model: Model }) {
             Clear assistant highlight
           </button>
         ) : null}
+        <section className="agent-edits" aria-label="Editable sides">
+          <h2>Your drawing · {drawing.segments.length} sides</h2>
+          <div className="agent-actions">
+            <button
+              type="button"
+              disabled={!drawing.past.length}
+              onClick={() => travel('undo')}
+            >
+              Undo drawing edit
+            </button>
+            <button
+              type="button"
+              disabled={!drawing.future.length}
+              onClick={() => travel('redo')}
+            >
+              Redo drawing edit
+            </button>
+            <button
+              type="button"
+              disabled={!drawing.segments.length}
+              onClick={keepDrawing}
+            >
+              Keep in My patterns
+            </button>
+          </div>
+          <p className="agent-caption">
+            {saved?.revision === drawing.revision
+              ? 'Kept in this browser. '
+              : 'Keep your edits before leaving this construction. '}
+            {saved ? <a href={`#/edit/${saved.id}`}>Open in editor</a> : null}
+          </p>
+          {drawing.segments.map((side, index) => (
+            <div className="agent-side" key={side.id}>
+              <span>Side {index + 1}</span>
+              {(['from', 'to'] as const).map((end) => (
+                <select
+                  key={end}
+                  aria-label={`Side ${index + 1} ${end === 'from' ? 'start' : 'end'}`}
+                  value={side[end]}
+                  onChange={(event) =>
+                    manualEdit({
+                      remove: [side.id],
+                      add: [
+                        {
+                          from: side.from,
+                          to: side.to,
+                          [end]: event.target.value,
+                        },
+                      ],
+                    })
+                  }
+                >
+                  {targets
+                    .filter((target) => target.kind === 'point')
+                    .map((target) => (
+                      <option key={target.id} value={target.id}>
+                        {target.id}
+                      </option>
+                    ))}
+                </select>
+              ))}
+              <button
+                type="button"
+                aria-label={`Remove side ${index + 1}`}
+                onClick={() => manualEdit({ remove: [side.id], add: [] })}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+        </section>
       </section>
       <aside className="agent-panel" aria-label="Assistant">
         <h2>Assistant</h2>
+        {['jW', 'jN', 'jE', 'jS'].every((id) =>
+          model.scene.elements.has(id),
+        ) ? (
+          <button
+            type="button"
+            onClick={() => setPrompt('Draw the square jW, jN, jE, jS.')}
+            disabled={!!activity}
+          >
+            Use square request
+          </button>
+        ) : null}
         <p>
           {connection?.connected
             ? connection.sharing
@@ -589,7 +810,9 @@ function Workspace({ model }: { model: Model }) {
         <p className="agent-activity" role="status">
           {activity ||
             (proof
-              ? 'Live check completed: image sent, highlight acknowledged, final response completed.'
+              ? proof === 'draw'
+                ? 'Drawing updated: edits displayed, current image sent, final response completed.'
+                : 'Live check completed: image sent, highlight acknowledged, final response completed.'
               : 'Ready for a question about this board.')}
         </p>
         {error ? (

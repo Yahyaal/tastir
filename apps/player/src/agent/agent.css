@@ -149,6 +149,21 @@
   height: auto;
   margin-top: 12px;
 }
+.agent-edits h2 {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+.agent-side {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.agent-side select {
+  flex: 1;
+}
 @media (max-width: 760px) {
   .agent-lab {
     padding: 12px;

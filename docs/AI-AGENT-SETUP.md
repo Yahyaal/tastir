@@ -1,6 +1,6 @@
 # Try the local drawing assistant
 
-The first implementation lives on `codex/ai-agent-phase-0`. It connects a local companion to ChatGPT, sends an image of a real Tastir construction, and lets the model highlight a named object. The owner connected ChatGPT, and a live image, highlighting and final-reply check passed on 15 October 2026.
+The current implementation lives on `codex/ai-agent-drawing`, following the connection workspace on `codex/ai-agent-phase-0`. It connects a local companion to ChatGPT, sends an image of a real Tastir construction, highlights named objects, and draws editable straight sides between existing points. The owner connected ChatGPT, and a live image, highlighting and final-reply check passed on 15 October 2026.
 
 ## Start it
 
@@ -20,7 +20,17 @@ A successful pointing test displays a turquoise annotation on the object. The br
 
 Changing the selection, theme, camera or board size while the model is preparing a pointer makes the old observation stale. The app rejects the old pointer and asks for a new view. Existing semantic annotations follow the camera. Stop cancels the current request and rejects late results. The annotation does not change construction geometry or ink.
 
-This first version explains and highlights objects in this workspace. It does not yet create or color patterns, operate the other screens, capture the whole tab, or retain a conversation between separate requests. Those remain in the [implementation plan](AI-AGENT-PLAN.md).
+## Draw the square
+
+Choose Eight-fold star and octagon, press Use square request, then Send current view. You can instead type “Draw the square jW, jN, jE, jS.” The assistant can add finite sides between existing named points and remove sides it previously added. All four sides belong in one edit, so Undo drawing edit removes the whole square and Redo drawing edit restores it.
+
+The Your drawing panel lists each side. Change either endpoint with its point selector, or remove that side. These controls use the same validation and history as the assistant. Invalid edits apply no changes. Undo and Redo stop a pending model request first, and document revisions always advance, including when undoing, so an old reply cannot edit a restored version.
+
+After a model edit, the browser waits for the drawing to render, captures a fresh image and sends it with the tool result and the updated named segments. The model then completes its reply. The success message is “Drawing updated: edits displayed, current image sent, final response completed.” Stop after an applied edit leaves it visible; Undo removes it.
+
+Keep in My patterns saves an editable copy in this browser, using Tastir's existing construction steps and ink paths. Open in editor opens that copy with its source credit. Keep again updates the same copy. Workspace edits and Undo history last only while this construction stays open, so keep changes before leaving or refreshing. The workspace allows 128 sides, 32 additions per edit and the last 50 edits in Undo history.
+
+The assistant still cannot create new points or circles, color patterns, operate other screens, capture the whole tab, or retain a conversation between separate requests. Those remain in the [implementation plan](AI-AGENT-PLAN.md). Drawing can currently use only named points in the current observation; use Fit if a needed point is outside the view.
 
 ## Accounts and local storage
 
@@ -40,7 +50,7 @@ Browser checks use simulated account and model responses. They send a real board
 
 The capture currently supports construction SVG and embedded canvas layers. Full-tab capture and verification of the finished Jali and colored-wall views belong to the later visual integration phase. The run budget is three model responses and two minutes, including time waiting for tool results. Stop or an error can leave a previously acknowledged annotation visible; Clear assistant highlight removes it.
 
-The official integration currently requires streaming requests with response storage disabled and supports the app-defined highlighting tool. Public hosted distribution needs a separate availability review. [Inference contract](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference), [preview limitations](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations)
+The integration uses streaming requests with response storage disabled and app-defined highlighting and segment-editing tools. Public hosted distribution needs a separate availability review. [Inference contract](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference), [preview limitations](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations)
 
 ## Verification on 15 October 2026
 
@@ -53,3 +63,12 @@ The owner's first live request exposed two assumptions in the stream reader. The
 After this fix, a live request using the connected account and GPT-6.1-Sol sent the board PNG with O selected, returned one highlighting call, displayed a turquoise ring at O, acknowledged it to the model and received the final completed explanation. The UI displayed the full live-check success message. [See the live result, with the saved account masked](/__review/renders/agent-phase-0/live-fixed.png). This establishes the first account-specific round trip; it does not establish reliability across other models or later creation features.
 
 The fix passed all 25 local runtime tests, including regression coverage for both live response differences, preserved continuation data, duplicate prevention and incomplete streams. The workspace's pnpm test, pnpm lint and pnpm typecheck passed. All 15 assistant browser checks also passed. Automated tests use simulated responses; the live test above used the owner's connected plan.
+
+
+## Editable drawing verification on 15 October 2026
+
+On `codex/ai-agent-drawing`, a live GPT-6.1-Sol request drew jW–jN–jE–jS with one edit_segments call. The browser displayed four finite sides, returned the current PNG and revised observation, and received “Drew the square jW–jN–jE–jS with all four sides.” The full drawing-success indicator appeared. One Undo left zero sides; Redo restored four. [Live result, account masked](/__review/renders/agent-drawing/live-square.png).
+
+The four geometry tests check equal side lengths, right angles, closure, atomic rejection, manual replacement, Undo/Redo revisions and a valid editor draft with four engine ink strokes. The local runtime's 26 tests cover tool continuation with the required fresh same-document observation. The 24 assistant browser checks passed across desktop, tablet and phone, including manual editing, saving and reopening an editor copy, stale observations and Stop. The workspace pnpm test, pnpm lint and pnpm typecheck passed.
+
+Responsive views use simulated model responses: [phone](/__review/renders/agent-drawing/phone-simulated.png), [tablet](/__review/renders/agent-drawing/tablet-simulated.png), and [dark desktop](/__review/renders/agent-drawing/desktop-dark-simulated.png). They are layout checks; the separately labeled live result above proves the connected-account drawing round trip.

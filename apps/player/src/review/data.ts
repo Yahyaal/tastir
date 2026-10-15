@@ -1816,6 +1816,14 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'AI agent: editable square with Undo is working',
+      text: 'On codex/ai-agent-drawing, ChatGPT can join existing named points into finite sides and remove sides it added. A live request drew jW–jN–jE–jS as four sides in one edit, received the updated image and completed its reply. One Undo removed all four sides; Redo restored them. Change endpoints or remove a side below the board. Keep in My patterns saves an editable copy. New points, compass circles and coloring remain later work. The picture is the actual live result with the account label hidden.',
+      link: {
+        label: 'See the live square',
+        href: '/__review/renders/agent-drawing/live-square.png',
+      },
+    },
+    {
       title: 'AI agent Phase 0: live ChatGPT request fixed and verified',
       text: 'The owner’s first request failed because the valid stream omitted its content-type header. It also delivered the tool call in finalized item events while leaving the final output list empty. Both are handled now, with actions still held until successful completion. A live GPT-6.1-Sol request sent the board image, highlighted O, acknowledged the mark and completed the explanation. All 25 runtime tests, workspace tests, lint, TypeScript checks and 15 assistant browser checks passed. The picture shows the real result with the saved account masked.',
       link: {
@@ -2103,14 +2111,14 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI agent: ready for the shared app command interface',
-    text: 'The first live connection check passed: a board image, browser-acknowledged highlight and completed explanation all worked with the connected account. The next phase gives the assistant shared app state and commands before extending it into the regular screens and original pattern creation. The current workspace can answer questions and highlight named objects.',
+    title: 'AI agent: try drawing and editing the square',
+    text: 'Open the assistant, choose Eight-fold star and octagon, press Use square request, then Send current view. Four dark sides should appear. Undo drawing edit removes the entire square; Redo restores it. Endpoint selectors edit individual sides, and Keep in My patterns saves them. Automated checks and the live ChatGPT drawing check passed.',
     link: { label: 'Open the setup guide', href: '/#/notes/agent-setup' },
   },
   next: [
     {
-      title: 'AI agent: shared commands, then original drawing and coloring',
-      text: 'After the live account check, add shared app state and revisioned commands, then extend seeing and pointing into the regular screens. The next creation phases build an original editable pattern, ink and repeat it, color it, check the result and save it.',
+      title: 'AI agent: new points and compass circles, then full patterns',
+      text: 'The first revisioned drawing command now works between existing named points. Extend it to ruler and compass steps that create new geometry, with evaluation and repair. Then connect complete original constructions, inking, repeat, coloring and coordinated saving, and extend the assistant into the regular app screens.',
       link: { label: 'Read the remaining phases', href: '/#/notes/agent' },
     },
     {

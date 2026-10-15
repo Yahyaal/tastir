@@ -57,9 +57,18 @@ export class AgentClient {
       ),
     );
   }
-  async resume(runId: string, results: ToolResult[], signal: AbortSignal) {
+  async resume(
+    runId: string,
+    results: ToolResult[],
+    signal: AbortSignal,
+    snapshot?: Snapshot,
+  ) {
     return ReplyShape.parse(
-      await this.request('/turn/continue', { runId, results }, signal),
+      await this.request(
+        '/turn/continue',
+        { runId, results, ...(snapshot ? { snapshot } : {}) },
+        signal,
+      ),
     );
   }
   async stop() {

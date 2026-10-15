@@ -26,6 +26,130 @@ async function connected(page: Page) {
   );
 }
 
+const squareCall = (snapshot: { id: string; documentRevision: string }) => ({
+  id: 'draw-call',
+  name: 'edit_segments',
+  arguments: {
+    snapshotId: snapshot.id,
+    documentRevision: snapshot.documentRevision,
+    label: 'Draw the square',
+    remove: [],
+    add: ['jW', 'jN', 'jE', 'jS'].map((from, i, points) => ({
+      from,
+      to: points[(i + 1) % 4],
+    })),
+  },
+});
+
+test('draws four editable sides, sends the resulting image, undoes in one step and keeps an editor copy', async ({
+  page,
+}) => {
+  await connected(page);
+  let initialImage = '';
+  let initialRevision = '';
+  await page.route('**/__agent/turn/start', async (route) => {
+    const { snapshot } = route.request().postDataJSON();
+    initialImage = snapshot.image;
+    initialRevision = snapshot.documentRevision;
+    await route.fulfill({
+      json: { runId, text: '', calls: [squareCall(snapshot)] },
+    });
+  });
+  await page.route('**/__agent/turn/continue', async (route) => {
+    const body = route.request().postDataJSON();
+    expect(body.results).toEqual([
+      expect.objectContaining({ callId: 'draw-call', ok: true }),
+    ]);
+    expect(body.snapshot.documentRevision).not.toBe(initialRevision);
+    expect(body.snapshot.image).not.toBe(initialImage);
+    expect(body.snapshot.segments).toHaveLength(4);
+    expect(await page.locator('.ink-piece.inked').count()).toBe(4);
+    await route.fulfill({
+      json: { runId, text: 'The four sides are drawn.', calls: [] },
+    });
+  });
+  await page.goto('/#/agent');
+  await page.getByRole('button', { name: 'Use square request' }).click();
+  await page.getByRole('button', { name: 'Send current view' }).click();
+  await expect(page.locator('.agent-answer')).toHaveText(
+    'The four sides are drawn.',
+  );
+  await expect(page.getByText(/Drawing updated:/)).toBeVisible();
+  await page.getByRole('button', { name: 'Undo drawing edit' }).click();
+  await expect(page.locator('.ink-piece.inked')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Redo drawing edit' }).click();
+  await expect(page.locator('.ink-piece.inked')).toHaveCount(4);
+  await page
+    .getByRole('combobox', { name: 'Side 1 start', exact: true })
+    .selectOption('O');
+  await expect(
+    page.getByRole('combobox', { name: 'Side 1 start', exact: true }),
+  ).toHaveValue('O');
+  await page.getByRole('button', { name: 'Undo drawing edit' }).click();
+  await expect(
+    page.getByRole('combobox', { name: 'Side 1 start', exact: true }),
+  ).toHaveValue('jW');
+  await page
+    .getByRole('button', { name: 'Remove side 1', exact: true })
+    .click();
+  await expect(page.locator('.ink-piece.inked')).toHaveCount(3);
+  await page.getByRole('button', { name: 'Undo drawing edit' }).click();
+  await page.getByRole('button', { name: 'Keep in My patterns' }).click();
+  const saved = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('tastir.patterns') ?? '[]'),
+  );
+  expect(saved).toHaveLength(1);
+  expect(saved[0].tutorial.ink.paths).toEqual(
+    ['jW', 'jN', 'jE', 'jS'].map((from, i, points) => ({
+      through: [from, points[(i + 1) % 4]],
+    })),
+  );
+  await page.getByRole('link', { name: 'Open in editor' }).click();
+  await expect(page).toHaveURL(new RegExp(`/edit/${saved[0].id}$`));
+  await expect(
+    page.getByRole('img', { name: 'The construction so far' }),
+  ).toBeVisible();
+});
+
+for (const intervention of ['selection', 'stop'] as const) {
+  test(`a ${intervention} change prevents a delayed drawing edit`, async ({
+    page,
+  }) => {
+    await connected(page);
+    let pending: Route | undefined;
+    await page.route('**/__agent/turn/start', (route) => {
+      pending = route;
+    });
+    await page.route('**/__agent/turn/continue', async (route) => {
+      expect(route.request().postDataJSON().results[0].ok).toBe(false);
+      await route.fulfill({
+        json: { runId, text: 'Please send a new view.', calls: [] },
+      });
+    });
+    await page.goto('/#/agent');
+    await page.getByRole('button', { name: 'Send current view' }).click();
+    await expect.poll(() => !!pending).toBe(true);
+    const { snapshot } = pending!.request().postDataJSON();
+    if (intervention === 'stop')
+      await page.getByRole('button', { name: 'Stop', exact: true }).click();
+    else
+      await page
+        .getByRole('combobox', { name: 'Selected object', exact: true })
+        .selectOption('A');
+    await pending!
+      .fulfill({ json: { runId, text: '', calls: [squareCall(snapshot)] } })
+      .catch(() => undefined);
+    if (intervention === 'selection')
+      await expect(page.locator('.agent-answer')).toHaveText(
+        'Please send a new view.',
+      );
+    await expect(page.locator('.ink-piece.inked')).toHaveCount(0);
+    await expect(
+      page.getByRole('button', { name: 'Undo drawing edit' }),
+    ).toBeDisabled();
+  });
+}
+
 test('a fresh local companion requires sign-in before sending a view', async ({
   page,
 }) => {

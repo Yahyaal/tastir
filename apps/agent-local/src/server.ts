@@ -208,6 +208,7 @@ export async function createCompanion(options: Options) {
             parsed.runId,
             parsed.results,
             controller.signal,
+            parsed.snapshot,
           ),
         );
         return;

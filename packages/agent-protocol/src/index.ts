@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 const Id = z.string().min(1).max(180);
+export const SegmentShape = z.strictObject({ id: Id, from: Id, to: Id });
+export type DrawingSegment = z.infer<typeof SegmentShape>;
 export const TargetShape = z.strictObject({
   id: Id,
   kind: z.enum(['point', 'line', 'circle', 'polygon']),
@@ -14,6 +16,7 @@ export const SnapshotShape = z.strictObject({
   title: z.string().max(300),
   selected: Id.nullable(),
   targets: z.array(TargetShape).min(1).max(5000),
+  segments: z.array(SegmentShape).max(128).default([]),
   image: z
     .string()
     .max(4_000_000)
@@ -26,11 +29,27 @@ export const HighlightShape = z.strictObject({
   label: z.string().min(1).max(160),
 });
 export type Highlight = z.infer<typeof HighlightShape>;
-export const CallShape = z.strictObject({
+export const HighlightCallShape = z.strictObject({
   id: Id,
   name: z.literal('highlight_target'),
   arguments: HighlightShape,
 });
+export const EditSegmentsShape = z.strictObject({
+  snapshotId: Id,
+  documentRevision: Id,
+  label: z.string().min(1).max(160),
+  add: z.array(z.strictObject({ from: Id, to: Id })).max(32),
+  remove: z.array(Id).max(128),
+});
+export type EditSegments = z.infer<typeof EditSegmentsShape>;
+export const CallShape = z.discriminatedUnion('name', [
+  HighlightCallShape,
+  z.strictObject({
+    id: Id,
+    name: z.literal('edit_segments'),
+    arguments: EditSegmentsShape,
+  }),
+]);
 export type ToolCall = z.infer<typeof CallShape>;
 export const ResultShape = z.strictObject({
   callId: Id,
@@ -47,6 +66,7 @@ export const StartShape = z.strictObject({
 export const ContinueShape = z.strictObject({
   runId: z.uuid(),
   results: z.array(ResultShape).min(1).max(8),
+  snapshot: SnapshotShape.optional(),
 });
 export const ReplyShape = z.strictObject({
   runId: z.uuid(),
@@ -72,7 +92,7 @@ export type ModelChoice = z.infer<typeof ModelsShape>[number];
 
 /** The app executes this only against the observation that produced it. */
 export function checkHighlight(
-  call: ToolCall,
+  call: z.infer<typeof HighlightCallShape>,
   snapshot: Snapshot,
   currentRevision: string,
 ): ToolResult {
@@ -98,10 +118,11 @@ export function checkHighlight(
   };
 }
 
-export const HIGHLIGHT_TOOL = {
+export const DRAWING_TOOLS = {
   type: 'namespace',
   name: 'tastir',
-  description: 'Point at named objects in the current Tastir drawing.',
+  description:
+    'Point at objects and draw editable segments between named points in Tastir.',
   tools: [
     {
       type: 'function',
@@ -118,6 +139,33 @@ export const HIGHLIGHT_TOOL = {
           label: { type: 'string' },
         },
         required: ['snapshotId', 'targetId', 'label'],
+      },
+    },
+    {
+      type: 'function',
+      name: 'edit_segments',
+      description:
+        'Add or remove finite straight segments as one undoable edit. Use exact named POINT IDs from the latest observation. To draw a square, add its four sides in ONE call. remove contains IDs from observation.segments. Return results and a fresh board image before making further edits. Cannot create new points or arbitrary coordinates.',
+      strict: true,
+      parameters: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          snapshotId: { type: 'string' },
+          documentRevision: { type: 'string' },
+          label: { type: 'string' },
+          add: {
+            type: 'array',
+            items: {
+              type: 'object',
+              additionalProperties: false,
+              properties: { from: { type: 'string' }, to: { type: 'string' } },
+              required: ['from', 'to'],
+            },
+          },
+          remove: { type: 'array', items: { type: 'string' } },
+        },
+        required: ['snapshotId', 'documentRevision', 'label', 'add', 'remove'],
       },
     },
   ],

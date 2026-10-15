@@ -227,6 +227,98 @@ describe('completed streaming responses', () => {
 });
 
 describe('image and tool execution loop', () => {
+  it('continues drawing only with a fresh same-document observation after acknowledgement', async () => {
+    const edit = {
+      ...tool,
+      name: 'edit_segments',
+      arguments: JSON.stringify({
+        snapshotId: snapshot.id,
+        documentRevision: snapshot.documentRevision,
+        label: 'Draw one side',
+        add: [{ from: 'O', to: 'A' }],
+        remove: [],
+      }),
+    };
+    const bodies: Record<string, unknown>[] = [];
+    const send = vi.fn<typeof fetch>().mockImplementation(async (url, init) => {
+      if (String(url).endsWith('/models'))
+        return Response.json({
+          models: [
+            { slug: 'model', display_name: 'Model', visibility: 'list' },
+          ],
+        });
+      bodies.push(JSON.parse(String(init!.body)));
+      return bodies.length === 1
+        ? sparseStream([edit])
+        : sparseStream([
+            {
+              type: 'message',
+              content: [{ type: 'output_text', text: 'The side is drawn.' }],
+            },
+          ]);
+    });
+    const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
+    try {
+      const first = await runtime.start(
+        'tab',
+        'model',
+        'Draw a side',
+        snapshot,
+        new AbortController().signal,
+      );
+      expect(first.calls[0]?.name).toBe('edit_segments');
+      const results = [
+        { callId: 'call-1', ok: true, message: 'Added one side' },
+      ];
+      await expect(
+        runtime.resume(
+          'tab',
+          first.runId,
+          results,
+          new AbortController().signal,
+        ),
+      ).rejects.toMatchObject({ code: 'observation_missing' });
+      const fresh = SnapshotShape.parse({
+        ...snapshot,
+        id: 'view-2',
+        documentRevision: '2',
+        viewRevision: 'camera-2',
+        segments: [{ id: 'agentSegment1', from: 'O', to: 'A' }],
+      });
+      await expect(
+        runtime.resume(
+          'tab',
+          first.runId,
+          results,
+          new AbortController().signal,
+          { ...fresh, documentId: 'other' },
+        ),
+      ).rejects.toMatchObject({ code: 'observation_missing' });
+      const final = await runtime.resume(
+        'tab',
+        first.runId,
+        results,
+        new AbortController().signal,
+        fresh,
+      );
+      expect(final.text).toBe('The side is drawn.');
+      const input = bodies[1]!['input'] as {
+        role?: string;
+        content?: unknown;
+      }[];
+      expect(JSON.stringify(input.at(-1))).toContain('agentSegment1');
+      expect(JSON.stringify(input.at(-1))).toContain(fresh.image);
+      expect(input.at(-1)?.role).toBe('user');
+      expect(input).toContainEqual(
+        expect.objectContaining({
+          type: 'function_call_output',
+          call_id: 'call-1',
+        }),
+      );
+    } finally {
+      runtime.cancelAll();
+    }
+  });
   it('an old cancellation cannot stop the next request in the same tab', async () => {
     const send = vi.fn<typeof fetch>().mockImplementation(async (url) =>
       String(url).endsWith('/models')
@@ -305,7 +397,10 @@ describe('image and tool execution loop', () => {
         new AbortController().signal,
       );
       expect(bodies).toHaveLength(1);
-      expect(first.calls[0]!.arguments.targetId).toBe('O');
+      expect(first.calls[0]).toMatchObject({
+        name: 'highlight_target',
+        arguments: { targetId: 'O' },
+      });
       expect(bodies[0]).toMatchObject({ store: false, stream: true });
       expect(JSON.stringify(bodies[0])).toContain(snapshot.image);
       expect(bodies[0]).not.toHaveProperty('previous_response_id');

@@ -1,6 +1,6 @@
 # AI agent for Tastir
 
-Detailed implementation plan, 15 October 2026. The owner wants an agent that answers questions, navigates Tastir, draws and colors its own patterns from instructions, sees the current view, and points things out on screen. The Phase 0 connection workspace is implemented on `codex/ai-agent-phase-0`; its first live account check passed after fixing the stream reader. [Try the local assistant](AI-AGENT-SETUP.md). The remaining phases below are planned work.
+Detailed implementation plan, 15 October 2026. The owner wants an agent that answers questions, navigates Tastir, draws and colors its own patterns from instructions, sees the current view, and points things out on screen. The Phase 0 connection workspace is implemented on `codex/ai-agent-phase-0`; its first live account check passed after fixing the stream reader. [Try the local assistant](AI-AGENT-SETUP.md). The first editable-segment milestone is implemented on `codex/ai-agent-drawing`; the remaining capabilities below are planned work.
 
 ## The experience we are building
 
@@ -161,6 +161,8 @@ Each phase produces a reviewable result. Phase 0 resolves external uncertainties
 
 Phase 0 is a capability test, not the finished product. The complete local release includes original drawing, coloring, seeing and pointing.
 
+**First drawing milestone (15 October).** After confirming the connection, the owner approved drawing jW–jN–jE–jS as four editable sides. `codex/ai-agent-drawing` adds a bounded segment-editing command, shared manual editing and Undo/Redo, fresh images after mutations and saving a copy through the existing editor format. This is a first part of the command and drawing phases: it uses existing named points, and does not yet create new points, circles, complete original patterns or color them. One requested square is one undoable edit.
+
 ## Proposed files
 
 | Location | Responsibility |
@@ -197,4 +199,4 @@ During implementation, run lint, typecheck, unit tests, build and Chromium check
 
 ## Next step
 
-Phase 0's first live check passed on the owner's connected account: a current board image and named selection produced a displayed, acknowledged highlight and a completed final reply. The connection workspace and shared observation contracts are implemented. Next, build the shared app command interface, then original drawing and coloring in the sequence above. The initial live success is a capability check; the broader evaluation set remains later work.
+Phase 0's first live check passed on the owner's connected account: a current board image and named selection produced a displayed, acknowledged highlight and a completed final reply. The connection workspace and shared observation contracts are implemented. The first segment-editing command now draws an editable square between existing points, refreshes the observation and supports Undo/Redo and editor-copy saving. Next, extend the command interface to new ruler and compass geometry, then original pattern creation and coloring in the sequence above. The initial live success is a capability check; the broader evaluation set remains later work.
