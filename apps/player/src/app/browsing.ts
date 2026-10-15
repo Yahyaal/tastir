@@ -111,11 +111,18 @@ export function aboutOf(json: unknown): {
     style?: unknown;
     level?: unknown;
     fold?: unknown;
+    star?: unknown;
   };
   return {
     ...(typeof t.style === 'string' ? { style: t.style } : {}),
     ...(typeof t.level === 'string' ? { level: t.level } : {}),
-    ...(typeof t.fold === 'number' ? { fold: t.fold } : {}),
+    // Shown and filtered by the main star, when it has more points than
+    // the tile turns.
+    ...(typeof t.star === 'number'
+      ? { fold: t.star }
+      : typeof t.fold === 'number'
+        ? { fold: t.fold }
+        : {}),
   };
 }
 

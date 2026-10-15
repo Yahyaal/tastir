@@ -396,6 +396,10 @@ export const TutorialShape = z.strictObject({
   /** A second line under the short name: the place, or whose construction. */
   subtitle: z.string().min(1).optional(),
   fold: z.int().min(3),
+  /** The points of the main star or rosette, when the tile turns into
+   * itself less often (a twelve-fold rosette on a square tile is 4-fold).
+   * The library shows and filters by it; the golden test checks `fold`. */
+  star: z.int().min(3).optional(),
   /** The pattern turns into itself but has no mirror symmetry (a pinwheel). */
   chiral: z.boolean().optional(),
   style: z.string().min(1),

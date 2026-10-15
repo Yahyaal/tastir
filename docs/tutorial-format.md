@@ -20,6 +20,10 @@ Every tutorial starts from two given points, `O` and `A`. They define the frame 
 
 `title` is the pattern's full name, shown on its lesson. A long title can have a `short` name for the library's cards and menus, and a `subtitle`, the line under it: the place (“Sala de los Reyes, Alhambra”) or whose construction it is (“Samira Mian’s construction”). Both are optional; without them the card shows the title.
 
+## Symmetry
+
+`fold` is how many times the tile turns into itself about `O`, and the golden test checks it. A star on a square tile can have more points than that: a twelve-fold rosette repeated on a square is 4-fold. Such a tutorial gives the star's points as `star` (optional), and the library shows the pattern as `star`-fold and files it under that number when filtering. Without `star`, the library shows `fold`.
+
 ## Elements
 
 Each entry in a step's `create` map is `"name": { "<kind>": { ... } }`.

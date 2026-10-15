@@ -2,15 +2,16 @@ import { useState } from 'react';
 import type { Tutorial } from '@tastir/schema';
 import { addPattern, freeTitle } from '../editor/patterns';
 import { LIBRARY } from './library';
+import { aboutOf } from './browsing';
 
 /** A finished lesson leads into experimenting and exploring the same symmetry. */
 export function ExploreNext({ tutorial }: { tutorial: Tutorial }) {
   const [refused, setRefused] = useState(false);
+  const fold = tutorial.star ?? tutorial.fold;
   const related = LIBRARY.filter(
     (entry) =>
       entry.id !== tutorial.id &&
-      (entry.preview?.fold ?? (entry.json as { fold?: number })?.fold) ===
-        tutorial.fold,
+      (entry.preview?.fold ?? aboutOf(entry.json).fold) === fold,
   ).slice(0, 3);
   const create = () => {
     const { photos: _photos, ...construction } = tutorial;
@@ -57,7 +58,7 @@ export function ExploreNext({ tutorial }: { tutorial: Tutorial }) {
       ) : null}
       {related.length ? (
         <>
-          <h3>Explore {tutorial.fold}-fold patterns</h3>
+          <h3>Explore {fold}-fold patterns</h3>
           <ul>
             {related.map((entry) => (
               <li key={entry.id}>

@@ -39,7 +39,7 @@ export function PrintSheet({
       <style>{`@page { size: ${paper === 'A4' ? 'A4' : 'letter'} portrait; margin: 12mm; }`}</style>
       <h1>{tutorial.title}</h1>
       <p>
-        {tutorial.fold}-fold · {tutorial.style}
+        {tutorial.star ?? tutorial.fold}-fold · {tutorial.style}
       </p>
       {/* The SVG is generated here from the pattern, not taken from input. */}
       <div

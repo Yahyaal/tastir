@@ -55,7 +55,8 @@ async function main() {
       ...(t.subtitle ? { subtitle: t.subtitle } : {}),
       style: t.style,
       level: t.level,
-      fold: t.fold,
+      // As the library shows it: the main star's points, else the tile's.
+      fold: t.star ?? t.fold,
       steps: shownSteps(withHelpers(model, false).tutorial).length,
       photos: Boolean(t.photos?.length),
       ...(t.verification ? { verification: t.verification } : {}),

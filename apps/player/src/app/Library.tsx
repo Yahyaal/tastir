@@ -515,7 +515,7 @@ function CardView({
   const subtitle = preview?.subtitle ?? t?.subtitle;
   const fullTitle = preview?.title ?? t?.title ?? id;
   const level = preview?.level ?? t?.level;
-  const fold = preview?.fold ?? t?.fold;
+  const fold = preview?.fold ?? t?.star ?? t?.fold;
   const style = preview?.style ?? t?.style;
   const verification = preview?.verification ?? t?.verification;
   return (
