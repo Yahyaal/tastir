@@ -694,7 +694,15 @@ export function RepeatedInk({
   speed = 1,
   paused = false,
   view: givenView,
+  from,
+  markOriginal = true,
 }: {
+  /** Whether the first tile stands out in the accent (the lesson); the
+   * hero keeps it the colour of the ink it was just drawn in. */
+  markOriginal?: boolean;
+  /** Where the camera starts, if not close on the tile (the hero starts
+   * where its inking ended, so the copies grow out of that tile). */
+  from?: Rect;
   model: Model;
   /** Only so many copies along the row and up, else the whole wall. */
   count?: readonly [number, number];
@@ -775,13 +783,14 @@ export function RepeatedInk({
     return (300 + maxI * ROW_STEP_MS + SLIDE_MS) / speed;
   }, [copies, speed]);
   const close = useMemo(() => {
+    if (from) return from;
     const cx = (view.minX + view.maxX) / 2;
     const cy = (view.minY + view.maxY) / 2;
     const k = 2.4;
     const hw = (view.maxX - view.minX) / 2 / k;
     const hh = (view.maxY - view.minY) / 2 / k;
     return { minX: cx - hw, maxX: cx + hw, minY: cy - hh, maxY: cy + hh };
-  }, [view]);
+  }, [view, from]);
 
   useLayoutEffect(() => {
     const svg = svgRef.current;
@@ -912,7 +921,7 @@ export function RepeatedInk({
       ref={svgRef}
       className="drawing wall"
       viewBox={viewBox(view)}
-      preserveAspectRatio={cm ? 'xMidYMid meet' : 'xMidYMid slice'}
+      preserveAspectRatio={cm || givenView ? 'xMidYMid meet' : 'xMidYMid slice'}
       role="img"
       aria-label="The inked tile repeated edge to edge"
     >
@@ -953,7 +962,9 @@ export function RepeatedInk({
               key={i}
               data-copy={`${i},${j}`}
               data-slide={j === 0 ? `${i},0` : undefined}
-              className={isOrigin(d) ? 'ink original' : undefined}
+              className={
+                markOriginal && isOrigin(d) ? 'ink original' : undefined
+              }
               transform={`translate(${i * row.x} ${-i * row.y})`}
             >
               {enter ? (

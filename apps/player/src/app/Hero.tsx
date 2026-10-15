@@ -72,13 +72,16 @@ function HeroPlay({ model }: { model: Model }) {
     [model, coloring, wallView],
   );
   const colorSteps = palette.length;
-  const total = n + colorSteps + 3;
+  const total = n + colorSteps + 4;
 
-  const isRepeating = k === n + 1;
-  const isColoring = k >= n + 2 && k <= n + 1 + colorSteps;
-  const isFinished = k > n + 1 + colorSteps;
-  const coloredUpTo = isFinished ? undefined : isColoring ? k - (n + 1) : 0;
-  const colorIndex = isColoring ? k - n - 2 : isFinished ? colorSteps - 1 : -1;
+  // After the ink: the construction lines fade, the copies slide out of
+  // the inked tile, then the colours fill the wall.
+  const isFadingLines = k === n + 1;
+  const isRepeating = k === n + 2;
+  const isColoring = k >= n + 3 && k <= n + 2 + colorSteps;
+  const isFinished = k > n + 2 + colorSteps;
+  const coloredUpTo = isFinished ? undefined : isColoring ? k - (n + 2) : 0;
+  const colorIndex = isColoring ? k - n - 3 : isFinished ? colorSteps - 1 : -1;
   const currentColor =
     colorIndex >= 0 && colorIndex < palette.length
       ? palette[colorIndex]
@@ -105,17 +108,30 @@ function HeroPlay({ model }: { model: Model }) {
     const wait =
       k === total - 1
         ? HERO_HOLD_MS
-        : isRepeating
-          ? Math.max(3000, ...ends) + 700
-          : isColoring
-            ? 950
-            : Math.max(600, ...ends) + (k === n ? 900 : 350);
+        : isFadingLines
+          ? 1100
+          : isRepeating
+            ? Math.max(3000, ...ends) + 700
+            : isColoring
+              ? 950
+              : Math.max(600, ...ends) + (k === n ? 900 : 350);
     const timer = setTimeout(() => setK((k + 1) % total), wait);
     return () => {
       clearTimeout(timer);
       for (const a of anims) a.cancel();
     };
-  }, [k, n, total, beats, model, panelModel, reduced, isRepeating, isColoring]);
+  }, [
+    k,
+    n,
+    total,
+    beats,
+    model,
+    panelModel,
+    reduced,
+    isFadingLines,
+    isRepeating,
+    isColoring,
+  ]);
 
   const colorNames = currentColor?.names.length
     ? currentColor.names.join(' & ')
@@ -125,11 +141,13 @@ function HeroPlay({ model }: { model: Model }) {
       ? `${model.tutorial.title}: completed design`
       : k === n
         ? `${model.tutorial.title}: inking the pattern`
-        : isRepeating
-          ? `${model.tutorial.title}: repeating the tile`
-          : isColoring
-            ? `${model.tutorial.title}: coloring — ${colorNames} (${colorIndex + 1} of ${colorSteps})`
-            : `${model.tutorial.title}: step ${k + 1} of ${n}`;
+        : isFadingLines
+          ? `${model.tutorial.title}: revealing the inked pattern`
+          : isRepeating
+            ? `${model.tutorial.title}: repeating the tile`
+            : isColoring
+              ? `${model.tutorial.title}: coloring — ${colorNames} (${colorIndex + 1} of ${colorSteps})`
+              : `${model.tutorial.title}: step ${k + 1} of ${n}`;
 
   return (
     <>
@@ -160,9 +178,13 @@ function HeroPlay({ model }: { model: Model }) {
             model={panelModel}
             enter
             speed={HERO_SPEED}
+            from={view}
             view={wallView}
+            markOriginal={false}
           />
-        ) : k === n ? (
+        ) : k === n || isFadingLines ? (
+          // One drawing through the ink and the fade, so it is not drawn
+          // again: only its construction lines go.
           <Construction
             model={panelModel}
             upTo={all}
@@ -170,6 +192,7 @@ function HeroPlay({ model }: { model: Model }) {
             svgRef={svgRef}
             ink
             enter
+            fadeLines={isFadingLines}
           />
         ) : (
           <Construction
