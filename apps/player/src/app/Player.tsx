@@ -25,7 +25,7 @@ import {
 } from './coloring';
 import { type Design } from './designs';
 import { draftOf, forgetDraft, keepDraft } from './drafts';
-import { Construction, RepeatedInk } from './drawing';
+import { Construction, RepeatedInk, Thumbnail } from './drawing';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
 import {
   asPanel,
@@ -60,7 +60,7 @@ import { ShareLink } from './Sharing';
 import { useCamera } from './useCamera';
 import { useInking } from './useInking';
 import { useModalFocus } from './useModalFocus';
-import { Wall, type WallStyle } from './Wall';
+import { banded, Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { WallControls } from './WallControls';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
@@ -826,6 +826,49 @@ export function Player({
     copies === 'wall' &&
     (colourFirst ? stage.kind === 'repeat' : stage.kind === 'color');
 
+  // The style samples show a few pieces round the middle of the pattern,
+  // about a dozen whatever their size (at most a little over one repeat),
+  // so grout, bands, the weave and the lattice can be told apart.
+  const sampleView = useMemo(() => {
+    const { cell, pieces } = inking.shown.pattern;
+    const x = cell.origin.x + (cell.u.x + cell.v.x) / 2;
+    const y = cell.origin.y + (cell.u.y + cell.v.y) / 2;
+    const area = Math.abs(cell.u.x * cell.v.y - cell.u.y * cell.v.x);
+    const piece = Math.sqrt(area / Math.max(1, pieces.length));
+    const r = Math.min(
+      2 * piece,
+      0.8 *
+        Math.max(
+          Math.hypot(cell.u.x, cell.u.y),
+          Math.hypot(cell.v.x, cell.v.y),
+        ),
+    );
+    return { minX: x - r, minY: y - r, maxX: x + r, maxY: y + r };
+  }, [inking.shown]);
+  // Drawn once per pattern, colouring and finish, not on every slide of
+  // the width or point at a ring.
+  const styleSamples = useMemo(
+    () =>
+      onWall
+        ? Object.fromEntries(
+            WALL_STYLES.map((look) => [
+              look,
+              <Thumbnail
+                key={look}
+                model={inking.shown}
+                coloring={colorHistory.now}
+                look={look}
+                // Bands drawn wider than the wall's, so they read at
+                // button size.
+                grout={banded(look) ? 2 : 1}
+                jali={jali}
+                view={sampleView}
+              />,
+            ]),
+          )
+        : undefined,
+    [onWall, inking.shown, colorHistory.now, jali, sampleView],
+  );
   const photos = tutorial.photos ?? [];
   const showOriginal = comparing && onWall && photos.length > 0;
   // The colours, at the top of the panel while colouring, so they are the
@@ -1238,6 +1281,7 @@ export function Player({
                   onGrout={setGrout}
                   comparing={photos.length ? comparing : undefined}
                   onCompare={setComparing}
+                  sample={(look) => styleSamples?.[look]}
                 />
               ) : null}
               {onWall && wallStyle === 'jali' ? (

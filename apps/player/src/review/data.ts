@@ -1817,7 +1817,7 @@ export const PROGRESS: {
   done: [
     {
       title: 'The wall panel: style and band width back at the top',
-      text: 'On 13 October the colours were put first at the colour stage, and since the finished wall counts as that stage, Style and Band slid below the screen. On the finished wall the panel now opens with the wall: its five styles as small pictures to click, the band or grout width with its value, and the original photo as a toggle beside them. The palettes come first in Colors, as one-click strips half as tall, and the paper size sits beside Print as two buttons.',
+      text: 'On 13 October the colours were put first at the colour stage, and since the finished wall counts as that stage, Style and Band slid below the screen. On the finished wall the panel now opens with the wall: its five styles as buttons that each show your own pattern and colours in that style, the band or grout width with its value, and the original photo as a toggle beside them. The palettes come first in Colors, as one-click strips half as tall, and the paper size sits beside Print as two buttons.',
       link: {
         label: 'See it on a finished wall',
         href: '#/alhambra-comares-dado/result',

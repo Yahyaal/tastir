@@ -1436,8 +1436,8 @@ main.stage .drawing:not(.wall) {
   pointer-events: none;
 }
 
-/* The wall's style, as small samples to click. Their colours are the
-   materials themselves, the same in both themes. */
+/* The wall's style, as small samples to click: the learner's own pattern
+   in each style. */
 .wall-styles {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -1458,56 +1458,21 @@ main.stage .drawing:not(.wall) {
   font-weight: 700;
 }
 .style-sample {
+  display: block;
   width: 100%;
-  max-width: 44px;
+  max-width: 60px;
   aspect-ratio: 1;
   border-radius: 4px;
+  overflow: hidden;
+  background: var(--theme-bg-raised);
 }
-.style-sample polygon {
-  stroke-linejoin: round;
-}
-.sample-tiles .ground {
-  fill: #1e6b52;
-}
-.sample-tiles .star {
-  fill: #e3ad45;
-  stroke: #f4ede1;
-  stroke-width: 2.5;
-}
-.sample-strapwork .ground,
-.sample-interlace .ground {
-  fill: #1f4e8c;
-}
-.sample-strapwork .star {
-  fill: none;
-  stroke: #f4ede1;
-  stroke-width: 4;
-}
-.sample-interlace .band-edge {
-  fill: none;
-  stroke: #1c2733;
-  stroke-width: 6;
-}
-.sample-interlace .star {
-  fill: none;
-  stroke: #f4ede1;
-  stroke-width: 3.2;
-}
-.sample-lines .ground {
-  fill: #fbf8f2;
-}
-.sample-lines .star {
-  fill: none;
-  stroke: #1c2733;
-  stroke-width: 1.4;
-}
-.sample-jali .ground {
-  fill: #8a5a34;
-}
-.sample-jali .star {
-  fill: #0f1820;
-  stroke: #8a5a34;
-  stroke-width: 2;
+.style-sample svg.thumbnail {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
 }
 
 /* The width of the grout, bands or lattice, with its value. */

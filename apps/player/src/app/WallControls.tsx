@@ -1,4 +1,4 @@
-import { useId } from 'react';
+import { useId, type ReactNode } from 'react';
 import { banded, WALL_STYLES, type WallStyle } from './Wall';
 
 const STYLE_NAMES: Record<WallStyle, string> = {
@@ -9,32 +9,9 @@ const STYLE_NAMES: Record<WallStyle, string> = {
   jali: 'Jali',
 };
 
-/** An eight-pointed star in a 40 by 40 box, the same in every sample. */
-const STAR = Array.from({ length: 16 }, (_, k) => {
-  const r = k % 2 ? 7.4 : 15;
-  const a = (k * Math.PI) / 8 - Math.PI / 2;
-  return `${(20 + r * Math.cos(a)).toFixed(2)},${(20 + r * Math.sin(a)).toFixed(2)}`;
-}).join(' ');
-
-/** A small picture of each style, so the choice is seen, not read. */
-function StyleSample({ style }: { style: WallStyle }) {
-  return (
-    <svg
-      className={`style-sample sample-${style}`}
-      viewBox="0 0 40 40"
-      aria-hidden="true"
-    >
-      <rect className="ground" width="40" height="40" />
-      {style === 'interlace' ? (
-        <polygon className="band-edge" points={STAR} />
-      ) : null}
-      <polygon className="star" points={STAR} />
-    </svg>
-  );
-}
-
 /**
- * The finished wall's own controls: its style as samples to click, the
+ * The finished wall's own controls: its style as samples to click (the
+ * learner's own pattern and colours in each style), the
  * width of its grout, bands or lattice, and the original photo beside it.
  */
 export function WallControls({
@@ -44,6 +21,7 @@ export function WallControls({
   onGrout,
   comparing,
   onCompare,
+  sample,
 }: {
   style: WallStyle;
   onStyle: (style: WallStyle) => void;
@@ -52,6 +30,8 @@ export function WallControls({
   /** Whether the original is beside the wall; absent when there is none. */
   comparing?: boolean;
   onCompare: (comparing: boolean) => void;
+  /** A small picture of the wall in a style. */
+  sample: (style: WallStyle) => ReactNode;
 }) {
   const id = useId();
   const jali = style === 'jali';
@@ -67,7 +47,7 @@ export function WallControls({
             aria-pressed={s === style}
             onClick={() => onStyle(s)}
           >
-            <StyleSample style={s} />
+            <span className="style-sample">{sample(s)}</span>
             <span>{STYLE_NAMES[s]}</span>
           </button>
         ))}
