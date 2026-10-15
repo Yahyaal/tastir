@@ -2,7 +2,13 @@ import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { planStep, play, playInk } from './animation';
 import { fullView } from './camera';
 import { tutorialColoring } from './coloring';
-import { Construction, orderedPaletteColors, Thumbnail } from './drawing';
+import {
+  Construction,
+  orderedPaletteColors,
+  RepeatedInk,
+  Thumbnail,
+  tiling,
+} from './drawing';
 import { type Entry } from './library';
 import { asPanel, beatsOf, shownBeats, type Model } from './model';
 import { useModel } from './workerClient';
@@ -34,8 +40,9 @@ const HERO_HOLD_MS = 4500;
 const HERO_SPEED = 1.6;
 
 /**
- * Plays the construction step by step, inks it, then shows it colored, and
- * starts again; with reduced motion it shows the colored pattern only.
+ * Plays the construction step by step, inks it, slides the copies of the
+ * tile into place, then colours the wall, and starts again; with reduced
+ * motion it shows the coloured wall only.
  */
 function HeroPlay({ model }: { model: Model }) {
   const beats = useMemo(() => shownBeats(model.tutorial), [model]);
@@ -43,8 +50,15 @@ function HeroPlay({ model }: { model: Model }) {
   const reduced = useMemo(prefersReducedMotion, []);
   const [k, setK] = useState(0);
   const svgRef = useRef<SVGSVGElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
   const view = useMemo(() => fullView(model), [model]);
   const panelModel = useMemo(() => asPanel(model), [model]);
+  // Where the repeat ends: the small wall the colours then fill, as on
+  // the library's cards.
+  const wallView = useMemo(
+    () => tiling(model, { halfWide: 1, halfHigh: 1, reach: 2 }).view,
+    [model],
+  );
   const n = beats.length;
 
   // The hero colours the pattern brightly, whatever the tutorial's own
@@ -54,13 +68,13 @@ function HeroPlay({ model }: { model: Model }) {
     [model],
   );
   const palette = useMemo(
-    () => orderedPaletteColors(model, coloring, view),
-    [model, coloring, view],
+    () => orderedPaletteColors(model, coloring, wallView),
+    [model, coloring, wallView],
   );
   const colorSteps = palette.length;
   const total = n + colorSteps + 3;
 
-  const isFadingLines = k === n + 1;
+  const isRepeating = k === n + 1;
   const isColoring = k >= n + 2 && k <= n + 1 + colorSteps;
   const isFinished = k > n + 1 + colorSteps;
   const coloredUpTo = isFinished ? undefined : isColoring ? k - (n + 1) : 0;
@@ -81,14 +95,18 @@ function HeroPlay({ model }: { model: Model }) {
     } else if (k === n) {
       anims = playInk(svgRef.current, panelModel, HERO_SPEED * 1.5);
     }
-    const ends = anims.map(
+    // The repeat animates itself; wait for its copies to snap into place.
+    const sliding = isRepeating
+      ? (frameRef.current?.getAnimations?.({ subtree: true }) ?? [])
+      : [];
+    const ends = [...anims, ...sliding].map(
       (a) => Number(a.effect?.getComputedTiming().endTime ?? 0) || 0,
     );
     const wait =
       k === total - 1
         ? HERO_HOLD_MS
-        : isFadingLines
-          ? 1100
+        : isRepeating
+          ? Math.max(3000, ...ends) + 700
           : isColoring
             ? 950
             : Math.max(600, ...ends) + (k === n ? 900 : 350);
@@ -97,17 +115,7 @@ function HeroPlay({ model }: { model: Model }) {
       clearTimeout(timer);
       for (const a of anims) a.cancel();
     };
-  }, [
-    k,
-    n,
-    total,
-    beats,
-    model,
-    panelModel,
-    reduced,
-    isFadingLines,
-    isColoring,
-  ]);
+  }, [k, n, total, beats, model, panelModel, reduced, isRepeating, isColoring]);
 
   const colorNames = currentColor?.names.length
     ? currentColor.names.join(' & ')
@@ -117,22 +125,25 @@ function HeroPlay({ model }: { model: Model }) {
       ? `${model.tutorial.title}: completed design`
       : k === n
         ? `${model.tutorial.title}: inking the pattern`
-        : isFadingLines
-          ? `${model.tutorial.title}: revealing the inked pattern`
+        : isRepeating
+          ? `${model.tutorial.title}: repeating the tile`
           : isColoring
             ? `${model.tutorial.title}: coloring — ${colorNames} (${colorIndex + 1} of ${colorSteps})`
             : `${model.tutorial.title}: step ${k + 1} of ${n}`;
 
   return (
     <>
-      <div className={`plate-frame ${isColoring ? 'coloring-active' : ''}`}>
+      <div
+        ref={frameRef}
+        className={`plate-frame ${isColoring ? 'coloring-active' : ''}`}
+      >
         {reduced ? (
-          <Thumbnail model={model} coloring={coloring} view={view} />
+          <Thumbnail model={model} coloring={coloring} view={wallView} />
         ) : isFinished ? (
           <Thumbnail
             model={model}
             coloring={coloring}
-            view={view}
+            view={wallView}
             coloredUpTo={colorSteps}
             activeColorIndex={-1}
           />
@@ -140,29 +151,17 @@ function HeroPlay({ model }: { model: Model }) {
           <Thumbnail
             model={model}
             coloring={coloring}
-            view={view}
+            view={wallView}
             coloredUpTo={coloredUpTo}
             activeColorIndex={colorIndex}
           />
-        ) : isFadingLines ? (
-          <>
-            <Thumbnail
-              model={model}
-              coloring={coloring}
-              view={view}
-              coloredUpTo={0}
-              activeColorIndex={-1}
-            />
-            <Construction
-              model={panelModel}
-              upTo={all}
-              view={view}
-              svgRef={svgRef}
-              ink
-              enter
-              fadeLines
-            />
-          </>
+        ) : isRepeating ? (
+          <RepeatedInk
+            model={panelModel}
+            enter
+            speed={HERO_SPEED}
+            view={wallView}
+          />
         ) : k === n ? (
           <Construction
             model={panelModel}

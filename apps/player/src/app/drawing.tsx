@@ -693,10 +693,14 @@ export function RepeatedInk({
   enter = false,
   speed = 1,
   paused = false,
+  view: givenView,
 }: {
   model: Model;
   /** Only so many copies along the row and up, else the whole wall. */
   count?: readonly [number, number];
+  /** Where the camera ends, if not the whole wall (the home page's hero
+   * ends on the wall its colours then fill). */
+  view?: Rect;
   enter?: boolean;
   speed?: number;
   paused?: boolean;
@@ -707,6 +711,7 @@ export function RepeatedInk({
   const { row, next } = useMemo(() => rowBasis(model), [model]);
   const [cm, cn] = count ?? [0, 0];
   const view = useMemo(() => {
+    if (givenView) return givenView;
     if (!cm) return tiling(model).view;
     // Just the copies asked for, with a margin.
     const corners = [];
@@ -718,7 +723,7 @@ export function RepeatedInk({
             y: c.y + i * row.y + j * next.y,
           });
     return fit(boxOf(corners) ?? tiling(model).view, 0.06);
-  }, [model, cm, cn, cell, row, next]);
+  }, [model, cm, cn, cell, row, next, givenView]);
   const svgRef = useRef<SVGSVGElement>(null);
   const inkId = `tile-ink-${useId().replace(/:/g, '')}`;
   const inkPath = useMemo(
