@@ -184,9 +184,14 @@ describe('the player', () => {
     fireEvent.click(forward);
     expect(label()).toBe('Step 2 of 6');
     fireEvent.click(screen.getByRole('button', { name: 'Go to color' }));
-    fireEvent.keyDown(screen.getByRole('combobox', { name: 'Style' }), {
-      key: 'ArrowLeft',
-    });
+    fireEvent.keyDown(
+      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+        name: 'Tiles',
+      }),
+      {
+        key: 'ArrowLeft',
+      },
+    );
     expect(label()).toBe('Color');
   });
 

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import zellige from '@tutorials/eight-fold-zellige.json';
 import filled from '@tutorials/kurt-eight-fold-zellige-filled.json';
@@ -215,9 +215,11 @@ describe('the wall controls', () => {
       fireEvent.click(
         screen.getByRole('button', { name: /^(Next|Repeat it)$/ }),
       );
-    fireEvent.change(screen.getByLabelText(/Style/), {
-      target: { value: 'lines' },
-    });
+    fireEvent.click(
+      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+        name: 'Lines',
+      }),
+    );
     expect(
       document.querySelector('svg.wall')?.classList.contains('style-lines'),
     ).toBe(true);
@@ -229,9 +231,11 @@ describe('the wall controls', () => {
         .querySelector('polygon.wall-piece')
         ?.getAttribute('stroke-width'),
     ).toBe('0');
-    fireEvent.change(screen.getByLabelText(/Style/), {
-      target: { value: 'jali' },
-    });
+    fireEvent.click(
+      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+        name: 'Jali',
+      }),
+    );
     expect(
       document.querySelector('svg.wall')?.classList.contains('style-jali'),
     ).toBe(true);
@@ -249,9 +253,11 @@ describe('the wall controls', () => {
           ?.getAttribute('stroke-width'),
       ),
     ).toBeCloseTo(0.024 * 5.4, 9);
-    fireEvent.change(screen.getByLabelText(/Style/), {
-      target: { value: 'tiles' },
-    });
+    fireEvent.click(
+      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+        name: 'Tiles',
+      }),
+    );
     expect(screen.getByRole('heading', { name: 'Colors' })).toBeTruthy();
   });
 });

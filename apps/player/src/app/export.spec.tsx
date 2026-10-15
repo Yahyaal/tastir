@@ -97,9 +97,7 @@ describe('export in the player', () => {
     window.print = print;
     vi.useFakeTimers();
     atColor();
-    fireEvent.change(screen.getByLabelText('Paper'), {
-      target: { value: 'Letter' },
-    });
+    fireEvent.click(screen.getByRole('button', { name: 'Letter' }));
     fireEvent.click(screen.getByRole('button', { name: 'Print line sheet' }));
     const sheet = document.querySelector('.print-sheet');
     expect(sheet?.classList.contains('paper-Letter')).toBe(true);

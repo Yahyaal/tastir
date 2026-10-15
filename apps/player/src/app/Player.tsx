@@ -60,7 +60,8 @@ import { ShareLink } from './Sharing';
 import { useCamera } from './useCamera';
 import { useInking } from './useInking';
 import { useModalFocus } from './useModalFocus';
-import { banded, Wall, WALL_STYLES, type WallStyle } from './Wall';
+import { Wall, type WallStyle } from './Wall';
+import { WallControls } from './WallControls';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
 import { setStayGuard } from './routing';
@@ -1224,7 +1225,25 @@ export function Player({
               {/* At the end on a computer or tablet, Save and Share are in the step
                   bar, where Next was; only a note about changes stays here. */}
               {ready && !phone ? draftNote : null}
-              {stage.kind === 'color' ? colorsSection : null}
+              {/* On the finished wall its style and width come first; while
+                  one tile is coloured, the colours do. */}
+              {onWall ? (
+                <WallControls
+                  style={wallStyle}
+                  onStyle={(style) => {
+                    setWallStyle(style);
+                    if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                  }}
+                  grout={grout}
+                  onGrout={setGrout}
+                  comparing={photos.length ? comparing : undefined}
+                  onCompare={setComparing}
+                />
+              ) : null}
+              {onWall && wallStyle === 'jali' ? (
+                <JaliControls appearance={jali} onChange={setJali} />
+              ) : null}
+              {colorsSection}
               {ready && phone ? (
                 <section ref={readyRef}>
                   <h2>My design</h2>
@@ -1240,83 +1259,13 @@ export function Player({
                   {draftNote}
                 </section>
               )}
-              {photos.length && onWall ? (
-                <section>
-                  <h2>The original</h2>
-                  <button
-                    type="button"
-                    className="compare-toggle"
-                    aria-pressed={comparing}
-                    onClick={() => setComparing(!comparing)}
-                  >
-                    {comparing
-                      ? 'Hide the original'
-                      : 'Compare with the original'}
-                  </button>
-                  <p className="hint">
-                    A photo of the real pattern, beside the wall. Click it to
-                    see it at full size.
-                  </p>
-                </section>
-              ) : null}
-              {onWall ? (
-                <section>
-                  <h2>The wall</h2>
-                  <div className="wall-tools">
-                    <label>
-                      Style
-                      <select
-                        value={wallStyle}
-                        onChange={(e) => {
-                          const style = e.target.value as WallStyle;
-                          setWallStyle(style);
-                          if (style === 'jali' && grout < 0.5) setGrout(0.5);
-                        }}
-                      >
-                        {WALL_STYLES.map((s) => (
-                          <option key={s} value={s}>
-                            {s[0]?.toUpperCase() + s.slice(1)}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      {wallStyle === 'jali'
-                        ? 'Lattice'
-                        : banded(wallStyle)
-                          ? 'Band'
-                          : 'Grout'}
-                      <input
-                        type="range"
-                        min={wallStyle === 'jali' ? 0.5 : 0}
-                        max={3}
-                        step={0.25}
-                        value={
-                          wallStyle === 'jali' ? Math.max(0.5, grout) : grout
-                        }
-                        onChange={(e) => setGrout(Number(e.target.value))}
-                      />
-                    </label>
-                  </div>
-                  <p className="hint">
-                    {wallStyle === 'jali'
-                      ? 'An open screen. Switch styles to see your tile colors. '
-                      : ''}
-                    Drag to move along the wall, scroll to zoom.
-                  </p>
-                </section>
-              ) : null}
-              {onWall && wallStyle === 'jali' ? (
-                <JaliControls appearance={jali} onChange={setJali} />
-              ) : null}
-              {stage.kind === 'color' ? null : colorsSection}
               <section>
                 <h2>Take it with you</h2>
                 {ready ? null : shareLink}
                 <div className="export-tools">
                   <button
                     type="button"
-                    className="quiet"
+                    className="secondary"
                     onClick={() =>
                       download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
                     }
@@ -1325,7 +1274,7 @@ export function Player({
                   </button>
                   <button
                     type="button"
-                    className="quiet"
+                    className="secondary"
                     onClick={() =>
                       void pngBlob(exportSvg()).then((png) =>
                         download(png, `${tutorial.id}.png`),
@@ -1334,21 +1283,28 @@ export function Player({
                   >
                     Download PNG
                   </button>
-                  <select
-                    aria-label="Paper"
-                    value={paper}
-                    onChange={(e) => setPaper(e.target.value as Paper)}
-                  >
-                    <option>A4</option>
-                    <option>Letter</option>
-                  </select>
+                </div>
+                {/* The paper is beside Print, the one thing it changes. */}
+                <div className="print-tools">
                   <button
                     type="button"
-                    className="quiet"
+                    className="secondary"
                     onClick={() => setPrinting(true)}
                   >
                     Print line sheet
                   </button>
+                  <div className="paper" role="group" aria-label="Paper">
+                    {(['A4', 'Letter'] as const).map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        aria-pressed={p === paper}
+                        onClick={() => setPaper(p)}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </section>
               {!mine && !sharedView ? (
