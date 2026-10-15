@@ -1816,8 +1816,16 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'AI agent Phase 0: live ChatGPT request fixed and verified',
+      text: 'The owner’s first request failed because the valid stream omitted its content-type header. It also delivered the tool call in finalized item events while leaving the final output list empty. Both are handled now, with actions still held until successful completion. A live GPT-6.1-Sol request sent the board image, highlighted O, acknowledged the mark and completed the explanation. All 25 runtime tests, workspace tests, lint, TypeScript checks and 15 assistant browser checks passed. The picture shows the real result with the saved account masked.',
+      link: {
+        label: 'See the successful live result',
+        href: '/__review/renders/agent-phase-0/live-fixed.png',
+      },
+    },
+    {
       title: 'AI agent Phase 0: local connection workspace implemented',
-      text: 'On codex/ai-agent-phase-0, pnpm dev:agent opens a real Tastir drawing with ChatGPT sign-in, account-specific models, board-image capture, questions and a highlighting tool. The browser acknowledges a displayed mark before the model continues, and rejects stale or stopped responses. The full checks passed, including 151 existing app browser checks and 15 assistant checks. Tests use simulated model responses; the owner’s live account check remains pending. Original pattern creation and coloring come later.',
+      text: 'On codex/ai-agent-phase-0, pnpm dev:agent opens a real Tastir drawing with ChatGPT sign-in, account-specific models, board-image capture, questions and a highlighting tool. The browser acknowledges a displayed mark before the model continues, and rejects stale or stopped responses. The full checks passed, including 151 existing app browser checks and 15 assistant checks. The first live account check now passed too. Original pattern creation and coloring come later.',
       link: { label: 'Open the local assistant', href: '/#/agent' },
     },
     {
@@ -2095,8 +2103,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI agent: verify the live ChatGPT connection',
-    text: 'The local workspace is implemented. Connect ChatGPT, select an object and send “Explain the selected object and point to it.” The check succeeds only after image inference, a browser-acknowledged highlight and the model’s final completed reply. The setup guide explains account access, usage and current limits.',
+    title: 'AI agent: ready for the shared app command interface',
+    text: 'The first live connection check passed: a board image, browser-acknowledged highlight and completed explanation all worked with the connected account. The next phase gives the assistant shared app state and commands before extending it into the regular screens and original pattern creation. The current workspace can answer questions and highlight named objects.',
     link: { label: 'Open the setup guide', href: '/#/notes/agent-setup' },
   },
   next: [
@@ -2123,14 +2131,6 @@ export const PROGRESS: {
     },
   ],
   waiting: [
-    {
-      title: 'AI agent: connect the owner’s ChatGPT account',
-      text: 'Run pnpm dev:agent and open its printed address, normally http://127.0.0.1:4291/#/agent. Continue with ChatGPT, grant plan usage, and send a request about the selected object. No API key is needed. The live check is pending; simulated tests are not proof of account access.',
-      link: {
-        label: 'See the current workspace',
-        href: '/__review/renders/agent-phase-0/desktop.png',
-      },
-    },
     {
       title: 'Alhambra interlace',
       text: 'Needs a better source than the product page: a photo or drawing of the whole panel.',

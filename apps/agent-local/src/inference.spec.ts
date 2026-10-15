@@ -36,6 +36,21 @@ const stream = (output: unknown[]) =>
     }),
     { headers: { 'Content-Type': 'text/event-stream' } },
   );
+// Matches the live route: no Content-Type, finalized items, empty terminal output.
+const sparseStream = (output: unknown[]) =>
+  new Response(
+    new TextEncoder().encode(
+      output
+        .map((item, output_index) =>
+          frame({ type: 'response.output_item.done', output_index, item }),
+        )
+        .join('') +
+        frame({
+          type: 'response.completed',
+          response: { status: 'completed', output: [] },
+        }),
+    ),
+  );
 let directory: string;
 let store: StateStore;
 beforeEach(async () => {
@@ -64,9 +79,93 @@ afterEach(async () => {
 });
 
 describe('completed streaming responses', () => {
+  it('retains finalized items when the completed event has an empty output array', async () => {
+    const reasoning = {
+      type: 'reasoning',
+      encrypted_content: 'opaque-continuation',
+    };
+    const response = new Response(
+      frame({
+        type: 'response.output_item.done',
+        output_index: 1,
+        item: tool,
+      }) +
+        frame({
+          type: 'response.output_item.done',
+          output_index: 0,
+          item: reasoning,
+        }) +
+        frame({
+          type: 'response.completed',
+          response: { status: 'completed', output: [] },
+        }),
+      { headers: { 'Content-Type': 'text/event-stream' } },
+    );
+    expect(await completedResponse(response)).toEqual([reasoning, tool]);
+  });
+  it('uses the completed output without duplicating finalized item events', async () => {
+    const response = new Response(
+      frame({
+        type: 'response.output_item.done',
+        output_index: 0,
+        item: tool,
+      }) +
+        frame({
+          type: 'response.completed',
+          response: { status: 'completed', output: [tool] },
+        }),
+      { headers: { 'Content-Type': 'text/event-stream' } },
+    );
+    expect(await completedResponse(response)).toEqual([tool]);
+  });
+  it('rejects a gap in finalized output before releasing any calls', async () => {
+    const response = new Response(
+      frame({
+        type: 'response.output_item.done',
+        output_index: 1,
+        item: tool,
+      }) +
+        frame({
+          type: 'response.completed',
+          response: { status: 'completed', output: [] },
+        }),
+      { headers: { 'Content-Type': 'text/event-stream' } },
+    );
+    await expect(completedResponse(response)).rejects.toMatchObject({
+      code: 'invalid_stream',
+    });
+  });
+  it('accepts a completed event stream when the response omits Content-Type', async () => {
+    // The live ChatGPT plan route returned HTTP 200 and SSE frames without this header.
+    const response = stream([tool]);
+    response.headers.delete('Content-Type');
+    expect(await completedResponse(response)).toEqual([tool]);
+  });
+  it('still requires completion for an event stream without Content-Type', async () => {
+    const response = new Response(
+      frame({ type: 'response.output_item.done', output_index: 0, item: tool }),
+    );
+    response.headers.delete('Content-Type');
+    await expect(completedResponse(response)).rejects.toMatchObject({
+      code: 'stream_interrupted',
+    });
+  });
+  it('rejects an explicitly incompatible response type', async () => {
+    await expect(
+      completedResponse(
+        new Response(
+          frame({
+            type: 'response.completed',
+            response: { status: 'completed', output: [tool] },
+          }),
+          { headers: { 'Content-Type': 'text/html' } },
+        ),
+      ),
+    ).rejects.toMatchObject({ code: 'invalid_stream' });
+  });
   it('does not accept tool arguments from an interrupted stream', async () => {
     const response = new Response(
-      frame({ type: 'response.output_item.done', item: tool }),
+      frame({ type: 'response.output_item.done', output_index: 0, item: tool }),
       { headers: { 'Content-Type': 'text/event-stream' } },
     );
     await expect(completedResponse(response)).rejects.toMatchObject({
@@ -75,7 +174,11 @@ describe('completed streaming responses', () => {
   });
   it('recognizes late usage-limit and incomplete errors', async () => {
     const response = new Response(
-      frame({ type: 'response.output_item.done', item: tool }) +
+      frame({
+        type: 'response.output_item.done',
+        output_index: 0,
+        item: tool,
+      }) +
         frame({
           type: 'response.failed',
           response: {
@@ -179,10 +282,13 @@ describe('image and tool execution loop', () => {
           ],
         });
       const data = JSON.parse(String(init!.body));
+      expect(new Headers(init!.headers).get('Accept')).toBe(
+        'text/event-stream',
+      );
       bodies.push(data);
       return bodies.length === 1
-        ? stream([tool])
-        : stream([
+        ? sparseStream([tool])
+        : sparseStream([
             {
               type: 'message',
               content: [{ type: 'output_text', text: 'Here is the center.' }],

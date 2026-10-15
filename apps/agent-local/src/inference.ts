@@ -18,12 +18,23 @@ const CompletedShape = z.object({
   output: z.array(ItemShape),
 });
 type Output = z.infer<typeof CompletedShape>['output'];
+const DoneItemShape = z.object({
+  output_index: z.number().int().nonnegative(),
+  item: ItemShape,
+});
 
 /** A truncated, failed or incomplete stream never releases executable calls. */
 export async function completedResponse(response: Response): Promise<Output> {
+  // The live ChatGPT plan route can omit Content-Type on valid SSE responses.
+  // A missing header still requires parsed events and response.completed below.
+  const contentType = response.headers
+    .get('content-type')
+    ?.split(';')[0]
+    ?.trim()
+    .toLowerCase();
   if (
     !response.body ||
-    !response.headers.get('content-type')?.includes('text/event-stream')
+    (contentType !== undefined && contentType !== 'text/event-stream')
   )
     throw new AgentError(
       'invalid_stream',
@@ -34,6 +45,7 @@ export async function completedResponse(response: Response): Promise<Output> {
   const decoder = new TextDecoder();
   let pending = '';
   let bytes = 0;
+  const finalized = new Map<number, Output[number]>();
   try {
     while (true) {
       const { value, done } = await reader.read();
@@ -55,8 +67,24 @@ export async function completedResponse(response: Response): Promise<Output> {
           .join('\n');
         if (!data || data === '[DONE]') continue;
         const event = JSON.parse(data) as Record<string, unknown>;
-        if (event['type'] === 'response.completed')
-          return CompletedShape.parse(event['response']).output;
+        if (event['type'] === 'response.output_item.done') {
+          const { output_index, item } = DoneItemShape.parse(event);
+          finalized.set(output_index, item);
+        }
+        if (event['type'] === 'response.completed') {
+          const { output } = CompletedShape.parse(event['response']);
+          if (output.length) return output;
+          // Some live streams deliver output only in finalized item events.
+          // Hold those items until the whole response completes successfully.
+          const entries = [...finalized].sort(([a], [b]) => a - b);
+          if (entries.some(([index], position) => index !== position))
+            throw new AgentError(
+              'invalid_stream',
+              'The response was missing output items. No new tool actions were applied.',
+              502,
+            );
+          return entries.map(([, item]) => item);
+        }
         if (
           ['response.failed', 'response.incomplete', 'error'].includes(
             String(event['type']),
@@ -122,6 +150,7 @@ export class AgentRuntime {
         signal,
         headers: {
           Authorization: `Bearer ${await this.auth.accessToken(force)}`,
+          Accept: body === undefined ? 'application/json' : 'text/event-stream',
           ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
         },
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),

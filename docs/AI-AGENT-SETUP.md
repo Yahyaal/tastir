@@ -1,6 +1,6 @@
 # Try the local drawing assistant
 
-The first implementation lives on `codex/ai-agent-phase-0`. It connects a local companion to ChatGPT, sends an image of a real Tastir construction, and lets the model highlight a named object. The code and automated tests are separate from the live account check: that check still needs the owner to sign in and complete a request.
+The first implementation lives on `codex/ai-agent-phase-0`. It connects a local companion to ChatGPT, sends an image of a real Tastir construction, and lets the model highlight a named object. The owner connected ChatGPT, and a live image, highlighting and final-reply check passed on 15 October 2026.
 
 ## Start it
 
@@ -48,4 +48,8 @@ The full `pnpm check` passed: lint, TypeScript checks, unit tests, production bu
 
 Manual browser checks found no page errors or horizontal overflow at 1280, 1024 and 390 pixels. The setup and review links opened correctly, and the production JavaScript excluded the local assistant UI. These are the signed-out workspace views: [desktop](/__review/renders/agent-phase-0/desktop.png), [tablet](/__review/renders/agent-phase-0/tablet.png), [phone](/__review/renders/agent-phase-0/phone.png), and [dark theme](/__review/renders/agent-phase-0/dark.png).
 
-The live account check remains pending. At verification, the local companion had no connected ChatGPT account, and no inference was made using the owner's plan during these automated checks.
+The owner's first live request exposed two assumptions in the stream reader. The HTTP 200 response omitted Content-Type, and its terminal response had an empty output array even though finalized item events contained the tool call. The reader now accepts a missing header, preserves finalized items in output order, and releases them only after a valid response.completed event. Explicitly incompatible content types, gaps in item order, interrupted streams and late failures still reject the response. Opaque continuation fields remain intact. [Official streaming events](https://developers.openai.com/api/reference/resources/responses/streaming-events).
+
+After this fix, a live request using the connected account and GPT-6.1-Sol sent the board PNG with O selected, returned one highlighting call, displayed a turquoise ring at O, acknowledged it to the model and received the final completed explanation. The UI displayed the full live-check success message. [See the live result, with the saved account masked](/__review/renders/agent-phase-0/live-fixed.png). This establishes the first account-specific round trip; it does not establish reliability across other models or later creation features.
+
+The fix passed all 25 local runtime tests, including regression coverage for both live response differences, preserved continuation data, duplicate prevention and incomplete streams. The workspace's pnpm test, pnpm lint and pnpm typecheck passed. All 15 assistant browser checks also passed. Automated tests use simulated responses; the live test above used the owner's connected plan.

@@ -1,6 +1,6 @@
 # AI agent for Tastir
 
-Detailed implementation plan, 15 October 2026. The owner wants an agent that answers questions, navigates Tastir, draws and colors its own patterns from instructions, sees the current view, and points things out on screen. The Phase 0 connection workspace is now implemented on `codex/ai-agent-phase-0`; its live account check is pending. [Try the local assistant](AI-AGENT-SETUP.md). The remaining phases below are planned work.
+Detailed implementation plan, 15 October 2026. The owner wants an agent that answers questions, navigates Tastir, draws and colors its own patterns from instructions, sees the current view, and points things out on screen. The Phase 0 connection workspace is implemented on `codex/ai-agent-phase-0`; its first live account check passed after fixing the stream reader. [Try the local assistant](AI-AGENT-SETUP.md). The remaining phases below are planned work.
 
 ## The experience we are building
 
@@ -197,4 +197,4 @@ During implementation, run lint, typecheck, unit tests, build and Chromium check
 
 ## Next step
 
-Finish Phase 0's live check: connect this local Tastir installation to your ChatGPT account, send a current board image with a named selection, and complete a tool call that points at that object. The connection workspace and shared observation contracts are implemented. A successful live request proves access on the actual account. Then proceed through the shared app command interface, original drawing and coloring in the sequence above.
+Phase 0's first live check passed on the owner's connected account: a current board image and named selection produced a displayed, acknowledged highlight and a completed final reply. The connection workspace and shared observation contracts are implemented. Next, build the shared app command interface, then original drawing and coloring in the sequence above. The initial live success is a capability check; the broader evaluation set remains later work.
