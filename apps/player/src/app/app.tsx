@@ -19,6 +19,12 @@ const Review = import.meta.env.DEV
   ? lazy(() => import('../review/Review').then((m) => ({ default: m.Review })))
   : undefined;
 
+const AgentLab = import.meta.env.DEV
+  ? lazy(() =>
+      import('../agent/AgentLab').then((m) => ({ default: m.AgentLab })),
+    )
+  : undefined;
+
 /**
  * The project notes (#/notes): the docs a new session reads first, shown in
  * the app. Like the review page, it exists only on the dev server.
@@ -89,6 +95,14 @@ export function App({
     [own, library],
   );
   if (!route) return <Library entries={library} />;
+  if (route === 'agent')
+    return AgentLab ? (
+      <Suspense fallback={<p>Loading the drawing assistant…</p>}>
+        <AgentLab />
+      </Suspense>
+    ) : (
+      <Broken message="The local assistant is available through pnpm dev:agent." />
+    );
   if (route === 'work') return <WorkPage entries={library} />;
   if (route === 'upcoming') {
     return (

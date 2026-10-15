@@ -32,6 +32,19 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 4200,
     host: 'localhost',
+    proxy:
+      process.env['TASTIR_AGENT_TARGET'] && process.env['TASTIR_AGENT_SECRET']
+        ? {
+            '/__agent': {
+              target: process.env['TASTIR_AGENT_TARGET'],
+              changeOrigin: true,
+              headers: {
+                'X-Tastir-Bridge': process.env['TASTIR_AGENT_SECRET'],
+              },
+              rewrite: (path) => path.replace(/^\/__agent/, ''),
+            },
+          }
+        : undefined,
   },
   preview: {
     port: 4300,

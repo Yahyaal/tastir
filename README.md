@@ -20,6 +20,10 @@ pnpm install --frozen-lockfile
 pnpm nx run player:dev --port=4290 --strictPort
 ```
 
+## Try the local drawing assistant
+
+Run `pnpm dev:agent` and open http://127.0.0.1:4291/#/agent. The first implementation connects your ChatGPT account, sends the current construction image, and lets the model point at a named object. Original drawing and coloring are later phases. The live account check requires signing in through this screen; automated tests use simulated model responses. See [the setup guide](docs/AI-AGENT-SETUP.md) and [the full plan](docs/AI-AGENT-PLAN.md).
+
 ## Check changes locally
 
 ```sh
@@ -35,6 +39,7 @@ pnpm typecheck
 pnpm test
 pnpm build
 pnpm test:browser
+pnpm test:agent:browser
 pnpm exec playwright show-report
 ```
 
@@ -54,6 +59,8 @@ Generated previews, reports, and browser traces are ignored by Git. `pnpm catalo
 
 - `packages/engine`: pure TypeScript geometry, construction evaluation, inking, and piece finding. No DOM or React.
 - `packages/schema`: tutorial, draft, and sharing validation.
+- `packages/agent-protocol`: shared observation and highlighting contracts.
+- `apps/agent-local`: local ChatGPT authentication and model/tool request handling.
 - `apps/player/src/app`: routing, library, player, saving, and sharing.
 - `apps/player/src/along`: drawing beside a tutorial, hints, pen inking, and hand-placed repeats.
 - `apps/player/src/editor`: construction tools and editable patterns.

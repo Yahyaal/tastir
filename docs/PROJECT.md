@@ -30,6 +30,8 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 ## Open decisions and things still to do
 
+**Local AI assistant (15 October).** The owner asked to begin the [AI agent plan](AI-AGENT-PLAN.md) on a new branch. `codex/ai-agent-phase-0` implements a local ChatGPT companion and a workspace using the real editor drawing. It can send the current construction image and accept a model tool call that highlights an object after validating the view. Original drawing and coloring remain later phases. Automated tests use simulated model responses; the live ChatGPT account check is pending. [Setup and current limits](AI-AGENT-SETUP.md).
+
 The prioritised list is the **Next** section of the review page (`PROGRESS` in `apps/player/src/review/data.ts`), and the pattern work is in [the queue](patterns/QUEUE.md). The owner still has to:
 - answer the question on the review page about the filled wheel's colours, and look at the interlace fix;
 - decide on the four wall styles Claude recommended dropping (tasks 2.2, 2.4, 2.5 and 2.6);

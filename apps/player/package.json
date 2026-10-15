@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@tastir/engine": "workspace:*",
-    "@tastir/schema": "workspace:*"
+    "@tastir/schema": "workspace:*",
+    "@tastir/agent-protocol": "workspace:*"
   }
 }

@@ -1,6 +1,6 @@
 # AI agent for Tastir
 
-Detailed implementation plan, 15 October 2026. The owner wants an agent that answers questions, navigates Tastir, draws and colors its own patterns from instructions, sees the current view, and points things out on screen. This document plans that work; the agent is not implemented yet.
+Detailed implementation plan, 15 October 2026. The owner wants an agent that answers questions, navigates Tastir, draws and colors its own patterns from instructions, sees the current view, and points things out on screen. The Phase 0 connection workspace is now implemented on `codex/ai-agent-phase-0`; its live account check is pending. [Try the local assistant](AI-AGENT-SETUP.md). The remaining phases below are planned work.
 
 ## The experience we are building
 
@@ -195,6 +195,6 @@ Use fixed fixtures and recorded tool transcripts for deterministic tests. Run a 
 
 During implementation, run lint, typecheck, unit tests, build and Chromium checks sequentially where generated output is shared. Add focused checks for transactions, revisions, pointers and the completed creation flow. Review desktop, tablet and phone captures. The first supported environment is the owner's local Linux browser; confirm other environments during packaging work.
 
-## Recommended first task
+## Next step
 
-Implement Phase 0: connect this local Tastir installation to your ChatGPT account, send a current board image with a named selection, and complete a tool call that points at that object. This proves sign-in, vision and tool execution on the actual account. Then proceed through the shared command interface, original drawing and coloring in the sequence above.
+Finish Phase 0's live check: connect this local Tastir installation to your ChatGPT account, send a current board image with a named selection, and complete a tool call that points at that object. The connection workspace and shared observation contracts are implemented. A successful live request proves access on the actual account. Then proceed through the shared app command interface, original drawing and coloring in the sequence above.
