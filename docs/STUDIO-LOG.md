@@ -12,7 +12,7 @@ Progress on [the studio plan](STUDIO-PLAN.md), newest last. The work is on branc
 | 4. Talking and pointing | Done, 16 October (live check with the owner still to do) |
 | 5. Photos | Tools done 16 October; the live reconstruction waits for the owner to line up a photo |
 | 6. Codex and Gemini | Two agents done 16 October; Codex waits for the ChatGPT allowance, Gemini for the owner to install and sign in |
-| 7. Contest (optional) | Tools done 16 October; a live contest is next |
+| 7. Contest (optional) | Done 16 October with Claude Code; waits for the owner's pick, and for Codex and Gemini runs |
 
 The plan asks for each phase to be added to `docs/TASKS.md`. Codex has uncommitted changes to that file in its checkout, so the studio phases are tracked here and will be added to the task list when the branches are merged.
 
@@ -83,3 +83,13 @@ Briefs are JSON files in `apps/studio/briefs/` (text for the models, the fold, a
 The Gemini command is written from its documentation and has not been tried, because Gemini's tool is not installed here.
 
 **Checks.** 20 studio tests pass, including a contest run with two stand-in clients (one draws the square through the service, one stops on a usage limit) and blind judging. 10 studio browser checks pass, including judging a contest on desktop and phone. Typecheck and lint pass for the studio and the player.
+
+**Live contest.** `pnpm contest star-and-cross --models claude --runs 2 --minutes 10` ran Claude Code twice, unattended, one run after the other. Both finished with `check` clean, in 113 and 124 seconds (contest `star-and-cross-2026-10-16-28fc`). They are two different designs. One inks only the outlines of the two squares' star, giving stars and crosses. The other inks both whole squares, giving an octagon ringed by triangles inside each star. Both repeat cleanly on the square tile. The owner can judge them at `#/studio/contest/star-and-cross-2026-10-16-28fc` with `pnpm studio` running.
+
+## What waits for the owner or for a limit
+
+1. **Codex.** The ChatGPT allowance resets at 4:52 AM on 16 October. After that, run the square brief once with `TASTIR_AUTHOR=codex` (as in phase 6), then `pnpm contest star-and-cross --models codex --runs 2`. A resumed session does this.
+2. **Gemini.** Install its tool and sign in (setup notes), then run the same brief.
+3. **Asking live (phase 4).** With the owner at the screen: an agent asks about an element, the owner answers in the panel, the agent continues.
+4. **A photo (phase 5).** The owner lines up `apps/player/public/photos/itimad-star-and-octagon.jpg` in a studio project; an agent then recreates the pattern from O and A, and the owner judges the overlay.
+5. **Judging** the first contest, and deciding whether to merge `claude/studio` (it is built on Codex's `codex/ai-agent-screen-pointing`).
