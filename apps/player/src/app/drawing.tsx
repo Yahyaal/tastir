@@ -1,5 +1,6 @@
 /** @jsxRuntime automatic */
 import { useId, useLayoutEffect, useMemo, useRef } from 'react';
+import { boardRef, sceneTargets, paintedElement } from '../agent/screenTargets';
 import type {
   Geometry,
   InkPiece,
@@ -593,7 +594,27 @@ export function Construction({
   ]);
   return (
     <svg
-      ref={svgRef}
+      ref={
+        import.meta.env.DEV
+          ? boardRef(
+              svgRef,
+              (svg) => {
+                const names = new Set(
+                  [...svg.querySelectorAll('[data-name]:not(text)')]
+                    .filter(paintedElement)
+                    .map((node) => node.getAttribute('data-name')),
+                );
+                return sceneTargets(
+                  [...model.scene.elements.values()].filter((el) =>
+                    names.has(el.name),
+                  ),
+                );
+              },
+              model,
+              upTo,
+            )
+          : svgRef
+      }
       className={`drawing ${ink && enter ? 'ink-enter' : ''} ${fadeLines ? 'fade-lines' : ''}`}
       viewBox={viewBox(view)}
       role="img"

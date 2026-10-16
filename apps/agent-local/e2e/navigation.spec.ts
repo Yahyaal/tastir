@@ -84,7 +84,9 @@ test('navigates across real pages, captures the destination, and returns to the 
       expect(snapshot.mode).toBe('screen');
       expect(snapshot.screen.route).toBe('work');
       expect(snapshot.image).toBeNull();
-      expect(snapshot.targets).toEqual([]);
+      expect(
+        snapshot.targets.every((t: { kind: string }) => t.kind === 'control'),
+      ).toBe(true);
       await expect(page.locator('[data-tastir-page] .work-page')).toBeVisible();
       calls = [navigate(snapshot, 'wall:eight-fold-star-and-octagon')];
     }

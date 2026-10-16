@@ -3,6 +3,7 @@ import { useId, useMemo } from 'react';
 import type { Model } from './model';
 import { placeKey } from './placement';
 import { rosetteCards } from './rosettes';
+import { boardRef } from '../agent/screenTargets';
 
 type Place = { piece: number; i: number; j: number };
 
@@ -87,6 +88,25 @@ export function Tiles({
   };
   return (
     <svg
+      ref={
+        import.meta.env.DEV
+          ? boardRef(
+              undefined,
+              () =>
+                placed.map((p) => ({
+                  id: `geometry:piece${p.piece}@${p.i},${p.j}`,
+                  kind: 'polygon',
+                  geometry: {
+                    kind: 'polygon',
+                    vertices: p.polygon,
+                    name: nameOf(p),
+                    typeId: types[p.type]?.name,
+                  },
+                })),
+              placed,
+            )
+          : undefined
+      }
       className="drawing tiles"
       viewBox={box}
       role="img"

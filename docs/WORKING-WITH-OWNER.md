@@ -18,6 +18,8 @@ The owner’s 11 October Jali correction: minimize clicks. Show material choices
 
 ## Doing the work
 
+- **Keep verification within the machine’s memory.** Use one test worker and bounded Node heaps, and finish one suite before starting the next. Do not overlap browser suites, unit tests, typechecks and builds. Keep the owner’s app available. *Why (15 October):* the owner reported a crash during overlapping AI-agent checks and asked us to avoid overloading memory.
+
 - **When the owner is near the Claude limit, orchestrate.** Plan, review and write self-contained prompts for Gemini in Antigravity in `docs/prompts/<date>.md`, and do not spawn builder or tester agents. *Why (8 October):* the owner is close to the weekly limit and asked for this; prompts in chat are hard to copy, so they go in a file the owner points Antigravity at.
 - **Review outside work against the content rules, not only the looks.** *Why (8 October):* a redesign made elsewhere looked good and passed every test, but shipped a private research photo, uncredited photos, and claims ("verified", "world-renowned") that were not true.
 - **An action that does more than the learner clicked must show it, or be off by default.** *Why (8 October):* inking a dot on the Comares bones inked several lines in different directions (whole runs plus copies round the centre, both on by default), and the owner could not tell why.

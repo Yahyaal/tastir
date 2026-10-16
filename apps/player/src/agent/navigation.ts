@@ -7,6 +7,7 @@ import type { Entry } from '../app/library';
 import { listPatterns, playable } from '../editor/patterns';
 import { listDesigns } from '../app/designs';
 import { captureBoard } from './capture';
+import { boardTargets, controls, pointingRevision } from './screenTargets';
 
 const safeId = (id: string) => /^[A-Za-z0-9_-]+$/.test(id);
 const titleOf = (entry: Entry) =>
@@ -125,7 +126,7 @@ export const visibleDrawing = () =>
   );
 
 /** Includes real page changes without sending markup or form values as instructions. */
-export function pageRevision() {
+export function pageRevision(includePointing = true) {
   const root = page();
   const svg = visibleDrawing();
   const data = JSON.stringify([
@@ -133,6 +134,15 @@ export function pageRevision() {
     committedRoute(),
     root?.textContent,
     svg?.getAttribute('viewBox'),
+    svg
+      ? [
+          svg.getBoundingClientRect().x,
+          svg.getBoundingClientRect().y,
+          svg.getBoundingClientRect().width,
+          svg.getBoundingClientRect().height,
+        ]
+      : null,
+    includePointing ? pointingRevision(svg) : null,
     [...(root?.querySelectorAll('[aria-pressed]') ?? [])].map((n) =>
       n.getAttribute('aria-pressed'),
     ),
@@ -177,8 +187,29 @@ export async function observeScreen(
     throw new Error(
       'The page is still changing. Send it again when it is ready.',
     );
-  const revision = pageRevision();
   const svg = visibleDrawing();
+  // Let finite stroke/camera animations settle before describing their geometry.
+  const deadline = performance.now() + 5_000;
+  while (
+    svg?.isConnected &&
+    performance.now() < deadline &&
+    svg
+      .getAnimations?.({ subtree: true })
+      .some(
+        (a) =>
+          a.playState === 'running' &&
+          a.effect?.getTiming().iterations !== Infinity,
+      )
+  ) {
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => resolve()),
+    );
+  }
+  if (!sameScreenRoute(committedRoute(), currentRoute()))
+    throw new Error(
+      'The page changed while its drawing was settling. Send it again.',
+    );
+  const revision = pageRevision();
   const image = svg ? await captureBoard(svg) : null;
   if (pageRevision() !== revision)
     throw new Error('The page changed during capture. Send it again.');
@@ -186,11 +217,12 @@ export async function observeScreen(
   return SnapshotShape.parse({
     id: crypto.randomUUID(),
     documentId: `screen:${screen.route || 'library'}`,
-    documentRevision: revision,
+    // Navigation depends on page state; pointing also depends on current target exposure.
+    documentRevision: pageRevision(false),
     viewRevision: revision,
     title: screen.title,
     selected: null,
-    targets: [],
+    targets: [...boardTargets(svg), ...controls().map((c) => c.target)],
     image,
     screen,
     mode: 'screen',

@@ -26,7 +26,7 @@ export const ConstructionShape = z.discriminatedUnion('kind', [
 export type Construction = z.infer<typeof ConstructionShape>;
 export const TargetShape = z.strictObject({
   id: Id,
-  kind: z.enum(['point', 'line', 'circle', 'polygon']),
+  kind: z.enum(['point', 'line', 'circle', 'polygon', 'control']),
   geometry: z.record(z.string(), z.unknown()),
 });
 const HexColor = z.string().regex(/^#[0-9a-fA-F]{6}$/);
@@ -346,7 +346,7 @@ export const DRAWING_TOOLS = {
       name: 'navigate',
       strict: true,
       description:
-        'Open a Tastir destination from the latest observation.screen.destinations. Use its exact destinationId; never invent a route or URL. This preserves the assistant workspace and respects unsaved-change questions in the normal player. The browser confirms the destination actually rendered before returning a fresh screen observation. No automatic saving or discarding. Use assistant destination to return to the editable drawing workspace. On normal screens only navigation and questions are supported.',
+        'Open a Tastir destination from the latest observation.screen.destinations. Use its exact destinationId; never invent a route or URL. This preserves the assistant workspace and respects unsaved-change questions in the normal player. The browser confirms the destination actually rendered before returning a fresh screen observation. No automatic saving or discarding. Use assistant destination to return to the editable drawing workspace. On normal screens navigation, questions and highlighting supplied targets are supported.',
       parameters: {
         type: 'object',
         additionalProperties: false,

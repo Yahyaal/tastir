@@ -295,3 +295,35 @@
 .agent-dock .agent-connection {
   margin-block: 8px;
 }
+
+.agent-screen-pointer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 47;
+}
+.agent-screen-pointer-svg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  fill: none;
+  stroke: var(--theme-accent);
+  stroke-width: 3px;
+}
+.agent-screen-pointer-svg * {
+  vector-effect: non-scaling-stroke;
+}
+.agent-screen-pointer-svg polygon {
+  fill: color-mix(in srgb, var(--theme-accent) 14%, transparent);
+}
+.agent-screen-pointer p {
+  position: absolute;
+  max-width: 210px;
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border: 2px solid var(--theme-accent);
+  border-radius: 8px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  font-size: 0.85rem;
+}

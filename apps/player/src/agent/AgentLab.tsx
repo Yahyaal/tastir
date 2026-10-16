@@ -54,7 +54,13 @@ import {
   navigateTo,
   observeScreen,
   pageRevision,
+  visibleDrawing,
 } from './navigation';
+import {
+  clearScreenHighlight,
+  showScreenHighlight,
+  screenHighlightDisplayed,
+} from './ScreenPointer';
 import './agent.css';
 
 export function AgentLab({
@@ -185,6 +191,7 @@ function Workspace({
   const [activity, setActivity] = useState('');
   const [error, setError] = useState('');
   const [sentImage, setSentImage] = useState('');
+  const [screenPoint, setScreenPoint] = useState(false);
   const [proof, setProof] = useState<
     false | 'point' | 'draw' | 'navigate' | 'view'
   >(false);
@@ -422,6 +429,8 @@ function Workspace({
   }, [open, client]);
 
   const stop = () => {
+    clearScreenHighlight();
+    setScreenPoint(false);
     generation.current++;
     controller.current?.abort();
     controller.current = null;
@@ -491,6 +500,8 @@ function Workspace({
     setAnswer('');
     setProof(false);
     setMark(undefined);
+    clearScreenHighlight();
+    setScreenPoint(false);
     const abort = new AbortController();
     controller.current = abort;
     const runGeneration = ++generation.current;
@@ -559,7 +570,9 @@ function Workspace({
               if (
                 call.arguments.snapshotId !== snapshot.id ||
                 call.arguments.documentRevision !== snapshot.documentRevision ||
-                revision() !== snapshot.viewRevision
+                (snapshot.mode === 'screen'
+                  ? pageRevision(false) !== snapshot.documentRevision
+                  : revision() !== snapshot.viewRevision)
               )
                 return {
                   callId: call.id,
@@ -578,6 +591,7 @@ function Workspace({
                 moved = true;
                 pointed = false;
                 setMark(undefined);
+                clearScreenHighlight();
                 return {
                   callId: call.id,
                   ok: true,
@@ -595,12 +609,36 @@ function Workspace({
                 };
               }
             }
+            if (
+              snapshot.mode === 'screen' &&
+              call.name === 'highlight_target'
+            ) {
+              const result = checkHighlight(call, snapshot, revision());
+              if (
+                result.ok &&
+                !showScreenHighlight(
+                  call.id,
+                  call.arguments,
+                  snapshot,
+                  visibleDrawing(),
+                )
+              ) {
+                result.ok = false;
+                result.message =
+                  'That object is no longer visible on this page. Send a new view.';
+              }
+              if (result.ok) {
+                pointed = true;
+                setScreenPoint(true);
+              }
+              return result;
+            }
             if (snapshot.mode === 'screen')
               return {
                 callId: call.id,
                 ok: false,
                 message:
-                  'This page supports questions and navigation. Return to the assistant workspace to edit or point at named geometry.',
+                  'This page supports questions, navigation and pointing. Return to the assistant workspace to edit geometry.',
               };
             if (call.name === 'highlight_target') {
               const result = checkHighlight(call, snapshot, revision());
@@ -768,12 +806,19 @@ function Workspace({
         if (!isCurrent()) return;
         if (!edited && !navigated && !refitted) {
           for (const result of results)
-            if (result.ok && revision() !== snapshot.viewRevision) {
+            if (
+              result.ok &&
+              (revision() !== snapshot.viewRevision ||
+                (snapshot.mode === 'screen' &&
+                  !screenHighlightDisplayed(result.callId)))
+            ) {
               result.ok = false;
               result.message =
                 'The view changed before the mark was displayed. Send a new view.';
               pointed = false;
               setMark(undefined);
+              clearScreenHighlight();
+              setScreenPoint(false);
             }
         }
         let fresh: Snapshot | undefined;
@@ -1232,8 +1277,8 @@ function Workspace({
         <h2>Assistant</h2>
         {route !== 'agent' ? (
           <p className="agent-caption">
-            Share this page’s text and drawing to ask or navigate. Geometry
-            tools remain in your <a href="#/agent">assistant workspace</a>.
+            Ask, navigate or point here. Draw in your{' '}
+            <a href="#/agent">assistant workspace</a>.
           </p>
         ) : null}
         {route === 'agent' ? (
@@ -1416,7 +1461,7 @@ function Workspace({
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
               maxLength={8000}
-              rows={route === 'agent' ? 4 : 3}
+              rows={route === 'agent' ? 4 : 2}
             />
           </label>
           <div className="agent-actions">
@@ -1444,7 +1489,9 @@ function Workspace({
                   ? 'Drawing updated: edits displayed, current image sent, final response completed.'
                   : proof === 'view'
                     ? 'View fitted: construction displayed, current image sent, final response completed.'
-                    : 'Live check completed: image sent, highlight acknowledged, final response completed.'
+                    : route !== 'agent'
+                      ? 'Page highlight displayed: target acknowledged, final response completed.'
+                      : 'Live check completed: image sent, highlight acknowledged, final response completed.'
               : route === 'agent'
                 ? 'Ready for a question about this board.'
                 : 'Ready for a question about this page.')}
@@ -1455,6 +1502,17 @@ function Workspace({
           </p>
         ) : null}
         {answer ? <p className="agent-answer">{answer}</p> : null}
+        {route !== 'agent' && screenPoint ? (
+          <button
+            type="button"
+            onClick={() => {
+              clearScreenHighlight();
+              setScreenPoint(false);
+            }}
+          >
+            Clear page highlight
+          </button>
+        ) : null}
         {sentImage ? (
           <details>
             <summary>Board image sent with the last request</summary>

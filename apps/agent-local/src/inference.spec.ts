@@ -237,17 +237,15 @@ describe('image and tool execution loop', () => {
         label: 'Fit drawing',
       }),
     };
-    const send = vi
-      .fn<typeof fetch>()
-      .mockImplementation(async (url) =>
-        String(url).endsWith('/models')
-          ? Response.json({
-              models: [
-                { slug: 'model', display_name: 'Model', visibility: 'list' },
-              ],
-            })
-          : sparseStream([fit]),
-      );
+    const send = vi.fn<typeof fetch>().mockImplementation(async (url) =>
+      String(url).endsWith('/models')
+        ? Response.json({
+            models: [
+              { slug: 'model', display_name: 'Model', visibility: 'list' },
+            ],
+          })
+        : sparseStream([fit]),
+    );
     const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
     const signal = new AbortController().signal;
     try {
@@ -503,7 +501,10 @@ describe('image and tool execution loop', () => {
       const input = bodies[1]!['input'] as { content?: { type: string }[] }[];
       expect(input.at(-1)?.content?.map((p) => p.type)).toEqual(['input_text']);
       const groups = bodies[1]!['tools'] as { tools: { name: string }[] }[];
-      expect(groups[0]!.tools.map((t) => t.name)).toEqual(['navigate']);
+      expect(groups[0]!.tools.map((t) => t.name)).toEqual([
+        'navigate',
+        'highlight_target',
+      ]);
     } finally {
       runtime.cancelAll();
     }

@@ -1816,14 +1816,28 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'AI agent: points on normal editor and tutorial screens',
+      text: 'Ask it to point at centre O, a visible wall or unit piece, or a named page button. The marker uses the actual drawing and follows zoom and scrolling; pointing at a control does not press it. Live ChatGPT checks passed for a tutorial point, an editor point and a control. All 36 affected browser checks passed on desktop, tablet and phone, along with the full unit suite, lint, TypeScript and production build. The earlier complete browser run was interrupted by the crash and is not counted as passing. Checks now run one at a time with bounded memory. This picture shows the actual live editor result.',
+      link: {
+        label: 'See the live editor highlight',
+        href: '/__review/renders/agent-screen-pointing/live-editor.png',
+      },
+    },
+    {
       title: 'AI agent: knows its edits and fits new geometry',
       text: 'Your latest screenshots exposed two gaps: the assistant asked whose Undo steps they were, and newly constructed corners could be outside its image. New edits now record their author, request and label. Undo your changes can undo its consecutive edits directly and refuses to cross a manual or unidentified edit. Added geometry now frames itself, and the assistant has Fit to show the full construction and continue drawing. A live request undid all three assistant changes without a clarification; an isolated live Fit request switched from the wall to Construction, sent the new image and completed. The initial combined Fit check timed out before the final reply; the isolated check passed without a code change. Old history remains unidentified. The picture is the actual live Undo result with the account masked.',
-      link: { label: 'See Undo your changes working', href: '/__review/renders/agent-history-context/live-undo.png' },
+      link: {
+        label: 'See Undo your changes working',
+        href: '/__review/renders/agent-history-context/live-undo.png',
+      },
     },
     {
       title: 'AI agent: Undo and Redo work by request',
       text: 'Your screenshot found a missing tool: the assistant could describe Undo but could not trigger it. It now uses the same Undo/Redo history as the drawing buttons, with the available step counts and a fresh image after each successful request. The live GPT-6.1-Sol check drew a square, repeated it and colored it blue; Undo all three edits removed the square, tile and color, and Redo all three restored them. Empty history and requests beyond the available steps leave the drawing unchanged. Normal editor/player history is not connected yet. The picture is the actual live Undo result, with the account hidden.',
-      link: { label: 'See the live Undo result', href: '/__review/renders/agent-undo/live-undo.png' },
+      link: {
+        label: 'See the live Undo result',
+        href: '/__review/renders/agent-undo/live-undo.png',
+      },
     },
     {
       title: 'AI agent: navigation preserves your drawing',
@@ -2145,14 +2159,14 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI agent: know whose edits to undo and fit new geometry',
-    text: 'The latest screenshots show two gaps: new construction points can fall outside the image, and the assistant sees history counts without knowing who made the edits. New edits now record their author, request and label; assistant-only Undo stops before manual or unidentified work. Construction frames now include added geometry, and a Fit command can bring the full construction back before continuing the request. The live account checks, workspace tests, lint, TypeScript and all 75 assistant browser checks passed on desktop, tablet and phone. Existing history from before this update stays unidentified.',
+    title: 'AI agent: pointing on normal screens is working',
+    text: 'Open a saved pattern’s editor or pause a tutorial, press Open drawing assistant, and ask “Point at the centre O” or name a visible button. You should see a marker on the page. Clear page highlight removes it. Geometry hidden by the panel or not yet drawn is excluded. Phone and dark-tablet views were checked. Editing the normal drawing by request is the next milestone; drawing commands still use the assistant workspace.',
     link: { label: 'Open the setup guide', href: '/#/notes/agent-setup' },
   },
   next: [
     {
-      title: 'AI agent: pointing and editing in normal screens',
-      text: 'Navigation and page questions now work alongside normal screens, and returning keeps the workspace drawing. Next, register the current editor/player geometry and controls so the assistant can point at and edit the same pattern you are using. Ring and individual placement colors, broader construction tools and automatic saving remain later phases.',
+      title: 'AI agent: edit the drawing you have open',
+      text: 'Connect drawing commands to the normal editor, with each request recorded in its Undo history and a fresh view confirming the result. Ring and individual placement colors, broader construction tools and automatic saving remain later phases.',
       link: { label: 'Read the remaining phases', href: '/#/notes/agent' },
     },
     {

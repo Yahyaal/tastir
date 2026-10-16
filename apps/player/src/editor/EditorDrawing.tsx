@@ -9,6 +9,7 @@ import { useMemo, useRef, useState } from 'react';
 import { InkRaster } from './InkRaster';
 import { viewBox, width, type Rect } from '../app/camera';
 import { useCamera } from '../app/useCamera';
+import { boardRef, sceneTargets } from '../agent/screenTargets';
 import {
   crossingsNear,
   pointPlaces,
@@ -422,7 +423,15 @@ export function EditorDrawing({
   return (
     <div className="editor-canvas">
       <svg
-        ref={svgRef}
+        ref={
+          import.meta.env.DEV
+            ? boardRef(
+                svgRef,
+                () => sceneTargets(scene.elements.values()),
+                scene,
+              )
+            : svgRef
+        }
         className="drawing editor-drawing"
         viewBox={viewBox(view)}
         role="img"

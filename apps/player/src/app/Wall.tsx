@@ -14,6 +14,8 @@ import type { Model } from './model';
 import { useCamera } from './useCamera';
 import { placeKey } from './placement';
 import { ringsOf } from './rings';
+import { boardRef as agentBoardRef } from '../agent/screenTargets';
+import { repeatTargets } from '../agent/repeatTargets';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
 
 export type WallStyle = 'tiles' | 'strapwork' | 'interlace' | 'lines' | 'jali';
@@ -312,7 +314,19 @@ export function Wall({
   const cover = fit(camera.view, 1);
   return (
     <svg
-      ref={svgRef}
+      ref={
+        import.meta.env.DEV
+          ? agentBoardRef(
+              svgRef,
+              (_svg, box) =>
+                repeatTargets(model, box).map((t) => ({
+                  ...t,
+                  id: `geometry:${t.id}`,
+                })),
+              model,
+            )
+          : svgRef
+      }
       className={`drawing wall style-${style}${enter ? ' color-enter' : ''}${litPieces ? ' lighting' : ''}`}
       viewBox={viewBox(camera.view)}
       preserveAspectRatio={boardCamera ? 'xMidYMid meet' : 'xMidYMid slice'}

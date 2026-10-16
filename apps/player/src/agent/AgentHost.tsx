@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Entry } from '../app/library';
 import { AgentLab } from './AgentLab';
+import { ScreenPointer } from './ScreenPointer';
 
 /** Keep the drawing and its history alive while the ordinary app changes routes. */
 export function AgentHost({
@@ -24,6 +25,7 @@ export function AgentHost({
   const visible = active || opened;
   return (
     <>
+      <ScreenPointer active={!active && visible} />
       {!active ? (
         <button
           ref={launcher}
