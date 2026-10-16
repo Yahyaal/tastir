@@ -4,6 +4,7 @@ import { EditorPage, type SharedDrawing } from '../editor/Editor';
 import { keepPattern, type UserPattern } from '../editor/patterns';
 import { ThemeSwitch } from '../app/theme';
 import { studioCall, type HistoryLine, type ProjectLine } from './client';
+import { ContestPage } from './ContestPage';
 import {
   StudioPanel,
   useNotes,
@@ -18,7 +19,14 @@ import './studio.css';
  * editor, where the owner's changes and the agents' meet.
  */
 export function StudioPage({ route }: { route: string }) {
-  const id = route.split('/')[1];
+  const [, id, contest] = route.split('/');
+  if (id === 'contest' && contest)
+    return (
+      <div className="player studio">
+        <Top />
+        <ContestPage key={contest} id={contest} />
+      </div>
+    );
   return id ? <StudioProject key={id} id={id} /> : <StudioList />;
 }
 
@@ -37,12 +45,24 @@ function Top({ children }: { children?: React.ReactNode }) {
 
 function StudioList() {
   const [projects, setProjects] = useState<ProjectLine[]>();
+  const [contests, setContests] =
+    useState<
+      {
+        id: string;
+        brief: { title: string };
+        designs: unknown[];
+        judged: boolean;
+      }[]
+    >();
   const [error, setError] = useState<string>();
   const [title, setTitle] = useState('');
   const load = useCallback(() => {
     studioCall<ProjectLine[]>('GET', '/projects')
       .then(setProjects)
       .catch((e: Error) => setError(e.message));
+    studioCall<NonNullable<typeof contests>>('GET', '/contests')
+      .then(setContests)
+      .catch(() => undefined);
   }, []);
   useEffect(load, [load]);
   useStudioEvents(load);
@@ -85,6 +105,23 @@ function StudioList() {
             Start
           </button>
         </form>
+        {contests?.length ? (
+          <>
+            <h2>Contests</h2>
+            <ul className="studio-projects">
+              {contests.map((c) => (
+                <li key={c.id}>
+                  <a href={`#/studio/contest/${c.id}`}>{c.brief.title}</a>{' '}
+                  <span className="studio-meta">
+                    {c.designs.length} designs,{' '}
+                    {c.judged ? 'judged' : 'not judged yet'}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <h2>Projects</h2>
+          </>
+        ) : null}
         {projects === undefined && !error ? <p>Loading…</p> : null}
         {projects?.length === 0 ? <p>No projects yet.</p> : null}
         {projects?.length ? (

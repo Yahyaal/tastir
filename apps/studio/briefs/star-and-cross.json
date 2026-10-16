@@ -1,0 +1,7 @@
+{
+  "id": "star-and-cross",
+  "title": "Eight-pointed star",
+  "text": "Starting from O and A only, draw an eight-fold pattern with an eight-pointed star at its centre that repeats on a square tile, so that the shapes between neighbouring stars are closed pieces too. Choose the construction yourself, keep it as simple as you can, and color the pieces with one of the palettes. Use view to look at the construction and the wall before you finish.",
+  "fold": 8,
+  "goals": { "fold": 8, "tile": "parallelogram" }
+}

@@ -12,7 +12,7 @@ Progress on [the studio plan](STUDIO-PLAN.md), newest last. The work is on branc
 | 4. Talking and pointing | Done, 16 October (live check with the owner still to do) |
 | 5. Photos | Tools done 16 October; the live reconstruction waits for the owner to line up a photo |
 | 6. Codex and Gemini | Two agents done 16 October; Codex waits for the ChatGPT allowance, Gemini for the owner to install and sign in |
-| 7. Contest (optional) | Not started |
+| 7. Contest (optional) | Tools done 16 October; a live contest is next |
 
 The plan asks for each phase to be added to `docs/TASKS.md`. Codex has uncommitted changes to that file in its checkout, so the studio phases are tracked here and will be added to the task list when the branches are merged.
 
@@ -73,3 +73,13 @@ A project can have a reference photo: the owner adds one in the studio panel (PN
 **Codex.** `codex exec` with the studio as an MCP server (`-c mcp_servers.tastir-studio…`) reached the model, but the ChatGPT plan had hit its usage limit until 4:52 AM on 16 October, shared with Codex's own work in the main checkout. The live Codex check is the next step after that time: the same square brief as Claude Code's phase 1 check, with `TASTIR_AUTHOR=codex`.
 
 **Gemini.** Gemini's command-line tool is not installed here, and it needs the owner to sign in with Google, so its setup is written in [the setup notes](STUDIO-SETUP.md) and its live check waits for the owner.
+
+## Phase 7: contest (16 October, tools)
+
+Briefs are JSON files in `apps/studio/briefs/` (text for the models, the fold, and the goals `check` measures); there are two to start with, `square` and `star-and-cross`. `pnpm contest <brief> --models claude,codex,gemini --runs 2 [--minutes 15]` gives the brief to each client in turn, one run at a time so the machine never runs two, each in a fresh project, through its own command-line tool (`claude -p`, `codex exec`, `gemini -p`) with the studio as its MCP server. After each run it saves the time, the number of edits, the remaining problems and whether the run finished, failed, or was stopped by a usage or time limit (stopped runs do not count against the model) to `studio/contests/<id>.json`.
+
+`#/studio/contest/<id>` shows the designs as Design A, B… in an order fixed by the contest, with the walls of finished ones side by side and no model names. The owner can mark any as not good and picks a favourite, and only then are the models, times and edit counts shown. The studio list page links each contest.
+
+The Gemini command is written from its documentation and has not been tried, because Gemini's tool is not installed here.
+
+**Checks.** 20 studio tests pass, including a contest run with two stand-in clients (one draws the square through the service, one stops on a usage limit) and blind judging. 10 studio browser checks pass, including judging a contest on desktop and phone. Typecheck and lint pass for the studio and the player.

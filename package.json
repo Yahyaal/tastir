@@ -22,7 +22,8 @@
     "dev:agent": "node --conditions=@tastir/source --import tsx tools/dev-agent.mts",
     "test:agent:browser": "playwright test --config tools/agent-playwright.config.mts",
     "studio": "node --conditions=@tastir/source --import tsx tools/studio.mts",
-    "test:studio:browser": "playwright test --config tools/studio-playwright.config.mts"
+    "test:studio:browser": "playwright test --config tools/studio-playwright.config.mts",
+    "contest": "node --conditions=@tastir/source --import tsx tools/studio-contest.mts"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

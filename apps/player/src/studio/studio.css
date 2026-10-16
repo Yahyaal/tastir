@@ -81,3 +81,39 @@
   margin-top: 0.3rem;
   max-width: 100%;
 }
+.studio-designs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.studio-designs li {
+  display: grid;
+  gap: 0.5rem;
+  align-content: start;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--faint);
+  border-radius: 6px;
+}
+.studio-designs li.picked {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 2px var(--saffron);
+}
+.studio-designs h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.studio-designs img {
+  width: 100%;
+  height: auto;
+}
+.studio-judge {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}

@@ -1,0 +1,7 @@
+{
+  "id": "square",
+  "title": "Square tile",
+  "text": "Starting from O and A only, construct the square whose corners are the four points where the unit circle about O meets the horizontal and vertical through O. Ink its four sides, make that square the repeating tile, and color its piece #2453a6.",
+  "fold": 4,
+  "goals": { "fold": 4, "tile": "parallelogram" }
+}

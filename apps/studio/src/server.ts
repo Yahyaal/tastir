@@ -6,6 +6,7 @@ import {
 import { timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
 import { StudioError } from './ops.js';
+import { blind, judge, listContests } from './contest.js';
 import {
   EditRequest,
   MarkRequest,
@@ -122,6 +123,36 @@ export async function startServer(options: ServerOptions) {
           200,
           await studio.create(NewShape.parse(await body(request))),
         );
+      if (parts[0] === 'contests') {
+        const root = studio.store.root;
+        const all = await listContests(root);
+        if (method === 'GET' && !parts[1])
+          return send(response, 200, all.map(blind));
+        const contest = all.find((c) => c.id === parts[1]);
+        if (!contest) throw new HttpError(404, 'There is no such contest.');
+        if (method === 'GET' && !parts[2])
+          return send(response, 200, blind(contest));
+        if (method === 'POST' && parts[2] === 'judge') {
+          const verdict = z
+            .strictObject({
+              pick: z.string().optional(),
+              rejected: z.array(z.string()).max(50).optional(),
+            })
+            .parse(await body(request));
+          try {
+            return send(
+              response,
+              200,
+              blind(await judge(root, contest.id, verdict)),
+            );
+          } catch (e) {
+            throw new HttpError(
+              400,
+              e instanceof Error ? e.message : String(e),
+            );
+          }
+        }
+      }
       if (parts[0] === 'projects' && parts[1]) {
         const id = parts[1];
         const what = parts[2] ?? '';

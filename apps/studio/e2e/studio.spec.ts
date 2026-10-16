@@ -217,3 +217,112 @@ test('the owner adds a photo, lines it up, and sees the ink over it', async ({
     view.body.reference.align.o.x,
   );
 });
+
+test('the owner judges a contest without seeing the models first', async ({
+  page,
+}) => {
+  const square = [
+    circle,
+    line,
+    { kind: 'intersection', name: 'W', first: 'L0', second: 'C0', angle: 180 },
+    { kind: 'circle', name: 'C1', centre: 'A', through: 'W' },
+    { kind: 'circle', name: 'C2', centre: 'W', through: 'A' },
+    { kind: 'intersection', name: 'T', first: 'C1', second: 'C2', angle: 90 },
+    { kind: 'intersection', name: 'B', first: 'C1', second: 'C2', angle: 270 },
+    { kind: 'line', name: 'Axis', from: 'T', to: 'B' },
+    { kind: 'intersection', name: 'N', first: 'Axis', second: 'C0', angle: 90 },
+    {
+      kind: 'intersection',
+      name: 'S',
+      first: 'Axis',
+      second: 'C0',
+      angle: 270,
+    },
+  ];
+  const good = (
+    await agent('POST', '/projects', { author: 'contest', title: 'Contest a' })
+  ).body.project as string;
+  const empty = (
+    await agent('POST', '/projects', { author: 'contest', title: 'Contest b' })
+  ).body.project as string;
+  let v = (
+    await agent('POST', `/projects/${good}/edit`, {
+      author: 'model-x',
+      revision: 1,
+      edit: { op: 'construct', add: square },
+    })
+  ).body;
+  v = (
+    await agent('POST', `/projects/${good}/edit`, {
+      author: 'model-x',
+      revision: v.revision,
+      edit: {
+        op: 'ink',
+        add: [
+          { from: 'A', to: 'N' },
+          { from: 'N', to: 'W' },
+          { from: 'W', to: 'S' },
+          { from: 'S', to: 'A' },
+        ],
+      },
+    })
+  ).body;
+  await agent('POST', `/projects/${good}/edit`, {
+    author: 'model-x',
+    revision: v.revision,
+    edit: { op: 'tile', vertices: ['A', 'N', 'W', 'S'] },
+  });
+  const dir = process.env['TASTIR_STUDIO_DIR'] as string;
+  const { mkdir, writeFile } = await import('node:fs/promises');
+  await mkdir(join(dir, 'contests'), { recursive: true });
+  const id = `square-test-${Date.now()}`;
+  await writeFile(
+    join(dir, 'contests', `${id}.json`),
+    JSON.stringify({
+      id,
+      brief: {
+        id: 'square',
+        title: 'Square tile',
+        text: 'Draw the square.',
+        goals: {},
+      },
+      started: new Date().toISOString(),
+      runs: [
+        {
+          model: 'model-x',
+          project: good,
+          seconds: 30,
+          outcome: 'finished',
+          edits: 3,
+          problems: [],
+        },
+        {
+          model: 'model-y',
+          project: empty,
+          seconds: 900,
+          outcome: 'stopped',
+          reason: 'Usage limit',
+          edits: 0,
+          problems: ['Nothing is inked yet.'],
+        },
+      ],
+    }),
+  );
+  await page.goto(`/#/studio/contest/${id}`);
+  await expect(
+    page.getByRole('heading', { name: 'Square tile' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('img', { name: /The wall of design/ }),
+  ).toBeVisible();
+  await expect(page.getByText('Stopped before it finished.')).toBeVisible();
+  await expect(page.locator('body')).not.toContainText('model-x');
+  await page.getByRole('button', { name: /Pick design/ }).click();
+  await expect(
+    page.getByRole('button', { name: 'Your favourite' }),
+  ).toBeVisible();
+  await expect(page.locator('body')).toContainText('model-x, 30 s, 3 edits');
+  await expect(page.locator('body')).toContainText(
+    'model-y, 900 s, 0 edits, Usage limit',
+  );
+});
