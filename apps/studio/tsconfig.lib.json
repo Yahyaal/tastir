@@ -1,0 +1,27 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
+    "emitDeclarationOnly": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/**/*.spec.ts"],
+  "references": [
+    {
+      "path": "../player/tsconfig.app.json"
+    },
+    {
+      "path": "../../packages/schema/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/engine/tsconfig.lib.json"
+    },
+    {
+      "path": "../../packages/agent-protocol/tsconfig.lib.json"
+    }
+  ]
+}

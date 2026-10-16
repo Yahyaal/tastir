@@ -29,3 +29,6 @@ apps/player/src/generated/
 apps/player/public/thumbnails/
 playwright-report/
 test-results/
+
+# Studio projects: the owner's own drawings and private photos
+/studio/

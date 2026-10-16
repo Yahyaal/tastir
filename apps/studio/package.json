@@ -1,0 +1,16 @@
+{
+  "name": "@tastir/studio",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "nx": {
+    "name": "studio"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.31.0",
+    "@tastir/agent-protocol": "workspace:*",
+    "@tastir/engine": "workspace:*",
+    "@tastir/schema": "workspace:*",
+    "zod": "^4.6.5"
+  }
+}
