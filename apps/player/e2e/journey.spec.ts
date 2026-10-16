@@ -89,9 +89,7 @@ test('home navigation fits narrow phones before and after saving a design', asyn
     page.getByText('Saved as “Phone wall”.', { exact: false }),
   ).toBeVisible();
   await page.goto('/');
-  await expect(
-    page.getByRole('link', { name: 'Your work (1)' }),
-  ).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Your work (1)' })).toBeVisible();
   await fits();
 });
 
@@ -226,7 +224,10 @@ test('player shortcuts respect controls and still work on the page', async ({
   await expect(page.locator('.label')).toHaveText('Step 2 of 6');
   await page.getByRole('button', { name: 'Go to color', exact: true }).click();
   await expect(page.locator('.label')).toHaveText('Color');
-  await page.getByRole('combobox', { name: 'Style', exact: true }).focus();
+  await page
+    .getByRole('group', { name: 'Style', exact: true })
+    .getByRole('button', { name: 'Tiles', exact: true })
+    .focus();
   await page.keyboard.press('ArrowLeft');
   await expect(page.locator('.label')).toHaveText('Color');
   await page.getByRole('button', { name: 'Back', exact: true }).focus();

@@ -30,8 +30,9 @@ for (const id of [
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto(`/#/${id}/result`);
     await page
-      .getByRole('combobox', { name: 'Style', exact: true })
-      .selectOption('jali');
+      .getByRole('group', { name: 'Style', exact: true })
+      .getByRole('button', { name: 'Jali', exact: true })
+      .click();
     const wall = page.locator('svg.wall.style-jali');
     await expect(wall).toBeVisible();
     await expect(wall.locator('.jali-framework > path')).toHaveCount(5);
@@ -118,8 +119,9 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     .locator('.wall-piece')
     .evaluateAll((pieces) => pieces.map((p) => p.getAttribute('fill')));
   await page
-    .getByRole('combobox', { name: 'Style', exact: true })
-    .selectOption('jali');
+    .getByRole('group', { name: 'Style', exact: true })
+    .getByRole('button', { name: 'Jali', exact: true })
+    .click();
   await page.getByRole('button', { name: 'Wood', exact: true }).click();
   await setColor(page, 'Framework color', '#864b31');
   await setColor(page, 'Background color', '#234a79');
@@ -139,8 +141,10 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   ).toBeVisible();
   await page.reload();
   await expect(
-    page.getByRole('combobox', { name: 'Style', exact: true }),
-  ).toHaveValue('jali');
+    page
+      .getByRole('group', { name: 'Style', exact: true })
+      .getByRole('button', { name: 'Jali', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
   await expect(lattice).toHaveValue('2');
   await expect(
     page.getByRole('button', { name: 'Wood', exact: true }),
@@ -164,8 +168,10 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   const other = await context.newPage();
   await other.goto(address);
   await expect(
-    other.getByRole('combobox', { name: 'Style', exact: true }),
-  ).toHaveValue('jali');
+    other
+      .getByRole('group', { name: 'Style', exact: true })
+      .getByRole('button', { name: 'Jali', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
   await expect(other.getByLabel('Lattice', { exact: true })).toHaveValue('2');
   await expect(
     other.getByRole('button', { name: 'Wood', exact: true }),
@@ -211,8 +217,9 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   }
 
   await page
-    .getByRole('combobox', { name: 'Style', exact: true })
-    .selectOption('tiles');
+    .getByRole('group', { name: 'Style', exact: true })
+    .getByRole('button', { name: 'Tiles', exact: true })
+    .click();
   await expect(
     page
       .getByRole('group', { name: 'Palette' })
@@ -225,9 +232,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   ).toEqual(colors);
   // The saved screen's thumbnail still uses the saved style and width.
   await page.goto('/');
-  await page
-    .getByRole('link', { name: 'Your work (1)', exact: true })
-    .click();
+  await page.getByRole('link', { name: 'Your work (1)', exact: true }).click();
   const preview = page.locator('.thumbnail.style-jali');
   await expect(preview).toBeVisible();
   await expect(preview.locator('.jali-framework')).toHaveAttribute(
@@ -247,8 +252,10 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     .evaluateAll((paths) => paths.map((p) => p.getAttribute('stroke-width')));
   await preview.click();
   await expect(
-    page.getByRole('combobox', { name: 'Style', exact: true }),
-  ).toHaveValue('jali');
+    page
+      .getByRole('group', { name: 'Style', exact: true })
+      .getByRole('button', { name: 'Jali', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
   await expect(lattice).toHaveValue('2');
   expect(
     await page
@@ -260,13 +267,15 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     .getByRole('button', { name: 'Reset Jali finish', exact: true })
     .click();
   await page
-    .getByRole('combobox', { name: 'Style', exact: true })
-    .selectOption('tiles');
+    .getByRole('group', { name: 'Style', exact: true })
+    .getByRole('button', { name: 'Tiles', exact: true })
+    .click();
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await page.reload();
   await page
-    .getByRole('combobox', { name: 'Style', exact: true })
-    .selectOption('jali');
+    .getByRole('group', { name: 'Style', exact: true })
+    .getByRole('button', { name: 'Jali', exact: true })
+    .click();
   await expect(
     page.getByRole('button', { name: 'Stone', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');

@@ -5,6 +5,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import { parseTutorial } from '@tastir/schema';
@@ -31,9 +32,11 @@ async function shareFrom(
   go(hash);
   render(<App />);
   fireEvent.click(screen.getByRole('button', { name: 'Chefchaouen' }));
-  fireEvent.change(screen.getByLabelText('Style'), {
-    target: { value: 'strapwork' },
-  });
+  fireEvent.click(
+    within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+      name: 'Strapwork',
+    }),
+  );
   const colored = fills();
   fireEvent.click(screen.getByRole('button', { name: 'Copy a share link' }));
   const input = await waitFor(() => screen.getByLabelText('Share link'));
@@ -63,9 +66,11 @@ describe('share links', () => {
     await openIn(hash);
     expect(document.querySelector('.label')?.textContent).toBe('Color');
     expect(fills()).toEqual(colored);
-    expect(screen.getByLabelText<HTMLSelectElement>('Style').value).toBe(
-      'strapwork',
-    );
+    expect(
+      within(screen.getByRole('group', { name: 'Style' }))
+        .getByRole('button', { name: 'Strapwork' })
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
     fireEvent.click(
       screen.getByRole('button', { name: 'Keep a copy in this browser' }),
     );

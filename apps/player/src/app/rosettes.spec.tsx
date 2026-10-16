@@ -108,14 +108,14 @@ describe('colouring rosette by rosette', () => {
     expect(wall.querySelectorAll('.wall-piece.lit').length).toBeGreaterThan(0);
   });
 
-  it('puts the colours to paint with before the palettes', () => {
+  it('puts the palettes before the colours to paint with', () => {
     atColor();
     const panel = document.querySelector('.colour-panel') as HTMLElement;
     const paint = screen.getByRole('group', { name: 'Paint with' });
     const palettes = screen.getByRole('group', { name: 'Palette' });
     expect(panel.contains(paint) && panel.contains(palettes)).toBe(true);
     expect(
-      paint.compareDocumentPosition(palettes) &
+      palettes.compareDocumentPosition(paint) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
   });

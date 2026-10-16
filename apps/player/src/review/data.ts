@@ -1812,9 +1812,17 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '14 October 2026',
+  updated: '15 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'The wall panel: style and band width back at the top',
+      text: 'On 13 October the colours were put first at the colour stage, and since the finished wall counts as that stage, Style and Band slid below the screen. On the finished wall the panel now opens with the wall: its five styles as buttons that each show your own pattern and colours in that style, the band or grout width with its value, and the original photo as a toggle beside them. The palettes come first in Colors, as one-click strips half as tall, and the paper size sits beside Print as two buttons.',
+      link: {
+        label: 'See it on a finished wall',
+        href: '#/alhambra-comares-dado/result',
+      },
+    },
     {
       title: 'Storage recovery: the warning points to a share link',
       text: 'When browser storage is blocked or full, the warning now says to use “Copy a share link” and keep the link before leaving. A named save uses the same storage, so it cannot solve that failure. Desktop and phone browser checks confirmed that the share link restores the palette, painted ring, style and band width in a fresh browser.',

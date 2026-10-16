@@ -102,10 +102,37 @@ export function ColourPanel({
       </button>
     </div>
   );
-  // The tools come first, then the palettes: what the learner paints with
-  // is in view before the choice of glazes.
+  // The palette comes first: it sets every colour at once, and the
+  // learner changes single rings after it.
   return (
     <div className="piece-panel colour-panel">
+      <div className="colour-step">
+        <h3>Palette</h3>
+        <div className="palette-strips" role="group" aria-label="Palette">
+          {paletteNames(model).map((name) => {
+            const g = GLAZES[name];
+            const p = paletteOf(model, name);
+            const strip = g
+              ? [g.white, g.black, ...g.families.flat()]
+              : [p.ground, p.a, p.b, p.c, p.d];
+            return (
+              <button
+                key={name}
+                type="button"
+                aria-pressed={name === now.palette}
+                onClick={() => dispatch({ kind: 'palette', palette: name })}
+              >
+                <span className="palette-strip" aria-hidden="true">
+                  {[...new Set(strip)].map((c) => (
+                    <span key={c} style={{ background: c }} />
+                  ))}
+                </span>
+                {name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
       {methods.length > 1 ? (
         <div className="colour-methods" role="group" aria-label="Colour">
           {methods.map((m) => (
@@ -160,33 +187,6 @@ export function ColourPanel({
           {tools}
         </>
       )}
-      <div className="colour-step">
-        <h3>Palette</h3>
-        <div className="palette-strips" role="group" aria-label="Palette">
-          {paletteNames(model).map((name) => {
-            const g = GLAZES[name];
-            const p = paletteOf(model, name);
-            const strip = g
-              ? [g.white, g.black, ...g.families.flat()]
-              : [p.ground, p.a, p.b, p.c, p.d];
-            return (
-              <button
-                key={name}
-                type="button"
-                aria-pressed={name === now.palette}
-                onClick={() => dispatch({ kind: 'palette', palette: name })}
-              >
-                <span className="palette-strip" aria-hidden="true">
-                  {[...new Set(strip)].map((c) => (
-                    <span key={c} style={{ background: c }} />
-                  ))}
-                </span>
-                {name}
-              </button>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }

@@ -1331,8 +1331,7 @@ main.stage .drawing:not(.wall) {
   font-size: 1.05rem;
 }
 
-.wall-tools,
-.export-tools {
+.wall-tools {
   display: flex;
   flex-wrap: wrap;
   gap: 10px 14px;
@@ -1437,8 +1436,92 @@ main.stage .drawing:not(.wall) {
   pointer-events: none;
 }
 
+/* The wall's style, as small samples to click: the learner's own pattern
+   in each style. */
+.wall-styles {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+.player .wall-styles button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 6px 2px 5px;
+  background: transparent;
+  font-size: 0.72rem;
+}
+.player .wall-styles button[aria-pressed='true'] {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 1px var(--saffron);
+  font-weight: 700;
+}
+.style-sample {
+  display: block;
+  width: 100%;
+  max-width: 60px;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--theme-bg-raised);
+}
+.style-sample svg.thumbnail {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+}
+
+/* The width of the grout, bands or lattice, with its value. */
+.wall-width {
+  display: grid;
+  grid-template-columns: auto 1fr 3.2em;
+  align-items: center;
+  gap: 10px;
+}
+.wall-width input[type='range'] {
+  width: 100%;
+  accent-color: var(--saffron);
+}
+.wall-width output {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--theme-text-muted);
+}
+
+.export-tools,
+.print-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
 .export-tools button {
-  padding: 4px 6px;
+  flex: 1;
+}
+.print-tools > button {
+  flex: 1;
+}
+/* A4 or Letter: two buttons side by side, one pressed. */
+.paper {
+  display: flex;
+  padding: 3px;
+  gap: 3px;
+  border-radius: 8px;
+  background: var(--lapis-deep);
+}
+.player .paper button {
+  padding: 4px 10px;
+  border-color: transparent;
+  background: transparent;
+  font-size: 0.8rem;
+}
+.player .paper button[aria-pressed='true'] {
+  color: var(--lapis-deep);
+  background: var(--saffron);
 }
 
 .compare-toggle {
@@ -1559,9 +1642,8 @@ main.stage .drawing:not(.wall) {
    rosettes ring by ring. */
 .palette-strips {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 6px;
-  margin-bottom: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 5px;
 }
 
 .player .palette-strips button,
@@ -1585,15 +1667,23 @@ main.stage .drawing:not(.wall) {
   box-shadow: 0 0 10px var(--theme-accent-muted);
 }
 
+.player .palette-strips button {
+  gap: 3px;
+  padding: 5px 6px;
+  font-size: 0.72rem;
+  min-width: 0;
+}
+
 .palette-strip {
   display: flex;
+  align-self: stretch;
   border-radius: 3px;
   overflow: hidden;
 }
 
 .palette-strip span {
-  width: 16px;
-  height: 14px;
+  flex: 1;
+  height: 10px;
 }
 
 .colour-methods {
@@ -4778,8 +4868,10 @@ main.stage .drawing:not(.wall) {
 }
 
 .explore-next h3 {
-  font-size: 0.95rem;
-  margin: 1rem 0 0.5rem;
+  margin: 0.5rem 0 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.05rem;
 }
 .explore-next ul {
   padding-left: 1.2rem;

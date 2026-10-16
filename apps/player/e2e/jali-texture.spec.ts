@@ -26,8 +26,9 @@ for (const id of ['eight-fold-star-and-cross', 'bou-inania-rosette']) {
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto(`/#/${id}/result`);
     await page
-      .getByRole('combobox', { name: 'Style', exact: true })
-      .selectOption('jali');
+      .getByRole('group', { name: 'Style', exact: true })
+      .getByRole('button', { name: 'Jali', exact: true })
+      .click();
     const wall = page.locator('svg.wall');
     await expect(wall).toBeVisible();
     await page.evaluate(() => document.fonts.ready);

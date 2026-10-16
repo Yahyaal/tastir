@@ -7,8 +7,9 @@ test('Jali materials, finish swatches and custom colors need no dropdown or moda
 }, info) => {
   await page.goto('/#/eight-fold-star-and-cross/result');
   await page
-    .getByRole('combobox', { name: 'Style', exact: true })
-    .selectOption('jali');
+    .getByRole('group', { name: 'Style', exact: true })
+    .getByRole('button', { name: 'Jali', exact: true })
+    .click();
   const controls = page.locator('.jali-controls');
   await expect(controls.getByRole('combobox')).toHaveCount(0);
   const errors: string[] = [];
