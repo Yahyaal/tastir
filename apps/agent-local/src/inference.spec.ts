@@ -227,7 +227,13 @@ describe('completed streaming responses', () => {
 });
 
 describe('image and tool execution loop', () => {
-  it.each(['edit_segments', 'construct', 'set_tile', 'paint_pattern'] as const)(
+  it.each([
+    'edit_segments',
+    'construct',
+    'set_tile',
+    'paint_pattern',
+    'travel_history',
+  ] as const)(
     'continues %s only with a fresh same-document observation after acknowledgement',
     async (name) => {
       const edit = {
@@ -237,27 +243,29 @@ describe('image and tool execution loop', () => {
           snapshotId: snapshot.id,
           documentRevision: snapshot.documentRevision,
           label: 'Draw one side',
-          ...(name === 'set_tile'
-            ? { vertices: ['N', 'E', 'S', 'W'] }
-            : name === 'paint_pattern'
-              ? {
-                  palette: null,
-                  colors: [{ typeId: 'square', color: '#2453a6' }],
-                }
-              : {
-                  add:
-                    name === 'construct'
-                      ? [
-                          {
-                            kind: 'circle',
-                            name: 'NewCircle',
-                            centre: 'O',
-                            through: 'A',
-                          },
-                        ]
-                      : [{ from: 'O', to: 'A' }],
-                  remove: [],
-                }),
+          ...(name === 'travel_history'
+            ? { direction: 'undo', steps: 1 }
+            : name === 'set_tile'
+              ? { vertices: ['N', 'E', 'S', 'W'] }
+              : name === 'paint_pattern'
+                ? {
+                    palette: null,
+                    colors: [{ typeId: 'square', color: '#2453a6' }],
+                  }
+                : {
+                    add:
+                      name === 'construct'
+                        ? [
+                            {
+                              kind: 'circle',
+                              name: 'NewCircle',
+                              centre: 'O',
+                              through: 'A',
+                            },
+                          ]
+                        : [{ from: 'O', to: 'A' }],
+                    remove: [],
+                  }),
         }),
       };
       const bodies: Record<string, unknown>[] = [];

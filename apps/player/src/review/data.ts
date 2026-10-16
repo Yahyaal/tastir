@@ -1816,6 +1816,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'AI agent: Undo and Redo work by request',
+      text: 'Your screenshot found a missing tool: the assistant could describe Undo but could not trigger it. It now uses the same Undo/Redo history as the drawing buttons, with the available step counts and a fresh image after each successful request. The live GPT-6.1-Sol check drew a square, repeated it and colored it blue; Undo all three edits removed the square, tile and color, and Redo all three restored them. Empty history and requests beyond the available steps leave the drawing unchanged. Normal editor/player history is not connected yet. The picture is the actual live Undo result, with the account hidden.',
+      link: { label: 'See the live Undo result', href: '/__review/renders/agent-undo/live-undo.png' },
+    },
+    {
       title: 'AI agent: navigation preserves your drawing',
       text: 'On codex/ai-agent-navigation, ask the assistant to open Your work, a library wall or construction, drawing along, or an available saved pattern, editor or design. It waits for the destination to display and receives the new page before finishing. The live GPT-6.1-Sol check drew four sides, opened Your work, then returned to the same drawing; Undo still removed the whole square. The panel stays available on ordinary pages, with compact account settings and a phone layout. Unsaved-design questions stay in control. If a saved copy changes in the editor, Keep as new pattern preserves both versions. Workspace tests, lint, TypeScript, production build and all 57 assistant browser checks passed. The picture is the actual return to the drawing, with the account hidden.',
       link: {
@@ -2135,8 +2140,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI agent: ask it to take you somewhere',
-    text: 'Open the local assistant, press Use navigation request, then Send current view. Or press Open drawing assistant on an ordinary page and ask for Your work, a tutorial wall, its construction, drawing along, or a saved pattern by name. Say Return to the assistant workspace to recover the same drawing and Undo history. Account and model opens the connection choices on normal pages. Questions and navigation work there; geometry tools and pointing remain in the workspace. Screenshots and test details are in the setup guide.',
+    title: 'AI agent: Undo and Redo by request',
+    text: 'Refresh the local assistant, make a drawing, then ask Undo the last edit or Redo the last edit. For multiple batches, say Undo the last three edits. A simple Undo means one batch, and changing the drawing after Undo clears Redo as usual. The live check, workspace tests, lint, TypeScript and all 69 assistant browser checks passed on desktop, tablet and phone. Pointing and editing on normal pages remain the next milestone.',
     link: { label: 'Open the setup guide', href: '/#/notes/agent-setup' },
   },
   next: [

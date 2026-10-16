@@ -22,6 +22,40 @@ const call = HighlightCallShape.parse({
 });
 
 describe('pointing contracts', () => {
+  it('accepts only explicit bounded Undo/Redo requests', () => {
+    const request = {
+      id: 'history',
+      name: 'travel_history',
+      arguments: {
+        snapshotId: 'snapshot',
+        documentRevision: '1',
+        direction: 'undo',
+        steps: 1,
+        label: 'Undo',
+      },
+    };
+    expect(CallShape.safeParse(request).success).toBe(true);
+    expect(
+      CallShape.safeParse({
+        ...request,
+        arguments: { ...request.arguments, direction: 'redo', steps: 50 },
+      }).success,
+    ).toBe(true);
+    for (const changes of [
+      { steps: 0 },
+      { steps: 51 },
+      { steps: 1.5 },
+      { direction: 'clear' },
+      { steps: undefined },
+      { all: true },
+    ])
+      expect(
+        CallShape.safeParse({
+          ...request,
+          arguments: { ...request.arguments, ...changes },
+        }).success,
+      ).toBe(false);
+  });
   it('allows relational construction operations and rejects raw coordinates or an unspecified intersection rule', () => {
     const command = {
       id: 'build',

@@ -28,6 +28,7 @@ import {
   editSegments,
   emptyDrawing,
   travelDrawing,
+  travelHistory,
   type DrawingHistory,
 } from './drawing';
 import { AgentClient } from './client';
@@ -326,6 +327,10 @@ function Workspace({
           : null,
       mode: inRepeat ? 'repeat' : 'construction',
       palettes: Object.keys(PALETTES),
+      history: {
+        undoSteps: drawingRef.current.past.length,
+        redoSteps: drawingRef.current.future.length,
+      },
       screen: {
         route: 'agent',
         title: model.tutorial.title,
@@ -638,7 +643,9 @@ function Workspace({
                 }
               }
               let next: DrawingHistory;
-              if (call.name === 'set_tile') {
+              if (call.name === 'travel_history') {
+                next = travelHistory(drawingRef.current, call.arguments);
+              } else if (call.name === 'set_tile') {
                 if (
                   call.arguments.vertices.some(
                     (id) =>
@@ -690,7 +697,11 @@ function Workspace({
               return {
                 callId: call.id,
                 ok: true,
-                message: `Applied “${call.arguments.label}”. The drawing has ${next.constructions.length} new construction elements, ${next.segments.length} sides${next.repeat ? ', and a colored repeating tile' : ''}. Undo restores this entire edit.`,
+                message:
+                  (call.name === 'travel_history'
+                    ? `Completed ${call.arguments.direction} for ${call.arguments.steps} edit(s). ${next.past.length} undo steps and ${next.future.length} redo steps remain. `
+                    : `Applied “${call.arguments.label}”. Undo restores this entire edit. `) +
+                  `The drawing has ${next.constructions.length} new construction elements, ${next.segments.length} sides${next.repeat ? ', and a colored repeating tile' : ''}.`,
               };
             } catch (e) {
               return {

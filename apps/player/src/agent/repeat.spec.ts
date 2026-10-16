@@ -5,7 +5,12 @@ import hexSource from '@tutorials/six-fold-star-and-hexagons.json';
 import { loadModel } from '../app/model';
 import { placeFills } from '../app/placement';
 import { tutorialColoring } from '../app/coloring';
-import { editSegments, emptyDrawing, travelDrawing } from './drawing';
+import {
+  editSegments,
+  emptyDrawing,
+  travelDrawing,
+  travelHistory,
+} from './drawing';
 import {
   paintPattern,
   repeatModel,
@@ -36,6 +41,49 @@ const inked = () =>
   );
 
 describe('assistant repeating tiles and colors', () => {
+  it('travels the actual shared history atomically, including tile/colors and the redo branch', () => {
+    const ink = inked();
+    const tiled = setTile(ink, { vertices: outer }, tutorial);
+    const colored = paintPattern(
+      tiled,
+      { palette: null, colors: [{ typeId: 'square', color: '#2453a6' }] },
+      tutorial,
+    );
+    const request = {
+      snapshotId: 'view',
+      documentRevision: '3',
+      direction: 'undo',
+      steps: 2,
+      label: 'Undo two edits',
+    };
+    const undone = travelHistory(colored, request);
+    expect(undone.segments).toEqual(ink.segments);
+    expect(undone.repeat).toBeNull();
+    expect(undone.revision).toBe(colored.revision + 2);
+    const restored = travelHistory(undone, { ...request, direction: 'redo' });
+    expect(restored.repeat).toEqual(colored.repeat);
+    expect(restored.segments).toEqual(colored.segments);
+    for (const bad of [
+      { steps: 4 },
+      { steps: 0 },
+      { steps: 1.5 },
+      { direction: 'clear' },
+    ])
+      expect(() => travelHistory(colored, { ...request, ...bad })).toThrow();
+    expect(colored.past).toHaveLength(3);
+    expect(colored.repeat!.colors).toEqual({ square: '#2453a6' });
+    expect(() =>
+      travelHistory(emptyDrawing(), { ...request, steps: 1 }),
+    ).toThrow('Only 0');
+    const branched = editSegments(
+      undone,
+      { add: [], remove: [undone.segments[0]!.id] },
+      scene,
+    );
+    expect(() =>
+      travelHistory(branched, { ...request, direction: 'redo', steps: 1 }),
+    ).toThrow('Only 0');
+  });
   it('closes the named tile with the engine, covers its exact area, and repeats matching polygons', () => {
     const state = setTile(inked(), { vertices: outer }, tutorial);
     const model = repeatModel(tutorial, state)!;

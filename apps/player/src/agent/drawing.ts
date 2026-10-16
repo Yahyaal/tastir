@@ -7,6 +7,7 @@ import {
 import { DraftShape, type ElementSpec, type Tutorial } from '@tastir/schema';
 import {
   ConstructShape,
+  TravelHistoryShape,
   type Construction,
   type Construct,
   type DrawingSegment,
@@ -128,6 +129,24 @@ export function travelDrawing(
         ? [contentOf(history), ...history.future]
         : history.future.slice(1),
   };
+}
+
+/** Validate model requests atomically before sharing the manual Undo/Redo path. */
+export function travelHistory(
+  history: DrawingHistory,
+  input: unknown,
+): DrawingHistory {
+  const request = TravelHistoryShape.parse(input);
+  const available =
+    request.direction === 'undo' ? history.past.length : history.future.length;
+  if (request.steps > available)
+    throw new Error(
+      `Only ${available} ${request.direction} steps are available. No changes were applied.`,
+    );
+  let next = history;
+  for (let i = 0; i < request.steps; i++)
+    next = travelDrawing(next, request.direction);
+  return next;
 }
 
 /** Export through the existing editor document and engine ink format, without coordinates. */

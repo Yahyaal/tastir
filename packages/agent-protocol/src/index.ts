@@ -79,6 +79,13 @@ export const NavigateShape = z.strictObject({
   label: z.string().min(1).max(160),
 });
 export type Navigate = z.infer<typeof NavigateShape>;
+export const TravelHistoryShape = z.strictObject({
+  snapshotId: Id,
+  documentRevision: Id,
+  direction: z.enum(['undo', 'redo']),
+  steps: z.number().int().min(1).max(50),
+  label: z.string().min(1).max(160),
+});
 export const SnapshotShape = z
   .strictObject({
     id: Id,
@@ -108,6 +115,13 @@ export const SnapshotShape = z
       .default(null),
     mode: z.enum(['construction', 'repeat', 'screen']).default('construction'),
     palettes: z.array(Id).max(50).default([]),
+    history: z
+      .strictObject({
+        undoSteps: z.number().int().min(0).max(50),
+        redoSteps: z.number().int().min(0).max(50),
+      })
+      .nullable()
+      .default(null),
     screen: ScreenShape.nullable().default(null),
     image: z
       .string()
@@ -158,6 +172,11 @@ export const ConstructShape = z.strictObject({
 });
 export type Construct = z.infer<typeof ConstructShape>;
 export const CallShape = z.discriminatedUnion('name', [
+  z.strictObject({
+    id: Id,
+    name: z.literal('travel_history'),
+    arguments: TravelHistoryShape,
+  }),
   z.strictObject({
     id: Id,
     name: z.literal('navigate'),
@@ -259,6 +278,31 @@ export const DRAWING_TOOLS = {
   description:
     'Construct ruler-and-compass geometry, draw finite sides, repeat and color closed patterns, and highlight objects in Tastir.',
   tools: [
+    {
+      type: 'function',
+      name: 'travel_history',
+      strict: true,
+      description:
+        'Undo or redo workspace edits using the SAME history as the drawing buttons. Works in construction and repeat views; restores geometry, tile and colors together. Check observation.history.undoSteps or redoSteps. Use one step for a simple Undo/Redo request; use multiple only when explicitly requested. Every construction, ink, tile or color batch is a separate step. Never simulate Undo by deleting or repainting objects. Requests exceeding available history fail without changing anything. A fresh drawing observation follows success. Does not undo navigation or edits in other pages.',
+      parameters: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          snapshotId: { type: 'string' },
+          documentRevision: { type: 'string' },
+          direction: { type: 'string', enum: ['undo', 'redo'] },
+          steps: { type: 'integer', minimum: 1, maximum: 50 },
+          label: { type: 'string' },
+        },
+        required: [
+          'snapshotId',
+          'documentRevision',
+          'direction',
+          'steps',
+          'label',
+        ],
+      },
+    },
     {
       type: 'function',
       name: 'navigate',
