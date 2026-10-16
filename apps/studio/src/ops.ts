@@ -127,7 +127,7 @@ export function construct(
   if (scene.elements.size > 5000)
     fail('The construction has too many elements.');
   inkOf(next, scene);
-  return forgetPieces(next);
+  return refinish(next);
 }
 
 /** The ink strokes of the draft, checked against its construction. */
@@ -142,7 +142,20 @@ function inkOf(draft: Draft, scene: Scene) {
   }
 }
 
-/** The piece names and colors are worked out again once the ink changes. */
+/**
+ * After a change to the construction or the ink, the pieces are found
+ * again. While the tile still repeats, they keep their names and colors
+ * (tutorialOf matches them to the earlier ones); otherwise they are left
+ * out until the tile works again, and check says why.
+ */
+function refinish(draft: Draft): Draft {
+  if (draft.pattern?.cell) {
+    const result = tutorialOf(draft);
+    if ('tutorial' in result) return result.tutorial;
+  }
+  return forgetPieces(draft);
+}
+
 const forgetPieces = (draft: Draft): Draft => {
   const { expect: _expect, ...rest } = draft;
   return rest;
@@ -232,7 +245,7 @@ export function ink(
       }
     : (({ ink: _ink, ...rest }) => rest)(next);
   inkOf(next, scene);
-  return forgetPieces(next);
+  return refinish(next);
 }
 
 const TILE_TEXT = 'Repeat using the tile';

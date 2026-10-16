@@ -11,7 +11,7 @@ Progress on [the studio plan](STUDIO-PLAN.md), newest last. The work is on branc
 | 3. Pictures | Done, 16 October |
 | 4. Talking and pointing | Done, 16 October (live check with the owner still to do) |
 | 5. Photos | Tools done 16 October; the live reconstruction waits for the owner to line up a photo |
-| 6. Codex and Gemini | Next |
+| 6. Codex and Gemini | Two agents done 16 October; Codex waits for the ChatGPT allowance, Gemini for the owner to install and sign in |
 | 7. Contest (optional) | Not started |
 
 The plan asks for each phase to be added to `docs/TASKS.md`. Codex has uncommitted changes to that file in its checkout, so the studio phases are tracked here and will be added to the task list when the branches are merged.
@@ -63,3 +63,13 @@ A project can have a reference photo: the owner adds one in the studio panel (PN
 **Checks.** 18 studio tests pass, including the photo's size from its header, the mapping from O and A (also for a turned photo), magenta ink only once the photo is lined up, and cropping. 8 studio browser checks pass on desktop and phone, including adding a photo and lining it up by clicking. Lint has no errors and typecheck passes for the studio and the player.
 
 **Still to do for this phase.** The live test: the owner lines up a free photo of a pattern that already has a tutorial (the Itimad star and octagon photo is a good first one, `apps/player/public/photos/itimad-star-and-octagon.jpg`), an agent recreates it from O and A, and the owner judges the overlay.
+
+## Phase 6: Codex, Gemini and two agents (16 October, in part)
+
+**Two agents on one project.** Two Claude Code runs, named `claude-drafter` and `claude-checker` with `TASTIR_AUTHOR`, shared the project `studio/two-agents-eight-pointed-star-c176`. The drafter built an eight-pointed star from two squares inscribed in the unit circle, starting from O and A, inked its outline, used the square around the circle as the tile and colored it with a palette: 22 turns, about two minutes, `check` clean at revision 10. Along the way `check` caught a mistake. The drafter had inked lines out to the tile corners, the pieces around O lost their eight-fold symmetry, and it removed them. It left two notes. The checker read the notes, rebuilt every point's derivation from O and A, looked at both pictures, removed three guides the drafter had marked unused (revision 11), and posted a review: a correct star and cross, 11 turns.
+
+**A bug the checker found.** After any change to the construction or the ink, inspect listed the tile's pieces as empty until the tile was set again, although the wall still drew them. Construct and ink now find the pieces again whenever the tile still repeats, keeping their names and colors; a test covers it, and 19 studio tests pass.
+
+**Codex.** `codex exec` with the studio as an MCP server (`-c mcp_servers.tastir-studio…`) reached the model, but the ChatGPT plan had hit its usage limit until 4:52 AM on 16 October, shared with Codex's own work in the main checkout. The live Codex check is the next step after that time: the same square brief as Claude Code's phase 1 check, with `TASTIR_AUTHOR=codex`.
+
+**Gemini.** Gemini's command-line tool is not installed here, and it needs the owner to sign in with Google, so its setup is written in [the setup notes](STUDIO-SETUP.md) and its live check waits for the owner.

@@ -53,6 +53,29 @@ describe('studio drawing edits', () => {
     expect(loadModel(tutorial).pattern.types).toHaveLength(1);
   });
 
+  it('keeps the pieces and their colors through a later change', () => {
+    let draft = setTile(ink(construct(blank(), SQUARE), SIDES), [
+      'A',
+      'N',
+      'W',
+      'S',
+    ]);
+    const piece = inspect(draft).tile!.pieces[0]!.id;
+    draft = paint(draft, null, [{ piece, color: '#2453a6' }]);
+    draft = construct(draft, [
+      { kind: 'circle', name: 'Spare', centre: 'A', through: 'O' },
+    ]);
+    expect(inspect(draft).tile!.pieces).toEqual([
+      expect.objectContaining({ id: piece, color: '#2453a6' }),
+    ]);
+    draft = construct(draft, [], ['Spare']);
+    expect(inspect(draft).tile!.pieces).toHaveLength(1);
+    // Ink that no longer closes the tile leaves the pieces out until mended.
+    draft = ink(draft, [], ['ink1', 'ink2', 'ink3']);
+    expect(inspect(draft).tile!.pieces).toEqual([]);
+    expect(problems(draft).join(' ')).toMatch(/cover|loose|no pieces/);
+  });
+
   it('refuses a whole batch when one element cannot be drawn', () => {
     const draft = construct(blank(), SQUARE.slice(0, 2));
     expect(() =>

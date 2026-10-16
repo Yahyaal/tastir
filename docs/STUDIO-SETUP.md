@@ -20,6 +20,28 @@ claude mcp add --scope user tastir-studio -- /home/yahya/Documents/projects/Tast
 
 The path is the studio branch's checkout until it is merged into main; after the merge it becomes the main checkout's `tools/studio-mcp.sh`. Then start the studio and ask Claude Code something like "Use the tastir-studio tools to start a project from O and A and draw an eight-pointed star". Claude Code asks before using each tool the first time; you can allow them all for the session.
 
+## Connect Codex
+
+Run this once:
+
+```sh
+codex mcp add tastir-studio --env TASTIR_AUTHOR=codex -- /home/yahya/Documents/projects/Tastir-studio/tools/studio-mcp.sh
+```
+
+Codex then lists the studio's tools in any session; ask it in the same words as Claude Code. Codex uses your ChatGPT plan, which Codex's own work on Tastir also uses, so the two share one allowance.
+
+## Connect Gemini
+
+Gemini's command-line tool is not installed on this computer yet. Install it with `npm install -g @google/gemini-cli`, run `gemini` once and sign in with the Google account that has your Gemini plan, then run:
+
+```sh
+gemini mcp add -e TASTIR_AUTHOR=gemini tastir-studio /home/yahya/Documents/projects/Tastir-studio/tools/studio-mcp.sh
+```
+
+## Several agents on one project
+
+Agents can share a project. Give each a role in your request, for example one drafts the construction and the other checks it against the photo or the goals and posts what it finds. Each agent's changes are marked with its name in the history (set by `TASTIR_AUTHOR` above), an edit based on an old view is refused, and an agent's own Undo stops at anyone else's change.
+
 ## What agents can do
 
 Agents start projects from O and A or from a library tutorial, then add named lines, circles and crossings, ink straight sides between named points, choose the repeating tile and color its pieces. `check` lists every remaining problem, including the project's goals such as the fold. `inspect` shows the whole drawing with its history, and agents leave notes for you and for each other.
@@ -32,6 +54,6 @@ Open the address `pnpm studio` prints, normally http://127.0.0.1:4293/#/studio. 
 
 Under the steps, the studio panel shows agents' questions with a box to answer each, what they have marked (it glows on the drawing), and the notes thread, where you can leave notes for them. ▶ Play keeps a copy in this browser and plays it like your own patterns.
 
-## Not yet
+## Still to come
 
-Reference photos and the Codex and Gemini setup are later phases; the log says where each stands.
+The optional contest between models is the last phase; the log says where each phase stands.
