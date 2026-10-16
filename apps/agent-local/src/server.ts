@@ -199,6 +199,12 @@ export async function createCompanion(options: Options) {
         );
         return;
       }
+      if (path === '/conversation/reset') {
+        z.strictObject({}).parse(data);
+        runtime.resetConversation(tab);
+        json(response, { cleared: true });
+        return;
+      }
       if (path === '/turn/continue') {
         const parsed = ContinueShape.parse(data);
         json(

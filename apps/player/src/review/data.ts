@@ -1816,6 +1816,22 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'AI.2–3: compact chat and normal drawing tools',
+      text: 'The toolbar companion opens a real conversation without covering Save. Follow-ups survive navigation and closing. It can create and edit normal patterns, ink, choose repeats, color shapes/rings/positions, save named copies and use the real Undo history. Assistant-only Undo protects manual work. This responsive preview uses simulated replies with the real app.',
+      link: {
+        label: 'See the phone chat',
+        href: '/__review/renders/assistant-chat/phone.png',
+      },
+    },
+    {
+      title: 'Chat in the dark theme',
+      text: 'The companion uses the existing theme colors, accessible buttons and a fixed composer. Earlier messages scroll above the input. Keyboard Enter sends, Shift+Enter adds a line, and touch Enter stays multiline. Escape closes the panel and returns focus to its toolbar icon.',
+      link: {
+        label: 'See the dark desktop chat',
+        href: '/__review/renders/assistant-chat/desktop-dark.png',
+      },
+    },
+    {
       title: 'AI.1: normal wall colors, Undo and saving',
       text: 'You chose one-square-thick borders: black 1×1, teal out to 3×3, blue to 5×5 and orange to 7×7. The assistant now applies this repeating motif to the normal Squares and stars wall while preserving its stars and connecting bands. One Undo reverses the whole request; Redo restores it. Normal saving, sharing and SVG export keep the colors. Live GPT-6.1-Sol completed coloring, Undo and Redo. All 108 assistant browser checks and 151 production browser checks passed (17 production skips), along with full unit tests, lint, TypeScript and build. Checks ran sequentially with one worker and bounded memory.',
       link: {
@@ -2175,17 +2191,17 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI.1: concentric square colors on your normal wall',
-    text: 'Your square-color request now works on the normal Squares and stars result page. Ask for a black centre, teal border out to 3×3, blue to 5×5 and orange to 7×7, repeating across the wall. You confirmed one-square-thick borders on 16 October: 1×1, 3×3, 5×5 and 7×7. Live ChatGPT applied it, checked it, and completed Undo and Redo. All 108 assistant browser checks passed. Unit tests, lint, TypeScript and the production build passed; the ordinary production browser suite passed 151 checks with 17 skips. The picture shows the actual live Redo result.',
+    title: 'AI.2: a proper chat companion and tools on your open drawing',
+    text: 'You asked for a cute icon instead of the long assistant button, and a real back-and-forth chat. The icon now lives in the toolbar, clear of Save. The panel keeps your messages and replies, shows actions and Stop, and can start a new conversation. Construction tools now reach the normal saved-pattern editor; coloring includes rings, shapes, individual positions and shared square borders. Named saves make new copies. All 117 assistant browser checks passed; after the live test exposed a save acknowledgement bug, all 15 affected coloring checks passed with its fix. The live assistant constructed and colored an eight-pointed star; a focused live follow-up saved and reopened it successfully. Full units, lint, TypeScript, the fresh production build and assistant-marker audit passed. The complete production browser suite passed 151 checks with 17 skips. All checks ran sequentially within bounded memory.',
     link: {
-      label: 'See the live color and Redo result',
-      href: '/__review/renders/agent-square-colors/live-redo.png',
+      label: 'See the live saved star and chat',
+      href: '/__review/renders/assistant-chat/live-star-final.png',
     },
   },
   next: [
     {
-      title: 'AI agent: edit the drawing you have open',
-      text: 'Connect drawing commands to the normal editor, with each request recorded in its Undo history and a fresh view confirming the result. Ring and individual placement colors, broader construction tools and automatic saving remain later phases.',
+      title: 'AI agent: broader live evaluation and local release',
+      text: 'Exercise more original construction requests and recovery cases, then finish account recovery, credential storage and local packaging. The chat and normal drawing/coloring tools are implemented; the wider generation evaluation remains.',
       link: { label: 'Read the remaining phases', href: '/#/notes/agent' },
     },
     {

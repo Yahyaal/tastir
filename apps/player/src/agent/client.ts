@@ -76,4 +76,9 @@ export class AgentClient {
     this.runId = null;
     if (runId) await this.request('/turn/cancel', { runId });
   }
+  async resetConversation() {
+    await this.stop();
+    await this.request('/conversation/reset', {});
+    this.tab = crypto.randomUUID();
+  }
 }

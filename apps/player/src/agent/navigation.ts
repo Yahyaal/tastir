@@ -1,4 +1,11 @@
-import { pageColorObservation, pageColorRevision } from './pageColoring';
+import { waitForRendered } from './rendered';
+import { PALETTES } from '../app/coloring';
+import { pageEditorObservation, pageEditorRevision } from './pageEditor';
+import {
+  pageColorObservation,
+  pageColorRevision,
+  pageColorSelected,
+} from './pageColoring';
 import {
   SnapshotShape,
   type Destination,
@@ -134,6 +141,7 @@ export function pageRevision(includePointing = true) {
     currentRoute(),
     committedRoute(),
     pageColorRevision(),
+    pageEditorRevision(),
     root?.textContent,
     svg?.getAttribute('viewBox'),
     svg
@@ -187,28 +195,50 @@ export function screenInfo(destinations: Destination[]) {
 
 export async function observeScreen(
   destinations: Destination[],
+  signal?: AbortSignal,
 ): Promise<Snapshot> {
   if (!sameScreenRoute(committedRoute(), currentRoute()))
     throw new Error(
       'The page is still changing. Send it again when it is ready.',
     );
   const svg = visibleDrawing();
-  // Let finite stroke/camera animations settle before describing their geometry.
-  const deadline = performance.now() + 5_000;
-  while (
-    svg?.isConnected &&
-    performance.now() < deadline &&
-    svg
-      .getAnimations?.({ subtree: true })
-      .some(
-        (a) =>
-          a.playState === 'running' &&
-          a.effect?.getTiming().iterations !== Infinity,
-      )
-  ) {
-    await new Promise<void>((resolve) =>
-      requestAnimationFrame(() => resolve()),
-    );
+  // useCamera glides with animation frames, outside the Web Animations API.
+  // Wait for the actual viewBox and bounds to stay still as well as CSS strokes.
+  if (svg) {
+    const route = currentRoute();
+    const frame = () => {
+      const r = svg.getBoundingClientRect();
+      return JSON.stringify([
+        svg.getAttribute('viewBox'),
+        r.x,
+        r.y,
+        r.width,
+        r.height,
+      ]);
+    };
+    let last = frame();
+    let stillSince = performance.now();
+    await waitForRendered(() => {
+      if (!svg.isConnected || currentRoute() !== route)
+        throw new Error(
+          'The page changed while its drawing was settling. Send it again.',
+        );
+      const next = frame();
+      if (next !== last) {
+        last = next;
+        stillSince = performance.now();
+      }
+      return (
+        performance.now() - stillSince >= 120 &&
+        !svg
+          .getAnimations?.({ subtree: true })
+          .some(
+            (a) =>
+              a.playState === 'running' &&
+              a.effect?.getTiming().iterations !== Infinity,
+          )
+      );
+    }, signal);
   }
   if (!sameScreenRoute(committedRoute(), currentRoute()))
     throw new Error(
@@ -219,6 +249,8 @@ export async function observeScreen(
   if (pageRevision() !== revision)
     throw new Error('The page changed during capture. Send it again.');
   const screen = screenInfo(destinations);
+  const targets = [...boardTargets(svg), ...controls().map((c) => c.target)];
+  const selected = pageColorSelected();
   return SnapshotShape.parse({
     id: crypto.randomUUID(),
     documentId: `screen:${screen.route || 'library'}`,
@@ -226,12 +258,14 @@ export async function observeScreen(
     documentRevision: pageRevision(false),
     viewRevision: revision,
     title: screen.title,
-    selected: null,
-    targets: [...boardTargets(svg), ...controls().map((c) => c.target)],
+    selected: targets.some((t) => t.id === selected) ? selected : null,
+    targets,
     image,
     screen,
     mode: 'screen',
+    palettes: Object.keys(PALETTES),
     ...pageColorObservation(),
+    ...pageEditorObservation(),
   });
 }
 

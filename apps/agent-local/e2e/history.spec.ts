@@ -1,3 +1,4 @@
+import { sendCurrentView, prepareRequest } from './chatHelpers';
 import { test, expect, type Page } from '@playwright/test';
 import type { Snapshot, ToolCall } from '@tastir/agent-protocol';
 
@@ -25,7 +26,7 @@ const historyCall = (
   steps = 1,
   scope: 'steps' | 'assistant' = 'steps',
 ): ToolCall => ({
-  id: 'history',
+  id: `history-${direction}-${s.id}`,
   name: 'travel_history',
   arguments: {
     snapshotId: s.id,
@@ -52,7 +53,7 @@ const squareCall = (s: Snapshot): ToolCall => ({
 });
 async function send(page: Page, prompt: string) {
   await page.getByRole('textbox', { name: 'Your request' }).fill(prompt);
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
 }
 
 test('new geometry is framed, and the assistant can fit a zoomed view and continue with its new points', async ({
@@ -422,10 +423,10 @@ for (const intervention of ['view', 'stop'] as const) {
     release();
     if (intervention === 'view')
       await expect(page.locator('.agent-answer')).toHaveText('View changed.');
-    else
-      await expect(
-        page.getByRole('button', { name: 'Send current view' }),
-      ).toBeEnabled();
+    await prepareRequest(page);
+    await expect(
+      page.getByRole('button', { name: 'Send current view' }),
+    ).toBeEnabled();
     await expect(page.locator('.agent-edits h2')).toHaveText(
       'Your drawing · 4 sides',
     );

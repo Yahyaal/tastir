@@ -23,8 +23,10 @@ import {
   pieceColors,
   tutorialColoring,
   type History,
+  type ColorAction,
+  typeKey,
 } from './coloring';
-import { type Design } from './designs';
+import { addDesign, type Design } from './designs';
 import { draftOf, forgetDraft, keepDraft } from './drafts';
 import { Construction, RepeatedInk } from './drawing';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
@@ -51,6 +53,7 @@ import {
   colorRepeat,
   colouredModel,
   placeFills,
+  paintChosen,
   placeKey,
   ringsFor,
 } from './placement';
@@ -264,7 +267,7 @@ export function Player({
     () => (inking.editing ? inking.shown : asPanel(inking.shown)),
     [inking.editing, inking.shown],
   );
-  const [colorHistory, colorDispatch] = useReducer(
+  const [colorHistory, rawColorDispatch] = useReducer(
     colorReducer,
     model,
     (m): History => ({
@@ -284,6 +287,36 @@ export function Player({
     () => colouredModel(inking.shown, colorHistory.now),
     [inking.shown, colorHistory.now],
   );
+  const colorDispatch = (action: ColorAction) => {
+    const bandType = colorHistory.now.squareBands?.typeId;
+    const replacesBands =
+      action.kind === 'paint' &&
+      !!bandType &&
+      inking.shown.pattern.types.some(
+        (type) => type.name === bandType && typeKey(type) === action.type,
+      );
+    if (
+      action.kind === 'paint' &&
+      (replacesBands ||
+        Object.keys(colorHistory.now.chosen).some((key) =>
+          key.includes('#placement'),
+        ))
+    ) {
+      rawColorDispatch({
+        kind: 'reset',
+        to: {
+          ...colorHistory.now,
+          chosen: paintChosen(
+            coloured,
+            colorHistory.now,
+            action.type,
+            action.color,
+          ),
+          ...(replacesBands ? { squareBands: undefined } : {}),
+        },
+      });
+    } else rawColorDispatch(action);
+  };
   const colors = useMemo(
     () => pieceColors(coloured, colorHistory.now),
     [coloured, colorHistory.now],
@@ -310,13 +343,16 @@ export function Player({
     if (
       !import.meta.env.DEV ||
       !import.meta.env.VITE_TASTIR_AGENT ||
-      stage.kind !== 'color' ||
-      wallStyle !== 'tiles'
+      stage.kind !== 'color'
     )
       return;
     return registerPageColoring({
       model: inking.shown,
       history: colorHistory,
+      style: wallStyle,
+      selected: place,
+      // A named copy does not switch the active design or its route/history.
+      saveNew: (name) => addDesign({ ...designFields(), name }),
       dispatch: colorDispatch,
       route: decodeURIComponent(window.location.hash.replace(/^#\/?/, '')),
     });

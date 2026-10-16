@@ -502,6 +502,7 @@ describe('image and tool execution loop', () => {
       expect(input.at(-1)?.content?.map((p) => p.type)).toEqual(['input_text']);
       const groups = bodies[1]!['tools'] as { tools: { name: string }[] }[];
       expect(groups[0]!.tools.map((t) => t.name)).toEqual([
+        'create_pattern',
         'navigate',
         'highlight_target',
       ]);
@@ -509,7 +510,7 @@ describe('image and tool execution loop', () => {
       runtime.cancelAll();
     }
   });
-  it('allows six bounded responses and cancels before a seventh inference', async () => {
+  it('allows twelve bounded responses and cancels before a thirteenth inference', async () => {
     let inferences = 0;
     const send = vi.fn<typeof fetch>().mockImplementation(async (url) => {
       if (String(url).endsWith('/models'))
@@ -530,14 +531,14 @@ describe('image and tool execution loop', () => {
         snapshot,
         new AbortController().signal,
       );
-      for (let i = 1; i < 6; i++)
+      for (let i = 1; i < 12; i++)
         await runtime.resume(
           'tab',
           first.runId,
           [{ callId: 'call-1', ok: true, message: 'Displayed' }],
           new AbortController().signal,
         );
-      expect(inferences).toBe(6);
+      expect(inferences).toBe(12);
       await expect(
         runtime.resume(
           'tab',
@@ -546,7 +547,7 @@ describe('image and tool execution loop', () => {
           new AbortController().signal,
         ),
       ).rejects.toMatchObject({ code: 'run_limit' });
-      expect(inferences).toBe(6);
+      expect(inferences).toBe(12);
     } finally {
       runtime.cancelAll();
     }
@@ -761,17 +762,15 @@ describe('review fixes: bounded context and model recovery', () => {
     }
   });
   it('stops repeated malformed model calls with an assistant error, without executing any', async () => {
-    const send = vi
-      .fn<typeof fetch>()
-      .mockImplementation(async (url) =>
-        String(url).endsWith('/models')
-          ? Response.json({
-              models: [
-                { slug: 'model', display_name: 'Model', visibility: 'list' },
-              ],
-            })
-          : stream([{ ...tool, arguments: '{}' }]),
-      );
+    const send = vi.fn<typeof fetch>().mockImplementation(async (url) =>
+      String(url).endsWith('/models')
+        ? Response.json({
+            models: [
+              { slug: 'model', display_name: 'Model', visibility: 'list' },
+            ],
+          })
+        : stream([{ ...tool, arguments: '{}' }]),
+    );
     const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
     await expect(
       runtime.start(
@@ -851,6 +850,164 @@ describe('review fixes: bounded context and model recovery', () => {
       expect(
         send.mock.calls.filter(([url]) => String(url).endsWith('/models')),
       ).toHaveLength(1);
+    } finally {
+      runtime.cancelAll();
+    }
+  });
+  it('clears one conversation without removing another tab’s text', async () => {
+    const bodies: Record<string, unknown>[] = [];
+    const send = vi.fn<typeof fetch>().mockImplementation(async (url, init) => {
+      if (String(url).endsWith('/models'))
+        return Response.json({
+          models: [
+            { slug: 'model', display_name: 'Model', visibility: 'list' },
+          ],
+        });
+      bodies.push(JSON.parse(String(init?.body)));
+      return stream([
+        {
+          type: 'message',
+          role: 'assistant',
+          content: [{ type: 'output_text', text: 'A remembered reply.' }],
+        },
+      ]);
+    });
+    const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
+    const signal = new AbortController().signal;
+    try {
+      await runtime.start(
+        'tab',
+        'model',
+        'First private request',
+        snapshot,
+        signal,
+      );
+      await runtime.start(
+        'other',
+        'model',
+        'Other tab request',
+        snapshot,
+        signal,
+      );
+      runtime.resetConversation('tab');
+      await runtime.start('tab', 'model', 'New conversation', snapshot, signal);
+      expect(JSON.stringify(bodies.at(-1))).not.toContain(
+        'First private request',
+      );
+      await runtime.start(
+        'other',
+        'model',
+        'Continue other tab',
+        snapshot,
+        signal,
+      );
+      expect(JSON.stringify(bodies.at(-1))).toContain('Other tab request');
+    } finally {
+      runtime.cancelAll();
+    }
+  });
+  it('requires a fresh normal editor after creation and allows saving without a fake document edit', async () => {
+    const bodies: Record<string, unknown>[] = [];
+    let turns = 0;
+    const send = vi.fn<typeof fetch>().mockImplementation(async (url, init) => {
+      if (String(url).endsWith('/models'))
+        return Response.json({
+          models: [
+            { slug: 'model', display_name: 'Model', visibility: 'list' },
+          ],
+        });
+      bodies.push(JSON.parse(String(init?.body)));
+      turns++;
+      if (turns === 1 || turns === 2)
+        return stream([
+          {
+            type: 'function_call',
+            namespace: 'tastir',
+            call_id: 'edit',
+            name: turns === 1 ? 'create_pattern' : 'save_work',
+            arguments: JSON.stringify({
+              snapshotId: turns === 1 ? snapshot.id : 'editor',
+              documentRevision:
+                turns === 1 ? snapshot.documentRevision : 'editor-r',
+              label: 'Named copy',
+              name: 'A new pattern',
+            }),
+          },
+        ]);
+      return stream([
+        {
+          type: 'message',
+          role: 'assistant',
+          content: [{ type: 'output_text', text: 'Saved.' }],
+        },
+      ]);
+    });
+    const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
+    const signal = new AbortController().signal;
+    const editor = SnapshotShape.parse({
+      ...snapshot,
+      id: 'editor',
+      documentId: 'screen:edit/p',
+      documentRevision: 'editor-r',
+      mode: 'screen',
+      editor: { steps: [], autoSaved: true },
+      canSave: true,
+      screen: {
+        route: 'edit/p',
+        title: 'A new pattern',
+        description: '',
+        destinations: [
+          {
+            id: 'editor:p',
+            title: 'A new pattern',
+            kind: 'editor',
+            route: 'edit/p',
+          },
+        ],
+      },
+    });
+    try {
+      const first = await runtime.start(
+        'tab',
+        'model',
+        'Create and save a new pattern',
+        snapshot,
+        signal,
+      );
+      await expect(
+        runtime.resume(
+          'tab',
+          first.runId,
+          [{ callId: 'edit', ok: true, message: 'Created' }],
+          signal,
+        ),
+      ).rejects.toMatchObject({ code: 'observation_missing' });
+      const second = await runtime.resume(
+        'tab',
+        first.runId,
+        [{ callId: 'edit', ok: true, message: 'Created' }],
+        signal,
+        editor,
+      );
+      expect(second.calls[0]?.name).toBe('save_work');
+      const tools = bodies[1]!['tools'] as { tools: { name: string }[] }[];
+      expect(tools[0]!.tools.map((t) => t.name)).toEqual(
+        expect.arrayContaining([
+          'apply_steps',
+          'edit_segments',
+          'travel_history',
+          'save_work',
+        ]),
+      );
+      expect(tools[0]!.tools.map((t) => t.name)).not.toContain('paint_targets');
+      const last = await runtime.resume(
+        'tab',
+        first.runId,
+        [{ callId: 'edit', ok: true, message: 'Saved a new copy' }],
+        signal,
+        { ...editor, id: 'saved' },
+      );
+      expect(last.text).toBe('Saved.');
     } finally {
       runtime.cancelAll();
     }

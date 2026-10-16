@@ -52,7 +52,7 @@ export function squareBandColor(
   i: number,
   j: number,
 ): string {
-  const size = bands.colors.length * 2 - 1;
+  const size = squareBandPeriod(bands);
   const distance = (n: number, centre: number) => {
     const at = (((n - centre) % size) + size) % size;
     return Math.min(at, size - at);
@@ -66,3 +66,6 @@ export const commonPeriod = (a: number, b: number): number => {
   const gcd = (x: number, y: number): number => (y ? gcd(y, x % y) : x);
   return (a * b) / gcd(a, b);
 };
+
+export const squareBandPeriod = (bands: SquareBands) =>
+  bands.colors.length * 2 - (bands.sharedBorder ? 2 : 1);

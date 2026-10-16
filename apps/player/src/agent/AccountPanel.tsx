@@ -2,13 +2,10 @@ import type { ConnectionStatus, ModelChoice } from '@tastir/agent-protocol';
 
 /** Account and data-sharing UI, independent of the drawing workspace. */
 export function AccountPanel({
-  route,
   connection,
   models,
   modelId,
   profileId,
-  settingsOpen,
-  setSettingsOpen,
   polling,
   chooseProfile,
   connect,
@@ -17,13 +14,10 @@ export function AccountPanel({
   stop,
   setModelId,
 }: {
-  route: string;
   connection: ConnectionStatus | undefined;
   models: ModelChoice[];
   modelId: string;
   profileId: string;
-  settingsOpen: boolean;
-  setSettingsOpen: (open: boolean) => void;
   polling: boolean;
   chooseProfile: (id: string) => Promise<void>;
   connect: (fresh?: boolean) => Promise<void>;
@@ -41,17 +35,7 @@ export function AccountPanel({
             : 'Connected; ChatGPT plan permission is needed'
           : 'Connect your ChatGPT account'}
       </p>
-      {route !== 'agent' && connection?.sharing ? (
-        <button
-          type="button"
-          aria-expanded={settingsOpen}
-          onClick={() => setSettingsOpen(!settingsOpen)}
-        >
-          Account and model ·{' '}
-          {models.find((m) => m.slug === modelId)?.name ?? 'ChatGPT'}
-        </button>
-      ) : null}
-      <div hidden={route !== 'agent' && !!connection?.sharing && !settingsOpen}>
+      <div>
         {connection?.profiles.length ? (
           <label>
             Saved account{' '}

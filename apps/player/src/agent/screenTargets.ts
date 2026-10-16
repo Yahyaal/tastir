@@ -99,16 +99,20 @@ export function boardWindow(svg: SVGSVGElement) {
     right: Math.min(window.innerWidth, r.right),
     bottom: Math.min(window.innerHeight, r.bottom),
   };
-  const dock = document
-    .querySelector('.agent-dock:not([hidden])')
-    ?.getBoundingClientRect();
-  if (
-    dock &&
-    dock.left < box.right &&
-    dock.right > box.left &&
-    dock.top < box.bottom &&
-    dock.bottom > box.top
-  ) {
+  const blockers = [
+    ...document.querySelectorAll(
+      '.agent-dock:not([hidden]), [data-tastir-page] .original',
+    ),
+  ].filter(visibleElement);
+  for (const blocker of blockers) {
+    const dock = blocker.getBoundingClientRect();
+    if (
+      dock.left >= box.right ||
+      dock.right <= box.left ||
+      dock.top >= box.bottom ||
+      dock.bottom <= box.top
+    )
+      continue;
     box = [
       { ...box, right: Math.min(box.right, dock.left) },
       { ...box, left: Math.max(box.left, dock.right) },

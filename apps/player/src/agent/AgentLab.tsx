@@ -1,5 +1,8 @@
+import { applyPageEditor, pageEditorRevision } from './pageEditor';
 import { waitForRendered } from './rendered';
 import { AccountPanel } from './AccountPanel';
+import { ChatPanel } from './ChatPanel';
+import { useConversation, type Conversation } from './conversation';
 import { pageColorRevision, applyPageColor } from './pageColoring';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -36,7 +39,6 @@ import {
   historyObservation,
   type DrawingHistory,
 } from './drawing';
-import { AgentClient } from './client';
 import { Wall } from '../app/Wall';
 import { PALETTES } from '../app/coloring';
 import {
@@ -70,11 +72,14 @@ export function AgentLab({
   route = 'agent',
   open = true,
   library = LIBRARY,
+  onClose,
 }: {
   route?: string;
   open?: boolean;
   library?: readonly Entry[];
+  onClose?: () => void;
 }) {
+  const conversation = useConversation();
   const [id, setId] = useState(
     route === 'agent'
       ? (library.find((entry) => entry.id === 'eight-fold-star-and-octagon')
@@ -121,6 +126,8 @@ export function AgentLab({
           route={route}
           open={open}
           library={library}
+          conversation={conversation}
+          onClose={onClose}
         />
       ) : (
         <p role="status">{loading.error ?? 'Loading the construction…'}</p>
@@ -172,32 +179,31 @@ function Workspace({
   route,
   open,
   library,
+  conversation,
+  onClose,
 }: {
   model: { tutorial: Draft; scene: Scene };
   route: string;
   open: boolean;
   library: readonly Entry[];
+  conversation: Conversation;
+  onClose?: () => void;
 }) {
-  const [client] = useState(() => new AgentClient());
+  const { client } = conversation;
   const [connection, setConnection] = useState<ConnectionStatus>();
   const [polling, setPolling] = useState(false);
   const [models, setModels] = useState<ModelChoice[]>([]);
   const [modelId, setModelId] = useState('');
   const [selected, setSelected] = useState('O');
   const [mark, setMark] = useState<Highlight & { geometry: Geometry }>();
-  const [prompt, setPrompt] = useState(
-    route === 'agent'
-      ? 'Explain the selected object and point to it.'
-      : 'What can I do on this page?',
-  );
-  const [answer, setAnswer] = useState('');
+  const [prompt, setPrompt] = useState('');
+  const setAnswer = (text: string) => {
+    if (text) conversation.update(text);
+  };
   const [activity, setActivity] = useState('');
   const [error, setError] = useState('');
   const [sentImage, setSentImage] = useState('');
   const [screenPoint, setScreenPoint] = useState(false);
-  const [proof, setProof] = useState<
-    false | 'point' | 'draw' | 'navigate' | 'view'
-  >(false);
   const [drawing, setDrawing] = useState(emptyDrawing);
   const drawingRef = useRef(drawing);
   const [showRepeat, setShowRepeat] = useState(true);
@@ -246,7 +252,6 @@ function Workspace({
     [pieces],
   );
   const [profileId, setProfileId] = useState('');
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
   const frame = useMemo(() => frameOf(scene), [scene]);
   const camera = useCamera(frame, svgRef, {
@@ -298,7 +303,7 @@ function Workspace({
     requiredMode?: 'construction',
   ): Promise<Snapshot> => {
     if (currentRoute() !== 'agent')
-      return observeScreen(destinationsOf(library));
+      return observeScreen(destinationsOf(library), controller.current?.signal);
     await waitForRendered(
       () =>
         svgRef.current?.closest<HTMLElement>('.agent-board')?.dataset[
@@ -362,6 +367,7 @@ function Workspace({
       mode: inRepeat ? 'repeat' : 'construction',
       palettes: Object.keys(PALETTES),
       history: historyObservation(drawingRef.current),
+      canSave: true,
       screen: {
         route: 'agent',
         title: model.tutorial.title,
@@ -397,6 +403,7 @@ function Workspace({
       });
     return () => {
       live = false;
+      conversation.interrupt();
       generation.current++;
       controller.current?.abort();
       void client.stop().catch(() => undefined);
@@ -433,23 +440,23 @@ function Workspace({
 
   useEffect(() => {
     if (!open) {
+      conversation.interrupt();
       generation.current++;
       controller.current?.abort();
       controller.current = null;
       setActivity('');
-      setProof(false);
       void client.stop().catch(() => undefined);
     }
   }, [open, client]);
 
   const stop = () => {
+    conversation.interrupt();
     clearScreenHighlight();
     setScreenPoint(false);
     generation.current++;
     controller.current?.abort();
     controller.current = null;
     setActivity('');
-    setProof(false);
     void client.stop().catch(() => undefined);
   };
   const connect = async (fresh = false) => {
@@ -492,6 +499,8 @@ function Workspace({
     setError('');
     try {
       await client.request('/auth/disconnect', {});
+      conversation.clear();
+      setSentImage('');
       await refreshStatus();
     } catch (e) {
       setError((e as Error).message);
@@ -503,16 +512,20 @@ function Workspace({
     setProfileId(id);
     try {
       await client.request('/auth/select', { profileId: id });
+      conversation.clear();
+      setSentImage('');
       await refreshStatus();
     } catch (e) {
       setError((e as Error).message);
     }
   };
   const send = async () => {
-    if (!prompt.trim() || !modelId || activity) return;
+    if (!prompt.trim() || !modelId || activity || controller.current) return;
+    const question = prompt.trim();
+    conversation.begin(question);
+    setPrompt('');
     setError('');
     setAnswer('');
-    setProof(false);
     setMark(undefined);
     clearScreenHighlight();
     setScreenPoint(false);
@@ -534,46 +547,44 @@ function Workspace({
       if (!isCurrent()) return;
       setSentImage(snapshot.image ?? '');
       setActivity('Asking with your ChatGPT plan…');
-      let reply = await client.start(
-        modelId,
-        prompt.trim(),
-        snapshot,
-        abort.signal,
-      );
-      let pointed = false;
-      let drawn = false;
-      let moved = false;
-      let viewed = false;
+      let reply = await client.start(modelId, question, snapshot, abort.signal);
+
       const text: string[] = [];
+      const executed = new Map<string, ToolResult>();
       while (isCurrent()) {
         if (snapshot.screen && currentRoute() !== snapshot.screen.route)
           throw new Error(
             'The page changed while the assistant was working. Send the current view again.',
           );
-        if (reply.text) text.push(reply.text);
+        if (reply.text) {
+          text.push(reply.text);
+          conversation.update(text.join('\n\n'), 'pending');
+        }
         if (!reply.calls.length) {
           setAnswer(
             text.join('\n\n') || 'The request completed without a text answer.',
           );
-          setProof(
-            moved
-              ? 'navigate'
-              : drawn
-                ? 'draw'
-                : viewed
-                  ? 'view'
-                  : pointed
-                    ? 'point'
-                    : false,
-          );
           break;
         }
         const colorRevisionBefore = pageColorRevision();
+        const editorRevisionBefore = pageEditorRevision();
         let edited = false;
+        let observed = false;
         let navigated = false;
         let refitted = false;
         const results: ToolResult[] = await Promise.all(
           reply.calls.map(async (call) => {
+            const previous = executed.get(call.id);
+            if (previous?.ok)
+              return {
+                callId: call.id,
+                ok: false,
+                message:
+                  `This operation was already applied: ${previous.message}`.slice(
+                    0,
+                    500,
+                  ),
+              };
             if (reply.calls.length > 1)
               return {
                 callId: call.id,
@@ -581,6 +592,79 @@ function Workspace({
                 message:
                   'Use one tool call per response. Put all sides of a shape in one edit_segments call.',
               };
+            if (call.name === 'create_pattern') {
+              try {
+                if (
+                  call.arguments.snapshotId !== snapshot.id ||
+                  call.arguments.documentRevision !==
+                    snapshot.documentRevision ||
+                  revision() !== snapshot.viewRevision
+                )
+                  throw new Error(
+                    'The view changed. Send a fresh view before creating a pattern.',
+                  );
+                const pattern = addPattern(
+                  emptyDraft('my-pattern', call.arguments.name),
+                );
+                if (!pattern)
+                  throw new Error('The browser could not save a new pattern.');
+                const live = destinationsOf(library);
+                const updated = {
+                  ...snapshot,
+                  screen: { ...snapshot.screen!, destinations: live },
+                };
+                await navigateTo(
+                  `editor:${pattern.id}`,
+                  updated,
+                  live,
+                  abort.signal,
+                );
+                navigated = true;
+                return {
+                  callId: call.id,
+                  ok: true,
+                  message: `Created and opened “${pattern.tutorial.title}” starting from O and A. The normal editor keeps every edit automatically. A fresh observation follows.`,
+                };
+              } catch (e) {
+                return {
+                  callId: call.id,
+                  ok: false,
+                  message: (e as Error).message.slice(0, 500),
+                };
+              }
+            }
+            if (call.name === 'save_work' && snapshot.mode !== 'screen') {
+              try {
+                if (
+                  call.arguments.snapshotId !== snapshot.id ||
+                  call.arguments.documentRevision !==
+                    snapshot.documentRevision ||
+                  revision() !== snapshot.viewRevision
+                )
+                  throw new Error(
+                    'The drawing changed. Send a fresh view before saving.',
+                  );
+                const draft = {
+                  ...savedDrawing(model.tutorial, drawingRef.current),
+                  title: call.arguments.name,
+                };
+                const saved = addPattern(draft);
+                if (!saved)
+                  throw new Error('The browser could not save this pattern.');
+                observed = true;
+                return {
+                  callId: call.id,
+                  ok: true,
+                  message: `Saved a new pattern “${draft.title}” in Your work. Editor destination: editor:${saved.id}.`,
+                };
+              } catch (e) {
+                return {
+                  callId: call.id,
+                  ok: false,
+                  message: (e as Error).message.slice(0, 500),
+                };
+              }
+            }
             if (call.name === 'navigate') {
               if (
                 call.arguments.snapshotId !== snapshot.id ||
@@ -603,8 +687,7 @@ function Workspace({
                   abort.signal,
                 );
                 navigated = true;
-                moved = true;
-                pointed = false;
+
                 setMark(undefined);
                 clearScreenHighlight();
                 return {
@@ -643,14 +726,24 @@ function Workspace({
                   'That object is no longer visible on this page. Send a new view.';
               }
               if (result.ok) {
-                pointed = true;
                 setScreenPoint(true);
               }
               return result;
             }
             if (
               snapshot.mode === 'screen' &&
-              ['color_square_bands', 'travel_history'].includes(call.name)
+              [
+                'color_square_bands',
+                'paint_pattern',
+                'paint_targets',
+                'set_coloring',
+                'apply_steps',
+                'construct',
+                'edit_segments',
+                'set_tile',
+                'save_work',
+                'travel_history',
+              ].includes(call.name)
             ) {
               try {
                 if (
@@ -663,12 +756,15 @@ function Workspace({
                   throw new Error(
                     'The page or drawing changed. Send a new view before coloring.',
                   );
-                const message = applyPageColor(call, snapshot, reply.runId);
+                const message = snapshot.editor
+                  ? applyPageEditor(call, snapshot, reply.runId)
+                  : applyPageColor(call, snapshot, reply.runId);
                 clearScreenHighlight();
                 setScreenPoint(false);
-                pointed = false;
-                edited = true;
-                drawn = true;
+
+                if (call.name === 'save_work') observed = true;
+                else edited = true;
+
                 return { callId: call.id, ok: true, message };
               } catch (e) {
                 return {
@@ -685,7 +781,13 @@ function Workspace({
                 message:
                   'This page supports questions, navigation and pointing. Return to the assistant workspace to edit geometry.',
               };
-            if (call.name === 'color_square_bands')
+            if (
+              call.name === 'color_square_bands' ||
+              call.name === 'paint_targets' ||
+              call.name === 'set_coloring' ||
+              call.name === 'apply_steps' ||
+              call.name === 'save_work'
+            )
               return {
                 callId: call.id,
                 ok: false,
@@ -701,7 +803,6 @@ function Workspace({
                     (t) => t.id === call.arguments.targetId,
                   )!.geometry as unknown as Geometry,
                 });
-                pointed = true;
               }
               return result;
             }
@@ -745,9 +846,9 @@ function Workspace({
                   ),
                 );
                 setMark(undefined);
-                pointed = false;
+
                 refitted = true;
-                viewed = true;
+
                 return {
                   callId: call.id,
                   ok: true,
@@ -831,9 +932,9 @@ function Workspace({
                     },
               );
               setMark(undefined);
-              pointed = false;
+
               edited = true;
-              drawn = true;
+
               return {
                 callId: call.id,
                 ok: true,
@@ -856,7 +957,7 @@ function Workspace({
           requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
         );
         if (!isCurrent()) return;
-        if (!edited && !navigated && !refitted) {
+        if (!edited && !navigated && !refitted && !observed) {
           for (const result of results)
             if (
               result.ok &&
@@ -867,17 +968,31 @@ function Workspace({
               result.ok = false;
               result.message =
                 'The view changed before the mark was displayed. Send a new view.';
-              pointed = false;
+
               setMark(undefined);
               clearScreenHighlight();
               setScreenPoint(false);
             }
         }
+        conversation.recordActions(
+          results.map((result) => ({
+            label:
+              reply.calls.find((c) => c.id === result.callId)?.arguments
+                .label ?? 'Assistant action',
+            ok: result.ok,
+            message: result.message,
+          })),
+        );
+        for (const result of results)
+          if (result.ok) executed.set(result.callId, result);
         let fresh: Snapshot | undefined;
-        if (edited || navigated || refitted) {
+        if (edited || navigated || refitted || observed) {
           if (edited && snapshot.mode === 'screen')
             await waitForRendered(
-              () => pageColorRevision() !== colorRevisionBefore,
+              () =>
+                snapshot.editor
+                  ? pageEditorRevision() !== editorRevisionBefore
+                  : pageColorRevision() !== colorRevisionBefore,
               abort.signal,
             );
           fresh = await snapshotOfView(refitted ? 'construction' : undefined);
@@ -897,6 +1012,10 @@ function Workspace({
     } catch (e) {
       if (isCurrent()) {
         setError((e as Error).message);
+        conversation.update(
+          'The request could not finish. ' + (e as Error).message,
+          'error',
+        );
         void client.stop().catch(() => undefined);
       }
     } finally {
@@ -1329,158 +1448,125 @@ function Workspace({
             </section>
           ) : null}
         </section>
-      </section>
-      <aside className="agent-panel" aria-label="Assistant">
-        <h2>Assistant</h2>
-        {route !== 'agent' ? (
-          <p className="agent-caption">
-            Ask, navigate or point here. Draw in your{' '}
-            <a href="#/agent">assistant workspace</a>.
-          </p>
-        ) : null}
-        {route === 'agent' ? (
-          <button
-            type="button"
-            disabled={!!activity}
-            onClick={() =>
-              setPrompt(
-                'Open Your work, where my saved patterns and designs are.',
-              )
-            }
-          >
-            Use navigation request
-          </button>
-        ) : null}
-        {route === 'agent' && model.tutorial.id === 'agent-blank' ? (
-          <button
-            type="button"
-            disabled={!!activity}
-            onClick={() =>
-              setPrompt(
-                'Draw a circle C0 centred at O through A, then a circle C1 centred at A through O. Mark their upper intersection as Top and lower intersection as Bottom. Draw a ruler line Axis through Top and Bottom. Make this in one construction batch.',
-              )
-            }
-          >
-            Use compass request
-          </button>
-        ) : null}
-        {route === 'agent' &&
-        ['jW', 'jN', 'jE', 'jS'].every((id) => model.scene.elements.has(id)) ? (
-          <button
-            type="button"
-            onClick={() => setPrompt('Draw the square jW, jN, jE, jS.')}
-            disabled={!!activity}
-          >
-            Use square request
-          </button>
-        ) : null}
-        {route === 'agent' &&
-        ['N', 'E', 'S', 'W', 'jN', 'jE', 'jS', 'jW'].every((id) =>
-          model.scene.elements.has(id),
-        ) ? (
-          <button
-            type="button"
-            disabled={!!activity}
-            onClick={() =>
-              setPrompt(
-                'Draw two closed squares N–E–S–W–N and jN–jE–jS–jW–jN, and join N to jN, E to jE, S to jS, W to jW. Add all 12 sides in one edit. Then use N, E, S, W as the repeat tile. Color the inner square cobalt blue (#2453a6) and the surrounding quadrilaterals gold (#dda83b).',
-              )
-            }
-          >
-            Use repeat and color request
-          </button>
-        ) : null}
-        <AccountPanel
-          route={route}
-          connection={connection}
-          models={models}
-          modelId={modelId}
-          profileId={profileId}
-          settingsOpen={settingsOpen}
-          setSettingsOpen={setSettingsOpen}
-          polling={polling}
-          chooseProfile={chooseProfile}
-          connect={connect}
-          cancelSignIn={cancelSignIn}
-          disconnect={disconnect}
-          stop={stop}
-          setModelId={setModelId}
-        />
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            void send();
-          }}
-        >
-          <label>
-            Your request{' '}
-            <textarea
-              value={prompt}
-              onChange={(event) => setPrompt(event.target.value)}
-              maxLength={8000}
-              rows={route === 'agent' ? 4 : 2}
-            />
-          </label>
-          <div className="agent-actions">
+        <div className="agent-workspace-examples" hidden={route !== 'agent'}>
+          {route === 'agent' ? (
             <button
-              type="submit"
-              disabled={
-                !connection?.sharing || !modelId || !prompt.trim() || !!activity
+              type="button"
+              disabled={!!activity}
+              onClick={() =>
+                setPrompt(
+                  'Open Your work, where my saved patterns and designs are.',
+                )
               }
             >
-              Send current view
+              Use navigation request
             </button>
-            {activity ? (
-              <button type="button" onClick={stop}>
-                Stop
+          ) : null}
+          {route === 'agent' && model.tutorial.id === 'agent-blank' ? (
+            <button
+              type="button"
+              disabled={!!activity}
+              onClick={() =>
+                setPrompt(
+                  'Draw a circle C0 centred at O through A, then a circle C1 centred at A through O. Mark their upper intersection as Top and lower intersection as Bottom. Draw a ruler line Axis through Top and Bottom. Make this in one construction batch.',
+                )
+              }
+            >
+              Use compass request
+            </button>
+          ) : null}
+          {route === 'agent' &&
+          ['jW', 'jN', 'jE', 'jS'].every((id) =>
+            model.scene.elements.has(id),
+          ) ? (
+            <button
+              type="button"
+              onClick={() => setPrompt('Draw the square jW, jN, jE, jS.')}
+              disabled={!!activity}
+            >
+              Use square request
+            </button>
+          ) : null}
+          {route === 'agent' &&
+          ['N', 'E', 'S', 'W', 'jN', 'jE', 'jS', 'jW'].every((id) =>
+            model.scene.elements.has(id),
+          ) ? (
+            <button
+              type="button"
+              disabled={!!activity}
+              onClick={() =>
+                setPrompt(
+                  'Draw two closed squares N–E–S–W–N and jN–jE–jS–jW–jN, and join N to jN, E to jE, S to jS, W to jW. Add all 12 sides in one edit. Then use N, E, S, W as the repeat tile. Color the inner square cobalt blue (#2453a6) and the surrounding quadrilaterals gold (#dda83b).',
+                )
+              }
+            >
+              Use repeat and color request
+            </button>
+          ) : null}
+        </div>
+      </section>
+      <ChatPanel
+        onClose={route !== 'agent' ? onClose : undefined}
+        messages={conversation.messages}
+        prompt={prompt}
+        setPrompt={setPrompt}
+        activity={activity}
+        error={error}
+        ready={!!connection?.sharing && !!modelId}
+        send={send}
+        stop={stop}
+        newChat={async () => {
+          stop();
+          try {
+            await client.resetConversation();
+            conversation.clear();
+            setError('');
+            setSentImage('');
+          } catch (e) {
+            setError((e as Error).message);
+          }
+        }}
+        account={
+          <AccountPanel
+            connection={connection}
+            models={models}
+            modelId={modelId}
+            profileId={profileId}
+            polling={polling}
+            chooseProfile={chooseProfile}
+            connect={connect}
+            cancelSignIn={cancelSignIn}
+            disconnect={disconnect}
+            stop={stop}
+            setModelId={setModelId}
+          />
+        }
+        tools={
+          <>
+            {' '}
+            {route !== 'agent' && screenPoint ? (
+              <button
+                type="button"
+                onClick={() => {
+                  clearScreenHighlight();
+                  setScreenPoint(false);
+                }}
+              >
+                Clear page highlight
               </button>
             ) : null}
-          </div>
-        </form>
-        <p className="agent-activity" role="status">
-          {activity ||
-            (proof
-              ? proof === 'navigate'
-                ? 'Navigation completed: destination displayed, current page sent, final response completed.'
-                : proof === 'draw'
-                  ? 'Drawing updated: edits displayed, current image sent, final response completed.'
-                  : proof === 'view'
-                    ? 'View fitted: construction displayed, current image sent, final response completed.'
-                    : route !== 'agent'
-                      ? 'Page highlight displayed: target acknowledged, final response completed.'
-                      : 'Live check completed: image sent, highlight acknowledged, final response completed.'
-              : route === 'agent'
-                ? 'Ready for a question about this board.'
-                : 'Ready for a question about this page.')}
-        </p>
-        {error ? (
-          <p className="agent-error" role="alert">
-            {error}
-          </p>
-        ) : null}
-        {answer ? <p className="agent-answer">{answer}</p> : null}
-        {route !== 'agent' && screenPoint ? (
-          <button
-            type="button"
-            onClick={() => {
-              clearScreenHighlight();
-              setScreenPoint(false);
-            }}
-          >
-            Clear page highlight
-          </button>
-        ) : null}
-        {sentImage ? (
-          <details>
-            <summary>Board image sent with the last request</summary>
-            <img
-              className="agent-sent-image"
-              src={sentImage}
-              alt="The board image sent with the last assistant request"
-            />
-          </details>
-        ) : null}
-      </aside>
+          </>
+        }
+        image={sentImage}
+        context={
+          route === 'agent'
+            ? model.tutorial.title
+            : document
+                .querySelector('[data-tastir-page] h1')
+                ?.textContent?.trim() || 'Current Tastir page'
+        }
+        workspace={route === 'agent'}
+      />
     </div>
   );
 }

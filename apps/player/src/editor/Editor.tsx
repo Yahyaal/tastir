@@ -1,5 +1,14 @@
 import { distance, type Vec } from '@tastir/engine';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { registerPageEditor } from './agentBridge';
+import { editDraft, travelDraft, type DraftHistory } from './history';
 import { useRemembered } from '../app/remembered';
 import { ThemeSwitch } from '../app/theme';
 import { AboutPanel } from './AboutPanel';
@@ -98,20 +107,13 @@ export function Editor({ id }: { id: string }) {
   return <EditorPage pattern={pattern} />;
 }
 
-/** The drafts before and after this one, for undo and redo. */
-interface History {
-  readonly past: readonly Draft[];
-  readonly now: Draft;
-  readonly future: readonly Draft[];
-}
-
 const firstSentence = (text: string) => {
   const end = text.indexOf('. ');
   return end > 0 ? text.slice(0, end + 1) : text;
 };
 
 function EditorPage({ pattern }: { pattern: UserPattern }) {
-  const [history, setHistory] = useState<History>({
+  const [history, setHistory] = useState<DraftHistory>({
     past: [],
     now: pattern.tutorial,
     future: [],
@@ -123,34 +125,17 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   // A run of typing in one text box is one undo step.
   const merging = useRef<string | undefined>(undefined);
   const edit = useCallback((next: Draft, merge?: string) => {
-    setHistory((h) =>
-      merge && merging.current === merge
-        ? { ...h, now: next }
-        : { past: [...h.past, h.now], now: next, future: [] },
-    );
+    const mergeCurrent = !!merge && merging.current === merge;
+    setHistory((h) => editDraft(h, next, undefined, mergeCurrent));
     merging.current = merge;
   }, []);
   const undo = useCallback(() => {
     merging.current = undefined;
-    setHistory((h) => {
-      const before = h.past.at(-1);
-      return before
-        ? {
-            past: h.past.slice(0, -1),
-            now: before,
-            future: [h.now, ...h.future],
-          }
-        : h;
-    });
+    setHistory((h) => (h.past.length ? travelDraft(h, 'undo') : h));
   }, []);
   const redo = useCallback(() => {
     merging.current = undefined;
-    setHistory((h) => {
-      const after = h.future[0];
-      return after
-        ? { past: [...h.past, h.now], now: after, future: h.future.slice(1) }
-        : h;
-    });
+    setHistory((h) => (h.future.length ? travelDraft(h, 'redo') : h));
   }, []);
 
   // Every change is kept in this browser at once.
@@ -169,6 +154,21 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
   const [selected, setSelected] = useState<number | undefined>(
     draft.steps.at(-1)?.id,
   );
+  useLayoutEffect(() => {
+    if (!import.meta.env.DEV || !import.meta.env.VITE_TASTIR_AGENT) return;
+    return registerPageEditor({
+      id: pattern.id,
+      history,
+      setHistory,
+      autoSaved: kept,
+      committed: (next) => {
+        merging.current = undefined;
+        setSelected(next.steps.at(-1)?.id);
+        setTargets([]);
+        setSaid(undefined);
+      },
+    });
+  });
   const step = draft.steps.find((s) => s.id === selected);
 
   const chooseTool = (id: ToolId) => {

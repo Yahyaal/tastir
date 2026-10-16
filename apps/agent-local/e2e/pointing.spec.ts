@@ -1,3 +1,4 @@
+import { sendCurrentView, prepareRequest } from './chatHelpers';
 import { test, expect, type Page } from '@playwright/test';
 import type { Snapshot } from '@tastir/agent-protocol';
 
@@ -45,15 +46,32 @@ async function open(page: Page) {
   await page
     .getByRole('button', { name: 'Open drawing assistant', exact: true })
     .click();
+  // The toolbar launcher scrolls into view; restore the drawing before sharing.
+  await board.evaluate((svg) =>
+    window.scrollBy(0, svg.getBoundingClientRect().top - 70),
+  );
+  await prepareRequest(page);
   await expect(
     page.getByRole('button', { name: 'Send current view' }),
   ).toBeEnabled();
+}
+async function hoverVisibleBoard(page: Page) {
+  const point = await page.evaluate(async () => {
+    // eslint-disable-next-line @nx/enforce-module-boundaries -- Browser-side Vite URL.
+    const { boardWindow } = await import('/src/agent/screenTargets.ts');
+    const svg = document.querySelector<SVGSVGElement>(
+      '[data-tastir-page] svg.drawing',
+    )!;
+    const box = boardWindow(svg);
+    return { x: (box.left + box.right) / 2, y: (box.top + box.bottom) / 2 };
+  });
+  await page.mouse.move(point.x, point.y);
 }
 async function ask(page: Page) {
   await page
     .getByRole('textbox', { name: 'Your request' })
     .fill('Point at a visible object.');
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
 }
 const highlight = (snapshot: Snapshot, id: string) => ({
   id: 'point',
@@ -116,9 +134,7 @@ test('points at real editor geometry, follows zoom and scroll, and clears when i
       chosen!.geometry as { at: { x: number; y: number } },
     );
   await expect.poll(aligned).toBe(true);
-  const board = page.locator('[data-tastir-page] svg.drawing').first();
-  const b = (await board.boundingBox())!;
-  await page.mouse.move(b.x + b.width / 2, Math.min(b.y + b.height / 3, 250));
+  await hoverVisibleBoard(page);
   await page.mouse.wheel(0, -100);
   await expect.poll(aligned).toBe(true);
   await page.evaluate(() => window.scrollBy(0, 8));
@@ -259,9 +275,7 @@ test('can point on a page without a board image and reports a page highlight acc
   await expect(page.locator('.agent-answer')).toHaveText(
     'Page control highlighted.',
   );
-  await expect(page.locator('.agent-activity')).toHaveText(
-    'Page highlight displayed: target acknowledged, final response completed.',
-  );
+  await expect(page.locator('.agent-action-receipts')).toHaveCount(1);
   await expect(page.locator('[data-screen-pointer] rect')).toBeVisible();
 });
 
@@ -306,11 +320,7 @@ for (const intervention of ['zoom', 'route', 'stop'] as const) {
     if (intervention === 'zoom') {
       const board = page.locator('[data-tastir-page] svg.drawing').first();
       const before = await board.getAttribute('viewBox');
-      const b = (await board.boundingBox())!;
-      await page.mouse.move(
-        b.x + b.width / 2,
-        Math.min(b.y + b.height / 3, 250),
-      );
+      await hoverVisibleBoard(page);
       await page.mouse.wheel(0, -300);
       await expect.poll(() => board.getAttribute('viewBox')).not.toBe(before);
     }
@@ -321,10 +331,10 @@ for (const intervention of ['zoom', 'route', 'stop'] as const) {
       );
     else if (intervention === 'route')
       await expect(page.locator('[data-tastir-page] .work-page')).toBeVisible();
-    else
-      await expect(
-        page.getByRole('button', { name: 'Send current view' }),
-      ).toBeEnabled();
+    await prepareRequest(page);
+    await expect(
+      page.getByRole('button', { name: 'Send current view' }),
+    ).toBeEnabled();
     await expect(page.locator('[data-screen-pointer]')).toHaveCount(0);
   });
 }

@@ -19,6 +19,7 @@ export const BasedOnShape = z.strictObject({
 });
 /** A periodic square-grid motif, measured in whole lattice cells. */
 export const SquareBandsShape = z.strictObject({
+  sharedBorder: z.boolean().optional(),
   typeId: z.string().min(1).max(180),
   centre: z.tuple([
     z.int().min(-10000).max(10000),

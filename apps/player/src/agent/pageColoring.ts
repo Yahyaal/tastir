@@ -1,12 +1,31 @@
 import type { Dispatch } from 'react';
 import type { Snapshot, ToolCall, HistoryAction } from '@tastir/agent-protocol';
-import type { ColorAction, History } from '../app/coloring';
+import {
+  PALETTES,
+  typeKey,
+  pieceColors,
+  type Coloring,
+  type ColorAction,
+  type History,
+} from '../app/coloring';
+import { rosetteOptions } from '../app/rings';
+import type { Design } from '../app/designs';
 import type { Model } from '../app/model';
-import { colouredModel, colorRepeat } from '../app/placement';
+import {
+  colouredModel,
+  colorRepeat,
+  methodsOf,
+  methodOf,
+  ringsFor,
+  placementKey,
+  placeKey,
+  paintChosen,
+} from '../app/placement';
 import {
   checkedSquareBands,
   squareGridTypes,
   commonPeriod,
+  squareBandPeriod,
 } from '../app/squareBands';
 
 interface PageColoring {
@@ -14,6 +33,9 @@ interface PageColoring {
   history: History;
   dispatch: Dispatch<ColorAction>;
   route: string;
+  style?: string;
+  selected?: { piece: number; i: number; j: number };
+  saveNew?: (name: string) => Design | undefined;
 }
 let current: PageColoring | undefined;
 export function registerPageColoring(value: PageColoring) {
@@ -31,6 +53,10 @@ export const pageColorRevision = () =>
         current.history.future.length,
       ])
     : '';
+export const pageColorSelected = () =>
+  current?.selected
+    ? `geometry:piece${current.selected.piece}@${current.selected.i},${current.selected.j}`
+    : null;
 const unknown = (): HistoryAction => ({
   source: 'unknown',
   requestId: null,
@@ -41,9 +67,25 @@ export function pageColorObservation() {
   const { model, history } = current;
   return {
     coloring: {
-      squareTypes: squareGridTypes(model),
+      squareTypes:
+        !current.style || current.style === 'tiles'
+          ? squareGridTypes(model)
+          : [],
+      methods: methodsOf(model),
+      types: model.pattern.types.map((t, i) => ({
+        id: t.name ?? typeKey(t),
+        color: pieceColors(model, history.now)[i]!,
+      })),
+      rosetteOptions: rosetteOptions(model.pattern),
+      method: methodOf(model, history.now),
+      palette: history.now.palette,
+      rosettes:
+        history.now.rosettes ??
+        ringsFor(colouredModel(model, history.now))?.rosettes ??
+        1,
       squareBands: history.now.squareBands ?? null,
     },
+    canSave: !!current.saveNew,
     history: {
       undoSteps: Math.min(50, history.past.length),
       redoSteps: Math.min(50, history.future.length),
@@ -74,7 +116,7 @@ export function applyPageColor(
     );
   const { model, history, dispatch } = current;
   if (call.name === 'color_square_bands') {
-    const { targetId, colors } = call.arguments;
+    const { targetId, colors, sharedBorder } = call.arguments;
     const target = snapshot.targets.find((t) => t.id === targetId);
     const match = /^geometry:piece(\d+)@(-?\d+),(-?\d+)$/.exec(targetId);
     if (!target || target.kind !== 'polygon' || !match)
@@ -95,13 +137,14 @@ export function applyPageColor(
       typeId,
       centre: [Number(match[2]), Number(match[3])],
       colors,
+      ...(sharedBorder ? { sharedBorder } : {}),
     });
     const base = colouredModel(model, {
       ...history.now,
       squareBands: undefined,
     });
     const period = colorRepeat(base).map((n) =>
-      commonPeriod(n, colors.length * 2 - 1),
+      commonPeriod(n, squareBandPeriod(squareBands)),
     );
     if (
       period.some((n) => n > 48) ||
@@ -115,7 +158,8 @@ export function applyPageColor(
       squareBands,
       chosen: Object.fromEntries(
         Object.entries(history.now.chosen).filter(
-          ([key]) => !key.startsWith(`${typeId}#`),
+          ([key]) =>
+            !key.startsWith(`${typeKey(model.pattern.types[piece!.type]!)}#`),
         ),
       ),
     };
@@ -128,6 +172,112 @@ export function applyPageColor(
       author: { source: 'assistant', requestId, label: call.arguments.label },
     });
     return 'Applied concentric square bands as one color edit. Other shapes keep their colors. The motif repeats after its outer border; a fresh image follows.';
+  }
+  const commit = (next: Coloring) => {
+    if (JSON.stringify(next) === JSON.stringify(history.now))
+      throw new Error('Those colors are already applied.');
+    dispatch({
+      kind: 'reset',
+      to: next,
+      author: { source: 'assistant', requestId, label: call.arguments.label },
+    });
+    return 'Applied one normal color-history edit. A fresh wall image follows.';
+  };
+  if (call.name === 'save_work') {
+    const saved = current.saveNew?.(call.arguments.name);
+    if (!saved) throw new Error('The browser could not save this design.');
+    return `Saved a new design “${saved.name}” in Your work. Destination: design:${saved.id}.`;
+  }
+  if (call.name === 'set_coloring') {
+    const { method, rosettes } = call.arguments;
+    if (
+      !methodsOf(model).includes(method) ||
+      (rosettes !== null &&
+        (method !== 'rings' ||
+          !rosetteOptions(model.pattern).includes(rosettes)))
+    )
+      throw new Error('Use a supported coloring method and rosette count.');
+    return commit({
+      ...history.now,
+      chosen: {},
+      squareBands: undefined,
+      method,
+      ...(rosettes === null ? {} : { rosettes }),
+    });
+  }
+  if (call.name === 'paint_pattern') {
+    const { palette, colors } = call.arguments;
+    if (palette !== null && !PALETTES[palette])
+      throw new Error('Use an available palette name.');
+    const chosen = { ...(palette === null ? history.now.chosen : {}) };
+    for (const { typeId, color } of colors) {
+      const type = model.pattern.types.find(
+        (t) => (t.name ?? typeKey(t)) === typeId,
+      );
+      if (!type) throw new Error('Choose a current piece type ID.');
+      const key = typeKey(type);
+      for (const own of Object.keys(chosen))
+        if (own === key || own.startsWith(`${key}#`)) delete chosen[own];
+      chosen[key] = color;
+    }
+    return commit({
+      ...history.now,
+      palette: palette ?? history.now.palette,
+      squareBands:
+        palette !== null ||
+        colors.some((c) => c.typeId === history.now.squareBands?.typeId)
+          ? undefined
+          : history.now.squareBands,
+      chosen,
+    });
+  }
+  if (call.name === 'paint_targets') {
+    const rendered = colouredModel(model, history.now);
+    let chosen = { ...history.now.chosen };
+    for (const { targetId, color } of call.arguments.targets) {
+      const target = snapshot.targets.find(
+        (t) => t.id === targetId && t.kind === 'polygon',
+      );
+      const match = /^geometry:piece(\d+)@(-?\d+),(-?\d+)$/.exec(targetId);
+      if (!target || !match)
+        throw new Error('Choose visible wall polygon targets.');
+      const [piece, i, j] = match.slice(1).map(Number) as [
+        number,
+        number,
+        number,
+      ];
+      const type = model.pattern.types[model.pattern.pieces[piece]?.type ?? -1];
+      if (!type) throw new Error('That placement no longer exists.');
+      let key = typeKey(type);
+      if (call.arguments.scope === 'placement')
+        key = placementKey(rendered, piece, i, j);
+      else if (call.arguments.scope === 'ring') {
+        if (!ringsFor(rendered))
+          throw new Error('This coloring has no rosette rings.');
+        key = placeKey(rendered, piece, i, j);
+      } else {
+        for (const own of Object.keys(chosen))
+          if (own === key || own.startsWith(`${key}#`)) delete chosen[own];
+      }
+      chosen =
+        call.arguments.scope === 'placement'
+          ? { ...chosen, [key]: color }
+          : paintChosen(rendered, { ...history.now, chosen }, key, color);
+    }
+    // Shape repainting intentionally replaces a spatial square motif for that shape.
+    const repaintSquare =
+      call.arguments.scope === 'shape' &&
+      call.arguments.targets.some(
+        ({ targetId }) =>
+          snapshot.targets.find((t) => t.id === targetId)?.geometry[
+            'typeId'
+          ] === history.now.squareBands?.typeId,
+      );
+    return commit({
+      ...history.now,
+      chosen,
+      ...(repaintSquare ? { squareBands: undefined } : {}),
+    });
   }
   if (call.name === 'travel_history') {
     const { direction, scope, steps } = call.arguments;

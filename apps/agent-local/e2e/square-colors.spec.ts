@@ -1,3 +1,4 @@
+import { sendCurrentView, prepareRequest } from './chatHelpers';
 import { test, expect, type Page } from '@playwright/test';
 import type { Snapshot } from '@tastir/agent-protocol';
 const runId = '55c4c0a2-487f-4c25-a25d-79518ef86021';
@@ -22,11 +23,74 @@ async function connected(page: Page) {
 }
 async function ask(page: Page, prompt: string) {
   await page.getByRole('textbox', { name: 'Your request' }).fill(prompt);
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect(page.locator('.agent-answer')).toHaveText(
     'Checked the actual updated wall.',
   );
 }
+test('saving a named wall copy keeps the active route and acknowledges the saved destination', async ({
+  page,
+}) => {
+  await connected(page);
+  let destination = '';
+  await page.route('**/__agent/turn/start', async (r) => {
+    const { snapshot: s } = r.request().postDataJSON() as {
+      snapshot: Snapshot;
+    };
+    await r.fulfill({
+      json: {
+        runId,
+        text: '',
+        calls: [
+          {
+            id: 'save-copy',
+            name: 'save_work',
+            arguments: {
+              snapshotId: s.id,
+              documentRevision: s.documentRevision,
+              label: 'Save a named copy',
+              name: 'Assistant wall copy',
+            },
+          },
+        ],
+      },
+    });
+  });
+  await page.route('**/__agent/turn/continue', async (r) => {
+    const { snapshot: s, results } = r.request().postDataJSON() as {
+      snapshot: Snapshot;
+      results: { ok: boolean; message: string }[];
+    };
+    expect(results[0]?.ok).toBe(true);
+    expect(s.screen?.route).toBe('alhambra-arrayanes-squares/result');
+    const saved = s.screen?.destinations.find((d) =>
+      d.title.startsWith('Assistant wall copy'),
+    );
+    expect(saved?.kind).toBe('wall');
+    expect(results[0]?.message).toContain(saved!.id);
+    destination = saved!.route;
+    await r.fulfill({
+      json: { runId, text: 'Checked the actual updated wall.', calls: [] },
+    });
+  });
+  await page.goto('/#/alhambra-arrayanes-squares/result');
+  await page.locator('svg.wall').waitFor();
+  await page
+    .getByRole('button', { name: 'Open drawing assistant', exact: true })
+    .click();
+  await ask(page, 'Save a new design named Assistant wall copy.');
+  await expect(page).toHaveURL(/#\/alhambra-arrayanes-squares\/result$/);
+  const saved = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem('tastir.designs') ?? '[]'),
+  );
+  expect(saved).toHaveLength(1);
+  expect(saved[0].name).toBe('Assistant wall copy');
+  await page.goto(`/#/${destination}`);
+  await expect(page.locator('svg.wall')).toBeVisible();
+  await page.reload();
+  await expect(page.locator('svg.wall')).toBeVisible();
+  await expect(page.locator('.agent-error')).toHaveCount(0);
+});
 test('colors normal square bands, undoes and redoes by request, then saves and reloads the design', async ({
   page,
 }, testInfo) => {
@@ -189,7 +253,7 @@ for (const change of ['route', 'manual color', 'Stop'] as const)
     await page
       .getByRole('textbox', { name: 'Your request' })
       .fill('Color square borders.');
-    await page.getByRole('button', { name: 'Send current view' }).click();
+    await sendCurrentView(page);
     await captured;
     if (change === 'Stop')
       await page.getByRole('button', { name: 'Stop', exact: true }).click();
@@ -202,6 +266,7 @@ for (const change of ['route', 'manual color', 'Stop'] as const)
         .getByRole('button', { name: 'Fès tile', exact: true })
         .evaluate((button: HTMLButtonElement) => button.click());
     await release();
+    await prepareRequest(page);
     await expect(
       page.getByRole('button', { name: 'Send current view' }),
     ).toBeEnabled();
