@@ -4,7 +4,7 @@ Written 16 October 2026 at the owner's request, while Codex finishes its branch,
 
 ## What the owner wants
 
-The owner wants to use the studio from the deployed app, not only on the computer at home. They want to open a project in a browser anywhere, including on a phone, and have Claude, ChatGPT, Codex or Gemini work on the same drawing with them. Each agent should still use the owner's own $20 plan, because Anthropic forbids third-party apps from signing in with a Claude plan, and that rule is why the studio works through MCP in the first place. The owner wants the app and the drawing to feel fast, and wants to pay nothing for hosting if possible.
+The owner wants to use the studio from the deployed app, not only on the computer at home. They want to open a project in a browser anywhere, including on a phone, and have Claude, ChatGPT, Codex or Gemini work on the same drawing with them. Each agent should still use the owner's own $20 plan, because Anthropic forbids third-party apps from signing in with a Claude plan, and that rule is why the studio works through MCP in the first place. The owner wants the app and the drawing to feel fast, and wants to use only free plans, while trying out Cloudflare Durable Objects to learn them.
 
 ## Why the local studio cannot simply be deployed
 
@@ -68,13 +68,19 @@ Three things depend on the server, and each has a target that task H6 measures.
 - **Saving an edit.** One function call and one transaction, which should take 100 to 300 milliseconds when the Vercel functions and Neon are in the same region. The region is the owner's decision, nearest to where they live. Target: under 400 milliseconds.
 - **The first request after a quiet spell.** Neon's free plan stops the database after five minutes without use and cannot be set otherwise; the first query afterwards takes about half a second, and a Vercel function that has gone cold adds a few hundred milliseconds more. This happens once, when work starts, and an agent at work keeps both awake. Target: under 1.5 seconds.
 
-If waiting a second for an agent's edit feels slow in use, the fix is the one described next.
+The owner is in Oklahoma, so the Neon database goes in AWS US East (Ohio) and the Vercel functions in Cleveland (`cle1`), which is the same AWS region. A save then crosses the country once, from Oklahoma to Ohio and back, and the function and the database talk to each other inside one region.
 
-### Durable Objects: the upgrade if polling is not fast enough
+Task H7 below makes an agent's edit reach the page much faster, on Cloudflare's free plan.
 
-A Cloudflare Durable Object is a small program with its own storage that lives at one place on Cloudflare's network, and every request for it goes to that one copy. One object per project is exactly the design of the local studio: one owner per drawing, the drawing kept in memory so an edit needs no database read, and every browser and agent connected to it by a WebSocket, so an agent's edit reaches the page in tens of milliseconds instead of up to a second. Cloudflare's Agents SDK also hosts remote MCP servers on Durable Objects, with OAuth.
+### A live room on Durable Objects, free
 
-It is not the first choice for two reasons. Cloudflare's free plan allows only 10 milliseconds of CPU per request, and checking an edit and finding its pieces takes more than that, so in practice it needs the $5-a-month Workers paid plan. And it is a bigger rewrite: the picture renderer moves to resvg's WebAssembly build, and the store and the live updates are rewritten for Cloudflare. The way to keep this open is to keep the store interface narrow, so that a later "live room" for each project can move to a Durable Object while Vercel and Neon keep the rest.
+The owner wants to learn Durable Objects without paying monthly, so they come in as a small, free addition that makes the studio faster. They do not replace Vercel and Neon.
+
+A Cloudflare Durable Object is a small program with its own storage that lives at one place on Cloudflare's network, and every request for it reaches that one copy. Each studio project gets one, a "live room". The studio page keeps a WebSocket open to its project's room. After every saved edit, the Vercel function tells the room the new revision, and the room passes it to every open page at once, which then reads the change from Vercel as it does now. An agent's edit should then show in well under half a second instead of up to a second, and the page stops checking every second. Neon stays the only place a drawing is kept, so the room holds nothing that could be lost, and if the room cannot be reached the page goes back to checking every few seconds.
+
+This fits the free plan, which needs no card and fails instead of billing when a daily limit is reached. Cloudflare's documentation gives a Durable Object 30 seconds of CPU for each request or WebSocket message, separately from the 10 milliseconds a plain Worker gets on the free plan, and a room uses far less than either because it only passes small messages along. The free plan allows 100,000 Durable Object requests and 13,000 GB-seconds a day, and the room uses the WebSocket Hibernation API so that an open but quiet page costs nothing. Free accounts get SQLite-backed objects only, which a room does not need yet. The room checks a short-lived ticket signed by Vercel before it accepts a page's WebSocket, and Vercel signs its revision messages with a shared secret, so nobody else can listen or send.
+
+If the room works well and the owner wants to go further, a second step can try holding the drawing itself in the Durable Object, checking each edit there within its 30 seconds of CPU. That is a larger change and stays out of this plan until H7 has shown how the free plan behaves in real use.
 
 ### The studio page on Vercel
 
@@ -103,9 +109,10 @@ Accounts for other people and sharing projects with them belong to the product p
 ## Decisions for the owner
 
 1. **Where it runs.** Decided 16 October: Vercel Hobby and a new free Neon project, as in finsight.
-2. **The region.** The Vercel functions and the Neon database must be in the same region, and the nearest one to the owner makes every save faster. finsight's database is in US East (Ohio). This blocks H2.
+2. **The region.** Decided 16 October: the owner is in Oklahoma, so Neon in AWS US East (Ohio) and Vercel functions in Cleveland (`cle1`).
 3. **Sign-in.** Recommended: Google through Auth.js, with only the owner on the allow list, copied from finsight. This blocks H3.
 4. **Private photos on the server.** The owner decides whether research photos that are not free may be uploaded to the hosted studio, where they stay private in Blob. This blocks nothing; until then, only free photos go up.
+5. **Free tiers only.** Decided 16 October: every service stays on its free plan. Durable Objects come in only as the free live room (H7).
 
 ## Tasks
 
@@ -121,14 +128,16 @@ Each task is one commit with its acceptance test, run one project at a time as t
 | H4 | The studio page on Vercel. The studio build of the player; `/api` as Vercel functions with the session cookie; revision checks instead of the change stream; photo upload to private Blob; export and import; the phone layout. | Agent | The studio browser checks pass against a local Vercel build (`vercel dev`) on desktop and phone, signed in with the stand-in Google. |
 | H5 | Deploy. The Neon project and region, the Vercel project, Blob store, environment variables, migrations, size and rate limits. | Owner sets up the accounts, agent does the rest | The studio answers at its address, a deploy keeps every project, and an exported project imports into the local studio unchanged. |
 | H6 | Live with every agent, and measured. Connect each client, update the setup notes (Gemini through Antigravity), run the square brief in each, and record the three speed targets and a week's use against the Hobby allowances. | Owner with agent | Each client that H0 showed can write finishes the square brief, the owner answers one question from the phone, and the log has the speeds and the use. |
-| H7 | Optional: the drawing inside the chat as an MCP App. | Agent | In claude.ai the owner sees the live drawing in the conversation and answers a question there. |
+| H7 | A live room on Durable Objects, on Cloudflare's free plan. A Worker with one room per project, WebSocket hibernation, signed tickets from Vercel, a revision message after every save, and checking every few seconds when the room cannot be reached. | Owner makes a free Cloudflare account, agent does the rest | An agent's edit reaches the open page in under 0.5 seconds in H6's measurement, the page keeps working when the room is switched off, and a week of use stays inside the free daily limits. |
+| H8 | Optional: the drawing inside the chat as an MCP App. | Agent | In claude.ai the owner sees the live drawing in the conversation and answers a question there. |
 
 ## Risks
 
 - **ChatGPT Plus may be read-only.** If so, ChatGPT can look and comment but not draw, and the ChatGPT plan draws through Codex instead. H0 settles it before any work depends on it.
 - **Gemini keeps changing.** Its command-line route moved once this year. The studio depends only on MCP, so any Gemini client that speaks it can connect.
 - **OAuth problems in the clients.** People have reported claude.ai connector sign-in bugs (see the sources). The sign-in tests run against the SDK's own client, and H0 tests the real ones early.
-- **Polling may feel slow.** An agent's edit can take up to a second to show. H6 measures it, and Durable Objects are the upgrade if it matters.
+- **Polling may feel slow.** Until H7, an agent's edit can take up to a second to show. H6 measures it, and H7's live room fixes it.
+- **The free Durable Object limits may differ in practice.** Cloudflare's pages give a Durable Object 30 seconds of CPU per message but a plain Worker only 10 milliseconds on the free plan. The room does very little work, and H7 checks real use against the daily limits; the studio keeps working without the room.
 - **Free allowances change.** Vercel and Neon have both changed their free plans before. H6 records real use, so a change shows up before it bites.
 - **A public address.** Anything on the internet is probed. Every route needs sign-in, there is one allow-listed account, and there are no API keys on the server to steal.
 - **Usage limits on $20 plans.** Pictures use a lot of them. Smaller default pictures help, and work is saved after every edit, so a stopped agent loses nothing.
@@ -142,6 +151,6 @@ Each task is one commit with its acceptance test, run one project at a time as t
 - Codex: [MCP in Codex](https://developers.openai.com/ja-JP/docs/extend/mcp), [Codex CLI OAuth and Streamable HTTP](https://codex.danielvaughan.com/2026/06/03/codex-cli-mcp-v0136-per-server-env-targeting-oauth-streamable-http-concurrent-tools/) (third party).
 - Vercel: [limits](https://vercel.com/docs/limits) (Hobby: about 1 million calls, 4 CPU-hours, 360 GB-hours a month; 300-second functions), [function limitations](https://vercel.com/docs/functions/limitations) (4.5 MB request body), [private Blob is generally available](https://vercel.com/changelog/vercel-private-blob-is-now-generally-available).
 - Neon: [scale to zero](https://neon.tech/docs/introduction/scale-to-zero) (five minutes, fixed on the free plan), [connection latency](https://neon.com/docs/connect/connection-latency) (a few hundred milliseconds after a suspend), [free plan summary](https://costbench.com/software/database-as-service/neon/free-plan) (third party: 0.5 GB and 100 compute hours per project).
-- Cloudflare: [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/) (10 ms of CPU per request on the free plan), [Durable Objects limits](https://developers.cloudflare.com/durable-objects/platform/limits).
+- Cloudflare: [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/) (10 ms of CPU per request on the free plan), [Durable Objects limits](https://developers.cloudflare.com/durable-objects/platform/limits) (30 seconds of CPU per request or WebSocket message; SQLite only and 5 GB on the free plan), [Durable Objects pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/) (free plan: 100,000 requests and 13,000 GB-seconds a day; over a limit, operations fail instead of being billed).
 - The owner's finsight app (`~/Documents/projects/finsight`): README, `CLAUDE.md` and `DECISIONS.md` for the Vercel, Neon, Auth.js and postgres.js setup.
 - Measured here: picture sizes from the running local studio on 16 October 2026 (construction 125 KB at 1,000 pixels, 84 KB at 700; wall 48 KB at 1,000).
