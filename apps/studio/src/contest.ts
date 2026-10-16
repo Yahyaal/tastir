@@ -91,6 +91,9 @@ export function commandFor(
           'mcp_servers.tastir-studio.env={TASTIR_AUTHOR="codex"}',
           '-c',
           'mcp_servers.tastir-studio.tool_timeout_sec=120',
+          // codex exec cannot ask, so the studio's tools are allowed outright.
+          '-c',
+          'mcp_servers.tastir-studio.default_tools_approval_mode="approve"',
           prompt,
         ],
       };
@@ -179,13 +182,26 @@ export async function runContest(options: {
   mcp: string;
   seconds?: number;
   log?: (line: string) => void;
+  /** Add these runs to an earlier contest of the same brief. */
+  into?: string;
 }): Promise<Contest> {
   const client = new StudioClient(options.root);
-  const id = `${options.brief.id}-${new Date().toISOString().slice(0, 10)}-${randomBytes(2).toString('hex')}`;
+  const earlier = options.into
+    ? (await listContests(options.root)).find((c) => c.id === options.into)
+    : undefined;
+  if (options.into && !earlier)
+    throw new Error(`There is no contest “${options.into}”.`);
+  if (earlier && earlier.brief.id !== options.brief.id)
+    throw new Error(
+      `Contest “${earlier.id}” is for the brief “${earlier.brief.id}”.`,
+    );
+  const id =
+    earlier?.id ??
+    `${options.brief.id}-${new Date().toISOString().slice(0, 10)}-${randomBytes(2).toString('hex')}`;
   const folder = join(options.root, 'contests');
   const scratch = join(folder, `${id}-scratch`);
   await mkdir(scratch, { recursive: true, mode: 0o700 });
-  let contest: Contest = {
+  let contest: Contest = earlier ?? {
     id,
     brief: options.brief,
     started: new Date().toISOString(),

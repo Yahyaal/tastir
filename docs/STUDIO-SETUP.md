@@ -28,7 +28,7 @@ Run this once:
 codex mcp add tastir-studio --env TASTIR_AUTHOR=codex -- /home/yahya/Documents/projects/Tastir-studio/tools/studio-mcp.sh
 ```
 
-Codex then lists the studio's tools in any session; ask it in the same words as Claude Code. Codex uses your ChatGPT plan, which Codex's own work on Tastir also uses, so the two share one allowance.
+Codex then lists the studio's tools in any session; ask it in the same words as Claude Code. It asks before each tool call; to let it use the studio's tools without asking, add `default_tools_approval_mode = "approve"` under `[mcp_servers.tastir-studio]` in `~/.codex/config.toml`. `pnpm contest` passes that setting itself, because `codex exec` cannot ask. Codex uses your ChatGPT plan, which Codex's own work on Tastir also uses, so the two share one allowance.
 
 ## Connect Gemini
 

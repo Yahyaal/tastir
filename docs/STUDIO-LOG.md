@@ -11,8 +11,8 @@ Progress on [the studio plan](STUDIO-PLAN.md), newest last. The work is on branc
 | 3. Pictures | Done, 16 October |
 | 4. Talking and pointing | Done, 16 October (live check with the owner still to do) |
 | 5. Photos | Tools done 16 October; the live reconstruction waits for the owner to line up a photo |
-| 6. Codex and Gemini | Two agents done 16 October; Codex waits for the ChatGPT allowance, Gemini for the owner to install and sign in |
-| 7. Contest (optional) | Done 16 October with Claude Code; waits for the owner's pick, and for Codex and Gemini runs |
+| 6. Codex and Gemini | Codex and two agents done 16 October; Gemini waits for the owner to install and sign in |
+| 7. Contest (optional) | Done 16 October with Claude Code and Codex; waits for the owner's pick, and for Gemini runs |
 
 The plan asks for each phase to be added to `docs/TASKS.md`. Codex has uncommitted changes to that file in its checkout, so the studio phases are tracked here and will be added to the task list when the branches are merged.
 
@@ -88,8 +88,14 @@ The Gemini command is written from its documentation and has not been tried, bec
 
 ## What waits for the owner or for a limit
 
-1. **Codex.** The ChatGPT allowance resets at 4:52 AM on 16 October. After that, run the square brief once with `TASTIR_AUTHOR=codex` (as in phase 6), then `pnpm contest star-and-cross --models codex --runs 2`. A resumed session does this.
+1. **Codex.** Done; see below.
 2. **Gemini.** Install its tool and sign in (setup notes), then run the same brief.
 3. **Asking live (phase 4).** With the owner at the screen: an agent asks about an element, the owner answers in the panel, the agent continues.
 4. **A photo (phase 5).** The owner lines up `apps/player/public/photos/itimad-star-and-octagon.jpg` in a studio project; an agent then recreates the pattern from O and A, and the owner judges the overlay.
 5. **Judging** the first contest, and deciding whether to merge `claude/studio` (it is built on Codex's `codex/ai-agent-screen-pointing`).
+
+## Codex, live (16 October, after the allowance reset)
+
+The first `codex exec` run created nothing: Codex refused every studio tool because they needed approval and `exec` cannot ask. Its MCP settings take `default_tools_approval_mode`, one of `auto`, `prompt`, `writes` or `approve`. With `approve`, Codex built the square brief (`studio/codex-square-check-e4d1`) in five edits under its own name, with `check` empty and a note. That is the same five edits Claude Code needed. `pnpm contest` now passes that setting to Codex, and `--into <contest id>` adds runs to an earlier contest.
+
+Two Codex runs of the star brief were added to the first contest, `star-and-cross-2026-10-16-28fc`. Both finished with `check` clean, in 185 and 123 seconds, and both are the classic star and cross. The contest now holds four designs for the owner to judge blind: two from Claude Code (one of them the octagon variant) and two from Codex.
