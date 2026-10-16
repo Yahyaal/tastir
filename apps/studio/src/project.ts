@@ -1,5 +1,6 @@
 import { StudioError, type Goals } from './ops.js';
 import type { Draft } from './player.js';
+import type { Reference } from './reference.js';
 
 /**
  * A studio project: one shared drawing, the history of who changed it, and
@@ -24,6 +25,12 @@ export interface Note {
   readonly author: string;
   readonly text: string;
   readonly at: string;
+  /** A question waiting for the owner's answer. */
+  readonly question?: true;
+  /** The element of the drawing it is about. */
+  readonly about?: string;
+  /** The question this note answers. */
+  readonly answers?: number;
 }
 
 export interface Project {
@@ -40,6 +47,8 @@ export interface Project {
   readonly past: readonly Entry[];
   readonly future: readonly Entry[];
   readonly notes: readonly Note[];
+  /** A photo to recreate the pattern from, when there is one. */
+  readonly reference?: Reference;
 }
 
 const HISTORY = 100;
@@ -173,15 +182,24 @@ export function addNote(
   author: string,
   text: string,
   at = new Date().toISOString(),
+  extra: Pick<Note, 'question' | 'about' | 'answers'> = {},
 ): Project {
   const clean = text.trim();
   if (!clean) throw new StudioError('A note needs some text.');
   if (clean.length > 4000)
     throw new StudioError('Keep a note under 4,000 characters.');
+  if (
+    extra.answers !== undefined &&
+    !project.notes.some((n) => n.id === extra.answers && n.question)
+  )
+    throw new StudioError(`There is no question ${extra.answers}.`);
   const id = (project.notes.at(-1)?.id ?? 0) + 1;
   return {
     ...project,
     updated: at,
-    notes: [...project.notes.slice(-499), { id, author, text: clean, at }],
+    notes: [
+      ...project.notes.slice(-499),
+      { id, author, text: clean, at, ...extra },
+    ],
   };
 }

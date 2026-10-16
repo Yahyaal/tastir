@@ -1,8 +1,10 @@
+import { Resvg } from '@resvg/resvg-js';
 import { firstFailingStep } from '@tastir/engine';
 import { parseTutorial } from '@tastir/schema';
 import { construct, ink, inspect, paint, problems, setTile } from './ops.js';
 import { applyEdit, historyOf, newProject, OWNER, travel } from './project.js';
 import { emptyDraft, loadModel } from './player.js';
+import { constructionSvg, png, RENDER_FONT, wallSvg } from './picture.js';
 
 /** The square A–N–W–S on the unit circle, built from O and A only. */
 const SQUARE = [
@@ -169,5 +171,54 @@ describe('studio history', () => {
     expect(() => travel(redone, 6, OWNER, 'redo', 1, false, at)).toThrow(
       /Only 0 redo/,
     );
+  });
+});
+
+describe('studio pictures', () => {
+  /** How many pixels of a picture are within a few levels of a color. */
+  const count = (svgText: string, hex: string) => {
+    // Each read of pixels copies the whole image, so read it once.
+    const pixels = new Resvg(svgText, {
+      fitTo: { mode: 'width', value: 400 },
+      font: RENDER_FONT,
+    }).render().pixels;
+    const want = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+    let n = 0;
+    for (let i = 0; i < pixels.length; i += 4)
+      if (want.every((v, k) => Math.abs(pixels[i + k]! - v) <= 6)) n++;
+    return n;
+  };
+  const square = () =>
+    paint(
+      setTile(ink(construct(blank(), SQUARE), SIDES), ['A', 'N', 'W', 'S']),
+      null,
+      [{ piece: 'square', color: '#2453a6' }],
+    );
+
+  it('draws the construction with its ink and names', () => {
+    const text = constructionSvg(ink(construct(blank(), SQUARE), SIDES));
+    expect(text).toContain('>N</text>');
+    expect(count(text, '#1c2733')).toBeGreaterThan(200);
+    expect(png(text, 800).subarray(1, 4).toString()).toBe('PNG');
+  });
+
+  it('draws the wall in the colors chosen', () => {
+    const draft = square();
+    expect(inspect(draft).tile!.pieces[0]!.id).toBe('square');
+    const text = wallSvg(draft);
+    expect(count(text, '#2453a6')).toBeGreaterThan(10_000);
+    expect(() => wallSvg(construct(blank(), SQUARE))).toThrow(/no wall yet/);
+  });
+
+  it('shows a part of the drawing when asked', () => {
+    const text = constructionSvg(construct(blank(), SQUARE), {
+      x: -0.5,
+      y: 0.5,
+      width: 1,
+      height: 1,
+    });
+    expect(text).toContain('viewBox="-0.5 -1.5 1 1"');
+    expect(text).toContain('>N</text>');
+    expect(text).not.toContain('>S</text>');
   });
 });

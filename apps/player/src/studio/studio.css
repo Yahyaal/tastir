@@ -1,0 +1,83 @@
+/* The studio list page; a studio project uses the editor's own layout. */
+.studio-list {
+  display: grid;
+  gap: 1rem;
+}
+.studio-new {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+.studio-new input {
+  min-width: 0;
+  flex: 1 1 14rem;
+}
+.studio-projects {
+  display: grid;
+  gap: 0.5rem;
+  padding-left: 1.2rem;
+  margin: 0;
+}
+.studio-meta {
+  color: var(--muted);
+  font-size: 0.9em;
+}
+.studio-error {
+  color: var(--theme-danger);
+}
+.studio-panel {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--faint);
+  font-size: 0.92rem;
+}
+.studio-panel h2 {
+  font-size: 1rem;
+  margin: 0 0 0.4rem;
+}
+.studio-panel ol,
+.studio-panel ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0 0 0.5rem;
+  padding-left: 1.1rem;
+  overflow-wrap: anywhere;
+}
+.studio-question,
+.studio-note {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+.studio-questions {
+  padding: 0.6rem;
+  border: 1px solid var(--saffron);
+  border-radius: 6px;
+}
+.studio-note textarea,
+.studio-question input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.studio-reference {
+  display: grid;
+  gap: 0.5rem;
+}
+.studio-reference img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.studio-reference img.placing {
+  cursor: crosshair;
+  outline: 2px solid var(--saffron);
+}
+.studio-upload input {
+  display: block;
+  margin-top: 0.3rem;
+  max-width: 100%;
+}

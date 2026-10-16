@@ -8,8 +8,12 @@ import { z } from 'zod';
 import { StudioError } from './ops.js';
 import {
   EditRequest,
+  MarkRequest,
   NewShape,
   NoteRequest,
+  QuestionRequest,
+  ReferenceRequest,
+  AlignRequest,
   Studio,
   TravelRequest,
 } from './studio.js';
@@ -47,7 +51,8 @@ async function body(request: IncomingMessage): Promise<unknown> {
   let size = 0;
   for await (const chunk of request) {
     size += chunk.length;
-    if (size > 8_000_000) throw new HttpError(413, 'The request is too large.');
+    if (size > 24_000_000)
+      throw new HttpError(413, 'The request is too large.');
     chunks.push(Buffer.from(chunk));
   }
   try {
@@ -124,6 +129,88 @@ export async function startServer(options: ServerOptions) {
           return send(response, 200, await studio.view(id));
         if (method === 'GET' && what === 'draft')
           return send(response, 200, await studio.draft(id));
+        if (method === 'GET' && what === 'picture') {
+          const q = url.searchParams;
+          const asked = q.get('what');
+          const kind =
+            asked === 'wall' || asked === 'reference' || asked === 'overlay'
+              ? asked
+              : 'construction';
+          const box = ['x', 'y', 'width', 'height'].map((k) =>
+            Number(q.get(k)),
+          );
+          const area = q.has('width')
+            ? {
+                x: box[0] ?? 0,
+                y: box[1] ?? 0,
+                width: box[2] ?? 0,
+                height: box[3] ?? 0,
+              }
+            : undefined;
+          if (area && Object.values(area).some((v) => !Number.isFinite(v)))
+            throw new HttpError(
+              400,
+              'Give the area as numbers x, y, width and height.',
+            );
+          const picture = await studio.picture(
+            id,
+            kind,
+            Number(q.get('size') ?? 1000) || 1000,
+            area,
+          );
+          response.writeHead(200, {
+            'Content-Type': 'image/png',
+            'X-Tastir-Revision': String(picture.revision),
+          });
+          response.end(picture.png);
+          return;
+        }
+        if (method === 'POST' && what === 'reference' && !parts[3])
+          return send(
+            response,
+            200,
+            await studio.setReference(
+              id,
+              ReferenceRequest.parse(await body(request)),
+            ),
+          );
+        if (method === 'POST' && what === 'reference' && parts[3] === 'align')
+          return send(
+            response,
+            200,
+            await studio.align(id, AlignRequest.parse(await body(request))),
+          );
+        if (method === 'GET' && what === 'marks')
+          return send(response, 200, studio.marks(id));
+        if (method === 'POST' && what === 'marks' && !parts[3])
+          return send(
+            response,
+            200,
+            await studio.point(id, MarkRequest.parse(await body(request))),
+          );
+        if (method === 'POST' && what === 'marks' && parts[3] === 'clear') {
+          const { author } = z
+            .strictObject({ author: z.string().optional() })
+            .parse(await body(request));
+          return send(response, 200, await studio.clearMarks(id, author));
+        }
+        if (method === 'POST' && what === 'questions' && !parts[3])
+          return send(
+            response,
+            200,
+            await studio.ask(id, QuestionRequest.parse(await body(request))),
+          );
+        if (method === 'GET' && what === 'questions' && parts[3]) {
+          const wait = Math.max(
+            0,
+            Math.min(600, Number(url.searchParams.get('wait') ?? 0) || 0),
+          );
+          return send(
+            response,
+            200,
+            await studio.answer(id, Number(parts[3]), wait),
+          );
+        }
         if (method === 'GET' && what === 'check')
           return send(response, 200, await studio.check(id));
         if (method === 'GET' && what === 'notes')

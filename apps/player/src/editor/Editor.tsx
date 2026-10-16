@@ -110,7 +110,34 @@ const firstSentence = (text: string) => {
   return end > 0 ? text.slice(0, end + 1) : text;
 };
 
-function EditorPage({ pattern }: { pattern: UserPattern }) {
+/**
+ * A drawing the editor shares instead of keeping it in this browser: the
+ * studio (#/studio/<id>) hands in the latest drawing whenever someone else
+ * changes it, and takes each of the owner's own changes.
+ */
+export interface SharedDrawing {
+  /** The latest drawing from the studio; a new object on every change. */
+  readonly incoming: Draft;
+  /** Called with each change made here. */
+  readonly save: (draft: Draft) => void;
+  /** What the status line says instead of “Kept in this browser”. */
+  readonly status: string;
+  readonly refused?: boolean;
+  /** Where ▶ Play goes. */
+  readonly onPlay: () => void;
+  /** Named elements an agent has marked, which glow. */
+  readonly marks?: readonly string[];
+  /** The studio's panel (notes, questions, marks), under the steps. */
+  readonly aside?: React.ReactNode;
+}
+
+export function EditorPage({
+  pattern,
+  shared,
+}: {
+  pattern: UserPattern;
+  shared?: SharedDrawing;
+}) {
   const [history, setHistory] = useState<History>({
     past: [],
     now: pattern.tutorial,
@@ -153,11 +180,27 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
     });
   }, []);
 
-  // Every change is kept in this browser at once.
+  // Every change is kept in this browser at once, or for a shared drawing
+  // sent to the studio. A drawing that came from the studio is not sent
+  // back, and arrives as one more step in this editor's Undo.
   const [kept, setKept] = useState(true);
+  const incoming = shared?.incoming;
+  const save = shared?.save;
   useEffect(() => {
+    if (incoming)
+      setHistory((h) =>
+        h.now === incoming
+          ? h
+          : { past: [...h.past, h.now], now: incoming, future: [] },
+      );
+  }, [incoming]);
+  useEffect(() => {
+    if (save) {
+      if (draft !== incoming) save(draft);
+      return;
+    }
     setKept(savePattern(pattern.id, draft) !== undefined);
-  }, [pattern.id, draft]);
+  }, [pattern.id, draft, incoming, save]);
 
   const [toolId, setToolId] = useState<ToolId>('compass');
   // A building block being placed works as a tool: its inputs are clicked.
@@ -201,6 +244,21 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
         ? checked.scene
         : check({ steps: steps.slice(0, at) } as Draft).scene,
     [at, last, steps, checked.scene],
+  );
+  // What an agent has marked in a shared drawing glows, and marked points
+  // are ringed as well, since a point alone is hard to see glowing.
+  const marks = shared?.marks;
+  const marked = useMemo(
+    () => (marks?.length ? new Set(marks) : undefined),
+    [marks],
+  );
+  const markedPoints = useMemo(
+    () =>
+      marks?.flatMap((name) => {
+        const g = scene.elements.get(name)?.geometry;
+        return g?.kind === 'point' ? [g.at] : [];
+      }),
+    [marks, scene],
   );
   // When two circles touch what was clicked, the learner chooses one.
   const [choices, setChoices] = useState<{
@@ -390,9 +448,19 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
         </label>
         <div className="editor-play">
           {playable && 'tutorial' in playable ? (
-            <a className="button play" href={`#/mine/${pattern.id}`}>
-              ▶ Play
-            </a>
+            shared ? (
+              <button
+                type="button"
+                className="button play"
+                onClick={shared.onPlay}
+              >
+                ▶ Play
+              </button>
+            ) : (
+              <a className="button play" href={`#/mine/${pattern.id}`}>
+                ▶ Play
+              </a>
+            )
           ) : (
             <span className="play-later">
               ▶ Play:{' '}
@@ -403,10 +471,17 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
             </span>
           )}
         </div>
-        <p className={kept ? 'kept' : 'kept refused'} role="status">
-          {kept
-            ? 'Kept in this browser'
-            : 'Not kept: this browser’s storage is blocked or full'}
+        <p
+          className={
+            (shared ? !shared.refused : kept) ? 'kept' : 'kept refused'
+          }
+          role="status"
+        >
+          {shared
+            ? shared.status
+            : kept
+              ? 'Kept in this browser'
+              : 'Not kept: this browser’s storage is blocked or full'}
         </p>
         <ThemeSwitch />
       </header>
@@ -470,6 +545,7 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
               {broken === 1 ? 'One step is' : `${broken} steps are`} broken.
             </p>
           ) : null}
+          {shared?.aside}
         </nav>
         <section className="plate-area">
           <div className="editor-modes" role="group" aria-label="Mode">
@@ -581,6 +657,8 @@ function EditorPage({ pattern }: { pattern: UserPattern }) {
             <EditorDrawing
               scene={scene}
               candidates={choices?.circles}
+              glow={marked}
+              rings={markedPoints}
               tile={inkable?.cell.corners}
               selected={selected}
               targets={targets}

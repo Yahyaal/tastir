@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.31.0",
+    "@resvg/resvg-js": "2.6.2",
     "@tastir/agent-protocol": "workspace:*",
     "@tastir/engine": "workspace:*",
     "@tastir/schema": "workspace:*",

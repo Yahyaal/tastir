@@ -21,7 +21,8 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm test:browser",
     "dev:agent": "node --conditions=@tastir/source --import tsx tools/dev-agent.mts",
     "test:agent:browser": "playwright test --config tools/agent-playwright.config.mts",
-    "studio": "node --conditions=@tastir/source --import tsx tools/studio.mts"
+    "studio": "node --conditions=@tastir/source --import tsx tools/studio.mts",
+    "test:studio:browser": "playwright test --config tools/studio-playwright.config.mts"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

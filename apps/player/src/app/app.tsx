@@ -19,6 +19,13 @@ const Review = import.meta.env.DEV
   ? lazy(() => import('../review/Review').then((m) => ({ default: m.Review })))
   : undefined;
 
+/** The studio (#/studio): drawings shared with AI agents, dev server only. */
+const StudioPage = import.meta.env.DEV
+  ? lazy(() =>
+      import('../studio/StudioPage').then((m) => ({ default: m.StudioPage })),
+    )
+  : undefined;
+
 const AgentHost = import.meta.env.DEV
   ? lazy(() =>
       import('../agent/AgentHost').then((m) => ({ default: m.AgentHost })),
@@ -133,6 +140,14 @@ function AppPage({
       <Broken message="The local assistant is available through pnpm dev:agent." />
     );
   if (route === 'work') return <WorkPage entries={library} />;
+  if (route === 'studio' || route.startsWith('studio/'))
+    return StudioPage ? (
+      <Suspense fallback={<p>Loading the studio…</p>}>
+        <StudioPage key={route} route={route} />
+      </Suspense>
+    ) : (
+      <Broken message="The studio only exists on the dev server (pnpm studio)." />
+    );
   if (route === 'upcoming') {
     return (
       <Suspense

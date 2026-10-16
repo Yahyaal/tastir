@@ -26,6 +26,12 @@ Agents start projects from O and A or from a library tutorial, then add named li
 
 Every edit is checked by the same code as Tastir's editor, and an edit that cannot be drawn changes nothing. Each edit names the revision it was based on, so if you or another agent changed the drawing first, the late edit is refused and the agent looks again. Undo by an agent stops at anyone else's change unless you ask it to go further.
 
+## Working together in Tastir
+
+Open the address `pnpm studio` prints, normally http://127.0.0.1:4293/#/studio. It lists the projects and starts a new one from O and A. A project opens in the normal editor: agents' changes appear as they make them, and anything you draw goes back to the studio. The status line names the latest change and who made it. Undo in the editor works on everything, agents' changes included.
+
+Under the steps, the studio panel shows agents' questions with a box to answer each, what they have marked (it glows on the drawing), and the notes thread, where you can leave notes for them. ▶ Play keeps a copy in this browser and plays it like your own patterns.
+
 ## Not yet
 
-Seeing the drawing live in Tastir, pictures for the agents, pointing and questions, reference photos, and the Codex and Gemini setup are later phases; the log says where each stands.
+Reference photos and the Codex and Gemini setup are later phases; the log says where each stands.

@@ -16,7 +16,9 @@ Every point comes from O and A (given, OA is the unit, A at 0°) or from crossin
 
 Work in this order: construct the lines, circles and crossings; ink the straight sides of the pattern between named points; set the repeating tile (four or six named points in order around a convex tile whose copies cover the plane); then paint the pieces. The ink must close pieces that cover the tile exactly, with no loose ends; a tile's opposite sides are copies of each other, so ink one of each pair at least.
 
-Every edit takes the project's current revision. If someone else changed the drawing first, the edit is refused: call inspect, look at what changed, and continue from it. Never undo other people's work unless the owner asks; undo only_mine is the default. Each edit is all or nothing, so a refused edit changed nothing; read its message, fix the request and try again. Use check to see every remaining problem. Leave a short note when you finish a stage or need the owner to decide something.`;
+Every edit takes the project's current revision. If someone else changed the drawing first, the edit is refused: call inspect, look at what changed, and continue from it. Never undo other people's work unless the owner asks; undo only_mine is the default. Each edit is all or nothing, so a refused edit changed nothing; read its message, fix the request and try again. Use check to see every remaining problem.
+
+When the project has a reference photo, you are recreating that pattern. Look at the overlay (your ink in magenta over the photo) after each meaningful change, find where your lines leave the photo's, and change the construction, not the ink alone: the result must still be a ruler-and-compass construction. Where the photo is worn, hidden or unclear, ask the owner rather than guess. A reconstruction is done when check passes and the owner accepts the overlay. Leave a short note when you finish a stage or need the owner to decide something.`;
 
 const Project = z
   .string()
@@ -246,6 +248,170 @@ export function createMcpServer(client: StudioClient, author?: string) {
           }),
         ),
     );
+  server.registerTool(
+    'view',
+    {
+      description:
+        'A picture of the drawing: the construction (guides faint, ink dark, tile dashed, points named), the wall of colored pieces, the reference photo, or the overlay (the photo with your ink drawn over it in magenta, and O and A in cyan, once the owner has lined it up). Give an area in drawing units (positions from inspect) to look closer. Look after a meaningful change, not after every edit: pictures use a lot of your plan.',
+      inputSchema: {
+        project: Project,
+        what: z
+          .enum(['construction', 'wall', 'reference', 'overlay'])
+          .default('construction'),
+        area: z
+          .strictObject({
+            x: z.number(),
+            y: z.number(),
+            width: z.number().positive(),
+            height: z.number().positive(),
+          })
+          .optional()
+          .describe('The lower-left corner and size of the part to show.'),
+        size: z
+          .number()
+          .int()
+          .min(200)
+          .max(1600)
+          .default(1000)
+          .describe('Pixels on the longer side.'),
+      },
+    },
+    async ({ project, what, area, size }) => {
+      try {
+        const q = new URLSearchParams({ what, size: String(size) });
+        if (area)
+          for (const [k, v] of Object.entries(area)) q.set(k, String(v));
+        const picture = await client.picture(
+          `/projects/${project}/picture?${q}`,
+        );
+        return {
+          content: [
+            {
+              type: 'image' as const,
+              data: picture.data,
+              mimeType: 'image/png',
+            },
+            {
+              type: 'text' as const,
+              text: `The ${what} at revision ${picture.revision}.`,
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          isError: true,
+          content: [
+            {
+              type: 'text' as const,
+              text: error instanceof Error ? error.message : String(error),
+            },
+          ],
+        };
+      }
+    },
+  );
+  server.registerTool(
+    'set_reference',
+    {
+      description:
+        'Give the project a reference photo from docs/research or apps/player/public/photos. The owner then lines it up in Tastir by placing O and A on it; until then overlay only shows the photo.',
+      inputSchema: {
+        project: Project,
+        path: z
+          .string()
+          .describe(
+            'Relative to the repository, for example docs/research/name.jpg.',
+          ),
+        source: z
+          .string()
+          .optional()
+          .describe('Where the photo came from, for the credits.'),
+      },
+    },
+    ({ project, path, source }) =>
+      run(() =>
+        client.call('POST', `/projects/${project}/reference`, {
+          author: who(),
+          path,
+          ...(source ? { source } : {}),
+        }),
+      ),
+  );
+  server.registerTool(
+    'point',
+    {
+      description:
+        'Mark a named element (from inspect) in Tastir with a short label, to show the owner what you mean. It changes nothing in the drawing.',
+      inputSchema: {
+        project: Project,
+        target: z.string(),
+        label: z.string().min(1).max(200),
+      },
+    },
+    ({ project, target, label }) =>
+      run(() =>
+        client.call('POST', `/projects/${project}/marks`, {
+          author: who(),
+          target,
+          label,
+        }),
+      ),
+  );
+  server.registerTool(
+    'clear_marks',
+    {
+      description: 'Remove your marks from the drawing.',
+      inputSchema: { project: Project },
+    },
+    ({ project }) =>
+      run(() =>
+        client.call('POST', `/projects/${project}/marks/clear`, {
+          author: who(),
+        }),
+      ),
+  );
+  server.registerTool(
+    'ask',
+    {
+      description:
+        'Ask the owner a question, marking the element it is about, and wait for the answer. If no answer comes in time, carry on with what does not depend on it and call read_notes later; never guess an answer.',
+      inputSchema: {
+        project: Project,
+        question: z.string().min(1).max(4000),
+        about: z
+          .string()
+          .optional()
+          .describe('A named element the question is about.'),
+        wait_seconds: z.number().int().min(0).max(600).default(180),
+      },
+    },
+    ({ project, question, about, wait_seconds }) =>
+      run(async () => {
+        const asked = (await client.call(
+          'POST',
+          `/projects/${project}/questions`,
+          {
+            author: who(),
+            text: question,
+            ...(about ? { about } : {}),
+          },
+        )) as { question: { id: number } };
+        const id = asked.question.id;
+        const reply = (await client.call(
+          'GET',
+          `/projects/${project}/questions/${id}?wait=${wait_seconds}`,
+          undefined,
+          wait_seconds + 30,
+        )) as { answer: { text: string } | null };
+        return reply.answer
+          ? { question: id, answer: reply.answer.text }
+          : {
+              question: id,
+              answer: null,
+              note: 'No answer yet. Carry on with what does not depend on it, and check read_notes later.',
+            };
+      }),
+  );
   server.registerTool(
     'check',
     {

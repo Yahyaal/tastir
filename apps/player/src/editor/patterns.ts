@@ -84,6 +84,23 @@ export function savePattern(
     : undefined;
 }
 
+/**
+ * Keeps a copy of a drawing under a fixed id, adding it the first time:
+ * the studio's drawings are played from here, like the learner's own.
+ */
+export function keepPattern(
+  id: string,
+  tutorial: Draft,
+): UserPattern | undefined {
+  return getPattern(id) ? savePattern(id, tutorial) : addAs(id, tutorial);
+}
+
+function addAs(id: string, tutorial: Draft): UserPattern | undefined {
+  const at = now();
+  const pattern: UserPattern = { id, tutorial, created: at, updated: at };
+  return patterns.write([pattern, ...listPatterns()]) ? pattern : undefined;
+}
+
 export const deletePattern = (id: string): boolean =>
   patterns.write(listPatterns().filter((p) => p.id !== id));
 

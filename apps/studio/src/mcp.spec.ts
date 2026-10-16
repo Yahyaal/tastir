@@ -186,6 +186,72 @@ describe('the studio over MCP', () => {
     expect((await call('inspect', { project })).value.revision).toBe(1);
   });
 
+  it('points at an element and asks the owner about it', async () => {
+    const project = (await call('new_project', { title: 'Questions' })).value
+      .project as string;
+    await call('construct', {
+      project,
+      revision: 1,
+      add: [{ kind: 'circle', name: 'C0', centre: 'O', through: 'A' }],
+    });
+    expect(
+      (await call('point', { project, target: 'Q', label: 'here' })).error,
+    ).toMatch(/no element “Q”/);
+    const pointed = await call('point', {
+      project,
+      target: 'C0',
+      label: 'The first circle',
+    });
+    expect(pointed.value.mark).toMatchObject({
+      author: 'claude-code',
+      target: 'C0',
+    });
+
+    // The owner answers while the agent waits.
+    const service = (path: string, data: unknown) =>
+      fetch(`${url}${path}`, {
+        method: 'POST',
+        headers: {
+          'X-Tastir-Studio': secret,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+    const asking = call('ask', {
+      project,
+      question: 'Is this circle the right size?',
+      about: 'C0',
+      wait_seconds: 20,
+    });
+    let question = 0;
+    for (let i = 0; i < 50 && !question; i++) {
+      await new Promise((r) => setTimeout(r, 50));
+      const notes = (await call('read_notes', { project })).value.notes as {
+        id: number;
+        question?: boolean;
+      }[];
+      question = notes.find((n) => n.question)?.id ?? 0;
+    }
+    await service(`/projects/${project}/notes`, {
+      author: 'owner',
+      text: 'Yes, keep it.',
+      answers: question,
+    });
+    expect((await asking).value).toEqual({ question, answer: 'Yes, keep it.' });
+
+    const late = await call('ask', {
+      project,
+      question: 'Anything else?',
+      wait_seconds: 0,
+    });
+    expect(late.value.answer).toBeNull();
+    await call('clear_marks', { project });
+    const marks = await fetch(`${url}/projects/${project}/marks`, {
+      headers: { 'X-Tastir-Studio': secret },
+    });
+    expect(((await marks.json()) as { marks: unknown[] }).marks).toEqual([]);
+  });
+
   it('starts from a library tutorial', async () => {
     const made = await call('new_project', {
       title: 'From the library',

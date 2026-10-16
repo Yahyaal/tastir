@@ -32,8 +32,9 @@ export default defineConfig(({ mode }) => ({
   server: {
     port: 4200,
     host: 'localhost',
-    proxy:
-      process.env['TASTIR_AGENT_TARGET'] && process.env['TASTIR_AGENT_SECRET']
+    proxy: {
+      ...(process.env['TASTIR_AGENT_TARGET'] &&
+      process.env['TASTIR_AGENT_SECRET']
         ? {
             '/__agent': {
               target: process.env['TASTIR_AGENT_TARGET'],
@@ -41,10 +42,26 @@ export default defineConfig(({ mode }) => ({
               headers: {
                 'X-Tastir-Bridge': process.env['TASTIR_AGENT_SECRET'],
               },
-              rewrite: (path) => path.replace(/^\/__agent/, ''),
+              rewrite: (path: string) => path.replace(/^\/__agent/, ''),
             },
           }
-        : undefined,
+        : {}),
+      // pnpm studio: the shared drawings, with the studio's secret added
+      // here so it never reaches the page.
+      ...(process.env['TASTIR_STUDIO_TARGET'] &&
+      process.env['TASTIR_STUDIO_SECRET']
+        ? {
+            '/__studio': {
+              target: process.env['TASTIR_STUDIO_TARGET'],
+              changeOrigin: true,
+              headers: {
+                'X-Tastir-Studio': process.env['TASTIR_STUDIO_SECRET'],
+              },
+              rewrite: (path: string) => path.replace(/^\/__studio/, ''),
+            },
+          }
+        : {}),
+    },
   },
   preview: {
     port: 4300,

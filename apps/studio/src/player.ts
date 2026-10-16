@@ -20,7 +20,8 @@ export {
 } from '../../player/src/editor/document';
 export { tutorialOf, withTile } from '../../player/src/editor/finish';
 export { loadModel, type Model } from '../../player/src/app/model';
-export { PALETTES } from '../../player/src/app/coloring';
+export { PALETTES, tutorialColoring } from '../../player/src/app/coloring';
+export { placeFills } from '../../player/src/app/placement';
 export {
   constructionSpec,
   constructionText,

@@ -12,7 +12,11 @@ import type { Project } from './project.js';
  */
 export const ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
 
-export async function writeAtomic(path: string, text: string, mode = 0o600) {
+export async function writeAtomic(
+  path: string,
+  text: string | Buffer,
+  mode = 0o600,
+) {
   const temporary = `${path}.${randomUUID()}.tmp`;
   try {
     const file = await open(temporary, 'wx', mode);

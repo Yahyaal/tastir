@@ -7,11 +7,11 @@ Progress on [the studio plan](STUDIO-PLAN.md), newest last. The work is on branc
 | Phase | State |
 | --- | --- |
 | 1. Studio and MCP | Done, 16 October |
-| 2. Live in Tastir | Next |
-| 3. Pictures | Not started |
-| 4. Talking and pointing | Not started |
-| 5. Photos | Not started |
-| 6. Codex and Gemini | Not started |
+| 2. Live in Tastir | Done, 16 October |
+| 3. Pictures | Done, 16 October |
+| 4. Talking and pointing | Done, 16 October (live check with the owner still to do) |
+| 5. Photos | Tools done 16 October; the live reconstruction waits for the owner to line up a photo |
+| 6. Codex and Gemini | Next |
 | 7. Contest (optional) | Not started |
 
 The plan asks for each phase to be added to `docs/TASKS.md`. Codex has uncommitted changes to that file in its checkout, so the studio phases are tracked here and will be added to the task list when the branches are merged.
@@ -29,3 +29,37 @@ The project folder (`studio/`) is ignored by Git with `/studio/`; a first `studi
 **Checks.** 11 studio tests pass: the edits, history and authorship, and a recorded MCP session that builds the square from O and A, tiles and colors it, and saves a pattern file that parses and plays. Studio typecheck passes (with its dependencies, one task at a time) and lint has no errors (26 warnings of the kinds the rest of the repository has).
 
 **Live check.** Claude Code (`claude -p`, the owner's plan, default model) was asked to build the square from O and A with fold-4 goals, tile it, color it and check it. It did so in 9 turns and 25 seconds: one construct batch of ten elements, one ink batch, the tile and the color, with `check` empty on the first try, and it left a note. The project is `studio/live-square-check-e7ca`.
+
+## Phase 2: live in Tastir (16 October)
+
+`#/studio` lists the projects and starts one from O and A, and `#/studio/<id>` opens a project in the normal editor. The editor (`EditorPage` in `apps/player/src/editor/Editor.tsx`) takes an optional shared drawing: the studio page hands in the latest drawing whenever the studio reports a change, and the editor sends each of the owner's changes back instead of keeping them in browser storage. A drawing that arrives from the studio becomes one more step in the editor's own Undo, so the owner can undo an agent's change by hand. The owner's changes are sent as a whole new drawing with a label worked out from what changed ("Added step 4 in Tastir", "Inked in Tastir"). ▶ Play keeps a copy in browser storage under `studio-<id>` and plays it like the owner's own patterns. The page and its route exist only on the dev server, and `pnpm studio` sets up a `/__studio` proxy that adds the studio's secret, so the page never sees it. Changes reach the page through a server-sent event stream.
+
+When an agent's change and the owner's arrive in the same moment, the agent's wins and the page says the owner's last change was not kept and that Undo brings it back. An agent that is still thinking when the owner edits has its late batch refused instead, which is the usual case.
+
+**Checks.** `pnpm test:studio:browser` (new, `tools/studio-playwright.config.mts`) runs `pnpm studio` with a throwaway folder and calls the service as an agent would. On desktop and phone: an agent's change appears in the open editor without a reload; the owner renames the drawing; the agent's late batch is refused and its "undo mine" stops at the owner's change; Undo in the editor reaches the studio; and the list page starts a project. The test uses a rename as the owner's change rather than drawing a line with the tools.
+
+## Phase 3: pictures (16 October)
+
+`view` returns a PNG of the construction (guides faint, ink dark, tile dashed, points named) or of the wall (two rings of tile copies around the centre, in the pattern's colors), optionally of an area in drawing units. The SVG is built in `apps/studio/src/picture.ts` and turned into PNG with `@resvg/resvg-js`. It does not reuse the app's `wallSvg` after all, because that would mean moving helpers out of `Wall.tsx` and `drawing.tsx`, which Codex is changing.
+
+Two things to remember. resvg's scan of every system font hangs inside Vitest, so the picture code loads one named font file (DejaVu Sans, then Noto Sans or Liberation Sans). And `RenderedImage.pixels` copies the whole image on every read: a test that read it inside a per-pixel loop hung while eating memory and crashed the owner's machine twice. The test now reads it once, and every heavy command in this work now runs under `timeout` and a `systemd-run` memory cap.
+
+**Checks.** 14 studio tests pass, including pixel counts of the ink and of the chosen blue on the wall.
+
+## Phase 4: talking and pointing (16 October)
+
+Agents have `point` (mark a named element with a label), `clear_marks`, `note`, `read_notes` and `ask`. `ask` posts a question, marks the element it is about, and waits up to ten minutes for the answer. If none comes it tells the agent to carry on with what does not depend on it and to look at the notes later, so it never has to guess. Marks are kept in the service's memory, not in the project, because they are only for the moment; questions and answers are notes, so they stay with the project.
+
+In Tastir, a panel under the steps shows the open questions with a box to answer each, what is marked (marked elements glow on the drawing, and marked points are ringed), and the notes thread with a box for the owner's own notes. The editor took two optional props for this (`marks` and `aside` on its shared drawing), so the normal editor is unchanged.
+
+Phases 2 to 4, and the tools of phase 5, went into one commit, not one each. The machine crashed twice during phase 3 (see above), and by then the changes overlapped in the same files.
+
+**Checks.** 15 studio tests pass, including an MCP session where the agent points, asks and gets the owner's answer while it waits. 6 studio browser checks pass on desktop and phone, including answering a question, posting a note and clearing marks in the panel. Player: 695 unit tests pass; lint has no errors; typecheck passes. The full player browser suite passed (151 passed, 17 skipped) before the panel was added and is run again before the commit. The live check, where Claude Code asks the owner something and continues from the answer, needs the owner at the screen and is still to do.
+
+## Phase 5: photos (16 October, tools)
+
+A project can have a reference photo: the owner adds one in the studio panel (PNG or JPEG), or an agent names one in `docs/research/` or `apps/player/public/photos/` with `set_reference`. It is copied into the project folder, which Git ignores, so a private photo never reaches the repository. The owner lines it up once by pressing "Line up" and clicking O, then A, on the photo; the alignment is kept in the project, never in the pattern. `view` then shows the photo with the ink drawn over it in magenta (O and A in cyan), whole or cropped to an area in drawing units, and the panel shows the same overlay to the owner after every change. The MCP instructions tell agents how to work from a photo: compare the overlay, change the construction rather than the ink alone, and ask instead of guessing where the photo is unclear.
+
+**Checks.** 18 studio tests pass, including the photo's size from its header, the mapping from O and A (also for a turned photo), magenta ink only once the photo is lined up, and cropping. 8 studio browser checks pass on desktop and phone, including adding a photo and lining it up by clicking. Lint has no errors and typecheck passes for the studio and the player.
+
+**Still to do for this phase.** The live test: the owner lines up a free photo of a pattern that already has a tutorial (the Itimad star and octagon photo is a good first one, `apps/player/public/photos/itimad-star-and-octagon.jpg`), an agent recreates it from O and A, and the owner judges the overlay.
