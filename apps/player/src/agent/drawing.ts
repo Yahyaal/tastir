@@ -13,10 +13,12 @@ import {
   type DrawingSegment,
   type RepeatSettings,
   type EditSegments,
+  type HistoryAction,
 } from '@tastir/agent-protocol';
 import { addStep, check, copyUpTo, type Draft } from '../editor/document';
 
 interface DrawingContent {
+  action?: HistoryAction;
   segments: DrawingSegment[];
   constructions: Construction[];
   repeat: RepeatSettings | null;
@@ -143,10 +145,36 @@ export function travelHistory(
     throw new Error(
       `Only ${available} ${request.direction} steps are available. No changes were applied.`,
     );
+  if (
+    request.scope === 'assistant' &&
+    historyObservation(history)
+      [request.direction].slice(0, request.steps)
+      .some((action) => action.source !== 'assistant')
+  )
+    throw new Error(
+      'Undo/Redo your changes stops before manual or unidentified edits. No changes were applied.',
+    );
   let next = history;
   for (let i = 0; i < request.steps; i++)
     next = travelDrawing(next, request.direction);
   return next;
+}
+
+/** Next action first; retained across requests and real Undo/Redo. */
+export function historyObservation(history: DrawingHistory) {
+  const unknown: HistoryAction = {
+    source: 'unknown',
+    requestId: null,
+    label: 'Unidentified edit',
+  };
+  return {
+    undoSteps: history.past.length,
+    redoSteps: history.future.length,
+    undo: [history, ...history.past.slice(1).reverse()]
+      .slice(0, history.past.length)
+      .map((state) => state.action ?? unknown),
+    redo: history.future.map((state) => state.action ?? unknown),
+  };
 }
 
 /** Export through the existing editor document and engine ink format, without coordinates. */
@@ -191,6 +219,7 @@ export function drawingPieces(
 }
 
 const contentOf = (history: DrawingHistory): DrawingContent => ({
+  action: history.action,
   segments: history.segments,
   constructions: history.constructions,
   repeat: history.repeat,

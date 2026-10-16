@@ -227,6 +227,61 @@ describe('completed streaming responses', () => {
 });
 
 describe('image and tool execution loop', () => {
+  it('continues a fitted view only with a fresh construction image of the unchanged document', async () => {
+    const fit = {
+      ...tool,
+      name: 'fit_view',
+      arguments: JSON.stringify({
+        snapshotId: snapshot.id,
+        documentRevision: snapshot.documentRevision,
+        label: 'Fit drawing',
+      }),
+    };
+    const send = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (url) =>
+        String(url).endsWith('/models')
+          ? Response.json({
+              models: [
+                { slug: 'model', display_name: 'Model', visibility: 'list' },
+              ],
+            })
+          : sparseStream([fit]),
+      );
+    const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
+    const signal = new AbortController().signal;
+    try {
+      const first = await runtime.start(
+        'tab',
+        'model',
+        'Fit the drawing',
+        snapshot,
+        signal,
+      );
+      const results = [{ callId: 'call-1', ok: true, message: 'Fitted' }];
+      const fresh = {
+        ...snapshot,
+        id: 'fitted',
+        viewRevision: 'fitted-camera',
+      };
+      for (const bad of [
+        undefined,
+        snapshot,
+        { ...fresh, documentRevision: '2' },
+        { ...fresh, documentId: 'other' },
+        { ...fresh, mode: 'repeat' as const },
+      ])
+        await expect(
+          runtime.resume('tab', first.runId, results, signal, bad),
+        ).rejects.toMatchObject({ code: 'observation_missing' });
+      expect(
+        (await runtime.resume('tab', first.runId, results, signal, fresh))
+          .calls[0]!.name,
+      ).toBe('fit_view');
+    } finally {
+      runtime.cancelAll();
+    }
+  });
   it.each([
     'edit_segments',
     'construct',

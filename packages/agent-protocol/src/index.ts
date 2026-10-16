@@ -79,10 +79,22 @@ export const NavigateShape = z.strictObject({
   label: z.string().min(1).max(160),
 });
 export type Navigate = z.infer<typeof NavigateShape>;
+export const HistoryActionShape = z.strictObject({
+  source: z.enum(['assistant', 'manual', 'unknown']),
+  requestId: Id.nullable(),
+  label: z.string().min(1).max(160),
+});
+export type HistoryAction = z.infer<typeof HistoryActionShape>;
+export const FitViewShape = z.strictObject({
+  snapshotId: Id,
+  documentRevision: Id,
+  label: z.string().min(1).max(160),
+});
 export const TravelHistoryShape = z.strictObject({
   snapshotId: Id,
   documentRevision: Id,
   direction: z.enum(['undo', 'redo']),
+  scope: z.enum(['steps', 'assistant']).default('steps'),
   steps: z.number().int().min(1).max(50),
   label: z.string().min(1).max(160),
 });
@@ -119,6 +131,8 @@ export const SnapshotShape = z
       .strictObject({
         undoSteps: z.number().int().min(0).max(50),
         redoSteps: z.number().int().min(0).max(50),
+        undo: z.array(HistoryActionShape).max(50).default([]),
+        redo: z.array(HistoryActionShape).max(50).default([]),
       })
       .nullable()
       .default(null),
@@ -172,6 +186,11 @@ export const ConstructShape = z.strictObject({
 });
 export type Construct = z.infer<typeof ConstructShape>;
 export const CallShape = z.discriminatedUnion('name', [
+  z.strictObject({
+    id: Id,
+    name: z.literal('fit_view'),
+    arguments: FitViewShape,
+  }),
   z.strictObject({
     id: Id,
     name: z.literal('travel_history'),
@@ -280,10 +299,27 @@ export const DRAWING_TOOLS = {
   tools: [
     {
       type: 'function',
+      name: 'fit_view',
+      strict: true,
+      description:
+        'Show Construction and fit ALL current named points and circles into the board. Use this yourself when needed geometry is outside the image or the repeat wall hides construction points. A fresh image and visible target IDs follow; no drawing edits or history changes. Do not ask the person to zoom out when this tool can do it.',
+      parameters: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          snapshotId: { type: 'string' },
+          documentRevision: { type: 'string' },
+          label: { type: 'string' },
+        },
+        required: ['snapshotId', 'documentRevision', 'label'],
+      },
+    },
+    {
+      type: 'function',
       name: 'travel_history',
       strict: true,
       description:
-        'Undo or redo workspace edits using the SAME history as the drawing buttons. Works in construction and repeat views; restores geometry, tile and colors together. Check observation.history.undoSteps or redoSteps. Use one step for a simple Undo/Redo request; use multiple only when explicitly requested. Every construction, ink, tile or color batch is a separate step. Never simulate Undo by deleting or repainting objects. Requests exceeding available history fail without changing anything. A fresh drawing observation follows success. Does not undo navigation or edits in other pages.',
+        'Undo or redo workspace edits using the SAME history as the drawing buttons. Check observation.history.undo/redo: ordered NEXT action first, with source, requestId and label. For undo your changes use scope:assistant and count consecutive assistant actions from the start; stop at manual/unknown actions. No extra confirmation is needed for identified assistant actions. scope:steps allows the explicit number of edits the user requested, regardless of author. A plain Undo/Redo means one step. Restores geometry, tile and colors together. Never simulate Undo by deleting or repainting objects. Excessive steps or crossing a manual/unknown edit with assistant scope fails atomically. A fresh drawing observation follows success. Does not undo navigation or other pages.',
       parameters: {
         type: 'object',
         additionalProperties: false,
@@ -291,6 +327,7 @@ export const DRAWING_TOOLS = {
           snapshotId: { type: 'string' },
           documentRevision: { type: 'string' },
           direction: { type: 'string', enum: ['undo', 'redo'] },
+          scope: { type: 'string', enum: ['steps', 'assistant'] },
           steps: { type: 'integer', minimum: 1, maximum: 50 },
           label: { type: 'string' },
         },
@@ -298,6 +335,7 @@ export const DRAWING_TOOLS = {
           'snapshotId',
           'documentRevision',
           'direction',
+          'scope',
           'steps',
           'label',
         ],

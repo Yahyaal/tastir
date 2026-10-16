@@ -23,6 +23,7 @@ const historyCall = (
   s: Snapshot,
   direction: 'undo' | 'redo',
   steps = 1,
+  scope: 'steps' | 'assistant' = 'steps',
 ): ToolCall => ({
   id: 'history',
   name: 'travel_history',
@@ -30,6 +31,7 @@ const historyCall = (
     snapshotId: s.id,
     documentRevision: s.documentRevision,
     direction,
+    scope,
     steps,
     label: `${direction} ${steps} edits`,
   },
@@ -53,6 +55,186 @@ async function send(page: Page, prompt: string) {
   await page.getByRole('button', { name: 'Send current view' }).click();
 }
 
+test('new geometry is framed, and the assistant can fit a zoomed view and continue with its new points', async ({
+  page,
+}) => {
+  await connected(page);
+  let fitting = false;
+  let before: Snapshot;
+  await page.route('**/__agent/turn/start', async (r) => {
+    const { snapshot: s, prompt } = r.request().postDataJSON();
+    before = s;
+    fitting = prompt === 'Fit and draw';
+    const call = fitting
+      ? {
+          id: 'fit',
+          name: 'fit_view',
+          arguments: {
+            snapshotId: s.id,
+            documentRevision: s.documentRevision,
+            label: 'Fit construction',
+          },
+        }
+      : {
+          id: 'extend',
+          name: 'construct',
+          arguments: {
+            snapshotId: s.id,
+            documentRevision: s.documentRevision,
+            label: 'Extend above the old view',
+            remove: [],
+            add: [
+              {
+                kind: 'circle',
+                name: 'OuterCircle',
+                centre: 'N',
+                through: 'S',
+              },
+              { kind: 'line', name: 'VerticalAxis', from: 'N', to: 'S' },
+              {
+                kind: 'intersection',
+                name: 'FarTop',
+                first: 'OuterCircle',
+                second: 'VerticalAxis',
+                angle: 90,
+              },
+            ],
+          },
+        };
+    if (fitting)
+      expect(s.targets.some((t: { id: string }) => t.id === 'FarTop')).toBe(
+        false,
+      );
+    await r.fulfill({ json: { runId, text: '', calls: [call] } });
+  });
+  await page.route('**/__agent/turn/continue', async (r) => {
+    const { results, snapshot: s } = r.request().postDataJSON();
+    expect(results[0].ok).toBe(true);
+    expect(s.targets.some((t: { id: string }) => t.id === 'FarTop')).toBe(true);
+    let call: unknown;
+    if (fitting && results[0].callId === 'fit') {
+      expect(s.documentRevision).toBe(before.documentRevision);
+      expect(s.history).toEqual(before.history);
+      expect(s.id).not.toBe(before.id);
+      expect(s.image).not.toBe(before.image);
+      expect(s.mode).toBe('construction');
+      call = {
+        id: 'ink',
+        name: 'edit_segments',
+        arguments: {
+          snapshotId: s.id,
+          documentRevision: s.documentRevision,
+          label: 'Join fitted point',
+          add: [{ from: 'FarTop', to: 'N' }],
+          remove: [],
+        },
+      };
+    }
+    await r.fulfill({
+      json: {
+        runId,
+        text: call ? '' : fitting ? 'Fitted and drawn.' : 'Built.',
+        calls: call ? [call] : [],
+      },
+    });
+  });
+  await page.goto('/#/agent');
+  await send(page, 'Build');
+  await expect(page.locator('.agent-answer')).toHaveText('Built.');
+  const board = page.locator('.agent-board svg.drawing');
+  await board.scrollIntoViewIfNeeded();
+  const bounds = (await board.boundingBox())!;
+  await page.mouse.move(
+    bounds.x + bounds.width / 2,
+    bounds.y + bounds.height / 2,
+  );
+  const fittedBox = await board.getAttribute('viewBox');
+  await page.mouse.wheel(0, -1400);
+  await expect.poll(() => board.getAttribute('viewBox')).not.toBe(fittedBox);
+  await send(page, 'Fit and draw');
+  await expect(page.locator('.agent-answer')).toHaveText('Fitted and drawn.');
+  await expect(page.locator('.agent-edits h2')).toHaveText(
+    'Your drawing · 1 side',
+  );
+  await page
+    .getByRole('button', { name: 'Undo drawing edit', exact: true })
+    .click();
+  await expect(page.locator('.agent-edits h2')).toHaveText(
+    'Your drawing · 0 sides',
+  );
+  await expect(page.locator('.agent-constructions li')).toHaveCount(3);
+});
+
+test('authored history survives requests and assistant-only Undo cannot cross a manual edit', async ({
+  page,
+}) => {
+  await connected(page);
+  await page.route('**/__agent/turn/start', async (r) => {
+    const { snapshot: s, prompt } = r.request().postDataJSON();
+    if (prompt !== 'Draw') {
+      expect(s.history.undo.map((a: { source: string }) => a.source)).toEqual([
+        'manual',
+        'assistant',
+      ]);
+      expect(s.history.undo[1].requestId).toBe(runId);
+    }
+    await r.fulfill({
+      json: {
+        runId,
+        text: '',
+        calls: [
+          prompt === 'Draw'
+            ? squareCall(s)
+            : historyCall(
+                s,
+                'undo',
+                2,
+                prompt === 'Undo your changes' ? 'assistant' : 'steps',
+              ),
+        ],
+      },
+    });
+  });
+  await page.route('**/__agent/turn/continue', async (r) => {
+    const { results, snapshot } = r.request().postDataJSON();
+    if (!results[0].ok) {
+      expect(results[0].message).toContain('manual or unidentified');
+      expect(snapshot).toBeUndefined();
+    }
+    await r.fulfill({
+      json: {
+        runId,
+        text: !results[0].ok
+          ? 'Manual edit protected.'
+          : snapshot.segments.length
+            ? 'Drawn.'
+            : 'All undone.',
+        calls: [],
+      },
+    });
+  });
+  await page.goto('/#/agent');
+  await send(page, 'Draw');
+  await expect(page.locator('.agent-answer')).toHaveText('Drawn.');
+  await page
+    .locator('.agent-side')
+    .first()
+    .getByRole('button', { name: 'Remove side 1', exact: true })
+    .click();
+  await send(page, 'Undo your changes');
+  await expect(page.locator('.agent-answer')).toHaveText(
+    'Manual edit protected.',
+  );
+  await expect(page.locator('.agent-edits h2')).toHaveText(
+    'Your drawing · 3 sides',
+  );
+  await send(page, 'Undo all changes');
+  await expect(page.locator('.agent-answer')).toHaveText('All undone.');
+  await expect(page.locator('.agent-edits h2')).toHaveText(
+    'Your drawing · 0 sides',
+  );
+});
+
 test('model Undo and Redo restore real ink, tile and colors, sharing the manual history', async ({
   page,
 }) => {
@@ -61,7 +243,7 @@ test('model Undo and Redo restore real ink, tile and colors, sharing the manual 
   let sent: Snapshot;
   await page.route('**/__agent/turn/start', async (r) => {
     sent = r.request().postDataJSON().snapshot;
-    expect(sent.history).toEqual({ undoSteps: 0, redoSteps: 0 });
+    expect(sent.history).toMatchObject({ undoSteps: 0, redoSteps: 0 });
     await r.fulfill({ json: { runId, text: '', calls: [squareCall(sent)] } });
   });
   await page.route('**/__agent/turn/continue', async (r) => {
@@ -103,19 +285,35 @@ test('model Undo and Redo restore real ink, tile and colors, sharing the manual 
     } else if (turn === 3) {
       expect(s.mode).toBe('repeat');
       expect(s.repeat!.types[0]!.color).toBe('#2453a6');
-      expect(s.history).toEqual({ undoSteps: 3, redoSteps: 0 });
-      call = historyCall(s, 'undo', 3);
+      expect(s.history).toMatchObject({ undoSteps: 3, redoSteps: 0 });
+      expect(s.history!.undo.map((a) => a.source)).toEqual([
+        'assistant',
+        'assistant',
+        'assistant',
+      ]);
+      expect(new Set(s.history!.undo.map((a) => a.requestId))).toEqual(
+        new Set([runId]),
+      );
+      call = historyCall(s, 'undo', 3, 'assistant');
     } else if (turn === 4) {
       expect(s.segments).toEqual([]);
       expect(s.repeat).toBeNull();
       expect(s.mode).toBe('construction');
-      expect(s.history).toEqual({ undoSteps: 0, redoSteps: 3 });
-      call = historyCall(s, 'redo', 3);
+      expect(s.history).toMatchObject({ undoSteps: 0, redoSteps: 3 });
+      call = historyCall(s, 'redo', 3, 'assistant');
     } else {
       expect(s.mode).toBe('repeat');
       expect(s.segments).toHaveLength(4);
       expect(s.repeat!.types[0]!.color).toBe('#2453a6');
-      expect(s.history).toEqual({ undoSteps: 3, redoSteps: 0 });
+      expect(s.history).toMatchObject({ undoSteps: 3, redoSteps: 0 });
+      expect(s.history!.undo.map((a) => a.source)).toEqual([
+        'assistant',
+        'assistant',
+        'assistant',
+      ]);
+      expect(new Set(s.history!.undo.map((a) => a.requestId))).toEqual(
+        new Set([runId]),
+      );
     }
     await r.fulfill({
       json: {

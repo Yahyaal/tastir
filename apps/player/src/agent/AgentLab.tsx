@@ -8,6 +8,7 @@ import {
   type Snapshot,
   type EditSegments,
   type ToolResult,
+  type HistoryAction,
 } from '@tastir/agent-protocol';
 import type { Geometry, Scene } from '@tastir/engine';
 import { EditorDrawing, frameOf } from '../editor/EditorDrawing';
@@ -29,6 +30,7 @@ import {
   emptyDrawing,
   travelDrawing,
   travelHistory,
+  historyObservation,
   type DrawingHistory,
 } from './drawing';
 import { AgentClient } from './client';
@@ -183,9 +185,9 @@ function Workspace({
   const [activity, setActivity] = useState('');
   const [error, setError] = useState('');
   const [sentImage, setSentImage] = useState('');
-  const [proof, setProof] = useState<false | 'point' | 'draw' | 'navigate'>(
-    false,
-  );
+  const [proof, setProof] = useState<
+    false | 'point' | 'draw' | 'navigate' | 'view'
+  >(false);
   const [drawing, setDrawing] = useState(emptyDrawing);
   const drawingRef = useRef(drawing);
   const [showRepeat, setShowRepeat] = useState(true);
@@ -208,9 +210,17 @@ function Workspace({
     if (!saved || route !== 'agent') return false;
     return JSON.stringify(getPattern(saved.id)?.tutorial) !== saved.contents;
   }, [saved, route]);
-  const publish = (next: DrawingHistory) => {
-    drawingRef.current = next;
-    setDrawing(next);
+  const publish = (
+    next: DrawingHistory,
+    action: HistoryAction | null = {
+      source: 'manual',
+      requestId: null,
+      label: 'Manual drawing edit',
+    },
+  ) => {
+    const stamped = action ? { ...next, action } : next;
+    drawingRef.current = stamped;
+    setDrawing(stamped);
   };
   const pieces = useMemo(
     () =>
@@ -228,8 +238,11 @@ function Workspace({
   const [profileId, setProfileId] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
-  const frame = useMemo(() => frameOf(model.scene), [model]);
-  const camera = useCamera(frame, svgRef, { stage: wallVisible ? 1 : 0 });
+  const frame = useMemo(() => frameOf(scene), [scene]);
+  const camera = useCamera(frame, svgRef, {
+    stage: wallVisible ? 1 : 0,
+    instant: true,
+  });
   const [documentRevision] = useState(() => crypto.randomUUID());
   const controller = useRef<AbortController | null>(null);
   const generation = useRef(0);
@@ -327,10 +340,7 @@ function Workspace({
           : null,
       mode: inRepeat ? 'repeat' : 'construction',
       palettes: Object.keys(PALETTES),
-      history: {
-        undoSteps: drawingRef.current.past.length,
-        redoSteps: drawingRef.current.future.length,
-      },
+      history: historyObservation(drawingRef.current),
       screen: {
         route: 'agent',
         title: model.tutorial.title,
@@ -508,6 +518,7 @@ function Workspace({
       let pointed = false;
       let drawn = false;
       let moved = false;
+      let viewed = false;
       const text: string[] = [];
       while (isCurrent()) {
         if (snapshot.screen && currentRoute() !== snapshot.screen.route)
@@ -520,12 +531,21 @@ function Workspace({
             text.join('\n\n') || 'The request completed without a text answer.',
           );
           setProof(
-            moved ? 'navigate' : drawn ? 'draw' : pointed ? 'point' : false,
+            moved
+              ? 'navigate'
+              : drawn
+                ? 'draw'
+                : viewed
+                  ? 'view'
+                  : pointed
+                    ? 'point'
+                    : false,
           );
           break;
         }
         let edited = false;
         let navigated = false;
+        let refitted = false;
         const results: ToolResult[] = await Promise.all(
           reply.calls.map(async (call) => {
             if (reply.calls.length > 1)
@@ -624,6 +644,27 @@ function Workspace({
                   'Use named points in the current observation as endpoints.',
               };
             try {
+              if (call.name === 'fit_view') {
+                setShowRepeat(false);
+                camera.goTo(
+                  frameOf(
+                    constructionScene(
+                      model.tutorial,
+                      drawingRef.current.constructions,
+                    ),
+                  ),
+                );
+                setMark(undefined);
+                pointed = false;
+                refitted = true;
+                viewed = true;
+                return {
+                  callId: call.id,
+                  ok: true,
+                  message:
+                    'Construction fitted to all current points and circles. A fresh board image and named targets follow. No drawing edits were made.',
+                };
+              }
               if (call.name === 'construct') {
                 const available = new Set(
                   snapshot.targets.map((target) => target.id),
@@ -689,7 +730,16 @@ function Workspace({
                   ),
                 );
               }
-              publish(next);
+              publish(
+                next,
+                call.name === 'travel_history'
+                  ? null
+                  : {
+                      source: 'assistant',
+                      requestId: reply.runId,
+                      label: call.arguments.label,
+                    },
+              );
               setMark(undefined);
               pointed = false;
               edited = true;
@@ -716,7 +766,7 @@ function Workspace({
           requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
         );
         if (!isCurrent()) return;
-        if (!edited && !navigated) {
+        if (!edited && !navigated && !refitted) {
           for (const result of results)
             if (result.ok && revision() !== snapshot.viewRevision) {
               result.ok = false;
@@ -727,7 +777,7 @@ function Workspace({
             }
         }
         let fresh: Snapshot | undefined;
-        if (edited || navigated) {
+        if (edited || navigated || refitted) {
           fresh = await snapshotOfView();
           if (!isCurrent()) return;
           snapshot = fresh;
@@ -736,7 +786,7 @@ function Workspace({
         setActivity(
           navigated
             ? 'Checking the opened page…'
-            : edited
+            : edited || refitted
               ? 'Checking the updated drawing…'
               : 'Checking the highlighting result…',
         );
@@ -771,7 +821,7 @@ function Workspace({
     setError('');
     setAnswer('');
     setMark(undefined);
-    publish(travelDrawing(drawingRef.current, direction));
+    publish(travelDrawing(drawingRef.current, direction), null);
   };
   const removeConstruction = (name: string) => {
     stop();
@@ -1392,7 +1442,9 @@ function Workspace({
                 ? 'Navigation completed: destination displayed, current page sent, final response completed.'
                 : proof === 'draw'
                   ? 'Drawing updated: edits displayed, current image sent, final response completed.'
-                  : 'Live check completed: image sent, highlight acknowledged, final response completed.'
+                  : proof === 'view'
+                    ? 'View fitted: construction displayed, current image sent, final response completed.'
+                    : 'Live check completed: image sent, highlight acknowledged, final response completed.'
               : route === 'agent'
                 ? 'Ready for a question about this board.'
                 : 'Ready for a question about this page.')}

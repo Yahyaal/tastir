@@ -8,6 +8,8 @@ import {
   editSegments,
   emptyDrawing,
   travelDrawing,
+  travelHistory,
+  historyObservation,
 } from './drawing';
 
 const tutorial = parseTutorial(source);
@@ -20,6 +22,65 @@ const square = {
 };
 
 describe('editable assistant drawing', () => {
+  it('keeps authorship and request groups through Undo/Redo and blocks crossing manual or unknown work', () => {
+    const assistant = {
+      source: 'assistant' as const,
+      requestId: 'request-1',
+      label: 'Square',
+    };
+    const a = {
+      ...editSegments(emptyDrawing(), square, scene),
+      action: assistant,
+    };
+    const b = {
+      ...editSegments(a, { add: [], remove: [a.segments[0]!.id] }, scene),
+      action: {
+        source: 'manual' as const,
+        requestId: null,
+        label: 'Remove side',
+      },
+    };
+    const c = {
+      ...editSegments(b, { add: [square.add[0]!], remove: [] }, scene),
+      action: { ...assistant, requestId: 'request-2' },
+    };
+    expect(historyObservation(c).undo.map((x) => x.source)).toEqual([
+      'assistant',
+      'manual',
+      'assistant',
+    ]);
+    const request = {
+      snapshotId: 'view',
+      documentRevision: '3',
+      direction: 'undo',
+      scope: 'assistant',
+      steps: 2,
+      label: 'Undo your changes',
+    };
+    expect(() => travelHistory(c, request)).toThrow('manual or unidentified');
+    const undone = travelHistory(c, { ...request, steps: 1 });
+    expect(historyObservation(undone).undo[0]!.source).toBe('manual');
+    expect(historyObservation(undone).redo[0]!.requestId).toBe('request-2');
+    const restored = travelHistory(undone, {
+      ...request,
+      direction: 'redo',
+      steps: 1,
+    });
+    expect(historyObservation(restored)).toEqual(historyObservation(c));
+    expect(() =>
+      travelHistory(editSegments(emptyDrawing(), square, scene), {
+        ...request,
+        steps: 1,
+      }),
+    ).toThrow('unidentified');
+    const explicit = travelHistory(c, { ...request, scope: 'steps', steps: 3 });
+    expect(explicit.segments).toEqual([]);
+    expect(historyObservation(explicit).redo.map((x) => x.source)).toEqual([
+      'assistant',
+      'manual',
+      'assistant',
+    ]);
+  });
   it('makes exactly four finite equal sides with right angles, then undoes the whole square', () => {
     const before = emptyDrawing();
     const after = editSegments(before, square, scene);
