@@ -43,6 +43,24 @@ export const DOCS: readonly {
     text: read('AI-AGENT-SETUP.md'),
   },
   {
+    key: 'studio',
+    label: 'Studio plan',
+    file: 'STUDIO-PLAN.md',
+    text: read('STUDIO-PLAN.md'),
+  },
+  {
+    key: 'studio-setup',
+    label: 'Studio setup',
+    file: 'STUDIO-SETUP.md',
+    text: read('STUDIO-SETUP.md'),
+  },
+  {
+    key: 'studio-log',
+    label: 'Studio log',
+    file: 'STUDIO-LOG.md',
+    text: read('STUDIO-LOG.md'),
+  },
+  {
     key: 'working',
     label: 'Working together',
     file: 'WORKING-WITH-OWNER.md',
