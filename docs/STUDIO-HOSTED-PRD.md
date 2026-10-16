@@ -110,7 +110,7 @@ Accounts for other people and sharing projects with them belong to the product p
 
 1. **Where it runs.** Decided 16 October: Vercel Hobby and a new free Neon project, as in finsight.
 2. **The region.** Decided 16 October: the owner is in Oklahoma, so Neon in AWS US East (Ohio) and Vercel functions in Cleveland (`cle1`).
-3. **Sign-in.** Recommended: Google through Auth.js, with only the owner on the allow list, copied from finsight. This blocks H3.
+3. **Sign-in.** Decided: Google through Auth.js, with only the owner on the allow list, copied from finsight.
 4. **Private photos on the server.** The owner decides whether research photos that are not free may be uploaded to the hosted studio, where they stay private in Blob. This blocks nothing; until then, only free photos go up.
 5. **Free tiers only.** Decided 16 October: every service stays on its free plan. Durable Objects come in only as the free live room (H7).
 
