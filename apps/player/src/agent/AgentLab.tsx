@@ -1,3 +1,6 @@
+import { waitForRendered } from './rendered';
+import { AccountPanel } from './AccountPanel';
+import { pageColorRevision, applyPageColor } from './pageColoring';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   checkHighlight,
@@ -291,9 +294,20 @@ function Workspace({
     currentView.current = { view: camera.view, selected };
   });
 
-  const snapshotOfView = async (): Promise<Snapshot> => {
+  const snapshotOfView = async (
+    requiredMode?: 'construction',
+  ): Promise<Snapshot> => {
     if (currentRoute() !== 'agent')
       return observeScreen(destinationsOf(library));
+    await waitForRendered(
+      () =>
+        svgRef.current?.closest<HTMLElement>('.agent-board')?.dataset[
+          'agentRevision'
+        ] === String(drawingRef.current.revision) &&
+        (!requiredMode ||
+          svgRef.current?.getAttribute('data-agent-mode') === requiredMode),
+      controller.current?.signal,
+    );
     const svg = svgRef.current;
     if (!svg) throw new Error('The drawing is not ready. Try again.');
     const capturedRevision = revision();
@@ -554,6 +568,7 @@ function Workspace({
           );
           break;
         }
+        const colorRevisionBefore = pageColorRevision();
         let edited = false;
         let navigated = false;
         let refitted = false;
@@ -633,12 +648,49 @@ function Workspace({
               }
               return result;
             }
+            if (
+              snapshot.mode === 'screen' &&
+              ['color_square_bands', 'travel_history'].includes(call.name)
+            ) {
+              try {
+                if (
+                  !('documentRevision' in call.arguments) ||
+                  call.arguments.snapshotId !== snapshot.id ||
+                  call.arguments.documentRevision !==
+                    snapshot.documentRevision ||
+                  revision() !== snapshot.viewRevision
+                )
+                  throw new Error(
+                    'The page or drawing changed. Send a new view before coloring.',
+                  );
+                const message = applyPageColor(call, snapshot, reply.runId);
+                clearScreenHighlight();
+                setScreenPoint(false);
+                pointed = false;
+                edited = true;
+                drawn = true;
+                return { callId: call.id, ok: true, message };
+              } catch (e) {
+                return {
+                  callId: call.id,
+                  ok: false,
+                  message: (e as Error).message.slice(0, 500),
+                };
+              }
+            }
             if (snapshot.mode === 'screen')
               return {
                 callId: call.id,
                 ok: false,
                 message:
                   'This page supports questions, navigation and pointing. Return to the assistant workspace to edit geometry.',
+              };
+            if (call.name === 'color_square_bands')
+              return {
+                callId: call.id,
+                ok: false,
+                message:
+                  'Open a normal pattern Color/result page for square bands.',
               };
             if (call.name === 'highlight_target') {
               const result = checkHighlight(call, snapshot, revision());
@@ -823,7 +875,12 @@ function Workspace({
         }
         let fresh: Snapshot | undefined;
         if (edited || navigated || refitted) {
-          fresh = await snapshotOfView();
+          if (edited && snapshot.mode === 'screen')
+            await waitForRendered(
+              () => pageColorRevision() !== colorRevisionBefore,
+              abort.signal,
+            );
+          fresh = await snapshotOfView(refitted ? 'construction' : undefined);
           if (!isCurrent()) return;
           snapshot = fresh;
           setSentImage(fresh.image ?? '');
@@ -991,7 +1048,7 @@ function Workspace({
             </button>
           </div>
         ) : null}
-        <div className="agent-board">
+        <div className="agent-board" data-agent-revision={drawing.revision}>
           {wallVisible && repeated && wallColors ? (
             <>
               <Wall
@@ -1333,122 +1390,22 @@ function Workspace({
             Use repeat and color request
           </button>
         ) : null}
-        <p className="agent-connection">
-          {connection?.connected
-            ? connection.sharing
-              ? 'Using ChatGPT plan'
-              : 'Connected; ChatGPT plan permission is needed'
-            : 'Connect your ChatGPT account'}
-        </p>
-        {route !== 'agent' && connection?.sharing ? (
-          <button
-            type="button"
-            aria-expanded={settingsOpen}
-            onClick={() => setSettingsOpen(!settingsOpen)}
-          >
-            Account and model ·{' '}
-            {models.find((m) => m.slug === modelId)?.name ?? 'ChatGPT'}
-          </button>
-        ) : null}
-        <div
-          hidden={route !== 'agent' && !!connection?.sharing && !settingsOpen}
-        >
-          {connection?.profiles.length ? (
-            <label>
-              Saved account{' '}
-              <select
-                value={profileId}
-                onChange={(event) => {
-                  void chooseProfile(event.target.value);
-                }}
-              >
-                {connection.profiles.map((profile) => (
-                  <option key={profile.id} value={profile.id}>
-                    {profile.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ) : null}
-          <div className="agent-actions">
-            <button
-              type="button"
-              onClick={() => {
-                void connect();
-              }}
-              disabled={polling}
-            >
-              {polling
-                ? 'Waiting for ChatGPT sign-in…'
-                : 'Continue with ChatGPT'}
-            </button>
-            {polling ? (
-              <button
-                type="button"
-                onClick={() => {
-                  void cancelSignIn();
-                }}
-              >
-                Cancel sign-in
-              </button>
-            ) : null}
-            {connection?.profiles.length ? (
-              <button
-                type="button"
-                onClick={() => {
-                  void connect(true);
-                }}
-                disabled={polling}
-              >
-                Add account
-              </button>
-            ) : null}
-            {connection?.connected ? (
-              <button
-                type="button"
-                onClick={() => {
-                  void disconnect();
-                }}
-              >
-                Disconnect
-              </button>
-            ) : null}
-          </div>
-          <p className="agent-caption">
-            Sending includes the current board image when available, page text,
-            destination titles and your question. It uses your existing plan
-            allowance.
-          </p>
-          <a
-            href="https://chatgpt.com/settings/usage"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Manage usage
-          </a>
-          {connection?.error ? <p role="alert">{connection.error}</p> : null}
-          <label>
-            Model{' '}
-            <select
-              value={modelId}
-              onChange={(event) => {
-                stop();
-                setModelId(event.target.value);
-              }}
-              disabled={!models.length}
-            >
-              {!models.length ? (
-                <option value="">Connect to load available models</option>
-              ) : (
-                models.map((choice) => (
-                  <option key={choice.slug} value={choice.slug}>
-                    {choice.name}
-                  </option>
-                ))
-              )}
-            </select>
-          </label>
-        </div>
+        <AccountPanel
+          route={route}
+          connection={connection}
+          models={models}
+          modelId={modelId}
+          profileId={profileId}
+          settingsOpen={settingsOpen}
+          setSettingsOpen={setSettingsOpen}
+          polling={polling}
+          chooseProfile={chooseProfile}
+          connect={connect}
+          cancelSignIn={cancelSignIn}
+          disconnect={disconnect}
+          stop={stop}
+          setModelId={setModelId}
+        />
         <form
           onSubmit={(event) => {
             event.preventDefault();

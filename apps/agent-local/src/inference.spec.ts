@@ -721,3 +721,138 @@ describe('image and tool execution loop', () => {
     ).rejects.toMatchObject({ code: 'run_missing' });
   });
 });
+
+describe('review fixes: bounded context and model recovery', () => {
+  it('returns invalid calls to the model and releases only the corrected response', async () => {
+    const bodies: Record<string, unknown>[] = [];
+    let inference = 0;
+    const send = vi.fn<typeof fetch>().mockImplementation(async (url, init) => {
+      if (String(url).endsWith('/models'))
+        return Response.json({
+          models: [
+            { slug: 'model', display_name: 'Model', visibility: 'list' },
+          ],
+        });
+      bodies.push(JSON.parse(String(init?.body)));
+      return stream([
+        ++inference === 1 ? { ...tool, arguments: '{invalid' } : tool,
+      ]);
+    });
+    const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
+    try {
+      const result = await runtime.start(
+        'tab',
+        'model',
+        'Point at O',
+        snapshot,
+        new AbortController().signal,
+      );
+      expect(result.calls).toHaveLength(1);
+      expect(inference).toBe(2);
+      expect(bodies[1]?.input).toContainEqual(
+        expect.objectContaining({
+          type: 'function_call_output',
+          call_id: 'call-1',
+          output: expect.stringContaining('invalid tool arguments'),
+        }),
+      );
+    } finally {
+      runtime.cancelAll();
+    }
+  });
+  it('stops repeated malformed model calls with an assistant error, without executing any', async () => {
+    const send = vi
+      .fn<typeof fetch>()
+      .mockImplementation(async (url) =>
+        String(url).endsWith('/models')
+          ? Response.json({
+              models: [
+                { slug: 'model', display_name: 'Model', visibility: 'list' },
+              ],
+            })
+          : stream([{ ...tool, arguments: '{}' }]),
+      );
+    const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
+    await expect(
+      runtime.start(
+        'tab',
+        'model',
+        'Point',
+        snapshot,
+        new AbortController().signal,
+      ),
+    ).rejects.toMatchObject({ code: 'invalid_model_tool' });
+    runtime.cancelAll();
+  });
+  it('keeps text context per tab, caches the catalog and retains only the newest observation image', async () => {
+    const bodies: Record<string, unknown>[] = [];
+    let inference = 0;
+    const send = vi.fn<typeof fetch>().mockImplementation(async (url, init) => {
+      if (String(url).endsWith('/models'))
+        return Response.json({
+          models: [
+            { slug: 'model', display_name: 'Model', visibility: 'list' },
+          ],
+        });
+      bodies.push(JSON.parse(String(init?.body)));
+      return stream(
+        ++inference === 1
+          ? [tool]
+          : [
+              {
+                type: 'message',
+                role: 'assistant',
+                content: [{ type: 'output_text', text: 'The centre is O.' }],
+              },
+            ],
+      );
+    });
+    const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
+    const signal = new AbortController().signal;
+    try {
+      const first = await runtime.start(
+        'tab',
+        'model',
+        'Find the centre',
+        snapshot,
+        signal,
+      );
+      await runtime.resume(
+        'tab',
+        first.runId,
+        [{ callId: 'call-1', ok: true, message: 'Highlighted' }],
+        signal,
+        { ...snapshot, id: 'fresh', image: 'data:image/png;base64,BBBB' },
+      );
+      expect(JSON.stringify(bodies[1])).not.toContain(
+        'data:image/png;base64,AAAA',
+      );
+      expect(JSON.stringify(bodies[1])).toContain('data:image/png;base64,BBBB');
+      await runtime.start(
+        'tab',
+        'model',
+        'Point at it again',
+        snapshot,
+        signal,
+      );
+      expect(JSON.stringify(bodies[2])).toContain('Find the centre');
+      expect(JSON.stringify(bodies[2])).toContain('The centre is O.');
+      expect(JSON.stringify(bodies[2])).not.toContain(
+        'data:image/png;base64,BBBB',
+      );
+      await runtime.start(
+        'other-tab',
+        'model',
+        'New context',
+        snapshot,
+        signal,
+      );
+      expect(JSON.stringify(bodies[3])).not.toContain('Find the centre');
+      expect(
+        send.mock.calls.filter(([url]) => String(url).endsWith('/models')),
+      ).toHaveLength(1);
+    } finally {
+      runtime.cancelAll();
+    }
+  });
+});

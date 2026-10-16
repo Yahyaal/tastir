@@ -1,3 +1,4 @@
+import { pageColorObservation, pageColorRevision } from './pageColoring';
 import {
   SnapshotShape,
   type Destination,
@@ -132,6 +133,7 @@ export function pageRevision(includePointing = true) {
   const data = JSON.stringify([
     currentRoute(),
     committedRoute(),
+    pageColorRevision(),
     root?.textContent,
     svg?.getAttribute('viewBox'),
     svg
@@ -172,7 +174,10 @@ export function screenInfo(destinations: Destination[]) {
   return {
     route,
     title: title.slice(0, 300),
-    description: (root?.innerText ?? root?.textContent ?? '')
+    description: (/^(review|notes)(\/|$)/.test(route)
+      ? ''
+      : (root?.innerText ?? root?.textContent ?? '')
+    )
       .replace(/\s+/g, ' ')
       .trim()
       .slice(0, 2000),
@@ -226,6 +231,7 @@ export async function observeScreen(
     image,
     screen,
     mode: 'screen',
+    ...pageColorObservation(),
   });
 }
 

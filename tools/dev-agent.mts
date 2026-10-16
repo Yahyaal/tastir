@@ -39,6 +39,7 @@ const child = spawn(
     stdio: 'inherit',
     env: {
       ...process.env,
+      VITE_TASTIR_AGENT: 'true',
       TASTIR_AGENT_TARGET: companion.url,
       TASTIR_AGENT_SECRET: secret,
     },

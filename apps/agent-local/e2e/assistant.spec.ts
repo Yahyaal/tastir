@@ -90,6 +90,9 @@ test('constructs from O and A, uses new intersections for ink, protects dependen
   await page.route('**/__agent/turn/continue', async (route) => {
     const body = route.request().postDataJSON();
     expect(body.results[0].ok).toBe(true);
+    expect(
+      await page.locator('.agent-board').getAttribute('data-agent-revision'),
+    ).toBe(body.snapshot.documentRevision.split(':').at(-1));
     expect(body.snapshot.image).not.toBe(image);
     image = body.snapshot.image;
     expect(

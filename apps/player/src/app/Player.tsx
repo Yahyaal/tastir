@@ -1,3 +1,4 @@
+import { registerPageColoring } from '../agent/pageColoring';
 import { DEFAULT_JALI, sameJali } from './jali';
 import { JaliControls } from './JaliControls';
 import { ExploreNext } from './ExploreNext';
@@ -158,6 +159,8 @@ function sameDesign(
     design.coloring.palette === now.coloring.palette &&
     design.coloring.method === now.coloring.method &&
     design.coloring.rosettes === now.coloring.rosettes &&
+    JSON.stringify(design.coloring.squareBands) ===
+      JSON.stringify(now.coloring.squareBands) &&
     sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
     design.look === now.look &&
     design.grout === now.grout &&
@@ -289,7 +292,7 @@ export function Player({
   const fill = useMemo(
     () =>
       byPlace(coloured) ? placeFills(coloured, colorHistory.now) : undefined,
-    [coloured, colorHistory.now],
+    [coloured, colorHistory.now, inking.shown],
   );
   const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
   // The colour a click paints with, when colouring ring by ring.
@@ -303,6 +306,21 @@ export function Player({
   const [wallStyle, setWallStyle] = useState<WallStyle>(
     opened?.look ?? draft?.look ?? tutorial.pattern.look ?? 'tiles',
   );
+  useLayoutEffect(() => {
+    if (
+      !import.meta.env.DEV ||
+      !import.meta.env.VITE_TASTIR_AGENT ||
+      stage.kind !== 'color' ||
+      wallStyle !== 'tiles'
+    )
+      return;
+    return registerPageColoring({
+      model: inking.shown,
+      history: colorHistory,
+      dispatch: colorDispatch,
+      route: decodeURIComponent(window.location.hash.replace(/^#\/?/, '')),
+    });
+  });
   const [grout, setGrout] = useState(opened?.grout ?? draft?.grout ?? 1);
   const [jali, setJali] = useState(opened?.jali ?? draft?.jali ?? DEFAULT_JALI);
   // The design being worked on: the one opened, or the last one saved.

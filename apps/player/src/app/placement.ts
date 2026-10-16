@@ -1,3 +1,4 @@
+import { squareGridTypes, squareBandColor, commonPeriod } from './squareBands';
 import type { Piece, Vec } from '@tastir/engine';
 import {
   glazeOf,
@@ -59,7 +60,40 @@ export const methodOf = (model: Model, coloring: Coloring): Method =>
  * ring, by shape, or by the tutorial's placements) and how many rosettes
  * take turns. A coloring that changed neither is the tutorial's own.
  */
+const bandBases = new WeakMap<Model, Model>();
 export function colouredModel(model: Model, coloring: Coloring): Model {
+  if (coloring.squareBands) {
+    const bands = coloring.squareBands;
+    const { squareBands: _, ...base } = coloring;
+    if (!squareGridTypes(model).includes(bands.typeId))
+      return colouredModel(model, base);
+    const plain = colouredModel(model, base);
+    const repeat = colorRepeat(plain);
+    const size = bands.colors.length * 2 - 1;
+    const period = repeat.map((n) => commonPeriod(n, size));
+    if (
+      period.some((n) => n > 48) ||
+      period[0]! * period[1]! * model.pattern.pieces.length > 12000
+    )
+      return plain;
+    const { rings: _rings, ...pattern } = plain.tutorial.pattern;
+    const derived = {
+      ...plain,
+      tutorial: {
+        ...plain.tutorial,
+        pattern: {
+          ...pattern,
+          placements: {
+            ...plain.tutorial.pattern.placements,
+            repeat: period as [number, number],
+            rules: plain.tutorial.pattern.placements?.rules ?? [],
+          },
+        },
+      },
+    };
+    bandBases.set(derived, plain);
+    return derived;
+  }
   if (coloring.method === undefined && coloring.rosettes === undefined)
     return model;
   const { rings, placements, ...rest } = model.tutorial.pattern;
@@ -190,6 +224,29 @@ export function placeFills(
   model: Model,
   coloring: Coloring,
 ): (piece: number, i: number, j: number) => string {
+  if (coloring.squareBands) {
+    const bands = coloring.squareBands;
+    const { squareBands: _, ...base } = coloring;
+    if (!squareGridTypes(model).includes(bands.typeId))
+      return placeFills(model, base);
+    // Preserve the original placement period for the stars and connecting bands.
+    const plain = bandBases.get(model) ?? colouredModel(model, base);
+    const fallback = placeFills(plain, base);
+    const period = colorRepeat(plain).map((n) =>
+      commonPeriod(n, bands.colors.length * 2 - 1),
+    );
+    if (
+      period.some((n) => n > 48) ||
+      period[0]! * period[1]! * model.pattern.pieces.length > 12000
+    )
+      return fallback;
+    return (piece, i, j) =>
+      model.pattern.types[model.pattern.pieces[piece]!.type]?.name ===
+      bands.typeId
+        ? (coloring.chosen[placeKey(model, piece, i, j)] ??
+          squareBandColor(bands, i, j))
+        : fallback(piece, i, j);
+  }
   const palette = paletteOf(model, coloring.palette);
   const placements = model.tutorial.pattern.placements;
   const rings = ringsFor(model);

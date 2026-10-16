@@ -1812,9 +1812,25 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '15 October 2026',
+  updated: '16 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'AI.1: normal wall colors, Undo and saving',
+      text: 'You chose one-square-thick borders: black 1×1, teal out to 3×3, blue to 5×5 and orange to 7×7. The assistant now applies this repeating motif to the normal Squares and stars wall while preserving its stars and connecting bands. One Undo reverses the whole request; Redo restores it. Normal saving, sharing and SVG export keep the colors. Live GPT-6.1-Sol completed coloring, Undo and Redo. All 108 assistant browser checks and 151 production browser checks passed (17 production skips), along with full unit tests, lint, TypeScript and build. Checks ran sequentially with one worker and bounded memory.',
+      link: {
+        label: 'See the actual live Redo result',
+        href: '/__review/renders/agent-square-colors/live-redo.png',
+      },
+    },
+    {
+      title: 'AI.1: Claude’s review and two additional fixes',
+      text: 'The sending notice now names saved pattern/design titles, and review/notes text is excluded. Malformed calls can be corrected; follow-ups keep bounded text context while only the latest image is resent. Account UI is separate, the launcher requires the companion, tool guidance is clearer, and the model list has a short cache. Expanded checks also exposed and fixed a stale-image capture race and a build-mode issue that included Notes in production. Branch cleanup, keyring storage, remote access-token revocation and the larger workspace split remain tracked follow-ups. The setup guide records the responsive captures and remaining visual refinements.',
+      link: {
+        label: 'Read the checks and current limits',
+        href: '/#/notes/agent-setup',
+      },
+    },
     {
       title: 'AI agent: points on normal editor and tutorial screens',
       text: 'Ask it to point at centre O, a visible wall or unit piece, or a named page button. The marker uses the actual drawing and follows zoom and scrolling; pointing at a control does not press it. Live ChatGPT checks passed for a tutorial point, an editor point and a control. All 36 affected browser checks passed on desktop, tablet and phone, along with the full unit suite, lint, TypeScript and production build. The earlier complete browser run was interrupted by the crash and is not counted as passing. Checks now run one at a time with bounded memory. This picture shows the actual live editor result.',
@@ -2159,9 +2175,12 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI agent: pointing on normal screens is working',
-    text: 'Open a saved pattern’s editor or pause a tutorial, press Open drawing assistant, and ask “Point at the centre O” or name a visible button. You should see a marker on the page. Clear page highlight removes it. Geometry hidden by the panel or not yet drawn is excluded. Phone and dark-tablet views were checked. Editing the normal drawing by request is the next milestone; drawing commands still use the assistant workspace.',
-    link: { label: 'Open the setup guide', href: '/#/notes/agent-setup' },
+    title: 'AI.1: concentric square colors on your normal wall',
+    text: 'Your square-color request now works on the normal Squares and stars result page. Ask for a black centre, teal border out to 3×3, blue to 5×5 and orange to 7×7, repeating across the wall. You confirmed one-square-thick borders on 16 October: 1×1, 3×3, 5×5 and 7×7. Live ChatGPT applied it, checked it, and completed Undo and Redo. All 108 assistant browser checks passed. Unit tests, lint, TypeScript and the production build passed; the ordinary production browser suite passed 151 checks with 17 skips. The picture shows the actual live Redo result.',
+    link: {
+      label: 'See the live color and Redo result',
+      href: '/__review/renders/agent-square-colors/live-redo.png',
+    },
   },
   next: [
     {

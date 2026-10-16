@@ -136,3 +136,16 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 
 Later phases (AI pipeline, accounts and library, learning features, designers) are described in `docs/PRD.md`.
 
+
+## Local AI assistant
+
+The delivered milestones and their live/automated evidence are in [AI agent setup](AI-AGENT-SETUP.md). These tasks track the remaining work without deleting the unmerged milestone branches.
+
+- [x] **AI.1 Normal-page square-band coloring and review fixes.** Connect a checked concentric-square command to the current result page and its color Undo history. Clarify band sizes, preserve other shapes, save/reload/share the new coloring data, reject stale/stopped replies, and address the applicable items in [Claude’s review](AI-AGENT-REVIEW.md).
+  *Done when:* the Squares and stars wall shows a black centre and teal/blue/orange one-cell borders, one Undo reverses the request, Redo restores it, a saved design reloads identically, and required checks pass with one worker.
+- [ ] **AI.2 Edit the open normal drawing.** Reuse the normal editor’s commands and history, with author/request labels and a fresh image after each batch. Finish separating the conversation and workspace UI before adding geometry commands there.
+  *Done when:* a request edits the actual saved-pattern editor, protects a later manual edit, and Undo/Redo and saving preserve the expected geometry.
+- [ ] **AI.3 Broader coloring.** Add named rosette rings and individual placements beyond the checked square-grid motif, plus coordinated saving through the normal controls.
+  *Done when:* only a selected ring/piece changes, surrounding colors remain unchanged, and save/export/share round-trip the result.
+- [ ] **AI.4 Local release and distribution.** Finish bounded repair and generation checks, account recovery, credential keyring storage, and wider live evaluation; review merging before pruning contained branches.
+  *Done when:* the acceptance scenarios in the AI plan pass, startup is clear on desktop and phone, and the owner reviews the release evidence.

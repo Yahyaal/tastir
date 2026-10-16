@@ -1,3 +1,4 @@
+import { SquareBandsShape } from '@tastir/schema';
 import { z } from 'zod';
 
 const Id = z.string().min(1).max(180);
@@ -36,6 +37,13 @@ export const RepeatShape = z.strictObject({
   colors: z.record(Id, HexColor),
 });
 export type RepeatSettings = z.infer<typeof RepeatShape>;
+export const ColorSquareBandsShape = z.strictObject({
+  snapshotId: Id,
+  documentRevision: Id,
+  label: z.string().min(1).max(160),
+  targetId: Id,
+  colors: SquareBandsShape.shape.colors,
+});
 export const SetTileShape = z.strictObject({
   snapshotId: Id,
   documentRevision: Id,
@@ -136,6 +144,13 @@ export const SnapshotShape = z
       })
       .nullable()
       .default(null),
+    coloring: z
+      .strictObject({
+        squareTypes: z.array(Id).max(128),
+        squareBands: SquareBandsShape.nullable(),
+      })
+      .nullable()
+      .default(null),
     screen: ScreenShape.nullable().default(null),
     image: z
       .string()
@@ -186,6 +201,11 @@ export const ConstructShape = z.strictObject({
 });
 export type Construct = z.infer<typeof ConstructShape>;
 export const CallShape = z.discriminatedUnion('name', [
+  z.strictObject({
+    id: Id,
+    name: z.literal('color_square_bands'),
+    arguments: ColorSquareBandsShape,
+  }),
   z.strictObject({
     id: Id,
     name: z.literal('fit_view'),
@@ -299,6 +319,31 @@ export const DRAWING_TOOLS = {
   tools: [
     {
       type: 'function',
+      name: 'color_square_bands',
+      strict: true,
+      description:
+        'On a normal Color/result page with observation.coloring, color one square-grid shape in concentric square borders. Choose a VISIBLE polygon targetId whose geometry.typeId is in observation.coloring.squareTypes; it becomes the centre square. colors are #RRGGBB from centre outward: black, teal, blue, orange gives 1×1 black, teal border out to 3×3, blue out to 5×5, orange out to 7×7. Each border is one square thick, measured along the repeat cell axes. The whole motif repeats every 7 square cells in this example. Other shapes retain their existing colors. Explain the repeating motif and clarify requests such as 2×2/3×3/4×4 when alignment or thickness is ambiguous before applying. This is spatial wall coloring, NOT rosette Ring by ring. One call is one Undo in the NORMAL PAGE color history. A fresh image must confirm success. Does not save a design or edit geometry.',
+      parameters: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          snapshotId: { type: 'string' },
+          documentRevision: { type: 'string' },
+          label: { type: 'string' },
+          targetId: { type: 'string' },
+          colors: { type: 'array', items: { type: 'string' } },
+        },
+        required: [
+          'snapshotId',
+          'documentRevision',
+          'label',
+          'targetId',
+          'colors',
+        ],
+      },
+    },
+    {
+      type: 'function',
       name: 'fit_view',
       strict: true,
       description:
@@ -319,7 +364,7 @@ export const DRAWING_TOOLS = {
       name: 'travel_history',
       strict: true,
       description:
-        'Undo or redo workspace edits using the SAME history as the drawing buttons. Check observation.history.undo/redo: ordered NEXT action first, with source, requestId and label. For undo your changes use scope:assistant and count consecutive assistant actions from the start; stop at manual/unknown actions. No extra confirmation is needed for identified assistant actions. scope:steps allows the explicit number of edits the user requested, regardless of author. A plain Undo/Redo means one step. Restores geometry, tile and colors together. Never simulate Undo by deleting or repainting objects. Excessive steps or crossing a manual/unknown edit with assistant scope fails atomically. A fresh drawing observation follows success. Does not undo navigation or other pages.',
+        'Undo or redo edits in the current observation: normal-page COLOR history when observation.coloring exists, otherwise workspace edits. Use the SAME history as the drawing buttons. Check observation.history.undo/redo: ordered NEXT action first, with source, requestId and label. For undo your changes use scope:assistant and count consecutive assistant actions from the start; stop at manual/unknown actions. No extra confirmation is needed for identified assistant actions. scope:steps allows the explicit number of edits the user requested, regardless of author. A plain Undo/Redo means one step. Restores geometry, tile and colors together. Never simulate Undo by deleting or repainting objects. Excessive steps or crossing a manual/unknown edit with assistant scope fails atomically. A fresh drawing observation follows success. Does not undo navigation or other pages.',
       parameters: {
         type: 'object',
         additionalProperties: false,
