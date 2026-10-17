@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { studioCall } from './client';
+import { studioCall, studioUrl } from './client';
 
 /**
  * The studio's side of the conversation, under the steps: what the agents
@@ -207,18 +207,16 @@ function ReferencePhoto({
   const [stamp, setStamp] = useState(0);
   useEffect(() => setStamp((n) => n + 1), [reference, revision]);
   const upload = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const data = String(reader.result).replace(/^data:[^,]*,/, '');
-      studioCall('POST', `/projects/${id}/reference`, {
-        author: 'owner',
-        data,
-        source: file.name,
-      })
-        .then(() => onError(undefined))
-        .catch((e: Error) => onError(e.message));
-    };
-    reader.readAsDataURL(file);
+    shrink(file)
+      .then((data) =>
+        studioCall('POST', `/projects/${id}/reference`, {
+          author: 'owner',
+          data,
+          source: file.name,
+        }),
+      )
+      .then(() => onError(undefined))
+      .catch((e: Error) => onError(e.message));
   };
   const place = (e: React.MouseEvent<HTMLImageElement>) => {
     if (!placing || !reference) return;
@@ -248,7 +246,9 @@ function ReferencePhoto({
         <>
           <img
             className={placing ? 'placing' : undefined}
-            src={`/__studio/projects/${id}/picture?what=overlay&size=700&v=${stamp}`}
+            src={studioUrl(
+              `/projects/${id}/picture?what=overlay&size=700&v=${stamp}`,
+            )}
             alt={
               reference.aligned
                 ? 'The reference photo with the ink drawn over it in magenta'
@@ -288,4 +288,36 @@ function ReferencePhoto({
       </label>
     </div>
   );
+}
+
+/**
+ * A photo as base64, at most 2,000 pixels on its longer side: plenty to
+ * line a pattern up, and small enough for the hosted studio, which takes at
+ * most a few megabytes in one request. A small photo is sent as it is.
+ */
+async function shrink(file: File): Promise<string> {
+  const read = (blob: Blob) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () =>
+        resolve(String(reader.result).replace(/^data:[^,]*,/, ''));
+      reader.onerror = () => reject(new Error('The photo could not be read.'));
+      reader.readAsDataURL(blob);
+    });
+  let image: ImageBitmap;
+  try {
+    image = await createImageBitmap(file);
+  } catch {
+    return read(file);
+  }
+  const scale = Math.min(1, 2000 / Math.max(image.width, image.height));
+  if (scale === 1 && file.size < 2_500_000) return read(file);
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(image.width * scale);
+  canvas.height = Math.round(image.height * scale);
+  canvas.getContext('2d')?.drawImage(image, 0, 0, canvas.width, canvas.height);
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, 'image/jpeg', 0.9),
+  );
+  return read(blob ?? file);
 }

@@ -1,6 +1,7 @@
 import { readFile, readdir, realpath } from 'node:fs/promises';
 import { join, resolve, sep } from 'node:path';
 import { createHash, randomBytes } from 'node:crypto';
+import { strFromU8, strToU8, unzipSync, zipSync } from 'fflate';
 import { z } from 'zod';
 import { DraftShape, parseTutorial } from '@tastir/schema';
 import {
@@ -27,6 +28,7 @@ import { Conflict, FileBackend, type Backend, type Mark } from './backend.js';
 import { constructionSvg, png, wallSvg, type Area } from './picture.js';
 import { imageSize, overlaySvg, type Reference } from './reference.js';
 import { check, copyUpTo, emptyDraft, type Draft } from './player.js';
+import { isProject } from './store.js';
 
 /**
  * The one owner of every open project. People and agents all edit through
@@ -240,6 +242,12 @@ export const AlignRequest = z.strictObject({
   a: Pixel,
 });
 
+export const ImportRequest = z.strictObject({
+  author: Author,
+  /** The exported zip, base64. */
+  zip: z.string().max(22_000_000),
+});
+
 export const QuestionRequest = z.strictObject({
   author: Author,
   text: z.string().max(4000),
@@ -398,14 +406,113 @@ export class Studio {
         fold: request.fold ?? 8,
       };
     }
-    let id = '';
-    for (;;) {
-      id = `${slug(request.title)}-${randomBytes(2).toString('hex')}`;
-      if (!(await this.backend.exists(id))) break;
-    }
+    const id = await this.freshId(request.title);
     draft = { ...draft, id };
     const project = newProject(id, draft, request.author, request.goals ?? {});
     await this.backend.create(project);
+    return this.view(id);
+  }
+
+  private async freshId(title: string) {
+    for (;;) {
+      const id = `${slug(title)}-${randomBytes(2).toString('hex')}`;
+      if (!(await this.backend.exists(id))) return id;
+    }
+  }
+
+  /** What a page polls: the revision, and stamps for notes, photo and marks. */
+  async pulse(id: string) {
+    const [pulse, marks] = await Promise.all([
+      this.backend.pulse(id),
+      this.backend.marks(id),
+    ]);
+    return {
+      project: id,
+      revision: pulse.revision,
+      stamp: pulse.stamp,
+      marks: marks.map((m) => m.id).join(','),
+    };
+  }
+
+  /**
+   * The project as a zip of the files the local studio keeps: project.json
+   * (the drawing with its history and notes), pattern.json (a pattern file
+   * Tastir's import opens) and the reference photo, as a backup or to move
+   * it between the local and the hosted studio.
+   */
+  async exportZip(id: string) {
+    const p = await this.load(id, 1000);
+    // Row ids from the database are not part of the file.
+    const plain = (e: Project['current']) => ({
+      draft: e.draft,
+      action: e.action,
+    });
+    const file: Project = {
+      ...p,
+      current: plain(p.current),
+      past: p.past.map(plain),
+      future: p.future.map(plain),
+    };
+    const files: Record<string, Uint8Array> = {
+      'project.json': strToU8(JSON.stringify(file, null, 2)),
+      'pattern.json': strToU8(
+        `${JSON.stringify({ tastir: 'pattern', version: 1, tutorial: p.current.draft }, null, 2)}\n`,
+      ),
+    };
+    if (p.reference)
+      files[p.reference.file] = await this.backend.getPhoto(
+        id,
+        p.reference.file,
+      );
+    return {
+      name: `${id}.zip`,
+      bytes: Buffer.from(zipSync(files, { level: 6 })),
+    };
+  }
+
+  /** A project from an exported zip, as a new project beside the others. */
+  async importZip(request: z.infer<typeof ImportRequest>) {
+    let files: Record<string, Uint8Array>;
+    try {
+      files = unzipSync(Buffer.from(request.zip, 'base64'));
+    } catch {
+      throw new StudioError('That is not a studio project zip.');
+    }
+    let p: unknown;
+    try {
+      p = JSON.parse(strFromU8(files['project.json'] ?? new Uint8Array()));
+    } catch {
+      throw new StudioError('The zip has no project.json.');
+    }
+    if (!isProject(p))
+      throw new StudioError('The project.json in the zip cannot be read.');
+    const id = await this.freshId(p.title);
+    const reference = p.reference;
+    const photo = reference ? files[reference.file] : undefined;
+    if (reference && (!photo || !/^reference\.(png|jpg)$/.test(reference.file)))
+      throw new StudioError('The zip names a photo it does not hold.');
+    const at = new Date().toISOString();
+    const project: Project = {
+      ...p,
+      id,
+      updated: at,
+      current: {
+        draft: { ...p.current.draft, id },
+        action: p.current.action,
+      },
+      notes: [
+        ...p.notes,
+        {
+          id: (p.notes.at(-1)?.id ?? 0) + 1,
+          author: request.author,
+          text: `Imported from ${p.id}.`,
+          at,
+        },
+      ],
+    };
+    await this.backend.create(project);
+    if (reference && photo)
+      await this.backend.putPhoto(id, reference.file, Buffer.from(photo));
     return this.view(id);
   }
 

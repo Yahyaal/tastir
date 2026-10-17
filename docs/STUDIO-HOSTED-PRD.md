@@ -4,8 +4,8 @@ The plan for using the studio from anywhere, on a phone or a laptop, with Claude
 
 ## At a glance
 
-- **Where it stands:** M0 to M2 and H1 to H3 are done (17 October); the rest is planned.
-- **What happens next:** H4, the studio page on Vercel (Claude), beside H7, the live room (Codex); M3 waits until both are merged, because it moves code they use.
+- **Where it stands:** M0 to M2 and H1 to H4 are done (17 October); the rest is planned.
+- **What happens next:** H5, deploying, needs your free Vercel, Neon and Google sign-in setup; Codex is on H7, the live room. M3 waits until H7 is merged, because it moves code both use.
 - **What it costs:** nothing. Every service stays on its free plan.
 - **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
 - **What you still decide:** whether private research photos may be uploaded (decision 4). Nothing waits on it.
@@ -49,12 +49,12 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
 - [x] **H3 · Sign-in.** You sign in with Google; agents sign in with OAuth and you approve each one; each connection has a lasting identity that owns its edits; a Connections page lists them, renames them and can revoke any.
   - **Who:** an agent.
   - **Done when:** a test runs the whole sign-in with a stand-in Google; renaming a connection or refreshing its token keeps its edits its own; a revoked agent is refused at once; and a redirect to an unknown address is refused.
-- [ ] **H4 · The studio page on Vercel.** The studio page in its own build, photo upload to private storage, export and import, and a phone layout.
+- [x] **H4 · The studio page on Vercel.** The hosted site is all of Tastir for everyone, with the studio behind sign-in; the studio page in its own build, photo upload to private storage, export and import, and a phone layout.
   - **Who:** an agent.
-  - **Done when:** the studio browser checks pass on a local Vercel build, on desktop and phone.
+  - **Done when:** the hosted browser checks (`pnpm test:hosted:browser`) pass on desktop and phone against the hosted build and server on this computer, with an in-process Postgres and a stand-in Google, including a visitor who is not signed in. The owner agreed on 17 October to move running them on Vercel itself to H5, since `vercel dev` needs the account H5 creates.
 - [ ] **H5 · Deploy.** The Neon database, the Vercel project, photo storage, settings, and size and rate limits.
   - **Who:** you create the free Vercel and Neon accounts or projects, an agent does the rest.
-  - **Done when:** the studio answers at its address, a redeploy keeps every project, and an exported project opens in the local studio unchanged.
+  - **Done when:** the studio answers at its address, the hosted browser checks pass there, a redeploy keeps every project, and an exported project opens in the local studio unchanged.
 - [ ] **H6 · Live with every agent, and measured.** Connect each client, update the setup notes, run the square brief in each, and measure speed and a week's use against the free limits.
   - **Who:** you with an agent.
   - **Done when:** each client that can write finishes the square brief, you answer one question from your phone, and the log has the speeds and the use.
@@ -80,7 +80,7 @@ The details behind each task are below.
 
 ## What the owner wants
 
-The owner wants to use the studio from the deployed app, not only on the computer at home. They want to open a project in a browser anywhere, including on a phone, and have Claude, ChatGPT, Codex or Gemini work on the same drawing with them. Each agent should still use the owner's own $20 plan, because Anthropic forbids third-party apps from signing in with a Claude plan, and that rule is why the studio works through MCP in the first place. The owner wants the app and the drawing to feel fast, and wants to use only free plans, while trying out Cloudflare Durable Objects to learn them.
+The owner wants to use the studio from the deployed app, not only on the computer at home. They want to open a project in a browser anywhere, including on a phone, and have Claude, ChatGPT, Codex or Gemini work on the same drawing with them. Each agent should still use the owner's own $20 plan, because Anthropic forbids third-party apps from signing in with a Claude plan, and that rule is why the studio works through MCP in the first place. The owner wants the app and the drawing to feel fast, and wants to use only free plans, while trying out Cloudflare Durable Objects to learn them. Anyone who is not signed in can still use everything in Tastir that needs no account (the library, tutorials, the editor, coloring, walls and their own patterns in their browser); only the studio needs sign-in (said on 17 October).
 
 ## Why the local studio cannot simply be deployed
 
@@ -116,7 +116,7 @@ An edit reads the project, checks it with the same code as today, and saves it i
 
 ### Photos in private Vercel Blob
 
-Reference photos go in a private Vercel Blob store, which Vercel made generally available on 30 June 2026. The browser uploads a photo straight to Blob with a one-time signed address, because a Vercel function accepts at most 4.5 MB per request, and the browser first shrinks the photo to at most 2,000 pixels on its long side. Photos are only ever read through a signed-in route or a short-lived signed address, never at a public one. This matters because many research photos are not free to share, and the content rules allow only free photos in the public app.
+Reference photos go in a private Vercel Blob store, which Vercel made generally available on 30 June 2026. The browser first shrinks a photo to at most 2,000 pixels on its long side (as JPEG), which keeps it well under the 4.5 MB a Vercel function accepts per request, so it goes up through the signed-in `/api` like any other request and the server writes it to Blob; no signed upload address is needed. Private blobs have no public address: only the server, with the store's token, reads them, for a signed-in owner or a signed-in agent's picture. This matters because many research photos are not free to share, and the content rules allow only free photos in the public app.
 
 ### Signing in
 

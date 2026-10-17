@@ -1,0 +1,28 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "VITE_TASTIR_STUDIO=hosted pnpm exec vite build --config apps/player/vite.config.mts --outDir ../../dist/studio-hosted --emptyOutDir",
+  "outputDirectory": "dist/studio-hosted",
+  "regions": ["cle1"],
+  "functions": {
+    "api/index.ts": {
+      "maxDuration": 60,
+      "includeFiles": "{tutorials/**,apps/studio/fonts/**}"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api" },
+    { "source": "/mcp", "destination": "/api" },
+    { "source": "/.well-known/:path*", "destination": "/api" },
+    { "source": "/authorize", "destination": "/api" },
+    { "source": "/token", "destination": "/api" },
+    { "source": "/register", "destination": "/api" },
+    { "source": "/revoke", "destination": "/api" },
+    { "source": "/login", "destination": "/api" },
+    { "source": "/logout", "destination": "/api" },
+    { "source": "/auth/:path*", "destination": "/api" },
+    { "source": "/consent", "destination": "/api" },
+    { "source": "/connections/:path*", "destination": "/api" },
+    { "source": "/connections", "destination": "/api" }
+  ]
+}

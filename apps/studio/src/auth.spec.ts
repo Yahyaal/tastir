@@ -9,15 +9,14 @@ import type {
   OAuthTokens,
 } from '@modelcontextprotocol/sdk/shared/auth.js';
 import express from 'express';
-import { SignJWT, exportJWK, generateKeyPair } from 'jose';
 import { StudioAuth } from './auth.js';
 import { hostedApp } from './hosted.js';
 import type { PgBackend } from './pg.js';
 import { Studio } from './studio.js';
+import { OWNER, standInGoogle } from './standin.js';
 import { testBackend, type TestBackend } from './testing.js';
 
 const tutorials = join(import.meta.dirname, '../../../tutorials');
-const OWNER = 'owner@example.com';
 const listen = async (handler: Parameters<typeof createServer>[1]) => {
   const server = createServer(handler);
   await new Promise<void>((r) => server.listen(0, '127.0.0.1', r));
@@ -31,40 +30,6 @@ const closeServer = (server: Server) =>
     server.closeAllConnections();
     server.close(() => r());
   });
-
-/** A stand-in Google that signs in whoever `email` says, at once. */
-async function standInGoogle() {
-  const { publicKey, privateKey } = await generateKeyPair('RS256');
-  const jwk = { ...(await exportJWK(publicKey)), kid: 'k1', alg: 'RS256' };
-  const state = { email: OWNER, nonce: '', url: '' };
-  const app = express();
-  app.get('/authorize', (request, response) => {
-    state.nonce = String(request.query['nonce']);
-    const back = new URL(String(request.query['redirect_uri']));
-    back.searchParams.set('code', 'google-code');
-    back.searchParams.set('state', String(request.query['state']));
-    response.redirect(back.href);
-  });
-  app.post('/token', express.urlencoded({ extended: false }), async (_q, r) => {
-    r.json({
-      id_token: await new SignJWT({
-        email: state.email,
-        email_verified: true,
-        nonce: state.nonce,
-      })
-        .setProtectedHeader({ alg: 'RS256', kid: 'k1' })
-        .setIssuer(state.url)
-        .setAudience('google-client')
-        .setIssuedAt()
-        .setExpirationTime('5m')
-        .sign(privateKey),
-    });
-  });
-  app.get('/jwks', (_q, r) => r.json({ keys: [jwk] }));
-  const { server, url } = await listen(app);
-  state.url = url;
-  return { server, url, state };
-}
 
 /** A browser for the owner: follows redirects on the studio, keeping cookies. */
 function browser(studio: string) {
@@ -169,14 +134,7 @@ describe('signing in to the hosted studio', () => {
       baseUrl: new URL(site.url),
       allow: [OWNER],
       secret: 'a-session-secret-of-at-least-32-characters',
-      google: {
-        clientId: 'google-client',
-        clientSecret: 'google-secret',
-        issuer: google.url,
-        authorizeUrl: `${google.url}/authorize`,
-        tokenUrl: `${google.url}/token`,
-        jwksUrl: `${google.url}/jwks`,
-      },
+      google: google.google,
       redirects: ['http://127.0.0.1:9/callback'],
     });
     holder.app = hosted.app;

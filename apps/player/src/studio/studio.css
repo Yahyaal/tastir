@@ -140,3 +140,12 @@
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+
+.studio-import {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.92rem;
+}
+.studio-import input {
+  max-width: 100%;
+}

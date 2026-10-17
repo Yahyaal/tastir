@@ -19,12 +19,15 @@ const Review = import.meta.env.DEV
   ? lazy(() => import('../review/Review').then((m) => ({ default: m.Review })))
   : undefined;
 
-/** The studio (#/studio): drawings shared with AI agents, dev server only. */
-const StudioPage = import.meta.env.DEV
-  ? lazy(() =>
-      import('../studio/StudioPage').then((m) => ({ default: m.StudioPage })),
-    )
-  : undefined;
+/** The studio (#/studio): drawings shared with AI agents, on the dev server
+ * and in the hosted studio's build (VITE_TASTIR_STUDIO=hosted), never in the
+ * public site. */
+const StudioPage =
+  import.meta.env.DEV || import.meta.env['VITE_TASTIR_STUDIO'] === 'hosted'
+    ? lazy(() =>
+        import('../studio/StudioPage').then((m) => ({ default: m.StudioPage })),
+      )
+    : undefined;
 
 const AgentHost =
   import.meta.env.DEV && import.meta.env.VITE_TASTIR_AGENT

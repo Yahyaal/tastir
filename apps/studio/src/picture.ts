@@ -187,6 +187,8 @@ export function wallSvg(draft: Draft, copies = 2, area?: Area): string {
  * font hangs inside the test runner. Without one, names are left out.
  */
 const FONT = [
+  // Bundled, for servers without fonts (Vercel); its licence is beside it.
+  new URL('../fonts/DejaVuSans.ttf', import.meta.url).pathname,
   '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
   '/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf',
   '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf',

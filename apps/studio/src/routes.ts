@@ -4,6 +4,7 @@ import { blind, judge, listContests } from './contest.js';
 import {
   AlignRequest,
   EditRequest,
+  ImportRequest,
   LONGEST_WAIT,
   MarkRequest,
   NewShape,
@@ -35,6 +36,12 @@ export type Answer =
       readonly png: Buffer;
       readonly revision: number;
       readonly size: number;
+    }
+  | {
+      readonly kind: 'file';
+      readonly name: string;
+      readonly type: string;
+      readonly bytes: Buffer;
     };
 
 const json = (value: unknown): Answer => ({ kind: 'json', value });
@@ -50,6 +57,8 @@ export async function route(
     return json(await studio.list());
   if (method === 'GET' && url.pathname === '/library')
     return json(await studio.library());
+  if (method === 'POST' && url.pathname === '/projects/import')
+    return json(await studio.importZip(ImportRequest.parse(await body())));
   if (method === 'POST' && url.pathname === '/projects')
     return json(await studio.create(NewShape.parse(await body())));
   if (parts[0] === 'contests') {
@@ -77,6 +86,12 @@ export async function route(
     const id = parts[1];
     const what = parts[2] ?? '';
     if (method === 'GET' && what === '') return json(await studio.view(id));
+    if (method === 'GET' && what === 'pulse')
+      return json(await studio.pulse(id));
+    if (method === 'GET' && what === 'export') {
+      const zip = await studio.exportZip(id);
+      return { kind: 'file', type: 'application/zip', ...zip };
+    }
     if (method === 'GET' && what === 'draft')
       return json(await studio.draft(id));
     if (method === 'GET' && what === 'picture') {

@@ -15,7 +15,12 @@ import { StudioError, type Goals } from './ops.js';
 import type { Draft } from './player.js';
 import type { Entry, Note, Project, Receipt } from './project.js';
 import type { Reference } from './reference.js';
-import { Conflict, type Backend, type Mark } from './backend.js';
+import {
+  Conflict,
+  type Backend,
+  type Mark,
+  type PhotoStore,
+} from './backend.js';
 
 /**
  * The studio's projects in Postgres, for the hosted studio. A project is a
@@ -199,7 +204,18 @@ export class PgBackend implements Backend {
     readonly db: Db,
     readonly root: string,
     private readonly end: () => Promise<void> = async () => undefined,
+    /** Photos elsewhere (private Blob when hosted); else in the database. */
+    private readonly photoStore?: PhotoStore,
   ) {}
+
+  async pulse(id: string) {
+    const [row] = await this.db
+      .select({ revision: projects.revision, version: projects.version })
+      .from(projects)
+      .where(eq(projects.id, id));
+    if (!row) throw new StudioError(`There is no project “${id}”.`);
+    return { revision: row.revision, stamp: String(row.version) };
+  }
 
   async list() {
     return this.db
@@ -321,13 +337,38 @@ export class PgBackend implements Backend {
         goals: project.goals,
         reference: project.reference ?? null,
       });
-      await tx.insert(entries).values({
-        project: project.id,
-        stack: 'current',
-        ord: 0,
-        draft: project.current.draft,
-        ...project.current.action,
-      });
+      // A new project has only its drawing; an imported one brings its
+      // history and notes along.
+      const step = (
+        e: Entry,
+        stack: 'past' | 'current' | 'future',
+        ord: number,
+      ) => ({ project: project.id, stack, ord, draft: e.draft, ...e.action });
+      await tx
+        .insert(entries)
+        .values([
+          step(project.current, 'current', 0),
+          ...project.past.map((e, i) => step(e, 'past', i)),
+          ...project.future.map((e, i) => step(e, 'future', i)),
+        ]);
+      if (project.notes.length)
+        await tx
+          .insert(notes)
+          .values(
+            project.notes.map((n) => ({
+              project: project.id,
+              id: n.id,
+              note: n,
+            })),
+          );
+      if (project.receipts?.length)
+        await tx.insert(receipts).values(
+          project.receipts.map((r) => ({
+            project: project.id,
+            key: r.key,
+            receipt: r,
+          })),
+        );
     });
   }
 
@@ -449,6 +490,7 @@ export class PgBackend implements Backend {
   }
 
   async putPhoto(id: string, file: string, bytes: Buffer) {
+    if (this.photoStore) return this.photoStore.put(id, file, bytes);
     await this.db
       .insert(photos)
       .values({ project: id, file, bytes })
@@ -459,6 +501,7 @@ export class PgBackend implements Backend {
   }
 
   async getPhoto(id: string, file: string) {
+    if (this.photoStore) return this.photoStore.get(id, file);
     const [row] = await this.db
       .select({ bytes: photos.bytes })
       .from(photos)
@@ -468,6 +511,7 @@ export class PgBackend implements Backend {
   }
 
   async removePhoto(id: string, file: string) {
+    if (this.photoStore) return this.photoStore.remove(id, file);
     await this.db
       .delete(photos)
       .where(and(eq(photos.project, id), eq(photos.file, file)));
@@ -545,7 +589,11 @@ export const MIGRATIONS = new URL('../drizzle', import.meta.url).pathname;
  * prepared statements off, because Neon's pooled address does not keep
  * them between requests.
  */
-export async function connectPostgres(url: string, root: string) {
+export async function connectPostgres(
+  url: string,
+  root: string,
+  photos?: PhotoStore,
+) {
   const { default: postgres } = await import('postgres');
   const { drizzle } = await import('drizzle-orm/postgres-js');
   const client = postgres(url, {
@@ -553,8 +601,11 @@ export async function connectPostgres(url: string, root: string) {
     max: 5,
     onnotice: () => undefined,
   });
-  return new PgBackend(drizzle(client, { schema }) as unknown as Db, root, () =>
-    client.end(),
+  return new PgBackend(
+    drizzle(client, { schema }) as unknown as Db,
+    root,
+    () => client.end(),
+    photos,
   );
 }
 

@@ -32,7 +32,7 @@ export async function writeAtomic(
   }
 }
 
-function isProject(x: unknown): x is Project {
+export function isProject(x: unknown): x is Project {
   if (typeof x !== 'object' || x === null) return false;
   const p = x as Record<string, unknown>;
   const current = p['current'] as Record<string, unknown> | undefined;

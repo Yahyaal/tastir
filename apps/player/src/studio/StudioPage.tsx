@@ -5,7 +5,15 @@ import type { Draft } from '../editor/document';
 import { EditorPage, type SharedDrawing } from '../editor/Editor';
 import { keepPattern, type UserPattern } from '../editor/patterns';
 import { ThemeSwitch } from '../app/theme';
-import { studioCall, type HistoryLine, type ProjectLine } from './client';
+import {
+  HOSTED,
+  SignedOut,
+  studioCall,
+  studioUrl,
+  useStudioEvents,
+  type HistoryLine,
+  type ProjectLine,
+} from './client';
 import { ContestPage } from './ContestPage';
 import { onTop, readKept, writeKept, type Kept } from './kept';
 import {
@@ -22,6 +30,64 @@ import './studio.css';
  * editor, where the owner's changes and the agents' meet.
  */
 export function StudioPage({ route }: { route: string }) {
+  const signedIn = useSignedIn();
+  if (signedIn === false) return <SignIn route={route} />;
+  if (signedIn === undefined)
+    return (
+      <div className="player studio">
+        <Top />
+        <p className="notice">Loading…</p>
+      </div>
+    );
+  return <StudioRoute route={route} />;
+}
+
+/**
+ * Whether the owner may use the studio: always on this computer; on the
+ * hosted site only once signed in. The rest of Tastir needs no sign-in.
+ */
+function useSignedIn(): boolean | undefined {
+  const [state, setState] = useState<boolean | undefined>(
+    HOSTED ? undefined : true,
+  );
+  useEffect(() => {
+    if (!HOSTED) return;
+    studioCall('GET', '/me')
+      .then(() => setState(true))
+      .catch((e: Error) => setState(e instanceof SignedOut ? false : true));
+  }, []);
+  return state;
+}
+
+function SignIn({ route }: { route: string }) {
+  const next = `/#/${route}`;
+  return (
+    <div className="player studio">
+      <Top />
+      <section className="notice studio-list">
+        <h1>Sign in to use the studio</h1>
+        <p>
+          The studio is where you and AI agents work on the same patterns. It is
+          private, so it needs you to sign in. Everything else in Tastir works
+          without signing in.
+        </p>
+        <p className="notice-links">
+          <a
+            className="button"
+            href={`/login?next=${encodeURIComponent(next)}`}
+          >
+            Sign in with Google
+          </a>
+          <a className="button secondary" href="#/">
+            All patterns
+          </a>
+        </p>
+      </section>
+    </div>
+  );
+}
+
+function StudioRoute({ route }: { route: string }) {
   const [, id, contest] = route.split('/');
   if (id === 'contest' && contest)
     return (
@@ -79,6 +145,21 @@ function StudioList() {
       })
       .catch((e: Error) => setError(e.message));
   };
+  const importProject = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const zip = String(reader.result).replace(/^data:[^,]*,/, '');
+      studioCall<{ project: string }>('POST', '/projects/import', {
+        author: 'owner',
+        zip,
+      })
+        .then((made) => {
+          window.location.hash = `#/studio/${made.project}`;
+        })
+        .catch((e: Error) => setError(e.message));
+    };
+    reader.readAsDataURL(file);
+  };
   return (
     <div className="player studio">
       <Top />
@@ -88,6 +169,13 @@ function StudioList() {
           Patterns you share with AI agents. Agents connect through the studio's
           MCP server; see the setup notes on the notes page.
         </p>
+        {HOSTED ? (
+          <p className="notice-links">
+            <a className="button secondary" href="/connections">
+              Connected apps
+            </a>
+          </p>
+        ) : null}
         {error ? (
           <p className="studio-error" role="alert">
             {error}
@@ -107,6 +195,18 @@ function StudioList() {
             Start
           </button>
         </form>
+        <label className="studio-import">
+          <span>Import a project (.zip from Export)</span>
+          <input
+            type="file"
+            accept=".zip,application/zip"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) importProject(file);
+              e.target.value = '';
+            }}
+          />
+        </label>
         {contests?.length ? (
           <>
             <h2>Contests</h2>
@@ -142,29 +242,6 @@ function StudioList() {
       </section>
     </div>
   );
-}
-
-/** Calls back on every change any studio client makes. */
-function useStudioEvents(
-  onChange: (event: {
-    project: string;
-    revision: number;
-    kind?: 'drawing' | 'notes' | 'marks' | 'reference';
-  }) => void,
-) {
-  const latest = useRef(onChange);
-  latest.current = onChange;
-  useEffect(() => {
-    const source = new EventSource('/__studio/events');
-    source.onmessage = (e) => {
-      try {
-        latest.current(JSON.parse(e.data as string));
-      } catch {
-        // A message that does not parse is ignored.
-      }
-    };
-    return () => source.close();
-  }, []);
 }
 
 interface Loaded {
@@ -306,7 +383,7 @@ function StudioProject({ id }: { id: string }) {
     if (event.revision <= revision.current) return;
     if (sending.current || pending.current) behind.current = true;
     else fetchLatest();
-  });
+  }, id);
 
   const [busy, setBusy] = useState(false);
   const addOnTop = (draft: Draft, latest: Draft) => {
@@ -534,6 +611,15 @@ function StudioProject({ id }: { id: string }) {
           reference={loaded.reference}
           revision={loaded.revision}
         />
+        <p className="notice-links">
+          <a
+            className="button secondary"
+            href={studioUrl(`/projects/${id}/export`)}
+            download
+          >
+            Export project
+          </a>
+        </p>
       </>
     ),
     onPlay: () => {

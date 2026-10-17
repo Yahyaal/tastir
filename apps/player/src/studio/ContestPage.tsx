@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { studioCall } from './client';
+import { studioCall, studioUrl } from './client';
 
 /**
  * Judging a contest (#/studio/contest/<id>): every design lettered, its
@@ -72,7 +72,9 @@ export function ContestPage({ id }: { id: string }) {
             <h2>Design {d.letter}</h2>
             {done(d) ? (
               <img
-                src={`/__studio/projects/${d.project}/picture?what=wall&size=600`}
+                src={studioUrl(
+                  `/projects/${d.project}/picture?what=wall&size=600`,
+                )}
                 alt={`The wall of design ${d.letter}`}
               />
             ) : (

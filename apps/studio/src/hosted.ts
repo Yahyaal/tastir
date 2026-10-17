@@ -10,7 +10,7 @@ import { mcpSessions } from './http.js';
 import { createMcpServer } from './mcp.js';
 import { Owner, type OwnerOptions } from './owner.js';
 import type { Db } from './pg.js';
-import { DirectClient } from './routes.js';
+import { DirectClient, failure, route } from './routes.js';
 import type { Studio } from './studio.js';
 
 /**
@@ -24,6 +24,8 @@ export interface HostedOptions extends Omit<OwnerOptions, 'baseUrl'> {
   readonly baseUrl: URL;
   /** More redirect addresses to allow, for tests. */
   readonly redirects?: readonly string[];
+  /** A built Tastir to serve as well (on Vercel, its CDN serves it). */
+  readonly site?: string;
 }
 
 const escape = (text: string) =>
@@ -217,6 +219,51 @@ export function hostedApp(options: HostedOptions) {
     else await auth.rename(id, String(request.body.name ?? ''));
     response.redirect(303, '/connections');
   });
+
+  // The studio page's requests: the same ones the local studio answers,
+  // each needing the owner's session. A cross-site form cannot send JSON,
+  // so requiring it on POST keeps other sites out.
+  const api = express.Router();
+  api.use(express.json({ limit: '4mb' }));
+  api.get('/me', async (request, response) => {
+    const who = await owner.who(request);
+    if (who) response.json({ email: who });
+    else response.status(401).json({ error: 'Sign in to use the studio.' });
+  });
+  api.use(async (request, response, next) => {
+    if (!(await owner.who(request))) {
+      response.status(401).json({ error: 'Sign in to use the studio.' });
+      return;
+    }
+    if (request.method === 'POST' && !request.is('application/json')) {
+      response.status(415).json({ error: 'Send application/json.' });
+      return;
+    }
+    next();
+  });
+  api.use(async (request, response) => {
+    try {
+      const answer = await route(
+        studio,
+        request.method,
+        new URL(request.url, 'http://studio'),
+        async () => request.body ?? {},
+      );
+      if (answer.kind === 'png')
+        response
+          .type('image/png')
+          .setHeader('X-Tastir-Revision', String(answer.revision))
+          .send(answer.png);
+      else if (answer.kind === 'file')
+        response.type(answer.type).attachment(answer.name).send(answer.bytes);
+      else response.json(answer.value);
+    } catch (error) {
+      const { status, error: message } = failure(error);
+      response.status(status).json({ error: message });
+    }
+  });
+  app.use('/api', api);
+  if (options.site) app.use(express.static(options.site));
 
   return { app, auth, close: () => sessions.close() };
 }

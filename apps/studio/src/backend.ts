@@ -31,6 +31,22 @@ export class Conflict extends Error {
   }
 }
 
+/** Where reference photos are kept, when not with the project. */
+export interface PhotoStore {
+  put(id: string, file: string, bytes: Buffer): Promise<void>;
+  get(id: string, file: string): Promise<Buffer>;
+  remove(id: string, file: string): Promise<void>;
+}
+
+/**
+ * What a page polls to know whether to fetch again: the revision (the
+ * drawing), and a stamp that changes on any save at all (notes, photo).
+ */
+export interface Pulse {
+  readonly revision: number;
+  readonly stamp: string;
+}
+
 export interface Backend {
   /** The folder for local files such as contests. */
   readonly root: string;
@@ -42,7 +58,9 @@ export interface Backend {
    * and redo steps, which only Undo and Redo need.
    */
   load(id: string, drafts?: number): Promise<Project>;
+  /** A new project, with whatever history and notes it already has. */
   create(project: Project): Promise<void>;
+  pulse(id: string): Promise<Pulse>;
   /** Saves `next` in place of `before`, or throws Conflict. */
   commit(before: Project, next: Project): Promise<void>;
   putPhoto(id: string, file: string, bytes: Buffer): Promise<void>;
@@ -93,6 +111,19 @@ export class FileBackend implements Backend {
   async create(project: Project) {
     await this.store.write(project);
     this.cache.set(project.id, project);
+  }
+
+  async pulse(id: string) {
+    const p = await this.load(id);
+    return {
+      revision: p.revision,
+      stamp: [
+        p.revision,
+        p.notes.at(-1)?.id ?? 0,
+        p.reference?.file ?? '',
+        JSON.stringify(p.reference?.align ?? null),
+      ].join(':'),
+    };
   }
 
   // One process owns the folder (the launcher refuses a second studio) and

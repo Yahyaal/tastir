@@ -101,6 +101,14 @@ export async function startServer(options: ServerOptions) {
         response.end(answer.png);
         return;
       }
+      if (answer.kind === 'file') {
+        response.writeHead(200, {
+          'Content-Type': answer.type,
+          'Content-Disposition': `attachment; filename="${answer.name}"`,
+        });
+        response.end(answer.bytes);
+        return;
+      }
       return send(response, 200, answer.value);
     })().catch((error: unknown) => {
       if (response.headersSent) {
