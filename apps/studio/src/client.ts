@@ -6,7 +6,20 @@ import { join } from 'node:path';
  * address and secret to studio/.service.json (readable by the owner only),
  * and this reads it again on every call, so a restarted studio is found.
  */
-export class StudioClient {
+/** What the MCP tools need from the studio: its requests and pictures. */
+export interface StudioCaller {
+  call(
+    method: 'GET' | 'POST',
+    path: string,
+    data?: unknown,
+    seconds?: number,
+  ): Promise<unknown>;
+  picture(
+    path: string,
+  ): Promise<{ data: string; revision: number; size: number }>;
+}
+
+export class StudioClient implements StudioCaller {
   constructor(readonly root: string) {}
 
   private async service(): Promise<{ url: string; secret: string }> {

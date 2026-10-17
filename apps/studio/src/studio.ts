@@ -101,8 +101,15 @@ export const EditShape = z.discriminatedUnion('op', [
 ]);
 export type Edit = z.infer<typeof EditShape>;
 
+/** A signed-in connection's lasting id, which owns its changes. */
+export const Actor = z
+  .string()
+  .regex(/^[A-Za-z0-9_-]{1,64}$/)
+  .optional();
+
 export const EditRequest = z.strictObject({
   author: Author,
+  actor: Actor,
   revision: z.number().int().min(1),
   label: z.string().trim().min(1).max(160).optional(),
   edit: EditShape,
@@ -111,6 +118,7 @@ export const EditRequest = z.strictObject({
 
 export const TravelRequest = z.strictObject({
   author: Author,
+  actor: Actor,
   revision: z.number().int().min(1),
   direction: z.enum(['undo', 'redo']),
   steps: z.number().int().min(1).max(100).default(1),
@@ -540,6 +548,8 @@ export class Studio {
         request.author,
         request.label ?? labelOf(edit),
         change(edit),
+        undefined,
+        request.actor,
       );
       return keep(
         edit.op === 'goals' ? { ...next, goals: edit.goals as Goals } : next,
@@ -565,6 +575,8 @@ export class Studio {
             request.direction,
             request.steps,
             request.mine,
+            undefined,
+            request.actor,
           ),
           request,
         );

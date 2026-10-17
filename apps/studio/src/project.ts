@@ -12,7 +12,14 @@ export interface Action {
   readonly author: string;
   readonly label: string;
   readonly at: string;
+  /** The lasting id of the signed-in connection that made it, when there
+   * is one; its name (author) can change, its id never does. */
+  readonly actor?: string;
 }
+
+/** Who a change belongs to: the connection's id, or else the name. */
+export const ownerOf = (a: Pick<Action, 'author' | 'actor'>) =>
+  a.actor ?? a.author;
 
 /** A drawing and the change that made it. */
 export interface Entry {
@@ -117,6 +124,7 @@ export function applyEdit(
   label: string,
   change: (draft: Draft) => Draft,
   at = new Date().toISOString(),
+  actor?: string,
 ): Project {
   fresh(project, revision);
   const draft = change(project.current.draft);
@@ -125,7 +133,10 @@ export function applyEdit(
     title: draft.title,
     updated: at,
     revision: project.revision + 1,
-    current: { draft, action: { author, label, at } },
+    current: {
+      draft,
+      action: { author, label, at, ...(actor ? { actor } : {}) },
+    },
     past: [...project.past.slice(-(HISTORY - 1)), project.current],
     future: [],
   };
@@ -144,6 +155,7 @@ export function travel(
   steps: number,
   mine: boolean,
   at = new Date().toISOString(),
+  actor?: string,
 ): Project {
   fresh(project, revision);
   if (!Number.isInteger(steps) || steps < 1)
@@ -159,7 +171,8 @@ export function travel(
     direction === 'undo'
       ? [project.current, ...project.past.slice(1).reverse()].slice(0, steps)
       : project.future.slice(0, steps);
-  const other = changes.find((e) => e.action.author !== author);
+  const me = ownerOf({ author, actor });
+  const other = changes.find((e) => ownerOf(e.action) !== me);
   if (mine && other)
     throw new StudioError(
       `“${other.action.label}” was made by ${other.action.author}, so undoing only your own changes stops there. Nothing changed.`,

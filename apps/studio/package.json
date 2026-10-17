@@ -13,11 +13,14 @@
     "@tastir/engine": "workspace:*",
     "@tastir/schema": "workspace:*",
     "drizzle-orm": "0.45.2",
+    "express": "5.2.1",
+    "jose": "6.1.3",
     "postgres": "3.4.9",
     "zod": "^4.6.5"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.14",
+    "@types/express": "5.0.6",
     "drizzle-kit": "0.31.10"
   }
 }

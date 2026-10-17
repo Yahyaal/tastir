@@ -2,7 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import { ConstructionShape } from '@tastir/agent-protocol';
-import { StudioClient } from './client.js';
+import { StudioClient, type StudioCaller } from './client.js';
 import { GoalsShape, LONGEST_WAIT } from './studio.js';
 
 /**
@@ -41,13 +41,26 @@ const Revision = z
     'The revision the edit is based on, from the latest inspect or edit result.',
   );
 
-export function createMcpServer(client: StudioClient, author?: string) {
+/** A signed-in connection: the name its changes show, and its lasting id. */
+export interface Identity {
+  readonly name: string;
+  readonly actor: string;
+}
+
+export function createMcpServer(
+  client: StudioCaller,
+  author?: string | Identity,
+) {
   const server = new McpServer(
     { name: 'tastir-studio', version: '0.1.0' },
     { instructions: INSTRUCTIONS },
   );
+  const actor = typeof author === 'object' ? { actor: author.actor } : {};
   const who = () => {
-    const name = author ?? server.server.getClientVersion()?.name ?? 'agent';
+    const name =
+      (typeof author === 'object' ? author.name : author) ??
+      server.server.getClientVersion()?.name ??
+      'agent';
     return (
       name
         .replace(/[^A-Za-z0-9 ._()-]/g, '-')
@@ -83,6 +96,7 @@ export function createMcpServer(client: StudioClient, author?: string) {
     run(() =>
       client.call('POST', `/projects/${project}/edit`, {
         author: who(),
+        ...actor,
         revision,
         edit: change,
         ...(command ? { command } : {}),
@@ -264,6 +278,7 @@ export function createMcpServer(client: StudioClient, author?: string) {
         run(() =>
           client.call('POST', `/projects/${project}/travel`, {
             author: who(),
+            ...actor,
             revision,
             direction,
             steps,

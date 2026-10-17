@@ -54,6 +54,7 @@ export const entries = pgTable(
     author: text('author').notNull(),
     label: text('label').notNull(),
     at: text('at').notNull(),
+    actor: text('actor'),
   },
   (t) => [index('entries_project').on(t.project, t.stack, t.ord)],
 );
@@ -109,7 +110,72 @@ export const photos = pgTable(
   (t) => [primaryKey({ columns: [t.project, t.file] })],
 );
 
-const schema = { projects, entries, notes, receipts, marks, photos };
+/** Agents' apps, registered by themselves or known by their metadata address. */
+export const oauthClients = pgTable('oauth_clients', {
+  id: text('id').primaryKey(),
+  info: jsonb('info').$type<Record<string, unknown>>().notNull(),
+  fetched: timestamp('fetched', { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** One approval by the owner: a lasting identity that owns its edits. */
+export const connections = pgTable('connections', {
+  id: text('id').primaryKey(),
+  client: text('client').notNull(),
+  name: text('name').notNull(),
+  created: timestamp('created', { withTimezone: true }).notNull().defaultNow(),
+  used: timestamp('used', { withTimezone: true }),
+  revoked: timestamp('revoked', { withTimezone: true }),
+});
+
+/** A sign-in waiting for the owner's Allow or Deny. */
+export const authRequests = pgTable('auth_requests', {
+  id: text('id').primaryKey(),
+  client: text('client').notNull(),
+  redirect: text('redirect').notNull(),
+  challenge: text('challenge').notNull(),
+  state: text('state'),
+  expires: timestamp('expires', { withTimezone: true }).notNull(),
+});
+
+/** Codes and tokens, kept only as hashes. */
+export const authCodes = pgTable('auth_codes', {
+  hash: text('hash').primaryKey(),
+  client: text('client').notNull(),
+  connection: text('connection')
+    .notNull()
+    .references(() => connections.id, { onDelete: 'cascade' }),
+  redirect: text('redirect').notNull(),
+  challenge: text('challenge').notNull(),
+  expires: timestamp('expires', { withTimezone: true }).notNull(),
+});
+
+export const tokens = pgTable(
+  'tokens',
+  {
+    hash: text('hash').primaryKey(),
+    kind: text('kind').$type<'access' | 'refresh'>().notNull(),
+    client: text('client').notNull(),
+    connection: text('connection')
+      .notNull()
+      .references(() => connections.id, { onDelete: 'cascade' }),
+    expires: timestamp('expires', { withTimezone: true }).notNull(),
+  },
+  (t) => [index('tokens_connection').on(t.connection)],
+);
+
+const schema = {
+  projects,
+  entries,
+  notes,
+  receipts,
+  marks,
+  photos,
+  oauthClients,
+  connections,
+  authRequests,
+  authCodes,
+  tokens,
+};
 // postgres.js and PGlite both give a database of this shape.
 export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
 
@@ -169,6 +235,7 @@ export class PgBackend implements Backend {
         author: entries.author,
         label: entries.label,
         at: entries.at,
+        actor: entries.actor,
       })
       .from(entries)
       .where(eq(entries.project, id))
@@ -196,7 +263,12 @@ export class PgBackend implements Backend {
       ({
         key: String(s.id),
         draft: read.get(s.id) ?? UNREAD,
-        action: { author: s.author, label: s.label, at: s.at },
+        action: {
+          author: s.author,
+          label: s.label,
+          at: s.at,
+          ...(s.actor ? { actor: s.actor } : {}),
+        },
       }) as Keyed;
     const noteRows = await this.db
       .select({ note: notes.note })

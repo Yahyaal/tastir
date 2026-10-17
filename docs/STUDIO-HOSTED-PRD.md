@@ -4,7 +4,7 @@ The plan for using the studio from anywhere, on a phone or a laptop, with Claude
 
 ## At a glance
 
-- **Where it stands:** M0, M1, H1 and H2 are done (17 October); Codex is on M2; the rest is planned.
+- **Where it stands:** M0, M1, H1, H2 and H3 are done (17 October); Codex is on M2; the rest is planned.
 - **What happens first:** M0, merging Codex's branch and this one into main, once Codex has finished and you say go. Then M1 to M3 make the studio, the in-app assistant and outside agents work on one project, before anything is hosted.
 - **What it costs:** nothing. Every service stays on its free plan.
 - **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
@@ -16,7 +16,7 @@ A ticked box is decided.
 
 - [x] **1. Where it runs:** Vercel Hobby and a new free Neon project, as in finsight. Decided 16 October.
 - [x] **2. The region:** Neon in AWS US East (Ohio) and Vercel functions in Cleveland (`cle1`), the nearest to Oklahoma. Decided 16 October.
-- [x] **3. Sign-in:** Google through Auth.js, with only your address on the allow list, copied from finsight. Decided 16 October.
+- [x] **3. Sign-in:** Google, with only your address on the allow list, like finsight. Decided 16 October; on 17 October the owner agreed to do it with Google's sign-in directly instead of Auth.js, whose version for a plain server is still experimental.
 - [ ] **4. Private photos on the server:** may research photos that are not free be uploaded, where they stay private in Blob? Until you say yes, only free photos go up.
 - [x] **5. Free plans only:** every service stays free, and Durable Objects come in only as the free live room (H7). Decided 16 October.
 
@@ -45,7 +45,7 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
 - [x] **H2 · Projects in a database.** The studio can keep projects in files (as now) or in Postgres; nothing is kept in memory between requests.
   - **Who:** an agent.
   - **Done when:** every studio test passes with both; of two edits based on the same revision, one is saved and the other refused whole; and the edit, its history entry and its command receipt are saved in one transaction.
-- [ ] **H3 · Sign-in.** You sign in with Google; agents sign in with OAuth and you approve each one; each connection has a lasting identity that owns its edits; a Connections page lists them, renames them and can revoke any.
+- [x] **H3 · Sign-in.** You sign in with Google; agents sign in with OAuth and you approve each one; each connection has a lasting identity that owns its edits; a Connections page lists them, renames them and can revoke any.
   - **Who:** an agent.
   - **Done when:** a test runs the whole sign-in with a stand-in Google; renaming a connection or refreshing its token keeps its edits its own; a revoked agent is refused at once; and a redirect to an unknown address is refused.
 - [ ] **H4 · The studio page on Vercel.** The studio page in its own build, photo upload to private storage, export and import, and a phone layout.
@@ -101,11 +101,11 @@ These facts were checked on 16 October 2026; the sources are listed at the end. 
 
 ### Vercel and Neon, the same as finsight
 
-The hosted studio runs on Vercel's free Hobby plan with a free Neon Postgres database and Google sign-in through Auth.js, the same stack as the owner's finsight app. The owner already knows how to run it, and it costs nothing at one person's use. Hobby is for personal, non-commercial projects, which a private studio is. Its free allowances (about 1 million function calls, 4 hours of active CPU and 360 GB-hours of memory a month) are far more than one person and a few agents use, and the studio tracks its own use against them (task H6).
+The hosted studio runs on Vercel's free Hobby plan with a free Neon Postgres database and Google sign-in, the same stack as the owner's finsight app apart from Auth.js (see Signing in). The owner already knows how to run it, and it costs nothing at one person's use. Hobby is for personal, non-commercial projects, which a private studio is. Its free allowances (about 1 million function calls, 4 hours of active CPU and 360 GB-hours of memory a month) are far more than one person and a few agents use, and the studio tracks its own use against them (task H6).
 
 Vercel does not keep a process running or keep a disk, so the studio's service changes shape. Each request is handled on its own and keeps nothing in memory afterwards, and everything that was in memory or in folders moves to Neon. The `Studio` class gets a store interface with two versions: the file store used today, so `pnpm studio` and the stdio MCP server keep working at home exactly as now, and a Postgres store for Vercel. The edit logic (`ops.ts`, `project.ts`) does not change, because it already works on one project at a time and returns a new revision.
 
-The deployment serves three things at one address, for example `tastir-studio.vercel.app`. `/mcp` is the MCP server for agents over Streamable HTTP, using Vercel's MCP handler. `/api` is today's HTTP routes as Vercel functions, used by the studio page. `/` is a build of the Tastir player with the studio page switched on, served from Vercel's CDN. Serving the page from the same address means the owner's sign-in is an ordinary first-party cookie and the page never holds a token. The public site on GitHub Pages stays as it is, without the studio, because the studio is private to signed-in people.
+The deployment serves three things at one address, for example `tastir-studio.vercel.app`. `/mcp` is the MCP server for agents over Streamable HTTP. It and the sign-in pages are one Express app (`apps/studio/src/hosted.ts`), which Vercel runs as a function, built on the MCP SDK's own OAuth handlers. `/api` is today's HTTP routes, used by the studio page. `/` is a build of the Tastir player with the studio page switched on, served from Vercel's CDN. Serving the page from the same address means the owner's sign-in is an ordinary first-party cookie and the page never holds a token. The public site on GitHub Pages stays as it is, without the studio, because the studio is private to signed-in people.
 
 ### Projects in Neon
 
@@ -119,7 +119,7 @@ Reference photos go in a private Vercel Blob store, which Vercel made generally 
 
 ### Signing in
 
-The owner signs in to the studio page with Google through Auth.js, with an allow list holding only the owner's address at first, copying finsight's `auth.config.ts`. Sessions are Auth.js JWT cookies, so signing in needs no session table.
+The owner signs in with Google's OpenID Connect sign-in directly, with PKCE and an allow list holding only the owner's address at first; `jose` checks Google's signed ID token (`apps/studio/src/owner.ts`). Auth.js, which finsight uses, is not used because its version for a plain server is still experimental and one provider for one person needs little code. The session is a signed cookie, so signing in needs no session table.
 
 Agents sign in through OAuth 2.1 with PKCE, with the studio acting as its own authorization server, built on the MCP TypeScript SDK's auth support. When an agent connects for the first time, the client opens the studio's sign-in page. If the owner is not signed in, it sends them through Google, then shows "Allow Claude to work on your studio projects?" with Allow and Deny. The studio supports Dynamic Client Registration, because Claude uses it, and Client ID Metadata Documents, which the newest spec prefers. Redirects are allowed only to the claude.ai and claude.com callbacks, ChatGPT's callback and loopback addresses.
 

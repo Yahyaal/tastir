@@ -8,6 +8,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { StudioClient } from './client.js';
 import { createMcpServer } from './mcp.js';
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 /**
  * The studio's MCP server over Streamable HTTP, for agents that cannot
@@ -56,12 +57,20 @@ async function json(request: IncomingMessage): Promise<unknown> {
   return JSON.parse(Buffer.concat(chunks).toString('utf8'));
 }
 
-export async function startMcpHttp(options: HttpOptions) {
-  if (options.key.length < 32) throw new Error('The MCP key is too short.');
-  const client = new StudioClient(options.root);
+/**
+ * MCP sessions over Streamable HTTP: each connection gets its own server
+ * and session, and a session answers only the one who opened it (`owner`:
+ * the local key, or a signed-in connection's id).
+ */
+export function mcpSessions(
+  make: (request: IncomingMessage) => {
+    server: () => McpServer;
+    owner: string;
+  },
+) {
   const sessions = new Map<
     string,
-    { transport: StreamableHTTPServerTransport; used: number }
+    { transport: StreamableHTTPServerTransport; used: number; owner: string }
   >();
   const sweep = setInterval(() => {
     const now = Date.now();
@@ -70,23 +79,22 @@ export async function startMcpHttp(options: HttpOptions) {
   }, 60_000);
   sweep.unref();
 
-  const server = createServer((request, response) => {
-    void (async () => {
-      const path = (request.url ?? '/').split('?')[0] ?? '/';
-      const [first, key, ...rest] = path.split('/').filter(Boolean);
-      if (first !== 'mcp' || !key || rest.length || !same(key, options.key))
-        return fail(response, 404, 'There is nothing here.');
+  const handle = async (request: IncomingMessage, response: ServerResponse) => {
+    try {
       // Chat apps call from their servers; a web page in a browser never
       // has any business here.
       if (request.headers.origin !== undefined)
         return fail(response, 403, 'Browser pages may not call the studio.');
+      const made = make(request);
       const id = request.headers['mcp-session-id'];
       const known = typeof id === 'string' ? sessions.get(id) : undefined;
       if (known) {
+        if (known.owner !== made.owner)
+          return fail(response, 404, 'That session has ended. Connect again.');
         known.used = Date.now();
         const body =
           request.method === 'POST' ? await json(request) : undefined;
-        return known.transport.handleRequest(request, response, body);
+        return await known.transport.handleRequest(request, response, body);
       }
       if (request.method !== 'POST')
         return fail(response, 400, 'Start with an initialize request.');
@@ -104,15 +112,15 @@ export async function startMcpHttp(options: HttpOptions) {
       const transport = new StreamableHTTPServerTransport({
         sessionIdGenerator: () => randomUUID(),
         onsessioninitialized: (sid) => {
-          sessions.set(sid, { transport, used: Date.now() });
+          sessions.set(sid, { transport, used: Date.now(), owner: made.owner });
         },
       });
       transport.onclose = () => {
         if (transport.sessionId) sessions.delete(transport.sessionId);
       };
-      await createMcpServer(client).connect(transport);
+      await made.server().connect(transport);
       await transport.handleRequest(request, response, body);
-    })().catch((error: unknown) => {
+    } catch (error) {
       if (response.headersSent) {
         response.end();
         return;
@@ -126,7 +134,30 @@ export async function startMcpHttp(options: HttpOptions) {
             ? error.message
             : 'The studio could not finish this request.',
       );
-    });
+    }
+  };
+  return {
+    handle,
+    close: async () => {
+      clearInterval(sweep);
+      await Promise.all([...sessions.values()].map((s) => s.transport.close()));
+    },
+  };
+}
+
+export async function startMcpHttp(options: HttpOptions) {
+  if (options.key.length < 32) throw new Error('The MCP key is too short.');
+  const client = new StudioClient(options.root);
+  const sessions = mcpSessions(() => ({
+    server: () => createMcpServer(client),
+    owner: 'key',
+  }));
+  const server = createServer((request, response) => {
+    const path = (request.url ?? '/').split('?')[0] ?? '/';
+    const [first, key, ...rest] = path.split('/').filter(Boolean);
+    if (first !== 'mcp' || !key || rest.length || !same(key, options.key))
+      return fail(response, 404, 'There is nothing here.');
+    void sessions.handle(request, response);
   });
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
@@ -141,8 +172,7 @@ export async function startMcpHttp(options: HttpOptions) {
   return {
     url: `http://127.0.0.1:${address.port}/mcp/${options.key}`,
     close: async () => {
-      clearInterval(sweep);
-      await Promise.all([...sessions.values()].map((s) => s.transport.close()));
+      await sessions.close();
       await new Promise<void>((resolve, reject) => {
         server.closeAllConnections();
         server.close((e) => (e ? reject(e) : resolve()));
