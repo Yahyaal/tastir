@@ -1,13 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "VITE_TASTIR_STUDIO=hosted pnpm exec vite build --config apps/player/vite.config.mts --outDir ../../dist/studio-hosted --emptyOutDir",
+  "installCommand": "npx --yes pnpm@10.30.3 install --frozen-lockfile",
+  "buildCommand": "node tools/studio-build.mjs && VITE_TASTIR_STUDIO=hosted pnpm exec vite build --config apps/player/vite.config.mts --outDir ../../dist/studio-hosted --emptyOutDir",
   "outputDirectory": "dist/studio-hosted",
   "regions": ["cle1"],
   "functions": {
     "api/index.ts": {
       "maxDuration": 60,
-      "includeFiles": "{tutorials/**,apps/studio/fonts/**}"
+      "includeFiles": "{tutorials/**,dist/studio-function/server/*.mjs,dist/studio-function/fonts/**,dist/studio-function/node_modules/**}"
     }
   },
   "rewrites": [
