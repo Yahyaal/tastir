@@ -1,0 +1,35 @@
+{
+  "name": "@tastir/live-room",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./client": {
+      "@tastir/source": "./src/client.ts",
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.js"
+    },
+    "./server": {
+      "@tastir/source": "./src/server.ts",
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    }
+  },
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "setup:local": "node scripts/setup-local.mjs",
+    "build": "tsc -b tsconfig.lib.json && node scripts/build.mjs",
+    "typecheck": "tsc -b tsconfig.lib.json tsconfig.worker.json tsconfig.spec.json",
+    "smoke:local": "node scripts/smoke-local.mjs",
+    "smoke:browser": "node scripts/smoke-browser.mjs"
+  },
+  "nx": {
+    "name": "live-room"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261016.1",
+    "esbuild": "^0.27.0",
+    "miniflare": "5.20261012.1-beta",
+    "wrangler": "4.151.1"
+  }
+}

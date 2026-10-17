@@ -2215,12 +2215,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI.2a: a zellige companion and clearer chat errors',
-    text: 'The robot is now a smiling eight-point tile in cobalt, turquoise and gold, using Tastir’s colors in both themes. Your screenshot exposed an error-labeling bug: a temporary usage-check failure was being called a usage limit. Those cases now have different explanations. A confirmed app or plan limit shows Manage usage directly. Earlier edits and action records are kept, and the same error is no longer shown twice. All 46 companion unit checks and all 15 chat browser checks passed, along with full workspace tests, lint, TypeScript and a fresh production build. Checks ran sequentially with one worker. This preview uses simulated responses.',
-    link: {
-      label: 'See the new companion and error recovery',
-      href: '/__review/renders/assistant-feedback/desktop-dark.png',
-    },
+    title: 'H7: a live room for each shared drawing',
+    text: 'M2 is pushed to main. The separate live-room app sends signed revision notices to open pages; the page falls back to checking every few seconds if the room is unavailable. Seventeen local checks, full workspace tests, lint, TypeScript, the Worker build and a real-browser fixture pass. Checks ran one at a time. Claude will connect this to the hosted Studio in H4. The deployed speed and a week within the free limits still need H6, so H7 remains unticked.',
   },
   next: [
     {
