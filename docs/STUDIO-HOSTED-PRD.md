@@ -4,8 +4,8 @@ The plan for using the studio from anywhere, on a phone or a laptop, with Claude
 
 ## At a glance
 
-- **Where it stands:** M0, M1 and H1 are done (17 October); the rest is planned.
-- **What happens first:** M0, merging Codex's branch and this one into main, once Codex has finished and you say go. Then M1 to M3 make the studio, the in-app assistant and outside agents work on one project, before anything is hosted.
+- **Where it stands:** M0, M1, M2 and H1 are done (17 October); the rest is planned.
+- **What happens next:** the local three-worker proof is complete. H2 can run beside M2; finish that parallel work before M3 moves shared editing code, then follow the hosted milestones below.
 - **What it costs:** nothing. Every service stays on its free plan.
 - **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
 - **What you still decide:** whether private research photos may be uploaded (decision 4). Nothing waits on it.
@@ -30,9 +30,10 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
 - [x] **M1 · Never lose your unsaved change.** When an agent saves first, the studio page today drops your pending change and wrongly says Undo brings it back. It will keep that change, explain what happened, and offer to retry it against the latest drawing or keep it as a copy.
   - **Who:** an agent.
   - **Done when:** a browser test makes an agent and you edit at the same moment, and your change can be retried (checked against the agent's newer drawing, never replacing it blindly) or recovered as a copy.
-- [ ] **M2 · One project, three workers.** You in the editor, the in-app assistant and an outside agent over MCP all work on the same project on this computer. Required before deploying.
+- [x] **M2 · One project, three workers.** You in the editor, the in-app assistant and an outside agent over MCP all work on the same project on this computer. Required before deploying.
   - **Who:** you with an agent.
   - **Done when:** all three edit one drawing; a stale edit is refused whole; each one's "undo mine" stops at the others' work; a named copy saves, reloads and exports with its colours; and the pictures match what you see.
+  - **Evidence (17 October):** [M2 validation](testing/m2-three-workers-2026-10-17.md): six desktop/phone checks with the real editor, Studio persistence and MCP HTTP connection, using simulated chat-model replies. The owner draws with the compass; shared history, stale edits, copies/colours/export and pictures are checked. Full workspace, production, assistant and Studio regressions passed. This is not a live provider evaluation.
 - [ ] **M3 · Shared editing code.** The editing commands the studio and the in-app assistant both use move into one package (`packages/project-core`), pure TypeScript with no browser or network code, so the two never drift apart.
   - **Who:** an agent.
   - **Done when:** the studio and the assistant both use the package, and every existing test passes unchanged.

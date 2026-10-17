@@ -6,6 +6,16 @@ The studio lets AI agents and you work on the same pattern. This page says how t
 
 From the repository root run `pnpm studio`. It starts the studio service and a Tastir dev server beside it, and prints the address of the studio page. Keep the terminal open while you work. `pnpm studio --no-app` starts only the service, for agents working without you watching.
 
+To use the in-app drawing assistant on those same shared projects, run **`pnpm studio:agent`** instead. It starts the same Studio service and MCP endpoint, plus the local ChatGPT companion behind the same browser address (normally `http://127.0.0.1:4293/#/studio`). Connect ChatGPT with the existing assistant account controls. Stop an older Studio using that same data directory before starting this command; the launcher refuses to open two writers. `pnpm studio` and `pnpm studio --no-app` remain available without the companion.
+
+The companion uses the same account storage as `pnpm dev:agent`. Stop that companion before starting `pnpm studio:agent` to reuse its ChatGPT sign-in. For a separate simultaneous review session, set `TASTIR_AGENT_DATA_DIR` to a fresh folder and connect ChatGPT there; the existing account session is left alone.
+
+On a shared project, the assistant's geometry edits are acknowledged after Studio saves them, with author `tastir-assistant`, a command ID and the server revision. Its own Undo stops at another author. **Undo mine** under the steps does the same for your edits; ordinary Undo/Redo and keyboard shortcuts deliberately travel through the complete shared history. A manual edit made during an assistant save is kept for recovery rather than silently replaced.
+
+**Play** opens a browser copy for playing and coloring, as before; changes on that copy do not write back to the shared project. Return to the Studio editor for shared edits. The assistant's named save also creates a separate normal pattern in Your work, preserving the shared source and its saved colors. The server's picture depicts the saved project, while the assistant's image depicts the current browser view; the camera and framing can differ.
+
+The automated three-worker proof runs with `pnpm test:shared:browser --workers=1`. It uses throwaway projects/accounts and simulated model replies, the real editor, and a real MCP HTTP client. It does not establish live model quality, hosted authorization or cross-client subscription support.
+
 Projects are kept in the `studio/` folder at the repository root, one folder per project. Git ignores it, because it holds your own work and possibly private photos. Each project folder has `project.json`, the drawing with its whole history and notes, and `pattern.json`, the drawing as a normal Tastir pattern file that the editor's file import opens.
 
 Only one studio runs at a time, so two services never write the same project. The service listens on this computer only and needs a secret that it hands to the agents' MCP server and to the dev server, so no website can reach your drawings.

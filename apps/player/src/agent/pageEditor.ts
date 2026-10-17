@@ -40,6 +40,7 @@ export const pageEditorRevision = () => {
     revisions.get(history.now),
     history.past.length,
     history.future.length,
+    current.shared?.revision,
   ]);
 };
 const segments = (draft: Draft) =>
@@ -61,7 +62,8 @@ export function pageEditorObservation() {
       autoSaved: current.autoSaved,
     },
     segments: segments(current.history.now),
-    history: draftHistoryObservation(current.history),
+    history:
+      current.shared?.history ?? draftHistoryObservation(current.history),
     canSave: true,
   };
 }
@@ -214,15 +216,17 @@ export function checkedDraftEdit(draft: Draft, call: ToolCall): Draft {
   return next;
 }
 
-export function applyPageEditor(
+export async function applyPageEditor(
   call: ToolCall,
   snapshot: Snapshot,
   requestId: string,
+  signal?: AbortSignal,
 ) {
   const current = getPageEditor();
   if (
     !current ||
-    snapshot.screen?.route !== `edit/${current.id}` ||
+    snapshot.screen?.route !==
+      (current.shared?.route ?? `edit/${current.id}`) ||
     !snapshot.editor
   )
     throw new Error('Open the saved pattern in its normal editor first.');
@@ -234,6 +238,8 @@ export function applyPageEditor(
     if (!saved) throw new Error('The browser could not save this pattern.');
     return `Saved a new pattern “${saved.tutorial.title}” in Your work. Editor destination: editor:${saved.id}.`;
   }
+  if (current.shared)
+    return current.shared.apply(call, snapshot, requestId, signal);
   const next =
     call.name === 'travel_history'
       ? travelDraft(

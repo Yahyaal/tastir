@@ -1812,9 +1812,17 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '16 October 2026',
+  updated: '17 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'M2: the editor, assistant and MCP share one project',
+      text: 'The owner draws with the compass, the in-app assistant adds geometry, and a real MCP client edits the same Studio project. Saves use server revisions and authored history. Undo mine stops at another author; ordinary Undo still works across the shared history. An owner edit made during an assistant save stays recoverable. A named copy reloads and exports with its paint. Six desktop/phone checks pass using simulated model replies and the real app and service; this is not a live provider evaluation.',
+      link: {
+        label: 'See the shared editor and matching walls',
+        href: '/__review/renders/m2-three-workers/proof.html',
+      },
+    },
     {
       title: 'The wall panel: style and band width back at the top',
       text: 'On 13 October the colours were put first at the colour stage, and since the finished wall counts as that stage, Style and Band slid below the screen. On the finished wall the panel now opens with the wall: its five styles as buttons that each show your own pattern and colours in that style, the band or grout width with its value, and the original photo as a toggle beside them. The palettes come first in Colors, as one-click strips half as tall, and the paper size sits beside Print as two buttons.',

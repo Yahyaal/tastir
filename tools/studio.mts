@@ -1,9 +1,10 @@
 // Starts the studio: the service that owns the shared drawings, and the
-// Tastir dev server beside it. Usage: pnpm studio [--no-app]
+// Tastir dev server beside it. Usage: pnpm studio [--no-app | --assistant]
 import { randomBytes } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { chmod, mkdir, readFile, rm } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
+import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { Studio, startMcpHttp, startServer } from '../apps/studio/src/index.js';
 import { writeAtomic } from '../apps/studio/src/store.js';
@@ -11,6 +12,9 @@ import { writeAtomic } from '../apps/studio/src/store.js';
 const repo = join(dirname(fileURLToPath(import.meta.url)), '..');
 const root = process.env['TASTIR_STUDIO_DIR'] ?? join(repo, 'studio');
 const withApp = !process.argv.includes('--no-app');
+const withAssistant = process.argv.includes('--assistant');
+if (withAssistant && !withApp)
+  throw new Error('The in-app assistant needs the Studio page.');
 const appPort = Number(process.env['TASTIR_STUDIO_APP_PORT'] ?? 4293);
 if (!Number.isInteger(appPort) || appPort < 1024 || appPort > 65535)
   throw new Error(
@@ -59,6 +63,24 @@ await writeAtomic(
   JSON.stringify({ url: service.url, secret, pid: process.pid, mcp: mcp.url }),
 );
 
+// One page origin owns both proxies; neither service secret reaches the browser.
+const agentSecret = randomBytes(32).toString('base64url');
+const companion = withAssistant
+  ? await (
+      await import('../apps/agent-local/src/index.js')
+    ).createCompanion({
+      directory:
+        process.env['TASTIR_AGENT_DATA_DIR'] ??
+        join(
+          process.env['XDG_CONFIG_HOME'] ?? join(homedir(), '.config'),
+          'tastir',
+          'agent',
+        ),
+      appOrigin: origin,
+      secret: agentSecret,
+    })
+  : undefined;
+
 let child: ReturnType<typeof spawn> | undefined;
 const stopped = new Promise<void>((resolve) => {
   const stop = () => {
@@ -86,6 +108,13 @@ const stopped = new Promise<void>((resolve) => {
         stdio: 'inherit',
         env: {
           ...process.env,
+          ...(companion
+            ? {
+                VITE_TASTIR_AGENT: 'true',
+                TASTIR_AGENT_TARGET: companion.url,
+                TASTIR_AGENT_SECRET: agentSecret,
+              }
+            : {}),
           TASTIR_STUDIO_TARGET: service.url,
           TASTIR_STUDIO_SECRET: secret,
         },
@@ -101,6 +130,7 @@ try {
   await stopped;
 } finally {
   await rm(info, { force: true });
+  await companion?.close();
   await mcp.close();
   await service.close();
 }
