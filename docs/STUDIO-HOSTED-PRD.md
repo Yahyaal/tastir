@@ -53,6 +53,7 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
   - **Who:** an agent.
   - **Done when:** the studio browser checks pass on a local Vercel build, on desktop and phone.
 - [ ] **H5 · Deploy.** The Neon database, the Vercel project, photo storage, settings, and size and rate limits.
+  - **Preparation (17 October, Codex):** [Owner setup steps](STUDIO-DEPLOY.md), `pnpm studio:preflight`, and [Vercel packaging checks](STUDIO-VERCEL-AUDIT.md). [Validation](testing/h5-deploy-prep-2026-10-17.md): 11 new tests, full workspace tests/lint/typecheck pass; the Vercel CLI requires authentication before an artifact can be checked. H4/H7 must be merged before running the final Vercel build. Provider accounts, production credentials, deployed routing/persistence and size/rate limits remain H5 work; this preparation does not tick H5.
   - **Who:** you create the free Vercel and Neon accounts or projects, an agent does the rest.
   - **Done when:** the studio answers at its address, a redeploy keeps every project, and an exported project opens in the local studio unchanged.
 - [ ] **H6 · Live with every agent, and measured.** Connect each client, update the setup notes, run the square brief in each, and measure speed and a week's use against the free limits.

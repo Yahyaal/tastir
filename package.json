@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nx run player:dev",
-    "test": "pnpm catalog && nx run-many -t test --parallel=1",
+    "test": "pnpm test:studio:preflight && pnpm catalog && nx run-many -t test --parallel=1",
     "lint": "nx run-many -t lint",
     "typecheck": "pnpm catalog && nx run-many -t typecheck",
     "build": "nx run-many -t build",
@@ -27,7 +27,9 @@
     "test:studio:browser": "playwright test --config tools/studio-playwright.config.mts",
     "contest": "node --conditions=@tastir/source --import tsx tools/studio-contest.mts",
     "studio:db:migrate": "node --conditions=@tastir/source --import tsx tools/studio-db.mts",
-    "studio:db:generate": "pnpm --dir apps/studio exec drizzle-kit generate"
+    "studio:db:generate": "pnpm --dir apps/studio exec drizzle-kit generate",
+    "studio:preflight": "node tools/studio-preflight.mjs",
+    "test:studio:preflight": "node --test --test-concurrency=1 tools/studio-preflight.spec.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

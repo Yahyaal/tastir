@@ -32,3 +32,8 @@ test-results/
 
 # Studio projects: the owner's own drawings and private photos
 /studio/
+
+# Deployment settings and local credentials
+.vercel/
+.env
+.env.*

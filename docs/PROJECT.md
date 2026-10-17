@@ -34,6 +34,8 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 **Shared Studio assistant (17 October, M2).** `pnpm studio:agent` runs the local companion and Studio at one browser address. Assistant edits and Undo use the server's revision checks and authored history, with a separate `tastir-assistant` identity. The owner has Undo mine as well as normal shared Undo/Redo. Manual changes made during an assistant save stay recoverable. The three-worker, conflict, named-copy/color/export and picture checks use a real MCP HTTP connection and real editor with simulated model replies; they do not claim a live provider evaluation. [Setup](STUDIO-SETUP.md) and [validation evidence](testing/m2-three-workers-2026-10-17.md). The hosted PRD owns completion status and task order; package extraction is M3.
 
+**Hosted deployment preparation (17 October, H5).** [The short setup guide](STUDIO-DEPLOY.md) maps provider values to Studio settings. `pnpm studio:preflight` checks configuration and database migrations without changing the database or displaying secrets. [The Vercel audit](STUDIO-VERCEL-AUDIT.md) identifies the packaging and deployed checks for the merged H4/H7 tree. H5 remains unchecked until the owner creates the accounts and the real deployment/persistence checks pass.
+
 The prioritised list is the **Next** section of the review page (`PROGRESS` in `apps/player/src/review/data.ts`), and the pattern work is in [the queue](patterns/QUEUE.md). The owner still has to:
 - answer the question on the review page about the filled wheel's colours, and look at the interlace fix;
 - decide on the four wall styles Claude recommended dropping (tasks 2.2, 2.4, 2.5 and 2.6);
