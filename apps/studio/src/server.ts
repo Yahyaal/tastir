@@ -125,7 +125,7 @@ export async function startServer(options: ServerOptions) {
           await studio.create(NewShape.parse(await body(request))),
         );
       if (parts[0] === 'contests') {
-        const root = studio.store.root;
+        const root = studio.root;
         const all = await listContests(root);
         if (method === 'GET' && !parts[1])
           return send(response, 200, all.map(blind));
@@ -214,7 +214,7 @@ export async function startServer(options: ServerOptions) {
             await studio.align(id, AlignRequest.parse(await body(request))),
           );
         if (method === 'GET' && what === 'marks')
-          return send(response, 200, studio.marks(id));
+          return send(response, 200, await studio.marks(id));
         if (method === 'POST' && what === 'marks' && !parts[3])
           return send(
             response,

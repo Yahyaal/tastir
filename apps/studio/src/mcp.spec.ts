@@ -1,5 +1,4 @@
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
+import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
@@ -12,10 +11,11 @@ import { startServer } from './server.js';
 import { Studio } from './studio.js';
 import { writeAtomic } from './store.js';
 import { loadModel } from './player.js';
+import { BACKENDS, testBackend, type BackendKind } from './testing.js';
 
 const tutorials = join(import.meta.dirname, '../../../tutorials');
 
-describe('the studio over MCP', () => {
+describe.each(BACKENDS)('the studio over MCP, with %s', (kind: BackendKind) => {
   let root: string;
   let close: () => Promise<void>;
   let client: Client;
@@ -23,10 +23,11 @@ describe('the studio over MCP', () => {
   let secret: string;
 
   beforeEach(async () => {
-    root = await mkdtemp(join(tmpdir(), 'studio-'));
+    const store = await testBackend(kind);
+    root = store.root;
     secret = randomBytes(32).toString('base64url');
     const service = await startServer({
-      studio: new Studio(root, tutorials),
+      studio: new Studio(root, tutorials, store.backend),
       secret,
     });
     url = service.url;
@@ -41,7 +42,7 @@ describe('the studio over MCP', () => {
     close = async () => {
       await client.close();
       await service.close();
-      await rm(root, { recursive: true, force: true });
+      await store.close();
     };
   });
   afterEach(() => close());
@@ -159,6 +160,7 @@ describe('the studio over MCP', () => {
     ).toMatchObject({ author: 'claude-code' });
 
     // The file Tastir opens is a normal pattern file that plays.
+    if (kind !== 'files') return;
     const file = JSON.parse(
       await readFile(join(root, project, 'pattern.json'), 'utf8'),
     );

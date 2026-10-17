@@ -1,4 +1,4 @@
-import { readFile, readdir, realpath, rm } from 'node:fs/promises';
+import { readFile, readdir, realpath } from 'node:fs/promises';
 import { join, resolve, sep } from 'node:path';
 import { createHash, randomBytes } from 'node:crypto';
 import { z } from 'zod';
@@ -23,10 +23,9 @@ import {
   type Project,
   type Receipt,
 } from './project.js';
-import { ProjectStore } from './store.js';
+import { Conflict, FileBackend, type Backend, type Mark } from './backend.js';
 import { constructionSvg, png, wallSvg, type Area } from './picture.js';
 import { imageSize, overlaySvg, type Reference } from './reference.js';
-import { writeAtomic } from './store.js';
 import { check, copyUpTo, emptyDraft, type Draft } from './player.js';
 
 /**
@@ -208,13 +207,7 @@ export interface StudioEvent {
 export type Listener = (event: StudioEvent) => void;
 
 /** A mark an agent puts on a named element, shown in Tastir until cleared. */
-export interface Mark {
-  readonly id: number;
-  readonly author: string;
-  readonly target: string;
-  readonly label: string;
-  readonly at: string;
-}
+export type { Mark };
 
 export const MarkRequest = z.strictObject({
   author: Author,
@@ -290,18 +283,16 @@ const repeated = (r: Receipt) => ({
 });
 
 export class Studio {
-  private cache = new Map<string, Project>();
   private locks = new Map<string, Promise<unknown>>();
   private listeners = new Set<Listener>();
-  private marked = new Map<string, readonly Mark[]>();
-  private nextMark = 1;
-  readonly store: ProjectStore;
+  readonly backend: Backend;
 
   constructor(
-    root: string,
+    readonly root: string,
     private tutorials: string,
+    backend?: Backend,
   ) {
-    this.store = new ProjectStore(root);
+    this.backend = backend ?? new FileBackend(root);
   }
 
   subscribe(listener: Listener) {
@@ -309,33 +300,45 @@ export class Studio {
     return () => this.listeners.delete(listener);
   }
 
-  private async load(id: string) {
-    const cached = this.cache.get(id);
-    if (cached) return cached;
-    const project = await this.store.read(id);
-    this.cache.set(id, project);
-    return project;
+  private load(id: string, drafts = 0) {
+    return this.backend.load(id, drafts);
   }
 
-  /** Runs one change of one project at a time, then saves and announces it. */
   private announce(event: StudioEvent) {
     for (const listener of this.listeners) listener(event);
   }
 
+  /**
+   * Runs one change of one project at a time in this process, saves it and
+   * announces it. When another server saved the project first (the hosted
+   * studio may run several), the change runs again on the newer project,
+   * where a stale edit is then refused as usual.
+   */
   private update(
     id: string,
     step: (p: Project) => Project,
     kind: StudioEvent['kind'] = 'drawing',
+    drafts = 0,
   ): Promise<Project> {
     const run = (this.locks.get(id) ?? Promise.resolve()).then(async () => {
-      const before = await this.load(id);
-      const next = step(before);
-      // A retried command changes nothing and is not announced.
-      if (next === before) return next;
-      await this.store.write(next);
-      this.cache.set(id, next);
-      this.announce({ project: id, revision: next.revision, kind });
-      return next;
+      for (let attempt = 0; ; attempt++) {
+        const before = await this.load(id, drafts);
+        const next = step(before);
+        // A retried command changes nothing and is not announced.
+        if (next === before) return next;
+        try {
+          await this.backend.commit(before, next);
+        } catch (e) {
+          if (e instanceof Conflict && attempt < 4) continue;
+          if (e instanceof Conflict)
+            throw new StudioError(
+              'The project is busy; try again in a moment.',
+            );
+          throw e;
+        }
+        this.announce({ project: id, revision: next.revision, kind });
+        return next;
+      }
     });
     this.locks.set(
       id,
@@ -344,13 +347,8 @@ export class Studio {
     return run;
   }
 
-  async list() {
-    return (await this.store.list()).map((p) => ({
-      id: p.id,
-      title: p.title,
-      updated: p.updated,
-      revision: p.revision,
-    }));
+  list() {
+    return this.backend.list();
   }
 
   async library() {
@@ -395,12 +393,11 @@ export class Studio {
     let id = '';
     for (;;) {
       id = `${slug(request.title)}-${randomBytes(2).toString('hex')}`;
-      if (!(await this.store.read(id).catch(() => undefined))) break;
+      if (!(await this.backend.exists(id))) break;
     }
     draft = { ...draft, id };
     const project = newProject(id, draft, request.author, request.goals ?? {});
-    await this.store.write(project);
-    this.cache.set(id, project);
+    await this.backend.create(project);
     return this.view(id);
   }
 
@@ -453,11 +450,10 @@ export class Studio {
       throw new StudioError('Use a photo under 15 MB.');
     const size = imageSize(bytes);
     const file = `reference${size.type === 'image/png' ? '.png' : '.jpg'}`;
-    const folder = this.store.folder(id);
     const before = (await this.load(id)).reference;
-    await writeAtomic(join(folder, file), bytes);
+    await this.backend.putPhoto(id, file, bytes);
     if (before && before.file !== file)
-      await rm(join(folder, before.file), { force: true });
+      await this.backend.removePhoto(id, before.file);
     const source = request.source ?? (request.path ? request.path : undefined);
     const p = await this.update(
       id,
@@ -509,7 +505,7 @@ export class Studio {
       const ref = p.reference;
       if (!ref)
         throw new StudioError('This project has no reference photo yet.');
-      const photo = await readFile(join(this.store.folder(id), ref.file));
+      const photo = await this.backend.getPhoto(id, ref.file);
       text = overlaySvg(
         ref,
         photo,
@@ -556,21 +552,27 @@ export class Studio {
 
   async travel(id: string, request: z.infer<typeof TravelRequest>) {
     let again: Receipt | undefined;
-    await this.update(id, (p) => {
-      again = repeatOf(p, request);
-      if (again) return p;
-      return keep(
-        travel(
-          p,
-          request.revision,
-          request.author,
-          request.direction,
-          request.steps,
-          request.mine,
-        ),
-        request,
-      );
-    });
+    await this.update(
+      id,
+      (p) => {
+        again = repeatOf(p, request);
+        if (again) return p;
+        return keep(
+          travel(
+            p,
+            request.revision,
+            request.author,
+            request.direction,
+            request.steps,
+            request.mine,
+          ),
+          request,
+        );
+      },
+      'drawing',
+      // Undo and Redo need the drawings they go back or forward to.
+      request.steps,
+    );
     const view = await this.view(id);
     return again ? { ...view, ...repeated(again) } : view;
   }
@@ -643,7 +645,11 @@ export class Studio {
       : { project: p.id, question: p.notes.at(-1)! };
   }
 
-  /** The answer to a question, waiting up to `seconds` for it. */
+  /**
+   * The answer to a question, waiting up to `seconds` for it. It hears an
+   * answer given through this server at once, and checks the project every
+   * second for one given through another.
+   */
   async answer(id: string, question: number, seconds: number) {
     const find = async () =>
       (await this.load(id)).notes.find((n) => n.answers === question);
@@ -653,28 +659,32 @@ export class Studio {
     if (!asked) throw new StudioError(`There is no question ${question}.`);
     const now = await find();
     if (now || seconds <= 0) return { question, answer: now ?? null };
+    const until = Date.now() + Math.min(seconds, LONGEST_WAIT) * 1000;
     return new Promise<{
       question: number;
       answer: Awaited<ReturnType<typeof find>> | null;
     }>((resolve) => {
+      let finished = false;
       const done = (answer: Awaited<ReturnType<typeof find>> | null) => {
-        clearTimeout(timer);
+        if (finished) return;
+        finished = true;
+        clearInterval(timer);
         stop();
         resolve({ question, answer });
       };
+      const look = () =>
+        void find()
+          .then((a) => (a ? done(a) : Date.now() >= until && done(null)))
+          .catch(() => done(null));
       const stop = this.subscribe((event) => {
-        if (event.project === id && event.kind === 'notes')
-          void find().then((a) => a && done(a));
+        if (event.project === id && event.kind === 'notes') look();
       });
-      const timer = setTimeout(
-        () => done(null),
-        Math.min(seconds, LONGEST_WAIT) * 1000,
-      );
+      const timer = setInterval(look, 1000);
     });
   }
 
-  marks(id: string) {
-    return { project: id, marks: this.marked.get(id) ?? [] };
+  async marks(id: string) {
+    return { project: id, marks: await this.backend.marks(id) };
   }
 
   /** Marks a named element; a newer mark on the same element replaces it. */
@@ -685,15 +695,10 @@ export class Studio {
       throw new StudioError(
         `There is no element “${request.target}” to point at. Use a name from inspect.`,
       );
-    const mark: Mark = {
-      id: this.nextMark++,
+    const mark = await this.backend.putMark(id, {
       ...request,
       at: new Date().toISOString(),
-    };
-    const kept = (this.marked.get(id) ?? []).filter(
-      (m) => m.target !== request.target,
-    );
-    this.marked.set(id, [...kept, mark].slice(-12));
+    });
     this.announce({ project: id, revision: p.revision, kind: 'marks' });
     return { project: id, mark };
   }
@@ -701,12 +706,7 @@ export class Studio {
   /** Clears marks: one author's, or everyone's. */
   async clearMarks(id: string, author?: string) {
     const p = await this.load(id);
-    this.marked.set(
-      id,
-      author
-        ? (this.marked.get(id) ?? []).filter((m) => m.author !== author)
-        : [],
-    );
+    await this.backend.clearMarks(id, author);
     this.announce({ project: id, revision: p.revision, kind: 'marks' });
     return this.marks(id);
   }

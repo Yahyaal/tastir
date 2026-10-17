@@ -46,6 +46,12 @@ Claude Code takes it with `claude mcp add --transport http tastir-studio-http <a
 
 Chat apps such as claude.ai and ChatGPT need a public address, which task H0 tries through a temporary tunnel: run `cloudflared tunnel --url http://127.0.0.1:4294` (free, no account), and add the `https://…trycloudflare.com` address it prints followed by `/mcp/<key>`. Anyone with that address can change your projects while the tunnel is open, so close it when the test is done.
 
+## Keep projects in Postgres instead
+
+The hosted studio keeps projects in Postgres, and the local studio can too, to try it: start a database (for example `docker run --rm -d -p 127.0.0.1:55432:5432 -e POSTGRES_PASSWORD=<password> postgres:17-alpine`), create its tables once with `pnpm studio:db:migrate <postgres://…>`, then start the studio with `TASTIR_STUDIO_DATABASE_URL=<postgres://…> pnpm studio`. The printed line says where projects are kept. Without that variable the studio keeps using the `studio/` folder. After a change to the tables in `apps/studio/src/pg.ts`, `pnpm studio:db:generate` writes the next migration.
+
+The studio's tests always run with folders and with an in-process Postgres (PGlite), so they need no database. To run them against a real one as well, give a database used only for tests, because its tables are emptied: `TEST_DATABASE_URL=<postgres://…> pnpm nx run studio:test`.
+
 ## Several agents on one project
 
 Agents can share a project. Give each a role in your request, for example one drafts the construction and the other checks it against the photo or the goals and posts what it finds. Each agent's changes are marked with its name in the history (set by `TASTIR_AUTHOR` above), an edit based on an old view is refused, and an agent's own Undo stops at anyone else's change.

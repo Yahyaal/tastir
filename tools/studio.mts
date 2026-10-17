@@ -5,7 +5,12 @@ import { spawn } from 'node:child_process';
 import { chmod, mkdir, readFile, rm } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Studio, startMcpHttp, startServer } from '../apps/studio/src/index.js';
+import {
+  Studio,
+  connectPostgres,
+  startMcpHttp,
+  startServer,
+} from '../apps/studio/src/index.js';
 import { writeAtomic } from '../apps/studio/src/store.js';
 
 const repo = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -42,7 +47,11 @@ if (running) {
 // The projects hold the owner's own work and may hold private photos.
 await mkdir(root, { recursive: true, mode: 0o700 });
 await chmod(root, 0o700);
-const studio = new Studio(root, join(repo, 'tutorials'));
+// With a database address the projects are kept in Postgres, as the hosted
+// studio keeps them; otherwise in the folder, as always.
+const database = process.env['TASTIR_STUDIO_DATABASE_URL'];
+const backend = database ? await connectPostgres(database, root) : undefined;
+const studio = new Studio(root, join(repo, 'tutorials'), backend);
 await studio.list();
 const secret = randomBytes(32).toString('base64url');
 const service = await startServer({ studio, secret, appOrigin: origin });
@@ -95,7 +104,7 @@ const stopped = new Promise<void>((resolve) => {
   }
 });
 process.stdout.write(
-  `\nTastir studio: ${withApp ? `${origin}/#/studio` : 'running without the app'}\nProjects are kept in ${root}\nAgents connect with tools/studio-mcp.sh, or over HTTP at\n  ${mcp.url}\n(see docs/STUDIO-SETUP.md; the address is a password, so keep it private).\n\n`,
+  `\nTastir studio: ${withApp ? `${origin}/#/studio` : 'running without the app'}\nProjects are kept in ${database ? `Postgres (${new URL(database).host})` : root}\nAgents connect with tools/studio-mcp.sh, or over HTTP at\n  ${mcp.url}\n(see docs/STUDIO-SETUP.md; the address is a password, so keep it private).\n\n`,
 );
 try {
   await stopped;
@@ -103,4 +112,5 @@ try {
   await rm(info, { force: true });
   await mcp.close();
   await service.close();
+  await studio.backend.close();
 }

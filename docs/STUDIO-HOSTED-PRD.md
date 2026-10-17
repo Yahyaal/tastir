@@ -4,7 +4,7 @@ The plan for using the studio from anywhere, on a phone or a laptop, with Claude
 
 ## At a glance
 
-- **Where it stands:** M0, M1 and H1 are done (17 October); the rest is planned.
+- **Where it stands:** M0, M1, H1 and H2 are done (17 October); Codex is on M2; the rest is planned.
 - **What happens first:** M0, merging Codex's branch and this one into main, once Codex has finished and you say go. Then M1 to M3 make the studio, the in-app assistant and outside agents work on one project, before anything is hosted.
 - **What it costs:** nothing. Every service stays on its free plan.
 - **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
@@ -42,7 +42,7 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
 - [x] **H1 · Agents over the internet.** MCP over HTTP at `/mcp` beside today's local one; `ask` returns a question number at once and `wait_for_answer` waits at most 45 seconds; every change carries a command ID so a retry is never applied twice; smaller pictures, labelled as the server's drawing.
   - **Who:** an agent.
   - **Done when:** a test client over HTTP builds the square brief; `ask` returns at once and the answer arrives through `wait_for_answer`; a retried edit returns the first result without editing twice, and a reused ID with different content is refused; every default picture is under 100,000 base64 characters.
-- [ ] **H2 · Projects in a database.** The studio can keep projects in files (as now) or in Postgres; nothing is kept in memory between requests.
+- [x] **H2 · Projects in a database.** The studio can keep projects in files (as now) or in Postgres; nothing is kept in memory between requests.
   - **Who:** an agent.
   - **Done when:** every studio test passes with both; of two edits based on the same revision, one is saved and the other refused whole; and the edit, its history entry and its command receipt are saved in one transaction.
 - [ ] **H3 · Sign-in.** You sign in with Google; agents sign in with OAuth and you approve each one; each connection has a lasting identity that owns its edits; a Connections page lists them, renames them and can revoke any.
