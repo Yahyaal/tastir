@@ -4,6 +4,7 @@ import {
   fireEvent,
   render,
   screen,
+  within,
 } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import App, { Play } from './app';
@@ -80,9 +81,11 @@ describe('saving a design', () => {
     click('Next');
     expect(label()).toBe('Repeat');
     const colored = fills();
-    fireEvent.change(screen.getByLabelText('Style'), {
-      target: { value: 'strapwork' },
-    });
+    fireEvent.click(
+      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+        name: 'Strapwork',
+      }),
+    );
     expect(screen.getByText('Test', { selector: 'b' })).toBeTruthy();
     click('Save');
     expect(listDesigns()).toHaveLength(1);
@@ -98,9 +101,11 @@ describe('saving a design', () => {
     render(<App />);
     expect(label()).toBe('Color');
     expect(fills()).toEqual(colored);
-    expect(screen.getByLabelText<HTMLSelectElement>('Style').value).toBe(
-      'strapwork',
-    );
+    expect(
+      within(screen.getByRole('group', { name: 'Style' }))
+        .getByRole('button', { name: 'Strapwork' })
+        .getAttribute('aria-pressed'),
+    ).toBe('true');
     expect(screen.getByText('Test', { selector: 'b' })).toBeTruthy();
     click('Go to ink');
     click('Make your own');

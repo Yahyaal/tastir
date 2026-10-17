@@ -26,11 +26,12 @@ const StudioPage = import.meta.env.DEV
     )
   : undefined;
 
-const AgentHost = import.meta.env.DEV
-  ? lazy(() =>
-      import('../agent/AgentHost').then((m) => ({ default: m.AgentHost })),
-    )
-  : undefined;
+const AgentHost =
+  import.meta.env.DEV && import.meta.env.VITE_TASTIR_AGENT
+    ? lazy(() =>
+        import('../agent/AgentHost').then((m) => ({ default: m.AgentHost })),
+      )
+    : undefined;
 
 /**
  * The project notes (#/notes): the docs a new session reads first, shown in

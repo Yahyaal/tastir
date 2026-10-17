@@ -17,6 +17,7 @@
     "name": "agent-protocol"
   },
   "dependencies": {
+    "@tastir/schema": "workspace:*",
     "zod": "^4.6.5"
   }
 }

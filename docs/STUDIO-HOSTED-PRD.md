@@ -4,7 +4,7 @@ The plan for using the studio from anywhere, on a phone or a laptop, with Claude
 
 ## At a glance
 
-- **Where it stands:** M1 and H1 are done (16 October); M0 is half done (Codex's side); the rest is planned.
+- **Where it stands:** M0, M1 and H1 are done (17 October); the rest is planned.
 - **What happens first:** M0, merging Codex's branch and this one into main, once Codex has finished and you say go. Then M1 to M3 make the studio, the in-app assistant and outside agents work on one project, before anything is hosted.
 - **What it costs:** nothing. Every service stays on its free plan.
 - **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
@@ -24,7 +24,7 @@ A ticked box is decided.
 
 Done in this order, one commit each. A ticked box is done; whoever finishes a task ticks it here in the same commit, and an unticked box means planned, not started. H1 to H4 will be built and tested on this computer against a local Postgres, so only H5 needs the accounts.
 
-- [ ] **M0 · Merge the branches.** Codex's agent branches go into main, then `claude/studio` is rebased onto main and merged.
+- [x] **M0 · Merge the branches.** Codex's agent branches go into main, then `claude/studio` is rebased onto main and merged.
   - **Who:** you decide when, an agent does it.
   - **Done when:** main holds both, and the full test, lint, typecheck and browser checks pass. Codex's old copy of `docs/STUDIO-PLAN.md` and its extra "Studio plan" tab are dropped in favour of `claude/studio`'s.
 - [x] **M1 · Never lose your unsaved change.** When an agent saves first, the studio page today drops your pending change and wrongly says Undo brings it back. It will keep that change, explain what happened, and offer to retry it against the latest drawing or keep it as a copy.

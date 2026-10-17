@@ -118,3 +118,7 @@ Three tool changes go with it. `ask` returns the question number at once, and `w
 
 Not done here: `new_project` takes no command id yet, so a retried `new_project` can make a second project.
 
+## M0: the studio merged into main (17 October)
+
+Codex merged GitHub's main (the wall panel, PR #13) and its assistant branch into main first. `claude/studio` was then merged on top. Three files conflicted: `app.tsx` and `Notes.tsx` kept both sides, and `Editor.tsx` now uses Codex's editor history (`editDraft`, `travelDraft`) with the studio's shared drawing on top. An arriving studio drawing goes into that history like any other change. The merged tree's first studio browser run failed one test, on desktop and phone: Undo in the editor stopped reaching the studio when it went back to exactly the drawing that had last arrived, because the editor only saved a drawing that differed from the arrived one. It now saves anything that differs from what the studio last had. Every check then passed: typecheck, lint, unit tests, the player browser checks (151), the studio browser checks (14) and the assistant browser checks (126).
+

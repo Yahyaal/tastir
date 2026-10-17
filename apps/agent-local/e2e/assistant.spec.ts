@@ -1,3 +1,4 @@
+import { sendCurrentView, prepareRequest } from './chatHelpers';
 import { test, expect, type Page, type Route } from '@playwright/test';
 import sharp from 'sharp';
 import type { Construction } from '@tastir/agent-protocol';
@@ -90,6 +91,9 @@ test('constructs from O and A, uses new intersections for ink, protects dependen
   await page.route('**/__agent/turn/continue', async (route) => {
     const body = route.request().postDataJSON();
     expect(body.results[0].ok).toBe(true);
+    expect(
+      await page.locator('.agent-board').getAttribute('data-agent-revision'),
+    ).toBe(body.snapshot.documentRevision.split(':').at(-1));
     expect(body.snapshot.image).not.toBe(image);
     image = body.snapshot.image;
     expect(
@@ -133,7 +137,7 @@ test('constructs from O and A, uses new intersections for ink, protects dependen
     .getByRole('combobox', { name: 'Construction', exact: true })
     .selectOption('agent-blank');
   await page.getByRole('button', { name: 'Use compass request' }).click();
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect(page.locator('.agent-answer')).toHaveText(
     'The compass construction and its side are drawn.',
   );
@@ -201,7 +205,7 @@ test('an ambiguous intersection rejects the entire construction batch', async ({
   await page
     .getByRole('combobox', { name: 'Construction', exact: true })
     .selectOption('agent-blank');
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect(page.locator('.agent-answer')).toHaveText(
     'Choose which crossing to use.',
   );
@@ -230,7 +234,7 @@ for (const intervention of ['selection', 'stop'] as const) {
     await page
       .getByRole('combobox', { name: 'Construction', exact: true })
       .selectOption('agent-blank');
-    await page.getByRole('button', { name: 'Send current view' }).click();
+    await sendCurrentView(page);
     await expect.poll(() => !!pending).toBe(true);
     const { snapshot } = pending!.request().postDataJSON();
     if (intervention === 'stop')
@@ -284,11 +288,11 @@ test('draws four editable sides, sends the resulting image, undoes in one step a
   });
   await page.goto('/#/agent');
   await page.getByRole('button', { name: 'Use square request' }).click();
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect(page.locator('.agent-answer')).toHaveText(
     'The four sides are drawn.',
   );
-  await expect(page.getByText(/Drawing updated:/)).toBeVisible();
+  await expect(page.locator('.agent-action-receipts')).toHaveCount(1);
   await page.getByRole('button', { name: 'Undo drawing edit' }).click();
   await expect(page.locator('.ink-piece.inked')).toHaveCount(0);
   await page.getByRole('button', { name: 'Redo drawing edit' }).click();
@@ -341,7 +345,7 @@ for (const intervention of ['selection', 'stop'] as const) {
       });
     });
     await page.goto('/#/agent');
-    await page.getByRole('button', { name: 'Send current view' }).click();
+    await sendCurrentView(page);
     await expect.poll(() => !!pending).toBe(true);
     const { snapshot } = pending!.request().postDataJSON();
     if (intervention === 'stop')
@@ -433,10 +437,11 @@ test('sends a real board PNG and acknowledges the displayed highlight before con
     });
   });
   await page.goto('/#/agent');
+  await prepareRequest(page);
   await expect(
     page.getByRole('button', { name: 'Send current view' }),
   ).toBeEnabled();
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect(page.locator('.agent-answer')).toHaveText(
     'I have highlighted the center.',
   );
@@ -447,7 +452,7 @@ test('sends a real board PNG and acknowledges the displayed highlight before con
   expect(meta.width).toBeGreaterThan(200);
   const stats = await decoded.stats();
   expect(stats.channels[0]!.stdev).toBeGreaterThan(2);
-  await expect(page.getByText(/Live check completed:/)).toBeVisible();
+  await expect(page.locator('.agent-action-receipts')).toBeVisible();
   const svg = page.getByRole('img', { name: 'The construction so far' });
   await svg.scrollIntoViewIfNeeded();
   const before = await svg.getAttribute('viewBox');
@@ -480,7 +485,7 @@ test('rejects a reply based on an older selection', async ({ page }) => {
     });
   });
   await page.goto('/#/agent');
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect.poll(() => !!pending).toBe(true);
   const snapshot = pending!.request().postDataJSON().snapshot;
   await page
@@ -524,7 +529,7 @@ test('Stop prevents late responses from marking the board', async ({
     return route.fulfill({ json: {} });
   });
   await page.goto('/#/agent');
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect.poll(() => !!pending).toBe(true);
   await page.getByRole('button', { name: 'Stop', exact: true }).click();
   const snapshot = pending!.request().postDataJSON().snapshot;
@@ -547,6 +552,7 @@ test('Stop prevents late responses from marking the board', async ({
       },
     })
     .catch(() => undefined);
+  await prepareRequest(page);
   await expect(
     page.getByRole('button', { name: 'Send current view' }),
   ).toBeEnabled();
@@ -720,7 +726,7 @@ test('draws, repeats and colors with fresh wall images, Undo and a saved playabl
   await page
     .getByRole('button', { name: 'Use repeat and color request' })
     .click();
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect(page.locator('.agent-answer')).toHaveText(
     'Repeated and colored.',
   );
@@ -814,7 +820,7 @@ test('stale tile and color commands cannot mutate the drawing', async ({
   });
   await page.goto('/#/agent');
   for (command of ['set_tile', 'paint_pattern']) {
-    await page.getByRole('button', { name: 'Send current view' }).click();
+    await sendCurrentView(page);
     await expect(page.locator('.agent-answer')).toHaveText(
       'Rejected stale edit.',
     );

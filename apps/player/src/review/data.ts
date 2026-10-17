@@ -1812,9 +1812,57 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '15 October 2026',
+  updated: '16 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'The wall panel: style and band width back at the top',
+      text: 'On 13 October the colours were put first at the colour stage, and since the finished wall counts as that stage, Style and Band slid below the screen. On the finished wall the panel now opens with the wall: its five styles as buttons that each show your own pattern and colours in that style, the band or grout width with its value, and the original photo as a toggle beside them. The palettes come first in Colors, as one-click strips half as tall, and the paper size sits beside Print as two buttons.',
+      link: {
+        label: 'See it on a finished wall',
+        href: '#/alhambra-comares-dado/result',
+      },
+    },
+    {
+      title: 'AI.2a: colorful companion and useful error recovery',
+      text: 'The smiling zellige star uses Tastir’s theme colors. Confirmed usage limits, temporary usage-check failures and account restrictions now have separate explanations. Manage usage is directly beside recovery controls, editing the prompt does not resend it, and earlier changes survive a later service failure. This phone preview uses simulated responses.',
+      link: {
+        label: 'See the new companion on a phone',
+        href: '/__review/renders/assistant-feedback/phone-dark.png',
+      },
+    },
+    {
+      title: 'AI.2–3: compact chat and normal drawing tools',
+      text: 'The toolbar companion opens a real conversation without covering Save. Follow-ups survive navigation and closing. It can create and edit normal patterns, ink, choose repeats, color shapes/rings/positions, save named copies and use the real Undo history. Assistant-only Undo protects manual work. This responsive preview uses simulated replies with the real app.',
+      link: {
+        label: 'See the phone chat',
+        href: '/__review/renders/assistant-chat/phone.png',
+      },
+    },
+    {
+      title: 'Chat in the dark theme',
+      text: 'The companion uses the existing theme colors, accessible buttons and a fixed composer. Earlier messages scroll above the input. Keyboard Enter sends, Shift+Enter adds a line, and touch Enter stays multiline. Escape closes the panel and returns focus to its toolbar icon.',
+      link: {
+        label: 'See the dark desktop chat',
+        href: '/__review/renders/assistant-chat/desktop-dark.png',
+      },
+    },
+    {
+      title: 'AI.1: normal wall colors, Undo and saving',
+      text: 'You chose one-square-thick borders: black 1×1, teal out to 3×3, blue to 5×5 and orange to 7×7. The assistant now applies this repeating motif to the normal Squares and stars wall while preserving its stars and connecting bands. One Undo reverses the whole request; Redo restores it. Normal saving, sharing and SVG export keep the colors. Live GPT-6.1-Sol completed coloring, Undo and Redo. All 108 assistant browser checks and 151 production browser checks passed (17 production skips), along with full unit tests, lint, TypeScript and build. Checks ran sequentially with one worker and bounded memory.',
+      link: {
+        label: 'See the actual live Redo result',
+        href: '/__review/renders/agent-square-colors/live-redo.png',
+      },
+    },
+    {
+      title: 'AI.1: Claude’s review and two additional fixes',
+      text: 'The sending notice now names saved pattern/design titles, and review/notes text is excluded. Malformed calls can be corrected; follow-ups keep bounded text context while only the latest image is resent. Account UI is separate, the launcher requires the companion, tool guidance is clearer, and the model list has a short cache. Expanded checks also exposed and fixed a stale-image capture race and a build-mode issue that included Notes in production. Branch cleanup, keyring storage, remote access-token revocation and the larger workspace split remain tracked follow-ups. The setup guide records the responsive captures and remaining visual refinements.',
+      link: {
+        label: 'Read the checks and current limits',
+        href: '/#/notes/agent-setup',
+      },
+    },
     {
       title: 'AI agent: points on normal editor and tutorial screens',
       text: 'Ask it to point at centre O, a visible wall or unit piece, or a named page button. The marker uses the actual drawing and follows zoom and scrolling; pointing at a control does not press it. Live ChatGPT checks passed for a tutorial point, an editor point and a control. All 36 affected browser checks passed on desktop, tablet and phone, along with the full unit suite, lint, TypeScript and production build. The earlier complete browser run was interrupted by the crash and is not counted as passing. Checks now run one at a time with bounded memory. This picture shows the actual live editor result.',
@@ -2159,14 +2207,17 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI agent: pointing on normal screens is working',
-    text: 'Open a saved pattern’s editor or pause a tutorial, press Open drawing assistant, and ask “Point at the centre O” or name a visible button. You should see a marker on the page. Clear page highlight removes it. Geometry hidden by the panel or not yet drawn is excluded. Phone and dark-tablet views were checked. Editing the normal drawing by request is the next milestone; drawing commands still use the assistant workspace.',
-    link: { label: 'Open the setup guide', href: '/#/notes/agent-setup' },
+    title: 'AI.2a: a zellige companion and clearer chat errors',
+    text: 'The robot is now a smiling eight-point tile in cobalt, turquoise and gold, using Tastir’s colors in both themes. Your screenshot exposed an error-labeling bug: a temporary usage-check failure was being called a usage limit. Those cases now have different explanations. A confirmed app or plan limit shows Manage usage directly. Earlier edits and action records are kept, and the same error is no longer shown twice. All 46 companion unit checks and all 15 chat browser checks passed, along with full workspace tests, lint, TypeScript and a fresh production build. Checks ran sequentially with one worker. This preview uses simulated responses.',
+    link: {
+      label: 'See the new companion and error recovery',
+      href: '/__review/renders/assistant-feedback/desktop-dark.png',
+    },
   },
   next: [
     {
-      title: 'AI agent: edit the drawing you have open',
-      text: 'Connect drawing commands to the normal editor, with each request recorded in its Undo history and a fresh view confirming the result. Ring and individual placement colors, broader construction tools and automatic saving remain later phases.',
+      title: 'AI agent: broader live evaluation and local release',
+      text: 'Exercise more original construction requests and recovery cases, then finish account recovery, credential storage and local packaging. The chat and normal drawing/coloring tools are implemented; the wider generation evaluation remains.',
       link: { label: 'Read the remaining phases', href: '/#/notes/agent' },
     },
     {

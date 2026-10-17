@@ -136,3 +136,18 @@ Work on branch `review-screenshots` (worktree `../Tastir-review`), merged into m
 
 Later phases (AI pipeline, accounts and library, learning features, designers) are described in `docs/PRD.md`.
 
+
+## Local AI assistant
+
+The delivered milestones and their live/automated evidence are in [AI agent setup](AI-AGENT-SETUP.md). These tasks track the remaining work without deleting the unmerged milestone branches.
+
+- [x] **AI.1 Normal-page square-band coloring and review fixes.** Connect a checked concentric-square command to the current result page and its color Undo history. Clarify band sizes, preserve other shapes, save/reload/share the new coloring data, reject stale/stopped replies, and address the applicable items in [Claude’s review](AI-AGENT-REVIEW.md).
+  *Done when:* the Squares and stars wall shows a black centre and teal/blue/orange one-cell borders, one Undo reverses the request, Redo restores it, a saved design reloads identically, and required checks pass with one worker.
+- [x] **AI.2 Chat companion and editing the open normal drawing.** Use a compact toolbar icon and a real conversation thread with a fixed composer, Stop, New conversation and accessible close/focus behavior. Separate chat presentation and transcript state from the drawing UI. Reuse the normal editor’s commands and history, with author/request labels, autosave and a fresh image after each batch.
+  *Done when:* a request edits the actual saved-pattern editor, protects a later manual edit, and Undo/Redo and saving preserve the expected geometry.
+- [x] **AI.2a Companion icon and service-error recovery.** Replace the robot with a theme-aware zellige star; distinguish confirmed usage limits from unavailable usage checks, expose Manage usage on confirmed limits, and preserve earlier edits and action records when later inference fails.
+  *Done when:* exact HTTP/SSE error classifications and chat recovery pass; desktop/tablet/phone previews show the new icon and retain the prompt; full tests, lint and TypeScript pass sequentially.
+- [x] **AI.3 Broader coloring and named saves.** Add named rosette rings, individual positions in the color repeat, shape palettes, shared square borders and new named saves through the existing storage paths.
+  *Done when:* only a selected ring/piece changes, surrounding colors remain unchanged, and save/export/share round-trip the result.
+- [ ] **AI.4 Local release and distribution.** Finish bounded repair and generation checks, account recovery, credential keyring storage, and wider live evaluation; review merging before pruning contained branches.
+  *Done when:* the acceptance scenarios in the AI plan pass, startup is clear on desktop and phone, and the owner reviews the release evidence.

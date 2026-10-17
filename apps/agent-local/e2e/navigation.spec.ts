@@ -1,3 +1,4 @@
+import { sendCurrentView, prepareRequest } from './chatHelpers';
 import { test, expect, type Page, type Route } from '@playwright/test';
 const runId = '55c4c0a2-487f-4c25-a25d-79518ef86021';
 async function connected(page: Page) {
@@ -21,7 +22,7 @@ const navigate = (
   snapshot: { id: string; documentRevision: string },
   destinationId: string,
 ) => ({
-  id: 'go',
+  id: `go-${snapshot.id}`,
   name: 'navigate',
   arguments: {
     snapshotId: snapshot.id,
@@ -109,16 +110,14 @@ test('navigates across real pages, captures the destination, and returns to the 
     });
   });
   await page.goto('/#/agent');
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect(page.locator('.agent-answer')).toHaveText(
     'Returned with your drawing.',
   );
   await expect(page.locator('.agent-edits h2')).toHaveText(
     'Your drawing · 4 sides',
   );
-  await expect(page.locator('.agent-activity')).toContainText(
-    'Navigation completed:',
-  );
+  await expect(page.locator('.agent-action-receipts')).toHaveCount(1);
   await expect(page.locator('.agent-board svg.wall')).toBeVisible();
   await page.getByRole('button', { name: 'Undo drawing edit' }).click();
   await expect(
@@ -158,7 +157,7 @@ test('opens the assistant on a normal page and rejects a stale or stopped naviga
   });
   await page.goto('/#/work');
   await page.getByRole('button', { name: 'Open drawing assistant' }).click();
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect.poll(() => !!pending).toBe(true);
   let snapshot = pending!.request().postDataJSON().snapshot;
   expect(snapshot.image).toBeNull();
@@ -180,7 +179,7 @@ test('opens the assistant on a normal page and rejects a stale or stopped naviga
   await expect(page.locator('.agent-answer')).toContainText('page changed');
   await expect(page).toHaveURL(/#\/work$/);
   pending = undefined;
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect.poll(() => !!pending).toBe(true);
   snapshot = pending!.request().postDataJSON().snapshot;
   await page.getByRole('button', { name: 'Close drawing assistant' }).click();
@@ -190,6 +189,7 @@ test('opens the assistant on a normal page and rejects a stale or stopped naviga
     })
     .catch(() => undefined);
   await page.getByRole('button', { name: 'Open drawing assistant' }).click();
+  await prepareRequest(page);
   await expect(
     page.getByRole('button', { name: 'Send current view' }),
   ).toBeEnabled();
@@ -251,7 +251,7 @@ test('navigates to saved editor and playable wall destinations', async ({
     }
   });
   await page.getByRole('button', { name: 'Open drawing assistant' }).click();
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect(page.locator('.agent-answer')).toHaveText('Saved wall opened.');
 });
 
@@ -293,7 +293,7 @@ test('navigation honors the normal unsaved-design question and preserves the cha
     });
   });
   await page.getByRole('button', { name: 'Open drawing assistant' }).click();
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   const dialog = page.getByRole('alertdialog', { name: 'Unsaved changes' });
   await expect(dialog).toBeVisible();
   await expect(page).toHaveURL(address);
@@ -339,7 +339,7 @@ test('returning from the editor preserves its changes and saves the assistant ve
     r.fulfill({ json: { runId, text: 'Square drawn.', calls: [] } }),
   );
   await page.goto('/#/agent');
-  await page.getByRole('button', { name: 'Send current view' }).click();
+  await sendCurrentView(page);
   await expect(page.locator('.agent-answer')).toHaveText('Square drawn.');
   await page
     .getByRole('button', { name: 'Keep in My patterns', exact: true })

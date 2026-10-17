@@ -6,6 +6,15 @@ import {
   type ToolResult,
 } from '@tastir/agent-protocol';
 
+export class AgentRequestError extends Error {
+  constructor(
+    message: string,
+    readonly code: string,
+  ) {
+    super(message);
+  }
+}
+
 export class AgentClient {
   private tab = crypto.randomUUID();
   private runId: string | null = null;
@@ -27,10 +36,11 @@ export class AgentClient {
       );
     const value: unknown = await response.json();
     if (!response.ok) {
-      const error = value as { error?: { message?: string } };
-      throw new Error(
+      const error = value as { error?: { message?: string; code?: string } };
+      throw new AgentRequestError(
         error.error?.message ??
           'The local assistant could not complete the request.',
+        error.error?.code ?? 'local_error',
       );
     }
     return value;
@@ -75,5 +85,10 @@ export class AgentClient {
     const runId = this.runId;
     this.runId = null;
     if (runId) await this.request('/turn/cancel', { runId });
+  }
+  async resetConversation() {
+    await this.stop();
+    await this.request('/conversation/reset', {});
+    this.tab = crypto.randomUUID();
   }
 }

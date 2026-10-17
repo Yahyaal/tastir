@@ -8,6 +8,29 @@ export class AgentError extends Error {
   }
 }
 
+/** Only exact documented codes identify a plan restriction; never reflect upstream text. */
+export function planError(code: unknown): AgentError | undefined {
+  if (code === 'subscription_sharing_usage_limit_exceeded')
+    return new AgentError(
+      'usage_limit',
+      'ChatGPT reported a usage limit for this app or your plan. Check Manage usage before trying again.',
+      429,
+    );
+  if (code === 'subscription_sharing_usage_unavailable')
+    return new AgentError(
+      'usage_unavailable',
+      'OpenAI could not check ChatGPT usage right now. Wait a moment before trying again. This does not confirm that your allowance is used up.',
+      503,
+    );
+  if (code === 'subscription_sharing_user_not_eligible')
+    return new AgentError(
+      'plan_unavailable',
+      'ChatGPT plan usage is unavailable for this account or workspace. Check its plan access and policies.',
+      403,
+    );
+  return undefined;
+}
+
 /** Upstream bodies and exceptions can contain credentials; never reflect them. */
 export function publicError(error: unknown) {
   return error instanceof AgentError

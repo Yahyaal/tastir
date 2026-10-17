@@ -216,8 +216,9 @@ export function Wall({
               fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
             });
           });
-        for (const s of pattern.ink)
-          lines.push([move(s.segment.a), move(s.segment.b)]);
+        if (banded(style) || jali || finish.carved)
+          for (const s of pattern.ink)
+            lines.push([move(s.segment.a), move(s.segment.b)]);
         // The patches are already placed in tile (i, j).
         if (style === 'interlace')
           for (const p of patchesAt(pattern, i, j, groutWidth * 4)) {
@@ -227,7 +228,7 @@ export function Wall({
       }
     }
     return { pieces: out, lines, over, overIn };
-  }, [pattern, tile, fill, colors, jali, style, groutWidth]);
+  }, [pattern, tile, fill, colors, jali, style, groutWidth, finish.carved]);
   const bandPath = useMemo(
     () =>
       shifted.lines.map(([a, b]) => `M${a.x} ${a.y}L${b.x} ${b.y}`).join(''),

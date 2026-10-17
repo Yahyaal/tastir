@@ -1,3 +1,5 @@
+import type { SquareBands } from '@tastir/schema';
+import type { HistoryAction } from '@tastir/agent-protocol';
 import type { PieceType } from '@tastir/engine';
 import type { Model } from './model';
 
@@ -249,6 +251,7 @@ export type Method = 'rings' | 'shape' | 'place';
  * rings, and, when the learner changed them, how the wall is coloured and
  * how many rosettes take turns before it repeats. */
 export interface Coloring {
+  readonly squareBands?: SquareBands;
   readonly palette: string;
   readonly chosen: Readonly<Record<string, string>>;
   readonly method?: Method;
@@ -287,6 +290,8 @@ export function pieceColors(
 
 /** A coloring with its undo and redo history. */
 export interface History {
+  readonly pastActions?: readonly HistoryAction[];
+  readonly futureActions?: readonly HistoryAction[];
   readonly past: readonly Coloring[];
   readonly now: Coloring;
   readonly future: readonly Coloring[];
@@ -295,7 +300,11 @@ export interface History {
 export type ColorAction =
   | { readonly kind: 'paint'; readonly type: string; readonly color: string }
   | { readonly kind: 'palette'; readonly palette: string }
-  | { readonly kind: 'reset'; readonly to: Coloring }
+  | {
+      readonly kind: 'reset';
+      readonly to: Coloring;
+      readonly author?: HistoryAction;
+    }
   | { readonly kind: 'undo' }
   | { readonly kind: 'redo' };
 
@@ -304,7 +313,27 @@ export function colorReducer(h: History, action: ColorAction): History {
   const change = (now: Coloring): History =>
     JSON.stringify(now) === JSON.stringify(h.now)
       ? h
-      : { past: [...h.past, h.now], now, future: [] };
+      : {
+          past: [...h.past, h.now],
+          now,
+          future: [],
+          pastActions: [
+            ...(h.pastActions ??
+              h.past.map(() => ({
+                source: 'unknown' as const,
+                requestId: null,
+                label: 'Earlier color edit',
+              }))),
+            action.kind === 'reset' && action.author
+              ? action.author
+              : {
+                  source: 'manual',
+                  requestId: null,
+                  label: 'Manual color edit',
+                },
+          ],
+          futureActions: [],
+        };
   switch (action.kind) {
     case 'paint': {
       // A whole shape painted drops the colors chosen for its placements
@@ -319,11 +348,19 @@ export function colorReducer(h: History, action: ColorAction): History {
       return change({
         ...h.now,
         chosen: { ...chosen, [action.type]: action.color },
+        ...(h.now.squareBands?.typeId === action.type
+          ? { squareBands: undefined }
+          : {}),
       });
     }
     case 'palette':
       // A new palette recolors everything; single choices are dropped.
-      return change({ ...h.now, palette: action.palette, chosen: {} });
+      return change({
+        ...h.now,
+        squareBands: undefined,
+        palette: action.palette,
+        chosen: {},
+      });
     case 'reset':
       return change(action.to);
     case 'undo': {
@@ -333,13 +370,35 @@ export function colorReducer(h: History, action: ColorAction): History {
             past: h.past.slice(0, -1),
             now: before,
             future: [h.now, ...h.future],
+            pastActions: h.pastActions?.slice(0, -1),
+            futureActions: [
+              h.pastActions?.at(-1) ?? {
+                source: 'unknown',
+                requestId: null,
+                label: 'Earlier color edit',
+              },
+              ...(h.futureActions ?? []),
+            ],
           }
         : h;
     }
     case 'redo': {
       const after = h.future[0];
       return after
-        ? { past: [...h.past, h.now], now: after, future: h.future.slice(1) }
+        ? {
+            past: [...h.past, h.now],
+            now: after,
+            future: h.future.slice(1),
+            pastActions: [
+              ...(h.pastActions ?? []),
+              h.futureActions?.[0] ?? {
+                source: 'unknown',
+                requestId: null,
+                label: 'Earlier color edit',
+              },
+            ],
+            futureActions: h.futureActions?.slice(1),
+          }
         : h;
     }
   }

@@ -1,3 +1,4 @@
+import { registerPageColoring } from '../agent/pageColoring';
 import { DEFAULT_JALI, sameJali } from './jali';
 import { JaliControls } from './JaliControls';
 import { ExploreNext } from './ExploreNext';
@@ -22,10 +23,12 @@ import {
   pieceColors,
   tutorialColoring,
   type History,
+  type ColorAction,
+  typeKey,
 } from './coloring';
-import { type Design } from './designs';
+import { addDesign, type Design } from './designs';
 import { draftOf, forgetDraft, keepDraft } from './drafts';
-import { Construction, RepeatedInk } from './drawing';
+import { Construction, RepeatedInk, Thumbnail } from './drawing';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
 import {
   asPanel,
@@ -50,6 +53,7 @@ import {
   colorRepeat,
   colouredModel,
   placeFills,
+  paintChosen,
   placeKey,
   ringsFor,
 } from './placement';
@@ -61,6 +65,7 @@ import { useCamera } from './useCamera';
 import { useInking } from './useInking';
 import { useModalFocus } from './useModalFocus';
 import { banded, Wall, WALL_STYLES, type WallStyle } from './Wall';
+import { WallControls } from './WallControls';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
 import { setStayGuard } from './routing';
@@ -158,6 +163,8 @@ function sameDesign(
     design.coloring.palette === now.coloring.palette &&
     design.coloring.method === now.coloring.method &&
     design.coloring.rosettes === now.coloring.rosettes &&
+    JSON.stringify(design.coloring.squareBands) ===
+      JSON.stringify(now.coloring.squareBands) &&
     sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
     design.look === now.look &&
     design.grout === now.grout &&
@@ -261,7 +268,7 @@ export function Player({
     () => (inking.editing ? inking.shown : asPanel(inking.shown)),
     [inking.editing, inking.shown],
   );
-  const [colorHistory, colorDispatch] = useReducer(
+  const [colorHistory, rawColorDispatch] = useReducer(
     colorReducer,
     model,
     (m): History => ({
@@ -281,6 +288,36 @@ export function Player({
     () => colouredModel(inking.shown, colorHistory.now),
     [inking.shown, colorHistory.now],
   );
+  const colorDispatch = (action: ColorAction) => {
+    const bandType = colorHistory.now.squareBands?.typeId;
+    const replacesBands =
+      action.kind === 'paint' &&
+      !!bandType &&
+      inking.shown.pattern.types.some(
+        (type) => type.name === bandType && typeKey(type) === action.type,
+      );
+    if (
+      action.kind === 'paint' &&
+      (replacesBands ||
+        Object.keys(colorHistory.now.chosen).some((key) =>
+          key.includes('#placement'),
+        ))
+    ) {
+      rawColorDispatch({
+        kind: 'reset',
+        to: {
+          ...colorHistory.now,
+          chosen: paintChosen(
+            coloured,
+            colorHistory.now,
+            action.type,
+            action.color,
+          ),
+          ...(replacesBands ? { squareBands: undefined } : {}),
+        },
+      });
+    } else rawColorDispatch(action);
+  };
   const colors = useMemo(
     () => pieceColors(coloured, colorHistory.now),
     [coloured, colorHistory.now],
@@ -289,7 +326,7 @@ export function Player({
   const fill = useMemo(
     () =>
       byPlace(coloured) ? placeFills(coloured, colorHistory.now) : undefined,
-    [coloured, colorHistory.now],
+    [coloured, colorHistory.now, inking.shown],
   );
   const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
   // The colour a click paints with, when colouring ring by ring.
@@ -303,6 +340,24 @@ export function Player({
   const [wallStyle, setWallStyle] = useState<WallStyle>(
     opened?.look ?? draft?.look ?? tutorial.pattern.look ?? 'tiles',
   );
+  useLayoutEffect(() => {
+    if (
+      !import.meta.env.DEV ||
+      !import.meta.env.VITE_TASTIR_AGENT ||
+      stage.kind !== 'color'
+    )
+      return;
+    return registerPageColoring({
+      model: inking.shown,
+      history: colorHistory,
+      style: wallStyle,
+      selected: place,
+      // A named copy does not switch the active design or its route/history.
+      saveNew: (name) => addDesign({ ...designFields(), name }),
+      dispatch: colorDispatch,
+      route: decodeURIComponent(window.location.hash.replace(/^#\/?/, '')),
+    });
+  });
   const [grout, setGrout] = useState(opened?.grout ?? draft?.grout ?? 1);
   const [jali, setJali] = useState(opened?.jali ?? draft?.jali ?? DEFAULT_JALI);
   // The design being worked on: the one opened, or the last one saved.
@@ -825,6 +880,49 @@ export function Player({
     copies === 'wall' &&
     (colourFirst ? stage.kind === 'repeat' : stage.kind === 'color');
 
+  // The style samples show a few pieces round the middle of the pattern,
+  // about a dozen whatever their size (at most a little over one repeat),
+  // so grout, bands, the weave and the lattice can be told apart.
+  const sampleView = useMemo(() => {
+    const { cell, pieces } = inking.shown.pattern;
+    const x = cell.origin.x + (cell.u.x + cell.v.x) / 2;
+    const y = cell.origin.y + (cell.u.y + cell.v.y) / 2;
+    const area = Math.abs(cell.u.x * cell.v.y - cell.u.y * cell.v.x);
+    const piece = Math.sqrt(area / Math.max(1, pieces.length));
+    const r = Math.min(
+      2 * piece,
+      0.8 *
+        Math.max(
+          Math.hypot(cell.u.x, cell.u.y),
+          Math.hypot(cell.v.x, cell.v.y),
+        ),
+    );
+    return { minX: x - r, minY: y - r, maxX: x + r, maxY: y + r };
+  }, [inking.shown]);
+  // Drawn once per pattern, colouring and finish, not on every slide of
+  // the width or point at a ring.
+  const styleSamples = useMemo(
+    () =>
+      onWall
+        ? Object.fromEntries(
+            WALL_STYLES.map((look) => [
+              look,
+              <Thumbnail
+                key={look}
+                model={inking.shown}
+                coloring={colorHistory.now}
+                look={look}
+                // Bands drawn wider than the wall's, so they read at
+                // button size.
+                grout={banded(look) ? 2 : 1}
+                jali={jali}
+                view={sampleView}
+              />,
+            ]),
+          )
+        : undefined,
+    [onWall, inking.shown, colorHistory.now, jali, sampleView],
+  );
   const photos = tutorial.photos ?? [];
   const showOriginal = comparing && onWall && photos.length > 0;
   // The colours, at the top of the panel while colouring, so they are the
@@ -1233,7 +1331,26 @@ export function Player({
               {/* At the end on a computer or tablet, Save and Share are in the step
                   bar, where Next was; only a note about changes stays here. */}
               {ready && !phone ? draftNote : null}
-              {stage.kind === 'color' ? colorsSection : null}
+              {/* On the finished wall its style and width come first; while
+                  one tile is coloured, the colours do. */}
+              {onWall ? (
+                <WallControls
+                  style={wallStyle}
+                  onStyle={(style) => {
+                    setWallStyle(style);
+                    if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                  }}
+                  grout={grout}
+                  onGrout={setGrout}
+                  comparing={photos.length ? comparing : undefined}
+                  onCompare={setComparing}
+                  sample={(look) => styleSamples?.[look]}
+                />
+              ) : null}
+              {onWall && wallStyle === 'jali' ? (
+                <JaliControls appearance={jali} onChange={setJali} />
+              ) : null}
+              {colorsSection}
               {ready && phone ? (
                 <section ref={readyRef}>
                   <h2>My design</h2>
@@ -1249,83 +1366,13 @@ export function Player({
                   {draftNote}
                 </section>
               )}
-              {photos.length && onWall ? (
-                <section>
-                  <h2>The original</h2>
-                  <button
-                    type="button"
-                    className="compare-toggle"
-                    aria-pressed={comparing}
-                    onClick={() => setComparing(!comparing)}
-                  >
-                    {comparing
-                      ? 'Hide the original'
-                      : 'Compare with the original'}
-                  </button>
-                  <p className="hint">
-                    A photo of the real pattern, beside the wall. Click it to
-                    see it at full size.
-                  </p>
-                </section>
-              ) : null}
-              {onWall ? (
-                <section>
-                  <h2>The wall</h2>
-                  <div className="wall-tools">
-                    <label>
-                      Style
-                      <select
-                        value={wallStyle}
-                        onChange={(e) => {
-                          const style = e.target.value as WallStyle;
-                          setWallStyle(style);
-                          if (style === 'jali' && grout < 0.5) setGrout(0.5);
-                        }}
-                      >
-                        {WALL_STYLES.map((s) => (
-                          <option key={s} value={s}>
-                            {s[0]?.toUpperCase() + s.slice(1)}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <label>
-                      {wallStyle === 'jali'
-                        ? 'Lattice'
-                        : banded(wallStyle)
-                          ? 'Band'
-                          : 'Grout'}
-                      <input
-                        type="range"
-                        min={wallStyle === 'jali' ? 0.5 : 0}
-                        max={3}
-                        step={0.25}
-                        value={
-                          wallStyle === 'jali' ? Math.max(0.5, grout) : grout
-                        }
-                        onChange={(e) => setGrout(Number(e.target.value))}
-                      />
-                    </label>
-                  </div>
-                  <p className="hint">
-                    {wallStyle === 'jali'
-                      ? 'An open screen. Switch styles to see your tile colors. '
-                      : ''}
-                    Drag to move along the wall, scroll to zoom.
-                  </p>
-                </section>
-              ) : null}
-              {onWall && wallStyle === 'jali' ? (
-                <JaliControls appearance={jali} onChange={setJali} />
-              ) : null}
-              {stage.kind === 'color' ? null : colorsSection}
               <section>
                 <h2>Take it with you</h2>
                 {ready ? null : shareLink}
                 <div className="export-tools">
                   <button
                     type="button"
-                    className="quiet"
+                    className="secondary"
                     onClick={() =>
                       download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
                     }
@@ -1334,7 +1381,7 @@ export function Player({
                   </button>
                   <button
                     type="button"
-                    className="quiet"
+                    className="secondary"
                     onClick={() =>
                       void pngBlob(exportSvg()).then((png) =>
                         download(png, `${tutorial.id}.png`),
@@ -1343,21 +1390,28 @@ export function Player({
                   >
                     Download PNG
                   </button>
-                  <select
-                    aria-label="Paper"
-                    value={paper}
-                    onChange={(e) => setPaper(e.target.value as Paper)}
-                  >
-                    <option>A4</option>
-                    <option>Letter</option>
-                  </select>
+                </div>
+                {/* The paper is beside Print, the one thing it changes. */}
+                <div className="print-tools">
                   <button
                     type="button"
-                    className="quiet"
+                    className="secondary"
                     onClick={() => setPrinting(true)}
                   >
                     Print line sheet
                   </button>
+                  <div className="paper" role="group" aria-label="Paper">
+                    {(['A4', 'Letter'] as const).map((p) => (
+                      <button
+                        key={p}
+                        type="button"
+                        aria-pressed={p === paper}
+                        onClick={() => setPaper(p)}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </section>
               {!mine && !sharedView ? (

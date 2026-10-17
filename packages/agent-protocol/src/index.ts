@@ -1,3 +1,4 @@
+import { SquareBandsShape } from '@tastir/schema';
 import { z } from 'zod';
 
 const Id = z.string().min(1).max(180);
@@ -36,6 +37,49 @@ export const RepeatShape = z.strictObject({
   colors: z.record(Id, HexColor),
 });
 export type RepeatSettings = z.infer<typeof RepeatShape>;
+const EditBase = {
+  snapshotId: Id,
+  documentRevision: Id,
+  label: z.string().min(1).max(160),
+};
+export const ApplyStepsShape = z.strictObject({
+  ...EditBase,
+  steps: z
+    .array(
+      z.strictObject({
+        text: z.string().min(1).max(1000),
+        createJson: z.string().min(2).max(16000),
+      }),
+    )
+    .max(16),
+  remove: z.array(z.number().int().positive()).max(32),
+});
+export const PaintTargetsShape = z.strictObject({
+  ...EditBase,
+  scope: z.enum(['shape', 'ring', 'placement']),
+  targets: z
+    .array(z.strictObject({ targetId: Id, color: HexColor }))
+    .min(1)
+    .max(64),
+});
+export const SetColoringShape = z.strictObject({
+  ...EditBase,
+  method: z.enum(['rings', 'shape', 'place']),
+  rosettes: z.number().int().min(1).max(6).nullable(),
+});
+export const SaveWorkShape = z.strictObject({
+  ...EditBase,
+  name: z.string().trim().min(1).max(60),
+});
+export const CreatePatternShape = SaveWorkShape;
+export const ColorSquareBandsShape = z.strictObject({
+  snapshotId: Id,
+  documentRevision: Id,
+  label: z.string().min(1).max(160),
+  targetId: Id,
+  colors: SquareBandsShape.shape.colors,
+  sharedBorder: z.boolean().default(false),
+});
 export const SetTileShape = z.strictObject({
   snapshotId: Id,
   documentRevision: Id,
@@ -136,6 +180,41 @@ export const SnapshotShape = z
       })
       .nullable()
       .default(null),
+    coloring: z
+      .strictObject({
+        squareTypes: z.array(Id).max(128),
+        types: z
+          .array(z.strictObject({ id: Id, color: HexColor }))
+          .max(128)
+          .default([]),
+        rosetteOptions: z
+          .array(z.number().int().min(1).max(6))
+          .max(6)
+          .default([]),
+        squareBands: SquareBandsShape.nullable(),
+        methods: z.array(z.enum(['rings', 'shape', 'place'])).default([]),
+        method: z.enum(['rings', 'shape', 'place']).optional(),
+        rosettes: z.number().int().min(1).max(6).optional(),
+        palette: Id.optional(),
+      })
+      .nullable()
+      .default(null),
+    editor: z
+      .strictObject({
+        steps: z
+          .array(
+            z.strictObject({
+              id: z.number().int().positive(),
+              text: z.string().max(1000),
+              names: z.array(Id).max(500),
+            }),
+          )
+          .max(500),
+        autoSaved: z.boolean(),
+      })
+      .nullable()
+      .default(null),
+    canSave: z.boolean().default(false),
     screen: ScreenShape.nullable().default(null),
     image: z
       .string()
@@ -186,6 +265,36 @@ export const ConstructShape = z.strictObject({
 });
 export type Construct = z.infer<typeof ConstructShape>;
 export const CallShape = z.discriminatedUnion('name', [
+  z.strictObject({
+    id: Id,
+    name: z.literal('apply_steps'),
+    arguments: ApplyStepsShape,
+  }),
+  z.strictObject({
+    id: Id,
+    name: z.literal('paint_targets'),
+    arguments: PaintTargetsShape,
+  }),
+  z.strictObject({
+    id: Id,
+    name: z.literal('set_coloring'),
+    arguments: SetColoringShape,
+  }),
+  z.strictObject({
+    id: Id,
+    name: z.literal('save_work'),
+    arguments: SaveWorkShape,
+  }),
+  z.strictObject({
+    id: Id,
+    name: z.literal('create_pattern'),
+    arguments: CreatePatternShape,
+  }),
+  z.strictObject({
+    id: Id,
+    name: z.literal('color_square_bands'),
+    arguments: ColorSquareBandsShape,
+  }),
   z.strictObject({
     id: Id,
     name: z.literal('fit_view'),
@@ -291,12 +400,116 @@ export function checkHighlight(
   };
 }
 
+const editProperties = {
+  snapshotId: { type: 'string' },
+  documentRevision: { type: 'string' },
+  label: { type: 'string' },
+} as const;
+const objectTool = (
+  name: string,
+  description: string,
+  properties: Record<string, unknown>,
+) => ({
+  type: 'function',
+  name,
+  strict: true,
+  description,
+  parameters: {
+    type: 'object',
+    additionalProperties: false,
+    properties: { ...editProperties, ...properties },
+    required: [...Object.keys(editProperties), ...Object.keys(properties)],
+  },
+});
 export const DRAWING_TOOLS = {
   type: 'namespace',
   name: 'tastir',
   description:
     'Construct ruler-and-compass geometry, draw finite sides, repeat and color closed patterns, and highlight objects in Tastir.',
   tools: [
+    objectTool(
+      'create_pattern',
+      'Create and open a NEW saved editable pattern starting with given points O and A. Use when asked to draw a new pattern. Never replaces existing work; respects normal navigation guards. name is the requested or concise descriptive title. A fresh editor observation follows.',
+      { name: { type: 'string' } },
+    ),
+    objectTool(
+      'save_work',
+      'Save a NEW named copy of the CURRENT wall/design, open editor draft, or assistant workspace using normal browser storage. Never overwrites existing saved work. The returned exact local destination is evidence of saving. Only available when observation.canSave. Do not claim saving before success. Saving is outside Undo history.',
+      { name: { type: 'string' } },
+    ),
+    objectTool(
+      'apply_steps',
+      'In a normal editor (observation.editor), add construction steps and/or remove exact step IDs atomically through its real Undo history. No coordinate literals. steps contains {text,createJson}; createJson is valid JSON mapping NEW names to Tastir element specs. Examples: {"C":{"circle":{"centre":"O","through":"A"}}}, {"L":{"line":{"through":["O","A"]}}}, {"P":{"point":{"meet":["C","L"],"pick":{"angle":90}}}}, {"Perp":{"line":{"through":"O","perpendicularTo":"L"}}}, {"Tile":{"polygon":["N","E","S","W"]}}, {"Copies":{"repeat":{"of":["L"],"by":"rot8"}}}. References must exist in the current observation or earlier batch steps. Supports existing schema line, circle, point, points, polygon and repeat forms. Removal fails if dependent geometry, ink or tile would break. Keep additions small; at most 16 steps and 500 total. A fresh drawing follows.',
+      {
+        steps: {
+          type: 'array',
+          items: {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+              text: { type: 'string' },
+              createJson: { type: 'string' },
+            },
+            required: ['text', 'createJson'],
+          },
+        },
+        remove: { type: 'array', items: { type: 'integer' } },
+      },
+    ),
+    objectTool(
+      'paint_targets',
+      'On normal Color/result pages, repaint visible polygon targets. scope:shape changes the whole shape; scope:ring changes its existing rosette ring; scope:placement changes just its position in the current finite color repeat (that repeat tiles across the wall). Use exact targetId and #RRGGBB color. Surrounding colors remain. No guessed IDs; one batch is one normal Undo. A fresh wall image follows.',
+      {
+        scope: { type: 'string', enum: ['shape', 'ring', 'placement'] },
+        targets: {
+          type: 'array',
+          items: {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+              targetId: { type: 'string' },
+              color: { type: 'string' },
+            },
+            required: ['targetId', 'color'],
+          },
+        },
+      },
+    ),
+    objectTool(
+      'set_coloring',
+      'Change normal wall coloring method to an exact observation.coloring.methods entry. rosettes:null keeps its count; an integer chooses the number of alternating rosettes when supported. Clears custom colors and square bands, so use only when asked to change the coloring method. One normal Undo and a fresh image follow.',
+      {
+        method: { type: 'string', enum: ['rings', 'shape', 'place'] },
+        rosettes: { type: ['integer', 'null'] },
+      },
+    ),
+    {
+      type: 'function',
+      name: 'color_square_bands',
+      strict: true,
+      description:
+        'On a normal Color/result page with observation.coloring, color one square-grid shape in concentric square borders. Choose a VISIBLE polygon targetId whose geometry.typeId is in observation.coloring.squareTypes; it becomes the centre square. colors are #RRGGBB from centre outward: black, teal, blue, orange gives 1×1 black, teal border out to 3×3, blue out to 5×5, orange out to 7×7. Each border is one square thick, measured along the repeat cell axes. sharedBorder:false repeats the whole motif every 7 square cells in this example; sharedBorder:true lets neighbors share one outer border and repeats every 6 cells. For a 9×9 motif with a shared black outer border, pass five colors with black last and sharedBorder:true (centres 8 cells apart). Other shapes retain their existing colors. Explain the repeating motif and clarify requests such as 2×2/3×3/4×4 when alignment or thickness is ambiguous before applying. This is spatial wall coloring, NOT rosette Ring by ring. One call is one Undo in the NORMAL PAGE color history. A fresh image must confirm success. Does not save a design or edit geometry.',
+      parameters: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          snapshotId: { type: 'string' },
+          documentRevision: { type: 'string' },
+          label: { type: 'string' },
+          targetId: { type: 'string' },
+          colors: { type: 'array', items: { type: 'string' } },
+          sharedBorder: { type: 'boolean' },
+        },
+        required: [
+          'snapshotId',
+          'documentRevision',
+          'label',
+          'targetId',
+          'colors',
+          'sharedBorder',
+        ],
+      },
+    },
     {
       type: 'function',
       name: 'fit_view',
@@ -319,7 +532,7 @@ export const DRAWING_TOOLS = {
       name: 'travel_history',
       strict: true,
       description:
-        'Undo or redo workspace edits using the SAME history as the drawing buttons. Check observation.history.undo/redo: ordered NEXT action first, with source, requestId and label. For undo your changes use scope:assistant and count consecutive assistant actions from the start; stop at manual/unknown actions. No extra confirmation is needed for identified assistant actions. scope:steps allows the explicit number of edits the user requested, regardless of author. A plain Undo/Redo means one step. Restores geometry, tile and colors together. Never simulate Undo by deleting or repainting objects. Excessive steps or crossing a manual/unknown edit with assistant scope fails atomically. A fresh drawing observation follows success. Does not undo navigation or other pages.',
+        'Undo or redo edits in the current observation: normal-page COLOR history when observation.coloring exists, otherwise workspace edits. Use the SAME history as the drawing buttons. Check observation.history.undo/redo: ordered NEXT action first, with source, requestId and label. For undo your changes use scope:assistant and count consecutive assistant actions from the start; stop at manual/unknown actions. No extra confirmation is needed for identified assistant actions. scope:steps allows the explicit number of edits the user requested, regardless of author. A plain Undo/Redo means one step. Restores geometry, tile and colors together. Never simulate Undo by deleting or repainting objects. Excessive steps or crossing a manual/unknown edit with assistant scope fails atomically. A fresh drawing observation follows success. Does not undo navigation or other pages.',
       parameters: {
         type: 'object',
         additionalProperties: false,
@@ -382,7 +595,7 @@ export const DRAWING_TOOLS = {
       name: 'paint_pattern',
       strict: true,
       description:
-        'Color a validated repeating pattern. Use typeId from observation.repeat.types and #RRGGBB colors; all pieces of that shape take that color. palette:null keeps existing colors. A named palette from observation.palettes resets custom colors before applying colors in this call. Use empty colors to apply just a palette. One batch is one Undo. A fresh image follows success.',
+        'Color a validated repeating pattern. Use typeId from observation.repeat.types (workspace) or observation.coloring.types (normal wall) and #RRGGBB colors; all pieces of that shape take that color. palette:null keeps existing colors. A named palette from observation.palettes resets custom colors before applying colors in this call. Use empty colors to apply just a palette. One batch is one Undo. A fresh image follows success.',
       parameters: {
         type: 'object',
         additionalProperties: false,
