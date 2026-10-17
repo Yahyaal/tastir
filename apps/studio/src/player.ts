@@ -1,11 +1,8 @@
 /**
- * The player's editor and model code, which the studio shares so that an
- * edit made here is exactly the edit the editor would make. These files
- * are pure TypeScript (no DOM, no React, no storage). They should move into
- * a package once the assistant branches are merged; until then this is the
- * one place that reaches into the player.
+ * The editor and model code the studio shares with the player and the
+ * assistant, from packages/project-core, so an edit made here is exactly
+ * the edit the editor would make.
  */
-/* eslint-disable @nx/enforce-module-boundaries */
 export {
   addStep,
   check,
@@ -17,12 +14,12 @@ export {
   specsOf,
   type Checked,
   type Draft,
-} from '../../player/src/editor/document';
-export { tutorialOf, withTile } from '../../player/src/editor/finish';
-export { loadModel, type Model } from '../../player/src/app/model';
-export { PALETTES, tutorialColoring } from '../../player/src/app/coloring';
-export { placeFills } from '../../player/src/app/placement';
+} from '@tastir/project-core/document';
+export { tutorialOf, withTile } from '@tastir/project-core/finish';
+export { loadModel, type Model } from '@tastir/project-core/model';
+export { PALETTES, tutorialColoring } from '@tastir/project-core/coloring';
+export { placeFills } from '@tastir/project-core/placement';
 export {
   constructionSpec,
   constructionText,
-} from '../../player/src/agent/drawing';
+} from '@tastir/project-core/drawing';

@@ -4,8 +4,8 @@ The plan for using the studio from anywhere, on a phone or a laptop, with Claude
 
 ## At a glance
 
-- **Where it stands:** M0 to M2 and H1 to H4 are done (17 October); the rest is planned.
-- **What happens next:** H5, deploying, needs your free Vercel, Neon, Google sign-in and Cloudflare setup (Codex is writing the steps). The live room is built and wired in, and is ticked after it is measured on the deployed studio. M3 can follow.
+- **Where it stands:** M0 to M3 and H1 to H4 are done (17 October), and the live room is built; the deploy and live use are next.
+- **What happens next:** H5, deploying, needs your free Vercel, Neon, Google sign-in and Cloudflare setup (Codex is writing the steps). The live room is built and wired in, and is ticked after it is measured on the deployed studio.
 - **What it costs:** nothing. Every service stays on its free plan.
 - **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
 - **What you still decide:** whether private research photos may be uploaded (decision 4). Nothing waits on it.
@@ -34,7 +34,7 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
   - **Who:** you with an agent.
   - **Done when:** all three edit one drawing; a stale edit is refused whole; each one's "undo mine" stops at the others' work; a named copy saves, reloads and exports with its colours; and the pictures match what you see.
   - **Evidence (17 October):** [M2 validation](testing/m2-three-workers-2026-10-17.md): six desktop/phone checks with the real editor, Studio persistence and MCP HTTP connection, using simulated chat-model replies. The owner draws with the compass; shared history, stale edits, copies/colours/export and pictures are checked. Full workspace, production, assistant and Studio regressions passed. This is not a live provider evaluation.
-- [ ] **M3 · Shared editing code.** The editing commands the studio and the in-app assistant both use move into one package (`packages/project-core`), pure TypeScript with no browser or network code, so the two never drift apart.
+- [x] **M3 · Shared editing code.** The editing commands the studio and the in-app assistant both use move into one package (`packages/project-core`), pure TypeScript with no browser or network code, so the two never drift apart.
   - **Who:** an agent.
   - **Done when:** the studio and the assistant both use the package, and every existing test passes unchanged.
 - [ ] **H0 · Check every client before building.** Open the local studio through a temporary public tunnel and add it to claude.ai (web and phone), Claude Code, ChatGPT developer mode, Codex and Antigravity.

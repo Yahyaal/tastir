@@ -12,10 +12,10 @@
   "exclude": ["src/**/*.spec.ts"],
   "references": [
     {
-      "path": "../player/tsconfig.app.json"
+      "path": "../../packages/schema/tsconfig.lib.json"
     },
     {
-      "path": "../../packages/schema/tsconfig.lib.json"
+      "path": "../../packages/project-core/tsconfig.lib.json"
     },
     {
       "path": "../live-room/tsconfig.lib.json"

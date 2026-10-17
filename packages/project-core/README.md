@@ -1,0 +1,3 @@
+# @tastir/project-core
+
+The drawing a person, the in-app assistant and the studio's agents all edit, and the commands that edit it: the editor's document (`document`), finishing a pattern (`finish`), the editor's Undo history (`history`), the pattern model, coloring and placement (`model`, `coloring`, `placement`, `rings`, `squareBands`), the assistant's drawing commands (`drawing`) and the studio's edit commands (`ops`). Pure TypeScript like the engine: no DOM, no storage, no network, so it runs in the browser, the studio service and tests alike. Import a module by name, for example `@tastir/project-core/document`.

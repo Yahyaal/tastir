@@ -18,6 +18,7 @@
     "@tastir/agent-protocol": "workspace:*",
     "@tastir/engine": "workspace:*",
     "@tastir/live-room": "workspace:*",
+    "@tastir/project-core": "workspace:*",
     "@tastir/schema": "workspace:*"
   }
 }

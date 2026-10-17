@@ -1,0 +1,22 @@
+{
+  "name": "@tastir/project-core",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": {
+      "@tastir/source": "./src/*.ts",
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "default": "./dist/*.js"
+    }
+  },
+  "nx": {
+    "name": "project-core"
+  },
+  "dependencies": {
+    "@tastir/agent-protocol": "workspace:*",
+    "@tastir/engine": "workspace:*",
+    "@tastir/schema": "workspace:*"
+  }
+}

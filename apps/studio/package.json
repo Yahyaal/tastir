@@ -12,6 +12,7 @@
     "@tastir/agent-protocol": "workspace:*",
     "@tastir/engine": "workspace:*",
     "@tastir/live-room": "workspace:*",
+    "@tastir/project-core": "workspace:*",
     "@tastir/schema": "workspace:*",
     "@vercel/blob": "2.8.0",
     "@vercel/functions": "3.9.11",

@@ -34,6 +34,8 @@ A web app that walks people through Islamic geometric pattern tutorials one step
 ```
 packages/engine    geometry, evaluator, pieces
 packages/schema    Zod schema for the tutorial format
+packages/project-core  the drawing and the commands that edit it, shared by
+                   the editor, the assistant and the studio (pure, like the engine)
 apps/player        React + Vite + SVG player
 tutorials/         tutorial JSON files
 docs/              PRD, tasks, format, notes, prototype
