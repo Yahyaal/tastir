@@ -1,4 +1,8 @@
-import { JaliAppearanceShape, type JaliAppearance } from '@tastir/schema';
+import {
+  SquareBandsShape,
+  JaliAppearanceShape,
+  type JaliAppearance,
+} from '@tastir/schema';
 import type { Coloring } from './coloring';
 import { newId, now, store } from './storage';
 import type { WallStyle } from './Wall';
@@ -47,6 +51,8 @@ export function isDesign(x: unknown): x is Design {
     (d['inked'] === undefined || isStrings(d['inked'])) &&
     typeof c === 'object' &&
     c !== null &&
+    (c['squareBands'] === undefined ||
+      SquareBandsShape.safeParse(c['squareBands']).success) &&
     typeof c['palette'] === 'string' &&
     typeof c['chosen'] === 'object' &&
     c['chosen'] !== null &&

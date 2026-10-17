@@ -1,3 +1,4 @@
+import { registerPageColoring } from '../agent/pageColoring';
 import { DEFAULT_JALI, sameJali } from './jali';
 import { JaliControls } from './JaliControls';
 import { ExploreNext } from './ExploreNext';
@@ -22,8 +23,10 @@ import {
   pieceColors,
   tutorialColoring,
   type History,
+  type ColorAction,
+  typeKey,
 } from './coloring';
-import { type Design } from './designs';
+import { addDesign, type Design } from './designs';
 import { draftOf, forgetDraft, keepDraft } from './drafts';
 import { Construction, RepeatedInk, Thumbnail } from './drawing';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
@@ -50,6 +53,7 @@ import {
   colorRepeat,
   colouredModel,
   placeFills,
+  paintChosen,
   placeKey,
   ringsFor,
 } from './placement';
@@ -159,6 +163,8 @@ function sameDesign(
     design.coloring.palette === now.coloring.palette &&
     design.coloring.method === now.coloring.method &&
     design.coloring.rosettes === now.coloring.rosettes &&
+    JSON.stringify(design.coloring.squareBands) ===
+      JSON.stringify(now.coloring.squareBands) &&
     sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
     design.look === now.look &&
     design.grout === now.grout &&
@@ -262,7 +268,7 @@ export function Player({
     () => (inking.editing ? inking.shown : asPanel(inking.shown)),
     [inking.editing, inking.shown],
   );
-  const [colorHistory, colorDispatch] = useReducer(
+  const [colorHistory, rawColorDispatch] = useReducer(
     colorReducer,
     model,
     (m): History => ({
@@ -282,6 +288,36 @@ export function Player({
     () => colouredModel(inking.shown, colorHistory.now),
     [inking.shown, colorHistory.now],
   );
+  const colorDispatch = (action: ColorAction) => {
+    const bandType = colorHistory.now.squareBands?.typeId;
+    const replacesBands =
+      action.kind === 'paint' &&
+      !!bandType &&
+      inking.shown.pattern.types.some(
+        (type) => type.name === bandType && typeKey(type) === action.type,
+      );
+    if (
+      action.kind === 'paint' &&
+      (replacesBands ||
+        Object.keys(colorHistory.now.chosen).some((key) =>
+          key.includes('#placement'),
+        ))
+    ) {
+      rawColorDispatch({
+        kind: 'reset',
+        to: {
+          ...colorHistory.now,
+          chosen: paintChosen(
+            coloured,
+            colorHistory.now,
+            action.type,
+            action.color,
+          ),
+          ...(replacesBands ? { squareBands: undefined } : {}),
+        },
+      });
+    } else rawColorDispatch(action);
+  };
   const colors = useMemo(
     () => pieceColors(coloured, colorHistory.now),
     [coloured, colorHistory.now],
@@ -290,7 +326,7 @@ export function Player({
   const fill = useMemo(
     () =>
       byPlace(coloured) ? placeFills(coloured, colorHistory.now) : undefined,
-    [coloured, colorHistory.now],
+    [coloured, colorHistory.now, inking.shown],
   );
   const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
   // The colour a click paints with, when colouring ring by ring.
@@ -304,6 +340,24 @@ export function Player({
   const [wallStyle, setWallStyle] = useState<WallStyle>(
     opened?.look ?? draft?.look ?? tutorial.pattern.look ?? 'tiles',
   );
+  useLayoutEffect(() => {
+    if (
+      !import.meta.env.DEV ||
+      !import.meta.env.VITE_TASTIR_AGENT ||
+      stage.kind !== 'color'
+    )
+      return;
+    return registerPageColoring({
+      model: inking.shown,
+      history: colorHistory,
+      style: wallStyle,
+      selected: place,
+      // A named copy does not switch the active design or its route/history.
+      saveNew: (name) => addDesign({ ...designFields(), name }),
+      dispatch: colorDispatch,
+      route: decodeURIComponent(window.location.hash.replace(/^#\/?/, '')),
+    });
+  });
   const [grout, setGrout] = useState(opened?.grout ?? draft?.grout ?? 1);
   const [jali, setJali] = useState(opened?.jali ?? draft?.jali ?? DEFAULT_JALI);
   // The design being worked on: the one opened, or the last one saved.
@@ -956,7 +1010,16 @@ export function Player({
   }, [view, browsing, design, address]);
 
   return (
-    <div className={colorStage ? 'player at-color' : 'player'}>
+    <div
+      className={colorStage ? 'player at-color' : 'player'}
+      data-tastir-screen={
+        import.meta.env.DEV
+          ? design
+            ? `${address}/design/${design.id}`
+            : viewAddress(address, view).slice(2)
+          : undefined
+      }
+    >
       {leaving !== undefined && changed ? (
         <LeaveConfirmation
           name={design?.name}

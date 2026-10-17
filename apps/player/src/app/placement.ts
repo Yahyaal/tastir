@@ -1,3 +1,9 @@
+import {
+  squareGridTypes,
+  squareBandColor,
+  commonPeriod,
+  squareBandPeriod,
+} from './squareBands';
 import type { Piece, Vec } from '@tastir/engine';
 import {
   glazeOf,
@@ -59,7 +65,53 @@ export const methodOf = (model: Model, coloring: Coloring): Method =>
  * ring, by shape, or by the tutorial's placements) and how many rosettes
  * take turns. A coloring that changed neither is the tutorial's own.
  */
+const bandBases = new WeakMap<Model, Model>();
 export function colouredModel(model: Model, coloring: Coloring): Model {
+  if (coloring.squareBands) {
+    const bands = coloring.squareBands;
+    const { squareBands: _, ...base } = coloring;
+    if (!squareGridTypes(model).includes(bands.typeId))
+      return colouredModel(model, base);
+    const plain = colouredModel(model, base);
+    const repeat = colorRepeat(plain);
+    const size = squareBandPeriod(bands);
+    const period = repeat.map((n) => commonPeriod(n, size));
+    if (
+      period.some((n) => n > 48) ||
+      period[0]! * period[1]! * model.pattern.pieces.length > 12000
+    )
+      return plain;
+    const { rings: _rings, ...pattern } = plain.tutorial.pattern;
+    const derived = {
+      ...plain,
+      tutorial: {
+        ...plain.tutorial,
+        pattern: {
+          ...pattern,
+          placements: {
+            ...plain.tutorial.pattern.placements,
+            repeat: period as [number, number],
+            rules: plain.tutorial.pattern.placements?.rules ?? [],
+          },
+        },
+      },
+    };
+    bandBases.set(derived, plain);
+    return derived;
+  }
+  if (
+    methodOf(model, coloring) === 'shape' &&
+    Object.keys(coloring.chosen).some((key) => key.includes('#placement'))
+  ) {
+    const { rings: _rings, ...rest } = model.tutorial.pattern;
+    return {
+      ...model,
+      tutorial: {
+        ...model.tutorial,
+        pattern: { ...rest, placements: { repeat: [1, 1], rules: [] } },
+      },
+    };
+  }
   if (coloring.method === undefined && coloring.rosettes === undefined)
     return model;
   const { rings, placements, ...rest } = model.tutorial.pattern;
@@ -186,10 +238,33 @@ function resolve(palette: Palette, color: string): string {
  * placement, else one chosen for its whole shape, else the tutorial's
  * placement rules, else the shape's palette slot.
  */
-export function placeFills(
+function basePlaceFills(
   model: Model,
   coloring: Coloring,
 ): (piece: number, i: number, j: number) => string {
+  if (coloring.squareBands) {
+    const bands = coloring.squareBands;
+    const { squareBands: _, ...base } = coloring;
+    if (!squareGridTypes(model).includes(bands.typeId))
+      return basePlaceFills(model, base);
+    // Preserve the original placement period for the stars and connecting bands.
+    const plain = bandBases.get(model) ?? colouredModel(model, base);
+    const fallback = basePlaceFills(plain, base);
+    const period = colorRepeat(plain).map((n) =>
+      commonPeriod(n, squareBandPeriod(bands)),
+    );
+    if (
+      period.some((n) => n > 48) ||
+      period[0]! * period[1]! * model.pattern.pieces.length > 12000
+    )
+      return fallback;
+    return (piece, i, j) =>
+      model.pattern.types[model.pattern.pieces[piece]!.type]?.name ===
+      bands.typeId
+        ? (coloring.chosen[placeKey(model, piece, i, j)] ??
+          squareBandColor(bands, i, j))
+        : fallback(piece, i, j);
+  }
   const palette = paletteOf(model, coloring.palette);
   const placements = model.tutorial.pattern.placements;
   const rings = ringsFor(model);
@@ -302,4 +377,92 @@ function ringFills(
     cache.set(key, fill);
     return fill;
   };
+}
+
+/** Exact position within the current finite color repeat, independent of its ring. */
+export function placementKey(
+  model: Model,
+  piece: number,
+  i: number,
+  j: number,
+): string {
+  const type = model.pattern.types[model.pattern.pieces[piece]!.type]!;
+  const [m, n] = colorRepeat(model);
+  return `${typeKey(type)}#placement${piece}@${mod(i, m)},${mod(j, n)}/${m},${n}`;
+}
+export function placeFills(model: Model, coloring: Coloring) {
+  const fill = basePlaceFills(model, coloring);
+  const overrides = new Map<
+    number,
+    { i: number; j: number; m: number; n: number; color: string }[]
+  >();
+  for (const [key, color] of Object.entries(coloring.chosen)) {
+    const match = /^(.*)#placement(\d+)@(\d+),(\d+)\/(\d+),(\d+)$/.exec(key);
+    if (!match) continue;
+    const [piece, i, j, m, n] = match.slice(2).map(Number) as [
+      number,
+      number,
+      number,
+      number,
+      number,
+    ];
+    const type = model.pattern.types[model.pattern.pieces[piece]?.type ?? -1];
+    if (
+      !type ||
+      match[1] !== typeKey(type) ||
+      m < 1 ||
+      n < 1 ||
+      m > 48 ||
+      n > 48
+    )
+      continue;
+    overrides.set(piece, [
+      { i, j, m, n, color },
+      ...(overrides.get(piece) ?? []),
+    ]);
+  }
+  return (piece: number, i: number, j: number) => {
+    const override = overrides
+      .get(piece)
+      ?.find((p) => mod(i, p.m) === p.i && mod(j, p.n) === p.j);
+    return override?.color ?? fill(piece, i, j);
+  };
+}
+
+/** Manual and assistant ring/shape repainting take precedence over prior single positions. */
+export function paintChosen(
+  model: Model,
+  coloring: Coloring,
+  key: string,
+  color: string,
+) {
+  const chosen = { ...coloring.chosen };
+  const position = /#(\d+)@(\d+),(\d+)$/.exec(key);
+  for (const own of Object.keys(chosen)) {
+    if (!key.includes('#') && own.startsWith(`${key}#`)) {
+      delete chosen[own];
+      continue;
+    }
+    const match = /^(.*)#placement(\d+)@(\d+),(\d+)\/(\d+),(\d+)$/.exec(own);
+    if (!match) continue;
+    const [piece, i, j] = match.slice(2).map(Number) as [
+      number,
+      number,
+      number,
+    ];
+    if (!model.pattern.pieces[piece]) continue;
+    if (!position && (match[1] === key || placeKey(model, piece, i, j) === key))
+      delete chosen[own];
+  }
+  if (position) {
+    const [piece, i, j] = position.slice(1).map(Number) as [
+      number,
+      number,
+      number,
+    ];
+    if (model.pattern.pieces[piece])
+      chosen[placementKey(model, piece, i, j)] = color;
+  }
+  chosen[key] = color;
+  return chosen;
 }

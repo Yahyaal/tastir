@@ -20,6 +20,10 @@ pnpm install --frozen-lockfile
 pnpm nx run player:dev --port=4290 --strictPort
 ```
 
+## Try the local drawing assistant
+
+Run `pnpm dev:agent` and open http://127.0.0.1:4291/#/agent. Connect your ChatGPT account to ask about the current drawing, highlight named objects, and draw editable sides between existing points. Try “Draw the square jW, jN, jE, jS” on Eight-fold star and octagon. Undo restores the whole edit; Keep in My patterns saves an editor copy. Choose Start from O and A and Use compass request to create new lines, circles and intersections. Use repeat and color request draws a closed design, repeats its tile and paints its shape types. Tile and color edits have Undo, visible palette buttons and custom shape colors, and save into the normal playable pattern. The assistant can also open library tutorials and saved work by name. Open drawing assistant is available on normal local pages; returning to the workspace keeps its drawing and Undo history. Existing unsaved-design questions are respected. Automated tests use simulated model responses. See [the setup guide](docs/AI-AGENT-SETUP.md) and [the full plan](docs/AI-AGENT-PLAN.md).
+
 ## Check changes locally
 
 ```sh
@@ -35,6 +39,7 @@ pnpm typecheck
 pnpm test
 pnpm build
 pnpm test:browser
+pnpm test:agent:browser
 pnpm exec playwright show-report
 ```
 
@@ -54,6 +59,8 @@ Generated previews, reports, and browser traces are ignored by Git. `pnpm catalo
 
 - `packages/engine`: pure TypeScript geometry, construction evaluation, inking, and piece finding. No DOM or React.
 - `packages/schema`: tutorial, draft, and sharing validation.
+- `packages/agent-protocol`: shared observation, highlighting and drawing contracts.
+- `apps/agent-local`: local ChatGPT authentication and model/tool request handling.
 - `apps/player/src/app`: routing, library, player, saving, and sharing.
 - `apps/player/src/along`: drawing beside a tutorial, hints, pen inking, and hand-placed repeats.
 - `apps/player/src/editor`: construction tools and editable patterns.

@@ -19,6 +19,13 @@ const Review = import.meta.env.DEV
   ? lazy(() => import('../review/Review').then((m) => ({ default: m.Review })))
   : undefined;
 
+const AgentHost =
+  import.meta.env.DEV && import.meta.env.VITE_TASTIR_AGENT
+    ? lazy(() =>
+        import('../agent/AgentHost').then((m) => ({ default: m.AgentHost })),
+      )
+    : undefined;
+
 /**
  * The project notes (#/notes): the docs a new session reads first, shown in
  * the app. Like the review page, it exists only on the dev server.
@@ -78,6 +85,39 @@ export function App({
   entries?: readonly Entry[];
 }) {
   const route = useRoute();
+  return (
+    <>
+      {import.meta.env.DEV ? (
+        <div
+          data-tastir-page
+          data-tastir-route={route}
+          style={{ display: 'contents' }}
+        >
+          <AppPage route={route} library={library} />
+        </div>
+      ) : (
+        <AppPage route={route} library={library} />
+      )}
+      {AgentHost ? (
+        <Suspense
+          fallback={
+            route === 'agent' ? <p>Loading the drawing assistant…</p> : null
+          }
+        >
+          <AgentHost route={route} library={library} />
+        </Suspense>
+      ) : null}
+    </>
+  );
+}
+
+function AppPage({
+  route,
+  library,
+}: {
+  route: string;
+  library: readonly Entry[];
+}) {
   // #/mine/p… plays the learner's own pattern p like a library tutorial.
   const ownId = /^mine\/([^/]+)/.exec(route)?.[1];
   const own = useMemo(
@@ -89,6 +129,10 @@ export function App({
     [own, library],
   );
   if (!route) return <Library entries={library} />;
+  if (route === 'agent')
+    return import.meta.env.DEV ? null : (
+      <Broken message="The local assistant is available through pnpm dev:agent." />
+    );
   if (route === 'work') return <WorkPage entries={library} />;
   if (route === 'upcoming') {
     return (

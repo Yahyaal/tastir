@@ -31,6 +31,24 @@ export const DOCS: readonly {
     text: read('USER-PATTERNS.md'),
   },
   {
+    key: 'agent',
+    label: 'AI agent plan',
+    file: 'AI-AGENT-PLAN.md',
+    text: read('AI-AGENT-PLAN.md'),
+  },
+  {
+    key: 'agent-setup',
+    label: 'AI agent setup',
+    file: 'AI-AGENT-SETUP.md',
+    text: read('AI-AGENT-SETUP.md'),
+  },
+  {
+    key: 'agent-review',
+    label: 'AI agent review',
+    file: 'AI-AGENT-REVIEW.md',
+    text: read('AI-AGENT-REVIEW.md'),
+  },
+  {
     key: 'working',
     label: 'Working together',
     file: 'WORKING-WITH-OWNER.md',

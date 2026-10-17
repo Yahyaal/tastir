@@ -1812,7 +1812,7 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '15 October 2026',
+  updated: '16 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
@@ -1822,6 +1822,125 @@ export const PROGRESS: {
         label: 'See it on a finished wall',
         href: '#/alhambra-comares-dado/result',
       },
+    },
+    {
+      title: 'AI.2a: colorful companion and useful error recovery',
+      text: 'The smiling zellige star uses Tastir’s theme colors. Confirmed usage limits, temporary usage-check failures and account restrictions now have separate explanations. Manage usage is directly beside recovery controls, editing the prompt does not resend it, and earlier changes survive a later service failure. This phone preview uses simulated responses.',
+      link: {
+        label: 'See the new companion on a phone',
+        href: '/__review/renders/assistant-feedback/phone-dark.png',
+      },
+    },
+    {
+      title: 'AI.2–3: compact chat and normal drawing tools',
+      text: 'The toolbar companion opens a real conversation without covering Save. Follow-ups survive navigation and closing. It can create and edit normal patterns, ink, choose repeats, color shapes/rings/positions, save named copies and use the real Undo history. Assistant-only Undo protects manual work. This responsive preview uses simulated replies with the real app.',
+      link: {
+        label: 'See the phone chat',
+        href: '/__review/renders/assistant-chat/phone.png',
+      },
+    },
+    {
+      title: 'Chat in the dark theme',
+      text: 'The companion uses the existing theme colors, accessible buttons and a fixed composer. Earlier messages scroll above the input. Keyboard Enter sends, Shift+Enter adds a line, and touch Enter stays multiline. Escape closes the panel and returns focus to its toolbar icon.',
+      link: {
+        label: 'See the dark desktop chat',
+        href: '/__review/renders/assistant-chat/desktop-dark.png',
+      },
+    },
+    {
+      title: 'AI.1: normal wall colors, Undo and saving',
+      text: 'You chose one-square-thick borders: black 1×1, teal out to 3×3, blue to 5×5 and orange to 7×7. The assistant now applies this repeating motif to the normal Squares and stars wall while preserving its stars and connecting bands. One Undo reverses the whole request; Redo restores it. Normal saving, sharing and SVG export keep the colors. Live GPT-6.1-Sol completed coloring, Undo and Redo. All 108 assistant browser checks and 151 production browser checks passed (17 production skips), along with full unit tests, lint, TypeScript and build. Checks ran sequentially with one worker and bounded memory.',
+      link: {
+        label: 'See the actual live Redo result',
+        href: '/__review/renders/agent-square-colors/live-redo.png',
+      },
+    },
+    {
+      title: 'AI.1: Claude’s review and two additional fixes',
+      text: 'The sending notice now names saved pattern/design titles, and review/notes text is excluded. Malformed calls can be corrected; follow-ups keep bounded text context while only the latest image is resent. Account UI is separate, the launcher requires the companion, tool guidance is clearer, and the model list has a short cache. Expanded checks also exposed and fixed a stale-image capture race and a build-mode issue that included Notes in production. Branch cleanup, keyring storage, remote access-token revocation and the larger workspace split remain tracked follow-ups. The setup guide records the responsive captures and remaining visual refinements.',
+      link: {
+        label: 'Read the checks and current limits',
+        href: '/#/notes/agent-setup',
+      },
+    },
+    {
+      title: 'AI agent: points on normal editor and tutorial screens',
+      text: 'Ask it to point at centre O, a visible wall or unit piece, or a named page button. The marker uses the actual drawing and follows zoom and scrolling; pointing at a control does not press it. Live ChatGPT checks passed for a tutorial point, an editor point and a control. All 36 affected browser checks passed on desktop, tablet and phone, along with the full unit suite, lint, TypeScript and production build. The earlier complete browser run was interrupted by the crash and is not counted as passing. Checks now run one at a time with bounded memory. This picture shows the actual live editor result.',
+      link: {
+        label: 'See the live editor highlight',
+        href: '/__review/renders/agent-screen-pointing/live-editor.png',
+      },
+    },
+    {
+      title: 'AI agent: knows its edits and fits new geometry',
+      text: 'Your latest screenshots exposed two gaps: the assistant asked whose Undo steps they were, and newly constructed corners could be outside its image. New edits now record their author, request and label. Undo your changes can undo its consecutive edits directly and refuses to cross a manual or unidentified edit. Added geometry now frames itself, and the assistant has Fit to show the full construction and continue drawing. A live request undid all three assistant changes without a clarification; an isolated live Fit request switched from the wall to Construction, sent the new image and completed. The initial combined Fit check timed out before the final reply; the isolated check passed without a code change. Old history remains unidentified. The picture is the actual live Undo result with the account masked.',
+      link: {
+        label: 'See Undo your changes working',
+        href: '/__review/renders/agent-history-context/live-undo.png',
+      },
+    },
+    {
+      title: 'AI agent: Undo and Redo work by request',
+      text: 'Your screenshot found a missing tool: the assistant could describe Undo but could not trigger it. It now uses the same Undo/Redo history as the drawing buttons, with the available step counts and a fresh image after each successful request. The live GPT-6.1-Sol check drew a square, repeated it and colored it blue; Undo all three edits removed the square, tile and color, and Redo all three restored them. Empty history and requests beyond the available steps leave the drawing unchanged. Normal editor/player history is not connected yet. The picture is the actual live Undo result, with the account hidden.',
+      link: {
+        label: 'See the live Undo result',
+        href: '/__review/renders/agent-undo/live-undo.png',
+      },
+    },
+    {
+      title: 'AI agent: navigation preserves your drawing',
+      text: 'On codex/ai-agent-navigation, ask the assistant to open Your work, a library wall or construction, drawing along, or an available saved pattern, editor or design. It waits for the destination to display and receives the new page before finishing. The live GPT-6.1-Sol check drew four sides, opened Your work, then returned to the same drawing; Undo still removed the whole square. The panel stays available on ordinary pages, with compact account settings and a phone layout. Unsaved-design questions stay in control. If a saved copy changes in the editor, Keep as new pattern preserves both versions. Workspace tests, lint, TypeScript, production build and all 57 assistant browser checks passed. The picture is the actual return to the drawing, with the account hidden.',
+      link: {
+        label: 'See the live return to the drawing',
+        href: '/__review/renders/agent-navigation/live-return.png',
+      },
+    },
+    {
+      title: 'AI agent: repeating tiles and coloring are working',
+      text: 'On codex/ai-agent-repeat-color, the assistant can turn finite ink into a checked four- or six-corner tile, show the infinite wall and color each shape type. The live GPT-6.1-Sol request drew 12 sides, repeated N–E–S–W and painted the inner squares cobalt blue and surrounding quadrilaterals gold. Each change returned a fresh image before the next response. Undo/Redo cover tile and color edits, and Keep in My patterns preserves a normal playable tutorial with the same colors. All workspace tests, lint, TypeScript checks, production build and 42 assistant browser checks passed. The picture is the actual live result with the saved account hidden.',
+      link: {
+        label: 'See the live colored repeat',
+        href: '/__review/renders/agent-repeat-color/live-repeat.png',
+      },
+    },
+    {
+      title: 'AI agent: new ruler-and-compass geometry is working',
+      text: 'On codex/ai-agent-construction, the assistant can start from just O and A, add named lines and circles, and mark chosen intersections. In the live check it created C0, C1, Top, Bottom and Axis, then used the new points for a finite side. Each edit sent a fresh image before the model continued. Undo removed the side first and the construction batch second; Redo restored both. Saving preserves the complete editable draft. All geometry tests, workspace tests, lint, TypeScript checks and 36 assistant browser checks passed. The picture shows the actual live result with the account hidden.',
+      link: {
+        label: 'See the live compass construction',
+        href: '/__review/renders/agent-construction/live-construction.png',
+      },
+    },
+    {
+      title: 'AI agent: editable square with Undo is working',
+      text: 'On codex/ai-agent-drawing, ChatGPT can join existing named points into finite sides and remove sides it added. A live request drew jW–jN–jE–jS as four sides in one edit, received the updated image and completed its reply. One Undo removed all four sides; Redo restored them. Change endpoints or remove a side below the board. Keep in My patterns saves an editable copy. New points, compass circles and coloring remain later work. The picture is the actual live result with the account label hidden.',
+      link: {
+        label: 'See the live square',
+        href: '/__review/renders/agent-drawing/live-square.png',
+      },
+    },
+    {
+      title: 'AI agent Phase 0: live ChatGPT request fixed and verified',
+      text: 'The owner’s first request failed because the valid stream omitted its content-type header. It also delivered the tool call in finalized item events while leaving the final output list empty. Both are handled now, with actions still held until successful completion. A live GPT-6.1-Sol request sent the board image, highlighted O, acknowledged the mark and completed the explanation. All 25 runtime tests, workspace tests, lint, TypeScript checks and 15 assistant browser checks passed. The picture shows the real result with the saved account masked.',
+      link: {
+        label: 'See the successful live result',
+        href: '/__review/renders/agent-phase-0/live-fixed.png',
+      },
+    },
+    {
+      title: 'AI agent Phase 0: local connection workspace implemented',
+      text: 'On codex/ai-agent-phase-0, pnpm dev:agent opens a real Tastir drawing with ChatGPT sign-in, account-specific models, board-image capture, questions and a highlighting tool. The browser acknowledges a displayed mark before the model continues, and rejects stale or stopped responses. The full checks passed, including 151 existing app browser checks and 15 assistant checks. The first live account check now passed too. Original pattern creation and coloring come later.',
+      link: { label: 'Open the local assistant', href: '/#/agent' },
+    },
+    {
+      title: 'AI agent: detailed implementation plan',
+      text: 'The plan covers ChatGPT sign-in, seeing and pointing, original editable constructions, inking, repeats, coloring and saving. It maps the existing engine and editor to proposed tools, with revisions, undo, visual checks and phased acceptance tests. The first connection workspace is implemented; the remaining capabilities are planned.',
+      link: { label: 'Read the AI agent plan', href: '/#/notes/agent' },
+    },
+    {
+      title: 'Codex’s review: all ten items are done',
+      text: 'Continue offers a drawing left partway and opens where it was left. The library has Clear all beside its filters, and an empty result names what was chosen. The earlier review finished with 151 browser tests and 664 unit tests passing.',
+      link: { label: 'Before and after', href: '#redesign' },
     },
     {
       title: 'Storage recovery: the warning points to a share link',
@@ -2088,11 +2207,19 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Codex’s review: all ten items are done',
-    text: 'The last two: the home page’s Continue now also offers a drawing you left partway (it says Drawing along or Watching, and opens the board or the lesson where you were), and the library has Clear all beside the filters, with an empty result that names what was chosen. All 151 browser tests and 664 unit tests pass.',
-    link: { label: 'Before and after', href: '#redesign' },
+    title: 'AI.2a: a zellige companion and clearer chat errors',
+    text: 'The robot is now a smiling eight-point tile in cobalt, turquoise and gold, using Tastir’s colors in both themes. Your screenshot exposed an error-labeling bug: a temporary usage-check failure was being called a usage limit. Those cases now have different explanations. A confirmed app or plan limit shows Manage usage directly. Earlier edits and action records are kept, and the same error is no longer shown twice. All 46 companion unit checks and all 15 chat browser checks passed, along with full workspace tests, lint, TypeScript and a fresh production build. Checks ran sequentially with one worker. This preview uses simulated responses.',
+    link: {
+      label: 'See the new companion and error recovery',
+      href: '/__review/renders/assistant-feedback/desktop-dark.png',
+    },
   },
   next: [
+    {
+      title: 'AI agent: broader live evaluation and local release',
+      text: 'Exercise more original construction requests and recovery cases, then finish account recovery, credential storage and local packaging. The chat and normal drawing/coloring tools are implemented; the wider generation evaluation remains.',
+      link: { label: 'Read the remaining phases', href: '/#/notes/agent' },
+    },
     {
       title: 'Ink in under a second',
       text: 'Pressing Ink in draw along on Bou Inania now takes about a third of the time it did, but still around three seconds on a slow machine. The goal is under one second on both Bou Inania tutorials.',

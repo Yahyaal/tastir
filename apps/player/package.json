@@ -3,10 +3,20 @@
   "version": "0.0.1",
   "private": true,
   "nx": {
-    "name": "player"
+    "name": "player",
+    "targets": {
+      "build": {
+        "options": {
+          "env": {
+            "NODE_ENV": "production"
+          }
+        }
+      }
+    }
   },
   "dependencies": {
     "@tastir/engine": "workspace:*",
-    "@tastir/schema": "workspace:*"
+    "@tastir/schema": "workspace:*",
+    "@tastir/agent-protocol": "workspace:*"
   }
 }

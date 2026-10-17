@@ -14,6 +14,8 @@ import type { Model } from './model';
 import { useCamera } from './useCamera';
 import { placeKey } from './placement';
 import { ringsOf } from './rings';
+import { boardRef as agentBoardRef } from '../agent/screenTargets';
+import { repeatTargets } from '../agent/repeatTargets';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
 
 export type WallStyle = 'tiles' | 'strapwork' | 'interlace' | 'lines' | 'jali';
@@ -116,7 +118,12 @@ export function Wall({
   onPick,
   enter = false,
   lit,
+  boardRef,
+  boardCamera,
 }: {
+  /** Optional shared board for image capture and annotations in the assistant. */
+  boardRef?: React.RefObject<SVGSVGElement | null>;
+  boardCamera?: ReturnType<typeof useCamera>;
   model: Model;
   colors: readonly string[];
   /** The fill for each placement (piece, and the cell it is copied to),
@@ -145,9 +152,11 @@ export function Wall({
   enter?: boolean;
 }) {
   const id = useId().replace(/:/g, '');
-  const svgRef = useRef<SVGSVGElement>(null);
+  const ownRef = useRef<SVGSVGElement>(null);
+  const svgRef = boardRef ?? ownRef;
   const start = useMemo(() => tiling(model).view, [model]);
-  const camera = useCamera(start, svgRef);
+  const ownCamera = useCamera(start, svgRef, { active: !boardCamera });
+  const camera = boardCamera ?? ownCamera;
   const { pattern } = model;
   // The weave may repeat after two tiles: the wall's tile holds whole
   // repeats of both the colouring and the weave.
@@ -207,8 +216,9 @@ export function Wall({
               fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
             });
           });
-        for (const s of pattern.ink)
-          lines.push([move(s.segment.a), move(s.segment.b)]);
+        if (banded(style) || jali || finish.carved)
+          for (const s of pattern.ink)
+            lines.push([move(s.segment.a), move(s.segment.b)]);
         // The patches are already placed in tile (i, j).
         if (style === 'interlace')
           for (const p of patchesAt(pattern, i, j, groutWidth * 4)) {
@@ -218,7 +228,7 @@ export function Wall({
       }
     }
     return { pieces: out, lines, over, overIn };
-  }, [pattern, tile, fill, colors, jali, style, groutWidth]);
+  }, [pattern, tile, fill, colors, jali, style, groutWidth, finish.carved]);
   const bandPath = useMemo(
     () =>
       shifted.lines.map(([a, b]) => `M${a.x} ${a.y}L${b.x} ${b.y}`).join(''),
@@ -305,10 +315,22 @@ export function Wall({
   const cover = fit(camera.view, 1);
   return (
     <svg
-      ref={svgRef}
+      ref={
+        import.meta.env.DEV
+          ? agentBoardRef(
+              svgRef,
+              (_svg, box) =>
+                repeatTargets(model, box).map((t) => ({
+                  ...t,
+                  id: `geometry:${t.id}`,
+                })),
+              model,
+            )
+          : svgRef
+      }
       className={`drawing wall style-${style}${enter ? ' color-enter' : ''}${litPieces ? ' lighting' : ''}`}
       viewBox={viewBox(camera.view)}
-      preserveAspectRatio="xMidYMid slice"
+      preserveAspectRatio={boardCamera ? 'xMidYMid meet' : 'xMidYMid slice'}
       role="img"
       aria-label="The pattern repeated as a wall"
       onPointerMove={(e) => {

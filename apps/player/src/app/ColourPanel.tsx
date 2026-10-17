@@ -133,6 +133,24 @@ export function ColourPanel({
           })}
         </div>
       </div>
+      {now.squareBands ? (
+        <p role="status">
+          Concentric square bands: {now.squareBands.colors.length} colors, one
+          square thick. The motif repeats every{' '}
+          {now.squareBands.colors.length * 2 - 1} squares.{' '}
+          <button
+            type="button"
+            onClick={() =>
+              dispatch({
+                kind: 'reset',
+                to: { ...now, squareBands: undefined },
+              })
+            }
+          >
+            Remove square bands
+          </button>
+        </p>
+      ) : null}
       {methods.length > 1 ? (
         <div className="colour-methods" role="group" aria-label="Colour">
           {methods.map((m) => (
