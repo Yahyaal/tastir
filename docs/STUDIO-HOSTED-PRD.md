@@ -1,11 +1,11 @@
 # Hosted studio
 
-The plan for using the studio from anywhere, on a phone or a laptop, with Claude, ChatGPT, Codex and Gemini working on the same drawing as you. It builds on [the studio plan](STUDIO-PLAN.md), whose local version is done (see [the studio log](STUDIO-LOG.md)). Written 16 October 2026.
+The plan for using the studio from anywhere, on a phone or a laptop, with Claude, ChatGPT, Codex and Gemini working on the same drawing as you. It builds on [the studio plan](STUDIO-PLAN.md), whose local version is done (see [the studio log](STUDIO-LOG.md)). Written 16 October 2026 and revised the same day with Codex's review of how the studio and its in-app assistant fit together (`docs/AI-STUDIO-INTEGRATION-REVIEW.md` on Codex's branch). Codex and Claude agreed every change; this file owns the tasks and their status, and the review is the reasoning behind M1 to M3.
 
 ## At a glance
 
 - **Where it stands:** planned, nothing built yet.
-- **What happens first:** M0, merging Codex's branch and this one into main, once Codex has finished and you say go.
+- **What happens first:** M0, merging Codex's branch and this one into main, once Codex has finished and you say go. Then M1 to M3 make the studio, the in-app assistant and outside agents work on one project, before anything is hosted.
 - **What it costs:** nothing. Every service stays on its free plan.
 - **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
 - **What you still decide:** whether private research photos may be uploaded (decision 4). Nothing waits on it.
@@ -22,23 +22,32 @@ A ticked box is decided.
 
 ## Tasks
 
-Done in this order, one commit each. A ticked box is done; whoever finishes a task ticks it here in the same commit. H1 to H4 are built and tested on this computer against a local Postgres, so only H5 needs the accounts.
+Done in this order, one commit each. A ticked box is done; whoever finishes a task ticks it here in the same commit, and an unticked box means planned, not started. H1 to H4 will be built and tested on this computer against a local Postgres, so only H5 needs the accounts.
 
 - [ ] **M0 · Merge the branches.** Codex's agent branches go into main, then `claude/studio` is rebased onto main and merged.
   - **Who:** you decide when, an agent does it.
-  - **Done when:** main holds both, and the full test, lint, typecheck and browser checks pass.
+  - **Done when:** main holds both, and the full test, lint, typecheck and browser checks pass. Codex's old copy of `docs/STUDIO-PLAN.md` and its extra "Studio plan" tab are dropped in favour of `claude/studio`'s.
+- [ ] **M1 · Never lose your unsaved change.** When an agent saves first, the studio page today drops your pending change and wrongly says Undo brings it back. It will keep that change, explain what happened, and offer to retry it against the latest drawing or keep it as a copy.
+  - **Who:** an agent.
+  - **Done when:** a browser test makes an agent and you edit at the same moment, and your change can be retried (checked against the agent's newer drawing, never replacing it blindly) or recovered as a copy.
+- [ ] **M2 · One project, three workers.** You in the editor, the in-app assistant and an outside agent over MCP all work on the same project on this computer. Required before deploying.
+  - **Who:** you with an agent.
+  - **Done when:** all three edit one drawing; a stale edit is refused whole; each one's "undo mine" stops at the others' work; a named copy saves, reloads and exports with its colours; and the pictures match what you see.
+- [ ] **M3 · Shared editing code.** The editing commands the studio and the in-app assistant both use move into one package (`packages/project-core`), pure TypeScript with no browser or network code, so the two never drift apart.
+  - **Who:** an agent.
+  - **Done when:** the studio and the assistant both use the package, and every existing test passes unchanged.
 - [ ] **H0 · Check every client before building.** Open the local studio through a temporary public tunnel and add it to claude.ai (web and phone), Claude Code, ChatGPT developer mode, Codex and Antigravity.
   - **Who:** you with an agent.
   - **Done when:** the log has a table saying, for each client, whether it connected, whether it could change the drawing, and whether it showed a picture.
-- [ ] **H1 · Agents over the internet.** MCP over HTTP at `/mcp` beside today's local one; the author name taken from the connection; `ask` waits at most 200 seconds with a new `wait_for_answer`; smaller pictures.
+- [ ] **H1 · Agents over the internet.** MCP over HTTP at `/mcp` beside today's local one; `ask` returns a question number at once and `wait_for_answer` waits at most 45 seconds; every change carries a command ID so a retry is never applied twice; smaller pictures, labelled as the server's drawing.
   - **Who:** an agent.
-  - **Done when:** a test client over HTTP builds the square brief, `ask` returns within 200 seconds with the question still open, and every default picture is under 100,000 base64 characters.
+  - **Done when:** a test client over HTTP builds the square brief; `ask` returns at once and the answer arrives through `wait_for_answer`; a retried edit returns the first result without editing twice, and a reused ID with different content is refused; every default picture is under 100,000 base64 characters.
 - [ ] **H2 · Projects in a database.** The studio can keep projects in files (as now) or in Postgres; nothing is kept in memory between requests.
   - **Who:** an agent.
-  - **Done when:** every studio test passes with both, and of two edits based on the same revision, one is saved and the other refused whole.
-- [ ] **H3 · Sign-in.** You sign in with Google; agents sign in with OAuth and you approve each one; a Connections page lists them and can revoke any.
+  - **Done when:** every studio test passes with both; of two edits based on the same revision, one is saved and the other refused whole; and the edit, its history entry and its command receipt are saved in one transaction.
+- [ ] **H3 · Sign-in.** You sign in with Google; agents sign in with OAuth and you approve each one; each connection has a lasting identity that owns its edits; a Connections page lists them, renames them and can revoke any.
   - **Who:** an agent.
-  - **Done when:** a test runs the whole sign-in with a stand-in Google, a revoked agent is refused at once, and a redirect to an unknown address is refused.
+  - **Done when:** a test runs the whole sign-in with a stand-in Google; renaming a connection or refreshing its token keeps its edits its own; a revoked agent is refused at once; and a redirect to an unknown address is refused.
 - [ ] **H4 · The studio page on Vercel.** The studio page in its own build, photo upload to private storage, export and import, and a phone layout.
   - **Who:** an agent.
   - **Done when:** the studio browser checks pass on a local Vercel build, on desktop and phone.
@@ -91,7 +100,7 @@ The deployment serves three things at one address, for example `tastir-studio.ve
 
 A project becomes rows in a separate free Neon project, so the studio's data never mixes with finsight's. The drawing and its goals are one row in `projects` with a `revision` column; each history entry is a row in `revisions` with its author and label, so loading a project does not load its whole history; notes, questions and answers are rows in `notes`; marks are rows in `marks` that expire after an hour; and the photo's size and alignment are on the project, with the image itself in Vercel Blob (below). Connected agents and their tokens are in `oauth_clients` and `oauth_tokens`.
 
-An edit reads the project, checks it with the same code as today, and saves it in one transaction whose update only succeeds if the revision is still the one the edit was based on (`UPDATE projects … WHERE id = $1 AND revision = $2`). That is the same rule the local studio enforces in memory, so an edit based on an old view is still refused whole. The database code uses postgres.js with `prepare: false` against Neon's pooled address, as finsight's decisions file explains, because the Neon HTTP driver cannot run transactions. Migrations use Drizzle, as in finsight.
+An edit reads the project, checks it with the same code as today, and saves it in one transaction whose update only succeeds if the revision is still the one the edit was based on (`UPDATE projects … WHERE id = $1 AND revision = $2`). That is the same rule the local studio enforces in memory, so an edit based on an old view is still refused whole. The database code uses postgres.js with `prepare: false` against Neon's pooled address, as finsight's decisions file explains, because a save reads the project, checks it and writes it in one transaction, and Neon's HTTP driver only runs fixed batches of queries, not a transaction that decides what to write after reading. Migrations use Drizzle, as in finsight.
 
 ### Photos in private Vercel Blob
 
@@ -107,11 +116,13 @@ Each token belongs to one client, so the author name comes from the token and no
 
 ### Tool changes for chat apps
 
-Three things work locally but would fail in a chat app, so they change for every client.
+These work locally but would fail or mislead once agents connect over the internet, so they change for every client.
 
-1. **`ask` waits too long.** It waits up to ten minutes for the owner's answer, but claude.ai stops a tool call after 240 seconds. `ask` will wait at most 200 seconds, checking Neon for the answer every second, and then say the question is still open. A new `wait_for_answer` tool lets the agent keep waiting without asking again. Two hundred seconds is inside Vercel Hobby's 300-second limit for one function call.
+1. **`ask` waits too long.** It waits up to ten minutes for the owner's answer, but claude.ai stops a tool call after 240 seconds and Codex after 60 by default. `ask` will save the question and return its number at once, and a new `wait_for_answer` tool waits at most 45 seconds, which leaves room under Codex's 60, then says the question is still open so the agent can wait again. Questions stay in the database, so an answer given later is never lost.
 2. **Pictures are too big.** A construction picture at the default 1,000 pixels is 125 KB, about 167,000 characters as base64, which is over claude.ai's limit of about 150,000. At 700 pixels it is about 113,000. The default size drops to 768 pixels, the PNG is written with a limited palette, and a test checks that every default picture stays under 100,000 characters.
-3. **Who made each edit.** The author comes from the token (above) instead of `TASTIR_AUTHOR`, which stays only for the local stdio server.
+3. **Who made each edit.** The author comes from the connection's lasting identity (above) instead of `TASTIR_AUTHOR`, which stays only for the local stdio server. The name shown is only a label.
+4. **Retries.** A request can fail on the way back after the edit was saved, and the agent then sends it again. Every change (an edit, a note, a question) carries a command ID, unique per project and connection, saved in the same transaction. A repeat returns the first result without doing it again, and a reused ID with different content is refused. Reads need no ID.
+5. **Which picture is which.** A picture the server draws shows the saved project at a named revision, not the owner's screen. Only a connected browser knows what the owner is looking at, so a tool that means the owner's live view says so, with its age, and says plainly when no browser is open.
 
 ### Speed
 
