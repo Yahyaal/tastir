@@ -759,7 +759,12 @@ function Workspace({
                     'The page or drawing changed. Send a new view before coloring.',
                   );
                 const message = snapshot.editor
-                  ? applyPageEditor(call, snapshot, reply.runId)
+                  ? await applyPageEditor(
+                      call,
+                      snapshot,
+                      reply.runId,
+                      abort.signal,
+                    )
                   : applyPageColor(call, snapshot, reply.runId);
                 clearScreenHighlight();
                 setScreenPoint(false);

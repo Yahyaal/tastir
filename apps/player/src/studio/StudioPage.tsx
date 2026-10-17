@@ -1,3 +1,5 @@
+import { checkedDraftEdit } from '../agent/pageEditor';
+import { COMPANION_ACTOR, projectHistory } from '../agent/projectHistory';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Draft } from '../editor/document';
 import { EditorPage, type SharedDrawing } from '../editor/Editor';
@@ -168,7 +170,10 @@ function useStudioEvents(
 interface Loaded {
   readonly revision: number;
   readonly draft: Draft;
-  readonly history: { readonly undo: readonly HistoryLine[] };
+  readonly history: {
+    readonly undo: readonly HistoryLine[];
+    readonly redo: readonly HistoryLine[];
+  };
   readonly reference: ReferenceLine | null;
 }
 
@@ -362,6 +367,53 @@ function StudioProject({ id }: { id: string }) {
       .finally(() => setBusy(false));
   };
 
+  // Shared tools acknowledge only saved server edits, never a local optimistic
+  // change. Keep a manual draft made while this request was on its way (M1).
+  const mutateShared = async (
+    expected: number,
+    endpoint: 'edit' | 'travel',
+    data: Record<string, unknown>,
+  ) => {
+    if (sending.current || pending.current || kept)
+      throw new Error(
+        'Finish saving or recover your kept change before asking for another shared edit.',
+      );
+    if (revision.current !== expected)
+      throw new Error('The shared drawing changed. Send a new view first.');
+    const before = shown.current!;
+    sending.current = true;
+    try {
+      await studioCall('POST', `/projects/${id}/${endpoint}`, {
+        ...data,
+        revision: expected,
+      });
+      const next = await studioCall<Loaded>('GET', `/projects/${id}/draft`);
+      revision.current = next.revision;
+      shown.current = next.draft;
+      if (pending.current) {
+        setKept({ base: before, mine: pending.current });
+        pending.current = undefined;
+        setNotice(
+          'Your change made while the shared edit was saving is kept under the steps.',
+        );
+      } else setNotice(undefined);
+      setLoaded(next);
+    } catch (error) {
+      if (pending.current) {
+        setKept({ base: before, mine: pending.current });
+        pending.current = undefined;
+      }
+      fetchLatest();
+      throw error;
+    } finally {
+      sending.current = false;
+      if (behind.current) {
+        behind.current = false;
+        fetchLatest();
+      }
+    }
+  };
+
   if (error && !loaded)
     return (
       <div className="player studio">
@@ -394,6 +446,51 @@ function StudioProject({ id }: { id: string }) {
   const shared: SharedDrawing = {
     incoming: loaded.draft,
     save,
+    canUndo: loaded.history.undo.length > 0,
+    canRedo: loaded.history.redo.length > 0,
+    travel: (direction, mine = false) => {
+      void mutateShared(loaded.revision, 'travel', {
+        author: 'owner',
+        direction,
+        steps: 1,
+        mine,
+        command: crypto.randomUUID(),
+      }).catch((error: Error) => setNotice(error.message));
+    },
+    agent: {
+      route: `studio/${id}`,
+      revision: loaded.revision,
+      history: projectHistory(loaded.history),
+      apply: async (call, _snapshot, requestId, signal) => {
+        const digest = await crypto.subtle.digest(
+          'SHA-256',
+          new TextEncoder().encode(JSON.stringify([requestId, call.id])),
+        );
+        const command = `assistant:${Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('')}`;
+        signal?.throwIfAborted();
+        if (call.name === 'travel_history') {
+          await mutateShared(loaded.revision, 'travel', {
+            author: COMPANION_ACTOR,
+            command,
+            direction: call.arguments.direction,
+            steps: call.arguments.steps,
+            mine: call.arguments.scope === 'assistant',
+          });
+        } else {
+          const draft = checkedDraftEdit(loaded.draft, call);
+          await mutateShared(loaded.revision, 'edit', {
+            author: COMPANION_ACTOR,
+            command,
+            label:
+              'label' in call.arguments
+                ? call.arguments.label
+                : 'Assistant edit',
+            edit: { op: 'replace', draft },
+          });
+        }
+        return 'Saved the shared project through Studio history. A fresh view follows.';
+      },
+    },
     refused: notice !== undefined,
     status:
       notice ??
@@ -414,6 +511,21 @@ function StudioProject({ id }: { id: string }) {
             }}
           />
         ) : null}
+        <section aria-label="Shared history">
+          <h2>Shared history</h2>
+          <p>
+            Undo reverses the latest edit. Undo mine stops at someone else’s
+            work.
+          </p>
+          <button
+            type="button"
+            className="button secondary"
+            disabled={!loaded.history.undo.length || busy}
+            onClick={() => shared.travel?.('undo', true)}
+          >
+            Undo mine
+          </button>
+        </section>
         <StudioPanel
           id={id}
           marks={marks}

@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { registerPageEditor } from './agentBridge';
+import { registerPageEditor, type SharedEditorAgent } from './agentBridge';
 import { editDraft, travelDraft, type DraftHistory } from './history';
 import { useRemembered } from '../app/remembered';
 import { ThemeSwitch } from '../app/theme';
@@ -122,6 +122,10 @@ export interface SharedDrawing {
   readonly incoming: Draft;
   /** Called with each change made here. */
   readonly save: (draft: Draft) => void;
+  readonly agent?: SharedEditorAgent;
+  readonly travel?: (direction: 'undo' | 'redo', mine?: boolean) => void;
+  readonly canUndo?: boolean;
+  readonly canRedo?: boolean;
   /** What the status line says instead of “Kept in this browser”. */
   readonly status: string;
   readonly refused?: boolean;
@@ -158,12 +162,14 @@ export function EditorPage({
   }, []);
   const undo = useCallback(() => {
     merging.current = undefined;
-    setHistory((h) => (h.past.length ? travelDraft(h, 'undo') : h));
-  }, []);
+    if (shared?.travel) shared.travel('undo');
+    else setHistory((h) => (h.past.length ? travelDraft(h, 'undo') : h));
+  }, [shared?.travel]);
   const redo = useCallback(() => {
     merging.current = undefined;
-    setHistory((h) => (h.future.length ? travelDraft(h, 'redo') : h));
-  }, []);
+    if (shared?.travel) shared.travel('redo');
+    else setHistory((h) => (h.future.length ? travelDraft(h, 'redo') : h));
+  }, [shared?.travel]);
 
   // Every change is kept in this browser at once, or for a shared drawing
   // sent to the studio. A drawing that came from the studio is not sent
@@ -220,7 +226,8 @@ export function EditorPage({
       id: pattern.id,
       history,
       setHistory,
-      autoSaved: kept,
+      autoSaved: shared ? !shared.refused : kept,
+      shared: shared?.agent,
       committed: (next) => {
         merging.current = undefined;
         setSelected(next.steps.at(-1)?.id);
@@ -634,7 +641,7 @@ export function EditorPage({
                 type="button"
                 className="tool"
                 onClick={undo}
-                disabled={!history.past.length}
+                disabled={!(shared?.canUndo ?? history.past.length > 0)}
               >
                 Undo
               </button>
@@ -642,7 +649,7 @@ export function EditorPage({
                 type="button"
                 className="tool"
                 onClick={redo}
-                disabled={!history.future.length}
+                disabled={!(shared?.canRedo ?? history.future.length > 0)}
               >
                 Redo
               </button>
@@ -653,8 +660,8 @@ export function EditorPage({
               onTool={chooseTool}
               symmetry={symmetry}
               onSymmetry={setSymmetry}
-              canUndo={history.past.length > 0}
-              canRedo={history.future.length > 0}
+              canUndo={shared?.canUndo ?? history.past.length > 0}
+              canRedo={shared?.canRedo ?? history.future.length > 0}
               onUndo={undo}
               onRedo={redo}
             >
