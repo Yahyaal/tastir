@@ -55,6 +55,12 @@ export const DOCS: readonly {
     text: read('STUDIO-SETUP.md'),
   },
   {
+    key: 'studio-hosted',
+    label: 'Hosted studio',
+    file: 'STUDIO-HOSTED-PRD.md',
+    text: read('STUDIO-HOSTED-PRD.md'),
+  },
+  {
     key: 'studio-log',
     label: 'Studio log',
     file: 'STUDIO-LOG.md',

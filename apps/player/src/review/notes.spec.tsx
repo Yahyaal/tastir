@@ -34,6 +34,12 @@ describe('the project notes page', () => {
     ).toBeGreaterThan(0);
   });
 
+  it('shows the hosted studio plan with its decisions and tasks to tick', () => {
+    render(<Notes page="studio-hosted" />);
+    expect(screen.getByRole('heading', { name: 'Tasks' })).toBeTruthy();
+    expect(document.querySelectorAll('li.task').length).toBeGreaterThan(10);
+  });
+
   it('shows the status as a table', () => {
     render(<Notes page="status" />);
     expect(

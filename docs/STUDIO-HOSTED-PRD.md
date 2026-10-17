@@ -1,6 +1,61 @@
-# Hosted studio: product requirements and tasks
+# Hosted studio
 
-Written 16 October 2026 at the owner's request, while Codex finishes its branch, and revised the same day after the owner chose Vercel and Neon. It builds on [the studio plan](STUDIO-PLAN.md), whose local version is done (see [the studio log](STUDIO-LOG.md)). Nothing here is built yet. An HTML copy with a tick list and the owner's answers to the decisions lives at https://claude.ai/artifact/RmC2jZKaN1mMqgN8mvdzHB (read its `tasks` and `decisions` collections with the ArtifactData tool, and tick a task there when it is done); this file is the version other agents read, and the two must say the same thing.
+The plan for using the studio from anywhere, on a phone or a laptop, with Claude, ChatGPT, Codex and Gemini working on the same drawing as you. It builds on [the studio plan](STUDIO-PLAN.md), whose local version is done (see [the studio log](STUDIO-LOG.md)). Written 16 October 2026.
+
+## At a glance
+
+- **Where it stands:** planned, nothing built yet.
+- **What happens first:** M0, merging Codex's branch and this one into main, once Codex has finished and you say go.
+- **What it costs:** nothing. Every service stays on its free plan.
+- **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
+- **What you still decide:** whether private research photos may be uploaded (decision 4). Nothing waits on it.
+
+## Decisions
+
+A ticked box is decided.
+
+- [x] **1. Where it runs:** Vercel Hobby and a new free Neon project, as in finsight. Decided 16 October.
+- [x] **2. The region:** Neon in AWS US East (Ohio) and Vercel functions in Cleveland (`cle1`), the nearest to Oklahoma. Decided 16 October.
+- [x] **3. Sign-in:** Google through Auth.js, with only your address on the allow list, copied from finsight. Decided 16 October.
+- [ ] **4. Private photos on the server:** may research photos that are not free be uploaded, where they stay private in Blob? Until you say yes, only free photos go up.
+- [x] **5. Free plans only:** every service stays free, and Durable Objects come in only as the free live room (H7). Decided 16 October.
+
+## Tasks
+
+Done in this order, one commit each. A ticked box is done; whoever finishes a task ticks it here in the same commit. H1 to H4 are built and tested on this computer against a local Postgres, so only H5 needs the accounts.
+
+- [ ] **M0 · Merge the branches.** Codex's agent branches go into main, then `claude/studio` is rebased onto main and merged.
+  - **Who:** you decide when, an agent does it.
+  - **Done when:** main holds both, and the full test, lint, typecheck and browser checks pass.
+- [ ] **H0 · Check every client before building.** Open the local studio through a temporary public tunnel and add it to claude.ai (web and phone), Claude Code, ChatGPT developer mode, Codex and Antigravity.
+  - **Who:** you with an agent.
+  - **Done when:** the log has a table saying, for each client, whether it connected, whether it could change the drawing, and whether it showed a picture.
+- [ ] **H1 · Agents over the internet.** MCP over HTTP at `/mcp` beside today's local one; the author name taken from the connection; `ask` waits at most 200 seconds with a new `wait_for_answer`; smaller pictures.
+  - **Who:** an agent.
+  - **Done when:** a test client over HTTP builds the square brief, `ask` returns within 200 seconds with the question still open, and every default picture is under 100,000 base64 characters.
+- [ ] **H2 · Projects in a database.** The studio can keep projects in files (as now) or in Postgres; nothing is kept in memory between requests.
+  - **Who:** an agent.
+  - **Done when:** every studio test passes with both, and of two edits based on the same revision, one is saved and the other refused whole.
+- [ ] **H3 · Sign-in.** You sign in with Google; agents sign in with OAuth and you approve each one; a Connections page lists them and can revoke any.
+  - **Who:** an agent.
+  - **Done when:** a test runs the whole sign-in with a stand-in Google, a revoked agent is refused at once, and a redirect to an unknown address is refused.
+- [ ] **H4 · The studio page on Vercel.** The studio page in its own build, photo upload to private storage, export and import, and a phone layout.
+  - **Who:** an agent.
+  - **Done when:** the studio browser checks pass on a local Vercel build, on desktop and phone.
+- [ ] **H5 · Deploy.** The Neon database, the Vercel project, photo storage, settings, and size and rate limits.
+  - **Who:** you create the free Vercel and Neon accounts or projects, an agent does the rest.
+  - **Done when:** the studio answers at its address, a redeploy keeps every project, and an exported project opens in the local studio unchanged.
+- [ ] **H6 · Live with every agent, and measured.** Connect each client, update the setup notes, run the square brief in each, and measure speed and a week's use against the free limits.
+  - **Who:** you with an agent.
+  - **Done when:** each client that can write finishes the square brief, you answer one question from your phone, and the log has the speeds and the use.
+- [ ] **H7 · The live room on Durable Objects.** One room per project that tells open pages about each new edit at once, on Cloudflare's free plan.
+  - **Who:** you make a free Cloudflare account, an agent does the rest.
+  - **Done when:** an agent's edit shows on the open page in under half a second, the page keeps working with the room switched off, and a week of use stays inside the free daily limits.
+- [ ] **H8 · Optional: the drawing inside the chat.** An MCP App that shows the live drawing in claude.ai.
+  - **Who:** an agent.
+  - **Done when:** you see the live drawing in a Claude conversation and answer a question there.
+
+The details behind each task are below.
 
 ## What the owner wants
 
@@ -22,7 +77,7 @@ These facts were checked on 16 October 2026; the sources are listed at the end. 
 | Codex CLI | `codex mcp add tastir-studio --url https://…/mcp`, then `codex mcp login tastir-studio`. | Streamable HTTP with OAuth is supported; credentials go to the system keyring. |
 | Gemini | Antigravity CLI (`agy`) with a `serverUrl` entry in `~/.gemini/config/mcp_config.json`, signing in from `/mcp`. | Gemini CLI stopped serving Google AI Pro accounts on 18 June 2026, and Antigravity CLI replaced it, so [the setup notes](STUDIO-SETUP.md) are out of date for Gemini. The Gemini web app also takes custom MCP apps since mid-2026, but reports say only for personal accounts in the US and in English. Users report that AI Pro limits in Antigravity are tight. |
 
-## What we will build
+## How it will work
 
 ### Vercel and Neon, the same as finsight
 
@@ -65,7 +120,7 @@ The drawing feels as fast as the app does today, because it is drawn in the brow
 Three things depend on the server, and each has a target that task H6 measures.
 
 - **An agent's edit reaching the page.** Vercel cannot hold a connection open cheaply, so the page asks for the project's revision every second while someone has edited in the last two minutes, every five seconds otherwise, and not at all while the tab is hidden. Each check is a single small read. An agent's edit therefore shows within about a second while work is going on. Target: under 1.5 seconds.
-- **Saving an edit.** One function call and one transaction, which should take 100 to 300 milliseconds when the Vercel functions and Neon are in the same region. The region is the owner's decision, nearest to where they live. Target: under 400 milliseconds.
+- **Saving an edit.** One function call and one transaction, which should take 100 to 300 milliseconds when the Vercel functions and Neon are in the same region. Target: under 400 milliseconds.
 - **The first request after a quiet spell.** Neon's free plan stops the database after five minutes without use and cannot be set otherwise; the first query afterwards takes about half a second, and a Vercel function that has gone cold adds a few hundred milliseconds more. This happens once, when work starts, and an agent at work keeps both awake. Target: under 1.5 seconds.
 
 The owner is in Oklahoma, so the Neon database goes in AWS US East (Ohio) and the Vercel functions in Cleveland (`cle1`), which is the same AWS region. A save then crosses the country once, from Oklahoma to Ohio and back, and the function and the database talk to each other inside one region.
@@ -105,31 +160,6 @@ Claude and ChatGPT both show MCP Apps, which are small interactive pages a tool 
 ### Not in this work
 
 Accounts for other people and sharing projects with them belong to the product plan's accounts phase ([PRD](PRD.md), "Accounts and library"). The hosted studio is built so that this can come later: projects already record their authors, the database already has an owner on each project, and the allow list can become real accounts. The contest runner stays a local tool, because it starts the agents' command-line programs on the owner's computer.
-
-## Decisions for the owner
-
-1. **Where it runs.** Decided 16 October: Vercel Hobby and a new free Neon project, as in finsight.
-2. **The region.** Decided 16 October: the owner is in Oklahoma, so Neon in AWS US East (Ohio) and Vercel functions in Cleveland (`cle1`).
-3. **Sign-in.** Decided: Google through Auth.js, with only the owner on the allow list, copied from finsight.
-4. **Private photos on the server.** The owner decides whether research photos that are not free may be uploaded to the hosted studio, where they stay private in Blob. This blocks nothing; until then, only free photos go up.
-5. **Free tiers only.** Decided 16 October: every service stays on its free plan. Durable Objects come in only as the free live room (H7).
-
-## Tasks
-
-Each task is one commit with its acceptance test, run one project at a time as the checks notes require. H1 to H4 can be built and tested on this computer against a local Postgres, the way finsight's `pnpm dev` runs, so only the deploy needs the accounts.
-
-| ID | Task | Who | Done when |
-| --- | --- | --- | --- |
-| M0 | Merge Codex's agent branches into main, then rebase `claude/studio` onto main and merge it. | Owner decides, agent does | `main` holds both, and the full test, lint, typecheck and browser checks pass. |
-| H0 | Check every door before building. Start the local studio with a temporary public tunnel and add it to claude.ai (web and phone), Claude Code, ChatGPT developer mode, Codex and Antigravity. | Owner with agent | A table in the log records, for each client, whether it connected, whether it could call a tool that changes the drawing, and whether it showed a picture. |
-| H1 | Remote MCP. Add Streamable HTTP at `/mcp` beside stdio; take the author from the connection; shorten `ask` and add `wait_for_answer`; cap picture size. | Agent | An MCP SDK client over HTTP builds the square brief; a test shows `ask` returns within 200 seconds with the question still open; every default picture is under 100,000 base64 characters. |
-| H2 | The Postgres store. A store interface with the file store and a Postgres store (Drizzle schema and migrations, postgres.js); the `Studio` keeps nothing in memory between requests; marks and waiting questions move to tables; a local Postgres for development. | Agent | Every studio test passes against both stores, and a test shows two edits based on the same revision: one is saved and the other is refused whole. |
-| H3 | Sign-in. Google through Auth.js with an allow list; OAuth 2.1 for agents with PKCE, DCR and CIMD; the consent page; hashed tokens; refresh rotation; the Connections page with revoke. | Agent | A test runs the whole OAuth flow with the SDK's client and a stand-in Google, a revoked token is refused at once, and a redirect to an unknown address is refused. |
-| H4 | The studio page on Vercel. The studio build of the player; `/api` as Vercel functions with the session cookie; revision checks instead of the change stream; photo upload to private Blob; export and import; the phone layout. | Agent | The studio browser checks pass against a local Vercel build (`vercel dev`) on desktop and phone, signed in with the stand-in Google. |
-| H5 | Deploy. The Neon project and region, the Vercel project, Blob store, environment variables, migrations, size and rate limits. | Owner sets up the accounts, agent does the rest | The studio answers at its address, a deploy keeps every project, and an exported project imports into the local studio unchanged. |
-| H6 | Live with every agent, and measured. Connect each client, update the setup notes (Gemini through Antigravity), run the square brief in each, and record the three speed targets and a week's use against the Hobby allowances. | Owner with agent | Each client that H0 showed can write finishes the square brief, the owner answers one question from the phone, and the log has the speeds and the use. |
-| H7 | A live room on Durable Objects, on Cloudflare's free plan. A Worker with one room per project, WebSocket hibernation, signed tickets from Vercel, a revision message after every save, and checking every few seconds when the room cannot be reached. | Owner makes a free Cloudflare account, agent does the rest | An agent's edit reaches the open page in under 0.5 seconds in H6's measurement, the page keeps working when the room is switched off, and a week of use stays inside the free daily limits. |
-| H8 | Optional: the drawing inside the chat as an MCP App. | Agent | In claude.ai the owner sees the live drawing in the conversation and answers a question there. |
 
 ## Risks
 
