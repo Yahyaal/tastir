@@ -4,7 +4,7 @@ The plan for using the studio from anywhere, on a phone or a laptop, with Claude
 
 ## At a glance
 
-- **Where it stands:** planned, nothing built yet.
+- **Where it stands:** M1 is done (16 October); the rest is planned.
 - **What happens first:** M0, merging Codex's branch and this one into main, once Codex has finished and you say go. Then M1 to M3 make the studio, the in-app assistant and outside agents work on one project, before anything is hosted.
 - **What it costs:** nothing. Every service stays on its free plan.
 - **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
@@ -27,7 +27,7 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
 - [ ] **M0 · Merge the branches.** Codex's agent branches go into main, then `claude/studio` is rebased onto main and merged.
   - **Who:** you decide when, an agent does it.
   - **Done when:** main holds both, and the full test, lint, typecheck and browser checks pass. Codex's old copy of `docs/STUDIO-PLAN.md` and its extra "Studio plan" tab are dropped in favour of `claude/studio`'s.
-- [ ] **M1 · Never lose your unsaved change.** When an agent saves first, the studio page today drops your pending change and wrongly says Undo brings it back. It will keep that change, explain what happened, and offer to retry it against the latest drawing or keep it as a copy.
+- [x] **M1 · Never lose your unsaved change.** When an agent saves first, the studio page today drops your pending change and wrongly says Undo brings it back. It will keep that change, explain what happened, and offer to retry it against the latest drawing or keep it as a copy.
   - **Who:** an agent.
   - **Done when:** a browser test makes an agent and you edit at the same moment, and your change can be retried (checked against the agent's newer drawing, never replacing it blindly) or recovered as a copy.
 - [ ] **M2 · One project, three workers.** You in the editor, the in-app assistant and an outside agent over MCP all work on the same project on this computer. Required before deploying.

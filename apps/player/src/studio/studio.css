@@ -117,3 +117,26 @@
   align-items: center;
   justify-content: space-between;
 }
+
+/* The owner's change the studio refused, until they decide what to do. */
+.studio-kept {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border: 1px solid var(--saffron);
+  border-radius: 6px;
+  font-size: 0.92rem;
+}
+.studio-kept h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+.studio-kept p {
+  margin: 0;
+}
+.studio-kept-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

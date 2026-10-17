@@ -5,6 +5,7 @@ import { keepPattern, type UserPattern } from '../editor/patterns';
 import { ThemeSwitch } from '../app/theme';
 import { studioCall, type HistoryLine, type ProjectLine } from './client';
 import { ContestPage } from './ContestPage';
+import { onTop, readKept, writeKept, type Kept } from './kept';
 import {
   StudioPanel,
   useNotes,
@@ -45,15 +46,14 @@ function Top({ children }: { children?: React.ReactNode }) {
 
 function StudioList() {
   const [projects, setProjects] = useState<ProjectLine[]>();
-  const [contests, setContests] =
-    useState<
-      {
-        id: string;
-        brief: { title: string };
-        designs: unknown[];
-        judged: boolean;
-      }[]
-    >();
+  const [contests, setContests] = useState<
+    {
+      id: string;
+      brief: { title: string };
+      designs: unknown[];
+      judged: boolean;
+    }[]
+  >();
   const [error, setError] = useState<string>();
   const [title, setTitle] = useState('');
   const load = useCallback(() => {
@@ -198,6 +198,15 @@ function StudioProject({ id }: { id: string }) {
   const sending = useRef(false);
   const behind = useRef(false);
   const shown = useRef<Draft | undefined>(undefined);
+  // The owner's change the studio refused, kept until the owner decides.
+  const [kept, setKeptState] = useState<Kept | undefined>(() => readKept(id));
+  const setKept = useCallback(
+    (next: Kept | undefined) => {
+      writeKept(id, next);
+      setKeptState(next);
+    },
+    [id],
+  );
 
   const fetchLatest = useCallback(() => {
     studioCall<Loaded>('GET', `/projects/${id}/draft`)
@@ -237,11 +246,12 @@ function StudioProject({ id }: { id: string }) {
       })
       .catch((e: Error) => {
         pending.current = undefined;
-        setNotice(
-          /has changed since revision/.test(e.message)
-            ? 'An agent changed the drawing at the same moment, so your last change was not kept. Undo brings it back.'
-            : e.message,
-        );
+        if (/has changed since revision/.test(e.message)) {
+          setKept({ base: before, mine: draft });
+          setNotice(
+            'An agent changed the drawing while you were editing. Your change is kept under the steps.',
+          );
+        } else setNotice(e.message);
         behind.current = true;
       })
       .finally(() => {
@@ -252,7 +262,7 @@ function StudioProject({ id }: { id: string }) {
           fetchLatest();
         }
       });
-  }, [id, fetchLatest]);
+  }, [id, fetchLatest, setKept]);
 
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   const save = useCallback(
@@ -293,6 +303,65 @@ function StudioProject({ id }: { id: string }) {
     else fetchLatest();
   });
 
+  const [busy, setBusy] = useState(false);
+  const addOnTop = (draft: Draft, latest: Draft) => {
+    setBusy(true);
+    studioCall<Pick<Loaded, 'revision' | 'history'>>(
+      'POST',
+      `/projects/${id}/edit`,
+      {
+        author: 'owner',
+        revision: revision.current,
+        label: `${labelOf(latest, draft)}, kept after a clash`,
+        edit: { op: 'replace', draft },
+      },
+    )
+      .then((done) => {
+        revision.current = done.revision;
+        shown.current = draft;
+        setKept(undefined);
+        setNotice(undefined);
+        setLoaded((l) =>
+          l
+            ? { ...l, draft, revision: done.revision, history: done.history }
+            : l,
+        );
+      })
+      .catch((e: Error) => {
+        setNotice(
+          /has changed since revision/.test(e.message)
+            ? 'An agent changed the drawing again first. Your change is still kept; try again.'
+            : e.message,
+        );
+        fetchLatest();
+      })
+      .finally(() => setBusy(false));
+  };
+  const keepCopy = (mine: Draft) => {
+    setBusy(true);
+    const title = `${mine.title} (your version)`.slice(0, 120);
+    studioCall<{ project: string }>('POST', '/projects', {
+      author: 'owner',
+      title,
+    })
+      .then(async (made) => {
+        const fresh = await studioCall<Loaded>(
+          'GET',
+          `/projects/${made.project}/draft`,
+        );
+        await studioCall('POST', `/projects/${made.project}/edit`, {
+          author: 'owner',
+          revision: fresh.revision,
+          label: `Kept from ${loaded?.draft.title ?? 'another project'}`,
+          edit: { op: 'replace', draft: { ...mine, title } },
+        });
+        setKept(undefined);
+        window.location.hash = `#/studio/${made.project}`;
+      })
+      .catch((e: Error) => setNotice(e.message))
+      .finally(() => setBusy(false));
+  };
+
   if (error && !loaded)
     return (
       <div className="player studio">
@@ -331,14 +400,29 @@ function StudioProject({ id }: { id: string }) {
       `Studio, revision ${loaded.revision}${last ? `. Last: ${last.author}, ${last.label}` : ''}`,
     marks: marks.map((m) => m.target),
     aside: (
-      <StudioPanel
-        id={id}
-        marks={marks}
-        notes={notes}
-        onPosted={reload}
-        reference={loaded.reference}
-        revision={loaded.revision}
-      />
+      <>
+        {kept ? (
+          <KeptChange
+            kept={kept}
+            latest={loaded.draft}
+            busy={busy}
+            onTop={addOnTop}
+            onCopy={keepCopy}
+            onDiscard={() => {
+              setKept(undefined);
+              setNotice(undefined);
+            }}
+          />
+        ) : null}
+        <StudioPanel
+          id={id}
+          marks={marks}
+          notes={notes}
+          onPosted={reload}
+          reference={loaded.reference}
+          revision={loaded.revision}
+        />
+      </>
     ),
     onPlay: () => {
       if (keepPattern(pattern.id, shown.current ?? loaded.draft))
@@ -347,4 +431,64 @@ function StudioProject({ id }: { id: string }) {
     },
   };
   return <EditorPage key={id} pattern={pattern} shared={shared} />;
+}
+
+/** The owner's refused change, with what can be done with it. */
+function KeptChange({
+  kept,
+  latest,
+  busy,
+  onTop: add,
+  onCopy,
+  onDiscard,
+}: {
+  kept: Kept;
+  latest: Draft;
+  busy: boolean;
+  onTop: (draft: Draft, latest: Draft) => void;
+  onCopy: (mine: Draft) => void;
+  onDiscard: () => void;
+}) {
+  const result = onTop(kept, latest);
+  return (
+    <section className="studio-kept" aria-label="Your kept change">
+      <h2>Your change is kept</h2>
+      <p>
+        An agent saved a change while you were editing, so the studio did not
+        save yours: “{labelOf(kept.base, kept.mine)}”. The drawing now shows the
+        agent’s version.
+      </p>
+      {result && 'reason' in result ? (
+        <p className="studio-error">{result.reason}</p>
+      ) : null}
+      <p className="studio-kept-actions">
+        {result && 'draft' in result ? (
+          <button
+            type="button"
+            className="button"
+            disabled={busy}
+            onClick={() => add(result.draft, latest)}
+          >
+            Add my change on top
+          </button>
+        ) : null}
+        <button
+          type="button"
+          className="button secondary"
+          disabled={busy}
+          onClick={() => onCopy(kept.mine)}
+        >
+          Keep mine as a copy
+        </button>
+        <button
+          type="button"
+          className="button secondary"
+          disabled={busy}
+          onClick={onDiscard}
+        >
+          Discard mine
+        </button>
+      </p>
+    </section>
+  );
 }

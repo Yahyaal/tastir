@@ -194,9 +194,15 @@ export function EditorPage({
           : { past: [...h.past, h.now], now: incoming, future: [] },
       );
   }, [incoming]);
+  // A drawing that has just arrived is not a change made here: in the
+  // render it arrives, `draft` is still the one it replaces, and saving
+  // that would undo the change that arrived.
+  const lastIncoming = useRef(incoming);
   useEffect(() => {
     if (save) {
-      if (draft !== incoming) save(draft);
+      const arrived = incoming !== lastIncoming.current;
+      lastIncoming.current = incoming;
+      if (!arrived && draft !== incoming) save(draft);
       return;
     }
     setKept(savePattern(pattern.id, draft) !== undefined);

@@ -104,6 +104,125 @@ test('an agent and the owner edit one drawing in the open editor', async ({
     .toBe('Shared drawing');
 });
 
+test('the owner’s change is kept when an agent saves first', async ({
+  page,
+}) => {
+  const made = await agent('POST', '/projects', {
+    author: 'claude-code',
+    title: 'Clash',
+  });
+  const id = made.body.project as string;
+  await agent('POST', `/projects/${id}/edit`, {
+    author: 'claude-code',
+    revision: 1,
+    edit: { op: 'construct', add: [circle] },
+  });
+  await page.goto(`/#/studio/${id}`);
+  const steps = page.getByRole('navigation', { name: 'Steps' });
+  await expect(steps).toContainText('Circle C0 about O through A.');
+
+  // The agent saves while the owner's rename is on its way.
+  let clashed = false;
+  await page.route(`**/__studio/projects/${id}/edit`, async (route) => {
+    if (!clashed) {
+      clashed = true;
+      await agent('POST', `/projects/${id}/edit`, {
+        author: 'claude-code',
+        revision: 2,
+        edit: { op: 'construct', add: [line] },
+      });
+    }
+    await route.continue();
+  });
+  await page.getByRole('textbox', { name: 'Title' }).fill('Mine');
+  await expect(page.getByRole('status').first()).toContainText(
+    'An agent changed the drawing while you were editing',
+  );
+  await expect(steps).toContainText('Line L0 through O and A.');
+  const kept = page.getByRole('region', { name: 'Your kept change' });
+  await expect(kept).toContainText('Renamed in Tastir');
+  // A rename cannot go on top of the agent's work without undoing it.
+  await expect(
+    kept.getByRole('button', { name: 'Add my change on top' }),
+  ).toHaveCount(0);
+  // Nothing re-sends the refused change over the agent's work (the editor
+  // once did, a moment after the agent's drawing arrived).
+  await page.waitForTimeout(1000);
+  const after = (await agent('GET', `/projects/${id}`)).body;
+  expect(after.drawing.title).toBe('Clash');
+  expect(after.history.undo[0].label).toBe('Added L0');
+
+  // A reload keeps it, and it can become a project of its own.
+  await page.reload();
+  await kept.getByRole('button', { name: 'Keep mine as a copy' }).click();
+  await expect(page).toHaveURL(/#\/studio\/mine-your-version-/);
+  await expect(page.getByRole('textbox', { name: 'Title' })).toHaveValue(
+    'Mine (your version)',
+  );
+  expect((await agent('GET', `/projects/${id}`)).body.drawing.title).toBe(
+    'Clash',
+  );
+});
+
+test('the owner adds a kept step on top of the agent’s, or discards it', async ({
+  page,
+}) => {
+  const made = await agent('POST', '/projects', {
+    author: 'claude-code',
+    title: 'On top',
+  });
+  const id = made.body.project as string;
+  const base = (await agent('GET', `/projects/${id}/draft`)).body.draft;
+  const mine = {
+    ...base,
+    steps: [
+      ...base.steps,
+      {
+        id: base.steps.length + 1,
+        text: 'Circle r about A through O.',
+        create: { r: { circle: { centre: 'A', through: 'O' } } },
+      },
+    ],
+  };
+  await agent('POST', `/projects/${id}/edit`, {
+    author: 'claude-code',
+    revision: 1,
+    edit: { op: 'construct', add: [circle] },
+  });
+  // As the page left it after the clash, before a reload.
+  await page.addInitScript(
+    ([key, value]) => {
+      if (!sessionStorage.getItem('seeded')) {
+        localStorage.setItem(key as string, value as string);
+        sessionStorage.setItem('seeded', '1');
+      }
+    },
+    [`tastir-studio-kept-${id}`, JSON.stringify({ base, mine })],
+  );
+  await page.goto(`/#/studio/${id}`);
+  const kept = page.getByRole('region', { name: 'Your kept change' });
+  await kept.getByRole('button', { name: 'Add my change on top' }).click();
+  await expect(kept).toHaveCount(0);
+  const steps = page.getByRole('navigation', { name: 'Steps' });
+  await expect(steps).toContainText('Circle C0 about O through A.');
+  await expect(steps).toContainText('Circle r about A through O.');
+  const view = (await agent('GET', `/projects/${id}`)).body;
+  expect(view.history.undo[0].author).toBe('owner');
+  expect(view.history.undo[0].label).toMatch(/kept after a clash/);
+
+  // Discarding a kept change leaves the drawing as it is.
+  await page.evaluate(
+    ([key, value]) => localStorage.setItem(key as string, value as string),
+    [`tastir-studio-kept-${id}`, JSON.stringify({ base, mine })],
+  );
+  await page.reload();
+  await kept.getByRole('button', { name: 'Discard mine' }).click();
+  await expect(kept).toHaveCount(0);
+  await page.reload();
+  await expect(steps).toContainText('Circle r about A through O.');
+  await expect(kept).toHaveCount(0);
+});
+
 test('the studio lists projects and starts one from O and A', async ({
   page,
 }) => {
