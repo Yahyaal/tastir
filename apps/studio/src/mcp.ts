@@ -1,9 +1,16 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import {
+  RESOURCE_MIME_TYPE,
+  getUiCapability,
+  registerAppResource,
+  registerAppTool,
+} from '@modelcontextprotocol/ext-apps/server';
 import { z } from 'zod';
 import { ConstructionShape } from '@tastir/agent-protocol';
 import { StudioClient, type StudioCaller } from './client.js';
 import { GoalsShape, LONGEST_WAIT } from './studio.js';
+import { CARD_HTML } from './card/page.js';
 
 /**
  * The Tastir studio as an MCP server, for Claude Code, Codex, Gemini or any
@@ -516,7 +523,180 @@ export function createMcpServer(
         client.call('GET', `/projects/${project}/notes?after=${after}`),
       ),
   );
+  registerCard(server, client);
   return server;
+}
+
+/** The studio card's page, which chat apps that show MCP Apps display. */
+export const CARD = 'ui://tastir/studio.html';
+
+/**
+ * The studio card (MCP Apps, task H8): open_studio shows a project as a
+ * live card in the chat, and the card itself calls studio_snapshot and
+ * answer_question, which hosts hide from the model.
+ */
+function registerCard(server: McpServer, client: StudioCaller) {
+  const fail = (error: unknown) => ({
+    isError: true,
+    content: [
+      {
+        type: 'text' as const,
+        text: error instanceof Error ? error.message : String(error),
+      },
+    ],
+  });
+  registerAppResource(
+    server,
+    'Tastir studio card',
+    CARD,
+    {
+      description:
+        'A live card of one studio project: the drawing, its latest change and the open questions.',
+    },
+    async () => ({
+      contents: [{ uri: CARD, mimeType: RESOURCE_MIME_TYPE, text: CARD_HTML }],
+    }),
+  );
+  registerAppTool(
+    server,
+    'open_studio',
+    {
+      description:
+        'Show a project as a live card in the chat, where the owner sees the drawing as it changes and answers your open questions. Use it when the owner wants to see the drawing, or after you ask something. In apps without cards it only names the project.',
+      inputSchema: { project: Project },
+      _meta: { ui: { resourceUri: CARD } },
+    },
+    async ({ project }) => {
+      try {
+        const view = (await client.call('GET', `/projects/${project}`)) as {
+          revision: number;
+          drawing: { title: string };
+        };
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: `Showing “${view.drawing.title}” at revision ${view.revision} in the studio card.`,
+            },
+          ],
+          structuredContent: { project },
+        };
+      } catch (error) {
+        return fail(error);
+      }
+    },
+  );
+  registerAppTool(
+    server,
+    'studio_snapshot',
+    {
+      description:
+        'For the studio card only: the project at its latest revision, with the picture when the revision is newer than the one given.',
+      inputSchema: {
+        project: Project,
+        revision: z.number().int().min(0).default(0),
+      },
+      _meta: { ui: { resourceUri: CARD, visibility: ['app'] } },
+    },
+    async ({ project, revision }) => {
+      try {
+        const view = (await client.call('GET', `/projects/${project}`)) as {
+          revision: number;
+          drawing: { title: string };
+          history: { undo: { author: string; label: string }[] };
+        };
+        const { notes } = (await client.call(
+          'GET',
+          `/projects/${project}/notes`,
+        )) as {
+          notes: {
+            id: number;
+            author: string;
+            text: string;
+            question?: boolean;
+            about?: string;
+            answers?: number;
+          }[];
+        };
+        const answered = new Set(notes.flatMap((n) => n.answers ?? []));
+        const last = view.history.undo[0];
+        const snapshot = {
+          project,
+          title: view.drawing.title,
+          revision: view.revision,
+          last: last ? { author: last.author, label: last.label } : null,
+          questions: notes
+            .filter((n) => n.question && !answered.has(n.id))
+            .map((n) => ({
+              id: n.id,
+              author: n.author,
+              text: n.text,
+              ...(n.about ? { about: n.about } : {}),
+            })),
+          ...(view.revision !== revision
+            ? {
+                picture: (
+                  await client.picture(
+                    `/projects/${project}/picture?what=construction&size=640`,
+                  )
+                ).data,
+              }
+            : {}),
+        };
+        return {
+          content: [
+            { type: 'text' as const, text: `Revision ${view.revision}.` },
+          ],
+          structuredContent: snapshot,
+        };
+      } catch (error) {
+        return fail(error);
+      }
+    },
+  );
+  registerAppTool(
+    server,
+    'answer_question',
+    {
+      description:
+        "For the studio card only: the owner's answer to a question, typed into the card.",
+      inputSchema: {
+        project: Project,
+        question: z.number().int().min(1),
+        text: z.string().trim().min(1).max(4000),
+      },
+      _meta: { ui: { resourceUri: CARD, visibility: ['app'] } },
+    },
+    async ({ project, question, text }) => {
+      // Apps that show cards keep this from the model; an app that does
+      // not would offer it to the model, which must never answer for the
+      // owner.
+      if (!getUiCapability(server.server.getClientCapabilities()))
+        return fail(
+          new Error(
+            'Only the owner can answer, in the studio card or in Tastir.',
+          ),
+        );
+      try {
+        return {
+          content: [
+            {
+              type: 'text' as const,
+              text: JSON.stringify(
+                await client.call('POST', `/projects/${project}/notes`, {
+                  author: 'owner',
+                  text,
+                  answers: question,
+                }),
+              ),
+            },
+          ],
+        };
+      } catch (error) {
+        return fail(error);
+      }
+    },
+  );
 }
 
 export async function runMcp(root: string) {

@@ -65,6 +65,7 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
   - **Who:** you make a free Cloudflare account, an agent does the rest.
   - **Done when:** an agent's edit shows on the open page in under half a second on the deployed studio, the page keeps working with the room switched off, and a week of use stays inside the free daily limits. The deployed part is H5 and H6.
 - [ ] **H8 · Optional: the drawing inside the chat.** An MCP App that shows the live drawing in claude.ai.
+  - **Built (17 October, Claude):** `open_studio` shows a project as a live card in the chat (the drawing, the latest change, the agent's open questions with an answer box), through two tools only the card may call; checked in a stand-in chat app built with the MCP Apps host bridge. The claude.ai check needs the deployed studio (H6).
   - **Who:** an agent.
   - **Done when:** you see the live drawing in a Claude conversation and answer a question there.
 

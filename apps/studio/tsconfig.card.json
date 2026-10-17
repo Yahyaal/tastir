@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "out-tsc/card",
+    "tsBuildInfoFile": "out-tsc/card/tsconfig.card.tsbuildinfo",
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom"],
+    "types": []
+  },
+  "include": ["src/card/card.ts"]
+}

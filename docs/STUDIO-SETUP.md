@@ -62,6 +62,10 @@ The hosted studio keeps projects in Postgres, and the local studio can too, to t
 
 The studio's tests always run with folders and with an in-process Postgres (PGlite), so they need no database. To run them against a real one as well, give a database used only for tests, because its tables are emptied: `TEST_DATABASE_URL=<postgres://…> pnpm nx run studio:test`.
 
+## The studio card in a chat
+
+In a chat app that shows MCP Apps (claude.ai, the Claude apps, ChatGPT), ask the agent to "open the studio card": its `open_studio` tool shows the project as a live card in the conversation, with the drawing as it changes, the latest change and the agent's open questions, each with a box to answer it. An answer typed there is yours, under "owner"; agents cannot use it, and an app that cannot show cards is refused. In other apps `open_studio` only names the project. After changing the card (`apps/studio/src/card/`), rebuild its page with `node tools/studio-card.mjs`; a test fails until it is current.
+
 ## Several agents on one project
 
 Agents can share a project. Give each a role in your request, for example one drafts the construction and the other checks it against the photo or the goals and posts what it finds. Each agent's changes are marked with its name in the history (set by `TASTIR_AUTHOR` above), an edit based on an old view is refused, and an agent's own Undo stops at anyone else's change.
