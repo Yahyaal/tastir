@@ -64,6 +64,17 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
   - **Who:** an agent.
   - **Done when:** you see the live drawing in a Claude conversation and answer a question there.
 
+### What can run at the same time
+
+Two agents can work at once when their tasks touch different files, each in its own worktree on its own branch, merged one at a time. This computer runs out of memory with two test runs at once, so agents working in parallel take turns for the heavy checks (tests, browser checks, builds): one waits until the other's run has finished.
+
+1. **Now, while Codex finishes its branch:** M1 and H1 in parallel. M1 changes only the studio page (`apps/player/src/studio/`), and H1 only the studio service (`apps/studio/`), and Codex touches neither. H0 can follow as soon as H1 has its HTTP endpoint, because a chat app cannot reach today's local-only connection.
+2. **Then alone:** M0, the merge, because it touches everything.
+3. **Then:** M2 (you with an agent, mostly checking) beside H2 (the database store, in `apps/studio/`).
+4. **Then alone:** M3, the shared package, because it moves code that both the studio and the assistant use.
+5. **Then three at once:** H3 (sign-in, mostly new files), H4 (the studio page on Vercel) and H7 (the live room, a new Cloudflare Worker in its own folder that runs locally for free). H8 can join here too.
+6. **Then in order, with you:** H5 (deploy) and H6 (live use and measuring), and H7 goes live after H6's first measurements.
+
 The details behind each task are below.
 
 ## What the owner wants
