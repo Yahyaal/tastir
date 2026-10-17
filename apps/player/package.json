@@ -15,8 +15,9 @@
     }
   },
   "dependencies": {
+    "@tastir/agent-protocol": "workspace:*",
     "@tastir/engine": "workspace:*",
-    "@tastir/schema": "workspace:*",
-    "@tastir/agent-protocol": "workspace:*"
+    "@tastir/live-room": "workspace:*",
+    "@tastir/schema": "workspace:*"
   }
 }

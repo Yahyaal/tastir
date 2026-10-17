@@ -40,6 +40,15 @@ if (!process.argv.includes('--no-build'))
 const store = await testBackend('pglite');
 const google = await standInGoogle();
 const studio = new Studio(store.root, join(repo, 'tutorials'), store.backend);
+// The live room, when the browser checks start one (wrangler dev).
+const live =
+  process.env['TASTIR_HOSTED_LIVE_ORIGIN'] &&
+  process.env['TASTIR_HOSTED_LIVE_SECRET']
+    ? {
+        roomOrigin: process.env['TASTIR_HOSTED_LIVE_ORIGIN'],
+        secret: process.env['TASTIR_HOSTED_LIVE_SECRET'],
+      }
+    : undefined;
 const hosted = hostedApp({
   studio,
   db: (store.backend as PgBackend).db,
@@ -48,12 +57,23 @@ const hosted = hostedApp({
   secret: 'a-session-secret-for-the-browser-checks-only',
   google: google.google,
   site,
+  ...(live ? { live } : {}),
 });
 
 // A pretend agent, only in this test server: it calls the studio as an
 // agent's tools do.
 const agent = new DirectClient(studio);
 createServer((request, response) => {
+  // Points the server at a room that is not there, to check that pages
+  // keep up without it, or back at the real one.
+  if (request.url?.startsWith('/__test/room') && live) {
+    const origin =
+      new URL(request.url, 'http://x').searchParams.get('origin') || null;
+    live.roomOrigin =
+      origin ?? process.env['TASTIR_HOSTED_LIVE_ORIGIN'] ?? live.roomOrigin;
+    response.end('ok');
+    return;
+  }
   if (request.url !== '/__test/agent' || request.method !== 'POST')
     return hosted.app(request, response);
   const chunks: Buffer[] = [];

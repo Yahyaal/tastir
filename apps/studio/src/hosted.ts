@@ -5,6 +5,11 @@ import {
   mcpAuthRouter,
 } from '@modelcontextprotocol/sdk/server/auth/router.js';
 import { requireBearerAuth } from '@modelcontextprotocol/sdk/server/auth/middleware/bearerAuth.js';
+import {
+  createConnectionTicket,
+  notifyRevision,
+} from '@tastir/live-room/server';
+import { waitUntil } from '@vercel/functions';
 import { StudioAuth } from './auth.js';
 import { mcpSessions } from './http.js';
 import { createMcpServer } from './mcp.js';
@@ -26,6 +31,11 @@ export interface HostedOptions extends Omit<OwnerOptions, 'baseUrl'> {
   readonly redirects?: readonly string[];
   /** A built Tastir to serve as well (on Vercel, its CDN serves it). */
   readonly site?: string;
+  /**
+   * The live room (H7, apps/live-room): its address and the secret shared
+   * with it. Without it, pages check for changes themselves.
+   */
+  readonly live?: { secret: string; roomOrigin: string };
 }
 
 const escape = (text: string) =>
@@ -69,6 +79,29 @@ export function hostedApp(options: HostedOptions) {
     identities.set(actor, identity);
     return { server: () => createMcpServer(client, identity), owner: actor };
   });
+
+  // After every saved change, the project's live room is told its new
+  // version, so open pages fetch at once. The version goes up on every
+  // save (notes and marks too). Telling the room can fail without harm:
+  // pages also check now and then.
+  if (options.live)
+    studio.subscribe((event) => {
+      const live = options.live;
+      if (!live) return;
+      waitUntil(
+        studio.backend
+          .pulse(event.project)
+          .then((p) =>
+            notifyRevision({
+              secret: live.secret,
+              roomOrigin: live.roomOrigin,
+              project: event.project,
+              revision: Number(p.stamp),
+            }),
+          )
+          .catch(() => false),
+      );
+    });
 
   const app = express();
   app.set('trust proxy', 1);
@@ -227,7 +260,7 @@ export function hostedApp(options: HostedOptions) {
   api.use(express.json({ limit: '4mb' }));
   api.get('/me', async (request, response) => {
     const who = await owner.who(request);
-    if (who) response.json({ email: who });
+    if (who) response.json({ email: who, live: !!options.live });
     else response.status(401).json({ error: 'Sign in to use the studio.' });
   });
   api.use(async (request, response, next) => {
@@ -240,6 +273,22 @@ export function hostedApp(options: HostedOptions) {
       return;
     }
     next();
+  });
+  // A ticket into one project's live room, for the signed-in page.
+  api.get('/projects/:id/live', async (request, response) => {
+    const id = String(request.params['id']);
+    if (!options.live || !(await studio.backend.exists(id))) {
+      response.status(404).json({ error: 'There is no live room.' });
+      return;
+    }
+    response.json(
+      await createConnectionTicket({
+        secret: options.live.secret,
+        roomOrigin: options.live.roomOrigin,
+        project: id,
+        origin: baseUrl.origin,
+      }),
+    );
   });
   api.use(async (request, response) => {
     try {

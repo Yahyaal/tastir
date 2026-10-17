@@ -16,6 +16,9 @@ import { Studio } from './studio.js';
  *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET   the Google sign-in client
  *   BLOB_READ_WRITE_TOKEN         a private Blob store for photos (optional;
  *                                 without it photos are kept in the database)
+ *   LIVE_ROOM_ORIGIN, LIVE_ROOM_SECRET   the live room on Cloudflare and the
+ *                                 secret shared with it (optional; without
+ *                                 them pages check for changes themselves)
  */
 function setting(name: string) {
   const value = process.env[name]?.trim();
@@ -47,5 +50,13 @@ export async function hostedFromEnv(options: { site?: string } = {}) {
       clientSecret: setting('GOOGLE_CLIENT_SECRET'),
     },
     ...(options.site ? { site: options.site } : {}),
+    ...(process.env['LIVE_ROOM_ORIGIN'] && process.env['LIVE_ROOM_SECRET']
+      ? {
+          live: {
+            roomOrigin: process.env['LIVE_ROOM_ORIGIN'],
+            secret: process.env['LIVE_ROOM_SECRET'],
+          },
+        }
+      : {}),
   });
 }

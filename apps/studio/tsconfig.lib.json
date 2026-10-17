@@ -18,6 +18,9 @@
       "path": "../../packages/schema/tsconfig.lib.json"
     },
     {
+      "path": "../live-room/tsconfig.lib.json"
+    },
+    {
       "path": "../../packages/engine/tsconfig.lib.json"
     },
     {

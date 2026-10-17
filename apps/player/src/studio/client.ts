@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { watchProject } from '@tastir/live-room/client';
 
 /**
  * Calls to the studio. On this computer they go through the dev server,
@@ -14,6 +15,12 @@ export const studioUrl = (path: string) => `${BASE}${path}`;
 
 /** The studio said the owner is not signed in (hosted only). */
 export class SignedOut extends Error {}
+
+/** Whether the hosted server has a live room (it says so in /api/me). */
+let live = false;
+export const setLive = (on: boolean) => {
+  live = on;
+};
 export interface ProjectLine {
   readonly id: string;
   readonly title: string;
@@ -58,6 +65,8 @@ export async function studioCall<T>(
   return value;
 }
 
+type Pulse = { revision: number; stamp: string; marks: string };
+
 type StudioEvent = {
   project: string;
   revision: number;
@@ -93,36 +102,62 @@ export function useStudioEvents(
     let stopped = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let changed = Date.now();
-    let last: { revision: number; stamp: string; marks: string } | undefined;
+    let last: Pulse | undefined;
     let list: string | undefined;
     const emit = (event: StudioEvent) => {
       changed = Date.now();
       latest.current(event);
     };
+    // Every kind that changed is told, and the first answer too, since
+    // something may have changed while the page was loading; a page
+    // ignores a revision it already has.
+    const compare = (p: Pulse) => {
+      if (!project) return;
+      if (p.revision !== last?.revision)
+        emit({ project, revision: p.revision, kind: 'drawing' });
+      if (p.stamp !== last?.stamp) {
+        emit({ project, revision: p.revision, kind: 'notes' });
+        emit({ project, revision: p.revision, kind: 'reference' });
+      }
+      if (p.marks !== last?.marks)
+        emit({ project, revision: p.revision, kind: 'marks' });
+      last = p;
+    };
+    // With a live room, the room says when the project changed and the
+    // page then asks; Codex's client keeps checking slowly as a fallback.
+    if (project && live)
+      return watchProject({
+        project,
+        getTicket: async (signal) => {
+          const response = await fetch(studioUrl(`/projects/${project}/live`), {
+            credentials: 'same-origin',
+            cache: 'no-store',
+            signal,
+          });
+          return response.ok ? response.json() : null;
+        },
+        refresh: async (signal) => {
+          const response = await fetch(
+            studioUrl(`/projects/${project}/pulse`),
+            { credentials: 'same-origin', cache: 'no-store', signal },
+          );
+          if (!response.ok) throw new Error('The studio did not answer.');
+          const p = (await response.json()) as Pulse;
+          if (signal.aborted) throw new Error('Cancelled.');
+          compare(p);
+          return Number(p.stamp);
+        },
+      });
     const tick = async () => {
       timer = undefined;
       if (stopped) return;
       if (!document.hidden)
         try {
-          if (project) {
-            const p = await studioCall<{
-              revision: number;
-              stamp: string;
-              marks: string;
-            }>('GET', `/projects/${project}/pulse`);
-            // Every kind that changed is told, and the first answer too,
-            // since something may have changed while the page was loading;
-            // a page ignores a revision it already has.
-            if (p.revision !== last?.revision)
-              emit({ project, revision: p.revision, kind: 'drawing' });
-            if (p.stamp !== last?.stamp) {
-              emit({ project, revision: p.revision, kind: 'notes' });
-              emit({ project, revision: p.revision, kind: 'reference' });
-            }
-            if (p.marks !== last?.marks)
-              emit({ project, revision: p.revision, kind: 'marks' });
-            last = p;
-          } else {
+          if (project)
+            compare(
+              await studioCall<Pulse>('GET', `/projects/${project}/pulse`),
+            );
+          else {
             const now = JSON.stringify(await studioCall('GET', '/projects'));
             if (now !== list) emit({ project: '', revision: 0 });
             list = now;

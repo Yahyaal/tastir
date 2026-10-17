@@ -8,6 +8,7 @@ import { ThemeSwitch } from '../app/theme';
 import {
   HOSTED,
   SignedOut,
+  setLive,
   studioCall,
   studioUrl,
   useStudioEvents,
@@ -52,8 +53,11 @@ function useSignedIn(): boolean | undefined {
   );
   useEffect(() => {
     if (!HOSTED) return;
-    studioCall('GET', '/me')
-      .then(() => setState(true))
+    studioCall<{ live?: boolean }>('GET', '/me')
+      .then((me) => {
+        setLive(!!me.live);
+        setState(true);
+      })
       .catch((e: Error) => setState(e instanceof SignedOut ? false : true));
   }, []);
   return state;

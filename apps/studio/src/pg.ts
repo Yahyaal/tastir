@@ -352,15 +352,13 @@ export class PgBackend implements Backend {
           ...project.future.map((e, i) => step(e, 'future', i)),
         ]);
       if (project.notes.length)
-        await tx
-          .insert(notes)
-          .values(
-            project.notes.map((n) => ({
-              project: project.id,
-              id: n.id,
-              note: n,
-            })),
-          );
+        await tx.insert(notes).values(
+          project.notes.map((n) => ({
+            project: project.id,
+            id: n.id,
+            note: n,
+          })),
+        );
       if (project.receipts?.length)
         await tx.insert(receipts).values(
           project.receipts.map((r) => ({
@@ -540,8 +538,14 @@ export class PgBackend implements Backend {
     }));
   }
 
+  // A mark counts as a change of the project (its version goes up), so a
+  // page told about the version hears about marks too.
   async putMark(id: string, mark: Omit<Mark, 'id'>) {
     return this.db.transaction(async (tx) => {
+      await tx
+        .update(projects)
+        .set({ version: sql`${projects.version} + 1` })
+        .where(eq(projects.id, id));
       await tx
         .delete(marks)
         .where(and(eq(marks.project, id), eq(marks.target, mark.target)));
@@ -567,13 +571,19 @@ export class PgBackend implements Backend {
   }
 
   async clearMarks(id: string, author?: string) {
-    await this.db
-      .delete(marks)
-      .where(
-        author
-          ? and(eq(marks.project, id), eq(marks.author, author))
-          : eq(marks.project, id),
-      );
+    await this.db.transaction(async (tx) => {
+      await tx
+        .delete(marks)
+        .where(
+          author
+            ? and(eq(marks.project, id), eq(marks.author, author))
+            : eq(marks.project, id),
+        );
+      await tx
+        .update(projects)
+        .set({ version: sql`${projects.version} + 1` })
+        .where(eq(projects.id, id));
+    });
   }
 
   close() {

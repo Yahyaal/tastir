@@ -5,7 +5,7 @@ The plan for using the studio from anywhere, on a phone or a laptop, with Claude
 ## At a glance
 
 - **Where it stands:** M0 to M2 and H1 to H4 are done (17 October); the rest is planned.
-- **What happens next:** H5, deploying, needs your free Vercel, Neon and Google sign-in setup; Codex is on H7, the live room. M3 waits until H7 is merged, because it moves code both use.
+- **What happens next:** H5, deploying, needs your free Vercel, Neon, Google sign-in and Cloudflare setup (Codex is writing the steps). The live room is built and wired in, and is ticked after it is measured on the deployed studio. M3 can follow.
 - **What it costs:** nothing. Every service stays on its free plan.
 - **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
 - **What you still decide:** whether private research photos may be uploaded (decision 4). Nothing waits on it.
@@ -60,8 +60,9 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
   - **Done when:** each client that can write finishes the square brief, you answer one question from your phone, and the log has the speeds and the use.
 - [ ] **H7 · The live room on Durable Objects.** One room per project that tells open pages about each new edit at once, on Cloudflare's free plan.
   - **Local implementation validated (17 October, Codex):** isolated in `apps/live-room`, with hibernatable project sockets, short-lived origin/project-bound HMAC tickets, separately signed revision hints and a browser client with polling fallback. [Local setup and H4 integration contract](../apps/live-room/README.md). [Validation evidence](testing/h7-live-room-2026-10-17.md): 17 local tests, full workspace test/lint/typecheck, build, Wrangler and a real-browser fixture pass. Studio wiring stays with H4; deployed edit-to-screen latency, room-off recovery and the week of free-plan usage remain for H6. H7 stays unchecked until all its Done when criteria are met.
+  - **Wired into the hosted studio (17 October, Claude):** after every saved change the server tells the project's room its new version (marks and notes count too), the signed-in page gets a ticket from `/api/projects/<id>/live`, and without a room it checks for itself. On this computer, with the real Worker on Cloudflare's local runtime, an agent's edit reached the page in 49 to 87 ms on desktop and phone, and with the room unreachable the page kept up and saved.
   - **Who:** you make a free Cloudflare account, an agent does the rest.
-  - **Done when:** an agent's edit shows on the open page in under half a second, the page keeps working with the room switched off, and a week of use stays inside the free daily limits.
+  - **Done when:** an agent's edit shows on the open page in under half a second on the deployed studio, the page keeps working with the room switched off, and a week of use stays inside the free daily limits. The deployed part is H5 and H6.
 - [ ] **H8 · Optional: the drawing inside the chat.** An MCP App that shows the live drawing in claude.ai.
   - **Who:** an agent.
   - **Done when:** you see the live drawing in a Claude conversation and answer a question there.
