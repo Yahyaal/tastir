@@ -217,39 +217,114 @@ describe('the studio over MCP', () => {
         },
         body: JSON.stringify(data),
       });
-    const asking = call('ask', {
+    // Asking returns at once, so no client's tool time limit is reached.
+    const started = Date.now();
+    const asked = await call('ask', {
       project,
       question: 'Is this circle the right size?',
       about: 'C0',
-      wait_seconds: 20,
     });
-    let question = 0;
-    for (let i = 0; i < 50 && !question; i++) {
-      await new Promise((r) => setTimeout(r, 50));
-      const notes = (await call('read_notes', { project })).value.notes as {
-        id: number;
-        question?: boolean;
-      }[];
-      question = notes.find((n) => n.question)?.id ?? 0;
-    }
+    expect(Date.now() - started).toBeLessThan(5000);
+    const question = asked.value.question as number;
+    expect(question).toBeGreaterThan(0);
+    const waiting = call('wait_for_answer', { project, question, seconds: 20 });
+    await new Promise((r) => setTimeout(r, 100));
     await service(`/projects/${project}/notes`, {
       author: 'owner',
       text: 'Yes, keep it.',
       answers: question,
     });
-    expect((await asking).value).toEqual({ question, answer: 'Yes, keep it.' });
+    expect((await waiting).value).toEqual({
+      question,
+      answer: 'Yes, keep it.',
+    });
 
-    const late = await call('ask', {
+    const other = (await call('ask', { project, question: 'Anything else?' }))
+      .value.question as number;
+    const late = await call('wait_for_answer', {
       project,
-      question: 'Anything else?',
-      wait_seconds: 0,
+      question: other,
+      seconds: 0,
     });
     expect(late.value.answer).toBeNull();
+    expect(
+      (await call('wait_for_answer', { project, question: other, seconds: 46 }))
+        .error,
+    ).toBeDefined();
     await call('clear_marks', { project });
     const marks = await fetch(`${url}/projects/${project}/marks`, {
       headers: { 'X-Tastir-Studio': secret },
     });
     expect(((await marks.json()) as { marks: unknown[] }).marks).toEqual([]);
+  });
+
+  it('does a retried change once, and refuses an id reused for another', async () => {
+    const project = (await call('new_project', { title: 'Retries' })).value
+      .project as string;
+    const circle = { kind: 'circle', name: 'C0', centre: 'O', through: 'A' };
+    const first = await call('construct', {
+      project,
+      revision: 1,
+      add: [circle],
+      command_id: 'c-1',
+    });
+    expect(first.value.revision).toBe(2);
+    // The answer was lost on the way back, so the agent sends it again.
+    const again = await call('construct', {
+      project,
+      revision: 1,
+      add: [circle],
+      command_id: 'c-1',
+    });
+    expect(again.error).toBeUndefined();
+    expect(again.value.revision).toBe(2);
+    expect(again.value.repeated.revision).toBe(2);
+    expect(again.value.history.undo).toHaveLength(1);
+    const reused = await call('construct', {
+      project,
+      revision: 2,
+      add: [{ ...circle, name: 'C1' }],
+      command_id: 'c-1',
+    });
+    expect(reused.error).toMatch(/already used for a different request/);
+
+    const note = { project, text: 'Done the circle.', command_id: 'n-1' };
+    const posted = (await call('note', note)).value.note.id as number;
+    const repost = (await call('note', note)).value;
+    expect(repost.note.id).toBe(posted);
+    expect(repost.repeated).toBeDefined();
+    expect((await call('read_notes', { project })).value.notes).toHaveLength(1);
+
+    // Undo with a command id is also done once.
+    const undo = { project, revision: 2, command_id: 'u-1' };
+    expect((await call('undo', undo)).value.revision).toBe(3);
+    expect((await call('undo', undo)).value.revision).toBe(3);
+  });
+
+  it('keeps every default picture small enough for a chat app', async () => {
+    const project = (
+      await call('new_project', {
+        title: 'Pictures',
+        from_tutorial: 'eight-fold-star-and-cross',
+      })
+    ).value.project as string;
+    await call('set_reference', {
+      project,
+      path: 'apps/player/public/photos/cairo-minbar-doors-met.jpg',
+    });
+    for (const what of ['construction', 'reference', 'overlay']) {
+      const result = (await client.callTool({
+        name: 'view',
+        arguments: { project, what },
+      })) as {
+        content: { type: string; data?: string; text?: string }[];
+      };
+      const image = result.content.find((c) => c.type === 'image');
+      expect(image?.data?.length).toBeLessThan(100_000);
+      expect(result.content.find((c) => c.type === 'text')?.text).toMatch(
+        /not the owner's screen/,
+      );
+    }
   });
 
   it('starts from a library tutorial', async () => {

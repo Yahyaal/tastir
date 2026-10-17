@@ -49,6 +49,32 @@ export interface Project {
   readonly notes: readonly Note[];
   /** A photo to recreate the pattern from, when there is one. */
   readonly reference?: Reference;
+  /** The latest changes sent with a command id, so a retry is not done
+   * twice. Saved with the change itself. */
+  readonly receipts?: readonly Receipt[];
+}
+
+/**
+ * A change sent with a command id: who sent it, a fingerprint of what it
+ * asked for, and what it made (the revision, or the note it posted).
+ */
+export interface Receipt {
+  /** The author and the command id. */
+  readonly key: string;
+  readonly hash: string;
+  readonly revision: number;
+  readonly note?: number;
+  readonly at: string;
+}
+
+const RECEIPTS = 200;
+
+/** The project with one more receipt, keeping the latest few hundred. */
+export function withReceipt(project: Project, receipt: Receipt): Project {
+  return {
+    ...project,
+    receipts: [...(project.receipts ?? []).slice(-(RECEIPTS - 1)), receipt],
+  };
 }
 
 const HISTORY = 100;

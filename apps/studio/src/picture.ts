@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs';
+import { deflateSync } from 'node:zlib';
 import { Resvg } from '@resvg/resvg-js';
 import { inkStrokes, type Vec } from '@tastir/engine';
 import type { Tutorial } from '@tastir/schema';
@@ -204,13 +205,95 @@ export const RENDER_FONT = {
 };
 
 /** The picture as PNG, at most `size` pixels on its longer side. */
-export function png(svgText: string, size = 1000): Buffer {
+export function png(svgText: string, size = 768): Buffer {
   const fit = new Resvg(svgText, { font: RENDER_FONT });
   const tall = fit.height > fit.width;
-  return new Resvg(svgText, {
+  const image = new Resvg(svgText, {
     fitTo: { mode: tall ? 'height' : 'width', value: size },
     font: RENDER_FONT,
-  })
-    .render()
-    .asPng();
+  }).render();
+  return indexedPng(image.pixels, image.width, image.height);
+}
+
+/**
+ * RGBA pixels as a PNG of at most 256 colours. The drawings use a handful
+ * of colours and their blends, so this keeps them sharp at a fraction of
+ * the size, which matters because a chat app limits how big a tool's
+ * answer may be. Colours are grouped coarser until 256 groups are enough,
+ * and each group is drawn in its average colour.
+ */
+export function indexedPng(rgba: Buffer, width: number, height: number) {
+  const n = width * height;
+  let index = new Uint8Array(n);
+  let palette: number[][] = [];
+  for (const shift of [2, 3, 4, 5, 6]) {
+    const groups = new Map<number, number>();
+    const sums: number[][] = [];
+    let fits = true;
+    for (let i = 0; i < n; i++) {
+      const o = i * 4;
+      const key =
+        ((rgba[o]! >> shift) << 24) |
+        ((rgba[o + 1]! >> shift) << 16) |
+        ((rgba[o + 2]! >> shift) << 8) |
+        (rgba[o + 3]! >> Math.max(shift, 4));
+      let g = groups.get(key);
+      if (g === undefined) {
+        if (groups.size === 256) {
+          fits = false;
+          break;
+        }
+        g = groups.size;
+        groups.set(key, g);
+        sums.push([0, 0, 0, 0, 0]);
+      }
+      const sum = sums[g]!;
+      for (let c = 0; c < 4; c++) sum[c]! += rgba[o + c]!;
+      sum[4]! += 1;
+      index[i] = g;
+    }
+    if (!fits) continue;
+    palette = sums.map((s) => s.slice(0, 4).map((v) => Math.round(v / s[4]!)));
+    break;
+  }
+  if (!palette.length) {
+    // Never reached with 4 levels per channel and alpha; kept as a guard.
+    index = new Uint8Array(n);
+    palette = [[0, 0, 0, 255]];
+  }
+  const rows = Buffer.alloc((width + 1) * height);
+  for (let y = 0; y < height; y++)
+    rows.set(index.subarray(y * width, (y + 1) * width), y * (width + 1) + 1);
+  const header = Buffer.alloc(13);
+  header.writeUInt32BE(width, 0);
+  header.writeUInt32BE(height, 4);
+  header.set([8, 3, 0, 0, 0], 8);
+  return Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    chunk('IHDR', header),
+    chunk('PLTE', Buffer.from(palette.flatMap((c) => c.slice(0, 3)))),
+    ...(palette.some((c) => c[3]! < 255)
+      ? [chunk('tRNS', Buffer.from(palette.map((c) => c[3]!)))]
+      : []),
+    chunk('IDAT', deflateSync(rows, { level: 9 })),
+    chunk('IEND', Buffer.alloc(0)),
+  ]);
+}
+
+const CRC = Array.from({ length: 256 }, (_, n) => {
+  let c = n;
+  for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+  return c >>> 0;
+});
+
+function chunk(type: string, data: Buffer) {
+  const head = Buffer.alloc(8);
+  head.writeUInt32BE(data.length, 0);
+  head.write(type, 4, 'ascii');
+  let c = 0xffffffff;
+  for (const b of head.subarray(4)) c = CRC[(c ^ b) & 0xff]! ^ (c >>> 8);
+  for (const b of data) c = CRC[(c ^ b) & 0xff]! ^ (c >>> 8);
+  const crc = Buffer.alloc(4);
+  crc.writeUInt32BE((c ^ 0xffffffff) >>> 0, 0);
+  return Buffer.concat([head, data, crc]);
 }

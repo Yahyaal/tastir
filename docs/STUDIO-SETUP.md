@@ -38,6 +38,14 @@ Gemini's command-line tool is not installed on this computer yet. Install it wit
 gemini mcp add -e TASTIR_AUTHOR=gemini tastir-studio /home/yahya/Documents/projects/Tastir-studio/tools/studio-mcp.sh
 ```
 
+## Connect over HTTP
+
+`pnpm studio` also offers the same tools over HTTP, for agents that cannot start a program on this computer, and prints the address: `http://127.0.0.1:4294/mcp/<key>`. The key is kept in `studio/.mcp-key`, so the address stays the same from one start to the next. The address is a password until sign-in arrives (task H3 of [the hosted studio plan](STUDIO-HOSTED-PRD.md)), so keep it private; delete that file and restart to get a new one.
+
+Claude Code takes it with `claude mcp add --transport http tastir-studio-http <address>`, and Codex with `codex mcp add tastir-studio-http --url <address>`. Changes made this way carry the name the agent's app gives itself, such as `claude-code` or `codex-mcp-client`.
+
+Chat apps such as claude.ai and ChatGPT need a public address, which task H0 tries through a temporary tunnel: run `cloudflared tunnel --url http://127.0.0.1:4294` (free, no account), and add the `https://…trycloudflare.com` address it prints followed by `/mcp/<key>`. Anyone with that address can change your projects while the tunnel is open, so close it when the test is done.
+
 ## Several agents on one project
 
 Agents can share a project. Give each a role in your request, for example one drafts the construction and the other checks it against the photo or the goals and posts what it finds. Each agent's changes are marked with its name in the history (set by `TASTIR_AUTHOR` above), an edit based on an old view is refused, and an agent's own Undo stops at anyone else's change.

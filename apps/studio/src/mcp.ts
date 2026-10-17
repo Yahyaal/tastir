@@ -3,7 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import { ConstructionShape } from '@tastir/agent-protocol';
 import { StudioClient } from './client.js';
-import { GoalsShape } from './studio.js';
+import { GoalsShape, LONGEST_WAIT } from './studio.js';
 
 /**
  * The Tastir studio as an MCP server, for Claude Code, Codex, Gemini or any
@@ -18,11 +18,22 @@ Work in this order: construct the lines, circles and crossings; ink the straight
 
 Every edit takes the project's current revision. If someone else changed the drawing first, the edit is refused: call inspect, look at what changed, and continue from it. Never undo other people's work unless the owner asks; undo only_mine is the default. Each edit is all or nothing, so a refused edit changed nothing; read its message, fix the request and try again. Use check to see every remaining problem.
 
+Give every change a new command_id (any unique text, such as a UUID). If a call fails on the way back and you are not sure it was done, send it again with the same command_id: it is never done twice, and the answer says so.
+
+Pictures from view are drawn by the studio from the saved project at a named revision. They are not the owner's screen, and the owner may be looking at something else.
+
 When the project has a reference photo, you are recreating that pattern. Look at the overlay (your ink in magenta over the photo) after each meaningful change, find where your lines leave the photo's, and change the construction, not the ink alone: the result must still be a ruler-and-compass construction. Where the photo is worn, hidden or unclear, ask the owner rather than guess. A reconstruction is done when check passes and the owner accepts the overlay. Leave a short note when you finish a stage or need the owner to decide something.`;
 
 const Project = z
   .string()
   .describe('The project id, from list_projects or new_project.');
+const CommandId = z
+  .string()
+  .regex(/^[A-Za-z0-9._:-]{1,80}$/)
+  .optional()
+  .describe(
+    'A new unique id for this change. Send the same id again only to retry a call whose answer you did not get; it is never done twice.',
+  );
 const Revision = z
   .number()
   .int()
@@ -67,12 +78,14 @@ export function createMcpServer(client: StudioClient, author?: string) {
     project: string,
     revision: number,
     change: Record<string, unknown>,
+    command?: string,
   ) =>
     run(() =>
       client.call('POST', `/projects/${project}/edit`, {
         author: who(),
         revision,
         edit: change,
+        ...(command ? { command } : {}),
       }),
     );
 
@@ -160,10 +173,11 @@ export function createMcpServer(client: StudioClient, author?: string) {
           .max(32)
           .default([])
           .describe('Names of elements to remove.'),
+        command_id: CommandId,
       },
     },
-    ({ project, revision, add, remove }) =>
-      edit(project, revision, { op: 'construct', add, remove }),
+    ({ project, revision, add, remove, command_id }) =>
+      edit(project, revision, { op: 'construct', add, remove }, command_id),
   );
   server.registerTool(
     'ink',
@@ -178,10 +192,11 @@ export function createMcpServer(client: StudioClient, author?: string) {
           .max(64)
           .default([]),
         remove: z.array(z.string()).max(64).default([]),
+        command_id: CommandId,
       },
     },
-    ({ project, revision, add, remove }) =>
-      edit(project, revision, { op: 'ink', add, remove }),
+    ({ project, revision, add, remove, command_id }) =>
+      edit(project, revision, { op: 'ink', add, remove }, command_id),
   );
   server.registerTool(
     'set_tile',
@@ -192,10 +207,11 @@ export function createMcpServer(client: StudioClient, author?: string) {
         project: Project,
         revision: Revision,
         vertices: z.array(z.string()).min(4).max(6),
+        command_id: CommandId,
       },
     },
-    ({ project, revision, vertices }) =>
-      edit(project, revision, { op: 'tile', vertices }),
+    ({ project, revision, vertices, command_id }) =>
+      edit(project, revision, { op: 'tile', vertices }, command_id),
   );
   server.registerTool(
     'paint',
@@ -210,20 +226,26 @@ export function createMcpServer(client: StudioClient, author?: string) {
           .array(z.strictObject({ piece: z.string(), color: z.string() }))
           .max(128)
           .default([]),
+        command_id: CommandId,
       },
     },
-    ({ project, revision, palette, colors }) =>
-      edit(project, revision, { op: 'paint', palette, colors }),
+    ({ project, revision, palette, colors, command_id }) =>
+      edit(project, revision, { op: 'paint', palette, colors }, command_id),
   );
   server.registerTool(
     'set_goals',
     {
       description:
         'Change what check measures: fold, maximum steps, tile shape, number of kinds of piece.',
-      inputSchema: { project: Project, revision: Revision, goals: GoalsShape },
+      inputSchema: {
+        project: Project,
+        revision: Revision,
+        goals: GoalsShape,
+        command_id: CommandId,
+      },
     },
-    ({ project, revision, goals }) =>
-      edit(project, revision, { op: 'goals', goals }),
+    ({ project, revision, goals, command_id }) =>
+      edit(project, revision, { op: 'goals', goals }, command_id),
   );
   for (const direction of ['undo', 'redo'] as const)
     server.registerTool(
@@ -235,9 +257,10 @@ export function createMcpServer(client: StudioClient, author?: string) {
           revision: Revision,
           steps: z.number().int().min(1).max(100).default(1),
           only_mine: z.boolean().default(true),
+          command_id: CommandId,
         },
       },
-      ({ project, revision, steps, only_mine }) =>
+      ({ project, revision, steps, only_mine, command_id }) =>
         run(() =>
           client.call('POST', `/projects/${project}/travel`, {
             author: who(),
@@ -245,6 +268,7 @@ export function createMcpServer(client: StudioClient, author?: string) {
             direction,
             steps,
             mine: only_mine,
+            ...(command_id ? { command: command_id } : {}),
           }),
         ),
     );
@@ -252,7 +276,7 @@ export function createMcpServer(client: StudioClient, author?: string) {
     'view',
     {
       description:
-        'A picture of the drawing: the construction (guides faint, ink dark, tile dashed, points named), the wall of colored pieces, the reference photo, or the overlay (the photo with your ink drawn over it in magenta, and O and A in cyan, once the owner has lined it up). Give an area in drawing units (positions from inspect) to look closer. Look after a meaningful change, not after every edit: pictures use a lot of your plan.',
+        "A picture the studio draws from the saved project (not the owner's screen): the construction (guides faint, ink dark, tile dashed, points named), the wall of colored pieces, the reference photo, or the overlay (the photo with your ink drawn over it in magenta, and O and A in cyan, once the owner has lined it up). Give an area in drawing units (positions from inspect) to look closer. Look after a meaningful change, not after every edit: pictures use a lot of your plan.",
       inputSchema: {
         project: Project,
         what: z
@@ -272,8 +296,10 @@ export function createMcpServer(client: StudioClient, author?: string) {
           .int()
           .min(200)
           .max(1600)
-          .default(1000)
-          .describe('Pixels on the longer side.'),
+          .default(768)
+          .describe(
+            'Pixels on the longer side. A picture too big for a chat app is drawn smaller.',
+          ),
       },
     },
     async ({ project, what, area, size }) => {
@@ -293,7 +319,7 @@ export function createMcpServer(client: StudioClient, author?: string) {
             },
             {
               type: 'text' as const,
-              text: `The ${what} at revision ${picture.revision}.`,
+              text: `The ${what} at revision ${picture.revision}, ${picture.size} pixels on its longer side, drawn by the studio from the saved project. It is not the owner's screen.`,
             },
           ],
         };
@@ -374,7 +400,7 @@ export function createMcpServer(client: StudioClient, author?: string) {
     'ask',
     {
       description:
-        'Ask the owner a question, marking the element it is about, and wait for the answer. If no answer comes in time, carry on with what does not depend on it and call read_notes later; never guess an answer.',
+        'Ask the owner a question, marking the element it is about. It returns the question number at once; then call wait_for_answer. Never guess an answer: carry on with what does not depend on it.',
       inputSchema: {
         project: Project,
         question: z.string().min(1).max(4000),
@@ -382,10 +408,10 @@ export function createMcpServer(client: StudioClient, author?: string) {
           .string()
           .optional()
           .describe('A named element the question is about.'),
-        wait_seconds: z.number().int().min(0).max(600).default(180),
+        command_id: CommandId,
       },
     },
-    ({ project, question, about, wait_seconds }) =>
+    ({ project, question, about, command_id }) =>
       run(async () => {
         const asked = (await client.call(
           'POST',
@@ -394,21 +420,39 @@ export function createMcpServer(client: StudioClient, author?: string) {
             author: who(),
             text: question,
             ...(about ? { about } : {}),
+            ...(command_id ? { command: command_id } : {}),
           },
         )) as { question: { id: number } };
-        const id = asked.question.id;
+        return {
+          question: asked.question.id,
+          note: 'Asked. Call wait_for_answer with this question number to wait for the owner.',
+        };
+      }),
+  );
+  server.registerTool(
+    'wait_for_answer',
+    {
+      description: `Wait up to ${LONGEST_WAIT} seconds for the owner's answer to a question. If it has not come, call again, or carry on with what does not depend on it and check read_notes later. The question stays open, and an answer given later is kept.`,
+      inputSchema: {
+        project: Project,
+        question: z.number().int().min(1).describe('The number ask returned.'),
+        seconds: z.number().int().min(0).max(LONGEST_WAIT).default(40),
+      },
+    },
+    ({ project, question, seconds }) =>
+      run(async () => {
         const reply = (await client.call(
           'GET',
-          `/projects/${project}/questions/${id}?wait=${wait_seconds}`,
+          `/projects/${project}/questions/${question}?wait=${seconds}`,
           undefined,
-          wait_seconds + 30,
+          seconds + 15,
         )) as { answer: { text: string } | null };
         return reply.answer
-          ? { question: id, answer: reply.answer.text }
+          ? { question, answer: reply.answer.text }
           : {
-              question: id,
+              question,
               answer: null,
-              note: 'No answer yet. Carry on with what does not depend on it, and check read_notes later.',
+              note: 'No answer yet. Call wait_for_answer again, or carry on with what does not depend on it.',
             };
       }),
   );
@@ -427,13 +471,18 @@ export function createMcpServer(client: StudioClient, author?: string) {
     {
       description:
         "Post a short note to the project's thread, which the owner and other agents read.",
-      inputSchema: { project: Project, text: z.string().min(1).max(4000) },
+      inputSchema: {
+        project: Project,
+        text: z.string().min(1).max(4000),
+        command_id: CommandId,
+      },
     },
-    ({ project, text }) =>
+    ({ project, text, command_id }) =>
       run(() =>
         client.call('POST', `/projects/${project}/notes`, {
           author: who(),
           text,
+          ...(command_id ? { command: command_id } : {}),
         }),
       ),
   );

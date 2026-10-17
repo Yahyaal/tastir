@@ -25,7 +25,9 @@ export class StudioClient {
   }
 
   /** A picture from the studio, as base64 PNG, with its revision. */
-  async picture(path: string): Promise<{ data: string; revision: number }> {
+  async picture(
+    path: string,
+  ): Promise<{ data: string; revision: number; size: number }> {
     const { url, secret } = await this.service();
     const response = await fetch(`${url}${path}`, {
       headers: { 'X-Tastir-Studio': secret },
@@ -44,6 +46,7 @@ export class StudioClient {
     return {
       data: Buffer.from(await response.arrayBuffer()).toString('base64'),
       revision: Number(response.headers.get('x-tastir-revision')),
+      size: Number(response.headers.get('x-tastir-size')),
     };
   }
 

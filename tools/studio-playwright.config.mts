@@ -40,6 +40,7 @@ export default defineConfig({
     reuseExistingServer: false,
     env: {
       TASTIR_STUDIO_APP_PORT: port,
+      TASTIR_STUDIO_MCP_PORT: '0',
       TASTIR_STUDIO_DIR: process.env['TASTIR_STUDIO_DIR'],
     },
     timeout: 60_000,

@@ -5,7 +5,7 @@ import { spawn } from 'node:child_process';
 import { chmod, mkdir, readFile, rm } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Studio, startServer } from '../apps/studio/src/index.js';
+import { Studio, startMcpHttp, startServer } from '../apps/studio/src/index.js';
 import { writeAtomic } from '../apps/studio/src/store.js';
 
 const repo = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -16,6 +16,11 @@ if (!Number.isInteger(appPort) || appPort < 1024 || appPort > 65535)
   throw new Error(
     'TASTIR_STUDIO_APP_PORT must be a port between 1024 and 65535.',
   );
+// Agents that cannot start a local program reach the studio over HTTP at a
+// fixed port, so a tunnel or a connector keeps the same address.
+const mcpPort = Number(process.env['TASTIR_STUDIO_MCP_PORT'] ?? 4294);
+if (!Number.isInteger(mcpPort) || mcpPort < 0 || mcpPort > 65535)
+  throw new Error('TASTIR_STUDIO_MCP_PORT must be a port number.');
 const origin = `http://127.0.0.1:${appPort}`;
 const info = join(root, '.service.json');
 
@@ -41,9 +46,17 @@ const studio = new Studio(root, join(repo, 'tutorials'));
 await studio.list();
 const secret = randomBytes(32).toString('base64url');
 const service = await startServer({ studio, secret, appOrigin: origin });
+// The key in the HTTP address is kept, so an agent added once keeps working.
+const keyFile = join(root, '.mcp-key');
+let key = (await readFile(keyFile, 'utf8').catch(() => '')).trim();
+if (key.length < 32) {
+  key = randomBytes(32).toString('base64url');
+  await writeAtomic(keyFile, key);
+}
+const mcp = await startMcpHttp({ root, key, port: mcpPort });
 await writeAtomic(
   info,
-  JSON.stringify({ url: service.url, secret, pid: process.pid }),
+  JSON.stringify({ url: service.url, secret, pid: process.pid, mcp: mcp.url }),
 );
 
 let child: ReturnType<typeof spawn> | undefined;
@@ -82,11 +95,12 @@ const stopped = new Promise<void>((resolve) => {
   }
 });
 process.stdout.write(
-  `\nTastir studio: ${withApp ? `${origin}/#/studio` : 'running without the app'}\nProjects are kept in ${root}\nAgents connect with tools/studio-mcp.sh (see docs/STUDIO-SETUP.md).\n\n`,
+  `\nTastir studio: ${withApp ? `${origin}/#/studio` : 'running without the app'}\nProjects are kept in ${root}\nAgents connect with tools/studio-mcp.sh, or over HTTP at\n  ${mcp.url}\n(see docs/STUDIO-SETUP.md; the address is a password, so keep it private).\n\n`,
 );
 try {
   await stopped;
 } finally {
   await rm(info, { force: true });
+  await mcp.close();
   await service.close();
 }

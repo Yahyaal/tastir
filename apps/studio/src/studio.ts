@@ -1,6 +1,6 @@
 import { readFile, readdir, realpath, rm } from 'node:fs/promises';
 import { join, resolve, sep } from 'node:path';
-import { randomBytes } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { z } from 'zod';
 import { DraftShape, parseTutorial } from '@tastir/schema';
 import {
@@ -19,7 +19,9 @@ import {
   historyOf,
   newProject,
   travel,
+  withReceipt,
   type Project,
+  type Receipt,
 } from './project.js';
 import { ProjectStore } from './store.js';
 import { constructionSvg, png, wallSvg, type Area } from './picture.js';
@@ -59,6 +61,18 @@ export const NewShape = z.strictObject({
   goals: GoalsShape.optional(),
 });
 
+/**
+ * A command id an agent may send with a change. A retry with the same id
+ * returns what the first one did instead of doing it again.
+ */
+export const Command = z
+  .string()
+  .regex(
+    /^[A-Za-z0-9._:-]{1,80}$/,
+    'A command id is up to 80 letters, digits and . _ : -',
+  )
+  .optional();
+
 const Names = z.array(z.string().min(1).max(180)).max(128);
 export const EditShape = z.discriminatedUnion('op', [
   z.strictObject({
@@ -93,6 +107,7 @@ export const EditRequest = z.strictObject({
   revision: z.number().int().min(1),
   label: z.string().trim().min(1).max(160).optional(),
   edit: EditShape,
+  command: Command,
 });
 
 export const TravelRequest = z.strictObject({
@@ -101,12 +116,14 @@ export const TravelRequest = z.strictObject({
   direction: z.enum(['undo', 'redo']),
   steps: z.number().int().min(1).max(100).default(1),
   mine: z.boolean().default(true),
+  command: Command,
 });
 
 export const NoteRequest = z.strictObject({
   answers: z.number().int().min(1).optional(),
   author: Author,
   text: z.string().max(4000),
+  command: Command,
 });
 
 function labelOf(edit: Edit): string {
@@ -226,6 +243,50 @@ export const QuestionRequest = z.strictObject({
   author: Author,
   text: z.string().max(4000),
   about: z.string().min(1).max(180).optional(),
+  command: Command,
+});
+
+/** The longest an agent's wait for an answer may be: under Codex's
+ * 60-second tool limit, with room for the trip there and back. */
+export const LONGEST_WAIT = 45;
+
+type Commanded = { readonly author: string; readonly command?: string };
+
+/** The receipt a retried command already has, or undefined for a new one. */
+function repeatOf(p: Project, request: Commanded): Receipt | undefined {
+  if (!request.command) return undefined;
+  const key = `${request.author}\n${request.command}`;
+  const found = p.receipts?.find((r) => r.key === key);
+  if (found && found.hash !== fingerprint(request))
+    throw new StudioError(
+      `The command id “${request.command}” was already used for a different request. Use a new id for a new change.`,
+    );
+  return found;
+}
+
+function fingerprint(request: Commanded) {
+  const { command: _command, ...rest } = request;
+  return createHash('sha256').update(JSON.stringify(rest)).digest('hex');
+}
+
+function receipt(request: Commanded, revision: number, note?: number): Receipt {
+  return {
+    key: `${request.author}\n${request.command ?? ''}`,
+    hash: fingerprint(request),
+    revision,
+    ...(note !== undefined ? { note } : {}),
+    at: new Date().toISOString(),
+  };
+}
+
+const keep = (p: Project, request: Commanded, note?: number) =>
+  request.command ? withReceipt(p, receipt(request, p.revision, note)) : p;
+
+const repeated = (r: Receipt) => ({
+  repeated: {
+    revision: r.revision,
+    note: 'This command id was already done, so nothing was done again.',
+  },
 });
 
 export class Studio {
@@ -267,7 +328,10 @@ export class Studio {
     kind: StudioEvent['kind'] = 'drawing',
   ): Promise<Project> {
     const run = (this.locks.get(id) ?? Promise.resolve()).then(async () => {
-      const next = step(await this.load(id));
+      const before = await this.load(id);
+      const next = step(before);
+      // A retried command changes nothing and is not announced.
+      if (next === before) return next;
       await this.store.write(next);
       this.cache.set(id, next);
       this.announce({ project: id, revision: next.revision, kind });
@@ -457,15 +521,23 @@ export class Studio {
         what === 'wall'
           ? wallSvg(draft, 2, area)
           : constructionSvg(draft, area);
-    return {
-      revision: p.revision,
-      png: png(text, Math.max(200, Math.min(1600, size))),
-    };
+    // A chat app limits how big a tool's answer may be, so a picture that
+    // would be over about 100,000 characters as base64 is drawn smaller.
+    let pixels = Math.max(200, Math.min(1600, size));
+    let picture = png(text, pixels);
+    while (picture.length * (4 / 3) > 100_000 && pixels > 200) {
+      pixels = Math.max(200, Math.round(pixels * 0.8));
+      picture = png(text, pixels);
+    }
+    return { revision: p.revision, png: picture, size: pixels };
   }
 
   async edit(id: string, request: z.infer<typeof EditRequest>) {
     const { edit } = request;
+    let again: Receipt | undefined;
     await this.update(id, (p) => {
+      again = repeatOf(p, request);
+      if (again) return p;
       const next = applyEdit(
         p,
         request.revision,
@@ -473,25 +545,34 @@ export class Studio {
         request.label ?? labelOf(edit),
         change(edit),
       );
-      return edit.op === 'goals'
-        ? { ...next, goals: edit.goals as Goals }
-        : next;
+      return keep(
+        edit.op === 'goals' ? { ...next, goals: edit.goals as Goals } : next,
+        request,
+      );
     });
-    return this.view(id);
+    const view = await this.view(id);
+    return again ? { ...view, ...repeated(again) } : view;
   }
 
   async travel(id: string, request: z.infer<typeof TravelRequest>) {
-    await this.update(id, (p) =>
-      travel(
-        p,
-        request.revision,
-        request.author,
-        request.direction,
-        request.steps,
-        request.mine,
-      ),
-    );
-    return this.view(id);
+    let again: Receipt | undefined;
+    await this.update(id, (p) => {
+      again = repeatOf(p, request);
+      if (again) return p;
+      return keep(
+        travel(
+          p,
+          request.revision,
+          request.author,
+          request.direction,
+          request.steps,
+          request.mine,
+        ),
+        request,
+      );
+    });
+    const view = await this.view(id);
+    return again ? { ...view, ...repeated(again) } : view;
   }
 
   async notes(id: string, after = 0) {
@@ -504,37 +585,62 @@ export class Studio {
   }
 
   async note(id: string, request: z.infer<typeof NoteRequest>) {
+    let again: Receipt | undefined;
     const p = await this.update(
       id,
-      (p) =>
-        addNote(p, request.author, request.text, undefined, {
+      (p) => {
+        again = repeatOf(p, request);
+        if (again) return p;
+        const next = addNote(p, request.author, request.text, undefined, {
           ...(request.answers !== undefined
             ? { answers: request.answers }
             : {}),
-        }),
+        });
+        return keep(next, request, next.notes.at(-1)?.id);
+      },
       'notes',
     );
-    return { project: p.id, note: p.notes.at(-1) };
+    const done = again;
+    return done
+      ? {
+          project: p.id,
+          note: p.notes.find((n) => n.id === done.note),
+          ...repeated(done),
+        }
+      : { project: p.id, note: p.notes.at(-1) };
   }
 
   /** Asks the owner something, marking the element it is about. */
   async ask(id: string, request: z.infer<typeof QuestionRequest>) {
-    if (request.about)
+    const earlier = repeatOf(await this.load(id), request);
+    if (request.about && !earlier)
       await this.point(id, {
         author: request.author,
         target: request.about,
         label: 'Question',
       });
+    let again: Receipt | undefined;
     const p = await this.update(
       id,
-      (p) =>
-        addNote(p, request.author, request.text, undefined, {
+      (p) => {
+        again = repeatOf(p, request);
+        if (again) return p;
+        const next = addNote(p, request.author, request.text, undefined, {
           question: true,
           ...(request.about ? { about: request.about } : {}),
-        }),
+        });
+        return keep(next, request, next.notes.at(-1)?.id);
+      },
       'notes',
     );
-    return { project: p.id, question: p.notes.at(-1)! };
+    const done = again;
+    return done
+      ? {
+          project: p.id,
+          question: p.notes.find((n) => n.id === done.note)!,
+          ...repeated(done),
+        }
+      : { project: p.id, question: p.notes.at(-1)! };
   }
 
   /** The answer to a question, waiting up to `seconds` for it. */
@@ -560,7 +666,10 @@ export class Studio {
         if (event.project === id && event.kind === 'notes')
           void find().then((a) => a && done(a));
       });
-      const timer = setTimeout(() => done(null), Math.min(seconds, 600) * 1000);
+      const timer = setTimeout(
+        () => done(null),
+        Math.min(seconds, LONGEST_WAIT) * 1000,
+      );
     });
   }
 

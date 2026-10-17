@@ -15,6 +15,7 @@ import {
   QuestionRequest,
   ReferenceRequest,
   AlignRequest,
+  LONGEST_WAIT,
   Studio,
   TravelRequest,
 } from './studio.js';
@@ -186,12 +187,13 @@ export async function startServer(options: ServerOptions) {
           const picture = await studio.picture(
             id,
             kind,
-            Number(q.get('size') ?? 1000) || 1000,
+            Number(q.get('size') ?? 768) || 768,
             area,
           );
           response.writeHead(200, {
             'Content-Type': 'image/png',
             'X-Tastir-Revision': String(picture.revision),
+            'X-Tastir-Size': String(picture.size),
           });
           response.end(picture.png);
           return;
@@ -234,7 +236,10 @@ export async function startServer(options: ServerOptions) {
         if (method === 'GET' && what === 'questions' && parts[3]) {
           const wait = Math.max(
             0,
-            Math.min(600, Number(url.searchParams.get('wait') ?? 0) || 0),
+            Math.min(
+              LONGEST_WAIT,
+              Number(url.searchParams.get('wait') ?? 0) || 0,
+            ),
           );
           return send(
             response,
