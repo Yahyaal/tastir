@@ -2215,8 +2215,12 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'H7: a live room for each shared drawing',
-    text: 'M2 is pushed to main. The separate live-room app sends signed revision notices to open pages; the page falls back to checking every few seconds if the room is unavailable. Seventeen local checks, full workspace tests, lint, TypeScript, the Worker build and a real-browser fixture pass. Checks ran one at a time. Claude will connect this to the hosted Studio in H4. The deployed speed and a week within the free limits still need H6, so H7 remains unticked.',
+    title: 'H5: make the hosted Studio setup quick',
+    text: 'The deployment guide maps each Neon, Vercel, Google and Cloudflare setting to its destination. A read-only preflight reports missing settings and checks database migrations without displaying credentials. The Vercel audit lists the function packaging, native renderer and routing checks needed after H4 is merged and the owner creates the accounts. This prepares H5; deployment and persistence checks still remain.',
+    link: {
+      label: 'Read the deployment steps',
+      href: 'https://github.com/Yahyaal/tastir/blob/main/docs/STUDIO-DEPLOY.md',
+    },
   },
   next: [
     {

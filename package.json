@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nx run player:dev",
-    "test": "pnpm catalog && nx run-many -t test --parallel=1",
+    "test": "pnpm test:studio:preflight && pnpm catalog && nx run-many -t test --parallel=1",
     "lint": "nx run-many -t lint",
     "typecheck": "pnpm catalog && nx run-many -t typecheck",
     "build": "nx run-many -t build",
@@ -30,7 +30,9 @@
     "studio:db:generate": "pnpm --dir apps/studio exec drizzle-kit generate",
     "studio:hosted:test": "node --conditions=@tastir/source --import tsx tools/studio-hosted-test.mts",
     "test:hosted:browser": "playwright test --config tools/studio-hosted-playwright.config.mts",
-    "studio:hosted": "node --conditions=@tastir/source --import tsx tools/studio-hosted.mts"
+    "studio:hosted": "node --conditions=@tastir/source --import tsx tools/studio-hosted.mts",
+    "studio:preflight": "node tools/studio-preflight.mjs",
+    "test:studio:preflight": "node --test --test-concurrency=1 tools/studio-preflight.spec.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
