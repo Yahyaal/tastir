@@ -43,6 +43,12 @@ export const DOCS: readonly {
     text: read('AI-AGENT-SETUP.md'),
   },
   {
+    key: 'agent-review',
+    label: 'AI agent review',
+    file: 'AI-AGENT-REVIEW.md',
+    text: read('AI-AGENT-REVIEW.md'),
+  },
+  {
     key: 'working',
     label: 'Working together',
     file: 'WORKING-WITH-OWNER.md',
