@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
+    "emitDeclarationOnly": false,
+    "lib": ["es2022", "dom"],
+    "types": []
+  },
+  "include": [
+    "src/protocol.ts",
+    "src/signing.ts",
+    "src/server.ts",
+    "src/client.ts"
+  ]
+}

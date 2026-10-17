@@ -20,6 +20,9 @@
     },
     {
       "path": "./apps/studio"
+    },
+    {
+      "path": "./apps/live-room"
     }
   ]
 }

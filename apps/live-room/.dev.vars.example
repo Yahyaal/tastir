@@ -1,0 +1,3 @@
+# Run pnpm --filter @tastir/live-room setup:local to generate a private local key.
+# Use the identical 64-character hex value in Studio; never send it to the page.
+LIVE_ROOM_SECRET=""

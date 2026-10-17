@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist/worker-types",
+    "tsBuildInfoFile": "dist/tsconfig.worker.tsbuildinfo",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["@cloudflare/workers-types"]
+  },
+  "include": ["src/worker.ts", "src/protocol.ts", "src/signing.ts"]
+}
