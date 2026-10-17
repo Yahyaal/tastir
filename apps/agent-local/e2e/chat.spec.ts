@@ -170,6 +170,113 @@ test('Stop retains the transcript, blocks a late reply, and makes the next messa
   await expect(page.getByRole('log')).toContainText('Draw something');
 });
 
+test('a usage limit offers Manage usage without retrying or losing the prompt', async ({
+  page,
+}, info) => {
+  await connected(page);
+  let requests = 0;
+  await page.route('**/__agent/turn/start', (r) => {
+    requests++;
+    return r.fulfill({
+      status: 429,
+      json: {
+        error: {
+          code: 'usage_limit',
+          message:
+            'ChatGPT reported a usage limit for this app or your plan. Check Manage usage before trying again.',
+        },
+      },
+    });
+  });
+  await page.goto('/#/work');
+  await page
+    .getByRole('button', { name: 'Open drawing assistant', exact: true })
+    .click();
+  await send(page, 'Use the orange-brown color from before.');
+  await expect(page.locator('.agent-answer')).toContainText(
+    'this app or your plan',
+  );
+  const usage = page.locator('.agent-usage-link');
+  await expect(usage).toHaveAttribute(
+    'href',
+    'https://chatgpt.com/settings/usage',
+  );
+  await expect(usage).toHaveAttribute('target', '_blank');
+  await page.getByRole('button', { name: 'Edit and retry' }).click();
+  await expect(page.getByRole('textbox', { name: 'Your request' })).toHaveValue(
+    'Use the orange-brown color from before.',
+  );
+  expect(requests).toBe(1);
+  await mkdir('docs/review/assistant-feedback', { recursive: true });
+  await page.screenshot({
+    animations: 'disabled',
+    path: `docs/review/assistant-feedback/${info.project.name}.png`,
+  });
+  await page
+    .getByRole('button', { name: 'Switch to dark mode' })
+    .evaluate((button: HTMLButtonElement) => button.click());
+  await page.screenshot({
+    animations: 'disabled',
+    path: `docs/review/assistant-feedback/${info.project.name}-dark.png`,
+  });
+});
+
+test('a temporary usage-check failure preserves an applied color edit and its receipt', async ({
+  page,
+}) => {
+  await connected(page);
+  await page.route('**/__agent/turn/start', (r) => {
+    const { snapshot: s } = r.request().postDataJSON();
+    return r.fulfill({
+      json: {
+        runId,
+        text: '',
+        calls: [
+          tool(s, 'paint_pattern', {
+            palette: null,
+            colors: [{ typeId: 'square', color: '#b86c25' }],
+          }),
+        ],
+      },
+    });
+  });
+  let receipts: { ok: boolean }[] = [];
+  await page.route('**/__agent/turn/continue', (r) => {
+    receipts = r.request().postDataJSON().results;
+    return r.fulfill({
+      status: 503,
+      json: {
+        error: {
+          code: 'usage_unavailable',
+          message:
+            'OpenAI could not check ChatGPT usage right now. Wait a moment before trying again. This does not confirm that your allowance is used up.',
+        },
+      },
+    });
+  });
+  await page.goto('/#/alhambra-arrayanes-squares/result');
+  await page.locator('svg.wall').waitFor();
+  await page
+    .getByRole('button', { name: 'Open drawing assistant', exact: true })
+    .click();
+  await send(page, 'Use the previous orange-brown for the squares.');
+  await expect(page.locator('.agent-answer')).toContainText(
+    'Changes already applied are kept.',
+  );
+  await expect(page.locator('.agent-answer')).toContainText(
+    'does not confirm that your allowance is used up',
+  );
+  await expect(page.locator('.agent-answer')).not.toContainText(
+    'No new tool actions were applied',
+  );
+  await expect(
+    page.locator('svg.wall polygon[fill="#b86c25"]').first(),
+  ).toBeAttached();
+  await expect(page.locator('.agent-action-receipts')).toHaveCount(1);
+  await expect(page.locator('.agent-usage-link')).toHaveCount(0);
+  expect(receipts).toEqual([expect.objectContaining({ ok: true })]);
+});
+
 test('creates a normal saved pattern, edits its real construction and ink, then undoes and redoes using the editor history', async ({
   page,
 }) => {

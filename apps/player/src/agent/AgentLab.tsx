@@ -1,6 +1,7 @@
 import { applyPageEditor, pageEditorRevision } from './pageEditor';
 import { waitForRendered } from './rendered';
 import { AccountPanel } from './AccountPanel';
+import { AgentRequestError } from './client';
 import { ChatPanel } from './ChatPanel';
 import { useConversation, type Conversation } from './conversation';
 import { pageColorRevision, applyPageColor } from './pageColoring';
@@ -534,6 +535,7 @@ function Workspace({
     const runGeneration = ++generation.current;
     const isCurrent = () =>
       !abort.signal.aborted && runGeneration === generation.current;
+    let changesApplied = false;
     try {
       setActivity(
         currentRoute() === 'agent'
@@ -974,6 +976,16 @@ function Workspace({
               setScreenPoint(false);
             }
         }
+        if (
+          edited ||
+          observed ||
+          reply.calls.some(
+            (call) =>
+              call.name === 'create_pattern' &&
+              results.some((result) => result.callId === call.id && result.ok),
+          )
+        )
+          changesApplied = true;
         conversation.recordActions(
           results.map((result) => ({
             label:
@@ -1013,8 +1025,13 @@ function Workspace({
       if (isCurrent()) {
         setError((e as Error).message);
         conversation.update(
-          'The request could not finish. ' + (e as Error).message,
+          'The request could not finish. ' +
+            (e as Error).message +
+            (changesApplied
+              ? ' Changes already applied are kept. Check the actions below before continuing.'
+              : ''),
           'error',
+          e instanceof AgentRequestError ? e.code : undefined,
         );
         void client.stop().catch(() => undefined);
       }

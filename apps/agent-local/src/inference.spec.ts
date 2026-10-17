@@ -79,6 +79,32 @@ afterEach(async () => {
 });
 
 describe('completed streaming responses', () => {
+  it.each([
+    ['subscription_sharing_usage_limit_exceeded', 429, 'usage_limit'],
+    ['subscription_sharing_usage_unavailable', 503, 'usage_unavailable'],
+    ['subscription_sharing_user_not_eligible', 403, 'plan_unavailable'],
+    ['rate_limit_exceeded', 429, 'rate_limited'],
+  ])(
+    'classifies HTTP %s without reflecting private error details',
+    async (code, status, expected) => {
+      const send = vi.fn<typeof fetch>(
+        async () =>
+          new Response(
+            JSON.stringify({
+              error: { code, message: 'private upstream details' },
+            }),
+            { status: Number(status) },
+          ),
+      );
+      const runtime = new AgentRuntime(new ChatGPTAuth(store, send), send);
+      const error = await runtime.models().catch((e: unknown) => e);
+      expect(error).toMatchObject({ code: expected });
+      expect((error as Error).message).not.toContain(
+        'private upstream details',
+      );
+      expect(send).toHaveBeenCalledTimes(1);
+    },
+  );
   it('retains finalized items when the completed event has an empty output array', async () => {
     const reasoning = {
       type: 'reasoning',
@@ -198,6 +224,27 @@ describe('completed streaming responses', () => {
       ),
     ).rejects.toMatchObject({ code: 'inference_failed' });
   });
+  it.each([
+    ['subscription_sharing_usage_limit_exceeded', 'usage_limit', 429],
+    ['subscription_sharing_usage_unavailable', 'usage_unavailable', 503],
+    ['subscription_sharing_user_not_eligible', 'plan_unavailable', 403],
+    ['subscription_sharing_usage_unknown', 'inference_failed', 502],
+  ])(
+    'classifies %s precisely without exposing upstream text',
+    async (code, expected, status) => {
+      const response = new Response(
+        frame({
+          type: 'response.failed',
+          response: { error: { code, message: 'private upstream details' } },
+        }),
+        { headers: { 'Content-Type': 'text/event-stream' } },
+      );
+      await expect(completedResponse(response)).rejects.toMatchObject({
+        code: expected,
+        status,
+      });
+    },
+  );
   it('handles split UTF-8 and CRLF frames', async () => {
     const bytes = new TextEncoder().encode(
       frame({

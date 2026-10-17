@@ -6,6 +6,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
   state: 'pending' | 'complete' | 'stopped' | 'error';
+  errorCode?: string;
   actions?: { label: string; ok: boolean; message: string }[];
 }
 
@@ -23,12 +24,18 @@ export function useConversation() {
       { id, role: 'assistant', text: '', state: 'pending' },
     ]);
   };
-  const update = (text: string, state: ChatMessage['state'] = 'complete') => {
+  const update = (
+    text: string,
+    state: ChatMessage['state'] = 'complete',
+    errorCode?: string,
+  ) => {
     const id = active.current;
     if (!id) return;
     setMessages((before) =>
       before.map((m) =>
-        m.id === id ? { ...m, text: text.slice(0, 40000), state } : m,
+        m.id === id
+          ? { ...m, text: text.slice(0, 40000), state, errorCode }
+          : m,
       ),
     );
     if (state !== 'pending') active.current = null;

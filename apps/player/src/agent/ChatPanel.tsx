@@ -72,6 +72,8 @@ export function ChatPanel({
   const lastAnswer = [...messages]
     .reverse()
     .find((m) => m.role === 'assistant');
+  const errorInReply =
+    lastAnswer?.state === 'error' && lastAnswer.text.includes(error);
   return (
     <aside className="agent-panel agent-chat" aria-label="Assistant">
       <header className="agent-chat-head">
@@ -209,7 +211,7 @@ export function ChatPanel({
         ))}
       </div>
       <div className="agent-chat-bottom">
-        {error ? (
+        {error && !errorInReply ? (
           <p className="agent-error" role="alert">
             {error}
           </p>
@@ -231,6 +233,18 @@ export function ChatPanel({
           >
             Edit and retry
           </button>
+        ) : null}
+        {error &&
+        lastAnswer?.state === 'error' &&
+        ['usage_limit', 'rate_limited'].includes(lastAnswer.errorCode ?? '') ? (
+          <a
+            className="agent-usage-link"
+            href="https://chatgpt.com/settings/usage"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Manage usage ↗
+          </a>
         ) : null}
         {tools}
         <form

@@ -1816,6 +1816,14 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'AI.2a: colorful companion and useful error recovery',
+      text: 'The smiling zellige star uses Tastir’s theme colors. Confirmed usage limits, temporary usage-check failures and account restrictions now have separate explanations. Manage usage is directly beside recovery controls, editing the prompt does not resend it, and earlier changes survive a later service failure. This phone preview uses simulated responses.',
+      link: {
+        label: 'See the new companion on a phone',
+        href: '/__review/renders/assistant-feedback/phone-dark.png',
+      },
+    },
+    {
       title: 'AI.2–3: compact chat and normal drawing tools',
       text: 'The toolbar companion opens a real conversation without covering Save. Follow-ups survive navigation and closing. It can create and edit normal patterns, ink, choose repeats, color shapes/rings/positions, save named copies and use the real Undo history. Assistant-only Undo protects manual work. This responsive preview uses simulated replies with the real app.',
       link: {
@@ -2191,11 +2199,11 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'AI.2: a proper chat companion and tools on your open drawing',
-    text: 'You asked for a cute icon instead of the long assistant button, and a real back-and-forth chat. The icon now lives in the toolbar, clear of Save. The panel keeps your messages and replies, shows actions and Stop, and can start a new conversation. Construction tools now reach the normal saved-pattern editor; coloring includes rings, shapes, individual positions and shared square borders. Named saves make new copies. All 117 assistant browser checks passed; after the live test exposed a save acknowledgement bug, all 15 affected coloring checks passed with its fix. The live assistant constructed and colored an eight-pointed star; a focused live follow-up saved and reopened it successfully. Full units, lint, TypeScript, the fresh production build and assistant-marker audit passed. The complete production browser suite passed 151 checks with 17 skips. All checks ran sequentially within bounded memory.',
+    title: 'AI.2a: a zellige companion and clearer chat errors',
+    text: 'The robot is now a smiling eight-point tile in cobalt, turquoise and gold, using Tastir’s colors in both themes. Your screenshot exposed an error-labeling bug: a temporary usage-check failure was being called a usage limit. Those cases now have different explanations. A confirmed app or plan limit shows Manage usage directly. Earlier edits and action records are kept, and the same error is no longer shown twice. All 46 companion unit checks and all 15 chat browser checks passed, along with full workspace tests, lint, TypeScript and a fresh production build. Checks ran sequentially with one worker. This preview uses simulated responses.',
     link: {
-      label: 'See the live saved star and chat',
-      href: '/__review/renders/assistant-chat/live-star-final.png',
+      label: 'See the new companion and error recovery',
+      href: '/__review/renders/assistant-feedback/desktop-dark.png',
     },
   },
   next: [

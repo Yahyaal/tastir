@@ -10,7 +10,7 @@ import {
   type ModelChoice,
 } from '@tastir/agent-protocol';
 import { ChatGPTAuth } from './auth.js';
-import { AgentError } from './errors.js';
+import { AgentError, planError } from './errors.js';
 
 const ItemShape = z.object({ type: z.string() }).passthrough();
 const CompletedShape = z.object({
@@ -92,7 +92,7 @@ export async function completedResponse(response: Response): Promise<Output> {
           if (entries.some(([index], position) => index !== position))
             throw new AgentError(
               'invalid_stream',
-              'The response was missing output items. No new tool actions were applied.',
+              'The response was missing output items. This response supplied no executable actions.',
               502,
             );
           return entries.map(([, item]) => item);
@@ -108,15 +108,11 @@ export async function completedResponse(response: Response): Promise<Output> {
             payload?.error?.code ??
             (event['error'] as { code?: string } | undefined)?.code ??
             event['code'];
-          if (String(code).startsWith('subscription_sharing_usage_'))
-            throw new AgentError(
-              'usage_limit',
-              'Your ChatGPT plan cannot complete this request now. Check Manage usage before trying again.',
-              429,
-            );
+          const restriction = planError(code);
+          if (restriction) throw restriction;
           throw new AgentError(
             'inference_failed',
-            'OpenAI could not complete the request. No new tool actions were applied.',
+            'OpenAI could not complete this response. It supplied no executable actions.',
             502,
           );
         }
@@ -125,7 +121,7 @@ export async function completedResponse(response: Response): Promise<Output> {
     }
     throw new AgentError(
       'stream_interrupted',
-      'The response ended before completion. No new tool actions were applied.',
+      'The response ended before completion. This response supplied no executable actions.',
       502,
     );
   } finally {
@@ -186,11 +182,41 @@ export class AgentRuntime {
       response = await send(true);
     }
     if (!response.ok) {
-      await response.body?.cancel();
+      const reader = response.body?.getReader();
+      let bodyText = '';
+      try {
+        if (reader) {
+          const decoder = new TextDecoder();
+          let bytes = 0;
+          for (;;) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            bytes += value.byteLength;
+            if (bytes > 8192) {
+              bodyText = '';
+              break;
+            }
+            bodyText += decoder.decode(value, { stream: true });
+          }
+          bodyText += decoder.decode();
+        }
+      } finally {
+        await reader?.cancel().catch(() => undefined);
+        reader?.releaseLock();
+      }
+      let code: unknown;
+      try {
+        code = (JSON.parse(bodyText) as { error?: { code?: unknown } }).error
+          ?.code;
+      } catch {
+        /* Invalid or oversized bodies use the safe status-only fallback. */
+      }
+      const restriction = planError(code);
+      if (restriction) throw restriction;
       throw new AgentError(
-        response.status === 429 ? 'usage_limit' : 'inference_unavailable',
+        response.status === 429 ? 'rate_limited' : 'inference_unavailable',
         response.status === 429
-          ? 'Your ChatGPT usage is limited right now. Open Manage usage.'
+          ? 'OpenAI is limiting requests right now. Wait before trying again; check Manage usage for any app or plan limits.'
           : `OpenAI returned HTTP ${response.status}. Check your selected model and ChatGPT plan access.`,
         response.status === 429 ? 429 : 502,
       );

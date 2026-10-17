@@ -266,6 +266,16 @@
   background: var(--theme-accent-muted);
   border-color: var(--theme-accent);
 }
+.agent-usage-link {
+  margin-inline-start: 8px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  align-self: flex-start;
+  font-size: 0.9rem;
+  color: var(--theme-accent);
+}
+.agent-usage-link:focus-visible,
 .agent-launch:focus-visible,
 .agent-chat button:focus-visible,
 .agent-chat textarea:focus-visible,
