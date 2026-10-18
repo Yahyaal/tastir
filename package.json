@@ -32,7 +32,10 @@
     "test:hosted:browser": "playwright test --config tools/studio-hosted-playwright.config.mts",
     "studio:hosted": "node --conditions=@tastir/source --import tsx tools/studio-hosted.mts",
     "studio:preflight": "node tools/studio-preflight.mjs",
-    "test:studio:preflight": "node --test --test-concurrency=1 tools/studio-preflight.spec.mjs"
+    "test:studio:preflight": "node --test --test-concurrency=1 tools/studio-preflight.spec.mjs",
+    "studio:settings": "node tools/studio-settings.mjs",
+    "studio:setup:db": "node --env-file=.env.studio-preflight.local --conditions=@tastir/source --import tsx tools/studio-db.mts",
+    "studio:check": "node tools/studio-preflight.mjs --settings .env.studio-preflight.local"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

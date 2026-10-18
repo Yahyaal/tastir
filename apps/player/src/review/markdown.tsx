@@ -2,8 +2,9 @@ import type { ReactNode } from 'react';
 
 /**
  * A small Markdown reader for the project's own documents: headings,
- * paragraphs, lists (nested, with task boxes), tables, bold, italics, code
- * and links. Everything becomes React text, so nothing in a document can
+ * paragraphs, lists (nested, with task boxes, numbered from where they
+ * start), tables, code blocks, bold, italics, code and links, including
+ * bare https addresses. Everything becomes React text, so nothing in a document can
  * inject HTML. `link` turns a link target into the address to open.
  */
 export function Markdown({
@@ -23,7 +24,7 @@ export function inline(
 ): ReactNode[] {
   const out: ReactNode[] = [];
   const re =
-    /(\*\*([^*]+)\*\*|\*([^*\s][^*]*)\*|`([^`]+)`|\[([^\]]+)\]\(([^)\s]+)\))/g;
+    /(\*\*([^*]+)\*\*|\*([^*\s][^*]*)\*|`([^`]+)`|\[([^\]]+)\]\(([^)\s]+)\)|(https:\/\/[^\s<>()]*[^\s<>().,;:!?'"]))/g;
   let last = 0;
   let m: RegExpExecArray | null;
   while ((m = re.exec(text))) {
@@ -34,6 +35,12 @@ export function inline(
     else if (m[3] !== undefined)
       out.push(<em key={key}>{inline(m[3], link)}</em>);
     else if (m[4] !== undefined) out.push(<code key={key}>{m[4]}</code>);
+    else if (m[7] !== undefined)
+      out.push(
+        <a key={key} href={m[7]} target="_blank" rel="noreferrer">
+          {m[7]}
+        </a>,
+      );
     else if (m[5] !== undefined && m[6] !== undefined) {
       const href = link(m[6]);
       const outside = /^https?:/.test(href);
@@ -63,6 +70,21 @@ function blocks(lines: string[], link: (href: string) => string): ReactNode[] {
     const key = out.length;
     if (!line.trim()) {
       i++;
+      continue;
+    }
+    // A code block, at any indent (inside a list item, say).
+    if (line.trim().startsWith('```')) {
+      const code: string[] = [];
+      const indent = line.length - line.trimStart().length;
+      i++;
+      while (i < lines.length && !(lines[i] ?? '').trim().startsWith('```'))
+        code.push((lines[i++] ?? '').slice(indent));
+      i++;
+      out.push(
+        <pre className="md-code" key={key}>
+          <code>{code.join('\n')}</code>
+        </pre>,
+      );
       continue;
     }
     const heading = /^(#{1,4})\s+(.*)$/.exec(line);
@@ -128,7 +150,8 @@ function blocks(lines: string[], link: (href: string) => string): ReactNode[] {
       (lines[i] ?? '').trim() &&
       !/^#{1,4}\s/.test(lines[i] ?? '') &&
       !LIST.test(lines[i] ?? '') &&
-      !(lines[i] ?? '').trimStart().startsWith('|')
+      !(lines[i] ?? '').trimStart().startsWith('|') &&
+      !(lines[i] ?? '').trim().startsWith('```')
     )
       para.push((lines[i++] ?? '').trim());
     out.push(<p key={key}>{inline(para.join(' '), link)}</p>);
@@ -147,6 +170,8 @@ function List({
   const first = LIST.exec(lines[0] ?? '');
   const indent = first?.[1]?.length ?? 0;
   const ordered = /\d/.test(first?.[2] ?? '');
+  // A numbered list split by a code block carries on from its number.
+  const start = ordered ? Number.parseInt(first?.[2] ?? '1', 10) : 1;
   const items: { text: string; children: string[] }[] = [];
   for (const line of lines) {
     const m = LIST.exec(line);
@@ -161,7 +186,7 @@ function List({
   }
   const Tag = ordered ? 'ol' : 'ul';
   return (
-    <Tag>
+    <Tag {...(ordered && start !== 1 ? { start } : {})}>
       {items.map((item, k) => {
         const box = /^\[( |x)\]\s+(.*)$/.exec(item.text);
         return (

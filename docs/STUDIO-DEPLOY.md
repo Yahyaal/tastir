@@ -1,57 +1,206 @@
-# Set up the hosted Studio (H5)
+# Put the studio online
 
-Use the checkout with **H4, H7 and this preparation branch merged**. An agent must finish the [Vercel packaging checks](STUDIO-VERCEL-AUDIT.md) before the first real deployment. H5 stays unchecked until the deployed save/redeploy/export checks pass.
+This walks you through putting the studio on the internet, so you can use it from your phone or any computer and connect chat apps like claude.ai to it. You create four free accounts and copy a few values into one private file. Then you tell Claude "the setup is done", and Claude deploys and checks everything.
 
-1. **Create Neon.** Choose the **Free** plan and **AWS US East (Ohio), `aws-us-east-2`** when creating the project. Keep the default database/role. In **Connect**, choose the pooled **postgres.js** connection string. Save it privately as `TASTIR_STUDIO_DATABASE_URL`. Set its `sslmode` to `verify-full`; remove `channel_binding` if supplied (that libpq option is not implemented by our postgres.js driver). Keep the password URL-encoded. [Neon regions](https://neon.com/docs/introduction/regions).
+- **How long:** about 40 minutes, in one go or in parts.
+- **What it costs:** nothing. All four services are free plans, and none asks for a card.
+- **What you need:** a browser, a text editor, and a terminal open in your `Tastir` folder.
 
-2. **Create Vercel.** On the Hobby plan, import **`Yahyaal/tastir`** from GitHub. Use the repository root (`.`), **Other** framework, **Node.js 22.x**, and production branch **`main`**. The merged `vercel.json` owns the build/install commands and output directory (`dist/studio-hosted`); functions belong in Cleveland (`cle1`). An agent must verify the pinned pnpm install and function packaging described in the audit. Record the stable production address, `https://<site>`; initial setup is not ready for use until step 9. [Project settings](https://vercel.com/docs/project-configuration/project-settings).
+**Three rules for the whole guide:**
 
-3. **Create private photo storage.** In that Vercel project's **Storage → Create Database → Blob**, choose **Private**, then connect it to the project for **Production**. Save its `BLOB_READ_WRITE_TOKEN` directly in the Vercel environment settings and your private local settings file. The token is required for this H5 setup. [Private Blob setup](https://vercel.com/docs/vercel-blob/private-storage).
+1. Every secret goes into one private file on this computer, `.env.studio-preflight.local`, and into the services' own settings pages. Never paste a secret into a chat (with Claude, Codex or anyone), an issue or a screenshot. When you are done, just say "done".
+2. Where this guide says `<your site>`, use your own site's address from Part 2, for example `https://tastir-studio.vercel.app`.
+3. If a screen looks different from what is described, look for the button with the same name nearby; these sites move things around now and then. If you are stuck, tell Claude which step and what you see (but no secrets).
 
-4. **Create Google sign-in.** In a Google Cloud project, open **Google Auth Platform**. Set the app name/support email, choose **External / Testing** and add your own Google email as a test user. Create a **Web application** OAuth client. Its **Authorized redirect URI** must be exactly `https://<site>/auth/google`. Save the client ID and client secret privately. The app requests `openid email`; no Drive access is needed. [Google web OAuth setup](https://developers.google.com/identity/protocols/oauth2/web-server).
+## Part 0: Get ready (2 minutes)
 
-5. **Generate two signing secrets locally.** From the repo root, this writes two independent keys to an ignored, private file without displaying them. It refuses to overwrite an existing file:
-
-   ```sh
-   node -e 'const fs=require("node:fs"),c=require("node:crypto"); fs.writeFileSync(".env.studio-secrets.local",["TASTIR_STUDIO_SESSION_SECRET","LIVE_ROOM_SECRET"].map(k=>k+"="+c.randomBytes(32).toString("hex")).join("\n")+"\n",{mode:0o600,flag:"wx"})'
-   ```
-
-   Open the file in your private editor and copy each value directly to the fields below. **Never paste credentials, connection strings or signing keys into a chat, issue or screenshot.**
-
-6. **Fill Vercel's Production environment variables.** Also keep these nine values in an ignored local file, `.env.studio-preflight.local`, using `NAME=value` lines; set its permissions with `chmod 600 .env.studio-preflight.local`. All are server settings; none gets a `VITE_` prefix. Use origins without a trailing slash.
-
-   | Name | Value to paste |
-   | --- | --- |
-   | `TASTIR_STUDIO_DATABASE_URL` | Neon pooled postgres.js connection string from step 1, with `sslmode=verify-full` |
-   | `TASTIR_STUDIO_URL` | Stable `https://<site>` from Vercel |
-   | `TASTIR_STUDIO_OWNERS` | Your Google email; comma-separated addresses if more than one |
-   | `TASTIR_STUDIO_SESSION_SECRET` | Session key from step 5 |
-   | `GOOGLE_CLIENT_ID` | Google's web client ID, ending `.apps.googleusercontent.com` |
-   | `GOOGLE_CLIENT_SECRET` | The same client's secret |
-   | `BLOB_READ_WRITE_TOKEN` | The private store's token from step 3 |
-   | `LIVE_ROOM_ORIGIN` | Worker's HTTPS origin, obtained in step 8 |
-   | `LIVE_ROOM_SECRET` | Room key from step 5; identical to Cloudflare's secret |
-
-7. **Migrate and run preflight.** Use Node 22 and pnpm 10.30.3. From the merged repo root:
+1. Open a terminal in your `Tastir` folder and bring it up to date:
 
    ```sh
-   pnpm install --frozen-lockfile
-   node --env-file=.env.studio-preflight.local --conditions=@tastir/source --import tsx tools/studio-db.mts
-   pnpm studio:preflight --settings .env.studio-preflight.local
+   git switch main
+   git pull
+   pnpm install
    ```
 
-   Migrate only the new Neon database you selected. Preflight itself is read-only: it checks required settings, HTTPS origins, verified database TLS, migration hashes/timestamps and required tables/columns. It prints names and fixed diagnostics, never values. It exits with code 1 until all checks pass; fill the Worker origin after step 8 and rerun. Existing terminal environment variables take precedence over the file, so clear old local overrides. A green check does not authenticate Google/Blob or compare Cloudflare's stored key; step 9 does that.
+2. Make the private settings file:
 
-8. **Set up the live room.** Create a Cloudflare account on **Workers Free**. After H7 is merged, sign in and deploy from the repo root, replacing only the nonsecret site origin:
+   ```sh
+   pnpm studio:settings
+   ```
+
+   This makes `.env.studio-preflight.local` in the `Tastir` folder, with every setting named and two secrets already filled in. Git ignores it, so it is never uploaded. Open it in your text editor and keep it open: you fill in the empty lines as you go through the guide.
+
+## Part 1: The database, on Neon (5 minutes)
+
+Neon keeps your studio projects.
+
+1. Open https://console.neon.tech/signup and sign up. "Continue with Google" or "Continue with GitHub" is quickest.
+2. Neon asks you to create your first project. Fill in:
+   - **Project name:** `tastir-studio`
+   - **Postgres version:** leave as it is.
+   - **Cloud provider:** AWS.
+   - **Region:** **AWS US East 2 (Ohio)**. This is the nearest to Oklahoma, and the website goes in the same place, so they talk quickly.
+
+   Then click **Create project**.
+3. On the project's dashboard, click **Connect** (top right). A box called "Connect to your branch" opens. Leave the choices as they are: branch `production`, database `neondb`, role `neondb_owner`, and **Connection pooling** switched on.
+4. The box shows a connection string that starts with `postgresql://`. Click **Show password**, then the copy button next to the string.
+5. In your settings file, paste it after `TASTIR_STUDIO_DATABASE_URL=`.
+6. Change the end of that line. The string ends with something like:
+
+   ```
+   ?sslmode=require&channel_binding=require
+   ```
+
+   Replace all of that with:
+
+   ```
+   ?sslmode=verify-full
+   ```
+
+   That makes the studio check it is really talking to Neon. The other two settings make it skip that check.
+
+   The line now looks like this, with your own values: `TASTIR_STUDIO_DATABASE_URL=postgresql://neondb_owner:abc123@ep-something-pooler.us-east-2.aws.neon.tech/neondb?sslmode=verify-full`
+
+## Part 2: The website, on Vercel (10 minutes)
+
+Vercel runs the website and the server behind it.
+
+1. Open https://vercel.com/signup.
+   - Choose **Hobby** (the free plan for personal projects).
+   - Type your name.
+   - Click **Continue with GitHub**, and allow Vercel to see your GitHub account when GitHub asks.
+2. Open https://vercel.com/new. Under **Import Git Repository**, find **tastir** and click **Import**.
+
+   If `tastir` is not in the list, click **Adjust GitHub App Permissions**, give Vercel access to the `tastir` repository, and come back.
+3. On the "Configure Project" page:
+   - **Project Name:** `tastir-studio`. This decides your site's address.
+   - **Framework Preset:** **Other**.
+   - **Root Directory:** leave it as `./`.
+   - **Build and Output Settings:** leave them alone. The repository already says how to build (in `vercel.json`).
+   - **Environment Variables:** leave them for now. They come in Part 6.
+
+   Click **Deploy**.
+4. Vercel builds the site, which takes a few minutes. The studio will not work yet because it has no settings; that is expected. When it finishes, click **Continue to Dashboard**.
+5. Find your site's address under **Domains** on the project page, for example `tastir-studio.vercel.app`. In your settings file, put it after `TASTIR_STUDIO_URL=` with `https://` in front and no `/` at the end:
+
+   ```
+   TASTIR_STUDIO_URL=https://tastir-studio.vercel.app
+   ```
+
+6. Make the private photo storage:
+   - On the project page, open the **Storage** tab.
+   - Click **Create Database** (it may say **Create Storage**), choose **Blob**, and click **Continue**.
+   - Name it `tastir-photos` and set the access to **Private**.
+   - Click **Create**. If it asks which environments to connect, leave them all ticked and click **Connect**.
+
+   There is nothing to copy: Vercel connects the store to the site by itself.
+
+## Part 3: Signing in with Google (10 minutes)
+
+This lets you, and only you, sign in to the studio with your Google account.
+
+1. Open https://console.cloud.google.com and sign in with the Google account you want to use for the studio. If it asks you to agree to the terms, agree.
+2. Make a project for it:
+   - Open https://console.cloud.google.com/projectcreate.
+   - **Project name:** `tastir-studio`. Leave the rest.
+   - Click **Create**.
+   - Wait a few seconds until the notification says it is created, then make sure `tastir-studio` is the project shown at the top left of the page. If it is not, click the project name there and choose it.
+3. Set up the sign-in screen:
+   - Open https://console.cloud.google.com/auth/overview and click **Get started**.
+   - **App name:** `Tastir studio`.
+   - **User support email:** choose your own address.
+   - Click **Next**.
+   - **Audience:** choose **External**. Click **Next**.
+   - **Contact information:** type your own address. Click **Next**.
+   - Tick that you agree to the policy, click **Continue**, then **Create**.
+4. Allow your own account in:
+   - Open https://console.cloud.google.com/auth/audience.
+   - Under **Test users**, click **Add users**, type your Google address and click **Save**.
+
+   The sign-in stays in "Testing", which means only the people on this list can sign in. That is what you want.
+5. Make the sign-in key:
+   - Open https://console.cloud.google.com/auth/clients and click **Create client**.
+   - **Application type:** **Web application**.
+   - **Name:** `Tastir studio`.
+   - Under **Authorized redirect URIs**, click **Add URI** and type your site's address followed by `/auth/google`, for example `https://tastir-studio.vercel.app/auth/google`. It must match exactly: `https`, and no `/` at the end.
+   - Leave **Authorized JavaScript origins** empty.
+   - Click **Create**.
+6. A box shows a **Client ID** and a **Client secret**. Copy each into your settings file, after `GOOGLE_CLIENT_ID=` and `GOOGLE_CLIENT_SECRET=`.
+
+   Google shows the secret only once. If you lose it, open the client again from https://console.cloud.google.com/auth/clients and add a new secret.
+7. In your settings file, put your Google address after `TASTIR_STUDIO_OWNERS=`. Only addresses listed here can use the studio.
+
+## Part 4: The live room, on Cloudflare (5 minutes)
+
+The live room makes an agent's changes appear on your screen at once.
+
+1. Open https://dash.cloudflare.com/sign-up, sign up with your email and a password, and confirm your email with the link Cloudflare sends. When it offers plans, stay on **Free**.
+2. In the terminal, in your `Tastir` folder, let this computer use your Cloudflare account:
 
    ```sh
    pnpm --filter @tastir/live-room exec wrangler login
-   pnpm --filter @tastir/live-room exec wrangler deploy --var 'STUDIO_ORIGINS:https://<site>'
+   ```
+
+   A browser page opens; click **Allow**. The terminal says you are logged in.
+3. Put the live room online. Use your own site's address in place of `https://tastir-studio.vercel.app`:
+
+   ```sh
+   pnpm --filter @tastir/live-room exec wrangler deploy --var 'STUDIO_ORIGINS:https://tastir-studio.vercel.app'
+   ```
+
+   - **First time only:** Cloudflare asks you to choose a `workers.dev` subdomain, a short name of your own. Type one and press Enter.
+   - **When it finishes,** the terminal shows an address like `https://tastir-live-room.yourname.workers.dev`. Copy it into your settings file after `LIVE_ROOM_ORIGIN=`.
+4. Give the live room its secret:
+
+   ```sh
    pnpm --filter @tastir/live-room exec wrangler secret put LIVE_ROOM_SECRET
    ```
 
-   Paste the room key directly into Wrangler's hidden prompt, matching Vercel's `LIVE_ROOM_SECRET`. Copy the deployed Worker's HTTPS origin into `LIVE_ROOM_ORIGIN` in Vercel and the private local file. The initial Worker fails closed until the key is set. Keep the SQLite-backed migration and repeat the `STUDIO_ORIGINS` override on future deployments; H7's checked-in defaults are local-only. Cloudflare's account ID is selected by login; it is not a Studio environment variable. [Durable Objects setup](https://developers.cloudflare.com/durable-objects/get-started/), [Worker secrets](https://developers.cloudflare.com/workers/configuration/secrets/).
+   When it asks, paste the value after `LIVE_ROOM_SECRET=` in your settings file (the long code that was made for you in Part 0) and press Enter. Nothing shows while you paste; that is normal.
 
-9. **Validate and deploy Studio.** Rerun preflight. An agent links the existing Vercel project, pulls its settings and runs `vercel build --prod` and the artifact checks in the audit, then deploys the reviewed build. Redeploy after changing environment settings. Open `https://<site>/login`, finish Google sign-in and confirm your drawing list opens. Confirm anonymous project requests return 401, while OAuth discovery is reachable by agents; Vercel's deployment protection must allow the production MCP/OAuth routes through to the app's own authentication. Upload/read a private photo and request an actual server PNG to verify Blob and the native renderer.
+## Part 5: Set up the database and check everything (3 minutes)
 
-10. **Check persistence and recovery.** Save and color a project, reload it, redeploy Studio and reopen it. Export it and open the export in the local Studio with the same colors. Have an agent edit while the page is open, then test with the room unavailable. Record the deployed timing and free usage in H6; H7's week-long acceptance remains there. Secrets stay in provider settings and private local files, never in the test report.
+1. Create the studio's tables in your new Neon database:
+
+   ```sh
+   pnpm studio:setup:db
+   ```
+
+   It says "Migrating …" and then "Done."
+2. Check every setting:
+
+   ```sh
+   pnpm studio:check
+   ```
+
+   Each line starts with `OK` or names a problem, and no values are ever shown. Fix any problem it names and run it again, until every line says `OK`.
+
+## Part 6: Copy the settings into Vercel (5 minutes)
+
+1. Open your project on https://vercel.com/dashboard, then **Settings**, then **Environment Variables**.
+2. Copy everything in your settings file. Click into the first **Key** box and paste: Vercel splits it into one row per setting.
+
+   If it does not split, add them one by one. The **Key** is the part before `=`, and the **Value** is the part after.
+3. Under **Environments**, choose **Production** only. Click **Save**.
+4. Make the site use them: open the **Deployments** tab, click the **⋯** menu on the newest deployment, choose **Redeploy**, and confirm.
+
+## Part 7: Try it
+
+1. Open your site's address. You see Tastir as usual. Everything except the studio works without signing in.
+2. Add `/#/studio` to the address (for example `https://tastir-studio.vercel.app/#/studio`). It says "Sign in to use the studio". Click **Sign in with Google** and choose your account.
+3. Google may warn "Google hasn't verified this app". That is because the sign-in is yours and in Testing. Click **Continue**.
+4. You see the studio's project list.
+5. Tell Claude "the studio setup is done". Claude then checks the live site (pictures, photos, agents, the live room) and fixes anything that needs it.
+
+## If something goes wrong
+
+| What you see | What it means and what to do |
+| --- | --- |
+| Google says **Error 400: redirect_uri_mismatch** | The address in Part 3, step 5 is not exactly `<your site>/auth/google`. Fix it in https://console.cloud.google.com/auth/clients and wait a minute. |
+| Google says **Access blocked** or **app is in testing** | Your address is not a test user yet. Add it in Part 3, step 4. |
+| The studio says **… may not use this studio** | The Google address you chose is not in `TASTIR_STUDIO_OWNERS`. Fix it in Vercel (Part 6), then redeploy. |
+| `pnpm studio:check` names the database | Check the line from Part 1: it must end with `?sslmode=verify-full`, and the address must contain `-pooler`. |
+| The Vercel build fails | Open the failed deployment, click **Build Logs**, and tell Claude what the last red lines say. Build logs hold no secrets. |
+| You changed a setting in Vercel and nothing changed | Settings only apply after a redeploy (Part 6, step 4). |
+
+The technical checks behind this guide, for agents, are in [the Vercel audit](STUDIO-VERCEL-AUDIT.md).

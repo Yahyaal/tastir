@@ -14,8 +14,11 @@ import { Studio } from './studio.js';
  *   TASTIR_STUDIO_OWNERS          the Google addresses allowed in, comma-separated
  *   TASTIR_STUDIO_SESSION_SECRET  at least 32 random characters
  *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET   the Google sign-in client
- *   BLOB_READ_WRITE_TOKEN         a private Blob store for photos (optional;
- *                                 without it photos are kept in the database)
+ *   BLOB_STORE_ID or BLOB_READ_WRITE_TOKEN   a private Blob store for photos;
+ *                                 Vercel adds BLOB_STORE_ID when the store is
+ *                                 connected to the project and signs in to it
+ *                                 by itself (optional; without one photos are
+ *                                 kept in the database)
  *   LIVE_ROOM_ORIGIN, LIVE_ROOM_SECRET   the live room on Cloudflare and the
  *                                 secret shared with it (optional; without
  *                                 them pages check for changes themselves)
@@ -33,7 +36,9 @@ export async function hostedFromEnv(options: { site?: string } = {}) {
   const backend = await connectPostgres(
     setting('TASTIR_STUDIO_DATABASE_URL'),
     root,
-    process.env['BLOB_READ_WRITE_TOKEN'] ? new BlobPhotos() : undefined,
+    process.env['BLOB_STORE_ID'] || process.env['BLOB_READ_WRITE_TOKEN']
+      ? new BlobPhotos()
+      : undefined,
   );
   const studio = new Studio(root, join(repo, 'tutorials'), backend);
   return hostedApp({

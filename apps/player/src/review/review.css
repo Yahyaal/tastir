@@ -570,6 +570,23 @@
   margin: 12px 0;
 }
 
+.notes-doc .md-code {
+  overflow-x: auto;
+  margin: 10px 0;
+  padding: 10px 12px;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: 6px;
+}
+
+.notes-doc .md-code code {
+  border: 0;
+  padding: 0;
+  background: none;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
 .notes-doc table {
   border-collapse: collapse;
   font-size: 0.92rem;

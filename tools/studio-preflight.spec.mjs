@@ -334,7 +334,6 @@ test('CLI reads an explicitly selected private settings file and keeps its conte
     { cwd: root, env: childEnv, encoding: 'utf8' },
   );
   assert.equal(child.status, 1);
-  assert.match(child.stdout, /OK BLOB_READ_WRITE_TOKEN: Present/);
   assert.match(child.stdout, /OK LIVE_ROOM_SECRET/);
   for (const value of Object.values(values))
     assert.equal((child.stdout + child.stderr).includes(value), false);
