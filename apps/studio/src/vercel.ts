@@ -6,7 +6,7 @@ import { connectPostgres } from './pg.js';
 import { Studio } from './studio.js';
 
 /**
- * The hosted studio made from its settings, as Vercel runs it (api/index.ts)
+ * The hosted studio made from its settings, as Vercel runs it (api/index.js)
  * and as `pnpm studio:hosted` runs it on this computer:
  *
  *   TASTIR_STUDIO_DATABASE_URL    the Neon (or any Postgres) address

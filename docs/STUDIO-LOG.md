@@ -156,3 +156,7 @@ The code the editor, the in-app assistant and the studio all use to hold and cha
 
 Unit tests check the tool metadata, the page as a host reads it, the picture sent only on change, the owner's answer, and the refusal without cards. A browser test runs a stand-in chat app (`apps/studio/e2e/card-host.mts`) that shows the card through the library's own host bridge, as claude.ai does, with a real studio behind it: an agent's edit and question appear on the card, and the answer typed there arrives in the studio as the owner's. H8 is ticked once the owner sees it in claude.ai on the deployed studio.
 
+## H5: the first real Vercel build (18 October)
+
+The owner imported the repository on Vercel. Vercel first offered a multi-app "Services" setup, which hides Deploy; choosing the **Other** preset gives one project from the top folder, and the guide now says so. The first build then made the site but failed on the function: "api/index.ts: Emit skipped", because Vercel compiled it with the repository's top-level tsconfig, which builds nothing by design. The entry is now plain JavaScript (`api/index.js`), which only imports the server Codex's build step already bundled.
+

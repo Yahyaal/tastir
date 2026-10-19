@@ -59,7 +59,7 @@ before(async () => {
     join(fixture, 'apps/studio/src/vercel.ts'),
     SETTINGS.map((name) => `setting('${name}');`).join('\n'),
   );
-  await writeFile(join(fixture, 'api/index.ts'), '// H4 entry fixture\n');
+  await writeFile(join(fixture, 'api/index.js'), '// H4 entry fixture\n');
   await writeFile(join(fixture, 'vercel.json'), '{}');
 });
 after(async () => {

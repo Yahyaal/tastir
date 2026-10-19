@@ -289,7 +289,7 @@ export async function preflight({
           : 'Hosted server setting names are covered.',
       ),
     );
-    for (const file of ['vercel.json', 'api/index.ts']) {
+    for (const file of ['vercel.json', 'api/index.js']) {
       await readFile(join(root, file), 'utf8');
     }
   } catch {

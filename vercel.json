@@ -5,7 +5,7 @@
   "outputDirectory": "dist/studio-hosted",
   "regions": ["cle1"],
   "functions": {
-    "api/index.ts": {
+    "api/index.js": {
       "maxDuration": 60,
       "includeFiles": "{tutorials/**,dist/studio-function/server/*.mjs,dist/studio-function/fonts/**,dist/studio-function/node_modules/**}"
     }

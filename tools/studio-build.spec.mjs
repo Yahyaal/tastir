@@ -132,7 +132,7 @@ test(
         config.buildCommand.startsWith('node tools/studio-build.mjs && '),
       );
       for await (const path of glob(
-        config.functions['api/index.ts'].includeFiles,
+        config.functions['api/index.js'].includeFiles,
         { cwd: root },
       )) {
         if (!(await lstat(join(root, path))).isFile()) continue;
@@ -141,7 +141,7 @@ test(
       }
       await writeFile(join(artifact, 'package.json'), '{"type":"module"}\n');
       await build({
-        entryPoints: [join(root, 'api/index.ts')],
+        entryPoints: [join(root, 'api/index.js')],
         outfile: join(artifact, 'api/index.mjs'),
         platform: 'node',
         format: 'esm',
