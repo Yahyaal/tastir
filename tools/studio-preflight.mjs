@@ -6,6 +6,11 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseEnv } from 'node:util';
 
 const repository = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+// Settings the hosted server reads that Vercel sets itself: connecting the
+// private Blob store to the project adds BLOB_STORE_ID (or a token), so the
+// owner never copies them and this check does not ask for them.
+export const PLATFORM_SETTINGS = ['BLOB_STORE_ID', 'BLOB_READ_WRITE_TOKEN'];
+
 export const SETTINGS = [
   'TASTIR_STUDIO_DATABASE_URL',
   'TASTIR_STUDIO_URL',
@@ -278,7 +283,7 @@ export async function preflight({
       ),
     ].map((match) => match[1]);
     const unknown = [...new Set(names)].filter(
-      (name) => !SETTINGS.includes(name),
+      (name) => !SETTINGS.includes(name) && !PLATFORM_SETTINGS.includes(name),
     );
     checks.push(
       check(
