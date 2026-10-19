@@ -103,9 +103,10 @@ This lets you, and only you, sign in to the studio with your Google account.
    - Open https://console.cloud.google.com/projectcreate.
    - **Project name:** `tastir-studio`. Leave the rest.
    - Click **Create**.
-   - Wait a few seconds until the notification says it is created, then make sure `tastir-studio` is the project shown at the top left of the page. If it is not, click the project name there and choose it.
+   - Wait a few seconds until the notification says it is created, then click **Select Project** in that notification.
+   - Check the project name in the bar at the top of the page now says your new project. **Every link below opens whichever project is chosen there**, so if you have other Google Cloud projects, check it again before each step; if it shows another project, click its name and choose the new one.
 3. Set up the sign-in screen:
-   - Open https://console.cloud.google.com/auth/overview and click **Get started**.
+   - Open https://console.cloud.google.com/auth/overview and click **Get started**. If there is no **Get started** button but an overview of an existing app, you are in another project: switch to the new one (step 2) and open the link again.
    - **App name:** `Tastir studio`.
    - **User support email:** choose your own address.
    - Click **Next**.
