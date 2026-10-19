@@ -9,7 +9,7 @@ This walks you through putting the studio on the internet, so you can use it fro
 **Three rules for the whole guide:**
 
 1. Every secret goes into one private file on this computer, `.env.studio-preflight.local`, and into the services' own settings pages. Never paste a secret into a chat (with Claude, Codex or anyone), an issue or a screenshot. When you are done, just say "done".
-2. Where this guide says `<your site>`, use your own site's address from Part 2, for example `https://tastir-studio.vercel.app`.
+2. Where this guide says `<your site>`, or shows `tastir-studio.vercel.app` as an example, use your own site's address from Part 2.
 3. If a screen looks different from what is described, look for the button with the same name nearby; these sites move things around now and then. If you are stuck, tell Claude which step and what you see (but no secrets).
 
 ## Part 0: Get ready (2 minutes)
@@ -72,14 +72,13 @@ Vercel runs the website and the server behind it.
 2. Open https://vercel.com/new. Under **Import Git Repository**, find **tastir** and click **Import**.
 
    If `tastir` is not in the list, click **Adjust GitHub App Permissions**, give Vercel access to the `tastir` repository, and come back.
-3. On the "Configure Project" page:
-   - **Project Name:** `tastir-studio`. This decides your site's address.
-   - **Framework Preset:** **Other**.
+3. On the "New Project" page:
+   - **Project Name:** `tastir` (or any name you like). This decides your site's address, so if the name is taken Vercel adds a few letters to it.
    - **Root Directory:** leave it as `./`.
-   - **Build and Output Settings:** leave them alone. The repository already says how to build (in `vercel.json`).
+   - **Application Preset:** Vercel sees several apps in the repository and may choose **Services**, which lists them and hides the **Deploy** button. Open that dropdown and choose **Other**: the site is one project from the top folder, and the repository's `vercel.json` says how to build it. If **Other** is not offered, click **Import single project** on the row called **app** (marked Vite, with `/`) instead.
    - **Environment Variables:** leave them for now. They come in Part 6.
 
-   Click **Deploy**.
+   Click **Deploy** at the bottom.
 4. Vercel builds the site, which takes a few minutes. The studio will not work yet because it has no settings; that is expected. When it finishes, click **Continue to Dashboard**.
 5. Find your site's address under **Domains** on the project page, for example `tastir-studio.vercel.app`. In your settings file, put it after `TASTIR_STUDIO_URL=` with `https://` in front and no `/` at the end:
 
