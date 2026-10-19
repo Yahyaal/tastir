@@ -177,7 +177,7 @@ The live room makes an agent's changes appear on your screen at once.
 
 ## Part 6: Copy the settings into Vercel (5 minutes)
 
-1. Open your project on https://vercel.com/dashboard, then **Settings**, then **Environment Variables**.
+1. Open your project on https://vercel.com/dashboard. In the project's left menu (the one with Overview, Deployments and Logs), click **Environment Variables**. It is not under **Settings**; and **Team Settings**, which says "All Projects" at the top, is the wrong place.
 2. Copy everything in your settings file. Click into the first **Key** box and paste: Vercel splits it into one row per setting.
 
    If it does not split, add them one by one. The **Key** is the part before `=`, and the **Value** is the part after.
