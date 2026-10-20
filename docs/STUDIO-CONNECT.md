@@ -4,12 +4,12 @@ This walks you through adding your online studio to ChatGPT, Codex and Antigravi
 
 - **How long:** about 10 minutes per app. Do them in any order, one at a time, and skip any you do not use.
 - **What it costs:** nothing beyond the plans you already have.
-- **Your studio's address:** `https://tastir-studio.vercel.app`. The apps connect to it at `https://tastir-studio.vercel.app/mcp`.
 
-**Two rules for the whole guide:**
+**How connecting works.** You do everything inside the app you are connecting (ChatGPT, Codex or Antigravity), never in your browser's address bar. You give the app one address, `https://tastir-studio.vercel.app/mcp`, and the app then opens a sign-in page for you by itself: first Google, where you choose your account, then the studio's own page asking whether that app may work on your studio projects, where you click **Allow**. Each part below says exactly when that happens.
 
-1. Every app sends you to the same two pages to sign in: Google (choose your own account), then the studio's own page asking "Allow … to work on your studio projects?". Click **Allow**. You never type a password or a code from the studio into the app.
-2. If a screen looks different from what is described, look for the button with the same name nearby; these apps move their settings around often. If you are stuck, tell Claude which step and what you see.
+Do not open `https://tastir-studio.vercel.app/mcp` in your browser: it is only for the apps, and a browser just gets `{"error":"invalid_token" …}`. That is normal, not a fault.
+
+If a screen looks different from what is described, look for the button with the same name nearby; these apps move their settings around often. If you are stuck, tell Claude which step and what you see.
 
 Each part ends with the same small test, so we can compare the apps:
 
@@ -41,7 +41,10 @@ ChatGPT calls outside tools like the studio "MCP apps", and only shows the butto
    - **Connection** (or **MCP server URL**): `https://tastir-studio.vercel.app/mcp`.
    - **Authentication:** leave it on **OAuth**.
    - Tick **I understand and want to continue**, then click **Create**.
-4. ChatGPT sends you to Google: choose your account. Then the studio asks "Allow ChatGPT to work on your studio projects?" (the name is whatever ChatGPT calls itself): click **Allow**. You come back to ChatGPT, which lists the studio's tools.
+4. Sign in. Clicking **Create** makes ChatGPT open a sign-in page by itself, in a new tab or a pop-up. If nothing opens (a pop-up blocker can stop it), find **Tastir studio** in the **Plugins** list, open it and click **Connect**.
+   - The page is Google's: choose your own account.
+   - Next comes the studio's own page, "Allow ChatGPT to work on your studio projects?" (the name is whatever ChatGPT calls itself). Click **Allow**.
+   - The tab closes or sends you back to ChatGPT, which now lists the studio's tools.
 5. Try it: start a **new** chat (not a temporary one), click **+** next to the message box, choose **Developer mode** or **Tastir studio**, and paste the test above.
 
 ChatGPT asks before each tool that changes something; click **Confirm** (or **Always allow** for this chat). If it says your plan cannot use apps that make changes, tell Claude what it says.
