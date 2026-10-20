@@ -4,8 +4,8 @@ The plan for using the studio from anywhere, on a phone or a laptop, with Claude
 
 ## At a glance
 
-- **Where it stands:** M0 to M3 and H1 to H4 are done (17 October), and the live room is built; the deploy and live use are next.
-- **What happens next:** H5, deploying, needs your free Vercel, Neon, Google sign-in and Cloudflare setup (Codex is writing the steps). The live room is built and wired in, and is ticked after it is measured on the deployed studio.
+- **Where it stands:** M0 to M3 and H1 to H4 are done (17 October). The studio is live at https://tastir-studio.vercel.app (19 October): you signed in, made a project, added a photo, and Claude drew on it from claude.ai through the card.
+- **What happens next:** H5 needs two last checks, that a redeploy keeps every project and that an export opens in the local studio. H6 has started: connect ChatGPT, Codex and Antigravity, measure the live room, and use it for a week. Codex is giving agents every construction the editor has, since claude.ai's first drawing showed they had only line, circle and crossing.
 - **What it costs:** nothing. Every service stays on its free plan.
 - **What it runs on:** Vercel and Neon, the same as finsight, with a free Cloudflare Durable Object per project so an agent's edits appear at once.
 - **What you still decide:** whether private research photos may be uploaded (decision 4). Nothing waits on it.
@@ -56,6 +56,7 @@ Done in this order, one commit each. A ticked box is done; whoever finishes a ta
   - **Preparation (17 October, Codex):** [Owner setup steps](STUDIO-DEPLOY.md), `pnpm studio:preflight`, and [Vercel packaging checks](STUDIO-VERCEL-AUDIT.md). [Validation](testing/h5-deploy-prep-2026-10-17.md): 11 new tests, full workspace tests/lint/typecheck pass; the Vercel CLI requires authentication before an artifact can be checked. H4/H7 must be merged before running the final Vercel build. Provider accounts, production credentials, deployed routing/persistence and size/rate limits remain H5 work; this preparation does not tick H5.
   - **Who:** you create the free Vercel and Neon accounts or projects, an agent does the rest.
   - **Done when:** the studio answers at its address, the hosted browser checks pass there, a redeploy keeps every project, and an exported project opens in the local studio unchanged.
+  - **Live (19 October):** the site, Google sign-in, the database, private photos and the claude.ai connector work at https://tastir-studio.vercel.app. Left: the redeploy and export checks, which the owner moved to later.
 - [ ] **H6 · Live with every agent, and measured.** Connect each client, update the setup notes, run the square brief in each, and measure speed and a week's use against the free limits.
   - **Who:** you with an agent.
   - **Done when:** each client that can write finishes the square brief, you answer one question from your phone, and the log has the speeds and the use.

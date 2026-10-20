@@ -149,7 +149,7 @@ The live room makes an agent's changes appear on your screen at once.
    ```
 
    - **First time only:** Cloudflare asks you to choose a `workers.dev` subdomain, a short name of your own. Type one and press Enter.
-   - **When it finishes,** the terminal shows an address like `https://tastir-live-room.yourname.workers.dev`. Copy it into your settings file after `LIVE_ROOM_ORIGIN=`.
+   - **When it finishes,** the terminal shows an address like `https://tastir-live-room.yourname.workers.dev`. Copy all of it into your settings file after `LIVE_ROOM_ORIGIN=`. It must start with `https://tastir-live-room.`: `https://yourname.workers.dev` alone is your account, not the room, and the studio then quietly falls back to checking every few seconds.
 4. Give the live room its secret:
 
    ```sh

@@ -28,6 +28,9 @@
 }
 .studio-panel {
   display: grid;
+  /* minmax(0, 1fr): the photo's file picker would otherwise widen the
+     column past the editor's side panel. */
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   margin-top: 1rem;
   padding-top: 0.75rem;
@@ -79,7 +82,7 @@
 .studio-upload input {
   display: block;
   margin-top: 0.3rem;
-  max-width: 100%;
+  width: 100%;
 }
 .studio-designs {
   display: grid;

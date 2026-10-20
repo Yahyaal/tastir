@@ -239,6 +239,15 @@ test('the studio lists projects and starts one from O and A', async ({
     () => document.documentElement.scrollWidth - innerWidth,
   );
   expect(scroll).toBeLessThanOrEqual(0);
+  // The side panel holds the photo's file picker and the note box without
+  // a sideways scrollbar of its own.
+  const panel = page.getByRole('region', { name: 'Studio notes' });
+  await expect(panel).toBeVisible();
+  const sideways = await panel.evaluate((el) => {
+    const nav = el.closest('nav') ?? el;
+    return nav.scrollWidth - nav.clientWidth;
+  });
+  expect(sideways).toBeLessThanOrEqual(0);
 });
 
 test('an agent marks an element and asks the owner about it', async ({
