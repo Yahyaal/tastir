@@ -225,6 +225,39 @@ const contentOf = (history: DrawingHistory): DrawingContent => ({
   repeat: history.repeat,
 });
 
+/** Every named input, including the points/circles used to select a crossing. */
+export function constructionReferences(operation: Construction): string[] {
+  switch (operation.kind) {
+    case 'line':
+      return [operation.from, operation.to];
+    case 'circle':
+      return [operation.centre, operation.through];
+    case 'intersection':
+      return [operation.first, operation.second];
+    case 'perpendicular':
+      return [operation.through, operation.perpendicularTo];
+    case 'parallel':
+      return [operation.through, operation.parallelTo];
+    case 'bisector':
+      return [...operation.bisects];
+    case 'same-opening':
+      return [operation.centre, operation.radiusOf];
+    case 'opening-from-points':
+      return [operation.centre, ...operation.radiusFrom];
+    case 'touching':
+      return [operation.centre, ...operation.tangentTo];
+    case 'polygon':
+      return [...operation.vertices];
+    case 'point':
+      return [
+        ...operation.meet,
+        ...Object.values(operation.pick ?? {}).filter(
+          (value): value is string => typeof value === 'string',
+        ),
+      ];
+  }
+}
+
 export function constructionSpec(operation: Construction): ElementSpec {
   switch (operation.kind) {
     case 'line':
@@ -232,6 +265,46 @@ export function constructionSpec(operation: Construction): ElementSpec {
     case 'circle':
       return {
         circle: { centre: operation.centre, through: operation.through },
+      };
+    case 'perpendicular':
+      return {
+        line: {
+          through: operation.through,
+          perpendicularTo: operation.perpendicularTo,
+        },
+      };
+    case 'parallel':
+      return {
+        line: { through: operation.through, parallelTo: operation.parallelTo },
+      };
+    case 'bisector':
+      return {
+        line: { through: operation.bisects[1], bisects: operation.bisects },
+      };
+    case 'same-opening':
+      return {
+        circle: { centre: operation.centre, radiusOf: operation.radiusOf },
+      };
+    case 'opening-from-points':
+      return {
+        circle: { centre: operation.centre, radiusFrom: operation.radiusFrom },
+      };
+    case 'touching':
+      return {
+        circle: {
+          centre: operation.centre,
+          tangentTo: operation.tangentTo,
+          ...(operation.touch ? { touch: operation.touch } : {}),
+        },
+      };
+    case 'polygon':
+      return { polygon: operation.vertices };
+    case 'point':
+      return {
+        point: {
+          meet: operation.meet,
+          ...(operation.pick ? { pick: operation.pick } : {}),
+        },
       };
     case 'intersection':
       return {
@@ -251,6 +324,22 @@ export function constructionText(operation: Construction): string {
       return `Line ${operation.name} through ${operation.from} and ${operation.to}.`;
     case 'circle':
       return `Circle ${operation.name} about ${operation.centre} through ${operation.through}.`;
+    case 'perpendicular':
+      return `Draw ${operation.name} through ${operation.through}, square to ${operation.perpendicularTo}.`;
+    case 'parallel':
+      return `Draw ${operation.name} through ${operation.through}, parallel to ${operation.parallelTo}.`;
+    case 'bisector':
+      return `Draw ${operation.name} halving the angle ${operation.bisects.join('–')}.`;
+    case 'same-opening':
+      return `Circle ${operation.name} about ${operation.centre}, with the opening of ${operation.radiusOf}.`;
+    case 'opening-from-points':
+      return `Circle ${operation.name} about ${operation.centre}, with the opening ${operation.radiusFrom.join('–')}.`;
+    case 'touching':
+      return `Circle ${operation.name} about ${operation.centre}, touching ${operation.tangentTo.join(', ')}${operation.touch ? ` on the ${operation.touch} side` : ''}.`;
+    case 'polygon':
+      return `Join ${operation.vertices.join('–')} as polygon ${operation.name}.`;
+    case 'point':
+      return `Point ${operation.name} where ${operation.meet.join(' and ')} meet${operation.pick ? `, chosen by ${JSON.stringify(operation.pick)}` : ''}.`;
     case 'intersection':
       return `Point ${operation.name} where ${operation.first} and ${operation.second} meet${operation.angle === null ? '' : `, chosen toward ${operation.angle}° about O`}.`;
   }

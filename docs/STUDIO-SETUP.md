@@ -72,7 +72,18 @@ Agents can share a project. Give each a role in your request, for example one dr
 
 ## What agents can do
 
-Agents start projects from O and A or from a library tutorial, then add named lines, circles and crossings, ink straight sides between named points, choose the repeating tile and color its pieces. `check` lists every remaining problem, including the project's goals such as the fold. `inspect` shows the whole drawing with its history, and agents leave notes for you and for each other.
+Agents start projects from O and A or from a library tutorial, then use every editor construction, ink straight sides between named points, choose the repeating tile and color its pieces. `check` lists every remaining problem, including the project's goals such as the fold. `inspect` shows the whole drawing with its history, and agents leave notes for you and for each other.
+
+The `construct` tool keeps `line`, `circle` and `intersection`, and also offers `perpendicular` (Square to), `parallel`, `bisector` (Halve angle), `same-opening`, `opening-from-points`, `touching`, `polygon` and `point`. Its schema describes each input. Point supports the editor's crossing rules; Touching supports near/far selection and several targets. Polygon draws a closed shape; `set_tile` chooses the repeating tile separately.
+
+For example, to cut an existing circle centred at O into quarters, add two constructions in order. These are two drawing steps; Square to needs no helper circles or crossings:
+
+```json
+[
+  { "kind": "line", "name": "H", "from": "O", "to": "A" },
+  { "kind": "perpendicular", "name": "V", "through": "O", "perpendicularTo": "H" }
+]
+```
 
 Every edit is checked by the same code as Tastir's editor, and an edit that cannot be drawn changes nothing. Each edit names the revision it was based on, so if you or another agent changed the drawing first, the late edit is refused and the agent looks again. Undo by an agent stops at anyone else's change unless you ask it to go further.
 

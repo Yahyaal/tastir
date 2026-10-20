@@ -7,7 +7,7 @@ import {
   registerAppTool,
 } from '@modelcontextprotocol/ext-apps/server';
 import { z } from 'zod';
-import { ConstructionShape } from '@tastir/agent-protocol';
+import { CONSTRUCTION_GUIDE, ConstructionShape } from '@tastir/agent-protocol';
 import { StudioClient, type StudioCaller } from './client.js';
 import { GoalsShape, LONGEST_WAIT } from './studio.js';
 import { CARD_HTML } from './card/page.js';
@@ -183,8 +183,7 @@ export function createMcpServer(
   server.registerTool(
     'construct',
     {
-      description:
-        'Add ruler lines, compass circles and crossing points in order (later ones may use earlier names), or remove elements nothing else is built on. All or nothing.',
+      description: `Add editor constructions in order (later ones may use earlier names), or remove elements nothing else is built on. All or nothing. ${CONSTRUCTION_GUIDE}`,
       inputSchema: {
         project: Project,
         revision: Revision,

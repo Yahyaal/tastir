@@ -1,4 +1,4 @@
-import { SquareBandsShape } from '@tastir/schema';
+import { PointSpec, SquareBandsShape } from '@tastir/schema';
 import { z } from 'zod';
 
 const Id = z.string().min(1).max(180);
@@ -8,6 +8,10 @@ const Name = z
   .string()
   .regex(/^[A-Za-z][A-Za-z0-9_]*$/)
   .max(80);
+/** Shared by MCP and the in-app assistant so every client learns the same tools. */
+export const CONSTRUCTION_GUIDE =
+  'Editor constructions: line {from,to} joins two points; circle {centre,through} draws through a point; perpendicular {through,perpendicularTo} is Square to (one right-angle line, no helper circles); parallel {through,parallelTo} copies a line direction; bisector {bisects:[arm,vertex,arm]} is Halve angle; same-opening {centre,radiusOf} copies an existing circle radius; opening-from-points {centre,radiusFrom:[first,second]} uses the distance between two points; touching {centre,tangentTo:[lines or circles],touch?} touches every target with one radius (near touches the facing side of each circle, far encloses it; omit only when unambiguous); polygon {vertices} joins at least three points in boundary order; point {meet:[first,second],pick?} marks a crossing using editor rules (angle about O, nearest/farthest point, inside/outside circle; omit pick only for a unique crossing). Existing intersection {first,second,angle} also marks a crossing, with angle null only for a unique crossing. All angles are degrees counter-clockwise about O: 0 toward A, 90 up, 270 down. All references are names, never coordinates. To quarter an existing circle with a diameter line, add perpendicular through its centre; to draw both diameters takes just line and perpendicular, two steps. Polygon draws a shape; use set_tile to choose a repeating tile.';
+
 export const ConstructionShape = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('line'), name: Name, from: Id, to: Id }),
   z.strictObject({
@@ -23,6 +27,84 @@ export const ConstructionShape = z.discriminatedUnion('kind', [
     second: Id,
     angle: z.number().min(0).max(360).nullable(),
   }),
+  z
+    .strictObject({
+      kind: z.literal('perpendicular'),
+      name: Name,
+      through: Id,
+      perpendicularTo: Id,
+    })
+    .describe(
+      'Square to: one line through a point at right angles to an existing line.',
+    ),
+  z
+    .strictObject({
+      kind: z.literal('parallel'),
+      name: Name,
+      through: Id,
+      parallelTo: Id,
+    })
+    .describe(
+      'Parallel: a line through a point with the direction of an existing line.',
+    ),
+  z
+    .strictObject({
+      kind: z.literal('bisector'),
+      name: Name,
+      bisects: z.tuple([Id, Id, Id]),
+    })
+    .describe(
+      'Halve angle: [point on first arm, vertex, point on second arm].',
+    ),
+  z
+    .strictObject({
+      kind: z.literal('same-opening'),
+      name: Name,
+      centre: Id,
+      radiusOf: Id,
+    })
+    .describe(
+      'Same opening: a circle at a new centre with the radius of a named circle.',
+    ),
+  z
+    .strictObject({
+      kind: z.literal('opening-from-points'),
+      name: Name,
+      centre: Id,
+      radiusFrom: z.tuple([Id, Id]),
+    })
+    .describe(
+      'Opening from two points: a circle with radius equal to their distance.',
+    ),
+  z
+    .strictObject({
+      kind: z.literal('touching'),
+      name: Name,
+      centre: Id,
+      tangentTo: z.array(Id).min(1).max(32),
+      touch: z.enum(['near', 'far']).optional(),
+    })
+    .describe(
+      'Touching: one circle touching every named line/circle; near is the facing side, far encloses the target circle. Omit touch only if unambiguous.',
+    ),
+  z
+    .strictObject({
+      kind: z.literal('polygon'),
+      name: Name,
+      vertices: z.array(Id).min(3).max(128),
+    })
+    .describe(
+      'Polygon: join named corners in boundary order, closing back to the first.',
+    ),
+  z
+    .strictObject({
+      kind: z.literal('point'),
+      name: Name,
+      ...PointSpec.shape,
+    })
+    .describe(
+      'Point: name a crossing, with the editor pick rules. Omit pick only for a unique crossing; never give coordinates.',
+    ),
 ]);
 export type Construction = z.infer<typeof ConstructionShape>;
 export const TargetShape = z.strictObject({
@@ -629,9 +711,10 @@ export const DRAWING_TOOLS = {
     {
       type: 'function',
       name: 'construct',
-      strict: true,
-      description:
-        'Add named ruler lines, compass circles or intersection points in one undoable batch. Later operations can reference earlier names in the same batch. Use unique new names; never overwrite existing geometry. angle is null for a unique intersection, otherwise choose by angle in degrees about O (90 upper, 270 lower); ambiguous or impossible crossings fail the WHOLE batch. remove deletes only your previously added construction elements, and fails if anything still depends on them. A fresh image and geometry follow the result. Use edit_segments afterward for finite sides.',
+      // Point pick rules and Touching have optional fields, as in the editor.
+      // CallShape still validates every returned request before it is applied.
+      strict: false,
+      description: `Add named constructions in one undoable batch. ${CONSTRUCTION_GUIDE} Later operations may use earlier names in this batch. Use unique new names. Invalid or ambiguous input refuses the whole edit. remove deletes your workspace constructions only, refusing broken dependencies. A fresh image follows. Use edit_segments for finite ink.`,
       parameters: {
         type: 'object',
         additionalProperties: false,
@@ -642,42 +725,8 @@ export const DRAWING_TOOLS = {
           add: {
             type: 'array',
             items: {
-              anyOf: [
-                {
-                  type: 'object',
-                  additionalProperties: false,
-                  properties: {
-                    kind: { type: 'string', enum: ['line'] },
-                    name: { type: 'string' },
-                    from: { type: 'string' },
-                    to: { type: 'string' },
-                  },
-                  required: ['kind', 'name', 'from', 'to'],
-                },
-                {
-                  type: 'object',
-                  additionalProperties: false,
-                  properties: {
-                    kind: { type: 'string', enum: ['circle'] },
-                    name: { type: 'string' },
-                    centre: { type: 'string' },
-                    through: { type: 'string' },
-                  },
-                  required: ['kind', 'name', 'centre', 'through'],
-                },
-                {
-                  type: 'object',
-                  additionalProperties: false,
-                  properties: {
-                    kind: { type: 'string', enum: ['intersection'] },
-                    name: { type: 'string' },
-                    first: { type: 'string' },
-                    second: { type: 'string' },
-                    angle: { type: ['number', 'null'] },
-                  },
-                  required: ['kind', 'name', 'first', 'second', 'angle'],
-                },
-              ],
+              // A plain union emits anyOf, supported by function tool schemas.
+              anyOf: z.toJSONSchema(z.union(ConstructionShape.options)).anyOf,
             },
           },
           remove: { type: 'array', items: { type: 'string' } },

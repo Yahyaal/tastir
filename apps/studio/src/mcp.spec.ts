@@ -170,6 +170,131 @@ describe.each(BACKENDS)('the studio over MCP, with %s', (kind: BackendKind) => {
     expect(loadModel(tutorial).pattern.types).toHaveLength(1);
   });
 
+  it('offers every editor construction and quarters a circle in two steps', async () => {
+    const tools = await client.listTools();
+    const tool = tools.tools.find((t) => t.name === 'construct')!;
+    expect(tool.description).toMatch(/Square to.*one right-angle line/);
+    for (const kind of [
+      'perpendicular',
+      'parallel',
+      'bisector',
+      'same-opening',
+      'opening-from-points',
+      'touching',
+      'polygon',
+      'point',
+    ])
+      expect(JSON.stringify(tool.inputSchema)).toContain(`"${kind}"`);
+    const project = (await call('new_project', { title: 'Circle quarters' }))
+      .value.project as string;
+    await call('construct', {
+      project,
+      revision: 1,
+      add: [{ kind: 'circle', name: 'C', centre: 'O', through: 'A' }],
+    });
+    const quarters = await call('construct', {
+      project,
+      revision: 2,
+      add: [
+        { kind: 'line', name: 'H', from: 'O', to: 'A' },
+        {
+          kind: 'perpendicular',
+          name: 'V',
+          through: 'O',
+          perpendicularTo: 'H',
+        },
+      ],
+    });
+    expect(quarters.error).toBeUndefined();
+    const quartered = (await call('inspect', { project })).value;
+    expect(quartered.drawing.steps).toHaveLength(3);
+    expect(
+      quartered.drawing.lines.map((l: { name: string }) => l.name),
+    ).toEqual(['H', 'V']);
+    const rest = await call('construct', {
+      project,
+      revision: 3,
+      add: [
+        { kind: 'point', name: 'N', meet: ['C', 'V'], pick: { angle: 90 } },
+        { kind: 'point', name: 'S', meet: ['C', 'V'], pick: { farthest: 'N' } },
+        { kind: 'parallel', name: 'Top', through: 'N', parallelTo: 'H' },
+        { kind: 'bisector', name: 'Half', bisects: ['A', 'O', 'N'] },
+        { kind: 'same-opening', name: 'Copy', centre: 'N', radiusOf: 'C' },
+        {
+          kind: 'opening-from-points',
+          name: 'Span',
+          centre: 'O',
+          radiusFrom: ['N', 'S'],
+        },
+        {
+          kind: 'touching',
+          name: 'Near',
+          centre: 'S',
+          tangentTo: ['Copy'],
+          touch: 'near',
+        },
+        {
+          kind: 'touching',
+          name: 'Far',
+          centre: 'S',
+          tangentTo: ['Copy'],
+          touch: 'far',
+        },
+        {
+          kind: 'touching',
+          name: 'Multi',
+          centre: 'O',
+          tangentTo: ['C', 'Top'],
+        },
+        { kind: 'polygon', name: 'Triangle', vertices: ['A', 'N', 'S'] },
+      ],
+    });
+    expect(rest.error).toBeUndefined();
+    expect(
+      (await call('inspect', { project })).value.drawing.steps,
+    ).toHaveLength(13);
+  });
+
+  it('refuses new constructions atomically, including removals and history', async () => {
+    const project = (
+      await call('new_project', { title: 'Atomic constructions' })
+    ).value.project as string;
+    await call('construct', {
+      project,
+      revision: 1,
+      add: [{ kind: 'circle', name: 'C', centre: 'O', through: 'A' }],
+    });
+    const before = (await call('inspect', { project })).value;
+    for (const bad of [
+      { kind: 'parallel', name: 'Bad', through: 'O', parallelTo: 'Missing' },
+      {
+        kind: 'perpendicular',
+        name: 'Bad',
+        through: 'O',
+        perpendicularTo: 'A',
+      },
+      { kind: 'touching', name: 'Bad', centre: 'A', tangentTo: ['H'] },
+      { kind: 'point', name: 'Bad', meet: ['H', 'H'] },
+      { kind: 'polygon', name: 'Bad', vertices: ['O', 'A'] },
+      {
+        kind: 'perpendicular',
+        name: 'Bad',
+        through: 'O',
+        perpendicularTo: 'H',
+        x: 1,
+      },
+    ]) {
+      const result = await call('construct', {
+        project,
+        revision: 2,
+        remove: ['C'],
+        add: [{ kind: 'line', name: 'H', from: 'O', to: 'A' }, bad],
+      });
+      expect(result.error).toBeDefined();
+      expect((await call('inspect', { project })).value).toEqual(before);
+    }
+  });
+
   it('returns a refused edit to the agent so it can fix it', async () => {
     const project = (await call('new_project', { title: 'Refusals' })).value
       .project as string;

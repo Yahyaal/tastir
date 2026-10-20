@@ -1,5 +1,7 @@
 import {
   checkHighlight,
+  ConstructionShape,
+  DRAWING_TOOLS,
   SnapshotShape,
   CallShape,
   HighlightCallShape,
@@ -56,6 +58,31 @@ describe('pointing contracts', () => {
         }).success,
       ).toBe(false);
   });
+  it('advertises every construction in the assistant schema and rejects unknown fields', () => {
+    const tool = DRAWING_TOOLS.tools.find((t) => t.name === 'construct')!;
+    const properties = tool.parameters.properties;
+    if (!('add' in properties) || !('anyOf' in properties.add.items))
+      throw new Error('Missing construction variants');
+    const variants = properties.add.items.anyOf!;
+    expect(
+      variants.map((v) => {
+        const kind = v.properties?.kind;
+        return typeof kind === 'object' ? kind.const : undefined;
+      }),
+    ).toEqual(
+      ConstructionShape.options.map((option) => option.shape.kind.value),
+    );
+    for (const option of ConstructionShape.options)
+      expect(
+        option.safeParse({
+          kind: option.shape.kind.value,
+          name: 'P',
+          x: 1,
+          y: 2,
+        }).success,
+      ).toBe(false);
+  });
+
   it('allows relational construction operations and rejects raw coordinates or an unspecified intersection rule', () => {
     const command = {
       id: 'build',

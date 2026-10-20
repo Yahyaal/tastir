@@ -77,7 +77,7 @@ function pointAt(scene: Scene, name: string): Vec {
   return (g as { at: Vec }).at;
 }
 
-/** Adds named lines, circles and crossings in order, or removes some. */
+/** Adds any editor construction in order, or removes some, atomically. */
 export function construct(
   draft: Draft,
   add: readonly unknown[],
@@ -109,7 +109,7 @@ export function construct(
     const parsed = ConstructionShape.safeParse(raw);
     if (!parsed.success)
       fail(
-        'Each element is {kind:"line",name,from,to}, {kind:"circle",name,centre,through} or {kind:"intersection",name,first,second,angle}.',
+        `Invalid construction: ${parsed.error!.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`).join('; ')}`,
       );
     const op = parsed.data as Construction;
     if (taken.has(op.name))

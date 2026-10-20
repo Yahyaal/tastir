@@ -30,6 +30,7 @@ import { ThemeSwitch } from '../app/theme';
 import { addPattern, getPattern, savePattern } from '../editor/patterns';
 import {
   constructionScene,
+  constructionReferences,
   construct,
   constructionText,
   drawingPieces,
@@ -868,12 +869,7 @@ function Workspace({
                   snapshot.targets.map((target) => target.id),
                 );
                 for (const operation of call.arguments.add) {
-                  const refs =
-                    operation.kind === 'line'
-                      ? [operation.from, operation.to]
-                      : operation.kind === 'circle'
-                        ? [operation.centre, operation.through]
-                        : [operation.first, operation.second];
+                  const refs = constructionReferences(operation);
                   if (refs.some((name) => !available.has(name)))
                     throw new Error(
                       'Use names from the current observation or earlier operations in this batch.',
