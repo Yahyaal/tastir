@@ -73,6 +73,12 @@ export const DOCS: readonly {
     text: read('STUDIO-DEPLOY.md'),
   },
   {
+    key: 'studio-connect',
+    label: 'Connect your other apps',
+    file: 'STUDIO-CONNECT.md',
+    text: read('STUDIO-CONNECT.md'),
+  },
+  {
     key: 'studio-log',
     label: 'Studio log',
     file: 'STUDIO-LOG.md',

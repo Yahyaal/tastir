@@ -43,10 +43,14 @@ export const REDIRECTS = [
   'https://claude.ai/api/mcp/auth_callback',
   'https://claude.com/api/mcp/auth_callback',
   'https://chatgpt.com/connector_platform_oauth_redirect',
+  'https://antigravity.google/oauth-callback',
 ];
 
 export function redirectAllowed(uri: string, extra: readonly string[] = []) {
   if ([...REDIRECTS, ...extra].includes(uri)) return true;
+  // ChatGPT's newer apps return to a page of their own connection.
+  if (/^https:\/\/chatgpt\.com\/connector\/oauth\/[A-Za-z0-9_-]+$/.test(uri))
+    return true;
   try {
     const url = new URL(uri);
     // Command-line agents (Claude Code, Codex) listen on this computer.

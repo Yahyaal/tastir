@@ -9,7 +9,7 @@ import type {
   OAuthTokens,
 } from '@modelcontextprotocol/sdk/shared/auth.js';
 import express from 'express';
-import { StudioAuth } from './auth.js';
+import { redirectAllowed, StudioAuth } from './auth.js';
 import { hostedApp } from './hosted.js';
 import type { PgBackend } from './pg.js';
 import { Studio } from './studio.js';
@@ -259,6 +259,25 @@ describe('signing in to the hosted studio', () => {
     await hosted.auth.revoke(connection!.id);
     await expect(claude.call('inspect', { project: id })).rejects.toThrow();
     expect((await codex.call('inspect', { project: id })).revision).toBe(5);
+  });
+
+  it('knows where each chat app returns after sign-in', () => {
+    for (const uri of [
+      'https://claude.ai/api/mcp/auth_callback',
+      'https://chatgpt.com/connector_platform_oauth_redirect',
+      'https://chatgpt.com/connector/oauth/AbC_12-x',
+      'https://antigravity.google/oauth-callback',
+      'http://127.0.0.1:51234/callback',
+    ])
+      expect(redirectAllowed(uri), uri).toBe(true);
+    for (const uri of [
+      'https://chatgpt.com/connector/oauth/a/b',
+      'https://chatgpt.com/connector/oauth/a?next=https://evil.example',
+      'https://chatgpt.com.evil.example/connector/oauth/a',
+      'http://chatgpt.com/connector/oauth/a',
+      'https://antigravity.google/oauth-callback/x',
+    ])
+      expect(redirectAllowed(uri), uri).toBe(false);
   });
 
   it('refuses an app that would send the sign-in somewhere unknown', async () => {
