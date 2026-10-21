@@ -33,10 +33,11 @@ Heavy checks ran sequentially with bounded Node heaps. The first full workspace 
 | Chat card browser checks, desktop and phone | 4 passed: live updates/questions and the finished blue-square card |
 | Focused hosted browser checks, desktop and phone | 4 passed: visitor sign-in route and homepage → Your work → saved project → View finished wall |
 | Packaged server build, `node tools/studio-build.mjs` | Passed |
+| Notes/review checks after adding the incident report to the app | 14 passed, 1 skipped; affected-file lint and Player typecheck passed |
 
 The hosted check scopes its blue-fill assertion to the **main repeating wall**, checks the SVG repeat definition, confirms the saved project is still revision 5, and checks horizontal overflow on desktop and phone. A blue swatch or a small style-preview thumbnail cannot satisfy the assertion. The card regression compares the returned picture with the real wall-rendering endpoint.
 
-Production deployment and fresh-browser verification are recorded in the [Studio log](../STUDIO-LOG.md). These checks do not complete H6's remaining clients, phone question, deployed timing or week of usage measurements, or H8's owner-answer acceptance check.
+Production deployment and fresh-browser verification are recorded in the [Studio log](../STUDIO-LOG.md). The implementation commit is pushed, but Vercel has not reported a deployment and the site still serves the old bundle; the production UI/card checks remain pending. No build failure or trigger cause is established from that absence. This workspace has no Vercel login for a direct deployment. These checks do not complete H6's remaining clients, phone question, deployed timing or week of usage measurements, or H8's owner-answer acceptance check.
 
 ## Lessons to carry forward
 
@@ -48,6 +49,7 @@ Production deployment and fresh-browser verification are recorded in the [Studio
 6. **Use a complete fixture for a completed result.** Copying a tutorial's construction does not necessarily supply ink, a tile or paint. The browser fixture now performs the real construct → ink → tile → paint commands.
 7. **Limit test workers explicitly.** Nx `--parallel=1` serializes projects, not Vitest forks. Use `--maxWorkers=1` as well, keep heaps bounded, and do not overlap browser suites, tests and builds. Resource-driven timeouts are not a reason to loosen product checks or increase unrelated timeouts.
 8. **Record uncertainty and remaining acceptance work.** Duplicate connector entries were observed; the client's internal retention behavior was not. A successful server check is not evidence that every chat host refreshed an existing card or that all H6/H8 criteria passed.
+9. **Separate pushed, deployed and verified.** A successful Git push does not establish that Vercel started or completed a build. An empty provider-status list is not a running-build signal. Check the provider result and the served application, then record fresh-browser evidence before calling a UI fix live. [Vercel's Git deployment documentation](https://vercel.com/docs/git/vercel-for-github) describes the automatic trigger; the missing result here remains unexplained.
 
 ## Source record
 
