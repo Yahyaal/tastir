@@ -59,6 +59,43 @@ describe.each(BACKENDS)('the studio over MCP, with %s', (kind: BackendKind) => {
     };
   };
 
+  it('publishes tool schemas without oneOf or tuple arrays for ChatGPT discovery', async () => {
+    const tools = (await client.listTools()).tools;
+    const check = (schema: unknown, path: string) => {
+      if (!schema || typeof schema !== 'object') return;
+      const node = schema as Record<string, unknown>;
+      expect(node, path).not.toHaveProperty('oneOf');
+      expect(node, path).not.toHaveProperty('prefixItems');
+      expect(Array.isArray(node['items']), path).toBe(false);
+      for (const [key, value] of Object.entries(node))
+        check(value, `${path}.${key}`);
+    };
+    for (const tool of tools) check(tool.inputSchema, tool.name);
+    const construct = tools.find((tool) => tool.name === 'construct');
+    if (!construct?.inputSchema.properties)
+      throw new Error('Missing construct input schema');
+    const add = construct.inputSchema.properties['add'] as {
+      items: { anyOf: { properties: Record<string, unknown> }[] };
+    };
+    expect(add.items.anyOf).toHaveLength(11);
+    for (const [kind, field, length] of [
+      ['bisector', 'bisects', 3],
+      ['opening-from-points', 'radiusFrom', 2],
+      ['point', 'meet', 2],
+    ] as const) {
+      const variant = add.items.anyOf.find(
+        (v) => (v.properties['kind'] as { const: string }).const === kind,
+      );
+      if (!variant) throw new Error(`Missing construction variant: ${kind}`);
+      expect(variant.properties[field]).toMatchObject({
+        type: 'array',
+        items: { type: 'string' },
+        minItems: length,
+        maxItems: length,
+      });
+    }
+  });
+
   it('plays a recorded session that draws the square from O and A', async () => {
     const tools = (await client.listTools()).tools.map((t) => t.name);
     expect(tools).toEqual(
@@ -275,6 +312,14 @@ describe.each(BACKENDS)('the studio over MCP, with %s', (kind: BackendKind) => {
       },
       { kind: 'touching', name: 'Bad', centre: 'A', tangentTo: ['H'] },
       { kind: 'point', name: 'Bad', meet: ['H', 'H'] },
+      { kind: 'point', name: 'Bad', meet: ['C', 'H', 'O'] },
+      { kind: 'bisector', name: 'Bad', bisects: ['O', 'A'] },
+      {
+        kind: 'opening-from-points',
+        name: 'Bad',
+        centre: 'O',
+        radiusFrom: ['O', 'A', 'C'],
+      },
       { kind: 'polygon', name: 'Bad', vertices: ['O', 'A'] },
       {
         kind: 'perpendicular',

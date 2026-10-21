@@ -48,6 +48,28 @@ const Revision = z
     'The revision the edit is based on, from the latest inspect or edit result.',
   );
 
+// ChatGPT's tool discovery rejects oneOf and tuple-style array items. Each
+// construction has a distinct kind, so anyOf is equivalent here. The tuples
+// contain identical string schemas; fixed-length arrays keep their constraints.
+const ConstructionInputShape = z.union(
+  ConstructionShape.options.map((option) => {
+    const shape = option.shape;
+    const input = z.strictObject({
+      ...shape,
+      ...('bisects' in shape
+        ? { bisects: z.array(shape.bisects.def.items[0]).length(3) }
+        : {}),
+      ...('radiusFrom' in shape
+        ? { radiusFrom: z.array(shape.radiusFrom.def.items[0]).length(2) }
+        : {}),
+      ...('meet' in shape
+        ? { meet: z.array(shape.meet.def.items[0]).length(2) }
+        : {}),
+    });
+    return option.description ? input.describe(option.description) : input;
+  }),
+);
+
 /** A signed-in connection: the name its changes show, and its lasting id. */
 export interface Identity {
   readonly name: string;
@@ -187,7 +209,7 @@ export function createMcpServer(
       inputSchema: {
         project: Project,
         revision: Revision,
-        add: z.array(ConstructionShape).max(32).default([]),
+        add: z.array(ConstructionInputShape).max(32).default([]),
         remove: z
           .array(z.string())
           .max(32)

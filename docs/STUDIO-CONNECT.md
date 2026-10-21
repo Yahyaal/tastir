@@ -9,7 +9,7 @@ This walks you through adding your online studio to ChatGPT, Codex and Antigravi
 
 Do not open `https://tastir-studio.vercel.app/mcp` in your browser: it is only for the apps, and a browser just gets `{"error":"invalid_token" …}`. That is normal, not a fault.
 
-If a screen looks different from what is described, look for the button with the same name nearby; these apps move their settings around often. If you are stuck, tell Claude which step and what you see.
+If a control is missing, check the troubleshooting table below. If you are still stuck, tell the agent which app and step you reached, which plan and workspace you are using, and the labels you actually see.
 
 Each part ends with the same small test, so we can compare the apps:
 
@@ -26,28 +26,25 @@ Replace `<app name>` with ChatGPT, Codex or Antigravity. While it works, open ht
 
 ## Part 1: ChatGPT (on the website)
 
-ChatGPT calls outside tools like the studio "MCP apps", and only shows the button for them once you switch on **Developer mode**.
+**Checked against official OpenAI documentation on 21 October 2026.** The current setup starts in **Plugins**. It does not list **Advanced settings** or a **Developer mode** switch as prerequisites. The previous version of this guide incorrectly made those controls a required first step. [Official connection guide](https://developers.openai.com/plugins/deploy/connect-chatgpt).
 
-1. Open https://chatgpt.com and sign in.
-2. Switch on Developer mode:
-   - Click your name or picture at the bottom left, then **Settings**.
-   - Open **Security and sign-in** (older versions put it under **Apps** or **Connectors**, then **Advanced settings**).
-   - Switch on **Developer mode**. ChatGPT warns that it is "high risk", because it allows apps OpenAI has not reviewed. That is expected: the studio is yours.
-3. Add the studio:
-   - In Settings, open **Plugins** (it may be called **Apps** or **Connectors**).
-   - Click **+** at the top right, then **Create an MCP app**. If there is no **Create** button, Developer mode is not on yet; go back to step 2.
+1. Sign in at https://chatgpt.com in a desktop browser. Open **Plugins**.
+2. Click **+**, then **Add custom MCP server**. Enter:
    - **Name:** `Tastir studio`.
    - **Description:** `My Islamic geometric pattern studio`.
-   - **Connection** (or **MCP server URL**): `https://tastir-studio.vercel.app/mcp`.
-   - **Authentication:** leave it on **OAuth**.
-   - Tick **I understand and want to continue**, then click **Create**.
-4. Sign in. Clicking **Create** makes ChatGPT open a sign-in page by itself, in a new tab or a pop-up. If nothing opens (a pop-up blocker can stop it), find **Tastir studio** in the **Plugins** list, open it and click **Connect**.
-   - The page is Google's: choose your own account.
-   - Next comes the studio's own page, "Allow ChatGPT to work on your studio projects?" (the name is whatever ChatGPT calls itself). Click **Allow**.
-   - The tab closes or sends you back to ChatGPT, which now lists the studio's tools.
-5. Try it: start a **new** chat (not a temporary one), click **+** next to the message box, choose **Developer mode** or **Tastir studio**, and paste the test above.
+   - For the connection, use the public server address `https://tastir-studio.vercel.app/mcp`.
+   - Use OAuth authentication for the studio.
+3. Accept the risk acknowledgement and click **Create as a plugin**. Review the discovered tools.
+4. Install the resulting plugin. When prompted to connect, choose the Google account you use for the studio, then approve access on the studio's consent page. Authentication may happen during installation or on first use. [Plugin installation and authentication](https://learn.chatgpt.com/docs/plugins).
+5. Start a new conversation, type `@`, select **Tastir studio**, and paste the square test above. Approve requested edits after reviewing them.
 
-ChatGPT asks before each tool that changes something; click **Confirm** (or **Always allow** for this chat). If it says your plan cannot use apps that make changes, tell Claude what it says.
+### If you cannot find the controls
+
+Missing **Advanced settings** or **Developer mode** alone is not a reason to stop: try the Plugins steps above. If your screen explicitly requires Developer mode, record the message and the settings you see; this guide does not establish a toggle location for that interface.
+
+If **Plugins**, **+**, or the option to add a custom MCP server is absent, check which account and workspace you are in. OpenAI says account and workspace policies apply to custom servers. In a managed workspace, ask the administrator to check your plugin and MCP access. [Workspace access controls](https://learn.chatgpt.com/docs/enterprise/apps-and-connectors).
+
+The official connection guide does not give a complete plan eligibility table, so this guide cannot promise that your particular plan can add the studio or edit drawings. If access is unavailable or edits are blocked, keep the exact message and use **Part 2: Codex** to try connecting from the terminal. Missing controls alone do not establish that you need to upgrade.
 
 ## Part 2: Codex (in the terminal)
 
@@ -116,8 +113,11 @@ To see or remove the apps you allowed, open https://tastir-studio.vercel.app/con
 | What you see | What it means and what to do |
 | --- | --- |
 | The app shows an error containing **The studio does not send sign-ins to** … | The app returns to an address the studio does not know yet. Tell Claude the app's name and the address that follows those words. |
-| ChatGPT has no **Create an MCP app** button | Developer mode is off. Part 1, step 2. |
-| ChatGPT lists the app but never uses it | Start a new chat and choose the app with **+** before you send the message. |
+| ChatGPT has no **Advanced settings** or **Developer mode** | The current documented flow starts in **Plugins**. Follow Part 1; those settings are not listed as prerequisites. |
+| ChatGPT has no **Create an MCP app** button | The current labels are **Add custom MCP server** and **Create as a plugin**. If those are missing too, follow Part 1's account and workspace checks. |
+| ChatGPT lists the plugin but never uses it | Make sure it is installed and connected. Start a new chat, type `@`, and select **Tastir studio** before sending the test. |
+| ChatGPT can read the studio but refuses edits | Keep the exact refusal. Workspace action controls or other account restrictions may apply; use Part 2 to try Codex. |
+| ChatGPT says **Authentication succeeded, action discovery failed**, with **Invalid MCP tool schema** | Login worked. ChatGPT rejected one of the studio's tool definitions. Give the agent the tool name; the server needs a schema fix and redeployment. After that, refresh the plugin's tools or retry connecting. Changing Google login settings will not fix this error. |
 | Codex says `tastir-online` is not logged in | Run `codex mcp login tastir-online` again. |
 | Antigravity shows no **Authenticate** button | The settings file did not save, or a comma is missing. Open it again (Part 3, step 2) and check it against the example. |
 | Google says **Access blocked** | You chose a Google account that is not yours, or not on the studio's list. Choose the same account you use for the studio. |

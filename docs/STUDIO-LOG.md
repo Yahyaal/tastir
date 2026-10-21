@@ -167,3 +167,11 @@ The owner finished the setup, and https://tastir-studio.vercel.app answers: the 
 ## Agents get every editor construction (20 October, Codex)
 
 claude.ai's first live drawing showed agents had only a line, a circle and a crossing, so a right angle cost six steps. The `construct` tool, in the studio and in the in-app assistant, now offers every editor construction too: `perpendicular` (Square to), `parallel`, `bisector` (Halve angle), `same-opening`, `opening-from-points`, `touching`, `polygon` and `point`, described once in `CONSTRUCTION_GUIDE` (`packages/agent-protocol`) so every client reads the same text. A test builds each kind both through the tool and with the editor's own tool and compares the drawings; quartering a circle now takes two steps, and a refused edit names the field that was wrong.
+
+## ChatGPT connection and tool discovery (21 October, Codex)
+
+The owner reached ChatGPT's OAuth callback but received `MCP_ACTION_DISCOVERY_FAILED`: "Authentication succeeded, action discovery failed", naming the `construct` tool's schema. Google consent and token exchange had completed. The MCP schema now describes construction choices with `anyOf` and the three homogeneous tuples as fixed-length arrays, keeping all eleven construction kinds, their string constraints and rejection of unknown fields. A regression checks every tool's actual MCP discovery schema, and the construction tests still reject invalid array lengths without changing the drawing or history.
+
+[Connect your other apps](STUDIO-CONNECT.md) now follows OpenAI's current Plugins flow, distinguishes missing account/workspace controls from login problems, and explains this discovery error. Server-side schema verification does not replace the owner's final ChatGPT reconnect and square test.
+
+Checks before deployment: full workspace `pnpm test`, `pnpm lint --parallel=1` and `pnpm typecheck --parallel=1` passed, as did the packaged server build. The Studio suite includes 54 passing tests.
