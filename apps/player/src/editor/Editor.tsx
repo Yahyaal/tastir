@@ -478,7 +478,7 @@ export function EditorPage({
                 className="button play"
                 onClick={shared.onPlay}
               >
-                ▶ Play
+                View finished wall
               </button>
             ) : (
               <a className="button play" href={`#/mine/${pattern.id}`}>

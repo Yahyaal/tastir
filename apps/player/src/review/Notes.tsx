@@ -3,7 +3,11 @@ import './review.css';
 
 // The documents, read as text from docs/ when the app is built.
 const files = import.meta.glob<string>(
-  ['../../../../docs/*.md', '../../../../docs/patterns/*.md'],
+  [
+    '../../../../docs/*.md',
+    '../../../../docs/patterns/*.md',
+    '../../../../docs/testing/studio-chatgpt-2026-10-21.md',
+  ],
   { query: '?raw', import: 'default', eager: true },
 );
 const read = (file: string) => files[`../../../../docs/${file}`] ?? '';
@@ -83,6 +87,12 @@ export const DOCS: readonly {
     label: 'Studio log',
     file: 'STUDIO-LOG.md',
     text: read('STUDIO-LOG.md'),
+  },
+  {
+    key: 'studio-lessons',
+    label: 'Studio issues and lessons',
+    file: 'testing/studio-chatgpt-2026-10-21.md',
+    text: read('testing/studio-chatgpt-2026-10-21.md'),
   },
   {
     key: 'working',

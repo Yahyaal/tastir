@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { join } from 'node:path';
+import { blueSquare } from '../e2e/blue-square.mjs';
 
 /** A pretend agent's call, through the test server's own door. */
 async function agent(
@@ -33,6 +34,13 @@ test('a visitor uses Tastir without signing in, and the studio asks to', async (
 }) => {
   await page.goto('/');
   await expect(page.getByRole('link', { name: /star/i }).first()).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Studio', exact: true }),
+  ).toBeVisible();
+  await page.getByRole('link', { name: 'Your work', exact: true }).click();
+  await expect(
+    page.getByRole('link', { name: 'Sign in to see your Studio projects' }),
+  ).toBeVisible();
   await page.goto('/#/studio');
   await expect(
     page.getByRole('heading', { name: 'Sign in to use the studio' }),
@@ -43,6 +51,45 @@ test('a visitor uses Tastir without signing in, and the studio asks to', async (
     () => document.documentElement.scrollWidth - innerWidth,
   );
   expect(scroll).toBeLessThanOrEqual(0);
+});
+
+test('online projects appear in Your work and open their colored repeating wall', async ({
+  page,
+}) => {
+  await signIn(page);
+  const id = await blueSquare(
+    (method, path, data) => agent(page, method, path, data),
+    'Online square check',
+  );
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Your work', exact: true }).click();
+  const projects = page.getByRole('region', { name: 'Studio projects' });
+  const project = projects.locator(`a[href="#/studio/${id}"]`);
+  await expect(project).toBeVisible();
+  await expect(project).toContainText('Online square check');
+  await expect(project.locator('img')).toHaveJSProperty('naturalWidth', 360);
+  await project.click();
+  await expect(
+    page.getByText(/This shape is the tile that repeats\./),
+  ).toBeVisible();
+  await page
+    .getByRole('button', { name: 'View finished wall', exact: true })
+    .click();
+  await expect(page.locator('.label')).toHaveText('Color');
+  const wall = page.getByRole('img', {
+    name: 'The pattern repeated as a wall',
+  });
+  await expect(wall).toBeVisible();
+  await expect(wall.locator('pattern')).toHaveCount(1);
+  await expect
+    .poll(() => wall.locator('pattern [fill="#2453a6"]').count())
+    .toBeGreaterThan(0);
+  expect((await agent(page, 'GET', `/projects/${id}`)).revision).toBe(5);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - innerWidth,
+    ),
+  ).toBeLessThanOrEqual(0);
 });
 
 test('the signed-in owner and an agent work on one drawing', async ({

@@ -175,3 +175,13 @@ The owner reached ChatGPT's OAuth callback but received `MCP_ACTION_DISCOVERY_FA
 [Connect your other apps](STUDIO-CONNECT.md) now follows OpenAI's current Plugins flow, distinguishes missing account/workspace controls from login problems, and explains this discovery error. Server-side schema verification does not replace the owner's final ChatGPT reconnect and square test.
 
 Checks before deployment: full workspace `pnpm test`, `pnpm lint --parallel=1` and `pnpm typecheck --parallel=1` passed, as did the packaged server build. The Studio suite includes 54 passing tests.
+
+## Finding Studio projects and seeing their finished wall (21 October, Codex)
+
+The owner's ChatGPT square was saved correctly at revision 5, with the tile A–N–W–S and blue `#2453a6`. The UI hid that result: Your work listed only browser-local patterns, the homepage had no Studio navigation, the chat card always rendered construction, and the editor's Play button did not say that it opened the finished wall. A selected square tile also triggered the generic motif warning before its selected-tile confirmation.
+
+The hosted homepage now links to Studio and always offers Your work. Your work includes the signed-in owner's online Studio projects with wall thumbnails and construction fallbacks; signed-out visitors get a sign-in link. The shared editor calls its result button **View finished wall** and confirms an already selected tile. The chat card automatically shows the colored repeating wall when ready and labels it; unfinished or temporarily unplayable projects retain their construction view. The connection prompt now names ChatGPT explicitly and asks to show the finished wall.
+
+[Issues, causes, fixes and lessons](testing/studio-chatgpt-2026-10-21.md) records the full incident, including the obsolete setup path, discovery schema, duplicate entries, ambiguous prompt and hidden result. It distinguishes observed evidence from the unconfirmed explanation for ChatGPT retaining duplicate entries.
+
+Validation: the complete workspace tests passed across the initial run and single-worker retries of Player (752 passed, one skipped) and Studio (55 passed). The initial parallel-worker run had resource-driven timeouts and is not recorded as a pass. Full workspace lint and typecheck passed; four chat-card and four focused hosted browser checks passed across desktop and phone; the packaged server build passed. The new hosted assertion checks blue fills inside the main repeating wall, rather than elsewhere on the page.

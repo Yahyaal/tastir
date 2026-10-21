@@ -37,6 +37,8 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 **Live rooms (17 October, H7 local portion).** `apps/live-room` is an independent Cloudflare Worker with hibernatable project sockets, signed short-lived page tickets and server revision notices. Its small page client polls when the room is unavailable. Seventeen tests include actual hibernation recovery, and a real Chromium/Worker fixture verifies delivery and fallback. Full workspace test, lint and typecheck pass. [Setup and H4 contract](../apps/live-room/README.md), [validation evidence](testing/h7-live-room-2026-10-17.md). Claude wires the hosted Studio separately. H7 stays unchecked until H6 measures deployed edit-to-screen latency and a week of free-plan usage.
 **Hosted deployment preparation (17 October, H5).** [The short setup guide](STUDIO-DEPLOY.md) maps provider values to Studio settings. `pnpm studio:preflight` checks configuration and database migrations without changing the database or displaying secrets. [The Vercel audit](STUDIO-VERCEL-AUDIT.md) identifies the packaging and deployed checks for the merged H4/H7 tree. H5 remains unchecked until the owner creates the accounts and the real deployment/persistence checks pass.
 
+**ChatGPT connection and visible results (21 October, H6).** The owner connected ChatGPT and saved its blue repeating square online. The corrected [connection guide](STUDIO-CONNECT.md) covers setup, existing connectors and finding online projects in Your work. [Issues, causes and lessons](testing/studio-chatgpt-2026-10-21.md) records the discovery-schema failure and the navigation/preview bugs that hid the saved result. [The Studio log](STUDIO-LOG.md) holds deployment verification; [the hosted PRD](STUDIO-HOSTED-PRD.md) retains the outstanding acceptance checks.
+
 The prioritised list is the **Next** section of the review page (`PROGRESS` in `apps/player/src/review/data.ts`), and the pattern work is in [the queue](patterns/QUEUE.md). The owner still has to:
 - answer the question on the review page about the filled wheel's colours, and look at the interlace fix;
 - decide on the four wall styles Claude recommended dropping (tasks 2.2, 2.4, 2.5 and 2.6);
@@ -69,6 +71,7 @@ The redesign is done (R1 to R6, 13–14 October). Next: the owner’s look at it
 | [Work queue](patterns/QUEUE.md) | Every piece of pattern work, done and left, with the detail needed to resume it |
 | [Pattern status](patterns/STATUS.md) | Every tutorial in the library and how it was verified |
 | [Lessons](patterns/LESSONS.md) | Mistakes that cost time once, and facts that save time |
+| [ChatGPT Studio issues and lessons](testing/studio-chatgpt-2026-10-21.md) | Connection failures, hidden online projects and finished walls: evidence, causes, fixes and regression checks |
 | `docs/geometry-notes.md` | Lessons from the prototype about intersections, motifs and piece finding |
 | Plan for user-made patterns (`#/plan`, `apps/player/src/review/Plan.tsx`) | How learners will make their own patterns: the editor, copying at any step, building blocks, the order of the work, and the owner's open questions |
 | [How to write a pattern tutorial](patterns/BRIEF.md) | The working method and the tools for adding a pattern |

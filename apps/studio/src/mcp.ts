@@ -583,7 +583,7 @@ function registerCard(server: McpServer, client: StudioCaller) {
     'open_studio',
     {
       description:
-        'Show a project as a live card in the chat, where the owner sees the drawing as it changes and answers your open questions. Use it when the owner wants to see the drawing, or after you ask something. In apps without cards it only names the project.',
+        'Show a project as a live card in the chat: the finished colored repeating wall when ready, otherwise the construction drawing. The owner sees changes and answers your open questions here. Use it when the owner wants to see the drawing or finished result, or after you ask something. In apps without cards it only names the project.',
       inputSchema: { project: Project },
       _meta: { ui: { resourceUri: CARD } },
     },
@@ -623,7 +623,10 @@ function registerCard(server: McpServer, client: StudioCaller) {
       try {
         const view = (await client.call('GET', `/projects/${project}`)) as {
           revision: number;
-          drawing: { title: string };
+          drawing: {
+            title: string;
+            tile: { pieces: unknown[] } | null;
+          };
           history: { undo: { author: string; label: string }[] };
         };
         const { notes } = (await client.call(
@@ -641,11 +644,35 @@ function registerCard(server: McpServer, client: StudioCaller) {
         };
         const answered = new Set(notes.flatMap((n) => n.answers ?? []));
         const last = view.history.undo[0];
+        let pictureKind: 'wall' | 'construction' = view.drawing.tile?.pieces
+          .length
+          ? 'wall'
+          : 'construction';
+        let picture: string | undefined;
+        if (view.revision !== revision) {
+          try {
+            picture = (
+              await client.picture(
+                `/projects/${project}/picture?what=${pictureKind}&size=640`,
+              )
+            ).data;
+          } catch (error) {
+            if (pictureKind !== 'wall') throw error;
+            // A shared drawing can be between edits or temporarily unplayable.
+            pictureKind = 'construction';
+            picture = (
+              await client.picture(
+                `/projects/${project}/picture?what=construction&size=640`,
+              )
+            ).data;
+          }
+        }
         const snapshot = {
           project,
           title: view.drawing.title,
           revision: view.revision,
           last: last ? { author: last.author, label: last.label } : null,
+          pictureKind,
           questions: notes
             .filter((n) => n.question && !answered.has(n.id))
             .map((n) => ({
@@ -654,15 +681,7 @@ function registerCard(server: McpServer, client: StudioCaller) {
               text: n.text,
               ...(n.about ? { about: n.about } : {}),
             })),
-          ...(view.revision !== revision
-            ? {
-                picture: (
-                  await client.picture(
-                    `/projects/${project}/picture?what=construction&size=640`,
-                  )
-                ).data,
-              }
-            : {}),
+          ...(picture ? { picture } : {}),
         };
         return {
           content: [

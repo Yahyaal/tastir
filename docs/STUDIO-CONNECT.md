@@ -15,14 +15,16 @@ Each part ends with the same small test, so we can compare the apps:
 
 ```
 Use the Tastir studio. Make a new project called "Square check
-from <app name>". Starting from O and A only, construct the
+from ChatGPT". Starting from O and A only, construct the
 square whose corners are the four points where the unit circle
 about O meets the horizontal and vertical through O. Ink its
 four sides, make that square the repeating tile, and color its
-piece #2453a6.
+piece #2453a6. Show me the finished colored repeating wall.
 ```
 
-Replace `<app name>` with ChatGPT, Codex or Antigravity. While it works, open https://tastir-studio.vercel.app/#/studio and you can watch the drawing appear.
+Use the prompt as written in ChatGPT. For Codex or Antigravity, replace `ChatGPT` in the project title with that app's name.
+
+The project is saved online in Tastir. Sign in at https://tastir-studio.vercel.app with the same Google account, then open **Your work → Studio projects**, or **Studio**, from the homepage. You can watch the drawing there while the agent works. In the project editor, **View finished wall** opens the repeating tiles and colors. The live chat card also shows the finished wall once the project has a usable tile; before that it shows the construction.
 
 ## Part 1: ChatGPT (on the website)
 
@@ -99,7 +101,7 @@ Antigravity keeps its tools in a settings file that you edit from inside the app
 Agents sometimes ask you something and wait. To check that works away from the computer:
 
 1. On your phone, open https://tastir-studio.vercel.app/#/studio and sign in with Google.
-2. In any of the apps above, ask: `Use the Tastir studio: in my project "Square check from Codex", ask me which colour I want for the tile, and wait for my answer.`
+2. In the app you connected, ask: `Use the Tastir studio: in my project "Square check from ChatGPT", ask me which colour I want for the tile, and wait for my answer.` Use your actual project title if you tested Codex or Antigravity instead.
 3. On the phone, open that project. The question shows in a box with an answer field. Type a colour and send it. The agent carries on with your answer.
 
 ## When you are done
@@ -107,6 +109,8 @@ Agents sometimes ask you something and wait. To check that works away from the c
 Tell Claude which apps you connected and how each test went (finished, stuck, or refused something). Claude then reads the studio's history, measures how fast each app's edits reached your screen, and writes it all in the log.
 
 To see or remove the apps you allowed, open https://tastir-studio.vercel.app/connections. **Remove** stops that app at once; you can always add it again with this guide.
+
+A plugin entry in ChatGPT and an authorization on the Studio connections page are separate records. If ChatGPT says the connector already exists, reuse its existing entry and refresh the tools there. If you see duplicates, identify the working entry before removing an unwanted copy; repeating Add is unnecessary.
 
 ## If something goes wrong
 
@@ -116,6 +120,7 @@ To see or remove the apps you allowed, open https://tastir-studio.vercel.app/con
 | ChatGPT has no **Advanced settings** or **Developer mode** | The current documented flow starts in **Plugins**. Follow Part 1; those settings are not listed as prerequisites. |
 | ChatGPT has no **Create an MCP app** button | The current labels are **Add custom MCP server** and **Create as a plugin**. If those are missing too, follow Part 1's account and workspace checks. |
 | ChatGPT lists the plugin but never uses it | Make sure it is installed and connected. Start a new chat, type `@`, and select **Tastir studio** before sending the test. |
+| ChatGPT says the connector already exists | Open the existing Tastir plugin and refresh its tools or connect it there. A previous attempt may have created the connector before discovery failed; adding another copy is unnecessary. |
 | ChatGPT can read the studio but refuses edits | Keep the exact refusal. Workspace action controls or other account restrictions may apply; use Part 2 to try Codex. |
 | ChatGPT says **Authentication succeeded, action discovery failed**, with **Invalid MCP tool schema** | Login worked. ChatGPT rejected one of the studio's tool definitions. Give the agent the tool name; the server needs a schema fix and redeployment. After that, refresh the plugin's tools or retry connecting. Changing Google login settings will not fix this error. |
 | Codex says `tastir-online` is not logged in | Run `codex mcp login tastir-online` again. |

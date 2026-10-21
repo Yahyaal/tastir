@@ -19,6 +19,7 @@ The owner’s 11 October Jali correction: minimize clicks. Show material choices
 ## Doing the work
 
 - **Keep verification within the machine’s memory.** Use one test worker and bounded Node heaps, and finish one suite before starting the next. Do not overlap browser suites, unit tests, typechecks and builds. Keep the owner’s app available. *Why (15 October):* the owner reported a crash during overlapping AI-agent checks and asked us to avoid overloading memory.
+  *Clarification (21 October):* Nx `--parallel=1` limits concurrent projects, not Vitest workers. Pass `--maxWorkers=1` too; the Studio/Player suites timed out with multiple forks and passed when rerun with one. [Incident and lessons](testing/studio-chatgpt-2026-10-21.md).
 
 - **When the owner is near the Claude limit, orchestrate.** Plan, review and write self-contained prompts for Gemini in Antigravity in `docs/prompts/<date>.md`, and do not spawn builder or tester agents. *Why (8 October):* the owner is close to the weekly limit and asked for this; prompts in chat are hard to copy, so they go in a file the owner points Antigravity at.
 - **Review outside work against the content rules, not only the looks.** *Why (8 October):* a redesign made elsewhere looked good and passed every test, but shipped a private research photo, uncredited photos, and claims ("verified", "world-renowned") that were not true.

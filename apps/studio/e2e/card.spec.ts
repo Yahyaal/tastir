@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { spawn, type ChildProcess } from 'node:child_process';
 import { join } from 'node:path';
+import { blueSquare } from './blue-square.mjs';
 
 // The studio card in a stand-in chat app (card-host.mts beside this file),
 // which shows it through the MCP Apps host bridge, as claude.ai does.
@@ -90,4 +91,21 @@ test('the card shows the live drawing and takes the owner’s answer', async ({
     text: 'Yes, keep it.',
     answers: asked.question.id,
   });
+});
+
+test('the card opens a finished project at its colored repeating wall', async ({
+  page,
+}) => {
+  const id = await blueSquare(agent, 'Finished in the chat');
+  await page.goto(`${site}/?project=${id}`);
+  const card = page.frameLocator('iframe[title="Studio card"]');
+  await expect(
+    card.getByRole('heading', { name: 'Finished in the chat' }),
+  ).toBeVisible();
+  await expect(
+    card.getByRole('img', { name: 'The colored repeating wall at revision 5' }),
+  ).toBeVisible();
+  await expect(
+    card.getByText('Finished wall · repeating tiles and colors'),
+  ).toBeVisible();
 });

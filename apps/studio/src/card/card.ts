@@ -14,6 +14,7 @@ interface Snapshot {
   last: { author: string; label: string } | null;
   questions: { id: number; author: string; text: string; about?: string }[];
   picture?: string;
+  pictureKind?: 'wall' | 'construction';
 }
 
 const app = new App({ name: 'Tastir studio card', version: '1.0.0' });
@@ -35,8 +36,12 @@ function show(s: Snapshot) {
   if (s.picture) {
     const img = $<HTMLImageElement>('picture');
     img.src = `data:image/png;base64,${s.picture}`;
-    img.alt = `The drawing at revision ${s.revision}`;
+    img.alt = `${s.pictureKind === 'wall' ? 'The colored repeating wall' : 'The drawing'} at revision ${s.revision}`;
     img.hidden = false;
+    $('picture-caption').textContent =
+      s.pictureKind === 'wall'
+        ? 'Finished wall · repeating tiles and colors'
+        : 'Construction drawing';
   }
   revision = s.revision;
   const list = $('questions');

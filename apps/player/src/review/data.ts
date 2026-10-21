@@ -1812,9 +1812,17 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '17 October 2026',
+  updated: '21 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'H6: find the ChatGPT square and see its finished wall',
+      text: 'ChatGPT saved the square correctly, including its repeating tile and blue color. Your work now lists online Studio projects, the shared editor says View finished wall, and the chat card shows the colored repeat when ready. Desktop and phone checks cover the complete route. The connection guide and incident report record each issue, cause, fix and lesson.',
+      link: {
+        label: 'Read the Studio issues and lessons',
+        href: '#/notes/studio-lessons',
+      },
+    },
     {
       title: 'M2: the editor, assistant and MCP share one project',
       text: 'The owner draws with the compass, the in-app assistant adds geometry, and a real MCP client edits the same Studio project. Saves use server revisions and authored history. Undo mine stops at another author; ordinary Undo still works across the shared history. An owner edit made during an assistant save stays recoverable. A named copy reloads and exports with its paint. Six desktop/phone checks pass using simulated model replies and the real app and service; this is not a live provider evaluation.',
@@ -2215,11 +2223,11 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'H5: make the hosted Studio setup quick',
-    text: 'The deployment guide maps each Neon, Vercel, Google and Cloudflare setting to its destination. A read-only preflight reports missing settings and checks database migrations without displaying credentials. The Vercel audit lists the function packaging, native renderer and routing checks needed after H4 is merged and the owner creates the accounts. This prepares H5; deployment and persistence checks still remain.',
+    title: 'H6: complete the live client checks and measurements',
+    text: 'The Studio is online and ChatGPT has completed the blue square brief. The other client checks, a question answered by the owner from the phone, deployed edit-to-screen timing and a week of usage remain open. H5 still needs its deferred export check; H8 still needs the owner to answer a question inside the chat card.',
     link: {
-      label: 'Read the deployment steps',
-      href: 'https://github.com/Yahyaal/tastir/blob/main/docs/STUDIO-DEPLOY.md',
+      label: 'Read the hosted Studio acceptance checks',
+      href: '#/notes/studio-hosted',
     },
   },
   next: [

@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import { HOSTED } from '../studio/client';
+import { StudioWork } from '../studio/StudioWork';
 import { allProgress } from '../along/progress';
 import { PatternCard, PatternShelf } from '../editor/PatternShelf';
 import { listPatterns, type UserPattern } from '../editor/patterns';
@@ -155,6 +157,7 @@ export function WorkPage({ entries }: { entries: readonly Entry[] }) {
             setPatterns(listPatterns());
             setDesigns(listDesigns());
           }}
+          studio={HOSTED ? <StudioWork /> : undefined}
         />
       </main>
     </div>
@@ -177,6 +180,7 @@ export function YourWork({
   patterns,
   onDesigns,
   onPatterns,
+  studio,
 }: {
   heading?: 1 | 2;
   entries: readonly Entry[];
@@ -187,6 +191,7 @@ export function YourWork({
   patterns: readonly UserPattern[];
   onDesigns: () => void;
   onPatterns: () => void;
+  studio?: ReactNode;
 }) {
   const [tab, setTab] = useState<Tab>('all');
   const counts: Record<Exclude<Tab, 'all'>, number> = {
@@ -224,7 +229,8 @@ export function YourWork({
           </div>
         ) : null}
       </div>
-      {kinds.length || designNote ? null : (
+      {tab === 'all' ? studio : null}
+      {kinds.length || designNote || studio ? null : (
         <p className="work-empty">
           Nothing here yet. The lessons you leave partway, the designs you save
           and the patterns you make are kept here, in this browser.{' '}

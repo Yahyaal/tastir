@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { listPatterns } from '../editor/patterns';
 import { NewPattern } from '../editor/PatternShelf';
+import { HOSTED } from '../studio/client';
 import {
   aboutOf,
   filtered,
@@ -199,14 +200,19 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             <span>Upcoming patterns</span>
             <span className="nav-badge highlight">24</span>
           </a>
-          {workCount || designNote ? (
+          {HOSTED ? (
+            <a className="nav-item jump-link" href="#/studio">
+              Studio
+            </a>
+          ) : null}
+          {workCount || designNote || HOSTED ? (
             <a
               className="nav-item jump-link"
               href="#/work"
-              aria-label={`Your work (${workCount})`}
+              aria-label={HOSTED ? 'Your work' : `Your work (${workCount})`}
             >
               <span>Your work</span>{' '}
-              <span className="nav-badge">({workCount})</span>
+              {HOSTED ? null : <span className="nav-badge">({workCount})</span>}
             </a>
           ) : null}
         </nav>

@@ -147,7 +147,7 @@ export function StepPanel({
         <section>
           <h2>The tile</h2>
           {polygons.map((name) =>
-            motif(name) ? (
+            name !== tile && motif(name) ? (
               <p key={name} className="hint">
                 This shape is part of the pattern, not a tile that holds it. For
                 a star or rosette, draw a square (or hexagon) around the circle,

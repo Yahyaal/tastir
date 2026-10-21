@@ -131,6 +131,80 @@ describe('the studio card in a chat (MCP Apps)', () => {
     expect((await studio.notes(id)).notes).toHaveLength(1);
   });
 
+  it('shows the saved colored repeating wall once the square has a tile', async () => {
+    const { call } = await connect(true);
+    const id = (
+      await studio.create({ author: 'ChatGPT', title: 'Square check' })
+    ).project;
+    await studio.edit(id, {
+      author: 'ChatGPT',
+      revision: 1,
+      edit: {
+        op: 'construct',
+        add: [
+          { kind: 'circle', name: 'C', centre: 'O', through: 'A' },
+          { kind: 'line', name: 'H', from: 'O', to: 'A' },
+          {
+            kind: 'perpendicular',
+            name: 'V',
+            through: 'O',
+            perpendicularTo: 'H',
+          },
+          { kind: 'point', name: 'N', meet: ['C', 'V'], pick: { angle: 90 } },
+          { kind: 'point', name: 'W', meet: ['C', 'H'], pick: { angle: 180 } },
+          { kind: 'point', name: 'S', meet: ['C', 'V'], pick: { angle: 270 } },
+        ],
+        remove: [],
+      },
+    });
+    expect(
+      (await call('studio_snapshot', { project: id })).structuredContent,
+    ).toMatchObject({ pictureKind: 'construction' });
+    await studio.edit(id, {
+      author: 'ChatGPT',
+      revision: 2,
+      edit: {
+        op: 'ink',
+        add: [
+          { from: 'A', to: 'N' },
+          { from: 'N', to: 'W' },
+          { from: 'W', to: 'S' },
+          { from: 'S', to: 'A' },
+        ],
+        remove: [],
+      },
+    });
+    await studio.edit(id, {
+      author: 'ChatGPT',
+      revision: 3,
+      edit: { op: 'tile', vertices: ['A', 'N', 'W', 'S'] },
+    });
+    const view = await studio.view(id);
+    const piece = view.drawing.tile?.pieces[0]?.id;
+    if (!piece) throw new Error('The square has no tile piece');
+    await studio.edit(id, {
+      author: 'ChatGPT',
+      revision: 4,
+      edit: {
+        op: 'paint',
+        palette: null,
+        colors: [{ piece, color: '#2453a6' }],
+      },
+    });
+    const result = await call('studio_snapshot', { project: id, revision: 2 });
+    const wall = await new DirectClient(studio).picture(
+      `/projects/${id}/picture?what=wall&size=640`,
+    );
+    expect(result.structuredContent).toMatchObject({
+      revision: 5,
+      pictureKind: 'wall',
+      picture: wall.data,
+    });
+    expect((await studio.view(id)).drawing.tile?.pieces[0]?.color).toBe(
+      '#2453a6',
+    );
+  });
+
   it('serves the page built from the card’s current code', async () => {
     const { cardPage } = (await import(
       join(import.meta.dirname, '../../../tools/studio-card.mjs')
