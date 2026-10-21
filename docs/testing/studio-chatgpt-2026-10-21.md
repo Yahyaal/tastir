@@ -14,6 +14,7 @@ The owner followed [Connect your other apps](../STUDIO-CONNECT.md), connected Ch
 | The chat card showed circles and lines, without the blue repeat | The card always requested a construction picture, even after the saved project had a tile and paint. | Render the repeating wall when a usable tile exists, label it **Finished wall · repeating tiles and colors**, and retain construction for unfinished or temporarily unplayable drawings. Continue fetching pictures only when the revision changes. |
 | It was unclear how to see the finished result in Tastir | The shared editor's **Play** label did not explain that it opened the colored wall. The construction canvas itself does not display the finished repeat. | Rename the shared-project action **View finished wall** and explain the route in the connection guide. |
 | The selected square was described as “not a tile” | A motif heuristic ran before checking whether the polygon was already the selected valid tile. | Give the selected tile's actual state precedence over the heuristic, and show its confirmation. |
+| After refreshing, ChatGPT showed a blue repeat but the Studio link still showed an outlined square | Both screenshots show revision 5. The chat card now renders the finished wall, while `#/studio/<project>` opens the construction editor. These are two views of the same saved project. | Explain the distinction explicitly in the guide: use **View finished wall** at the top of the editor to open its colored repeat. A construction outline alone does not establish missing saved paint. |
 
 ## What was actually saved
 
@@ -34,10 +35,12 @@ Heavy checks ran sequentially with bounded Node heaps. The first full workspace 
 | Focused hosted browser checks, desktop and phone | 4 passed: visitor sign-in route and homepage → Your work → saved project → View finished wall |
 | Packaged server build, `node tools/studio-build.mjs` | Passed |
 | Notes/review checks after adding the incident report to the app | 14 passed, 1 skipped; affected-file lint and Player typecheck passed |
+| Fresh production browser checks, desktop and phone | Passed: homepage navigation, online project discovery, selected tile confirmation, main blue repeating wall, no horizontal overflow, original saved revision still 5 |
+| Authenticated production MCP and card snapshot | Passed: initialization, discovery of 23 compatible tool schemas, eleven construction alternatives, and the existing project's finished wall; temporary diagnostic credentials removed |
 
 The hosted check scopes its blue-fill assertion to the **main repeating wall**, checks the SVG repeat definition, confirms the saved project is still revision 5, and checks horizontal overflow on desktop and phone. A blue swatch or a small style-preview thumbnail cannot satisfy the assertion. The card regression compares the returned picture with the real wall-rendering endpoint.
 
-Production deployment and fresh-browser verification are recorded in the [Studio log](../STUDIO-LOG.md). The implementation commit is pushed, but Vercel has not reported a deployment and the site still serves the old bundle; the production UI/card checks remain pending. No build failure or trigger cause is established from that absence. This workspace has no Vercel login for a direct deployment. These checks do not complete H6's remaining clients, phone question, deployed timing or week of usage measurements, or H8's owner-answer acceptance check.
+Production deployment and fresh-browser verification are recorded in the [Studio log](../STUDIO-LOG.md). Vercel subsequently confirmed deployment of `b4ad5fe`, including the implementation in `2eebe50`; the production UI and card checks above passed against it. The owner's refreshed screenshots also show the updated card and editor. Notes are intentionally available only on the local dev server; the production verification probe was corrected to exclude that route. These checks do not complete H6's remaining clients, phone question, deployed timing or week of usage measurements, or H8's owner-answer acceptance check.
 
 ## Lessons to carry forward
 
@@ -49,7 +52,8 @@ Production deployment and fresh-browser verification are recorded in the [Studio
 6. **Use a complete fixture for a completed result.** Copying a tutorial's construction does not necessarily supply ink, a tile or paint. The browser fixture now performs the real construct → ink → tile → paint commands.
 7. **Limit test workers explicitly.** Nx `--parallel=1` serializes projects, not Vitest forks. Use `--maxWorkers=1` as well, keep heaps bounded, and do not overlap browser suites, tests and builds. Resource-driven timeouts are not a reason to loosen product checks or increase unrelated timeouts.
 8. **Record uncertainty and remaining acceptance work.** Duplicate connector entries were observed; the client's internal retention behavior was not. A successful server check is not evidence that every chat host refreshed an existing card or that all H6/H8 criteria passed.
-9. **Separate pushed, deployed and verified.** A successful Git push does not establish that Vercel started or completed a build. An empty provider-status list is not a running-build signal. Check the provider result and the served application, then record fresh-browser evidence before calling a UI fix live. [Vercel's Git deployment documentation](https://vercel.com/docs/git/vercel-for-github) describes the automatic trigger; the missing result here remains unexplained.
+9. **Separate pushed, deployed and verified.** A successful Git push does not establish that Vercel started or completed a build. An empty provider-status list is not a running-build signal. Check the provider result and the served application, then record fresh-browser evidence before calling a UI fix live. [Vercel's Git deployment documentation](https://vercel.com/docs/git/vercel-for-github) describes the automatic trigger; the initial delay here remains unexplained, even though deployment subsequently succeeded.
+10. **Compare the same view as well as the same revision.** A finished preview and a construction editor can look different with identical saved data. Name the view and its action explicitly when explaining what the owner should see.
 
 ## Source record
 

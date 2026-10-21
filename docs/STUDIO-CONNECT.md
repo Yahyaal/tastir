@@ -26,6 +26,8 @@ Use the prompt as written in ChatGPT. For Codex or Antigravity, replace `ChatGPT
 
 The project is saved online in Tastir. Sign in at https://tastir-studio.vercel.app with the same Google account, then open **Your work → Studio projects**, or **Studio**, from the homepage. You can watch the drawing there while the agent works. In the project editor, **View finished wall** opens the repeating tiles and colors. The live chat card also shows the finished wall once the project has a usable tile; before that it shows the construction.
 
+**Why the chat and Studio link can look different:** a `#/studio/<project>` link opens the construction editor, showing the compass circles, lines and tile outline. The finished chat card shows the colored repeat. Click **View finished wall** at the top of the editor to see that result in Tastir. An outline in the construction editor does not mean the saved tile or paint is missing.
+
 ## Part 1: ChatGPT (on the website)
 
 **Checked against official OpenAI documentation on 21 October 2026.** The current setup starts in **Plugins**. It does not list **Advanced settings** or a **Developer mode** switch as prerequisites. The previous version of this guide incorrectly made those controls a required first step. [Official connection guide](https://developers.openai.com/plugins/deploy/connect-chatgpt).
