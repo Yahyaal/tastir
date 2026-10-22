@@ -27,6 +27,8 @@ The owner’s 11 October Jali correction: minimize clicks. Show material choices
 - **The tester must not be the builder.** Run the tester's prompt in a fresh conversation, and check its verdict yourself. *Why (8 October):* Gemini tested its own redesign in the same conversation, called a 38 px board jump "minor" and missed that the board no longer fits a 1280×800 screen.
 - **The owner's eye matters most on layout.** Two halves that should match must line up exactly, and nothing may shift between stages. *Why (7 October):* the owner asked for it in the draw-along answers.
 
+- **When the owner says to work on while they are away, decide and keep going.** Take your own recommendation, build it, and put the choice on the review page as done, so the owner can revert it; ask only about what cannot be undone, such as pushing to production. *Why (22 October):* the owner asked for an overnight design review with every suggestion made, and woke to a question whose answer was my own recommendation.
+
 - **Plan first.** Show a short plan for each task and wait for an OK before writing code (`CLAUDE.md`).
 - **One task, one commit,** with the task named in the message. Run `pnpm test`, `pnpm lint` and `pnpm typecheck` first.
 - **Check the whole result after every change, not only the part that was fixed.** *Why (5 October):* a fix to the Bou Inania long hexagons broke the corner, giving an incomplete star and two stray triangles, and the owner caught it. After each change, compare the full list of piece shapes with the last version the owner approved, and look at the wall.

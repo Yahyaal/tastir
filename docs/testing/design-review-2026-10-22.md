@@ -1,6 +1,6 @@
 # Design review against the approved canvas — 22 October 2026
 
-The owner asked why the library cards lost the arch shown on the design canvas (https://claude.ai/artifact/McyS36FxVoDKxVCUKNZmX1), and for a full review of the app against that design with every suggested fix made overnight. The review page (`#/review`, card `design-review-2026-10-22`) has the pictures and the one open question.
+The owner asked why the library cards lost the arch shown on the design canvas (https://claude.ai/artifact/McyS36FxVoDKxVCUKNZmX1), and for a full review of the app against that design with every suggested fix made overnight. The review page (`#/review`, card `design-review-2026-10-22`) has the pictures.
 
 ## What was compared
 
@@ -21,7 +21,7 @@ Every artboard of the canvas (style sheet, library, lesson, colour stage, draw a
 
 ## Deliberately unchanged
 
-The lesson's construction board keeps its rectangular cedar frame, as in the canvas's desktop lesson: an arch would hide points near its top corners while the learner draws, pans and zooms. The canvas's phone lesson shows an arch; whether to follow it is the open question on the review page.
+The lesson's construction board keeps its rectangular cedar frame, as in the canvas's desktop lesson: an arch would hide points near its top corners while the learner draws, pans and zooms. The canvas's phone lesson shows an arch, but the owner chose (22 October) the arch for the cards only: an opened pattern, watched or drawn along, sits in a rectangle on every screen.
 
 ## Noticed, not changed
 

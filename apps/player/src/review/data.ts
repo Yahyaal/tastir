@@ -38,14 +38,16 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'design-review-2026-10-22',
     title: 'Design review: the app against the approved design',
     fold: 8,
-    status: 'decide',
+    status: 'decided',
     summary:
-      'You asked (21 October) why the cards lost the arch from the design, and for a full review of the app against the design canvas, with every fix made overnight. Eight fixes are in, one question is left.',
+      'You asked (21 October) why the cards lost the arch from the design, and for a full review of the app against the design canvas, with every fix made overnight. Eight fixes are in.',
+    decision:
+      'You chose (22 October) the arch for the cards only: once a pattern is opened, to watch it or draw along, its drawing sits in a rectangle. That is how the app already is, so nothing changes.',
     story: [
       'I compared every screen of the design canvas (style, library, lesson, colour, draw along, phone) with the app, light and dark, desktop and phone. The lesson and the colour stage already match it closely. The differences were these, each now fixed in its own commit.',
       '1, the arch. The design shows each card’s picture as a window in an arch and the home page’s drawing inside a cedar arch; the build had square corners, by oversight, not by decision (A, B, D). 2, the card buttons cut “Watch it drawn” at the border; they now share a row when both fit and stack when not (B). 3, labels and badges still used the old typewriter font, which the design dropped; they now use the text font in small letter-spaced capitals (A).',
       '4, draw along was furthest from the design: numbered capsules, a blue heading and tiny square tools. It now has the lesson’s khatam-star timeline, cedar labels, the tools in one pill with the chosen tool in saffron, and pill buttons. The layout is unchanged, so the board still never moves between steps (C). 5, the design and the 14 October UX review both asked for a library search: type a name, place or tradition, in any case and without accents (E). 6, an address Tastir cannot open now shows a plain notice with a way back instead of red typewriter text (G). 7, the editor’s tools and the upcoming page’s chips are pills like everything else (F). 8, on a phone the editor’s title now comes first, with Play and “Kept in this browser” on the row under it.',
-      'Left as they are, on purpose: the lesson’s drawing keeps its rectangular cedar frame, as in the design’s desktop lesson (H), because an arch would hide points and circles near its top corners while you draw and zoom. The design’s phone lesson does show it in an arch (I is the app today), which is the question below. Noticed but not changed: the Comares bones card has no line under its name, which is tutorial text rather than design.',
+      'Left as they are, on purpose: the lesson’s drawing keeps its rectangular cedar frame, as in the design’s desktop lesson (H), because an arch would hide points and circles near its top corners while you draw and zoom. The design’s phone lesson does show it in an arch (I is the app today); you chose the rectangle there too. Noticed but not changed: the Comares bones card has no line under its name, which is tutorial text rather than design.',
       'Checks: player unit tests 755 passed (1 skipped), lint and typecheck pass, and the browser suite 151 passed (17 skipped) on desktop, tablet and phone. Nothing is pushed, so the live site is unchanged until you say so.',
     ],
     pictures: [
@@ -1859,28 +1861,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'design-review-phone-arch',
-    text: 'The lesson’s drawing keeps its rectangular frame, because an arch hides points near its top corners while you draw. On a phone, should it sit in an arch as in the design’s mockup (I)?',
-    choices: [
-      'Keep the rectangle',
-      'Arch on the phone only',
-      'Arch on every screen',
-    ],
-    pictures: [
-      {
-        src: 'renders/design-review-2026-10-22/I-phone-lesson-dark.png',
-        caption: 'I. The lesson on a phone today.',
-      },
-      {
-        src: 'renders/design-review-2026-10-22/A-home-arch.png',
-        caption: 'A. The arch as the home page now shows it.',
-      },
-    ],
-    card: 'design-review-2026-10-22',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -2329,8 +2310,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Waiting: your look at the design review',
-    text: 'The eight design fixes are committed on this computer and not yet pushed. H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
+    title: 'Waiting: pushing the design review',
+    text: 'The eight design fixes are committed on this computer and not yet pushed; you chose the arch for the cards only, as built. H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
     link: {
       label: 'Read the hosted Studio acceptance checks',
       href: '#/notes/studio-hosted',
