@@ -167,3 +167,15 @@ describe('the editor', () => {
     ).toBeTruthy();
   });
 });
+
+describe('the pointer over the drawing', () => {
+  it('shows the chosen tool', () => {
+    openEmpty();
+    const svg = screen.getByRole('img', { name: 'The construction so far' });
+    tool('Ruler');
+    const ruler = svg.style.getPropertyValue('--tool-cursor');
+    expect(ruler).toContain('data:image/svg+xml');
+    tool('Compass');
+    expect(svg.style.getPropertyValue('--tool-cursor')).not.toBe(ruler);
+  });
+});

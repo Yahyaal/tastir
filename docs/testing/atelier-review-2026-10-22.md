@@ -23,3 +23,7 @@ Merging the branch as it is would also restore the arch around the home drawing,
 ## Ideas worth their own tasks later
 
 A compass and ruler shown moving during "Watch it drawn", and a short glow where two circles cross to show why a point exists.
+
+## Decision
+
+The owner liked the idea of the compass pointer, which did not show for them on the branch. Every editor tool now has its own pointer, built on main in `apps/player/src/editor/cursors.ts`: a crosshair centred on the click point with the tool's sign in a badge beside it. Nothing else is taken from the branch.

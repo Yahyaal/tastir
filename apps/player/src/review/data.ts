@@ -38,9 +38,11 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'atelier-review-2026-10-22',
     title: 'Antigravity’s design branch (atelier-ui)',
     fold: 8,
-    status: 'decide',
+    status: 'decided',
     summary:
-      'You asked Antigravity to review the design and improve it; it wrote a long proposal and committed a smaller set of changes on its own branch. My advice is to keep only the compass cursor and close the branch.',
+      'You asked Antigravity to review the design and improve it; it wrote a long proposal and committed a smaller set of changes on its own branch.',
+    decision:
+      'You liked the idea behind its compass pointer but it did not show for you, so (22 October) every editor tool now has its own pointer, built on main: a crosshair aimed at the exact click point, with the tool’s sign beside it (picture E). Nothing else is taken from the branch, which can be closed.',
     story: [
       'What it proposed and what it built are far apart. The proposal promised hover-only card buttons, a brass compass that swings each circle, a slider fading the construction into the ink, a sun that casts the jali’s shadow, and the four stages renamed as “historic rites”. None of these was built, though its summary says everything discussed was. What it did build: star glyphs on the fold chips, a lift and zoom on cards under the mouse, a fade between pages, bevels on the frames and colour buttons, two more jali backgrounds, and a compass-shaped cursor in the editor.',
       'The star glyphs do not work (B): at their size the 8, 10, 12 and 16-pointed stars are all the same grey blob, so they add noise without telling the folds apart, and on a phone they push the chips into a lumpy block (C). Moving “See it” to the middle of the picture wraps it onto two lines over the pattern on a phone (C). The bevels are hard to see on a computer (D) and are written as fixed white and black, which breaks the rule that every colour has a light and a dark value. The “sunlight” for the jali is two more flat background colours with lighting names. The page fade snapshots the whole screen on every page change, which costs time on the large walls, and you asked for speed first.',
@@ -66,6 +68,11 @@ export const PATTERNS: readonly Pattern[] = [
         src: 'renders/atelier-review-2026-10-22/C-phone-cards.png',
         caption:
           'C. On a phone: the chips bunch into a block and “See it” wraps onto two lines over the picture.',
+      },
+      {
+        src: 'renders/tool-pointers-2026-10-22/A-pointers.png',
+        caption:
+          'E. The editor’s new pointers, one per tool, on the light board (top) and the dark one (bottom), at four times their size.',
       },
       {
         src: 'renders/atelier-review-2026-10-22/D-color-wells.png',
@@ -1903,28 +1910,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'atelier-take',
-    text: 'Antigravity’s branch: I would bring over only the compass cursor in the editor and close the rest (A–D). What should I take?',
-    choices: [
-      'Only the compass cursor',
-      'The cursor and the page fade',
-      'Nothing, close the branch',
-    ],
-    pictures: [
-      {
-        src: 'renders/atelier-review-2026-10-22/B-fold-glyphs.png',
-        caption: 'B. The fold stars at three times their size.',
-      },
-      {
-        src: 'renders/atelier-review-2026-10-22/C-phone-cards.png',
-        caption: 'C. The branch on a phone.',
-      },
-    ],
-    card: 'atelier-review-2026-10-22',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -2373,8 +2359,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Waiting: what to take from Antigravity’s design branch',
-    text: 'The design review is pushed and live: arched cards only, and the original photo hides and shows from a button on the drawing. Antigravity’s branch is reviewed, with one question. H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
+    title: 'Nothing waiting on you',
+    text: 'The design review is live: arched cards only, the original photo hides and shows from a button on the drawing, and each editor tool has its own pointer. Antigravity’s branch is reviewed and can be closed. H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
     link: {
       label: 'Read the hosted Studio acceptance checks',
       href: '#/notes/studio-hosted',

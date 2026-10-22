@@ -5,7 +5,8 @@ import {
   type Scene,
   type Vec,
 } from '@tastir/engine';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, type CSSProperties } from 'react';
+import { toolCursor } from './cursors';
 import { InkRaster } from './InkRaster';
 import { viewBox, width, type Rect } from '../app/camera';
 import { useCamera } from '../app/useCamera';
@@ -433,6 +434,11 @@ export function EditorDrawing({
             : svgRef
         }
         className="drawing editor-drawing"
+        style={
+          toolId
+            ? ({ '--tool-cursor': toolCursor(toolId) } as CSSProperties)
+            : undefined
+        }
         viewBox={viewBox(view)}
         role="img"
         aria-label="The construction so far"
