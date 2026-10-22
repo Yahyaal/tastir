@@ -613,10 +613,29 @@
   fill: var(--muted);
 }
 
+/* On a phone the title comes first, beside the way home and the theme
+   switch; Play and whether the pattern is kept share the second row. */
 @media (max-width: 760px) {
   .editor-title {
-    order: 5;
-    flex-basis: 100%;
+    order: 1;
+    flex: 1 1 12rem;
+    width: auto;
+  }
+
+  .editor .topbar > :last-child {
+    order: 2;
+  }
+
+  .editor-play {
+    order: 3;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .editor .topbar .kept {
+    order: 4;
+    margin: 0;
+    font-size: 0.72rem;
   }
 
   .editor-play .play-later {
