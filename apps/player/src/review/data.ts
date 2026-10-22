@@ -35,6 +35,75 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'design-review-2026-10-22',
+    title: 'Design review: the app against the approved design',
+    fold: 8,
+    status: 'decide',
+    summary:
+      'You asked (21 October) why the cards lost the arch from the design, and for a full review of the app against the design canvas, with every fix made overnight. Seven fixes are in, one question is left.',
+    story: [
+      'I compared every screen of the design canvas (style, library, lesson, colour, draw along, phone) with the app, light and dark, desktop and phone. The lesson and the colour stage already match it closely. The differences were these, each now fixed in its own commit.',
+      '1, the arch. The design shows each card’s picture as a window in an arch and the home page’s drawing inside a cedar arch; the build had square corners, by oversight, not by decision (A, B, D). 2, the card buttons cut “Watch it drawn” at the border; they now share a row when both fit and stack when not (B). 3, labels and badges still used the old typewriter font, which the design dropped; they now use the text font in small letter-spaced capitals (A).',
+      '4, draw along was furthest from the design: numbered capsules, a blue heading and tiny square tools. It now has the lesson’s khatam-star timeline, cedar labels, the tools in one pill with the chosen tool in saffron, and pill buttons. The layout is unchanged, so the board still never moves between steps (C). 5, the design and the 14 October UX review both asked for a library search: type a name, place or tradition, in any case and without accents (E). 6, an address Tastir cannot open now shows a plain notice with a way back instead of red typewriter text (G). 7, the editor’s tools and the upcoming page’s chips are pills like everything else (F).',
+      'Left as they are, on purpose: the lesson’s drawing keeps its rectangular cedar frame, as in the design’s desktop lesson (H), because an arch would hide points and circles near its top corners while you draw and zoom. The design’s phone lesson does show it in an arch (I is the app today), which is the question below. Noticed but not changed: the editor’s header on a phone is crowded (its title sits under Play and “Kept in this browser”), and the Comares bones card has no line under its name, which is tutorial text rather than design.',
+      'Checks: player unit tests 755 passed (1 skipped), lint and typecheck pass, and the browser suite 151 passed (17 skipped) on desktop, tablet and phone. Nothing is pushed, so the live site is unchanged until you say so.',
+    ],
+    pictures: [
+      {
+        src: 'renders/design-review-2026-10-22/A-home-arch.png',
+        caption:
+          'A. The home page: the drawing inside a cedar arch, and the labels in the text font.',
+      },
+      {
+        src: 'renders/design-review-2026-10-22/B-cards-arch.png',
+        caption:
+          'B. Library cards: each picture is a window in an arch; the two buttons stack so their words fit.',
+      },
+      {
+        src: 'renders/design-review-2026-10-22/D-phone-cards-dark.png',
+        caption: 'D. The same cards on a phone, in the dark theme.',
+      },
+      {
+        src: 'renders/design-review-2026-10-22/C-draw-along.png',
+        caption:
+          'C. Draw along: the khatam-star timeline, cedar labels, the tools in one pill, pill buttons.',
+      },
+      {
+        src: 'renders/design-review-2026-10-22/E-search.png',
+        caption:
+          'E. The new library search: “comares” finds 6 of 39; Clear all empties it.',
+      },
+      {
+        src: 'renders/design-review-2026-10-22/F-editor.png',
+        caption: 'F. The pattern editor with pill tools.',
+      },
+      {
+        src: 'renders/design-review-2026-10-22/G-broken-address.png',
+        caption:
+          'G. An address that leads nowhere: a plain notice and a way back.',
+      },
+      {
+        src: 'renders/design-review-2026-10-22/H-lesson-board.png',
+        caption:
+          'H. The lesson on a computer, unchanged: a rectangular cedar frame, as in the design.',
+      },
+      {
+        src: 'renders/design-review-2026-10-22/I-phone-lesson-dark.png',
+        caption:
+          'I. The lesson on a phone today: the same rectangular frame. The design’s phone mockup put this drawing in an arch.',
+      },
+    ],
+    asks: [
+      'Should the lesson’s drawing on a phone sit in an arch, as in the design’s phone mockup (picture I is today)?',
+    ],
+    sources: [
+      {
+        label: 'The approved design canvas',
+        url: 'https://claude.ai/artifact/McyS36FxVoDKxVCUKNZmX1',
+      },
+    ],
+  },
+  {
     id: 'eight-fold-khatam',
     title: 'Eight-fold khatam',
     fold: 4,
@@ -1790,7 +1859,28 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'design-review-phone-arch',
+    text: 'The lesson’s drawing keeps its rectangular frame, because an arch hides points near its top corners while you draw. On a phone, should it sit in an arch as in the design’s mockup (I)?',
+    choices: [
+      'Keep the rectangle',
+      'Arch on the phone only',
+      'Arch on every screen',
+    ],
+    pictures: [
+      {
+        src: 'renders/design-review-2026-10-22/I-phone-lesson-dark.png',
+        caption: 'I. The lesson on a phone today.',
+      },
+      {
+        src: 'renders/design-review-2026-10-22/A-home-arch.png',
+        caption: 'A. The arch as the home page now shows it.',
+      },
+    ],
+    card: 'design-review-2026-10-22',
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
@@ -1812,9 +1902,25 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '21 October 2026',
+  updated: '22 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Design review: the app brought back to the approved design',
+      text: 'Arched card pictures and a cedar arch on the home drawing, card buttons that fit, the old typewriter font gone, draw along in the lesson’s look, a library search, a plain page for a broken address, and pill controls in the editor and upcoming page. One question: an arch for the lesson on a phone.',
+      link: {
+        label: 'See the review and the pictures',
+        href: '#design-review-2026-10-22',
+      },
+    },
+    {
+      title: 'H6 and H8: phone answer, every client and deployed speed',
+      text: 'You answered Claude’s question inside the claude.ai card from your phone, which completes H8. Claude, ChatGPT, Codex and Antigravity each finished the square brief. After the one-request fix, an agent’s edit reached the open page in 83 to 217 ms in all twenty deployed tries. Only the week of free-plan use is left.',
+      link: {
+        label: 'Read the hosted Studio acceptance checks',
+        href: '#/notes/studio-hosted',
+      },
+    },
     {
       title: 'H6: find the ChatGPT square and see its finished wall',
       text: 'ChatGPT saved the square correctly, including its repeating tile and blue color. Your work now lists online Studio projects, the shared editor says View finished wall, and the chat card shows the colored repeat when ready. Desktop and phone checks cover the complete route. The connection guide and incident report record each issue, cause, fix and lesson.',
@@ -2223,8 +2329,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'H6: complete the live client checks and measurements',
-    text: 'The Studio is online and ChatGPT has completed the blue square brief. The other client checks, a question answered by the owner from the phone, deployed edit-to-screen timing and a week of usage remain open. H5 still needs its deferred export check; H8 still needs the owner to answer a question inside the chat card.',
+    title: 'Waiting: your look at the design review',
+    text: 'The seven design fixes are committed on this computer and not yet pushed. H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
     link: {
       label: 'Read the hosted Studio acceptance checks',
       href: '#/notes/studio-hosted',
