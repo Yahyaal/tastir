@@ -110,7 +110,11 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   const [style, setStyle] = useState(() => keptFilters().style);
   const [level, setLevel] = useState(() => keptFilters().level);
   const [fold, setFold] = useState(() => keptFilters().fold);
-  useEffect(() => keepFilters({ style, level, fold }), [style, level, fold]);
+  const [query, setQuery] = useState(() => keptFilters().query ?? '');
+  useEffect(
+    () => keepFilters({ query, style, level, fold }),
+    [query, style, level, fold],
+  );
   useReturnToScroll();
   const [designs] = useState(listDesigns);
   const [patterns] = useState(listPatterns);
@@ -136,7 +140,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   const folds = [
     ...new Set(entries.flatMap((e) => aboutOf(e.preview ?? e.json).fold ?? [])),
   ].sort((a, b) => a - b);
-  const shown = filtered(entries, { style, level, fold });
+  const shown = filtered(entries, { query, style, level, fold });
   // A card's level, symmetry or tradition shows every pattern like it,
   // with the list brought into view under its filters.
   const filterBy = (facet: Facet) => {
@@ -148,6 +152,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
       ?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
   };
   const clear = () => {
+    setQuery('');
     setStyle(undefined);
     setLevel(undefined);
     setFold(undefined);
@@ -155,6 +160,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   // The filters chosen, in words: “8-fold, for beginners and Nasrid”.
   const chosenWords = andList(
     [
+      query.trim() ? `called “${query.trim()}”` : '',
       fold ? `${fold}-fold` : '',
       level
         ? `for ${level === 'beginner' ? 'beginners' : `the ${level} level`}`
@@ -279,6 +285,19 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           </div>
         </div>
         <div className="filters">
+          <label className="filter-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <line x1="16.5" y1="16.5" x2="21" y2="21" />
+            </svg>
+            <span className="visually-hidden">Search patterns</span>
+            <input
+              type="search"
+              placeholder="Search by name or place"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </label>
           <div className="filter-group" role="group" aria-label="Symmetry">
             <Chip on={!fold} onClick={() => setFold(undefined)}>
               Any fold
@@ -317,7 +336,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
               ))}
             </select>
           </label>
-          {style || level || fold ? (
+          {query || style || level || fold ? (
             <button type="button" className="clear-filters" onClick={clear}>
               Clear all
             </button>

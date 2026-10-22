@@ -155,6 +155,30 @@ describe('the library', () => {
     expect(screen.queryByRole('button', { name: 'Clear all' })).toBeNull();
   });
 
+  it('finds patterns by the words of their name', () => {
+    const extra = {
+      ...(structuredClone(example) as object),
+      id: 'another-star',
+      title: 'Another star',
+    };
+    const entries = entriesOf({
+      '../../../../tutorials/eight-fold-star-and-cross.json': example,
+      '../../../../tutorials/another-star.json': extra,
+    });
+    render(<App entries={entries} />);
+    const cards = () => document.querySelectorAll('.cards > li').length;
+    const search = screen.getByRole('searchbox', { name: 'Search patterns' });
+    fireEvent.change(search, { target: { value: 'another' } });
+    expect(cards()).toBe(1);
+    fireEvent.change(search, { target: { value: 'nothing like it' } });
+    expect(
+      screen.getByText(/No pattern is called “nothing like it”/),
+    ).toBeTruthy();
+    act(() => screen.getAllByRole('button', { name: 'Clear all' })[0]?.click());
+    expect(cards()).toBe(2);
+    expect((search as HTMLInputElement).value).toBe('');
+  });
+
   it('filters by a card’s level, symmetry or tradition when it is clicked', () => {
     const extra = {
       ...(structuredClone(example) as object),

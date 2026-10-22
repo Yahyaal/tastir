@@ -1,7 +1,9 @@
 import type { Entry } from './library';
 
-/** The library's filters: a tradition, a level and a fold, each optional. */
+/** The library's filters: words to look for, a tradition, a level and a
+ * fold, each optional. */
 export interface LibraryFilters {
+  readonly query?: string;
   readonly style?: string;
   readonly level?: string;
   readonly fold?: number;
@@ -46,8 +48,9 @@ function write(change: Kept) {
 }
 
 export function keptFilters(): LibraryFilters {
-  const { style, level, fold } = read();
+  const { query, style, level, fold } = read();
   return {
+    ...(typeof query === 'string' && query ? { query } : {}),
     ...(typeof style === 'string' ? { style } : {}),
     ...(typeof level === 'string' ? { level } : {}),
     ...(typeof fold === 'number' ? { fold } : {}),
@@ -55,8 +58,8 @@ export function keptFilters(): LibraryFilters {
 }
 
 /** Keeps the filters; an undefined filter is dropped (JSON leaves it out). */
-export function keepFilters({ style, level, fold }: LibraryFilters) {
-  write({ style, level, fold });
+export function keepFilters({ query, style, level, fold }: LibraryFilters) {
+  write({ query: query || undefined, style, level, fold });
 }
 
 /** Where the learner was in the library, if anywhere. */
@@ -129,16 +132,40 @@ export function aboutOf(json: unknown): {
 /** The entries the library shows under these filters, in its order. */
 export function filtered(
   entries: readonly Entry[],
-  { style, level, fold }: LibraryFilters,
+  { query, style, level, fold }: LibraryFilters,
 ): readonly Entry[] {
+  const words = plain(query ?? '')
+    .split(/\s+/)
+    .filter(Boolean);
   return entries.filter((e) => {
     const about = aboutOf(e.preview ?? e.json);
+    const text = words.length ? searchText(e) : '';
     return (
+      words.every((w) => text.includes(w)) &&
       (!style || about.style === style) &&
       (!level || about.level === level) &&
       (!fold || about.fold === fold)
     );
   });
+}
+
+/** Lower case without accents, so “fes” finds “Fès” and “salon” “Salón”. */
+const plain = (text: string) =>
+  text.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+
+/** What a search looks through: the names, the line under them and the
+ * tradition. */
+function searchText(entry: Entry): string {
+  const json = (entry.json ?? {}) as Record<string, unknown>;
+  const p = entry.preview;
+  const words = [
+    p?.title ?? json['title'],
+    p?.short ?? json['short'],
+    p?.subtitle ?? json['subtitle'],
+    p?.style ?? json['style'],
+    entry.id.replace(/-/g, ' '),
+  ].filter((w): w is string => typeof w === 'string');
+  return plain(words.join(' '));
 }
 
 /** A tutorial's title before it is loaded. */

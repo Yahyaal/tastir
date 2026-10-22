@@ -3078,6 +3078,48 @@ main.stage .drawing:not(.wall) {
   color: var(--theme-bg-canvas);
 }
 
+/* Search by name or place, first in the filters, as in the design. */
+.filter-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 220px;
+  max-width: 320px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-muted);
+}
+
+.filter-search:focus-within {
+  border-color: var(--theme-accent-cobalt);
+}
+
+.filter-search svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.filter-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--theme-text-primary);
+  font: 0.92rem var(--text);
+}
+
+.filter-search input::placeholder {
+  color: var(--theme-text-muted);
+}
+
 .filter-select {
   display: inline-flex;
   align-items: center;

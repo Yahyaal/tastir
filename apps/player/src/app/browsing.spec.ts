@@ -1,4 +1,4 @@
-import { neighbours, titleOf } from './browsing';
+import { filtered, neighbours, titleOf } from './browsing';
 import type { Entry } from './library';
 
 const entry = (id: string, fold: number, style = 'Nasrid'): Entry => ({
@@ -38,5 +38,29 @@ describe('previous and next pattern', () => {
 
   it('are named by the tutorial title', () => {
     expect(titleOf(library[1] as Entry)).toBe('The b');
+  });
+});
+
+describe('searching the library', () => {
+  const library: Entry[] = [
+    { id: 'fes-star', json: { title: 'Star of Fès', style: 'Marinid' } },
+    {
+      id: 'salon-frames',
+      json: { title: 'Framed stars', subtitle: 'Salón de Comares' },
+    },
+    { id: 'cairo-door', json: { title: 'Minbar doors', style: 'Mamluk' } },
+  ];
+  const ids = (query: string) => filtered(library, { query }).map((e) => e.id);
+
+  it('finds every word, in any case and without accents', () => {
+    expect(ids('fes')).toEqual(['fes-star']);
+    expect(ids('SALON comares')).toEqual(['salon-frames']);
+    expect(ids('stars comares')).toEqual(['salon-frames']);
+    expect(ids('mamluk')).toEqual(['cairo-door']);
+  });
+
+  it('shows everything for no words, and nothing for words no pattern has', () => {
+    expect(ids('  ')).toHaveLength(3);
+    expect(ids('zellige')).toEqual([]);
   });
 });
