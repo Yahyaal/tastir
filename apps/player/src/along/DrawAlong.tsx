@@ -1,3 +1,4 @@
+import { Khatam, PHASE_MARKS } from '../app/khatam';
 import { ThemeSwitch } from '../app/theme';
 import { ViewSwitch } from '../app/ViewSwitch';
 import {
@@ -1177,7 +1178,7 @@ export function DrawAlong({
         <ThemeSwitch />
       </header>
       <nav className="along-steps" aria-label="Steps">
-        <span className="along-steps-label">Steps</span>
+        <span className="along-steps-label">Construct</span>
         <ol ref={stepChips}>
           {shown.map((b, i) => {
             const done = ticks[i] ?? false;
@@ -1197,8 +1198,8 @@ export function DrawAlong({
                   title={done ? 'On your board' : 'Not on your board yet'}
                   onClick={() => go(i)}
                 >
-                  {i + 1}
-                  {done ? <span aria-hidden="true"> ✓</span> : null}
+                  <Khatam />
+                  <span className="step-number">{i + 1}</span>
                 </button>
               </li>
             );
@@ -1217,7 +1218,11 @@ export function DrawAlong({
               aria-label="Ink"
               onClick={() => go(shown.length)}
             >
-              Ink
+              <span className="phase-name">Ink</span>
+              <span className="phase-mark">
+                <Khatam />
+                {PHASE_MARKS.ink}
+              </span>
             </button>
           </li>
           {(colourFirst
@@ -1247,7 +1252,11 @@ export function DrawAlong({
                   }
                   onClick={() => go(shown.length + 1 + k)}
                 >
-                  {name}
+                  <span className="phase-name">{name}</span>
+                  <span className="phase-mark">
+                    <Khatam />
+                    {PHASE_MARKS[name === 'Repeat' ? 'repeat' : 'color']}
+                  </span>
                 </button>
               </li>
             );
