@@ -181,11 +181,15 @@
   width: 100%;
   height: 100%;
   min-height: 50vh;
-  /* The chosen tool's pointer (cursors.ts), or a plain crosshair. */
+}
+
+/* The chosen tool's pointer (cursors.ts), or a plain crosshair. The board
+   sits in main.stage, so this must outrank the lesson's grab hand there. */
+main.stage .drawing.editor-drawing:not(.wall) {
   cursor: var(--tool-cursor, crosshair);
 }
 
-.editor-drawing .el {
+main.stage .drawing.editor-drawing .el {
   fill: none;
   stroke: var(--old);
   vector-effect: non-scaling-stroke;
@@ -564,10 +568,6 @@
 .player .editor-canvas .fit:hover {
   border-color: var(--theme-border-hover);
   color: var(--theme-text-primary);
-}
-
-.editor-drawing.dragging {
-  cursor: grabbing;
 }
 
 .editor-drawing .crossing {
