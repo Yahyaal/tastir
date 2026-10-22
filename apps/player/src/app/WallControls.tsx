@@ -12,24 +12,19 @@ const STYLE_NAMES: Record<WallStyle, string> = {
 /**
  * The finished wall's own controls: its style as samples to click (the
  * learner's own pattern and colours in each style), the
- * width of its grout, bands or lattice, and the original photo beside it.
+ * width of its grout, bands or lattice.
  */
 export function WallControls({
   style,
   onStyle,
   grout,
   onGrout,
-  comparing,
-  onCompare,
   sample,
 }: {
   style: WallStyle;
   onStyle: (style: WallStyle) => void;
   grout: number;
   onGrout: (grout: number) => void;
-  /** Whether the original is beside the wall; absent when there is none. */
-  comparing?: boolean;
-  onCompare: (comparing: boolean) => void;
   /** A small picture of the wall in a style. */
   sample: (style: WallStyle) => ReactNode;
 }) {
@@ -69,17 +64,6 @@ export function WallControls({
           {width === 0 ? 'none' : `${width}×`}
         </output>
       </div>
-      {comparing === undefined ? null : (
-        <button
-          type="button"
-          className="compare-toggle"
-          aria-pressed={comparing}
-          title="A photo of the real pattern, beside the wall. Click it to see it at full size."
-          onClick={() => onCompare(!comparing)}
-        >
-          {comparing ? 'Hide the original' : 'Compare with the original'}
-        </button>
-      )}
       <p className="hint">
         {jali ? 'An open screen. Switch styles to see your tile colors. ' : ''}
         Drag to move along the wall, scroll to zoom.

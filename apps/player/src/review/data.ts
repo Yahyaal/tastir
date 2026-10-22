@@ -42,7 +42,7 @@ export const PATTERNS: readonly Pattern[] = [
     summary:
       'You asked (21 October) why the cards lost the arch from the design, and for a full review of the app against the design canvas, with every fix made overnight. Eight fixes are in.',
     decision:
-      'You chose (22 October) the arch for the cards only: once a pattern is opened, to watch it or draw along, its drawing sits in a rectangle. That is how the app already is, so nothing changes.',
+      'You chose (22 October) the arch for the library cards only. An opened pattern, watched or drawn along, and the home page’s animated drawing sit in a rectangular cedar frame, so I squared the home drawing again. You also asked to hide or show the original photo while viewing a pattern: the button is now on the drawing’s top corner, “Hide the original” or “Show the original”, instead of down in the side panel, where on a phone it sat a screen below the photo.',
     story: [
       'I compared every screen of the design canvas (style, library, lesson, colour, draw along, phone) with the app, light and dark, desktop and phone. The lesson and the colour stage already match it closely. The differences were these, each now fixed in its own commit.',
       '1, the arch. The design shows each card’s picture as a window in an arch and the home page’s drawing inside a cedar arch; the build had square corners, by oversight, not by decision (A, B, D). 2, the card buttons cut “Watch it drawn” at the border; they now share a row when both fit and stack when not (B). 3, labels and badges still used the old typewriter font, which the design dropped; they now use the text font in small letter-spaced capitals (A).',
@@ -2311,7 +2311,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'Waiting: pushing the design review',
-    text: 'The eight design fixes are committed on this computer and not yet pushed; you chose the arch for the cards only, as built. H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
+    text: 'The eight design fixes are committed on this computer and not yet pushed; you chose the arch for the cards only, and the original photo now hides and shows from a button on the drawing. H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
     link: {
       label: 'Read the hosted Studio acceptance checks',
       href: '#/notes/studio-hosted',

@@ -1146,6 +1146,19 @@ export function Player({
             {showOriginal ? <Original photos={photos} /> : null}
             {picture}
           </main>
+          {/* On the drawing itself, so the photo is hidden or shown where
+              it is, on a phone as on a computer. */}
+          {onWall && photos.length > 0 ? (
+            <button
+              type="button"
+              className="original-toggle"
+              aria-pressed={comparing}
+              title="A photo of the real pattern, beside the wall"
+              onClick={() => setComparing(!comparing)}
+            >
+              {comparing ? 'Hide the original' : 'Show the original'}
+            </button>
+          ) : null}
           {onConstruction ? (
             <button
               type="button"
@@ -1343,8 +1356,6 @@ export function Player({
                   }}
                   grout={grout}
                   onGrout={setGrout}
-                  comparing={photos.length ? comparing : undefined}
-                  onCompare={setComparing}
                   sample={(look) => styleSamples?.[look]}
                 />
               ) : null}

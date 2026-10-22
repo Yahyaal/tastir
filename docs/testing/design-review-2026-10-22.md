@@ -21,7 +21,7 @@ Every artboard of the canvas (style sheet, library, lesson, colour stage, draw a
 
 ## Deliberately unchanged
 
-The lesson's construction board keeps its rectangular cedar frame, as in the canvas's desktop lesson: an arch would hide points near its top corners while the learner draws, pans and zooms. The canvas's phone lesson shows an arch, but the owner chose (22 October) the arch for the cards only: an opened pattern, watched or drawn along, sits in a rectangle on every screen.
+The lesson's construction board keeps its rectangular cedar frame, as in the canvas's desktop lesson: an arch would hide points near its top corners while the learner draws, pans and zooms. The canvas's phone lesson shows an arch, but the owner chose (22 October) the arch for the cards only: an opened pattern, watched or drawn along, sits in a rectangle on every screen, and so does the home page's animated drawing, which was squared again. The owner also asked to hide or show the original photo while viewing a pattern; the toggle moved from the side panel onto the drawing's top corner, where it is next to the photo on a phone too.
 
 ## Noticed, not changed
 

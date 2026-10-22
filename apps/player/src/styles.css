@@ -1535,15 +1535,22 @@ main.stage .drawing:not(.wall) {
   background: var(--saffron);
 }
 
-.compare-toggle {
-  width: 100%;
-}
-
-.player .compare-toggle[aria-pressed='false'] {
-  background: var(--saffron);
-  border-color: var(--saffron);
-  color: var(--lapis-deep);
-  font-weight: 700;
+/* Hides or shows the photo of the original, in the drawing's top corner. */
+.player .plate-area .original-toggle {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border-hover);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 4px 14px
+    color-mix(in srgb, var(--shadow) calc(40% * var(--shadow-k)), transparent);
 }
 
 .hint {
@@ -2667,15 +2674,16 @@ main.stage .drawing:not(.wall) {
   margin: 0;
 }
 
-/* The drawing sits in a cedar arch, as on the design canvas. */
+/* The drawing sits in a cedar frame like the lesson's; only the library's
+   cards are arched, as the owner chose on 22 October. */
 .hero-plate .plate-frame {
-  aspect-ratio: 6 / 7;
+  aspect-ratio: 1;
   background-color: var(--theme-bg-card);
   background-size: 32px 32px;
   background-image:
     linear-gradient(to right, var(--theme-grid-line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--theme-grid-line) 1px, transparent 1px);
-  border-radius: 50% 50% 16px 16px / 43% 43% 16px 16px;
+  border-radius: 16px;
   border: 9px solid var(--theme-frame);
   box-shadow: 0 24px 54px
     color-mix(in srgb, var(--shadow) calc(70% * var(--shadow-k)), transparent);

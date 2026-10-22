@@ -466,6 +466,15 @@ describe('the address', () => {
     15000,
   );
 
+  it('hides and shows the original from the button on the drawing', () => {
+    window.location.hash = '#/minbar-doors-cairo/result';
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: 'Hide the original' }));
+    expect(screen.queryByRole('figure', { name: 'The original' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Show the original' }));
+    expect(screen.getByRole('figure', { name: 'The original' })).toBeTruthy();
+  }, 15000);
+
   it('opens at the finished wall alone when there is no photo', () => {
     window.location.hash = '#/eight-fold-star-and-cross/result';
     render(<App />);
