@@ -84,7 +84,9 @@
   --text: 'Manrope', 'Reem Kufi', system-ui, -apple-system, sans-serif;
   --sans: var(--text);
   --arabic: 'Reem Kufi', 'Noto Kufi Arabic', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
+  /* Labels and badges once used a typewriter face; the design has none, so
+     they share the text face, set as small letter-spaced capitals. */
+  --mono: var(--text);
 
   font-family: var(--text);
   color: var(--theme-text-primary);
@@ -2656,20 +2658,18 @@ main.stage .drawing:not(.wall) {
   margin: 0;
 }
 
+/* The drawing sits in a cedar arch, as on the design canvas. */
 .hero-plate .plate-frame {
-  aspect-ratio: 1;
+  aspect-ratio: 6 / 7;
   background-color: var(--theme-bg-card);
   background-size: 32px 32px;
   background-image:
     linear-gradient(to right, var(--theme-grid-line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--theme-grid-line) 1px, transparent 1px);
-  border-radius: 14px;
-  border: 1px solid var(--theme-border);
-  box-shadow:
-    0 0 0 6px var(--theme-bg-canvas),
-    0 0 0 8px color-mix(in srgb, var(--theme-accent) 25%, transparent),
-    0 24px 54px
-      color-mix(in srgb, var(--shadow) calc(70% * var(--shadow-k)), transparent);
+  border-radius: 50% 50% 16px 16px / 43% 43% 16px 16px;
+  border: 9px solid var(--theme-frame);
+  box-shadow: 0 24px 54px
+    color-mix(in srgb, var(--shadow) calc(70% * var(--shadow-k)), transparent);
   overflow: hidden;
   display: grid;
 }
@@ -2728,7 +2728,6 @@ main.stage .drawing:not(.wall) {
 .hero-plate figcaption {
   font-size: 0.88rem;
   color: var(--on-lapis);
-  letter-spacing: 0.01em;
   font-weight: 500;
   min-height: 1.3em;
 }
@@ -3179,13 +3178,14 @@ main.stage .drawing:not(.wall) {
   text-decoration: none;
 }
 
+/* A card's picture is a window in an arch, as on the design canvas. */
 .card .thumbnail {
   display: block;
   width: 100%;
   aspect-ratio: 1;
   background: var(--theme-bg-surface);
   border: 1px solid var(--theme-border);
-  border-radius: 8px;
+  border-radius: 50% 50% 8px 8px / 46% 46% 8px 8px;
   outline: none;
   overflow: hidden;
   transition:
@@ -5178,20 +5178,21 @@ svg.tiles {
   color: var(--act-make);
 }
 
-/* Watch it drawn and Draw along: two buttons in their own colours. */
+/* Watch it drawn and Draw along: two buttons in their own colours, side by
+   side when both fit their words, else one above the other. */
 .card-actions:has(.card-link) {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 12px;
 }
 
 .library .card-link {
+  flex: 1 1 auto;
   justify-content: center;
   gap: 5px;
-  min-width: 0;
   min-height: 40px;
-  padding: 0 6px;
+  padding: 0 12px;
   border: 1.5px solid currentColor;
   border-radius: 999px;
   font-size: 0.8rem;
