@@ -1653,9 +1653,17 @@ export function Broken({ message }: { message: string }) {
           </span>
           <span>All patterns</span>
         </a>
-        <h1>This pattern cannot be shown</h1>
       </header>
-      <pre className="error">{message}</pre>
+      <section className="notice">
+        <h1>This pattern cannot be shown</h1>
+        <p>Tastir could not open this address. What it found:</p>
+        <pre className="error">{message}</pre>
+        <p className="notice-links">
+          <a className="button" href="#/">
+            Back to all patterns
+          </a>
+        </p>
+      </section>
     </div>
   );
 }
