@@ -114,6 +114,13 @@ To see or remove the apps you allowed, open https://tastir-studio.vercel.app/con
 
 A plugin entry in ChatGPT and an authorization on the Studio connections page are separate records. If ChatGPT says the connector already exists, reuse its existing entry and refresh the tools there. If you see duplicates, identify the working entry before removing an unwanted copy; repeating Add is unnecessary.
 
+## Stop approving every tool
+
+The studio tells each app which of its tools only read (inspect, check, view, the lists, notes and waiting for an answer), that every edit can be undone, and that only **set_reference** replaces something for good (the reference photo and its alignment). Apps use this to group the tools and ask less.
+
+- **claude.ai:** open Settings → Connectors, choose the Tastir studio connector, and set its tools to **Always allow**, a whole group at once or one by one. Choosing **Always allow** when a chat asks also lasts for that tool. Disconnect and connect again if the groups still show the old list.
+- **ChatGPT, Codex and Antigravity:** each asks in its own way; choose the option that remembers the choice for this app when it asks.
+
 ## If something goes wrong
 
 | What you see | What it means and what to do |

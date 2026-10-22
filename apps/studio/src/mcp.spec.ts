@@ -71,6 +71,29 @@ describe.each(BACKENDS)('the studio over MCP, with %s', (kind: BackendKind) => {
         check(value, `${path}.${key}`);
     };
     for (const tool of tools) check(tool.inputSchema, tool.name);
+    // Every tool says whether it only reads, so apps can ask less.
+    const reads = tools
+      .filter((tool) => tool.annotations?.readOnlyHint)
+      .map((tool) => tool.name)
+      .sort();
+    expect(reads).toEqual([
+      'check',
+      'inspect',
+      'list_library',
+      'list_projects',
+      'open_studio',
+      'read_notes',
+      'studio_snapshot',
+      'view',
+      'wait_for_answer',
+    ]);
+    for (const tool of tools) {
+      expect(tool.annotations?.openWorldHint, tool.name).toBe(false);
+      if (!tool.annotations?.readOnlyHint)
+        expect(tool.annotations?.destructiveHint, tool.name).toBe(
+          tool.name === 'set_reference',
+        );
+    }
     const construct = tools.find((tool) => tool.name === 'construct');
     if (!construct?.inputSchema.properties)
       throw new Error('Missing construct input schema');
@@ -191,6 +214,32 @@ describe.each(BACKENDS)('the studio over MCP, with %s', (kind: BackendKind) => {
     });
     expect(r.value.revision).toBe(5);
     expect((await call('check', { project })).value.problems).toEqual([]);
+    // The squares can alternate colors cell by cell.
+    r = await call('paint', {
+      project,
+      revision: 5,
+      repeat: [2, 2],
+      colors: [
+        { piece, color: '#2453a6' },
+        { piece, cell: [1, 0], color: '#2e8b57' },
+        { piece, cell: [0, 1], color: '#2e8b57' },
+      ],
+    });
+    expect(r.error).toBeUndefined();
+    expect(r.value.drawing.tile).toMatchObject({
+      repeat: [2, 2],
+      pieces: [
+        { color: '#2453a6', placed: [{ cell: [1, 0] }, { cell: [0, 1] }] },
+      ],
+    });
+    r = await call('paint', {
+      project,
+      revision: 6,
+      colors: [{ piece, cell: [0, 2], color: '#2e8b57' }],
+    });
+    expect(r.error).toMatch(/outside the 2×2 repeat/);
+    r = await call('undo', { project, revision: 6 });
+    expect(r.value.revision).toBe(7);
     await call('note', { project, text: 'The square repeats; colored blue.' });
     expect(
       (await call('read_notes', { project })).value.notes[0],

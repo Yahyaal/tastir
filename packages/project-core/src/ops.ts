@@ -372,41 +372,107 @@ export function tileProblem(model: Model): string | undefined {
 }
 
 /**
+ * One color for a piece type, or for only some of its pieces: those in one
+ * cell of the color repeat, the nth of its shape in the tile, or those
+ * turned to one direction (the tutorial's placement rules).
+ */
+export interface PaintColor {
+  readonly piece: string;
+  readonly color: string;
+  readonly cell?: readonly number[];
+  readonly nth?: number;
+  readonly turn?: number;
+}
+
+/**
  * Colors the pieces: a preset palette, and #rrggbb colors for named piece
- * types (the ids inspect lists). A palette starts the colors afresh.
+ * types (the ids inspect lists). A palette starts the colors afresh. A
+ * repeat of more than one tile lets the colors of one shape take turns, cell
+ * by cell; colors given for a piece replace its earlier ones, and of its
+ * colors the later win.
  */
 export function paint(
   draft: Draft,
   palette: string | null,
-  colors: readonly { piece: string; color: string }[],
+  colors: readonly PaintColor[],
+  repeat?: readonly number[],
 ): Draft {
   if (!draft.pattern?.cell || !draft.expect)
     fail('Choose a tile that repeats before coloring.');
-  if (palette === null && !colors.length)
+  if (palette === null && !colors.length && !repeat)
     fail('Choose a palette or at least one piece color.');
   if (palette !== null && !Object.hasOwn(PALETTES, palette))
     fail(`Choose a palette from: ${Object.keys(PALETTES).join(', ')}.`);
-  const names = new Set(draft.expect!.pieces.map((p) => p.name));
-  for (const { piece, color } of colors) {
-    if (!names.has(piece))
-      fail(`There is no piece “${piece}”. Pieces: ${[...names].join(', ')}.`);
+  if (
+    repeat &&
+    (repeat.length !== 2 ||
+      !repeat.every((n) => Number.isInteger(n) && n >= 1 && n <= 12))
+  )
+    fail('A repeat is two whole numbers of tiles, each from 1 to 12.');
+  const pattern = draft.pattern!;
+  const was = pattern.placements?.repeat ?? [1, 1];
+  const [m, n] = repeat ?? (palette === null ? was : [1, 1]);
+  const pieces = new Map(draft.expect!.pieces.map((p) => [p.name, p]));
+  const seen = new Set<string>();
+  for (const { piece, color, cell, nth, turn } of colors) {
+    const known = pieces.get(piece);
+    if (!known)
+      fail(
+        `There is no piece “${piece}”. Pieces: ${[...pieces.keys()].join(', ')}.`,
+      );
     if (!/^#[0-9a-f]{6}$/i.test(color))
       fail(`“${color}” is not a #rrggbb color.`);
+    if (
+      cell &&
+      (cell.length !== 2 ||
+        !Number.isInteger(cell[0]) ||
+        !Number.isInteger(cell[1]) ||
+        cell[0]! < 0 ||
+        cell[1]! < 0 ||
+        cell[0]! >= m! ||
+        cell[1]! >= n!)
+    )
+      fail(
+        `The cell [${cell.join(', ')}] for “${piece}” is outside the ${m}×${n} repeat; cells run from [0, 0] to [${m! - 1}, ${n! - 1}].`,
+      );
+    if (
+      nth !== undefined &&
+      (!Number.isInteger(nth) || nth < 0 || nth >= known!.perCell)
+    )
+      fail(
+        `“${piece}” has ${known!.perCell} in each tile, so nth runs from 0 to ${known!.perCell - 1}.`,
+      );
+    if (turn !== undefined && !(turn >= 0 && turn <= 180))
+      fail(`The turn for “${piece}” is a direction from 0 to 180 degrees.`);
+    const key = JSON.stringify([piece, cell, nth, turn]);
+    if (seen.has(key))
+      fail(`“${piece}” is given two colors for the same pieces.`);
+    seen.add(key);
   }
-  if (new Set(colors.map((c) => c.piece)).size !== colors.length)
-    fail('Give each piece one color.');
-  const pattern = draft.pattern!;
-  const before = palette === null ? (pattern.placements?.rules ?? []) : [];
+  // A new repeat moves the cells, so colors kept for old cells go.
+  const moved = was[0] !== m || was[1] !== n;
+  const before = (
+    palette === null ? (pattern.placements?.rules ?? []) : []
+  ).filter((r) => !(moved && r.cell));
   const rules = [
     ...before.filter((r) => !colors.some((c) => c.piece === r.piece)),
-    ...colors.map((c) => ({ piece: c.piece, color: c.color.toLowerCase() })),
+    ...colors.map(({ piece, color, cell, nth, turn }) => ({
+      piece,
+      ...(turn !== undefined ? { turn } : {}),
+      ...(nth !== undefined ? { nth } : {}),
+      ...(cell ? { cell: [cell[0]!, cell[1]!] as [number, number] } : {}),
+      color: color.toLowerCase(),
+    })),
   ];
+  const { placements: _placements, ...look } = pattern;
   return finished({
     ...draft,
     pattern: {
-      ...pattern,
+      ...look,
       ...(palette !== null ? { palette } : {}),
-      placements: { repeat: [1, 1], rules },
+      ...(rules.length
+        ? { placements: { repeat: [m!, n!] as [number, number], rules } }
+        : {}),
     },
   });
 }
@@ -463,13 +529,27 @@ export function inspect(draft: Draft) {
       ? {
           polygon: draft.pattern.cell,
           palette: draft.pattern.palette ?? null,
-          pieces: (draft.expect?.pieces ?? []).map((p) => ({
-            id: p.name,
-            corners: p.vertices,
-            color:
-              draft.pattern?.placements?.rules.find((r) => r.piece === p.name)
-                ?.color ?? null,
-          })),
+          repeat: draft.pattern.placements?.repeat ?? [1, 1],
+          pieces: (draft.expect?.pieces ?? []).map((p) => {
+            const rules =
+              draft.pattern?.placements?.rules.filter(
+                (r) => r.piece === p.name,
+              ) ?? [];
+            const placed = rules.filter(
+              (r) => r.cell || r.nth !== undefined || r.turn !== undefined,
+            );
+            return {
+              id: p.name,
+              corners: p.vertices,
+              perTile: p.perCell,
+              color: rules.find((r) => !placed.includes(r))?.color ?? null,
+              ...(placed.length
+                ? {
+                    placed: placed.map(({ piece: _, ...rule }) => rule),
+                  }
+                : {}),
+            };
+          }),
         }
       : null,
     palettes: Object.keys(PALETTES),

@@ -9,7 +9,7 @@ import {
 import { z } from 'zod';
 import { CONSTRUCTION_GUIDE, ConstructionShape } from '@tastir/agent-protocol';
 import { StudioClient, type StudioCaller } from './client.js';
-import { GoalsShape, LONGEST_WAIT } from './studio.js';
+import { GoalsShape, LONGEST_WAIT, PaintColorShape } from './studio.js';
 import { CARD_HTML } from './card/page.js';
 
 /**
@@ -47,6 +47,21 @@ const Revision = z
   .describe(
     'The revision the edit is based on, from the latest inspect or edit result.',
   );
+
+// What each tool may do, so chat apps can group them and ask less: reads
+// change nothing, edits can all be undone, and a new reference photo
+// replaces the old one and its alignment for good.
+const READS = { readOnlyHint: true, openWorldHint: false } as const;
+const EDITS = {
+  readOnlyHint: false,
+  destructiveHint: false,
+  openWorldHint: false,
+} as const;
+const REPLACES = {
+  readOnlyHint: false,
+  destructiveHint: true,
+  openWorldHint: false,
+} as const;
 
 // ChatGPT's tool discovery rejects oneOf and tuple-style array items. Each
 // construction has a distinct kind, so anyOf is equivalent here. The tuples
@@ -135,6 +150,7 @@ export function createMcpServer(
   server.registerTool(
     'list_projects',
     {
+      annotations: READS,
       description:
         'The studio projects, newest first, with their current revision.',
     },
@@ -143,6 +159,7 @@ export function createMcpServer(
   server.registerTool(
     'list_library',
     {
+      annotations: READS,
       description:
         "Tastir's library tutorials, which a new project can start from.",
     },
@@ -151,6 +168,7 @@ export function createMcpServer(
   server.registerTool(
     'new_project',
     {
+      annotations: EDITS,
       description:
         'Start a project: from O and A only, or from a library tutorial up to one of its steps. Optional goals are checked by check.',
       inputSchema: {
@@ -196,6 +214,7 @@ export function createMcpServer(
   server.registerTool(
     'inspect',
     {
+      annotations: READS,
       description:
         'The current drawing: revision, steps, named points with positions, lines, circles, polygons, ink ids, tile and pieces, and recent history with authors.',
       inputSchema: { project: Project },
@@ -205,6 +224,7 @@ export function createMcpServer(
   server.registerTool(
     'construct',
     {
+      annotations: EDITS,
       description: `Add editor constructions in order (later ones may use earlier names), or remove elements nothing else is built on. All or nothing. ${CONSTRUCTION_GUIDE}`,
       inputSchema: {
         project: Project,
@@ -224,6 +244,7 @@ export function createMcpServer(
   server.registerTool(
     'ink',
     {
+      annotations: EDITS,
       description:
         'Ink straight sides of the pattern between named points, or remove ink by id (ink1, ink2… from inspect). A ruler line is added under a side that has none. All or nothing.',
       inputSchema: {
@@ -243,6 +264,7 @@ export function createMcpServer(
   server.registerTool(
     'set_tile',
     {
+      annotations: EDITS,
       description:
         'Make the repeating tile from four or six named points in order around it. It is refused unless the ink closes pieces that cover it exactly, with no loose ends across its seams. The pieces it finds are listed by inspect.',
       inputSchema: {
@@ -258,25 +280,36 @@ export function createMcpServer(
   server.registerTool(
     'paint',
     {
+      annotations: EDITS,
       description:
-        'Color the pieces: a palette from inspect, and/or #rrggbb colors for piece ids from inspect. A palette starts the colors afresh.',
+        'Color the pieces: a palette from inspect, and/or #rrggbb colors for piece ids from inspect. A palette starts the colors afresh. Pieces of one shape can differ: set repeat to a block of tiles (alternating squares on a square tile is repeat [2, 2], one color for cells [0, 0] and [1, 1], another for [1, 0] and [0, 1]), and narrow a color by cell, by nth (which of the shape in each tile) or by turn. Colors given for a piece replace its earlier ones; later colors win, so give the plain color first.',
       inputSchema: {
         project: Project,
         revision: Revision,
         palette: z.string().nullable().default(null),
-        colors: z
-          .array(z.strictObject({ piece: z.string(), color: z.string() }))
-          .max(128)
-          .default([]),
+        colors: z.array(PaintColorShape).max(128).default([]),
+        repeat: z
+          .array(z.number().int())
+          .length(2)
+          .optional()
+          .describe(
+            'How many tiles along each side of the tile the colors repeat after; [1, 1] by default.',
+          ),
         command_id: CommandId,
       },
     },
-    ({ project, revision, palette, colors, command_id }) =>
-      edit(project, revision, { op: 'paint', palette, colors }, command_id),
+    ({ project, revision, palette, colors, repeat, command_id }) =>
+      edit(
+        project,
+        revision,
+        { op: 'paint', palette, colors, ...(repeat ? { repeat } : {}) },
+        command_id,
+      ),
   );
   server.registerTool(
     'set_goals',
     {
+      annotations: EDITS,
       description:
         'Change what check measures: fold, maximum steps, tile shape, number of kinds of piece.',
       inputSchema: {
@@ -293,6 +326,7 @@ export function createMcpServer(
     server.registerTool(
       direction,
       {
+        annotations: EDITS,
         description: `${direction === 'undo' ? 'Undo' : 'Redo'} the latest changes. With only_mine (the default) it refuses to pass a change someone else made.`,
         inputSchema: {
           project: Project,
@@ -318,6 +352,7 @@ export function createMcpServer(
   server.registerTool(
     'view',
     {
+      annotations: READS,
       description:
         "A picture the studio draws from the saved project (not the owner's screen): the construction (guides faint, ink dark, tile dashed, points named), the wall of colored pieces, the reference photo, or the overlay (the photo with your ink drawn over it in magenta, and O and A in cyan, once the owner has lined it up). Give an area in drawing units (positions from inspect) to look closer. Look after a meaningful change, not after every edit: pictures use a lot of your plan.",
       inputSchema: {
@@ -382,6 +417,7 @@ export function createMcpServer(
   server.registerTool(
     'set_reference',
     {
+      annotations: REPLACES,
       description:
         'Give the project a reference photo from docs/research or apps/player/public/photos. The owner then lines it up in Tastir by placing O and A on it; until then overlay only shows the photo.',
       inputSchema: {
@@ -409,6 +445,7 @@ export function createMcpServer(
   server.registerTool(
     'point',
     {
+      annotations: EDITS,
       description:
         'Mark a named element (from inspect) in Tastir with a short label, to show the owner what you mean. It changes nothing in the drawing.',
       inputSchema: {
@@ -429,6 +466,7 @@ export function createMcpServer(
   server.registerTool(
     'clear_marks',
     {
+      annotations: EDITS,
       description: 'Remove your marks from the drawing.',
       inputSchema: { project: Project },
     },
@@ -442,6 +480,7 @@ export function createMcpServer(
   server.registerTool(
     'ask',
     {
+      annotations: EDITS,
       description:
         'Ask the owner a question, marking the element it is about. It returns the question number at once; then call wait_for_answer. Never guess an answer: carry on with what does not depend on it.',
       inputSchema: {
@@ -475,6 +514,7 @@ export function createMcpServer(
   server.registerTool(
     'wait_for_answer',
     {
+      annotations: READS,
       description: `Wait up to ${LONGEST_WAIT} seconds for the owner's answer to a question. If it has not come, call again, or carry on with what does not depend on it and check read_notes later. The question stays open, and an answer given later is kept.`,
       inputSchema: {
         project: Project,
@@ -502,6 +542,7 @@ export function createMcpServer(
   server.registerTool(
     'check',
     {
+      annotations: READS,
       description:
         "Every remaining problem: broken steps, ink off the construction, the tile, loose ends, and the project's goals. An empty list means it is done.",
       inputSchema: { project: Project },
@@ -512,6 +553,7 @@ export function createMcpServer(
   server.registerTool(
     'note',
     {
+      annotations: EDITS,
       description:
         "Post a short note to the project's thread, which the owner and other agents read.",
       inputSchema: {
@@ -532,6 +574,7 @@ export function createMcpServer(
   server.registerTool(
     'read_notes',
     {
+      annotations: READS,
       description:
         'The notes in the project thread after a note id (0 for all).',
       inputSchema: {
@@ -582,6 +625,7 @@ function registerCard(server: McpServer, client: StudioCaller) {
     server,
     'open_studio',
     {
+      annotations: READS,
       description:
         'Show a project as a live card in the chat: the finished colored repeating wall when ready, otherwise the construction drawing. The owner sees changes and answers your open questions here. Use it when the owner wants to see the drawing or finished result, or after you ask something. In apps without cards it only names the project.',
       inputSchema: { project: Project },
@@ -611,6 +655,7 @@ function registerCard(server: McpServer, client: StudioCaller) {
     server,
     'studio_snapshot',
     {
+      annotations: READS,
       description:
         'For the studio card only: the project at its latest revision, with the picture when the revision is newer than the one given.',
       inputSchema: {
@@ -698,6 +743,7 @@ function registerCard(server: McpServer, client: StudioCaller) {
     server,
     'answer_question',
     {
+      annotations: EDITS,
       description:
         "For the studio card only: the owner's answer to a question, typed into the card.",
       inputSchema: {

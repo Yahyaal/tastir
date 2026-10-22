@@ -75,6 +75,31 @@ export const Command = z
   .optional();
 
 const Names = z.array(z.string().min(1).max(180)).max(128);
+/** A piece's color, for all of its pieces or only some (see paint). */
+export const PaintColorShape = z.strictObject({
+  piece: z.string(),
+  color: z.string(),
+  cell: z
+    .array(z.number().int())
+    .length(2)
+    .optional()
+    .describe(
+      'Only the pieces in this cell of the repeat, from [0, 0] to the repeat minus one.',
+    ),
+  nth: z
+    .number()
+    .int()
+    .optional()
+    .describe(
+      "Only this one of the shape's pieces in each tile, from 0 to perTile minus one.",
+    ),
+  turn: z
+    .number()
+    .optional()
+    .describe(
+      'Only pieces whose long axis points this way, in degrees from 0 to 180.',
+    ),
+});
 export const EditShape = z.discriminatedUnion('op', [
   z.strictObject({
     op: z.literal('construct'),
@@ -93,10 +118,8 @@ export const EditShape = z.discriminatedUnion('op', [
   z.strictObject({
     op: z.literal('paint'),
     palette: z.string().nullable().default(null),
-    colors: z
-      .array(z.strictObject({ piece: z.string(), color: z.string() }))
-      .max(128)
-      .default([]),
+    colors: z.array(PaintColorShape).max(128).default([]),
+    repeat: z.array(z.number().int()).length(2).optional(),
   }),
   z.strictObject({ op: z.literal('replace'), draft: z.unknown() }),
   z.strictObject({ op: z.literal('goals'), goals: GoalsShape }),
@@ -175,7 +198,7 @@ function change(edit: Edit): (draft: Draft) => Draft {
     case 'tile':
       return (d) => setTile(d, edit.vertices);
     case 'paint':
-      return (d) => paint(d, edit.palette, edit.colors);
+      return (d) => paint(d, edit.palette, edit.colors, edit.repeat);
     case 'replace':
       return () => {
         const parsed = DraftShape.safeParse(edit.draft);

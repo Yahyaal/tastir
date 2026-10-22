@@ -233,6 +233,66 @@ describe('studio pictures', () => {
     expect(() => wallSvg(construct(blank(), SQUARE))).toThrow(/no wall yet/);
   });
 
+  it('alternates the colors of one shape over a larger repeat', () => {
+    const tiled = setTile(ink(construct(blank(), SQUARE), SIDES), [
+      'A',
+      'N',
+      'W',
+      'S',
+    ]);
+    const checker = paint(
+      tiled,
+      null,
+      [
+        { piece: 'square', color: '#2453a6' },
+        { piece: 'square', cell: [1, 0], color: '#2e8b57' },
+        { piece: 'square', cell: [0, 1], color: '#2e8b57' },
+      ],
+      [2, 2],
+    );
+    const tile = inspect(checker).tile!;
+    expect(tile.repeat).toEqual([2, 2]);
+    expect(tile.pieces[0]).toMatchObject({
+      color: '#2453a6',
+      perTile: 1,
+      placed: [
+        { cell: [1, 0], color: '#2e8b57' },
+        { cell: [0, 1], color: '#2e8b57' },
+      ],
+    });
+    // On the 5 by 5 wall, the 13 even squares are blue, the 12 odd ones green.
+    const text = wallSvg(checker);
+    expect(text.split('fill="#2453a6"').length - 1).toBe(13);
+    expect(text.split('fill="#2e8b57"').length - 1).toBe(12);
+    expect(problems(checker)).toEqual([]);
+
+    // One plain color again goes back to one color for every square.
+    const plain = paint(checker, null, [{ piece: 'square', color: '#c62828' }]);
+    expect(wallSvg(plain).split('fill="#c62828"').length - 1).toBe(25);
+    expect(inspect(plain).tile!.pieces[0]).not.toHaveProperty('placed');
+  });
+
+  it('refuses a placed color that names no pieces, saying which', () => {
+    const tiled = setTile(ink(construct(blank(), SQUARE), SIDES), [
+      'A',
+      'N',
+      'W',
+      'S',
+    ]);
+    const red = { piece: 'square', color: '#c62828' };
+    expect(() =>
+      paint(tiled, null, [{ ...red, cell: [2, 0] }], [2, 2]),
+    ).toThrow(/cell \[2, 0\] for “square” is outside the 2×2 repeat/);
+    expect(() => paint(tiled, null, [{ ...red, cell: [1, 0] }])).toThrow(
+      /outside the 1×1 repeat/,
+    );
+    expect(() => paint(tiled, null, [{ ...red, nth: 1 }])).toThrow(
+      /“square” has 1 in each tile/,
+    );
+    expect(() => paint(tiled, null, [red], [0, 2])).toThrow(/from 1 to 12/);
+    expect(() => paint(tiled, null, [red, red])).toThrow(/two colors/);
+  });
+
   it('shows a part of the drawing when asked', () => {
     const text = constructionSvg(construct(blank(), SQUARE), {
       x: -0.5,
