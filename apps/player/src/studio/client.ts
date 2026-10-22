@@ -65,13 +65,25 @@ export async function studioCall<T>(
   return value;
 }
 
-type Pulse = { revision: number; stamp: string; marks: string };
+type Pulse = {
+  revision: number;
+  stamp: string;
+  marks: string;
+  /** The newer drawing, when the page said which revision it has. */
+  latest?: unknown;
+};
 
 type StudioEvent = {
   project: string;
   revision: number;
   kind?: 'drawing' | 'notes' | 'marks' | 'reference';
+  /** For a drawing that changed, the project's /draft answer, when sent. */
+  latest?: unknown;
 };
+
+/** A project's pulse path, asking for the drawing if it is newer than the last. */
+const pulsePath = (project: string, last?: Pulse) =>
+  `/projects/${project}/pulse${last ? `?since=${last.revision}` : ''}`;
 
 /**
  * Calls back on every change any studio client makes. Locally the studio
@@ -111,13 +123,21 @@ export function useStudioEvents(
     // Every kind that changed is told, and the first answer too, since
     // something may have changed while the page was loading; a page
     // ignores a revision it already has.
+    // A new revision's drawing carries the photo too, so the photo alone is
+    // fetched only when something changed without one.
     const compare = (p: Pulse) => {
       if (!project) return;
       if (p.revision !== last?.revision)
-        emit({ project, revision: p.revision, kind: 'drawing' });
+        emit({
+          project,
+          revision: p.revision,
+          kind: 'drawing',
+          ...(p.latest ? { latest: p.latest } : {}),
+        });
       if (p.stamp !== last?.stamp) {
         emit({ project, revision: p.revision, kind: 'notes' });
-        emit({ project, revision: p.revision, kind: 'reference' });
+        if (p.revision === last?.revision)
+          emit({ project, revision: p.revision, kind: 'reference' });
       }
       if (p.marks !== last?.marks)
         emit({ project, revision: p.revision, kind: 'marks' });
@@ -137,10 +157,11 @@ export function useStudioEvents(
           return response.ok ? response.json() : null;
         },
         refresh: async (signal) => {
-          const response = await fetch(
-            studioUrl(`/projects/${project}/pulse`),
-            { credentials: 'same-origin', cache: 'no-store', signal },
-          );
+          const response = await fetch(studioUrl(pulsePath(project, last)), {
+            credentials: 'same-origin',
+            cache: 'no-store',
+            signal,
+          });
           if (!response.ok) throw new Error('The studio did not answer.');
           const p = (await response.json()) as Pulse;
           if (signal.aborted) throw new Error('Cancelled.');
@@ -154,9 +175,7 @@ export function useStudioEvents(
       if (!document.hidden)
         try {
           if (project)
-            compare(
-              await studioCall<Pulse>('GET', `/projects/${project}/pulse`),
-            );
+            compare(await studioCall<Pulse>('GET', pulsePath(project, last)));
           else {
             const now = JSON.stringify(await studioCall('GET', '/projects'));
             if (now !== list) emit({ project: '', revision: 0 });

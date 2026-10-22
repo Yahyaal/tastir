@@ -86,8 +86,15 @@ export async function route(
     const id = parts[1];
     const what = parts[2] ?? '';
     if (method === 'GET' && what === '') return json(await studio.view(id));
-    if (method === 'GET' && what === 'pulse')
-      return json(await studio.pulse(id));
+    if (method === 'GET' && what === 'pulse') {
+      const since = url.searchParams.get('since');
+      return json(
+        await studio.pulse(
+          id,
+          since !== null && /^\d+$/.test(since) ? Number(since) : undefined,
+        ),
+      );
+    }
     if (method === 'GET' && what === 'export') {
       const zip = await studio.exportZip(id);
       return { kind: 'file', type: 'application/zip', ...zip };

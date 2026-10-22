@@ -294,16 +294,17 @@ function StudioProject({ id }: { id: string }) {
     [id],
   );
 
+  const show = useCallback((next: Loaded) => {
+    if (next.revision <= revision.current) return;
+    revision.current = next.revision;
+    shown.current = next.draft;
+    setLoaded(next);
+  }, []);
   const fetchLatest = useCallback(() => {
     studioCall<Loaded>('GET', `/projects/${id}/draft`)
-      .then((next) => {
-        if (next.revision <= revision.current) return;
-        revision.current = next.revision;
-        shown.current = next.draft;
-        setLoaded(next);
-      })
+      .then(show)
       .catch((e: Error) => setError(e.message));
-  }, [id]);
+  }, [id, show]);
   useEffect(fetchLatest, [fetchLatest]);
 
   const flush = useCallback(() => {
@@ -386,6 +387,7 @@ function StudioProject({ id }: { id: string }) {
     }
     if (event.revision <= revision.current) return;
     if (sending.current || pending.current) behind.current = true;
+    else if (event.latest) show(event.latest as Loaded);
     else fetchLatest();
   }, id);
 

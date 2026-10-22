@@ -45,6 +45,12 @@ test('an agent’s edit arrives through the live room at once', async ({
   // Let the page connect to its room.
   await page.waitForTimeout(1500);
   const steps = page.getByRole('navigation', { name: 'Steps' });
+  // Each change costs the page one request: the pulse brings the drawing.
+  const asked: string[] = [];
+  page.on('request', (request) => {
+    const path = new URL(request.url()).pathname;
+    if (/\/(pulse|draft)$/.test(path)) asked.push(path.split('/').at(-1) ?? '');
+  });
   for (let i = 1; i <= 3; i++) {
     const start = Date.now();
     await agent(page, 'POST', `/projects/${id}/edit`, {
@@ -58,6 +64,7 @@ test('an agent’s edit arrives through the live room at once', async ({
     // Without the room the page checks every three seconds.
     expect(ms).toBeLessThan(1500);
   }
+  expect(asked).toEqual(['pulse', 'pulse', 'pulse']);
 });
 
 test('with the live room unreachable, the page still keeps up', async ({

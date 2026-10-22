@@ -443,8 +443,12 @@ export class Studio {
     }
   }
 
-  /** What a page polls: the revision, and stamps for notes, photo and marks. */
-  async pulse(id: string) {
+  /**
+   * What a page polls: the revision, and stamps for notes, photo and marks.
+   * Given the revision the page has, a newer drawing comes in the same
+   * answer, so a page told of a change fetches once, not twice in a row.
+   */
+  async pulse(id: string, since?: number) {
     const [pulse, marks] = await Promise.all([
       this.backend.pulse(id),
       this.backend.marks(id),
@@ -454,6 +458,9 @@ export class Studio {
       revision: pulse.revision,
       stamp: pulse.stamp,
       marks: marks.map((m) => m.id).join(','),
+      ...(since !== undefined && pulse.revision > since
+        ? { latest: await this.draft(id) }
+        : {}),
     };
   }
 

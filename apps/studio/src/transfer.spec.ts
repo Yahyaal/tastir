@@ -97,4 +97,28 @@ describe('moving a project between the local and the hosted studio', () => {
       expect(after.stamp).not.toBe(before.stamp);
     }
   });
+
+  it('sends a newer drawing with the pulse, so a page fetches once', async () => {
+    for (const store of [files, pg]) {
+      const studio = new Studio(store.root, tutorials, store.backend);
+      const id = (await studio.create({ author: 'owner', title: 'Pulse' }))
+        .project;
+      const seen = (await studio.pulse(id)).revision;
+      expect(await studio.pulse(id, seen)).not.toHaveProperty('latest');
+      await studio.edit(id, {
+        author: 'claude',
+        revision: seen,
+        edit: {
+          op: 'construct',
+          add: [{ kind: 'circle', name: 'C1', centre: 'O', through: 'A' }],
+          remove: [],
+        },
+      });
+      const pulse = await studio.pulse(id, seen);
+      expect(pulse.latest).toEqual(await studio.draft(id));
+      expect(pulse.latest?.revision).toBe(seen + 1);
+      // Without the page's revision, the pulse stays small.
+      expect(await studio.pulse(id)).not.toHaveProperty('latest');
+    }
+  });
 });
