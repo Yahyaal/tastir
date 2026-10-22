@@ -5,6 +5,13 @@
   "fold": 6,
   "style": "Tulunid",
   "level": "advanced",
+  "construction": {
+    "basis": "instructions",
+    "fidelity": "adapted",
+    "note": "The sequence follows Mamoot’s Ibn Tulun window lesson: triangles, three squares, twelve-pointed star, fish and two bending stars. The work log records an exact final-ink overlay.",
+    "changes": "The source does not fully specify the fish and bending-star endpoints in words. Those details were measured from its step drawings and expressed as exact crossings and parallel lines. We use its clover repeat.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Islamic Geometry: A Window from Ibn Tulun Masjid",

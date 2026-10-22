@@ -5,6 +5,13 @@
   "fold": 6,
   "style": "Mamluk",
   "level": "intermediate",
+  "construction": {
+    "basis": "instructions",
+    "fidelity": "close",
+    "note": "The motif and inking follow Mamoot’s Hammerhead instructions. The work log records source-step comparisons and an ink overlay.",
+    "changes": "Where the source’s size note disagrees with its written construction, we follow the written construction and drawing. Of the source’s two repeats, we use the one matching the Alcázar reference.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Islamic Geometry: Six-Fold Hammerhead Pattern",

@@ -5,6 +5,13 @@
   "fold": 4,
   "style": "Mughal",
   "level": "advanced",
+  "construction": {
+    "basis": "instructions",
+    "fidelity": "adapted",
+    "note": "The ring circles, squares and ink follow Sandy Kurt’s 4fold Pattern Tutorial. The work log records an exact final-ink overlay.",
+    "changes": "The app groups the square sides by direction and draws shared long lines once. The current 12 steps are not the PDF’s 12 numbered operations; later simplification also removed intermediate mark points. No monument match is established.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "4fold Pattern Tutorial",
@@ -15,7 +22,9 @@
         7,
         8,
         9,
-        10
+        10,
+        11,
+        12
       ]
     }
   ],

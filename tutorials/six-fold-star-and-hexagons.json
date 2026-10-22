@@ -5,6 +5,13 @@
   "fold": 6,
   "style": "Timurid",
   "level": "beginner",
+  "construction": {
+    "basis": "instructions",
+    "fidelity": "adapted",
+    "note": "The triangles, hexagon and channel lines follow Charlotte Webb’s ATM handout. The work log records first-try matches of those drawings and the final motif.",
+    "changes": "App step 7 replaces the handout’s suggested large-hexagon repeat with a smaller hexagon. This is an intentional correction made to match the tilework photo, so the complete lesson is an adaptation.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Art in the Mathematics Classroom: Islamic Geometry (ATM conference handout)",

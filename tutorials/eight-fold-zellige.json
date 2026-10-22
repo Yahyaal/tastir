@@ -5,6 +5,13 @@
   "fold": 8,
   "style": "Moroccan",
   "level": "intermediate",
+  "construction": {
+    "basis": "original",
+    "fidelity": "not-applicable",
+    "note": "This simpler rosette was worked out for Tastir. An earlier attempt associated it with the text of Sandy Kurt’s zellige PDF, but the recorded drawing comparison found a different design.",
+    "changes": "It must not be described as following Kurt’s wheel instructions. The owner kept it as a separate construction study. A matching historical panel has not been established.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [],
   "given": {
     "O": "The centre of the rosette.",

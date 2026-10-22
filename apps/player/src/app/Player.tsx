@@ -43,6 +43,7 @@ import {
 } from './model';
 import { Original } from './Original';
 import { LessonTitle, byOf, stepSources } from './LessonTitle';
+import { ConstructionSource } from './ConstructionSource';
 import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
 import { ColourPanel } from './ColourPanel';
 import { Tiles } from './Tiles';
@@ -1177,6 +1178,7 @@ export function Player({
               ) : null}
               <p className="label">{label}</p>
               {hint ? <p className="stage-hint">{hint}</p> : null}
+              <ConstructionSource tutorial={tutorial} />
               {tutorial.verification?.status === 'unverified' ? (
                 <details className="verification-note">
                   <summary>Historical match unverified</summary>
@@ -1194,7 +1196,7 @@ export function Player({
               </p>
               {sources.length ? (
                 <p className="step-source">
-                  This step follows{' '}
+                  Source for this step:{' '}
                   {sources.map((c, i) => (
                     <span key={c.url}>
                       {i ? ' and ' : ''}
@@ -1204,7 +1206,7 @@ export function Player({
                         rel="noreferrer"
                         title={c.source}
                       >
-                        {byOf(c)}’s tutorial <span aria-hidden="true">↗</span>
+                        {byOf(c)} <span aria-hidden="true">↗</span>
                       </a>
                     </span>
                   ))}

@@ -8,6 +8,13 @@
   "star": 12,
   "style": "Mamluk",
   "level": "beginner",
+  "construction": {
+    "basis": "instructions",
+    "fidelity": "close",
+    "note": "The chord-sized inner circle, 150° star lines, inking and square tile follow Samira Mian’s twelve-fold rosette lesson. The project records a line-for-line comparison with her pictures.",
+    "changes": "The app groups the work into 11 steps, including explicit intersection marks. This audit checked the written construction and saved source page; the video and every intermediate picture were not compared again.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",

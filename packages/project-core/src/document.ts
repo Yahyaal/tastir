@@ -77,6 +77,8 @@ export function copyUpTo(
     pattern: _pattern,
     expect: _expect,
     photos: _photos,
+    // The audit describes the complete library sequence, not an editable copy.
+    construction: _construction,
     ...rest
   } = tutorial;
   return {

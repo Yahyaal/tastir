@@ -8,6 +8,13 @@
   "star": 8,
   "style": "Nasrid",
   "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s AL01 drawing. We devised the construction using large and small stars whose radii are fixed by two crossings. The reference does not supply this sequence of steps.",
+    "changes": "The app’s compass operations, step order and named intersections are our reconstruction. Recorded drawing and photo comparisons assess the finished line structure, not whether these were the historical construction steps.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Tiling Search, data182/AL01: Alhambra, Baño Real (Comares bath)",

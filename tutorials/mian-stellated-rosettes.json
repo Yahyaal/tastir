@@ -8,6 +8,13 @@
   "star": 12,
   "style": "Mamluk",
   "level": "advanced",
+  "construction": {
+    "basis": "instructions",
+    "fidelity": "unassessed",
+    "note": "The credits say the construction follows activity 8 of Samira Mian’s lesson step by step. The generators and saved reference pictures support that origin; the finished pattern also has recorded photo comparisons.",
+    "changes": "App steps 9–11 build the corner hexagons and octagon, and 12–13 mark endpoints and the tile. A complete comparison of these 13 current steps with the activity 8 video is still needed; matching the minbar does not prove the sequence matches.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Twelvefold Islamic Geometric Rosette, activity 8: stellated rosettes in a square arrangement (video)",

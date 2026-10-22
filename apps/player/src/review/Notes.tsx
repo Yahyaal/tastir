@@ -107,6 +107,12 @@ export const DOCS: readonly {
     text: read('patterns/QUEUE.md'),
   },
   {
+    key: 'construction-sources',
+    label: 'Pattern construction sources',
+    file: 'patterns/CONSTRUCTION-AUDIT.md',
+    text: read('patterns/CONSTRUCTION-AUDIT.md'),
+  },
+  {
     key: 'status',
     label: 'Pattern status',
     file: 'patterns/STATUS.md',

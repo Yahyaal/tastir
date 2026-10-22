@@ -9,6 +9,13 @@
   "chiral": true,
   "style": "Nasrid",
   "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s C55 drawing. We devised the construction using frets on the grid diagonals and a star radius found by a single line. The reference does not supply this sequence of steps.",
+    "changes": "The app’s compass operations, step order and named intersections are our reconstruction. Recorded drawing and photo comparisons assess the finished line structure, not whether these were the historical construction steps.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Tiling Search, data18/C55: Alhambra, Patio de los Leones",

@@ -26,6 +26,9 @@ For a new rosette or a change that adds construction lines, crossings, helpers o
 
 ## Rules
 
+- Record how the teaching sequence was obtained in `construction`: published instructions, a mixture with our additions, reconstruction from a finished design, an app-developed study, or a standard construction. Keep instruction fidelity separate from historical verification. Record which app steps correspond to source steps, and describe changes to the motif, inking and repeat; a finished drawing is not a numbered construction. See [the construction audit](CONSTRUCTION-AUDIT.md).
+- Reassess that record when changing the construction, ink or repeat. A generator must preserve the record for a formatting-only rebuild, or update it when its output changes; do not carry an old fidelity verdict onto a different sequence.
+
 - Step text is in our own words. Credit every source whose specific sequence you followed in the tutorial's `credits` (`source`, `creator`, `url`, `note`, `steps`).
 - No coordinates, ever. Every point is a crossing or tangency of earlier elements, chosen with `pick` rules that cannot flip (prefer `angle` or `nearest`/`farthest` with a clear margin).
 - When a pattern needs something the format lacks, say exactly what in the pattern log and the report, rather than changing the engine in a parallel branch.

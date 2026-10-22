@@ -8,6 +8,13 @@
   "chiral": true,
   "style": "Nasrid",
   "level": "advanced",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s PG365 drawing. We devised the construction using sixths of the grid unit and compass-built small diamonds, preserving the pinwheel’s handedness. The reference does not supply this sequence of steps.",
+    "changes": "The app’s compass operations, step order and named intersections are our reconstruction. Recorded drawing and photo comparisons assess the finished line structure, not whether these were the historical construction steps.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Tiling Search, data8/PG365: Alhambra, Sala de los Reyes",

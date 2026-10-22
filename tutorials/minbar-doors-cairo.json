@@ -7,6 +7,13 @@
   "fold": 12,
   "style": "Mamluk",
   "level": "intermediate",
+  "construction": {
+    "basis": "mixed",
+    "fidelity": "adapted",
+    "note": "The inner circle, twelve star lines and hexagonal tile use Samira Mian’s method. The actual lines to ink were reconstructed from the Met’s photograph of the minbar doors.",
+    "changes": "The rosette is inked differently from the plain Mian tutorial to reproduce the doors: small star, kites, flat-ended shields and triangles between rosettes. A measured finished-design match is recorded; there is no published sequence for the entire door pattern.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",

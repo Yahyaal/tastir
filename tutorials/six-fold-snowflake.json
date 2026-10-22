@@ -5,6 +5,13 @@
   "fold": 6,
   "style": "Mamluk",
   "level": "beginner",
+  "construction": {
+    "basis": "instructions",
+    "fidelity": "close",
+    "note": "The motif and inking follow Mamoot’s numbered Snowflake instructions. The original work log records step comparisons and a corrected small star that matches the source’s lines.",
+    "changes": "The six-fold foundation is expanded into several app steps. The repeat uses the source’s hexagon. The current written sequence was checked against the saved page; the earlier image overlay has not been rerun.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Islamic Geometry: A Six-Fold “Snowflake”",
