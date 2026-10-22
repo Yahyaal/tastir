@@ -17,6 +17,7 @@ Every artboard of the canvas (style sheet, library, lesson, colour stage, draw a
 | No library search | Asked for by the design and the 14 October UX review | Search by name, subtitle, tradition or address, case- and accent-insensitive, kept with the filters, cleared by Clear all (`bce4d79`) |
 | A broken address showed red typewriter text in the top bar | Old error view | A notice like the missing-design page, with a way back (`1878913`) |
 | Editor tools and upcoming chips square-cornered | Not covered by the redesign tasks | Pills (`7dec029`) |
+| The editor's title fell below Play and the kept status on a phone | Header order | Title on the first row, Play and the status on the second (`fb5ad78`) |
 
 ## Deliberately unchanged
 
@@ -24,11 +25,11 @@ The lesson's construction board keeps its rectangular cedar frame, as in the can
 
 ## Noticed, not changed
 
-The editor's header on a phone is crowded (the title sits under Play and “Kept in this browser”). The Comares bones card has no subtitle; that is tutorial text, not design.
+The Comares bones card has no subtitle; that is tutorial text, not design.
 
 ## Checks
 
-Player unit tests 755 passed (1 skipped), lint and typecheck pass, and `pnpm test:browser` 151 passed (17 skipped) on desktop, tablet and phone, after all seven fixes. The commits are local; nothing was pushed.
+Player unit tests 755 passed (1 skipped), lint and typecheck pass, and `pnpm test:browser` 151 passed (17 skipped) on desktop, tablet and phone, after the first seven fixes; the editor tests (199) and the browser suite again after the eighth. The commits are local; nothing was pushed.
 
 ## Lesson
 

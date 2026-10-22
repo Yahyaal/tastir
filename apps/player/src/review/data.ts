@@ -40,12 +40,12 @@ export const PATTERNS: readonly Pattern[] = [
     fold: 8,
     status: 'decide',
     summary:
-      'You asked (21 October) why the cards lost the arch from the design, and for a full review of the app against the design canvas, with every fix made overnight. Seven fixes are in, one question is left.',
+      'You asked (21 October) why the cards lost the arch from the design, and for a full review of the app against the design canvas, with every fix made overnight. Eight fixes are in, one question is left.',
     story: [
       'I compared every screen of the design canvas (style, library, lesson, colour, draw along, phone) with the app, light and dark, desktop and phone. The lesson and the colour stage already match it closely. The differences were these, each now fixed in its own commit.',
       '1, the arch. The design shows each card’s picture as a window in an arch and the home page’s drawing inside a cedar arch; the build had square corners, by oversight, not by decision (A, B, D). 2, the card buttons cut “Watch it drawn” at the border; they now share a row when both fit and stack when not (B). 3, labels and badges still used the old typewriter font, which the design dropped; they now use the text font in small letter-spaced capitals (A).',
-      '4, draw along was furthest from the design: numbered capsules, a blue heading and tiny square tools. It now has the lesson’s khatam-star timeline, cedar labels, the tools in one pill with the chosen tool in saffron, and pill buttons. The layout is unchanged, so the board still never moves between steps (C). 5, the design and the 14 October UX review both asked for a library search: type a name, place or tradition, in any case and without accents (E). 6, an address Tastir cannot open now shows a plain notice with a way back instead of red typewriter text (G). 7, the editor’s tools and the upcoming page’s chips are pills like everything else (F).',
-      'Left as they are, on purpose: the lesson’s drawing keeps its rectangular cedar frame, as in the design’s desktop lesson (H), because an arch would hide points and circles near its top corners while you draw and zoom. The design’s phone lesson does show it in an arch (I is the app today), which is the question below. Noticed but not changed: the editor’s header on a phone is crowded (its title sits under Play and “Kept in this browser”), and the Comares bones card has no line under its name, which is tutorial text rather than design.',
+      '4, draw along was furthest from the design: numbered capsules, a blue heading and tiny square tools. It now has the lesson’s khatam-star timeline, cedar labels, the tools in one pill with the chosen tool in saffron, and pill buttons. The layout is unchanged, so the board still never moves between steps (C). 5, the design and the 14 October UX review both asked for a library search: type a name, place or tradition, in any case and without accents (E). 6, an address Tastir cannot open now shows a plain notice with a way back instead of red typewriter text (G). 7, the editor’s tools and the upcoming page’s chips are pills like everything else (F). 8, on a phone the editor’s title now comes first, with Play and “Kept in this browser” on the row under it.',
+      'Left as they are, on purpose: the lesson’s drawing keeps its rectangular cedar frame, as in the design’s desktop lesson (H), because an arch would hide points and circles near its top corners while you draw and zoom. The design’s phone lesson does show it in an arch (I is the app today), which is the question below. Noticed but not changed: the Comares bones card has no line under its name, which is tutorial text rather than design.',
       'Checks: player unit tests 755 passed (1 skipped), lint and typecheck pass, and the browser suite 151 passed (17 skipped) on desktop, tablet and phone. Nothing is pushed, so the live site is unchanged until you say so.',
     ],
     pictures: [
@@ -1907,7 +1907,7 @@ export const PROGRESS: {
   done: [
     {
       title: 'Design review: the app brought back to the approved design',
-      text: 'Arched card pictures and a cedar arch on the home drawing, card buttons that fit, the old typewriter font gone, draw along in the lesson’s look, a library search, a plain page for a broken address, and pill controls in the editor and upcoming page. One question: an arch for the lesson on a phone.',
+      text: 'Arched card pictures and a cedar arch on the home drawing, card buttons that fit, the old typewriter font gone, draw along in the lesson’s look, a library search, a plain page for a broken address, pill controls in the editor and upcoming page, and the editor’s title first on a phone. One question: an arch for the lesson on a phone.',
       link: {
         label: 'See the review and the pictures',
         href: '#design-review-2026-10-22',
@@ -2330,7 +2330,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'Waiting: your look at the design review',
-    text: 'The seven design fixes are committed on this computer and not yet pushed. H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
+    text: 'The eight design fixes are committed on this computer and not yet pushed. H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
     link: {
       label: 'Read the hosted Studio acceptance checks',
       href: '#/notes/studio-hosted',
