@@ -38,7 +38,7 @@
     },
     {
       "id": 2,
-      "text": "Draw a vertical line through O. It crosses the first circle at E and G. The horizontal line crosses it at A and C. Draw a circle with centre A through O. It crosses the line again at B. Draw a circle with centre C through O. It crosses the line again at D. Draw a circle with centre E through O. It crosses the vertical line again at F. Draw a circle with centre G through O. It crosses the vertical line again at H.",
+      "text": "Draw a vertical line through O. It crosses the first circle at E and G. The horizontal line crosses it at A and C. Draw circles with centres A and C, through O. They cross the horizontal line again at B and D. Draw circles with centres E and G, through O. They cross the vertical line again at F and H.",
       "create": {
         "C": { "point": { "meet": ["c", "h"], "pick": { "angle": 180 } } },
         "v": { "line": { "through": "O", "perpendicularTo": "h" } },

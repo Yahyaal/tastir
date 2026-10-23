@@ -119,8 +119,8 @@
     },
     {
       "id": 7,
-      "text": "Draw a straight line through C3 and J2. Draw a straight line through C2 and J2. Draw a straight line through J4 and C7. Draw a straight line through J4 and C6. Draw a straight line through C4 and C3. Draw a straight line through C2 and C1. Draw a straight line through C5 and C6. Draw a straight line through C7 and C8. C1 to C8 are where the four small circles cross the lines through M1 to M4.",
-      "textWithoutHelpers": "Draw a straight line through C3 and J2. Draw a straight line through C2 and J2. Draw a straight line through J4 and C7. Draw a straight line through J4 and C6. Draw a straight line through C4 and C3. Draw a straight line through C2 and C1. C1 to C8 are where the four small circles cross the lines through M1 to M4.",
+      "text": "Draw a straight line through C3 and J2, C2 and J2, J4 and C7, and J4 and C6. Draw a straight line through C4 and C3, C2 and C1, C5 and C6, and C7 and C8. C1 to C8 are where the four small circles cross the lines through M1 to M4.",
+      "textWithoutHelpers": "Draw a straight line through C3 and J2, C2 and J2, J4 and C7, and J4 and C6. Draw a straight line through C4 and C3, and C2 and C1. C1 to C8 are where the four small circles cross the lines through M1 to M4.",
       "create": {
         "C3": { "point": { "meet": ["cNW", "vW"], "pick": { "angle": 90 } } },
         "C4": { "point": { "meet": ["cNW", "hN"], "pick": { "angle": 180 } } },
@@ -171,8 +171,8 @@
     },
     {
       "id": 9,
-      "text": "Draw a straight line through P7 and P3. Draw a straight line through P11 and P15. Draw a straight line through P22 and P23. Draw a straight line through P19 and P18. Draw a straight line through P1 and P8. Draw a straight line through P16 and P9. Draw a straight line through P24 and P21. Draw a straight line through P17 and P20. Draw a straight line through P5 and P6. Draw a straight line through P4 and P2. Draw a straight line through P12 and P10. Draw a straight line through P13 and P14. These lines shape the facets of the star and the corners.",
-      "textWithoutHelpers": "Draw a straight line through P7 and P3. Draw a straight line through P11 and P15. Draw a straight line through P22 and P23. Draw a straight line through P19 and P18. Draw a straight line through P1 and P8. Draw a straight line through P16 and P9. Draw a straight line through P24 and P21. Draw a straight line through P17 and P20. Draw a straight line through P5 and P6. Draw a straight line through P4 and P2. Draw a straight line through P12 and P10. Draw a straight line through P13 and P14. These lines shape the facets of the star and the corners.",
+      "text": "Draw a straight line through P7 and P3, P11 and P15, P22 and P23, and P19 and P18. Draw a straight line through P1 and P8, P16 and P9, P24 and P21, and P17 and P20. Draw a straight line through P5 and P6, P4 and P2, P12 and P10, and P13 and P14. These lines shape the facets of the star and the corners.",
+      "textWithoutHelpers": "Draw a straight line through P7 and P3, P11 and P15, P22 and P23, and P19 and P18. Draw a straight line through P1 and P8, P16 and P9, P24 and P21, and P17 and P20. Draw a straight line through P5 and P6, P4 and P2, P12 and P10, and P13 and P14. These lines shape the facets of the star and the corners.",
       "create": {
         "P7": { "point": { "meet": ["h_top_inner", "diag_p1"] } },
         "P3": { "point": { "meet": ["v_right_inner", "diag_p2"] } },

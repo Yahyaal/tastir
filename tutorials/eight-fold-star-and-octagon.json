@@ -88,7 +88,7 @@
     },
     {
       "id": 5,
-      "text": "Draw a straight line through M2 and M1. Draw a straight line through M3 and M4. Draw a straight line through M4 and M1. Draw a straight line through M3 and M2. These lines make a square that sits flat. They cross the horizontal and vertical lines halfway out, at jE, jN, jW and jS.",
+      "text": "Draw a straight line through M2 and M1, M3 and M4, M4 and M1, and M3 and M2. These lines make a square that sits flat. They cross the horizontal and vertical lines halfway out, at jE, jN, jW and jS.",
       "textWithoutHelpers": "Draw a straight line through M4 and M1. It crosses the horizontal line at jE, halfway out. The points jN, jW and jS are halfway out on the other sides.",
       "create": {
         "hN": { "line": { "through": ["M2", "M1"] } },
@@ -118,7 +118,7 @@
     },
     {
       "id": 7,
-      "text": "Draw a straight line through K2 and K1. Draw a straight line through K3 and K4. Draw a straight line through K4 and K1. Draw a straight line through K3 and K2. K1 to K4 are where the small circle at O crosses the lines through NE and NW. These lines make a square inside the small circle.",
+      "text": "Draw a straight line through K2 and K1, K3 and K4, K4 and K1, and K3 and K2. K1 to K4 are where the small circle at O crosses the lines through NE and NW. These lines make a square inside the small circle.",
       "create": {
         "K1": { "point": { "meet": ["cO", "d1"], "pick": { "angle": 45 } } },
         "K2": { "point": { "meet": ["cO", "d2"], "pick": { "angle": 135 } } },
@@ -134,7 +134,7 @@
     },
     {
       "id": 8,
-      "text": "Draw a straight line through jN and jE. Draw a straight line through jN and jW. Draw a straight line through jS and jW. Draw a straight line through jS and jE.",
+      "text": "Draw a straight line through jN and jE, jN and jW, jS and jW, and jS and jE.",
       "create": {
         "diaNE": { "line": { "through": ["jN", "jE"] } },
         "diaNW": { "line": { "through": ["jN", "jW"] } },
@@ -146,7 +146,7 @@
     },
     {
       "id": 9,
-      "text": "Draw a straight line through U3 and U2. Draw a straight line through U6 and U7. Draw a straight line through U1 and U8. Draw a straight line through U4 and U5. These points are where the sides of the small square cross the circles at N, S, E and W.",
+      "text": "Draw a straight line through U3 and U2, U6 and U7, U1 and U8, and U4 and U5. These points are where the sides of the small square cross the circles at N, S, E and W.",
       "create": {
         "U3": { "point": { "meet": ["cN", "vO_W"], "pick": { "nearest": "O" } } },
         "U2": { "point": { "meet": ["cN", "vO_E"], "pick": { "nearest": "O" } } },

@@ -38,7 +38,7 @@
     },
     {
       "id": 2,
-      "text": "Draw a vertical line through O. It crosses the first circle at J and N. The horizontal line crosses it at A and E. Draw a circle with centre A through O. It crosses the line again at B. Draw circles in the same way along the line to mark C and D. Draw circles in the same way to the left of O, from E, to mark F, G and H. Draw circles in the same way up from J to mark K, L and M. Draw circles in the same way down from N to mark P, R and S.",
+      "text": "Draw a vertical line through O. It crosses the first circle at J and N. The horizontal line crosses it at A and E. Draw a circle with centre A through O. It crosses the line again at B. Go on along the line with circles of the same size, to mark C and D. Do the same to the left from E, up from J and down from N. They mark F, G and H, then K, L and M, then P, R and S.",
       "create": {
         "E": { "point": { "meet": ["c", "h"], "pick": { "angle": 180 } } },
         "v": { "line": { "through": "O", "perpendicularTo": "h" } },

@@ -38,7 +38,7 @@
     },
     {
       "id": 2,
-      "text": "Draw a vertical line through O. It crosses the first circle at E and G. The horizontal line crosses it at A and C. Draw a circle with centre A through O. It crosses the line again at B. Draw a circle with centre C through O. It crosses the line again at D. Draw a circle with centre E through O. It crosses the vertical line again at F. Draw a circle with centre G through O. It crosses the vertical line again at H.",
+      "text": "Draw a vertical line through O. It crosses the first circle at E and G. The horizontal line crosses it at A and C. Draw circles with centres A and C, through O. They cross the horizontal line again at B and D. Draw circles with centres E and G, through O. They cross the vertical line again at F and H.",
       "create": {
         "C": { "point": { "meet": ["c", "h"], "pick": { "angle": 180 } } },
         "v": { "line": { "through": "O", "perpendicularTo": "h" } },
@@ -74,7 +74,7 @@
     },
     {
       "id": 4,
-      "text": "Draw a circle with centre O through Q16, the corner of the grid square at the top right. Draw a circle with centre D, the same size as this circle. It crosses the horizontal line at U and Q11. Draw a circle with centre B, the same size. It crosses the horizontal line at Q12 and V. Draw the line through O that halves the angle AOE. Draw the line through O that halves the angle EOC. Draw two lines through each of U, Q11, Q12 and V, parallel to these two lines.",
+      "text": "Draw a circle with centre O through Q16, the top right corner of the grid square. Draw circles with centres D and B, the same size. They cross the horizontal line at U, Q11, Q12 and V. Draw the lines through O that halve the angles AOE and EOC. Draw two lines through each of U, Q11, Q12 and V, parallel to these two lines.",
       "create": {
         "Q16": { "point": { "meet": ["V1", "H1"] } },
         "s": { "circle": { "centre": "O", "through": "Q16" } },

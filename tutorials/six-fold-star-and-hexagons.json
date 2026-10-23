@@ -93,7 +93,7 @@
     },
     {
       "id": 6,
-      "text": "Draw a straight line through K1 and K3. Draw a straight line through K3 and K5. Draw a straight line through K5 and K1. Draw a straight line through K2 and K4. Draw a straight line through K4 and K6. Draw a straight line through K6 and K2. These lines make a smaller star. They run on to the hexagon.",
+      "text": "Draw a straight line through K1 and K3, K3 and K5, K5 and K1, and K2 and K4. Draw a straight line through K4 and K6, and K6 and K2. These lines make a smaller star. They run on to the hexagon.",
       "create": {
         "g1": { "line": { "through": ["K1", "K3"] } },
         "g2": { "line": { "through": ["K3", "K5"] } },

@@ -63,7 +63,7 @@
     },
     {
       "id": 4,
-      "text": "Draw a straight line through B and H. Draw a straight line through C and J. Draw a straight line through E and L. Draw a straight line through F and M. B, C, E, F, H, J, L and M are where the four new circles cross the first circle. The first circle is now cut into twelve.",
+      "text": "Draw a straight line through B and H, C and J, E and L, and F and M. B, C, E, F, H, J, L and M are where the four new circles cross the first circle. The first circle is now cut into twelve.",
       "create": {
         "C": { "point": { "meet": ["c", "cE"], "pick": { "angle": 60 } } },
         "L": { "point": { "meet": ["c", "cE"], "pick": { "angle": 300 } } },
@@ -83,8 +83,8 @@
     },
     {
       "id": 5,
-      "text": "Draw a straight line through A and B. Draw a straight line through B and C. Draw a straight line through C and D. Draw a straight line through D and E. Draw a straight line through E and F. Draw a straight line through F and G. Draw a straight line through G and H. Draw a straight line through H and J. Draw a straight line through J and K. Draw a straight line through K and L. Draw a straight line through L and M. Draw a straight line through M and A. The twelve lines outline the rosette. They run on past its corners.",
-      "textWithoutHelpers": "B, C, E, F, H, J, L and M are where the four new circles cross the first circle. Draw a straight line through A and B. Draw a straight line through B and C. Draw a straight line through C and D. Draw a straight line through D and E. Draw a straight line through E and F. Draw a straight line through F and G. Draw a straight line through G and H. Draw a straight line through H and J. Draw a straight line through J and K. Draw a straight line through K and L. Draw a straight line through L and M. Draw a straight line through M and A. The twelve lines outline the rosette. They run on past its corners.",
+      "text": "Draw a straight line through A and B, B and C, C and D, and D and E. Draw a straight line through E and F, F and G, G and H, and H and J. Draw a straight line through J and K, K and L, L and M, and M and A. The twelve lines outline the rosette. They run on past its corners.",
+      "textWithoutHelpers": "B, C, E, F, H, J, L and M are where the four new circles cross the first circle. Draw a straight line through A and B, B and C, C and D, and D and E. Draw a straight line through E and F, F and G, G and H, and H and J. Draw a straight line through J and K, K and L, L and M, and M and A. The twelve lines outline the rosette. They run on past its corners.",
       "create": {
         "o0": { "line": { "through": ["A", "B"] } },
         "o1": { "line": { "through": ["B", "C"] } },
@@ -103,8 +103,8 @@
     },
     {
       "id": 6,
-      "text": "Draw the line through O that halves the angle AOB. Draw the line through O that halves the angle BOC. Draw the line through O that halves the angle COD. Draw the line through O that halves the angle DOE. Draw the line through O that halves the angle EOF. Draw the line through O that halves the angle FOG. There is now a line through O every 15°.",
-      "textWithoutHelpers": "Draw the line through O that halves the angle AOB. Draw the line through O that halves the angle BOC. Draw the line through O that halves the angle COD. Draw the line through O that halves the angle DOE. Draw the line through O that halves the angle EOF. Draw the line through O that halves the angle FOG. These lines run through O at 15°, 45°, 75° and so on.",
+      "text": "Draw the lines through O that halve the angles AOB, BOC, COD, DOE, EOF and FOG. There is now a line through O every 15°.",
+      "textWithoutHelpers": "Draw the lines through O that halve the angles AOB, BOC, COD, DOE, EOF and FOG. These lines run through O at 15°, 45°, 75° and so on.",
       "create": {
         "r15": { "line": { "through": "O", "bisects": ["A", "O", "B"] } },
         "r45": { "line": { "through": "O", "bisects": ["B", "O", "C"] } },
@@ -148,7 +148,7 @@
     },
     {
       "id": 9,
-      "text": "Draw a straight line through S1 and S6. Draw a straight line through S2 and S7. Draw a straight line through S3 and S8. Draw a straight line through S4 and S9. Draw a straight line through S5 and S10. Draw a straight line through S6 and S11. Draw a straight line through S7 and S12. Draw a straight line through S8 and S1. Draw a straight line through S9 and S2. Draw a straight line through S10 and S3. Draw a straight line through S11 and S4. Draw a straight line through S12 and S5. The twelve lines make a twelve-pointed star.",
+      "text": "Draw a straight line through S1 and S6, S2 and S7, S3 and S8, and S4 and S9. Draw a straight line through S5 and S10, S6 and S11, S7 and S12, and S8 and S1. Draw a straight line through S9 and S2, S10 and S3, S11 and S4, and S12 and S5. The twelve lines make a twelve-pointed star.",
       "create": {
         "s0": { "line": { "through": ["S1", "S6"] } },
         "s1": { "line": { "through": ["S2", "S7"] } },
@@ -248,6 +248,10 @@
     "paths": [
       { "through": ["U1", "X2"] },
       { "through": ["U2", "X12"] },
+      { "through": ["U24", "A"] },
+      { "through": ["A", "U1"] },
+      { "through": ["U2", "B", "W3"] },
+      { "through": ["W1", "B", "U3"] },
       { "through": ["U12", "X5"] },
       { "through": ["U14", "X6"] },
       { "through": ["U3", "X3"] },
@@ -270,10 +274,6 @@
       { "through": ["U21", "X12"] },
       { "through": ["U10", "X4"] },
       { "through": ["U23", "X1"] },
-      { "through": ["U24", "A"] },
-      { "through": ["A", "U1"] },
-      { "through": ["U2", "B", "W3"] },
-      { "through": ["W1", "B", "U3"] },
       { "through": ["U4", "C", "W4"] },
       { "through": ["W2", "C", "U5"] },
       { "through": ["U6", "D"] },
@@ -297,21 +297,16 @@
     ],
     "parts": [
       {
-        "text": "Ink from U1 to X2. Ink from U2 to X12. These are two star lines, from the outline in to their first crossing.",
+        "text": "Ink from U1 to X2, and from U2 to X12. These star lines run from the outline in to their first crossing.",
         "paths": 2
       },
       {
-        "text": "Ink the same two lines at each of the other eleven corners of the outline. Tick “Also ink the copies round the centre” to ink them all at once.",
-        "paths": 22
-      },
-      { "text": "Ink the outline at A: from U24 through A to U1.", "paths": 2 },
-      {
-        "text": "Ink the outline at B: from U2 through B to W3, and from W1 through B to U3. Each line runs on to the edge of the tile.",
-        "paths": 2
+        "text": "Ink the outline at A, from U24 through A to U1. Ink it at B, from U2 through B to W3, and from W1 through B to U3.",
+        "paths": 4
       },
       {
-        "text": "Ink the outline at the other corners, C to M, in the same way. Tick “Also ink the copies round the centre” to ink them all at once.",
-        "paths": 20
+        "text": "Ink the same lines at every other corner. Tick “Also ink the copies round the centre” to ink them all at once.",
+        "paths": 42
       }
     ]
   },

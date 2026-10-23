@@ -64,7 +64,7 @@
     },
     {
       "id": 4,
-      "text": "Draw a straight line through O and P1. Draw a straight line through O and P2. Draw a straight line through O and P3. P1, P2 and P3 are the tips of the large petals outside the first circle.",
+      "text": "Draw a straight line through O and P1, O and P2, and O and P3. P1, P2 and P3 are the tips of the large petals outside the first circle.",
       "create": {
         "P1": { "point": { "meet": ["cE", "c60"], "pick": { "farthest": "O" } } },
         "P2": { "point": { "meet": ["c60", "c120"], "pick": { "farthest": "O" } } },
@@ -106,7 +106,7 @@
     },
     {
       "id": 6,
-      "text": "Draw a straight line through X2 and X11. Draw a straight line through X4 and X1. Draw a straight line through X6 and X3. Draw a straight line through X8 and X5. Draw a straight line through X10 and X7. Draw a straight line through X12 and X9. These are the hammerhead lines.",
+      "text": "Draw a straight line through X2 and X11, X4 and X1, X6 and X3, and X8 and X5. Draw a straight line through X10 and X7, and X12 and X9. These are the hammerhead lines.",
       "create": {
         "ch0": { "line": { "through": ["X2", "X11"] } },
         "ch60": { "line": { "through": ["X4", "X1"] } },
@@ -133,7 +133,7 @@
     },
     {
       "id": 7,
-      "text": "Draw a straight line through Y11 and Y4. Draw a straight line through Y1 and Y6. Draw a straight line through Y3 and Y8. Draw a straight line through Y5 and Y10. Draw a straight line through Y7 and Y12. Draw a straight line through Y9 and Y2. Y1 to Y12 are where the hammerhead lines cross the small petals. The six lines make a small star.",
+      "text": "Draw a straight line through Y11 and Y4, Y1 and Y6, Y3 and Y8, and Y5 and Y10. Draw a straight line through Y7 and Y12, and Y9 and Y2. Y1 to Y12 are where the hammerhead lines cross the small petals. The six lines make a small star.",
       "create": {
         "Y1": { "point": { "meet": ["ch0", "c300"], "pick": { "nearest": "O" } } },
         "Y12": { "point": { "meet": ["ch0", "c60"], "pick": { "nearest": "O" } } },

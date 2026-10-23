@@ -145,7 +145,7 @@
     },
     {
       "id": 8,
-      "text": "Draw a straight line through T1 and T4. Draw a straight line through T2 and T5. Draw a straight line through T3 and T6. Draw a straight line through T4 and T7. Draw a straight line through T5 and T8. Draw a straight line through T6 and T1. Draw a straight line through T7 and T2. Draw a straight line through T8 and T3. The eight lines make an eight-pointed star.",
+      "text": "Draw a straight line through T1 and T4, T2 and T5, T3 and T6, and T4 and T7. Draw a straight line through T5 and T8, T6 and T1, T7 and T2, and T8 and T3. The eight lines make an eight-pointed star.",
       "create": {
         "L0": { "line": { "through": ["T1", "T4"] } },
         "L45": { "line": { "through": ["T2", "T5"] } },

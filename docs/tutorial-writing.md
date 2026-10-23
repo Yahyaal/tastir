@@ -21,8 +21,9 @@ The steps are read by beginners, many of them reading English as a second langua
    | Join X, Y, Z and W with straight lines (a shape's sides) | |
 
 6. **Ask only for what is still to draw.** When some sides of a shape are already on the board, ask for the missing lines by their points and say which lines are the other sides ("Draw a straight line through S and X. … The vertical lines through V and W are the other two sides of the square SXYP."). "Join the four points: this makes a square" sounds like a new polygon, while the board asks for two lines.
-7. **Short sentences.** Twenty words at most; a step's text that runs long is split into `parts`, each one move, with the step's own `text` as a short heading ("Draw the square tile.").
-8. **Write both texts.** When helper lines are hidden, a part that leaves lines out gives `textWithoutHelpers`, written by the same rules and naming only what is drawn.
+7. **Group the same action.** Twelve lines drawn the same way are one or three sentences, not twelve: "Draw a straight line through S1 and S6, S2 and S7, S3 and S8, and S4 and S9." "Draw a line through each of A, C and E, at 90° to its line from O." The steps share one box above the board, sized to the longest, so a step of twelve numbered lines shrinks the board for the whole tutorial. A test keeps every step to twelve sentences.
+8. **Short sentences.** Twenty words at most; a step's text that runs long is split into `parts`, each one move, with the step's own `text` as a short heading ("Draw the square tile.").
+9. **Write both texts.** When helper lines are hidden, a part that leaves lines out gives `textWithoutHelpers`, written by the same rules and naming only what is drawn.
 
 ## The ink
 

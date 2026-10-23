@@ -7,9 +7,7 @@ import { sentencesOf } from './StepText';
 // (docs/tutorial-writing.md), except those still waiting to be rewritten.
 const NOT_YET: readonly string[] = [
   'alhambra-comares-frames',
-  'alhambra-reyes-dodecagrams',
   'alhambra-reyes-fret',
-  'alhambra-reyes-stars',
   'bou-inania-rosette',
   'bou-inania-twelve-fold-wall',
   'four-fold-ring-of-circles',
@@ -19,7 +17,6 @@ const NOT_YET: readonly string[] = [
   'kurt-eight-fold-zellige-shifted',
   'mian-stellated-hex',
   'mian-stellated-rosettes',
-  'minbar-doors-cairo',
   'sixteen-fold-rosette',
   'ten-pointed-star-decagon-rect',
 ];
@@ -51,6 +48,11 @@ describe.each(
 
   it('uses none of the words the rules replace', () => {
     expect(sentences.filter((s) => BANNED.test(s))).toEqual([]);
+  });
+
+  it('keeps every step to twelve sentences, so the board keeps its size', () => {
+    const long = texts.filter((t) => sentencesOf(t).length > 12);
+    expect(long).toEqual([]);
   });
 
   it('keeps every sentence to twenty words', () => {

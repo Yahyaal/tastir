@@ -70,7 +70,7 @@
     },
     {
       "id": 5,
-      "text": "Draw a line through NE, at 90° to the line from O to NE. Draw a line through NW, at 90° to the line from O to NW. Draw a line through SW, at 90° to the line from O to SW. Draw a line through SE, at 90° to the line from O to SE. With the sides of the square they make an octagon. Join R1, R2, R3, R4, R5, R6, R7 and R8 with straight lines.",
+      "text": "Draw a line through each of NE, NW, SW and SE, at 90° to its line from O. With the sides of the square they make an octagon. Join R1, R2, R3, R4, R5, R6, R7 and R8 with straight lines.",
       "create": {
         "tNE": { "line": { "through": "NE", "perpendicularTo": "d1" } },
         "tNW": { "line": { "through": "NW", "perpendicularTo": "d2" } },
@@ -91,7 +91,7 @@
     },
     {
       "id": 6,
-      "text": "Draw a straight line through O and R1. Draw a straight line through O and R2. Draw a straight line through O and R3. Draw a straight line through O and R4. The circle is now cut into sixteen.",
+      "text": "Draw a straight line through O and R1, O and R2, O and R3, and O and R4. The circle is now cut into sixteen.",
       "textWithoutHelpers": "Draw a straight line through O and R1. Draw a straight line through O and R4. These lines halve two of the eight parts of the circle.",
       "create": {
         "s1": { "line": { "through": ["O", "R1"] } },

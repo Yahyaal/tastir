@@ -65,7 +65,7 @@
     },
     {
       "id": 4,
-      "text": "Draw a straight line through O and P1. Draw a straight line through O and P2. Draw a straight line through O and P3. P1, P2 and P3 are the tips of the large petals outside the first circle.",
+      "text": "Draw a straight line through O and P1, O and P2, and O and P3. P1, P2 and P3 are the tips of the large petals outside the first circle.",
       "create": {
         "P1": { "point": { "meet": ["cE", "c60"], "pick": { "farthest": "O" } } },
         "P2": { "point": { "meet": ["c60", "c120"], "pick": { "farthest": "O" } } },
@@ -129,7 +129,7 @@
       "text": "Draw the tile.",
       "parts": [
         {
-          "text": "Draw a line through H1, at 90° to the line from O to H1. Draw a line through H2, at 90° to the line from O to H2. Draw a line through H3, at 90° to the line from O to H3. Draw a line through H4, at 90° to the line from O to H4. Draw a line through H5, at 90° to the line from O to H5. Draw a line through H6, at 90° to the line from O to H6. The six lines just touch the circle. They make a hexagon with corners T1 to T6.",
+          "text": "Draw a line through each of H1, H2, H3, H4, H5 and H6, at 90° to its line from O. The six lines just touch the circle. They make a hexagon with corners T1 to T6.",
           "create": {
             "tan30": { "line": { "through": "H1", "perpendicularTo": "m30" } },
             "tan90": { "line": { "through": "H2", "perpendicularTo": "m90" } },
