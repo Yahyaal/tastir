@@ -33,13 +33,13 @@
   "steps": [
     {
       "id": 1,
-      "text": "Put the compass point on the centre and draw a circle.",
+      "text": "Draw a circle with centre O through A.",
       "create": { "c": { "circle": { "centre": "O", "through": "A" } } },
       "animate": "compass"
     },
     {
       "id": 2,
-      "text": "Draw a horizontal line through the centre, then a vertical line at right angles to it. They cut the circle at four points.",
+      "text": "Draw a horizontal straight line through O and A. Draw a vertical line through O. The two lines cross the circle at E, N, W and S. These letters stand for east, north, west and south.",
       "create": {
         "h": { "line": { "through": ["O", "A"] } },
         "v": { "line": { "through": "O", "perpendicularTo": "h" } },
@@ -52,7 +52,7 @@
     },
     {
       "id": 3,
-      "text": "Halve each right angle to get the two diagonals. The circle is now divided into eight equal parts.",
+      "text": "Draw the line through O that halves the angle at O between E and N. Draw the line through O that halves the angle at O between N and W. These lines cross the circle at NE, NW, SW and SE.",
       "create": {
         "d1": { "line": { "through": "O", "bisects": ["E", "O", "N"] } },
         "d2": { "line": { "through": "O", "bisects": ["N", "O", "W"] } },
@@ -66,190 +66,156 @@
     },
     {
       "id": 4,
-      "text": "Join the four points on the axes to form a standing dynamic square. Mark where its edges cross the diagonals.",
+      "text": "Join E, N, W and S with straight lines. This square stands on its corner. Its sides cross the lines through NE and NW at M1, M2, M3 and M4.",
       "create": {
         "dynamic": { "polygon": ["E", "N", "W", "S"] },
-        "mNE": {
-          "point": { "meet": ["dynamic", "d1"], "pick": { "angle": 45 } }
-        },
-        "mNW": {
-          "point": { "meet": ["dynamic", "d2"], "pick": { "angle": 135 } }
-        },
-        "mSW": {
-          "point": { "meet": ["dynamic", "d1"], "pick": { "angle": 225 } }
-        },
-        "mSE": {
-          "point": { "meet": ["dynamic", "d2"], "pick": { "angle": 315 } }
-        }
+        "M1": { "point": { "meet": ["dynamic", "d1"], "pick": { "angle": 45 } } },
+        "M2": { "point": { "meet": ["dynamic", "d2"], "pick": { "angle": 135 } } },
+        "M3": { "point": { "meet": ["dynamic", "d1"], "pick": { "angle": 225 } } },
+        "M4": { "point": { "meet": ["dynamic", "d2"], "pick": { "angle": 315 } } }
       },
       "highlight": ["E", "N", "W", "S"],
       "animate": "ruler"
     },
     {
       "id": 5,
-      "text": "Draw the static square framing the circle, and connect the diagonal points to mark the half-radius point on each axis.",
-      "textWithoutHelpers": "Draw the framing square and mark the half-radius point on each axis.",
+      "text": "Draw a horizontal line through N. Draw a horizontal line through S. Draw a vertical line through E. Draw a vertical line through W. Join T1, T2, T3 and T4, where they cross: this square is the tile. Join M1, M2, M3 and M4 with straight lines. They cross the horizontal and vertical lines at J1 to J4, halfway out.",
+      "textWithoutHelpers": "Draw a horizontal line through N. Draw a vertical line through E. Draw a vertical line through W. Join T1, T2, T3 and T4: this square is the tile. Join M1, M2, M3 and M4 with straight lines. They cross the horizontal and vertical lines at J1 to J4, halfway out.",
       "create": {
         "hTop": { "line": { "through": "N", "parallelTo": "h" } },
         "hBot": { "line": { "through": "S", "parallelTo": "h" } },
         "vRight": { "line": { "through": "E", "parallelTo": "v" } },
         "vLeft": { "line": { "through": "W", "parallelTo": "v" } },
-        "tNE": { "point": { "meet": ["hTop", "vRight"] } },
-        "tNW": { "point": { "meet": ["hTop", "vLeft"] } },
-        "tSW": { "point": { "meet": ["hBot", "vLeft"] } },
-        "tSE": { "point": { "meet": ["hBot", "vRight"] } },
-        "static": { "polygon": ["tNE", "tNW", "tSW", "tSE"] },
-        "hN": { "line": { "through": ["mNW", "mNE"] } },
-        "hS": { "line": { "through": ["mSW", "mSE"] } },
-        "vE": { "line": { "through": ["mSE", "mNE"] } },
-        "vW": { "line": { "through": ["mSW", "mNW"] } },
-        "jE": { "point": { "meet": ["vE", "h"] } },
-        "jN": { "point": { "meet": ["hN", "v"] } },
-        "jW": { "point": { "meet": ["vW", "h"] } },
-        "jS": { "point": { "meet": ["hS", "v"] } }
+        "T1": { "point": { "meet": ["hTop", "vRight"] } },
+        "T2": { "point": { "meet": ["hTop", "vLeft"] } },
+        "T3": { "point": { "meet": ["hBot", "vLeft"] } },
+        "T4": { "point": { "meet": ["hBot", "vRight"] } },
+        "static": { "polygon": ["T1", "T2", "T3", "T4"] },
+        "hN": { "line": { "through": ["M2", "M1"] } },
+        "hS": { "line": { "through": ["M3", "M4"] } },
+        "vE": { "line": { "through": ["M4", "M1"] } },
+        "vW": { "line": { "through": ["M3", "M2"] } },
+        "J1": { "point": { "meet": ["vE", "h"] } },
+        "J2": { "point": { "meet": ["hN", "v"] } },
+        "J3": { "point": { "meet": ["vW", "h"] } },
+        "J4": { "point": { "meet": ["hS", "v"] } }
       },
-      "highlight": ["mNE", "mNW", "mSW", "mSE"],
+      "highlight": ["M1", "M2", "M3", "M4"],
       "animate": "ruler"
     },
     {
       "id": 6,
-      "text": "Draw a circle of half radius centered at O, and four more with the same radius centered on the diagonal points.",
-      "textWithoutHelpers": "Draw the central small circle and the four circles on the diagonals.",
+      "text": "Draw a circle with centre O through J2. Draw a circle with centre M1 through J2. Draw a circle with centre M2 through J2. Draw a circle with centre M3 through J4. Draw a circle with centre M4 through J4.",
+      "textWithoutHelpers": "Draw a circle with centre O through J2. Draw a circle with centre M1 through J2. Draw a circle with centre M2 through J2. Draw a circle with centre M3 through J4. Draw a circle with centre M4 through J4.",
       "create": {
-        "cO": { "circle": { "centre": "O", "through": "jN" } },
-        "cNE": { "circle": { "centre": "mNE", "through": "jN" } },
-        "cNW": { "circle": { "centre": "mNW", "through": "jN" } },
-        "cSW": { "circle": { "centre": "mSW", "through": "jS" } },
-        "cSE": { "circle": { "centre": "mSE", "through": "jS" } }
+        "cO": { "circle": { "centre": "O", "through": "J2" } },
+        "cNE": { "circle": { "centre": "M1", "through": "J2" } },
+        "cNW": { "circle": { "centre": "M2", "through": "J2" } },
+        "cSW": { "circle": { "centre": "M3", "through": "J4" } },
+        "cSE": { "circle": { "centre": "M4", "through": "J4" } }
       },
-      "highlight": ["O", "mNE", "mNW", "mSW", "mSE", "jN", "jS"],
+      "highlight": ["O", "M1", "M2", "M3", "M4", "J2", "J4"],
       "animate": "compass"
     },
     {
       "id": 7,
-      "text": "Connect the poles of the small circles with diagonal lines to draw their dynamic square sides.",
-      "textWithoutHelpers": "Draw the diagonal lines across the poles of the small circles.",
+      "text": "Draw a straight line through C3 and J2. Draw a straight line through C2 and J2. Draw a straight line through J4 and C7. Draw a straight line through J4 and C6. Draw a straight line through C4 and C3. Draw a straight line through C2 and C1. Draw a straight line through C5 and C6. Draw a straight line through C7 and C8. C1 to C8 are where the four small circles cross the lines through M1 to M4.",
+      "textWithoutHelpers": "Draw a straight line through C3 and J2. Draw a straight line through C2 and J2. Draw a straight line through J4 and C7. Draw a straight line through J4 and C6. Draw a straight line through C4 and C3. Draw a straight line through C2 and C1. C1 to C8 are where the four small circles cross the lines through M1 to M4.",
       "create": {
-        "cNW_top": {
-          "point": { "meet": ["cNW", "vW"], "pick": { "angle": 90 } }
-        },
-        "cNW_left": {
-          "point": { "meet": ["cNW", "hN"], "pick": { "angle": 180 } }
-        },
-        "cNE_top": {
-          "point": { "meet": ["cNE", "vE"], "pick": { "angle": 90 } }
-        },
-        "cNE_right": {
-          "point": { "meet": ["cNE", "hN"], "pick": { "angle": 0 } }
-        },
-        "cSW_bot": {
-          "point": { "meet": ["cSW", "vW"], "pick": { "angle": 270 } }
-        },
-        "cSW_left": {
-          "point": { "meet": ["cSW", "hS"], "pick": { "angle": 180 } }
-        },
-        "cSE_bot": {
-          "point": { "meet": ["cSE", "vE"], "pick": { "angle": 270 } }
-        },
-        "cSE_right": {
-          "point": { "meet": ["cSE", "hS"], "pick": { "angle": 0 } }
-        },
-        "diag_m1": { "line": { "through": ["cNW_top", "jN"] } },
-        "diag_p1": { "line": { "through": ["cNE_top", "jN"] } },
-        "diag_m2": { "line": { "through": ["jS", "cSE_bot"] } },
-        "diag_p2": { "line": { "through": ["jS", "cSW_bot"] } },
-        "diag_corn_NW": { "line": { "through": ["cNW_left", "cNW_top"] } },
-        "diag_corn_NE": { "line": { "through": ["cNE_top", "cNE_right"] } },
-        "diag_corn_SW": { "line": { "through": ["cSW_left", "cSW_bot"] } },
-        "diag_corn_SE": { "line": { "through": ["cSE_bot", "cSE_right"] } }
+        "C3": { "point": { "meet": ["cNW", "vW"], "pick": { "angle": 90 } } },
+        "C4": { "point": { "meet": ["cNW", "hN"], "pick": { "angle": 180 } } },
+        "C2": { "point": { "meet": ["cNE", "vE"], "pick": { "angle": 90 } } },
+        "C1": { "point": { "meet": ["cNE", "hN"], "pick": { "angle": 0 } } },
+        "C6": { "point": { "meet": ["cSW", "vW"], "pick": { "angle": 270 } } },
+        "C5": { "point": { "meet": ["cSW", "hS"], "pick": { "angle": 180 } } },
+        "C7": { "point": { "meet": ["cSE", "vE"], "pick": { "angle": 270 } } },
+        "C8": { "point": { "meet": ["cSE", "hS"], "pick": { "angle": 0 } } },
+        "diag_m1": { "line": { "through": ["C3", "J2"] } },
+        "diag_p1": { "line": { "through": ["C2", "J2"] } },
+        "diag_m2": { "line": { "through": ["J4", "C7"] } },
+        "diag_p2": { "line": { "through": ["J4", "C6"] } },
+        "diag_corn_NW": { "line": { "through": ["C4", "C3"] } },
+        "diag_corn_NE": { "line": { "through": ["C2", "C1"] } },
+        "diag_corn_SW": { "line": { "through": ["C5", "C6"] } },
+        "diag_corn_SE": { "line": { "through": ["C7", "C8"] } }
       },
       "animate": "ruler"
     },
     {
       "id": 8,
-      "text": "Mark where the diagonals cross each small circle to draw the horizontal and vertical sides of their static squares.",
-      "textWithoutHelpers": "Draw the horizontal and vertical sides of the static squares in each circle.",
+      "text": "Join K1, K2, K3 and K4 with straight lines. They are where the circle at O crosses the lines through NE and NW. Draw a horizontal line and a vertical line through R1 and through R2. R1 and R2 are where the circle at M1 crosses the line through NE. Do the same through R3 and R4, on the circle at M3.",
+      "textWithoutHelpers": "Join K1, K2, K3 and K4 with straight lines. They are where the circle at O crosses the lines through NE and NW. Draw a horizontal line and a vertical line through R1 and through R2. R1 and R2 are where the circle at M1 crosses the line through NE. Do the same through R3 and R4, on the circle at M3.",
       "create": {
-        "kNE": { "point": { "meet": ["cO", "d1"], "pick": { "angle": 45 } } },
-        "kNW": { "point": { "meet": ["cO", "d2"], "pick": { "angle": 135 } } },
-        "kSW": { "point": { "meet": ["cO", "d1"], "pick": { "angle": 225 } } },
-        "kSE": { "point": { "meet": ["cO", "d2"], "pick": { "angle": 315 } } },
-        "hO_N": { "line": { "through": ["kNW", "kNE"] } },
-        "hO_S": { "line": { "through": ["kSW", "kSE"] } },
-        "vO_E": { "line": { "through": ["kSE", "kNE"] } },
-        "vO_W": { "line": { "through": ["kSW", "kNW"] } },
-        "kNE_out": {
-          "point": { "meet": ["cNE", "d1"], "pick": { "farthest": "O" } }
-        },
-        "kNE_in": {
-          "point": { "meet": ["cNE", "d1"], "pick": { "nearest": "O" } }
-        },
-        "kSW_out": {
-          "point": { "meet": ["cSW", "d1"], "pick": { "farthest": "O" } }
-        },
-        "kSW_in": {
-          "point": { "meet": ["cSW", "d1"], "pick": { "nearest": "O" } }
-        },
-        "h_top_inner": { "line": { "through": "kNE_out", "parallelTo": "h" } },
-        "h_mid_top": { "line": { "through": "kNE_in", "parallelTo": "h" } },
-        "v_right_inner": {
-          "line": { "through": "kNE_out", "parallelTo": "v" }
-        },
-        "v_mid_right": { "line": { "through": "kNE_in", "parallelTo": "v" } },
-        "h_bot_inner": { "line": { "through": "kSW_out", "parallelTo": "h" } },
-        "h_mid_bot": { "line": { "through": "kSW_in", "parallelTo": "h" } },
-        "v_left_inner": { "line": { "through": "kSW_out", "parallelTo": "v" } },
-        "v_mid_left": { "line": { "through": "kSW_in", "parallelTo": "v" } }
+        "K1": { "point": { "meet": ["cO", "d1"], "pick": { "angle": 45 } } },
+        "K2": { "point": { "meet": ["cO", "d2"], "pick": { "angle": 135 } } },
+        "K3": { "point": { "meet": ["cO", "d1"], "pick": { "angle": 225 } } },
+        "K4": { "point": { "meet": ["cO", "d2"], "pick": { "angle": 315 } } },
+        "hO_N": { "line": { "through": ["K2", "K1"] } },
+        "hO_S": { "line": { "through": ["K3", "K4"] } },
+        "vO_E": { "line": { "through": ["K4", "K1"] } },
+        "vO_W": { "line": { "through": ["K3", "K2"] } },
+        "R1": { "point": { "meet": ["cNE", "d1"], "pick": { "farthest": "O" } } },
+        "R2": { "point": { "meet": ["cNE", "d1"], "pick": { "nearest": "O" } } },
+        "R3": { "point": { "meet": ["cSW", "d1"], "pick": { "farthest": "O" } } },
+        "R4": { "point": { "meet": ["cSW", "d1"], "pick": { "nearest": "O" } } },
+        "h_top_inner": { "line": { "through": "R1", "parallelTo": "h" } },
+        "h_mid_top": { "line": { "through": "R2", "parallelTo": "h" } },
+        "v_right_inner": { "line": { "through": "R1", "parallelTo": "v" } },
+        "v_mid_right": { "line": { "through": "R2", "parallelTo": "v" } },
+        "h_bot_inner": { "line": { "through": "R3", "parallelTo": "h" } },
+        "h_mid_bot": { "line": { "through": "R4", "parallelTo": "h" } },
+        "v_left_inner": { "line": { "through": "R3", "parallelTo": "v" } },
+        "v_mid_left": { "line": { "through": "R4", "parallelTo": "v" } }
       },
       "animate": "ruler"
     },
     {
       "id": 9,
-      "text": "Connect the crossings of the static and dynamic squares with diagonal lines to shape the facets of the star and corner motifs.",
-      "textWithoutHelpers": "Connect the crossings to shape the facets of the star and corner motifs.",
+      "text": "Draw a straight line through P7 and P3. Draw a straight line through P11 and P15. Draw a straight line through P22 and P23. Draw a straight line through P19 and P18. Draw a straight line through P1 and P8. Draw a straight line through P16 and P9. Draw a straight line through P24 and P21. Draw a straight line through P17 and P20. Draw a straight line through P5 and P6. Draw a straight line through P4 and P2. Draw a straight line through P12 and P10. Draw a straight line through P13 and P14. These lines shape the facets of the star and the corners.",
+      "textWithoutHelpers": "Draw a straight line through P7 and P3. Draw a straight line through P11 and P15. Draw a straight line through P22 and P23. Draw a straight line through P19 and P18. Draw a straight line through P1 and P8. Draw a straight line through P16 and P9. Draw a straight line through P24 and P21. Draw a straight line through P17 and P20. Draw a straight line through P5 and P6. Draw a straight line through P4 and P2. Draw a straight line through P12 and P10. Draw a straight line through P13 and P14. These lines shape the facets of the star and the corners.",
       "create": {
-        "pA_NE": { "point": { "meet": ["h_top_inner", "diag_p1"] } },
-        "pB_NE": { "point": { "meet": ["v_right_inner", "diag_p2"] } },
-        "diag_facet_out_NE": { "line": { "through": ["pA_NE", "pB_NE"] } },
-        "pA_NW": { "point": { "meet": ["h_top_inner", "diag_m1"] } },
-        "pB_NW": { "point": { "meet": ["v_left_inner", "diag_m2"] } },
-        "diag_facet_out_NW": { "line": { "through": ["pA_NW", "pB_NW"] } },
-        "pA_SE": { "point": { "meet": ["h_bot_inner", "diag_m2"] } },
-        "pB_SE": { "point": { "meet": ["v_right_inner", "diag_m1"] } },
-        "diag_facet_out_SE": { "line": { "through": ["pA_SE", "pB_SE"] } },
-        "pA_SW": { "point": { "meet": ["h_bot_inner", "diag_p2"] } },
-        "pB_SW": { "point": { "meet": ["v_left_inner", "diag_p1"] } },
-        "diag_facet_out_SW": { "line": { "through": ["pA_SW", "pB_SW"] } },
-        "pC_NE": { "point": { "meet": ["h_mid_top", "diag_p2"] } },
-        "pD_NE": { "point": { "meet": ["v_mid_right", "diag_p1"] } },
-        "diag_facet_in_NE": { "line": { "through": ["pC_NE", "pD_NE"] } },
-        "pC_NW": { "point": { "meet": ["h_mid_top", "diag_m2"] } },
-        "pD_NW": { "point": { "meet": ["v_mid_left", "diag_m1"] } },
-        "diag_facet_in_NW": { "line": { "through": ["pC_NW", "pD_NW"] } },
-        "pC_SE": { "point": { "meet": ["h_mid_bot", "diag_m1"] } },
-        "pD_SE": { "point": { "meet": ["v_mid_right", "diag_m2"] } },
-        "diag_facet_in_SE": { "line": { "through": ["pC_SE", "pD_SE"] } },
-        "pC_SW": { "point": { "meet": ["h_mid_bot", "diag_p1"] } },
-        "pD_SW": { "point": { "meet": ["v_mid_left", "diag_p2"] } },
-        "diag_facet_in_SW": { "line": { "through": ["pC_SW", "pD_SW"] } },
-        "pE_NE": { "point": { "meet": ["h_top_inner", "diag_corn_NE"] } },
-        "pF_NE": { "point": { "meet": ["hO_N", "v_mid_right"] } },
-        "diag_mid_p_NE": { "line": { "through": ["pE_NE", "pF_NE"] } },
-        "pE_SE": { "point": { "meet": ["v_right_inner", "diag_corn_NE"] } },
-        "pF_SE": { "point": { "meet": ["vO_E", "h_mid_top"] } },
-        "diag_mid_p_SE": { "line": { "through": ["pE_SE", "pF_SE"] } },
-        "pE_NW": { "point": { "meet": ["h_top_inner", "diag_corn_NW"] } },
-        "pF_NW": { "point": { "meet": ["hO_N", "v_mid_left"] } },
-        "diag_mid_m_NW": { "line": { "through": ["pE_NW", "pF_NW"] } },
-        "pE_SW": { "point": { "meet": ["v_left_inner", "diag_corn_NW"] } },
-        "pF_SW": { "point": { "meet": ["vO_W", "h_mid_top"] } },
-        "diag_mid_m_SW": { "line": { "through": ["pE_SW", "pF_SW"] } }
+        "P7": { "point": { "meet": ["h_top_inner", "diag_p1"] } },
+        "P3": { "point": { "meet": ["v_right_inner", "diag_p2"] } },
+        "diag_facet_out_NE": { "line": { "through": ["P7", "P3"] } },
+        "P11": { "point": { "meet": ["h_top_inner", "diag_m1"] } },
+        "P15": { "point": { "meet": ["v_left_inner", "diag_m2"] } },
+        "diag_facet_out_NW": { "line": { "through": ["P11", "P15"] } },
+        "P22": { "point": { "meet": ["h_bot_inner", "diag_m2"] } },
+        "P23": { "point": { "meet": ["v_right_inner", "diag_m1"] } },
+        "diag_facet_out_SE": { "line": { "through": ["P22", "P23"] } },
+        "P19": { "point": { "meet": ["h_bot_inner", "diag_p2"] } },
+        "P18": { "point": { "meet": ["v_left_inner", "diag_p1"] } },
+        "diag_facet_out_SW": { "line": { "through": ["P19", "P18"] } },
+        "P1": { "point": { "meet": ["h_mid_top", "diag_p2"] } },
+        "P8": { "point": { "meet": ["v_mid_right", "diag_p1"] } },
+        "diag_facet_in_NE": { "line": { "through": ["P1", "P8"] } },
+        "P16": { "point": { "meet": ["h_mid_top", "diag_m2"] } },
+        "P9": { "point": { "meet": ["v_mid_left", "diag_m1"] } },
+        "diag_facet_in_NW": { "line": { "through": ["P16", "P9"] } },
+        "P24": { "point": { "meet": ["h_mid_bot", "diag_m1"] } },
+        "P21": { "point": { "meet": ["v_mid_right", "diag_m2"] } },
+        "diag_facet_in_SE": { "line": { "through": ["P24", "P21"] } },
+        "P17": { "point": { "meet": ["h_mid_bot", "diag_p1"] } },
+        "P20": { "point": { "meet": ["v_mid_left", "diag_p2"] } },
+        "diag_facet_in_SW": { "line": { "through": ["P17", "P20"] } },
+        "P5": { "point": { "meet": ["h_top_inner", "diag_corn_NE"] } },
+        "P6": { "point": { "meet": ["hO_N", "v_mid_right"] } },
+        "diag_mid_p_NE": { "line": { "through": ["P5", "P6"] } },
+        "P4": { "point": { "meet": ["v_right_inner", "diag_corn_NE"] } },
+        "P2": { "point": { "meet": ["vO_E", "h_mid_top"] } },
+        "diag_mid_p_SE": { "line": { "through": ["P4", "P2"] } },
+        "P12": { "point": { "meet": ["h_top_inner", "diag_corn_NW"] } },
+        "P10": { "point": { "meet": ["hO_N", "v_mid_left"] } },
+        "diag_mid_m_NW": { "line": { "through": ["P12", "P10"] } },
+        "P13": { "point": { "meet": ["v_left_inner", "diag_corn_NW"] } },
+        "P14": { "point": { "meet": ["vO_W", "h_mid_top"] } },
+        "diag_mid_m_SW": { "line": { "through": ["P13", "P14"] } }
       },
       "animate": "ruler"
     }
   ],
   "ink": {
-    "text": "Go over the outline of the central eight-pointed khatam star, the surrounding kites, hexagons, and corner squares.",
+    "text": "Ink the eight-pointed star at O. Ink the kites, hexagons and squares round it. Follow the faint grey ink, or tick “Also ink the copies round the centre” to ink four at once.",
     "paths": [
       { "along": "diag_facet_out_NE", "from": "diag_p1", "to": "vE" },
       { "along": "diag_facet_out_NE", "from": "vE", "to": "d1" },
@@ -318,64 +284,32 @@
       { "along": "h_bot_inner", "from": "vLeft", "to": "d1" },
       { "along": "h_bot_inner", "from": "d1", "to": "diag_corn_SW" },
       { "along": "h_bot_inner", "from": "diag_p2", "to": "v_mid_left" },
-      {
-        "along": "h_bot_inner",
-        "from": "v_mid_left",
-        "to": "diag_facet_in_SE"
-      },
+      { "along": "h_bot_inner", "from": "v_mid_left", "to": "diag_facet_in_SE" },
       { "along": "h_bot_inner", "from": "diag_facet_in_SE", "to": "v" },
       { "along": "h_bot_inner", "from": "v", "to": "diag_facet_in_SW" },
-      {
-        "along": "h_bot_inner",
-        "from": "diag_facet_in_SW",
-        "to": "v_mid_right"
-      },
+      { "along": "h_bot_inner", "from": "diag_facet_in_SW", "to": "v_mid_right" },
       { "along": "h_bot_inner", "from": "v_mid_right", "to": "diag_m2" },
       { "along": "h_bot_inner", "from": "diag_corn_SE", "to": "d2" },
       { "along": "h_bot_inner", "from": "d2", "to": "vRight" },
       { "along": "h_mid_bot", "from": "vLeft", "to": "diag_facet_in_NW" },
-      {
-        "along": "h_mid_bot",
-        "from": "diag_facet_in_NW",
-        "to": "v_left_inner"
-      },
+      { "along": "h_mid_bot", "from": "diag_facet_in_NW", "to": "v_left_inner" },
       { "along": "h_mid_bot", "from": "v_left_inner", "to": "diag_p1" },
       { "along": "h_mid_bot", "from": "diag_m1", "to": "v_right_inner" },
-      {
-        "along": "h_mid_bot",
-        "from": "v_right_inner",
-        "to": "diag_facet_in_NE"
-      },
+      { "along": "h_mid_bot", "from": "v_right_inner", "to": "diag_facet_in_NE" },
       { "along": "h_mid_bot", "from": "diag_facet_in_NE", "to": "vRight" },
       { "along": "h_mid_top", "from": "vLeft", "to": "diag_facet_in_SW" },
-      {
-        "along": "h_mid_top",
-        "from": "diag_facet_in_SW",
-        "to": "v_left_inner"
-      },
+      { "along": "h_mid_top", "from": "diag_facet_in_SW", "to": "v_left_inner" },
       { "along": "h_mid_top", "from": "v_left_inner", "to": "diag_m2" },
       { "along": "h_mid_top", "from": "diag_p2", "to": "v_right_inner" },
-      {
-        "along": "h_mid_top",
-        "from": "v_right_inner",
-        "to": "diag_facet_in_SE"
-      },
+      { "along": "h_mid_top", "from": "v_right_inner", "to": "diag_facet_in_SE" },
       { "along": "h_mid_top", "from": "diag_facet_in_SE", "to": "vRight" },
       { "along": "h_top_inner", "from": "vLeft", "to": "d2" },
       { "along": "h_top_inner", "from": "d2", "to": "diag_corn_NW" },
       { "along": "h_top_inner", "from": "diag_m1", "to": "v_mid_left" },
-      {
-        "along": "h_top_inner",
-        "from": "v_mid_left",
-        "to": "diag_facet_in_NE"
-      },
+      { "along": "h_top_inner", "from": "v_mid_left", "to": "diag_facet_in_NE" },
       { "along": "h_top_inner", "from": "diag_facet_in_NE", "to": "v" },
       { "along": "h_top_inner", "from": "v", "to": "diag_facet_in_NW" },
-      {
-        "along": "h_top_inner",
-        "from": "diag_facet_in_NW",
-        "to": "v_mid_right"
-      },
+      { "along": "h_top_inner", "from": "diag_facet_in_NW", "to": "v_mid_right" },
       { "along": "h_top_inner", "from": "v_mid_right", "to": "diag_p1" },
       { "along": "h_top_inner", "from": "diag_corn_NE", "to": "d1" },
       { "along": "h_top_inner", "from": "d1", "to": "vRight" },
@@ -398,64 +332,32 @@
       { "along": "v_left_inner", "from": "hBot", "to": "d1" },
       { "along": "v_left_inner", "from": "d1", "to": "diag_corn_SW" },
       { "along": "v_left_inner", "from": "diag_p1", "to": "h_mid_bot" },
-      {
-        "along": "v_left_inner",
-        "from": "h_mid_bot",
-        "to": "diag_facet_in_NW"
-      },
+      { "along": "v_left_inner", "from": "h_mid_bot", "to": "diag_facet_in_NW" },
       { "along": "v_left_inner", "from": "diag_facet_in_NW", "to": "h" },
       { "along": "v_left_inner", "from": "h", "to": "diag_facet_in_SW" },
-      {
-        "along": "v_left_inner",
-        "from": "diag_facet_in_SW",
-        "to": "h_mid_top"
-      },
+      { "along": "v_left_inner", "from": "diag_facet_in_SW", "to": "h_mid_top" },
       { "along": "v_left_inner", "from": "h_mid_top", "to": "diag_m2" },
       { "along": "v_left_inner", "from": "diag_corn_NW", "to": "d2" },
       { "along": "v_left_inner", "from": "d2", "to": "hTop" },
       { "along": "v_mid_left", "from": "hBot", "to": "diag_facet_in_SE" },
-      {
-        "along": "v_mid_left",
-        "from": "diag_facet_in_SE",
-        "to": "h_bot_inner"
-      },
+      { "along": "v_mid_left", "from": "diag_facet_in_SE", "to": "h_bot_inner" },
       { "along": "v_mid_left", "from": "h_bot_inner", "to": "diag_p2" },
       { "along": "v_mid_left", "from": "diag_m1", "to": "h_top_inner" },
-      {
-        "along": "v_mid_left",
-        "from": "h_top_inner",
-        "to": "diag_facet_in_NE"
-      },
+      { "along": "v_mid_left", "from": "h_top_inner", "to": "diag_facet_in_NE" },
       { "along": "v_mid_left", "from": "diag_facet_in_NE", "to": "hTop" },
       { "along": "v_mid_right", "from": "hBot", "to": "diag_facet_in_SW" },
-      {
-        "along": "v_mid_right",
-        "from": "diag_facet_in_SW",
-        "to": "h_bot_inner"
-      },
+      { "along": "v_mid_right", "from": "diag_facet_in_SW", "to": "h_bot_inner" },
       { "along": "v_mid_right", "from": "h_bot_inner", "to": "diag_m2" },
       { "along": "v_mid_right", "from": "diag_p1", "to": "h_top_inner" },
-      {
-        "along": "v_mid_right",
-        "from": "h_top_inner",
-        "to": "diag_facet_in_NW"
-      },
+      { "along": "v_mid_right", "from": "h_top_inner", "to": "diag_facet_in_NW" },
       { "along": "v_mid_right", "from": "diag_facet_in_NW", "to": "hTop" },
       { "along": "v_right_inner", "from": "hBot", "to": "d2" },
       { "along": "v_right_inner", "from": "d2", "to": "diag_corn_SE" },
       { "along": "v_right_inner", "from": "diag_m1", "to": "h_mid_bot" },
-      {
-        "along": "v_right_inner",
-        "from": "h_mid_bot",
-        "to": "diag_facet_in_NE"
-      },
+      { "along": "v_right_inner", "from": "h_mid_bot", "to": "diag_facet_in_NE" },
       { "along": "v_right_inner", "from": "diag_facet_in_NE", "to": "h" },
       { "along": "v_right_inner", "from": "h", "to": "diag_facet_in_SE" },
-      {
-        "along": "v_right_inner",
-        "from": "diag_facet_in_SE",
-        "to": "h_mid_top"
-      },
+      { "along": "v_right_inner", "from": "diag_facet_in_SE", "to": "h_mid_top" },
       { "along": "v_right_inner", "from": "h_mid_top", "to": "diag_p2" },
       { "along": "v_right_inner", "from": "diag_corn_NE", "to": "d1" },
       { "along": "v_right_inner", "from": "d1", "to": "hTop" }
@@ -463,9 +365,15 @@
   },
   "pattern": {
     "cell": "static",
-    "text": "Repeat the static tile to fill the wall.",
+    "text": "Put copies of the square tile side by side to fill the wall.",
     "palette": "Timurid tile",
-    "colors": {"khatam_star": "c", "cross_arm": "a", "petal": "b", "square": "d", "shield": "ground"},
+    "colors": {
+      "khatam_star": "c",
+      "cross_arm": "a",
+      "petal": "b",
+      "square": "d",
+      "shield": "ground"
+    },
     "rings": true
   },
   "expect": {

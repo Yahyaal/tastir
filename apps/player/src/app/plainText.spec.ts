@@ -6,20 +6,12 @@ import { sentencesOf } from './StepText';
 // Every tutorial is written in simple, controlled English
 // (docs/tutorial-writing.md), except those still waiting to be rewritten.
 const NOT_YET: readonly string[] = [
-  'alhambra-barca-stars',
-  'alhambra-bath-stars',
   'alhambra-comares-frames',
-  'alhambra-comares-lattice',
-  'alhambra-comares-stars',
-  'alhambra-leones-fret',
-  'alhambra-mexuar-stars',
   'alhambra-reyes-dodecagrams',
   'alhambra-reyes-fret',
   'alhambra-reyes-stars',
   'bou-inania-rosette',
   'bou-inania-twelve-fold-wall',
-  'eight-fold-khatam',
-  'eight-fold-star-and-octagon',
   'four-fold-ring-of-circles',
   'ibn-tulun-window',
   'kurt-eight-fold-zellige',
@@ -28,7 +20,6 @@ const NOT_YET: readonly string[] = [
   'mian-stellated-hex',
   'mian-stellated-rosettes',
   'minbar-doors-cairo',
-  'six-fold-hammerhead',
   'sixteen-fold-rosette',
   'ten-pointed-star-decagon-rect',
 ];

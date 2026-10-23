@@ -46,7 +46,7 @@
   "steps": [
     {
       "id": 1,
-      "text": "Rule a horizontal line through O and A and draw a circle about O through A. A large star will sit at O and at every point two radii away along the diagonals.",
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
       "create": {
         "c": { "circle": { "centre": "O", "through": "A" } },
         "h": { "line": { "through": ["O", "A"] } }
@@ -55,166 +55,133 @@
     },
     {
       "id": 2,
-      "text": "Rule the vertical through O. At the four points where the circle meets the two lines, rule lines at right angles to them. Draw the circle about O through their corners: it meets the horizontal and vertical at the four corners of the square cell. Rule the cell’s four sides and its two diagonals through O.",
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a vertical line through B. Draw a horizontal line through C. Draw a horizontal line through D. These lines cross at E, F, G and H. Draw a straight line through O and E. Draw a line through O at 90° to line OE. Draw a circle with centre O through E. It crosses the horizontal and vertical lines at J, K, L and N. Join J, K, L and N with straight lines.",
       "create": {
         "v": { "line": { "through": "O", "perpendicularTo": "h" } },
-        "P0": { "point": { "meet": ["c", "h"], "pick": { "angle": 0.0 } } },
-        "P180": { "point": { "meet": ["c", "h"], "pick": { "angle": 180.0 } } },
-        "P90": { "point": { "meet": ["c", "v"], "pick": { "angle": 90.0 } } },
-        "P270": { "point": { "meet": ["c", "v"], "pick": { "angle": 270.0 } } },
-        "gx": { "line": { "through": "P0", "perpendicularTo": "h" } },
-        "gxw": { "line": { "through": "P180", "perpendicularTo": "h" } },
-        "gy": { "line": { "through": "P90", "perpendicularTo": "v" } },
-        "gys": { "line": { "through": "P270", "perpendicularTo": "v" } },
-        "K": { "point": { "meet": ["gx", "gy"] } },
-        "K2": { "point": { "meet": ["gxw", "gy"] } },
-        "K3": { "point": { "meet": ["gxw", "gys"] } },
-        "K4": { "point": { "meet": ["gx", "gys"] } },
-        "d45": { "line": { "through": ["O", "K"] } },
+        "B": { "point": { "meet": ["c", "h"], "pick": { "angle": 180.0 } } },
+        "C": { "point": { "meet": ["c", "v"], "pick": { "angle": 90.0 } } },
+        "D": { "point": { "meet": ["c", "v"], "pick": { "angle": 270.0 } } },
+        "gx": { "line": { "through": "A", "perpendicularTo": "h" } },
+        "gxw": { "line": { "through": "B", "perpendicularTo": "h" } },
+        "gy": { "line": { "through": "C", "perpendicularTo": "v" } },
+        "gys": { "line": { "through": "D", "perpendicularTo": "v" } },
+        "E": { "point": { "meet": ["gx", "gy"] } },
+        "F": { "point": { "meet": ["gxw", "gy"] } },
+        "G": { "point": { "meet": ["gxw", "gys"] } },
+        "H": { "point": { "meet": ["gx", "gys"] } },
+        "d45": { "line": { "through": ["O", "E"] } },
         "d135": { "line": { "through": "O", "perpendicularTo": "d45" } },
-        "cd": { "circle": { "centre": "O", "through": "K" } },
-        "C0": { "point": { "meet": ["cd", "h"], "pick": { "angle": 0.0 } } },
-        "C90": { "point": { "meet": ["cd", "v"], "pick": { "angle": 90.0 } } },
-        "C180": {
-          "point": { "meet": ["cd", "h"], "pick": { "angle": 180.0 } }
-        },
-        "C270": {
-          "point": { "meet": ["cd", "v"], "pick": { "angle": 270.0 } }
-        },
-        "w1": { "line": { "through": ["C0", "C90"] } },
-        "w2": { "line": { "through": ["C90", "C180"] } },
-        "w3": { "line": { "through": ["C180", "C270"] } },
-        "w4": { "line": { "through": ["C270", "C0"] } }
+        "cd": { "circle": { "centre": "O", "through": "E" } },
+        "J": { "point": { "meet": ["cd", "h"], "pick": { "angle": 0.0 } } },
+        "K": { "point": { "meet": ["cd", "v"], "pick": { "angle": 90.0 } } },
+        "L": { "point": { "meet": ["cd", "h"], "pick": { "angle": 180.0 } } },
+        "N": { "point": { "meet": ["cd", "v"], "pick": { "angle": 270.0 } } },
+        "w1": { "line": { "through": ["J", "K"] } },
+        "w2": { "line": { "through": ["K", "L"] } },
+        "w3": { "line": { "through": ["L", "N"] } },
+        "w4": { "line": { "through": ["N", "J"] } }
       },
       "highlight": ["c", "h"],
       "animate": "ruler",
-      "textWithoutHelpers": "Rule the vertical through O. Where the circle meets the two lines, rule lines at right angles to them on the right and the top. Draw the circle about O through their corners: it meets the horizontal and vertical at the four corners of the square cell. Rule the cell’s top two sides and its two diagonals through O."
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. These lines cross at E. Draw a straight line through O and E. Draw a line through O at 90° to line OE. Draw a circle with centre O through E. It crosses the horizontal and vertical lines at J, K, L and N. Draw a straight line through J and K. Draw a straight line through K and L."
     },
     {
       "id": 3,
-      "text": "Rule the line halving the angle between the horizontal and the diagonal: the 22.5° line.",
+      "text": "Draw the line through O that halves the angle AOE.",
       "create": {
-        "r22": { "line": { "through": "O", "bisects": ["P0", "O", "K"] } }
+        "r22": { "line": { "through": "O", "bisects": ["A", "O", "E"] } }
       },
       "animate": "ruler"
     },
     {
       "id": 4,
-      "text": "Rule the line from the corner K to the bottom of the circle. Where it crosses the 22.5° line, rule a vertical down to the horizontal: that point is the tip of the large star. Draw the circle about O through it.",
+      "text": "Draw a straight line through E and D. It crosses the line that halves the angle AOE at Q. Draw a vertical line through Q. It crosses the horizontal line at S1. Draw a circle with centre O through S1.",
       "create": {
-        "kq": { "line": { "through": ["K", "P270"] } },
+        "kq": { "line": { "through": ["E", "D"] } },
         "Q": { "point": { "meet": ["kq", "r22"] } },
         "qv": { "line": { "through": "Q", "perpendicularTo": "h" } },
-        "B0": { "point": { "meet": ["qv", "h"] } },
-        "cb": { "circle": { "centre": "O", "through": "B0" } }
+        "S1": { "point": { "meet": ["qv", "h"] } },
+        "cb": { "circle": { "centre": "O", "through": "S1" } }
       },
-      "highlight": ["K", "P270"],
+      "highlight": ["E", "D"],
       "animate": "compass"
     },
     {
       "id": 5,
-      "text": "The large star is two squares in this circle. Mark where the circle meets the horizontal, the vertical and the two diagonals, and join every other mark: one square on the horizontal and vertical marks, one on the diagonal marks. Rule each side as a full line.",
+      "text": "Join S1, S3, S5 and S7 with straight lines. Join S2, S4, S6 and S8 with straight lines. S1 to S8 are where the circle through S1 crosses the lines through O. The two squares make the large star.",
       "create": {
-        "B90": { "point": { "meet": ["cb", "v"], "pick": { "angle": 90.0 } } },
-        "B180": {
-          "point": { "meet": ["cb", "h"], "pick": { "angle": 180.0 } }
-        },
-        "B270": {
-          "point": { "meet": ["cb", "v"], "pick": { "angle": 270.0 } }
-        },
-        "B45": {
-          "point": { "meet": ["cb", "d45"], "pick": { "angle": 45.0 } }
-        },
-        "B135": {
-          "point": { "meet": ["cb", "d135"], "pick": { "angle": 135.0 } }
-        },
-        "B225": {
-          "point": { "meet": ["cb", "d45"], "pick": { "angle": 225.0 } }
-        },
-        "B315": {
-          "point": { "meet": ["cb", "d135"], "pick": { "angle": 315.0 } }
-        },
-        "bs0": { "line": { "through": ["B0", "B90"] } },
-        "bd45": { "line": { "through": ["B45", "B135"] } },
-        "bs90": { "line": { "through": ["B90", "B180"] } },
-        "bd135": { "line": { "through": ["B135", "B225"] } },
-        "bs180": { "line": { "through": ["B180", "B270"] } },
-        "bd225": { "line": { "through": ["B225", "B315"] } },
-        "bs270": { "line": { "through": ["B270", "B0"] } },
-        "bd315": { "line": { "through": ["B315", "B45"] } }
+        "S3": { "point": { "meet": ["cb", "v"], "pick": { "angle": 90.0 } } },
+        "S5": { "point": { "meet": ["cb", "h"], "pick": { "angle": 180.0 } } },
+        "S7": { "point": { "meet": ["cb", "v"], "pick": { "angle": 270.0 } } },
+        "S2": { "point": { "meet": ["cb", "d45"], "pick": { "angle": 45.0 } } },
+        "S4": { "point": { "meet": ["cb", "d135"], "pick": { "angle": 135.0 } } },
+        "S6": { "point": { "meet": ["cb", "d45"], "pick": { "angle": 225.0 } } },
+        "S8": { "point": { "meet": ["cb", "d135"], "pick": { "angle": 315.0 } } },
+        "bs0": { "line": { "through": ["S1", "S3"] } },
+        "bd45": { "line": { "through": ["S2", "S4"] } },
+        "bs90": { "line": { "through": ["S3", "S5"] } },
+        "bd135": { "line": { "through": ["S4", "S6"] } },
+        "bs180": { "line": { "through": ["S5", "S7"] } },
+        "bd225": { "line": { "through": ["S6", "S8"] } },
+        "bs270": { "line": { "through": ["S7", "S1"] } },
+        "bd315": { "line": { "through": ["S8", "S2"] } }
       },
       "highlight": ["cb"],
       "animate": "ruler"
     },
     {
       "id": 6,
-      "text": "The next large star along sits two units away along the diagonal. Mark where circle c meets diagonal d45: P45. Put the compass on P45, open it to B45, and mark the other side along the diagonal: N45. Through that mark, rule the line parallel to the large star’s side bd45: a side of the neighbouring star.",
+      "text": "Draw a circle with centre R through S2. R is where the first circle crosses line OE. The new circle crosses line OE again at U. Draw a line through U parallel to the line from S2 to S4. It is a side of the next large star.",
       "create": {
-        "P45": { "point": { "meet": ["c", "d45"], "pick": { "angle": 45.0 } } },
-        "ca": { "circle": { "centre": "P45", "through": "B45" } },
-        "N45": {
-          "point": { "meet": ["ca", "d45"], "pick": { "farthest": "O" } }
-        },
-        "nd": { "line": { "through": "N45", "parallelTo": "bd45" } }
+        "R": { "point": { "meet": ["c", "d45"], "pick": { "angle": 45.0 } } },
+        "ca": { "circle": { "centre": "R", "through": "S2" } },
+        "U": { "point": { "meet": ["ca", "d45"], "pick": { "farthest": "O" } } },
+        "nd": { "line": { "through": "U", "parallelTo": "bd45" } }
       },
-      "highlight": ["P45", "B45"],
+      "highlight": ["R", "S2"],
       "animate": "compass",
-      "textWithoutHelpers": "The next large star along sits two units away along the diagonal. Mark where circle c meets diagonal d45: P45. Put the compass on P45, open it to B45, and draw the circle: it marks the neighbouring star’s tip on the other side."
+      "textWithoutHelpers": "Draw a circle with centre R through S2. R is where the first circle crosses line OE. The new circle crosses line OE again at U, the point of the next large star."
     },
     {
       "id": 7,
-      "text": "Draw the circle about the top corner C90 with radius equal to B45–P45: the circle of the small square.",
+      "text": "Draw a circle with centre K whose radius is the distance from S2 to R. It carries the small square at K.",
       "create": {
-        "cs": { "circle": { "centre": "C90", "radiusFrom": ["B45", "P45"] } }
+        "cs": { "circle": { "centre": "K", "radiusFrom": ["S2", "R"] } }
       },
-      "highlight": ["C90"],
+      "highlight": ["K"],
       "animate": "compass"
     },
     {
       "id": 8,
-      "text": "Mark where the circle cs meets the vertical line v. Through each mark rule lines parallel to the two diagonals: the sides of the small square.",
+      "text": "Draw a horizontal line through K. Join Q1, Q3, Q5 and Q7 with straight lines. Join Q2, Q4, Q6 and Q8 with straight lines. Q1 to Q8 are where the circle at K crosses the lines through K. The second square is the small square at K.",
       "create": {
-        "hy_c90": { "line": { "through": "C90", "parallelTo": "h" } },
-        "S0": {
-          "point": { "meet": ["cs", "hy_c90"], "pick": { "angle": 75.361 } }
-        },
-        "S90": {
-          "point": { "meet": ["cs", "v"], "pick": { "farthest": "O" } }
-        },
-        "S180": {
+        "hy_c90": { "line": { "through": "K", "parallelTo": "h" } },
+        "Q1": { "point": { "meet": ["cs", "hy_c90"], "pick": { "angle": 75.361 } } },
+        "Q3": { "point": { "meet": ["cs", "v"], "pick": { "farthest": "O" } } },
+        "Q5": {
           "point": { "meet": ["cs", "hy_c90"], "pick": { "angle": 104.639 } }
         },
-        "S270": {
-          "point": { "meet": ["cs", "v"], "pick": { "nearest": "O" } }
-        },
-        "S45": {
-          "point": { "meet": ["cs", "w2"], "pick": { "angle": 81.139 } }
-        },
-        "S135": {
-          "point": { "meet": ["cs", "w1"], "pick": { "angle": 98.861 } }
-        },
-        "S225": {
-          "point": { "meet": ["cs", "w2"], "pick": { "angle": 102.764 } }
-        },
-        "S315": {
-          "point": { "meet": ["cs", "w1"], "pick": { "angle": 77.236 } }
-        },
-        "ss0": { "line": { "through": ["S0", "S90"] } },
-        "sd45": { "line": { "through": ["S45", "S135"] } },
-        "ss90": { "line": { "through": ["S90", "S180"] } },
-        "sd135": { "line": { "through": ["S135", "S225"] } },
-        "ss180": { "line": { "through": ["S180", "S270"] } },
-        "sd225": { "line": { "through": ["S225", "S315"] } },
-        "ss270": { "line": { "through": ["S270", "S0"] } },
-        "sd315": { "line": { "through": ["S315", "S45"] } }
+        "Q7": { "point": { "meet": ["cs", "v"], "pick": { "nearest": "O" } } },
+        "Q2": { "point": { "meet": ["cs", "w2"], "pick": { "angle": 81.139 } } },
+        "Q4": { "point": { "meet": ["cs", "w1"], "pick": { "angle": 98.861 } } },
+        "Q6": { "point": { "meet": ["cs", "w2"], "pick": { "angle": 102.764 } } },
+        "Q8": { "point": { "meet": ["cs", "w1"], "pick": { "angle": 77.236 } } },
+        "ss0": { "line": { "through": ["Q1", "Q3"] } },
+        "sd45": { "line": { "through": ["Q2", "Q4"] } },
+        "ss90": { "line": { "through": ["Q3", "Q5"] } },
+        "sd135": { "line": { "through": ["Q4", "Q6"] } },
+        "ss180": { "line": { "through": ["Q5", "Q7"] } },
+        "sd225": { "line": { "through": ["Q6", "Q8"] } },
+        "ss270": { "line": { "through": ["Q7", "Q1"] } },
+        "sd315": { "line": { "through": ["Q8", "Q2"] } }
       },
       "highlight": ["cs"],
       "animate": "ruler",
-      "textWithoutHelpers": "Mark where the circle cs meets the vertical line v. Through each mark rule lines parallel to the two diagonals: the sides of the small square (its other sides are not needed)."
+      "textWithoutHelpers": "Draw a horizontal line through K. Draw straight lines through Q2 and Q4, Q4 and Q6, Q6 and Q8, and Q8 and Q2. Q1 to Q8 are where the circle at K crosses the lines through K. These lines make the small square at K."
     },
     {
       "id": 9,
-      "text": "Copy the small square’s lines and the neighbouring star’s side to the other three corners, turning them about O.",
+      "text": "Turn the lines of the small square, and the line through U, round O by 90°, three times. This copies them to J, L and N.",
       "create": {
         "cp": {
           "repeat": {
@@ -234,122 +201,136 @@
         }
       },
       "animate": "ruler",
-      "textWithoutHelpers": "Copy the small square’s lines to the other three corners, turning them about O."
+      "textWithoutHelpers": "Turn the lines of the small square round O by 90°, three times. This copies them to J, L and N."
     },
     {
       "id": 10,
-      "text": "Through the middles of the small square’s near sides, rule lines parallel to the cell sides: the bands that run past the small square.",
+      "text": "Draw a line through V1 parallel to line KL. Draw a line through V1 parallel to line JK. Draw a line through V2 parallel to line KL. Draw a line through V2 parallel to line JK. V1 and V2 are where the sides of the small square cross the horizontal line through K. Turn these four lines round O by 90°, three times.",
       "create": {
-        "H1": { "point": { "meet": ["sd135", "hy_c90"] } },
-        "H2": { "point": { "meet": ["sd315", "hy_c90"] } },
-        "hv1": { "line": { "through": "H1", "parallelTo": "w2" } },
-        "hh1": { "line": { "through": "H1", "parallelTo": "w1" } },
-        "hv2": { "line": { "through": "H2", "parallelTo": "w2" } },
-        "hh2": { "line": { "through": "H2", "parallelTo": "w1" } },
+        "V1": { "point": { "meet": ["sd135", "hy_c90"] } },
+        "V2": { "point": { "meet": ["sd315", "hy_c90"] } },
+        "hv1": { "line": { "through": "V1", "parallelTo": "w2" } },
+        "hh1": { "line": { "through": "V1", "parallelTo": "w1" } },
+        "hv2": { "line": { "through": "V2", "parallelTo": "w2" } },
+        "hh2": { "line": { "through": "V2", "parallelTo": "w1" } },
         "cq": { "repeat": { "of": ["hv1", "hh1", "hv2", "hh2"], "by": "rot4" } }
       },
       "animate": "ruler",
-      "textWithoutHelpers": "Through the middles of the small square’s near sides, rule lines parallel to the cell sides: the bands that run past the small square (lines that lie entirely outside are not needed)."
+      "textWithoutHelpers": "Draw a line through V1 parallel to line KL. Draw a line through V1 parallel to line JK. Draw a line through V2 parallel to line KL. V1 and V2 are where the sides of the small square cross the horizontal line through K. Turn these lines round O by 90°, three times. Only the lines the pattern needs are shown."
     },
     {
       "id": 11,
-      "text": "Mark the corners of the pattern: every point where a band turns, crosses another or ends.",
+      "text": "Mark each point where a band turns, crosses another or ends.",
       "create": {
-        "M1": { "point": { "meet": ["w3", "sd135@1"] } },
-        "M2": { "point": { "meet": ["w2", "sd135@3"] } },
-        "M3": { "point": { "meet": ["bs90", "sd135@1"] } },
-        "M4": { "point": { "meet": ["bs180", "sd135@3"] } },
-        "M5": { "point": { "meet": ["bd225", "hh1@2"] } },
-        "M6": { "point": { "meet": ["bd45", "hv2"] } },
-        "M7": { "point": { "meet": ["r22", "bd135"] } },
-        "M8": { "point": { "meet": ["bs90", "bd135"] } },
-        "M9": { "point": { "meet": ["bd135", "hh1@2"] } },
-        "M10": { "point": { "meet": ["bs270", "sd135"] } },
-        "M11": { "point": { "meet": ["bd135", "hv2"] } },
-        "M12": { "point": { "meet": ["bs0", "sd135"] } },
-        "M13": { "point": { "meet": ["bs180", "bd225"] } },
-        "M14": { "point": { "meet": ["bd45", "bs90"] } },
-        "M15": { "point": { "meet": ["w3", "sd135"] } },
-        "M16": { "point": { "meet": ["w4", "sd315"] } },
-        "M17": { "point": { "meet": ["bd225", "bs270"] } },
-        "M18": { "point": { "meet": ["bs0", "bd45"] } },
-        "M19": { "point": { "meet": ["bs180", "sd315"] } },
-        "M20": { "point": { "meet": ["bd315", "hh1@3"] } },
-        "M21": { "point": { "meet": ["bs90", "sd315"] } },
-        "M22": { "point": { "meet": ["bd315", "hh1"] } },
-        "M23": { "point": { "meet": ["bs270", "bd315"] } },
-        "M24": { "point": { "meet": ["bd225", "hh1@3"] } },
-        "M25": { "point": { "meet": ["r22", "bs0"] } },
-        "M26": { "point": { "meet": ["bd45", "hh1"] } },
-        "M27": { "point": { "meet": ["bs0", "sd135@1"] } },
-        "M28": { "point": { "meet": ["bs270", "sd135@3"] } },
-        "M29": { "point": { "meet": ["w4", "sd135@1"] } },
-        "M30": { "point": { "meet": ["w1", "sd135@3"] } }
+        "P15": { "point": { "meet": ["w3", "sd135@1"] } },
+        "P14": { "point": { "meet": ["w2", "sd135@3"] } },
+        "P16": { "point": { "meet": ["bs90", "sd135@1"] } },
+        "P13": { "point": { "meet": ["bs180", "sd135@3"] } },
+        "P18": { "point": { "meet": ["bd225", "hh1@2"] } },
+        "P11": { "point": { "meet": ["bd45", "hv2"] } },
+        "P17": { "point": { "meet": ["r22", "bd135"] } },
+        "P12": { "point": { "meet": ["bs90", "bd135"] } },
+        "P19": { "point": { "meet": ["bd135", "hh1@2"] } },
+        "P21": { "point": { "meet": ["bs270", "sd135"] } },
+        "P10": { "point": { "meet": ["bd135", "hv2"] } },
+        "P8": { "point": { "meet": ["bs0", "sd135"] } },
+        "P20": { "point": { "meet": ["bs180", "bd225"] } },
+        "P9": { "point": { "meet": ["bd45", "bs90"] } },
+        "P22": { "point": { "meet": ["w3", "sd135"] } },
+        "P23": { "point": { "meet": ["w4", "sd315"] } },
+        "P25": { "point": { "meet": ["bd225", "bs270"] } },
+        "P6": { "point": { "meet": ["bs0", "bd45"] } },
+        "P24": { "point": { "meet": ["bs180", "sd315"] } },
+        "P26": { "point": { "meet": ["bd315", "hh1@3"] } },
+        "P7": { "point": { "meet": ["bs90", "sd315"] } },
+        "P5": { "point": { "meet": ["bd315", "hh1"] } },
+        "P28": { "point": { "meet": ["bs270", "bd315"] } },
+        "P27": { "point": { "meet": ["bd225", "hh1@3"] } },
+        "P3": { "point": { "meet": ["r22", "bs0"] } },
+        "P4": { "point": { "meet": ["bd45", "hh1"] } },
+        "P29": { "point": { "meet": ["bs0", "sd135@1"] } },
+        "P2": { "point": { "meet": ["bs270", "sd135@3"] } },
+        "P30": { "point": { "meet": ["w4", "sd135@1"] } },
+        "P1": { "point": { "meet": ["w1", "sd135@3"] } }
       },
       "animate": "fade"
     },
     {
       "id": 12,
-      "text": "The tile is the square cell.",
-      "create": { "tile": { "polygon": ["C0", "C90", "C180", "C270"] } },
+      "text": "Join J, K, L and N to mark the tile that repeats.",
+      "create": { "tile": { "polygon": ["J", "K", "L", "N"] } },
       "animate": "fade"
     }
   ],
   "ink": {
-    "text": "Ink the bands: round each large star, and round the small square at each corner of the cell, the bands run on and cross between them.",
+    "text": "Ink the bands. They run round each large star and round each small square, and cross between them.",
     "paths": [
-      { "through": ["M1", "M2"] },
-      { "through": ["M1", "M3"] },
-      { "through": ["M2", "M4"] },
-      { "through": ["M3", "M5"] },
-      { "through": ["M4", "M6"] },
-      { "through": ["M5", "B225"] },
-      { "through": ["M6", "B135"] },
-      { "through": ["B180", "M7"] },
-      { "through": ["B180", "M8"] },
-      { "through": ["M9", "B225"] },
-      { "through": ["M9", "M10"] },
-      { "through": ["M11", "B135"] },
-      { "through": ["M11", "M12"] },
-      { "through": ["B225", "M7"] },
-      { "through": ["B225", "M13"] },
-      { "through": ["M8", "B135"] },
-      { "through": ["B135", "M14"] },
-      { "through": ["M15", "M10"] },
-      { "through": ["M15", "M16"] },
-      { "through": ["M12", "S225"] },
-      { "through": ["S225", "S315"] },
-      { "through": ["M13", "B270"] },
-      { "through": ["M14", "B90"] },
-      { "through": ["B270", "M17"] },
-      { "through": ["B90", "M18"] },
-      { "through": ["M17", "B315"] },
-      { "through": ["M18", "B45"] },
-      { "through": ["M16", "M19"] },
-      { "through": ["M19", "M20"] },
-      { "through": ["M21", "S315"] },
-      { "through": ["M21", "M22"] },
-      { "through": ["B315", "M23"] },
-      { "through": ["B315", "M20"] },
-      { "through": ["B315", "M24"] },
-      { "through": ["M23", "B0"] },
-      { "through": ["M25", "B45"] },
-      { "through": ["M25", "B0"] },
-      { "through": ["B45", "M22"] },
-      { "through": ["B45", "M26"] },
-      { "through": ["M24", "M27"] },
-      { "through": ["M26", "M28"] },
-      { "through": ["M27", "M29"] },
-      { "through": ["M28", "M30"] },
-      { "through": ["M29", "M30"] }
+      { "through": ["S3", "P6"] },
+      { "through": ["P6", "S2"] },
+      { "through": ["P3", "S2"] },
+      { "through": ["P3", "S1"] },
+      { "through": ["S2", "P4"] },
+      { "through": ["P4", "P2"] },
+      { "through": ["P2", "P1"] },
+      { "through": ["S2", "P5"] },
+      { "through": ["P7", "P5"] },
+      { "through": ["P7", "Q8"] },
+      { "through": ["Q6", "Q8"] },
+      { "through": ["P15", "P14"] },
+      { "through": ["P15", "P16"] },
+      { "through": ["P14", "P13"] },
+      { "through": ["P16", "P18"] },
+      { "through": ["P13", "P11"] },
+      { "through": ["P18", "S6"] },
+      { "through": ["P11", "S4"] },
+      { "through": ["S5", "P17"] },
+      { "through": ["S5", "P12"] },
+      { "through": ["P19", "S6"] },
+      { "through": ["P19", "P21"] },
+      { "through": ["P10", "S4"] },
+      { "through": ["P10", "P8"] },
+      { "through": ["S6", "P17"] },
+      { "through": ["S6", "P20"] },
+      { "through": ["P12", "S4"] },
+      { "through": ["S4", "P9"] },
+      { "through": ["P22", "P21"] },
+      { "through": ["P22", "P23"] },
+      { "through": ["P8", "Q6"] },
+      { "through": ["P20", "S7"] },
+      { "through": ["P9", "S3"] },
+      { "through": ["S7", "P25"] },
+      { "through": ["P25", "S8"] },
+      { "through": ["P23", "P24"] },
+      { "through": ["P24", "P26"] },
+      { "through": ["S8", "P28"] },
+      { "through": ["S8", "P26"] },
+      { "through": ["S8", "P27"] },
+      { "through": ["P28", "S1"] },
+      { "through": ["P27", "P29"] },
+      { "through": ["P29", "P30"] },
+      { "through": ["P30", "P1"] }
+    ],
+    "parts": [
+      {
+        "text": "Ink from S3 through P6 to S2, then on to P3 and S1. These lines make one point of the large star.",
+        "paths": 4
+      },
+      {
+        "text": "Ink from S2 through P4 and P2 to P1. Ink from S2 through P5, P7 and Q8 to Q6. These are the bands from that point.",
+        "paths": 7
+      },
+      {
+        "text": "Ink the same lines turned round O, three more times. Tick “Also ink the copies round the centre” to ink them all at once.",
+        "paths": 33
+      }
     ]
   },
   "pattern": {
     "cell": "tile",
-    "text": "Repeat the square cell edge to edge: large stars on the grid, a small square where four cells meet, and the bands interlaced between them.",
+    "text": "Put copies of the square cell side by side. Large stars sit on the grid, and a small square where four cells touch. The bands weave between them.",
     "palette": "Alhambra",
     "look": "strapwork",
-    "colors": {"star": "d", "fork": "a", "bar": "b", "square": "a"},
+    "colors": { "star": "d", "fork": "a", "bar": "b", "square": "a" },
     "rings": true
   },
   "expect": {

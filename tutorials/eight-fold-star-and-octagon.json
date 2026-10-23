@@ -42,187 +42,201 @@
   "steps": [
     {
       "id": 1,
-      "text": "Put the compass point on the centre and draw a circle.",
-      "create": {"c": {"circle": {"centre": "O", "through": "A"}}},
+      "text": "Draw a circle with centre O through A.",
+      "create": { "c": { "circle": { "centre": "O", "through": "A" } } },
       "animate": "compass"
     },
     {
       "id": 2,
-      "text": "Draw a horizontal line through the centre, then a vertical line at right angles to it. They cut the circle at four points.",
+      "text": "Draw a horizontal straight line through O and A. Draw a vertical line through O. The two lines cross the circle at E, N, W and S. These letters stand for east, north, west and south.",
       "create": {
-        "h": {"line": {"through": ["O", "A"]}},
-        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
-        "E": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
-        "N": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
-        "W": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
-        "S": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}}
+        "h": { "line": { "through": ["O", "A"] } },
+        "v": { "line": { "through": "O", "perpendicularTo": "h" } },
+        "E": { "point": { "meet": ["c", "h"], "pick": { "angle": 0 } } },
+        "N": { "point": { "meet": ["c", "v"], "pick": { "angle": 90 } } },
+        "W": { "point": { "meet": ["c", "h"], "pick": { "angle": 180 } } },
+        "S": { "point": { "meet": ["c", "v"], "pick": { "angle": 270 } } }
       },
       "animate": "ruler"
     },
     {
       "id": 3,
-      "text": "Halve each right angle to get the two diagonals. The circle is now divided into eight equal parts.",
+      "text": "Draw the line through O that halves the angle at O between E and N. Draw the line through O that halves the angle at O between N and W. These lines cross the circle at NE, NW, SW and SE. The circle is now cut into eight equal parts.",
       "create": {
-        "d1": {"line": {"through": "O", "bisects": ["E", "O", "N"]}},
-        "d2": {"line": {"through": "O", "bisects": ["N", "O", "W"]}},
-        "NE": {"point": {"meet": ["c", "d1"], "pick": {"angle": 45}}},
-        "NW": {"point": {"meet": ["c", "d2"], "pick": {"angle": 135}}},
-        "SW": {"point": {"meet": ["c", "d1"], "pick": {"angle": 225}}},
-        "SE": {"point": {"meet": ["c", "d2"], "pick": {"angle": 315}}}
+        "d1": { "line": { "through": "O", "bisects": ["E", "O", "N"] } },
+        "d2": { "line": { "through": "O", "bisects": ["N", "O", "W"] } },
+        "NE": { "point": { "meet": ["c", "d1"], "pick": { "angle": 45 } } },
+        "NW": { "point": { "meet": ["c", "d2"], "pick": { "angle": 135 } } },
+        "SW": { "point": { "meet": ["c", "d1"], "pick": { "angle": 225 } } },
+        "SE": { "point": { "meet": ["c", "d2"], "pick": { "angle": 315 } } }
       },
       "highlight": ["h", "v"],
       "animate": "ruler"
     },
     {
       "id": 4,
-      "text": "Join the four points on the axes to form a standing dynamic square.",
+      "text": "Join E, N, W and S with straight lines. This square stands on its corner. Its sides cross the lines through NE and NW at M1, M2, M3 and M4.",
       "create": {
-        "dynamic": {"polygon": ["E", "N", "W", "S"]},
-        "mNE": {"point": {"meet": ["dynamic", "d1"], "pick": {"angle": 45}}},
-        "mNW": {"point": {"meet": ["dynamic", "d2"], "pick": {"angle": 135}}},
-        "mSW": {"point": {"meet": ["dynamic", "d1"], "pick": {"angle": 225}}},
-        "mSE": {"point": {"meet": ["dynamic", "d2"], "pick": {"angle": 315}}}
+        "dynamic": { "polygon": ["E", "N", "W", "S"] },
+        "M1": { "point": { "meet": ["dynamic", "d1"], "pick": { "angle": 45 } } },
+        "M2": { "point": { "meet": ["dynamic", "d2"], "pick": { "angle": 135 } } },
+        "M3": { "point": { "meet": ["dynamic", "d1"], "pick": { "angle": 225 } } },
+        "M4": { "point": { "meet": ["dynamic", "d2"], "pick": { "angle": 315 } } }
       },
       "highlight": ["E", "N", "W", "S"],
       "animate": "ruler"
     },
     {
       "id": 5,
-      "text": "Draw the horizontal and vertical lines through the four points on the diagonals. They form a square flat on its base, and mark the half-radius point on each axis.",
-      "textWithoutHelpers": "Draw the lines through the diagonal points to mark the half-radius point on each axis.",
+      "text": "Draw a straight line through M2 and M1. Draw a straight line through M3 and M4. Draw a straight line through M4 and M1. Draw a straight line through M3 and M2. These lines make a square that sits flat. They cross the horizontal and vertical lines halfway out, at jE, jN, jW and jS.",
+      "textWithoutHelpers": "Draw a straight line through M4 and M1. It crosses the horizontal line at jE, halfway out. The points jN, jW and jS are halfway out on the other sides.",
       "create": {
-        "hN": {"line": {"through": ["mNW", "mNE"]}},
-        "hS": {"line": {"through": ["mSW", "mSE"]}},
-        "vE": {"line": {"through": ["mSE", "mNE"]}},
-        "vW": {"line": {"through": ["mSW", "mNW"]}},
-        "jE": {"point": {"meet": ["vE", "h"]}},
-        "jN": {"point": {"meet": ["hN", "v"]}},
-        "jW": {"point": {"meet": ["vW", "h"]}},
-        "jS": {"point": {"meet": ["hS", "v"]}}
+        "hN": { "line": { "through": ["M2", "M1"] } },
+        "hS": { "line": { "through": ["M3", "M4"] } },
+        "vE": { "line": { "through": ["M4", "M1"] } },
+        "vW": { "line": { "through": ["M3", "M2"] } },
+        "jE": { "point": { "meet": ["vE", "h"] } },
+        "jN": { "point": { "meet": ["hN", "v"] } },
+        "jW": { "point": { "meet": ["vW", "h"] } },
+        "jS": { "point": { "meet": ["hS", "v"] } }
       },
-      "highlight": ["mNE", "mNW", "mSW", "mSE"],
+      "highlight": ["M1", "M2", "M3", "M4"],
       "animate": "ruler"
     },
     {
       "id": 6,
-      "text": "Draw a small circle centered at O out to the half-radius mark. With the same radius, draw four more circles centered at the points on the main circle.",
+      "text": "Draw a circle with centre O through jE. Draw a circle with centre E, the same size. Draw a circle with centre N, the same size. Draw a circle with centre W, the same size. Draw a circle with centre S, the same size.",
       "create": {
-        "cO": {"circle": {"centre": "O", "through": "jE"}},
-        "cE": {"circle": {"centre": "E", "radiusOf": "cO"}},
-        "cN": {"circle": {"centre": "N", "radiusOf": "cO"}},
-        "cW": {"circle": {"centre": "W", "radiusOf": "cO"}},
-        "cS": {"circle": {"centre": "S", "radiusOf": "cO"}}
+        "cO": { "circle": { "centre": "O", "through": "jE" } },
+        "cE": { "circle": { "centre": "E", "radiusOf": "cO" } },
+        "cN": { "circle": { "centre": "N", "radiusOf": "cO" } },
+        "cW": { "circle": { "centre": "W", "radiusOf": "cO" } },
+        "cS": { "circle": { "centre": "S", "radiusOf": "cO" } }
       },
       "highlight": ["O", "jE", "E", "N", "W", "S"],
       "animate": "compass"
     },
     {
       "id": 7,
-      "text": "Mark where the diagonals cross the small center circle. Draw horizontal and vertical lines through them: they form the static square inside the small circle.",
+      "text": "Draw a straight line through K2 and K1. Draw a straight line through K3 and K4. Draw a straight line through K4 and K1. Draw a straight line through K3 and K2. K1 to K4 are where the small circle at O crosses the lines through NE and NW. These lines make a square inside the small circle.",
       "create": {
-        "kNE": {"point": {"meet": ["cO", "d1"], "pick": {"angle": 45}}},
-        "kNW": {"point": {"meet": ["cO", "d2"], "pick": {"angle": 135}}},
-        "kSW": {"point": {"meet": ["cO", "d1"], "pick": {"angle": 225}}},
-        "kSE": {"point": {"meet": ["cO", "d2"], "pick": {"angle": 315}}},
-        "hO_N": {"line": {"through": ["kNW", "kNE"]}},
-        "hO_S": {"line": {"through": ["kSW", "kSE"]}},
-        "vO_E": {"line": {"through": ["kSE", "kNE"]}},
-        "vO_W": {"line": {"through": ["kSW", "kNW"]}}
+        "K1": { "point": { "meet": ["cO", "d1"], "pick": { "angle": 45 } } },
+        "K2": { "point": { "meet": ["cO", "d2"], "pick": { "angle": 135 } } },
+        "K3": { "point": { "meet": ["cO", "d1"], "pick": { "angle": 225 } } },
+        "K4": { "point": { "meet": ["cO", "d2"], "pick": { "angle": 315 } } },
+        "hO_N": { "line": { "through": ["K2", "K1"] } },
+        "hO_S": { "line": { "through": ["K3", "K4"] } },
+        "vO_E": { "line": { "through": ["K4", "K1"] } },
+        "vO_W": { "line": { "through": ["K3", "K2"] } }
       },
       "highlight": ["cO", "d1", "d2"],
       "animate": "ruler"
     },
     {
       "id": 8,
-      "text": "Draw the four diagonal lines connecting the points where the center circle touches the outer circles.",
+      "text": "Draw a straight line through jN and jE. Draw a straight line through jN and jW. Draw a straight line through jS and jW. Draw a straight line through jS and jE.",
       "create": {
-        "diaNE": {"line": {"through": ["jN", "jE"]}},
-        "diaNW": {"line": {"through": ["jN", "jW"]}},
-        "diaSW": {"line": {"through": ["jS", "jW"]}},
-        "diaSE": {"line": {"through": ["jS", "jE"]}}
+        "diaNE": { "line": { "through": ["jN", "jE"] } },
+        "diaNW": { "line": { "through": ["jN", "jW"] } },
+        "diaSW": { "line": { "through": ["jS", "jW"] } },
+        "diaSE": { "line": { "through": ["jS", "jE"] } }
       },
       "highlight": ["jN", "jE", "jW", "jS"],
       "animate": "ruler"
     },
     {
       "id": 9,
-      "text": "Mark where the vertical lines meet the upper circle, and rule a horizontal line through them. Do the same on the bottom, and with vertical lines on the left and right.",
+      "text": "Draw a straight line through U3 and U2. Draw a straight line through U6 and U7. Draw a straight line through U1 and U8. Draw a straight line through U4 and U5. These points are where the sides of the small square cross the circles at N, S, E and W.",
       "create": {
-        "pTopL": {"point": {"meet": ["cN", "vO_W"], "pick": {"nearest": "O"}}},
-        "pTopR": {"point": {"meet": ["cN", "vO_E"], "pick": {"nearest": "O"}}},
-        "hTop": {"line": {"through": ["pTopL", "pTopR"]}},
-        "pBotL": {"point": {"meet": ["cS", "vO_W"], "pick": {"nearest": "O"}}},
-        "pBotR": {"point": {"meet": ["cS", "vO_E"], "pick": {"nearest": "O"}}},
-        "hBot": {"line": {"through": ["pBotL", "pBotR"]}},
-        "pRightT": {"point": {"meet": ["cE", "hO_N"], "pick": {"nearest": "O"}}},
-        "pRightB": {"point": {"meet": ["cE", "hO_S"], "pick": {"nearest": "O"}}},
-        "vRight": {"line": {"through": ["pRightT", "pRightB"]}},
-        "pLeftT": {"point": {"meet": ["cW", "hO_N"], "pick": {"nearest": "O"}}},
-        "pLeftB": {"point": {"meet": ["cW", "hO_S"], "pick": {"nearest": "O"}}},
-        "vLeft": {"line": {"through": ["pLeftT", "pLeftB"]}}
+        "U3": { "point": { "meet": ["cN", "vO_W"], "pick": { "nearest": "O" } } },
+        "U2": { "point": { "meet": ["cN", "vO_E"], "pick": { "nearest": "O" } } },
+        "hTop": { "line": { "through": ["U3", "U2"] } },
+        "U6": { "point": { "meet": ["cS", "vO_W"], "pick": { "nearest": "O" } } },
+        "U7": { "point": { "meet": ["cS", "vO_E"], "pick": { "nearest": "O" } } },
+        "hBot": { "line": { "through": ["U6", "U7"] } },
+        "U1": { "point": { "meet": ["cE", "hO_N"], "pick": { "nearest": "O" } } },
+        "U8": { "point": { "meet": ["cE", "hO_S"], "pick": { "nearest": "O" } } },
+        "vRight": { "line": { "through": ["U1", "U8"] } },
+        "U4": { "point": { "meet": ["cW", "hO_N"], "pick": { "nearest": "O" } } },
+        "U5": { "point": { "meet": ["cW", "hO_S"], "pick": { "nearest": "O" } } },
+        "vLeft": { "line": { "through": ["U4", "U5"] } }
       },
       "highlight": ["cN", "cS", "cE", "cW"],
       "animate": "ruler"
     }
   ],
   "ink": {
-    "text": "Go over the outline of the central eight-pointed star, the surrounding octagons, and the corner squares.",
+    "text": "Ink the eight-pointed star at the centre. Ink the octagons round it and the squares at the corners.",
     "paths": [
-      {"along": "hO_N", "from": "vO_E", "to": "diaNE"},
-      {"along": "hO_N", "from": "vO_W", "to": "diaNW"},
-      {"along": "hO_S", "from": "vO_E", "to": "diaSE"},
-      {"along": "hO_S", "from": "vO_W", "to": "diaSW"},
-      {"along": "vO_E", "from": "hO_N", "to": "diaNE"},
-      {"along": "vO_E", "from": "hO_S", "to": "diaSE"},
-      {"along": "vO_W", "from": "hO_N", "to": "diaNW"},
-      {"along": "vO_W", "from": "hO_S", "to": "diaSW"},
-      {"along": "diaNE", "from": "jN", "to": "hO_N"},
-      {"along": "diaNE", "from": "jE", "to": "vO_E"},
-      {"along": "diaNW", "from": "jN", "to": "hO_N"},
-      {"along": "diaNW", "from": "jW", "to": "vO_W"},
-      {"along": "diaSW", "from": "jS", "to": "hO_S"},
-      {"along": "diaSW", "from": "jW", "to": "vO_W"},
-      {"along": "diaSE", "from": "jS", "to": "hO_S"},
-      {"along": "diaSE", "from": "jE", "to": "vO_E"},
-      {"along": "diaNE", "from": "jN", "to": "hTop"},
-      {"along": "diaNW", "from": "jN", "to": "hTop"},
-      {"along": "hTop", "from": "diaNE", "to": "vO_W"},
-      {"along": "hTop", "from": "diaNW", "to": "vO_E"},
-      {"along": "vO_W", "from": "hTop", "to": "hO_N"},
-      {"along": "vO_E", "from": "hTop", "to": "hO_N"},
-      {"along": "diaSE", "from": "jS", "to": "hBot"},
-      {"along": "diaSW", "from": "jS", "to": "hBot"},
-      {"along": "hBot", "from": "diaSE", "to": "vO_W"},
-      {"along": "hBot", "from": "diaSW", "to": "vO_E"},
-      {"along": "vO_W", "from": "hBot", "to": "hO_S"},
-      {"along": "vO_E", "from": "hBot", "to": "hO_S"},
-      {"along": "diaNE", "from": "jE", "to": "vRight"},
-      {"along": "diaSE", "from": "jE", "to": "vRight"},
-      {"along": "vRight", "from": "diaSE", "to": "hO_N"},
-      {"along": "vRight", "from": "diaNE", "to": "hO_S"},
-      {"along": "hO_N", "from": "vRight", "to": "vO_E"},
-      {"along": "hO_S", "from": "vRight", "to": "vO_E"},
-      {"along": "diaNW", "from": "jW", "to": "vLeft"},
-      {"along": "diaSW", "from": "jW", "to": "vLeft"},
-      {"along": "vLeft", "from": "diaSW", "to": "hO_N"},
-      {"along": "vLeft", "from": "diaNW", "to": "hO_S"},
-      {"along": "hO_N", "from": "vLeft", "to": "vO_W"},
-      {"along": "hO_S", "from": "vLeft", "to": "vO_W"}
+      { "along": "hO_N", "from": "vO_E", "to": "diaNE" },
+      { "along": "hO_N", "from": "vO_W", "to": "diaNW" },
+      { "along": "hO_S", "from": "vO_E", "to": "diaSE" },
+      { "along": "hO_S", "from": "vO_W", "to": "diaSW" },
+      { "along": "vO_E", "from": "hO_N", "to": "diaNE" },
+      { "along": "vO_E", "from": "hO_S", "to": "diaSE" },
+      { "along": "vO_W", "from": "hO_N", "to": "diaNW" },
+      { "along": "vO_W", "from": "hO_S", "to": "diaSW" },
+      { "along": "diaNE", "from": "jN", "to": "hO_N" },
+      { "along": "diaNE", "from": "jE", "to": "vO_E" },
+      { "along": "diaNW", "from": "jN", "to": "hO_N" },
+      { "along": "diaNW", "from": "jW", "to": "vO_W" },
+      { "along": "diaSW", "from": "jS", "to": "hO_S" },
+      { "along": "diaSW", "from": "jW", "to": "vO_W" },
+      { "along": "diaSE", "from": "jS", "to": "hO_S" },
+      { "along": "diaSE", "from": "jE", "to": "vO_E" },
+      { "along": "diaNE", "from": "jN", "to": "hTop" },
+      { "along": "diaNW", "from": "jN", "to": "hTop" },
+      { "along": "hTop", "from": "diaNE", "to": "vO_W" },
+      { "along": "hTop", "from": "diaNW", "to": "vO_E" },
+      { "along": "vO_W", "from": "hTop", "to": "hO_N" },
+      { "along": "vO_E", "from": "hTop", "to": "hO_N" },
+      { "along": "diaSE", "from": "jS", "to": "hBot" },
+      { "along": "diaSW", "from": "jS", "to": "hBot" },
+      { "along": "hBot", "from": "diaSE", "to": "vO_W" },
+      { "along": "hBot", "from": "diaSW", "to": "vO_E" },
+      { "along": "vO_W", "from": "hBot", "to": "hO_S" },
+      { "along": "vO_E", "from": "hBot", "to": "hO_S" },
+      { "along": "diaNE", "from": "jE", "to": "vRight" },
+      { "along": "diaSE", "from": "jE", "to": "vRight" },
+      { "along": "vRight", "from": "diaSE", "to": "hO_N" },
+      { "along": "vRight", "from": "diaNE", "to": "hO_S" },
+      { "along": "hO_N", "from": "vRight", "to": "vO_E" },
+      { "along": "hO_S", "from": "vRight", "to": "vO_E" },
+      { "along": "diaNW", "from": "jW", "to": "vLeft" },
+      { "along": "diaSW", "from": "jW", "to": "vLeft" },
+      { "along": "vLeft", "from": "diaSW", "to": "hO_N" },
+      { "along": "vLeft", "from": "diaNW", "to": "hO_S" },
+      { "along": "hO_N", "from": "vLeft", "to": "vO_W" },
+      { "along": "hO_S", "from": "vLeft", "to": "vO_W" }
+    ],
+    "parts": [
+      {
+        "text": "Ink the star at O. Its points are jE, jN, jW and jS, and the corners K1 to K4 of the small square.",
+        "paths": 16
+      },
+      {
+        "text": "Ink the octagon at N, along the line through U3 and U2. Ink the octagon at S, along the line through U6 and U7.",
+        "paths": 12
+      },
+      {
+        "text": "Ink the octagon at E, along the line through U1 and U8. Ink the octagon at W, along the line through U4 and U5.",
+        "paths": 12
+      }
     ]
   },
   "pattern": {
     "cell": "dynamic",
-    "text": "Repeat the dynamic tile. The eight-pointed stars and corner squares tile with regular octagons in between, forming the Mughal inlay pattern.",
+    "text": "Put copies of the standing square tile side by side. Eight-pointed stars and corner squares fit together with regular octagons between them.",
     "palette": "Timurid tile",
-    "colors": {"star": "a", "corner_square": "c", "octagon_arm": "ground"},
+    "colors": { "star": "a", "corner_square": "c", "octagon_arm": "ground" },
     "rings": true
   },
   "expect": {
     "pieceTypes": 3,
     "pieces": [
-      {"name": "star", "vertices": 16, "area": 0.58579, "perCell": 2},
-      {"name": "corner_square", "vertices": 4, "area": 0.08579, "perCell": 2},
-      {"name": "octagon_arm", "vertices": 5, "area": 0.08211, "perCell": 8}
+      { "name": "star", "vertices": 16, "area": 0.58579, "perCell": 2 },
+      { "name": "corner_square", "vertices": 4, "area": 0.08579, "perCell": 2 },
+      { "name": "octagon_arm", "vertices": 5, "area": 0.08211, "perCell": 8 }
     ],
     "cellArea": 2.0
   }

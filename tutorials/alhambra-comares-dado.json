@@ -128,7 +128,7 @@
     },
     {
       "id": 8,
-      "text": "Mark P3 to P8 and X3 to X8, where the outline of the pattern turns.",
+      "text": "Mark each point where the outline of the pattern turns.",
       "create": {
         "X5": { "point": { "meet": ["gxw", "e2"] } },
         "X6": { "point": { "meet": ["gys", "e1"] } },

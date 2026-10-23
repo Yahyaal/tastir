@@ -185,7 +185,7 @@
     {
       "id": 11,
       "hidden": true,
-      "text": "Mark the points where the ink turns: U1 to U24, X1 to X12 and W1 to W16.",
+      "text": "Mark each point where the ink turns.",
       "create": {
         "U12": { "point": { "meet": ["s0", "o5"] } },
         "X5": { "point": { "meet": ["s0", "s3"] } },

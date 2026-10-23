@@ -28,155 +28,199 @@
   "steps": [
     {
       "id": 1,
-      "text": "Draw a horizontal line, put the compass point on it and draw a circle. Keep the compass at this opening until the end.",
-      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. Keep this compass size until the end.",
+      "create": {
+        "h": { "line": { "through": ["O", "A"] } },
+        "c": { "circle": { "centre": "O", "through": "A" } }
+      },
       "animate": "compass"
     },
     {
       "id": 2,
-      "text": "Put the compass point where the circle crosses the line on the right and draw a circle through the centre. Do the same on the left. The two new circles touch at the centre.",
+      "text": "Draw a circle with centre A through O. Draw a circle with centre D through O, where the line crosses the first circle on the left. The two new circles touch at O.",
       "create": {
-        "E": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
-        "W": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
-        "cE": {"circle": {"centre": "E", "radiusOf": "c"}},
-        "cW": {"circle": {"centre": "W", "radiusOf": "c"}}
+        "D": { "point": { "meet": ["c", "h"], "pick": { "angle": 180 } } },
+        "cE": { "circle": { "centre": "A", "radiusOf": "c" } },
+        "cW": { "circle": { "centre": "D", "radiusOf": "c" } }
       },
       "highlight": ["c", "h"],
       "animate": "compass"
     },
     {
       "id": 3,
-      "text": "The two new circles cross the first one at four more points. Draw a circle of the same size around each of them. Six circles now ring the first, and their crossings divide it into six.",
+      "text": "Draw a circle with centre B through O. Draw a circle with centre C through O. Draw a circle with centre E through O. Draw a circle with centre F through O. B, C, E and F are where the two new circles cross the first one. Six circles now ring the first circle.",
       "create": {
-        "P60": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60}}},
-        "P300": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300}}},
-        "P120": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120}}},
-        "P240": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240}}},
-        "c60": {"circle": {"centre": "P60", "radiusOf": "c"}},
-        "c120": {"circle": {"centre": "P120", "radiusOf": "c"}},
-        "c240": {"circle": {"centre": "P240", "radiusOf": "c"}},
-        "c300": {"circle": {"centre": "P300", "radiusOf": "c"}}
+        "B": { "point": { "meet": ["c", "cE"], "pick": { "angle": 60 } } },
+        "F": { "point": { "meet": ["c", "cE"], "pick": { "angle": 300 } } },
+        "C": { "point": { "meet": ["c", "cW"], "pick": { "angle": 120 } } },
+        "E": { "point": { "meet": ["c", "cW"], "pick": { "angle": 240 } } },
+        "c60": { "circle": { "centre": "B", "radiusOf": "c" } },
+        "c120": { "circle": { "centre": "C", "radiusOf": "c" } },
+        "c240": { "circle": { "centre": "E", "radiusOf": "c" } },
+        "c300": { "circle": { "centre": "F", "radiusOf": "c" } }
       },
       "highlight": ["cE", "cW"],
       "animate": "compass"
     },
     {
       "id": 4,
-      "text": "Outside the first circle, each pair of neighbouring circles makes a large petal. Rule a line through the centre and the tips of two opposite petals; do it three times. Together with the tips of the small petals inside, these lines divide the circle into twelve.",
+      "text": "Draw a straight line through O and P1. Draw a straight line through O and P2. Draw a straight line through O and P3. P1, P2 and P3 are the tips of the large petals outside the first circle.",
       "create": {
-        "X30": {"point": {"meet": ["cE", "c60"], "pick": {"farthest": "O"}}},
-        "X90": {"point": {"meet": ["c60", "c120"], "pick": {"farthest": "O"}}},
-        "X150": {"point": {"meet": ["c120", "cW"], "pick": {"farthest": "O"}}},
-        "m30": {"line": {"through": ["O", "X30"]}},
-        "m90": {"line": {"through": ["O", "X90"]}},
-        "m150": {"line": {"through": ["O", "X150"]}}
+        "P1": { "point": { "meet": ["cE", "c60"], "pick": { "farthest": "O" } } },
+        "P2": { "point": { "meet": ["c60", "c120"], "pick": { "farthest": "O" } } },
+        "P3": { "point": { "meet": ["c120", "cW"], "pick": { "farthest": "O" } } },
+        "m30": { "line": { "through": ["O", "P1"] } },
+        "m90": { "line": { "through": ["O", "P2"] } },
+        "m150": { "line": { "through": ["O", "P3"] } }
       },
       "highlight": ["cE", "c60", "c120", "cW"],
       "animate": "ruler"
     },
     {
       "id": 5,
-      "text": "Join the six points where the three new lines cut the circle to draw a hexagon standing on a corner. Then join the six tips of the small petals to draw a second hexagon lying on its side; this one is the tile that will repeat. The two hexagons cross at twelve points.",
+      "text": "Join H1, H2, H3, H4, H5 and H6 with straight lines. H1 to H6 are where the three lines cross the first circle. This hexagon stands on a corner. Join A, B, C, D, E and F with straight lines. This hexagon lies on its side and is the tile. The two hexagons cross at X1 to X12.",
       "create": {
-        "D30": {"point": {"meet": ["c", "m30"], "pick": {"angle": 30}}},
-        "D90": {"point": {"meet": ["c", "m90"], "pick": {"angle": 90}}},
-        "D150": {"point": {"meet": ["c", "m150"], "pick": {"angle": 150}}},
-        "D210": {"point": {"meet": ["c", "m30"], "pick": {"angle": 210}}},
-        "D270": {"point": {"meet": ["c", "m90"], "pick": {"angle": 270}}},
-        "D330": {"point": {"meet": ["c", "m150"], "pick": {"angle": 330}}},
-        "hex": {"polygon": ["D30", "D90", "D150", "D210", "D270", "D330"]},
-        "flat": {"polygon": ["E", "P60", "P120", "W", "P240", "P300"]},
-        "X": {"points": {"meet": ["hex", "flat"], "pick": {"all": "byAngle"}}}
+        "H1": { "point": { "meet": ["c", "m30"], "pick": { "angle": 30 } } },
+        "H2": { "point": { "meet": ["c", "m90"], "pick": { "angle": 90 } } },
+        "H3": { "point": { "meet": ["c", "m150"], "pick": { "angle": 150 } } },
+        "H4": { "point": { "meet": ["c", "m30"], "pick": { "angle": 210 } } },
+        "H5": { "point": { "meet": ["c", "m90"], "pick": { "angle": 270 } } },
+        "H6": { "point": { "meet": ["c", "m150"], "pick": { "angle": 330 } } },
+        "hex": { "polygon": ["H1", "H2", "H3", "H4", "H5", "H6"] },
+        "flat": { "polygon": ["A", "B", "C", "D", "E", "F"] },
+        "X1": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 15 } } },
+        "X2": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 45 } } },
+        "X3": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 75 } } },
+        "X4": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 105 } } },
+        "X5": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 135 } } },
+        "X6": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 165 } } },
+        "X7": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 195 } } },
+        "X8": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 225 } } },
+        "X9": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 255 } } },
+        "X10": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 285 } } },
+        "X11": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 315 } } },
+        "X12": { "point": { "meet": ["hex", "flat"], "pick": { "angle": 345 } } }
       },
-      "highlight": ["m30", "m90", "m150", "E", "P60", "P120", "W", "P240", "P300"],
+      "highlight": ["m30", "m90", "m150", "A", "B", "C", "D", "E", "F"],
       "animate": "ruler"
     },
     {
       "id": 6,
-      "text": "From each crossing rule a line to the crossing three places further round, skipping two, so that the line runs across the hexagons parallel to one of their sides. Six such lines make a large six-pointed outline: these are the hammerhead lines.",
+      "text": "Draw a straight line through X2 and X11. Draw a straight line through X4 and X1. Draw a straight line through X6 and X3. Draw a straight line through X8 and X5. Draw a straight line through X10 and X7. Draw a straight line through X12 and X9. These are the hammerhead lines.",
       "create": {
-        "ch0": {"line": {"through": ["X.2", "X.11"]}},
-        "ch60": {"line": {"through": ["X.4", "X.1"]}},
-        "ch120": {"line": {"through": ["X.6", "X.3"]}},
-        "ch180": {"line": {"through": ["X.8", "X.5"]}},
-        "ch240": {"line": {"through": ["X.10", "X.7"]}},
-        "ch300": {"line": {"through": ["X.12", "X.9"]}}
+        "ch0": { "line": { "through": ["X2", "X11"] } },
+        "ch60": { "line": { "through": ["X4", "X1"] } },
+        "ch120": { "line": { "through": ["X6", "X3"] } },
+        "ch180": { "line": { "through": ["X8", "X5"] } },
+        "ch240": { "line": { "through": ["X10", "X7"] } },
+        "ch300": { "line": { "through": ["X12", "X9"] } }
       },
-      "highlight": ["X"],
+      "highlight": [
+        "X1",
+        "X2",
+        "X3",
+        "X4",
+        "X5",
+        "X6",
+        "X7",
+        "X8",
+        "X9",
+        "X10",
+        "X11",
+        "X12"
+      ],
       "animate": "ruler"
     },
     {
       "id": 7,
-      "text": "Each hammerhead line crosses the arcs of the small petals near the centre. Join these crossings across the middle with lines parallel to the hammerhead lines, three pairs in all. They draw a small star, and around its centre a tiny hexagon.",
+      "text": "Draw a straight line through Y11 and Y4. Draw a straight line through Y1 and Y6. Draw a straight line through Y3 and Y8. Draw a straight line through Y5 and Y10. Draw a straight line through Y7 and Y12. Draw a straight line through Y9 and Y2. Y1 to Y12 are where the hammerhead lines cross the small petals. The six lines make a small star.",
       "create": {
-        "Y0a": {"point": {"meet": ["ch0", "c300"], "pick": {"nearest": "O"}}},
-        "Y0b": {"point": {"meet": ["ch0", "c60"], "pick": {"nearest": "O"}}},
-        "Y60a": {"point": {"meet": ["ch60", "cE"], "pick": {"nearest": "O"}}},
-        "Y60b": {"point": {"meet": ["ch60", "c120"], "pick": {"nearest": "O"}}},
-        "Y120a": {"point": {"meet": ["ch120", "c60"], "pick": {"nearest": "O"}}},
-        "Y120b": {"point": {"meet": ["ch120", "cW"], "pick": {"nearest": "O"}}},
-        "Y180a": {"point": {"meet": ["ch180", "c120"], "pick": {"nearest": "O"}}},
-        "Y180b": {"point": {"meet": ["ch180", "c240"], "pick": {"nearest": "O"}}},
-        "Y240a": {"point": {"meet": ["ch240", "cW"], "pick": {"nearest": "O"}}},
-        "Y240b": {"point": {"meet": ["ch240", "c300"], "pick": {"nearest": "O"}}},
-        "Y300a": {"point": {"meet": ["ch300", "c240"], "pick": {"nearest": "O"}}},
-        "Y300b": {"point": {"meet": ["ch300", "cE"], "pick": {"nearest": "O"}}},
-        "s30": {"line": {"through": ["Y300a", "Y120b"]}},
-        "s90": {"line": {"through": ["Y0a", "Y180b"]}},
-        "s150": {"line": {"through": ["Y60a", "Y240b"]}},
-        "s210": {"line": {"through": ["Y120a", "Y300b"]}},
-        "s270": {"line": {"through": ["Y180a", "Y0b"]}},
-        "s330": {"line": {"through": ["Y240a", "Y60b"]}},
-        "V0": {"point": {"meet": ["s30", "s330"]}},
-        "V60": {"point": {"meet": ["s90", "s30"]}},
-        "V120": {"point": {"meet": ["s150", "s90"]}},
-        "V180": {"point": {"meet": ["s210", "s150"]}},
-        "V240": {"point": {"meet": ["s270", "s210"]}},
-        "V300": {"point": {"meet": ["s330", "s270"]}}
+        "Y1": { "point": { "meet": ["ch0", "c300"], "pick": { "nearest": "O" } } },
+        "Y12": { "point": { "meet": ["ch0", "c60"], "pick": { "nearest": "O" } } },
+        "Y3": { "point": { "meet": ["ch60", "cE"], "pick": { "nearest": "O" } } },
+        "Y2": { "point": { "meet": ["ch60", "c120"], "pick": { "nearest": "O" } } },
+        "Y5": { "point": { "meet": ["ch120", "c60"], "pick": { "nearest": "O" } } },
+        "Y4": { "point": { "meet": ["ch120", "cW"], "pick": { "nearest": "O" } } },
+        "Y7": { "point": { "meet": ["ch180", "c120"], "pick": { "nearest": "O" } } },
+        "Y6": { "point": { "meet": ["ch180", "c240"], "pick": { "nearest": "O" } } },
+        "Y9": { "point": { "meet": ["ch240", "cW"], "pick": { "nearest": "O" } } },
+        "Y8": { "point": { "meet": ["ch240", "c300"], "pick": { "nearest": "O" } } },
+        "Y11": {
+          "point": { "meet": ["ch300", "c240"], "pick": { "nearest": "O" } }
+        },
+        "Y10": { "point": { "meet": ["ch300", "cE"], "pick": { "nearest": "O" } } },
+        "s30": { "line": { "through": ["Y11", "Y4"] } },
+        "s90": { "line": { "through": ["Y1", "Y6"] } },
+        "s150": { "line": { "through": ["Y3", "Y8"] } },
+        "s210": { "line": { "through": ["Y5", "Y10"] } },
+        "s270": { "line": { "through": ["Y7", "Y12"] } },
+        "s330": { "line": { "through": ["Y9", "Y2"] } },
+        "V1": { "point": { "meet": ["s30", "s330"] } },
+        "V2": { "point": { "meet": ["s90", "s30"] } },
+        "V3": { "point": { "meet": ["s150", "s90"] } },
+        "V4": { "point": { "meet": ["s210", "s150"] } },
+        "V5": { "point": { "meet": ["s270", "s210"] } },
+        "V6": { "point": { "meet": ["s330", "s270"] } }
       },
       "highlight": ["ch0", "ch60", "ch120", "ch180", "ch240", "ch300"],
       "animate": "ruler"
     }
   ],
   "ink": {
-    "text": "Go over the middle of each side of the standing hexagon, between its two crossings. Then follow each hammerhead line in from its crossing until it meets the small star, and turn along the star's line to the tiny hexagon. You get a small star held by six hammerheads.",
+    "text": "Ink the middle of each side of the standing hexagon. Ink each hammerhead line in from the hexagon to the small star.",
     "paths": [
-      {"through": ["X.12", "X.1"]},
-      {"through": ["X.2", "Y0a", "V60"]},
-      {"through": ["X.11", "Y0b", "V300"]},
-      {"through": ["X.2", "X.3"]},
-      {"through": ["X.4", "Y60a", "V120"]},
-      {"through": ["X.1", "Y60b", "V0"]},
-      {"through": ["X.4", "X.5"]},
-      {"through": ["X.6", "Y120a", "V180"]},
-      {"through": ["X.3", "Y120b", "V60"]},
-      {"through": ["X.6", "X.7"]},
-      {"through": ["X.8", "Y180a", "V240"]},
-      {"through": ["X.5", "Y180b", "V120"]},
-      {"through": ["X.8", "X.9"]},
-      {"through": ["X.10", "Y240a", "V300"]},
-      {"through": ["X.7", "Y240b", "V180"]},
-      {"through": ["X.10", "X.11"]},
-      {"through": ["X.12", "Y300a", "V0"]},
-      {"through": ["X.9", "Y300b", "V240"]}
+      { "through": ["X12", "X1"] },
+      { "through": ["X2", "Y1", "V2"] },
+      { "through": ["X1", "Y2", "V1"] },
+      { "through": ["X11", "Y12", "V6"] },
+      { "through": ["X2", "X3"] },
+      { "through": ["X4", "Y3", "V3"] },
+      { "through": ["X4", "X5"] },
+      { "through": ["X6", "Y5", "V4"] },
+      { "through": ["X3", "Y4", "V2"] },
+      { "through": ["X6", "X7"] },
+      { "through": ["X8", "Y7", "V5"] },
+      { "through": ["X5", "Y6", "V3"] },
+      { "through": ["X8", "X9"] },
+      { "through": ["X10", "Y9", "V6"] },
+      { "through": ["X7", "Y8", "V4"] },
+      { "through": ["X10", "X11"] },
+      { "through": ["X12", "Y11", "V1"] },
+      { "through": ["X9", "Y10", "V5"] }
+    ],
+    "parts": [
+      {
+        "text": "Ink from X12 to X1. Ink from X2 through Y1 to V2. Ink from X1 through Y2 to V1. These three lines make one hammerhead.",
+        "paths": 3
+      },
+      {
+        "text": "Ink the same three lines turned round O, five more times. Tick “Also ink the copies round the centre” to ink them all at once.",
+        "paths": 15
+      }
     ]
   },
   "pattern": {
     "cell": "flat",
-    "text": "Repeat the hexagon lying on its side, side to side. The middles of the standing hexagon's sides line up with the next tiles' hammerhead lines into long straight lines, and between them new diamonds, triangles, kites and rectangles appear.",
+    "text": "Put copies of the tile side by side. The middles of the standing hexagon line up with the next hammerheads into long straight lines.",
     "palette": "Mamluk wood",
-    "colors": {"hammerhead": "a", "star": "b", "kite": "ground", "triangle": "c", "rhombus": "ground"},
+    "colors": {
+      "hammerhead": "a",
+      "star": "b",
+      "kite": "ground",
+      "triangle": "c",
+      "rhombus": "ground"
+    },
     "rings": true
   },
   "expect": {
     "note": "Golden values, in units of OA, computed by the engine and checked for six-fold symmetry, no slivers, and pieces that exactly fill the flat hexagon of area 3√3/2.",
     "pieceTypes": 5,
     "pieces": [
-      {"name": "hammerhead", "vertices": 9, "area": 0.25215, "perCell": 6},
-      {"name": "star", "vertices": 12, "area": 0.10818, "perCell": 1},
-      {"name": "kite", "vertices": 4, "area": 0.10065, "perCell": 6},
-      {"name": "triangle", "vertices": 3, "area": 0.09327, "perCell": 2},
-      {"name": "rhombus", "vertices": 4, "area": 0.06218, "perCell": 3}
+      { "name": "hammerhead", "vertices": 9, "area": 0.25215, "perCell": 6 },
+      { "name": "star", "vertices": 12, "area": 0.10818, "perCell": 1 },
+      { "name": "kite", "vertices": 4, "area": 0.10065, "perCell": 6 },
+      { "name": "triangle", "vertices": 3, "area": 0.09327, "perCell": 2 },
+      { "name": "rhombus", "vertices": 4, "area": 0.06218, "perCell": 3 }
     ],
     "cellArea": 2.59808
   }
