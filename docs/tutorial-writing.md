@@ -29,6 +29,8 @@ The steps are read by beginners, many of them reading English as a second langua
 
 The ink is written the same way, a shape at a time, in `ink.parts` (see the format): one part for each shape or run of lines, whose text names the points the pen goes through ("Ink the star: from S1 through P2, S2, P3, S3 and on round the star, back to S1."). A family is named by its ends ("S1 to S8 are its points"), and the board shows every point of it. Draw along shows the parts as a checklist, zooms to the points of the part at hand, picks its lines out in orange and ticks it once they are inked. Name the turning points of the ink with families too (P1 to P8 for the star's inner corners, X1 to X8 where the bands meet the tile's sides); the engine's own names (M1, B45) never appear in a text.
 
+When one shape takes more than five runs to name, the part asks for "the lines picked out in orange" and names the landmark points they pass through instead of every corner: the board already picks those lines out, and a long list of P-numbers would shrink the board for the whole tutorial. Generated tutorials that ink along lines (the four-fold ring, the khatam) keep one plain ink text.
+
 ## How it is checked
 
 A test (`apps/player/src/app/plainText.spec.ts`) checks every tutorial in its list of rewritten tutorials: no word from the "Not" column, no engine names in the text, no sentence over twenty words, and every capital letter used as a point name is a point the tutorial makes. Add a tutorial to that list when it is rewritten.

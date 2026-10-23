@@ -6,15 +6,10 @@ import { sentencesOf } from './StepText';
 // Every tutorial is written in simple, controlled English
 // (docs/tutorial-writing.md), except those still waiting to be rewritten.
 const NOT_YET: readonly string[] = [
-  'alhambra-comares-frames',
-  'alhambra-reyes-fret',
   'bou-inania-rosette',
   'bou-inania-twelve-fold-wall',
-  'kurt-eight-fold-zellige',
   'kurt-eight-fold-zellige-filled',
   'kurt-eight-fold-zellige-shifted',
-  'mian-stellated-hex',
-  'mian-stellated-rosettes',
 ];
 
 // Words the rules replace: "Rule" by "Draw a straight line", "about X" by
