@@ -10,15 +10,11 @@ const NOT_YET: readonly string[] = [
   'alhambra-reyes-fret',
   'bou-inania-rosette',
   'bou-inania-twelve-fold-wall',
-  'four-fold-ring-of-circles',
-  'ibn-tulun-window',
   'kurt-eight-fold-zellige',
   'kurt-eight-fold-zellige-filled',
   'kurt-eight-fold-zellige-shifted',
   'mian-stellated-hex',
   'mian-stellated-rosettes',
-  'sixteen-fold-rosette',
-  'ten-pointed-star-decagon-rect',
 ];
 
 // Words the rules replace: "Rule" by "Draw a straight line", "about X" by

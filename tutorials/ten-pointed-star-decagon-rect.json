@@ -27,845 +27,230 @@
   },
   "given": {
     "O": "The centre of the decagram.",
-    "A": "Any point to the right of O. OA is the radius of the decagram\u2019s circle."
+    "A": "Any point to the right of O. OA is the radius of the decagram’s circle."
   },
   "steps": [
     {
       "id": 1,
-      "text": "Rule a horizontal line through O and A and draw a circle about O through A: the circle of the decagram.",
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. This is the circle of the ten-pointed star.",
       "create": {
-        "c": {
-          "circle": {
-            "centre": "O",
-            "through": "A"
-          }
-        },
-        "h": {
-          "line": {
-            "through": [
-              "O",
-              "A"
-            ]
-          }
-        },
-        "P0": {
-          "point": {
-            "meet": [
-              "c",
-              "h"
-            ],
-            "pick": {
-              "angle": 0.0
-            }
-          }
-        },
-        "P180": {
-          "point": {
-            "meet": [
-              "c",
-              "h"
-            ],
-            "pick": {
-              "angle": 180.0
-            }
-          }
-        }
+        "c": { "circle": { "centre": "O", "through": "A" } },
+        "h": { "line": { "through": ["O", "A"] } },
+        "F": { "point": { "meet": ["c", "h"], "pick": { "angle": 180.0 } } }
       },
       "animate": "compass"
     },
     {
       "id": 2,
-      "text": "Rule the vertical through O at right angles to the horizontal.",
+      "text": "Draw a vertical line through O. It crosses the circle at N and S.",
       "create": {
-        "v": {
-          "line": {
-            "through": "O",
-            "perpendicularTo": "h"
-          }
-        },
-        "N": {
-          "point": {
-            "meet": [
-              "c",
-              "v"
-            ],
-            "pick": {
-              "angle": 90.0
-            }
-          }
-        },
-        "S": {
-          "point": {
-            "meet": [
-              "c",
-              "v"
-            ],
-            "pick": {
-              "angle": 270.0
-            }
-          }
-        }
+        "v": { "line": { "through": "O", "perpendicularTo": "h" } },
+        "N": { "point": { "meet": ["c", "v"], "pick": { "angle": 90.0 } } },
+        "S": { "point": { "meet": ["c", "v"], "pick": { "angle": 270.0 } } }
       },
-      "highlight": [
-        "c",
-        "h"
-      ],
+      "highlight": ["c", "h"],
       "animate": "ruler"
     },
     {
       "id": 3,
-      "text": "Draw a circle about the left point through the centre; rule the line through where the two circles cross to find the midpoint of the radius.",
+      "text": "Draw a circle with centre F through O. F is where the line crosses the circle on the left. The new circle crosses the first at Y1 and Y2. Draw a straight line through Y1 and Y2. It crosses the horizontal line at M, halfway from O to F.",
       "create": {
-        "cW": {
-          "circle": {
-            "centre": "P180",
-            "through": "O"
-          }
-        },
-        "Y1": {
-          "point": {
-            "meet": [
-              "c",
-              "cW"
-            ],
-            "pick": {
-              "angle": 120.0
-            }
-          }
-        },
-        "Y2": {
-          "point": {
-            "meet": [
-              "c",
-              "cW"
-            ],
-            "pick": {
-              "angle": 240.0
-            }
-          }
-        },
-        "m": {
-          "line": {
-            "through": [
-              "Y1",
-              "Y2"
-            ]
-          }
-        },
-        "M": {
-          "point": {
-            "meet": [
-              "m",
-              "h"
-            ]
-          }
-        }
+        "cW": { "circle": { "centre": "F", "through": "O" } },
+        "Y1": { "point": { "meet": ["c", "cW"], "pick": { "angle": 120.0 } } },
+        "Y2": { "point": { "meet": ["c", "cW"], "pick": { "angle": 240.0 } } },
+        "m": { "line": { "through": ["Y1", "Y2"] } },
+        "M": { "point": { "meet": ["m", "h"] } }
       },
-      "highlight": [
-        "P180"
-      ],
+      "highlight": ["F"],
       "animate": "compass"
     },
     {
       "id": 4,
-      "text": "Put the compass point on the midpoint and open it to the top of the circle. Draw an arc to cut the horizontal line: the distance from the centre is the chord of 36\u00b0.",
+      "text": "Draw a circle with centre M through N. It crosses the horizontal line at R. The distance OR is a tenth of the way round the circle.",
       "create": {
-        "cM": {
-          "circle": {
-            "centre": "M",
-            "through": "N"
-          }
-        },
-        "F": {
-          "point": {
-            "meet": [
-              "cM",
-              "h"
-            ],
-            "pick": {
-              "angle": 0.0
-            }
-          }
-        }
+        "cM": { "circle": { "centre": "M", "through": "N" } },
+        "R": { "point": { "meet": ["cM", "h"], "pick": { "angle": 0.0 } } }
       },
-      "highlight": [
-        "M"
-      ],
+      "highlight": ["M"],
       "animate": "compass"
     },
     {
       "id": 5,
-      "text": "Step the compass open to OF around the circle to divide it into ten equal parts.",
+      "text": "Draw a circle with centre A whose radius is the distance from O to R. It crosses the circle at B and K. Draw circles of the same size round the circle, each centred where the last one crosses it. They mark C, D, E, G, H and J. The circle is now cut into ten.",
       "create": {
-        "cF0": {
-          "circle": {
-            "centre": "P0",
-            "radiusFrom": [
-              "O",
-              "F"
-            ]
-          }
-        },
-        "P36": {
-          "point": {
-            "meet": [
-              "c",
-              "cF0"
-            ],
-            "pick": {
-              "angle": 36.0
-            }
-          }
-        },
-        "P324": {
-          "point": {
-            "meet": [
-              "c",
-              "cF0"
-            ],
-            "pick": {
-              "angle": 324.0
-            }
-          }
-        },
-        "cF1": {
-          "circle": {
-            "centre": "P36",
-            "radiusFrom": [
-              "O",
-              "F"
-            ]
-          }
-        },
-        "P72": {
-          "point": {
-            "meet": [
-              "c",
-              "cF1"
-            ],
-            "pick": {
-              "angle": 72.0
-            }
-          }
-        },
-        "cF2": {
-          "circle": {
-            "centre": "P72",
-            "radiusFrom": [
-              "O",
-              "F"
-            ]
-          }
-        },
-        "P108": {
-          "point": {
-            "meet": [
-              "c",
-              "cF2"
-            ],
-            "pick": {
-              "angle": 108.0
-            }
-          }
-        },
-        "cF3": {
-          "circle": {
-            "centre": "P108",
-            "radiusFrom": [
-              "O",
-              "F"
-            ]
-          }
-        },
-        "P144": {
-          "point": {
-            "meet": [
-              "c",
-              "cF3"
-            ],
-            "pick": {
-              "angle": 144.0
-            }
-          }
-        },
-        "cF9": {
-          "circle": {
-            "centre": "P324",
-            "radiusFrom": [
-              "O",
-              "F"
-            ]
-          }
-        },
-        "P288": {
-          "point": {
-            "meet": [
-              "c",
-              "cF9"
-            ],
-            "pick": {
-              "angle": 288.0
-            }
-          }
-        },
-        "cF8": {
-          "circle": {
-            "centre": "P288",
-            "radiusFrom": [
-              "O",
-              "F"
-            ]
-          }
-        },
-        "P252": {
-          "point": {
-            "meet": [
-              "c",
-              "cF8"
-            ],
-            "pick": {
-              "angle": 252.0
-            }
-          }
-        },
-        "cF7": {
-          "circle": {
-            "centre": "P252",
-            "radiusFrom": [
-              "O",
-              "F"
-            ]
-          }
-        },
-        "P216": {
-          "point": {
-            "meet": [
-              "c",
-              "cF7"
-            ],
-            "pick": {
-              "angle": 216.0
-            }
-          }
-        }
+        "cF0": { "circle": { "centre": "A", "radiusFrom": ["O", "R"] } },
+        "B": { "point": { "meet": ["c", "cF0"], "pick": { "angle": 36.0 } } },
+        "K": { "point": { "meet": ["c", "cF0"], "pick": { "angle": 324.0 } } },
+        "cF1": { "circle": { "centre": "B", "radiusFrom": ["O", "R"] } },
+        "C": { "point": { "meet": ["c", "cF1"], "pick": { "angle": 72.0 } } },
+        "cF2": { "circle": { "centre": "C", "radiusFrom": ["O", "R"] } },
+        "D": { "point": { "meet": ["c", "cF2"], "pick": { "angle": 108.0 } } },
+        "cF3": { "circle": { "centre": "D", "radiusFrom": ["O", "R"] } },
+        "E": { "point": { "meet": ["c", "cF3"], "pick": { "angle": 144.0 } } },
+        "cF9": { "circle": { "centre": "K", "radiusFrom": ["O", "R"] } },
+        "J": { "point": { "meet": ["c", "cF9"], "pick": { "angle": 288.0 } } },
+        "cF8": { "circle": { "centre": "J", "radiusFrom": ["O", "R"] } },
+        "H": { "point": { "meet": ["c", "cF8"], "pick": { "angle": 252.0 } } },
+        "cF7": { "circle": { "centre": "H", "radiusFrom": ["O", "R"] } },
+        "G": { "point": { "meet": ["c", "cF7"], "pick": { "angle": 216.0 } } }
       },
-      "highlight": [
-        "F"
-      ],
+      "highlight": ["R"],
       "animate": "compass"
     },
     {
       "id": 6,
-      "text": "Join each of the ten points to the one three places round: ten lines, the ten-pointed star.",
+      "text": "Draw a straight line through A and D, B and E, C and F, and D and G. Draw a straight line through E and H, F and J, G and K, and H and A. Draw a straight line through J and B, and K and C. The ten lines make the ten-pointed star.",
       "create": {
-        "s0": {
-          "line": {
-            "through": [
-              "P0",
-              "P108"
-            ]
-          }
-        },
-        "s1": {
-          "line": {
-            "through": [
-              "P36",
-              "P144"
-            ]
-          }
-        },
-        "s2": {
-          "line": {
-            "through": [
-              "P72",
-              "P180"
-            ]
-          }
-        },
-        "s3": {
-          "line": {
-            "through": [
-              "P108",
-              "P216"
-            ]
-          }
-        },
-        "s4": {
-          "line": {
-            "through": [
-              "P144",
-              "P252"
-            ]
-          }
-        },
-        "s5": {
-          "line": {
-            "through": [
-              "P180",
-              "P288"
-            ]
-          }
-        },
-        "s6": {
-          "line": {
-            "through": [
-              "P216",
-              "P324"
-            ]
-          }
-        },
-        "s7": {
-          "line": {
-            "through": [
-              "P252",
-              "P0"
-            ]
-          }
-        },
-        "s8": {
-          "line": {
-            "through": [
-              "P288",
-              "P36"
-            ]
-          }
-        },
-        "s9": {
-          "line": {
-            "through": [
-              "P324",
-              "P72"
-            ]
-          }
-        }
+        "s0": { "line": { "through": ["A", "D"] } },
+        "s1": { "line": { "through": ["B", "E"] } },
+        "s2": { "line": { "through": ["C", "F"] } },
+        "s3": { "line": { "through": ["D", "G"] } },
+        "s4": { "line": { "through": ["E", "H"] } },
+        "s5": { "line": { "through": ["F", "J"] } },
+        "s6": { "line": { "through": ["G", "K"] } },
+        "s7": { "line": { "through": ["H", "A"] } },
+        "s8": { "line": { "through": ["J", "B"] } },
+        "s9": { "line": { "through": ["K", "C"] } }
       },
       "animate": "ruler"
     },
     {
       "id": 7,
-      "text": "Join the ten points on the circle in order: the regular decagon.",
+      "text": "Join A, B, C, D, E, F, G, H, J and K with straight lines. This is the decagon.",
       "create": {
-        "decagon": {
-          "polygon": [
-            "P0",
-            "P36",
-            "P72",
-            "P108",
-            "P144",
-            "P180",
-            "P216",
-            "P252",
-            "P288",
-            "P324"
-          ]
-        }
+        "decagon": { "polygon": ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K"] }
       },
       "animate": "ruler"
     },
     {
       "id": 8,
-      "text": "The star lines cross outside the circle to mark four outer corners. Draw the rectangle through them: the tile that repeats.",
+      "text": "Join V1, V2, V3 and V4 to mark the rectangle tile that repeats. V1 to V4 are where the star lines cross outside the circle.",
       "create": {
-        "C1": {
-          "point": {
-            "meet": [
-              "s2",
-              "s8"
-            ]
-          }
-        },
-        "C2": {
-          "point": {
-            "meet": [
-              "s0",
-              "s4"
-            ]
-          }
-        },
-        "C3": {
-          "point": {
-            "meet": [
-              "s3",
-              "s7"
-            ]
-          }
-        },
-        "C4": {
-          "point": {
-            "meet": [
-              "s5",
-              "s9"
-            ]
-          }
-        },
-        "tile": {
-          "polygon": [
-            "C1",
-            "C2",
-            "C3",
-            "C4"
-          ]
-        }
+        "V1": { "point": { "meet": ["s2", "s8"] } },
+        "V2": { "point": { "meet": ["s0", "s4"] } },
+        "V3": { "point": { "meet": ["s3", "s7"] } },
+        "V4": { "point": { "meet": ["s5", "s9"] } },
+        "tile": { "polygon": ["V1", "V2", "V3", "V4"] }
       },
       "animate": "ruler"
     },
     {
       "id": 9,
-      "text": "Mark the inner crossings of the star.",
+      "text": "Mark X1 to X10, where the star lines cross nearest O. Mark U1 to U10, where they cross next.",
       "create": {
-        "I0": {
-          "point": {
-            "meet": [
-              "s8",
-              "s9"
-            ]
-          }
-        },
-        "I1": {
-          "point": {
-            "meet": [
-              "s0",
-              "s9"
-            ]
-          }
-        },
-        "I2": {
-          "point": {
-            "meet": [
-              "s0",
-              "s1"
-            ]
-          }
-        },
-        "I3": {
-          "point": {
-            "meet": [
-              "s1",
-              "s2"
-            ]
-          }
-        },
-        "I4": {
-          "point": {
-            "meet": [
-              "s2",
-              "s3"
-            ]
-          }
-        },
-        "I5": {
-          "point": {
-            "meet": [
-              "s3",
-              "s4"
-            ]
-          }
-        },
-        "I6": {
-          "point": {
-            "meet": [
-              "s4",
-              "s5"
-            ]
-          }
-        },
-        "I7": {
-          "point": {
-            "meet": [
-              "s5",
-              "s6"
-            ]
-          }
-        },
-        "I8": {
-          "point": {
-            "meet": [
-              "s6",
-              "s7"
-            ]
-          }
-        },
-        "I9": {
-          "point": {
-            "meet": [
-              "s7",
-              "s8"
-            ]
-          }
-        },
-        "M0": {
-          "point": {
-            "meet": [
-              "s0",
-              "s8"
-            ]
-          }
-        },
-        "M1": {
-          "point": {
-            "meet": [
-              "s1",
-              "s9"
-            ]
-          }
-        },
-        "M2": {
-          "point": {
-            "meet": [
-              "s0",
-              "s2"
-            ]
-          }
-        },
-        "M3": {
-          "point": {
-            "meet": [
-              "s1",
-              "s3"
-            ]
-          }
-        },
-        "M4": {
-          "point": {
-            "meet": [
-              "s2",
-              "s4"
-            ]
-          }
-        },
-        "M5": {
-          "point": {
-            "meet": [
-              "s3",
-              "s5"
-            ]
-          }
-        },
-        "M6": {
-          "point": {
-            "meet": [
-              "s4",
-              "s6"
-            ]
-          }
-        },
-        "M7": {
-          "point": {
-            "meet": [
-              "s5",
-              "s7"
-            ]
-          }
-        },
-        "M8": {
-          "point": {
-            "meet": [
-              "s6",
-              "s8"
-            ]
-          }
-        },
-        "M9": {
-          "point": {
-            "meet": [
-              "s7",
-              "s9"
-            ]
-          }
-        }
+        "X1": { "point": { "meet": ["s8", "s9"] } },
+        "X2": { "point": { "meet": ["s0", "s9"] } },
+        "X3": { "point": { "meet": ["s0", "s1"] } },
+        "X4": { "point": { "meet": ["s1", "s2"] } },
+        "X5": { "point": { "meet": ["s2", "s3"] } },
+        "X6": { "point": { "meet": ["s3", "s4"] } },
+        "X7": { "point": { "meet": ["s4", "s5"] } },
+        "X8": { "point": { "meet": ["s5", "s6"] } },
+        "X9": { "point": { "meet": ["s6", "s7"] } },
+        "X10": { "point": { "meet": ["s7", "s8"] } },
+        "U1": { "point": { "meet": ["s0", "s8"] } },
+        "U2": { "point": { "meet": ["s1", "s9"] } },
+        "U3": { "point": { "meet": ["s0", "s2"] } },
+        "U4": { "point": { "meet": ["s1", "s3"] } },
+        "U5": { "point": { "meet": ["s2", "s4"] } },
+        "U6": { "point": { "meet": ["s3", "s5"] } },
+        "U7": { "point": { "meet": ["s4", "s6"] } },
+        "U8": { "point": { "meet": ["s5", "s7"] } },
+        "U9": { "point": { "meet": ["s6", "s8"] } },
+        "U10": { "point": { "meet": ["s7", "s9"] } }
       },
       "animate": "ruler"
     }
   ],
   "ink": {
-    "text": "Go over the ten-pointed star, the surrounding kites, the decagon, and the star points extending to the rectangular tile corners.",
+    "text": "Ink the ten-pointed star, the kites round it and the decagon. Ink the points that reach out to the corners of the tile.",
     "paths": [
       {
         "closed": true,
         "through": [
-          "M0",
-          "I1",
-          "M1",
-          "I2",
-          "M2",
-          "I3",
-          "M3",
-          "I4",
-          "M4",
-          "I5",
-          "M5",
-          "I6",
-          "M6",
-          "I7",
-          "M7",
-          "I8",
-          "M8",
-          "I9",
-          "M9",
-          "I0"
+          "U1",
+          "X2",
+          "U2",
+          "X3",
+          "U3",
+          "X4",
+          "U4",
+          "X5",
+          "U5",
+          "X6",
+          "U6",
+          "X7",
+          "U7",
+          "X8",
+          "U8",
+          "X9",
+          "U9",
+          "X10",
+          "U10",
+          "X1"
         ]
       },
-      {
-        "through": [
-          "P0",
-          "M0",
-          "P36"
-        ]
-      },
-      {
-        "through": [
-          "P36",
-          "M1",
-          "P72"
-        ]
-      },
-      {
-        "through": [
-          "P72",
-          "M2",
-          "P108"
-        ]
-      },
-      {
-        "through": [
-          "P108",
-          "M3",
-          "P144"
-        ]
-      },
-      {
-        "through": [
-          "P144",
-          "M4",
-          "P180"
-        ]
-      },
-      {
-        "through": [
-          "P180",
-          "M5",
-          "P216"
-        ]
-      },
-      {
-        "through": [
-          "P216",
-          "M6",
-          "P252"
-        ]
-      },
-      {
-        "through": [
-          "P252",
-          "M7",
-          "P288"
-        ]
-      },
-      {
-        "through": [
-          "P288",
-          "M8",
-          "P324"
-        ]
-      },
-      {
-        "through": [
-          "P324",
-          "M9",
-          "P0"
-        ]
-      },
+      { "through": ["A", "U1", "B"] },
+      { "through": ["B", "U2", "C"] },
+      { "through": ["C", "U3", "D"] },
+      { "through": ["D", "U4", "E"] },
+      { "through": ["E", "U5", "F"] },
+      { "through": ["F", "U6", "G"] },
+      { "through": ["G", "U7", "H"] },
+      { "through": ["H", "U8", "J"] },
+      { "through": ["J", "U9", "K"] },
+      { "through": ["K", "U10", "A"] },
       {
         "closed": true,
-        "through": [
-          "P0",
-          "P36",
-          "P72",
-          "P108",
-          "P144",
-          "P180",
-          "P216",
-          "P252",
-          "P288",
-          "P324"
-        ]
+        "through": ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K"]
+      },
+      { "through": ["C", "V1", "B"] },
+      { "through": ["D", "V2", "E"] },
+      { "through": ["G", "V3", "H"] },
+      { "through": ["J", "V4", "K"] }
+    ],
+    "parts": [
+      {
+        "text": "Ink the star: from U1 through X2, U2, X3 and on round, back to U1. Its outer corners are U1 to U10, and its inner corners X1 to X10.",
+        "paths": 1
       },
       {
-        "through": [
-          "P72",
-          "C1",
-          "P36"
-        ]
+        "text": "Ink the kites: from A through U1 to B, from B through U2 to C, and on round the circle.",
+        "paths": 10
       },
       {
-        "through": [
-          "P108",
-          "C2",
-          "P144"
-        ]
+        "text": "Ink the decagon: from A through B, C and on round, back to A.",
+        "paths": 1
       },
       {
-        "through": [
-          "P216",
-          "C3",
-          "P252"
-        ]
-      },
-      {
-        "through": [
-          "P288",
-          "C4",
-          "P324"
-        ]
+        "text": "Ink from C through V1 to B. Ink from D through V2 to E. Ink from G through V3 to H. Ink from J through V4 to K.",
+        "paths": 4
       }
     ]
   },
   "pattern": {
     "cell": "tile",
-    "text": "Repeat the rectangle edge to edge: the decagrams meet at their corners and interlace across the Persian Girih tilework.",
+    "text": "Put copies of the rectangle side by side. The ten-pointed stars touch at their corners and weave across the wall.",
     "palette": "Timurid tile",
-    "colors": {"star": "c", "hexagon": "a", "bowtie": "b", "kite": "d", "dart": "b", "corner": "a"},
+    "colors": {
+      "star": "c",
+      "hexagon": "a",
+      "bowtie": "b",
+      "kite": "d",
+      "dart": "b",
+      "corner": "a"
+    },
     "rings": true
   },
   "expect": {
     "pieceTypes": 6,
     "pieces": [
-      {
-        "name": "hexagon",
-        "vertices": 6,
-        "area": 1.6776,
-        "perCell": 1
-      },
-      {
-        "name": "star",
-        "vertices": 20,
-        "area": 1.38757,
-        "perCell": 1
-      },
-      {
-        "name": "bowtie",
-        "vertices": 8,
-        "area": 1.08981,
-        "perCell": 1
-      },
-      {
-        "name": "corner",
-        "vertices": 3,
-        "area": 0.29389,
-        "perCell": 4
-      },
-      {
-        "name": "kite",
-        "vertices": 4,
-        "area": 0.08576,
-        "perCell": 10
-      },
-      {
-        "name": "dart",
-        "vertices": 3,
-        "area": 0.06938,
-        "perCell": 10
-      }
+      { "name": "hexagon", "vertices": 6, "area": 1.6776, "perCell": 1 },
+      { "name": "star", "vertices": 20, "area": 1.38757, "perCell": 1 },
+      { "name": "bowtie", "vertices": 8, "area": 1.08981, "perCell": 1 },
+      { "name": "corner", "vertices": 3, "area": 0.29389, "perCell": 4 },
+      { "name": "kite", "vertices": 4, "area": 0.08576, "perCell": 10 },
+      { "name": "dart", "vertices": 3, "area": 0.06938, "perCell": 10 }
     ]
   }
 }

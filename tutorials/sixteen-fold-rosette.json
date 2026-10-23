@@ -20,766 +20,190 @@
   "steps": [
     {
       "id": 1,
-      "text": "Put the compass point on the centre and draw a circle. Its radius is the unit for the whole pattern.",
-      "create": {
-        "c": {
-          "circle": {
-            "centre": "O",
-            "through": "A"
-          }
-        }
-      },
+      "text": "Draw a circle with centre O through A. Its radius is the unit for the whole pattern.",
+      "create": { "c": { "circle": { "centre": "O", "through": "A" } } },
       "animate": "compass"
     },
     {
       "id": 2,
-      "text": "Draw the horizontal through the centre and the vertical at right angles to it. They cut the circle at four points.",
+      "text": "Draw a horizontal straight line through O and A. Draw a vertical line through O. The two lines cross the circle at E, N, W and S. These letters stand for east, north, west and south.",
       "create": {
-        "h": {
-          "line": {
-            "through": [
-              "O",
-              "A"
-            ]
-          }
-        },
-        "v": {
-          "line": {
-            "through": "O",
-            "perpendicularTo": "h"
-          }
-        },
-        "E": {
-          "point": {
-            "meet": [
-              "c",
-              "h"
-            ],
-            "pick": {
-              "angle": 0
-            }
-          }
-        },
-        "N": {
-          "point": {
-            "meet": [
-              "c",
-              "v"
-            ],
-            "pick": {
-              "angle": 90
-            }
-          }
-        },
-        "W": {
-          "point": {
-            "meet": [
-              "c",
-              "h"
-            ],
-            "pick": {
-              "angle": 180
-            }
-          }
-        },
-        "S": {
-          "point": {
-            "meet": [
-              "c",
-              "v"
-            ],
-            "pick": {
-              "angle": 270
-            }
-          }
-        }
+        "h": { "line": { "through": ["O", "A"] } },
+        "v": { "line": { "through": "O", "perpendicularTo": "h" } },
+        "E": { "point": { "meet": ["c", "h"], "pick": { "angle": 0 } } },
+        "N": { "point": { "meet": ["c", "v"], "pick": { "angle": 90 } } },
+        "W": { "point": { "meet": ["c", "h"], "pick": { "angle": 180 } } },
+        "S": { "point": { "meet": ["c", "v"], "pick": { "angle": 270 } } }
       },
       "animate": "ruler"
     },
     {
       "id": 3,
-      "text": "Halve the four right angles with two diagonals, cutting the circle into eight.",
+      "text": "Draw the lines through O that halve the angles at O between E and N, and between N and W. These lines cross the circle at NE, NW, SW and SE.",
       "create": {
-        "d1": {
-          "line": {
-            "through": "O",
-            "bisects": [
-              "E",
-              "O",
-              "N"
-            ]
-          }
-        },
-        "d2": {
-          "line": {
-            "through": "O",
-            "bisects": [
-              "N",
-              "O",
-              "W"
-            ]
-          }
-        },
-        "NE": {
-          "point": {
-            "meet": [
-              "c",
-              "d1"
-            ],
-            "pick": {
-              "angle": 45
-            }
-          }
-        },
-        "NW": {
-          "point": {
-            "meet": [
-              "c",
-              "d2"
-            ],
-            "pick": {
-              "angle": 135
-            }
-          }
-        },
-        "SW": {
-          "point": {
-            "meet": [
-              "c",
-              "d1"
-            ],
-            "pick": {
-              "angle": 225
-            }
-          }
-        },
-        "SE": {
-          "point": {
-            "meet": [
-              "c",
-              "d2"
-            ],
-            "pick": {
-              "angle": 315
-            }
-          }
-        }
+        "d1": { "line": { "through": "O", "bisects": ["E", "O", "N"] } },
+        "d2": { "line": { "through": "O", "bisects": ["N", "O", "W"] } },
+        "NE": { "point": { "meet": ["c", "d1"], "pick": { "angle": 45 } } },
+        "NW": { "point": { "meet": ["c", "d2"], "pick": { "angle": 135 } } },
+        "SW": { "point": { "meet": ["c", "d1"], "pick": { "angle": 225 } } },
+        "SE": { "point": { "meet": ["c", "d2"], "pick": { "angle": 315 } } }
       },
-      "highlight": [
-        "h",
-        "v"
-      ],
+      "highlight": ["h", "v"],
       "animate": "ruler"
     },
     {
       "id": 4,
-      "text": "Draw the square that just touches the circle at the ends of the horizontal and the vertical. This square is the tile that repeats.",
-      "textWithoutHelpers": "Draw the square that just touches the circle at the ends of the horizontal and the vertical (its bottom side is not needed as a line). This square is the tile that repeats.",
+      "text": "Draw a vertical line through each of E and W. Draw a horizontal line through each of N and S. These lines make a square with corners J, K, L and M. Join J, K, L and M to mark the tile that repeats.",
+      "textWithoutHelpers": "Draw a vertical line through each of E and W. Draw a horizontal line through N. Join J, K, L and M to mark the square tile that repeats. Its bottom side is not needed as a line.",
       "create": {
-        "tE": {
-          "line": {
-            "through": "E",
-            "perpendicularTo": "h"
-          }
-        },
-        "tN": {
-          "line": {
-            "through": "N",
-            "perpendicularTo": "v"
-          }
-        },
-        "tW": {
-          "line": {
-            "through": "W",
-            "perpendicularTo": "h"
-          }
-        },
-        "tS": {
-          "line": {
-            "through": "S",
-            "perpendicularTo": "v"
-          }
-        },
-        "c1": {
-          "point": {
-            "meet": [
-              "tE",
-              "tN"
-            ]
-          }
-        },
-        "c2": {
-          "point": {
-            "meet": [
-              "tN",
-              "tW"
-            ]
-          }
-        },
-        "c3": {
-          "point": {
-            "meet": [
-              "tW",
-              "tS"
-            ]
-          }
-        },
-        "c4": {
-          "point": {
-            "meet": [
-              "tS",
-              "tE"
-            ]
-          }
-        },
-        "cell": {
-          "polygon": [
-            "c1",
-            "c2",
-            "c3",
-            "c4"
-          ]
-        }
+        "tE": { "line": { "through": "E", "perpendicularTo": "h" } },
+        "tN": { "line": { "through": "N", "perpendicularTo": "v" } },
+        "tW": { "line": { "through": "W", "perpendicularTo": "h" } },
+        "tS": { "line": { "through": "S", "perpendicularTo": "v" } },
+        "J": { "point": { "meet": ["tE", "tN"] } },
+        "K": { "point": { "meet": ["tN", "tW"] } },
+        "L": { "point": { "meet": ["tW", "tS"] } },
+        "M": { "point": { "meet": ["tS", "tE"] } },
+        "cell": { "polygon": ["J", "K", "L", "M"] }
       },
-      "highlight": [
-        "E",
-        "N",
-        "W",
-        "S"
-      ],
+      "highlight": ["E", "N", "W", "S"],
       "animate": "ruler"
     },
     {
       "id": 5,
-      "text": "Halve each of the eight parts with a line through the centre. The circle is now cut into sixteen; mark the new points on it.",
-      "textWithoutHelpers": "Halve the first of the eight parts with a line through the centre, and mark the new points on the circle: it is now cut into sixteen.",
+      "text": "Draw the lines through O that halve the four angles between E, NE, N, NW and W. The first crosses the circle at R. Turn R round O by 45°, seven times. The circle is now cut into sixteen.",
+      "textWithoutHelpers": "Draw the line through O that halves the angle at O between E and NE. It crosses the circle at R. Turn R round O by 45°, seven times. The circle is now cut into sixteen.",
       "create": {
-        "s1": {
-          "line": {
-            "through": "O",
-            "bisects": [
-              "E",
-              "O",
-              "NE"
-            ]
-          }
-        },
-        "s2": {
-          "line": {
-            "through": "O",
-            "bisects": [
-              "NE",
-              "O",
-              "N"
-            ]
-          }
-        },
-        "s3": {
-          "line": {
-            "through": "O",
-            "bisects": [
-              "N",
-              "O",
-              "NW"
-            ]
-          }
-        },
-        "s4": {
-          "line": {
-            "through": "O",
-            "bisects": [
-              "NW",
-              "O",
-              "W"
-            ]
-          }
-        },
-        "m": {
-          "point": {
-            "meet": [
-              "c",
-              "s1"
-            ],
-            "pick": {
-              "angle": 22.5
-            }
-          }
-        },
-        "mids": {
-          "repeat": {
-            "of": [
-              "m"
-            ],
-            "by": "rot8"
-          }
-        }
+        "s1": { "line": { "through": "O", "bisects": ["E", "O", "NE"] } },
+        "s2": { "line": { "through": "O", "bisects": ["NE", "O", "N"] } },
+        "s3": { "line": { "through": "O", "bisects": ["N", "O", "NW"] } },
+        "s4": { "line": { "through": "O", "bisects": ["NW", "O", "W"] } },
+        "R": { "point": { "meet": ["c", "s1"], "pick": { "angle": 22.5 } } },
+        "mids": { "repeat": { "of": ["R"], "by": "rot8" } }
       },
-      "highlight": [
-        "E",
-        "NE"
-      ],
+      "highlight": ["E", "NE"],
       "animate": "ruler"
     },
     {
       "id": 6,
-      "text": "Draw the line that touches the circle at the first new point. Where it crosses the side of the square is a corner of the sixteen-sided figure that holds the rosette.",
+      "text": "Draw a line through R, at 90° to the line from O to R. It crosses the vertical line through E at T, a corner of the sixteen-sided figure round the rosette.",
       "create": {
-        "tm": {
-          "line": {
-            "through": "m",
-            "perpendicularTo": "s1"
-          }
-        },
-        "a": {
-          "point": {
-            "meet": [
-              "tE",
-              "tm"
-            ]
-          }
-        }
+        "tm": { "line": { "through": "R", "perpendicularTo": "s1" } },
+        "T": { "point": { "meet": ["tE", "tm"] } }
       },
-      "highlight": [
-        "m",
-        "tE"
-      ],
+      "highlight": ["R", "tE"],
       "animate": "ruler"
     },
     {
       "id": 7,
-      "text": "Join the centre to that corner. Put the compass point on the corner, open it to the end of the horizontal, and mark where the arc cuts the line to the centre. Do the same all the way round, sixteen times.",
+      "text": "Draw a straight line through O and T. Draw a circle with centre T through E. It crosses the line from O to T at C. Turn this circle and C round O by 22.5°, fifteen times.",
       "create": {
-        "sp": {
-          "line": {
-            "through": [
-              "O",
-              "a"
-            ]
-          }
-        },
-        "q": {
-          "circle": {
-            "centre": "a",
-            "through": "E"
-          }
-        },
-        "C": {
-          "point": {
-            "meet": [
-              "q",
-              "sp"
-            ],
-            "pick": {
-              "nearest": "O"
-            }
-          }
-        },
-        "marks": {
-          "repeat": {
-            "of": [
-              "q",
-              "C"
-            ],
-            "by": "rot16"
-          }
-        }
+        "sp": { "line": { "through": ["O", "T"] } },
+        "q": { "circle": { "centre": "T", "through": "E" } },
+        "C": { "point": { "meet": ["q", "sp"], "pick": { "nearest": "O" } } },
+        "marks": { "repeat": { "of": ["q", "C"], "by": "rot16" } }
       },
-      "highlight": [
-        "a",
-        "E"
-      ],
+      "highlight": ["T", "E"],
       "animate": "compass"
     },
     {
       "id": 8,
-      "text": "Join each mark to the seventh mark along, all the way round. The sixteen lines make the star at the heart of the rosette.",
+      "text": "Draw a straight line through C and the copy of C seven places round, counter-clockwise. Turn this line round O by 22.5°, fifteen times. The sixteen lines make the star at the heart of the rosette.",
       "create": {
-        "t": {
-          "line": {
-            "through": [
-              "C",
-              "C@7"
-            ]
-          }
-        },
-        "star": {
-          "repeat": {
-            "of": [
-              "t"
-            ],
-            "by": "rot16"
-          }
-        }
+        "t": { "line": { "through": ["C", "C@7"] } },
+        "star": { "repeat": { "of": ["t"], "by": "rot16" } }
       },
-      "highlight": [
-        "C",
-        "C@7"
-      ],
+      "highlight": ["C", "C@7"],
       "animate": "ruler"
     },
     {
       "id": 9,
-      "text": "From each of the sixteen points on the circle, draw two lines leaning inwards, parallel to the lines from the centre to the fourth and fifth marks. Where they meet the star lines they turn into petals.",
-      "textWithoutHelpers": "From each of the sixteen points on the circle, draw two lines leaning inwards, at the slant of the lines from the centre to the fourth and fifth marks. Where they meet the star lines they turn into petals.",
+      "text": "Draw two lines through E, parallel to the lines from O to the fourth and fifth copies of C. Turn these two lines round O by 22.5°, fifteen times. Where they cross the star lines, they turn into petals.",
+      "textWithoutHelpers": "Draw two lines through E, sloping like the lines from O to the fourth and fifth copies of C. Turn these two lines round O by 22.5°, fifteen times. Where they cross the star lines, they turn into petals.",
       "create": {
-        "r1": {
-          "line": {
-            "through": [
-              "O",
-              "C@4"
-            ]
-          }
-        },
-        "r2": {
-          "line": {
-            "through": [
-              "O",
-              "C@3"
-            ]
-          }
-        },
-        "p": {
-          "line": {
-            "through": "E",
-            "parallelTo": "r1"
-          }
-        },
-        "pm": {
-          "line": {
-            "through": "E",
-            "parallelTo": "r2"
-          }
-        },
-        "petals": {
-          "repeat": {
-            "of": [
-              "p",
-              "pm"
-            ],
-            "by": "rot16"
-          }
-        }
+        "r1": { "line": { "through": ["O", "C@4"] } },
+        "r2": { "line": { "through": ["O", "C@3"] } },
+        "p": { "line": { "through": "E", "parallelTo": "r1" } },
+        "pm": { "line": { "through": "E", "parallelTo": "r2" } },
+        "petals": { "repeat": { "of": ["p", "pm"], "by": "rot16" } }
       },
-      "highlight": [
-        "E",
-        "C@3",
-        "C@4"
-      ],
+      "highlight": ["E", "C@3", "C@4"],
       "animate": "ruler"
     },
     {
       "id": 10,
-      "text": "Mark where each leaning line meets its star line, and where each star line crosses the next line through the centre. These are the corners of the petals and the points of the star.",
+      "text": "Mark G, where the upper line through E crosses a star line. Mark P, where that star line crosses the line from O to R. Mark H and Q in the same way below. Turn G, P, H and Q round O by 22.5°, fifteen times.",
       "create": {
-        "G": {
-          "point": {
-            "meet": [
-              "p",
-              "t"
-            ]
-          }
-        },
-        "P": {
-          "point": {
-            "meet": [
-              "t",
-              "s1"
-            ]
-          }
-        },
-        "Gm": {
-          "point": {
-            "meet": [
-              "pm",
-              "t@8"
-            ]
-          }
-        },
-        "Pm": {
-          "point": {
-            "meet": [
-              "t@8",
-              "s4"
-            ]
-          }
-        },
-        "corners": {
-          "repeat": {
-            "of": [
-              "G",
-              "P",
-              "Gm",
-              "Pm"
-            ],
-            "by": "rot16"
-          }
-        }
+        "G": { "point": { "meet": ["p", "t"] } },
+        "P": { "point": { "meet": ["t", "s1"] } },
+        "H": { "point": { "meet": ["pm", "t@8"] } },
+        "Q": { "point": { "meet": ["t@8", "s4"] } },
+        "corners": { "repeat": { "of": ["G", "P", "H", "Q"], "by": "rot16" } }
       },
       "animate": "fade"
     }
   ],
   "ink": {
-    "text": "Ink each leaning line from the circle to its petal corner, then along the star line to the star's point. Sixteen petals ring a sixteen-pointed star.",
+    "text": "Ink each petal from the circle to a point of the star. Sixteen petals ring a sixteen-pointed star.",
     "paths": [
+      { "through": ["E", "G", "P"] },
+      { "through": ["E", "H", "Q"] },
+      { "through": ["R", "G@1", "P@1"] },
+      { "through": ["R", "H@1", "Q@1"] },
+      { "through": ["NE", "G@2", "P@2"] },
+      { "through": ["NE", "H@2", "Q@2"] },
+      { "through": ["R@1", "G@3", "P@3"] },
+      { "through": ["R@1", "H@3", "Q@3"] },
+      { "through": ["N", "G@4", "P@4"] },
+      { "through": ["N", "H@4", "Q@4"] },
+      { "through": ["R@2", "G@5", "P@5"] },
+      { "through": ["R@2", "H@5", "Q@5"] },
+      { "through": ["NW", "G@6", "P@6"] },
+      { "through": ["NW", "H@6", "Q@6"] },
+      { "through": ["R@3", "G@7", "P@7"] },
+      { "through": ["R@3", "H@7", "Q@7"] },
+      { "through": ["W", "G@8", "P@8"] },
+      { "through": ["W", "H@8", "Q@8"] },
+      { "through": ["R@4", "G@9", "P@9"] },
+      { "through": ["R@4", "H@9", "Q@9"] },
+      { "through": ["SW", "G@10", "P@10"] },
+      { "through": ["SW", "H@10", "Q@10"] },
+      { "through": ["R@5", "G@11", "P@11"] },
+      { "through": ["R@5", "H@11", "Q@11"] },
+      { "through": ["S", "G@12", "P@12"] },
+      { "through": ["S", "H@12", "Q@12"] },
+      { "through": ["R@6", "G@13", "P@13"] },
+      { "through": ["R@6", "H@13", "Q@13"] },
+      { "through": ["SE", "G@14", "P@14"] },
+      { "through": ["SE", "H@14", "Q@14"] },
+      { "through": ["R@7", "G@15", "P@15"] },
+      { "through": ["R@7", "H@15", "Q@15"] }
+    ],
+    "parts": [
       {
-        "through": [
-          "E",
-          "G",
-          "P"
-        ]
+        "text": "Ink from E through G to P. Ink from E through H to Q. These lines make one petal.",
+        "paths": 2
       },
       {
-        "through": [
-          "E",
-          "Gm",
-          "Pm"
-        ]
-      },
-      {
-        "through": [
-          "m",
-          "G@1",
-          "P@1"
-        ]
-      },
-      {
-        "through": [
-          "m",
-          "Gm@1",
-          "Pm@1"
-        ]
-      },
-      {
-        "through": [
-          "NE",
-          "G@2",
-          "P@2"
-        ]
-      },
-      {
-        "through": [
-          "NE",
-          "Gm@2",
-          "Pm@2"
-        ]
-      },
-      {
-        "through": [
-          "m@1",
-          "G@3",
-          "P@3"
-        ]
-      },
-      {
-        "through": [
-          "m@1",
-          "Gm@3",
-          "Pm@3"
-        ]
-      },
-      {
-        "through": [
-          "N",
-          "G@4",
-          "P@4"
-        ]
-      },
-      {
-        "through": [
-          "N",
-          "Gm@4",
-          "Pm@4"
-        ]
-      },
-      {
-        "through": [
-          "m@2",
-          "G@5",
-          "P@5"
-        ]
-      },
-      {
-        "through": [
-          "m@2",
-          "Gm@5",
-          "Pm@5"
-        ]
-      },
-      {
-        "through": [
-          "NW",
-          "G@6",
-          "P@6"
-        ]
-      },
-      {
-        "through": [
-          "NW",
-          "Gm@6",
-          "Pm@6"
-        ]
-      },
-      {
-        "through": [
-          "m@3",
-          "G@7",
-          "P@7"
-        ]
-      },
-      {
-        "through": [
-          "m@3",
-          "Gm@7",
-          "Pm@7"
-        ]
-      },
-      {
-        "through": [
-          "W",
-          "G@8",
-          "P@8"
-        ]
-      },
-      {
-        "through": [
-          "W",
-          "Gm@8",
-          "Pm@8"
-        ]
-      },
-      {
-        "through": [
-          "m@4",
-          "G@9",
-          "P@9"
-        ]
-      },
-      {
-        "through": [
-          "m@4",
-          "Gm@9",
-          "Pm@9"
-        ]
-      },
-      {
-        "through": [
-          "SW",
-          "G@10",
-          "P@10"
-        ]
-      },
-      {
-        "through": [
-          "SW",
-          "Gm@10",
-          "Pm@10"
-        ]
-      },
-      {
-        "through": [
-          "m@5",
-          "G@11",
-          "P@11"
-        ]
-      },
-      {
-        "through": [
-          "m@5",
-          "Gm@11",
-          "Pm@11"
-        ]
-      },
-      {
-        "through": [
-          "S",
-          "G@12",
-          "P@12"
-        ]
-      },
-      {
-        "through": [
-          "S",
-          "Gm@12",
-          "Pm@12"
-        ]
-      },
-      {
-        "through": [
-          "m@6",
-          "G@13",
-          "P@13"
-        ]
-      },
-      {
-        "through": [
-          "m@6",
-          "Gm@13",
-          "Pm@13"
-        ]
-      },
-      {
-        "through": [
-          "SE",
-          "G@14",
-          "P@14"
-        ]
-      },
-      {
-        "through": [
-          "SE",
-          "Gm@14",
-          "Pm@14"
-        ]
-      },
-      {
-        "through": [
-          "m@7",
-          "G@15",
-          "P@15"
-        ]
-      },
-      {
-        "through": [
-          "m@7",
-          "Gm@15",
-          "Pm@15"
-        ]
+        "text": "Ink the same two lines at each of the other fifteen points on the circle. Tick “Also ink the copies round the centre” to ink them all at once.",
+        "paths": 30
       }
     ]
   },
   "pattern": {
     "cell": "cell",
-    "text": "Repeat the tile edge to edge. Each rosette touches its four neighbours at the tips of its petals, and the ground between them is one piece.",
+    "text": "Put copies of the tile side by side. Each rosette touches its four neighbours at the tips of its petals. The ground between them is one piece.",
     "palette": "Marinid zellige",
-    "colors": {
-      "star": "a",
-      "petal": "b",
-      "ground": "ground"
-    },
+    "colors": { "star": "a", "petal": "b", "ground": "ground" },
     "rings": true
   },
   "expect": {
     "note": "Golden values, in units of OA, computed by the engine and checked for sixteen-fold symmetry, no slivers, and pieces that exactly fill the tile.",
     "pieceTypes": 3,
     "pieces": [
-      {
-        "name": "star",
-        "vertices": 32,
-        "area": 1.07176,
-        "perCell": 1
-      },
-      {
-        "name": "ground",
-        "vertices": 64,
-        "area": 1.02012,
-        "perCell": 1
-      },
-      {
-        "name": "petal",
-        "vertices": 6,
-        "area": 0.11926,
-        "perCell": 16
-      }
+      { "name": "star", "vertices": 32, "area": 1.07176, "perCell": 1 },
+      { "name": "ground", "vertices": 64, "area": 1.02012, "perCell": 1 },
+      { "name": "petal", "vertices": 6, "area": 0.11926, "perCell": 16 }
     ],
     "cellArea": 4
   }
