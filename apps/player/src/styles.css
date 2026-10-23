@@ -138,6 +138,13 @@
   box-sizing: border-box;
 }
 
+/* Slim scroll bars in the theme's hairline colour, where something must
+   scroll. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--theme-border-hover) transparent;
+}
+
 body {
   margin: 0;
   font-family: var(--text);
@@ -1085,6 +1092,34 @@ main.stage .drawing:not(.wall) {
 
 .text .instruction {
   margin-bottom: 12px;
+}
+
+/* A step that asks for several things: one sentence to a line, numbered
+   in the step's orange. */
+.step-list {
+  margin: 0;
+  padding-left: 1.5em;
+}
+
+.step-list li {
+  padding-left: 0.2em;
+  break-inside: avoid;
+}
+
+.step-list li + li {
+  margin-top: 0.3em;
+}
+
+.step-list li::marker {
+  color: var(--current);
+  font-weight: 700;
+}
+
+/* What the last action made, under it: no number, in the muted colour. */
+.step-list li.note {
+  list-style: none;
+  color: var(--theme-text-muted);
+  font-size: 0.92em;
 }
 
 .resumed {
@@ -3516,6 +3551,11 @@ main.stage .drawing:not(.wall) {
     padding-top: 0;
   }
 
+  /* Swiped along by a finger: no bar. */
+  .journey {
+    scrollbar-width: none;
+  }
+
   .lesson-side {
     overflow: visible;
   }
@@ -5290,24 +5330,6 @@ svg.tiles {
 }
 
 /* The zellige band: blue stars on green, on the page's own ground. */
-.zellige-band {
-  display: block;
-  margin: 0 0 24px;
-  border-radius: 4px;
-}
-
-.zellige-band .band-ground {
-  fill: var(--theme-bg-canvas);
-}
-
-.zellige-band .band-a {
-  fill: var(--act-watch);
-}
-
-.zellige-band .band-b {
-  fill: var(--act-draw);
-}
-
 /* The view switch: each way to see the pattern in its colour and icon. */
 .view-switch a {
   display: inline-flex;
@@ -5392,6 +5414,12 @@ svg.tiles {
 
 .your-work > .collection-head {
   align-items: center;
+}
+
+/* Straight under the masthead, its hairline is the divider. */
+.masthead + .your-work > .collection-head {
+  padding-top: 0;
+  border-top: 0;
 }
 
 .work-tabs {

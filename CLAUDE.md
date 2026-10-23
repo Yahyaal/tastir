@@ -10,6 +10,7 @@ A web app that walks people through Islamic geometric pattern tutorials one step
 - `docs/PRD.md` is the product: what we are building and why.
 - `docs/TASKS.md` is the work, in order, each task with its acceptance test. Do one task per session.
 - `docs/tutorial-format.md` is the tutorial JSON format, with a full worked example in `tutorials/`.
+- `docs/tutorial-writing.md` is how step texts are written: simple controlled English, one action to a sentence, every point named by a letter.
 - `docs/geometry-notes.md` holds lessons from the prototype. Read it before touching intersections, motifs or piece finding, because each note is a bug that already happened once.
 - `docs/prototype/` is a working single-file prototype. Port from it; do not import it.
 

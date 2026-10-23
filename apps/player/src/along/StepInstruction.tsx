@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { StepText } from '../app/StepText';
 
-/** Keep long instructions readable without moving the drawing boards. */
+/** The step to copy: its heading, then its text, a sentence to a line. The
+ * steps are stacked in one place, so the box fits the longest and the
+ * drawing boards never move. */
 export function StepInstruction({
   head,
   text,
@@ -10,51 +12,12 @@ export function StepInstruction({
   text: string;
   announcement?: 'status' | 'alert';
 }) {
-  const paragraph = useRef<HTMLParagraphElement>(null);
-  const [overflow, setOverflow] = useState(false);
-  const [atEnd, setAtEnd] = useState(false);
-  useEffect(() => {
-    const el = paragraph.current;
-    if (!el) return;
-    const measure = () => {
-      setOverflow(el.scrollHeight > el.clientHeight + 1);
-      setAtEnd(el.scrollTop + el.clientHeight >= el.scrollHeight - 1);
-    };
-    el.scrollTop = 0;
-    measure();
-    const observer =
-      typeof ResizeObserver === 'undefined'
-        ? undefined
-        : new ResizeObserver(measure);
-    observer?.observe(el);
-    window.addEventListener('resize', measure);
-    el.addEventListener('scroll', measure);
-    return () => {
-      observer?.disconnect();
-      window.removeEventListener('resize', measure);
-      el.removeEventListener('scroll', measure);
-    };
-  }, [text]);
   return (
     <div className="along-instruction" role={announcement}>
-      <h2>
-        {head}
-        {overflow && (
-          <span className="instruction-scroll-hint">
-            {atEnd ? 'Scroll up ↑' : 'Scroll for more ↓'}
-          </span>
-        )}
-      </h2>
-      <p
-        ref={paragraph}
-        className="instruction"
-        tabIndex={overflow ? 0 : undefined}
-        aria-label={
-          overflow ? 'Step instructions, scroll to read more' : undefined
-        }
-      >
-        {text}
-      </p>
+      <h2>{head}</h2>
+      <div className="instruction">
+        <StepText text={text} />
+      </div>
     </div>
   );
 }

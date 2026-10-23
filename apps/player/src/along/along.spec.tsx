@@ -37,9 +37,9 @@ function clickAt(x: number, y: number) {
 const tool = (name: string) => {
   const bar = () => within(screen.getByRole('toolbar', { name: 'Tools' }));
   const more = bar().queryByRole('button', { name: 'More tools' });
-  if (!bar().queryByRole('button', { name: new RegExp(name) }) && more)
+  if (!bar().queryByRole('button', { name: new RegExp(`${name}$`) }) && more)
     fireEvent.click(more);
-  fireEvent.click(bar().getByRole('button', { name: new RegExp(name) }));
+  fireEvent.click(bar().getByRole('button', { name: new RegExp(`${name}$`) }));
 };
 const click = (name: string | RegExp) =>
   fireEvent.click(screen.getByRole('button', { name }));
@@ -115,7 +115,7 @@ describe('drawing along', () => {
 
     // Step 1: the circle. Step 2's helper lines find E, N, W and S, which
     // the squares need, so they still count: step 2 is not ticked.
-    tool('Compass');
+    tool('Circle');
     clickAt(0, 0);
     clickAt(1, 0);
     expect(ticked()).toEqual(['1']);
@@ -132,12 +132,12 @@ describe('drawing along', () => {
     expect(status()).toBe('Not on your board yet.');
 
     // Step 2: the horizontal, then the vertical; half done in between.
-    tool('Ruler');
+    tool('Line');
     clickAt(0, 0);
     clickAt(1, 0);
     expect(ticked()).toEqual(['1']);
     expect(status()).toBe('Still to draw: one line.');
-    tool('Square to');
+    tool('Perpendicular');
     clickAt(-0.5, 0);
     clickAt(0, 0);
     expect(ticked()).toEqual(['1', '2']);
@@ -161,7 +161,7 @@ describe('drawing along', () => {
 
   it('counts a step drawn another way, and keeps extras without counting them against the learner', () => {
     openAlong();
-    tool('Compass');
+    tool('Circle');
     clickAt(0, 0);
     clickAt(1, 0);
     // An extra circle about A: kept, faint, and step 1 stays done.
@@ -236,10 +236,10 @@ describe('drawing along', () => {
         .getAllByRole('button')
         .filter((b) => b.classList.contains('tool') && !b.closest('label'))
         .map((b) => b.textContent),
-    ).toContain('◯Compass');
-    expect(within(bar).queryByRole('button', { name: /Ruler/ })).toBeNull();
+    ).toContain('◯Circle');
+    expect(within(bar).queryByRole('button', { name: /Line$/ })).toBeNull();
     fireEvent.click(within(bar).getByRole('button', { name: 'More tools' }));
-    expect(within(bar).getByRole('button', { name: /Ruler/ })).toBeTruthy();
+    expect(within(bar).getByRole('button', { name: /Line$/ })).toBeTruthy();
     expect(
       within(bar).getByRole('button', { name: 'Fewer tools' }),
     ).toBeTruthy();
@@ -251,7 +251,7 @@ describe('drawing along', () => {
     fireEvent.click(within(bar).getByRole('button', { name: 'More tools' }));
     for (const t of TOOLS) {
       const button = within(bar).getByRole('button', {
-        name: new RegExp(t.label),
+        name: new RegExp(`${t.label}$`),
       });
       expect(button.getAttribute('title')).toBe(t.does);
       expect(button.getAttribute('aria-description')).toBe(t.does);
@@ -404,7 +404,7 @@ describe('drawing along', () => {
     }
     expect(current()).toBe('4');
     // An extra circle of the learner's own, to be kept too.
-    tool('Compass');
+    tool('Circle');
     clickAt(1, 0);
     clickAt(0, 0);
     cleanup();
@@ -525,14 +525,14 @@ describe('drawing along', () => {
 
   it('shows no name for a crossing the tutorial does not name', () => {
     openAlong();
-    tool('Compass');
+    tool('Circle');
     clickAt(0, 0);
     clickAt(1, 0);
     clickAt(1, 0);
     clickAt(0, 0);
     // A line through O and a crossing of the two circles, which the
     // board names P1 for itself.
-    tool('Ruler');
+    tool('Line');
     clickAt(0, 0);
     clickAt(0.5, Math.sqrt(3) / 2);
     const board = screen.getByRole('img', { name: 'The construction so far' });
@@ -544,7 +544,7 @@ describe('drawing along', () => {
   it('keeps each figure once when the learner drew it twice', () => {
     openAlong();
     // The circle drawn twice.
-    tool('Compass');
+    tool('Circle');
     clickAt(0, 0);
     clickAt(1, 0);
     clickAt(0, 0);
@@ -915,14 +915,14 @@ describe('drawing along', () => {
   it('shows dotted preview lines while drawing a polygon and closes on clicking the first point', () => {
     openAlong();
     // Step 1: compass circle through A
-    tool('Compass');
+    tool('Circle');
     clickAt(0, 0);
     clickAt(1, 0);
     // Step 2: horizontal and vertical lines to create corner crossings
-    tool('Ruler');
+    tool('Line');
     clickAt(0, 0);
     clickAt(1, 0);
-    tool('Square to');
+    tool('Perpendicular');
     clickAt(-0.5, 0);
     clickAt(0, 0);
 

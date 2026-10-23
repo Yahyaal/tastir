@@ -35,6 +35,48 @@ const MAMOOT = 'https://mamootdiy.com';
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'band-and-pointer-2026-10-22',
+    title: 'The home page’s star band and the editor’s pointers',
+    fold: 8,
+    status: 'decided',
+    decision:
+      'Pointers Q are kept, with the line or circle the click will draw in gold (picture 5). On 22 October you chose to remove both star bands from the home page instead, which is cleaner.',
+    summary:
+      'You found the star band on the home page too crowded to read, and asked whether the editor’s tool pointers could be easier to see and recognise.',
+    story: [
+      'The band is cramped because it squeezes a whole field of stars into 18 pixels, so each star is about eleven pixels wide and half of them are cut off at the edges. Design B in picture 1 keeps only one row of whole stars, about two thirds taller, separated by a thin line of plaster as grout separates real zellige tiles, with a hairline above and below like the edge of a dado. B2 is the same with brass crosses between the stars, which is livelier but louder. C keeps today’s field, only larger.',
+      'You asked whether a second colour could show the line that halves the angle. It can, if the colour always means the same thing, so in every sign the line or circle the click will draw is gold and what is already there is white: the halving line, the square-to line, the second parallel, the touching circle, the copied circle and the new block. Gold rather than red because red nearly vanishes on the blue and green badges at real size, and gold matches the orange the board already uses for the line being drawn.',
+      'The pointers (picture 2) are all the same dark ink today, so they tell tools apart only by the small sign. Design Q fills the badge with one colour per kind of tool, blue for the compass tools, green for the ruler tools, terracotta for the shapes and brass for the point, with a white sign and a white edge, so the colour says the kind before you read the sign and it stands out on both boards. R uses one orange for every tool. The crosshair stays dark with a light edge, a touch thicker, with a coloured dot at its centre.',
+    ],
+    pictures: [
+      {
+        src: 'renders/band-and-pointer-2026-10-22/A-bands.png',
+        caption:
+          '1. The star band: A as it is now, B one row of stars with grout (my pick), B2 with brass crosses, C today’s field made larger. Light theme on top, dark below.',
+      },
+      {
+        src: 'renders/band-and-pointer-2026-10-22/B-pointers.png',
+        caption:
+          '2. The pointers at three times their size and at real size: P now, Q one colour per kind of tool (my pick), R one orange for all.',
+      },
+      {
+        src: 'renders/band-and-pointer-2026-10-22/C-band-light.png',
+        caption: '3. Built: band B on the home page, light theme.',
+      },
+      {
+        src: 'renders/band-and-pointer-2026-10-22/C-band-dark.png',
+        caption: '4. Built: band B on the home page, dark theme.',
+      },
+      {
+        src: 'renders/band-and-pointer-2026-10-22/D-pointers.png',
+        caption:
+          '5. Built: pointers Q, with the line or circle the click will draw in gold beside what is already there (same opening, touching, square to, parallel, halve angle, block).',
+      },
+    ],
+    asks: ['Nothing to do.'],
+    sources: [],
+  },
+  {
     id: 'atelier-review-2026-10-22',
     title: 'Antigravity’s design branch (atelier-ui)',
     fold: 8,
@@ -2359,11 +2401,11 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Nothing waiting on you',
-    text: 'The design review is live: arched cards only, the original photo hides and shows from a button on the drawing, and each editor tool has its own pointer. Antigravity’s branch is reviewed and can be closed. H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
+    title: 'Plain steps: Squares and stars to check',
+    text: 'Squares and stars is rewritten as the pilot for plain steps: one action to a numbered line, every point named by a letter and shown large on your board, long steps split into parts, and the lines in two columns on a wide screen. Lines you draw over the step turn green, the star bands are gone and scroll bars are slimmer or gone. When you are happy with it, the other tutorials follow the same rules.',
     link: {
-      label: 'Read the hosted Studio acceptance checks',
-      href: '#/notes/studio-hosted',
+      label: 'Draw Squares and stars along',
+      href: '#/alhambra-arrayanes-squares/draw',
     },
   },
   next: [
@@ -2390,6 +2432,14 @@ export const PROGRESS: {
     },
   ],
   waiting: [
+    {
+      title: 'H6 and H5: Studio checks',
+      text: 'H6 waits only on a week of free-plan use (read around 29 October), and H5 on the export check you moved to later.',
+      link: {
+        label: 'Read the hosted Studio acceptance checks',
+        href: '#/notes/studio-hosted',
+      },
+    },
     {
       title: 'Alhambra interlace',
       text: 'Needs a better source than the product page: a photo or drawing of the whole panel.',

@@ -33,7 +33,7 @@ function clickAt(x: number, y: number) {
 const tool = (name: string) =>
   fireEvent.click(
     within(screen.getByRole('toolbar', { name: 'Tools' })).getByRole('button', {
-      name: new RegExp(name),
+      name: new RegExp(`${name}$`),
     }),
   );
 
@@ -102,7 +102,7 @@ describe('the fixes from the editor report', () => {
   it('writes about circles and lines in plain words, not their names', () => {
     const p = addPattern(copyUpTo(star, 3));
     open(p?.id ?? '');
-    tool('Same opening');
+    tool('Same-size circle');
     clickAt(0.6, 0.8); // on the first circle
     clickAt(Math.SQRT1_2, Math.SQRT1_2); // NE
     expect(screen.getByLabelText('Text the learner reads')).toHaveProperty(

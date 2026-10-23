@@ -1,4 +1,4 @@
-import type { Step, Tutorial } from '@tastir/schema';
+import { partsOf, type Step, type Tutorial } from '@tastir/schema';
 import {
   loadTutorial,
   starAndCross,
@@ -28,19 +28,36 @@ describe('checking a step by geometry', () => {
       const whole = evaluate(t);
       let beat = 0;
       for (const step of t.steps) {
-        beat += 1;
-        // The board after the learner has drawn this step and the ones
-        // before it, with the tutorial's own constructions.
-        const upTo = board(t.steps.filter((s) => s.id <= step.id));
-        expect(checkStep(whole, upTo, beat).done, `step ${step.id}`).toBe(true);
-        // Nothing the tutorial draws is extra.
-        expect([...extrasOn(whole, upTo)]).toEqual([]);
-        // A later step that draws a new line or circle is not done yet; a
-        // polygon may be, when its sides lie on lines already drawn.
-        const next = neededAt(whole, beat + 1);
-        if (next.some((n) => n.geometry.kind !== 'polygon')) {
-          const before = checkStep(whole, upTo, beat + 1);
-          expect(before.done, `step ${step.id + 1} early`).toBe(false);
+        // A step with parts is a beat for each part.
+        const parts = partsOf(step);
+        for (let k = 1; k <= parts.length; k++) {
+          beat += 1;
+          const label = parts.length > 1 ? `${step.id}.${k}` : `${step.id}`;
+          // The board after the learner has drawn this beat and the ones
+          // before it, with the tutorial's own constructions.
+          const upTo = board([
+            ...t.steps.filter((s) => s.id < step.id),
+            {
+              id: step.id,
+              text: step.text,
+              create: Object.assign(
+                {},
+                ...parts.slice(0, k).map((p) => p.create),
+              ),
+            },
+          ]);
+          expect(checkStep(whole, upTo, beat).done, `step ${label}`).toBe(true);
+          // Nothing the tutorial draws is extra.
+          expect([...extrasOn(whole, upTo)]).toEqual([]);
+          // A later beat that draws a new line or circle is not done yet; a
+          // polygon may be, when its sides lie on lines already drawn.
+          const next = neededAt(whole, beat + 1);
+          if (next.some((n) => n.geometry.kind !== 'polygon')) {
+            const before = checkStep(whole, upTo, beat + 1);
+            expect(before.done, `the beat after step ${label} early`).toBe(
+              false,
+            );
+          }
         }
       }
     },
@@ -144,12 +161,16 @@ describe('checking a step by geometry', () => {
   });
 
   it('counts copies only when all are there', () => {
-    const squares = loadTutorial('alhambra-arrayanes-squares.json');
-    const scene = evaluate(squares);
-    const step = squares.steps.find((s) =>
+    const tutorial = loadTutorial('alhambra-comares-dado.json');
+    const scene = evaluate(tutorial);
+    const step = tutorial.steps.find((s) =>
       Object.values(s.create ?? {}).some((el) => 'repeat' in el),
     ) as Step;
-    const beat = squares.steps.indexOf(step) + 1;
+    // Its beat: one for each part of the steps before it, then its own.
+    const beat =
+      tutorial.steps
+        .filter((s) => s.id < step.id)
+        .reduce((n, s) => n + partsOf(s).length, 0) + 1;
     const copies = neededAt(scene, beat).filter((n) => n.name.includes('@'));
     expect(copies.length).toBeGreaterThan(0);
     // The board with the step, minus its repeat: some copies are missing,
@@ -157,7 +178,7 @@ describe('checking a step by geometry', () => {
     const create = Object.fromEntries(
       Object.entries(step.create ?? {}).filter(([, el]) => !('repeat' in el)),
     );
-    const before = squares.steps.filter((s) => s.id < step.id);
+    const before = tutorial.steps.filter((s) => s.id < step.id);
     const check = checkStep(
       scene,
       board([...before, { ...step, create }]),

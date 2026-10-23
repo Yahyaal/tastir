@@ -40,7 +40,7 @@ describe('building blocks in the editor', () => {
     fireEvent.click(
       within(screen.getByRole('toolbar', { name: 'Tools' })).getByRole(
         'button',
-        { name: /Compass/ },
+        { name: /Circle$/ },
       ),
     );
     clickAt(0, 0);

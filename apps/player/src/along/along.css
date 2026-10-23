@@ -61,7 +61,6 @@
   align-items: flex-end;
   flex-wrap: nowrap;
   overflow-x: auto;
-  scrollbar-width: thin;
   gap: 2px;
   margin: 0;
   padding: 0;
@@ -186,7 +185,10 @@
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: 6.75rem auto minmax(180px, 1fr) 3.8rem;
+  /* The step's words take the room the longest step needs (the steps are
+     stacked in one place), so they never scroll and the board holds still;
+     the line under the board has a fixed height its words fit in. */
+  grid-template-rows: minmax(6.75rem, auto) auto minmax(180px, 1fr) 4.2rem;
   column-gap: 28px;
   row-gap: 8px;
 }
@@ -203,7 +205,15 @@
 .along-text {
   flex: 1;
   min-width: 0;
-  max-width: 90ch;
+}
+
+/* A long list of actions takes the width in two columns, so the board
+   keeps its height. */
+@media (min-width: 1101px) {
+  .along-text-row .step-list.long {
+    columns: 2;
+    column-gap: 48px;
+  }
 }
 
 .along-text .along-layer {
@@ -214,14 +224,6 @@
 
 .along-instruction {
   min-width: 0;
-}
-
-.instruction-scroll-hint {
-  margin-left: 12px;
-  font-family: var(--text);
-  font-size: 0.72rem;
-  color: var(--on-lapis-muted);
-  white-space: nowrap;
 }
 
 @media (min-width: 761px) and (max-width: 1100px) {
@@ -278,15 +280,7 @@
   margin: 0 0 4px;
   line-height: 1.4;
   font-size: 1rem;
-  height: 3lh;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--saffron) var(--theme-bg-surface);
-}
-
-.along-text-row .instruction:focus-visible {
-  outline: 2px solid var(--saffron);
-  outline-offset: 2px;
+  min-height: 3lh;
 }
 
 .along-tools .editor-tools {
@@ -331,7 +325,32 @@
 .along .caption {
   display: block;
   min-height: 0;
-  overflow-y: auto;
+}
+
+/* Under the board: the title with Done and Cancel beside it, then what to
+   click, so the words fit the fixed line without a scroll bar. */
+.along .along-board-caption {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: start;
+  align-items: center;
+  column-gap: 14px;
+  row-gap: 2px;
+}
+
+.along .along-board-caption > .instruction {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.along .along-board-caption > .ink-tools {
+  grid-row: 1;
+  grid-column: 2;
+  margin: 0;
+}
+
+.along .along-board-caption > .ink-tools button {
+  padding: 1px 12px;
 }
 
 .along .tool-gap {
@@ -462,15 +481,33 @@
   opacity: 0.45;
 }
 
-/* The board's own lines in ink, the step at hand in blue; the step to
-   copy keeps the player's colours. */
+/* The board's own lines in grey. A line drawn over the step to copy turns
+   green and thick with a short pulse, unlike the step's orange dashes, so
+   the learner sees it took. */
 .along .editor-drawing .el {
   stroke: var(--old);
 }
 
 .along .editor-drawing .el.current {
-  stroke: var(--current);
-  stroke-width: 2.4px;
+  stroke: var(--fresh);
+  stroke-width: 3px;
+  animation: drawn-over 0.7s ease-out;
+}
+
+@keyframes drawn-over {
+  from {
+    stroke-width: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .along .editor-drawing .el.current {
+    animation: none;
+  }
+}
+
+.along .dot-key .drawn::before {
+  background: var(--fresh);
 }
 
 /* Names stay readable over dots and lines. */
@@ -541,7 +578,7 @@
   }
 
   .along-instruction {
-    height: 6.75rem;
+    min-height: 6.75rem;
   }
 
   .along-text .along-check {
@@ -555,6 +592,13 @@
     height: 62vh;
     min-height: 62vh;
     max-height: 62vh;
+  }
+
+  /* The rows a finger swipes along: no bar, which a phone shows anyway
+     only while swiping. */
+  .along-steps ol,
+  .along .editor-tools {
+    scrollbar-width: none;
   }
 
   /* One row of tools that scrolls sideways, so the board shows. */
@@ -894,6 +938,12 @@
 .along-guide .el.current {
   opacity: 0.6;
   stroke-dasharray: 6 6;
+}
+
+/* What the learner has drawn over leaves the guide: their green line
+   shows alone. */
+.along-guide .el.current.drawn {
+  display: none;
 }
 
 /* At the ink, the pattern's ink only, faint, to trace over. */

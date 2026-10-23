@@ -189,7 +189,7 @@ main.stage .drawing.editor-drawing:not(.wall) {
   cursor: var(--tool-cursor, crosshair);
 }
 
-main.stage .drawing.editor-drawing .el {
+.editor-drawing .el {
   fill: none;
   stroke: var(--old);
   vector-effect: non-scaling-stroke;
@@ -213,6 +213,25 @@ main.stage .drawing.editor-drawing .el {
 
 .editor-drawing .dot.current {
   fill: var(--current);
+}
+
+/* The points the step's text names: a ringed dot and a large name in the
+   text colour, so a learner finds E or K at a glance. */
+.editor-drawing .dot.named {
+  fill: var(--theme-bg-card);
+  stroke: var(--theme-text-primary);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Dragging the board moves it; it never selects a name as text. */
+.editor-drawing text {
+  user-select: none;
+}
+
+.editor-drawing .point-name.named {
+  fill: var(--theme-text-primary);
+  font-weight: 800;
 }
 
 .editor-drawing .target {

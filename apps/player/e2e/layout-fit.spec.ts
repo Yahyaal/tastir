@@ -41,7 +41,7 @@ test('draw along says what to tap in view, beside the board', async ({
 }, info) => {
   await page.goto('/#/eight-fold-star-and-cross/draw');
   const prompt = page.locator('.along-board-caption .instruction');
-  await expect(prompt).toContainText(/Choose Compass/);
+  await expect(prompt).toContainText(/Choose Circle/);
   await expect(prompt).toBeInViewport();
   // On a phone the prompt sits above the fixed Back and Next bar.
   if (info.project.name === 'phone') {
@@ -52,7 +52,7 @@ test('draw along says what to tap in view, beside the board', async ({
   // The suggested tool is marked, but not chosen.
   const compass = page
     .getByRole('toolbar', { name: 'Tools' })
-    .getByRole('button', { name: /Compass/ });
+    .getByRole('button', { name: /Circle$/ });
   await expect(compass).toHaveClass(/hinted/);
   await expect(compass).toHaveAttribute('aria-pressed', 'false');
 });

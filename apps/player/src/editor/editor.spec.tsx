@@ -37,7 +37,7 @@ function clickAt(x: number, y: number) {
 const tool = (name: string) =>
   fireEvent.click(
     within(screen.getByRole('toolbar', { name: 'Tools' })).getByRole('button', {
-      name: new RegExp(name),
+      name: new RegExp(`${name}$`),
     }),
   );
 const steps = () =>
@@ -51,14 +51,14 @@ describe('the editor', () => {
   it('draws the first steps of the star and cross by clicking', () => {
     const id = openEmpty();
     // The circle: centre O, through A.
-    tool('Compass');
+    tool('Circle');
     clickAt(0, 0);
     clickAt(1, 0);
     // The horizontal through O and A, and the vertical square to it.
-    tool('Ruler');
+    tool('Line');
     clickAt(0, 0);
     clickAt(1, 0);
-    tool('Square to');
+    tool('Perpendicular');
     clickAt(-0.5, 0);
     clickAt(0, 0);
     // Halve the right angle: A, the corner O, and the crossing at the top,
@@ -88,7 +88,7 @@ describe('the editor', () => {
 
   it('only takes points that exist', () => {
     openEmpty();
-    tool('Compass');
+    tool('Circle');
     clickAt(0.5, 0.5);
     expect(screen.getByText(/There is no point there/)).toBeTruthy();
     expect(steps()).toEqual([]);
@@ -96,10 +96,10 @@ describe('the editor', () => {
 
   it('undoes and redoes, and the step text is editable', () => {
     const id = openEmpty();
-    tool('Compass');
+    tool('Circle');
     clickAt(0, 0);
     clickAt(1, 0);
-    tool('Ruler');
+    tool('Line');
     clickAt(0, 0);
     clickAt(1, 0);
     expect(steps()).toHaveLength(2);
@@ -125,13 +125,13 @@ describe('the editor', () => {
 
   it('marks broken steps in red, and deletes a step with those built on it', () => {
     openEmpty();
-    tool('Compass');
+    tool('Circle');
     clickAt(0, 0);
     clickAt(1, 0);
-    tool('Ruler');
+    tool('Line');
     clickAt(0, 0);
     clickAt(1, 0);
-    tool('Square to');
+    tool('Perpendicular');
     clickAt(-0.5, 0);
     clickAt(0, 0);
     // Deleting the horizontal alone breaks the vertical square to it.
@@ -172,10 +172,10 @@ describe('the pointer over the drawing', () => {
   it('shows the chosen tool', () => {
     openEmpty();
     const svg = screen.getByRole('img', { name: 'The construction so far' });
-    tool('Ruler');
+    tool('Line');
     const ruler = svg.style.getPropertyValue('--tool-cursor');
     expect(ruler).toContain('data:image/svg+xml');
-    tool('Compass');
+    tool('Circle');
     expect(svg.style.getPropertyValue('--tool-cursor')).not.toBe(ruler);
   });
 });

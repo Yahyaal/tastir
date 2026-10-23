@@ -82,7 +82,7 @@ const OPPOSITE: BlockStep = {
   text: 'Draw a line through the centre and the starting point; it crosses the circle again opposite.',
   create: { a: ln('P', 'Q'), Qx: pt('c', 'a', { farthest: 'Q' }) },
 };
-/** Square to that line through the centre: two more points. */
+/** Perpendicular to that line through the centre: two more points. */
 const QUARTERS: BlockStep = {
   text: 'Draw the line through the centre square to it: the circle is cut into four.',
   create: { b: perp('P', 'a'), B: pts('c', 'b') },

@@ -64,7 +64,7 @@ export function BlocksPanel({
         </p>
         {hasCircle ? null : (
           <p className="hint lost">
-            These blocks work on a circle: draw one with the Compass first
+            These blocks work on a circle: draw one with the Circle tool first
             (click O, then A).
           </p>
         )}

@@ -12,7 +12,6 @@ import {
 } from './browsing';
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { ActionIcon } from './actionIcons';
-import { ZelligeBand } from './ZelligeBand';
 import { workInProgress, WorkRow } from './YourWork';
 import { Thumbnail } from './drawing';
 import { type Entry } from './library';
@@ -228,7 +227,6 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           <ThemeSwitch />
         </div>
       </header>
-      <ZelligeBand />
       {inProgress.length ? yourWork : null}
       <section className="hero">
         {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}
@@ -269,7 +267,6 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
         </div>
       </section>
       {inProgress.length ? null : yourWork}
-      <ZelligeBand />
       <section aria-labelledby="collection">
         <div className="collection-head">
           <h2 id="collection">The patterns</h2>

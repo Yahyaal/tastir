@@ -414,8 +414,12 @@ export function Construction({
   arrived = false,
   names,
   optional,
+  drawn,
   fadeLines = false,
 }: {
+  /** Drawing along: the step's elements already on the learner's board,
+   * which the guide stops showing. */
+  drawn?: ReadonlySet<string>;
   /** Helper lines nothing needs, drawn lighter (drawing along, with
    * helper lines shown). */
   optional?: ReadonlySet<string>;
@@ -495,6 +499,7 @@ export function Construction({
                       : '',
                 helper(el) ? 'helper' : '',
                 optional?.has(el.name) ? 'optional' : '',
+                drawn?.has(el.name) ? 'drawn' : '',
                 wasNew(el) ? 'was-new' : '',
               ]
                 .filter(Boolean)
@@ -585,6 +590,7 @@ export function Construction({
     ink,
     names,
     optional,
+    drawn,
     showNames,
     inkSoFar,
     pen,

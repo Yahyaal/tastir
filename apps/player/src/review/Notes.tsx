@@ -125,6 +125,12 @@ export const DOCS: readonly {
     text: read('geometry-notes.md'),
   },
   {
+    key: 'writing',
+    label: 'Writing the steps',
+    file: 'tutorial-writing.md',
+    text: read('tutorial-writing.md'),
+  },
+  {
     key: 'method',
     label: 'How to add a pattern',
     file: 'patterns/BRIEF.md',

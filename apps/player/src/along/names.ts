@@ -6,11 +6,18 @@ import { clearestName } from '../editor/document';
  * numbered by the engine (k.3) and copies (x@2) are never named. */
 const words = (text: string) => text.match(/[A-Za-z][A-Za-z0-9_]*/g) ?? [];
 
-/** The points a text names, among the scene's points. */
+/** The points a text names, among the scene's points. A line or shape
+ * named by its points (line OE, the square JKLN) names each of them, so
+ * the board shows O and E too. */
 export function namesIn(text: string, scene: Scene): Set<string> {
   const out = new Set<string>();
-  for (const w of words(text))
-    if (scene.elements.get(w)?.geometry.kind === 'point') out.add(w);
+  const isPoint = (n: string) =>
+    scene.elements.get(n)?.geometry.kind === 'point';
+  for (const w of words(text)) {
+    if (isPoint(w)) out.add(w);
+    else if (/^[A-Z]{2,}$/.test(w) && [...w].every(isPoint))
+      for (const letter of w) out.add(letter);
+  }
   return out;
 }
 

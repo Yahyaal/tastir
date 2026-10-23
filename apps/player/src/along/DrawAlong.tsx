@@ -27,8 +27,8 @@ import {
   beatsOf,
   hiddenBeats,
   shownBeats,
-  shownSteps,
   withHelpers,
+  type Beat,
   type Model,
 } from '../app/model';
 import { PiecePanel } from '../app/PiecePanel';
@@ -45,6 +45,7 @@ import { setPatternWall } from '../editor/patterns';
 import { ToolBar } from '../editor/ToolBar';
 import {
   complete,
+  crossingsNear,
   sameTarget,
   snap,
   toolOf,
@@ -188,6 +189,15 @@ function usePhone(): boolean {
   return phone;
 }
 
+/** The heading over a step to copy: its number among the chips, and for
+ * a part of a long step, what the whole step does. */
+function headOf(beat: Beat | undefined, number: number, of: number) {
+  const head = `Step ${number} of ${of}`;
+  return beat?.parts && beat.heading
+    ? `${head}: ${beat.heading.replace(/\.$/, '')} (${beat.part} of ${beat.parts})`
+    : `${head}: the step to copy`;
+}
+
 /**
  * Drawing along: the learner's board, with the editor's tools, on the
  * left; the tutorial's step, as the player draws it, on the right. Both
@@ -225,7 +235,6 @@ export function DrawAlong({
   const { tutorial } = model;
   const beats = useMemo(() => beatsOf(tutorial), [tutorial]);
   const shown = useMemo(() => shownBeats(tutorial), [tutorial]);
-  const shownIds = useMemo(() => shownSteps(tutorial), [tutorial]);
   const hidden = useMemo(() => hiddenBeats(tutorial), [tutorial]);
   // The tile counts only when marked as a shape.
   const shapes = useMemo(() => new Set([tutorial.pattern.cell]), [tutorial]);
@@ -369,7 +378,7 @@ export function DrawAlong({
       ? 'Repeat'
       : coloring
         ? 'Color'
-        : `Step ${shownIds.indexOf(info?.step ?? 0) + 1} of ${shownIds.length}`;
+        : `Step ${index + 1} of ${shown.length}`;
   const [kept, setKept] = useState(true);
   useEffect(() => {
     setKept(
@@ -627,15 +636,20 @@ export function DrawAlong({
     : tool.id === 'tile'
       ? TILE_ASK
       : (tool.asks[Math.min(targets.length, tool.asks.length - 1)] ?? '');
-  // The board's figures that are the step's, drawn blue.
-  const currentOnBoard = useMemo(() => {
+  // The board's figures that are the step's, drawn green, and the step's
+  // own names for them, whose dashes the guide no longer shows.
+  const [currentOnBoard, drawnOfStep] = useMemo(() => {
     const out = new Set<string>();
-    if (inking) return out;
+    const drawn = new Set<string>();
+    if (inking) return [out, drawn];
     for (const n of neededAt(model.scene, beat)) {
       const on = figureOn(board, n.geometry);
-      if (on) out.add(on);
+      if (on) {
+        out.add(on);
+        drawn.add(n.name);
+      }
     }
-    return out;
+    return [out, drawn];
   }, [inking, model.scene, beat, board]);
   // The names the step to copy shows: those its text and highlight use.
   const stepNames = useMemo(() => {
@@ -646,6 +660,28 @@ export function DrawAlong({
     for (const h of info?.highlight ?? []) if (readable.has(h)) names.add(h);
     return names;
   }, [info, model.scene, readable]);
+  // Where the step's named points are on the learner's board: at a point
+  // of theirs, or where two of their lines cross, so "through B" always
+  // finds a B to look at.
+  const spokenPlaces = useMemo(() => {
+    if (inking || afterInk) return [];
+    const out: { at: Vec; name: string }[] = [];
+    // Far below what an eye can see (OA is 1), and above the drift of a
+    // board drawn by hand from its own crossings.
+    const near = 1e-5;
+    for (const name of stepNames) {
+      const el = model.scene.elements.get(name);
+      if (el?.geometry.kind !== 'point') continue;
+      const at = el.geometry.at;
+      const there =
+        [...board.elements.values()].some(
+          (b) =>
+            b.geometry.kind === 'point' && distance(b.geometry.at, at) < near,
+        ) || crossingsNear(board, at, 1e-3).some((c) => c.d < near);
+      if (there) out.push({ at, name });
+    }
+    return out;
+  }, [inking, afterInk, stepNames, model.scene, board]);
   /** A board point's name as the tutorial shows it, never an engine name. */
   const labelOf = (p: PointPlace) =>
     readAt.get(placeKey(p.at)) ??
@@ -834,7 +870,8 @@ export function DrawAlong({
   goRef.current = go;
   const keepLabel = (first: string) =>
     !keptAs ? first : unchanged ? 'Kept ✓' : 'Keep the changes';
-  const number = shownIds.indexOf(info?.step ?? 0) + 1;
+  // The step as its chip numbers it, as the heading over it does.
+  const number = index + 1;
   const last = index === shown.length - 1;
   // A step whose figures are all helper lines needs nothing drawn.
   const helperOnly =
@@ -926,6 +963,7 @@ export function DrawAlong({
           svgRef={stepRef}
           names={stepNames}
           optional={showHelpers ? optional : undefined}
+          drawn={drawnOfStep}
         />
       )}
     </div>
@@ -1022,6 +1060,7 @@ export function DrawAlong({
           faint={extras}
           current={currentOnBoard}
           labelOf={labelOf}
+          spoken={spokenPlaces}
           glow={hint?.glow}
           rings={inking ? ink.hint?.ring : hint?.rings}
           pen={
@@ -1289,7 +1328,7 @@ export function DrawAlong({
               {[
                 ...shown.map((b, i) => ({
                   on: !inking && i === index,
-                  head: `Step ${shownIds.indexOf(beats[b - 1]?.step ?? 0) + 1} of ${shownIds.length}: the step to copy`,
+                  head: headOf(beats[b - 1], i + 1, shown.length),
                   text: beats[b - 1]?.text ?? '',
                 })),
                 { on: inking, head: 'Ink', text: tutorial.ink.text ?? '' },
@@ -1879,6 +1918,7 @@ export function DrawAlong({
               </span>
               <span className="used">blue: the points it starts from</span>
               <span>solid lines: your drawing</span>
+              <span className="drawn">green: drawn over the step</span>
             </p>
           )}
         </footer>

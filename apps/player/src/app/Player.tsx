@@ -1,4 +1,5 @@
 import { registerPageColoring } from '../agent/pageColoring';
+import { StepText } from './StepText';
 import { DEFAULT_JALI, sameJali } from './jali';
 import { JaliControls } from './JaliControls';
 import { ExploreNext } from './ExploreNext';
@@ -1202,9 +1203,9 @@ export function Player({
                   {draftNote}
                 </>
               ) : null}
-              <p className="instruction" aria-live="polite">
-                {text}
-              </p>
+              <div className="instruction" aria-live="polite">
+                <StepText text={text} />
+              </div>
               {sources.length ? (
                 <p className="step-source">
                   This step follows{' '}

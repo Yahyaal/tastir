@@ -10,7 +10,7 @@ const Name = z
   .max(80);
 /** Shared by MCP and the in-app assistant so every client learns the same tools. */
 export const CONSTRUCTION_GUIDE =
-  'Editor constructions: line {from,to} joins two points; circle {centre,through} draws through a point; perpendicular {through,perpendicularTo} is Square to (one right-angle line, no helper circles); parallel {through,parallelTo} copies a line direction; bisector {bisects:[arm,vertex,arm]} is Halve angle; same-opening {centre,radiusOf} copies an existing circle radius; opening-from-points {centre,radiusFrom:[first,second]} uses the distance between two points; touching {centre,tangentTo:[lines or circles],touch?} touches every target with one radius (near touches the facing side of each circle, far encloses it; omit only when unambiguous); polygon {vertices} joins at least three points in boundary order; point {meet:[first,second],pick?} marks a crossing using editor rules (angle about O, nearest/farthest point, inside/outside circle; omit pick only for a unique crossing). Existing intersection {first,second,angle} also marks a crossing, with angle null only for a unique crossing. All angles are degrees counter-clockwise about O: 0 toward A, 90 up, 270 down. All references are names, never coordinates. To quarter an existing circle with a diameter line, add perpendicular through its centre; to draw both diameters takes just line and perpendicular, two steps. Polygon draws a shape; use set_tile to choose a repeating tile.';
+  'Editor constructions: line {from,to} joins two points; circle {centre,through} draws through a point; perpendicular {through,perpendicularTo} is Perpendicular (one right-angle line, no helper circles); parallel {through,parallelTo} copies a line direction; bisector {bisects:[arm,vertex,arm]} is Halve angle; same-opening {centre,radiusOf} copies an existing circle radius; opening-from-points {centre,radiusFrom:[first,second]} uses the distance between two points; touching {centre,tangentTo:[lines or circles],touch?} touches every target with one radius (near touches the facing side of each circle, far encloses it; omit only when unambiguous); polygon {vertices} joins at least three points in boundary order; point {meet:[first,second],pick?} marks a crossing using editor rules (angle about O, nearest/farthest point, inside/outside circle; omit pick only for a unique crossing). Existing intersection {first,second,angle} also marks a crossing, with angle null only for a unique crossing. All angles are degrees counter-clockwise about O: 0 toward A, 90 up, 270 down. All references are names, never coordinates. To quarter an existing circle with a diameter line, add perpendicular through its centre; to draw both diameters takes just line and perpendicular, two steps. Polygon draws a shape; use set_tile to choose a repeating tile.';
 
 export const ConstructionShape = z.discriminatedUnion('kind', [
   z.strictObject({ kind: z.literal('line'), name: Name, from: Id, to: Id }),
@@ -35,7 +35,7 @@ export const ConstructionShape = z.discriminatedUnion('kind', [
       perpendicularTo: Id,
     })
     .describe(
-      'Square to: one line through a point at right angles to an existing line.',
+      'Perpendicular: one line through a point at 90° to an existing line.',
     ),
   z
     .strictObject({
@@ -64,7 +64,7 @@ export const ConstructionShape = z.discriminatedUnion('kind', [
       radiusOf: Id,
     })
     .describe(
-      'Same opening: a circle at a new centre with the radius of a named circle.',
+      'Same-size circle: a circle at a new centre with the radius of a named circle.',
     ),
   z
     .strictObject({
@@ -74,7 +74,7 @@ export const ConstructionShape = z.discriminatedUnion('kind', [
       radiusFrom: z.tuple([Id, Id]),
     })
     .describe(
-      'Opening from two points: a circle with radius equal to their distance.',
+      'Circle sized by two points: a circle with radius equal to their distance.',
     ),
   z
     .strictObject({
@@ -85,7 +85,7 @@ export const ConstructionShape = z.discriminatedUnion('kind', [
       touch: z.enum(['near', 'far']).optional(),
     })
     .describe(
-      'Touching: one circle touching every named line/circle; near is the facing side, far encloses the target circle. Omit touch only if unambiguous.',
+      'Touching circle: one circle touching every named line/circle; near is the facing side, far encloses the target circle. Omit touch only if unambiguous.',
     ),
   z
     .strictObject({

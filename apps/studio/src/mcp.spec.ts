@@ -259,7 +259,7 @@ describe.each(BACKENDS)('the studio over MCP, with %s', (kind: BackendKind) => {
   it('offers every editor construction and quarters a circle in two steps', async () => {
     const tools = await client.listTools();
     const tool = tools.tools.find((t) => t.name === 'construct')!;
-    expect(tool.description).toMatch(/Square to.*one right-angle line/);
+    expect(tool.description).toMatch(/Perpendicular.*one right-angle line/);
     for (const kind of [
       'perpendicular',
       'parallel',

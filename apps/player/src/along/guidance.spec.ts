@@ -18,7 +18,7 @@ it('uses visible point names to explain the first compass action', () => {
   );
   expect(guidance).toEqual({
     tool: 'compass',
-    words: 'Choose Compass, click O, then E.',
+    words: 'Choose Circle, click O, then E.',
   });
 });
 it('does not suggest more drawing when the step is complete', () => {

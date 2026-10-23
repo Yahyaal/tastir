@@ -32,7 +32,7 @@ function clickAt(x: number, y: number) {
 const tool = (name: string) =>
   fireEvent.click(
     within(screen.getByRole('toolbar', { name: 'Tools' })).getByRole('button', {
-      name: new RegExp(name),
+      name: new RegExp(`${name}$`),
     }),
   );
 const symmetry = (value: string) =>
@@ -59,12 +59,12 @@ describe('a pattern from nothing', () => {
   it('rebuilds the eight-fold star and cross by clicks, with symmetry, and its file passes the golden checks', () => {
     const id = startNew();
     // The circle about O through A.
-    tool('Compass');
+    tool('Circle');
     clickAt(0, 0);
     clickAt(1, 0);
     // The horizontal, turned four times: the horizontal and the vertical.
     symmetry('4');
-    tool('Ruler');
+    tool('Line');
     clickAt(0, 0);
     clickAt(1, 0);
     // The square through the four points on the circle, turned eight
@@ -82,7 +82,7 @@ describe('a pattern from nothing', () => {
     // A line touching the circle at A, square to the horizontal, turned
     // four times: the sides of the tile.
     symmetry('4');
-    tool('Square to');
+    tool('Perpendicular');
     clickAt(-0.5, 0);
     clickAt(1, 0);
     // The tile: its corners, and the first again.

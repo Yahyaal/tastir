@@ -31,7 +31,7 @@ const click = (name: string | RegExp) =>
 const tool = (name: string) =>
   fireEvent.click(
     within(screen.getByRole('toolbar', { name: 'Tools' })).getByRole('button', {
-      name: new RegExp(name),
+      name: new RegExp(`${name}$`),
     }),
   );
 
@@ -57,16 +57,16 @@ describe('from a copy to a played pattern', () => {
     );
     for (const [x, y] of [...ring, ring[0] as [number, number]]) clickAt(x, y);
     // The four sides of the square tile, touching the circle.
-    tool('Square to');
+    tool('Perpendicular');
     clickAt(-0.5, 0);
     clickAt(1, 0);
-    tool('Square to');
+    tool('Perpendicular');
     clickAt(-0.5, 0);
     clickAt(-1, 0);
-    tool('Square to');
+    tool('Perpendicular');
     clickAt(0, -0.5);
     clickAt(0, 1);
-    tool('Square to');
+    tool('Perpendicular');
     clickAt(0, -0.5);
     clickAt(0, -1);
     // The tile: its four corners, and the first again to close it.

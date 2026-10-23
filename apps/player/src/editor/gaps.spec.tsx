@@ -31,7 +31,7 @@ function clickAt(x: number, y: number) {
 const tool = (name: string) =>
   fireEvent.click(
     within(screen.getByRole('toolbar', { name: 'Tools' })).getByRole('button', {
-      name: new RegExp(name),
+      name: new RegExp(`${name}$`),
     }),
   );
 
@@ -45,10 +45,10 @@ describe('the editor’s worst gaps', () => {
     open(p?.id ?? '');
     // A circle about E through O, then a circle about N touching it:
     // one just touching it, one going round it.
-    tool('Compass');
+    tool('Circle');
     clickAt(1, 0);
     clickAt(0, 0);
-    tool('Touching');
+    tool('Touching circle');
     clickAt(0, 1);
     clickAt(
       1 + Math.cos((250 * Math.PI) / 180),
@@ -76,7 +76,7 @@ describe('the editor’s worst gaps', () => {
     );
     fireEvent.click(screen.getByLabelText('Add after step 1'));
     // N is made in step 2, so after step 1 there is no point there.
-    tool('Compass');
+    tool('Circle');
     clickAt(0, 1);
     expect(screen.getByText(/There is no point there/)).toBeTruthy();
     clickAt(1, 0);

@@ -5,7 +5,13 @@ import {
   type Scene,
   type Vec,
 } from '@tastir/engine';
-import { useMemo, useRef, useState, type CSSProperties } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react';
 import { toolCursor } from './cursors';
 import { InkRaster } from './InkRaster';
 import { viewBox, width, type Rect } from '../app/camera';
@@ -84,6 +90,7 @@ export function EditorDrawing({
   rings,
   dashed,
   labelOf,
+  spoken,
   current: currentNames,
   pen,
   penDots,
@@ -134,6 +141,10 @@ export function EditorDrawing({
   /** The name shown for a point, when it differs from the board's own;
    * an empty name hides it. */
   labelOf?: (place: PointPlace) => string | undefined;
+  /** Drawing along: the points the step's text names, where they are on
+   * the board; always shown, large and in strong contrast, on a ringed
+   * dot. */
+  spoken?: readonly { readonly at: Vec; readonly name: string }[];
   /** Elements drawn as the step at hand (orange), when drawing along. */
   current?: ReadonlySet<string>;
   /** Inking with a pen: where it is down, and the dots one straight
@@ -222,12 +233,42 @@ export function EditorDrawing({
       );
   }
 
-  // Named points: one dot and at most one name per place.
+  // The board's width over its height, as laid out. The drawing keeps its
+  // aspect (meet), so a board wider than the view shows more of the
+  // drawing at the sides, and taller shows more above and below.
+  const [aspect, setAspect] = useState<number>();
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || typeof ResizeObserver === 'undefined') return;
+    const measure = () => {
+      const r = svg.getBoundingClientRect();
+      if (r.width && r.height) setAspect(r.width / r.height);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(svg);
+    return () => observer.disconnect();
+  }, [svgRef]);
+  // Named points: one dot and at most one name per place, for every place
+  // the board shows, the margins beside the view included.
+  const shown = (() => {
+    const w = width(view);
+    const h = view.maxY - view.minY;
+    if (!aspect || !w || !h) return view;
+    const dx = Math.max(0, (h * aspect - w) / 2);
+    const dy = Math.max(0, (w / aspect - h) / 2);
+    return {
+      minX: view.minX - dx,
+      maxX: view.maxX + dx,
+      minY: view.minY - dy,
+      maxY: view.maxY + dy,
+    };
+  })();
   const inView = (p: Vec) =>
-    p.x >= view.minX &&
-    p.x <= view.maxX &&
-    p.y >= view.minY &&
-    p.y <= view.maxY;
+    p.x >= shown.minX &&
+    p.x <= shown.maxX &&
+    p.y >= shown.minY &&
+    p.y <= shown.maxY;
   const places = useMemo(() => pointPlaces(scene), [scene]);
   const visible = places.filter((p) => inView(p.at));
   const current = new Set(
@@ -249,26 +290,55 @@ export function EditorDrawing({
           .slice(0, visible.length > 150 ? 3 : NEAR_NAMES)
           .map(({ p }) => p.name),
   );
+  // A place the step names is drawn with the spoken points below.
+  const isNamed = (p: (typeof places)[number]) =>
+    Boolean(
+      spoken?.some((s) => Math.hypot(s.at.x - p.at.x, s.at.y - p.at.y) < 1e-6),
+    );
   const showName = (p: (typeof places)[number]) =>
-    visible.length <= ALL_NAMES ||
-    taken.has(p.name) ||
-    p.names.some((n) => current.has(n)) ||
-    nearPointer.has(p.name);
+    !isNamed(p) &&
+    (visible.length <= ALL_NAMES ||
+      taken.has(p.name) ||
+      p.names.some((n) => current.has(n)) ||
+      nearPointer.has(p.name));
   const crowded = visible.length > 150;
-  const dots = visible.map((p) => (
+  const dots = visible
+    .filter((p) => !isNamed(p))
+    .map((p) => (
+      <circle
+        key={`d${p.name}`}
+        className={
+          p.names.some((n) => current.has(n))
+            ? 'dot current'
+            : crowded
+              ? 'dot crowded'
+              : 'dot'
+        }
+        cx={p.at.x}
+        cy={p.at.y}
+        r={unit * (crowded ? 1.6 : 3)}
+      />
+    ));
+  const spokenHere = (spoken ?? []).filter((s) => inView(s.at));
+  const spokenDots = spokenHere.map((s) => (
     <circle
-      key={`d${p.name}`}
-      className={
-        p.names.some((n) => current.has(n))
-          ? 'dot current'
-          : crowded
-            ? 'dot crowded'
-            : 'dot'
-      }
-      cx={p.at.x}
-      cy={p.at.y}
-      r={unit * (crowded ? 1.6 : 3)}
+      key={`s${s.name}`}
+      className="dot named"
+      cx={s.at.x}
+      cy={s.at.y}
+      r={unit * 4.5}
     />
+  ));
+  const spokenLabels = spokenHere.map((s) => (
+    <text
+      key={`s${s.name}`}
+      className="point-name named"
+      x={s.at.x + unit * 7}
+      y={-(s.at.y + unit * 7)}
+      fontSize={unit * 17}
+    >
+      {s.name}
+    </text>
   ));
   const labels = visible
     .filter(showName)
@@ -501,6 +571,7 @@ export function EditorDrawing({
             <Dashed key={`a${i}`} g={g} far={far} />
           ))}
           {dots}
+          {spokenDots}
           {allDots}
           {pen
             ? pen.reach.map((d, i) => (
@@ -577,6 +648,7 @@ export function EditorDrawing({
         </g>
         <g className="labels">
           {labels}
+          {spokenLabels}
           {numbered
             ? rings?.map((p, i) => (
                 <text

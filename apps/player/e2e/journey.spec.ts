@@ -346,12 +346,12 @@ test('a beginner draws the first circle, gets a completed step, and resumes', as
 }, info) => {
   await page.goto(route(`${star}/draw`));
   await expect(
-    page.getByText(/Choose Compass, (click|tap) O, then E\./),
+    page.getByText(/Choose Circle, (click|tap) O, then E\./),
   ).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Compass', exact: true }),
+    page.getByRole('button', { name: 'Circle', exact: true }),
   ).toHaveClass(/hinted/);
-  await page.getByRole('button', { name: 'Compass', exact: true }).click();
+  await page.getByRole('button', { name: 'Circle', exact: true }).click();
   await page.evaluate(() => document.fonts.ready);
   const svg = page.locator('.along-plate .editor-drawing');
   await svg.scrollIntoViewIfNeeded();

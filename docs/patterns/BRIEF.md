@@ -4,7 +4,7 @@ This is the working method for adding a pattern tutorial to `tutorials/`. It was
 
 ## Read first
 
-Read `CLAUDE.md`, `docs/tutorial-format.md`, `docs/geometry-notes.md`, `docs/patterns/LESSONS.md` and the worked example `tutorials/eight-fold-star-and-cross.json`. The lessons file lists mistakes that already cost time; do not repeat them.
+Read `CLAUDE.md`, `docs/tutorial-format.md`, `docs/tutorial-writing.md` (how to write the step texts), `docs/geometry-notes.md`, `docs/patterns/LESSONS.md` and the worked example `tutorials/eight-fold-star-and-cross.json`. The lessons file lists mistakes that already cost time; do not repeat them.
 
 ## Tools
 
