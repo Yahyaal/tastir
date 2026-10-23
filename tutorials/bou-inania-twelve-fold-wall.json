@@ -6,6 +6,13 @@
  "star": 12,
  "style": "Marinid zellige (Fès)",
  "level": "advanced",
+ "construction": {
+  "basis": "mixed",
+  "fidelity": "adapted",
+  "note": "Most line distances were fitted to a photograph of the Bou Inania wall, then expressed as exact ruler and compass operations. Only the 150° star-line idea in step 4 is credited to Samira Mian.",
+  "changes": "This is our fitted reconstruction. Exact crossings do not establish the original craftsman’s method. The outer-tip compass move was chosen to match the fit; the rim is a nearby exact substitute. The corner ring was corrected to four axis and four bent pieces.",
+  "reviewed": "2026-10-21"
+ },
  "credits": [
   {
    "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",

@@ -6,6 +6,13 @@
   "star": 8,
   "style": "Nasrid",
   "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "This uses Manuel Martínez Vela’s published grid method and the Infantas plaster tracing on a square grid and diagonals in ALZADA 115, page 45. We read the outlines and supplied the compass construction and step grouping.",
+    "changes": "The article explains the shared grid and shows the completed tracing. It does not give this pattern’s numbered app sequence. Its separate nine-step Partal example is a different pattern. Source credits identify the design and method, not a verbatim sequence.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "La Alhambra con regla y compás: el trazado de los diseños geométricos nazaríes (ALZADA 115, 2017)",

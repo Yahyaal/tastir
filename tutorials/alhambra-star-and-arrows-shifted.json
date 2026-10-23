@@ -7,6 +7,13 @@
   "fold": 8,
   "style": "Nasrid",
   "level": "beginner",
+  "construction": {
+    "basis": "mixed",
+    "fidelity": "adapted",
+    "note": "The rosette follows Mamoot’s Alhambra lesson. The build log records first-try step matches and an exact overlay of the final motif.",
+    "changes": "Repeating it in half-shifted rows is our addition. The source shows one ceiling rosette, and neither a historical wall with this repeat nor the surrounding ceiling band network was established.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Islamic Geometry: A Rosette Tile from The Alhambra",

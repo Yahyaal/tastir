@@ -1,5 +1,7 @@
 # Pattern status
 
+The [construction-source audit (21 October 2026)](CONSTRUCTION-AUDIT.md) records, for all 39 tutorials, which sequences follow published instructions, which were reconstructed from finished designs, and the evidence for instruction fidelity. These are separate from the finished-design statuses below. Each pattern also shows its findings in the player under **How this construction was made**.
+
 Every tutorial in the library (`tutorials/`), updated 12 October 2026. **Verified** means the tiled pattern was compared with a photo of the real pattern and the line structure matches. **Approved** means it matches a published drawing or the owner's chosen source, and the owner decided to keep it on the review page; the card there gives the reason. The review page (`#/review`) has a card for most patterns with pictures and the owner's decisions, and each early pattern's log is in `docs/patterns/<id>.md`.
 
 ## Twelve-fold

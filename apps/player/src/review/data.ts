@@ -1978,6 +1978,14 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'All 39 patterns: where their construction steps came from',
+      text: 'Eleven use published instructions, nine combine instructions with our additions, fifteen reconstruct finished designs, three are app-developed studies and one is a standard construction. Among the twenty with instructional sources, five have documented close correspondence, eleven have identifiable adaptations and four lack a complete fidelity check. Every pattern now has a source assessment under “How this construction was made”. The report gives source mappings, departures and evidence for each; historical verification remains a separate question.',
+      link: {
+        label: 'Read the construction-source audit',
+        href: '#/notes/construction-sources',
+      },
+    },
+    {
       title: 'Design review: the app brought back to the approved design',
       text: 'Arched card pictures and a cedar arch on the home drawing, card buttons that fit, the old typewriter font gone, draw along in the lesson’s look, a library search, a plain page for a broken address, pill controls in the editor and upcoming page, and the editor’s title first on a phone. One question: an arch for the lesson on a phone.',
       link: {

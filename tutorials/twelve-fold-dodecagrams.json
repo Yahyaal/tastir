@@ -6,6 +6,13 @@
   "star": 12,
   "style": "Seljuk",
   "level": "beginner",
+  "construction": {
+    "basis": "instructions",
+    "fidelity": "close",
+    "note": "The two six-pointed stars turned 30° apart follow the Tuts+ construction. The work log records a measured, exact overlay of the repeated stars on its final drawing.",
+    "changes": "The app expands the shared six-fold foundation and represents the repeat with a tangent hexagon. This is a documented drawing match; no matching monument photo was established.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Geometric Design: Working With 6 and 12 (Dodecagram Pattern)",

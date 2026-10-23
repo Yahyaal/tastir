@@ -8,6 +8,13 @@
   "star": 8,
   "style": "Nasrid",
   "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s PG299 drawing. We devised the construction using the star from the drawing, with square size and pointed band ends taken from the photo. The reference does not supply this sequence of steps.",
+    "changes": "The photograph takes precedence over PG299: its squares are smaller and its band ends are pointed. The tutorial intentionally combines those proportions with Wichmann’s star.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Tiling Search, data8/PG299: Alhambra, Patio de los Arrayanes",

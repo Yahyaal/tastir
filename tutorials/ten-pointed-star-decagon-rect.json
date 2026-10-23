@@ -7,6 +7,13 @@
   "fold": 10,
   "style": "Timurid / Persian",
   "level": "advanced",
+  "construction": {
+    "basis": "original",
+    "fidelity": "not-applicable",
+    "note": "This is Tastir’s rectangular ten-fold study, built from the standard decagon construction. Its only construction credit names Tastir.",
+    "changes": "The rectangular repeat is not a reconstruction of the Darb-e Imam spandrel. No external step-by-step source or matching historical panel is established for this complete design.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Ten-pointed star and decagon rectangular repeat",

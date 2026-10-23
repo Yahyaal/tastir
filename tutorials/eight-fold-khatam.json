@@ -6,6 +6,13 @@
   "star": 8,
   "style": "Safavid",
   "level": "intermediate",
+  "construction": {
+    "basis": "instructions",
+    "fidelity": "unassessed",
+    "note": "The generator and credits identify Sandy Kurt’s Al-Hakim Mosque PDF. The current sequence uses its squares and small-circle construction, regrouped into nine app steps.",
+    "changes": "The saved PDF was read and selected drawings compared during this audit, but a complete comparison of every current step, ink segment and repeat is not established. Earlier exact monument-match claims were rejected; that does not by itself show whether the PDF was followed accurately.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "4fold Pattern from Al-Hakim Mosque, Isfahan",

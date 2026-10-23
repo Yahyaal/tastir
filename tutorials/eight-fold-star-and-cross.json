@@ -5,6 +5,13 @@
   "fold": 8,
   "style": "Moroccan",
   "level": "beginner",
+  "construction": {
+    "basis": "standard",
+    "fidelity": "not-applicable",
+    "note": "This is the standard eight-pointed star made from two squares in a circle, repeated on a tangent square. No specific published teaching sequence is claimed.",
+    "changes": "The Kashan tile photograph was used to check the finished pattern. It is a historical reference, not a set of construction instructions.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [],
   "given": {
     "O": "The centre of the drawing.",

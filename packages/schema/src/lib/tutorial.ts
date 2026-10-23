@@ -405,6 +405,24 @@ export const TutorialShape = z.strictObject({
   style: z.string().min(1),
   level: z.enum(['beginner', 'intermediate', 'advanced']),
   credits: z.array(Credit),
+  /** How the teaching sequence was obtained, independently of whether the
+   * finished wall matches a monument. Missing metadata means unaudited. */
+  construction: z
+    .strictObject({
+      basis: z.enum([
+        'instructions',
+        'mixed',
+        'reconstruction',
+        'original',
+        'standard',
+        'undocumented',
+      ]),
+      fidelity: z.enum(['close', 'adapted', 'unassessed', 'not-applicable']),
+      note: z.string().min(1),
+      changes: z.string().min(1),
+      reviewed: z.iso.date(),
+    })
+    .optional(),
   /** Historical verification is separate from approval to teach the drawing. */
   verification: z
     .strictObject({

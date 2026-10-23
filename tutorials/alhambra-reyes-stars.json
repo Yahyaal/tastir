@@ -7,6 +7,13 @@
   "fold": 4,
   "style": "Nasrid",
   "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s M060 drawing. We devised the construction using stars at grid points and compass-built notches in the crosses. The reference does not supply this sequence of steps.",
+    "changes": "The app’s compass operations, step order and named intersections are our reconstruction. Recorded drawing and photo comparisons assess the finished line structure, not whether these were the historical construction steps.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Tiling Search, data9/M060: Alhambra, Sala de los Reyes",

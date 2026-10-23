@@ -7,6 +7,13 @@
   "star": 8,
   "style": "Moroccan",
   "level": "advanced",
+  "construction": {
+    "basis": "mixed",
+    "fidelity": "adapted",
+    "note": "The wheel follows Sandy Kurt’s 8fold Zellige PDF. Its circles, octagons and central rosette are sourced; the final ink was read from her finished drawing.",
+    "changes": "We added an overlapping square repeat and extra lines filling the remaining cross. The PDF teaches one wheel. The app splits, combines and reorders its operations, so its step numbers are not the PDF’s. The repeat is not presented as a historical reconstruction.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "8fold Zellige (free PDF tutorial)",

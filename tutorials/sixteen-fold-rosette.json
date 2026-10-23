@@ -5,6 +5,13 @@
   "fold": 16,
   "style": "Moroccan",
   "level": "advanced",
+  "construction": {
+    "basis": "original",
+    "fidelity": "not-applicable",
+    "note": "This was developed by extending Tastir’s simpler eight-fold rosette to sixteen divisions. The creation commit describes that generalisation; no published sequence is credited.",
+    "changes": "It is a construction study, not a reconstruction of the Bou Inania wall. The photographed Bou Inania rosette used in the early comparison was later identified as twelve-fold, and its surrounding network differs substantially.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [],
   "given": {
     "O": "The centre of the rosette.",

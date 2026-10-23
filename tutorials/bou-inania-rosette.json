@@ -6,6 +6,13 @@
   "star": 12,
   "style": "Marinid zellige (Fès)",
   "level": "advanced",
+  "construction": {
+    "basis": "mixed",
+    "fidelity": "adapted",
+    "note": "Only the central rosette method is taken from Samira Mian. Most of the surrounding construction was worked out from @aslam.geometricpatterns’ finished drawing.",
+    "changes": "The construction is not a published step-by-step method for the whole Bou Inania panel. The shield band is omitted, joining shields to neighbouring dark pieces. The overlapping repeat and corner-star details were reconstructed, then simplified.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",

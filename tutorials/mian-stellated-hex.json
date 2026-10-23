@@ -7,6 +7,13 @@
   "fold": 12,
   "style": "Mamluk",
   "level": "advanced",
+  "construction": {
+    "basis": "mixed",
+    "fidelity": "unassessed",
+    "note": "This combines Samira Mian’s stellated rosette with a hexagonal tile. Her activity 9 is an independent challenge with hints and pictures, not a complete step-by-step lesson.",
+    "changes": "The app supplies its own combined 10-step sequence. The saved source page explicitly asks for independent construction. Neither a full comparison with the challenge drawings nor a matching historical wall is documented.",
+    "reviewed": "2026-10-21"
+  },
   "credits": [
     {
       "source": "Twelvefold Islamic Geometric Rosette, activity 9: stellated rosettes in a hexagonal arrangement (challenge)",
