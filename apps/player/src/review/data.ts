@@ -1974,9 +1974,17 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '22 October 2026',
+  updated: '23 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Codex’s construction-source audit reviewed and merged',
+      text: 'The counts add up, spot checks agree with the pattern status and credits, and the code is small and tested; it is merged into main (23 October). Every lesson now has “How this construction was made”. Three small things were left as they are; the review says which.',
+      link: {
+        label: 'Read the review',
+        href: '#/notes/codex-provenance-review',
+      },
+    },
     {
       title: 'All 39 patterns: where their construction steps came from',
       text: 'Eleven use published instructions, nine combine instructions with our additions, fifteen reconstruct finished designs, three are app-developed studies and one is a standard construction. Among the twenty with instructional sources, five have documented close correspondence, eleven have identifiable adaptations and four lack a complete fidelity check. Every pattern now has a source assessment under “How this construction was made”. The report gives source mappings, departures and evidence for each; historical verification remains a separate question.',
@@ -2409,8 +2417,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Plain steps: Squares and stars to check',
-    text: 'Squares and stars is rewritten as the pilot for plain steps: one action to a numbered line, every point named by a letter and shown large on your board, long steps split into parts, and the lines in two columns on a wide screen. Lines you draw over the step turn green, the star bands are gone and scroll bars are slimmer or gone. When you are happy with it, the other tutorials follow the same rules.',
+    title: 'Plain steps: Squares and stars to check, now with the ink',
+    text: 'Overnight (23 October) the ink of Squares and stars became a checklist of four shapes: the star, the corner of the large square at K, the same corner at L, N and J, and the four short seams. Every corner the pen turns at has a name (S1–S8 and P1–P8 on the star, X1–X8 where the bands meet the tile, Q1–Q4), the board zooms to the shape at hand with its lines in orange, and each shape is ticked once inked. When you are happy with the pilot, the other tutorials follow the same rules.',
     link: {
       label: 'Draw Squares and stars along',
       href: '#/alhambra-arrayanes-squares/draw',

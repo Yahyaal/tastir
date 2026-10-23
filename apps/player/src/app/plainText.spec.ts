@@ -27,6 +27,7 @@ describe.each(
       ...(s.parts ?? []).flatMap((p) => [p.text, p.textWithoutHelpers]),
     ]),
     tutorial.ink.text,
+    ...(tutorial.ink.parts ?? []).map((p) => p.text),
     tutorial.pattern.text,
   ].filter((t): t is string => Boolean(t));
   const sentences = texts.flatMap(sentencesOf);

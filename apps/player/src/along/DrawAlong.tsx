@@ -2,9 +2,11 @@ import { Khatam, PHASE_MARKS } from '../app/khatam';
 import { ThemeSwitch } from '../app/theme';
 import { ViewSwitch } from '../app/ViewSwitch';
 import {
+  classicSelection,
   distance,
   figureOn,
   hiddenHelpers,
+  inkStrokes,
   neededAt,
   type Segment,
   type StepCheck,
@@ -428,6 +430,35 @@ export function DrawAlong({
     index >= shown.length - 1 && Boolean(here?.done),
   );
   const ready = ink.ready && !('reason' in ink.ready) ? ink.ready : undefined;
+  // The ink a shape at a time, when the tutorial splits it: the bits of
+  // the learner's board each part keeps, found as the whole ink's are.
+  const inkParts = useMemo(() => {
+    const parts = tutorial.ink.parts;
+    if (!parts || !ready || tutorial.pattern.panel) return undefined;
+    let from = 0;
+    return parts.map((part) => {
+      const paths = tutorial.ink.paths.slice(from, (from += part.paths));
+      const strokes = inkStrokes(model.scene, {
+        ...tutorial,
+        ink: { ...tutorial.ink, paths },
+      });
+      return {
+        text: part.text,
+        bits: classicSelection(ready.pieces, strokes, 1e-7, ready.cell),
+      };
+    });
+  }, [tutorial, model.scene, ready]);
+  const inkDone = (inkParts ?? []).map(
+    (p) => p.bits.size > 0 && [...p.bits].every((b) => chosen.has(b)),
+  );
+  // The part at hand: the first whose lines are not all inked.
+  const inkPart = inkParts ? Math.max(0, inkDone.indexOf(false)) : undefined;
+  const traced =
+    inkParts && inkPart !== undefined && !inkDone[inkPart]
+      ? new Set(
+          [...(inkParts[inkPart]?.bits ?? [])].filter((b) => !chosen.has(b)),
+        )
+      : undefined;
   // The learner's inked tile, as it repeats: its bits.
   const tileInk = useMemo((): Segment[] => {
     if (!ready) return [];
@@ -651,20 +682,26 @@ export function DrawAlong({
     }
     return [out, drawn];
   }, [inking, model.scene, beat, board]);
-  // The names the step to copy shows: those its text and highlight use.
+  // The names the step to copy shows: those its text and highlight use;
+  // at the ink, those of the ink part at hand.
+  const inkPartText =
+    inking && inkParts && inkPart !== undefined
+      ? inkParts[inkPart]?.text
+      : undefined;
   const stepNames = useMemo(() => {
+    if (inkPartText !== undefined) return namesIn(inkPartText, model.scene);
     const names = namesIn(
       `${info?.heading ?? ''} ${info?.text ?? ''}`,
       model.scene,
     );
     for (const h of info?.highlight ?? []) if (readable.has(h)) names.add(h);
     return names;
-  }, [info, model.scene, readable]);
+  }, [info, model.scene, readable, inkPartText]);
   // Where the step's named points are on the learner's board: at a point
   // of theirs, or where two of their lines cross, so "through B" always
   // finds a B to look at.
   const spokenPlaces = useMemo(() => {
-    if (inking || afterInk) return [];
+    if (afterInk || (inking && inkPartText === undefined)) return [];
     const out: { at: Vec; name: string }[] = [];
     // Far below what an eye can see (OA is 1), and above the drift of a
     // board drawn by hand from its own crossings.
@@ -681,7 +718,7 @@ export function DrawAlong({
       if (there) out.push({ at, name });
     }
     return out;
-  }, [inking, afterInk, stepNames, model.scene, board]);
+  }, [inking, afterInk, inkPartText, stepNames, model.scene, board]);
   /** A board point's name as the tutorial shows it, never an engine name. */
   const labelOf = (p: PointPlace) =>
     readAt.get(placeKey(p.at)) ??
@@ -749,11 +786,29 @@ export function DrawAlong({
   ]);
 
   // One view for both halves: the step's calm frame, as the player
-  // shows it; Fit shows the whole pattern.
-  const frame = useMemo(
-    () => (inking ? fullView(model) : growingFrame(model, beat, hidden)),
-    [inking, model, beat, hidden],
-  );
+  // shows it; at the ink, the points of the shape at hand, with room
+  // round them, so its names never pile up; Fit shows the whole pattern.
+  const frame = useMemo(() => {
+    if (!inking) return growingFrame(model, beat, hidden);
+    const at = [...stepNames].flatMap((n) => {
+      const g = model.scene.elements.get(n)?.geometry;
+      return inkPartText !== undefined && g?.kind === 'point' ? [g.at] : [];
+    });
+    if (at.length < 2) return fullView(model);
+    const xs = at.map((p) => p.x);
+    const ys = at.map((p) => p.y);
+    const size = Math.max(
+      Math.max(...xs) - Math.min(...xs),
+      Math.max(...ys) - Math.min(...ys),
+    );
+    const pad = size * 0.35 + 0.1;
+    return {
+      minX: Math.min(...xs) - pad,
+      maxX: Math.max(...xs) + pad,
+      minY: Math.min(...ys) - pad,
+      maxY: Math.max(...ys) + pad,
+    };
+  }, [inking, model, beat, hidden, stepNames, inkPartText]);
   const boardRef = useRef<SVGSVGElement>(null);
   const stepRef = useRef<SVGSVGElement>(null);
   const refs = useMemo(() => [boardRef, stepRef], []);
@@ -1046,6 +1101,7 @@ export function DrawAlong({
                   pieces: ready.pieces,
                   chosen,
                   fresh: ink.fresh,
+                  ...(traced ? { trace: traced } : {}),
                   ...(ink.hint
                     ? { glow: ink.hint.glow, dashed: ink.hint.dashed }
                     : {}),
@@ -1331,7 +1387,17 @@ export function DrawAlong({
                   head: headOf(beats[b - 1], i + 1, shown.length),
                   text: beats[b - 1]?.text ?? '',
                 })),
-                { on: inking, head: 'Ink', text: tutorial.ink.text ?? '' },
+                {
+                  on: inking,
+                  head: 'Ink',
+                  text: tutorial.ink.text ?? '',
+                  // From the tutorial, so the stacked texts keep their
+                  // height before the board is ready to ink.
+                  parts: tutorial.ink.parts?.map((p, i) => ({
+                    text: p.text,
+                    done: inkDone[i] ?? false,
+                  })),
+                },
                 {
                   on: repeating,
                   head: 'Repeat it yourself',
@@ -1362,6 +1428,11 @@ export function DrawAlong({
                         : layer.on && welcome
                           ? 'Your board and your step are as you left them.'
                           : layer.text
+                    }
+                    parts={
+                      'parts' in layer && !(layer.on && (restarting || welcome))
+                        ? layer.parts
+                        : undefined
                     }
                     announcement={
                       layer.on && restarting

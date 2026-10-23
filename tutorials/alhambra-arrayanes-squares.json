@@ -241,25 +241,22 @@
       "id": 8,
       "text": "Mark each point where the outline of a piece changes direction.",
       "create": {
-        "M1": { "point": { "meet": ["w3", "e1"] } },
-        "M2": { "point": { "meet": ["h", "e1"] } },
-        "M3": { "point": { "meet": ["w2", "e3"] } },
-        "M4": { "point": { "meet": ["w3", "e4"] } },
-        "M5": { "point": { "meet": ["v", "e3"] } },
-        "M6": { "point": { "meet": ["w2", "e2"] } },
-        "M7": { "point": { "meet": ["x2", "bs180"] } },
-        "M8": { "point": { "meet": ["x2", "bs90"] } },
-        "M9": { "point": { "meet": ["r67", "y2"] } },
-        "M10": { "point": { "meet": ["y1", "bs90"] } },
-        "M11": { "point": { "meet": ["w4", "e3"] } },
-        "M12": { "point": { "meet": ["y2", "bs270"] } },
-        "M13": { "point": { "meet": ["r67", "y1"] } },
-        "M14": { "point": { "meet": ["w1", "e1"] } },
-        "M15": { "point": { "meet": ["x1", "bs270"] } },
-        "M16": { "point": { "meet": ["x1", "bs0"] } },
-        "M17": { "point": { "meet": ["h", "e2"] } },
-        "M18": { "point": { "meet": ["w4", "e2"] } },
-        "M19": { "point": { "meet": ["w1", "e4"] } }
+        "P1": { "point": { "meet": ["x1", "bs0"] } },
+        "P2": { "point": { "meet": ["r67", "y1"] } },
+        "P3": { "point": { "meet": ["y1", "bs90"] } },
+        "P4": { "point": { "meet": ["x2", "bs90"] } },
+        "P5": { "point": { "meet": ["x2", "bs180"] } },
+        "P6": { "point": { "meet": ["r67", "y2"] } },
+        "P7": { "point": { "meet": ["y2", "bs270"] } },
+        "P8": { "point": { "meet": ["x1", "bs270"] } },
+        "X1": { "point": { "meet": ["w1", "e4"] } },
+        "X2": { "point": { "meet": ["w1", "e1"] } },
+        "X3": { "point": { "meet": ["w2", "e2"] } },
+        "X4": { "point": { "meet": ["w2", "e3"] } },
+        "X5": { "point": { "meet": ["w3", "e1"] } },
+        "X6": { "point": { "meet": ["w3", "e4"] } },
+        "X7": { "point": { "meet": ["w4", "e3"] } },
+        "X8": { "point": { "meet": ["w4", "e2"] } }
       },
       "animate": "fade"
     },
@@ -271,36 +268,55 @@
     }
   ],
   "ink": {
-    "text": "Ink the star at O. Ink the large squares at the corners of the tile. Ink the short lines on the horizontal and vertical lines, from each large square to the star.",
+    "text": "Ink the star at O. Ink the corners of the large squares at K, L, N and J. Ink the four short lines from the star to the squares.",
     "paths": [
-      { "through": ["M1", "M2"] },
-      { "through": ["M3", "M2"] },
-      { "through": ["M4", "M5"] },
-      { "through": ["M6", "Q1"] },
-      { "through": ["M2", "S4"] },
-      { "through": ["S4", "M7"] },
-      { "through": ["S4", "M8"] },
-      { "through": ["S5", "M7"] },
-      { "through": ["S5", "M9"] },
-      { "through": ["M8", "S3"] },
-      { "through": ["S3", "M10"] },
-      { "through": ["M9", "S6"] },
-      { "through": ["M10", "S2"] },
-      { "through": ["M5", "S6"] },
-      { "through": ["M5", "M11"] },
-      { "through": ["S6", "M12"] },
+      {
+        "through": [
+          "S1",
+          "P2",
+          "S2",
+          "P3",
+          "S3",
+          "P4",
+          "S4",
+          "P5",
+          "S5",
+          "P6",
+          "S6",
+          "P7",
+          "S7",
+          "P8",
+          "S8",
+          "P1",
+          "S1"
+        ]
+      },
+      { "through": ["X3", "Q1", "X2"] },
+      { "through": ["X4", "Q2", "X5"] },
+      { "through": ["X6", "Q3", "X7"] },
+      { "through": ["X8", "Q4", "X1"] },
       { "through": ["S2", "Q1"] },
-      { "through": ["S2", "M13"] },
-      { "through": ["Q1", "M14"] },
-      { "through": ["M12", "S7"] },
-      { "through": ["M13", "S1"] },
-      { "through": ["S7", "M15"] },
-      { "through": ["M15", "S8"] },
-      { "through": ["M16", "S1"] },
-      { "through": ["M16", "S8"] },
-      { "through": ["S8", "M17"] },
-      { "through": ["M17", "M18"] },
-      { "through": ["M17", "M19"] }
+      { "through": ["S4", "Q2"] },
+      { "through": ["S6", "Q3"] },
+      { "through": ["S8", "Q4"] }
+    ],
+    "parts": [
+      {
+        "text": "Ink the star: from S1 through P2, S2, P3, S3 and on round the star, back to S1. S1 to S8 are its points, and P1 to P8 its inner corners.",
+        "paths": 1
+      },
+      {
+        "text": "Ink the corner of the large square at K: from X3 through Q1 to X2.",
+        "paths": 1
+      },
+      {
+        "text": "Ink from X4 through Q2 to X5, at L. Ink from X6 through Q3 to X7, at N. Ink from X8 through Q4 to X1, at J.",
+        "paths": 3
+      },
+      {
+        "text": "Ink the short lines from S2 to Q1 and from S4 to Q2. Ink the short lines from S6 to Q3 and from S8 to Q4.",
+        "paths": 4
+      }
     ]
   },
   "pattern": {

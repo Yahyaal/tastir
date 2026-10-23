@@ -433,10 +433,30 @@ export const TutorialShape = z.strictObject({
   photos: z.array(Photo).optional(),
   given: z.strictObject({ O: z.string().min(1), A: z.string().min(1) }),
   steps: z.array(Step).min(1),
-  ink: z.strictObject({
-    text: z.string().optional(),
-    paths: z.array(InkPath).min(1),
-  }),
+  ink: z
+    .strictObject({
+      text: z.string().optional(),
+      paths: z.array(InkPath).min(1),
+      /**
+       * The ink a shape at a time, for drawing along: each part has its
+       * own text and covers the next `paths` of `paths`, in order.
+       */
+      parts: z
+        .array(
+          z.strictObject({
+            text: z.string().min(1),
+            paths: z.int().positive(),
+          }),
+        )
+        .min(2)
+        .optional(),
+    })
+    .refine(
+      (ink) =>
+        !ink.parts ||
+        ink.parts.reduce((n, p) => n + p.paths, 0) === ink.paths.length,
+      { message: 'the ink parts must cover every ink path exactly once' },
+    ),
   pattern: z.strictObject({
     cell: Ref,
     /**

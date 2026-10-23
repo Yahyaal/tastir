@@ -18,4 +18,17 @@ describe('the points a step names', () => {
       ...namesIn('Join S2, S4 and S6 with straight lines.', scene),
     ]).toEqual(['S2', 'S4', 'S6']);
   });
+
+  it('names a whole family given by its ends', () => {
+    expect([...namesIn('S1 to S8 are its points.', scene)]).toEqual([
+      'S1',
+      'S2',
+      'S3',
+      'S4',
+      'S5',
+      'S6',
+      'S7',
+      'S8',
+    ]);
+  });
 });

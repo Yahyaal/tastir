@@ -13,3 +13,22 @@ it('shows the heading and each sentence of the step on its own line', () => {
     'Draw a circle.',
   ]);
 });
+
+it('lists the ink a shape at a time, ticking what is done', () => {
+  render(
+    <StepInstruction
+      head="Ink"
+      text="Ink it all."
+      parts={[
+        { text: 'Ink the star.', done: true },
+        { text: 'Ink the corner at K. It is a square.', done: false },
+        { text: 'Ink the seams.', done: false },
+      ]}
+    />,
+  );
+  const items = screen.getAllByRole('listitem');
+  expect(items.map((li) => li.className)).toEqual(['done', 'at', '']);
+  expect(items[0]?.textContent).toMatch(/^✓Ink the star\./);
+  expect(items[1]?.getAttribute('aria-current')).toBe('step');
+  expect(screen.getByText('It is a square.').className).toBe('note');
+});

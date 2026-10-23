@@ -24,6 +24,10 @@ The steps are read by beginners, many of them reading English as a second langua
 7. **Short sentences.** Twenty words at most; a step's text that runs long is split into `parts`, each one move, with the step's own `text` as a short heading ("Draw the square tile.").
 8. **Write both texts.** When helper lines are hidden, a part that leaves lines out gives `textWithoutHelpers`, written by the same rules and naming only what is drawn.
 
+## The ink
+
+The ink is written the same way, a shape at a time, in `ink.parts` (see the format): one part for each shape or run of lines, whose text names the points the pen goes through ("Ink the star: from S1 through P2, S2, P3, S3 and on round the star, back to S1."). A family is named by its ends ("S1 to S8 are its points"), and the board shows every point of it. Draw along shows the parts as a checklist, zooms to the points of the part at hand, picks its lines out in orange and ticks it once they are inked. Name the turning points of the ink with families too (P1 to P8 for the star's inner corners, X1 to X8 where the bands meet the tile's sides); the engine's own names (M1, B45) never appear in a text.
+
 ## How it is checked
 
 A test (`apps/player/src/app/plainText.spec.ts`) checks every tutorial in its list of rewritten tutorials: no word from the "Not" column, no engine names in the text, no sentence over twenty words, and every capital letter used as a point name is a point the tutorial makes. Add a tutorial to that list when it is rewritten.

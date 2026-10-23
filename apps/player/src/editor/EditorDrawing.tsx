@@ -110,6 +110,9 @@ export function EditorDrawing({
     dashed?: ReadonlySet<string>;
     /** Copies just inked, which flash briefly. */
     fresh?: ReadonlySet<string>;
+    /** Drawing along a shape at a time: the bits of the shape at hand
+     * still to ink, picked out while the others fade. */
+    trace?: ReadonlySet<string>;
     /** Inked bits drawn again where the learner drew them: on the tile's
      * edge, the wall keeps one of two copies, and the other is shown too. */
     echo?: readonly { readonly a: Vec; readonly b: Vec }[];
@@ -403,6 +406,7 @@ export function EditorDrawing({
   const inkGlow = ink?.glow;
   const inkDashed = ink?.dashed;
   const inkFresh = ink?.fresh;
+  const inkTrace = ink?.trace;
   const inkLayers = useMemo(() => {
     if (!inkPieces) return undefined;
     const classes = (id: string) =>
@@ -410,7 +414,8 @@ export function EditorDrawing({
       (inkChosen?.has(id) ? ' inked' : '') +
       (inkGlow?.has(id) ? ' glow' : '') +
       (inkDashed?.has(id) ? ' answer' : '') +
-      (inkFresh?.has(id) ? ' fresh' : '');
+      (inkFresh?.has(id) ? ' fresh' : '') +
+      (inkTrace?.has(id) ? ' trace' : '');
     if (inkPieces.length <= 1000)
       return inkPieces.map((piece) => ({
         cls: classes(piece.id),
@@ -439,7 +444,7 @@ export function EditorDrawing({
               .join('')
           : undefined,
     }));
-  }, [inkPieces, inkChosen, inkGlow, inkDashed, inkFresh]);
+  }, [inkPieces, inkChosen, inkGlow, inkDashed, inkFresh, inkTrace]);
   const inkDrawing = inkLayers?.map(({ cls, pieces, raster, path }) =>
     raster ? (
       <InkRaster key={cls} view={view} pieces={pieces} />
@@ -503,7 +508,11 @@ export function EditorDrawing({
               )
             : svgRef
         }
-        className="drawing editor-drawing"
+        className={
+          inkTrace?.size
+            ? 'drawing editor-drawing tracing'
+            : 'drawing editor-drawing'
+        }
         style={
           toolId
             ? ({ '--tool-cursor': toolCursor(toolId) } as CSSProperties)

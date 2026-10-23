@@ -622,6 +622,19 @@
   color: var(--theme-danger);
 }
 
+/* Inking a shape at a time: the shape at hand stands out in the step's
+   orange, and the other bits not yet inked fade. */
+.editor-drawing.tracing .ink-piece:not(.inked) {
+  stroke-opacity: 0.12;
+}
+
+.editor-drawing.tracing .ink-piece.trace {
+  stroke: var(--current);
+  stroke-width: 3px;
+  stroke-dasharray: 6 4;
+  stroke-opacity: 1;
+}
+
 /* Ink hints: the bits still to ink glow, or are dashed. */
 .editor-drawing .ink-piece.glow {
   stroke: var(--saffron);

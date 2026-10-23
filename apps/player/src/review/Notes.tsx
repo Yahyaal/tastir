@@ -7,6 +7,7 @@ const files = import.meta.glob<string>(
     '../../../../docs/*.md',
     '../../../../docs/patterns/*.md',
     '../../../../docs/testing/studio-chatgpt-2026-10-21.md',
+    '../../../../docs/testing/codex-provenance-review-2026-10-23.md',
   ],
   { query: '?raw', import: 'default', eager: true },
 );
@@ -129,6 +130,12 @@ export const DOCS: readonly {
     label: 'Geometry notes',
     file: 'geometry-notes.md',
     text: read('geometry-notes.md'),
+  },
+  {
+    key: 'codex-provenance-review',
+    label: 'Review: construction sources',
+    file: 'testing/codex-provenance-review-2026-10-23.md',
+    text: read('testing/codex-provenance-review-2026-10-23.md'),
   },
   {
     key: 'writing',

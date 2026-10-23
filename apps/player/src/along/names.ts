@@ -13,6 +13,10 @@ export function namesIn(text: string, scene: Scene): Set<string> {
   const out = new Set<string>();
   const isPoint = (n: string) =>
     scene.elements.get(n)?.geometry.kind === 'point';
+  // A family named by its ends, "S1 to S8", names all of it.
+  for (const [, letter, a, b] of text.matchAll(/\b([A-Z])(\d+) to \1(\d+)\b/g))
+    for (let i = Number(a); i <= Number(b); i++)
+      if (isPoint(`${letter}${i}`)) out.add(`${letter}${i}`);
   for (const w of words(text)) {
     if (isPoint(w)) out.add(w);
     else if (/^[A-Z]{2,}$/.test(w) && [...w].every(isPoint))
