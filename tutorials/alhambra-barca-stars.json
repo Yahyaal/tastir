@@ -20,13 +20,15 @@
       "source": "Tiling Search, data15/CM052: Alhambra, Sala de la Barca",
       "creator": "Brian Wichmann",
       "url": "https://tilingsearch.mit.edu/HTML/data15/CM052.html",
-      "note": "The design was read from his line drawing; the construction, shared with the Comares bath stars, is ours."
+      "note": "The design was read from his line drawing; the construction, shared with the Comares bath stars, is ours.",
+      "kind": "drawing"
     },
     {
       "source": "Photograph SPA 1624x (Sala de la Barca)",
       "creator": "David Wade",
       "url": "https://patterninislamicart.com/",
-      "note": "The real panel, used to check the wall."
+      "note": "The real panel, used to check the wall.",
+      "kind": "photo"
     }
   ],
   "photos": [

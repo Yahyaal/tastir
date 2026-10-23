@@ -2,11 +2,25 @@ import type { Tutorial } from '@tastir/schema';
 
 type Credit = Tutorial['credits'][number];
 
-/** The credit to point at as the reference for drawing it: the first with
- * a link. */
-export function referenceOf(tutorial: Tutorial): Credit | undefined {
-  return tutorial.credits.find((c) => c.url);
+/** Sources that teach the drawing, explicitly distinguished from finished pictures. */
+export function drawingGuides(tutorial: Tutorial): Credit[] {
+  return tutorial.credits.filter(
+    (c) => c.url && (c.kind === 'tutorial' || c.kind === 'challenge'),
+  );
 }
+
+/** Prefer the actual instructions even when a photo comes first in the credits. */
+export function referenceOf(tutorial: Tutorial): Credit | undefined {
+  return drawingGuides(tutorial)[0] ?? tutorial.credits.find((c) => c.url);
+}
+
+const labels = {
+  tutorial: 'Tutorial',
+  challenge: 'Drawing challenge',
+  drawing: 'Drawing reference',
+  photo: 'Photo reference',
+  background: 'Further reading',
+} as const;
 
 /** The credits with a link that cover this step (by its id). */
 export function stepSources(tutorial: Tutorial, step: number): Credit[] {
@@ -46,7 +60,8 @@ export function LessonTitle({
               rel="noreferrer"
               title={`${reference.source}${reference.creator ? `, ${reference.creator}` : ''}`}
             >
-              Reference: {byOf(reference)} <span aria-hidden="true">↗</span>
+              {reference.kind ? labels[reference.kind] : 'Reference'}:{' '}
+              {byOf(reference)} <span aria-hidden="true">↗</span>
             </a>
           ) : null}
         </p>

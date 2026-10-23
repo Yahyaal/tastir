@@ -18,7 +18,14 @@
       "creator": "Manuel Martínez Vela",
       "url": "https://www.riarte.es/handle/20.500.12251/633",
       "note": "The article shows this Comares panel (“los huesos”) photographed with its grid and diagonals drawn over it; the outlines here were read from that photo.",
-      "steps": [1, 2, 3, 4, 5]
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "kind": "drawing"
     }
   ],
   "photos": [

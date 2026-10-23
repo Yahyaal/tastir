@@ -17,9 +17,17 @@
     {
       "source": "4fold Pattern from Al-Hakim Mosque, Isfahan",
       "creator": "Sandy Kurt (sandykurt.com)",
-      "url": "https://sandykurt.com/free-tutorials",
+      "url": "https://static.showit.co/file/Y3_pKjR7TyCx5pgVJzdiGg/141862/al-hakim_mosque_isfahan.pdf",
       "note": "Static and dynamic squares, radius-1/2 circles at the center and diagonal midpoints, establishing the khatam star, corner squares, and flanking motifs.",
-      "steps": [4, 5, 6, 7, 8, 9]
+      "steps": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "kind": "tutorial"
     }
   ],
   "verification": {

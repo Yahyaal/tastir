@@ -1978,6 +1978,14 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Source tutorials: direct links for comparing the drawing steps',
+      text: 'The lesson and Draw along now say Tutorial beneath the pattern name, linked to the specific source. The construction panel puts drawing tutorials first, with the author, PDF/video/written format and the app steps that use them. Twelve lessons now link directly to the published PDF or video; the ATM handout opens at page 12. Finished drawings, photographs and the challenge with hints are labeled separately. The audit report opens with an index of all twenty patterns with instructional sources.',
+      link: {
+        label: 'Find the source tutorials',
+        href: '#/notes/construction-sources',
+      },
+    },
+    {
       title: 'Codex’s construction-source audit reviewed and merged',
       text: 'The counts add up, spot checks agree with the pattern status and credits, and the code is small and tested; it is merged into main (23 October). Every lesson now has “How this construction was made”. Three small things were left as they are; the review says which.',
       link: {

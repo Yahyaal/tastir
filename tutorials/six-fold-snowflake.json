@@ -18,7 +18,14 @@
       "creator": "Mamoot (mamootdiy.com)",
       "url": "https://mamootdiy.com/2022/04/06/islamic-geometry-a-six-fold-snowflake/",
       "note": "The order of the construction (mirror lines through the large petals, dynamic hexagon, star, half-way points, second star carried to the hexagon) and the choice of lines to ink follow this tutorial.",
-      "steps": [4, 5, 6, 7, 8]
+      "steps": [
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "kind": "tutorial"
     }
   ],
   "given": {

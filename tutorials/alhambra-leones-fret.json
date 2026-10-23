@@ -21,13 +21,15 @@
       "source": "Tiling Search, data18/C55: Alhambra, Patio de los Leones",
       "creator": "Brian Wichmann",
       "url": "https://tilingsearch.mit.edu/HTML/data18/C55.html",
-      "note": "The design was read from his line drawing; the construction (frets on the grid’s diagonals, the star’s size from one line) is ours."
+      "note": "The design was read from his line drawing; the construction (frets on the grid’s diagonals, the star’s size from one line) is ours.",
+      "kind": "drawing"
     },
     {
       "source": "Photograph SPA 0218 (carved panel, Patio de los Leones)",
       "creator": "David Wade",
       "url": "https://patterninislamicart.com/",
-      "note": "The real panel, used to check the wall."
+      "note": "The real panel, used to check the wall.",
+      "kind": "photo"
     }
   ],
   "photos": [

@@ -18,7 +18,14 @@
       "creator": "Mamoot (mamootdiy.com), after a class by William Charles Riding and the Prince's Foundation School of Traditional Arts",
       "url": "https://mamootdiy.com/2020/12/21/islamic-geometry-a-window-from-ibn-tulun-masjid/",
       "note": "The sequence of triangles, three squares, twelve-pointed star, the six fish, the diagonals and the two stars of parallel lines follows this tutorial.",
-      "steps": [6, 7, 8, 9, 10]
+      "steps": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "kind": "tutorial"
     }
   ],
   "given": {

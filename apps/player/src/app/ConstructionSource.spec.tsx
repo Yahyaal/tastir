@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { parseTutorial } from '@tastir/schema';
 import rosette from '@tutorials/bou-inania-rosette.json';
 import { ConstructionSource } from './ConstructionSource';
@@ -9,6 +9,16 @@ it('shows the mixed origin, departures and actual source links without claiming 
   render(<ConstructionSource tutorial={tutorial} />);
   expect(screen.getByText('How this construction was made')).toBeTruthy();
   fireEvent.click(screen.getByText('How this construction was made'));
+  const guides = screen.getByRole('region', { name: 'Drawing tutorials' });
+  expect(
+    within(guides)
+      .getByRole('link', { name: /activity 2/ })
+      .getAttribute('href'),
+  ).toBe('https://www.youtube.com/watch?v=YcqakkAKvFI');
+  expect(within(guides).getByText('Used for app steps 5–6.')).toBeTruthy();
+  expect(screen.getAllByRole('heading', { level: 3 })[0]?.textContent).toBe(
+    'Compare with the source tutorial',
+  );
   expect(
     screen.getByText('Published instructions with our own additions'),
   ).toBeTruthy();
@@ -26,6 +36,22 @@ it('does not assign an audit verdict to an older or user-created tutorial', () =
   delete tutorial.construction;
   const { container } = render(<ConstructionSource tutorial={tutorial} />);
   expect(container.textContent).toBe('');
+});
+
+it('keeps older untyped references available without claiming their tutorial does not exist', () => {
+  const tutorial = parseTutorial(rosette);
+  for (const credit of tutorial.credits) delete credit.kind;
+  render(<ConstructionSource tutorial={tutorial} />);
+  fireEvent.click(screen.getByText('How this construction was made'));
+  expect(
+    screen.getByText('The available source references are listed below.'),
+  ).toBeTruthy();
+  expect(
+    screen.queryByText(
+      'No step-by-step source tutorial is documented for this pattern.',
+    ),
+  ).toBeNull();
+  expect(screen.getByRole('link', { name: /activity 2/ })).toBeTruthy();
 });
 
 it('keeps source credits when copying a lesson without certifying the learner’s editable sequence', () => {

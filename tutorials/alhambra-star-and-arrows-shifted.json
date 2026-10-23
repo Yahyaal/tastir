@@ -20,7 +20,12 @@
       "creator": "Mamoot (mamootdiy.com)",
       "url": "https://mamootdiy.com/2021/02/01/islamic-geometry-rosette-tile-from-the-alhambra/",
       "note": "The small circle sized from a square's corner to the squares' crossing, the star joining every third point, and the lines carried out to the squares follow this tutorial.",
-      "steps": [7, 8, 9]
+      "steps": [
+        7,
+        8,
+        9
+      ],
+      "kind": "tutorial"
     }
   ],
   "given": {

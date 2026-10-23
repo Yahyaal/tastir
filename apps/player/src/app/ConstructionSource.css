@@ -61,3 +61,30 @@
 .construction-source-body li + li {
   margin-top: 12px;
 }
+
+.drawing-guides {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  background: var(--theme-bg-raised);
+}
+
+.drawing-guides h3 {
+  margin-top: 0;
+}
+
+.drawing-guides ul {
+  margin-bottom: 0;
+  padding-left: 20px;
+}
+
+.drawing-guides a {
+  font-weight: 600;
+}
+
+.drawing-guide-kind {
+  margin-bottom: 4px;
+  font-size: 0.8rem;
+  color: var(--theme-text-muted);
+}

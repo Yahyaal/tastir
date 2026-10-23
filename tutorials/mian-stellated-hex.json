@@ -19,7 +19,7 @@
       "source": "Twelvefold Islamic Geometric Rosette, activity 9: stellated rosettes in a hexagonal arrangement (challenge)",
       "creator": "Samira Mian",
       "url": "https://www.samiramian.uk/twelvefoldrosette",
-      "note": "The construction combines her stellated rosette (activity 8) with the honeycomb hexagonal tile of activity 5. The wording is ours.",
+      "note": "The construction combines her stellated rosette (activity 8) with the honeycomb hexagonal tile of activity 5. The wording is ours. Activity 9, near the bottom of the linked page, provides hints and pictures rather than a complete numbered lesson.",
       "steps": [
         1,
         2,
@@ -31,12 +31,14 @@
         8,
         9,
         10
-      ]
+      ],
+      "kind": "challenge"
     },
     {
       "source": "Lantern slide of the minbar of the al-Maridani mosque, Cairo (14th century): detail of the wooden panelling (Wikimedia Commons, GDE002950)",
       "url": "https://commons.wikimedia.org/wiki/File:Ca%C3%AFro._Amir_al-Maridani-moskee_Minbar_Detail_van_het_houten_maaswerk,_GDE002950.jpg",
-      "note": "The same twelvefold stellated rosette motif carved into historic Cairo woodwork."
+      "note": "The same twelvefold stellated rosette motif carved into historic Cairo woodwork.",
+      "kind": "photo"
     }
   ],
   "given": {

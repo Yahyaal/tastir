@@ -39,3 +39,33 @@ it('accepts unaudited files but rejects malformed source assessments', () => {
     );
   }
 });
+
+it('identifies the instructional sources for every sourced library lesson and keeps pictures separate', () => {
+  for (const input of tutorials) {
+    const tutorial = parseTutorial(input);
+    const guides = tutorial.credits.filter(
+      (credit) =>
+        credit.url && ['tutorial', 'challenge'].includes(credit.kind ?? ''),
+    );
+    const basis = tutorial.construction?.basis;
+    expect(guides.length > 0, tutorial.id).toBe(
+      basis === 'instructions' || basis === 'mixed',
+    );
+    for (const guide of guides) {
+      expect(guide.steps?.length, tutorial.id).toBeGreaterThan(0);
+      for (const step of guide.steps ?? [])
+        expect(
+          tutorial.steps.some((entry) => entry.id === step),
+          tutorial.id,
+        ).toBe(true);
+    }
+  }
+});
+
+it('keeps legacy credits valid and rejects unsupported source kinds', () => {
+  const input = structuredClone(tutorials[0]);
+  for (const credit of input.credits) delete credit.kind;
+  expect(safeParseTutorial(input).success).toBe(true);
+  input.credits[0].kind = 'verified';
+  expect(safeParseTutorial(input).success).toBe(false);
+});

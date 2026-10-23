@@ -16,15 +16,21 @@
     {
       "source": "Art in the Mathematics Classroom: Islamic Geometry (ATM conference handout)",
       "creator": "Charlotte Webb",
-      "url": "https://atm.org.uk/write/MediaUploads/Conference/2019%20Conference/Speakers/Art_in_the_Mathematics_classroom.pdf",
-      "note": "The sequence of two triangles, the hexagon, and lines through the triangles' crossings carried to the hexagon follows the handout's six-fold construction. The handout repeats the large hexagon; the real tilework repeats the smaller hexagon of step 7 instead.",
-      "steps": [4, 5, 6]
+      "url": "https://atm.org.uk/write/MediaUploads/Conference/2019%20Conference/Speakers/Art_in_the_Mathematics_classroom.pdf#page=12",
+      "note": "The construction pictures are on PDF pages 12–13. The sequence of two triangles, the hexagon, and lines through the triangles' crossings carried to the hexagon follows the handout's six-fold construction. The handout repeats the large hexagon; the real tilework repeats the smaller hexagon of step 7 instead.",
+      "steps": [
+        4,
+        5,
+        6
+      ],
+      "kind": "tutorial"
     },
     {
       "source": "Computer Graphics and Geometric Ornamental Design, chapter 3",
       "creator": "Craig S. Kaplan",
       "url": "https://cs.uwaterloo.ca/~csk/other/phd/kaplan_diss_starpatterns_print.pdf",
-      "note": "Describes this pattern as six-pointed stars placed in a tiling of hexagons, which confirmed the repeat used here."
+      "note": "Describes this pattern as six-pointed stars placed in a tiling of hexagons, which confirmed the repeat used here.",
+      "kind": "background"
     }
   ],
   "given": {

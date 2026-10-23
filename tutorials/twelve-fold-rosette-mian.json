@@ -17,11 +17,24 @@
   },
   "credits": [
     {
-      "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",
+      "source": "Drawing, Tiling & Painting Two Arrangements of a Twelvefold Islamic Geometric Rosette (#15.1, activity 3)",
       "creator": "Samira Mian",
-      "url": "https://www.samiramian.uk/twelvefoldrosette",
+      "url": "https://www.youtube.com/watch?v=5ocdSaE9tFg",
       "note": "The construction (the inner circle from one chord, the star lines joining its points 150° apart, the inking, and the square and hexagonal tiles) follows her tutorial; the wording is ours. She names the source as the minbar of the al-Maridani mosque, Cairo.",
-      "steps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "kind": "tutorial"
     }
   ],
   "given": {
