@@ -2418,7 +2418,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'Plain steps: Squares and stars to check, now with the ink',
-    text: 'Overnight (23 October) the ink of Squares and stars became a checklist of four shapes: the star, the corner of the large square at K, the same corner at L, N and J, and the four short seams. Every corner the pen turns at has a name (S1–S8 and P1–P8 on the star, X1–X8 where the bands meet the tile, Q1–Q4), the board zooms to the shape at hand with its lines in orange, and each shape is ticked once inked. When you are happy with the pilot, the other tutorials follow the same rules.',
+    text: 'Overnight (23 October) the ink of Squares and stars became a checklist of four shapes: the star, the corner of the large square at K, the same corner at L, N and J, and the four short seams. Every corner the pen turns at has a name (S1–S8 and P1–P8 on the star, X1–X8 where the bands meet the tile, Q1–Q4), the board zooms to the shape at hand with its lines in orange, and each shape is ticked once inked. Star and arrows is rewritten the same way as a second example (its star points T1–T8, its arrows inked two at a time). When you are happy with both, the other tutorials follow the same rules.',
     link: {
       label: 'Draw Squares and stars along',
       href: '#/alhambra-arrayanes-squares/draw',

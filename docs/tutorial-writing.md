@@ -1,6 +1,6 @@
 # Writing the steps
 
-The steps are read by beginners, many of them reading English as a second language, while their hands are busy with a compass and a ruler. So every step is written in simple, controlled English, after ASD-STE100 (Simplified Technical English), and the owner checks the result by eye. Squares and stars (`alhambra-arrayanes-squares`) is the first tutorial written this way; the others follow in batches.
+The steps are read by beginners, many of them reading English as a second language, while their hands are busy with a compass and a ruler. So every step is written in simple, controlled English, after ASD-STE100 (Simplified Technical English), and the owner checks the result by eye. Squares and stars (`alhambra-arrayanes-squares`) is the first tutorial written this way and Star and arrows (`alhambra-star-and-arrows`) the second; the others follow in batches. Eight-fold star and cross, the format's worked example, waits for a batch of its own: some 30 test files use its point names (E, NE, k.1), so renaming them means rewriting those tests too.
 
 ## The rules
 

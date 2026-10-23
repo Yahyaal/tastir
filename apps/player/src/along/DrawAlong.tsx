@@ -688,20 +688,22 @@ export function DrawAlong({
     inking && inkParts && inkPart !== undefined
       ? inkParts[inkPart]?.text
       : undefined;
+  // The ink's text when it is one shape: its points show as a step's do.
+  const inkText = inking ? (inkPartText ?? tutorial.ink.text) : undefined;
   const stepNames = useMemo(() => {
-    if (inkPartText !== undefined) return namesIn(inkPartText, model.scene);
+    if (inkText !== undefined) return namesIn(inkText, model.scene);
     const names = namesIn(
       `${info?.heading ?? ''} ${info?.text ?? ''}`,
       model.scene,
     );
     for (const h of info?.highlight ?? []) if (readable.has(h)) names.add(h);
     return names;
-  }, [info, model.scene, readable, inkPartText]);
+  }, [info, model.scene, readable, inkText]);
   // Where the step's named points are on the learner's board: at a point
   // of theirs, or where two of their lines cross, so "through B" always
   // finds a B to look at.
   const spokenPlaces = useMemo(() => {
-    if (afterInk || (inking && inkPartText === undefined)) return [];
+    if (afterInk || (inking && inkText === undefined)) return [];
     const out: { at: Vec; name: string }[] = [];
     // Far below what an eye can see (OA is 1), and above the drift of a
     // board drawn by hand from its own crossings.
@@ -718,7 +720,7 @@ export function DrawAlong({
       if (there) out.push({ at, name });
     }
     return out;
-  }, [inking, afterInk, inkPartText, stepNames, model.scene, board]);
+  }, [inking, afterInk, inkText, stepNames, model.scene, board]);
   /** A board point's name as the tutorial shows it, never an engine name. */
   const labelOf = (p: PointPlace) =>
     readAt.get(placeKey(p.at)) ??

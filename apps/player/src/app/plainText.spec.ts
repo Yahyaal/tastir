@@ -5,7 +5,7 @@ import { sentencesOf } from './StepText';
 
 // The tutorials rewritten in simple, controlled English
 // (docs/tutorial-writing.md); a tutorial joins the list when it is.
-const REWRITTEN = ['alhambra-arrayanes-squares'];
+const REWRITTEN = ['alhambra-arrayanes-squares', 'alhambra-star-and-arrows'];
 
 // Words the rules replace: "Rule" by "Draw a straight line", "about X" by
 // "with centre X", "meets" and "intersects" by "crosses", "bisect" and
@@ -50,7 +50,7 @@ describe.each(
           // "A" opening a sentence before a small word is the article.
           if (word === 'A' && m.index === 0 && /^A [a-z]/.test(s)) return false;
           // A family of points is a letter and a number: S1 … S8.
-          if (/^[A-Z]\d$/.test(word)) return !isPoint(word);
+          if (/^[A-Z]\d+$/.test(word)) return !isPoint(word);
           if (/\d/.test(word)) return true;
           return ![...word].every(isPoint);
         })
