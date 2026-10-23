@@ -78,6 +78,12 @@ export const DOCS: readonly {
     text: read('STUDIO-DEPLOY.md'),
   },
   {
+    key: 'chatgpt-hosted',
+    label: 'ChatGPT hosted sign-in',
+    file: 'CHATGPT-HOSTED-SIGN-IN.md',
+    text: read('CHATGPT-HOSTED-SIGN-IN.md'),
+  },
+  {
     key: 'studio-connect',
     label: 'Connect your other apps',
     file: 'STUDIO-CONNECT.md',

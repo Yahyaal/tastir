@@ -4,6 +4,7 @@ import { BlobPhotos } from './blob.js';
 import { hostedApp } from './hosted.js';
 import { connectPostgres } from './pg.js';
 import { Studio } from './studio.js';
+import { openAISettings } from './openai.js';
 
 /**
  * The hosted studio made from its settings, as Vercel runs it (api/index.js)
@@ -54,6 +55,7 @@ export async function hostedFromEnv(options: { site?: string } = {}) {
       clientId: setting('GOOGLE_CLIENT_ID'),
       clientSecret: setting('GOOGLE_CLIENT_SECRET'),
     },
+    openai: openAISettings(process.env),
     ...(options.site ? { site: options.site } : {}),
     ...(process.env['LIVE_ROOM_ORIGIN'] && process.env['LIVE_ROOM_SECRET']
       ? {

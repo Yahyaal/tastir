@@ -168,7 +168,32 @@ export const tokens = pgTable(
   (t) => [index('tokens_connection').on(t.connection)],
 );
 
+/** Short-lived, server-side OpenAI login state, consumed once across instances. */
+export const openaiTransactions = pgTable('openai_transactions', {
+  id: text('id').primaryKey(),
+  state: text('state').notNull(),
+  nonce: text('nonce').notNull(),
+  verifier: text('verifier').notNull(),
+  next: text('next').notNull(),
+  owner: text('owner'),
+  expires: timestamp('expires', { withTimezone: true }).notNull(),
+});
+
+/** Explicitly linked identities; provider email never grants Studio access. */
+export const openaiIdentities = pgTable(
+  'openai_identities',
+  {
+    issuer: text('issuer').notNull(),
+    client: text('client').notNull(),
+    subject: text('subject').notNull(),
+    owner: text('owner').notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.issuer, t.client, t.subject] })],
+);
+
 const schema = {
+  openaiTransactions,
+  openaiIdentities,
   projects,
   entries,
   notes,

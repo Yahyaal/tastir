@@ -193,16 +193,29 @@ export class Owner {
       return refuse('Google’s answer could not be checked.');
     if (!this.options.allow.includes(email))
       return refuse(`${email} may not use this studio.`);
+    await this.establish(email, response, safeNext(pending['next']));
+  }
+
+  /** Called only after a provider identity has been checked and authorized. */
+  async establish(email: string, response: Response, next: string) {
+    if (!this.options.allow.includes(email))
+      throw new Error('This account may not use the studio.');
     const session = await new SignJWT({ email })
       .setProtectedHeader({ alg: 'HS256' })
       .setAudience('session')
       .setExpirationTime(`${SESSION_DAYS}d`)
       .sign(this.key);
+    const existing = response.getHeader('Set-Cookie');
     response.setHeader('Set-Cookie', [
+      ...(Array.isArray(existing)
+        ? existing
+        : existing
+          ? [String(existing)]
+          : []),
       this.cookie(SESSION, session, SESSION_DAYS * 24 * 60 * 60),
       this.cookie(LOGIN, '', 0),
     ]);
-    response.redirect(safeNext(pending['next']));
+    response.redirect(safeNext(next));
   }
 
   logout(response: Response) {

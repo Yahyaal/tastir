@@ -14,6 +14,7 @@ import { StudioAuth } from './auth.js';
 import { mcpSessions } from './http.js';
 import { createMcpServer } from './mcp.js';
 import { Owner, type OwnerOptions } from './owner.js';
+import { OpenAILogin, type OpenAIOptions } from './openai.js';
 import type { Db } from './pg.js';
 import { DirectClient, failure, route } from './routes.js';
 import type { Studio } from './studio.js';
@@ -31,6 +32,8 @@ export interface HostedOptions extends Omit<OwnerOptions, 'baseUrl'> {
   readonly redirects?: readonly string[];
   /** A built Tastir to serve as well (on Vercel, its CDN serves it). */
   readonly site?: string;
+  /** Registered hosted website client; absent until OpenAI provisions access. */
+  readonly openai?: OpenAIOptions;
   /**
    * The live room (H7, apps/live-room): its address and the secret shared
    * with it. Without it, pages check for changes themselves.
@@ -65,6 +68,9 @@ export function hostedApp(options: HostedOptions) {
   const { studio, baseUrl } = options;
   const auth = new StudioAuth({ db: options.db, redirects: options.redirects });
   const owner = new Owner(options);
+  const openai = options.openai
+    ? new OpenAILogin(options.openai, options.db, owner, baseUrl)
+    : undefined;
   const mcpUrl = new URL('/mcp', baseUrl);
   const client = new DirectClient(studio);
   // Each connection's name is read on every request, so a rename shows on
@@ -162,6 +168,31 @@ export function hostedApp(options: HostedOptions) {
   };
 
   app.get('/login', (request, response) => void owner.login(request, response));
+  app.get('/api/sign-in-options', (_request, response) => {
+    response.json({ chatgpt: !!openai });
+  });
+  if (openai) {
+    app.get(
+      '/auth/openai',
+      (request, response) => void openai.start(request, response),
+    );
+    app.get(
+      '/auth/openai/callback',
+      (request, response) => void openai.callback(request, response),
+    );
+    app.post('/auth/openai/link', form, async (request, response) => {
+      const who = await signedIn(request, response);
+      if (who && checked(request, response))
+        await openai.start(request, response, who);
+    });
+    app.post('/auth/openai/unlink', form, async (request, response) => {
+      const who = await signedIn(request, response);
+      if (who && checked(request, response)) {
+        await openai.unlink(who);
+        response.redirect(303, '/connections');
+      }
+    });
+  }
   app.get(
     '/auth/google',
     (request, response) => void owner.callback(request, response),
@@ -222,8 +253,15 @@ export function hostedApp(options: HostedOptions) {
   });
 
   app.get('/connections', async (request, response) => {
-    if (!(await signedIn(request, response))) return;
+    const who = await signedIn(request, response);
+    if (!who) return;
     const csrf = owner.csrf(request);
+    const linked = openai && (await openai.linked(who));
+    const chatgpt = openai
+      ? `<h2>ChatGPT sign-in</h2>
+<p>${linked ? 'Your ChatGPT account is linked. You can use it to sign in to this Studio.' : 'Link your ChatGPT account to use it to sign in to this Studio.'} This does not enable the in-app chatbot.</p>
+<form method="post" action="/auth/openai/${linked ? 'unlink' : 'link'}"><input type="hidden" name="csrf" value="${csrf}"><button class="quiet">${linked ? 'Unlink ChatGPT' : 'Link ChatGPT account'}</button></form>`
+      : '';
     const list = await auth.connections();
     const items = list
       .map(
@@ -240,6 +278,7 @@ export function hostedApp(options: HostedOptions) {
         'Connections',
         `<h1>Connections</h1><p>The apps you allowed to work on your studio projects. Removing one stops it at once.</p>
 <ul>${items || '<li class="muted">No apps are connected yet.</li>'}</ul>
+${chatgpt}
 <form method="post" action="/logout"><input type="hidden" name="csrf" value="${csrf}"><button class="quiet">Sign out</button></form>`,
       ),
     );

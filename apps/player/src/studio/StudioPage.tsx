@@ -65,6 +65,16 @@ function useSignedIn(): boolean | undefined {
 
 function SignIn({ route }: { route: string }) {
   const next = `/#/${route}`;
+  const [chatgpt, setChatgpt] = useState(false);
+  useEffect(() => {
+    if (!HOSTED) return;
+    const controller = new AbortController();
+    void fetch('/api/sign-in-options', { signal: controller.signal })
+      .then((response) => (response.ok ? response.json() : undefined))
+      .then((options) => setChatgpt(options?.chatgpt === true))
+      .catch(() => undefined);
+    return () => controller.abort();
+  }, []);
   return (
     <div className="player studio">
       <Top />
@@ -82,10 +92,24 @@ function SignIn({ route }: { route: string }) {
           >
             Sign in with Google
           </a>
+          {chatgpt && (
+            <a
+              className="button secondary"
+              href={`/auth/openai?next=${encodeURIComponent(next)}`}
+            >
+              Continue with ChatGPT
+            </a>
+          )}
           <a className="button secondary" href="#/">
             All patterns
           </a>
         </p>
+        {chatgpt && (
+          <p>
+            First time with ChatGPT? Sign in with Google and link your ChatGPT
+            account on <a href="/connections">Connections</a>.
+          </p>
+        )}
       </section>
     </div>
   );
