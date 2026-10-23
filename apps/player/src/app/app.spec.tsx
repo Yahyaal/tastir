@@ -66,9 +66,7 @@ describe('the player', () => {
     ).toBeTruthy();
     expect(label()).toBe('Step 1 of 6');
     expect(
-      screen.getByText(
-        'Put the compass point on the centre and draw a circle.',
-      ),
+      screen.getByText('Draw a circle with centre O through A.'),
     ).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Back' })).toHaveProperty(
       'disabled',
@@ -147,7 +145,7 @@ describe('the player', () => {
     expect(screen.getByText(/2 rosettes take turns/)).toBeTruthy();
     back();
     expect(label()).toBe('Repeat');
-    expect(screen.getByText(/Repeat the tile edge to edge/)).toBeTruthy();
+    expect(screen.getByText(/Put copies of the tile side by side/)).toBeTruthy();
     // One original star in color, copies of it in every other tile.
     expect(
       container.querySelector('.ink.original use')?.getAttribute('href'),

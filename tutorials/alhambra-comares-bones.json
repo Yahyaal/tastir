@@ -37,153 +37,162 @@
   "steps": [
     {
       "id": 1,
-      "text": "Rule a horizontal line through the centre and draw a small circle. Its radius is half a square of the grid, and the compass keeps this opening for the whole construction.",
-      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. Keep this compass size until the end. The distance OA is half a square of the grid.",
+      "create": {
+        "h": { "line": { "through": ["O", "A"] } },
+        "c": { "circle": { "centre": "O", "through": "A" } }
+      },
       "animate": "compass"
     },
     {
       "id": 2,
-      "text": "Walk the compass along the horizontal: put the point where the circle crosses the line and mark the next crossing, again and again, both ways. The marks are half a square apart.",
+      "text": "Draw a circle with centre A through O. It crosses the line again at B. Draw a circle with centre B through A. It crosses the line again at C. Draw a circle with centre C through B. It crosses the line again at D. Draw the same three circles on the left of O, with centres E, F and G. They give F, G and H. E is where the first circle crosses the line on the left.",
       "create": {
-        "Xm1": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
-        "cx1": {"circle": {"centre": "A", "radiusOf": "c"}},
-        "X2": {"point": {"meet": ["cx1", "h"], "pick": {"farthest": "O"}}},
-        "cxm1": {"circle": {"centre": "Xm1", "radiusOf": "c"}},
-        "Xm2": {"point": {"meet": ["cxm1", "h"], "pick": {"farthest": "O"}}},
-        "cx2": {"circle": {"centre": "X2", "radiusOf": "c"}},
-        "X3": {"point": {"meet": ["cx2", "h"], "pick": {"farthest": "O"}}},
-        "cxm2": {"circle": {"centre": "Xm2", "radiusOf": "c"}},
-        "Xm3": {"point": {"meet": ["cxm2", "h"], "pick": {"farthest": "O"}}},
-        "cx3": {"circle": {"centre": "X3", "radiusOf": "c"}},
-        "X4": {"point": {"meet": ["cx3", "h"], "pick": {"farthest": "O"}}},
-        "cxm3": {"circle": {"centre": "Xm3", "radiusOf": "c"}},
-        "Xm4": {"point": {"meet": ["cxm3", "h"], "pick": {"farthest": "O"}}}
+        "E": { "point": { "meet": ["c", "h"], "pick": { "angle": 180 } } },
+        "cx1": { "circle": { "centre": "A", "radiusOf": "c" } },
+        "B": { "point": { "meet": ["cx1", "h"], "pick": { "farthest": "O" } } },
+        "cxm1": { "circle": { "centre": "E", "radiusOf": "c" } },
+        "F": { "point": { "meet": ["cxm1", "h"], "pick": { "farthest": "O" } } },
+        "cx2": { "circle": { "centre": "B", "radiusOf": "c" } },
+        "C": { "point": { "meet": ["cx2", "h"], "pick": { "farthest": "O" } } },
+        "cxm2": { "circle": { "centre": "F", "radiusOf": "c" } },
+        "G": { "point": { "meet": ["cxm2", "h"], "pick": { "farthest": "O" } } },
+        "cx3": { "circle": { "centre": "C", "radiusOf": "c" } },
+        "D": { "point": { "meet": ["cx3", "h"], "pick": { "farthest": "O" } } },
+        "cxm3": { "circle": { "centre": "G", "radiusOf": "c" } },
+        "H": { "point": { "meet": ["cxm3", "h"], "pick": { "farthest": "O" } } }
       },
       "highlight": ["c", "h"],
       "animate": "compass"
     },
     {
       "id": 3,
-      "text": "Rule the vertical through the centre, at right angles to the horizontal, and walk the compass up and down it in the same way.",
+      "text": "Draw a vertical line through O. It crosses the first circle at J and N. Draw a circle with centre J through O. It crosses the vertical line again at K. Draw a circle with centre K through J. It crosses it again at L. Draw a circle with centre L through K. It crosses it again at M. Draw the same three circles below O, with centres N, P and Q. They give P, Q and R.",
       "create": {
-        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
-        "Y1": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
-        "Ym1": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}},
-        "cy1": {"circle": {"centre": "Y1", "radiusOf": "c"}},
-        "Y2": {"point": {"meet": ["cy1", "v"], "pick": {"farthest": "O"}}},
-        "cym1": {"circle": {"centre": "Ym1", "radiusOf": "c"}},
-        "Ym2": {"point": {"meet": ["cym1", "v"], "pick": {"farthest": "O"}}},
-        "cy2": {"circle": {"centre": "Y2", "radiusOf": "c"}},
-        "Y3": {"point": {"meet": ["cy2", "v"], "pick": {"farthest": "O"}}},
-        "cym2": {"circle": {"centre": "Ym2", "radiusOf": "c"}},
-        "Ym3": {"point": {"meet": ["cym2", "v"], "pick": {"farthest": "O"}}},
-        "cy3": {"circle": {"centre": "Y3", "radiusOf": "c"}},
-        "Y4": {"point": {"meet": ["cy3", "v"], "pick": {"farthest": "O"}}},
-        "cym3": {"circle": {"centre": "Ym3", "radiusOf": "c"}},
-        "Ym4": {"point": {"meet": ["cym3", "v"], "pick": {"farthest": "O"}}}
+        "v": { "line": { "through": "O", "perpendicularTo": "h" } },
+        "J": { "point": { "meet": ["c", "v"], "pick": { "angle": 90 } } },
+        "N": { "point": { "meet": ["c", "v"], "pick": { "angle": 270 } } },
+        "cy1": { "circle": { "centre": "J", "radiusOf": "c" } },
+        "K": { "point": { "meet": ["cy1", "v"], "pick": { "farthest": "O" } } },
+        "cym1": { "circle": { "centre": "N", "radiusOf": "c" } },
+        "P": { "point": { "meet": ["cym1", "v"], "pick": { "farthest": "O" } } },
+        "cy2": { "circle": { "centre": "K", "radiusOf": "c" } },
+        "L": { "point": { "meet": ["cy2", "v"], "pick": { "farthest": "O" } } },
+        "cym2": { "circle": { "centre": "P", "radiusOf": "c" } },
+        "Q": { "point": { "meet": ["cym2", "v"], "pick": { "farthest": "O" } } },
+        "cy3": { "circle": { "centre": "L", "radiusOf": "c" } },
+        "M": { "point": { "meet": ["cy3", "v"], "pick": { "farthest": "O" } } },
+        "cym3": { "circle": { "centre": "Q", "radiusOf": "c" } },
+        "R": { "point": { "meet": ["cym3", "v"], "pick": { "farthest": "O" } } }
       },
       "highlight": ["h"],
       "animate": "compass"
     },
     {
       "id": 4,
-      "text": "Through the first mark on each side of the centre, and every second mark after it, rule a line at right angles to its axis. The lines make a square grid with the centre in the middle of a square.",
-      "textWithoutHelpers": "Through the first mark on each side of the centre, rule a line at right angles to its axis. The four lines make a square with the centre in its middle.",
+      "text": "Draw a vertical line through each of G, E, A and C. Draw a horizontal line through each of Q, N, J and L. The lines make a square grid, with O in the middle of a square.",
+      "textWithoutHelpers": "Draw a vertical line through E. Draw a vertical line through A. Draw a horizontal line through N. Draw a horizontal line through J. The four lines make a square with O in its middle.",
       "create": {
-        "Vm3": {"line": {"through": "Xm3", "perpendicularTo": "h"}},
-        "Hm3": {"line": {"through": "Ym3", "perpendicularTo": "v"}},
-        "Vm1": {"line": {"through": "Xm1", "perpendicularTo": "h"}},
-        "Hm1": {"line": {"through": "Ym1", "perpendicularTo": "v"}},
-        "V1": {"line": {"through": "A", "perpendicularTo": "h"}},
-        "H1": {"line": {"through": "Y1", "perpendicularTo": "v"}},
-        "V3": {"line": {"through": "X3", "perpendicularTo": "h"}},
-        "H3": {"line": {"through": "Y3", "perpendicularTo": "v"}}
+        "Vm3": { "line": { "through": "G", "perpendicularTo": "h" } },
+        "Hm3": { "line": { "through": "Q", "perpendicularTo": "v" } },
+        "Vm1": { "line": { "through": "E", "perpendicularTo": "h" } },
+        "Hm1": { "line": { "through": "N", "perpendicularTo": "v" } },
+        "V1": { "line": { "through": "A", "perpendicularTo": "h" } },
+        "H1": { "line": { "through": "J", "perpendicularTo": "v" } },
+        "V3": { "line": { "through": "C", "perpendicularTo": "h" } },
+        "H3": { "line": { "through": "L", "perpendicularTo": "v" } }
       },
       "highlight": ["h", "v"],
       "animate": "ruler"
     },
     {
       "id": 5,
-      "text": "Halve the right angles at the centre to get the two diagonals, and rule lines parallel to them through every second mark on the horizontal, counting from the centre. Every square of the grid now has both its diagonals.",
-      "textWithoutHelpers": "Halve the right angles at the centre to get the two diagonals, and rule lines parallel to them through the fourth mark on each side of the centre, on the horizontal.",
+      "text": "Draw the line through O that halves the angle AOJ. Draw the line through O that halves the angle JOE. Draw two lines through each of H, F, B and D, parallel to these two lines. Every square of the grid now has both its diagonals.",
+      "textWithoutHelpers": "Draw the line through O that halves the angle AOJ. Draw the line through O that halves the angle JOE. Draw two lines through H, parallel to these two lines. Draw two lines through D, parallel to these two lines.",
       "create": {
-        "d1": {"line": {"through": "O", "bisects": ["A", "O", "Y1"]}},
-        "d2": {"line": {"through": "O", "bisects": ["Y1", "O", "Xm1"]}},
-        "Dmm4": {"line": {"through": "Xm4", "parallelTo": "d1"}},
-        "Dpm4": {"line": {"through": "Xm4", "parallelTo": "d2"}},
-        "Dmm2": {"line": {"through": "Xm2", "parallelTo": "d1"}},
-        "Dpm2": {"line": {"through": "Xm2", "parallelTo": "d2"}},
-        "Dm2": {"line": {"through": "X2", "parallelTo": "d1"}},
-        "Dp2": {"line": {"through": "X2", "parallelTo": "d2"}},
-        "Dm4": {"line": {"through": "X4", "parallelTo": "d1"}},
-        "Dp4": {"line": {"through": "X4", "parallelTo": "d2"}}
+        "d1": { "line": { "through": "O", "bisects": ["A", "O", "J"] } },
+        "d2": { "line": { "through": "O", "bisects": ["J", "O", "E"] } },
+        "Dmm4": { "line": { "through": "H", "parallelTo": "d1" } },
+        "Dpm4": { "line": { "through": "H", "parallelTo": "d2" } },
+        "Dmm2": { "line": { "through": "F", "parallelTo": "d1" } },
+        "Dpm2": { "line": { "through": "F", "parallelTo": "d2" } },
+        "Dm2": { "line": { "through": "B", "parallelTo": "d1" } },
+        "Dp2": { "line": { "through": "B", "parallelTo": "d2" } },
+        "Dm4": { "line": { "through": "D", "parallelTo": "d1" } },
+        "Dp4": { "line": { "through": "D", "parallelTo": "d2" } }
       },
       "highlight": ["h", "v"],
       "animate": "ruler"
     },
     {
       "id": 6,
-      "text": "Mark the tile: the square, standing on a corner, whose corners are two squares from the centre along the horizontal and the vertical.",
+      "text": "Join D, M, H and R to mark the tile that repeats. It stands on a corner, two squares from O each way.",
       "create": {
-        "Gm4_0": {"point": {"meet": ["Dmm4", "Dpm4"]}},
-        "Gm3_m1": {"point": {"meet": ["Vm3", "Hm1"]}},
-        "Gm3_1": {"point": {"meet": ["Vm3", "H1"]}},
-        "Gm1_m3": {"point": {"meet": ["Vm1", "Hm3"]}},
-        "Gm1_m1": {"point": {"meet": ["Vm1", "Hm1"]}},
-        "Gm1_1": {"point": {"meet": ["Vm1", "H1"]}},
-        "Gm1_3": {"point": {"meet": ["Vm1", "H3"]}},
-        "G0_m4": {"point": {"meet": ["Dm4", "Dpm4"]}},
-        "G0_4": {"point": {"meet": ["Dmm4", "Dp4"]}},
-        "G1_m3": {"point": {"meet": ["V1", "Hm3"]}},
-        "G1_m1": {"point": {"meet": ["V1", "Hm1"]}},
-        "G1_1": {"point": {"meet": ["V1", "H1"]}},
-        "G1_3": {"point": {"meet": ["V1", "H3"]}},
-        "G3_m1": {"point": {"meet": ["V3", "Hm1"]}},
-        "G3_1": {"point": {"meet": ["V3", "H1"]}},
-        "G4_0": {"point": {"meet": ["Dm4", "Dp4"]}},
-        "tile": {"polygon": ["G4_0", "G0_4", "Gm4_0", "G0_m4"]}
+        "S7": { "point": { "meet": ["Vm3", "Hm1"] } },
+        "S6": { "point": { "meet": ["Vm3", "H1"] } },
+        "S9": { "point": { "meet": ["Vm1", "Hm3"] } },
+        "S8": { "point": { "meet": ["Vm1", "Hm1"] } },
+        "S5": { "point": { "meet": ["Vm1", "H1"] } },
+        "S4": { "point": { "meet": ["Vm1", "H3"] } },
+        "S10": { "point": { "meet": ["V1", "Hm3"] } },
+        "S11": { "point": { "meet": ["V1", "Hm1"] } },
+        "S2": { "point": { "meet": ["V1", "H1"] } },
+        "S3": { "point": { "meet": ["V1", "H3"] } },
+        "S12": { "point": { "meet": ["V3", "Hm1"] } },
+        "S1": { "point": { "meet": ["V3", "H1"] } },
+        "tile": { "polygon": ["D", "M", "H", "R"] }
       },
       "animate": "ruler"
     }
   ],
   "ink": {
-    "text": "Go over the outline of the bones. Each bone is three squares long, and at both ends it reaches half a square out to each side along the diagonals, so it looks like a bone with knobbed ends.",
+    "text": "Ink the outline of the bones. Each bone is three squares long. At both ends it reaches out along the diagonals, like a bone with knobbed ends.",
     "paths": [
-      {"through": ["Gm4_0", "Gm3_1"]},
-      {"through": ["Gm1_3", "G0_4"]},
-      {"through": ["Gm1_m1", "G1_1"]},
-      {"through": ["G0_m4", "G1_m3"]},
-      {"through": ["G3_m1", "G4_0"]},
-      {"through": ["Gm4_0", "Gm3_m1"]},
-      {"through": ["Gm1_m3", "G0_m4"]},
-      {"through": ["Gm1_1", "G1_m1"]},
-      {"through": ["G0_4", "G1_3"]},
-      {"through": ["G3_1", "G4_0"]},
-      {"through": ["Gm3_m1", "Gm1_m1"]},
-      {"through": ["G1_1", "G3_1"]},
-      {"through": ["Gm1_1", "Gm1_3"]},
-      {"through": ["G1_m3", "G1_m1"]}
+      { "through": ["S8", "S2"] },
+      { "through": ["S2", "S1"] },
+      { "through": ["S1", "D"] },
+      { "through": ["M", "S3"] },
+      { "through": ["H", "S6"] },
+      { "through": ["S4", "M"] },
+      { "through": ["R", "S10"] },
+      { "through": ["S12", "D"] },
+      { "through": ["H", "S7"] },
+      { "through": ["S9", "R"] },
+      { "through": ["S5", "S11"] },
+      { "through": ["S7", "S8"] },
+      { "through": ["S5", "S4"] },
+      { "through": ["S10", "S11"] }
+    ],
+    "parts": [
+      {
+        "text": "Ink from S8 to S2, through O. Ink from S2 to S1, then from S1 to D. Ink from M to S3.",
+        "paths": 4
+      },
+      {
+        "text": "Ink the same lines turned round O, three more times. Tick “Also ink the copies round the centre” to ink them all at once.",
+        "paths": 10
+      }
     ]
   },
   "pattern": {
     "cell": "tile",
-    "text": "Repeat the tile edge to edge. Upright and lying bones interlock like a basket weave, as in the tile panel of the Hall of Comares, where the upright bones are glazed black, green and ochre and the lying ones white.",
+    "text": "Put copies of the tile side by side. Upright and lying bones interlock like a basket weave. In the Hall of Comares the upright bones are black, green and ochre. The lying ones are white.",
     "palette": "Alhambra",
-    "colors": {"bone": "ground"},
+    "colors": { "bone": "ground" },
     "placements": {
       "repeat": [2, 2],
       "rules": [
-        {"piece": "bone", "turn": 90, "cell": [0, 0], "color": "a"},
-        {"piece": "bone", "turn": 90, "cell": [1, 1], "color": "a"},
-        {"piece": "bone", "turn": 90, "cell": [1, 0], "color": "c"},
-        {"piece": "bone", "turn": 90, "cell": [0, 1], "color": "b"}
+        { "piece": "bone", "turn": 90, "cell": [0, 0], "color": "a" },
+        { "piece": "bone", "turn": 90, "cell": [1, 1], "color": "a" },
+        { "piece": "bone", "turn": 90, "cell": [1, 0], "color": "c" },
+        { "piece": "bone", "turn": 90, "cell": [0, 1], "color": "b" }
       ]
     }
   },
   "expect": {
     "note": "Golden values in units of OA (half a grid square, so one square is 4); every piece is the same bone of 4 squares, two per tile of 8 squares.",
     "pieceTypes": 1,
-    "pieces": [{"name": "bone", "vertices": 12, "area": 16, "perCell": 2}],
+    "pieces": [{ "name": "bone", "vertices": 12, "area": 16, "perCell": 2 }],
     "cellArea": 32
   }
 }

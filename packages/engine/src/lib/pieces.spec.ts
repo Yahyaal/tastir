@@ -177,7 +177,7 @@ describe('a parallelogram cell', () => {
       id: 99,
       text: 'The rhombus.',
       create: {
-        l60: { line: { through: ['O', 'P60'] } },
+        l60: { line: { through: ['O', 'B'] } },
         M0: { point: { meet: ['h', 'hex'], pick: { angle: 0 } } },
         M60: { point: { meet: ['l60', 'hex'], pick: { angle: 60 } } },
         cM0: { circle: { centre: 'M0', through: 'O' } },
@@ -186,8 +186,8 @@ describe('a parallelogram cell', () => {
         N60: { point: { meet: ['cM60', 'l60'], pick: { farthest: 'O' } } },
         g1: { line: { through: 'N60', parallelTo: 'h' } },
         g2: { line: { through: 'N0', parallelTo: 'l60' } },
-        F: { point: { meet: ['g1', 'g2'] } },
-        rhombus: { polygon: ['O', 'N0', 'F', 'N60'] },
+        Z: { point: { meet: ['g1', 'g2'] } },
+        rhombus: { polygon: ['O', 'N0', 'Z', 'N60'] },
       },
     });
     const scene = evaluate(t);
@@ -210,7 +210,7 @@ describe('a parallelogram cell', () => {
       id: 99,
       text: 'A lopsided hexagon.',
       create: {
-        lop: { polygon: ['D30', 'D90', 'D150', 'D210', 'D270', 'Q330'] },
+        lop: { polygon: ['H1', 'H2', 'H3', 'H4', 'H5', 'S6'] },
       },
     });
     bad.pattern.cell = 'lop';

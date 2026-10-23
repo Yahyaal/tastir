@@ -34,125 +34,154 @@
   "steps": [
     {
       "id": 1,
-      "text": "Draw a horizontal line, put the compass point on it and draw a circle. Keep the compass at this opening until the end.",
-      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. Keep this compass size until the end.",
+      "create": {
+        "h": { "line": { "through": ["O", "A"] } },
+        "c": { "circle": { "centre": "O", "through": "A" } }
+      },
       "animate": "compass"
     },
     {
       "id": 2,
-      "text": "Put the compass point where the circle crosses the line on the right and draw a circle through the centre. Do the same on the left. The two new circles touch at the centre.",
+      "text": "Draw a circle with centre A through O. Draw a circle with centre D through O, where the line crosses the first circle on the left. The two new circles touch at O.",
       "create": {
-        "E": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
-        "W": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
-        "cE": {"circle": {"centre": "E", "radiusOf": "c"}},
-        "cW": {"circle": {"centre": "W", "radiusOf": "c"}}
+        "D": { "point": { "meet": ["c", "h"], "pick": { "angle": 180 } } },
+        "cE": { "circle": { "centre": "A", "radiusOf": "c" } },
+        "cW": { "circle": { "centre": "D", "radiusOf": "c" } }
       },
       "highlight": ["c", "h"],
       "animate": "compass"
     },
     {
       "id": 3,
-      "text": "The two new circles cross the first one at four more points. Draw a circle of the same size around each of them. Six circles now ring the first, and their crossings divide it into six.",
+      "text": "Draw a circle with centre B through O. Draw a circle with centre C through O. Draw a circle with centre E through O. Draw a circle with centre F through O. B, C, E and F are where the two new circles cross the first one. Six circles now ring the first circle.",
       "create": {
-        "P60": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60}}},
-        "P300": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300}}},
-        "P120": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120}}},
-        "P240": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240}}},
-        "c60": {"circle": {"centre": "P60", "radiusOf": "c"}},
-        "c120": {"circle": {"centre": "P120", "radiusOf": "c"}},
-        "c240": {"circle": {"centre": "P240", "radiusOf": "c"}},
-        "c300": {"circle": {"centre": "P300", "radiusOf": "c"}}
+        "B": { "point": { "meet": ["c", "cE"], "pick": { "angle": 60 } } },
+        "F": { "point": { "meet": ["c", "cE"], "pick": { "angle": 300 } } },
+        "C": { "point": { "meet": ["c", "cW"], "pick": { "angle": 120 } } },
+        "E": { "point": { "meet": ["c", "cW"], "pick": { "angle": 240 } } },
+        "c60": { "circle": { "centre": "B", "radiusOf": "c" } },
+        "c120": { "circle": { "centre": "C", "radiusOf": "c" } },
+        "c240": { "circle": { "centre": "E", "radiusOf": "c" } },
+        "c300": { "circle": { "centre": "F", "radiusOf": "c" } }
       },
       "highlight": ["cE", "cW"],
       "animate": "compass"
     },
     {
       "id": 4,
-      "text": "The six circles cut the first circle at six points, one every 60°. Join every other point to draw a triangle pointing right, then join the other three to draw a triangle pointing left. The two triangles make a six-pointed star and cross each other at six points.",
+      "text": "Join A, C and E with straight lines. Join B, D and F with straight lines. The two triangles make a six-pointed star. They cross at K1 to K6.",
       "create": {
-        "right": {"polygon": ["E", "P120", "P240"]},
-        "left": {"polygon": ["P60", "W", "P300"]},
-        "K": {"points": {"meet": ["right", "left"], "pick": {"all": "byAngle"}}}
+        "right": { "polygon": ["A", "C", "E"] },
+        "left": { "polygon": ["B", "D", "F"] },
+        "K1": { "point": { "meet": ["right", "left"], "pick": { "angle": 30 } } },
+        "K2": { "point": { "meet": ["right", "left"], "pick": { "angle": 90 } } },
+        "K3": { "point": { "meet": ["right", "left"], "pick": { "angle": 150 } } },
+        "K4": { "point": { "meet": ["right", "left"], "pick": { "angle": 210 } } },
+        "K5": { "point": { "meet": ["right", "left"], "pick": { "angle": 270 } } },
+        "K6": { "point": { "meet": ["right", "left"], "pick": { "angle": 330 } } }
       },
-      "highlight": ["E", "P60", "P120", "W", "P240", "P300"],
+      "highlight": ["A", "B", "C", "D", "E", "F"],
       "animate": "ruler"
     },
     {
       "id": 5,
-      "text": "Join the six points on the circle in order to draw a hexagon with a corner at each end of the horizontal line. It frames the drawing.",
-      "create": {"hex": {"polygon": ["E", "P60", "P120", "W", "P240", "P300"]}},
-      "highlight": ["E", "P60", "P120", "W", "P240", "P300"],
+      "text": "Join A, B, C, D, E and F with straight lines. This hexagon frames the drawing.",
+      "create": { "hex": { "polygon": ["A", "B", "C", "D", "E", "F"] } },
+      "highlight": ["A", "B", "C", "D", "E", "F"],
       "animate": "ruler"
     },
     {
       "id": 6,
-      "text": "Rule a line through every other crossing of the two triangles, six lines in all, and carry each one on until it meets the hexagon at both ends. Where these lines cross near the centre they draw a smaller star whose points are the crossings you started from.",
+      "text": "Draw a straight line through K1 and K3. Draw a straight line through K3 and K5. Draw a straight line through K5 and K1. Draw a straight line through K2 and K4. Draw a straight line through K4 and K6. Draw a straight line through K6 and K2. These lines make a smaller star. They run on to the hexagon.",
       "create": {
-        "g1": {"line": {"through": ["K.1", "K.3"]}},
-        "g2": {"line": {"through": ["K.3", "K.5"]}},
-        "g3": {"line": {"through": ["K.5", "K.1"]}},
-        "g4": {"line": {"through": ["K.2", "K.4"]}},
-        "g5": {"line": {"through": ["K.4", "K.6"]}},
-        "g6": {"line": {"through": ["K.6", "K.2"]}},
-        "g1_30": {"point": {"meet": ["g1", "hex"], "pick": {"nearest": "K.1"}}},
-        "g1_150": {"point": {"meet": ["g1", "hex"], "pick": {"nearest": "K.3"}}},
-        "g2_150": {"point": {"meet": ["g2", "hex"], "pick": {"nearest": "K.3"}}},
-        "g2_270": {"point": {"meet": ["g2", "hex"], "pick": {"nearest": "K.5"}}},
-        "g3_270": {"point": {"meet": ["g3", "hex"], "pick": {"nearest": "K.5"}}},
-        "g3_30": {"point": {"meet": ["g3", "hex"], "pick": {"nearest": "K.1"}}},
-        "g4_90": {"point": {"meet": ["g4", "hex"], "pick": {"nearest": "K.2"}}},
-        "g4_210": {"point": {"meet": ["g4", "hex"], "pick": {"nearest": "K.4"}}},
-        "g5_210": {"point": {"meet": ["g5", "hex"], "pick": {"nearest": "K.4"}}},
-        "g5_330": {"point": {"meet": ["g5", "hex"], "pick": {"nearest": "K.6"}}},
-        "g6_330": {"point": {"meet": ["g6", "hex"], "pick": {"nearest": "K.6"}}},
-        "g6_90": {"point": {"meet": ["g6", "hex"], "pick": {"nearest": "K.2"}}},
-        "J0": {"point": {"meet": ["g3", "g6"]}},
-        "J60": {"point": {"meet": ["g1", "g6"]}},
-        "J120": {"point": {"meet": ["g1", "g4"]}},
-        "J180": {"point": {"meet": ["g4", "g2"]}},
-        "J240": {"point": {"meet": ["g5", "g2"]}},
-        "J300": {"point": {"meet": ["g5", "g3"]}}
+        "g1": { "line": { "through": ["K1", "K3"] } },
+        "g2": { "line": { "through": ["K3", "K5"] } },
+        "g3": { "line": { "through": ["K5", "K1"] } },
+        "g4": { "line": { "through": ["K2", "K4"] } },
+        "g5": { "line": { "through": ["K4", "K6"] } },
+        "g6": { "line": { "through": ["K6", "K2"] } },
+        "R1": { "point": { "meet": ["g1", "hex"], "pick": { "nearest": "K1" } } },
+        "R6": { "point": { "meet": ["g1", "hex"], "pick": { "nearest": "K3" } } },
+        "R5": { "point": { "meet": ["g2", "hex"], "pick": { "nearest": "K3" } } },
+        "R10": { "point": { "meet": ["g2", "hex"], "pick": { "nearest": "K5" } } },
+        "R9": { "point": { "meet": ["g3", "hex"], "pick": { "nearest": "K5" } } },
+        "R2": { "point": { "meet": ["g3", "hex"], "pick": { "nearest": "K1" } } },
+        "R3": { "point": { "meet": ["g4", "hex"], "pick": { "nearest": "K2" } } },
+        "R8": { "point": { "meet": ["g4", "hex"], "pick": { "nearest": "K4" } } },
+        "R7": { "point": { "meet": ["g5", "hex"], "pick": { "nearest": "K4" } } },
+        "R12": { "point": { "meet": ["g5", "hex"], "pick": { "nearest": "K6" } } },
+        "R11": { "point": { "meet": ["g6", "hex"], "pick": { "nearest": "K6" } } },
+        "R4": { "point": { "meet": ["g6", "hex"], "pick": { "nearest": "K2" } } },
+        "J1": { "point": { "meet": ["g3", "g6"] } },
+        "J2": { "point": { "meet": ["g1", "g6"] } },
+        "J3": { "point": { "meet": ["g1", "g4"] } },
+        "J4": { "point": { "meet": ["g4", "g2"] } },
+        "J5": { "point": { "meet": ["g5", "g2"] } },
+        "J6": { "point": { "meet": ["g5", "g3"] } }
       },
-      "highlight": ["K.1", "K.2", "K.3", "K.4", "K.5", "K.6", "hex"],
+      "highlight": ["K1", "K2", "K3", "K4", "K5", "K6", "hex"],
       "animate": "ruler"
     },
     {
       "id": 7,
-      "text": "In the finished pattern every small hexagon is shared by three stars, so the tile reaches only to the middle of each one. Find the middle of the right-hand corner hexagon by ruling its diagonal from its top-left corner to its bottom-right corner and marking where it crosses the horizontal. Turn that point round the centre in steps of 60° to get the middles of the other five, and join the six points: this smaller hexagon is the tile that repeats.",
-      "create": {
-        "d0": {"line": {"through": ["K.1", "g5_330"]}},
-        "C0": {"point": {"meet": ["h", "d0"]}},
-        "Cs": {"repeat": {"of": ["C0"], "by": "rot6"}},
-        "tile": {"polygon": ["C0", "C0@1", "C0@2", "C0@3", "C0@4", "C0@5"]}
-      },
-      "highlight": ["K.1", "g5_330", "h"],
-      "animate": "ruler"
+      "text": "Draw the tile.",
+      "parts": [
+        {
+          "text": "Draw a straight line through K1 and R12. It crosses the horizontal line at T. T is the middle of the small hexagon at A.",
+          "create": {
+            "d0": { "line": { "through": ["K1", "R12"] } },
+            "T": { "point": { "meet": ["h", "d0"] } }
+          },
+          "highlight": ["K1", "R12", "h"],
+          "animate": "ruler"
+        },
+        {
+          "text": "Turn T round O by 60°, five times, to get the other corners of the tile. Join the six points: this small hexagon is the tile that repeats.",
+          "create": {
+            "Cs": { "repeat": { "of": ["T"], "by": "rot6" } },
+            "tile": { "polygon": ["T", "T@1", "T@2", "T@3", "T@4", "T@5"] }
+          },
+          "highlight": ["T"],
+          "animate": "fade"
+        }
+      ]
     }
   ],
   "ink": {
-    "text": "Go over six small hexagons, one in each corner of the tile: each has a corner of the tile as one of its corners and is cut off by the new lines. Between them the six-pointed star is left in the middle.",
+    "text": "Ink six small hexagons, one at each corner of the large hexagon. The six-pointed star is left between them.",
     "paths": [
-      {"closed": true, "through": ["E", "g1_30", "K.1", "J0", "K.6", "g5_330"]},
-      {"closed": true, "through": ["P60", "g4_90", "K.2", "J60", "K.1", "g3_30"]},
-      {"closed": true, "through": ["P120", "g2_150", "K.3", "J120", "K.2", "g6_90"]},
-      {"closed": true, "through": ["W", "g5_210", "K.4", "J180", "K.3", "g1_150"]},
-      {"closed": true, "through": ["P240", "g3_270", "K.5", "J240", "K.4", "g4_210"]},
-      {"closed": true, "through": ["P300", "g6_330", "K.6", "J300", "K.5", "g2_270"]}
+      { "closed": true, "through": ["A", "R1", "K1", "J1", "K6", "R12"] },
+      { "closed": true, "through": ["B", "R3", "K2", "J2", "K1", "R2"] },
+      { "closed": true, "through": ["C", "R5", "K3", "J3", "K2", "R4"] },
+      { "closed": true, "through": ["D", "R7", "K4", "J4", "K3", "R6"] },
+      { "closed": true, "through": ["E", "R9", "K5", "J5", "K4", "R8"] },
+      { "closed": true, "through": ["F", "R11", "K6", "J6", "K5", "R10"] }
+    ],
+    "parts": [
+      {
+        "text": "Ink the small hexagon at A: from A through R1, K1, J1, K6 and R12, back to A.",
+        "paths": 1
+      },
+      {
+        "text": "Ink the same small hexagon at B, C, D, E and F. Tick “Also ink the copies round the centre” to ink them all at once.",
+        "paths": 5
+      }
     ]
   },
   "pattern": {
     "cell": "tile",
-    "text": "Repeat the small tile side to side. Each corner hexagon is completed by the two tiles that share it, so every hexagon touches three stars, and hexagons meet only at their corners, where two star points fit between them.",
+    "text": "Put copies of the tile side by side. Each corner hexagon is completed by the tiles that share it. Every hexagon touches three stars.",
     "palette": "Timurid tile",
-    "colors": {"star": "a", "hexagon": "b"},
+    "colors": { "star": "a", "hexagon": "b" },
     "rings": true
   },
   "expect": {
     "note": "Golden values, in units of OA, computed by the engine and checked for six-fold symmetry, no slivers, and pieces that exactly fill the tile. The hexagons have side 1/3 and the star's points reach 1/√3.",
     "pieceTypes": 2,
     "pieces": [
-      {"name": "star", "vertices": 12, "area": 0.57735, "perCell": 1},
-      {"name": "hexagon", "vertices": 6, "area": 0.28868, "perCell": 2}
+      { "name": "star", "vertices": 12, "area": 0.57735, "perCell": 1 },
+      { "name": "hexagon", "vertices": 6, "area": 0.28868, "perCell": 2 }
     ],
     "cellArea": 1.1547
   }

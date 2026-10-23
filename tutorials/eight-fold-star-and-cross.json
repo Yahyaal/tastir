@@ -20,15 +20,13 @@
   "steps": [
     {
       "id": 1,
-      "text": "Put the compass point on the centre and draw a circle.",
-      "create": {
-        "c": { "circle": { "centre": "O", "through": "A" } }
-      },
+      "text": "Draw a circle with centre O through A.",
+      "create": { "c": { "circle": { "centre": "O", "through": "A" } } },
       "animate": "compass"
     },
     {
       "id": 2,
-      "text": "Draw a horizontal line through the centre, then a vertical line at right angles to it. They cut the circle at four points.",
+      "text": "Draw a horizontal straight line through O and A. Draw a vertical line through O. The two lines cross the circle at E, N, W and S. These letters stand for east, north, west and south.",
       "create": {
         "h": { "line": { "through": ["O", "A"] } },
         "v": { "line": { "through": "O", "perpendicularTo": "h" } },
@@ -41,7 +39,7 @@
     },
     {
       "id": 3,
-      "text": "Halve each right angle to get the two diagonals. The circle is now divided into eight equal parts.",
+      "text": "Draw the line through O that halves the angle at O between E and N. Draw the line through O that halves the angle at O between N and W. These lines cross the circle at NE, NW, SW and SE. The circle is now cut into eight equal parts.",
       "create": {
         "d1": { "line": { "through": "O", "bisects": ["E", "O", "N"] } },
         "d2": { "line": { "through": "O", "bisects": ["N", "O", "W"] } },
@@ -55,26 +53,26 @@
     },
     {
       "id": 4,
-      "text": "Join the four points on the horizontal and vertical lines. This is the dynamic square, standing on its corner.",
-      "create": {
-        "dynamic": { "polygon": ["E", "N", "W", "S"] }
-      },
+      "text": "Join E, N, W and S with straight lines. This square stands on its corner.",
+      "create": { "dynamic": { "polygon": ["E", "N", "W", "S"] } },
       "highlight": ["E", "N", "W", "S"],
       "animate": "ruler"
     },
     {
       "id": 5,
-      "text": "Join the four points on the diagonals. This is the static square, sitting flat. The two squares cross each other at eight points.",
+      "text": "Join NE, NW, SW and SE with straight lines. This square sits flat. The two squares cross at eight points.",
       "create": {
         "static": { "polygon": ["NE", "NW", "SW", "SE"] },
-        "k": { "points": { "meet": ["dynamic", "static"], "pick": { "all": "byAngle" } } }
+        "k": {
+          "points": { "meet": ["dynamic", "static"], "pick": { "all": "byAngle" } }
+        }
       },
       "highlight": ["NE", "NW", "SW", "SE"],
       "animate": "ruler"
     },
     {
       "id": 6,
-      "text": "Draw the square that just touches the circle: a line at right angles to the horizontal at each side, and at right angles to the vertical at the top and bottom. This square is the tile that repeats.",
+      "text": "Draw a vertical line through E. Draw a vertical line through W. Draw a horizontal line through N. Draw a horizontal line through S. The four lines make a square that just touches the circle. Join its four corners to mark the tile that repeats.",
       "create": {
         "tE": { "line": { "through": "E", "perpendicularTo": "h" } },
         "tW": { "line": { "through": "W", "perpendicularTo": "h" } },
@@ -91,19 +89,36 @@
     }
   ],
   "ink": {
-    "text": "Go over the outline of the two squares, turning at every crossing. You get an eight-point star.",
+    "text": "Ink the outline of the two squares, turning at each of the eight points where they cross. This makes an eight-pointed star.",
     "paths": [
       {
         "closed": true,
-        "through": ["E", "k.1", "NE", "k.2", "N", "k.3", "NW", "k.4", "W", "k.5", "SW", "k.6", "S", "k.7", "SE", "k.8"]
+        "through": [
+          "E",
+          "k.1",
+          "NE",
+          "k.2",
+          "N",
+          "k.3",
+          "NW",
+          "k.4",
+          "W",
+          "k.5",
+          "SW",
+          "k.6",
+          "S",
+          "k.7",
+          "SE",
+          "k.8"
+        ]
       }
     ]
   },
   "pattern": {
     "cell": "cell",
-    "text": "Repeat the tile edge to edge, with the same star in every square. Neighbouring stars touch at their points, and the space between four stars closes into a cross.",
+    "text": "Put copies of the tile side by side. Neighbouring stars touch at their points. The space between four stars closes into a cross.",
     "palette": "Marinid zellige",
-    "colors": {"star": "a", "cross": "ground"},
+    "colors": { "star": "a", "cross": "ground" },
     "rings": true
   },
   "expect": {

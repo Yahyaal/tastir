@@ -3,9 +3,35 @@ import { parseTutorial } from '@tastir/schema';
 import { LIBRARY } from './library';
 import { sentencesOf } from './StepText';
 
-// The tutorials rewritten in simple, controlled English
-// (docs/tutorial-writing.md); a tutorial joins the list when it is.
-const REWRITTEN = ['alhambra-arrayanes-squares', 'alhambra-star-and-arrows'];
+// Every tutorial is written in simple, controlled English
+// (docs/tutorial-writing.md), except those still waiting to be rewritten.
+const NOT_YET: readonly string[] = [
+  'alhambra-barca-stars',
+  'alhambra-bath-stars',
+  'alhambra-comares-frames',
+  'alhambra-comares-lattice',
+  'alhambra-comares-stars',
+  'alhambra-leones-fret',
+  'alhambra-mexuar-stars',
+  'alhambra-reyes-dodecagrams',
+  'alhambra-reyes-fret',
+  'alhambra-reyes-stars',
+  'bou-inania-rosette',
+  'bou-inania-twelve-fold-wall',
+  'eight-fold-khatam',
+  'eight-fold-star-and-octagon',
+  'four-fold-ring-of-circles',
+  'ibn-tulun-window',
+  'kurt-eight-fold-zellige',
+  'kurt-eight-fold-zellige-filled',
+  'kurt-eight-fold-zellige-shifted',
+  'mian-stellated-hex',
+  'mian-stellated-rosettes',
+  'minbar-doors-cairo',
+  'six-fold-hammerhead',
+  'sixteen-fold-rosette',
+  'ten-pointed-star-decagon-rect',
+];
 
 // Words the rules replace: "Rule" by "Draw a straight line", "about X" by
 // "with centre X", "meets" and "intersects" by "crosses", "bisect" and
@@ -14,7 +40,7 @@ const BANNED =
   /\b(rule|ruled|rules|about [A-Z]\b|meets?|intersects?|bisects?|cuts? the angle)\b/i;
 
 describe.each(
-  LIBRARY.filter((e) => REWRITTEN.includes(e.id)).map(
+  LIBRARY.filter((e) => !NOT_YET.includes(e.id)).map(
     (e) => [e.id, e.json] as const,
   ),
 )('%s is written in plain steps', (_, json) => {
@@ -44,7 +70,7 @@ describe.each(
     const isPoint = (n: string) =>
       scene.elements.get(n)?.geometry.kind === 'point';
     const wrong = sentences.flatMap((s) =>
-      [...s.matchAll(/\b[A-Za-z]*\d+[A-Za-z\d]*\b|\b[A-Z]{1,4}\b/g)]
+      [...s.matchAll(/\b(?=\w*[A-Za-z])(?=\w*\d)\w+\b|\b[A-Z]{1,4}\b/g)]
         .filter((m) => {
           const word = m[0];
           // "A" opening a sentence before a small word is the article.

@@ -792,10 +792,18 @@ export function DrawAlong({
   // round them, so its names never pile up; Fit shows the whole pattern.
   const frame = useMemo(() => {
     if (!inking) return growingFrame(model, beat, hidden);
-    const at = [...stepNames].flatMap((n) => {
-      const g = model.scene.elements.get(n)?.geometry;
-      return inkPartText !== undefined && g?.kind === 'point' ? [g.at] : [];
-    });
+    if (inkPartText === undefined) return fullView(model);
+    // The ends of the part's own lines, and the points its text names.
+    const bits = inkPart !== undefined ? inkParts?.[inkPart]?.bits : undefined;
+    const at = [
+      ...(ready?.pieces ?? [])
+        .filter((piece) => bits?.has(piece.id))
+        .flatMap((piece) => [piece.segment.a, piece.segment.b]),
+      ...[...stepNames].flatMap((n) => {
+        const g = model.scene.elements.get(n)?.geometry;
+        return g?.kind === 'point' ? [g.at] : [];
+      }),
+    ];
     if (at.length < 2) return fullView(model);
     const xs = at.map((p) => p.x);
     const ys = at.map((p) => p.y);
@@ -803,14 +811,24 @@ export function DrawAlong({
       Math.max(...xs) - Math.min(...xs),
       Math.max(...ys) - Math.min(...ys),
     );
-    const pad = size * 0.35 + 0.1;
+    const pad = size * 0.25 + 0.1;
     return {
       minX: Math.min(...xs) - pad,
       maxX: Math.max(...xs) + pad,
       minY: Math.min(...ys) - pad,
       maxY: Math.max(...ys) + pad,
     };
-  }, [inking, model, beat, hidden, stepNames, inkPartText]);
+  }, [
+    inking,
+    model,
+    beat,
+    hidden,
+    stepNames,
+    inkPartText,
+    inkParts,
+    inkPart,
+    ready,
+  ]);
   const boardRef = useRef<SVGSVGElement>(null);
   const stepRef = useRef<SVGSVGElement>(null);
   const refs = useMemo(() => [boardRef, stepRef], []);

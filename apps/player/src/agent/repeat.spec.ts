@@ -114,7 +114,7 @@ describe('assistant repeating tiles and colors', () => {
   });
   it('supports a named hexagonal repeat with equal opposite sides', () => {
     const hex = parseTutorial(hexSource);
-    const vertices = ['E', 'P60', 'P120', 'W', 'P240', 'P300'];
+    const vertices = ['A', 'B', 'C', 'D', 'E', 'F'];
     const ink = editSegments(
       emptyDrawing(),
       { add: loop(vertices), remove: [] },

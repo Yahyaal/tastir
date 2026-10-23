@@ -29,138 +29,195 @@
   "steps": [
     {
       "id": 1,
-      "text": "Draw a horizontal line, put the compass point on it and draw a circle. Keep the compass at this opening until the end.",
-      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. Keep this compass size until the end.",
+      "create": {
+        "h": { "line": { "through": ["O", "A"] } },
+        "c": { "circle": { "centre": "O", "through": "A" } }
+      },
       "animate": "compass"
     },
     {
       "id": 2,
-      "text": "Put the compass point where the circle crosses the line on the right and draw a circle through the centre. Do the same on the left. The two new circles touch at the centre.",
+      "text": "Draw a circle with centre A through O. Draw a circle with centre D through O, where the line crosses the first circle on the left. The two new circles touch at O.",
       "create": {
-        "E": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
-        "W": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
-        "cE": {"circle": {"centre": "E", "radiusOf": "c"}},
-        "cW": {"circle": {"centre": "W", "radiusOf": "c"}}
+        "D": { "point": { "meet": ["c", "h"], "pick": { "angle": 180 } } },
+        "cE": { "circle": { "centre": "A", "radiusOf": "c" } },
+        "cW": { "circle": { "centre": "D", "radiusOf": "c" } }
       },
       "highlight": ["c", "h"],
       "animate": "compass"
     },
     {
       "id": 3,
-      "text": "The two new circles cross the first one at four more points. Draw a circle of the same size around each of them. Six circles now ring the first, and their crossings divide it into six.",
+      "text": "Draw a circle with centre B through O. Draw a circle with centre C through O. Draw a circle with centre E through O. Draw a circle with centre F through O. B, C, E and F are where the two new circles cross the first one. Six circles now ring the first circle.",
       "create": {
-        "P60": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60}}},
-        "P300": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300}}},
-        "P120": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120}}},
-        "P240": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240}}},
-        "c60": {"circle": {"centre": "P60", "radiusOf": "c"}},
-        "c120": {"circle": {"centre": "P120", "radiusOf": "c"}},
-        "c240": {"circle": {"centre": "P240", "radiusOf": "c"}},
-        "c300": {"circle": {"centre": "P300", "radiusOf": "c"}}
+        "B": { "point": { "meet": ["c", "cE"], "pick": { "angle": 60 } } },
+        "F": { "point": { "meet": ["c", "cE"], "pick": { "angle": 300 } } },
+        "C": { "point": { "meet": ["c", "cW"], "pick": { "angle": 120 } } },
+        "E": { "point": { "meet": ["c", "cW"], "pick": { "angle": 240 } } },
+        "c60": { "circle": { "centre": "B", "radiusOf": "c" } },
+        "c120": { "circle": { "centre": "C", "radiusOf": "c" } },
+        "c240": { "circle": { "centre": "E", "radiusOf": "c" } },
+        "c300": { "circle": { "centre": "F", "radiusOf": "c" } }
       },
       "highlight": ["cE", "cW"],
       "animate": "compass"
     },
     {
       "id": 4,
-      "text": "Outside the first circle, each pair of neighbouring circles makes a large petal. Rule a line through the centre and the tips of two opposite petals; do it three times. One line is vertical and two lean at 30° either side of it.",
+      "text": "Draw a straight line through O and P1. Draw a straight line through O and P2. Draw a straight line through O and P3. P1, P2 and P3 are the tips of the large petals outside the first circle.",
       "create": {
-        "X30": {"point": {"meet": ["cE", "c60"], "pick": {"farthest": "O"}}},
-        "X90": {"point": {"meet": ["c60", "c120"], "pick": {"farthest": "O"}}},
-        "X150": {"point": {"meet": ["c120", "cW"], "pick": {"farthest": "O"}}},
-        "m30": {"line": {"through": ["O", "X30"]}},
-        "m90": {"line": {"through": ["O", "X90"]}},
-        "m150": {"line": {"through": ["O", "X150"]}}
+        "P1": { "point": { "meet": ["cE", "c60"], "pick": { "farthest": "O" } } },
+        "P2": { "point": { "meet": ["c60", "c120"], "pick": { "farthest": "O" } } },
+        "P3": { "point": { "meet": ["c120", "cW"], "pick": { "farthest": "O" } } },
+        "m30": { "line": { "through": ["O", "P1"] } },
+        "m90": { "line": { "through": ["O", "P2"] } },
+        "m150": { "line": { "through": ["O", "P3"] } }
       },
       "highlight": ["cE", "c60", "c120", "cW"],
       "animate": "ruler"
     },
     {
       "id": 5,
-      "text": "The three lines cut the circle at six points. Join them to draw a hexagon standing on a corner; with the six points from the circles, the circle is now divided into twelve.",
+      "text": "Join H1, H2, H3, H4, H5 and H6 with straight lines. H1 to H6 are where the three lines cross the first circle. The circle is now divided into twelve.",
       "create": {
-        "D30": {"point": {"meet": ["c", "m30"], "pick": {"angle": 30}}},
-        "D90": {"point": {"meet": ["c", "m90"], "pick": {"angle": 90}}},
-        "D150": {"point": {"meet": ["c", "m150"], "pick": {"angle": 150}}},
-        "D210": {"point": {"meet": ["c", "m30"], "pick": {"angle": 210}}},
-        "D270": {"point": {"meet": ["c", "m90"], "pick": {"angle": 270}}},
-        "D330": {"point": {"meet": ["c", "m150"], "pick": {"angle": 330}}},
-        "hex": {"polygon": ["D30", "D90", "D150", "D210", "D270", "D330"]}
+        "H1": { "point": { "meet": ["c", "m30"], "pick": { "angle": 30 } } },
+        "H2": { "point": { "meet": ["c", "m90"], "pick": { "angle": 90 } } },
+        "H3": { "point": { "meet": ["c", "m150"], "pick": { "angle": 150 } } },
+        "H4": { "point": { "meet": ["c", "m30"], "pick": { "angle": 210 } } },
+        "H5": { "point": { "meet": ["c", "m90"], "pick": { "angle": 270 } } },
+        "H6": { "point": { "meet": ["c", "m150"], "pick": { "angle": 330 } } },
+        "hex": { "polygon": ["H1", "H2", "H3", "H4", "H5", "H6"] }
       },
       "highlight": ["m30", "m90", "m150"],
       "animate": "ruler"
     },
     {
       "id": 6,
-      "text": "Join every other corner of the hexagon to draw two triangles, one pointing up and one pointing down. Together they make a six-pointed star.",
+      "text": "Join H2, H4 and H6 with straight lines. Join H1, H3 and H5 with straight lines. The two triangles make a six-pointed star. They cross at K1 to K6.",
       "create": {
-        "up": {"polygon": ["D90", "D210", "D330"]},
-        "down": {"polygon": ["D30", "D150", "D270"]},
-        "K": {"points": {"meet": ["up", "down"], "pick": {"all": "byAngle"}}}
+        "up": { "polygon": ["H2", "H4", "H6"] },
+        "down": { "polygon": ["H1", "H3", "H5"] },
+        "K1": { "point": { "meet": ["up", "down"], "pick": { "angle": 0 } } },
+        "K2": { "point": { "meet": ["up", "down"], "pick": { "angle": 60 } } },
+        "K3": { "point": { "meet": ["up", "down"], "pick": { "angle": 120 } } },
+        "K4": { "point": { "meet": ["up", "down"], "pick": { "angle": 180 } } },
+        "K5": { "point": { "meet": ["up", "down"], "pick": { "angle": 240 } } },
+        "K6": { "point": { "meet": ["up", "down"], "pick": { "angle": 300 } } }
       },
-      "highlight": ["D30", "D90", "D150", "D210", "D270", "D330"],
+      "highlight": ["H1", "H2", "H3", "H4", "H5", "H6"],
       "animate": "ruler"
     },
     {
       "id": 7,
-      "text": "Join every other one of the six points from the circles to draw a second pair of triangles, pointing right and left. They make a second six-pointed star, turned 30° from the first.",
+      "text": "Join A, C and E with straight lines. Join B, D and F with straight lines. They make a second six-pointed star, turned 30° from the first. Its triangles cross at J1 to J6.",
       "create": {
-        "right": {"polygon": ["E", "P120", "P240"]},
-        "left": {"polygon": ["P60", "W", "P300"]},
-        "J": {"points": {"meet": ["right", "left"], "pick": {"all": "byAngle"}}}
+        "right": { "polygon": ["A", "C", "E"] },
+        "left": { "polygon": ["B", "D", "F"] },
+        "J1": { "point": { "meet": ["right", "left"], "pick": { "angle": 30 } } },
+        "J2": { "point": { "meet": ["right", "left"], "pick": { "angle": 90 } } },
+        "J3": { "point": { "meet": ["right", "left"], "pick": { "angle": 150 } } },
+        "J4": { "point": { "meet": ["right", "left"], "pick": { "angle": 210 } } },
+        "J5": { "point": { "meet": ["right", "left"], "pick": { "angle": 270 } } },
+        "J6": { "point": { "meet": ["right", "left"], "pick": { "angle": 330 } } }
       },
-      "highlight": ["E", "P60", "P120", "W", "P240", "P300"],
+      "highlight": ["A", "B", "C", "D", "E", "F"],
       "animate": "ruler"
     },
     {
       "id": 8,
-      "text": "At each point of the first star, rule a line at right angles to the line through the centre, so it just touches the circle. The six lines make a hexagon around the circle: this is the tile, and the next circle sits beyond each of its sides, touching this one at the star's point.",
-      "create": {
-        "tan30": {"line": {"through": "D30", "perpendicularTo": "m30"}},
-        "tan90": {"line": {"through": "D90", "perpendicularTo": "m90"}},
-        "tan150": {"line": {"through": "D150", "perpendicularTo": "m150"}},
-        "tan210": {"line": {"through": "D210", "perpendicularTo": "m30"}},
-        "tan270": {"line": {"through": "D270", "perpendicularTo": "m90"}},
-        "tan330": {"line": {"through": "D330", "perpendicularTo": "m150"}},
-        "V0": {"point": {"meet": ["tan30", "tan330"]}},
-        "V60": {"point": {"meet": ["tan90", "tan30"]}},
-        "V120": {"point": {"meet": ["tan150", "tan90"]}},
-        "V180": {"point": {"meet": ["tan210", "tan150"]}},
-        "V240": {"point": {"meet": ["tan270", "tan210"]}},
-        "V300": {"point": {"meet": ["tan330", "tan270"]}},
-        "tile": {"polygon": ["V0", "V60", "V120", "V180", "V240", "V300"]}
-      },
-      "highlight": ["D30", "D90", "D150", "D210", "D270", "D330"],
-      "animate": "ruler"
+      "text": "Draw the tile.",
+      "parts": [
+        {
+          "text": "Draw a line through H1, at 90° to the line from O to H1. Draw a line through H2, at 90° to the line from O to H2. Draw a line through H3, at 90° to the line from O to H3. Draw a line through H4, at 90° to the line from O to H4. Draw a line through H5, at 90° to the line from O to H5. Draw a line through H6, at 90° to the line from O to H6. The six lines just touch the circle. They make a hexagon with corners T1 to T6.",
+          "create": {
+            "tan30": { "line": { "through": "H1", "perpendicularTo": "m30" } },
+            "tan90": { "line": { "through": "H2", "perpendicularTo": "m90" } },
+            "tan150": { "line": { "through": "H3", "perpendicularTo": "m150" } },
+            "tan210": { "line": { "through": "H4", "perpendicularTo": "m30" } },
+            "tan270": { "line": { "through": "H5", "perpendicularTo": "m90" } },
+            "tan330": { "line": { "through": "H6", "perpendicularTo": "m150" } },
+            "T1": { "point": { "meet": ["tan30", "tan330"] } },
+            "T2": { "point": { "meet": ["tan90", "tan30"] } },
+            "T3": { "point": { "meet": ["tan150", "tan90"] } },
+            "T4": { "point": { "meet": ["tan210", "tan150"] } },
+            "T5": { "point": { "meet": ["tan270", "tan210"] } },
+            "T6": { "point": { "meet": ["tan330", "tan270"] } }
+          },
+          "highlight": ["H1", "H2", "H3", "H4", "H5", "H6"],
+          "animate": "ruler"
+        },
+        {
+          "text": "Join T1, T2, T3, T4, T5 and T6 to mark the tile that repeats.",
+          "create": { "tile": { "polygon": ["T1", "T2", "T3", "T4", "T5", "T6"] } },
+          "animate": "fade"
+        }
+      ]
     }
   ],
   "ink": {
-    "text": "Go over the outline of each six-pointed star. Together they make a twelve-pointed star whose two outlines weave through each other.",
+    "text": "Ink the outline of each six-pointed star. Together they make a twelve-pointed star.",
     "paths": [
       {
         "closed": true,
-        "through": ["K.1", "D30", "K.2", "D90", "K.3", "D150", "K.4", "D210", "K.5", "D270", "K.6", "D330"]
+        "through": [
+          "K1",
+          "H1",
+          "K2",
+          "H2",
+          "K3",
+          "H3",
+          "K4",
+          "H4",
+          "K5",
+          "H5",
+          "K6",
+          "H6"
+        ]
       },
       {
         "closed": true,
-        "through": ["E", "J.1", "P60", "J.2", "P120", "J.3", "W", "J.4", "P240", "J.5", "P300", "J.6"]
+        "through": [
+          "A",
+          "J1",
+          "B",
+          "J2",
+          "C",
+          "J3",
+          "D",
+          "J4",
+          "E",
+          "J5",
+          "F",
+          "J6"
+        ]
+      }
+    ],
+    "parts": [
+      {
+        "text": "Ink the first star: from K1 through H1, K2, H2 and on round the star, back to K1. Its points are H1 to H6, and its inner corners K1 to K6.",
+        "paths": 1
+      },
+      {
+        "text": "Ink the second star: from A through J1, B, J2 and on round the star, back to A. Its points are A, B, C, D, E and F.",
+        "paths": 1
       }
     ]
   },
   "pattern": {
     "cell": "tile",
-    "text": "Repeat the hexagon side to side. Neighbouring stars touch point to point, and the space between three stars stays open.",
+    "text": "Put copies of the hexagon side by side. Neighbouring stars touch point to point. The space between three stars stays open.",
     "palette": "Timurid tile",
-    "colors": {"star": "a", "ground": "b", "rhombus": "c"},
+    "colors": { "star": "a", "ground": "b", "rhombus": "c" },
     "rings": true
   },
   "expect": {
     "note": "Golden values computed by the engine; the pattern matches the Tuts+ drawing but no photo of a real example was found.",
     "pieceTypes": 3,
     "pieces": [
-      {"name": "star", "vertices": 24, "area": 1.26795, "perCell": 1},
-      {"name": "ground", "vertices": 12, "area": 0.63397, "perCell": 2},
-      {"name": "rhombus", "vertices": 4, "area": 0.07735, "perCell": 12}
+      { "name": "star", "vertices": 24, "area": 1.26795, "perCell": 1 },
+      { "name": "ground", "vertices": 12, "area": 0.63397, "perCell": 2 },
+      { "name": "rhombus", "vertices": 4, "area": 0.07735, "perCell": 12 }
     ],
     "cellArea": 3.4641
   }
