@@ -1,6 +1,6 @@
 # Writing the steps
 
-The steps are read by beginners, many of them reading English as a second language, while their hands are busy with a compass and a ruler. So every step is written in simple, controlled English, after ASD-STE100 (Simplified Technical English), and the owner checks the result by eye. Squares and stars (`alhambra-arrayanes-squares`) is the first tutorial written this way and Star and arrows (`alhambra-star-and-arrows`) the second; the others follow in batches. Eight-fold star and cross, the format's worked example, waits for a batch of its own: some 30 test files use its point names (E, NE, k.1), so renaming them means rewriting those tests too.
+The steps are read by beginners, many of them reading English as a second language, while their hands are busy with a compass and a ruler. So every step is written in simple, controlled English, after ASD-STE100 (Simplified Technical English), and the owner checks the result by eye. All 39 tutorials are written this way (23 October 2026); Squares and stars was the pilot. Eight-fold star and cross, the eight-fold rosette and the two Bou Inania tutorials keep some older point names (E, NE, P30) because many tests use them.
 
 ## The rules
 
@@ -33,4 +33,4 @@ When one shape takes more than five runs to name, the part asks for "the lines p
 
 ## How it is checked
 
-A test (`apps/player/src/app/plainText.spec.ts`) checks every tutorial in its list of rewritten tutorials: no word from the "Not" column, no engine names in the text, no sentence over twenty words, and every capital letter used as a point name is a point the tutorial makes. Add a tutorial to that list when it is rewritten.
+A test (`apps/player/src/app/plainText.spec.ts`) checks every tutorial: no word from the "Not" column, no engine names in the text, no sentence over twenty words, and every capital letter used as a point name is a point the tutorial makes.

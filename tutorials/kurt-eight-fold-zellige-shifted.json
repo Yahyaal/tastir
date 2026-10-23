@@ -28,1441 +28,361 @@
   "steps": [
     {
       "id": 1,
-      "text": "Draw a circle around the centre. Its radius is the unit for the whole pattern.",
-      "create": {
-        "c": {
-          "circle": {
-            "centre": "O",
-            "through": "A"
-          }
-        }
-      },
+      "text": "Draw a circle with centre O through A. Its radius is the unit for the whole pattern.",
+      "create": { "c": { "circle": { "centre": "O", "through": "A" } } },
       "animate": "compass"
     },
     {
       "id": 2,
-      "text": "Draw the horizontal through the centre and the vertical at right angles to it. They cut the circle at four points.",
+      "text": "Draw a horizontal straight line through O and A. Draw a vertical line through O. The two lines cross the circle at E, N, W and S. These letters stand for east, north, west and south.",
       "create": {
-        "h": {
-          "line": {
-            "through": [
-              "O",
-              "A"
-            ]
-          }
-        },
-        "v": {
-          "line": {
-            "through": "O",
-            "perpendicularTo": "h"
-          }
-        },
-        "E": {
-          "point": {
-            "meet": [
-              "c",
-              "h"
-            ],
-            "pick": {
-              "angle": 0
-            }
-          }
-        },
-        "N": {
-          "point": {
-            "meet": [
-              "c",
-              "v"
-            ],
-            "pick": {
-              "angle": 90
-            }
-          }
-        },
-        "W": {
-          "point": {
-            "meet": [
-              "c",
-              "h"
-            ],
-            "pick": {
-              "angle": 180
-            }
-          }
-        },
-        "Sp": {
-          "point": {
-            "meet": [
-              "c",
-              "v"
-            ],
-            "pick": {
-              "angle": 270
-            }
-          }
-        }
+        "h": { "line": { "through": ["O", "A"] } },
+        "v": { "line": { "through": "O", "perpendicularTo": "h" } },
+        "E": { "point": { "meet": ["c", "h"], "pick": { "angle": 0 } } },
+        "N": { "point": { "meet": ["c", "v"], "pick": { "angle": 90 } } },
+        "W": { "point": { "meet": ["c", "h"], "pick": { "angle": 180 } } },
+        "S": { "point": { "meet": ["c", "v"], "pick": { "angle": 270 } } }
       },
       "animate": "ruler"
     },
     {
       "id": 3,
-      "text": "Halve each right angle to get the two diagonals. The circle is now divided into eight.",
+      "text": "Draw the lines through O that halve the angles at O between E and N, and between N and W. These lines cross the circle at NE, NW, SW and SE.",
       "create": {
-        "d1": {
-          "line": {
-            "through": "O",
-            "bisects": [
-              "E",
-              "O",
-              "N"
-            ]
-          }
-        },
-        "d2": {
-          "line": {
-            "through": "O",
-            "bisects": [
-              "N",
-              "O",
-              "W"
-            ]
-          }
-        },
-        "NE": {
-          "point": {
-            "meet": [
-              "c",
-              "d1"
-            ],
-            "pick": {
-              "angle": 45
-            }
-          }
-        },
-        "NW": {
-          "point": {
-            "meet": [
-              "c",
-              "d2"
-            ],
-            "pick": {
-              "angle": 135
-            }
-          }
-        },
-        "SW": {
-          "point": {
-            "meet": [
-              "c",
-              "d1"
-            ],
-            "pick": {
-              "angle": 225
-            }
-          }
-        },
-        "SE": {
-          "point": {
-            "meet": [
-              "c",
-              "d2"
-            ],
-            "pick": {
-              "angle": 315
-            }
-          }
-        }
+        "d1": { "line": { "through": "O", "bisects": ["E", "O", "N"] } },
+        "d2": { "line": { "through": "O", "bisects": ["N", "O", "W"] } },
+        "NE": { "point": { "meet": ["c", "d1"], "pick": { "angle": 45 } } },
+        "NW": { "point": { "meet": ["c", "d2"], "pick": { "angle": 135 } } },
+        "SW": { "point": { "meet": ["c", "d1"], "pick": { "angle": 225 } } },
+        "SE": { "point": { "meet": ["c", "d2"], "pick": { "angle": 315 } } }
       },
-      "highlight": [
-        "h",
-        "v"
-      ],
+      "highlight": ["h", "v"],
       "animate": "ruler"
     },
     {
       "id": 4,
-      "text": "Draw the two squares inside the circle: one standing on its corners at the ends of the horizontal and vertical, one lying flat with its corners on the diagonals. They cross at eight points.",
+      "text": "Join E, N, W and S with straight lines. Join NE, NW, SW and SE with straight lines. The two squares cross at X1 to X8.",
       "create": {
-        "dyn": {
-          "polygon": [
-            "E",
-            "N",
-            "W",
-            "Sp"
-          ]
-        },
-        "sta": {
-          "polygon": [
-            "NE",
-            "NW",
-            "SW",
-            "SE"
-          ]
-        },
-        "k0": {
-          "point": {
-            "meet": [
-              "dyn",
-              "sta"
-            ],
-            "pick": {
-              "angle": 22.5
-            }
-          }
-        },
-        "k1": {
-          "point": {
-            "meet": [
-              "dyn",
-              "sta"
-            ],
-            "pick": {
-              "angle": 67.5
-            }
-          }
-        },
-        "k2": {
-          "point": {
-            "meet": [
-              "dyn",
-              "sta"
-            ],
-            "pick": {
-              "angle": 112.5
-            }
-          }
-        },
-        "k3": {
-          "point": {
-            "meet": [
-              "dyn",
-              "sta"
-            ],
-            "pick": {
-              "angle": 157.5
-            }
-          }
-        },
-        "k4": {
-          "point": {
-            "meet": [
-              "dyn",
-              "sta"
-            ],
-            "pick": {
-              "angle": 202.5
-            }
-          }
-        },
-        "k5": {
-          "point": {
-            "meet": [
-              "dyn",
-              "sta"
-            ],
-            "pick": {
-              "angle": 247.5
-            }
-          }
-        },
-        "k6": {
-          "point": {
-            "meet": [
-              "dyn",
-              "sta"
-            ],
-            "pick": {
-              "angle": 292.5
-            }
-          }
-        },
-        "k7": {
-          "point": {
-            "meet": [
-              "dyn",
-              "sta"
-            ],
-            "pick": {
-              "angle": 337.5
-            }
-          }
-        }
+        "dyn": { "polygon": ["E", "N", "W", "S"] },
+        "sta": { "polygon": ["NE", "NW", "SW", "SE"] },
+        "X1": { "point": { "meet": ["dyn", "sta"], "pick": { "angle": 22.5 } } },
+        "X2": { "point": { "meet": ["dyn", "sta"], "pick": { "angle": 67.5 } } },
+        "X3": { "point": { "meet": ["dyn", "sta"], "pick": { "angle": 112.5 } } },
+        "X4": { "point": { "meet": ["dyn", "sta"], "pick": { "angle": 157.5 } } },
+        "X5": { "point": { "meet": ["dyn", "sta"], "pick": { "angle": 202.5 } } },
+        "X6": { "point": { "meet": ["dyn", "sta"], "pick": { "angle": 247.5 } } },
+        "X7": { "point": { "meet": ["dyn", "sta"], "pick": { "angle": 292.5 } } },
+        "X8": { "point": { "meet": ["dyn", "sta"], "pick": { "angle": 337.5 } } }
       },
       "animate": "ruler"
     },
     {
       "id": 5,
-      "text": "Rule a line through the centre and each crossing of the squares. With the first lines, the circle is divided into sixteen.",
+      "text": "Draw a straight line through O and each of X1, X2, X3 and X4. The circle is now cut into sixteen.",
       "create": {
-        "r0": {
-          "line": {
-            "through": [
-              "O",
-              "k0"
-            ]
-          }
-        },
-        "r1": {
-          "line": {
-            "through": [
-              "O",
-              "k1"
-            ]
-          }
-        },
-        "r2": {
-          "line": {
-            "through": [
-              "O",
-              "k2"
-            ]
-          }
-        },
-        "r3": {
-          "line": {
-            "through": [
-              "O",
-              "k3"
-            ]
-          }
-        }
+        "r0": { "line": { "through": ["O", "X1"] } },
+        "r1": { "line": { "through": ["O", "X2"] } },
+        "r2": { "line": { "through": ["O", "X3"] } },
+        "r3": { "line": { "through": ["O", "X4"] } }
       },
-      "highlight": [
-        "k0",
-        "k1",
-        "k2",
-        "k3",
-        "k4",
-        "k5",
-        "k6",
-        "k7"
-      ],
+      "highlight": ["X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8"],
       "animate": "ruler"
     },
     {
       "id": 6,
-      "text": "Put the compass on the crossing just above the horizontal on the right and open it until the circle just touches the horizontal and the diagonal. Keep that opening and draw the same circle on the other seven crossings and on the centre.",
+      "text": "Draw a circle with centre X1 that just touches the horizontal line and the line through O and NE. Draw circles of the same size with centres X2 to X8 and O. These are the ring circles.",
       "create": {
-        "ring0": {
-          "circle": {
-            "centre": "k0",
-            "tangentTo": [
-              "h",
-              "d1"
-            ]
-          }
-        },
-        "ring1": {
-          "circle": {
-            "centre": "k1",
-            "radiusOf": "ring0"
-          }
-        },
-        "ring2": {
-          "circle": {
-            "centre": "k2",
-            "radiusOf": "ring0"
-          }
-        },
-        "ring3": {
-          "circle": {
-            "centre": "k3",
-            "radiusOf": "ring0"
-          }
-        },
-        "ring4": {
-          "circle": {
-            "centre": "k4",
-            "radiusOf": "ring0"
-          }
-        },
-        "ring5": {
-          "circle": {
-            "centre": "k5",
-            "radiusOf": "ring0"
-          }
-        },
-        "ring6": {
-          "circle": {
-            "centre": "k6",
-            "radiusOf": "ring0"
-          }
-        },
-        "ring7": {
-          "circle": {
-            "centre": "k7",
-            "radiusOf": "ring0"
-          }
-        },
-        "ringO": {
-          "circle": {
-            "centre": "O",
-            "radiusOf": "ring0"
-          }
-        }
+        "ring0": { "circle": { "centre": "X1", "tangentTo": ["h", "d1"] } },
+        "ring1": { "circle": { "centre": "X2", "radiusOf": "ring0" } },
+        "ring2": { "circle": { "centre": "X3", "radiusOf": "ring0" } },
+        "ring3": { "circle": { "centre": "X4", "radiusOf": "ring0" } },
+        "ring4": { "circle": { "centre": "X5", "radiusOf": "ring0" } },
+        "ring5": { "circle": { "centre": "X6", "radiusOf": "ring0" } },
+        "ring6": { "circle": { "centre": "X7", "radiusOf": "ring0" } },
+        "ring7": { "circle": { "centre": "X8", "radiusOf": "ring0" } },
+        "ringO": { "circle": { "centre": "O", "radiusOf": "ring0" } }
       },
-      "highlight": [
-        "k0",
-        "h",
-        "d1"
-      ],
+      "highlight": ["X1", "h", "d1"],
       "animate": "compass"
     },
     {
       "id": 7,
-      "text": "Join the centres of the ring circles with two horizontal and two vertical lines, then with four diagonal lines. Each line runs through two centres.",
+      "text": "Draw a straight line through X1 and X4, X5 and X8, X2 and X7, and X3 and X6. Draw a straight line through X1 and X6, X2 and X5, X3 and X8, and X4 and X7. Each line joins the centres of two ring circles.",
       "create": {
-        "g6a": {
-          "line": {
-            "through": [
-              "k0",
-              "k3"
-            ]
-          }
-        },
-        "g6b": {
-          "line": {
-            "through": [
-              "k4",
-              "k7"
-            ]
-          }
-        },
-        "g6c": {
-          "line": {
-            "through": [
-              "k1",
-              "k6"
-            ]
-          }
-        },
-        "g6d": {
-          "line": {
-            "through": [
-              "k2",
-              "k5"
-            ]
-          }
-        },
-        "g7a": {
-          "line": {
-            "through": [
-              "k0",
-              "k5"
-            ]
-          }
-        },
-        "g7b": {
-          "line": {
-            "through": [
-              "k1",
-              "k4"
-            ]
-          }
-        },
-        "g7c": {
-          "line": {
-            "through": [
-              "k2",
-              "k7"
-            ]
-          }
-        },
-        "g7d": {
-          "line": {
-            "through": [
-              "k3",
-              "k6"
-            ]
-          }
-        }
+        "g6a": { "line": { "through": ["X1", "X4"] } },
+        "g6b": { "line": { "through": ["X5", "X8"] } },
+        "g6c": { "line": { "through": ["X2", "X7"] } },
+        "g6d": { "line": { "through": ["X3", "X6"] } },
+        "g7a": { "line": { "through": ["X1", "X6"] } },
+        "g7b": { "line": { "through": ["X2", "X5"] } },
+        "g7c": { "line": { "through": ["X3", "X8"] } },
+        "g7d": { "line": { "through": ["X4", "X7"] } }
       },
-      "highlight": [
-        "k0",
-        "k1",
-        "k2",
-        "k3",
-        "k4",
-        "k5",
-        "k6",
-        "k7"
-      ],
+      "highlight": ["X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8"],
       "animate": "ruler"
     },
     {
       "id": 8,
-      "text": "Where the upper horizontal line crosses the steep line through the centre, put the compass and draw the circle that just touches the vertical and the diagonal.",
+      "text": "Draw a circle with centre M that just touches the vertical line and the line through O and NE. M is where the line through X1 and X4 crosses the line through O and X2.",
       "create": {
-        "m8": {
-          "point": {
-            "meet": [
-              "g6a",
-              "r1"
-            ]
-          }
-        },
-        "c8": {
-          "circle": {
-            "centre": "m8",
-            "tangentTo": [
-              "v",
-              "d1"
-            ]
-          }
-        }
+        "M": { "point": { "meet": ["g6a", "r1"] } },
+        "c8": { "circle": { "centre": "M", "tangentTo": ["v", "d1"] } }
       },
-      "highlight": [
-        "g6a",
-        "r1"
-      ],
+      "highlight": ["g6a", "r1"],
       "animate": "compass"
     },
     {
       "id": 9,
-      "text": "Put the compass on the centre and draw the circle that just touches that small circle on its near side. With the same opening, draw a circle around each of the eight crossings of the squares.",
+      "text": "Draw a circle with centre O that just touches this small circle on its near side. Draw circles of the same size with centres X1 to X8.",
       "create": {
-        "c9": {
-          "circle": {
-            "centre": "O",
-            "tangentTo": [
-              "c8"
-            ],
-            "touch": "near"
-          }
-        },
-        "c10_0": {
-          "circle": {
-            "centre": "k0",
-            "radiusOf": "c9"
-          }
-        },
-        "c10_1": {
-          "circle": {
-            "centre": "k1",
-            "radiusOf": "c9"
-          }
-        },
-        "c10_2": {
-          "circle": {
-            "centre": "k2",
-            "radiusOf": "c9"
-          }
-        },
-        "c10_3": {
-          "circle": {
-            "centre": "k3",
-            "radiusOf": "c9"
-          }
-        },
-        "c10_4": {
-          "circle": {
-            "centre": "k4",
-            "radiusOf": "c9"
-          }
-        },
-        "c10_5": {
-          "circle": {
-            "centre": "k5",
-            "radiusOf": "c9"
-          }
-        },
-        "c10_6": {
-          "circle": {
-            "centre": "k6",
-            "radiusOf": "c9"
-          }
-        },
-        "c10_7": {
-          "circle": {
-            "centre": "k7",
-            "radiusOf": "c9"
-          }
-        }
+        "c9": { "circle": { "centre": "O", "tangentTo": ["c8"], "touch": "near" } },
+        "c10_0": { "circle": { "centre": "X1", "radiusOf": "c9" } },
+        "c10_1": { "circle": { "centre": "X2", "radiusOf": "c9" } },
+        "c10_2": { "circle": { "centre": "X3", "radiusOf": "c9" } },
+        "c10_3": { "circle": { "centre": "X4", "radiusOf": "c9" } },
+        "c10_4": { "circle": { "centre": "X5", "radiusOf": "c9" } },
+        "c10_5": { "circle": { "centre": "X6", "radiusOf": "c9" } },
+        "c10_6": { "circle": { "centre": "X7", "radiusOf": "c9" } },
+        "c10_7": { "circle": { "centre": "X8", "radiusOf": "c9" } }
       },
-      "highlight": [
-        "c8"
-      ],
+      "highlight": ["c8"],
       "animate": "compass"
     },
     {
       "id": 10,
-      "text": "Where two of the diagonal lines cross on the horizontal, draw the circle that just touches the ring circles around it. Draw the same circle at the seven other places where two of the joining lines cross on the vertical or the diagonals.",
+      "text": "Draw a circle with centre R1 that just touches the ring circle at X1 on its near side. R1 is where the line through X1 and X6 crosses the line through X3 and X8. Draw circles of the same size with centres R2 to R8, where the other joining lines cross.",
       "create": {
-        "s0": {
-          "point": {
-            "meet": [
-              "g7a",
-              "g7c"
-            ]
-          }
-        },
-        "s1": {
-          "point": {
-            "meet": [
-              "g6a",
-              "g6c"
-            ]
-          }
-        },
-        "s2": {
-          "point": {
-            "meet": [
-              "g7b",
-              "g7c"
-            ]
-          }
-        },
-        "s3": {
-          "point": {
-            "meet": [
-              "g6a",
-              "g6d"
-            ]
-          }
-        },
-        "s4": {
-          "point": {
-            "meet": [
-              "g7b",
-              "g7d"
-            ]
-          }
-        },
-        "s5": {
-          "point": {
-            "meet": [
-              "g6b",
-              "g6d"
-            ]
-          }
-        },
-        "s6": {
-          "point": {
-            "meet": [
-              "g7a",
-              "g7d"
-            ]
-          }
-        },
-        "s7": {
-          "point": {
-            "meet": [
-              "g6b",
-              "g6c"
-            ]
-          }
-        },
+        "R1": { "point": { "meet": ["g7a", "g7c"] } },
+        "R2": { "point": { "meet": ["g6a", "g6c"] } },
+        "R3": { "point": { "meet": ["g7b", "g7c"] } },
+        "R4": { "point": { "meet": ["g6a", "g6d"] } },
+        "R5": { "point": { "meet": ["g7b", "g7d"] } },
+        "R6": { "point": { "meet": ["g6b", "g6d"] } },
+        "R7": { "point": { "meet": ["g7a", "g7d"] } },
+        "R8": { "point": { "meet": ["g6b", "g6c"] } },
         "sm0": {
-          "circle": {
-            "centre": "s0",
-            "tangentTo": [
-              "ring0"
-            ],
-            "touch": "near"
-          }
+          "circle": { "centre": "R1", "tangentTo": ["ring0"], "touch": "near" }
         },
-        "sm1": {
-          "circle": {
-            "centre": "s1",
-            "radiusOf": "sm0"
-          }
-        },
-        "sm2": {
-          "circle": {
-            "centre": "s2",
-            "radiusOf": "sm0"
-          }
-        },
-        "sm3": {
-          "circle": {
-            "centre": "s3",
-            "radiusOf": "sm0"
-          }
-        },
-        "sm4": {
-          "circle": {
-            "centre": "s4",
-            "radiusOf": "sm0"
-          }
-        },
-        "sm5": {
-          "circle": {
-            "centre": "s5",
-            "radiusOf": "sm0"
-          }
-        },
-        "sm6": {
-          "circle": {
-            "centre": "s6",
-            "radiusOf": "sm0"
-          }
-        },
-        "sm7": {
-          "circle": {
-            "centre": "s7",
-            "radiusOf": "sm0"
-          }
-        }
+        "sm1": { "circle": { "centre": "R2", "radiusOf": "sm0" } },
+        "sm2": { "circle": { "centre": "R3", "radiusOf": "sm0" } },
+        "sm3": { "circle": { "centre": "R4", "radiusOf": "sm0" } },
+        "sm4": { "circle": { "centre": "R5", "radiusOf": "sm0" } },
+        "sm5": { "circle": { "centre": "R6", "radiusOf": "sm0" } },
+        "sm6": { "circle": { "centre": "R7", "radiusOf": "sm0" } },
+        "sm7": { "circle": { "centre": "R8", "radiusOf": "sm0" } }
       },
       "animate": "compass"
     },
     {
       "id": 11,
-      "text": "Join every ring-circle centre to the centre two places round. The eight lines make two more squares, turned a sixteenth of a turn from the first two.",
+      "text": "Draw a straight line through X1 and X3, X2 and X4, X3 and X5, and X4 and X6. Draw a straight line through X5 and X7, X6 and X8, X7 and X1, and X8 and X2. The eight lines make two more squares.",
       "create": {
-        "q0": {
-          "line": {
-            "through": [
-              "k0",
-              "k2"
-            ]
-          }
-        },
-        "q1": {
-          "line": {
-            "through": [
-              "k1",
-              "k3"
-            ]
-          }
-        },
-        "q2": {
-          "line": {
-            "through": [
-              "k2",
-              "k4"
-            ]
-          }
-        },
-        "q3": {
-          "line": {
-            "through": [
-              "k3",
-              "k5"
-            ]
-          }
-        },
-        "q4": {
-          "line": {
-            "through": [
-              "k4",
-              "k6"
-            ]
-          }
-        },
-        "q5": {
-          "line": {
-            "through": [
-              "k5",
-              "k7"
-            ]
-          }
-        },
-        "q6": {
-          "line": {
-            "through": [
-              "k6",
-              "k0"
-            ]
-          }
-        },
-        "q7": {
-          "line": {
-            "through": [
-              "k7",
-              "k1"
-            ]
-          }
-        }
+        "q0": { "line": { "through": ["X1", "X3"] } },
+        "q1": { "line": { "through": ["X2", "X4"] } },
+        "q2": { "line": { "through": ["X3", "X5"] } },
+        "q3": { "line": { "through": ["X4", "X6"] } },
+        "q4": { "line": { "through": ["X5", "X7"] } },
+        "q5": { "line": { "through": ["X6", "X8"] } },
+        "q6": { "line": { "through": ["X7", "X1"] } },
+        "q7": { "line": { "through": ["X8", "X2"] } }
       },
-      "highlight": [
-        "k0",
-        "k1",
-        "k2",
-        "k3",
-        "k4",
-        "k5",
-        "k6",
-        "k7"
-      ],
+      "highlight": ["X1", "X2", "X3", "X4", "X5", "X6", "X7", "X8"],
       "animate": "ruler"
     },
     {
       "id": 12,
-      "text": "Mark where the circles around the crossings of the squares cut the new lines, and through those points rule vertical lines, in pairs.",
+      "text": "Draw vertical lines in pairs. They go through the points where the circles round X1 to X8 cross the lines of step 11.",
       "create": {
         "x0_m7820": {
-          "point": {
-            "meet": [
-              "c10_3",
-              "q3"
-            ],
-            "pick": {
-              "farthest": "k5"
-            }
-          }
+          "point": { "meet": ["c10_3", "q3"], "pick": { "farthest": "X6" } }
         },
-        "l0_m7820": {
-          "line": {
-            "through": "x0_m7820",
-            "perpendicularTo": "h"
-          }
-        },
+        "l0_m7820": { "line": { "through": "x0_m7820", "perpendicularTo": "h" } },
         "x0_m6322": {
-          "point": {
-            "meet": [
-              "c10_3",
-              "q3"
-            ],
-            "pick": {
-              "nearest": "k5"
-            }
-          }
+          "point": { "meet": ["c10_3", "q3"], "pick": { "nearest": "X6" } }
         },
-        "l0_m6322": {
-          "line": {
-            "through": "x0_m6322",
-            "perpendicularTo": "h"
-          }
-        },
+        "l0_m6322": { "line": { "through": "x0_m6322", "perpendicularTo": "h" } },
         "x0_m3678": {
-          "point": {
-            "meet": [
-              "c10_2",
-              "q2"
-            ],
-            "pick": {
-              "nearest": "k4"
-            }
-          }
+          "point": { "meet": ["c10_2", "q2"], "pick": { "nearest": "X5" } }
         },
-        "l0_m3678": {
-          "line": {
-            "through": "x0_m3678",
-            "perpendicularTo": "h"
-          }
-        },
+        "l0_m3678": { "line": { "through": "x0_m3678", "perpendicularTo": "h" } },
         "x0_m2180": {
-          "point": {
-            "meet": [
-              "c10_2",
-              "q2"
-            ],
-            "pick": {
-              "farthest": "k4"
-            }
-          }
+          "point": { "meet": ["c10_2", "q2"], "pick": { "farthest": "X5" } }
         },
-        "l0_m2180": {
-          "line": {
-            "through": "x0_m2180",
-            "perpendicularTo": "h"
-          }
-        },
+        "l0_m2180": { "line": { "through": "x0_m2180", "perpendicularTo": "h" } },
         "x0_2180": {
-          "point": {
-            "meet": [
-              "c10_1",
-              "q7"
-            ],
-            "pick": {
-              "farthest": "k7"
-            }
-          }
+          "point": { "meet": ["c10_1", "q7"], "pick": { "farthest": "X8" } }
         },
-        "l0_2180": {
-          "line": {
-            "through": "x0_2180",
-            "perpendicularTo": "h"
-          }
-        },
+        "l0_2180": { "line": { "through": "x0_2180", "perpendicularTo": "h" } },
         "x0_3678": {
-          "point": {
-            "meet": [
-              "c10_1",
-              "q7"
-            ],
-            "pick": {
-              "nearest": "k7"
-            }
-          }
+          "point": { "meet": ["c10_1", "q7"], "pick": { "nearest": "X8" } }
         },
-        "l0_3678": {
-          "line": {
-            "through": "x0_3678",
-            "perpendicularTo": "h"
-          }
-        },
+        "l0_3678": { "line": { "through": "x0_3678", "perpendicularTo": "h" } },
         "x0_6322": {
-          "point": {
-            "meet": [
-              "c10_0",
-              "q6"
-            ],
-            "pick": {
-              "nearest": "k6"
-            }
-          }
+          "point": { "meet": ["c10_0", "q6"], "pick": { "nearest": "X7" } }
         },
-        "l0_6322": {
-          "line": {
-            "through": "x0_6322",
-            "perpendicularTo": "h"
-          }
-        },
+        "l0_6322": { "line": { "through": "x0_6322", "perpendicularTo": "h" } },
         "x0_7820": {
-          "point": {
-            "meet": [
-              "c10_0",
-              "q6"
-            ],
-            "pick": {
-              "farthest": "k6"
-            }
-          }
+          "point": { "meet": ["c10_0", "q6"], "pick": { "farthest": "X7" } }
         },
-        "l0_7820": {
-          "line": {
-            "through": "x0_7820",
-            "perpendicularTo": "h"
-          }
-        }
+        "l0_7820": { "line": { "through": "x0_7820", "perpendicularTo": "h" } }
       },
       "animate": "ruler"
     },
     {
       "id": 13,
-      "text": "Mark where the circles around the crossings of the squares cut the new lines, and through those points rule horizontal lines, in pairs.",
+      "text": "Draw horizontal lines in pairs. They go through the points where the circles round X1 to X8 cross the lines of step 11.",
       "create": {
         "x90_m7820": {
-          "point": {
-            "meet": [
-              "c10_5",
-              "q5"
-            ],
-            "pick": {
-              "farthest": "k7"
-            }
-          }
+          "point": { "meet": ["c10_5", "q5"], "pick": { "farthest": "X8" } }
         },
-        "l90_m7820": {
-          "line": {
-            "through": "x90_m7820",
-            "perpendicularTo": "v"
-          }
-        },
+        "l90_m7820": { "line": { "through": "x90_m7820", "perpendicularTo": "v" } },
         "x90_m6322": {
-          "point": {
-            "meet": [
-              "c10_5",
-              "q5"
-            ],
-            "pick": {
-              "nearest": "k7"
-            }
-          }
+          "point": { "meet": ["c10_5", "q5"], "pick": { "nearest": "X8" } }
         },
-        "l90_m6322": {
-          "line": {
-            "through": "x90_m6322",
-            "perpendicularTo": "v"
-          }
-        },
+        "l90_m6322": { "line": { "through": "x90_m6322", "perpendicularTo": "v" } },
         "x90_m3678": {
-          "point": {
-            "meet": [
-              "c10_4",
-              "q4"
-            ],
-            "pick": {
-              "nearest": "k6"
-            }
-          }
+          "point": { "meet": ["c10_4", "q4"], "pick": { "nearest": "X7" } }
         },
-        "l90_m3678": {
-          "line": {
-            "through": "x90_m3678",
-            "perpendicularTo": "v"
-          }
-        },
+        "l90_m3678": { "line": { "through": "x90_m3678", "perpendicularTo": "v" } },
         "x90_m2180": {
-          "point": {
-            "meet": [
-              "c10_4",
-              "q4"
-            ],
-            "pick": {
-              "farthest": "k6"
-            }
-          }
+          "point": { "meet": ["c10_4", "q4"], "pick": { "farthest": "X7" } }
         },
-        "l90_m2180": {
-          "line": {
-            "through": "x90_m2180",
-            "perpendicularTo": "v"
-          }
-        },
+        "l90_m2180": { "line": { "through": "x90_m2180", "perpendicularTo": "v" } },
         "x90_2180": {
-          "point": {
-            "meet": [
-              "c10_0",
-              "q0"
-            ],
-            "pick": {
-              "farthest": "k2"
-            }
-          }
+          "point": { "meet": ["c10_0", "q0"], "pick": { "farthest": "X3" } }
         },
-        "l90_2180": {
-          "line": {
-            "through": "x90_2180",
-            "perpendicularTo": "v"
-          }
-        },
+        "l90_2180": { "line": { "through": "x90_2180", "perpendicularTo": "v" } },
         "x90_3678": {
-          "point": {
-            "meet": [
-              "c10_0",
-              "q0"
-            ],
-            "pick": {
-              "nearest": "k2"
-            }
-          }
+          "point": { "meet": ["c10_0", "q0"], "pick": { "nearest": "X3" } }
         },
-        "l90_3678": {
-          "line": {
-            "through": "x90_3678",
-            "perpendicularTo": "v"
-          }
-        },
+        "l90_3678": { "line": { "through": "x90_3678", "perpendicularTo": "v" } },
         "x90_6322": {
-          "point": {
-            "meet": [
-              "c10_1",
-              "q1"
-            ],
-            "pick": {
-              "nearest": "k3"
-            }
-          }
+          "point": { "meet": ["c10_1", "q1"], "pick": { "nearest": "X4" } }
         },
-        "l90_6322": {
-          "line": {
-            "through": "x90_6322",
-            "perpendicularTo": "v"
-          }
-        },
+        "l90_6322": { "line": { "through": "x90_6322", "perpendicularTo": "v" } },
         "x90_7820": {
-          "point": {
-            "meet": [
-              "c10_1",
-              "q1"
-            ],
-            "pick": {
-              "farthest": "k3"
-            }
-          }
+          "point": { "meet": ["c10_1", "q1"], "pick": { "farthest": "X4" } }
         },
-        "l90_7820": {
-          "line": {
-            "through": "x90_7820",
-            "perpendicularTo": "v"
-          }
-        }
+        "l90_7820": { "line": { "through": "x90_7820", "perpendicularTo": "v" } }
       },
       "animate": "ruler"
     },
     {
       "id": 14,
-      "text": "Mark where the circles around the crossings of the squares cut the new lines, and through those points rule slanting up to the left lines, in pairs.",
+      "text": "Draw lines that slope up to the left in pairs. They go through the points where the circles round X1 to X8 cross the lines of step 11.",
       "create": {
         "x45_m7820": {
-          "point": {
-            "meet": [
-              "c10_4",
-              "q4"
-            ],
-            "pick": {
-              "farthest": "k6"
-            }
-          }
+          "point": { "meet": ["c10_4", "q4"], "pick": { "farthest": "X7" } }
         },
-        "l45_m7820": {
-          "line": {
-            "through": "x45_m7820",
-            "perpendicularTo": "d1"
-          }
-        },
+        "l45_m7820": { "line": { "through": "x45_m7820", "perpendicularTo": "d1" } },
         "x45_m6322": {
-          "point": {
-            "meet": [
-              "c10_4",
-              "q4"
-            ],
-            "pick": {
-              "nearest": "k6"
-            }
-          }
+          "point": { "meet": ["c10_4", "q4"], "pick": { "nearest": "X7" } }
         },
-        "l45_m6322": {
-          "line": {
-            "through": "x45_m6322",
-            "perpendicularTo": "d1"
-          }
-        },
+        "l45_m6322": { "line": { "through": "x45_m6322", "perpendicularTo": "d1" } },
         "x45_m3678": {
-          "point": {
-            "meet": [
-              "c10_3",
-              "q3"
-            ],
-            "pick": {
-              "farthest": "x0_m7820"
-            }
-          }
+          "point": { "meet": ["c10_3", "q3"], "pick": { "farthest": "x0_m7820" } }
         },
-        "l45_m3678": {
-          "line": {
-            "through": "x45_m3678",
-            "perpendicularTo": "d1"
-          }
-        },
+        "l45_m3678": { "line": { "through": "x45_m3678", "perpendicularTo": "d1" } },
         "x45_m2180": {
-          "point": {
-            "meet": [
-              "c10_3",
-              "q3"
-            ],
-            "pick": {
-              "nearest": "x0_m7820"
-            }
-          }
+          "point": { "meet": ["c10_3", "q3"], "pick": { "nearest": "x0_m7820" } }
         },
-        "l45_m2180": {
-          "line": {
-            "through": "x45_m2180",
-            "perpendicularTo": "d1"
-          }
-        },
+        "l45_m2180": { "line": { "through": "x45_m2180", "perpendicularTo": "d1" } },
         "x45_2180": {
-          "point": {
-            "meet": [
-              "c10_2",
-              "q0"
-            ],
-            "pick": {
-              "farthest": "k0"
-            }
-          }
+          "point": { "meet": ["c10_2", "q0"], "pick": { "farthest": "X1" } }
         },
-        "l45_2180": {
-          "line": {
-            "through": "x45_2180",
-            "perpendicularTo": "d1"
-          }
-        },
+        "l45_2180": { "line": { "through": "x45_2180", "perpendicularTo": "d1" } },
         "x45_3678": {
-          "point": {
-            "meet": [
-              "c10_2",
-              "q0"
-            ],
-            "pick": {
-              "nearest": "k0"
-            }
-          }
+          "point": { "meet": ["c10_2", "q0"], "pick": { "nearest": "X1" } }
         },
-        "l45_3678": {
-          "line": {
-            "through": "x45_3678",
-            "perpendicularTo": "d1"
-          }
-        },
+        "l45_3678": { "line": { "through": "x45_3678", "perpendicularTo": "d1" } },
         "x45_6322": {
-          "point": {
-            "meet": [
-              "c10_0",
-              "q0"
-            ],
-            "pick": {
-              "farthest": "x90_2180"
-            }
-          }
+          "point": { "meet": ["c10_0", "q0"], "pick": { "farthest": "x90_2180" } }
         },
-        "l45_6322": {
-          "line": {
-            "through": "x45_6322",
-            "perpendicularTo": "d1"
-          }
-        },
+        "l45_6322": { "line": { "through": "x45_6322", "perpendicularTo": "d1" } },
         "x45_7820": {
-          "point": {
-            "meet": [
-              "c10_0",
-              "q0"
-            ],
-            "pick": {
-              "nearest": "x90_2180"
-            }
-          }
+          "point": { "meet": ["c10_0", "q0"], "pick": { "nearest": "x90_2180" } }
         },
-        "l45_7820": {
-          "line": {
-            "through": "x45_7820",
-            "perpendicularTo": "d1"
-          }
-        }
+        "l45_7820": { "line": { "through": "x45_7820", "perpendicularTo": "d1" } }
       },
       "animate": "ruler"
     },
     {
       "id": 15,
-      "text": "Mark where the circles around the crossings of the squares cut the new lines, and through those points rule slanting up to the right lines, in pairs.",
+      "text": "Draw lines that slope up to the right in pairs. They go through the points where the circles round X1 to X8 cross the lines of step 11.",
       "create": {
         "x135_m7820": {
-          "point": {
-            "meet": [
-              "c10_6",
-              "q6"
-            ],
-            "pick": {
-              "farthest": "k0"
-            }
-          }
+          "point": { "meet": ["c10_6", "q6"], "pick": { "farthest": "X1" } }
         },
         "l135_m7820": {
-          "line": {
-            "through": "x135_m7820",
-            "perpendicularTo": "d2"
-          }
+          "line": { "through": "x135_m7820", "perpendicularTo": "d2" }
         },
         "x135_m6322": {
-          "point": {
-            "meet": [
-              "c10_6",
-              "q6"
-            ],
-            "pick": {
-              "nearest": "k0"
-            }
-          }
+          "point": { "meet": ["c10_6", "q6"], "pick": { "nearest": "X1" } }
         },
         "l135_m6322": {
-          "line": {
-            "through": "x135_m6322",
-            "perpendicularTo": "d2"
-          }
+          "line": { "through": "x135_m6322", "perpendicularTo": "d2" }
         },
         "x135_m3678": {
-          "point": {
-            "meet": [
-              "c10_0",
-              "q6"
-            ],
-            "pick": {
-              "nearest": "k6"
-            }
-          }
+          "point": { "meet": ["c10_0", "q6"], "pick": { "nearest": "X7" } }
         },
         "l135_m3678": {
-          "line": {
-            "through": "x135_m3678",
-            "perpendicularTo": "d2"
-          }
+          "line": { "through": "x135_m3678", "perpendicularTo": "d2" }
         },
         "x135_m2180": {
-          "point": {
-            "meet": [
-              "c10_0",
-              "q6"
-            ],
-            "pick": {
-              "farthest": "k6"
-            }
-          }
+          "point": { "meet": ["c10_0", "q6"], "pick": { "farthest": "X7" } }
         },
         "l135_m2180": {
-          "line": {
-            "through": "x135_m2180",
-            "perpendicularTo": "d2"
-          }
+          "line": { "through": "x135_m2180", "perpendicularTo": "d2" }
         },
         "x135_2180": {
-          "point": {
-            "meet": [
-              "c10_1",
-              "q1"
-            ],
-            "pick": {
-              "farthest": "k3"
-            }
-          }
+          "point": { "meet": ["c10_1", "q1"], "pick": { "farthest": "X4" } }
         },
-        "l135_2180": {
-          "line": {
-            "through": "x135_2180",
-            "perpendicularTo": "d2"
-          }
-        },
+        "l135_2180": { "line": { "through": "x135_2180", "perpendicularTo": "d2" } },
         "x135_3678": {
-          "point": {
-            "meet": [
-              "c10_1",
-              "q1"
-            ],
-            "pick": {
-              "nearest": "k3"
-            }
-          }
+          "point": { "meet": ["c10_1", "q1"], "pick": { "nearest": "X4" } }
         },
-        "l135_3678": {
-          "line": {
-            "through": "x135_3678",
-            "perpendicularTo": "d2"
-          }
-        },
+        "l135_3678": { "line": { "through": "x135_3678", "perpendicularTo": "d2" } },
         "x135_6322": {
-          "point": {
-            "meet": [
-              "c10_2",
-              "q2"
-            ],
-            "pick": {
-              "nearest": "x0_m3678"
-            }
-          }
+          "point": { "meet": ["c10_2", "q2"], "pick": { "nearest": "x0_m3678" } }
         },
-        "l135_6322": {
-          "line": {
-            "through": "x135_6322",
-            "perpendicularTo": "d2"
-          }
-        },
+        "l135_6322": { "line": { "through": "x135_6322", "perpendicularTo": "d2" } },
         "x135_7820": {
-          "point": {
-            "meet": [
-              "c10_2",
-              "q2"
-            ],
-            "pick": {
-              "farthest": "x0_m3678"
-            }
-          }
+          "point": { "meet": ["c10_2", "q2"], "pick": { "farthest": "x0_m3678" } }
         },
-        "l135_7820": {
-          "line": {
-            "through": "x135_7820",
-            "perpendicularTo": "d2"
-          }
-        }
+        "l135_7820": { "line": { "through": "x135_7820", "perpendicularTo": "d2" } }
       },
       "animate": "ruler"
     },
     {
       "id": 16,
-      "text": "Draw an octagon inside each ring circle, each small circle and the centre circle, with its corners where the circle meets lines through its centre parallel to the horizontal, the vertical and the diagonals.",
-      "textWithoutHelpers": "Draw an octagon inside each ring circle, each small circle and the centre circle, with its corners on the circle at the horizontal, the vertical and the diagonals through its centre.",
+      "text": "Draw an octagon in each ring circle, each small circle and the circle round O. Its corners are where the circle crosses the lines through its centre that run parallel to the lines through O.",
+      "textWithoutHelpers": "Draw an octagon in each ring circle, each small circle and the circle round O. Its corners are where the circle crosses the lines through its centre that run parallel to the lines through O.",
       "create": {
         "oK0_0": {
-          "point": {
-            "meet": [
-              "ring0",
-              "g6a"
-            ],
-            "pick": {
-              "farthest": "k3"
-            }
-          }
+          "point": { "meet": ["ring0", "g6a"], "pick": { "farthest": "X4" } }
         },
         "oK0_1": {
-          "point": {
-            "meet": [
-              "ring0",
-              "g7a"
-            ],
-            "pick": {
-              "farthest": "k5"
-            }
-          }
+          "point": { "meet": ["ring0", "g7a"], "pick": { "farthest": "X6" } }
         },
-        "pK0_90": {
-          "line": {
-            "through": "k0",
-            "parallelTo": "v"
-          }
-        },
+        "pK0_90": { "line": { "through": "X1", "parallelTo": "v" } },
         "oK0_2": {
-          "point": {
-            "meet": [
-              "ring0",
-              "pK0_90"
-            ],
-            "pick": {
-              "nearest": "NE"
-            }
-          }
+          "point": { "meet": ["ring0", "pK0_90"], "pick": { "nearest": "NE" } }
         },
-        "pK0_135": {
-          "line": {
-            "through": "k0",
-            "parallelTo": "d2"
-          }
-        },
+        "pK0_135": { "line": { "through": "X1", "parallelTo": "d2" } },
         "oK0_3": {
-          "point": {
-            "meet": [
-              "ring0",
-              "pK0_135"
-            ],
-            "pick": {
-              "farthest": "A"
-            }
-          }
+          "point": { "meet": ["ring0", "pK0_135"], "pick": { "farthest": "A" } }
         },
         "oK0_4": {
-          "point": {
-            "meet": [
-              "ring0",
-              "g6a"
-            ],
-            "pick": {
-              "nearest": "k3"
-            }
-          }
+          "point": { "meet": ["ring0", "g6a"], "pick": { "nearest": "X4" } }
         },
         "oK0_5": {
-          "point": {
-            "meet": [
-              "ring0",
-              "g7a"
-            ],
-            "pick": {
-              "nearest": "k5"
-            }
-          }
+          "point": { "meet": ["ring0", "g7a"], "pick": { "nearest": "X6" } }
         },
         "oK0_6": {
-          "point": {
-            "meet": [
-              "ring0",
-              "pK0_90"
-            ],
-            "pick": {
-              "farthest": "NE"
-            }
-          }
+          "point": { "meet": ["ring0", "pK0_90"], "pick": { "farthest": "NE" } }
         },
         "oK0_7": {
-          "point": {
-            "meet": [
-              "ring0",
-              "pK0_135"
-            ],
-            "pick": {
-              "nearest": "A"
-            }
-          }
+          "point": { "meet": ["ring0", "pK0_135"], "pick": { "nearest": "A" } }
         },
         "octK0": {
           "polygon": [
@@ -1476,99 +396,30 @@
             "oK0_7"
           ]
         },
-        "pK1_0": {
-          "line": {
-            "through": "k1",
-            "parallelTo": "h"
-          }
-        },
+        "pK1_0": { "line": { "through": "X2", "parallelTo": "h" } },
         "oK1_0": {
-          "point": {
-            "meet": [
-              "ring1",
-              "pK1_0"
-            ],
-            "pick": {
-              "nearest": "NE"
-            }
-          }
+          "point": { "meet": ["ring1", "pK1_0"], "pick": { "nearest": "NE" } }
         },
         "oK1_1": {
-          "point": {
-            "meet": [
-              "ring1",
-              "g7b"
-            ],
-            "pick": {
-              "farthest": "k4"
-            }
-          }
+          "point": { "meet": ["ring1", "g7b"], "pick": { "farthest": "X5" } }
         },
         "oK1_2": {
-          "point": {
-            "meet": [
-              "ring1",
-              "g6c"
-            ],
-            "pick": {
-              "farthest": "k6"
-            }
-          }
+          "point": { "meet": ["ring1", "g6c"], "pick": { "farthest": "X7" } }
         },
         "oK1_3": {
-          "point": {
-            "meet": [
-              "ring1",
-              "pK0_135"
-            ],
-            "pick": {
-              "farthest": "A"
-            }
-          }
+          "point": { "meet": ["ring1", "pK0_135"], "pick": { "farthest": "A" } }
         },
         "oK1_4": {
-          "point": {
-            "meet": [
-              "ring1",
-              "pK1_0"
-            ],
-            "pick": {
-              "farthest": "NE"
-            }
-          }
+          "point": { "meet": ["ring1", "pK1_0"], "pick": { "farthest": "NE" } }
         },
         "oK1_5": {
-          "point": {
-            "meet": [
-              "ring1",
-              "g7b"
-            ],
-            "pick": {
-              "nearest": "k4"
-            }
-          }
+          "point": { "meet": ["ring1", "g7b"], "pick": { "nearest": "X5" } }
         },
         "oK1_6": {
-          "point": {
-            "meet": [
-              "ring1",
-              "g6c"
-            ],
-            "pick": {
-              "nearest": "k6"
-            }
-          }
+          "point": { "meet": ["ring1", "g6c"], "pick": { "nearest": "X7" } }
         },
         "oK1_7": {
-          "point": {
-            "meet": [
-              "ring1",
-              "pK0_135"
-            ],
-            "pick": {
-              "nearest": "A"
-            }
-          }
+          "point": { "meet": ["ring1", "pK0_135"], "pick": { "nearest": "A" } }
         },
         "octK1": {
           "polygon": [
@@ -1583,98 +434,29 @@
           ]
         },
         "oK2_0": {
-          "point": {
-            "meet": [
-              "ring2",
-              "pK1_0"
-            ],
-            "pick": {
-              "nearest": "NE"
-            }
-          }
+          "point": { "meet": ["ring2", "pK1_0"], "pick": { "nearest": "NE" } }
         },
-        "pK2_45": {
-          "line": {
-            "through": "k2",
-            "parallelTo": "d1"
-          }
-        },
+        "pK2_45": { "line": { "through": "X3", "parallelTo": "d1" } },
         "oK2_1": {
-          "point": {
-            "meet": [
-              "ring2",
-              "pK2_45"
-            ],
-            "pick": {
-              "farthest": "W"
-            }
-          }
+          "point": { "meet": ["ring2", "pK2_45"], "pick": { "farthest": "W" } }
         },
         "oK2_2": {
-          "point": {
-            "meet": [
-              "ring2",
-              "g6d"
-            ],
-            "pick": {
-              "farthest": "k5"
-            }
-          }
+          "point": { "meet": ["ring2", "g6d"], "pick": { "farthest": "X6" } }
         },
         "oK2_3": {
-          "point": {
-            "meet": [
-              "ring2",
-              "g7c"
-            ],
-            "pick": {
-              "farthest": "s0"
-            }
-          }
+          "point": { "meet": ["ring2", "g7c"], "pick": { "farthest": "R1" } }
         },
         "oK2_4": {
-          "point": {
-            "meet": [
-              "ring2",
-              "pK1_0"
-            ],
-            "pick": {
-              "farthest": "NE"
-            }
-          }
+          "point": { "meet": ["ring2", "pK1_0"], "pick": { "farthest": "NE" } }
         },
         "oK2_5": {
-          "point": {
-            "meet": [
-              "ring2",
-              "pK2_45"
-            ],
-            "pick": {
-              "nearest": "W"
-            }
-          }
+          "point": { "meet": ["ring2", "pK2_45"], "pick": { "nearest": "W" } }
         },
         "oK2_6": {
-          "point": {
-            "meet": [
-              "ring2",
-              "g6d"
-            ],
-            "pick": {
-              "nearest": "k5"
-            }
-          }
+          "point": { "meet": ["ring2", "g6d"], "pick": { "nearest": "X6" } }
         },
         "oK2_7": {
-          "point": {
-            "meet": [
-              "ring2",
-              "g7c"
-            ],
-            "pick": {
-              "nearest": "s0"
-            }
-          }
+          "point": { "meet": ["ring2", "g7c"], "pick": { "nearest": "R1" } }
         },
         "octK2": {
           "polygon": [
@@ -1689,98 +471,29 @@
           ]
         },
         "oK3_0": {
-          "point": {
-            "meet": [
-              "ring3",
-              "g6a"
-            ],
-            "pick": {
-              "nearest": "k0"
-            }
-          }
+          "point": { "meet": ["ring3", "g6a"], "pick": { "nearest": "X1" } }
         },
         "oK3_1": {
-          "point": {
-            "meet": [
-              "ring3",
-              "pK2_45"
-            ],
-            "pick": {
-              "nearest": "N"
-            }
-          }
+          "point": { "meet": ["ring3", "pK2_45"], "pick": { "nearest": "N" } }
         },
-        "pK3_90": {
-          "line": {
-            "through": "k3",
-            "parallelTo": "v"
-          }
-        },
+        "pK3_90": { "line": { "through": "X4", "parallelTo": "v" } },
         "oK3_2": {
-          "point": {
-            "meet": [
-              "ring3",
-              "pK3_90"
-            ],
-            "pick": {
-              "nearest": "NW"
-            }
-          }
+          "point": { "meet": ["ring3", "pK3_90"], "pick": { "nearest": "NW" } }
         },
         "oK3_3": {
-          "point": {
-            "meet": [
-              "ring3",
-              "g7d"
-            ],
-            "pick": {
-              "farthest": "k6"
-            }
-          }
+          "point": { "meet": ["ring3", "g7d"], "pick": { "farthest": "X7" } }
         },
         "oK3_4": {
-          "point": {
-            "meet": [
-              "ring3",
-              "g6a"
-            ],
-            "pick": {
-              "farthest": "k0"
-            }
-          }
+          "point": { "meet": ["ring3", "g6a"], "pick": { "farthest": "X1" } }
         },
         "oK3_5": {
-          "point": {
-            "meet": [
-              "ring3",
-              "pK2_45"
-            ],
-            "pick": {
-              "farthest": "N"
-            }
-          }
+          "point": { "meet": ["ring3", "pK2_45"], "pick": { "farthest": "N" } }
         },
         "oK3_6": {
-          "point": {
-            "meet": [
-              "ring3",
-              "pK3_90"
-            ],
-            "pick": {
-              "farthest": "NW"
-            }
-          }
+          "point": { "meet": ["ring3", "pK3_90"], "pick": { "farthest": "NW" } }
         },
         "oK3_7": {
-          "point": {
-            "meet": [
-              "ring3",
-              "g7d"
-            ],
-            "pick": {
-              "nearest": "k6"
-            }
-          }
+          "point": { "meet": ["ring3", "g7d"], "pick": { "nearest": "X7" } }
         },
         "octK3": {
           "polygon": [
@@ -1795,98 +508,29 @@
           ]
         },
         "oK4_0": {
-          "point": {
-            "meet": [
-              "ring4",
-              "g6b"
-            ],
-            "pick": {
-              "nearest": "k7"
-            }
-          }
+          "point": { "meet": ["ring4", "g6b"], "pick": { "nearest": "X8" } }
         },
         "oK4_1": {
-          "point": {
-            "meet": [
-              "ring4",
-              "g7b"
-            ],
-            "pick": {
-              "nearest": "k1"
-            }
-          }
+          "point": { "meet": ["ring4", "g7b"], "pick": { "nearest": "X2" } }
         },
         "oK4_2": {
-          "point": {
-            "meet": [
-              "ring4",
-              "pK3_90"
-            ],
-            "pick": {
-              "nearest": "NW"
-            }
-          }
+          "point": { "meet": ["ring4", "pK3_90"], "pick": { "nearest": "NW" } }
         },
-        "pK4_135": {
-          "line": {
-            "through": "k4",
-            "parallelTo": "d2"
-          }
-        },
+        "pK4_135": { "line": { "through": "X5", "parallelTo": "d2" } },
         "oK4_3": {
-          "point": {
-            "meet": [
-              "ring4",
-              "pK4_135"
-            ],
-            "pick": {
-              "nearest": "W"
-            }
-          }
+          "point": { "meet": ["ring4", "pK4_135"], "pick": { "nearest": "W" } }
         },
         "oK4_4": {
-          "point": {
-            "meet": [
-              "ring4",
-              "g6b"
-            ],
-            "pick": {
-              "farthest": "k7"
-            }
-          }
+          "point": { "meet": ["ring4", "g6b"], "pick": { "farthest": "X8" } }
         },
         "oK4_5": {
-          "point": {
-            "meet": [
-              "ring4",
-              "g7b"
-            ],
-            "pick": {
-              "farthest": "k1"
-            }
-          }
+          "point": { "meet": ["ring4", "g7b"], "pick": { "farthest": "X2" } }
         },
         "oK4_6": {
-          "point": {
-            "meet": [
-              "ring4",
-              "pK3_90"
-            ],
-            "pick": {
-              "farthest": "NW"
-            }
-          }
+          "point": { "meet": ["ring4", "pK3_90"], "pick": { "farthest": "NW" } }
         },
         "oK4_7": {
-          "point": {
-            "meet": [
-              "ring4",
-              "pK4_135"
-            ],
-            "pick": {
-              "farthest": "W"
-            }
-          }
+          "point": { "meet": ["ring4", "pK4_135"], "pick": { "farthest": "W" } }
         },
         "octK4": {
           "polygon": [
@@ -1900,99 +544,30 @@
             "oK4_7"
           ]
         },
-        "pK5_0": {
-          "line": {
-            "through": "k5",
-            "parallelTo": "h"
-          }
-        },
+        "pK5_0": { "line": { "through": "X6", "parallelTo": "h" } },
         "oK5_0": {
-          "point": {
-            "meet": [
-              "ring5",
-              "pK5_0"
-            ],
-            "pick": {
-              "farthest": "SW"
-            }
-          }
+          "point": { "meet": ["ring5", "pK5_0"], "pick": { "farthest": "SW" } }
         },
         "oK5_1": {
-          "point": {
-            "meet": [
-              "ring5",
-              "g7a"
-            ],
-            "pick": {
-              "nearest": "k0"
-            }
-          }
+          "point": { "meet": ["ring5", "g7a"], "pick": { "nearest": "X1" } }
         },
         "oK5_2": {
-          "point": {
-            "meet": [
-              "ring5",
-              "g6d"
-            ],
-            "pick": {
-              "nearest": "k2"
-            }
-          }
+          "point": { "meet": ["ring5", "g6d"], "pick": { "nearest": "X3" } }
         },
         "oK5_3": {
-          "point": {
-            "meet": [
-              "ring5",
-              "pK4_135"
-            ],
-            "pick": {
-              "nearest": "W"
-            }
-          }
+          "point": { "meet": ["ring5", "pK4_135"], "pick": { "nearest": "W" } }
         },
         "oK5_4": {
-          "point": {
-            "meet": [
-              "ring5",
-              "pK5_0"
-            ],
-            "pick": {
-              "nearest": "SW"
-            }
-          }
+          "point": { "meet": ["ring5", "pK5_0"], "pick": { "nearest": "SW" } }
         },
         "oK5_5": {
-          "point": {
-            "meet": [
-              "ring5",
-              "g7a"
-            ],
-            "pick": {
-              "farthest": "k0"
-            }
-          }
+          "point": { "meet": ["ring5", "g7a"], "pick": { "farthest": "X1" } }
         },
         "oK5_6": {
-          "point": {
-            "meet": [
-              "ring5",
-              "g6d"
-            ],
-            "pick": {
-              "farthest": "k2"
-            }
-          }
+          "point": { "meet": ["ring5", "g6d"], "pick": { "farthest": "X3" } }
         },
         "oK5_7": {
-          "point": {
-            "meet": [
-              "ring5",
-              "pK4_135"
-            ],
-            "pick": {
-              "farthest": "W"
-            }
-          }
+          "point": { "meet": ["ring5", "pK4_135"], "pick": { "farthest": "W" } }
         },
         "octK5": {
           "polygon": [
@@ -2007,98 +582,29 @@
           ]
         },
         "oK6_0": {
-          "point": {
-            "meet": [
-              "ring6",
-              "pK5_0"
-            ],
-            "pick": {
-              "farthest": "SW"
-            }
-          }
+          "point": { "meet": ["ring6", "pK5_0"], "pick": { "farthest": "SW" } }
         },
-        "pK6_45": {
-          "line": {
-            "through": "k6",
-            "parallelTo": "d1"
-          }
-        },
+        "pK6_45": { "line": { "through": "X7", "parallelTo": "d1" } },
         "oK6_1": {
-          "point": {
-            "meet": [
-              "ring6",
-              "pK6_45"
-            ],
-            "pick": {
-              "farthest": "Sp"
-            }
-          }
+          "point": { "meet": ["ring6", "pK6_45"], "pick": { "farthest": "S" } }
         },
         "oK6_2": {
-          "point": {
-            "meet": [
-              "ring6",
-              "g6c"
-            ],
-            "pick": {
-              "nearest": "k1"
-            }
-          }
+          "point": { "meet": ["ring6", "g6c"], "pick": { "nearest": "X2" } }
         },
         "oK6_3": {
-          "point": {
-            "meet": [
-              "ring6",
-              "g7d"
-            ],
-            "pick": {
-              "nearest": "k3"
-            }
-          }
+          "point": { "meet": ["ring6", "g7d"], "pick": { "nearest": "X4" } }
         },
         "oK6_4": {
-          "point": {
-            "meet": [
-              "ring6",
-              "pK5_0"
-            ],
-            "pick": {
-              "nearest": "SW"
-            }
-          }
+          "point": { "meet": ["ring6", "pK5_0"], "pick": { "nearest": "SW" } }
         },
         "oK6_5": {
-          "point": {
-            "meet": [
-              "ring6",
-              "pK6_45"
-            ],
-            "pick": {
-              "nearest": "Sp"
-            }
-          }
+          "point": { "meet": ["ring6", "pK6_45"], "pick": { "nearest": "S" } }
         },
         "oK6_6": {
-          "point": {
-            "meet": [
-              "ring6",
-              "g6c"
-            ],
-            "pick": {
-              "farthest": "k1"
-            }
-          }
+          "point": { "meet": ["ring6", "g6c"], "pick": { "farthest": "X2" } }
         },
         "oK6_7": {
-          "point": {
-            "meet": [
-              "ring6",
-              "g7d"
-            ],
-            "pick": {
-              "farthest": "k3"
-            }
-          }
+          "point": { "meet": ["ring6", "g7d"], "pick": { "farthest": "X4" } }
         },
         "octK6": {
           "polygon": [
@@ -2113,92 +619,28 @@
           ]
         },
         "oK7_0": {
-          "point": {
-            "meet": [
-              "ring7",
-              "g6b"
-            ],
-            "pick": {
-              "farthest": "k4"
-            }
-          }
+          "point": { "meet": ["ring7", "g6b"], "pick": { "farthest": "X5" } }
         },
         "oK7_1": {
-          "point": {
-            "meet": [
-              "ring7",
-              "pK6_45"
-            ],
-            "pick": {
-              "nearest": "A"
-            }
-          }
+          "point": { "meet": ["ring7", "pK6_45"], "pick": { "nearest": "A" } }
         },
         "oK7_2": {
-          "point": {
-            "meet": [
-              "ring7",
-              "pK0_90"
-            ],
-            "pick": {
-              "nearest": "NE"
-            }
-          }
+          "point": { "meet": ["ring7", "pK0_90"], "pick": { "nearest": "NE" } }
         },
         "oK7_3": {
-          "point": {
-            "meet": [
-              "ring7",
-              "g7c"
-            ],
-            "pick": {
-              "nearest": "k2"
-            }
-          }
+          "point": { "meet": ["ring7", "g7c"], "pick": { "nearest": "X3" } }
         },
         "oK7_4": {
-          "point": {
-            "meet": [
-              "ring7",
-              "g6b"
-            ],
-            "pick": {
-              "nearest": "k4"
-            }
-          }
+          "point": { "meet": ["ring7", "g6b"], "pick": { "nearest": "X5" } }
         },
         "oK7_5": {
-          "point": {
-            "meet": [
-              "ring7",
-              "pK6_45"
-            ],
-            "pick": {
-              "farthest": "A"
-            }
-          }
+          "point": { "meet": ["ring7", "pK6_45"], "pick": { "farthest": "A" } }
         },
         "oK7_6": {
-          "point": {
-            "meet": [
-              "ring7",
-              "pK0_90"
-            ],
-            "pick": {
-              "farthest": "NE"
-            }
-          }
+          "point": { "meet": ["ring7", "pK0_90"], "pick": { "farthest": "NE" } }
         },
         "oK7_7": {
-          "point": {
-            "meet": [
-              "ring7",
-              "g7c"
-            ],
-            "pick": {
-              "farthest": "k2"
-            }
-          }
+          "point": { "meet": ["ring7", "g7c"], "pick": { "farthest": "X3" } }
         },
         "octK7": {
           "polygon": [
@@ -2212,99 +654,26 @@
             "oK7_7"
           ]
         },
-        "oS0_0": {
-          "point": {
-            "meet": [
-              "sm0",
-              "h"
-            ],
-            "pick": {
-              "farthest": "O"
-            }
-          }
-        },
+        "oS0_0": { "point": { "meet": ["sm0", "h"], "pick": { "farthest": "O" } } },
         "oS0_1": {
-          "point": {
-            "meet": [
-              "sm0",
-              "g7a"
-            ],
-            "pick": {
-              "nearest": "k0"
-            }
-          }
+          "point": { "meet": ["sm0", "g7a"], "pick": { "nearest": "X1" } }
         },
-        "pS0_90": {
-          "line": {
-            "through": "s0",
-            "parallelTo": "v"
-          }
-        },
+        "pS0_90": { "line": { "through": "R1", "parallelTo": "v" } },
         "oS0_2": {
-          "point": {
-            "meet": [
-              "sm0",
-              "pS0_90"
-            ],
-            "pick": {
-              "nearest": "x90_7820"
-            }
-          }
+          "point": { "meet": ["sm0", "pS0_90"], "pick": { "nearest": "x90_7820" } }
         },
         "oS0_3": {
-          "point": {
-            "meet": [
-              "sm0",
-              "g7c"
-            ],
-            "pick": {
-              "farthest": "k7"
-            }
-          }
+          "point": { "meet": ["sm0", "g7c"], "pick": { "farthest": "X8" } }
         },
-        "oS0_4": {
-          "point": {
-            "meet": [
-              "sm0",
-              "h"
-            ],
-            "pick": {
-              "nearest": "O"
-            }
-          }
-        },
+        "oS0_4": { "point": { "meet": ["sm0", "h"], "pick": { "nearest": "O" } } },
         "oS0_5": {
-          "point": {
-            "meet": [
-              "sm0",
-              "g7a"
-            ],
-            "pick": {
-              "farthest": "k0"
-            }
-          }
+          "point": { "meet": ["sm0", "g7a"], "pick": { "farthest": "X1" } }
         },
         "oS0_6": {
-          "point": {
-            "meet": [
-              "sm0",
-              "pS0_90"
-            ],
-            "pick": {
-              "farthest": "x90_7820"
-            }
-          }
+          "point": { "meet": ["sm0", "pS0_90"], "pick": { "farthest": "x90_7820" } }
         },
         "oS0_7": {
-          "point": {
-            "meet": [
-              "sm0",
-              "g7c"
-            ],
-            "pick": {
-              "nearest": "k7"
-            }
-          }
+          "point": { "meet": ["sm0", "g7c"], "pick": { "nearest": "X8" } }
         },
         "octS0": {
           "polygon": [
@@ -2319,98 +688,25 @@
           ]
         },
         "oS1_0": {
-          "point": {
-            "meet": [
-              "sm1",
-              "g6a"
-            ],
-            "pick": {
-              "nearest": "k0"
-            }
-          }
+          "point": { "meet": ["sm1", "g6a"], "pick": { "nearest": "X1" } }
         },
-        "oS1_1": {
-          "point": {
-            "meet": [
-              "sm1",
-              "d1"
-            ],
-            "pick": {
-              "farthest": "O"
-            }
-          }
-        },
+        "oS1_1": { "point": { "meet": ["sm1", "d1"], "pick": { "farthest": "O" } } },
         "oS1_2": {
-          "point": {
-            "meet": [
-              "sm1",
-              "g6c"
-            ],
-            "pick": {
-              "nearest": "k1"
-            }
-          }
+          "point": { "meet": ["sm1", "g6c"], "pick": { "nearest": "X2" } }
         },
-        "pS1_135": {
-          "line": {
-            "through": "s1",
-            "parallelTo": "d2"
-          }
-        },
+        "pS1_135": { "line": { "through": "R2", "parallelTo": "d2" } },
         "oS1_3": {
-          "point": {
-            "meet": [
-              "sm1",
-              "pS1_135"
-            ],
-            "pick": {
-              "nearest": "x0_m2180"
-            }
-          }
+          "point": { "meet": ["sm1", "pS1_135"], "pick": { "nearest": "x0_m2180" } }
         },
         "oS1_4": {
-          "point": {
-            "meet": [
-              "sm1",
-              "g6a"
-            ],
-            "pick": {
-              "farthest": "k0"
-            }
-          }
+          "point": { "meet": ["sm1", "g6a"], "pick": { "farthest": "X1" } }
         },
-        "oS1_5": {
-          "point": {
-            "meet": [
-              "sm1",
-              "d1"
-            ],
-            "pick": {
-              "nearest": "O"
-            }
-          }
-        },
+        "oS1_5": { "point": { "meet": ["sm1", "d1"], "pick": { "nearest": "O" } } },
         "oS1_6": {
-          "point": {
-            "meet": [
-              "sm1",
-              "g6c"
-            ],
-            "pick": {
-              "farthest": "k1"
-            }
-          }
+          "point": { "meet": ["sm1", "g6c"], "pick": { "farthest": "X2" } }
         },
         "oS1_7": {
-          "point": {
-            "meet": [
-              "sm1",
-              "pS1_135"
-            ],
-            "pick": {
-              "farthest": "x0_m2180"
-            }
-          }
+          "point": { "meet": ["sm1", "pS1_135"], "pick": { "farthest": "x0_m2180" } }
         },
         "octS1": {
           "polygon": [
@@ -2424,99 +720,26 @@
             "oS1_7"
           ]
         },
-        "pS2_0": {
-          "line": {
-            "through": "s2",
-            "parallelTo": "h"
-          }
-        },
+        "pS2_0": { "line": { "through": "R3", "parallelTo": "h" } },
         "oS2_0": {
-          "point": {
-            "meet": [
-              "sm2",
-              "pS2_0"
-            ],
-            "pick": {
-              "farthest": "x0_m7820"
-            }
-          }
+          "point": { "meet": ["sm2", "pS2_0"], "pick": { "farthest": "x0_m7820" } }
         },
         "oS2_1": {
-          "point": {
-            "meet": [
-              "sm2",
-              "g7b"
-            ],
-            "pick": {
-              "nearest": "k1"
-            }
-          }
+          "point": { "meet": ["sm2", "g7b"], "pick": { "nearest": "X2" } }
         },
-        "oS2_2": {
-          "point": {
-            "meet": [
-              "sm2",
-              "v"
-            ],
-            "pick": {
-              "farthest": "O"
-            }
-          }
-        },
+        "oS2_2": { "point": { "meet": ["sm2", "v"], "pick": { "farthest": "O" } } },
         "oS2_3": {
-          "point": {
-            "meet": [
-              "sm2",
-              "g7c"
-            ],
-            "pick": {
-              "nearest": "k2"
-            }
-          }
+          "point": { "meet": ["sm2", "g7c"], "pick": { "nearest": "X3" } }
         },
         "oS2_4": {
-          "point": {
-            "meet": [
-              "sm2",
-              "pS2_0"
-            ],
-            "pick": {
-              "nearest": "x0_m7820"
-            }
-          }
+          "point": { "meet": ["sm2", "pS2_0"], "pick": { "nearest": "x0_m7820" } }
         },
         "oS2_5": {
-          "point": {
-            "meet": [
-              "sm2",
-              "g7b"
-            ],
-            "pick": {
-              "farthest": "k1"
-            }
-          }
+          "point": { "meet": ["sm2", "g7b"], "pick": { "farthest": "X2" } }
         },
-        "oS2_6": {
-          "point": {
-            "meet": [
-              "sm2",
-              "v"
-            ],
-            "pick": {
-              "nearest": "O"
-            }
-          }
-        },
+        "oS2_6": { "point": { "meet": ["sm2", "v"], "pick": { "nearest": "O" } } },
         "oS2_7": {
-          "point": {
-            "meet": [
-              "sm2",
-              "g7c"
-            ],
-            "pick": {
-              "farthest": "k2"
-            }
-          }
+          "point": { "meet": ["sm2", "g7c"], "pick": { "farthest": "X3" } }
         },
         "octS2": {
           "polygon": [
@@ -2531,99 +754,26 @@
           ]
         },
         "oS3_0": {
-          "point": {
-            "meet": [
-              "sm3",
-              "g6a"
-            ],
-            "pick": {
-              "nearest": "k0"
-            }
-          }
+          "point": { "meet": ["sm3", "g6a"], "pick": { "nearest": "X1" } }
         },
-        "pS3_45": {
-          "line": {
-            "through": "s3",
-            "parallelTo": "d1"
-          }
-        },
+        "pS3_45": { "line": { "through": "R4", "parallelTo": "d1" } },
         "oS3_1": {
-          "point": {
-            "meet": [
-              "sm3",
-              "pS3_45"
-            ],
-            "pick": {
-              "nearest": "x0_2180"
-            }
-          }
+          "point": { "meet": ["sm3", "pS3_45"], "pick": { "nearest": "x0_2180" } }
         },
         "oS3_2": {
-          "point": {
-            "meet": [
-              "sm3",
-              "g6d"
-            ],
-            "pick": {
-              "nearest": "k2"
-            }
-          }
+          "point": { "meet": ["sm3", "g6d"], "pick": { "nearest": "X3" } }
         },
-        "oS3_3": {
-          "point": {
-            "meet": [
-              "sm3",
-              "d2"
-            ],
-            "pick": {
-              "farthest": "O"
-            }
-          }
-        },
+        "oS3_3": { "point": { "meet": ["sm3", "d2"], "pick": { "farthest": "O" } } },
         "oS3_4": {
-          "point": {
-            "meet": [
-              "sm3",
-              "g6a"
-            ],
-            "pick": {
-              "farthest": "k0"
-            }
-          }
+          "point": { "meet": ["sm3", "g6a"], "pick": { "farthest": "X1" } }
         },
         "oS3_5": {
-          "point": {
-            "meet": [
-              "sm3",
-              "pS3_45"
-            ],
-            "pick": {
-              "farthest": "x0_2180"
-            }
-          }
+          "point": { "meet": ["sm3", "pS3_45"], "pick": { "farthest": "x0_2180" } }
         },
         "oS3_6": {
-          "point": {
-            "meet": [
-              "sm3",
-              "g6d"
-            ],
-            "pick": {
-              "farthest": "k2"
-            }
-          }
+          "point": { "meet": ["sm3", "g6d"], "pick": { "farthest": "X3" } }
         },
-        "oS3_7": {
-          "point": {
-            "meet": [
-              "sm3",
-              "d2"
-            ],
-            "pick": {
-              "nearest": "O"
-            }
-          }
-        },
+        "oS3_7": { "point": { "meet": ["sm3", "d2"], "pick": { "nearest": "O" } } },
         "octS3": {
           "polygon": [
             "oS3_0",
@@ -2636,99 +786,26 @@
             "oS3_7"
           ]
         },
-        "oS4_0": {
-          "point": {
-            "meet": [
-              "sm4",
-              "h"
-            ],
-            "pick": {
-              "nearest": "O"
-            }
-          }
-        },
+        "oS4_0": { "point": { "meet": ["sm4", "h"], "pick": { "nearest": "O" } } },
         "oS4_1": {
-          "point": {
-            "meet": [
-              "sm4",
-              "g7b"
-            ],
-            "pick": {
-              "nearest": "k1"
-            }
-          }
+          "point": { "meet": ["sm4", "g7b"], "pick": { "nearest": "X2" } }
         },
-        "pS4_90": {
-          "line": {
-            "through": "s4",
-            "parallelTo": "v"
-          }
-        },
+        "pS4_90": { "line": { "through": "R5", "parallelTo": "v" } },
         "oS4_2": {
-          "point": {
-            "meet": [
-              "sm4",
-              "pS4_90"
-            ],
-            "pick": {
-              "farthest": "x90_m7820"
-            }
-          }
+          "point": { "meet": ["sm4", "pS4_90"], "pick": { "farthest": "x90_m7820" } }
         },
         "oS4_3": {
-          "point": {
-            "meet": [
-              "sm4",
-              "g7d"
-            ],
-            "pick": {
-              "nearest": "k3"
-            }
-          }
+          "point": { "meet": ["sm4", "g7d"], "pick": { "nearest": "X4" } }
         },
-        "oS4_4": {
-          "point": {
-            "meet": [
-              "sm4",
-              "h"
-            ],
-            "pick": {
-              "farthest": "O"
-            }
-          }
-        },
+        "oS4_4": { "point": { "meet": ["sm4", "h"], "pick": { "farthest": "O" } } },
         "oS4_5": {
-          "point": {
-            "meet": [
-              "sm4",
-              "g7b"
-            ],
-            "pick": {
-              "farthest": "k1"
-            }
-          }
+          "point": { "meet": ["sm4", "g7b"], "pick": { "farthest": "X2" } }
         },
         "oS4_6": {
-          "point": {
-            "meet": [
-              "sm4",
-              "pS4_90"
-            ],
-            "pick": {
-              "nearest": "x90_m7820"
-            }
-          }
+          "point": { "meet": ["sm4", "pS4_90"], "pick": { "nearest": "x90_m7820" } }
         },
         "oS4_7": {
-          "point": {
-            "meet": [
-              "sm4",
-              "g7d"
-            ],
-            "pick": {
-              "farthest": "k3"
-            }
-          }
+          "point": { "meet": ["sm4", "g7d"], "pick": { "farthest": "X4" } }
         },
         "octS4": {
           "polygon": [
@@ -2743,97 +820,32 @@
           ]
         },
         "oS5_0": {
-          "point": {
-            "meet": [
-              "sm5",
-              "g6b"
-            ],
-            "pick": {
-              "farthest": "k4"
-            }
-          }
+          "point": { "meet": ["sm5", "g6b"], "pick": { "farthest": "X5" } }
         },
-        "oS5_1": {
-          "point": {
-            "meet": [
-              "sm5",
-              "d1"
-            ],
-            "pick": {
-              "nearest": "NE"
-            }
-          }
-        },
+        "oS5_1": { "point": { "meet": ["sm5", "d1"], "pick": { "nearest": "NE" } } },
         "oS5_2": {
-          "point": {
-            "meet": [
-              "sm5",
-              "g6d"
-            ],
-            "pick": {
-              "nearest": "s3"
-            }
-          }
+          "point": { "meet": ["sm5", "g6d"], "pick": { "nearest": "R4" } }
         },
-        "pS5_135": {
-          "line": {
-            "through": "s5",
-            "parallelTo": "d2"
-          }
-        },
+        "pS5_135": { "line": { "through": "R6", "parallelTo": "d2" } },
         "oS5_3": {
           "point": {
-            "meet": [
-              "sm5",
-              "pS5_135"
-            ],
-            "pick": {
-              "farthest": "x135_m7820"
-            }
+            "meet": ["sm5", "pS5_135"],
+            "pick": { "farthest": "x135_m7820" }
           }
         },
         "oS5_4": {
-          "point": {
-            "meet": [
-              "sm5",
-              "g6b"
-            ],
-            "pick": {
-              "nearest": "k4"
-            }
-          }
+          "point": { "meet": ["sm5", "g6b"], "pick": { "nearest": "X5" } }
         },
         "oS5_5": {
-          "point": {
-            "meet": [
-              "sm5",
-              "d1"
-            ],
-            "pick": {
-              "farthest": "NE"
-            }
-          }
+          "point": { "meet": ["sm5", "d1"], "pick": { "farthest": "NE" } }
         },
         "oS5_6": {
-          "point": {
-            "meet": [
-              "sm5",
-              "g6d"
-            ],
-            "pick": {
-              "farthest": "s3"
-            }
-          }
+          "point": { "meet": ["sm5", "g6d"], "pick": { "farthest": "R4" } }
         },
         "oS5_7": {
           "point": {
-            "meet": [
-              "sm5",
-              "pS5_135"
-            ],
-            "pick": {
-              "nearest": "x135_m7820"
-            }
+            "meet": ["sm5", "pS5_135"],
+            "pick": { "nearest": "x135_m7820" }
           }
         },
         "octS5": {
@@ -2848,99 +860,26 @@
             "oS5_7"
           ]
         },
-        "pS6_0": {
-          "line": {
-            "through": "s6",
-            "parallelTo": "h"
-          }
-        },
+        "pS6_0": { "line": { "through": "R7", "parallelTo": "h" } },
         "oS6_0": {
-          "point": {
-            "meet": [
-              "sm6",
-              "pS6_0"
-            ],
-            "pick": {
-              "farthest": "x90_m3678"
-            }
-          }
+          "point": { "meet": ["sm6", "pS6_0"], "pick": { "farthest": "x90_m3678" } }
         },
         "oS6_1": {
-          "point": {
-            "meet": [
-              "sm6",
-              "g7a"
-            ],
-            "pick": {
-              "nearest": "k0"
-            }
-          }
+          "point": { "meet": ["sm6", "g7a"], "pick": { "nearest": "X1" } }
         },
-        "oS6_2": {
-          "point": {
-            "meet": [
-              "sm6",
-              "v"
-            ],
-            "pick": {
-              "nearest": "O"
-            }
-          }
-        },
+        "oS6_2": { "point": { "meet": ["sm6", "v"], "pick": { "nearest": "O" } } },
         "oS6_3": {
-          "point": {
-            "meet": [
-              "sm6",
-              "g7d"
-            ],
-            "pick": {
-              "nearest": "s4"
-            }
-          }
+          "point": { "meet": ["sm6", "g7d"], "pick": { "nearest": "R5" } }
         },
         "oS6_4": {
-          "point": {
-            "meet": [
-              "sm6",
-              "pS6_0"
-            ],
-            "pick": {
-              "nearest": "x90_m3678"
-            }
-          }
+          "point": { "meet": ["sm6", "pS6_0"], "pick": { "nearest": "x90_m3678" } }
         },
         "oS6_5": {
-          "point": {
-            "meet": [
-              "sm6",
-              "g7a"
-            ],
-            "pick": {
-              "farthest": "k0"
-            }
-          }
+          "point": { "meet": ["sm6", "g7a"], "pick": { "farthest": "X1" } }
         },
-        "oS6_6": {
-          "point": {
-            "meet": [
-              "sm6",
-              "v"
-            ],
-            "pick": {
-              "farthest": "O"
-            }
-          }
-        },
+        "oS6_6": { "point": { "meet": ["sm6", "v"], "pick": { "farthest": "O" } } },
         "oS6_7": {
-          "point": {
-            "meet": [
-              "sm6",
-              "g7d"
-            ],
-            "pick": {
-              "farthest": "s4"
-            }
-          }
+          "point": { "meet": ["sm6", "g7d"], "pick": { "farthest": "R5" } }
         },
         "octS6": {
           "polygon": [
@@ -2955,99 +894,26 @@
           ]
         },
         "oS7_0": {
-          "point": {
-            "meet": [
-              "sm7",
-              "g6b"
-            ],
-            "pick": {
-              "farthest": "k4"
-            }
-          }
+          "point": { "meet": ["sm7", "g6b"], "pick": { "farthest": "X5" } }
         },
-        "pS7_45": {
-          "line": {
-            "through": "s7",
-            "parallelTo": "d1"
-          }
-        },
+        "pS7_45": { "line": { "through": "R8", "parallelTo": "d1" } },
         "oS7_1": {
-          "point": {
-            "meet": [
-              "sm7",
-              "pS7_45"
-            ],
-            "pick": {
-              "nearest": "x90_2180"
-            }
-          }
+          "point": { "meet": ["sm7", "pS7_45"], "pick": { "nearest": "x90_2180" } }
         },
         "oS7_2": {
-          "point": {
-            "meet": [
-              "sm7",
-              "g6c"
-            ],
-            "pick": {
-              "farthest": "k6"
-            }
-          }
+          "point": { "meet": ["sm7", "g6c"], "pick": { "farthest": "X7" } }
         },
-        "oS7_3": {
-          "point": {
-            "meet": [
-              "sm7",
-              "d2"
-            ],
-            "pick": {
-              "nearest": "O"
-            }
-          }
-        },
+        "oS7_3": { "point": { "meet": ["sm7", "d2"], "pick": { "nearest": "O" } } },
         "oS7_4": {
-          "point": {
-            "meet": [
-              "sm7",
-              "g6b"
-            ],
-            "pick": {
-              "nearest": "k4"
-            }
-          }
+          "point": { "meet": ["sm7", "g6b"], "pick": { "nearest": "X5" } }
         },
         "oS7_5": {
-          "point": {
-            "meet": [
-              "sm7",
-              "pS7_45"
-            ],
-            "pick": {
-              "farthest": "x90_2180"
-            }
-          }
+          "point": { "meet": ["sm7", "pS7_45"], "pick": { "farthest": "x90_2180" } }
         },
         "oS7_6": {
-          "point": {
-            "meet": [
-              "sm7",
-              "g6c"
-            ],
-            "pick": {
-              "nearest": "k6"
-            }
-          }
+          "point": { "meet": ["sm7", "g6c"], "pick": { "nearest": "X7" } }
         },
-        "oS7_7": {
-          "point": {
-            "meet": [
-              "sm7",
-              "d2"
-            ],
-            "pick": {
-              "farthest": "O"
-            }
-          }
-        },
+        "oS7_7": { "point": { "meet": ["sm7", "d2"], "pick": { "farthest": "O" } } },
         "octS7": {
           "polygon": [
             "oS7_0",
@@ -3060,93 +926,25 @@
             "oS7_7"
           ]
         },
-        "oO0_0": {
-          "point": {
-            "meet": [
-              "ringO",
-              "h"
-            ],
-            "pick": {
-              "nearest": "A"
-            }
-          }
-        },
+        "oO0_0": { "point": { "meet": ["ringO", "h"], "pick": { "nearest": "A" } } },
         "oO0_1": {
-          "point": {
-            "meet": [
-              "ringO",
-              "d1"
-            ],
-            "pick": {
-              "nearest": "NE"
-            }
-          }
+          "point": { "meet": ["ringO", "d1"], "pick": { "nearest": "NE" } }
         },
-        "oO0_2": {
-          "point": {
-            "meet": [
-              "ringO",
-              "v"
-            ],
-            "pick": {
-              "nearest": "N"
-            }
-          }
-        },
+        "oO0_2": { "point": { "meet": ["ringO", "v"], "pick": { "nearest": "N" } } },
         "oO0_3": {
-          "point": {
-            "meet": [
-              "ringO",
-              "d2"
-            ],
-            "pick": {
-              "nearest": "NW"
-            }
-          }
+          "point": { "meet": ["ringO", "d2"], "pick": { "nearest": "NW" } }
         },
         "oO0_4": {
-          "point": {
-            "meet": [
-              "ringO",
-              "h"
-            ],
-            "pick": {
-              "farthest": "A"
-            }
-          }
+          "point": { "meet": ["ringO", "h"], "pick": { "farthest": "A" } }
         },
         "oO0_5": {
-          "point": {
-            "meet": [
-              "ringO",
-              "d1"
-            ],
-            "pick": {
-              "farthest": "NE"
-            }
-          }
+          "point": { "meet": ["ringO", "d1"], "pick": { "farthest": "NE" } }
         },
         "oO0_6": {
-          "point": {
-            "meet": [
-              "ringO",
-              "v"
-            ],
-            "pick": {
-              "farthest": "N"
-            }
-          }
+          "point": { "meet": ["ringO", "v"], "pick": { "farthest": "N" } }
         },
         "oO0_7": {
-          "point": {
-            "meet": [
-              "ringO",
-              "d2"
-            ],
-            "pick": {
-              "farthest": "NW"
-            }
-          }
+          "point": { "meet": ["ringO", "d2"], "pick": { "farthest": "NW" } }
         },
         "octO0": {
           "polygon": [
@@ -3165,548 +963,118 @@
     },
     {
       "id": 17,
-      "text": "For the star in the middle, mark where the circle around the centre crosses the sixteen lines through the centre, and join the marks three places apart with lines in pairs.",
+      "text": "Mark Z1 to Z16, where the circle round O crosses the sixteen lines through O. Join each mark to the marks three places round, with straight lines in pairs. This makes the star in the middle.",
       "create": {
-        "z0": {
-          "point": {
-            "meet": [
-              "c9",
-              "h"
-            ],
-            "pick": {
-              "angle": 0
-            }
-          }
-        },
-        "z1": {
-          "point": {
-            "meet": [
-              "c9",
-              "r0"
-            ],
-            "pick": {
-              "angle": 22.5
-            }
-          }
-        },
-        "z2": {
-          "point": {
-            "meet": [
-              "c9",
-              "d1"
-            ],
-            "pick": {
-              "angle": 45
-            }
-          }
-        },
-        "z3": {
-          "point": {
-            "meet": [
-              "c9",
-              "r1"
-            ],
-            "pick": {
-              "angle": 67.5
-            }
-          }
-        },
-        "z4": {
-          "point": {
-            "meet": [
-              "c9",
-              "v"
-            ],
-            "pick": {
-              "angle": 90
-            }
-          }
-        },
-        "z5": {
-          "point": {
-            "meet": [
-              "c9",
-              "r2"
-            ],
-            "pick": {
-              "angle": 112.5
-            }
-          }
-        },
-        "z6": {
-          "point": {
-            "meet": [
-              "c9",
-              "d2"
-            ],
-            "pick": {
-              "angle": 135
-            }
-          }
-        },
-        "z7": {
-          "point": {
-            "meet": [
-              "c9",
-              "r3"
-            ],
-            "pick": {
-              "angle": 157.5
-            }
-          }
-        },
-        "z8": {
-          "point": {
-            "meet": [
-              "c9",
-              "h"
-            ],
-            "pick": {
-              "angle": 180
-            }
-          }
-        },
-        "z9": {
-          "point": {
-            "meet": [
-              "c9",
-              "r0"
-            ],
-            "pick": {
-              "angle": 202.5
-            }
-          }
-        },
-        "z10": {
-          "point": {
-            "meet": [
-              "c9",
-              "d1"
-            ],
-            "pick": {
-              "angle": 225
-            }
-          }
-        },
-        "z11": {
-          "point": {
-            "meet": [
-              "c9",
-              "r1"
-            ],
-            "pick": {
-              "angle": 247.5
-            }
-          }
-        },
-        "z12": {
-          "point": {
-            "meet": [
-              "c9",
-              "v"
-            ],
-            "pick": {
-              "angle": 270
-            }
-          }
-        },
-        "z13": {
-          "point": {
-            "meet": [
-              "c9",
-              "r2"
-            ],
-            "pick": {
-              "angle": 292.5
-            }
-          }
-        },
-        "z14": {
-          "point": {
-            "meet": [
-              "c9",
-              "d2"
-            ],
-            "pick": {
-              "angle": 315
-            }
-          }
-        },
-        "z15": {
-          "point": {
-            "meet": [
-              "c9",
-              "r3"
-            ],
-            "pick": {
-              "angle": 337.5
-            }
-          }
-        },
-        "rs0": {
-          "line": {
-            "through": [
-              "z3",
-              "z13"
-            ]
-          }
-        },
-        "rs45": {
-          "line": {
-            "through": [
-              "z5",
-              "z15"
-            ]
-          }
-        },
-        "rs90": {
-          "line": {
-            "through": [
-              "z7",
-              "z1"
-            ]
-          }
-        },
-        "rs135": {
-          "line": {
-            "through": [
-              "z9",
-              "z3"
-            ]
-          }
-        },
-        "rs180": {
-          "line": {
-            "through": [
-              "z11",
-              "z5"
-            ]
-          }
-        },
-        "rs225": {
-          "line": {
-            "through": [
-              "z13",
-              "z7"
-            ]
-          }
-        },
-        "rs270": {
-          "line": {
-            "through": [
-              "z15",
-              "z9"
-            ]
-          }
-        },
-        "rs315": {
-          "line": {
-            "through": [
-              "z1",
-              "z11"
-            ]
-          }
-        }
+        "Z1": { "point": { "meet": ["c9", "h"], "pick": { "angle": 0 } } },
+        "Z2": { "point": { "meet": ["c9", "r0"], "pick": { "angle": 22.5 } } },
+        "Z3": { "point": { "meet": ["c9", "d1"], "pick": { "angle": 45 } } },
+        "Z4": { "point": { "meet": ["c9", "r1"], "pick": { "angle": 67.5 } } },
+        "Z5": { "point": { "meet": ["c9", "v"], "pick": { "angle": 90 } } },
+        "Z6": { "point": { "meet": ["c9", "r2"], "pick": { "angle": 112.5 } } },
+        "Z7": { "point": { "meet": ["c9", "d2"], "pick": { "angle": 135 } } },
+        "Z8": { "point": { "meet": ["c9", "r3"], "pick": { "angle": 157.5 } } },
+        "Z9": { "point": { "meet": ["c9", "h"], "pick": { "angle": 180 } } },
+        "Z10": { "point": { "meet": ["c9", "r0"], "pick": { "angle": 202.5 } } },
+        "Z11": { "point": { "meet": ["c9", "d1"], "pick": { "angle": 225 } } },
+        "Z12": { "point": { "meet": ["c9", "r1"], "pick": { "angle": 247.5 } } },
+        "Z13": { "point": { "meet": ["c9", "v"], "pick": { "angle": 270 } } },
+        "Z14": { "point": { "meet": ["c9", "r2"], "pick": { "angle": 292.5 } } },
+        "Z15": { "point": { "meet": ["c9", "d2"], "pick": { "angle": 315 } } },
+        "Z16": { "point": { "meet": ["c9", "r3"], "pick": { "angle": 337.5 } } },
+        "rs0": { "line": { "through": ["Z4", "Z14"] } },
+        "rs45": { "line": { "through": ["Z6", "Z16"] } },
+        "rs90": { "line": { "through": ["Z8", "Z2"] } },
+        "rs135": { "line": { "through": ["Z10", "Z4"] } },
+        "rs180": { "line": { "through": ["Z12", "Z6"] } },
+        "rs225": { "line": { "through": ["Z14", "Z8"] } },
+        "rs270": { "line": { "through": ["Z16", "Z10"] } },
+        "rs315": { "line": { "through": ["Z2", "Z12"] } }
       },
-      "highlight": [
-        "c9"
-      ],
+      "highlight": ["c9"],
       "animate": "ruler"
     },
     {
       "id": 18,
-      "text": "Draw the square that just touches the main circle: a line at right angles to the horizontal at each side, and at right angles to the vertical at the top and bottom. Its two upright sides will be sides of the tile.",
-      "textWithoutHelpers": "Mark the square that just touches the main circle at the top, the bottom and the sides. Its corners are crossings already on the board, and its two upright sides will be sides of the tile.",
+      "text": "Draw a vertical line through each of E and W. Draw a horizontal line through each of N and S. They make a square that just touches the main circle. Its two upright sides are sides of the tile.",
+      "textWithoutHelpers": "Mark the square that just touches the main circle. Its corners are crossings already on the board. Its two upright sides are sides of the tile.",
       "create": {
-        "tE": {
-          "line": {
-            "through": "E",
-            "perpendicularTo": "h"
-          }
-        },
-        "tW": {
-          "line": {
-            "through": "W",
-            "perpendicularTo": "h"
-          }
-        },
-        "tN": {
-          "line": {
-            "through": "N",
-            "perpendicularTo": "v"
-          }
-        },
-        "tS": {
-          "line": {
-            "through": "Sp",
-            "perpendicularTo": "v"
-          }
-        },
-        "t1": {
-          "point": {
-            "meet": [
-              "tE",
-              "tN"
-            ]
-          }
-        },
-        "t2": {
-          "point": {
-            "meet": [
-              "tN",
-              "tW"
-            ]
-          }
-        },
-        "t3": {
-          "point": {
-            "meet": [
-              "tW",
-              "tS"
-            ]
-          }
-        },
-        "t4": {
-          "point": {
-            "meet": [
-              "tS",
-              "tE"
-            ]
-          }
-        },
-        "tile": {
-          "polygon": [
-            "t1",
-            "t2",
-            "t3",
-            "t4"
-          ]
-        }
+        "tE": { "line": { "through": "E", "perpendicularTo": "h" } },
+        "tW": { "line": { "through": "W", "perpendicularTo": "h" } },
+        "tN": { "line": { "through": "N", "perpendicularTo": "v" } },
+        "tS": { "line": { "through": "S", "perpendicularTo": "v" } },
+        "T1": { "point": { "meet": ["tE", "tN"] } },
+        "T2": { "point": { "meet": ["tN", "tW"] } },
+        "T3": { "point": { "meet": ["tW", "tS"] } },
+        "T4": { "point": { "meet": ["tS", "tE"] } },
+        "tile": { "polygon": ["T1", "T2", "T3", "T4"] }
       },
-      "highlight": [
-        "E",
-        "N",
-        "W",
-        "Sp"
-      ],
+      "highlight": ["E", "N", "W", "S"],
       "animate": "ruler"
     },
     {
       "id": 19,
-      "text": "Now set the rows: each row sits half a wheel along from the one below, as close as the wheels allow. Put the compass on the centre of the small circle above the middle and draw the circle through the middle; where it crosses the vertical again is the bottom of the next row. Rule the slant from the bottom-left corner of the square to that mark, and the same slant through the centre: where it meets the right side of the square is the centre of the wheel above and to the right.",
-      "textWithoutHelpers": "Now set the rows: each row sits half a wheel along from the one below, as close as the wheels allow. Put the compass on the centre of the small circle above the middle and draw the circle through the middle; where it crosses the vertical again is the bottom of the next row. Rule the slant from the bottom-left corner of the square to that mark, and the same slant through the centre: where it meets the right side of the square is the centre of the wheel above and to the right.",
+      "text": "Draw a circle with centre R3 through O. It crosses the vertical line again at U, the bottom of the next row. Draw a straight line through T3 and U. Draw a line through O parallel to it. It crosses the right side of the square at V. V is the centre of the next wheel up.",
+      "textWithoutHelpers": "Draw a circle with centre R3 through O. It crosses the vertical line again at U, the bottom of the next row. Draw a straight line through T3 and U. Draw a line through O parallel to it. It crosses the right side of the square at V. V is the centre of the next wheel up.",
       "create": {
-        "cRow": {
-          "circle": {
-            "centre": "s2",
-            "through": "O"
-          }
-        },
-        "Up": {
-          "point": {
-            "meet": [
-              "cRow",
-              "v"
-            ],
-            "pick": {
-              "farthest": "O"
-            }
-          }
-        },
-        "sideL": {
-          "line": {
-            "through": [
-              "t3",
-              "Up"
-            ]
-          }
-        },
-        "oSlant": {
-          "line": {
-            "through": "O",
-            "parallelTo": "sideL"
-          }
-        },
-        "uR": {
-          "point": {
-            "meet": [
-              "oSlant",
-              "tE"
-            ]
-          }
-        }
+        "cRow": { "circle": { "centre": "R3", "through": "O" } },
+        "U": { "point": { "meet": ["cRow", "v"], "pick": { "farthest": "O" } } },
+        "sideL": { "line": { "through": ["T3", "U"] } },
+        "oSlant": { "line": { "through": "O", "parallelTo": "sideL" } },
+        "V": { "point": { "meet": ["oSlant", "tE"] } }
       },
-      "highlight": [
-        "s2",
-        "v",
-        "t3",
-        "tE"
-      ],
+      "highlight": ["R3", "v", "T3", "tE"],
       "animate": "compass"
     },
     {
       "id": 20,
-      "text": "The tile is a hexagon around the wheel: its upright sides lie on the square, and its pointed roof runs halfway to the wheels of the next row.",
+      "text": "Draw the hexagon tile.",
       "parts": [
         {
-          "text": "Put the compass on the centre and open it to the centre of the wheel above and to the right. Draw the circle, then the same circle from that centre back.",
+          "text": "Draw a circle with centre O through V. Draw a circle with centre V through O.",
           "create": {
-            "cMidA": {
-              "circle": {
-                "centre": "O",
-                "through": "uR"
-              }
-            },
-            "cMidB": {
-              "circle": {
-                "centre": "uR",
-                "through": "O"
-              }
-            }
+            "cMidA": { "circle": { "centre": "O", "through": "V" } },
+            "cMidB": { "circle": { "centre": "V", "through": "O" } }
           },
-          "highlight": [
-            "O",
-            "uR"
-          ],
+          "highlight": ["O", "V"],
           "animate": "compass"
         },
         {
-          "text": "Rule the line through the two crossings of those circles. It runs halfway between the two wheels and is the right half of the roof: mark where it meets the vertical and the right side of the square.",
+          "text": "Draw a straight line through Y1 and Y2, where these two circles cross. It runs halfway between the two wheels. It crosses the vertical line at H2 and the right side of the square at H1.",
           "create": {
-            "m1": {
-              "point": {
-                "meet": [
-                  "cMidA",
-                  "cMidB"
-                ],
-                "pick": {
-                  "angle": 135
-                }
-              }
+            "Y1": {
+              "point": { "meet": ["cMidA", "cMidB"], "pick": { "angle": 135 } }
             },
-            "m2": {
-              "point": {
-                "meet": [
-                  "cMidA",
-                  "cMidB"
-                ],
-                "pick": {
-                  "angle": 0
-                }
-              }
-            },
-            "roof": {
-              "line": {
-                "through": [
-                  "m1",
-                  "m2"
-                ]
-              }
-            },
-            "hTop": {
-              "point": {
-                "meet": [
-                  "roof",
-                  "v"
-                ]
-              }
-            },
-            "hR1": {
-              "point": {
-                "meet": [
-                  "roof",
-                  "tE"
-                ]
-              }
-            }
+            "Y2": { "point": { "meet": ["cMidA", "cMidB"], "pick": { "angle": 0 } } },
+            "roof": { "line": { "through": ["Y1", "Y2"] } },
+            "H2": { "point": { "meet": ["roof", "v"] } },
+            "H1": { "point": { "meet": ["roof", "tE"] } }
           },
-          "highlight": [
-            "v",
-            "tE"
-          ],
+          "highlight": ["v", "tE"],
           "animate": "ruler"
         },
         {
-          "text": "With the compass on the centre, swing a circle through the corner on the right side: it marks the other three corners on the upright sides. Swing one through the top corner to mark the bottom one.",
+          "text": "Draw a circle with centre O through H1. It crosses the upright sides of the square at H3, H4 and H6. Draw a circle with centre O through H2. It crosses the vertical line again at H5.",
           "create": {
-            "cSide": {
-              "circle": {
-                "centre": "O",
-                "through": "hR1"
-              }
+            "cSide": { "circle": { "centre": "O", "through": "H1" } },
+            "H6": {
+              "point": { "meet": ["cSide", "tE"], "pick": { "farthest": "H1" } }
             },
-            "hR2": {
-              "point": {
-                "meet": [
-                  "cSide",
-                  "tE"
-                ],
-                "pick": {
-                  "farthest": "hR1"
-                }
-              }
+            "H3": {
+              "point": { "meet": ["cSide", "tW"], "pick": { "nearest": "H1" } }
             },
-            "hL1": {
-              "point": {
-                "meet": [
-                  "cSide",
-                  "tW"
-                ],
-                "pick": {
-                  "nearest": "hR1"
-                }
-              }
+            "H4": {
+              "point": { "meet": ["cSide", "tW"], "pick": { "farthest": "H1" } }
             },
-            "hL2": {
-              "point": {
-                "meet": [
-                  "cSide",
-                  "tW"
-                ],
-                "pick": {
-                  "farthest": "hR1"
-                }
-              }
-            },
-            "cTop": {
-              "circle": {
-                "centre": "O",
-                "through": "hTop"
-              }
-            },
-            "hBot": {
-              "point": {
-                "meet": [
-                  "cTop",
-                  "v"
-                ],
-                "pick": {
-                  "farthest": "hTop"
-                }
-              }
-            }
+            "cTop": { "circle": { "centre": "O", "through": "H2" } },
+            "H5": { "point": { "meet": ["cTop", "v"], "pick": { "farthest": "H2" } } }
           },
-          "highlight": [
-            "hR1",
-            "hTop",
-            "tE",
-            "tW"
-          ],
+          "highlight": ["H1", "H2", "tE", "tW"],
           "animate": "compass"
         },
         {
-          "text": "Join the six corners. This hexagon is the tile that repeats.",
+          "text": "Join H1, H2, H3, H4, H5 and H6. This hexagon is the tile that repeats.",
           "create": {
-            "hexTile": {
-              "polygon": [
-                "hR1",
-                "hTop",
-                "hL1",
-                "hL2",
-                "hBot",
-                "hR2"
-              ]
-            }
+            "hexTile": { "polygon": ["H1", "H2", "H3", "H4", "H5", "H6"] }
           },
           "animate": "ruler"
         }
@@ -3714,3277 +1082,1517 @@
     }
   ],
   "ink": {
-    "text": "Go over the lines of the finished wheel: the octagons, the bands between them and the star in the middle.",
+    "text": "Ink the lines of the finished wheel: the octagons, the bands between them and the star in the middle. Follow the faint grey ink, or tick “Also ink the copies round the centre” to ink eight at once.",
     "paths": [
       {
         "along": "l0_m2180",
-        "from": {
-          "cross": "octK5",
-          "pick": {
-            "farthest": "x0_m2180"
-          }
-        },
+        "from": { "cross": "octK5", "pick": { "farthest": "x0_m2180" } },
         "to": "l135_m3678"
       },
       {
         "along": "l0_m2180",
         "from": "l45_m6322",
-        "to": {
-          "cross": "octK5",
-          "pick": {
-            "nearest": "x0_m2180"
-          }
-        }
+        "to": { "cross": "octK5", "pick": { "nearest": "x0_m2180" } }
       },
       {
         "along": "l0_m2180",
-        "from": {
-          "cross": "octK2",
-          "pick": {
-            "nearest": "oS5_7"
-          }
-        },
+        "from": { "cross": "octK2", "pick": { "nearest": "oS5_7" } },
         "to": "l135_6322"
       },
       {
         "along": "l0_m2180",
         "from": "l45_3678",
-        "to": {
-          "cross": "octK2",
-          "pick": {
-            "farthest": "oS5_7"
-          }
-        }
+        "to": { "cross": "octK2", "pick": { "farthest": "oS5_7" } }
       },
       {
         "along": "l45_m2180",
-        "from": {
-          "cross": "octK6",
-          "pick": {
-            "farthest": "x0_m7820"
-          }
-        },
+        "from": { "cross": "octK6", "pick": { "farthest": "x0_m7820" } },
         "to": "l0_3678"
       },
       {
         "along": "l45_m2180",
         "from": "l90_m6322",
-        "to": {
-          "cross": "octK6",
-          "pick": {
-            "nearest": "x0_m7820"
-          }
-        }
+        "to": { "cross": "octK6", "pick": { "nearest": "x0_m7820" } }
       },
       {
         "along": "l45_m2180",
-        "from": {
-          "cross": "octK3",
-          "pick": {
-            "nearest": "oS6_0"
-          }
-        },
+        "from": { "cross": "octK3", "pick": { "nearest": "oS6_0" } },
         "to": "l0_m6322"
       },
       {
         "along": "l45_m2180",
         "from": "l90_3678",
-        "to": {
-          "cross": "octK3",
-          "pick": {
-            "farthest": "oS6_0"
-          }
-        }
+        "to": { "cross": "octK3", "pick": { "farthest": "oS6_0" } }
       },
       {
         "along": "l90_m2180",
-        "from": {
-          "cross": "octK7",
-          "pick": {
-            "farthest": "x90_m2180"
-          }
-        },
+        "from": { "cross": "octK7", "pick": { "farthest": "x90_m2180" } },
         "to": "l45_3678"
       },
       {
         "along": "l90_m2180",
         "from": "l135_m6322",
-        "to": {
-          "cross": "octK7",
-          "pick": {
-            "nearest": "x90_m2180"
-          }
-        }
+        "to": { "cross": "octK7", "pick": { "nearest": "x90_m2180" } }
       },
       {
         "along": "l90_m2180",
-        "from": {
-          "cross": "octK4",
-          "pick": {
-            "nearest": "oS7_1"
-          }
-        },
+        "from": { "cross": "octK4", "pick": { "nearest": "oS7_1" } },
         "to": "l45_m6322"
       },
       {
         "along": "l90_m2180",
         "from": "l135_3678",
-        "to": {
-          "cross": "octK4",
-          "pick": {
-            "farthest": "oS7_1"
-          }
-        }
+        "to": { "cross": "octK4", "pick": { "farthest": "oS7_1" } }
       },
       {
         "along": "l135_m2180",
-        "from": {
-          "cross": "octK5",
-          "pick": {
-            "farthest": "x0_7820"
-          }
-        },
+        "from": { "cross": "octK5", "pick": { "farthest": "x0_7820" } },
         "to": "l0_m3678"
       },
       {
         "along": "l135_m2180",
         "from": "l90_m6322",
-        "to": {
-          "cross": "octK5",
-          "pick": {
-            "nearest": "x0_7820"
-          }
-        }
+        "to": { "cross": "octK5", "pick": { "nearest": "x0_7820" } }
       },
       {
         "along": "l135_m2180",
-        "from": {
-          "cross": "octK0",
-          "pick": {
-            "nearest": "x90_m7820"
-          }
-        },
+        "from": { "cross": "octK0", "pick": { "nearest": "x90_m7820" } },
         "to": "l0_6322"
       },
       {
         "along": "l135_m2180",
         "from": "l90_3678",
-        "to": {
-          "cross": "octK0",
-          "pick": {
-            "farthest": "x90_m7820"
-          }
-        }
+        "to": { "cross": "octK0", "pick": { "farthest": "x90_m7820" } }
       },
       {
         "along": "l0_2180",
-        "from": {
-          "cross": "octK6",
-          "pick": {
-            "farthest": "x0_2180"
-          }
-        },
+        "from": { "cross": "octK6", "pick": { "farthest": "x0_2180" } },
         "to": "l45_m3678"
       },
       {
         "along": "l0_2180",
         "from": "l135_m6322",
-        "to": {
-          "cross": "octK6",
-          "pick": {
-            "nearest": "x0_2180"
-          }
-        }
+        "to": { "cross": "octK6", "pick": { "nearest": "x0_2180" } }
       },
       {
         "along": "l0_2180",
-        "from": {
-          "cross": "octK1",
-          "pick": {
-            "nearest": "x135_m7820"
-          }
-        },
+        "from": { "cross": "octK1", "pick": { "nearest": "x135_m7820" } },
         "to": "l45_6322"
       },
       {
         "along": "l0_2180",
         "from": "l135_3678",
-        "to": {
-          "cross": "octK1",
-          "pick": {
-            "farthest": "x135_m7820"
-          }
-        }
+        "to": { "cross": "octK1", "pick": { "farthest": "x135_m7820" } }
       },
       {
         "along": "l45_2180",
-        "from": {
-          "cross": "octK7",
-          "pick": {
-            "farthest": "x45_2180"
-          }
-        },
+        "from": { "cross": "octK7", "pick": { "farthest": "x45_2180" } },
         "to": "l90_m3678"
       },
       {
         "along": "l45_2180",
         "from": "l0_6322",
-        "to": {
-          "cross": "octK7",
-          "pick": {
-            "nearest": "x45_2180"
-          }
-        }
+        "to": { "cross": "octK7", "pick": { "nearest": "x45_2180" } }
       },
       {
         "along": "l45_2180",
-        "from": {
-          "cross": "octK2",
-          "pick": {
-            "nearest": "oS0_6"
-          }
-        },
+        "from": { "cross": "octK2", "pick": { "nearest": "oS0_6" } },
         "to": "l90_6322"
       },
       {
         "along": "l45_2180",
         "from": "l0_m3678",
-        "to": {
-          "cross": "octK2",
-          "pick": {
-            "farthest": "oS0_6"
-          }
-        }
+        "to": { "cross": "octK2", "pick": { "farthest": "oS0_6" } }
       },
       {
         "along": "l90_2180",
-        "from": {
-          "cross": "octK0",
-          "pick": {
-            "farthest": "oS3_5"
-          }
-        },
+        "from": { "cross": "octK0", "pick": { "farthest": "oS3_5" } },
         "to": "l135_m3678"
       },
       {
         "along": "l90_2180",
         "from": "l45_6322",
-        "to": {
-          "cross": "octK0",
-          "pick": {
-            "nearest": "oS3_5"
-          }
-        }
+        "to": { "cross": "octK0", "pick": { "nearest": "oS3_5" } }
       },
       {
         "along": "l90_2180",
-        "from": {
-          "cross": "octK3",
-          "pick": {
-            "nearest": "x90_2180"
-          }
-        },
+        "from": { "cross": "octK3", "pick": { "nearest": "x90_2180" } },
         "to": "l135_6322"
       },
       {
         "along": "l90_2180",
         "from": "l45_m3678",
-        "to": {
-          "cross": "octK3",
-          "pick": {
-            "farthest": "x90_2180"
-          }
-        }
+        "to": { "cross": "octK3", "pick": { "farthest": "x90_2180" } }
       },
       {
         "along": "l135_2180",
-        "from": {
-          "cross": "octK4",
-          "pick": {
-            "farthest": "x90_7820"
-          }
-        },
+        "from": { "cross": "octK4", "pick": { "farthest": "x90_7820" } },
         "to": "l90_m3678"
       },
       {
         "along": "l135_2180",
         "from": "l0_m6322",
-        "to": {
-          "cross": "octK4",
-          "pick": {
-            "nearest": "x90_7820"
-          }
-        }
+        "to": { "cross": "octK4", "pick": { "nearest": "x90_7820" } }
       },
       {
         "along": "l135_2180",
-        "from": {
-          "cross": "octK1",
-          "pick": {
-            "nearest": "oS4_6"
-          }
-        },
+        "from": { "cross": "octK1", "pick": { "nearest": "oS4_6" } },
         "to": "l90_6322"
       },
       {
         "along": "l135_2180",
         "from": "l0_3678",
-        "to": {
-          "cross": "octK1",
-          "pick": {
-            "farthest": "oS4_6"
-          }
-        }
+        "to": { "cross": "octK1", "pick": { "farthest": "oS4_6" } }
       },
       {
         "along": "l45_m6322",
-        "from": {
-          "cross": "octK5",
-          "pick": {
-            "farthest": "x90_m3678"
-          }
-        },
+        "from": { "cross": "octK5", "pick": { "farthest": "x90_m3678" } },
         "to": "l0_m2180"
       },
       {
         "along": "l45_m6322",
         "from": "r1",
-        "to": {
-          "cross": "octK5",
-          "pick": {
-            "nearest": "x90_m3678"
-          }
-        }
+        "to": { "cross": "octK5", "pick": { "nearest": "x90_m3678" } }
       },
       {
         "along": "l45_m6322",
-        "from": {
-          "cross": "octK4",
-          "pick": {
-            "nearest": "oK6_5"
-          }
-        },
+        "from": { "cross": "octK4", "pick": { "nearest": "oK6_5" } },
         "to": "l0_m6322"
       },
       {
         "along": "l45_m6322",
         "from": "l90_m2180",
-        "to": {
-          "cross": "octK4",
-          "pick": {
-            "farthest": "oK6_5"
-          }
-        }
+        "to": { "cross": "octK4", "pick": { "farthest": "oK6_5" } }
       },
       {
         "along": "l90_m6322",
-        "from": {
-          "cross": "octK6",
-          "pick": {
-            "farthest": "x90_m6322"
-          }
-        },
+        "from": { "cross": "octK6", "pick": { "farthest": "x90_m6322" } },
         "to": "l45_m2180"
       },
       {
         "along": "l90_m6322",
         "from": "r2",
-        "to": {
-          "cross": "octK6",
-          "pick": {
-            "nearest": "x90_m6322"
-          }
-        }
+        "to": { "cross": "octK6", "pick": { "nearest": "x90_m6322" } }
       },
       {
         "along": "l90_m6322",
-        "from": {
-          "cross": "octK5",
-          "pick": {
-            "nearest": "oK7_6"
-          }
-        },
+        "from": { "cross": "octK5", "pick": { "nearest": "oK7_6" } },
         "to": "l45_m6322"
       },
       {
         "along": "l90_m6322",
         "from": "l135_m2180",
-        "to": {
-          "cross": "octK5",
-          "pick": {
-            "farthest": "oK7_6"
-          }
-        }
+        "to": { "cross": "octK5", "pick": { "farthest": "oK7_6" } }
       },
       {
         "along": "l135_m6322",
-        "from": {
-          "cross": "octK6",
-          "pick": {
-            "farthest": "oK0_7"
-          }
-        },
+        "from": { "cross": "octK6", "pick": { "farthest": "oK0_7" } },
         "to": "l0_2180"
       },
       {
         "along": "l135_m6322",
         "from": "l90_m6322",
-        "to": {
-          "cross": "octK6",
-          "pick": {
-            "nearest": "oK0_7"
-          }
-        }
+        "to": { "cross": "octK6", "pick": { "nearest": "oK0_7" } }
       },
       {
         "along": "l135_m6322",
-        "from": {
-          "cross": "octK7",
-          "pick": {
-            "nearest": "x135_m6322"
-          }
-        },
+        "from": { "cross": "octK7", "pick": { "nearest": "x135_m6322" } },
         "to": "l0_6322"
       },
       {
         "along": "l135_m6322",
         "from": "l90_m2180",
-        "to": {
-          "cross": "octK7",
-          "pick": {
-            "farthest": "x135_m6322"
-          }
-        }
+        "to": { "cross": "octK7", "pick": { "farthest": "x135_m6322" } }
       },
       {
         "along": "l0_6322",
-        "from": {
-          "cross": "octK7",
-          "pick": {
-            "farthest": "x0_6322"
-          }
-        },
+        "from": { "cross": "octK7", "pick": { "farthest": "x0_6322" } },
         "to": "l45_2180"
       },
       {
         "along": "l0_6322",
         "from": "l135_m6322",
-        "to": {
-          "cross": "octK7",
-          "pick": {
-            "nearest": "x0_6322"
-          }
-        }
+        "to": { "cross": "octK7", "pick": { "nearest": "x0_6322" } }
       },
       {
         "along": "l0_6322",
-        "from": {
-          "cross": "octK0",
-          "pick": {
-            "nearest": "oK6_0"
-          }
-        },
+        "from": { "cross": "octK0", "pick": { "nearest": "oK6_0" } },
         "to": "r0"
       },
       {
         "along": "l0_6322",
         "from": "l135_m2180",
-        "to": {
-          "cross": "octK0",
-          "pick": {
-            "farthest": "oK6_0"
-          }
-        }
+        "to": { "cross": "octK0", "pick": { "farthest": "oK6_0" } }
       },
       {
         "along": "l45_6322",
-        "from": {
-          "cross": "octK0",
-          "pick": {
-            "farthest": "x0_3678"
-          }
-        },
+        "from": { "cross": "octK0", "pick": { "farthest": "x0_3678" } },
         "to": "l90_2180"
       },
       {
         "along": "l45_6322",
         "from": "l0_6322",
-        "to": {
-          "cross": "octK0",
-          "pick": {
-            "nearest": "x0_3678"
-          }
-        }
+        "to": { "cross": "octK0", "pick": { "nearest": "x0_3678" } }
       },
       {
         "along": "l45_6322",
-        "from": {
-          "cross": "octK1",
-          "pick": {
-            "nearest": "x90_3678"
-          }
-        },
+        "from": { "cross": "octK1", "pick": { "nearest": "x90_3678" } },
         "to": "r1"
       },
       {
         "along": "l45_6322",
         "from": "l0_2180",
-        "to": {
-          "cross": "octK1",
-          "pick": {
-            "farthest": "x90_3678"
-          }
-        }
+        "to": { "cross": "octK1", "pick": { "farthest": "x90_3678" } }
       },
       {
         "along": "l90_6322",
-        "from": {
-          "cross": "octK1",
-          "pick": {
-            "farthest": "x45_3678"
-          }
-        },
+        "from": { "cross": "octK1", "pick": { "farthest": "x45_3678" } },
         "to": "l135_2180"
       },
       {
         "along": "l90_6322",
         "from": "l45_6322",
-        "to": {
-          "cross": "octK1",
-          "pick": {
-            "nearest": "x45_3678"
-          }
-        }
+        "to": { "cross": "octK1", "pick": { "nearest": "x45_3678" } }
       },
       {
         "along": "l90_6322",
-        "from": {
-          "cross": "octK2",
-          "pick": {
-            "nearest": "x90_6322"
-          }
-        },
+        "from": { "cross": "octK2", "pick": { "nearest": "x90_6322" } },
         "to": "r2"
       },
       {
         "along": "l90_6322",
         "from": "l45_2180",
-        "to": {
-          "cross": "octK2",
-          "pick": {
-            "farthest": "x90_6322"
-          }
-        }
+        "to": { "cross": "octK2", "pick": { "farthest": "x90_6322" } }
       },
       {
         "along": "l135_6322",
-        "from": {
-          "cross": "octK3",
-          "pick": {
-            "farthest": "x0_m3678"
-          }
-        },
+        "from": { "cross": "octK3", "pick": { "farthest": "x0_m3678" } },
         "to": "l90_2180"
       },
       {
         "along": "l135_6322",
         "from": "l0_m6322",
-        "to": {
-          "cross": "octK3",
-          "pick": {
-            "nearest": "x0_m3678"
-          }
-        }
+        "to": { "cross": "octK3", "pick": { "nearest": "x0_m3678" } }
       },
       {
         "along": "l135_6322",
-        "from": {
-          "cross": "octK2",
-          "pick": {
-            "nearest": "oK4_3"
-          }
-        },
+        "from": { "cross": "octK2", "pick": { "nearest": "oK4_3" } },
         "to": "l90_6322"
       },
       {
         "along": "l135_6322",
         "from": "l0_m2180",
-        "to": {
-          "cross": "octK2",
-          "pick": {
-            "farthest": "oK4_3"
-          }
-        }
+        "to": { "cross": "octK2", "pick": { "farthest": "oK4_3" } }
       },
       {
         "along": "l0_m6322",
-        "from": {
-          "cross": "octK4",
-          "pick": {
-            "farthest": "x0_m6322"
-          }
-        },
+        "from": { "cross": "octK4", "pick": { "farthest": "x0_m6322" } },
         "to": "l135_2180"
       },
       {
         "along": "l0_m6322",
         "from": "l45_m6322",
-        "to": {
-          "cross": "octK4",
-          "pick": {
-            "nearest": "x0_m6322"
-          }
-        }
+        "to": { "cross": "octK4", "pick": { "nearest": "x0_m6322" } }
       },
       {
         "along": "l0_m6322",
-        "from": {
-          "cross": "octK3",
-          "pick": {
-            "nearest": "oK5_4"
-          }
-        },
+        "from": { "cross": "octK3", "pick": { "nearest": "oK5_4" } },
         "to": "l135_6322"
       },
       {
         "along": "l0_m6322",
         "from": "l45_m2180",
-        "to": {
-          "cross": "octK3",
-          "pick": {
-            "farthest": "oK5_4"
-          }
-        }
+        "to": { "cross": "octK3", "pick": { "farthest": "oK5_4" } }
       },
       {
         "along": "l135_m3678",
-        "from": {
-          "cross": "octK5",
-          "pick": {
-            "farthest": "x0_6322"
-          }
-        },
+        "from": { "cross": "octK5", "pick": { "farthest": "x0_6322" } },
         "to": "l90_m7820"
       },
       {
         "along": "l135_m3678",
         "from": "l0_m2180",
-        "to": {
-          "cross": "octK5",
-          "pick": {
-            "nearest": "x0_6322"
-          }
-        }
+        "to": { "cross": "octK5", "pick": { "nearest": "x0_6322" } }
       },
       {
         "along": "l135_m3678",
-        "from": {
-          "cross": "octK0",
-          "pick": {
-            "nearest": "x90_m6322"
-          }
-        },
+        "from": { "cross": "octK0", "pick": { "nearest": "x90_m6322" } },
         "to": "l90_2180"
       },
       {
         "along": "l135_m3678",
         "from": "l0_7820",
-        "to": {
-          "cross": "octK0",
-          "pick": {
-            "farthest": "x90_m6322"
-          }
-        }
+        "to": { "cross": "octK0", "pick": { "farthest": "x90_m6322" } }
       },
       {
         "along": "l0_3678",
-        "from": {
-          "cross": "octK6",
-          "pick": {
-            "farthest": "x0_3678"
-          }
-        },
+        "from": { "cross": "octK6", "pick": { "farthest": "x0_3678" } },
         "to": "l135_m7820"
       },
       {
         "along": "l0_3678",
         "from": "l45_m2180",
-        "to": {
-          "cross": "octK6",
-          "pick": {
-            "nearest": "x0_3678"
-          }
-        }
+        "to": { "cross": "octK6", "pick": { "nearest": "x0_3678" } }
       },
       {
         "along": "l0_3678",
-        "from": {
-          "cross": "octK1",
-          "pick": {
-            "nearest": "x135_m6322"
-          }
-        },
+        "from": { "cross": "octK1", "pick": { "nearest": "x135_m6322" } },
         "to": "l135_2180"
       },
       {
         "along": "l0_3678",
         "from": "l45_7820",
-        "to": {
-          "cross": "octK1",
-          "pick": {
-            "farthest": "x135_m6322"
-          }
-        }
+        "to": { "cross": "octK1", "pick": { "farthest": "x135_m6322" } }
       },
       {
         "along": "l45_3678",
-        "from": {
-          "cross": "octK7",
-          "pick": {
-            "farthest": "x45_3678"
-          }
-        },
+        "from": { "cross": "octK7", "pick": { "farthest": "x45_3678" } },
         "to": "l0_7820"
       },
       {
         "along": "l45_3678",
         "from": "l90_m2180",
-        "to": {
-          "cross": "octK7",
-          "pick": {
-            "nearest": "x45_3678"
-          }
-        }
+        "to": { "cross": "octK7", "pick": { "nearest": "x45_3678" } }
       },
       {
         "along": "l45_3678",
-        "from": {
-          "cross": "octK2",
-          "pick": {
-            "nearest": "oS0_0"
-          }
-        },
+        "from": { "cross": "octK2", "pick": { "nearest": "oS0_0" } },
         "to": "l0_m2180"
       },
       {
         "along": "l45_3678",
         "from": "l90_7820",
-        "to": {
-          "cross": "octK2",
-          "pick": {
-            "farthest": "oS0_0"
-          }
-        }
+        "to": { "cross": "octK2", "pick": { "farthest": "oS0_0" } }
       },
       {
         "along": "l90_3678",
-        "from": {
-          "cross": "octK0",
-          "pick": {
-            "farthest": "oS3_3"
-          }
-        },
+        "from": { "cross": "octK0", "pick": { "farthest": "oS3_3" } },
         "to": "l45_7820"
       },
       {
         "along": "l90_3678",
         "from": "l135_m2180",
-        "to": {
-          "cross": "octK0",
-          "pick": {
-            "nearest": "oS3_3"
-          }
-        }
+        "to": { "cross": "octK0", "pick": { "nearest": "oS3_3" } }
       },
       {
         "along": "l90_3678",
-        "from": {
-          "cross": "octK3",
-          "pick": {
-            "nearest": "x90_3678"
-          }
-        },
+        "from": { "cross": "octK3", "pick": { "nearest": "x90_3678" } },
         "to": "l45_m2180"
       },
       {
         "along": "l90_3678",
         "from": "l135_7820",
-        "to": {
-          "cross": "octK3",
-          "pick": {
-            "farthest": "x90_3678"
-          }
-        }
+        "to": { "cross": "octK3", "pick": { "farthest": "x90_3678" } }
       },
       {
         "along": "l135_3678",
-        "from": {
-          "cross": "octK4",
-          "pick": {
-            "farthest": "x90_6322"
-          }
-        },
+        "from": { "cross": "octK4", "pick": { "farthest": "x90_6322" } },
         "to": "l0_m7820"
       },
       {
         "along": "l135_3678",
         "from": "l90_m2180",
-        "to": {
-          "cross": "octK4",
-          "pick": {
-            "nearest": "x90_6322"
-          }
-        }
+        "to": { "cross": "octK4", "pick": { "nearest": "x90_6322" } }
       },
       {
         "along": "l135_3678",
-        "from": {
-          "cross": "octK1",
-          "pick": {
-            "nearest": "oS4_4"
-          }
-        },
+        "from": { "cross": "octK1", "pick": { "nearest": "oS4_4" } },
         "to": "l0_2180"
       },
       {
         "along": "l135_3678",
         "from": "l90_7820",
-        "to": {
-          "cross": "octK1",
-          "pick": {
-            "farthest": "oS4_4"
-          }
-        }
+        "to": { "cross": "octK1", "pick": { "farthest": "oS4_4" } }
       },
       {
         "along": "l0_m3678",
-        "from": {
-          "cross": "octK5",
-          "pick": {
-            "farthest": "x0_m3678"
-          }
-        },
+        "from": { "cross": "octK5", "pick": { "farthest": "x0_m3678" } },
         "to": "l45_m7820"
       },
       {
         "along": "l0_m3678",
         "from": "l135_m2180",
-        "to": {
-          "cross": "octK5",
-          "pick": {
-            "nearest": "x0_m3678"
-          }
-        }
+        "to": { "cross": "octK5", "pick": { "nearest": "x0_m3678" } }
       },
       {
         "along": "l0_m3678",
-        "from": {
-          "cross": "octK2",
-          "pick": {
-            "nearest": "oS5_5"
-          }
-        },
+        "from": { "cross": "octK2", "pick": { "nearest": "oS5_5" } },
         "to": "l45_2180"
       },
       {
         "along": "l0_m3678",
         "from": "l135_7820",
-        "to": {
-          "cross": "octK2",
-          "pick": {
-            "farthest": "oS5_5"
-          }
-        }
+        "to": { "cross": "octK2", "pick": { "farthest": "oS5_5" } }
       },
       {
         "along": "l45_m3678",
-        "from": {
-          "cross": "octK6",
-          "pick": {
-            "farthest": "x0_m6322"
-          }
-        },
+        "from": { "cross": "octK6", "pick": { "farthest": "x0_m6322" } },
         "to": "l90_m7820"
       },
       {
         "along": "l45_m3678",
         "from": "l0_2180",
-        "to": {
-          "cross": "octK6",
-          "pick": {
-            "nearest": "x0_m6322"
-          }
-        }
+        "to": { "cross": "octK6", "pick": { "nearest": "x0_m6322" } }
       },
       {
         "along": "l45_m3678",
-        "from": {
-          "cross": "octK3",
-          "pick": {
-            "nearest": "oS6_6"
-          }
-        },
+        "from": { "cross": "octK3", "pick": { "nearest": "oS6_6" } },
         "to": "l90_2180"
       },
       {
         "along": "l45_m3678",
         "from": "l0_m7820",
-        "to": {
-          "cross": "octK3",
-          "pick": {
-            "farthest": "oS6_6"
-          }
-        }
+        "to": { "cross": "octK3", "pick": { "farthest": "oS6_6" } }
       },
       {
         "along": "l90_m3678",
-        "from": {
-          "cross": "octK7",
-          "pick": {
-            "farthest": "x90_m3678"
-          }
-        },
+        "from": { "cross": "octK7", "pick": { "farthest": "x90_m3678" } },
         "to": "l135_m7820"
       },
       {
         "along": "l90_m3678",
         "from": "l45_2180",
-        "to": {
-          "cross": "octK7",
-          "pick": {
-            "nearest": "x90_m3678"
-          }
-        }
+        "to": { "cross": "octK7", "pick": { "nearest": "x90_m3678" } }
       },
       {
         "along": "l90_m3678",
-        "from": {
-          "cross": "octK4",
-          "pick": {
-            "nearest": "oS7_7"
-          }
-        },
+        "from": { "cross": "octK4", "pick": { "nearest": "oS7_7" } },
         "to": "l135_2180"
       },
       {
         "along": "l90_m3678",
         "from": "l45_m7820",
-        "to": {
-          "cross": "octK4",
-          "pick": {
-            "farthest": "oS7_7"
-          }
-        }
+        "to": { "cross": "octK4", "pick": { "farthest": "oS7_7" } }
       },
       {
         "along": "rs45",
-        "from": {
-          "cross": "octO0",
-          "pick": {
-            "nearest": "oK7_6"
-          }
-        },
+        "from": { "cross": "octO0", "pick": { "nearest": "oK7_6" } },
         "to": "r0"
       },
       {
         "along": "rs45",
         "from": "r1",
-        "to": {
-          "cross": "octO0",
-          "pick": {
-            "farthest": "oK7_6"
-          }
-        }
+        "to": { "cross": "octO0", "pick": { "farthest": "oK7_6" } }
       },
       {
         "along": "rs90",
-        "from": {
-          "cross": "octO0",
-          "pick": {
-            "nearest": "oK0_7"
-          }
-        },
+        "from": { "cross": "octO0", "pick": { "nearest": "oK0_7" } },
         "to": "rs45"
       },
       {
         "along": "rs90",
         "from": "rs135",
-        "to": {
-          "cross": "octO0",
-          "pick": {
-            "farthest": "oK0_7"
-          }
-        }
+        "to": { "cross": "octO0", "pick": { "farthest": "oK0_7" } }
       },
       {
         "along": "rs135",
-        "from": {
-          "cross": "octO0",
-          "pick": {
-            "nearest": "oK4_6"
-          }
-        },
+        "from": { "cross": "octO0", "pick": { "nearest": "oK4_6" } },
         "to": "r3"
       },
       {
         "along": "rs135",
         "from": "rs90",
-        "to": {
-          "cross": "octO0",
-          "pick": {
-            "farthest": "oK4_6"
-          }
-        }
+        "to": { "cross": "octO0", "pick": { "farthest": "oK4_6" } }
       },
       {
         "along": "rs180",
-        "from": {
-          "cross": "octO0",
-          "pick": {
-            "farthest": "oK2_1"
-          }
-        },
+        "from": { "cross": "octO0", "pick": { "farthest": "oK2_1" } },
         "to": "rs225"
       },
       {
         "along": "rs180",
         "from": "rs135",
-        "to": {
-          "cross": "octO0",
-          "pick": {
-            "nearest": "oK2_1"
-          }
-        }
+        "to": { "cross": "octO0", "pick": { "nearest": "oK2_1" } }
       },
       {
         "along": "rs225",
-        "from": {
-          "cross": "octO0",
-          "pick": {
-            "farthest": "oK3_2"
-          }
-        },
+        "from": { "cross": "octO0", "pick": { "farthest": "oK3_2" } },
         "to": "r1"
       },
       {
         "along": "rs225",
         "from": "rs180",
-        "to": {
-          "cross": "octO0",
-          "pick": {
-            "nearest": "oK3_2"
-          }
-        }
+        "to": { "cross": "octO0", "pick": { "nearest": "oK3_2" } }
       },
       {
         "along": "rs270",
-        "from": {
-          "cross": "octO0",
-          "pick": {
-            "farthest": "oK4_3"
-          }
-        },
+        "from": { "cross": "octO0", "pick": { "farthest": "oK4_3" } },
         "to": "rs315"
       },
       {
         "along": "rs270",
         "from": "rs225",
-        "to": {
-          "cross": "octO0",
-          "pick": {
-            "nearest": "oK4_3"
-          }
-        }
+        "to": { "cross": "octO0", "pick": { "nearest": "oK4_3" } }
       },
       {
         "along": "rs315",
-        "from": {
-          "cross": "octO0",
-          "pick": {
-            "nearest": "oK5_4"
-          }
-        },
+        "from": { "cross": "octO0", "pick": { "nearest": "oK5_4" } },
         "to": "rs270"
       },
       {
         "along": "rs315",
         "from": "r3",
-        "to": {
-          "cross": "octO0",
-          "pick": {
-            "farthest": "oK5_4"
-          }
-        }
+        "to": { "cross": "octO0", "pick": { "farthest": "oK5_4" } }
       },
       {
         "along": "rs0",
-        "from": {
-          "cross": "octO0",
-          "pick": {
-            "farthest": "oK1_3"
-          }
-        },
+        "from": { "cross": "octO0", "pick": { "farthest": "oK1_3" } },
         "to": "rs315"
       },
       {
         "along": "rs0",
         "from": "rs45",
-        "to": {
-          "cross": "octO0",
-          "pick": {
-            "nearest": "oK1_3"
-          }
-        }
+        "to": { "cross": "octO0", "pick": { "nearest": "oK1_3" } }
       },
       {
         "along": "octK5",
         "from": "oK5_7",
-        "to": {
-          "cross": "l45_m6322",
-          "pick": {
-            "farthest": "x90_m3678"
-          }
-        }
+        "to": { "cross": "l45_m6322", "pick": { "farthest": "x90_m3678" } }
       },
       {
         "along": "octK5",
-        "from": {
-          "cross": "l90_m7820",
-          "pick": {
-            "nearest": "SE"
-          }
-        },
+        "from": { "cross": "l90_m7820", "pick": { "nearest": "SE" } },
         "to": "oK6_4"
       },
       {
         "along": "octK6",
         "from": "oK6_4",
-        "to": {
-          "cross": "l90_m6322",
-          "pick": {
-            "nearest": "x90_m6322"
-          }
-        }
+        "to": { "cross": "l90_m6322", "pick": { "nearest": "x90_m6322" } }
       },
       {
         "along": "octK6",
-        "from": {
-          "cross": "l45_m3678",
-          "pick": {
-            "nearest": "x0_m6322"
-          }
-        },
+        "from": { "cross": "l45_m3678", "pick": { "nearest": "x0_m6322" } },
         "to": "oS6_7"
       },
-      {
-        "through": [
-          "oS6_7",
-          "oS6_0"
-        ]
-      },
-      {
-        "through": [
-          "oS7_4",
-          "oO0_7"
-        ]
-      },
+      { "through": ["oS6_7", "oS6_0"] },
+      { "through": ["oS7_4", "oO0_7"] },
       {
         "along": "octO0",
         "from": "oO0_7",
-        "to": {
-          "cross": "rs45",
-          "pick": {
-            "nearest": "oK7_6"
-          }
-        }
+        "to": { "cross": "rs45", "pick": { "nearest": "oK7_6" } }
       },
       {
         "along": "octO0",
-        "from": {
-          "cross": "rs270",
-          "pick": {
-            "farthest": "oK4_3"
-          }
-        },
+        "from": { "cross": "rs270", "pick": { "farthest": "oK4_3" } },
         "to": "oO0_0"
       },
-      {
-        "through": [
-          "oO0_0",
-          "oS0_3"
-        ]
-      },
-      {
-        "through": [
-          "oS1_7",
-          "oS1_0"
-        ]
-      },
+      { "through": ["oO0_0", "oS0_3"] },
+      { "through": ["oS1_7", "oS1_0"] },
       {
         "along": "octK0",
         "from": "oS1_0",
-        "to": {
-          "cross": "l90_3678",
-          "pick": {
-            "nearest": "oS3_3"
-          }
-        }
+        "to": { "cross": "l90_3678", "pick": { "nearest": "oS3_3" } }
       },
       {
         "along": "octK0",
-        "from": {
-          "cross": "l45_6322",
-          "pick": {
-            "nearest": "x0_3678"
-          }
-        },
+        "from": { "cross": "l45_6322", "pick": { "nearest": "x0_3678" } },
         "to": "oK1_7"
       },
       {
         "along": "octK1",
         "from": "oK1_7",
-        "to": {
-          "cross": "l45_7820",
-          "pick": {
-            "nearest": "x90_2180"
-          }
-        }
+        "to": { "cross": "l45_7820", "pick": { "nearest": "x90_2180" } }
       },
       {
         "along": "octK1",
-        "from": {
-          "cross": "l90_6322",
-          "pick": {
-            "farthest": "x45_3678"
-          }
-        },
+        "from": { "cross": "l90_6322", "pick": { "farthest": "x45_3678" } },
         "to": "oK1_0"
       },
       {
         "along": "octK6",
         "from": "oK6_0",
-        "to": {
-          "cross": "l90_m6322",
-          "pick": {
-            "farthest": "x90_m6322"
-          }
-        }
+        "to": { "cross": "l90_m6322", "pick": { "farthest": "x90_m6322" } }
       },
       {
         "along": "octK6",
-        "from": {
-          "cross": "l135_m7820",
-          "pick": {
-            "nearest": "A"
-          }
-        },
+        "from": { "cross": "l135_m7820", "pick": { "nearest": "A" } },
         "to": "oK7_5"
       },
       {
         "along": "octK7",
         "from": "oK7_5",
-        "to": {
-          "cross": "l135_m6322",
-          "pick": {
-            "nearest": "x135_m6322"
-          }
-        }
+        "to": { "cross": "l135_m6322", "pick": { "nearest": "x135_m6322" } }
       },
       {
         "along": "octK7",
-        "from": {
-          "cross": "l90_m3678",
-          "pick": {
-            "nearest": "x90_m3678"
-          }
-        },
+        "from": { "cross": "l90_m3678", "pick": { "nearest": "x90_m3678" } },
         "to": "oS7_0"
       },
-      {
-        "through": [
-          "oS7_0",
-          "oS7_1"
-        ]
-      },
-      {
-        "through": [
-          "oS0_5",
-          "oO0_0"
-        ]
-      },
+      { "through": ["oS7_0", "oS7_1"] },
+      { "through": ["oS0_5", "oO0_0"] },
       {
         "along": "octO0",
         "from": "oO0_0",
-        "to": {
-          "cross": "rs90",
-          "pick": {
-            "nearest": "oK0_7"
-          }
-        }
+        "to": { "cross": "rs90", "pick": { "nearest": "oK0_7" } }
       },
       {
         "along": "octO0",
-        "from": {
-          "cross": "rs315",
-          "pick": {
-            "farthest": "oK5_4"
-          }
-        },
+        "from": { "cross": "rs315", "pick": { "farthest": "oK5_4" } },
         "to": "oO0_1"
       },
-      {
-        "through": [
-          "oO0_1",
-          "oS1_4"
-        ]
-      },
-      {
-        "through": [
-          "oS2_0",
-          "oS2_1"
-        ]
-      },
+      { "through": ["oO0_1", "oS1_4"] },
+      { "through": ["oS2_0", "oS2_1"] },
       {
         "along": "octK1",
         "from": "oS2_1",
-        "to": {
-          "cross": "l135_3678",
-          "pick": {
-            "nearest": "oS4_4"
-          }
-        }
+        "to": { "cross": "l135_3678", "pick": { "nearest": "oS4_4" } }
       },
       {
         "along": "octK1",
-        "from": {
-          "cross": "l90_6322",
-          "pick": {
-            "nearest": "x45_3678"
-          }
-        },
+        "from": { "cross": "l90_6322", "pick": { "nearest": "x45_3678" } },
         "to": "oK2_0"
       },
       {
         "along": "octK2",
         "from": "oK2_0",
-        "to": {
-          "cross": "l90_7820",
-          "pick": {
-            "nearest": "x90_7820"
-          }
-        }
+        "to": { "cross": "l90_7820", "pick": { "nearest": "x90_7820" } }
       },
       {
         "along": "octK2",
-        "from": {
-          "cross": "l135_6322",
-          "pick": {
-            "farthest": "oK4_3"
-          }
-        },
+        "from": { "cross": "l135_6322", "pick": { "farthest": "oK4_3" } },
         "to": "oK2_1"
       },
       {
         "along": "octK7",
         "from": "oK7_1",
-        "to": {
-          "cross": "l135_m6322",
-          "pick": {
-            "farthest": "x135_m6322"
-          }
-        }
+        "to": { "cross": "l135_m6322", "pick": { "farthest": "x135_m6322" } }
       },
       {
         "along": "octK7",
-        "from": {
-          "cross": "l0_7820",
-          "pick": {
-            "nearest": "x0_7820"
-          }
-        },
+        "from": { "cross": "l0_7820", "pick": { "nearest": "x0_7820" } },
         "to": "oK7_2"
       },
       {
         "along": "octK0",
         "from": "oK7_2",
-        "to": {
-          "cross": "l0_6322",
-          "pick": {
-            "nearest": "oK6_0"
-          }
-        }
+        "to": { "cross": "l0_6322", "pick": { "nearest": "oK6_0" } }
       },
       {
         "along": "octK0",
-        "from": {
-          "cross": "l135_m3678",
-          "pick": {
-            "nearest": "x90_m6322"
-          }
-        },
+        "from": { "cross": "l135_m3678", "pick": { "nearest": "x90_m6322" } },
         "to": "oS0_1"
       },
-      {
-        "through": [
-          "oS0_1",
-          "oS0_2"
-        ]
-      },
-      {
-        "through": [
-          "oS1_6",
-          "oO0_1"
-        ]
-      },
+      { "through": ["oS0_1", "oS0_2"] },
+      { "through": ["oS1_6", "oO0_1"] },
       {
         "along": "octO0",
         "from": "oO0_1",
-        "to": {
-          "cross": "rs135",
-          "pick": {
-            "farthest": "oK4_6"
-          }
-        }
+        "to": { "cross": "rs135", "pick": { "farthest": "oK4_6" } }
       },
       {
         "along": "octO0",
-        "from": {
-          "cross": "rs0",
-          "pick": {
-            "nearest": "oK1_3"
-          }
-        },
+        "from": { "cross": "rs0", "pick": { "nearest": "oK1_3" } },
         "to": "oO0_2"
       },
-      {
-        "through": [
-          "oO0_2",
-          "oS2_5"
-        ]
-      },
-      {
-        "through": [
-          "oS3_1",
-          "oS3_2"
-        ]
-      },
+      { "through": ["oO0_2", "oS2_5"] },
+      { "through": ["oS3_1", "oS3_2"] },
       {
         "along": "octK2",
         "from": "oS3_2",
-        "to": {
-          "cross": "l0_m3678",
-          "pick": {
-            "nearest": "oS5_5"
-          }
-        }
+        "to": { "cross": "l0_m3678", "pick": { "nearest": "oS5_5" } }
       },
       {
         "along": "octK2",
-        "from": {
-          "cross": "l135_6322",
-          "pick": {
-            "nearest": "oK4_3"
-          }
-        },
+        "from": { "cross": "l135_6322", "pick": { "nearest": "oK4_3" } },
         "to": "oK3_1"
       },
       {
         "along": "octK3",
         "from": "oK3_1",
-        "to": {
-          "cross": "l135_7820",
-          "pick": {
-            "nearest": "x0_m2180"
-          }
-        }
+        "to": { "cross": "l135_7820", "pick": { "nearest": "x0_m2180" } }
       },
       {
         "along": "octK3",
-        "from": {
-          "cross": "l0_m6322",
-          "pick": {
-            "farthest": "oK5_4"
-          }
-        },
+        "from": { "cross": "l0_m6322", "pick": { "farthest": "oK5_4" } },
         "to": "oK3_2"
       },
       {
         "along": "octK4",
         "from": "oK4_3",
-        "to": {
-          "cross": "l45_m6322",
-          "pick": {
-            "farthest": "oK6_5"
-          }
-        }
+        "to": { "cross": "l45_m6322", "pick": { "farthest": "oK6_5" } }
       },
       {
         "along": "octK4",
-        "from": {
-          "cross": "l0_m7820",
-          "pick": {
-            "nearest": "x0_m7820"
-          }
-        },
+        "from": { "cross": "l0_m7820", "pick": { "nearest": "x0_m7820" } },
         "to": "oK4_2"
       },
       {
         "along": "octK3",
         "from": "oK4_2",
-        "to": {
-          "cross": "l0_m6322",
-          "pick": {
-            "nearest": "oK5_4"
-          }
-        }
+        "to": { "cross": "l0_m6322", "pick": { "nearest": "oK5_4" } }
       },
       {
         "along": "octK3",
-        "from": {
-          "cross": "l45_m3678",
-          "pick": {
-            "nearest": "oS6_6"
-          }
-        },
+        "from": { "cross": "l45_m3678", "pick": { "nearest": "oS6_6" } },
         "to": "oS4_3"
       },
-      {
-        "through": [
-          "oS4_3",
-          "oS4_2"
-        ]
-      },
-      {
-        "through": [
-          "oS3_6",
-          "oO0_3"
-        ]
-      },
+      { "through": ["oS4_3", "oS4_2"] },
+      { "through": ["oS3_6", "oO0_3"] },
       {
         "along": "octO0",
         "from": "oO0_3",
-        "to": {
-          "cross": "rs45",
-          "pick": {
-            "farthest": "oK7_6"
-          }
-        }
+        "to": { "cross": "rs45", "pick": { "farthest": "oK7_6" } }
       },
       {
         "along": "octO0",
-        "from": {
-          "cross": "rs180",
-          "pick": {
-            "nearest": "oK2_1"
-          }
-        },
+        "from": { "cross": "rs180", "pick": { "nearest": "oK2_1" } },
         "to": "oO0_2"
       },
-      {
-        "through": [
-          "oO0_2",
-          "oS2_7"
-        ]
-      },
-      {
-        "through": [
-          "oS1_3",
-          "oS1_2"
-        ]
-      },
+      { "through": ["oO0_2", "oS2_7"] },
+      { "through": ["oS1_3", "oS1_2"] },
       {
         "along": "octK1",
         "from": "oS1_2",
-        "to": {
-          "cross": "l0_3678",
-          "pick": {
-            "nearest": "x135_m6322"
-          }
-        }
+        "to": { "cross": "l0_3678", "pick": { "nearest": "x135_m6322" } }
       },
       {
         "along": "octK1",
-        "from": {
-          "cross": "l45_6322",
-          "pick": {
-            "nearest": "x90_3678"
-          }
-        },
+        "from": { "cross": "l45_6322", "pick": { "nearest": "x90_3678" } },
         "to": "oK1_7"
       },
       {
         "along": "octK0",
         "from": "oK1_7",
-        "to": {
-          "cross": "l45_7820",
-          "pick": {
-            "nearest": "x0_2180"
-          }
-        }
+        "to": { "cross": "l45_7820", "pick": { "nearest": "x0_2180" } }
       },
       {
         "along": "octK0",
-        "from": {
-          "cross": "l0_6322",
-          "pick": {
-            "farthest": "oK6_0"
-          }
-        },
+        "from": { "cross": "l0_6322", "pick": { "farthest": "oK6_0" } },
         "to": "oK0_2"
       },
       {
         "along": "octK5",
         "from": "oK5_4",
-        "to": {
-          "cross": "l90_m6322",
-          "pick": {
-            "farthest": "oK7_6"
-          }
-        }
+        "to": { "cross": "l90_m6322", "pick": { "farthest": "oK7_6" } }
       },
       {
         "along": "octK5",
-        "from": {
-          "cross": "l45_m7820",
-          "pick": {
-            "nearest": "x90_m2180"
-          }
-        },
+        "from": { "cross": "l45_m7820", "pick": { "nearest": "x90_m2180" } },
         "to": "oK5_3"
       },
       {
         "along": "octK4",
         "from": "oK5_3",
-        "to": {
-          "cross": "l45_m6322",
-          "pick": {
-            "nearest": "oK6_5"
-          }
-        }
+        "to": { "cross": "l45_m6322", "pick": { "nearest": "oK6_5" } }
       },
       {
         "along": "octK4",
-        "from": {
-          "cross": "l90_m3678",
-          "pick": {
-            "nearest": "oS7_7"
-          }
-        },
+        "from": { "cross": "l90_m3678", "pick": { "nearest": "oS7_7" } },
         "to": "oS5_4"
       },
-      {
-        "through": [
-          "oS5_4",
-          "oS5_3"
-        ]
-      },
-      {
-        "through": [
-          "oS4_7",
-          "oO0_4"
-        ]
-      },
+      { "through": ["oS5_4", "oS5_3"] },
+      { "through": ["oS4_7", "oO0_4"] },
       {
         "along": "octO0",
         "from": "oO0_4",
-        "to": {
-          "cross": "rs90",
-          "pick": {
-            "farthest": "oK0_7"
-          }
-        }
+        "to": { "cross": "rs90", "pick": { "farthest": "oK0_7" } }
       },
       {
         "along": "octO0",
-        "from": {
-          "cross": "rs225",
-          "pick": {
-            "nearest": "oK3_2"
-          }
-        },
+        "from": { "cross": "rs225", "pick": { "nearest": "oK3_2" } },
         "to": "oO0_3"
       },
-      {
-        "through": [
-          "oO0_3",
-          "oS3_0"
-        ]
-      },
-      {
-        "through": [
-          "oS2_4",
-          "oS2_3"
-        ]
-      },
+      { "through": ["oO0_3", "oS3_0"] },
+      { "through": ["oS2_4", "oS2_3"] },
       {
         "along": "octK2",
         "from": "oS2_3",
-        "to": {
-          "cross": "l45_3678",
-          "pick": {
-            "nearest": "oS0_0"
-          }
-        }
+        "to": { "cross": "l45_3678", "pick": { "nearest": "oS0_0" } }
       },
       {
         "along": "octK2",
-        "from": {
-          "cross": "l90_6322",
-          "pick": {
-            "nearest": "x90_6322"
-          }
-        },
+        "from": { "cross": "l90_6322", "pick": { "nearest": "x90_6322" } },
         "to": "oK2_0"
       },
       {
         "along": "octK1",
         "from": "oK2_0",
-        "to": {
-          "cross": "l90_7820",
-          "pick": {
-            "nearest": "x45_2180"
-          }
-        }
+        "to": { "cross": "l90_7820", "pick": { "nearest": "x45_2180" } }
       },
       {
         "along": "octK1",
-        "from": {
-          "cross": "l45_6322",
-          "pick": {
-            "farthest": "x90_3678"
-          }
-        },
+        "from": { "cross": "l45_6322", "pick": { "farthest": "x90_3678" } },
         "to": "oK1_3"
       },
       {
         "along": "octK6",
         "from": "oK6_5",
-        "to": {
-          "cross": "l135_m6322",
-          "pick": {
-            "farthest": "oK0_7"
-          }
-        }
+        "to": { "cross": "l135_m6322", "pick": { "farthest": "oK0_7" } }
       },
       {
         "along": "octK6",
-        "from": {
-          "cross": "l90_m7820",
-          "pick": {
-            "nearest": "x90_m7820"
-          }
-        },
+        "from": { "cross": "l90_m7820", "pick": { "nearest": "x90_m7820" } },
         "to": "oK6_4"
       },
       {
         "along": "octK5",
         "from": "oK6_4",
-        "to": {
-          "cross": "l90_m6322",
-          "pick": {
-            "nearest": "oK7_6"
-          }
-        }
+        "to": { "cross": "l90_m6322", "pick": { "nearest": "oK7_6" } }
       },
       {
         "along": "octK5",
-        "from": {
-          "cross": "l135_m3678",
-          "pick": {
-            "nearest": "x0_6322"
-          }
-        },
+        "from": { "cross": "l135_m3678", "pick": { "nearest": "x0_6322" } },
         "to": "oS6_5"
       },
-      {
-        "through": [
-          "oS6_5",
-          "oS6_4"
-        ]
-      },
-      {
-        "through": [
-          "oS5_0",
-          "oO0_5"
-        ]
-      },
+      { "through": ["oS6_5", "oS6_4"] },
+      { "through": ["oS5_0", "oO0_5"] },
       {
         "along": "octO0",
         "from": "oO0_5",
-        "to": {
-          "cross": "rs135",
-          "pick": {
-            "nearest": "oK4_6"
-          }
-        }
+        "to": { "cross": "rs135", "pick": { "nearest": "oK4_6" } }
       },
       {
         "along": "octO0",
-        "from": {
-          "cross": "rs270",
-          "pick": {
-            "nearest": "oK4_3"
-          }
-        },
+        "from": { "cross": "rs270", "pick": { "nearest": "oK4_3" } },
         "to": "oO0_4"
       },
-      {
-        "through": [
-          "oO0_4",
-          "oS4_1"
-        ]
-      },
-      {
-        "through": [
-          "oS3_5",
-          "oS3_4"
-        ]
-      },
+      { "through": ["oO0_4", "oS4_1"] },
+      { "through": ["oS3_5", "oS3_4"] },
       {
         "along": "octK3",
         "from": "oS3_4",
-        "to": {
-          "cross": "l90_3678",
-          "pick": {
-            "nearest": "x90_3678"
-          }
-        }
+        "to": { "cross": "l90_3678", "pick": { "nearest": "x90_3678" } }
       },
       {
         "along": "octK3",
-        "from": {
-          "cross": "l135_6322",
-          "pick": {
-            "nearest": "x0_m3678"
-          }
-        },
+        "from": { "cross": "l135_6322", "pick": { "nearest": "x0_m3678" } },
         "to": "oK3_1"
       },
       {
         "along": "octK2",
         "from": "oK3_1",
-        "to": {
-          "cross": "l135_7820",
-          "pick": {
-            "nearest": "W"
-          }
-        }
+        "to": { "cross": "l135_7820", "pick": { "nearest": "W" } }
       },
       {
         "along": "octK2",
-        "from": {
-          "cross": "l90_6322",
-          "pick": {
-            "farthest": "x90_6322"
-          }
-        },
+        "from": { "cross": "l90_6322", "pick": { "farthest": "x90_6322" } },
         "to": "oK2_4"
       },
       {
         "along": "octK7",
         "from": "oK7_6",
-        "to": {
-          "cross": "l0_6322",
-          "pick": {
-            "farthest": "x0_6322"
-          }
-        }
+        "to": { "cross": "l0_6322", "pick": { "farthest": "x0_6322" } }
       },
       {
         "along": "octK7",
-        "from": {
-          "cross": "l135_m7820",
-          "pick": {
-            "nearest": "x135_m7820"
-          }
-        },
+        "from": { "cross": "l135_m7820", "pick": { "nearest": "x135_m7820" } },
         "to": "oK7_5"
       },
       {
         "along": "octK6",
         "from": "oK7_5",
-        "to": {
-          "cross": "l135_m6322",
-          "pick": {
-            "nearest": "oK0_7"
-          }
-        }
+        "to": { "cross": "l135_m6322", "pick": { "nearest": "oK0_7" } }
       },
       {
         "along": "octK6",
-        "from": {
-          "cross": "l0_3678",
-          "pick": {
-            "nearest": "x0_3678"
-          }
-        },
+        "from": { "cross": "l0_3678", "pick": { "nearest": "x0_3678" } },
         "to": "oS7_6"
       },
-      {
-        "through": [
-          "oS7_6",
-          "oS7_5"
-        ]
-      },
-      {
-        "through": [
-          "oS6_1",
-          "oO0_6"
-        ]
-      },
+      { "through": ["oS7_6", "oS7_5"] },
+      { "through": ["oS6_1", "oO0_6"] },
       {
         "along": "octO0",
         "from": "oO0_6",
-        "to": {
-          "cross": "rs180",
-          "pick": {
-            "farthest": "oK2_1"
-          }
-        }
+        "to": { "cross": "rs180", "pick": { "farthest": "oK2_1" } }
       },
       {
         "along": "octO0",
-        "from": {
-          "cross": "rs315",
-          "pick": {
-            "nearest": "oK5_4"
-          }
-        },
+        "from": { "cross": "rs315", "pick": { "nearest": "oK5_4" } },
         "to": "oO0_5"
       },
-      {
-        "through": [
-          "oO0_5",
-          "oS5_2"
-        ]
-      },
-      {
-        "through": [
-          "oS4_6",
-          "oS4_5"
-        ]
-      },
+      { "through": ["oO0_5", "oS5_2"] },
+      { "through": ["oS4_6", "oS4_5"] },
       {
         "along": "octK4",
         "from": "oS4_5",
-        "to": {
-          "cross": "l135_3678",
-          "pick": {
-            "nearest": "x90_6322"
-          }
-        }
+        "to": { "cross": "l135_3678", "pick": { "nearest": "x90_6322" } }
       },
       {
         "along": "octK4",
-        "from": {
-          "cross": "l0_m6322",
-          "pick": {
-            "nearest": "x0_m6322"
-          }
-        },
+        "from": { "cross": "l0_m6322", "pick": { "nearest": "x0_m6322" } },
         "to": "oK4_2"
       },
       {
         "along": "octK3",
         "from": "oK4_2",
-        "to": {
-          "cross": "l0_m7820",
-          "pick": {
-            "nearest": "SW"
-          }
-        }
+        "to": { "cross": "l0_m7820", "pick": { "nearest": "SW" } }
       },
       {
         "along": "octK3",
-        "from": {
-          "cross": "l135_6322",
-          "pick": {
-            "farthest": "x0_m3678"
-          }
-        },
+        "from": { "cross": "l135_6322", "pick": { "farthest": "x0_m3678" } },
         "to": "oK3_5"
       },
       {
         "along": "octK4",
         "from": "oK4_6",
-        "to": {
-          "cross": "l0_m6322",
-          "pick": {
-            "farthest": "x0_m6322"
-          }
-        }
+        "to": { "cross": "l0_m6322", "pick": { "farthest": "x0_m6322" } }
       },
       {
         "along": "octK4",
-        "from": {
-          "cross": "l45_m7820",
-          "pick": {
-            "nearest": "Sp"
-          }
-        },
+        "from": { "cross": "l45_m7820", "pick": { "nearest": "S" } },
         "to": "oK5_3"
       },
       {
         "along": "octK5",
         "from": "oK5_3",
-        "to": {
-          "cross": "l45_m6322",
-          "pick": {
-            "nearest": "x90_m3678"
-          }
-        }
+        "to": { "cross": "l45_m6322", "pick": { "nearest": "x90_m3678" } }
       },
       {
         "along": "octK5",
-        "from": {
-          "cross": "l0_m3678",
-          "pick": {
-            "nearest": "x0_m3678"
-          }
-        },
+        "from": { "cross": "l0_m3678", "pick": { "nearest": "x0_m3678" } },
         "to": "oS5_6"
       },
-      {
-        "through": [
-          "oS5_6",
-          "oS5_7"
-        ]
-      },
-      {
-        "through": [
-          "oS6_3",
-          "oO0_6"
-        ]
-      },
+      { "through": ["oS5_6", "oS5_7"] },
+      { "through": ["oS6_3", "oO0_6"] },
       {
         "along": "octO0",
         "from": "oO0_6",
-        "to": {
-          "cross": "rs0",
-          "pick": {
-            "farthest": "oK1_3"
-          }
-        }
+        "to": { "cross": "rs0", "pick": { "farthest": "oK1_3" } }
       },
       {
         "along": "octO0",
-        "from": {
-          "cross": "rs225",
-          "pick": {
-            "farthest": "oK3_2"
-          }
-        },
+        "from": { "cross": "rs225", "pick": { "farthest": "oK3_2" } },
         "to": "oO0_7"
       },
-      {
-        "through": [
-          "oO0_7",
-          "oS7_2"
-        ]
-      },
-      {
-        "through": [
-          "oS0_6",
-          "oS0_7"
-        ]
-      },
+      { "through": ["oO0_7", "oS7_2"] },
+      { "through": ["oS0_6", "oS0_7"] },
       {
         "along": "octK7",
         "from": "oS0_7",
-        "to": {
-          "cross": "l45_3678",
-          "pick": {
-            "nearest": "x45_3678"
-          }
-        }
+        "to": { "cross": "l45_3678", "pick": { "nearest": "x45_3678" } }
       },
       {
         "along": "octK7",
-        "from": {
-          "cross": "l0_6322",
-          "pick": {
-            "nearest": "x0_6322"
-          }
-        },
+        "from": { "cross": "l0_6322", "pick": { "nearest": "x0_6322" } },
         "to": "oK7_2"
       },
       {
         "along": "octK0",
         "from": "oK7_2",
-        "to": {
-          "cross": "l0_7820",
-          "pick": {
-            "nearest": "SE"
-          }
-        }
+        "to": { "cross": "l0_7820", "pick": { "nearest": "SE" } }
       },
       {
         "along": "octK0",
-        "from": {
-          "cross": "l45_6322",
-          "pick": {
-            "farthest": "x0_3678"
-          }
-        },
+        "from": { "cross": "l45_6322", "pick": { "farthest": "x0_3678" } },
         "to": "oK0_7"
       },
-      {
-        "through": [
-          "oS5_7",
-          "oS5_0"
-        ]
-      },
-      {
-        "through": [
-          "oS2_7",
-          "oS2_0"
-        ]
-      },
-      {
-        "through": [
-          "oS6_0",
-          "oS6_1"
-        ]
-      },
-      {
-        "through": [
-          "oS3_0",
-          "oS3_1"
-        ]
-      },
-      {
-        "through": [
-          "oS7_1",
-          "oS7_2"
-        ]
-      },
-      {
-        "through": [
-          "oS4_1",
-          "oS4_2"
-        ]
-      },
-      {
-        "through": [
-          "oS5_3",
-          "oS5_2"
-        ]
-      },
-      {
-        "through": [
-          "oS0_3",
-          "oS0_2"
-        ]
-      },
-      {
-        "through": [
-          "oS6_4",
-          "oS6_3"
-        ]
-      },
-      {
-        "through": [
-          "oS1_4",
-          "oS1_3"
-        ]
-      },
-      {
-        "through": [
-          "oS7_5",
-          "oS7_4"
-        ]
-      },
-      {
-        "through": [
-          "oS2_5",
-          "oS2_4"
-        ]
-      },
-      {
-        "through": [
-          "oS0_6",
-          "oS0_5"
-        ]
-      },
-      {
-        "through": [
-          "oS3_6",
-          "oS3_5"
-        ]
-      },
-      {
-        "through": [
-          "oS4_6",
-          "oS4_7"
-        ]
-      },
-      {
-        "through": [
-          "oS1_6",
-          "oS1_7"
-        ]
-      },
+      { "through": ["oS5_7", "oS5_0"] },
+      { "through": ["oS2_7", "oS2_0"] },
+      { "through": ["oS6_0", "oS6_1"] },
+      { "through": ["oS3_0", "oS3_1"] },
+      { "through": ["oS7_1", "oS7_2"] },
+      { "through": ["oS4_1", "oS4_2"] },
+      { "through": ["oS5_3", "oS5_2"] },
+      { "through": ["oS0_3", "oS0_2"] },
+      { "through": ["oS6_4", "oS6_3"] },
+      { "through": ["oS1_4", "oS1_3"] },
+      { "through": ["oS7_5", "oS7_4"] },
+      { "through": ["oS2_5", "oS2_4"] },
+      { "through": ["oS0_6", "oS0_5"] },
+      { "through": ["oS3_6", "oS3_5"] },
+      { "through": ["oS4_6", "oS4_7"] },
+      { "through": ["oS1_6", "oS1_7"] },
       {
         "along": "octK6",
         "from": "oK6_7",
-        "to": {
-          "cross": "l45_m2180",
-          "pick": {
-            "farthest": "x0_m7820"
-          }
-        }
+        "to": { "cross": "l45_m2180", "pick": { "farthest": "x0_m7820" } }
       },
       {
         "along": "octK6",
-        "from": {
-          "cross": "l90_m7820",
-          "pick": {
-            "farthest": "x90_m7820"
-          }
-        },
+        "from": { "cross": "l90_m7820", "pick": { "farthest": "x90_m7820" } },
         "to": "oK6_0"
       },
       {
         "along": "octK0",
         "from": "oK0_7",
-        "to": {
-          "cross": "l45_7820",
-          "pick": {
-            "farthest": "x0_2180"
-          }
-        }
+        "to": { "cross": "l45_7820", "pick": { "farthest": "x0_2180" } }
       },
       {
         "along": "octK0",
-        "from": {
-          "cross": "l90_2180",
-          "pick": {
-            "farthest": "oS3_5"
-          }
-        },
+        "from": { "cross": "l90_2180", "pick": { "farthest": "oS3_5" } },
         "to": "oK0_0"
       },
       {
         "along": "octK7",
         "from": "oK7_0",
-        "to": {
-          "cross": "l90_m2180",
-          "pick": {
-            "farthest": "x90_m2180"
-          }
-        }
+        "to": { "cross": "l90_m2180", "pick": { "farthest": "x90_m2180" } }
       },
       {
         "along": "octK7",
-        "from": {
-          "cross": "l135_m7820",
-          "pick": {
-            "farthest": "x135_m7820"
-          }
-        },
+        "from": { "cross": "l135_m7820", "pick": { "farthest": "x135_m7820" } },
         "to": "oK7_1"
       },
       {
         "along": "octK1",
         "from": "oK1_0",
-        "to": {
-          "cross": "l90_7820",
-          "pick": {
-            "farthest": "x45_2180"
-          }
-        }
+        "to": { "cross": "l90_7820", "pick": { "farthest": "x45_2180" } }
       },
       {
         "along": "octK1",
-        "from": {
-          "cross": "l135_2180",
-          "pick": {
-            "farthest": "oS4_6"
-          }
-        },
+        "from": { "cross": "l135_2180", "pick": { "farthest": "oS4_6" } },
         "to": "oK1_1"
       },
       {
         "along": "octK0",
         "from": "oK0_1",
-        "to": {
-          "cross": "l135_m2180",
-          "pick": {
-            "farthest": "x90_m7820"
-          }
-        }
+        "to": { "cross": "l135_m2180", "pick": { "farthest": "x90_m7820" } }
       },
       {
         "along": "octK0",
-        "from": {
-          "cross": "l0_7820",
-          "pick": {
-            "farthest": "SE"
-          }
-        },
+        "from": { "cross": "l0_7820", "pick": { "farthest": "SE" } },
         "to": "oK0_2"
       },
       {
         "along": "octK2",
         "from": "oK2_1",
-        "to": {
-          "cross": "l135_7820",
-          "pick": {
-            "farthest": "W"
-          }
-        }
+        "to": { "cross": "l135_7820", "pick": { "farthest": "W" } }
       },
       {
         "along": "octK2",
-        "from": {
-          "cross": "l0_m2180",
-          "pick": {
-            "farthest": "oS5_7"
-          }
-        },
+        "from": { "cross": "l0_m2180", "pick": { "farthest": "oS5_7" } },
         "to": "oK2_2"
       },
       {
         "along": "octK3",
         "from": "oK3_3",
-        "to": {
-          "cross": "l45_m2180",
-          "pick": {
-            "farthest": "oS6_0"
-          }
-        }
+        "to": { "cross": "l45_m2180", "pick": { "farthest": "oS6_0" } }
       },
       {
         "along": "octK3",
-        "from": {
-          "cross": "l0_m7820",
-          "pick": {
-            "farthest": "SW"
-          }
-        },
+        "from": { "cross": "l0_m7820", "pick": { "farthest": "SW" } },
         "to": "oK3_2"
       },
       {
         "along": "octK1",
         "from": "oK1_3",
-        "to": {
-          "cross": "l45_7820",
-          "pick": {
-            "farthest": "x90_2180"
-          }
-        }
+        "to": { "cross": "l45_7820", "pick": { "farthest": "x90_2180" } }
       },
       {
         "along": "octK1",
-        "from": {
-          "cross": "l0_2180",
-          "pick": {
-            "farthest": "x135_m7820"
-          }
-        },
+        "from": { "cross": "l0_2180", "pick": { "farthest": "x135_m7820" } },
         "to": "oK1_2"
       },
       {
         "along": "octK4",
         "from": "oK4_4",
-        "to": {
-          "cross": "l90_m2180",
-          "pick": {
-            "farthest": "oS7_1"
-          }
-        }
+        "to": { "cross": "l90_m2180", "pick": { "farthest": "oS7_1" } }
       },
       {
         "along": "octK4",
-        "from": {
-          "cross": "l45_m7820",
-          "pick": {
-            "farthest": "Sp"
-          }
-        },
+        "from": { "cross": "l45_m7820", "pick": { "farthest": "S" } },
         "to": "oK4_3"
       },
       {
         "along": "octK2",
         "from": "oK2_4",
-        "to": {
-          "cross": "l90_7820",
-          "pick": {
-            "farthest": "x90_7820"
-          }
-        }
+        "to": { "cross": "l90_7820", "pick": { "farthest": "x90_7820" } }
       },
       {
         "along": "octK2",
-        "from": {
-          "cross": "l45_2180",
-          "pick": {
-            "farthest": "oS0_6"
-          }
-        },
+        "from": { "cross": "l45_2180", "pick": { "farthest": "oS0_6" } },
         "to": "oK2_3"
       },
       {
         "along": "octK5",
         "from": "oK5_5",
-        "to": {
-          "cross": "l135_m2180",
-          "pick": {
-            "farthest": "x0_7820"
-          }
-        }
+        "to": { "cross": "l135_m2180", "pick": { "farthest": "x0_7820" } }
       },
       {
         "along": "octK5",
-        "from": {
-          "cross": "l90_m7820",
-          "pick": {
-            "farthest": "SE"
-          }
-        },
+        "from": { "cross": "l90_m7820", "pick": { "farthest": "SE" } },
         "to": "oK5_4"
       },
       {
         "along": "octK3",
         "from": "oK3_5",
-        "to": {
-          "cross": "l135_7820",
-          "pick": {
-            "farthest": "x0_m2180"
-          }
-        }
+        "to": { "cross": "l135_7820", "pick": { "farthest": "x0_m2180" } }
       },
       {
         "along": "octK3",
-        "from": {
-          "cross": "l90_2180",
-          "pick": {
-            "farthest": "x90_2180"
-          }
-        },
+        "from": { "cross": "l90_2180", "pick": { "farthest": "x90_2180" } },
         "to": "oK3_4"
       },
       {
         "along": "octK6",
         "from": "oK6_6",
-        "to": {
-          "cross": "l0_2180",
-          "pick": {
-            "farthest": "x0_2180"
-          }
-        }
+        "to": { "cross": "l0_2180", "pick": { "farthest": "x0_2180" } }
       },
       {
         "along": "octK6",
-        "from": {
-          "cross": "l135_m7820",
-          "pick": {
-            "farthest": "A"
-          }
-        },
+        "from": { "cross": "l135_m7820", "pick": { "farthest": "A" } },
         "to": "oK6_5"
       },
       {
         "along": "octK4",
         "from": "oK4_6",
-        "to": {
-          "cross": "l0_m7820",
-          "pick": {
-            "farthest": "x0_m7820"
-          }
-        }
+        "to": { "cross": "l0_m7820", "pick": { "farthest": "x0_m7820" } }
       },
       {
         "along": "octK4",
-        "from": {
-          "cross": "l135_2180",
-          "pick": {
-            "farthest": "x90_7820"
-          }
-        },
+        "from": { "cross": "l135_2180", "pick": { "farthest": "x90_7820" } },
         "to": "oK4_5"
       },
       {
         "along": "octK5",
         "from": "oK5_6",
-        "to": {
-          "cross": "l0_m2180",
-          "pick": {
-            "farthest": "x0_m2180"
-          }
-        }
+        "to": { "cross": "l0_m2180", "pick": { "farthest": "x0_m2180" } }
       },
       {
         "along": "octK5",
-        "from": {
-          "cross": "l45_m7820",
-          "pick": {
-            "farthest": "x90_m2180"
-          }
-        },
+        "from": { "cross": "l45_m7820", "pick": { "farthest": "x90_m2180" } },
         "to": "oK5_7"
       },
       {
         "along": "octK7",
         "from": "oK7_6",
-        "to": {
-          "cross": "l0_7820",
-          "pick": {
-            "farthest": "x0_7820"
-          }
-        }
+        "to": { "cross": "l0_7820", "pick": { "farthest": "x0_7820" } }
       },
       {
         "along": "octK7",
-        "from": {
-          "cross": "l45_2180",
-          "pick": {
-            "farthest": "x45_2180"
-          }
-        },
+        "from": { "cross": "l45_2180", "pick": { "farthest": "x45_2180" } },
         "to": "oK7_7"
       },
       {
         "along": "l45_m7820",
-        "from": {
-          "cross": "octK5",
-          "pick": {
-            "farthest": "x90_m2180"
-          }
-        },
+        "from": { "cross": "octK5", "pick": { "farthest": "x90_m2180" } },
         "to": "l90_m7820"
       },
       {
         "along": "l45_m7820",
         "from": "l0_m3678",
-        "to": {
-          "cross": "octK5",
-          "pick": {
-            "nearest": "x90_m2180"
-          }
-        }
+        "to": { "cross": "octK5", "pick": { "nearest": "x90_m2180" } }
       },
       {
         "along": "l45_m7820",
-        "from": {
-          "cross": "octK4",
-          "pick": {
-            "nearest": "Sp"
-          }
-        },
+        "from": { "cross": "octK4", "pick": { "nearest": "S" } },
         "to": "l90_m3678"
       },
       {
         "along": "l45_m7820",
         "from": "l0_m7820",
-        "to": {
-          "cross": "octK4",
-          "pick": {
-            "farthest": "Sp"
-          }
-        }
+        "to": { "cross": "octK4", "pick": { "farthest": "S" } }
       },
       {
         "along": "l90_m7820",
-        "from": {
-          "cross": "octK6",
-          "pick": {
-            "farthest": "x90_m7820"
-          }
-        },
+        "from": { "cross": "octK6", "pick": { "farthest": "x90_m7820" } },
         "to": "l135_m7820"
       },
       {
         "along": "l90_m7820",
         "from": "l45_m3678",
-        "to": {
-          "cross": "octK6",
-          "pick": {
-            "nearest": "x90_m7820"
-          }
-        }
+        "to": { "cross": "octK6", "pick": { "nearest": "x90_m7820" } }
       },
       {
         "along": "l90_m7820",
-        "from": {
-          "cross": "octK5",
-          "pick": {
-            "nearest": "SE"
-          }
-        },
+        "from": { "cross": "octK5", "pick": { "nearest": "SE" } },
         "to": "l135_m3678"
       },
       {
         "along": "l90_m7820",
         "from": "l45_m7820",
-        "to": {
-          "cross": "octK5",
-          "pick": {
-            "farthest": "SE"
-          }
-        }
+        "to": { "cross": "octK5", "pick": { "farthest": "SE" } }
       },
       {
         "along": "l135_m7820",
-        "from": {
-          "cross": "octK6",
-          "pick": {
-            "farthest": "A"
-          }
-        },
+        "from": { "cross": "octK6", "pick": { "farthest": "A" } },
         "to": "l90_m7820"
       },
       {
         "along": "l135_m7820",
         "from": "l0_3678",
-        "to": {
-          "cross": "octK6",
-          "pick": {
-            "nearest": "A"
-          }
-        }
+        "to": { "cross": "octK6", "pick": { "nearest": "A" } }
       },
       {
         "along": "l135_m7820",
-        "from": {
-          "cross": "octK7",
-          "pick": {
-            "nearest": "x135_m7820"
-          }
-        },
+        "from": { "cross": "octK7", "pick": { "nearest": "x135_m7820" } },
         "to": "l90_m3678"
       },
       {
         "along": "l135_m7820",
         "from": "l0_7820",
-        "to": {
-          "cross": "octK7",
-          "pick": {
-            "farthest": "x135_m7820"
-          }
-        }
+        "to": { "cross": "octK7", "pick": { "farthest": "x135_m7820" } }
       },
       {
         "along": "l0_7820",
-        "from": {
-          "cross": "octK7",
-          "pick": {
-            "farthest": "x0_7820"
-          }
-        },
+        "from": { "cross": "octK7", "pick": { "farthest": "x0_7820" } },
         "to": "l135_m7820"
       },
       {
         "along": "l0_7820",
         "from": "l45_3678",
-        "to": {
-          "cross": "octK7",
-          "pick": {
-            "nearest": "x0_7820"
-          }
-        }
+        "to": { "cross": "octK7", "pick": { "nearest": "x0_7820" } }
       },
       {
         "along": "l0_7820",
-        "from": {
-          "cross": "octK0",
-          "pick": {
-            "nearest": "SE"
-          }
-        },
+        "from": { "cross": "octK0", "pick": { "nearest": "SE" } },
         "to": "l135_m3678"
       },
       {
         "along": "l0_7820",
         "from": "l45_7820",
-        "to": {
-          "cross": "octK0",
-          "pick": {
-            "farthest": "SE"
-          }
-        }
+        "to": { "cross": "octK0", "pick": { "farthest": "SE" } }
       },
       {
         "along": "l45_7820",
-        "from": {
-          "cross": "octK0",
-          "pick": {
-            "farthest": "x0_2180"
-          }
-        },
+        "from": { "cross": "octK0", "pick": { "farthest": "x0_2180" } },
         "to": "l0_7820"
       },
       {
         "along": "l45_7820",
         "from": "l90_3678",
-        "to": {
-          "cross": "octK0",
-          "pick": {
-            "nearest": "x0_2180"
-          }
-        }
+        "to": { "cross": "octK0", "pick": { "nearest": "x0_2180" } }
       },
       {
         "along": "l45_7820",
-        "from": {
-          "cross": "octK1",
-          "pick": {
-            "nearest": "x90_2180"
-          }
-        },
+        "from": { "cross": "octK1", "pick": { "nearest": "x90_2180" } },
         "to": "l0_3678"
       },
       {
         "along": "l45_7820",
         "from": "l90_7820",
-        "to": {
-          "cross": "octK1",
-          "pick": {
-            "farthest": "x90_2180"
-          }
-        }
+        "to": { "cross": "octK1", "pick": { "farthest": "x90_2180" } }
       },
       {
         "along": "l90_7820",
-        "from": {
-          "cross": "octK1",
-          "pick": {
-            "farthest": "x45_2180"
-          }
-        },
+        "from": { "cross": "octK1", "pick": { "farthest": "x45_2180" } },
         "to": "l45_7820"
       },
       {
         "along": "l90_7820",
         "from": "l135_3678",
-        "to": {
-          "cross": "octK1",
-          "pick": {
-            "nearest": "x45_2180"
-          }
-        }
+        "to": { "cross": "octK1", "pick": { "nearest": "x45_2180" } }
       },
       {
         "along": "l90_7820",
-        "from": {
-          "cross": "octK2",
-          "pick": {
-            "nearest": "x90_7820"
-          }
-        },
+        "from": { "cross": "octK2", "pick": { "nearest": "x90_7820" } },
         "to": "l45_3678"
       },
       {
         "along": "l90_7820",
         "from": "l135_7820",
-        "to": {
-          "cross": "octK2",
-          "pick": {
-            "farthest": "x90_7820"
-          }
-        }
+        "to": { "cross": "octK2", "pick": { "farthest": "x90_7820" } }
       },
       {
         "along": "l135_7820",
-        "from": {
-          "cross": "octK3",
-          "pick": {
-            "farthest": "x0_m2180"
-          }
-        },
+        "from": { "cross": "octK3", "pick": { "farthest": "x0_m2180" } },
         "to": "l0_m7820"
       },
       {
         "along": "l135_7820",
         "from": "l90_3678",
-        "to": {
-          "cross": "octK3",
-          "pick": {
-            "nearest": "x0_m2180"
-          }
-        }
+        "to": { "cross": "octK3", "pick": { "nearest": "x0_m2180" } }
       },
       {
         "along": "l135_7820",
-        "from": {
-          "cross": "octK2",
-          "pick": {
-            "nearest": "W"
-          }
-        },
+        "from": { "cross": "octK2", "pick": { "nearest": "W" } },
         "to": "l0_m3678"
       },
       {
         "along": "l135_7820",
         "from": "l90_7820",
-        "to": {
-          "cross": "octK2",
-          "pick": {
-            "farthest": "W"
-          }
-        }
+        "to": { "cross": "octK2", "pick": { "farthest": "W" } }
       },
       {
         "along": "l0_m7820",
-        "from": {
-          "cross": "octK4",
-          "pick": {
-            "farthest": "x0_m7820"
-          }
-        },
+        "from": { "cross": "octK4", "pick": { "farthest": "x0_m7820" } },
         "to": "l45_m7820"
       },
       {
         "along": "l0_m7820",
         "from": "l135_3678",
-        "to": {
-          "cross": "octK4",
-          "pick": {
-            "nearest": "x0_m7820"
-          }
-        }
+        "to": { "cross": "octK4", "pick": { "nearest": "x0_m7820" } }
       },
       {
         "along": "l0_m7820",
-        "from": {
-          "cross": "octK3",
-          "pick": {
-            "nearest": "SW"
-          }
-        },
+        "from": { "cross": "octK3", "pick": { "nearest": "SW" } },
         "to": "l45_m3678"
       },
       {
         "along": "l0_m7820",
         "from": "l135_7820",
-        "to": {
-          "cross": "octK3",
-          "pick": {
-            "farthest": "SW"
-          }
-        }
+        "to": { "cross": "octK3", "pick": { "farthest": "SW" } }
       },
-      {
-        "through": [
-          "oS7_7",
-          "oS7_0"
-        ]
-      },
+      { "through": ["oS7_7", "oS7_0"] },
       {
         "along": "octK7",
         "from": "oS7_0",
-        "to": {
-          "cross": "l90_m2180",
-          "pick": {
-            "nearest": "x90_m2180"
-          }
-        }
+        "to": { "cross": "l90_m2180", "pick": { "nearest": "x90_m2180" } }
       },
       {
         "along": "octK7",
-        "from": {
-          "cross": "l45_2180",
-          "pick": {
-            "nearest": "x45_2180"
-          }
-        },
+        "from": { "cross": "l45_2180", "pick": { "nearest": "x45_2180" } },
         "to": "oS0_7"
       },
-      {
-        "through": [
-          "oS0_7",
-          "oS0_0"
-        ]
-      },
-      {
-        "through": [
-          "oS0_0",
-          "oS0_1"
-        ]
-      },
+      { "through": ["oS0_7", "oS0_0"] },
+      { "through": ["oS0_0", "oS0_1"] },
       {
         "along": "octK0",
         "from": "oS0_1",
-        "to": {
-          "cross": "l135_m2180",
-          "pick": {
-            "nearest": "x90_m7820"
-          }
-        }
+        "to": { "cross": "l135_m2180", "pick": { "nearest": "x90_m7820" } }
       },
       {
         "along": "octK0",
-        "from": {
-          "cross": "l90_2180",
-          "pick": {
-            "nearest": "oS3_5"
-          }
-        },
+        "from": { "cross": "l90_2180", "pick": { "nearest": "oS3_5" } },
         "to": "oS1_0"
       },
-      {
-        "through": [
-          "oS1_0",
-          "oS1_1"
-        ]
-      },
-      {
-        "through": [
-          "oS1_1",
-          "oS1_2"
-        ]
-      },
+      { "through": ["oS1_0", "oS1_1"] },
+      { "through": ["oS1_1", "oS1_2"] },
       {
         "along": "octK1",
         "from": "oS1_2",
-        "to": {
-          "cross": "l0_2180",
-          "pick": {
-            "nearest": "x135_m7820"
-          }
-        }
+        "to": { "cross": "l0_2180", "pick": { "nearest": "x135_m7820" } }
       },
       {
         "along": "octK1",
-        "from": {
-          "cross": "l135_2180",
-          "pick": {
-            "nearest": "oS4_6"
-          }
-        },
+        "from": { "cross": "l135_2180", "pick": { "nearest": "oS4_6" } },
         "to": "oS2_1"
       },
-      {
-        "through": [
-          "oS2_1",
-          "oS2_2"
-        ]
-      },
-      {
-        "through": [
-          "oS3_3",
-          "oS3_2"
-        ]
-      },
+      { "through": ["oS2_1", "oS2_2"] },
+      { "through": ["oS3_3", "oS3_2"] },
       {
         "along": "octK2",
         "from": "oS3_2",
-        "to": {
-          "cross": "l0_m2180",
-          "pick": {
-            "nearest": "oS5_7"
-          }
-        }
+        "to": { "cross": "l0_m2180", "pick": { "nearest": "oS5_7" } }
       },
       {
         "along": "octK2",
-        "from": {
-          "cross": "l45_2180",
-          "pick": {
-            "nearest": "oS0_6"
-          }
-        },
+        "from": { "cross": "l45_2180", "pick": { "nearest": "oS0_6" } },
         "to": "oS2_3"
       },
-      {
-        "through": [
-          "oS2_3",
-          "oS2_2"
-        ]
-      },
-      {
-        "through": [
-          "oS4_4",
-          "oS4_3"
-        ]
-      },
+      { "through": ["oS2_3", "oS2_2"] },
+      { "through": ["oS4_4", "oS4_3"] },
       {
         "along": "octK3",
         "from": "oS4_3",
-        "to": {
-          "cross": "l45_m2180",
-          "pick": {
-            "nearest": "oS6_0"
-          }
-        }
+        "to": { "cross": "l45_m2180", "pick": { "nearest": "oS6_0" } }
       },
       {
         "along": "octK3",
-        "from": {
-          "cross": "l90_2180",
-          "pick": {
-            "nearest": "x90_2180"
-          }
-        },
+        "from": { "cross": "l90_2180", "pick": { "nearest": "x90_2180" } },
         "to": "oS3_4"
       },
-      {
-        "through": [
-          "oS3_4",
-          "oS3_3"
-        ]
-      },
-      {
-        "through": [
-          "oS5_5",
-          "oS5_4"
-        ]
-      },
+      { "through": ["oS3_4", "oS3_3"] },
+      { "through": ["oS5_5", "oS5_4"] },
       {
         "along": "octK4",
         "from": "oS5_4",
-        "to": {
-          "cross": "l90_m2180",
-          "pick": {
-            "nearest": "oS7_1"
-          }
-        }
+        "to": { "cross": "l90_m2180", "pick": { "nearest": "oS7_1" } }
       },
       {
         "along": "octK4",
-        "from": {
-          "cross": "l135_2180",
-          "pick": {
-            "nearest": "x90_7820"
-          }
-        },
+        "from": { "cross": "l135_2180", "pick": { "nearest": "x90_7820" } },
         "to": "oS4_5"
       },
-      {
-        "through": [
-          "oS4_5",
-          "oS4_4"
-        ]
-      },
-      {
-        "through": [
-          "oS6_6",
-          "oS6_5"
-        ]
-      },
+      { "through": ["oS4_5", "oS4_4"] },
+      { "through": ["oS6_6", "oS6_5"] },
       {
         "along": "octK5",
         "from": "oS6_5",
-        "to": {
-          "cross": "l135_m2180",
-          "pick": {
-            "nearest": "x0_7820"
-          }
-        }
+        "to": { "cross": "l135_m2180", "pick": { "nearest": "x0_7820" } }
       },
       {
         "along": "octK5",
-        "from": {
-          "cross": "l0_m2180",
-          "pick": {
-            "nearest": "x0_m2180"
-          }
-        },
+        "from": { "cross": "l0_m2180", "pick": { "nearest": "x0_m2180" } },
         "to": "oS5_6"
       },
-      {
-        "through": [
-          "oS5_6",
-          "oS5_5"
-        ]
-      },
-      {
-        "through": [
-          "oS6_6",
-          "oS6_7"
-        ]
-      },
+      { "through": ["oS5_6", "oS5_5"] },
+      { "through": ["oS6_6", "oS6_7"] },
       {
         "along": "octK6",
         "from": "oS6_7",
-        "to": {
-          "cross": "l45_m2180",
-          "pick": {
-            "nearest": "x0_m7820"
-          }
-        }
+        "to": { "cross": "l45_m2180", "pick": { "nearest": "x0_m7820" } }
       },
       {
         "along": "octK6",
-        "from": {
-          "cross": "l0_2180",
-          "pick": {
-            "nearest": "x0_2180"
-          }
-        },
+        "from": { "cross": "l0_2180", "pick": { "nearest": "x0_2180" } },
         "to": "oS7_6"
       },
-      {
-        "through": [
-          "oS7_6",
-          "oS7_7"
-        ]
-      },
+      { "through": ["oS7_6", "oS7_7"] },
       {
         "along": "octK1",
         "from": "oK1_1",
-        "to": {
-          "cross": "l135_3678",
-          "pick": {
-            "farthest": "oS4_4"
-          }
-        }
+        "to": { "cross": "l135_3678", "pick": { "farthest": "oS4_4" } }
       },
       {
         "along": "octK1",
-        "from": {
-          "cross": "l0_3678",
-          "pick": {
-            "farthest": "x135_m6322"
-          }
-        },
+        "from": { "cross": "l0_3678", "pick": { "farthest": "x135_m6322" } },
         "to": "oK1_2"
       },
       {
         "along": "octK2",
         "from": "oK2_3",
-        "to": {
-          "cross": "l45_3678",
-          "pick": {
-            "farthest": "oS0_0"
-          }
-        }
+        "to": { "cross": "l45_3678", "pick": { "farthest": "oS0_0" } }
       },
       {
         "along": "octK2",
-        "from": {
-          "cross": "l0_m3678",
-          "pick": {
-            "farthest": "oS5_5"
-          }
-        },
+        "from": { "cross": "l0_m3678", "pick": { "farthest": "oS5_5" } },
         "to": "oK2_2"
       },
       {
         "along": "octK3",
         "from": "oK3_4",
-        "to": {
-          "cross": "l90_3678",
-          "pick": {
-            "farthest": "x90_3678"
-          }
-        }
+        "to": { "cross": "l90_3678", "pick": { "farthest": "x90_3678" } }
       },
       {
         "along": "octK3",
-        "from": {
-          "cross": "l45_m3678",
-          "pick": {
-            "farthest": "oS6_6"
-          }
-        },
+        "from": { "cross": "l45_m3678", "pick": { "farthest": "oS6_6" } },
         "to": "oK3_3"
       },
       {
         "along": "octK4",
         "from": "oK4_5",
-        "to": {
-          "cross": "l135_3678",
-          "pick": {
-            "farthest": "x90_6322"
-          }
-        }
+        "to": { "cross": "l135_3678", "pick": { "farthest": "x90_6322" } }
       },
       {
         "along": "octK4",
-        "from": {
-          "cross": "l90_m3678",
-          "pick": {
-            "farthest": "oS7_7"
-          }
-        },
+        "from": { "cross": "l90_m3678", "pick": { "farthest": "oS7_7" } },
         "to": "oK4_4"
       },
       {
         "along": "octK5",
         "from": "oK5_6",
-        "to": {
-          "cross": "l0_m3678",
-          "pick": {
-            "farthest": "x0_m3678"
-          }
-        }
+        "to": { "cross": "l0_m3678", "pick": { "farthest": "x0_m3678" } }
       },
       {
         "along": "octK5",
-        "from": {
-          "cross": "l135_m3678",
-          "pick": {
-            "farthest": "x0_6322"
-          }
-        },
+        "from": { "cross": "l135_m3678", "pick": { "farthest": "x0_6322" } },
         "to": "oK5_5"
       },
       {
         "along": "octK6",
         "from": "oK6_6",
-        "to": {
-          "cross": "l0_3678",
-          "pick": {
-            "farthest": "x0_3678"
-          }
-        }
+        "to": { "cross": "l0_3678", "pick": { "farthest": "x0_3678" } }
       },
       {
         "along": "octK6",
-        "from": {
-          "cross": "l45_m3678",
-          "pick": {
-            "farthest": "x0_m6322"
-          }
-        },
+        "from": { "cross": "l45_m3678", "pick": { "farthest": "x0_m6322" } },
         "to": "oK6_7"
       },
       {
         "along": "octK7",
         "from": "oK7_7",
-        "to": {
-          "cross": "l45_3678",
-          "pick": {
-            "farthest": "x45_3678"
-          }
-        }
+        "to": { "cross": "l45_3678", "pick": { "farthest": "x45_3678" } }
       },
       {
         "along": "octK7",
-        "from": {
-          "cross": "l90_m3678",
-          "pick": {
-            "farthest": "x90_m3678"
-          }
-        },
+        "from": { "cross": "l90_m3678", "pick": { "farthest": "x90_m3678" } },
         "to": "oK7_0"
       },
       {
         "along": "octK0",
         "from": "oK0_0",
-        "to": {
-          "cross": "l90_3678",
-          "pick": {
-            "farthest": "oS3_3"
-          }
-        }
+        "to": { "cross": "l90_3678", "pick": { "farthest": "oS3_3" } }
       },
       {
         "along": "octK0",
-        "from": {
-          "cross": "l135_m3678",
-          "pick": {
-            "farthest": "x90_m6322"
-          }
-        },
+        "from": { "cross": "l135_m3678", "pick": { "farthest": "x90_m6322" } },
         "to": "oK0_1"
       }
     ]
   },
   "pattern": {
     "cell": "hexTile",
-    "text": "Repeat the hexagon side to side. Each row of wheels sits half a wheel along from the row below and as close as it can come, the large octagons of neighbouring rows meeting corner to corner.",
+    "text": "Put copies of the hexagon side by side. Each row of wheels sits half a wheel along from the row below. The large octagons of neighbouring rows touch corner to corner.",
     "palette": "Marinid zellige",
     "colors": {
       "ground": "ground",
@@ -7002,12 +2610,7 @@
     "note": "Golden values in units of OA. Rows half a wheel apart sideways and 2√2 − 1 apart upward (the owner's suggestion, as close as the wheels allow); the kites and the joint star are small by design.",
     "pieceTypes": 8,
     "pieces": [
-      {
-        "name": "ground",
-        "vertices": 64,
-        "area": 0.38032,
-        "perCell": 2
-      },
+      { "name": "ground", "vertices": 64, "area": 0.38032, "perCell": 2 },
       {
         "name": "joint",
         "vertices": 32,
@@ -7015,36 +2618,11 @@
         "perCell": 1,
         "small": true
       },
-      {
-        "name": "octagon",
-        "vertices": 8,
-        "area": 0.04163,
-        "perCell": 8
-      },
-      {
-        "name": "star",
-        "vertices": 14,
-        "area": 0.03408,
-        "perCell": 8
-      },
-      {
-        "name": "rosette",
-        "vertices": 16,
-        "area": 0.02629,
-        "perCell": 9
-      },
-      {
-        "name": "petal",
-        "vertices": 6,
-        "area": 0.02007,
-        "perCell": 72
-      },
-      {
-        "name": "band",
-        "vertices": 10,
-        "area": 0.01937,
-        "perCell": 8
-      },
+      { "name": "octagon", "vertices": 8, "area": 0.04163, "perCell": 8 },
+      { "name": "star", "vertices": 14, "area": 0.03408, "perCell": 8 },
+      { "name": "rosette", "vertices": 16, "area": 0.02629, "perCell": 9 },
+      { "name": "petal", "vertices": 6, "area": 0.02007, "perCell": 72 },
+      { "name": "band", "vertices": 10, "area": 0.01937, "perCell": 8 },
       {
         "name": "kite",
         "vertices": 4,

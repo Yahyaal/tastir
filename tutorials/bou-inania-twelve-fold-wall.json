@@ -1,2936 +1,733 @@
 {
- "format": 0,
- "id": "bou-inania-twelve-fold-wall",
- "title": "Bou Inania twelve-fold wall",
- "fold": 4,
- "star": 12,
- "style": "Marinid zellige (Fès)",
- "level": "advanced",
- "construction": {
-  "basis": "mixed",
-  "fidelity": "adapted",
-  "note": "Most line distances were fitted to a photograph of the Bou Inania wall, then expressed as exact ruler and compass operations. Only the 150° star-line idea in step 4 is credited to Samira Mian.",
-  "changes": "This is our fitted reconstruction. Exact crossings do not establish the original craftsman’s method. The outer-tip compass move was chosen to match the fit; the rim is a nearby exact substitute. The corner ring was corrected to four axis and four bent pieces.",
-  "reviewed": "2026-10-21"
- },
- "credits": [
-  {
-   "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",
-   "creator": "Samira Mian",
-   "url": "https://www.samiramian.uk/twelvefoldrosette",
-   "note": "The star lines joining points of the circle 150° apart (step 4) follow her construction.",
-   "steps": [
-    4
-   ]
+  "format": 0,
+  "id": "bou-inania-twelve-fold-wall",
+  "title": "Bou Inania twelve-fold wall",
+  "fold": 4,
+  "star": 12,
+  "style": "Marinid zellige (Fès)",
+  "level": "advanced",
+  "construction": {
+    "basis": "mixed",
+    "fidelity": "adapted",
+    "note": "Most line distances were fitted to a photograph of the Bou Inania wall, then expressed as exact ruler and compass operations. Only the 150° star-line idea in step 4 is credited to Samira Mian.",
+    "changes": "This is our fitted reconstruction. Exact crossings do not establish the original craftsman’s method. The outer-tip compass move was chosen to match the fit; the rim is a nearby exact substitute. The corner ring was corrected to four axis and four bent pieces.",
+    "reviewed": "2026-10-21"
   },
-  {
-   "source": "Bou Inania madrasa, Fès: zellij tiling in the entrance stairway (photograph, Wikimedia Commons)",
-   "creator": "Robert Prazeres",
-   "url": "https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg",
-   "note": "The line distances were fitted to this photo. The construction is our own reconstruction, not a published one. CC BY-SA 4.0."
+  "credits": [
+    {
+      "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",
+      "creator": "Samira Mian",
+      "url": "https://www.samiramian.uk/twelvefoldrosette",
+      "note": "The star lines joining points of the circle 150° apart (step 4) follow her construction.",
+      "steps": [4]
+    },
+    {
+      "source": "Bou Inania madrasa, Fès: zellij tiling in the entrance stairway (photograph, Wikimedia Commons)",
+      "creator": "Robert Prazeres",
+      "url": "https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg",
+      "note": "The line distances were fitted to this photo. The construction is our own reconstruction, not a published one. CC BY-SA 4.0."
+    }
+  ],
+  "given": { "O": "centre of a rosette", "A": "halfway to the next rosette" },
+  "photos": [
+    {
+      "file": "bou-inania-wall.jpg",
+      "caption": "Zellige tiling in the entrance stairway of the Bou Inania madrasa, Fès",
+      "creator": "Robert Prazeres",
+      "license": "CC BY-SA 4.0",
+      "url": "https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg"
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. The rosettes sit on a square grid, twice OA apart.",
+      "create": {
+        "c": { "circle": { "centre": "O", "through": "A" } },
+        "h": { "line": { "through": ["O", "A"] } }
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. It crosses the circle at N. Draw a vertical line through A. Draw a horizontal line through N. These grid lines cross at K, a corner of the tile. Draw a straight line through O and K.",
+      "create": {
+        "v": { "line": { "through": "O", "perpendicularTo": "h" } },
+        "N": { "point": { "meet": ["c", "v"], "pick": { "angle": 90 } } },
+        "gx": { "line": { "through": "A", "perpendicularTo": "h" } },
+        "gy": { "line": { "through": "N", "perpendicularTo": "v" } },
+        "K": { "point": { "meet": ["gx", "gy"] } },
+        "r45": { "line": { "through": ["O", "K"] } }
+      },
+      "highlight": ["h", "c"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre A through O. It crosses the first circle at P60. Draw a straight line through O and P60. Draw the lines through O that halve the angles, and the lines at 90° to them. There is now a line through O every 15°.",
+      "textWithoutHelpers": "Draw a circle with centre A through O. It crosses the first circle at P60. Draw a straight line through O and P60. Draw the lines through O that halve the angles, at 15°, 30°, 45°, 75° and 90°.",
+      "create": {
+        "cA": { "circle": { "centre": "A", "through": "O" } },
+        "P60": { "point": { "meet": ["c", "cA"], "pick": { "angle": 60 } } },
+        "r60": { "line": { "through": ["O", "P60"] } },
+        "r30": { "line": { "through": "O", "bisects": ["A", "O", "P60"] } },
+        "P30": { "point": { "meet": ["c", "r30"], "pick": { "angle": 30 } } },
+        "r15": { "line": { "through": "O", "bisects": ["A", "O", "P30"] } },
+        "r75": { "line": { "through": "O", "bisects": ["P60", "O", "N"] } },
+        "r105": { "line": { "through": "O", "perpendicularTo": "r15" } },
+        "r120": { "line": { "through": "O", "perpendicularTo": "r30" } },
+        "r135": { "line": { "through": "O", "perpendicularTo": "r45" } },
+        "r150": { "line": { "through": "O", "perpendicularTo": "r60" } },
+        "r165": { "line": { "through": "O", "perpendicularTo": "r75" } }
+      },
+      "highlight": ["c", "A"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a straight line through P45 and P255. They are points of the circle, 150° apart. Turn this line round O by 30°, eleven times. These are the twelve star lines.",
+      "create": {
+        "P45": { "point": { "meet": ["c", "r45"], "pick": { "angle": 45 } } },
+        "P255": { "point": { "meet": ["c", "r75"], "pick": { "angle": 255 } } },
+        "F2": { "line": { "through": ["P45", "P255"] } },
+        "F2s": { "repeat": { "of": ["F2"], "by": "rot12" } }
+      },
+      "highlight": ["P45", "P255"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a straight line through A and N. It crosses the first star line at V9, a corner of the rosette. Draw a line through V9 at 30° to the horizontal. Turn it round O.",
+      "create": {
+        "an": { "line": { "through": ["A", "N"] } },
+        "V9": { "point": { "meet": ["an", "F2"] } },
+        "F1": { "line": { "through": "V9", "parallelTo": "r30" } },
+        "F1s": { "repeat": { "of": ["F1"], "by": "rot12" } }
+      },
+      "highlight": ["A", "N", "F2"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw a circle with centre W whose radius is the distance from O to K. W is the corner like V9, below and to the left of O. The circle crosses the horizontal line at V13, the outer tip of the rosette. Draw a line through V13 at 135°. Turn it round O.",
+      "create": {
+        "W": { "point": { "meet": ["F1@1", "F2@11"] } },
+        "ck": { "circle": { "centre": "W", "radiusFrom": ["O", "K"] } },
+        "V13": { "point": { "meet": ["ck", "h"], "pick": { "angle": 0 } } },
+        "F3": { "line": { "through": "V13", "parallelTo": "r135" } },
+        "F3s": { "repeat": { "of": ["F3"], "by": "rot12" } }
+      },
+      "highlight": ["O", "K", "W"],
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "Draw a horizontal line and a vertical line through C8. C8 is where a star line crosses a 135° line, just above the horizontal on the right. Turn both lines round O.",
+      "create": {
+        "C8": { "point": { "meet": ["F2@11", "F3@10"] } },
+        "F4": { "line": { "through": "C8", "parallelTo": "h" } },
+        "F4s": { "repeat": { "of": ["F4"], "by": "rot12" } },
+        "F5": { "line": { "through": "C8", "parallelTo": "v" } },
+        "F5s": { "repeat": { "of": ["F5"], "by": "rot12" } }
+      },
+      "highlight": ["F2@11", "F3@10"],
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Draw a line through C9 at 75° to the horizontal. C9 is V9 turned back by 30°. Draw a helper line through C9 at 150°. Turn both lines round O.",
+      "create": {
+        "C9": { "point": { "meet": ["F1@11", "F2@11"] } },
+        "F6": { "line": { "through": "C9", "parallelTo": "r75" } },
+        "F6s": { "repeat": { "of": ["F6"], "by": "rot12" } },
+        "F7": { "line": { "through": "C9", "parallelTo": "r150" } },
+        "F7s": { "repeat": { "of": ["F7"], "by": "rot12" } }
+      },
+      "highlight": ["C9"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a line through C9 at 75° to the horizontal. C9 is V9 turned back by 30°. Turn the line round O."
+    },
+    {
+      "id": 9,
+      "text": "Draw a line through C12 at 105° to the horizontal. C12 is where the helper line through C9 crosses the 135° line through V13. Draw a helper line through C12 at 15°. Turn both lines round O.",
+      "create": {
+        "C12": { "point": { "meet": ["F3", "F7"] } },
+        "F8": { "line": { "through": "C12", "parallelTo": "r105" } },
+        "F8s": { "repeat": { "of": ["F8"], "by": "rot12" } },
+        "F9": { "line": { "through": "C12", "parallelTo": "r15" } },
+        "F9s": { "repeat": { "of": ["F9"], "by": "rot12" } }
+      },
+      "highlight": ["F3", "F7"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a line through C12 at 105° to the horizontal. C12 is the corner beside the tip V13. Turn the line round O."
+    },
+    {
+      "id": 10,
+      "text": "Draw a line through C2 at 150° to the horizontal. C2 is where a 15° helper line crosses the line through O at 15°. Turn it round O. These are the sides of the petals.",
+      "create": {
+        "C2": { "point": { "meet": ["r15", "F9@2"] } },
+        "F10": { "line": { "through": "C2", "parallelTo": "r150" } },
+        "F10s": { "repeat": { "of": ["F10"], "by": "rot12" } }
+      },
+      "highlight": ["r15", "F9@2"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a line through C2 at 150° to the horizontal. C2 is the inner end of a petal, on the line through O at 15°. Turn it round O."
+    },
+    {
+      "id": 11,
+      "text": "Draw lines through C5 at 30° and at 60° to the horizontal. C5 is where a 150° helper line and a 15° helper line cross. Turn them round O.",
+      "create": {
+        "C5": { "point": { "meet": ["F7@11", "F9@5"] } },
+        "F11": { "line": { "through": "C5", "parallelTo": "r30" } },
+        "F11s": { "repeat": { "of": ["F11"], "by": "rot12" } },
+        "F12": { "line": { "through": "C5", "parallelTo": "r60" } },
+        "F12s": { "repeat": { "of": ["F12"], "by": "rot12" } }
+      },
+      "highlight": ["F7@11", "F9@5"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw lines through C5 at 30° and at 60° to the horizontal. C5 is the shoulder of a petal. Turn them round O."
+    },
+    {
+      "id": 12,
+      "text": "Draw lines through C6 at 150° and at 105° to the horizontal. C6 is where the 60° line through C5 crosses the 30° line through C9. Turn them round O. They make the small stars.",
+      "create": {
+        "C6": { "point": { "meet": ["F1@11", "F12"] } },
+        "F13": { "line": { "through": "C6", "parallelTo": "r150" } },
+        "F13s": { "repeat": { "of": ["F13"], "by": "rot12" } },
+        "F14": { "line": { "through": "C6", "parallelTo": "r105" } },
+        "F14s": { "repeat": { "of": ["F14"], "by": "rot12" } }
+      },
+      "highlight": ["F1@11", "F12"],
+      "animate": "ruler"
+    },
+    {
+      "id": 13,
+      "text": "Draw a line through C0 at 165° to the horizontal. C0 is where a petal side crosses the line through O at 30°. Turn it round O. This makes the twelve-pointed star at the centre.",
+      "create": {
+        "C0": { "point": { "meet": ["r30", "F10@11"] } },
+        "F15": { "line": { "through": "C0", "parallelTo": "r165" } },
+        "F15s": { "repeat": { "of": ["F15"], "by": "rot12" } }
+      },
+      "highlight": ["r30", "F10@11"],
+      "animate": "ruler"
+    },
+    {
+      "id": 14,
+      "text": "Draw a straight line through P345 and P45. It crosses the horizontal line at R0. Draw a vertical line through R0, and turn it round O. This makes the twelve-sided rim. Draw a horizontal line through R45, its corner at 45°.",
+      "create": {
+        "P345": { "point": { "meet": ["c", "r165"], "pick": { "angle": 345 } } },
+        "hx": { "line": { "through": ["P345", "P45"] } },
+        "R0": { "point": { "meet": ["hx", "h"] } },
+        "rim": { "line": { "through": "R0", "perpendicularTo": "h" } },
+        "rims": { "repeat": { "of": ["rim"], "by": "rot12" } },
+        "R45": { "point": { "meet": ["rim@1", "rim@2"] } },
+        "oh": { "line": { "through": "R45", "parallelTo": "h" } }
+      },
+      "highlight": ["P345", "P45"],
+      "animate": "ruler"
+    },
+    {
+      "id": 15,
+      "text": "Draw a line through K at 90° to line OK. Draw a circle with centre K whose radius is the distance from R0 to A. Where it crosses the lines through K, draw the sides of a square turned by 45°. With the rims, it makes the eight-pointed star at K.",
+      "create": {
+        "ad": { "line": { "through": "K", "perpendicularTo": "r45" } },
+        "cs": { "circle": { "centre": "K", "radiusFrom": ["R0", "A"] } },
+        "Sr450": { "point": { "meet": ["cs", "r45"], "pick": { "nearest": "O" } } },
+        "SLr450": { "line": { "through": "Sr450", "perpendicularTo": "r45" } },
+        "Sad0": { "point": { "meet": ["cs", "ad"], "pick": { "angle": 90 } } },
+        "SLad0": { "line": { "through": "Sad0", "perpendicularTo": "ad" } },
+        "Sad1": { "point": { "meet": ["cs", "ad"], "pick": { "angle": 0 } } },
+        "SLad1": { "line": { "through": "Sad1", "perpendicularTo": "ad" } }
+      },
+      "highlight": ["K", "R0", "A"],
+      "animate": "compass"
+    },
+    {
+      "id": 16,
+      "text": "Draw a circle with centre K that touches the horizontal line through R45. Where it crosses the grid line and line OK, draw the sides of the inner octagon. Draw a circle with centre K through R45. Where it crosses the grid lines and line OK, draw the sides of the outer octagon. The ring lies between them.",
+      "create": {
+        "Oi": { "point": { "meet": ["oh", "gx"] } },
+        "ci": { "circle": { "centre": "K", "through": "Oi" } },
+        "Igy0": { "point": { "meet": ["ci", "gy"], "pick": { "angle": 90 } } },
+        "ILgy0": { "line": { "through": "Igy0", "perpendicularTo": "gy" } },
+        "Ir450": { "point": { "meet": ["ci", "r45"], "pick": { "nearest": "O" } } },
+        "ILr450": { "line": { "through": "Ir450", "perpendicularTo": "r45" } },
+        "co": { "circle": { "centre": "K", "through": "R45" } },
+        "Ugx0": { "point": { "meet": ["co", "gx"], "pick": { "angle": 0 } } },
+        "ULgx0": { "line": { "through": "Ugx0", "perpendicularTo": "gx" } },
+        "Ugy0": { "point": { "meet": ["co", "gy"], "pick": { "angle": 90 } } },
+        "ULgy0": { "line": { "through": "Ugy0", "perpendicularTo": "gy" } },
+        "ULr450": { "line": { "through": "R45", "perpendicularTo": "r45" } }
+      },
+      "highlight": ["K", "R45", "oh"],
+      "animate": "compass"
+    },
+    {
+      "id": 17,
+      "text": "Turn the star, its ring and the grid lines round O by 90°, three times.",
+      "textWithoutHelpers": "Turn the star and its ring round O by 90°, three times.",
+      "create": {
+        "Ks": { "repeat": { "of": ["K"], "by": "rot4" } },
+        "corners": {
+          "repeat": {
+            "of": [
+              "SLr450",
+              "SLad0",
+              "SLad1",
+              "oh",
+              "ILgy0",
+              "ILr450",
+              "ULgx0",
+              "ULgy0",
+              "ULr450",
+              "gx",
+              "gy",
+              "ad"
+            ],
+            "by": "rot4"
+          }
+        }
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 18,
+      "text": "Join the centres of the four eight-pointed stars to mark the square tile that repeats.",
+      "create": { "tile": { "polygon": ["K", "K@1", "K@2", "K@3"] } },
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the rosette and its twelve-sided rim. Ink the bands between the rosettes, and the eight-pointed stars with their rings. Follow the faint grey ink, or tick “Also ink the copies round the centre”.",
+    "paths": [
+      { "along": "SLr450@2", "from": "SLad0", "to": "rim@9" },
+      { "along": "SLr450@2", "from": "rim@6", "to": "SLad1" },
+      { "along": "SLad0", "from": "gy", "to": "ILr450" },
+      { "along": "SLad0", "from": "ILr450@2", "to": "gy@1" },
+      { "along": "ILgy0@3", "from": "gx", "to": "ILr450@3" },
+      { "along": "ILgy0@3", "from": "ILr450@2", "to": "gy@1" },
+      { "along": "ULgx0@2", "from": "gy@1", "to": "ULr450@2" },
+      { "along": "ULgx0@2", "from": "ULr450@3", "to": "gx" },
+      { "along": "rim@7", "from": "gy@1", "to": "r45" },
+      { "along": "rim@5", "from": "oh", "to": "gy@1" },
+      { "along": "ULgx0", "from": "gx", "to": "ULr450" },
+      { "along": "ULgx0", "from": "ULr450@1", "to": "gy@1" },
+      { "along": "oh", "from": "gy@1", "to": "ILr450@1" },
+      { "along": "oh", "from": "ILr450", "to": "gx" },
+      { "along": "SLr450@1", "from": "gy", "to": "rim@6" },
+      { "along": "SLr450@1", "from": "rim@3", "to": "gy@1" },
+      { "along": "SLad0@1", "from": "gy@1", "to": "ILr450@1" },
+      { "along": "SLad0@1", "from": "ILr450@3", "to": "gy@2" },
+      { "along": "rim@9", "from": "SLr450@2", "to": "SLr450@3" },
+      { "along": "rim@3", "from": "SLr450", "to": "SLr450@1" },
+      { "along": "rim@6", "from": "SLr450@1", "to": "SLr450@2" },
+      { "along": "h", "from": "rim@6", "to": "F3@3" },
+      { "along": "h", "from": "F11@6", "to": "F10@2" },
+      { "along": "h", "from": "F10", "to": "F11" },
+      { "along": "h", "from": "F3", "to": "rim" },
+      { "along": "ILr450@2", "from": "ILgy0@3", "to": "ILgy0@2" },
+      { "along": "ILr450@1", "from": "ILgy0@2", "to": "oh" },
+      { "along": "F3@6", "from": "h", "to": "F8@6" },
+      { "along": "F3@6", "from": "F8@8", "to": "v" },
+      { "along": "F3@3", "from": "v", "to": "F8@3" },
+      { "along": "F3@3", "from": "F8@5", "to": "h" },
+      { "along": "SLad1", "from": "gx", "to": "ILr450" },
+      { "along": "SLad1", "from": "ILr450@2", "to": "gy@2" },
+      { "along": "SLad1@1", "from": "gy", "to": "ILr450@1" },
+      { "along": "SLad1@1", "from": "ILr450@3", "to": "gx" },
+      { "along": "F8@6", "from": "F3@6", "to": "F1@5" },
+      { "along": "F8@6", "from": "F1", "to": "F3@4" },
+      { "along": "F8@5", "from": "F3@5", "to": "F1@4" },
+      { "along": "F8@5", "from": "F1@11", "to": "F3@3" },
+      { "along": "ULr450@2", "from": "ULgx0@2", "to": "ULgx0@1" },
+      { "along": "ULr450@1", "from": "ULgx0@1", "to": "ULgx0" },
+      { "along": "F1@5", "from": "F8@11", "to": "F6@1" },
+      { "along": "F1@5", "from": "F2@5", "to": "F8@6" },
+      { "along": "F1@11", "from": "F8@5", "to": "F6@7" },
+      { "along": "F1@11", "from": "F6", "to": "F8" },
+      { "along": "r30", "from": "rim@7", "to": "F3@4" },
+      { "along": "r30", "from": "F11@7", "to": "F10@3" },
+      { "along": "r30", "from": "F10@1", "to": "F11@1" },
+      { "along": "r30", "from": "F3@1", "to": "rim@1" },
+      { "along": "r150", "from": "rim@11", "to": "F3@8" },
+      { "along": "r150", "from": "F11@3", "to": "F10@7" },
+      { "along": "r150", "from": "F10@1", "to": "F11@5" },
+      { "along": "r150", "from": "F3@2", "to": "rim@5" },
+      { "along": "F1", "from": "F8@6", "to": "F6@8" },
+      { "along": "F1", "from": "F2", "to": "F8@1" },
+      { "along": "F1@4", "from": "F8@10", "to": "F6" },
+      { "along": "F1@4", "from": "F2@4", "to": "F8@5" },
+      { "along": "F3@4", "from": "r120", "to": "F8@4" },
+      { "along": "F3@4", "from": "F8@6", "to": "r30" },
+      { "along": "F3@7", "from": "r30", "to": "F8@7" },
+      { "along": "F3@7", "from": "F8@9", "to": "r120" },
+      { "along": "F3@5", "from": "r150", "to": "F8@5" },
+      { "along": "F3@5", "from": "F8@7", "to": "r60" },
+      { "along": "F3@2", "from": "r60", "to": "F8@2" },
+      { "along": "F3@2", "from": "F8@4", "to": "r150" },
+      { "along": "F6@6", "from": "r135", "to": "F2@8" },
+      { "along": "F6@6", "from": "F2@5", "to": "r15" },
+      { "along": "F6@8", "from": "r15", "to": "F1" },
+      { "along": "F6@8", "from": "F2@7", "to": "r75" },
+      { "along": "F6@7", "from": "r165", "to": "F2@9" },
+      { "along": "F6@7", "from": "F2@6", "to": "r45" },
+      { "along": "F6@5", "from": "r105", "to": "F2@7" },
+      { "along": "F6@5", "from": "F2@4", "to": "r165" },
+      { "along": "F2@5", "from": "F6@3", "to": "F3@1" },
+      { "along": "F2@5", "from": "F3@4", "to": "F1@5" },
+      { "along": "F2@9", "from": "F6@7", "to": "F4" },
+      { "along": "F2@9", "from": "F3@8", "to": "F1@9" },
+      { "along": "F8@7", "from": "F3@7", "to": "F1@6" },
+      { "along": "F8@7", "from": "F1@1", "to": "F3@5" },
+      { "along": "F8@4", "from": "F3@4", "to": "F1@3" },
+      { "along": "F8@4", "from": "F1@10", "to": "F3@2" },
+      { "along": "F2@10", "from": "F1", "to": "F4@1" },
+      { "along": "F2@10", "from": "F3@9", "to": "F1@10" },
+      { "along": "F2@4", "from": "F6@2", "to": "F3" },
+      { "along": "F2@4", "from": "F3@3", "to": "F1@4" },
+      { "along": "ILgy0@2", "from": "gy@2", "to": "ILr450@2" },
+      { "along": "ILgy0@2", "from": "ILr450@1", "to": "gy" },
+      { "along": "rim@8", "from": "r45", "to": "gy@2" },
+      { "along": "rim@4", "from": "gy", "to": "oh" },
+      { "along": "F5@6", "from": "F4", "to": "F3@4" },
+      { "along": "F4@6", "from": "F5", "to": "F13@8" },
+      { "along": "F4@6", "from": "F13@6", "to": "F3@4" },
+      { "along": "F4", "from": "F3@5", "to": "F13@2" },
+      { "along": "F4", "from": "F13", "to": "F5" },
+      { "along": "F1@6", "from": "F8", "to": "F6@2" },
+      { "along": "F1@6", "from": "F2@6", "to": "F8@7" },
+      { "along": "F1@10", "from": "F8@4", "to": "F6@6" },
+      { "along": "F1@10", "from": "F2@10", "to": "F8@11" },
+      { "along": "F4@1", "from": "F3@6", "to": "F13@3" },
+      { "along": "F4@1", "from": "F13@1", "to": "F2" },
+      { "along": "F5@7", "from": "F4@1", "to": "F3@5" },
+      { "along": "F4@5", "from": "F2@2", "to": "F13@7" },
+      { "along": "F4@5", "from": "F13@5", "to": "F3@3" },
+      { "along": "F5@5", "from": "F3@4", "to": "F3@3" },
+      { "along": "F13@6", "from": "F4@6", "to": "F1@5" },
+      { "along": "F13@6", "from": "F12", "to": "F4@4" },
+      { "along": "F13@2", "from": "F4@2", "to": "F1@1" },
+      { "along": "F13@2", "from": "F14@5", "to": "F4" },
+      { "along": "F2@6", "from": "F6@4", "to": "F3@2" },
+      { "along": "F2@6", "from": "F3@5", "to": "F1@6" },
+      { "along": "F2@8", "from": "F6@6", "to": "F3@4" },
+      { "along": "F2@8", "from": "F3@7", "to": "F1@8" },
+      { "along": "F13@3", "from": "F4@3", "to": "F1@2" },
+      { "along": "F13@3", "from": "F1", "to": "F4@1" },
+      { "along": "F13@5", "from": "F4@5", "to": "F1@4" },
+      { "along": "F13@5", "from": "F1@2", "to": "F4@3" },
+      { "along": "F6@9", "from": "r45", "to": "F1@1" },
+      { "along": "F6@9", "from": "F2@8", "to": "r105" },
+      { "along": "F6@4", "from": "r75", "to": "F2@6" },
+      { "along": "F6@4", "from": "F2@3", "to": "r135" },
+      { "along": "F14@6", "from": "F1@5", "to": "F1" },
+      { "along": "F12@6", "from": "F13", "to": "F11@8" },
+      { "along": "F12@6", "from": "F11@6", "to": "F1@5" },
+      { "along": "F14@5", "from": "F1@4", "to": "F13@2" },
+      { "along": "F12@8", "from": "F13@2", "to": "F11@10" },
+      { "along": "F12@8", "from": "F11@8", "to": "F1@7" },
+      { "along": "F4@7", "from": "F3", "to": "F13@9" },
+      { "along": "F4@7", "from": "F13@7", "to": "F3@5" },
+      { "along": "F4@11", "from": "F3@4", "to": "F13@1" },
+      { "along": "F4@11", "from": "F13@11", "to": "F3@9" },
+      { "along": "ULgx0@1", "from": "gy", "to": "ULr450@1" },
+      { "along": "ULgx0@1", "from": "ULr450@2", "to": "gy@2" },
+      { "along": "F12@9", "from": "F1", "to": "F11@11" },
+      { "along": "F12@9", "from": "F11@9", "to": "F1@8" },
+      { "along": "F12@5", "from": "F14@2", "to": "F11@7" },
+      { "along": "F12@5", "from": "F11@5", "to": "F1@4" },
+      { "along": "F1@1", "from": "F8@7", "to": "F6@9" },
+      { "along": "F1@1", "from": "F2@1", "to": "F8@2" },
+      { "along": "F1@3", "from": "F8@9", "to": "F2@1" },
+      { "along": "F1@3", "from": "F2@3", "to": "F8@4" },
+      { "along": "F11@6", "from": "F12@4", "to": "r60" },
+      { "along": "F11@6", "from": "h", "to": "F12@6" },
+      { "along": "F11@10", "from": "F12@8", "to": "h" },
+      { "along": "F11@10", "from": "r120", "to": "F12@10" },
+      { "along": "F13@7", "from": "F4@7", "to": "F1@6" },
+      { "along": "F13@7", "from": "F12@1", "to": "F4@5" },
+      { "along": "F13@1", "from": "F4@1", "to": "F1" },
+      { "along": "F13@1", "from": "F14@4", "to": "F4@11" },
+      { "along": "r60", "from": "rim@8", "to": "F3@5" },
+      { "along": "r60", "from": "F11", "to": "F10@4" },
+      { "along": "r60", "from": "F10@2", "to": "F11@2" },
+      { "along": "r60", "from": "F3@2", "to": "rim@2" },
+      { "along": "r120", "from": "rim@10", "to": "F3@7" },
+      { "along": "r120", "from": "F11@2", "to": "F10@6" },
+      { "along": "r120", "from": "F10", "to": "F11@4" },
+      { "along": "r120", "from": "F3@1", "to": "rim@4" },
+      { "along": "F2@11", "from": "F1@1", "to": "F4@2" },
+      { "along": "F2@11", "from": "F4", "to": "F6" },
+      { "along": "F11@11", "from": "F12@9", "to": "r30" },
+      { "along": "F11@11", "from": "r150", "to": "F12@11" },
+      { "along": "F11@5", "from": "F12@3", "to": "r30" },
+      { "along": "F11@5", "from": "r150", "to": "F12@5" },
+      { "along": "F2@3", "from": "F6@1", "to": "F5" },
+      { "along": "F2@3", "from": "F3@2", "to": "F1@3" },
+      { "along": "F3@8", "from": "r60", "to": "F8@8" },
+      { "along": "F3@8", "from": "F8@10", "to": "r150" },
+      { "along": "F3@1", "from": "r30", "to": "F8@1" },
+      { "along": "F3@1", "from": "F8@3", "to": "r120" },
+      { "along": "F12@7", "from": "F13@1", "to": "F11@9" },
+      { "along": "F12@7", "from": "F11@7", "to": "F1@6" },
+      { "along": "F14@7", "from": "F1@6", "to": "F1@1" },
+      { "along": "F11@7", "from": "F12@5", "to": "v" },
+      { "along": "F11@7", "from": "r30", "to": "F12@7" },
+      { "along": "F11@9", "from": "F12@7", "to": "r150" },
+      { "along": "F11@9", "from": "v", "to": "F12@9" },
+      { "along": "F14@4", "from": "F1@3", "to": "F13@1" },
+      { "along": "F4@2", "from": "F3@7", "to": "F13@4" },
+      { "along": "F4@2", "from": "F13@2", "to": "F3" },
+      { "along": "F5@8", "from": "F4@2", "to": "F3@6" },
+      { "along": "F4@4", "from": "F2@1", "to": "F13@6" },
+      { "along": "F4@4", "from": "F13@4", "to": "F3@2" },
+      { "along": "F5@4", "from": "F3@3", "to": "F3@2" },
+      { "along": "F8@8", "from": "F3@8", "to": "F1@7" },
+      { "along": "F8@8", "from": "F1@2", "to": "F3@6" },
+      { "along": "F8@3", "from": "F3@3", "to": "F1@2" },
+      { "along": "F8@3", "from": "F1@9", "to": "F3@1" },
+      { "along": "F13@4", "from": "F4@4", "to": "F1@3" },
+      { "along": "F13@4", "from": "F1@1", "to": "F4@2" },
+      { "along": "F12@10", "from": "F1@1", "to": "F11" },
+      { "along": "F12@10", "from": "F11@10", "to": "F1@9" },
+      { "along": "F12@4", "from": "F14@1", "to": "F11@6" },
+      { "along": "F12@4", "from": "F11@4", "to": "F1@3" },
+      { "along": "F1@7", "from": "F8@1", "to": "F6@3" },
+      { "along": "F1@7", "from": "F2@7", "to": "F8@8" },
+      { "along": "F1@9", "from": "F8@3", "to": "F6@5" },
+      { "along": "F1@9", "from": "F2@9", "to": "F8@10" },
+      { "along": "F11", "from": "F12@10", "to": "r60" },
+      { "along": "F11", "from": "h", "to": "F12" },
+      { "along": "F11@4", "from": "F12@2", "to": "h" },
+      { "along": "F11@4", "from": "r120", "to": "F12@4" },
+      { "along": "F10@6", "from": "h", "to": "r15" },
+      { "along": "F10@6", "from": "r105", "to": "r120" },
+      { "along": "F10@2", "from": "r60", "to": "r75" },
+      { "along": "F10@2", "from": "r165", "to": "h" },
+      { "along": "F2@7", "from": "F6@5", "to": "F3@3" },
+      { "along": "F2@7", "from": "F3@6", "to": "F1@7" },
+      { "along": "F4@8", "from": "F3@1", "to": "F13@10" },
+      { "along": "F4@8", "from": "F13@8", "to": "F3@6" },
+      { "along": "F4@10", "from": "F3@3", "to": "F13" },
+      { "along": "F4@10", "from": "F13@10", "to": "F3@8" },
+      { "along": "F10@3", "from": "v", "to": "F10" },
+      { "along": "F10@3", "from": "r15", "to": "r30" },
+      { "along": "F10@7", "from": "r30", "to": "r45" },
+      { "along": "F10@7", "from": "r135", "to": "r150" },
+      { "along": "F10@5", "from": "r150", "to": "r165" },
+      { "along": "F10@5", "from": "r75", "to": "v" },
+      { "along": "F10@1", "from": "r30", "to": "r45" },
+      { "along": "F10@1", "from": "F15", "to": "r150" },
+      { "along": "F13@8", "from": "F4@8", "to": "F1@7" },
+      { "along": "F13@8", "from": "F12@2", "to": "F4@6" },
+      { "along": "F13", "from": "F4", "to": "F12" },
+      { "along": "F13", "from": "F14@3", "to": "F4@10" },
+      { "along": "F11@8", "from": "F12@6", "to": "r120" },
+      { "along": "F11@8", "from": "r60", "to": "F12@8" },
+      { "along": "F6@10", "from": "r75", "to": "F2" },
+      { "along": "F6@10", "from": "F2@9", "to": "F6" },
+      { "along": "F6@3", "from": "r45", "to": "F2@5" },
+      { "along": "F6@3", "from": "F2@2", "to": "r105" },
+      { "along": "F15@2", "from": "r75", "to": "v" },
+      { "along": "F15@2", "from": "h", "to": "r15" },
+      { "along": "F15@6", "from": "r15", "to": "r30" },
+      { "along": "F15@6", "from": "r120", "to": "r135" },
+      { "along": "F15@5", "from": "r165", "to": "h" },
+      { "along": "F15@5", "from": "v", "to": "r105" },
+      { "along": "F15@1", "from": "r45", "to": "r60" },
+      { "along": "F15@1", "from": "r150", "to": "r165" },
+      { "along": "F14@8", "from": "F1@7", "to": "F1@2" },
+      { "along": "F14@3", "from": "F1@2", "to": "F13" },
+      { "along": "F10@4", "from": "F10", "to": "F15" },
+      { "along": "F10@4", "from": "r45", "to": "r60" },
+      { "along": "F10@8", "from": "r60", "to": "r75" },
+      { "along": "F10@8", "from": "r165", "to": "h" },
+      { "along": "F15@3", "from": "F10", "to": "F15" },
+      { "along": "F15@3", "from": "r30", "to": "r45" },
+      { "along": "F15@7", "from": "r45", "to": "r60" },
+      { "along": "F15@7", "from": "r150", "to": "r165" },
+      { "along": "F15@4", "from": "F15", "to": "r150" },
+      { "along": "F15@4", "from": "r60", "to": "r75" },
+      { "along": "F15", "from": "r15", "to": "r30" },
+      { "along": "F15", "from": "r120", "to": "r135" },
+      { "along": "F10", "from": "h", "to": "r15" },
+      { "along": "F10", "from": "r105", "to": "r120" },
+      { "along": "F1@2", "from": "F8@8", "to": "F2" },
+      { "along": "F1@2", "from": "F2@2", "to": "F8@3" },
+      { "along": "F2", "from": "F1@2", "to": "F4@3" },
+      { "along": "F2", "from": "F4@1", "to": "F1" },
+      { "along": "F12@11", "from": "F1@2", "to": "F11@1" },
+      { "along": "F12@11", "from": "F11@11", "to": "F1@10" },
+      { "along": "F12@3", "from": "F14", "to": "F11@5" },
+      { "along": "F12@3", "from": "F11@3", "to": "F1@2" },
+      { "along": "F2@2", "from": "F6", "to": "F4@5" },
+      { "along": "F2@2", "from": "F3@1", "to": "F1@2" },
+      { "along": "F4@3", "from": "F2", "to": "F13@5" },
+      { "along": "F4@3", "from": "F13@3", "to": "F3@1" },
+      { "along": "F5@9", "from": "F2", "to": "F3@7" },
+      { "along": "F5@3", "from": "F3@2", "to": "F3@1" },
+      { "along": "F15@8", "from": "r75", "to": "v" },
+      { "along": "F15@8", "from": "h", "to": "r15" },
+      { "along": "F15@11", "from": "r165", "to": "h" },
+      { "along": "F15@11", "from": "v", "to": "F10" },
+      { "along": "F11@1", "from": "F12@11", "to": "v" },
+      { "along": "F11@1", "from": "r30", "to": "F12@1" },
+      { "along": "F11@3", "from": "F12@1", "to": "r150" },
+      { "along": "F11@3", "from": "v", "to": "F12@3" },
+      { "along": "v", "from": "rim@9", "to": "F3@6" },
+      { "along": "v", "from": "F11@1", "to": "F10@5" },
+      { "along": "v", "from": "F10@3", "to": "F11@3" },
+      { "along": "v", "from": "F3", "to": "rim@3" },
+      { "along": "F3@9", "from": "v", "to": "F8@9" },
+      { "along": "F3@9", "from": "F8@11", "to": "h" },
+      { "along": "F10@9", "from": "v", "to": "r105" },
+      { "along": "F10@9", "from": "r15", "to": "r30" },
+      { "along": "F10@11", "from": "r150", "to": "r165" },
+      { "along": "F10@11", "from": "r75", "to": "v" },
+      { "along": "F3", "from": "h", "to": "F8" },
+      { "along": "F3", "from": "F8@2", "to": "v" },
+      { "along": "F8@9", "from": "F3@9", "to": "F1@8" },
+      { "along": "F8@9", "from": "F1@3", "to": "F3@7" },
+      { "along": "F8@2", "from": "F3@2", "to": "F1@1" },
+      { "along": "F8@2", "from": "F1@8", "to": "F3" },
+      { "along": "F15@9", "from": "r105", "to": "r120" },
+      { "along": "F15@9", "from": "r30", "to": "r45" },
+      { "along": "F15@10", "from": "r135", "to": "r150" },
+      { "along": "F15@10", "from": "r60", "to": "r75" },
+      { "along": "rim@10", "from": "gy@2", "to": "r135" },
+      { "along": "rim@2", "from": "oh", "to": "gy" },
+      { "along": "F4@9", "from": "F3@2", "to": "F13@11" },
+      { "along": "F4@9", "from": "F13@9", "to": "F3@7" },
+      { "along": "F13@9", "from": "F4@9", "to": "F1@8" },
+      { "along": "F13@9", "from": "F14", "to": "F4@7" },
+      { "along": "F13@11", "from": "F4@11", "to": "F1@10" },
+      { "along": "F13@11", "from": "F14@2", "to": "F4@9" },
+      { "along": "F1@8", "from": "F8@2", "to": "F6@4" },
+      { "along": "F1@8", "from": "F2@8", "to": "F8@9" },
+      { "along": "F14@9", "from": "F1@8", "to": "F12" },
+      { "along": "F14@2", "from": "F1@1", "to": "F12@5" },
+      { "along": "F10@10", "from": "r120", "to": "r135" },
+      { "along": "F10@10", "from": "r45", "to": "r60" },
+      { "along": "F12", "from": "F1@3", "to": "F11@2" },
+      { "along": "F12", "from": "F11", "to": "F13" },
+      { "along": "F12@2", "from": "F1@5", "to": "F11@4" },
+      { "along": "F12@2", "from": "F11@2", "to": "F1@1" },
+      { "along": "F6@11", "from": "r105", "to": "F2@1" },
+      { "along": "F6@11", "from": "F2@10", "to": "r165" },
+      { "along": "F6@2", "from": "F6", "to": "F2@4" },
+      { "along": "F6@2", "from": "F2@1", "to": "r75" },
+      { "along": "F11@2", "from": "F12", "to": "r120" },
+      { "along": "F11@2", "from": "r60", "to": "F12@2" },
+      { "along": "F2@1", "from": "F1@3", "to": "F4@4" },
+      { "along": "F2@1", "from": "F3", "to": "F1@1" },
+      { "along": "F5@10", "from": "F2@1", "to": "F3@8" },
+      { "along": "F5@2", "from": "F3@1", "to": "F3" },
+      { "along": "F13@10", "from": "F4@10", "to": "F1@9" },
+      { "along": "F13@10", "from": "F14@1", "to": "F4@8" },
+      { "along": "F14@10", "from": "F1@9", "to": "F12@1" },
+      { "along": "F14@1", "from": "F1", "to": "F12@4" },
+      { "along": "F12@1", "from": "F1@4", "to": "F11@3" },
+      { "along": "F12@1", "from": "F11@1", "to": "F1" },
+      { "along": "F3@10", "from": "r120", "to": "F8@10" },
+      { "along": "F3@10", "from": "F8", "to": "r30" },
+      { "along": "F3@11", "from": "r150", "to": "F8@11" },
+      { "along": "F3@11", "from": "F8@1", "to": "r60" },
+      { "along": "F8@10", "from": "F3@10", "to": "F1@9" },
+      { "along": "F8@10", "from": "F1@4", "to": "F3@8" },
+      { "along": "F8@1", "from": "F3@1", "to": "F1" },
+      { "along": "F8@1", "from": "F1@7", "to": "F3@11" },
+      { "along": "F14@11", "from": "F1@10", "to": "F12@2" },
+      { "along": "F14", "from": "F12", "to": "F12@3" },
+      { "along": "ULgy0", "from": "gy", "to": "ULr450" },
+      { "along": "ULgy0", "from": "ULr450@3", "to": "gy@2" },
+      { "along": "ULr450@3", "from": "ULgy0", "to": "ULgx0@2" },
+      { "along": "ULr450", "from": "ULgx0", "to": "ULgy0" },
+      { "along": "F5@11", "from": "F2@2", "to": "F3@9" },
+      { "along": "F5@1", "from": "F3", "to": "F2" },
+      { "along": "F6", "from": "r135", "to": "F2@2" },
+      { "along": "F6", "from": "F2@11", "to": "r15" },
+      { "along": "F6@1", "from": "r165", "to": "F2@3" },
+      { "along": "F6@1", "from": "F2", "to": "r45" },
+      { "along": "F5", "from": "F2@3", "to": "F4" },
+      { "along": "ILgy0", "from": "gy", "to": "ILr450" },
+      { "along": "ILgy0", "from": "ILr450@3", "to": "gy@2" },
+      { "along": "ILr450@3", "from": "ILgy0", "to": "ILgy0@3" },
+      { "along": "rim@11", "from": "r135", "to": "gx" },
+      { "along": "rim@1", "from": "gx", "to": "oh" },
+      { "along": "ILr450", "from": "oh", "to": "ILgy0" },
+      { "along": "F8@11", "from": "F3@11", "to": "F1@10" },
+      { "along": "F8@11", "from": "F1@5", "to": "F3@9" },
+      { "along": "F8", "from": "F3", "to": "F1@11" },
+      { "along": "F8", "from": "F1@6", "to": "F3@10" },
+      { "along": "SLr450@3", "from": "SLad0@1", "to": "rim" },
+      { "along": "SLr450@3", "from": "rim@9", "to": "gx" },
+      { "along": "SLr450", "from": "gx", "to": "rim@3" },
+      { "along": "SLr450", "from": "rim", "to": "gy" },
+      { "along": "rim", "from": "SLr450@3", "to": "SLr450" }
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square tile side by side. Rosettes sit on a square grid, with an eight-pointed star at every corner.",
+    "palette": "Marinid zellige",
+    "look": "strapwork",
+    "colors": {
+      "centre": "b",
+      "arrowhead": "a",
+      "cross": "a",
+      "arrow": "d",
+      "petal": "a",
+      "cornerstar": "b",
+      "shield": "a",
+      "pentagon": "c",
+      "arm": "a",
+      "star": "a",
+      "gap": "ground",
+      "diamond": "a",
+      "kite": "a",
+      "chip": "ground",
+      "ringbend": "c",
+      "ringaxis": "c"
+    },
+    "rings": true
+  },
+  "expect": {
+    "pieceTypes": 16,
+    "pieces": [
+      { "name": "centre", "vertices": 24, "area": 0.08108, "perCell": 1 },
+      { "name": "arrowhead", "vertices": 5, "area": 0.07515, "perCell": 4 },
+      { "name": "ringbend", "vertices": 8, "area": 0.06839, "perCell": 4 },
+      {
+        "name": "cross",
+        "vertices": 6,
+        "area": 0.06233,
+        "perCell": 2,
+        "small": true
+      },
+      { "name": "arrow", "vertices": 12, "area": 0.05686, "perCell": 12 },
+      { "name": "petal", "vertices": 9, "area": 0.05223, "perCell": 12 },
+      { "name": "cornerstar", "vertices": 16, "area": 0.05013, "perCell": 1 },
+      { "name": "shield", "vertices": 9, "area": 0.03438, "perCell": 12 },
+      { "name": "pentagon", "vertices": 9, "area": 0.03026, "perCell": 12 },
+      { "name": "arm", "vertices": 5, "area": 0.03013, "perCell": 8 },
+      { "name": "ringaxis", "vertices": 4, "area": 0.02944, "perCell": 4 },
+      { "name": "star", "vertices": 9, "area": 0.02815, "perCell": 12 },
+      { "name": "gap", "vertices": 4, "area": 0.02592, "perCell": 8 },
+      { "name": "diamond", "vertices": 4, "area": 0.00886, "perCell": 8 },
+      {
+        "name": "kite",
+        "vertices": 4,
+        "area": 0.00676,
+        "perCell": 12,
+        "small": true
+      },
+      {
+        "name": "chip",
+        "vertices": 4,
+        "area": 0.00366,
+        "perCell": 8,
+        "small": true
+      }
+    ]
   }
- ],
- "given": {
-  "O": "centre of a rosette",
-  "A": "halfway to the next rosette"
- },
- "photos": [
-  {
-   "file": "bou-inania-wall.jpg",
-   "caption": "Zellige tiling in the entrance stairway of the Bou Inania madrasa, Fès",
-   "creator": "Robert Prazeres",
-   "license": "CC BY-SA 4.0",
-   "url": "https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg"
-  }
- ],
- "steps": [
-  {
-   "id": 1,
-   "text": "Draw the circle about the rosette's centre O through A, and the horizontal line through both. A is halfway to the next rosette: the rosettes sit on a square grid, twice OA apart.",
-   "create": {
-    "c": {
-     "circle": {
-      "centre": "O",
-      "through": "A"
-     }
-    },
-    "h": {
-     "line": {
-      "through": [
-       "O",
-       "A"
-      ]
-     }
-    }
-   },
-   "animate": "compass"
-  },
-  {
-   "id": 2,
-   "text": "Draw the vertical through O and mark the top of the circle, N. Through A and through N draw lines at right angles to these: they are lines of the grid, and they cross at the corner K of the tile. Join O to K: the diagonal.",
-   "create": {
-    "v": {
-     "line": {
-      "through": "O",
-      "perpendicularTo": "h"
-     }
-    },
-    "N": {
-     "point": {
-      "meet": [
-       "c",
-       "v"
-      ],
-      "pick": {
-       "angle": 90
-      }
-     }
-    },
-    "gx": {
-     "line": {
-      "through": "A",
-      "perpendicularTo": "h"
-     }
-    },
-    "gy": {
-     "line": {
-      "through": "N",
-      "perpendicularTo": "v"
-     }
-    },
-    "K": {
-     "point": {
-      "meet": [
-       "gx",
-       "gy"
-      ]
-     }
-    },
-    "r45": {
-     "line": {
-      "through": [
-       "O",
-       "K"
-      ]
-     }
-    }
-   },
-   "highlight": [
-    "h",
-    "c"
-   ],
-   "animate": "ruler"
-  },
-  {
-   "id": 3,
-   "text": "Divide the circle into 24. With the compass still open to OA, put its point on A and mark where it cuts the circle at 60°; join O to that mark. Halve the angles and draw the lines at right angles to those you have, so there is a line through O every 15°.",
-   "textWithoutHelpers": "Divide the circle into 24. With the compass still open to OA, put its point on A and mark where it cuts the circle at 60°; join O to that mark, and halve the angle to get the lines at 15°, 30°, 45°, 60°, 75° and 90°.",
-   "create": {
-    "cA": {
-     "circle": {
-      "centre": "A",
-      "through": "O"
-     }
-    },
-    "P60": {
-     "point": {
-      "meet": [
-       "c",
-       "cA"
-      ],
-      "pick": {
-       "angle": 60
-      }
-     }
-    },
-    "r60": {
-     "line": {
-      "through": [
-       "O",
-       "P60"
-      ]
-     }
-    },
-    "r30": {
-     "line": {
-      "through": "O",
-      "bisects": [
-       "A",
-       "O",
-       "P60"
-      ]
-     }
-    },
-    "P30": {
-     "point": {
-      "meet": [
-       "c",
-       "r30"
-      ],
-      "pick": {
-       "angle": 30
-      }
-     }
-    },
-    "r15": {
-     "line": {
-      "through": "O",
-      "bisects": [
-       "A",
-       "O",
-       "P30"
-      ]
-     }
-    },
-    "r75": {
-     "line": {
-      "through": "O",
-      "bisects": [
-       "P60",
-       "O",
-       "N"
-      ]
-     }
-    },
-    "r105": {
-     "line": {
-      "through": "O",
-      "perpendicularTo": "r15"
-     }
-    },
-    "r120": {
-     "line": {
-      "through": "O",
-      "perpendicularTo": "r30"
-     }
-    },
-    "r135": {
-     "line": {
-      "through": "O",
-      "perpendicularTo": "r45"
-     }
-    },
-    "r150": {
-     "line": {
-      "through": "O",
-      "perpendicularTo": "r60"
-     }
-    },
-    "r165": {
-     "line": {
-      "through": "O",
-      "perpendicularTo": "r75"
-     }
-    }
-   },
-   "highlight": [
-    "c",
-    "A"
-   ],
-   "animate": "compass"
-  },
-  {
-   "id": 4,
-   "text": "Join the point of the circle at 45° to the point 150° round, at 255°. Turn this line round: twelve star lines, each joining two points of the circle 150° apart.",
-   "create": {
-    "c45": {
-     "point": {
-      "meet": [
-       "c",
-       "r45"
-      ],
-      "pick": {
-       "angle": 45
-      }
-     }
-    },
-    "P255": {
-     "point": {
-      "meet": [
-       "c",
-       "r75"
-      ],
-      "pick": {
-       "angle": 255
-      }
-     }
-    },
-    "F2": {
-     "line": {
-      "through": [
-       "c45",
-       "P255"
-      ]
-     }
-    },
-    "F2s": {
-     "repeat": {
-      "of": [
-       "F2"
-      ],
-      "by": "rot12"
-     }
-    }
-   },
-   "highlight": [
-    "c45",
-    "P255"
-   ],
-   "animate": "ruler"
-  },
-  {
-   "id": 5,
-   "text": "Join A to N. Where this line crosses the star line you drew first is the first corner of the rosette. Through it, draw the line in the 30° direction and turn it round.",
-   "create": {
-    "an": {
-     "line": {
-      "through": [
-       "A",
-       "N"
-      ]
-     }
-    },
-    "V9": {
-     "point": {
-      "meet": [
-       "an",
-       "F2"
-      ]
-     }
-    },
-    "F1": {
-     "line": {
-      "through": "V9",
-      "parallelTo": "r30"
-     }
-    },
-    "F1s": {
-     "repeat": {
-      "of": [
-       "F1"
-      ],
-      "by": "rot12"
-     }
-    }
-   },
-   "highlight": [
-    "A",
-    "N",
-    "F2"
-   ],
-   "animate": "ruler"
-  },
-  {
-   "id": 6,
-   "text": "Open the compass from O to K. Put its point on the corner of the same kind below and to the left of O (where the 30° line turned by 30° crosses the star line turned back by 30°), and mark where the arc crosses the horizontal on the right: the outer tip of the rosette. Through it, draw the line in the 135° direction and turn it round.",
-   "create": {
-    "V9b": {
-     "point": {
-      "meet": [
-       "F1@1",
-       "F2@11"
-      ]
-     }
-    },
-    "ck": {
-     "circle": {
-      "centre": "V9b",
-      "radiusFrom": [
-       "O",
-       "K"
-      ]
-     }
-    },
-    "V13": {
-     "point": {
-      "meet": [
-       "ck",
-       "h"
-      ],
-      "pick": {
-       "angle": 0
-      }
-     }
-    },
-    "F3": {
-     "line": {
-      "through": "V13",
-      "parallelTo": "r135"
-     }
-    },
-    "F3s": {
-     "repeat": {
-      "of": [
-       "F3"
-      ],
-      "by": "rot12"
-     }
-    }
-   },
-   "highlight": [
-    "O",
-    "K",
-    "V9b"
-   ],
-   "animate": "compass"
-  },
-  {
-   "id": 7,
-   "text": "Just above the horizontal on the right, a star line crosses one of the 135° lines. Through that crossing draw a level line and an upright line, and turn both round.",
-   "create": {
-    "C8": {
-     "point": {
-      "meet": [
-       "F2@11",
-       "F3@10"
-      ]
-     }
-    },
-    "F4": {
-     "line": {
-      "through": "C8",
-      "parallelTo": "h"
-     }
-    },
-    "F4s": {
-     "repeat": {
-      "of": [
-       "F4"
-      ],
-      "by": "rot12"
-     }
-    },
-    "F5": {
-     "line": {
-      "through": "C8",
-      "parallelTo": "v"
-     }
-    },
-    "F5s": {
-     "repeat": {
-      "of": [
-       "F5"
-      ],
-      "by": "rot12"
-     }
-    }
-   },
-   "highlight": [
-    "F2@11",
-    "F3@10"
-   ],
-   "animate": "ruler"
-  },
-  {
-   "id": 8,
-   "text": "Turn the first corner back by 30°: it sits just above the horizontal. There, draw the line in the 75° direction and turn it round. Draw also the helper line in the 150° direction there, and turn it round.",
-   "create": {
-    "C9": {
-     "point": {
-      "meet": [
-       "F1@11",
-       "F2@11"
-      ]
-     }
-    },
-    "F6": {
-     "line": {
-      "through": "C9",
-      "parallelTo": "r75"
-     }
-    },
-    "F6s": {
-     "repeat": {
-      "of": [
-       "F6"
-      ],
-      "by": "rot12"
-     }
-    },
-    "F7": {
-     "line": {
-      "through": "C9",
-      "parallelTo": "r150"
-     }
-    },
-    "F7s": {
-     "repeat": {
-      "of": [
-       "F7"
-      ],
-      "by": "rot12"
-     }
-    }
-   },
-   "highlight": [
-    "C9"
-   ],
-   "animate": "ruler",
-   "textWithoutHelpers": "Turn the first corner back by 30°: it sits just above the horizontal. There, draw the line in the 75° direction and turn it round."
-  },
-  {
-   "id": 9,
-   "text": "Just above the horizontal, near the outer tip, the 150° helper line through the last corner crosses the 135° line through the tip. There, draw the line in the 105° direction and turn it round. Draw also the helper line in the 15° direction there, and turn it round.",
-   "create": {
-    "C12": {
-     "point": {
-      "meet": [
-       "F3",
-       "F7"
-      ]
-     }
-    },
-    "F8": {
-     "line": {
-      "through": "C12",
-      "parallelTo": "r105"
-     }
-    },
-    "F8s": {
-     "repeat": {
-      "of": [
-       "F8"
-      ],
-      "by": "rot12"
-     }
-    },
-    "F9": {
-     "line": {
-      "through": "C12",
-      "parallelTo": "r15"
-     }
-    },
-    "F9s": {
-     "repeat": {
-      "of": [
-       "F9"
-      ],
-      "by": "rot12"
-     }
-    }
-   },
-   "highlight": [
-    "F3",
-    "F7"
-   ],
-   "animate": "ruler",
-   "textWithoutHelpers": "Just above the horizontal, near the outer tip, mark the corner beside the tip, and draw the line in the 105° direction through it; turn it round."
-  },
-  {
-   "id": 10,
-   "text": "Where a 15° helper line crosses the 15° line through O near the centre, draw the line in the 150° direction and turn it round: the sides of the petals.",
-   "create": {
-    "C2": {
-     "point": {
-      "meet": [
-       "r15",
-       "F9@2"
-      ]
-     }
-    },
-    "F10": {
-     "line": {
-      "through": "C2",
-      "parallelTo": "r150"
-     }
-    },
-    "F10s": {
-     "repeat": {
-      "of": [
-       "F10"
-      ],
-      "by": "rot12"
-     }
-    }
-   },
-   "highlight": [
-    "r15",
-    "F9@2"
-   ],
-   "animate": "ruler",
-   "textWithoutHelpers": "Mark the inner end of a petal on the 15° line through O, and through it draw the line in the 150° direction; turn it round."
-  },
-  {
-   "id": 11,
-   "text": "Just above the horizontal, about halfway out, a 150° helper line and a 15° helper line cross. There, draw the lines in the 30° and 60° directions, and turn them round.",
-   "create": {
-    "C5": {
-     "point": {
-      "meet": [
-       "F7@11",
-       "F9@5"
-      ]
-     }
-    },
-    "F11": {
-     "line": {
-      "through": "C5",
-      "parallelTo": "r30"
-     }
-    },
-    "F11s": {
-     "repeat": {
-      "of": [
-       "F11"
-      ],
-      "by": "rot12"
-     }
-    },
-    "F12": {
-     "line": {
-      "through": "C5",
-      "parallelTo": "r60"
-     }
-    },
-    "F12s": {
-     "repeat": {
-      "of": [
-       "F12"
-      ],
-      "by": "rot12"
-     }
-    }
-   },
-   "highlight": [
-    "F7@11",
-    "F9@5"
-   ],
-   "animate": "ruler",
-   "textWithoutHelpers": "At the shoulder of a petal, draw the lines in the 30° and 60° directions, and turn them round."
-  },
-  {
-   "id": 12,
-   "text": "Where the 60° line you just drew crosses the 30° line through the first corner turned back by 30°, draw the lines in the 150° and 105° directions, and turn them round: the small stars.",
-   "create": {
-    "C6": {
-     "point": {
-      "meet": [
-       "F1@11",
-       "F12"
-      ]
-     }
-    },
-    "F13": {
-     "line": {
-      "through": "C6",
-      "parallelTo": "r150"
-     }
-    },
-    "F13s": {
-     "repeat": {
-      "of": [
-       "F13"
-      ],
-      "by": "rot12"
-     }
-    },
-    "F14": {
-     "line": {
-      "through": "C6",
-      "parallelTo": "r105"
-     }
-    },
-    "F14s": {
-     "repeat": {
-      "of": [
-       "F14"
-      ],
-      "by": "rot12"
-     }
-    }
-   },
-   "highlight": [
-    "F1@11",
-    "F12"
-   ],
-   "animate": "ruler"
-  },
-  {
-   "id": 13,
-   "text": "Where a petal side crosses the 30° line through O, draw the line in the 165° direction and turn it round: the twelve-pointed star at the centre.",
-   "create": {
-    "C0": {
-     "point": {
-      "meet": [
-       "r30",
-       "F10@11"
-      ]
-     }
-    },
-    "F15": {
-     "line": {
-      "through": "C0",
-      "parallelTo": "r165"
-     }
-    },
-    "F15s": {
-     "repeat": {
-      "of": [
-       "F15"
-      ],
-      "by": "rot12"
-     }
-    }
-   },
-   "highlight": [
-    "r30",
-    "F10@11"
-   ],
-   "animate": "ruler"
-  },
-  {
-   "id": 14,
-   "text": "Join the points of the circle at 345° and 45°. Where this line crosses the horizontal, draw the line at right angles to the horizontal, and turn it round: the twelve-sided rim. Mark its corner at 45° and draw the level line through it.",
-   "create": {
-    "P345": {
-     "point": {
-      "meet": [
-       "c",
-       "r165"
-      ],
-      "pick": {
-       "angle": 345
-      }
-     }
-    },
-    "hx": {
-     "line": {
-      "through": [
-       "P345",
-       "c45"
-      ]
-     }
-    },
-    "RA": {
-     "point": {
-      "meet": [
-       "hx",
-       "h"
-      ]
-     }
-    },
-    "rim": {
-     "line": {
-      "through": "RA",
-      "perpendicularTo": "h"
-     }
-    },
-    "rims": {
-     "repeat": {
-      "of": [
-       "rim"
-      ],
-      "by": "rot12"
-     }
-    },
-    "R45": {
-     "point": {
-      "meet": [
-       "rim@1",
-       "rim@2"
-      ]
-     }
-    },
-    "oh": {
-     "line": {
-      "through": "R45",
-      "parallelTo": "h"
-     }
-    }
-   },
-   "highlight": [
-    "P345",
-    "c45"
-   ],
-   "animate": "ruler"
-  },
-  {
-   "id": 15,
-   "text": "The eight-pointed star at K is two squares. The rims of the four rosettes round K make one; the other is turned by 45° and its sides are as far from K. Draw the other diagonal through K. Set the compass from the rim to A, draw that circle about K, and draw the turned square's sides across the diagonals where the circle cuts them.",
-   "create": {
-    "ad": {
-     "line": {
-      "through": "K",
-      "perpendicularTo": "r45"
-     }
-    },
-    "cs": {
-     "circle": {
-      "centre": "K",
-      "radiusFrom": [
-       "RA",
-       "A"
-      ]
-     }
-    },
-    "Sr450": {
-     "point": {
-      "meet": [
-       "cs",
-       "r45"
-      ],
-      "pick": {
-       "nearest": "O"
-      }
-     }
-    },
-    "SLr450": {
-     "line": {
-      "through": "Sr450",
-      "perpendicularTo": "r45"
-     }
-    },
-    "Sad0": {
-     "point": {
-      "meet": [
-       "cs",
-       "ad"
-      ],
-      "pick": {
-       "angle": 90
-      }
-     }
-    },
-    "SLad0": {
-     "line": {
-      "through": "Sad0",
-      "perpendicularTo": "ad"
-     }
-    },
-    "Sad1": {
-     "point": {
-      "meet": [
-       "cs",
-       "ad"
-      ],
-      "pick": {
-       "angle": 0
-      }
-     }
-    },
-    "SLad1": {
-     "line": {
-      "through": "Sad1",
-      "perpendicularTo": "ad"
-     }
-    }
-   },
-   "highlight": [
-    "K",
-    "RA",
-    "A"
-   ],
-   "animate": "compass"
-  },
-  {
-   "id": 16,
-   "text": "The ring round the star lies between two octagons about K. The inner one has the level line through the rim's 45° corner as a side: draw the circle about K that touches it, and the inner octagon's upright side and its side across the diagonal towards O where the circle cuts the grid line and the diagonal. The outer one has its diagonal side through the rim's 45° corner: draw the circle about K through that corner, and its sides across the grid lines and the diagonal towards O.",
-   "create": {
-    "Oi": {
-     "point": {
-      "meet": [
-       "oh",
-       "gx"
-      ]
-     }
-    },
-    "ci": {
-     "circle": {
-      "centre": "K",
-      "through": "Oi"
-     }
-    },
-    "Igy0": {
-     "point": {
-      "meet": [
-       "ci",
-       "gy"
-      ],
-      "pick": {
-       "angle": 90
-      }
-     }
-    },
-    "ILgy0": {
-     "line": {
-      "through": "Igy0",
-      "perpendicularTo": "gy"
-     }
-    },
-    "Ir450": {
-     "point": {
-      "meet": [
-       "ci",
-       "r45"
-      ],
-      "pick": {
-       "nearest": "O"
-      }
-     }
-    },
-    "ILr450": {
-     "line": {
-      "through": "Ir450",
-      "perpendicularTo": "r45"
-     }
-    },
-    "co": {
-     "circle": {
-      "centre": "K",
-      "through": "R45"
-     }
-    },
-    "Ugx0": {
-     "point": {
-      "meet": [
-       "co",
-       "gx"
-      ],
-      "pick": {
-       "angle": 0
-      }
-     }
-    },
-    "ULgx0": {
-     "line": {
-      "through": "Ugx0",
-      "perpendicularTo": "gx"
-     }
-    },
-    "Ugy0": {
-     "point": {
-      "meet": [
-       "co",
-       "gy"
-      ],
-      "pick": {
-       "angle": 90
-      }
-     }
-    },
-    "ULgy0": {
-     "line": {
-      "through": "Ugy0",
-      "perpendicularTo": "gy"
-     }
-    },
-    "ULr450": {
-     "line": {
-      "through": "R45",
-      "perpendicularTo": "r45"
-     }
-    }
-   },
-   "highlight": [
-    "K",
-    "R45",
-    "oh"
-   ],
-   "animate": "compass"
-  },
-  {
-   "id": 17,
-   "text": "Copy the star, its ring and the grid lines to the other three corners of the tile by turning them a quarter turn at a time about O.",
-   "textWithoutHelpers": "Copy the star and its ring to the other three corners of the tile by turning them a quarter turn at a time about O.",
-   "create": {
-    "Ks": {
-     "repeat": {
-      "of": [
-       "K"
-      ],
-      "by": "rot4"
-     }
-    },
-    "corners": {
-     "repeat": {
-      "of": [
-       "SLr450",
-       "SLad0",
-       "SLad1",
-       "oh",
-       "ILgy0",
-       "ILr450",
-       "ULgx0",
-       "ULgy0",
-       "ULr450",
-       "gx",
-       "gy",
-       "ad"
-      ],
-      "by": "rot4"
-     }
-    }
-   },
-   "animate": "ruler"
-  },
-  {
-   "id": 18,
-   "text": "The tile is the square between the four eight-pointed stars.",
-   "create": {
-    "tile": {
-     "polygon": [
-      "K",
-      "K@1",
-      "K@2",
-      "K@3"
-     ]
-    }
-   },
-   "animate": "fade"
-  }
- ],
- "ink": {
-  "text": "Ink the rosette, its twelve-sided rim, the bands between the rosettes and the eight-pointed stars with their rings.",
-  "paths": [
-   {
-    "along": "SLr450@2",
-    "from": "SLad0",
-    "to": "rim@9"
-   },
-   {
-    "along": "SLr450@2",
-    "from": "rim@6",
-    "to": "SLad1"
-   },
-   {
-    "along": "SLad0",
-    "from": "gy",
-    "to": "ILr450"
-   },
-   {
-    "along": "SLad0",
-    "from": "ILr450@2",
-    "to": "gy@1"
-   },
-   {
-    "along": "ILgy0@3",
-    "from": "gx",
-    "to": "ILr450@3"
-   },
-   {
-    "along": "ILgy0@3",
-    "from": "ILr450@2",
-    "to": "gy@1"
-   },
-   {
-    "along": "ULgx0@2",
-    "from": "gy@1",
-    "to": "ULr450@2"
-   },
-   {
-    "along": "ULgx0@2",
-    "from": "ULr450@3",
-    "to": "gx"
-   },
-   {
-    "along": "rim@7",
-    "from": "gy@1",
-    "to": "r45"
-   },
-   {
-    "along": "rim@5",
-    "from": "oh",
-    "to": "gy@1"
-   },
-   {
-    "along": "ULgx0",
-    "from": "gx",
-    "to": "ULr450"
-   },
-   {
-    "along": "ULgx0",
-    "from": "ULr450@1",
-    "to": "gy@1"
-   },
-   {
-    "along": "oh",
-    "from": "gy@1",
-    "to": "ILr450@1"
-   },
-   {
-    "along": "oh",
-    "from": "ILr450",
-    "to": "gx"
-   },
-   {
-    "along": "SLr450@1",
-    "from": "gy",
-    "to": "rim@6"
-   },
-   {
-    "along": "SLr450@1",
-    "from": "rim@3",
-    "to": "gy@1"
-   },
-   {
-    "along": "SLad0@1",
-    "from": "gy@1",
-    "to": "ILr450@1"
-   },
-   {
-    "along": "SLad0@1",
-    "from": "ILr450@3",
-    "to": "gy@2"
-   },
-   {
-    "along": "rim@9",
-    "from": "SLr450@2",
-    "to": "SLr450@3"
-   },
-   {
-    "along": "rim@3",
-    "from": "SLr450",
-    "to": "SLr450@1"
-   },
-   {
-    "along": "rim@6",
-    "from": "SLr450@1",
-    "to": "SLr450@2"
-   },
-   {
-    "along": "h",
-    "from": "rim@6",
-    "to": "F3@3"
-   },
-   {
-    "along": "h",
-    "from": "F11@6",
-    "to": "F10@2"
-   },
-   {
-    "along": "h",
-    "from": "F10",
-    "to": "F11"
-   },
-   {
-    "along": "h",
-    "from": "F3",
-    "to": "rim"
-   },
-   {
-    "along": "ILr450@2",
-    "from": "ILgy0@3",
-    "to": "ILgy0@2"
-   },
-   {
-    "along": "ILr450@1",
-    "from": "ILgy0@2",
-    "to": "oh"
-   },
-   {
-    "along": "F3@6",
-    "from": "h",
-    "to": "F8@6"
-   },
-   {
-    "along": "F3@6",
-    "from": "F8@8",
-    "to": "v"
-   },
-   {
-    "along": "F3@3",
-    "from": "v",
-    "to": "F8@3"
-   },
-   {
-    "along": "F3@3",
-    "from": "F8@5",
-    "to": "h"
-   },
-   {
-    "along": "SLad1",
-    "from": "gx",
-    "to": "ILr450"
-   },
-   {
-    "along": "SLad1",
-    "from": "ILr450@2",
-    "to": "gy@2"
-   },
-   {
-    "along": "SLad1@1",
-    "from": "gy",
-    "to": "ILr450@1"
-   },
-   {
-    "along": "SLad1@1",
-    "from": "ILr450@3",
-    "to": "gx"
-   },
-   {
-    "along": "F8@6",
-    "from": "F3@6",
-    "to": "F1@5"
-   },
-   {
-    "along": "F8@6",
-    "from": "F1",
-    "to": "F3@4"
-   },
-   {
-    "along": "F8@5",
-    "from": "F3@5",
-    "to": "F1@4"
-   },
-   {
-    "along": "F8@5",
-    "from": "F1@11",
-    "to": "F3@3"
-   },
-   {
-    "along": "ULr450@2",
-    "from": "ULgx0@2",
-    "to": "ULgx0@1"
-   },
-   {
-    "along": "ULr450@1",
-    "from": "ULgx0@1",
-    "to": "ULgx0"
-   },
-   {
-    "along": "F1@5",
-    "from": "F8@11",
-    "to": "F6@1"
-   },
-   {
-    "along": "F1@5",
-    "from": "F2@5",
-    "to": "F8@6"
-   },
-   {
-    "along": "F1@11",
-    "from": "F8@5",
-    "to": "F6@7"
-   },
-   {
-    "along": "F1@11",
-    "from": "F6",
-    "to": "F8"
-   },
-   {
-    "along": "r30",
-    "from": "rim@7",
-    "to": "F3@4"
-   },
-   {
-    "along": "r30",
-    "from": "F11@7",
-    "to": "F10@3"
-   },
-   {
-    "along": "r30",
-    "from": "F10@1",
-    "to": "F11@1"
-   },
-   {
-    "along": "r30",
-    "from": "F3@1",
-    "to": "rim@1"
-   },
-   {
-    "along": "r150",
-    "from": "rim@11",
-    "to": "F3@8"
-   },
-   {
-    "along": "r150",
-    "from": "F11@3",
-    "to": "F10@7"
-   },
-   {
-    "along": "r150",
-    "from": "F10@1",
-    "to": "F11@5"
-   },
-   {
-    "along": "r150",
-    "from": "F3@2",
-    "to": "rim@5"
-   },
-   {
-    "along": "F1",
-    "from": "F8@6",
-    "to": "F6@8"
-   },
-   {
-    "along": "F1",
-    "from": "F2",
-    "to": "F8@1"
-   },
-   {
-    "along": "F1@4",
-    "from": "F8@10",
-    "to": "F6"
-   },
-   {
-    "along": "F1@4",
-    "from": "F2@4",
-    "to": "F8@5"
-   },
-   {
-    "along": "F3@4",
-    "from": "r120",
-    "to": "F8@4"
-   },
-   {
-    "along": "F3@4",
-    "from": "F8@6",
-    "to": "r30"
-   },
-   {
-    "along": "F3@7",
-    "from": "r30",
-    "to": "F8@7"
-   },
-   {
-    "along": "F3@7",
-    "from": "F8@9",
-    "to": "r120"
-   },
-   {
-    "along": "F3@5",
-    "from": "r150",
-    "to": "F8@5"
-   },
-   {
-    "along": "F3@5",
-    "from": "F8@7",
-    "to": "r60"
-   },
-   {
-    "along": "F3@2",
-    "from": "r60",
-    "to": "F8@2"
-   },
-   {
-    "along": "F3@2",
-    "from": "F8@4",
-    "to": "r150"
-   },
-   {
-    "along": "F6@6",
-    "from": "r135",
-    "to": "F2@8"
-   },
-   {
-    "along": "F6@6",
-    "from": "F2@5",
-    "to": "r15"
-   },
-   {
-    "along": "F6@8",
-    "from": "r15",
-    "to": "F1"
-   },
-   {
-    "along": "F6@8",
-    "from": "F2@7",
-    "to": "r75"
-   },
-   {
-    "along": "F6@7",
-    "from": "r165",
-    "to": "F2@9"
-   },
-   {
-    "along": "F6@7",
-    "from": "F2@6",
-    "to": "r45"
-   },
-   {
-    "along": "F6@5",
-    "from": "r105",
-    "to": "F2@7"
-   },
-   {
-    "along": "F6@5",
-    "from": "F2@4",
-    "to": "r165"
-   },
-   {
-    "along": "F2@5",
-    "from": "F6@3",
-    "to": "F3@1"
-   },
-   {
-    "along": "F2@5",
-    "from": "F3@4",
-    "to": "F1@5"
-   },
-   {
-    "along": "F2@9",
-    "from": "F6@7",
-    "to": "F4"
-   },
-   {
-    "along": "F2@9",
-    "from": "F3@8",
-    "to": "F1@9"
-   },
-   {
-    "along": "F8@7",
-    "from": "F3@7",
-    "to": "F1@6"
-   },
-   {
-    "along": "F8@7",
-    "from": "F1@1",
-    "to": "F3@5"
-   },
-   {
-    "along": "F8@4",
-    "from": "F3@4",
-    "to": "F1@3"
-   },
-   {
-    "along": "F8@4",
-    "from": "F1@10",
-    "to": "F3@2"
-   },
-   {
-    "along": "F2@10",
-    "from": "F1",
-    "to": "F4@1"
-   },
-   {
-    "along": "F2@10",
-    "from": "F3@9",
-    "to": "F1@10"
-   },
-   {
-    "along": "F2@4",
-    "from": "F6@2",
-    "to": "F3"
-   },
-   {
-    "along": "F2@4",
-    "from": "F3@3",
-    "to": "F1@4"
-   },
-   {
-    "along": "ILgy0@2",
-    "from": "gy@2",
-    "to": "ILr450@2"
-   },
-   {
-    "along": "ILgy0@2",
-    "from": "ILr450@1",
-    "to": "gy"
-   },
-   {
-    "along": "rim@8",
-    "from": "r45",
-    "to": "gy@2"
-   },
-   {
-    "along": "rim@4",
-    "from": "gy",
-    "to": "oh"
-   },
-   {
-    "along": "F5@6",
-    "from": "F4",
-    "to": "F3@4"
-   },
-   {
-    "along": "F4@6",
-    "from": "F5",
-    "to": "F13@8"
-   },
-   {
-    "along": "F4@6",
-    "from": "F13@6",
-    "to": "F3@4"
-   },
-   {
-    "along": "F4",
-    "from": "F3@5",
-    "to": "F13@2"
-   },
-   {
-    "along": "F4",
-    "from": "F13",
-    "to": "F5"
-   },
-   {
-    "along": "F1@6",
-    "from": "F8",
-    "to": "F6@2"
-   },
-   {
-    "along": "F1@6",
-    "from": "F2@6",
-    "to": "F8@7"
-   },
-   {
-    "along": "F1@10",
-    "from": "F8@4",
-    "to": "F6@6"
-   },
-   {
-    "along": "F1@10",
-    "from": "F2@10",
-    "to": "F8@11"
-   },
-   {
-    "along": "F4@1",
-    "from": "F3@6",
-    "to": "F13@3"
-   },
-   {
-    "along": "F4@1",
-    "from": "F13@1",
-    "to": "F2"
-   },
-   {
-    "along": "F5@7",
-    "from": "F4@1",
-    "to": "F3@5"
-   },
-   {
-    "along": "F4@5",
-    "from": "F2@2",
-    "to": "F13@7"
-   },
-   {
-    "along": "F4@5",
-    "from": "F13@5",
-    "to": "F3@3"
-   },
-   {
-    "along": "F5@5",
-    "from": "F3@4",
-    "to": "F3@3"
-   },
-   {
-    "along": "F13@6",
-    "from": "F4@6",
-    "to": "F1@5"
-   },
-   {
-    "along": "F13@6",
-    "from": "F12",
-    "to": "F4@4"
-   },
-   {
-    "along": "F13@2",
-    "from": "F4@2",
-    "to": "F1@1"
-   },
-   {
-    "along": "F13@2",
-    "from": "F14@5",
-    "to": "F4"
-   },
-   {
-    "along": "F2@6",
-    "from": "F6@4",
-    "to": "F3@2"
-   },
-   {
-    "along": "F2@6",
-    "from": "F3@5",
-    "to": "F1@6"
-   },
-   {
-    "along": "F2@8",
-    "from": "F6@6",
-    "to": "F3@4"
-   },
-   {
-    "along": "F2@8",
-    "from": "F3@7",
-    "to": "F1@8"
-   },
-   {
-    "along": "F13@3",
-    "from": "F4@3",
-    "to": "F1@2"
-   },
-   {
-    "along": "F13@3",
-    "from": "F1",
-    "to": "F4@1"
-   },
-   {
-    "along": "F13@5",
-    "from": "F4@5",
-    "to": "F1@4"
-   },
-   {
-    "along": "F13@5",
-    "from": "F1@2",
-    "to": "F4@3"
-   },
-   {
-    "along": "F6@9",
-    "from": "r45",
-    "to": "F1@1"
-   },
-   {
-    "along": "F6@9",
-    "from": "F2@8",
-    "to": "r105"
-   },
-   {
-    "along": "F6@4",
-    "from": "r75",
-    "to": "F2@6"
-   },
-   {
-    "along": "F6@4",
-    "from": "F2@3",
-    "to": "r135"
-   },
-   {
-    "along": "F14@6",
-    "from": "F1@5",
-    "to": "F1"
-   },
-   {
-    "along": "F12@6",
-    "from": "F13",
-    "to": "F11@8"
-   },
-   {
-    "along": "F12@6",
-    "from": "F11@6",
-    "to": "F1@5"
-   },
-   {
-    "along": "F14@5",
-    "from": "F1@4",
-    "to": "F13@2"
-   },
-   {
-    "along": "F12@8",
-    "from": "F13@2",
-    "to": "F11@10"
-   },
-   {
-    "along": "F12@8",
-    "from": "F11@8",
-    "to": "F1@7"
-   },
-   {
-    "along": "F4@7",
-    "from": "F3",
-    "to": "F13@9"
-   },
-   {
-    "along": "F4@7",
-    "from": "F13@7",
-    "to": "F3@5"
-   },
-   {
-    "along": "F4@11",
-    "from": "F3@4",
-    "to": "F13@1"
-   },
-   {
-    "along": "F4@11",
-    "from": "F13@11",
-    "to": "F3@9"
-   },
-   {
-    "along": "ULgx0@1",
-    "from": "gy",
-    "to": "ULr450@1"
-   },
-   {
-    "along": "ULgx0@1",
-    "from": "ULr450@2",
-    "to": "gy@2"
-   },
-   {
-    "along": "F12@9",
-    "from": "F1",
-    "to": "F11@11"
-   },
-   {
-    "along": "F12@9",
-    "from": "F11@9",
-    "to": "F1@8"
-   },
-   {
-    "along": "F12@5",
-    "from": "F14@2",
-    "to": "F11@7"
-   },
-   {
-    "along": "F12@5",
-    "from": "F11@5",
-    "to": "F1@4"
-   },
-   {
-    "along": "F1@1",
-    "from": "F8@7",
-    "to": "F6@9"
-   },
-   {
-    "along": "F1@1",
-    "from": "F2@1",
-    "to": "F8@2"
-   },
-   {
-    "along": "F1@3",
-    "from": "F8@9",
-    "to": "F2@1"
-   },
-   {
-    "along": "F1@3",
-    "from": "F2@3",
-    "to": "F8@4"
-   },
-   {
-    "along": "F11@6",
-    "from": "F12@4",
-    "to": "r60"
-   },
-   {
-    "along": "F11@6",
-    "from": "h",
-    "to": "F12@6"
-   },
-   {
-    "along": "F11@10",
-    "from": "F12@8",
-    "to": "h"
-   },
-   {
-    "along": "F11@10",
-    "from": "r120",
-    "to": "F12@10"
-   },
-   {
-    "along": "F13@7",
-    "from": "F4@7",
-    "to": "F1@6"
-   },
-   {
-    "along": "F13@7",
-    "from": "F12@1",
-    "to": "F4@5"
-   },
-   {
-    "along": "F13@1",
-    "from": "F4@1",
-    "to": "F1"
-   },
-   {
-    "along": "F13@1",
-    "from": "F14@4",
-    "to": "F4@11"
-   },
-   {
-    "along": "r60",
-    "from": "rim@8",
-    "to": "F3@5"
-   },
-   {
-    "along": "r60",
-    "from": "F11",
-    "to": "F10@4"
-   },
-   {
-    "along": "r60",
-    "from": "F10@2",
-    "to": "F11@2"
-   },
-   {
-    "along": "r60",
-    "from": "F3@2",
-    "to": "rim@2"
-   },
-   {
-    "along": "r120",
-    "from": "rim@10",
-    "to": "F3@7"
-   },
-   {
-    "along": "r120",
-    "from": "F11@2",
-    "to": "F10@6"
-   },
-   {
-    "along": "r120",
-    "from": "F10",
-    "to": "F11@4"
-   },
-   {
-    "along": "r120",
-    "from": "F3@1",
-    "to": "rim@4"
-   },
-   {
-    "along": "F2@11",
-    "from": "F1@1",
-    "to": "F4@2"
-   },
-   {
-    "along": "F2@11",
-    "from": "F4",
-    "to": "F6"
-   },
-   {
-    "along": "F11@11",
-    "from": "F12@9",
-    "to": "r30"
-   },
-   {
-    "along": "F11@11",
-    "from": "r150",
-    "to": "F12@11"
-   },
-   {
-    "along": "F11@5",
-    "from": "F12@3",
-    "to": "r30"
-   },
-   {
-    "along": "F11@5",
-    "from": "r150",
-    "to": "F12@5"
-   },
-   {
-    "along": "F2@3",
-    "from": "F6@1",
-    "to": "F5"
-   },
-   {
-    "along": "F2@3",
-    "from": "F3@2",
-    "to": "F1@3"
-   },
-   {
-    "along": "F3@8",
-    "from": "r60",
-    "to": "F8@8"
-   },
-   {
-    "along": "F3@8",
-    "from": "F8@10",
-    "to": "r150"
-   },
-   {
-    "along": "F3@1",
-    "from": "r30",
-    "to": "F8@1"
-   },
-   {
-    "along": "F3@1",
-    "from": "F8@3",
-    "to": "r120"
-   },
-   {
-    "along": "F12@7",
-    "from": "F13@1",
-    "to": "F11@9"
-   },
-   {
-    "along": "F12@7",
-    "from": "F11@7",
-    "to": "F1@6"
-   },
-   {
-    "along": "F14@7",
-    "from": "F1@6",
-    "to": "F1@1"
-   },
-   {
-    "along": "F11@7",
-    "from": "F12@5",
-    "to": "v"
-   },
-   {
-    "along": "F11@7",
-    "from": "r30",
-    "to": "F12@7"
-   },
-   {
-    "along": "F11@9",
-    "from": "F12@7",
-    "to": "r150"
-   },
-   {
-    "along": "F11@9",
-    "from": "v",
-    "to": "F12@9"
-   },
-   {
-    "along": "F14@4",
-    "from": "F1@3",
-    "to": "F13@1"
-   },
-   {
-    "along": "F4@2",
-    "from": "F3@7",
-    "to": "F13@4"
-   },
-   {
-    "along": "F4@2",
-    "from": "F13@2",
-    "to": "F3"
-   },
-   {
-    "along": "F5@8",
-    "from": "F4@2",
-    "to": "F3@6"
-   },
-   {
-    "along": "F4@4",
-    "from": "F2@1",
-    "to": "F13@6"
-   },
-   {
-    "along": "F4@4",
-    "from": "F13@4",
-    "to": "F3@2"
-   },
-   {
-    "along": "F5@4",
-    "from": "F3@3",
-    "to": "F3@2"
-   },
-   {
-    "along": "F8@8",
-    "from": "F3@8",
-    "to": "F1@7"
-   },
-   {
-    "along": "F8@8",
-    "from": "F1@2",
-    "to": "F3@6"
-   },
-   {
-    "along": "F8@3",
-    "from": "F3@3",
-    "to": "F1@2"
-   },
-   {
-    "along": "F8@3",
-    "from": "F1@9",
-    "to": "F3@1"
-   },
-   {
-    "along": "F13@4",
-    "from": "F4@4",
-    "to": "F1@3"
-   },
-   {
-    "along": "F13@4",
-    "from": "F1@1",
-    "to": "F4@2"
-   },
-   {
-    "along": "F12@10",
-    "from": "F1@1",
-    "to": "F11"
-   },
-   {
-    "along": "F12@10",
-    "from": "F11@10",
-    "to": "F1@9"
-   },
-   {
-    "along": "F12@4",
-    "from": "F14@1",
-    "to": "F11@6"
-   },
-   {
-    "along": "F12@4",
-    "from": "F11@4",
-    "to": "F1@3"
-   },
-   {
-    "along": "F1@7",
-    "from": "F8@1",
-    "to": "F6@3"
-   },
-   {
-    "along": "F1@7",
-    "from": "F2@7",
-    "to": "F8@8"
-   },
-   {
-    "along": "F1@9",
-    "from": "F8@3",
-    "to": "F6@5"
-   },
-   {
-    "along": "F1@9",
-    "from": "F2@9",
-    "to": "F8@10"
-   },
-   {
-    "along": "F11",
-    "from": "F12@10",
-    "to": "r60"
-   },
-   {
-    "along": "F11",
-    "from": "h",
-    "to": "F12"
-   },
-   {
-    "along": "F11@4",
-    "from": "F12@2",
-    "to": "h"
-   },
-   {
-    "along": "F11@4",
-    "from": "r120",
-    "to": "F12@4"
-   },
-   {
-    "along": "F10@6",
-    "from": "h",
-    "to": "r15"
-   },
-   {
-    "along": "F10@6",
-    "from": "r105",
-    "to": "r120"
-   },
-   {
-    "along": "F10@2",
-    "from": "r60",
-    "to": "r75"
-   },
-   {
-    "along": "F10@2",
-    "from": "r165",
-    "to": "h"
-   },
-   {
-    "along": "F2@7",
-    "from": "F6@5",
-    "to": "F3@3"
-   },
-   {
-    "along": "F2@7",
-    "from": "F3@6",
-    "to": "F1@7"
-   },
-   {
-    "along": "F4@8",
-    "from": "F3@1",
-    "to": "F13@10"
-   },
-   {
-    "along": "F4@8",
-    "from": "F13@8",
-    "to": "F3@6"
-   },
-   {
-    "along": "F4@10",
-    "from": "F3@3",
-    "to": "F13"
-   },
-   {
-    "along": "F4@10",
-    "from": "F13@10",
-    "to": "F3@8"
-   },
-   {
-    "along": "F10@3",
-    "from": "v",
-    "to": "F10"
-   },
-   {
-    "along": "F10@3",
-    "from": "r15",
-    "to": "r30"
-   },
-   {
-    "along": "F10@7",
-    "from": "r30",
-    "to": "r45"
-   },
-   {
-    "along": "F10@7",
-    "from": "r135",
-    "to": "r150"
-   },
-   {
-    "along": "F10@5",
-    "from": "r150",
-    "to": "r165"
-   },
-   {
-    "along": "F10@5",
-    "from": "r75",
-    "to": "v"
-   },
-   {
-    "along": "F10@1",
-    "from": "r30",
-    "to": "r45"
-   },
-   {
-    "along": "F10@1",
-    "from": "F15",
-    "to": "r150"
-   },
-   {
-    "along": "F13@8",
-    "from": "F4@8",
-    "to": "F1@7"
-   },
-   {
-    "along": "F13@8",
-    "from": "F12@2",
-    "to": "F4@6"
-   },
-   {
-    "along": "F13",
-    "from": "F4",
-    "to": "F12"
-   },
-   {
-    "along": "F13",
-    "from": "F14@3",
-    "to": "F4@10"
-   },
-   {
-    "along": "F11@8",
-    "from": "F12@6",
-    "to": "r120"
-   },
-   {
-    "along": "F11@8",
-    "from": "r60",
-    "to": "F12@8"
-   },
-   {
-    "along": "F6@10",
-    "from": "r75",
-    "to": "F2"
-   },
-   {
-    "along": "F6@10",
-    "from": "F2@9",
-    "to": "F6"
-   },
-   {
-    "along": "F6@3",
-    "from": "r45",
-    "to": "F2@5"
-   },
-   {
-    "along": "F6@3",
-    "from": "F2@2",
-    "to": "r105"
-   },
-   {
-    "along": "F15@2",
-    "from": "r75",
-    "to": "v"
-   },
-   {
-    "along": "F15@2",
-    "from": "h",
-    "to": "r15"
-   },
-   {
-    "along": "F15@6",
-    "from": "r15",
-    "to": "r30"
-   },
-   {
-    "along": "F15@6",
-    "from": "r120",
-    "to": "r135"
-   },
-   {
-    "along": "F15@5",
-    "from": "r165",
-    "to": "h"
-   },
-   {
-    "along": "F15@5",
-    "from": "v",
-    "to": "r105"
-   },
-   {
-    "along": "F15@1",
-    "from": "r45",
-    "to": "r60"
-   },
-   {
-    "along": "F15@1",
-    "from": "r150",
-    "to": "r165"
-   },
-   {
-    "along": "F14@8",
-    "from": "F1@7",
-    "to": "F1@2"
-   },
-   {
-    "along": "F14@3",
-    "from": "F1@2",
-    "to": "F13"
-   },
-   {
-    "along": "F10@4",
-    "from": "F10",
-    "to": "F15"
-   },
-   {
-    "along": "F10@4",
-    "from": "r45",
-    "to": "r60"
-   },
-   {
-    "along": "F10@8",
-    "from": "r60",
-    "to": "r75"
-   },
-   {
-    "along": "F10@8",
-    "from": "r165",
-    "to": "h"
-   },
-   {
-    "along": "F15@3",
-    "from": "F10",
-    "to": "F15"
-   },
-   {
-    "along": "F15@3",
-    "from": "r30",
-    "to": "r45"
-   },
-   {
-    "along": "F15@7",
-    "from": "r45",
-    "to": "r60"
-   },
-   {
-    "along": "F15@7",
-    "from": "r150",
-    "to": "r165"
-   },
-   {
-    "along": "F15@4",
-    "from": "F15",
-    "to": "r150"
-   },
-   {
-    "along": "F15@4",
-    "from": "r60",
-    "to": "r75"
-   },
-   {
-    "along": "F15",
-    "from": "r15",
-    "to": "r30"
-   },
-   {
-    "along": "F15",
-    "from": "r120",
-    "to": "r135"
-   },
-   {
-    "along": "F10",
-    "from": "h",
-    "to": "r15"
-   },
-   {
-    "along": "F10",
-    "from": "r105",
-    "to": "r120"
-   },
-   {
-    "along": "F1@2",
-    "from": "F8@8",
-    "to": "F2"
-   },
-   {
-    "along": "F1@2",
-    "from": "F2@2",
-    "to": "F8@3"
-   },
-   {
-    "along": "F2",
-    "from": "F1@2",
-    "to": "F4@3"
-   },
-   {
-    "along": "F2",
-    "from": "F4@1",
-    "to": "F1"
-   },
-   {
-    "along": "F12@11",
-    "from": "F1@2",
-    "to": "F11@1"
-   },
-   {
-    "along": "F12@11",
-    "from": "F11@11",
-    "to": "F1@10"
-   },
-   {
-    "along": "F12@3",
-    "from": "F14",
-    "to": "F11@5"
-   },
-   {
-    "along": "F12@3",
-    "from": "F11@3",
-    "to": "F1@2"
-   },
-   {
-    "along": "F2@2",
-    "from": "F6",
-    "to": "F4@5"
-   },
-   {
-    "along": "F2@2",
-    "from": "F3@1",
-    "to": "F1@2"
-   },
-   {
-    "along": "F4@3",
-    "from": "F2",
-    "to": "F13@5"
-   },
-   {
-    "along": "F4@3",
-    "from": "F13@3",
-    "to": "F3@1"
-   },
-   {
-    "along": "F5@9",
-    "from": "F2",
-    "to": "F3@7"
-   },
-   {
-    "along": "F5@3",
-    "from": "F3@2",
-    "to": "F3@1"
-   },
-   {
-    "along": "F15@8",
-    "from": "r75",
-    "to": "v"
-   },
-   {
-    "along": "F15@8",
-    "from": "h",
-    "to": "r15"
-   },
-   {
-    "along": "F15@11",
-    "from": "r165",
-    "to": "h"
-   },
-   {
-    "along": "F15@11",
-    "from": "v",
-    "to": "F10"
-   },
-   {
-    "along": "F11@1",
-    "from": "F12@11",
-    "to": "v"
-   },
-   {
-    "along": "F11@1",
-    "from": "r30",
-    "to": "F12@1"
-   },
-   {
-    "along": "F11@3",
-    "from": "F12@1",
-    "to": "r150"
-   },
-   {
-    "along": "F11@3",
-    "from": "v",
-    "to": "F12@3"
-   },
-   {
-    "along": "v",
-    "from": "rim@9",
-    "to": "F3@6"
-   },
-   {
-    "along": "v",
-    "from": "F11@1",
-    "to": "F10@5"
-   },
-   {
-    "along": "v",
-    "from": "F10@3",
-    "to": "F11@3"
-   },
-   {
-    "along": "v",
-    "from": "F3",
-    "to": "rim@3"
-   },
-   {
-    "along": "F3@9",
-    "from": "v",
-    "to": "F8@9"
-   },
-   {
-    "along": "F3@9",
-    "from": "F8@11",
-    "to": "h"
-   },
-   {
-    "along": "F10@9",
-    "from": "v",
-    "to": "r105"
-   },
-   {
-    "along": "F10@9",
-    "from": "r15",
-    "to": "r30"
-   },
-   {
-    "along": "F10@11",
-    "from": "r150",
-    "to": "r165"
-   },
-   {
-    "along": "F10@11",
-    "from": "r75",
-    "to": "v"
-   },
-   {
-    "along": "F3",
-    "from": "h",
-    "to": "F8"
-   },
-   {
-    "along": "F3",
-    "from": "F8@2",
-    "to": "v"
-   },
-   {
-    "along": "F8@9",
-    "from": "F3@9",
-    "to": "F1@8"
-   },
-   {
-    "along": "F8@9",
-    "from": "F1@3",
-    "to": "F3@7"
-   },
-   {
-    "along": "F8@2",
-    "from": "F3@2",
-    "to": "F1@1"
-   },
-   {
-    "along": "F8@2",
-    "from": "F1@8",
-    "to": "F3"
-   },
-   {
-    "along": "F15@9",
-    "from": "r105",
-    "to": "r120"
-   },
-   {
-    "along": "F15@9",
-    "from": "r30",
-    "to": "r45"
-   },
-   {
-    "along": "F15@10",
-    "from": "r135",
-    "to": "r150"
-   },
-   {
-    "along": "F15@10",
-    "from": "r60",
-    "to": "r75"
-   },
-   {
-    "along": "rim@10",
-    "from": "gy@2",
-    "to": "r135"
-   },
-   {
-    "along": "rim@2",
-    "from": "oh",
-    "to": "gy"
-   },
-   {
-    "along": "F4@9",
-    "from": "F3@2",
-    "to": "F13@11"
-   },
-   {
-    "along": "F4@9",
-    "from": "F13@9",
-    "to": "F3@7"
-   },
-   {
-    "along": "F13@9",
-    "from": "F4@9",
-    "to": "F1@8"
-   },
-   {
-    "along": "F13@9",
-    "from": "F14",
-    "to": "F4@7"
-   },
-   {
-    "along": "F13@11",
-    "from": "F4@11",
-    "to": "F1@10"
-   },
-   {
-    "along": "F13@11",
-    "from": "F14@2",
-    "to": "F4@9"
-   },
-   {
-    "along": "F1@8",
-    "from": "F8@2",
-    "to": "F6@4"
-   },
-   {
-    "along": "F1@8",
-    "from": "F2@8",
-    "to": "F8@9"
-   },
-   {
-    "along": "F14@9",
-    "from": "F1@8",
-    "to": "F12"
-   },
-   {
-    "along": "F14@2",
-    "from": "F1@1",
-    "to": "F12@5"
-   },
-   {
-    "along": "F10@10",
-    "from": "r120",
-    "to": "r135"
-   },
-   {
-    "along": "F10@10",
-    "from": "r45",
-    "to": "r60"
-   },
-   {
-    "along": "F12",
-    "from": "F1@3",
-    "to": "F11@2"
-   },
-   {
-    "along": "F12",
-    "from": "F11",
-    "to": "F13"
-   },
-   {
-    "along": "F12@2",
-    "from": "F1@5",
-    "to": "F11@4"
-   },
-   {
-    "along": "F12@2",
-    "from": "F11@2",
-    "to": "F1@1"
-   },
-   {
-    "along": "F6@11",
-    "from": "r105",
-    "to": "F2@1"
-   },
-   {
-    "along": "F6@11",
-    "from": "F2@10",
-    "to": "r165"
-   },
-   {
-    "along": "F6@2",
-    "from": "F6",
-    "to": "F2@4"
-   },
-   {
-    "along": "F6@2",
-    "from": "F2@1",
-    "to": "r75"
-   },
-   {
-    "along": "F11@2",
-    "from": "F12",
-    "to": "r120"
-   },
-   {
-    "along": "F11@2",
-    "from": "r60",
-    "to": "F12@2"
-   },
-   {
-    "along": "F2@1",
-    "from": "F1@3",
-    "to": "F4@4"
-   },
-   {
-    "along": "F2@1",
-    "from": "F3",
-    "to": "F1@1"
-   },
-   {
-    "along": "F5@10",
-    "from": "F2@1",
-    "to": "F3@8"
-   },
-   {
-    "along": "F5@2",
-    "from": "F3@1",
-    "to": "F3"
-   },
-   {
-    "along": "F13@10",
-    "from": "F4@10",
-    "to": "F1@9"
-   },
-   {
-    "along": "F13@10",
-    "from": "F14@1",
-    "to": "F4@8"
-   },
-   {
-    "along": "F14@10",
-    "from": "F1@9",
-    "to": "F12@1"
-   },
-   {
-    "along": "F14@1",
-    "from": "F1",
-    "to": "F12@4"
-   },
-   {
-    "along": "F12@1",
-    "from": "F1@4",
-    "to": "F11@3"
-   },
-   {
-    "along": "F12@1",
-    "from": "F11@1",
-    "to": "F1"
-   },
-   {
-    "along": "F3@10",
-    "from": "r120",
-    "to": "F8@10"
-   },
-   {
-    "along": "F3@10",
-    "from": "F8",
-    "to": "r30"
-   },
-   {
-    "along": "F3@11",
-    "from": "r150",
-    "to": "F8@11"
-   },
-   {
-    "along": "F3@11",
-    "from": "F8@1",
-    "to": "r60"
-   },
-   {
-    "along": "F8@10",
-    "from": "F3@10",
-    "to": "F1@9"
-   },
-   {
-    "along": "F8@10",
-    "from": "F1@4",
-    "to": "F3@8"
-   },
-   {
-    "along": "F8@1",
-    "from": "F3@1",
-    "to": "F1"
-   },
-   {
-    "along": "F8@1",
-    "from": "F1@7",
-    "to": "F3@11"
-   },
-   {
-    "along": "F14@11",
-    "from": "F1@10",
-    "to": "F12@2"
-   },
-   {
-    "along": "F14",
-    "from": "F12",
-    "to": "F12@3"
-   },
-   {
-    "along": "ULgy0",
-    "from": "gy",
-    "to": "ULr450"
-   },
-   {
-    "along": "ULgy0",
-    "from": "ULr450@3",
-    "to": "gy@2"
-   },
-   {
-    "along": "ULr450@3",
-    "from": "ULgy0",
-    "to": "ULgx0@2"
-   },
-   {
-    "along": "ULr450",
-    "from": "ULgx0",
-    "to": "ULgy0"
-   },
-   {
-    "along": "F5@11",
-    "from": "F2@2",
-    "to": "F3@9"
-   },
-   {
-    "along": "F5@1",
-    "from": "F3",
-    "to": "F2"
-   },
-   {
-    "along": "F6",
-    "from": "r135",
-    "to": "F2@2"
-   },
-   {
-    "along": "F6",
-    "from": "F2@11",
-    "to": "r15"
-   },
-   {
-    "along": "F6@1",
-    "from": "r165",
-    "to": "F2@3"
-   },
-   {
-    "along": "F6@1",
-    "from": "F2",
-    "to": "r45"
-   },
-   {
-    "along": "F5",
-    "from": "F2@3",
-    "to": "F4"
-   },
-   {
-    "along": "ILgy0",
-    "from": "gy",
-    "to": "ILr450"
-   },
-   {
-    "along": "ILgy0",
-    "from": "ILr450@3",
-    "to": "gy@2"
-   },
-   {
-    "along": "ILr450@3",
-    "from": "ILgy0",
-    "to": "ILgy0@3"
-   },
-   {
-    "along": "rim@11",
-    "from": "r135",
-    "to": "gx"
-   },
-   {
-    "along": "rim@1",
-    "from": "gx",
-    "to": "oh"
-   },
-   {
-    "along": "ILr450",
-    "from": "oh",
-    "to": "ILgy0"
-   },
-   {
-    "along": "F8@11",
-    "from": "F3@11",
-    "to": "F1@10"
-   },
-   {
-    "along": "F8@11",
-    "from": "F1@5",
-    "to": "F3@9"
-   },
-   {
-    "along": "F8",
-    "from": "F3",
-    "to": "F1@11"
-   },
-   {
-    "along": "F8",
-    "from": "F1@6",
-    "to": "F3@10"
-   },
-   {
-    "along": "SLr450@3",
-    "from": "SLad0@1",
-    "to": "rim"
-   },
-   {
-    "along": "SLr450@3",
-    "from": "rim@9",
-    "to": "gx"
-   },
-   {
-    "along": "SLr450",
-    "from": "gx",
-    "to": "rim@3"
-   },
-   {
-    "along": "SLr450",
-    "from": "rim",
-    "to": "gy"
-   },
-   {
-    "along": "rim",
-    "from": "SLr450@3",
-    "to": "SLr450"
-   }
-  ]
- },
- "pattern": {
-   "cell": "tile",
-   "text": "Repeat the square tile edge to edge: rosettes on a square grid, stars at the corners.",
-   "palette": "Marinid zellige",
-   "look": "strapwork",
-   "colors": {
-     "centre": "b",
-     "arrowhead": "a",
-     "cross": "a",
-     "arrow": "d",
-     "petal": "a",
-     "cornerstar": "b",
-     "shield": "a",
-     "pentagon": "c",
-     "arm": "a",
-     "star": "a",
-     "gap": "ground",
-     "diamond": "a",
-     "kite": "a",
-     "chip": "ground",
-     "ringbend": "c",
-     "ringaxis": "c"
-   },
-   "rings": true
- },
- "expect": {
-  "pieceTypes": 16,
-  "pieces": [
-   {
-    "name": "centre",
-    "vertices": 24,
-    "area": 0.08108,
-    "perCell": 1
-   },
-   {
-    "name": "arrowhead",
-    "vertices": 5,
-    "area": 0.07515,
-    "perCell": 4
-   },
-   {
-    "name": "ringbend",
-    "vertices": 8,
-    "area": 0.06839,
-    "perCell": 4
-   },
-   {
-    "name": "cross",
-    "vertices": 6,
-    "area": 0.06233,
-    "perCell": 2,
-    "small": true
-   },
-   {
-    "name": "arrow",
-    "vertices": 12,
-    "area": 0.05686,
-    "perCell": 12
-   },
-   {
-    "name": "petal",
-    "vertices": 9,
-    "area": 0.05223,
-    "perCell": 12
-   },
-   {
-    "name": "cornerstar",
-    "vertices": 16,
-    "area": 0.05013,
-    "perCell": 1
-   },
-   {
-    "name": "shield",
-    "vertices": 9,
-    "area": 0.03438,
-    "perCell": 12
-   },
-   {
-    "name": "pentagon",
-    "vertices": 9,
-    "area": 0.03026,
-    "perCell": 12
-   },
-   {
-    "name": "arm",
-    "vertices": 5,
-    "area": 0.03013,
-    "perCell": 8
-   },
-   {
-    "name": "ringaxis",
-    "vertices": 4,
-    "area": 0.02944,
-    "perCell": 4
-   },
-   {
-    "name": "star",
-    "vertices": 9,
-    "area": 0.02815,
-    "perCell": 12
-   },
-   {
-    "name": "gap",
-    "vertices": 4,
-    "area": 0.02592,
-    "perCell": 8
-   },
-   {
-    "name": "diamond",
-    "vertices": 4,
-    "area": 0.00886,
-    "perCell": 8
-   },
-   {
-    "name": "kite",
-    "vertices": 4,
-    "area": 0.00676,
-    "perCell": 12,
-    "small": true
-   },
-   {
-    "name": "chip",
-    "vertices": 4,
-    "area": 0.00366,
-    "perCell": 8,
-    "small": true
-   }
-  ]
- }
 }
