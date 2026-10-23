@@ -805,7 +805,12 @@ export function RepeatedInk({
       list.push(copy);
       groups.set(copy.j, list);
     }
-    return [...groups];
+    // The original is drawn last: where the ink reaches past the tile
+    // (the filled zellige wheel), neighbouring copies overlap it, and the
+    // accent must not be painted over by them.
+    for (const list of groups.values())
+      list.sort((a, b) => Number(a.i === 0) - Number(b.i === 0));
+    return [...groups].sort(([a], [b]) => Number(a === 0) - Number(b === 0));
   }, [copies]);
 
   // The row is built first, then the rows; the camera pulls back from the
