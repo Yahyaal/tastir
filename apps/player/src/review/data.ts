@@ -2458,7 +2458,7 @@ export const PROGRESS: {
   waiting: [
     {
       title: 'Hosted ChatGPT sign-in: confirm the OpenAI website registration',
-      text: 'The hosted Studio sign-in code is prepared, with explicit linking from your existing owner account. It stays off until the provisioned OpenAI client ID, registered callback and authentication method are configured. We have not verified an approval or deployed this feature. This identity login does not enable the in-app chatbot; hosted ChatGPT-plan usage needs separate partner access. The local assistant remains available with pnpm dev:agent.',
+      text: 'The hosted Studio sign-in code is prepared, with explicit linking from your existing owner account. It stays off until the provisioned OpenAI client ID, registered callback and authentication method are configured. OpenAI approval and a real hosted sign-in have not been verified. This identity login does not enable the in-app chatbot; hosted ChatGPT-plan usage needs separate partner access. The local assistant remains available with pnpm dev:agent.',
       link: {
         label: 'Hosted ChatGPT setup and remaining checks',
         href: '#/notes/chatgpt-hosted',

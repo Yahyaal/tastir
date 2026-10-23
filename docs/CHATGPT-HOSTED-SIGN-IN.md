@@ -30,7 +30,7 @@ Configure server-side Vercel environment variables (never `VITE_` variables):
 | `OPENAI_SIGN_IN_TOKEN_AUTH_METHOD` | Exactly the registered method: `none` or `client_secret_basic` |
 | `OPENAI_SIGN_IN_CLIENT_SECRET` | Only for `client_secret_basic`; leave absent for `none` |
 
-Keep the existing Google, session, database, owner allowlist and Studio URL settings. Apply migration `0003_openai_sign_in.sql` with `pnpm studio:db:migrate` using the intended production database configuration, then run `pnpm studio:preflight`. The migration adds identity links and short-lived login transactions. It does not change any project table. Deploy the tested branch only after configuration is available. No remote database migration or Vercel deployment was performed in this work.
+Keep the existing Google, session, database, owner allowlist and Studio URL settings. Apply migration `0003_openai_sign_in.sql` with `pnpm studio:db:migrate` using the intended production database configuration, then run `pnpm studio:preflight`. The migration adds identity links and short-lived login transactions. It does not change any project table. Deploy the tested branch only after configuration is available. The production migration was applied on 23 October 2026 after the owner requested deployment; both sign-in tables are present and the existing project count is unchanged. Releases use the existing GitHub main → Vercel connection.
 
 ## First use
 
