@@ -18,7 +18,12 @@
       "creator": "Mamoot (mamootdiy.com)",
       "url": "https://mamootdiy.com/2020/12/19/islamic-geometry-six-fold-hammerhead-pattern/",
       "note": "The two crossing hexagons, the hammerhead lines joining their crossings, the inner star from the petal arcs, and the lines to ink follow this tutorial.",
-      "steps": [5, 6, 7]
+      "steps": [
+        5,
+        6,
+        7
+      ],
+      "kind": "tutorial"
     }
   ],
   "given": {

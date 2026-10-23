@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import { useModalFocus } from './useModalFocus';
 import './ConstructionSource.css';
 import type { Tutorial } from '@tastir/schema';
+import { DrawingGuides } from './DrawingGuides';
+import { drawingGuides } from './LessonTitle';
 
 const bases = {
   instructions: 'Based on published instructions',
@@ -82,26 +84,57 @@ function SourceDialog({
           </button>
         </header>
         <div className="construction-source-body">
+          <DrawingGuides tutorial={tutorial} />
+          {!drawingGuides(tutorial).length ? (
+            <p>
+              {tutorial.credits.some((credit) => credit.url && !credit.kind)
+                ? 'The available source references are listed below.'
+                : 'No step-by-step source tutorial is documented for this pattern.'}
+            </p>
+          ) : null}
+          <h3>About this construction</h3>
           <p>
             <strong>{bases[source.basis]}</strong>
           </p>
           <p>{source.note}</p>
           <p>{fidelity[source.fidelity]}</p>
           <p>{source.changes}</p>
-          {tutorial.credits.some((credit) => credit.url) ? (
-            <ul>
-              {tutorial.credits
-                .filter((credit) => credit.url)
-                .map((credit, i) => (
-                  <li key={`${credit.url}-${i}`}>
-                    <a href={credit.url} target="_blank" rel="noreferrer">
-                      {credit.source}
-                      {credit.creator ? ` — ${credit.creator}` : ''}
-                    </a>
-                    {credit.note ? <p>{credit.note}</p> : null}
-                  </li>
-                ))}
-            </ul>
+          {tutorial.credits.some(
+            (credit) =>
+              credit.url &&
+              credit.kind !== 'tutorial' &&
+              credit.kind !== 'challenge',
+          ) ? (
+            <section aria-label="Other references">
+              <h3>Other references</h3>
+              <ul>
+                {tutorial.credits
+                  .filter(
+                    (credit) =>
+                      credit.url &&
+                      credit.kind !== 'tutorial' &&
+                      credit.kind !== 'challenge',
+                  )
+                  .map((credit, i) => (
+                    <li key={`${credit.url}-${i}`}>
+                      <a href={credit.url} target="_blank" rel="noreferrer">
+                        {credit.source}
+                        {credit.creator ? ` — ${credit.creator}` : ''}
+                      </a>
+                      {credit.kind ? (
+                        <p className="drawing-guide-kind">
+                          {credit.kind === 'photo'
+                            ? 'Photograph of the finished design'
+                            : credit.kind === 'drawing'
+                              ? 'Drawing of the finished design'
+                              : 'Further reading'}
+                        </p>
+                      ) : null}
+                      {credit.note ? <p>{credit.note}</p> : null}
+                    </li>
+                  ))}
+              </ul>
+            </section>
           ) : null}
           <p>
             Reviewed {source.reviewed}. This describes the construction’s

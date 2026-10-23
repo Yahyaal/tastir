@@ -2,6 +2,33 @@
 
 This audit covers all **39 library tutorials** at base commit `1878913`. It answers where each teaching sequence came from, which parts were reconstructed, and how much evidence supports fidelity to published instructions. Findings are also stored in every tutorial’s `construction` metadata and shown under **How this construction was made** in the player. The report opens at `#/notes/construction-sources`; the review page links here.
 
+## Open the source tutorials
+
+These are the actual drawing resources linked from each lesson and Draw along. Open one in another tab to compare it with the app. The app-step coverage below identifies the borrowed material; source step numbers and grouping may differ. A mixed construction can have substantial additions beyond the linked tutorial. The hexagonal stellated challenge has hints rather than a complete sequence. Direct PDF/video links were checked against the publishers’ pages on 23 October 2026; no private copies are served. This reference update does not upgrade the earlier fidelity verdicts.
+
+| Pattern | Source instructions | Used for app steps |
+| --- | --- | --- |
+| [Star and arrows, shifted rows](#/alhambra-star-and-arrows-shifted) | [Mamoot — written](https://mamootdiy.com/2021/02/01/islamic-geometry-rosette-tile-from-the-alhambra/) | 7–9 |
+| [Star and arrows](#/alhambra-star-and-arrows) | [Mamoot — written](https://mamootdiy.com/2021/02/01/islamic-geometry-rosette-tile-from-the-alhambra/) | 7–9 |
+| [Bou Inania rosette, her way](#/bou-inania-rosette) | [Samira Mian — video](https://www.youtube.com/watch?v=YcqakkAKvFI) | 5–6 |
+| [Bou Inania twelve-fold wall](#/bou-inania-twelve-fold-wall) | [Samira Mian — video](https://www.youtube.com/watch?v=YcqakkAKvFI) | 4 |
+| [Eight-fold khatam](#/eight-fold-khatam) | [Sandy Kurt — PDF](https://static.showit.co/file/Y3_pKjR7TyCx5pgVJzdiGg/141862/al-hakim_mosque_isfahan.pdf) | 4–9 |
+| [Eight-fold star and octagon](#/eight-fold-star-and-octagon) | [Sandy Kurt — PDF](https://static.showit.co/file/ONvAj-aXT52Wez7Dd1Hh7g/141862/tomb_of_itimud_ad-daula.pdf) | 4–9 |
+| [Four-fold ring of circles](#/four-fold-ring-of-circles) | [Sandy Kurt — PDF](https://static.showit.co/file/JehTNJA6SfGzf5iSMbgYiw/141862/4fold_pattern.pdf) | 7–12 |
+| [Ibn Tulun window](#/ibn-tulun-window) | [Mamoot — written](https://mamootdiy.com/2020/12/21/islamic-geometry-a-window-from-ibn-tulun-masjid/) | 6–10 |
+| [Zellige wheel, filled](#/kurt-eight-fold-zellige-filled) | [Sandy Kurt — PDF](https://static.showit.co/file/yEZKK6D_ReWIuU5g0gIHyw/141862/8fold_zellige.pdf) | 1–17 |
+| [Zellige wheel, shifted rows](#/kurt-eight-fold-zellige-shifted) | [Sandy Kurt — PDF](https://static.showit.co/file/yEZKK6D_ReWIuU5g0gIHyw/141862/8fold_zellige.pdf) | 1–17 |
+| [Eight-fold zellige wheel](#/kurt-eight-fold-zellige) | [Sandy Kurt — PDF](https://static.showit.co/file/yEZKK6D_ReWIuU5g0gIHyw/141862/8fold_zellige.pdf) | 1–17 |
+| [Stellated rosette, hexagonal tile](#/mian-stellated-hex) | [Samira Mian — hints](https://www.samiramian.uk/twelvefoldrosette) | 1–10 |
+| [Stellated rosettes](#/mian-stellated-rosettes) | [Samira Mian — video](https://www.youtube.com/watch?v=uG2uh5inICA) | 1–13 |
+| [Minbar doors](#/minbar-doors-cairo) | [Samira Mian — video](https://www.youtube.com/watch?v=5ocdSaE9tFg) | 1–8 |
+| [Six-fold hammerheads](#/six-fold-hammerhead) | [Mamoot — written](https://mamootdiy.com/2020/12/19/islamic-geometry-six-fold-hammerhead-pattern/) | 5–7 |
+| [Six-fold snowflake](#/six-fold-snowflake) | [Mamoot — written](https://mamootdiy.com/2022/04/06/islamic-geometry-a-six-fold-snowflake/) | 4–8 |
+| [Star and hexagons](#/six-fold-star-and-hexagons) | [Charlotte Webb — PDF](https://atm.org.uk/write/MediaUploads/Conference/2019%20Conference/Speakers/Art_in_the_Mathematics_classroom.pdf#page=12) | 4–6 |
+| [Twelve-pointed stars](#/twelve-fold-dodecagrams) | [Joumana Medlej — written](https://design.tutsplus.com/tutorials/geometric-design-working-with-6-and-12--cms-22872) | 6–7 |
+| [Twelve-fold rosette, hexagonal tile](#/twelve-fold-rosette-mian-hex) | [Samira Mian — video](https://www.youtube.com/watch?v=5ocdSaE9tFg) | 1–11 |
+| [Twelve-fold rosette](#/twelve-fold-rosette-mian) | [Samira Mian — video](https://www.youtube.com/watch?v=5ocdSaE9tFg) | 1–11 |
+
 ## Summary
 
 | Origin of the teaching sequence | Patterns |
@@ -329,7 +356,7 @@ The construction is not a published step-by-step method for the whole Bou Inania
 
 **Evidence:** `tools/review/bou_inania_v2/README.md`; `tools/review/bou_inania_v2/gen_bou_inania_v2.py`; `docs/patterns/STATUS.md`; `docs/patterns/bou-inania-tutorials-comparison.md`.
 
-**Public references:** [Twelvefold Islamic Geometric Rosette (online tutorial)](https://www.samiramian.uk/twelvefoldrosette), [Drawing of the Bou Inania pattern](https://www.instagram.com/aslam.geometricpatterns/), [Zellige of the Bou Inania madrasa, Fès (photograph, Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg).
+**Public references:** [Drawing a Twelvefold Islamic Geometric Rosette (#15, activity 2)](https://www.youtube.com/watch?v=YcqakkAKvFI), [Drawing of the Bou Inania pattern](https://www.instagram.com/aslam.geometricpatterns/), [Zellige of the Bou Inania madrasa, Fès (photograph, Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg).
 
 ### bou-inania-twelve-fold-wall
 
@@ -343,7 +370,7 @@ This is our fitted reconstruction. Exact crossings do not establish the original
 
 **Evidence:** `docs/patterns/bou-inania-wall-simple-construction.md`; `docs/patterns/bou-inania-wall-review-2026-10-09.md`; `tools/review/bou_inania/gen_design_e.py`; `docs/patterns/bou-inania-centerline-verification.md`.
 
-**Public references:** [Twelvefold Islamic Geometric Rosette (online tutorial)](https://www.samiramian.uk/twelvefoldrosette), [Bou Inania madrasa, Fès: zellij tiling in the entrance stairway (photograph, Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg).
+**Public references:** [Drawing a Twelvefold Islamic Geometric Rosette (#15, activity 2)](https://www.youtube.com/watch?v=YcqakkAKvFI), [Bou Inania madrasa, Fès: zellij tiling in the entrance stairway (photograph, Wikimedia Commons)](https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg).
 
 ### eight-fold-khatam
 
@@ -357,7 +384,7 @@ The saved PDF was read and selected drawings compared during this audit, but a c
 
 **Evidence:** `docs/research/four-fold-model/kurt/hakim.pdf`; `tools/review/gen_hakim.py`; `docs/testing/review-decisions-2026-10-11.md`; `apps/player/src/review/data.ts`.
 
-**Public references:** [4fold Pattern from Al-Hakim Mosque, Isfahan](https://sandykurt.com/free-tutorials).
+**Public references:** [4fold Pattern from Al-Hakim Mosque, Isfahan](https://static.showit.co/file/Y3_pKjR7TyCx5pgVJzdiGg/141862/al-hakim_mosque_isfahan.pdf).
 
 ### eight-fold-star-and-cross
 
@@ -383,7 +410,7 @@ The saved PDF was read and selected drawings compared during this audit, but a c
 
 **Evidence:** `docs/research/four-fold-model/kurt/itimad.pdf`; `tools/review/gen_itimad.py`; `docs/testing/review-decisions-2026-10-11.md`; `apps/player/src/review/data.ts`.
 
-**Public references:** [4fold Pattern from the Tomb of Itimud ad-Daula](https://sandykurt.com/free-tutorials).
+**Public references:** [4fold Pattern from the Tomb of Itimud ad-Daula](https://static.showit.co/file/ONvAj-aXT52Wez7Dd1Hh7g/141862/tomb_of_itimud_ad-daula.pdf).
 
 ### eight-fold-zellige
 
@@ -409,7 +436,7 @@ The app groups the square sides by direction and draws shared long lines once. T
 
 **Evidence:** `docs/patterns/four-fold-ring-of-circles.md`; `docs/research/four-fold-model/kurt/4fold.pdf`; `tools/review/gen_four_fold_ring.py`; `docs/patterns/STATUS.md`.
 
-**Public references:** [4fold Pattern Tutorial](https://sandykurt.com/free-tutorials).
+**Public references:** [4fold Pattern Tutorial](https://static.showit.co/file/JehTNJA6SfGzf5iSMbgYiw/141862/4fold_pattern.pdf).
 
 ### ibn-tulun-window
 
@@ -437,7 +464,7 @@ We added an edge-to-edge square repeat. The PDF teaches one wheel. The app split
 
 **Evidence:** `docs/research/eight-fold-zellige/kurt-8fold_zellige.pdf`; `tools/review/kurt8/gen_kurt_zellige.py`; `tools/review/kurt8/gen_filled.py`; `apps/player/src/review/data.ts`; `docs/patterns/STATUS.md`.
 
-**Public references:** [8fold Zellige (free PDF tutorial)](https://sandykurt.com/free-tutorials).
+**Public references:** [8fold Zellige (free PDF tutorial)](https://static.showit.co/file/yEZKK6D_ReWIuU5g0gIHyw/141862/8fold_zellige.pdf).
 
 ### kurt-eight-fold-zellige-filled
 
@@ -451,7 +478,7 @@ We added an overlapping square repeat and extra lines filling the remaining cros
 
 **Evidence:** `docs/research/eight-fold-zellige/kurt-8fold_zellige.pdf`; `tools/review/kurt8/gen_kurt_zellige.py`; `tools/review/kurt8/gen_filled.py`; `apps/player/src/review/data.ts`; `docs/patterns/STATUS.md`.
 
-**Public references:** [8fold Zellige (free PDF tutorial)](https://sandykurt.com/free-tutorials).
+**Public references:** [8fold Zellige (free PDF tutorial)](https://static.showit.co/file/yEZKK6D_ReWIuU5g0gIHyw/141862/8fold_zellige.pdf).
 
 ### kurt-eight-fold-zellige-shifted
 
@@ -465,7 +492,7 @@ We added a shifted repeat, later represented by a hexagon. The PDF teaches one w
 
 **Evidence:** `docs/research/eight-fold-zellige/kurt-8fold_zellige.pdf`; `tools/review/kurt8/gen_kurt_zellige.py`; `tools/review/kurt8/gen_filled.py`; `apps/player/src/review/data.ts`; `docs/patterns/STATUS.md`.
 
-**Public references:** [8fold Zellige (free PDF tutorial)](https://sandykurt.com/free-tutorials).
+**Public references:** [8fold Zellige (free PDF tutorial)](https://static.showit.co/file/yEZKK6D_ReWIuU5g0gIHyw/141862/8fold_zellige.pdf).
 
 ### mian-stellated-hex
 
@@ -493,7 +520,7 @@ App steps 9–11 build the corner hexagons and octagon, and 12–13 mark endpoin
 
 **Evidence:** `tools/review/mian_stellated/gen_mian_stellated.py`; `tools/review/design_h/README.md`; `docs/research/mian-rosette/page.html`; `docs/patterns/STATUS.md`.
 
-**Public references:** [Twelvefold Islamic Geometric Rosette, activity 8: stellated rosettes in a square arrangement (video)](https://www.samiramian.uk/twelvefoldrosette), [Lantern slide of the minbar of the al-Maridani mosque, Cairo (14th century): detail of the wooden panelling (Wikimedia Commons, GDE002950)](https://commons.wikimedia.org/wiki/File:Ca%C3%AFro._Amir_al-Maridani-moskee_Minbar_Detail_van_het_houten_maaswerk,_GDE002950.jpg), [Photograph of the minbar of the mosque of al-Nasir Muhammad, Cairo Citadel (1318–35), by Sailko (Wikimedia Commons, CC BY 3.0)](https://commons.wikimedia.org/wiki/File:Cairo,_cittadella,_moschea_di_an-nasr_mohammed,_1318-1335,_minbar,_intarsi.JPG).
+**Public references:** [Twelvefold Islamic Geometric Rosette, activity 8: stellated rosettes in a square arrangement (video)](https://www.youtube.com/watch?v=uG2uh5inICA), [Lantern slide of the minbar of the al-Maridani mosque, Cairo (14th century): detail of the wooden panelling (Wikimedia Commons, GDE002950)](https://commons.wikimedia.org/wiki/File:Ca%C3%AFro._Amir_al-Maridani-moskee_Minbar_Detail_van_het_houten_maaswerk,_GDE002950.jpg), [Photograph of the minbar of the mosque of al-Nasir Muhammad, Cairo Citadel (1318–35), by Sailko (Wikimedia Commons, CC BY 3.0)](https://commons.wikimedia.org/wiki/File:Cairo,_cittadella,_moschea_di_an-nasr_mohammed,_1318-1335,_minbar,_intarsi.JPG).
 
 ### minbar-doors-cairo
 
@@ -507,7 +534,7 @@ The rosette is inked differently from the plain Mian tutorial to reproduce the d
 
 **Evidence:** `tools/review/design_h2/README.md`; `tools/review/design_h2/gen_minbar_doors.py`; `docs/patterns/STATUS.md`.
 
-**Public references:** [Twelvefold Islamic Geometric Rosette (online tutorial)](https://www.samiramian.uk/twelvefoldrosette), [Pair of Minbar Doors, Egypt, probably Cairo, ca. 1325–30 (The Metropolitan Museum of Art, 91.1.2064, public domain photo)](https://www.metmuseum.org/art/collection/search/444812).
+**Public references:** [Drawing, Tiling & Painting Two Arrangements of a Twelvefold Islamic Geometric Rosette (#15.1, activity 3)](https://www.youtube.com/watch?v=5ocdSaE9tFg), [Pair of Minbar Doors, Egypt, probably Cairo, ca. 1325–30 (The Metropolitan Museum of Art, 91.1.2064, public domain photo)](https://www.metmuseum.org/art/collection/search/444812).
 
 ### six-fold-hammerhead
 
@@ -549,7 +576,7 @@ App step 7 replaces the handout’s suggested large-hexagon repeat with a smalle
 
 **Evidence:** `docs/patterns/six-fold-star-and-hexagons.md`; `docs/research/six-fold-star-and-hexagons/atm-handout.pdf`.
 
-**Public references:** [Art in the Mathematics Classroom: Islamic Geometry (ATM conference handout)](https://atm.org.uk/write/MediaUploads/Conference/2019%20Conference/Speakers/Art_in_the_Mathematics_classroom.pdf), [Computer Graphics and Geometric Ornamental Design, chapter 3](https://cs.uwaterloo.ca/~csk/other/phd/kaplan_diss_starpatterns_print.pdf).
+**Public references:** [Art in the Mathematics Classroom: Islamic Geometry (ATM conference handout)](https://atm.org.uk/write/MediaUploads/Conference/2019%20Conference/Speakers/Art_in_the_Mathematics_classroom.pdf#page=12), [Computer Graphics and Geometric Ornamental Design, chapter 3](https://cs.uwaterloo.ca/~csk/other/phd/kaplan_diss_starpatterns_print.pdf).
 
 ### sixteen-fold-rosette
 
@@ -601,7 +628,7 @@ The app groups the work into 11 steps, including explicit intersection marks. Th
 
 **Evidence:** `tutorials/twelve-fold-rosette-mian.json`; `tools/review/gen_twelve_rosette.py`; `docs/patterns/STATUS.md`; `docs/research/mian-rosette/page.html`.
 
-**Public references:** [Twelvefold Islamic Geometric Rosette (online tutorial)](https://www.samiramian.uk/twelvefoldrosette).
+**Public references:** [Drawing, Tiling & Painting Two Arrangements of a Twelvefold Islamic Geometric Rosette (#15.1, activity 3)](https://www.youtube.com/watch?v=5ocdSaE9tFg).
 
 ### twelve-fold-rosette-mian-hex
 
@@ -615,7 +642,7 @@ The app groups the work into 11 steps, including explicit intersection marks. Th
 
 **Evidence:** `tutorials/twelve-fold-rosette-mian-hex.json`; `tools/review/gen_twelve_rosette.py`; `docs/patterns/STATUS.md`; `docs/research/mian-rosette/page.html`.
 
-**Public references:** [Twelvefold Islamic Geometric Rosette (online tutorial)](https://www.samiramian.uk/twelvefoldrosette).
+**Public references:** [Drawing, Tiling & Painting Two Arrangements of a Twelvefold Islamic Geometric Rosette (#15.1, activity 3)](https://www.youtube.com/watch?v=5ocdSaE9tFg).
 
 ## Follow-up priorities
 

@@ -15,17 +15,21 @@
   },
   "credits": [
     {
-      "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",
+      "source": "Drawing a Twelvefold Islamic Geometric Rosette (#15, activity 2)",
       "creator": "Samira Mian",
-      "url": "https://www.samiramian.uk/twelvefoldrosette",
+      "url": "https://www.youtube.com/watch?v=YcqakkAKvFI",
       "note": "The star lines joining points of the circle 150° apart (step 4) follow her construction.",
-      "steps": [4]
+      "steps": [
+        4
+      ],
+      "kind": "tutorial"
     },
     {
       "source": "Bou Inania madrasa, Fès: zellij tiling in the entrance stairway (photograph, Wikimedia Commons)",
       "creator": "Robert Prazeres",
       "url": "https://commons.wikimedia.org/wiki/File:Bou_inania_DSCF2978.jpg",
-      "note": "The line distances were fitted to this photo. The construction is our own reconstruction, not a published one. CC BY-SA 4.0."
+      "note": "The line distances were fitted to this photo. The construction is our own reconstruction, not a published one. CC BY-SA 4.0.",
+      "kind": "photo"
     }
   ],
   "given": { "O": "centre of a rosette", "A": "halfway to the next rosette" },

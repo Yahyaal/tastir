@@ -20,13 +20,15 @@
       "source": "Tiling Search, data174/SPA1416: Alhambra, Salón de Comares",
       "creator": "Brian Wichmann",
       "url": "https://tilingsearch.mit.edu/HTML/data174/SPA1416.html",
-      "note": "The design was read from his line drawing; the construction (one star circle, its frame and the diamonds found from the star’s own corners) is ours."
+      "note": "The design was read from his line drawing; the construction (one star circle, its frame and the diamonds found from the star’s own corners) is ours.",
+      "kind": "drawing"
     },
     {
       "source": "Photograph SPA 1416 (zellige, Salón de Comares)",
       "creator": "David Wade",
       "url": "https://patterninislamicart.com/",
-      "note": "The real panel, used to check the wall."
+      "note": "The real panel, used to check the wall.",
+      "kind": "photo"
     }
   ],
   "photos": [

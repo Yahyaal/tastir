@@ -16,10 +16,14 @@
   "credits": [
     {
       "source": "Geometric Design: Working With 6 and 12 (Dodecagram Pattern)",
-      "creator": "Envato Tuts+",
+      "creator": "Joumana Medlej (Envato Tuts+)",
       "url": "https://design.tutsplus.com/tutorials/geometric-design-working-with-6-and-12--cms-22872",
-      "note": "The pattern of two six-pointed stars in each circle of the seven-circle grid follows this tutorial.",
-      "steps": [6, 7]
+      "note": "See the “Dodecagram Pattern” section. The pattern of two six-pointed stars in each circle of the seven-circle grid follows this tutorial.",
+      "steps": [
+        6,
+        7
+      ],
+      "kind": "tutorial"
     }
   ],
   "given": {

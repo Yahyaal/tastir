@@ -19,7 +19,14 @@
       "creator": "Manuel Martínez Vela",
       "url": "https://www.riarte.es/handle/20.500.12251/633",
       "note": "The grid of eight-pointed stars and the tracing of this panel (the article's drawing 3) follow this article.",
-      "steps": [1, 2, 3, 4, 5]
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "kind": "drawing"
     }
   ],
   "given": {

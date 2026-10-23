@@ -20,13 +20,15 @@
       "source": "Tiling Search, data177/P069: Alhambra, Sala de los Reyes",
       "creator": "Brian Wichmann",
       "url": "https://tilingsearch.mit.edu/HTML/data177/P069.html",
-      "note": "The design was read from his line drawing; the construction (twelve lines round each star touching one small circle, and the hexagon of the star’s circle) is ours."
+      "note": "The design was read from his line drawing; the construction (twelve lines round each star touching one small circle, and the hexagon of the star’s circle) is ours.",
+      "kind": "drawing"
     },
     {
       "source": "Photograph SPA 1908 (zellige, Sala de los Reyes)",
       "creator": "David Wade",
       "url": "https://patterninislamicart.com/",
-      "note": "The real panel, used to check the wall."
+      "note": "The real panel, used to check the wall.",
+      "kind": "photo"
     }
   ],
   "photos": [

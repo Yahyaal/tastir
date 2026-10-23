@@ -19,13 +19,15 @@
       "source": "Tiling Search, data9/M060: Alhambra, Sala de los Reyes",
       "creator": "Brian Wichmann",
       "url": "https://tilingsearch.mit.edu/HTML/data9/M060.html",
-      "note": "The design was read from his line drawing; the construction (the same eight-pointed star at every grid point, the crosses’ notches found with the compass) is ours."
+      "note": "The design was read from his line drawing; the construction (the same eight-pointed star at every grid point, the crosses’ notches found with the compass) is ours.",
+      "kind": "drawing"
     },
     {
       "source": "Photograph SPA 0408x (zellige of the Sala de los Reyes)",
       "creator": "David Wade",
       "url": "https://patterninislamicart.com/",
-      "note": "The real panel, used to check the wall."
+      "note": "The real panel, used to check the wall.",
+      "kind": "photo"
     }
   ],
   "photos": [

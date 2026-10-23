@@ -20,13 +20,15 @@
       "source": "Tiling Search, data182/AL01: Alhambra, Baño Real (Comares bath)",
       "creator": "Brian Wichmann",
       "url": "https://tilingsearch.mit.edu/HTML/data182/AL01.html",
-      "note": "The design was read from his line drawing; the construction (each band a side of one of two eight-pointed stars, their sizes found by two crossings) is ours."
+      "note": "The design was read from his line drawing; the construction (each band a side of one of two eight-pointed stars, their sizes found by two crossings) is ours.",
+      "kind": "drawing"
     },
     {
       "source": "Photograph MOR 0711 (carved wooden panel)",
       "creator": "David Wade",
       "url": "https://patterninislamicart.com/",
-      "note": "The same design on a real panel, used to check the wall."
+      "note": "The same design on a real panel, used to check the wall.",
+      "kind": "photo"
     }
   ],
   "photos": [

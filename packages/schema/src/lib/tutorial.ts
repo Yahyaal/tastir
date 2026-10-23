@@ -266,6 +266,10 @@ export const InkPath = z.union([InkThrough, InkAlong], {
 
 export const Credit = z.strictObject({
   source: z.string().min(1),
+  /** A teaching sequence is different from a picture of its finished result. */
+  kind: z
+    .enum(['tutorial', 'challenge', 'drawing', 'photo', 'background'])
+    .optional(),
   creator: z.string().optional(),
   url: z.url().optional(),
   note: z.string().optional(),

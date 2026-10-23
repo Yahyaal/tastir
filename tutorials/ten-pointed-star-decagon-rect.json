@@ -18,7 +18,8 @@
     {
       "source": "Ten-pointed star and decagon rectangular repeat",
       "creator": "Tastir",
-      "note": "A ten-pointed star and decagon pattern repeated across a rectangular cell."
+      "note": "A ten-pointed star and decagon pattern repeated across a rectangular cell.",
+      "kind": "background"
     }
   ],
   "verification": {

@@ -16,9 +16,17 @@
     {
       "source": "4fold Pattern Tutorial",
       "creator": "Sandy Kurt",
-      "url": "https://sandykurt.com/free-tutorials",
+      "url": "https://static.showit.co/file/JehTNJA6SfGzf5iSMbgYiw/141862/4fold_pattern.pdf",
       "note": "The ring of small circles touching the axes and diagonals, a lying and a standing square in each, and the choice of lines to ink follow this tutorial; our steps group the drawing differently and the text is our own.",
-      "steps": [7, 8, 9, 10, 11, 12]
+      "steps": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "kind": "tutorial"
     }
   ],
   "given": {

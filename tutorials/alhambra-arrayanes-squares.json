@@ -20,13 +20,15 @@
       "source": "Tiling Search, data8/PG299: Alhambra, Patio de los Arrayanes",
       "creator": "Brian Wichmann",
       "url": "https://tilingsearch.mit.edu/HTML/data8/PG299.html",
-      "note": "The design and the star’s size were read from his line drawing; the construction is ours."
+      "note": "The design and the star’s size were read from his line drawing; the construction is ours.",
+      "kind": "drawing"
     },
     {
       "source": "Photograph SPA 0111 (zellige dado, Patio de los Arrayanes)",
       "creator": "David Wade",
       "url": "https://patterninislamicart.com/",
-      "note": "The real dado: the squares’ size and the pointed ends of the band tiles were read from it."
+      "note": "The real dado: the squares’ size and the pointed ends of the band tiles were read from it.",
+      "kind": "photo"
     }
   ],
   "photos": [

@@ -16,16 +16,27 @@
   },
   "credits": [
     {
-      "source": "Twelvefold Islamic Geometric Rosette (online tutorial)",
+      "source": "Drawing, Tiling & Painting Two Arrangements of a Twelvefold Islamic Geometric Rosette (#15.1, activity 3)",
       "creator": "Samira Mian",
-      "url": "https://www.samiramian.uk/twelvefoldrosette",
+      "url": "https://www.youtube.com/watch?v=5ocdSaE9tFg",
       "note": "The construction of the rosette (the inner circle from one chord and the star lines joining its points 150° apart) and the hexagonal tile follow her tutorial; the wording is ours.",
-      "steps": [1, 2, 3, 4, 5, 6, 7, 8]
+      "steps": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "kind": "tutorial"
     },
     {
       "source": "Pair of Minbar Doors, Egypt, probably Cairo, ca. 1325–30 (The Metropolitan Museum of Art, 91.1.2064, public domain photo)",
       "url": "https://www.metmuseum.org/art/collection/search/444812",
-      "note": "The design was read from the museum’s photo: the inlays were measured and every band traced back to a line of the construction."
+      "note": "The design was read from the museum’s photo: the inlays were measured and every band traced back to a line of the construction.",
+      "kind": "photo"
     }
   ],
   "photos": [

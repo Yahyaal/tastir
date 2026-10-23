@@ -19,13 +19,15 @@
       "source": "Tiling Search, data5/J43A: Alhambra, Salón de Comares",
       "creator": "Brian Wichmann",
       "url": "https://tilingsearch.mit.edu/HTML/data5/J43A.html",
-      "note": "The design was read from his line drawing; the construction (one length found by a single line from a corner of the cell) is ours."
+      "note": "The design was read from his line drawing; the construction (one length found by a single line from a corner of the cell) is ours.",
+      "kind": "drawing"
     },
     {
       "source": "Photograph SPA 0204 (zellige dado of the Salón de Comares)",
       "creator": "David Wade",
       "url": "https://patterninislamicart.com/",
-      "note": "The real dado, used to check the wall."
+      "note": "The real dado, used to check the wall.",
+      "kind": "photo"
     }
   ],
   "photos": [
