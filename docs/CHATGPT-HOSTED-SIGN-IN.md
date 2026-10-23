@@ -1,50 +1,79 @@
-# ChatGPT sign-in on Vercel
+# Set up ChatGPT sign-in for Tastir
 
-## Current status
+The website is deployed and the database is ready. Follow these steps in order. You do not need to run any commands.
 
-The local assistant still uses `pnpm dev:agent` and a loopback companion. Its locally registered client and account files do not establish hosted access. Do not copy those tokens or that client ID into Vercel.
+## 1. Check your email for OpenAI's approval
 
-The hosted Studio now has an optional, standard OpenID Connect website sign-in implementation. It is **disabled until a registered website client is configured**. No real OpenAI registration or hosted sign-in has been verified for Tastir. The owner recalls possible approval but is unsure. Available local settings contain no hosted OpenAI sign-in client; Vercel credentials are not available in this environment, so its remote settings have not been inspected.
+- Open your email inbox. Search for **Sign in with ChatGPT**, then search for **oaiapp_**.
+- Look for an OpenAI reply approving **Tastir's website** and providing a **client ID**. It may start with `oaiapp_`.
+- If you have that reply, go to **step 3**.
+- If you cannot find it, do **step 2**. Having a ChatGPT subscription or using the local assistant does not confirm website approval.
 
-This feature authenticates the Studio owner. It does **not** enable a hosted in-app chatbot, use the owner's ChatGPT plan for inference, or change the public pattern library's access. The existing ChatGPT-to-Studio MCP connection is another separate feature.
+## 2. Request access if you do not already have it
 
-Official contracts checked on 23 October 2026:
+- Open [OpenAI's request form](https://openai.com/form/sign-in-with-chatgpt-interest/).
+- Enter your own name and email. For **Company name**, enter `Tastir`.
+- For **Website URL**, enter `https://tastir-studio.vercel.app`.
+- Select **Sign in and ChatGPT plan use for AI requests**, since you also want the chatbot.
+- In the product description box, paste this:
 
-- [Website identity sign-in](https://developers.openai.com/siwc/website): registered client, exact callback, PKCE, nonce, server-side one-time transaction, verified ID token, first-party session.
-- [Request a client](https://developers.openai.com/siwc/request-client-id): hosted website availability is a limited trial for selected commercial partners.
-- [ChatGPT plan usage in open-source apps](https://developers.openai.com/siwc/token-sharing-open-source): the local open-source route is separate from paid or remotely hosted apps.
+  ```text
+  Tastir is a web app for learning and drawing Islamic geometric patterns. I want people to sign in with ChatGPT and use their ChatGPT plan with an in-app drawing assistant.
 
-## Enable after registration is confirmed
+  Website: https://tastir-studio.vercel.app
+  Sign-in callback URL: https://tastir-studio.vercel.app/auth/openai/callback
 
-Find the OpenAI application registration or approval email. Confirm its client ID, registered token-endpoint authentication method, and this exact callback with OpenAI:
+  Please provide the website client ID, the registered token authentication method (none or client_secret_basic), and a client secret if required.
+  ```
 
-`https://tastir-studio.vercel.app/auth/openai/callback`
+- Click **Submit**.
+- **Wait for OpenAI to approve the request and provide the client details before continuing.** Submitting the form does not turn sign-in on.
 
-Use the actual production domain if it differs. Preview domains need their own exact registered callbacks and matching Studio base URL. Do not use an illustrative client ID from documentation.
+## 3. Check the details OpenAI sends you
 
-Configure server-side Vercel environment variables (never `VITE_` variables):
+- Find the **website client ID** in OpenAI's reply.
+- Find the **token authentication method**: it must be `none` or `client_secret_basic`.
+- If the method is `client_secret_basic`, also find the **client secret**.
+- Check that OpenAI has registered this exact callback: `https://tastir-studio.vercel.app/auth/openai/callback`.
+- If any of those details are missing, reply to OpenAI's email with this text, then wait for their answer:
 
-| Setting | Value |
-| --- | --- |
-| `OPENAI_SIGN_IN_CLIENT_ID` | The provisioned website client ID |
-| `OPENAI_SIGN_IN_TOKEN_AUTH_METHOD` | Exactly the registered method: `none` or `client_secret_basic` |
-| `OPENAI_SIGN_IN_CLIENT_SECRET` | Only for `client_secret_basic`; leave absent for `none` |
+  ```text
+  Please confirm Tastir's website client ID and whether its token authentication method is none or client_secret_basic. If a secret is required, please provide it through your secure channel. Please also confirm this registered callback URL: https://tastir-studio.vercel.app/auth/openai/callback
+  ```
 
-Keep the existing Google, session, database, owner allowlist and Studio URL settings. Apply migration `0003_openai_sign_in.sql` with `pnpm studio:db:migrate` using the intended production database configuration, then run `pnpm studio:preflight`. The migration adds identity links and short-lived login transactions. It does not change any project table. Deploy the tested branch only after configuration is available. The production migration was applied on 23 October 2026 after the owner requested deployment; both sign-in tables are present and the existing project count is unchanged. Releases use the existing GitHub main → Vercel connection.
+## 4. Add the details to Vercel
 
-## First use
+- Open [Tastir's Environment Variables page](https://vercel.com/yahyaal-gmailcoms-projects/tastir/settings/environment-variables) and sign in to Vercel if asked.
+- If it opens the project overview instead, click **Environment Variables** in the left sidebar. Make sure the project is **tastir**.
+- In the add-variable form, enter **Name** `OPENAI_SIGN_IN_CLIENT_ID`. In **Value**, paste the website client ID OpenAI gave you. Select **Production** only, then click **Save**.
+- Add another variable: **Name** `OPENAI_SIGN_IN_TOKEN_AUTH_METHOD`. For **Value**, enter the exact method OpenAI confirmed: `none` or `client_secret_basic`. Select **Production** only, then click **Save**.
+- **Only if the method is `client_secret_basic`:** add **Name** `OPENAI_SIGN_IN_CLIENT_SECRET`. For **Value**, paste the client secret OpenAI provided. Select **Production** only, then click **Save**.
+- **If the method is `none`:** leave `OPENAI_SIGN_IN_CLIENT_SECRET` absent. If you previously added it, remove that variable using its **⋯** menu → **Delete**.
+- Leave the existing Google and database settings as they are.
 
-1. Sign in to the hosted Studio with the existing Google owner account.
-2. Open `/connections` and choose **Link ChatGPT account**. This explicitly associates the verified OpenAI subject with the signed-in owner.
-3. Sign out. On the Studio sign-in page, choose **Continue with ChatGPT**. It should return to the requested Studio page.
-4. **Unlink ChatGPT** on Connections prevents future sign-ins through that association. It does not invalidate an existing Studio session; use **Sign out** to end that browser session. Google sign-in remains available.
+## 5. Make the live site use the new settings
 
-An unknown OpenAI subject receives no project access even if its email matches the owner. Sign-in keys are the verified issuer, client ID and subject; provider email is never an authorization shortcut. Removing an email from `TASTIR_STUDIO_OWNERS` prevents its Studio sessions and linked sign-ins from being authorized.
+- Open [Tastir's Deployments page](https://vercel.com/yahyaal-gmailcoms-projects/tastir/deployments).
+- Find the newest deployment for **main** marked **Production**.
+- Open its **⋯** menu and click **Redeploy**.
+- In the confirmation window, keep the destination as **Production** and click **Redeploy**.
+- Wait until the new deployment says **Ready**.
 
-## Implementation and checks
+## 6. Link your account and try it
 
-`apps/studio/src/openai.ts` loads OpenAI discovery, pins production endpoints to the OpenAI issuer, requests identity scopes only, and checks signed ID tokens using `jose`. It accepts identity-only responses without access or refresh tokens. Confidential client secrets go only in the HTTP Basic header.
+- Open [Tastir Studio](https://tastir-studio.vercel.app/#/studio).
+- Click **Sign in with Google** and use the Google account you already use for Tastir.
+- Open [Connections](https://tastir-studio.vercel.app/connections).
+- Click **Link ChatGPT account**. Follow OpenAI's sign-in prompts using the ChatGPT account you want to link.
+- When you return to Connections, check that it says **Your ChatGPT account is linked**.
+- Click **Sign out**.
+- Open [Tastir Studio](https://tastir-studio.vercel.app/#/studio) again. Click **Continue with ChatGPT**.
+- You should arrive in the Studio with your existing projects.
 
-A random HttpOnly, SameSite=Lax cookie (Secure on HTTPS) binds the browser to a ten-minute database transaction. PKCE verifiers stay server-side. Atomic `DELETE … RETURNING` consumes each transaction once across Vercel instances. Expired transactions are removed on subsequent login starts. Linking and unlinking require a Studio session and its form token. Callbacks verify state, expiration, signature, issuer, audience, authorized party when applicable, required claims and nonce. Raw ID tokens are not stored or returned to the browser.
+## If a step does not work
 
-Automated tests use a simulated provider with real signed JWTs and a PKCE check. They are not evidence of approval or a real hosted OpenAI sign-in. Before enabling in production, complete a real sign-in, sign-out/re-entry and unlink check on the registered HTTPS domain, verify the owner allowlist, and inspect the callback cookies. Hosted chatbot work still needs the separate partner authorization and supported inference contract; identity sign-in alone supplies neither.
+- **No approval or client ID from OpenAI:** finish step 2 and wait for their reply. Vercel cannot provide these details.
+- **No Continue with ChatGPT button:** go back to step 4, check the variable names and Production selection, then repeat step 5. Refresh the Studio page afterward.
+- **OpenAI reports a callback or redirect error:** reply to OpenAI's registration email and ask them to register `https://tastir-studio.vercel.app/auth/openai/callback` exactly.
+- **ChatGPT sign-in returns an error in Tastir:** repeat step 6 starting with Google, so your existing owner account is linked first. If it still fails, tell me the exact message.
+- **Sign-in works but there is no chatbot:** these steps enable sign-in. Connecting the hosted chatbot is separate work after OpenAI grants the requested plan-use access.

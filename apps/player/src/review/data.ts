@@ -2460,7 +2460,7 @@ export const PROGRESS: {
       title: 'Hosted ChatGPT sign-in: confirm the OpenAI website registration',
       text: 'The hosted Studio sign-in code is prepared, with explicit linking from your existing owner account. It stays off until the provisioned OpenAI client ID, registered callback and authentication method are configured. OpenAI approval and a real hosted sign-in have not been verified. This identity login does not enable the in-app chatbot; hosted ChatGPT-plan usage needs separate partner access. The local assistant remains available with pnpm dev:agent.',
       link: {
-        label: 'Hosted ChatGPT setup and remaining checks',
+        label: 'ChatGPT setup: direct links and step-by-step actions',
         href: '#/notes/chatgpt-hosted',
       },
     },
