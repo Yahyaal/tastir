@@ -2,8 +2,12 @@ import { expect, test, type Page } from '@playwright/test';
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
-const tutorialFiles = readdirSync(resolve('tutorials')).filter((f) =>
-  f.endsWith('.json'),
+// The built library lists every tutorial the owner has not hidden.
+const hidden: string[] = JSON.parse(
+  readFileSync(resolve('apps/player/src/app/hidden.json'), 'utf8'),
+);
+const tutorialFiles = readdirSync(resolve('tutorials')).filter(
+  (f) => f.endsWith('.json') && !hidden.includes(f.replace(/\.json$/, '')),
 );
 const star = 'eight-fold-star-and-cross';
 const route = (id: string) => `/#/${id}`;
@@ -483,7 +487,9 @@ async function boardBounds(page: Page) {
   );
 }
 const tutorials = resolve('tutorials');
-const beginners = tutorialFiles
+// Hidden patterns still open by link, so every tutorial is checked here.
+const beginners = readdirSync(tutorials)
+  .filter((f) => f.endsWith('.json'))
   .map((f) => JSON.parse(readFileSync(resolve(tutorials, f), 'utf8')))
   .filter((t) => t.level === 'beginner');
 for (const tutorial of beginners) {
