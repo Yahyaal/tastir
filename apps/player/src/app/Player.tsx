@@ -68,6 +68,8 @@ import { useInking } from './useInking';
 import { useModalFocus } from './useModalFocus';
 import { banded, Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { WallControls } from './WallControls';
+import { PenControls } from './PenControls';
+import { DEFAULT_PEN, samePen } from './pen';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
 import { setStayGuard } from './routing';
@@ -156,7 +158,7 @@ function keptColoring(address: string) {
 /** Whether a saved design holds just what the player shows now. */
 function sameDesign(
   design: Design,
-  now: Pick<Design, 'inked' | 'coloring' | 'look' | 'grout' | 'jali'>,
+  now: Pick<Design, 'inked' | 'coloring' | 'look' | 'grout' | 'jali' | 'pen'>,
 ): boolean {
   const sorted = (chosen: Readonly<Record<string, string>>) =>
     JSON.stringify(Object.entries(chosen).sort(([a], [b]) => (a < b ? -1 : 1)));
@@ -171,7 +173,8 @@ function sameDesign(
     sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
     design.look === now.look &&
     design.grout === now.grout &&
-    sameJali(design.jali, now.jali)
+    sameJali(design.jali, now.jali) &&
+    samePen(design.pen, now.pen)
   );
 }
 
@@ -363,6 +366,7 @@ export function Player({
   });
   const [grout, setGrout] = useState(opened?.grout ?? draft?.grout ?? 1);
   const [jali, setJali] = useState(opened?.jali ?? draft?.jali ?? DEFAULT_JALI);
+  const [pen, setPen] = useState(opened?.pen ?? draft?.pen ?? DEFAULT_PEN);
   // The design being worked on: the one opened, or the last one saved.
   const [design, setDesign] = useState(opened);
   const designFields = () => ({
@@ -373,6 +377,9 @@ export function Player({
     grout,
     ...(wallStyle === 'jali' || design?.jali !== undefined || !sameJali(jali)
       ? { jali }
+      : {}),
+    ...(wallStyle === 'lines' || design?.pen !== undefined || !samePen(pen)
+      ? { pen }
       : {}),
   });
   // Until it has a name, every change is kept as a draft; back to the
@@ -477,6 +484,7 @@ export function Player({
       grout,
       fill,
       jali,
+      pen,
       finish: finishOf(inking.shown, colorHistory.now),
     });
   const svgRef = useRef<SVGSVGElement>(null);
@@ -775,6 +783,7 @@ export function Player({
           look={wallStyle}
           grout={grout}
           jali={jali}
+          pen={pen}
           onHover={setHovered}
           onPick={pick}
           enter={enter}
@@ -919,19 +928,20 @@ export function Player({
                 // button size.
                 grout={banded(look) ? 2 : 1}
                 jali={jali}
+                pen={pen}
                 view={sampleView}
               />,
             ]),
           )
         : undefined,
-    [onWall, inking.shown, colorHistory.now, jali, sampleView],
+    [onWall, inking.shown, colorHistory.now, jali, pen, sampleView],
   );
   const photos = tutorial.photos ?? [];
   const showOriginal = comparing && onWall && photos.length > 0;
   // The colours, at the top of the panel while colouring, so they are the
   // first thing in view.
   const colorsSection =
-    !onWall || wallStyle !== 'jali' ? (
+    !onWall || (wallStyle !== 'jali' && (wallStyle !== 'lines' || pen.wash)) ? (
       <section>
         <h2>Colors</h2>
         <ColourPanel
@@ -1356,6 +1366,7 @@ export function Player({
                   onStyle={(style) => {
                     setWallStyle(style);
                     if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                    if (style === 'lines' && grout < 0.25) setGrout(0.25);
                   }}
                   grout={grout}
                   onGrout={setGrout}
@@ -1364,6 +1375,9 @@ export function Player({
               ) : null}
               {onWall && wallStyle === 'jali' ? (
                 <JaliControls appearance={jali} onChange={setJali} />
+              ) : null}
+              {onWall && wallStyle === 'lines' ? (
+                <PenControls look={pen} onChange={setPen} />
               ) : null}
               {colorsSection}
               {ready && phone ? (

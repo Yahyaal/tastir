@@ -12,7 +12,7 @@ const STYLE_NAMES: Record<WallStyle, string> = {
 /**
  * The finished wall's own controls: its style as samples to click (the
  * learner's own pattern and colours in each style), the
- * width of its grout, bands or lattice.
+ * width of its lines (the grout, for tiles), bands or lattice.
  */
 export function WallControls({
   style,
@@ -30,7 +30,9 @@ export function WallControls({
 }) {
   const id = useId();
   const jali = style === 'jali';
-  const width = jali ? Math.max(0.5, grout) : grout;
+  // The lines style always draws a line, however thin.
+  const least = jali ? 0.5 : style === 'lines' ? 0.25 : 0;
+  const width = Math.max(least, grout);
   return (
     <section className="wall-section">
       <h2>The wall</h2>
@@ -49,12 +51,12 @@ export function WallControls({
       </div>
       <div className="wall-width">
         <label htmlFor={id}>
-          {jali ? 'Lattice' : banded(style) ? 'Band' : 'Grout'}
+          {jali ? 'Lattice' : banded(style) ? 'Band width' : 'Line width'}
         </label>
         <input
           id={id}
           type="range"
-          min={jali ? 0.5 : 0}
+          min={least}
           max={3}
           step={0.25}
           value={width}

@@ -1,7 +1,9 @@
 import {
   SquareBandsShape,
   JaliAppearanceShape,
+  PenLookShape,
   type JaliAppearance,
+  type PenLook,
 } from '@tastir/schema';
 import type { Coloring } from './coloring';
 import { newId, now, store } from './storage';
@@ -25,6 +27,8 @@ export interface Design {
   readonly look: WallStyle;
   readonly grout: number;
   readonly jali?: JaliAppearance;
+  /** How the lines style draws: pen, wash and ink. */
+  readonly pen?: PenLook;
   /** When it was first saved and last changed, as ISO dates. */
   readonly created: string;
   readonly updated: string;
@@ -65,6 +69,7 @@ export function isDesign(x: unknown): x is Design {
     typeof d['grout'] === 'number' &&
     (d['jali'] === undefined ||
       JaliAppearanceShape.safeParse(d['jali']).success) &&
+    (d['pen'] === undefined || PenLookShape.safeParse(d['pen']).success) &&
     typeof d['created'] === 'string' &&
     typeof d['updated'] === 'string'
   );

@@ -1974,9 +1974,17 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '23 October 2026',
+  updated: '24 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Lines style: a drawing with a pen, a wash and an ink (your request, 24 October)',
+      text: 'Colours now work in Lines: the pieces take a light wash of their colours on warm paper, like a coloured drawing, and “Lines only” turns the wash off (the colour panel then hides, as for Jali). Under “The drawing” you choose the pen: Single, Double (two lines with paper between, joined where they cross, like your sketchbook star) or Pencil (a soft line gone over twice), and the ink: black, sepia, indigo, red ochre or your own colour. “Grout” is now “Line width” (tiles and lines) or “Band width” (strapwork and interlace). Saved designs, share links and the SVG/PNG download keep all of it; the printed colouring sheet stays bare black lines on white. Open the wall, pick Lines, and try the three pens.',
+      link: {
+        label: 'Zellige wheel, filled: the wall',
+        href: '/#/kurt-eight-fold-zellige-filled/result',
+      },
+    },
     {
       title: 'Source tutorials: direct links for comparing the drawing steps',
       text: 'The lesson and Draw along now say Tutorial beneath the pattern name, linked to the specific source. The construction panel puts drawing tutorials first, with the author, PDF/video/written format and the app steps that use them. Twelve lessons now link directly to the published PDF or video; the ATM handout opens at page 12. Finished drawings, photographs and the challenge with hints are labeled separately. The audit report opens with an index of all twenty patterns with instructional sources.',

@@ -28,9 +28,10 @@ import {
 import { byPlace, colouredModel, placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
 import { patchesAt, patchPath } from './interlace';
-import type { JaliAppearance } from '@tastir/schema';
+import type { JaliAppearance, PenLook } from '@tastir/schema';
 import type { WallStyle } from './Wall';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
+import { DEFAULT_PEN, PAPER, penStrokes, washOpacity } from './pen';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
@@ -1197,6 +1198,7 @@ export function Thumbnail({
   look = model.tutorial.pattern.look,
   grout = 1,
   jali: appearance,
+  pen = DEFAULT_PEN,
   coloredUpTo,
   activeColorIndex,
   view: givenView,
@@ -1209,6 +1211,8 @@ export function Thumbnail({
   /** Saved lattice, band or grout width. */
   grout?: number;
   jali?: JaliAppearance;
+  /** How the lines style draws: pen, wash and ink. */
+  pen?: PenLook;
   /** If set, only colors with index < coloredUpTo receive their color; others show blueprint tone. */
   coloredUpTo?: number;
   /** Currently active color index being animated/rippled in quick succession. */
@@ -1437,11 +1441,12 @@ export function Thumbnail({
         model.pattern.pieces.forEach((p, k) => {
           const polygon = p.polygon.map((q) => move(q, d));
           if (!meets(polygon)) return;
-          const color = lines
-            ? 'none'
-            : fill
-              ? fill(k, i, j)
-              : (colors[p.type] ?? '#999999');
+          const color =
+            lines && !pen.wash
+              ? 'none'
+              : fill
+                ? fill(k, i, j)
+                : (colors[p.type] ?? '#999999');
           const list = byColor.get(color) ?? [];
           list.push(poly(polygon));
           byColor.set(color, list);
@@ -1467,6 +1472,46 @@ export function Thumbnail({
           width={widths.grout}
           appearance={appearance}
         />
+      </svg>
+    );
+  }
+  if (lines) {
+    // A drawing: paper, the wash, and the pen along the ink.
+    const d = strokes.join('');
+    const g = widths.grout;
+    return (
+      <svg className="thumbnail" viewBox={viewBox(view)} aria-hidden="true">
+        <rect
+          x={view.minX}
+          y={-view.maxY}
+          width={view.maxX - view.minX}
+          height={view.maxY - view.minY}
+          fill={PAPER}
+        />
+        {[...byColor].map(([color, ds]) => (
+          <path
+            key={color}
+            d={ds.join('')}
+            fill={color}
+            fillOpacity={washOpacity(pen.pen)}
+          />
+        ))}
+        {(pen.pen === 'single'
+          ? [{ paper: false, width: 0.8, opacity: 1, dx: 0, dy: 0 }]
+          : penStrokes(pen.pen)
+        ).map((s, k) => (
+          <path
+            key={k}
+            d={d}
+            fill="none"
+            stroke={s.paper ? PAPER : pen.ink}
+            strokeOpacity={s.opacity}
+            strokeWidth={g * s.width}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            transform={`translate(${g * s.dx} ${g * s.dy})`}
+          />
+        ))}
       </svg>
     );
   }

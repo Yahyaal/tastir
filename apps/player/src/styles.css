@@ -1524,6 +1524,60 @@ main.stage .drawing:not(.wall) {
   pointer-events: none;
 }
 
+/* The lines style's pen, wash and ink (PenControls). */
+.pen-controls {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.pen-choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.player .pen-choices button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 6px;
+  background: transparent;
+  font-size: 0.8rem;
+}
+.pen-sample {
+  display: block;
+  width: 100%;
+  max-width: 52px;
+  aspect-ratio: 1;
+  border-radius: 4px;
+}
+.pen-wash {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border-radius: 8px;
+  background: var(--lapis-deep);
+}
+.player .pen-wash button {
+  min-height: 44px;
+  padding: 6px;
+  border-color: transparent;
+  background: transparent;
+}
+.player .pen-wash button[aria-pressed='true'] {
+  color: var(--lapis-deep);
+  background: var(--saffron);
+}
+.player .pen-choices button[aria-pressed='true'] {
+  border-color: var(--saffron);
+  box-shadow: 0 0 0 1px var(--saffron);
+}
+.pen-controls .chooser .swatch-button {
+  width: 44px;
+  height: 44px;
+}
+
 /* The wall's style, as small samples to click: the learner's own pattern
    in each style. */
 .wall-styles {

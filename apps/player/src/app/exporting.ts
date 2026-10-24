@@ -1,5 +1,5 @@
 import { jaliTextureSvg } from './jaliTexture';
-import type { JaliAppearance } from '@tastir/schema';
+import type { JaliAppearance, PenLook } from '@tastir/schema';
 import type { Vec } from '@tastir/engine';
 import type { Model } from './model';
 import { patchesAt, patchPath } from './interlace';
@@ -7,6 +7,7 @@ import { banded, type WallStyle } from './Wall';
 import { strapWidths } from './drawing';
 import { DEFAULT_FINISH, type Finish } from './coloring';
 import { DEFAULT_JALI, jaliLayers, jaliLight, latticeWidth } from './jali';
+import { DEFAULT_PEN, PAPER, penStrokes, washOpacity } from './pen';
 
 const f = (n: number) => String(Math.round(n * 1e5) / 1e5);
 
@@ -14,6 +15,10 @@ export interface WallOptions {
   readonly look?: WallStyle;
   readonly grout?: number;
   readonly jali?: JaliAppearance;
+  /** How the lines style draws: pen, wash and ink. */
+  readonly pen?: PenLook;
+  /** The paper under the lines style (white to print). */
+  readonly paper?: string;
   /** How many tiles across and down. */
   readonly across?: number;
   readonly down?: number;
@@ -40,6 +45,8 @@ export function wallSvg(
     look = 'tiles',
     grout = 1,
     jali: appearance = DEFAULT_JALI,
+    pen = DEFAULT_PEN,
+    paper = PAPER,
     across = 4,
     down = 4,
     scale = 100,
@@ -98,25 +105,52 @@ export function wallSvg(
     body.push(
       `<rect class="jali-ground" x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}" fill="url(#jali-light)"/>`,
     );
-  if (look === 'lines')
+  const lines = look === 'lines';
+  if (lines)
     body.push(
-      `<rect x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}" fill="#ffffff"/>`,
+      `<rect x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}" fill="${paper}"/>`,
     );
   for (const d of jali ? [] : shifts) {
     for (const [k, p] of pieces.entries()) {
       if (!inView(p.polygon, d)) continue;
       const fill =
-        look === 'lines'
+        lines && !pen.wash
           ? 'none'
           : placed
             ? placed(k, d.i, d.j)
             : (colors[p.type] ?? '#999999');
-      const stroke = banded(look) ? 'none' : INK;
-      const width = look === 'lines' ? groutWidth * 0.8 : groutWidth;
+      const stroke = lines
+        ? pen.pen === 'single'
+          ? pen.ink
+          : 'none'
+        : banded(look)
+          ? 'none'
+          : INK;
+      const width = lines ? groutWidth * 0.8 : groutWidth;
+      const wash =
+        lines && pen.wash ? ` fill-opacity="${washOpacity(pen.pen)}"` : '';
       body.push(
-        `<polygon data-type="${p.type}" points="${p.polygon.map((q) => pt(q, d)).join(' ')}" fill="${fill}" stroke="${stroke}" stroke-width="${f(width)}" stroke-linejoin="round"/>`,
+        `<polygon data-type="${p.type}" points="${p.polygon.map((q) => pt(q, d)).join(' ')}" fill="${fill}"${wash} stroke="${stroke}" stroke-width="${f(width)}" stroke-linejoin="round"/>`,
       );
     }
+  }
+  // A double or pencil line along the ink.
+  if (lines) {
+    const path = shifts
+      .flatMap((d) =>
+        ink.flatMap((s) =>
+          inView([s.segment.a, s.segment.b], d)
+            ? [
+                `M${pt(s.segment.a, d).replace(',', ' ')}L${pt(s.segment.b, d).replace(',', ' ')}`,
+              ]
+            : [],
+        ),
+      )
+      .join('');
+    for (const s of penStrokes(pen.pen))
+      body.push(
+        `<path d="${path}" fill="none" stroke="${s.paper ? paper : pen.ink}" stroke-opacity="${s.opacity}" stroke-width="${f(groutWidth * s.width)}" stroke-linecap="round" stroke-linejoin="round" transform="translate(${f(groutWidth * s.dx)} ${f(groutWidth * s.dy)})"/>`,
+      );
   }
   if (jali) {
     const path = shifts

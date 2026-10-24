@@ -91,6 +91,17 @@ export const JaliAppearanceShape = z
     },
   );
 export type JaliAppearance = z.infer<typeof JaliAppearanceShape>;
+/**
+ * How the lines style draws: one pen line, two lines with paper between
+ * them (an outlined band), or pencil; whether the pieces take a light wash
+ * of their colours; and the ink's colour.
+ */
+export const PenLookShape = z.strictObject({
+  pen: z.enum(['single', 'double', 'pencil']),
+  wash: z.boolean(),
+  ink: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+});
+export type PenLook = z.infer<typeof PenLookShape>;
 export const SharedDesignShape = z.strictObject({
   name: z.string(),
   inked: z.array(z.string()).optional(),
@@ -98,6 +109,7 @@ export const SharedDesignShape = z.strictObject({
   look: z.enum(['tiles', 'strapwork', 'interlace', 'lines', 'jali']),
   grout: z.number().min(0).max(100),
   jali: JaliAppearanceShape.optional(),
+  pen: PenLookShape.optional(),
 });
 export const SharedShape = z
   .strictObject({

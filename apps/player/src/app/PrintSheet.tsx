@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { wallSvg } from './exporting';
 import type { Model } from './model';
+import { DEFAULT_PEN } from './pen';
 
 export type Paper = 'A4' | 'Letter';
 
@@ -30,6 +31,9 @@ export function PrintSheet({
   }, [onDone]);
   const svg = wallSvg(model, [], {
     look: 'lines',
+    // Bare black lines on white, to colour in by hand.
+    pen: { ...DEFAULT_PEN, wash: false },
+    paper: '#ffffff',
     across: 4,
     down: paper === 'A4' ? 5 : 4.6,
     scale: 60,

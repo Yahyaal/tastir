@@ -1,4 +1,4 @@
-import type { JaliAppearance } from '@tastir/schema';
+import type { JaliAppearance, PenLook } from '@tastir/schema';
 import {
   pieceAt,
   rectangularPeriod,
@@ -17,6 +17,7 @@ import { ringsOf } from './rings';
 import { boardRef as agentBoardRef } from '../agent/screenTargets';
 import { repeatTargets } from '../agent/repeatTargets';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
+import { DEFAULT_PEN, PAPER, penStrokes, washOpacity } from './pen';
 
 export type WallStyle = 'tiles' | 'strapwork' | 'interlace' | 'lines' | 'jali';
 export const WALL_STYLES: readonly WallStyle[] = [
@@ -113,6 +114,7 @@ export function Wall({
   look: style = 'tiles',
   grout = 1,
   jali: appearance,
+  pen = DEFAULT_PEN,
   finish = DEFAULT_FINISH,
   onHover,
   onPick,
@@ -135,6 +137,8 @@ export function Wall({
   /** Grout (or band) width, as a multiple of the normal width. */
   grout?: number;
   jali?: JaliAppearance;
+  /** How the lines style draws: pen, wash and ink. */
+  pen?: PenLook;
   /** The colours of the lines and bands, and whether they are carved. */
   finish?: Finish;
   /** Tells which piece type is under the pointer (the wall itself does
@@ -170,6 +174,10 @@ export function Wall({
   const tile = useMemo(() => tileFrame(model, [rm, rn]), [model, rm, rn]);
   // Grout in proportion to the tile, so every pattern gets the same look.
   const jali = style === 'jali';
+  const lines = style === 'lines';
+  // The lines style draws a double or pencil line along the ink; a single
+  // pen line is the pieces' own edges.
+  const strokes = lines ? penStrokes(pen.pen) : [];
   const groutWidth = strapWidths(
     model,
     jali ? latticeWidth(grout) : grout,
@@ -216,7 +224,7 @@ export function Wall({
               fill: fill ? fill(k, i, j) : (colors[piece.type] ?? '#999999'),
             });
           });
-        if (banded(style) || jali || finish.carved)
+        if (banded(style) || jali || finish.carved || strokes.length)
           for (const s of pattern.ink)
             lines.push([move(s.segment.a), move(s.segment.b)]);
         // The patches are already placed in tile (i, j).
@@ -228,7 +236,17 @@ export function Wall({
       }
     }
     return { pieces: out, lines, over, overIn };
-  }, [pattern, tile, fill, colors, jali, style, groutWidth, finish.carved]);
+  }, [
+    pattern,
+    tile,
+    fill,
+    colors,
+    jali,
+    style,
+    groutWidth,
+    finish.carved,
+    strokes.length,
+  ]);
   const bandPath = useMemo(
     () =>
       shifted.lines.map(([a, b]) => `M${a.x} ${a.y}L${b.x} ${b.y}`).join(''),
@@ -277,15 +295,20 @@ export function Wall({
             } as React.CSSProperties
           }
           points={p.points}
-          fill={style === 'lines' || jali ? 'none' : p.fill}
+          fill={(lines && !pen.wash) || jali ? 'none' : p.fill}
+          fillOpacity={lines && pen.wash ? washOpacity(pen.pen) : undefined}
           stroke={
-            style === 'tiles' || style === 'lines' ? finish.lines : 'none'
+            style === 'tiles'
+              ? finish.lines
+              : lines && pen.pen === 'single'
+                ? pen.ink
+                : 'none'
           }
-          strokeWidth={style === 'lines' ? groutWidth * 0.8 : groutWidth}
+          strokeWidth={lines ? groutWidth * 0.8 : groutWidth}
           strokeLinejoin="round"
         />
       )),
-    [shifted, jali, style, groutWidth, finish, delays, litPieces],
+    [shifted, jali, style, lines, pen, groutWidth, finish, delays, litPieces],
   );
 
   /** The piece type under a screen position. */
@@ -351,15 +374,33 @@ export function Wall({
           height={tile.lv}
           patternTransform={tile.matrix}
         >
-          {style === 'lines' ? (
-            <rect width={tile.lu} height={tile.lv} fill="#fff" />
+          {lines ? (
+            <rect width={tile.lu} height={tile.lv} fill={PAPER} />
           ) : null}
           {pieceNodes}
           {/* Carved: each line or band in relief, a shadow below it and a
               light edge above (light from the top left). */}
-          {finish.carved && !jali && style !== 'interlace'
+          {finish.carved && !jali && style !== 'interlace' && !strokes.length
             ? relief(bandPath, banded(style) ? groutWidth * 4 : groutWidth)
             : null}
+          {strokes.map((s, k) => (
+            <path
+              key={k}
+              className={`pen-${pen.pen}`}
+              d={bandPath}
+              fill="none"
+              stroke={s.paper ? PAPER : pen.ink}
+              strokeOpacity={s.opacity}
+              strokeWidth={groutWidth * s.width}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              transform={
+                s.dx || s.dy
+                  ? `translate(${groutWidth * s.dx} ${groutWidth * s.dy})`
+                  : undefined
+              }
+            />
+          ))}
           {banded(style)
             ? (['out', 'in'] as const).map((layer) => (
                 <g key={layer} className={`band-${layer}`}>

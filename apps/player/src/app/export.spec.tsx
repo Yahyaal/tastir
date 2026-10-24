@@ -54,6 +54,36 @@ describe.each([
   });
 });
 
+describe('the SVG of a drawing in the lines style', () => {
+  const model = loadModel(zellige);
+  const colors = pieceColors(model);
+  const svgOf = (pen: Parameters<typeof wallSvg>[2] = {}) =>
+    parse(wallSvg(model, colors, { look: 'lines', ...pen })).documentElement;
+
+  it('washes the pieces on paper, or leaves them bare', () => {
+    const washed = svgOf().querySelector('polygon');
+    expect(washed?.getAttribute('fill-opacity')).toBe('0.5');
+    const bare = svgOf({
+      pen: { pen: 'single', wash: false, ink: '#23201c' },
+      paper: '#ffffff',
+    });
+    expect(bare.querySelector('g > rect')?.getAttribute('fill')).toBe('#ffffff');
+    expect(bare.querySelector('polygon')?.getAttribute('fill')).toBe('none');
+  });
+
+  it('draws a double line as a wide ink stroke under a paper one', () => {
+    const paths = [
+      ...svgOf({
+        pen: { pen: 'double', wash: false, ink: '#2b3d6e' },
+      }).querySelectorAll('path'),
+    ];
+    expect(paths.map((p) => p.getAttribute('stroke'))).toEqual([
+      '#2b3d6e',
+      '#fbf8f1',
+    ]);
+  });
+});
+
 describe('export in the player', () => {
   function atColor() {
     render(<Play json={example} />);

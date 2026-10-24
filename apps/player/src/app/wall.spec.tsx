@@ -8,6 +8,7 @@ import { Play } from './app';
 import { pieceColors } from './coloring';
 import { loadModel } from './model';
 import { Wall } from './Wall';
+import { DEFAULT_PEN, PAPER } from './pen';
 
 type P = { x: number; y: number };
 const parse = (s: string | null): P[] =>
@@ -95,7 +96,7 @@ describe('the wall', () => {
     expect(rect?.getAttribute('fill')).toMatch(/^url\(#wall-/);
   });
 
-  it('draws tiles with grout, strapwork with bands, and lines on white', () => {
+  it('draws tiles with grout, strapwork with bands, and lines on paper', () => {
     const tiles = render(
       <Wall model={model} colors={colors} look="tiles" grout={2} />,
     );
@@ -123,12 +124,50 @@ describe('the wall', () => {
     ).toBe('none');
     straps.unmount();
 
+    // Lines wash the pieces with their colours on paper by default.
     const lines = render(<Wall model={model} colors={colors} look="lines" />);
     expect(
       lines.container.querySelector('pattern rect')?.getAttribute('fill'),
-    ).toBe('#fff');
+    ).toBe(PAPER);
+    const washed = lines.container.querySelector(
+      'polygon.wall-piece[data-type="0"]',
+    );
+    expect(washed?.getAttribute('fill')).toBe(colors[0]);
+    expect(washed?.getAttribute('fill-opacity')).toBe('0.5');
+    lines.unmount();
+
+    const bare = render(
+      <Wall
+        model={model}
+        colors={colors}
+        look="lines"
+        pen={{ ...DEFAULT_PEN, wash: false }}
+      />,
+    );
     expect(
-      lines.container.querySelector('polygon.wall-piece')?.getAttribute('fill'),
+      bare.container.querySelector('polygon.wall-piece')?.getAttribute('fill'),
+    ).toBe('none');
+    bare.unmount();
+  });
+
+  it('draws a double line as ink with paper between, along the ink', () => {
+    const { container } = render(
+      <Wall
+        model={model}
+        colors={colors}
+        look="lines"
+        pen={{ pen: 'double', wash: true, ink: '#6b4226' }}
+      />,
+    );
+    const [outer, inner] = [...container.querySelectorAll('path.pen-double')];
+    expect(outer?.getAttribute('stroke')).toBe('#6b4226');
+    expect(inner?.getAttribute('stroke')).toBe(PAPER);
+    expect(Number(outer?.getAttribute('stroke-width'))).toBeGreaterThan(
+      Number(inner?.getAttribute('stroke-width')),
+    );
+    // The pieces' own edges are not drawn: the two lines are.
+    expect(
+      container.querySelector('polygon.wall-piece')?.getAttribute('stroke'),
     ).toBe('none');
   });
 
@@ -223,14 +262,17 @@ describe('the wall controls', () => {
     expect(
       document.querySelector('svg.wall')?.classList.contains('style-lines'),
     ).toBe(true);
-    fireEvent.change(screen.getByLabelText(/Grout/), {
-      target: { value: '0' },
+    const width = () =>
+      Number(
+        document
+          .querySelector('polygon.wall-piece')
+          ?.getAttribute('stroke-width'),
+      );
+    const before = width();
+    fireEvent.change(screen.getByLabelText('Line width'), {
+      target: { value: '0.5' },
     });
-    expect(
-      document
-        .querySelector('polygon.wall-piece')
-        ?.getAttribute('stroke-width'),
-    ).toBe('0');
+    expect(width()).toBeCloseTo(before / 2, 9);
     fireEvent.click(
       within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
         name: 'Jali',

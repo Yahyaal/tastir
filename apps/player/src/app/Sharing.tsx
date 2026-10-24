@@ -133,6 +133,7 @@ export function openShared(shared: Shared, library: readonly Entry[]): Opened {
     look: d?.look ?? 'tiles',
     grout: d?.grout ?? 1,
     ...(d?.jali ? { jali: d.jali } : {}),
+    ...(d?.pen ? { pen: d.pen } : {}),
   };
   return {
     json,

@@ -124,6 +124,7 @@ function DesignLink({ design, entry }: { design: Design; entry: Entry }) {
           look={design.look}
           grout={design.grout}
           jali={design.jali}
+          pen={design.pen}
         />
       ) : (
         <div className={error ? 'thumbnail broken' : 'thumbnail waiting'} />

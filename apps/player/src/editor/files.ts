@@ -1,6 +1,7 @@
 import type { WallStyle } from '../app/Wall';
 import {
   type JaliAppearance,
+  type PenLook,
   BasedOnShape,
   DraftShape,
   SharedShape,
@@ -107,6 +108,7 @@ export interface Shared {
     readonly look: WallStyle;
     readonly grout: number;
     readonly jali?: JaliAppearance;
+    readonly pen?: PenLook;
   };
 }
 

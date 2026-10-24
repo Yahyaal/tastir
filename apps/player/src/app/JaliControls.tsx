@@ -11,7 +11,7 @@ const BACKGROUNDS = [
 ];
 
 /** Open the native picker directly, anchored away from the browser's right edge. */
-function CustomColor({
+export function CustomColor({
   label,
   color,
   selected,
