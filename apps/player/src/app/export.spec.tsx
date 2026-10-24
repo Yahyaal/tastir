@@ -67,7 +67,9 @@ describe('the SVG of a drawing in the lines style', () => {
       pen: { pen: 'single', wash: false, ink: '#23201c' },
       paper: '#ffffff',
     });
-    expect(bare.querySelector('g > rect')?.getAttribute('fill')).toBe('#ffffff');
+    expect(bare.querySelector('g > rect')?.getAttribute('fill')).toBe(
+      '#ffffff',
+    );
     expect(bare.querySelector('polygon')?.getAttribute('fill')).toBe('none');
   });
 
