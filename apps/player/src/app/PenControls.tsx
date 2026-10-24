@@ -1,5 +1,6 @@
 import type { PenLook } from '@tastir/schema';
 import { CustomColor } from './JaliControls';
+import { washFill } from './drawnTexture';
 import {
   DEFAULT_PEN,
   INKS,
@@ -7,7 +8,6 @@ import {
   PENS,
   penStrokes,
   samePen,
-  washOpacity,
   type Pen,
 } from './pen';
 
@@ -30,10 +30,7 @@ function PenSample({ look }: { look: PenLook }) {
       <path
         d={STAR}
         fill={look.wash ? '#c8792e' : 'none'}
-        fillOpacity={washOpacity(look.pen)}
-        stroke={look.pen === 'single' ? look.ink : 'none'}
-        strokeWidth={1.2}
-        strokeLinejoin="round"
+        fillOpacity={washFill(look.pen).opacity}
       />
       {strokes.map((s, k) => (
         <path

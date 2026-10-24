@@ -17,7 +17,8 @@ import { ringsOf } from './rings';
 import { boardRef as agentBoardRef } from '../agent/screenTargets';
 import { repeatTargets } from '../agent/repeatTargets';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
-import { DEFAULT_PEN, PAPER, penStrokes, washOpacity } from './pen';
+import { DEFAULT_PEN, DOUBLE, PAPER, penStrokes } from './pen';
+import { graphite, texture, washFill } from './drawnTexture';
 
 export type WallStyle = 'tiles' | 'strapwork' | 'interlace' | 'lines' | 'jali';
 export const WALL_STYLES: readonly WallStyle[] = [
@@ -162,22 +163,24 @@ export function Wall({
   const ownCamera = useCamera(start, svgRef, { active: !boardCamera });
   const camera = boardCamera ?? ownCamera;
   const { pattern } = model;
+  const lines = style === 'lines';
+  // Interlace, and the double pen, weave their bands over and under.
+  const woven = style === 'interlace' || (lines && pen.pen === 'double');
   // The weave may repeat after two tiles: the wall's tile holds whole
   // repeats of both the colouring and the weave.
   const [wm, wn] = useMemo(
-    (): readonly [number, number] =>
-      style === 'interlace' ? weaveRepeat(pattern) : [1, 1],
-    [style, pattern],
+    (): readonly [number, number] => (woven ? weaveRepeat(pattern) : [1, 1]),
+    [woven, pattern],
   );
   const rm = lcm(repeat[0], wm);
   const rn = lcm(repeat[1], wn);
   const tile = useMemo(() => tileFrame(model, [rm, rn]), [model, rm, rn]);
   // Grout in proportion to the tile, so every pattern gets the same look.
   const jali = style === 'jali';
-  const lines = style === 'lines';
-  // The lines style draws a double or pencil line along the ink; a single
-  // pen line is the pieces' own edges.
+  // The lines style draws its pen along the ink.
   const strokes = lines ? penStrokes(pen.pen) : [];
+  // The double pen's band, woven: its width with both lines.
+  const weaveWidth = lines ? DOUBLE.edge : 4;
   const groutWidth = strapWidths(
     model,
     jali ? latticeWidth(grout) : grout,
@@ -228,8 +231,8 @@ export function Wall({
           for (const s of pattern.ink)
             lines.push([move(s.segment.a), move(s.segment.b)]);
         // The patches are already placed in tile (i, j).
-        if (style === 'interlace')
-          for (const p of patchesAt(pattern, i, j, groutWidth * 4)) {
+        if (woven)
+          for (const p of patchesAt(pattern, i, j, groutWidth * weaveWidth)) {
             over.push(p.edge.map(tile.toTile));
             overIn.push(p.band.map(tile.toTile));
           }
@@ -246,7 +249,21 @@ export function Wall({
     groutWidth,
     finish.carved,
     strokes.length,
+    woven,
+    weaveWidth,
   ]);
+  // The drawn look's filters: the wash's paint or pencil, the graphite of
+  // a pencil line, and a soft blur for the double band's shadows.
+  const wash = useMemo(
+    () => texture(pen.pen, groutWidth, `${id}-wash`),
+    [pen.pen, groutWidth, id],
+  );
+  const washed = lines && pen.wash;
+  const drawnFilters = lines
+    ? wash.markup +
+      graphite(groutWidth, `${id}-graphite`) +
+      `<filter id="${id}-soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="${groutWidth * 0.35}"/></filter>`
+    : '';
   const bandPath = useMemo(
     () =>
       shifted.lines.map(([a, b]) => `M${a.x} ${a.y}L${b.x} ${b.y}`).join(''),
@@ -296,15 +313,19 @@ export function Wall({
           }
           points={p.points}
           fill={(lines && !pen.wash) || jali ? 'none' : p.fill}
-          fillOpacity={lines && pen.wash ? washOpacity(pen.pen) : undefined}
+          fillOpacity={
+            lines && pen.wash ? washFill(pen.pen).opacity : undefined
+          }
+          // Paint pools darker at the edge of each piece.
           stroke={
             style === 'tiles'
               ? finish.lines
-              : lines && pen.pen === 'single'
-                ? pen.ink
+              : lines && pen.wash && washFill(pen.pen).edge
+                ? p.fill
                 : 'none'
           }
-          strokeWidth={lines ? groutWidth * 0.8 : groutWidth}
+          strokeOpacity={lines ? washFill(pen.pen).edge : undefined}
+          strokeWidth={lines ? groutWidth * 1.6 : groutWidth}
           strokeLinejoin="round"
         />
       )),
@@ -367,6 +388,23 @@ export function Wall({
       }}
     >
       <defs>
+        {drawnFilters ? (
+          <g dangerouslySetInnerHTML={{ __html: drawnFilters }} />
+        ) : null}
+        {/* The lines style's wash has a tile of its own: its texture is
+            laid over the whole wall at once (below), since a texture inside
+            the repeating tile shows a seam where tiles meet. */}
+        {washed ? (
+          <pattern
+            id={`wash-${id}`}
+            patternUnits="userSpaceOnUse"
+            width={tile.lu}
+            height={tile.lv}
+            patternTransform={tile.matrix}
+          >
+            {pieceNodes}
+          </pattern>
+        ) : null}
         <pattern
           id={`wall-${id}`}
           patternUnits="userSpaceOnUse"
@@ -374,19 +412,35 @@ export function Wall({
           height={tile.lv}
           patternTransform={tile.matrix}
         >
-          {lines ? (
-            <rect width={tile.lu} height={tile.lv} fill={PAPER} />
-          ) : null}
-          {pieceNodes}
+          {washed ? null : pieceNodes}
           {/* Carved: each line or band in relief, a shadow below it and a
               light edge above (light from the top left). */}
           {finish.carved && !jali && style !== 'interlace' && !strokes.length
             ? relief(bandPath, banded(style) ? groutWidth * 4 : groutWidth)
             : null}
+          {/* The double band casts a soft shadow on the paper. */}
+          {woven && lines ? (
+            <path
+              className="pen-shadow"
+              d={bandPath}
+              fill="none"
+              stroke="#000"
+              strokeOpacity={0.22}
+              strokeWidth={groutWidth * DOUBLE.edge}
+              strokeLinecap="round"
+              transform={`translate(${groutWidth * 0.7} ${groutWidth * 0.9})`}
+              filter={`url(#${id}-soft)`}
+            />
+          ) : null}
           {strokes.map((s, k) => (
             <path
               key={k}
               className={`pen-${pen.pen}`}
+              filter={
+                pen.pen === 'pencil' && !s.paper
+                  ? `url(#${id}-graphite)`
+                  : undefined
+              }
               d={bandPath}
               fill="none"
               stroke={s.paper ? PAPER : pen.ink}
@@ -436,6 +490,37 @@ export function Wall({
                 />
               ))
             : null}
+          {/* The double pen woven: where its band goes over, a shadow falls
+              on the band below on both sides, then the top band is drawn
+              again, so the bands read as strips laid on each other. */}
+          {lines && woven && overPath.out ? (
+            <>
+              <path
+                className="over-shadow"
+                d={overPath.out}
+                fill="none"
+                stroke="#000"
+                strokeOpacity={0.35}
+                strokeWidth={groutWidth * (DOUBLE.edge + 1.6)}
+                strokeLinecap="butt"
+                filter={`url(#${id}-soft)`}
+              />
+              {(['out', 'in'] as const).map((layer) => (
+                <path
+                  key={layer}
+                  className={`over-${layer}`}
+                  d={overPath[layer]}
+                  fill="none"
+                  stroke={layer === 'out' ? pen.ink : PAPER}
+                  strokeWidth={
+                    groutWidth * (layer === 'out' ? DOUBLE.edge : DOUBLE.band)
+                  }
+                  strokeLinecap="butt"
+                  strokeLinejoin="round"
+                />
+              ))}
+            </>
+          ) : null}
           {jali ? (
             <JaliFramework
               appearance={appearance}
@@ -457,6 +542,33 @@ export function Wall({
           view={cover}
           appearance={appearance}
         />
+      ) : null}
+      {lines ? (
+        <rect
+          x={cover.minX}
+          y={-cover.maxY}
+          width={width(cover)}
+          height={cover.maxY - cover.minY}
+          fill={PAPER}
+        />
+      ) : null}
+      {washed ? (
+        // The wash, through a paint or pencil texture, turned for pencil
+        // so its streaks slant like shading.
+        <g
+          className="wash"
+          transform={`rotate(${wash.turn} ${(cover.minX + cover.maxX) / 2} ${-(cover.minY + cover.maxY) / 2})`}
+          filter={`url(#${wash.id})`}
+        >
+          <rect
+            x={cover.minX}
+            y={-cover.maxY}
+            width={width(cover)}
+            height={cover.maxY - cover.minY}
+            fill={`url(#wash-${id})`}
+            transform={`rotate(${-wash.turn} ${(cover.minX + cover.maxX) / 2} ${-(cover.minY + cover.maxY) / 2})`}
+          />
+        </g>
       ) : null}
       <rect
         x={cover.minX}

@@ -31,7 +31,8 @@ import { patchesAt, patchPath } from './interlace';
 import type { JaliAppearance, PenLook } from '@tastir/schema';
 import type { WallStyle } from './Wall';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
-import { DEFAULT_PEN, PAPER, penStrokes, washOpacity } from './pen';
+import { DEFAULT_PEN, PAPER, penStrokes } from './pen';
+import { washFill } from './drawnTexture';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
@@ -1493,13 +1494,10 @@ export function Thumbnail({
             key={color}
             d={ds.join('')}
             fill={color}
-            fillOpacity={washOpacity(pen.pen)}
+            fillOpacity={washFill(pen.pen).opacity}
           />
         ))}
-        {(pen.pen === 'single'
-          ? [{ paper: false, width: 0.8, opacity: 1, dx: 0, dy: 0 }]
-          : penStrokes(pen.pen)
-        ).map((s, k) => (
+        {penStrokes(pen.pen).map((s, k) => (
           <path
             key={k}
             d={d}

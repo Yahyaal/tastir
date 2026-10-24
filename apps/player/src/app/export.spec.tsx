@@ -61,8 +61,10 @@ describe('the SVG of a drawing in the lines style', () => {
     parse(wallSvg(model, colors, { look: 'lines', ...pen })).documentElement;
 
   it('washes the pieces on paper, or leaves them bare', () => {
-    const washed = svgOf().querySelector('polygon');
-    expect(washed?.getAttribute('fill-opacity')).toBe('0.5');
+    const doc = svgOf();
+    const washed = doc.querySelector('g[filter="url(#wash)"] polygon');
+    expect(washed?.getAttribute('fill-opacity')).toBe('0.82');
+    expect(doc.querySelector('filter#wash feTurbulence')).not.toBeNull();
     const bare = svgOf({
       pen: { pen: 'single', wash: false, ink: '#23201c' },
       paper: '#ffffff',
@@ -73,13 +75,19 @@ describe('the SVG of a drawing in the lines style', () => {
     expect(bare.querySelector('polygon')?.getAttribute('fill')).toBe('none');
   });
 
-  it('draws a double line as a wide ink stroke under a paper one', () => {
+  it('draws a double line as ink under paper, with a shadow, woven', () => {
     const paths = [
       ...svgOf({
         pen: { pen: 'double', wash: false, ink: '#2b3d6e' },
       }).querySelectorAll('path'),
     ];
+    // The band's shadow, the band, then at the crossings a shadow and the
+    // top band again.
     expect(paths.map((p) => p.getAttribute('stroke'))).toEqual([
+      '#000',
+      '#2b3d6e',
+      '#fbf8f1',
+      '#000',
       '#2b3d6e',
       '#fbf8f1',
     ]);

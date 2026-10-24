@@ -124,16 +124,20 @@ describe('the wall', () => {
     ).toBe('none');
     straps.unmount();
 
-    // Lines wash the pieces with their colours on paper by default.
+    // Lines wash the pieces with their colours on paper by default, in a
+    // tile of their own laid through a paint texture over the whole wall.
     const lines = render(<Wall model={model} colors={colors} look="lines" />);
     expect(
-      lines.container.querySelector('pattern rect')?.getAttribute('fill'),
+      lines.container.querySelector('svg.wall > rect')?.getAttribute('fill'),
     ).toBe(PAPER);
     const washed = lines.container.querySelector(
-      'polygon.wall-piece[data-type="0"]',
+      'pattern[id^="wash-"] polygon.wall-piece[data-type="0"]',
     );
     expect(washed?.getAttribute('fill')).toBe(colors[0]);
-    expect(washed?.getAttribute('fill-opacity')).toBe('0.5');
+    expect(washed?.getAttribute('fill-opacity')).toBe('0.82');
+    expect(
+      lines.container.querySelector('g.wash')?.getAttribute('filter'),
+    ).toMatch(/^url\(#.*-wash\)$/);
     lines.unmount();
 
     const bare = render(
@@ -150,7 +154,7 @@ describe('the wall', () => {
     bare.unmount();
   });
 
-  it('draws a double line as ink with paper between, along the ink', () => {
+  it('draws a double line as ink with paper between, woven over and under', () => {
     const { container } = render(
       <Wall
         model={model}
@@ -165,10 +169,14 @@ describe('the wall', () => {
     expect(Number(outer?.getAttribute('stroke-width'))).toBeGreaterThan(
       Number(inner?.getAttribute('stroke-width')),
     );
-    // The pieces' own edges are not drawn: the two lines are.
+    // At each crossing the top band is drawn again over a shadow.
+    expect(container.querySelector('path.over-shadow')).not.toBeNull();
     expect(
-      container.querySelector('polygon.wall-piece')?.getAttribute('stroke'),
-    ).toBe('none');
+      container.querySelector('path.over-out')?.getAttribute('stroke'),
+    ).toBe('#6b4226');
+    expect(
+      container.querySelector('path.over-in')?.getAttribute('stroke'),
+    ).toBe(PAPER);
   });
 
   it('weaves the bands for interlace: the top band drawn again at each crossing', () => {

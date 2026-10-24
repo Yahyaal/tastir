@@ -1978,6 +1978,15 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title:
+        'Lines: woven double lines, and paint and pencil colours (your feedback, 24 October)',
+      text: 'The Double pen now weaves like interlace: at each crossing one band goes over and the other under, the band below darkens in the top band’s shadow, and every band casts a soft shadow on the paper, so the strips look laid on each other. The wash no longer looks like faint digital colour: with Single and Double it is watercolour (soft blotches where the paint pooled or thinned, paper grain through it, a darker edge round each piece), and with Pencil it is coloured pencil (slanted shading strokes with white specks where the pencil skipped the paper), with a grainy graphite line. Downloads look the same. Open the wall, pick Lines, zoom in and try each pen. One cost: these textures make dragging the wall slower than the plain styles; it was smooth enough in my tests, but tell me if it lags on your machine.',
+      link: {
+        label: 'Zellige wheel, filled: the wall',
+        href: '/#/kurt-eight-fold-zellige-filled/result',
+      },
+    },
+    {
       title: 'Your own grout and band colours (24 October)',
       text: 'Until now the bands of strapwork and interlace were always ivory with dark edges, so a wall like your sketchbook star (terracotta bands) could not be made. Under the width slider there are now swatches: Band color and Edge color for strapwork and interlace, Grout color for tiles, each with a custom colour. They are part of the colouring, so Undo, Redo, saving and share links keep them, and choosing another palette keeps them. Try Strapwork with a Terracotta band.',
       link: {
