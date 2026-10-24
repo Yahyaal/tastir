@@ -1,5 +1,6 @@
 import fixtures from 'virtual:tastir-fixtures';
 import catalog from '../generated/catalog';
+import hidden from './hidden.json';
 
 /** Library metadata and previews are prepared at build time; geometry loads on demand. */
 export interface Preview {
@@ -33,6 +34,25 @@ export function entriesOf(files: Record<string, unknown>): Entry[] {
     }))
     .sort((a, b) => a.id.localeCompare(b.id));
 }
+/**
+ * Patterns the owner keeps out of the library while deciding whether they
+ * need more work or should go (`hidden.json`, written by the Hide button
+ * on the dev server). They still open from a direct link, so saved designs
+ * and share links keep working.
+ */
+export const isHidden = (id: string): boolean =>
+  (hidden as readonly string[]).includes(id);
+
+/**
+ * The patterns the library, its menus and next/previous show: all of them
+ * on the dev server (hidden ones carry a badge), else the ones not hidden.
+ */
+export const listed = (
+  entries: readonly Entry[],
+  showHidden: boolean = import.meta.env.DEV,
+): readonly Entry[] =>
+  showHidden ? entries : entries.filter((e) => !isHidden(e.id));
+
 export const LIBRARY: readonly Entry[] =
   import.meta.env.MODE === 'test'
     ? entriesOf(fixtures)

@@ -1,6 +1,11 @@
 import { execFileSync } from 'node:child_process';
 /// <reference types='vitest' />
-import { createReadStream } from 'node:fs';
+import {
+  createReadStream,
+  existsSync,
+  readFileSync,
+  writeFileSync,
+} from 'node:fs';
 import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defaultClientConditions, defineConfig } from 'vite';
@@ -120,6 +125,48 @@ export default defineConfig(({ mode }) => ({
       name: 'watch-tutorials',
       configureServer(server) {
         server.watcher.add([tutorials, packages]);
+      },
+    },
+    {
+      // The Hide button on a pattern (dev server only) keeps it out of the
+      // live site's library: it writes the pattern's id into hidden.json.
+      name: 'hidden-patterns',
+      apply: 'serve',
+      configureServer(server) {
+        const list = resolve(import.meta.dirname, 'src/app/hidden.json');
+        server.middlewares.use('/__hidden', (req, res) => {
+          if (req.method !== 'POST') {
+            res.statusCode = 405;
+            res.end('POST only');
+            return;
+          }
+          let body = '';
+          req.on('data', (chunk) => (body += chunk));
+          req.on('end', () => {
+            try {
+              const { id, hidden } = JSON.parse(body) as {
+                id: unknown;
+                hidden: unknown;
+              };
+              if (
+                typeof id !== 'string' ||
+                typeof hidden !== 'boolean' ||
+                !/^[a-z0-9-]+$/.test(id) ||
+                !existsSync(resolve(tutorials, `${id}.json`))
+              )
+                throw new Error('Not a library pattern');
+              const now = JSON.parse(readFileSync(list, 'utf8')) as string[];
+              const next = [
+                ...new Set(hidden ? [...now, id] : now.filter((x) => x !== id)),
+              ].sort();
+              writeFileSync(list, `${JSON.stringify(next, null, 2)}\n`);
+              res.end('ok');
+            } catch (e) {
+              res.statusCode = 400;
+              res.end(e instanceof Error ? e.message : 'Bad request');
+            }
+          });
+        });
       },
     },
     {

@@ -69,6 +69,7 @@ import { useModalFocus } from './useModalFocus';
 import { banded, Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { WallControls } from './WallControls';
 import { PenControls } from './PenControls';
+import { HideToggle } from './HideToggle';
 import { DEFAULT_PEN, samePen } from './pen';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
@@ -1149,6 +1150,9 @@ export function Player({
               />
               Show helper lines
             </label>
+            {import.meta.env.DEV && browsing ? (
+              <HideToggle id={address} />
+            ) : null}
           </div>
         </details>
         <ThemeSwitch />

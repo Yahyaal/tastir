@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { aboutOf, keptFilters, neighbours, titleOf } from './browsing';
-import { LIBRARY, type Entry } from './library';
+import { LIBRARY, listed, type Entry } from './library';
 import { useModalFocus } from './useModalFocus';
 import { viewAddress, type View } from './ViewSwitch';
 
@@ -9,7 +9,7 @@ import { viewAddress, type View } from './ViewSwitch';
  * named by their titles so they are not mistaken for the step buttons.
  */
 export function useNeighbours(id: string) {
-  return useMemo(() => neighbours(LIBRARY, id, keptFilters()), [id]);
+  return useMemo(() => neighbours(listed(LIBRARY), id, keptFilters()), [id]);
 }
 
 export function NeighbourLink({
@@ -123,7 +123,7 @@ function MenuPanel({
   const panel = useRef<HTMLElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   useModalFocus(panel, close, onClose, '.topbar', '.menu-button');
-  const groups = useMemo(() => byFold(LIBRARY), []);
+  const groups = useMemo(() => byFold(listed(LIBRARY)), []);
   // Open with the current pattern in sight.
   useLayoutEffect(() => {
     panel.current

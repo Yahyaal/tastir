@@ -14,7 +14,7 @@ import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { ActionIcon } from './actionIcons';
 import { workInProgress, WorkRow } from './YourWork';
 import { Thumbnail } from './drawing';
-import { type Entry } from './library';
+import { isHidden, type Entry } from './library';
 import { shownSteps } from './model';
 import { ThemeSwitch } from './theme';
 import { PROGRESS_TEXT, useModel } from './workerClient';
@@ -570,6 +570,14 @@ function CardView({
         </span>
         <h3>{title}</h3>
         {subtitle ? <p className="card-subtitle">{subtitle}</p> : null}
+        {isHidden(id) ? (
+          <span
+            className="hidden-label"
+            title="Hidden from the library on the live site; only the dev server lists it."
+          >
+            Hidden
+          </span>
+        ) : null}
         {verification?.status === 'unverified' ? (
           <span className="verification-label" title={verification.note}>
             Historical match unverified

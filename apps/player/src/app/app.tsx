@@ -3,7 +3,7 @@ import { DrawAlongPage } from '../along/DrawAlong';
 import { Editor } from '../editor/Editor';
 import { playable } from '../editor/patterns';
 import { getDesign } from './designs';
-import { LIBRARY, type Entry } from './library';
+import { LIBRARY, listed, type Entry } from './library';
 import { Library } from './Library';
 import { WorkPage } from './YourWork';
 import { Broken, MissingDesign, Play } from './Player';
@@ -138,7 +138,7 @@ function AppPage({
     () => (own && 'entry' in own ? [...library, own.entry] : library),
     [own, library],
   );
-  if (!route) return <Library entries={library} />;
+  if (!route) return <Library entries={listed(library)} />;
   if (route === 'agent')
     return import.meta.env.DEV ? null : (
       <Broken message="The local assistant is available through pnpm dev:agent." />

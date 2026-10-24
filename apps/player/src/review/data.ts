@@ -1978,6 +1978,11 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'Hidden patterns (your request, 24 October)',
+      text: 'Bou Inania twelve-fold wall and Eight-fold zellige wheel are hidden: the live site leaves them out of the library, the side menu and next/previous, but they still open from a direct link, so saved designs and shared links keep working. This dev server still lists them with a grey Hidden badge. To hide or show any pattern, open it, click the gear (View settings) and use Hide from the library or Show in the library; the change reaches the live site with the next push.',
+      link: { label: 'The library', href: '/#/' },
+    },
+    {
       title:
         'Lines: woven double lines, and paint and pencil colours (your feedback, 24 October)',
       text: 'The Double pen now weaves like interlace: at each crossing one band goes over and the other under, the band below darkens in the top band’s shadow, and every band casts a soft shadow on the paper, so the strips look laid on each other. The wash no longer looks like faint digital colour: with Single and Double it is watercolour (soft blotches where the paint pooled or thinned, paper grain through it, a darker edge round each piece), and with Pencil it is coloured pencil (slanted shading strokes with white specks where the pencil skipped the paper), with a grainy graphite line. Downloads look the same. Open the wall, pick Lines, zoom in and try each pen. One cost: these textures make dragging the wall slower than the plain styles; it was smooth enough in my tests, but tell me if it lags on your machine.',
