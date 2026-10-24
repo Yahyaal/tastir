@@ -1,5 +1,6 @@
 import {
   SquareBandsShape,
+  ColoringShape,
   JaliAppearanceShape,
   PenLookShape,
   type JaliAppearance,
@@ -65,6 +66,8 @@ export function isDesign(x: unknown): x is Design {
       ['rings', 'shape', 'place'].includes(c['method'] as string)) &&
     (c['rosettes'] === undefined ||
       (Number.isInteger(c['rosettes']) && (c['rosettes'] as number) >= 1)) &&
+    (c['finish'] === undefined ||
+      ColoringShape.shape.finish.safeParse(c['finish']).success) &&
     LOOKS.includes(d['look'] as string) &&
     typeof d['grout'] === 'number' &&
     (d['jali'] === undefined ||

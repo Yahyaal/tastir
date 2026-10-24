@@ -226,15 +226,20 @@ export const DEFAULT_FINISH: Finish = {
   carved: false,
 };
 
-/** The finish under a coloring: the original's with its own palette. */
+/** The finish under a coloring: the original's with its own palette, and
+ * over it the grout and band colours the learner chose. */
 export function finishOf(model: Model, coloring: Coloring): Finish {
   const original = model.tutorial.pattern.original;
-  if (coloring.palette !== ORIGINAL || !original) return DEFAULT_FINISH;
-  return {
-    lines: original.lines ?? DEFAULT_FINISH.lines,
-    band: original.band ?? DEFAULT_FINISH.band,
-    carved: original.carved ?? false,
-  };
+  const base =
+    coloring.palette !== ORIGINAL || !original
+      ? DEFAULT_FINISH
+      : {
+          lines: original.lines ?? DEFAULT_FINISH.lines,
+          band: original.band ?? DEFAULT_FINISH.band,
+          carved: original.carved ?? false,
+        };
+  const own = coloring.finish;
+  return own?.lines || own?.band ? { ...base, ...own } : base;
 }
 
 /**
@@ -256,6 +261,9 @@ export interface Coloring {
   readonly chosen: Readonly<Record<string, string>>;
   readonly method?: Method;
   readonly rosettes?: number;
+  /** The grout or band-edge colour (`lines`) and band colour the learner
+   * chose; else the palette's own. */
+  readonly finish?: { readonly lines?: string; readonly band?: string };
 }
 
 /** A tutorial's own coloring: its original when it has a photo's, else
@@ -300,6 +308,11 @@ export interface History {
 export type ColorAction =
   | { readonly kind: 'paint'; readonly type: string; readonly color: string }
   | { readonly kind: 'palette'; readonly palette: string }
+  | {
+      readonly kind: 'finish';
+      readonly lines?: string;
+      readonly band?: string;
+    }
   | {
       readonly kind: 'reset';
       readonly to: Coloring;
@@ -361,6 +374,14 @@ export function colorReducer(h: History, action: ColorAction): History {
         palette: action.palette,
         chosen: {},
       });
+    case 'finish': {
+      // The grout and band colours; a colour equal to none drops it.
+      const finish: { lines?: string; band?: string } = { ...h.now.finish };
+      if (action.lines !== undefined) finish.lines = action.lines;
+      if (action.band !== undefined) finish.band = action.band;
+      const { finish: _old, ...rest } = h.now;
+      return change(finish.lines || finish.band ? { ...rest, finish } : rest);
+    }
     case 'reset':
       return change(action.to);
     case 'undo': {

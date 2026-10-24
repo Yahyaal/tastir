@@ -37,6 +37,19 @@ export const ColoringShape = z.strictObject({
   chosen: z.record(z.string(), z.string()),
   method: z.enum(['rings', 'shape', 'place']).optional(),
   rosettes: z.int().min(1).max(6).optional(),
+  /** The learner's own grout or band-edge colour (lines) and band colour. */
+  finish: z
+    .strictObject({
+      lines: z
+        .string()
+        .regex(/^#[0-9a-fA-F]{6}$/)
+        .optional(),
+      band: z
+        .string()
+        .regex(/^#[0-9a-fA-F]{6}$/)
+        .optional(),
+    })
+    .optional(),
 });
 /** Read old four-material designs as the new material families. */
 const FINISHES = {

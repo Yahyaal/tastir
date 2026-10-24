@@ -168,6 +168,8 @@ function sameDesign(
     design.coloring.palette === now.coloring.palette &&
     design.coloring.method === now.coloring.method &&
     design.coloring.rosettes === now.coloring.rosettes &&
+    JSON.stringify(design.coloring.finish ?? null) ===
+      JSON.stringify(now.coloring.finish ?? null) &&
     JSON.stringify(design.coloring.squareBands) ===
       JSON.stringify(now.coloring.squareBands) &&
     sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
@@ -1370,6 +1372,10 @@ export function Player({
                   }}
                   grout={grout}
                   onGrout={setGrout}
+                  finish={finishOf(coloured, colorHistory.now)}
+                  onFinish={(change) =>
+                    colorDispatch({ kind: 'finish', ...change })
+                  }
                   sample={(look) => styleSamples?.[look]}
                 />
               ) : null}

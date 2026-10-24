@@ -1,5 +1,66 @@
 import { useId, type ReactNode } from 'react';
 import { banded, WALL_STYLES, type WallStyle } from './Wall';
+import type { Finish } from './coloring';
+import { CustomColor } from './JaliControls';
+
+type Swatch = { readonly name: string; readonly color: string };
+/** Grout, and the dark edge of a band. */
+const LINES: readonly Swatch[] = [
+  { name: 'Dark', color: '#23201c' },
+  { name: 'Sepia', color: '#6b4226' },
+  { name: 'Grey', color: '#8c8a84' },
+  { name: 'Ivory', color: '#f7f2e6' },
+];
+/** The band of strapwork and interlace. */
+const BANDS: readonly Swatch[] = [
+  { name: 'Ivory', color: '#f7f2e6' },
+  { name: 'Terracotta', color: '#c4622d' },
+  { name: 'Gold', color: '#d9a441' },
+  { name: 'Lapis', color: '#2b4c8c' },
+  { name: 'Green', color: '#2f7a55' },
+];
+
+/** One colour of the wall as swatches to click, and a custom colour. */
+function FinishColors({
+  label,
+  swatches,
+  color,
+  onChange,
+}: {
+  label: string;
+  swatches: readonly Swatch[];
+  color: string;
+  onChange: (color: string) => void;
+}) {
+  const now = color.toLowerCase();
+  return (
+    <div className="finish-colors">
+      <h3 className="jali-background-heading">{label}</h3>
+      <div className="chooser" role="group" aria-label={label}>
+        {swatches.map((p) => (
+          <button
+            key={p.color}
+            type="button"
+            className={
+              p.color === now ? 'swatch-button current' : 'swatch-button'
+            }
+            style={{ background: p.color }}
+            aria-label={`${p.name} ${label.toLowerCase()}`}
+            title={p.name}
+            aria-pressed={p.color === now}
+            onClick={() => onChange(p.color)}
+          />
+        ))}
+        <CustomColor
+          label={label}
+          color={color}
+          selected={!swatches.some((p) => p.color === now)}
+          onChange={onChange}
+        />
+      </div>
+    </div>
+  );
+}
 
 const STYLE_NAMES: Record<WallStyle, string> = {
   tiles: 'Tiles',
@@ -20,6 +81,8 @@ export function WallControls({
   grout,
   onGrout,
   sample,
+  finish,
+  onFinish,
 }: {
   style: WallStyle;
   onStyle: (style: WallStyle) => void;
@@ -27,6 +90,9 @@ export function WallControls({
   onGrout: (grout: number) => void;
   /** A small picture of the wall in a style. */
   sample: (style: WallStyle) => ReactNode;
+  /** The grout or band colours, chosen with swatches. */
+  finish?: Finish;
+  onFinish?: (change: { lines?: string; band?: string }) => void;
 }) {
   const id = useId();
   const jali = style === 'jali';
@@ -66,6 +132,30 @@ export function WallControls({
           {width === 0 ? 'none' : `${width}×`}
         </output>
       </div>
+      {finish && onFinish && style === 'tiles' ? (
+        <FinishColors
+          label="Grout color"
+          swatches={LINES}
+          color={finish.lines}
+          onChange={(lines) => onFinish({ lines })}
+        />
+      ) : null}
+      {finish && onFinish && banded(style) ? (
+        <>
+          <FinishColors
+            label="Band color"
+            swatches={BANDS}
+            color={finish.band}
+            onChange={(band) => onFinish({ band })}
+          />
+          <FinishColors
+            label="Edge color"
+            swatches={LINES}
+            color={finish.lines}
+            onChange={(lines) => onFinish({ lines })}
+          />
+        </>
+      ) : null}
       <p className="hint">
         {jali ? 'An open screen. Switch styles to see your tile colors. ' : ''}
         Drag to move along the wall, scroll to zoom.

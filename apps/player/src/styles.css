@@ -1524,6 +1524,23 @@ main.stage .drawing:not(.wall) {
   pointer-events: none;
 }
 
+/* Grout and band colours under the wall's width (WallControls). */
+.finish-colors {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+.finish-colors .chooser {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.finish-colors .chooser .swatch-button {
+  width: 36px;
+  height: 36px;
+}
+
 /* The lines style's pen, wash and ink (PenControls). */
 .pen-controls {
   display: grid;

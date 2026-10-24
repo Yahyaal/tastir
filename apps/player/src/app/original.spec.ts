@@ -2,6 +2,7 @@ import dadoJson from '@tutorials/alhambra-comares-dado.json';
 import {
   DEFAULT_FINISH,
   finishOf,
+  colorReducer,
   ORIGINAL,
   paletteNames,
   paletteOf,
@@ -52,5 +53,26 @@ describe('the original look', () => {
     expect(finishOf(dado, { palette: 'Alhambra', chosen: {} })).toBe(
       DEFAULT_FINISH,
     );
+  });
+
+  it('takes the grout and band colours the learner chose, one undo step each', () => {
+    const start = { past: [], now: tutorialColoring(dado), future: [] };
+    const band = colorReducer(start, { kind: 'finish', band: '#c4622d' });
+    expect(band.past).toHaveLength(1);
+    expect(finishOf(dado, band.now)).toEqual({
+      lines: '#d9d2c4',
+      band: '#c4622d',
+      carved: false,
+    });
+    // A new palette keeps them: they are the wall's, not the pieces'.
+    const palette = colorReducer(band, {
+      kind: 'palette',
+      palette: 'Alhambra',
+    });
+    expect(finishOf(dado, palette.now)).toEqual({
+      ...DEFAULT_FINISH,
+      band: '#c4622d',
+    });
+    expect(colorReducer(band, { kind: 'undo' }).now.finish).toBeUndefined();
   });
 });
