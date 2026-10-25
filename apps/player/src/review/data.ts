@@ -1560,6 +1560,163 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'casablanca-house-crosses',
+    title: 'Crosses and arrows of a house in Casablanca (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. The arrows of neighbouring crosses touch tip to tip, and a large piece fills the space round each corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P269C3 drawing, its corners snapped to exact values. We devised the construction. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The real panel is richly ornamented with double bands; the drawing, and so this tutorial, leaves that out. No photo of the house was checked.',
+      '6 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/casablanca-house-crosses/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/casablanca-house-crosses/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Private house, Casablanca (P269C3)',
+        url: 'https://tilingsearch.mit.edu/HTML/data164/P269C3.html',
+      },
+    ],
+  },
+  {
+    id: 'leon-tile-stars',
+    title:
+      'Stars and squares of a tile photographed by Alberto Leon (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the tile side by side. A small square sits between each four stars, touching their points, and bands with ten sides join the squares.',
+    story: [
+      'The finished design was read from Brian Wichmann’s LEON10 drawing, its corners snapped to exact values. It is the design of the Patio de los Arrayanes squares with larger stars and smaller squares, so it starts with the same steps. We devised the construction. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The place of the tile is not known, and no photo of it was checked.',
+      '5 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/leon-tile-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/leon-tile-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Tile for sale, photo by Alberto Leon (LEON10)',
+        url: 'https://tilingsearch.mit.edu/HTML/data194/LEON10.html',
+      },
+    ],
+  },
+  {
+    id: 'paccard-zellige-frets',
+    title: 'Red frets of a Moroccan zellige panel (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. Small stars and large stars with arms take turns like the squares of a chessboard. Red frets wind between them.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P201 drawing, its corners snapped to exact values. We devised the construction. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The drawing fits stars whose points reach 3/(5 + 2√2) of OA to within 0.0003 of OA; we use that value. The frets turn like a pinwheel round each small star, so the design has no mirror. No photo of the panel was checked.',
+      '8 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/paccard-zellige-frets/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/paccard-zellige-frets/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Zellige panel, Morocco (Paccard) (P201)',
+        url: 'https://tilingsearch.mit.edu/HTML/data183/P201.html',
+      },
+    ],
+  },
+  {
+    id: 'badi-palace-stars',
+    title:
+      'Interlaced stars of the El Badi Palace (Marrakesh) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and every corner, and a small square halfway between two stars.',
+    story: [
+      'The finished design was read from Brian Wichmann’s MAR1 drawing, the centre lines of its bands snapped to exact values. We devised the construction. Its stars and first steps are those of the Spanish tile mosaic; four more diagonals through Z make the small squares at A, B, C and D. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the palace was checked.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/badi-palace-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/badi-palace-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: El Badi Palace, Marrakesh (MAR1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data197/MAR1.html',
+      },
+    ],
+  },
+  {
+    id: 'chellah-mosque-stars',
+    title:
+      'Interlaced stars of the Chellah mosque (Rabat) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. Stars sit in rows and columns, and the bands between them weave over and under.',
+    story: [
+      'The finished design was read from Brian Wichmann’s C103 drawing, the centre lines of its bands snapped to exact values. We devised the construction. Its stars and first steps are those of the Spanish tile mosaic, with one more star at A and four diagonals through Z. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the mosque was checked.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/chellah-mosque-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/chellah-mosque-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Chellah mosque, Rabat (C103)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C103.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -2679,7 +2836,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Twenty-four new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Twenty-nine new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -2716,6 +2873,11 @@ export const QUESTIONS: readonly Question[] = [
       'shiraz-qavam-crosses',
       'herat-minaret-stars',
       'mashhad-gowhar-interlace',
+      'casablanca-house-crosses',
+      'leon-tile-stars',
+      'paccard-zellige-frets',
+      'badi-palace-stars',
+      'chellah-mosque-stars',
     ],
   },
 ];

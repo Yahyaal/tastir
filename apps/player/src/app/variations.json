@@ -57,5 +57,10 @@
     "id": "star-and-cross",
     "title": "Eight-fold star and cross",
     "members": ["eight-fold-star-and-cross", "mashhad-gowhar-interlace"]
+  },
+  {
+    "id": "arrayanes-squares",
+    "title": "Squares and stars",
+    "members": ["alhambra-arrayanes-squares", "leon-tile-stars"]
   }
 ]
