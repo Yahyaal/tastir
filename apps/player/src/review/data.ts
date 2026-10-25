@@ -2189,7 +2189,7 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '24 October 2026',
+  updated: '25 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
@@ -2671,11 +2671,11 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Plain steps in all 39 tutorials',
-    text: 'Every tutorial now reads one action to a numbered line, names its points by letters, picks out the points a step names on your board and inks a shape at a time. Long runs of the same action are grouped, so every board keeps its size. Try draw along on any pattern; tell me any step that is still unclear.',
+    title: 'Tiling Search 45° tilings (your request while away, 25 October)',
+    text: 'Of the 161 tilings on the list, we had 4. Seven new ones are built so far, each checked against Wichmann’s drawing: the Mexuar porch fret and corridor stars, the Alhambra Museum loops, the Shah-i-Zinda and Qaytbay octagons, the Sırçalı stars and the Topkapı pinwheel. Variations of one design now share one library card, with a Variations switch at the top of the pattern (try the Sala de los Reyes fret). The way to read Wichmann’s drawings exactly was found today: every corner lies on a grid of whole numbers and halves of √2, so the proportions come out exact. More batches follow; the full comparison is in the notes.',
     link: {
-      label: 'Draw the snowflake along',
-      href: '#/six-fold-snowflake/draw',
+      label: 'Tiling Search notes',
+      href: '#/notes/tilingsearch-45',
     },
   },
   next: [
