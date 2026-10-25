@@ -440,7 +440,7 @@ describe('the address', () => {
         ?.getAttribute('aria-current'),
     ).toBe('page');
     // A pattern with no variations has no switch.
-    go('#/eight-fold-star-and-cross');
+    go('#/six-fold-snowflake');
     expect(
       screen.queryByRole('navigation', { name: 'Variations of this pattern' }),
     ).toBeNull();
