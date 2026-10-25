@@ -1,0 +1,227 @@
+{
+  "format": 0,
+  "id": "alhambra-leones-southeast-doors",
+  "title": "Stars and diamonds of the Patio de los Leones south-east doors (Alhambra)",
+  "short": "Leones south-east doors",
+  "subtitle": "Patio de los Leones, Alhambra",
+  "fold": 4,
+  "star": 8,
+  "style": "Nasrid",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s SPA0417X drawing, its corners snapped to exact values. We devised the construction: a small star at O with the tip radius of the Leones door stars, its sides carried on, and lines at 45° through two points that follow from the circle with centre K1. The drawing gives no steps.",
+    "changes": "Wichmann draws the design turned by 45°, with the stars above each other as on the doors; it is turned here so that the tile is the square cell. His bevelled bands are drawn as single lines along their middles. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data190/SPA0417X: Alhambra, Patio de los Leones",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data190/SPA0417X.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing of the south-east doors in the corners of the Patio de los Leones (1370–76). The construction is ours."
+    },
+    {
+      "source": "Photograph SPA 0417x (Patio de los Leones)",
+      "creator": "David Wade",
+      "url": "https://patterninislamicart.com/",
+      "kind": "photo",
+      "note": "The real doors, compared with our lines laid over the photo."
+    }
+  ],
+  "given": {
+    "O": "The centre of a small eight-pointed star.",
+    "A": "The centre of a twelve-sided piece, halfway to the next small star."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The circle crosses the line from O to K1 at F. Draw a circle with centre K1 through F. It crosses the horizontal line through C at Q. Draw a circle with centre O and the same radius.",
+      "create": {
+        "F": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "ck": {"circle": {"centre": "K1", "through": "F"}},
+        "Q": {"point": {"meet": ["ck", "gy"], "pick": {"angle": 59.639}}},
+        "cs": {"circle": {"centre": "O", "radiusOf": "ck"}}
+      },
+      "highlight": ["K1"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw the line through O at 90° to the line from O to K1. The small circle with centre O crosses the four lines through O at S1 to S8.",
+      "create": {
+        "d135": {"line": {"through": "O", "perpendicularTo": "d45"}},
+        "S1": {"point": {"meet": ["cs", "h"], "pick": {"angle": 0.0}}},
+        "S2": {"point": {"meet": ["cs", "d45"], "pick": {"angle": 45.0}}},
+        "S3": {"point": {"meet": ["cs", "v"], "pick": {"angle": 90.0}}},
+        "S4": {"point": {"meet": ["cs", "d135"], "pick": {"angle": 135.0}}},
+        "S5": {"point": {"meet": ["cs", "h"], "pick": {"angle": 180.0}}},
+        "S6": {"point": {"meet": ["cs", "d45"], "pick": {"angle": 225.0}}},
+        "S7": {"point": {"meet": ["cs", "v"], "pick": {"angle": 270.0}}},
+        "S8": {"point": {"meet": ["cs", "d135"], "pick": {"angle": 315.0}}}
+      },
+      "highlight": ["cs"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw the small star at O as two squares.",
+      "highlight": ["cs"],
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a straight line through S1 and S3, S3 and S5, S5 and S7, and S7 and S1. Draw each line long, to the sides of the cell.",
+          "create": {
+            "q01": {"line": {"through": ["S1", "S3"]}},
+            "q02": {"line": {"through": ["S3", "S5"]}},
+            "q03": {"line": {"through": ["S5", "S7"]}},
+            "q04": {"line": {"through": ["S7", "S1"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through S2 and S4, S4 and S6, S6 and S8, and S8 and S2. Draw each line long, to the sides of the cell.",
+          "create": {
+            "q11": {"line": {"through": ["S2", "S4"]}},
+            "q12": {"line": {"through": ["S4", "S6"]}},
+            "q13": {"line": {"through": ["S6", "S8"]}},
+            "q14": {"line": {"through": ["S8", "S2"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "text": "Draw a vertical line through F. Draw a vertical line through Q. It crosses the side of the star through S7 and S1 at U. Draw a line through U parallel to the line from S4 to S8. It crosses the vertical line through A at W.",
+      "create": {
+        "fv": {"line": {"through": "F", "parallelTo": "v"}},
+        "qv": {"line": {"through": "Q", "parallelTo": "v"}},
+        "U": {"point": {"meet": ["qv", "q04"]}},
+        "ul": {"line": {"through": "U", "parallelTo": "d135"}},
+        "W": {"point": {"meet": ["ul", "gx"]}}
+      },
+      "highlight": ["F", "Q"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Draw a line through W parallel to the line from O to K1.",
+      "create": {"wl": {"line": {"through": "W", "parallelTo": "d45"}}},
+      "highlight": ["W"],
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Turn the lines through F, U and W round O by 90°, three times.",
+      "create": {"cp": {"repeat": {"of": ["fv", "ul", "wl"], "by": "rot4"}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the small star at O and the bands that carry its sides on. The bands turn round the diamonds and close the large stars at the corners, the bows and the pentagons.",
+    "paths": [
+      {"along": "q01", "from": "gx", "to": "q14"},
+      {"along": "q01", "from": "q11", "to": "gy"},
+      {"along": "q02", "from": "gy", "to": "q11"},
+      {"along": "q02", "from": "q12", "to": "gxw"},
+      {"along": "q03", "from": "gxw", "to": "q12"},
+      {"along": "q03", "from": "q13", "to": "gys"},
+      {"along": "q04", "from": "gys", "to": "q13"},
+      {"along": "q04", "from": "q14", "to": "gx"},
+      {"along": "q11", "from": "ul", "to": "q01"},
+      {"along": "q11", "from": "q02", "to": "ul@1"},
+      {"along": "q12", "from": "ul@1", "to": "q02"},
+      {"along": "q12", "from": "q03", "to": "ul@2"},
+      {"along": "q13", "from": "ul@2", "to": "q03"},
+      {"along": "q13", "from": "q04", "to": "ul@3"},
+      {"along": "q14", "from": "ul@3", "to": "q04"},
+      {"along": "q14", "from": "q01", "to": "ul"},
+      {"along": "fv", "from": "d135", "to": "wl"},
+      {"along": "fv", "from": "wl@1", "to": "d45"},
+      {"along": "ul", "from": "h", "to": "q11"},
+      {"along": "ul", "from": "q14", "to": "v"},
+      {"along": "wl", "from": "gys", "to": "fv@3"},
+      {"along": "wl", "from": "fv", "to": "gx"},
+      {"along": "fv@1", "from": "d45", "to": "wl@1"},
+      {"along": "fv@1", "from": "wl@2", "to": "d135"},
+      {"along": "fv@2", "from": "d135", "to": "wl@2"},
+      {"along": "fv@2", "from": "wl@3", "to": "d45"},
+      {"along": "fv@3", "from": "d45", "to": "wl@3"},
+      {"along": "fv@3", "from": "wl", "to": "d135"},
+      {"along": "ul@1", "from": "v", "to": "q12"},
+      {"along": "ul@1", "from": "q11", "to": "h"},
+      {"along": "ul@2", "from": "h", "to": "q13"},
+      {"along": "ul@2", "from": "q12", "to": "v"},
+      {"along": "ul@3", "from": "v", "to": "q14"},
+      {"along": "ul@3", "from": "q13", "to": "h"},
+      {"along": "wl@1", "from": "gx", "to": "fv"},
+      {"along": "wl@1", "from": "fv@1", "to": "gy"},
+      {"along": "wl@2", "from": "gy", "to": "fv@1"},
+      {"along": "wl@2", "from": "fv@2", "to": "gxw"},
+      {"along": "wl@3", "from": "gxw", "to": "fv@2"},
+      {"along": "wl@3", "from": "fv@3", "to": "gys"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. A large star sits at every corner of every cell, and a small star at every centre.",
+    "palette": "Alhambra",
+    "look": "strapwork",
+    "colors": {
+      "large_star": "ground",
+      "twelve": "b",
+      "small_star": "a",
+      "bow": "c",
+      "diamond": "a",
+      "pentagon": "d"
+    }
+  },
+  "expect": {
+    "pieceTypes": 6,
+    "pieces": [
+      {"name": "large_star", "vertices": 24, "area": 0.85281, "perCell": 1},
+      {"name": "twelve", "vertices": 12, "area": 0.45079, "perCell": 2},
+      {"name": "small_star", "vertices": 16, "area": 0.40202, "perCell": 1},
+      {"name": "bow", "vertices": 10, "area": 0.23045, "perCell": 4},
+      {"name": "diamond", "vertices": 4, "area": 0.05887, "perCell": 8},
+      {"name": "pentagon", "vertices": 5, "area": 0.05635, "perCell": 8}
+    ]
+  }
+}
