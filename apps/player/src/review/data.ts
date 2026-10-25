@@ -836,6 +836,84 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-mexuar-porch-fret',
+    title: 'Ceiling fret of the Mexuar porch (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Long bars and hooked frets turning round a small star, like the Sala de los Reyes fret but with no diamonds where the bands cross. A variation of that fret: the two share one card in the library.',
+    story: [
+      'Every line of Brian Wichmann’s drawing sits at a third of OA plus or minus a small offset of √2/6, so the tutorial reuses the Reyes fret’s way of dividing OA into thirds and adds one circle for the offset, in eight steps.',
+      'There is no photo of this ceiling to check against, so it is marked not yet verified. Over Wichmann’s drawing, every band centre line lies on ours (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-mexuar-porch-fret/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      { src: 'renders/alhambra-mexuar-porch-fret/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Alhambra, Mexuar/Arrayanes corridor (AL2)',
+        url: 'https://tilingsearch.mit.edu/HTML/data184/AL2.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-mexuar-corridor-stars',
+    title: 'Stars and frets of the Mexuar corridor (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Eight-pointed stars with T-shaped frets turning round them and a small square where four frets meet. A pinwheel, so it has no mirror.',
+    story: [
+      'The star is two squares, and the bands are exactly as wide as one star point; one crossing of two lines gives both sizes, in eight steps.',
+      'No photo of the corridor panel has been found yet, so it is marked not yet verified. Over Wichmann’s drawing every edge matches (picture).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-mexuar-corridor-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      { src: 'renders/alhambra-mexuar-corridor-stars/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Alhambra, Mexuar Patio corridor (P051)',
+        url: 'https://tilingsearch.mit.edu/HTML/data10/P051.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-museum-loops',
+    title: 'Interlaced loops of the Alhambra Museum (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Notched square loops woven together, with an eight-pointed star in each loop. The same design is on the Chellah minaret in Rabat (CM014), which can become a variation.',
+    story: [
+      'Every line is at √2/4 or 1 − √2/4 from the centre, or on a diagonal through a half; the √2/4 comes from one circle crossing a diagonal, in seven steps.',
+      'Wichmann colours the two sets of loops differently; the tutorial draws them as one band, which the colouring can still tell apart. No photo yet, so it is marked not yet verified.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-museum-loops/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      { src: 'renders/alhambra-museum-loops/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Alhambra Museum (RE3559)',
+        url: 'https://tilingsearch.mit.edu/HTML/data183/RE3559.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
