@@ -37,5 +37,5 @@ Do not run the whole `pnpm test` or the browser suite; the orchestrator runs tho
 | Batch | Tilings | Why together | State |
 |---|---|---|---|
 | 1 | AL2, P051 (Mexuar corridor frets); also judge ALH1 and RE3559 | Chiral T-shaped frets of the same family as the Sala de los Reyes fret (PG365, `alhambra-reyes-fret`) | started |
-| 2 | F254L, W2, P17, R9, BON36 | Small star, octagon and cross designs, quick beginner tutorials | waiting |
+| 2 | F254L, W2, P17, R9, BON36 | Small star, octagon and cross designs, quick beginner tutorials; the pilot for snapping vertices to the a + b·√2/2 grid | started |
 | 3 | A233, AL1, F219 | Alhambra eight-pointed stars ringed by bands, near the Comares bath and Barca stars | waiting |
