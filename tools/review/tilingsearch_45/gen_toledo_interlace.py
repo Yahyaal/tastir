@@ -57,6 +57,13 @@ def drawing(pieces):
 def main():
     pieces, out = sys.argv[1], sys.argv[2]
     build()
+    # The vertical through F is a helper line here (the Leones doors ink it).
+    cm.steps[5]['textWithoutHelpers'] = (
+        'The same star sits at each corner of the cell. The circle with centre K1 crosses the vertical line '
+        'through A at P. It crosses the horizontal line through C at Q. Draw a straight line through P and Q.')
+    cm.steps[6]['textWithoutHelpers'] = (
+        'Turn the line through P and Q round O by 90°, three times. '
+        'The four lines are sides of the stars at K1, K2, K3 and K4.')
     segs = cm.network(drawing(pieces))
     paths = cm.along_ink(segs)
     step('Join K1, K2, K3 and K4 to mark the tile that repeats.', 'fade')

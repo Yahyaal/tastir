@@ -155,7 +155,7 @@
     },
     {
       "id": 9,
-      "text": "Turn the lines through E, P and Q, through M, and through V and W round O by 90°, three times.",
+      "text": "Turn the lines of the last three steps round O by 90°, three times. Leave out the line through A and C.",
       "create": {"cp": {"repeat": {"of": ["ev", "pq", "mv", "vw"], "by": "rot4"}}},
       "highlight": ["ev", "pq", "mv", "vw"],
       "animate": "ruler"

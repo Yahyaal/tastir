@@ -56,13 +56,13 @@ def main():
                      'Seville. The construction is ours.'}],
         'given': {'O': 'The centre of an eight-pointed star.', 'A': 'Halfway from O to the next star on the horizontal line.'},
         'steps': cm.steps,
-        'ink': {'text': 'Ink the large star at O with its sides carried on to their crossings, and the bands that carry '
+        'ink': {'text': 'Ink the large star at O with its sides carried on to their crossings. Ink the bands that carry '
                         'the stars’ sides on. They close the small stars at the corners, the long hexagons, the arrows '
                         'and the triangles.',
                 'paths': paths},
         'pattern': {'cell': 'tile',
                     'text': 'Put copies of the square cell side by side. A large star sits at every centre and a small '
-                            'one at every corner, and a long hexagon joins each two large stars.',
+                            'one at every corner. A long hexagon joins each two large stars.',
                     'palette': 'Alhambra', 'look': 'interlace', 'colors': {}},
         'expect': {'pieceTypes': 1, 'pieces': [{'name': 'x', 'vertices': 3, 'area': 1, 'perCell': 1}]},
     }

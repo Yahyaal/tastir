@@ -74,11 +74,11 @@ def main():
         'given': {'O': 'The centre of an eight-pointed star.', 'A': 'Halfway from O to the next star on the horizontal line.'},
         'steps': cm.steps,
         'ink': {'text': 'Ink the star at O and the lines that carry its sides on. They close eight arrows round the '
-                        'star at O, four round the star at each corner, the kites and the white crosses.',
+                        'star at O and four round the star at each corner. They also close the kites and the crosses.',
                 'paths': paths},
         'pattern': {'cell': 'tile',
-                    'text': 'Put copies of the square cell side by side. A star sits at every centre and every corner: '
-                            'eight arrows point at the one at the centre and four at the ones at the corners.',
+                    'text': 'Put copies of the square cell side by side. A star sits at every centre and every corner. '
+                            'Eight arrows point at each star at a centre, and four at each star at a corner.',
                     'palette': 'Alhambra', 'colors': {}},
         'expect': {'pieceTypes': 1, 'pieces': [{'name': 'x', 'vertices': 3, 'area': 1, 'perCell': 1}]},
     }

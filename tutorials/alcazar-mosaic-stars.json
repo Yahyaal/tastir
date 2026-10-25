@@ -119,7 +119,7 @@
     },
     {
       "id": 8,
-      "text": "Draw a straight line through A and C. Draw circles with centre A, one with the radius of the small circle and one with the radius of the circle NM. The small one crosses line AC at U1 and U2. The other crosses the horizontal line at W, between O and A. Draw the lines through U1 and U2 at 90° to line AC. Draw a vertical line through W.",
+      "text": "Draw a straight line through A and C. Draw a circle with centre A and the radius of the small circle. Draw a circle with centre A and the radius of the circle NM. The small one crosses line AC at U1 and U2. The other crosses the horizontal line at W, between O and A. Draw the lines through U1 and U2 at 90° to line AC. Draw a vertical line through W.",
       "create": {
         "ac": {"line": {"through": ["A", "C"]}},
         "cat": {"circle": {"centre": "A", "radiusOf": "ct"}},
@@ -147,7 +147,7 @@
     },
     {
       "id": 10,
-      "text": "Turn the line through X and Y and the lines through U1, U2, W and E round O by 90°, three times.",
+      "text": "Turn the lines through X and Y, U1, U2, W and E round O by 90°, three times.",
       "create": {"ap": {"repeat": {"of": ["xy", "a1", "a2", "a3", "k1"], "by": "rot4"}}},
       "highlight": ["xy", "a1", "a2", "a3", "k1"],
       "animate": "ruler"
@@ -270,7 +270,7 @@
   },
   "pattern": {
     "cell": "tile",
-    "text": "Put copies of the square cell side by side. A large star sits at every centre, a small star at every corner and a cross between each two large stars.",
+    "text": "Put copies of the square cell side by side. A large star sits at every centre and a small star at every corner. A cross sits between each two large stars.",
     "palette": "Alhambra",
     "look": "interlace",
     "colors": {

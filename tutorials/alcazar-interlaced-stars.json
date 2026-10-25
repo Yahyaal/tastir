@@ -139,7 +139,7 @@
     }
   ],
   "ink": {
-    "text": "Ink the large star at O with its sides carried on to their crossings, and the bands that carry the stars’ sides on. They close the small stars at the corners, the long hexagons, the arrows and the triangles.",
+    "text": "Ink the large star at O with its sides carried on to their crossings. Ink the bands that carry the stars’ sides on. They close the small stars at the corners, the long hexagons, the arrows and the triangles.",
     "paths": [
       {"along": "q01", "from": "gx", "to": "h"},
       {"along": "q01", "from": "v", "to": "gy"},
@@ -177,7 +177,7 @@
   },
   "pattern": {
     "cell": "tile",
-    "text": "Put copies of the square cell side by side. A large star sits at every centre and a small one at every corner, and a long hexagon joins each two large stars.",
+    "text": "Put copies of the square cell side by side. A large star sits at every centre and a small one at every corner. A long hexagon joins each two large stars.",
     "palette": "Alhambra",
     "look": "interlace",
     "colors": {"large_star": "a", "hexagon": "c", "small_star": "b", "arrow": "d", "triangle": "ground"}

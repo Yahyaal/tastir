@@ -84,7 +84,7 @@ def build():
     g.meet('W', 's3h', 'q04', (2 * R, R))
     g.line_through('vw', 'V', 'W')
 
-    step('Turn the lines through E, P and Q, through M, and through V and W round O by 90°, three times.',
+    step('Turn the lines of the last three steps round O by 90°, three times. Leave out the line through A and C.',
          'ruler', ['ev', 'pq', 'mv', 'vw'])
     g.repeat('cp', ['ev', 'pq', 'mv', 'vw'], 'rot4')
 

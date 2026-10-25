@@ -90,8 +90,8 @@ def build():
          'They make the large star at O and the square ring round it.', 'ruler', ['o1', 'o2', 'o3', 'o4'])
     g.repeat('op', ['o1', 'o2', 'o3', 'o4'], 'rot4')
 
-    step('Draw a straight line through A and C. Draw circles with centre A, one with the radius of the small '
-         'circle and one with the radius of the circle NM. The small one crosses line AC at U1 and U2. '
+    step('Draw a straight line through A and C. Draw a circle with centre A and the radius of the small circle. '
+         'Draw a circle with centre A and the radius of the circle NM. The small one crosses line AC at U1 and U2. '
          'The other crosses the horizontal line at W, between O and A. '
          'Draw the lines through U1 and U2 at 90° to line AC. Draw a vertical line through W.', 'compass', ['A'])
     g.line_through('ac', 'A', 'C')
@@ -110,7 +110,7 @@ def build():
     g.meet('E', 'ckt', 'd45', (1 - T * H, 1 - T * H))
     g.line_perp('k1', 'E', 'd45')
 
-    step('Turn the line through X and Y and the lines through U1, U2, W and E round O by 90°, three times.',
+    step('Turn the lines through X and Y, U1, U2, W and E round O by 90°, three times.',
          'ruler', ['xy', 'a1', 'a2', 'a3', 'k1'])
     g.repeat('ap', ['xy', 'a1', 'a2', 'a3', 'k1'], 'rot4')
 
@@ -149,8 +149,8 @@ def main():
                         'the corners, the crosses between the large stars and the pieces round them.',
                 'paths': paths},
         'pattern': {'cell': 'tile',
-                    'text': 'Put copies of the square cell side by side. A large star sits at every centre, a small '
-                            'star at every corner and a cross between each two large stars.',
+                    'text': 'Put copies of the square cell side by side. A large star sits at every centre and a small '
+                            'star at every corner. A cross sits between each two large stars.',
                     'palette': 'Alhambra', 'look': 'interlace', 'colors': {}},
         'expect': {'pieceTypes': 1, 'pieces': [{'name': 'x', 'vertices': 3, 'area': 1, 'perCell': 1}]},
     }
