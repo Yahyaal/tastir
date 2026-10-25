@@ -1,0 +1,161 @@
+{
+  "format": 0,
+  "id": "mashhad-gowhar-interlace",
+  "title": "Interlaced star and cross of the Gowhar Shad mosque, Mashhad",
+  "short": "Gowhar Shad interlace",
+  "subtitle": "Mosque of Gowhar Shad, Mashhad",
+  "fold": 4,
+  "star": 8,
+  "style": "Timurid",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s CM066B drawing, the centre lines of its bands snapped to exact values. They are the lines of the eight-fold star and cross, with the flat square’s sides carried on to the sides of the tile, so the construction is that one. The drawing gives no steps.",
+    "changes": "Wichmann draws the design turned by 45°; it is turned here so that the tile is the square round the circle. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the mosque was checked.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data15/CM066B: Mosque of Gowhar, Mashhad",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data15/CM066B.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He cites A. U. Pope’s photo 269 for the mosque of Gowhar Shad, Mashhad (1418), and lists the same design from Balkh, the minaret of Jam, Cairo, Gubbio, Agra, Samarkand, Lahore, Seville and Aleppo. The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of the drawing.",
+    "A": "Any point to the right of O. The distance OA is the radius, and the unit for every length."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a horizontal straight line through O and A. Draw a vertical line through O. The two lines cross the circle at E, N, W and S. These letters stand for east, north, west and south.",
+      "create": {
+        "h": {"line": {"through": ["O", "A"]}},
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "E": {"point": {"meet": ["c", "h"], "pick": {"angle": 0}}},
+        "N": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "W": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "S": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw the line through O that halves the angle at O between E and N. Draw the line through O that halves the angle at O between N and W. These lines cross the circle at NE, NW, SW and SE. The circle is now cut into eight equal parts.",
+      "create": {
+        "d1": {"line": {"through": "O", "bisects": ["E", "O", "N"]}},
+        "d2": {"line": {"through": "O", "bisects": ["N", "O", "W"]}},
+        "NE": {"point": {"meet": ["c", "d1"], "pick": {"angle": 45}}},
+        "NW": {"point": {"meet": ["c", "d2"], "pick": {"angle": 135}}},
+        "SW": {"point": {"meet": ["c", "d1"], "pick": {"angle": 225}}},
+        "SE": {"point": {"meet": ["c", "d2"], "pick": {"angle": 315}}}
+      },
+      "highlight": ["h", "v"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Join E, N, W and S with straight lines. This square stands on its corner.",
+      "create": {"dynamic": {"polygon": ["E", "N", "W", "S"]}},
+      "highlight": ["E", "N", "W", "S"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Join NE, NW, SW and SE with straight lines. This square sits flat. The two squares cross at eight points.",
+      "create": {
+        "static": {"polygon": ["NE", "NW", "SW", "SE"]},
+        "k": {"points": {"meet": ["dynamic", "static"], "pick": {"all": "byAngle"}}}
+      },
+      "highlight": ["NE", "NW", "SW", "SE"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw a straight line through NE and NW, NW and SW, SW and SE, and SE and NE. Draw each line long. They carry the sides of the flat square on.",
+      "create": {
+        "fN": {"line": {"through": ["NE", "NW"]}},
+        "fW": {"line": {"through": ["NW", "SW"]}},
+        "fS": {"line": {"through": ["SW", "SE"]}},
+        "fE": {"line": {"through": ["SE", "NE"]}}
+      },
+      "highlight": ["NE", "NW", "SW", "SE"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Draw a vertical line through E. Draw a vertical line through W. Draw a horizontal line through N. Draw a horizontal line through S. The four lines make a square that just touches the circle. Join its four corners to mark the tile that repeats.",
+      "create": {
+        "tE": {"line": {"through": "E", "perpendicularTo": "h"}},
+        "tW": {"line": {"through": "W", "perpendicularTo": "h"}},
+        "tN": {"line": {"through": "N", "perpendicularTo": "v"}},
+        "tS": {"line": {"through": "S", "perpendicularTo": "v"}},
+        "c1": {"point": {"meet": ["tE", "tN"]}},
+        "c2": {"point": {"meet": ["tN", "tW"]}},
+        "c3": {"point": {"meet": ["tW", "tS"]}},
+        "c4": {"point": {"meet": ["tS", "tE"]}},
+        "cell": {"polygon": ["c1", "c2", "c3", "c4"]}
+      },
+      "highlight": ["E", "N", "W", "S"],
+      "animate": "ruler"
+    }
+  ],
+  "ink": {
+    "text": "Ink the outline of the two squares, turning at each of the eight points where they cross. Then ink the flat square’s sides on from each corner to the sides of the tile. They cut each cross into a square and four pentagons.",
+    "paths": [
+      {
+        "closed": true,
+        "through": [
+          "E",
+          "k.1",
+          "NE",
+          "k.2",
+          "N",
+          "k.3",
+          "NW",
+          "k.4",
+          "W",
+          "k.5",
+          "SW",
+          "k.6",
+          "S",
+          "k.7",
+          "SE",
+          "k.8"
+        ]
+      },
+      {"along": "fN", "from": "NE", "to": "tE"},
+      {"along": "fN", "from": "NW", "to": "tW"},
+      {"along": "fW", "from": "NW", "to": "tN"},
+      {"along": "fW", "from": "SW", "to": "tS"},
+      {"along": "fS", "from": "SW", "to": "tW"},
+      {"along": "fS", "from": "SE", "to": "tE"},
+      {"along": "fE", "from": "SE", "to": "tS"},
+      {"along": "fE", "from": "NE", "to": "tN"}
+    ]
+  },
+  "pattern": {
+    "cell": "cell",
+    "text": "Put copies of the tile side by side. Neighbouring stars touch at their points. The lines carried on from the stars weave over and under each other.",
+    "palette": "Timurid tile",
+    "look": "interlace",
+    "colors": {"star": "a", "square": "c", "pentagon": "b"}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 2.34315, "perCell": 1},
+      {"name": "square", "vertices": 4, "area": 0.34315, "perCell": 1},
+      {"name": "pentagon", "vertices": 5, "area": 0.32843, "perCell": 4}
+    ]
+  }
+}

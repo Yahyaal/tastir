@@ -1,0 +1,164 @@
+{
+  "format": 0,
+  "id": "shiraz-qavam-crosses",
+  "title": "Crosses of the Qavam Hosseiniyeh, Shiraz",
+  "short": "Qavam crosses",
+  "subtitle": "Qavam Hosseiniyeh, Shiraz",
+  "fold": 4,
+  "style": "Persian",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P47 drawing, its corners snapped to exact values. We devised the construction: one length, the radius of the circle round K1 through F, gives the point and the shoulder of the cross, and the cross’s lines carried on give the rest. The drawing gives no steps.",
+    "changes": "Wichmann draws the design turned by 45°; it is turned here so that the tile is the square cell. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the wall was checked.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data180/P47: Shiraz, Qavam Hosseiniyeh",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data180/P47.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from Mahmood Maher al-Naqsh, Design and execution of drawing in Iranian tilework, Islamic period (Reza Abbasi Museum, 1983), volume 4, page 47, where it is shown as tile mosaic. The construction is ours."
+    }
+  ],
+  "given": {"O": "The centre of a cross.", "A": "Halfway from O to the next cross on the horizontal line."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The circle crosses the line from O to K1 at F. Draw a circle with centre K1 through F. Draw a circle with centre A and the same radius. It crosses the horizontal line at T. Draw a circle with centre O and the same radius. It crosses the horizontal line at G.",
+      "create": {
+        "F": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "ck": {"circle": {"centre": "K1", "through": "F"}},
+        "ca": {"circle": {"centre": "A", "radiusOf": "ck"}},
+        "T": {"point": {"meet": ["ca", "h"], "pick": {"nearest": "O"}}},
+        "co": {"circle": {"centre": "O", "radiusOf": "ck"}},
+        "G": {"point": {"meet": ["co", "h"], "pick": {"angle": 0.0}}}
+      },
+      "highlight": ["K1"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a vertical line through G. Draw a line through T at 90° to the line from O to K1. The two lines cross at S. Draw a horizontal line through S. Draw a line through T parallel to the line from O to K1.",
+      "create": {
+        "gv": {"line": {"through": "G", "parallelTo": "v"}},
+        "tp": {"line": {"through": "T", "perpendicularTo": "d45"}},
+        "S": {"point": {"meet": ["gv", "tp"]}},
+        "sh": {"line": {"through": "S", "parallelTo": "h"}},
+        "td": {"line": {"through": "T", "parallelTo": "d45"}}
+      },
+      "highlight": ["G", "T"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a line through S parallel to the line from O to K1. It crosses the vertical line through A at V. Draw a horizontal line through V. Draw a line through V at 90° to the line from O to K1.",
+      "create": {
+        "sd": {"line": {"through": "S", "parallelTo": "d45"}},
+        "V": {"point": {"meet": ["sd", "gx"]}},
+        "vh": {"line": {"through": "V", "parallelTo": "h"}},
+        "vp": {"line": {"through": "V", "perpendicularTo": "d45"}}
+      },
+      "highlight": ["S"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Turn the lines through T, S and V round O by 90°, three times.",
+      "create": {"rp": {"repeat": {"of": ["tp", "sh", "td", "sd", "vh", "vp"], "by": "rot4"}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the cross at O and the lines that carry its sides on. They close the long pieces, the corner diamonds and the white pieces between them.",
+    "paths": [
+      {"along": "tp", "from": "sh@2", "to": "gv"},
+      {"along": "tp", "from": "sh@3", "to": "vh"},
+      {"along": "sh", "from": "tp@1", "to": "sh@1"},
+      {"along": "sh", "from": "d45", "to": "gv"},
+      {"along": "td", "from": "sh@1", "to": "sh@3"},
+      {"along": "td", "from": "gv", "to": "sh"},
+      {"along": "sd", "from": "gys", "to": "vh@2"},
+      {"along": "sd", "from": "vh@3", "to": "gx"},
+      {"along": "vh", "from": "sd@1", "to": "tp"},
+      {"along": "vh", "from": "tp@1", "to": "sd@2"},
+      {"along": "vp", "from": "gx", "to": "gy"},
+      {"along": "tp@1", "from": "vh", "to": "sh@1"},
+      {"along": "tp@1", "from": "sh", "to": "sh@2"},
+      {"along": "tp@2", "from": "sh", "to": "sh@2"},
+      {"along": "tp@2", "from": "sd", "to": "sh@3"},
+      {"along": "sh@1", "from": "sd", "to": "d45"},
+      {"along": "sh@1", "from": "sh", "to": "tp@1"},
+      {"along": "sh@2", "from": "gv", "to": "sh@3"},
+      {"along": "sh@2", "from": "d45", "to": "tp@2"},
+      {"along": "sh@3", "from": "tp", "to": "d45"},
+      {"along": "sh@3", "from": "sh@2", "to": "td"},
+      {"along": "sd@1", "from": "gx", "to": "vh@3"},
+      {"along": "sd@1", "from": "vh", "to": "gy"},
+      {"along": "sd@2", "from": "gy", "to": "vh"},
+      {"along": "sd@2", "from": "vh@1", "to": "gxw"},
+      {"along": "sd@3", "from": "gxw", "to": "vh@1"},
+      {"along": "sd@3", "from": "vh@2", "to": "gys"},
+      {"along": "vh@1", "from": "sd@2", "to": "tp@1"},
+      {"along": "vh@1", "from": "sh", "to": "sd@3"},
+      {"along": "vh@2", "from": "sd@3", "to": "tp@2"},
+      {"along": "vh@2", "from": "td", "to": "sd"},
+      {"along": "vh@3", "from": "sd", "to": "sh"},
+      {"along": "vh@3", "from": "tp", "to": "sd@1"},
+      {"along": "vp@1", "from": "gy", "to": "gxw"},
+      {"along": "vp@2", "from": "gxw", "to": "gys"},
+      {"along": "vp@3", "from": "gys", "to": "gx"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. A cross sits at every centre and a diamond at every corner.",
+    "palette": "Timurid tile",
+    "colors": {"long_piece": "a", "cross": "a", "white_piece": "ground", "diamond": "b"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "long_piece", "vertices": 12, "area": 0.67619, "perCell": 2},
+      {"name": "cross", "vertices": 16, "area": 0.56854, "perCell": 1},
+      {"name": "white_piece", "vertices": 11, "area": 0.49033, "perCell": 4},
+      {"name": "diamond", "vertices": 4, "area": 0.11775, "perCell": 1}
+    ]
+  }
+}
