@@ -1,4 +1,4 @@
-import type { Entry } from './library';
+import { holds, type Entry } from './library';
 
 /** The library's filters: words to look for, a tradition, a level and a
  * fold, each optional. */
@@ -129,7 +129,8 @@ export function aboutOf(json: unknown): {
   };
 }
 
-/** The entries the library shows under these filters, in its order. */
+/** The entries the library shows under these filters, in its order. A
+ * family's card is shown when any of its variations matches. */
 export function filtered(
   entries: readonly Entry[],
   { query, style, level, fold }: LibraryFilters,
@@ -137,7 +138,7 @@ export function filtered(
   const words = plain(query ?? '')
     .split(/\s+/)
     .filter(Boolean);
-  return entries.filter((e) => {
+  const matches = (e: Entry) => {
     const about = aboutOf(e.preview ?? e.json);
     const text = words.length ? searchText(e) : '';
     return (
@@ -146,7 +147,8 @@ export function filtered(
       (!level || about.level === level) &&
       (!fold || about.fold === fold)
     );
-  });
+  };
+  return entries.filter((e) => [e, ...(e.variations ?? [])].some(matches));
 }
 
 /** Lower case without accents, so “fes” finds “Fès” and “salon” “Salón”. */
@@ -182,8 +184,9 @@ export function titleOf(entry: Entry): string {
 /**
  * The patterns before and after this one, in the order the library shows
  * them under the learner's filters. A pattern the filters hide (opened from
- * a link) walks the whole library instead. There is nothing before the
- * first or after the last.
+ * a link) walks the whole library instead. A family is one place in it,
+ * whichever variation is open. There is nothing before the first or after
+ * the last.
  */
 export function neighbours(
   entries: readonly Entry[],
@@ -191,8 +194,8 @@ export function neighbours(
   filters: LibraryFilters,
 ): { previous?: Entry; next?: Entry } {
   const shown = filtered(entries, filters);
-  const list = shown.some((e) => e.id === id) ? shown : entries;
-  const k = list.findIndex((e) => e.id === id);
+  const list = shown.some((e) => holds(e, id)) ? shown : entries;
+  const k = list.findIndex((e) => holds(e, id));
   if (k < 0) return {};
   return {
     ...(list[k - 1] ? { previous: list[k - 1] } : {}),

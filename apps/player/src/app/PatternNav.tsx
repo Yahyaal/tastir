@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { aboutOf, keptFilters, neighbours, titleOf } from './browsing';
-import { LIBRARY, listed, type Entry } from './library';
+import { grouped, holds, LIBRARY, listed, type Entry } from './library';
 import { useModalFocus } from './useModalFocus';
 import { viewAddress, type View } from './ViewSwitch';
 
@@ -9,7 +9,10 @@ import { viewAddress, type View } from './ViewSwitch';
  * named by their titles so they are not mistaken for the step buttons.
  */
 export function useNeighbours(id: string) {
-  return useMemo(() => neighbours(listed(LIBRARY), id, keptFilters()), [id]);
+  return useMemo(
+    () => neighbours(grouped(listed(LIBRARY)), id, keptFilters()),
+    [id],
+  );
 }
 
 export function NeighbourLink({
@@ -78,6 +81,7 @@ function byFold(entries: readonly Entry[]) {
 /**
  * A "Patterns" button that opens every pattern in a panel from the left,
  * so the learner can change pattern without going back to the library.
+ * Like the library, it lists a family once (Variations switches in it).
  * Escape, a click outside or choosing a pattern closes it.
  */
 export function PatternMenu({ id, view }: { id: string; view: View }) {
@@ -123,7 +127,7 @@ function MenuPanel({
   const panel = useRef<HTMLElement>(null);
   const close = useRef<HTMLButtonElement>(null);
   useModalFocus(panel, close, onClose, '.topbar', '.menu-button');
-  const groups = useMemo(() => byFold(listed(LIBRARY)), []);
+  const groups = useMemo(() => byFold(grouped(listed(LIBRARY))), []);
   // Open with the current pattern in sight.
   useLayoutEffect(() => {
     panel.current
@@ -160,7 +164,7 @@ function MenuPanel({
                 <li key={e.id}>
                   <a
                     href={viewAddress(e.id, view)}
-                    aria-current={e.id === id ? 'page' : undefined}
+                    aria-current={holds(e, id) ? 'page' : undefined}
                     onClick={onClose}
                   >
                     {e.preview ? (

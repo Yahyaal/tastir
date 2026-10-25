@@ -40,7 +40,8 @@
     "src/**/*.jsx",
     "src/**/*.ts",
     "src/**/*.tsx",
-    "src/app/hidden.json"
+    "src/app/hidden.json",
+    "src/app/variations.json"
   ],
   "references": [
     {

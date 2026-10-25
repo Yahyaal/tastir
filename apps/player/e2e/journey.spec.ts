@@ -9,6 +9,19 @@ const hidden: string[] = JSON.parse(
 const tutorialFiles = readdirSync(resolve('tutorials')).filter(
   (f) => f.endsWith('.json') && !hidden.includes(f.replace(/\.json$/, '')),
 );
+// A family of variations (variations.json) is one card.
+const families: { members: string[] }[] = JSON.parse(
+  readFileSync(resolve('apps/player/src/app/variations.json'), 'utf8'),
+);
+const listedIds = tutorialFiles.map((f) => f.replace(/\.json$/, ''));
+const cardCount =
+  listedIds.length -
+  families.reduce(
+    (folded, f) =>
+      folded +
+      Math.max(0, f.members.filter((m) => listedIds.includes(m)).length - 1),
+    0,
+  );
 const star = 'eight-fold-star-and-cross';
 const route = (id: string) => `/#/${id}`;
 const payload = (data: unknown) =>
@@ -22,9 +35,9 @@ test('library previews need no construction downloads except the animated hero',
     if (/\/assets\/.*\.js/.test(r.url())) tutorials.push(r.url());
   });
   await page.goto('/');
-  await expect(page.locator('.cards > li')).toHaveCount(tutorialFiles.length);
+  await expect(page.locator('.cards > li')).toHaveCount(cardCount);
   const previews = page.locator('.cards img.thumbnail');
-  await expect(previews).toHaveCount(tutorialFiles.length);
+  await expect(previews).toHaveCount(cardCount);
   await expect(previews.first()).toBeVisible();
   await expect
     .poll(() =>
@@ -464,7 +477,7 @@ test('bad links recover and never leave a blank page', async ({ page }) => {
     page.getByRole('heading', { name: 'This pattern cannot be shown' }),
   ).toBeVisible();
   await page.getByRole('link', { name: /All patterns/ }).click();
-  await expect(page.locator('.cards > li')).toHaveCount(tutorialFiles.length);
+  await expect(page.locator('.cards > li')).toHaveCount(cardCount);
   await page.goto('/#/%E0%A4%A');
   await expect(
     page.getByRole('heading', { name: 'This pattern cannot be shown' }),

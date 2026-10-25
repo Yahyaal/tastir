@@ -1,6 +1,7 @@
 import fixtures from 'virtual:tastir-fixtures';
 import catalog from '../generated/catalog';
 import hidden from './hidden.json';
+import variations from './variations.json';
 
 /** Library metadata and previews are prepared at build time; geometry loads on demand. */
 export interface Preview {
@@ -22,6 +23,9 @@ export interface Entry {
   /** Raw data for user patterns/tests, or an async loader for library tutorials. */
   readonly json: unknown;
   readonly preview?: Preview;
+  /** The other variations of this pattern the library lists, when the
+   * entry stands for its family (`grouped`). */
+  readonly variations?: readonly Entry[];
 }
 const loaders = import.meta.glob<unknown>('../../../../tutorials/*.json', {
   import: 'default',
@@ -52,6 +56,62 @@ export const listed = (
   showHidden: boolean = import.meta.env.DEV,
 ): readonly Entry[] =>
   showHidden ? entries : entries.filter((e) => !isHidden(e.id));
+
+/**
+ * Tutorials that are variations of one design (the same pattern on another
+ * tile, shifted or filled) form a family in `variations.json`, its main
+ * tutorial first. The library shows a family as one card, and the player
+ * switches between its members. A tutorial in no family stands alone.
+ */
+export interface Family {
+  readonly id: string;
+  readonly title: string;
+  readonly members: readonly string[];
+}
+export const FAMILIES: readonly Family[] = variations;
+
+export const familyOf = (id: string): Family | undefined =>
+  FAMILIES.find((f) => f.members.includes(id));
+
+/** Whether this entry is the tutorial `id` or stands for its family. */
+export const holds = (entry: Entry, id: string): boolean =>
+  entry.id === id || !!entry.variations?.some((v) => v.id === id);
+
+/**
+ * The entries with each family folded into one: its first member not
+ * hidden (the first, when all are), in that member's place, carrying the
+ * family's other listed members as `variations`.
+ */
+export function grouped(entries: readonly Entry[]): readonly Entry[] {
+  const byId = new Map(entries.map((e) => [e.id, e]));
+  return entries.flatMap((e) => {
+    const family = familyOf(e.id);
+    if (!family) return [e];
+    const members = family.members.flatMap((id) => byId.get(id) ?? []);
+    const main = members.find((m) => !isHidden(m.id)) ?? members[0];
+    if (main !== e) return [];
+    const others = members.filter((m) => m !== e);
+    return [others.length ? { ...e, variations: others } : e];
+  });
+}
+
+/**
+ * The family of the tutorial `id` as the player offers it: its members
+ * the library lists, and `id` itself even when it is hidden (opened from
+ * a link). Empty when it has no other variation.
+ */
+export function variationsOf(
+  id: string,
+  entries: readonly Entry[] = LIBRARY,
+): readonly Entry[] {
+  const family = familyOf(id);
+  if (!family) return [];
+  const shown = listed(entries);
+  const members = family.members.flatMap(
+    (m) => (m === id ? entries : shown).find((e) => e.id === m) ?? [],
+  );
+  return members.length > 1 ? members : [];
+}
 
 export const LIBRARY: readonly Entry[] =
   import.meta.env.MODE === 'test'

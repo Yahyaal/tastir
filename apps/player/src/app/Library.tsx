@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { listPatterns } from '../editor/patterns';
 import { NewPattern } from '../editor/PatternShelf';
 import { HOSTED } from '../studio/client';
@@ -14,7 +14,7 @@ import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { ActionIcon } from './actionIcons';
 import { workInProgress, WorkRow } from './YourWork';
 import { Thumbnail } from './drawing';
-import { isHidden, type Entry } from './library';
+import { grouped, isHidden, type Entry } from './library';
 import { shownSteps } from './model';
 import { ThemeSwitch } from './theme';
 import { PROGRESS_TEXT, useModel } from './workerClient';
@@ -104,8 +104,10 @@ const TRADITIONS: Record<
   },
 };
 
-/** Every tutorial, with a picture of the finished pattern. */
+/** Every tutorial, with a picture of the finished pattern: one card for
+ * each family of variations. */
 export function Library({ entries }: { entries: readonly Entry[] }) {
+  const families = useMemo(() => grouped(entries), [entries]);
   const [style, setStyle] = useState(() => keptFilters().style);
   const [level, setLevel] = useState(() => keptFilters().level);
   const [fold, setFold] = useState(() => keptFilters().fold);
@@ -139,7 +141,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   const folds = [
     ...new Set(entries.flatMap((e) => aboutOf(e.preview ?? e.json).fold ?? [])),
   ].sort((a, b) => a - b);
-  const shown = filtered(entries, { query, style, level, fold });
+  const shown = filtered(families, { query, style, level, fold });
   // A card's level, symmetry or tradition shows every pattern like it,
   // with the list brought into view under its filters.
   const filterBy = (facet: Facet) => {
@@ -199,7 +201,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             }}
           >
             <span>Library</span>
-            <span className="nav-badge">{entries.length}</span>
+            <span className="nav-badge">{families.length}</span>
           </a>
           <a className="nav-item jump-link upcoming-nav-link" href="#/upcoming">
             <span>Upcoming patterns</span>
@@ -272,9 +274,9 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           <h2 id="collection">The patterns</h2>
           <div className="collection-meta">
             <p>
-              {shown.length === entries.length
-                ? `${entries.length} patterns, many checked against photos of the real walls.`
-                : `${shown.length} of ${entries.length} patterns.`}
+              {shown.length === families.length
+                ? `${families.length} patterns, many checked against photos of the real walls.`
+                : `${shown.length} of ${families.length} patterns.`}
             </p>
             <a className="upcoming-teaser-link" href="#/upcoming">
               Upcoming masterworks roadmap (24) →
@@ -493,17 +495,28 @@ function Card({
   entry: Entry;
   onFilter: (facet: Facet) => void;
 }) {
+  // A family's card counts the main tutorial with its variations.
+  const variations = entry.variations?.length
+    ? entry.variations.length + 1
+    : undefined;
   return entry.preview ? (
-    <CardView id={entry.id} preview={entry.preview} onFilter={onFilter} />
+    <CardView
+      id={entry.id}
+      preview={entry.preview}
+      variations={variations}
+      onFilter={onFilter}
+    />
   ) : (
-    <LiveCard entry={entry} onFilter={onFilter} />
+    <LiveCard entry={entry} variations={variations} onFilter={onFilter} />
   );
 }
 function LiveCard({
   entry: { id, json },
+  variations,
   onFilter,
 }: {
   entry: Entry;
+  variations?: number;
   onFilter: (facet: Facet) => void;
 }) {
   const { model, error, progress } = useModel(json);
@@ -513,6 +526,7 @@ function LiveCard({
       model={model}
       error={error}
       progress={progress}
+      variations={variations}
       onFilter={onFilter}
     />
   );
@@ -523,6 +537,7 @@ function CardView({
   model,
   error,
   progress,
+  variations,
   onFilter,
 }: {
   id: string;
@@ -530,6 +545,8 @@ function CardView({
   model?: import('./model').Model;
   error?: string;
   progress?: import('./workerClient').Progress;
+  /** How many variations the card's family has, when it stands for one. */
+  variations?: number;
   onFilter: (facet: Facet) => void;
 }) {
   const t = model?.tutorial;
@@ -570,6 +587,14 @@ function CardView({
         </span>
         <h3>{title}</h3>
         {subtitle ? <p className="card-subtitle">{subtitle}</p> : null}
+        {variations ? (
+          <span
+            className="variations-label"
+            title="The same design on another tile, shifted or filled: switch between them in the pattern."
+          >
+            {variations} variations
+          </span>
+        ) : null}
         {isHidden(id) ? (
           <span
             className="hidden-label"
