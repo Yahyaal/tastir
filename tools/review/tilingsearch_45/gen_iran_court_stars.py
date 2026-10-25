@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Builds two Persian courtyard designs drawn by Brian Wichmann in Tiling
-Search, which share every construction line and differ only in the ink:
+Search, which share the star at O and the diamond lines through P:
 
   qom-atabaki-stars        data16/F77  Atabaki Court, Qom
   mashhad-courtyard-stars  data16/F82  Mashhad, the new courtyard
@@ -18,7 +18,8 @@ next stars at (±2, 0) and (0, ±2). Every line is one of:
     at 90° to OK1 (a side of the next stars and of the diamonds round K1 to K4).
 
 Units: OA = 1, A halfway to the next star on the horizontal line; the tile is
-the square cell. F77 and F82 have the same lines and differ in the ink.
+the square cell. F82 needs only steps 1 to 4 and the lines through P; F77
+adds the lines through R and U.
 
 Usage: gen_iran_court_stars.py <F77-pieces.json> <F82-pieces.json> tutorials/
        pnpm review qom-atabaki-stars ; pnpm review mashhad-courtyard-stars
