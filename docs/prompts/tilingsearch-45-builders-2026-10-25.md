@@ -41,8 +41,8 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 1 | AL2, P051 (Mexuar corridor frets); also judge ALH1 and RE3559 | Chiral T-shaped frets of the same family as the Sala de los Reyes fret (PG365, `alhambra-reyes-fret`) | done, merged d899f14: AL2, P051, RE3559 built; ALH1 is a separate plain-grid design (tenths of OA), not built |
 | 2 | F254L, W2, P17, R9, BON36 | Small star, octagon and cross designs, quick beginner tutorials; the pilot for snapping vertices to the a + b·√2/2 grid | done, merged c870c6e: F254L, W2, BON36, R9 built; P17 = eight-fold-star-and-cross |
 | 3 | A233, AL1, F219 | Alhambra eight-pointed stars ringed by bands, near the Comares bath and Barca stars | done, merged 4f9ffcd: all three built; none is a variation of the bath or Barca stars |
-| 4 | SPA0417X, SPA0508X, P077, CM014 | More Alhambra panels (Patio de los Leones, Patio de los Arrayanes), each with a Wade photo in `wade-paired.json`; CM014 (Chellah minaret) is the same design as RE3559, `alhambra-museum-loops`, so build it as that tutorial's variant | waiting |
-| 5 | H424, SPA2215, RAY1, RAY12, DS4 | Spain outside the Alhambra: Seville Alcázar, Toledo tiles, a tile-mosaic panel; small eight-pointed star designs | waiting |
+| 4 | SPA0417X, SPA0508X, P077, CM014 | More Alhambra panels (Patio de los Leones, Patio de los Arrayanes), each with a Wade photo in `wade-paired.json`; CM014 (Chellah minaret) is the same design as RE3559, `alhambra-museum-loops`, so build it as that tutorial's variant | started |
+| 5 | H424, SPA2215, RAY1, RAY12, DS4 | Spain outside the Alhambra: Seville Alcázar, Toledo tiles, a tile-mosaic panel; small eight-pointed star designs | started |
 | 6 | F77, F82, CM066B, IRA0501, IRA1330, PG223, P47 | Small Iranian and Central Asian designs, each under 120 polygons | waiting |
 | 7 | P269C3, P201, MAR1, LEON10, C103 | Small Moroccan designs | waiting |
 | 8 | GREEN1, HAMA, KHC, P35, CM036, F34, CM006A, ROMAN11 | Small designs from Turkey, Syria, Egypt, books and Roman mosaics | waiting |
