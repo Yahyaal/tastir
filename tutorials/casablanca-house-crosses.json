@@ -1,0 +1,140 @@
+{
+  "format": 0,
+  "id": "casablanca-house-crosses",
+  "title": "Crosses and arrows of a house in Casablanca",
+  "short": "Casablanca crosses",
+  "subtitle": "Private house, Casablanca",
+  "fold": 4,
+  "star": 8,
+  "style": "Moroccan",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P269C3 drawing, its corners snapped to exact values. We devised the construction. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The real panel is richly ornamented with double bands; the drawing, and so this tutorial, leaves that out. No photo of the house was checked.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data164/P269C3: Private home, Casablanca",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data164/P269C3.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing, after J.-M. Castéra’s Arabesques: Decorative Art in Morocco (1999), page 269, figure 3c (a private house in Casablanca, shown without its ornament). He also cites Robert Field’s Geometric Patterns from Islamic Art and Architecture (1998), page 23, for the Kubadabad Palace in Turkey. The construction is ours."
+    }
+  ],
+  "given": {"O": "The centre of a cross.", "A": "Halfway from O to the next cross on the horizontal line."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "Draw a straight line through A and C. Turn it round O by 90°, three times. The four lines make a square with corners A, B, C and D.",
+      "create": {"ac": {"line": {"through": ["A", "C"]}}, "acp": {"repeat": {"of": ["ac"], "by": "rot4"}}},
+      "highlight": ["A", "C"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "The circle crosses the line from O to K1 at E. Draw a vertical line through E. It crosses the line through A and C at F. Draw a horizontal line through F. Turn it round O by 90°, three times. The four lines make a small square round O.",
+      "create": {
+        "E": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "ev": {"line": {"through": "E", "parallelTo": "v"}},
+        "F": {"point": {"meet": ["ev", "ac"]}},
+        "fh": {"line": {"through": "F", "parallelTo": "h"}},
+        "fp": {"repeat": {"of": ["fh"], "by": "rot4"}}
+      },
+      "highlight": ["c", "d45"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw the line through O that halves the angle AOE. It crosses the right side of the small square at V. Draw the line through V parallel to the line from O to K1. Turn it round O by 90°, three times.",
+      "create": {
+        "b22": {"line": {"through": "O", "bisects": ["A", "O", "E"]}},
+        "V": {"point": {"meet": ["b22", "fh@3"]}},
+        "vd": {"line": {"through": "V", "parallelTo": "d45"}},
+        "vp": {"repeat": {"of": ["vd"], "by": "rot4"}}
+      },
+      "highlight": ["A", "E"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the cross at O, with its four diagonal arms. Ink the four arrows that point from it to A, B, C and D. What is left round each corner of the cell is one large piece.",
+    "paths": [
+      {"along": "ac", "from": "h", "to": "ev"},
+      {"along": "ac", "from": "fh@3", "to": "v"},
+      {"along": "ac@1", "from": "v", "to": "fh@1"},
+      {"along": "ac@1", "from": "fh", "to": "h"},
+      {"along": "ac@2", "from": "h", "to": "fh@2"},
+      {"along": "ac@2", "from": "fh@1", "to": "v"},
+      {"along": "ac@3", "from": "v", "to": "fh@3"},
+      {"along": "ac@3", "from": "ev", "to": "h"},
+      {"along": "fh", "from": "ac@1", "to": "vd@1"},
+      {"along": "fh", "from": "vd@2", "to": "ac"},
+      {"along": "fh@1", "from": "ac@2", "to": "b22"},
+      {"along": "fh@1", "from": "vd@3", "to": "ac@1"},
+      {"along": "fh@2", "from": "ac@3", "to": "vd@3"},
+      {"along": "fh@2", "from": "vd", "to": "ac@2"},
+      {"along": "fh@3", "from": "ac", "to": "b22"},
+      {"along": "fh@3", "from": "vd@1", "to": "ac@3"},
+      {"along": "vd", "from": "fh@2", "to": "v"},
+      {"along": "vd", "from": "h", "to": "fh@3"},
+      {"along": "vd@1", "from": "fh@3", "to": "h"},
+      {"along": "vd@1", "from": "v", "to": "fh"},
+      {"along": "vd@2", "from": "fh", "to": "v"},
+      {"along": "vd@2", "from": "h", "to": "fh@1"},
+      {"along": "vd@3", "from": "fh@1", "to": "h"},
+      {"along": "vd@3", "from": "v", "to": "fh@2"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. The arrows of neighbouring crosses touch tip to tip, and a large piece fills the space round each corner.",
+    "palette": "Alhambra",
+    "look": "tiles",
+    "colors": {"ground": "ground", "arrow": "a", "cross": "b"}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "ground", "vertices": 16, "area": 2.34315, "perCell": 1},
+      {"name": "arrow", "vertices": 8, "area": 0.34315, "perCell": 4},
+      {"name": "cross", "vertices": 16, "area": 0.28427, "perCell": 1}
+    ]
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "format": 0,
+  "id": "leon-tile-stars",
+  "title": "Stars and squares of a tile photographed by Alberto Leon",
+  "short": "Leon tile stars",
+  "subtitle": "Tile for sale, photo by Alberto Leon",
+  "fold": 4,
+  "star": 8,
+  "style": "Moroccan",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s LEON10 drawing, its corners snapped to exact values. It is the design of the Patio de los Arrayanes squares with larger stars and smaller squares, so it starts with the same steps. We devised the construction. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The place of the tile is not known, and no photo of it was checked.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data194/LEON10: Tile for sale",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data194/LEON10.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing of a tile for sale, from a photo sent to him by Alberto Leon. He links it with the Patio de los Arrayanes in the Alhambra. The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of a star.",
+    "A": "The unit length. The next stars are two units from O on the lines at 45° through O."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw the square tile.",
+      "parts": [
+        {
+          "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D.",
+          "create": {
+            "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+            "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+            "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+            "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}}
+          },
+          "highlight": ["c", "h"],
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through A. Draw a vertical line through B. Draw a horizontal line through C. Draw a horizontal line through D. These four lines make a square with corners E, F, G and H.",
+          "textWithoutHelpers": "Draw a vertical line through A. Draw a vertical line through B. Draw a horizontal line through C. These lines cross at E and F.",
+          "create": {
+            "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+            "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+            "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+            "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+            "E": {"point": {"meet": ["gx", "gy"]}},
+            "F": {"point": {"meet": ["gxw", "gy"]}},
+            "G": {"point": {"meet": ["gxw", "gys"]}},
+            "H": {"point": {"meet": ["gx", "gys"]}}
+          },
+          "highlight": ["A", "B", "C", "D"],
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through O and E. Draw a straight line through O and F. Draw a circle with centre O through E. This circle crosses the horizontal line at J and L, and the vertical line at K and N.",
+          "create": {
+            "d45": {"line": {"through": ["O", "E"]}},
+            "d135": {"line": {"through": ["O", "F"]}},
+            "cd": {"circle": {"centre": "O", "through": "E"}},
+            "J": {"point": {"meet": ["cd", "h"], "pick": {"angle": 0.0}}},
+            "K": {"point": {"meet": ["cd", "v"], "pick": {"angle": 90.0}}},
+            "L": {"point": {"meet": ["cd", "h"], "pick": {"angle": 180.0}}},
+            "N": {"point": {"meet": ["cd", "v"], "pick": {"angle": 270.0}}}
+          },
+          "highlight": ["E", "F"],
+          "animate": "ruler",
+          "textWithoutHelpers": "Draw a circle with centre O through E. This circle crosses the horizontal line at J and L, and the vertical line at K and N."
+        },
+        {
+          "text": "Join J, K, L and N with straight lines. This square is the tile that repeats.",
+          "textWithoutHelpers": "Draw a straight line through J and K. It is one side of the square tile JKLN.",
+          "create": {
+            "w1": {"line": {"through": ["J", "K"]}},
+            "w2": {"line": {"through": ["K", "L"]}},
+            "w3": {"line": {"through": ["L", "N"]}},
+            "w4": {"line": {"through": ["N", "J"]}}
+          },
+          "highlight": ["J", "K", "L", "N"],
+          "animate": "ruler"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre A through J. It crosses the horizontal line at P. Draw a vertical line through P. Turn it round O by 90°, three times. The four lines make a square round O.",
+      "create": {
+        "ca": {"circle": {"centre": "A", "through": "J"}},
+        "P": {"point": {"meet": ["ca", "h"], "pick": {"nearest": "O"}}},
+        "pv": {"line": {"through": "P", "parallelTo": "v"}},
+        "pp": {"repeat": {"of": ["pv"], "by": "rot4"}}
+      },
+      "highlight": ["A", "J"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The vertical line through P crosses the line from O to E at Q. Draw a circle with centre O through Q. It crosses the horizontal line at R. Draw the line through R parallel to the line through J and K. Turn it round O by 90°, three times. These lines and the square round O make the star at O.",
+      "create": {
+        "Q": {"point": {"meet": ["pv", "d45"]}},
+        "cq": {"circle": {"centre": "O", "through": "Q"}},
+        "R": {"point": {"meet": ["cq", "h"], "pick": {"angle": 0.0}}},
+        "rd": {"line": {"through": "R", "parallelTo": "w1"}},
+        "rp": {"repeat": {"of": ["rd"], "by": "rot4"}}
+      },
+      "highlight": ["P", "d45"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "The square JKLN is the tile that repeats.",
+      "create": {"tile": {"polygon": ["J", "K", "L", "N"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O. Ink the sides of its outer square, carried on to the sides of the tile. These lines close the small squares at J, K, L and N and the bands between them.",
+    "paths": [
+      {"along": "pv", "from": "d135", "to": "rd@3"},
+      {"along": "pv", "from": "rd", "to": "d45"},
+      {"along": "pv@1", "from": "d45", "to": "rd"},
+      {"along": "pv@1", "from": "rd@1", "to": "d135"},
+      {"along": "pv@2", "from": "d135", "to": "rd@1"},
+      {"along": "pv@2", "from": "rd@2", "to": "d45"},
+      {"along": "pv@3", "from": "d45", "to": "rd@2"},
+      {"along": "pv@3", "from": "rd@3", "to": "d135"},
+      {"along": "rd", "from": "w4", "to": "pv"},
+      {"along": "rd", "from": "pv@1", "to": "w2"},
+      {"along": "rd@1", "from": "w1", "to": "pv@1"},
+      {"along": "rd@1", "from": "pv@2", "to": "w3"},
+      {"along": "rd@2", "from": "w2", "to": "pv@2"},
+      {"along": "rd@2", "from": "pv@3", "to": "w4"},
+      {"along": "rd@3", "from": "w3", "to": "pv@3"},
+      {"along": "rd@3", "from": "pv", "to": "w1"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the tile side by side. A small square sits between each four stars, touching their points, and bands with ten sides join the squares.",
+    "palette": "Alhambra",
+    "look": "tiles",
+    "colors": {"star": "b", "band": "ground", "square": "a"}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 1.60808, "perCell": 1},
+      {"name": "band", "vertices": 10, "area": 0.85281, "perCell": 2},
+      {"name": "square", "vertices": 4, "area": 0.68629, "perCell": 1}
+    ]
+  }
+}
