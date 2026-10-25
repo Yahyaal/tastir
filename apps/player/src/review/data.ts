@@ -1115,6 +1115,295 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-leones-southeast-doors',
+    title:
+      'Stars and diamonds of the Patio de los Leones south-east doors (Alhambra) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A large star sits at every corner of every cell, and a small star at every centre.',
+    story: [
+      'The finished design was read from Brian Wichmann’s SPA0417X drawing, its corners snapped to exact values. We devised the construction: a small star at O with the tip radius of the Leones door stars, its sides carried on, and lines at 45° through two points that follow from the circle with centre K1. The drawing gives no steps.',
+      'Wichmann draws the design turned by 45°, with the stars above each other as on the doors; it is turned here so that the tile is the square cell. His bevelled bands are drawn as single lines along their middles. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-leones-southeast-doors/photo-overlay.png',
+        caption:
+          'David Wade’s photo with the tutorial’s lines in red (private, not shipped).',
+      },
+      {
+        src: 'renders/alhambra-leones-southeast-doors/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-leones-southeast-doors/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Patio de los Leones, Alhambra (SPA0417X)',
+        url: 'https://tilingsearch.mit.edu/HTML/data190/SPA0417X.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-leones-gallery-stars',
+    title:
+      'Stars of the Patio de los Leones south gallery (Alhambra) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A small four-pointed star sits at every corner, ringed by four stars.',
+    story: [
+      'The finished design was read from Brian Wichmann’s SPA0508X drawing, its corners snapped to exact values. We devised the construction: every line is a side of an eight-pointed star of tip radius √2 − 1, at O or on the sides of the cell, carried on. The drawing gives no steps.',
+      'Wichmann made the repeat from a single motif of the ceiling panel, so the wall is his and ours, not the building’s. His bevelled bands are drawn as single lines along their middles. The compass steps, their order and the named points are ours.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-leones-gallery-stars/photo-overlay.png',
+        caption:
+          'David Wade’s photo with the tutorial’s lines in red (private, not shipped).',
+      },
+      {
+        src: 'renders/alhambra-leones-gallery-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-leones-gallery-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Patio de los Leones, Alhambra (SPA0508X)',
+        url: 'https://tilingsearch.mit.edu/HTML/data190/SPA0508X.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-arrayanes-portico-doors',
+    title:
+      'Stars and octagons of the Patio de los Arrayanes doors (Alhambra) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the cell side by side. The stars make rows, and each row is the mirror image of the next.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P077 drawing, its corners snapped to exact values. We devised the construction: the star at O has the tip radius of the Leones door stars, its sides are carried on, and the rows of stars are √2 apart, the radius of the circle through the corners of the square. The drawing gives no steps.',
+      'His bevelled bands are drawn as single lines along their middles. No photo of the doors was checked: the copy of Wade’s SPA 2816 we hold shows a carved stucco panel instead. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-arrayanes-portico-doors/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-arrayanes-portico-doors/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Patio de los Arrayanes, Alhambra (P077)',
+        url: 'https://tilingsearch.mit.edu/HTML/data159/P077.html',
+      },
+    ],
+  },
+  {
+    id: 'chellah-minaret-loops',
+    title:
+      'Interlaced loops of the Chellah minaret (Rabat) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. Each loop weaves over and under its four neighbours.',
+    story: [
+      'The finished design was read from Brian Wichmann’s CM014 drawing. It is the design of the Alhambra Museum loops, built the same way: the straight bands pass where a circle of radius one half, or its mirror image, crosses the diagonal. The drawing gives no steps.',
+      'The compass operations, step order and named crossings are our reconstruction. Wichmann’s colours follow Castéra’s plate of the minaret; no photo of the minaret was available to check the lines.',
+      '7 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/chellah-minaret-loops/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/chellah-minaret-loops/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Chellah mosque minaret, Rabat (CM014)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/CM014.html',
+      },
+    ],
+  },
+  {
+    id: 'alcazar-interlaced-stars',
+    title: 'Interlaced stars of the Alcázar of Seville (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A large star sits at every centre and a small one at every corner. A long hexagon joins each two large stars.',
+    story: [
+      'The finished design was read from Brian Wichmann’s SPA2215 drawing, its corners snapped to exact values. Its lines are those of the Patio de los Leones doors: a star at O and one at each corner of the cell, both the same size, every side carried on. We reused that construction; the drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the real panel was checked.',
+      '8 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alcazar-interlaced-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alcazar-interlaced-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Alcázar, Seville (SPA2215)',
+        url: 'https://tilingsearch.mit.edu/HTML/data173/SPA2215.html',
+      },
+    ],
+  },
+  {
+    id: 'toledo-tile-interlace',
+    title: 'Interlaced stars of a Toledo tile (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A large star sits at every centre and a smaller one at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s RAY12 drawing, its corners snapped to exact values. We devised the construction: the star of the Patio de los Leones doors at O and at each corner of the cell, a square through R and the diamond through A, B, C and D. The drawing gives no steps.',
+      'Wichmann draws the design turned by 45°; it is turned back here so that the tile is the square cell. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the tile was checked.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/toledo-tile-interlace/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/toledo-tile-interlace/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Toledo tile, V&A (RAY12)',
+        url: 'https://tilingsearch.mit.edu/HTML/data183/RAY12.html',
+      },
+    ],
+  },
+  {
+    id: 'toledo-tile-stars',
+    title: 'Stars and arrows of a Toledo tile (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and every corner. Eight arrows point at each star at a centre, and four at each star at a corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s RAY1 drawing, its corners snapped to exact values. We devised the construction, the same as for the other Toledo tile with four more diagonals. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the tile was checked.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/toledo-tile-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/toledo-tile-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Toledo tile, V&A (RAY1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data184/RAY1.html',
+      },
+    ],
+  },
+  {
+    id: 'spanish-mosaic-stars',
+    title:
+      'Stars of a Spanish tile mosaic (David Collection) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s DS4 drawing, its corners snapped to exact values. We devised the construction: a star at O and one at each corner of the cell, both the same size, the square through M and four diagonals through V and W. The drawing gives no steps.',
+      'Wichmann draws the design turned by 45°; it is turned back here so that the tile is the square cell. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the panel was checked.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/spanish-mosaic-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/spanish-mosaic-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Tile mosaic panel, Spain (DS4)',
+        url: 'https://tilingsearch.mit.edu/HTML/data184/DS4.html',
+      },
+    ],
+  },
+  {
+    id: 'alcazar-mosaic-stars',
+    title: 'Tile mosaic stars of the Alcázar of Seville (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A large star sits at every centre and a small star at every corner. A cross sits between each two large stars.',
+    story: [
+      'The finished design was read from Brian Wichmann’s H424 drawing, its corners snapped to exact values. We devised the construction: every line lies at one of two distances, t and 3t, from O, from the middle of a side of the cell or from a corner. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the real mosaic was checked.',
+      '11 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alcazar-mosaic-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alcazar-mosaic-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Alcázar, Seville (H424)',
+        url: 'https://tilingsearch.mit.edu/HTML/data9/H424.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -2234,7 +2523,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Ten new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Nineteen new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -2257,6 +2546,15 @@ export const QUESTIONS: readonly Question[] = [
       'alhambra-leones-door-stars',
       'alhambra-comares-soffit-stars',
       'alhambra-comares-throne-dado',
+      'alhambra-leones-southeast-doors',
+      'alhambra-leones-gallery-stars',
+      'alhambra-arrayanes-portico-doors',
+      'chellah-minaret-loops',
+      'alcazar-interlaced-stars',
+      'toledo-tile-interlace',
+      'toledo-tile-stars',
+      'spanish-mosaic-stars',
+      'alcazar-mosaic-stars',
     ],
   },
 ];

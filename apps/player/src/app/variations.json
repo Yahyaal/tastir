@@ -32,5 +32,15 @@
     "id": "touching-octagons",
     "title": "Octagons that touch",
     "members": ["shah-i-zinda-octagons", "qaytbay-floor-octagons"]
+  },
+  {
+    "id": "leones-door-stars",
+    "title": "Stars and arrows of the Leones doors",
+    "members": ["alhambra-leones-door-stars", "alcazar-interlaced-stars"]
+  },
+  {
+    "id": "interlaced-loops",
+    "title": "Interlaced notched loops",
+    "members": ["alhambra-museum-loops", "chellah-minaret-loops"]
   }
 ]
