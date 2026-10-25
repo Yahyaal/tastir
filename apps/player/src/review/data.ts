@@ -851,12 +851,16 @@ export const PATTERNS: readonly Pattern[] = [
         src: 'renders/alhambra-mexuar-porch-fret/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
-      { src: 'renders/alhambra-mexuar-porch-fret/wall.png', caption: 'Our wall.' },
+      {
+        src: 'renders/alhambra-mexuar-porch-fret/wall.png',
+        caption: 'Our wall.',
+      },
     ],
     asks: [],
     sources: [
       {
-        label: 'Brian Wichmann, Tiling Search: Alhambra, Mexuar/Arrayanes corridor (AL2)',
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Mexuar/Arrayanes corridor (AL2)',
         url: 'https://tilingsearch.mit.edu/HTML/data184/AL2.html',
       },
     ],
@@ -877,13 +881,17 @@ export const PATTERNS: readonly Pattern[] = [
         src: 'renders/alhambra-mexuar-corridor-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
-      { src: 'renders/alhambra-mexuar-corridor-stars/wall.png', caption: 'Our wall.' },
+      {
+        src: 'renders/alhambra-mexuar-corridor-stars/wall.png',
+        caption: 'Our wall.',
+      },
     ],
     asks: [],
     sources: [
       {
-        label: 'Brian Wichmann, Tiling Search: Alhambra, Mexuar Patio corridor (P051)',
-        url: 'https://tilingsearch.mit.edu/HTML/data10/P051.html',
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Mexuar Patio corridor (P051)',
+        url: 'https://tilingsearch.mit.edu/HTML/data159/P051.html',
       },
     ],
   },
@@ -910,6 +918,110 @@ export const PATTERNS: readonly Pattern[] = [
       {
         label: 'Brian Wichmann, Tiling Search: Alhambra Museum (RE3559)',
         url: 'https://tilingsearch.mit.edu/HTML/data183/RE3559.html',
+      },
+    ],
+  },
+  {
+    id: 'shah-i-zinda-octagons',
+    title: 'Octagons and stars of the Shah-i-Zinda (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Regular octagons touching corner to corner, with a four-pointed star in each gap: a five-step beginner tutorial.',
+    story: [
+      'The octagon’s corners lie on the first circle, so the whole pattern comes from dividing that circle into eight, in five steps.',
+      'Our wall matches David Wade’s photo TRA 0301 by eye (private, not shipped). The Qaytbay floor below is its variation: the two share one card in the library.',
+    ],
+    pictures: [
+      {
+        src: 'research/tilingsearch-45/F254L/F254L-pdf.png',
+        caption: 'Wichmann’s drawing.',
+      },
+      { src: 'renders/shah-i-zinda-octagons/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Shah-i-Zinda, Samarkand (F254L)',
+        url: 'https://tilingsearch.mit.edu/HTML/data147/F254L.html',
+      },
+    ],
+  },
+  {
+    id: 'qaytbay-floor-octagons',
+    title: 'Octagons of the Qaytbay madrasa floor (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'The Shah-i-Zinda octagons with their sides carried on past the corners, which closes a small octagon and four darts where four octagons meet.',
+    story: [
+      'It shares its first five steps with the Shah-i-Zinda octagons and adds two, so it is a variation of that pattern.',
+      'No photo was available; checked against Wichmann’s drawing only.',
+    ],
+    pictures: [
+      {
+        src: 'research/tilingsearch-45/W2/W2-pdf.png',
+        caption: 'Wichmann’s drawing.',
+      },
+      { src: 'renders/qaytbay-floor-octagons/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Qaytbay madrasa floor (W2)',
+        url: 'https://tilingsearch.mit.edu/HTML/data202/W2.html',
+      },
+    ],
+  },
+  {
+    id: 'sircali-stars',
+    title: 'Eight-pointed stars of the Sırçalı madrasa (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Sharp eight-pointed stars touching point to point, with notched crosses between them: a five-step beginner tutorial.',
+    story: [
+      'Each star line joins a point on the circle through the grid corner to a grid corner. It uses the same grid and tile as our Comares stars, but with the sharper star.',
+      'No photo was available; checked against Wichmann’s drawing only.',
+    ],
+    pictures: [
+      {
+        src: 'research/tilingsearch-45/BON36/BON36-pdf.png',
+        caption: 'Wichmann’s drawing.',
+      },
+      { src: 'renders/sircali-stars/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Sırçalı madrasa, Konya (BON36)',
+        url: 'https://tilingsearch.mit.edu/HTML/data211/BON36.html',
+      },
+    ],
+  },
+  {
+    id: 'topkapi-scroll-pinwheel',
+    title: 'Pinwheel of stars from the Topkapı scroll (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Eight-pointed stars turned so they do not line up with the page, with boot-shaped pieces and pentagons wheeling round them. A pinwheel, so it has no mirror.',
+    story: [
+      'Every edge lies on the star’s own lines or on one small diamond, so the construction is the star, four circles and that diamond, in six steps. The tile is a tilted square, because the stars do not sit on an upright grid.',
+      'The photo the source lists shows a different scroll panel, so this is checked against Wichmann’s drawing only.',
+    ],
+    pictures: [
+      {
+        src: 'research/tilingsearch-45/R9/R9-pdf.png',
+        caption: 'Wichmann’s drawing.',
+      },
+      { src: 'renders/topkapi-scroll-pinwheel/wall.png', caption: 'Our wall.' },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Topkapı Scroll, page 318 (R9)',
+        url: 'https://tilingsearch.mit.edu/HTML/data19/R9.html',
       },
     ],
   },
@@ -2030,7 +2142,32 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'tilingsearch-45-first',
+    text: 'Seven new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    choices: ['They look right', 'Some need work (say which)'],
+    pictures: [
+      {
+        src: 'renders/alhambra-mexuar-porch-fret/drawing-overlay.png',
+        caption: 'Mexuar porch fret: Wichmann’s drawing with our lines in red.',
+      },
+      {
+        src: 'renders/shah-i-zinda-octagons/wall.png',
+        caption: 'Shah-i-Zinda octagons: our wall.',
+      },
+    ],
+    card: 'alhambra-mexuar-porch-fret',
+    also: [
+      'alhambra-mexuar-corridor-stars',
+      'alhambra-museum-loops',
+      'shah-i-zinda-octagons',
+      'qaytbay-floor-octagons',
+      'sircali-stars',
+      'topkapi-scroll-pinwheel',
+    ],
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;

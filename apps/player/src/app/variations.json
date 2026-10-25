@@ -27,5 +27,10 @@
     "id": "mian-stellated-rosettes",
     "title": "Stellated twelve-fold rosettes (Samira Mian)",
     "members": ["mian-stellated-rosettes", "mian-stellated-hex"]
+  },
+  {
+    "id": "touching-octagons",
+    "title": "Octagons that touch",
+    "members": ["shah-i-zinda-octagons", "qaytbay-floor-octagons"]
   }
 ]
