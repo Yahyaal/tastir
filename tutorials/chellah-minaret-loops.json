@@ -1,0 +1,154 @@
+{
+  "format": 0,
+  "id": "chellah-minaret-loops",
+  "title": "Interlaced loops of the Chellah minaret (Rabat)",
+  "short": "Chellah loops",
+  "subtitle": "Chellah mosque minaret, Rabat",
+  "fold": 4,
+  "style": "Marinid",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s CM014 drawing. It is the design of the Alhambra Museum loops, built the same way: the straight bands pass where a circle of radius one half, or its mirror image, crosses the diagonal. The drawing gives no steps.",
+    "changes": "The compass operations, step order and named crossings are our reconstruction. Wichmann’s colours follow Castéra’s plate of the minaret; no photo of the minaret was available to check the lines.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data15/CM014: Minaret of Chellah Mosque, Rabat",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data15/CM014.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing, coloured after J.-M. Castéra’s Arabesques (page 103, the Chellah minaret). He lists the same repeat in the Alhambra Museum (RE3559), at San Juan de los Reyes in Toledo, on a stucco ceiling in the Bardo, Tunis, and on Moroccan zellige. The construction is ours."
+    }
+  ],
+  "given": {"O": "The centre of a loop.", "A": "The centre of an eight-pointed star between four loops."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw a straight line through A and C. It crosses the line from O to K1 at H. Draw a horizontal line through H. It crosses the vertical line through O at E.",
+      "create": {
+        "ac": {"line": {"through": ["A", "C"]}},
+        "H": {"point": {"meet": ["ac", "d45"]}},
+        "hh": {"line": {"through": "H", "parallelTo": "h"}},
+        "E": {"point": {"meet": ["hh", "v"]}}
+      },
+      "highlight": ["A", "C"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a circle with centre O through E. It crosses the line from O to K1 at F. Draw a circle with centre H through F. It crosses the line from O to K1 again at J.",
+      "create": {
+        "ce": {"circle": {"centre": "O", "through": "E"}},
+        "F": {"point": {"meet": ["ce", "d45"], "pick": {"angle": 45.0}}},
+        "ch": {"circle": {"centre": "H", "through": "F"}},
+        "J": {"point": {"meet": ["ch", "d45"], "pick": {"farthest": "O"}}}
+      },
+      "highlight": ["E"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Draw a vertical line through F. Draw a vertical line through J. Draw a line through E parallel to line AC.",
+      "create": {
+        "fv": {"line": {"through": "F", "parallelTo": "v"}},
+        "jv": {"line": {"through": "J", "parallelTo": "v"}},
+        "ed": {"line": {"through": "E", "parallelTo": "ac"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Turn the three lines of the last step round O by 90°, three times.",
+      "create": {"cp": {"repeat": {"of": ["fv", "jv", "ed"], "by": "rot4"}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the bands. Each band makes a square loop with a notch in every side. The loops link with their neighbours.",
+    "paths": [
+      {"along": "fv", "from": "ed@2", "to": "fv@3"},
+      {"along": "fv", "from": "d45", "to": "ed@1"},
+      {"along": "jv", "from": "jv@3", "to": "ed"},
+      {"along": "jv", "from": "ed@3", "to": "d45"},
+      {"along": "ed", "from": "gx", "to": "fv@3"},
+      {"along": "ed", "from": "jv", "to": "h"},
+      {"along": "ed", "from": "v", "to": "jv@1"},
+      {"along": "ed", "from": "fv@2", "to": "gy"},
+      {"along": "fv@1", "from": "ed@3", "to": "d45"},
+      {"along": "fv@1", "from": "fv@2", "to": "ed@2"},
+      {"along": "fv@2", "from": "ed", "to": "fv@1"},
+      {"along": "fv@2", "from": "d45", "to": "ed@3"},
+      {"along": "fv@3", "from": "ed@1", "to": "d45"},
+      {"along": "fv@3", "from": "fv", "to": "ed"},
+      {"along": "jv@1", "from": "d45", "to": "ed@1"},
+      {"along": "jv@1", "from": "ed", "to": "jv@2"},
+      {"along": "jv@2", "from": "jv@1", "to": "ed@2"},
+      {"along": "jv@2", "from": "ed@1", "to": "d45"},
+      {"along": "jv@3", "from": "d45", "to": "ed@3"},
+      {"along": "jv@3", "from": "ed@2", "to": "jv"},
+      {"along": "ed@1", "from": "gy", "to": "fv"},
+      {"along": "ed@1", "from": "jv@1", "to": "v"},
+      {"along": "ed@1", "from": "h", "to": "jv@2"},
+      {"along": "ed@1", "from": "fv@3", "to": "gxw"},
+      {"along": "ed@2", "from": "gxw", "to": "fv@1"},
+      {"along": "ed@2", "from": "jv@2", "to": "h"},
+      {"along": "ed@2", "from": "v", "to": "jv@3"},
+      {"along": "ed@2", "from": "fv", "to": "gys"},
+      {"along": "ed@3", "from": "gys", "to": "fv@2"},
+      {"along": "ed@3", "from": "jv@3", "to": "v"},
+      {"along": "ed@3", "from": "h", "to": "jv"},
+      {"along": "ed@3", "from": "fv@1", "to": "gx"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. Each loop weaves over and under its four neighbours.",
+    "palette": "Alhambra",
+    "look": "interlace",
+    "colors": {"cross": "d", "star": "b", "square": "ground"}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "cross", "vertices": 24, "area": 1.24264, "perCell": 2},
+      {"name": "star", "vertices": 16, "area": 0.58579, "perCell": 2},
+      {"name": "square", "vertices": 4, "area": 0.08579, "perCell": 4}
+    ]
+  }
+}
