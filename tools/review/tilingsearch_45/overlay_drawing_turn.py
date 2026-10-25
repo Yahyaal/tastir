@@ -5,7 +5,8 @@ Wichmann's PDF, to check the reading by eye.
 
 Usage: overlay_drawing.py <dump.json> <page.png> <dpi> <ox> <oy> <period> <out.png> [--turn]
   (ox, oy): O in PDF points; period: the cell's side in PDF points.
-  --turn: the tutorial turned Wichmann's drawing by 45° ((x, y) -> ((x + y)/√2, (y - x)/√2))."""
+  --turn: the tutorial turned Wichmann’s drawing by 45° ((x, y) -> ((x + y)/√2, (y - x)/√2)).
+  The ink repeats by the dump’s cell vectors (a diamond tile works too)."""
 import json
 import math
 import sys
@@ -21,7 +22,7 @@ def back(x, y):
     return ((x - y) * S, (x + y) * S) if turn else (x, y)
 
 
-d = json.load(open(dump))
+d = json.load(open(dump)); cu, cv = d['cell']['u'], d['cell']['v']
 im = Image.open(png).convert('RGB')
 im = Image.blend(im, Image.new('RGB', im.size, 'white'), 0.45)
 dr = ImageDraw.Draw(im)
@@ -33,7 +34,7 @@ ny = int(H / k / per) + 2
 for i in range(-nx, nx + 1):
     for j in range(-ny, ny + 1):
         for (a, b) in d['ink']:
-            qa, qb = back(a[0] + 2 * i, a[1] + 2 * j), back(b[0] + 2 * i, b[1] + 2 * j)
+            qa, qb = back(a[0] + i * cu[0] + j * cv[0], a[1] + i * cu[1] + j * cv[1]), back(b[0] + i * cu[0] + j * cv[0], b[1] + i * cu[1] + j * cv[1])
             pa = ((ox + qa[0] * unit) * k, (oy - qa[1] * unit) * k)
             pb = ((ox + qb[0] * unit) * k, (oy - qb[1] * unit) * k)
             dr.line([pa, pb], fill=(220, 0, 0), width=2)

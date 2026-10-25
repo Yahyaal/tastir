@@ -1,0 +1,242 @@
+{
+  "format": 0,
+  "id": "herat-minaret-stars",
+  "title": "Stars and crosses of the Husayn Baykara minaret, Herat",
+  "short": "Herat minaret stars",
+  "subtitle": "Husayn Baykara madrasa, Herat",
+  "fold": 4,
+  "star": 8,
+  "style": "Timurid",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s PG223 drawing, its corners snapped to exact values in units of its shortest edge. Every line is a line of the Sala de la Barca stars, so the construction is theirs: the same large star, with the forks and the small square between four stars left as one large piece. The drawing gives no steps.",
+    "changes": "Wichmann draws the design turned by 45° from the Barca frame; it is turned here so that both share their steps. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the minaret was checked.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data8/PG223: Minaret, Husayn Baykara Madrasah, Herat",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data8/PG223.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He cites S. J. Abas and A. S. Salman, Symmetries of Islamic Geometrical Patterns (World Scientific, 1995), page 223, for the minaret of the Husayn Baykara madrasa in Herat. The construction is ours."
+    }
+  ],
+  "given": {"O": "The centre of a large star.", "A": "Halfway from O to the next large star along the axis."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a vertical line through B. Draw a horizontal line through C. Draw a horizontal line through D. These lines cross at E, F, G and H. Draw a straight line through O and E. Draw a line through O at 90° to line OE. Draw a circle with centre O through E. It crosses the horizontal and vertical lines at J, K, L and N. Join J, K, L and N with straight lines.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "E": {"point": {"meet": ["gx", "gy"]}},
+        "F": {"point": {"meet": ["gxw", "gy"]}},
+        "G": {"point": {"meet": ["gxw", "gys"]}},
+        "H": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "E"]}},
+        "d135": {"line": {"through": "O", "perpendicularTo": "d45"}},
+        "cd": {"circle": {"centre": "O", "through": "E"}},
+        "J": {"point": {"meet": ["cd", "h"], "pick": {"angle": 0.0}}},
+        "K": {"point": {"meet": ["cd", "v"], "pick": {"angle": 90.0}}},
+        "L": {"point": {"meet": ["cd", "h"], "pick": {"angle": 180.0}}},
+        "N": {"point": {"meet": ["cd", "v"], "pick": {"angle": 270.0}}},
+        "w1": {"line": {"through": ["J", "K"]}},
+        "w2": {"line": {"through": ["K", "L"]}},
+        "w3": {"line": {"through": ["L", "N"]}},
+        "w4": {"line": {"through": ["N", "J"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. These lines cross at E. Draw a straight line through O and E. Draw a line through O at 90° to line OE. Draw a circle with centre O through E. It crosses the horizontal and vertical lines at J, K, L and N. Draw a straight line through J and K. Draw a straight line through K and L."
+    },
+    {
+      "id": 3,
+      "text": "Draw the line through O that halves the angle AOE.",
+      "create": {"r22": {"line": {"through": "O", "bisects": ["A", "O", "E"]}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a straight line through E and D. It crosses the line that halves the angle AOE at Q. Draw a vertical line through Q. It crosses the horizontal line at S1. Draw a circle with centre O through S1.",
+      "create": {
+        "kq": {"line": {"through": ["E", "D"]}},
+        "Q": {"point": {"meet": ["kq", "r22"]}},
+        "qv": {"line": {"through": "Q", "perpendicularTo": "h"}},
+        "S1": {"point": {"meet": ["qv", "h"]}},
+        "cb": {"circle": {"centre": "O", "through": "S1"}}
+      },
+      "highlight": ["E", "D"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Join S1, S3, S5 and S7 with straight lines. Join S2, S4, S6 and S8 with straight lines. S1 to S8 are where the circle through S1 crosses the lines through O. The two squares make the large star.",
+      "create": {
+        "S3": {"point": {"meet": ["cb", "v"], "pick": {"angle": 90.0}}},
+        "S5": {"point": {"meet": ["cb", "h"], "pick": {"angle": 180.0}}},
+        "S7": {"point": {"meet": ["cb", "v"], "pick": {"angle": 270.0}}},
+        "S2": {"point": {"meet": ["cb", "d45"], "pick": {"angle": 45.0}}},
+        "S4": {"point": {"meet": ["cb", "d135"], "pick": {"angle": 135.0}}},
+        "S6": {"point": {"meet": ["cb", "d45"], "pick": {"angle": 225.0}}},
+        "S8": {"point": {"meet": ["cb", "d135"], "pick": {"angle": 315.0}}},
+        "bs0": {"line": {"through": ["S1", "S3"]}},
+        "bd45": {"line": {"through": ["S2", "S4"]}},
+        "bs90": {"line": {"through": ["S3", "S5"]}},
+        "bd135": {"line": {"through": ["S4", "S6"]}},
+        "bs180": {"line": {"through": ["S5", "S7"]}},
+        "bd225": {"line": {"through": ["S6", "S8"]}},
+        "bs270": {"line": {"through": ["S7", "S1"]}},
+        "bd315": {"line": {"through": ["S8", "S2"]}}
+      },
+      "highlight": ["cb"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw a circle with centre R through S2. R is where the first circle crosses line OE. The new circle crosses line OE again at U. Draw a line through U parallel to the line from S2 to S4. It is a side of the next large star.",
+      "create": {
+        "R": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "ca": {"circle": {"centre": "R", "through": "S2"}},
+        "U": {"point": {"meet": ["ca", "d45"], "pick": {"farthest": "O"}}},
+        "nd": {"line": {"through": "U", "parallelTo": "bd45"}}
+      },
+      "highlight": ["R", "S2"],
+      "animate": "compass",
+      "textWithoutHelpers": "Draw a circle with centre R through S2. R is where the first circle crosses line OE. The new circle crosses line OE again at U, the point of the next large star."
+    },
+    {
+      "id": 7,
+      "text": "Draw a circle with centre K whose radius is the distance from S2 to R. It carries the small square at K.",
+      "create": {"cs": {"circle": {"centre": "K", "radiusFrom": ["S2", "R"]}}},
+      "highlight": ["K"],
+      "animate": "compass"
+    },
+    {
+      "id": 8,
+      "text": "Draw a horizontal line through K. Join Q1, Q3, Q5 and Q7 with straight lines. Join Q2, Q4, Q6 and Q8 with straight lines. Q1 to Q8 are where the circle at K crosses the lines through K. The second square is the small square at K.",
+      "create": {
+        "hy_c90": {"line": {"through": "K", "parallelTo": "h"}},
+        "Q1": {"point": {"meet": ["cs", "hy_c90"], "pick": {"angle": 75.361}}},
+        "Q3": {"point": {"meet": ["cs", "v"], "pick": {"farthest": "O"}}},
+        "Q5": {"point": {"meet": ["cs", "hy_c90"], "pick": {"angle": 104.639}}},
+        "Q7": {"point": {"meet": ["cs", "v"], "pick": {"nearest": "O"}}},
+        "Q2": {"point": {"meet": ["cs", "w2"], "pick": {"angle": 81.139}}},
+        "Q4": {"point": {"meet": ["cs", "w1"], "pick": {"angle": 98.861}}},
+        "Q6": {"point": {"meet": ["cs", "w2"], "pick": {"angle": 102.764}}},
+        "Q8": {"point": {"meet": ["cs", "w1"], "pick": {"angle": 77.236}}},
+        "ss0": {"line": {"through": ["Q1", "Q3"]}},
+        "sd45": {"line": {"through": ["Q2", "Q4"]}},
+        "ss90": {"line": {"through": ["Q3", "Q5"]}},
+        "sd135": {"line": {"through": ["Q4", "Q6"]}},
+        "ss180": {"line": {"through": ["Q5", "Q7"]}},
+        "sd225": {"line": {"through": ["Q6", "Q8"]}},
+        "ss270": {"line": {"through": ["Q7", "Q1"]}},
+        "sd315": {"line": {"through": ["Q8", "Q2"]}}
+      },
+      "highlight": ["cs"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a horizontal line through K. Draw straight lines through Q2 and Q4, Q4 and Q6, Q6 and Q8, and Q8 and Q2. Q1 to Q8 are where the circle at K crosses the lines through K. These lines make the small square at K."
+    },
+    {
+      "id": 9,
+      "text": "Turn the lines of the small square, and the line through U, round O by 90°, three times. This copies them to J, L and N.",
+      "create": {
+        "cp": {
+          "repeat": {
+            "of": ["nd", "ss0", "ss90", "ss180", "ss270", "sd45", "sd135", "sd225", "sd315"],
+            "by": "rot4"
+          }
+        }
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Turn the lines of the small square round O by 90°, three times. This copies them to J, L and N."
+    },
+    {
+      "id": 10,
+      "text": "Draw a line through V1 parallel to line KL. Draw a line through V1 parallel to line JK. Draw a line through V2 parallel to line KL. Draw a line through V2 parallel to line JK. V1 and V2 are where the sides of the small square cross the horizontal line through K. Turn these four lines round O by 90°, three times.",
+      "create": {
+        "V1": {"point": {"meet": ["sd135", "hy_c90"]}},
+        "V2": {"point": {"meet": ["sd315", "hy_c90"]}},
+        "hv1": {"line": {"through": "V1", "parallelTo": "w2"}},
+        "hh1": {"line": {"through": "V1", "parallelTo": "w1"}},
+        "hv2": {"line": {"through": "V2", "parallelTo": "w2"}},
+        "hh2": {"line": {"through": "V2", "parallelTo": "w1"}},
+        "cq": {"repeat": {"of": ["hv1", "hh1", "hv2", "hh2"], "by": "rot4"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a line through V1 parallel to line KL. Draw a line through V1 parallel to line JK. Draw a line through V2 parallel to line KL. V1 and V2 are where the sides of the small square cross the horizontal line through K. Turn these lines round O by 90°, three times. Only the lines the pattern needs are shown."
+    },
+    {
+      "id": 11,
+      "text": "Join J, K, L and N to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["J", "K", "L", "N"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O and the lines that carry its sides on. They close the crosses between the stars and the large piece at each corner of the cell.",
+    "paths": [
+      {"along": "bs0", "from": "h", "to": "r22"},
+      {"along": "bs0", "from": "bd45", "to": "v"},
+      {"along": "bd45", "from": "hh1", "to": "bs0"},
+      {"along": "bd45", "from": "bs90", "to": "hv2"},
+      {"along": "bs90", "from": "v", "to": "bd45"},
+      {"along": "bs90", "from": "bd135", "to": "h"},
+      {"along": "bd135", "from": "hv2", "to": "bs90"},
+      {"along": "bd135", "from": "r22", "to": "hh1@2"},
+      {"along": "bs180", "from": "h", "to": "r22"},
+      {"along": "bs180", "from": "bd225", "to": "v"},
+      {"along": "bd225", "from": "hh1@2", "to": "bs180"},
+      {"along": "bd225", "from": "bs270", "to": "hh1@3"},
+      {"along": "bs270", "from": "v", "to": "bd225"},
+      {"along": "bs270", "from": "bd315", "to": "h"},
+      {"along": "bd315", "from": "hh1@3", "to": "bs270"},
+      {"along": "bd315", "from": "r22", "to": "hh1"},
+      {"along": "sd135", "from": "w2", "to": "bs0"},
+      {"along": "sd135", "from": "bs270", "to": "w3"},
+      {"along": "sd315", "from": "w4", "to": "bs180"},
+      {"along": "sd315", "from": "bs90", "to": "w1"},
+      {"along": "sd135@1", "from": "w3", "to": "bs90"},
+      {"along": "sd135@1", "from": "bs0", "to": "w4"},
+      {"along": "sd135@3", "from": "w1", "to": "bs270"},
+      {"along": "sd135@3", "from": "bs180", "to": "w2"},
+      {"along": "hh1", "from": "bs270", "to": "bd45"},
+      {"along": "hh1", "from": "bd315", "to": "bs90"},
+      {"along": "hv2", "from": "bs0", "to": "bd135"},
+      {"along": "hv2", "from": "bd45", "to": "bs180"},
+      {"along": "hh1@2", "from": "bs90", "to": "bd225"},
+      {"along": "hh1@2", "from": "bd135", "to": "bs270"},
+      {"along": "hh1@3", "from": "bs180", "to": "bd315"},
+      {"along": "hh1@3", "from": "bd225", "to": "bs0"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. Large stars sit on the grid, a cross between each two, and a large piece where four cells touch.",
+    "palette": "Timurid tile",
+    "colors": {"ground": "ground", "star": "a", "cross": "b"}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "ground", "vertices": 40, "area": 2.13645, "perCell": 1},
+      {"name": "star", "vertices": 16, "area": 0.93177, "perCell": 1},
+      {"name": "cross", "vertices": 12, "area": 0.46589, "perCell": 2}
+    ]
+  }
+}
