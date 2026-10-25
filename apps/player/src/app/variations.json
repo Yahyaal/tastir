@@ -42,5 +42,20 @@
     "id": "interlaced-loops",
     "title": "Interlaced notched loops",
     "members": ["alhambra-museum-loops", "chellah-minaret-loops"]
+  },
+  {
+    "id": "persian-court-stars",
+    "title": "Stars of the Persian courtyards",
+    "members": ["qom-atabaki-stars", "mashhad-courtyard-stars"]
+  },
+  {
+    "id": "barca-stars",
+    "title": "Stars of the Sala de la Barca",
+    "members": ["alhambra-barca-stars", "herat-minaret-stars"]
+  },
+  {
+    "id": "star-and-cross",
+    "title": "Eight-fold star and cross",
+    "members": ["eight-fold-star-and-cross", "mashhad-gowhar-interlace"]
   }
 ]

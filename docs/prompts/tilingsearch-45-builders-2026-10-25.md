@@ -43,7 +43,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 3 | A233, AL1, F219 | Alhambra eight-pointed stars ringed by bands, near the Comares bath and Barca stars | done, merged 4f9ffcd: all three built; none is a variation of the bath or Barca stars |
 | 4 | SPA0417X, SPA0508X, P077, CM014 | More Alhambra panels (Patio de los Leones, Patio de los Arrayanes), each with a Wade photo in `wade-paired.json`; CM014 (Chellah minaret) is the same design as RE3559, `alhambra-museum-loops`, so build it as that tutorial's variant | done, merged: all four; CM014 is a variant of the museum loops |
 | 5 | H424, SPA2215, RAY1, RAY12, DS4 | Spain outside the Alhambra: Seville Alcázar, Toledo tiles, a tile-mosaic panel; small eight-pointed star designs | done, merged 19c4535: all five; SPA2215 is a variant of the Leones door stars |
-| 6 | F77, F82, CM066B, IRA0501, IRA1330, PG223, P47 | Small Iranian and Central Asian designs, each under 120 polygons | started |
+| 6 | F77, F82, CM066B, IRA0501, IRA1330, PG223, P47 | Small Iranian and Central Asian designs, each under 120 polygons | done, merged: five built; IRA0501 and IRA1330 need fold-2 support |
 | 7 | P269C3, P201, MAR1, LEON10, C103 | Small Moroccan designs | started |
 | 8 | GREEN1, HAMA, KHC, P35, CM036, F34, CM006A, ROMAN11 | Small designs from Turkey, Syria, Egypt, books and Roman mosaics | waiting |
 

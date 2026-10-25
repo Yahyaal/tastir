@@ -1404,6 +1404,162 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'qom-atabaki-stars',
+    title: 'Stars and squares of the Atabaki court, Qom (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre, with a large square at each corner and on each side of the cell.',
+    story: [
+      'The finished design was read from Brian Wichmann’s F77 drawing, its corners snapped to exact values. We devised the construction: a star of two squares at O, and a diamond on the same circle round A, B, C and D, every side carried on. The drawing gives no steps.',
+      'Wichmann draws the design turned by 45°; it is turned here so that the tile is the square cell. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the wall was checked.',
+      '8 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/qom-atabaki-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/qom-atabaki-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Atabaki court, Qom (F77)',
+        url: 'https://tilingsearch.mit.edu/HTML/data16/F77.html',
+      },
+    ],
+  },
+  {
+    id: 'mashhad-courtyard-stars',
+    title:
+      'Stars and crosses of the new courtyard, Mashhad (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and a cross at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s F82 drawing, its corners snapped to exact values. It has every line of the Atabaki court design of Qom (F77), inked another way, so it uses the same construction. The drawing gives no steps.',
+      'Wichmann draws the design turned by 45°; it is turned here so that the tile is the square cell. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the wall was checked.',
+      '6 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/mashhad-courtyard-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/mashhad-courtyard-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: The new courtyard, Mashhad (F82)',
+        url: 'https://tilingsearch.mit.edu/HTML/data16/F82.html',
+      },
+    ],
+  },
+  {
+    id: 'shiraz-qavam-crosses',
+    title: 'Crosses of the Qavam Hosseiniyeh, Shiraz (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A cross sits at every centre and a diamond at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P47 drawing, its corners snapped to exact values. We devised the construction: one length, the radius of the circle round K1 through F, gives the point and the shoulder of the cross, and the cross’s lines carried on give the rest. The drawing gives no steps.',
+      'Wichmann draws the design turned by 45°; it is turned here so that the tile is the square cell. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the wall was checked.',
+      '7 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/shiraz-qavam-crosses/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/shiraz-qavam-crosses/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Qavam Hosseiniyeh, Shiraz (P47)',
+        url: 'https://tilingsearch.mit.edu/HTML/data180/P47.html',
+      },
+    ],
+  },
+  {
+    id: 'herat-minaret-stars',
+    title:
+      'Stars and crosses of the Husayn Baykara minaret, Herat (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. Large stars sit on the grid, a cross between each two, and a large piece where four cells touch.',
+    story: [
+      'The finished design was read from Brian Wichmann’s PG223 drawing, its corners snapped to exact values in units of its shortest edge. Every line is a line of the Sala de la Barca stars, so the construction is theirs: the same large star, with the forks and the small square between four stars left as one large piece. The drawing gives no steps.',
+      'Wichmann draws the design turned by 45° from the Barca frame; it is turned here so that both share their steps. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the minaret was checked.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/herat-minaret-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/herat-minaret-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Husayn Baykara madrasa, Herat (PG223)',
+        url: 'https://tilingsearch.mit.edu/HTML/data8/PG223.html',
+      },
+    ],
+  },
+  {
+    id: 'mashhad-gowhar-interlace',
+    title:
+      'Interlaced star and cross of the Gowhar Shad mosque, Mashhad (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the tile side by side. Neighbouring stars touch at their points. The lines carried on from the stars weave over and under each other.',
+    story: [
+      'The finished design was read from Brian Wichmann’s CM066B drawing, the centre lines of its bands snapped to exact values. They are the lines of the eight-fold star and cross, with the flat square’s sides carried on to the sides of the tile, so the construction is that one. The drawing gives no steps.',
+      'Wichmann draws the design turned by 45°; it is turned here so that the tile is the square round the circle. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the mosque was checked.',
+      '7 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/mashhad-gowhar-interlace/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/mashhad-gowhar-interlace/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mosque of Gowhar Shad, Mashhad (CM066B)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/CM066B.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -2523,7 +2679,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Nineteen new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Twenty-four new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -2555,6 +2711,11 @@ export const QUESTIONS: readonly Question[] = [
       'toledo-tile-stars',
       'spanish-mosaic-stars',
       'alcazar-mosaic-stars',
+      'qom-atabaki-stars',
+      'mashhad-courtyard-stars',
+      'shiraz-qavam-crosses',
+      'herat-minaret-stars',
+      'mashhad-gowhar-interlace',
     ],
   },
 ];
