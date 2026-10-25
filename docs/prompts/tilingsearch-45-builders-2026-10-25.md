@@ -34,6 +34,8 @@ Do not run the whole `pnpm test` or the browser suite; the orchestrator runs tho
 
 ## Batches
 
+The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json` lists families, the library shows one card per family and the player has a Variations switch. The orchestrator adds each new family there at merge.
+
 | Batch | Tilings | Why together | State |
 |---|---|---|---|
 | 1 | AL2, P051 (Mexuar corridor frets); also judge ALH1 and RE3559 | Chiral T-shaped frets of the same family as the Sala de los Reyes fret (PG365, `alhambra-reyes-fret`) | started |
