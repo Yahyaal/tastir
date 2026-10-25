@@ -146,10 +146,11 @@ def repeat(name, of, by):
     """Copies under rot<n> about O or a mirror across a line."""
     copies = []
     if by.startswith('mirror:'):
-        p, d = el[by[7:]][1]
+        mp, md = el[by[7:]][1]
         def T(x):
-            f = (x[0] - p[0]) * d[0] + (x[1] - p[1]) * d[1]
-            foot = (p[0] + f * d[0], p[1] + f * d[1])
+            # mp, md: not p, d, which the loop below reuses
+            f = (x[0] - mp[0]) * md[0] + (x[1] - mp[1]) * md[1]
+            foot = (mp[0] + f * md[0], mp[1] + f * md[1])
             return (2 * foot[0] - x[0], 2 * foot[1] - x[1])
         ts = [T]
     else:

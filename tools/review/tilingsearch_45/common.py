@@ -88,14 +88,17 @@ def frame_pieces(pieces_json, origin, period, band):
     return res
 
 
-def clip(segs, hcell=1.0):
+def clip(segs, hcell=1.0, vcell=None):
+    """The parts of segs inside the cell |x| <= hcell, |y| <= vcell (vcell
+    defaults to hcell: the square cell)."""
+    vcell = hcell if vcell is None else vcell
     out = []
     for p, q in segs:
         t0, t1 = 0.0, 1.0
         dx, dy = q[0] - p[0], q[1] - p[1]
-        for dv, pv in ((dx, p[0]), (dy, p[1])):
+        for dv, pv, hc in ((dx, p[0], hcell), (dy, p[1], vcell)):
             for sg in (1, -1):
-                a_, b_ = sg * dv, hcell - sg * pv
+                a_, b_ = sg * dv, hc - sg * pv
                 if abs(a_) < 1e-12:
                     if b_ < -1e-12:
                         t1 = -1
@@ -132,15 +135,15 @@ def snap(p, tol=0.006):
     return best[1] if best else None
 
 
-def network(polys):
+def network(polys, vcell=None, hcell=1.0, reach=3):
     """Every edge of the drawing inside the cell, its ends snapped onto the
     construction. Fails loudly on a corner the construction does not make."""
     segs = set()
     for Q in polys:
-        if max(abs(v) for q in Q for v in q) > 3:
+        if max(abs(v) for q in Q for v in q) > reach:
             continue
         for i in range(len(Q)):
-            for a, b in clip([(Q[i], Q[(i + 1) % len(Q)])]):
+            for a, b in clip([(Q[i], Q[(i + 1) % len(Q)])], hcell, vcell):
                 sa, sb = snap(a), snap(b)
                 assert sa and sb, ('corner off the construction', a, b, sa, sb)
                 if math.dist(sa, sb) > 1e-6:
