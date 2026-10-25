@@ -120,6 +120,12 @@ export const DOCS: readonly {
     text: read('patterns/CONSTRUCTION-AUDIT.md'),
   },
   {
+    key: 'tilingsearch-45',
+    label: 'Tiling Search 45° tilings',
+    file: 'patterns/TILINGSEARCH-45.md',
+    text: read('patterns/TILINGSEARCH-45.md'),
+  },
+  {
     key: 'status',
     label: 'Pattern status',
     file: 'patterns/STATUS.md',
