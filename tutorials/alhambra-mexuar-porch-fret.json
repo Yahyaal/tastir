@@ -1,0 +1,228 @@
+{
+  "format": 0,
+  "id": "alhambra-mexuar-porch-fret",
+  "title": "Ceiling fret of the Mexuar porch (Alhambra)",
+  "short": "Mexuar porch fret",
+  "subtitle": "Mexuar porch, Alhambra",
+  "fold": 4,
+  "chiral": true,
+  "style": "Nasrid",
+  "level": "advanced",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s AL2 drawing. We devised the construction: the bands lie on thirds of the grid unit and on lines a circle’s radius away from them. The drawing gives no steps.",
+    "changes": "The compass operations, step order and named crossings are our reconstruction. The comparison with the drawing checks the finished lines, not the historical steps. No photo of the real ceiling was available to check it.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data184/AL2: Alhambra, Mexuar/Arrayanes corridor",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data184/AL2.html",
+      "note": "The design was read from his drawing of the largest of three small ceiling panels in the porch between the Mexuar Patio and the corridor to the Patio de los Arrayanes, made from a photo by Nick Crossling. The construction is ours.",
+      "kind": "drawing"
+    }
+  ],
+  "given": {"O": "The centre of a small eight-pointed star.", "A": "Halfway from O to the next star."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw a straight line through K4 and C. It crosses the line from O to K1 at T, a third of the way to K1. Draw a horizontal line through T. It crosses the vertical line at E.",
+      "create": {
+        "kp": {"line": {"through": ["K4", "C"]}},
+        "T": {"point": {"meet": ["kp", "d45"]}},
+        "th": {"line": {"through": "T", "parallelTo": "h"}},
+        "E": {"point": {"meet": ["th", "v"]}}
+      },
+      "highlight": ["K4", "C"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a line through E parallel to the line from O to K1. Draw a straight line through B and C. Draw a circle with centre C through E. It crosses the top side of the cell at F, on the left. Draw a line through F parallel to the line from O to K1.",
+      "create": {
+        "e45": {"line": {"through": "E", "parallelTo": "d45"}},
+        "bc": {"line": {"through": ["B", "C"]}},
+        "cc": {"circle": {"centre": "C", "through": "E"}},
+        "F": {"point": {"meet": ["cc", "gy"], "pick": {"angle": 123.69}}},
+        "f45": {"line": {"through": "F", "parallelTo": "d45"}}
+      },
+      "highlight": ["E"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre O that touches the line through E. It crosses the vertical line at G, above O. Draw a circle with centre E through O. It crosses the vertical line again at J. Draw a circle with centre J that touches the line through E. It crosses the vertical line at L and M.",
+      "create": {
+        "co": {"circle": {"centre": "O", "tangentTo": ["e45"]}},
+        "G": {"point": {"meet": ["co", "v"], "pick": {"angle": 90.0}}},
+        "ce": {"circle": {"centre": "E", "through": "O"}},
+        "J": {"point": {"meet": ["ce", "v"], "pick": {"farthest": "O"}}},
+        "cj": {"circle": {"centre": "J", "tangentTo": ["e45"]}},
+        "L": {"point": {"meet": ["cj", "v"], "pick": {"farthest": "O"}}},
+        "M": {"point": {"meet": ["cj", "v"], "pick": {"nearest": "O"}}}
+      },
+      "highlight": ["e45"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a horizontal line through each of G, L and M. These are the lines of the bands.",
+      "create": {
+        "yg": {"line": {"through": "G", "parallelTo": "h"}},
+        "yl": {"line": {"through": "L", "parallelTo": "h"}},
+        "ym": {"line": {"through": "M", "parallelTo": "h"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Turn the lines of the last three steps round O by 90°, three times.",
+      "create": {"cp": {"repeat": {"of": ["e45", "bc", "f45", "yg", "yl", "ym"], "by": "rot4"}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the bands. They make the star at O and the T-shaped frets and long bars round it. They make a cross at each corner of the cell.",
+    "paths": [
+      {"along": "e45", "from": "gxw", "to": "yl@1"},
+      {"along": "e45", "from": "ym@2", "to": "yg@2"},
+      {"along": "e45", "from": "ym@1", "to": "yg@1"},
+      {"along": "e45", "from": "yg", "to": "ym"},
+      {"along": "e45", "from": "yl", "to": "gy"},
+      {"along": "bc", "from": "h", "to": "yl@1"},
+      {"along": "bc", "from": "ym@1", "to": "yg@1"},
+      {"along": "bc", "from": "yl", "to": "v"},
+      {"along": "f45", "from": "gxw", "to": "yl@1"},
+      {"along": "f45", "from": "yl", "to": "gy"},
+      {"along": "yg", "from": "yg@1", "to": "e45"},
+      {"along": "yg", "from": "e45@3", "to": "d45"},
+      {"along": "yg", "from": "ym@3", "to": "e45@2"},
+      {"along": "yg", "from": "bc@3", "to": "yl@3"},
+      {"along": "yl", "from": "yl@1", "to": "f45"},
+      {"along": "yl", "from": "e45@3", "to": "ym@1"},
+      {"along": "yl", "from": "yg@1", "to": "bc"},
+      {"along": "yl", "from": "bc@3", "to": "e45"},
+      {"along": "yl", "from": "f45@3", "to": "d45"},
+      {"along": "ym", "from": "yg@1", "to": "e45@3"},
+      {"along": "ym", "from": "e45", "to": "bc@3"},
+      {"along": "ym", "from": "e45@2", "to": "yl@3"},
+      {"along": "e45@1", "from": "gys", "to": "yl@2"},
+      {"along": "e45@1", "from": "ym@3", "to": "yg@3"},
+      {"along": "e45@1", "from": "ym@2", "to": "yg@2"},
+      {"along": "e45@1", "from": "yg@1", "to": "ym@1"},
+      {"along": "e45@1", "from": "yl@1", "to": "gxw"},
+      {"along": "e45@2", "from": "gx", "to": "yl@3"},
+      {"along": "e45@2", "from": "ym", "to": "yg"},
+      {"along": "e45@2", "from": "ym@3", "to": "yg@3"},
+      {"along": "e45@2", "from": "yg@2", "to": "ym@2"},
+      {"along": "e45@2", "from": "yl@2", "to": "gys"},
+      {"along": "e45@3", "from": "gy", "to": "yl"},
+      {"along": "e45@3", "from": "ym@1", "to": "yg@1"},
+      {"along": "e45@3", "from": "ym", "to": "yg"},
+      {"along": "e45@3", "from": "yg@3", "to": "ym@3"},
+      {"along": "e45@3", "from": "yl@3", "to": "gx"},
+      {"along": "bc@1", "from": "v", "to": "yl@2"},
+      {"along": "bc@1", "from": "ym@2", "to": "yg@2"},
+      {"along": "bc@1", "from": "yl@1", "to": "h"},
+      {"along": "bc@2", "from": "h", "to": "yl@3"},
+      {"along": "bc@2", "from": "ym@3", "to": "yg@3"},
+      {"along": "bc@2", "from": "yl@2", "to": "v"},
+      {"along": "bc@3", "from": "v", "to": "yl"},
+      {"along": "bc@3", "from": "ym", "to": "yg"},
+      {"along": "bc@3", "from": "yl@3", "to": "h"},
+      {"along": "f45@1", "from": "gys", "to": "yl@2"},
+      {"along": "f45@1", "from": "yl@1", "to": "gxw"},
+      {"along": "f45@2", "from": "gx", "to": "yl@3"},
+      {"along": "f45@2", "from": "yl@2", "to": "gys"},
+      {"along": "f45@3", "from": "gy", "to": "yl"},
+      {"along": "f45@3", "from": "yl@3", "to": "gx"},
+      {"along": "yg@1", "from": "d45", "to": "e45@1"},
+      {"along": "yg@1", "from": "e45", "to": "yg"},
+      {"along": "yg@1", "from": "ym", "to": "e45@3"},
+      {"along": "yg@1", "from": "bc", "to": "yl"},
+      {"along": "yg@2", "from": "yg@3", "to": "e45@2"},
+      {"along": "yg@2", "from": "e45@1", "to": "d45"},
+      {"along": "yg@2", "from": "ym@1", "to": "e45"},
+      {"along": "yg@2", "from": "bc@1", "to": "yl@1"},
+      {"along": "yg@3", "from": "d45", "to": "e45@3"},
+      {"along": "yg@3", "from": "e45@2", "to": "yg@2"},
+      {"along": "yg@3", "from": "ym@2", "to": "e45@1"},
+      {"along": "yg@3", "from": "bc@2", "to": "yl@2"},
+      {"along": "yl@1", "from": "d45", "to": "f45@1"},
+      {"along": "yl@1", "from": "e45", "to": "ym@2"},
+      {"along": "yl@1", "from": "yg@2", "to": "bc@1"},
+      {"along": "yl@1", "from": "bc", "to": "e45@1"},
+      {"along": "yl@1", "from": "f45", "to": "yl"},
+      {"along": "yl@2", "from": "yl@3", "to": "f45@2"},
+      {"along": "yl@2", "from": "e45@1", "to": "ym@3"},
+      {"along": "yl@2", "from": "yg@3", "to": "bc@2"},
+      {"along": "yl@2", "from": "bc@1", "to": "e45@2"},
+      {"along": "yl@2", "from": "f45@1", "to": "d45"},
+      {"along": "yl@3", "from": "d45", "to": "f45@3"},
+      {"along": "yl@3", "from": "e45@2", "to": "ym"},
+      {"along": "yl@3", "from": "yg", "to": "bc@3"},
+      {"along": "yl@3", "from": "bc@2", "to": "e45@3"},
+      {"along": "yl@3", "from": "f45@2", "to": "yl@2"},
+      {"along": "ym@1", "from": "yg@2", "to": "e45"},
+      {"along": "ym@1", "from": "e45@1", "to": "bc"},
+      {"along": "ym@1", "from": "e45@3", "to": "yl"},
+      {"along": "ym@2", "from": "yg@3", "to": "e45@1"},
+      {"along": "ym@2", "from": "e45@2", "to": "bc@1"},
+      {"along": "ym@2", "from": "e45", "to": "yl@1"},
+      {"along": "ym@3", "from": "yg", "to": "e45@2"},
+      {"along": "ym@3", "from": "e45@3", "to": "bc@2"},
+      {"along": "ym@3", "from": "e45@1", "to": "yl@2"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. The frets and bars turn round each star like a pinwheel. The bands weave over and under.",
+    "palette": "Alhambra",
+    "look": "interlace",
+    "colors": {"bar": "ground", "star": "ground", "cross": "c", "fret": "c"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "bar", "vertices": 22, "area": 0.59368, "perCell": 4},
+      {"name": "star", "vertices": 16, "area": 0.26035, "perCell": 1},
+      {"name": "cross", "vertices": 16, "area": 0.18409, "perCell": 1},
+      {"name": "fret", "vertices": 11, "area": 0.1476, "perCell": 8}
+    ]
+  }
+}
