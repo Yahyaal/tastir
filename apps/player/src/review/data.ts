@@ -1026,6 +1026,95 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-leones-door-stars',
+    title:
+      'Stars and arrows of the Patio de los Leones doors (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Equal eight-pointed stars at the centre and corners of each square, with hexagons, arrows, triangles and kites between them, every line a star side carried on.',
+    story: [
+      'One circle gives the star size (√2 − 1), and the rest is the stars’ own sides drawn long, in eight steps. Wichmann draws it turned by 45°; it is turned back to match David Wade’s photo SPA 0424x, which shows the same pieces (by eye; the photo is private).',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-leones-door-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-leones-door-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Patio de los Leones (A233)',
+        url: 'https://tilingsearch.mit.edu/HTML/data164/A233.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-comares-soffit-stars',
+    title: 'Interlaced stars of the Comares soffits (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'The same layout as the Leones door stars with smaller stars (radius ½), so the hexagons, kites and triangles merge into one ground piece, woven as interlace.',
+    story: [
+      'Nine steps; the half of OA comes from one crossing. No photo was checked, only Wichmann’s drawing.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-soffit-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-comares-soffit-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Salón de Comares (AL1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data187/AL1.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-comares-throne-dado',
+    title:
+      'Black and white stars of the Comares throne alcove (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'A white star in the middle and black ones at the corners, with crosses, boats, octagons and hexagons in black and white between them; the colouring follows Wichmann’s.',
+    story: [
+      'Twelve steps on a larger tile (four of OA across). Its centre ring is the same as the Leones door stars. Checked against Wichmann’s drawing only.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-throne-dado/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-comares-throne-dado/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Salón de Comares (F219)',
+        url: 'https://tilingsearch.mit.edu/HTML/data150/F219.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -2145,7 +2234,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Seven new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Ten new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -2165,6 +2254,9 @@ export const QUESTIONS: readonly Question[] = [
       'qaytbay-floor-octagons',
       'sircali-stars',
       'topkapi-scroll-pinwheel',
+      'alhambra-leones-door-stars',
+      'alhambra-comares-soffit-stars',
+      'alhambra-comares-throne-dado',
     ],
   },
 ];

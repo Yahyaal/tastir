@@ -26,7 +26,7 @@ You build Tastir tutorials for a batch of tilings from Brian Wichmann's Tiling S
 - in `apps/player`: `pnpm exec vitest run src/app/plainText.spec.ts src/app/helperTexts.spec.ts`
 - `pnpm nx run schema:test`
 
-Do not run the whole `pnpm test` or the browser suite; the orchestrator runs those after merging. If your worktree has no `node_modules`, run `pnpm install` once.
+In a fresh worktree run `pnpm nx run schema:build` once before the engine's vitest, which resolves `@tastir/schema` from `dist`. Do not run the whole `pnpm test` or the browser suite; the orchestrator runs those after merging. If your worktree has no `node_modules`, run `pnpm install` once.
 
 **Commits.** One commit per tutorial, with a message like `Tiling Search AL2: Mexuar corridor fret` and ending with the line `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. Do not edit `docs/patterns/QUEUE.md`, `STATUS.md`, `apps/player/src/review/data.ts` or `variations.json`; the orchestrator updates those at merge, so parallel builders do not conflict.
 
@@ -40,4 +40,4 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 |---|---|---|---|
 | 1 | AL2, P051 (Mexuar corridor frets); also judge ALH1 and RE3559 | Chiral T-shaped frets of the same family as the Sala de los Reyes fret (PG365, `alhambra-reyes-fret`) | done, merged d899f14: AL2, P051, RE3559 built; ALH1 is a separate plain-grid design (tenths of OA), not built |
 | 2 | F254L, W2, P17, R9, BON36 | Small star, octagon and cross designs, quick beginner tutorials; the pilot for snapping vertices to the a + b·√2/2 grid | done, merged c870c6e: F254L, W2, BON36, R9 built; P17 = eight-fold-star-and-cross |
-| 3 | A233, AL1, F219 | Alhambra eight-pointed stars ringed by bands, near the Comares bath and Barca stars | started |
+| 3 | A233, AL1, F219 | Alhambra eight-pointed stars ringed by bands, near the Comares bath and Barca stars | done, merged 4f9ffcd: all three built; none is a variation of the bath or Barca stars |
