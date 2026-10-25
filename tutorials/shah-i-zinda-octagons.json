@@ -1,0 +1,114 @@
+{
+  "format": 0,
+  "id": "shah-i-zinda-octagons",
+  "title": "Octagons and stars of the Shah-i-Zinda (Samarkand)",
+  "short": "Octagons and stars",
+  "subtitle": "Shah-i-Zinda, Samarkand",
+  "fold": 4,
+  "style": "Timurid",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s F254L drawing, its corners snapped to exact values. We devised the construction; the drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data147/F254L: Shah-i-Zinda, Samarkand",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data147/F254L.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing; the construction is ours. He lists the same design at Nur al-Din’s mosque in Hama (1163), the Eşrefoğlu mosque in Beyşehir, Amir Shaykhu’s stone floor in Cairo and the shrine of Sheikh Safi in Ardabil."
+    },
+    {
+      "source": "Photograph TRA 0301 (tile panel, Shah-i-Zinda, Samarkand)",
+      "creator": "David Wade",
+      "url": "https://patterninislamicart.com/",
+      "kind": "photo",
+      "note": "The real panel, compared by eye with the wall: regular octagons touching at their corners."
+    }
+  ],
+  "given": {
+    "O": "The centre of an octagon.",
+    "A": "A corner of that octagon, where it touches the next one."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "B": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "C": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}}
+      },
+      "highlight": ["h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw the line through O that halves the angle AOB. Draw the line through O that halves the angle BOC. They cross the circle at E, F, G and H.",
+      "create": {
+        "d1": {"line": {"through": "O", "bisects": ["A", "O", "B"]}},
+        "d2": {"line": {"through": "O", "bisects": ["B", "O", "C"]}},
+        "E": {"point": {"meet": ["c", "d1"], "pick": {"angle": 45}}},
+        "F": {"point": {"meet": ["c", "d2"], "pick": {"angle": 135}}},
+        "G": {"point": {"meet": ["c", "d1"], "pick": {"angle": 225}}},
+        "H": {"point": {"meet": ["c", "d2"], "pick": {"angle": 315}}}
+      },
+      "highlight": ["A", "B", "C"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Join A, E, B, F, C, G, D and H with straight lines. This makes the octagon.",
+      "create": {"oct": {"polygon": ["A", "E", "B", "F", "C", "G", "D", "H"]}},
+      "highlight": ["A", "E", "B", "F", "C", "G", "D", "H"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a vertical line through A. Draw a vertical line through C. Draw a horizontal line through B. Draw a horizontal line through D. The four lines make a square with corners K1, K2, K3 and K4. Join them to mark the tile that repeats.",
+      "create": {
+        "tE": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "tW": {"line": {"through": "C", "perpendicularTo": "h"}},
+        "tN": {"line": {"through": "B", "perpendicularTo": "v"}},
+        "tS": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["tE", "tN"]}},
+        "K2": {"point": {"meet": ["tN", "tW"]}},
+        "K3": {"point": {"meet": ["tW", "tS"]}},
+        "K4": {"point": {"meet": ["tS", "tE"]}},
+        "tile": {"polygon": ["K1", "K2", "K3", "K4"]}
+      },
+      "highlight": ["A", "B", "C", "D"],
+      "animate": "ruler"
+    }
+  ],
+  "ink": {
+    "text": "Ink the octagon: from A through E, B and on round, back to A.",
+    "paths": [{"closed": true, "through": ["A", "E", "B", "F", "C", "G", "D", "H"]}]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square tile side by side. The octagons touch at their corners, and a four-pointed star closes between every four of them.",
+    "palette": "Timurid tile",
+    "colors": {"octagon": "a", "star": "b"}
+  },
+  "expect": {
+    "note": "Octagon 2√2, star 4 − 2√2, cell 4.",
+    "pieceTypes": 2,
+    "pieces": [
+      {"name": "octagon", "vertices": 8, "area": 2.82843, "perCell": 1},
+      {"name": "star", "vertices": 8, "area": 1.17157, "perCell": 1}
+    ],
+    "cellArea": 4
+  }
+}

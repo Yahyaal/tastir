@@ -1,0 +1,164 @@
+{
+  "format": 0,
+  "id": "sircali-stars",
+  "title": "Eight-pointed stars of the Sırçalı madrasa (Konya)",
+  "short": "Sırçalı stars",
+  "subtitle": "Sırçalı madrasa, Konya",
+  "fold": 4,
+  "star": 8,
+  "style": "Seljuk",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s BON36 drawing, its corners snapped to exact values. We devised the construction; the drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data211/BON36: Sırçalı madrasa, Konya",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data211/BON36.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing (after Jay Bonner, Islamic Geometric Patterns, 2017, fig. 125a); the construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of a star.",
+    "A": "Any point to the right of O. Neighbouring stars are 2 OA away along each line."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. It crosses the circle at B and D. The horizontal line crosses it at A and C. Draw a vertical line through A. Draw a vertical line through C. Draw a horizontal line through B. Draw a horizontal line through D. The four lines make a square with corners T2, T4, T6 and T8.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "B": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "C": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}},
+        "gE": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gW": {"line": {"through": "C", "perpendicularTo": "h"}},
+        "gN": {"line": {"through": "B", "perpendicularTo": "v"}},
+        "gS": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "T2": {"point": {"meet": ["gE", "gN"]}},
+        "T4": {"point": {"meet": ["gN", "gW"]}},
+        "T6": {"point": {"meet": ["gW", "gS"]}},
+        "T8": {"point": {"meet": ["gS", "gE"]}}
+      },
+      "highlight": ["h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre O through T2. It crosses the horizontal line at T1 and T5. It crosses the vertical line at T3 and T7. T1 to T8 are the points of the star.",
+      "create": {
+        "s": {"circle": {"centre": "O", "through": "T2"}},
+        "T1": {"point": {"meet": ["s", "h"], "pick": {"angle": 0}}},
+        "T3": {"point": {"meet": ["s", "v"], "pick": {"angle": 90}}},
+        "T5": {"point": {"meet": ["s", "h"], "pick": {"angle": 180}}},
+        "T7": {"point": {"meet": ["s", "v"], "pick": {"angle": 270}}}
+      },
+      "highlight": ["T2"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The star joins each point to the point three places on.",
+      "parts": [
+        {
+          "text": "Draw a straight line through T1 and T4, T2 and T5, T3 and T6, and T4 and T7.",
+          "create": {
+            "L1": {"line": {"through": ["T1", "T4"]}},
+            "L2": {"line": {"through": ["T2", "T5"]}},
+            "L3": {"line": {"through": ["T3", "T6"]}},
+            "L4": {"line": {"through": ["T4", "T7"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through T5 and T8, T6 and T1, T7 and T2, and T8 and T3. The lines cross at P1 to P8, the inner corners of the star.",
+          "create": {
+            "L5": {"line": {"through": ["T5", "T8"]}},
+            "L6": {"line": {"through": ["T6", "T1"]}},
+            "L7": {"line": {"through": ["T7", "T2"]}},
+            "L8": {"line": {"through": ["T8", "T3"]}},
+            "P1": {"point": {"meet": ["L1", "L7"]}},
+            "P2": {"point": {"meet": ["L2", "L8"]}},
+            "P3": {"point": {"meet": ["L3", "L1"]}},
+            "P4": {"point": {"meet": ["L4", "L2"]}},
+            "P5": {"point": {"meet": ["L5", "L3"]}},
+            "P6": {"point": {"meet": ["L6", "L4"]}},
+            "P7": {"point": {"meet": ["L7", "L5"]}},
+            "P8": {"point": {"meet": ["L8", "L6"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre A through O. It crosses the horizontal line again at E. Draw circles with centres B, C and D through O. They cross the lines through O again at F, G and H. Join E, F, G and H to mark the tile that repeats.",
+      "create": {
+        "cA": {"circle": {"centre": "A", "through": "O"}},
+        "cB": {"circle": {"centre": "B", "through": "O"}},
+        "cC": {"circle": {"centre": "C", "through": "O"}},
+        "cD": {"circle": {"centre": "D", "through": "O"}},
+        "E": {"point": {"meet": ["cA", "h"], "pick": {"farthest": "O"}}},
+        "F": {"point": {"meet": ["cB", "v"], "pick": {"farthest": "O"}}},
+        "G": {"point": {"meet": ["cC", "h"], "pick": {"farthest": "O"}}},
+        "H": {"point": {"meet": ["cD", "v"], "pick": {"farthest": "O"}}},
+        "tile": {"polygon": ["E", "F", "G", "H"]}
+      },
+      "highlight": ["A", "B", "C", "D"],
+      "animate": "compass"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star: from T1 through P1, T2, P2 and on round, back to T1.",
+    "paths": [
+      {
+        "closed": true,
+        "through": [
+          "T1",
+          "P1",
+          "T2",
+          "P2",
+          "T3",
+          "P3",
+          "T4",
+          "P4",
+          "T5",
+          "P5",
+          "T6",
+          "P6",
+          "T7",
+          "P7",
+          "T8",
+          "P8"
+        ]
+      }
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the diamond tile side by side. Neighbouring stars touch at their slanting points. The space between four stars closes into a cross with notched arms.",
+    "palette": "Timurid tile",
+    "colors": {"star": "a", "cross": "ground"}
+  },
+  "expect": {
+    "note": "Star 8(√2 − 1), cross 8 − 8(√2 − 1), cell 8.",
+    "pieceTypes": 2,
+    "pieces": [
+      {"name": "cross", "vertices": 16, "area": 4.68629, "perCell": 1},
+      {"name": "star", "vertices": 16, "area": 3.31371, "perCell": 1}
+    ],
+    "cellArea": 8
+  }
+}

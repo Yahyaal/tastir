@@ -1,0 +1,145 @@
+{
+  "format": 0,
+  "id": "qaytbay-floor-octagons",
+  "title": "Octagons of the Qaytbay madrasa floor (Cairo)",
+  "short": "Qaytbay floor octagons",
+  "subtitle": "Qaytbay madrasa, Cairo",
+  "fold": 4,
+  "style": "Mamluk",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s W2 drawing, its corners snapped to exact values. We devised the construction; the drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data202/W2: mosaic floor, Qaytbay madrasa",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data202/W2.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing; the construction is ours. He also lists it at the Qalawun complex in Cairo, the Friday mosque of Yazd and in James Wild’s Cairo sketchbook (V&A E.3839:170-1938)."
+    }
+  ],
+  "given": {
+    "O": "The centre of a large octagon.",
+    "A": "A corner of that octagon, where it touches the next one."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "B": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "C": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}}
+      },
+      "highlight": ["h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw the line through O that halves the angle AOB. Draw the line through O that halves the angle BOC. They cross the circle at E, F, G and H.",
+      "create": {
+        "d1": {"line": {"through": "O", "bisects": ["A", "O", "B"]}},
+        "d2": {"line": {"through": "O", "bisects": ["B", "O", "C"]}},
+        "E": {"point": {"meet": ["c", "d1"], "pick": {"angle": 45}}},
+        "F": {"point": {"meet": ["c", "d2"], "pick": {"angle": 135}}},
+        "G": {"point": {"meet": ["c", "d1"], "pick": {"angle": 225}}},
+        "H": {"point": {"meet": ["c", "d2"], "pick": {"angle": 315}}}
+      },
+      "highlight": ["A", "B", "C"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Join A, E, B, F, C, G, D and H with straight lines. This makes the octagon.",
+      "create": {"oct": {"polygon": ["A", "E", "B", "F", "C", "G", "D", "H"]}},
+      "highlight": ["A", "E", "B", "F", "C", "G", "D", "H"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a vertical line through A. Draw a vertical line through C. Draw a horizontal line through B. Draw a horizontal line through D. The four lines make a square with corners K1, K2, K3 and K4. Join them to mark the tile that repeats.",
+      "create": {
+        "tE": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "tW": {"line": {"through": "C", "perpendicularTo": "h"}},
+        "tN": {"line": {"through": "B", "perpendicularTo": "v"}},
+        "tS": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["tE", "tN"]}},
+        "K2": {"point": {"meet": ["tN", "tW"]}},
+        "K3": {"point": {"meet": ["tW", "tS"]}},
+        "K4": {"point": {"meet": ["tS", "tE"]}},
+        "tile": {"polygon": ["K1", "K2", "K3", "K4"]}
+      },
+      "highlight": ["A", "B", "C", "D"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw a straight line through B and E. It crosses the vertical line through A at R. Draw a straight line through A and E. It crosses the horizontal line through B at T.",
+      "create": {
+        "sRE": {"line": {"through": ["B", "E"]}},
+        "R": {"point": {"meet": ["sRE", "tE"]}},
+        "sET": {"line": {"through": ["A", "E"]}},
+        "T": {"point": {"meet": ["sET", "tN"]}}
+      },
+      "highlight": ["A", "B", "E"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Turn the lines through R and T round O by 90°, three times. This copies them to K2, K3 and K4.",
+      "create": {"cp": {"repeat": {"of": ["sRE", "sET"], "by": "rot4"}}},
+      "highlight": ["sRE", "sET"],
+      "animate": "ruler"
+    }
+  ],
+  "ink": {
+    "text": "Ink the large octagon. Ink the two sides of the small octagon at each corner of the tile.",
+    "paths": [
+      {"closed": true, "through": ["A", "E", "B", "F", "C", "G", "D", "H"]},
+      {"along": "sRE", "from": "R", "to": "E"},
+      {"along": "sET", "from": "E", "to": "T"},
+      {"along": "sRE@1", "from": "tN", "to": "F"},
+      {"along": "sET@1", "from": "F", "to": "tW"},
+      {"along": "sRE@2", "from": "tW", "to": "G"},
+      {"along": "sET@2", "from": "G", "to": "tS"},
+      {"along": "sRE@3", "from": "tS", "to": "H"},
+      {"along": "sET@3", "from": "H", "to": "tE"}
+    ],
+    "parts": [
+      {"text": "Ink the large octagon: from A through E, B and on round, back to A.", "paths": 1},
+      {
+        "text": "Ink from R to E and from E to T. These are two sides of the small octagon at K1.",
+        "paths": 2
+      },
+      {"text": "Ink the same two lines at K2, K3 and K4.", "paths": 6}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square tile side by side. The large octagons touch at their corners. A small octagon sits where four tiles touch, with a dart on each side of it.",
+    "palette": "Mamluk wood",
+    "colors": {"octagon": "a", "small_octagon": "c", "dart": "b"}
+  },
+  "expect": {
+    "note": "Large octagon 2√2, small octagon 6√2 − 8, dart 3 − 2√2, cell 4.",
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "octagon", "vertices": 8, "area": 2.82843, "perCell": 1},
+      {"name": "small_octagon", "vertices": 8, "area": 0.48528, "perCell": 1},
+      {"name": "dart", "vertices": 4, "area": 0.17157, "perCell": 4}
+    ],
+    "cellArea": 4
+  }
+}
