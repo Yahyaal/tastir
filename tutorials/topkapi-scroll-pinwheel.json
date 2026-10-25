@@ -1,0 +1,151 @@
+{
+  "format": 0,
+  "id": "topkapi-scroll-pinwheel",
+  "title": "Pinwheel of stars from the Topkapı scroll",
+  "short": "Topkapı scroll pinwheel",
+  "subtitle": "Topkapı scroll, Istanbul",
+  "fold": 4,
+  "star": 8,
+  "chiral": true,
+  "style": "Timurid / Persian",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s R9 drawing of the scroll’s figure, its corners snapped to exact values. We devised the construction; the drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the scroll’s designer laid them out.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data19/R9: Topkapı scroll, page 318, figure 61",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data19/R9.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing of the figure in Gülru Necipoğlu’s The Topkapı Scroll (1995); the construction is ours."
+    }
+  ],
+  "given": {"O": "The centre of a star.", "A": "A point of that star."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. It crosses the circle at B and D. The horizontal line crosses it at A and C. Draw the line through O that halves the angle AOB. Draw the line through O that halves the angle BOC. They cross the circle at E, F, G and H.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "B": {"point": {"meet": ["c", "v"], "pick": {"angle": 90}}},
+        "C": {"point": {"meet": ["c", "h"], "pick": {"angle": 180}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270}}},
+        "d1": {"line": {"through": "O", "bisects": ["A", "O", "B"]}},
+        "d2": {"line": {"through": "O", "bisects": ["B", "O", "C"]}},
+        "E": {"point": {"meet": ["c", "d1"], "pick": {"angle": 45}}},
+        "F": {"point": {"meet": ["c", "d2"], "pick": {"angle": 135}}},
+        "G": {"point": {"meet": ["c", "d1"], "pick": {"angle": 225}}},
+        "H": {"point": {"meet": ["c", "d2"], "pick": {"angle": 315}}}
+      },
+      "highlight": ["h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw a straight line through A and B, B and C, C and D, and D and A. Draw a straight line through E and F, F and G, G and H, and H and E. The two squares make the star.",
+      "create": {
+        "AB": {"line": {"through": ["A", "B"]}},
+        "BC": {"line": {"through": ["B", "C"]}},
+        "CD": {"line": {"through": ["C", "D"]}},
+        "DA": {"line": {"through": ["D", "A"]}},
+        "EF": {"line": {"through": ["E", "F"]}},
+        "FG": {"line": {"through": ["F", "G"]}},
+        "GH": {"line": {"through": ["G", "H"]}},
+        "HE": {"line": {"through": ["H", "E"]}}
+      },
+      "highlight": ["A", "B", "C", "D", "E", "F", "G", "H"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a circle with centre A through B. It crosses the horizontal line at Z3, just past O. Draw a circle with centre B through C. It crosses the vertical line at Z4, just past O. Draw a circle with centre C through D. It crosses the horizontal line at Z1. Draw a circle with centre D through A. It crosses the vertical line at Z2.",
+      "create": {
+        "cA": {"circle": {"centre": "A", "through": "B"}},
+        "Z3": {"point": {"meet": ["cA", "h"], "pick": {"angle": 180}}},
+        "cB": {"circle": {"centre": "B", "through": "C"}},
+        "Z4": {"point": {"meet": ["cB", "v"], "pick": {"angle": 270}}},
+        "cC": {"circle": {"centre": "C", "through": "D"}},
+        "Z1": {"point": {"meet": ["cC", "h"], "pick": {"angle": 0}}},
+        "cD": {"circle": {"centre": "D", "through": "A"}},
+        "Z2": {"point": {"meet": ["cD", "v"], "pick": {"angle": 90}}}
+      },
+      "highlight": ["A", "B", "C", "D"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Draw a straight line through Z1 and Z2, Z2 and Z3, Z3 and Z4, and Z4 and Z1. The line through Z2 and Z3 crosses the circle with centre A again at K1. The line through Z3 and Z4 crosses the circle with centre B again at K2. The line through Z4 and Z1 crosses the circle with centre C again at K3. The line through Z1 and Z2 crosses the circle with centre D again at K4.",
+      "create": {
+        "Z12": {"line": {"through": ["Z1", "Z2"]}},
+        "Z23": {"line": {"through": ["Z2", "Z3"]}},
+        "Z34": {"line": {"through": ["Z3", "Z4"]}},
+        "Z41": {"line": {"through": ["Z4", "Z1"]}},
+        "K1": {"point": {"meet": ["cA", "Z23"], "pick": {"angle": 55}}},
+        "K2": {"point": {"meet": ["cB", "Z34"], "pick": {"angle": 145}}},
+        "K3": {"point": {"meet": ["cC", "Z41"], "pick": {"angle": 235}}},
+        "K4": {"point": {"meet": ["cD", "Z12"], "pick": {"angle": 325}}}
+      },
+      "highlight": ["Z1", "Z2", "Z3", "Z4"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "highlight": ["K1", "K2", "K3", "K4"],
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They run along the sides of the star at O. Some of them carry on to the side of the tile. Four short lines run in from K1, K2, K3 and K4.",
+    "paths": [
+      {"along": "EF", "from": "Z41", "to": "AB"},
+      {"along": "EF", "from": "BC", "to": "Z34"},
+      {"along": "CD", "from": {"cross": "tile", "pick": {"angle": 167.2}}, "to": "FG"},
+      {"along": "CD", "from": "GH", "to": {"cross": "tile", "pick": {"angle": 279.7}}},
+      {"along": "HE", "from": "Z34", "to": "DA"},
+      {"along": "HE", "from": "AB", "to": "Z23"},
+      {"along": "Z41", "from": "K3", "to": "FG"},
+      {"along": "AB", "from": {"cross": "tile", "pick": {"angle": 347.2}}, "to": "HE"},
+      {"along": "AB", "from": "EF", "to": {"cross": "tile", "pick": {"angle": 99.7}}},
+      {"along": "DA", "from": {"cross": "tile", "pick": {"angle": 257.2}}, "to": "GH"},
+      {"along": "DA", "from": "HE", "to": {"cross": "tile", "pick": {"angle": 9.7}}},
+      {"along": "Z23", "from": "K1", "to": "HE"},
+      {"along": "FG", "from": "Z12", "to": "BC"},
+      {"along": "FG", "from": "CD", "to": "Z41"},
+      {"along": "Z12", "from": "K4", "to": "GH"},
+      {"along": "BC", "from": {"cross": "tile", "pick": {"angle": 77.2}}, "to": "EF"},
+      {"along": "BC", "from": "FG", "to": {"cross": "tile", "pick": {"angle": 189.7}}},
+      {"along": "GH", "from": "Z23", "to": "CD"},
+      {"along": "GH", "from": "DA", "to": "Z12"},
+      {"along": "Z34", "from": "K2", "to": "EF"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the tilted tile side by side. Each star has a pentagon in every other notch. A bent boot fills each of the other notches. Four boots turn round each corner of the tile.",
+    "palette": "Timurid tile",
+    "colors": {"star": "a", "boot": "ground", "pentagon": "b"}
+  },
+  "expect": {
+    "note": "Star 8 − 4√2, boot 2 − √2, pentagon 2√2 − 2.5, cell 6.",
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 2.34315, "perCell": 1},
+      {"name": "boot", "vertices": 8, "area": 0.58579, "perCell": 4},
+      {"name": "pentagon", "vertices": 5, "area": 0.32843, "perCell": 4}
+    ],
+    "cellArea": 6
+  }
+}
