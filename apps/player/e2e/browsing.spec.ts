@@ -129,3 +129,41 @@ test('the view switch moves between watching, the result and drawing along', asy
   );
   expect(overflow).toBeLessThanOrEqual(0);
 });
+
+test('the variations of a pattern switch at the same stage', async ({
+  page,
+}) => {
+  await page.goto('/#/');
+  // The library shows the family once, counting its variations.
+  const card = page.locator('.card[href="#/alhambra-star-and-arrows/result"]');
+  await expect(
+    page.locator('.card-item', { has: card }).locator('.variations-label'),
+  ).toHaveText('2 variations');
+  await expect(
+    page.locator('.card[href="#/alhambra-star-and-arrows-shifted/result"]'),
+  ).toHaveCount(0);
+  await card.click();
+  const switcher = page.getByRole('navigation', {
+    name: 'Variations of this pattern',
+  });
+  await expect(switcher).toBeVisible();
+  // It fits on the screen, phones included.
+  const box = await switcher.boundingBox();
+  const width = page.viewportSize()?.width ?? 0;
+  expect((box?.x ?? -1) + (box?.width ?? 0)).toBeLessThanOrEqual(width);
+  await expect(
+    switcher.getByRole('link', {
+      name: 'Alhambra star and arrows',
+      exact: true,
+    }),
+  ).toHaveAttribute('aria-current', 'page');
+  await switcher
+    .getByRole('link', { name: 'Alhambra star and arrows, shifted rows' })
+    .click();
+  await expect(page).toHaveURL(/alhambra-star-and-arrows-shifted\/result$/);
+  await expect(
+    switcher.getByRole('link', {
+      name: 'Alhambra star and arrows, shifted rows',
+    }),
+  ).toHaveAttribute('aria-current', 'page');
+});

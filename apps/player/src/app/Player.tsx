@@ -50,6 +50,7 @@ import { ColourPanel } from './ColourPanel';
 import { Tiles } from './Tiles';
 import { brushOf, refamily, rosetteCounts } from './rosettes';
 import { ViewSwitch, viewAddress, type View } from './ViewSwitch';
+import { Variations } from './Variations';
 import {
   byPlace,
   colorRepeat,
@@ -1076,6 +1077,25 @@ export function Player({
         {browsing ? <PreviousPattern id={address} view={view} /> : null}
         <LessonTitle tutorial={tutorial} />
         {browsing ? <NextPattern id={address} view={view} /> : null}
+        {browsing ? (
+          <Variations
+            id={address}
+            // Another variation opens at the same stage: the colours, the
+            // repeat, or the lesson's start.
+            at={
+              colorStage
+                ? 'result'
+                : stage.kind === 'repeat'
+                  ? 'repeat'
+                  : 'beginning'
+            }
+            guard={(to) => {
+              if (!changed) return false;
+              setLeaving(to);
+              return true;
+            }}
+          />
+        ) : null}
         {mine ? (
           <a
             className="edit-link"

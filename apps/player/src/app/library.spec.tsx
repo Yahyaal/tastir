@@ -7,7 +7,7 @@ import { parseTutorial } from '@tastir/schema';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import App from './app';
-import { entriesOf, LIBRARY } from './library';
+import { entriesOf, grouped, LIBRARY } from './library';
 
 // Tests run from apps/player or from the repo root.
 const TUTORIALS = join(
@@ -403,7 +403,10 @@ describe('the address', () => {
     go('#/eight-fold-star-and-cross');
     act(() => screen.getByRole('button', { name: 'Patterns' }).click());
     const menu = screen.getByRole('dialog', { name: 'Patterns' });
-    expect(within(menu).getAllByRole('link').length).toBe(LIBRARY.length);
+    // A family of variations is listed once.
+    expect(within(menu).getAllByRole('link').length).toBe(
+      grouped(LIBRARY).length,
+    );
     expect(
       within(menu)
         .getByRole('link', { name: 'Eight-fold star and cross' })
@@ -414,6 +417,51 @@ describe('the address', () => {
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
     });
     expect(screen.queryByRole('dialog', { name: 'Patterns' })).toBeNull();
+  }, 30000);
+
+  it('switches between the variations of a pattern at the same stage', () => {
+    render(<App />);
+    go('#/twelve-fold-rosette-mian-hex/result');
+    const switcher = screen.getByRole('navigation', {
+      name: 'Variations of this pattern',
+    });
+    const links = within(switcher).getAllByRole('link');
+    expect(links.map((a) => a.getAttribute('href'))).toEqual([
+      '#/twelve-fold-rosette-mian/result',
+      '#/twelve-fold-rosette-mian-hex/result',
+    ]);
+    expect(links[1]?.getAttribute('aria-current')).toBe('page');
+    go(links[0]?.getAttribute('href') ?? '');
+    expect(
+      within(
+        screen.getByRole('navigation', { name: 'Variations of this pattern' }),
+      )
+        .getAllByRole('link')[0]
+        ?.getAttribute('aria-current'),
+    ).toBe('page');
+    // A pattern with no variations has no switch.
+    go('#/eight-fold-star-and-cross');
+    expect(
+      screen.queryByRole('navigation', { name: 'Variations of this pattern' }),
+    ).toBeNull();
+  }, 30000);
+
+  it('shows a family as one card that counts its variations', () => {
+    render(<App />);
+    expect(document.querySelectorAll('.cards > li').length).toBe(
+      grouped(LIBRARY).length,
+    );
+    const card = document
+      .querySelector('.card[href="#/alhambra-star-and-arrows/result"]')
+      ?.closest('li');
+    expect(card?.querySelector('.variations-label')?.textContent).toBe(
+      '2 variations',
+    );
+    expect(
+      document.querySelector(
+        '.card[href="#/alhambra-star-and-arrows-shifted/result"]',
+      ),
+    ).toBeNull();
   }, 30000);
 
   it('switches to the result in place, and keeps it for the next pattern', () => {

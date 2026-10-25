@@ -1,0 +1,26 @@
+[
+  {
+    "id": "star-and-arrows",
+    "title": "Alhambra star and arrows",
+    "members": ["alhambra-star-and-arrows", "alhambra-star-and-arrows-shifted"]
+  },
+  {
+    "id": "kurt-zellige-wheel",
+    "title": "Eight-fold zellige wheel",
+    "members": [
+      "kurt-eight-fold-zellige",
+      "kurt-eight-fold-zellige-shifted",
+      "kurt-eight-fold-zellige-filled"
+    ]
+  },
+  {
+    "id": "twelve-fold-rosette-mian",
+    "title": "Twelve-fold rosette (Samira Mian’s construction)",
+    "members": ["twelve-fold-rosette-mian", "twelve-fold-rosette-mian-hex"]
+  },
+  {
+    "id": "mian-stellated-rosettes",
+    "title": "Stellated twelve-fold rosettes (Samira Mian)",
+    "members": ["mian-stellated-rosettes", "mian-stellated-hex"]
+  }
+]

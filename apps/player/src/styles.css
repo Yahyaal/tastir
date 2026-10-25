@@ -628,6 +628,66 @@ a.button.primary:hover {
   color: var(--theme-bg-canvas);
 }
 
+/* The pattern's variations (Variations): a pill of small pictures, the
+   open one ringed in the accent. */
+.variations {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 3px 3px 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+}
+
+.variations-name {
+  margin-right: 4px;
+  color: var(--on-lapis-muted);
+  font-size: 0.8rem;
+}
+
+.variations a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  box-sizing: border-box;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  color: var(--on-lapis-muted);
+  font-size: 0.8rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.variations a:hover,
+.variations a:focus-visible {
+  border-color: var(--theme-border-hover);
+  background: var(--theme-bg-raised);
+  color: var(--on-lapis);
+}
+
+.variations a[aria-current='page'] {
+  border-color: var(--saffron);
+  color: var(--on-lapis);
+}
+
+.variations img {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.variations-text {
+  max-width: 9rem;
+  padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Narrower screens keep the room for the pattern's own title: the
    previous and next links show "Previous" and "Next" (their titles stay
    in the tooltip), and below 1180 px the title takes its own line. */
@@ -2271,6 +2331,18 @@ main.stage .drawing:not(.wall) {
 
 .wall.style-jali {
   cursor: grab;
+}
+
+/* A family's card: how many variations of the design it stands for. */
+.variations-label {
+  align-self: flex-start;
+  justify-self: start;
+  width: fit-content;
+  padding: 0 8px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  color: var(--theme-text-muted);
 }
 
 .hidden-label {
@@ -5208,6 +5280,11 @@ svg.tiles {
 
   .player:not(.along) .view-switch {
     order: 5;
+  }
+
+  /* The variations under the view switch, in a row of their own. */
+  .player:not(.along) .topbar .variations {
+    order: 6;
   }
 
   /* The drawing a little shorter, so the step's words show under it. */
