@@ -112,9 +112,9 @@ The inventory below uses the exact library IDs. The detailed entries then give t
 
 The finished design was read from Brian Wichmann’s PG299 drawing. We devised the construction using the star from the drawing, with square size and pointed band ends taken from the photo. The reference does not supply this sequence of steps.
 
-The photograph takes precedence over PG299: its squares are smaller and its band ends are pointed. The tutorial intentionally combines those proportions with Wichmann’s star.
+On 25 October the squares went back to PG299’s size (half-side about 0.77), so that each square’s corner touches a point of the star, as on the shipped photo. The 6 October build took smaller squares (half-side 1/√2) from Wade’s SPA 0111, which left a gap.
 
-**Source-to-app mapping and evidence limits.** PG299 is a vector picture of the completed pattern. The extraction pipeline reads polygon edges and band centrelines; the generator derives exact constructions afterwards. No numbered source-step map exists. The documented square half-side changes from about 0.77 in PG299 to 1/sqrt(2) in the photo, approximately 8% smaller.
+**Source-to-app mapping and evidence limits.** PG299 is a vector picture of the completed pattern. The extraction pipeline reads polygon edges and band centrelines; the generator derives exact constructions afterwards. No numbered source-step map exists. The square half-side is √2/2 · (√2 − √2(3 − √2)/7) ≈ 0.7735, the size at which its corner meets the star’s point.
 
 **Evidence:** `tools/review/alhambra_wichmann/README.md`; `tools/review/alhambra_wichmann/gen_arrayanes_squares.py`; `tutorials/alhambra-arrayanes-squares.json`; `docs/patterns/STATUS.md`.
 

@@ -11,8 +11,8 @@
   "construction": {
     "basis": "reconstruction",
     "fidelity": "not-applicable",
-    "note": "The finished design was read from Brian Wichmann’s PG299 drawing. We devised the construction using the star from the drawing, with square size and pointed band ends taken from the photo. The reference does not supply this sequence of steps.",
-    "changes": "The photograph takes precedence over PG299: its squares are smaller and its band ends are pointed. The tutorial intentionally combines those proportions with Wichmann’s star.",
+    "note": "The finished design was read from Brian Wichmann’s PG299 drawing: each large square’s corner touches a point of the star, as on the real dado. We devised the construction. The reference does not supply this sequence of steps.",
+    "changes": "None: the squares, bands and star follow PG299.",
     "reviewed": "2026-10-21"
   },
   "credits": [
@@ -27,7 +27,7 @@
       "source": "Photograph SPA 0111 (zellige dado, Patio de los Arrayanes)",
       "creator": "David Wade",
       "url": "https://patterninislamicart.com/",
-      "note": "The real dado: the squares’ size and the pointed ends of the band tiles were read from it.",
+      "note": "The real dado, used to check the proportions.",
       "kind": "photo"
     }
   ],
@@ -190,7 +190,7 @@
           "animate": "ruler"
         },
         {
-          "text": "Join S2, S4, S6 and S8 with straight lines. This makes a second square. The two squares make the star.",
+          "text": "Join S2, S4, S6 and S8 with straight lines. This makes a second square. The two squares make the star. The sides of the second square, drawn long, are also the sides of the large squares. Each large square touches the star at a point.",
           "create": {
             "bs0": { "line": { "through": ["S8", "S2"] } },
             "bs90": { "line": { "through": ["S2", "S4"] } },
@@ -203,44 +203,6 @@
     },
     {
       "id": 6,
-      "text": "Draw the large square at K.",
-      "parts": [
-        {
-          "text": "Draw a circle with centre K through R, where the circle through A crosses line OE. It crosses the vertical line at Q1.",
-          "create": {
-            "R": { "point": { "meet": ["c", "d45"], "pick": { "angle": 45.0 } } },
-            "ck": { "circle": { "centre": "K", "through": "R" } },
-            "Q1": { "point": { "meet": ["ck", "v"], "pick": { "nearest": "O" } } }
-          },
-          "highlight": ["K", "R"],
-          "animate": "compass"
-        },
-        {
-          "text": "Draw a line through Q1 parallel to line OE. Draw a line through Q1 parallel to line OF.",
-          "create": {
-            "e1": { "line": { "through": "Q1", "parallelTo": "d45" } },
-            "e2": { "line": { "through": "Q1", "parallelTo": "d135" } }
-          },
-          "highlight": ["Q1"],
-          "animate": "ruler"
-        }
-      ]
-    },
-    {
-      "id": 7,
-      "text": "Draw a line through Q2 parallel to line OF. Draw a line through Q4 parallel to line OE. Q2 and Q4 are where the lines through Q1 cross the horizontal line. The four lines make a square with corners Q1, Q2, Q3 and Q4.",
-      "create": {
-        "Q2": { "point": { "meet": ["h", "e1"] } },
-        "Q4": { "point": { "meet": ["h", "e2"] } },
-        "e3": { "line": { "through": "Q2", "parallelTo": "d135" } },
-        "e4": { "line": { "through": "Q4", "parallelTo": "d45" } },
-        "Q3": { "point": { "meet": ["e3", "e4"] } }
-      },
-      "highlight": ["e1", "e2"],
-      "animate": "ruler"
-    },
-    {
-      "id": 8,
       "text": "Mark each point where the outline of a piece changes direction.",
       "create": {
         "P1": { "point": { "meet": ["x1", "bs0"] } },
@@ -251,26 +213,26 @@
         "P6": { "point": { "meet": ["r67", "y2"] } },
         "P7": { "point": { "meet": ["y2", "bs270"] } },
         "P8": { "point": { "meet": ["x1", "bs270"] } },
-        "X1": { "point": { "meet": ["w1", "e4"] } },
-        "X2": { "point": { "meet": ["w1", "e1"] } },
-        "X3": { "point": { "meet": ["w2", "e2"] } },
-        "X4": { "point": { "meet": ["w2", "e3"] } },
-        "X5": { "point": { "meet": ["w3", "e1"] } },
-        "X6": { "point": { "meet": ["w3", "e4"] } },
-        "X7": { "point": { "meet": ["w4", "e3"] } },
-        "X8": { "point": { "meet": ["w4", "e2"] } }
+        "X1": { "point": { "meet": ["w1", "bs270"] } },
+        "X2": { "point": { "meet": ["w1", "bs90"] } },
+        "X3": { "point": { "meet": ["w2", "bs0"] } },
+        "X4": { "point": { "meet": ["w2", "bs180"] } },
+        "X5": { "point": { "meet": ["w3", "bs90"] } },
+        "X6": { "point": { "meet": ["w3", "bs270"] } },
+        "X7": { "point": { "meet": ["w4", "bs180"] } },
+        "X8": { "point": { "meet": ["w4", "bs0"] } }
       },
       "animate": "fade"
     },
     {
-      "id": 9,
+      "id": 7,
       "text": "The square JKLN is the tile.",
       "create": { "tile": { "polygon": ["J", "K", "L", "N"] } },
       "animate": "fade"
     }
   ],
   "ink": {
-    "text": "Ink the star at O. Ink the corners of the large squares at K, L, N and J. Ink the four short lines from the star to the squares.",
+    "text": "Ink the star at O. Ink the corners of the large squares at K, L, N and J.",
     "paths": [
       {
         "through": [
@@ -293,14 +255,10 @@
           "S1"
         ]
       },
-      { "through": ["X3", "Q1", "X2"] },
-      { "through": ["X4", "Q2", "X5"] },
-      { "through": ["X6", "Q3", "X7"] },
-      { "through": ["X8", "Q4", "X1"] },
-      { "through": ["S2", "Q1"] },
-      { "through": ["S4", "Q2"] },
-      { "through": ["S6", "Q3"] },
-      { "through": ["S8", "Q4"] }
+      { "through": ["X3", "S2", "X2"] },
+      { "through": ["X4", "S4", "X5"] },
+      { "through": ["X6", "S6", "X7"] },
+      { "through": ["X8", "S8", "X1"] }
     ],
     "parts": [
       {
@@ -308,16 +266,12 @@
         "paths": 1
       },
       {
-        "text": "Ink the corner of the large square at K: from X3 through Q1 to X2.",
+        "text": "Ink the corner of the large square at K: from X3 through S2 to X2. The corner is the point S2 of the star.",
         "paths": 1
       },
       {
-        "text": "Ink from X4 through Q2 to X5, at L. Ink from X6 through Q3 to X7, at N. Ink from X8 through Q4 to X1, at J.",
+        "text": "Ink from X4 through S4 to X5, at L. Ink from X6 through S6 to X7, at N. Ink from X8 through S8 to X1, at J.",
         "paths": 3
-      },
-      {
-        "text": "Ink the short lines from S2 to Q1 and from S4 to Q2. Ink the short lines from S6 to Q3 and from S8 to Q4.",
-        "paths": 4
       }
     ]
   },
@@ -378,8 +332,8 @@
   "expect": {
     "pieceTypes": 3,
     "pieces": [
-      { "name": "square", "vertices": 4, "area": 2, "perCell": 1 },
-      { "name": "band", "vertices": 14, "area": 0.87975, "perCell": 2 },
+      { "name": "square", "vertices": 4, "area": 2.39296, "perCell": 1 },
+      { "name": "band", "vertices": 10, "area": 0.68327, "perCell": 2 },
       { "name": "star", "vertices": 16, "area": 0.2405, "perCell": 1 }
     ]
   }

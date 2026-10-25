@@ -9,8 +9,8 @@ describe('the points a step names', () => {
 
   it('counts the points of a line named by them', () => {
     expect([
-      ...namesIn('Draw a line through Q1 parallel to line OF.', scene),
-    ]).toEqual(['Q1', 'O', 'F']);
+      ...namesIn('Draw a line through S2 parallel to line OF.', scene),
+    ]).toEqual(['S2', 'O', 'F']);
   });
 
   it('keeps a point family whole', () => {
