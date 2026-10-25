@@ -1,0 +1,191 @@
+{
+  "format": 0,
+  "id": "alhambra-mexuar-corridor-stars",
+  "title": "Stars and frets of the Mexuar corridor (Alhambra)",
+  "short": "Mexuar corridor stars",
+  "subtitle": "Mexuar corridor, Alhambra",
+  "fold": 4,
+  "star": 8,
+  "chiral": true,
+  "style": "Nasrid",
+  "level": "advanced",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P051 drawing. We devised the construction: the width of the bands is the width of a star point, and the small corner square is one band wide, which fixes the size of the star. The drawing gives no steps.",
+    "changes": "The compass operations, step order and named crossings are our reconstruction. The comparison with the drawing checks the finished lines, not the historical steps. No photo of the real panel was available to check it.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data159/P051: Alhambra, Mexuar Patio corridor",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data159/P051.html",
+      "note": "The design was read from his drawing of the incised stucco panel on the east wall of the corridor from the Mexuar Patio to the Patio de los Arrayanes, made from a photo by John Rigby. It is also Fig. A.6 of Wichmann and Wade, Islamic Design: a Mathematical Approach (2017). The construction is ours.",
+      "kind": "drawing"
+    }
+  ],
+  "given": {"O": "The centre of an eight-pointed star.", "A": "Halfway from O to the next star."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "Draw a straight line through A and C. It crosses the line from O to K1 at H. Draw a horizontal line through H. It crosses the vertical line at E. Draw a straight line through E and F, where the circle crosses the line from O to K1.",
+      "create": {
+        "ac": {"line": {"through": ["A", "C"]}},
+        "H": {"point": {"meet": ["ac", "d45"]}},
+        "hh": {"line": {"through": "H", "parallelTo": "h"}},
+        "E": {"point": {"meet": ["hh", "v"]}},
+        "F": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "ef": {"line": {"through": ["E", "F"]}}
+      },
+      "highlight": ["A", "C"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a circle with centre O through K1. It crosses the horizontal line at G, beyond A. Draw a straight line through G and H. It crosses line EF at Q.",
+      "create": {
+        "ck": {"circle": {"centre": "O", "through": "K1"}},
+        "G": {"point": {"meet": ["ck", "h"], "pick": {"angle": 0.0}}},
+        "gh": {"line": {"through": ["G", "H"]}},
+        "Q": {"point": {"meet": ["gh", "ef"]}}
+      },
+      "highlight": ["K1"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Draw a vertical line through Q. It crosses the line from O to K1 at S. Draw a horizontal line through Q. Draw a circle with centre Q through S. It crosses the vertical line through Q again at R. Draw a horizontal line through R.",
+      "create": {
+        "qv": {"line": {"through": "Q", "parallelTo": "v"}},
+        "S": {"point": {"meet": ["qv", "d45"]}},
+        "qh": {"line": {"through": "Q", "parallelTo": "h"}},
+        "cq": {"circle": {"centre": "Q", "through": "S"}},
+        "R": {"point": {"meet": ["cq", "qv"], "pick": {"angle": 69.374}}},
+        "rh": {"line": {"through": "R", "parallelTo": "h"}}
+      },
+      "highlight": ["Q"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a circle with centre O through S. It crosses the horizontal line at U, between O and A. Draw a line through U parallel to line AC. It is a side of the turned square of the star.",
+      "create": {
+        "cs": {"circle": {"centre": "O", "through": "S"}},
+        "U": {"point": {"meet": ["cs", "h"], "pick": {"angle": 0.0}}},
+        "ud": {"line": {"through": "U", "parallelTo": "ac"}}
+      },
+      "highlight": ["S"],
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "Turn line AC and the lines of the last two steps round O by 90°, three times.",
+      "create": {"cp": {"repeat": {"of": ["ac", "qv", "qh", "rh", "ud"], "by": "rot4"}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O and the long frets that turn round it. Ink the small square at each corner of the cell.",
+    "paths": [
+      {"along": "ac", "from": "h", "to": "rh@3"},
+      {"along": "ac", "from": "rh", "to": "v"},
+      {"along": "qv", "from": "rh@2", "to": "qh@2"},
+      {"along": "qv", "from": "qv@3", "to": "ud@3"},
+      {"along": "qv", "from": "ud", "to": "d45"},
+      {"along": "qh", "from": "qv@2", "to": "ud"},
+      {"along": "qh", "from": "ud@1", "to": "rh@3"},
+      {"along": "rh", "from": "gxw", "to": "qh@1"},
+      {"along": "rh", "from": "qv@2", "to": "ac@1"},
+      {"along": "rh", "from": "ac", "to": "gx"},
+      {"along": "ud", "from": "qh@3", "to": "qv"},
+      {"along": "ud", "from": "qv@1", "to": "qh"},
+      {"along": "ac@1", "from": "v", "to": "rh"},
+      {"along": "ac@1", "from": "rh@1", "to": "h"},
+      {"along": "ac@2", "from": "h", "to": "rh@1"},
+      {"along": "ac@2", "from": "rh@2", "to": "v"},
+      {"along": "ac@3", "from": "v", "to": "rh@2"},
+      {"along": "ac@3", "from": "rh@3", "to": "h"},
+      {"along": "qv@1", "from": "rh@3", "to": "qh@3"},
+      {"along": "qv@1", "from": "d45", "to": "ud"},
+      {"along": "qv@1", "from": "ud@1", "to": "qv@2"},
+      {"along": "qv@2", "from": "rh", "to": "qh"},
+      {"along": "qv@2", "from": "qv@1", "to": "ud@1"},
+      {"along": "qv@2", "from": "ud@2", "to": "d45"},
+      {"along": "qv@3", "from": "rh@1", "to": "qh@1"},
+      {"along": "qv@3", "from": "d45", "to": "ud@2"},
+      {"along": "qv@3", "from": "ud@3", "to": "qv"},
+      {"along": "qh@1", "from": "qv@3", "to": "ud@1"},
+      {"along": "qh@1", "from": "ud@2", "to": "rh"},
+      {"along": "qh@2", "from": "qv", "to": "ud@2"},
+      {"along": "qh@2", "from": "ud@3", "to": "rh@1"},
+      {"along": "qh@3", "from": "qv@1", "to": "ud@3"},
+      {"along": "qh@3", "from": "ud", "to": "rh@2"},
+      {"along": "rh@1", "from": "gys", "to": "qh@2"},
+      {"along": "rh@1", "from": "qv@3", "to": "ac@2"},
+      {"along": "rh@1", "from": "ac@1", "to": "gy"},
+      {"along": "rh@2", "from": "gx", "to": "qh@3"},
+      {"along": "rh@2", "from": "qv", "to": "ac@3"},
+      {"along": "rh@2", "from": "ac@2", "to": "gxw"},
+      {"along": "rh@3", "from": "gy", "to": "qh"},
+      {"along": "rh@3", "from": "qv@1", "to": "ac"},
+      {"along": "rh@3", "from": "ac@3", "to": "gys"},
+      {"along": "ud@1", "from": "qh", "to": "qv@1"},
+      {"along": "ud@1", "from": "qv@2", "to": "qh@1"},
+      {"along": "ud@2", "from": "qh@1", "to": "qv@2"},
+      {"along": "ud@2", "from": "qv@3", "to": "qh@2"},
+      {"along": "ud@3", "from": "qh@2", "to": "qv@3"},
+      {"along": "ud@3", "from": "qv", "to": "qh@3"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. The frets turn round each star like a pinwheel. A small square joins four frets.",
+    "palette": "Alhambra",
+    "look": "strapwork",
+    "colors": {"ground": "ground", "star": "a", "fret": "c", "square": "d"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "ground", "vertices": 15, "area": 0.5, "perCell": 4},
+      {"name": "star", "vertices": 16, "area": 0.49688, "perCell": 1},
+      {"name": "fret", "vertices": 10, "area": 0.35759, "perCell": 4},
+      {"name": "square", "vertices": 4, "area": 0.07277, "perCell": 1}
+    ]
+  }
+}
