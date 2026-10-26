@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is in progress; C268A and P164 are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
+Group A is in progress; C268A, P164 and MOR2615 are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -28,3 +28,11 @@ I inspected the wall beside the GIF and `docs/research/tilingsearch-45/P164/over
 The catalog, six targeted golden checks and all 34 schema tests passed. The first player check found missing helper-free wording for the midpoint diagonals; the corrected text describes the single visible diagonal through N. All 435 player text checks then passed. All checks used the memory cap. No shared application or engine files changed.
 
 A final helper-line inspection also showed that P164 retains all four cell sides. Its helper-free opening now says to draw all four; this corrects wording only and preserves the evaluated geometry.
+
+## MOR2615 — built as `tetouan-sakkala-knots`
+
+The tutorial has nine steps. The PDF has 5 pt bands and a 233.13 pt square repeat. OA = 116.565 pt is also the snapping unit, with worst source-corner error 0.00069 OA. All neighbouring stars have the same surroundings, so this cell spans a single star spacing. The first five steps reuse the Leones-door star; the corner circles then locate V, whose horizontal line closes each square knot. The finished design differs from the Leones doors and from C268A in its corner pieces and connecting lines, so it is a separate design with a shared opening.
+
+With H = √2/2, the source-polygon shoelace areas are hexagon 9 − 12H, two; star 40 − 56H, one; eight 6 − 8H, four; triangle 3/2 − 2H, four; kite −7 + 10H, eight; square 34 − 48H, one; and pentagon −31/2 + 22H, four. The counted areas sum to exactly 4 + 0H. The engine gives the same seven types and counts, with no slivers.
+
+I inspected the wall beside the GIF and `docs/research/tilingsearch-45/MOR2615/overlay.png`. The red lines follow the bands throughout, including the square knots. MOR2615 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits name Wade MOR 2615x and the page's additional EPC 039 link. The tutorial records the centre-line representation and illustrative palette. The catalog, six targeted golden checks, all 440 player text checks and all 34 schema tests passed under the memory cap. The generator supplies specific text for the corner diagonals when helper lines are hidden.
