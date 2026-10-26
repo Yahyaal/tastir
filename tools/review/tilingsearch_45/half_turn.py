@@ -17,8 +17,9 @@ def run(build, spec):
     ox, oy, unit, band, hx, hy = spec['frame']
     polygons = cm.frame_pieces(pieces, (ox, oy), 2 * unit, band)
     paths = cm.along_ink(cm.network(polygons, hcell=hx, vcell=hy, reach=4 * max(hx, hy)))
-    step('Join N1, N2, N3 and N4 to mark the tile that repeats.', 'fade')
-    put('tile', 'polygon', None, {'polygon': ['N1', 'N2', 'N3', 'N4']})
+    corners = spec.get('corners', ['N1', 'N2', 'N3', 'N4'])
+    step(f'Join {corners[0]}, {corners[1]}, {corners[2]} and {corners[3]} to mark the tile that repeats.', 'fade')
+    put('tile', 'polygon', None, {'polygon': corners})
     expected = []
     colors = {}
     for name, vertices, a, b, count, color in spec['pieces']:
@@ -45,7 +46,7 @@ def run(build, spec):
         'ink': {'text': 'Ink the lines picked out in orange.', 'paths': paths},
         'pattern': {'cell': 'tile', 'palette': spec.get('palette', 'Timurid tile'),
                     'look': spec.get('look', 'tiles'), 'colors': colors,
-                    'text': 'Put copies of the rectangular tile side by side.'},
+                    'text': 'Put copies of the ' + ('square' if abs(hx-hy) < 1e-10 else 'rectangular') + ' tile side by side.'},
         'expect': {'pieceTypes': len(expected), 'pieces': expected},
     }
     if spec.get('star'):
