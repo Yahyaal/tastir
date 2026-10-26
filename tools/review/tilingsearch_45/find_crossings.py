@@ -13,6 +13,7 @@ import math
 
 import common as cm
 
+SCALE = 1   # set to 3 when the drawing's unit is a third of OA
 DIRS = {0: (0.0, 1.0), 45: (-math.sqrt(0.5), math.sqrt(0.5)), 90: (-1.0, 0.0), 135: (-math.sqrt(0.5), -math.sqrt(0.5))}
 
 
@@ -21,10 +22,11 @@ def line_key(a, b):
     ang = round(math.degrees(math.atan2(d[1], d[0])) / 45) * 45 % 180
     n = DIRS[ang]
     c = a[0] * n[0] + a[1] * n[1]
-    # snap 2c to a + b·√2/2
+    # snap 2c·SCALE to a + b·√2/2
     H = math.sqrt(0.5)
-    best = min(((abs(2 * c - k - j * H), k + j * H) for j in range(-16, 17) for k in [round(2 * c - j * H)]))
-    return ang, round(best[1] / 2, 9)
+    m = 2 * SCALE
+    best = min(((abs(m * c - k - j * H), k + j * H) for j in range(-16, 17) for k in [round(m * c - j * H)]))
+    return ang, round(best[1] / m, 9)
 
 
 def have(key):
