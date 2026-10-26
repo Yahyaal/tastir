@@ -18,7 +18,10 @@ P18B areas (OA², H = √2/2): shield 1/2 + 4H (twenty), long hexagon 3 (sixteen
 star 8 − 8H (eight), eight 2 (twenty), petal 2 (sixty-four), seven 1/2 + 2H
 (forty), arrow −1 + 4H (sixteen), triangle 1/2 (twenty), dart 2H (sixty-four),
 small dart 2 − 2H (sixteen), kite −1 + 2H (sixty-four); together
-272 + 384H = 4(6 + 8H)², the cell. In the code the dart of area 2H is the
+272 + 384H = 4(6 + 8H)², the cell. P18A has twelve shields, eight small darts,
+twenty-eight eights and triangles, forty-eight petals, fifty-six sevens and
+darts, eight hexagons, and two new eight-sided pieces in the ring, −3 + 8H and
+5 − 4H (eight each); the same sum. In the code the dart of area 2H is the
 rhombus and the small dart is the dart.
 """
 import math
@@ -98,8 +101,8 @@ def build():
     if not top:
         step('Draw a circle with centre W4 and radius OA. It crosses the horizontal line at Y, to the right.',
              'compass')
-        cm.circle_radius_of('cy', 'W4', 'c')
-        g.meet('Y', 'cy', 'h', (5+5*H, 0))
+        cm.circle_radius_of('cwy', 'W4', 'c')
+        g.meet('Y', 'cwy', 'h', (5+5*H, 0))
 
     us = ['U1', 'U2', 'U3', 'U4', 'U5'] + (['U6'] if top else [])
     ns = us + [f'W{i+1}' for i in range(len(ws))] + ([] if top else ['Y'])
@@ -195,12 +198,39 @@ RULES_B = [
 ]
 COUNTS_B = {'shield': 20, 'long_hexagon': 16, 'star': 8, 'eight': 20, 'petal': 64, 'seven': 40, 'hexagon': 16,
             'rhombus': 64, 'dart': 16, 'triangle': 20, 'kite': 64}
-NAMES, RULES, COUNTS = {'B': (NAMES_B, RULES_B, COUNTS_B)}.get(VARIANT, ({}, [], {}))
+# P18A: Wichmann's yellow takes the honey slot.
+NAMES_A = {
+    (9, 3.328): ('shield', 'ground'), (6, 3.0): ('long_hexagon', 'b'), (8, 2.657): ('ring_eight', 'd'),
+    (16, 2.343): ('star', 'a'), (8, 2.172): ('short_eight', 'a'), (8, 2.0): ('eight', 'd'),
+    (6, 2.0): ('petal', 'c'), (7, 1.914): ('seven', 'ground'), (6, 1.828): ('hexagon', 'a'),
+    (4, 1.414): ('rhombus', 'ground'), (4, 0.586): ('dart', 'ground'), (3, 0.5): ('triangle', 'ground'),
+    (4, 0.414): ('kite', 'ground')}
+RULES_A = [
+    ('long_hexagon', 'c', (5, 6, 7, 8, 9, 10, 11, 13)),
+    ('star', RED, (0,)),
+    ('star', ORANGE, (1, 2, 3, 4, 6, 7)),
+    ('eight', 'b', (0, 1, 6, 22)),
+    ('eight', RED, (7, 10, 11, 14, 15, 18, 19, 23)),
+    ('petal', 'ground', (0, 3, 12, 13, 16, 17, 24, 27, 34, 35, 38, 39)),
+    ('petal', ORANGE, (1, 2, 4, 5, 6, 9, 18, 32, 42, 45, 46, 47)),
+    ('seven', 'a', (2, 3, 6, 7, 10, 11, 22, 25, 30, 33, 44, 45, 48, 49, 52, 53)),
+    ('seven', 'c', (4, 5, 8, 9, 16, 17, 23, 24, 31, 32, 38, 39, 46, 47, 50, 51)),
+    ('rhombus', ORANGE, (0, 3, 10, 13, 42, 45, 52, 55)),
+    ('rhombus', RED, (11, 12, 14, 15, 21, 22, 24, 27, 28, 31, 33, 34, 40, 41, 43, 44)),
+    ('triangle', ORANGE, (0, 1, 6, 22)),
+    ('triangle', 'a', (7, 10, 11, 14, 15, 18, 19, 23)),
+]
+COUNTS_A = {'shield': 12, 'long_hexagon': 16, 'ring_eight': 8, 'star': 8, 'short_eight': 8, 'eight': 28,
+            'petal': 48, 'seven': 56, 'hexagon': 8, 'rhombus': 56, 'dart': 8, 'triangle': 28, 'kite': 64}
+NAMES, RULES, COUNTS = {'B': (NAMES_B, RULES_B, COUNTS_B), 'A': (NAMES_A, RULES_A, COUNTS_A)}[VARIANT]
 SPEC['expect'] = {'pieceTypes': len(NAMES), 'pieces': [
     {'name': nm, 'vertices': v, 'area': a, 'perCell': COUNTS[nm]} for (v, a), (nm, _) in NAMES.items()]}
+if not NAMES:
+    del SPEC['expect']
 SPEC['small'] = {'dart', 'triangle', 'kite'}
-SPEC['placements'] = {'repeat': [1, 1], 'rules': [
-    {'piece': nm, 'nth': n, 'color': col} for nm, col, ns in RULES for n in ns]}
+if RULES:
+    SPEC['placements'] = {'repeat': [1, 1], 'rules': [
+        {'piece': nm, 'nth': n, 'color': col} for nm, col, ns in RULES for n in ns]}
 
 if __name__ == '__main__':
     if VARIANT == 'A':
