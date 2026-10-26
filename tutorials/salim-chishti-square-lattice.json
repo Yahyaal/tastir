@@ -1,0 +1,134 @@
+{
+  "format": 0,
+  "id": "salim-chishti-square-lattice",
+  "title": "Square lattice of Salim Chishti’s tomb (Fatehpur Sikri)",
+  "short": "Salim Chishti square lattice",
+  "subtitle": "Salim Chishti’s tomb, Fatehpur Sikri, lower pattern",
+  "given": {"O": "The centre of a small square.", "A": "The midpoint of its right-hand side."},
+  "fold": 4,
+  "style": "Mughal",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Wichmann’s data206/SM3 drawing. Its polygon edges already coincide; the ochre stroke is not a gap between inset tiles. Half the small-square side gives the unit. Two radii and a unit-square diagonal give the half-side 2 + square root of two; four diagonals then close the pentagons and hexagons. The drawing gives no steps; we devised the construction.",
+    "changes": "The compass steps, their order and the named points are ours. The shared polygon boundaries follow the plain drawing; no band expansion is applied. The palette is illustrative; no photograph was checked. The lower pattern is the one identified by the source.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data206/SM3: Salim Chishti’s tomb, Fatehpur Sikri, lower pattern",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data206/SM3.html",
+      "note": "Read from his finished drawing, not construction instructions. His reference is E. W. Smith, The Moghul Architecture of Fathpur-Sikri (1896), part II, plate XXVIII, figure 4, Salim Chishti’s tomb, Fatehpur Sikri, India (1581). This is data206/SM3, distinct from the related data205/SM3 cited on the IRAN16 page."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. The upper-right corner is E. Draw a straight line through O and E. Draw a straight line through A and C.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "ax": {"line": {"through": "A", "parallelTo": "v"}},
+        "bx": {"line": {"through": "B", "parallelTo": "v"}},
+        "cy": {"line": {"through": "C", "parallelTo": "h"}},
+        "dy": {"line": {"through": "D", "parallelTo": "h"}},
+        "E": {"point": {"meet": ["ax", "cy"]}},
+        "d45": {"line": {"through": ["O", "E"]}},
+        "ac": {"line": {"through": ["A", "C"]}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. The upper-right corner is E. Draw a straight line through O and E."
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre A through O. It crosses the horizontal line at F, beyond A. Draw a circle with centre F and radius OE. It crosses the horizontal line at G, to the right.",
+      "create": {
+        "ca": {"circle": {"centre": "A", "through": "O"}},
+        "F": {"point": {"meet": ["ca", "h"], "pick": {"farthest": "O"}}},
+        "cf": {"circle": {"centre": "F", "radiusFrom": ["O", "E"]}},
+        "G": {"point": {"meet": ["cf", "h"], "pick": {"farthest": "O"}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a circle with centre O through G. It crosses the horizontal and vertical lines at T1 to T4. Draw a vertical line through each of T1 and T3. Draw a horizontal line through each of T2 and T4. They make a square with corners K1, K2, K3 and K4.",
+      "create": {
+        "co": {"circle": {"centre": "O", "through": "G"}},
+        "T1": {"point": {"meet": ["co", "h"], "pick": {"angle": 0.0}}},
+        "T2": {"point": {"meet": ["co", "v"], "pick": {"angle": 90.0}}},
+        "T3": {"point": {"meet": ["co", "h"], "pick": {"angle": 180.0}}},
+        "T4": {"point": {"meet": ["co", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "T1", "parallelTo": "v"}},
+        "gy": {"line": {"through": "T2", "parallelTo": "h"}},
+        "gxw": {"line": {"through": "T3", "parallelTo": "v"}},
+        "gys": {"line": {"through": "T4", "parallelTo": "h"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Draw a line through T1 parallel to line AC. Turn it round O by 90°, three times.",
+      "create": {
+        "dd": {"line": {"through": "T1", "parallelTo": "ac"}},
+        "dp": {"repeat": {"of": ["dd"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They close the square, the four pentagons and the four hexagons.",
+    "paths": [
+      {"along": "ax", "from": "dd@3", "to": "dd"},
+      {"along": "bx", "from": "dd@2", "to": "dd@1"},
+      {"along": "cy", "from": "dd@1", "to": "dd"},
+      {"along": "dy", "from": "dd@2", "to": "dd@3"},
+      {"along": "gxw", "from": "d45", "to": "gy"},
+      {"along": "gys", "from": "d45", "to": "gx"},
+      {"along": "dd", "from": "h", "to": "cy"},
+      {"along": "dd", "from": "ax", "to": "v"},
+      {"along": "dd@1", "from": "v", "to": "bx"},
+      {"along": "dd@1", "from": "cy", "to": "h"},
+      {"along": "dd@2", "from": "h", "to": "dy"},
+      {"along": "dd@2", "from": "bx", "to": "v"},
+      {"along": "dd@3", "from": "v", "to": "ax"},
+      {"along": "dd@3", "from": "dy", "to": "h"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Timurid tile",
+    "look": "strapwork",
+    "colors": {"hexagon": "a", "square": "b", "pentagon": "c"},
+    "text": "Put copies of the square tile side by side."
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "hexagon", "vertices": 6, "area": 6.82843, "perCell": 4},
+      {"name": "square", "vertices": 4, "area": 4, "perCell": 1},
+      {"name": "pentagon", "vertices": 5, "area": 3.82843, "perCell": 4}
+    ]
+  }
+}

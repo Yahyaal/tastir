@@ -1,12 +1,17 @@
 """Reads the pieces of a Tiling Search vector drawing: the filled polygons of
 the PDF, cleaned (back-tracking spikes and collinear corners removed).
-Usage: 1_pieces.py <name> [--no-grey]   (--no-grey drops grey fills, the bevels of drawn bands)   reads <name>-vec.json, writes <name>-pieces.json
+Usage: 1_pieces.py <name> [--no-grey] [--precision n]   (--no-grey drops grey fills, the bevels of drawn bands)   reads <name>-vec.json, writes <name>-pieces.json
 Run from docs/research/alhambra-wichmann/."""
 import json, math, sys
 name = sys.argv[1]
 segs = json.load(open(f'{name}-vec.json'))
+# Keep the historical 0.1 pt chaining grid unless a fine-unit drawing
+# needs more precision. This does not change existing callers.
+precision = int(sys.argv[sys.argv.index('--precision') + 1]) if '--precision' in sys.argv else 1
+if not 1 <= precision <= 6:
+    raise ValueError('--precision must be between 1 and 6')
 def clean(P):
-    P = [tuple(round(c, 2) for c in p) for p in P]
+    P = [tuple(round(c, max(2, precision)) for c in p) for p in P]
     changed = True
     while changed and len(P) > 2:
         changed = False
@@ -26,7 +31,7 @@ def clean(P):
 def chain(lines):
     """The outline from the drawing's segments: a segment drawn back and
     forth (a spike) cancels out, the rest is followed end to start."""
-    key = lambda p: (round(p[0], 1), round(p[1], 1))
+    key = lambda p: (round(p[0], precision), round(p[1], precision))
     segs = [(key(a), key(b)) for a, b in lines if key(a) != key(b)]
     from collections import Counter
     cnt = Counter(segs)

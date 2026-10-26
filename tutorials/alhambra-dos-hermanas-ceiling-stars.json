@@ -1,0 +1,227 @@
+{
+  "format": 0,
+  "id": "alhambra-dos-hermanas-ceiling-stars",
+  "title": "Pointed stars of the Dos Hermanas side-chamber ceiling (Alhambra)",
+  "short": "Dos Hermanas ceiling stars",
+  "subtitle": "Sala de las Dos Hermanas, Alhambra",
+  "given": {"O": "The centre of a small star.", "A": "Sets the point radius of the larger stars."},
+  "fold": 4,
+  "star": 8,
+  "style": "Nasrid",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Wichmann’s NC5 vector drawing. Its band centre lines were snapped to exact half-unit square-root-of-two values. Every edge is a side of one of four eight-pointed stars with 45-degree tips, continued. The circle transfer through E locates their centres, and the crossings make the small central star. The drawing gives no steps; we devised the construction.",
+    "changes": "The compass steps, their order and the named points are ours. The 8 pt bands are represented by their centre lines. The palette is illustrative; no photograph of the ceiling was checked.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data174/NC5: Sala de las Dos Hermanas, Alhambra",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data174/NC5.html",
+      "note": "Read from his finished drawing, not construction instructions. His reference is Nick Crossling’s photograph, personal communication, of wood inlay in a side gallery of the Sala de las Dos Hermanas. The page locates the design at the end section of a side-chamber ceiling."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass",
+      "textWithoutHelpers": "Draw a circle with centre O through A."
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. It crosses the circle at C, above O. Draw the line through O that halves the angle AOC. It crosses the circle at E, above O. Draw a circle with centre E through O. It crosses line OE again at B1, beyond E.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "d45": {"line": {"through": "O", "bisects": ["A", "O", "C"]}},
+        "E": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "ce": {"circle": {"centre": "E", "through": "O"}},
+        "B1": {"point": {"meet": ["ce", "d45"], "pick": {"farthest": "O"}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre B1 through E. Draw a horizontal line through B1. Draw a vertical line through B1. Draw a line through B1 at 90° to line OE. The circle crosses the four lines through B1 at S1 to S8.",
+      "create": {
+        "cs": {"circle": {"centre": "B1", "through": "E"}},
+        "bh": {"line": {"through": "B1", "parallelTo": "h"}},
+        "bv": {"line": {"through": "B1", "parallelTo": "v"}},
+        "bd": {"line": {"through": "B1", "perpendicularTo": "d45"}},
+        "S1": {"point": {"meet": ["cs", "bh"], "pick": {"angle": 30.361}}},
+        "S2": {"point": {"meet": ["cs", "d45"], "pick": {"farthest": "O"}}},
+        "S3": {"point": {"meet": ["cs", "bv"], "pick": {"angle": 59.639}}},
+        "S4": {"point": {"meet": ["cs", "bd"], "pick": {"angle": 71.565}}},
+        "S5": {"point": {"meet": ["cs", "bh"], "pick": {"angle": 73.675}}},
+        "S6": {"point": {"meet": ["cs", "d45"], "pick": {"nearest": "O"}}},
+        "S7": {"point": {"meet": ["cs", "bv"], "pick": {"angle": 16.325}}},
+        "S8": {"point": {"meet": ["cs", "bd"], "pick": {"angle": 18.435}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw the eight-pointed star at B1.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a straight line through S1 and S4, S3 and S6, S5 and S8, and S7 and S2. Draw each line long.",
+          "create": {
+            "q0": {"line": {"through": ["S1", "S4"]}},
+            "q2": {"line": {"through": ["S3", "S6"]}},
+            "q4": {"line": {"through": ["S5", "S8"]}},
+            "q6": {"line": {"through": ["S7", "S2"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through S2 and S5, S4 and S7, S6 and S1, and S8 and S3. Draw each line long.",
+          "create": {
+            "q1": {"line": {"through": ["S2", "S5"]}},
+            "q3": {"line": {"through": ["S4", "S7"]}},
+            "q5": {"line": {"through": ["S6", "S1"]}},
+            "q7": {"line": {"through": ["S8", "S3"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "text": "Turn the eight lines of the last step round O by 90°, three times.",
+      "create": {"qp": {"repeat": {"of": ["q0", "q1", "q2", "q3", "q4", "q5", "q6", "q7"], "by": "rot4"}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw a vertical line through S1. Turn it round O by 90°, three times. These four lines make a square with corners K1, K2, K3 and K4.",
+      "create": {
+        "gx": {"line": {"through": "S1", "parallelTo": "v"}},
+        "grid": {"repeat": {"of": ["gx"], "by": "rot4"}},
+        "K1": {"point": {"meet": ["gx", "gx@1"]}},
+        "K2": {"point": {"meet": ["gx@1", "gx@2"]}},
+        "K3": {"point": {"meet": ["gx@2", "gx@3"]}},
+        "K4": {"point": {"meet": ["gx@3", "gx"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They close the pointed stars, the small centre star and the connecting pieces.",
+    "paths": [
+      {"along": "q0", "from": "bh", "to": "q6"},
+      {"along": "q0", "from": "q2", "to": "v"},
+      {"along": "q2", "from": "bv", "to": "q0"},
+      {"along": "q2", "from": "q4", "to": "h"},
+      {"along": "q2", "from": "q5@2", "to": "q1@2"},
+      {"along": "q4", "from": "v", "to": "q2"},
+      {"along": "q4", "from": "q6", "to": "q5@2"},
+      {"along": "q6", "from": "q5@2", "to": "q4"},
+      {"along": "q6", "from": "q0", "to": "gx@1"},
+      {"along": "q1", "from": "gx", "to": "q7"},
+      {"along": "q1", "from": "q3", "to": "q2@2"},
+      {"along": "q3", "from": "q2@2", "to": "q1"},
+      {"along": "q3", "from": "q5", "to": "h"},
+      {"along": "q5", "from": "q6@2", "to": "q2@2"},
+      {"along": "q5", "from": "v", "to": "q3"},
+      {"along": "q5", "from": "q7", "to": "bh"},
+      {"along": "q7", "from": "h", "to": "q5"},
+      {"along": "q7", "from": "q1", "to": "bv"},
+      {"along": "q0@1", "from": "q5@1", "to": "q6@1"},
+      {"along": "q0@1", "from": "q2@1", "to": "h"},
+      {"along": "q0@2", "from": "q5@2", "to": "q6@2"},
+      {"along": "q0@2", "from": "q2@2", "to": "v"},
+      {"along": "q0@3", "from": "bv", "to": "q6@3"},
+      {"along": "q0@3", "from": "q2@3", "to": "h"},
+      {"along": "q1@1", "from": "gx@1", "to": "q7@1"},
+      {"along": "q1@1", "from": "q3@1", "to": "q2@3"},
+      {"along": "q1@2", "from": "gx@2", "to": "q7@2"},
+      {"along": "q1@2", "from": "q3@2", "to": "q2"},
+      {"along": "q1@3", "from": "gx@3", "to": "q7@3"},
+      {"along": "q1@3", "from": "q3@3", "to": "q2@1"},
+      {"along": "q2@1", "from": "bh", "to": "q0@1"},
+      {"along": "q2@1", "from": "q4@1", "to": "v"},
+      {"along": "q2@1", "from": "d45", "to": "q1@3"},
+      {"along": "q2@2", "from": "q7@2", "to": "q0@2"},
+      {"along": "q2@2", "from": "q4@2", "to": "h"},
+      {"along": "q2@2", "from": "q5", "to": "q1"},
+      {"along": "q2@3", "from": "q7@3", "to": "q0@3"},
+      {"along": "q2@3", "from": "q4@3", "to": "v"},
+      {"along": "q2@3", "from": "d45", "to": "q1@1"},
+      {"along": "q3@1", "from": "q2@3", "to": "q1@1"},
+      {"along": "q3@1", "from": "q5@1", "to": "v"},
+      {"along": "q3@2", "from": "q2", "to": "q1@2"},
+      {"along": "q3@2", "from": "q5@2", "to": "h"},
+      {"along": "q3@3", "from": "q2@1", "to": "q1@3"},
+      {"along": "q3@3", "from": "q5@3", "to": "v"},
+      {"along": "q4@1", "from": "h", "to": "q2@1"},
+      {"along": "q4@1", "from": "q6@1", "to": "q5@3"},
+      {"along": "q4@2", "from": "v", "to": "q2@2"},
+      {"along": "q4@2", "from": "q6@2", "to": "q5"},
+      {"along": "q4@3", "from": "h", "to": "q2@3"},
+      {"along": "q4@3", "from": "q6@3", "to": "q5@1"},
+      {"along": "q5@1", "from": "q6@3", "to": "d45"},
+      {"along": "q5@1", "from": "h", "to": "q3@1"},
+      {"along": "q5@1", "from": "q7@1", "to": "q0@1"},
+      {"along": "q5@2", "from": "q6", "to": "q2"},
+      {"along": "q5@2", "from": "v", "to": "q3@2"},
+      {"along": "q5@2", "from": "q7@2", "to": "q0@2"},
+      {"along": "q5@3", "from": "q6@1", "to": "d45"},
+      {"along": "q5@3", "from": "h", "to": "q3@3"},
+      {"along": "q5@3", "from": "q7@3", "to": "bv"},
+      {"along": "q6@1", "from": "q5@3", "to": "q4@1"},
+      {"along": "q6@1", "from": "q0@1", "to": "gx@2"},
+      {"along": "q6@2", "from": "q5", "to": "q4@2"},
+      {"along": "q6@2", "from": "q0@2", "to": "gx@3"},
+      {"along": "q6@3", "from": "q5@1", "to": "q4@3"},
+      {"along": "q6@3", "from": "q0@3", "to": "gx"},
+      {"along": "q7@1", "from": "v", "to": "q5@1"},
+      {"along": "q7@1", "from": "q1@1", "to": "bh"},
+      {"along": "q7@2", "from": "h", "to": "q5@2"},
+      {"along": "q7@2", "from": "q1@2", "to": "q2@2"},
+      {"along": "q7@3", "from": "v", "to": "q5@3"},
+      {"along": "q7@3", "from": "q1@3", "to": "q2@3"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Alhambra",
+    "look": "interlace",
+    "colors": {
+      "pointed_star": "a",
+      "eight": "b",
+      "star": "d",
+      "hexagon": "c",
+      "four_star": "d",
+      "short_hexagon": "ground",
+      "rhombus": "ground",
+      "kite": "ground"
+    },
+    "text": "Put copies of the square tile side by side."
+  },
+  "expect": {
+    "pieceTypes": 8,
+    "pieces": [
+      {"name": "pointed_star", "vertices": 16, "area": 1.65685, "perCell": 4},
+      {"name": "eight", "vertices": 8, "area": 1.22183, "perCell": 4},
+      {"name": "star", "vertices": 16, "area": 0.68629, "perCell": 1},
+      {"name": "hexagon", "vertices": 6, "area": 0.53553, "perCell": 16},
+      {"name": "four_star", "vertices": 8, "area": 0.20101, "perCell": 1},
+      {"name": "short_hexagon", "vertices": 6, "area": 0.17157, "perCell": 4},
+      {"name": "rhombus", "vertices": 4, "area": 0.17157, "perCell": 4},
+      {"name": "kite", "vertices": 4, "area": 0.12132, "perCell": 8}
+    ]
+  }
+}
