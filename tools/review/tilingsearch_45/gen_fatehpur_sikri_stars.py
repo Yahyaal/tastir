@@ -179,10 +179,10 @@ def clip_poly(seg, poly):
     return ((a[0] + t0 * d[0], a[1] + t0 * d[1]), (a[0] + t1 * d[0], a[1] + t1 * d[1]))
 
 
-def network(polys, tile):
+def network(polys, tile, reach=3):
     segs = set()
     for Q in polys:
-        if max(abs(v) for q in Q for v in q) > 3:
+        if max(abs(v) for q in Q for v in q) > reach:
             continue
         for i in range(len(Q)):
             cs = clip_poly((Q[i], Q[(i + 1) % len(Q)]), tile)
