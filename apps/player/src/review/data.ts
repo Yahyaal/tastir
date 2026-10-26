@@ -4083,6 +4083,134 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'isfahan-seyyed-stars',
+    title:
+      'Stars and pentagons of the Seyyed mosque (Isfahan) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A blue star sits at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s IRAN2 drawing. Its tile corners were snapped to the square-root-of-two grid with the star’s point radius as the unit. The stars stand two apart along the lines of a larger pattern, so every line is at one of four distances from O, or at the same distances from the corner of the tile. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing; its white strokes over the joints are not bands. The colours follow Wichmann’s drawing: blue stars and blue ten-sided crosses mark the larger pattern among the gold stars. His second drawing of the panel (IRAN4) draws that larger pattern as lines over the same pieces; the lines are not inked here. No photograph was checked.',
+      '11 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/isfahan-seyyed-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/isfahan-seyyed-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Masjid-e Sayyed, Isfahan (IRAN2)',
+        url: 'https://tilingsearch.mit.edu/HTML/data209/IRAN2.html',
+      },
+    ],
+  },
+  {
+    id: 'isfahan-sayyed-crosses',
+    title:
+      'Stars and crosses of the Masjid-e Sayyed (Isfahan) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side, corner to corner along the horizontal and vertical lines.',
+    story: [
+      'The finished design was read from Wichmann’s IRA1617 drawing. Its tile corners were snapped to the square-root-of-two grid with the star’s point radius as the unit. The stars stand two apart along the lines of a larger pattern, so every line is at one of a few distances from O, or at the same distances from the corner of the tile. The opening is shared with the Seyyed mosque stars (IRAN2), drawn in the same frame. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing; its white strokes over the joints are not bands. Wichmann also draws the larger pattern as lines over the pieces; those lines are not inked here. The colours follow his drawing. Wade’s photograph was not overlaid.',
+      '10 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/isfahan-sayyed-crosses/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/isfahan-sayyed-crosses/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Masjid-e Sayyed, Isfahan (IRA1617)',
+        url: 'https://tilingsearch.mit.edu/HTML/data201/IRA1617.html',
+      },
+    ],
+  },
+  {
+    id: 'paccard-222-rosette',
+    title:
+      'Large rosette of a Moroccan panel (Paccard, page 222) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A star rosette sits at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s P18B drawing. Its tile corners were snapped to the square-root-of-two grid with the small star’s point radius as the unit. Every line, in all four directions, lies at one of twelve distances from O, so each is drawn once as a vertical line and turned round O; three diagonals near the corner of the tile complete the corner rosette. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing; its thin strokes over the joints are not bands. The colours follow Wichmann’s drawing, mapped to the Marinid zellige palette. His drawing of the bottom-left panel of the same page (P18A) changes the large rosette and shares the rest. No photograph was checked.',
+      '11 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/paccard-222-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/paccard-222-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Morocco, after Paccard, page 222 top left (P18B)',
+        url: 'https://tilingsearch.mit.edu/HTML/data157/P18B.html',
+      },
+    ],
+  },
+  {
+    id: 'paccard-222-rosette-ring',
+    title:
+      'Ringed rosette of a Moroccan panel (Paccard, page 222) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A star rosette sits at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s P18A drawing. Its tile corners were snapped to the square-root-of-two grid with the small star’s point radius as the unit. It is the top-left panel of the same page (P18B) with a different ring round the large rosette: two of its distances from O are replaced by one, and the rest of the construction is shared. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing; its thin strokes over the joints are not bands. The colours follow Wichmann’s drawing, mapped to the Marinid zellige palette. No photograph was checked.',
+      '12 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/paccard-222-rosette-ring/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/paccard-222-rosette-ring/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Morocco, after Paccard, page 222 bottom left (P18A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data157/P18A.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -5202,7 +5330,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'A hundred and five new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'A hundred and nine new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -5320,6 +5448,10 @@ export const QUESTIONS: readonly Question[] = [
       'alhambra-museum-pointed-stars',
       'marrakesh-throne-rosette',
       'alhambra-dos-hermanas-jamb-rosette',
+      'isfahan-seyyed-stars',
+      'isfahan-sayyed-crosses',
+      'paccard-222-rosette',
+      'paccard-222-rosette-ring',
     ],
   },
 ];

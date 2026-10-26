@@ -106,5 +106,15 @@
       "alhambra-arrayanes-porch-ceiling",
       "alhambra-museum-pointed-stars"
     ]
+  },
+  {
+    "id": "paccard-222-rosettes",
+    "title": "Rosettes of Paccard's page 222",
+    "members": ["paccard-222-rosette", "paccard-222-rosette-ring"]
+  },
+  {
+    "id": "isfahan-seyyed",
+    "title": "Stars of the Seyyed mosque, Isfahan",
+    "members": ["isfahan-seyyed-stars", "isfahan-sayyed-crosses"]
   }
 ]
