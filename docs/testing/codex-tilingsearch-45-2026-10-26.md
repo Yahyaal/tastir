@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058, BON61 and P144 are built, and IRAN16 is skipped for unsupported symmetry. The remaining five entries are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058, BON61, P144 and L34A are built, and IRAN16 is skipped for unsupported symmetry. The remaining four entries are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -242,3 +242,13 @@ A regular octagon tangent to the unit circle supplies the star's eight tips. Its
 I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/P144/overlay.png`. All red lines follow the 3 pt band centres. The exact data12/P144 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Bourgoin plate 144 and its connection to plate 52, Critchlow page 187, Abas and Salman page 250, and the page's Wade BOU 144 link. The tutorial records the frame turn, centre-line representation and illustrative palette. The piece inventory and proportions differ from the existing octagon lessons; no duplicate or filling-only variation was found.
 
 The overlay tool now accepts optional `angle=<degrees>` for a pure frame turn at the true tutorial scale. Its old no-argument and `rot45` modes are unchanged: regenerating the NC7 and PG229 overlays gave byte-identical PNGs. Helper inspection found no omitted lines needing alternate text. The catalog, six targeted golden checks, all 540 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## L34A — built as `lindisfarne-folio-2b-stepped-bands`
+
+The tutorial has nine steps. This is a Celtic manuscript pattern, credited to Backhouse's Lindisfarne Gospels, page 34, pattern 1 from folio 2b. It is not given an Islamic building attribution. O is at PDF (290.83, 357.67), where four small squares meet, and OA is one square side, exactly 20 pt. All source corners fit the integer grid within 3 × 10⁻¹⁵ OA at 0.01 pt extraction precision. The plain drawing has no bands to expand; the gap detector's 20 pt result is a tile-side length here. The half-side is eight, giving the 320 pt repeat.
+
+Independent source-polygon shoelace areas are twenty_six 13, four; twenty_one 25/2, four; eighteen 9, eight; fifteen 17/2, four; ten 5, eight; and square 1, eight. Their counted sum is exactly 256 = 16². The engine independently confirms these six types and counts. Its sliver heuristic flags the long twenty-one- and fifteen-sided bands despite their substantial areas. Both match whole source polygons exactly; only those two intentional shapes are declared `small`, with all area and count assertions retained.
+
+I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/L34A/overlay.png`. Every red edge agrees, including the diagonal corners of the outer bands. The exact data1/L34A entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. The manuscript page was not independently checked. The finished geometry is retained and the palette is explicitly illustrative. No existing tutorial has this stepped linework. Helper inspection supplies wording that omits the hidden AC diagonal from step two.
+
+The catalog, six targeted golden checks, all 545 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
