@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929, ALH1 and NC5 built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929, ALH1, NC5 and MUL128K built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -168,3 +168,13 @@ Independent source-polygon shoelace areas are pointed_star −4 + 8H, four; eigh
 I inspected the wall beside the GIF and the full drawing overlay at `docs/research/tilingsearch-45/NC5/overlay.png`. Every red line follows a band centre. The exact data174/NC5 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Nick Crossling's photograph, personal communication, and the end section of a side-chamber ceiling in the Sala de las Dos Hermanas. The tutorial records the centre-line representation and illustrative palette. Its 45° pointed stars and their connecting pieces differ from the existing Dos Hermanas designs; no duplicate was found.
 
 The catalog, six targeted golden checks, all 505 player text checks and all 34 schema tests passed under the memory cap. Helper inspection supplied circle-only wording for the opening when its horizontal guide is hidden. No shared application or engine code changed.
+
+## MUL128K — built as `alhambra-dos-hermanas-band-stars`
+
+The tutorial has seventeen steps. OA is the small star's point radius, 36.2141225526 pt. Four radii and two unit-square diagonals give the half-side 4 + 2√2. After reducing the 7 pt bands to centre lines, source corners fit a + bH, H = √2/2, within 0.000359 OA. The small-star opening is shared with the Moroccan reconstructions, but the larger stars and their connecting bands have different linework. It is not a variation of NC5 or the existing Dos Hermanas designs.
+
+Independent source-polygon shoelace areas are twelve 10 − 8H, six; large_star 6H, eight; star 8 − 8H, six; eight 2, twenty; fourteen and hexagon −1 + 4H, four and sixteen; short_eight 1, eight; pentagon 1/2, sixteen; and kite −1 + 2H, forty-eight. Their counted sum is 96 + 128H = 4(4 + 4H)², the cell area. The engine independently finds those nine types and counts without slivers.
+
+I inspected the wall beside the GIF and the full drawing overlay at `docs/research/tilingsearch-45/MUL128K/overlay.png`. All red lines follow band centres. The exact data175/MUL128K entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Edith Müller's 1944 publication, illustration 36, and Sala de las Dos Hermanas. The tutorial records its centre-line representation and illustrative palette. Helper inspection replaced the partly hidden lines through R with direct wording for the retained horizontal, its quarter-turn and the diagonal through R3.
+
+The catalog, six targeted golden checks, all 510 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
