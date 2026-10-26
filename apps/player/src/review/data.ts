@@ -2747,6 +2747,69 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'khayrbak-mosque-stars',
+    title:
+      'Stars and arrows of the Khayrbak mosque, Cairo (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A star sits at every centre and a small square at every corner, with arrows pointing from star to star.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P60B drawing, its corners snapped to exact values. We devised the construction. Every line runs across, up or at 45°, and one length fixes them all: the point S, found with the line from K3 to M. The star at O is made of eight lines that touch the small circle; carried on, they make the small squares at the corners. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws it as an interlace of bands; we draw the centre lines of the bands. No photo of the stonework was checked.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/khayrbak-mosque-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/khayrbak-mosque-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mosque of Khayrbak, Cairo (P60B)',
+        url: 'https://tilingsearch.mit.edu/HTML/data4/P60B.html',
+      },
+    ],
+  },
+  {
+    id: 'fes-palace-door-stars',
+    title:
+      'Stars and rosettes of a door in the Royal Palace Museum, Fès (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at every centre, and a star ringed by chevrons at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s C101 drawing, its corners snapped to exact values. We devised the construction. A star of two squares sits on every point of a square grid, and every line runs across, up or at 45°. The tips of the rosette’s petals lie on the circle about O through the inner points of the next stars. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the door was checked.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-palace-door-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-palace-door-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Royal Palace Museum, Fès (C101)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C101.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -3866,7 +3929,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Sixty-two new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Sixty-four new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -3941,6 +4004,8 @@ export const QUESTIONS: readonly Question[] = [
       'damghan-minaret-stars',
       'cairo-embassy-stars',
       'bourgoin-plate-64',
+      'khayrbak-mosque-stars',
+      'fes-palace-door-stars',
     ],
   },
 ];
