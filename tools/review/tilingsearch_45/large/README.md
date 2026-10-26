@@ -9,3 +9,10 @@ Scratch scripts the batch 16 builder used on P008B, C126B and NC2, kept as they 
 - `plotq.py`: quick plots.
 
 Beware: `crossings()` in `tools/review/bou_inania/gen_design_e.py` returns bogus points for two circles that do not meet.
+
+Added by batch 17 (RAY7, L90, MOR0719, C176A, 26 October 2026):
+
+- `greedy.py`: the line search behind those four. After the unit star (or the circle and its octagon), every missing line ran through a crossing of earlier lines, so a greedy plan of parallels, turned round O, built all but two of them; `../parallels.py` writes the plan as steps with their plain-English text.
+- `fills.ts` (run with tsx and the workspace's source conditions) prints each piece's colour from the player's own placement function; `cmpslots.py` checks it against the drawing's fills.
+- `hidden.ts` lists the lines each step hides when helper lines are off, for writing `textWithoutHelpers`.
+- Find the repeat by matching pieces under translation before choosing the cell: C176A's small stars sit 437.78 pt apart but the repeat is 619.1 pt, and MOR0719's rosettes sit on a centred lattice.
