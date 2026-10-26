@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Groups B and C are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929 built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -138,3 +138,13 @@ I inspected the normal review wall beside the GIF and the full source overlay at
 The new optional drawing callback in `medium.py` supports this periodic source extraction. Its optional expectation block lets the already-verified parent geometry supply names before placement rules are parsed. Existing generators retain their original defaults. No shared application or engine code changed.
 
 The normalized source-coordinate residual is at most 0.000032 OA. The catalog, six targeted golden checks, all 490 player text checks and all 34 schema tests passed under the memory cap. The real placement-function check also passed. Group A is complete with thirteen built and no skipped tilings.
+
+## SPA2929 — built as `toledo-synagogue-star-bands`
+
+The tutorial has eight steps after removing an unused diagonal set. Grey bevel faces were excluded before measuring the 6 pt bands. OA is the star's point radius, 36.2141225526 pt, and the half-side is 3√2 − 1: three unit-square diagonal transfers to the right from B, the unit circle's left crossing. Corners of the source pieces in this cell fit a + bH, H = √2/2, within 0.000228 OA. The unit-star opening is shared through the new `build_unit_star` helper; regenerating P70 confirmed that the existing frame output remains byte-identical.
+
+The source-polygon shoelace areas are twelve 16 − 18H, four; hexagon −3 + 8H, four; eight 1 + 2H, four; star 8 − 8H, two; kite −1 + 2H, eight; and square 6 − 8H, two. Their counted sum is 76 − 48H = 4(6H − 1)², the cell area. The engine independently finds those six types and counts, with no slivers.
+
+I inspected the wall beside the GIF and `docs/research/tilingsearch-45/SPA2929/overlay.png` over the full PDF. Every red line follows a bevelled band centre. The exact data173/SPA2929 entry is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits retain Wade SPA 2929. The source says only Synagogue, Toledo; the tutorial does not infer a more specific building. It records the centre-line representation and illustrative palette. The existing Toledo tile interlace has different pieces and counts, so this is a separate design.
+
+The catalog, six targeted golden checks, all 495 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.

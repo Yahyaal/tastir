@@ -25,9 +25,7 @@ L = 2+6*H
 ORIGIN, UNIT = (297.5, 373.59), 241.13/L
 
 
-def build_frame(unit_steps=2, diagonals=3):
-    assert diagonals in (2, 3)
-    cell_half_side = unit_steps+2*diagonals*H
+def build_unit_star():
     g.given()
     step('Draw a horizontal straight line through O and A. Draw a circle with centre O through A.', 'compass')
     g.circle_through('c', 'O', 'A')
@@ -52,6 +50,12 @@ def build_frame(unit_steps=2, diagonals=3):
     step('Draw the star at O as two squares.')
     le.two_squares(ss, 'q', le.square_texts(ss, 'Draw each line long, beyond the circle.'))
 
+
+
+def build_frame(unit_steps=2, diagonals=3):
+    assert diagonals in (2, 3)
+    cell_half_side = unit_steps+2*diagonals*H
+    build_unit_star()
     if unit_steps == 2:
         step('Draw a circle with centre A through O. It crosses the horizontal line at F, beyond A.', 'compass')
         g.circle_through('ca', 'A', 'O')
