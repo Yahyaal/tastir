@@ -4337,6 +4337,131 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'fes-najjarin-rosette',
+    title: 'Rosette of the Najjarin fountain (Fès) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s BR14 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line is drawn through a crossing of earlier lines and turned round O; the tile’s sides come the same way, and the corner star’s sides from a compass mark at the tile’s corner. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing in the Marinid zellige palette; his light blue ring takes the palette’s blue, as his violet-blue pieces do. No photograph was checked.',
+      '16 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-najjarin-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-najjarin-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Najjarin fountain, medina of Fès (BR14)',
+        url: 'https://tilingsearch.mit.edu/HTML/data198/BR14.html',
+      },
+    ],
+  },
+  {
+    id: 'meknes-bou-inania-rosette',
+    title: 'Rosette of the Bou Inania madrasa (Meknes) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s MOR2404X drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. It is the Najjarin fountain rosette with different rosettes at the tile’s corners, so it shares that tutorial’s opening steps. After the unit star every line is drawn through a crossing of earlier lines and turned round O; the tile’s sides come the same way, and the corner star’s sides from a compass mark at the tile’s corner. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing in the Modern Moroccan palette: his maroon is the palette’s red and his light blue its dark blue. Wade’s photo MOR 2404x was not checked.',
+      '15 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/meknes-bou-inania-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/meknes-bou-inania-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bou Inania madrasa, Meknes (MOR2404X)',
+        url: 'https://tilingsearch.mit.edu/HTML/data175/MOR2404X.html',
+      },
+    ],
+  },
+  {
+    id: 'meknes-throne-star-rosette',
+    title:
+      'Star rosette of the Royal Palace throne room (Meknes) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s C122C drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing, which keeps the original colouring: green, red, black and white, in the Tétouan palette, whose dark navy stands for his black. No photograph was checked.',
+      '13 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/meknes-throne-star-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/meknes-throne-star-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Royal Palace throne room, Meknes (C122C)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C122C.html',
+      },
+    ],
+  },
+  {
+    id: 'meknes-moulay-ismail-rosette',
+    title: 'Rosette of the tomb of Moulay Ismail (Meknes) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s MOR0803 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The opening, the unit star and the first six lines after it, is shared with the Meknes throne-room star rosette. After the unit star every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing: orange, green, black and white, in the Marinid zellige palette, whose honey stands for his orange. Wade’s photos MOR 0803 and MOR 0911 were not checked.',
+      '11 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/meknes-moulay-ismail-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/meknes-moulay-ismail-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Tomb of Moulay Ismail, Meknes (MOR0803)',
+        url: 'https://tilingsearch.mit.edu/HTML/data173/MOR0803.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -5456,7 +5581,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'A hundred and thirteen new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'A hundred and seventeen new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -5582,6 +5707,10 @@ export const QUESTIONS: readonly Question[] = [
       'fes-rosette-rings',
       'seville-octagon-rings',
       'sidi-said-window',
+      'fes-najjarin-rosette',
+      'meknes-bou-inania-rosette',
+      'meknes-throne-star-rosette',
+      'meknes-moulay-ismail-rosette',
     ],
   },
 ];

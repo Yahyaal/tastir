@@ -116,5 +116,10 @@
     "id": "isfahan-seyyed",
     "title": "Stars of the Seyyed mosque, Isfahan",
     "members": ["isfahan-seyyed-stars", "isfahan-sayyed-crosses"]
+  },
+  {
+    "id": "najjarin-rosette",
+    "title": "Rosettes of the Najjarin fountain and Bou Inania",
+    "members": ["fes-najjarin-rosette", "meknes-bou-inania-rosette"]
   }
 ]

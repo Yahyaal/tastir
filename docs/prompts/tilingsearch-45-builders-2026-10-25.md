@@ -56,7 +56,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 16 | P008B, C126B, NC2 | Pilot for the large panels (600–700 pieces): Granada museum, Marrakesh throne room, Dos Hermanas. Time box 2 hours each | done, merged: all three in about 30 minutes; P008B is a variant of the Arrayanes porch ceiling |
 | 17 | RAY7, L90, MOR0719, C176A | 700–811 pieces | done, merged: all four; the greedy parallels search (`large/greedy.py`, `parallels.py`) builds most large panels |
 | 18 | P18B, P18A, IRAN2, IRAN4, IRA1617 | 875–907 pieces; P18A/B and IRAN2/4 are likely pairs | done, merged: four built; IRAN4 = IRAN2 |
-| 19 | BR14, MOR0803, C122C, MOR2404X | 930–990 pieces | started |
+| 19 | BR14, MOR0803, C122C, MOR2404X | 930–990 pieces | done, merged: all four; MOR2404X is a variant of BR14 |
 | 20 | C122B, MOR1218, MOR0411, FR1 | 1019–1307 pieces; C122B and C122C may be a pair | waiting |
 | 21 | F17, DW10A, MOR0321, C123 | 1360–1507 pieces | waiting |
 | 22 | C124, MOR0331, F16, P71TL | 1517–1823 pieces; F16 and F17 (Telouet) may be a pair | waiting |
