@@ -4,7 +4,7 @@ import json, sys, math
 from collections import Counter
 f = sys.argv[1]; ox, oy, u, L = map(float, sys.argv[2:6])
 band = float(sys.argv[6]) if len(sys.argv) > 6 else 0
-sys.path.insert(0, '/home/yahya/Documents/projects/Tastir/.claude/worktrees/agent-a0638ace160955a10/tools/review/tilingsearch_45')
+sys.path.insert(0, '/home/yahya/Documents/projects/Tastir/.claude/worktrees/agent-a6be1d66963d6165b/tools/review/tilingsearch_45')
 import common as cm
 polys = cm.frame_pieces(f, (ox, oy), 2 * u, band)
 H = math.sqrt(.5)
