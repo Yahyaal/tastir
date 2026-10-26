@@ -40,7 +40,10 @@ D = S * R2
 ORIGIN, PERIOD = (299.2, 375.1), 247.29
 
 
-def build():
+def build(corner_diagonals=False):
+    """The construction, shared with gen_arrayanes_porch_ceiling.py (ALHAMK),
+    whose stars of two squares need the corner star's diagonal sides (the
+    lines through V) but not the lines through E."""
     cm.cell_square(
         'Draw a vertical line through O. The two lines cross the circle at A, B, C and D. '
         'Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. '
@@ -61,15 +64,29 @@ def build():
     g.line_par('td', 'T', 'd45')
     g.repeat('st', ['tv', 'td'], 'rot4')
 
-    step('The vertical line through T crosses the horizontal line through O at S. '
-         'Draw a circle with centre K1 and radius OS. It crosses the horizontal line through C at U, left of K1. '
-         'Draw a vertical line through U. Turn it round O by 90°, three times. '
-         'With the lines through T, they make the stars at the corners.', 'compass', ['S', 'U'])
+    if corner_diagonals:
+        step('The vertical line through T crosses the horizontal line through O at S. '
+             'Draw a circle with centre K1 and radius OS. It crosses the horizontal line through C at U, left of K1. '
+             'Draw a vertical line through U.', 'compass', ['S', 'U'])
+    else:
+        step('The vertical line through T crosses the horizontal line through O at S. '
+             'Draw a circle with centre K1 and radius OS. It crosses the horizontal line through C at U, left of K1. '
+             'Draw a vertical line through U. Turn it round O by 90°, three times. '
+             'With the lines through T, they make the stars at the corners.', 'compass', ['S', 'U'])
     g.meet('S', 'tv', 'h', (S, 0))
     g.circle_from('ku', 'K1', 'O', 'S')
     g.meet('U', 'ku', 'gy', (1 - S, 1))
     g.line_par('uv', 'U', 'v')
-    g.repeat('ks', ['uv'], 'rot4')
+    if corner_diagonals:
+        step('The line through T parallel to the line through O and K1 crosses the horizontal line through C at V. '
+             'Draw a line through V at 90° to the line through O and K1. '
+             'Turn the new lines through U and V round O by 90°, three times. '
+             'With the lines through T, they make the stars at the corners.', 'ruler', ['V'])
+        g.meet('V', 'td', 'gy', (1 - D, 1))
+        g.line_perp('vd', 'V', 'd45')
+        g.repeat('ks', ['uv', 'vd'], 'rot4')
+    else:
+        g.repeat('ks', ['uv'], 'rot4')
 
     step('Another side of the star at O crosses the horizontal line through O at N. '
          'Draw a circle with centre A and radius ON. It crosses the horizontal line through O at W, left of A. '
@@ -91,21 +108,28 @@ def build():
     g.circle_through('cy', 'O', 'Y')
     g.meet('G', 'cy', 'h', (3 * D, 0))
 
-    step('Draw a circle with centre K1 and the same radius as the circle through Y. '
-         'It crosses the horizontal line through C at E, left of K1.', 'compass', ['E'])
-    g.put('ky', 'circle', (g.P('K1'), 3 * D), {'circle': {'centre': 'K1', 'radiusOf': 'cy'}})
-    g.meet('E', 'ky', 'gy', (1 - 3 * D, 1))
-
-    step('Draw a horizontal line through each of X and Y. Draw a line through each of W, Z, G and E '
-         'at 90° to the line through O and K1. Turn the six new lines round O by 90°, three times.',
-         'ruler', ['X', 'Y', 'W', 'Z', 'G', 'E'])
+    if corner_diagonals:
+        step('Draw a horizontal line through each of X and Y. Draw a line through each of W, Z and G '
+             'at 90° to the line through O and K1. Turn the five new lines round O by 90°, three times.',
+             'ruler', ['X', 'Y', 'W', 'Z', 'G'])
+        new = ['xh', 'yh', 'wd', 'zd', 'gd']
+    else:
+        step('Draw a circle with centre K1 and the same radius as the circle through Y. '
+             'It crosses the horizontal line through C at E, left of K1.', 'compass', ['E'])
+        g.put('ky', 'circle', (g.P('K1'), 3 * D), {'circle': {'centre': 'K1', 'radiusOf': 'cy'}})
+        g.meet('E', 'ky', 'gy', (1 - 3 * D, 1))
+        step('Draw a horizontal line through each of X and Y. Draw a line through each of W, Z, G and E '
+             'at 90° to the line through O and K1. Turn the six new lines round O by 90°, three times.',
+             'ruler', ['X', 'Y', 'W', 'Z', 'G', 'E'])
+        new = ['xh', 'yh', 'wd', 'zd', 'gd', 'ed']
     g.line_par('xh', 'X', 'h')
     g.line_par('yh', 'Y', 'h')
     g.line_perp('wd', 'W', 'd45')
     g.line_perp('zd', 'Z', 'd45')
     g.line_perp('gd', 'G', 'd45')
-    g.line_perp('ed', 'E', 'd45')
-    g.repeat('fr', ['xh', 'yh', 'wd', 'zd', 'gd', 'ed'], 'rot4')
+    if not corner_diagonals:
+        g.line_perp('ed', 'E', 'd45')
+    g.repeat('fr', new, 'rot4')
 
 
 def drawing(pieces):
