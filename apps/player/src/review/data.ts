@@ -3667,6 +3667,137 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'maku-floor-hexagons',
+    title: 'Squares and long hexagons of a floor in Maku (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A small square sits at every corner, with a long hexagon on each side of it.',
+    story: [
+      'The finished design was read from Brian Wichmann’s SHAF27 drawing, its corners snapped to exact values. We devised the construction. Every corner comes from the point where the 45° line crosses the circle through A. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the floor was checked.',
+      '6 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/maku-floor-hexagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/maku-floor-hexagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Floor tiling, Maku, Iran (SHAF27)',
+        url: 'https://tilingsearch.mit.edu/HTML/data199/SHAF27.html',
+      },
+    ],
+  },
+  {
+    id: 'nasrid-textile-stars',
+    title:
+      'Stars and arrows of a Nasrid textile in the Metropolitan Museum (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. The stars at O and at the corners make a chessboard. A bone joins each star at O to the next.',
+    story: [
+      'The finished design was read from Brian Wichmann’s MMA2 drawing, its corners snapped to exact values. We devised the construction. Each star is cut by eight lines at one distance from its centre, and the other lines lie at three times that distance from a star, or at three times that distance from the next star. The drawing gives no steps.',
+      'Wichmann draws the stars on a square grid; here his drawing is turned by 45° so that the tile is a square with one kind of star at O and the other at its corners. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the textile was checked.',
+      '10 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/nasrid-textile-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/nasrid-textile-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Silk textile fragment, Granada, Metropolitan Museum (MMA2)',
+        url: 'https://tilingsearch.mit.edu/HTML/data196/MMA2.html',
+      },
+    ],
+  },
+  {
+    id: 'fes-palace-ceiling-stars',
+    title:
+      'Interlaced stars of a ceiling in the Royal Palace, Fès (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A star sits at every centre and every corner, with a diagonal cross between each two centres.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P397 drawing, its corners snapped to exact values. We devised the construction. Every line is a side of a star of two squares, all the same size. The stars sit at O, at the corners of the cell, and where the 22.5° line from O crosses a side of the cell. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the ceiling was checked.',
+      '8 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-palace-ceiling-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-palace-ceiling-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Royal Palace, Fès (P397)',
+        url: 'https://tilingsearch.mit.edu/HTML/data186/P397.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-arrayanes-porch-ceiling',
+    title:
+      'Interlaced stars of a porch ceiling by the Patio de los Arrayanes, Alhambra (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A star sits at every centre and every corner, and at the middle of every side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s ALHAMK drawing, its corners snapped to exact values. We devised the construction. Its lines are exactly those of the Nasrid textile stars, so the construction is the same; only the inked pieces differ. Each star is cut by eight lines at one distance from its centre. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Our lines were also laid over David Wade’s photo of the ceiling (SPA 0524x). They follow its bands in the middle of the ceiling; towards the photo’s edges the camera’s angle bends the ceiling away from a flat fit, and no difference from the drawing was found.',
+      '10 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-arrayanes-porch-ceiling/photo-overlay.png',
+        caption:
+          'David Wade’s photo with the tutorial’s lines in red (private, not shipped).',
+      },
+      {
+        src: 'renders/alhambra-arrayanes-porch-ceiling/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-arrayanes-porch-ceiling/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Granada: porch into the Patio de los Arrayanes (ALHAMK)',
+        url: 'https://tilingsearch.mit.edu/HTML/data189/ALHAMK.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -4786,7 +4917,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Ninety-two new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Ninety-six new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -4891,6 +5022,10 @@ export const QUESTIONS: readonly Question[] = [
       'abas-salman-232-star-bands',
       'racinet-37-octagonal-rings',
       'salim-chishti-square-lattice',
+      'maku-floor-hexagons',
+      'nasrid-textile-stars',
+      'fes-palace-ceiling-stars',
+      'alhambra-arrayanes-porch-ceiling',
     ],
   },
 ];

@@ -17,8 +17,8 @@ const beginners = tutorialFiles().filter(
 );
 
 describe('checking a step by geometry', () => {
-  it('finds the 39 beginner tutorials', () => {
-    expect(beginners).toHaveLength(39);
+  it('finds the 40 beginner tutorials', () => {
+    expect(beginners).toHaveLength(40);
   });
 
   it.each(beginners)(
