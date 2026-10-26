@@ -53,7 +53,7 @@ def build_unit_star():
 
 
 def build_frame(unit_steps=2, diagonals=3):
-    assert diagonals in (2, 3)
+    assert diagonals in (1, 2, 3)
     cell_half_side = unit_steps+2*diagonals*H
     build_unit_star()
     if unit_steps == 2:
@@ -80,9 +80,11 @@ def build_frame(unit_steps=2, diagonals=3):
     if diagonals == 3:
         step('Keep the compass open to OE. Draw circles with centres F, G1 and G2 in turn. '
              'Each circle crosses the horizontal line to the right at G1, G2 and G3.', 'compass')
-    else:
+    elif diagonals == 2:
         step('Keep the compass open to OE. Draw circles with centres F and G1 in turn. '
              'Each circle crosses the horizontal line to the right at G1 and G2.', 'compass')
+    else:
+        step('Draw a circle with centre F and radius OE. It crosses the horizontal line at G1, to the right.', 'compass')
     prev = 'F'
     for i in range(1, diagonals+1):
         g.circle_from(f'cg{i}', prev, 'O', 'E')

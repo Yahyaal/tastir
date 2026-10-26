@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058, BON61, P144, L34A and LEON7 are built, and IRAN16 is skipped for unsupported symmetry. The remaining three entries are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058, BON61, P144, L34A, LEON7 and PG232 are built, and IRAN16 is skipped for unsupported symmetry. R37D and SM3 remain pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -262,3 +262,13 @@ OA is half the source repeat, 253.3 pt, with O at PDF (297.5, 373.895625). Corne
 I inspected the wall beside the GIF, the full drawing overlay at `docs/research/tilingsearch-45/LEON7/overlay.png`, and `source-colour-wall.png` rendered from actual player placement fills. All red edges agree and every actual placement fill matches its source polygon. The black-star indices are 0 and 4; the black long-hexagon indices are 0 and 3. Their source-centre matching residual is at most 0.000112 OA. These choices are stored in the generator, rather than relying on palette roles alone.
 
 The exact data194/LEON7 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Alberto Leon's personal communication, Mosaic in Islamic Design. The source gives no building or country; the tutorial adds none. The repeated linework is unchanged and the source filling is retained. The catalog, six targeted golden checks, all 550 player text checks and all 34 schema tests passed under the memory cap. The actual player source-colour check also passed. No shared application or engine code changed.
+
+## PG232 — built as `abas-salman-232-star-bands`
+
+The tutorial has eleven steps after removing an unused corner-circle diagonal step. OA is the smaller star's point radius, 36.2141225526 pt. Two radii and one unit-square diagonal give the half-side 2 + √2. Source corners fit a + bH, H = √2/2, within 0.000235 OA. The unit-star opening is shared with the earlier reconstructions; the continued sides and parallels through R, V, X and Z also close the larger star with 45° tips.
+
+Independent source-polygon shoelace areas are pointed_star 8H, one; star 8 − 8H, one; eight 2, four; pentagon 1/2 + 2H, four; ten −1 + 4H, two; bowtie 4 − 4H, eight; short_eight −2 + 4H, eight; and kite −1 + 2H, eight. Their counted sum is 24 + 32H = 4(2 + 2H)². The engine independently gives those eight types and counts without slivers. These pieces and their arrangement differ from the other mixed-tip star designs; no exact duplicate or filling-only variation was found.
+
+I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/PG232/overlay.png`. Every red edge agrees. The exact data8/PG232 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Abas and Salman, Symmetries of Islamic Geometrical Patterns (1995), page 232. The page gives no building attribution, so the tutorial adds none. The plain geometry is retained and the palette is illustrative. Helper inspection supplied direct wording for the retained diagonal through R1.
+
+The shared frame helper now accepts one diagonal transfer in addition to two or three. Its original defaults are unchanged; regenerating P70 gave byte-identical JSON. The catalog, six targeted golden checks, all 555 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
