@@ -1,0 +1,130 @@
+{
+  "format": 0,
+  "id": "pompeii-stars-and-rhombi",
+  "title": "Stars and rhombi of a Roman mosaic (Pompeii)",
+  "short": "Pompeii stars and rhombi",
+  "subtitle": "Roman mosaic, Pompeii",
+  "fold": 4,
+  "star": 8,
+  "style": "Roman",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s F34 drawing, its corners snapped to exact values. We devised the construction: every line halves an angle of 45° at O or at a corner of the cell. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the mosaic was checked.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data155/F34: Roman mosaic, Pompei",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data155/F34.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing, after Issam El-Said, Islamic Art and Architecture: The System of Geometric Design (Garnet, 1993), page 43, figure 34, and Catherine Balmelle et al., Le décor géométrique de la mosaïque romaine (Picard, 2002), plate 184 (Pompeii and El Jem). The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The point where eight rhombi touch.",
+    "A": "The centre of a four-pointed star with a point at O."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4."
+    },
+    {
+      "id": 3,
+      "text": "Draw a straight line through O and K2. The circle crosses it at G, and the line through O and K1 at F. Draw the lines through O that halve the angles AOF, FOC, COG and GOB.",
+      "create": {
+        "d135": {"line": {"through": ["O", "K2"]}},
+        "G": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
+        "F": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "b1": {"line": {"through": "O", "bisects": ["A", "O", "F"]}},
+        "b2": {"line": {"through": "O", "bisects": ["F", "O", "C"]}},
+        "b3": {"line": {"through": "O", "bisects": ["C", "O", "G"]}},
+        "b4": {"line": {"through": "O", "bisects": ["G", "O", "B"]}}
+      },
+      "highlight": ["A", "K1", "C", "K2"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a line through K1 parallel to the line that halves the angle AOF. Draw a line through K1 parallel to the line that halves the angle FOC.",
+      "create": {
+        "k1a": {"line": {"through": "K1", "parallelTo": "b1"}},
+        "k1b": {"line": {"through": "K1", "parallelTo": "b2"}}
+      },
+      "highlight": ["K1", "b1", "b2"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Turn the two lines through K1 round O by 90°, three times. They pass through K2, K3 and K4.",
+      "create": {"cp": {"repeat": {"of": ["k1a", "k1b"], "by": "rot4"}}},
+      "highlight": ["k1a", "k1b"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines through O and through the corners, as far as they cross. They make the eight rhombi round O and the four-pointed stars at A, B, C and D.",
+    "paths": [
+      {"along": "b1", "from": "k1b@2", "to": "k1b"},
+      {"along": "b2", "from": "k1a@1", "to": "k1a"},
+      {"along": "b3", "from": "k1b", "to": "k1b@1"},
+      {"along": "b4", "from": "k1a@2", "to": "k1a"},
+      {"along": "k1a", "from": "b2", "to": "gx"},
+      {"along": "k1b", "from": "b1", "to": "gx"},
+      {"along": "k1a@1", "from": "b4", "to": "gxw"},
+      {"along": "k1a@2", "from": "b2", "to": "gxw"},
+      {"along": "k1a@3", "from": "b4", "to": "gx"},
+      {"along": "k1b@1", "from": "b3", "to": "gxw"},
+      {"along": "k1b@2", "from": "b1", "to": "gxw"},
+      {"along": "k1b@3", "from": "b3", "to": "gx"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. The stars touch point to point, and eight rhombi fill the space round each meeting point.",
+    "palette": "Alhambra",
+    "colors": {"star": "ground", "rhombus": "a"},
+    "placements": {"repeat": [1, 1], "rules": [{"piece": "star", "nth": 0, "color": "b"}]}
+  },
+  "expect": {
+    "pieceTypes": 2,
+    "pieces": [
+      {"name": "star", "vertices": 8, "area": 1.17157, "perCell": 2},
+      {"name": "rhombus", "vertices": 4, "area": 0.41421, "perCell": 4}
+    ]
+  }
+}

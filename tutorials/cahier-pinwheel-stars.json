@@ -1,0 +1,233 @@
+{
+  "format": 0,
+  "id": "cahier-pinwheel-stars",
+  "title": "Pinwheel of eight-pointed stars (Cahier and Martin)",
+  "short": "Pinwheel stars",
+  "subtitle": "After Cahier and Martin, page 36",
+  "fold": 4,
+  "chiral": true,
+  "star": 8,
+  "style": "Moroccan",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s CM036 drawing, its corners snapped to exact values. We devised the construction: each star is two equal squares, and every line is a side of the star at O or of one of the four stars nearest to it. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The source names no building, and no photo was checked.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data15/CM036: Cahier and Martin, page 36",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data15/CM036.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing, after Charles Cahier and Arthur Martin, 376 Decorative Allover Patterns from Historic Tilework and Textiles (Dover), page 36. The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of an eight-pointed star.",
+    "A": "A point on a line through two points of the star. OA is as long as a side of the star’s square."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. It crosses the circle at C, above O. Draw a horizontal line through C.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "ch": {"line": {"through": "C", "parallelTo": "h"}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre A through O. It crosses the first circle at P and Q, and the horizontal line at E. Draw a straight line through P and Q.",
+      "create": {
+        "ca": {"circle": {"centre": "A", "through": "O"}},
+        "P": {"point": {"meet": ["ca", "c"], "pick": {"angle": 60.0}}},
+        "Q": {"point": {"meet": ["ca", "c"], "pick": {"angle": 300.0}}},
+        "E": {"point": {"meet": ["ca", "h"], "pick": {"farthest": "O"}}},
+        "pq": {"line": {"through": ["P", "Q"]}}
+      },
+      "highlight": ["A", "O"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Turn line PQ round O by 90°, three times. The four lines make a square. F is its corner above A.",
+      "create": {"cp1": {"repeat": {"of": ["pq"], "by": "rot4"}}, "F": {"point": {"meet": ["pq", "pq@1"]}}},
+      "highlight": ["pq"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre O through F. It crosses the horizontal line at T, right of O, and the vertical line at U, above O. Draw a straight line through T and U.",
+      "create": {
+        "cs": {"circle": {"centre": "O", "through": "F"}},
+        "T": {"point": {"meet": ["cs", "h"], "pick": {"angle": 0.0}}},
+        "U": {"point": {"meet": ["cs", "v"], "pick": {"angle": 90.0}}},
+        "tu": {"line": {"through": ["T", "U"]}}
+      },
+      "highlight": ["F"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Turn line TU round O by 90°, three times. With the square, it makes the star at O.",
+      "create": {"cp2": {"repeat": {"of": ["tu"], "by": "rot4"}}},
+      "highlight": ["tu"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Draw a vertical line through E. It crosses the horizontal line through C at Z1, the centre of the next star.",
+      "create": {"ev": {"line": {"through": "E", "parallelTo": "v"}}, "Z1": {"point": {"meet": ["ev", "ch"]}}},
+      "highlight": ["E", "ch"],
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Draw the star at Z1, the same size as the star at O.",
+      "highlight": ["Z1"],
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre Z1 and the same radius as the circle through F. It crosses the horizontal line through C at W and Y. It crosses the vertical line through E at V and X.",
+          "create": {
+            "cz": {"circle": {"centre": "Z1", "radiusOf": "cs"}},
+            "W": {"point": {"meet": ["cz", "ch"], "pick": {"angle": 37.72}}},
+            "Y": {"point": {"meet": ["cz", "ch"], "pick": {"angle": 20.274}}},
+            "V": {"point": {"meet": ["cz", "ev"], "pick": {"angle": 40.483}}},
+            "X": {"point": {"meet": ["cz", "ev"], "pick": {"angle": 8.332}}}
+          },
+          "highlight": ["cs", "Z1"],
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a straight line through W and X, W and V, and X and Y. They are three sides of the turned square of the star at Z1.",
+          "create": {
+            "wx": {"line": {"through": ["W", "X"]}},
+            "wv": {"line": {"through": ["W", "V"]}},
+            "xy": {"line": {"through": ["X", "Y"]}}
+          },
+          "highlight": ["W", "X", "V", "Y"],
+          "animate": "ruler"
+        },
+        {
+          "text": "The circle with centre Z1 crosses the top side of the square at O at R, left of Z1. Draw a vertical line through R. It crosses the circle again at S. Draw a horizontal line through S. They are two sides of the square of the star at Z1.",
+          "create": {
+            "R": {"point": {"meet": ["cz", "pq@1"], "pick": {"angle": 18.435}}},
+            "rv": {"line": {"through": "R", "parallelTo": "v"}},
+            "S": {"point": {"meet": ["cz", "rv"], "pick": {"angle": 45.0}}},
+            "sh": {"line": {"through": "S", "parallelTo": "h"}}
+          },
+          "highlight": ["cz", "pq@1"],
+          "animate": "ruler"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "text": "Turn the lines through W, X, R and S round O by 90°, three times. They are the sides of the stars next to O.",
+      "create": {"cp3": {"repeat": {"of": ["wx", "wv", "xy", "rv", "sh"], "by": "rot4"}}},
+      "highlight": ["wx", "wv", "xy", "rv", "sh"],
+      "animate": "ruler"
+    },
+    {
+      "id": 10,
+      "text": "Turn the vertical line through E and the horizontal line through C round O by 90°, three times. They cross at Z2, Z3 and Z4, the centres of the other stars next to O.",
+      "create": {
+        "cpz": {"repeat": {"of": ["ev", "ch"], "by": "rot4"}},
+        "Z2": {"point": {"meet": ["ev@1", "ch@1"]}},
+        "Z3": {"point": {"meet": ["ev@2", "ch@2"]}},
+        "Z4": {"point": {"meet": ["ev@3", "ch@3"]}}
+      },
+      "highlight": ["ev", "ch"],
+      "animate": "ruler"
+    },
+    {
+      "id": 11,
+      "text": "Join Z1, Z2, Z3 and Z4 with straight lines to mark the tile that repeats.",
+      "create": {
+        "k12": {"line": {"through": ["Z1", "Z2"]}},
+        "k23": {"line": {"through": ["Z2", "Z3"]}},
+        "k34": {"line": {"through": ["Z3", "Z4"]}},
+        "k41": {"line": {"through": ["Z4", "Z1"]}},
+        "tile": {"polygon": ["Z1", "Z2", "Z3", "Z4"]}
+      },
+      "highlight": ["Z1", "Z2", "Z3", "Z4"],
+      "animate": "ruler"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O and the parts of the four stars next to it inside the tile. Ink the lines that carry their sides on. They close the five- and thirteen-sided tiles.",
+    "paths": [
+      {"along": "pq", "from": "sh", "to": "tu"},
+      {"along": "pq", "from": "tu@3", "to": "wv@3"},
+      {"along": "pq", "from": "rv@3", "to": "wx@3"},
+      {"along": "pq@1", "from": "rv@2", "to": "tu@1"},
+      {"along": "pq@1", "from": "tu", "to": "wv"},
+      {"along": "pq@1", "from": "rv", "to": "wx"},
+      {"along": "pq@2", "from": "rv@3", "to": "tu@2"},
+      {"along": "pq@2", "from": "tu@1", "to": "wv@1"},
+      {"along": "pq@2", "from": "sh", "to": "wx@1"},
+      {"along": "pq@3", "from": "rv", "to": "tu@3"},
+      {"along": "pq@3", "from": "tu@2", "to": "wv@2"},
+      {"along": "pq@3", "from": "rv@2", "to": "wx@2"},
+      {"along": "tu", "from": "h", "to": "pq"},
+      {"along": "tu", "from": "pq@1", "to": "v"},
+      {"along": "tu@1", "from": "v", "to": "pq@1"},
+      {"along": "tu@1", "from": "pq@2", "to": "h"},
+      {"along": "tu@2", "from": "h", "to": "pq@2"},
+      {"along": "tu@2", "from": "pq@3", "to": "v"},
+      {"along": "tu@3", "from": "v", "to": "pq@3"},
+      {"along": "tu@3", "from": "pq", "to": "h"},
+      {"along": "wx", "from": "k12", "to": "tu@3"},
+      {"along": "wx", "from": "pq@1", "to": "k41"},
+      {"along": "wv", "from": "pq@1", "to": "k12"},
+      {"along": "xy", "from": "rv", "to": "k41"},
+      {"along": "rv", "from": "pq@3", "to": "xy"},
+      {"along": "rv", "from": "pq@1", "to": "tu@3"},
+      {"along": "sh", "from": "tu", "to": "pq@2"},
+      {"along": "sh", "from": "xy@1", "to": "pq"},
+      {"along": "wx@1", "from": "k23", "to": "tu"},
+      {"along": "wx@1", "from": "pq@2", "to": "k12"},
+      {"along": "wx@2", "from": "k34", "to": "tu@1"},
+      {"along": "wx@2", "from": "pq@3", "to": "k23"},
+      {"along": "wx@3", "from": "k41", "to": "tu@2"},
+      {"along": "wx@3", "from": "pq", "to": "k34"},
+      {"along": "wv@1", "from": "pq@2", "to": "k23"},
+      {"along": "wv@2", "from": "pq@3", "to": "k34"},
+      {"along": "wv@3", "from": "pq", "to": "k41"},
+      {"along": "xy@1", "from": "sh", "to": "k12"},
+      {"along": "xy@2", "from": "rv@2", "to": "k23"},
+      {"along": "xy@3", "from": "rv@3", "to": "k34"},
+      {"along": "rv@2", "from": "pq@1", "to": "xy@2"},
+      {"along": "rv@2", "from": "pq@3", "to": "tu@1"},
+      {"along": "rv@3", "from": "pq@2", "to": "xy@3"},
+      {"along": "rv@3", "from": "pq", "to": "tu@2"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the tile side by side. The stars run in rows that climb one step in two. The thirteen-sided tiles turn round the points between them.",
+    "palette": "Marinid zellige",
+    "colors": {"sail": "b", "star": "ground", "shield": "a"}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "sail", "vertices": 13, "area": 1.37132, "perCell": 4},
+      {"name": "star", "vertices": 16, "area": 1.17157, "perCell": 2},
+      {"name": "shield", "vertices": 5, "area": 0.54289, "perCell": 4}
+    ]
+  }
+}

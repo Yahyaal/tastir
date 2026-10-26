@@ -1,0 +1,140 @@
+{
+  "format": 0,
+  "id": "iznik-green-mosque-pinwheel",
+  "title": "Pinwheel of the Green Mosque (Iznik)",
+  "short": "Green Mosque pinwheel",
+  "subtitle": "Green Mosque, Iznik",
+  "fold": 4,
+  "chiral": true,
+  "style": "Ottoman",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s GREEN1 drawing, its corners snapped to exact values. We devised the construction: every line is a side of a small square carried on, or a diagonal of the cell. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann’s drawing is turned by 45° here, so that O sits where four tiles turn round a point. No photo of the mosque was checked.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data187/GREEN1: Green mosque, Iznik",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data187/GREEN1.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing of the upper band round the minaret of the Green Mosque in Iznik (after Tony Lee). He also cites David Wade’s photo TRA 0332, the Shir Dar madrasah in Samarkand. The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The point where four ten-sided tiles meet.",
+    "A": "The centre of a small square, halfway from O to the next point like O."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The circle crosses the line from O to K1 at F. Draw a vertical line through F. It crosses the horizontal line at G. Draw a circle with centre A through G.",
+      "create": {
+        "F": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "fv": {"line": {"through": "F", "parallelTo": "v"}},
+        "G": {"point": {"meet": ["fv", "h"]}},
+        "ca": {"circle": {"centre": "A", "through": "G"}}
+      },
+      "highlight": ["F", "A"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The small circle crosses the vertical line through A at P. Draw a horizontal line through P. The lines through G and P are two sides of a square with centre A.",
+      "create": {
+        "P": {"point": {"meet": ["ca", "gx"], "pick": {"angle": 16.325}}},
+        "ph": {"line": {"through": "P", "parallelTo": "h"}}
+      },
+      "highlight": ["ca"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw the line through O at 90° to the line from O to K1.",
+      "create": {"d135": {"line": {"through": "O", "perpendicularTo": "d45"}}},
+      "highlight": ["d45"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Turn the lines through F and P round O by 90°, three times. They are the sides of the squares at A, B, C and D.",
+      "create": {"cp": {"repeat": {"of": ["fv", "ph"], "by": "rot4"}}},
+      "highlight": ["fv", "ph"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the four small squares round O, at A, B, C and D. Ink the lines that carry their sides on, and the two lines through O. They close the ten-sided tiles.",
+    "paths": [
+      {"along": "d45", "from": "gxw", "to": "fv@2"},
+      {"along": "d45", "from": "ph@1", "to": "ph"},
+      {"along": "d45", "from": "fv", "to": "gx"},
+      {"along": "fv", "from": "d135", "to": "ph"},
+      {"along": "ph", "from": "gxw", "to": "d135"},
+      {"along": "ph", "from": "fv", "to": "gx"},
+      {"along": "d135", "from": "gx", "to": "fv"},
+      {"along": "d135", "from": "ph@2", "to": "ph"},
+      {"along": "d135", "from": "fv@1", "to": "gxw"},
+      {"along": "fv@1", "from": "d45", "to": "ph@1"},
+      {"along": "fv@2", "from": "d135", "to": "ph@2"},
+      {"along": "fv@3", "from": "d45", "to": "ph@3"},
+      {"along": "ph@1", "from": "gys", "to": "d45"},
+      {"along": "ph@1", "from": "fv@1", "to": "gy"},
+      {"along": "ph@2", "from": "gx", "to": "d135"},
+      {"along": "ph@2", "from": "fv@2", "to": "gxw"},
+      {"along": "ph@3", "from": "gy", "to": "d45"},
+      {"along": "ph@3", "from": "fv@3", "to": "gys"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. The ten-sided tiles turn round O like the sails of a windmill.",
+    "palette": "Timurid tile",
+    "colors": {"sail": "b", "square": "a"},
+    "placements": {"repeat": [1, 1], "rules": [{"piece": "sail", "turn": 135, "color": "c"}]}
+  },
+  "expect": {
+    "pieceTypes": 2,
+    "pieces": [
+      {"name": "sail", "vertices": 10, "area": 0.82843, "perCell": 4},
+      {"name": "square", "vertices": 4, "area": 0.34315, "perCell": 2}
+    ]
+  }
+}
