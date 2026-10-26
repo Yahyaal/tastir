@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is in progress; C268A, P164, MOR2615 and MOR0323 are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
+Group A is in progress; C268A, P164, MOR2615, MOR0323 and MOR0910 are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -46,3 +46,13 @@ The source-polygon shoelace areas are long_hexagon 51 − 72H, six; star 232 −
 I inspected the wall beside the GIF and `docs/research/tilingsearch-45/MOR0323/overlay.png` over the whole PDF. The red lines follow the tile edges everywhere. MOR0323 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. The tutorial keeps the plain tile geometry and records its illustrative palette and the absence of a photo check. Credits retain Wade MOR 0323, MOR 1209, MOR 0421 and MOR 1227. All construction lines remain visible without helpers, and the opening text was adjusted accordingly.
 
 The catalog, six targeted golden checks, all 445 player text checks and all 34 schema tests passed under the memory cap. The first text run rejected the joined point-family name S3S5; the wording now says “the line from S3 to S5”. No geometry or shared code changed for that correction.
+
+## MOR0910 — built as `meknes-bou-inania-petals`
+
+The tutorial has 16 steps. Half the 482.26 pt repeat is not a simple grid unit: it equals (2 + 3√2) times the small star's point radius. I chose that radius for OA = 38.6262820632 pt, so all vertices have the form a + bH, H = √2/2, with worst residual 0.001792 OA. Compass transfers from two radii and three unit-square diagonals construct the half-side 2 + 6H. This avoids a construction with sevenths and makes the remaining line families come directly from the unit star. The cell area is 4(2 + 6H)² = 88 + 96H.
+
+The source-polygon shoelace areas are pointed_star 8H, one; long_hexagon 3, twelve; star 8 − 8H, three; arrow 2, sixteen; petal 2, eight; seven 1/2 + 2H, sixteen; triangle 1/2, twenty-four; and kite −1 + 2H, forty. Their counted sum is exactly 88 + 96H. The engine independently finds the same eight types and counts, with no slivers. The larger 45° corner stars distinguish this repeat from MOR0323, so it is a separate finished design rather than a proportion-only variation.
+
+I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/MOR0910/overlay.png`. Every red line follows a tile edge. MOR0910 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. The tutorial retains the plain tile geometry and records its illustrative palette and absent photo check. Credits retain Wade MOR 0910. A redundant set of unused corner diagonals was removed after helper inspection; it changes no ink and shortens the construction by one step.
+
+The catalog, six targeted golden checks, all 450 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
