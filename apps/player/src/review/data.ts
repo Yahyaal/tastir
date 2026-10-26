@@ -1905,6 +1905,192 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'iznik-green-mosque-pinwheel',
+    title: 'Pinwheel of the Green Mosque (Iznik) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. The ten-sided tiles turn round O like the sails of a windmill.',
+    story: [
+      'The finished design was read from Brian Wichmann’s GREEN1 drawing, its corners snapped to exact values. We devised the construction: every line is a side of a small square carried on, or a diagonal of the cell. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann’s drawing is turned by 45° here, so that O sits where four tiles turn round a point. No photo of the mosque was checked.',
+      '7 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/iznik-green-mosque-pinwheel/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/iznik-green-mosque-pinwheel/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Green Mosque, Iznik (GREEN1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data187/GREEN1.html',
+      },
+    ],
+  },
+  {
+    id: 'iranian-tile-crosses',
+    title: 'Crosses and squares of Iranian tilework (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. Squares and four-armed crosses take turns on the diagonals, with long crosses between them.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P35 drawing, its corners snapped to exact values. We devised the construction: the arms of the crosses are as wide as their pointed ends are long, which one line from A fixes. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of a building was checked; the book gives none in colour.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/iranian-tile-crosses/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/iranian-tile-crosses/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: After al-Naqsh, Iranian tilework, volume 4 (P35)',
+        url: 'https://tilingsearch.mit.edu/HTML/data17/P35.html',
+      },
+    ],
+  },
+  {
+    id: 'cahier-pinwheel-stars',
+    title:
+      'Pinwheel of eight-pointed stars (Cahier and Martin) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the tile side by side. The stars run in rows that climb one step in two. The thirteen-sided tiles turn round the points between them.',
+    story: [
+      'The finished design was read from Brian Wichmann’s CM036 drawing, its corners snapped to exact values. We devised the construction: each star is two equal squares, and every line is a side of the star at O or of one of the four stars nearest to it. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The source names no building, and no photo was checked.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/cahier-pinwheel-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/cahier-pinwheel-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: After Cahier and Martin, page 36 (CM036)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/CM036.html',
+      },
+    ],
+  },
+  {
+    id: 'pompeii-stars-and-rhombi',
+    title: 'Stars and rhombi of a Roman mosaic (Pompeii) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. The stars touch point to point, and eight rhombi fill the space round each meeting point.',
+    story: [
+      'The finished design was read from Brian Wichmann’s F34 drawing, its corners snapped to exact values. We devised the construction: every line halves an angle of 45° at O or at a corner of the cell. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the mosaic was checked.',
+      '6 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/pompeii-stars-and-rhombi/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/pompeii-stars-and-rhombi/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Roman mosaic, Pompeii (F34)',
+        url: 'https://tilingsearch.mit.edu/HTML/data155/F34.html',
+      },
+    ],
+  },
+  {
+    id: 'hippo-mosaic-octagons',
+    title:
+      'Braided octagons of a Roman mosaic (Hippo Regius) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. The bands run on from cell to cell and weave over and under.',
+    story: [
+      'The finished design was read from Brian Wichmann’s ROMAN11 drawing, the centre lines of its bands snapped to exact values. We devised the construction: four lines cross at each of A, B, C and D, halving the angles there. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as bevelled bands, and the floor has thick braids; the tutorial draws their centre lines. No photo of the floor was checked.',
+      '5 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/hippo-mosaic-octagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/hippo-mosaic-octagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Roman mosaic, Hippone (Annaba) (ROMAN11)',
+        url: 'https://tilingsearch.mit.edu/HTML/data192/ROMAN11.html',
+      },
+    ],
+  },
+  {
+    id: 'kritliya-house-stars',
+    title:
+      'Interlaced stars of the Kritliya House (Cairo) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. The bands run on from star to star and weave over and under.',
+    story: [
+      'The finished design was read from Brian Wichmann’s KHC drawing, the centre lines of its bands snapped to exact values. We devised the construction: the star at O, then four lines set by two small circles, all turned round O. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines, turned by 45° so that the stars next to O sit at the corners of the cell. No photo of the house was checked.',
+      '13 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/kritliya-house-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/kritliya-house-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bayt al-Kritliya, Cairo (KHC)',
+        url: 'https://tilingsearch.mit.edu/HTML/data186/KHC.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -3024,7 +3210,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Thirty-five new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Forty-one new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -3072,6 +3258,12 @@ export const QUESTIONS: readonly Question[] = [
       'tash-khauli-crosses',
       'sikandra-stars',
       'agra-kite-stars',
+      'iznik-green-mosque-pinwheel',
+      'iranian-tile-crosses',
+      'cahier-pinwheel-stars',
+      'pompeii-stars-and-rhombi',
+      'hippo-mosaic-octagons',
+      'kritliya-house-stars',
     ],
   },
 ];
