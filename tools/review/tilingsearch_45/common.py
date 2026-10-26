@@ -56,10 +56,12 @@ def cell_square(text, text_without=None):
 
 # ---- reading the drawing ------------------------------------------------------
 
-def frame_pieces(pieces_json, origin, period, band):
+def frame_pieces(pieces_json, origin, period, band, keep=None):
     """Wichmann's pieces moved out by half a band (their centre lines), in the
     frame: origin (PDF points) at O, period/2 points to OA, y up."""
     ps = json.load(open(pieces_json))
+    if keep is not None:
+        ps = [p for p in ps if keep(p)]
     unit = period / 2
 
     def offset(Q, hh):

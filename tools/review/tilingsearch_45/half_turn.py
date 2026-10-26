@@ -58,11 +58,11 @@ def diagonals(points):
     g.repeat(f'copies_{points[0]}', names, 'rot4')
 
 
-def run(build, spec):
+def run(build, spec, drawing=None):
     pieces, out = sys.argv[1:3]
     build()
     ox, oy, unit, band, hx, hy = spec['frame']
-    polygons = cm.frame_pieces(pieces, (ox, oy), 2 * unit, band)
+    polygons = drawing(pieces) if drawing else cm.frame_pieces(pieces, (ox, oy), 2 * unit, band)
     if spec.get('angle'):
         angle = math.radians(spec['angle'])
         c, s = math.cos(angle), math.sin(angle)
