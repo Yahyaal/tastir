@@ -51,7 +51,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 11 | P044, IRAN7, IRA1329 (both drawings, data172 and data189), C129A, P067 | Next smallest, 175–201 polygons (P111 is pm, mirror only: skip until fold-2 support) | waiting |
 | 12 | CM010, CM033, DS3, BM1, P008A, P78B, P052 | 211–220 polygons; P008A is a Nasrid panel (Granada) | waiting |
 
-After batch 8, take the remaining tilings of [the comparison](../patterns/TILINGSEARCH-45.md) by size, smallest first, five to a batch, grouping ones that look alike. Leave the large Moroccan rosette panels (over 900 polygons) until last; each needs a time box of its own.
+Codex builds the 29 medium tilings (300–600 pieces) on its own branch, `codex/tilingsearch-45`, from [its brief](codex-tilingsearch-45-2026-10-26.md); Claude's builders never take one of those. After batch 8, take the remaining tilings of [the comparison](../patterns/TILINGSEARCH-45.md) by size, smallest first, five to a batch, grouping ones that look alike. Leave the large Moroccan rosette panels (over 900 polygons) until last; each needs a time box of its own.
 
 At merge, the orchestrator also updates the beginner count pinned in `packages/engine/src/lib/along.spec.ts`.
 
