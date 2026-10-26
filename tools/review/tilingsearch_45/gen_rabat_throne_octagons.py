@@ -17,7 +17,7 @@ from gen_meknes_bou_inania_rosette_rings import crossing_set
 H, L = mp.H, 4+6*mp.H
 
 
-def build():
+def build(include_y1=True):
     mp.build_frame(4)
     crossing_set('R', 'q14', 'q02', (H, 1+H), [('rh', 'h'), ('rd', 'q01')],
                  'The vertical side from S8 to S2 crosses the line from S3 to S5 at R. '
@@ -57,9 +57,10 @@ def build():
     crossing_set('X', 'q14', 'rd@1', (H, 1+3*H), [('xd', 'q01')],
                  'The vertical side from S8 to S2 crosses the diagonal through R, turned by 90°, at X. '
                  'Draw a line through X parallel to the line from S1 to S3. Turn it round O by 90°, three times.')
-    crossing_set('Y1', 'wv', 'q04', (2+3*H, 1+3*H), [('y1d', 'q01')],
-                 'The vertical line through W crosses the line from S7 to S1 at Y1. '
-                 'Draw a line through Y1 parallel to the line from S1 to S3. Turn it round O by 90°, three times.')
+    if include_y1:
+        crossing_set('Y1', 'wv', 'q04', (2+3*H, 1+3*H), [('y1d', 'q01')],
+                     'The vertical line through W crosses the line from S7 to S1 at Y1. '
+                     'Draw a line through Y1 parallel to the line from S1 to S3. Turn it round O by 90°, three times.')
     crossing_set('Y2', 'gx', 'wd@3', (L, 1+2*H), [('y2d', 'q01')],
                  'The vertical line through T1 crosses the diagonal through W, turned by 270°, at Y2. '
                  'Draw a line through Y2 parallel to the line from S1 to S3. Turn it round O by 90°, three times.')

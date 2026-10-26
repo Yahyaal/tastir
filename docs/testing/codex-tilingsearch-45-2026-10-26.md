@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929, ALH1, NC5, MUL128K, PG229 and SPA2103X built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -198,3 +198,13 @@ Independent source-polygon shoelace areas are star 8 − 8H, fourteen; cross and
 I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/SPA2103X/overlay.png`. All red lines follow band centres. The exact data192/SPA2103X entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Wade SPA 2103x, Synagogue, Cordova, with archive record 4186. The tutorial records the centre-line representation and illustrative palette. Wichmann explicitly says the original is uncoloured; the tutorial therefore opens in Lines. Helper inspection found no additional wording changes necessary.
 
 The catalog, six targeted golden checks, all 520 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## NC7 — built as `alcazar-reyes-octagon-bands`
+
+The tutorial has twenty steps. OA is the small star's point radius, 199/(4 + 3√2) = 24.1427483684 pt, and the half-side is 4 + 3√2. After reducing the 6 pt bands to centre lines, source corners fit a + bH, H = √2/2, within 0.000495 OA. The construction reuses the Rabat throne-room grid with its unused Y1 diagonal omitted, then adds three crossing and compass steps. The larger stars and octagonal bands have different piece types and counts, so this is a separate design.
+
+Independent source-polygon shoelace areas are octagon 4 + 8H, eight; eighteen −5 + 14H, eight; fourteen −1 + 8H, eight; large_star −4 + 12H, four; hexagon 3, four; star 8 − 8H, two; eight 2, thirty-two; triangle 1/2, sixteen; kite −1 + 2H, sixteen; and square 6 − 8H, fourteen. Their counted sum is 136 + 192H = 4(4 + 6H)². The engine independently finds those ten types and counts. Triangles, kites and squares are deliberately small relative to this cell; I inspected them against the source and declared only those three types `small`.
+
+I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/NC7/overlay.png`. Every red line follows a band centre, including the small square knots. The exact data174/NC7 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Nick Crossling's photograph, personal communication, of the Alcázar wood inlay in the Dormitorio de Reyes Moros and vestibule, and V&A Toledo tin-glazed earthenware tile 308:100-1866, fifteenth century, record O160017. No photo or museum record was independently checked. The tutorial records the centre-line representation and illustrative palette.
+
+The Rabat generator's new optional `include_y1` argument defaults to its original behaviour; regenerating C126A gave byte-identical JSON. Helper inspection confirms the inherited wording describes the retained lines. The catalog, six targeted golden checks, all 525 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed. Groups A and B are complete: twenty built and none skipped.
