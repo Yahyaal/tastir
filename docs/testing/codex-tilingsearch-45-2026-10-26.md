@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is in progress; the first nine entries, C268A through MOR1137, are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
+Group A is in progress; the first ten entries, C268A through C129B, are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -96,3 +96,13 @@ The source-polygon shoelace areas are shield 1/2 + 4H, eight; long_hexagon 3, si
 I inspected the wall beside the GIF and `docs/research/tilingsearch-45/MOR1137/overlay.png` over the full drawing. Red lines follow the tile edges throughout. MOR1137 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. The source names only Rabat and Wade MOR 1137; the tutorial adds no more specific building attribution. The geometry follows the plain drawing and the palette is explicitly illustrative. The opening squares are guides, and their ink makes the smaller cross at O. Helper inspection removed an unused corner-diagonal step and supplied direct wording for the one visible diagonal through R3. This differs from the other rosettes in its centre, shield pieces and connecting lines, so it is not a proportion-only variation.
 
 The catalog, six targeted golden checks, all 470 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## C129B — built as `ben-youssef-arrow-bands`
+
+The tutorial has fifteen steps. OA is the star's point radius, 36.2141225526 pt. Two radii and two unit-square diagonals give the half-side 2 + 2√2. Source corners fit a + bH, H = √2/2, within 0.000425 OA. The unit-star opening is shared with the earlier reconstructions; lines through R, V and W set this smaller repeat's arrows and square knots. Helper inspection removed an unused diagonal set and supplied wording for the two retained guide parallels through R.
+
+The source-polygon shoelace areas are eleven −5/2 + 8H, eight; star 8 − 8H, two; hexagon 2, eight; arrow 2, sixteen; triangle 1/2, eight; kite −1 + 2H, sixteen; square 6 − 8H, six; and pentagon −5/2 + 4H, eight. Their counted sum is 48 + 64H = 4(2 + 4H)², the cell area. The engine independently gives the same eight types and counts, with no slivers.
+
+I inspected the wall beside the GIF and `docs/research/tilingsearch-45/C129B/overlay.png`; every red line follows the plain drawing. C129B is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits retain Castéra, Arabesques, page 129 bottom, Ben Youssef madrasa. Wichmann says the original is uncoloured; the tutorial opens in Lines and records the palette as illustrative. The linework, its square knots and its connecting pieces differ from P70, so the shared opening is not a proportion-only variation.
+
+The catalog, six targeted golden checks, all 475 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
