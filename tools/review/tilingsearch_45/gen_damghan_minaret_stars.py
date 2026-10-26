@@ -27,7 +27,9 @@ L = 2 * R2          # half the cell
 ORIGIN, UNIT, BAND = (297.5, 376.6), 84.5, 0.0
 
 
-def build():
+def build_star(w=True):
+    """Steps 1 to 6, shared with Bourgoin's plate 64 (gen_bourgoin_plate64.py):
+    the star at O and the lines through V, P and W, turned round O."""
     g.given()
     step('Draw a horizontal straight line through O and A. Draw a circle with centre O through A.', 'compass')
     put('c', 'circle', ((0, 0), 1.0), {'circle': {'centre': 'O', 'through': 'A'}})
@@ -53,11 +55,17 @@ def build():
     g.line_par('pd', 'P', 'd135')
     step('Turn the four lines of the last step round O by 90°, three times.')
     g.repeat('vr', ['vv', 'vd', 'pv', 'pd'], 'rot4')
+    if not w:
+        return
     step('The slanting line through V crosses the line through S8 and S2 at W. Draw a horizontal line through W. '
          'Turn it round O by 90°, three times.', 'ruler', ['W'])
     g.meet('W', 'vd', 'q14', (H, 3 * H - 1))
     g.line_par('wh', 'W', 'h')
     g.repeat('wr', ['wh'], 'rot4')
+
+
+def build():
+    build_star()
     step('The line through S7 and S1, carried on, crosses the horizontal line through W at X. '
          'Draw a line through X parallel to the line through O and S4. It crosses the line through S2 and S4, carried on, at Y. '
          'Draw a vertical line through Y. Turn the two lines round O by 90°, three times.', 'ruler', ['X', 'Y'])
