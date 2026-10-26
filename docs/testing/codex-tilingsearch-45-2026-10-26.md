@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is in progress; the first eight entries, C268A through C126A, are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
+Group A is in progress; the first nine entries, C268A through MOR1137, are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -86,3 +86,13 @@ The source-polygon shoelace areas are octagon 4 + 8H, eight; long_hexagon 3, six
 I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/C126A/overlay.png`. The red lines follow all band centres. C126A is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Wichmann explicitly says he redrew Castéra's page 126 figure 1 more regularly; the tutorial preserves that qualification and does not claim the wall's exact proportions. It records the centre-line representation and illustrative palette. The unit-star opening and compass transfers are shared with P70, but the octagons and connecting lines make this a separate design.
 
 The catalog, six targeted golden checks, all 465 player text checks and all 34 schema tests passed under the memory cap. The helper-free text names R1 and R3 at earlier star-side crossings so its two visible diagonals are explained directly. No shared application or engine code changed.
+
+## MOR1137 — built as `rabat-rosette-bands`
+
+The tutorial has 17 steps. OA is the small central cross's point radius, 36.2141225526 pt, and the half-side is 4 + 2√2. The approximately 494.57 pt repeat is shorter than C126A's: choosing its cell from motif centres, rather than reusing the previous cell, is essential. Corners fit a + bH, H = √2/2, with worst residual 0.000404 OA. Four radii and two square diagonals give the frame. The shared `build_frame` now optionally accepts two diagonal transfers; its default remains three, and regenerating P70 gave byte-identical tutorial JSON.
+
+The source-polygon shoelace areas are shield 1/2 + 4H, eight; long_hexagon 3, sixteen; star 8 − 8H, seven; eight and petal 2, four and eight; arrow and hexagon −1 + 4H, four and sixteen; cross −4 + 8H, one; dart 2 − 2H, sixteen; triangle 1/2, eight; and kite −1 + 2H, forty-eight. The counted sum is 96 + 128H = 4(4 + 4H)², the cell area. The engine independently gives the same eleven types and counts, with no slivers.
+
+I inspected the wall beside the GIF and `docs/research/tilingsearch-45/MOR1137/overlay.png` over the full drawing. Red lines follow the tile edges throughout. MOR1137 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. The source names only Rabat and Wade MOR 1137; the tutorial adds no more specific building attribution. The geometry follows the plain drawing and the palette is explicitly illustrative. The opening squares are guides, and their ink makes the smaller cross at O. Helper inspection removed an unused corner-diagonal step and supplied direct wording for the one visible diagonal through R3. This differs from the other rosettes in its centre, shield pieces and connecting lines, so it is not a proportion-only variation.
+
+The catalog, six targeted golden checks, all 470 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.

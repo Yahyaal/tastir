@@ -25,8 +25,9 @@ L = 2+6*H
 ORIGIN, UNIT = (297.5, 373.59), 241.13/L
 
 
-def build_frame(unit_steps=2):
-    cell_half_side = unit_steps+6*H
+def build_frame(unit_steps=2, diagonals=3):
+    assert diagonals in (2, 3)
+    cell_half_side = unit_steps+2*diagonals*H
     g.given()
     step('Draw a horizontal straight line through O and A. Draw a circle with centre O through A.', 'compass')
     g.circle_through('c', 'O', 'A')
@@ -66,16 +67,20 @@ def build_frame(unit_steps=2):
             g.meet(name, f'cf{i}', 'h', (i+2, 0))
             previous = name
 
-    step('Keep the compass open to OE. Draw circles with centres F, G1 and G2 in turn. '
-         'Each circle crosses the horizontal line to the right at G1, G2 and G3.', 'compass')
+    if diagonals == 3:
+        step('Keep the compass open to OE. Draw circles with centres F, G1 and G2 in turn. '
+             'Each circle crosses the horizontal line to the right at G1, G2 and G3.', 'compass')
+    else:
+        step('Keep the compass open to OE. Draw circles with centres F and G1 in turn. '
+             'Each circle crosses the horizontal line to the right at G1 and G2.', 'compass')
     prev = 'F'
-    for i in range(1, 4):
+    for i in range(1, diagonals+1):
         g.circle_from(f'cg{i}', prev, 'O', 'E')
         g.meet(f'G{i}', f'cg{i}', 'h', (unit_steps+2*i*H, 0))
         prev = f'G{i}'
 
-    step('Draw a circle with centre O through G3. It crosses the horizontal and vertical lines at T1 to T4.', 'compass')
-    g.circle_through('co', 'O', 'G3')
+    step(f'Draw a circle with centre O through G{diagonals}. It crosses the horizontal and vertical lines at T1 to T4.', 'compass')
+    g.circle_through('co', 'O', f'G{diagonals}')
     for i, (line, p) in enumerate([('h', (cell_half_side, 0)), ('v', (0, cell_half_side)), ('h', (-cell_half_side, 0)), ('v', (0, -cell_half_side))]):
         g.meet(f'T{i+1}', 'co', line, p)
 
