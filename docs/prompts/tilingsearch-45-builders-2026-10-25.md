@@ -58,7 +58,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 18 | P18B, P18A, IRAN2, IRAN4, IRA1617 | 875–907 pieces; P18A/B and IRAN2/4 are likely pairs | waiting |
 | 19+ | the 25 panels over 930 pieces, two or three to a builder | Big Moroccan and Persian rosette walls; may need a rosette-first approach | waiting |
 
-Codex builds the 29 medium tilings (300–600 pieces) on its own branch, `codex/tilingsearch-45`, from [its brief](codex-tilingsearch-45-2026-10-26.md); Claude's builders never take one of those. After batch 8, take the remaining tilings of [the comparison](../patterns/TILINGSEARCH-45.md) by size, smallest first, five to a batch, grouping ones that look alike. Leave the large Moroccan rosette panels (over 900 polygons) until last; each needs a time box of its own.
+Codex adds fold 2 and fold 1 support and builds the 14 half-turn and mirror-only tilings on `codex/fold-2`, from [its brief](codex-fold2-2026-10-26.md); Claude's builders never take one of those. Codex built the 29 medium tilings (300–600 pieces) on its own branch, `codex/tilingsearch-45`, from [its brief](codex-tilingsearch-45-2026-10-26.md); Claude's builders never take one of those. After batch 8, take the remaining tilings of [the comparison](../patterns/TILINGSEARCH-45.md) by size, smallest first, five to a batch, grouping ones that look alike. Leave the large Moroccan rosette panels (over 900 polygons) until last; each needs a time box of its own.
 
 At merge, the orchestrator also updates the beginner count pinned in `packages/engine/src/lib/along.spec.ts`.
 
