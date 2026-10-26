@@ -16,6 +16,10 @@ def run(build, spec):
     build()
     ox, oy, unit, band, hx, hy = spec['frame']
     polygons = cm.frame_pieces(pieces, (ox, oy), 2 * unit, band)
+    if spec.get('angle'):
+        angle = math.radians(spec['angle'])
+        c, s = math.cos(angle), math.sin(angle)
+        polygons = [[(c*x+s*y, c*y-s*x) for x, y in q] for q in polygons]
     paths = cm.along_ink(cm.network(polygons, hcell=hx, vcell=hy, reach=4 * max(hx, hy)))
     corners = spec.get('corners', ['N1', 'N2', 'N3', 'N4'])
     step(f'Join {corners[0]}, {corners[1]}, {corners[2]} and {corners[3]} to mark the tile that repeats.', 'fade')
@@ -49,6 +53,8 @@ def run(build, spec):
                     'text': 'Put copies of the ' + ('square' if abs(hx-hy) < 1e-10 else 'rectangular') + ' tile side by side.'},
         'expect': {'pieceTypes': len(expected), 'pieces': expected},
     }
+    if spec.get('placements'):
+        tutorial['pattern']['placements'] = spec['placements']
     if spec.get('star'):
         tutorial['star'] = spec['star']
     if spec.get('small'):
