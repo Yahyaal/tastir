@@ -1,0 +1,209 @@
+{
+  "format": 0,
+  "id": "isfahan-masjid-ali-crosses",
+  "title": "Stars and crosses of the Masjid-e Ali, Isfahan",
+  "short": "Masjid-e Ali crosses",
+  "subtitle": "Masjid-e Ali, Isfahan",
+  "fold": 4,
+  "star": 8,
+  "style": "Safavid",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s data189/IRA1329 drawing, its corners snapped to exact values. We devised the construction: one line from K1 through E fixes P, and every line is drawn through P, F, J, M, N or R. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws white bands over the lines; the tutorial draws the lines. Wichmann draws the design turned by 45°; it is turned back here, as on the portal. His drawing was compared by eye with David Wade’s photo IRA 1329 (stars and crosses in rows, with small square panels of square Kufic in the crosses and the ground); no overlay was made, because the portal is curved.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data189/IRA1329: Masjid-e Ali, Isfahan",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data189/IRA1329.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from David Wade’s photo IRA 1329 (Masjid-e Ali, Isfahan, Iran, 1522), on patterninislamicart.com. The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of an eight-pointed star.",
+    "A": "The centre of a cross, halfway to the next star on the horizontal line."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "Draw a straight line through O and K2. It crosses the circle at E. Draw a straight line through K1 and E. Draw a straight line through A and C. It crosses the line through K1 and E at P.",
+      "create": {
+        "d135": {"line": {"through": ["O", "K2"]}},
+        "E": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
+        "ke": {"line": {"through": ["K1", "E"]}},
+        "ac": {"line": {"through": ["A", "C"]}},
+        "P": {"point": {"meet": ["ac", "ke"]}}
+      },
+      "highlight": ["K2", "E", "P"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a vertical line through P. Draw a horizontal line through P. Turn the two lines round O by 90°, three times.",
+      "create": {
+        "pv": {"line": {"through": "P", "parallelTo": "v"}},
+        "ph": {"line": {"through": "P", "parallelTo": "h"}},
+        "pp": {"repeat": {"of": ["pv", "ph"], "by": "rot4"}}
+      },
+      "highlight": ["P"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a vertical line through E. It crosses the horizontal line at F. Draw a line through F parallel to line AC. Draw a circle with centre B through F. It crosses the horizontal line at J, to the left of B. Draw a line through J parallel to line AC.",
+      "create": {
+        "ev": {"line": {"through": "E", "parallelTo": "v"}},
+        "F": {"point": {"meet": ["ev", "h"]}},
+        "fl": {"line": {"through": "F", "parallelTo": "ac"}},
+        "cb": {"circle": {"centre": "B", "through": "F"}},
+        "J": {"point": {"meet": ["cb", "h"], "pick": {"farthest": "O"}}},
+        "jl": {"line": {"through": "J", "parallelTo": "ac"}}
+      },
+      "highlight": ["E", "F", "B", "J"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "The line through F crosses the line from O to K1 at M. It crosses the vertical line through P2 at R. P2 is the copy of P below O. Draw a vertical line and a horizontal line through M. Draw a horizontal line through R.",
+      "create": {
+        "M": {"point": {"meet": ["fl", "d45"]}},
+        "P2": {"point": {"meet": ["pv@2", "ph@2"]}},
+        "mv": {"line": {"through": "M", "parallelTo": "v"}},
+        "mh": {"line": {"through": "M", "parallelTo": "h"}},
+        "R": {"point": {"meet": ["fl", "pv@2"]}},
+        "rh": {"line": {"through": "R", "parallelTo": "h"}}
+      },
+      "highlight": ["M", "R"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "The horizontal line through M crosses the vertical line through P2 at N. Draw a line through N parallel to line AC. Turn the lines through F, J, M, R and N round O by 90°, three times.",
+      "create": {
+        "N": {"point": {"meet": ["mh", "pv@2"]}},
+        "nl": {"line": {"through": "N", "parallelTo": "ac"}},
+        "fr": {"repeat": {"of": ["fl", "jl", "mv", "mh", "rh", "nl"], "by": "rot4"}}
+      },
+      "highlight": ["N"],
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O and the crosses at A, B, C and D. Ink the small squares round each corner of the cell. The lines through F, J, M and N close the pieces between them.",
+    "paths": [
+      {"along": "pv", "from": "ph@2", "to": "nl"},
+      {"along": "pv", "from": "nl@3", "to": "ke"},
+      {"along": "ph", "from": "gxw", "to": "jl@3"},
+      {"along": "ph", "from": "jl@2", "to": "gx"},
+      {"along": "pv@1", "from": "ac", "to": "nl@1"},
+      {"along": "pv@1", "from": "nl", "to": "ph@1"},
+      {"along": "pv@2", "from": "ph", "to": "nl@2"},
+      {"along": "pv@2", "from": "nl@1", "to": "ph@2"},
+      {"along": "pv@3", "from": "ph@1", "to": "nl@3"},
+      {"along": "pv@3", "from": "nl@2", "to": "ph@3"},
+      {"along": "ph@1", "from": "gys", "to": "jl"},
+      {"along": "ph@1", "from": "jl@3", "to": "gy"},
+      {"along": "ph@2", "from": "gx", "to": "jl@1"},
+      {"along": "ph@2", "from": "jl", "to": "gxw"},
+      {"along": "ph@3", "from": "gy", "to": "jl@2"},
+      {"along": "ph@3", "from": "jl@1", "to": "gys"},
+      {"along": "fl", "from": "gys", "to": "pv"},
+      {"along": "fl", "from": "pv@1", "to": "gxw"},
+      {"along": "jl", "from": "gys", "to": "ph@2"},
+      {"along": "jl", "from": "ph@1", "to": "gxw"},
+      {"along": "mv", "from": "rh", "to": "pv@3"},
+      {"along": "mv", "from": "pv@1", "to": "rh@2"},
+      {"along": "mh", "from": "rh@3", "to": "pv@2"},
+      {"along": "mh", "from": "pv", "to": "rh@1"},
+      {"along": "rh", "from": "d45", "to": "mv"},
+      {"along": "rh", "from": "mv@2", "to": "d135"},
+      {"along": "nl", "from": "pv", "to": "pv@2"},
+      {"along": "nl", "from": "pv@3", "to": "pv@1"},
+      {"along": "fl@1", "from": "gx", "to": "ac"},
+      {"along": "fl@1", "from": "pv@2", "to": "gys"},
+      {"along": "fl@2", "from": "gy", "to": "ph"},
+      {"along": "fl@2", "from": "pv@3", "to": "gx"},
+      {"along": "fl@3", "from": "gxw", "to": "pv@3"},
+      {"along": "fl@3", "from": "ke", "to": "gy"},
+      {"along": "jl@1", "from": "gx", "to": "ph@3"},
+      {"along": "jl@1", "from": "ph@2", "to": "gys"},
+      {"along": "jl@2", "from": "gy", "to": "ph"},
+      {"along": "jl@2", "from": "ph@3", "to": "gx"},
+      {"along": "jl@3", "from": "gxw", "to": "ph@1"},
+      {"along": "jl@3", "from": "ph", "to": "gy"},
+      {"along": "mv@2", "from": "rh@2", "to": "pv@1"},
+      {"along": "mv@2", "from": "pv@3", "to": "rh"},
+      {"along": "mv@3", "from": "rh@3", "to": "pv@2"},
+      {"along": "mv@3", "from": "pv", "to": "rh@1"},
+      {"along": "rh@1", "from": "d135", "to": "mh"},
+      {"along": "rh@1", "from": "mv@3", "to": "d45"},
+      {"along": "rh@2", "from": "d45", "to": "mv@2"},
+      {"along": "rh@2", "from": "mv", "to": "d135"},
+      {"along": "rh@3", "from": "d135", "to": "mv@3"},
+      {"along": "rh@3", "from": "mh", "to": "d45"},
+      {"along": "nl@1", "from": "pv@1", "to": "pv@3"},
+      {"along": "nl@1", "from": "pv", "to": "pv@2"},
+      {"along": "nl@2", "from": "pv@2", "to": "pv"},
+      {"along": "nl@2", "from": "pv@1", "to": "pv@3"},
+      {"along": "nl@3", "from": "pv@3", "to": "pv@1"},
+      {"along": "nl@3", "from": "pv@2", "to": "pv"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. Stars and crosses take turns along every row.",
+    "palette": "Timurid tile",
+    "look": "strapwork",
+    "colors": {"star": "b", "ground": "ground", "bar": "a", "arm": "a", "square": "c", "small_square": "c"}
+  },
+  "expect": {
+    "pieceTypes": 6,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 0.58579, "perCell": 1},
+      {"name": "ground", "vertices": 18, "area": 0.5, "perCell": 4},
+      {"name": "bar", "vertices": 12, "area": 0.29289, "perCell": 2},
+      {"name": "arm", "vertices": 5, "area": 0.14277, "perCell": 4},
+      {"name": "square", "vertices": 4, "area": 0.08579, "perCell": 1},
+      {"name": "small_square", "vertices": 4, "area": 0.04289, "perCell": 4}
+    ]
+  }
+}
