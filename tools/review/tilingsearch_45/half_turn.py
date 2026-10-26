@@ -8,7 +8,54 @@ import math
 import sys
 
 import common as cm
-from common import put, step
+from common import g, put, step
+
+
+def unit_star():
+    """Four opening steps, with the unit star and M at sqrt(2)/2 on OA."""
+    cm.cell_square(
+        'Draw a vertical line through O. The two lines cross the circle at A, B, C and D. '
+        'Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. '
+        'They cross at K1, K2, K3 and K4. Draw a straight line through O and K1.',
+        'Draw a vertical line through O. The two lines cross the circle at A, B, C and D. '
+        'Draw a vertical line through A. Draw a horizontal line through C. '
+        'They cross at K1. Draw a straight line through O and K1.')
+    h = math.sqrt(.5)
+    step('The line from O to K1 crosses the circle at F. '
+         'Draw a vertical line through F. It crosses the horizontal line through O at M. '
+         'Turn the vertical line round O by 90°, three times.', 'ruler', ['F', 'M'])
+    g.meet('F', 'c', 'd45', (h, h))
+    g.line_par('fv', 'F', 'v')
+    g.meet('M', 'fv', 'h', (h, 0))
+    g.repeat('square', ['fv'], 'rot4')
+    step('Draw a straight line through A and C. Turn it round O by 90°, three times.', 'ruler', ['A', 'C'])
+    g.line_through('ac', 'A', 'C')
+    g.repeat('diamond', ['ac'], 'rot4')
+
+
+def rectangle(xpoint, ypoint, hx, hy):
+    """The rectangle's four sides from two compass marks on the axes."""
+    step(f'Draw a vertical line through {xpoint}. Draw a horizontal line through {ypoint}. '
+         'Turn both lines round O by 180°. They cross at N1, N2, N3 and N4.', 'ruler', [xpoint, ypoint])
+    g.line_par('sideX', xpoint, 'v')
+    g.line_par('sideY', ypoint, 'h')
+    g.repeat('frame', ['sideX', 'sideY'], 'rot2')
+    for name, x, y, a, b in [('N1', 1, 1, 'sideX', 'sideY'), ('N2', -1, 1, 'sideX@1', 'sideY'),
+                              ('N3', -1, -1, 'sideX@1', 'sideY@1'), ('N4', 1, -1, 'sideX', 'sideY@1')]:
+        g.meet(name, a, b, (x*hx, y*hy))
+
+
+def diagonals(points):
+    """Both diagonal directions through each axial compass mark, all signs."""
+    through = points[0] if len(points) == 1 else 'each of ' + ' and '.join(points)
+    step(f'Draw a line through {through} at 90° to the line from O to K1. '
+         'Turn the lines round O by 90°, three times.', 'ruler', points + ['K1'])
+    names = []
+    for point in points:
+        name = f'diagonal_{point}'
+        g.line_perp(name, point, 'd45')
+        names.append(name)
+    g.repeat(f'copies_{points[0]}', names, 'rot4')
 
 
 def run(build, spec):
