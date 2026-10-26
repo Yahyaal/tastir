@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058, BON61, P144, L34A, LEON7 and PG232 are built, and IRAN16 is skipped for unsupported symmetry. R37D is also built; only SM3 remains pending; pending entries are not counted as skips.
+All three groups are complete, in the assigned order. Group A has thirteen tutorials, Group B seven and Group C eight. Twenty-eight tutorials were built in twenty-eight commits, including four filling variations. IRAN16 is the only skip because its cmm symmetry is unsupported. No entries remain pending. All four required checks passed before each tutorial commit; the final run has 113 catalog previews, six targeted golden checks, 565 player text checks and 34 schema tests.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -282,3 +282,19 @@ Independent source-polygon shoelace areas are long_twelve 4 + 4H, two; eight 3 +
 I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/R37D/overlay.png`. Every red line follows a band centre. The exact data202/R37D entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Racinet plate 37 and its Algerian public-architecture motifs of the thirteenth and fourteenth centuries. The page names no individual building; the tutorial adds none. It records its centre-line representation and illustrative palette. The ring widths, pointed stars and piece inventory differ from the earlier octagon designs, so this is a separate design.
 
 The Rabat generator now optionally omits its Q2 diagonal step, with the original default retained. Regenerating C126A still gives byte-identical JSON. Helper inspection confirms the inherited wording for R1 and R3 matches the retained diagonals. The catalog, six targeted golden checks, all 560 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## SM3 (data206) — built as `salim-chishti-square-lattice`
+
+The final tutorial has six steps. O is at PDF (303.39, 365.11), the centre of a small square. OA is half its side, 25/√2 = 17.6776695297 pt, and the half-side is 2 + √2. Corners fit a + bH, H = √2/2, within 0.000303 OA. The source polygons already share their boundaries; the ochre stroke does not separate inset tiles. No band expansion is applied. Two radii and the unit-square diagonal give the cell, and four parallel diagonals close the pentagons and hexagons.
+
+Independent source-polygon shoelace areas are hexagon 4 + 4H, four; square 4, one; and pentagon 1 + 4H, four. Their counted sum is 24 + 32H = 4(2 + 2H)². The engine independently confirms those three types and counts, without slivers. The existing square-and-polygon tutorials have different tile shapes and arrangements; no exact duplicate or filling-only variation was found.
+
+I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/SM3/overlay.png`. Every red edge agrees. The exact data206/SM3 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain E. W. Smith, The Moghul Architecture of Fathpur-Sikri (1896), part II, plate XXVIII, figure 4, the lower pattern at Salim Chishti's tomb, Fatehpur Sikri (1581). This is distinct from data205/SM3 linked by IRAN16. The source geometry is retained and the palette is illustrative; no photograph was checked. Helper inspection supplies step-two wording that omits only the hidden AC guide.
+
+The catalog, six targeted golden checks, all 565 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## Handoff
+
+All twenty-nine assigned entries have been handled. IRAN16 alone is skipped, for the explicit symmetry limitation. No tutorial exceeded the ninety-minute research time box. The two families for Claude to register are the four Attarine rosette fillings (MOR0323, P77, PG229 and LEON7) and the ring-of-circles pair (`four-fold-ring-of-circles` and BON61). Their full ids and source-filling decisions are recorded above. BON61 alone uses `basis: mixed` because it retains Sandy Kurt's instructional credit and steps; the schema requires that truthful classification.
+
+The shared PDF reader's optional precision, the frame helpers' optional branches, the metadata helper's optional drawing/placement support and the overlay tool's optional angle retain their earlier defaults. The reported byte comparisons check those earlier outputs. Application, engine, review-page, family, queue and status files were left untouched. Overlays and intermediate measurements remain in this worktree's ignored research directory. The full and browser suites were not run, as the brief reserves those for Claude after merging. The branch is ready for Claude's review and the owner's merge.
