@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929 built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929 and ALH1 built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -148,3 +148,13 @@ The source-polygon shoelace areas are twelve 16 − 18H, four; hexagon −3 + 8H
 I inspected the wall beside the GIF and `docs/research/tilingsearch-45/SPA2929/overlay.png` over the full PDF. Every red line follows a bevelled band centre. The exact data173/SPA2929 entry is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits retain Wade SPA 2929. The source says only Synagogue, Toledo; the tutorial does not infer a more specific building. It records the centre-line representation and illustrative palette. The existing Toledo tile interlace has different pieces and counts, so this is a separate design.
 
 The catalog, six targeted golden checks, all 495 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## ALH1 (data192) — built as `alhambra-mexuar-grid-fret`
+
+The tutorial has ten steps. This is the chiral data192/ALH1 entry, not the unrelated data190/ALH1. After reducing its 8 pt bands to centre lines, a 45° frame change exposes the primitive square cell on the diagonal lattice. O is at PDF (172.7, 251), the source scaling unit is 120 pt, and tutorial OA is 120√2 pt. Every nearby corner fits tenths of OA within 0.000014 OA. Line K4F, with F halfway up OC, crosses the diagonal at one fifth; line E1E2 halves that to one tenth. Compass transfers then give the odd tenths. These simple rational lengths replace the irrationally offset diamond construction of the Reyes fret.
+
+Independent shoelace areas from the snapped source polygons are hook 13/100, eight; fret 3/25, eight; crossbar 9/100, eight; elbow 17/200, four; square 1/25, ten; pentagon 3/100, eight; and hexagon 3/100, ten. Their counted sum is exactly 4, the cell area. The engine independently gives these seven types and counts without slivers. The finished bands and hook topology differ from the Reyes and Mexuar porch frets, so the shared visual theme is not a variation of their linework.
+
+I inspected the wall beside the GIF and `docs/research/tilingsearch-45/ALH1/overlay.png` over the full PDF. Every red line follows a band centre and the handedness is retained. The exact data192/ALH1 entry is absent from `wade-paired.json`; its data190/ALH1 record is a different tiling and has no Wade photo. No photo overlay is claimed. Credits retain Tony Lee's personal communication and the stucco panel above the southern entrance of the small open patio south of the Sala del Mexuar. The source notes two reversed hexagons in the real upper-left corner; the tutorial explicitly follows the regular repeat. Source polygons are wrapped by full-cell translations to complete the primitive cell near the page edge. The tutorial records the frame turn, centre-line representation and illustrative palette.
+
+The catalog, six targeted golden checks (including rotation and chirality), all 500 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.

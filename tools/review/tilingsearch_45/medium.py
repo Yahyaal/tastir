@@ -48,6 +48,8 @@ def run(build, spec, names, drawing=None):
                     'look': spec.get('look', 'tiles'), 'colors': {},
                     'text': spec.get('repeat', 'Put copies of the square tile side by side.')},
         'expect': spec.get('expect', {'pieceTypes': 1, 'pieces': [{'name': 'x', 'vertices': 3, 'area': 1, 'perCell': 1}]})})
+    if spec.get('star', 8) is None:
+        tut.pop('star', None)
     if spec.get('placements'):
         tut['pattern']['placements'] = spec['placements']
     if spec.get('chiral'):
