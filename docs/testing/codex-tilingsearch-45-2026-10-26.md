@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058 is built and IRAN16 is skipped for unsupported symmetry. The remaining seven entries are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -208,3 +208,17 @@ Independent source-polygon shoelace areas are octagon 4 + 8H, eight; eighteen �
 I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/NC7/overlay.png`. Every red line follows a band centre, including the small square knots. The exact data174/NC7 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Nick Crossling's photograph, personal communication, of the Alcázar wood inlay in the Dormitorio de Reyes Moros and vestibule, and V&A Toledo tin-glazed earthenware tile 308:100-1866, fifteenth century, record O160017. No photo or museum record was independently checked. The tutorial records the centre-line representation and illustrative palette.
 
 The Rabat generator's new optional `include_y1` argument defaults to its original behaviour; regenerating C126A gave byte-identical JSON. Helper inspection confirms the inherited wording describes the retained lines. The catalog, six targeted golden checks, all 525 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed. Groups A and B are complete: twenty built and none skipped.
+
+## P058 — built as `bourgoin-58-star-bands`
+
+The tutorial has thirteen steps. OA is the star's point radius, 48.2854967367 pt. Two radii and two unit-square diagonals give the half-side 2 + 2√2. Neighbouring stars on an axis have different surroundings; retaining two star spacings avoids an incorrect half-period. After reducing the 12 pt bands to centre lines, source corners fit a + bH, H = √2/2, within 0.000311 OA. The construction shares the unit-star opening, then uses earlier star-side crossings and the corner circle to set the connecting bands.
+
+Independent source-polygon shoelace areas are long_hexagon 3, twelve; star 8 − 8H, four; eight 2, four; hexagon −1 + 4H, eight; dart 2 − 2H, eight; triangle 1/2, eight; and kite −1 + 2H, forty. Their counted sum is 48 + 64H = 4(2 + 4H)². The engine independently finds those seven types and counts without slivers. The topology and piece inventory differ from the earlier reconstructions; no exact duplicate or filling-only variation was found.
+
+I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/P058/overlay.png`. Every red line follows a band centre. The exact data162/P058 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Bourgoin plate 58 and all eight references listed by the page: Wade MOR 0316; Broug page 76 figure 3.34; Wichmann and Wade figure 9.6a; Dury page 22; Abas and Salman page 239; Wade SPA 2315/2109x; and Paccard volume 1 page 410. The tutorial records the centre-line representation and illustrative palette. The source highlights one star in ochre; this tutorial repeats a consistent shape palette.
+
+The catalog, six targeted golden checks, all 530 player text checks and all 34 schema tests passed under the memory cap. Helper inspection supplied direct wording for the two retained diagonals through R1 and R3, the horizontal through R and its 270° turn, and the four horizontals through V. No shared application or engine code changed.
+
+## IRAN16 — skipped: unsupported symmetry
+
+Wichmann's data197/IRAN16 page explicitly gives 2*22 (cmm). Its Mir Qavam al-Din Mar'ashi design has half-turns and mirrors, without a turn of a third or more. The current format requires fold ≥ 3, and the brief explicitly says to skip this symmetry. No tutorial or generator was created, and no false fourfold repeat was substituted. The page's related data205/SM3 is a different entry from the assigned data206/SM3 still to come.
