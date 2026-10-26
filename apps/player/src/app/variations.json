@@ -66,5 +66,13 @@
     "id": "arrayanes-squares",
     "title": "Squares and stars",
     "members": ["alhambra-arrayanes-squares", "leon-tile-stars"]
+  },
+  {
+    "id": "masjid-ali-crosses",
+    "title": "Crosses and stars of the Masjid-e Ali",
+    "members": [
+      "isfahan-masjid-ali-crosses",
+      "isfahan-masjid-ali-crosses-plain"
+    ]
   }
 ]

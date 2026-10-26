@@ -2247,6 +2247,160 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'bourgoin-star-octagons',
+    title: 'Stars and octagons of Bourgoin’s plate 44 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and an octagon at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P044 drawing of Bourgoin’s plate, its corners snapped to exact values. We devised the construction: one radius, K1E, sets the octagon at each corner, and every line is a side of an octagon, carried on: they make the star at O. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Bourgoin gives no building, and no photo of a real wall was checked.',
+      '5 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-star-octagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-star-octagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Jules Bourgoin, plate 44 (P044)',
+        url: 'https://tilingsearch.mit.edu/HTML/data10/P044.html',
+      },
+    ],
+  },
+  {
+    id: 'mazar-shrine-stars',
+    title: 'Stars of the Mazar-e Sharif shrine (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. Four stars sit round every cross, point to point with the next four.',
+    story: [
+      'The finished design was read from Brian Wichmann’s IRAN7 drawing, its corners snapped to exact values. We devised the construction: two circles fix P, the centre of a star whose point touches A, and every line is a side of one of the four stars round O. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws white bands over the lines; the tutorial draws the lines. No photo of the shrine was checked.',
+      '6 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/mazar-shrine-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/mazar-shrine-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Shrine of Ali, Mazar-e Sharif (IRAN7)',
+        url: 'https://tilingsearch.mit.edu/HTML/data187/IRAN7.html',
+      },
+    ],
+  },
+  {
+    id: 'sale-madrasa-stars',
+    title: 'Stars of the Merinid madrasa, Salé (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and a small star at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s C129A drawing, its corners snapped to exact values. We devised the construction: one line from K1 through E fixes P, and every line is drawn through P, S, T, U, W or Q. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Castéra’s picture is uncoloured; the colours are ours. No photo of the madrasa was checked.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/sale-madrasa-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/sale-madrasa-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Merinid madrasa, Salé (C129A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C129A.html',
+      },
+    ],
+  },
+  {
+    id: 'isfahan-masjid-ali-crosses',
+    title:
+      'Stars and crosses of the Masjid-e Ali, Isfahan (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. Stars and crosses take turns along every row.',
+    story: [
+      'The finished design was read from Brian Wichmann’s data189/IRA1329 drawing, its corners snapped to exact values. We devised the construction: one line from K1 through E fixes P, and every line is drawn through P, F, J, M, N or R. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws white bands over the lines; the tutorial draws the lines. Wichmann draws the design turned by 45°; it is turned back here, as on the portal. His drawing was compared by eye with David Wade’s photo IRA 1329 (stars and crosses in rows, with small square panels of square Kufic in the crosses and the ground); no overlay was made, because the portal is curved.',
+      '8 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/isfahan-masjid-ali-crosses/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/isfahan-masjid-ali-crosses/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Masjid-e Ali, Isfahan (IRA1329)',
+        url: 'https://tilingsearch.mit.edu/HTML/data189/IRA1329.html',
+      },
+    ],
+  },
+  {
+    id: 'isfahan-masjid-ali-crosses-plain',
+    title:
+      'Stars and crosses of the Masjid-e Ali, Isfahan (without squares) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. Stars and crosses take turns along every row.',
+    story: [
+      'The finished design was read from Brian Wichmann’s data172/IRA1329 drawing, its corners snapped to exact values. We devised the construction: one line from K1 through E fixes P, and every line is drawn through P, F, J, M, N. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws white bands over the lines; the tutorial draws the lines. Wichmann’s second drawing of the same portal leaves out the small squares; this variant follows it. His drawing was compared by eye with David Wade’s photo IRA 1329 (stars and crosses in rows, with small square panels of square Kufic in the crosses and the ground); no overlay was made, because the portal is curved.',
+      '8 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/isfahan-masjid-ali-crosses-plain/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/isfahan-masjid-ali-crosses-plain/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Masjid-e Ali, Isfahan (IRA1329_172)',
+        url: 'https://tilingsearch.mit.edu/HTML/data172/IRA1329.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -3366,7 +3520,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Forty-six new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Fifty-one new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -3425,6 +3579,11 @@ export const QUESTIONS: readonly Question[] = [
       'cahier-martin-arrow-stars',
       'khojent-tile-stars',
       'nishapur-madrasa-stars',
+      'bourgoin-star-octagons',
+      'mazar-shrine-stars',
+      'sale-madrasa-stars',
+      'isfahan-masjid-ali-crosses',
+      'isfahan-masjid-ali-crosses-plain',
     ],
   },
 ];
