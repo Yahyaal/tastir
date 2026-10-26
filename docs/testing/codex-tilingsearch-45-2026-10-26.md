@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is in progress; C268A, P164 and MOR2615 are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
+Group A is in progress; C268A, P164, MOR2615 and MOR0323 are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -36,3 +36,13 @@ The tutorial has nine steps. The PDF has 5 pt bands and a 233.13 pt square repea
 With H = √2/2, the source-polygon shoelace areas are hexagon 9 − 12H, two; star 40 − 56H, one; eight 6 − 8H, four; triangle 3/2 − 2H, four; kite −7 + 10H, eight; square 34 − 48H, one; and pentagon −31/2 + 22H, four. The counted areas sum to exactly 4 + 0H. The engine gives the same seven types and counts, with no slivers.
 
 I inspected the wall beside the GIF and `docs/research/tilingsearch-45/MOR2615/overlay.png`. The red lines follow the bands throughout, including the square knots. MOR2615 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits name Wade MOR 2615x and the page's additional EPC 039 link. The tutorial records the centre-line representation and illustrative palette. The catalog, six targeted golden checks, all 440 player text checks and all 34 schema tests passed under the memory cap. The generator supplies specific text for the corner diagonals when helper lines are hidden.
+
+## MOR0323 — built as `attarine-star-rosettes`
+
+The tutorial has 14 steps. The plain drawing repeats over 506.6 pt, so OA = 253.3 pt. This is also the snapping unit; all corners fit a + bH, H = √2/2, with worst error 0.000315 OA. Coefficients beyond eight are needed for this unit because the central star's tip radius is 3 − 4H. The Charbagh construction supplies the guide squares and most line families; the vertical through W and lines through Y and Z complete this different rosette design. It is a shared opening, not the same finished motif or a proportion-only variation. MOR0323's page links LEON7 as using the same irregular tiles; compare that later entry when Group C is reached.
+
+The source-polygon shoelace areas are long_hexagon 51 − 72H, six; star 232 − 328H, six; petal and eight 34 − 48H, eight each; seven −31/2 + 22H, sixteen; arrow −65 + 92H, four; rhombus −24 + 34H, eight; triangle 17/2 − 12H, twelve; and kite −41 + 58H, forty. Their counted sum is exactly 4 + 0H, independently matching the engine's nine types and counts, with no slivers.
+
+I inspected the wall beside the GIF and `docs/research/tilingsearch-45/MOR0323/overlay.png` over the whole PDF. The red lines follow the tile edges everywhere. MOR0323 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. The tutorial keeps the plain tile geometry and records its illustrative palette and the absence of a photo check. Credits retain Wade MOR 0323, MOR 1209, MOR 0421 and MOR 1227. All construction lines remain visible without helpers, and the opening text was adjusted accordingly.
+
+The catalog, six targeted golden checks, all 445 player text checks and all 34 schema tests passed under the memory cap. The first text run rejected the joined point-family name S3S5; the wording now says “the line from S3 to S5”. No geometry or shared code changed for that correction.
