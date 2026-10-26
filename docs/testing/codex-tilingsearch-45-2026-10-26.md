@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929 and ALH1 built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929, ALH1 and NC5 built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -158,3 +158,13 @@ Independent shoelace areas from the snapped source polygons are hook 13/100, eig
 I inspected the wall beside the GIF and `docs/research/tilingsearch-45/ALH1/overlay.png` over the full PDF. Every red line follows a band centre and the handedness is retained. The exact data192/ALH1 entry is absent from `wade-paired.json`; its data190/ALH1 record is a different tiling and has no Wade photo. No photo overlay is claimed. Credits retain Tony Lee's personal communication and the stucco panel above the southern entrance of the small open patio south of the Sala del Mexuar. The source notes two reversed hexagons in the real upper-left corner; the tutorial explicitly follows the regular repeat. Source polygons are wrapped by full-cell translations to complete the primitive cell near the page edge. The tutorial records the frame turn, centre-line representation and illustrative palette.
 
 The catalog, six targeted golden checks (including rotation and chirality), all 500 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## NC5 — built as `alhambra-dos-hermanas-ceiling-stars`
+
+The tutorial has seven steps. OA is the larger pointed star's tip radius, 57.99145 pt. Its four centres lie at (±√2, ±√2), reached by transferring a radius along the diagonal. All tile sides come from the eight long chords at those four centres. After reducing the 8 pt bands to centre lines, source corners fit (a + bH)/2, H = √2/2, within 0.000276 OA. The half-side is 1 + √2.
+
+Independent source-polygon shoelace areas are pointed_star −4 + 8H, four; eight 9 − 11H, four; star 12 − 16H, one; hexagon −3 + 5H, sixteen; four_star 20 − 28H, one; short_hexagon and rhombus 3 − 4H, four each; and kite −2 + 3H, eight. Their counted sum is 12 + 16H = 4(1 + 2H)², the cell area. The engine independently finds these eight types and counts, with no slivers.
+
+I inspected the wall beside the GIF and the full drawing overlay at `docs/research/tilingsearch-45/NC5/overlay.png`. Every red line follows a band centre. The exact data174/NC5 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Nick Crossling's photograph, personal communication, and the end section of a side-chamber ceiling in the Sala de las Dos Hermanas. The tutorial records the centre-line representation and illustrative palette. Its 45° pointed stars and their connecting pieces differ from the existing Dos Hermanas designs; no duplicate was found.
+
+The catalog, six targeted golden checks, all 505 player text checks and all 34 schema tests passed under the memory cap. Helper inspection supplied circle-only wording for the opening when its horizontal guide is hidden. No shared application or engine code changed.
