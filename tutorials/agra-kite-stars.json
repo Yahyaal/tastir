@@ -1,0 +1,133 @@
+{
+  "format": 0,
+  "id": "agra-kite-stars",
+  "title": "Stars and kite rosettes of a drawing from Agra",
+  "short": "Agra kite stars",
+  "subtitle": "Agra, India",
+  "fold": 4,
+  "star": 8,
+  "style": "Mughal",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s VA3 drawing, its corners snapped to exact values. Every line runs through a corner of the cell and halves an angle there, so the construction is two lines through K1, turned round O; circles of radius K1F round A and C give the second point of each. The drawing gives no steps.",
+    "changes": "Wichmann draws the design turned by 67.5°; it is turned here so that the tile is the square cell. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as bevelled bands; the tutorial draws their centre lines. No photo was checked.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data193/VA3: Agra, India",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data193/VA3.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from a drawing of Agra in the Victoria and Albert Museum (IS.1052:17-1883, one of twenty-nine drawings), and lists the same design at Rajah Birbal’s house, Fatehpur Sikri. The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of an eight-pointed star.",
+    "A": "Halfway from O to the next star on the horizontal line."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The circle crosses the line from O to K1 at F. Draw a circle with centre K1 through F. Draw circles with centres A and C and the same radius.",
+      "create": {
+        "F": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "ck": {"circle": {"centre": "K1", "through": "F"}},
+        "ca": {"circle": {"centre": "A", "radiusOf": "ck"}},
+        "cc": {"circle": {"centre": "C", "radiusOf": "ck"}}
+      },
+      "highlight": ["F", "K1"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The circle with centre A crosses the horizontal line at E. The circle with centre C crosses the vertical line at G. Draw a straight line through K1 and E. Draw a straight line through K1 and G.",
+      "create": {
+        "E": {"point": {"meet": ["ca", "h"], "pick": {"nearest": "O"}}},
+        "G": {"point": {"meet": ["cc", "v"], "pick": {"nearest": "O"}}},
+        "ka": {"line": {"through": ["K1", "E"]}},
+        "kc": {"line": {"through": ["K1", "G"]}}
+      },
+      "highlight": ["E", "G"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Turn the two lines round O by 90°, three times. They make the star at O.",
+      "create": {"kr": {"repeat": {"of": ["ka", "kc"], "by": "rot4"}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O and the lines that carry its sides on to the corners. They close the octagons between the stars and the eight kites round each corner.",
+    "paths": [
+      {"along": "ka", "from": "gx", "to": "h"},
+      {"along": "ka", "from": "kc@2", "to": "gys"},
+      {"along": "kc", "from": "gx", "to": "v"},
+      {"along": "kc", "from": "ka@2", "to": "gxw"},
+      {"along": "ka@1", "from": "gxw", "to": "v"},
+      {"along": "ka@1", "from": "d45", "to": "gx"},
+      {"along": "ka@2", "from": "gxw", "to": "h"},
+      {"along": "ka@2", "from": "kc", "to": "gy"},
+      {"along": "ka@3", "from": "gx", "to": "v"},
+      {"along": "ka@3", "from": "d45", "to": "gxw"},
+      {"along": "kc@1", "from": "gxw", "to": "h"},
+      {"along": "kc@1", "from": "d45", "to": "gys"},
+      {"along": "kc@2", "from": "gxw", "to": "v"},
+      {"along": "kc@2", "from": "ka", "to": "gx"},
+      {"along": "kc@3", "from": "gx", "to": "h"},
+      {"along": "kc@3", "from": "d45", "to": "gy"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. A star sits at every centre, an octagon between two stars, and eight kites round every corner.",
+    "palette": "Timurid tile",
+    "look": "strapwork",
+    "colors": {"star": "a", "octagon": "b", "kite": "c"}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 1.37258, "perCell": 1},
+      {"name": "octagon", "vertices": 8, "area": 0.34315, "perCell": 2},
+      {"name": "kite", "vertices": 4, "area": 0.24264, "perCell": 8}
+    ]
+  }
+}

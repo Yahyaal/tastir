@@ -1,0 +1,122 @@
+{
+  "format": 0,
+  "id": "tillya-kari-squares",
+  "title": "Interlaced squares of the Tillya-Kari madrasa, Samarkand",
+  "short": "Tillya-Kari squares",
+  "subtitle": "Tillya-Kari madrasa, Samarkand",
+  "fold": 4,
+  "style": "Timurid",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s A222 drawing, the centre lines of its bands snapped to exact values. We devised the construction: lines through F and a square at O turned by 45°. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the madrasa was checked.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data15/A222: Tillya-Kari Madrasah, Samarkand",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data15/A222.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He lists the same design on the eastern tomb tower at Kharraqan, Iran (Jay Bonner, Islamic Geometric Patterns, page 266), the Maghak-i Attari mosque in Bukhara and the shrine at Chisht, Afghanistan (Eric Broug, Islamic Geometric Design), the minaret of Jam, Jodh Bai’s palace at Fatehpur Sikri, and Agra Fort (David Wade’s photo IND 0312). The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of a square turned by 45°.",
+    "A": "Halfway from O to the next turned square on the horizontal line."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The circle crosses the line from O to K1 at F. Draw a vertical line through F. Turn it round O by 90°, three times.",
+      "create": {
+        "F": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "fv": {"line": {"through": "F", "parallelTo": "v"}},
+        "fvp": {"repeat": {"of": ["fv"], "by": "rot4"}}
+      },
+      "highlight": ["F"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "The vertical line through F crosses the horizontal line at G. Draw a circle with centre G through A. It crosses the vertical line through F at E. Draw a line through E parallel to the line from O to K1. Turn it round O by 90°, three times. The four lines make a square at O.",
+      "create": {
+        "G": {"point": {"meet": ["fv", "h"]}},
+        "cg": {"circle": {"centre": "G", "through": "A"}},
+        "E": {"point": {"meet": ["cg", "fv"], "pick": {"angle": 22.5}}},
+        "ed": {"line": {"through": "E", "parallelTo": "d45"}},
+        "edp": {"repeat": {"of": ["ed"], "by": "rot4"}}
+      },
+      "highlight": ["G", "E"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the turned square at O and the lines that carry its sides on. They close the upright squares at the corners, the pentagons and the ten-sided pieces.",
+    "paths": [
+      {"along": "fv", "from": "gys", "to": "ed@1"},
+      {"along": "fv", "from": "ed", "to": "gy"},
+      {"along": "fv@1", "from": "gx", "to": "ed@2"},
+      {"along": "fv@1", "from": "ed@1", "to": "gxw"},
+      {"along": "fv@2", "from": "gy", "to": "ed@3"},
+      {"along": "fv@2", "from": "ed@2", "to": "gys"},
+      {"along": "fv@3", "from": "gxw", "to": "ed"},
+      {"along": "fv@3", "from": "ed@3", "to": "gx"},
+      {"along": "ed", "from": "fv@3", "to": "fv"},
+      {"along": "ed@1", "from": "fv", "to": "fv@1"},
+      {"along": "ed@2", "from": "fv@1", "to": "fv@2"},
+      {"along": "ed@3", "from": "fv@2", "to": "fv@3"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. A turned square sits at every centre and an upright square at every corner.",
+    "palette": "Timurid tile",
+    "look": "interlace",
+    "colors": {"ten": "ground", "square": "a", "pentagon": "b"}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "ten", "vertices": 10, "area": 1, "perCell": 2},
+      {"name": "square", "vertices": 4, "area": 0.34315, "perCell": 2},
+      {"name": "pentagon", "vertices": 5, "area": 0.32843, "perCell": 4}
+    ]
+  }
+}

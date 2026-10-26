@@ -1,0 +1,163 @@
+{
+  "format": 0,
+  "id": "nim-avard-stars",
+  "title": "Stars, squares and pentagons of the Nim Avard madrasa, Isfahan",
+  "short": "Nim Avard stars",
+  "subtitle": "Nim Avard madrasa, Isfahan",
+  "fold": 4,
+  "star": 8,
+  "style": "Persian",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the madrasa was checked.",
+    "reviewed": "2026-10-25",
+    "note": "The finished design was read from Brian Wichmann’s F81 drawing, its corners snapped to exact values. It has the lines of the Mashhad courtyard design (F82), with more of them inked: each cross is cut into a square and four pentagons. So it uses the same construction. The drawing gives no steps."
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data16/F81: Nim Avard Madrasah, Isfahan",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data16/F81.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from Mahmood Maher al-Naqsh, Design and execution of drawing in Iranian tilework, Islamic period, Reza Abbasi Museum, 1983, volume 3, figure 81, page 37 (the Nim Avard madrasa, Isfahan), and lists the same design at the tomb of Nasr ibn Ali in Uzgen (Jay Bonner, Islamic Geometric Patterns, page 31), the Friday mosque and the Masjid-e Ali in Isfahan (Arthur Upham Pope, A Survey of Persian Art) and the shrine of Darb-e Imam, Isfahan (Eric Broug, Islamic Geometric Design, page 71). The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of an eight-pointed star.",
+    "A": "Halfway from O to the next star on the horizontal line."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre A through O. It crosses the first circle at E. Draw a vertical line through E. Turn it round O by 90°, three times. The four lines make a square, the first half of the star at O.",
+      "create": {
+        "ca": {"circle": {"centre": "A", "through": "O"}},
+        "E": {"point": {"meet": ["ca", "c"], "pick": {"angle": 60.0}}},
+        "ev": {"line": {"through": "E", "parallelTo": "v"}},
+        "evp": {"repeat": {"of": ["ev"], "by": "rot4"}}
+      },
+      "highlight": ["A"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The square crosses the line from O to K1 at S. Draw a circle with centre O through S. It crosses the horizontal line at F. Draw a line through F at 90° to the line from O to K1. Turn it round O by 90°, three times. The four lines make the second square of the star.",
+      "create": {
+        "S": {"point": {"meet": ["ev", "ev@1"]}},
+        "cs": {"circle": {"centre": "O", "through": "S"}},
+        "F": {"point": {"meet": ["cs", "h"], "pick": {"angle": 0.0}}},
+        "fd": {"line": {"through": "F", "perpendicularTo": "d45"}},
+        "fdp": {"repeat": {"of": ["fd"], "by": "rot4"}}
+      },
+      "highlight": ["S"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre A and the same radius. It crosses the horizontal line at P. Draw a line through P parallel to the line from O to K1. Turn it round O by 90°, three times.",
+      "create": {
+        "cr": {"circle": {"centre": "A", "radiusOf": "cs"}},
+        "P": {"point": {"meet": ["cr", "h"], "pick": {"nearest": "O"}}},
+        "pd": {"line": {"through": "P", "parallelTo": "d45"}},
+        "pdp": {"repeat": {"of": ["pd"], "by": "rot4"}}
+      },
+      "highlight": ["cs"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "The circle with centre A through P crosses the vertical line through A at R. Draw a line through R at 90° to the line from O to K1. Turn it round O by 90°, three times.",
+      "create": {
+        "R": {"point": {"meet": ["cr", "gx"], "pick": {"angle": 35.264}}},
+        "rd": {"line": {"through": "R", "perpendicularTo": "d45"}},
+        "rdp": {"repeat": {"of": ["rd"], "by": "rot4"}}
+      },
+      "highlight": ["cr"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O and the lines that carry the diamonds’ sides on. They close the ten-sided pieces, and the squares and pentagons round each corner of the cell.",
+    "paths": [
+      {"along": "ev", "from": "pd@3", "to": "fd@3"},
+      {"along": "ev", "from": "fd", "to": "pd@2"},
+      {"along": "ev@1", "from": "pd", "to": "fd"},
+      {"along": "ev@1", "from": "fd@1", "to": "pd@3"},
+      {"along": "ev@2", "from": "pd@1", "to": "fd@1"},
+      {"along": "ev@2", "from": "fd@2", "to": "pd"},
+      {"along": "ev@3", "from": "pd@2", "to": "fd@2"},
+      {"along": "ev@3", "from": "fd@3", "to": "pd@1"},
+      {"along": "fd", "from": "gx", "to": "ev"},
+      {"along": "fd", "from": "ev@1", "to": "gy"},
+      {"along": "fd@1", "from": "gy", "to": "ev@1"},
+      {"along": "fd@1", "from": "ev@2", "to": "gxw"},
+      {"along": "fd@2", "from": "gxw", "to": "ev@2"},
+      {"along": "fd@2", "from": "ev@3", "to": "gys"},
+      {"along": "fd@3", "from": "gys", "to": "ev@3"},
+      {"along": "fd@3", "from": "ev", "to": "gx"},
+      {"along": "pd", "from": "gys", "to": "ev@2"},
+      {"along": "pd", "from": "ev@1", "to": "gx"},
+      {"along": "pd@1", "from": "gx", "to": "ev@3"},
+      {"along": "pd@1", "from": "ev@2", "to": "gy"},
+      {"along": "pd@2", "from": "gy", "to": "ev"},
+      {"along": "pd@2", "from": "ev@3", "to": "gxw"},
+      {"along": "pd@3", "from": "gxw", "to": "ev@1"},
+      {"along": "pd@3", "from": "ev", "to": "gys"},
+      {"along": "rd", "from": "gx", "to": "gy"},
+      {"along": "rd@1", "from": "gy", "to": "gxw"},
+      {"along": "rd@2", "from": "gxw", "to": "gys"},
+      {"along": "rd@3", "from": "gys", "to": "gx"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. A star sits at every centre. A square sits at every corner, with four pentagons round it.",
+    "palette": "Timurid tile",
+    "colors": {"star": "a", "ten": "ground", "square": "b", "pentagon": "c"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 1.17157, "perCell": 1},
+      {"name": "ten", "vertices": 10, "area": 0.41421, "perCell": 4},
+      {"name": "square", "vertices": 4, "area": 0.17157, "perCell": 3},
+      {"name": "pentagon", "vertices": 5, "area": 0.16421, "perCell": 4}
+    ]
+  }
+}
