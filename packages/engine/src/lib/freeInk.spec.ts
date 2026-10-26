@@ -4,12 +4,15 @@ import { classicSelection, inkPieces, strokesOf } from './freeInk.js';
 import { cellOf, computePattern, type Pattern } from './pieces.js';
 
 /** The piece types, rounded, for comparing two patterns. */
+// Sorted, because two types of equal area may be found in either order.
 const shapes = (p: Pattern) =>
-  p.types.map((t) => ({
-    vertices: t.vertices,
-    area: Number(t.area.toFixed(5)),
-    perCell: t.perCell,
-  }));
+  p.types
+    .map((t) => ({
+      vertices: t.vertices,
+      area: Number(t.area.toFixed(5)),
+      perCell: t.perCell,
+    }))
+    .sort((x, y) => x.area - y.area || x.vertices - y.vertices);
 
 describe.each(tutorialFiles())('free inking %s', (file) => {
   const tutorial = loadTutorial(file);

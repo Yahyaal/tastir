@@ -102,7 +102,10 @@ describe('Draw it for me through every tutorial', () => {
     const golden = expectedGolden(t);
     const got = expectedGolden(kept.tutorial);
     expect(got.pieceTypes).toBe(golden.pieceTypes);
-    expect(got.pieces).toEqual(golden.pieces);
+    // Sorted, because two types of equal area may be found in either order.
+    const sorted = (ps: typeof golden.pieces) =>
+      [...ps].sort((x, y) => x.area - y.area || x.vertices - y.vertices);
+    expect(sorted(got.pieces)).toEqual(sorted(golden.pieces));
   });
 
   it('draws a step on a board drawn another way', () => {
