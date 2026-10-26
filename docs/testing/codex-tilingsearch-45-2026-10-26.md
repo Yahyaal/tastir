@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929, ALH1, NC5, MUL128K and PG229 built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929, ALH1, NC5, MUL128K, PG229 and SPA2103X built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -188,3 +188,13 @@ O is at PDF (297.5, 373.414375). The source frame unit is 149.25 pt; the turn ma
 I inspected the wall beside the GIF and the full drawing overlay at `docs/research/tilingsearch-45/PG229/overlay.png`. Every red edge agrees. I also inspected `source-colour-wall.png`, rendered from fills returned by the actual player placement function, against the PDF. Source PDF fills were grouped by shape before setting those rules; all actual player fills match. The exact data8/PG229 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain V&A tile 184:1853, Seville, sixteenth century, cuenca, record O159790; Abas and Salman page 229; and Wade MOR 0322 at the Attarine madrasa. No museum record or photograph was independently checked. The tutorial records the frame turn and source filling.
 
 The catalog, six targeted golden checks, all 515 player text checks and all 34 schema tests passed under the memory cap. The actual player placement-colour check also passed. No shared application or engine code changed.
+
+## SPA2103X — built as `cordoba-synagogue-star-bands`
+
+The tutorial has sixteen steps. OA is the small star's point radius, 36.2141225526 pt, and the half-side is 2 + 2√2. Source band centres fit a + bH, H = √2/2, within 0.000286 OA after extracting at 0.01 pt precision and expanding by half the 7 pt band width. The Ben Youssef arrow-band construction supplies all line families except the axes at 1 + 3H; a unit-radius transfer from J gives those. Its finished stars, crosses and connecting pieces have different topology, so this shared opening is not a filling-only variation.
+
+Independent source-polygon shoelace areas are star 8 − 8H, fourteen; cross and eight −1 + 4H, eight and sixteen; kite −1 + 2H, thirty-two; square 6 − 8H, two; and pentagon −5/2 + 4H, eight. Their counted sum is 48 + 64H = 4(2 + 4H)². The engine independently finds those six types and counts without slivers.
+
+I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/SPA2103X/overlay.png`. All red lines follow band centres. The exact data192/SPA2103X entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Wade SPA 2103x, Synagogue, Cordova, with archive record 4186. The tutorial records the centre-line representation and illustrative palette. Wichmann explicitly says the original is uncoloured; the tutorial therefore opens in Lines. Helper inspection found no additional wording changes necessary.
+
+The catalog, six targeted golden checks, all 520 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
