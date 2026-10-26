@@ -50,7 +50,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 10 | F80, P060, CL39, F109, CM054A, VA6, W1 | Next smallest, 143–171 polygons | done, merged: five built; F80 and F109 are cmm and need fold-2 support |
 | 11 | P044, IRAN7, IRA1329 (both drawings, data172 and data189), C129A, P067 | Next smallest, 175–201 polygons (P111 is pm, mirror only: skip until fold-2 support) | done, merged: four built (IRA1329 as main and plain variant); P067 = eight-fold-khatam |
 | 12 | CM010, CM033, DS3, BM1, P008A, P78B, P052 | 211–220 polygons; P008A is a Nasrid panel (Granada) | done, merged: six built; P052 is cmm |
-| 13 | BON47, IND01, FE1, IRAN15, F78, P064 | Next smallest, 231–239 polygons | started |
+| 13 | BON47, IND01, FE1, IRAN15, F78, P064 | Next smallest, 231–239 polygons | done, merged: five built; IRAN15 = qom-atabaki-stars recoloured |
 | 14 | P60B, C101, MMA2, SHAF27, ALHAMK, P397 | 241–259 polygons; ALHAMK is an Alhambra panel with a Wade photo; P30 and S45A are pmm (skip) | waiting |
 | 15 | CL35, IND0312, P94, RAY10, AJL1, P99 | 267–293 polygons; DW5 is pmm (skip). After this, only the large panels (over 600 pieces) remain for Claude | waiting |
 

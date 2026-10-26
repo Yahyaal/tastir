@@ -2591,6 +2591,162 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'itimad-daula-stars',
+    title:
+      'Interlaced stars of the tomb of Itimad al-Daula, Agra (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre, two stars on every side and a small square at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s F78 drawing, the centre lines of its bands snapped to exact values. We devised the construction. Every line is a side of a star of two squares, carried on: the star at O, which is the star of the Leones doors, and a star of the same size at T, two on each side of the cell. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the tomb was checked.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/itimad-daula-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/itimad-daula-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Tomb of Itimad al-Daula, Agra (F78)',
+        url: 'https://tilingsearch.mit.edu/HTML/data153/F78.html',
+      },
+    ],
+  },
+  {
+    id: 'fatehpur-sikri-stars',
+    title:
+      'Interlaced stars of Rajah Birbal’s house, Fatehpur Sikri (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the tilted square tile side by side. Four stars turn one way round each centre and the other way round each corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s IND01 drawing, the centre lines of its bands snapped to exact values. We devised the construction. Every line is a side of a star of two squares, carried on. Four stars turn round O; the line through Z that halves the angle W2ZQ is a mirror of the pattern, which gives the stars that turn the other way round each corner of the tile. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines, turned by 22.5° so that the stars stand upright. No photo of the house was checked.',
+      '11 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fatehpur-sikri-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fatehpur-sikri-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Rajah Birbal’s house, Fatehpur Sikri (IND01)',
+        url: 'https://tilingsearch.mit.edu/HTML/data175/IND01.html',
+      },
+    ],
+  },
+  {
+    id: 'damghan-minaret-stars',
+    title:
+      'Star and squares of the Friday mosque minaret, Damghan (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and a small square at every corner, with rows of squares between them.',
+    story: [
+      'The finished design was read from Brian Wichmann’s BON47 drawing, its corners snapped to exact values. We devised the construction. The star at O is the classic star of two squares; every other line runs through a crossing of the star’s lines carried on (V, P, W, X and Y), and the cell’s corner K1 lies four times as far from O as the star’s point S2. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the minaret was checked.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/damghan-minaret-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/damghan-minaret-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Friday mosque, Damghan (BON47)',
+        url: 'https://tilingsearch.mit.edu/HTML/data211/BON47.html',
+      },
+    ],
+  },
+  {
+    id: 'cairo-embassy-stars',
+    title:
+      'Stars and crosses of the French Embassy ceiling, Cairo (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the tilted square tile side by side. A large piece sits at every centre and every corner, with stars and crosses between them.',
+    story: [
+      'The finished design was read from Brian Wichmann’s FE1 drawing, its corners snapped to exact values. We devised the construction. It is the eight-fold star and cross: stars of two squares stand round O, every side carried on, and the lines through W add the next stars. Round O and round the tile’s corners the lines between the cross and its four stars are left out, so they make one large piece. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the ceiling was checked.',
+      '8 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/cairo-embassy-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/cairo-embassy-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: French Embassy, Cairo (FE1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data208/FE1.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-plate-64',
+    title: 'Stars and octagons of Bourgoin’s plate 64 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the tilted square tile side by side. A star sits at every centre and a large octagon at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P064 drawing, its corners snapped to exact values. We devised the construction. The star at O is the classic star of two squares, and every other line runs through a crossing of its lines carried on (V and P), as in the Damghan minaret. The large octagons sit at the corners of a square tile turned by 22.5°. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of a real panel was checked.',
+      '7 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-plate-64/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-plate-64/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Jules Bourgoin, plate 64 (P064)',
+        url: 'https://tilingsearch.mit.edu/HTML/data11/P064.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -3710,7 +3866,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Fifty-seven new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Sixty-two new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -3780,6 +3936,11 @@ export const QUESTIONS: readonly Question[] = [
       'sicily-panel-stars',
       'alhambra-museum-interlaced-stars',
       'assisi-basilica-stars',
+      'itimad-daula-stars',
+      'fatehpur-sikri-stars',
+      'damghan-minaret-stars',
+      'cairo-embassy-stars',
+      'bourgoin-plate-64',
     ],
   },
 ];

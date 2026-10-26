@@ -60,7 +60,11 @@
   {
     "id": "star-and-cross",
     "title": "Eight-fold star and cross",
-    "members": ["eight-fold-star-and-cross", "mashhad-gowhar-interlace"]
+    "members": [
+      "eight-fold-star-and-cross",
+      "mashhad-gowhar-interlace",
+      "cairo-embassy-stars"
+    ]
   },
   {
     "id": "arrayanes-squares",
