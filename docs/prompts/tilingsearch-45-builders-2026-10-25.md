@@ -45,7 +45,9 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 5 | H424, SPA2215, RAY1, RAY12, DS4 | Spain outside the Alhambra: Seville Alcázar, Toledo tiles, a tile-mosaic panel; small eight-pointed star designs | done, merged 19c4535: all five; SPA2215 is a variant of the Leones door stars |
 | 6 | F77, F82, CM066B, IRA0501, IRA1330, PG223, P47 | Small Iranian and Central Asian designs, each under 120 polygons | done, merged: five built; IRA0501 and IRA1330 need fold-2 support |
 | 7 | P269C3, P201, MAR1, LEON10, C103 | Small Moroccan designs | done, merged: all five; LEON10 is a variant of the Arrayanes squares |
-| 8 | GREEN1, HAMA, KHC, P35, CM036, F34, CM006A, ROMAN11 | Small designs from Turkey, Syria, Egypt, books and Roman mosaics | waiting |
+| 8 | GREEN1, HAMA, KHC, P35, CM036, F34, CM006A, ROMAN11 | Small designs from Turkey, Syria, Egypt, books and Roman mosaics | started |
+| 9 | A222, IND0703, R241B, A7, F81, VA3 | Central Asia, Iran and India, 123–150 polygons | started |
+| 10 | F80, P060, CL39, F109, CM054A, VA6, W1 | Next smallest, 143–171 polygons | waiting |
 
 After batch 8, take the remaining tilings of [the comparison](../patterns/TILINGSEARCH-45.md) by size, smallest first, five to a batch, grouping ones that look alike. Leave the large Moroccan rosette panels (over 900 polygons) until last; each needs a time box of its own.
 
