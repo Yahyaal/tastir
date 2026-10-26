@@ -88,15 +88,20 @@ def frame_pieces(pieces_json, origin, period, band):
     return res
 
 
-def clip(segs, hcell=1.0, vcell=None):
+def clip(segs, hcell=1.0, vcell=None, diamond=False):
     """The parts of segs inside the cell |x| <= hcell, |y| <= vcell (vcell
-    defaults to hcell: the square cell)."""
+    defaults to hcell: the square cell); with diamond, inside the square
+    |x| + |y| <= hcell, whose corners lie on the axes."""
     vcell = hcell if vcell is None else vcell
     out = []
     for p, q in segs:
         t0, t1 = 0.0, 1.0
         dx, dy = q[0] - p[0], q[1] - p[1]
-        for dv, pv, hc in ((dx, p[0], hcell), (dy, p[1], vcell)):
+        if diamond:
+            sides = ((dx + dy, p[0] + p[1], hcell), (dx - dy, p[0] - p[1], hcell))
+        else:
+            sides = ((dx, p[0], hcell), (dy, p[1], vcell))
+        for dv, pv, hc in sides:
             for sg in (1, -1):
                 a_, b_ = sg * dv, hc - sg * pv
                 if abs(a_) < 1e-12:
@@ -135,15 +140,16 @@ def snap(p, tol=0.006):
     return best[1] if best else None
 
 
-def network(polys, vcell=None, hcell=1.0, reach=3):
+def network(polys, vcell=None, hcell=1.0, reach=3, diamond=False):
     """Every edge of the drawing inside the cell, its ends snapped onto the
-    construction. Fails loudly on a corner the construction does not make."""
+    construction. Fails loudly on a corner the construction does not make.
+    With diamond, the cell is the square |x| + |y| <= hcell."""
     segs = set()
     for Q in polys:
         if max(abs(v) for q in Q for v in q) > reach:
             continue
         for i in range(len(Q)):
-            for a, b in clip([(Q[i], Q[(i + 1) % len(Q)])], hcell, vcell):
+            for a, b in clip([(Q[i], Q[(i + 1) % len(Q)])], hcell, vcell, diamond):
                 sa, sb = snap(a), snap(b)
                 assert sa and sb, ('corner off the construction', a, b, sa, sb)
                 if math.dist(sa, sb) > 1e-6:

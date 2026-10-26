@@ -25,9 +25,11 @@ def run(build, spec, names, drawing=None):
     build()
     origin, unit, band, half_side = spec['frame']
     polys = drawing(pieces) if drawing else cm.frame_pieces(pieces, origin, 2*unit, band)
-    paths = cm.along_ink(cm.network(polys, hcell=half_side, reach=3*half_side))
-    step('Join K1, K2, K3 and K4 to mark the tile that repeats.', 'fade')
-    put('tile', 'polygon', None, {'polygon': ['K1', 'K2', 'K3', 'K4']})
+    diamond = spec.get('diamond', False)
+    paths = cm.along_ink(cm.network(polys, hcell=half_side, reach=3*half_side, diamond=diamond))
+    corners = ['T1', 'T2', 'T3', 'T4'] if diamond else ['K1', 'K2', 'K3', 'K4']
+    step('Join {}, {}, {} and {} to mark the tile that repeats.'.format(*corners), 'fade')
+    put('tile', 'polygon', None, {'polygon': corners})
     tut = {'format': 0, **{key: spec[key] for key in ['id', 'title', 'short', 'subtitle', 'given']}}
     tut.update({
         'format': 0, 'fold': 4, 'star': spec.get('star', 8),
