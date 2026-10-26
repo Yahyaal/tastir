@@ -10,7 +10,10 @@ import { PALETTES } from '../../../../packages/project-core/src/coloring.ts';
 
 const id = process.argv[2];
 const json = JSON.parse(
-  readFileSync(new URL(`../../../../tutorials/${id}.json`, import.meta.url), 'utf8'),
+  readFileSync(
+    new URL(`../../../../tutorials/${id}.json`, import.meta.url),
+    'utf8',
+  ),
 );
 const model = loadModel(json);
 const palette = json.pattern.palette as string;
@@ -20,7 +23,10 @@ const slots = Object.fromEntries(
 );
 model.pattern.pieces.forEach((p, i) => {
   const n = p.polygon.length;
-  const c = p.polygon.reduce((a, q) => ({ x: a.x + q.x / n, y: a.y + q.y / n }), { x: 0, y: 0 });
+  const c = p.polygon.reduce(
+    (a, q) => ({ x: a.x + q.x / n, y: a.y + q.y / n }),
+    { x: 0, y: 0 },
+  );
   const t = model.pattern.types[p.type]!;
   const f = fill(i, 0, 0);
   console.log(`${t.name} ${c.x},${c.y} ${slots[f] ?? f}`);

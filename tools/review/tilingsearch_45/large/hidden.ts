@@ -3,11 +3,17 @@
 //
 //   tsx --conditions=@tastir/source tools/review/tilingsearch_45/large/hidden.ts <id>
 import { readFileSync } from 'node:fs';
-import { loadModel, withHelpers } from '../../../../packages/project-core/src/model.ts';
+import {
+  loadModel,
+  withHelpers,
+} from '../../../../packages/project-core/src/model.ts';
 
 const id = process.argv[2];
 const json = JSON.parse(
-  readFileSync(new URL(`../../../../tutorials/${id}.json`, import.meta.url), 'utf8'),
+  readFileSync(
+    new URL(`../../../../tutorials/${id}.json`, import.meta.url),
+    'utf8',
+  ),
 );
 const model = loadModel(json);
 const hide = withHelpers(model, false).hide ?? new Set<string>();
