@@ -2810,6 +2810,863 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'moulay-idriss-interlace',
+    title:
+      'Interlaced stars of the Moulay Idriss zaouia (Fez) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. The stars’ surroundings alternate along each row.',
+    story: [
+      'The finished design was read from Brian Wichmann’s C268A vector drawing. The band centre lines were snapped to exact values on a half-OA grid. The drawing gives no steps. We devised the construction from the square’s midpoint and two squares on the circle of radius MG.',
+      'The compass steps, their order and the named points are ours. The tutorial draws the centre lines of Wichmann’s 10 pt interlaced bands. Its square cell spans two small-star spacings because their surroundings alternate. The palette is illustrative; no photograph was checked. The page heading names Moulay Idriss zaouia, while its Wade references name Moulay Ishmael mosque.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/moulay-idriss-interlace/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/moulay-idriss-interlace/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Moulay Idriss zaouia, Fez (C268A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C268A.html',
+      },
+    ],
+  },
+  {
+    id: 'meknes-bou-inania-star-rings',
+    title: 'Star rings of the Bou Inania madrasa (Meknes) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A smaller star sits among each group of three larger stars.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P164 vector drawing. The band centre lines were snapped to exact values on a half-OA grid. The drawing gives no steps. We devised the construction, sharing its first five steps with the Moulay Idriss interlace: the square’s midpoint sets the first star, then its inner corners and the midpoint set the remaining lines.',
+      'The compass steps, their order and the named points are ours. The tutorial draws the centre lines of Wichmann’s 11 pt interlaced bands. The full square repeat contains three equal stars and one smaller star. The palette is illustrative; no photograph was checked.',
+      '13 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/meknes-bou-inania-star-rings/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/meknes-bou-inania-star-rings/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bou Inania madrasa, Meknes (P164)',
+        url: 'https://tilingsearch.mit.edu/HTML/data153/P164.html',
+      },
+    ],
+  },
+  {
+    id: 'tetouan-sakkala-knots',
+    title:
+      'Stars and square knots of the Sakkala (Tetouan) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A square knot sits at every corner between four stars.',
+    story: [
+      'The finished design was read from Brian Wichmann’s MOR2615 vector drawing. The band centre lines were snapped to exact values. The drawing gives no steps. We devised the construction, reusing the star of the Leones doors. The crossing V sets the small square at each cell corner.',
+      'The compass steps, their order and the named points are ours. The tutorial draws the centre lines of Wichmann’s 5 pt bands. The palette is illustrative; no photograph was checked.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/tetouan-sakkala-knots/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/tetouan-sakkala-knots/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Sakkala, Tetouan (MOR2615)',
+        url: 'https://tilingsearch.mit.edu/HTML/data173/MOR2615.html',
+      },
+    ],
+  },
+  {
+    id: 'attarine-star-rosettes',
+    title: 'Star rosettes of the Attarine madrasa (Fez) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. Stars fill the spaces between the rosettes.',
+    story: [
+      'The finished design was read from Brian Wichmann’s MOR0323 vector drawing. The corners were snapped to exact values on the square-root-of-two grid. The drawing gives no steps. We devised the construction, sharing the Charbagh opening as two guide squares and their continued sides. Lines through W, Y and Z complete the rosettes and their surrounding stars.',
+      'The compass steps, their order and the named points are ours. The finished tile edges follow the plain drawing. The palette is illustrative; no photograph was checked.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/attarine-star-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/attarine-star-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Attarine madrasa, Fez (MOR0323)',
+        url: 'https://tilingsearch.mit.edu/HTML/data172/MOR0323.html',
+      },
+    ],
+  },
+  {
+    id: 'meknes-bou-inania-petals',
+    title:
+      'Petal rosettes of the Bou Inania madrasa (Meknes) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A pointed star sits at every corner between four rosettes.',
+    story: [
+      'The finished design was read from Brian Wichmann’s MOR0910 vector drawing. The corners were snapped to exact values with the small star’s point radius as the unit. The drawing gives no steps. We devised the construction: the unit star and a square diagonal set the compass transfers, and earlier crossings give every remaining line.',
+      'The compass steps, their order and the named points are ours. OA is the small star’s point radius; the cell half-side is two radii plus three square diagonals. The finished tile edges follow the plain drawing. The palette is illustrative; no photograph was checked.',
+      '16 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/meknes-bou-inania-petals/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/meknes-bou-inania-petals/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bou Inania madrasa, Meknes (MOR0910)',
+        url: 'https://tilingsearch.mit.edu/HTML/data190/MOR0910.html',
+      },
+    ],
+  },
+  {
+    id: 'meknes-bou-inania-rosette-rings',
+    title:
+      'Rosette rings of the Bou Inania madrasa (Meknes) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. Stars and arrows join the rosettes along the rows.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P70 vector drawing. The corners were snapped to exact values with the small star’s point radius as the unit. The drawing gives no steps. We devised the construction, sharing the unit-star and compass-transfer opening with the Meknes petal rosettes. The crossings R, V, W, X and Y1 to Y4 set the inner stars and outer pieces.',
+      'The compass steps, their order and the named points are ours. OA is the small star’s point radius; the cell half-side is four radii plus three square diagonals. The finished tile edges follow the plain drawing. The palette is illustrative; no photograph was checked.',
+      '22 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/meknes-bou-inania-rosette-rings/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/meknes-bou-inania-rosette-rings/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bou Inania madrasa, Meknes (P70)',
+        url: 'https://tilingsearch.mit.edu/HTML/data21/P70.html',
+      },
+    ],
+  },
+  {
+    id: 'fes-bou-inania-cross-stars',
+    title:
+      'Crosses and stars of the Bou Inania madrasa (Fez) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. Stars and small squares fill the spaces between the crosses.',
+    story: [
+      'The finished design was read from Brian Wichmann’s MOR2832X vector drawing. The grey bevel shading was separated from the coloured faces, and the band centre lines snapped to exact values. The drawing gives no steps. We devised the construction from half-unit lines and circles of radius OM.',
+      'The compass steps, their order and the named points are ours. The 9 pt bevelled bands are represented by their centre lines. The large cruciform piece has 24 corners in this centre-line tiling. OA is one third of the cell half-side. The palette is illustrative; no photograph was checked.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-bou-inania-cross-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-bou-inania-cross-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bou Inania madrasa, Fez (MOR2832X)',
+        url: 'https://tilingsearch.mit.edu/HTML/data190/MOR2832X.html',
+      },
+    ],
+  },
+  {
+    id: 'rabat-throne-octagons',
+    title:
+      'Octagons and stars of the Royal Palace throne room (Rabat) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s C126A drawing. Its band centre lines were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening and square-diagonal compass transfers are shared with the Meknes rosette rings; different crossings complete the octagons. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The 8 pt bands are represented by their centre lines. Wichmann says his drawing regularizes the panel in Castéra’s book; we follow that regularized drawing, without claiming the wall’s exact proportions. The palette is illustrative; no photograph was checked.',
+      '18 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/rabat-throne-octagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/rabat-throne-octagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Royal Palace throne room, Rabat (C126A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C126A.html',
+      },
+    ],
+  },
+  {
+    id: 'rabat-rosette-bands',
+    title: 'Rosette bands from Rabat (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s MOR1137 vector drawing and snapped to exact values in small-star-radius units. Four radii and two unit-square diagonals set the cell half-side. The construction shares the unit-star opening with the Meknes and Rabat reconstructions, then adds lines through the guide squares’ corners to make the bands and the small central cross. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The finished tile edges follow the plain drawing. The opening squares are guides; the cross at O is picked out from them at the ink stage. The palette is illustrative; no photograph was checked.',
+      '17 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/rabat-rosette-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/rabat-rosette-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Rabat (MOR1137)',
+        url: 'https://tilingsearch.mit.edu/HTML/data190/MOR1137.html',
+      },
+    ],
+  },
+  {
+    id: 'ben-youssef-arrow-bands',
+    title:
+      'Arrow bands of the Ben Youssef madrasa (Marrakesh) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s C129B drawing and snapped to exact values in small-star-radius units. Two radii and two unit-square diagonals set the cell half-side. The construction shares the unit-star opening with the Meknes reconstructions; crossings R, V and W then set the bands and square knots. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The finished tile edges follow the plain drawing. Castéra’s original example is uncoloured, according to Wichmann; the tutorial therefore opens as lines. Its palette is illustrative; no photograph was checked.',
+      '15 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/ben-youssef-arrow-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/ben-youssef-arrow-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Ben Youssef madrasa, Marrakesh (C129B)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C129B.html',
+      },
+    ],
+  },
+  {
+    id: 'fes-bou-inania-octagonal-rosettes',
+    title:
+      'Octagonal rosettes of the Bou Inania madrasa (Fez) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s MOR2841X vector drawing and snapped to exact values in small-star-radius units. Three radii and two unit-square diagonals set the half-side. The unit-star opening is shared with the earlier reconstructions. Compass transfers from J give M2, whose distance from O is the outer octagon’s apothem. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The finished tile edges follow the plain drawing. The palette is illustrative; no photograph was checked.',
+      '20 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-bou-inania-octagonal-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-bou-inania-octagonal-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bou Inania madrasa, Fez (MOR2841X)',
+        url: 'https://tilingsearch.mit.edu/HTML/data190/MOR2841X.html',
+      },
+    ],
+  },
+  {
+    id: 'moulay-ismail-octagons',
+    title:
+      'Octagons and pointed stars of the Moulay Ismail mosque (Fez) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s MOR0606 vector drawing. Its band centre lines were snapped to the square-root-of-two grid in small-star-radius units. It uses the same construction grid as the Rabat throne-room octagons, but inks different runs to form the pointed centre star and the twelve-sided pieces. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The 5 pt bands are represented by their centre lines. The initial squares at O are guides for the finished larger star. The palette is illustrative; no photograph was checked.',
+      '18 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/moulay-ismail-octagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/moulay-ismail-octagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Moulay Ismail mosque, Fez (MOR0606)',
+        url: 'https://tilingsearch.mit.edu/HTML/data172/MOR0606.html',
+      },
+    ],
+  },
+  {
+    id: 'ben-youssef-star-rosettes',
+    title:
+      'Star rosettes of the Ben Youssef madrasa (Marrakesh) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s P77 drawing. Its exact tile shapes, areas and counts agree with the Attarine star rosettes after shifting the centre. This variation shares all of that tutorial’s construction steps. The repeat and proportions are the same; the source’s filling distinguishes this version. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The source is shifted to place an eight-petal rosette at O, matching the Attarine opening. The repeated geometry is unchanged. Colours are read from the vector drawing: the centre star is maroon, the corner star white and the filler stars black. No photograph was checked.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/ben-youssef-star-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/ben-youssef-star-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Ben Youssef madrasa, Marrakesh (P77)',
+        url: 'https://tilingsearch.mit.edu/HTML/data205/P77.html',
+      },
+    ],
+  },
+  {
+    id: 'toledo-synagogue-star-bands',
+    title: 'Stars and bands of a synagogue in Toledo (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s SPA2929 drawing. Grey bevel shading was separated from the coloured faces, and the 6 pt band centre lines snapped to exact values. The unit-star opening is shared with the earlier reconstructions. Three square-diagonal transfers from B give the cell; the lines through M complete the bands. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The shaded bands are represented by their centre lines. The palette is illustrative; no photograph was checked. The source names only a synagogue in Toledo, so no more specific building is asserted.',
+      '8 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/toledo-synagogue-star-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/toledo-synagogue-star-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Synagogue, Toledo (SPA2929)',
+        url: 'https://tilingsearch.mit.edu/HTML/data173/SPA2929.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-mexuar-grid-fret',
+    title:
+      'Grid fret of the Sala del Mexuar patio (Alhambra) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s data192/ALH1 drawing. After taking the 8 pt band centre lines and turning the frame by 45 degrees, the corners lie on a rational grid in tenths of OA. Line K4F gives a fifth, and line E1E2 halves it to a tenth; compass transfers make the odd tenths. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tutorial draws band centre lines. The square cell follows the primitive diagonal lattice; the change of frame preserves the drawing’s handedness. Wichmann notes two reversed hexagons in the real panel’s upper left; this tutorial follows his regular repeat. The palette is illustrative; no photograph was checked.',
+      '10 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-mexuar-grid-fret/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-mexuar-grid-fret/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Sala del Mexuar patio, Alhambra (ALH1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data192/ALH1.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-dos-hermanas-ceiling-stars',
+    title:
+      'Pointed stars of the Dos Hermanas side-chamber ceiling (Alhambra) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s NC5 vector drawing. Its band centre lines were snapped to exact half-unit square-root-of-two values. Every edge is a side of one of four eight-pointed stars with 45-degree tips, continued. The circle transfer through E locates their centres, and the crossings make the small central star. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The 8 pt bands are represented by their centre lines. The palette is illustrative; no photograph of the ceiling was checked.',
+      '7 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-dos-hermanas-ceiling-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-dos-hermanas-ceiling-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Sala de las Dos Hermanas, Alhambra (NC5)',
+        url: 'https://tilingsearch.mit.edu/HTML/data174/NC5.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-dos-hermanas-band-stars',
+    title:
+      'Star bands of the Sala de las Dos Hermanas (Alhambra) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s MUL128K drawing. Its band centre lines fit exact square-root-of-two values. The shared unit-star opening sets the smaller stars. Four radii and two square diagonals set the half-side; compass transfers and star-side crossings set the bands. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The 7 pt bands are represented by their centre lines. The palette is illustrative; no photograph was checked.',
+      '17 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-dos-hermanas-band-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-dos-hermanas-band-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Sala de las Dos Hermanas, Alhambra (MUL128K)',
+        url: 'https://tilingsearch.mit.edu/HTML/data175/MUL128K.html',
+      },
+    ],
+  },
+  {
+    id: 'seville-vanda-star-rosettes',
+    title: 'Star rosettes of a Seville tile (V&A) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s PG229 drawing. Turning the frame by 45 degrees reveals the same primitive repeat, exact proportions and tile network as the Attarine star rosettes. This variation shares every construction step. Its source filling distinguishes this version. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The frame is turned by 45 degrees to match the Attarine opening. The repeated linework is unchanged. The source colours are retained as placement rules: ochre stars, slate-blue petals and long hexagons, black seven-sided pieces and arrows, and white remaining pieces. No photograph was checked.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/seville-vanda-star-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/seville-vanda-star-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Seville tile, Victoria and Albert Museum (PG229)',
+        url: 'https://tilingsearch.mit.edu/HTML/data8/PG229.html',
+      },
+    ],
+  },
+  {
+    id: 'cordoba-synagogue-star-bands',
+    title: 'Star bands of the synagogue in Córdoba (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s SPA2103X drawing and snapped to exact square-root-of-two values. Two radii and two unit-square diagonals set the half-side. The construction shares the Ben Youssef arrow-band grid, adding a radius transfer from J. The ink picks out different stars, connecting bands and square knots. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The 7 pt bands are represented by their centre lines. Wichmann says colour was added because the original is uncoloured, so the tutorial opens as lines. The palette is illustrative; no photograph was checked.',
+      '16 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/cordoba-synagogue-star-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/cordoba-synagogue-star-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Synagogue, Córdoba (SPA2103X)',
+        url: 'https://tilingsearch.mit.edu/HTML/data192/SPA2103X.html',
+      },
+    ],
+  },
+  {
+    id: 'alcazar-reyes-octagon-bands',
+    title:
+      'Octagons of the Dormitorio de Reyes Moros (Alcázar, Seville) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s NC7 drawing. Its band centre lines fit exact square-root-of-two values. The opening shares the Rabat throne-room octagon grid; three further crossing and compass steps complete the different stars and octagonal bands. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The 6 pt bands are represented by their centre lines. The palette is illustrative; no photograph was checked.',
+      '20 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alcazar-reyes-octagon-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alcazar-reyes-octagon-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Dormitorio de Reyes Moros, Alcázar Real, Seville (NC7)',
+        url: 'https://tilingsearch.mit.edu/HTML/data174/NC7.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-58-star-bands',
+    title: 'Star bands of Bourgoin plate 58 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s P058 drawing and its band centres snapped to exact square-root-of-two values. The unit-star opening is shared with the earlier reconstructions. Neighbouring stars on an axis have different surroundings, so the repeat spans two star spacings. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The 12 pt bands are represented by their centre lines. The palette is illustrative; no photograph was checked. The source highlights one star in ochre; the tutorial repeats a consistent shape palette.',
+      '13 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-58-star-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-58-star-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bourgoin, plate 58 (P058)',
+        url: 'https://tilingsearch.mit.edu/HTML/data162/P058.html',
+      },
+    ],
+  },
+  {
+    id: 'hani-zeynebiye-stars',
+    title: 'Stars of the Zeynebiye madrasa (Hani) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. The ring of stars repeats between the small squares.',
+    story: [
+      'The finished design was read from Wichmann’s BON61 drawing. Its exact geometry and tile counts match the existing Four-fold ring of circles, whose twelve steps from Sandy Kurt’s credited tutorial are reused verbatim. The drawing gives no steps; the comparison establishes the geometric match, not a historical construction for the madrasa.',
+      'The existing ring-of-circles construction is reused. The source drawing’s navy stars, yellow bowties, green and peach pentagons, and brown squares distinguish this filling variation. No photograph or monument match was independently checked.',
+      '12 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/hani-zeynebiye-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/hani-zeynebiye-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Zeynebiye madrasa, Hani, Turkey (BON61)',
+        url: 'https://tilingsearch.mit.edu/HTML/data211/BON61.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-144-octagon-bands',
+    title: 'Octagon bands of Bourgoin plate 144 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s P144 drawing. A 22.5-degree frame turn reveals its primitive square repeat. The guide octagon touches the unit circle, and its corners give the star. The star-side crossing P and compass transfers set the remaining parallels at exact square-root-of-two values. An axis-aligned cell chosen from neighbouring source stars would give a false repeat. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The frame is turned by 22.5 degrees. The 3 pt bands are represented by their centre lines. The palette is illustrative; no photograph was checked.',
+      '12 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-144-octagon-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-144-octagon-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bourgoin, plate 144 (P144)',
+        url: 'https://tilingsearch.mit.edu/HTML/data12/P144.html',
+      },
+    ],
+  },
+  {
+    id: 'lindisfarne-folio-2b-stepped-bands',
+    title:
+      'Stepped bands from folio 2b of the Lindisfarne Gospels (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s L34A drawing. Its plain tile corners lie exactly on an integer grid, with a repeat sixteen small-square sides wide. Compass steps give that grid; four diagonals through the seventh mark close the outer stepped bands. This is a Celtic manuscript pattern, not an attribution to an Islamic building. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The finished tile edges follow the plain drawing. The palette is illustrative; the manuscript page was not independently checked.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/lindisfarne-folio-2b-stepped-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/lindisfarne-folio-2b-stepped-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Lindisfarne Gospels, folio 2b, pattern 1 (L34A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data1/L34A.html',
+      },
+    ],
+  },
+  {
+    id: 'leon-mosaic-star-rosettes',
+    title: 'Star rosettes of Alberto Leon’s mosaic design (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s LEON7 drawing. Its primitive repeat, tile network and exact proportions match the Attarine star rosettes. This filling variation shares all fourteen construction steps, alongside the Ben Youssef and Seville versions. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The repeated geometry is unchanged. The source’s red and black stars, blue petals and seven-sided pieces, ochre and black long hexagons, and white remaining pieces distinguish this version. The white surround remains divided into the source’s individual tiles. No photograph was checked.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/leon-mosaic-star-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/leon-mosaic-star-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mosaic in Islamic Design, from Alberto Leon (LEON7)',
+        url: 'https://tilingsearch.mit.edu/HTML/data194/LEON7.html',
+      },
+    ],
+  },
+  {
+    id: 'abas-salman-232-star-bands',
+    title: 'Star bands from Abas and Salman, page 232 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s PG232 drawing and snapped to exact square-root-of-two values. Two radii and one unit-square diagonal set the half-side. The shared unit-star opening supplies the smaller star; the continued lines and exact parallels also close the larger star with 45-degree tips. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The finished tile edges follow the plain drawing. The palette is illustrative; no photograph was checked. The page gives no building attribution, so none is added.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/abas-salman-232-star-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/abas-salman-232-star-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Abas and Salman, page 232 (PG232)',
+        url: 'https://tilingsearch.mit.edu/HTML/data8/PG232.html',
+      },
+    ],
+  },
+  {
+    id: 'racinet-37-octagonal-rings',
+    title: 'Octagonal rings from Racinet plate 37 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s R37D drawing. Its band centres fit exact square-root-of-two values. The construction shares the Rabat throne-room octagon grid, adding two compass and crossing steps for the different rims and connecting pieces. The first two squares are guides for the larger pointed star. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The 7 pt bands are represented by their centre lines. The palette is illustrative; no photograph was checked. The source identifies Algerian architectural motifs but gives no individual building.',
+      '19 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/racinet-37-octagonal-rings/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/racinet-37-octagonal-rings/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Algerian motifs in Racinet, plate 37 (R37D)',
+        url: 'https://tilingsearch.mit.edu/HTML/data202/R37D.html',
+      },
+    ],
+  },
+  {
+    id: 'salim-chishti-square-lattice',
+    title:
+      'Square lattice of Salim Chishti’s tomb (Fatehpur Sikri) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s data206/SM3 drawing. Its polygon edges already coincide; the ochre stroke is not a gap between inset tiles. Half the small-square side gives the unit. Two radii and a unit-square diagonal give the half-side 2 + square root of two; four diagonals then close the pentagons and hexagons. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The shared polygon boundaries follow the plain drawing; no band expansion is applied. The palette is illustrative; no photograph was checked. The lower pattern is the one identified by the source.',
+      '6 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/salim-chishti-square-lattice/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/salim-chishti-square-lattice/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Salim Chishti’s tomb, Fatehpur Sikri, lower pattern (SM3)',
+        url: 'https://tilingsearch.mit.edu/HTML/data206/SM3.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -3929,7 +4786,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Sixty-four new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Ninety-two new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -4006,6 +4863,34 @@ export const QUESTIONS: readonly Question[] = [
       'bourgoin-plate-64',
       'khayrbak-mosque-stars',
       'fes-palace-door-stars',
+      'moulay-idriss-interlace',
+      'meknes-bou-inania-star-rings',
+      'tetouan-sakkala-knots',
+      'attarine-star-rosettes',
+      'meknes-bou-inania-petals',
+      'meknes-bou-inania-rosette-rings',
+      'fes-bou-inania-cross-stars',
+      'rabat-throne-octagons',
+      'rabat-rosette-bands',
+      'ben-youssef-arrow-bands',
+      'fes-bou-inania-octagonal-rosettes',
+      'moulay-ismail-octagons',
+      'ben-youssef-star-rosettes',
+      'toledo-synagogue-star-bands',
+      'alhambra-mexuar-grid-fret',
+      'alhambra-dos-hermanas-ceiling-stars',
+      'alhambra-dos-hermanas-band-stars',
+      'seville-vanda-star-rosettes',
+      'cordoba-synagogue-star-bands',
+      'alcazar-reyes-octagon-bands',
+      'bourgoin-58-star-bands',
+      'hani-zeynebiye-stars',
+      'bourgoin-144-octagon-bands',
+      'lindisfarne-folio-2b-stepped-bands',
+      'leon-mosaic-star-rosettes',
+      'abas-salman-232-star-bands',
+      'racinet-37-octagonal-rings',
+      'salim-chishti-square-lattice',
     ],
   },
 ];

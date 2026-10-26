@@ -78,5 +78,20 @@
       "isfahan-masjid-ali-crosses",
       "isfahan-masjid-ali-crosses-plain"
     ]
+  },
+  {
+    "id": "attarine-star-rosettes",
+    "title": "Star rosettes of the Attarine",
+    "members": [
+      "attarine-star-rosettes",
+      "ben-youssef-star-rosettes",
+      "seville-vanda-star-rosettes",
+      "leon-mosaic-star-rosettes"
+    ]
+  },
+  {
+    "id": "ring-of-circles",
+    "title": "Four-fold ring of circles",
+    "members": ["four-fold-ring-of-circles", "hani-zeynebiye-stars"]
   }
 ]
