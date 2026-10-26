@@ -46,7 +46,11 @@
   {
     "id": "persian-court-stars",
     "title": "Stars of the Persian courtyards",
-    "members": ["qom-atabaki-stars", "mashhad-courtyard-stars"]
+    "members": [
+      "qom-atabaki-stars",
+      "mashhad-courtyard-stars",
+      "nim-avard-stars"
+    ]
   },
   {
     "id": "barca-stars",

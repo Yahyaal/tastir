@@ -1717,6 +1717,194 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'nim-avard-stars',
+    title:
+      'Stars, squares and pentagons of the Nim Avard madrasa, Isfahan (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre. A square sits at every corner, with four pentagons round it.',
+    story: [
+      'The finished design was read from Brian Wichmann’s F81 drawing, its corners snapped to exact values. It has the lines of the Mashhad courtyard design (F82), with more of them inked: each cross is cut into a square and four pentagons. So it uses the same construction. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the madrasa was checked.',
+      '7 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/nim-avard-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/nim-avard-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Nim Avard madrasa, Isfahan (F81)',
+        url: 'https://tilingsearch.mit.edu/HTML/data16/F81.html',
+      },
+    ],
+  },
+  {
+    id: 'tillya-kari-squares',
+    title:
+      'Interlaced squares of the Tillya-Kari madrasa, Samarkand (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A turned square sits at every centre and an upright square at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s A222 drawing, the centre lines of its bands snapped to exact values. We devised the construction: lines through F and a square at O turned by 45°. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the madrasa was checked.',
+      '5 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/tillya-kari-squares/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/tillya-kari-squares/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Tillya-Kari madrasa, Samarkand (A222)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/A222.html',
+      },
+    ],
+  },
+  {
+    id: 'charbagh-stars',
+    title:
+      'Interlaced stars of the Charbagh madrasa, Isfahan (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and every corner, and a ten-sided piece halfway between two stars.',
+    story: [
+      'The finished design was read from Brian Wichmann’s A7 drawing, the centre lines of its bands snapped to exact values. We devised the construction. Its stars are those of the Leones doors of the Alhambra, at O and at each corner, so it starts with their steps; lines through V and W and the lines AC, CB, BD and DA make the rest. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the madrasa was checked.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/charbagh-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/charbagh-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Charbagh madrasa, Isfahan (A7)',
+        url: 'https://tilingsearch.mit.edu/HTML/data9/A7.html',
+      },
+    ],
+  },
+  {
+    id: 'tash-khauli-crosses',
+    title: 'Crosses of the Tash-Khauli palace, Khiva (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A cross sits at every centre, and a square with four pentagons round it at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s R241B drawing, the centre lines of its bands snapped to exact values: every line lies on a grid of sixths of OA. We devised the construction: the line from K2 to A marks a half and a third, and the rest follows from them. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as bands; the tutorial draws their centre lines. No photo of the palace was checked.',
+      '7 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/tash-khauli-crosses/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/tash-khauli-crosses/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Tash-Khauli palace, Khiva (R241B)',
+        url: 'https://tilingsearch.mit.edu/HTML/data185/R241B.html',
+      },
+    ],
+  },
+  {
+    id: 'sikandra-stars',
+    title: 'Stars and crosses of Akbar’s tomb, Sikandra (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. Four stars sit round every centre, and a cross sits at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s IND0703 drawing, its corners snapped to exact values in thirds of OA. We devised the construction: a star at T, a third of the way to K1, turned round O, and two more kinds of line through P and Z. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. David Wade’s photo of the tomb, which Wichmann drew from, was not checked.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/sikandra-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/sikandra-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Akbar’s tomb, Sikandra (IND0703)',
+        url: 'https://tilingsearch.mit.edu/HTML/data172/IND0703.html',
+      },
+    ],
+  },
+  {
+    id: 'agra-kite-stars',
+    title:
+      'Stars and kite rosettes of a drawing from Agra (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre, an octagon between two stars, and eight kites round every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s VA3 drawing, its corners snapped to exact values. Every line runs through a corner of the cell and halves an angle there, so the construction is two lines through K1, turned round O; circles of radius K1F round A and C give the second point of each. The drawing gives no steps.',
+      'Wichmann draws the design turned by 67.5°; it is turned here so that the tile is the square cell. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as bevelled bands; the tutorial draws their centre lines. No photo was checked.',
+      '6 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/agra-kite-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/agra-kite-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Agra, India (VA3)',
+        url: 'https://tilingsearch.mit.edu/HTML/data193/VA3.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -2836,7 +3024,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Twenty-nine new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Thirty-five new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -2878,6 +3066,12 @@ export const QUESTIONS: readonly Question[] = [
       'paccard-zellige-frets',
       'badi-palace-stars',
       'chellah-mosque-stars',
+      'nim-avard-stars',
+      'tillya-kari-squares',
+      'charbagh-stars',
+      'tash-khauli-crosses',
+      'sikandra-stars',
+      'agra-kite-stars',
     ],
   },
 ];
