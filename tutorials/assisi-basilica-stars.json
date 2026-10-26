@@ -1,0 +1,142 @@
+{
+  "format": 0,
+  "id": "assisi-basilica-stars",
+  "title": "Stars and squares of the Basilica of St Francis, Assisi",
+  "short": "Assisi basilica stars",
+  "subtitle": "Basilica of St Francis, Assisi",
+  "fold": 4,
+  "star": 8,
+  "style": "Cosmatesque",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P78B drawing, its corners snapped to exact values. We devised the construction: the circle through the cell’s corners gives the star’s long sides, and every other line comes from R. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the basilica was checked.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data4/P78B: Basilica of St Francis, Assisi",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data4/P78B.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from F. M. Hessemer, Historic Designs and Patterns in Color (Dover), page 78 (bottom): a mosaic wall in the Basilica of St Francis. He also cites David Wade’s photo SIC 031 from Monreale Cathedral. The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of an eight-pointed star.",
+    "A": "Halfway from O to the side of the square tile on the horizontal line."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre O through K1. It crosses the horizontal line at Q and the vertical line at W. Draw a straight line through Q and W. Turn it round O by 90°, three times.",
+      "create": {
+        "cq": {"circle": {"centre": "O", "through": "K1"}},
+        "Q": {"point": {"meet": ["cq", "h"], "pick": {"angle": 0.0}}},
+        "W": {"point": {"meet": ["cq", "v"], "pick": {"angle": 90.0}}},
+        "qq": {"line": {"through": ["Q", "W"]}},
+        "qqp": {"repeat": {"of": ["qq"], "by": "rot4"}}
+      },
+      "highlight": ["Q", "W"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The line through Q and W crosses the vertical line through A at R. Draw a horizontal line through R. Turn it round O by 90°, three times.",
+      "create": {
+        "R": {"point": {"meet": ["qq", "gx"]}},
+        "rh": {"line": {"through": "R", "parallelTo": "h"}},
+        "rhp": {"repeat": {"of": ["rh"], "by": "rot4"}}
+      },
+      "highlight": ["R"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a line through R parallel to the line from O to K1. Turn it round O by 90°, three times. The lines make the star at O.",
+      "create": {
+        "rd": {"line": {"through": "R", "parallelTo": "d45"}},
+        "rdp": {"repeat": {"of": ["rd"], "by": "rot4"}}
+      },
+      "highlight": ["R"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O and the squares at the corners. Their sides close the diamonds and the triangles between them.",
+    "paths": [
+      {"along": "qq", "from": "gx", "to": "gy"},
+      {"along": "qq@1", "from": "gy", "to": "gxw"},
+      {"along": "qq@2", "from": "gxw", "to": "gys"},
+      {"along": "qq@3", "from": "gys", "to": "gx"},
+      {"along": "rh", "from": "gxw", "to": "rh@1"},
+      {"along": "rh", "from": "d45", "to": "gx"},
+      {"along": "rh@1", "from": "gys", "to": "d45"},
+      {"along": "rh@1", "from": "rh", "to": "gy"},
+      {"along": "rh@2", "from": "gx", "to": "rh@3"},
+      {"along": "rh@2", "from": "d45", "to": "gxw"},
+      {"along": "rh@3", "from": "gy", "to": "d45"},
+      {"along": "rh@3", "from": "rh@2", "to": "gys"},
+      {"along": "rd", "from": "gys", "to": "v"},
+      {"along": "rd", "from": "h", "to": "gx"},
+      {"along": "rd@1", "from": "gx", "to": "h"},
+      {"along": "rd@1", "from": "v", "to": "gy"},
+      {"along": "rd@2", "from": "gy", "to": "v"},
+      {"along": "rd@2", "from": "h", "to": "gxw"},
+      {"along": "rd@3", "from": "gxw", "to": "h"},
+      {"along": "rd@3", "from": "v", "to": "gys"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. The stars stand in rows, with a square between four stars and a diamond between two.",
+    "palette": "Timurid tile",
+    "look": "tiles",
+    "colors": {"star": "a", "square": "ground", "diamond": "b", "triangle": "b"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 1.94113, "perCell": 1},
+      {"name": "square", "vertices": 4, "area": 0.68629, "perCell": 1},
+      {"name": "diamond", "vertices": 4, "area": 0.34315, "perCell": 2},
+      {"name": "triangle", "vertices": 3, "area": 0.17157, "perCell": 4}
+    ]
+  }
+}
