@@ -1,0 +1,158 @@
+{
+  "format": 0,
+  "id": "bourgoin-star-octagons",
+  "title": "Stars and octagons of Bourgoin’s plate 44",
+  "short": "Bourgoin stars and octagons",
+  "subtitle": "Jules Bourgoin, plate 44",
+  "fold": 4,
+  "star": 8,
+  "style": "Islamic tilework",
+  "level": "beginner",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P044 drawing of Bourgoin’s plate, its corners snapped to exact values. We devised the construction: one radius, K1E, sets the octagon at each corner, and every line is a side of an octagon, carried on: they make the star at O. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Bourgoin gives no building, and no photo of a real wall was checked.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data10/P044: Bourgoin, Plate 44",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data10/P044.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from plate 44 of Jules Bourgoin, Arabic Geometrical Pattern and Design (1879; Dover reprint), and lists it on page 236 of S. J. Abas and A. S. Salman, Symmetries of Islamic Geometrical Patterns (1995). The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of an eight-pointed star.",
+    "A": "Halfway from O to the next star on the horizontal line."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The line from O to K1 crosses the circle at E. Draw a circle with centre K1 through E. Draw a line through K1 at 90° to the line from O to K1.",
+      "create": {
+        "E": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "ck": {"circle": {"centre": "K1", "through": "E"}},
+        "kp": {"line": {"through": "K1", "perpendicularTo": "d45"}}
+      },
+      "highlight": ["K1", "E"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The circle with centre K1 crosses the four lines through K1 at V1 to V7 and E. Join V1, V2, V3, V4, V5, E, V6 and V7 with straight lines to make an octagon. Turn the circle and the octagon round O by 90°, three times. The sides of the four octagons cross round O to make the star.",
+      "create": {
+        "V1": {"point": {"meet": ["ck", "gy"], "pick": {"angle": 35.264}}},
+        "V2": {"point": {"meet": ["ck", "d45"], "pick": {"farthest": "O"}}},
+        "V3": {"point": {"meet": ["ck", "gx"], "pick": {"angle": 54.736}}},
+        "V4": {"point": {"meet": ["ck", "kp"], "pick": {"angle": 61.325}}},
+        "V5": {"point": {"meet": ["ck", "gy"], "pick": {"angle": 59.639}}},
+        "V6": {"point": {"meet": ["ck", "gx"], "pick": {"angle": 30.361}}},
+        "V7": {"point": {"meet": ["ck", "kp"], "pick": {"angle": 28.675}}},
+        "oc0": {"line": {"through": ["V1", "V2"]}},
+        "oc1": {"line": {"through": ["V2", "V3"]}},
+        "oc2": {"line": {"through": ["V3", "V4"]}},
+        "oc3": {"line": {"through": ["V4", "V5"]}},
+        "oc4": {"line": {"through": ["V5", "E"]}},
+        "oc5": {"line": {"through": ["E", "V6"]}},
+        "oc6": {"line": {"through": ["V6", "V7"]}},
+        "oc7": {"line": {"through": ["V7", "V1"]}},
+        "ocr": {
+          "repeat": {"of": ["ck", "oc0", "oc1", "oc2", "oc3", "oc4", "oc5", "oc6", "oc7"], "by": "rot4"}
+        }
+      },
+      "highlight": ["K1"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a straight line through V3 and V4, V4 and V5, and V5 and E. Draw a straight line through E and V6, V6 and V7, and V7 and V1. Turn the lines round O by 90°, three times. They cross round O to make the star."
+    },
+    {
+      "id": 5,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O and the octagons at the corners, and carry their sides on. They close the long pieces and the kites between them.",
+    "paths": [
+      {"along": "oc2", "from": "v", "to": "oc6@3"},
+      {"along": "oc2", "from": "oc6@1", "to": "gxw"},
+      {"along": "oc3", "from": "oc5", "to": "oc3@1"},
+      {"along": "oc3", "from": "oc3@3", "to": "oc5@2"},
+      {"along": "oc4", "from": "gy", "to": "oc6"},
+      {"along": "oc4", "from": "oc6@2", "to": "h"},
+      {"along": "oc5", "from": "v", "to": "oc3@2"},
+      {"along": "oc5", "from": "oc3", "to": "gx"},
+      {"along": "oc6", "from": "oc2@1", "to": "oc6@1"},
+      {"along": "oc6", "from": "oc6@3", "to": "oc4"},
+      {"along": "oc7", "from": "gys", "to": "oc3@3"},
+      {"along": "oc7", "from": "oc3@1", "to": "h"},
+      {"along": "oc2@1", "from": "h", "to": "oc6"},
+      {"along": "oc2@1", "from": "oc6@2", "to": "gys"},
+      {"along": "oc2@2", "from": "v", "to": "oc6@1"},
+      {"along": "oc2@2", "from": "oc6@3", "to": "gx"},
+      {"along": "oc3@1", "from": "oc5@1", "to": "oc3@2"},
+      {"along": "oc3@1", "from": "oc3", "to": "oc7"},
+      {"along": "oc3@2", "from": "oc5@2", "to": "oc3@3"},
+      {"along": "oc3@2", "from": "oc3@1", "to": "oc5"},
+      {"along": "oc3@3", "from": "oc7", "to": "oc3"},
+      {"along": "oc3@3", "from": "oc3@2", "to": "oc5@1"},
+      {"along": "oc5@1", "from": "h", "to": "oc3@3"},
+      {"along": "oc5@1", "from": "oc3@1", "to": "gy"},
+      {"along": "oc5@2", "from": "v", "to": "oc3"},
+      {"along": "oc5@2", "from": "oc3@2", "to": "gxw"},
+      {"along": "oc6@1", "from": "oc2@2", "to": "oc6@2"},
+      {"along": "oc6@1", "from": "oc6", "to": "oc2"},
+      {"along": "oc6@2", "from": "oc4", "to": "oc6@3"},
+      {"along": "oc6@2", "from": "oc6@1", "to": "oc2@1"},
+      {"along": "oc6@3", "from": "oc2", "to": "oc6"},
+      {"along": "oc6@3", "from": "oc6@2", "to": "oc2@2"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. A star sits at every centre and an octagon at every corner.",
+    "palette": "Timurid tile",
+    "look": "tiles",
+    "colors": {"long": "ground", "octagon": "a", "star": "b", "kite": "c"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "long", "vertices": 14, "area": 0.56497, "perCell": 4},
+      {"name": "octagon", "vertices": 8, "area": 0.48528, "perCell": 1},
+      {"name": "star", "vertices": 16, "area": 0.28427, "perCell": 1},
+      {"name": "kite", "vertices": 4, "area": 0.12132, "perCell": 8}
+    ]
+  }
+}
