@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058, BON61, P144, L34A, LEON7 and PG232 are built, and IRAN16 is skipped for unsupported symmetry. R37D and SM3 remain pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058, BON61, P144, L34A, LEON7 and PG232 are built, and IRAN16 is skipped for unsupported symmetry. R37D is also built; only SM3 remains pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -272,3 +272,13 @@ Independent source-polygon shoelace areas are pointed_star 8H, one; star 8 − 8
 I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/PG232/overlay.png`. Every red edge agrees. The exact data8/PG232 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Abas and Salman, Symmetries of Islamic Geometrical Patterns (1995), page 232. The page gives no building attribution, so the tutorial adds none. The plain geometry is retained and the palette is illustrative. Helper inspection supplied direct wording for the retained diagonal through R1.
 
 The shared frame helper now accepts one diagonal transfer in addition to two or three. Its original defaults are unchanged; regenerating P70 gave byte-identical JSON. The catalog, six targeted golden checks, all 555 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## R37D — built as `racinet-37-octagonal-rings`
+
+The tutorial has nineteen steps after removing an unused corner diagonal. OA is the guide-circle radius, 218.89375/(4 + 3√2) = 26.5562649531 pt, and the half-side is 4 + 3√2. After expanding by half the 7 pt band, source corners fit a + bH, H = √2/2, within 0.000351 OA. The opening shares the Rabat throne-room octagon grid. Two extra steps give axis offsets 3 + 3H and 3 + 5H and diagonal offset 3 + 5H. The first squares are explicitly guides for the finished pointed star.
+
+Independent source-polygon shoelace areas are long_twelve 4 + 4H, two; eight 3 + 4H, eight; pointed_star 8H, two; twelve 2 + 4H, four; long_hexagon 2 + 2H, eight; shield 1/2 + 4H, twelve; hexagon 3, sixteen; pentagon 1/2 + 2H, four; short_hexagon −1 + 4H, sixteen; rhombus 2H, eight; dart 2 − 2H, sixteen; and triangle 1/2, sixteen. Their counted sum is 136 + 192H = 4(4 + 6H)². The engine independently confirms the twelve types and counts. Only the sixteen triangles are flagged as small; they match intentional source pieces and retain exact golden areas and counts.
+
+I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/R37D/overlay.png`. Every red line follows a band centre. The exact data202/R37D entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Racinet plate 37 and its Algerian public-architecture motifs of the thirteenth and fourteenth centuries. The page names no individual building; the tutorial adds none. It records its centre-line representation and illustrative palette. The ring widths, pointed stars and piece inventory differ from the earlier octagon designs, so this is a separate design.
+
+The Rabat generator now optionally omits its Q2 diagonal step, with the original default retained. Regenerating C126A still gives byte-identical JSON. Helper inspection confirms the inherited wording for R1 and R3 matches the retained diagonals. The catalog, six targeted golden checks, all 560 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.

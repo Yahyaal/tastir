@@ -17,7 +17,7 @@ from gen_meknes_bou_inania_rosette_rings import crossing_set
 H, L = mp.H, 4+6*mp.H
 
 
-def build(include_y1=True):
+def build(include_y1=True, include_q2=True):
     mp.build_frame(4)
     crossing_set('R', 'q14', 'q02', (H, 1+H), [('rh', 'h'), ('rd', 'q01')],
                  'The vertical side from S8 to S2 crosses the line from S3 to S5 at R. '
@@ -67,9 +67,10 @@ def build(include_y1=True):
     crossing_set('Z', 'qv', 'rd@3', (L-H, 3+3*H), [('zd', 'q01')],
                  'The vertical line through Q crosses the diagonal through R, turned by 270°, at Z. '
                  'Draw a line through Z parallel to the line from S1 to S3. Turn it round O by 90°, three times.')
-    crossing_set('Q2', 'ck', 'gx', (L, L-1), [('q2d', 'q01')],
-                 'The circle with centre K1 crosses the vertical line through T1 at Q2, towards T1. '
-                 'Draw a line through Q2 parallel to the line from S1 to S3. Turn it round O by 90°, three times.')
+    if include_q2:
+        crossing_set('Q2', 'ck', 'gx', (L, L-1), [('q2d', 'q01')],
+                     'The circle with centre K1 crosses the vertical line through T1 at Q2, towards T1. '
+                     'Draw a line through Q2 parallel to the line from S1 to S3. Turn it round O by 90°, three times.')
 
 
 SPEC = {
