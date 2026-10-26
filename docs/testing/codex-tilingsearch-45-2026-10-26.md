@@ -4,11 +4,11 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is in progress; C268A, P164, MOR2615, MOR0323 and MOR0910 are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
+Group A is in progress; the first six entries, C268A through P70, are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
-The PDF has 10 pt bands. Their centre lines fit the grid in a 116.57 pt unit, with worst coordinate residual below 0.0008 unit over 101 nearby pieces. The small-star spacing is 233.14 pt, but adjacent stars have different surroundings, so the full square repeat is 466.28 pt. OA will be 233.14 pt. This avoids mistaking a half-period for the cell. The source page cites Castéra page 268 right, Wichmann and Wade figure 9.9a, and Wade MOR 0616 and MOR 0329; its heading and photograph locations differ, so the tutorial must retain that attribution distinction.
+The PDF has 10 pt bands. Their centre lines fit the grid in a 116.57 pt unit, with worst coordinate residual below 0.0008 unit over 101 nearby pieces. The small-star spacing is 233.14 pt, but adjacent stars have different surroundings, so the full square repeat is 466.28 pt. OA is 233.14 pt. This avoids mistaking a half-period for the cell. The source page cites Castéra page 268 right, Wichmann and Wade figure 9.9a, and Wade MOR 0616 and MOR 0329; its heading and photograph locations differ, so the tutorial must retain that attribution distinction.
 
 
 The tutorial has 14 steps. Put H = √2/2. The snapped source polygons give these areas by the shoelace formula (counts are per full cell): ring_arm −47/8 + 17H/2, four; long_hexagon 9/4 − 3H, four; star 10 − 14H, four; short_hexagon and eight 3/2 − 2H, four and twelve; arrow −11/4 + 4H, four; triangle 3/8 − H/2, twelve; kite −7/4 + 5H/2, twenty-four; square 17/2 − 12H, four; and pentagon −31/8 + 11H/2, eight. Their counted sum is exactly 4 + 0H. The engine independently finds those ten types and counts, with no slivers.
@@ -56,3 +56,13 @@ The source-polygon shoelace areas are pointed_star 8H, one; long_hexagon 3, twel
 I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/MOR0910/overlay.png`. Every red line follows a tile edge. MOR0910 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. The tutorial retains the plain tile geometry and records its illustrative palette and absent photo check. Credits retain Wade MOR 0910. A redundant set of unused corner diagonals was removed after helper inspection; it changes no ink and shortens the construction by one step.
 
 The catalog, six targeted golden checks, all 450 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## P70 — built as `meknes-bou-inania-rosette-rings`
+
+The tutorial has 22 steps. The square repeat is 597 pt, and OA is the small star's point radius, 298.5/(4 + 3√2) = 36.2141225526 pt. Every source corner fits a + bH, H = √2/2, with worst error 0.001782 OA. Four radius steps and three unit-square diagonal transfers construct the half-side 4 + 6H. The first three steps and the compass-transfer method are shared with MOR0910; the new rings of small stars, squares and pentagons make the finished design different.
+
+The source-polygon shoelace areas are eleven −5/2 + 8H, eight; star 8 − 8H, six; twelve 5 − 4H, eight; petal 2, thirty-two; arrow 2, twenty; seven 1/2 + 2H, sixteen; pointed_star −4 + 8H, four; rhombus 2H, thirty-two; triangle 1/2, eight; kite −1 + 2H, forty-eight; square 6 − 8H, six; and pentagon −5/2 + 4H, eight. Their counted sum is 136 + 192H = 4(4 + 6H)², the cell area. The engine independently gives these twelve types and counts. The triangle, kite, square and pentagon are deliberately small relative to this large cell. I inspected them in the source and overlay and declared just those four named types `small`; their source-derived areas and counts remain exact golden checks.
+
+I inspected the wall beside the GIF and `docs/research/tilingsearch-45/P70/overlay.png` over the entire PDF. All red lines follow the tile edges, including the square and pentagon rings. P70 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits retain Wade's Pattern in Islamic Art, page 70, and photograph MOR 0909. The tutorial keeps the plain geometry and records its illustrative palette and absent photo check. The MOR0910 generator now exposes its opening as `build_frame`; a regeneration and byte comparison confirmed that its default output is unchanged, so the shared helper change is backward compatible.
+
+The catalog, six targeted golden checks, all 455 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.

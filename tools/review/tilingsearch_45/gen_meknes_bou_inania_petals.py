@@ -25,7 +25,8 @@ L = 2+6*H
 ORIGIN, UNIT = (297.5, 373.59), 241.13/L
 
 
-def build():
+def build_frame(unit_steps=2):
+    cell_half_side = unit_steps+6*H
     g.given()
     step('Draw a horizontal straight line through O and A. Draw a circle with centre O through A.', 'compass')
     g.circle_through('c', 'O', 'A')
@@ -50,31 +51,47 @@ def build():
     step('Draw the star at O as two squares.')
     le.two_squares(ss, 'q', le.square_texts(ss, 'Draw each line long, beyond the circle.'))
 
-    step('Draw a circle with centre A through O. It crosses the horizontal line at F, beyond A.', 'compass')
-    g.circle_through('ca', 'A', 'O')
-    g.meet('F', 'ca', 'h', (2, 0))
+    if unit_steps == 2:
+        step('Draw a circle with centre A through O. It crosses the horizontal line at F, beyond A.', 'compass')
+        g.circle_through('ca', 'A', 'O')
+        g.meet('F', 'ca', 'h', (2, 0))
+
+    else:
+        assert unit_steps == 4
+        step('Keep the compass open to OA. Draw circles with centres A, F1 and F2 in turn. '
+             'Each circle crosses the horizontal line to the right at F1, F2 and F.', 'compass')
+        previous = 'A'
+        for i, name in enumerate(['F1', 'F2', 'F']):
+            cm.circle_radius_of(f'cf{i}', previous, 'c')
+            g.meet(name, f'cf{i}', 'h', (i+2, 0))
+            previous = name
 
     step('Keep the compass open to OE. Draw circles with centres F, G1 and G2 in turn. '
          'Each circle crosses the horizontal line to the right at G1, G2 and G3.', 'compass')
     prev = 'F'
     for i in range(1, 4):
         g.circle_from(f'cg{i}', prev, 'O', 'E')
-        g.meet(f'G{i}', f'cg{i}', 'h', (2+2*i*H, 0))
+        g.meet(f'G{i}', f'cg{i}', 'h', (unit_steps+2*i*H, 0))
         prev = f'G{i}'
 
     step('Draw a circle with centre O through G3. It crosses the horizontal and vertical lines at T1 to T4.', 'compass')
     g.circle_through('co', 'O', 'G3')
-    for i, (line, p) in enumerate([('h', (L, 0)), ('v', (0, L)), ('h', (-L, 0)), ('v', (0, -L))]):
+    for i, (line, p) in enumerate([('h', (cell_half_side, 0)), ('v', (0, cell_half_side)), ('h', (-cell_half_side, 0)), ('v', (0, -cell_half_side))]):
         g.meet(f'T{i+1}', 'co', line, p)
 
     step('Draw a vertical line through each of T1 and T3. Draw a horizontal line through each of T2 and T4. '
          'They make a square with corners K1, K2, K3 and K4.')
     for name, p, line in [('gx', 'T1', 'v'), ('gy', 'T2', 'h'), ('gxw', 'T3', 'v'), ('gys', 'T4', 'h')]:
         g.line_par(name, p, line)
-    for i, (a, b, p) in enumerate([('gx', 'gy', (L, L)), ('gxw', 'gy', (-L, L)),
-                                    ('gxw', 'gys', (-L, -L)), ('gx', 'gys', (L, -L))]):
+    for i, (a, b, p) in enumerate([('gx', 'gy', (cell_half_side, cell_half_side)), ('gxw', 'gy', (-cell_half_side, cell_half_side)),
+                                    ('gxw', 'gys', (-cell_half_side, -cell_half_side)), ('gx', 'gys', (cell_half_side, -cell_half_side))]):
         g.meet(f'K{i+1}', a, b, p)
 
+    return cell_half_side
+
+
+def build():
+    build_frame()
     step('The vertical side from S8 to S2 crosses the horizontal line at P. Draw a circle with centre P and radius OE. '
          'It crosses the horizontal line at J, to the right. Draw a vertical line through J. '
          'Turn it round O by 90°, three times.', 'compass')

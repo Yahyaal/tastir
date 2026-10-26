@@ -1,0 +1,571 @@
+{
+  "format": 0,
+  "id": "meknes-bou-inania-rosette-rings",
+  "title": "Rosette rings of the Bou Inania madrasa (Meknes)",
+  "short": "Meknes rosette rings",
+  "subtitle": "Bou Inania madrasa, Meknes",
+  "fold": 4,
+  "star": 8,
+  "style": "Moroccan",
+  "level": "advanced",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P70 vector drawing. The corners were snapped to exact values with the small star’s point radius as the unit. The drawing gives no steps. We devised the construction, sharing the unit-star and compass-transfer opening with the Meknes petal rosettes. The crossings R, V, W, X and Y1 to Y4 set the inner stars and outer pieces.",
+    "changes": "The compass steps, their order and the named points are ours. OA is the small star’s point radius; the cell half-side is four radii plus three square diagonals. The finished tile edges follow the plain drawing. The palette is illustrative; no photograph was checked.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data21/P70: Bou Inania Madrasah, Meknes",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data21/P70.html",
+      "note": "Read from his finished drawing, not construction instructions. His references are David Wade, Pattern in Islamic Art (Studio Vista, 1976), page 70, and Wade photograph MOR 0909 of the Bou Inania madrasa, Meknes."
+    }
+  ],
+  "given": {"O": "The centre of the small star inside a rosette.", "A": "A point of that star."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. It crosses the circle at C and D. The horizontal line crosses the circle at B on the left. Draw a vertical line through A. Draw a horizontal line through C. They cross at E. Draw a straight line through O and E. Draw a line through O at 90° to line OE. The circle crosses the four lines through O at S1 to S8.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "ax": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "cy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "E": {"point": {"meet": ["ax", "cy"]}},
+        "d45": {"line": {"through": ["O", "E"]}},
+        "d135": {"line": {"through": "O", "perpendicularTo": "d45"}},
+        "S1": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
+        "S2": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "S3": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "S4": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
+        "S5": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "S6": {"point": {"meet": ["c", "d45"], "pick": {"angle": 225.0}}},
+        "S7": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "S8": {"point": {"meet": ["c", "d135"], "pick": {"angle": 315.0}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw the star at O as two squares.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a straight line through S1 and S3, S3 and S5, S5 and S7, and S7 and S1. Draw each line long, beyond the circle.",
+          "create": {
+            "q01": {"line": {"through": ["S1", "S3"]}},
+            "q02": {"line": {"through": ["S3", "S5"]}},
+            "q03": {"line": {"through": ["S5", "S7"]}},
+            "q04": {"line": {"through": ["S7", "S1"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through S2 and S4, S4 and S6, S6 and S8, and S8 and S2. Draw each line long, beyond the circle.",
+          "create": {
+            "q11": {"line": {"through": ["S2", "S4"]}},
+            "q12": {"line": {"through": ["S4", "S6"]}},
+            "q13": {"line": {"through": ["S6", "S8"]}},
+            "q14": {"line": {"through": ["S8", "S2"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "text": "Keep the compass open to OA. Draw circles with centres A, F1 and F2 in turn. Each circle crosses the horizontal line to the right at F1, F2 and F.",
+      "create": {
+        "cf0": {"circle": {"centre": "A", "radiusOf": "c"}},
+        "F1": {"point": {"meet": ["cf0", "h"], "pick": {"farthest": "O"}}},
+        "cf1": {"circle": {"centre": "F1", "radiusOf": "c"}},
+        "F2": {"point": {"meet": ["cf1", "h"], "pick": {"farthest": "O"}}},
+        "cf2": {"circle": {"centre": "F2", "radiusOf": "c"}},
+        "F": {"point": {"meet": ["cf2", "h"], "pick": {"farthest": "O"}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Keep the compass open to OE. Draw circles with centres F, G1 and G2 in turn. Each circle crosses the horizontal line to the right at G1, G2 and G3.",
+      "create": {
+        "cg1": {"circle": {"centre": "F", "radiusFrom": ["O", "E"]}},
+        "G1": {"point": {"meet": ["cg1", "h"], "pick": {"farthest": "O"}}},
+        "cg2": {"circle": {"centre": "G1", "radiusFrom": ["O", "E"]}},
+        "G2": {"point": {"meet": ["cg2", "h"], "pick": {"farthest": "O"}}},
+        "cg3": {"circle": {"centre": "G2", "radiusFrom": ["O", "E"]}},
+        "G3": {"point": {"meet": ["cg3", "h"], "pick": {"farthest": "O"}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a circle with centre O through G3. It crosses the horizontal and vertical lines at T1 to T4.",
+      "create": {
+        "co": {"circle": {"centre": "O", "through": "G3"}},
+        "T1": {"point": {"meet": ["co", "h"], "pick": {"angle": 0.0}}},
+        "T2": {"point": {"meet": ["co", "v"], "pick": {"angle": 90.0}}},
+        "T3": {"point": {"meet": ["co", "h"], "pick": {"angle": 180.0}}},
+        "T4": {"point": {"meet": ["co", "v"], "pick": {"angle": 270.0}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "Draw a vertical line through each of T1 and T3. Draw a horizontal line through each of T2 and T4. They make a square with corners K1, K2, K3 and K4.",
+      "create": {
+        "gx": {"line": {"through": "T1", "parallelTo": "v"}},
+        "gy": {"line": {"through": "T2", "parallelTo": "h"}},
+        "gxw": {"line": {"through": "T3", "parallelTo": "v"}},
+        "gys": {"line": {"through": "T4", "parallelTo": "h"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "The vertical side from S8 to S2 crosses the horizontal line at P. Draw a circle with centre P and radius OE. It crosses the horizontal line at J, to the right. Draw a vertical line through J. Turn it round O by 90°, three times.",
+      "create": {
+        "P": {"point": {"meet": ["q14", "h"]}},
+        "cp": {"circle": {"centre": "P", "radiusFrom": ["O", "E"]}},
+        "J": {"point": {"meet": ["cp", "h"], "pick": {"angle": 0.0}}},
+        "jv": {"line": {"through": "J", "parallelTo": "v"}},
+        "jvp": {"repeat": {"of": ["jv"], "by": "rot4"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 9,
+      "text": "The vertical side from S8 to S2 crosses the line from S3 to S5 at R. Draw a horizontal line through R. Draw a line through R parallel to the line from S1 to S3. Turn both lines round O by 90°, three times.",
+      "create": {
+        "R": {"point": {"meet": ["q14", "q02"]}},
+        "rh": {"line": {"through": "R", "parallelTo": "h"}},
+        "rd": {"line": {"through": "R", "parallelTo": "q01"}},
+        "rcopies": {"repeat": {"of": ["rh", "rd"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 10,
+      "text": "The line through R, turned by 270°, crosses the line from S3 to S5 at V. Draw a horizontal line through V. Turn it round O by 90°, three times.",
+      "create": {
+        "V": {"point": {"meet": ["rh@3", "q02"]}},
+        "vh": {"line": {"through": "V", "parallelTo": "h"}},
+        "vcopies": {"repeat": {"of": ["vh"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 11,
+      "text": "The horizontal line through R crosses the diagonal through R, turned by 270°, at W. Draw a vertical line through W. Draw a line through W parallel to the line from S1 to S3. Turn both lines round O by 90°, three times.",
+      "create": {
+        "W": {"point": {"meet": ["rh", "rd@3"]}},
+        "wv": {"line": {"through": "W", "parallelTo": "v"}},
+        "wd": {"line": {"through": "W", "parallelTo": "q01"}},
+        "wcopies": {"repeat": {"of": ["wv", "wd"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 12,
+      "text": "The horizontal line through R crosses the vertical line through O at U. Draw a circle with centre T1 and radius OU. It crosses the horizontal line at N, towards O. Draw a vertical line through N. Turn it round O by 90°, three times.",
+      "create": {
+        "U": {"point": {"meet": ["v", "rh"]}},
+        "ct": {"circle": {"centre": "T1", "radiusFrom": ["O", "U"]}},
+        "N": {"point": {"meet": ["ct", "h"], "pick": {"nearest": "O"}}},
+        "nv": {"line": {"through": "N", "parallelTo": "v"}},
+        "nvp": {"repeat": {"of": ["nv"], "by": "rot4"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 13,
+      "text": "Draw a circle with centre N and radius OA. It crosses the horizontal line at P1, towards O. Draw a vertical line through P1. Turn it round O by 90°, three times.",
+      "create": {
+        "cn": {"circle": {"centre": "N", "radiusOf": "c"}},
+        "P1": {"point": {"meet": ["cn", "h"], "pick": {"nearest": "O"}}},
+        "pv": {"line": {"through": "P1", "parallelTo": "v"}},
+        "pvp": {"repeat": {"of": ["pv"], "by": "rot4"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 14,
+      "text": "Draw a circle with centre K1 and radius OA. It crosses line OE at Q, towards O. Draw a vertical line through Q. Turn it round O by 90°, three times.",
+      "create": {
+        "ck": {"circle": {"centre": "K1", "radiusOf": "c"}},
+        "Q": {"point": {"meet": ["ck", "d45"], "pick": {"nearest": "O"}}},
+        "qv": {"line": {"through": "Q", "parallelTo": "v"}},
+        "qvp": {"repeat": {"of": ["qv"], "by": "rot4"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 15,
+      "text": "Draw a line through F2 parallel to the line from S1 to S3. Turn it round O by 90°, three times.",
+      "create": {
+        "fd": {"line": {"through": "F2", "parallelTo": "q01"}},
+        "fdp": {"repeat": {"of": ["fd"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 16,
+      "text": "The vertical line through J crosses the horizontal line through R at X. Draw a line through X parallel to the line from S1 to S3. Turn it round O by 90°, three times.",
+      "create": {
+        "X": {"point": {"meet": ["jv", "rh"]}},
+        "xd": {"line": {"through": "X", "parallelTo": "q01"}},
+        "xcopies": {"repeat": {"of": ["xd"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 17,
+      "text": "The vertical line through W crosses the line from S7 to S1 at Y1. Draw a line through Y1 parallel to the line from S1 to S3. Turn it round O by 90°, three times.",
+      "create": {
+        "Y1": {"point": {"meet": ["wv", "q04"]}},
+        "y1d": {"line": {"through": "Y1", "parallelTo": "q01"}},
+        "y1copies": {"repeat": {"of": ["y1d"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 18,
+      "text": "The horizontal line through V crosses the diagonal through R, turned by 270°, at Y2. Draw a line through Y2 parallel to the line from S1 to S3. Turn it round O by 90°, three times.",
+      "create": {
+        "Y2": {"point": {"meet": ["vh", "rd@3"]}},
+        "y2d": {"line": {"through": "Y2", "parallelTo": "q01"}},
+        "y2copies": {"repeat": {"of": ["y2d"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 19,
+      "text": "The vertical line through P1 crosses the diagonal through R, turned by 270°, at Y3. Draw a line through Y3 parallel to the line from S1 to S3. Turn it round O by 90°, three times.",
+      "create": {
+        "Y3": {"point": {"meet": ["pv", "rd@3"]}},
+        "y3d": {"line": {"through": "Y3", "parallelTo": "q01"}},
+        "y3copies": {"repeat": {"of": ["y3d"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 20,
+      "text": "The vertical line through W crosses the line through N, turned by 90°, at Y4. Draw a line through Y4 parallel to the line from S1 to S3. Turn it round O by 90°, three times.",
+      "create": {
+        "Y4": {"point": {"meet": ["wv", "nv@1"]}},
+        "y4d": {"line": {"through": "Y4", "parallelTo": "q01"}},
+        "y4copies": {"repeat": {"of": ["y4d"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 21,
+      "text": "The circle with centre K1 crosses the vertical line through T1 at Q2, towards T1. Draw a line through Q2 parallel to the line from S1 to S3. Turn it round O by 90°, three times.",
+      "create": {
+        "Q2": {"point": {"meet": ["ck", "gx"], "pick": {"angle": 41.305}}},
+        "q2d": {"line": {"through": "Q2", "parallelTo": "q01"}},
+        "q2copies": {"repeat": {"of": ["q2d"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 22,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They close the centre star, the rings of pieces and the stars between rosettes.",
+    "paths": [
+      {"along": "q01", "from": "gx", "to": "y3d@3"},
+      {"along": "q01", "from": "wd@3", "to": "jv@3"},
+      {"along": "q01", "from": "rh@2", "to": "q14"},
+      {"along": "q01", "from": "q11", "to": "rh@1"},
+      {"along": "q01", "from": "jv@2", "to": "wd@1"},
+      {"along": "q01", "from": "y3d@1", "to": "gy"},
+      {"along": "q02", "from": "gy", "to": "y3d"},
+      {"along": "q02", "from": "wd", "to": "jv"},
+      {"along": "q02", "from": "rh@3", "to": "q11"},
+      {"along": "q02", "from": "q12", "to": "rh@2"},
+      {"along": "q02", "from": "jv@3", "to": "wd@2"},
+      {"along": "q02", "from": "y3d@2", "to": "gxw"},
+      {"along": "q03", "from": "gxw", "to": "y3d@1"},
+      {"along": "q03", "from": "wd@1", "to": "jv@1"},
+      {"along": "q03", "from": "rh", "to": "q12"},
+      {"along": "q03", "from": "q13", "to": "rh@3"},
+      {"along": "q03", "from": "jv", "to": "wd@3"},
+      {"along": "q03", "from": "y3d@3", "to": "gys"},
+      {"along": "q04", "from": "gys", "to": "y3d@2"},
+      {"along": "q04", "from": "wd@2", "to": "jv@2"},
+      {"along": "q04", "from": "rh@1", "to": "q13"},
+      {"along": "q04", "from": "q14", "to": "rh"},
+      {"along": "q04", "from": "jv@1", "to": "wd"},
+      {"along": "q04", "from": "y3d", "to": "gx"},
+      {"along": "q11", "from": "qv", "to": "wd"},
+      {"along": "q11", "from": "xd@3", "to": "fd@3"},
+      {"along": "q11", "from": "rd@3", "to": "q01"},
+      {"along": "q11", "from": "q02", "to": "rd@2"},
+      {"along": "q11", "from": "fd@2", "to": "xd@2"},
+      {"along": "q11", "from": "wd@1", "to": "qv@2"},
+      {"along": "q12", "from": "qv@1", "to": "wd@1"},
+      {"along": "q12", "from": "xd", "to": "fd"},
+      {"along": "q12", "from": "rd", "to": "q02"},
+      {"along": "q12", "from": "q03", "to": "rd@3"},
+      {"along": "q12", "from": "fd@3", "to": "xd@3"},
+      {"along": "q12", "from": "wd@2", "to": "qv@3"},
+      {"along": "q13", "from": "qv@2", "to": "wd@2"},
+      {"along": "q13", "from": "xd@1", "to": "fd@1"},
+      {"along": "q13", "from": "rd@1", "to": "q03"},
+      {"along": "q13", "from": "q04", "to": "rd"},
+      {"along": "q13", "from": "fd", "to": "xd"},
+      {"along": "q13", "from": "wd@3", "to": "qv"},
+      {"along": "q14", "from": "qv@3", "to": "wd@3"},
+      {"along": "q14", "from": "xd@2", "to": "fd@2"},
+      {"along": "q14", "from": "rd@2", "to": "q04"},
+      {"along": "q14", "from": "q01", "to": "rd@1"},
+      {"along": "q14", "from": "fd@1", "to": "xd@1"},
+      {"along": "q14", "from": "wd", "to": "qv@1"},
+      {"along": "jv", "from": "q03", "to": "rh@2"},
+      {"along": "jv", "from": "rh", "to": "q02"},
+      {"along": "jv@1", "from": "q04", "to": "rh@3"},
+      {"along": "jv@1", "from": "rh@1", "to": "q03"},
+      {"along": "jv@2", "from": "q01", "to": "rh"},
+      {"along": "jv@2", "from": "rh@2", "to": "q04"},
+      {"along": "jv@3", "from": "q02", "to": "rh@1"},
+      {"along": "jv@3", "from": "rh@3", "to": "q01"},
+      {"along": "rh", "from": "gxw", "to": "nv@2"},
+      {"along": "rh", "from": "nv", "to": "gx"},
+      {"along": "rd", "from": "gx", "to": "y1d@3"},
+      {"along": "rd", "from": "y1d@1", "to": "gy"},
+      {"along": "rh@1", "from": "gys", "to": "nv@3"},
+      {"along": "rh@1", "from": "nv@1", "to": "gy"},
+      {"along": "rh@2", "from": "gx", "to": "nv"},
+      {"along": "rh@2", "from": "nv@2", "to": "gxw"},
+      {"along": "rh@3", "from": "gy", "to": "nv@1"},
+      {"along": "rh@3", "from": "nv@3", "to": "gys"},
+      {"along": "rd@1", "from": "gy", "to": "y1d"},
+      {"along": "rd@1", "from": "y1d@2", "to": "gxw"},
+      {"along": "rd@2", "from": "gxw", "to": "y1d@1"},
+      {"along": "rd@2", "from": "y1d@3", "to": "gys"},
+      {"along": "rd@3", "from": "gys", "to": "y1d@2"},
+      {"along": "rd@3", "from": "y1d", "to": "gx"},
+      {"along": "vh", "from": "y4d@1", "to": "qv@2"},
+      {"along": "vh", "from": "d135", "to": "q01"},
+      {"along": "vh", "from": "xd@1", "to": "rd"},
+      {"along": "vh", "from": "rd@1", "to": "xd"},
+      {"along": "vh", "from": "q02", "to": "d45"},
+      {"along": "vh", "from": "qv", "to": "y4d"},
+      {"along": "vh@1", "from": "y4d@2", "to": "qv@3"},
+      {"along": "vh@1", "from": "d45", "to": "q02"},
+      {"along": "vh@1", "from": "xd@2", "to": "rd@1"},
+      {"along": "vh@1", "from": "rd@2", "to": "xd@1"},
+      {"along": "vh@1", "from": "q03", "to": "d135"},
+      {"along": "vh@1", "from": "qv@1", "to": "y4d@1"},
+      {"along": "vh@2", "from": "y4d@3", "to": "qv"},
+      {"along": "vh@2", "from": "d135", "to": "q03"},
+      {"along": "vh@2", "from": "xd@3", "to": "rd@2"},
+      {"along": "vh@2", "from": "rd@3", "to": "xd@2"},
+      {"along": "vh@2", "from": "q04", "to": "d45"},
+      {"along": "vh@2", "from": "qv@2", "to": "y4d@2"},
+      {"along": "vh@3", "from": "y4d", "to": "qv@1"},
+      {"along": "vh@3", "from": "d45", "to": "q04"},
+      {"along": "vh@3", "from": "xd", "to": "rd@3"},
+      {"along": "vh@3", "from": "rd", "to": "xd@3"},
+      {"along": "vh@3", "from": "q01", "to": "d135"},
+      {"along": "vh@3", "from": "qv@3", "to": "y4d@3"},
+      {"along": "wv", "from": "y3d@3", "to": "xd"},
+      {"along": "wv", "from": "xd@3", "to": "y3d"},
+      {"along": "wd", "from": "gx", "to": "pv"},
+      {"along": "wd", "from": "q11", "to": "q04"},
+      {"along": "wd", "from": "q02", "to": "q14"},
+      {"along": "wd", "from": "pv@1", "to": "gy"},
+      {"along": "wv@1", "from": "y3d", "to": "xd@1"},
+      {"along": "wv@1", "from": "xd", "to": "y3d@1"},
+      {"along": "wv@2", "from": "y3d@1", "to": "xd@2"},
+      {"along": "wv@2", "from": "xd@1", "to": "y3d@2"},
+      {"along": "wv@3", "from": "y3d@2", "to": "xd@3"},
+      {"along": "wv@3", "from": "xd@2", "to": "y3d@3"},
+      {"along": "wd@1", "from": "gy", "to": "pv@1"},
+      {"along": "wd@1", "from": "q12", "to": "q01"},
+      {"along": "wd@1", "from": "q03", "to": "q11"},
+      {"along": "wd@1", "from": "pv@2", "to": "gxw"},
+      {"along": "wd@2", "from": "gxw", "to": "pv@2"},
+      {"along": "wd@2", "from": "q13", "to": "q02"},
+      {"along": "wd@2", "from": "q04", "to": "q12"},
+      {"along": "wd@2", "from": "pv@3", "to": "gys"},
+      {"along": "wd@3", "from": "gys", "to": "pv@3"},
+      {"along": "wd@3", "from": "q14", "to": "q03"},
+      {"along": "wd@3", "from": "q01", "to": "q13"},
+      {"along": "wd@3", "from": "pv", "to": "gx"},
+      {"along": "nv", "from": "d135", "to": "rh@2"},
+      {"along": "nv", "from": "rh", "to": "d45"},
+      {"along": "nv@1", "from": "d45", "to": "rh@3"},
+      {"along": "nv@1", "from": "rh@1", "to": "d135"},
+      {"along": "nv@2", "from": "d135", "to": "rh"},
+      {"along": "nv@2", "from": "rh@2", "to": "d45"},
+      {"along": "nv@3", "from": "d45", "to": "rh@1"},
+      {"along": "nv@3", "from": "rh@3", "to": "d135"},
+      {"along": "pv", "from": "d135", "to": "wd@3"},
+      {"along": "pv", "from": "wd", "to": "d45"},
+      {"along": "pv@1", "from": "d45", "to": "wd"},
+      {"along": "pv@1", "from": "wd@1", "to": "d135"},
+      {"along": "pv@2", "from": "d135", "to": "wd@1"},
+      {"along": "pv@2", "from": "wd@2", "to": "d45"},
+      {"along": "pv@3", "from": "d45", "to": "wd@2"},
+      {"along": "pv@3", "from": "wd@3", "to": "d135"},
+      {"along": "qv", "from": "q2d@3", "to": "vh@2"},
+      {"along": "qv", "from": "q13", "to": "y1d"},
+      {"along": "qv", "from": "y1d@3", "to": "q11"},
+      {"along": "qv", "from": "vh", "to": "q2d"},
+      {"along": "qv@1", "from": "q2d", "to": "vh@3"},
+      {"along": "qv@1", "from": "q14", "to": "y1d@1"},
+      {"along": "qv@1", "from": "y1d", "to": "q12"},
+      {"along": "qv@1", "from": "vh@1", "to": "q2d@1"},
+      {"along": "qv@2", "from": "q2d@1", "to": "vh"},
+      {"along": "qv@2", "from": "q11", "to": "y1d@2"},
+      {"along": "qv@2", "from": "y1d@1", "to": "q13"},
+      {"along": "qv@2", "from": "vh@2", "to": "q2d@2"},
+      {"along": "qv@3", "from": "q2d@2", "to": "vh@1"},
+      {"along": "qv@3", "from": "q12", "to": "y1d@3"},
+      {"along": "qv@3", "from": "y1d@2", "to": "q14"},
+      {"along": "qv@3", "from": "vh@3", "to": "q2d@3"},
+      {"along": "fd", "from": "q13", "to": "xd@3"},
+      {"along": "fd", "from": "h", "to": "rd@3"},
+      {"along": "fd", "from": "rd@1", "to": "v"},
+      {"along": "fd", "from": "xd@1", "to": "q12"},
+      {"along": "fd@1", "from": "q14", "to": "xd"},
+      {"along": "fd@1", "from": "v", "to": "rd"},
+      {"along": "fd@1", "from": "rd@2", "to": "h"},
+      {"along": "fd@1", "from": "xd@2", "to": "q13"},
+      {"along": "fd@2", "from": "q11", "to": "xd@1"},
+      {"along": "fd@2", "from": "h", "to": "rd@1"},
+      {"along": "fd@2", "from": "rd@3", "to": "v"},
+      {"along": "fd@2", "from": "xd@3", "to": "q14"},
+      {"along": "fd@3", "from": "q12", "to": "xd@2"},
+      {"along": "fd@3", "from": "v", "to": "rd@2"},
+      {"along": "fd@3", "from": "rd", "to": "h"},
+      {"along": "fd@3", "from": "xd", "to": "q11"},
+      {"along": "xd", "from": "gx", "to": "q13"},
+      {"along": "xd", "from": "wv", "to": "h"},
+      {"along": "xd", "from": "fd@3", "to": "q11"},
+      {"along": "xd", "from": "vh@3", "to": "jv"},
+      {"along": "xd", "from": "jv@1", "to": "vh"},
+      {"along": "xd", "from": "q14", "to": "fd@1"},
+      {"along": "xd", "from": "v", "to": "wv@1"},
+      {"along": "xd", "from": "q12", "to": "gy"},
+      {"along": "xd@1", "from": "gy", "to": "q14"},
+      {"along": "xd@1", "from": "wv@1", "to": "v"},
+      {"along": "xd@1", "from": "fd", "to": "q12"},
+      {"along": "xd@1", "from": "vh", "to": "jv@1"},
+      {"along": "xd@1", "from": "jv@2", "to": "vh@1"},
+      {"along": "xd@1", "from": "q11", "to": "fd@2"},
+      {"along": "xd@1", "from": "h", "to": "wv@2"},
+      {"along": "xd@1", "from": "q13", "to": "gxw"},
+      {"along": "xd@2", "from": "gxw", "to": "q11"},
+      {"along": "xd@2", "from": "wv@2", "to": "h"},
+      {"along": "xd@2", "from": "fd@1", "to": "q13"},
+      {"along": "xd@2", "from": "vh@1", "to": "jv@2"},
+      {"along": "xd@2", "from": "jv@3", "to": "vh@2"},
+      {"along": "xd@2", "from": "q12", "to": "fd@3"},
+      {"along": "xd@2", "from": "v", "to": "wv@3"},
+      {"along": "xd@2", "from": "q14", "to": "gys"},
+      {"along": "xd@3", "from": "gys", "to": "q12"},
+      {"along": "xd@3", "from": "wv@3", "to": "v"},
+      {"along": "xd@3", "from": "fd@2", "to": "q14"},
+      {"along": "xd@3", "from": "vh@2", "to": "jv@3"},
+      {"along": "xd@3", "from": "jv", "to": "vh@3"},
+      {"along": "xd@3", "from": "q13", "to": "fd"},
+      {"along": "xd@3", "from": "h", "to": "wv"},
+      {"along": "xd@3", "from": "q11", "to": "gx"},
+      {"along": "y1d", "from": "rd@3", "to": "rd@1"},
+      {"along": "y1d@1", "from": "rd", "to": "rd@2"},
+      {"along": "y1d@2", "from": "rd@1", "to": "rd@3"},
+      {"along": "y1d@3", "from": "rd@2", "to": "rd"},
+      {"along": "y2d", "from": "gx", "to": "qv"},
+      {"along": "y2d", "from": "qv@1", "to": "gy"},
+      {"along": "y2d@1", "from": "gy", "to": "qv@1"},
+      {"along": "y2d@1", "from": "qv@2", "to": "gxw"},
+      {"along": "y2d@2", "from": "gxw", "to": "qv@2"},
+      {"along": "y2d@2", "from": "qv@3", "to": "gys"},
+      {"along": "y2d@3", "from": "gys", "to": "qv@3"},
+      {"along": "y2d@3", "from": "qv", "to": "gx"},
+      {"along": "y3d", "from": "q04", "to": "wv@1"},
+      {"along": "y3d", "from": "wv", "to": "q02"},
+      {"along": "y3d@1", "from": "q01", "to": "wv@2"},
+      {"along": "y3d@1", "from": "wv@1", "to": "q03"},
+      {"along": "y3d@2", "from": "q02", "to": "wv@3"},
+      {"along": "y3d@2", "from": "wv@2", "to": "q04"},
+      {"along": "y3d@3", "from": "q03", "to": "wv"},
+      {"along": "y3d@3", "from": "wv@3", "to": "q01"},
+      {"along": "y4d", "from": "gx", "to": "vh"},
+      {"along": "y4d", "from": "vh@3", "to": "gy"},
+      {"along": "y4d@1", "from": "gy", "to": "vh@1"},
+      {"along": "y4d@1", "from": "vh", "to": "gxw"},
+      {"along": "y4d@2", "from": "gxw", "to": "vh@2"},
+      {"along": "y4d@2", "from": "vh@1", "to": "gys"},
+      {"along": "y4d@3", "from": "gys", "to": "vh@3"},
+      {"along": "y4d@3", "from": "vh@2", "to": "gx"},
+      {"along": "q2d", "from": "q04", "to": "qv@1"},
+      {"along": "q2d", "from": "qv", "to": "q02"},
+      {"along": "q2d@1", "from": "q01", "to": "qv@2"},
+      {"along": "q2d@1", "from": "qv@1", "to": "q03"},
+      {"along": "q2d@2", "from": "q02", "to": "qv@3"},
+      {"along": "q2d@2", "from": "qv@2", "to": "q04"},
+      {"along": "q2d@3", "from": "q03", "to": "qv"},
+      {"along": "q2d@3", "from": "qv@3", "to": "q01"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Marinid zellige",
+    "look": "tiles",
+    "text": "Put copies of the square tile side by side. Stars and arrows join the rosettes along the rows.",
+    "colors": {
+      "eleven": "ground",
+      "star": "d",
+      "twelve": "ground",
+      "petal": "a",
+      "arrow": "b",
+      "seven": "c",
+      "pointed_star": "d",
+      "rhombus": "ground",
+      "triangle": "ground",
+      "kite": "ground",
+      "square": "d",
+      "pentagon": "ground"
+    }
+  },
+  "expect": {
+    "pieceTypes": 12,
+    "pieces": [
+      {"name": "eleven", "vertices": 11, "area": 3.15685, "perCell": 8},
+      {"name": "star", "vertices": 16, "area": 2.34315, "perCell": 6},
+      {"name": "twelve", "vertices": 12, "area": 2.17157, "perCell": 8},
+      {"name": "petal", "vertices": 6, "area": 2, "perCell": 32},
+      {"name": "arrow", "vertices": 8, "area": 2, "perCell": 20},
+      {"name": "seven", "vertices": 7, "area": 1.91421, "perCell": 16},
+      {"name": "pointed_star", "vertices": 16, "area": 1.65685, "perCell": 4},
+      {"name": "rhombus", "vertices": 4, "area": 1.41421, "perCell": 32},
+      {"name": "triangle", "vertices": 3, "area": 0.5, "perCell": 8, "small": true},
+      {"name": "kite", "vertices": 4, "area": 0.41421, "perCell": 48, "small": true},
+      {"name": "square", "vertices": 4, "area": 0.34315, "perCell": 6, "small": true},
+      {"name": "pentagon", "vertices": 5, "area": 0.32843, "perCell": 8, "small": true}
+    ]
+  }
+}
