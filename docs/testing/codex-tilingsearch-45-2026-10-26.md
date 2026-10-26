@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058 is built and IRAN16 is skipped for unsupported symmetry. The remaining seven entries are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058 and BON61 are built, and IRAN16 is skipped for unsupported symmetry. The remaining six entries are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -222,3 +222,13 @@ The catalog, six targeted golden checks, all 530 player text checks and all 34 s
 ## IRAN16 — skipped: unsupported symmetry
 
 Wichmann's data197/IRAN16 page explicitly gives 2*22 (cmm). Its Mir Qavam al-Din Mar'ashi design has half-turns and mirrors, without a turn of a third or more. The current format requires fold ≥ 3, and the brief explicitly says to skip this symmetry. No tutorial or generator was created, and no false fourfold repeat was substituted. The page's related data205/SM3 is a different entry from the assigned data206/SM3 still to come.
+
+## BON61 — built as `hani-zeynebiye-stars`, ring-of-circles variation
+
+The source geometry exactly matches the existing `four-fold-ring-of-circles`, whose twelve steps are reused verbatim. Sandy Kurt's tutorial credit is retained alongside the new Wichmann drawing credit. The source's filling distinguishes the Hani variation: navy stars, yellow bowties, brown squares, and green and peach pentagons. The family for Claude to register is `four-fold-ring-of-circles` with `hani-zeynebiye-stars`. This comparison does not establish how the madrasa pattern was historically constructed.
+
+The source small-star radius is 25(1 + √2) = 60.3553390593 pt. Its half-side is 2 + √2 in those units; normalized tutorial OA is 206.066017178 pt. Corners fit (a + bH)/2, H = √2/2, within 0.000025 OA. Independent source-polygon shoelace areas in normalized units are star 20 − 28H, ten; bowtie 5 − 7H, sixteen; square 17 − 24H, two; and dart (the five-sided pentagon) −31/4 + 11H, forty. Their counted sum is exactly 4. The engine independently confirms these four types and counts, without slivers.
+
+I inspected the review wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/BON61/overlay.png`; every red edge agrees. I also inspected `source-colour-wall.png`, rendered from actual player placement fills. Every fill was checked against the nearest source polygon, including all sixteen peach and twenty-four green pentagons per cell. The maximum matched-centre residual is 0.000017 OA. The existing ring colouring and explicit placement rules are mutually exclusive in the schema, so this variant uses placements. Its source colours are stored in the generator, including the player-verified `nth` choices.
+
+The exact data211/BON61 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Bonner page 276 figure 154, Zeynebiye madrasa, Hani, Turkey (1000–1300); no building photograph was checked. This variant is the exception to the brief’s usual `basis: reconstruction`: its reused steps actually come from Kurt’s tutorial. The schema audit requires `mixed` (with `fidelity: adapted`) when that instructional credit is retained. I used `mixed` to describe both sources truthfully, rather than misclassifying or dropping Kurt’s credit. The catalog, six targeted golden checks, all 535 player text checks and all 34 schema tests passed under the memory cap. The source-colour placement check also passed. No shared application or engine code changed.
