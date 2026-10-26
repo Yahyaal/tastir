@@ -37,7 +37,7 @@ PLAN = [
 ]
 
 
-def opening():
+def opening(shown_turns='by 45° each way'):
     """The circle, the octagon round it and the lines at height t."""
     g.given()
     step('Draw a horizontal straight line through O and A. Draw a circle with centre O through A.', 'compass')
@@ -61,7 +61,7 @@ def opening():
          'Draw a horizontal line through V. Turn it round O by 45°, seven times.')
     cm.steps[-1]['textWithoutHelpers'] = (
         'The vertical line through A, turned by 45°, crosses the vertical line through A at V. '
-        'Draw a horizontal line through V. Turn it round O by 45° each way.')
+        f'Draw a horizontal line through V. Turn it round O {shown_turns}.')
     g.meet('V', 'ax', 'ax@1', (1, T))
     g.line_par('vt', 'V', 'h')
     g.repeat('vtr', ['vt'], 'rot8')
