@@ -1,0 +1,187 @@
+{
+  "format": 0,
+  "id": "iranian-tile-crosses",
+  "title": "Crosses and squares of Iranian tilework",
+  "short": "Iranian tile crosses",
+  "subtitle": "After al-Naqsh, Iranian tilework, volume 4",
+  "fold": 4,
+  "style": "Persian",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P35 drawing, its corners snapped to exact values. We devised the construction: the arms of the crosses are as wide as their pointed ends are long, which one line from A fixes. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of a building was checked; the book gives none in colour.",
+    "reviewed": "2026-10-25"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data17/P35: Arabic collection, volume 4, page 35",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data17/P35.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing, after Mahmood Maher al-Naqsh, Design and execution of drawing in Iranian tilework, Islamic period (Reza Abbasi Museum, 1983), volume 4, page 35. The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of a small square.",
+    "A": "The centre of a long cross, halfway from O to the next square."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "Draw the line through O at 90° to the line from O to K1. It crosses the circle at E, between C and B. Draw a vertical line through E. It crosses the line through C and K1 at N.",
+      "create": {
+        "d135": {"line": {"through": "O", "perpendicularTo": "d45"}},
+        "E": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
+        "ev": {"line": {"through": "E", "parallelTo": "v"}},
+        "N": {"point": {"meet": ["ev", "gy"]}}
+      },
+      "highlight": ["d45", "c"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a straight line through A and N. It crosses the line from O to K1 at M. Draw a vertical line and a horizontal line through M. They cross the line through O and A at S, and the line through A and K1 at P.",
+      "create": {
+        "an": {"line": {"through": ["A", "N"]}},
+        "M": {"point": {"meet": ["an", "d45"]}},
+        "mv": {"line": {"through": "M", "parallelTo": "v"}},
+        "mh": {"line": {"through": "M", "parallelTo": "h"}},
+        "S": {"point": {"meet": ["mv", "h"]}},
+        "P": {"point": {"meet": ["mh", "gx"]}}
+      },
+      "highlight": ["A", "N"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw the line through S at 90° to the line from O to K1. It is a side of the square at O. It crosses the line from O to K1 at Q. Draw a horizontal line through Q.",
+      "create": {
+        "sq": {"line": {"through": "S", "perpendicularTo": "d45"}},
+        "Q": {"point": {"meet": ["sq", "d45"]}},
+        "qh": {"line": {"through": "Q", "parallelTo": "h"}}
+      },
+      "highlight": ["S"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw the line through A at 90° to the line from O to K1. It crosses the horizontal line through Q at R. Draw a vertical line through R.",
+      "create": {
+        "ad": {"line": {"through": "A", "perpendicularTo": "d45"}},
+        "R": {"point": {"meet": ["ad", "qh"]}},
+        "rv": {"line": {"through": "R", "parallelTo": "v"}}
+      },
+      "highlight": ["A", "qh"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Draw a line through P parallel to the line from O to K1. Draw the line through P at 90° to it.",
+      "create": {
+        "pp": {"line": {"through": "P", "parallelTo": "d45"}},
+        "pq": {"line": {"through": "P", "perpendicularTo": "d45"}}
+      },
+      "highlight": ["P", "d45"],
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Turn the lines through S, Q, R and P round O by 90°, three times. They are the sides of the square and the crosses.",
+      "create": {"cp": {"repeat": {"of": ["sq", "qh", "rv", "pp", "pq"], "by": "rot4"}}},
+      "highlight": ["sq", "qh", "rv", "pp", "pq"],
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the square at O and the long crosses at A, B, C and D. Ink the four-armed crosses at the corners. Their sides close the ground between them.",
+    "paths": [
+      {"along": "sq", "from": "qh@2", "to": "qh@1"},
+      {"along": "qh", "from": "rv@2", "to": "sq@2"},
+      {"along": "qh", "from": "sq@3", "to": "ad"},
+      {"along": "rv", "from": "d135", "to": "pq@3"},
+      {"along": "rv", "from": "pq", "to": "d45"},
+      {"along": "pp", "from": "gys", "to": "qh@1"},
+      {"along": "pp", "from": "qh", "to": "gx"},
+      {"along": "pq", "from": "gx", "to": "rv"},
+      {"along": "pq", "from": "rv@1", "to": "gy"},
+      {"along": "sq@1", "from": "qh@3", "to": "qh@2"},
+      {"along": "sq@2", "from": "qh", "to": "qh@3"},
+      {"along": "sq@3", "from": "qh@1", "to": "qh"},
+      {"along": "qh@1", "from": "pp", "to": "sq@3"},
+      {"along": "qh@1", "from": "sq", "to": "rv@1"},
+      {"along": "qh@2", "from": "rv", "to": "sq"},
+      {"along": "qh@2", "from": "sq@1", "to": "rv@2"},
+      {"along": "qh@3", "from": "ad", "to": "sq@1"},
+      {"along": "qh@3", "from": "sq@2", "to": "rv@3"},
+      {"along": "rv@1", "from": "d45", "to": "pq"},
+      {"along": "rv@1", "from": "pq@1", "to": "d135"},
+      {"along": "rv@2", "from": "d135", "to": "pq@1"},
+      {"along": "rv@2", "from": "pq@2", "to": "d45"},
+      {"along": "rv@3", "from": "d45", "to": "pq@2"},
+      {"along": "rv@3", "from": "pq@3", "to": "d135"},
+      {"along": "pp@1", "from": "gx", "to": "rv"},
+      {"along": "pp@1", "from": "qh@1", "to": "gy"},
+      {"along": "pp@2", "from": "gy", "to": "ad"},
+      {"along": "pp@2", "from": "qh@2", "to": "gxw"},
+      {"along": "pp@3", "from": "gxw", "to": "qh"},
+      {"along": "pp@3", "from": "qh@3", "to": "gys"},
+      {"along": "pq@1", "from": "gy", "to": "rv@1"},
+      {"along": "pq@1", "from": "rv@2", "to": "gxw"},
+      {"along": "pq@2", "from": "gxw", "to": "rv@2"},
+      {"along": "pq@2", "from": "rv@3", "to": "gys"},
+      {"along": "pq@3", "from": "gys", "to": "rv@3"},
+      {"along": "pq@3", "from": "rv", "to": "gx"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. Squares and four-armed crosses take turns on the diagonals, with long crosses between them.",
+    "palette": "Timurid tile",
+    "colors": {"cross": "b", "ground": "ground", "bar": "a", "square": "c"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "cross", "vertices": 16, "area": 0.65886, "perCell": 1},
+      {"name": "ground", "vertices": 11, "area": 0.53411, "perCell": 4},
+      {"name": "bar", "vertices": 12, "area": 0.46589, "perCell": 2},
+      {"name": "square", "vertices": 4, "area": 0.27291, "perCell": 1}
+    ]
+  }
+}
