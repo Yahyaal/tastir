@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is in progress; the first six entries, C268A through P70, are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
+Group A is in progress; the first seven entries, C268A through MOR2832X, are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -66,3 +66,13 @@ The source-polygon shoelace areas are eleven −5/2 + 8H, eight; star 8 − 8H, 
 I inspected the wall beside the GIF and `docs/research/tilingsearch-45/P70/overlay.png` over the entire PDF. All red lines follow the tile edges, including the square and pentagon rings. P70 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits retain Wade's Pattern in Islamic Art, page 70, and photograph MOR 0909. The tutorial keeps the plain geometry and records its illustrative palette and absent photo check. The MOR0910 generator now exposes its opening as `build_frame`; a regeneration and byte comparison confirmed that its default output is unchanged, so the shared helper change is backward compatible.
 
 The catalog, six targeted golden checks, all 455 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## MOR2832X — built as `fes-bou-inania-cross-stars`
+
+The tutorial has ten steps. I separated the coloured faces from the grey bevel shading and moved them out by half of the 9 pt band. OA = 68.275 pt is one third of the half-repeat; the full square cell is 409.65 pt across and has half-side 3 in OA units. The vertices fit (a + bH)/2, H = √2/2, with worst error 0.001718 OA. Odd half-unit parallels and diagonals through crossings of circles with the horizontal axis construct every required line. An unused final corner-diagonal set was removed after helper inspection.
+
+The source-polygon shoelace areas are cross −6 + 12H, two; star 4 − 4H, sixteen; square 3 − 4H, eighteen; and pentagon −5/4 + 2H, fifty-six. Their counted sum is exactly 36, the cell area. The engine independently gives these four types and counts, with no slivers. The source's banded-shape description names more star and square types; the centre-line tiling instead has the 24-cornered cruciform face and four plain piece types. That representation is stated explicitly in the tutorial.
+
+I inspected the wall beside the GIF and `docs/research/tilingsearch-45/MOR2832X/overlay.png`. Every red line follows the centre of a bevelled band, including the crosses' notches. MOR2832X is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits retain Wade MOR 2832x. The tutorial records the centre-line representation and illustrative palette. It differs from the existing Arrayanes door stars and the Badi palace repeat in motifs, filler pieces and counts, so it is not an exact duplicate or a proportion-only variation.
+
+The catalog, six targeted golden checks, all 460 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
