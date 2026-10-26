@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is in progress; the first twelve entries, C268A through MOR0606, are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Groups B and C are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -126,3 +126,15 @@ The source-polygon shoelace areas are octagon 4 + 8H, eight; pointed_star 8H, on
 I inspected the wall beside the GIF and `docs/research/tilingsearch-45/MOR0606/overlay.png` over the entire PDF. Every red line follows a band centre. MOR0606 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits retain Wade MOR 0606 and the page's Moulay Ishmael mosque attribution (spelled Ismail in the tutorial). The tutorial records its centre-line representation and illustrative palette. Its inherited helper-free wording matches the retained guide lines, as verified by helper inspection.
 
 The catalog, six targeted golden checks, all 485 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## P77 — built as `ben-youssef-star-rosettes`, Attarine variation
+
+This is the first confirmed variation in the batch. After moving the origin from the four-petal centre to its eight-petal neighbour, the repeated linework and proportions are exactly those of MOR0323, `attarine-star-rosettes`. The source's different filling makes this a variation rather than another full construction. It shares all fourteen steps, and its source colours distinguish the maroon centre star, white corner star and four black filler stars. The family for Claude to register is `attarine-star-rosettes` with `ben-youssef-star-rosettes`. P77 also links PG229 as using the same irregular tiles; check that Group B entry against this family.
+
+OA is half the repeat, 211.065625 pt; in small-star-radius research units the half-side is 3 + 2√2. The source polygons snap within 0.000359 small-star-radius unit. The normalized cell has area 4. With H = √2/2, the areas and counts equal MOR0323's exactly: long_hexagon 51 − 72H, six; star 232 − 328H, six; petal and eight 34 − 48H, eight each; seven −31/2 + 22H, sixteen; arrow −65 + 92H, four; rhombus −24 + 34H, eight; triangle 17/2 − 12H, twelve; and kite −41 + 58H, forty. Their sum is 4. The engine independently finds the same nine types and counts, with no slivers.
+
+I inspected the normal review wall beside the GIF and the full source overlay at `docs/research/tilingsearch-45/P77/overlay.png`. Every red edge agrees. Because the chosen centre is near the PDF's corner, source polygons are wrapped by full-cell translations before ink extraction. A further render, `source-colour-wall.png`, uses fills returned by the actual player placement function; I inspected it against the source and verified one white corner star, one maroon centre star and four black filler stars. The fixed source colours are placement rules; shape colouring still has ordinary palette roles. P77 is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits retain Degeorge and Porter, The Art of the Islamic Tile (2002), page 77 bottom left, Ben Youssef madrasa (1565).
+
+The new optional drawing callback in `medium.py` supports this periodic source extraction. Its optional expectation block lets the already-verified parent geometry supply names before placement rules are parsed. Existing generators retain their original defaults. No shared application or engine code changed.
+
+The normalized source-coordinate residual is at most 0.000032 OA. The catalog, six targeted golden checks, all 490 player text checks and all 34 schema tests passed under the memory cap. The real placement-function check also passed. Group A is complete with thirteen built and no skipped tilings.

@@ -11,7 +11,7 @@ import common as cm
 from common import put, step
 
 
-def run(build, spec, names):
+def run(build, spec, names, drawing=None):
     if sys.argv[1] == 'finish':
         cm.finish(sys.argv[2], sys.argv[3], names)
         if spec.get('small'):
@@ -24,7 +24,7 @@ def run(build, spec, names):
     pieces, out = sys.argv[1:3]
     build()
     origin, unit, band, half_side = spec['frame']
-    polys = cm.frame_pieces(pieces, origin, 2*unit, band)
+    polys = drawing(pieces) if drawing else cm.frame_pieces(pieces, origin, 2*unit, band)
     paths = cm.along_ink(cm.network(polys, hcell=half_side, reach=3*half_side))
     step('Join K1, K2, K3 and K4 to mark the tile that repeats.', 'fade')
     put('tile', 'polygon', None, {'polygon': ['K1', 'K2', 'K3', 'K4']})
@@ -47,7 +47,9 @@ def run(build, spec, names):
         'pattern': {'cell': 'tile', 'palette': spec.get('palette', 'Marinid zellige'),
                     'look': spec.get('look', 'tiles'), 'colors': {},
                     'text': spec.get('repeat', 'Put copies of the square tile side by side.')},
-        'expect': {'pieceTypes': 1, 'pieces': [{'name': 'x', 'vertices': 3, 'area': 1, 'perCell': 1}]}})
+        'expect': spec.get('expect', {'pieceTypes': 1, 'pieces': [{'name': 'x', 'vertices': 3, 'area': 1, 'perCell': 1}]})})
+    if spec.get('placements'):
+        tut['pattern']['placements'] = spec['placements']
     if spec.get('chiral'):
         tut['chiral'] = True
     cm.write(tut, out)
