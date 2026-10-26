@@ -93,5 +93,10 @@
     "id": "ring-of-circles",
     "title": "Four-fold ring of circles",
     "members": ["four-fold-ring-of-circles", "hani-zeynebiye-stars"]
+  },
+  {
+    "id": "agra-kite-stars",
+    "title": "Kite stars of Agra and Fatehpur Sikri",
+    "members": ["agra-kite-stars", "birbal-house-stars"]
   }
 ]

@@ -3798,6 +3798,190 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'dar-el-bey-stars',
+    title: 'Stars round a cross, Dar el Bey (Tunis) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A cross sits at every centre with four stars round it, and a star sits at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s CL35 drawing, the centre lines of its bands snapped to exact values. We devised the construction. Every star is two squares on a circle of the same radius: the stars at the corners come first, as in the Dar el Bey crosses, and four more stars sit round O at S, twice that radius from O. Their sides carried on make the notched cross at O. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the building was checked.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/dar-el-bey-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/dar-el-bey-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Dar el Bey, Tunis (CL35)',
+        url: 'https://tilingsearch.mit.edu/HTML/data208/CL35.html',
+      },
+    ],
+  },
+  {
+    id: 'agra-fort-stars',
+    title: 'Stars and crosses of the Agra Fort (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and a small cross of squares at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s IND0312 drawing, its corners snapped to exact values. We devised the construction. The star at O is two squares; the circle through K1 gives the sides of the next stars, and those fix the square at O. A circle about M doubles the square’s side for the lines of the small crosses at the corners. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as white bands; the tutorial draws their centre lines. David Wade’s photo was not checked.',
+      '7 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/agra-fort-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/agra-fort-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Agra Fort, India (IND0312)',
+        url: 'https://tilingsearch.mit.edu/HTML/data172/IND0312.html',
+      },
+    ],
+  },
+  {
+    id: 'birbal-house-stars',
+    title: 'Stars of Rajah Birbal’s house, Fatehpur Sikri (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P94 drawing. We devised the construction. Every line runs at 22.5° to the cell’s sides: sixteen lines through A, B, C and D, and eight through N and its turns, the inner corners of the star at O. The drawing gives no steps.',
+      'Wichmann draws the design turned by 22.5°; it is turned here so that the tile is the square cell. Where four pieces meet at A his drawing has a tiny square with uneven bevels; here the lines meet in a point, and the gap becomes two thin white triangles. The compass steps, their order and the named points are ours. No photo of the ceiling was checked.',
+      '6 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/birbal-house-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/birbal-house-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Rajah Birbal’s house, Fatehpur Sikri (P94)',
+        url: 'https://tilingsearch.mit.edu/HTML/data185/P94.html',
+      },
+    ],
+  },
+  {
+    id: 'seville-tile-stars',
+    title: 'Sharp stars of a Seville tile panel (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star ringed by eight hexagons sits at every centre, and the stars between them have four.',
+    story: [
+      'The finished design was read from Brian Wichmann’s RAY10 drawing, its corners snapped to exact values. We devised the construction. Every star is the same: eight lines touching a small circle about its centre. The star at O comes first; the circles about A copy its lines to the stars at A and at the corners, and one more circle about O gives the lines that close the hexagons round O. The drawing gives no steps.',
+      'Wichmann draws the design turned by 45°; it is turned back here so that the tile is the square cell. The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The V&A photo of the panel was not checked.',
+      '8 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/seville-tile-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/seville-tile-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Tile panel from Seville, V&A, London (RAY10)',
+        url: 'https://tilingsearch.mit.edu/HTML/data183/RAY10.html',
+      },
+    ],
+  },
+  {
+    id: 'bahramiye-mosque-stars',
+    title:
+      'Interlaced stars of the Bahramiye mosque, Aleppo (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and a small square at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s AJL1 drawing, the centre lines of its bands snapped to exact values. We devised the construction. The star at O is two squares, found with line DE; that line then crosses the star’s sides at M, L and J, which fix most of the other lines, and the line through E fixes the rest. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the carving was checked.',
+      '8 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bahramiye-mosque-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bahramiye-mosque-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bahramiye mosque, Aleppo (AJL1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data198/AJL1.html',
+      },
+    ],
+  },
+  {
+    id: 'marrakesh-crafts-stars',
+    title:
+      'Stars and crosses of the Crafts Center, Marrakesh (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and every corner, with a green cross between each two.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P99 drawing, its corners matched to exact values. We devised the construction. The stars at O and at the corners are two squares, as large as the small star of the Comares bath stars, and are found the same way: from X, where line K1D crosses the line that halves the angle AOE. The point T, found with the circle through K1, closes the small squares and the green crosses. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the mosaic was checked.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/marrakesh-crafts-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/marrakesh-crafts-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Crafts Center, Marrakesh (P99)',
+        url: 'https://tilingsearch.mit.edu/HTML/data164/P99.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -4917,7 +5101,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Ninety-six new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'A hundred and two new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -5026,6 +5210,12 @@ export const QUESTIONS: readonly Question[] = [
       'nasrid-textile-stars',
       'fes-palace-ceiling-stars',
       'alhambra-arrayanes-porch-ceiling',
+      'dar-el-bey-stars',
+      'agra-fort-stars',
+      'birbal-house-stars',
+      'seville-tile-stars',
+      'bahramiye-mosque-stars',
+      'marrakesh-crafts-stars',
     ],
   },
 ];

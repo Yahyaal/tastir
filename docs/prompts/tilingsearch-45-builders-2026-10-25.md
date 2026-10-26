@@ -52,7 +52,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 12 | CM010, CM033, DS3, BM1, P008A, P78B, P052 | 211–220 polygons; P008A is a Nasrid panel (Granada) | done, merged: six built; P052 is cmm |
 | 13 | BON47, IND01, FE1, IRAN15, F78, P064 | Next smallest, 231–239 polygons | done, merged: five built; IRAN15 = qom-atabaki-stars recoloured |
 | 14 | P60B, C101, MMA2, SHAF27, ALHAMK, P397 | 241–259 polygons; ALHAMK is an Alhambra panel with a Wade photo; P30 and S45A are pmm (skip) | done, merged: all six |
-| 15 | CL35, IND0312, P94, RAY10, AJL1, P99 | 267–293 polygons; DW5 is pmm (skip). After this, only the large panels (over 600 pieces) remain for Claude | started |
+| 15 | CL35, IND0312, P94, RAY10, AJL1, P99 | 267–293 polygons; DW5 is pmm (skip). After this, only the large panels (over 600 pieces) remain for Claude | done, merged: all six; P94 joins agra-kite-stars |
 
 Codex builds the 29 medium tilings (300–600 pieces) on its own branch, `codex/tilingsearch-45`, from [its brief](codex-tilingsearch-45-2026-10-26.md); Claude's builders never take one of those. After batch 8, take the remaining tilings of [the comparison](../patterns/TILINGSEARCH-45.md) by size, smallest first, five to a batch, grouping ones that look alike. Leave the large Moroccan rosette panels (over 900 polygons) until last; each needs a time box of its own.
 
