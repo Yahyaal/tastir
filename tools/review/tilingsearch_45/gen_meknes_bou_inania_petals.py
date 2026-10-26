@@ -58,11 +58,17 @@ def build_frame(unit_steps=2, diagonals=3):
         g.meet('F', 'ca', 'h', (2, 0))
 
     else:
-        assert unit_steps == 4
-        step('Keep the compass open to OA. Draw circles with centres A, F1 and F2 in turn. '
-             'Each circle crosses the horizontal line to the right at F1, F2 and F.', 'compass')
+        assert unit_steps in (3, 4)
+        if unit_steps == 4:
+            step('Keep the compass open to OA. Draw circles with centres A, F1 and F2 in turn. '
+                 'Each circle crosses the horizontal line to the right at F1, F2 and F.', 'compass')
+            marks = ['F1', 'F2', 'F']
+        else:
+            step('Keep the compass open to OA. Draw circles with centres A and F1 in turn. '
+                 'Each circle crosses the horizontal line to the right at F1 and F.', 'compass')
+            marks = ['F1', 'F']
         previous = 'A'
-        for i, name in enumerate(['F1', 'F2', 'F']):
+        for i, name in enumerate(marks):
             cm.circle_radius_of(f'cf{i}', previous, 'c')
             g.meet(name, f'cf{i}', 'h', (i+2, 0))
             previous = name
