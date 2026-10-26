@@ -1,0 +1,164 @@
+{
+  "format": 0,
+  "id": "birbal-house-stars",
+  "title": "Stars of Rajah Birbal’s house, Fatehpur Sikri",
+  "short": "Birbal’s house stars",
+  "subtitle": "Rajah Birbal’s house, Fatehpur Sikri",
+  "fold": 4,
+  "star": 8,
+  "style": "Mughal",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P94 drawing. We devised the construction. Every line runs at 22.5° to the cell’s sides: sixteen lines through A, B, C and D, and eight through N and its turns, the inner corners of the star at O. The drawing gives no steps.",
+    "changes": "Wichmann draws the design turned by 22.5°; it is turned here so that the tile is the square cell. Where four pieces meet at A his drawing has a tiny square with uneven bevels; here the lines meet in a point, and the gap becomes two thin white triangles. The compass steps, their order and the named points are ours. No photo of the ceiling was checked.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data185/P94: Fatehpur Sikri, Rajah Birbal’s House",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data185/P94.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from E. W. Smith, The Moghul Architecture of Fathpur-Sikri (Archaeological Survey of India, 1896), part 2, plate X (the north porch ceiling of Rajah Birbal’s house), and lists the same design in Jay Bonner, Islamic Geometric Patterns (Springer, 2017), page 276, figure 153 (the mihrab of the Malik mosque, Kerman) and in a photo by M. Sakkal of the Junblat house, Aleppo. The construction is ours."
+    }
+  ],
+  "given": {"O": "The centre of a star.", "A": "Halfway from O to the next star on the horizontal line."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The circle crosses the line from O to K1 at E. Draw the line through O that halves the angle AOE. Draw the line through O that halves the angle EOC.",
+      "create": {
+        "E": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "b1": {"line": {"through": "O", "bisects": ["A", "O", "E"]}},
+        "b2": {"line": {"through": "O", "bisects": ["E", "O", "C"]}}
+      },
+      "highlight": ["E"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw two lines through A parallel to the two new lines. Draw two lines through A at 90° to the two new lines. Turn the four lines round O by 90°, three times.",
+      "create": {
+        "a1": {"line": {"through": "A", "parallelTo": "b1"}},
+        "a2": {"line": {"through": "A", "parallelTo": "b2"}},
+        "a3": {"line": {"through": "A", "perpendicularTo": "b1"}},
+        "a4": {"line": {"through": "A", "perpendicularTo": "b2"}},
+        "ap": {"repeat": {"of": ["a1", "a2", "a3", "a4"], "by": "rot4"}}
+      },
+      "highlight": ["A"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw four lines through A, at 22.5° and at 67.5° to the horizontal line. Turn the four lines round O by 90°, three times."
+    },
+    {
+      "id": 5,
+      "text": "The line through D parallel to the line that halves the angle EOC crosses the horizontal line at N. Draw a line through N parallel to the line that halves the angle AOE. Draw a line through N at 90° to the line that halves the angle EOC. Turn the two lines round O by 90°, three times.",
+      "create": {
+        "N": {"point": {"meet": ["a4@3", "h"]}},
+        "n1": {"line": {"through": "N", "parallelTo": "b1"}},
+        "n2": {"line": {"through": "N", "perpendicularTo": "b2"}},
+        "np": {"repeat": {"of": ["n1", "n2"], "by": "rot4"}}
+      },
+      "highlight": ["N"],
+      "animate": "ruler",
+      "textWithoutHelpers": "The line through D at 67.5° to the horizontal line crosses the horizontal line at N. Draw two lines through N at 22.5° to the horizontal line. Turn the two lines round O by 90°, three times."
+    },
+    {
+      "id": 6,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They make the stars at O and at the corners, the eight-sided pieces, the pentagons and the hexagons between them.",
+    "paths": [
+      {"along": "a1", "from": "n2@1", "to": "v"},
+      {"along": "a1", "from": "a4@3", "to": "n2"},
+      {"along": "a2", "from": "a1@1", "to": "h"},
+      {"along": "a3", "from": "h", "to": "d45"},
+      {"along": "a4", "from": "n1", "to": "d45"},
+      {"along": "a4", "from": "v", "to": "n1@3"},
+      {"along": "a1@1", "from": "n2@2", "to": "h"},
+      {"along": "a1@1", "from": "d45", "to": "n2@1"},
+      {"along": "a1@2", "from": "n2@3", "to": "v"},
+      {"along": "a1@2", "from": "a4@1", "to": "n2@2"},
+      {"along": "a1@3", "from": "n2", "to": "h"},
+      {"along": "a1@3", "from": "d45", "to": "n2@3"},
+      {"along": "a2@1", "from": "d45", "to": "v"},
+      {"along": "a2@2", "from": "a4", "to": "h"},
+      {"along": "a2@3", "from": "d45", "to": "v"},
+      {"along": "a3@1", "from": "v", "to": "a4"},
+      {"along": "a3@2", "from": "h", "to": "d45"},
+      {"along": "a3@3", "from": "v", "to": "a2"},
+      {"along": "a4@1", "from": "n1@1", "to": "a1@2"},
+      {"along": "a4@1", "from": "h", "to": "n1"},
+      {"along": "a4@2", "from": "n1@2", "to": "d45"},
+      {"along": "a4@2", "from": "v", "to": "n1@1"},
+      {"along": "a4@3", "from": "n1@3", "to": "a1"},
+      {"along": "a4@3", "from": "h", "to": "n1@2"},
+      {"along": "n1", "from": "gxw", "to": "a4@1"},
+      {"along": "n1", "from": "a4", "to": "gx"},
+      {"along": "n2", "from": "gx", "to": "a1"},
+      {"along": "n2", "from": "a1@3", "to": "gxw"},
+      {"along": "n1@1", "from": "gys", "to": "a4@2"},
+      {"along": "n1@1", "from": "a4@1", "to": "gy"},
+      {"along": "n1@2", "from": "gx", "to": "a4@3"},
+      {"along": "n1@2", "from": "a4@2", "to": "gxw"},
+      {"along": "n1@3", "from": "gy", "to": "a4"},
+      {"along": "n1@3", "from": "a4@3", "to": "gys"},
+      {"along": "n2@1", "from": "gy", "to": "a1@1"},
+      {"along": "n2@1", "from": "a1", "to": "gys"},
+      {"along": "n2@2", "from": "gxw", "to": "a1@2"},
+      {"along": "n2@2", "from": "a1@1", "to": "gx"},
+      {"along": "n2@3", "from": "gys", "to": "a1@3"},
+      {"along": "n2@3", "from": "a1@2", "to": "gy"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. A star sits at every centre and every corner.",
+    "palette": "Timurid tile",
+    "look": "strapwork",
+    "colors": {"star": "b", "eight": "a", "hexagon": "c", "pentagon": "ground", "kite": "d"}
+  },
+  "expect": {
+    "pieceTypes": 5,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 0.68629, "perCell": 2},
+      {"name": "eight", "vertices": 8, "area": 0.17157, "perCell": 8},
+      {"name": "hexagon", "vertices": 6, "area": 0.10051, "perCell": 4},
+      {"name": "pentagon", "vertices": 5, "area": 0.09619, "perCell": 8},
+      {"name": "kite", "vertices": 4, "area": 0.02082, "perCell": 4}
+    ]
+  }
+}
