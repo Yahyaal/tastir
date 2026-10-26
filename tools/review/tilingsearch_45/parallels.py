@@ -51,16 +51,22 @@ def describe(n):
     elif base[0] == 'q' and len(base) == 3:
         d = star_side(base)
     elif base in LINES:
-        d = new_line(*LINES[base])
+        d = new_line(*LINES[base][:2])
     else:
         raise KeyError(n)
-    return d + (f', turned by {90 * int(j)}°,' if j else '')
+    order = LINES[base][2] if base in LINES else ORDER.get(base, 4)
+    return d + (f', turned by {360 // order * int(j)}°,' if j else '')
+
+
+ORDER = {}       # copies' turn for lines not in the plan (rot8 repeats)
+TURN = {4: 'by 90°, three times', 8: 'by 45°, seven times'}
 
 
 def emit(groups, prefix='m', heading=None):
     """One step per group of plan entries (point, a, b, want, ref[, ...])."""
     for grp in groups:
         sents, made, meets, seen = [], [], [], set()
+        order = int((grp[0][5] if len(grp[0]) > 5 else 'rot4')[3:])
         for e in grp:
             pt, a, b, want, ref = e[:5]
             if not g.named_at(want) and pt not in seen:
@@ -69,7 +75,7 @@ def emit(groups, prefix='m', heading=None):
                 meets.append((pt, a, b, want))
                 seen.add(pt)
             name = f'{prefix}{len(LINES) + 1}'
-            LINES[name] = (pt, ref)
+            LINES[name] = (pt, ref, order)
             made.append((name, pt, ref))
         draws = []
         for name, pt, ref in made:
@@ -77,14 +83,14 @@ def emit(groups, prefix='m', heading=None):
                 draws.append(f'Draw a {DIRWORD[ref]} through {pt}.')
             else:
                 draws.append(f'Draw a {new_line(pt, ref)[4:]}.')
-        tail = 'Turn it round O by 90°, three times.' if len(made) == 1 else \
-            'Turn the new lines round O by 90°, three times.'
+        tail = f'Turn it round O {TURN[order]}.' if len(made) == 1 else \
+            f'Turn the new lines round O {TURN[order]}.'
         step(' '.join(sents + draws + [tail]))
         for pt, a, b, want in meets:
             g.meet(pt, a, b, want)
         for name, pt, ref in made:
             g.line_par(name, pt, ref)
-        g.repeat(f'{prefix}r{len(LINES)}', [nm for nm, _, _ in made], 'rot4')
+        g.repeat(f'{prefix}r{len(LINES)}', [nm for nm, _, _ in made], f'rot{order}')
 
 
 def group(plan, size=3):
@@ -94,7 +100,8 @@ def group(plan, size=3):
     n = len(LINES)
     for e in plan:
         uses = {e[1].split('@')[0], e[2].split('@')[0]}
-        if cur and (len(cur) >= size or uses & made):
+        by = e[5] if len(e) > 5 else 'rot4'
+        if cur and (len(cur) >= size or uses & made or by != (cur[0][5] if len(cur[0]) > 5 else 'rot4')):
             out.append(cur)
             cur, made = [], set()
         cur.append(e)
