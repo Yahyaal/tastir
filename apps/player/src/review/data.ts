@@ -2401,6 +2401,196 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'cahier-martin-cross-stars',
+    title:
+      'Stars, crosses and squares from Cahier and Martin (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits in the middle and a cross at every corner and side. Large squares fill the space between them.',
+    story: [
+      'The finished design was read from Brian Wichmann’s CM010 drawing, its corners snapped to exact values. We devised the construction: one circle from K1 fixes the star’s square at G, and every other line comes from G and the cell. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of a building was checked: the source gives no place.',
+      '8 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/cahier-martin-cross-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/cahier-martin-cross-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Cahier and Martin, page 10 (CM010)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/CM010.html',
+      },
+    ],
+  },
+  {
+    id: 'cahier-martin-star-crosses',
+    title:
+      'Small stars, crosses and hexagons from Cahier and Martin (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. The crosses join through the hexagons into a square net, with plain ground in each square.',
+    story: [
+      'The finished design was read from Brian Wichmann’s CM033 drawing, its corners snapped to exact values in thirds of OA. We devised the construction: the line from K2 to A marks a third at F, and every other line comes from F. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of a building was checked: the source gives no place.',
+      '6 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/cahier-martin-star-crosses/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/cahier-martin-star-crosses/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Cahier and Martin, page 33 (CM033)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/CM033.html',
+      },
+    ],
+  },
+  {
+    id: 'sutton-crosses-and-kites',
+    title: 'Stars, hexagons and kites from Daud Sutton (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A large star sits in the middle and a small star at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s DS3 drawing, its corners snapped to exact values. We devised the construction: one circle from K1 fixes the star’s square at G, and every other line comes from G and the cell. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of a building was checked: the source gives no place.',
+      '7 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/sutton-crosses-and-kites/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/sutton-crosses-and-kites/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Daud Sutton, Islamic Design, page 27 (DS3)',
+        url: 'https://tilingsearch.mit.edu/HTML/data184/DS3.html',
+      },
+    ],
+  },
+  {
+    id: 'sicily-panel-stars',
+    title: 'Stars of a wooden panel from medieval Sicily (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. Small and large stars take turns along every row.',
+    story: [
+      'The finished design was read from Brian Wichmann’s BM1 drawing, its corners snapped to exact values. We devised the construction: every line touches a small circle round O, A, C or K1, all of one radius, found by halving the length ON. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The panel itself was not checked: no free photo of it was found.',
+      '9 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/sicily-panel-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/sicily-panel-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: British Museum, wooden panel from Sicily (BM1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data207/BM1.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-museum-interlaced-stars',
+    title:
+      'Interlaced stars of a Nasrid panel in the Alhambra Museum (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits in the middle and at every corner, with a long piece between each two.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P008A drawing, its band centre lines snapped to exact values. We devised the construction: one line from E through M fixes the star, as in the Leones fret, and every other line comes from it. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The panel itself was not checked: no free photo of it was found.',
+      '10 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-museum-interlaced-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-museum-interlaced-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra Museum, Granada (P008A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data159/P008A.html',
+      },
+    ],
+  },
+  {
+    id: 'assisi-basilica-stars',
+    title:
+      'Stars and squares of the Basilica of St Francis, Assisi (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. The stars stand in rows, with a square between four stars and a diamond between two.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P78B drawing, its corners snapped to exact values. We devised the construction: the circle through the cell’s corners gives the star’s long sides, and every other line comes from R. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the basilica was checked.',
+      '6 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/assisi-basilica-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/assisi-basilica-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Basilica of St Francis, Assisi (P78B)',
+        url: 'https://tilingsearch.mit.edu/HTML/data4/P78B.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -3520,7 +3710,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Fifty-one new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Fifty-seven new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -3584,6 +3774,12 @@ export const QUESTIONS: readonly Question[] = [
       'sale-madrasa-stars',
       'isfahan-masjid-ali-crosses',
       'isfahan-masjid-ali-crosses-plain',
+      'cahier-martin-cross-stars',
+      'cahier-martin-star-crosses',
+      'sutton-crosses-and-kites',
+      'sicily-panel-stars',
+      'alhambra-museum-interlaced-stars',
+      'assisi-basilica-stars',
     ],
   },
 ];

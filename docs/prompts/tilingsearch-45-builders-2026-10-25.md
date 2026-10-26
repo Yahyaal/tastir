@@ -49,7 +49,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 9 | A222, IND0703, R241B, A7, F81, VA3 | Central Asia, Iran and India, 123–150 polygons | done, merged: all six; F81 joins the Persian courtyard family |
 | 10 | F80, P060, CL39, F109, CM054A, VA6, W1 | Next smallest, 143–171 polygons | done, merged: five built; F80 and F109 are cmm and need fold-2 support |
 | 11 | P044, IRAN7, IRA1329 (both drawings, data172 and data189), C129A, P067 | Next smallest, 175–201 polygons (P111 is pm, mirror only: skip until fold-2 support) | done, merged: four built (IRA1329 as main and plain variant); P067 = eight-fold-khatam |
-| 12 | CM010, CM033, DS3, BM1, P008A, P78B, P052 | 211–220 polygons; P008A is a Nasrid panel (Granada) | started |
+| 12 | CM010, CM033, DS3, BM1, P008A, P78B, P052 | 211–220 polygons; P008A is a Nasrid panel (Granada) | done, merged: six built; P052 is cmm |
 
 Codex builds the 29 medium tilings (300–600 pieces) on its own branch, `codex/tilingsearch-45`, from [its brief](codex-tilingsearch-45-2026-10-26.md); Claude's builders never take one of those. After batch 8, take the remaining tilings of [the comparison](../patterns/TILINGSEARCH-45.md) by size, smallest first, five to a batch, grouping ones that look alike. Leave the large Moroccan rosette panels (over 900 polygons) until last; each needs a time box of its own.
 
