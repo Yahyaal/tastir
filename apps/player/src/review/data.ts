@@ -2091,6 +2091,162 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'bou-inania-interlaced-stars',
+    title:
+      'Interlaced stars of the Bou Inania madrasa (Fez) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and every corner, and a long star halfway between two centres.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P060 drawing, the centre lines of its bands snapped to exact values. We devised the construction: the star at O is two squares on the circle through G, the same star sits at each corner, and the diamond ABCD with lines at the same distance from A makes the rest. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the madrasa was checked.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bou-inania-interlaced-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bou-inania-interlaced-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bou Inania madrasa, Fez (P060)',
+        url: 'https://tilingsearch.mit.edu/HTML/data11/P060.html',
+      },
+    ],
+  },
+  {
+    id: 'dar-el-bey-crosses',
+    title: 'Crosses and stars of Dar el Bey (Tunis) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A framed cross sits at every centre and a small star at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s CL39 drawing, the centre lines of its bands snapped to exact values. We devised the construction: the small stars at the corners are two squares through U, their sides carried on make the points of the cross at O, and a square frame through F holds the cross. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the building was checked.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/dar-el-bey-crosses/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/dar-el-bey-crosses/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Dar el Bey, Tunis (CL39)',
+        url: 'https://tilingsearch.mit.edu/HTML/data208/CL39.html',
+      },
+    ],
+  },
+  {
+    id: 'cahier-martin-arrow-stars',
+    title:
+      'Stars, arrows and squares from Cahier and Martin (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star with four arrows sits in every large square, and a small star where the bands cross.',
+    story: [
+      'The finished design was read from Brian Wichmann’s CM054A drawing, its corners snapped to exact values. We devised the construction: one line from C through U fixes the large square at R, and every other line comes from R. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of a building was checked: the source gives no place.',
+      '9 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/cahier-martin-arrow-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/cahier-martin-arrow-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Cahier and Martin, page 54 (CM054A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/CM054A.html',
+      },
+    ],
+  },
+  {
+    id: 'khojent-tile-stars',
+    title:
+      'Interlaced star and squares of a tile from Khojent (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A large star sits at every centre, and a grid of small squares between two stars.',
+    story: [
+      'The finished design was read from Brian Wichmann’s VA6 drawing, the centre lines of its bands snapped to exact values. We devised the construction: the line through K1 and R fixes the point S of the star at O, the star is two squares on the circle through S, and line AD fixes the square through Q. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. The tile itself was not checked.',
+      '8 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/khojent-tile-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/khojent-tile-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Tomb of Sheikh Badr al-Din Nuri, Khojent (VA6)',
+        url: 'https://tilingsearch.mit.edu/HTML/data184/VA6.html',
+      },
+    ],
+  },
+  {
+    id: 'nishapur-madrasa-stars',
+    title:
+      'Stars and crosses of the Tepe madrasa, Nishapur (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square cell side by side. A star sits at every centre and a small square at every corner.',
+    story: [
+      'The finished design was read from Brian Wichmann’s W1 drawing, its corners snapped to exact values. We devised the construction: one line from K1 through E fixes P, and every line is drawn through P, S or T. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws white bands over the lines; the tutorial draws the lines. No photo of the bricks was checked.',
+      '7 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/nishapur-madrasa-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/nishapur-madrasa-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Tepe madrasa, Nishapur (W1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data193/W1.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -3210,7 +3366,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'Forty-one new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'Forty-six new patterns from Tiling Search’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -3264,6 +3420,11 @@ export const QUESTIONS: readonly Question[] = [
       'pompeii-stars-and-rhombi',
       'hippo-mosaic-octagons',
       'kritliya-house-stars',
+      'bou-inania-interlaced-stars',
+      'dar-el-bey-crosses',
+      'cahier-martin-arrow-stars',
+      'khojent-tile-stars',
+      'nishapur-madrasa-stars',
     ],
   },
 ];

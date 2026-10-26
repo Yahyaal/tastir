@@ -47,7 +47,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 7 | P269C3, P201, MAR1, LEON10, C103 | Small Moroccan designs | done, merged: all five; LEON10 is a variant of the Arrayanes squares |
 | 8 | GREEN1, HAMA, KHC, P35, CM036, F34, CM006A, ROMAN11 | Small designs from Turkey, Syria, Egypt, books and Roman mosaics | done, merged: six built; HAMA and CM006A need fold-2 support |
 | 9 | A222, IND0703, R241B, A7, F81, VA3 | Central Asia, Iran and India, 123–150 polygons | done, merged: all six; F81 joins the Persian courtyard family |
-| 10 | F80, P060, CL39, F109, CM054A, VA6, W1 | Next smallest, 143–171 polygons | started |
+| 10 | F80, P060, CL39, F109, CM054A, VA6, W1 | Next smallest, 143–171 polygons | done, merged: five built; F80 and F109 are cmm and need fold-2 support |
 
 After batch 8, take the remaining tilings of [the comparison](../patterns/TILINGSEARCH-45.md) by size, smallest first, five to a batch, grouping ones that look alike. Leave the large Moroccan rosette panels (over 900 polygons) until last; each needs a time box of its own.
 
