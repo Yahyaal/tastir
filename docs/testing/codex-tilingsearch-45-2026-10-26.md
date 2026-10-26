@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929, ALH1, NC5 and MUL128K built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is in progress, with SPA2929, ALH1, NC5, MUL128K and PG229 built. The rest of Group B and Group C are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -178,3 +178,13 @@ Independent source-polygon shoelace areas are twelve 10 − 8H, six; large_star 
 I inspected the wall beside the GIF and the full drawing overlay at `docs/research/tilingsearch-45/MUL128K/overlay.png`. All red lines follow band centres. The exact data175/MUL128K entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Edith Müller's 1944 publication, illustration 36, and Sala de las Dos Hermanas. The tutorial records its centre-line representation and illustrative palette. Helper inspection replaced the partly hidden lines through R with direct wording for the retained horizontal, its quarter-turn and the diagonal through R3.
 
 The catalog, six targeted golden checks, all 510 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## PG229 — built as `seville-vanda-star-rosettes`, Attarine variation
+
+This is the third member of the Attarine family, alongside MOR0323 and P77. After a 45° frame turn its primitive repeat has exactly the same linework, proportions, nine piece types and counts. It shares all fourteen construction steps. The source's slate-blue long hexagons and petals, black seven-sided pieces and arrows, ochre stars and white remaining pieces distinguish it. The family for Claude to register now contains `attarine-star-rosettes`, `ben-youssef-star-rosettes` and `seville-vanda-star-rosettes`.
+
+O is at PDF (297.5, 373.414375). The source frame unit is 149.25 pt; the turn makes tutorial OA = 149.25√2 pt. Corners snap to a + bH, H = √2/2, within 0.000054 OA. Adjacent centres on the PDF axes have different rosettes; the primitive cell lies on the diagonals. Independent shoelace areas in normalized units are long_hexagon 51 − 72H, six; star 232 − 328H, six; petal and eight 34 − 48H, eight each; seven −31/2 + 22H, sixteen; arrow −65 + 92H, four; rhombus −24 + 34H, eight; triangle 17/2 − 12H, twelve; and kite −41 + 58H, forty. Their counted sum is 4. The engine independently confirms every type and count without slivers.
+
+I inspected the wall beside the GIF and the full drawing overlay at `docs/research/tilingsearch-45/PG229/overlay.png`. Every red edge agrees. I also inspected `source-colour-wall.png`, rendered from fills returned by the actual player placement function, against the PDF. Source PDF fills were grouped by shape before setting those rules; all actual player fills match. The exact data8/PG229 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain V&A tile 184:1853, Seville, sixteenth century, cuenca, record O159790; Abas and Salman page 229; and Wade MOR 0322 at the Attarine madrasa. No museum record or photograph was independently checked. The tutorial records the frame turn and source filling.
+
+The catalog, six targeted golden checks, all 515 player text checks and all 34 schema tests passed under the memory cap. The actual player placement-colour check also passed. No shared application or engine code changed.
