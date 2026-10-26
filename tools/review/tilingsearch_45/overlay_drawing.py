@@ -2,13 +2,16 @@
 """Draws a tutorial's ink, repeated over the page, in red on a render of
 Wichmann's PDF, to check the reading by eye.
 
-Usage: overlay_drawing.py <dump.json> <page.png> <dpi> <ox> <oy> <period> <out.png> [rot45]
+Usage: overlay_drawing.py <dump.json> <page.png> <dpi> <ox> <oy> <period> <out.png> [rot45 | angle=<degrees>]
   (ox, oy): O in PDF points; period: twice OA in PDF points (the square
   cell's side). The ink repeats by the dump's cell vectors.
   rot45: the tutorial's frame is the drawing's turned by 45° (x' = (x + y)/2,
   y' = (y - x)/2, as in gen_leones_door_stars.py); period is then twice the
-  drawing's unit."""
+  drawing's unit.
+  angle=<degrees>: a pure frame turn with no extra scaling; period is twice
+  the actual tutorial OA in PDF points. Existing rot45 behaviour is unchanged."""
 import json
+import math
 import sys
 
 from PIL import Image, ImageDraw
@@ -23,6 +26,10 @@ unit = per / 2
 W, H = im.size
 rot = len(sys.argv) > 8 and sys.argv[8] == 'rot45'
 tf = (lambda x, y: (x - y, x + y)) if rot else (lambda x, y: (x, y))
+if len(sys.argv) > 8 and sys.argv[8].startswith('angle='):
+    theta = math.radians(float(sys.argv[8].split('=', 1)[1]))
+    ct, st = math.cos(theta), math.sin(theta)
+    tf = lambda x, y: (ct*x-st*y, st*x+ct*y)
 cu, cv = d['cell']['u'], d['cell']['v']
 nx = int(W / k / per) + 2
 ny = int(H / k / per) + 2
