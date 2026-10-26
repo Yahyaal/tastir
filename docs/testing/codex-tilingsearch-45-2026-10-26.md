@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058, BON61, P144 and L34A are built, and IRAN16 is skipped for unsupported symmetry. The remaining four entries are pending; pending entries are not counted as skips.
+Group A is complete: all thirteen tutorials are built, including one variation. Group B is complete with all seven tutorials built. Group C is in progress: P058, BON61, P144, L34A and LEON7 are built, and IRAN16 is skipped for unsupported symmetry. The remaining three entries are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -252,3 +252,13 @@ Independent source-polygon shoelace areas are twenty_six 13, four; twenty_one 25
 I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/L34A/overlay.png`. Every red edge agrees, including the diagonal corners of the outer bands. The exact data1/L34A entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. The manuscript page was not independently checked. The finished geometry is retained and the palette is explicitly illustrative. No existing tutorial has this stepped linework. Helper inspection supplies wording that omits the hidden AC diagonal from step two.
 
 The catalog, six targeted golden checks, all 545 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## LEON7 — built as `leon-mosaic-star-rosettes`, Attarine variation
+
+This is the fourth Attarine-family filling. All fourteen construction steps and all ink paths are shared with MOR0323. The family for Claude to register is now `attarine-star-rosettes`, `ben-youssef-star-rosettes`, `seville-vanda-star-rosettes` and `leon-mosaic-star-rosettes`. The source has two black and four red stars per cell, two black and four ochre long hexagons, dark-blue petals, brighter-blue seven-sided pieces and white remaining pieces. Its white surrounds remain divided into individual tiles, as Wichmann explicitly notes.
+
+OA is half the source repeat, 253.3 pt, with O at PDF (297.5, 373.895625). Corners fit a + bH, H = √2/2, within 0.000103 OA. Independent source-polygon shoelace areas are long_hexagon 51 − 72H, six; star 232 − 328H, six; petal and eight 34 − 48H, eight each; seven −31/2 + 22H, sixteen; arrow −65 + 92H, four; rhombus −24 + 34H, eight; triangle 17/2 − 12H, twelve; and kite −41 + 58H, forty. Their counted sum is exactly 4. The engine independently confirms the nine types and counts without slivers.
+
+I inspected the wall beside the GIF, the full drawing overlay at `docs/research/tilingsearch-45/LEON7/overlay.png`, and `source-colour-wall.png` rendered from actual player placement fills. All red edges agree and every actual placement fill matches its source polygon. The black-star indices are 0 and 4; the black long-hexagon indices are 0 and 3. Their source-centre matching residual is at most 0.000112 OA. These choices are stored in the generator, rather than relying on palette roles alone.
+
+The exact data194/LEON7 entry is absent from `wade-paired.json`, so no photo overlay is required or claimed. Credits retain Alberto Leon's personal communication, Mosaic in Islamic Design. The source gives no building or country; the tutorial adds none. The repeated linework is unchanged and the source filling is retained. The catalog, six targeted golden checks, all 550 player text checks and all 34 schema tests passed under the memory cap. The actual player source-colour check also passed. No shared application or engine code changed.
