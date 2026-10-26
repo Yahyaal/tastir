@@ -26,7 +26,7 @@ R = (math.sqrt(2)-1)/2
 ORIGIN, PERIOD, BAND = (299.78, 373.28), 466.28, 10
 
 
-def build():
+def build_star():
     cm.cell_square(
         'Draw a vertical line through O. The circle crosses the two lines at A, B, C and D. '
         'Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. '
@@ -61,6 +61,9 @@ def build():
     g.line_par('td', 'T', 'ac')
     g.repeat('tdp', ['td'], 'rot4')
 
+
+def build():
+    build_star()
     step('Draw a line through M parallel to line AC. Turn it round O by 90°, three times.')
     g.line_par('md', 'M', 'ac')
     g.repeat('mdp', ['md'], 'rot4')
