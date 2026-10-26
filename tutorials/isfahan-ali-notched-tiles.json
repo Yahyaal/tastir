@@ -1,0 +1,212 @@
+{
+  "format": 0,
+  "id": "isfahan-ali-notched-tiles",
+  "title": "Notched tiles of the Masjid-e Ali, Isfahan",
+  "short": "Masjid-e Ali notched tiles",
+  "subtitle": "Masjid-e Ali, Isfahan",
+  "fold": 2,
+  "style": "Persian",
+  "level": "intermediate",
+  "given": {
+    "O": "The centre of a small square, at a half-turn point.",
+    "A": "The right corner of that square."
+  },
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s IRA1330 drawing and its corners snapped to exact values. OA is the half-diagonal of a small square. Two compass transfers of the unit-square diagonal give the rectangular repeat. The drawing gives no steps; we devised the construction.",
+    "changes": "The plain tile boundaries are retained. The palette is illustrative. No building photograph was checked. The compass steps, their order and the named points are ours.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data189/IRA1330: Masjid-e Ali, Isfahan",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data189/IRA1330.html",
+      "note": "Read from his finished drawing, not construction instructions. His page cites David Wade’s IRA 1330 photograph of the Masjid-e Ali, Isfahan, Iran (1552 AD, 959 AH)."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. They cross at K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "Draw a straight line through A and C. Turn it round O by 90°, three times. Draw the line through O at 90° to the line from O to K1.",
+      "create": {
+        "ac": {"line": {"through": ["A", "C"]}},
+        "diamond": {"repeat": {"of": ["ac"], "by": "rot4"}},
+        "d135": {"line": {"through": "O", "perpendicularTo": "d45"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "The line from O to K1 crosses the circle at F. Draw a vertical line through F. It crosses the horizontal line through O at M.",
+      "create": {
+        "F": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "fv": {"line": {"through": "F", "parallelTo": "v"}},
+        "M": {"point": {"meet": ["fv", "h"]}}
+      },
+      "highlight": ["F", "M"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre O through K1. Draw a circle with centre A, with the same opening. It crosses the horizontal line through O at W, right of A.",
+      "create": {
+        "ck": {"circle": {"centre": "O", "through": "K1"}},
+        "cw": {"circle": {"centre": "A", "radiusOf": "ck"}},
+        "W": {"point": {"meet": ["cw", "h"], "pick": {"angle": 0.0}}}
+      },
+      "highlight": ["K1", "A", "W"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a circle with centre W, with the same opening. It crosses the horizontal line through O at Z, right of W. Draw a circle with centre O through Z. It crosses the vertical line through O at V, above O.",
+      "create": {
+        "cz": {"circle": {"centre": "W", "radiusOf": "ck"}},
+        "Z": {"point": {"meet": ["cz", "h"], "pick": {"farthest": "O"}}},
+        "coz": {"circle": {"centre": "O", "through": "Z"}},
+        "V": {"point": {"meet": ["coz", "v"], "pick": {"angle": 90.0}}}
+      },
+      "highlight": ["W", "Z", "V"],
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "Draw a vertical line through W. Draw a horizontal line through V. Turn both lines round O by 180°. They cross at N1, N2, N3 and N4.",
+      "create": {
+        "sideX": {"line": {"through": "W", "parallelTo": "v"}},
+        "sideY": {"line": {"through": "V", "parallelTo": "h"}},
+        "frame": {"repeat": {"of": ["sideX", "sideY"], "by": "rot2"}},
+        "N1": {"point": {"meet": ["sideX", "sideY"]}},
+        "N2": {"point": {"meet": ["sideX@1", "sideY"]}},
+        "N3": {"point": {"meet": ["sideX@1", "sideY@1"]}},
+        "N4": {"point": {"meet": ["sideX", "sideY@1"]}}
+      },
+      "highlight": ["W", "V"],
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Draw a circle with centre A and opening OM. It crosses the horizontal line through O at R, right of A. Draw a vertical line through R. Turn it round O by 180°.",
+      "create": {
+        "cr": {"circle": {"centre": "A", "radiusFrom": ["O", "M"]}},
+        "R": {"point": {"meet": ["cr", "h"], "pick": {"farthest": "O"}}},
+        "rx": {"line": {"through": "R", "parallelTo": "v"}},
+        "rxPair": {"repeat": {"of": ["rx"], "by": "rot2"}}
+      },
+      "highlight": ["A", "M", "R"],
+      "animate": "compass"
+    },
+    {
+      "id": 9,
+      "text": "Draw a circle with centre V and opening OM. It crosses the vertical line through O at S, below V. Draw a horizontal line through S. Turn it round O by 180°.",
+      "create": {
+        "cs": {"circle": {"centre": "V", "radiusFrom": ["O", "M"]}},
+        "S": {"point": {"meet": ["cs", "v"], "pick": {"nearest": "O"}}},
+        "sy": {"line": {"through": "S", "parallelTo": "h"}},
+        "syPair": {"repeat": {"of": ["sy"], "by": "rot2"}}
+      },
+      "highlight": ["V", "M", "S"],
+      "animate": "compass"
+    },
+    {
+      "id": 10,
+      "text": "Draw a circle with centre Z and opening OA. It crosses the horizontal line through O at J, right of Z. Draw a line through each of Z and J at 90° to the line from O to K1.",
+      "create": {
+        "cj": {"circle": {"centre": "Z", "radiusFrom": ["O", "A"]}},
+        "J": {"point": {"meet": ["cj", "h"], "pick": {"farthest": "O"}}},
+        "zd": {"line": {"through": "Z", "perpendicularTo": "d45"}},
+        "jd": {"line": {"through": "J", "perpendicularTo": "d45"}}
+      },
+      "highlight": ["Z", "J", "K1"],
+      "animate": "compass"
+    },
+    {
+      "id": 11,
+      "text": "Turn both lines through Z and J round O by 90°, three times.",
+      "create": {"diagonals": {"repeat": {"of": ["zd", "jd"], "by": "rot4"}}},
+      "highlight": ["Z", "J"],
+      "animate": "ruler"
+    },
+    {
+      "id": 12,
+      "text": "Join N1, N2, N3 and N4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["N1", "N2", "N3", "N4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange.",
+    "paths": [
+      {"along": "d45", "from": "sideX@1", "to": "rx@1"},
+      {"along": "d45", "from": "rx", "to": "sideX"},
+      {"along": "ac", "from": "rx", "to": "v"},
+      {"along": "ac@1", "from": "v", "to": "rx@1"},
+      {"along": "ac@2", "from": "rx@1", "to": "v"},
+      {"along": "ac@3", "from": "v", "to": "rx"},
+      {"along": "d135", "from": "sideX", "to": "rx"},
+      {"along": "d135", "from": "rx@1", "to": "sideX@1"},
+      {"along": "rx", "from": "d135", "to": "ac"},
+      {"along": "rx", "from": "ac@3", "to": "d45"},
+      {"along": "rx@1", "from": "d135", "to": "ac@2"},
+      {"along": "rx@1", "from": "ac@1", "to": "d45"},
+      {"along": "sy", "from": "rx@1", "to": "zd@1"},
+      {"along": "sy", "from": "fv", "to": "rx"},
+      {"along": "sy@1", "from": "rx", "to": "fv"},
+      {"along": "sy@1", "from": "zd@2", "to": "rx@1"},
+      {"along": "zd", "from": "fv", "to": "v"},
+      {"along": "jd", "from": "d45", "to": "rx"},
+      {"along": "zd@1", "from": "v", "to": "sy"},
+      {"along": "zd@2", "from": "sy@1", "to": "v"},
+      {"along": "zd@3", "from": "v", "to": "fv"},
+      {"along": "jd@1", "from": "rx@1", "to": "d135"},
+      {"along": "jd@2", "from": "d45", "to": "rx@1"},
+      {"along": "jd@3", "from": "rx", "to": "d135"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Timurid tile",
+    "look": "tiles",
+    "colors": {"notched": "a", "twelve": "ground", "square": "b"},
+    "text": "Put copies of the rectangular tile side by side."
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "notched", "vertices": 14, "area": 10.65685, "perCell": 2},
+      {"name": "twelve", "vertices": 12, "area": 6.82843, "perCell": 2},
+      {"name": "square", "vertices": 4, "area": 2.0, "perCell": 1}
+    ]
+  }
+}
