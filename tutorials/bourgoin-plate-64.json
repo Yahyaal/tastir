@@ -1,0 +1,196 @@
+{
+  "format": 0,
+  "id": "bourgoin-plate-64",
+  "title": "Stars and octagons of Bourgoin’s plate 64",
+  "short": "Bourgoin plate 64",
+  "subtitle": "Jules Bourgoin, plate 64",
+  "fold": 4,
+  "star": 8,
+  "style": "Seljuk",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P064 drawing, its corners snapped to exact values. We devised the construction. The star at O is the classic star of two squares, and every other line runs through a crossing of its lines carried on (V and P), as in the Damghan minaret. The large octagons sit at the corners of a square tile turned by 22.5°. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of a real panel was checked.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data11/P064: Bourgoin, Plate 64",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data11/P064.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from plate 64 of Jules Bourgoin, Arabic Geometrical Pattern and Design (1879; Dover reprint), and lists it on carved stucco from Rey (twelfth century, Tehran Museum), at the Sari Han on the Aksaray to Kayseri road (David Wade’s photo TUR 0626) and under an inscription in the al-Azhar mosque, Cairo. The construction is ours."
+    }
+  ],
+  "given": {"O": "The centre of an eight-pointed star.", "A": "A point of the star."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. Draw the line through O that halves the angle between the two lines. Draw the line through O at 90° to it. The four lines cross the circle at S1 to S8.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "d45": {"line": {"through": "O", "bisects": ["A", "O", "C"]}},
+        "d135": {"line": {"through": "O", "perpendicularTo": "d45"}},
+        "S1": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
+        "S2": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "S3": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "S4": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
+        "S5": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "S6": {"point": {"meet": ["c", "d45"], "pick": {"angle": 225.0}}},
+        "S7": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "S8": {"point": {"meet": ["c", "d135"], "pick": {"angle": 315.0}}}
+      },
+      "highlight": ["c"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw the star at O as two squares.",
+      "highlight": ["c"],
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a straight line through S1 and S3, S3 and S5, S5 and S7, and S7 and S1. Draw each line long.",
+          "create": {
+            "q01": {"line": {"through": ["S1", "S3"]}},
+            "q02": {"line": {"through": ["S3", "S5"]}},
+            "q03": {"line": {"through": ["S5", "S7"]}},
+            "q04": {"line": {"through": ["S7", "S1"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through S2 and S4, S4 and S6, S6 and S8, and S8 and S2. Draw each line long.",
+          "create": {
+            "q11": {"line": {"through": ["S2", "S4"]}},
+            "q12": {"line": {"through": ["S4", "S6"]}},
+            "q13": {"line": {"through": ["S6", "S8"]}},
+            "q14": {"line": {"through": ["S8", "S2"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "text": "The line through S1 and S3 crosses the line through S2 and S4 at V. Draw a vertical line through V. Draw a line through V parallel to the line through O and S2. The line through S7 and S1 crosses the line through S2 and S4, carried on, at P. Draw a vertical line through P. Draw a line through P parallel to the line through O and S4.",
+      "create": {
+        "V": {"point": {"meet": ["q01", "q11"]}},
+        "vv": {"line": {"through": "V", "parallelTo": "v"}},
+        "vd": {"line": {"through": "V", "parallelTo": "d45"}},
+        "P": {"point": {"meet": ["q04", "q11"]}},
+        "pv": {"line": {"through": "P", "parallelTo": "v"}},
+        "pd": {"line": {"through": "P", "parallelTo": "d135"}}
+      },
+      "highlight": ["V", "P"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Turn the four lines of the last step round O by 90°, three times.",
+      "create": {"vr": {"repeat": {"of": ["vv", "vd", "pv", "pd"], "by": "rot4"}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw a vertical line through A. Draw the line through O that halves the angle at O between S2 and S3. The two lines cross at K1. Draw a line through O at 90° to the line through O and K1. Draw a circle with centre O through K1. It crosses the two lines through O at K2, K3 and K4.",
+      "create": {
+        "ax": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "t": {"line": {"through": "O", "bisects": ["S2", "O", "S3"]}},
+        "K1": {"point": {"meet": ["ax", "t"]}},
+        "tp": {"line": {"through": "O", "perpendicularTo": "t"}},
+        "ck": {"circle": {"centre": "O", "through": "K1"}},
+        "K2": {"point": {"meet": ["ck", "tp"], "pick": {"angle": 157.5}}},
+        "K3": {"point": {"meet": ["ck", "t"], "pick": {"angle": 247.5}}},
+        "K4": {"point": {"meet": ["ck", "tp"], "pick": {"angle": 337.5}}}
+      },
+      "highlight": ["K1"],
+      "animate": "compass",
+      "textWithoutHelpers": "Mark K1, a corner of the tile, above A. Draw a circle with centre O through K1. Mark K2, K3 and K4 on it, each a quarter turn on from the last."
+    },
+    {
+      "id": 7,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O and the lines picked out in orange. They close the small octagons round the star, the long pieces and the large octagons.",
+    "paths": [
+      {"along": "q01", "from": "vv@3", "to": "q14"},
+      {"along": "q01", "from": "q11", "to": "vv@2"},
+      {"along": "q02", "from": "vv", "to": "q11"},
+      {"along": "q02", "from": "q12", "to": "vv@3"},
+      {"along": "q03", "from": "vv@1", "to": "q12"},
+      {"along": "q03", "from": "q13", "to": "vv"},
+      {"along": "q04", "from": "vv@2", "to": "q13"},
+      {"along": "q04", "from": "q14", "to": "vv@1"},
+      {"along": "q11", "from": "vd@2", "to": "q01"},
+      {"along": "q11", "from": "q02", "to": "vd@1"},
+      {"along": "q12", "from": "vd@3", "to": "q02"},
+      {"along": "q12", "from": "q03", "to": "vd@2"},
+      {"along": "q13", "from": "vd", "to": "q03"},
+      {"along": "q13", "from": "q04", "to": "vd@3"},
+      {"along": "q14", "from": "vd@1", "to": "q04"},
+      {"along": "q14", "from": "q01", "to": "vd"},
+      {"along": "vv", "from": "pv@3", "to": "q03"},
+      {"along": "vv", "from": "q02", "to": "pv@1"},
+      {"along": "vd", "from": "pd@2", "to": "q13"},
+      {"along": "vd", "from": "q14", "to": "pd"},
+      {"along": "pv", "from": "vd@3", "to": "vv@3"},
+      {"along": "pv", "from": "vv@1", "to": "q04"},
+      {"along": "pd", "from": "q04", "to": "vd@2"},
+      {"along": "pd", "from": "vd", "to": "vv"},
+      {"along": "vv@1", "from": "pv", "to": "q04"},
+      {"along": "vv@1", "from": "q03", "to": "pv@2"},
+      {"along": "vv@2", "from": "pv@1", "to": "q01"},
+      {"along": "vv@2", "from": "q04", "to": "pv@3"},
+      {"along": "vv@3", "from": "pv@2", "to": "q02"},
+      {"along": "vv@3", "from": "q01", "to": "pv"},
+      {"along": "vd@1", "from": "pd@3", "to": "q14"},
+      {"along": "vd@1", "from": "q11", "to": "pd@1"},
+      {"along": "vd@2", "from": "pd", "to": "q11"},
+      {"along": "vd@2", "from": "q12", "to": "pd@2"},
+      {"along": "vd@3", "from": "pd@1", "to": "q12"},
+      {"along": "vd@3", "from": "q13", "to": "pd@3"},
+      {"along": "pv@1", "from": "vd", "to": "vv"},
+      {"along": "pv@1", "from": "vv@2", "to": "q01"},
+      {"along": "pv@2", "from": "vd@1", "to": "vv@1"},
+      {"along": "pv@2", "from": "vv@3", "to": "q02"},
+      {"along": "pv@3", "from": "vd@2", "to": "vv@2"},
+      {"along": "pv@3", "from": "vv", "to": "q03"},
+      {"along": "pd@1", "from": "q01", "to": "vd@3"},
+      {"along": "pd@1", "from": "vd@1", "to": "vv@1"},
+      {"along": "pd@2", "from": "q02", "to": "vd"},
+      {"along": "pd@2", "from": "vd@2", "to": "vv@2"},
+      {"along": "pd@3", "from": "q03", "to": "vd@1"},
+      {"along": "pd@3", "from": "vd@3", "to": "vv@3"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the tilted square tile side by side. A star sits at every centre and a large octagon at every corner.",
+    "palette": "Timurid tile",
+    "look": "tiles",
+    "colors": {"star": "ground", "octagon": "a", "long_piece": "ground", "small_octagon": "a"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 2.34315, "perCell": 1},
+      {"name": "octagon", "vertices": 8, "area": 1.65685, "perCell": 1},
+      {"name": "long_piece", "vertices": 14, "area": 1.24264, "perCell": 4},
+      {"name": "small_octagon", "vertices": 8, "area": 0.58579, "perCell": 8}
+    ]
+  }
+}

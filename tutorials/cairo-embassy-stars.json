@@ -1,0 +1,232 @@
+{
+  "format": 0,
+  "id": "cairo-embassy-stars",
+  "title": "Stars and crosses of the French Embassy ceiling, Cairo",
+  "short": "Cairo embassy stars",
+  "subtitle": "French Embassy, Cairo",
+  "fold": 4,
+  "star": 8,
+  "style": "Mamluk",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s FE1 drawing, its corners snapped to exact values. We devised the construction. It is the eight-fold star and cross: stars of two squares stand round O, every side carried on, and the lines through W add the next stars. Round O and round the tile’s corners the lines between the cross and its four stars are left out, so they make one large piece. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. No photo of the ceiling was checked.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data208/FE1: French Embassy, Cairo",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data208/FE1.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from Mercedes Volait, Maisons de France au Caire (Cairo, 2012), page 55, plate 38 (a ceiling of the French Embassy, Cairo). The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of a large piece made of a cross and four stars.",
+    "A": "A point of the star at E, next to O."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a vertical line through O.",
+      "create": {
+        "h": {"line": {"through": ["O", "A"]}},
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 2,
+      "text": "Draw a circle with centre O through A. It crosses the vertical line at C, above O. Draw a vertical line through A. Draw a horizontal line through C. They cross at E.",
+      "create": {
+        "c": {"circle": {"centre": "O", "through": "A"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "ax": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "cy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "E": {"point": {"meet": ["ax", "cy"]}}
+      },
+      "highlight": ["A", "C", "E"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre E through A. It passes through C. Draw a straight line through O and E. It crosses the circle at T1 and T2. Draw a line through E at 90° to line OE. It crosses the circle at T3 and T4.",
+      "create": {
+        "ce": {"circle": {"centre": "E", "through": "A"}},
+        "oe": {"line": {"through": ["O", "E"]}},
+        "T1": {"point": {"meet": ["ce", "oe"], "pick": {"farthest": "O"}}},
+        "T2": {"point": {"meet": ["ce", "oe"], "pick": {"nearest": "O"}}},
+        "ep": {"line": {"through": "E", "perpendicularTo": "oe"}},
+        "T3": {"point": {"meet": ["ce", "ep"], "pick": {"angle": 80.264}}},
+        "T4": {"point": {"meet": ["ce", "ep"], "pick": {"angle": 9.736}}},
+        "U1": {"point": {"meet": ["ce", "ax"], "pick": {"angle": 63.435}}},
+        "U2": {"point": {"meet": ["ce", "cy"], "pick": {"angle": 26.565}}}
+      },
+      "highlight": ["E"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a straight line through A and C. Draw a straight line through U1 and U2. U1 and U2 are where the circle crosses the vertical line through A and the horizontal line through C. Draw a vertical line through each of T1 and T2.",
+      "create": {
+        "s1": {"line": {"through": ["A", "C"]}},
+        "s3": {"line": {"through": ["U1", "U2"]}},
+        "t1v": {"line": {"through": "T1", "parallelTo": "v"}},
+        "t2v": {"line": {"through": "T2", "parallelTo": "v"}}
+      },
+      "highlight": ["U1", "U2", "T1", "T2"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Turn the four lines of the last step round O by 90°, three times. They finish the star at E and make three more stars round O.",
+      "create": {"sr": {"repeat": {"of": ["s1", "s3", "t1v", "t2v"], "by": "rot4"}}},
+      "highlight": ["ce"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "The line through E at 90° to line OE crosses the vertical line through T2, turned, at W. Draw a horizontal line through W. Turn it round O by 90°, three times.",
+      "create": {
+        "W": {"point": {"meet": ["ep", "t2v@2"]}},
+        "wh": {"line": {"through": "W", "parallelTo": "h"}},
+        "wr": {"repeat": {"of": ["wh"], "by": "rot4"}}
+      },
+      "highlight": ["W"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Draw a circle with centre E through O. It crosses line OE again at G. Draw a circle with centre G through O. It crosses the horizontal line at K1 and the vertical line at K2. Draw a circle with centre O through K1. It crosses the two lines again at K3 and K4.",
+      "create": {
+        "co": {"circle": {"centre": "E", "through": "O"}},
+        "G": {"point": {"meet": ["co", "oe"], "pick": {"farthest": "O"}}},
+        "cg": {"circle": {"centre": "G", "through": "O"}},
+        "K1": {"point": {"meet": ["cg", "h"], "pick": {"farthest": "O"}}},
+        "K2": {"point": {"meet": ["cg", "v"], "pick": {"farthest": "O"}}},
+        "ck": {"circle": {"centre": "O", "through": "K1"}},
+        "K3": {"point": {"meet": ["ck", "h"], "pick": {"angle": 180.0}}},
+        "K4": {"point": {"meet": ["ck", "v"], "pick": {"angle": 270.0}}}
+      },
+      "highlight": ["G", "K1", "K2"],
+      "animate": "compass"
+    },
+    {
+      "id": 8,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange: the sides of the stars and crosses. Leave out the lines between O and the four stars round it, and the same at each corner.",
+    "paths": [
+      {"along": "s1", "from": "wh@3", "to": "t1v"},
+      {"along": "s1", "from": "t2v@3", "to": "h"},
+      {"along": "s1", "from": "v", "to": "t2v@2"},
+      {"along": "s1", "from": "t1v@1", "to": "wh"},
+      {"along": "s3", "from": "t2v@2", "to": "t2v"},
+      {"along": "s3", "from": "wh", "to": "t1v@1"},
+      {"along": "s3", "from": "t1v", "to": "wh@3"},
+      {"along": "s3", "from": "t2v@1", "to": "t2v@3"},
+      {"along": "t1v", "from": "t1v@3", "to": "s3@3"},
+      {"along": "t1v", "from": "s1", "to": "t2v@3"},
+      {"along": "t1v", "from": "ep", "to": "s1@3"},
+      {"along": "t1v", "from": "s3", "to": "oe"},
+      {"along": "t2v", "from": {"cross": "tile", "pick": {"angle": 274.5}}, "to": "s3@2"},
+      {"along": "t2v", "from": "s3@3", "to": "wh@2"},
+      {"along": "t2v", "from": "t1v@3", "to": "s1@2"},
+      {"along": "t2v", "from": "s1@1", "to": "ep"},
+      {"along": "t2v", "from": "wh", "to": "s3"},
+      {"along": "t2v", "from": "s3@1", "to": {"cross": "tile", "pick": {"angle": 85.5}}},
+      {"along": "s1@1", "from": "wh", "to": "t1v@1"},
+      {"along": "s1@1", "from": "t2v", "to": "v"},
+      {"along": "s1@1", "from": "h", "to": "t2v@3"},
+      {"along": "s1@1", "from": "t1v@2", "to": "wh@1"},
+      {"along": "s1@2", "from": "wh@1", "to": "t1v@2"},
+      {"along": "s1@2", "from": "t2v@1", "to": "h"},
+      {"along": "s1@2", "from": "v", "to": "t2v"},
+      {"along": "s1@2", "from": "t1v@3", "to": "wh@2"},
+      {"along": "s1@3", "from": "wh@2", "to": "t1v@3"},
+      {"along": "s1@3", "from": "t2v@2", "to": "v"},
+      {"along": "s1@3", "from": "h", "to": "t2v@1"},
+      {"along": "s1@3", "from": "t1v", "to": "wh@3"},
+      {"along": "s3@1", "from": "t2v@3", "to": "t2v@1"},
+      {"along": "s3@1", "from": "wh@1", "to": "t1v@2"},
+      {"along": "s3@1", "from": "t1v@1", "to": "wh"},
+      {"along": "s3@1", "from": "t2v@2", "to": "t2v"},
+      {"along": "s3@2", "from": "t2v", "to": "t2v@2"},
+      {"along": "s3@2", "from": "wh@2", "to": "t1v@3"},
+      {"along": "s3@2", "from": "t1v@2", "to": "wh@1"},
+      {"along": "s3@2", "from": "t2v@3", "to": "t2v@1"},
+      {"along": "s3@3", "from": "t2v@1", "to": "t2v@3"},
+      {"along": "s3@3", "from": "wh@3", "to": "t1v"},
+      {"along": "s3@3", "from": "t1v@3", "to": "wh@2"},
+      {"along": "s3@3", "from": "t2v", "to": "t2v@2"},
+      {"along": "t1v@1", "from": "oe", "to": "s3"},
+      {"along": "t1v@1", "from": "s1@1", "to": "ep"},
+      {"along": "t1v@1", "from": "t2v@2", "to": "s1"},
+      {"along": "t1v@1", "from": "s3@1", "to": "t1v@2"},
+      {"along": "t1v@2", "from": "t1v@1", "to": "s3@1"},
+      {"along": "t1v@2", "from": "s1@2", "to": "t2v@1"},
+      {"along": "t1v@2", "from": "t2v@3", "to": "s1@1"},
+      {"along": "t1v@2", "from": "s3@2", "to": "oe"},
+      {"along": "t1v@3", "from": "oe", "to": "s3@2"},
+      {"along": "t1v@3", "from": "s1@3", "to": "t2v@2"},
+      {"along": "t1v@3", "from": "t2v", "to": "s1@2"},
+      {"along": "t1v@3", "from": "s3@3", "to": "t1v"},
+      {"along": "t2v@1", "from": {"cross": "tile", "pick": {"angle": 4.5}}, "to": "s3@3"},
+      {"along": "t2v@1", "from": "s3", "to": "wh@3"},
+      {"along": "t2v@1", "from": "ep", "to": "s1@3"},
+      {"along": "t2v@1", "from": "s1@2", "to": "t1v@2"},
+      {"along": "t2v@1", "from": "wh@1", "to": "s3@1"},
+      {"along": "t2v@1", "from": "s3@2", "to": {"cross": "tile", "pick": {"angle": 175.5}}},
+      {"along": "t2v@2", "from": {"cross": "tile", "pick": {"angle": 94.5}}, "to": "s3"},
+      {"along": "t2v@2", "from": "s3@1", "to": "ep"},
+      {"along": "t2v@2", "from": "t1v@1", "to": "s1"},
+      {"along": "t2v@2", "from": "s1@3", "to": "t1v@3"},
+      {"along": "t2v@2", "from": "wh@2", "to": "s3@2"},
+      {"along": "t2v@2", "from": "s3@3", "to": {"cross": "tile", "pick": {"angle": 265.5}}},
+      {"along": "t2v@3", "from": {"cross": "tile", "pick": {"angle": 184.5}}, "to": "s3@1"},
+      {"along": "t2v@3", "from": "s3@2", "to": "wh@1"},
+      {"along": "t2v@3", "from": "t1v@2", "to": "s1@1"},
+      {"along": "t2v@3", "from": "s1", "to": "t1v"},
+      {"along": "t2v@3", "from": "ep", "to": "s3@3"},
+      {"along": "t2v@3", "from": "s3", "to": {"cross": "tile", "pick": {"angle": 355.5}}},
+      {"along": "wh", "from": "t1v@2", "to": "s1"},
+      {"along": "wh", "from": "s3@1", "to": "ep"},
+      {"along": "wh", "from": "t2v", "to": "s3"},
+      {"along": "wh", "from": "s1@1", "to": "t1v"},
+      {"along": "wh@1", "from": "t1v@3", "to": "s1@1"},
+      {"along": "wh@1", "from": "s3@2", "to": "t2v@3"},
+      {"along": "wh@1", "from": "t2v@1", "to": "s3@1"},
+      {"along": "wh@1", "from": "s1@2", "to": "t1v@1"},
+      {"along": "wh@2", "from": "t1v", "to": "s1@2"},
+      {"along": "wh@2", "from": "s3@3", "to": "t2v"},
+      {"along": "wh@2", "from": "t2v@2", "to": "s3@2"},
+      {"along": "wh@2", "from": "s1@3", "to": "t1v@2"},
+      {"along": "wh@3", "from": "t1v@1", "to": "s1@3"},
+      {"along": "wh@3", "from": "s3", "to": "t2v@1"},
+      {"along": "wh@3", "from": "ep", "to": "s3@3"},
+      {"along": "wh@3", "from": "s1", "to": "t1v@3"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the tilted square tile side by side. A large piece sits at every centre and every corner, with stars and crosses between them.",
+    "palette": "Mamluk wood",
+    "look": "tiles",
+    "colors": {"large": "a", "star": "a", "cross": "b"}
+  },
+  "expect": {
+    "pieceTypes": 3,
+    "pieces": [
+      {"name": "large", "vertices": 48, "area": 11.02944, "perCell": 1},
+      {"name": "star", "vertices": 16, "area": 2.34315, "perCell": 4},
+      {"name": "cross", "vertices": 16, "area": 1.65685, "perCell": 7}
+    ]
+  }
+}
