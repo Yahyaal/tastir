@@ -4,7 +4,7 @@ Work is on `codex/tilingsearch-45` in the assigned worktree. The dated brief tak
 
 Dependencies were installed once within the 3 GB scope. The first schema build stalled while contacting the Nx daemon; its process was stopped and the build succeeded with `NX_DAEMON=false NX_ISOLATE_PLUGINS=false` in the same memory cap. Subsequent Nx commands use those environment settings. Heavy commands run sequentially.
 
-Group A is in progress; the first seven entries, C268A through MOR2832X, are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
+Group A is in progress; the first eight entries, C268A through C126A, are built. The remaining Group A entries, then Groups B and C, are pending; pending entries are not counted as skips.
 
 ## C268A — built as `moulay-idriss-interlace`
 
@@ -76,3 +76,13 @@ The source-polygon shoelace areas are cross −6 + 12H, two; star 4 − 4H, sixt
 I inspected the wall beside the GIF and `docs/research/tilingsearch-45/MOR2832X/overlay.png`. Every red line follows the centre of a bevelled band, including the crosses' notches. MOR2832X is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Credits retain Wade MOR 2832x. The tutorial records the centre-line representation and illustrative palette. It differs from the existing Arrayanes door stars and the Badi palace repeat in motifs, filler pieces and counts, so it is not an exact duplicate or a proportion-only variation.
 
 The catalog, six targeted golden checks, all 460 player text checks and all 34 schema tests passed under the memory cap. No shared application or engine code changed.
+
+## C126A — built as `rabat-throne-octagons`
+
+The tutorial has 18 steps. The 8 pt band drawing uses the same 597 pt cell and small-star radius as P70: OA = 298.5/(4 + 3√2) = 36.2141225526 pt. With H = √2/2, the half-side is 4 + 6H and the cell area 136 + 192H. Every corner fits a + bH, with worst error 0.000727 OA after extracting at 0.01 pt precision. The default reader's 0.1 pt chaining grid had introduced a 0.00316 OA quantization error. I added optional `--precision n` to `1_pieces.py`; the default is unchanged, and regenerating P70 with that default gave a byte-identical pieces file. The new `medium.py` helper only centralizes metadata, formatting and ink extraction for these generators; each construction still defines its own geometry.
+
+The source-polygon shoelace areas are octagon 4 + 8H, eight; long_hexagon 3, sixteen; star 8 − 8H, four; eight 2, sixteen; arrow and hexagon −1 + 4H, eight and sixteen; dart 2 − 2H, sixteen; triangle 1/2, sixty-four; and kite −1 + 2H, forty-eight. The counted sum is exactly 136 + 192H. The engine independently finds these nine types and counts. The triangles and kites are intentionally small relative to this large cell; I inspected them against the source and declared only those two types `small`, retaining exact golden areas and counts.
+
+I inspected the wall beside the GIF and the full PDF overlay at `docs/research/tilingsearch-45/C126A/overlay.png`. The red lines follow all band centres. C126A is absent from `wade-paired.json`, so no paired-photo overlay is required or claimed. Wichmann explicitly says he redrew Castéra's page 126 figure 1 more regularly; the tutorial preserves that qualification and does not claim the wall's exact proportions. It records the centre-line representation and illustrative palette. The unit-star opening and compass transfers are shared with P70, but the octagons and connecting lines make this a separate design.
+
+The catalog, six targeted golden checks, all 465 player text checks and all 34 schema tests passed under the memory cap. The helper-free text names R1 and R3 at earlier star-side crossings so its two visible diagonals are explained directly. No shared application or engine code changed.
