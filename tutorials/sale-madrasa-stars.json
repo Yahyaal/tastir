@@ -1,0 +1,244 @@
+{
+  "format": 0,
+  "id": "sale-madrasa-stars",
+  "title": "Stars of the Merinid madrasa, Salé",
+  "short": "Salé madrasa stars",
+  "subtitle": "Merinid madrasa, Salé",
+  "fold": 4,
+  "star": 8,
+  "style": "Marinid",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s C129A drawing, its corners snapped to exact values. We devised the construction: one line from K1 through E fixes P, and every line is drawn through P, S, T, U, W or Q. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Castéra’s picture is uncoloured; the colours are ours. No photo of the madrasa was checked.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data152/C129A: Merinid Madrasah, Sale",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data152/C129A.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from Jean-Marc Castéra, Arabesques: Decorative Art in Morocco (ACR Édition, Paris, 1999), page 129, top (Merinid madrasa, Salé, uncoloured in the book). The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of an eight-pointed star.",
+    "A": "Halfway from O to the next star on the horizontal line."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "Draw a straight line through O and K2. It crosses the circle at E. Draw a straight line through K1 and E. Draw a straight line through A and C. It crosses the line through K1 and E at P.",
+      "create": {
+        "d135": {"line": {"through": ["O", "K2"]}},
+        "E": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
+        "ke": {"line": {"through": ["K1", "E"]}},
+        "ac": {"line": {"through": ["A", "C"]}},
+        "P": {"point": {"meet": ["ac", "ke"]}}
+      },
+      "highlight": ["K2", "E", "P"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a vertical line through P. Draw a horizontal line through P. Turn the two lines round O by 90°, three times.",
+      "create": {
+        "pv": {"line": {"through": "P", "parallelTo": "v"}},
+        "ph": {"line": {"through": "P", "parallelTo": "h"}},
+        "pp": {"repeat": {"of": ["pv", "ph"], "by": "rot4"}}
+      },
+      "highlight": ["P"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "The vertical line through P crosses the line from O to K1 at G. Draw a circle with centre O through G. It crosses the horizontal line at S. Draw a line through S parallel to line AC. Turn it round O by 90°, three times. The lines make the star at O.",
+      "create": {
+        "G": {"point": {"meet": ["pv", "d45"]}},
+        "cg": {"circle": {"centre": "O", "through": "G"}},
+        "S": {"point": {"meet": ["cg", "h"], "pick": {"angle": 0.0}}},
+        "sd": {"line": {"through": "S", "parallelTo": "ac"}},
+        "sdp": {"repeat": {"of": ["sd"], "by": "rot4"}}
+      },
+      "highlight": ["G", "S"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a circle with centre A and the same radius as the circle through G. It crosses the vertical line through A at T, above A. Draw a line through T parallel to line AC. Turn it round O by 90°, three times.",
+      "create": {
+        "ca": {"circle": {"centre": "A", "radiusOf": "cg"}},
+        "T": {"point": {"meet": ["ca", "gx"], "pick": {"angle": 11.701}}},
+        "td": {"line": {"through": "T", "parallelTo": "ac"}},
+        "tdp": {"repeat": {"of": ["td"], "by": "rot4"}}
+      },
+      "highlight": ["A", "T"],
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "The circle with centre A crosses the horizontal line at U, to the left of A. The line through S crosses the vertical line through A at W, below A. Draw a line through each of U and W parallel to the line from O to K1. Turn the two lines round O by 90°, three times.",
+      "create": {
+        "U": {"point": {"meet": ["ca", "h"], "pick": {"nearest": "O"}}},
+        "W": {"point": {"meet": ["sd", "gx"]}},
+        "ud": {"line": {"through": "U", "parallelTo": "d45"}},
+        "wd": {"line": {"through": "W", "parallelTo": "d45"}},
+        "uwp": {"repeat": {"of": ["ud", "wd"], "by": "rot4"}}
+      },
+      "highlight": ["U", "W"],
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Draw a circle with centre O through U. It crosses the line from O to K1 at Q. Draw a vertical line and a horizontal line through Q. Turn the two lines round O by 90°, three times.",
+      "create": {
+        "cu": {"circle": {"centre": "O", "through": "U"}},
+        "Q": {"point": {"meet": ["cu", "d45"], "pick": {"angle": 45.0}}},
+        "qv": {"line": {"through": "Q", "parallelTo": "v"}},
+        "qh": {"line": {"through": "Q", "parallelTo": "h"}},
+        "qp": {"repeat": {"of": ["qv", "qh"], "by": "rot4"}}
+      },
+      "highlight": ["U", "Q"],
+      "animate": "compass"
+    },
+    {
+      "id": 9,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the star at O and the small star at each corner. Then ink the octagons and hexagons round them.",
+    "paths": [
+      {"along": "pv", "from": "ud", "to": "d135"},
+      {"along": "pv", "from": "d45", "to": "ud@1"},
+      {"along": "ph", "from": "wd@2", "to": "d135"},
+      {"along": "ph", "from": "sd", "to": "ud@1"},
+      {"along": "ph", "from": "ud@2", "to": "sd@1"},
+      {"along": "ph", "from": "d45", "to": "wd@1"},
+      {"along": "pv@1", "from": "ud@1", "to": "d45"},
+      {"along": "pv@1", "from": "d135", "to": "ud@2"},
+      {"along": "pv@2", "from": "ud@2", "to": "d135"},
+      {"along": "pv@2", "from": "d45", "to": "ud@3"},
+      {"along": "pv@3", "from": "ud@3", "to": "d45"},
+      {"along": "pv@3", "from": "d135", "to": "ud"},
+      {"along": "ph@1", "from": "wd@3", "to": "d45"},
+      {"along": "ph@1", "from": "sd@1", "to": "ud@2"},
+      {"along": "ph@1", "from": "ud@3", "to": "sd@2"},
+      {"along": "ph@1", "from": "d135", "to": "wd@2"},
+      {"along": "ph@2", "from": "wd", "to": "d135"},
+      {"along": "ph@2", "from": "sd@2", "to": "ud@3"},
+      {"along": "ph@2", "from": "ud", "to": "sd@3"},
+      {"along": "ph@2", "from": "d45", "to": "wd@3"},
+      {"along": "ph@3", "from": "wd@1", "to": "d45"},
+      {"along": "ph@3", "from": "sd@3", "to": "ud"},
+      {"along": "ph@3", "from": "ud@1", "to": "sd"},
+      {"along": "ph@3", "from": "d135", "to": "wd"},
+      {"along": "sd", "from": "gx", "to": "ph@3"},
+      {"along": "sd", "from": "qv", "to": "h"},
+      {"along": "sd", "from": "v", "to": "qh"},
+      {"along": "sd", "from": "ph", "to": "gy"},
+      {"along": "sd@1", "from": "gy", "to": "ph"},
+      {"along": "sd@1", "from": "qh", "to": "v"},
+      {"along": "sd@1", "from": "h", "to": "qv@2"},
+      {"along": "sd@1", "from": "ph@1", "to": "gxw"},
+      {"along": "sd@2", "from": "gxw", "to": "ph@1"},
+      {"along": "sd@2", "from": "qv@2", "to": "h"},
+      {"along": "sd@2", "from": "v", "to": "qv@3"},
+      {"along": "sd@2", "from": "ph@2", "to": "gys"},
+      {"along": "sd@3", "from": "gys", "to": "ph@2"},
+      {"along": "sd@3", "from": "qv@3", "to": "v"},
+      {"along": "sd@3", "from": "h", "to": "qv"},
+      {"along": "sd@3", "from": "ph@3", "to": "gx"},
+      {"along": "td", "from": "gx", "to": "qh"},
+      {"along": "td", "from": "qv", "to": "gy"},
+      {"along": "td@1", "from": "gy", "to": "qv@2"},
+      {"along": "td@1", "from": "qh", "to": "gxw"},
+      {"along": "td@2", "from": "gxw", "to": "qv@3"},
+      {"along": "td@2", "from": "qv@2", "to": "gys"},
+      {"along": "td@3", "from": "gys", "to": "qv"},
+      {"along": "td@3", "from": "qv@3", "to": "gx"},
+      {"along": "ud", "from": "ph@2", "to": "pv"},
+      {"along": "ud", "from": "pv@3", "to": "ph@3"},
+      {"along": "wd", "from": "gys", "to": "ph@3"},
+      {"along": "wd", "from": "ph@2", "to": "gx"},
+      {"along": "ud@1", "from": "ph@3", "to": "pv@1"},
+      {"along": "ud@1", "from": "pv", "to": "ph"},
+      {"along": "ud@2", "from": "ph", "to": "pv@2"},
+      {"along": "ud@2", "from": "pv@1", "to": "ph@1"},
+      {"along": "ud@3", "from": "ph@1", "to": "pv@3"},
+      {"along": "ud@3", "from": "pv@2", "to": "ph@2"},
+      {"along": "wd@1", "from": "gx", "to": "ph"},
+      {"along": "wd@1", "from": "ph@3", "to": "gy"},
+      {"along": "wd@2", "from": "gy", "to": "ph@1"},
+      {"along": "wd@2", "from": "ph", "to": "gxw"},
+      {"along": "wd@3", "from": "gxw", "to": "ph@2"},
+      {"along": "wd@3", "from": "ph@1", "to": "gys"},
+      {"along": "qv", "from": "td@3", "to": "sd"},
+      {"along": "qv", "from": "sd@3", "to": "td"},
+      {"along": "qh", "from": "td@1", "to": "sd"},
+      {"along": "qh", "from": "sd@1", "to": "td"},
+      {"along": "qv@2", "from": "td@1", "to": "sd@2"},
+      {"along": "qv@2", "from": "sd@1", "to": "td@2"},
+      {"along": "qv@3", "from": "td@2", "to": "sd@3"},
+      {"along": "qv@3", "from": "sd@2", "to": "td@3"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. A star sits at every centre and a small star at every corner.",
+    "palette": "Marinid zellige",
+    "look": "tiles",
+    "colors": {
+      "star": "b",
+      "long": "d",
+      "twelve": "c",
+      "octagon": "a",
+      "hexagon": "ground",
+      "small_star": "b"
+    }
+  },
+  "expect": {
+    "pieceTypes": 6,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 0.24264, "perCell": 1},
+      {"name": "long", "vertices": 12, "area": 0.17157, "perCell": 2},
+      {"name": "twelve", "vertices": 12, "area": 0.16421, "perCell": 4},
+      {"name": "octagon", "vertices": 8, "area": 0.13909, "perCell": 8},
+      {"name": "hexagon", "vertices": 6, "area": 0.12868, "perCell": 12},
+      {"name": "small_star", "vertices": 16, "area": 0.10051, "perCell": 1}
+    ]
+  }
+}
