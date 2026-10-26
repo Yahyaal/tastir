@@ -98,5 +98,13 @@
     "id": "agra-kite-stars",
     "title": "Kite stars of Agra and Fatehpur Sikri",
     "members": ["agra-kite-stars", "birbal-house-stars"]
+  },
+  {
+    "id": "arrayanes-porch-ceiling",
+    "title": "Stars of the Arrayanes porch ceiling",
+    "members": [
+      "alhambra-arrayanes-porch-ceiling",
+      "alhambra-museum-pointed-stars"
+    ]
   }
 ]

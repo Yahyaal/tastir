@@ -3982,6 +3982,107 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-museum-pointed-stars',
+    title:
+      'Pointed stars of a tile panel in the Alhambra museum (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A large star sits at the centre of every tile. A small star sits at every corner and at the middle of every side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P008B drawing, its corners snapped to exact values. We devised the construction. Its lines are exactly those of the Arrayanes porch ceiling and the Nasrid textile stars, so the construction is the same; only the inked pieces differ. The star at O and the eight kites round it become one large star with sharp points. The drawing gives no steps.',
+      'The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. The colours follow Wichmann’s drawing, which he took from the original; no photograph was checked.',
+      '10 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-museum-pointed-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-museum-pointed-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra museum, Granada (P008B)',
+        url: 'https://tilingsearch.mit.edu/HTML/data159/P008B.html',
+      },
+    ],
+  },
+  {
+    id: 'marrakesh-throne-rosette',
+    title:
+      'Rosette and octagons of the Royal Palace throne room (Marrakesh) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A small black star sits at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s C126B drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening and square-diagonal compass transfers are shared with the Rabat throne-room octagons; different crossings complete the rosette, the crosses and the octagons. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing; its white strokes over the joints are not bands. The colours follow Wichmann’s drawing, mapped to the Alhambra palette: the teal and blue octagons turn in a pinwheel, though the lines themselves are mirror-symmetric. No photograph was checked.',
+      '12 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/marrakesh-throne-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/marrakesh-throne-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Royal Palace throne room, Marrakesh (C126B)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C126B.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-dos-hermanas-jamb-rosette',
+    title:
+      'Rosette of the arch jambs in the Sala de las Dos Hermanas, Alhambra (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A small octagon sits at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s NC2 drawing. Every line runs at 22.5° to the square repeat. Turned by 22.5°, the band centre lines snap to the square-root-of-two grid in units of the red star’s point radius, and the four line directions share one set of distances from O. So all lines are perpendiculars to the 22.5° line through O, marked by compass transfers and turned by 45°. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The 9 pt bands are represented by their centre lines. Our lines were laid over David Wade’s photograph SPA 1803 of the jamb and follow its white bands; no difference from the drawing was found. The colours follow Wichmann’s approximate drawing on the Alhambra palette (his red as honey-brown); the jamb itself also has purple pieces.',
+      '9 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-dos-hermanas-jamb-rosette/photo-overlay.png',
+        caption:
+          'David Wade’s photo with the tutorial’s lines in red (private, not shipped).',
+      },
+      {
+        src: 'renders/alhambra-dos-hermanas-jamb-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-dos-hermanas-jamb-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Alhambra, Granada: Sala de las Dos Hermanas, north arch (NC2)',
+        url: 'https://tilingsearch.mit.edu/HTML/data174/NC2.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -5101,7 +5202,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'A hundred and two new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'A hundred and five new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -5216,6 +5317,9 @@ export const QUESTIONS: readonly Question[] = [
       'seville-tile-stars',
       'bahramiye-mosque-stars',
       'marrakesh-crafts-stars',
+      'alhambra-museum-pointed-stars',
+      'marrakesh-throne-rosette',
+      'alhambra-dos-hermanas-jamb-rosette',
     ],
   },
 ];

@@ -53,7 +53,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 13 | BON47, IND01, FE1, IRAN15, F78, P064 | Next smallest, 231–239 polygons | done, merged: five built; IRAN15 = qom-atabaki-stars recoloured |
 | 14 | P60B, C101, MMA2, SHAF27, ALHAMK, P397 | 241–259 polygons; ALHAMK is an Alhambra panel with a Wade photo; P30 and S45A are pmm (skip) | done, merged: all six |
 | 15 | CL35, IND0312, P94, RAY10, AJL1, P99 | 267–293 polygons; DW5 is pmm (skip). After this, only the large panels (over 600 pieces) remain for Claude | done, merged: all six; P94 joins agra-kite-stars |
-| 16 | P008B, C126B, NC2 | Pilot for the large panels (600–700 pieces): Granada museum, Marrakesh throne room, Dos Hermanas. Time box 2 hours each | started |
+| 16 | P008B, C126B, NC2 | Pilot for the large panels (600–700 pieces): Granada museum, Marrakesh throne room, Dos Hermanas. Time box 2 hours each | done, merged: all three in about 30 minutes; P008B is a variant of the Arrayanes porch ceiling |
 | 17 | RAY7, L90, MOR0719, C176A | 700–811 pieces | waiting |
 | 18 | P18B, P18A, IRAN2, IRAN4, IRA1617 | 875–907 pieces; P18A/B and IRAN2/4 are likely pairs | waiting |
 | 19+ | the 25 panels over 930 pieces, two or three to a builder | Big Moroccan and Persian rosette walls; may need a rosette-first approach | waiting |
@@ -61,5 +61,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 Codex builds the 29 medium tilings (300–600 pieces) on its own branch, `codex/tilingsearch-45`, from [its brief](codex-tilingsearch-45-2026-10-26.md); Claude's builders never take one of those. After batch 8, take the remaining tilings of [the comparison](../patterns/TILINGSEARCH-45.md) by size, smallest first, five to a batch, grouping ones that look alike. Leave the large Moroccan rosette panels (over 900 polygons) until last; each needs a time box of its own.
 
 At merge, the orchestrator also updates the beginner count pinned in `packages/engine/src/lib/along.spec.ts`.
+
+Large panels (batch 16 lessons): turn the drawing until its edges run at 0/45/90/135 before snapping; when all four directions share one set of distances from O, rot8 perpendiculars are the whole construction; the main tool for finding constructions is a list of missing lines with the crossings they run through (`tools/review/tilingsearch_45/large/missing.py`); large panels colour one shape several ways, so they need `nth` placements, checked against the player's `placeFills`. About 45 minutes a panel, three or four to a builder.
 
 Pacing: run at most two builders at once. Each used about a fifth of the 5-hour window on the Pro plan on 25 October, so check `get_usage` before starting one and start nothing above about 75%.
