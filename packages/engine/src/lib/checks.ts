@@ -119,7 +119,8 @@ function distanceToCurve(p: Vec, c: Curve): number {
  * Whether the pieces around `centre` repeat under a turn of 360°/fold and
  * (unless `mirror` is false) under the mirror in the horizontal through
  * it: every piece within
- * `radius` must land on a piece of the same type.
+ * `radius` must land on a piece of the same type. Fold 1 always requires
+ * the mirror: its full-turn rotation alone would prove nothing.
  */
 export function hasSymmetry(
   pattern: Pattern,
@@ -164,13 +165,16 @@ export function hasSymmetry(
       const r = f({ x: p.x - centre.x, y: p.y - centre.y });
       return { x: r.x + centre.x, y: r.y + centre.y };
     });
+  // A mirror-only pattern must still prove its mirror, even if a caller
+  // disables mirrors for rotational patterns. An empty sample proves nothing.
+  if (fold <= 2 && near.length === 0) return false;
   return near.every(
     (p) =>
       isPiece(
         moved(p.polygon, (v) => rotate(v, (2 * Math.PI) / fold)),
         p.type,
       ) &&
-      (!mirror ||
+      (!(mirror || fold === 1) ||
         isPiece(
           moved(p.polygon, (v) => ({ x: v.x, y: -v.y })),
           p.type,

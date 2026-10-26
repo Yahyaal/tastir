@@ -47,6 +47,8 @@ describe('symmetry', () => {
     const p = computePattern(evaluate(t), t);
     expect(hasSymmetry(p, 4)).toBe(false);
     expect(hasSymmetry(p, 4, undefined, undefined, false)).toBe(true);
+    expect(hasSymmetry(p, 2)).toBe(false);
+    expect(hasSymmetry(p, 2, undefined, undefined, false)).toBe(true);
   });
 
   it('finds no symmetry about a point that is not a centre', () => {

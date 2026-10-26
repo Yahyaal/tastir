@@ -79,6 +79,8 @@ export function tileWarning(scene: Scene, cell: Cell): string | undefined {
  * turns round the centre, or the tutorial's own fold.
  */
 export function foldOf(draft: Pick<Draft, 'steps' | 'fold'>): number {
+  // Construction guides can turn more often than a half-turn or mirror wall.
+  if (draft.fold <= 2) return draft.fold;
   let most = 0;
   for (const step of draft.steps)
     for (const el of Object.values(step.create ?? {}))

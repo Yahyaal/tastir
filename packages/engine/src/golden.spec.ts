@@ -53,7 +53,7 @@ describe.each(files)('%s', (file) => {
     // A tutorial that claims to be chiral must really lack the mirror. The
     // turning pieces can lie a little further out than the rotation check
     // looks (the Leones frets are centred about 1 from O), so look to 2.
-    if (tutorial.chiral)
+    if (tutorial.chiral && tutorial.fold > 1)
       expect(hasSymmetry(pattern, tutorial.fold, undefined, 2)).toBe(false);
   });
 

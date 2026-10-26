@@ -619,9 +619,9 @@ export function EditorPage({
                     edit({ ...draft, fold: Number(e.target.value) })
                   }
                 >
-                  {[3, 4, 5, 6, 8, 10, 12, 16].map((n) => (
+                  {[1, 2, 3, 4, 5, 6, 8, 10, 12, 16].map((n) => (
                     <option key={n} value={n}>
-                      {n}
+                      {n === 1 ? '1 (mirror)' : n}
                     </option>
                   ))}
                 </select>
@@ -742,7 +742,9 @@ export function EditorPage({
                     (!cellName
                       ? 'Draw the tile first, with the Tile tool, or use a shape as the tile.'
                       : symmetric
-                        ? `Click a bit of line to ink or erase it, with its ${draft.fold} turned${draft.chiral ? '' : ' and mirrored'} copies.`
+                        ? draft.fold === 1
+                          ? 'Click a bit of line to ink or erase it, with its mirrored copy.'
+                          : `Click a bit of line to ink or erase it, with its ${draft.fold} turned${draft.chiral ? '' : ' and mirrored'} copies.`
                         : 'Click a bit of line to ink or erase it.')}
                 </>
               ) : (

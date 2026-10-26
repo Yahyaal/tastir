@@ -605,7 +605,9 @@ export function problems(draft: Draft, goals: Goals = {}): string[] {
     );
   if (goals.fold && !hasSymmetry(model.pattern, goals.fold))
     out.push(
-      `The pieces around O do not repeat with ${goals.fold}-fold symmetry.`,
+      goals.fold === 1
+        ? 'The pieces around O do not have mirror symmetry across OA.'
+        : `The pieces around O do not repeat with ${goals.fold}-fold symmetry.`,
     );
   if (
     goals.pieceTypes !== undefined &&

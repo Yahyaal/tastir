@@ -22,7 +22,7 @@ Every tutorial starts from two given points, `O` and `A`. They define the frame 
 
 ## Symmetry
 
-`fold` is how many times the tile turns into itself about `O`, and the golden test checks it. A star on a square tile can have more points than that: a twelve-fold rosette repeated on a square is 4-fold. Such a tutorial gives the star's points as `star` (optional), and the library shows the pattern as `star`-fold and files it under that number when filtering. Without `star`, the library shows `fold`.
+`fold` is how many times the pattern turns into itself about `O` in a full turn, and the golden test checks it. Use `fold: 2` for pmm, cmm or p2-type patterns, with O at a half-turn point. Use `fold: 1` for patterns with only mirrors or glides, with O on a mirror line and OA along that line. Fold 1 checks the mirror in OA because its full-turn rotation is trivial. A glide-only pattern without a mirror through O cannot pass this check. Fold 2 also checks that mirror unless `chiral` is true. `star` still needs at least three points. A star on a square tile can have more points than that: a twelve-fold rosette repeated on a square is 4-fold. Such a tutorial gives the star's points as `star` (optional), and the library shows the pattern as `star`-fold and files it under that number when filtering. Without `star`, the library shows `fold`.
 
 ## Elements
 
@@ -42,7 +42,7 @@ Each entry in a step's `create` map is `"name": { "<kind>": { ... } }`.
 | | `{ "centre": p, "tangentTo": [x, ...] }` | centre `p`, just touching every listed line or circle; an error if no single radius does that |
 | | `{ "centre": p, "tangentTo": [x, ...], "touch": "near" }` | the same, touching each listed circle on its `near` side (the side facing `p`) or its `far` side (going round it, so the new circle encloses it); needed when a circle can be touched both ways |
 | `polygon` | `[p1, p2, ...]` | a closed polygon through the points in order; its sides are segments, and it can be used in `meet` |
-| `repeat` | `{ "of": [names], "by": "rot8" }` | copies of the named elements under a symmetry about `O` (`rot3`, `rot4`, `rot5`, `rot6`, `rot8`, `rot10`, `rot12`, `rot16`, `mirror:<line>`); copies are named `name@1`, `name@2`, …; with `"distinct": true`, copies that land on the original or an earlier copy (a line through `O` turned by 180°) are left out and their names do not exist |
+| `repeat` | `{ "of": [names], "by": "rot8" }` | copies of the named elements under a symmetry about `O` (`rot2`, `rot3`, `rot4`, `rot5`, `rot6`, `rot8`, `rot10`, `rot12`, `rot16`, `mirror:<line>`); copies are named `name@1`, `name@2`, …; with `"distinct": true`, copies that land on the original or an earlier copy (a line through `O` turned by 180°) are left out and their names do not exist |
 
 Lines are infinite for the purpose of `meet`. Polygon sides and inked paths are segments.
 
@@ -83,7 +83,7 @@ A piece in `expect.pieces` may carry `"small": true` when it is small or thin on
 
 ## Chiral patterns
 
-`"chiral": true` says the pattern turns into itself by 360°/`fold` but has no mirror symmetry, like a pinwheel. The golden test then checks the rotation only, and also checks that the mirror really is missing, so the flag cannot hide a broken mirror-symmetric pattern.
+`"chiral": true` says the pattern turns into itself by 360°/`fold` but has no mirror symmetry, like a pinwheel. For fold 2 and above the golden test then checks the rotation only, and also checks that the mirror really is missing, so the flag cannot hide a broken mirror-symmetric pattern.
 
 ## Photos of the original
 
