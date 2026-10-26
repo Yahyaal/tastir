@@ -2,7 +2,7 @@
 the source fill of the nearest source piece, grouped by the player's nth."""
 import json, sys, math
 from collections import defaultdict
-sys.path.insert(0, '/home/yahya/Documents/projects/Tastir/.claude/worktrees/agent-a0638ace160955a10/tools/review/tilingsearch_45')
+sys.path.insert(0, '/home/yahya/Documents/projects/Tastir/.claude/worktrees/agent-a6be1d66963d6165b/tools/review/tilingsearch_45')
 import common as cm
 d = json.load(open(sys.argv[1])); f = sys.argv[2]
 ox, oy, u, band = map(float, sys.argv[3:7])
