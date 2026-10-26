@@ -4211,6 +4211,132 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'meknes-throne-rosette',
+    title:
+      'Rosette of the Royal Palace throne room (Meknes) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s C176A drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of the star’s sides, carried on, with earlier lines, and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing: red, black and white, in the Modern Moroccan palette. No photograph was checked. Wichmann notes that his drawing omits the panel’s central 24-pointed star; this repeat follows his drawing.',
+      '22 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/meknes-throne-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/meknes-throne-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Royal Palace throne room, Meknes (C176A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C176A.html',
+      },
+    ],
+  },
+  {
+    id: 'fes-rosette-rings',
+    title: 'Rosettes in octagonal rings (Fès) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre and at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s MOR0719 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it almost every line is drawn through a crossing of the star’s sides, carried on, with earlier lines, and turned round O; two compass transfers set the lines of the rosettes at the tile’s corners. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The tile holds two rosettes, one at O and a quarter at each corner. The colours follow Wichmann’s drawing in the Marinid zellige palette. Wade’s photograph MOR 0719 was not checked.',
+      '19 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-rosette-rings/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-rosette-rings/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Fès (MOR0719)',
+        url: 'https://tilingsearch.mit.edu/HTML/data181/MOR0719.html',
+      },
+    ],
+  },
+  {
+    id: 'seville-octagon-rings',
+    title:
+      'Stars in octagonal rings, a Seville tile panel (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A star sits at the centre and at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s RAY7 drawing, its interlaced bands reduced to their centre lines and snapped to the square-root-of-two grid. The circle, the octagon round it and the octagon of the lines at height V give the star; every other line is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The bands are drawn as their centre lines, woven over and under as in the drawing. The colours follow Wichmann’s drawing, which he says are as in the original, mapped to the Alhambra palette. No photograph was checked.',
+      '12 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/seville-octagon-rings/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/seville-octagon-rings/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Seville tiles, Victoria and Albert Museum (RAY7)',
+        url: 'https://tilingsearch.mit.edu/HTML/data183/RAY7.html',
+      },
+    ],
+  },
+  {
+    id: 'sidi-said-window',
+    title:
+      'Pierced plaster window of the Dar Si Said museum (Marrakesh) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A small star sits at the centre and at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s L90 drawing, its bevelled bands reduced to their centre lines and snapped to the square-root-of-two grid. It shares every construction line but one with the Seville octagon rings: the circle, the octagon round it and the lines at height V, then lines through crossings of earlier lines, turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The plaster bands are drawn as their centre lines; the pieces are the window’s openings, in one colour, and the small kites and triangles where the bands cross, which are solid plaster. No photograph was checked.',
+      '11 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/sidi-said-window/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/sidi-said-window/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Dar Si Said museum, Marrakesh (L90)',
+        url: 'https://tilingsearch.mit.edu/HTML/data181/L90.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -5330,7 +5456,7 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'tilingsearch-45-first',
-    text: 'A hundred and nine new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
+    text: 'A hundred and thirteen new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
     pictures: [
       {
@@ -5452,6 +5578,10 @@ export const QUESTIONS: readonly Question[] = [
       'isfahan-sayyed-crosses',
       'paccard-222-rosette',
       'paccard-222-rosette-ring',
+      'meknes-throne-rosette',
+      'fes-rosette-rings',
+      'seville-octagon-rings',
+      'sidi-said-window',
     ],
   },
 ];

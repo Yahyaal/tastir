@@ -54,7 +54,7 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 14 | P60B, C101, MMA2, SHAF27, ALHAMK, P397 | 241–259 polygons; ALHAMK is an Alhambra panel with a Wade photo; P30 and S45A are pmm (skip) | done, merged: all six |
 | 15 | CL35, IND0312, P94, RAY10, AJL1, P99 | 267–293 polygons; DW5 is pmm (skip). After this, only the large panels (over 600 pieces) remain for Claude | done, merged: all six; P94 joins agra-kite-stars |
 | 16 | P008B, C126B, NC2 | Pilot for the large panels (600–700 pieces): Granada museum, Marrakesh throne room, Dos Hermanas. Time box 2 hours each | done, merged: all three in about 30 minutes; P008B is a variant of the Arrayanes porch ceiling |
-| 17 | RAY7, L90, MOR0719, C176A | 700–811 pieces | started |
+| 17 | RAY7, L90, MOR0719, C176A | 700–811 pieces | done, merged: all four; the greedy parallels search (`large/greedy.py`, `parallels.py`) builds most large panels |
 | 18 | P18B, P18A, IRAN2, IRAN4, IRA1617 | 875–907 pieces; P18A/B and IRAN2/4 are likely pairs | done, merged: four built; IRAN4 = IRAN2 |
 | 19+ | the 25 panels over 930 pieces, two or three to a builder | Big Moroccan and Persian rosette walls; may need a rosette-first approach | waiting |
 
