@@ -1,0 +1,236 @@
+{
+  "format": 0,
+  "id": "bahramiye-mosque-stars",
+  "title": "Interlaced stars of the Bahramiye mosque, Aleppo",
+  "short": "Bahramiye mosque stars",
+  "subtitle": "Bahramiye mosque, Aleppo",
+  "fold": 4,
+  "star": 8,
+  "style": "Ottoman",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s AJL1 drawing, the centre lines of its bands snapped to exact values. We devised the construction. The star at O is two squares, found with line DE; that line then crosses the star’s sides at M, L and J, which fix most of the other lines, and the line through E fixes the rest. The drawing gives no steps.",
+    "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws the lines as interlaced bands; the tutorial draws their centre lines. No photo of the carving was checked.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data198/AJL1: Bahramiye Mosque, Aleppo",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data198/AJL1.html",
+      "kind": "drawing",
+      "note": "The design was read from his drawing. He takes it from a photo by Dick Osseman of the carved border round the door arch of the Bahramiye mosque, Aleppo, and lists the same design at Termez in L. I. Rempel, Arkhitekturnyi ornament Uzbekistana (Tashkent, 1961), page 209. The construction is ours."
+    }
+  ],
+  "given": {"O": "The centre of a star.", "A": "Halfway from O to the next star on the horizontal line."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. These lines make the square cell, with corners K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1, a corner of the cell. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The circle crosses the line from O to K1 at E. Draw a straight line through D and E. It crosses the horizontal line through O at T. Draw a circle with centre O through T. It crosses the line from O to K1 at Q.",
+      "create": {
+        "E": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "de": {"line": {"through": ["D", "E"]}},
+        "T": {"point": {"meet": ["de", "h"]}},
+        "ct": {"circle": {"centre": "O", "through": "T"}},
+        "Q": {"point": {"meet": ["ct", "d45"], "pick": {"angle": 45.0}}}
+      },
+      "highlight": ["E", "T", "Q"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a line through T at 90° to the line from O to K1. Draw a vertical line through Q. Turn the two lines round O by 90°, three times. They make the star at O.",
+      "create": {
+        "td": {"line": {"through": "T", "perpendicularTo": "d45"}},
+        "qv": {"line": {"through": "Q", "parallelTo": "v"}},
+        "sp": {"repeat": {"of": ["td", "qv"], "by": "rot4"}}
+      },
+      "highlight": ["T", "Q"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "The two lines cross at N, an inner corner of the star. Draw a horizontal line through N. Draw a line through N parallel to the line from O to K1. Draw a horizontal line through E. Draw a straight line through A and C. Turn the four lines round O by 90°, three times.",
+      "create": {
+        "N": {"point": {"meet": ["td", "qv"]}},
+        "nh": {"line": {"through": "N", "parallelTo": "h"}},
+        "nd": {"line": {"through": "N", "parallelTo": "d45"}},
+        "eh": {"line": {"through": "E", "parallelTo": "h"}},
+        "ac": {"line": {"through": ["A", "C"]}},
+        "np": {"repeat": {"of": ["nh", "nd", "eh", "ac"], "by": "rot4"}}
+      },
+      "highlight": ["N", "E"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Line DE crosses two sides of the star at M and L. It crosses the top side of the cell at J. Draw a vertical line through M. Draw a line through L parallel to the line from O to K1. Draw a line through J at 90° to the line from O to K1. Turn the three lines round O by 90°, three times.",
+      "create": {
+        "M": {"point": {"meet": ["de", "qv@1"]}},
+        "mv": {"line": {"through": "M", "parallelTo": "v"}},
+        "L": {"point": {"meet": ["de", "td@2"]}},
+        "ld": {"line": {"through": "L", "parallelTo": "d45"}},
+        "J": {"point": {"meet": ["de", "gy"]}},
+        "jd": {"line": {"through": "J", "perpendicularTo": "d45"}},
+        "mp": {"repeat": {"of": ["mv", "ld", "jd"], "by": "rot4"}}
+      },
+      "highlight": ["M", "L", "J"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "The horizontal line through E crosses the line through N parallel to the line from O to K1 at P. It crosses the vertical line through M at V. Draw a vertical line through P. Draw a line through V at 90° to the line from O to K1. Turn the two lines round O by 90°, three times.",
+      "create": {
+        "P": {"point": {"meet": ["eh", "nd"]}},
+        "V": {"point": {"meet": ["eh", "mv"]}},
+        "pv": {"line": {"through": "P", "parallelTo": "v"}},
+        "vd": {"line": {"through": "V", "perpendicularTo": "d45"}},
+        "pp": {"repeat": {"of": ["pv", "vd"], "by": "rot4"}}
+      },
+      "highlight": ["P", "V"],
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They make the star at O, the small square at each corner and the bands that weave between them.",
+    "paths": [
+      {"along": "td", "from": "nh@2", "to": "qv"},
+      {"along": "td", "from": "qv@1", "to": "nh@1"},
+      {"along": "qv", "from": "nd@3", "to": "td@3"},
+      {"along": "qv", "from": "td", "to": "nd@2"},
+      {"along": "td@1", "from": "nh@3", "to": "qv@1"},
+      {"along": "td@1", "from": "qv@2", "to": "nh@2"},
+      {"along": "td@2", "from": "nh", "to": "qv@2"},
+      {"along": "td@2", "from": "qv@3", "to": "nh@3"},
+      {"along": "td@3", "from": "nh@1", "to": "qv@3"},
+      {"along": "td@3", "from": "qv", "to": "nh"},
+      {"along": "qv@1", "from": "nd", "to": "td"},
+      {"along": "qv@1", "from": "td@1", "to": "nd@3"},
+      {"along": "qv@2", "from": "nd@1", "to": "td@1"},
+      {"along": "qv@2", "from": "td@2", "to": "nd"},
+      {"along": "qv@3", "from": "nd@2", "to": "td@2"},
+      {"along": "qv@3", "from": "td@3", "to": "nd@1"},
+      {"along": "nh", "from": "ac@1", "to": "td@2"},
+      {"along": "nh", "from": "td@3", "to": "ac"},
+      {"along": "nd", "from": "gys", "to": "eh@1"},
+      {"along": "nd", "from": "eh@2", "to": "qv@2"},
+      {"along": "nd", "from": "qv@1", "to": "eh@3"},
+      {"along": "nd", "from": "eh", "to": "gx"},
+      {"along": "eh", "from": "td", "to": "qv"},
+      {"along": "ac", "from": "td@3", "to": "qv"},
+      {"along": "nh@1", "from": "ac@2", "to": "td@3"},
+      {"along": "nh@1", "from": "td", "to": "ac@1"},
+      {"along": "nh@2", "from": "ac@3", "to": "td"},
+      {"along": "nh@2", "from": "td@1", "to": "ac@2"},
+      {"along": "nh@3", "from": "ac", "to": "td@1"},
+      {"along": "nh@3", "from": "td@2", "to": "ac@3"},
+      {"along": "nd@1", "from": "gx", "to": "eh@2"},
+      {"along": "nd@1", "from": "eh@3", "to": "qv@3"},
+      {"along": "nd@1", "from": "qv@2", "to": "eh"},
+      {"along": "nd@1", "from": "eh@1", "to": "gy"},
+      {"along": "nd@2", "from": "gy", "to": "eh@3"},
+      {"along": "nd@2", "from": "eh", "to": "qv"},
+      {"along": "nd@2", "from": "qv@3", "to": "eh@1"},
+      {"along": "nd@2", "from": "eh@2", "to": "gxw"},
+      {"along": "nd@3", "from": "gxw", "to": "eh"},
+      {"along": "nd@3", "from": "eh@1", "to": "qv@1"},
+      {"along": "nd@3", "from": "qv", "to": "eh@2"},
+      {"along": "nd@3", "from": "eh@3", "to": "gys"},
+      {"along": "eh@1", "from": "td@1", "to": "td@2"},
+      {"along": "eh@2", "from": "qv", "to": "td@3"},
+      {"along": "eh@3", "from": "td@3", "to": "td"},
+      {"along": "ac@1", "from": "td", "to": "td@2"},
+      {"along": "ac@2", "from": "td@1", "to": "td@3"},
+      {"along": "ac@3", "from": "qv", "to": "td"},
+      {"along": "mv", "from": "gys", "to": "nd@3"},
+      {"along": "mv", "from": "eh", "to": "gy"},
+      {"along": "ld", "from": "gys", "to": "nh@1"},
+      {"along": "ld", "from": "nh", "to": "gx"},
+      {"along": "jd", "from": "gx", "to": "gy"},
+      {"along": "mv@1", "from": "gx", "to": "nd"},
+      {"along": "mv@1", "from": "nd@3", "to": "gxw"},
+      {"along": "mv@2", "from": "gy", "to": "eh"},
+      {"along": "mv@2", "from": "nd", "to": "gys"},
+      {"along": "mv@3", "from": "gxw", "to": "nd@2"},
+      {"along": "mv@3", "from": "nd@1", "to": "gx"},
+      {"along": "ld@1", "from": "gx", "to": "nh@2"},
+      {"along": "ld@1", "from": "nh@1", "to": "gy"},
+      {"along": "ld@2", "from": "gy", "to": "ac"},
+      {"along": "ld@2", "from": "nh@2", "to": "gxw"},
+      {"along": "ld@3", "from": "gxw", "to": "nh"},
+      {"along": "ld@3", "from": "nh@3", "to": "gys"},
+      {"along": "jd@1", "from": "gy", "to": "gxw"},
+      {"along": "jd@2", "from": "gxw", "to": "gys"},
+      {"along": "jd@3", "from": "gys", "to": "gx"},
+      {"along": "pv", "from": "nd@1", "to": "vd@3"},
+      {"along": "pv", "from": "vd", "to": "nd"},
+      {"along": "vd", "from": "gx", "to": "pv"},
+      {"along": "vd", "from": "pv@1", "to": "gy"},
+      {"along": "pv@1", "from": "nd@2", "to": "vd"},
+      {"along": "pv@1", "from": "vd@1", "to": "nd@1"},
+      {"along": "pv@2", "from": "eh", "to": "vd@1"},
+      {"along": "pv@2", "from": "vd@2", "to": "nd@2"},
+      {"along": "pv@3", "from": "nd", "to": "vd@2"},
+      {"along": "pv@3", "from": "vd@3", "to": "nd@3"},
+      {"along": "vd@1", "from": "gy", "to": "pv@1"},
+      {"along": "vd@1", "from": "pv@2", "to": "gxw"},
+      {"along": "vd@2", "from": "gxw", "to": "pv@2"},
+      {"along": "vd@2", "from": "pv@3", "to": "gys"},
+      {"along": "vd@3", "from": "gys", "to": "pv@3"},
+      {"along": "vd@3", "from": "pv", "to": "gx"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square cell side by side. A star sits at every centre and a small square at every corner.",
+    "palette": "Mamluk wood",
+    "look": "interlace",
+    "colors": {"star": "b", "ten": "ground", "eight": "a", "square": "d", "pentagon": "c"}
+  },
+  "expect": {
+    "pieceTypes": 5,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 0.40202, "perCell": 1},
+      {"name": "ten", "vertices": 10, "area": 0.17157, "perCell": 6},
+      {"name": "eight", "vertices": 8, "area": 0.10051, "perCell": 16},
+      {"name": "square", "vertices": 4, "area": 0.05887, "perCell": 1},
+      {"name": "pentagon", "vertices": 5, "area": 0.05635, "perCell": 16}
+    ]
+  }
+}
