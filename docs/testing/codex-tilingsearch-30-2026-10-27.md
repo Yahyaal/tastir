@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Ten tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1 and SYR0222. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-two entries remain pending.
+Eleven tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222 and A192. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-one entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -143,3 +143,14 @@ Independent source shoelaces give fork243√3/128, twice; star√3, once; ten75�
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/SYR0222/overlay.png`. Every boundary agrees. All33 actual player fills match interior source samples, retaining the beige, gold and black classes with an illustrative Kashan palette. Credits retain David Wade’s SYR0222 attribution to Ibn al-Arabi Mausoleum, Damascus, Syria. No photograph was independently checked. No duplicate or filling-only variation was found.
 
 The catalog prepared196 previews. All six targeted golden checks and the full weave group, all980 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free texts describe the retained30°,45° and150° lines. No shared application or reserved file changed.
+
+
+## A192 — `bourgoin-98-divided-stars`
+
+This twelve-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(109.78,502.95), OA=25(√6+√2)pt, with no frame turn. Three squares give the central divided star. Transfers of1/2 and√3/2 set the hexagonal apothem L=(3+√3)/2. Two parallel families through earlier crossings complete the design. The white2pt source strokes are centred outlines, so no face expansion is applied. Periodic copies complete the off-centre cell. Source corners fit within0.00010840OA.
+
+Independent source-polygon shoelaces give six_kite(√3−1)/2, twelve; twelve_kite1/2−√3/6, twelve; hexagon(3−√3)/2, twelve; kite2√3/3−1, twelve; and eight1, three. These51 pieces sum exactly to9+6√3=2√3L². The engine independently confirms all five types and counts without slivers or off-construction endpoints. Two provisional exterior families were removed after proving that the ink is identical. PDF rounding makes exterior edges graze a cell corner for under0.001OA; those zero-length contacts are filtered before registration, and the resulting72 ink runs are unchanged.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/A192/overlay.png`. Every outline agrees, including both divided stars. All51 actual player fills match source interior samples. Six-star kites, central kites and surrounding hexagons each alternate between two classes, with placements1,2,5,6,9,10 forming the second class. The drawing has eight classes; three fixed illustrative colours extend the five-slot Kashan palette so all eight remain distinct. No photograph was checked. Credits name Abas and Salman, page192(1995), and Bourgoin, Plate98, upper design(1879), for which the page gives no location. No duplicate or filling-only variation was found.
+
+The catalog prepared197 previews. All six targeted golden checks and the full weave group, all985 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
