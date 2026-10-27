@@ -83,7 +83,7 @@ Tiling Search has no list of sixteen-fold tilings, so Claude read every page of 
 
 | Batch | Tilings | Notes | State |
 |---|---|---|---|
-| S1 | SPA0807, E41, TL1 | Spain first: the Alhambra Partal (311 pieces) and vestibule ceiling (931), both with Wade photos, and San Juan de los Reyes, Toledo (313) | started 27 Oct, 05:02 UTC |
+| S1 | SPA0807, E41, TL1 | Spain first: the Alhambra Partal (311 pieces) and vestibule ceiling (931), both with Wade photos, and San Juan de los Reyes, Toledo (313) | done 27 Oct: SPA0807 `alhambra-partal-turned-stars`, E41 `alhambra-mexuar-vestibule-rosettes`; TL1 skipped (one octagonal ceiling, d8, not a repeating tiling); E41's paired Wade photo SPA 1917 is a different panel (the data18 E41 dado) |
 | S2 | EGY1019, B153, B153A, AJL7 | Cairo, Bourgoin and Aleppo, 395–547 pieces; B153A is Bourgoin's drawing of B153 and is likely its variant | started 27 Oct, 05:02 UTC |
 | S3 | A285, P065, FIG8, SHAF2 | Bourgoin, Shiraz (tomb of Hafiz) and Shafai, 629–827 pieces | waiting |
 | S4 | MET1, SM27, MET2, SM31 | Mughal jali screens, two-level, 493–916 pieces; MET1 and SM27 may be the same design | waiting |

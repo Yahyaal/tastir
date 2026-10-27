@@ -3,7 +3,8 @@
 review page, copies its overlays there, and adds its review card, its id
 to the open Tiling Search question and its row to the pattern status.
 
-Usage: merge_batch.py <batch> <code>:<tutorial id> ...
+Usage: merge_batch.py [--research <folder>] <batch> <code>:<tutorial id> ...
+The research folder holds <code>/overlay.png (default docs/research/tilingsearch-45).
 Run from the repo root; the cards are written from each tutorial's own
 title, pattern text and construction note, so they say what the tutorial
 says.
@@ -64,7 +65,11 @@ def card(tid, code, t):
 
 
 def main():
-    batch, pairs = sys.argv[1], [a.split(':') for a in sys.argv[2:]]
+    global RESEARCH
+    args = sys.argv[1:]
+    if args[0] == '--research':
+        RESEARCH, args = args[1], args[2:]
+    batch, pairs = args[0], [a.split(':') for a in args[1:]]
     s = open(DATA).read()
     anchor = s.rindex("(new, Tiling Search)")
     j = s.index("\n  {\n    id:", anchor)

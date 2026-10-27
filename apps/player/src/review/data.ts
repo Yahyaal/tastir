@@ -5376,6 +5376,75 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-partal-turned-stars',
+    title:
+      'Turned stars of the Torre de las Damas, Alhambra (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A turned star sits at the centre of every tile, and a square star at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s SPA0807 drawing, an interlace of bands, by their centre lines. Its corners were snapped to the square-root-of-two grid in star-radius units, in the tile’s four directions and in the four directions turned by 22.5°. The tile’s half side is (1 + √2)² star radii: line OS2 meets the vertical through A at height 1 + √2, and line OS1 carries that out to the tile’s side. One helper line, the horizontal through P, is not in the finished pattern. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The lines are the centre lines of the drawing’s bands; the over-and-under weave is drawn by the player’s interlace look. Laid over Wade’s photo SPA 0807, our lines follow the square frames and the corner stars on the flat jamb; the turned stars lie where the wall curves into the arch, so the photo could not confirm or correct them, and the drawing is kept.',
+      '11 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-partal-turned-stars/photo-overlay.png',
+        caption:
+          'David Wade’s photo with the tutorial’s lines in red (private, not shipped).',
+      },
+      {
+        src: 'renders/alhambra-partal-turned-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-partal-turned-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Torre de las Damas, Partal, Alhambra, Granada (SPA0807)',
+        url: 'https://tilingsearch.mit.edu/HTML/data191/SPA0807.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-mexuar-vestibule-rosettes',
+    title:
+      'Sixteen-pointed rosettes of the Mexuar vestibule ceiling, Alhambra (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the tile side by side, corner to corner. A rosette sits at the centre of every tile, and an eight-pointed star at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s E41 drawing, an interlace of bands, by their centre lines. Every star, sixteen-pointed or eight-pointed, has its sides at one distance d from its centre. A rosette’s ring of sixteen lines is made of the next rosettes’ star sides, and the ring lies |AT| further out than the star’s sides, where T is the turned star on the tile’s side. These two facts fix d, marked here with the compass as half of KG. No three lines of the drawing meet in one point, so every other family is carried by the compass set to d, by turning round O, or by the tile’s mirror. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The lines are the centre lines of the drawing’s bands; the over-and-under weave is drawn by the player’s interlace look. No photograph of this ceiling was available to check: the Wade photograph paired with E41 in our research (SPA 1917, the Sala del Mexuar dado) shows a different design, with narrower sixteen-pointed stars.',
+      '12 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-mexuar-vestibule-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-mexuar-vestibule-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mexuar patio, vestibule ceiling, Alhambra, Granada (E41)',
+        url: 'https://tilingsearch.mit.edu/HTML/data208/E41.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -6655,6 +6724,8 @@ export const QUESTIONS: readonly Question[] = [
       'amol-marashi-tile-rows',
       'qom-atiq-courtyard-rows',
       'nasrid-casket-stars',
+      'alhambra-partal-turned-stars',
+      'alhambra-mexuar-vestibule-rosettes',
     ],
   },
 ];
