@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Twenty-three tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87 and MIR24. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Eight entries remain pending.
+Twenty-four tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87, MIR24 and DA1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Seven entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -313,3 +313,14 @@ Regression fixtures use U and T pentominoes with identical area5, perimeter12 an
 
 
 After the correction, catalog209, all twelve targeted golden assertions with the full weave group(226 total),1045 player text/helper assertions and41 schema assertions passed serially under3GB. The three outline regressions passed, and both affected tutorials passed the frozen legacy equivalence checks. Fresh ink/wall renders retain the source agreement; all68 MIR24 and136 P142 player fills again match source samples. Full final suites remain due after the remaining tutorials.
+
+
+## DA1 — `qawsun-quran-stars`
+
+The twenty-one-step p4m tutorial uses fold four and a twelve-pointed star. O is at PDF(299.56,373.06), OA=20(3+√3)/√2pt and the teaching frame turns45° onto the true square slides. Both primitive diagonal translations preserve the source polygons and colours. Three squares make the central star. A third-part construction and compass sums set the square half-side L=(3+5√3)/6. Six crossing-based parallel families, the5/3 axial carrier and two compass-derived corner carriers complete the mesh. The eight-star radius is√2(L−5/3). Plain source boundaries are retained, with worst source-corner residual0.00011378OA. Removing unused guides leaves all60 ink runs identical; corner grazes shorter than0.003OA are filtered before registration.
+
+Put r=√2, s=√3 and t=√6. Independent shoelaces give twelve_star6−2s, once; kite−1+2s/3, twelve; hexagon3/2−2s/3, sixteen; triangle−1/4+s/6, twelve; four_star(s−1)/3, twice; fourteen−275/18+62r/9+163s/18−35t/9, four; pentagon1/4+s/18, four; and eight_star(496−248r−280s+140t)/9, once. These52 counted areas sum exactly to28/3+10s/3=4L². The engine confirms all eight types and counts without slivers or off-construction endpoints. An additional opt-in full-outline inventory finds the same eight congruence classes, so this tutorial does not need the new classification option.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/DA1/overlay.png`. Every boundary agrees. All52 actual player fills match source interior samples. Four of the sixteen congruent hexagons are cyan and twelve are yellow; placement rules retain these classes alongside the cyan stars and pentagons, yellow eight-stars and brown connectors. The palette is illustrative. Credits retain Prisse d’Avennes, Arabic Art in Color, page45(1877), a decorative fourteenth-century Qur’an page attributed to Qeycoun, identified by the source page as Qawsun mosque, Cairo. No manuscript photograph was checked. The square mixed-star connectors differ from the other three-square-star meshes; no exact duplicate or filling-only variant was found.
+
+Catalog210, all six targeted golden assertions and the full weave group,1050 player text/helper assertions and41 schema assertions passed serially under3GB. Helper-free text describes only the retained15° bisectors and the single retained copy of the first parallel family. No shared application or reserved file changed.
