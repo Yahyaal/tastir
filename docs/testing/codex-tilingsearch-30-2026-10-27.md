@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Sixteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1 and DS1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Fifteen entries remain pending.
+Seventeen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1 and F294. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Fourteen entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -218,3 +218,16 @@ Independent shoelaces give twelve_star6−2√3, once; six_star42√3−72, twic
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/DS1/overlay.png`. Every band centre agrees. All30 actual player fills match the expanded source contours, retaining blue stars and grey connectors with an illustrative palette. Strapwork is the default. Credits retain the page’s email from B. O’Kane, Qalawun, Cairo, Egypt, through personal communication, and Daud Sutton, Islamic Design, page17(2007). No photograph or published teaching sequence was independently checked.
 
 The catalog prepared202 previews. All six targeted golden checks and the full weave group, all1010 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## F294 — `chester-beatty-twelve-stars`
+
+The sixteen-step p4m tutorial uses fold four and a twelve-pointed star. O is at PDF(297.5,373.3770833333), OA=20(1+√3)pt, with no frame turn. Facing contours give804 measurements clustered at8pt(7.99–8.01), so source faces are expanded4pt to band centres. Four triangles construct the60° star tips. Two compass transfers give the square half-side L=(3+√3)/2; six parallel families through earlier crossings complete the mesh. Worst source-corner residual is0.00064375OA.
+
+Independent shoelaces give twelve_star3√3−3, once; four_star3−√3, once; hexagon√3/2, twelve; three_star(9−3√3)/8, four; narrow_ten(√3−1)/2, four; ten(1+√3)/8, four; and kite(3−√3)/4, twelve. The38 counted areas sum exactly to12+6√3=4L². The engine independently confirms all seven types and counts. The two narrow ten-sided source shapes have small-piece allowances after the complete overlay confirmed their authentic sharp points. All ink endpoints are constructed crossings.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/F294/overlay.png`. Every band centre agrees throughout the page. All38 actual player fills match expanded source contours, retaining blue stars and ten-sided pieces, brown hexagons and smaller stars, and black kites with an illustrative palette. Strapwork is the default. The design has no exact library duplicate or filling-only variation; the four-triangle star opening differs from the three-square and two-hexagon stars.
+
+Credits retain Bonner, page408, figure335b, Great Mosque minaret, Siirt(1129AD,522AH); the page’s fourteenth-century Egyptian Qur’an at the Chester Beatty Library, Dublin, through personal communication; V&A cupboard panel899:1-1884, Cairo; Wichmann and Wade, figures7.1a and11.3a; d’Avennes internet photo282 with its uncertain al-naski qaisun minbar attribution; and the Thesaurus Islamicus al-Azhar kursi attribution. No photograph was independently checked.
+
+The catalog prepared203 previews. All six targeted golden checks and the full weave group, all1015 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free text omits the unused bottom frame line and three unused copies of the line through Q1. No shared application or reserved file changed.
