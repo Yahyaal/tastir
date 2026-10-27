@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Four tutorials are complete: CM022, ASU2, P41 and IND0403. Six two-level drawings are skipped: AS10, BR9, IND1016, IND0408, IND0917 and SM12. Twenty-nine entries remain pending.
+Five tutorials are complete: CM022, ASU2, P41, IND0403 and IND0405. Six two-level drawings are skipped: AS10, BR9, IND1016, IND0408, IND0917 and SM12. Twenty-eight entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -71,3 +71,13 @@ Put r=√2, s=√3 and t=√6. Independent source-polygon shoelaces give twelve_
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/IND0403/overlay.png`. Every red line follows a band centre throughout the page. The page cites Wade IND 0403, Agra Fort (1550 AD, 957 AH), explicitly the star without kites; no photograph was independently checked. White stars, green eight-sided connectors and the two blue petal classes are retained. Petals numbered 0, 3, 4, 7, 8 and 11 use the light class, as do the three-pointed stars. The actual player placement function’s 24 fills all match the source, with worst centre distance 0.00003199 OA. The numeric palette is illustrative. IND0405 is its central-kite variation, sharing the complete construction; no unrelated library design is an exact duplicate.
 
 All required checks passed serially under 3 GB: 190 catalog previews, the six targeted golden checks and full weave group, all 950 player text/helper assertions and all 40 schema checks. Default regeneration after exposing the variant path is byte-identical to the checked tutorial. No shared engine, schema, player or reserved file changed.
+
+## IND0405 — `agra-twelve-six-stars-kites`
+
+This twenty-step p6m variation shares every construction operation and normal step text with IND0403; only helper-free wording changes where its extra ink keeps a guide visible. O is at PDF (225.63, 371), the common centre of the twelve expanded kite corners. OA is the same 25(3+√3)/√2 pt star radius. The source’s lattice turns the other way, so the teaching frame turns −15°. The bands, bevel filtering and hexagonal apothem L are unchanged. Source corners in a complete shifted primitive cell fit within 0.00011735 OA; that cell is shifted along its first slide because the page clips one complete six-pointed star from the centred selection.
+
+Independent polygon shoelaces give twelve kites of area (3−√3)/6 in place of IND0403’s one twelve-pointed star. The other four piece types, their exact areas and counts are unchanged: three six_star pieces, six eight-sided connectors, twelve petals and two three_star pieces. Their 35 counted areas sum to the identical 2√3L². The engine independently confirms five types and all counts without slivers or off-construction endpoints. The existing radial lines provide every new kite edge; no new compass operations are needed.
+
+I inspected the ink, wall and full red overlay at `docs/research/tilingsearch-30/IND0405/overlay.png`; every band centre agrees, including all twelve central rays. The source’s white and pale-green kites alternate. Kite placements 1, 2, 5, 6, 9 and 10 use the pale-green class; the petal placements keep the same two blue classes as IND0403. All 35 fills from the actual player placement function match the source, with worst centre residual 0.00003902 OA. The comparison includes lattice copies of complete source faces because one six-pointed star is clipped at the page edge. The numeric palette is illustrative. The page credits Wade IND 0405, Agra Fort (1550 AD, 957 AH), specifying the version with kites; no photograph was independently checked. This and IND0403 form the Agra twelve/six-star family for Claude to add to the reserved variations file.
+
+The catalog prepared 191 previews. All six targeted golden checks and the full weave group, all 955 player text/helper assertions and all 40 schema checks passed serially under 3 GB. The variant’s construction was compared directly with the base; every normal step and operation agrees. No shared application or reserved file changed.

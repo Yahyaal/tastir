@@ -110,7 +110,11 @@ def drawing(pieces,origin=(297.5,374.6375),angle=15):
 def main(filled=False):
     pieces,out=sys.argv[1:3];cell=build()
     polys=drawing(pieces,origin=(225.63,371) if filled else (297.5,374.6375),angle=-15 if filled else 15)
-    if filled:cm.steps[3].pop('textWithoutHelpers',None)
+    if filled:
+        cm.steps[3].pop('textWithoutHelpers',None)
+        cm.steps[12]['textWithoutHelpers'] = (
+            'Draw a vertical line through N9. Draw its copies turned by 60°, 120°, 180° and 240° round O. '
+            'The tile’s corners are T1 to T6.')
     paths=cm.along_ink(network(polys,cell))
     step('Join T1, T2, T3, T4, T5 and T6 to mark the tile that repeats.','fade')
     g.put('tile','polygon',None,{'polygon':[f'T{i}' for i in range(1,7)]})
@@ -167,7 +171,7 @@ def main(filled=False):
         {'piece':'petal','nth':n,'color':'c'} for n in [0,3,4,7,8,11]]}
     if filled:
         tutorial['pattern']['placements']['rules'] += [
-            {'piece':'kite','nth':n,'color':'d'} for n in []]  # source-matched order below
+            {'piece':'kite','nth':n,'color':'d'} for n in [1,2,5,6,9,10]]
         tutorial['expect']['note']+=' Each central kite has area (3−√3)/6; twelve replace the star exactly.'
     cm.write(tutorial,out);print(len(cm.steps),'steps',len(paths),'paths')
 
