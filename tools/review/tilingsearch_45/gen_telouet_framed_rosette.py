@@ -9,9 +9,11 @@ The large rosette sits at the cell's corners; O is the small star at the
 middle of the cell, also a centre of four-fold turning, so the unit-star
 opening of the other Moroccan reconstructions applies (repeat found by
 matching pieces under translation and turning). All corners snap to a + bH
-(worst 0.0005). Axis lines lie at H, 2 + H, 2 + 3H, 3 + 3H, 2 + 5H, 4 + 3H,
-3 + 5H, 4 + 5H, 3 + 7H, 4 + 7H and 5 + 7H; the diagonals at H, 1 + H,
-2 + H, 2 + 3H, 2 + 5H, 4 + 5H and 4 + 7H. After the unit star each line runs
+(worst 0.0005); the page holds only part of the cell, so the drawing is
+completed by its turns about O (its colours turn with it). Axis lines lie at
+H, 2 + H, 2 + 3H, 3 + 3H, 2 + 5H, 4 + 3H, 3 + 5H, 4 + 5H, 3 + 7H, 4 + 7H,
+5 + 7H and 6 + 7H; the diagonals at H, 1 + H, 2 + H, 3 + H, 2 + 3H, 2 + 5H,
+4 + 3H, 4 + 5H, 4 + 7H, 5 + 7H, 6 + 7H, 5 + 9H and 5 + 11H. After the unit star each line runs
 through a crossing of earlier lines (large/greedy.py); where an axis line and
 a diagonal share their distance, one line turned by 45° seven times draws
 both. The tile's sides come as in the Najjarin rosette.
