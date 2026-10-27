@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Nineteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1 and P141. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Twelve entries remain pending.
+Twenty tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141 and P142. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Eleven entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -255,3 +255,14 @@ I inspected the ink, wall and complete red overlay at `docs/research/tilingsearc
 P142 reuses this lesson’s unchanged first six construction steps, but its cmm repeat and different connectors make a separate tiling. The optional opening-only generator path leaves default P141 geometry unchanged. F294 has the same kind of four-triangle star in a different frame and square mesh. No exact duplicate or filling-only variant was found.
 
 The catalog prepared205 previews. All six targeted golden checks and the full weave group, all1025 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## P142 — `bourgoin-142-star-rows`
+
+The twenty-seven-step cmm tutorial uses fold two and a twelve-pointed star. O is at PDF(297.5,373.3795833333), OA=20(1+√3)pt, and the teaching frame turns45° to align its mirrors with the axes. The conventional centred rectangle has half-sides H=2√2+√6 and V=√2+√6, and contains two twelve-pointed stars. The first six normal steps and every operation are identical to P141’s opening. Compass sums set H and V. Sixteen parallel families through earlier crossings construct the mesh. Their extra rotated guides do not assert extra symmetry of the finished ink. Plain source boundaries are retained. Periodic copies complete source coverage of the rotated rectangle. Worst source-corner residual is0.00017769OA.
+
+Independent shoelaces give twelve_star3√3−3, twice; kite(3−√3)/4, twenty-four; hexagon√3/2, twenty-four; notched_hexagon1/4, twenty-four; eight5√3/12, twenty-four; regular_hexagon√3/4, twenty-four; four_star3−√3, eight; ten−1/2+3√3/4, four; and six_star√3/2, twice. These136 counted areas sum exactly to40+24√3=4HV. The engine independently confirms all nine types and counts, the half-turn and mirrors, and the absence of slivers and off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P142/overlay.png`. Every boundary agrees. All136 actual player fills match source interior samples, retaining pale cyan stars, red kites and small connectors, green larger connectors, and blue four-stars with an illustrative palette. Credits retain Critchlow, page177(1976); Abas and Salman, page313(1995); Bourgoin, Plate142(1879), with no known source; and the Wade BOU142 link. No photograph was independently checked. This cmm arrangement and additional connectors differ from P141’s p6m mesh, so it is a separate related construction rather than a filling-only variation. No exact duplicate was found.
+
+The catalog prepared206 previews. All six targeted golden checks and the full weave group, all1030 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free texts list only the retained rotations, including the half-turn copy of the final vertical. No shared application or reserved file changed.
