@@ -146,5 +146,10 @@
     "id": "bourgoin-149-rosettes",
     "title": "Sixteen-pointed rosettes of Bourgoin plate 149",
     "members": ["bourgoin-149-rosettes", "shafai-248-rosettes"]
+  },
+  {
+    "id": "fatehpur-masjid-decagons",
+    "title": "Decagons of the Friday Mosque, Fatehpur Sikri",
+    "members": ["fatehpur-masjid-decagons", "fatehpur-masjid-small-decagons"]
   }
 ]

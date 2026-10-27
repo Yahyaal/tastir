@@ -102,7 +102,7 @@ The library has a single ten-fold tutorial (`ten-pointed-star-decagon-rect`). Th
 | Batch | Tilings | Notes | State |
 |---|---|---|---|
 | T1 | F207, BON15, SIVAS4, S31A | Fatehpur Sikri (126 pieces), Gunbad-i Qabud (pm), Sivas (coloured interlacing), Mirza Akber | started 27 Oct, 19:22 UTC |
-| T2 | F66B, SIVAS3, SM28, SM6 | Tayabad (pmm), Sifahidiye madrasa in Sivas (coloured interlacing), two Fatehpur Sikri panels of the same size that may be one design | started 27 Oct, 19:22 UTC |
+| T2 | F66B, SIVAS3, SM28, SM6 | Tayabad (pmm), Sifahidiye madrasa in Sivas (coloured interlacing), two Fatehpur Sikri panels of the same size that may be one design | done 27 Oct: F66B, SM6 and its variant SM28; SIVAS3 skipped (one d5 panel) |
 | T3 | P183, SHAF10, MIR17, MIR26 | Bourgoin (18°), Isfahan, and two Üsküdar mosques (pmm) | waiting |
 | T4 | MIR11, MIR1, TOP1, E41 (data18) | Çamlıca mosque (two), Topkapı Palace door (993 pieces), and the sixteen-fold Sala del Mexuar dado in the Alhambra, paired with Wade's photo SPA 1917 (its files are in `E41-data18/`) | waiting |
 

@@ -5721,6 +5721,102 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'tayabad-zayn-stars',
+    title:
+      'Ten-pointed stars of the shrine of Zayn al-Din, Tayabad (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at each corner of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s F66B drawing, whose pieces are drawn edge to edge. O is the centre of a ten-pointed star made of two regular pentagons, and OA is the distance from O to the star’s lines. The repeat is a rectangle of half-sides 3 + √5 and 1/sin 36° (in OA), with a second kind of star at its corners. Every line runs at 90° to the star’s radius at A, B, C and on round, and every offset, fitted as (a + b√5)/c, lies within 0.0007 of OA of the drawing. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Colours follow the shapes, not his drawing. No photograph was checked.',
+      '13 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/tayabad-zayn-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/tayabad-zayn-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Shrine of Zayn al-Din, Tayabad, Iran (F66B)',
+        url: 'https://tilingsearch.mit.edu/HTML/data13/F66B.html',
+      },
+    ],
+  },
+  {
+    id: 'fatehpur-masjid-decagons',
+    title:
+      'Decagons and pentagons of the Friday Mosque, Fatehpur Sikri (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A decagon sits at the centre and at each corner of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s SM6 drawing, whose pieces are drawn edge to edge. O is the centre of a regular decagon and OA its inradius. The decagons sit at the centre and the corners of a rectangle of half-sides 2φ and 2φ tan 54° (in OA, φ the golden ratio). Every line runs parallel to a side of the decagon, and, about some decagon’s centre, passes through it, along a side or at φ from it (drawing within 0.001 of OA). The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Colours follow the shapes: Wichmann draws the kites dark green and the rest white, with the lines as red bands. No photograph was checked.',
+      '13 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fatehpur-masjid-decagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fatehpur-masjid-decagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Friday Mosque, Fatehpur Sikri, India (SM6)',
+        url: 'https://tilingsearch.mit.edu/HTML/data206/SM6.html',
+      },
+    ],
+  },
+  {
+    id: 'fatehpur-masjid-small-decagons',
+    title:
+      'Small decagons of the Friday Mosque, Fatehpur Sikri (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A decagon sits at the centre and at each corner of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s SM28 drawing, whose pieces are drawn edge to edge. It is the design of his SM6 (Fatehpur Sikri decagons) with a smaller decagon and no ring of pentagons round it, so it shares that tutorial’s opening, outer ring and tile: O is the centre of a decagon, OA the inradius of SM6’s larger one, and the decagons sit at the centre and the corners of a rectangle of half-sides 2φ and 2φ tan 54°. Every other line matches the drawing within 0.001 of OA. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. In the drawing the small decagon’s sides are 0.6994 of OA from its centre (0.7 of SM6’s), a length no crossing of the design gives. We draw them through W, where two circles of the opening cross, at 0.6993: the pieces match the drawing within 0.0004 of OA. Colours follow the shapes, not his drawing (dark green kites, the rest white, red bands). No photograph was checked.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fatehpur-masjid-small-decagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fatehpur-masjid-small-decagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Friday Mosque, Fatehpur Sikri, India (SM28)',
+        url: 'https://tilingsearch.mit.edu/HTML/data206/SM28.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -7011,6 +7107,9 @@ export const QUESTIONS: readonly Question[] = [
       'bourgoin-65-rosettes',
       'hafiz-tomb-rosettes',
       'jali-screen-pinwheel',
+      'tayabad-zayn-stars',
+      'fatehpur-masjid-decagons',
+      'fatehpur-masjid-small-decagons',
     ],
   },
 ];
