@@ -1,0 +1,185 @@
+{
+  "format": 0,
+  "id": "salim-chishti-dodecagons",
+  "title": "Dodecagons of Salim Chishti’s tomb, Fatehpur Sikri",
+  "short": "Salim Chishti dodecagons",
+  "subtitle": "Salim Chishti’s tomb, Fatehpur Sikri",
+  "fold": 6,
+  "style": "Mughal",
+  "level": "intermediate",
+  "given": {"O": "The centre of a dodecagon.", "A": "Its right point."},
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Wichmann’s ASU2 drawing. The drawing gives no construction steps. The standard twelve-division opening is shared with the existing Mian rosette lesson. The pentagon boundaries and the hexagonal repeat were reconstructed from the drawing.",
+    "changes": "The 12 pt bands are represented by their centre lines. The compass steps, order and named points are ours. The palette is illustrative; no photograph was checked.",
+    "reviewed": "2026-10-27"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data216/ASU2: Salim Chishti’s tomb",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data216/ASU2.html",
+      "note": "His page attributes the design to Aslam Qureshi’s photograph of Salim Chishti’s tomb, Fatehpur Sikri, India (1581 AD, 989 AH), supplied by personal communication. The photograph was not independently checked."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. Keep this compass size for the next steps.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a circle with centre A through O. Draw a circle with centre G through O, where the line crosses the first circle on the left.",
+      "create": {
+        "G": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "cE": {"circle": {"centre": "A", "radiusOf": "c"}},
+        "cW": {"circle": {"centre": "G", "radiusOf": "c"}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "Draw a vertical line through O. It crosses the first circle at D and K. Draw a circle with centre D through O. Draw a circle with centre K through O.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "K": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "cN": {"circle": {"centre": "D", "radiusOf": "c"}},
+        "cS": {"circle": {"centre": "K", "radiusOf": "c"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a straight line through B and H, C and J, E and L, and F and M. B, C, E, F, H, J, L and M are where the four new circles cross the first circle. The first circle is now cut into twelve.",
+      "create": {
+        "C": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60.0}}},
+        "L": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300.0}}},
+        "E": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
+        "J": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}},
+        "B": {"point": {"meet": ["c", "cN"], "pick": {"angle": 30.0}}},
+        "F": {"point": {"meet": ["c", "cN"], "pick": {"angle": 150.0}}},
+        "H": {"point": {"meet": ["c", "cS"], "pick": {"angle": 210.0}}},
+        "M": {"point": {"meet": ["c", "cS"], "pick": {"angle": 330.0}}},
+        "r30": {"line": {"through": ["B", "H"]}},
+        "r60": {"line": {"through": ["C", "J"]}},
+        "r120": {"line": {"through": ["E", "L"]}},
+        "r150": {"line": {"through": ["F", "M"]}}
+      },
+      "highlight": ["cE", "cW", "cN", "cS"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a straight line through A and B, B and C, C and D, and D and E. Draw a straight line through E and F, F and G, G and H, and H and J. Draw a straight line through J and K, K and L, L and M, and M and A. These lines outline the twelve-sided shape.",
+      "create": {
+        "edge0": {"line": {"through": ["A", "B"]}},
+        "edge1": {"line": {"through": ["B", "C"]}},
+        "edge2": {"line": {"through": ["C", "D"]}},
+        "edge3": {"line": {"through": ["D", "E"]}},
+        "edge4": {"line": {"through": ["E", "F"]}},
+        "edge5": {"line": {"through": ["F", "G"]}},
+        "edge6": {"line": {"through": ["G", "H"]}},
+        "edge7": {"line": {"through": ["H", "J"]}},
+        "edge8": {"line": {"through": ["J", "K"]}},
+        "edge9": {"line": {"through": ["K", "L"]}},
+        "edge10": {"line": {"through": ["L", "M"]}},
+        "edge11": {"line": {"through": ["M", "A"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw a straight line through O and C. Draw a straight line through O and E. Draw the line through O that halves angle AOB. It crosses the circle at N, above OA.",
+      "create": {
+        "r0": {"line": {"through": ["O", "C"]}},
+        "r1": {"line": {"through": ["O", "E"]}},
+        "r15": {"line": {"through": "O", "bisects": ["A", "O", "B"]}},
+        "N": {"point": {"meet": ["c", "r15"], "pick": {"angle": 15.0}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Draw a horizontal line through N. It crosses the vertical line through O at P. Draw a circle with centre A and opening OP. It crosses the horizontal line at Q, right of A.",
+      "create": {
+        "nh": {"line": {"through": "N", "parallelTo": "h"}},
+        "P": {"point": {"meet": ["nh", "v"]}},
+        "cq": {"circle": {"centre": "A", "radiusFrom": ["O", "P"]}},
+        "Q": {"point": {"meet": ["cq", "h"], "pick": {"farthest": "O"}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 8,
+      "text": "Draw a vertical line through Q. Turn it round O by 60°, five times. These six lines frame the hexagonal tile. Its corners are T1 to T6.",
+      "create": {
+        "side": {"line": {"through": "Q", "parallelTo": "v"}},
+        "sides": {"repeat": {"of": ["side"], "by": "rot6"}},
+        "T1": {"point": {"meet": ["side", "side@1"]}},
+        "T2": {"point": {"meet": ["side@1", "side@2"]}},
+        "T3": {"point": {"meet": ["side@2", "side@3"]}},
+        "T4": {"point": {"meet": ["side@3", "side@4"]}},
+        "T5": {"point": {"meet": ["side@4", "side@5"]}},
+        "T6": {"point": {"meet": ["side@5", "side"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "Join T1, T2, T3, T4, T5 and T6 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["T1", "T2", "T3", "T4", "T5", "T6"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They close the dodecagon and its surrounding pentagons.",
+    "paths": [
+      {"along": "h", "from": "side@3", "to": "edge5"},
+      {"along": "h", "from": "edge0", "to": "side"},
+      {"along": "v", "from": "side@4", "to": "edge8"},
+      {"along": "v", "from": "edge2", "to": "side@1"},
+      {"along": "r30", "from": "side", "to": "edge0"},
+      {"along": "r30", "from": "edge6", "to": "side@3"},
+      {"along": "r60", "from": "side@1", "to": "edge1"},
+      {"along": "r60", "from": "edge7", "to": "side@4"},
+      {"along": "r120", "from": "side@2", "to": "edge3"},
+      {"along": "r120", "from": "edge9", "to": "side@5"},
+      {"along": "r150", "from": "side@2", "to": "edge4"},
+      {"along": "r150", "from": "edge10", "to": "side"},
+      {"along": "edge0", "from": "h", "to": "r30"},
+      {"along": "edge1", "from": "r30", "to": "r60"},
+      {"along": "edge2", "from": "r60", "to": "v"},
+      {"along": "edge3", "from": "v", "to": "r120"},
+      {"along": "edge4", "from": "r120", "to": "r150"},
+      {"along": "edge5", "from": "r150", "to": "h"},
+      {"along": "edge6", "from": "h", "to": "r30"},
+      {"along": "edge7", "from": "r30", "to": "r60"},
+      {"along": "edge8", "from": "r60", "to": "v"},
+      {"along": "edge9", "from": "v", "to": "r120"},
+      {"along": "edge10", "from": "r120", "to": "r150"},
+      {"along": "edge11", "from": "r150", "to": "h"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "look": "strapwork",
+    "palette": "Mamluk wood",
+    "colors": {"dodecagon": "a", "pentagon": "a"},
+    "text": "Put copies of the hexagonal tile side by side."
+  },
+  "expect": {
+    "pieceTypes": 2,
+    "cellArea": 5.4893,
+    "note": "The unit dodecagon has area 3. Six pentagons of area (6√2+6√3−2√6−9)/12 fill the rest. Their sum is 2√3(1+sin15°)², the hexagonal cell area.",
+    "pieces": [
+      {"name": "dodecagon", "vertices": 12, "area": 3, "perCell": 1},
+      {"name": "pentagon", "vertices": 5, "area": 0.41488, "perCell": 6}
+    ]
+  }
+}

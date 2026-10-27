@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-CM022 is complete. The other 38 entries remain pending.
+CM022 and ASU2 are complete. The other 37 entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -21,3 +21,13 @@ Independent polygon shoelaces give six_star 2√3, twice; eight 8−3√3, four;
 I inspected the ink, the wall and the complete red PDF overlay at `docs/research/tilingsearch-30/CM022/overlay.png`. Every red line follows a band centre. The drawing’s three fill classes are retained by shape; the numeric palette is illustrative. CM022 is absent from `wade-paired.json`, and no building photograph was checked. Credits retain the page’s Cahier and Martin page 22, Wade SPA 2219 and SPA 2319, Rigby photograph 180 and Crossling inlay attribution. The source’s own monument descriptions differ, and are reported as its attributions. Comparison with existing tutorials and families found no duplicate or filling-only variant. The old six-fold tutorials have different piece inventories and arrangements.
 
 The catalog prepared 187 previews. The six targeted golden checks and the targeted weave check passed. The specified combined filtered command failed only because interlace.spec.ts has a global afterAll requiring over 1000 followed band sections, which a single filtered design cannot supply. Running that entire file passed all 192 checks. The player text/helper checks passed all 940 assertions, including the ASU2 draft. The schema suite passed all 40 checks. A player run started while the full weave file was still running was stopped and then rerun sequentially; subsequent heavy checks remain serial. These checks used the 3 GB cap. No shared engine, schema, player or reserved file was changed.
+
+## ASU2 — `salim-chishti-dodecagons`
+
+This p6m tutorial has nine steps and fold six. O is at PDF (305.4016666667, 371), the central dodecagon’s centre. OA is its expanded radius, 45/(2sin15°)=86.9333243660 pt, and the hexagonal cell apothem is 1+sin15°. Its source faces are expanded by 6 pt, half the 12 pt bands. All 97 extracted source polygons fit the exact ideal vertex set and its lattice copies within 0.00009532 OA in Euclidean distance. The mixed √2/√3 expressions have small coefficients; no approximate length is shipped.
+
+The first four steps reuse the existing Mian lesson’s twelve-division opening byte for byte. The dodecagon sides, a half-chord transfer and the six cell sides give all the ink. An independent pentagon shoelace uses (−√3/2,1/2), (−L,L/√3), (−2L+√3/2,1/2), (−2L+1,0) and (−1,0), with L=1+sin15°. Its area is (6√2+6√3−2√6−9)/12. Six of these and one dodecagon of area 3 sum exactly to 2√3L², the cell area. The engine independently finds both types and those counts without slivers or off-construction endpoints.
+
+I inspected the ink, wall and the complete red overlay at `docs/research/tilingsearch-30/ASU2/overlay.png`. All source boundaries agree with our band centre lines. The source’s single fill class is retained by assigning both shapes the same palette slot. The numeric palette is illustrative. The page credits Aslam Qureshi’s photograph of Salim Chishti’s tomb, Fatehpur Sikri (1581 AD, 989 AH), supplied by personal communication; no photograph was independently checked. This is a separate design from the star and rosette lessons and the existing eight-fold Salim Chishti square lattice, with no duplicate or filling-only variant found.
+
+The catalog prepared 188 previews. All six targeted golden checks, the full weave group, all 940 text/helper assertions and all 40 schema checks passed serially under 3 GB. The filter includes `weave` because of the global crossing-count assertion explained under CM022. No shared application or reserved file changed.
