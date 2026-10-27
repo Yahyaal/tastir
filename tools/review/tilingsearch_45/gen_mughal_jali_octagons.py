@@ -114,6 +114,8 @@ def build():
     opening()
     if VARIANT == 'met1':
         cm.steps[1]['textWithoutHelpers'] = WITHOUT2
+    else:
+        cm.steps[1]['textWithoutHelpers'] = WITHOUT2 + ' Draw a line through O at 90° to the line through S2.'
     if VARIANT == 'met1':
         step('The horizontal line through P crosses a 135° line from step 6 at Q, near the vertical line through O. '
              'Draw a vertical line through Q. Turn it round O by 90°, three times.')
