@@ -1,0 +1,722 @@
+{
+  "pm": {
+    "format": 0,
+    "id": "test-pm",
+    "title": "Test pm",
+    "fold": 1,
+    "style": "Test",
+    "level": "intermediate",
+    "credits": [],
+    "given": {
+      "O": "The centre.",
+      "A": "One radius to the right."
+    },
+    "steps": [
+      {
+        "id": 1,
+        "text": "Draw the repeat.",
+        "create": {
+          "h": {
+            "line": {
+              "through": [
+                "O",
+                "A"
+              ]
+            }
+          },
+          "v": {
+            "line": {
+              "through": "O",
+              "perpendicularTo": "h"
+            }
+          },
+          "c": {
+            "circle": {
+              "centre": "O",
+              "through": "A"
+            }
+          },
+          "C": {
+            "point": {
+              "meet": [
+                "c",
+                "v"
+              ],
+              "pick": {
+                "angle": 90
+              }
+            }
+          },
+          "D": {
+            "point": {
+              "meet": [
+                "c",
+                "v"
+              ],
+              "pick": {
+                "angle": 270
+              }
+            }
+          },
+          "ca": {
+            "circle": {
+              "centre": "A",
+              "through": "O"
+            }
+          },
+          "E": {
+            "point": {
+              "meet": [
+                "ca",
+                "h"
+              ],
+              "pick": {
+                "farthest": "O"
+              }
+            }
+          },
+          "halves": {
+            "repeat": {
+              "of": [
+                "E"
+              ],
+              "by": "rot2"
+            }
+          },
+          "cb": {
+            "circle": {
+              "centre": "O",
+              "through": "E"
+            }
+          },
+          "B": {
+            "point": {
+              "meet": [
+                "cb",
+                "h"
+              ],
+              "pick": {
+                "angle": 180
+              }
+            }
+          },
+          "east": {
+            "line": {
+              "through": "E",
+              "parallelTo": "v"
+            }
+          },
+          "west": {
+            "line": {
+              "through": "B",
+              "parallelTo": "v"
+            }
+          },
+          "north": {
+            "line": {
+              "through": "C",
+              "parallelTo": "h"
+            }
+          },
+          "south": {
+            "line": {
+              "through": "D",
+              "parallelTo": "h"
+            }
+          },
+          "K1": {
+            "point": {
+              "meet": [
+                "east",
+                "north"
+              ]
+            }
+          },
+          "K2": {
+            "point": {
+              "meet": [
+                "west",
+                "north"
+              ]
+            }
+          },
+          "K3": {
+            "point": {
+              "meet": [
+                "west",
+                "south"
+              ]
+            }
+          },
+          "K4": {
+            "point": {
+              "meet": [
+                "east",
+                "south"
+              ]
+            }
+          },
+          "diagonal": {
+            "line": {
+              "through": [
+                "O",
+                "K1"
+              ]
+            }
+          },
+          "otherDiagonal": {
+            "line": {
+              "through": [
+                "O",
+                "K2"
+              ]
+            }
+          },
+          "cut": {
+            "line": {
+              "through": "A",
+              "parallelTo": "v"
+            }
+          },
+          "P": {
+            "point": {
+              "meet": [
+                "cut",
+                "north"
+              ]
+            }
+          },
+          "Q": {
+            "point": {
+              "meet": [
+                "cut",
+                "south"
+              ]
+            }
+          },
+          "cell": {
+            "polygon": [
+              "K1",
+              "K2",
+              "K3",
+              "K4"
+            ]
+          }
+        }
+      }
+    ],
+    "ink": {
+      "paths": [
+        {
+          "through": [
+            "K1",
+            "K2",
+            "K3",
+            "K4"
+          ],
+          "closed": true
+        },
+        {
+          "through": [
+            "P",
+            "Q"
+          ]
+        }
+      ]
+    },
+    "pattern": {
+      "cell": "cell",
+      "colors": {}
+    },
+    "expect": {
+      "pieceTypes": 2,
+      "cellArea": 8,
+      "pieces": [
+        {
+          "name": "wide",
+          "vertices": 4,
+          "area": 6,
+          "perCell": 1
+        },
+        {
+          "name": "narrow",
+          "vertices": 4,
+          "area": 2,
+          "perCell": 1
+        }
+      ]
+    }
+  },
+  "pmm": {
+    "format": 0,
+    "id": "test-pmm",
+    "title": "Test pmm",
+    "fold": 2,
+    "style": "Test",
+    "level": "intermediate",
+    "credits": [],
+    "given": {
+      "O": "The centre.",
+      "A": "One radius to the right."
+    },
+    "steps": [
+      {
+        "id": 1,
+        "text": "Draw the repeat.",
+        "create": {
+          "h": {
+            "line": {
+              "through": [
+                "O",
+                "A"
+              ]
+            }
+          },
+          "v": {
+            "line": {
+              "through": "O",
+              "perpendicularTo": "h"
+            }
+          },
+          "c": {
+            "circle": {
+              "centre": "O",
+              "through": "A"
+            }
+          },
+          "C": {
+            "point": {
+              "meet": [
+                "c",
+                "v"
+              ],
+              "pick": {
+                "angle": 90
+              }
+            }
+          },
+          "D": {
+            "point": {
+              "meet": [
+                "c",
+                "v"
+              ],
+              "pick": {
+                "angle": 270
+              }
+            }
+          },
+          "ca": {
+            "circle": {
+              "centre": "A",
+              "through": "O"
+            }
+          },
+          "E": {
+            "point": {
+              "meet": [
+                "ca",
+                "h"
+              ],
+              "pick": {
+                "farthest": "O"
+              }
+            }
+          },
+          "halves": {
+            "repeat": {
+              "of": [
+                "E"
+              ],
+              "by": "rot2"
+            }
+          },
+          "cb": {
+            "circle": {
+              "centre": "O",
+              "through": "E"
+            }
+          },
+          "B": {
+            "point": {
+              "meet": [
+                "cb",
+                "h"
+              ],
+              "pick": {
+                "angle": 180
+              }
+            }
+          },
+          "east": {
+            "line": {
+              "through": "E",
+              "parallelTo": "v"
+            }
+          },
+          "west": {
+            "line": {
+              "through": "B",
+              "parallelTo": "v"
+            }
+          },
+          "north": {
+            "line": {
+              "through": "C",
+              "parallelTo": "h"
+            }
+          },
+          "south": {
+            "line": {
+              "through": "D",
+              "parallelTo": "h"
+            }
+          },
+          "K1": {
+            "point": {
+              "meet": [
+                "east",
+                "north"
+              ]
+            }
+          },
+          "K2": {
+            "point": {
+              "meet": [
+                "west",
+                "north"
+              ]
+            }
+          },
+          "K3": {
+            "point": {
+              "meet": [
+                "west",
+                "south"
+              ]
+            }
+          },
+          "K4": {
+            "point": {
+              "meet": [
+                "east",
+                "south"
+              ]
+            }
+          },
+          "diagonal": {
+            "line": {
+              "through": [
+                "O",
+                "K1"
+              ]
+            }
+          },
+          "otherDiagonal": {
+            "line": {
+              "through": [
+                "O",
+                "K2"
+              ]
+            }
+          },
+          "cut": {
+            "line": {
+              "through": "A",
+              "parallelTo": "v"
+            }
+          },
+          "P": {
+            "point": {
+              "meet": [
+                "cut",
+                "north"
+              ]
+            }
+          },
+          "Q": {
+            "point": {
+              "meet": [
+                "cut",
+                "south"
+              ]
+            }
+          },
+          "cell": {
+            "polygon": [
+              "K1",
+              "K2",
+              "K3",
+              "K4"
+            ]
+          }
+        }
+      }
+    ],
+    "ink": {
+      "paths": [
+        {
+          "through": [
+            "K1",
+            "K2",
+            "K3",
+            "K4"
+          ],
+          "closed": true
+        }
+      ]
+    },
+    "pattern": {
+      "cell": "cell",
+      "colors": {}
+    },
+    "expect": {
+      "pieceTypes": 1,
+      "cellArea": 8,
+      "pieces": [
+        {
+          "name": "rectangle",
+          "vertices": 4,
+          "area": 8,
+          "perCell": 1
+        }
+      ]
+    }
+  },
+  "cmm": {
+    "format": 0,
+    "id": "test-cmm",
+    "title": "Test cmm",
+    "fold": 2,
+    "style": "Test",
+    "level": "intermediate",
+    "credits": [],
+    "given": {
+      "O": "The centre.",
+      "A": "One radius to the right."
+    },
+    "steps": [
+      {
+        "id": 1,
+        "text": "Draw the repeat.",
+        "create": {
+          "h": {
+            "line": {
+              "through": [
+                "O",
+                "A"
+              ]
+            }
+          },
+          "v": {
+            "line": {
+              "through": "O",
+              "perpendicularTo": "h"
+            }
+          },
+          "c": {
+            "circle": {
+              "centre": "O",
+              "through": "A"
+            }
+          },
+          "C": {
+            "point": {
+              "meet": [
+                "c",
+                "v"
+              ],
+              "pick": {
+                "angle": 90
+              }
+            }
+          },
+          "D": {
+            "point": {
+              "meet": [
+                "c",
+                "v"
+              ],
+              "pick": {
+                "angle": 270
+              }
+            }
+          },
+          "ca": {
+            "circle": {
+              "centre": "A",
+              "through": "O"
+            }
+          },
+          "E": {
+            "point": {
+              "meet": [
+                "ca",
+                "h"
+              ],
+              "pick": {
+                "farthest": "O"
+              }
+            }
+          },
+          "halves": {
+            "repeat": {
+              "of": [
+                "E"
+              ],
+              "by": "rot2"
+            }
+          },
+          "cb": {
+            "circle": {
+              "centre": "O",
+              "through": "E"
+            }
+          },
+          "B": {
+            "point": {
+              "meet": [
+                "cb",
+                "h"
+              ],
+              "pick": {
+                "angle": 180
+              }
+            }
+          },
+          "east": {
+            "line": {
+              "through": "E",
+              "parallelTo": "v"
+            }
+          },
+          "west": {
+            "line": {
+              "through": "B",
+              "parallelTo": "v"
+            }
+          },
+          "north": {
+            "line": {
+              "through": "C",
+              "parallelTo": "h"
+            }
+          },
+          "south": {
+            "line": {
+              "through": "D",
+              "parallelTo": "h"
+            }
+          },
+          "K1": {
+            "point": {
+              "meet": [
+                "east",
+                "north"
+              ]
+            }
+          },
+          "K2": {
+            "point": {
+              "meet": [
+                "west",
+                "north"
+              ]
+            }
+          },
+          "K3": {
+            "point": {
+              "meet": [
+                "west",
+                "south"
+              ]
+            }
+          },
+          "K4": {
+            "point": {
+              "meet": [
+                "east",
+                "south"
+              ]
+            }
+          },
+          "diagonal": {
+            "line": {
+              "through": [
+                "O",
+                "K1"
+              ]
+            }
+          },
+          "otherDiagonal": {
+            "line": {
+              "through": [
+                "O",
+                "K2"
+              ]
+            }
+          },
+          "cut": {
+            "line": {
+              "through": "A",
+              "parallelTo": "v"
+            }
+          },
+          "P": {
+            "point": {
+              "meet": [
+                "cut",
+                "north"
+              ]
+            }
+          },
+          "Q": {
+            "point": {
+              "meet": [
+                "cut",
+                "south"
+              ]
+            }
+          },
+          "cell": {
+            "polygon": [
+              "E",
+              "C",
+              "B",
+              "D"
+            ]
+          }
+        }
+      }
+    ],
+    "ink": {
+      "paths": [
+        {
+          "through": [
+            "E",
+            "C",
+            "B",
+            "D"
+          ],
+          "closed": true
+        }
+      ]
+    },
+    "pattern": {
+      "cell": "cell",
+      "colors": {}
+    },
+    "expect": {
+      "pieceTypes": 1,
+      "cellArea": 4,
+      "pieces": [
+        {
+          "name": "rhombus",
+          "vertices": 4,
+          "area": 4,
+          "perCell": 1
+        }
+      ]
+    }
+  }
+}

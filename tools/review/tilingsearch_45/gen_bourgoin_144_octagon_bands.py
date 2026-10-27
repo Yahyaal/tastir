@@ -20,15 +20,15 @@ H,T,L=math.sqrt(.5),math.sqrt(2)-1,2+2*math.sqrt(2)
 R=48.2854967367
 
 
-def parallels(points,prefix):
+def parallels(points,prefix,fold=4):
     names=[]
     for i,p in enumerate(points):
         for j,line in enumerate(['q01','q11']):
             n=f'{prefix}{i}{j}';g.line_par(n,p,line);names.append(n)
-    g.repeat(prefix+'p',names,'rot4')
+    g.repeat(prefix+'p',names,f'rot{fold}')
 
 
-def build():
+def build(opening_only=False):
     g.given()
     step('Draw a horizontal straight line through O and A. Draw a circle with centre O through A.', 'compass')
     g.circle_through('c','O','A');g.line_through('h','O','A')
@@ -54,6 +54,8 @@ def build():
     g.circle_through('ca','A','O');g.meet('F','ca','h',(2,0))
     g.circle_from('cg1','F','O','J');g.meet('G1','cg1','h',(2+2*H,0))
     g.circle_from('cg2','G1','O','J');g.meet('G2','cg2','h',(L,0))
+    if opening_only:
+        return
     step('Draw a circle with centre O through G2. It crosses the horizontal and vertical lines at T1 to T4. '
          'Draw a vertical line through each of T1 and T3. Draw a horizontal line through each of T2 and T4. '
          'They make a square with corners K1, K2, K3 and K4.', 'compass')

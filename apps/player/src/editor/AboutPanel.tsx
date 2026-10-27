@@ -28,7 +28,7 @@ export const slug = (title: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '') || 'my-pattern';
-const FOLDS = [3, 4, 5, 6, 8, 10, 12, 16];
+const FOLDS = [1, 2, 3, 4, 5, 6, 8, 10, 12, 16];
 
 /**
  * What only a library tutorial has, filled in from the editor: its level,
@@ -106,7 +106,7 @@ export function AboutPanel({
             >
               {FOLDS.map((n) => (
                 <option key={n} value={n}>
-                  {n}
+                  {n === 1 ? '1 (mirror)' : n}
                 </option>
               ))}
             </select>

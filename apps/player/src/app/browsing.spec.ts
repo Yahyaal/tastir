@@ -1,4 +1,4 @@
-import { filtered, neighbours, titleOf } from './browsing';
+import { filtered, foldLabel, neighbours, titleOf } from './browsing';
 import type { Entry } from './library';
 
 const entry = (id: string, fold: number, style = 'Nasrid'): Entry => ({
@@ -62,5 +62,17 @@ describe('searching the library', () => {
   it('shows everything for no words, and nothing for words no pattern has', () => {
     expect(ids('  ')).toHaveLength(3);
     expect(ids('zellige')).toEqual([]);
+  });
+});
+
+describe('mirror and half-turn filters', () => {
+  it('labels mirrors and retains the existing fold labels', () => {
+    expect([1, 2, 8].map(foldLabel)).toEqual(['Mirror', '2-fold', '8-fold']);
+  });
+
+  it('filters either low fold without losing the other', () => {
+    const low = [entry('mirror', 1), entry('half-turn', 2), ...library];
+    expect(filtered(low, { fold: 1 }).map((e) => e.id)).toEqual(['mirror']);
+    expect(filtered(low, { fold: 2 }).map((e) => e.id)).toEqual(['half-turn']);
   });
 });

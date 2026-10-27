@@ -290,6 +290,7 @@ describe('repeat', () => {
   });
 
   it.each([
+    ['rot2', 1],
     ['rot3', 2],
     ['rot5', 4],
     ['rot6', 5],
@@ -337,5 +338,38 @@ describe('pick', () => {
     expect(problems(input)).toEqual([
       'steps[1].create.E.point.pick: a pick needs at least one rule: angle, nearest, farthest, inside or outside',
     ]);
+  });
+});
+
+describe('low folds', () => {
+  it.each([1, 2])(
+    'accepts fold %i without reducing the star minimum',
+    (fold) => {
+      expect(
+        problems(
+          variant((t) => {
+            t.fold = fold;
+          }),
+        ),
+      ).toEqual([]);
+      expect(
+        problems(
+          variant((t) => {
+            t.fold = fold;
+            t.star = 2;
+          }),
+        ),
+      ).not.toEqual([]);
+    },
+  );
+
+  it.each([0, -1, 1.5])('rejects fold %s', (fold) => {
+    expect(
+      problems(
+        variant((t) => {
+          t.fold = fold;
+        }),
+      ),
+    ).not.toEqual([]);
   });
 });

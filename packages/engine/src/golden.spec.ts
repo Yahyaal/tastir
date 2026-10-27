@@ -56,7 +56,7 @@ describe.each(files)('%s', (file) => {
     // In a p4g pattern (Dar el Bacha) the mirrors miss O and the pieces
     // near O can be mirror images of each other; the mirror then fails
     // only further out, so look over the whole tile too.
-    if (tutorial.chiral) {
+    if (tutorial.chiral && tutorial.fold > 1) {
       const { u, v } = pattern.cell;
       const tile = (Math.hypot(u.x, u.y) + Math.hypot(v.x, v.y)) / 2;
       expect(

@@ -1,3 +1,4 @@
+import { foldLabel } from '../app/browsing';
 import { useEffect, useState, type MouseEvent } from 'react';
 import {
   PATTERNS,
@@ -208,7 +209,7 @@ function Card({ pattern: p }: { pattern: Pattern }) {
               : 'Verified'}
         </span>
         <h3>{p.title}</h3>
-        <span className="fold">{p.fold}-fold</span>
+        <span className="fold">{foldLabel(p.fold)}</span>
       </header>
       <p className="summary">{p.summary}</p>
       {TUTORIALS.has(p.id) ? (

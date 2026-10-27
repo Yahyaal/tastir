@@ -1,0 +1,170 @@
+{
+  "format": 0,
+  "id": "mosul-imam-yahya-star-rows",
+  "title": "Stars above the door of the Imam Yahya mosque, Mosul",
+  "short": "Imam Yahya mosque stars",
+  "subtitle": "Imam Yahya mosque, Mosul, Iraq",
+  "fold": 2,
+  "style": "Iraqi",
+  "level": "intermediate",
+  "given": {"O": "The centre of an eight-pointed star.", "A": "Its right point, along a mirror."},
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s S45A drawing and its corners snapped to exact values. The frame turns by 45° to put OA on a mirror. OA is the star’s point radius; compass transfers of the square diagonal fix the repeat. The drawing gives no steps; we devised the construction.",
+    "changes": "The plain boundaries are retained in the turned teaching frame. The palette is illustrative. No mosque photograph or original museum drawing was independently checked. The compass steps, their order and the named points are ours.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data9/S45A: Imam Yahya mosque, Mosul, Iraq",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data9/S45A.html",
+      "note": "Read from his finished drawing, not construction instructions. Javad Shafai, On decoration in Persian architecture and wood carving (Tehran, 1977), page 231, above the door of Imam Yahya mosque, Mosul (1239 AD, 636 AH). Also Mirza Akbar, V&A AL.8322:1, record O402863, and Mirza Akber’s Persian decoration, sheet 45a marked II (1898), pressmark VA.1898.0001."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. They cross at K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through C. The lines through A and C cross at K1. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The line from O to K1 crosses the circle at F. Draw a vertical line through F. It crosses the horizontal line through O at M. Turn the vertical line round O by 90°, three times.",
+      "create": {
+        "F": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "fv": {"line": {"through": "F", "parallelTo": "v"}},
+        "M": {"point": {"meet": ["fv", "h"]}},
+        "square": {"repeat": {"of": ["fv"], "by": "rot4"}}
+      },
+      "highlight": ["F", "M"],
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a straight line through A and C. Turn it round O by 90°, three times.",
+      "create": {"ac": {"line": {"through": ["A", "C"]}}, "diamond": {"repeat": {"of": ["ac"], "by": "rot4"}}},
+      "highlight": ["A", "C"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre O through K1. It crosses the vertical line through O at V, above O. Draw a circle with centre B, with the same opening. It crosses the horizontal line through O at P, right of O.",
+      "create": {
+        "ck": {"circle": {"centre": "O", "through": "K1"}},
+        "V": {"point": {"meet": ["ck", "v"], "pick": {"angle": 90.0}}},
+        "cp": {"circle": {"centre": "B", "radiusOf": "ck"}},
+        "P": {"point": {"meet": ["cp", "h"], "pick": {"angle": 0.0}}}
+      },
+      "highlight": ["K1", "B", "V", "P"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a horizontal line through V. Turn it round O by 180°. They cross the vertical lines through A and B at N1, N2, N3 and N4.",
+      "create": {
+        "sideY": {"line": {"through": "V", "parallelTo": "h"}},
+        "frame": {"repeat": {"of": ["sideY"], "by": "rot2"}},
+        "N1": {"point": {"meet": ["gx", "sideY"]}},
+        "N2": {"point": {"meet": ["gxw", "sideY"]}},
+        "N3": {"point": {"meet": ["gxw", "sideY@1"]}},
+        "N4": {"point": {"meet": ["gx", "sideY@1"]}}
+      },
+      "highlight": ["V", "A", "B"],
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Draw a circle with centre P and opening from O to K1. It crosses the horizontal line through O at Q, right of P.",
+      "create": {
+        "cq": {"circle": {"centre": "P", "radiusOf": "ck"}},
+        "Q": {"point": {"meet": ["cq", "h"], "pick": {"angle": 0.0}}}
+      },
+      "highlight": ["P", "K1", "Q"],
+      "animate": "compass"
+    },
+    {
+      "id": 8,
+      "text": "Draw a line through Q at 90° to the line from O to K1. Turn the lines round O by 90°, three times.",
+      "create": {
+        "diagonal_Q": {"line": {"through": "Q", "perpendicularTo": "d45"}},
+        "copies_Q": {"repeat": {"of": ["diagonal_Q"], "by": "rot4"}}
+      },
+      "highlight": ["Q", "K1"],
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "Join N1, N2, N3 and N4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["N1", "N2", "N3", "N4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange.",
+    "paths": [
+      {"along": "fv", "from": "diagonal_Q@3", "to": "ac@3"},
+      {"along": "fv", "from": "ac", "to": "diagonal_Q"},
+      {"along": "fv@1", "from": "gx", "to": "ac"},
+      {"along": "fv@1", "from": "ac@1", "to": "gxw"},
+      {"along": "fv@2", "from": "diagonal_Q@1", "to": "ac@1"},
+      {"along": "fv@2", "from": "ac@2", "to": "diagonal_Q@2"},
+      {"along": "fv@3", "from": "gxw", "to": "ac@2"},
+      {"along": "fv@3", "from": "ac@3", "to": "gx"},
+      {"along": "ac", "from": "h", "to": "fv"},
+      {"along": "ac", "from": "fv@1", "to": "sideY"},
+      {"along": "ac@1", "from": "sideY", "to": "fv@1"},
+      {"along": "ac@1", "from": "fv@2", "to": "h"},
+      {"along": "ac@2", "from": "h", "to": "fv@2"},
+      {"along": "ac@2", "from": "fv@3", "to": "sideY@1"},
+      {"along": "ac@3", "from": "sideY@1", "to": "fv@3"},
+      {"along": "ac@3", "from": "fv", "to": "h"},
+      {"along": "diagonal_Q", "from": "fv", "to": "ac@1"},
+      {"along": "diagonal_Q@1", "from": "ac", "to": "fv@2"},
+      {"along": "diagonal_Q@2", "from": "fv@2", "to": "ac@3"},
+      {"along": "diagonal_Q@3", "from": "ac@2", "to": "fv"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Timurid tile",
+    "look": "tiles",
+    "colors": {"star": "a", "ten": "b", "square": "c", "pentagon": "ground"},
+    "text": "Put copies of the rectangular tile side by side."
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 2.34315, "perCell": 1},
+      {"name": "ten", "vertices": 10, "area": 1.0, "perCell": 1},
+      {"name": "square", "vertices": 4, "area": 0.34315, "perCell": 1},
+      {"name": "pentagon", "vertices": 5, "area": 0.32843, "perCell": 6}
+    ]
+  },
+  "star": 8
+}

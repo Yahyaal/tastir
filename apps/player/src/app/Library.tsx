@@ -4,6 +4,7 @@ import { NewPattern } from '../editor/PatternShelf';
 import { HOSTED } from '../studio/client';
 import {
   aboutOf,
+  foldLabel,
   filtered,
   keepFilters,
   keptFilters,
@@ -162,7 +163,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   const chosenWords = andList(
     [
       query.trim() ? `called “${query.trim()}”` : '',
-      fold ? `${fold}-fold` : '',
+      fold ? foldLabel(fold) : '',
       level
         ? `for ${level === 'beginner' ? 'beginners' : `the ${level} level`}`
         : '',
@@ -303,7 +304,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             </Chip>
             {folds.map((f) => (
               <Chip key={f} on={fold === f} onClick={() => setFold(f)}>
-                {f}-fold
+                {foldLabel(f)}
               </Chip>
             ))}
           </div>
@@ -636,10 +637,10 @@ function CardView({
               <button
                 type="button"
                 className="fact"
-                title={`Show every ${fold}-fold pattern`}
+                title={`Show every ${foldLabel(fold).toLowerCase()} pattern`}
                 onClick={() => onFilter({ fold })}
               >
-                {fold}-fold
+                {foldLabel(fold)}
               </button>
             ) : null}
             {style ? (

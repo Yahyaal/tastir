@@ -42,6 +42,23 @@ const sixFold = () =>
   );
 
 describe('the fixes from the phase 3 report', () => {
+  it.each([1, 2])('keeps a chosen fold %i through inking and About', (fold) => {
+    const p = addPattern({ ...sixFold(), fold });
+    open(p?.id ?? '');
+    fireEvent.click(screen.getByRole('button', { name: 'Ink' }));
+    expect(screen.getByLabelText('Fold')).toHaveProperty('value', String(fold));
+    expect(getPattern(p?.id ?? '')?.tutorial.fold).toBe(fold);
+    fireEvent.click(screen.getByRole('button', { name: 'About the pattern' }));
+    const selects = screen.getAllByLabelText('Fold');
+    for (const select of selects) {
+      expect(select).toHaveProperty('value', String(fold));
+      expect(select.querySelector('option[value="1"]')?.textContent).toBe(
+        '1 (mirror)',
+      );
+      expect(select.querySelector('option[value="2"]')).not.toBeNull();
+    }
+  });
+
   it('inks with the fold the steps were drawn with', () => {
     expect(foldOf(sixFold())).toBe(6);
     expect(foldOf(star)).toBe(8);

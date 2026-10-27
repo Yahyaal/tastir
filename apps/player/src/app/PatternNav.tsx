@@ -1,5 +1,11 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { aboutOf, keptFilters, neighbours, titleOf } from './browsing';
+import {
+  foldLabel,
+  aboutOf,
+  keptFilters,
+  neighbours,
+  titleOf,
+} from './browsing';
 import { grouped, holds, LIBRARY, listed, type Entry } from './library';
 import { useModalFocus } from './useModalFocus';
 import { viewAddress, type View } from './ViewSwitch';
@@ -158,7 +164,7 @@ function MenuPanel({
         </header>
         {groups.map(([fold, entries]) => (
           <section key={fold ?? 'other'}>
-            <h3>{fold ? `${fold}-fold` : 'Other'}</h3>
+            <h3>{fold ? foldLabel(fold) : 'Other'}</h3>
             <ul>
               {entries.map((e) => (
                 <li key={e.id}>

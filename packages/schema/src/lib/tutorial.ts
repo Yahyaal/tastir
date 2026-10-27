@@ -97,12 +97,22 @@ export const PolygonSpec = z
 
 export const Symmetry = z.union(
   [
-    z.enum(['rot3', 'rot4', 'rot5', 'rot6', 'rot8', 'rot10', 'rot12', 'rot16']),
+    z.enum([
+      'rot2',
+      'rot3',
+      'rot4',
+      'rot5',
+      'rot6',
+      'rot8',
+      'rot10',
+      'rot12',
+      'rot16',
+    ]),
     z.templateLiteral(['mirror:', z.string().regex(REF_PATTERN)]),
   ],
   {
     error:
-      'a repeat is by rot3, rot4, rot5, rot6, rot8, rot10, rot12, rot16 or mirror:<line>',
+      'a repeat is by rot2, rot3, rot4, rot5, rot6, rot8, rot10, rot12, rot16 or mirror:<line>',
   },
 );
 
@@ -399,7 +409,7 @@ export const TutorialShape = z.strictObject({
   short: z.string().min(1).optional(),
   /** A second line under the short name: the place, or whose construction. */
   subtitle: z.string().min(1).optional(),
-  fold: z.int().min(3),
+  fold: z.int().min(1),
   /** The points of the main star or rosette, when the tile turns into
    * itself less often (a twelve-fold rosette on a square tile is 4-fold).
    * The library shows and filters by it; the golden test checks `fold`. */

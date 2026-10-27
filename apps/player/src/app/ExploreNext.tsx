@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Tutorial } from '@tastir/schema';
 import { addPattern, freeTitle } from '../editor/patterns';
 import { grouped, holds, LIBRARY, listed } from './library';
-import { aboutOf } from './browsing';
+import { aboutOf, foldLabel } from './browsing';
 
 /** A finished lesson leads into experimenting and exploring the same symmetry. */
 export function ExploreNext({ tutorial }: { tutorial: Tutorial }) {
@@ -60,7 +60,7 @@ export function ExploreNext({ tutorial }: { tutorial: Tutorial }) {
       ) : null}
       {related.length ? (
         <>
-          <h3>Explore {fold}-fold patterns</h3>
+          <h3>Explore {foldLabel(fold).toLowerCase()} patterns</h3>
           <ul>
             {related.map((entry) => (
               <li key={entry.id}>

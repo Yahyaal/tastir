@@ -202,3 +202,7 @@ export function neighbours(
     ...(list[k + 1] ? { next: list[k + 1] } : {}),
   };
 }
+
+/** The library's symmetry label, also used on printed sheets. */
+export const foldLabel = (fold: number): string =>
+  fold === 1 ? 'Mirror' : `${fold}-fold`;
