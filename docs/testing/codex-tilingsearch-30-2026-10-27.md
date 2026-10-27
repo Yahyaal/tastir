@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Twelve tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192 and SAM1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Nineteen entries remain pending.
+Thirteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1 and P106. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Eighteen entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -172,3 +172,14 @@ The catalog prepared198 previews. All six targeted golden checks and the full we
 The full source sheet shows large white-edged blue bow-tie panels crossing the smaller blue/teal star net. The large panels neither share that net’s vertices nor follow its edges. The page itself distinguishes the background and links it separately as ASL21. Its pmm,30° and326-piece description concerns that background rather than a single mesh joining both scales. The PDF’s1640 cleaned filled paths are small rendering facets, chiefly1170 six-sided paths and451 triangles, so treating them as the stated tiles would also be incorrect. Extended PDF inspection finds only the outer page clipping rectangle; this is not a missing image or a hidden alternate layer.
 
 The complete sheet was inspected at `docs/research/tilingsearch-30/ASL20/page.png`. As with the other excluded two-level drawings, reconstructing just the fine net would silently omit the coarse design. ASL20 is skipped under the brief’s two-level rule, without declaring its background an existing-library duplicate. The page credits a photograph via Aslam Qureshi, Zaynal Bek, Turkey(1473AD,877AH), through personal communication. No photograph was independently checked. No tutorial or application file is added.
+
+
+## P106 — `bourgoin-106-star-lattice`
+
+The eighteen-step p4m tutorial uses fold four and an eight-pointed star. O is at PDF(298.48,373.37). OA is the neighbouring six-star’s point radius, approximately56.88269678pt, obtained from the measured147.37pt half-period and exact L=(1+√3+√6)/2. There is no frame turn or band expansion. The eight-star’s outer point at22.5° lies at height sin15°, so a bisector and horizontal projection construct its75° tips exactly. Four parallel families complete the square repeat. Source corners fit within0.00015301OA.
+
+Put r=√2, s=√3 and t=√6. Independent source shoelaces give four_star4−2r+2s/3, once; six_star3(s−1)/2, twice; eight_star6+4r−10s/3−2t, once; six(r+s+t)/4, eight; hexagon(3+s)/4, four; ten(r+t)/2−2s/3, four; and kite s/6, eight. The28 counted areas sum exactly to10+6r+2s+2t=(1+s+t)²=4L². The engine independently confirms all seven types and counts. The authentic sharp six-stars and narrow ten-sided pieces alone have small-piece allowances; their shapes agree with the source rather than arising from rounding. All ink endpoints are constructed crossings.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P106/overlay.png`. Every plain boundary agrees. All28 actual player fills match source interior samples, retaining brown and white classes with an illustrative palette. Credits retain Bourgoin, Plate106; Creswell, volume1, Plate102, al-Salih Tala’i Mosque’s bronze-plated door, Cairo(1160AD,554AH); and Wade EGY1514, al-Mu’ayyad, Cairo(1420AD,823AH). No photograph was independently checked. No duplicate or filling-only variant was found.
+
+The catalog prepared199 previews. All six targeted golden checks and the full weave group passed, followed by all995 player text/helper assertions and all40 schema checks serially under3GB. The text check caught the joined name AOS2; it now reads “the angle at O between A and S2”. Catalog, text and schema checks were rerun after that wording-only correction; geometry and the passed engine checks are unchanged. No shared application or reserved file changed.
