@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Thirteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1 and P106. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Eighteen entries remain pending.
+Fourteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106 and P092. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Seventeen entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -183,3 +183,14 @@ Put r=√2, s=√3 and t=√6. Independent source shoelaces give four_star4−2r
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P106/overlay.png`. Every plain boundary agrees. All28 actual player fills match source interior samples, retaining brown and white classes with an illustrative palette. Credits retain Bourgoin, Plate106; Creswell, volume1, Plate102, al-Salih Tala’i Mosque’s bronze-plated door, Cairo(1160AD,554AH); and Wade EGY1514, al-Mu’ayyad, Cairo(1420AD,823AH). No photograph was independently checked. No duplicate or filling-only variant was found.
 
 The catalog prepared199 previews. All six targeted golden checks and the full weave group passed, followed by all995 player text/helper assertions and all40 schema checks serially under3GB. The text check caught the joined name AOS2; it now reads “the angle at O between A and S2”. Catalog, text and schema checks were rerun after that wording-only correction; geometry and the passed engine checks are unchanged. No shared application or reserved file changed.
+
+
+## P092 — `bourgoin-92-twelve-stars`
+
+The fourteen-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,374.2454166667), OA=20(2+√3)pt, and the teaching frame turns30°. The source faces are expanded2pt to the centres of the4pt bands. Two turned hexagons construct the120° star tips. Compass transfers give the hexagonal apothem L=3(√3−1), and a second height3−√3/2. One parallel family through a crossing completes the net. Worst source-corner residual is0.00009288OA.
+
+Independent shoelaces give twelve_star12√3−18, once; six_star63√3−108, twice; four_star66√3−114, three; hexagon(153−87√3)/4, twelve; kite√3−3/2, twelve; and small_kite(9−5√3)/4, twelve. The42 counted areas sum exactly to72√3−108=2√3L². The engine independently confirms all six types and counts without slivers or off-construction endpoints. This wider120° star is a different construction from the three-square stars in the Agra and Mexuar families.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P092/overlay.png`. Every band centre agrees. All42 actual player fills match the expanded source contours, retaining brown twelve-stars, pink smaller stars, red six-sided pieces, yellow kites and black small kites with an illustrative palette. Strapwork is the default. Credits retain Bourgoin, Plate92; Creswell, volume2, Plate52c, al-Zahir Baybars, Cairo, northwest transept(1266–69AD,664–67AH); Hessemer, page36, Qalawun wall decoration, Cairo(1284–85AD,682–83AH); Abas and Salman, page165; and the page’s Wade BOU092 link. No photograph was independently checked. No duplicate or filling-only variant was found.
+
+The catalog prepared200 previews. All six targeted golden checks and the full weave group, all1000 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
