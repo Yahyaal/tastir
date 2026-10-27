@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Seven tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785 and W85. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-five entries remain pending.
+Eight tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85 and IRA2633. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-four entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -111,3 +111,13 @@ I inspected the ink, wall and complete red overlay at `docs/research/tilingsearc
 IRA2633’s complete source overlay also follows exactly this centre-line mesh after scaling5/6, but assigns grey to stars, green to pentagons and triangles, and black to kites. It is therefore a filling variation rather than a second geometric construction; its tutorial and verification follow next. Claude should group the two as the twelve-star band family after merging.
 
 The catalog prepared 193 previews. All six targeted golden checks and the full weave group, all 965 text/helper assertions and all 40 schema checks passed under 3 GB. Both Agra tutorials regenerate byte-identically after exposing their unchanged opening. No shared application or reserved file changed.
+
+## IRA2633 — `sultaniyeh-twelve-star-bands`
+
+This nine-step p6m filling variation shares every step, ink reference and golden value with W85. The full red W85 overlay on the IRA2633 PDF at `docs/research/tilingsearch-30/IRA2633/w85-overlay.png` follows the white and red band centres throughout the page. O is at (297.5, 374.1754166667) pt, OA=25(3+√3)/√2 pt, and the teaching frame turns 15°. The 15 pt ribbons are broader than W85’s, but their centre-line mesh is identical after scaling5/6. Expanding the source’s grey star and black kite contours by7.5pt confirms their source-corner fit within 0.00011069 OA. The other coloured source polygons are backing and ribbon shapes, not the centre-line pentagons and triangles.
+
+The exact centre-line inventory remains star6−2√3, once; pentagon3−3√3/2, six; kite2√3/3−1, twelve; and triangle7√3/2−6, twice. The 21 counted areas fill4√3 exactly. The engine independently confirms the four types and counts without slivers or off-construction endpoints. The source’s grey stars, green pentagons and triangles, and black kites form three fill classes. All21 actual player fills match their source regions. The palette and single strapwork band colour are illustrative; the source’s two-colour weave phase is not claimed as a photograph match.
+
+The page describes its coloured ribbon drawing as not edge-to-edge. The mesh of band centres reconstructed here is edge-to-edge, as directly shown by the identical W85 geometry. This is the intended band-reading method, rather than treating its ribbon facets as extra tiles. Credits name Wade IRA2633, Öljeitü’s mausoleum, Sultaniyeh, Iran (1313 AD, 712 AH). No photograph was independently checked. This is W85’s filling variation, and Claude should add the two ids to one family after merging.
+
+The catalog prepared194 previews. All six targeted golden checks and the full weave group, all970 text/helper assertions and all40 schema checks passed under3GB. Direct comparison proves that the two tutorials’ steps, ink and expectations are identical. No shared application or reserved file changed.
