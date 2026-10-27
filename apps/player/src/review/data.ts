@@ -5817,6 +5817,69 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'salim-chishti-decagons',
+    title:
+      'Decagons of Salim Chishti’s tomb (Fatehpur Sikri) (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A decagon sits at the centre and at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s F207 drawing, whose pieces are drawn edge to edge. The decagons sit at the centre and the corners of a rectangle whose sides are in the ratio of 1 to tan 36°. Every line is one of 25 lines about a decagon: the five lines through its centre and its corners, the lines of its ten sides, and the lines of the sides of the decagon of radius √5 about it (drawing within 0.001 of OA). The decagons at the tile’s corners get their lines by mirroring those about O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Colours follow the shapes; the screen itself is white marble with no colour. No photograph was checked.',
+      '15 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/salim-chishti-decagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/salim-chishti-decagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Tomb of Salim Chishti, Fatehpur Sikri (F207)',
+        url: 'https://tilingsearch.mit.edu/HTML/data153/F207.html',
+      },
+    ],
+  },
+  {
+    id: 'mirza-akber-31-stars',
+    title: 'Ten-pointed stars of Mirza Akber’s sheet 31 (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s S31A drawing, whose pieces are drawn edge to edge. Each ten-pointed star is two regular pentagons; a ring of ten regular pentagons sits on its points, and the far sides of those pentagons are the only other lines a star needs. The stars sit at the centre and the corners of a rectangle 2(2 + √5) by 2 tan 54° in units of the star’s radius (drawing within 0.0006). The stars at the tile’s corners get their lines from crossings on the tile’s top side. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Wichmann’s drawing has two strips between its columns of stars, and only the left one is symmetric (a glide down its middle, as his pmg needs); the right strip has the same pentagons but green pieces where the left one has its crosses and octagons, and fits no symmetry. We build the left strip on both sides of every column, so the stars have both mirrors (cmm). Colours follow the shapes. No photograph was checked.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/mirza-akber-31-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/mirza-akber-31-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mirza Akber, Persian decoration, sheet 31 (S31A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data9/S31A.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -7110,6 +7173,8 @@ export const QUESTIONS: readonly Question[] = [
       'tayabad-zayn-stars',
       'fatehpur-masjid-decagons',
       'fatehpur-masjid-small-decagons',
+      'salim-chishti-decagons',
+      'mirza-akber-31-stars',
     ],
   },
 ];
