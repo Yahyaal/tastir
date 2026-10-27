@@ -69,7 +69,9 @@ def drawing(pieces, page=(612, 792)):
     return out
 
 
-def seeds():
+def star():
+    """Steps 1–4, shared with the Shafai rosettes (SHAF2): the circle divided
+    into sixteen and thirty-two, and the star's sixteen lines."""
     s16.opening(odd=True)
     step('Draw a straight line through U1 and U5. Turn it round O by 22.5°, fifteen times. '
          'These sixteen lines make the star at O.')
@@ -77,6 +79,10 @@ def seeds():
     g.repeat('tr', ['t'], 'rot16')
     for j in range(16):
         s16.DESC['t' if j == 0 else f't@{j}'] = 'a star line'
+
+
+def seeds():
+    star()
     step('Draw a line through A parallel to the 45° line through O. Draw a straight line through U3 and S7. '
          'The two lines cross at Q. Draw a vertical line through Q. It crosses the horizontal line at M. '
          'Turn the vertical line round O by 90°, three times. '
