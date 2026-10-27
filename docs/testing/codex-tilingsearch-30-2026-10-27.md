@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Seventeen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1 and F294. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Fourteen entries remain pending.
+Eighteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294 and BON1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Thirteen entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -231,3 +231,14 @@ I inspected the ink, wall and complete red overlay at `docs/research/tilingsearc
 Credits retain Bonner, page408, figure335b, Great Mosque minaret, Siirt(1129AD,522AH); the page’s fourteenth-century Egyptian Qur’an at the Chester Beatty Library, Dublin, through personal communication; V&A cupboard panel899:1-1884, Cairo; Wichmann and Wade, figures7.1a and11.3a; d’Avennes internet photo282 with its uncertain al-naski qaisun minbar attribution; and the Thesaurus Islamicus al-Azhar kursi attribution. No photograph was independently checked.
 
 The catalog prepared203 previews. All six targeted golden checks and the full weave group, all1015 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free text omits the unused bottom frame line and three unused copies of the line through Q1. No shared application or reserved file changed.
+
+
+## BON1 — `el-djem-dodecagons`
+
+The twelve-step p4m tutorial uses fold four. O is at PDF(204.25,277.75), OA=30√6pt, the regular dodecagon’s point radius, with no frame turn. Its twelve points are at15°+30k. A square-root projection, a diagonal half and a compass sum give square half-side L=√2/2+√6/4. Two parallel families through earlier crossings complete the mesh. The source’s8pt green strokes are centred on the polygon edges; there is no face expansion. Worst source-corner residual is0.00006048OA.
+
+Independent shoelaces give dodecagon3, once; regular hexagon√3/4, four; four_star1/2−√3/6, once; rhombus1/4−√3/12, twelve; triangle−1/4+√3/6, twelve; and kite√3/12, twice. The32 counted areas sum exactly to7/2+2√3=4L². The engine independently confirms all six types and counts. Its sliver metric flags the authentic30° four-pointed star, which alone has a small-piece allowance. All ink endpoints are constructed crossings.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/BON1/overlay.png`. Every edge agrees with the centre of the source’s green outline. All32 actual player fills retain the single tan class. Strapwork represents the outlines, with an illustrative palette. The tutorial is labelled Roman and cites Bonner, page13, photograph4(2016), a third-century Roman mosaic, El Djem, Tunisia. No photograph was independently checked. This square repeat and six-type inventory differ from the hexagonal ASU2 dodecagon design; no duplicate or filling-only variant was found.
+
+The catalog prepared204 previews. All six targeted golden checks, the full weave group, all1020 player text/helper assertions and all40 schema checks passed serially under3GB. The golden check initially caught the sharp four-star; its source-confirmed allowance then passed the targeted golden rerun. The already passed weave geometry is unchanged. Helper-free step5 also repeats the circle-division context because the preceding guide-only step is skipped. No shared application or reserved file changed.
