@@ -5880,6 +5880,134 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'bourgoin-183-stars',
+    title:
+      'Ten-pointed stars and decagons of Bourgoin’s plate 183 (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s P183 drawing, whose pieces are drawn edge to edge. Each ten-pointed star is two regular pentagons. The stars stand in columns, with regular decagons between the columns. The stars sit at the centre and the corners of a rectangle 2(2 + √5) by 2 tan 54° in units of the star’s radius (drawing within 0.002), the frame of Mirza Akber’s sheet 31, whose opening this shares. Every other line is a parallel to a line of the star through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Colours follow his drawing, by shape. No photograph was checked.',
+      '19 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-183-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-183-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: J. Bourgoin, Arabic Geometrical Pattern and Design, plate 183 (P183)',
+        url: 'https://tilingsearch.mit.edu/HTML/data12/P183.html',
+      },
+    ],
+  },
+  {
+    id: 'isfahan-imamzadeh-ismail-stars',
+    title:
+      'Ten-pointed stars of the Imamzadeh Ismail, Isfahan (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s SHAF10 drawing, whose pieces are drawn edge to edge. Each ten-pointed star is two regular pentagons. The stars sit at the centre and the corners of a rectangle 6φ by 2φ·tan 54° in units of the star’s radius, and the stars at the corners have other neighbours than the one at O; a pentagonal rosette of five hexagons round a pentagon sits on each side of O. Every edge is parallel to a line of the star (drawing within 0.001 of OA), and each line is drawn through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Colours follow his drawing, by shape. The original is a carved door; no photograph was checked.',
+      '19 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/isfahan-imamzadeh-ismail-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/isfahan-imamzadeh-ismail-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Shrine of the Imamzadeh Ismail, Isfahan, Iran (SHAF10)',
+        url: 'https://tilingsearch.mit.edu/HTML/data199/SHAF10.html',
+      },
+    ],
+  },
+  {
+    id: 'mihrimah-uskudar-stars',
+    title:
+      'Ten-pointed stars of the Mihrimah Sultan mosque, Üsküdar (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s MIR17 drawing of interlaced bands; the band centre lines give the tiling. One ten-pointed star with sharp points of 72° sits in each tile, and every other band runs parallel to one of its ten lines. With OA the distance from O to the star’s lines, the tile is a rectangle 2(7 + 3√5) by 4 tan 72°, and every offset from O is a + b√5 (drawing within 0.003 of OA, the accuracy of its bevelled bands). Each line is drawn through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The bands are drawn as their centre lines. Colours follow the shapes; his drawing has one colour for every piece but the star. No photograph was checked.',
+      '23 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/mihrimah-uskudar-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/mihrimah-uskudar-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mihrimah Sultan mosque, Üsküdar, Istanbul (MIR17)',
+        url: 'https://tilingsearch.mit.edu/HTML/data214/MIR17.html',
+      },
+    ],
+  },
+  {
+    id: 'atik-valide-uskudar-stars',
+    title:
+      'Ten-pointed stars of the Atik Valide mosque, Üsküdar (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s MIR26 drawing of interlaced bands; the band centre lines give the tiling. Ten-pointed stars with sharp points of 72° sit at the centre and the corners of the tile, and the two kinds have different surroundings. Every band runs parallel to one of the star’s ten lines. With OA the distance from O to the star’s lines, the tile is a rectangle 2(11 + 5√5) by 2(11 + 5√5)/tan 72° (drawing within 0.003 of OA). Each line is drawn through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The bands are drawn as their centre lines. Colours follow his drawing, by shape. No photograph was checked.',
+      '22 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/atik-valide-uskudar-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/atik-valide-uskudar-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Atik Valide mosque, Üsküdar, Istanbul (MIR26)',
+        url: 'https://tilingsearch.mit.edu/HTML/data216/MIR26.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -7175,6 +7303,10 @@ export const QUESTIONS: readonly Question[] = [
       'fatehpur-masjid-small-decagons',
       'salim-chishti-decagons',
       'mirza-akber-31-stars',
+      'bourgoin-183-stars',
+      'isfahan-imamzadeh-ismail-stars',
+      'mihrimah-uskudar-stars',
+      'atik-valide-uskudar-stars',
     ],
   },
 ];
