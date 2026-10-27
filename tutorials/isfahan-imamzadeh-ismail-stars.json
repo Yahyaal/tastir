@@ -1,0 +1,442 @@
+{
+  "format": 0,
+  "id": "isfahan-imamzadeh-ismail-stars",
+  "title": "Ten-pointed stars of the Imamzadeh Ismail, Isfahan",
+  "short": "Imamzadeh Ismail stars",
+  "subtitle": "Shrine of the Imamzadeh Ismail, Isfahan, Iran",
+  "fold": 2,
+  "star": 10,
+  "style": "Persian",
+  "level": "advanced",
+  "given": {
+    "O": "The centre of a ten-pointed star, where two mirrors of the pattern cross.",
+    "A": "A point of the star, to the right of O. OA is the star’s radius."
+  },
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Wichmann’s SHAF10 drawing, whose pieces are drawn edge to edge. Each ten-pointed star is two regular pentagons. The stars sit at the centre and the corners of a rectangle 6φ by 2φ·tan 54° in units of the star’s radius, and the stars at the corners have other neighbours than the one at O; a pentagonal rosette of five hexagons round a pentagon sits on each side of O. Every edge is parallel to a line of the star (drawing within 0.001 of OA), and each line is drawn through a crossing of earlier lines. The drawing gives no steps; we devised the construction.",
+    "changes": "The compass steps, their order and the named points are ours. Colours follow his drawing, by shape. The original is a carved door; no photograph was checked.",
+    "reviewed": "2026-10-27"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data199/SHAF10: Shrine of the Imamzadeh Ismail, Isfahan, Iran",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data199/SHAF10.html",
+      "note": "Read from his finished drawing, not construction instructions. His reference is Javad Shafai, On Decoration in Persian Architecture and Wood Carving (Tehran, 1977), page 71: a door of the shrine of the Imamzadeh Ismail, Isfahan, Iran."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. It crosses the horizontal line again at F.",
+      "create": {
+        "c": {"circle": {"centre": "O", "through": "A"}},
+        "h": {"line": {"through": ["O", "A"]}},
+        "F": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. It crosses the circle at N.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "N": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre F through O. It crosses the first circle at Y1 and Y2. Draw a straight line through Y1 and Y2. It crosses the horizontal line at M, halfway from O to F.",
+      "create": {
+        "cW": {"circle": {"centre": "F", "through": "O"}},
+        "Y1": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
+        "Y2": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}},
+        "m": {"line": {"through": ["Y1", "Y2"]}},
+        "M": {"point": {"meet": ["m", "h"]}}
+      },
+      "highlight": ["F"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a circle with centre M through N. It crosses the horizontal line at R.",
+      "create": {
+        "cM": {"circle": {"centre": "M", "through": "N"}},
+        "R": {"point": {"meet": ["cM", "h"], "pick": {"angle": 0.0}}}
+      },
+      "highlight": ["M"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre A and opening from O to R. It crosses the circle at B and K. Draw circles of the same size round the circle, each centred where the last one crosses it. They mark C, D, E, G, H and J. The circle is now cut into ten.",
+      "create": {
+        "cF0": {"circle": {"centre": "A", "radiusFrom": ["O", "R"]}},
+        "B": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 36.0}}},
+        "K": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 324.0}}},
+        "cF1": {"circle": {"centre": "B", "radiusFrom": ["O", "R"]}},
+        "C": {"point": {"meet": ["c", "cF1"], "pick": {"angle": 72.0}}},
+        "cF2": {"circle": {"centre": "C", "radiusFrom": ["O", "R"]}},
+        "D": {"point": {"meet": ["c", "cF2"], "pick": {"angle": 108.0}}},
+        "cF3": {"circle": {"centre": "D", "radiusFrom": ["O", "R"]}},
+        "E": {"point": {"meet": ["c", "cF3"], "pick": {"angle": 144.0}}},
+        "cF9": {"circle": {"centre": "K", "radiusFrom": ["O", "R"]}},
+        "J": {"point": {"meet": ["c", "cF9"], "pick": {"angle": 288.0}}},
+        "cF8": {"circle": {"centre": "J", "radiusFrom": ["O", "R"]}},
+        "H": {"point": {"meet": ["c", "cF8"], "pick": {"angle": 252.0}}},
+        "cF7": {"circle": {"centre": "H", "radiusFrom": ["O", "R"]}},
+        "G": {"point": {"meet": ["c", "cF7"], "pick": {"angle": 216.0}}}
+      },
+      "highlight": ["R"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a straight line through A and C, B and D, and on round the circle to K and B. These ten lines make the ten-pointed star.",
+      "create": {
+        "s0": {"line": {"through": ["A", "C"]}},
+        "s1": {"line": {"through": ["B", "D"]}},
+        "s2": {"line": {"through": ["C", "E"]}},
+        "s3": {"line": {"through": ["D", "F"]}},
+        "s4": {"line": {"through": ["E", "G"]}},
+        "s5": {"line": {"through": ["F", "H"]}},
+        "s6": {"line": {"through": ["G", "J"]}},
+        "s7": {"line": {"through": ["H", "K"]}},
+        "s8": {"line": {"through": ["J", "A"]}},
+        "s9": {"line": {"through": ["K", "B"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "The lines through B and D, and H and K, cross the horizontal line at Z. Draw a circle with centre A through Z, and one with centre Z through A. They cross at U1 and U2. Draw a straight line through U1 and U2. Turn it round O by 36°, nine times. These lines are the far sides of the pentagons round the star.",
+      "create": {
+        "Z": {"point": {"meet": ["s1", "h"]}},
+        "cAZ": {"circle": {"centre": "A", "through": "Z"}},
+        "cZA": {"circle": {"centre": "Z", "through": "A"}},
+        "U1": {"point": {"meet": ["cAZ", "cZA"], "pick": {"angle": 37.761}}},
+        "U2": {"point": {"meet": ["cAZ", "cZA"], "pick": {"angle": 322.239}}},
+        "f": {"line": {"through": ["U1", "U2"]}},
+        "fr": {"repeat": {"of": ["f"], "by": "rot10"}}
+      },
+      "animate": "compass",
+      "textWithoutHelpers": "The lines through B and D, and H and K, cross the horizontal line at Z. Draw a circle with centre A through Z, and one with centre Z through A. They cross at U1 and U2. Draw the far side of the pentagon at each of B, C, D, E, G, H, J and K. Each is the line through U1 and U2, turned round O."
+    },
+    {
+      "id": 8,
+      "text": "Draw a straight line through A and D, F and J, B and E, and G and K. Draw a straight line through C and F, and H and A.",
+      "create": {
+        "r0": {"line": {"through": ["A", "D"]}},
+        "r1": {"line": {"through": ["F", "J"]}},
+        "r2": {"line": {"through": ["B", "E"]}},
+        "r3": {"line": {"through": ["G", "K"]}},
+        "r4": {"line": {"through": ["C", "F"]}},
+        "r5": {"line": {"through": ["H", "A"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "Draw a straight line through O and B, O and C, O and D, and O and E.",
+      "create": {
+        "oB": {"line": {"through": ["O", "B"]}},
+        "oC": {"line": {"through": ["O", "C"]}},
+        "oD": {"line": {"through": ["O", "D"]}},
+        "oE": {"line": {"through": ["O", "E"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 10,
+      "text": "Line AD crosses line OB at P1. Line JA crosses line BE at P2. Draw a line through P1 parallel to line CE. Draw a vertical line through P2. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
+      "create": {
+        "P1": {"point": {"meet": ["r0", "oB"]}},
+        "m1": {"line": {"through": "P1", "parallelTo": "s2"}},
+        "P2": {"point": {"meet": ["s8", "r2"]}},
+        "m2": {"line": {"through": "P2", "parallelTo": "v"}},
+        "mc2p": {"repeat": {"of": ["P1"], "by": "mirror:h"}},
+        "m1b": {"line": {"through": "P1@1", "parallelTo": "s1"}},
+        "mc2r": {"repeat": {"of": ["m1", "m2", "m1b"], "by": "rot2"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 11,
+      "text": "Line OB crosses the line through P2 at P3. Line CE crosses line HA at P4. Line BE crosses the mirror image of the line through P1 at P5. Draw a line through P3 parallel to line BD. Draw a line through P4 parallel to line AC. Draw a vertical line through P5. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
+      "create": {
+        "P3": {"point": {"meet": ["oB", "m2"]}},
+        "m3": {"line": {"through": "P3", "parallelTo": "s1"}},
+        "P4": {"point": {"meet": ["s2", "r5"]}},
+        "m4": {"line": {"through": "P4", "parallelTo": "s0"}},
+        "P5": {"point": {"meet": ["r2", "m1b"]}},
+        "m5": {"line": {"through": "P5", "parallelTo": "v"}},
+        "mc5p": {"repeat": {"of": ["P3", "P4"], "by": "mirror:h"}},
+        "m3b": {"line": {"through": "P3@1", "parallelTo": "s2"}},
+        "m4b": {"line": {"through": "P4@1", "parallelTo": "s3"}},
+        "mc5r": {"repeat": {"of": ["m3", "m4", "m5", "m3b", "m4b"], "by": "rot2"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 12,
+      "text": "Line AD crosses the line through P3 at P6. Draw a line through P6 parallel to line DF. Reflect the new line in the horizontal line through O. Turn all of them round O by 180°.",
+      "create": {
+        "P6": {"point": {"meet": ["r0", "m3"]}},
+        "m6": {"line": {"through": "P6", "parallelTo": "s3"}},
+        "mc6p": {"repeat": {"of": ["P6"], "by": "mirror:h"}},
+        "m6b": {"line": {"through": "P6@1", "parallelTo": "s0"}},
+        "mc6r": {"repeat": {"of": ["m6", "m6b"], "by": "rot2"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 13,
+      "text": "Line BE crosses the line through P6 at P7. The pentagon’s far side beyond C crosses line BE at P8. Line AC crosses line BD at P9. Draw a vertical line through P7. Draw a vertical line through P8. Draw a line through P9 parallel to line OD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
+      "create": {
+        "P7": {"point": {"meet": ["r2", "m6"]}},
+        "m7": {"line": {"through": "P7", "parallelTo": "v"}},
+        "P8": {"point": {"meet": ["f@2", "r2"]}},
+        "m8": {"line": {"through": "P8", "parallelTo": "v"}},
+        "P9": {"point": {"meet": ["s0", "s1"]}},
+        "m9": {"line": {"through": "P9", "parallelTo": "oD"}},
+        "mc9p": {"repeat": {"of": ["P9"], "by": "mirror:h"}},
+        "m9b": {"line": {"through": "P9@1", "parallelTo": "oC"}},
+        "mc9r": {"repeat": {"of": ["m7", "m8", "m9", "m9b"], "by": "rot2"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Line BE crosses the line through P6 at P7. The pentagon’s far side beyond C crosses line BE at P8. Line AC crosses line BD at P9. Draw a vertical line through P7. Draw a vertical line through P8. Draw a line through P9 parallel to line OD. Reflect the line through P9 in the horizontal line through O. Turn the vertical lines round O by 180°."
+    },
+    {
+      "id": 14,
+      "text": "Line CF crosses the line through P9 at P10. The horizontal line through O crosses the line through P9 at P11. Draw a line through P10 parallel to line BD. Draw a line through P11 parallel to line BD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
+      "create": {
+        "P10": {"point": {"meet": ["r4", "m9"]}},
+        "m10": {"line": {"through": "P10", "parallelTo": "s1"}},
+        "P11": {"point": {"meet": ["h", "m9"]}},
+        "m11": {"line": {"through": "P11", "parallelTo": "s1"}},
+        "mc11p": {"repeat": {"of": ["P10"], "by": "mirror:h"}},
+        "m10b": {"line": {"through": "P10@1", "parallelTo": "s2"}},
+        "m11b": {"line": {"through": "P11", "parallelTo": "s2"}},
+        "mc11r": {"repeat": {"of": ["m10", "m11", "m10b", "m11b"], "by": "rot2"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Line CF crosses the line through P9 at P10. The horizontal line through O crosses the line through P9 at P11. Draw a line through P10 parallel to line BD. Draw a line through P11 parallel to line BD. Reflect the new lines in the horizontal line through O. Turn the line through P10 and its mirror image round O by 180°."
+    },
+    {
+      "id": 15,
+      "text": "Line BD crosses the mirror image of the line through P11 at P12. The pentagon’s far side beyond K crosses the mirror image of the line through P11 at P13. Line OC crosses the line through P1 at P14. Draw a line through P12 parallel to line AC. Draw a vertical line through P13. Draw a line through P14 parallel to line AD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
+      "create": {
+        "P12": {"point": {"meet": ["s1", "m11b"]}},
+        "m12": {"line": {"through": "P12", "parallelTo": "s0"}},
+        "P13": {"point": {"meet": ["f@9", "m11b"]}},
+        "m13": {"line": {"through": "P13", "parallelTo": "v"}},
+        "P14": {"point": {"meet": ["oC", "m1"]}},
+        "m14": {"line": {"through": "P14", "parallelTo": "r0"}},
+        "mc14p": {"repeat": {"of": ["P12", "P14"], "by": "mirror:h"}},
+        "m12b": {"line": {"through": "P12@1", "parallelTo": "s3"}},
+        "m14b": {"line": {"through": "P14@1", "parallelTo": "r4"}},
+        "mc14r": {"repeat": {"of": ["m12", "m13", "m14", "m12b", "m14b"], "by": "rot2"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Line BD crosses the mirror image of the line through P11 at P12. The pentagon’s far side beyond K crosses the mirror image of the line through P11 at P13. Line OC crosses the line through P1 at P14. Draw a line through P12 parallel to line AC. Draw a vertical line through P13. Draw a line through P14 parallel to line AD. Reflect the new lines in the horizontal line through O. Turn the lines through P12 and P13 and the mirror image of the first round O by 180°."
+    },
+    {
+      "id": 16,
+      "text": "Line FH crosses the line through P14 at P15. Line AD crosses line BE at P16. Draw a line through P15 parallel to line CE. Draw a line through P16 parallel to line BD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
+      "create": {
+        "P15": {"point": {"meet": ["s5", "m14"]}},
+        "m15": {"line": {"through": "P15", "parallelTo": "s2"}},
+        "P16": {"point": {"meet": ["r0", "r2"]}},
+        "m16": {"line": {"through": "P16", "parallelTo": "s1"}},
+        "mc16p": {"repeat": {"of": ["P15", "P16"], "by": "mirror:h"}},
+        "m15b": {"line": {"through": "P15@1", "parallelTo": "s1"}},
+        "m16b": {"line": {"through": "P16@1", "parallelTo": "s2"}},
+        "mc16r": {"repeat": {"of": ["m15", "m16", "m15b", "m16b"], "by": "rot2"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Line FH crosses the line through P14 at P15. Line AD crosses line BE at P16. Draw a line through P15 parallel to line CE. Draw a line through P16 parallel to line BD. Reflect the new lines in the horizontal line through O. Turn the line through P15 and its mirror image round O by 180°. Turn the mirror image of the line through P16 round O by 180°."
+    },
+    {
+      "id": 17,
+      "text": "Line BE crosses the mirror image of the line through P16 at P17. Line FJ crosses the line through P16 at P18. Draw a line through P17 parallel to line AC. Draw a vertical line through P18. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
+      "create": {
+        "P17": {"point": {"meet": ["r2", "m16b"]}},
+        "m17": {"line": {"through": "P17", "parallelTo": "s0"}},
+        "P18": {"point": {"meet": ["r1", "m16"]}},
+        "m18": {"line": {"through": "P18", "parallelTo": "v"}},
+        "mc18p": {"repeat": {"of": ["P17"], "by": "mirror:h"}},
+        "m17b": {"line": {"through": "P17@1", "parallelTo": "s3"}},
+        "mc18r": {"repeat": {"of": ["m17", "m18", "m17b"], "by": "rot2"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 18,
+      "text": "The line through P4 crosses the mirror image of the line through P17 at V. Draw a vertical line through V. Turn it round O by 180°. Line DF crosses the pentagon’s far side beyond B at Y. Draw a horizontal line through Y. Turn it round O by 180°. The four lines cross at N1, N2, N3 and N4, the corners of the tile.",
+      "create": {
+        "V": {"point": {"meet": ["m4", "m17b"]}},
+        "kr": {"line": {"through": "V", "parallelTo": "v"}},
+        "krr": {"repeat": {"of": ["kr"], "by": "rot2"}},
+        "Y": {"point": {"meet": ["s3", "f@1"]}},
+        "kt": {"line": {"through": "Y", "parallelTo": "h"}},
+        "ktr": {"repeat": {"of": ["kt"], "by": "rot2"}},
+        "N1": {"point": {"meet": ["kr", "kt"]}},
+        "N2": {"point": {"meet": ["kr@1", "kt"]}},
+        "N3": {"point": {"meet": ["kr@1", "kt@1"]}},
+        "N4": {"point": {"meet": ["kr", "kt@1"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 19,
+      "text": "Join N1, N2, N3 and N4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["N1", "N2", "N3", "N4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They close the stars, the pentagons and the pieces between them.",
+    "paths": [
+      {"along": "s0", "from": "m14@1", "to": "s9"},
+      {"along": "s0", "from": "s1", "to": "f@4"},
+      {"along": "s1", "from": "m17b", "to": "m10b"},
+      {"along": "s1", "from": "m11b", "to": "s0"},
+      {"along": "s1", "from": "v", "to": "f@4"},
+      {"along": "s2", "from": "f@1", "to": "v"},
+      {"along": "s2", "from": "m", "to": "m11@1"},
+      {"along": "s2", "from": "m10@1", "to": "m17@1"},
+      {"along": "s3", "from": "f@1", "to": "m"},
+      {"along": "s3", "from": "s4", "to": "m14b"},
+      {"along": "s4", "from": "f@3", "to": "s3"},
+      {"along": "s4", "from": "s5", "to": "f@7"},
+      {"along": "s5", "from": "m14", "to": "s4"},
+      {"along": "s5", "from": "m", "to": "f@9"},
+      {"along": "s6", "from": "m17b@1", "to": "m10b@1"},
+      {"along": "s6", "from": "m11b@1", "to": "m"},
+      {"along": "s6", "from": "v", "to": "f@9"},
+      {"along": "s7", "from": "f@6", "to": "v"},
+      {"along": "s7", "from": "s8", "to": "m11"},
+      {"along": "s7", "from": "m10", "to": "m17"},
+      {"along": "s8", "from": "f@6", "to": "s7"},
+      {"along": "s8", "from": "s9", "to": "m14b@1"},
+      {"along": "s9", "from": "f@8", "to": "s8"},
+      {"along": "s9", "from": "s0", "to": "f@2"},
+      {"along": "f@1", "from": "s3", "to": "m3b@1"},
+      {"along": "f@1", "from": "s2", "to": "m10"},
+      {"along": "f@1", "from": "m11", "to": "m4b"},
+      {"along": "f@2", "from": "v", "to": "s9"},
+      {"along": "f@2", "from": "m2", "to": "m18@1"},
+      {"along": "f@2", "from": "r2", "to": "kr"},
+      {"along": "f@3", "from": "kr@1", "to": "r2"},
+      {"along": "f@3", "from": "m18", "to": "m2@1"},
+      {"along": "f@3", "from": "s4", "to": "v"},
+      {"along": "f@4", "from": "m4@1", "to": "m11b@1"},
+      {"along": "f@4", "from": "m10b@1", "to": "s1"},
+      {"along": "f@4", "from": "m3", "to": "s0"},
+      {"along": "f@6", "from": "s8", "to": "m3b"},
+      {"along": "f@6", "from": "s7", "to": "m10@1"},
+      {"along": "f@6", "from": "m11@1", "to": "m4b@1"},
+      {"along": "f@7", "from": "v", "to": "s4"},
+      {"along": "f@7", "from": "m2@1", "to": "m18"},
+      {"along": "f@7", "from": "r3", "to": "kr@1"},
+      {"along": "f@8", "from": "kr", "to": "r3"},
+      {"along": "f@8", "from": "m18@1", "to": "m2"},
+      {"along": "f@8", "from": "s9", "to": "v"},
+      {"along": "f@9", "from": "m4", "to": "m11b"},
+      {"along": "f@9", "from": "m10b", "to": "s6"},
+      {"along": "f@9", "from": "m3@1", "to": "s5"},
+      {"along": "m1", "from": "m17@1", "to": "m15b"},
+      {"along": "m2", "from": "kt@1", "to": "f@8"},
+      {"along": "m2", "from": "f@2", "to": "kt"},
+      {"along": "m1b", "from": "m17b@1", "to": "m15"},
+      {"along": "m1@1", "from": "m17", "to": "m15b@1"},
+      {"along": "m2@1", "from": "kt", "to": "f@3"},
+      {"along": "m2@1", "from": "f@7", "to": "kt@1"},
+      {"along": "m1b@1", "from": "m17b", "to": "m15@1"},
+      {"along": "m3", "from": "f@4", "to": "r0"},
+      {"along": "m4", "from": "m17b", "to": "m15b@1"},
+      {"along": "m4", "from": "m8", "to": "f@9"},
+      {"along": "m5", "from": "m6b", "to": "m12b@1"},
+      {"along": "m5", "from": "m12@1", "to": "m6"},
+      {"along": "m3b", "from": "f@6", "to": "r5"},
+      {"along": "m4b", "from": "m17", "to": "m15@1"},
+      {"along": "m4b", "from": "m8", "to": "f@1"},
+      {"along": "m3@1", "from": "f@9", "to": "r1"},
+      {"along": "m4@1", "from": "m17b@1", "to": "m15b"},
+      {"along": "m4@1", "from": "m8@1", "to": "f@4"},
+      {"along": "m5@1", "from": "m6b@1", "to": "m12b"},
+      {"along": "m5@1", "from": "m12", "to": "m6@1"},
+      {"along": "m3b@1", "from": "f@1", "to": "r4"},
+      {"along": "m4b@1", "from": "m17@1", "to": "m15"},
+      {"along": "m4b@1", "from": "m8@1", "to": "f@6"},
+      {"along": "m6", "from": "r0", "to": "m5"},
+      {"along": "m6b", "from": "r5", "to": "m5"},
+      {"along": "m6@1", "from": "r1", "to": "m5@1"},
+      {"along": "m6b@1", "from": "r4", "to": "m5@1"},
+      {"along": "m7", "from": "kt@1", "to": "m16b"},
+      {"along": "m7", "from": "m16", "to": "kt"},
+      {"along": "m8", "from": "m4b", "to": "f@8"},
+      {"along": "m8", "from": "f@2", "to": "m4"},
+      {"along": "m7@1", "from": "kt", "to": "m16b@1"},
+      {"along": "m7@1", "from": "m16@1", "to": "kt@1"},
+      {"along": "m8@1", "from": "m4b@1", "to": "f@3"},
+      {"along": "m8@1", "from": "f@7", "to": "m4@1"},
+      {"along": "m10", "from": "s7", "to": "f@1"},
+      {"along": "m10b", "from": "s1", "to": "f@9"},
+      {"along": "m10@1", "from": "s2", "to": "f@6"},
+      {"along": "m10b@1", "from": "s6", "to": "f@4"},
+      {"along": "m12", "from": "m5@1", "to": "s1"},
+      {"along": "m13", "from": "f@1", "to": "f@9"},
+      {"along": "m12b", "from": "m5@1", "to": "s7"},
+      {"along": "m12@1", "from": "m5", "to": "s6"},
+      {"along": "m13@1", "from": "f@6", "to": "f@4"},
+      {"along": "m12b@1", "from": "m5", "to": "s2"},
+      {"along": "m15", "from": "s5", "to": "m4b@1"},
+      {"along": "m15b", "from": "s3", "to": "m4@1"},
+      {"along": "m15@1", "from": "s0", "to": "m4b"},
+      {"along": "m15b@1", "from": "s8", "to": "m4"},
+      {"along": "m17", "from": "m4b", "to": "s7"},
+      {"along": "m17", "from": "m1@1", "to": "m7@1"},
+      {"along": "m18", "from": "f@7", "to": "f@3"},
+      {"along": "m17b", "from": "m4", "to": "s1"},
+      {"along": "m17b", "from": "m1b@1", "to": "m7@1"},
+      {"along": "m17@1", "from": "m4b@1", "to": "s2"},
+      {"along": "m17@1", "from": "m1", "to": "m7"},
+      {"along": "m18@1", "from": "f@2", "to": "f@8"},
+      {"along": "m17b@1", "from": "m4@1", "to": "s6"},
+      {"along": "m17b@1", "from": "m1b", "to": "m7"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Timurid tile",
+    "look": "strapwork",
+    "colors": {
+      "star": "c",
+      "ten_sided": "ground",
+      "octagon": "d",
+      "pentagon": "a",
+      "hexagon": "b",
+      "small_hexagon": "ground",
+      "kite": "ground"
+    },
+    "text": "Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at every corner."
+  },
+  "expect": {
+    "pieceTypes": 7,
+    "pieces": [
+      {"name": "star", "vertices": 20, "area": 2.62866, "perCell": 2},
+      {"name": "ten_sided", "vertices": 10, "area": 0.75025, "perCell": 10},
+      {"name": "octagon", "vertices": 8, "area": 0.72654, "perCell": 6},
+      {"name": "pentagon", "vertices": 5, "area": 0.47553, "perCell": 28},
+      {"name": "hexagon", "vertices": 6, "area": 0.46549, "perCell": 10},
+      {"name": "small_hexagon", "vertices": 6, "area": 0.29536, "perCell": 10},
+      {"name": "kite", "vertices": 4, "area": 0.16246, "perCell": 32}
+    ]
+  }
+}
