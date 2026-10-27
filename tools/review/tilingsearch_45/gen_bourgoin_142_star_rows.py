@@ -127,15 +127,15 @@ def main():
            'kind':'drawing','url':'https://tilingsearch.mit.edu/HTML/data12/P142.html',
            'note':'The page cites Critchlow, page177(1976); Abas and Salman, page313(1995); and Bourgoin, Plate142(1879), with no known source. It links Wade BOU142. No photograph was independently checked.'}],
        'steps':cm.steps,'ink':{'text':'Ink the lines picked out in orange.','paths':paths},
-       'pattern':{'cell':'tile','palette':'Kashan','colors':{},'text':'Put copies of the rectangular tile side by side.'},
+       'pattern':{'cell':'tile','distinguishOutlines':True,'palette':'Kashan','colors':{},'text':'Put copies of the rectangular tile side by side.'},
        'expect':{'pieceTypes':1,'pieces':[{'name':'x','vertices':3,'area':1,'perCell':1}]}}
     s=math.sqrt(3)
     inventory=[('twelve_star',24,3*s-3,2,'ground'),('kite',4,(3-s)/4,24,'c'),
         ('hexagon',6,s/2,24,'b'),('notched_hexagon',6,.25,24,'c'),
-        ('eight',8,5*s/12,24,'b'),('regular_hexagon',6,s/4,24,'c'),
+        ('eight',8,5*s/12,16,'b'),('other_eight',8,5*s/12,8,'b'),('regular_hexagon',6,s/4,24,'c'),
         ('four_star',8,3-s,8,'a'),('ten',10,-.5+3*s/4,4,'b'),
         ('six_star',12,s/2,2,'ground')]
-    t['expect']={'pieceTypes':9,'cellArea':round(40+24*s,5),
+    t['expect']={'pieceTypes':10,'cellArea':round(40+24*s,5),
         'note':'The136 counted source-polygon shoelaces sum exactly to40+24√3=4(2√2+√6)(√2+√6). '
                'This conventional centred rectangle contains two twelve-pointed stars.',
         'pieces':[{'name':n,'vertices':v,'area':round(a,5),'perCell':c} for n,v,a,c,_ in inventory]}

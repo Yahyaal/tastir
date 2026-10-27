@@ -141,16 +141,16 @@ def main():
            'kind':'drawing','url':'https://tilingsearch.mit.edu/HTML/data216/MIR24.html',
            'note':'The page cites Hamburg museum accession1908.472, tile fragments from Fathabad, Bukhara, through personal communication. No photograph was independently checked.'}],
        'steps':cm.steps,'ink':{'text':'Ink the lines picked out in orange.','paths':paths},
-       'pattern':{'cell':'tile','look':'strapwork','palette':'Kashan','colors':{},'text':'Put copies of the square tile side by side.'},
+       'pattern':{'cell':'tile','distinguishOutlines':True,'look':'strapwork','palette':'Kashan','colors':{},'text':'Put copies of the square tile side by side.'},
        'expect':{'pieceTypes':1,'pieces':[{'name':'x','vertices':3,'area':1,'perCell':1}]}}
     r,s,t6=math.sqrt(2),math.sqrt(3),math.sqrt(6)
     inventory=[('twelve_star',24,45+9*s-12*t6,1,'a'),('kite',4,-1.5-3*r+3*s+t6,12,'b'),
-        ('hexagon',6,9/4+9*r/2-9*s/4,12,'b'),('ten',10,-1.5*r+4*s,12,'b'),
+        ('hexagon',6,9/4+9*r/2-9*s/4,12,'b'),('ten',10,-1.5*r+4*s,8,'b'),('other_ten',10,-1.5*r+4*s,4,'b'),
         ('regular_hexagon',6,3*s/2,12,'d'),('four_star',8,18-6*s,2,'a'),
         ('eight',8,-12+19*s/2,4,'b'),('six_star',12,3*s,4,'a'),
         ('small_eight',8,9/4+3*r/2-5*s/4,4,'b'),
         ('small_kite',4,(81-45*s)/4,4,'b'),('eight_star',16,12-6*r,1,'a')]
-    t['expect']={'pieceTypes':11,'cellArea':round(144+72*s,5),
+    t['expect']={'pieceTypes':12,'cellArea':round(144+72*s,5),
         'note':'The68 counted source-polygon shoelaces sum exactly to144+72√3=4[3(1+√3)]². '
                'The six-star radius is√3 and the eight-star radius√6/2.',
         'pieces':[{'name':n,'vertices':v,'area':round(a,5),'perCell':c} for n,v,a,c,_ in inventory]}

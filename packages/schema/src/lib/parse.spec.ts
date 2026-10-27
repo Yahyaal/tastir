@@ -30,6 +30,23 @@ function problems(input: unknown): string[] {
 }
 
 describe('the example tutorial', () => {
+  it('accepts opt-in outline grouping and leaves legacy grouping unset', () => {
+    expect(parseTutorial(example).pattern.distinguishOutlines).toBeUndefined();
+    expect(
+      parseTutorial(
+        variant((t) => {
+          t.pattern.distinguishOutlines = true;
+        }),
+      ).pattern.distinguishOutlines,
+    ).toBe(true);
+    expect(
+      safeParseTutorial(
+        variant((t) => {
+          t.pattern.distinguishOutlines = 'true';
+        }),
+      ).success,
+    ).toBe(false);
+  });
   it('preserves historical verification metadata and rejects unsupported statuses', () => {
     const input = {
       ...example,

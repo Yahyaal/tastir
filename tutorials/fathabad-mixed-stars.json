@@ -456,6 +456,7 @@
   },
   "pattern": {
     "cell": "tile",
+    "distinguishOutlines": true,
     "look": "strapwork",
     "palette": "Kashan",
     "colors": {
@@ -463,6 +464,7 @@
       "kite": "b",
       "hexagon": "b",
       "ten": "b",
+      "other_ten": "b",
       "regular_hexagon": "d",
       "four_star": "a",
       "eight": "b",
@@ -474,14 +476,15 @@
     "text": "Put copies of the square tile side by side."
   },
   "expect": {
-    "pieceTypes": 11,
+    "pieceTypes": 12,
     "cellArea": 268.70766,
     "note": "The68 counted source-polygon shoelaces sum exactly to144+72√3=4[3(1+√3)]². The six-star radius is√3 and the eight-star radius√6/2.",
     "pieces": [
       {"name": "twelve_star", "vertices": 24, "area": 31.19458, "perCell": 1},
       {"name": "kite", "vertices": 4, "area": 1.903, "perCell": 12},
       {"name": "hexagon", "vertices": 6, "area": 4.71685, "perCell": 12},
-      {"name": "ten", "vertices": 10, "area": 4.80688, "perCell": 12},
+      {"name": "ten", "vertices": 10, "area": 4.80688, "perCell": 8},
+      {"name": "other_ten", "vertices": 10, "area": 4.80688, "perCell": 4},
       {"name": "regular_hexagon", "vertices": 6, "area": 2.59808, "perCell": 12},
       {"name": "four_star", "vertices": 8, "area": 7.6077, "perCell": 2},
       {"name": "eight", "vertices": 8, "area": 4.45448, "perCell": 4},

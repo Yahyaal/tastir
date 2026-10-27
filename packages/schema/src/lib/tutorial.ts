@@ -473,6 +473,8 @@ export const TutorialShape = z.strictObject({
     ),
   pattern: z.strictObject({
     cell: Ref,
+    /** Separate noncongruent outlines even when their scalar measures agree. */
+    distinguishOutlines: z.boolean().optional(),
     /**
      * The whole panel to trace in the ink stage, when the tile carries a
      * shared band on only two sides: a convex polygon holding the tile. Its

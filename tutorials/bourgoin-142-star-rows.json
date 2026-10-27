@@ -584,6 +584,7 @@
   },
   "pattern": {
     "cell": "tile",
+    "distinguishOutlines": true,
     "palette": "Kashan",
     "colors": {
       "twelve_star": "ground",
@@ -591,6 +592,7 @@
       "hexagon": "b",
       "notched_hexagon": "c",
       "eight": "b",
+      "other_eight": "b",
       "regular_hexagon": "c",
       "four_star": "a",
       "ten": "b",
@@ -599,7 +601,7 @@
     "text": "Put copies of the rectangular tile side by side."
   },
   "expect": {
-    "pieceTypes": 9,
+    "pieceTypes": 10,
     "cellArea": 81.56922,
     "note": "The136 counted source-polygon shoelaces sum exactly to40+24√3=4(2√2+√6)(√2+√6). This conventional centred rectangle contains two twelve-pointed stars.",
     "pieces": [
@@ -607,7 +609,8 @@
       {"name": "kite", "vertices": 4, "area": 0.31699, "perCell": 24},
       {"name": "hexagon", "vertices": 6, "area": 0.86603, "perCell": 24},
       {"name": "notched_hexagon", "vertices": 6, "area": 0.25, "perCell": 24},
-      {"name": "eight", "vertices": 8, "area": 0.72169, "perCell": 24},
+      {"name": "eight", "vertices": 8, "area": 0.72169, "perCell": 16},
+      {"name": "other_eight", "vertices": 8, "area": 0.72169, "perCell": 8},
       {"name": "regular_hexagon", "vertices": 6, "area": 0.43301, "perCell": 24},
       {"name": "four_star", "vertices": 8, "area": 1.26795, "perCell": 8},
       {"name": "ten", "vertices": 10, "area": 0.79904, "perCell": 4},

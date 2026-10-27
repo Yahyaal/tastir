@@ -121,6 +121,8 @@ A tutorial with a photo of the real pattern should open looking like it. `patter
 
 `expect` holds the golden values for the tutorial's test: how many piece types there are, and each type's vertex count, area (in units of OA²) and count per cell. A piece is named in `expect.pieces`, and `pattern.colors` uses those names.
 
+`pattern.distinguishOutlines: true` compares every corner when grouping pieces, allowing rotation and reflection. Use it when different outlines share the same vertex count, area, perimeter and sorted side lengths. Without it, the existing grouping by those scalar measures is preserved. If several expected pieces have the same vertex count and area, their independently computed counts per cell must distinguish their names; an ambiguous match stays unnamed and fails its golden check.
+
 ## The worked example
 
 `tutorials/eight-fold-star-and-cross.json` builds the classic star and cross in six steps: a circle, the horizontal and vertical, the two diagonals, the dynamic square, the static square, and the square tile around the circle. The ink path walks the outline of the two squares, turning at each of their eight crossings.
