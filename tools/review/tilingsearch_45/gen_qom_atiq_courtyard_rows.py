@@ -121,10 +121,10 @@ def build():
     step('Draw a circle with centre P and opening from O to K1. '
          'It crosses the horizontal line through O at G, right of P. '
          'Draw a circle with centre G and opening AB. '
-         'It crosses the same line at I, right of G.', 'compass', ['P', 'K1', 'G', 'I', 'A', 'B'])
+         'It crosses the same line at H, right of G.', 'compass', ['P', 'K1', 'G', 'H', 'A', 'B'])
     transfer('G', 'P', ('O', 'K1'), 3+6*H)
-    transfer('I', 'G', ('A', 'B'), 5+6*H)
-    diagonals(['G', 'I'])
+    transfer('H', 'G', ('A', 'B'), 5+6*H)
+    diagonals(['G', 'H'])
     step('The vertical through Q crosses the horizontal through Y2 at Z1. '
          'Draw a line through each of X and Z1 at 90° to the line from O to K1. '
          'Turn both lines round O by 90°, three times.', 'ruler', ['Q', 'Y2', 'X', 'Z1'])
