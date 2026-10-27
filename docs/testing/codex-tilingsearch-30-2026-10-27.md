@@ -292,3 +292,12 @@ The engine independently confirms all nine types and counts without slivers or o
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/B87/overlay.png`. Every boundary agrees, including the inset kites. All69 actual player fills match interior source samples, retaining white, red, green, blue and brown classes with an illustrative palette. Credits retain Bourgoin, Plate87(1879), with no known source, and the page’s Wade BOU087 link. No photograph was independently checked. The chelate connectors and sixteenth divisions distinguish it from P141; no exact duplicate or filling-only variant was found.
 
 The catalog prepared208 previews. All six targeted golden checks and the full weave group, all1040 player text/helper assertions and all40 schema checks passed serially under3GB. P141 regenerates byte-identically after exposing its unchanged first eight steps. No shared application or reserved file changed.
+
+
+## MIR24 — `fathabad-mixed-stars` (classification follow-up pending)
+
+The twenty-four-step square construction is committed. Its6pt source bands are expanded3pt to their centres, with O at PDF(297.5,374.6375), OA=195.4835/[3(1+√3)]pt and square half-side L=3(1+√3). The worst source-corner residual is0.00036919OA. The ink, wall and complete overlay agree with the drawing, and all68 actual player fills match source interior samples. Credits retain Hamburg museum accession1908.472, Fathabad tile fragments, Bukhara, through Wichmann’s personal communication; no photograph was checked.
+
+Catalog209, the targeted golden checks and full weave group,1045 player text/helper assertions and40 schema checks passed under3GB. An additional full-outline congruence audit then found two different ten-corner outlines with equal area, perimeter and sorted side lengths. The current engine merges their eight and four occurrences. The same audit splits P142’s twenty-four eight-corner connectors into sixteen and eight. Their construction and fill matches remain valid, but their piece inventories need correction before either classification is considered final.
+
+The audit checked1367 current piece groups. Five older tutorials also contain merged outlines: `chellah-mosque-stars`, `fes-motif-rosette`, `isfahan-sayyed-crosses`, `kerman-ganj-ali-khan-chevrons` and `tash-khauli-crosses`. A separate tested opt-in engine change will distinguish full outlines for MIR24 and P142 while preserving those older tutorials for their own review. The progress count above predates this classification follow-up.
