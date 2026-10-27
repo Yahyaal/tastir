@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Nine tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633 and DM1. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-three entries remain pending.
+Ten tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1 and SYR0222. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-two entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -132,3 +132,14 @@ Independent shoelaces give star6−2√3, once; kite−1+2√3/3, twelve; hexago
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/DM1/overlay.png`. All boundaries agree, including the inset rhombi and thin chelates. All63 actual player fills match interior source samples, retaining grey, vivid red and muted red classes. The Kashan palette is illustrative. The page credits Richard Henry’s photograph of an exterior fountain surround in Damascus, Syria, described as a six-fold cut-stone pattern, supplied by personal communication. No photograph was independently checked. This is a separate design, with no duplicate or filling-only variant found.
 
 The catalog prepared195 previews. All six targeted golden checks and the full weave group, all975 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## SYR0222 — `ibn-arabi-six-stars`
+
+This twenty-one-step p6m tutorial uses fold six. O is at PDF(297.5,375.7208333333), OA=30√3pt, and the teaching frame turns30°. Two triangles give the large star. Diagonal intercepts construct3/16 and9/16. Compass doubling and complements in the cell apothem3 give the six axial families; two more families pass through existing crossings. Every exported point is a construction intersection. The plain source corners fit within0.00017618OA.
+
+Independent source shoelaces give fork243√3/128, twice; star√3, once; ten75√3/128, six; regular hexagon√3/2, six; kite√3/9, six; and small_kite49√3/576, six. The chelate’s fourteen-corner outer contour has area289√3/288. Subtract its inset small kite to get the eighteen-corner face area529√3/576, six per cell. One extracted contour already includes that subtraction; the other five need it. These33 counted areas sum exactly to18√3. The engine independently confirms all seven types and counts without slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/SYR0222/overlay.png`. Every boundary agrees. All33 actual player fills match interior source samples, retaining the beige, gold and black classes with an illustrative Kashan palette. Credits retain David Wade’s SYR0222 attribution to Ibn al-Arabi Mausoleum, Damascus, Syria. No photograph was independently checked. No duplicate or filling-only variation was found.
+
+The catalog prepared196 previews. All six targeted golden checks and the full weave group, all980 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free texts describe the retained30°,45° and150° lines. No shared application or reserved file changed.
