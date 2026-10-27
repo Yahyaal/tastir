@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Eleven tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222 and A192. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-one entries remain pending.
+Twelve tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192 and SAM1. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -154,3 +154,14 @@ Independent source-polygon shoelaces give six_kite(√3−1)/2, twelve; twelve_k
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/A192/overlay.png`. Every outline agrees, including both divided stars. All51 actual player fills match source interior samples. Six-star kites, central kites and surrounding hexagons each alternate between two classes, with placements1,2,5,6,9,10 forming the second class. The drawing has eight classes; three fixed illustrative colours extend the five-slot Kashan palette so all eight remain distinct. No photograph was checked. Credits name Abas and Salman, page192(1995), and Bourgoin, Plate98, upper design(1879), for which the page gives no location. No duplicate or filling-only variation was found.
 
 The catalog prepared197 previews. All six targeted golden checks and the full weave group, all985 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## SAM1 — `samarkand-star-knots`
+
+The eighteen-step tutorial uses fold four, star six and chiral=true, following the established p4g convention: turns round O preserve the whole mesh, while mirrors through O do not. O is a four-pointed star centre at PDF(156.90125,234.12875). OA=60pt, and the square half-side is L=(3+√3)/2, with no frame turn. Its two star-edge families and nine parallels through earlier crossings construct every boundary. The coloured source faces are expanded5pt to the centres of the10pt white bands. Periodic copies complete the off-centre cell. Worst source-corner residual is0.00013888OA.
+
+Independent shoelaces give four_star6−2√3, once; six_star3(1+√3)/4, once; seven(1+√3)/2, four; eight(2+√3)/4, six; three_star−1/2+3√3/4, four; and six(3+√3)/8, six. These22 pieces sum exactly to12+6√3=4L². The engine independently confirms all six types and counts without slivers or off-construction endpoints. The source’s extra small three-star classes counted across its complete drawing do not require extra congruence types in this primitive repeat.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/SAM1/overlay.png`. Every band centre agrees, including the offset six-pointed stars. All22 actual player fills match source interior samples and retain five classes: yellow stars, purple seven-sided pieces, green eight-sided pieces, blue six-sided pieces and black three-stars. Strapwork is the default; the palette is illustrative. Credits retain Tony Lee’s Samarkand attribution through personal communication, with the original source unrecorded. No photograph was checked. No duplicate or filling-only variation was found.
+
+The catalog prepared198 previews. All six targeted golden checks and the full weave group, all990 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free wording correctly limits the two half-turn families and the single retained line through Q5. No shared application or reserved file changed.
