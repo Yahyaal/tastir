@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
-import { compassStart, planStep, usedNames } from './animation';
+import { compassStart, dotKeyframes, planStep, usedNames } from './animation';
 import { Play } from './app';
 import { loadModel } from './model';
 
@@ -269,5 +269,26 @@ describe('inking as you go', () => {
     expect(
       planStep(model, 4, 1, { ink: true }).map((e) => e.name),
     ).not.toContain('ink-fresh');
+  });
+});
+
+describe('the dots of a ruler line', () => {
+  const offsets = (k: Keyframe[]) =>
+    k.flatMap((f) => (f.offset === undefined ? [] : [f.offset as number]));
+
+  it('grow in, stay until the ink is done, then fade', () => {
+    expect(offsets(dotKeyframes(1000, 1500, 1))).toEqual([
+      200 / 1500,
+      1000 / 1500,
+    ]);
+  });
+
+  it('keep their offsets in order when the last line starts just before the ink ends', () => {
+    // The jali screen pinwheel's many lines squeeze the pauses, so its last
+    // line started 150 ms before the end; the browser threw on the old
+    // keyframes ("Offsets must be monotonically non-decreasing").
+    const o = offsets(dotKeyframes(150, 650, 1));
+    expect(o).toEqual([...o].sort((a, b) => a - b));
+    expect(o[1]).toBe(o[0]);
   });
 });

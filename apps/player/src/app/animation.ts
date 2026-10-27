@@ -477,6 +477,27 @@ export const TILE_COLOR = 'var(--malachite)';
  * speed, red while drawing and then settling to black; the pen lifts over
  * the gaps. Last, the tile's outline (data-tile) is traced in green.
  */
+/**
+ * A ruler line's dots: they grow in over 200 ms, stay until the ink is done
+ * (`held` ms after the line starts) and fade by the end of `span`. When the
+ * pauses are squeezed, the last line can start less than 200 ms before the
+ * ink ends; the dots then stay from when they have grown, since the
+ * browser refuses keyframe offsets that go backwards.
+ */
+export function dotKeyframes(
+  held: number,
+  span: number,
+  speed: number,
+): Keyframe[] {
+  const grown = Math.min(1, 200 / speed / span);
+  return [
+    { opacity: 0, transform: 'scale(0)' },
+    { opacity: 1, transform: 'scale(1)', offset: grown },
+    { opacity: 1, offset: Math.min(1, Math.max(grown, held / span)) },
+    { opacity: 0 },
+  ];
+}
+
 export function playInk(
   svg: SVGSVGElement | null,
   model: Model,
@@ -610,19 +631,11 @@ export function playInk(
     for (const n of nodes) {
       if (!can(n)) continue;
       animations.push(
-        n.animate(
-          [
-            { opacity: 0, transform: 'scale(0)' },
-            {
-              opacity: 1,
-              transform: 'scale(1)',
-              offset: Math.min(1, 200 / speed / span),
-            },
-            { opacity: 1, offset: Math.max(0, (inkEnd - from) / span) },
-            { opacity: 0 },
-          ],
-          { duration: span, delay: from, fill: 'none' },
-        ),
+        n.animate(dotKeyframes(inkEnd - from, span, speed), {
+          duration: span,
+          delay: from,
+          fill: 'none',
+        }),
       );
     }
   }
