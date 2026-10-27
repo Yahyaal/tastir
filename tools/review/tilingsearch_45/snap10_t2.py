@@ -292,7 +292,10 @@ def plan(polys, HX, HY, reach=1.01, extra=(), tol=1e-6, verbose=True, maxn=60, h
             break
         s, key, a, b, p = best
         old = g.named_at(p)
-        pname = old or f'P{sum(1 for e in out if not e[5]) + 1}'
+        n = 1
+        while f'P{n}' in cm.el:
+            n += 1
+        pname = old or f'P{n}'
         if not old:
             g.meet(pname, a, b, p)
         lname = f'{PLAN_PREFIX}{len(LINES) + 1}'

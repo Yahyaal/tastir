@@ -39,10 +39,11 @@ def drawing(pieces, origin=ORIGIN):
     return polys + [[(-x, y) for x, y in Q] for Q in polys]
 
 
-def seeds():
+def seeds(small=False):
     s10.opening()
     s10.star_lines('Draw a line through A at 90° to the horizontal line. Turn it round O by 36°, nine times. '
-                   'These ten lines touch the circle at A, B, C and on round. They make the decagon.')
+                   'These ten lines touch the circle at A, B, C and on round.'
+                   + ('' if small else ' They make the decagon.'))
     step('Turn the vertical line round O by 36°, four times. '
          'These four lines and the vertical line run through the corners of the decagon.')
     # the vertical line exists: its turns by 36° are the other four
@@ -90,6 +91,11 @@ def build():
 
 
 def rest():
+    tile()
+    lines()
+
+
+def tile():
     step('The line through C crosses the horizontal line at P1. Draw a vertical line through P1. '
          'It crosses the line through O at 54° at K1. Draw a horizontal line through K1. '
          'Turn both new lines round O by 180°. The four lines make the tile, with corners K1, K2, K3 and K4.')
@@ -101,6 +107,10 @@ def rest():
     g.meet('K2', 'side@1', 'top', (-HX, HY))
     g.meet('K3', 'side@1', 'top@1', (-HX, -HY))
     g.meet('K4', 'side', 'top@1', (HX, -HY))
+
+
+
+def lines():
     S36 = 1 / math.sin(math.radians(36))
     step('The right side of the tile crosses line PQ at P2, and the mirror image of line PQ at P3. '
          'Draw a line through P2 parallel to the line through E. '

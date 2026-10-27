@@ -1,0 +1,316 @@
+{
+  "format": 0,
+  "id": "fatehpur-masjid-small-decagons",
+  "title": "Small decagons of the Friday Mosque, Fatehpur Sikri",
+  "short": "Fatehpur Sikri small decagons",
+  "subtitle": "Friday Mosque, Fatehpur Sikri, India",
+  "fold": 2,
+  "star": 10,
+  "style": "Mughal",
+  "level": "advanced",
+  "given": {
+    "O": "The centre of a decagon.",
+    "A": "A point to the right of O. The lines of the big decagon touch the circle through A."
+  },
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Wichmann’s SM28 drawing, whose pieces are drawn edge to edge. It is the design of his SM6 (Fatehpur Sikri decagons) with a smaller decagon and no ring of pentagons round it, so it shares that tutorial’s opening, outer ring and tile: O is the centre of a decagon, OA the inradius of SM6’s larger one, and the decagons sit at the centre and the corners of a rectangle of half-sides 2φ and 2φ tan 54°. Every other line matches the drawing within 0.001 of OA. The drawing gives no steps; we devised the construction.",
+    "changes": "The compass steps, their order and the named points are ours. In the drawing the small decagon’s sides are 0.6994 of OA from its centre (0.7 of SM6’s), a length no crossing of the design gives. We draw them through W, where two circles of the opening cross, at 0.6993: the pieces match the drawing within 0.0004 of OA. Colours follow the shapes, not his drawing (dark green kites, the rest white, red bands). No photograph was checked.",
+    "reviewed": "2026-10-27"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data206/SM28: Friday Mosque, Fatehpur Sikri, India",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data206/SM28.html",
+      "note": "Read from his finished drawing, not construction instructions. His reference is E. W. Smith, The Moghul Architecture of Fathpur-Sikri, part 4 (1896), plate XXVII (Friday Mosque). He notes that Bourgoin’s plate 175 is the same pattern without some ornament, and that SM6 is the version with a ring of pentagons."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. It crosses the horizontal line again at F.",
+      "create": {
+        "c": {"circle": {"centre": "O", "through": "A"}},
+        "h": {"line": {"through": ["O", "A"]}},
+        "F": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. It crosses the circle at N.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "N": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre F through O. It crosses the first circle at Y1 and Y2. Draw a straight line through Y1 and Y2. It crosses the horizontal line at M, halfway from O to F.",
+      "create": {
+        "cW": {"circle": {"centre": "F", "through": "O"}},
+        "Y1": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
+        "Y2": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}},
+        "m": {"line": {"through": ["Y1", "Y2"]}},
+        "M": {"point": {"meet": ["m", "h"]}}
+      },
+      "highlight": ["F"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a circle with centre M through N. It crosses the horizontal line at R.",
+      "create": {
+        "cM": {"circle": {"centre": "M", "through": "N"}},
+        "R": {"point": {"meet": ["cM", "h"], "pick": {"angle": 0.0}}}
+      },
+      "highlight": ["M"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre A and opening from O to R. It crosses the circle at B and K. Draw circles of the same size round the circle, each centred where the last one crosses it. They mark C, D, E, G, H and J. The circle is now cut into ten.",
+      "create": {
+        "cF0": {"circle": {"centre": "A", "radiusFrom": ["O", "R"]}},
+        "B": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 36.0}}},
+        "K": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 324.0}}},
+        "cF1": {"circle": {"centre": "B", "radiusFrom": ["O", "R"]}},
+        "C": {"point": {"meet": ["c", "cF1"], "pick": {"angle": 72.0}}},
+        "cF2": {"circle": {"centre": "C", "radiusFrom": ["O", "R"]}},
+        "D": {"point": {"meet": ["c", "cF2"], "pick": {"angle": 108.0}}},
+        "cF3": {"circle": {"centre": "D", "radiusFrom": ["O", "R"]}},
+        "E": {"point": {"meet": ["c", "cF3"], "pick": {"angle": 144.0}}},
+        "cF9": {"circle": {"centre": "K", "radiusFrom": ["O", "R"]}},
+        "J": {"point": {"meet": ["c", "cF9"], "pick": {"angle": 288.0}}},
+        "cF8": {"circle": {"centre": "J", "radiusFrom": ["O", "R"]}},
+        "H": {"point": {"meet": ["c", "cF8"], "pick": {"angle": 252.0}}},
+        "cF7": {"circle": {"centre": "H", "radiusFrom": ["O", "R"]}},
+        "G": {"point": {"meet": ["c", "cF7"], "pick": {"angle": 216.0}}}
+      },
+      "highlight": ["R"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a line through A at 90° to the horizontal line. Turn it round O by 36°, nine times. These ten lines touch the circle at A, B, C and on round.",
+      "create": {
+        "t": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "tr": {"repeat": {"of": ["t"], "by": "rot10"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a line through A at 90° to the horizontal line. Draw a line through each of C, D and K at 90° to its line from O."
+    },
+    {
+      "id": 7,
+      "text": "Turn the vertical line round O by 36°, four times. These four lines and the vertical line run through the corners of the decagon.",
+      "create": {"vr": {"repeat": {"of": ["v"], "by": "rot10", "distinct": true}}},
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "The lines through A and D cross at P. The lines through C and K cross at Q. Draw a straight line through P and Q. Turn it round O by 36°, nine times. These ten lines make the outer ring.",
+      "create": {
+        "P": {"point": {"meet": ["t", "t@3"]}},
+        "Q": {"point": {"meet": ["t@2", "t@9"]}},
+        "f": {"line": {"through": ["P", "Q"]}},
+        "fr": {"repeat": {"of": ["f"], "by": "rot10"}}
+      },
+      "highlight": ["A", "D", "C", "K"],
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "The line through C crosses the horizontal line at P1. Draw a vertical line through P1. It crosses the line through O at 54° at K1. Draw a horizontal line through K1. Turn both new lines round O by 180°. The four lines make the tile, with corners K1, K2, K3 and K4.",
+      "create": {
+        "P1": {"point": {"meet": ["h", "t@2"]}},
+        "side": {"line": {"through": "P1", "parallelTo": "v"}},
+        "K1": {"point": {"meet": ["side", "v@4"]}},
+        "top": {"line": {"through": "K1", "parallelTo": "h"}},
+        "frame": {"repeat": {"of": ["side", "top"], "by": "rot2"}},
+        "K2": {"point": {"meet": ["side@1", "top"]}},
+        "K3": {"point": {"meet": ["side@1", "top@1"]}},
+        "K4": {"point": {"meet": ["side", "top@1"]}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "The line through C crosses the horizontal line at P1. Draw a vertical line through P1. It crosses the line through O at 54° at K1. Turn the vertical line round O by 180°. K1, K2, K3 and K4 are the corners of the tile."
+    },
+    {
+      "id": 10,
+      "text": "The circle with centre M crosses the circle with centre D at W. Draw a line through W parallel to the line through B. Turn it round O by 36°, nine times. These ten lines make the small decagon, with corners V1 to V10.",
+      "create": {
+        "W": {"point": {"meet": ["cM", "cF3"], "pick": {"angle": 70.009}}},
+        "d": {"line": {"through": "W", "parallelTo": "t@1"}},
+        "dr": {"repeat": {"of": ["d"], "by": "rot10"}},
+        "V1": {"point": {"meet": ["d@9", "d"]}},
+        "V2": {"point": {"meet": ["d", "d@1"]}},
+        "V3": {"point": {"meet": ["d@1", "d@2"]}},
+        "V4": {"point": {"meet": ["d@2", "d@3"]}},
+        "V5": {"point": {"meet": ["d@3", "d@4"]}},
+        "V6": {"point": {"meet": ["d@4", "d@5"]}},
+        "V7": {"point": {"meet": ["d@5", "d@6"]}},
+        "V8": {"point": {"meet": ["d@6", "d@7"]}},
+        "V9": {"point": {"meet": ["d@7", "d@8"]}},
+        "V10": {"point": {"meet": ["d@8", "d@9"]}}
+      },
+      "highlight": ["M", "D"],
+      "animate": "ruler"
+    },
+    {
+      "id": 11,
+      "text": "The right side of the tile crosses line PQ at P2, and the mirror image of line PQ at P3. Draw a line through P2 parallel to the line through E. Draw a line through P3 parallel to the line through B. Turn both new lines round O by 180°.",
+      "create": {
+        "P2": {"point": {"meet": ["side", "f"]}},
+        "P3": {"point": {"meet": ["side", "f@8"]}},
+        "m1": {"line": {"through": "P2", "parallelTo": "t@4"}},
+        "m1x": {"line": {"through": "P3", "parallelTo": "t@1"}},
+        "c1r": {"repeat": {"of": ["m1", "m1x"], "by": "rot2"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 12,
+      "text": "The right side of the tile crosses the line through W at P4, and its mirror image at P5. Draw a line through P4 parallel to the line through E. Draw a line through P5 parallel to the line through B. Draw a line through K1 parallel to the line through D. It crosses the new line through P5 at P6. Draw a vertical line through P6. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
+      "create": {
+        "P4": {"point": {"meet": ["side", "d"]}},
+        "P5": {"point": {"meet": ["side", "d@8"]}},
+        "m2": {"line": {"through": "P4", "parallelTo": "t@4"}},
+        "m2x": {"line": {"through": "P5", "parallelTo": "t@1"}},
+        "m3": {"line": {"through": "K1", "parallelTo": "t@3"}},
+        "P6": {"point": {"meet": ["m3", "m2x"]}},
+        "m4": {"line": {"through": "P6", "parallelTo": "v"}},
+        "c2p": {"repeat": {"of": ["K1"], "by": "mirror:h"}},
+        "m3b": {"line": {"through": "K1@1", "parallelTo": "t@2"}},
+        "c2r": {"repeat": {"of": ["m2", "m2x", "m3", "m4", "m3b"], "by": "rot2"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 13,
+      "text": "The right side of the tile crosses the line through K at P7. Draw a line through P7 parallel to the line through C. The line through K1 parallel to the line through D crosses the line through V4 and V5 at P8. Draw a line through P8 parallel to the line through C. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
+      "create": {
+        "P7": {"point": {"meet": ["t@9", "side"]}},
+        "m5": {"line": {"through": "P7", "parallelTo": "t@2"}},
+        "P8": {"point": {"meet": ["m3", "d@3"]}},
+        "m6": {"line": {"through": "P8", "parallelTo": "t@2"}},
+        "c3p": {"repeat": {"of": ["P7", "P8"], "by": "mirror:h"}},
+        "m5b": {"line": {"through": "P7@1", "parallelTo": "t@3"}},
+        "m6b": {"line": {"through": "P8@1", "parallelTo": "t@3"}},
+        "c3r": {"repeat": {"of": ["m5", "m6", "m5b", "m6b"], "by": "rot2"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 14,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They close the decagons, the pentagons and the kites.",
+    "paths": [
+      {"along": "v", "from": "top@1", "to": "m5b"},
+      {"along": "v", "from": "t@6", "to": "d@6"},
+      {"along": "v", "from": "d@1", "to": "t@1"},
+      {"along": "v", "from": "m5", "to": "top"},
+      {"along": "v@1", "from": "m2", "to": "m1"},
+      {"along": "v@1", "from": "t", "to": "d@7"},
+      {"along": "v@1", "from": "d@2", "to": "t@2"},
+      {"along": "v@1", "from": "m1@1", "to": "m2@1"},
+      {"along": "v@2", "from": "t@1", "to": "d@8"},
+      {"along": "v@2", "from": "d@3", "to": "t@3"},
+      {"along": "v@3", "from": "t@2", "to": "d"},
+      {"along": "v@3", "from": "d@4", "to": "t@4"},
+      {"along": "v@4", "from": "m2x", "to": "m1x"},
+      {"along": "v@4", "from": "t", "to": "d"},
+      {"along": "v@4", "from": "d@5", "to": "t@5"},
+      {"along": "v@4", "from": "m1x@1", "to": "m2x@1"},
+      {"along": "f", "from": "top", "to": "t"},
+      {"along": "f", "from": "t@2", "to": "side"},
+      {"along": "f@1", "from": "t@6", "to": "v"},
+      {"along": "f@1", "from": "t", "to": "side"},
+      {"along": "f@2", "from": "side@1", "to": "t@2"},
+      {"along": "f@2", "from": "v", "to": "t@9"},
+      {"along": "f@3", "from": "side@1", "to": "t@3"},
+      {"along": "f@3", "from": "t@2", "to": "top"},
+      {"along": "f@4", "from": "t@9", "to": "t@4"},
+      {"along": "f@4", "from": "t@3", "to": "t@1"},
+      {"along": "f@5", "from": "top@1", "to": "t@5"},
+      {"along": "f@5", "from": "t@4", "to": "side@1"},
+      {"along": "f@6", "from": "t@1", "to": "v"},
+      {"along": "f@6", "from": "t@5", "to": "side@1"},
+      {"along": "f@7", "from": "side", "to": "t"},
+      {"along": "f@7", "from": "v", "to": "t@4"},
+      {"along": "f@8", "from": "side", "to": "t@1"},
+      {"along": "f@8", "from": "t", "to": "top@1"},
+      {"along": "f@9", "from": "t@4", "to": "t@2"},
+      {"along": "f@9", "from": "t@1", "to": "t@6"},
+      {"along": "side", "from": "m6b", "to": "t@1"},
+      {"along": "side", "from": "f@7", "to": "f@1"},
+      {"along": "side", "from": "t@9", "to": "m6"},
+      {"along": "side@1", "from": "m6b@1", "to": "t@6"},
+      {"along": "side@1", "from": "f@2", "to": "f@6"},
+      {"along": "side@1", "from": "t@4", "to": "m6@1"},
+      {"along": "d", "from": "v@3", "to": "v@4"},
+      {"along": "d@1", "from": "v@4", "to": "v"},
+      {"along": "d@2", "from": "v", "to": "v@1"},
+      {"along": "d@3", "from": "v@1", "to": "v@2"},
+      {"along": "d@4", "from": "v@2", "to": "v@3"},
+      {"along": "d@5", "from": "v@3", "to": "v@4"},
+      {"along": "d@6", "from": "v@4", "to": "v"},
+      {"along": "d@7", "from": "v", "to": "v@1"},
+      {"along": "d@8", "from": "v@1", "to": "v@2"},
+      {"along": "d@9", "from": "v@2", "to": "v@3"},
+      {"along": "m1", "from": "f", "to": "v@1"},
+      {"along": "m1", "from": "t@6", "to": "f@5"},
+      {"along": "m1x", "from": "f@8", "to": "v@4"},
+      {"along": "m1x", "from": "t@4", "to": "f@3"},
+      {"along": "m1@1", "from": "f@5", "to": "v@1"},
+      {"along": "m1@1", "from": "t@1", "to": "f"},
+      {"along": "m1x@1", "from": "f@3", "to": "v@4"},
+      {"along": "m1x@1", "from": "t@9", "to": "f@8"},
+      {"along": "m2", "from": "v@1", "to": "m4"},
+      {"along": "m2x", "from": "v@4", "to": "m3"},
+      {"along": "m3", "from": "m2x", "to": "t@4"},
+      {"along": "m4", "from": "top@1", "to": "m2"},
+      {"along": "m4", "from": "m2x", "to": "top"},
+      {"along": "m3b", "from": "m2", "to": "t@6"},
+      {"along": "m2@1", "from": "v@1", "to": "m4@1"},
+      {"along": "m2x@1", "from": "v@4", "to": "m3@1"},
+      {"along": "m3@1", "from": "m2x@1", "to": "t@9"},
+      {"along": "m4@1", "from": "top", "to": "m2@1"},
+      {"along": "m4@1", "from": "m2x@1", "to": "top@1"},
+      {"along": "m3b@1", "from": "m2@1", "to": "t@1"},
+      {"along": "m5", "from": "v@4", "to": "v"},
+      {"along": "m6", "from": "side", "to": "v@4"},
+      {"along": "m5b", "from": "v@1", "to": "v"},
+      {"along": "m6b", "from": "side", "to": "v@1"},
+      {"along": "m5@1", "from": "v@4", "to": "v"},
+      {"along": "m6@1", "from": "side@1", "to": "v@4"},
+      {"along": "m5b@1", "from": "v@1", "to": "v"},
+      {"along": "m6b@1", "from": "side@1", "to": "v@1"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Timurid tile",
+    "look": "tiles",
+    "colors": {"pentagon": "ground", "decagon": "c", "pentagon_short": "d", "ring_pentagon": "a", "kite": "b"},
+    "text": "Put copies of the rectangular tile side by side. A decagon sits at the centre and at each corner of every tile."
+  },
+  "expect": {
+    "pieceTypes": 5,
+    "pieces": [
+      {"name": "pentagon", "vertices": 5, "area": 1.90211, "perCell": 8},
+      {"name": "decagon", "vertices": 10, "area": 1.58882, "perCell": 2},
+      {"name": "pentagon_short", "vertices": 5, "area": 1.45309, "perCell": 4},
+      {"name": "ring_pentagon", "vertices": 5, "area": 0.89258, "perCell": 20},
+      {"name": "kite", "vertices": 4, "area": 0.64984, "perCell": 24}
+    ]
+  }
+}
