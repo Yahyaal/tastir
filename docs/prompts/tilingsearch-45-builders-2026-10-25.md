@@ -70,3 +70,22 @@ At merge, the orchestrator also updates the beginner count pinned in `packages/e
 Large panels (batch 16 lessons): turn the drawing until its edges run at 0/45/90/135 before snapping; when all four directions share one set of distances from O, rot8 perpendiculars are the whole construction; the main tool for finding constructions is a list of missing lines with the crossings they run through (`tools/review/tilingsearch_45/large/missing.py`); large panels colour one shape several ways, so they need `nth` placements, checked against the player's `placeFills`. About 45 minutes a panel, three or four to a builder.
 
 Pacing: run at most two builders at once. Each used about a fifth of the 5-hour window on the Pro plan on 25 October, so check `get_usage` before starting one and start nothing above about 75%.
+
+## Sixteen-fold batches (27 October 2026)
+
+Tiling Search has no list of sixteen-fold tilings, so Claude read every page of its other lists and picked those whose angles are multiples of 22.5° or 11.25°, with exact geometry and under 1000 pieces (`docs/research/tilingsearch-lists/claude-16.json` in the main checkout). Their PDFs, GIFs and pages are in the main checkout's `docs/research/tilingsearch-lists/<code>/`. Builders follow the brief above, with these changes:
+
+- **The grid.** A sixteen-pointed star's corners are at angles of 22.5°, so √2 alone is not enough: lengths and coordinates come from cos 22.5° = √(2 + √2)/2 and sin 22.5° = √(2 − √2)/2 as well. Snap in the frame of the star (radius and angle about its centre) first, or fit a + b√2 + (c + d√2)·√(2 + √2) with small whole numbers. As before, the right unit gives small coefficients and errors under 0.003. `sixteen-fold-rosette` and `twelve-fold-rosette-mian` are the library's examples of stars beyond eight points on a square cell; reuse their openings where a design shares them.
+- **Symmetry.** A sixteen-pointed star on a square cell is `fold` 4 with `star: 16`.
+- **Two-level patterns.** MET1, SM27, MET2 and SM31 are on Wichmann's list of two-level patterns. If a drawing is two patterns with different periods laid over each other, or a library design with something drawn on top (as DW10A and SM4 were), skip it and say why.
+- **Photos.** SPA0807 and E41 are paired with David Wade's photos in `docs/research/alhambra-wichmann/wade-paired.json`; overlay the tutorial on the photo as well (`photo-overlay.png`), and where the photo and the drawing disagree, the photo of the real wall wins.
+- Save each drawing overlay as `docs/research/tilingsearch-lists/<code>/overlay.png` in the main checkout.
+
+| Batch | Tilings | Notes | State |
+|---|---|---|---|
+| S1 | SPA0807, E41, TL1 | Spain first: the Alhambra Partal (311 pieces) and vestibule ceiling (931), both with Wade photos, and San Juan de los Reyes, Toledo (313) | waiting |
+| S2 | EGY1019, B153, B153A, AJL7 | Cairo, Bourgoin and Aleppo, 395–547 pieces; B153A is Bourgoin's drawing of B153 and is likely its variant | waiting |
+| S3 | A285, P065, FIG8, SHAF2 | Bourgoin, Shiraz (tomb of Hafiz) and Shafai, 629–827 pieces | waiting |
+| S4 | MET1, SM27, MET2, SM31 | Mughal jali screens, two-level, 493–916 pieces; MET1 and SM27 may be the same design | waiting |
+
+Left for later: N13 (Bahia Palace, 2403 pieces) and S32A (Royal Palace, Fès, 32-pointed stars, 5001 pieces).
