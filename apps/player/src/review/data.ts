@@ -4585,6 +4585,131 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'meknes-throne-ring-rosette',
+    title:
+      'Ringed rosette of the Royal Palace throne room (Meknes) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A ringed rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s C124 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The opening, the unit star and the first eight lines after it, is shared with the Meknes throne-room star rosette from the same room. After the unit star every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing, which keeps the original colouring: red, green, black and white, in the Tétouan palette, whose dark navy stands for his black. No photograph was checked.',
+      '16 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/meknes-throne-ring-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/meknes-throne-ring-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Royal Palace throne room, Meknes (C124)',
+        url: 'https://tilingsearch.mit.edu/HTML/data188/C124.html',
+      },
+    ],
+  },
+  {
+    id: 'fes-moulay-ismail-interlace',
+    title:
+      'Interlaced rosette of the Moulay Ismail mosque (Fès) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s MOR0331 drawing, an interlace of bands, by their centre lines. Its tile corners were snapped to the square-root-of-two grid in star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The lines are the centre lines of the drawing’s bands; the over-and-under weave is not drawn. The colours follow Wichmann’s drawing: black, red and green, in the Tétouan palette, whose dark navy stands for his black; the bands themselves are not pieces. Wade’s photo MOR 0331 was not checked.',
+      '21 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-moulay-ismail-interlace/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-moulay-ismail-interlace/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Moulay Ismail mosque, Fès (MOR0331)',
+        url: 'https://tilingsearch.mit.edu/HTML/data189/MOR0331.html',
+      },
+    ],
+  },
+  {
+    id: 'telouet-residence-rosettes',
+    title: 'Rosettes of the royal residence (Telouet) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A large rosette sits at the centre of every tile, and a cross rosette at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s F16 drawing. Its tile corners were snapped to the square-root-of-two grid in star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing, which shows part of a larger pattern. The colours follow Wichmann’s drawing, which keeps the original colouring, in the Marinid zellige palette: his green, blue and black take the palette’s, and his orange and red both take its honey, since the palette has no red. No photograph was checked.',
+      '16 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/telouet-residence-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/telouet-residence-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Royal residence, Telouet (F16)',
+        url: 'https://tilingsearch.mit.edu/HTML/data166/F16.html',
+      },
+    ],
+  },
+  {
+    id: 'fes-bou-inania-interlaced-rosette',
+    title:
+      'Interlaced rosette of the Bou Inania madrasa (Fès) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s P71TL drawing, an interlace of bands, by their centre lines. Its tile corners were snapped to the square-root-of-two grid in star-radius units. Every line of the Meknes throne-room star rosette is a line of this design too, so its whole construction is shared; four more lines follow. After the unit star every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The lines are the centre lines of the drawing’s bands; the over-and-under weave is not drawn. The colours follow Wichmann’s drawing: black, dark red and blue, in the Modern Moroccan palette; the bands themselves are not pieces. Wade’s photo MOR 0203 was not checked.',
+      '15 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-bou-inania-interlaced-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-bou-inania-interlaced-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bou Inania madrasa, Fès (P71TL)',
+        url: 'https://tilingsearch.mit.edu/HTML/data166/P71TL.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -5838,6 +5963,10 @@ export const QUESTIONS: readonly Question[] = [
       'marrakesh-bahia-rosette',
       'fes-petal-star-rosette',
       'paris-mosque-rosette',
+      'meknes-throne-ring-rosette',
+      'fes-moulay-ismail-interlace',
+      'telouet-residence-rosettes',
+      'fes-bou-inania-interlaced-rosette',
     ],
   },
 ];

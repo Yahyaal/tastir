@@ -59,8 +59,8 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 19 | BR14, MOR0803, C122C, MOR2404X | 930–990 pieces | done, merged: all four; MOR2404X is a variant of BR14 |
 | 20 | C122B, MOR1218, MOR0411, FR1 | 1019–1307 pieces; C122B and C122C may be a pair | done 26 Oct |
 | 21 | F17, DW10A, MOR0321, C123 | 1360–1507 pieces | started 27 Oct, 00:03 UTC |
-| 22 | C124, MOR0331, F16, P71TL | 1517–1823 pieces; F16 and F17 (Telouet) may be a pair | started 27 Oct, 00:03 UTC |
-| 23 | MOR0837, F169, F19, MIR19 | 1851–2105 pieces; MIR19 is p4g | waiting |
+| 22 | C124, MOR0331, F16, P71TL | 1517–1823 pieces; F16 and F17 (Telouet) may be a pair | done 27 Oct |
+| 23 | MOR0837, F169, F19, MIR19 | 1851–2105 pieces; MIR19 is p4g | started 27 Oct, 00:26 UTC |
 | 24 | FEZ7, SM4 | 2735–2898 pieces; SM4 is p4 (chiral) | waiting |
 
 Codex adds fold 2 and fold 1 support and builds the 14 half-turn and mirror-only tilings on `codex/fold-2`, from [its brief](codex-fold2-2026-10-26.md); Claude's builders never take one of those. Codex built the 29 medium tilings (300–600 pieces) on its own branch, `codex/tilingsearch-45`, from [its brief](codex-tilingsearch-45-2026-10-26.md); Claude's builders never take one of those. After batch 8, take the remaining tilings of [the comparison](../patterns/TILINGSEARCH-45.md) by size, smallest first, five to a batch, grouping ones that look alike. Leave the large Moroccan rosette panels (over 900 polygons) until last; each needs a time box of its own.
