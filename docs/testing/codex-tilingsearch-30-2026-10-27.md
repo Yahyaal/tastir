@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Twenty-five tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87, MIR24, DA1 and TAI1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Six entries remain pending.
+Twenty-six tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87, MIR24, DA1, TAI1 and AJL8. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Five entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -337,3 +337,14 @@ I inspected the ink, wall and complete red overlay at `docs/research/tilingsearc
 Credits retain Archnet’s lower screen panel at Takht-e Fulad, Isfahan; Dick Osseman’s minbar balustrade at the Turkish and Islamic museum, Istanbul; and M Sakkal’s Junblat House window lattice, Aleppo, all personal communications through Wichmann. No monument photograph was independently checked. The first six normal steps and operations share the Agra three-square opening. This is a related proportion and division variant: its stars and connectors are subdivided and its apothem differs from IND0403/IND0405. It is not an exact duplicate or a filling-only variation.
 
 Catalog211, all six targeted golden assertions and the full weave group(222 total),1055 player text/helper assertions and41 schema assertions passed serially under3GB. Helper-free text omits only the hidden intercept line. No shared application or reserved file changed.
+
+
+## AJL8 — `otrush-star-chelates`
+
+The twenty-three-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,373.1829166667), OA=15(3+√3)/√2pt and the frame is unturned. Facing-edge measurements give743 widths at5pt,78 at5.01pt and72 at4.99pt. Grey bevel facets are removed and coloured faces expanded2.5pt to their band centres. The first six normal steps and operations share DA1’s three-square opening. A third and compass sum set the hexagonal apothem L=7/3+√3. Four diagonal halvings give X=L/16. Compass sums and complements construct3X,10X,13X and15X; five vertical families and three crossing-based oblique families complete the mesh. Worst source-corner residual is0.00022947OA.
+
+Independent shoelaces give star6−2√3, once; kite−1+2√3/3, twelve; eight−5/6+47√3/54, twelve; large_kite16/9−8√3/9, twelve; fifteen2467/1152+757√3/1728, six; small_kite−5/18+7√3/27, six; ten91/96+247√3/432, six; fourteen119/64+323√3/288, three; and hexagon7/64+19√3/288, twice. The60 counted areas sum exactly to28+152√3/9=2√3L². A full-outline inventory confirms all nine congruence classes, with the same counts as the default engine. Golden checks confirm the symmetry and absence of slivers and off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/AJL8/overlay.png`. Every band centre agrees. All60 actual player fills match the source’s single tan class, with an illustrative palette. Credits retain Dick Osseman’s photograph of al-Otrush mosque, Aleppo, Syria(1370–1400AD,771–802AH), supplied through Wichmann by personal communication. No monument photograph was independently checked. Its chelate arrangement differs from B87’s four-triangle-star mesh and counts, and its hexagonal repeat differs from DA1’s square manuscript net. No exact duplicate or filling-only variation was found.
+
+Catalog212, all six targeted golden assertions and the full weave group(223 total),1060 player text/helper assertions and41 schema assertions passed serially under3GB. Helper-free text names only the retained30° and150° diameters and45°/135° bisectors, and omits the intercept line. DA1 regenerates byte-identically after exposing its unchanged first six steps. No shared application or reserved file changed. A subsequent colouring audit found that the opt-in equal-measure types in MIR24/P142 need distinct colour-selection keys; that shared follow-up is recorded separately.

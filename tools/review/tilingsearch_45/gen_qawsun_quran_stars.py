@@ -18,7 +18,7 @@ L=(3+5*math.sqrt(3))/6
 D=L-5/3
 
 
-def build():
+def build(opening_only=False):
     opening()
     step('Draw the lines through O that halve angles AOB, BOC and COD. '
          'Draw a line through O at 90° to each new line.')
@@ -32,6 +32,7 @@ def build():
               f'{pts[2]} and {pts[3]}, and {pts[3]} and {pts[0]}.','create':{},'animate':'ruler'}
         current['parts'].append(part);g.cur=part
         for i in range(4):g.line_through(f'st{k+3*i}',pts[i],pts[(i+1)%4])
+    if opening_only:return None
     step('Draw vertical lines through B and C. They cross the horizontal line at N1 and N2. '
          'Draw a circle with centre A through O. It crosses that line at N3, right of A. '
          'Draw a circle with centre N3 and opening OA. It crosses that line at N4, right of N3.', 'compass')
