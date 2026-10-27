@@ -5600,6 +5600,127 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'bourgoin-149-rosettes',
+    title: 'Rosettes of Bourgoin’s plate 149 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A sixteen-pointed star sits at the centre of every tile. Eight-pointed stars sit on its sides, and a four-pointed star at each corner.',
+    story: [
+      'The finished design was read from Wichmann’s A285 drawing of Bourgoin’s plate 149 (top): a sixteen-pointed star on a square tile, eight-pointed stars on the tile’s sides and a four-pointed star at each corner, every star split into kites. Every edge runs at a multiple of 11.25°. The star’s lines join points of its circle 90° apart. The tile’s half-side is the one free length (drawing: 1.97067 times the star’s radius); we take the crossing of the 45° line through A with the chord from U3 to S7, 1.97086. Every other line runs through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile is 0.01% larger than Wichmann’s (0.024 pt in his drawing). Wichmann colours each piece and its mirror image differently; we colour by shape. No photograph was checked.',
+      '18 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-149-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-149-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bourgoin, plate 149 (top) (A285)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/A285.html',
+      },
+    ],
+  },
+  {
+    id: 'shafai-248-rosettes',
+    title: 'Rosettes from Shafai, page 248 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A sixteen-pointed star sits at the centre of every tile, and eight-pointed stars sit on its sides.',
+    story: [
+      'The finished design was read from Wichmann’s SHAF2 drawing of a pattern in Shafai’s book: the design of Bourgoin’s plate 149 on a smaller square tile, a sixteen-pointed star at its centre and eight-pointed stars on its sides, every star split into kites. Every edge runs at a multiple of 11.25°. The star is the same, so the first four steps are shared. The tile’s half-side comes exactly from two corners of the star’s own lines, and every other line runs through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Wichmann colours each piece and its mirror image differently; we colour by shape. No photograph was checked.',
+      '20 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/shafai-248-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/shafai-248-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Shafai, page 248 (SHAF2)',
+        url: 'https://tilingsearch.mit.edu/HTML/data200/SHAF2.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-65-rosettes',
+    title: 'Rosettes of Bourgoin’s plate 65 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A sixteen-pointed star sits at the centre of every tile, and an octagon at each corner.',
+    story: [
+      'The finished design was read from Wichmann’s P065 drawing of Bourgoin’s plate 65: sixteen-pointed stars on a square grid, with octagons between them. Every edge runs at a multiple of 22.5°, and every line is one of three sets of lines about the star: the sixteen lines joining points of the circle 90° apart, sixteen lines parallel to them nearer O, and eight more. Each runs through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Colours follow Wichmann’s drawing. No photograph was checked.',
+      '7 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-65-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-65-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bourgoin, plate 65 (P065)',
+        url: 'https://tilingsearch.mit.edu/HTML/data168/P065.html',
+      },
+    ],
+  },
+  {
+    id: 'hafiz-tomb-rosettes',
+    title: 'Rosettes of the tomb of Hafiz (Shiraz) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. The sixteen-pointed stars sit at the tile’s centre and, between them, four-pointed stars at its corners.',
+    story: [
+      'The finished design was read from Wichmann’s FIG8 drawing: sixteen-pointed stars ringed by kites and pentagons, eight-pointed stars between them, octagons, and a four-pointed star at each corner of the square tile. Every edge runs at 11.25° plus a multiple of 22.5°. The star’s lines join points of its circle 90° apart and, carried on, make the kites round it. Each pentagon has three equal outer sides, and the eight-pointed star’s points fix the tile; every other line runs through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile is 0.005% smaller than Wichmann’s (0.008 pt in his drawing). Colours follow his drawing. No photograph was checked.',
+      '12 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/hafiz-tomb-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/hafiz-tomb-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Tomb of Hafiz, Shiraz (FIG8)',
+        url: 'https://tilingsearch.mit.edu/HTML/data169/FIG8.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -6886,6 +7007,10 @@ export const QUESTIONS: readonly Question[] = [
       'mughal-jali-octagons',
       'salim-chishti-octagons',
       'jali-screen-pinwheel',
+      'bourgoin-149-rosettes',
+      'shafai-248-rosettes',
+      'bourgoin-65-rosettes',
+      'hafiz-tomb-rosettes',
     ],
   },
 ];

@@ -141,5 +141,10 @@
     "id": "jali-octagons",
     "title": "Octagons of Mughal jali screens",
     "members": ["mughal-jali-octagons", "salim-chishti-octagons"]
+  },
+  {
+    "id": "bourgoin-149-rosettes",
+    "title": "Sixteen-pointed rosettes of Bourgoin plate 149",
+    "members": ["bourgoin-149-rosettes", "shafai-248-rosettes"]
   }
 ]
