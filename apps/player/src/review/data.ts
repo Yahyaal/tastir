@@ -4956,6 +4956,426 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'isfahan-ali-notched-tiles',
+    title: 'Notched tiles of the Masjid-e Ali, Isfahan (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s IRA1330 drawing and its corners snapped to exact values. OA is the half-diagonal of a small square. Two compass transfers of the unit-square diagonal give the rectangular repeat. The drawing gives no steps; we devised the construction.',
+      'The plain tile boundaries are retained. The palette is illustrative. No building photograph was checked. The compass steps, their order and the named points are ours.',
+      '12 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/isfahan-ali-notched-tiles/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/isfahan-ali-notched-tiles/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Masjid-e Ali, Isfahan (IRA1330)',
+        url: 'https://tilingsearch.mit.edu/HTML/data189/IRA1330.html',
+      },
+    ],
+  },
+  {
+    id: 'hama-azem-door-tiles',
+    title: 'Notched door tiles of the Azem Palace, Hama (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s HAMA drawing and its corners snapped to exact values. OA is one straight side of the ten-sided tile. Compass transfers of the square diagonal fix the rectangular repeat. The drawing gives no steps; we devised the construction.',
+      'His bevelled wood is represented by single lines along the middles of its 15 pt bands. The palette is illustrative. No door photograph was checked. The compass steps, their order and the named points are ours.',
+      '12 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/hama-azem-door-tiles/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/hama-azem-door-tiles/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Azem Palace, Hama, Syria (HAMA)',
+        url: 'https://tilingsearch.mit.edu/HTML/data187/HAMA.html',
+      },
+    ],
+  },
+  {
+    id: 'isfahan-royal-mosque-star-rows',
+    title: 'Rows of stars of the Royal Mosque, Isfahan (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s IRA0501 drawing and its corners snapped to exact values. OA is the star’s point radius. Its two squares and compass transfers of the unit-square diagonal fix the rectangular repeat. The drawing gives no steps; we devised the construction.',
+      'The plain tile boundaries are retained. The palette is illustrative. No building photograph was checked. The compass steps, their order and the named points are ours.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/isfahan-royal-mosque-star-rows/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/isfahan-royal-mosque-star-rows/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Royal Mosque, Isfahan (IRA0501)',
+        url: 'https://tilingsearch.mit.edu/HTML/data193/IRA0501.html',
+      },
+    ],
+  },
+  {
+    id: 'iranian-star-columns',
+    title:
+      'Stars and upright connectors from an Iranian collection (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s F80 drawing and its corners snapped to exact values. It shares the Charbagh star construction, then adds verticals and diagonals for connectors that keep one direction. The drawing gives no steps; we devised the construction.',
+      'The plain tile boundaries are retained. The palette is illustrative. The source names no building; none is assigned here. The compass steps, their order and the named points are ours.',
+      '14 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/iranian-star-columns/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/iranian-star-columns/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Al-Naqsh, volume 3, figure 80 (F80)',
+        url: 'https://tilingsearch.mit.edu/HTML/data16/F80.html',
+      },
+    ],
+  },
+  {
+    id: 'pompeii-squares-and-triangles',
+    title:
+      'Squares and triangles of a Roman mosaic, Pompeii (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s CM006A drawing. The frame is turned by 45° so OA follows a mirror line and is half a square diagonal. The square and its compass transfers give every corner exactly. The drawing gives no steps; we devised the construction.',
+      'The plain boundaries are retained. The palette is illustrative. This is a Roman mosaic, not an Islamic building attribution. No photograph was checked. The compass steps, their order and the named points are ours.',
+      '7 steps, beginner.',
+    ],
+    pictures: [
+      {
+        src: 'renders/pompeii-squares-and-triangles/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/pompeii-squares-and-triangles/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Roman mosaic, Pompeii (CM006A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data6/CM006A.html',
+      },
+    ],
+  },
+  {
+    id: 'nishapur-mahruq-star-rows',
+    title:
+      'Stars and connecting tiles of the Mahruq imamzadeh, Nishapur (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s F109 drawing and its corners snapped to exact values. OA is the star’s point radius. Compass transfers of the square diagonal and of OA give the longer rectangular repeat. The drawing gives no steps; we devised the construction.',
+      'The plain tile boundaries are retained. The palette is illustrative. The source says the original colouring had extensive ornamentation, which is not reconstructed here. No tomb photograph was checked. The compass steps, their order and the named points are ours.',
+      '15 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/nishapur-mahruq-star-rows/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/nishapur-mahruq-star-rows/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mahruq imamzadeh, Nishapur (F109)',
+        url: 'https://tilingsearch.mit.edu/HTML/data16/F109.html',
+      },
+    ],
+  },
+  {
+    id: 'kerman-ganj-ali-khan-chevrons',
+    title:
+      'Stars and chevrons of the Ganj Ali Khan complex, Kerman (new, Tiling Search)',
+    fold: 1,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P111 drawing and its corners snapped to exact values. OA is the star’s point radius and follows a mirror. The chevrons keep their direction, so the boundaries have no half-turn. The drawing gives no steps; we devised the construction.',
+      'The plain boundaries and the three source fill classes are retained. The palette is illustrative. Two ten-sided forms share one piece key because their areas, side lengths and perimeters agree; their different outlines are retained. No building photograph was checked. The compass steps, their order and the named points are ours.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/kerman-ganj-ali-khan-chevrons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/kerman-ganj-ali-khan-chevrons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Ganj Ali Khan complex, Kerman (P111)',
+        url: 'https://tilingsearch.mit.edu/HTML/data181/P111.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-52-octagon-rows',
+    title: 'Octagon rows of Bourgoin plate 52 (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P052 drawing and its corners snapped to exact values. The frame turns by −22.5°. OA is the radius of the circle inside the octagon through the star’s points. The guide construction is shared with plate 144; the narrower rectangle gives this different arrangement. The drawing gives no steps; we devised the construction.',
+      'The plain boundaries are retained. The palette is illustrative. The page identifies no building, and none is assigned here. No building photograph was checked. The compass steps, their order and the named points are ours.',
+      '12 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-52-octagon-rows/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-52-octagon-rows/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bourgoin, plate 52 (P052)',
+        url: 'https://tilingsearch.mit.edu/HTML/data11/P052.html',
+      },
+    ],
+  },
+  {
+    id: 'golestan-palace-star-rows',
+    title:
+      'Stars and connecting tiles of the Golestan Palace, Tehran (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P30 drawing and its corners snapped to exact values. OA is the star’s point radius. The star’s two squares and transfers of the unit-square diagonal give the rectangular repeat. The drawing gives no steps; we devised the construction.',
+      'The plain boundaries and the three source fill classes are retained. The numeric palette is illustrative. Equal star outlines in different surroundings remain one piece type. No palace photograph was checked. The compass steps, their order and the named points are ours.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/golestan-palace-star-rows/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/golestan-palace-star-rows/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Golestan Palace, Tehran (P30)',
+        url: 'https://tilingsearch.mit.edu/HTML/data17/P30.html',
+      },
+    ],
+  },
+  {
+    id: 'mosul-imam-yahya-star-rows',
+    title:
+      'Stars above the door of the Imam Yahya mosque, Mosul (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s S45A drawing and its corners snapped to exact values. The frame turns by 45° to put OA on a mirror. OA is the star’s point radius; compass transfers of the square diagonal fix the repeat. The drawing gives no steps; we devised the construction.',
+      'The plain boundaries are retained in the turned teaching frame. The palette is illustrative. No mosque photograph or original museum drawing was independently checked. The compass steps, their order and the named points are ours.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/mosul-imam-yahya-star-rows/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/mosul-imam-yahya-star-rows/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Imam Yahya mosque, Mosul, Iraq (S45A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data9/S45A.html',
+      },
+    ],
+  },
+  {
+    id: 'agra-fort-band-rows',
+    title: 'Stars and banded rows of the Agra Fort (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s DW5 drawing and its band centre lines snapped to exact values. OA is the star’s point radius. The unit star and compass transfers fix the rectangular repeat. The drawing gives no steps; we devised the construction.',
+      'The bevel facets are replaced by single lines along the centres of the 15 pt bands. The four source fill classes are retained with an illustrative numeric palette. No fort photograph was checked. The compass steps, their order and the named points are ours.',
+      '11 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/agra-fort-band-rows/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/agra-fort-band-rows/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Agra Fort, Agra, India (DW5)',
+        url: 'https://tilingsearch.mit.edu/HTML/data214/DW5.html',
+      },
+    ],
+  },
+  {
+    id: 'amol-marashi-tile-rows',
+    title:
+      'Tile rows of the Mir Qavam al-Din Mar’ashi building, Amol (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s IRAN16 drawing and its corners snapped to exact values. OA is half a small square’s side. The unit-square diagonal and compass transfers give the longer rectangular repeat. The drawing gives no steps; we devised the construction.',
+      'The plain boundaries and four source fill classes are retained. The numeric palette is illustrative. No building photograph was checked. The compass steps, their order and the named points are ours.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/amol-marashi-tile-rows/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/amol-marashi-tile-rows/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mir Qavam al-Din Mar’ashi building, Amol (IRAN16)',
+        url: 'https://tilingsearch.mit.edu/HTML/data197/IRAN16.html',
+      },
+    ],
+  },
+  {
+    id: 'qom-atiq-courtyard-rows',
+    title: 'Stars and squares of the Atiq courtyard, Qom (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P105 drawing and its corners snapped to exact values. OA is a small square’s half-diagonal. Compass transfers of OA, OM and the unit-square diagonal give the rectangular repeat. The drawing gives no steps; we devised the construction.',
+      'The plain boundaries and three source fill classes are retained. The numeric palette is illustrative. No courtyard photograph was checked. The compass steps, their order and the named points are ours.',
+      '19 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/qom-atiq-courtyard-rows/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/qom-atiq-courtyard-rows/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Atiq courtyard, Qom, Iran (P105)',
+        url: 'https://tilingsearch.mit.edu/HTML/data181/P105.html',
+      },
+    ],
+  },
+  {
+    id: 'nasrid-casket-stars',
+    title: 'Interlaced stars of a Nasrid casket (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s VA1 drawing and its band centre lines snapped to exact values. OA is the full star’s point radius. The unit star and compass transfers fix the rectangular repeat. The drawing gives no steps; we devised the construction.',
+      'The coloured faces are expanded to the centres of the 12 pt bands. The player weaves those centre lines and retains the five source fill classes with an illustrative numeric palette. No museum photograph was checked. The compass steps, their order and the named points are ours.',
+      '17 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/nasrid-casket-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/nasrid-casket-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Nasrid casket, V&A 270-1895, Granada (VA1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data185/VA1.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -6221,6 +6641,20 @@ export const QUESTIONS: readonly Question[] = [
       'alhambra-comares-west-dado',
       'marrakesh-dar-el-bacha-rosette',
       'fes-motif-rosette',
+      'isfahan-ali-notched-tiles',
+      'hama-azem-door-tiles',
+      'isfahan-royal-mosque-star-rows',
+      'iranian-star-columns',
+      'pompeii-squares-and-triangles',
+      'nishapur-mahruq-star-rows',
+      'kerman-ganj-ali-khan-chevrons',
+      'bourgoin-52-octagon-rows',
+      'golestan-palace-star-rows',
+      'mosul-imam-yahya-star-rows',
+      'agra-fort-band-rows',
+      'amol-marashi-tile-rows',
+      'qom-atiq-courtyard-rows',
+      'nasrid-casket-stars',
     ],
   },
 ];
