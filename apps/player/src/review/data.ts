@@ -5506,6 +5506,100 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'mughal-jali-octagons',
+    title: 'Octagons of a Mughal jali screen (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. The large octagons touch at the middles of the tile’s sides.',
+    story: [
+      'The finished design was read from Wichmann’s MET1 drawing, whose pieces are drawn edge to edge. O is the centre of the four pieces that turn round the middle of the tile, and OA is half the repeat. Every edge runs at a multiple of 22.5° and lies on one of a few lines: the sides of the octagon in the circle through A (drawing 0.9238 from O, cos 22.5° = 0.9239), the sides of a smaller octagon through P (drawing 0.6681, tan 33.75° = 0.6682), where P is the centre of the circle inside the triangle OAS3, and the horizontal, vertical and 45° lines through P and its turns (drawing 0.2557, 0.2557 exactly). The four hooked pieces round O need one more line each way, through the crossing Q (drawing 0.1059 from O, 0.1059 exactly). The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Wichmann’s page gives the symmetry as p4m, but the four pieces round the centre of the tile turn without a mirror, so the design is a pinwheel; we follow the drawing. His thick and thin bands (the two levels of the design) are drawn as plain lines. Colours follow the shapes, not his drawing, which is one colour. No photograph was checked.',
+      '9 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/mughal-jali-octagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/mughal-jali-octagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Jali screen, India (Metropolitan Museum of Art) (MET1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data193/MET1.html',
+      },
+    ],
+  },
+  {
+    id: 'salim-chishti-octagons',
+    title:
+      'Octagons of Salim Chishti’s tomb (Fatehpur Sikri) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. The large octagons touch at the middles of the tile’s sides.',
+    story: [
+      'The finished design was read from Wichmann’s SM27 drawing, whose pieces are drawn edge to edge. O is the centre of the four pieces that turn round the middle of the tile, and OA is half the repeat. Every edge runs at a multiple of 22.5° and lies on one of a few lines: the sides of the octagon in the circle through A (drawing 0.9238 from O, cos 22.5° = 0.9239), the sides of a smaller octagon through P (drawing 0.6681, tan 33.75° = 0.6682), where P is the centre of the circle inside the triangle OAS3, and the horizontal, vertical and 45° lines through P and its turns (drawing 0.2557, 0.2557 exactly). The four pinwheel pieces round O lie on the 22.5° lines through O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Wichmann’s page gives the symmetry as p4m, but the four pieces round the centre of the tile turn without a mirror, so the design is a pinwheel; we follow the drawing. His thick and thin bands (the two levels of the design) are drawn as plain lines. Colours follow the shapes, not his drawing, which is one colour. No photograph was checked.',
+      '8 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/salim-chishti-octagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/salim-chishti-octagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Tomb of Salim Chishti, Fatehpur Sikri (SM27)',
+        url: 'https://tilingsearch.mit.edu/HTML/data206/SM27.html',
+      },
+    ],
+  },
+  {
+    id: 'jali-screen-pinwheel',
+    title: 'Pinwheel of a Mughal jali screen (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. The pinwheel turns about the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s MET2 drawing, whose pieces are drawn edge to edge. O is a centre of four-fold turning and OA is half the repeat. All but two of its lines run at 22.5° to the tile’s sides or at 45° to those, and each passes through a corner of the tile, the middle of a side or a centre of a tile (drawing within 0.0005 of OA). The other two lines each way are horizontal and vertical, halfway from O to the tile’s sides. Every line runs through a crossing of earlier lines inside the tile. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Wichmann’s page gives the symmetry as p4m, but the lines at 22.5° and at 67.5° are not mirror images of each other, so the design is a pinwheel; we follow the drawing. His thick and thin bands (the two levels of the design) are drawn as plain lines. Colours follow the shapes, not his drawing, which is one colour. No photograph was checked.',
+      '10 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/jali-screen-pinwheel/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/jali-screen-pinwheel/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Jali screen, India (Metropolitan Museum of Art) (MET2)',
+        url: 'https://tilingsearch.mit.edu/HTML/data193/MET2.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -6789,6 +6883,9 @@ export const QUESTIONS: readonly Question[] = [
       'alhambra-mexuar-vestibule-rosettes',
       'cairo-bagasi-rosettes',
       'bourgoin-153-rosettes',
+      'mughal-jali-octagons',
+      'salim-chishti-octagons',
+      'jali-screen-pinwheel',
     ],
   },
 ];

@@ -136,5 +136,10 @@
     "id": "bagasi-rosettes",
     "title": "Sixteen-pointed rosettes of Barsbay al-Bagasi",
     "members": ["cairo-bagasi-rosettes", "bourgoin-153-rosettes"]
+  },
+  {
+    "id": "jali-octagons",
+    "title": "Octagons of Mughal jali screens",
+    "members": ["mughal-jali-octagons", "salim-chishti-octagons"]
   }
 ]
