@@ -55,7 +55,7 @@ def describe(n):
         if j:
             d = 'the turned copy of ' + d
         return d
-    return s2.describe(n)
+    return s2.describe(n).replace('the turned copy of the mirror image of', 'the turned mirror image of')
 
 
 def _mir(geom):
