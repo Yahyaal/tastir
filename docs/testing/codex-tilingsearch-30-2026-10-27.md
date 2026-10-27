@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Twelve tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192 and SAM1. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty entries remain pending.
+Twelve tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192 and SAM1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Nineteen entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -165,3 +165,10 @@ Independent shoelaces give four_star6−2√3, once; six_star3(1+√3)/4, once; 
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/SAM1/overlay.png`. Every band centre agrees, including the offset six-pointed stars. All22 actual player fills match source interior samples and retain five classes: yellow stars, purple seven-sided pieces, green eight-sided pieces, blue six-sided pieces and black three-stars. Strapwork is the default; the palette is illustrative. Credits retain Tony Lee’s Samarkand attribution through personal communication, with the original source unrecorded. No photograph was checked. No duplicate or filling-only variation was found.
 
 The catalog prepared198 previews. All six targeted golden checks and the full weave group, all990 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free wording correctly limits the two half-turn families and the single retained line through Q5. No shared application or reserved file changed.
+
+
+## ASL20 — skipped as a two-level composition
+
+The full source sheet shows large white-edged blue bow-tie panels crossing the smaller blue/teal star net. The large panels neither share that net’s vertices nor follow its edges. The page itself distinguishes the background and links it separately as ASL21. Its pmm,30° and326-piece description concerns that background rather than a single mesh joining both scales. The PDF’s1640 cleaned filled paths are small rendering facets, chiefly1170 six-sided paths and451 triangles, so treating them as the stated tiles would also be incorrect. Extended PDF inspection finds only the outer page clipping rectangle; this is not a missing image or a hidden alternate layer.
+
+The complete sheet was inspected at `docs/research/tilingsearch-30/ASL20/page.png`. As with the other excluded two-level drawings, reconstructing just the fine net would silently omit the coarse design. ASL20 is skipped under the brief’s two-level rule, without declaring its background an existing-library duplicate. The page credits a photograph via Aslam Qureshi, Zaynal Bek, Turkey(1473AD,877AH), through personal communication. No photograph was independently checked. No tutorial or application file is added.
