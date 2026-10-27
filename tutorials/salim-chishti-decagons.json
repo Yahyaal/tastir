@@ -1,0 +1,367 @@
+{
+  "format": 0,
+  "id": "salim-chishti-decagons",
+  "title": "Decagons of Salim Chishti’s tomb (Fatehpur Sikri)",
+  "short": "Salim Chishti decagons",
+  "subtitle": "Tomb of Salim Chishti, Fatehpur Sikri",
+  "fold": 2,
+  "star": 10,
+  "style": "Mughal",
+  "level": "intermediate",
+  "given": {
+    "O": "The centre of a decagon, at a half-turn point of the pattern.",
+    "A": "A corner of the decagon, to the right of O. OA is the decagon’s radius."
+  },
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Wichmann’s F207 drawing, whose pieces are drawn edge to edge. The decagons sit at the centre and the corners of a rectangle whose sides are in the ratio of 1 to tan 36°. Every line is one of 25 lines about a decagon: the five lines through its centre and its corners, the lines of its ten sides, and the lines of the sides of the decagon of radius √5 about it (drawing within 0.001 of OA). The decagons at the tile’s corners get their lines by mirroring those about O. The drawing gives no steps; we devised the construction.",
+    "changes": "The compass steps, their order and the named points are ours. Colours follow the shapes; the screen itself is white marble with no colour. No photograph was checked.",
+    "reviewed": "2026-10-27"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data153/F207: Tomb of Salim Chishti, Fatehpur Sikri",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data153/F207.html",
+      "note": "Read from his finished drawing, not construction instructions. His reference is Dominique Clévenot, Ornament and Decoration in Islamic Architecture (Thames & Hudson, 2000), page 148, figure 207: a pierced marble screen of Salim Chishti’s tomb, Fatehpur Sikri (1571), photographed by Gérard Degeorge."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {
+        "c": {"circle": {"centre": "O", "through": "A"}},
+        "h": {"line": {"through": ["O", "A"]}},
+        "F": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. It crosses the circle at N and S.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "N": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "S": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre F through O. F is where the horizontal line crosses the circle on the left. The new circle crosses the first circle at Y1 and Y2. Draw a straight line through Y1 and Y2. It crosses the horizontal line at M, halfway from O to F.",
+      "create": {
+        "cW": {"circle": {"centre": "F", "through": "O"}},
+        "Y1": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
+        "Y2": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}},
+        "m": {"line": {"through": ["Y1", "Y2"]}},
+        "M": {"point": {"meet": ["m", "h"]}}
+      },
+      "highlight": ["F"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a circle with centre M through N. It crosses the horizontal line at R and Q. The distance OR is a tenth of the way round the circle.",
+      "create": {
+        "cM": {"circle": {"centre": "M", "through": "N"}},
+        "R": {"point": {"meet": ["cM", "h"], "pick": {"angle": 0.0}}},
+        "Q": {"point": {"meet": ["cM", "h"], "pick": {"angle": 180.0}}}
+      },
+      "highlight": ["M"],
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre A whose radius is the distance from O to R. It crosses the circle at B and K. Draw circles of the same size round the circle, each centred where the last one crosses it. They mark C, D, E, G, H and J. The circle is now cut into ten.",
+      "create": {
+        "cF0": {"circle": {"centre": "A", "radiusFrom": ["O", "R"]}},
+        "B": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 36.0}}},
+        "K": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 324.0}}},
+        "cF1": {"circle": {"centre": "B", "radiusFrom": ["O", "R"]}},
+        "C": {"point": {"meet": ["c", "cF1"], "pick": {"angle": 72.0}}},
+        "cF2": {"circle": {"centre": "C", "radiusFrom": ["O", "R"]}},
+        "D": {"point": {"meet": ["c", "cF2"], "pick": {"angle": 108.0}}},
+        "cF3": {"circle": {"centre": "D", "radiusFrom": ["O", "R"]}},
+        "E": {"point": {"meet": ["c", "cF3"], "pick": {"angle": 144.0}}},
+        "cF9": {"circle": {"centre": "K", "radiusFrom": ["O", "R"]}},
+        "J": {"point": {"meet": ["c", "cF9"], "pick": {"angle": 288.0}}},
+        "cF8": {"circle": {"centre": "J", "radiusFrom": ["O", "R"]}},
+        "H": {"point": {"meet": ["c", "cF8"], "pick": {"angle": 252.0}}},
+        "cF7": {"circle": {"centre": "H", "radiusFrom": ["O", "R"]}},
+        "G": {"point": {"meet": ["c", "cF7"], "pick": {"angle": 216.0}}}
+      },
+      "highlight": ["R"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a straight line through B and G, C and H, D and J, and E and K. With the horizontal line, they cross at O and run through the ten points.",
+      "create": {
+        "rB": {"line": {"through": ["B", "G"]}},
+        "rC": {"line": {"through": ["C", "H"]}},
+        "rD": {"line": {"through": ["D", "J"]}},
+        "rE": {"line": {"through": ["E", "K"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "Draw a straight line through A and B, B and C, and on round the circle to K and A. These lines carry the sides of the decagon.",
+      "create": {
+        "s0": {"line": {"through": ["A", "B"]}},
+        "s1": {"line": {"through": ["B", "C"]}},
+        "s2": {"line": {"through": ["C", "D"]}},
+        "s3": {"line": {"through": ["D", "E"]}},
+        "s4": {"line": {"through": ["E", "F"]}},
+        "s5": {"line": {"through": ["F", "G"]}},
+        "s6": {"line": {"through": ["G", "H"]}},
+        "s7": {"line": {"through": ["H", "J"]}},
+        "s8": {"line": {"through": ["J", "K"]}},
+        "s9": {"line": {"through": ["K", "A"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Draw a circle with centre O whose radius is the distance from Q to R. It crosses the lines through O at P1 to P10, with P1 on the horizontal line beyond A.",
+      "create": {
+        "cP": {"circle": {"centre": "O", "radiusFrom": ["Q", "R"]}},
+        "P1": {"point": {"meet": ["cP", "h"], "pick": {"angle": 0.0}}},
+        "P2": {"point": {"meet": ["cP", "rB"], "pick": {"angle": 36.0}}},
+        "P3": {"point": {"meet": ["cP", "rC"], "pick": {"angle": 72.0}}},
+        "P4": {"point": {"meet": ["cP", "rD"], "pick": {"angle": 108.0}}},
+        "P5": {"point": {"meet": ["cP", "rE"], "pick": {"angle": 144.0}}},
+        "P6": {"point": {"meet": ["cP", "h"], "pick": {"angle": 180.0}}},
+        "P7": {"point": {"meet": ["cP", "rB"], "pick": {"angle": 216.0}}},
+        "P8": {"point": {"meet": ["cP", "rC"], "pick": {"angle": 252.0}}},
+        "P9": {"point": {"meet": ["cP", "rD"], "pick": {"angle": 288.0}}},
+        "P10": {"point": {"meet": ["cP", "rE"], "pick": {"angle": 324.0}}}
+      },
+      "highlight": ["Q", "R"],
+      "animate": "compass"
+    },
+    {
+      "id": 9,
+      "text": "Draw a straight line through P1 and P2, P2 and P3, and on round the circle to P10 and P1. These lines carry the sides of a larger decagon.",
+      "create": {
+        "t0": {"line": {"through": ["P1", "P2"]}},
+        "t1": {"line": {"through": ["P2", "P3"]}},
+        "t2": {"line": {"through": ["P3", "P4"]}},
+        "t3": {"line": {"through": ["P4", "P5"]}},
+        "t4": {"line": {"through": ["P5", "P6"]}},
+        "t5": {"line": {"through": ["P6", "P7"]}},
+        "t6": {"line": {"through": ["P7", "P8"]}},
+        "t7": {"line": {"through": ["P8", "P9"]}},
+        "t8": {"line": {"through": ["P9", "P10"]}},
+        "t9": {"line": {"through": ["P10", "P1"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 10,
+      "text": "The line through P3 and P4 crosses the line through P10 and P1 at T1. Draw a circle with centre O through T1. It crosses the line through B and G again at T3. It crosses the line through E and K at T2 and T4. Draw a circle with centre T1 through O. It crosses the line through B and G at N1. Draw a circle with centre O through N1. It crosses the lines through O at N2, N3 and N4.",
+      "create": {
+        "T1": {"point": {"meet": ["t2", "t9"]}},
+        "cT0": {"circle": {"centre": "O", "through": "T1"}},
+        "T2": {"point": {"meet": ["cT0", "rE"], "pick": {"angle": 144.0}}},
+        "T3": {"point": {"meet": ["cT0", "rB"], "pick": {"angle": 216.0}}},
+        "T4": {"point": {"meet": ["cT0", "rE"], "pick": {"angle": 324.0}}},
+        "cT": {"circle": {"centre": "T1", "through": "O"}},
+        "N1": {"point": {"meet": ["cT", "rB"], "pick": {"farthest": "O"}}},
+        "cN": {"circle": {"centre": "O", "through": "N1"}},
+        "N2": {"point": {"meet": ["cN", "rE"], "pick": {"angle": 144.0}}},
+        "N3": {"point": {"meet": ["cN", "rB"], "pick": {"angle": 216.0}}},
+        "N4": {"point": {"meet": ["cN", "rE"], "pick": {"angle": 324.0}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 11,
+      "text": "Draw a straight line through N1 and N2, and N3 and N4. Draw a straight line through N1 and N4, and N2 and N3. They are the sides of the tile.",
+      "create": {
+        "kt": {"line": {"through": ["N1", "N2"]}},
+        "kb": {"line": {"through": ["N3", "N4"]}},
+        "kr": {"line": {"through": ["N1", "N4"]}},
+        "kl": {"line": {"through": ["N2", "N3"]}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a straight line through N1 and N2, and N3 and N4. They are the top and bottom sides of the tile."
+    },
+    {
+      "id": 12,
+      "text": "Draw a line through N1 parallel to line CH, and one through N3. Draw a line through N2 parallel to line DJ, and one through N4.",
+      "create": {
+        "n1": {"line": {"through": "N1", "parallelTo": "rC"}},
+        "n3": {"line": {"through": "N3", "parallelTo": "rC"}},
+        "n2": {"line": {"through": "N2", "parallelTo": "rD"}},
+        "n4": {"line": {"through": "N4", "parallelTo": "rD"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 13,
+      "text": "Draw the decagons at the corners of the tile.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a line through T1 at 90° to line BG. Mirror in it the lines through A and B, B and C, P1 and P2, and P2 and P3. The new lines run round N1 as the first ones run round O.",
+          "create": {
+            "mT1": {"line": {"through": "T1", "perpendicularTo": "rB"}},
+            "mir1": {"repeat": {"of": ["s0", "s1", "t0", "t1"], "by": "mirror:mT1"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "Copy round N1 the lines through A and B, B and C, P1 and P2, and P2 and P3."
+        },
+        {
+          "text": "Draw a line through T2 at 90° to line EK. Mirror in it the lines through D and E, E and F, P4 and P5, and P5 and P6. The new lines run round N2 as the first ones run round O.",
+          "create": {
+            "mT2": {"line": {"through": "T2", "perpendicularTo": "rE"}},
+            "mir2": {"repeat": {"of": ["s3", "s4", "t3", "t4"], "by": "mirror:mT2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "Copy round N2 the lines through D and E, E and F, P4 and P5, and P5 and P6."
+        },
+        {
+          "text": "Draw a line through T3 at 90° to line BG. Mirror in it the lines through F and G, G and H, P6 and P7, and P7 and P8. The new lines run round N3 as the first ones run round O.",
+          "create": {
+            "mT3": {"line": {"through": "T3", "perpendicularTo": "rB"}},
+            "mir3": {"repeat": {"of": ["s5", "s6", "t5", "t6"], "by": "mirror:mT3"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "Copy round N3 the lines through F and G, G and H, P6 and P7, and P7 and P8."
+        },
+        {
+          "text": "Draw a line through T4 at 90° to line EK. Mirror in it the lines through J and K, K and A, P9 and P10, and P10 and P1. The new lines run round N4 as the first ones run round O.",
+          "create": {
+            "mT4": {"line": {"through": "T4", "perpendicularTo": "rE"}},
+            "mir4": {"repeat": {"of": ["s8", "s9", "t8", "t9"], "by": "mirror:mT4"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "Copy round N4 the lines through J and K, K and A, P9 and P10, and P10 and P1."
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "text": "The line through N1 parallel to line CH crosses a side of the decagon round N1 at X. Draw a horizontal line through X. Turn it round O by 180°.",
+      "create": {
+        "X": {"point": {"meet": ["n1", "s0@1"]}},
+        "x": {"line": {"through": "X", "parallelTo": "h"}},
+        "xr": {"repeat": {"of": ["x"], "by": "rot2"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 15,
+      "text": "Join N1, N2, N3 and N4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["N1", "N2", "N3", "N4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They close the decagons, the pentagons and the kites.",
+    "paths": [
+      {"along": "h", "from": "kl", "to": "t3@1"},
+      {"along": "h", "from": "t4", "to": "s4"},
+      {"along": "h", "from": "s0", "to": "t0"},
+      {"along": "h", "from": "t1@1", "to": "kr"},
+      {"along": "rB", "from": "s0@1", "to": "t0@1"},
+      {"along": "rB", "from": "t0", "to": "s0"},
+      {"along": "rB", "from": "s5", "to": "t5"},
+      {"along": "rB", "from": "t5@1", "to": "s5@1"},
+      {"along": "rC", "from": "t1", "to": "s1"},
+      {"along": "rC", "from": "s6", "to": "t6"},
+      {"along": "rD", "from": "t2", "to": "s2"},
+      {"along": "rD", "from": "s7", "to": "t7"},
+      {"along": "rE", "from": "s3@1", "to": "t3@1"},
+      {"along": "rE", "from": "t3", "to": "s3"},
+      {"along": "rE", "from": "s8", "to": "t8"},
+      {"along": "rE", "from": "t8@1", "to": "s8@1"},
+      {"along": "s0", "from": "h", "to": "rB"},
+      {"along": "s1", "from": "rB", "to": "rC"},
+      {"along": "s2", "from": "rC", "to": "rD"},
+      {"along": "s3", "from": "rD", "to": "rE"},
+      {"along": "s4", "from": "rE", "to": "h"},
+      {"along": "s5", "from": "h", "to": "rB"},
+      {"along": "s6", "from": "rB", "to": "rC"},
+      {"along": "s7", "from": "rC", "to": "rD"},
+      {"along": "s8", "from": "rD", "to": "rE"},
+      {"along": "s9", "from": "rE", "to": "h"},
+      {"along": "t0", "from": "kb", "to": "h"},
+      {"along": "t0", "from": "rB", "to": "kt"},
+      {"along": "t1", "from": "kr", "to": "rB"},
+      {"along": "t1", "from": "rC", "to": "kt"},
+      {"along": "t2", "from": "n1", "to": "rC"},
+      {"along": "t2", "from": "rD", "to": "n2"},
+      {"along": "t3", "from": "kt", "to": "rD"},
+      {"along": "t3", "from": "rE", "to": "kl"},
+      {"along": "t4", "from": "kt", "to": "rE"},
+      {"along": "t4", "from": "h", "to": "kb"},
+      {"along": "t5", "from": "kt", "to": "h"},
+      {"along": "t5", "from": "rB", "to": "kb"},
+      {"along": "t6", "from": "kl", "to": "rB"},
+      {"along": "t6", "from": "rC", "to": "kb"},
+      {"along": "t7", "from": "n3", "to": "rC"},
+      {"along": "t7", "from": "rD", "to": "n4"},
+      {"along": "t8", "from": "kb", "to": "rD"},
+      {"along": "t8", "from": "rE", "to": "kr"},
+      {"along": "t9", "from": "kb", "to": "rE"},
+      {"along": "t9", "from": "h", "to": "kt"},
+      {"along": "kt", "from": "s1@1", "to": "t9"},
+      {"along": "kt", "from": "t0", "to": "t4"},
+      {"along": "kt", "from": "t5", "to": "s3@1"},
+      {"along": "kb", "from": "s6@1", "to": "t4"},
+      {"along": "kb", "from": "t5", "to": "t9"},
+      {"along": "kb", "from": "t0", "to": "s8@1"},
+      {"along": "n1", "from": "s0@1", "to": "t2"},
+      {"along": "n3", "from": "t7", "to": "s5@1"},
+      {"along": "n2", "from": "s4@1", "to": "t2"},
+      {"along": "n4", "from": "t7", "to": "s9@1"},
+      {"along": "s0@1", "from": "n1", "to": "rB"},
+      {"along": "s1@1", "from": "rB", "to": "kt"},
+      {"along": "t0@1", "from": "t8", "to": "t2"},
+      {"along": "t0@1", "from": "rB", "to": "t3"},
+      {"along": "t1@1", "from": "h", "to": "rB"},
+      {"along": "s3@1", "from": "kt", "to": "rE"},
+      {"along": "s4@1", "from": "rE", "to": "n2"},
+      {"along": "t3@1", "from": "rE", "to": "h"},
+      {"along": "t4@1", "from": "t1", "to": "rE"},
+      {"along": "t4@1", "from": "t2", "to": "t6"},
+      {"along": "s5@1", "from": "n3", "to": "rB"},
+      {"along": "s6@1", "from": "rB", "to": "kb"},
+      {"along": "t5@1", "from": "t3", "to": "t7"},
+      {"along": "t5@1", "from": "rB", "to": "t8"},
+      {"along": "t6@1", "from": "h", "to": "rB"},
+      {"along": "s8@1", "from": "kb", "to": "rE"},
+      {"along": "s9@1", "from": "rE", "to": "n4"},
+      {"along": "t8@1", "from": "rE", "to": "h"},
+      {"along": "t9@1", "from": "t6", "to": "rE"},
+      {"along": "t9@1", "from": "t7", "to": "t1"},
+      {"along": "x", "from": "kl", "to": "n2"},
+      {"along": "x", "from": "n1", "to": "kr"},
+      {"along": "x@1", "from": "kr", "to": "n4"},
+      {"along": "x@1", "from": "n3", "to": "kl"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Timurid tile",
+    "look": "strapwork",
+    "colors": {"pentagon": "b", "decagon": "c", "gable": "d", "petal": "a", "kite": "ground"},
+    "text": "Put copies of the rectangular tile side by side. A decagon sits at the centre and at every corner."
+  },
+  "expect": {
+    "pieceTypes": 5,
+    "pieces": [
+      {"name": "pentagon", "vertices": 5, "area": 3.28582, "perCell": 8},
+      {"name": "decagon", "vertices": 10, "area": 2.93893, "perCell": 2},
+      {"name": "gable", "vertices": 5, "area": 2.51014, "perCell": 4},
+      {"name": "petal", "vertices": 5, "area": 1.52246, "perCell": 20},
+      {"name": "kite", "vertices": 4, "area": 1.12257, "perCell": 24}
+    ]
+  }
+}
