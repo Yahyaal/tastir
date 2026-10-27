@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Fourteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106 and P092. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Seventeen entries remain pending.
+Fifteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092 and CR1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Sixteen entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -194,3 +194,16 @@ Independent shoelaces give twelve_star12√3−18, once; six_star63√3−108, t
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P092/overlay.png`. Every band centre agrees. All42 actual player fills match the expanded source contours, retaining brown twelve-stars, pink smaller stars, red six-sided pieces, yellow kites and black small kites with an illustrative palette. Strapwork is the default. Credits retain Bourgoin, Plate92; Creswell, volume2, Plate52c, al-Zahir Baybars, Cairo, northwest transept(1266–69AD,664–67AH); Hessemer, page36, Qalawun wall decoration, Cairo(1284–85AD,682–83AH); Abas and Salman, page165; and the page’s Wade BOU092 link. No photograph was independently checked. No duplicate or filling-only variant was found.
 
 The catalog prepared200 previews. All six targeted golden checks and the full weave group, all1000 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## CR1 — `maragha-twelve-star-bands`
+
+The eighteen-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,374.5687916667), OA=22pt, a full regular-hexagon side, and the teaching frame turns−15°. Facing gold contours give872 measurements clustered at7pt(6.99–7.01), so the faces are expanded3.5pt to the ribbon centres. The twelve-star radius is2+√3. Its extended side crosses the horizontal axis at X=(9√2+5√6)/2; halving X with a diagonal and adding√3/2 gives the cell apothem L=(9√2+2√3+5√6)/4. This also gives unit regular hexagons on the sides of the repeat. A parallel intercept constructs the inner height2√3/5. No fitted decimal length is shipped.
+
+Put r=√2, s=√3 and t=√6. Independent source shoelaces give star18+12s, once; large_kite(9+5s)/4, six; hexagon249/100−3r/10+11s/8−3t/10, twelve; six3/2+3r/2−s+t/2, six; regular_hexagon3s/2, twice; rhombus12/5, three; pentagon−12/25+3(r+t)/5, six; small_pentagon−27/10+3(r+s+t)/4, six; and kite(3+s)/4, twelve. These54 counted areas sum exactly to(135+27r+81s+15t)/2=2sL². The engine independently confirms all nine types and counts without slivers or off-construction endpoints.
+
+The source’s rounding is coarser than its PDF’s printed decimal precision. It also puts some helper crossings very near real face junctions. Restricting research registration to final boundary carriers avoids snapping to those helpers and yields worst source-corner residual0.00056609OA, comfortably within0.003. Exterior edges grazing a cell corner for under0.003OA are discarded before registration. The complete red overlay at `docs/research/tilingsearch-30/CR1/overlay.png` follows every blue and white ribbon centre; the ink and wall were also inspected. All54 actual player fills retain the single gold class. Strapwork is the default. The palette and single band colour are illustrative; the source’s two-colour weave phase is not claimed as a photograph match.
+
+Credits retain Peter Cromwell, figure2(b), Islamic geometric ornament in Azerbaijan, listed by the page as forthcoming2018, and its Gunbad-i Surkh, Maragha attribution(1148AD,542AH). No photograph was independently checked. The120° twelve-star opening is related to P092, but the different line families, connectors and repeat give a separate tiling. No duplicate or filling-only variant was found.
+
+The catalog prepared201 previews. All six targeted golden checks and the full weave group, all1005 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
