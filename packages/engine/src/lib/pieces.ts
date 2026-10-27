@@ -148,11 +148,22 @@ export function computePattern(
   const rank = new Map(order.map((old, i) => [old, i]));
   const named = order.map((i) => {
     const t = types[i] as PieceType;
-    let match = tutorial.expect.pieces.filter(
-      (p) =>
-        p.vertices === t.vertices &&
-        Math.abs(p.area - t.area) <= 5e-6 * Math.max(1, p.area),
-    );
+    let match = tutorial.expect.pieces.filter((p) => {
+      if (
+        p.vertices !== t.vertices ||
+        Math.abs(p.area - t.area) > 5e-6 * Math.max(1, p.area)
+      )
+        return false;
+      if (!p.outline || !tutorial.pattern.distinguishOutlines) return true;
+      const g = scene.elements.get(p.outline)?.geometry;
+      if (g?.kind !== 'polygon')
+        throw new TutorialError(
+          'pattern',
+          p.outline,
+          'a piece outline must be a polygon',
+        );
+      return congruent(t, measure(g.vertices, true), eps);
+    });
     if (match.length > 1 && tutorial.pattern.distinguishOutlines)
       match = match.filter((p) => p.perCell === t.perCell);
     return match.length === 1

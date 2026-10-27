@@ -48,7 +48,11 @@ describe('full outline grouping', () => {
       segment: s,
     })),
   );
-  function fixture(distinguishOutlines?: boolean, ambiguous = false) {
+  function fixture(
+    distinguishOutlines?: boolean,
+    ambiguous = false,
+    specimens = false,
+  ) {
     const tutorial = structuredClone(starAndCross());
     tutorial.pattern = {
       cell: 'tile',
@@ -62,6 +66,10 @@ describe('full outline grouping', () => {
         { name: 't', vertices: 8, area: 5, perCell: ambiguous ? 2 : 1 },
       ],
     };
+    if (specimens) {
+      tutorial.expect.pieces[0]!.outline = 'uOutline';
+      tutorial.expect.pieces[1]!.outline = 'tOutline';
+    }
     const vertices = [
       { x: 0, y: 0 },
       { x: 14, y: 0 },
@@ -70,20 +78,33 @@ describe('full outline grouping', () => {
     ];
     const scene: Scene = {
       ...evaluate(tutorial),
-      elements: new Map([
-        [
-          'tile',
+      elements: new Map(
+        Object.entries({
+          tile: vertices,
+          uOutline: polygons[0]!,
+          tOutline: polygons[2]!,
+        }).map(([name, points]) => [
+          name,
           {
-            name: 'tile',
+            name,
             step: 0,
             beat: 0,
             deps: [],
-            geometry: { kind: 'polygon', vertices, sides: edges(vertices) },
+            geometry: {
+              kind: 'polygon' as const,
+              vertices: points,
+              sides: edges(points),
+            },
           },
-        ],
-      ]),
+        ]),
+      ),
     };
-    return computePattern(scene, tutorial, strokes);
+    const extra = specimens
+      ? edges(polygons[2]!.map(({ x, y }) => ({ x, y: y + 4 }))).map(
+          (segment) => ({ from: 'a', to: 'b', segment }),
+        )
+      : [];
+    return computePattern(scene, tutorial, [...strokes, ...extra]);
   }
 
   it('preserves legacy grouping when the flag is absent or false', () => {
@@ -111,6 +132,18 @@ describe('full outline grouping', () => {
       't',
       'u',
       'u',
+    ]);
+  });
+
+  it('uses constructed specimens when both outlines also have the same count', () => {
+    const result = fixture(true, true, true);
+    expect(
+      result.types
+        .map(({ name, perCell }) => ({ name, perCell }))
+        .sort((a, b) => a.name!.localeCompare(b.name!)),
+    ).toEqual([
+      { name: 't', perCell: 2 },
+      { name: 'u', perCell: 2 },
     ]);
   });
 

@@ -121,7 +121,9 @@ A tutorial with a photo of the real pattern should open looking like it. `patter
 
 `expect` holds the golden values for the tutorial's test: how many piece types there are, and each type's vertex count, area (in units of OA²) and count per cell. A piece is named in `expect.pieces`, and `pattern.colors` uses those names.
 
-`pattern.distinguishOutlines: true` compares every corner when grouping pieces, allowing rotation and reflection. Use it when different outlines share the same vertex count, area, perimeter and sorted side lengths. Without it, the existing grouping by those scalar measures is preserved. If several expected pieces have the same vertex count and area, their independently computed counts per cell must distinguish their names; an ambiguous match stays unnamed and fails its golden check.
+`pattern.distinguishOutlines: true` compares every corner when grouping pieces, allowing rotation and reflection. Use it when different outlines share the same vertex count, area, perimeter and sorted side lengths. Without it, the existing grouping by those scalar measures is preserved. If several expected pieces have the same vertex count and area, their independently computed counts per cell can distinguish their names; an ambiguous match stays unnamed and fails its golden check.
+
+If their counts also agree, give each expected piece an `outline` reference to a constructed polygon with that piece's outline. Its vertices must come from earlier crossings, like any construction polygon. Full congruence with this specimen identifies the type; its area and count are still checked independently by the golden. Specimens require `pattern.distinguishOutlines: true`.
 
 ## The worked example
 
