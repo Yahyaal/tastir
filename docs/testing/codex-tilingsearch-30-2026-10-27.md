@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Eight tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85 and IRA2633. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-four entries remain pending.
+Nine tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633 and DM1. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-three entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -121,3 +121,14 @@ The exact centre-line inventory remains star6−2√3, once; pentagon3−3√3/2
 The page describes its coloured ribbon drawing as not edge-to-edge. The mesh of band centres reconstructed here is edge-to-edge, as directly shown by the identical W85 geometry. This is the intended band-reading method, rather than treating its ribbon facets as extra tiles. Credits name Wade IRA2633, Öljeitü’s mausoleum, Sultaniyeh, Iran (1313 AD, 712 AH). No photograph was independently checked. This is W85’s filling variation, and Claude should add the two ids to one family after merging.
 
 The catalog prepared194 previews. All six targeted golden checks and the full weave group, all970 text/helper assertions and all40 schema checks passed under3GB. Direct comparison proves that the two tutorials’ steps, ink and expectations are identical. No shared application or reserved file changed.
+
+
+## DM1 — `damascus-fountain-stars`
+
+The twenty-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF (297.5,373.91), OA=20(3+√3)/√2 pt, and the teaching frame turns −15°. The three-square opening is shared with the Agra lessons. A square diagonal and two transfers of cos15° give the hexagonal apothem L=(3√2+√6)/2. A midpoint constructs the extra axial offset 3sin15°/2 and its complement in L. Six other parallel families pass through earlier crossings. The source has plain boundaries, with no band expansion. The source-corner Euclidean residual is below 0.00016 OA.
+
+Independent shoelaces give star6−2√3, once; kite−1+2√3/3, twelve; hexagon3/2−2√3/3, twelve; small_hexagon−1+2√3/3, twelve; rhombus√3/6, six; ten23/8−11√3/12, twelve; and small_star−27/4+9√3/2, twice. The chelate’s fourteen-corner outer contour has area −1/2+4√3/3. Subtracting its inset rhombus gives the actual eighteen-corner face area −1/2+7√3/6, six per cell. The corrected 63 pieces sum exactly to18+12√3=2√3L². The engine independently confirms all eight types and counts. A pairwise-distance congruence check finds one congruence class within each type; the page’s prose count of nine shapes is not reproduced by its drawing. The thin hooked chelate is present in the source and alone has the small-piece allowance. Every ink endpoint is on its construction.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/DM1/overlay.png`. All boundaries agree, including the inset rhombi and thin chelates. All63 actual player fills match interior source samples, retaining grey, vivid red and muted red classes. The Kashan palette is illustrative. The page credits Richard Henry’s photograph of an exterior fountain surround in Damascus, Syria, described as a six-fold cut-stone pattern, supplied by personal communication. No photograph was independently checked. This is a separate design, with no duplicate or filling-only variant found.
+
+The catalog prepared195 previews. All six targeted golden checks and the full weave group, all975 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
