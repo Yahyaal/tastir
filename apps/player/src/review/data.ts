@@ -4802,6 +4802,160 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'fes-two-rosettes',
+    title: 'Two rosettes (Fès) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A large rosette sits at the centre of every tile, and a rosette of eight petals at each corner.',
+    story: [
+      'The finished design was read from Wichmann’s MOR0837 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing in the Marinid zellige palette. Wade’s photo MOR 0837 was not checked.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-two-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-two-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Fès, Morocco (MOR0837)',
+        url: 'https://tilingsearch.mit.edu/HTML/data181/MOR0837.html',
+      },
+    ],
+  },
+  {
+    id: 'meknes-manezeh-fountain-rosette',
+    title: 'Rosette of the Manezeh fountain (Meknes) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A large rosette sits at the centre of every tile, and a rosette of eight petals at each corner.',
+    story: [
+      'The finished design was read from Wichmann’s F19 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. Every line of the Fès two rosettes (MOR0837) is a line of this design too, so its whole construction is shared; one more set of lines, drawn through a crossing of earlier lines and turned round O, changes the large rosette. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing, which keeps the colours of Paccard’s plate: black, green, red and light blue, in the Marinid zellige palette, which has no red: his red takes the palette’s honey and his light blue its blue. No photograph was checked.',
+      '15 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/meknes-manezeh-fountain-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/meknes-manezeh-fountain-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Manezeh fountain, Meknes (F19)',
+        url: 'https://tilingsearch.mit.edu/HTML/data166/F19.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-comares-west-dado',
+    title:
+      'Rosette dado of the Salón de Comares west wall, Alhambra (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s F169 drawing, an interlace of bands, by their centre lines. Its tile corners were snapped to the square-root-of-two grid in star-radius units. After the unit star every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. Two of those lines are helpers that the finished pattern does not use: no crossing of the pattern’s own lines lies on another of its lines. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The lines are the centre lines of the drawing’s bands; the over-and-under weave is not drawn. The colours follow Wichmann’s drawing, which keeps the panel’s own: black, teal, honey and blue, in the Alhambra palette; the bands themselves are not pieces. No photograph was checked.',
+      '18 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-comares-west-dado/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-comares-west-dado/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Salón de Comares, Alhambra, Granada (F169)',
+        url: 'https://tilingsearch.mit.edu/HTML/data150/F169.html',
+      },
+    ],
+  },
+  {
+    id: 'marrakesh-dar-el-bacha-rosette',
+    title:
+      'Rosette of the Dar el Bacha palace (Marrakesh) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile, and its mirror image at each corner.',
+    story: [
+      'The finished design was read from Wichmann’s MIR19 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The pattern turns about O but has no mirror through it. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing in the Marinid zellige palette: his pale green takes its green, his rust its honey, and his dark blue and sea green both its blue. No photograph was checked; Wichmann notes that the photo shows a band round the panel, which is not drawn.',
+      '16 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/marrakesh-dar-el-bacha-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/marrakesh-dar-el-bacha-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Dar el Bacha palace, Marrakesh (MIR19)',
+        url: 'https://tilingsearch.mit.edu/HTML/data215/MIR19.html',
+      },
+    ],
+  },
+  {
+    id: 'fes-motif-rosette',
+    title: 'Star and rosette motif (Fès) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A red rosette sits at the centre of every tile, a white star at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s FEZ7 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing in the Modern Moroccan palette. No photograph was checked.',
+      '18 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-motif-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-motif-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Fès (FEZ7)',
+        url: 'https://tilingsearch.mit.edu/HTML/data191/FEZ7.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -6062,6 +6216,11 @@ export const QUESTIONS: readonly Question[] = [
       'telouet-framed-rosette',
       'fes-attarine-rosette',
       'marrakesh-bahia-ring-rosette',
+      'fes-two-rosettes',
+      'meknes-manezeh-fountain-rosette',
+      'alhambra-comares-west-dado',
+      'marrakesh-dar-el-bacha-rosette',
+      'fes-motif-rosette',
     ],
   },
 ];

@@ -126,5 +126,10 @@
     "id": "throne-star-rosettes",
     "title": "Star rosettes of the Meknes and Fès throne rooms",
     "members": ["meknes-throne-star-rosette", "fes-throne-star-burst"]
+  },
+  {
+    "id": "fes-two-rosettes",
+    "title": "Two rosettes of Fès and Meknes",
+    "members": ["fes-two-rosettes", "meknes-manezeh-fountain-rosette"]
   }
 ]
