@@ -1,0 +1,427 @@
+{
+  "format": 0,
+  "id": "qom-atiq-courtyard-rows",
+  "title": "Stars and squares of the Atiq courtyard, Qom",
+  "short": "Atiq courtyard rows",
+  "subtitle": "Atiq courtyard, Qom, Iran",
+  "fold": 2,
+  "style": "Persian",
+  "level": "intermediate",
+  "given": {"O": "The centre of a small square, at a half-turn point.", "A": "Its right corner."},
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P105 drawing and its corners snapped to exact values. OA is a small square’s half-diagonal. Compass transfers of OA, OM and the unit-square diagonal give the rectangular repeat. The drawing gives no steps; we devised the construction.",
+    "changes": "The plain boundaries and three source fill classes are retained. The numeric palette is illustrative. No courtyard photograph was checked. The compass steps, their order and the named points are ours.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data181/P105: Atiq courtyard, Qom, Iran",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data181/P105.html",
+      "note": "Read from his finished drawing, not construction instructions. Mahmood Maher al-Naqsh, Design and execution of drawing in Iranian tilework, Islamic period (Reza Abbasi Museum, 1983), volume 5, page 105, Atiq courtyard, Qom, Iran. Wichmann says the colours follow the original mosaic presentation."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through each of A and B. Draw a horizontal line through each of C and D. They cross at K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a vertical line through A. Draw a horizontal line through C. They cross at K1. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The line from O to K1 crosses the circle at F. Draw a vertical line through F. It crosses the horizontal line through O at M. Draw a circle with centre O through K1.",
+      "create": {
+        "F": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "fv": {"line": {"through": "F", "parallelTo": "v"}},
+        "M": {"point": {"meet": ["fv", "h"]}},
+        "ck": {"circle": {"centre": "O", "through": "K1"}}
+      },
+      "highlight": ["F", "M", "K1"],
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a straight line through A and C. Turn it round O by 90°, three times.",
+      "create": {"ac": {"line": {"through": ["A", "C"]}}, "diamond": {"repeat": {"of": ["ac"], "by": "rot4"}}},
+      "highlight": ["A", "C"],
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre A and opening OM. It crosses the horizontal line through O at S, right of A. Draw a circle with centre S and opening from O to K1. It crosses the same line at T, right of S. Draw a vertical line through each of S and T. Turn both lines round O by 180°.",
+      "create": {
+        "circle_S": {"circle": {"centre": "A", "radiusFrom": ["O", "M"]}},
+        "S": {"point": {"meet": ["circle_S", "h"], "pick": {"farthest": "O"}}},
+        "circle_T": {"circle": {"centre": "S", "radiusFrom": ["O", "K1"]}},
+        "T": {"point": {"meet": ["circle_T", "h"], "pick": {"farthest": "O"}}},
+        "vertical_S": {"line": {"through": "S", "parallelTo": "v"}},
+        "vertical_T": {"line": {"through": "T", "parallelTo": "v"}},
+        "pair_S": {"repeat": {"of": ["vertical_S", "vertical_T"], "by": "rot2"}}
+      },
+      "highlight": ["A", "M", "S", "T"],
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a circle with centre T and opening OA. It crosses the horizontal line through O at E, right of T. Draw a circle with centre E, with the same opening. It crosses the same line at U, right of E.",
+      "create": {
+        "circle_E": {"circle": {"centre": "T", "radiusFrom": ["O", "A"]}},
+        "E": {"point": {"meet": ["circle_E", "h"], "pick": {"farthest": "O"}}},
+        "circle_U": {"circle": {"centre": "E", "radiusFrom": ["O", "A"]}},
+        "U": {"point": {"meet": ["circle_U", "h"], "pick": {"farthest": "O"}}}
+      },
+      "highlight": ["T", "E", "U"],
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "Draw a circle with centre U and opening from O to K1. It crosses the horizontal line through O at V, right of U. Draw a circle with centre V and opening OS. It crosses the same line at J, right of V. Draw a vertical line through V. Turn it round O by 180°.",
+      "create": {
+        "circle_V": {"circle": {"centre": "U", "radiusFrom": ["O", "K1"]}},
+        "V": {"point": {"meet": ["circle_V", "h"], "pick": {"farthest": "O"}}},
+        "circle_J": {"circle": {"centre": "V", "radiusFrom": ["O", "S"]}},
+        "J": {"point": {"meet": ["circle_J", "h"], "pick": {"farthest": "O"}}},
+        "vertical_V": {"line": {"through": "V", "parallelTo": "v"}},
+        "pair_V": {"repeat": {"of": ["vertical_V"], "by": "rot2"}}
+      },
+      "highlight": ["U", "S", "V", "J"],
+      "animate": "compass"
+    },
+    {
+      "id": 8,
+      "text": "Draw a circle with centre J and opening OM. It crosses the horizontal line through O at L, right of J. Draw a circle with centre L and opening OA. It crosses the same line at Q, right of L. Draw a vertical line through each of L and Q. Turn both lines round O by 180°.",
+      "create": {
+        "circle_L": {"circle": {"centre": "J", "radiusFrom": ["O", "M"]}},
+        "L": {"point": {"meet": ["circle_L", "h"], "pick": {"farthest": "O"}}},
+        "circle_Q": {"circle": {"centre": "L", "radiusFrom": ["O", "A"]}},
+        "Q": {"point": {"meet": ["circle_Q", "h"], "pick": {"farthest": "O"}}},
+        "vertical_L": {"line": {"through": "L", "parallelTo": "v"}},
+        "vertical_Q": {"line": {"through": "Q", "parallelTo": "v"}},
+        "pair_L": {"repeat": {"of": ["vertical_L", "vertical_Q"], "by": "rot2"}}
+      },
+      "highlight": ["J", "M", "L", "Q"],
+      "animate": "compass"
+    },
+    {
+      "id": 9,
+      "text": "Draw a circle with centre Q and opening OM. It crosses the horizontal line through O at X, right of Q. Draw a vertical line through X. Turn it round O by 180°.",
+      "create": {
+        "circle_X": {"circle": {"centre": "Q", "radiusFrom": ["O", "M"]}},
+        "X": {"point": {"meet": ["circle_X", "h"], "pick": {"farthest": "O"}}},
+        "vertical_X": {"line": {"through": "X", "parallelTo": "v"}},
+        "pair_X": {"repeat": {"of": ["vertical_X"], "by": "rot2"}}
+      },
+      "highlight": ["Q", "M", "X"],
+      "animate": "compass"
+    },
+    {
+      "id": 10,
+      "text": "Draw a circle with centre O through each of S, E and U. They cross the vertical line through O at Y1, Y2 and Y3, above O. Draw a horizontal line through each new point. Turn the lines round O by 180°.",
+      "create": {
+        "circle_Y1": {"circle": {"centre": "O", "through": "S"}},
+        "Y1": {"point": {"meet": ["circle_Y1", "v"], "pick": {"angle": 90.0}}},
+        "horizontal_Y1": {"line": {"through": "Y1", "parallelTo": "h"}},
+        "circle_Y2": {"circle": {"centre": "O", "through": "E"}},
+        "Y2": {"point": {"meet": ["circle_Y2", "v"], "pick": {"angle": 90.0}}},
+        "horizontal_Y2": {"line": {"through": "Y2", "parallelTo": "h"}},
+        "circle_Y3": {"circle": {"centre": "O", "through": "U"}},
+        "Y3": {"point": {"meet": ["circle_Y3", "v"], "pick": {"angle": 90.0}}},
+        "horizontal_Y3": {"line": {"through": "Y3", "parallelTo": "h"}},
+        "horizontalPairs": {"repeat": {"of": ["horizontal_Y1", "horizontal_Y2", "horizontal_Y3"], "by": "rot2"}}
+      },
+      "highlight": ["S", "E", "U"],
+      "animate": "compass"
+    },
+    {
+      "id": 11,
+      "text": "Draw a circle with centre U and opening OM. It crosses the horizontal line through O at P, right of U. Draw a circle with centre O through P. It crosses the vertical line through O at Y4, above O. Draw a horizontal line through Y4. Turn it round O by 180°. These lines cross the verticals through X at N1, N2, N3 and N4.",
+      "create": {
+        "circle_P": {"circle": {"centre": "U", "radiusFrom": ["O", "M"]}},
+        "P": {"point": {"meet": ["circle_P", "h"], "pick": {"farthest": "O"}}},
+        "circle_Y4": {"circle": {"centre": "O", "through": "P"}},
+        "Y4": {"point": {"meet": ["circle_Y4", "v"], "pick": {"angle": 90.0}}},
+        "horizontal_Y4": {"line": {"through": "Y4", "parallelTo": "h"}},
+        "frameY": {"repeat": {"of": ["horizontal_Y4"], "by": "rot2"}},
+        "N1": {"point": {"meet": ["vertical_X", "horizontal_Y4"]}},
+        "N2": {"point": {"meet": ["vertical_X@1", "horizontal_Y4"]}},
+        "N3": {"point": {"meet": ["vertical_X@1", "horizontal_Y4@1"]}},
+        "N4": {"point": {"meet": ["vertical_X", "horizontal_Y4@1"]}}
+      },
+      "highlight": ["U", "M", "P", "Y4"],
+      "animate": "compass"
+    },
+    {
+      "id": 12,
+      "text": "Draw a circle with centre B and opening from O to K1. It crosses the horizontal line through O at R, right of O. Draw a circle with centre A, with the same opening. It crosses the same line at W, right of A.",
+      "create": {
+        "circle_R": {"circle": {"centre": "B", "radiusFrom": ["O", "K1"]}},
+        "R": {"point": {"meet": ["circle_R", "h"], "pick": {"angle": 0.0}}},
+        "circle_W": {"circle": {"centre": "A", "radiusFrom": ["O", "K1"]}},
+        "W": {"point": {"meet": ["circle_W", "h"], "pick": {"angle": 0.0}}}
+      },
+      "highlight": ["B", "A", "K1", "R", "W"],
+      "animate": "compass"
+    },
+    {
+      "id": 13,
+      "text": "Draw a line through each of R and W at 90° to the line from O to K1. Turn the lines round O by 90°, three times.",
+      "create": {
+        "diagonal_R": {"line": {"through": "R", "perpendicularTo": "d45"}},
+        "diagonal_W": {"line": {"through": "W", "perpendicularTo": "d45"}},
+        "copies_R": {"repeat": {"of": ["diagonal_R", "diagonal_W"], "by": "rot4"}}
+      },
+      "highlight": ["R", "W", "K1"],
+      "animate": "ruler"
+    },
+    {
+      "id": 14,
+      "text": "Draw a circle with centre W and opening from O to K1. It crosses the horizontal line through O at Z, right of W.",
+      "create": {
+        "circle_Z": {"circle": {"centre": "W", "radiusFrom": ["O", "K1"]}},
+        "Z": {"point": {"meet": ["circle_Z", "h"], "pick": {"farthest": "O"}}}
+      },
+      "highlight": ["W", "K1", "Z"],
+      "animate": "compass"
+    },
+    {
+      "id": 15,
+      "text": "Draw a line through each of Z and P at 90° to the line from O to K1. Turn the lines round O by 90°, three times.",
+      "create": {
+        "diagonal_Z": {"line": {"through": "Z", "perpendicularTo": "d45"}},
+        "diagonal_P": {"line": {"through": "P", "perpendicularTo": "d45"}},
+        "copies_Z": {"repeat": {"of": ["diagonal_Z", "diagonal_P"], "by": "rot4"}}
+      },
+      "highlight": ["Z", "P", "K1"],
+      "animate": "ruler"
+    },
+    {
+      "id": 16,
+      "text": "Draw a circle with centre P and opening from O to K1. It crosses the horizontal line through O at G, right of P. Draw a circle with centre G and opening AB. It crosses the same line at I, right of G.",
+      "create": {
+        "circle_G": {"circle": {"centre": "P", "radiusFrom": ["O", "K1"]}},
+        "G": {"point": {"meet": ["circle_G", "h"], "pick": {"farthest": "O"}}},
+        "circle_I": {"circle": {"centre": "G", "radiusFrom": ["A", "B"]}},
+        "I": {"point": {"meet": ["circle_I", "h"], "pick": {"farthest": "O"}}}
+      },
+      "highlight": ["P", "K1", "G", "I", "A", "B"],
+      "animate": "compass"
+    },
+    {
+      "id": 17,
+      "text": "Draw a line through each of G and I at 90° to the line from O to K1. Turn the lines round O by 90°, three times.",
+      "create": {
+        "diagonal_G": {"line": {"through": "G", "perpendicularTo": "d45"}},
+        "diagonal_I": {"line": {"through": "I", "perpendicularTo": "d45"}},
+        "copies_G": {"repeat": {"of": ["diagonal_G", "diagonal_I"], "by": "rot4"}}
+      },
+      "highlight": ["G", "I", "K1"],
+      "animate": "ruler"
+    },
+    {
+      "id": 18,
+      "text": "The vertical through Q crosses the horizontal through Y2 at Z1. Draw a line through each of X and Z1 at 90° to the line from O to K1. Turn both lines round O by 90°, three times.",
+      "create": {
+        "Z1": {"point": {"meet": ["vertical_Q", "horizontal_Y2"]}},
+        "diagonal_X": {"line": {"through": "X", "perpendicularTo": "d45"}},
+        "diagonal_Z1": {"line": {"through": "Z1", "perpendicularTo": "d45"}},
+        "outerDiagonals": {"repeat": {"of": ["diagonal_X", "diagonal_Z1"], "by": "rot4"}}
+      },
+      "highlight": ["Q", "Y2", "X", "Z1"],
+      "animate": "ruler"
+    },
+    {
+      "id": 19,
+      "text": "Join N1, N2, N3 and N4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["N1", "N2", "N3", "N4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange.",
+    "paths": [
+      {"along": "ac", "from": "h", "to": "horizontal_Y1"},
+      {"along": "ac", "from": "vertical_S@1", "to": "vertical_T@1"},
+      {"along": "ac@1", "from": "vertical_T", "to": "vertical_S"},
+      {"along": "ac@1", "from": "fv", "to": "h"},
+      {"along": "ac@2", "from": "h", "to": "fv"},
+      {"along": "ac@2", "from": "vertical_S", "to": "vertical_T"},
+      {"along": "ac@3", "from": "vertical_T@1", "to": "vertical_S@1"},
+      {"along": "ac@3", "from": "horizontal_Y1@1", "to": "h"},
+      {"along": "vertical_S", "from": "horizontal_Y4@1", "to": "horizontal_Y2@1"},
+      {"along": "vertical_S", "from": "ac@2", "to": "ac"},
+      {"along": "vertical_S", "from": "ac@3", "to": "ac@1"},
+      {"along": "vertical_S", "from": "horizontal_Y2", "to": "horizontal_Y4"},
+      {"along": "vertical_T", "from": "horizontal_Y4@1", "to": "ac@2"},
+      {"along": "vertical_T", "from": "diagonal_R", "to": "diagonal_W"},
+      {"along": "vertical_T", "from": "diagonal_W@3", "to": "diagonal_R@3"},
+      {"along": "vertical_T", "from": "ac@1", "to": "horizontal_Y4"},
+      {"along": "vertical_S@1", "from": "horizontal_Y4", "to": "horizontal_Y2"},
+      {"along": "vertical_S@1", "from": "ac", "to": "ac@2"},
+      {"along": "vertical_S@1", "from": "ac@1", "to": "ac@3"},
+      {"along": "vertical_S@1", "from": "horizontal_Y2@1", "to": "horizontal_Y4@1"},
+      {"along": "vertical_T@1", "from": "horizontal_Y4", "to": "ac"},
+      {"along": "vertical_T@1", "from": "diagonal_R@2", "to": "diagonal_W@2"},
+      {"along": "vertical_T@1", "from": "diagonal_W@1", "to": "diagonal_R@1"},
+      {"along": "vertical_T@1", "from": "ac@3", "to": "horizontal_Y4@1"},
+      {"along": "vertical_V", "from": "horizontal_Y4@1", "to": "horizontal_Y2@1"},
+      {"along": "vertical_V", "from": "diagonal_Z", "to": "diagonal_P"},
+      {"along": "vertical_V", "from": "diagonal_P@3", "to": "diagonal_Z@3"},
+      {"along": "vertical_V", "from": "horizontal_Y2", "to": "horizontal_Y4"},
+      {"along": "vertical_V@1", "from": "horizontal_Y4", "to": "horizontal_Y2"},
+      {"along": "vertical_V@1", "from": "diagonal_Z@2", "to": "diagonal_P@2"},
+      {"along": "vertical_V@1", "from": "diagonal_P@1", "to": "diagonal_Z@1"},
+      {"along": "vertical_V@1", "from": "horizontal_Y2@1", "to": "horizontal_Y4@1"},
+      {"along": "vertical_L", "from": "horizontal_Y3@1", "to": "diagonal_P"},
+      {"along": "vertical_L", "from": "diagonal_P@3", "to": "horizontal_Y3"},
+      {"along": "vertical_Q", "from": "diagonal_G", "to": "diagonal_I"},
+      {"along": "vertical_Q", "from": "diagonal_I@3", "to": "diagonal_G@3"},
+      {"along": "vertical_L@1", "from": "horizontal_Y3", "to": "diagonal_P@2"},
+      {"along": "vertical_L@1", "from": "diagonal_P@1", "to": "horizontal_Y3@1"},
+      {"along": "vertical_Q@1", "from": "diagonal_G@2", "to": "diagonal_I@2"},
+      {"along": "vertical_Q@1", "from": "diagonal_I@1", "to": "diagonal_G@1"},
+      {"along": "horizontal_Y1", "from": "vertical_X@1", "to": "vertical_L@1"},
+      {"along": "horizontal_Y1", "from": "diagonal_P@2", "to": "diagonal_Z@2"},
+      {"along": "horizontal_Y1", "from": "diagonal_W@2", "to": "ac"},
+      {"along": "horizontal_Y1", "from": "fv", "to": "diagonal_W@3"},
+      {"along": "horizontal_Y1", "from": "diagonal_Z@3", "to": "diagonal_P@3"},
+      {"along": "horizontal_Y1", "from": "vertical_L", "to": "vertical_X"},
+      {"along": "horizontal_Y2", "from": "vertical_Q@1", "to": "diagonal_Z@2"},
+      {"along": "horizontal_Y2", "from": "diagonal_Z@3", "to": "vertical_Q"},
+      {"along": "horizontal_Y3", "from": "diagonal_W@2", "to": "diagonal_R@2"},
+      {"along": "horizontal_Y3", "from": "ac", "to": "diagonal_P@1"},
+      {"along": "horizontal_Y3", "from": "fv", "to": "ac@1"},
+      {"along": "horizontal_Y3", "from": "diagonal_R@3", "to": "diagonal_W@3"},
+      {"along": "horizontal_Y1@1", "from": "vertical_X", "to": "vertical_L"},
+      {"along": "horizontal_Y1@1", "from": "diagonal_P", "to": "diagonal_Z"},
+      {"along": "horizontal_Y1@1", "from": "diagonal_W", "to": "fv"},
+      {"along": "horizontal_Y1@1", "from": "ac@3", "to": "diagonal_W@1"},
+      {"along": "horizontal_Y1@1", "from": "diagonal_Z@1", "to": "diagonal_P@1"},
+      {"along": "horizontal_Y1@1", "from": "vertical_L@1", "to": "vertical_X@1"},
+      {"along": "horizontal_Y2@1", "from": "vertical_Q", "to": "diagonal_Z"},
+      {"along": "horizontal_Y2@1", "from": "diagonal_Z@1", "to": "vertical_Q@1"},
+      {"along": "horizontal_Y3@1", "from": "diagonal_W", "to": "diagonal_R"},
+      {"along": "horizontal_Y3@1", "from": "ac@2", "to": "fv"},
+      {"along": "horizontal_Y3@1", "from": "diagonal_P@2", "to": "ac@3"},
+      {"along": "horizontal_Y3@1", "from": "diagonal_R@1", "to": "diagonal_W@1"},
+      {"along": "diagonal_R", "from": "horizontal_Y3@1", "to": "diagonal_G@3"},
+      {"along": "diagonal_W", "from": "horizontal_Y4@1", "to": "horizontal_Y3@1"},
+      {"along": "diagonal_W", "from": "diagonal_I@3", "to": "horizontal_Y1@1"},
+      {"along": "diagonal_W", "from": "vertical_T", "to": "ac@3"},
+      {"along": "diagonal_R@1", "from": "diagonal_G@2", "to": "horizontal_Y3@1"},
+      {"along": "diagonal_R@2", "from": "horizontal_Y3", "to": "diagonal_G@1"},
+      {"along": "diagonal_R@3", "from": "diagonal_G", "to": "horizontal_Y3"},
+      {"along": "diagonal_W@1", "from": "ac@2", "to": "vertical_T@1"},
+      {"along": "diagonal_W@1", "from": "horizontal_Y1@1", "to": "diagonal_I@2"},
+      {"along": "diagonal_W@1", "from": "horizontal_Y3@1", "to": "horizontal_Y4@1"},
+      {"along": "diagonal_W@2", "from": "horizontal_Y4", "to": "horizontal_Y3"},
+      {"along": "diagonal_W@2", "from": "diagonal_I@1", "to": "horizontal_Y1"},
+      {"along": "diagonal_W@2", "from": "vertical_T@1", "to": "ac@1"},
+      {"along": "diagonal_W@3", "from": "ac", "to": "vertical_T"},
+      {"along": "diagonal_W@3", "from": "horizontal_Y1", "to": "diagonal_I"},
+      {"along": "diagonal_W@3", "from": "horizontal_Y3", "to": "horizontal_Y4"},
+      {"along": "diagonal_Z", "from": "horizontal_Y2@1", "to": "vertical_V"},
+      {"along": "diagonal_P", "from": "vertical_L", "to": "horizontal_Y1@1"},
+      {"along": "diagonal_P", "from": "vertical_T", "to": "vertical_S"},
+      {"along": "diagonal_P", "from": "fv", "to": "v"},
+      {"along": "diagonal_Z@1", "from": "vertical_V@1", "to": "horizontal_Y2@1"},
+      {"along": "diagonal_Z@2", "from": "horizontal_Y2", "to": "vertical_V@1"},
+      {"along": "diagonal_Z@3", "from": "vertical_V", "to": "horizontal_Y2"},
+      {"along": "diagonal_P@1", "from": "v", "to": "horizontal_Y3"},
+      {"along": "diagonal_P@1", "from": "vertical_S@1", "to": "vertical_T@1"},
+      {"along": "diagonal_P@1", "from": "horizontal_Y1@1", "to": "vertical_L@1"},
+      {"along": "diagonal_P@2", "from": "vertical_L@1", "to": "horizontal_Y1"},
+      {"along": "diagonal_P@2", "from": "vertical_T@1", "to": "vertical_S@1"},
+      {"along": "diagonal_P@2", "from": "horizontal_Y3@1", "to": "v"},
+      {"along": "diagonal_P@3", "from": "v", "to": "fv"},
+      {"along": "diagonal_P@3", "from": "vertical_S", "to": "vertical_T"},
+      {"along": "diagonal_P@3", "from": "horizontal_Y1", "to": "vertical_L"},
+      {"along": "diagonal_G", "from": "vertical_X", "to": "vertical_Q"},
+      {"along": "diagonal_G", "from": "gys", "to": "vertical_V"},
+      {"along": "diagonal_G", "from": "horizontal_Y1", "to": "diagonal_R@3"},
+      {"along": "diagonal_I", "from": "vertical_Q", "to": "gy"},
+      {"along": "diagonal_I", "from": "diagonal_W@3", "to": "ac@1"},
+      {"along": "diagonal_G@1", "from": "diagonal_R@2", "to": "horizontal_Y1"},
+      {"along": "diagonal_G@1", "from": "vertical_V@1", "to": "gys"},
+      {"along": "diagonal_G@1", "from": "vertical_Q@1", "to": "vertical_X@1"},
+      {"along": "diagonal_G@2", "from": "vertical_X@1", "to": "vertical_Q@1"},
+      {"along": "diagonal_G@2", "from": "gy", "to": "vertical_V@1"},
+      {"along": "diagonal_G@2", "from": "horizontal_Y1@1", "to": "diagonal_R@1"},
+      {"along": "diagonal_G@3", "from": "diagonal_R", "to": "horizontal_Y1@1"},
+      {"along": "diagonal_G@3", "from": "vertical_V", "to": "gy"},
+      {"along": "diagonal_G@3", "from": "vertical_Q", "to": "vertical_X"},
+      {"along": "diagonal_I@1", "from": "ac", "to": "diagonal_W@2"},
+      {"along": "diagonal_I@1", "from": "gy", "to": "vertical_Q@1"},
+      {"along": "diagonal_I@2", "from": "vertical_Q@1", "to": "gys"},
+      {"along": "diagonal_I@2", "from": "diagonal_W@1", "to": "ac@3"},
+      {"along": "diagonal_I@3", "from": "ac@2", "to": "diagonal_W"},
+      {"along": "diagonal_I@3", "from": "gys", "to": "vertical_Q"},
+      {"along": "diagonal_X", "from": "vertical_L", "to": "vertical_V"},
+      {"along": "diagonal_Z1", "from": "vertical_X", "to": "vertical_Q"},
+      {"along": "diagonal_Z1", "from": "vertical_L", "to": "horizontal_Y4"},
+      {"along": "diagonal_X@1", "from": "vertical_V@1", "to": "vertical_L@1"},
+      {"along": "diagonal_X@2", "from": "vertical_L@1", "to": "vertical_V@1"},
+      {"along": "diagonal_X@3", "from": "vertical_V", "to": "vertical_L"},
+      {"along": "diagonal_Z1@1", "from": "horizontal_Y4", "to": "vertical_L@1"},
+      {"along": "diagonal_Z1@1", "from": "vertical_Q@1", "to": "vertical_X@1"},
+      {"along": "diagonal_Z1@2", "from": "vertical_X@1", "to": "vertical_Q@1"},
+      {"along": "diagonal_Z1@2", "from": "vertical_L@1", "to": "horizontal_Y4@1"},
+      {"along": "diagonal_Z1@3", "from": "horizontal_Y4@1", "to": "vertical_L"},
+      {"along": "diagonal_Z1@3", "from": "vertical_Q", "to": "vertical_X"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Timurid tile",
+    "look": "tiles",
+    "colors": {"star": "ground", "upright_ten": "b", "ten": "b", "eight": "b", "square": "a", "pentagon": "b"},
+    "text": "Put copies of the rectangular tile side by side.",
+    "placements": {
+      "repeat": [1, 1],
+      "rules": [
+        {"piece": "star", "nth": 0, "color": "a"},
+        {"piece": "square", "nth": 0, "color": "b"},
+        {"piece": "square", "nth": 1, "color": "b"},
+        {"piece": "square", "nth": 4, "color": "b"},
+        {"piece": "square", "nth": 6, "color": "b"}
+      ]
+    }
+  },
+  "expect": {
+    "pieceTypes": 6,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 13.65685, "perCell": 5},
+      {"name": "upright_ten", "vertices": 10, "area": 5.82843, "perCell": 3},
+      {"name": "ten", "vertices": 10, "area": 4.82843, "perCell": 14},
+      {"name": "eight", "vertices": 8, "area": 3.41421, "perCell": 8},
+      {"name": "square", "vertices": 4, "area": 2.0, "perCell": 9},
+      {"name": "pentagon", "vertices": 5, "area": 1.91421, "perCell": 26}
+    ]
+  },
+  "star": 8
+}
