@@ -6008,6 +6008,107 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-mexuar-dado-rosettes',
+    title:
+      'Sixteen-pointed rosettes of the Sala del Mexuar dado, Alhambra (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the tile side by side, corner to corner. A rosette sits at the centre of every tile, and an eight-pointed star at every corner.',
+    story: [
+      'The finished design was read from Wichmann’s E41 drawing of the Sala del Mexuar dado (data18), by the centre lines of its white bands. Every one of its lines is a line of the Mexuar vestibule ceiling design (data208/E41), to within 0.0004 of OA, so this tutorial shares that construction step for step. The dado inks fewer lines: the sixteen short lines that close the tiny kites round each rosette’s star are left out, so the star is larger. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The lines are the centre lines of the drawing’s bands. David Wade’s photograph SPA 1917 of the dado agrees with the drawing: our lines run along its white bands, and its stars at the rosettes touch the bands with no tiny kites round them. Colours follow the photograph: black petals, ochre stars, blue and green pieces.',
+      '12 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-mexuar-dado-rosettes/photo-overlay.png',
+        caption:
+          'David Wade’s photo with the tutorial’s lines in red (private, not shipped).',
+      },
+      {
+        src: 'renders/alhambra-mexuar-dado-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-mexuar-dado-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Sala del Mexuar, north wall dado, Alhambra, Granada (E41-data18)',
+        url: 'https://tilingsearch.mit.edu/HTML/data18/E41.html',
+      },
+    ],
+  },
+  {
+    id: 'camlica-mosque-stars',
+    title:
+      'Ten-pointed stars of the Çamlıca mosque shutter, Istanbul (new, Tiling Search)',
+    fold: 1,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre of every tile and halfway along its top and bottom sides.',
+    story: [
+      'The finished design was read from Wichmann’s MIR1 drawing, whose pieces are drawn edge to edge. O is the centre of a ten-pointed star whose sides are the ten lines AC, CE, … and BD, DF, …: two regular pentagons. The pattern has mirrors through the stars and half turns between them, but no half turn about a star, so it is checked by its mirror only. The repeat is a rectangle of half-sides 2 + √5 and φ/sin 36° (in OA, φ the golden ratio), with a second star on its top and bottom sides. Every line runs at an odd multiple of 18°, and every offset is (a + b√5)/20 (drawing within 0.0016 of OA). The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Wichmann marks this drawing as his possible completion of a partial panel, a window shutter of the Çamlıca mosque; we build the completed pattern his drawing shows. His drawing of the shutter itself (MIR11, data213), a strip that repeats only along its length, lies exactly on our lines: every one of its edges is an edge of the completion. Colours follow the shapes. No photograph was checked.',
+      '25 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/camlica-mosque-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/camlica-mosque-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Çamlıca mosque, Istanbul, a completed window shutter (MIR1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data214/MIR1.html',
+      },
+    ],
+  },
+  {
+    id: 'topkapi-door-stars',
+    title:
+      'Ten-pointed stars of a Topkapı Palace door, Istanbul (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary:
+      'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at each corner of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s TOP1 drawing, whose pieces are drawn edge to edge. O is the centre of a ten-pointed star whose sides are the ten lines AD, BE, CF and on round, and OA is the radius of its points. The repeat is a rectangle of half-sides 2√5 and 10 tan 54° (in OA), with stars at its centre and corners and on rows between. Every line runs at a multiple of 36°, and every offset is sin 36° times a + b√5 with whole numbers a and b (drawing within 0.0002 of OA). The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. Wichmann draws the pieces red and white; our colours keep his red pieces in the warm slots and his white ones in the light slots. No photograph was checked.',
+      '21 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/topkapi-door-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/topkapi-door-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Door, Topkapı Palace, Istanbul (TOP1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data198/TOP1.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -7307,6 +7408,9 @@ export const QUESTIONS: readonly Question[] = [
       'isfahan-imamzadeh-ismail-stars',
       'mihrimah-uskudar-stars',
       'atik-valide-uskudar-stars',
+      'alhambra-mexuar-dado-rosettes',
+      'camlica-mosque-stars',
+      'topkapi-door-stars',
     ],
   },
 ];

@@ -151,5 +151,10 @@
     "id": "fatehpur-masjid-decagons",
     "title": "Decagons of the Friday Mosque, Fatehpur Sikri",
     "members": ["fatehpur-masjid-decagons", "fatehpur-masjid-small-decagons"]
+  },
+  {
+    "id": "mexuar-rosettes",
+    "title": "Sixteen-pointed rosettes of the Mexuar, Alhambra",
+    "members": ["alhambra-mexuar-vestibule-rosettes", "alhambra-mexuar-dado-rosettes"]
   }
 ]
