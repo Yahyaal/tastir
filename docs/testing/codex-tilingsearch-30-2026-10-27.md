@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Twenty-four tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87, MIR24 and DA1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Seven entries remain pending.
+Twenty-five tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87, MIR24, DA1 and TAI1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Six entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -324,3 +324,16 @@ Put r=√2, s=√3 and t=√6. Independent shoelaces give twelve_star6−2s, onc
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/DA1/overlay.png`. Every boundary agrees. All52 actual player fills match source interior samples. Four of the sixteen congruent hexagons are cyan and twelve are yellow; placement rules retain these classes alongside the cyan stars and pentagons, yellow eight-stars and brown connectors. The palette is illustrative. Credits retain Prisse d’Avennes, Arabic Art in Color, page45(1877), a decorative fourteenth-century Qur’an page attributed to Qeycoun, identified by the source page as Qawsun mosque, Cairo. No manuscript photograph was checked. The square mixed-star connectors differ from the other three-square-star meshes; no exact duplicate or filling-only variant was found.
 
 Catalog210, all six targeted golden assertions and the full weave group,1050 player text/helper assertions and41 schema assertions passed serially under3GB. Helper-free text describes only the retained15° bisectors and the single retained copy of the first parallel family. No shared application or reserved file changed.
+
+
+## TAI1 — `museum-divided-stars`
+
+The nineteen-step p6m tutorial uses fold six and a twelve-pointed star divided into twelve kites. O is at PDF(211.26,371), OA=30(3+√3)/√2pt, and the teaching frame turns15°. The facing-edge measurements give140 widths at20pt,40 at19.99pt and96 at10pt; the10pt separations arise within the bevel presentation. Removing the grey facets and expanding the coloured faces10pt recovers their common centre lines, including all twelve central kite tips at O. A projected√6/2, its third and a compass sum give the hexagonal apothem L=√2/2+2√6/3. Seven parallel families through crossings complete the mesh. Periodic source copies fill the part of the central cell outside the drawing’s face coverage. Worst source-corner residual is0.00019346OA.
+
+Independent shoelaces give twelve_kite1/2−√3/6, twelve; outer_four1/3−√3/24, twenty-four; blue_four7/24−√3/16, twenty-four; six_kite−23/24+17√3/24, eighteen; and small_kite17/24−23√3/72, six. These84 counted areas sum exactly to8+19√3/3=2√3L². The central twelve-star, three six-stars and two three-stars are divided into their source kites. An additional full-outline inventory confirms the same five congruence classes, including the two reflected quadrilateral pairs. The golden checks confirm the counts, mirrors and sixfold turn without slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/TAI1/overlay.png`. Every band centre agrees. All84 actual player fills match source interior samples, retaining yellow, orange, blue, green and white classes with an illustrative palette. Kashan has distinct slots for all five; the initially tried wood palette shared two colours and was replaced. A provisional45° frame failed the repeat and area check because PDF y runs down; the verified15° frame preserves both source translation vectors and colours.
+
+Credits retain Archnet’s lower screen panel at Takht-e Fulad, Isfahan; Dick Osseman’s minbar balustrade at the Turkish and Islamic museum, Istanbul; and M Sakkal’s Junblat House window lattice, Aleppo, all personal communications through Wichmann. No monument photograph was independently checked. The first six normal steps and operations share the Agra three-square opening. This is a related proportion and division variant: its stars and connectors are subdivided and its apothem differs from IND0403/IND0405. It is not an exact duplicate or a filling-only variation.
+
+Catalog211, all six targeted golden assertions and the full weave group(222 total),1055 player text/helper assertions and41 schema assertions passed serially under3GB. Helper-free text omits only the hidden intercept line. No shared application or reserved file changed.
