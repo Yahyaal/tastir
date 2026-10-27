@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-CM022, ASU2 and P41 are complete. The other 36 entries remain pending.
+Three tutorials are complete: CM022, ASU2 and P41. Six two-level drawings are skipped: AS10, BR9, IND1016, IND0408, IND0917 and SM12. Thirty entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -45,3 +45,19 @@ The catalog prepared 189 previews, the six targeted golden checks and full weave
 ### Hexagonal source registration
 
 `hexagonal.py` registers a noisy PDF edge with the closest exact constructed line before clipping it to a convex cell. AS10 exposed this need: rounding had tilted an edge that should coincide with the cell side, inventing a clipped endpoint halfway along it. Endpoint registration then uses exact existing crossings. Edges with no constructed support fail loudly. Three independent tests pass, covering the complete rounded seam, an outside polygon and rejection of an unsupported edge. Existing square readers and their defaults are untouched.
+
+## Two-level audit — AS10, BR9, IND1016, IND0408, IND0917 and SM12 skipped
+
+The face reader alone misses superposed stroke-only nets. I first reconstructed the fine faces of AS10, BR9 and IND1016 and passed their geometry checks, then withdrew all three after the full overlays and a stroke audit exposed those nets. The discarded drafts and their source overlays remain in ignored local review/research output as evidence; no tutorial is shipped for them.
+
+AS10’s fine tiling has one unit six-pointed star of area √3 and six irregular hexagons of area 5/3+31√3/36, in a cell of apothem 1+5√3/6. The nine-step draft matched those fine faces within 0.00014357 OA and passed the golden/weave, 960 player-text assertions and schema checks. However, its broad 20 pt hexagon strokes are translated relative to the fine net: a central horizontal runs at PDF y=462.93997 while the corresponding face edge is at y=458.79. The stroke audit finds a 4.15001 pt separation. Treating the two widths as a uniform band would silently change the drawing, so AS10 is skipped under the two-level rule. Its page credits Aslam Qureshi’s jali photograph at Agra Fort, 1565–73 AD; that photograph was not checked.
+
+BR9’s fine tiling has a star, six irregular hexagons and six pentagons; their areas are √3, 2/3+5√3/18 and 1/3+5√3/12, summing to 6+31√3/6. Its ten-step draft and full weave/text/schema checks passed. The complete red overlay at `docs/research/tilingsearch-30/BR9/overlay.png` exposes large orange stars and hexagons crossing these pieces. Central broad-stroke samples lie up to 18.19336 pt from any fine face boundary. This is an overlaid second net, so BR9 is skipped. The page cites Broug (2013), page 41, figure 2.2, Akbar’s mausoleum, Sikandra; no photograph was checked.
+
+IND1016’s fine tiling has a star of area √3, two regular hexagons of area 3√3/2 and six kites of area √3/3, filling 6√3. The red overlay at `docs/research/tilingsearch-30/IND1016/overlay.png` shows the white coarse hexagon grid cutting through those pieces. Central stroke samples are up to 23.27026 pt from their boundaries. Its nine-step draft is discarded and IND1016 is skipped under the same rule. The page cites Wade IND 1016, Maharajah’s Palace, Jaipur (1729–32 AD); no photograph was checked.
+
+IND0408 and IND0917 have the exact existing `six-fold-star-and-hexagons` fine tiling. The former uses 20 pt edges: star area 1200√3, regular hexagon 600√3, with a 40√3 pt star spacing. The latter uses 15 pt edges: star area 675√3, hexagon 675√3/2, spacing 30√3 pt. Both have one star and two hexagons per fine cell. I overlaid the existing tutorial on both complete PDFs, at OA=60 pt and O=(297.5,374.15) for IND0408, and OA=45 pt, O=(298.68,373.05), turned 30°, for IND0917. Every fine boundary agrees. The separate white hexagon grids cross those pieces. These are duplicate fine designs with band overlays, so both are skipped; overlays are their local `existing-overlay.png` files. The pages cite Wade IND 0408 (Taj Mahal) and IND 0917 (Amber Palace), respectively; no photographs were checked.
+
+SM12 adds equilateral triangles to the fine star-and-hexagon net. Its 20 pt edges give triangle area 100√3, regular hexagon 600√3 and star 1200√3. The blue coarse star/hexagon strokes cross the filled fine pieces: 48 of 288 central sampled stroke segments are off every face boundary, with separation up to 8.98521 pt. The drawing sheet also shows that second net across the fine polygons. It is skipped as an overlay, not declared an exact duplicate. The page cites E. W. Smith, part I, plate XLIV, Salim Chishti’s tomb, Fatehpur Sikri; no photograph was checked.
+
+The stroke audit samples quarter, middle and three-quarter points of central stroke-only segments against every filled polygon boundary. Raw stroke paths, exact sample results and complete PDF overlays remain under each local research folder. The source pages’ “edge-to-edge” descriptions concern their fine polygon tilings, and do not establish that the extra drawn nets are their boundaries. SM1’s sampled strokes all follow its faces and ASL20 needs a closer bevel reading; neither is skipped on this evidence.
