@@ -4710,6 +4710,98 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'telouet-framed-rosette',
+    title:
+      'Framed rosette of the royal residence (Telouet) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A large rosette sits at every corner of the tile.',
+    story: [
+      'The finished design was read from Wichmann’s F17 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing, which keeps the original colouring, in the Tétouan palette, whose dark navy stands for his black; his blue and light green, which the palette lacks, are fixed colours. No photograph was checked.',
+      '17 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/telouet-framed-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/telouet-framed-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Royal residence, Telouet (F17)',
+        url: 'https://tilingsearch.mit.edu/HTML/data166/F17.html',
+      },
+    ],
+  },
+  {
+    id: 'fes-attarine-rosette',
+    title: 'Rosette of the Attarine madrasa (Fès) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s MOR0321 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing in the Tétouan palette, whose dark navy stands for his black. No photograph was checked.',
+      '15 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-attarine-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-attarine-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Attarine madrasa, Fès (MOR0321)',
+        url: 'https://tilingsearch.mit.edu/HTML/data175/MOR0321.html',
+      },
+    ],
+  },
+  {
+    id: 'marrakesh-bahia-ring-rosette',
+    title:
+      'Ringed rosette of the Bahia Palace (Marrakesh) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s C123 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The original is uncoloured; the colours follow Wichmann’s drawing in the Tétouan palette, whose dark navy stands for his black and whose red for his dark red. No photograph was checked.',
+      '11 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/marrakesh-bahia-ring-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/marrakesh-bahia-ring-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bahia Palace, Marrakesh (C123)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C123.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -5967,6 +6059,9 @@ export const QUESTIONS: readonly Question[] = [
       'fes-moulay-ismail-interlace',
       'telouet-residence-rosettes',
       'fes-bou-inania-interlaced-rosette',
+      'telouet-framed-rosette',
+      'fes-attarine-rosette',
+      'marrakesh-bahia-ring-rosette',
     ],
   },
 ];
