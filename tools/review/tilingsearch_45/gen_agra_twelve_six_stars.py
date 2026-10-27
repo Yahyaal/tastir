@@ -31,7 +31,7 @@ def frame(mark, apothem):
     return corners
 
 
-def build():
+def build(opening_only=False):
     opening()
     step('Draw the lines through O that halve angles AOB, BOC and COD. '
          'Draw a line through O at 90° to each new line. '
@@ -48,6 +48,7 @@ def build():
                      f'{names[2]} and {names[3]}, and {names[3]} and {names[0]}.','create':{},'animate':'ruler'}
         current['parts'].append(part);g.cur=part
         for i in range(4):g.line_through(f'st{k+3*i}',names[i],names[(i+1)%4])
+    if opening_only:return None
     step('Draw a circle with centre A through O. It crosses the horizontal line at N1, right of A. '
          'Draw a circle with centre N1 and opening OA. It crosses the horizontal line at N2, right of N1. '
          'Draw a circle with centre N2 and opening from O to N1. '

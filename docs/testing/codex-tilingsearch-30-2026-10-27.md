@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Six tutorials are complete: CM022, ASU2, P41, IND0403, IND0405 and F8785. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-six entries remain pending.
+Seven tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785 and W85. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-five entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -99,3 +99,15 @@ I inspected the ink, wall and complete red overlay at `docs/research/tilingsearc
 Credits retain the page’s Thesaurus Islamicus attribution: first floor of the east side, north area of the qa’a, west wall, panel detail, Jamal al-Din al-Dhahabi, Cairo (1637 AD, 1047 AH), and Wichmann and Wade (2017), figure 11.1a. The style is labelled Egyptian without assigning the house to a different historical period. No duplicate or filling-only variation was found; the other six-pointed-star tutorials have different connectors and per-cell counts.
 
 The catalog prepared 192 previews. All six targeted golden checks and the full weave group, the complete player text/helper checks and all 40 schema checks passed under 3 GB. The final colour check also passed after separating the palette classes. A later source-reading refactor exposes IND0403’s unchanged first six steps for W85; regenerating both Agra tutorials remains byte-identical. No shared application or reserved file changed.
+
+## W85 — `mexuar-twelve-star-bands`
+
+This nine-step p6m tutorial has fold six and a twelve-pointed star. O is at PDF (297.5, 375.09), and OA is the full centre-line star radius, 30(3+√3)/√2 pt. The teaching frame turns 15°, and the hexagonal apothem is √2. The black faces are expanded by 4.5 pt, half the measured 9 pt bands; blue ribbon polygons are rendering details, not extra tiles. The worst expanded source-corner distance from the construction is 0.00009580 OA. The first six construction steps reuse IND0403’s three-square star opening. The unit-square diagonal then fixes the complete repeat; no further parallel families are required.
+
+Independent source-polygon shoelaces give star 6−2√3, once; pentagon 3−3√3/2, six; kite 2√3/3−1, twelve; and triangle 7√3/2−6, twice. These 21 pieces sum exactly to 4√3, the hexagonal cell area. The engine independently confirms all four types and counts without slivers or off-construction endpoints. The Agra patterns share the opening but add different line families and connectors, so they are separate designs.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/W85/overlay.png`; every line follows a blue band centre. The default look is strapwork, as the brief requests. The single black piece class is retained; the actual player assigns that class to all 21 pieces. The band colour is illustrative and the drawing’s weave phase is not claimed as a photograph match. No monument photograph was independently checked. Credits retain Wade page 85 and SPA 1914, Field’s Mexuar vestibule attribution and the page’s other cited examples and publications.
+
+IRA2633’s complete source overlay also follows exactly this centre-line mesh after scaling5/6, but assigns grey to stars, green to pentagons and triangles, and black to kites. It is therefore a filling variation rather than a second geometric construction; its tutorial and verification follow next. Claude should group the two as the twelve-star band family after merging.
+
+The catalog prepared 193 previews. All six targeted golden checks and the full weave group, all 965 text/helper assertions and all 40 schema checks passed under 3 GB. Both Agra tutorials regenerate byte-identically after exposing their unchanged opening. No shared application or reserved file changed.
