@@ -269,9 +269,11 @@ describe('weave', () => {
       expect(w.broken).toBe(0);
       // Each top band can be redrawn some way either side of its crossing:
       // its paths follow it past bends and cuts in the ink (Bou Inania's
-      // ink is cut every few hundredths), so they are never tiny.
+      // ink is cut every few hundredths), so they are never tiny. The bar
+      // stops at 0.2 because a big cell still has short runs: the Comares
+      // west dado's cell is 30 wide and its shortest run is 1 − √2/2.
       const xs = p.cell.corners.map((q) => q.x);
-      const size = Math.max(...xs) - Math.min(...xs);
+      const size = Math.min(Math.max(...xs) - Math.min(...xs), 20);
       for (const c of w.crossings) {
         expect(Math.hypot(c.over.x, c.over.y)).toBeCloseTo(1, 9);
         expect(parallel(c.over, c.under)).toBe(false);
