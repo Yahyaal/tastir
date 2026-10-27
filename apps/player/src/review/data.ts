@@ -5445,6 +5445,67 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'cairo-bagasi-rosettes',
+    title: 'Rosettes of Barsbay al-Bagasi (Cairo) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A sixteen-pointed star sits at the centre of every tile, and an octagon at each corner.',
+    story: [
+      'The finished design was read from Wichmann’s B153 drawing, a sixteen-pointed star on a square tile with an octagon at each corner, its bands drawn as parallel strips. Every edge runs at a multiple of 11.25°. The tile’s half-side is 6.5 + 3√2 strips (drawing: 10.7428), and every line but the star’s runs through a crossing of the strips, the tile’s sides and the lines through their middles. The star’s size is free in the drawing (2.0292 strips from O to each star line); we draw it through a crossing already on the board, 3(√3 − 1) cos 22.5° = 2.0290 strips from O. A narrower strip round the corner octagons is the star’s radius times sin 22.5°. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The bands follow their centre lines; the band width is not drawn. The star is 0.0002 strips (0.005 pt in the drawing) smaller than Wichmann’s. Colours follow his drawing in the Mamluk wood palette. No photograph was checked.',
+      '21 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/cairo-bagasi-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/cairo-bagasi-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Barsbay al-Bagasi, Cairo (B153)',
+        url: 'https://tilingsearch.mit.edu/HTML/data188/B153.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-153-rosettes',
+    title: 'Rosettes of Bourgoin’s plate 153 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A sixteen-pointed star sits at the centre of every tile, and an octagon at each corner.',
+    story: [
+      'The finished design was read from Wichmann’s B153A drawing of Bourgoin’s plate 153, the design of Barsbay al-Bagasi (B153) drawn as tiles. Every line of that design is a line here, so its whole construction is shared; more lines round the star, each through a crossing of earlier lines, change the pieces round it. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The colours follow Wichmann’s drawing in the Mamluk wood palette. No photograph was checked.',
+      '23 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-153-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-153-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bourgoin, Les arts arabes, plate 153 (B153A)',
+        url: 'https://tilingsearch.mit.edu/HTML/data188/B153A.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -6726,6 +6787,8 @@ export const QUESTIONS: readonly Question[] = [
       'nasrid-casket-stars',
       'alhambra-partal-turned-stars',
       'alhambra-mexuar-vestibule-rosettes',
+      'cairo-bagasi-rosettes',
+      'bourgoin-153-rosettes',
     ],
   },
 ];

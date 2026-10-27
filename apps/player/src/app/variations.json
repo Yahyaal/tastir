@@ -131,5 +131,10 @@
     "id": "fes-two-rosettes",
     "title": "Two rosettes of Fès and Meknes",
     "members": ["fes-two-rosettes", "meknes-manezeh-fountain-rosette"]
+  },
+  {
+    "id": "bagasi-rosettes",
+    "title": "Sixteen-pointed rosettes of Barsbay al-Bagasi",
+    "members": ["cairo-bagasi-rosettes", "bourgoin-153-rosettes"]
   }
 ]
