@@ -17,7 +17,7 @@ UNIT=20*(1+math.sqrt(3))
 L=(3+math.sqrt(3))/2
 
 
-def build():
+def build(opening_only=False):
     opening()
     step('Draw the lines through O that halve angles AOB, BOC and COD. '
          'Draw a line through O at 90° to each new line.')
@@ -31,6 +31,7 @@ def build():
               f'and {names[2]} and {names[0]}.','create':{},'animate':'ruler'}
         current['parts'].append(part);g.cur=part
         for i in range(3):g.line_through(f'st{k+4*i}',names[i],names[(i+1)%3])
+    if opening_only:return None
     step('Draw vertical lines through B and C. They cross the horizontal line at N1 and N2. '
          'Draw a circle with centre A and opening from O to N1. '
          'It crosses that line at N3, right of A.', 'compass')

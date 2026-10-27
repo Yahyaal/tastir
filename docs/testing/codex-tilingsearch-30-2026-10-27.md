@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Twenty tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141 and P142. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Eleven entries remain pending.
+Twenty-one tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142 and SEV2. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Ten entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -266,3 +266,16 @@ Independent shoelaces give twelve_star3√3−3, twice; kite(3−√3)/4, twenty
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P142/overlay.png`. Every boundary agrees. All136 actual player fills match source interior samples, retaining pale cyan stars, red kites and small connectors, green larger connectors, and blue four-stars with an illustrative palette. Credits retain Critchlow, page177(1976); Abas and Salman, page313(1995); Bourgoin, Plate142(1879), with no known source; and the Wade BOU142 link. No photograph was independently checked. This cmm arrangement and additional connectors differ from P141’s p6m mesh, so it is a separate related construction rather than a filling-only variation. No exact duplicate was found.
 
 The catalog prepared206 previews. All six targeted golden checks and the full weave group, all1030 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free texts list only the retained rotations, including the half-turn copy of the final vertical. No shared application or reserved file changed.
+
+
+## SEV2 — `seville-six-eight-twelve-stars`
+
+The fifteen-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,373.3770833333), OA=20(1+√3)pt, and the teaching frame turns30°. Facing source edges give720 measurements clustered at8pt(7.99–8.01), so the faces are expanded4pt to band centres. The first six steps share F294’s four-triangle opening. Two diagonal halvings give(3−√3)/4; adding3 gives the hexagonal apothem L=(15−√3)/4. The six-star radius is1, and the eight-star radius√2/2. Projecting the circle of radius L onto the45° line and subtracting1/2 gives its oblique carrier distance L/√2−1/2. The axial carrier is L−1/2. Worst source-corner residual is0.00018774OA.
+
+Independent shoelaces give twelve_star3√3−3, once; six_star√3, twice; eight_star4−2√2, three; kite(3−√3)/4, twelve; hexagon−3/2+11√3/6, six; eight3/2+√2/2−√3/2, six; triangle−27/16+9√3/8, twelve; and red_eight−3/2+√2/2+5√3/6, six. The48 counted areas sum exactly to−45/4+57√3/2=2√3L². The engine independently confirms all eight types and counts without slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/SEV2/overlay.png`. Every band centre agrees. All48 actual player fills match the expanded source contours, retaining black stars, light-green eight-stars, blue connectors, red connectors, and dark-green kites and triangles. The palette is illustrative and strapwork is the default. A provisional outer oblique family was removed after proving that all60 ink runs remain identical; exterior source edges that graze a cell corner for under0.003OA are filtered before registration.
+
+Credits retain Michael Stephens’s Flickr synagogue photograph, Cordova; Abas and Salman, page182; Wade MOR3630x, Bou Inania, Meknes; Wade SPA2200 and SPA2504, Alcazar, Seville; Wade SPA3014, Alcazabar, Malaga; and the page’s postcard reference through Wichmann. No photograph was independently checked. The six/eight/twelve-star arrangement differs from the other star families; no exact duplicate or filling-only variant was found.
+
+The catalog prepared207 previews. All six targeted golden checks and the full weave group, all1035 player text/helper assertions and all40 schema checks passed under3GB. F294 regenerates byte-identically after exposing its unchanged opening. During the preceding P142 fill verification, its short fill command briefly overlapped the first SEV2 review render; no test suite or build ran in parallel. Subsequent heavy checks remain serial. No shared application or reserved file changed.
