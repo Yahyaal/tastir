@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Five tutorials are complete: CM022, ASU2, P41, IND0403 and IND0405. Six two-level drawings are skipped: AS10, BR9, IND1016, IND0408, IND0917 and SM12. Twenty-eight entries remain pending.
+Five tutorials are complete: CM022, ASU2, P41, IND0403 and IND0405. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-seven entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -60,7 +60,7 @@ IND0408 and IND0917 have the exact existing `six-fold-star-and-hexagons` fine ti
 
 SM12 adds equilateral triangles to the fine star-and-hexagon net. Its 20 pt edges give triangle area 100√3, regular hexagon 600√3 and star 1200√3. The blue coarse star/hexagon strokes cross the filled fine pieces: 48 of 288 central sampled stroke segments are off every face boundary, with separation up to 8.98521 pt. The drawing sheet also shows that second net across the fine polygons. It is skipped as an overlay, not declared an exact duplicate. The page cites E. W. Smith, part I, plate XLIV, Salim Chishti’s tomb, Fatehpur Sikri; no photograph was checked.
 
-The stroke audit samples quarter, middle and three-quarter points of central stroke-only segments against every filled polygon boundary. Raw stroke paths, exact sample results and complete PDF overlays remain under each local research folder. The source pages’ “edge-to-edge” descriptions concern their fine polygon tilings, and do not establish that the extra drawn nets are their boundaries. SM1’s sampled strokes all follow its faces and ASL20 needs a closer bevel reading; neither is skipped on this evidence.
+The stroke audit samples quarter, middle and three-quarter points of central stroke-only segments against every filled polygon boundary. Raw stroke paths, exact sample results and complete PDF overlays remain under each local research folder. The source pages’ “edge-to-edge” descriptions concern their fine polygon tilings, and do not establish that the extra drawn nets are their boundaries. The initial SM1 sample was confined to the centre and missed its coarse fret; the full-page correction below supersedes that result. ASL20 needs a closer reading of its many small filled facets and is still pending.
 
 ## IND0403 — `agra-twelve-six-stars`
 
@@ -81,3 +81,9 @@ Independent polygon shoelaces give twelve kites of area (3−√3)/6 in place of
 I inspected the ink, wall and full red overlay at `docs/research/tilingsearch-30/IND0405/overlay.png`; every band centre agrees, including all twelve central rays. The source’s white and pale-green kites alternate. Kite placements 1, 2, 5, 6, 9 and 10 use the pale-green class; the petal placements keep the same two blue classes as IND0403. All 35 fills from the actual player placement function match the source, with worst centre residual 0.00003902 OA. The comparison includes lattice copies of complete source faces because one six-pointed star is clipped at the page edge. The numeric palette is illustrative. The page credits Wade IND 0405, Agra Fort (1550 AD, 957 AH), specifying the version with kites; no photograph was independently checked. This and IND0403 form the Agra twelve/six-star family for Claude to add to the reserved variations file.
 
 The catalog prepared 191 previews. All six targeted golden checks and the full weave group, all 955 player text/helper assertions and all 40 schema checks passed serially under 3 GB. The variant’s construction was compared directly with the base; every normal step and operation agrees. No shared application or reserved file changed.
+
+### SM1 — skipped after the full-page stroke audit
+
+SM1’s fine net was reconstructed as a nine-step lesson with one six-pointed star of area 3√3−3, three eight-sided pieces of area 1, and two three-pointed stars of area (3−√3)/2. They fill the cell area 3+2√3 exactly, and the draft passed golden/weave, text/helper and schema checks. The fine polygons agree with that construction within 0.00017047 OA, with OA=10(√2+√6) pt and O=(299.2558333333,374.0408333333).
+
+The full red overlay at `docs/research/tilingsearch-30/SM1/overlay.png` nevertheless exposes an independent green star/fret net crossing the fine pieces. The initial radius-110-pt stroke sample happened to include none of those green strokes. Repeating the audit over the whole interior page finds all 56 tested green segments off the fine polygon boundaries, by up to 14.18377 pt. That establishes a second net; a central sample cannot establish its absence. The draft and generator were archived in that ignored research folder and removed from the branch. SM1 is skipped under the two-level rule. The page cites E. W. Smith (1896), part II, plate XXVIII, Salim Chishti’s tomb, Fatehpur Sikri; no photograph was checked.
