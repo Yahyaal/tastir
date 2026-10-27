@@ -1,0 +1,266 @@
+{
+  "format": 0,
+  "id": "jali-screen-pinwheel",
+  "title": "Pinwheel of a Mughal jali screen",
+  "short": "Jali screen pinwheel",
+  "subtitle": "Jali screen, India (Metropolitan Museum of Art)",
+  "given": {
+    "O": "The centre of the tile, where the pinwheel turns.",
+    "A": "The middle of the tile’s right side, halfway to the next tile’s centre."
+  },
+  "fold": 4,
+  "style": "Mughal",
+  "level": "advanced",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Wichmann’s MET2 drawing, whose pieces are drawn edge to edge. O is a centre of four-fold turning and OA is half the repeat. All but two of its lines run at 22.5° to the tile’s sides or at 45° to those, and each passes through a corner of the tile, the middle of a side or a centre of a tile (drawing within 0.0005 of OA). The other two lines each way are horizontal and vertical, halfway from O to the tile’s sides. Every line runs through a crossing of earlier lines inside the tile. The drawing gives no steps; we devised the construction.",
+    "changes": "The compass steps, their order and the named points are ours. Wichmann’s page gives the symmetry as p4m, but the lines at 22.5° and at 67.5° are not mirror images of each other, so the design is a pinwheel; we follow the drawing. His thick and thin bands (the two levels of the design) are drawn as plain lines. Colours follow the shapes, not his drawing, which is one colour. No photograph was checked.",
+    "reviewed": "2026-10-26"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data193/MET2: Jali screen, India (Metropolitan Museum of Art)",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data193/MET2.html",
+      "note": "Read from his finished drawing, not construction instructions. His reference is the Metropolitan Museum of Art’s jali screen 1984.193 (India). He names the upper level as the Termez palace design."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass",
+      "textWithoutHelpers": "Draw a circle with centre O through A."
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. It crosses the circle at S5. Draw the line through O that halves the angle between the horizontal and the vertical line. It crosses the circle at S3. Draw a line through O at 90° to it. Draw the line through O that halves the angle between the horizontal line and the line through S3. It crosses the circle at S2. Turn this line round O by 45°, three times. The lines through O cross the circle at S1 to S16, with S1 at A.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "S5": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "d45": {"line": {"through": "O", "bisects": ["A", "O", "S5"]}},
+        "S3": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "r2": {"line": {"through": "O", "bisects": ["A", "O", "S3"]}},
+        "S2": {"point": {"meet": ["c", "r2"], "pick": {"angle": 22.5}}},
+        "r2r": {"repeat": {"of": ["r2"], "by": "rot8", "distinct": true}},
+        "d135": {"line": {"through": "O", "perpendicularTo": "d45"}},
+        "S1": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
+        "S4": {"point": {"meet": ["c", "r2@1"], "pick": {"angle": 67.5}}},
+        "S6": {"point": {"meet": ["c", "r2@2"], "pick": {"angle": 112.5}}},
+        "S7": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
+        "S8": {"point": {"meet": ["c", "r2@3"], "pick": {"angle": 157.5}}},
+        "S9": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "S10": {"point": {"meet": ["c", "r2"], "pick": {"angle": 202.5}}},
+        "S11": {"point": {"meet": ["c", "d45"], "pick": {"angle": 225.0}}},
+        "S12": {"point": {"meet": ["c", "r2@1"], "pick": {"angle": 247.5}}},
+        "S13": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "S14": {"point": {"meet": ["c", "r2@2"], "pick": {"angle": 292.5}}},
+        "S15": {"point": {"meet": ["c", "d135"], "pick": {"angle": 315.0}}},
+        "S16": {"point": {"meet": ["c", "r2@3"], "pick": {"angle": 337.5}}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. It crosses the circle at S5. Draw the line through O that halves the angle between A and S5. It crosses the circle at S3. Draw the line through O that halves the angle between A and S3. It crosses the circle at S2. Turn this line round O by 45°, three times. The lines through O cross the circle at S1 to S16, with S1 at A."
+    },
+    {
+      "id": 3,
+      "text": "Draw a vertical line through A. Turn it round O by 90°, three times. The four lines make the square tile, with corners K1, K2, K3 and K4.",
+      "create": {
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gr": {"repeat": {"of": ["gx"], "by": "rot4"}},
+        "K1": {"point": {"meet": ["gx", "gx@1"]}},
+        "K2": {"point": {"meet": ["gx@1", "gx@2"]}},
+        "K3": {"point": {"meet": ["gx@2", "gx@3"]}},
+        "K4": {"point": {"meet": ["gx@3", "gx"]}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through A. Draw a horizontal line through S5. They cross at K1, a corner of the square tile. K2, K3 and K4 are its other corners."
+    },
+    {
+      "id": 4,
+      "text": "Draw a line through K1 parallel to the 67.5° line through O. Draw a line through A parallel to the 22.5° line through O. Turn the new lines round O by 45°, seven times.",
+      "create": {
+        "m1": {"line": {"through": "K1", "parallelTo": "r2@1"}},
+        "m2": {"line": {"through": "A", "parallelTo": "r2"}},
+        "mr2": {"repeat": {"of": ["m1", "m2"], "by": "rot8"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 5,
+      "text": "The horizontal line through O crosses the 67.5° line through K1 at P1. Draw a line through P1 parallel to the 157.5° line through O. Turn it round O by 90°, three times.",
+      "create": {
+        "P1": {"point": {"meet": ["h", "m1"]}},
+        "m3": {"line": {"through": "P1", "parallelTo": "r2@3"}},
+        "mr3": {"repeat": {"of": ["m3"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw a line through A parallel to the 67.5° line through O. Turn it round O by 45°, seven times.",
+      "create": {
+        "m4": {"line": {"through": "A", "parallelTo": "r2@1"}},
+        "mr4": {"repeat": {"of": ["m4"], "by": "rot8"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 7,
+      "text": "The 67.5° line through K1 crosses the 22.5° line through A at P2. Draw a vertical line through P2. Turn it round O by 90°, three times.",
+      "create": {
+        "P2": {"point": {"meet": ["m1", "m2"]}},
+        "m5": {"line": {"through": "P2", "parallelTo": "v"}},
+        "mr5": {"repeat": {"of": ["m5"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "The 157.5° line through P1 crosses the vertical line through P2 at P3. The 22.5° line through O crosses the right side of the tile at P4. Draw a line through P3 parallel to the 22.5° line through O. Draw a line through P4 parallel to the 67.5° line through O. Turn the new lines round O by 90°, three times.",
+      "create": {
+        "P3": {"point": {"meet": ["m3", "m5"]}},
+        "m6": {"line": {"through": "P3", "parallelTo": "r2"}},
+        "P4": {"point": {"meet": ["r2", "gx"]}},
+        "m7": {"line": {"through": "P4", "parallelTo": "r2@1"}},
+        "mr7": {"repeat": {"of": ["m6", "m7"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "The right side of the tile crosses the 67.5° line through A, turned by 90°, at P5. Draw a line through P5 parallel to the 112.5° line through O. Turn it round O by 90°, three times.",
+      "create": {
+        "P5": {"point": {"meet": ["gx", "m4@2"]}},
+        "m8": {"line": {"through": "P5", "parallelTo": "r2@2"}},
+        "mr8": {"repeat": {"of": ["m8"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 10,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They close the hexagons, the pentagons and the small squares.",
+    "paths": [
+      {"along": "r2", "from": "gx@2", "to": "m1@4"},
+      {"along": "r2", "from": "m1@5", "to": "m1@1"},
+      {"along": "r2", "from": "m1", "to": "gx"},
+      {"along": "r2@1", "from": "gx@3", "to": "m1@5"},
+      {"along": "r2@1", "from": "m2", "to": "m3@2"},
+      {"along": "r2@1", "from": "m3", "to": "m1@2"},
+      {"along": "r2@1", "from": "m1@1", "to": "gx@1"},
+      {"along": "r2@2", "from": "gx@3", "to": "m1"},
+      {"along": "r2@2", "from": "m1@7", "to": "m1@3"},
+      {"along": "r2@2", "from": "m1@2", "to": "gx@1"},
+      {"along": "r2@3", "from": "gx", "to": "m1@1"},
+      {"along": "r2@3", "from": "m1", "to": "m3@3"},
+      {"along": "r2@3", "from": "m3@1", "to": "m1@4"},
+      {"along": "r2@3", "from": "m1@3", "to": "gx@2"},
+      {"along": "m1", "from": "gx@3", "to": "m4@7"},
+      {"along": "m1", "from": "h", "to": "r2"},
+      {"along": "m1", "from": "m4@1", "to": "m2@4"},
+      {"along": "m2", "from": "gx@2", "to": "m1@4"},
+      {"along": "m2", "from": "v", "to": "d135"},
+      {"along": "m2", "from": "r2@3", "to": "m3"},
+      {"along": "m1@1", "from": "d135", "to": "m4"},
+      {"along": "m1@1", "from": "r2@3", "to": "h"},
+      {"along": "m1@2", "from": "gx", "to": "m4@1"},
+      {"along": "m1@2", "from": "v", "to": "r2@2"},
+      {"along": "m1@2", "from": "m4@3", "to": "m2@6"},
+      {"along": "m1@3", "from": "d45", "to": "m4@2"},
+      {"along": "m1@3", "from": "r2@1", "to": "v"},
+      {"along": "m1@4", "from": "gx@1", "to": "m4@3"},
+      {"along": "m1@4", "from": "h", "to": "r2"},
+      {"along": "m1@4", "from": "m4@5", "to": "m2"},
+      {"along": "m1@5", "from": "d135", "to": "m4@4"},
+      {"along": "m1@5", "from": "r2@3", "to": "h"},
+      {"along": "m1@6", "from": "gx@2", "to": "m4@5"},
+      {"along": "m1@6", "from": "v", "to": "r2@2"},
+      {"along": "m1@6", "from": "m4@7", "to": "m2@2"},
+      {"along": "m1@7", "from": "d45", "to": "m4@6"},
+      {"along": "m1@7", "from": "r2@1", "to": "v"},
+      {"along": "m2@1", "from": "v", "to": "r2@2"},
+      {"along": "m2@1", "from": "d135", "to": "h"},
+      {"along": "m2@2", "from": "gx@3", "to": "m1@6"},
+      {"along": "m2@2", "from": "h", "to": "d45"},
+      {"along": "m2@2", "from": "r2@1", "to": "m3@1"},
+      {"along": "m2@3", "from": "h", "to": "r2"},
+      {"along": "m2@3", "from": "d45", "to": "v"},
+      {"along": "m2@4", "from": "gx", "to": "m1"},
+      {"along": "m2@4", "from": "v", "to": "d135"},
+      {"along": "m2@4", "from": "r2@3", "to": "m3@2"},
+      {"along": "m2@5", "from": "v", "to": "r2@2"},
+      {"along": "m2@5", "from": "d135", "to": "h"},
+      {"along": "m2@6", "from": "gx@1", "to": "m1@2"},
+      {"along": "m2@6", "from": "h", "to": "d45"},
+      {"along": "m2@6", "from": "r2@1", "to": "m3@3"},
+      {"along": "m2@7", "from": "h", "to": "r2"},
+      {"along": "m2@7", "from": "d45", "to": "v"},
+      {"along": "m3", "from": "gx", "to": "m2"},
+      {"along": "m3@1", "from": "gx@1", "to": "m2@2"},
+      {"along": "m3@2", "from": "gx@2", "to": "m2@4"},
+      {"along": "m3@3", "from": "gx@3", "to": "m2@6"},
+      {"along": "m4", "from": "gx@3", "to": "d135"},
+      {"along": "m4", "from": "m1@1", "to": "h"},
+      {"along": "m4@1", "from": "m1@2", "to": "m1"},
+      {"along": "m4@1", "from": "d45", "to": "gx@1"},
+      {"along": "m4@2", "from": "gx", "to": "d45"},
+      {"along": "m4@2", "from": "m1@3", "to": "v"},
+      {"along": "m4@3", "from": "m1@4", "to": "m1@2"},
+      {"along": "m4@3", "from": "d135", "to": "gx@2"},
+      {"along": "m4@4", "from": "gx@1", "to": "d135"},
+      {"along": "m4@4", "from": "m1@5", "to": "h"},
+      {"along": "m4@5", "from": "m1@6", "to": "m1@4"},
+      {"along": "m4@5", "from": "d45", "to": "gx@3"},
+      {"along": "m4@6", "from": "gx@2", "to": "d45"},
+      {"along": "m4@6", "from": "m1@7", "to": "v"},
+      {"along": "m4@7", "from": "m1", "to": "m1@6"},
+      {"along": "m4@7", "from": "d135", "to": "gx"},
+      {"along": "m5", "from": "m1@6", "to": "r2@3"},
+      {"along": "m5", "from": "r2", "to": "m1@3"},
+      {"along": "m5@1", "from": "m1", "to": "r2@1"},
+      {"along": "m5@1", "from": "r2@2", "to": "m1@5"},
+      {"along": "m5@2", "from": "m1@2", "to": "r2@3"},
+      {"along": "m5@2", "from": "r2", "to": "m1@7"},
+      {"along": "m5@3", "from": "m1@4", "to": "r2@1"},
+      {"along": "m5@3", "from": "r2@2", "to": "m1@1"},
+      {"along": "m6", "from": "r2@1", "to": "r2@3"},
+      {"along": "m7", "from": "m2", "to": "m1@2"},
+      {"along": "m6@1", "from": "r2@3", "to": "r2@1"},
+      {"along": "m6@2", "from": "r2@1", "to": "r2@3"},
+      {"along": "m6@3", "from": "r2@3", "to": "r2@1"},
+      {"along": "m7@1", "from": "m2@2", "to": "m1@4"},
+      {"along": "m7@2", "from": "m2@4", "to": "m1@6"},
+      {"along": "m7@3", "from": "m2@6", "to": "m1"},
+      {"along": "m8", "from": "m1", "to": "gx@1"},
+      {"along": "m8@1", "from": "m1@2", "to": "gx@2"},
+      {"along": "m8@2", "from": "m2", "to": "gx@3"},
+      {"along": "m8@3", "from": "m1@6", "to": "gx"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Timurid tile",
+    "look": "strapwork",
+    "colors": {"hexagon": "b", "octagon": "a", "pentagon": "ground", "square": "c"},
+    "text": "Put copies of the square tile side by side. The pinwheel turns about the centre of every tile."
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "hexagon", "vertices": 6, "area": 0.08579, "perCell": 16},
+      {"name": "octagon", "vertices": 8, "area": 0.08579, "perCell": 8},
+      {"name": "pentagon", "vertices": 5, "area": 0.0481, "perCell": 32},
+      {"name": "square", "vertices": 4, "area": 0.02513, "perCell": 16}
+    ]
+  },
+  "chiral": true
+}
