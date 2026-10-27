@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Three tutorials are complete: CM022, ASU2 and P41. Six two-level drawings are skipped: AS10, BR9, IND1016, IND0408, IND0917 and SM12. Thirty entries remain pending.
+Four tutorials are complete: CM022, ASU2, P41 and IND0403. Six two-level drawings are skipped: AS10, BR9, IND1016, IND0408, IND0917 and SM12. Twenty-nine entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -61,3 +61,13 @@ IND0408 and IND0917 have the exact existing `six-fold-star-and-hexagons` fine ti
 SM12 adds equilateral triangles to the fine star-and-hexagon net. Its 20 pt edges give triangle area 100√3, regular hexagon 600√3 and star 1200√3. The blue coarse star/hexagon strokes cross the filled fine pieces: 48 of 288 central sampled stroke segments are off every face boundary, with separation up to 8.98521 pt. The drawing sheet also shows that second net across the fine polygons. It is skipped as an overlay, not declared an exact duplicate. The page cites E. W. Smith, part I, plate XLIV, Salim Chishti’s tomb, Fatehpur Sikri; no photograph was checked.
 
 The stroke audit samples quarter, middle and three-quarter points of central stroke-only segments against every filled polygon boundary. Raw stroke paths, exact sample results and complete PDF overlays remain under each local research folder. The source pages’ “edge-to-edge” descriptions concern their fine polygon tilings, and do not establish that the extra drawn nets are their boundaries. SM1’s sampled strokes all follow its faces and ASL20 needs a closer bevel reading; neither is skipped on this evidence.
+
+## IND0403 — `agra-twelve-six-stars`
+
+The p6m tutorial has twenty steps, fold six and a twelve-pointed star. O is at PDF (297.5, 374.6375), and OA is the expanded star radius, 25(3+√3)/√2 pt. The teaching frame turns 15°, aligning the actual triangular lattice with the hexagonal repeat; a 45° turn would put that lattice on the wrong cell normals. Its apothem is L=√2+(9−3√3)/5. Three squares give the star. A parallel intercept constructs three fifths of 3−√3, and six parallel families through earlier crossings finish the net. The source has black and brown bevel facets; these are removed and the coloured faces expanded by 5 pt, half the 10 pt bands. The worst source-corner distance from the exact construction is 0.00009671 OA.
+
+Put r=√2, s=√3 and t=√6. Independent source-polygon shoelaces give twelve_star 6−2s, once; six_star (−1914−1080r+1116s+630t)/25, three; eight (239+135r−133s−75t)/25, six; petal (1359+810r−773s−450t)/150, twelve; and three_star (558+315r−319s−180t)/25, twice. These 24 pieces sum exactly to (−324−180r+316s+180t)/25=2sL². The engine independently finds all five types and counts without slivers or off-construction ink endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/IND0403/overlay.png`. Every red line follows a band centre throughout the page. The page cites Wade IND 0403, Agra Fort (1550 AD, 957 AH), explicitly the star without kites; no photograph was independently checked. White stars, green eight-sided connectors and the two blue petal classes are retained. Petals numbered 0, 3, 4, 7, 8 and 11 use the light class, as do the three-pointed stars. The actual player placement function’s 24 fills all match the source, with worst centre distance 0.00003199 OA. The numeric palette is illustrative. IND0405 is its central-kite variation, sharing the complete construction; no unrelated library design is an exact duplicate.
+
+All required checks passed serially under 3 GB: 190 catalog previews, the six targeted golden checks and full weave group, all 950 player text/helper assertions and all 40 schema checks. Default regeneration after exposing the variant path is byte-identical to the checked tutorial. No shared engine, schema, player or reserved file changed.
