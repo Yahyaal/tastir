@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-CM022 and ASU2 are complete. The other 37 entries remain pending.
+CM022, ASU2 and P41 are complete. The other 36 entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -31,3 +31,13 @@ The first four steps reuse the existing Mian lesson’s twelve-division opening 
 I inspected the ink, wall and the complete red overlay at `docs/research/tilingsearch-30/ASU2/overlay.png`. All source boundaries agree with our band centre lines. The source’s single fill class is retained by assigning both shapes the same palette slot. The numeric palette is illustrative. The page credits Aslam Qureshi’s photograph of Salim Chishti’s tomb, Fatehpur Sikri (1581 AD, 989 AH), supplied by personal communication; no photograph was independently checked. This is a separate design from the star and rosette lessons and the existing eight-fold Salim Chishti square lattice, with no duplicate or filling-only variant found.
 
 The catalog prepared 188 previews. All six targeted golden checks, the full weave group, all 940 text/helper assertions and all 40 schema checks passed serially under 3 GB. The filter includes `weave` because of the global crossing-count assertion explained under CM022. No shared application or reserved file changed.
+
+## P41 — `turkish-sultana-mixed-stars`
+
+This p4m tutorial has 28 steps, fold four and an eight-pointed star. O is at PDF (297.5, 377.91125), and OA is a common 50 pt edge. Put r=√2, s=√3 and t=√6. The axial marks R=(1+r+s)/2, X=(1+2r+s+t)/2 and the square half-side L=4+t−r fix the two different eight-pointed stars, the six-pointed stars and the regular hexagons. The twelve-division opening is shared with ASU2 and the Mian lesson. Four further parallel families pass through existing crossings. Four unused helper steps and an unused star-line family were removed; comparing evaluated ink before and after gives identical segments.
+
+Independent source-polygon shoelaces give large_star 2+2r+2s, once; small_star −2+2r+2s, once; six_star (−9+9r+15s−9t)/2, four; four_star 426−300r−240s+170t, twice; ten (−314+225r+174s−121t)/4, eight; irregular_hexagon (−48+39r+26s−15t)/8, sixteen; hexagon (−9+9r+15s−9t)/4, eight; and kite 1/2, eight. The larger coefficients arise after expanding mixed-radical lengths in this edge unit; the actual construction uses small compass sums and differences. These 48 pieces sum exactly to 96−32r−16s+32t=4L². The engine independently confirms every type and count without slivers or off-construction endpoints. Source corners, including complete boundary pieces checked against neighbouring constructions, have worst Euclidean snapping error 0.00015151 OA.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P41/overlay.png`. All red lines agree with the source polygon boundaries. The source’s single fill class is retained with one palette slot, and the numeric palette is illustrative. The page attributes the ceiling to the Turkish Sultana’s House, Fatehpur Sikri, through an internet photograph supplied by personal communication. No photograph was independently checked. The two regular eight-pointed stars differ from CM022’s star and four-pointed connectors, so it is a separate tiling; no exact duplicate or filling-only variant was found.
+
+The catalog prepared 189 previews, the six targeted golden checks and full weave group passed, all 945 text/helper assertions passed, and all 40 schema checks passed under 3 GB. The first text check caught ON1 and ON5 as joined family names; they now read “from O to N1” and “from O to N5”. Alternate texts describe only the retained helper-free lines. No shared application or reserved file changed.
