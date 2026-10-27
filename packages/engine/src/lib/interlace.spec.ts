@@ -265,6 +265,12 @@ describe('weave', () => {
         p.ink.map((s) => s.segment),
         p.cell,
       );
+      // A tutorial that says its bands cannot weave must really be so, and
+      // is not woven at all.
+      if (t.pattern.woven === false) {
+        expect(w.broken).toBeGreaterThan(0);
+        return;
+      }
       // Every crossing is woven, with no step along a band left unswapped.
       expect(w.broken).toBe(0);
       // Each top band can be redrawn some way either side of its crossing:

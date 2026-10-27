@@ -80,11 +80,14 @@ export function WallControls({
   onStyle,
   grout,
   onGrout,
+  styles = WALL_STYLES,
   sample,
   finish,
   onFinish,
 }: {
   style: WallStyle;
+  /** The styles offered: a pattern whose bands cannot weave leaves out interlace. */
+  styles?: readonly WallStyle[];
   onStyle: (style: WallStyle) => void;
   grout: number;
   onGrout: (grout: number) => void;
@@ -103,7 +106,7 @@ export function WallControls({
     <section className="wall-section">
       <h2>The wall</h2>
       <div className="wall-styles" role="group" aria-label="Style">
-        {WALL_STYLES.map((s) => (
+        {styles.map((s) => (
           <button
             key={s}
             type="button"

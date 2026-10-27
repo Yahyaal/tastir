@@ -488,6 +488,12 @@ export const TutorialShape = z.strictObject({
      * bands woven between the pieces (carved wood and plaster, Fès zellige).
      */
     look: z.enum(['tiles', 'strapwork', 'interlace', 'lines']).optional(),
+    /**
+     * False when the bands cannot weave over and under: some end against
+     * others, as in a pierced jali screen. The player then offers no woven
+     * look, and the weave test checks that the bands really cannot weave.
+     */
+    woven: z.literal(false).optional(),
     colors: z.record(Name, z.string().min(1)),
     placements: Placements.optional(),
     rings: Rings.optional(),

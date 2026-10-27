@@ -347,9 +347,17 @@ export function Player({
   // The ring pointed at in the colour panel, lit on the wall.
   const [lit, setLit] = useState<string>();
   const [selected, setSelected] = useState<number>();
-  const [wallStyle, setWallStyle] = useState<WallStyle>(
-    opened?.look ?? draft?.look ?? tutorial.pattern.look ?? 'tiles',
-  );
+  // A pattern whose bands cannot weave is never shown woven: a saved
+  // interlace look falls back to plain bands.
+  const unwoven = tutorial.pattern.woven === false;
+  const wallStyles = unwoven
+    ? WALL_STYLES.filter((s) => s !== 'interlace')
+    : WALL_STYLES;
+  const [wallStyle, setWallStyle] = useState<WallStyle>(() => {
+    const look =
+      opened?.look ?? draft?.look ?? tutorial.pattern.look ?? 'tiles';
+    return unwoven && look === 'interlace' ? 'strapwork' : look;
+  });
   useLayoutEffect(() => {
     if (
       !import.meta.env.DEV ||
@@ -1389,6 +1397,7 @@ export function Player({
               {onWall ? (
                 <WallControls
                   style={wallStyle}
+                  styles={wallStyles}
                   onStyle={(style) => {
                     setWallStyle(style);
                     if (style === 'jali' && grout < 0.5) setGrout(0.5);
