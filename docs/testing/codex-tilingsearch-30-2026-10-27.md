@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Five tutorials are complete: CM022, ASU2, P41, IND0403 and IND0405. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-seven entries remain pending.
+Six tutorials are complete: CM022, ASU2, P41, IND0403, IND0405 and F8785. Seven two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917 and SM12. Twenty-six entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -87,3 +87,15 @@ The catalog prepared 191 previews. All six targeted golden checks and the full w
 SM1’s fine net was reconstructed as a nine-step lesson with one six-pointed star of area 3√3−3, three eight-sided pieces of area 1, and two three-pointed stars of area (3−√3)/2. They fill the cell area 3+2√3 exactly, and the draft passed golden/weave, text/helper and schema checks. The fine polygons agree with that construction within 0.00017047 OA, with OA=10(√2+√6) pt and O=(299.2558333333,374.0408333333).
 
 The full red overlay at `docs/research/tilingsearch-30/SM1/overlay.png` nevertheless exposes an independent green star/fret net crossing the fine pieces. The initial radius-110-pt stroke sample happened to include none of those green strokes. Repeating the audit over the whole interior page finds all 56 tested green segments off the fine polygon boundaries, by up to 14.18377 pt. That establishes a second net; a central sample cannot establish its absence. The draft and generator were archived in that ignored research folder and removed from the branch. SM1 is skipped under the two-level rule. The page cites E. W. Smith (1896), part II, plate XXVIII, Salim Chishti’s tomb, Fatehpur Sikri; no photograph was checked.
+
+## F8785 — `dhahabi-house-six-stars`
+
+The fifteen-step p6m tutorial uses fold six. O is at PDF (297.5, 377.3), and OA is the large star’s point radius, 40√3 pt. The hexagonal apothem is three, with no frame turn or band expansion. The small stars at its six corners have radius 2√3−3; a circle about O of radius three locates their nearest tips. The nearest twelve-corner source polygons are those smaller stars, so treating their spacing as the repeat would give the wrong wall. The full repeat is set by the large stars and their different surroundings. The worst source-corner distance from the exact construction is 0.00010449 OA.
+
+The independent inventory is large star √3, once; regular hexagon √3/2, six; eight-sided piece 9/2−13√3/6, six; kite 3√3−9/2, twelve; small star 21√3−36, twice; and small kite √3−3/2, six. The chelate needs a compound-contour correction: its eight-corner outer contour has area (33−17√3)/2, but contains one inset small kite. Subtracting that kite gives the actual twelve-corner chelate area 18−19√3/2, six per cell. Without this subtraction, the source-reader shoelace total double-counts those six kites. The corrected 39 pieces sum exactly to 18√3, the full hexagonal cell area. The engine independently confirms all seven types and counts without slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/F8785/overlay.png`; every red edge follows the source outline, including the inset kites. The four source fill classes are retained. The actual player fills were checked at interior polygon samples against the source contours, using periodic copies at the boundaries and the smaller contour where the chelate surrounds a kite. All 39 agree. The Mamluk wood palette’s slots c and d coincide, so the light chelates use slot b to retain a distinct fourth class; the numeric palette remains illustrative. No photograph was independently checked.
+
+Credits retain the page’s Thesaurus Islamicus attribution: first floor of the east side, north area of the qa’a, west wall, panel detail, Jamal al-Din al-Dhahabi, Cairo (1637 AD, 1047 AH), and Wichmann and Wade (2017), figure 11.1a. The style is labelled Egyptian without assigning the house to a different historical period. No duplicate or filling-only variation was found; the other six-pointed-star tutorials have different connectors and per-cell counts.
+
+The catalog prepared 192 previews. All six targeted golden checks and the full weave group, the complete player text/helper checks and all 40 schema checks passed under 3 GB. The final colour check also passed after separating the palette classes. A later source-reading refactor exposes IND0403’s unchanged first six steps for W85; regenerating both Agra tutorials remains byte-identical. No shared application or reserved file changed.

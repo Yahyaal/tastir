@@ -1,0 +1,319 @@
+{
+  "format": 0,
+  "id": "dhahabi-house-six-stars",
+  "title": "Six-pointed stars of the al-Dhahabi house, Cairo",
+  "short": "Al-Dhahabi house stars",
+  "subtitle": "Jamal al-Din al-Dhahabi house, Cairo",
+  "fold": 6,
+  "star": 6,
+  "style": "Egyptian",
+  "level": "advanced",
+  "given": {"O": "The centre of a six-pointed star.", "A": "Sets its point radius."},
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Wichmann’s F8785 drawing. The drawing gives no steps. The large unit star, small stars at the cell corners and three parallel families construct every boundary.",
+    "changes": "The plain polygon boundaries are retained. The full repeat distinguishes large and small stars. The compass steps, order and named points are ours. The palette is illustrative; no house photograph was independently checked.",
+    "reviewed": "2026-10-27"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data201/F8785: Jamal al-Din al-Dhahabi, Cairo",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data201/F8785.html",
+      "note": "The page cites Thesaurus Islamicus: the first floor of the east side, north area of the qa’a, west wall, panel detail (1637 AD, 1047 AH); and Wichmann and Wade (2017), figure 11.1a."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. Keep this compass size for the next steps.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a circle with centre A through O. Draw a circle with centre G through O, where the line crosses the first circle on the left.",
+      "create": {
+        "G": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "cE": {"circle": {"centre": "A", "radiusOf": "c"}},
+        "cW": {"circle": {"centre": "G", "radiusOf": "c"}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "Draw a vertical line through O. It crosses the first circle at D and K. Draw a circle with centre D through O. Draw a circle with centre K through O.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "K": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "cN": {"circle": {"centre": "D", "radiusOf": "c"}},
+        "cS": {"circle": {"centre": "K", "radiusOf": "c"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a straight line through B and H, C and J, E and L, and F and M. B, C, E, F, H, J, L and M are where the four new circles cross the first circle. The first circle is now cut into twelve.",
+      "create": {
+        "C": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60.0}}},
+        "L": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300.0}}},
+        "E": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
+        "J": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}},
+        "B": {"point": {"meet": ["c", "cN"], "pick": {"angle": 30.0}}},
+        "F": {"point": {"meet": ["c", "cN"], "pick": {"angle": 150.0}}},
+        "H": {"point": {"meet": ["c", "cS"], "pick": {"angle": 210.0}}},
+        "M": {"point": {"meet": ["c", "cS"], "pick": {"angle": 330.0}}},
+        "r30": {"line": {"through": ["B", "H"]}},
+        "r60": {"line": {"through": ["C", "J"]}},
+        "r120": {"line": {"through": ["E", "L"]}},
+        "r150": {"line": {"through": ["F", "M"]}}
+      },
+      "highlight": ["cE", "cW", "cN", "cS"],
+      "animate": "ruler",
+      "textWithoutHelpers": "The four circles cross the first circle at B, C, E, F, H, J, L and M. Draw a straight line through B and H. Draw a straight line through F and M."
+    },
+    {
+      "id": 5,
+      "text": "Draw a straight line through B and F, F and K, and K and B. Draw a straight line through D and H, H and M, and M and D. The two triangles make the star at O.",
+      "create": {
+        "st0": {"line": {"through": ["B", "F"]}},
+        "st1": {"line": {"through": ["D", "H"]}},
+        "st2": {"line": {"through": ["F", "K"]}},
+        "st3": {"line": {"through": ["H", "M"]}},
+        "st4": {"line": {"through": ["K", "B"]}},
+        "st5": {"line": {"through": ["M", "D"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw a circle with centre A through O. It crosses the horizontal line at N1, right of A. Draw a circle with centre N1 and opening OA. It crosses the horizontal line at N2, right of N1.",
+      "create": {
+        "c2": {"circle": {"centre": "A", "through": "O"}},
+        "N1": {"point": {"meet": ["c2", "h"], "pick": {"farthest": "O"}}},
+        "c3": {"circle": {"centre": "N1", "radiusFrom": ["O", "A"]}},
+        "N2": {"point": {"meet": ["c3", "h"], "pick": {"farthest": "O"}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "Draw a vertical line through N2. Turn it round O by 60°, five times. The six lines frame the tile, with corners T1 to T6.",
+      "create": {
+        "frame": {"line": {"through": "N2", "parallelTo": "v"}},
+        "frames": {"repeat": {"of": ["frame"], "by": "rot6"}},
+        "T1": {"point": {"meet": ["frame", "frame@1"]}},
+        "T2": {"point": {"meet": ["frame@1", "frame@2"]}},
+        "T3": {"point": {"meet": ["frame@2", "frame@3"]}},
+        "T4": {"point": {"meet": ["frame@3", "frame@4"]}},
+        "T5": {"point": {"meet": ["frame@4", "frame@5"]}},
+        "T6": {"point": {"meet": ["frame@5", "frame"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Draw a circle with centre O through N2. It crosses line OB at P, towards T1. Draw a circle with centre T1 through P.",
+      "create": {
+        "frameCircle": {"circle": {"centre": "O", "through": "N2"}},
+        "P": {"point": {"meet": ["frameCircle", "r30"], "pick": {"angle": 30.0}}},
+        "small": {"circle": {"centre": "T1", "through": "P"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 9,
+      "text": "Draw a vertical line through T1. Draw lines through T1 parallel to lines OB and FM. Their crossings with the small circle are V1 to V6, counted round it.",
+      "create": {
+        "cornerRay30": {"line": {"through": "T1", "parallelTo": "r30"}},
+        "cornerRay90": {"line": {"through": "T1", "parallelTo": "v"}},
+        "cornerRay150": {"line": {"through": "T1", "parallelTo": "r150"}},
+        "V1": {"point": {"meet": ["small", "cornerRay30"], "pick": {"farthest": "O"}}},
+        "V2": {"point": {"meet": ["small", "cornerRay90"], "pick": {"angle": 36.206}}},
+        "V3": {"point": {"meet": ["small", "cornerRay150"], "pick": {"angle": 37.089}}},
+        "V4": {"point": {"meet": ["small", "cornerRay30"], "pick": {"nearest": "O"}}},
+        "V5": {"point": {"meet": ["small", "cornerRay90"], "pick": {"angle": 22.911}}},
+        "V6": {"point": {"meet": ["small", "cornerRay150"], "pick": {"angle": 23.794}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 10,
+      "text": "Draw a straight line through V1 and V3, V3 and V5, and V5 and V1. Draw a straight line through V2 and V4, V4 and V6, and V6 and V2. Turn these six lines round O by 60°, five times.",
+      "create": {
+        "smallStar0": {"line": {"through": ["V1", "V3"]}},
+        "smallStar1": {"line": {"through": ["V2", "V4"]}},
+        "smallStar2": {"line": {"through": ["V3", "V5"]}},
+        "smallStar3": {"line": {"through": ["V4", "V6"]}},
+        "smallStar4": {"line": {"through": ["V5", "V1"]}},
+        "smallStar5": {"line": {"through": ["V6", "V2"]}},
+        "cornerStars": {
+          "repeat": {
+            "of": ["smallStar0", "smallStar1", "smallStar2", "smallStar3", "smallStar4", "smallStar5"],
+            "by": "rot6"
+          }
+        }
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "V1 to V6 are the small circle’s six division points. Draw a straight line through V1 and V3, V3 and V5, and V5 and V1. Draw a straight line through V2 and V4, and V4 and V6. Turn these five lines round O by 60°, five times."
+    },
+    {
+      "id": 11,
+      "text": "Draw a vertical line through C. It crosses the horizontal line at N3. Draw a circle with centre A and opening from O to N3. It crosses the horizontal line at N4, right of A.",
+      "create": {
+        "projection": {"line": {"through": "C", "parallelTo": "v"}},
+        "N3": {"point": {"meet": ["projection", "h"]}},
+        "cHalf": {"circle": {"centre": "A", "radiusFrom": ["O", "N3"]}},
+        "N4": {"point": {"meet": ["cHalf", "h"], "pick": {"farthest": "O"}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 12,
+      "text": "Draw a circle with centre N4 and the same opening as the small circle at T1. It crosses the horizontal line at N5, right of N4. Draw a vertical line through N5. Turn it round O by 60°, five times.",
+      "create": {
+        "cX": {"circle": {"centre": "N4", "radiusOf": "small"}},
+        "N5": {"point": {"meet": ["cX", "h"], "pick": {"farthest": "O"}}},
+        "xv": {"line": {"through": "N5", "parallelTo": "v"}},
+        "xs": {"repeat": {"of": ["xv"], "by": "rot6"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 13,
+      "text": "Draw a circle with centre N2 and opening from O to N5. It crosses the horizontal line at N6, towards O. Draw a vertical line through N6. Turn it round O by 60°, five times.",
+      "create": {
+        "cY": {"circle": {"centre": "N2", "radiusFrom": ["O", "N5"]}},
+        "N6": {"point": {"meet": ["cY", "h"], "pick": {"nearest": "O"}}},
+        "yv": {"line": {"through": "N6", "parallelTo": "v"}},
+        "ys": {"repeat": {"of": ["yv"], "by": "rot6"}}
+      },
+      "animate": "compass",
+      "textWithoutHelpers": "Draw a circle with centre N2 and opening from O to N5. It crosses the horizontal line at N6, towards O."
+    },
+    {
+      "id": 14,
+      "text": "Draw a line through N2 parallel to line OB. Turn it round O by 60°, five times.",
+      "create": {
+        "connector": {"line": {"through": "N2", "parallelTo": "r30"}},
+        "connectors": {"repeat": {"of": ["connector"], "by": "rot6"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 15,
+      "text": "Join T1, T2, T3, T4, T5 and T6 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["T1", "T2", "T3", "T4", "T5", "T6"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange.",
+    "paths": [
+      {"along": "st0", "from": "smallStar1@1", "to": "r60"},
+      {"along": "st0", "from": "r120", "to": "smallStar1@3"},
+      {"along": "st1", "from": "smallStar3", "to": "r120"},
+      {"along": "st1", "from": "h", "to": "smallStar1@4"},
+      {"along": "st2", "from": "smallStar1@3", "to": "h"},
+      {"along": "st2", "from": "r60", "to": "smallStar1@5"},
+      {"along": "st3", "from": "smallStar1@4", "to": "r60"},
+      {"along": "st3", "from": "r120", "to": "smallStar1"},
+      {"along": "st4", "from": "smallStar1@5", "to": "r120"},
+      {"along": "st4", "from": "h", "to": "smallStar1@1"},
+      {"along": "st5", "from": "smallStar1", "to": "h"},
+      {"along": "st5", "from": "r60", "to": "smallStar3"},
+      {"along": "smallStar0", "from": "frame@1", "to": "xv"},
+      {"along": "smallStar0", "from": "xv@3", "to": "frame@2"},
+      {"along": "smallStar1", "from": "smallStar2", "to": "st3"},
+      {"along": "smallStar1", "from": "st5", "to": "smallStar2@4"},
+      {"along": "smallStar2", "from": "frame@1", "to": "smallStar1"},
+      {"along": "smallStar2", "from": "smallStar3", "to": "frame"},
+      {"along": "smallStar3", "from": "smallStar2@2", "to": "st5"},
+      {"along": "smallStar3", "from": "st1", "to": "smallStar2"},
+      {"along": "smallStar4", "from": "frame@5", "to": "xv@4"},
+      {"along": "smallStar4", "from": "xv@1", "to": "frame"},
+      {"along": "smallStar0@1", "from": "frame@2", "to": "xv@1"},
+      {"along": "smallStar0@1", "from": "xv@4", "to": "frame@3"},
+      {"along": "smallStar0@2", "from": "frame@3", "to": "xv@2"},
+      {"along": "smallStar0@2", "from": "xv@5", "to": "frame@4"},
+      {"along": "smallStar0@3", "from": "frame@4", "to": "xv@3"},
+      {"along": "smallStar0@3", "from": "xv", "to": "frame@5"},
+      {"along": "smallStar0@5", "from": "frame", "to": "xv@5"},
+      {"along": "smallStar0@5", "from": "xv@2", "to": "frame@1"},
+      {"along": "smallStar1@1", "from": "smallStar2@1", "to": "st4"},
+      {"along": "smallStar1@1", "from": "st0", "to": "smallStar2@5"},
+      {"along": "smallStar1@3", "from": "smallStar2@3", "to": "st0"},
+      {"along": "smallStar1@3", "from": "st2", "to": "smallStar2@1"},
+      {"along": "smallStar1@4", "from": "smallStar2@4", "to": "st1"},
+      {"along": "smallStar1@4", "from": "st3", "to": "smallStar2@2"},
+      {"along": "smallStar1@5", "from": "smallStar2@5", "to": "st2"},
+      {"along": "smallStar1@5", "from": "st4", "to": "smallStar2@3"},
+      {"along": "smallStar2@1", "from": "frame@2", "to": "smallStar1@1"},
+      {"along": "smallStar2@1", "from": "smallStar1@3", "to": "frame@1"},
+      {"along": "smallStar2@2", "from": "frame@3", "to": "smallStar3"},
+      {"along": "smallStar2@2", "from": "smallStar1@4", "to": "frame@2"},
+      {"along": "smallStar2@3", "from": "frame@4", "to": "smallStar1@3"},
+      {"along": "smallStar2@3", "from": "smallStar1@5", "to": "frame@3"},
+      {"along": "smallStar2@4", "from": "frame@5", "to": "smallStar1@4"},
+      {"along": "smallStar2@4", "from": "smallStar1", "to": "frame@4"},
+      {"along": "smallStar2@5", "from": "frame", "to": "smallStar1@5"},
+      {"along": "smallStar2@5", "from": "smallStar1@1", "to": "frame@5"},
+      {"along": "xv", "from": "frame@5", "to": "smallStar0@3"},
+      {"along": "xv", "from": "smallStar0", "to": "frame@1"},
+      {"along": "xv@1", "from": "frame", "to": "smallStar4"},
+      {"along": "xv@1", "from": "smallStar0@1", "to": "frame@2"},
+      {"along": "xv@2", "from": "frame@1", "to": "smallStar0@5"},
+      {"along": "xv@2", "from": "smallStar0@2", "to": "frame@3"},
+      {"along": "xv@3", "from": "frame@2", "to": "smallStar0"},
+      {"along": "xv@3", "from": "smallStar0@3", "to": "frame@4"},
+      {"along": "xv@4", "from": "frame@3", "to": "smallStar0@1"},
+      {"along": "xv@4", "from": "smallStar4", "to": "frame@5"},
+      {"along": "xv@5", "from": "frame@4", "to": "smallStar0@2"},
+      {"along": "xv@5", "from": "smallStar0@5", "to": "frame"},
+      {"along": "connector", "from": "h", "to": "r150"},
+      {"along": "connector", "from": "v", "to": "r60"},
+      {"along": "connector@1", "from": "r60", "to": "r30"},
+      {"along": "connector@1", "from": "r150", "to": "r120"},
+      {"along": "connector@2", "from": "r120", "to": "v"},
+      {"along": "connector@2", "from": "r30", "to": "h"},
+      {"along": "connector@3", "from": "h", "to": "r150"},
+      {"along": "connector@3", "from": "v", "to": "r60"},
+      {"along": "connector@4", "from": "r60", "to": "r30"},
+      {"along": "connector@4", "from": "r150", "to": "r120"},
+      {"along": "connector@5", "from": "r120", "to": "v"},
+      {"along": "connector@5", "from": "r30", "to": "h"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "palette": "Mamluk wood",
+    "colors": {
+      "star": "a",
+      "chelate": "b",
+      "hexagon": "ground",
+      "eight": "c",
+      "kite": "ground",
+      "small_star": "c",
+      "small_kite": "c"
+    },
+    "text": "Put copies of the hexagonal tile side by side."
+  },
+  "expect": {
+    "pieceTypes": 7,
+    "cellArea": 31.17691,
+    "note": "The chelate’s eight-corner outer contour has area (33−17√3)/2. Subtract its inset kite √3−3/2 to give 18−19√3/2 and twelve boundary corners. All counted piece areas sum exactly to 18√3.",
+    "pieces": [
+      {"name": "star", "vertices": 12, "area": 1.73205, "perCell": 1},
+      {"name": "chelate", "vertices": 12, "area": 1.54552, "perCell": 6},
+      {"name": "hexagon", "vertices": 6, "area": 0.86603, "perCell": 6},
+      {"name": "eight", "vertices": 8, "area": 0.74722, "perCell": 6},
+      {"name": "kite", "vertices": 4, "area": 0.69615, "perCell": 12},
+      {"name": "small_star", "vertices": 12, "area": 0.37307, "perCell": 2},
+      {"name": "small_kite", "vertices": 4, "area": 0.23205, "perCell": 6}
+    ]
+  }
+}
