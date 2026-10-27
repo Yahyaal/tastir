@@ -53,8 +53,17 @@ describe.each(files)('%s', (file) => {
     // A tutorial that claims to be chiral must really lack the mirror. The
     // turning pieces can lie a little further out than the rotation check
     // looks (the Leones frets are centred about 1 from O), so look to 2.
-    if (tutorial.chiral)
-      expect(hasSymmetry(pattern, tutorial.fold, undefined, 2)).toBe(false);
+    // In a p4g pattern (Dar el Bacha) the mirrors miss O and the pieces
+    // near O can be mirror images of each other; the mirror then fails
+    // only further out, so look over the whole tile too.
+    if (tutorial.chiral) {
+      const { u, v } = pattern.cell;
+      const tile = (Math.hypot(u.x, u.y) + Math.hypot(v.x, v.y)) / 2;
+      expect(
+        hasSymmetry(pattern, tutorial.fold, undefined, 2) &&
+          hasSymmetry(pattern, tutorial.fold, undefined, tile),
+      ).toBe(false);
+    }
   });
 
   it('has no slivers, and its pieces fill the tile', () => {
