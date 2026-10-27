@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Fifteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092 and CR1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Sixteen entries remain pending.
+Sixteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1 and DS1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Fifteen entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -207,3 +207,14 @@ The source’s rounding is coarser than its PDF’s printed decimal precision. I
 Credits retain Peter Cromwell, figure2(b), Islamic geometric ornament in Azerbaijan, listed by the page as forthcoming2018, and its Gunbad-i Surkh, Maragha attribution(1148AD,542AH). No photograph was independently checked. The120° twelve-star opening is related to P092, but the different line families, connectors and repeat give a separate tiling. No duplicate or filling-only variant was found.
 
 The catalog prepared201 previews. All six targeted golden checks and the full weave group, all1005 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## DS1 — `qalawun-twelve-star-knots`
+
+The fourteen-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,373.9091666667), OA=20(3+√3)/√2pt, and the teaching frame turns15°. The source faces are expanded5pt to the centres of the10pt bands, confirmed by994 facing-edge measurements clustered at9.99–10.01pt. The first six steps share the Agra three-square opening. Circle projections and transfers give the hexagonal apothem L=3√2−√6 and height√6−√2/2. One parallel family through a crossing completes the mesh. Worst source-corner residual is0.00015485OA.
+
+Independent shoelaces give twelve_star6−2√3, once; six_star42√3−72, twice; four_star44√3−76, three; hexagon(51−29√3)/2, twelve; and kite2√3/3−1, twelve. These30 counted areas sum exactly to48√3−72=2√3L². The engine independently confirms all five types and counts without slivers or off-construction endpoints. Its90° twelve-star tips and absence of P092’s extra small kites distinguish the two designs; no exact duplicate or filling-only variation was found.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/DS1/overlay.png`. Every band centre agrees. All30 actual player fills match the expanded source contours, retaining blue stars and grey connectors with an illustrative palette. Strapwork is the default. Credits retain the page’s email from B. O’Kane, Qalawun, Cairo, Egypt, through personal communication, and Daud Sutton, Islamic Design, page17(2007). No photograph or published teaching sequence was independently checked.
+
+The catalog prepared202 previews. All six targeted golden checks and the full weave group, all1010 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
