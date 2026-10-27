@@ -85,7 +85,7 @@ Tiling Search has no list of sixteen-fold tilings, so Claude read every page of 
 |---|---|---|---|
 | S1 | SPA0807, E41, TL1 | Spain first: the Alhambra Partal (311 pieces) and vestibule ceiling (931), both with Wade photos, and San Juan de los Reyes, Toledo (313) | done 27 Oct: SPA0807 `alhambra-partal-turned-stars`, E41 `alhambra-mexuar-vestibule-rosettes`; TL1 skipped (one octagonal ceiling, d8, not a repeating tiling); E41's paired Wade photo SPA 1917 is a different panel (the data18 E41 dado) |
 | S2 | EGY1019, B153, B153A, AJL7 | Cairo, Bourgoin and Aleppo, 395–547 pieces; B153A is Bourgoin's drawing of B153 and is likely its variant | done 27 Oct: B153 `cairo-bagasi-rosettes`, B153A `bourgoin-153-rosettes` (its variant); EGY1019 and AJL7 not built (three and seven lengths no crossing gives; see the S2 notes in QUEUE) |
-| S3 | A285, P065, FIG8, SHAF2 | Bourgoin, Shiraz (tomb of Hafiz) and Shafai, 629–827 pieces | waiting |
-| S4 | MET1, SM27, MET2, SM31 | Mughal jali screens, two-level, 493–916 pieces; MET1 and SM27 may be the same design | waiting |
+| S3 | A285, P065, FIG8, SHAF2 | Bourgoin, Shiraz (tomb of Hafiz) and Shafai, 629–827 pieces | started 27 Oct, 10:02 UTC |
+| S4 | MET1, SM27, MET2, SM31 | Mughal jali screens, two-level, 493–916 pieces; MET1 and SM27 may be the same design | started 27 Oct, 10:02 UTC |
 
 Left for later: N13 (Bahia Palace, 2403 pieces) and S32A (Royal Palace, Fès, 32-pointed stars, 5001 pieces).
