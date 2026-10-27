@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Eighteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294 and BON1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Thirteen entries remain pending.
+Nineteen tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1 and P141. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Twelve entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -242,3 +242,16 @@ Independent shoelaces give dodecagon3, once; regular hexagon√3/4, four; four_s
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/BON1/overlay.png`. Every edge agrees with the centre of the source’s green outline. All32 actual player fills retain the single tan class. Strapwork represents the outlines, with an illustrative palette. The tutorial is labelled Roman and cites Bonner, page13, photograph4(2016), a third-century Roman mosaic, El Djem, Tunisia. No photograph was independently checked. This square repeat and six-type inventory differ from the hexagonal ASU2 dodecagon design; no duplicate or filling-only variant was found.
 
 The catalog prepared204 previews. All six targeted golden checks, the full weave group, all1020 player text/helper assertions and all40 schema checks passed serially under3GB. The golden check initially caught the sharp four-star; its source-confirmed allowance then passed the targeted golden rerun. The already passed weave geometry is unchanged. Helper-free step5 also repeats the circle-division context because the preceding guide-only step is skipped. No shared application or reserved file changed.
+
+
+## P141 — `bourgoin-141-mixed-stars`
+
+The seventeen-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,373.3795833333), OA=20(1+√3)pt, and the teaching frame turns15°. The sign follows its actual lattice vectors, including the source’s275.13pt diagonal slide; the opposite frame would give the wrong repeat. Four triangles construct the60° twelve-star tips. Put r=√2, s=√3 and t=√6. Compass sums give L=2r+s−1 and D=(1+r+t)/2. A parallel intercept divides L−D into thirds, giving X. The four carrier distances D,X,3X,L−X construct the whole mesh. Plain source boundaries are retained; worst source-corner residual is0.00017340OA.
+
+Independent shoelaces give twelve_star3s−3, once; kite(3−s)/4, twelve; hexagon(1−r+t)/2, twelve; small_hexagon−3/2+3r/2+s−5t/6, twelve; eight−20/3+5r+25s/6−25t/9, twelve; four_star46−32r−26s+56t/3, three; three_star−4+3r+5s/2−5t/3, twelve; and six_star−8+6r+5s−10t/3, twice. These66 counted areas sum exactly to−12+24r+24s−8t=2sL². The engine independently confirms all eight types and counts without slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P141/overlay.png`. Every boundary agrees throughout the page. All66 actual player fills match source interior samples, retaining white, red, green, cyan and olive classes with an illustrative palette. Credits retain O’Kane, page197, the al-Mu’ini minbar, Damietta, Egypt(1400–55AD,802–59AH); Critchlow, page130, with the page’s explicit warning that its structure differs from Wichmann’s drawing; Abas and Salman, page206; Bourgoin, Plate141; and the Wade BOU141 link. No photograph was independently checked.
+
+P142 reuses this lesson’s unchanged first six construction steps, but its cmm repeat and different connectors make a separate tiling. The optional opening-only generator path leaves default P141 geometry unchanged. F294 has the same kind of four-triangle star in a different frame and square mesh. No exact duplicate or filling-only variant was found.
+
+The catalog prepared205 previews. All six targeted golden checks and the full weave group, all1025 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
