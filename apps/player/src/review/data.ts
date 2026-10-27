@@ -4462,6 +4462,129 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'fes-throne-star-burst',
+    title:
+      'Star burst of the Royal Palace throne room (Fès) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s C122B drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. It is the Meknes throne-room star rosette with a different middle to the rosette, so it shares that tutorial’s steps and adds one family of diagonals for the long arms round the small star. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing, which keeps the original colouring: green, black, white and one maroon star, in the Tétouan palette, whose dark navy stands for his black. Wade’s photo MOR 0422 was not checked.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-throne-star-burst/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-throne-star-burst/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Royal Palace throne room, Fès (C122B)',
+        url: 'https://tilingsearch.mit.edu/HTML/data152/C122B.html',
+      },
+    ],
+  },
+  {
+    id: 'marrakesh-bahia-rosette',
+    title: 'Rosette of the Bahia Palace (Marrakesh) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s MOR1218 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing in the Marinid zellige palette: his ochre takes the palette’s amber. Wade’s photo MOR 1218 was not checked.',
+      '16 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/marrakesh-bahia-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/marrakesh-bahia-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bahia Palace, Marrakesh (MOR1218)',
+        url: 'https://tilingsearch.mit.edu/HTML/data190/MOR1218.html',
+      },
+    ],
+  },
+  {
+    id: 'fes-petal-star-rosette',
+    title: 'Petal and star rosette (Fès) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. Four petal flowers ring the small star at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s MOR0411 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing in the Modern Moroccan palette: his red is the palette’s red and his light blue its dark blue. Wade’s photo MOR 0411 was not checked.',
+      '20 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fes-petal-star-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fes-petal-star-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Fès (MOR0411)',
+        url: 'https://tilingsearch.mit.edu/HTML/data175/MOR0411.html',
+      },
+    ],
+  },
+  {
+    id: 'paris-mosque-rosette',
+    title: 'Rosette of the Grande Mosquée (Paris) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
+    story: [
+      'The finished design was read from Wichmann’s FR1 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing in the Alhambra palette, which has his black, light blue, brown and dark blue: his light blue takes the palette’s teal. No photograph was checked.',
+      '16 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/paris-mosque-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/paris-mosque-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Grande Mosquée de Paris (FR1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data200/FR1.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -5711,6 +5834,10 @@ export const QUESTIONS: readonly Question[] = [
       'meknes-bou-inania-rosette',
       'meknes-throne-star-rosette',
       'meknes-moulay-ismail-rosette',
+      'fes-throne-star-burst',
+      'marrakesh-bahia-rosette',
+      'fes-petal-star-rosette',
+      'paris-mosque-rosette',
     ],
   },
 ];

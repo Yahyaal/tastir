@@ -57,9 +57,9 @@ The variations feature is merged (5d1a47e): `apps/player/src/app/variations.json
 | 17 | RAY7, L90, MOR0719, C176A | 700–811 pieces | done, merged: all four; the greedy parallels search (`large/greedy.py`, `parallels.py`) builds most large panels |
 | 18 | P18B, P18A, IRAN2, IRAN4, IRA1617 | 875–907 pieces; P18A/B and IRAN2/4 are likely pairs | done, merged: four built; IRAN4 = IRAN2 |
 | 19 | BR14, MOR0803, C122C, MOR2404X | 930–990 pieces | done, merged: all four; MOR2404X is a variant of BR14 |
-| 20 | C122B, MOR1218, MOR0411, FR1 | 1019–1307 pieces; C122B and C122C may be a pair | waiting |
-| 21 | F17, DW10A, MOR0321, C123 | 1360–1507 pieces | waiting |
-| 22 | C124, MOR0331, F16, P71TL | 1517–1823 pieces; F16 and F17 (Telouet) may be a pair | waiting |
+| 20 | C122B, MOR1218, MOR0411, FR1 | 1019–1307 pieces; C122B and C122C may be a pair | done 26 Oct |
+| 21 | F17, DW10A, MOR0321, C123 | 1360–1507 pieces | started 27 Oct, 00:03 UTC |
+| 22 | C124, MOR0331, F16, P71TL | 1517–1823 pieces; F16 and F17 (Telouet) may be a pair | started 27 Oct, 00:03 UTC |
 | 23 | MOR0837, F169, F19, MIR19 | 1851–2105 pieces; MIR19 is p4g | waiting |
 | 24 | FEZ7, SM4 | 2735–2898 pieces; SM4 is p4 (chiral) | waiting |
 

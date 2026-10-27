@@ -121,5 +121,10 @@
     "id": "najjarin-rosette",
     "title": "Rosettes of the Najjarin fountain and Bou Inania",
     "members": ["fes-najjarin-rosette", "meknes-bou-inania-rosette"]
+  },
+  {
+    "id": "throne-star-rosettes",
+    "title": "Star rosettes of the Meknes and Fès throne rooms",
+    "members": ["meknes-throne-star-rosette", "fes-throne-star-burst"]
   }
 ]
