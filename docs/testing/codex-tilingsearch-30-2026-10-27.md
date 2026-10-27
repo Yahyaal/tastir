@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Twenty-one tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142 and SEV2. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Ten entries remain pending.
+Twenty-two tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2 and B87. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Nine entries remain pending.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -279,3 +279,16 @@ I inspected the ink, wall and complete red overlay at `docs/research/tilingsearc
 Credits retain Michael Stephens’s Flickr synagogue photograph, Cordova; Abas and Salman, page182; Wade MOR3630x, Bou Inania, Meknes; Wade SPA2200 and SPA2504, Alcazar, Seville; Wade SPA3014, Alcazabar, Malaga; and the page’s postcard reference through Wichmann. No photograph was independently checked. The six/eight/twelve-star arrangement differs from the other star families; no exact duplicate or filling-only variant was found.
 
 The catalog prepared207 previews. All six targeted golden checks and the full weave group, all1035 player text/helper assertions and all40 schema checks passed under3GB. F294 regenerates byte-identically after exposing its unchanged opening. During the preceding P142 fill verification, its short fill command briefly overlapped the first SEV2 review render; no test suite or build ran in parallel. Subsequent heavy checks remain serial. No shared application or reserved file changed.
+
+
+## B87 — `bourgoin-87-chelates`
+
+The twenty-one-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,372.78), OA=15(1+√3)pt, and the teaching frame turns15°. Put r=√2, s=√3 and t=√6. The first eight steps share P141’s normal texts and operations, giving D=(1+r+t)/2. A circle doubles D to the hexagonal apothem L=1+r+t. Three diagonal halvings give X=D/8=L/16. Compass complements give the remaining carriers5X,11X,12X,15X and5X+1/4. The carrier at D turns by30°; the others turn by60°. Plain source boundaries are retained. Worst source-corner residual is0.00035683OA.
+
+Independent shoelaces give star3s−3, once; kite(3−s)/4, twelve; hexagon(1−r+t)/2, twelve; small_hexagon−3/2+3r/2+s−5t/6, twelve; green_chelate G=257/64−207r/128−257s/256+529t/384, six; small_kite K=−57/64+87r/128+153s/256−137t/384, six; brown_chelate38sX², twice; white_hexagon8sX², twelve; and eight34sX²/3, six. The69 counted areas sum exactly to24+12r+18s+4t=2sL². Two source green twelve-corner outer contours each contain one blue kite. Their outer area is G+K; subtracting K gives the same sixteen-corner chelate as four other placements. This accounts exactly for the raw shoelace excess2K.
+
+The engine independently confirms all nine types and counts without slivers or off-construction endpoints. A complete cyclic pairwise-distance congruence check confirms one congruence class within each engine type, including all six green chelates. The page’s non-edge-to-edge description is consistent with these inset contours and T junctions; this is one boundary graph, with no independent coarse net omitted.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/B87/overlay.png`. Every boundary agrees, including the inset kites. All69 actual player fills match interior source samples, retaining white, red, green, blue and brown classes with an illustrative palette. Credits retain Bourgoin, Plate87(1879), with no known source, and the page’s Wade BOU087 link. No photograph was independently checked. The chelate connectors and sixteenth divisions distinguish it from P141; no exact duplicate or filling-only variant was found.
+
+The catalog prepared208 previews. All six targeted golden checks and the full weave group, all1040 player text/helper assertions and all40 schema checks passed serially under3GB. P141 regenerates byte-identically after exposing its unchanged first eight steps. No shared application or reserved file changed.

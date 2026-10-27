@@ -18,7 +18,7 @@ D=(1+math.sqrt(2)+math.sqrt(6))/2
 X=(L-D)/3
 
 
-def build(opening_only=False):
+def build(opening_only=False,d_only=False):
     opening()
     step('Draw the lines through O that halve angles AOB, BOC and COD. '
          'Draw a line through O at 90° to each new line. '
@@ -49,6 +49,7 @@ def build(opening_only=False):
          'It crosses that line at N5, right of N4.', 'compass')
     g.circle_from('sum1','N1','O','N2');g.meet('N4','sum1','h',((1+math.sqrt(2))/2,0))
     g.circle_from('sum2','N4','O','N3');g.meet('N5','sum2','h',(D,0))
+    if d_only:return None
     step('Draw a circle with centre N2 through O. It crosses the horizontal line again at N6, right of N2. '
          'Draw a circle with centre N6 through O. It crosses that line again at N7, right of N6.', 'compass')
     g.circle_through('root2','N2','O');g.meet('N6','root2','h',(math.sqrt(2),0))
