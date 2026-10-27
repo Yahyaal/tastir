@@ -246,7 +246,42 @@ export function finishOf(model: Model, coloring: Coloring): Finish {
  * A piece type's key: its shape, so a color stays with the shape when the
  * same pieces come back (after free inking, for instance).
  */
-export const typeKey = (t: PieceType) => `${t.vertices}:${t.area.toFixed(4)}`;
+const outlineKeys = new WeakMap<PieceType, string>();
+export function typeKey(t: PieceType): string {
+  const base = `${t.vertices}:${t.area.toFixed(4)}`;
+  if (!t.outline) return base;
+  const cached = outlineKeys.get(t);
+  if (cached) return cached;
+  const polygon = t.outline;
+  const n = polygon.length;
+  const at = (i: number) => polygon[(i + n * n) % n]!;
+  const candidates: string[] = [];
+  // The ordered edge lengths and turns determine the whole outline. Canonical
+  // traversal and reflection keep the key when free ink finds another copy.
+  for (const direction of [-1, 1]) {
+    for (const mirror of [-1, 1]) {
+      const entries = polygon.map((p, i) => {
+        const before = at(i - direction);
+        const after = at(i + direction);
+        const ax = p.x - before.x,
+          ay = p.y - before.y;
+        const bx = after.x - p.x,
+          by = after.y - p.y;
+        const turn = Math.atan2(ax * by - ay * bx, ax * bx + ay * by);
+        return `${Math.round(Math.hypot(bx, by) * 1e4)},${Math.round(mirror * turn * 1e4)}`;
+      });
+      // Reversed traversal visits the original indices in descending order.
+      if (direction === -1) entries.reverse();
+      for (let start = 0; start < n; start++)
+        candidates.push(
+          [...entries.slice(start), ...entries.slice(0, start)].join(';'),
+        );
+    }
+  }
+  const key = `${base}:${candidates.sort()[0]}`;
+  outlineKeys.set(t, key);
+  return key;
+}
 
 /** How a wall is coloured: ring by ring round each rosette, one colour
  * per shape, or by where each piece sits (a tutorial's placements). */
