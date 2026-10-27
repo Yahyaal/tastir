@@ -89,3 +89,21 @@ Tiling Search has no list of sixteen-fold tilings, so Claude read every page of 
 | S4 | MET1, SM27, MET2, SM31 | Mughal jali screens, two-level, 493–916 pieces; MET1 and SM27 may be the same design | done 27 Oct: MET1 `mughal-jali-octagons`, SM27 `salim-chishti-octagons` (its variant), MET2 `jali-screen-pinwheel`; SM31 skipped (a small Qur'an design with strokes drawn over it) |
 
 Left for later: N13 (Bahia Palace, 2403 pieces) and S32A (Royal Palace, Fès, 32-pointed stars, 5001 pieces).
+
+## Ten-fold batches (27 October 2026)
+
+The library has a single ten-fold tutorial (`ten-pointed-star-decagon-rect`). These are the tilings on Tiling Search's other lists whose angles are multiples of 36° or 18°, with exact geometry and under 1000 pieces (`docs/research/tilingsearch-lists/claude-10.json` in the main checkout; files in `docs/research/tilingsearch-lists/<code>/`). Builders follow the brief above and the sixteen-fold section's notes on files and photos, with these changes:
+
+- **The grid.** Ten-pointed stars bring the golden ratio φ = (1 + √5)/2: cos 36° = φ/2 and cos 72° = (φ − 1)/2, while the sines need √(10 ± 2√5)/4. Snap in the frame of a star (radius and angle about its centre) first, then fit lengths as (a + b√5)/c with small whole numbers. A regular pentagon and decagon are constructible: divide the circle into ten by the classic construction (the golden section of the radius), and say it in steps the learner can follow. `ten-pointed-star-decagon-rect` is the library's example; reuse its opening where a design shares it.
+- **Symmetry.** Ten-fold stars almost never tile with ten-fold turns: these are mostly pmm, cmm or pm, so use `fold` 2 (or 1 for pm), with O at a half-turn centre at the middle of a star, and `star: 10`. Read the group from each page; where it says "?", read it from the drawing.
+- **"Completion?"** MIR1's page calls it a completion of a partial original; build what the drawing shows and say so in `construction.changes`.
+- **Not constructible.** If a length needs anything beyond square roots, skip the tiling and say why.
+
+| Batch | Tilings | Notes | State |
+|---|---|---|---|
+| T1 | F207, BON15, SIVAS4, S31A | Fatehpur Sikri (126 pieces), Gunbad-i Qabud (pm), Sivas (coloured interlacing), Mirza Akber | started 27 Oct, 19:22 UTC |
+| T2 | F66B, SIVAS3, SM28, SM6 | Tayabad (pmm), Sifahidiye madrasa in Sivas (coloured interlacing), two Fatehpur Sikri panels of the same size that may be one design | started 27 Oct, 19:22 UTC |
+| T3 | P183, SHAF10, MIR17, MIR26 | Bourgoin (18°), Isfahan, and two Üsküdar mosques (pmm) | waiting |
+| T4 | MIR11, MIR1, TOP1, E41 (data18) | Çamlıca mosque (two), Topkapı Palace door (993 pieces), and the sixteen-fold Sala del Mexuar dado in the Alhambra, paired with Wade's photo SPA 1917 (its files are in `E41-data18/`) | waiting |
+
+Left for later: the ten-fold panels over 1000 pieces (TOP4, RIG3, TUR1, MIR4, P190, MIR2, IRA0601, D3, STAR).
