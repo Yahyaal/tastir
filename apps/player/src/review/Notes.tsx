@@ -30,6 +30,12 @@ export const DOCS: readonly {
     text: read('PROJECT.md'),
   },
   {
+    key: 'library-browsing',
+    label: 'Plan: browsing the library',
+    file: 'LIBRARY-BROWSING-PLAN.md',
+    text: read('LIBRARY-BROWSING-PLAN.md'),
+  },
+  {
     key: 'yours',
     label: 'Your own patterns',
     file: 'USER-PATTERNS.md',
