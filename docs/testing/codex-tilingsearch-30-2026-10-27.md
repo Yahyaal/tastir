@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Twenty-nine tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87, MIR24, DA1, TAI1, AJL8, EGY1030, SHAF18 and F38. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. Two entries remain pending: MOR1118 and OR1.
+Thirty tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87, MIR24, DA1, TAI1, AJL8, EGY1030, SHAF18, F38 and OR1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. One entry remains pending: MOR1118.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -60,7 +60,7 @@ IND0408 and IND0917 have the exact existing `six-fold-star-and-hexagons` fine ti
 
 SM12 adds equilateral triangles to the fine star-and-hexagon net. Its 20 pt edges give triangle area 100√3, regular hexagon 600√3 and star 1200√3. The blue coarse star/hexagon strokes cross the filled fine pieces: 48 of 288 central sampled stroke segments are off every face boundary, with separation up to 8.98521 pt. The drawing sheet also shows that second net across the fine polygons. It is skipped as an overlay, not declared an exact duplicate. The page cites E. W. Smith, part I, plate XLIV, Salim Chishti’s tomb, Fatehpur Sikri; no photograph was checked.
 
-The stroke audit samples quarter, middle and three-quarter points of central stroke-only segments against every filled polygon boundary. Raw stroke paths, exact sample results and complete PDF overlays remain under each local research folder. The source pages’ “edge-to-edge” descriptions concern their fine polygon tilings, and do not establish that the extra drawn nets are their boundaries. The initial SM1 sample was confined to the centre and missed its coarse fret; the full-page correction below supersedes that result. ASL20 needs a closer reading of its many small filled facets and is still pending.
+The stroke audit samples quarter, middle and three-quarter points of central stroke-only segments against every filled polygon boundary. Raw stroke paths, exact sample results and complete PDF overlays remain under each local research folder. The source pages’ “edge-to-edge” descriptions concern their fine polygon tilings, and do not establish that the extra drawn nets are their boundaries. The initial SM1 sample was confined to the centre and missed its coarse fret; the full-page correction below supersedes that result. ASL20’s small filled facets were subsequently resolved in the skip audit below.
 
 ## IND0403 — `agra-twelve-six-stars`
 
@@ -399,3 +399,16 @@ A full-outline inventory confirms seven congruence classes: four kites and three
 I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/F38/overlay.png`. Every boundary agrees. All228 actual player fills match source interior samples, retaining orange, blue, white, two greens and grey under the primitive repeat. The palette is illustrative. Credits retain Dominique Clévenot, Ornament and decoration in Islamic architecture(2000), page45, figure38, photographs by Gérard Degeorge, Shah Mosque, Isfahan(1629AD,1038AH). The source explicitly states that the original wooden grille has no colour; the tutorial explains that its colours come from the diagram. No monument photograph was independently checked. The chiral arrangement differs from the other divided-star meshes; no exact duplicate was found.
 
 Catalog215, all six targeted golden assertions and the full weave group(226 total),1075 player text/helper assertions and42 schema assertions passed serially under3GB. Helper-free texts omit the intercept line, unused odd rotations and wholly hidden frame step. No shared application or reserved file changed.
+
+
+## OR1 — `chehel-sotoun-divided-stars`
+
+This forty-one-step tutorial is a filling variant of SHAF18 and shares its complete construction. O is at PDF(277.98,390.52), OA=35(1+√3)/2pt, and the teaching frame turns90°. Bright main faces are separated from brown bevel facets; the7pt bands expand3.5pt to their centres. The unturned comparison initially suggested a different arrangement, but turning the full SHAF18 overlay90° matches every OR1 boundary. The exact kite proportions, diamond half-diagonal L=2√2+√6, repeat and160-piece inventory are identical. The source calls OR1 cmm; the tutorial directly checks the ink’s half-turn and mirrors with fold two.
+
+Independent source-kite shoelaces give six_kite√3−√2, thirty-six; connector_kite(1+√2−√3)/2, seventy-two; four_kite(√3−1)/2, forty; and three_kite1−√3/3, twelve. Their counted sum is28+16√3=2L². Worst expanded source-corner distance is0.00020725OA. Golden checks confirm all four types, counts, area and symmetry without slivers or off-construction endpoints. The two extra collinear ink divisions compared with SHAF18 do not change the pieces or their geometry.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/OR1/overlay.png`. Every band centre agrees. Every one of the656 extracted main source faces matches the actual player fill after its geometric translation. A primitive colour repeat conflicts at twelve positions because two central six-stars are olive while their translated neighbours are green. A two-by-two colour repeat removes every conflict. Twelve placement rules retain those olive kites; the other classes are green six-kites, orange four-kites, blue three-kites and beige connectors. The source observes554 of the640 colour-repeat placements, with no disagreement; unobserved green six-kites use the common default. Palette values are illustrative. This is a filling-only family with SHAF18, rather than an independent geometric design.
+
+Credits retain Roberto Orazi, Grate lignee nell’architettura safavide, Roma: IsMEO(1976), figure9, page245, Chehel Sotoun Palace, Isfahan. No monument photograph was independently checked. The common construction imports SHAF18’s builder rather than copying its operations. Helper-free text is shared except that OR1 retains all four diamond sides, so its frame caption names all four.
+
+Catalog216, all six targeted golden assertions and the full weave group(227 total),1080 player text/helper assertions and42 schema assertions passed serially under3GB. No shared application or reserved file changed.
