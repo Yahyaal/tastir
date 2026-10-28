@@ -36,7 +36,7 @@ def description(ref):
     return text+(f', turned round O by {30*int(turn)}°,' if turn else '')
 
 
-def build():
+def build(width_only=False):
     star(opening_only=True)
     step('The first circle crosses the line at 45° from OA at P1, above O. '
          'Draw a circle with centre O and opening AE. It crosses that line at P2, above O. '
@@ -55,6 +55,7 @@ def build():
          'It crosses that line at N6, right of N5.', 'compass')
     g.circle_from('height','N3','O','N4');g.meet('N5','height','h',(V,0))
     g.circle_from('width','N5','O','N3');g.meet('N6','width','h',(L,0))
+    if width_only:return None
     step('Draw a circle with centre O through N5. It crosses the vertical line at N7, above O. '
          'Draw a vertical line through N6. Draw a horizontal line through N7. '
          'Turn both lines round O by 180°. They frame the tile, with corners T1 to T4.', 'compass')
