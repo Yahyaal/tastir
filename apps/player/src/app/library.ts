@@ -16,6 +16,8 @@ export interface Preview {
   readonly level: string;
   /** Words a search finds it by beyond its names: sources and pieces. */
   readonly words?: string;
+  /** The points of the stars among its pieces, for a search by points. */
+  readonly stars?: readonly number[];
   readonly fold: number;
   readonly steps: number;
   readonly photos: boolean;

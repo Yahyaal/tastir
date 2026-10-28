@@ -1,4 +1,5 @@
 import { holds, type Entry } from './library';
+import { readQuery, scoreOf } from './search';
 
 /** The library's filters: words to look for, a region, a tradition, a
  * level and a fold, each optional. */
@@ -146,30 +147,51 @@ export function filtered(
   entries: readonly Entry[],
   { query, region, style, level, fold }: LibraryFilters,
 ): readonly Entry[] {
-  const words = plain(query ?? '')
-    .split(/\s+/)
-    .filter(Boolean);
-  const matches = (e: Entry) => {
+  // "16 point" in the search box asks for stars of sixteen points.
+  const asked = readQuery(query ?? '');
+  const score = (e: Entry) => {
     const about = aboutOf(e.preview ?? e.json);
-    const text = words.length ? searchText(e) : '';
-    return (
-      words.every((w) => text.includes(w)) &&
-      (!region || about.region === region) &&
-      (!style || about.style === style) &&
-      (!level || about.level === level) &&
-      (!fold || about.fold === fold)
-    );
+    if (
+      (region && about.region !== region) ||
+      (style && about.style !== style) ||
+      (level && about.level !== level) ||
+      (fold && about.fold !== fold) ||
+      // "16 point" in the search also finds a sixteen-pointed star on a
+      // square tile, which the menu files as 4- or 8-fold.
+      (asked.fold &&
+        about.fold !== asked.fold &&
+        !e.preview?.stars?.includes(asked.fold))
+    )
+      return undefined;
+    return scoreOf(e, asked.words);
   };
-  // A family shows the face of its first member that matches: under
-  // Morocco, the Arrayanes squares family shows its Moroccan tile.
-  return entries.flatMap((e) => {
+  // A family shows the face of its best-matching member: under Morocco,
+  // the Arrayanes squares family shows its Moroccan tile.
+  const shown = entries.flatMap((e) => {
     const members = [e, ...(e.variations ?? [])];
-    const face = members.find(matches);
+    let face: Entry | undefined;
+    let best = -1;
+    for (const m of members) {
+      const s = score(m);
+      if (s !== undefined && s > best) {
+        best = s;
+        face = m;
+      }
+    }
     if (!face) return [];
-    if (face === e) return [e];
-    const { variations: _own, ...shown } = face;
-    return [{ ...shown, variations: members.filter((m) => m !== face) }];
+    if (face === e) return [{ entry: e, best }];
+    const { variations: _own, ...rest } = face;
+    return [
+      {
+        entry: { ...rest, variations: members.filter((m) => m !== face) },
+        best,
+      },
+    ];
   });
+  // With words to look for, the best matches come first; the library's
+  // own order breaks ties.
+  if (asked.words.length) shown.sort((a, b) => b.best - a.best);
+  return shown.map((s) => s.entry);
 }
 
 /** The filters the side menu sets, one value each. */
@@ -203,25 +225,6 @@ export function facetCounts<K extends 'region' | 'style' | 'level' | 'fold'>(
     }
   }
   return counts;
-}
-
-/** Lower case without accents, so “fes” finds “Fès” and “salon” “Salón”. */
-const plain = (text: string) =>
-  text.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
-
-/** What a search looks through: the names, the line under them and the
- * tradition. */
-function searchText(entry: Entry): string {
-  const json = (entry.json ?? {}) as Record<string, unknown>;
-  const p = entry.preview;
-  const words = [
-    p?.title ?? json['title'],
-    p?.short ?? json['short'],
-    p?.subtitle ?? json['subtitle'],
-    p?.style ?? json['style'],
-    entry.id.replace(/-/g, ' '),
-  ].filter((w): w is string => typeof w === 'string');
-  return plain(words.join(' '));
 }
 
 /** A tutorial's title before it is loaded. */

@@ -331,7 +331,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
                 <span className="visually-hidden">Search patterns</span>
                 <input
                   type="search"
-                  placeholder="Search by name or place"
+                  placeholder="Search: a place, a source, “16 point”…"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                 />

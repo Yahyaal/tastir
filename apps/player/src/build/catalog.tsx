@@ -58,6 +58,7 @@ async function main() {
       ...(t.region ? { region: t.region } : {}),
       level: t.level,
       words: searchWords(t),
+      stars: starsOf(model.pattern.pieces),
       // As the library shows it: the main star's points, else the tile's.
       fold: t.star ?? t.fold,
       steps: shownSteps(withHelpers(model, false).tutorial).length,
@@ -79,6 +80,33 @@ async function main() {
   );
   console.log(`Prepared ${catalog.length} library previews.`);
 }
+/**
+ * The points of every star among the pieces, largest first: a piece whose
+ * corners turn out and in by turns, with five points or more. A rosette on
+ * a square tile is filed as 4- or 8-fold, but a search for “16 point”
+ * should still find its sixteen-pointed star.
+ */
+function starsOf(
+  pieces: readonly { polygon: readonly { x: number; y: number }[] }[],
+): number[] {
+  const points = new Set<number>();
+  for (const { polygon: p } of pieces) {
+    const n = p.length;
+    if (n < 10 || n % 2) continue;
+    const turn = (i: number) => {
+      const a = p[(i + n - 1) % n]!;
+      const b = p[i]!;
+      const c = p[(i + 1) % n]!;
+      return (b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x) > 0;
+    };
+    let alternates = true;
+    for (let i = 0; i < n && alternates; i++)
+      alternates = turn(i) !== turn((i + 1) % n);
+    if (alternates) points.add(n / 2);
+  }
+  return [...points].sort((a, b) => b - a);
+}
+
 /** What a search may find a tutorial by beyond its names: its sources and
  * who made them, and its piece names. */
 function searchWords(t: Tutorial): string {
