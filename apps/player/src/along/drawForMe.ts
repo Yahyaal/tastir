@@ -78,18 +78,21 @@ export function drawForMe(
 /**
  * The board with the tutorial's tile on it, and the tile's name there:
  * the board's own polygon when it has one in its place, else the tile
- * drawn from the corners the board has (one more step).
+ * drawn from the corners the board has (one more step). Constructed
+ * piece outlines are taken onto the board too, with their references mapped.
  */
 export function withTutorialTile(
   tutorial: Tutorial,
   tScene: Scene,
   draft: Draft,
-): { draft: Draft; cell: string; panel?: string } {
+): { draft: Draft; cell: string; panel?: string; expect: Tutorial['expect'] } {
   const b = builder(
     tutorial,
     tScene,
     draft,
-    'The tile, which repeats edge to edge.',
+    tutorial.expect.pieces.some((piece) => piece.outline)
+      ? 'Mark the tile and the constructed piece outlines.'
+      : 'The tile, which repeats edge to edge.',
     check(draft.steps),
   );
   const cell = b.resolve(tutorial.pattern.cell);
@@ -98,7 +101,13 @@ export function withTutorialTile(
     : undefined;
   const carriers = inkCarriers(tScene, inkStrokes(tScene, tutorial));
   for (const c of carriers) b.resolve(c);
-  return { draft: b.draft(), cell, ...(panel ? { panel } : {}) };
+  const expect = {
+    ...tutorial.expect,
+    pieces: tutorial.expect.pieces.map((piece) =>
+      piece.outline ? { ...piece, outline: b.resolve(piece.outline) } : piece,
+    ),
+  };
+  return { draft: b.draft(), cell, ...(panel ? { panel } : {}), expect };
 }
 
 /** Takes references to the tutorial's elements from the board by geometry,

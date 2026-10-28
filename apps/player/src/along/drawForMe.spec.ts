@@ -11,6 +11,7 @@ import {
   strokesOf,
 } from '@tastir/engine';
 import { parseTutorial, type Tutorial } from '@tastir/schema';
+import { renameSpec } from '../editor/blocks';
 import { emptyDraft, type Draft } from '../editor/document';
 import { LIBRARY } from '../app/library';
 import { shownBeats, withHelpers } from '../app/model';
@@ -106,6 +107,50 @@ describe('Draw it for me through every tutorial', () => {
     const sorted = (ps: typeof golden.pieces) =>
       [...ps].sort((x, y) => x.area - y.area || x.vertices - y.vertices);
     expect(sorted(got.pieces)).toEqual(sorted(golden.pieces));
+  });
+
+  it('maps piece specimens to differently named polygons on the learner’s board', () => {
+    const tutorial = tutorials.find(
+      (t) => t.id === 'barsbay-twelve-star-doors',
+    )!;
+    const scene = evaluate(tutorial);
+    const rename = (name: string) =>
+      name === 'O' || name === 'A'
+        ? name
+        : name.replace(/^([^@.]+)/, '$1_mine');
+    const create = (specs: NonNullable<Tutorial['steps'][number]['create']>) =>
+      Object.fromEntries(
+        Object.entries(specs).map(([name, spec]) => [
+          rename(name),
+          renameSpec(spec, rename),
+        ]),
+      );
+    const { pattern: _pattern, expect: _expect, ink: _ink, ...base } = tutorial;
+    const draft: Draft = {
+      ...base,
+      steps: tutorial.steps.map((step) => ({
+        ...step,
+        ...(step.highlight ? { highlight: step.highlight.map(rename) } : {}),
+        ...(step.create ? { create: create(step.create) } : {}),
+        ...(step.parts
+          ? {
+              parts: step.parts.map((part) => ({
+                ...part,
+                create: create(part.create),
+              })),
+            }
+          : {}),
+      })),
+    };
+    const board = readyToInk(tutorial, scene, draft);
+    const specimens = board.expect!.pieces.flatMap((p) => p.outline ?? []);
+    expect(specimens).toEqual(['firstConnector_mine', 'secondConnector_mine']);
+    const made = tutorialOf(withTutorialInk(tutorial, scene, board));
+    if (!('tutorial' in made)) throw new Error(made.reason);
+    expect(goldenOf(made.tutorial)).toEqual(expectedGolden(tutorial));
+    expect(made.tutorial.expect.pieces.flatMap((p) => p.outline ?? [])).toEqual(
+      specimens,
+    );
   });
 
   it('draws a step on a board drawn another way', () => {
