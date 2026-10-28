@@ -18,6 +18,8 @@ import { OpenAILogin, type OpenAIOptions } from './openai.js';
 import type { Db } from './pg.js';
 import { DirectClient, failure, route } from './routes.js';
 import type { Studio } from './studio.js';
+import { Feedback, type FeedbackOptions } from './feedback.js';
+import { feedbackRoutes } from './feedbackRoutes.js';
 
 /**
  * The hosted studio as one Express app, which Vercel runs as a function:
@@ -25,6 +27,7 @@ import type { Studio } from './studio.js';
  * with Google and approves each app once, and /connections lists them.
  */
 export interface HostedOptions extends Omit<OwnerOptions, 'baseUrl'> {
+  readonly feedback?: FeedbackOptions;
   readonly studio: Studio;
   readonly db: Db;
   readonly baseUrl: URL;
@@ -291,6 +294,25 @@ ${chatgpt}
     else await auth.rename(id, String(request.body.name ?? ''));
     response.redirect(303, '/connections');
   });
+
+  // Public intake has its own parser, quotas and bot checks; never grants project access.
+  app.use(
+    '/api',
+    feedbackRoutes(
+      new Feedback(
+        options.db,
+        options.feedback ?? {
+          enabled: false,
+          siteKey: '',
+          contact: '',
+          verify: async () => false,
+        },
+        options.secret,
+      ),
+      owner,
+      baseUrl.origin,
+    ),
+  );
 
   // The studio page's requests: the same ones the local studio answers,
   // each needing the owner's session. A cross-site form cannot send JSON,

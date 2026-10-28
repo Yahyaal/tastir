@@ -78,6 +78,8 @@ import { useAlongWork } from './useAlongWork';
 import { useHistory } from './useHistory';
 import { useInkBoard } from './useInkBoard';
 import { LessonTitle } from '../app/LessonTitle';
+import { FeedbackButton } from '../feedback/FeedbackButton';
+import { basicFeedbackContext } from '../feedback/client';
 
 /** The draw-along page (#/<tutorial>/draw), once the tutorial is loaded. */
 export function DrawAlongPage({
@@ -94,6 +96,13 @@ export function DrawAlongPage({
         <section className="notice">
           <h1>This pattern cannot be drawn along</h1>
           <p>{error}</p>
+          <FeedbackButton
+            context={basicFeedbackContext(
+              address,
+              'Pattern could not be drawn along',
+              'error',
+            )}
+          />
           <p className="notice-links">
             <a className="button secondary" href="#/">
               All patterns
@@ -1278,6 +1287,37 @@ export function DrawAlong({
           <span>All patterns</span>
         </a>
         <LessonTitle tutorial={tutorial} prefix="Draw along: " />
+        <FeedbackButton
+          context={{
+            ...basicFeedbackContext(address, tutorial.title, 'draw'),
+            stage: inking
+              ? 'ink'
+              : repeating
+                ? 'repeat'
+                : coloring
+                  ? 'color'
+                  : 'step',
+            index,
+            label: progressLabel,
+            stepIds: !inking && !afterInk && info ? [info.step] : [],
+            instruction: (inking
+              ? (tutorial.ink.text ?? '')
+              : afterInk
+                ? progressLabel
+                : (info?.text ?? '')
+            ).slice(0, 8192),
+            hintLevel,
+            tool: toolId,
+          }}
+          tutorial={tutorial}
+          board={() => boardRef.current}
+          snapshot={() => ({
+            draft,
+            inked: [...chosen],
+            copies: copyHistory.now.map((c) => c.at),
+            coloring: colorHistory.now,
+          })}
+        />
         <label
           className="along-helpers"
           title="Construction lines the pattern never runs along: they only help find points. Hidden, the drawing looks as simple as it is."

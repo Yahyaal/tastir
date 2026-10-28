@@ -4,6 +4,7 @@
   "buildCommand": "node tools/studio-build.mjs && VITE_TASTIR_STUDIO=hosted pnpm exec vite build --config apps/player/vite.config.mts --outDir ../../dist/studio-hosted --emptyOutDir",
   "outputDirectory": "dist/studio-hosted",
   "regions": ["cle1"],
+  "crons": [{ "path": "/api/feedback/cleanup", "schedule": "0 8 * * *" }],
   "functions": {
     "api/index.js": {
       "maxDuration": 60,

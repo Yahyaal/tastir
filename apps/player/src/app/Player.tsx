@@ -44,6 +44,8 @@ import {
 } from './model';
 import { Original } from './Original';
 import { LessonTitle, byOf, stepSources } from './LessonTitle';
+import { FeedbackButton } from '../feedback/FeedbackButton';
+import { basicFeedbackContext } from '../feedback/client';
 import { ConstructionSource } from './ConstructionSource';
 import { NextPattern, PatternMenu, PreviousPattern } from './PatternNav';
 import { ColourPanel } from './ColourPanel';
@@ -193,6 +195,7 @@ export function Player({
   design: opened,
   address: given,
   banner,
+  reviewIndex,
 }: {
   model: Model;
   /** A line over the workspace, such as a shared pattern's Keep a copy. */
@@ -203,6 +206,8 @@ export function Player({
   /** Where the tutorial lives: its id in the library, or mine/<id> for
    * the learner's own pattern. */
   address?: string;
+  /** An isolated owner review uses address="shared", which disables progress autosaves. */
+  reviewIndex?: number;
 }) {
   // Helper lines (construction lines the pattern never runs along) are
   // left out unless the learner asks for them.
@@ -239,6 +244,9 @@ export function Player({
   );
   const [index, setIndex] = useState(
     () =>
+      (reviewIndex === undefined
+        ? undefined
+        : Math.max(0, Math.min(reviewIndex, stagesOf(tutorial).length - 1))) ??
       resumedAt ??
       (start === 'result'
         ? stagesOf(tutorial).length - 1
@@ -254,7 +262,9 @@ export function Player({
   const last = stages.length - 1;
   const [speed, setSpeed] = useState(1);
   const [playing, setPlaying] = useState(
-    start === 'beginning' && resumedAt === undefined,
+    start === 'beginning' &&
+      resumedAt === undefined &&
+      reviewIndex === undefined,
   );
   const plateRef = useRef<HTMLElement>(null);
   const clock = useRef<{ index: number; remaining: number } | undefined>(
@@ -1084,6 +1094,28 @@ export function Player({
         </a>
         {browsing ? <PreviousPattern id={address} view={view} /> : null}
         <LessonTitle tutorial={tutorial} />
+        <FeedbackButton
+          context={{
+            ...basicFeedbackContext(
+              address,
+              tutorial.title,
+              colorStage ? 'result' : 'watch',
+            ),
+            stage: stage.kind,
+            index,
+            stepIds:
+              stage.kind === 'step' ? [beats[stage.beat - 1]?.step ?? 1] : [],
+            label,
+            instruction: text.slice(0, 8192),
+          }}
+          tutorial={tutorial}
+          pause={() => setPlaying(false)}
+          board={() => svgRef.current}
+          snapshot={() => ({
+            draft: inking.shown.tutorial,
+            coloring: colorHistory.now,
+          })}
+        />
         {browsing ? <NextPattern id={address} view={view} /> : null}
         {browsing ? (
           <Variations
@@ -1675,12 +1707,14 @@ export function Play({
   design,
   address,
   banner,
+  reviewIndex,
 }: {
   json: unknown;
   start?: Start;
   design?: Design;
   address?: string;
   banner?: React.ReactNode;
+  reviewIndex?: number;
 }) {
   const { model, error, progress } = useModel(json);
   if (error !== undefined) return <Broken message={error} />;
@@ -1698,6 +1732,7 @@ export function Play({
       design={design}
       address={address}
       banner={banner}
+      reviewIndex={reviewIndex}
     />
   );
 }
@@ -1725,6 +1760,13 @@ export function Broken({ message }: { message: string }) {
         <h1>This pattern cannot be shown</h1>
         <p>Tastir could not open this address. What it found:</p>
         <pre className="error">{message}</pre>
+        <FeedbackButton
+          context={basicFeedbackContext(
+            '',
+            'Pattern could not be shown',
+            'error',
+          )}
+        />
         <p className="notice-links">
           <a className="button" href="#/">
             Back to all patterns

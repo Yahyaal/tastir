@@ -136,6 +136,33 @@ export function validateSettings(env) {
       ),
     );
   }
+  if (env.TASTIR_FEEDBACK_ENABLED === '1') {
+    const siteKey = env.TURNSTILE_SITE_KEY?.trim() ?? '';
+    const tokenSecret = env.TURNSTILE_SECRET_KEY?.trim() ?? '';
+    const contact = env.TASTIR_FEEDBACK_CONTACT?.trim() ?? '';
+    const cronSecret = env.CRON_SECRET ?? '';
+    const ready =
+      siteKey &&
+      tokenSecret &&
+      !placeholder(siteKey) &&
+      !placeholder(tokenSecret) &&
+      !/^[123]x0{10,}/.test(siteKey) &&
+      !/^[123]x0{10,}/.test(tokenSecret) &&
+      contact.length <= 254 &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact) &&
+      cronSecret.length >= 32 &&
+      cronSecret === cronSecret.trim() &&
+      !/^([\s\S])\1+$/.test(cronSecret);
+    checks.push(
+      check(
+        'Feedback setup',
+        !!ready,
+        ready
+          ? 'Feedback settings present; verify real Turnstile, private storage, cron and provider limits before enabling.'
+          : 'Enabled feedback needs production TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY, a valid TASTIR_FEEDBACK_CONTACT, and a random CRON_SECRET of at least 32 characters. Test keys cannot enable production intake.',
+      ),
+    );
+  }
   return checks;
 }
 

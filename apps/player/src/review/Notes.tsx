@@ -36,6 +36,18 @@ export const DOCS: readonly {
     text: read('LIBRARY-BROWSING-PLAN.md'),
   },
   {
+    key: 'feedback',
+    label: 'Plan: pattern feedback',
+    file: 'FEEDBACK-PLAN.md',
+    text: read('FEEDBACK-PLAN.md'),
+  },
+  {
+    key: 'feedback-setup',
+    label: 'Feedback setup and review',
+    file: 'FEEDBACK-SETUP.md',
+    text: read('FEEDBACK-SETUP.md'),
+  },
+  {
     key: 'regions',
     label: 'Proposed regions',
     file: 'patterns/REGIONS.md',

@@ -1,6 +1,7 @@
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { BlobPhotos } from './blob.js';
+import { BlobPhotos, BlobFeedbackImages } from './blob.js';
+import { turnstileVerifier } from './feedback.js';
 import { hostedApp } from './hosted.js';
 import { connectPostgres } from './pg.js';
 import { Studio } from './studio.js';
@@ -42,7 +43,38 @@ export async function hostedFromEnv(options: { site?: string } = {}) {
       : undefined,
   );
   const studio = new Studio(root, join(repo, 'tutorials'), backend);
+  const feedbackEnabled = process.env['TASTIR_FEEDBACK_ENABLED'] === '1';
+  const siteKey = process.env['TURNSTILE_SITE_KEY']?.trim() ?? '';
+  const botSecret = process.env['TURNSTILE_SECRET_KEY']?.trim() ?? '';
+  const feedbackContact = process.env['TASTIR_FEEDBACK_CONTACT']?.trim() ?? '';
+  if (
+    feedbackEnabled &&
+    (!siteKey ||
+      !botSecret ||
+      feedbackContact.length > 254 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(feedbackContact) ||
+      /^[123]x0{10,}/.test(siteKey) ||
+      /^[123]x0{10,}/.test(botSecret) ||
+      (process.env['CRON_SECRET']?.trim().length ?? 0) < 32)
+  )
+    throw new Error(
+      'Feedback needs production Turnstile keys, a deletion contact and a cleanup secret before enabling intake.',
+    );
   return hostedApp({
+    feedback: {
+      enabled: feedbackEnabled,
+      siteKey,
+      contact: feedbackContact,
+      verify: turnstileVerifier(
+        botSecret,
+        new URL(setting('TASTIR_STUDIO_URL')).hostname,
+      ),
+      vercel: process.env['VERCEL'] === '1',
+      cronSecret: process.env['CRON_SECRET'],
+      ...(process.env['BLOB_STORE_ID'] || process.env['BLOB_READ_WRITE_TOKEN']
+        ? { images: new BlobFeedbackImages() }
+        : {}),
+    },
     studio,
     db: backend.db,
     baseUrl: new URL(setting('TASTIR_STUDIO_URL')),
