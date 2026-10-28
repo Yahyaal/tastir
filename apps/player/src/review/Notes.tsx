@@ -36,6 +36,12 @@ export const DOCS: readonly {
     text: read('LIBRARY-BROWSING-PLAN.md'),
   },
   {
+    key: 'regions',
+    label: 'Proposed regions',
+    file: 'patterns/REGIONS.md',
+    text: read('patterns/REGIONS.md'),
+  },
+  {
     key: 'yours',
     label: 'Your own patterns',
     file: 'USER-PATTERNS.md',
