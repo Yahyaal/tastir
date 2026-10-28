@@ -5,6 +5,7 @@
   "short": "Zellige wheel, shifted rows",
   "fold": 8,
   "style": "Moroccan",
+  "region": "Morocco",
   "level": "advanced",
   "construction": {
     "basis": "mixed",

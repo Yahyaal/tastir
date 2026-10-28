@@ -5,7 +5,8 @@
   "short": "Bourgoin 52 octagon rows",
   "subtitle": "Bourgoin, plate 52",
   "fold": 2,
-  "style": "Book pattern",
+  "style": "Islamic",
+  "region": "Books and other",
   "level": "intermediate",
   "given": {"O": "The centre of an eight-pointed star.", "A": "Sets the circle inside the guide octagon."},
   "construction": {

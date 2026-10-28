@@ -1,6 +1,6 @@
 # Plan: browsing a library of two hundred patterns (27 October 2026)
 
-The owner asked on 27 October 2026 for easier browsing now that the library has more than 170 patterns: pagination, a side menu for exploring, and a smarter search. This is the plan, waiting for the owner's OK. Nothing in it is built yet.
+The owner asked on 27 October 2026 for easier browsing now that the library has more than 170 patterns: pagination, a side menu for exploring, and a smarter search. The owner approved it on 27 October 2026. Steps 1 and 2 are done: the owner approved [the region and tradition of every tutorial](patterns/REGIONS.md), and both are now in the tutorials and the library previews.
 
 ## Where things stand
 

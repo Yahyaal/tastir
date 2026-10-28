@@ -7,7 +7,8 @@
   "given": {"O": "The centre of the turned star.", "A": "A point on the star’s circle, level with O."},
   "fold": 4,
   "star": 8,
-  "style": "Moroccan",
+  "style": "Nasrid",
+  "region": "Alhambra and Nasrid Spain",
   "level": "advanced",
   "construction": {
     "basis": "reconstruction",

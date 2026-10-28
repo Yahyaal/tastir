@@ -7,7 +7,8 @@
   "given": {"O": "The centre of a small eight-pointed star.", "A": "A point of that star."},
   "fold": 4,
   "star": 8,
-  "style": "Spanish",
+  "style": "Mudéjar",
+  "region": "Spain and Portugal, other",
   "level": "advanced",
   "construction": {
     "basis": "reconstruction",

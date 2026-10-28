@@ -5,7 +5,8 @@
   "short": "Tash-Khauli crosses",
   "subtitle": "Tash-Khauli palace, Khiva",
   "fold": 4,
-  "style": "Central Asian",
+  "style": "Timurid",
+  "region": "Central Asia",
   "level": "beginner",
   "construction": {
     "basis": "reconstruction",

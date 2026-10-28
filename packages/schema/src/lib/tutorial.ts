@@ -399,6 +399,43 @@ const Original = z.strictObject({
   carved: z.boolean().optional(),
 });
 
+/** Where a library pattern is from: the regions the library is browsed by. */
+export const REGIONS = [
+  'Alhambra and Nasrid Spain',
+  'Spain and Portugal, other',
+  'Morocco',
+  'Algeria and Tunisia',
+  'Egypt, Syria and Iraq',
+  'Turkey',
+  'Iran',
+  'Central Asia',
+  'India',
+  'Books and other',
+] as const;
+export type Region = (typeof REGIONS)[number];
+
+/** The traditions a library tutorial's `style` may name. */
+export const TRADITIONS = [
+  'Nasrid',
+  'Mudéjar',
+  'Marinid',
+  'Moroccan',
+  'Maghrebi',
+  'Mamluk',
+  'Tulunid',
+  'Seljuk',
+  'Ottoman',
+  'Persian',
+  'Timurid',
+  'Safavid',
+  'Mughal',
+  'Islamic',
+  'Roman',
+  'Cosmatesque',
+  'Norman Sicily',
+  'Celtic',
+] as const;
+
 export const TutorialShape = z.strictObject({
   format: z.literal(0),
   id: z
@@ -416,7 +453,11 @@ export const TutorialShape = z.strictObject({
   star: z.int().min(3).optional(),
   /** The pattern turns into itself but has no mirror symmetry (a pinwheel). */
   chiral: z.boolean().optional(),
+  /** The tradition. Free text for the learner's own designs; a library
+   * tutorial uses one of TRADITIONS, which a library test checks. */
   style: z.string().min(1),
+  /** Where the pattern is from, for browsing the library. */
+  region: z.enum(REGIONS).optional(),
   level: z.enum(['beginner', 'intermediate', 'advanced']),
   credits: z.array(Credit),
   /** How the teaching sequence was obtained, independently of whether the

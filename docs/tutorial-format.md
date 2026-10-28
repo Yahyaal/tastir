@@ -18,7 +18,7 @@ Every tutorial starts from two given points, `O` and `A`. They define the frame 
 
 ## Names
 
-`title` is the pattern's full name, shown on its lesson. A long title can have a `short` name for the library's cards and menus, and a `subtitle`, the line under it: the place (“Sala de los Reyes, Alhambra”) or whose construction it is (“Samira Mian’s construction”). Both are optional; without them the card shows the title.
+`title` is the pattern's full name, shown on its lesson. A long title can have a `short` name for the library's cards and menus, and a `subtitle`, the line under it: the place (“Sala de los Reyes, Alhambra”) or whose construction it is (“Samira Mian’s construction”). Both are optional; without them the card shows the title. `style` names the tradition and `region` where the pattern is from; the library is browsed by both. A library tutorial takes them from the fixed lists `TRADITIONS` and `REGIONS` in `packages/schema/src/lib/tutorial.ts` (Nasrid, Mudéjar, Marinid, Moroccan, Maghrebi, Mamluk, Tulunid, Seljuk, Ottoman, Persian, Timurid, Safavid, Mughal, Islamic, Roman and a few more; Alhambra and Nasrid Spain, Spain and Portugal, other, Morocco, Algeria and Tunisia, Egypt, Syria and Iraq, Turkey, Iran, Central Asia, India, Books and other), and a library test checks it. Use Marinid for Marinid buildings and Moroccan for the rest of Morocco; a pattern with no building named goes under Books and other and keeps the tradition it was made for. The learner's own designs may name any style and no region.
 
 ## Symmetry
 

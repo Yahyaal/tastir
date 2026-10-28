@@ -4,7 +4,8 @@
   "title": "Bou Inania twelve-fold wall",
   "fold": 4,
   "star": 12,
-  "style": "Marinid zellige (Fès)",
+  "style": "Marinid",
+  "region": "Morocco",
   "level": "advanced",
   "construction": {
     "basis": "mixed",

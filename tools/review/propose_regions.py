@@ -9,10 +9,14 @@ tradition from its current free-text style, cut down to a fixed list, with
 the region deciding where the style is vague. OVERRIDES holds the cases the
 rules get wrong, each with its reason. Writes docs/patterns/REGIONS.md.
 
-Usage: python3 tools/review/propose_regions.py
+Usage: python3 tools/review/propose_regions.py [--write]
+With --write (after the owner approved the list, 27 October 2026) it also
+writes each tutorial's tradition into `style` and its `region` after it.
 """
 import glob
 import json
+import re
+import sys
 import unicodedata
 from collections import Counter
 
@@ -117,14 +121,21 @@ def main():
     for f in sorted(glob.glob('tutorials/*.json')):
         t = json.load(open(f))
         region, tradition, why = propose(t)
+        if '--write' in sys.argv:
+            text = open(f).read()
+            new, n = re.subn(r'\n(\s*)"style": "[^"]*",(\n\s*"region": "[^"]*",)?',
+                             lambda m: f'\n{m.group(1)}"style": "{tradition}",\n{m.group(1)}"region": "{region}",',
+                             text, count=1)
+            assert n == 1, f
+            open(f, 'w').write(new)
         rows.append((region, t['title'], t['id'], t.get('subtitle', ''), t.get('style', ''), tradition, why))
     rows.sort(key=lambda r: (REGIONS.index(r[0]), r[1]))
     regions = Counter(r[0] for r in rows)
     traditions = Counter(r[5] for r in rows)
     out = ['# Proposed region and tradition of every tutorial', '',
            'Step 1 of [the library browsing plan](../LIBRARY-BROWSING-PLAN.md), proposed on 27 October 2026 by '
-           '`tools/review/propose_regions.py` and checked by hand. Nothing is written into the tutorials until the '
-           'owner approves this list. Each tutorial gets one region, from the place it names, and one tradition, '
+           '`tools/review/propose_regions.py` and checked by hand. The owner approved the list and both proposals on '
+           '27 October 2026, and `propose_regions.py --write` wrote it into the tutorials. Each tutorial gets one region, from the place it names, and one tradition, '
            'from its old free-text style cut down to a fixed list; where the style was vague ("Islamic", '
            '"Islamic tilework"), the region decides. Rows the rules got wrong were corrected by hand and say why.',
            '', '## Two questions', '',

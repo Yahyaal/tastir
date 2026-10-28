@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Thumbnail } from '../app/drawing';
 import { loadModel, shownSteps, withHelpers } from '../app/model';
+import type { Tutorial } from '@tastir/schema';
 
 async function main() {
   const root = fileURLToPath(new URL('../../../../', import.meta.url));
@@ -54,7 +55,9 @@ async function main() {
       ...(t.short ? { short: t.short } : {}),
       ...(t.subtitle ? { subtitle: t.subtitle } : {}),
       style: t.style,
+      ...(t.region ? { region: t.region } : {}),
       level: t.level,
+      words: searchWords(t),
       // As the library shows it: the main star's points, else the tile's.
       fold: t.star ?? t.fold,
       steps: shownSteps(withHelpers(model, false).tutorial).length,
@@ -76,6 +79,16 @@ async function main() {
   );
   console.log(`Prepared ${catalog.length} library previews.`);
 }
+/** What a search may find a tutorial by beyond its names: its sources and
+ * who made them, and its piece names. */
+function searchWords(t: Tutorial): string {
+  const words = [
+    ...t.credits.flatMap((c) => [c.source, c.creator ?? '']),
+    ...t.expect.pieces.map((p) => p.name.replace(/_/g, ' ')),
+  ];
+  return [...new Set(words.join(' ').split(/\s+/).filter(Boolean))].join(' ');
+}
+
 void main().catch((error) => {
   console.error(error);
   process.exitCode = 1;

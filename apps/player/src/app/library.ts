@@ -11,7 +11,11 @@ export interface Preview {
   readonly short?: string;
   readonly subtitle?: string;
   readonly style: string;
+  /** Where the pattern is from (tutorial.region). */
+  readonly region?: string;
   readonly level: string;
+  /** Words a search finds it by beyond its names: sources and pieces. */
+  readonly words?: string;
   readonly fold: number;
   readonly steps: number;
   readonly photos: boolean;

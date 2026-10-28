@@ -1,6 +1,6 @@
 # Proposed region and tradition of every tutorial
 
-Step 1 of [the library browsing plan](../LIBRARY-BROWSING-PLAN.md), proposed on 27 October 2026 by `tools/review/propose_regions.py` and checked by hand. Nothing is written into the tutorials until the owner approves this list. Each tutorial gets one region, from the place it names, and one tradition, from its old free-text style cut down to a fixed list; where the style was vague ("Islamic", "Islamic tilework"), the region decides. Rows the rules got wrong were corrected by hand and say why.
+Step 1 of [the library browsing plan](../LIBRARY-BROWSING-PLAN.md), proposed on 27 October 2026 by `tools/review/propose_regions.py` and checked by hand. The owner approved the list and both proposals on 27 October 2026, and `propose_regions.py --write` wrote it into the tutorials. Each tutorial gets one region, from the place it names, and one tradition, from its old free-text style cut down to a fixed list; where the style was vague ("Islamic", "Islamic tilework"), the region decides. Rows the rules got wrong were corrected by hand and say why.
 
 ## Two questions
 

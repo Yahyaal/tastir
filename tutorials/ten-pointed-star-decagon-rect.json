@@ -5,7 +5,8 @@
   "short": "Ten-pointed star and decagon",
   "subtitle": "Rectangular repeat",
   "fold": 10,
-  "style": "Timurid / Persian",
+  "style": "Timurid",
+  "region": "Books and other",
   "level": "advanced",
   "construction": {
     "basis": "original",

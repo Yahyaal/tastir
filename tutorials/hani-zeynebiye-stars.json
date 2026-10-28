@@ -3,7 +3,8 @@
   "id": "hani-zeynebiye-stars",
   "title": "Stars of the Zeynebiye madrasa (Hani)",
   "fold": 4,
-  "style": "Turkish",
+  "style": "Ottoman",
+  "region": "Turkey",
   "level": "advanced",
   "construction": {
     "basis": "mixed",
