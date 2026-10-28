@@ -88,6 +88,28 @@ describe('the library search', () => {
     ).toEqual(['square-rosette', 'fes-rosette', 'bourgoin-65']);
   });
 
+  it('reads a small number on its own as points or as a word', () => {
+    // Twelve-pointed stars, or a 12 in the text (a plate, a page).
+    const twelve = card('fes-twelve', {
+      title: 'Twelve-pointed stars',
+      subtitle: 'Bou Inania, Fès',
+      fold: 12,
+    });
+    const plate = card('plate-12', {
+      title: 'Bourgoin plate 12',
+      subtitle: 'Fès',
+      fold: 8,
+    });
+    expect(
+      filtered([twelve, plate, ...library], { query: 'fes 12' }).map(
+        (e) => e.id,
+      ),
+    ).toEqual(['plate-12', 'fes-twelve']);
+    // A number too big for points is only a word.
+    expect(ids('bourgoin 65')).toEqual(['bourgoin-65']);
+    expect(ids('fes 65')).toEqual([]);
+  });
+
   it('filters by points and words together', () => {
     expect(ids('fez sixteen-fold')).toEqual(['fes-rosette']);
     expect(ids('16 point')).toEqual(['fes-rosette', 'bourgoin-65']);

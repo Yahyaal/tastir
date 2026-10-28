@@ -7,7 +7,8 @@ import type { Entry } from './library';
  * - other spellings and related names of places (Fez and Fès, Granada and
  *   the Alhambra), from a small dictionary;
  * - a number of points ("16 point", "twelve-fold"), which filters by
- *   symmetry instead of looking for the words;
+ *   symmetry instead of looking for the words; a small number on its own
+ *   ("fes 12") finds either that many points or the number in the text;
  * - a word one letter off ("Alhmbra"), for words of five letters or more;
  *
  * and puts matches in the title before matches in the subtitle, and those
@@ -118,6 +119,22 @@ function fields(entry: Entry): readonly (readonly [number, string])[] {
   ];
 }
 
+/** A number from 3 to 24 written in digits, which may be a count of points. */
+const smallNumber = (w: string) =>
+  /^\d+$/.test(w) && Number(w) >= 3 && Number(w) <= 24 ? Number(w) : undefined;
+
+/** The points a tutorial's stars or tile have: its fold, its main star and
+ * the stars among its pieces. */
+function pointsOf(entry: Entry): ReadonlySet<number> {
+  const json = (entry.json ?? {}) as { fold?: unknown; star?: unknown };
+  const p = entry.preview;
+  return new Set(
+    [p?.fold ?? json.star ?? json.fold, ...(p?.stars ?? [])].filter(
+      (n): n is number => typeof n === 'number',
+    ),
+  );
+}
+
 /** Whether two words are at most one letter apart: one added, dropped or
  * changed. */
 function oneOff(a: string, b: string): boolean {
@@ -160,7 +177,9 @@ export function scoreOf(
   let score = 0;
   for (const q of query) {
     const names = alsoOf.get(q) ?? [q];
-    let best = 0;
+    // A small number on its own ("fes 12") is a number of points as well
+    // as a word: a twelve-pointed star counts like a match in the subtitle.
+    let best = pointsOf(entry).has(smallNumber(q) ?? -1) ? 3 : 0;
     for (const [weight, text, list] of parts) {
       if (weight <= best) continue;
       const found =
