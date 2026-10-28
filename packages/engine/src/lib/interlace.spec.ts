@@ -321,14 +321,36 @@ describe('weave', () => {
       // ink is cut every few hundredths), so they are never tiny. The bar
       // stops at 0.2 because a big cell still has short runs: the Comares
       // west dado's cell is 30 wide and its shortest run is 1 − √2/2.
+      // A path may stop short only by a flat point (where a bending band
+      // crosses a straight one, as in the Bourgoin 149 and Shafai 248
+      // rosettes), which is drawn flat, so the redraw ends there on purpose.
       const xs = p.cell.corners.map((q) => q.x);
       const size = Math.min(Math.max(...xs) - Math.min(...xs), 20);
+      const { u, v } = p.cell;
+      const det = crossp(u, v);
+      const atFlat = (q: Vec2) =>
+        w.flat.some((f) => {
+          const d = sub(q, f);
+          const i = crossp(d, v) / det;
+          const j = crossp(u, d) / det;
+          return (
+            Math.abs(i - Math.round(i)) < 1e-6 &&
+            Math.abs(j - Math.round(j)) < 1e-6
+          );
+        });
       for (const c of w.crossings) {
         expect(Math.hypot(c.over.x, c.over.y)).toBeCloseTo(1, 9);
         expect(parallel(c.over, c.under)).toBe(false);
         for (const path of [c.ahead, c.behind]) {
           expect(path[0]).toEqual(c.at);
-          expect(pathLength(path)).toBeGreaterThan(size * 0.01);
+          // The redraw stops at a flat point, or halfway to the next one
+          // when the bands share the run between them.
+          const end = path[path.length - 1] as Vec2;
+          const before = path[path.length - 2] as Vec2;
+          const ahead = { x: 2 * end.x - before.x, y: 2 * end.y - before.y };
+          if (!atFlat(end) && !atFlat(ahead))
+            expect(pathLength(path)).toBeGreaterThan(size * 0.01);
+          else expect(pathLength(path)).toBeGreaterThan(0);
         }
         expect(parallel(sub(c.ahead[1] as Vec2, c.at), c.over)).toBe(true);
       }

@@ -14,5 +14,7 @@ for (const file of tutorialFiles()) {
       expect(actual[i]?.x).toBe(expected[i]?.x);
       expect(actual[i]?.y).toBe(expected[i]?.y);
     }
-  }, 120_000);
+    // The reference finder is slow on purpose: the Isfahan divided stars
+    // (41 steps) take nearly two minutes each, so allow five.
+  }, 300_000);
 }
