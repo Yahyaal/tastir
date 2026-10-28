@@ -1,0 +1,672 @@
+{
+  "format": 0,
+  "id": "barsbay-twelve-star-doors",
+  "title": "Twelve-star doors of Sultan Barsbay, Cairo",
+  "short": "Barsbay twelve-star doors",
+  "subtitle": "Al-Ashraf Barsbay, Cairo, Egypt",
+  "fold": 2,
+  "star": 12,
+  "style": "Mamluk",
+  "region": "Egypt, Syria and Iraq",
+  "level": "advanced",
+  "given": {"O": "The centre of a twelve-pointed star.", "A": "Sets its point radius."},
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Wichmann’s EGY1030 drawing. The drawing gives no steps. The first six steps share the Chester Beatty four-triangle opening. Compass sums construct the centred rectangle, small radius and corner diagonals; parallels through crossings complete the mesh.",
+    "changes": "Grey bevel facets are removed and the8pt bands represented by their centre lines. Guide families turn more often than the finished cmm pattern. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.",
+    "reviewed": "2026-10-27"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data180/EGY1030: al-Ashraf Barsbay",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data180/EGY1030.html",
+      "note": "The page cites David Wade EGY1030, al-Ashraf Barsbay, Cairo(1423AD,826AH); a Thesaurus Islamicus Foundation photograph of the qibla iwan minbar’s north-side door(1425–33AD,828–36AH), through personal communication; and links Wade LOU011. No photograph was independently checked."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. Keep this compass size for the next steps.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a circle with centre A through O. Draw a circle with centre G through O, where the line crosses the first circle on the left.",
+      "create": {
+        "G": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "cE": {"circle": {"centre": "A", "radiusOf": "c"}},
+        "cW": {"circle": {"centre": "G", "radiusOf": "c"}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "Draw a vertical line through O. It crosses the first circle at D and K. Draw a circle with centre D through O. Draw a circle with centre K through O.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "K": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "cN": {"circle": {"centre": "D", "radiusOf": "c"}},
+        "cS": {"circle": {"centre": "K", "radiusOf": "c"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a straight line through B and H, C and J, E and L, and F and M. B, C, E, F, H, J, L and M are where the four new circles cross the first circle. The first circle is now cut into twelve.",
+      "create": {
+        "C": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60.0}}},
+        "L": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300.0}}},
+        "E": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
+        "J": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}},
+        "B": {"point": {"meet": ["c", "cN"], "pick": {"angle": 30.0}}},
+        "F": {"point": {"meet": ["c", "cN"], "pick": {"angle": 150.0}}},
+        "H": {"point": {"meet": ["c", "cS"], "pick": {"angle": 210.0}}},
+        "M": {"point": {"meet": ["c", "cS"], "pick": {"angle": 330.0}}},
+        "r30": {"line": {"through": ["B", "H"]}},
+        "r60": {"line": {"through": ["C", "J"]}},
+        "r120": {"line": {"through": ["E", "L"]}},
+        "r150": {"line": {"through": ["F", "M"]}}
+      },
+      "highlight": ["cE", "cW", "cN", "cS"],
+      "animate": "ruler",
+      "textWithoutHelpers": "The four circles cross the first circle at B, C, E, F, H, J, L and M."
+    },
+    {
+      "id": 5,
+      "text": "Draw the lines through O that halve angles AOB, BOC and COD. Draw a line through O at 90° to each new line.",
+      "create": {
+        "r15": {"line": {"through": "O", "bisects": ["A", "O", "B"]}},
+        "r45": {"line": {"through": "O", "bisects": ["B", "O", "C"]}},
+        "r75": {"line": {"through": "O", "bisects": ["C", "O", "D"]}},
+        "r105": {"line": {"through": "O", "perpendicularTo": "r15"}},
+        "r135": {"line": {"through": "O", "perpendicularTo": "r45"}},
+        "r165": {"line": {"through": "O", "perpendicularTo": "r75"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw the lines through O that halve angles BOC and FOG. Draw a line through O at 90° to the bisector of angle BOC."
+    },
+    {
+      "id": 6,
+      "text": "Draw the four triangles that make the twelve-pointed star.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a straight line through A and E, E and J, and J and A.",
+          "create": {
+            "st0": {"line": {"through": ["A", "E"]}},
+            "st4": {"line": {"through": ["E", "J"]}},
+            "st8": {"line": {"through": ["J", "A"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through B and F, F and K, and K and B.",
+          "create": {
+            "st1": {"line": {"through": ["B", "F"]}},
+            "st5": {"line": {"through": ["F", "K"]}},
+            "st9": {"line": {"through": ["K", "B"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through C and G, G and L, and L and C.",
+          "create": {
+            "st2": {"line": {"through": ["C", "G"]}},
+            "st6": {"line": {"through": ["G", "L"]}},
+            "st10": {"line": {"through": ["L", "C"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through D and H, H and M, and M and D.",
+          "create": {
+            "st3": {"line": {"through": ["D", "H"]}},
+            "st7": {"line": {"through": ["H", "M"]}},
+            "st11": {"line": {"through": ["M", "D"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "text": "The first circle crosses the line at 45° from OA at P1, above O. Draw a circle with centre O and opening AE. It crosses that line at P2, above O. Draw vertical lines through P1, P2 and C. They cross the horizontal line at N1, N2 and N3.",
+      "create": {
+        "P1": {"point": {"meet": ["c", "r45"], "pick": {"angle": 45.0}}},
+        "root3": {"circle": {"centre": "O", "radiusFrom": ["A", "E"]}},
+        "P2": {"point": {"meet": ["root3", "r45"], "pick": {"angle": 45.0}}},
+        "N1v": {"line": {"through": "P1", "parallelTo": "v"}},
+        "N1": {"point": {"meet": ["N1v", "h"]}},
+        "N2v": {"line": {"through": "P2", "parallelTo": "v"}},
+        "N2": {"point": {"meet": ["N2v", "h"]}},
+        "N3v": {"line": {"through": "C", "parallelTo": "v"}},
+        "N3": {"point": {"meet": ["N3v", "h"]}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 8,
+      "text": "Draw a circle with centre A through O. It crosses the horizontal line at N4, right of A. Draw a circle with centre N2 and opening from O to N1. It crosses that line at N5, towards O. Draw a circle with centre N4 and opening from O to N5. It crosses that line at N6, right of N4.",
+      "create": {
+        "two": {"circle": {"centre": "A", "through": "O"}},
+        "N4": {"point": {"meet": ["two", "h"], "pick": {"farthest": "O"}}},
+        "difference": {"circle": {"centre": "N2", "radiusFrom": ["O", "N1"]}},
+        "N5": {"point": {"meet": ["difference", "h"], "pick": {"nearest": "O"}}},
+        "width": {"circle": {"centre": "N4", "radiusFrom": ["O", "N5"]}},
+        "N6": {"point": {"meet": ["width", "h"], "pick": {"farthest": "O"}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 9,
+      "text": "Draw a line through N6 parallel to the line at 165° from OA. It crosses the vertical line at P3, above O. Draw a circle with centre O through P3. It crosses the horizontal line at N7, right of O.",
+      "create": {
+        "heightIntercept": {"line": {"through": "N6", "parallelTo": "r165"}},
+        "P3": {"point": {"meet": ["heightIntercept", "v"]}},
+        "fourStarRadius": {"circle": {"centre": "O", "through": "P3"}},
+        "N7": {"point": {"meet": ["fourStarRadius", "h"], "pick": {"angle": 0.0}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 10,
+      "text": "Draw a circle with centre N6 through O. It crosses the horizontal line again at N8, right of N6. Draw a circle with centre N8 and opening from O to N7. It crosses that line at N9, right of N8. Draw a circle with centre O through N9. It crosses the vertical line at P4, above O.",
+      "create": {
+        "twiceWidth": {"circle": {"centre": "N6", "through": "O"}},
+        "N8": {"point": {"meet": ["twiceWidth", "h"], "pick": {"farthest": "O"}}},
+        "height": {"circle": {"centre": "N8", "radiusFrom": ["O", "N7"]}},
+        "N9": {"point": {"meet": ["height", "h"], "pick": {"farthest": "O"}}},
+        "heightCircle": {"circle": {"centre": "O", "through": "N9"}},
+        "P4": {"point": {"meet": ["heightCircle", "v"], "pick": {"angle": 90.0}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 11,
+      "text": "Draw a vertical line through N6. Draw a horizontal line through P4. Turn both lines round O by 180°. The four lines frame the tile, with corners T1 to T4.",
+      "create": {
+        "frameX": {"line": {"through": "N6", "parallelTo": "v"}},
+        "frameY": {"line": {"through": "P4", "parallelTo": "h"}},
+        "frames": {"repeat": {"of": ["frameX", "frameY"], "by": "rot2"}},
+        "T1": {"point": {"meet": ["frameX", "frameY"]}},
+        "T2": {"point": {"meet": ["frameX@1", "frameY"]}},
+        "T3": {"point": {"meet": ["frameX@1", "frameY@1"]}},
+        "T4": {"point": {"meet": ["frameX", "frameY@1"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 12,
+      "text": "Draw a circle with centre N6 and opening from O to N3. It crosses the horizontal line at N10, towards O. Draw a circle with centre N9 and opening from O to N3. It crosses that line at N11, towards O. Draw a circle with centre O through N11. It crosses the vertical line at P5, above O.",
+      "create": {
+        "innerWidth": {"circle": {"centre": "N6", "radiusFrom": ["O", "N3"]}},
+        "N10": {"point": {"meet": ["innerWidth", "h"], "pick": {"nearest": "O"}}},
+        "innerHeight": {"circle": {"centre": "N9", "radiusFrom": ["O", "N3"]}},
+        "N11": {"point": {"meet": ["innerHeight", "h"], "pick": {"nearest": "O"}}},
+        "innerHeightCircle": {"circle": {"centre": "O", "through": "N11"}},
+        "P5": {"point": {"meet": ["innerHeightCircle", "v"], "pick": {"angle": 90.0}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 13,
+      "text": "Draw a vertical line through N10. Draw a horizontal line through P5. Turn both lines round O by 180°.",
+      "create": {
+        "axisX": {"line": {"through": "N10", "parallelTo": "v"}},
+        "axisXCopies": {"repeat": {"of": ["axisX"], "by": "rot2"}},
+        "axisY": {"line": {"through": "P5", "parallelTo": "h"}},
+        "axisYCopies": {"repeat": {"of": ["axisY"], "by": "rot2"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 14,
+      "text": "Draw a circle with centre N7 and opening from O to N3. It crosses the horizontal line at N12, towards O. Draw a circle with centre O through N12. It crosses the line at 165° from OA at P6, above O.",
+      "create": {
+        "smallRadius": {"circle": {"centre": "N7", "radiusFrom": ["O", "N3"]}},
+        "N12": {"point": {"meet": ["smallRadius", "h"], "pick": {"nearest": "O"}}},
+        "smallCircle": {"circle": {"centre": "O", "through": "N12"}},
+        "P6": {"point": {"meet": ["smallCircle", "r165"], "pick": {"angle": 165.0}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 15,
+      "text": "Draw a vertical line through N12. Draw a line through P6 parallel to the line at 75° from OA. Turn both lines round O by 30°, eleven times.",
+      "create": {
+        "small": {"line": {"through": "N12", "parallelTo": "v"}},
+        "smallCopies": {"repeat": {"of": ["small"], "by": "rot12"}},
+        "small15": {"line": {"through": "P6", "parallelTo": "r75"}},
+        "small15Copies": {"repeat": {"of": ["small15"], "by": "rot12"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw the copies of the vertical through N12 turned round O by 30°, 150°, 210° and 330°. Draw a line through P6 parallel to the line at 75° from OA. Turn it round O by 30°, 180°, 210° and 270°."
+    },
+    {
+      "id": 16,
+      "text": "Draw a circle with centre O through N6. It crosses the line at 45° from OA at P7, above O. Draw a vertical line through P7. It crosses the horizontal line at N13. Draw a circle with centre N13 through O. It crosses that line again at N14, right of N13. Draw a circle with centre N14 and opening from O to N12. It crosses that line at N15, towards O.",
+      "create": {
+        "widthCircle": {"circle": {"centre": "O", "through": "N6"}},
+        "P7": {"point": {"meet": ["widthCircle", "r45"], "pick": {"angle": 45.0}}},
+        "diagonalProjection": {"line": {"through": "P7", "parallelTo": "v"}},
+        "N13": {"point": {"meet": ["diagonalProjection", "h"]}},
+        "diagonalDouble": {"circle": {"centre": "N13", "through": "O"}},
+        "N14": {"point": {"meet": ["diagonalDouble", "h"], "pick": {"farthest": "O"}}},
+        "diagonalRadius": {"circle": {"centre": "N14", "radiusFrom": ["O", "N12"]}},
+        "N15": {"point": {"meet": ["diagonalRadius", "h"], "pick": {"nearest": "O"}}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 17,
+      "text": "Draw a circle with centre O through N15. It crosses the line at 135° from OA at P8, above O. Draw a line through P8 parallel to the line at 45° from OA. Turn it round O by 90°, three times.",
+      "create": {
+        "diagonalCircle": {"circle": {"centre": "O", "through": "N15"}},
+        "P8": {"point": {"meet": ["diagonalCircle", "r135"], "pick": {"angle": 135.0}}},
+        "diagonal": {"line": {"through": "P8", "parallelTo": "r45"}},
+        "diagonals": {"repeat": {"of": ["diagonal"], "by": "rot4"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 18,
+      "text": "Draw a circle with centre N6 and opening OA. It crosses the horizontal line at N16, right of N6, and N17, towards O. Draw vertical lines through N16 and N17. Turn both lines round O by 180°.",
+      "create": {
+        "topMarks": {"circle": {"centre": "N6", "radiusFrom": ["O", "A"]}},
+        "N16": {"point": {"meet": ["topMarks", "h"], "pick": {"farthest": "O"}}},
+        "N17": {"point": {"meet": ["topMarks", "h"], "pick": {"nearest": "O"}}},
+        "topRight": {"line": {"through": "N16", "parallelTo": "v"}},
+        "topRightCopies": {"repeat": {"of": ["topRight"], "by": "rot2"}},
+        "topLeft": {"line": {"through": "N17", "parallelTo": "v"}},
+        "topLeftCopies": {"repeat": {"of": ["topLeft"], "by": "rot2"}}
+      },
+      "animate": "compass",
+      "textWithoutHelpers": "Draw a circle with centre N6 and opening OA. It crosses the horizontal line at N16, right of N6, and N17, towards O. Draw vertical lines through N16 and N17."
+    },
+    {
+      "id": 19,
+      "text": "The vertical lines through N16 and N17 cross the horizontal line through P4 at R1 and R2. The half-turn copy of the vertical through N17 crosses that horizontal line at R3. Draw lines through R1, R2 and R3 parallel to line BH. Turn them round O by 30°, eleven times.",
+      "create": {
+        "R1": {"point": {"meet": ["topRight", "frameY"]}},
+        "top0": {"line": {"through": "R1", "parallelTo": "r30"}},
+        "tops0": {"repeat": {"of": ["top0"], "by": "rot12"}},
+        "R2": {"point": {"meet": ["topLeft", "frameY"]}},
+        "top1": {"line": {"through": "R2", "parallelTo": "r30"}},
+        "tops1": {"repeat": {"of": ["top1"], "by": "rot12"}},
+        "R3": {"point": {"meet": ["topLeft@1", "frameY"]}},
+        "top2": {"line": {"through": "R3", "parallelTo": "r30"}},
+        "tops2": {"repeat": {"of": ["top2"], "by": "rot12"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "The vertical lines through N16 and N17 cross the horizontal line through P4 at R1 and R2. The half-turn copy of the vertical through N17 crosses that horizontal line at R3. Draw a line through R1 parallel to line BH. Turn it round O by 120°, 180°, 270° and 300°. Draw lines through R2 and R3 parallel to line BH. Turn them round O by 120°, 180° and 300°."
+    },
+    {
+      "id": 20,
+      "text": "Draw a line through N6 parallel to the line at 75° from OA. Turn it round O by 30°, eleven times.",
+      "create": {
+        "gl0": {"line": {"through": "N6", "parallelTo": "r75"}},
+        "copies0": {"repeat": {"of": ["gl0"], "by": "rot12"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 21,
+      "text": "Draw a line through P4 parallel to the line at 75° from OA. Turn it round O by 30°, eleven times.",
+      "create": {
+        "gl1": {"line": {"through": "P4", "parallelTo": "r75"}},
+        "copies1": {"repeat": {"of": ["gl1"], "by": "rot12"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a line through P4 parallel to the line at 75° from OA. Turn it round O by 30°, 180° and 210°."
+    },
+    {
+      "id": 22,
+      "text": "The line through P6 turned by 270° crosses the right tile side at Q1. Draw a line through Q1 at 15° from OA. Turn it round O by 30°, eleven times.",
+      "create": {
+        "Q1": {"point": {"meet": ["frameX", "small15@9"]}},
+        "gl2": {"line": {"through": "Q1", "parallelTo": "r15"}},
+        "copies2": {"repeat": {"of": ["gl2"], "by": "rot12"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 23,
+      "text": "The line through R1 turned by 270° crosses the right tile side at Q2. Draw a line through Q2 parallel to line CJ. Turn it round O by 30°, eleven times.",
+      "create": {
+        "Q2": {"point": {"meet": ["frameX", "top0@9"]}},
+        "gl3": {"line": {"through": "Q2", "parallelTo": "r60"}},
+        "copies3": {"repeat": {"of": ["gl3"], "by": "rot12"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "The line through R1 turned by 270° crosses the right tile side at Q2. Draw a line through Q2 parallel to line CJ. Turn it round O by 60°, 180° and 240°."
+    },
+    {
+      "id": 24,
+      "text": "The line through N6 at 75° turned by 270° crosses the right tile side again at Q3. Draw a line through Q3 at 15° from OA. Turn it round O by 30°, eleven times.",
+      "create": {
+        "Q3": {"point": {"meet": ["frameX", "gl0@9"]}},
+        "gl4": {"line": {"through": "Q3", "parallelTo": "r15"}},
+        "copies4": {"repeat": {"of": ["gl4"], "by": "rot12"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "The line through N6 at 75° turned by 270° crosses the right tile side again at Q3. Draw a line through Q3 at 15° from OA. Turn it round O by 150°, 180° and 330°."
+    },
+    {
+      "id": 25,
+      "text": "The vertical line through N12 turned by 210° crosses the right tile side at Q4. Draw a line through Q4 parallel to line CJ. Turn it round O by 30°, eleven times.",
+      "create": {
+        "Q4": {"point": {"meet": ["frameX", "small@7"]}},
+        "gl5": {"line": {"through": "Q4", "parallelTo": "r60"}},
+        "copies5": {"repeat": {"of": ["gl5"], "by": "rot12"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "The vertical line through N12 turned by 210° crosses the right tile side at Q4. Draw a line through Q4 parallel to line CJ. Turn it round O by 60°, 180° and 240°."
+    },
+    {
+      "id": 26,
+      "text": "Outline a ten-sided connector.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "The 75° line through O crosses the line DH at U1. The line DH crosses the 75° line through N6 turned 90° at U2.",
+          "create": {"U1": {"point": {"meet": ["r75", "st3"]}}, "U2": {"point": {"meet": ["st3", "gl0@3"]}}},
+          "animate": "fade"
+        },
+        {
+          "text": "The 60° line through O crosses the 75° line through N6 turned 60° at U3. The 75° line through N6 turned 60° crosses the 15° line through Q1 turned 210° at U4.",
+          "create": {
+            "U3": {"point": {"meet": ["r60", "gl0@2"]}},
+            "U4": {"point": {"meet": ["gl0@2", "gl2@7"]}}
+          },
+          "animate": "fade"
+        },
+        {
+          "text": "The 75° line through N6 turned 120° crosses the 15° line through Q1 turned 210° at U5. The 75° line through N6 turned 120° crosses the 75° line through P4 turned 210° at U6.",
+          "create": {
+            "U5": {"point": {"meet": ["gl0@4", "gl2@7"]}},
+            "U6": {"point": {"meet": ["gl0@4", "gl1@7"]}}
+          },
+          "animate": "fade"
+        },
+        {
+          "text": "The 75° line through P6 crosses the 75° line through P4 turned 210° at U7. The 75° line through P6 crosses the 75° line through N6 turned 120° at U8.",
+          "create": {
+            "U7": {"point": {"meet": ["small15", "gl1@7"]}},
+            "U8": {"point": {"meet": ["small15", "gl0@4"]}}
+          },
+          "animate": "fade"
+        },
+        {
+          "text": "The vertical line through O crosses the 75° line through N6 turned 90° at U9. The vertical line through C crosses the 75° line through N6 turned 90° at U10.",
+          "create": {"U9": {"point": {"meet": ["v", "gl0@3"]}}, "U10": {"point": {"meet": ["N3v", "gl0@3"]}}},
+          "animate": "fade"
+        },
+        {
+          "text": "Join U1, U2, U3, U4, U5, U6, U7, U8, U9 and U10 to outline the connector.",
+          "create": {
+            "firstConnector": {"polygon": ["U1", "U2", "U3", "U4", "U5", "U6", "U7", "U8", "U9", "U10"]}
+          },
+          "animate": "fade"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "text": "Outline a ten-sided connector.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "The 75° line through P6 turned 180° crosses the 75° line through P4 turned 30° at W1. The 75° line through P6 turned 180° crosses the 15° line through Q3 turned 330° at W2.",
+          "create": {
+            "W1": {"point": {"meet": ["small15@6", "gl1@1"]}},
+            "W2": {"point": {"meet": ["small15@6", "gl4@11"]}}
+          },
+          "animate": "fade"
+        },
+        {
+          "text": "The 45° line through P8 turned 90° crosses the 15° line through Q3 turned 330° at W3. The 45° line through P8 turned 90° crosses the line through Q2 parallel to CJ at W4.",
+          "create": {
+            "W3": {"point": {"meet": ["diagonal@1", "gl4@11"]}},
+            "W4": {"point": {"meet": ["diagonal@1", "gl3"]}}
+          },
+          "animate": "fade"
+        },
+        {
+          "text": "The line through R1 parallel to BH turned 180° crosses the line through Q2 parallel to CJ at W5. The 45° line through P8 turned 90° crosses the line through R1 parallel to BH turned 180° at W6.",
+          "create": {
+            "W5": {"point": {"meet": ["top0@6", "gl3"]}},
+            "W6": {"point": {"meet": ["diagonal@1", "top0@6"]}}
+          },
+          "animate": "fade"
+        },
+        {
+          "text": "The 45° line through P8 turned 90° crosses the 75° line through P4 turned 30° at W7. The 75° line through P4 turned 30° crosses the 15° line through Q3 at W8.",
+          "create": {
+            "W7": {"point": {"meet": ["diagonal@1", "gl1@1"]}},
+            "W8": {"point": {"meet": ["gl1@1", "gl4"]}}
+          },
+          "animate": "fade"
+        },
+        {
+          "text": "The vertical line through O crosses the 15° line through Q3 at W9. The 75° line through P4 turned 30° crosses the 15° line through Q3 turned 330° at W10.",
+          "create": {"W9": {"point": {"meet": ["v", "gl4"]}}, "W10": {"point": {"meet": ["gl1@1", "gl4@11"]}}},
+          "animate": "fade"
+        },
+        {
+          "text": "Join W1, W2, W3, W4, W5, W6, W7, W8, W9 and W10 to outline the connector.",
+          "create": {
+            "secondConnector": {"polygon": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10"]}
+          },
+          "animate": "fade"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "text": "Join T1, T2, T3 and T4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["T1", "T2", "T3", "T4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange.",
+    "paths": [
+      {"along": "st0", "from": "gl0", "to": "r15"},
+      {"along": "st0", "from": "r105", "to": "gl0@5"},
+      {"along": "st4", "from": "gl0@4", "to": "r135"},
+      {"along": "st4", "from": "r45", "to": "gl0@9"},
+      {"along": "st8", "from": "gl0@8", "to": "r75"},
+      {"along": "st8", "from": "r165", "to": "gl0@1"},
+      {"along": "st1", "from": "gl0@1", "to": "r45"},
+      {"along": "st1", "from": "r135", "to": "gl0@6"},
+      {"along": "st5", "from": "gl0@5", "to": "r165"},
+      {"along": "st5", "from": "r75", "to": "gl0@10"},
+      {"along": "st9", "from": "gl0@9", "to": "r105"},
+      {"along": "st9", "from": "r15", "to": "gl0@2"},
+      {"along": "st2", "from": "gl0@2", "to": "r75"},
+      {"along": "st2", "from": "r165", "to": "gl0@7"},
+      {"along": "st6", "from": "gl0@6", "to": "r15"},
+      {"along": "st6", "from": "r105", "to": "gl0@11"},
+      {"along": "st10", "from": "gl0@10", "to": "r135"},
+      {"along": "st10", "from": "r45", "to": "gl0@3"},
+      {"along": "st3", "from": "gl0@3", "to": "r105"},
+      {"along": "st3", "from": "r15", "to": "gl0@8"},
+      {"along": "st7", "from": "gl0@7", "to": "r45"},
+      {"along": "st7", "from": "r135", "to": "gl0"},
+      {"along": "st11", "from": "gl0@11", "to": "r165"},
+      {"along": "st11", "from": "r75", "to": "gl0@4"},
+      {"along": "axisX", "from": "axisY@1", "to": "gl4"},
+      {"along": "axisX", "from": "gl4@5", "to": "axisY"},
+      {"along": "axisX@1", "from": "axisY", "to": "gl4@6"},
+      {"along": "axisX@1", "from": "gl4@11", "to": "axisY@1"},
+      {"along": "axisY", "from": "axisX@1", "to": "gl1"},
+      {"along": "axisY", "from": "gl1@7", "to": "axisX"},
+      {"along": "axisY@1", "from": "axisX", "to": "gl1@6"},
+      {"along": "axisY@1", "from": "gl1@1", "to": "axisX@1"},
+      {"along": "small@1", "from": "gl4@6", "to": "frameX@1"},
+      {"along": "small@5", "from": "frameX", "to": "gl4@5"},
+      {"along": "small@7", "from": "gl4", "to": "frameX"},
+      {"along": "small@11", "from": "frameX@1", "to": "gl4@11"},
+      {"along": "small15", "from": "gl0@4", "to": "gl4@5"},
+      {"along": "small15@1", "from": "gl4", "to": "gl0@9"},
+      {"along": "small15@6", "from": "gl0@10", "to": "gl4@11"},
+      {"along": "small15@7", "from": "gl4@6", "to": "gl0@3"},
+      {"along": "diagonal", "from": "gl2@4", "to": "gl3@2"},
+      {"along": "diagonal", "from": "top0@10", "to": "v"},
+      {"along": "diagonal@1", "from": "v", "to": "top0@6"},
+      {"along": "diagonal@1", "from": "gl3", "to": "gl2@1"},
+      {"along": "diagonal@2", "from": "gl2@10", "to": "gl3@8"},
+      {"along": "diagonal@2", "from": "top0@4", "to": "v"},
+      {"along": "diagonal@3", "from": "v", "to": "top0"},
+      {"along": "diagonal@3", "from": "gl3@6", "to": "gl2@7"},
+      {"along": "top0", "from": "gl5@2", "to": "diagonal@3"},
+      {"along": "top0@4", "from": "diagonal@2", "to": "gl5"},
+      {"along": "top0@6", "from": "gl5@8", "to": "diagonal@1"},
+      {"along": "top0@10", "from": "diagonal", "to": "gl5@6"},
+      {"along": "top1", "from": "frameY", "to": "gl1@7"},
+      {"along": "top1@4", "from": "gl1@6", "to": "frameY@1"},
+      {"along": "top1@6", "from": "frameY@1", "to": "gl1@1"},
+      {"along": "top1@10", "from": "gl1", "to": "frameY"},
+      {"along": "top2", "from": "frameY", "to": "gl3@2"},
+      {"along": "top2@4", "from": "gl3", "to": "frameY@1"},
+      {"along": "top2@6", "from": "frameY@1", "to": "gl3@8"},
+      {"along": "top2@10", "from": "gl3@6", "to": "frameY"},
+      {"along": "gl0", "from": "r120", "to": "r135"},
+      {"along": "gl0", "from": "gl2@11", "to": "st0"},
+      {"along": "gl0", "from": "st7", "to": "h"},
+      {"along": "gl0@1", "from": "h", "to": "st1"},
+      {"along": "gl0@1", "from": "st8", "to": "gl2@6"},
+      {"along": "gl0@1", "from": "r45", "to": "r60"},
+      {"along": "gl0@2", "from": "frameX", "to": "st2"},
+      {"along": "gl0@2", "from": "st9", "to": "gl2@7"},
+      {"along": "gl0@3", "from": "frameX", "to": "r45"},
+      {"along": "gl0@3", "from": "gl2@2", "to": "st3"},
+      {"along": "gl0@3", "from": "st10", "to": "small15@7"},
+      {"along": "gl0@3", "from": "gl1", "to": "r120"},
+      {"along": "gl0@3", "from": "gl2@9", "to": "frameX@1"},
+      {"along": "gl0@4", "from": "frameX", "to": "gl2@2"},
+      {"along": "gl0@4", "from": "r60", "to": "gl1@7"},
+      {"along": "gl0@4", "from": "small15", "to": "st4"},
+      {"along": "gl0@4", "from": "st11", "to": "gl2@9"},
+      {"along": "gl0@4", "from": "r135", "to": "frameX@1"},
+      {"along": "gl0@5", "from": "gl2@4", "to": "st5"},
+      {"along": "gl0@5", "from": "st0", "to": "frameX@1"},
+      {"along": "gl0@6", "from": "r120", "to": "r135"},
+      {"along": "gl0@6", "from": "gl2@5", "to": "st6"},
+      {"along": "gl0@6", "from": "st1", "to": "h"},
+      {"along": "gl0@7", "from": "h", "to": "st7"},
+      {"along": "gl0@7", "from": "st2", "to": "gl2"},
+      {"along": "gl0@7", "from": "r45", "to": "r60"},
+      {"along": "gl0@8", "from": "frameX@1", "to": "st8"},
+      {"along": "gl0@8", "from": "st3", "to": "gl2@1"},
+      {"along": "gl0@9", "from": "frameX@1", "to": "r45"},
+      {"along": "gl0@9", "from": "gl2@8", "to": "st9"},
+      {"along": "gl0@9", "from": "st4", "to": "small15@1"},
+      {"along": "gl0@9", "from": "gl1@6", "to": "r120"},
+      {"along": "gl0@9", "from": "gl2@3", "to": "frameX"},
+      {"along": "gl0@10", "from": "frameX@1", "to": "gl2@8"},
+      {"along": "gl0@10", "from": "r60", "to": "gl1@1"},
+      {"along": "gl0@10", "from": "small15@6", "to": "st10"},
+      {"along": "gl0@10", "from": "st5", "to": "gl2@3"},
+      {"along": "gl0@10", "from": "r135", "to": "frameX"},
+      {"along": "gl0@11", "from": "gl2@10", "to": "st11"},
+      {"along": "gl0@11", "from": "st6", "to": "frameX"},
+      {"along": "gl1", "from": "gl0@3", "to": "gl4@6"},
+      {"along": "gl1", "from": "gl4@5", "to": "top1@10"},
+      {"along": "gl1", "from": "axisY", "to": "v"},
+      {"along": "gl1@1", "from": "v", "to": "axisY@1"},
+      {"along": "gl1@1", "from": "top1@6", "to": "gl4"},
+      {"along": "gl1@1", "from": "gl4@11", "to": "gl0@10"},
+      {"along": "gl1@6", "from": "gl0@9", "to": "gl4"},
+      {"along": "gl1@6", "from": "gl4@11", "to": "top1@4"},
+      {"along": "gl1@6", "from": "axisY@1", "to": "v"},
+      {"along": "gl1@7", "from": "v", "to": "axisY"},
+      {"along": "gl1@7", "from": "top1", "to": "gl4@6"},
+      {"along": "gl1@7", "from": "gl4@5", "to": "gl0@4"},
+      {"along": "gl2", "from": "frameX@1", "to": "gl0@7"},
+      {"along": "gl2@1", "from": "diagonal@1", "to": "gl0@8"},
+      {"along": "gl2@2", "from": "gl0@3", "to": "gl0@4"},
+      {"along": "gl2@3", "from": "gl0@9", "to": "gl0@10"},
+      {"along": "gl2@4", "from": "gl0@5", "to": "diagonal"},
+      {"along": "gl2@5", "from": "gl0@6", "to": "frameX@1"},
+      {"along": "gl2@6", "from": "frameX", "to": "gl0@1"},
+      {"along": "gl2@7", "from": "diagonal@3", "to": "gl0@2"},
+      {"along": "gl2@8", "from": "gl0@9", "to": "gl0@10"},
+      {"along": "gl2@9", "from": "gl0@3", "to": "gl0@4"},
+      {"along": "gl2@10", "from": "gl0@11", "to": "diagonal@2"},
+      {"along": "gl2@11", "from": "gl0", "to": "frameX"},
+      {"along": "gl3", "from": "diagonal@1", "to": "top2@4"},
+      {"along": "gl3@2", "from": "top2", "to": "diagonal"},
+      {"along": "gl3@6", "from": "diagonal@3", "to": "top2@10"},
+      {"along": "gl3@8", "from": "top2@6", "to": "diagonal@2"},
+      {"along": "gl4", "from": "gl1@1", "to": "gl1@6"},
+      {"along": "gl4", "from": "small15@1", "to": "small@7"},
+      {"along": "gl4", "from": "axisX", "to": "frameX"},
+      {"along": "gl4@5", "from": "frameX", "to": "axisX"},
+      {"along": "gl4@5", "from": "small@5", "to": "small15"},
+      {"along": "gl4@5", "from": "gl1@7", "to": "gl1"},
+      {"along": "gl4@6", "from": "gl1@7", "to": "gl1"},
+      {"along": "gl4@6", "from": "small15@7", "to": "small@1"},
+      {"along": "gl4@6", "from": "axisX@1", "to": "frameX@1"},
+      {"along": "gl4@11", "from": "frameX@1", "to": "axisX@1"},
+      {"along": "gl4@11", "from": "small@11", "to": "small15@6"},
+      {"along": "gl4@11", "from": "gl1@1", "to": "gl1@6"},
+      {"along": "gl5", "from": "frameX", "to": "top0@4"},
+      {"along": "gl5@2", "from": "top0", "to": "frameX"},
+      {"along": "gl5@6", "from": "frameX@1", "to": "top0@10"},
+      {"along": "gl5@8", "from": "top0@6", "to": "frameX@1"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "distinguishOutlines": true,
+    "look": "strapwork",
+    "palette": "Kashan",
+    "colors": {
+      "twelve_star": "a",
+      "kite": "ground",
+      "hexagon": "b",
+      "notched_ten": "ground",
+      "other_ten": "ground",
+      "three_star": "c",
+      "four_star": "c",
+      "ten": "ground"
+    },
+    "text": "Put copies of the rectangular tile side by side."
+  },
+  "expect": {
+    "pieceTypes": 8,
+    "cellArea": 57.5016,
+    "note": "The86 counted source-polygon shoelaces sum exactly to108−56√2−40√3+40√6=4P²(4−√3). The two equal-measure eight-count connector types are identified by their constructed outlines.",
+    "pieces": [
+      {"name": "twelve_star", "vertices": 24, "area": 2.19615, "perCell": 2},
+      {"name": "kite", "vertices": 4, "area": 0.31699, "perCell": 24},
+      {"name": "hexagon", "vertices": 6, "area": 1.01764, "perCell": 24},
+      {
+        "name": "notched_ten",
+        "vertices": 10,
+        "area": 0.4435,
+        "perCell": 8,
+        "outline": "firstConnector",
+        "small": true
+      },
+      {
+        "name": "other_ten",
+        "vertices": 10,
+        "area": 0.4435,
+        "perCell": 8,
+        "outline": "secondConnector",
+        "small": true
+      },
+      {"name": "three_star", "vertices": 6, "area": 0.53837, "perCell": 12},
+      {"name": "four_star", "vertices": 8, "area": 1.43565, "perCell": 4},
+      {"name": "ten", "vertices": 10, "area": 0.4448, "perCell": 4, "small": true}
+    ]
+  }
+}

@@ -2,6 +2,8 @@ import { render } from '@testing-library/react';
 import bonesJson from '@tutorials/alhambra-comares-bones.json';
 import starsJson from '@tutorials/alhambra-infantas-stars.json';
 import hammerJson from '@tutorials/six-fold-hammerhead.json';
+import fathabadJson from '@tutorials/fathabad-mixed-stars.json';
+import bourgoin142Json from '@tutorials/bourgoin-142-star-rows.json';
 import { colorReducer, PALETTES, tutorialColoring, typeKey } from './coloring';
 import { loadModel } from './model';
 import { colorRepeat, nthOf, placeFills, placeKey, turnOf } from './placement';
@@ -14,6 +16,46 @@ const bones = loadModel(bonesJson);
 const alhambra = PALETTES['Alhambra'] as Record<string, string>;
 
 describe('colors by placement', () => {
+  it('paints equal-measure outlines independently and preserves legacy keys', () => {
+    const legacy = bones.pattern.types[0]!;
+    expect(typeKey(legacy)).toBe(
+      `${legacy.vertices}:${legacy.area.toFixed(4)}`,
+    );
+    for (const [json, first, second] of [
+      [fathabadJson, 'ten', 'other_ten'],
+      [bourgoin142Json, 'eight', 'other_eight'],
+    ] as const) {
+      const m = loadModel(json);
+      const a = m.pattern.types.findIndex((t) => t.name === first);
+      const b = m.pattern.types.findIndex((t) => t.name === second);
+      const t = m.pattern.types[a]!;
+      const key = typeKey(t);
+      expect(key).not.toBe(typeKey(m.pattern.types[b]!));
+      const painted = colorReducer(
+        { past: [], now: tutorialColoring(m), future: [] },
+        {
+          kind: 'paint',
+          type: key,
+          color: '#123456',
+        },
+      );
+      const fill = placeFills(m, painted.now);
+      const original = placeFills(m, tutorialColoring(m));
+      const i = m.pattern.pieces.findIndex((p) => p.type === a);
+      const j = m.pattern.pieces.findIndex((p) => p.type === b);
+      expect(fill(i, 0, 0)).toBe('#123456');
+      expect(fill(j, 0, 0)).toBe(original(j, 0, 0));
+      const angle = 0.37;
+      const outline = t
+        .outline!.map(({ x, y }) => ({
+          x: 20 + x * Math.cos(angle) - y * Math.sin(angle),
+          y: 10 - x * Math.sin(angle) - y * Math.cos(angle),
+        }))
+        .reverse();
+      outline.push(outline.shift()!);
+      expect(typeKey({ ...t, outline })).toBe(key);
+    }
+  });
   it('finds a long axis, and none for a square', () => {
     const bar = [
       { x: 0, y: 0 },

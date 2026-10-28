@@ -583,13 +583,19 @@ export function tutorialOf(
         ...(draft.expect?.note ? { note: draft.expect.note } : {}),
         ...(Object.keys(crossings).length ? { crossings } : {}),
         pieceTypes: pattern.types.length,
-        pieces: pattern.types.map((t, i) => ({
-          name: names[i],
-          vertices: t.vertices,
-          area: round(t.area),
-          perCell: t.perCell,
-          ...(small.has(names[i] as string) ? { small: true } : {}),
-        })),
+        pieces: pattern.types.map((t, i) => {
+          const outline = t.name
+            ? before.find((piece) => piece.name === t.name)?.outline
+            : undefined;
+          return {
+            name: names[i],
+            vertices: t.vertices,
+            area: round(t.area),
+            perCell: t.perCell,
+            ...(outline ? { outline } : {}),
+            ...(small.has(names[i] as string) ? { small: true } : {}),
+          };
+        }),
         ...(draft.expect?.cellArea !== undefined
           ? { cellArea: round(pattern.cell.area) }
           : {}),

@@ -19,13 +19,14 @@ export function readyToInk(
     draft: tiled,
     cell,
     panel,
+    expect,
   } = withTutorialTile(tutorial, tScene, draft);
   return {
     ...tiled,
     fold: tutorial.fold,
     ...(tutorial.chiral !== undefined ? { chiral: tutorial.chiral } : {}),
     pattern: { ...tutorial.pattern, cell, ...(panel ? { panel } : {}) },
-    expect: tutorial.expect,
+    expect,
   };
 }
 

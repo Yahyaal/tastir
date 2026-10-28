@@ -39,6 +39,8 @@ export interface PieceType {
   readonly perimeter: number;
   /** Side lengths, shortest first. */
   readonly sides: readonly number[];
+  /** Representative outline when the tutorial distinguishes full outlines. */
+  readonly outline?: readonly Vec[];
   /** How many pieces of this type each cell holds. */
   readonly perCell: number;
   /** Too thin or too small to cut from tile; see isSliver. */
@@ -115,7 +117,7 @@ export function computePattern(
   const types: (Omit<PieceType, 'perCell' | 'name'> & { perCell: number })[] =
     [];
   const pieces: Piece[] = polygons.map((polygon) => {
-    const shape = measure(polygon);
+    const shape = measure(polygon, tutorial.pattern.distinguishOutlines);
     let index = types.findIndex((t) => congruent(t, shape, eps));
     if (index < 0) {
       index = types.length;
@@ -132,17 +134,38 @@ export function computePattern(
   // Largest type first, so the order does not depend on the face walk.
   const order = types
     .map((_, i) => i)
-    .sort(
-      (a, b) => (types[b] as PieceType).area - (types[a] as PieceType).area,
-    );
+    .sort((a, b) => {
+      const x = types[a] as PieceType;
+      const y = types[b] as PieceType;
+      if (
+        tutorial.pattern.distinguishOutlines &&
+        Math.abs(y.area - x.area) <=
+          4 * eps * Math.max(x.perimeter, y.perimeter)
+      )
+        return y.perCell - x.perCell || y.vertices - x.vertices;
+      return y.area - x.area;
+    });
   const rank = new Map(order.map((old, i) => [old, i]));
   const named = order.map((i) => {
     const t = types[i] as PieceType;
-    const match = tutorial.expect.pieces.filter(
-      (p) =>
-        p.vertices === t.vertices &&
-        Math.abs(p.area - t.area) <= 5e-6 * Math.max(1, p.area),
-    );
+    let match = tutorial.expect.pieces.filter((p) => {
+      if (
+        p.vertices !== t.vertices ||
+        Math.abs(p.area - t.area) > 5e-6 * Math.max(1, p.area)
+      )
+        return false;
+      if (!p.outline || !tutorial.pattern.distinguishOutlines) return true;
+      const g = scene.elements.get(p.outline)?.geometry;
+      if (g?.kind !== 'polygon')
+        throw new TutorialError(
+          'pattern',
+          p.outline,
+          'a piece outline must be a polygon',
+        );
+      return congruent(t, measure(g.vertices, true), eps);
+    });
+    if (match.length > 1 && tutorial.pattern.distinguishOutlines)
+      match = match.filter((p) => p.perCell === t.perCell);
     return match.length === 1
       ? { ...t, name: (match[0] as { name: string }).name }
       : t;
@@ -260,9 +283,10 @@ interface Shape {
   readonly area: number;
   readonly perimeter: number;
   readonly sides: readonly number[];
+  readonly outline?: readonly Vec[];
 }
 
-function measure(polygon: readonly Vec[]): Shape {
+function measure(polygon: readonly Vec[], distinguishOutlines = false): Shape {
   const sides = polygon
     .map((p, i) => distance(p, polygon[(i + 1) % polygon.length] as Vec))
     .sort((a, b) => a - b);
@@ -272,10 +296,11 @@ function measure(polygon: readonly Vec[]): Shape {
     area: signedArea(polygon),
     perimeter,
     sides,
+    ...(distinguishOutlines ? { outline: polygon } : {}),
   };
 }
 
-/** Same shape, by vertex count, area, perimeter and side lengths. */
+/** Legacy measures, followed by an optional full outline comparison. */
 function congruent(a: Shape, b: Shape, eps: number): boolean {
   // Corners are only known to within eps, so lengths may differ by a few
   // eps and areas by about eps times the perimeter.
@@ -284,8 +309,48 @@ function congruent(a: Shape, b: Shape, eps: number): boolean {
     a.vertices === b.vertices &&
     Math.abs(a.area - b.area) <= len * Math.max(a.perimeter, b.perimeter) &&
     Math.abs(a.perimeter - b.perimeter) <= len * a.vertices &&
-    a.sides.every((s, i) => Math.abs(s - (b.sides[i] as number)) <= len)
+    a.sides.every((s, i) => Math.abs(s - (b.sides[i] as number)) <= len) &&
+    (!a.outline || !b.outline || sameOutline(a.outline, b.outline, len))
   );
+}
+
+/** Compare every corner, allowing a cyclic start, either traversal and reflection. */
+function sameOutline(
+  a: readonly Vec[],
+  b: readonly Vec[],
+  eps: number,
+): boolean {
+  const n = a.length;
+  const local = (polygon: readonly Vec[], start: number, direction: number) => {
+    const origin = polygon[start] as Vec;
+    const edge = sub(polygon[(start + direction + n) % n] as Vec, origin);
+    const unit = scale(edge, 1 / length(edge));
+    return polygon.map((_, i) => {
+      const p = sub(
+        polygon[(start + direction * i + n * n) % n] as Vec,
+        origin,
+      );
+      return vec(dot(unit, p), cross(unit, p));
+    });
+  };
+  const first = local(a, 0, 1);
+  for (let start = 0; start < n; start++) {
+    for (const direction of [-1, 1]) {
+      const second = local(b, start, direction);
+      for (const mirror of [-1, 1]) {
+        if (
+          first.every((p, i) => {
+            const q = second[i] as Vec;
+            return (
+              Math.abs(p.x - q.x) <= eps && Math.abs(p.y - mirror * q.y) <= eps
+            );
+          })
+        )
+          return true;
+      }
+    }
+  }
+  return false;
 }
 
 /**
@@ -337,7 +402,7 @@ export function wallPieces(
   return faces
     .filter((f) => f.length >= 3)
     .map((polygon) => {
-      const shape = measure(polygon);
+      const shape = measure(polygon, true);
       const type = types.findIndex((t) => congruent(t, shape, eps * 10));
       return { polygon, type };
     });

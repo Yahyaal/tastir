@@ -81,6 +81,9 @@ REGION_TRADITION = {
 OVERRIDES = {
     'topkapi-scroll-pinwheel': ('Iran', 'Timurid', 'The Topkapı scroll is kept in Istanbul but was drawn by Timurid or Turkmen architects in Iran.'),
     'twelve-fold-dodecagrams': ('Books and other', None, 'A classic construction from a book, with no building named.'),
+    'turkish-sultana-mixed-stars': ('India', 'Mughal', 'The Turkish Sultana\'s House is in Fatehpur Sikri.'),
+    'otrush-star-chelates': (None, 'Mamluk', 'The al-Otrush mosque in Aleppo is Mamluk work (1398–1410).'),
+    'qawsun-quran-stars': ('Egypt, Syria and Iraq', 'Mamluk', 'A Qur\'an of the Qawsun mosque in Cairo.'),
     'leon-tile-stars': (None, 'Moroccan', 'A modern tile "for sale": the word sale is not Salé.'),
     'mosul-imam-yahya-star-rows': (None, 'Seljuk', 'Mosul under its atabegs, 13th century: Seljuk-era work.'),
 }

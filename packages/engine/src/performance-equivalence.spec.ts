@@ -37,6 +37,9 @@ function identical(actual: unknown, expected: unknown, path = 'result'): void {
 for (const file of tutorialFiles()) {
   it(`${file}: keeps every ink id, endpoint, piece and golden value`, () => {
     const t = loadTutorial(file);
+    // The frozen implementation predates full-outline grouping. Compare its
+    // legacy mode for every tutorial; pieces.spec and goldens cover the opt-in.
+    if (t.pattern.distinguishOutlines) t.pattern.distinguishOutlines = false;
     const scene = evaluate(t);
     const cell = cellOf(scene, t.pattern.cell);
     const own = referencePattern(scene, t);

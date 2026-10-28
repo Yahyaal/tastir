@@ -156,5 +156,20 @@
     "id": "mexuar-rosettes",
     "title": "Sixteen-pointed rosettes of the Mexuar, Alhambra",
     "members": ["alhambra-mexuar-vestibule-rosettes", "alhambra-mexuar-dado-rosettes"]
+  },
+  {
+    "id": "agra-twelve-six-stars",
+    "title": "Twelve- and six-pointed stars of the Agra Fort",
+    "members": ["agra-twelve-six-stars", "agra-twelve-six-stars-kites"]
+  },
+  {
+    "id": "twelve-star-bands",
+    "title": "Twelve-pointed star bands of the Mexuar and Sultaniyeh",
+    "members": ["mexuar-twelve-star-bands", "sultaniyeh-twelve-star-bands"]
+  },
+  {
+    "id": "divided-stars-isfahan",
+    "title": "Divided stars of Isfahan",
+    "members": ["ismail-shrine-divided-stars", "chehel-sotoun-divided-stars"]
   }
 ]

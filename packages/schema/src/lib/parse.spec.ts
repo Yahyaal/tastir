@@ -30,6 +30,47 @@ function problems(input: unknown): string[] {
 }
 
 describe('the example tutorial', () => {
+  it('checks outline specimens as constructed polygons in opt-in mode', () => {
+    const specimen = variant((t) => {
+      t.pattern.distinguishOutlines = true;
+      t.expect.pieces[0].outline = 'dynamic';
+    });
+    expect(safeParseTutorial(specimen).success).toBe(true);
+    for (const outline of ['missing', 'c']) {
+      expect(
+        safeParseTutorial(
+          variant((t) => {
+            t.pattern.distinguishOutlines = true;
+            t.expect.pieces[0].outline = outline;
+          }),
+        ).success,
+      ).toBe(false);
+    }
+    expect(
+      problems(
+        variant((t) => {
+          t.expect.pieces[0].outline = 'dynamic';
+        }),
+      ).join('\n'),
+    ).toContain('requires pattern.distinguishOutlines: true');
+  });
+  it('accepts opt-in outline grouping and leaves legacy grouping unset', () => {
+    expect(parseTutorial(example).pattern.distinguishOutlines).toBeUndefined();
+    expect(
+      parseTutorial(
+        variant((t) => {
+          t.pattern.distinguishOutlines = true;
+        }),
+      ).pattern.distinguishOutlines,
+    ).toBe(true);
+    expect(
+      safeParseTutorial(
+        variant((t) => {
+          t.pattern.distinguishOutlines = 'true';
+        }),
+      ).success,
+    ).toBe(false);
+  });
   it('preserves historical verification metadata and rejects unsupported statuses', () => {
     const input = {
       ...example,

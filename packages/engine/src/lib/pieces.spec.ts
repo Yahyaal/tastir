@@ -1,6 +1,6 @@
 import type { Tutorial } from '@tastir/schema';
 import { loadTutorial, starAndCross } from '../test/tutorials.js';
-import { evaluate, TutorialError } from './evaluate.js';
+import { evaluate, TutorialError, type Scene } from './evaluate.js';
 import { inkStrokes } from './ink.js';
 import {
   computePattern,
@@ -9,6 +9,149 @@ import {
   wallPieces,
 } from './pieces.js';
 import { segment } from './shapes.js';
+import type { Vec } from './vec.js';
+
+describe('full outline grouping', () => {
+  // U and T pentominoes share area 5, perimeter 12, eight corners and
+  // sorted sides [1,1,1,1,1,2,2,3], but cannot cover one another.
+  const u = [
+    [0, 0],
+    [2, 0],
+    [2, 1],
+    [1, 1],
+    [1, 2],
+    [2, 2],
+    [2, 3],
+    [0, 3],
+  ];
+  const t = [
+    [0, 0],
+    [1, 0],
+    [1, 1],
+    [3, 1],
+    [3, 2],
+    [1, 2],
+    [1, 3],
+    [0, 3],
+  ];
+  const polygons = [
+    u.map(([x = 0, y = 0]) => ({ x: x + 1, y: y + 1 })),
+    u.map(([x = 0, y = 0]) => ({ x: y + 6, y: x + 1 })),
+    t.map(([x = 0, y = 0]) => ({ x: x + 10, y: y + 1 })),
+  ];
+  const edges = (polygon: readonly Vec[]) =>
+    polygon.map((p, i) => segment(p, polygon[(i + 1) % polygon.length] as Vec));
+  const strokes = polygons.flatMap((p) =>
+    edges(p).map((s) => ({
+      from: 'test-start',
+      to: 'test-end',
+      segment: s,
+    })),
+  );
+  function fixture(
+    distinguishOutlines?: boolean,
+    ambiguous = false,
+    specimens = false,
+  ) {
+    const tutorial = structuredClone(starAndCross());
+    tutorial.pattern = {
+      cell: 'tile',
+      colors: {},
+      ...(distinguishOutlines === undefined ? {} : { distinguishOutlines }),
+    };
+    tutorial.expect = {
+      pieceTypes: 2,
+      pieces: [
+        { name: 'u', vertices: 8, area: 5, perCell: 2 },
+        { name: 't', vertices: 8, area: 5, perCell: ambiguous ? 2 : 1 },
+      ],
+    };
+    if (specimens) {
+      tutorial.expect.pieces[0]!.outline = 'uOutline';
+      tutorial.expect.pieces[1]!.outline = 'tOutline';
+    }
+    const vertices = [
+      { x: 0, y: 0 },
+      { x: 14, y: 0 },
+      { x: 14, y: 8 },
+      { x: 0, y: 8 },
+    ];
+    const scene: Scene = {
+      ...evaluate(tutorial),
+      elements: new Map(
+        Object.entries({
+          tile: vertices,
+          uOutline: polygons[0]!,
+          tOutline: polygons[2]!,
+        }).map(([name, points]) => [
+          name,
+          {
+            name,
+            step: 0,
+            beat: 0,
+            deps: [],
+            geometry: {
+              kind: 'polygon' as const,
+              vertices: points,
+              sides: edges(points),
+            },
+          },
+        ]),
+      ),
+    };
+    const extra = specimens
+      ? edges(polygons[2]!.map(({ x, y }) => ({ x, y: y + 4 }))).map(
+          (segment) => ({ from: 'a', to: 'b', segment }),
+        )
+      : [];
+    return computePattern(scene, tutorial, [...strokes, ...extra]);
+  }
+
+  it('preserves legacy grouping when the flag is absent or false', () => {
+    for (const flag of [undefined, false]) {
+      const p = fixture(flag);
+      expect(p.types).toHaveLength(1);
+      expect(p.types[0]?.perCell).toBe(3);
+      expect(p.types[0]?.outline).toBeUndefined();
+    }
+  });
+
+  it('separates outlines while grouping translated and reflected copies', () => {
+    const p = fixture(true);
+    expect(p.types.map(({ name, perCell }) => ({ name, perCell }))).toEqual([
+      { name: 'u', perCell: 2 },
+      { name: 't', perCell: 1 },
+    ]);
+    expect(p.types[0]?.sides).toEqual(p.types[1]?.sides);
+    expect(p.types.every((type) => type.outline?.length === 8)).toBe(true);
+    const wall = wallPieces(
+      strokes.map((s) => s.segment),
+      p.types,
+    );
+    expect(wall.map((piece) => p.types[piece.type]?.name).sort()).toEqual([
+      't',
+      'u',
+      'u',
+    ]);
+  });
+
+  it('uses constructed specimens when both outlines also have the same count', () => {
+    const result = fixture(true, true, true);
+    expect(
+      result.types
+        .map(({ name, perCell }) => ({ name, perCell }))
+        .sort((a, b) => a.name!.localeCompare(b.name!)),
+    ).toEqual([
+      { name: 't', perCell: 2 },
+      { name: 'u', perCell: 2 },
+    ]);
+  });
+
+  it('leaves same-count, same-measure names ambiguous', () => {
+    const result = fixture(true, true);
+    expect(result.types.every((type) => type.name === undefined)).toBe(true);
+  });
+});
 
 function withInk(through: string[]): Tutorial {
   const t = structuredClone(starAndCross());

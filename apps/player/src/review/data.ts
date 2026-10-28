@@ -6109,6 +6109,940 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alcazar-six-eight-stars',
+    title:
+      'Six- and eight-pointed stars of the Alcázar, Seville (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s CM022 drawing. The unit star and a square-root-of-three compass transfer fix the six-pointed stars and the full square repeat. The drawing gives no steps; we devised the construction.',
+      'The 15 pt bands are represented by their centre lines. The palette is illustrative. No photograph was checked. The compass steps, their order and named points are ours.',
+      '12 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alcazar-six-eight-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alcazar-six-eight-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Hall of the Ambassadors, Alcázar of Seville (CM022)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/CM022.html',
+      },
+    ],
+  },
+  {
+    id: 'salim-chishti-dodecagons',
+    title:
+      'Dodecagons of Salim Chishti’s tomb, Fatehpur Sikri (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s ASU2 drawing. The drawing gives no construction steps. The standard twelve-division opening is shared with the existing Mian rosette lesson. The pentagon boundaries and the hexagonal repeat were reconstructed from the drawing.',
+      'The 12 pt bands are represented by their centre lines. The compass steps, order and named points are ours. The palette is illustrative; no photograph was checked.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/salim-chishti-dodecagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/salim-chishti-dodecagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Salim Chishti’s tomb, Fatehpur Sikri (ASU2)',
+        url: 'https://tilingsearch.mit.edu/HTML/data216/ASU2.html',
+      },
+    ],
+  },
+  {
+    id: 'turkish-sultana-mixed-stars',
+    title:
+      'Mixed stars of the Turkish Sultana’s House, Fatehpur Sikri (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s P41 drawing. The drawing gives no steps. The twelve-division opening is shared with the Mian lesson. Compass transfers fix both eight-pointed stars, the six-pointed stars and the regular hexagons; parallels through their crossings complete the connectors.',
+      'The plain polygon boundaries are retained. The compass operations, step order and named points are ours. The palette is illustrative. No building photograph was checked.',
+      '28 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/turkish-sultana-mixed-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/turkish-sultana-mixed-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Turkish Sultana’s House, Fatehpur Sikri (P41)',
+        url: 'https://tilingsearch.mit.edu/HTML/data186/P41.html',
+      },
+    ],
+  },
+  {
+    id: 'agra-twelve-six-stars',
+    title: 'Twelve- and six-pointed stars of Agra Fort (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s IND0403 drawing. The drawing gives no steps. Three squares construct the star. A parallel intercept fixes the repeat length exactly; six parallel families through existing crossings supply all remaining lines.',
+      'The teaching frame turns by 15°. Black and brown bevel facets are removed, and the coloured faces expanded by 5 pt to recover the 10 pt band centre lines. The compass steps, order and named points are ours. The palette is illustrative; no fort photograph was independently checked.',
+      '20 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/agra-twelve-six-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/agra-twelve-six-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Agra Fort, Agra, India (IND0403)',
+        url: 'https://tilingsearch.mit.edu/HTML/data174/IND0403.html',
+      },
+    ],
+  },
+  {
+    id: 'agra-twelve-six-stars-kites',
+    title: 'Kite-filled twelve-pointed stars of Agra Fort (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s IND0403 drawing. The drawing gives no steps. Three squares construct the star. A parallel intercept fixes the repeat length exactly; six parallel families through existing crossings supply all remaining lines. This variation shares the complete construction with agra-twelve-six-stars. The existing lines through O divide its central star into twelve kites.',
+      'The teaching frame turns by −15°. Black and brown bevel facets are removed, and the coloured faces expanded by 5 pt to recover the 10 pt band centre lines. The compass steps, order and named points are ours. The palette is illustrative; no fort photograph was independently checked.',
+      '20 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/agra-twelve-six-stars-kites/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/agra-twelve-six-stars-kites/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Agra Fort, Agra, India (IND0405)',
+        url: 'https://tilingsearch.mit.edu/HTML/data214/IND0405.html',
+      },
+    ],
+  },
+  {
+    id: 'dhahabi-house-six-stars',
+    title:
+      'Six-pointed stars of the al-Dhahabi house, Cairo (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s F8785 drawing. The drawing gives no steps. The large unit star, small stars at the cell corners and three parallel families construct every boundary.',
+      'The plain polygon boundaries are retained. The full repeat distinguishes large and small stars. The compass steps, order and named points are ours. The palette is illustrative; no house photograph was independently checked.',
+      '15 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/dhahabi-house-six-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/dhahabi-house-six-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Jamal al-Din al-Dhahabi house, Cairo (F8785)',
+        url: 'https://tilingsearch.mit.edu/HTML/data201/F8785.html',
+      },
+    ],
+  },
+  {
+    id: 'mexuar-twelve-star-bands',
+    title:
+      'Twelve-pointed star bands of the Mexuar patio, Alhambra (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s W85 drawing. The drawing gives no steps. The unit star of three squares shares IND0403’s opening. The unit-square diagonal fixes the hexagonal repeat; these lines supply every boundary.',
+      'The frame turns15°. The black faces are expanded by4.5pt to recover the9pt band centre lines. The ribbon facets are replaced by one strapwork band. The compass steps, order and named points are ours. The palette and band colour are illustrative; no monument photograph was independently checked.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/mexuar-twelve-star-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/mexuar-twelve-star-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Mexuar patio, Alhambra (W85)',
+        url: 'https://tilingsearch.mit.edu/HTML/data18/W85.html',
+      },
+    ],
+  },
+  {
+    id: 'sultaniyeh-twelve-star-bands',
+    title:
+      'Twelve-pointed star bands of Öljeitü’s mausoleum, Sultaniyeh (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s IRA2633 coloured ribbon drawing. Its band centre lines coincide with W85’s complete mesh. This filling variation shares every construction step and ink reference with mexuar-twelve-star-bands. The drawing gives no construction instructions.',
+      'The source’s15pt ribbons are represented by their centre lines with the strapwork look. The grey stars, green pentagons and triangles, and black kites retain three distinct fill classes. The numeric palette and single band colour are illustrative. The frame turns15°. The compass operations, order and named points are ours. No monument photograph was independently checked.',
+      '9 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/sultaniyeh-twelve-star-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/sultaniyeh-twelve-star-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Öljeitü’s mausoleum, Sultaniyeh (IRA2633)',
+        url: 'https://tilingsearch.mit.edu/HTML/data189/IRA2633.html',
+      },
+    ],
+  },
+  {
+    id: 'damascus-fountain-stars',
+    title: 'Star surround of a Damascus fountain (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s DM1 drawing. The drawing gives no steps. The three-square star opening, a square diagonal, compass transfers and one midpoint fix the repeat and every parallel family.',
+      'The teaching frame turns−15°. The plain source boundaries are retained. The compass steps, order and named points are ours. The palette is illustrative. No fountain photograph was independently checked.',
+      '20 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/damascus-fountain-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/damascus-fountain-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Fountain surround, Damascus (DM1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data204/DM1.html',
+      },
+    ],
+  },
+  {
+    id: 'ibn-arabi-six-stars',
+    title: 'Six-pointed stars of Ibn al-Arabi’s mausoleum (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s SYR0222 drawing. The drawing gives no steps. Two triangles, diagonal intercepts and compass transfers fix every parallel family.',
+      'The teaching frame turns 30°. Plain source boundaries are retained. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
+      '21 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/ibn-arabi-six-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/ibn-arabi-six-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Ibn al-Arabi mausoleum, Damascus (SYR0222)',
+        url: 'https://tilingsearch.mit.edu/HTML/data197/SYR0222.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-98-divided-stars',
+    title: 'Divided stars of Bourgoin’s Plate 98 (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s A192 drawing. The drawing gives no steps. Three squares and two parallel families construct the divided stars and their connectors.',
+      'Plain polygon boundaries are retained. The white strokes are outlines centred on those boundaries. The steps, order and named points are ours. The palette is illustrative. No historical photograph was checked.',
+      '12 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-98-divided-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-98-divided-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bourgoin, Plate 98, upper design (A192)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/A192.html',
+      },
+    ],
+  },
+  {
+    id: 'samarkand-star-knots',
+    title: 'Four- and six-pointed star knots, Samarkand (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s SAM1 drawing. The drawing gives no steps. A four-pointed star, two compass transfers and parallels through earlier crossings fix the mesh.',
+      'The 10pt bands are represented by their centre lines. The square repeat preserves the p4g pattern’s handed arrangement round its fourfold centres. The steps, order and named points are ours. The palette is illustrative. No historical photograph was checked.',
+      '18 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/samarkand-star-knots/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/samarkand-star-knots/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Samarkand, after Tony Lee’s drawing (SAM1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data184/SAM1.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-106-star-lattice',
+    title: 'Star lattice of Bourgoin’s Plate 106 (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s P106 drawing. The drawing gives no steps. An angle bisector and a projected circle point fix the eight-pointed star. Compass transfers and four parallel families complete its square repeat.',
+      'Plain polygon boundaries are retained. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
+      '18 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-106-star-lattice/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-106-star-lattice/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bourgoin, Plate 106; examples in Cairo (P106)',
+        url: 'https://tilingsearch.mit.edu/HTML/data168/P106.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-92-twelve-stars',
+    title: 'Twelve-pointed stars of Bourgoin’s Plate 92 (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s P092 drawing. The drawing gives no steps. Two turned hexagons make the twelve-pointed star. Compass transfers set the hexagonal repeat and one height; a parallel through a crossing completes the mesh.',
+      'The 4pt bands are represented by their centre lines. The teaching frame turns30°. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-92-twelve-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-92-twelve-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Bourgoin, Plate92; examples in Cairo (P092)',
+        url: 'https://tilingsearch.mit.edu/HTML/data11/P092.html',
+      },
+    ],
+  },
+  {
+    id: 'maragha-twelve-star-bands',
+    title: 'Twelve-star bands of Gunbad-i Surkh, Maragha (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s CR1 drawing. The drawing gives no steps. Two turned hexagons, a diagonal intercept and a fifth-part construction fix the band centres.',
+      'The 7pt ribbons are represented by their centre lines. The teaching frame turns−15°. The steps, order and named points are ours. The palette and single band colour are illustrative. The source’s two-colour weave phase is not claimed as a photograph match. No monument photograph was independently checked.',
+      '18 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/maragha-twelve-star-bands/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/maragha-twelve-star-bands/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Gunbad-i Surkh, Maragha (CR1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data210/CR1.html',
+      },
+    ],
+  },
+  {
+    id: 'qalawun-twelve-star-knots',
+    title: 'Twelve-star knots of Qalawun’s mausoleum (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s DS1 drawing. The drawing gives no steps. Three squares make the twelve-pointed star. Compass transfers set the hexagonal repeat and one height; a parallel through a crossing completes the mesh.',
+      'The 10pt bands are represented by their centre lines. The teaching frame turns15°. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
+      '14 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/qalawun-twelve-star-knots/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/qalawun-twelve-star-knots/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Qalawun mausoleum, Cairo (DS1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data184/DS1.html',
+      },
+    ],
+  },
+  {
+    id: 'chester-beatty-twelve-stars',
+    title:
+      'Twelve-star lattice of a Chester Beatty Qur’an (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s F294 drawing. The drawing gives no steps. Four triangles and six parallel families construct the stars and their connectors.',
+      'The 8pt bands are represented by their centre lines. The steps, order and named points are ours. The palette is illustrative. No historical photograph was checked.',
+      '16 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/chester-beatty-twelve-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/chester-beatty-twelve-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Chester Beatty Library Qur’an (F294)',
+        url: 'https://tilingsearch.mit.edu/HTML/data164/F294.html',
+      },
+    ],
+  },
+  {
+    id: 'el-djem-dodecagons',
+    title: 'Dodecagons of a Roman mosaic, El Djem (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s BON1 drawing. The drawing gives no steps. A regular dodecagon, a diagonal intercept and two parallel families construct the mesh.',
+      'The 8pt green strokes are centred outlines; the original polygon boundaries are retained. The steps, order and named points are ours. The palette is illustrative. No historical photograph was checked.',
+      '12 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/el-djem-dodecagons/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/el-djem-dodecagons/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Roman mosaic, El Djem, Tunisia (BON1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data209/BON1.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-141-mixed-stars',
+    title: 'Mixed stars of Bourgoin’s Plate 141 (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s P141 drawing. The drawing gives no steps. Four triangles, compass sums and a third-part construction fix the repeat and parallel families.',
+      'Plain polygon boundaries are retained. The teaching frame turns15°. The steps, order and named points are ours. The palette is illustrative. No historical photograph was independently checked.',
+      '17 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-141-mixed-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-141-mixed-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bourgoin, Plate141 (P141)',
+        url: 'https://tilingsearch.mit.edu/HTML/data12/P141.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-142-star-rows',
+    title: 'Star rows of Bourgoin’s Plate 142 (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s P142 drawing. The drawing gives no steps. The four-triangle opening is shared with P141. Compass transfers set a rectangular repeat; parallels through earlier crossings complete its mesh.',
+      'Plain polygon boundaries are retained. The teaching frame turns45°. The conventional centred rectangle contains two twelve-pointed stars. The guide families turn more often than the finished cmm pattern. The steps, order and named points are ours. The palette is illustrative. No historical photograph was independently checked.',
+      '27 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-142-star-rows/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-142-star-rows/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bourgoin, Plate142 (P142)',
+        url: 'https://tilingsearch.mit.edu/HTML/data12/P142.html',
+      },
+    ],
+  },
+  {
+    id: 'seville-six-eight-twelve-stars',
+    title:
+      'Six-, eight- and twelve-pointed stars of Seville (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s SEV2 drawing. The drawing gives no steps. The four-triangle opening is shared with F294. A quarter-part construction fixes the repeat, and circle projections fix the eight-star carriers.',
+      'The 8pt bands are represented by their centre lines. The teaching frame turns30°. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
+      '15 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/seville-six-eight-twelve-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/seville-six-eight-twelve-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Reales Alcázares, Seville (SEV2)',
+        url: 'https://tilingsearch.mit.edu/HTML/data18/SEV2.html',
+      },
+    ],
+  },
+  {
+    id: 'bourgoin-87-chelates',
+    title: 'Star chelates of Bourgoin’s Plate 87 (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s B87 drawing. The drawing gives no steps. The first eight steps are shared with P141. Three diagonal halvings and compass complements construct all further parallel families.',
+      'Plain polygon boundaries are retained. The teaching frame turns15°. The steps, order and named points are ours. The palette is illustrative. No historical photograph was independently checked.',
+      '21 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/bourgoin-87-chelates/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/bourgoin-87-chelates/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label: 'Brian Wichmann, Tiling Search: Bourgoin, Plate87 (B87)',
+        url: 'https://tilingsearch.mit.edu/HTML/data188/B87.html',
+      },
+    ],
+  },
+  {
+    id: 'fathabad-mixed-stars',
+    title: 'Mixed stars of the Fathabad tile fragments (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s MIR24 drawing. The drawing gives no steps. A regular-hexagon side is the unit. Compass transfers set the three-square star and the repeat; corner-star and parallel families complete the mesh.',
+      'The 6pt bands are represented by their centre lines. The steps, order and named points are ours. The palette is illustrative. No fragment photograph was independently checked.',
+      '24 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/fathabad-mixed-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/fathabad-mixed-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Fathabad, Bukhara; Hamburg museum fragments (MIR24)',
+        url: 'https://tilingsearch.mit.edu/HTML/data216/MIR24.html',
+      },
+    ],
+  },
+  {
+    id: 'qawsun-quran-stars',
+    title: 'Stars of a Qur’an page from Qawsun mosque (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s DA1 drawing. The drawing gives no steps. Three squares, a third-part construction and parallels through crossings fix the square mesh.',
+      'Plain polygon boundaries are retained. The teaching frame turns45° onto the actual square slides. The steps, order and named points are ours. The palette is illustrative. No manuscript photograph was independently checked.',
+      '21 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/qawsun-quran-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/qawsun-quran-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Qawsun mosque Qur’an, after Prisse d’Avennes (DA1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data187/DA1.html',
+      },
+    ],
+  },
+  {
+    id: 'museum-divided-stars',
+    title:
+      'Divided stars of the Turkish and Islamic Arts Museum (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s TAI1 drawing. The drawing gives no steps. The three-square opening is shared with the Agra star lesson. A third-part construction and compass sum set the repeat; parallels through crossings complete the divided stars.',
+      'Grey bevel facets are removed and the20pt bands represented by their centre lines. The teaching frame turns15°. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
+      '19 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/museum-divided-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/museum-divided-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Minbar balustrade, Turkish and Islamic Arts Museum, Istanbul (TAI1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data193/TAI1.html',
+      },
+    ],
+  },
+  {
+    id: 'otrush-star-chelates',
+    title: 'Star chelates of al-Otrush mosque, Aleppo (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s AJL8 drawing. The drawing gives no steps. The first six steps share the Qawsun three-square opening. A third, compass sum and four diagonal halvings set the repeat and carrier distances.',
+      'Grey bevel facets are removed and the5pt bands represented by their centre lines. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
+      '23 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/otrush-star-chelates/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/otrush-star-chelates/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Al-Otrush mosque, Aleppo, Syria (AJL8)',
+        url: 'https://tilingsearch.mit.edu/HTML/data198/AJL8.html',
+      },
+    ],
+  },
+  {
+    id: 'barsbay-twelve-star-doors',
+    title: 'Twelve-star doors of Sultan Barsbay, Cairo (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the rectangular tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s EGY1030 drawing. The drawing gives no steps. The first six steps share the Chester Beatty four-triangle opening. Compass sums construct the centred rectangle, small radius and corner diagonals; parallels through crossings complete the mesh.',
+      'Grey bevel facets are removed and the8pt bands represented by their centre lines. Guide families turn more often than the finished cmm pattern. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
+      '28 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/barsbay-twelve-star-doors/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/barsbay-twelve-star-doors/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Al-Ashraf Barsbay, Cairo, Egypt (EGY1030)',
+        url: 'https://tilingsearch.mit.edu/HTML/data180/EGY1030.html',
+      },
+    ],
+  },
+  {
+    id: 'ismail-shrine-divided-stars',
+    title: 'Divided stars of Imamzadeh Ismail, Isfahan (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the diamond tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s SHAF18 drawing. The drawing gives no steps. The first nine construction operations share the P142 opening. Compass sums set the diamond repeat; parallels through crossings complete the divided stars.',
+      'Grey bevel facets below0.6 are removed; the pale-grey kites are retained. The10pt bands are represented by their centre lines. Guide families turn more often than the finished pattern. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
+      '41 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/ismail-shrine-divided-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/ismail-shrine-divided-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Imamzadeh Ismail shrine, Isfahan, Iran (SHAF18)',
+        url: 'https://tilingsearch.mit.edu/HTML/data200/SHAF18.html',
+      },
+    ],
+  },
+  {
+    id: 'shah-mosque-chiral-grille',
+    title:
+      'Chiral divided stars of the Shah Mosque grille (new, Tiling Search)',
+    fold: 6,
+    status: 'decide',
+    summary: 'Put copies of the hexagonal tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s F38 drawing. The drawing gives no steps. The shared three-square opening locates a unit kite edge. A fifth and twentieth of it set two connector lengths. Parallels and one further compass transfer locate the chiral mesh and its angled hexagonal repeat.',
+      'Plain source boundaries are retained. The independent edge lengths use6/5 and29/20 of the unit kite edge, matching the rounded source vertices. The steps, order and named points are ours. Colours retain the diagram’s classes and are illustrative; the source states that the wooden original has no colour. No monument photograph was independently checked.',
+      '36 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/shah-mosque-chiral-grille/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/shah-mosque-chiral-grille/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Shah Mosque, Isfahan, Iran (F38)',
+        url: 'https://tilingsearch.mit.edu/HTML/data153/F38.html',
+      },
+    ],
+  },
+  {
+    id: 'chehel-sotoun-divided-stars',
+    title: 'Divided stars of Chehel Sotoun, Isfahan (new, Tiling Search)',
+    fold: 2,
+    status: 'decide',
+    summary: 'Put copies of the diamond tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s OR1 drawing. The drawing gives no steps. The complete construction is shared with the Ismail shrine tutorial. Turning the source frame by90° gives the same mesh and kite proportions.',
+      'Brown bevel facets are removed. The7pt bands are represented by their centre lines. The steps, order and named points are ours. The colours retain the diagram’s classes and are illustrative. The olive six-stars use a two-by-two colour repeat, larger than the geometric repeat. The olive six-stars use a two-by-two colour repeat, larger than the geometric repeat. The olive six-stars use a two-by-two colour repeat, larger than the geometric repeat. No monument photograph was independently checked.',
+      '41 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/chehel-sotoun-divided-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/chehel-sotoun-divided-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Chehel Sotoun Palace, Isfahan, Iran (OR1)',
+        url: 'https://tilingsearch.mit.edu/HTML/data213/OR1.html',
+      },
+    ],
+  },
+  {
+    id: 'rabat-mixed-star-rosette',
+    title: 'Mixed-star rosette from Rabat (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary: 'Put copies of the square tile side by side.',
+    story: [
+      'The finished design was read from Wichmann’s MOR1118 drawing. The drawing gives no steps. The first six steps share the Chester Beatty four-triangle opening. Compass sums and diagonal halvings locate the rosette and mixed-star mesh.',
+      'The6pt bands are represented by their centre lines. The square half-side is(3+5√2+√6)/2 of the twelve-star radius. The half inner-star edge sets the smaller stars. Extra guide turns do not assert extra symmetry of the finished ink. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
+      '49 steps, advanced.',
+    ],
+    pictures: [
+      {
+        src: 'renders/rabat-mixed-star-rosette/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/rabat-mixed-star-rosette/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mosque, Rabat, Morocco (MOR1118)',
+        url: 'https://tilingsearch.mit.edu/HTML/data190/MOR1118.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -7411,6 +8345,37 @@ export const QUESTIONS: readonly Question[] = [
       'alhambra-mexuar-dado-rosettes',
       'camlica-mosque-stars',
       'topkapi-door-stars',
+      'alcazar-six-eight-stars',
+      'salim-chishti-dodecagons',
+      'turkish-sultana-mixed-stars',
+      'agra-twelve-six-stars',
+      'agra-twelve-six-stars-kites',
+      'dhahabi-house-six-stars',
+      'mexuar-twelve-star-bands',
+      'sultaniyeh-twelve-star-bands',
+      'damascus-fountain-stars',
+      'ibn-arabi-six-stars',
+      'bourgoin-98-divided-stars',
+      'samarkand-star-knots',
+      'bourgoin-106-star-lattice',
+      'bourgoin-92-twelve-stars',
+      'maragha-twelve-star-bands',
+      'qalawun-twelve-star-knots',
+      'chester-beatty-twelve-stars',
+      'el-djem-dodecagons',
+      'bourgoin-141-mixed-stars',
+      'bourgoin-142-star-rows',
+      'seville-six-eight-twelve-stars',
+      'bourgoin-87-chelates',
+      'fathabad-mixed-stars',
+      'qawsun-quran-stars',
+      'museum-divided-stars',
+      'otrush-star-chelates',
+      'barsbay-twelve-star-doors',
+      'ismail-shrine-divided-stars',
+      'shah-mosque-chiral-grille',
+      'chehel-sotoun-divided-stars',
+      'rabat-mixed-star-rosette',
     ],
   },
 ];

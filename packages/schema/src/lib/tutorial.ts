@@ -307,6 +307,8 @@ export const ExpectedPiece = z.strictObject({
   vertices: z.int().min(3),
   area: z.number().positive(),
   perCell: z.int().positive(),
+  /** A constructed specimen when scalar measures and counts are ambiguous. */
+  outline: Ref.optional(),
   /** A deliberately small or thin piece, which the sliver check accepts. */
   small: z.boolean().optional(),
 });
@@ -514,6 +516,8 @@ export const TutorialShape = z.strictObject({
     ),
   pattern: z.strictObject({
     cell: Ref,
+    /** Separate noncongruent outlines even when their scalar measures agree. */
+    distinguishOutlines: z.boolean().optional(),
     /**
      * The whole panel to trace in the ink stage, when the tile carries a
      * shared band on only two sides: a convex polygon holding the tile. Its

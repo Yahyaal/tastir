@@ -1,0 +1,224 @@
+{
+  "format": 0,
+  "id": "sultaniyeh-twelve-star-bands",
+  "title": "Twelve-pointed star bands of Öljeitü’s mausoleum, Sultaniyeh",
+  "short": "Sultaniyeh twelve-star bands",
+  "subtitle": "Öljeitü’s mausoleum, Sultaniyeh",
+  "fold": 6,
+  "star": 12,
+  "style": "Persian",
+  "region": "Iran",
+  "level": "intermediate",
+  "given": {"O": "The centre of a twelve-pointed star.", "A": "Sets its point radius."},
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Wichmann’s IRA2633 coloured ribbon drawing. Its band centre lines coincide with W85’s complete mesh. This filling variation shares every construction step and ink reference with mexuar-twelve-star-bands. The drawing gives no construction instructions.",
+    "changes": "The source’s15pt ribbons are represented by their centre lines with the strapwork look. The grey stars, green pentagons and triangles, and black kites retain three distinct fill classes. The numeric palette and single band colour are illustrative. The frame turns15°. The compass operations, order and named points are ours. No monument photograph was independently checked.",
+    "reviewed": "2026-10-27"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data189/IRA2633: Öljeitü’s mausoleum, Sultaniyeh",
+      "creator": "Brian Wichmann",
+      "kind": "drawing",
+      "url": "https://tilingsearch.mit.edu/HTML/data189/IRA2633.html",
+      "note": "The page cites David Wade’s photograph IRA2633, Öljeitü’s mausoleum, Sultaniyeh, Iran (1313 AD, 712 AH). Its non-edge-to-edge statement describes the filled ribbon rendering; the repeated centre-line mesh reconstructed here is the same as W85."
+    }
+  ],
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A. Keep this compass size for the next steps.",
+      "create": {"h": {"line": {"through": ["O", "A"]}}, "c": {"circle": {"centre": "O", "through": "A"}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a circle with centre A through O. Draw a circle with centre G through O, where the line crosses the first circle on the left.",
+      "create": {
+        "G": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "cE": {"circle": {"centre": "A", "radiusOf": "c"}},
+        "cW": {"circle": {"centre": "G", "radiusOf": "c"}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "compass"
+    },
+    {
+      "id": 3,
+      "text": "Draw a vertical line through O. It crosses the first circle at D and K. Draw a circle with centre D through O. Draw a circle with centre K through O.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "K": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "cN": {"circle": {"centre": "D", "radiusOf": "c"}},
+        "cS": {"circle": {"centre": "K", "radiusOf": "c"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a straight line through B and H, C and J, E and L, and F and M. B, C, E, F, H, J, L and M are where the four new circles cross the first circle. The first circle is now cut into twelve.",
+      "create": {
+        "C": {"point": {"meet": ["c", "cE"], "pick": {"angle": 60.0}}},
+        "L": {"point": {"meet": ["c", "cE"], "pick": {"angle": 300.0}}},
+        "E": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
+        "J": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}},
+        "B": {"point": {"meet": ["c", "cN"], "pick": {"angle": 30.0}}},
+        "F": {"point": {"meet": ["c", "cN"], "pick": {"angle": 150.0}}},
+        "H": {"point": {"meet": ["c", "cS"], "pick": {"angle": 210.0}}},
+        "M": {"point": {"meet": ["c", "cS"], "pick": {"angle": 330.0}}},
+        "r30": {"line": {"through": ["B", "H"]}},
+        "r60": {"line": {"through": ["C", "J"]}},
+        "r120": {"line": {"through": ["E", "L"]}},
+        "r150": {"line": {"through": ["F", "M"]}}
+      },
+      "highlight": ["cE", "cW", "cN", "cS"],
+      "animate": "ruler",
+      "textWithoutHelpers": "The four circles cross the first circle at B, C, E, F, H, J, L and M. Draw a straight line through B and H. Draw a straight line through F and M."
+    },
+    {
+      "id": 5,
+      "text": "Draw the lines through O that halve angles AOB, BOC and COD. Draw a line through O at 90° to each new line. The circle’s twelve points on these lines are S1 to S12, counted round it.",
+      "create": {
+        "r15": {"line": {"through": "O", "bisects": ["A", "O", "B"]}},
+        "r45": {"line": {"through": "O", "bisects": ["B", "O", "C"]}},
+        "r75": {"line": {"through": "O", "bisects": ["C", "O", "D"]}},
+        "r105": {"line": {"through": "O", "perpendicularTo": "r15"}},
+        "r135": {"line": {"through": "O", "perpendicularTo": "r45"}},
+        "r165": {"line": {"through": "O", "perpendicularTo": "r75"}},
+        "S1": {"point": {"meet": ["c", "r15"], "pick": {"angle": 15.0}}},
+        "S2": {"point": {"meet": ["c", "r45"], "pick": {"angle": 45.0}}},
+        "S3": {"point": {"meet": ["c", "r75"], "pick": {"angle": 75.0}}},
+        "S4": {"point": {"meet": ["c", "r105"], "pick": {"angle": 105.0}}},
+        "S5": {"point": {"meet": ["c", "r135"], "pick": {"angle": 135.0}}},
+        "S6": {"point": {"meet": ["c", "r165"], "pick": {"angle": 165.0}}},
+        "S7": {"point": {"meet": ["c", "r15"], "pick": {"angle": 195.0}}},
+        "S8": {"point": {"meet": ["c", "r45"], "pick": {"angle": 225.0}}},
+        "S9": {"point": {"meet": ["c", "r75"], "pick": {"angle": 255.0}}},
+        "S10": {"point": {"meet": ["c", "r105"], "pick": {"angle": 285.0}}},
+        "S11": {"point": {"meet": ["c", "r135"], "pick": {"angle": 315.0}}},
+        "S12": {"point": {"meet": ["c", "r165"], "pick": {"angle": 345.0}}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Draw the three squares that make the twelve-pointed star.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a straight line through S1 and S4, S4 and S7, S7 and S10, and S10 and S1.",
+          "create": {
+            "st0": {"line": {"through": ["S1", "S4"]}},
+            "st3": {"line": {"through": ["S4", "S7"]}},
+            "st6": {"line": {"through": ["S7", "S10"]}},
+            "st9": {"line": {"through": ["S10", "S1"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through S2 and S5, S5 and S8, S8 and S11, and S11 and S2.",
+          "create": {
+            "st1": {"line": {"through": ["S2", "S5"]}},
+            "st4": {"line": {"through": ["S5", "S8"]}},
+            "st7": {"line": {"through": ["S8", "S11"]}},
+            "st10": {"line": {"through": ["S11", "S2"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through S3 and S6, S6 and S9, S9 and S12, and S12 and S3.",
+          "create": {
+            "st2": {"line": {"through": ["S3", "S6"]}},
+            "st5": {"line": {"through": ["S6", "S9"]}},
+            "st8": {"line": {"through": ["S9", "S12"]}},
+            "st11": {"line": {"through": ["S12", "S3"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "text": "Draw a vertical line through A. Draw a horizontal line through D. They cross at P1. Draw a circle with centre O through P1. It crosses the horizontal line at N, right of A.",
+      "create": {
+        "ax": {"line": {"through": "A", "parallelTo": "v"}},
+        "dy": {"line": {"through": "D", "parallelTo": "h"}},
+        "P1": {"point": {"meet": ["ax", "dy"]}},
+        "repeatCircle": {"circle": {"centre": "O", "through": "P1"}},
+        "N": {"point": {"meet": ["repeatCircle", "h"], "pick": {"angle": 0.0}}}
+      },
+      "animate": "compass",
+      "textWithoutHelpers": "P1 is where the vertical through A crosses the horizontal through D. Draw a circle with centre O through P1. It crosses the horizontal line at N, right of A."
+    },
+    {
+      "id": 8,
+      "text": "Draw a vertical line through N. Turn it round O by 60°, five times. The six lines frame the tile, with corners T1 to T6.",
+      "create": {
+        "frame": {"line": {"through": "N", "parallelTo": "v"}},
+        "frames": {"repeat": {"of": ["frame"], "by": "rot6"}},
+        "T1": {"point": {"meet": ["frame", "frame@1"]}},
+        "T2": {"point": {"meet": ["frame@1", "frame@2"]}},
+        "T3": {"point": {"meet": ["frame@2", "frame@3"]}},
+        "T4": {"point": {"meet": ["frame@3", "frame@4"]}},
+        "T5": {"point": {"meet": ["frame@4", "frame@5"]}},
+        "T6": {"point": {"meet": ["frame@5", "frame"]}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "Join T1, T2, T3, T4, T5 and T6 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["T1", "T2", "T3", "T4", "T5", "T6"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange.",
+    "paths": [
+      {"along": "st0", "from": "h", "to": "r30"},
+      {"along": "st0", "from": "v", "to": "r120"},
+      {"along": "st3", "from": "frame@1", "to": "r120"},
+      {"along": "st3", "from": "h", "to": "frame@4"},
+      {"along": "st6", "from": "h", "to": "r30"},
+      {"along": "st6", "from": "v", "to": "r120"},
+      {"along": "st9", "from": "frame@4", "to": "r120"},
+      {"along": "st9", "from": "h", "to": "frame@1"},
+      {"along": "st1", "from": "frame", "to": "r60"},
+      {"along": "st1", "from": "r120", "to": "frame@3"},
+      {"along": "st4", "from": "r120", "to": "r150"},
+      {"along": "st4", "from": "r30", "to": "r60"},
+      {"along": "st7", "from": "frame@3", "to": "r60"},
+      {"along": "st7", "from": "r120", "to": "frame"},
+      {"along": "st10", "from": "r120", "to": "r150"},
+      {"along": "st10", "from": "r30", "to": "r60"},
+      {"along": "st2", "from": "r60", "to": "v"},
+      {"along": "st2", "from": "r150", "to": "h"},
+      {"along": "st5", "from": "frame@2", "to": "h"},
+      {"along": "st5", "from": "r60", "to": "frame@5"},
+      {"along": "st8", "from": "r60", "to": "v"},
+      {"along": "st8", "from": "r150", "to": "h"},
+      {"along": "st11", "from": "frame@5", "to": "h"},
+      {"along": "st11", "from": "r60", "to": "frame@2"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "look": "strapwork",
+    "palette": "Alhambra",
+    "colors": {"star": "ground", "pentagon": "b", "kite": "a", "triangle": "b"},
+    "text": "Put copies of the hexagonal tile side by side."
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "cellArea": 6.9282,
+    "note": "Star6−2√3; six pentagons3−3√3/2; twelve kites2√3/3−1; two triangles7√3/2−6. Their counted areas sum exactly to4√3, the hexagonal cell area.",
+    "pieces": [
+      {"name": "star", "vertices": 24, "area": 2.5359, "perCell": 1},
+      {"name": "pentagon", "vertices": 5, "area": 0.40192, "perCell": 6},
+      {"name": "kite", "vertices": 4, "area": 0.1547, "perCell": 12},
+      {"name": "triangle", "vertices": 3, "area": 0.06218, "perCell": 2}
+    ]
+  }
+}

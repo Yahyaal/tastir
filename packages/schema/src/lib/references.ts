@@ -207,6 +207,15 @@ export function checkReferences(t: Tutorial): Issue[] {
 
   const pieceNames = new Set<string>();
   t.expect.pieces.forEach((p, i) => {
+    if (p.outline) {
+      use(`expect.pieces[${i}].outline`, p.outline, ['polygon']);
+      if (!t.pattern.distinguishOutlines)
+        issues.push({
+          path: `expect.pieces[${i}].outline`,
+          message:
+            'an outline specimen requires pattern.distinguishOutlines: true',
+        });
+    }
     if (pieceNames.has(p.name))
       issues.push({
         path: `expect.pieces[${i}].name`,

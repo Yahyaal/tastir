@@ -28,8 +28,9 @@ import type { Vec } from './vec.js';
  * next tile). Then the answer repeats after two tiles along that slide,
  * and `repeat` says so.
  *
- * Points where three or more bands cross, where a band ends against
- * another, or where bands only touch, are drawn as they are: `flat`.
+ * Points where a bending band crosses a straight one, where three or
+ * more bands cross, where a band ends against another, or where bands
+ * only touch, are drawn as they are: `flat`.
  *
  * For drawing, each crossing carries the path of its top band either way
  * (`ahead`, `behind`), following the band through its bends and straight
@@ -74,6 +75,12 @@ const EPS = 1e-7;
 const SNAP = 1e-6;
 /** Directions this close are the same. */
 const SAME = 1e-6;
+
+/** The ends of a bending band lie on opposite sides of a straight band. */
+const crossesLine = (axis: Vec, a: Vec, b: Vec) => {
+  const side = (d: Vec) => axis.x * d.y - axis.y * d.x;
+  return side(a) * side(b) < -SAME * SAME;
+};
 
 interface Out {
   readonly dir: Vec;
@@ -405,9 +412,17 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
       // On along the band: straight through, or round a bend.
       const straight = vx.out.find((p) => same(p.dir, dir));
       if (straight) {
-        // Several bands crossing here at once: the band swaps once for
-        // each other band, and the point is drawn flat, so the path stops.
-        const others = (through[at] as number) - 1;
+        // At a flat crossing, swap once for each other straight or
+        // bending band that crosses this one, and stop the redraw path.
+        const loose = vx.out.filter(
+          (_, x) => (opposite[at] as number[])[x] === -1,
+        );
+        const bent =
+          loose.length === 2 &&
+          crossesLine(dir, (loose[0] as Out).dir, (loose[1] as Out).dir)
+            ? 1
+            : 0;
+        const others = (through[at] as number) - 1 + bent;
         if (others >= 1) {
           swaps += others;
           stop ??= length;
@@ -425,6 +440,21 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
         const back = { x: -dir.x, y: -dir.y };
         const turn = loose.find((p) => !same(p.dir, back));
         if (turn && loose.some((p) => same(p.dir, back))) {
+          // A bending band can cross a straight one too. That junction
+          // stays flat, but each band must still swap there.
+          let crossed = 0;
+          for (let x = 0; x < vx.out.length; x++) {
+            const other = vx.out[x] as Out;
+            if (
+              ((opposite[at] as number[])[x] as number) > x &&
+              crossesLine(other.dir, back, turn.dir)
+            )
+              crossed++;
+          }
+          if (crossed > 0) {
+            swaps += crossed;
+            stop ??= length;
+          }
           step = turn;
           continue;
         }

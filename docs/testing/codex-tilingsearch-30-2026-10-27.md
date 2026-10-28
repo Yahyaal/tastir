@@ -1,0 +1,491 @@
+# Six- and twelve-fold Tiling Search work, 27 October 2026
+
+Work is confined to `/home/yahya/Documents/projects/Tastir-codex-30`, on `codex/tilingsearch-30`. The approved brief authorizes implementation and the final branch push. It reserves the review, variations, queue, status and prompt files for Claude. Main-checkout research is read only. Intermediate files and overlays are in this worktree's ignored `docs/research/tilingsearch-30/`. No development server is started and port 4200 is left alone.
+
+Dependencies were installed once and the schema build succeeded once, using `NX_DAEMON=false NX_ISOLATE_PLUGINS=false`. Heavy commands run sequentially under the specified memory caps. All 39 PDFs have been read into polygons and their drawing sheets inspected. A source drawing match will be reported separately from a monument photograph match.
+
+## Shared tools
+
+`snap_grid3.py` adds an importable and command-line √3/2 grid reader beside the unchanged √2 reader. It accepts an explicit rational denominator, reports the worst coordinate residual, and keeps exact rational coefficients. Three standard-library tests pass, covering triangle and hexagon coordinates, negative coefficients, rational halves, source-frame conversion, radius selection and invalid options. Snapping alone does not prove the construction.
+
+## Progress
+
+Thirty-one tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87, MIR24, DA1, TAI1, AJL8, EGY1030, SHAF18, F38, OR1 and MOR1118. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. All39 entries are accounted for.
+
+## CM022 — `alcazar-six-eight-stars`
+
+This twelve-step p4m tutorial uses fold four and an eight-pointed star. O is at PDF (300.345625, 373.845625), with OA the full centre-line star radius, 25(1+√2) pt. With H=√2/2, the square cell half-side is H(1+5/√3). The source’s 15 pt bands are expanded by 7.5 pt before reading their centre lines. The unit-star opening is shared with the existing low-fold generators. A √3 compass transfer and two parallels through crossings locate the other lines. The worst expanded source-corner distance from the exact construction, including neighbouring copies for complete boundary pieces, is 0.00015603 OA.
+
+Independent polygon shoelaces give six_star 2√3, twice; eight 8−3√3, four; four_star (38√3−58)/3, once; eight_star 8−4√2, once; arrow −3/2+√2+5√3/6, four; and kite 1−√3/3, four. Their counted sum is (56+20√3)/3=4H²(1+5/√3)², exactly the square cell area. The engine independently finds these six types and sixteen pieces, without slivers or off-construction ink endpoints.
+
+I inspected the ink, the wall and the complete red PDF overlay at `docs/research/tilingsearch-30/CM022/overlay.png`. Every red line follows a band centre. The drawing’s three fill classes are retained by shape; the numeric palette is illustrative. CM022 is absent from `wade-paired.json`, and no building photograph was checked. Credits retain the page’s Cahier and Martin page 22, Wade SPA 2219 and SPA 2319, Rigby photograph 180 and Crossling inlay attribution. The source’s own monument descriptions differ, and are reported as its attributions. Comparison with existing tutorials and families found no duplicate or filling-only variant. The old six-fold tutorials have different piece inventories and arrangements.
+
+The catalog prepared 187 previews. The six targeted golden checks and the targeted weave check passed. The specified combined filtered command failed only because interlace.spec.ts has a global afterAll requiring over 1000 followed band sections, which a single filtered design cannot supply. Running that entire file passed all 192 checks. The player text/helper checks passed all 940 assertions, including the ASU2 draft. The schema suite passed all 40 checks. A player run started while the full weave file was still running was stopped and then rerun sequentially; subsequent heavy checks remain serial. These checks used the 3 GB cap. No shared engine, schema, player or reserved file was changed.
+
+## ASU2 — `salim-chishti-dodecagons`
+
+This p6m tutorial has nine steps and fold six. O is at PDF (305.4016666667, 371), the central dodecagon’s centre. OA is its expanded radius, 45/(2sin15°)=86.9333243660 pt, and the hexagonal cell apothem is 1+sin15°. Its source faces are expanded by 6 pt, half the 12 pt bands. All 97 extracted source polygons fit the exact ideal vertex set and its lattice copies within 0.00009532 OA in Euclidean distance. The mixed √2/√3 expressions have small coefficients; no approximate length is shipped.
+
+The first four steps reuse the existing Mian lesson’s twelve-division opening byte for byte. The dodecagon sides, a half-chord transfer and the six cell sides give all the ink. An independent pentagon shoelace uses (−√3/2,1/2), (−L,L/√3), (−2L+√3/2,1/2), (−2L+1,0) and (−1,0), with L=1+sin15°. Its area is (6√2+6√3−2√6−9)/12. Six of these and one dodecagon of area 3 sum exactly to 2√3L², the cell area. The engine independently finds both types and those counts without slivers or off-construction endpoints.
+
+I inspected the ink, wall and the complete red overlay at `docs/research/tilingsearch-30/ASU2/overlay.png`. All source boundaries agree with our band centre lines. The source’s single fill class is retained by assigning both shapes the same palette slot. The numeric palette is illustrative. The page credits Aslam Qureshi’s photograph of Salim Chishti’s tomb, Fatehpur Sikri (1581 AD, 989 AH), supplied by personal communication; no photograph was independently checked. This is a separate design from the star and rosette lessons and the existing eight-fold Salim Chishti square lattice, with no duplicate or filling-only variant found.
+
+The catalog prepared 188 previews. All six targeted golden checks, the full weave group, all 940 text/helper assertions and all 40 schema checks passed serially under 3 GB. The filter includes `weave` because of the global crossing-count assertion explained under CM022. No shared application or reserved file changed.
+
+## P41 — `turkish-sultana-mixed-stars`
+
+This p4m tutorial has 28 steps, fold four and an eight-pointed star. O is at PDF (297.5, 377.91125), and OA is a common 50 pt edge. Put r=√2, s=√3 and t=√6. The axial marks R=(1+r+s)/2, X=(1+2r+s+t)/2 and the square half-side L=4+t−r fix the two different eight-pointed stars, the six-pointed stars and the regular hexagons. The twelve-division opening is shared with ASU2 and the Mian lesson. Four further parallel families pass through existing crossings. Four unused helper steps and an unused star-line family were removed; comparing evaluated ink before and after gives identical segments.
+
+Independent source-polygon shoelaces give large_star 2+2r+2s, once; small_star −2+2r+2s, once; six_star (−9+9r+15s−9t)/2, four; four_star 426−300r−240s+170t, twice; ten (−314+225r+174s−121t)/4, eight; irregular_hexagon (−48+39r+26s−15t)/8, sixteen; hexagon (−9+9r+15s−9t)/4, eight; and kite 1/2, eight. The larger coefficients arise after expanding mixed-radical lengths in this edge unit; the actual construction uses small compass sums and differences. These 48 pieces sum exactly to 96−32r−16s+32t=4L². The engine independently confirms every type and count without slivers or off-construction endpoints. Source corners, including complete boundary pieces checked against neighbouring constructions, have worst Euclidean snapping error 0.00015151 OA.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P41/overlay.png`. All red lines agree with the source polygon boundaries. The source’s single fill class is retained with one palette slot, and the numeric palette is illustrative. The page attributes the ceiling to the Turkish Sultana’s House, Fatehpur Sikri, through an internet photograph supplied by personal communication. No photograph was independently checked. The two regular eight-pointed stars differ from CM022’s star and four-pointed connectors, so it is a separate tiling; no exact duplicate or filling-only variant was found.
+
+The catalog prepared 189 previews, the six targeted golden checks and full weave group passed, all 945 text/helper assertions passed, and all 40 schema checks passed under 3 GB. The first text check caught ON1 and ON5 as joined family names; they now read “from O to N1” and “from O to N5”. Alternate texts describe only the retained helper-free lines. No shared application or reserved file changed.
+
+### Hexagonal source registration
+
+`hexagonal.py` registers a noisy PDF edge with the closest exact constructed line before clipping it to a convex cell. AS10 exposed this need: rounding had tilted an edge that should coincide with the cell side, inventing a clipped endpoint halfway along it. Endpoint registration then uses exact existing crossings. Edges with no constructed support fail loudly. Three independent tests pass, covering the complete rounded seam, an outside polygon and rejection of an unsupported edge. Existing square readers and their defaults are untouched.
+
+## Two-level audit — AS10, BR9, IND1016, IND0408, IND0917 and SM12 skipped
+
+The face reader alone misses superposed stroke-only nets. I first reconstructed the fine faces of AS10, BR9 and IND1016 and passed their geometry checks, then withdrew all three after the full overlays and a stroke audit exposed those nets. The discarded drafts and their source overlays remain in ignored local review/research output as evidence; no tutorial is shipped for them.
+
+AS10’s fine tiling has one unit six-pointed star of area √3 and six irregular hexagons of area 5/3+31√3/36, in a cell of apothem 1+5√3/6. The nine-step draft matched those fine faces within 0.00014357 OA and passed the golden/weave, 960 player-text assertions and schema checks. However, its broad 20 pt hexagon strokes are translated relative to the fine net: a central horizontal runs at PDF y=462.93997 while the corresponding face edge is at y=458.79. The stroke audit finds a 4.15001 pt separation. Treating the two widths as a uniform band would silently change the drawing, so AS10 is skipped under the two-level rule. Its page credits Aslam Qureshi’s jali photograph at Agra Fort, 1565–73 AD; that photograph was not checked.
+
+BR9’s fine tiling has a star, six irregular hexagons and six pentagons; their areas are √3, 2/3+5√3/18 and 1/3+5√3/12, summing to 6+31√3/6. Its ten-step draft and full weave/text/schema checks passed. The complete red overlay at `docs/research/tilingsearch-30/BR9/overlay.png` exposes large orange stars and hexagons crossing these pieces. Central broad-stroke samples lie up to 18.19336 pt from any fine face boundary. This is an overlaid second net, so BR9 is skipped. The page cites Broug (2013), page 41, figure 2.2, Akbar’s mausoleum, Sikandra; no photograph was checked.
+
+IND1016’s fine tiling has a star of area √3, two regular hexagons of area 3√3/2 and six kites of area √3/3, filling 6√3. The red overlay at `docs/research/tilingsearch-30/IND1016/overlay.png` shows the white coarse hexagon grid cutting through those pieces. Central stroke samples are up to 23.27026 pt from their boundaries. Its nine-step draft is discarded and IND1016 is skipped under the same rule. The page cites Wade IND 1016, Maharajah’s Palace, Jaipur (1729–32 AD); no photograph was checked.
+
+IND0408 and IND0917 have the exact existing `six-fold-star-and-hexagons` fine tiling. The former uses 20 pt edges: star area 1200√3, regular hexagon 600√3, with a 40√3 pt star spacing. The latter uses 15 pt edges: star area 675√3, hexagon 675√3/2, spacing 30√3 pt. Both have one star and two hexagons per fine cell. I overlaid the existing tutorial on both complete PDFs, at OA=60 pt and O=(297.5,374.15) for IND0408, and OA=45 pt, O=(298.68,373.05), turned 30°, for IND0917. Every fine boundary agrees. The separate white hexagon grids cross those pieces. These are duplicate fine designs with band overlays, so both are skipped; overlays are their local `existing-overlay.png` files. The pages cite Wade IND 0408 (Taj Mahal) and IND 0917 (Amber Palace), respectively; no photographs were checked.
+
+SM12 adds equilateral triangles to the fine star-and-hexagon net. Its 20 pt edges give triangle area 100√3, regular hexagon 600√3 and star 1200√3. The blue coarse star/hexagon strokes cross the filled fine pieces: 48 of 288 central sampled stroke segments are off every face boundary, with separation up to 8.98521 pt. The drawing sheet also shows that second net across the fine polygons. It is skipped as an overlay, not declared an exact duplicate. The page cites E. W. Smith, part I, plate XLIV, Salim Chishti’s tomb, Fatehpur Sikri; no photograph was checked.
+
+The stroke audit samples quarter, middle and three-quarter points of central stroke-only segments against every filled polygon boundary. Raw stroke paths, exact sample results and complete PDF overlays remain under each local research folder. The source pages’ “edge-to-edge” descriptions concern their fine polygon tilings, and do not establish that the extra drawn nets are their boundaries. The initial SM1 sample was confined to the centre and missed its coarse fret; the full-page correction below supersedes that result. ASL20’s small filled facets were subsequently resolved in the skip audit below.
+
+## IND0403 — `agra-twelve-six-stars`
+
+The p6m tutorial has twenty steps, fold six and a twelve-pointed star. O is at PDF (297.5, 374.6375), and OA is the expanded star radius, 25(3+√3)/√2 pt. The teaching frame turns 15°, aligning the actual triangular lattice with the hexagonal repeat; a 45° turn would put that lattice on the wrong cell normals. Its apothem is L=√2+(9−3√3)/5. Three squares give the star. A parallel intercept constructs three fifths of 3−√3, and six parallel families through earlier crossings finish the net. The source has black and brown bevel facets; these are removed and the coloured faces expanded by 5 pt, half the 10 pt bands. The worst source-corner distance from the exact construction is 0.00009671 OA.
+
+Put r=√2, s=√3 and t=√6. Independent source-polygon shoelaces give twelve_star 6−2s, once; six_star (−1914−1080r+1116s+630t)/25, three; eight (239+135r−133s−75t)/25, six; petal (1359+810r−773s−450t)/150, twelve; and three_star (558+315r−319s−180t)/25, twice. These 24 pieces sum exactly to (−324−180r+316s+180t)/25=2sL². The engine independently finds all five types and counts without slivers or off-construction ink endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/IND0403/overlay.png`. Every red line follows a band centre throughout the page. The page cites Wade IND 0403, Agra Fort (1550 AD, 957 AH), explicitly the star without kites; no photograph was independently checked. White stars, green eight-sided connectors and the two blue petal classes are retained. Petals numbered 0, 3, 4, 7, 8 and 11 use the light class, as do the three-pointed stars. The actual player placement function’s 24 fills all match the source, with worst centre distance 0.00003199 OA. The numeric palette is illustrative. IND0405 is its central-kite variation, sharing the complete construction; no unrelated library design is an exact duplicate.
+
+All required checks passed serially under 3 GB: 190 catalog previews, the six targeted golden checks and full weave group, all 950 player text/helper assertions and all 40 schema checks. Default regeneration after exposing the variant path is byte-identical to the checked tutorial. No shared engine, schema, player or reserved file changed.
+
+## IND0405 — `agra-twelve-six-stars-kites`
+
+This twenty-step p6m variation shares every construction operation and normal step text with IND0403; only helper-free wording changes where its extra ink keeps a guide visible. O is at PDF (225.63, 371), the common centre of the twelve expanded kite corners. OA is the same 25(3+√3)/√2 pt star radius. The source’s lattice turns the other way, so the teaching frame turns −15°. The bands, bevel filtering and hexagonal apothem L are unchanged. Source corners in a complete shifted primitive cell fit within 0.00011735 OA; that cell is shifted along its first slide because the page clips one complete six-pointed star from the centred selection.
+
+Independent polygon shoelaces give twelve kites of area (3−√3)/6 in place of IND0403’s one twelve-pointed star. The other four piece types, their exact areas and counts are unchanged: three six_star pieces, six eight-sided connectors, twelve petals and two three_star pieces. Their 35 counted areas sum to the identical 2√3L². The engine independently confirms five types and all counts without slivers or off-construction endpoints. The existing radial lines provide every new kite edge; no new compass operations are needed.
+
+I inspected the ink, wall and full red overlay at `docs/research/tilingsearch-30/IND0405/overlay.png`; every band centre agrees, including all twelve central rays. The source’s white and pale-green kites alternate. Kite placements 1, 2, 5, 6, 9 and 10 use the pale-green class; the petal placements keep the same two blue classes as IND0403. All 35 fills from the actual player placement function match the source, with worst centre residual 0.00003902 OA. The comparison includes lattice copies of complete source faces because one six-pointed star is clipped at the page edge. The numeric palette is illustrative. The page credits Wade IND 0405, Agra Fort (1550 AD, 957 AH), specifying the version with kites; no photograph was independently checked. This and IND0403 form the Agra twelve/six-star family for Claude to add to the reserved variations file.
+
+The catalog prepared 191 previews. All six targeted golden checks and the full weave group, all 955 player text/helper assertions and all 40 schema checks passed serially under 3 GB. The variant’s construction was compared directly with the base; every normal step and operation agrees. No shared application or reserved file changed.
+
+### SM1 — skipped after the full-page stroke audit
+
+SM1’s fine net was reconstructed as a nine-step lesson with one six-pointed star of area 3√3−3, three eight-sided pieces of area 1, and two three-pointed stars of area (3−√3)/2. They fill the cell area 3+2√3 exactly, and the draft passed golden/weave, text/helper and schema checks. The fine polygons agree with that construction within 0.00017047 OA, with OA=10(√2+√6) pt and O=(299.2558333333,374.0408333333).
+
+The full red overlay at `docs/research/tilingsearch-30/SM1/overlay.png` nevertheless exposes an independent green star/fret net crossing the fine pieces. The initial radius-110-pt stroke sample happened to include none of those green strokes. Repeating the audit over the whole interior page finds all 56 tested green segments off the fine polygon boundaries, by up to 14.18377 pt. That establishes a second net; a central sample cannot establish its absence. The draft and generator were archived in that ignored research folder and removed from the branch. SM1 is skipped under the two-level rule. The page cites E. W. Smith (1896), part II, plate XXVIII, Salim Chishti’s tomb, Fatehpur Sikri; no photograph was checked.
+
+## F8785 — `dhahabi-house-six-stars`
+
+The fifteen-step p6m tutorial uses fold six. O is at PDF (297.5, 377.3), and OA is the large star’s point radius, 40√3 pt. The hexagonal apothem is three, with no frame turn or band expansion. The small stars at its six corners have radius 2√3−3; a circle about O of radius three locates their nearest tips. The nearest twelve-corner source polygons are those smaller stars, so treating their spacing as the repeat would give the wrong wall. The full repeat is set by the large stars and their different surroundings. The worst source-corner distance from the exact construction is 0.00010449 OA.
+
+The independent inventory is large star √3, once; regular hexagon √3/2, six; eight-sided piece 9/2−13√3/6, six; kite 3√3−9/2, twelve; small star 21√3−36, twice; and small kite √3−3/2, six. The chelate needs a compound-contour correction: its eight-corner outer contour has area (33−17√3)/2, but contains one inset small kite. Subtracting that kite gives the actual twelve-corner chelate area 18−19√3/2, six per cell. Without this subtraction, the source-reader shoelace total double-counts those six kites. The corrected 39 pieces sum exactly to 18√3, the full hexagonal cell area. The engine independently confirms all seven types and counts without slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/F8785/overlay.png`; every red edge follows the source outline, including the inset kites. The four source fill classes are retained. The actual player fills were checked at interior polygon samples against the source contours, using periodic copies at the boundaries and the smaller contour where the chelate surrounds a kite. All 39 agree. The Mamluk wood palette’s slots c and d coincide, so the light chelates use slot b to retain a distinct fourth class; the numeric palette remains illustrative. No photograph was independently checked.
+
+Credits retain the page’s Thesaurus Islamicus attribution: first floor of the east side, north area of the qa’a, west wall, panel detail, Jamal al-Din al-Dhahabi, Cairo (1637 AD, 1047 AH), and Wichmann and Wade (2017), figure 11.1a. The style is labelled Egyptian without assigning the house to a different historical period. No duplicate or filling-only variation was found; the other six-pointed-star tutorials have different connectors and per-cell counts.
+
+The catalog prepared 192 previews. All six targeted golden checks and the full weave group, the complete player text/helper checks and all 40 schema checks passed under 3 GB. The final colour check also passed after separating the palette classes. A later source-reading refactor exposes IND0403’s unchanged first six steps for W85; regenerating both Agra tutorials remains byte-identical. No shared application or reserved file changed.
+
+## W85 — `mexuar-twelve-star-bands`
+
+This nine-step p6m tutorial has fold six and a twelve-pointed star. O is at PDF (297.5, 375.09), and OA is the full centre-line star radius, 30(3+√3)/√2 pt. The teaching frame turns 15°, and the hexagonal apothem is √2. The black faces are expanded by 4.5 pt, half the measured 9 pt bands; blue ribbon polygons are rendering details, not extra tiles. The worst expanded source-corner distance from the construction is 0.00009580 OA. The first six construction steps reuse IND0403’s three-square star opening. The unit-square diagonal then fixes the complete repeat; no further parallel families are required.
+
+Independent source-polygon shoelaces give star 6−2√3, once; pentagon 3−3√3/2, six; kite 2√3/3−1, twelve; and triangle 7√3/2−6, twice. These 21 pieces sum exactly to 4√3, the hexagonal cell area. The engine independently confirms all four types and counts without slivers or off-construction endpoints. The Agra patterns share the opening but add different line families and connectors, so they are separate designs.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/W85/overlay.png`; every line follows a blue band centre. The default look is strapwork, as the brief requests. The single black piece class is retained; the actual player assigns that class to all 21 pieces. The band colour is illustrative and the drawing’s weave phase is not claimed as a photograph match. No monument photograph was independently checked. Credits retain Wade page 85 and SPA 1914, Field’s Mexuar vestibule attribution and the page’s other cited examples and publications.
+
+IRA2633’s complete source overlay also follows exactly this centre-line mesh after scaling5/6, but assigns grey to stars, green to pentagons and triangles, and black to kites. It is therefore a filling variation rather than a second geometric construction; its tutorial and verification follow next. Claude should group the two as the twelve-star band family after merging.
+
+The catalog prepared 193 previews. All six targeted golden checks and the full weave group, all 965 text/helper assertions and all 40 schema checks passed under 3 GB. Both Agra tutorials regenerate byte-identically after exposing their unchanged opening. No shared application or reserved file changed.
+
+## IRA2633 — `sultaniyeh-twelve-star-bands`
+
+This nine-step p6m filling variation shares every step, ink reference and golden value with W85. The full red W85 overlay on the IRA2633 PDF at `docs/research/tilingsearch-30/IRA2633/w85-overlay.png` follows the white and red band centres throughout the page. O is at (297.5, 374.1754166667) pt, OA=25(3+√3)/√2 pt, and the teaching frame turns 15°. The 15 pt ribbons are broader than W85’s, but their centre-line mesh is identical after scaling5/6. Expanding the source’s grey star and black kite contours by7.5pt confirms their source-corner fit within 0.00011069 OA. The other coloured source polygons are backing and ribbon shapes, not the centre-line pentagons and triangles.
+
+The exact centre-line inventory remains star6−2√3, once; pentagon3−3√3/2, six; kite2√3/3−1, twelve; and triangle7√3/2−6, twice. The 21 counted areas fill4√3 exactly. The engine independently confirms the four types and counts without slivers or off-construction endpoints. The source’s grey stars, green pentagons and triangles, and black kites form three fill classes. All21 actual player fills match their source regions. The palette and single strapwork band colour are illustrative; the source’s two-colour weave phase is not claimed as a photograph match.
+
+The page describes its coloured ribbon drawing as not edge-to-edge. The mesh of band centres reconstructed here is edge-to-edge, as directly shown by the identical W85 geometry. This is the intended band-reading method, rather than treating its ribbon facets as extra tiles. Credits name Wade IRA2633, Öljeitü’s mausoleum, Sultaniyeh, Iran (1313 AD, 712 AH). No photograph was independently checked. This is W85’s filling variation, and Claude should add the two ids to one family after merging.
+
+The catalog prepared194 previews. All six targeted golden checks and the full weave group, all970 text/helper assertions and all40 schema checks passed under3GB. Direct comparison proves that the two tutorials’ steps, ink and expectations are identical. No shared application or reserved file changed.
+
+
+## DM1 — `damascus-fountain-stars`
+
+The twenty-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF (297.5,373.91), OA=20(3+√3)/√2 pt, and the teaching frame turns −15°. The three-square opening is shared with the Agra lessons. A square diagonal and two transfers of cos15° give the hexagonal apothem L=(3√2+√6)/2. A midpoint constructs the extra axial offset 3sin15°/2 and its complement in L. Six other parallel families pass through earlier crossings. The source has plain boundaries, with no band expansion. The source-corner Euclidean residual is below 0.00016 OA.
+
+Independent shoelaces give star6−2√3, once; kite−1+2√3/3, twelve; hexagon3/2−2√3/3, twelve; small_hexagon−1+2√3/3, twelve; rhombus√3/6, six; ten23/8−11√3/12, twelve; and small_star−27/4+9√3/2, twice. The chelate’s fourteen-corner outer contour has area −1/2+4√3/3. Subtracting its inset rhombus gives the actual eighteen-corner face area −1/2+7√3/6, six per cell. The corrected 63 pieces sum exactly to18+12√3=2√3L². The engine independently confirms all eight types and counts. A pairwise-distance congruence check finds one congruence class within each type; the page’s prose count of nine shapes is not reproduced by its drawing. The thin hooked chelate is present in the source and alone has the small-piece allowance. Every ink endpoint is on its construction.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/DM1/overlay.png`. All boundaries agree, including the inset rhombi and thin chelates. All63 actual player fills match interior source samples, retaining grey, vivid red and muted red classes. The Kashan palette is illustrative. The page credits Richard Henry’s photograph of an exterior fountain surround in Damascus, Syria, described as a six-fold cut-stone pattern, supplied by personal communication. No photograph was independently checked. This is a separate design, with no duplicate or filling-only variant found.
+
+The catalog prepared195 previews. All six targeted golden checks and the full weave group, all975 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## SYR0222 — `ibn-arabi-six-stars`
+
+This twenty-one-step p6m tutorial uses fold six. O is at PDF(297.5,375.7208333333), OA=30√3pt, and the teaching frame turns30°. Two triangles give the large star. Diagonal intercepts construct3/16 and9/16. Compass doubling and complements in the cell apothem3 give the six axial families; two more families pass through existing crossings. Every exported point is a construction intersection. The plain source corners fit within0.00017618OA.
+
+Independent source shoelaces give fork243√3/128, twice; star√3, once; ten75√3/128, six; regular hexagon√3/2, six; kite√3/9, six; and small_kite49√3/576, six. The chelate’s fourteen-corner outer contour has area289√3/288. Subtract its inset small kite to get the eighteen-corner face area529√3/576, six per cell. One extracted contour already includes that subtraction; the other five need it. These33 counted areas sum exactly to18√3. The engine independently confirms all seven types and counts without slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/SYR0222/overlay.png`. Every boundary agrees. All33 actual player fills match interior source samples, retaining the beige, gold and black classes with an illustrative Kashan palette. Credits retain David Wade’s SYR0222 attribution to Ibn al-Arabi Mausoleum, Damascus, Syria. No photograph was independently checked. No duplicate or filling-only variation was found.
+
+The catalog prepared196 previews. All six targeted golden checks and the full weave group, all980 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free texts describe the retained30°,45° and150° lines. No shared application or reserved file changed.
+
+
+## A192 — `bourgoin-98-divided-stars`
+
+This twelve-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(109.78,502.95), OA=25(√6+√2)pt, with no frame turn. Three squares give the central divided star. Transfers of1/2 and√3/2 set the hexagonal apothem L=(3+√3)/2. Two parallel families through earlier crossings complete the design. The white2pt source strokes are centred outlines, so no face expansion is applied. Periodic copies complete the off-centre cell. Source corners fit within0.00010840OA.
+
+Independent source-polygon shoelaces give six_kite(√3−1)/2, twelve; twelve_kite1/2−√3/6, twelve; hexagon(3−√3)/2, twelve; kite2√3/3−1, twelve; and eight1, three. These51 pieces sum exactly to9+6√3=2√3L². The engine independently confirms all five types and counts without slivers or off-construction endpoints. Two provisional exterior families were removed after proving that the ink is identical. PDF rounding makes exterior edges graze a cell corner for under0.001OA; those zero-length contacts are filtered before registration, and the resulting72 ink runs are unchanged.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/A192/overlay.png`. Every outline agrees, including both divided stars. All51 actual player fills match source interior samples. Six-star kites, central kites and surrounding hexagons each alternate between two classes, with placements1,2,5,6,9,10 forming the second class. The drawing has eight classes; three fixed illustrative colours extend the five-slot Kashan palette so all eight remain distinct. No photograph was checked. Credits name Abas and Salman, page192(1995), and Bourgoin, Plate98, upper design(1879), for which the page gives no location. No duplicate or filling-only variation was found.
+
+The catalog prepared197 previews. All six targeted golden checks and the full weave group, all985 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## SAM1 — `samarkand-star-knots`
+
+The eighteen-step tutorial uses fold four, star six and chiral=true, following the established p4g convention: turns round O preserve the whole mesh, while mirrors through O do not. O is a four-pointed star centre at PDF(156.90125,234.12875). OA=60pt, and the square half-side is L=(3+√3)/2, with no frame turn. Its two star-edge families and nine parallels through earlier crossings construct every boundary. The coloured source faces are expanded5pt to the centres of the10pt white bands. Periodic copies complete the off-centre cell. Worst source-corner residual is0.00013888OA.
+
+Independent shoelaces give four_star6−2√3, once; six_star3(1+√3)/4, once; seven(1+√3)/2, four; eight(2+√3)/4, six; three_star−1/2+3√3/4, four; and six(3+√3)/8, six. These22 pieces sum exactly to12+6√3=4L². The engine independently confirms all six types and counts without slivers or off-construction endpoints. The source’s extra small three-star classes counted across its complete drawing do not require extra congruence types in this primitive repeat.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/SAM1/overlay.png`. Every band centre agrees, including the offset six-pointed stars. All22 actual player fills match source interior samples and retain five classes: yellow stars, purple seven-sided pieces, green eight-sided pieces, blue six-sided pieces and black three-stars. Strapwork is the default; the palette is illustrative. Credits retain Tony Lee’s Samarkand attribution through personal communication, with the original source unrecorded. No photograph was checked. No duplicate or filling-only variation was found.
+
+The catalog prepared198 previews. All six targeted golden checks and the full weave group, all990 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free wording correctly limits the two half-turn families and the single retained line through Q5. No shared application or reserved file changed.
+
+
+## ASL20 — skipped as a two-level composition
+
+The full source sheet shows large white-edged blue bow-tie panels crossing the smaller blue/teal star net. The large panels neither share that net’s vertices nor follow its edges. The page itself distinguishes the background and links it separately as ASL21. Its pmm,30° and326-piece description concerns that background rather than a single mesh joining both scales. The PDF’s1640 cleaned filled paths are small rendering facets, chiefly1170 six-sided paths and451 triangles, so treating them as the stated tiles would also be incorrect. Extended PDF inspection finds only the outer page clipping rectangle; this is not a missing image or a hidden alternate layer.
+
+The complete sheet was inspected at `docs/research/tilingsearch-30/ASL20/page.png`. As with the other excluded two-level drawings, reconstructing just the fine net would silently omit the coarse design. ASL20 is skipped under the brief’s two-level rule, without declaring its background an existing-library duplicate. The page credits a photograph via Aslam Qureshi, Zaynal Bek, Turkey(1473AD,877AH), through personal communication. No photograph was independently checked. No tutorial or application file is added.
+
+
+## P106 — `bourgoin-106-star-lattice`
+
+The eighteen-step p4m tutorial uses fold four and an eight-pointed star. O is at PDF(298.48,373.37). OA is the neighbouring six-star’s point radius, approximately56.88269678pt, obtained from the measured147.37pt half-period and exact L=(1+√3+√6)/2. There is no frame turn or band expansion. The eight-star’s outer point at22.5° lies at height sin15°, so a bisector and horizontal projection construct its75° tips exactly. Four parallel families complete the square repeat. Source corners fit within0.00015301OA.
+
+Put r=√2, s=√3 and t=√6. Independent source shoelaces give four_star4−2r+2s/3, once; six_star3(s−1)/2, twice; eight_star6+4r−10s/3−2t, once; six(r+s+t)/4, eight; hexagon(3+s)/4, four; ten(r+t)/2−2s/3, four; and kite s/6, eight. The28 counted areas sum exactly to10+6r+2s+2t=(1+s+t)²=4L². The engine independently confirms all seven types and counts. The authentic sharp six-stars and narrow ten-sided pieces alone have small-piece allowances; their shapes agree with the source rather than arising from rounding. All ink endpoints are constructed crossings.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P106/overlay.png`. Every plain boundary agrees. All28 actual player fills match source interior samples, retaining brown and white classes with an illustrative palette. Credits retain Bourgoin, Plate106; Creswell, volume1, Plate102, al-Salih Tala’i Mosque’s bronze-plated door, Cairo(1160AD,554AH); and Wade EGY1514, al-Mu’ayyad, Cairo(1420AD,823AH). No photograph was independently checked. No duplicate or filling-only variant was found.
+
+The catalog prepared199 previews. All six targeted golden checks and the full weave group passed, followed by all995 player text/helper assertions and all40 schema checks serially under3GB. The text check caught the joined name AOS2; it now reads “the angle at O between A and S2”. Catalog, text and schema checks were rerun after that wording-only correction; geometry and the passed engine checks are unchanged. No shared application or reserved file changed.
+
+
+## P092 — `bourgoin-92-twelve-stars`
+
+The fourteen-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,374.2454166667), OA=20(2+√3)pt, and the teaching frame turns30°. The source faces are expanded2pt to the centres of the4pt bands. Two turned hexagons construct the120° star tips. Compass transfers give the hexagonal apothem L=3(√3−1), and a second height3−√3/2. One parallel family through a crossing completes the net. Worst source-corner residual is0.00009288OA.
+
+Independent shoelaces give twelve_star12√3−18, once; six_star63√3−108, twice; four_star66√3−114, three; hexagon(153−87√3)/4, twelve; kite√3−3/2, twelve; and small_kite(9−5√3)/4, twelve. The42 counted areas sum exactly to72√3−108=2√3L². The engine independently confirms all six types and counts without slivers or off-construction endpoints. This wider120° star is a different construction from the three-square stars in the Agra and Mexuar families.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P092/overlay.png`. Every band centre agrees. All42 actual player fills match the expanded source contours, retaining brown twelve-stars, pink smaller stars, red six-sided pieces, yellow kites and black small kites with an illustrative palette. Strapwork is the default. Credits retain Bourgoin, Plate92; Creswell, volume2, Plate52c, al-Zahir Baybars, Cairo, northwest transept(1266–69AD,664–67AH); Hessemer, page36, Qalawun wall decoration, Cairo(1284–85AD,682–83AH); Abas and Salman, page165; and the page’s Wade BOU092 link. No photograph was independently checked. No duplicate or filling-only variant was found.
+
+The catalog prepared200 previews. All six targeted golden checks and the full weave group, all1000 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## CR1 — `maragha-twelve-star-bands`
+
+The eighteen-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,374.5687916667), OA=22pt, a full regular-hexagon side, and the teaching frame turns−15°. Facing gold contours give872 measurements clustered at7pt(6.99–7.01), so the faces are expanded3.5pt to the ribbon centres. The twelve-star radius is2+√3. Its extended side crosses the horizontal axis at X=(9√2+5√6)/2; halving X with a diagonal and adding√3/2 gives the cell apothem L=(9√2+2√3+5√6)/4. This also gives unit regular hexagons on the sides of the repeat. A parallel intercept constructs the inner height2√3/5. No fitted decimal length is shipped.
+
+Put r=√2, s=√3 and t=√6. Independent source shoelaces give star18+12s, once; large_kite(9+5s)/4, six; hexagon249/100−3r/10+11s/8−3t/10, twelve; six3/2+3r/2−s+t/2, six; regular_hexagon3s/2, twice; rhombus12/5, three; pentagon−12/25+3(r+t)/5, six; small_pentagon−27/10+3(r+s+t)/4, six; and kite(3+s)/4, twelve. These54 counted areas sum exactly to(135+27r+81s+15t)/2=2sL². The engine independently confirms all nine types and counts without slivers or off-construction endpoints.
+
+The source’s rounding is coarser than its PDF’s printed decimal precision. It also puts some helper crossings very near real face junctions. Restricting research registration to final boundary carriers avoids snapping to those helpers and yields worst source-corner residual0.00056609OA, comfortably within0.003. Exterior edges grazing a cell corner for under0.003OA are discarded before registration. The complete red overlay at `docs/research/tilingsearch-30/CR1/overlay.png` follows every blue and white ribbon centre; the ink and wall were also inspected. All54 actual player fills retain the single gold class. Strapwork is the default. The palette and single band colour are illustrative; the source’s two-colour weave phase is not claimed as a photograph match.
+
+Credits retain Peter Cromwell, figure2(b), Islamic geometric ornament in Azerbaijan, listed by the page as forthcoming2018, and its Gunbad-i Surkh, Maragha attribution(1148AD,542AH). No photograph was independently checked. The120° twelve-star opening is related to P092, but the different line families, connectors and repeat give a separate tiling. No duplicate or filling-only variant was found.
+
+The catalog prepared201 previews. All six targeted golden checks and the full weave group, all1005 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## DS1 — `qalawun-twelve-star-knots`
+
+The fourteen-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,373.9091666667), OA=20(3+√3)/√2pt, and the teaching frame turns15°. The source faces are expanded5pt to the centres of the10pt bands, confirmed by994 facing-edge measurements clustered at9.99–10.01pt. The first six steps share the Agra three-square opening. Circle projections and transfers give the hexagonal apothem L=3√2−√6 and height√6−√2/2. One parallel family through a crossing completes the mesh. Worst source-corner residual is0.00015485OA.
+
+Independent shoelaces give twelve_star6−2√3, once; six_star42√3−72, twice; four_star44√3−76, three; hexagon(51−29√3)/2, twelve; and kite2√3/3−1, twelve. These30 counted areas sum exactly to48√3−72=2√3L². The engine independently confirms all five types and counts without slivers or off-construction endpoints. Its90° twelve-star tips and absence of P092’s extra small kites distinguish the two designs; no exact duplicate or filling-only variation was found.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/DS1/overlay.png`. Every band centre agrees. All30 actual player fills match the expanded source contours, retaining blue stars and grey connectors with an illustrative palette. Strapwork is the default. Credits retain the page’s email from B. O’Kane, Qalawun, Cairo, Egypt, through personal communication, and Daud Sutton, Islamic Design, page17(2007). No photograph or published teaching sequence was independently checked.
+
+The catalog prepared202 previews. All six targeted golden checks and the full weave group, all1010 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## F294 — `chester-beatty-twelve-stars`
+
+The sixteen-step p4m tutorial uses fold four and a twelve-pointed star. O is at PDF(297.5,373.3770833333), OA=20(1+√3)pt, with no frame turn. Facing contours give804 measurements clustered at8pt(7.99–8.01), so source faces are expanded4pt to band centres. Four triangles construct the60° star tips. Two compass transfers give the square half-side L=(3+√3)/2; six parallel families through earlier crossings complete the mesh. Worst source-corner residual is0.00064375OA.
+
+Independent shoelaces give twelve_star3√3−3, once; four_star3−√3, once; hexagon√3/2, twelve; three_star(9−3√3)/8, four; narrow_ten(√3−1)/2, four; ten(1+√3)/8, four; and kite(3−√3)/4, twelve. The38 counted areas sum exactly to12+6√3=4L². The engine independently confirms all seven types and counts. The two narrow ten-sided source shapes have small-piece allowances after the complete overlay confirmed their authentic sharp points. All ink endpoints are constructed crossings.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/F294/overlay.png`. Every band centre agrees throughout the page. All38 actual player fills match expanded source contours, retaining blue stars and ten-sided pieces, brown hexagons and smaller stars, and black kites with an illustrative palette. Strapwork is the default. The design has no exact library duplicate or filling-only variation; the four-triangle star opening differs from the three-square and two-hexagon stars.
+
+Credits retain Bonner, page408, figure335b, Great Mosque minaret, Siirt(1129AD,522AH); the page’s fourteenth-century Egyptian Qur’an at the Chester Beatty Library, Dublin, through personal communication; V&A cupboard panel899:1-1884, Cairo; Wichmann and Wade, figures7.1a and11.3a; d’Avennes internet photo282 with its uncertain al-naski qaisun minbar attribution; and the Thesaurus Islamicus al-Azhar kursi attribution. No photograph was independently checked.
+
+The catalog prepared203 previews. All six targeted golden checks and the full weave group, all1015 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free text omits the unused bottom frame line and three unused copies of the line through Q1. No shared application or reserved file changed.
+
+
+## BON1 — `el-djem-dodecagons`
+
+The twelve-step p4m tutorial uses fold four. O is at PDF(204.25,277.75), OA=30√6pt, the regular dodecagon’s point radius, with no frame turn. Its twelve points are at15°+30k. A square-root projection, a diagonal half and a compass sum give square half-side L=√2/2+√6/4. Two parallel families through earlier crossings complete the mesh. The source’s8pt green strokes are centred on the polygon edges; there is no face expansion. Worst source-corner residual is0.00006048OA.
+
+Independent shoelaces give dodecagon3, once; regular hexagon√3/4, four; four_star1/2−√3/6, once; rhombus1/4−√3/12, twelve; triangle−1/4+√3/6, twelve; and kite√3/12, twice. The32 counted areas sum exactly to7/2+2√3=4L². The engine independently confirms all six types and counts. Its sliver metric flags the authentic30° four-pointed star, which alone has a small-piece allowance. All ink endpoints are constructed crossings.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/BON1/overlay.png`. Every edge agrees with the centre of the source’s green outline. All32 actual player fills retain the single tan class. Strapwork represents the outlines, with an illustrative palette. The tutorial is labelled Roman and cites Bonner, page13, photograph4(2016), a third-century Roman mosaic, El Djem, Tunisia. No photograph was independently checked. This square repeat and six-type inventory differ from the hexagonal ASU2 dodecagon design; no duplicate or filling-only variant was found.
+
+The catalog prepared204 previews. All six targeted golden checks, the full weave group, all1020 player text/helper assertions and all40 schema checks passed serially under3GB. The golden check initially caught the sharp four-star; its source-confirmed allowance then passed the targeted golden rerun. The already passed weave geometry is unchanged. Helper-free step5 also repeats the circle-division context because the preceding guide-only step is skipped. No shared application or reserved file changed.
+
+
+## P141 — `bourgoin-141-mixed-stars`
+
+The seventeen-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,373.3795833333), OA=20(1+√3)pt, and the teaching frame turns15°. The sign follows its actual lattice vectors, including the source’s275.13pt diagonal slide; the opposite frame would give the wrong repeat. Four triangles construct the60° twelve-star tips. Put r=√2, s=√3 and t=√6. Compass sums give L=2r+s−1 and D=(1+r+t)/2. A parallel intercept divides L−D into thirds, giving X. The four carrier distances D,X,3X,L−X construct the whole mesh. Plain source boundaries are retained; worst source-corner residual is0.00017340OA.
+
+Independent shoelaces give twelve_star3s−3, once; kite(3−s)/4, twelve; hexagon(1−r+t)/2, twelve; small_hexagon−3/2+3r/2+s−5t/6, twelve; eight−20/3+5r+25s/6−25t/9, twelve; four_star46−32r−26s+56t/3, three; three_star−4+3r+5s/2−5t/3, twelve; and six_star−8+6r+5s−10t/3, twice. These66 counted areas sum exactly to−12+24r+24s−8t=2sL². The engine independently confirms all eight types and counts without slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P141/overlay.png`. Every boundary agrees throughout the page. All66 actual player fills match source interior samples, retaining white, red, green, cyan and olive classes with an illustrative palette. Credits retain O’Kane, page197, the al-Mu’ini minbar, Damietta, Egypt(1400–55AD,802–59AH); Critchlow, page130, with the page’s explicit warning that its structure differs from Wichmann’s drawing; Abas and Salman, page206; Bourgoin, Plate141; and the Wade BOU141 link. No photograph was independently checked.
+
+P142 reuses this lesson’s unchanged first six construction steps, but its cmm repeat and different connectors make a separate tiling. The optional opening-only generator path leaves default P141 geometry unchanged. F294 has the same kind of four-triangle star in a different frame and square mesh. No exact duplicate or filling-only variant was found.
+
+The catalog prepared205 previews. All six targeted golden checks and the full weave group, all1025 player text/helper assertions and all40 schema checks passed serially under3GB. No shared application or reserved file changed.
+
+
+## P142 — `bourgoin-142-star-rows`
+
+The twenty-seven-step cmm tutorial uses fold two and a twelve-pointed star. O is at PDF(297.5,373.3795833333), OA=20(1+√3)pt, and the teaching frame turns45° to align its mirrors with the axes. The conventional centred rectangle has half-sides H=2√2+√6 and V=√2+√6, and contains two twelve-pointed stars. The first six normal steps and every operation are identical to P141’s opening. Compass sums set H and V. Sixteen parallel families through earlier crossings construct the mesh. Their extra rotated guides do not assert extra symmetry of the finished ink. Plain source boundaries are retained. Periodic copies complete source coverage of the rotated rectangle. Worst source-corner residual is0.00017769OA.
+
+Independent shoelaces give twelve_star3√3−3, twice; kite(3−√3)/4, twenty-four; hexagon√3/2, twenty-four; notched_hexagon1/4, twenty-four; eight5√3/12, sixteen; other_eight5√3/12, eight; regular_hexagon√3/4, twenty-four; four_star3−√3, eight; ten−1/2+3√3/4, four; and six_star√3/2, twice. These136 counted areas sum exactly to40+24√3=4HV. The engine independently confirms all ten types and counts, the half-turn and mirrors, and the absence of slivers and off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/P142/overlay.png`. Every boundary agrees. All136 actual player fills match source interior samples, retaining pale cyan stars, red kites and small connectors, green larger connectors, and blue four-stars with an illustrative palette. Credits retain Critchlow, page177(1976); Abas and Salman, page313(1995); Bourgoin, Plate142(1879), with no known source; and the Wade BOU142 link. No photograph was independently checked. This cmm arrangement and additional connectors differ from P141’s p6m mesh, so it is a separate related construction rather than a filling-only variation. No exact duplicate was found.
+
+The catalog prepared206 previews. All six targeted golden checks and the full weave group, all1030 player text/helper assertions and all40 schema checks passed serially under3GB. Helper-free texts list only the retained rotations, including the half-turn copy of the final vertical. No shared application or reserved file changed.
+
+
+## SEV2 — `seville-six-eight-twelve-stars`
+
+The fifteen-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,373.3770833333), OA=20(1+√3)pt, and the teaching frame turns30°. Facing source edges give720 measurements clustered at8pt(7.99–8.01), so the faces are expanded4pt to band centres. The first six steps share F294’s four-triangle opening. Two diagonal halvings give(3−√3)/4; adding3 gives the hexagonal apothem L=(15−√3)/4. The six-star radius is1, and the eight-star radius√2/2. Projecting the circle of radius L onto the45° line and subtracting1/2 gives its oblique carrier distance L/√2−1/2. The axial carrier is L−1/2. Worst source-corner residual is0.00018774OA.
+
+Independent shoelaces give twelve_star3√3−3, once; six_star√3, twice; eight_star4−2√2, three; kite(3−√3)/4, twelve; hexagon−3/2+11√3/6, six; eight3/2+√2/2−√3/2, six; triangle−27/16+9√3/8, twelve; and red_eight−3/2+√2/2+5√3/6, six. The48 counted areas sum exactly to−45/4+57√3/2=2√3L². The engine independently confirms all eight types and counts without slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/SEV2/overlay.png`. Every band centre agrees. All48 actual player fills match the expanded source contours, retaining black stars, light-green eight-stars, blue connectors, red connectors, and dark-green kites and triangles. The palette is illustrative and strapwork is the default. A provisional outer oblique family was removed after proving that all60 ink runs remain identical; exterior source edges that graze a cell corner for under0.003OA are filtered before registration.
+
+Credits retain Michael Stephens’s Flickr synagogue photograph, Cordova; Abas and Salman, page182; Wade MOR3630x, Bou Inania, Meknes; Wade SPA2200 and SPA2504, Alcazar, Seville; Wade SPA3014, Alcazabar, Malaga; and the page’s postcard reference through Wichmann. No photograph was independently checked. The six/eight/twelve-star arrangement differs from the other star families; no exact duplicate or filling-only variant was found.
+
+The catalog prepared207 previews. All six targeted golden checks and the full weave group, all1035 player text/helper assertions and all40 schema checks passed under3GB. F294 regenerates byte-identically after exposing its unchanged opening. During the preceding P142 fill verification, its short fill command briefly overlapped the first SEV2 review render; no test suite or build ran in parallel. Subsequent heavy checks remain serial. No shared application or reserved file changed.
+
+
+## B87 — `bourgoin-87-chelates`
+
+The twenty-one-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,372.78), OA=15(1+√3)pt, and the teaching frame turns15°. Put r=√2, s=√3 and t=√6. The first eight steps share P141’s normal texts and operations, giving D=(1+r+t)/2. A circle doubles D to the hexagonal apothem L=1+r+t. Three diagonal halvings give X=D/8=L/16. Compass complements give the remaining carriers5X,11X,12X,15X and5X+1/4. The carrier at D turns by30°; the others turn by60°. Plain source boundaries are retained. Worst source-corner residual is0.00035683OA.
+
+Independent shoelaces give star3s−3, once; kite(3−s)/4, twelve; hexagon(1−r+t)/2, twelve; small_hexagon−3/2+3r/2+s−5t/6, twelve; green_chelate G=257/64−207r/128−257s/256+529t/384, six; small_kite K=−57/64+87r/128+153s/256−137t/384, six; brown_chelate38sX², twice; white_hexagon8sX², twelve; and eight34sX²/3, six. The69 counted areas sum exactly to24+12r+18s+4t=2sL². Two source green twelve-corner outer contours each contain one blue kite. Their outer area is G+K; subtracting K gives the same sixteen-corner chelate as four other placements. This accounts exactly for the raw shoelace excess2K.
+
+The engine independently confirms all nine types and counts without slivers or off-construction endpoints. A complete cyclic pairwise-distance congruence check confirms one congruence class within each engine type, including all six green chelates. The page’s non-edge-to-edge description is consistent with these inset contours and T junctions; this is one boundary graph, with no independent coarse net omitted.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/B87/overlay.png`. Every boundary agrees, including the inset kites. All69 actual player fills match interior source samples, retaining white, red, green, blue and brown classes with an illustrative palette. Credits retain Bourgoin, Plate87(1879), with no known source, and the page’s Wade BOU087 link. No photograph was independently checked. The chelate connectors and sixteenth divisions distinguish it from P141; no exact duplicate or filling-only variant was found.
+
+The catalog prepared208 previews. All six targeted golden checks and the full weave group, all1040 player text/helper assertions and all40 schema checks passed serially under3GB. P141 regenerates byte-identically after exposing its unchanged first eight steps. No shared application or reserved file changed.
+
+
+## MIR24 — `fathabad-mixed-stars`
+
+The twenty-four-step p4m tutorial uses fold four and a twelve-pointed star. Its6pt source bands are expanded3pt to their centres, with O at PDF(297.5,374.6375), OA=195.4835/[3(1+√3)]pt and square half-side L=3(1+√3). The worst source-corner residual is0.00036919OA. The ink, wall and complete overlay agree with the drawing, and all68 actual player fills match source interior samples. Credits retain Hamburg museum accession1908.472, Fathabad tile fragments, Bukhara, through Wichmann’s personal communication; no photograph was checked.
+
+Catalog209, the targeted golden checks and full weave group,1045 player text/helper assertions and40 schema checks passed under3GB. An additional full-outline congruence audit then found two different ten-corner outlines with equal area, perimeter and sorted side lengths. The legacy classifier merged their eight and four occurrences. The same audit splits P142’s twenty-four eight-corner connectors into sixteen and eight. The opt-in comparison below corrects both inventories without changing any polygon or ink boundary.
+
+The audit checked1367 current piece groups. Five older tutorials also contain merged outlines: `chellah-mosque-stars`, `fes-motif-rosette`, `isfahan-sayyed-crosses`, `kerman-ganj-ali-khan-chevrons` and `tash-khauli-crosses`. The opt-in comparison preserves those five older tutorials for their own review.
+
+
+Put r=√2, s=√3 and t=√6. MIR24’s exact areas and counts are twelve_star45+9s−12t, once; kite−3/2−3r+3s+t, twelve; hexagon9/4+9r/2−9s/4, twelve; ten4s−3r/2, eight; other_ten4s−3r/2, four; regular_hexagon3s/2, twelve; four_star18−6s, twice; eight−12+19s/2, four; six_star3s, four; small_eight9/4+3r/2−5s/4, four; small_kite(81−45s)/4, four; and eight_star12−6r, once. These68 counted areas sum to144+72s=4L². There are twelve congruence types. The three source fill classes are retained with an illustrative palette. This mixed-star arrangement differs from the other square rosettes; no exact duplicate or filling-only variant was found.
+
+### Full-outline grouping correction
+
+`pattern.distinguishOutlines` opts into comparing every corner after the existing scalar checks. The comparison allows cyclic starting corners, either traversal, rotations and reflection. The hand-laid wall matcher uses the same comparison. Tutorials without the flag retain their existing grouping and data shape. Counts independently computed from the arrangement disambiguate expected names when vertex counts and areas agree; an ambiguous name remains unset, so its golden check fails. Near-equal areas in opt-in mode sort by count and vertex count for a stable inventory. MIR24 and P142 enable this flag and update their expectations and colour names. Their source fills and geometry are unchanged.
+
+Regression fixtures use U and T pentominoes with identical area5, perimeter12 and sorted side lengths, plus a reflected translated U. Three engine assertions cover opt-in distinction, legacy compatibility, hand-laid wall classification and ambiguous names. A schema assertion covers acceptance, the unset default and malformed flags. The frozen performance-equivalence suite compares legacy mode for opted-in tutorials, retaining its full library coverage; their new mode has targeted golden and regression coverage. The format documentation describes the option. A schema rebuild was necessary after changing its public type.
+
+
+After the correction, catalog209, all twelve targeted golden assertions with the full weave group(226 total),1045 player text/helper assertions and41 schema assertions passed serially under3GB. The three outline regressions passed, and both affected tutorials passed the frozen legacy equivalence checks. Fresh ink/wall renders retain the source agreement; all68 MIR24 and136 P142 player fills again match source samples. The final full-suite results are recorded below.
+
+
+## DA1 — `qawsun-quran-stars`
+
+The twenty-one-step p4m tutorial uses fold four and a twelve-pointed star. O is at PDF(299.56,373.06), OA=20(3+√3)/√2pt and the teaching frame turns45° onto the true square slides. Both primitive diagonal translations preserve the source polygons and colours. Three squares make the central star. A third-part construction and compass sums set the square half-side L=(3+5√3)/6. Six crossing-based parallel families, the5/3 axial carrier and two compass-derived corner carriers complete the mesh. The eight-star radius is√2(L−5/3). Plain source boundaries are retained, with worst source-corner residual0.00011378OA. Removing unused guides leaves all60 ink runs identical; corner grazes shorter than0.003OA are filtered before registration.
+
+Put r=√2, s=√3 and t=√6. Independent shoelaces give twelve_star6−2s, once; kite−1+2s/3, twelve; hexagon3/2−2s/3, sixteen; triangle−1/4+s/6, twelve; four_star(s−1)/3, twice; fourteen−275/18+62r/9+163s/18−35t/9, four; pentagon1/4+s/18, four; and eight_star(496−248r−280s+140t)/9, once. These52 counted areas sum exactly to28/3+10s/3=4L². The engine confirms all eight types and counts without slivers or off-construction endpoints. An additional opt-in full-outline inventory finds the same eight congruence classes, so this tutorial does not need the new classification option.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/DA1/overlay.png`. Every boundary agrees. All52 actual player fills match source interior samples. Four of the sixteen congruent hexagons are cyan and twelve are yellow; placement rules retain these classes alongside the cyan stars and pentagons, yellow eight-stars and brown connectors. The palette is illustrative. Credits retain Prisse d’Avennes, Arabic Art in Color, page45(1877), a decorative fourteenth-century Qur’an page attributed to Qeycoun, identified by the source page as Qawsun mosque, Cairo. No manuscript photograph was checked. The square mixed-star connectors differ from the other three-square-star meshes; no exact duplicate or filling-only variant was found.
+
+Catalog210, all six targeted golden assertions and the full weave group,1050 player text/helper assertions and41 schema assertions passed serially under3GB. Helper-free text describes only the retained15° bisectors and the single retained copy of the first parallel family. No shared application or reserved file changed.
+
+
+## TAI1 — `museum-divided-stars`
+
+The nineteen-step p6m tutorial uses fold six and a twelve-pointed star divided into twelve kites. O is at PDF(211.26,371), OA=30(3+√3)/√2pt, and the teaching frame turns15°. The facing-edge measurements give140 widths at20pt,40 at19.99pt and96 at10pt; the10pt separations arise within the bevel presentation. Removing the grey facets and expanding the coloured faces10pt recovers their common centre lines, including all twelve central kite tips at O. A projected√6/2, its third and a compass sum give the hexagonal apothem L=√2/2+2√6/3. Seven parallel families through crossings complete the mesh. Periodic source copies fill the part of the central cell outside the drawing’s face coverage. Worst source-corner residual is0.00019346OA.
+
+Independent shoelaces give twelve_kite1/2−√3/6, twelve; outer_four1/3−√3/24, twenty-four; blue_four7/24−√3/16, twenty-four; six_kite−23/24+17√3/24, eighteen; and small_kite17/24−23√3/72, six. These84 counted areas sum exactly to8+19√3/3=2√3L². The central twelve-star, three six-stars and two three-stars are divided into their source kites. An additional full-outline inventory confirms the same five congruence classes, including the two reflected quadrilateral pairs. The golden checks confirm the counts, mirrors and sixfold turn without slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/TAI1/overlay.png`. Every band centre agrees. All84 actual player fills match source interior samples, retaining yellow, orange, blue, green and white classes with an illustrative palette. Kashan has distinct slots for all five; the initially tried wood palette shared two colours and was replaced. A provisional45° frame failed the repeat and area check because PDF y runs down; the verified15° frame preserves both source translation vectors and colours.
+
+Credits retain Archnet’s lower screen panel at Takht-e Fulad, Isfahan; Dick Osseman’s minbar balustrade at the Turkish and Islamic museum, Istanbul; and M Sakkal’s Junblat House window lattice, Aleppo, all personal communications through Wichmann. No monument photograph was independently checked. The first six normal steps and operations share the Agra three-square opening. This is a related proportion and division variant: its stars and connectors are subdivided and its apothem differs from IND0403/IND0405. It is not an exact duplicate or a filling-only variation.
+
+Catalog211, all six targeted golden assertions and the full weave group(222 total),1055 player text/helper assertions and41 schema assertions passed serially under3GB. Helper-free text omits only the hidden intercept line. No shared application or reserved file changed.
+
+
+## AJL8 — `otrush-star-chelates`
+
+The twenty-three-step p6m tutorial uses fold six and a twelve-pointed star. O is at PDF(297.5,373.1829166667), OA=15(3+√3)/√2pt and the frame is unturned. Facing-edge measurements give743 widths at5pt,78 at5.01pt and72 at4.99pt. Grey bevel facets are removed and coloured faces expanded2.5pt to their band centres. The first six normal steps and operations share DA1’s three-square opening. A third and compass sum set the hexagonal apothem L=7/3+√3. Four diagonal halvings give X=L/16. Compass sums and complements construct3X,10X,13X and15X; five vertical families and three crossing-based oblique families complete the mesh. Worst source-corner residual is0.00022947OA.
+
+Independent shoelaces give star6−2√3, once; kite−1+2√3/3, twelve; eight−5/6+47√3/54, twelve; large_kite16/9−8√3/9, twelve; fifteen2467/1152+757√3/1728, six; small_kite−5/18+7√3/27, six; ten91/96+247√3/432, six; fourteen119/64+323√3/288, three; and hexagon7/64+19√3/288, twice. The60 counted areas sum exactly to28+152√3/9=2√3L². A full-outline inventory confirms all nine congruence classes, with the same counts as the default engine. Golden checks confirm the symmetry and absence of slivers and off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/AJL8/overlay.png`. Every band centre agrees. All60 actual player fills match the source’s single tan class, with an illustrative palette. Credits retain Dick Osseman’s photograph of al-Otrush mosque, Aleppo, Syria(1370–1400AD,771–802AH), supplied through Wichmann by personal communication. No monument photograph was independently checked. Its chelate arrangement differs from B87’s four-triangle-star mesh and counts, and its hexagonal repeat differs from DA1’s square manuscript net. No exact duplicate or filling-only variation was found.
+
+Catalog212, all six targeted golden assertions and the full weave group(223 total),1060 player text/helper assertions and41 schema assertions passed serially under3GB. Helper-free text names only the retained30° and150° diameters and45°/135° bisectors, and omits the intercept line. DA1 regenerates byte-identically after exposing its unchanged first six steps. No shared application or reserved file changed. A subsequent colouring audit found that the opt-in equal-measure types in MIR24/P142 need distinct colour-selection keys; that shared follow-up is recorded separately.
+
+
+### Independent colours for opt-in outlines
+
+The colour-selection key also used only vertex count and rounded area. That would repaint both newly separated MIR24 tens, or both P142 eights, together. `project-core/coloring.ts` now appends a canonical sequence of edge lengths and turning angles only when a type carries its opt-in outline. Cyclic starts, both traversals and reflection have the same key; different outlines have different sequences. A WeakMap caches the result for each immutable type. Existing tutorials retain their exact old keys.
+
+A player regression loads both real tutorials, paints one equal-measure type, and verifies that the other keeps its source colour. It also checks a rotated, reflected, translated and cyclically shifted outline, and an unchanged legacy key. All16 placement and colour-history checks passed under3GB, preparing212 previews. The final full-suite results are recorded below. This is a separate shared-code follow-up required to make the corrected tutorial types independently usable.
+
+
+### Constructed specimens for equal-count outlines
+
+The EGY1030 draft has two noncongruent ten-corner outlines with equal area, perimeter, sorted side lengths and eight placements each. Counts therefore cannot identify their expected names. Optional `expect.pieces[].outline` now names a constructed polygon specimen, whose full congruence identifies the type. All specimen vertices must come from earlier construction elements. Reference validation requires a polygon and the opt-in grouping flag. Specimens are matching metadata; golden values continue to check the independently computed vertex count, area and count per cell. Tutorials without specimens retain their existing behaviour.
+
+The U/T regression now includes two of each pentomino and proves that specimens identify both names without a count distinction; the earlier ambiguity regression still leaves names unset when no specimen is supplied. All16 targeted engine assertions(four outline regressions plus MIR24/P142 goldens) and42 schema assertions passed serially under3GB after rebuilding the changed schema. The final full-suite results are recorded below. The completed Barsbay source, fill and tutorial checks are recorded below.
+
+
+## EGY1030 — `barsbay-twelve-star-doors`
+
+The twenty-eight-step cmm tutorial uses fold two and a twelve-pointed star. O is at PDF(297.5,373.2566666667), OA=19(1+√3)pt, and the teaching frame is unturned. Grey bevel facets are removed and the8pt bands expanded4pt to their centres. Put r=√2, s=√3 and t=√6. The first six normal steps and operations share F294’s four-triangle opening. Compass differences set the rectangle’s half-width P=(4−r+t)/2. A line at165° projects the four-star radius Ptan15° onto the vertical; adding twice P gives the exact half-height Q=P(4−s). The small carrier is S=Q−2P−1/2, and its corner diagonal is rP−S. Three further families pass through constructed crossings on the upper horizontal line; six crossing-based oblique families complete the mesh. Extra rotations are guides and do not assert extra symmetry of the finished ink. Two connector outlines are explicitly marked from earlier crossings to distinguish equal-measure, equal-count shapes. Worst source-corner residual is0.00041190OA.
+
+Independent shoelaces give twelve_star3s−3, twice; kite(3−s)/4, twenty-four; hexagon(1−r+t)/2, twenty-four; notched_ten−17+25r/2+10s−43t/6, eight; other_ten with that same area, eight; three_star69/4−12r−39s/4+7t, twelve; four_star46−32r−26s+56t/3, four; and ten−35/4+7r+21s/4−4t, four. These86 counted areas sum exactly to108−56r−40s+40t=4P²(4−s). Full-outline matching confirms eight congruence classes. The twenty authentic narrow white ten-corner connectors are explicitly declared small under the existing schema option; no accidental slivers remain. A provisional numerical fit for Q produced false near-coincident seams and was discarded. Deriving Q from the regular four-stars removes them exactly.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/EGY1030/overlay.png`. Every band centre agrees. All86 actual player fills match source interior samples, retaining orange twelve-stars, green hexagons, cyan three/four-stars and white connectors with an illustrative palette. Credits retain Wade EGY1030, al-Ashraf Barsbay, Cairo(1423AD,826AH); the Thesaurus Islamicus Foundation’s qibla-iwan minbar north-side door photograph(1425–33AD,828–36AH), through personal communication; and the source page’s Wade LOU011 link. No monument photograph was independently checked. The cmm arrangement and its small stars differ from F294’s square mesh; no exact duplicate or filling-only variant was found.
+
+Catalog213, all six targeted golden assertions and the full weave group(224 total),1065 player text/helper assertions and42 schema assertions passed serially under3GB. The first text run caught long connector-location sentences; shortening the line descriptions preserves every construction reference. Helper-free texts name only the retained rotations, including the four shifted copies of the hidden axial small carrier. No reserved file changed. The separately committed specimen and colour-key fixes support the exact shape distinctions.
+
+
+## SHAF18 — `ismail-shrine-divided-stars`
+
+The forty-one-step tutorial uses fold two and names the source’s largest star as six. O is the four-star centre at PDF(130.77,548.19), where the verified horizontal and vertical mirrors cross; OA=35(1+√2+√3)/2pt is its point radius. The frame is unturned. Grey bevel shades through0.5 are removed, but the0.8-grey kites are real pieces and are retained. The10pt bands are expanded5pt to their centre lines. The first nine construction operations share P142’s opening, with the triangle heading shortened. Compass sums give the diamond half-diagonal L=2√2+√6. Thirty crossing-based parallel families complete the mesh. Their extra rotations are guides, while the finished drawing has the required half-turn and mirrors. Two unused guide families were removed before emitting the tutorial. Worst source-corner residual is0.00018155OA.
+
+Independent source-kite shoelaces give six_kite√3−√2, thirty-six; connector_kite(1+√2−√3)/2, seventy-two; four_kite(√3−1)/2, forty; and three_kite1−√3/3, twelve. These160 areas sum exactly to28+16√3=2L². A full-outline inventory confirms precisely four congruence classes. Golden checks confirm the cell area, counts, half-turn and mirrors, with no slivers or off-construction endpoints.
+
+The initial repeat based on neighbouring six-star centres was rejected: they have different surroundings and are not translations. Their centres also do not have the full required point symmetry. Centroid translation checks instead locate the two diagonal repeat vectors, and reflection/half-turn checks locate the chosen four-star centre. Sampling the available source faces gives130 horizontal,93 vertical and61 half-turn matches there, with residuals below0.014pt. The diamond repeat and periodic source copies recover the complete boundary graph. The initial bevel filter also omitted the pale-grey kite class; the final four-type inventory includes it.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/SHAF18/overlay.png`. Every boundary agrees across the page. All160 actual player fills match source interior samples, with no ambiguity under the primitive translations. Placement rules retain the three blue/white classes, two green classes, two orange/ochre classes and the pale-grey kites. Palette values are illustrative. Credits retain Javad Shafai, On decoration in Persian architecture and wood carving, Tehran(1977), page110, in Persian, Imamzadeh Ismail shrine, Isfahan. The page calls its group pmm; the tutorial checks fold two directly against the drawing. No monument photograph was independently checked. This divided three/four/six-star arrangement differs from TAI1’s twelve-star mesh and P142’s star rows; no exact duplicate was found.
+
+Catalog214, all six targeted golden assertions and the full weave group,1070 player text/helper assertions and42 schema assertions passed serially under3GB. Helper-free texts omit only the hidden triangle side, diamond side and individual rotations. A first text run caught the transition after the wholly hidden fourth step; the following step now states its circle crossings. P142 regenerates byte-identically after exposing its unchanged width construction. No shared application or reserved file changed.
+
+
+## F38 — `shah-mosque-chiral-grille`
+
+The thirty-six-step p6 tutorial uses fold six, a twelve-pointed star and chiral=true. O is at PDF(350.28,371), OA=30(3+√3)/√2pt, with no rotation of the teaching frame. The source has plain quadrilateral boundaries, so no bevel removal or band expansion is used. Its first six steps share DA1’s three-square opening. Let K=(3√2−√6)/6 be the short unit-star kite edge. A fifth, two diagonal halvings and compass sums construct6K/5 and29K/20. Two circle crossings and eighteen parallel families locate the mesh. A four-star junction constructed from earlier lines fixes the angled hexagonal repeat without a numerical rotation. Its normal is((158+89√3)/120,(38−9√3)/120).
+
+The initial source-edge system has595 vertices,1137 edges and two free lengths after the star is fixed. The two rational ratios above close every edge cycle exactly in Q(√2,√3). All151 matched source-period vertex pairs give the same exact vector. Independent exact source shoelaces give twelve_kite1/2−√3/6, twelve; green_four661/7200+319√3/14400, twelve; outer_four−881/4800+1261√3/7200, twenty-four; three_kite1003/7200−73√3/4320, twenty-four; four_kite−73/2880+1003√3/14400, forty-eight; six_kite−145/576+947√3/4800, thirty-six; and small_four(6269−2203√3)/28800, seventy-two. These228 areas sum exactly to343/30+25207√3/3600, the angled hexagon’s area. Worst source-corner distance is0.00007181OA, within the PDF’s rounding precision.
+
+A full-outline inventory confirms seven congruence classes: four kites and three reflected quadrilateral pairs. The source page lists five kites and three reflected pairs. All543 source quadrilaterals are accounted for; no missing edge supports an eighth class. The tutorial and golden expectations retain the seven drawn classes and state the discrepancy. The engine confirms the repeat and sixfold turn without mirrors, slivers or off-construction endpoints.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/F38/overlay.png`. Every boundary agrees. All228 actual player fills match source interior samples, retaining orange, blue, white, two greens and grey under the primitive repeat. The palette is illustrative. Credits retain Dominique Clévenot, Ornament and decoration in Islamic architecture(2000), page45, figure38, photographs by Gérard Degeorge, Shah Mosque, Isfahan(1629AD,1038AH). The source explicitly states that the original wooden grille has no colour; the tutorial explains that its colours come from the diagram. No monument photograph was independently checked. The chiral arrangement differs from the other divided-star meshes; no exact duplicate was found.
+
+Catalog215, all six targeted golden assertions and the full weave group(226 total),1075 player text/helper assertions and42 schema assertions passed serially under3GB. Helper-free texts omit the intercept line, unused odd rotations and wholly hidden frame step. No shared application or reserved file changed.
+
+
+## OR1 — `chehel-sotoun-divided-stars`
+
+This forty-one-step tutorial is a filling variant of SHAF18 and shares its complete construction. O is at PDF(277.98,390.52), OA=35(1+√3)/2pt, and the teaching frame turns90°. Bright main faces are separated from brown bevel facets; the7pt bands expand3.5pt to their centres. The unturned comparison initially suggested a different arrangement, but turning the full SHAF18 overlay90° matches every OR1 boundary. The exact kite proportions, diamond half-diagonal L=2√2+√6, repeat and160-piece inventory are identical. The source calls OR1 cmm; the tutorial directly checks the ink’s half-turn and mirrors with fold two.
+
+Independent source-kite shoelaces give six_kite√3−√2, thirty-six; connector_kite(1+√2−√3)/2, seventy-two; four_kite(√3−1)/2, forty; and three_kite1−√3/3, twelve. Their counted sum is28+16√3=2L². Worst expanded source-corner distance is0.00020725OA. Golden checks confirm all four types, counts, area and symmetry without slivers or off-construction endpoints. The two extra collinear ink divisions compared with SHAF18 do not change the pieces or their geometry.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/OR1/overlay.png`. Every band centre agrees. Every one of the656 extracted main source faces matches the actual player fill after its geometric translation. A primitive colour repeat conflicts at twelve positions because two central six-stars are olive while their translated neighbours are green. A two-by-two colour repeat removes every conflict. Twelve placement rules retain those olive kites; the other classes are green six-kites, orange four-kites, blue three-kites and beige connectors. The source observes554 of the640 colour-repeat placements, with no disagreement; unobserved green six-kites use the common default. Palette values are illustrative. This is a filling-only family with SHAF18, rather than an independent geometric design.
+
+Credits retain Roberto Orazi, Grate lignee nell’architettura safavide, Roma: IsMEO(1976), figure9, page245, Chehel Sotoun Palace, Isfahan. No monument photograph was independently checked. The common construction imports SHAF18’s builder rather than copying its operations. Helper-free text is shared except that OR1 retains all four diamond sides, so its frame caption names all four.
+
+Catalog216, all six targeted golden assertions and the full weave group(227 total),1080 player text/helper assertions and42 schema assertions passed serially under3GB. No shared application or reserved file changed.
+
+
+### Weaving through a bending crossing
+
+MOR1118’s complete source mesh exposed a weave parity bug. At24 flat junctions a bending band crosses a straight band, with its ends on opposite sides. The engine recognised straight-through pairs but omitted the crossing with the bend, giving72 broken alternation constraints. The shared fix counts that crossing in both strands’ walks and stops the redraw path at the flat junction. A bend whose ends lie on the same side remains a touch and does not swap. The drawing and its junctions remain unchanged.
+
+A small two-row, two-column net reproduces the bug independently of the tutorial: one column bends across a row, and the old engine leaves four broken constraints. The corrected weave has zero and keeps its one-cell repeat. A diamond touching two rows verifies that touches retain their required two-cell repeat. Both cases use explicit geometric segments; no tutorial-specific exception is added. MOR1118 now has zero broken constraints. Catalog217,230 targeted golden/weave assertions including both new regressions,1085 player text/helper assertions and42 schema assertions passed serially under3GB. The shared fix and the final tutorial are committed separately. The final full-suite results are recorded below.
+
+
+The complete weave run also exposed an incorrect old test assumption for TAI1. Its divided kites have fourteen degree-three junctions and eighteen strand ends; the source explicitly says that two-colouring is impossible. With bending crossings counted, its closed-band constraints all remain consistent, but the interrupted strands leave22 unsatisfied constraints in the selected primitive repeat. The documented weave API already permits broken constraints for interrupted bands. The library test now requires a positive broken count for this specific non-alternating net and keeps the independent band-following checks. Every other tutorial still requires zero. There is no tutorial exception in the engine, and no source geometry is altered to make it weave.
+
+
+## MOR1118 — `rabat-mixed-star-rosette`
+
+The forty-nine-step p4m tutorial uses fold four and a twelve-pointed star on a square cell. O is at PDF(297.5,373.01875), OA=17(1+√3)pt, and the teaching frame is unturned. Facing-edge measurements give1044 widths at6pt,62 at5.99pt and49 at6.01pt. All438 main faces, including the black ones, are retained and expanded3pt to their band centres. The first six steps share F294’s four-triangle opening. Compass sums construct the square half-side L=(3+5√2+√6)/2. A projected half inner-star edge sets the smaller-star proportions. Diagonal halvings and compass transfers locate six further carrier orbits; eleven parallel families through earlier crossings complete the mesh. Extra rotations belong to the guides, while the finished drawing has fourfold symmetry.
+
+The shared-edge reconstruction has1120 vertices,1557 edges and two free lengths after anchoring the central star. Fixing the half inner-star edge and the simple repeat above removes both freedoms. Independent exact arithmetic in Q(√2,√3) closes every edge cycle, and406 matched source vertex pairs have the same repeat. Worst expanded source-corner distance is0.00060856OA. Independent source shoelaces account for260 faces and sum exactly to65+30√2+20√3+6√6=4L². Full-outline grouping confirms the same31 congruence classes as the default classifier, so no opt-in grouping or specimens are needed. The table gives each exact area, with r=√2, s=√3 and t=√6.
+
+| Piece | Corners | Exact area | Per cell |
+|---|---:|---|---:|
+| `twelve_star` | 24 | −3+3s | 1 |
+| `six_star` | 12 | s | 4 |
+| `petal` | 6 | 1/2+2r−2s/3−t/3 | 12 |
+| `ochre_eight` | 8 | −6−6r+5s/2+14t/3 | 4 |
+| `blue_hex` | 6 | −13/4−r+s/12+7t/3 | 8 |
+| `eight_star` | 16 | 4−2r | 3 |
+| `black_eight` | 8 | −11/8+3r/4−29s/48+t | 16 |
+| `hexagon` | 6 | 1 | 12 |
+| `black_other_eight` | 8 | −1/4+5r/2−11s/12−t/3 | 4 |
+| `blue_notch` | 6 | −3/4−s/4+5t/6 | 4 |
+| `blue_angle` | 6 | −7/4+s/4+5t/6 | 4 |
+| `black_middle_eight` | 8 | −27/32+r−9s/32+t/4 | 8 |
+| `green_hex` | 6 | 3/4+5s/12−t/3 | 8 |
+| `black_hex` | 6 | s/3 | 16 |
+| `blue_small_hex` | 6 | −3/2−3r+s/3+7t/3 | 4 |
+| `black_seven` | 7 | 29/8−5s/8−5t/6 | 8 |
+| `rhombus` | 4 | 1/2 | 12 |
+| `ten` | 10 | 1/2 | 12 |
+| `pink_four` | 4 | −45/32+13r/16−9s/16+11t/16 | 8 |
+| `pink_hex` | 6 | −365/32−r/8+361s/96+9t/4 | 4 |
+| `blue_eight` | 8 | −69/16+3r/8+2s/3+5t/4 | 8 |
+| `blue_small_eight` | 8 | −3/32+3r/8−s/96 | 8 |
+| `black_four` | 4 | 3/4−s/4 | 12 |
+| `pink_seven` | 7 | 1/16+9r/8−13s/24−t/6 | 8 |
+| `small_rhombus` | 4 | s/6 | 12 |
+| `ochre_kite` | 4 | 157/32−39r/8+189s/32−13t/4 | 4 |
+| `black_ten` | 10 | 5/8−r/4 | 12 |
+| `black_five` | 5 | 3/8−r/4+17s/48−t/6 | 16 |
+| `triangle` | 3 | 173/32−65r/16+181s/48−39t/16 | 8 |
+| `narrow_four` | 4 | −1/2+r/2 | 16 |
+| `dart` | 4 | 101/4+14r−49s/4−29t/3 | 4 |
+
+Eighty pieces in the final eight small types are authentic fine background features: pink_seven, small_rhombus, ochre_kite, black_ten, black_five, triangle, narrow_four and dart. Their areas range from0.15297 to0.30705, while the cell area is156.76436. The source overlay confirms them; they are explicitly marked small under the existing schema option. No accidental slivers or off-construction endpoints remain. The pink quadrilateral has four unequal sides, so its name is pink_four; the two unequal-edge black forms are called black_four and narrow_four rather than rhombi.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/MOR1118/overlay.png`. Every band centre agrees, including the long rosette petals and fine corner stars. All260 actual player fills match source interior samples. Six diagram colour classes are retained with an illustrative palette. Sixteen placement corrections distinguish blue/ochre tens and black/ochre rhombi; a whole-petal placement supplies the sixth, light-green class. The primitive geometric repeat also preserves all source colours. This is one connected tiling; it does not have the independent overlay responsible for the two-level skips. Its square twelve-star rosette and dense six/eight-star background differ from the other mixed-star meshes, so no exact duplicate or filling-only variant was found.
+
+Credits retain David Wade’s photograph MOR1118, mosque, Rabat, Morocco, Pattern in Islamic Art website(2015), and the source’s PIA1500 photograph link. No building photograph was independently checked. Helper-free captions name only the retained diameters and rotations. Catalog217, all six targeted golden assertions and the full weave group(230 total),1085 player text/helper assertions and42 schema assertions passed serially under3GB. The separately committed bending-crossing fix makes the complete Rabat net alternate without broken constraints. This tutorial commit changes no shared application or reserved file.
+
+
+### Specimens through draw-along and editor saves
+
+The first complete engine run passed all3441 assertions across22 files, including the frozen crossing and piece equivalence suites. The first complete player run found three workflow failures for EGY1030: the learner’s board lacked the named polygon specimens, and saving through the editor discarded their references. Draw-along now takes each constructed specimen onto the board by geometry, maps its reference to the board’s actual polygon name, and carries that expect block into inking. Editor export retains a specimen only for a type that still matches the earlier named piece; newly shaped pieces do not inherit an old specimen.
+
+A new regression renames every construction element on a Barsbay board and verifies both mapped specimen references, the saved references and all original golden names. The217 draw-along and editor roundtrips, photo fixture checks and renamed-board regression pass:1107 existing targeted assertions plus the new case. The first run’s other three failures were missing private photo fixtures. Ignored links inside this worktree now provide the existing main-checkout `alhambra-wichmann` and `upcoming` research folders and the Fes image for read-only checks. No photograph is added to the branch or shipped. The final full-suite results are recorded below. This is a separate shared-code commit with its regression; no tutorial geometry or reserved file changes.
+
+
+## Final validation
+
+All39 assigned entries are handled:31 new tutorials and eight documented two-level skips. The catalog now has217 entries. Each tutorial has its own generator, exact area/count inventory, full-page source overlay and required per-tutorial checks. Source diagram matches are distinguished from building photographs throughout; no new monument photograph match is claimed. The family decisions are recorded with each entry, including the Agra proportion/division variants, W85/IRA2633 and SHAF18/OR1. Review cards, variations, queue, status and prompt files remain unchanged from the task’s starting point.
+
+The complete engine suite passed3441 assertions across22 files, including both frozen-reference equivalence suites, all goldens, helper checks, free inking and weaving. The complete player suite passed2750 assertions across85 files. All42 beginner tutorials remain counted by the existing draw-along pin. Lint passed for eight projects. Typecheck passed for eight projects and seven dependency tasks. The production build and browser suite passed on desktop, tablet and phone:244 tests passed and17 configured platform-specific tests were skipped. The browser suite used its own production preview on4397 and stopped it afterwards; port4200 was untouched.
+
+Every heavy command ran serially under the approved limits:3GB with no swap, or4GB for the browser suite. Two parallel player attempts lost workers in the library and saved-design files. A768MiB heap run explicitly exhausted V8’s heap in those files. The successful full run retained `--maxWorkers=2`, added `--no-file-parallelism`, and used `NODE_OPTIONS=--max-old-space-size=1536` under the original3GB cap. All85 files and all2750 assertions ran; no player case was omitted. This changes only test execution, with no test or application exception for resource pressure.
+
+The successful final commands were `pnpm exec vitest run` in `packages/engine`; `NODE_OPTIONS=--max-old-space-size=1536 pnpm exec vitest run --maxWorkers=2 --no-file-parallelism` in `apps/player`; and root `pnpm lint`, `pnpm typecheck` and `TASTIR_BROWSER_PORT=4397 pnpm test:browser`. Nx used `NX_DAEMON=false NX_ISOLATE_PLUGINS=false`. Detailed logs remain under this worktree’s ignored `docs/research/tilingsearch-30/checks/`. The complete engine run took541.79 seconds, the successful complete player run358.85 seconds, and the browser run11.4 minutes.
+
+The final branch audit finds exactly31 added tutorial JSON files, no reserved-file changes relative to the branch base, and no whitespace errors. No branch switch, rebase, force-push, development server or main-checkout mutation was used. The branch is ready for Claude’s review and the owner’s merge.
