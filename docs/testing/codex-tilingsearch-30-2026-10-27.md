@@ -10,7 +10,7 @@ Dependencies were installed once and the schema build succeeded once, using `NX_
 
 ## Progress
 
-Thirty tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87, MIR24, DA1, TAI1, AJL8, EGY1030, SHAF18, F38 and OR1. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. One entry remains pending: MOR1118.
+Thirty-one tutorials are complete: CM022, ASU2, P41, IND0403, IND0405, F8785, W85, IRA2633, DM1, SYR0222, A192, SAM1, P106, P092, CR1, DS1, F294, BON1, P141, P142, SEV2, B87, MIR24, DA1, TAI1, AJL8, EGY1030, SHAF18, F38, OR1 and MOR1118. Eight two-level drawings are skipped: AS10, BR9, IND1016, SM1, IND0408, IND0917, SM12 and ASL20. All39 entries are accounted for.
 
 ## CM022 — `alcazar-six-eight-stars`
 
@@ -422,3 +422,50 @@ A small two-row, two-column net reproduces the bug independently of the tutorial
 
 
 The complete weave run also exposed an incorrect old test assumption for TAI1. Its divided kites have fourteen degree-three junctions and eighteen strand ends; the source explicitly says that two-colouring is impossible. With bending crossings counted, its closed-band constraints all remain consistent, but the interrupted strands leave22 unsatisfied constraints in the selected primitive repeat. The documented weave API already permits broken constraints for interrupted bands. The library test now requires a positive broken count for this specific non-alternating net and keeps the independent band-following checks. Every other tutorial still requires zero. There is no tutorial exception in the engine, and no source geometry is altered to make it weave.
+
+
+## MOR1118 — `rabat-mixed-star-rosette`
+
+The forty-nine-step p4m tutorial uses fold four and a twelve-pointed star on a square cell. O is at PDF(297.5,373.01875), OA=17(1+√3)pt, and the teaching frame is unturned. Facing-edge measurements give1044 widths at6pt,62 at5.99pt and49 at6.01pt. All438 main faces, including the black ones, are retained and expanded3pt to their band centres. The first six steps share F294’s four-triangle opening. Compass sums construct the square half-side L=(3+5√2+√6)/2. A projected half inner-star edge sets the smaller-star proportions. Diagonal halvings and compass transfers locate six further carrier orbits; eleven parallel families through earlier crossings complete the mesh. Extra rotations belong to the guides, while the finished drawing has fourfold symmetry.
+
+The shared-edge reconstruction has1120 vertices,1557 edges and two free lengths after anchoring the central star. Fixing the half inner-star edge and the simple repeat above removes both freedoms. Independent exact arithmetic in Q(√2,√3) closes every edge cycle, and406 matched source vertex pairs have the same repeat. Worst expanded source-corner distance is0.00060856OA. Independent source shoelaces account for260 faces and sum exactly to65+30√2+20√3+6√6=4L². Full-outline grouping confirms the same31 congruence classes as the default classifier, so no opt-in grouping or specimens are needed. The table gives each exact area, with r=√2, s=√3 and t=√6.
+
+| Piece | Corners | Exact area | Per cell |
+|---|---:|---|---:|
+| `twelve_star` | 24 | −3+3s | 1 |
+| `six_star` | 12 | s | 4 |
+| `petal` | 6 | 1/2+2r−2s/3−t/3 | 12 |
+| `ochre_eight` | 8 | −6−6r+5s/2+14t/3 | 4 |
+| `blue_hex` | 6 | −13/4−r+s/12+7t/3 | 8 |
+| `eight_star` | 16 | 4−2r | 3 |
+| `black_eight` | 8 | −11/8+3r/4−29s/48+t | 16 |
+| `hexagon` | 6 | 1 | 12 |
+| `black_other_eight` | 8 | −1/4+5r/2−11s/12−t/3 | 4 |
+| `blue_notch` | 6 | −3/4−s/4+5t/6 | 4 |
+| `blue_angle` | 6 | −7/4+s/4+5t/6 | 4 |
+| `black_middle_eight` | 8 | −27/32+r−9s/32+t/4 | 8 |
+| `green_hex` | 6 | 3/4+5s/12−t/3 | 8 |
+| `black_hex` | 6 | s/3 | 16 |
+| `blue_small_hex` | 6 | −3/2−3r+s/3+7t/3 | 4 |
+| `black_seven` | 7 | 29/8−5s/8−5t/6 | 8 |
+| `rhombus` | 4 | 1/2 | 12 |
+| `ten` | 10 | 1/2 | 12 |
+| `pink_four` | 4 | −45/32+13r/16−9s/16+11t/16 | 8 |
+| `pink_hex` | 6 | −365/32−r/8+361s/96+9t/4 | 4 |
+| `blue_eight` | 8 | −69/16+3r/8+2s/3+5t/4 | 8 |
+| `blue_small_eight` | 8 | −3/32+3r/8−s/96 | 8 |
+| `black_four` | 4 | 3/4−s/4 | 12 |
+| `pink_seven` | 7 | 1/16+9r/8−13s/24−t/6 | 8 |
+| `small_rhombus` | 4 | s/6 | 12 |
+| `ochre_kite` | 4 | 157/32−39r/8+189s/32−13t/4 | 4 |
+| `black_ten` | 10 | 5/8−r/4 | 12 |
+| `black_five` | 5 | 3/8−r/4+17s/48−t/6 | 16 |
+| `triangle` | 3 | 173/32−65r/16+181s/48−39t/16 | 8 |
+| `narrow_four` | 4 | −1/2+r/2 | 16 |
+| `dart` | 4 | 101/4+14r−49s/4−29t/3 | 4 |
+
+Eighty pieces in the final eight small types are authentic fine background features: pink_seven, small_rhombus, ochre_kite, black_ten, black_five, triangle, narrow_four and dart. Their areas range from0.15297 to0.30705, while the cell area is156.76436. The source overlay confirms them; they are explicitly marked small under the existing schema option. No accidental slivers or off-construction endpoints remain. The pink quadrilateral has four unequal sides, so its name is pink_four; the two unequal-edge black forms are called black_four and narrow_four rather than rhombi.
+
+I inspected the ink, wall and complete red overlay at `docs/research/tilingsearch-30/MOR1118/overlay.png`. Every band centre agrees, including the long rosette petals and fine corner stars. All260 actual player fills match source interior samples. Six diagram colour classes are retained with an illustrative palette. Sixteen placement corrections distinguish blue/ochre tens and black/ochre rhombi; a whole-petal placement supplies the sixth, light-green class. The primitive geometric repeat also preserves all source colours. This is one connected tiling; it does not have the independent overlay responsible for the two-level skips. Its square twelve-star rosette and dense six/eight-star background differ from the other mixed-star meshes, so no exact duplicate or filling-only variant was found.
+
+Credits retain David Wade’s photograph MOR1118, mosque, Rabat, Morocco, Pattern in Islamic Art website(2015), and the source’s PIA1500 photograph link. No building photograph was independently checked. Helper-free captions name only the retained diameters and rotations. Catalog217, all six targeted golden assertions and the full weave group(230 total),1085 player text/helper assertions and42 schema assertions passed serially under3GB. The separately committed bending-crossing fix makes the complete Rabat net alternate without broken constraints. This tutorial commit changes no shared application or reserved file.
