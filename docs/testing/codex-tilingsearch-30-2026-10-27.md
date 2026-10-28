@@ -412,3 +412,13 @@ I inspected the ink, wall and complete red overlay at `docs/research/tilingsearc
 Credits retain Roberto Orazi, Grate lignee nell’architettura safavide, Roma: IsMEO(1976), figure9, page245, Chehel Sotoun Palace, Isfahan. No monument photograph was independently checked. The common construction imports SHAF18’s builder rather than copying its operations. Helper-free text is shared except that OR1 retains all four diamond sides, so its frame caption names all four.
 
 Catalog216, all six targeted golden assertions and the full weave group(227 total),1080 player text/helper assertions and42 schema assertions passed serially under3GB. No shared application or reserved file changed.
+
+
+### Weaving through a bending crossing
+
+MOR1118’s complete source mesh exposed a weave parity bug. At24 flat junctions a bending band crosses a straight band, with its ends on opposite sides. The engine recognised straight-through pairs but omitted the crossing with the bend, giving72 broken alternation constraints. The shared fix counts that crossing in both strands’ walks and stops the redraw path at the flat junction. A bend whose ends lie on the same side remains a touch and does not swap. The drawing and its junctions remain unchanged.
+
+A small two-row, two-column net reproduces the bug independently of the tutorial: one column bends across a row, and the old engine leaves four broken constraints. The corrected weave has zero and keeps its one-cell repeat. A diamond touching two rows verifies that touches retain their required two-cell repeat. Both cases use explicit geometric segments; no tutorial-specific exception is added. MOR1118 now has zero broken constraints. Catalog217,230 targeted golden/weave assertions including both new regressions,1085 player text/helper assertions and42 schema assertions passed serially under3GB. The shared fix and the final tutorial are committed separately; complete final suites remain due.
+
+
+The complete weave run also exposed an incorrect old test assumption for TAI1. Its divided kites have fourteen degree-three junctions and eighteen strand ends; the source explicitly says that two-colouring is impossible. With bending crossings counted, its closed-band constraints all remain consistent, but the interrupted strands leave22 unsatisfied constraints in the selected primitive repeat. The documented weave API already permits broken constraints for interrupted bands. The library test now requires a positive broken count for this specific non-alternating net and keeps the independent band-following checks. Every other tutorial still requires zero. There is no tutorial exception in the engine, and no source geometry is altered to make it weave.

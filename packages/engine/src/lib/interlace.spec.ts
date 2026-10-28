@@ -256,17 +256,66 @@ describe('weave', () => {
     expect(w.flat).toEqual([]);
   });
 
+  it('swaps at a flat crossing where one band bends', () => {
+    // The column bends while crossing the lower row. Ignoring that
+    // crossing makes the two rows ask for incompatible alternation.
+    const w = weave(
+      [
+        segment({ x: 0, y: 0.25 }, { x: 1, y: 0.25 }),
+        segment({ x: 0, y: 0.75 }, { x: 1, y: 0.75 }),
+        segment({ x: 0.75, y: 0 }, { x: 0.75, y: 1 }),
+        segment({ x: 0.25, y: 0 }, { x: 0.25, y: 0.2 }),
+        segment({ x: 0.25, y: 0.2 }, { x: 0.3, y: 0.25 }),
+        segment({ x: 0.3, y: 0.25 }, { x: 0.25, y: 0.3 }),
+        segment({ x: 0.25, y: 0.3 }, { x: 0.25, y: 1 }),
+      ],
+      square,
+    );
+    expect(w.broken).toBe(0);
+    expect(w.repeat).toEqual([1, 1]);
+    expect(w.crossings).toHaveLength(3);
+    expect(w.flat).toHaveLength(1);
+    expect(w.flat[0]?.x).toBeCloseTo(0.3, 9);
+    expect(w.flat[0]?.y).toBeCloseTo(0.25, 9);
+  });
+
+  it('does not swap where a bending band only touches a straight one', () => {
+    // The diamond touches both rows. Their single crossings with the
+    // column still need a two-cell repeat along the rows.
+    const w = weave(
+      [
+        segment({ x: 0, y: 0.25 }, { x: 1, y: 0.25 }),
+        segment({ x: 0, y: 0.75 }, { x: 1, y: 0.75 }),
+        segment({ x: 0.75, y: 0 }, { x: 0.75, y: 1 }),
+        segment({ x: 0.25, y: 0.25 }, { x: 0.4, y: 0.5 }),
+        segment({ x: 0.4, y: 0.5 }, { x: 0.25, y: 0.75 }),
+        segment({ x: 0.25, y: 0.75 }, { x: 0.1, y: 0.5 }),
+        segment({ x: 0.1, y: 0.5 }, { x: 0.25, y: 0.25 }),
+      ],
+      square,
+    );
+    expect(w.broken).toBe(0);
+    expect(w.repeat).toEqual([2, 1]);
+    expect(w.flat).toHaveLength(2);
+  });
+
   let followed = 0;
   describe.each(tutorialFiles())('%s', (file) => {
-    it('alternates over and under along every band', () => {
+    it('alternates whole bands and reports interrupted strands', () => {
       const t = loadTutorial(file);
       const p = computePattern(evaluate(t), t);
       const w = weave(
         p.ink.map((s) => s.segment),
         p.cell,
       );
-      // Every crossing is woven, with no step along a band left unswapped.
-      expect(w.broken).toBe(0);
+      // TAI1's divided kites have fourteen degree-three junctions. Its
+      // interrupted strands cannot all alternate once bending crossings
+      // are counted; the source also states that it fails two-colouring.
+      // Closed runs are still checked by following them below. Every
+      // other library net must continue to have no broken constraints.
+      if (file === 'museum-divided-stars.json')
+        expect(w.broken).toBeGreaterThan(0);
+      else expect(w.broken).toBe(0);
       // Each top band can be redrawn some way either side of its crossing:
       // its paths follow it past bends and cuts in the ink (Bou Inania's
       // ink is cut every few hundredths), so they are never tiny. The bar
