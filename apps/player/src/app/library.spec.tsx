@@ -29,12 +29,18 @@ afterEach(() => {
 });
 
 /** Picks an option in one of the library's menus (Level, Tradition). */
-const choose = (menu: string, value: string) =>
-  act(() => {
-    fireEvent.change(screen.getByRole('combobox', { name: menu }), {
-      target: { value },
-    });
-  });
+/** Chooses a value in a group of the library's side menu. */
+const pick = (group: string, value: string) =>
+  act(() => menuButton(group, value).click());
+const menuButton = (group: string, value: string) =>
+  within(
+    within(document.querySelector('.library-side') as HTMLElement).getByRole(
+      'region',
+      { name: group },
+    ),
+  ).getByRole('button', {
+    name: new RegExp(`^${value},`),
+  }) as HTMLButtonElement;
 
 describe('the library', () => {
   it.each([khatam, octagons, rectangular].map(parseTutorial))(
@@ -139,17 +145,19 @@ describe('the library', () => {
     render(<App entries={entries} />);
     const cards = () => document.querySelectorAll('.cards > li').length;
     expect(cards()).toBe(2);
-    choose('Tradition', 'Nasrid');
+    pick('Tradition', 'Nasrid');
     expect(cards()).toBe(1);
-    choose('Level', 'beginner');
+    // No Nasrid pattern is for beginners, so the menu does not offer it.
+    expect(menuButton('Level', 'Beginner').disabled).toBe(true);
     // The empty library names what was chosen, and Clear all undoes it.
+    fireEvent.change(screen.getByRole('searchbox'), {
+      target: { value: 'nothing' },
+    });
     expect(
       screen.getByText(
-        /No pattern is for beginners and from the Nasrid tradition/,
+        /No pattern is called “nothing” and from the Nasrid tradition/,
       ),
     ).toBeTruthy();
-    choose('Tradition', '');
-    expect(cards()).toBe(1);
     act(() => screen.getAllByRole('button', { name: 'Clear all' })[0]?.click());
     expect(cards()).toBe(2);
     expect(screen.queryByRole('button', { name: 'Clear all' })).toBeNull();
@@ -196,10 +204,9 @@ describe('the library', () => {
     expect(cards()).toBe(2);
     act(() => screen.getByRole('button', { name: 'Advanced' }).click());
     expect(cards()).toBe(1);
-    expect(
-      (screen.getByRole('combobox', { name: 'Level' }) as HTMLSelectElement)
-        .value,
-    ).toBe('advanced');
+    expect(menuButton('Level', 'Advanced').getAttribute('aria-pressed')).toBe(
+      'true',
+    );
     act(() => screen.getByRole('button', { name: 'Clear all' }).click());
     act(() => screen.getAllByRole('button', { name: 'Nasrid' })[0]?.click());
     expect(cards()).toBe(1);
@@ -342,13 +349,12 @@ describe('coming back to the library', () => {
   it('keeps the filters the learner chose', () => {
     const entries = twoStars();
     const { unmount } = render(<App entries={entries} />);
-    choose('Tradition', 'Nasrid');
+    pick('Tradition', 'Nasrid');
     unmount();
     render(<App entries={entries} />);
-    expect(
-      (screen.getByRole('combobox', { name: 'Tradition' }) as HTMLSelectElement)
-        .value,
-    ).toBe('Nasrid');
+    expect(menuButton('Tradition', 'Nasrid').getAttribute('aria-pressed')).toBe(
+      'true',
+    );
     expect(document.querySelectorAll('.cards > li').length).toBe(1);
   });
 

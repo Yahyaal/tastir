@@ -1,6 +1,6 @@
 # Plan: browsing a library of two hundred patterns (27 October 2026)
 
-The owner asked on 27 October 2026 for easier browsing now that the library has more than 170 patterns: pagination, a side menu for exploring, and a smarter search. The owner approved it on 27 October 2026. Steps 1 and 2 are done: the owner approved [the region and tradition of every tutorial](patterns/REGIONS.md), and both are now in the tutorials and the library previews.
+The owner asked on 27 October 2026 for easier browsing now that the library has more than 170 patterns: pagination, a side menu for exploring, and a smarter search. The owner approved it on 27 October 2026. Steps 1 and 2 are done: the owner approved [the region and tradition of every tutorial](patterns/REGIONS.md), and both are now in the tutorials and the library previews. Steps 3 and 5 are done (28 October): the side menu and the phone drawer replaced the fold chips and the two drop-downs. A family's card shows the member that matches the filters, so under Morocco the Arrayanes squares family shows its Moroccan tile. Step 4, the smarter search, is next.
 
 ## Where things stand
 

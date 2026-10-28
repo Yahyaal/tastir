@@ -1,4 +1,10 @@
-import { filtered, foldLabel, neighbours, titleOf } from './browsing';
+import {
+  facetCounts,
+  filtered,
+  foldLabel,
+  neighbours,
+  titleOf,
+} from './browsing';
 import type { Entry } from './library';
 
 const entry = (id: string, fold: number, style = 'Nasrid'): Entry => ({
@@ -74,5 +80,48 @@ describe('mirror and half-turn filters', () => {
     const low = [entry('mirror', 1), entry('half-turn', 2), ...library];
     expect(filtered(low, { fold: 1 }).map((e) => e.id)).toEqual(['mirror']);
     expect(filtered(low, { fold: 2 }).map((e) => e.id)).toEqual(['half-turn']);
+  });
+});
+
+describe('the side menu', () => {
+  const at = (
+    id: string,
+    region: string,
+    fold: number,
+    level = 'beginner',
+  ): Entry => ({
+    id,
+    json: { title: id, region, fold, level, style: 'Nasrid' },
+  });
+  const cards = [
+    at('alhambra', 'Alhambra and Nasrid Spain', 8),
+    at('fes', 'Morocco', 8),
+    at('meknes', 'Morocco', 12, 'advanced'),
+    {
+      ...at('arrayanes', 'Alhambra and Nasrid Spain', 8),
+      variations: [at('leon-tile', 'Morocco', 8)],
+    },
+  ];
+
+  it('filters by region, and a family shows the member that matches', () => {
+    expect(filtered(cards, { region: 'Morocco' }).map((e) => e.id)).toEqual([
+      'fes',
+      'meknes',
+      'leon-tile',
+    ]);
+    const leon = filtered(cards, { region: 'Morocco' })[2];
+    expect(leon?.variations?.map((e) => e.id)).toEqual(['arrayanes']);
+  });
+
+  it('counts each value under the other filters', () => {
+    const regions = facetCounts(cards, { fold: 8 }, 'region');
+    expect(regions.get('Morocco')).toBe(2);
+    expect(regions.get('Alhambra and Nasrid Spain')).toBe(2);
+    const folds = facetCounts(cards, { region: 'Morocco' }, 'fold');
+    expect(folds.get(8)).toBe(2);
+    expect(folds.get(12)).toBe(1);
+    expect(facetCounts(cards, { level: 'advanced' }, 'fold').get(8)).toBe(
+      undefined,
+    );
   });
 });

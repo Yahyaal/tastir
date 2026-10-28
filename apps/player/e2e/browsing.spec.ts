@@ -50,10 +50,19 @@ test('next and previous follow the filtered library', async ({
   // On a phone the patterns before and after are in the Patterns menu.
   test.skip(info.project.name === 'phone');
   await page.goto('/#/');
-  await page
-    .getByRole('group', { name: 'Symmetry' })
-    .getByRole('button', { name: '8-fold', exact: true })
-    .click();
+  // The side menu, or on a narrow screen the same menu in the Browse drawer.
+  const side = page.locator('.library-side');
+  const eightFold = (menu: typeof side) =>
+    menu
+      .getByRole('region', { name: 'Symmetry' })
+      .getByRole('button', { name: /^8-fold,/ });
+  if (await side.isVisible()) await eightFold(side).click();
+  else {
+    await page.getByRole('button', { name: /^Browse/ }).click();
+    const drawer = page.getByRole('dialog', { name: 'Browse the patterns' });
+    await eightFold(drawer).click();
+    await drawer.getByRole('button', { name: /^Show \d+ patterns?$/ }).click();
+  }
   const ids = await page
     .locator('.cards .card')
     .evaluateAll((cards) => cards.map((c) => c.getAttribute('href')));
@@ -70,10 +79,8 @@ test('next and previous follow the filtered library', async ({
   // The filter is still on when the learner goes back.
   await page.locator('.topbar .home').click();
   await expect(
-    page
-      .getByRole('group', { name: 'Symmetry' })
-      .getByRole('button', { name: '8-fold', exact: true }),
-  ).toHaveAttribute('aria-pressed', 'true');
+    page.getByRole('button', { name: 'Remove the filter 8-fold' }),
+  ).toBeVisible();
 });
 
 test('the side menu opens another pattern', async ({ page }) => {

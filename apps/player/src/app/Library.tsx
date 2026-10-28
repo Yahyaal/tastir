@@ -3,7 +3,6 @@ import { listPatterns } from '../editor/patterns';
 import { NewPattern } from '../editor/PatternShelf';
 import { HOSTED } from '../studio/client';
 import {
-  aboutOf,
   foldLabel,
   filtered,
   keepFilters,
@@ -11,6 +10,7 @@ import {
   cardAt,
   keptPlace,
 } from './browsing';
+import { LibraryDrawer, LibraryMenu, type MenuChange } from './LibraryMenu';
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { ActionIcon } from './actionIcons';
 import { workInProgress, WorkRow } from './YourWork';
@@ -21,7 +21,6 @@ import { ThemeSwitch } from './theme';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
 import { HeroDrawing } from './Hero';
-const LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
 const capital = (s: string) => (s ? s[0]?.toUpperCase() + s.slice(1) : s);
 
 /** The pattern that draws itself at the top of the library. */
@@ -47,7 +46,7 @@ const TRADITIONS: Record<
     summary:
       'Masterful geometric mosaics hand-chiselled from enamelled terracotta, renowned for rich saffron, cobalt, and emerald glazes radiating through celestial star rosettes.',
   },
-  'Marinid zellige (Fès)': {
+  Marinid: {
     arabic: 'الزليج المريني بفاس',
     era: '1244 – 1465 CE',
     region: 'Bou Inania & Attarine Medersas, Fez',
@@ -109,13 +108,15 @@ const TRADITIONS: Record<
  * each family of variations. */
 export function Library({ entries }: { entries: readonly Entry[] }) {
   const families = useMemo(() => grouped(entries), [entries]);
+  const [region, setRegion] = useState(() => keptFilters().region);
   const [style, setStyle] = useState(() => keptFilters().style);
   const [level, setLevel] = useState(() => keptFilters().level);
   const [fold, setFold] = useState(() => keptFilters().fold);
   const [query, setQuery] = useState(() => keptFilters().query ?? '');
+  const [browsing, setBrowsing] = useState(false);
   useEffect(
-    () => keepFilters({ query, style, level, fold }),
-    [query, style, level, fold],
+    () => keepFilters({ query, region, style, level, fold }),
+    [query, region, style, level, fold],
   );
   useReturnToScroll();
   const [designs] = useState(listDesigns);
@@ -134,15 +135,47 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
       patterns={patterns}
     />
   ) : null;
-  const styles = [
-    ...new Set(
-      entries.flatMap((e) => aboutOf(e.preview ?? e.json).style ?? []),
-    ),
-  ].sort();
-  const folds = [
-    ...new Set(entries.flatMap((e) => aboutOf(e.preview ?? e.json).fold ?? [])),
-  ].sort((a, b) => a - b);
-  const shown = filtered(families, { query, style, level, fold });
+  const filters = { query, region, style, level, fold };
+  const shown = filtered(families, filters);
+  const choose = (change: MenuChange) => {
+    if (change.key === 'region') setRegion(change.value);
+    if (change.key === 'style') setStyle(change.value);
+    if (change.key === 'level') setLevel(change.value);
+    if (change.key === 'fold') setFold(change.value);
+  };
+  // The filters chosen, each a tag that removes it.
+  const tags: readonly { label: string; change: MenuChange }[] = [
+    ...(region
+      ? [
+          {
+            label: region,
+            change: { key: 'region', value: undefined } as const,
+          },
+        ]
+      : []),
+    ...(fold
+      ? [
+          {
+            label: foldLabel(fold),
+            change: { key: 'fold', value: undefined } as const,
+          },
+        ]
+      : []),
+    ...(level
+      ? [
+          {
+            label: capital(level),
+            change: { key: 'level', value: undefined } as const,
+          },
+        ]
+      : []),
+    ...(style
+      ? [{ label: style, change: { key: 'style', value: undefined } as const }]
+      : []),
+  ];
+  const menu = (
+    <LibraryMenu entries={families} filters={filters} onChange={choose} />
+  );
   // A card's level, symmetry or tradition shows every pattern like it,
   // with the list brought into view under its filters.
   const filterBy = (facet: Facet) => {
@@ -155,6 +188,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   };
   const clear = () => {
     setQuery('');
+    setRegion(undefined);
     setStyle(undefined);
     setLevel(undefined);
     setFold(undefined);
@@ -168,6 +202,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
         ? `for ${level === 'beginner' ? 'beginners' : `the ${level} level`}`
         : '',
       style ? `from the ${style} tradition` : '',
+      region ? `from ${region}` : '',
     ].filter(Boolean),
   );
   const hero = entries.find((e) => e.id === HERO) ?? entries[0];
@@ -284,114 +319,116 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
             </a>
           </div>
         </div>
-        <div className="filters">
-          <label className="filter-search">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="11" cy="11" r="7" />
-              <line x1="16.5" y1="16.5" x2="21" y2="21" />
-            </svg>
-            <span className="visually-hidden">Search patterns</span>
-            <input
-              type="search"
-              placeholder="Search by name or place"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </label>
-          <div className="filter-group" role="group" aria-label="Symmetry">
-            <Chip on={!fold} onClick={() => setFold(undefined)}>
-              Any fold
-            </Chip>
-            {folds.map((f) => (
-              <Chip key={f} on={fold === f} onClick={() => setFold(f)}>
-                {foldLabel(f)}
-              </Chip>
-            ))}
-          </div>
-          <label className="filter-select">
-            Level
-            <select
-              value={level ?? ''}
-              onChange={(e) => setLevel(e.target.value || undefined)}
-            >
-              <option value="">Any</option>
-              {LEVELS.map((l) => (
-                <option key={l} value={l}>
-                  {capital(l)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="filter-select">
-            Tradition
-            <select
-              value={style ?? ''}
-              onChange={(e) => setStyle(e.target.value || undefined)}
-            >
-              <option value="">All</option>
-              {styles.map((st) => (
-                <option key={st} value={st}>
-                  {st}
-                </option>
-              ))}
-            </select>
-          </label>
-          {query || style || level || fold ? (
-            <button type="button" className="clear-filters" onClick={clear}>
-              Clear all
-            </button>
-          ) : null}
-        </div>
-        {style && TRADITIONS[style] ? (
-          <aside
-            className="tradition-dossier"
-            aria-label={`Context for ${style}`}
-          >
-            <div className="dossier-header">
-              <div className="dossier-badge">
-                <span className="dossier-tag">TRADITION CONTEXT</span>
-                <span className="dossier-sep">·</span>
-                <span className="dossier-ar" lang="ar" dir="rtl">
-                  {TRADITIONS[style].arabic}
-                </span>
-              </div>
+        <div className="collection-body">
+          <aside className="library-side">{menu}</aside>
+          <div className="collection-main">
+            <div className="collection-tools">
+              <label className="filter-search">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" />
+                  <line x1="16.5" y1="16.5" x2="21" y2="21" />
+                </svg>
+                <span className="visually-hidden">Search patterns</span>
+                <input
+                  type="search"
+                  placeholder="Search by name or place"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </label>
               <button
                 type="button"
-                className="dossier-clear"
-                onClick={() => setStyle(undefined)}
+                className="browse-button"
+                aria-haspopup="dialog"
+                onClick={() => setBrowsing(true)}
               >
-                Clear tradition filter ✕
+                Browse{tags.length ? ` (${tags.length})` : ''}
               </button>
             </div>
-            <div className="dossier-body">
-              <div className="dossier-heading">
-                <h3 className="dossier-title">{style}</h3>
-                <p className="dossier-meta">
-                  <span>{TRADITIONS[style].era}</span>
-                  <span className="meta-dot">·</span>
-                  <span>{TRADITIONS[style].region}</span>
-                  <span className="meta-dot">·</span>
-                  <span>{TRADITIONS[style].medium}</span>
-                </p>
-              </div>
-              <p className="dossier-summary">{TRADITIONS[style].summary}</p>
-            </div>
-          </aside>
+            {tags.length || query ? (
+              <ul className="filter-tags" aria-label="Chosen filters">
+                {tags.map((tag) => (
+                  <li key={tag.change.key}>
+                    <button
+                      type="button"
+                      aria-label={`Remove the filter ${tag.label}`}
+                      onClick={() => choose(tag.change)}
+                    >
+                      {tag.label} <span aria-hidden="true">✕</span>
+                    </button>
+                  </li>
+                ))}
+                <li>
+                  <button
+                    type="button"
+                    className="clear-filters"
+                    onClick={clear}
+                  >
+                    Clear all
+                  </button>
+                </li>
+              </ul>
+            ) : null}
+            {style && TRADITIONS[style] ? (
+              <aside
+                className="tradition-dossier"
+                aria-label={`Context for ${style}`}
+              >
+                <div className="dossier-header">
+                  <div className="dossier-badge">
+                    <span className="dossier-tag">TRADITION CONTEXT</span>
+                    <span className="dossier-sep">·</span>
+                    <span className="dossier-ar" lang="ar" dir="rtl">
+                      {TRADITIONS[style].arabic}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    className="dossier-clear"
+                    onClick={() => setStyle(undefined)}
+                  >
+                    Clear tradition filter ✕
+                  </button>
+                </div>
+                <div className="dossier-body">
+                  <div className="dossier-heading">
+                    <h3 className="dossier-title">{style}</h3>
+                    <p className="dossier-meta">
+                      <span>{TRADITIONS[style].era}</span>
+                      <span className="meta-dot">·</span>
+                      <span>{TRADITIONS[style].region}</span>
+                      <span className="meta-dot">·</span>
+                      <span>{TRADITIONS[style].medium}</span>
+                    </p>
+                  </div>
+                  <p className="dossier-summary">{TRADITIONS[style].summary}</p>
+                </div>
+              </aside>
+            ) : null}
+            {shown.length ? (
+              <ul className="cards">
+                {shown.map((entry) => (
+                  <Card key={entry.id} entry={entry} onFilter={filterBy} />
+                ))}
+              </ul>
+            ) : (
+              <p className="empty">
+                No pattern is {chosenWords}.{' '}
+                <button type="button" className="clear-filters" onClick={clear}>
+                  Clear all
+                </button>
+              </p>
+            )}
+          </div>
+        </div>
+        {browsing ? (
+          <LibraryDrawer
+            onClose={() => setBrowsing(false)}
+            shown={shown.length}
+          >
+            {menu}
+          </LibraryDrawer>
         ) : null}
-        {shown.length ? (
-          <ul className="cards">
-            {shown.map((entry) => (
-              <Card key={entry.id} entry={entry} onFilter={filterBy} />
-            ))}
-          </ul>
-        ) : (
-          <p className="empty">
-            No pattern is {chosenWords}.{' '}
-            <button type="button" className="clear-filters" onClick={clear}>
-              Clear all
-            </button>
-          </p>
-        )}
       </section>
       <footer className="site-footer">
         Tastir draws every point from crossings of earlier circles and lines, as
@@ -467,22 +504,6 @@ function useReturnToScroll() {
 function andList(words: readonly string[]): string {
   if (words.length < 2) return words[0] ?? '';
   return `${words.slice(0, -1).join(', ')} and ${words.at(-1)}`;
-}
-
-function Chip({
-  on,
-  onClick,
-  children,
-}: {
-  on: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button type="button" className="chip" aria-pressed={on} onClick={onClick}>
-      {children}
-    </button>
-  );
 }
 
 /** A filter a card's facts set: its level, its symmetry or its tradition. */

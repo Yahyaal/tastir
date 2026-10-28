@@ -1,9 +1,10 @@
 import { holds, type Entry } from './library';
 
-/** The library's filters: words to look for, a tradition, a level and a
- * fold, each optional. */
+/** The library's filters: words to look for, a region, a tradition, a
+ * level and a fold, each optional. */
 export interface LibraryFilters {
   readonly query?: string;
+  readonly region?: string;
   readonly style?: string;
   readonly level?: string;
   readonly fold?: number;
@@ -48,9 +49,10 @@ function write(change: Kept) {
 }
 
 export function keptFilters(): LibraryFilters {
-  const { query, style, level, fold } = read();
+  const { query, region, style, level, fold } = read();
   return {
     ...(typeof query === 'string' && query ? { query } : {}),
+    ...(typeof region === 'string' ? { region } : {}),
     ...(typeof style === 'string' ? { style } : {}),
     ...(typeof level === 'string' ? { level } : {}),
     ...(typeof fold === 'number' ? { fold } : {}),
@@ -58,8 +60,14 @@ export function keptFilters(): LibraryFilters {
 }
 
 /** Keeps the filters; an undefined filter is dropped (JSON leaves it out). */
-export function keepFilters({ query, style, level, fold }: LibraryFilters) {
-  write({ query: query || undefined, style, level, fold });
+export function keepFilters({
+  query,
+  region,
+  style,
+  level,
+  fold,
+}: LibraryFilters) {
+  write({ query: query || undefined, region, style, level, fold });
 }
 
 /** Where the learner was in the library, if anywhere. */
@@ -106,17 +114,20 @@ function cards() {
 
 /** What the library needs to know about a tutorial before it is loaded. */
 export function aboutOf(json: unknown): {
+  region?: string;
   style?: string;
   level?: string;
   fold?: number;
 } {
   const t = (json ?? {}) as {
+    region?: unknown;
     style?: unknown;
     level?: unknown;
     fold?: unknown;
     star?: unknown;
   };
   return {
+    ...(typeof t.region === 'string' ? { region: t.region } : {}),
     ...(typeof t.style === 'string' ? { style: t.style } : {}),
     ...(typeof t.level === 'string' ? { level: t.level } : {}),
     // Shown and filtered by the main star, when it has more points than
@@ -133,7 +144,7 @@ export function aboutOf(json: unknown): {
  * family's card is shown when any of its variations matches. */
 export function filtered(
   entries: readonly Entry[],
-  { query, style, level, fold }: LibraryFilters,
+  { query, region, style, level, fold }: LibraryFilters,
 ): readonly Entry[] {
   const words = plain(query ?? '')
     .split(/\s+/)
@@ -143,12 +154,55 @@ export function filtered(
     const text = words.length ? searchText(e) : '';
     return (
       words.every((w) => text.includes(w)) &&
+      (!region || about.region === region) &&
       (!style || about.style === style) &&
       (!level || about.level === level) &&
       (!fold || about.fold === fold)
     );
   };
-  return entries.filter((e) => [e, ...(e.variations ?? [])].some(matches));
+  // A family shows the face of its first member that matches: under
+  // Morocco, the Arrayanes squares family shows its Moroccan tile.
+  return entries.flatMap((e) => {
+    const members = [e, ...(e.variations ?? [])];
+    const face = members.find(matches);
+    if (!face) return [];
+    if (face === e) return [e];
+    const { variations: _own, ...shown } = face;
+    return [{ ...shown, variations: members.filter((m) => m !== face) }];
+  });
+}
+
+/** The filters the side menu sets, one value each. */
+export type Facet =
+  | { readonly region: string }
+  | { readonly style: string }
+  | { readonly level: string }
+  | { readonly fold: number };
+
+/**
+ * How many cards each value of one filter would show, with the other
+ * filters as they are: the counts the side menu prints beside each value.
+ */
+export function facetCounts<K extends 'region' | 'style' | 'level' | 'fold'>(
+  entries: readonly Entry[],
+  filters: LibraryFilters,
+  key: K,
+): Map<NonNullable<LibraryFilters[K]>, number> {
+  const others = { ...filters, [key]: undefined };
+  const counts = new Map<NonNullable<LibraryFilters[K]>, number>();
+  for (const entry of filtered(entries, others)) {
+    // A family counts once for each value any of its variations has.
+    const values = new Set(
+      [entry, ...(entry.variations ?? [])].flatMap(
+        (e) => aboutOf(e.preview ?? e.json)[key] ?? [],
+      ),
+    );
+    for (const v of values) {
+      const value = v as NonNullable<LibraryFilters[K]>;
+      counts.set(value, (counts.get(value) ?? 0) + 1);
+    }
+  }
+  return counts;
 }
 
 /** Lower case without accents, so “fes” finds “Fès” and “salon” “Salón”. */

@@ -5696,3 +5696,207 @@ svg.tiles {
   border-radius: 999px;
   font-weight: 600;
 }
+
+/* ------------------------------------------------------------------ */
+/* The library's side menu: region, symmetry, level and tradition,    */
+/* at the left of the cards on a wide screen, a drawer on a phone.     */
+/* ------------------------------------------------------------------ */
+
+.collection-body {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.library-side {
+  position: sticky;
+  top: 16px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.library-menu section + section {
+  margin-top: 18px;
+}
+
+.library-menu h3 {
+  margin: 0 0 6px;
+  color: var(--theme-label);
+  font: 600 0.75rem var(--text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.library-menu ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.library-menu button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-height: 34px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--theme-text-primary);
+  font: 0.9rem var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.library-menu button:hover:not(:disabled) {
+  background: var(--theme-bg-raised);
+}
+
+.library-menu button[aria-pressed='true'] {
+  background: var(--theme-text-primary);
+  color: var(--theme-bg-canvas);
+}
+
+.library-menu button:disabled {
+  color: var(--theme-text-muted);
+  opacity: 0.55;
+  cursor: default;
+}
+
+.library-menu .menu-count {
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}
+
+.collection-tools {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.collection-tools .filter-search {
+  max-width: 420px;
+}
+
+.browse-button {
+  display: none;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  font: 600 0.9rem var(--text);
+  cursor: pointer;
+}
+
+.filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.filter-tags button:not(.clear-filters) {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 999px;
+  background: var(--theme-bg-raised);
+  color: var(--theme-text-primary);
+  font: 0.85rem var(--text);
+  cursor: pointer;
+}
+
+.library-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--theme-bg-surface) 60%, transparent);
+}
+
+.library-drawer {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  flex-direction: column;
+  width: min(340px, 100%);
+  box-sizing: border-box;
+  background: var(--theme-bg-surface);
+  border-right: 1px solid var(--theme-border);
+  animation: pattern-menu-in 0.18s ease-out;
+}
+
+.library-drawer header,
+.library-drawer footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--theme-bg-surface);
+}
+
+.library-drawer header {
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.library-drawer footer {
+  border-top: 1px solid var(--theme-border);
+}
+
+.library-drawer footer .button {
+  width: 100%;
+}
+
+.library-drawer h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.25rem;
+}
+
+.library-drawer .library-menu {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .library-drawer {
+    animation: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .collection-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .library-side {
+    display: none;
+  }
+
+  .browse-button {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .collection-tools .filter-search {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .collection-tools .filter-search input {
+    min-width: 0;
+  }
+}

@@ -78,13 +78,16 @@ describe('the library’s families', () => {
     expect(only?.variations).toBeUndefined();
   });
 
-  it('finds a family by any member’s title', () => {
+  it('finds a family by any member’s title, showing that member', () => {
     const cards = grouped([
       entry('six-fold-snowflake', 'Six-fold snowflake'),
       entry('twelve-fold-rosette-mian', 'Twelve-fold rosette'),
       entry('twelve-fold-rosette-mian-hex', 'Rosette, hexagonal tile'),
     ]);
-    expect(filtered(cards, { query: 'hexagonal' }).map((e) => e.id)).toEqual([
+    const found = filtered(cards, { query: 'hexagonal' });
+    expect(found.map((e) => e.id)).toEqual(['twelve-fold-rosette-mian-hex']);
+    // Still one family card, with the main tutorial among its variations.
+    expect(found[0]?.variations?.map((e) => e.id)).toEqual([
       'twelve-fold-rosette-mian',
     ]);
   });
