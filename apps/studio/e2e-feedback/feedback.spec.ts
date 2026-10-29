@@ -239,3 +239,74 @@ test('a cooldown preserves the draft and lets the learner retry after the wait',
     page.getByText('Thanks — your feedback was sent.'),
   ).toBeVisible();
 });
+
+test('production hides Feedback while intake is disabled and shows it when enabled', async ({
+  page,
+}) => {
+  let enabled = false;
+  await page.route('**/api/feedback/config', async (route) => {
+    const response = await route.fetch();
+    await route.fulfill({ json: { ...(await response.json()), enabled } });
+  });
+  const configured = page.waitForResponse((response) =>
+    response.url().endsWith('/api/feedback/config'),
+  );
+  await page.goto(`/#/${pattern}/draw`);
+  await configured;
+  await expect(
+    page.getByRole('heading', { name: /Draw along:/ }),
+  ).toBeVisible();
+  await expect(reportButton(page)).toHaveCount(0);
+  enabled = true;
+  await page.reload();
+  await expect(reportButton(page)).toBeVisible();
+});
+
+test('unavailable drawing attachments are explained and text-only feedback can still send', async ({
+  page,
+}) => {
+  await fakeVerification(page);
+  await page.route('**/api/feedback/config', async (route) => {
+    const response = await route.fetch();
+    await route.fulfill({
+      json: { ...(await response.json()), attachments: false },
+    });
+  });
+  await openReport(page);
+  await expect(
+    page.getByLabel('Include my current drawing and editable drawing data'),
+  ).toBeDisabled();
+  await expect(
+    page.getByText(
+      "Attaching your drawing isn't available right now. You can still send your message.",
+    ),
+  ).toBeVisible();
+  await page
+    .getByLabel('What happened, or what would you like to tell us?')
+    .fill('Text-only comment while attachments are off.');
+  await page
+    .getByRole('button', { name: 'Send feedback', exact: true })
+    .click();
+  await expect(
+    page.getByText('Thanks — your feedback was sent.'),
+  ).toBeVisible();
+});
+
+test('the form explains disabled drawing attachments if its configuration reload fails', async ({
+  page,
+}) => {
+  let requests = 0;
+  await page.route('**/api/feedback/config', async (route) => {
+    if (++requests === 1) await route.continue();
+    else await route.abort();
+  });
+  await openReport(page);
+  await expect(
+    page.getByLabel('Include my current drawing and editable drawing data'),
+  ).toBeDisabled();
+  await expect(
+    page.getByText(
+      "Attaching your drawing isn't available right now. You can still send your message.",
+    ),
+  ).toBeVisible();
+});

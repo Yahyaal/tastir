@@ -246,9 +246,7 @@ export class Feedback {
   }
   /** The broad gate runs before parsing or verifying a public request, including sessions. */
   async attempt(network: string, browser?: string) {
-    // Each gate commits independently: a later refusal still counts as an attempt.
-    await this.take(this.db, windowKey('attempt:global:day', DAY), 6000);
-    await this.take(this.db, windowKey('attempt:global:minute', 60000), 600);
+    // Local refusals must not consume another learner's global budget.
     await this.take(
       this.db,
       windowKey(`attempt:ip:${this.networkId(network, 60000)}`, 60000),
@@ -260,6 +258,10 @@ export class Feedback {
         windowKey(`attempt:browser:${this.hmac(browser)}`, 60000),
         10,
       );
+    await this.db.transaction(async (tx) => {
+      await this.take(tx, windowKey('attempt:global:minute', 60000), 600);
+      await this.take(tx, windowKey('attempt:global:day', DAY), 6000);
+    });
   }
   session(value?: string) {
     if (value) {
@@ -296,10 +298,7 @@ export class Feedback {
     const { token: _token, retrySecret: _retry, ...content } = p;
     const contentHash = digest(JSON.stringify(content)),
       secretHash = digest(p.retrySecret);
-    const existing = (
-      await this.db.select().from(receipts).where(eq(receipts.id, p.id))
-    )[0];
-    if (existing) {
+    const retry = (existing: typeof receipts.$inferSelect) => {
       if (
         !same(existing.secret, secretHash) ||
         !same(existing.content, contentHash)
@@ -316,12 +315,21 @@ export class Feedback {
           'This send reference has expired. Download your message before starting a new report.',
         );
       if (existing.state === 'saved') return { receipt: existing.report };
-      throw new FeedbackError(
-        409,
-        'pending',
-        'Your earlier send is still being checked. Please retry in a moment.',
-        5,
-      );
+      if (existing.lease > new Date())
+        throw new FeedbackError(
+          409,
+          'pending',
+          'Your earlier send is still being checked. Please retry in a moment.',
+          5,
+        );
+      return undefined;
+    };
+    const existing = (
+      await this.db.select().from(receipts).where(eq(receipts.id, p.id))
+    )[0];
+    if (existing) {
+      const saved = retry(existing);
+      if (saved) return saved;
     }
     const config = await this.config();
     if (!config.enabled)
@@ -338,28 +346,80 @@ export class Feedback {
         'Drawing attachments are paused. You can remove the drawing and send your message.',
         600,
       );
-    const claimed = await this.db
-      .insert(receipts)
-      .values({
+    const acquired = await this.db.transaction(async (tx) => {
+      const locked = (
+        await tx
+          .select()
+          .from(receipts)
+          .where(eq(receipts.id, p.id))
+          .for('update')
+      )[0];
+      const values = {
         id: p.id,
         secret: secretHash,
         content: contentHash,
         report: randomUUID(),
         state: 'checking',
         lease: new Date(Date.now() + 120000),
-        expires: future(1),
-      })
-      .onConflictDoNothing()
-      .returning();
-    if (!claimed.length)
-      throw new FeedbackError(
-        409,
-        'pending',
-        'This send is already being checked. Retry in a moment.',
-        5,
-      );
-    const claim = claimed[0]!;
+        expires: locked?.expires ?? future(1),
+        imageKey: null,
+        bytes: 0,
+        quotas: [],
+      };
+      if (locked) {
+        const saved = retry(locked);
+        if (saved) return { kind: 'saved' as const, receipt: saved.receipt };
+        // Preserve old image keys/reservations until object cleanup succeeds.
+        const cleanupId = locked.imageKey ? randomUUID() : undefined;
+        if (cleanupId) {
+          const imageQuotas = locked.quotas.filter((q) =>
+            q.key.startsWith('image:'),
+          );
+          await this.refund(
+            tx,
+            locked.quotas.filter((q) => !q.key.startsWith('image:')),
+          );
+          await tx.insert(receipts).values({
+            ...locked,
+            id: cleanupId,
+            state: 'abandoned',
+            lease: new Date(0),
+            quotas: imageQuotas,
+          });
+        } else await this.refund(tx, locked.quotas);
+        const [claim] = await tx
+          .update(receipts)
+          .set(values)
+          .where(eq(receipts.id, p.id))
+          .returning();
+        return {
+          kind: 'claimed' as const,
+          claim: claim!,
+          cleanupId,
+          cleanupReport: locked.report,
+        };
+      }
+      const [claim] = await tx
+        .insert(receipts)
+        .values(values)
+        .onConflictDoNothing()
+        .returning();
+      if (!claim)
+        throw new FeedbackError(
+          409,
+          'pending',
+          'This send is already being checked. Retry in a moment.',
+          5,
+        );
+      return { kind: 'claimed' as const, claim };
+    });
+    if (acquired.kind === 'saved') return { receipt: acquired.receipt };
+    const { claim } = acquired;
     try {
+      if (acquired.cleanupId)
+        await this.release(acquired.cleanupId, acquired.cleanupReport).catch(
+          () => undefined,
+        );
       let verified = false;
       try {
         verified = await this.options.verify(p.token);
@@ -391,6 +451,7 @@ export class Feedback {
       const quotas: { key: string; amount: number }[] = [];
       let quarantine = false;
       await this.db.transaction(async (tx) => {
+        await this.requireClaim(tx, claim.id, claim.report, 'checking');
         const reserve = async (
           key: string,
           limit: number,
@@ -452,8 +513,9 @@ export class Feedback {
             imageKey,
             bytes: image?.length ?? 0,
             quotas,
+            lease: new Date(Date.now() + 120000),
           })
-          .where(eq(receipts.id, p.id));
+          .where(and(eq(receipts.id, p.id), eq(receipts.report, claim.report)));
       });
       if (image && imageKey) {
         try {
@@ -467,6 +529,7 @@ export class Feedback {
         }
       }
       await this.db.transaction(async (tx) => {
+        await this.requireClaim(tx, claim.id, claim.report, 'reserved');
         await tx.insert(reports).values({
           id: claim.report,
           category: p.category,
@@ -489,12 +552,12 @@ export class Feedback {
         await tx
           .update(receipts)
           .set({ state: 'saved' })
-          .where(eq(receipts.id, p.id));
+          .where(and(eq(receipts.id, p.id), eq(receipts.report, claim.report)));
       });
       return { receipt: claim.report };
     } catch (error) {
       // Keep the private key/reserved bytes if object deletion fails, for cleanup to retry.
-      await this.release(p.id).catch(() => undefined);
+      await this.release(p.id, claim.report).catch(() => undefined);
       if (error instanceof FeedbackError) throw error;
       throw new FeedbackError(
         503,
@@ -504,9 +567,53 @@ export class Feedback {
       );
     }
   }
-  private async release(id: string) {
+  private async requireClaim(
+    tx: Executor,
+    id: string,
+    report: string,
+    state: string,
+  ) {
+    const [owned] = await tx
+      .select({ id: receipts.id })
+      .from(receipts)
+      .where(
+        and(
+          eq(receipts.id, id),
+          eq(receipts.report, report),
+          eq(receipts.state, state),
+          gt(receipts.lease, new Date()),
+        ),
+      )
+      .for('update');
+    if (!owned)
+      throw new FeedbackError(
+        409,
+        'pending',
+        'This send is being recovered. Retry in a moment to check its receipt.',
+        5,
+      );
+  }
+  private async refund(
+    tx: Executor,
+    quotas: (typeof receipts.$inferSelect)['quotas'],
+  ) {
+    for (const q of quotas)
+      await tx
+        .update(counters)
+        .set({ value: sql`greatest(0, ${counters.value} - ${q.amount})` })
+        .where(eq(counters.key, q.key));
+  }
+  private async release(id: string, report?: string) {
     const row = (
-      await this.db.select().from(receipts).where(eq(receipts.id, id))
+      await this.db
+        .select()
+        .from(receipts)
+        .where(
+          and(
+            eq(receipts.id, id),
+            report ? eq(receipts.report, report) : undefined,
+          ),
+        )
     )[0];
     if (!row || row.state === 'saved') return;
     if (row.imageKey) {
@@ -524,11 +631,7 @@ export class Feedback {
       )[0];
       if (!locked || locked.state === 'saved' || locked.report !== row.report)
         return;
-      for (const q of locked.quotas)
-        await tx
-          .update(counters)
-          .set({ value: sql`greatest(0, ${counters.value} - ${q.amount})` })
-          .where(eq(counters.key, q.key));
+      await this.refund(tx, locked.quotas);
       await tx.delete(receipts).where(eq(receipts.id, id));
     });
   }
@@ -887,7 +990,7 @@ export class Feedback {
       if (Date.now() > deadline) break;
       pendingProcessed++;
       try {
-        await this.release(row.id);
+        await this.release(row.id, row.report);
       } catch {
         failed++;
       }

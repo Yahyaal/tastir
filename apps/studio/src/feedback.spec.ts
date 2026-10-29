@@ -207,7 +207,7 @@ describe('private feedback with guarded anonymous intake', () => {
     await service.submit(submission(), 'shared-network', service.session());
     expect(await db.select().from(feedbackReports)).toHaveLength(6);
   });
-  it('counts rejected requests without allowing spoofed proxy headers to create new network identities', async () => {
+  it('refuses spoofed network headers without spending global budget on the refusal', async () => {
     for (let n = 0; n < 120; n++) await service.attempt('127.0.0.1');
     const response = await post(submission(), '/api/feedback', {
       'X-Forwarded-For': '203.0.113.1',
@@ -219,7 +219,203 @@ describe('private feedback with guarded anonymous intake', () => {
       .select()
       .from(feedbackCounters)
       .where(sql`${feedbackCounters.key} like 'attempt:global:day:%'`);
-    expect(global[0]?.value).toBe(121);
+    expect(global[0]?.value).toBe(120);
+  });
+  it('keeps global budgets at the allowed count when one network floods intake', async () => {
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(1_793_188_810_000);
+    try {
+      const outcomes = await Promise.allSettled(
+        Array.from({ length: 300 }, () => service.attempt('one-network')),
+      );
+      expect(outcomes.filter((r) => r.status === 'fulfilled')).toHaveLength(
+        120,
+      );
+      expect(outcomes.filter((r) => r.status === 'rejected')).toHaveLength(180);
+      const global = await db
+        .select()
+        .from(feedbackCounters)
+        .where(sql`${feedbackCounters.key} like 'attempt:global:%'`);
+      expect(global).toHaveLength(2);
+      expect(global.map((r) => r.value)).toEqual([120, 120]);
+    } finally {
+      clock.mockRestore();
+    }
+  });
+  it('checks a browser limit before spending global budget across different networks', async () => {
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(1_793_188_810_000);
+    try {
+      const browser = service.session();
+      const outcomes = await Promise.allSettled(
+        Array.from({ length: 20 }, (_, i) =>
+          service.attempt(`network-${i}`, browser),
+        ),
+      );
+      expect(outcomes.filter((r) => r.status === 'fulfilled')).toHaveLength(10);
+      const global = await db
+        .select()
+        .from(feedbackCounters)
+        .where(sql`${feedbackCounters.key} like 'attempt:global:%'`);
+      expect(global.map((r) => r.value)).toEqual([10, 10]);
+    } finally {
+      clock.mockRestore();
+    }
+  });
+  it('rolls back the other global gate when a global limit refuses a request', async () => {
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(1_793_188_810_000);
+    try {
+      const minute = `attempt:global:minute:${Math.floor(Date.now() / 60000)}`;
+      const day = `attempt:global:day:${Math.floor(Date.now() / 86400000)}`;
+      const expires = new Date(Date.now() + 86400000);
+      await db.insert(feedbackCounters).values([
+        { key: minute, value: 42, expires },
+        { key: day, value: 6000, expires },
+      ]);
+      await expect(service.attempt('network')).rejects.toMatchObject({
+        status: 429,
+      });
+      expect(
+        (
+          await db
+            .select()
+            .from(feedbackCounters)
+            .where(eq(feedbackCounters.key, minute))
+        )[0]?.value,
+      ).toBe(42);
+      expect(
+        (
+          await db
+            .select()
+            .from(feedbackCounters)
+            .where(eq(feedbackCounters.key, day))
+        )[0]?.value,
+      ).toBe(6000);
+    } finally {
+      clock.mockRestore();
+    }
+  });
+  it('atomically recovers an expired checking lease across parallel retries and fences the stale sender', async () => {
+    let resumeOriginal = (_verified: boolean) => undefined as void;
+    let started = () => undefined as void;
+    const verifying = new Promise<void>((resolve) => {
+      started = resolve;
+    });
+    options.verify = vi
+      .fn()
+      .mockImplementationOnce(
+        () =>
+          new Promise<boolean>((resolve) => {
+            resumeOriginal = resolve;
+            started();
+          }),
+      )
+      .mockResolvedValue(true);
+    const body = submission();
+    const original = Promise.allSettled([service.submit(body, 'network')]);
+    await verifying;
+    try {
+      const [old] = await db
+        .select()
+        .from(feedbackReceipts)
+        .where(eq(feedbackReceipts.id, body.id));
+      expect(old?.state).toBe('checking');
+      await db
+        .update(feedbackReceipts)
+        .set({ lease: new Date(Date.now() - 1000) })
+        .where(eq(feedbackReceipts.id, body.id));
+      const other = new Feedback(db, options, secret);
+      const retries = await Promise.allSettled(
+        Array.from({ length: 6 }, (_, i) =>
+          (i % 2 ? service : other).submit(body, 'network'),
+        ),
+      );
+      expect(retries.some((r) => r.status === 'fulfilled')).toBe(true);
+      const [saved] = await db
+        .select()
+        .from(feedbackReceipts)
+        .where(eq(feedbackReceipts.id, body.id));
+      expect(saved?.state).toBe('saved');
+      expect(saved?.report).not.toBe(old?.report);
+      expect(await db.select().from(feedbackReports)).toHaveLength(1);
+      expect(options.verify).toHaveBeenCalledTimes(2);
+      resumeOriginal(true);
+      expect((await original)[0]).toMatchObject({
+        status: 'rejected',
+        reason: { code: 'pending' },
+      });
+      expect(await service.submit(body, 'network')).toEqual({
+        receipt: saved?.report,
+      });
+      expect(await db.select().from(feedbackReceipts)).toHaveLength(1);
+    } finally {
+      resumeOriginal(true);
+      await original;
+    }
+  });
+  it('recovers an expired reserved receipt while tracking an old image until cleanup succeeds', async () => {
+    let resumeUpload = () => undefined as void;
+    let started = () => undefined as void;
+    const uploading = new Promise<void>((resolve) => {
+      started = resolve;
+    });
+    let first = true;
+    const put = options.images!.put;
+    options.images!.put = async (key, bytes) => {
+      await put(key, bytes);
+      if (first) {
+        first = false;
+        started();
+        await new Promise<void>((resolve) => {
+          resumeUpload = resolve;
+        });
+      }
+    };
+    const remove = options.images!.remove;
+    options.images!.remove = async () => {
+      throw new Error('Temporary cleanup outage');
+    };
+    const body = submission({
+      snapshot: { draft: emptyDraft('test', 'My board') },
+      image: dataPng(),
+    });
+    const original = Promise.allSettled([service.submit(body, 'network')]);
+    await uploading;
+    try {
+      await db
+        .update(feedbackReceipts)
+        .set({ lease: new Date(Date.now() - 1000) })
+        .where(eq(feedbackReceipts.id, body.id));
+      const recovered = await new Feedback(db, options, secret).submit(
+        body,
+        'network',
+      );
+      const [abandoned] = await db
+        .select()
+        .from(feedbackReceipts)
+        .where(eq(feedbackReceipts.state, 'abandoned'));
+      expect(abandoned?.imageKey).toBeTruthy();
+      expect(abandoned?.quotas.every((q) => q.key.startsWith('image:'))).toBe(
+        true,
+      );
+      expect(images.size).toBe(2);
+      const accepted = await db
+        .select()
+        .from(feedbackCounters)
+        .where(sql`${feedbackCounters.key} like 'accepted:global:day:%'`);
+      expect(accepted[0]?.value).toBe(1);
+      resumeUpload();
+      expect((await original)[0]).toMatchObject({
+        status: 'rejected',
+        reason: { code: 'pending' },
+      });
+      options.images!.remove = remove;
+      expect((await service.cleanup()).failed).toBe(0);
+      expect(images.size).toBe(1);
+      expect(await db.select().from(feedbackReceipts)).toHaveLength(1);
+      expect((await service.detail(recovered.receipt)).image).toBe(true);
+    } finally {
+      resumeUpload();
+      await original;
+    }
   });
   it('quarantines verified network bursts without discarding separate learner messages', async () => {
     for (let n = 0; n < 31; n++)

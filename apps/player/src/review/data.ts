@@ -8404,6 +8404,14 @@ export const PROGRESS: {
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
     {
+      title: 'PR #14 review fixes: feedback intake and retry recovery',
+      text: 'Sender limits now run before the global attempt budget, and the global minute/day counters update together. Production hides Feedback when intake is off; the dev server keeps the form available for review. The drawing checkbox explains when attachments are unavailable. Interrupted sends can reclaim an expired lease under a database row lock, with stale-worker protection and tracked image cleanup. The setup guide also explains the daily cron’s 401 response until its secret is configured.',
+      link: {
+        label: 'Feedback setup and review',
+        href: '#/notes/feedback-setup',
+      },
+    },
+    {
       title: 'Pattern feedback: first release built for review (28 October)',
       text: 'On codex/pattern-feedback, learners can report a pattern or step without an account and optionally attach their drawing. Your private inbox has review notes, status, issue groups, spam quarantine, bulk deletion, retention and a preview before copying selected reports for AI. Bot checks, shared rate and storage limits, private images and safe retries protect intake. Production reporting stays disabled until its settings and deployed checks are complete. Direct agent access remains a later phase.',
       link: {

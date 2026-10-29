@@ -4,7 +4,8 @@ import {
   type FeedbackSnapshot,
 } from '@tastir/schema';
 import { captureBoard } from '../agent/capture';
-import { FEEDBACK_AVAILABLE, openFeedback } from './client';
+import { useEffect, useState } from 'react';
+import { FEEDBACK_AVAILABLE, feedbackCall, openFeedback } from './client';
 
 export function FeedbackButton({
   context,
@@ -19,7 +20,23 @@ export function FeedbackButton({
   board?: () => SVGSVGElement | null;
   pause?: () => void;
 }) {
-  if (!FEEDBACK_AVAILABLE) return null;
+  const [enabled, setEnabled] = useState(import.meta.env.DEV);
+  useEffect(() => {
+    // Keep the form reviewable locally while production follows server availability.
+    if (import.meta.env.DEV || !FEEDBACK_AVAILABLE) return;
+    let active = true;
+    void feedbackCall<{ enabled: boolean }>('feedback/config')
+      .then((config) => {
+        if (active) setEnabled(config.enabled);
+      })
+      .catch(() => {
+        if (active) setEnabled(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+  if (!FEEDBACK_AVAILABLE || !enabled) return null;
   return (
     <button
       type="button"

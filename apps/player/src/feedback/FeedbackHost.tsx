@@ -398,15 +398,31 @@ function FeedbackForm({
             onChange={(e) => setEmail(e.target.value)}
           />
           {attachment ? (
-            <label>
-              <input
-                type="checkbox"
-                checked={include}
-                disabled={!config?.attachments || pending || busy}
-                onChange={(e) => setInclude(e.target.checked)}
-              />{' '}
-              Include my current drawing and editable drawing data
-            </label>
+            <>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={include}
+                  disabled={!config?.attachments || pending || busy}
+                  aria-describedby={
+                    !config?.attachments
+                      ? 'feedback-attachment-unavailable'
+                      : undefined
+                  }
+                  onChange={(e) => setInclude(e.target.checked)}
+                />{' '}
+                Include my current drawing and editable drawing data
+              </label>
+              {!config?.attachments ? (
+                <p
+                  id="feedback-attachment-unavailable"
+                  className="feedback-muted"
+                >
+                  Attaching your drawing isn't available right now. You can
+                  still send your message.
+                </p>
+              ) : null}
+            </>
           ) : capture.snapshot ? (
             <p>
               This drawing is too large to attach. You can still send your
