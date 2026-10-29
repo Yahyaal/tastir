@@ -1,5 +1,7 @@
 # Pattern feedback: setup and operation
 
+**PR #14 is merged.** For your site, follow [Turn on feedback: your remaining steps](FEEDBACK-GO-LIVE.md). The 29 October preparation applied the database migration, created the Cloudflare widget, and saved the keys and cleanup secret in the local private settings file. The remaining work is the public contact address, Vercel settings/redeploys, and real acceptance checks. This page is the technical operating reference.
+
 The `codex/pattern-feedback` branch implements the first release of the [feedback plan](FEEDBACK-PLAN.md): contextual reports, optional current-drawing evidence, an owner-only inbox, moderation, retention and manual AI export. Direct access by connected agents remains the optional F7 phase. Production intake defaults to off. Opening a PR does not migrate the live database or enable reporting.
 
 ## Review it locally
