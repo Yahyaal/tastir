@@ -42,6 +42,12 @@ export const DOCS: readonly {
     text: read('FEEDBACK-PLAN.md'),
   },
   {
+    key: 'feedback-go-live',
+    label: 'Turn on feedback: your remaining steps',
+    file: 'FEEDBACK-GO-LIVE.md',
+    text: read('FEEDBACK-GO-LIVE.md'),
+  },
+  {
     key: 'feedback-setup',
     label: 'Feedback setup and review',
     file: 'FEEDBACK-SETUP.md',

@@ -101,6 +101,18 @@ after(async () => {
   if (fixture) await rm(fixture, { recursive: true, force: true });
 });
 const inspect = () => readDatabase(async (sql) => (await db.query(sql)).rows);
+test('the actual hosted server settings contract passes while feedback is disabled', async () => {
+  const result = await preflight({
+    env,
+    root,
+    inspectDatabase: inspect,
+  });
+  assert.equal(
+    result.every((item) => item.ok),
+    true,
+    JSON.stringify(result),
+  );
+});
 test('complete settings and the actual migrated schema pass without altering database contents', async () => {
   await db.exec(
     "INSERT INTO projects VALUES ('preflight-project', 'Private drawing', 'now', 'now', 1, 1, '{}', null)",
