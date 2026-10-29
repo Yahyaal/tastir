@@ -1,5 +1,29 @@
 import { del, get, put } from '@vercel/blob';
 import type { PhotoStore } from './backend.js';
+import type { FeedbackImages } from './feedback.js';
+
+/** Dedicated private namespace. A project/agent reference cannot address these objects. */
+export class BlobFeedbackImages implements FeedbackImages {
+  async put(key: string, bytes: Buffer) {
+    await put(key, bytes, {
+      access: 'private',
+      addRandomSuffix: false,
+      allowOverwrite: false,
+      abortSignal: AbortSignal.timeout(5000),
+    });
+  }
+  async get(key: string) {
+    const found = await get(key, {
+      access: 'private',
+      abortSignal: AbortSignal.timeout(5000),
+    });
+    if (!found?.stream) throw new Error('The feedback image is missing.');
+    return Buffer.from(await new Response(found.stream).arrayBuffer());
+  }
+  async remove(key: string) {
+    await del(key, { abortSignal: AbortSignal.timeout(5000) });
+  }
+}
 
 /**
  * Reference photos in a private Vercel Blob store, for the hosted studio.

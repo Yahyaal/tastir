@@ -8400,9 +8400,41 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '25 October 2026',
+  updated: '28 October 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'PR #14 review fixes: feedback intake and retry recovery',
+      text: 'Sender limits now run before the global attempt budget, and the global minute/day counters update together. Production hides Feedback when intake is off; the dev server keeps the form available for review. The drawing checkbox explains when attachments are unavailable. Interrupted sends can reclaim an expired lease under a database row lock, with stale-worker protection and tracked image cleanup. The setup guide also explains the daily cron’s 401 response until its secret is configured.',
+      link: {
+        label: 'Feedback setup and review',
+        href: '#/notes/feedback-setup',
+      },
+    },
+    {
+      title: 'Pattern feedback: first release built for review (28 October)',
+      text: 'On codex/pattern-feedback, learners can report a pattern or step without an account and optionally attach their drawing. Your private inbox has review notes, status, issue groups, spam quarantine, bulk deletion, retention and a preview before copying selected reports for AI. Bot checks, shared rate and storage limits, private images and safe retries protect intake. Production reporting stays disabled until its settings and deployed checks are complete. Direct agent access remains a later phase.',
+      link: {
+        label: 'Feedback setup, review and remaining rollout',
+        href: '#/notes/feedback-setup',
+      },
+    },
+    {
+      title: 'Feedback form on a phone',
+      text: 'A real browser capture from the local fixture. The form keeps the pattern and step, has optional email and drawing evidence, and keeps unsent text when closed or when verification fails. Light and dark desktop/phone captures are saved with the browser checks.',
+      link: {
+        label: 'See the phone feedback form',
+        href: '/__review/renders/feedback/phone-form-light.png',
+      },
+    },
+    {
+      title: 'Private report review',
+      text: 'The owner sees the original comment, exact instruction and optional board. Current-lesson review preserves existing progress; a construction copy is a separate saved pattern. Contact details are omitted from AI exports, whose messages can be redacted before downloading.',
+      link: {
+        label: 'See the desktop report review',
+        href: '/__review/renders/feedback/desktop-inbox-light.png',
+      },
+    },
     {
       title: 'Hidden patterns (your request, 24 October)',
       text: 'Bou Inania twelve-fold wall and Eight-fold zellige wheel are hidden: the live site leaves them out of the library, the side menu and next/previous, but they still open from a direct link, so saved designs and shared links keep working. This dev server still lists them with a grey Hidden badge. To hide or show any pattern, open it, click the gear (View settings) and use Hide from the library or Show in the library; the change reaches the live site with the next push.',
@@ -8890,6 +8922,14 @@ export const PROGRESS: {
     },
   },
   next: [
+    {
+      title: 'Feedback: production acceptance and optional direct agent access',
+      text: 'After reviewing the branch, apply the migration and configure production bot verification, the privacy contact, private storage and scheduled cleanup. Check a real hosted report and observe traffic before enabling wider intake. F7 can then add report-specific, revocable agent grants.',
+      link: {
+        label: 'Feedback rollout and operation',
+        href: '#/notes/feedback-setup',
+      },
+    },
     {
       title: 'AI agent: broader live evaluation and local release',
       text: 'Exercise more original construction requests and recovery cases, then finish account recovery, credential storage and local packaging. The chat and normal drawing/coloring tools are implemented; the wider generation evaluation remains.',

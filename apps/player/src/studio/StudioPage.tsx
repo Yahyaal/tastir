@@ -202,6 +202,9 @@ function StudioList() {
             <a className="button secondary" href="/connections">
               Connected apps
             </a>
+            <a className="button secondary" href="#/feedback">
+              Pattern feedback
+            </a>
           </p>
         ) : null}
         {error ? (

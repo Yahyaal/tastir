@@ -30,6 +30,8 @@
     "studio:db:generate": "pnpm --dir apps/studio exec drizzle-kit generate",
     "studio:hosted:test": "node --conditions=@tastir/source --import tsx tools/studio-hosted-test.mts",
     "test:hosted:browser": "playwright test --config tools/studio-hosted-playwright.config.mts",
+    "test:feedback:browser": "playwright test --config tools/feedback-playwright.config.mts",
+    "feedback:cleanup": "node tools/feedback-cleanup.mjs",
     "studio:hosted": "node --conditions=@tastir/source --import tsx tools/studio-hosted.mts",
     "studio:preflight": "node tools/studio-preflight.mjs",
     "test:studio:preflight": "node --test --test-concurrency=1 tools/studio-preflight.spec.mjs",

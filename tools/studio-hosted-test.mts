@@ -50,6 +50,29 @@ const live =
       }
     : undefined;
 const hosted = hostedApp({
+  // Only this local fixture supplies a fake verifier. Production never accepts these tokens.
+  feedback: {
+    enabled: true,
+    siteKey: 'fixture-feedback-key',
+    contact: 'owner@fixture.invalid',
+    verify: async (token) => token === 'fixture-feedback-token',
+    images: (() => {
+      const files = new Map<string, Buffer>();
+      return {
+        put: async (key: string, bytes: Buffer) => {
+          files.set(key, bytes);
+        },
+        get: async (key: string) => {
+          const value = files.get(key);
+          if (!value) throw new Error('No fixture image');
+          return value;
+        },
+        remove: async (key: string) => {
+          files.delete(key);
+        },
+      };
+    })(),
+  },
   studio,
   db: (store.backend as PgBackend).db,
   baseUrl: new URL(`http://127.0.0.1:${port}`),

@@ -41,6 +41,40 @@ const env = {
 let db;
 let fixture;
 let expected;
+test('feedback stays optional but enabling it requires production bot keys, a contact and a cleanup secret', () => {
+  assert.equal(
+    validateSettings(env).some((c) => c.name === 'Feedback setup'),
+    false,
+  );
+  const enabled = { ...env, TASTIR_FEEDBACK_ENABLED: '1' };
+  assert.equal(
+    validateSettings(enabled).find((c) => c.name === 'Feedback setup').ok,
+    false,
+  );
+  const ready = {
+    ...enabled,
+    TURNSTILE_SITE_KEY: 'production-site-key',
+    TURNSTILE_SECRET_KEY: 'production-secret-key',
+    TASTIR_FEEDBACK_CONTACT: 'owner@fixture.invalid',
+    CRON_SECRET: 'ab19'.repeat(16),
+  };
+  assert.equal(
+    validateSettings(ready).find((c) => c.name === 'Feedback setup').ok,
+    true,
+  );
+  for (const key of [
+    '1x00000000000000000000AA',
+    '1x00000000000000000000BB',
+    '2x00000000000000000000AB',
+    '3x00000000000000000000FF',
+  ])
+    assert.equal(
+      validateSettings({ ...ready, TURNSTILE_SITE_KEY: key }).find(
+        (c) => c.name === 'Feedback setup',
+      ).ok,
+      false,
+    );
+});
 before(async () => {
   db = new PGlite();
   await migrate(drizzle(db), {

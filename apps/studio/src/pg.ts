@@ -1,4 +1,6 @@
 import { and, asc, desc, eq, gt, inArray, lt, sql } from 'drizzle-orm';
+import * as feedbackTables from './feedbackTables.js';
+export * from './feedbackTables.js';
 import type { PgDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core';
 import {
   bigserial,
@@ -192,6 +194,7 @@ export const openaiIdentities = pgTable(
 );
 
 const schema = {
+  ...feedbackTables,
   openaiTransactions,
   openaiIdentities,
   projects,

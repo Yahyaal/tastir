@@ -29,6 +29,15 @@ const IMAGE_TYPES: Record<string, string> = {
 };
 
 export default defineConfig(({ mode }) => ({
+  define: {
+    'import.meta.env.VITE_TASTIR_BUILD_ID': JSON.stringify(
+      process.env['VERCEL_GIT_COMMIT_SHA'] ??
+        process.env['VITE_TASTIR_BUILD_ID'] ??
+        execFileSync('git', ['rev-parse', '--short=12', 'HEAD'], {
+          encoding: 'utf8',
+        }).trim(),
+    ),
+  },
   root: import.meta.dirname,
   // GitHub Pages serves the app under /<repo>/; the deploy workflow sets
   // TASTIR_BASE to that path. Locally the app lives at the root.

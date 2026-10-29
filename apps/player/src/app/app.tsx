@@ -9,6 +9,12 @@ import { WorkPage } from './YourWork';
 import { Broken, MissingDesign, Play } from './Player';
 import { useRoute } from './routing';
 import { openShared, useShared } from './Sharing';
+import { FeedbackHost } from '../feedback/FeedbackHost';
+const FeedbackInbox = lazy(() =>
+  import('../feedback/FeedbackInbox').then((m) => ({
+    default: m.FeedbackInbox,
+  })),
+);
 
 /**
  * The overnight review page (#/review). Its pictures come from the private
@@ -97,6 +103,7 @@ export function App({
   const route = useRoute();
   return (
     <>
+      <FeedbackHost />
       {import.meta.env.DEV ? (
         <div
           data-tastir-page
@@ -139,6 +146,12 @@ function AppPage({
     [own, library],
   );
   if (!route) return <Library entries={listed(library)} />;
+  if (route === 'feedback' || route.startsWith('feedback/'))
+    return (
+      <Suspense fallback={<p>Loading feedback…</p>}>
+        <FeedbackInbox route={route} entries={library} />
+      </Suspense>
+    );
   if (route === 'agent')
     return import.meta.env.DEV ? null : (
       <Broken message="The local assistant is available through pnpm dev:agent." />

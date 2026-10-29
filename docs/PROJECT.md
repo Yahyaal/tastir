@@ -84,6 +84,8 @@ The redesign is done (R1 to R6, 13–14 October). Next: the owner’s look at it
 | Plan for user-made patterns (`#/plan`, `apps/player/src/review/Plan.tsx`) | How learners will make their own patterns: the editor, copying at any step, building blocks, the order of the work, and the owner's open questions |
 | [How to write a pattern tutorial](patterns/BRIEF.md) | The working method and the tools for adding a pattern |
 | `docs/PRD.md`, `docs/TASKS.md`, `docs/tutorial-format.md` | The product, the original task list and the tutorial format |
+| [Feedback setup and operation](FEEDBACK-SETUP.md) | Local review, production settings, private inbox, spam limits, retention and manual AI export |
+| [Pattern feedback plan](FEEDBACK-PLAN.md) | In-app issue reports and comments, private owner review, optional AI handoff, and spam protection; implementation phases F1–F7 |
 | `docs/OVERNIGHT.md` | The log of the overnight run of 3–4 October |
 | `tools/review/` | The generators and image tools, one folder per design |
 | `docs/research/` | Private reference pictures and papers; never shipped |

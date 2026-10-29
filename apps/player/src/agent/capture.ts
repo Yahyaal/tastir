@@ -26,7 +26,10 @@ const STYLE = [
 const SVG_NS = 'http://www.w3.org/2000/svg';
 
 /** Capture the actual camera, computed theme styles and canvas ink layers. */
-export async function captureBoard(svg: SVGSVGElement): Promise<string> {
+export async function captureBoard(
+  svg: SVGSVGElement,
+  options: { maxSide?: number; maxBytes?: number } = {},
+): Promise<string> {
   const bounds = svg.getBoundingClientRect();
   if (!bounds.width || !bounds.height)
     throw new Error('The drawing must be visible before it can be sent.');
@@ -60,7 +63,10 @@ export async function captureBoard(svg: SVGSVGElement): Promise<string> {
   clone
     .querySelectorAll('[data-agent-annotation]')
     .forEach((node) => node.remove());
-  const scale = Math.min(1, 1280 / Math.max(bounds.width, bounds.height));
+  const scale = Math.min(
+    1,
+    (options.maxSide ?? 1280) / Math.max(bounds.width, bounds.height),
+  );
   const width = Math.max(1, Math.round(bounds.width * scale));
   const height = Math.max(1, Math.round(bounds.height * scale));
   clone.setAttribute('xmlns', SVG_NS);
@@ -90,6 +96,12 @@ export async function captureBoard(svg: SVGSVGElement): Promise<string> {
       throw new Error(
         'The drawing image is too large. Fit the view and try again.',
       );
+    if (
+      options.maxBytes &&
+      ((result.length - 'data:image/png;base64,'.length) * 3) / 4 >
+        options.maxBytes
+    )
+      throw new Error('This board image is too large to attach.');
     return result;
   } finally {
     URL.revokeObjectURL(url);
