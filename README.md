@@ -1,77 +1,110 @@
-# Tastir
+# Tastir تسطير
 
-Tastir teaches Islamic geometric patterns through compass-and-ruler constructions. Watch a pattern unfold, draw beside any beginner, intermediate, or advanced tutorial, ink selected lines, repeat the tile, and color the wall. You can save designs in your browser, make your own construction in the editor, export pattern files, and share designs by link.
+**Learn to draw Islamic geometric patterns the way craftsmen did, with only a compass and a ruler.**
 
-## Run locally
+### [▶ Open the live app: tastir-studio.vercel.app](https://tastir-studio.vercel.app)
 
-Use Node 22.12 or newer and pnpm 10.
+![A twelve-fold rosette being constructed step by step on Tastir's home page](docs/images/readme-construction.png)
 
-```sh
+Tastir walks you through a real pattern one step at a time. Each step draws one exact circle or line, and the star pattern appears out of the lines you drew. You then ink the pattern, repeat its tile into an endless wall, and color it piece by piece. The library holds more than 200 designs from the Alhambra, Fès, Isfahan, Cairo, Agra and elsewhere, many checked against photos of the real walls.
+
+| Pick a pattern from the library | Finish it as a colored wall |
+| --- | --- |
+| ![Library of patterns filtered by region and symmetry](docs/images/readme-library.png) | ![A finished eight-fold star and cross wall with palette controls](docs/images/readme-wall.png) |
+
+## What you can do
+
+- **Watch it drawn** or **draw along** beside any beginner, intermediate or advanced tutorial.
+- **Finish the wall** as tiles, strapwork, line drawing, a pierced *jali* screen, or woven interlace, with historical palettes such as Alhambra, Marinid zellige and Timurid tile.
+- **Make your own** pattern in the construction editor, save it in your browser, export it as a file, or share it as a link that carries the whole design (nothing is uploaded).
+- **Draw with an AI.** The Studio is an MCP server, so Claude, ChatGPT or Codex can connect to it and build a pattern from ruler-and-compass steps on the same drawing you are editing ([how to connect](docs/STUDIO-CONNECT.md)).
+
+## How it is built
+
+The core idea is that a pattern is a construction, not a picture. Tutorials are JSON that never contain coordinates: every point is a crossing of earlier circles and lines, and the engine refuses any reference that is missing or ambiguous, naming the step that caused it. That makes the geometry exact and testable.
+
+- **Geometry engine** (`packages/engine`): pure TypeScript with no DOM and no runtime dependencies. It evaluates constructions, finds the closed pieces of the ink, and runs the same in tests, in a Web Worker, and on the server.
+- **Golden tests**: every tutorial has a test built from its expected pieces, so an engine change that alters any pattern fails the build.
+- **Player** (`apps/player`): React 19, Vite and SVG. Opening a tutorial evaluates it in a Web Worker so the page stays responsive on large patterns.
+- **Studio** (`apps/studio`): a shared drawing space with revision-checked edits and per-author undo, served as a Vercel function with Neon Postgres, Google sign-in, and a Cloudflare Durable Object that pushes changes live. AI agents reach it through the Model Context Protocol.
+- **Tooling**: an Nx and pnpm monorepo, Zod schemas, Vitest, and Playwright browser tests on desktop, tablet and phone viewports.
+
+## Run it locally
+
+You need Node 22.12 or newer and pnpm 10.
+
+```bash
 pnpm install --frozen-lockfile
+```
+
+```bash
 pnpm dev
 ```
 
-Open http://localhost:4200. Library previews are generated automatically. To work alongside another agent, use a separate worktree and a different port:
+Then open http://localhost:4200. Library previews are generated automatically.
 
-```sh
-git worktree add ../Tastir-my-work -b my-work
-cd ../Tastir-my-work
-pnpm install --frozen-lockfile
-pnpm nx run player:dev --port=4290 --strictPort
+## Repository map
+
+| Path | What it holds |
+| --- | --- |
+| `packages/engine` | Geometry, construction evaluation, inking and piece finding |
+| `packages/schema` | Validation for tutorials, drafts and share links |
+| `packages/project-core` | The drawing and the commands that edit it, shared by the editor, the assistant and the Studio |
+| `packages/agent-protocol` | Shared contracts for AI observation, highlighting and drawing |
+| `apps/player` | The web app: library, lessons, draw along, editor, walls and coloring |
+| `apps/studio` | The hosted Studio server and its MCP endpoint |
+| `apps/live-room` | The Cloudflare Worker that delivers live updates |
+| `apps/agent-local` | The local ChatGPT drawing assistant |
+| `tutorials/` | Tutorial source JSON, each checked by a golden geometry test |
+| `docs/` | Product decisions, pattern verification and working notes |
+
+## Contributing
+
+Start with [the project overview](docs/PROJECT.md), [the tutorial format](docs/tutorial-format.md) and [how steps are written](docs/tutorial-writing.md). Read [the geometry notes](docs/geometry-notes.md) before changing construction or piece finding, because each note records a bug that already happened once. [Pattern status](docs/patterns/STATUS.md) records how each design was verified; passing geometry tests alone does not show that a design matches a historical example.
+
+Tutorial text and drawings are always original. A construction taken from a book, video or website is credited in the tutorial's `credits`, and only free (public domain or Creative Commons) photos are shipped.
+
+### Checks
+
+Install the test browser once, then run every check:
+
+```bash
+pnpm exec playwright install chromium
 ```
 
-## Try the local drawing assistant
-
-Run `pnpm dev:agent` and open http://127.0.0.1:4291/#/agent. Connect your ChatGPT account to ask about the current drawing, highlight named objects, and draw editable sides between existing points. Try “Draw the square jW, jN, jE, jS” on Eight-fold star and octagon. Undo restores the whole edit; Keep in My patterns saves an editor copy. Choose Start from O and A and Use compass request to create new lines, circles and intersections. Use repeat and color request draws a closed design, repeats its tile and paints its shape types. Tile and color edits have Undo, visible palette buttons and custom shape colors, and save into the normal playable pattern. The assistant can also open library tutorials and saved work by name. Open drawing assistant is available on normal local pages; returning to the workspace keeps its drawing and Undo history. Existing unsaved-design questions are respected. Automated tests use simulated model responses. See [the setup guide](docs/AI-AGENT-SETUP.md) and [the full plan](docs/AI-AGENT-PLAN.md).
-
-## Check changes locally
-
-```sh
-pnpm exec playwright install chromium
+```bash
 pnpm check
 ```
 
-`pnpm check` runs lint, strict TypeScript checks, geometry and UI tests, the production build, and Chromium browser tests. Run checks sequentially: the build and TypeScript checks share generated output. Browser tests use port 4392 and cover desktop, tablet, and phone viewports. To run individual checks:
+`pnpm check` runs lint, strict TypeScript, the geometry and UI tests, the production build, and the Chromium browser tests. Run checks one at a time, because the build and TypeScript checks share generated output. The individual commands are `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`, `pnpm test:browser` and `pnpm test:agent:browser`.
 
-```sh
-pnpm lint
-pnpm typecheck
-pnpm test
-pnpm build
-pnpm test:browser
-pnpm test:agent:browser
-pnpm exec playwright show-report
+GitHub Actions is disabled at the owner's request, so tests run locally and the Pages workflow is manual-only.
+
+<details>
+<summary>More for contributors: parallel worktrees, the local AI assistant, and the layout audit</summary>
+
+#### Working beside another agent
+
+Use a separate worktree and a different port:
+
+```bash
+git worktree add ../Tastir-my-work -b my-work
 ```
 
-For the full draw-along layout audit, leave the dev server running on port 4290 and run:
-
-```sh
-node tools/check-draw-along.mjs
+```bash
+cd ../Tastir-my-work && pnpm install --frozen-lockfile && pnpm nx run player:dev --port=4290 --strictPort
 ```
 
-This draws and inks seven tutorials, repeats and colors them, and measures both boards at every stage at five screen sizes. It checks equal board sizes, zero movement, consistent desktop board sizes between tutorials, desktop page fit, phone panel switching, and three-line instruction boxes with accessible scroll hints. Boards at 1280×800 must be at least 443px tall. Measurements and screenshots go to `docs/review/codex-layout/`. Set `TASTIR_URL` to use a different dev server. Run the audit after build and catalog commands finish so dev-server reloads do not interrupt measurements.
+#### The local drawing assistant
 
-Generated previews, reports, and browser traces are ignored by Git. `pnpm catalog` rebuilds the library metadata and thumbnails; adding a tutorial does not require changing the app's code. Browser test traces and screenshots appear in `test-results/` on failure.
+Run `pnpm dev:agent` and open http://127.0.0.1:4291/#/agent. Connect your ChatGPT account to ask about the current drawing, highlight named objects, construct new lines, circles and crossings from O and A, ink sides between named points, repeat the tile and paint it. Every assistant edit has one Undo, and Keep in My patterns saves an editor copy. Automated tests use simulated model responses. See [the setup guide](docs/AI-AGENT-SETUP.md) and [the full plan](docs/AI-AGENT-PLAN.md).
 
-**GitHub Actions is disabled at the owner's request.** Tests run locally and consume no GitHub Actions minutes. The Pages workflow is manual-only; automatic deployments are paused. Re-enabling Actions and requesting a deployment are separate, explicit actions.
+#### The draw-along layout audit
 
-## Project structure
+With the dev server running on port 4290, run `node tools/check-draw-along.mjs`. It draws and inks seven tutorials, repeats and colors them, and measures both boards at every stage at five screen sizes, writing measurements and screenshots to `docs/review/codex-layout/`. Set `TASTIR_URL` to use a different dev server, and run it after build and catalog commands finish so dev-server reloads do not interrupt it.
 
-- `packages/engine`: pure TypeScript geometry, construction evaluation, inking, and piece finding. No DOM or React.
-- `packages/schema`: tutorial, draft, and sharing validation.
-- `packages/agent-protocol`: shared observation, highlighting and drawing contracts.
-- `apps/agent-local`: local ChatGPT authentication and model/tool request handling.
-- `apps/player/src/app`: routing, library, player, saving, and sharing.
-- `apps/player/src/along`: drawing beside a tutorial, hints, pen inking, and hand-placed repeats.
-- `apps/player/src/editor`: construction tools and editable patterns.
-- `tutorials`: source JSON, validated against golden geometry tests.
-- `apps/player/e2e`: real-browser regression tests.
-- `docs`: product decisions, pattern verification, and working notes.
+#### Generated files and private pages
 
-Tutorial data loads on demand. The library uses generated metadata and WebP previews; opening a tutorial evaluates it in a Web Worker. Stored work remains in the current browser; export a pattern file to keep a portable copy. Share links contain the design data rather than uploading it to a server.
+Generated previews, reports and browser traces are ignored by Git. `pnpm catalog` rebuilds the library metadata and thumbnails, and adding a tutorial needs no app code. The dev server also has `#/review`, `#/notes` and `#/plan`; private research and internal review pages are left out of the production build. Do not add private reference photos to public assets.
 
-## Working on Tastir
-
-Start with [the project overview](docs/PROJECT.md), [working with the owner](docs/WORKING-WITH-OWNER.md), and [the tutorial format](docs/tutorial-format.md). Read [geometry notes](docs/geometry-notes.md) before changing construction or piece finding. [Pattern status](docs/patterns/STATUS.md) records verification; passing geometry tests alone does not establish that a design matches a historical example.
-
-The dev server includes `#/review`, `#/notes`, and `#/plan`. Private research and internal review pages are excluded from the production build. Do not add private reference photos to public assets.
+</details>
