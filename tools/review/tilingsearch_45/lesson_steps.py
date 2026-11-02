@@ -238,8 +238,16 @@ def mirrored_line_parts(step,helper_texts=None):
                 create[rn+f'Part{i+1}']={'repeat':{**deepcopy(r),'of':lines}}
                 copied[rn]+=lines
         point=made[names[-1]]['line']['through']
-        normal=text+' Reflect the new line in the horizontal line through O.'
-        if turned:normal+=' Turn both lines round O by 180°.'
+        base=names[-1]
+        mirrored=base+'b' in create
+        normal=text
+        if mirrored:normal+=' Reflect the new line in the horizontal line through O.'
+        turned_lines={n for spec in create.values() if 'repeat' in spec and spec['repeat']['by']=='rot2'
+                      for n in spec['repeat']['of']}
+        if base in turned_lines and base+'b' in turned_lines:
+            normal+=' Turn both lines round O by 180°.'
+        elif base in turned_lines:normal+=' Turn the new line round O by 180°.'
+        elif base+'b' in turned_lines:normal+=' Turn the mirror image round O by 180°.'
         part={'text':normal,'create':create,'animate':'ruler'}
         if 'textWithoutHelpers' in step:
             part['textWithoutHelpers']=(helper_texts or {}).get(point,normal)

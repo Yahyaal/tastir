@@ -211,7 +211,7 @@
           "animate": "ruler"
         },
         {
-          "text": "The line OD crosses the line through P3 at P4. Draw a vertical line through P4. Reflect the new line in the horizontal line through O.",
+          "text": "The line OD crosses the line through P3 at P4. Draw a vertical line through P4.",
           "create": {
             "P4": {"point": {"meet": ["oD", "m3"]}},
             "m4": {"line": {"through": "P4", "parallelTo": "v"}}
@@ -293,7 +293,7 @@
       "animate": "ruler",
       "parts": [
         {
-          "text": "The line OE crosses the line through P6 at P11. Draw a vertical line through P11. Reflect the new line in the horizontal line through O.",
+          "text": "The line OE crosses the line through P6 at P11. Draw a vertical line through P11.",
           "create": {
             "P11": {"point": {"meet": ["oE", "m6"]}},
             "m11": {"line": {"through": "P11", "parallelTo": "v"}}
@@ -368,7 +368,7 @@
           "animate": "ruler"
         },
         {
-          "text": "The line OB crosses the line through P17 at P18. Draw a vertical line through P18. Reflect the new line in the horizontal line through O.",
+          "text": "The line OB crosses the line through P17 at P18. Draw a vertical line through P18.",
           "create": {
             "P18": {"point": {"meet": ["oB", "m17"]}},
             "m18": {"line": {"through": "P18", "parallelTo": "v"}}
@@ -386,7 +386,7 @@
           "animate": "ruler"
         },
         {
-          "text": "The line OE crosses the line through P16 at P20. Draw a vertical line through P20. Reflect the new line in the horizontal line through O.",
+          "text": "The line OE crosses the line through P16 at P20. Draw a vertical line through P20.",
           "create": {
             "P20": {"point": {"meet": ["oE", "m16"]}},
             "m20": {"line": {"through": "P20", "parallelTo": "v"}}
@@ -516,7 +516,7 @@
       "animate": "ruler",
       "parts": [
         {
-          "text": "The line through P1 crosses the mirror image of the line through P30 at P31. Draw a vertical line through P31. Reflect the new line in the horizontal line through O.",
+          "text": "The line through P1 crosses the mirror image of the line through P30 at P31. Draw a vertical line through P31.",
           "create": {
             "P31": {"point": {"meet": ["m1", "m30b"]}},
             "m31": {"line": {"through": "P31", "parallelTo": "v"}}
@@ -524,7 +524,7 @@
           "animate": "ruler"
         },
         {
-          "text": "The line CE crosses the line through P30 at P32. Draw a vertical line through P32. Reflect the new line in the horizontal line through O.",
+          "text": "The line CE crosses the line through P30 at P32. Draw a vertical line through P32.",
           "create": {
             "P32": {"point": {"meet": ["pCE", "m30"]}},
             "m32": {"line": {"through": "P32", "parallelTo": "v"}}
@@ -579,7 +579,7 @@
           "animate": "ruler"
         },
         {
-          "text": "The line through P12 crosses the line through P30 at P37. Draw a vertical line through P37. Reflect the new line in the horizontal line through O.",
+          "text": "The line through P12 crosses the line through P30 at P37. Draw a vertical line through P37.",
           "create": {
             "P37": {"point": {"meet": ["m12", "m30"]}},
             "m37": {"line": {"through": "P37", "parallelTo": "v"}}
@@ -652,7 +652,7 @@
           "animate": "ruler"
         },
         {
-          "text": "The line through P5 crosses the line through P30 at P43. Draw a vertical line through P43. Reflect the new line in the horizontal line through O.",
+          "text": "The line through P5 crosses the line through P30 at P43. Draw a vertical line through P43.",
           "create": {
             "P43": {"point": {"meet": ["m5", "m41"]}},
             "m44": {"line": {"through": "P43", "parallelTo": "v"}}
@@ -687,7 +687,7 @@
           "animate": "ruler"
         },
         {
-          "text": "The line CE crosses the mirror image of the line through P30 at P46. Draw a vertical line through P46. Reflect the new line in the horizontal line through O.",
+          "text": "The line CE crosses the mirror image of the line through P30 at P46. Draw a vertical line through P46.",
           "create": {
             "P46": {"point": {"meet": ["pCE", "m41b"]}},
             "m47": {"line": {"through": "P46", "parallelTo": "v"}}
@@ -695,7 +695,7 @@
           "animate": "ruler"
         },
         {
-          "text": "The line through P12 crosses the mirror image of the line through P30 at P47. Draw a vertical line through P47. Reflect the new line in the horizontal line through O.",
+          "text": "The line through P12 crosses the mirror image of the line through P30 at P47. Draw a vertical line through P47.",
           "create": {
             "P47": {"point": {"meet": ["m12", "m41b"]}},
             "m48": {"line": {"through": "P47", "parallelTo": "v"}}
@@ -765,7 +765,7 @@
       "animate": "ruler",
       "parts": [
         {
-          "text": "The line through P13 crosses the line through O parallel to line CE at P52. Draw a vertical line through P52. Reflect the new line in the horizontal line through O.",
+          "text": "The line through P13 crosses the line through O parallel to line CE at P52. Draw a vertical line through P52.",
           "create": {
             "P52": {"point": {"meet": ["m13", "m53b"]}},
             "m54": {"line": {"through": "P52", "parallelTo": "v"}}
@@ -809,7 +809,7 @@
           "animate": "ruler"
         },
         {
-          "text": "The line through O parallel to line CE crosses the line through P55 at P56. Draw a vertical line through P56. Reflect the new line in the horizontal line through O.",
+          "text": "The line through O parallel to line CE crosses the line through P55 at P56. Draw a vertical line through P56.",
           "create": {
             "P56": {"point": {"meet": ["m53b", "m57"]}},
             "m58": {"line": {"through": "P56", "parallelTo": "v"}}

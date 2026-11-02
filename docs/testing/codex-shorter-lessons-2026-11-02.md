@@ -13,7 +13,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `turkish-sultana-mixed-stars` | 28 → 27 | 28 → 37 | 971 → 1005 | Yes, 88 segments |
 | `barsbay-twelve-star-doors` | 28 → 25 | 41 → 50 | 1339 → 1306 | Yes, 144 segments |
 | `bourgoin-142-star-rows` | 27 → 25 | 30 → 32 | 912 → 893 | Yes, 196 segments |
-| `camlica-mosque-stars` | 25 → 25 | 25 → 85 | 1777 → 2534 | Yes, 250 segments |
+| `camlica-mosque-stars` | 25 → 25 | 25 → 85 | 1777 → 2414 | Yes, 250 segments |
 | `fathabad-mixed-stars` | 24 → 20 | 26 → 31 | 781 → 762 | Yes, 120 segments |
 | `mihrimah-uskudar-stars` | 23 → 23 | 23 → 32 | 1081 → 1178 | Yes, 124 segments |
 | `bourgoin-153-rosettes` | 23 → — | 23 → — | 938 → — | — |
@@ -95,6 +95,7 @@ All 196 ink segments match the saved baseline at nine decimal places. Full regen
 No shorter exact construction was verified. The old five-line batches contain dependent chains, so they now have one line and its mirror per part. The seven circle transfers of the ten-division opening are separate too. Removed one mirror line through O that has no construction, ink or tile users. This lesson is longer in words and clicks; it is a pacing repair, not a shortening success.
 
 Review steps 3, 5, 8–23 and 24 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
 
 ## fathabad-mixed-stars
 
