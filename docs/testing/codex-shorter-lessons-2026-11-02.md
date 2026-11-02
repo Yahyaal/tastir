@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-8 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+9 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -14,7 +14,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `barsbay-twelve-star-doors` | 28 → 25 | 41 → 50 | 1339 → 1306 | Yes, 144 segments |
 | `bourgoin-142-star-rows` | 27 → 25 | 30 → 32 | 912 → 893 | Yes, 196 segments |
 | `camlica-mosque-stars` | 25 → 25 | 25 → 85 | 1777 → 2534 | Yes, 250 segments |
-| `fathabad-mixed-stars` | 24 → — | 26 → — | 781 → — | — |
+| `fathabad-mixed-stars` | 24 → 20 | 26 → 31 | 781 → 762 | Yes, 120 segments |
 | `mihrimah-uskudar-stars` | 23 → — | 23 → — | 1081 → — | — |
 | `bourgoin-153-rosettes` | 23 → — | 23 → — | 938 → — | — |
 | `otrush-star-chelates` | 23 → — | 25 → — | 741 → — | — |
@@ -95,6 +95,12 @@ All 196 ink segments match the saved baseline at nine decimal places. Full regen
 No shorter exact construction was verified. The old five-line batches contain dependent chains, so they now have one line and its mirror per part. The seven circle transfers of the ten-division opening are separate too. Removed one mirror line through O that has no construction, ink or tile users. This lesson is longer in words and clicks; it is a pacing repair, not a shortening success.
 
 Review steps 3, 5, 8–23 and 24 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## fathabad-mixed-stars
+
+Reused the opening circle instead of drawing it again. Moved the division-point note into the first square that uses it. Grouped three independent vertical families and paired two later parallel families. Split the compass sums and projections into parts, so the lower parent-step count does not conceal their dependencies.
+
+Review steps 6–10, 12–13, 16 and 18–19 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
