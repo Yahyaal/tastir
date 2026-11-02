@@ -4,13 +4,11 @@ The owner asked on 1 November 2026 not to lose track of any pattern. This page l
 
 ## Tiling Search's 45° list
 
-Ten tilings on the list have no tutorial crediting them. Three are real gaps: P042, CM045 and H153, all from the Alhambra (below). The other seven are left out on purpose: DW10A and SM4 are a library design with a second pattern over it, and F15, P17, P067, IRAN15 and IRAN4 are designs already in the library.
+The list is finished. P042, CM045 and H153, the last three from the Alhambra, were built from Wichmann's drawings on 1 November, and no photo confirms them yet. Seven tilings are left out on purpose: DW10A and SM4 are a library design with a second pattern over it, and F15, P17, P067, IRAN15 and IRAN4 are designs already in the library.
 
 ## Parked in the queue, waiting for a source
 
-- **P042, Lindaraja rosettes.** Built, but Wade's photo is a different panel, so it needs a photo of the drawn one.
 - **CM026, Generalife ceiling.** Built, but Wade's photo has frames the drawing lacks.
-- **CM045 (Mirador de Lindaraja) and H153 (Sala de la Barca).** Skipped early because their photos are of mixed panels or at an angle. Their drawings can still be built.
 - **Córdoba Synagogue, second Ibn Tulun grille, Alhambra interlace and rosette.** See [the queue](QUEUE.md).
 - **Darb-e Imam spandrel,** and the rest of [the 24 Upcoming patterns](#/upcoming).
 

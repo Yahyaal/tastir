@@ -7338,6 +7338,102 @@ export const PATTERNS: readonly Pattern[] = [
     ],
   },
   {
+    id: 'alhambra-lindaraja-mirador-stars',
+    title:
+      'Stars and crosses of the Mirador de Lindaraja (Alhambra) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A white star sits at the centre of every tile. A small square sits at the middle of every side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s CM045 drawing, its corners snapped to exact values. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. No photograph confirms this design: the Wade photograph Wichmann links, SPA 1813, shows mixed panels, so we built it from his drawing alone. The colours follow the drawing.',
+      '10 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-lindaraja-mirador-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-lindaraja-mirador-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mirador de Lindaraja, Alhambra (CM045)',
+        url: 'https://tilingsearch.mit.edu/HTML/data15/CM045.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-barca-niche-stars',
+    title:
+      'Turning stars in the niches of the Sala de la Barca (Alhambra) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A four-pointed star sits at the centre and at the corners of every tile. A white piece sits at the middle of every side.',
+    story: [
+      'The finished design was read from Brian Wichmann’s H153 drawing, its corners snapped to exact values. The drawing gives no steps; we devised the construction.',
+      'The compass steps, their order and the named points are ours. No photograph confirms this design: Wade’s photograph of the panel is taken at an angle, so we built it from Wichmann’s drawing alone. The colours follow the drawing; its dark green is shown in the palette’s teal.',
+      '8 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-barca-niche-stars/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-barca-niche-stars/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Sala de la Barca, Alhambra (H153)',
+        url: 'https://tilingsearch.mit.edu/HTML/data9/H153.html',
+      },
+    ],
+  },
+  {
+    id: 'alhambra-lindaraja-rosettes',
+    title:
+      'Eight-fold rosettes of the Mirador de Lindaraja (Alhambra) (new, Tiling Search)',
+    fold: 4,
+    status: 'decide',
+    summary:
+      'Put copies of the square tile side by side. A rosette of eight petals sits at every grid point. A white star sits between four rosettes.',
+    story: [
+      'The finished design was read from Brian Wichmann’s P042 drawing of Bourgoin’s plate 42, its corners snapped to exact values. The drawing gives no steps; we devised the construction. The star is two squares, and their sides, carried on to the edge of the tile, make every line.',
+      'The compass steps, their order and the named points are ours. No photograph confirms this design: Wade’s photograph SPA 1009 shows a different panel of the Mirador de Lindaraja, with flower insets and five-sided petals. This is the plain form Wichmann draws, not that panel.',
+      '6 steps, intermediate.',
+    ],
+    pictures: [
+      {
+        src: 'renders/alhambra-lindaraja-rosettes/drawing-overlay.png',
+        caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
+      },
+      {
+        src: 'renders/alhambra-lindaraja-rosettes/wall.png',
+        caption: 'Our wall.',
+      },
+    ],
+    asks: [],
+    sources: [
+      {
+        label:
+          'Brian Wichmann, Tiling Search: Mirador de Lindaraja, Alhambra (P042)',
+        url: 'https://tilingsearch.mit.edu/HTML/data10/P042.html',
+      },
+    ],
+  },
+  {
     id: 'alhambra-arrayanes-squares',
     title: 'Squares and stars of the Patio de los Arrayanes (new)',
     fold: 4,
@@ -8754,6 +8850,9 @@ export const QUESTIONS: readonly Question[] = [
       'shah-mosque-chiral-grille',
       'chehel-sotoun-divided-stars',
       'rabat-mixed-star-rosette',
+      'alhambra-lindaraja-mirador-stars',
+      'alhambra-barca-niche-stars',
+      'alhambra-lindaraja-rosettes',
     ],
   },
 ];
