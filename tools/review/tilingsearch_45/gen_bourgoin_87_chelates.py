@@ -19,6 +19,26 @@ L=2*D
 X=L/16
 
 
+def shorter_steps():
+    from lesson_steps import partition,merge,number,circle_parts,sentence_parts
+    old={s['id']:s for s in cm.steps};assert len(old)==20
+    old[7]=sentence_parts(old[7],'Find the diagonal projections.',[
+        (3,['P1','root3','P2']),(2,['N1v','N1','N2v','N2','N3v','N3'])],without=[
+        'The first circle crosses the line at 45° from OA at P1, above O. '
+        'Draw a circle with centre O and opening AE. It crosses that line at P2, above O.',
+        'N2 is where the vertical through P1 crosses the horizontal line. '
+        'Draw vertical lines through C and P2. They cross the horizontal line at N1 and N3.'])
+    for i in [8,15]:old[i]=circle_parts(old[i],'Transfer the guide lengths.')
+    for k in range(3):
+        i=12+k;p=f'P{k+3}';n=f'N{k+7}'
+        old[i]=sentence_parts(old[i],'Halve the horizontal length.',[(2,[f'half{k}',p]),(2,[f'project{k}',n])])
+    old[17]=sentence_parts(old[17],'Find the final guide length.',[
+        (2,['quarter','P6']),(2,['quarterProjection','N14']),(2,['extra','N15'])])
+    guides=merge([old[18],old[19],old[20]],
+        'Draw vertical lines through N9, N10, N11, N12, N13 and N15. Turn each line round O by 60°, five times.')
+    cm.steps[:]=number([*[old[i] for i in range(1,18)],guides])
+
+
 def build():
     opening(d_only=True)
     step('Draw a circle with centre N5 through O. It crosses the horizontal line again at N6, right of N5.', 'compass')
@@ -63,6 +83,7 @@ def build():
         'Draw a circle with centre O and opening AE. It crosses that line at P2, above O. '
         'N2 is where the vertical through P1 crosses the horizontal line. '
         'Draw vertical lines through C and P2. They cross the horizontal line at N1 and N3.')
+    shorter_steps()
     return cell
 
 
