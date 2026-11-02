@@ -36,6 +36,39 @@ def description(ref):
     return text+(f', turned round O by {30*int(turn)}°,' if turn else '')
 
 
+def shorter_steps():
+    from lesson_steps import partition,merge,circle_parts,number
+    old={s['id']:s for s in cm.steps}
+    assert len(old)==26
+    old[7]=partition(old[7],'Find the two diagonal lengths.',[
+        ('The first circle crosses the line at 45° from OA at P1, above O. '
+         'Draw a circle with centre O and opening AE. It crosses that line at P2, above O.',
+         ['P1','root3','P2'],None),
+        ('Draw vertical lines through P1 and P2. They cross the horizontal line at N1 and N2.',
+         ['N1v','N1','N2v','N2'],
+         'N1 is where the vertical through P1 crosses the horizontal line. '
+         'Draw a vertical line through P2. It crosses the horizontal line at N2.')])
+    old[8]=circle_parts(old[8],'Double the diagonal lengths.')
+    old[9]=circle_parts(old[9],'Transfer the frame lengths.')
+    old[10]=partition(old[10],'Draw the rectangular frame.',[
+        ('Draw a circle with centre O through N5. It crosses the vertical line at N7, above O.',
+         ['frameCircle','N7'],None),
+        ('Draw a vertical line through N6. Draw a horizontal line through N7. '
+         'Turn both lines round O by 180°. They frame the tile, with corners T1 to T4.',
+         ['frameX','frameY','frames',*[f'T{i}' for i in range(1,5)]],None)])
+    first=merge([old[19],old[24]],
+        'The line from S1 to S5 crosses the line through Q2 at Q9. '
+        'The line from S7 to S11 crosses the right tile side at Q14. '
+        'Draw lines through Q9 and Q14 parallel to the line at 75° from OA. '
+        'Turn each line round O by 30°, eleven times.')
+    second=merge([old[16],old[20]],
+        'The line from S10 to S2 crosses the line through Q5 at Q6. '
+        'The right tile side crosses the line through Q3 at Q10. '
+        'Draw lines through Q6 and Q10 parallel to line FM. Turn each line round O by 30°, eleven times.')
+    cm.steps[:]=number([*[old[i] for i in range(1,16)],old[17],old[18],first,second,
+                      old[21],old[22],old[23],old[25],old[26]])
+
+
 def build(width_only=False):
     star(opening_only=True)
     step('The first circle crosses the line at 45° from OA at P1, above O. '
@@ -91,6 +124,7 @@ def build(width_only=False):
         turns=degrees[0] if len(degrees)==1 else ', '.join(degrees[:-1])+' and '+degrees[-1]
         current['textWithoutHelpers']=current['text'].replace(
             'Turn it round O by 30°, eleven times.',f'Turn it round O by {turns}.')
+    shorter_steps()
     return cell
 
 

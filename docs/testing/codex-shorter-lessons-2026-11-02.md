@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-6 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+7 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -12,7 +12,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `shah-mosque-chiral-grille` | 36 → 32 | 38 → 42 | 1207 → 1150 | Yes, 318 segments |
 | `turkish-sultana-mixed-stars` | 28 → 27 | 28 → 37 | 971 → 1005 | Yes, 88 segments |
 | `barsbay-twelve-star-doors` | 28 → 25 | 41 → 50 | 1339 → 1306 | Yes, 144 segments |
-| `bourgoin-142-star-rows` | 27 → — | 30 → — | 912 → — | — |
+| `bourgoin-142-star-rows` | 27 → 25 | 30 → 32 | 912 → 893 | Yes, 196 segments |
 | `camlica-mosque-stars` | 25 → — | 25 → — | 1777 → — | — |
 | `fathabad-mixed-stars` | 24 → — | 26 → — | 781 → — | — |
 | `mihrimah-uskudar-stars` | 23 → — | 23 → — | 1081 → — | — |
@@ -83,6 +83,12 @@ Inspected all step pictures in order and the wall. A human should look most clos
 Reused the opening circle instead of drawing it twice. Paired the independent 75°, 15° and 60° guide families. Split the dependent compass and projection sequences into individual parts; the extra parts increase learner beats while removing repeated instructions. Kept both connector outlines because the unchanged expect block uses them to distinguish two pieces of the same shape.
 
 All 144 ink segments match the saved baseline at nine decimal places. The full regenerated steps, ink and expect block match the tutorial. Text and helper checks passed, as did 265 engine tests including the complete weave suite. Inspected the ordered step pictures and wall. Review steps 7–18 and the paired families in 20–22 most closely. Browser playback and hand construction remain unchecked.
+
+## bourgoin-142-star-rows
+
+Paired independent 75° and 150° guide families. Split the diagonal projections, both circle-transfer chains and the frame into parts. Each compass transfer now has its own part. The opening used by Ismail and Chehel Sotoun returns before this local transformation and remains unchanged.
+
+All 196 ink segments match the saved baseline at nine decimal places. Full regeneration matches the tutorial steps, ink and expect block. Plain-text and helper checks passed. The complete weave suite and selected engine checks passed 265 tests before the last pacing-only split; they were rerun after it. Inspected the ordered step pictures and wall. Review steps 7–10 and 18–19 most closely. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
