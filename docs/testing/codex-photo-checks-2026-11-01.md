@@ -1,6 +1,6 @@
 # Photo checks, 1 November 2026
 
-Of 59 pairs, 7 have been assessed: 1 agree, 4 agree in part, 0 disagree and 2 are not checkable. 52 remain unassessed.
+Of 59 pairs, 14 have been assessed: 1 agree, 6 agree in part, 0 disagree and 7 are not checkable. 45 remain unassessed.
 
 This report checks the supplied private Wade photographs against the current tutorial dumps. Agreement means the visible geometric bands within the stated region, not the floral inlays, borders, colours or historical attribution. All picks, attempted registrations and overlays stay in this worktree under `docs/research/photo-checks/<tutorial id>/`; none are committed. Each picks file records its reading width, original photograph and tutorial coordinates. `refine` is false. Points used for fitting are not independent evidence; the entries name the regions inspected beyond them. A failed registration is not evidence of a wrong tutorial.
 
@@ -22,19 +22,19 @@ No disagreement established so far.
 
 **4. `alcazar-interlaced-stars` — SPA 2215 (SPA2215).** **agrees**. Four large eight-star centres in the upper left register the panel. Away from these picks, the small eight-stars, squared arrow turns and long six-sided spaces follow the white bands through the middle and lower rows. The two star sizes and their alternating positions agree. The separate decorative borders are outside the tutorial's repeat. Overlay: `docs/research/photo-checks/alcazar-interlaced-stars/photo-overlay.png`.
 
-**5. `alcazar-mosaic-stars` — SPA 2311 (H424).** Not assessed yet.
+**5. `alcazar-mosaic-stars` — SPA 2311 (H424).** **agrees in part**. Four large and small star centres across the upper half register the tile. The eight-star, long hexagon and crossed-arrow arrangement follows the bands in the centre and far right. Some tiny square turns in the physical bands have no separately visible counterpart in this plain centre-line representation; I cannot certify those details from this photograph. Overlay: `docs/research/photo-checks/alcazar-mosaic-stars/photo-overlay.png`.
 
-**6. `alcazar-six-eight-stars` — SPA 2219 (CM022).** Not assessed yet.
+**6. `alcazar-six-eight-stars` — SPA 2219 (CM022).** **agrees in part**. Four eight-star centres in the upper two rows register the central panel. The overlay follows the six-stars, eight-stars and four-pointed fillers in the middle. In the lower row the band positions drift, so that region is not verified; the photograph has uneven handmade geometry and the limited upper picks do not isolate its cause. Overlay: `docs/research/photo-checks/alcazar-six-eight-stars/photo-overlay.png`.
 
-**7. `cordoba-synagogue-star-bands` — SPA 2103x (SPA2103X).** Not assessed yet.
+**7. `cordoba-synagogue-star-bands` — SPA 2103x (SPA2103X).** **not checkable**. The supplied photograph is an intricate relief with floral carving inside broad star frames. After viewing the full panel and rendered wall, I could not reliably pick four matching geometric centres or separate every band from its carved infill at this resolution. No homography or overlay was produced. Overlay: `docs/research/photo-checks/cordoba-synagogue-star-bands/photo-overlay.png`.
 
-**8. `seville-six-eight-twelve-stars` — SPA 2200 (SEV2).** Not assessed yet.
+**8. `seville-six-eight-twelve-stars` — SPA 2200 (SEV2).** **not checkable**. The photograph contains small six-, eight- and many-pointed centres in closely spaced rows. My attempted four-centre registration did not align the intervening star mesh, and I could not resolve the correspondence between the mixed motif families in the time box. The saved overlay is a failed trial; it establishes neither agreement nor disagreement. Overlay: `docs/research/photo-checks/seville-six-eight-twelve-stars/photo-overlay.png`.
 
-**9. `seville-vanda-star-rosettes` — MOR 0322 (PG229).** Not assessed yet.
+**9. `seville-vanda-star-rosettes` — MOR 0322 (PG229).** **not checkable**. The supplied MOR 0322 photograph is a narrow Moroccan tile strip, whereas this tutorial names a Seville tile in the V&A. Under the brief's different-building rule this cannot verify the named original. Its visible eight-fold rosettes are only a related comparison. No fit was forced and no overlay was produced. Overlay: `docs/research/photo-checks/seville-vanda-star-rosettes/photo-overlay.png`.
 
-**10. `toledo-synagogue-star-bands` — SPA 2929 (SPA2929).** Not assessed yet.
+**10. `toledo-synagogue-star-bands` — SPA 2929 (SPA2929).** **not checkable**. The photograph contains one shallow horizontal strip of the geometry above an arch, with its left end obscured and broad multiple carved moldings. It does not expose enough unambiguous repetitions in both directions for a dependable four-point registration. No overlay was produced. Overlay: `docs/research/photo-checks/toledo-synagogue-star-bands/photo-overlay.png`.
 
-**11. `toledo-tile-stars` — MOR 2816x (RAY1).** Not assessed yet.
+**11. `toledo-tile-stars` — MOR 2816x (RAY1).** **not checkable**. MOR 2816x shows a Moroccan pierced and carved panel rather than the Toledo tile named by the tutorial. Its lattice and eight-stars are related, but a different object cannot verify the named tile under this brief. No overlay was produced. Overlay: `docs/research/photo-checks/toledo-tile-stars/photo-overlay.png`.
 
 ### Morocco
 
