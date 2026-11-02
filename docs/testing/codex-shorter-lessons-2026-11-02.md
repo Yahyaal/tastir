@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-10 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+12 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -16,14 +16,14 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `camlica-mosque-stars` | 25 → 25 | 25 → 85 | 1777 → 2414 | Yes, 250 segments |
 | `fathabad-mixed-stars` | 24 → 20 | 26 → 31 | 781 → 762 | Yes, 120 segments |
 | `mihrimah-uskudar-stars` | 23 → 23 | 23 → 32 | 1081 → 1178 | Yes, 124 segments |
-| `bourgoin-153-rosettes` | 23 → — | 23 → — | 938 → — | — |
+| `bourgoin-153-rosettes` | 23 → 22 | 23 → 34 | 938 → 938 | Yes, 248 segments |
 | `otrush-star-chelates` | 23 → — | 25 → — | 741 → — | — |
 | `atik-valide-uskudar-stars` | 22 → — | 22 → — | 998 → — | — |
 | `meknes-throne-rosette` | 22 → — | 23 → — | 1033 → — | — |
 | `meknes-bou-inania-rosette-rings` | 22 → — | 23 → — | 773 → — | — |
 | `topkapi-door-stars` | 21 → — | 21 → — | 1432 → — | — |
 | `fes-moulay-ismail-interlace` | 21 → — | 22 → — | 876 → — | — |
-| `cairo-bagasi-rosettes` | 21 → — | 21 → — | 811 → — | — |
+| `cairo-bagasi-rosettes` | 21 → 20 | 21 → 29 | 811 → 806 | Yes, 232 segments |
 | `qawsun-quran-stars` | 21 → — | 23 → — | 779 → — | — |
 | `bourgoin-87-chelates` | 21 → — | 24 → — | 690 → — | — |
 | `ibn-arabi-six-stars` | 21 → — | 21 → — | 580 → — | — |
@@ -109,8 +109,26 @@ Grouped the two independent parallels through P16 and P17 in one sentence. The p
 
 Review steps 3, 5, 8 and 19 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
+## bourgoin-153-rosettes
+
+Reviewed this with Cairo because they share their construction. Paired two independent 78.75° families. Split the dependent angle halvings, compass sums, diagonal projection and central-strip transfers into parts. Bourgoin’s extra corner construction now has four parts, one move each. Cairo’s other generator callers are unchanged.
+
+Review steps 2, 4–6, 10, 17 and the extra corner step 20 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## cairo-bagasi-rosettes
+
+Applied the shared changes with Bourgoin 153, in that family’s earlier place in the brief. Pairing the two independent 78.75° families removes one parent step and five words. The compass chains and angle halvings have separate parts; their extra clicks remain visible in the table.
+
+Review steps 2, 4–6, 10 and 17 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
 ## Checks
 
-`pnpm install` and `pnpm nx run schema:build` passed. Heavy commands run sequentially in a systemd scope with `MemoryMax=3G` and `MemorySwapMax=0`; Node has a 2304 MB heap and Vitest uses one worker. The initial batch passed two complete engine runs of 4,074 tests in 23 files. For the follow-up, all 64 selected geometry assertions passed, but the filtered weave suite failed its library-wide coverage threshold. The complete weave suite was then run with the Turkish Sultana checks: 265 tests passed. All 25 selected plain-text and helper-text checks for the first five lessons passed. A complete engine run will follow the remaining lessons. Numbered points in the edited text exist by the step that names them. Comparing old and new helper visibility found no changed visibility for retained lines. Lint and type checks passed again before the follow-up push, for all eight projects and the type-check prerequisites.
+The initial two complete engine runs passed all 4,074 tests in 23 files. After the remaining construction edits, the final complete engine run passed all 4,074 again in 902.72 seconds. This includes golden, weave and crossing-equivalence checks for the whole library. Intermediate follow-up runs selected individual tutorials and the complete weave suite; later lessons were checked together by this final full run, rather than running the full library after each one. One early filtered run passed its 64 selected assertions but failed the weave suite’s global count check because filtering excluded most tutorials. Running the complete weave suite resolved that harness failure. No expect block was changed.
 
-The normal `pnpm typecheck` and `pnpm test` scripts invoke `pnpm catalog`. The brief prohibits that command. Type checks used the same Nx targets directly, with a local copy of the owner’s existing ignored catalogue so previews need not be regenerated, and text checks used an ignored temporary Vitest configuration with the real tutorial fixtures and an unused empty catalogue module. No catalogue command, server or browser suite ran. Browser playback, hand construction and the other application unit suites remain unchecked.
+All 1,215 plain-text and helper-text checks pass across the library. The last copy-instruction trims change text only: the complete construction maps were compared unchanged, and the text checks were rerun. The full before/after unordered ink sets match at nine decimal places for every requested lesson and the additional Bourgoin 149 family member. Their tile frames and complete piece-polygon multisets match at the same precision. All tutorial fields outside steps remain unchanged. Retained helper lines have unchanged visibility; the only removed visible line is Çamlıca’s unused mirror through O.
+
+Inspected the ordered step pictures and walls, and read the changed instructions. Separate part renders make the long chains reviewable too. Full-helper drawings can remain dense, and the renderer’s fixed tile view clips some distant compass centres as before. Browser playback and hand construction have not been checked. Claude is to do the browser review; no server or browser suite ran and port 4200 was not touched.
+
+Heavy commands ran sequentially under the 3 GB systemd memory cap, with no swap and a 2304 MB Node heap. Vitest used one worker. The initial install and schema build passed. Lint and type checks passed before the earlier pushes and will be rerun before the next push.
+
+The normal root typecheck and test scripts invoke the prohibited catalog command. Type checks use the same Nx targets directly, with a local copy of the owner’s existing ignored catalogue. Text checks use an ignored temporary Vitest configuration with the real tutorial fixtures and an unused empty catalogue module. No catalog command ran. Other application unit suites remain unchecked.

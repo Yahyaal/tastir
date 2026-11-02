@@ -52,6 +52,17 @@ def corner_lines():
     g.repeat('vlr', ['vl'], 'rot8')
     s16.DESC['vl'] = 'the 22.5° line through V3'
     s16.ORDER['vl'] = 8
+    from lesson_steps import partition
+    cm.steps[-1]=partition(cm.steps[-1],'Find the extra corner lines.',[
+        ('The 157.5° line through P4 crosses its copy turned by 315° at V, a corner of the octagon. '
+         'Draw a circle with centre V through K1. It crosses the 45° line through O at V2.',
+         ['V','kv','V2'],None),
+        ('Draw a circle with centre V2 through V. It crosses the circle with centre V at J3 and J4.',
+         ['kv2','J3','J4'],None),
+        ('Draw a straight line through J3 and J4. It crosses the 45° line through O at V3.',
+         ['jl','V3'],None),
+        ('Draw a line through V3 parallel to the 22.5° line through O. Turn it round O by 45°, seven times.',
+         ['vl','vlr'],None)])
 
 
 def build():
