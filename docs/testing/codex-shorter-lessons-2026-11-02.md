@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-5 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+6 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -11,7 +11,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `chehel-sotoun-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1113 | Yes, 230 segments |
 | `shah-mosque-chiral-grille` | 36 → 32 | 38 → 42 | 1207 → 1150 | Yes, 318 segments |
 | `turkish-sultana-mixed-stars` | 28 → 27 | 28 → 37 | 971 → 1005 | Yes, 88 segments |
-| `barsbay-twelve-star-doors` | 28 → — | 41 → — | 1339 → — | — |
+| `barsbay-twelve-star-doors` | 28 → 25 | 41 → 50 | 1339 → 1306 | Yes, 144 segments |
 | `bourgoin-142-star-rows` | 27 → — | 30 → — | 912 → — | — |
 | `camlica-mosque-stars` | 25 → — | 25 → — | 1777 → — | — |
 | `fathabad-mixed-stars` | 24 → — | 26 → — | 781 → — | — |
@@ -77,6 +77,12 @@ Reused the opening’s circle about A and grouped the two independent 60° guide
 The numbered steps fall from 28 to 27. Moves rise from 28 to 37 because the original text packed dependent moves together. The table includes the added part headings in its word count. All 88 ink segments match the baseline at nine decimal places. Complete generator output reproduces the steps, ink and expect block exactly. All metadata outside steps remains unchanged, and helper visibility is unchanged.
 
 Inspected all step pictures in order and the wall. A human should look most closely at steps 7–11, 14–15, 18–19 and 22–25. All fifteen selected engine assertions passed, as did the complete library weave suite and the text checks. Browser playback and hand construction remain unchecked.
+
+## barsbay-twelve-star-doors
+
+Reused the opening circle instead of drawing it twice. Paired the independent 75°, 15° and 60° guide families. Split the dependent compass and projection sequences into individual parts; the extra parts increase learner beats while removing repeated instructions. Kept both connector outlines because the unchanged expect block uses them to distinguish two pieces of the same shape.
+
+All 144 ink segments match the saved baseline at nine decimal places. The full regenerated steps, ink and expect block match the tutorial. Text and helper checks passed, as did 265 engine tests including the complete weave suite. Inspected the ordered step pictures and wall. Review steps 7–18 and the paired families in 20–22 most closely. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
