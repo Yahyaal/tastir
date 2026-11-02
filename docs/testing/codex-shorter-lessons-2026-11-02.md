@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-16 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+17 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -21,7 +21,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `atik-valide-uskudar-stars` | 22 → 22 | 22 → 30 | 998 → 1107 | Yes, 116 segments |
 | `meknes-throne-rosette` | 22 → 22 | 23 → 26 | 1033 → 995 | Yes, 424 segments |
 | `meknes-bou-inania-rosette-rings` | 22 → 19 | 23 → 31 | 773 → 803 | Yes, 236 segments |
-| `topkapi-door-stars` | 21 → — | 21 → — | 1432 → — | — |
+| `topkapi-door-stars` | 21 → 21 | 21 → 62 | 1432 → 2114 | Yes, 270 segments |
 | `fes-moulay-ismail-interlace` | 21 → — | 22 → — | 876 → — | — |
 | `cairo-bagasi-rosettes` | 21 → 20 | 21 → 29 | 811 → 806 | Yes, 232 segments |
 | `qawsun-quran-stars` | 21 → — | 23 → — | 779 → — | — |
@@ -144,6 +144,12 @@ Review steps 2, 15, 18 and 19 most closely. The ink matches the saved baseline a
 Paired six independent diagonal families in three steps. Each pair has the same direction and quarter turns. Split the unit and diagonal compass walks, the square-diagonal opening and the later circle-to-line transitions into parts. Three parent steps are saved, but explicit compass instructions and parts add words and clicks.
 
 Review steps 2, 4–5, 8 and 12–17 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## topkapi-door-stars
+
+No shorter exact construction was verified. The greedy line batches contained dependent chains, so each new line and its symmetry copies now has its own part. Kept the special helper texts for P13, P33, P40, P42 and P44. Split the opening compass walk and the frame too. Parent steps remain 21; words and clicks increase substantially, so this is a pacing repair.
+
+Review steps 3, 5, 8–18 and 20 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
