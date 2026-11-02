@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-7 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+8 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -13,7 +13,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `turkish-sultana-mixed-stars` | 28 → 27 | 28 → 37 | 971 → 1005 | Yes, 88 segments |
 | `barsbay-twelve-star-doors` | 28 → 25 | 41 → 50 | 1339 → 1306 | Yes, 144 segments |
 | `bourgoin-142-star-rows` | 27 → 25 | 30 → 32 | 912 → 893 | Yes, 196 segments |
-| `camlica-mosque-stars` | 25 → — | 25 → — | 1777 → — | — |
+| `camlica-mosque-stars` | 25 → 25 | 25 → 85 | 1777 → 2534 | Yes, 250 segments |
 | `fathabad-mixed-stars` | 24 → — | 26 → — | 781 → — | — |
 | `mihrimah-uskudar-stars` | 23 → — | 23 → — | 1081 → — | — |
 | `bourgoin-153-rosettes` | 23 → — | 23 → — | 938 → — | — |
@@ -89,6 +89,12 @@ All 144 ink segments match the saved baseline at nine decimal places. The full r
 Paired independent 75° and 150° guide families. Split the diagonal projections, both circle-transfer chains and the frame into parts. Each compass transfer now has its own part. The opening used by Ismail and Chehel Sotoun returns before this local transformation and remains unchanged.
 
 All 196 ink segments match the saved baseline at nine decimal places. Full regeneration matches the tutorial steps, ink and expect block. Plain-text and helper checks passed. The complete weave suite and selected engine checks passed 265 tests before the last pacing-only split; they were rerun after it. Inspected the ordered step pictures and wall. Review steps 7–10 and 18–19 most closely. Browser playback and hand construction remain unchecked.
+
+## camlica-mosque-stars
+
+No shorter exact construction was verified. The old five-line batches contain dependent chains, so they now have one line and its mirror per part. The seven circle transfers of the ten-division opening are separate too. Removed one mirror line through O that has no construction, ink or tile users. This lesson is longer in words and clicks; it is a pacing repair, not a shortening success.
+
+Review steps 3, 5, 8–23 and 24 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
 ## Checks
 

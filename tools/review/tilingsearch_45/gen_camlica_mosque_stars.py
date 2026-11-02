@@ -99,6 +99,28 @@ def build(pieces):
     seeds()
     s4.write_plan(entries, size=int(os.environ.get('SIZE', 5)))
     tile()
+    shorter_steps()
+
+
+def shorter_steps():
+    from lesson_steps import partition,tenfold_opening_parts,mirrored_line_parts
+    tenfold_opening_parts(cm.steps)
+    cm.steps[:]=[mirrored_line_parts(s) if 8<=s["id"]<=23 else s for s in cm.steps]
+    # This mirror of the new line through O has no later construction or ink
+    # user. Keeping it in a later part would ask for an unrelated extra move.
+    part=cm.steps[22]['parts'][1]
+    assert 'm65b' in part['create']
+    del part['create']['m65b']
+    part['text']='Draw a line through O parallel to line AC.'
+    last=cm.steps[-1]
+    assert last["id"]==24
+    cm.steps[-1]=partition(last,"Draw the rectangular frame.",[
+        ("The line through P19 crosses the horizontal line through O at T. Draw a vertical line through T.",
+         ["T","side"],None),
+        ("The vertical through T crosses the mirror image of the line through P3 at K1. "
+         "Draw a horizontal line through K1. Turn both frame lines round O by 180°. "
+         "They frame the tile, with corners K1 to K4.",
+         ["K1","top","frame","K2","K3","K4"],None)])
 
 
 def lab():
