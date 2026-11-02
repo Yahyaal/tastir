@@ -130,10 +130,9 @@
     },
     {
       "id": 7,
-      "text": "Draw a circle with centre A through O. It crosses the horizontal line at N1, right of A. Draw a circle with centre N1 and opening OA. It crosses that line at N2, right of N1.",
+      "text": "The circle with centre A through O crosses the horizontal line at N1, right of A. Draw a circle with centre N1 and opening OA. It crosses that line at N2, right of N1.",
       "create": {
-        "two": {"circle": {"centre": "A", "through": "O"}},
-        "N1": {"point": {"meet": ["two", "h"], "pick": {"farthest": "O"}}},
+        "N1": {"point": {"meet": ["cE", "h"], "pick": {"farthest": "O"}}},
         "three": {"circle": {"centre": "N1", "radiusFrom": ["O", "A"]}},
         "N2": {"point": {"meet": ["three", "h"], "pick": {"farthest": "O"}}}
       },
@@ -141,32 +140,70 @@
     },
     {
       "id": 8,
-      "text": "Draw a straight line through N2 and D. Draw a line through A parallel to it. It crosses the vertical line at P1. Draw a circle with centre O through P1. It crosses the horizontal line at N3, right of O.",
-      "create": {
-        "intercept": {"line": {"through": ["N2", "D"]}},
-        "third": {"line": {"through": "A", "parallelTo": "intercept"}},
-        "P1": {"point": {"meet": ["third", "v"]}},
-        "thirdCircle": {"circle": {"centre": "O", "through": "P1"}},
-        "N3": {"point": {"meet": ["thirdCircle", "h"], "pick": {"angle": 0.0}}}
-      },
-      "animate": "compass",
-      "textWithoutHelpers": "Draw a line through A parallel to the line from D to N2. It crosses the vertical line at P1. Draw a circle with centre O through P1. It crosses the horizontal line at N3, right of O."
+      "text": "Draw a straight line through N2 and D.",
+      "create": {"intercept": {"line": {"through": ["N2", "D"]}}},
+      "animate": "ruler"
     },
     {
       "id": 9,
-      "text": "Draw a circle with centre O and opening AE. It crosses the horizontal line at N4, right of A. Draw a circle with centre N1 and opening from O to N3. It crosses that line at N5, right of N1. Draw a circle with centre N5 and opening from O to N4. It crosses that line at N6, right of N5.",
-      "create": {
-        "root3": {"circle": {"centre": "O", "radiusFrom": ["A", "E"]}},
-        "N4": {"point": {"meet": ["root3", "h"], "pick": {"angle": 0.0}}},
-        "sevenThirds": {"circle": {"centre": "N1", "radiusFrom": ["O", "N3"]}},
-        "N5": {"point": {"meet": ["sevenThirds", "h"], "pick": {"farthest": "O"}}},
-        "apothem": {"circle": {"centre": "N5", "radiusFrom": ["O", "N4"]}},
-        "N6": {"point": {"meet": ["apothem", "h"], "pick": {"farthest": "O"}}}
-      },
-      "animate": "compass"
+      "text": "Find one third of the unit.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a line through A parallel to the line from D to N2. It crosses the vertical line at P1.",
+          "create": {
+            "third": {"line": {"through": "A", "parallelTo": "intercept"}},
+            "P1": {"point": {"meet": ["third", "v"]}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a line through A parallel to the line from D to N2. It crosses the vertical line at P1."
+        },
+        {
+          "text": "Draw a circle with centre O through P1. It crosses the horizontal line at N3, right of O.",
+          "create": {
+            "thirdCircle": {"circle": {"centre": "O", "through": "P1"}},
+            "N3": {"point": {"meet": ["thirdCircle", "h"], "pick": {"angle": 0.0}}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 10,
+      "text": "Transfer the frame lengths.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre O and opening AE. It crosses the horizontal line at N4, right of A.",
+          "create": {
+            "root3": {"circle": {"centre": "O", "radiusFrom": ["A", "E"]}},
+            "N4": {"point": {"meet": ["root3", "h"], "pick": {"angle": 0.0}}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a circle with centre O and opening AE. It crosses the horizontal line at N4, right of A."
+        },
+        {
+          "text": "Draw a circle with centre N1 and opening from O to N3. It crosses that line at N5, right of N1.",
+          "create": {
+            "sevenThirds": {"circle": {"centre": "N1", "radiusFrom": ["O", "N3"]}},
+            "N5": {"point": {"meet": ["sevenThirds", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a circle with centre N1 and opening from O to N3. It crosses that line at N5, right of N1."
+        },
+        {
+          "text": "Draw a circle with centre N5 and opening from O to N4. It crosses that line at N6, right of N5.",
+          "create": {
+            "apothem": {"circle": {"centre": "N5", "radiusFrom": ["O", "N4"]}},
+            "N6": {"point": {"meet": ["apothem", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a circle with centre N5 and opening from O to N4. It crosses that line at N6, right of N5."
+        }
+      ]
+    },
+    {
+      "id": 11,
       "text": "Draw a vertical line through N6. Turn it round O by 60°, five times. The six lines frame the tile, with corners T1 to T6.",
       "create": {
         "frame": {"line": {"through": "N6", "parallelTo": "v"}},
@@ -181,51 +218,99 @@
       "animate": "ruler"
     },
     {
-      "id": 11,
-      "text": "Draw a line through N6 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P2. Draw a vertical line through P2. It crosses the horizontal line at N7.",
-      "create": {
-        "half0": {"line": {"through": "N6", "parallelTo": "r135"}},
-        "P2": {"point": {"meet": ["half0", "r45"]}},
-        "halfProjection0": {"line": {"through": "P2", "parallelTo": "v"}},
-        "N7": {"point": {"meet": ["halfProjection0", "h"]}}
-      },
-      "animate": "ruler"
-    },
-    {
       "id": 12,
-      "text": "Draw a line through N7 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P3. Draw a vertical line through P3. It crosses the horizontal line at N8.",
-      "create": {
-        "half1": {"line": {"through": "N7", "parallelTo": "r135"}},
-        "P3": {"point": {"meet": ["half1", "r45"]}},
-        "halfProjection1": {"line": {"through": "P3", "parallelTo": "v"}},
-        "N8": {"point": {"meet": ["halfProjection1", "h"]}}
-      },
-      "animate": "ruler"
+      "text": "Halve the horizontal length.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a line through N6 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P2.",
+          "create": {
+            "half0": {"line": {"through": "N6", "parallelTo": "r135"}},
+            "P2": {"point": {"meet": ["half0", "r45"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through P2. It crosses the horizontal line at N7.",
+          "create": {
+            "halfProjection0": {"line": {"through": "P2", "parallelTo": "v"}},
+            "N7": {"point": {"meet": ["halfProjection0", "h"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 13,
-      "text": "Draw a line through N8 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P4. Draw a vertical line through P4. It crosses the horizontal line at N9.",
-      "create": {
-        "half2": {"line": {"through": "N8", "parallelTo": "r135"}},
-        "P4": {"point": {"meet": ["half2", "r45"]}},
-        "halfProjection2": {"line": {"through": "P4", "parallelTo": "v"}},
-        "N9": {"point": {"meet": ["halfProjection2", "h"]}}
-      },
-      "animate": "ruler"
+      "text": "Halve the horizontal length.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a line through N7 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P3.",
+          "create": {
+            "half1": {"line": {"through": "N7", "parallelTo": "r135"}},
+            "P3": {"point": {"meet": ["half1", "r45"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through P3. It crosses the horizontal line at N8.",
+          "create": {
+            "halfProjection1": {"line": {"through": "P3", "parallelTo": "v"}},
+            "N8": {"point": {"meet": ["halfProjection1", "h"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 14,
-      "text": "Draw a line through N9 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P5. Draw a vertical line through P5. It crosses the horizontal line at N10.",
-      "create": {
-        "half3": {"line": {"through": "N9", "parallelTo": "r135"}},
-        "P5": {"point": {"meet": ["half3", "r45"]}},
-        "halfProjection3": {"line": {"through": "P5", "parallelTo": "v"}},
-        "N10": {"point": {"meet": ["halfProjection3", "h"]}}
-      },
-      "animate": "ruler"
+      "text": "Halve the horizontal length.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a line through N8 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P4.",
+          "create": {
+            "half2": {"line": {"through": "N8", "parallelTo": "r135"}},
+            "P4": {"point": {"meet": ["half2", "r45"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through P4. It crosses the horizontal line at N9.",
+          "create": {
+            "halfProjection2": {"line": {"through": "P4", "parallelTo": "v"}},
+            "N9": {"point": {"meet": ["halfProjection2", "h"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 15,
+      "text": "Halve the horizontal length.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a line through N9 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P5.",
+          "create": {
+            "half3": {"line": {"through": "N9", "parallelTo": "r135"}},
+            "P5": {"point": {"meet": ["half3", "r45"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through P5. It crosses the horizontal line at N10.",
+          "create": {
+            "halfProjection3": {"line": {"through": "P5", "parallelTo": "v"}},
+            "N10": {"point": {"meet": ["halfProjection3", "h"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
+    },
+    {
+      "id": 16,
       "text": "Draw a circle with centre N9 and opening from O to N10. It crosses the horizontal line at N11, right of N9. Draw a circle with centre N7 and opening from O to N9. It crosses that line at N12, right of N7.",
       "create": {
         "threeX": {"circle": {"centre": "N9", "radiusFrom": ["O", "N10"]}},
@@ -236,7 +321,7 @@
       "animate": "compass"
     },
     {
-      "id": 16,
+      "id": 17,
       "text": "Draw a circle with centre N6 and opening from O to N11. It crosses the horizontal line at N13, towards O. Draw a circle with centre N6 and opening from O to N10. It crosses that line at N14, towards O.",
       "create": {
         "thirteenX": {"circle": {"centre": "N6", "radiusFrom": ["O", "N11"]}},
@@ -247,38 +332,24 @@
       "animate": "compass"
     },
     {
-      "id": 17,
-      "text": "Draw vertical lines through N10 and N11. Turn them round O by 60°, five times.",
+      "id": 18,
+      "text": "Draw vertical lines through N10, N11, N12, N13 and N14. Turn each line round O by 60°, five times.",
       "create": {
         "N10v": {"line": {"through": "N10", "parallelTo": "v"}},
         "N10copies": {"repeat": {"of": ["N10v"], "by": "rot6"}},
         "N11v": {"line": {"through": "N11", "parallelTo": "v"}},
-        "N11copies": {"repeat": {"of": ["N11v"], "by": "rot6"}}
-      },
-      "animate": "ruler"
-    },
-    {
-      "id": 18,
-      "text": "Draw vertical lines through N12 and N13. Turn them round O by 60°, five times.",
-      "create": {
+        "N11copies": {"repeat": {"of": ["N11v"], "by": "rot6"}},
         "N12v": {"line": {"through": "N12", "parallelTo": "v"}},
         "N12copies": {"repeat": {"of": ["N12v"], "by": "rot6"}},
         "N13v": {"line": {"through": "N13", "parallelTo": "v"}},
-        "N13copies": {"repeat": {"of": ["N13v"], "by": "rot6"}}
-      },
-      "animate": "ruler"
-    },
-    {
-      "id": 19,
-      "text": "Draw a vertical line through N14. Turn it round O by 60°, five times.",
-      "create": {
+        "N13copies": {"repeat": {"of": ["N13v"], "by": "rot6"}},
         "N14v": {"line": {"through": "N14", "parallelTo": "v"}},
         "N14copies": {"repeat": {"of": ["N14v"], "by": "rot6"}}
       },
       "animate": "ruler"
     },
     {
-      "id": 20,
+      "id": 19,
       "text": "Draw a line through N6 parallel to line BH. Turn it round O by 60°, five times.",
       "create": {
         "gl0": {"line": {"through": "N6", "parallelTo": "r30"}},
@@ -287,7 +358,7 @@
       "animate": "ruler"
     },
     {
-      "id": 21,
+      "id": 20,
       "text": "The line at 135° from OA crosses the last line at Q1, below O. Draw a line through Q1 parallel to line CJ. Turn it round O by 60°, five times.",
       "create": {
         "Q1": {"point": {"meet": ["r135", "gl0"]}},
@@ -297,7 +368,7 @@
       "animate": "ruler"
     },
     {
-      "id": 22,
+      "id": 21,
       "text": "The line at 165° from OA crosses the last line at Q2, below O. Draw a line through Q2 parallel to line BH. Turn it round O by 60°, five times.",
       "create": {
         "Q2": {"point": {"meet": ["r165", "gl1"]}},
@@ -307,7 +378,7 @@
       "animate": "ruler"
     },
     {
-      "id": 23,
+      "id": 22,
       "text": "Join T1, T2, T3, T4, T5 and T6 to mark the tile that repeats.",
       "create": {"tile": {"polygon": ["T1", "T2", "T3", "T4", "T5", "T6"]}},
       "animate": "fade"

@@ -17,6 +17,36 @@ L=7/3+math.sqrt(3)
 X=L/16
 
 
+def shorter_steps():
+    from lesson_steps import partition,merge,circle_parts,number
+    old={s['id']:s for s in cm.steps};assert len(old)==22
+    del old[7]['create']['two'];g.el.pop('two')
+    old[7]['create']['N1']['point']['meet'][0]='cE'
+    old[7]['text']=old[7]['text'].replace(
+        'Draw a circle with centre A through O. It crosses the horizontal line at N1, right of A.',
+        'The circle with centre A through O crosses the horizontal line at N1, right of A.')
+    helper={'id':8,'text':'Draw a straight line through N2 and D.',
+            'create':{'intercept':old[8]['create'].pop('intercept')},'animate':'ruler'}
+    old[8]=partition(old[8],'Find one third of the unit.',[
+        ('Draw a line through A parallel to the line from D to N2. It crosses the vertical line at P1.',
+         ['third','P1'],
+         'Draw a line through A parallel to the line from D to N2. It crosses the vertical line at P1.'),
+        ('Draw a circle with centre O through P1. It crosses the horizontal line at N3, right of O.',
+         ['thirdCircle','N3'],None)])
+    old[9]=circle_parts(old[9],'Transfer the frame lengths.')
+    for k in range(4):
+        before,after,p=f'N{6+k}',f'N{7+k}',f'P{k+2}'
+        old[11+k]=partition(old[11+k],'Halve the horizontal length.',[
+            (f'Draw a line through {before} parallel to the line at 135° from OA. '
+             f'It crosses the line at 45° from OA at {p}.',[f'half{k}',p],None),
+            (f'Draw a vertical line through {p}. It crosses the horizontal line at {after}.',
+             [f'halfProjection{k}',after],None)])
+    verticals=merge([old[17],old[18],old[19]],
+        'Draw vertical lines through N10, N11, N12, N13 and N14. Turn each line round O by 60°, five times.')
+    cm.steps[:]=number([*[old[i] for i in range(1,8)],helper,
+                      *[old[i] for i in range(8,17)],verticals,old[20],old[21],old[22]])
+
+
 def build():
     star_opening(opening_only=True)
     step('Draw a circle with centre A through O. It crosses the horizontal line at N1, right of A. '
@@ -75,6 +105,7 @@ def build():
     cm.steps[7]['textWithoutHelpers'] = (
         'Draw a line through A parallel to the line from D to N2. It crosses the vertical line at P1. '
         'Draw a circle with centre O through P1. It crosses the horizontal line at N3, right of O.')
+    shorter_steps()
     return cell
 
 

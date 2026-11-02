@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-12 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+13 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -17,7 +17,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `fathabad-mixed-stars` | 24 → 20 | 26 → 31 | 781 → 762 | Yes, 120 segments |
 | `mihrimah-uskudar-stars` | 23 → 23 | 23 → 32 | 1081 → 1178 | Yes, 124 segments |
 | `bourgoin-153-rosettes` | 23 → 22 | 23 → 34 | 938 → 938 | Yes, 248 segments |
-| `otrush-star-chelates` | 23 → — | 25 → — | 741 → — | — |
+| `otrush-star-chelates` | 23 → 22 | 25 → 31 | 741 → 745 | Yes, 126 segments |
 | `atik-valide-uskudar-stars` | 22 → — | 22 → — | 998 → — | — |
 | `meknes-throne-rosette` | 22 → — | 23 → — | 1033 → — | — |
 | `meknes-bou-inania-rosette-rings` | 22 → — | 23 → — | 773 → — | — |
@@ -120,6 +120,12 @@ Review steps 2, 4–6, 10, 17 and the extra corner step 20 most closely. The ink
 Applied the shared changes with Bourgoin 153, in that family’s earlier place in the brief. Pairing the two independent 78.75° families removes one parent step and five words. The compass chains and angle halvings have separate parts; their extra clicks remain visible in the table.
 
 Review steps 2, 4–6, 10 and 17 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## otrush-star-chelates
+
+Reused the opening circle and grouped five independent vertical guide families. Split the intercept, its compass transfer and each diagonal halving. The helper-only intercept is an ordinary step so helpers-off playback can skip it; the next part has its own alternate text. The last three guide families still depend on each other and remain separate.
+
+Review steps 8–10, 12–15 and 18 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
