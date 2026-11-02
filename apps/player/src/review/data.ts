@@ -8910,6 +8910,14 @@ export const PROGRESS: {
       text: 'This is by eye only. Some photos show a similar design in another building, and many are too small, carved or angled to judge. Codex then laid lines over the 59 photos: 1 agrees, 19 agree in part, 2 are plain variants that omit details, and 37 could not be lined up, so most patterns are still unconfirmed by a photo.',
     },
     {
+      title: 'F6 preparation: feedback database and bot-check widget ready',
+      text: 'PR #14 is merged. The live database now has the feedback migration, and the deployed configuration endpoint responds successfully with reporting still off. The Cloudflare Managed widget is created for tastir-studio.vercel.app; its keys and a new cleanup secret are saved in your ignored private settings file. Choose the public contact email, copy the five feedback settings into Vercel, and follow the guide to redeploy and test. Vercel is not signed in on this computer, so those dashboard steps remain yours.',
+      link: {
+        label: 'Your step-by-step launch guide',
+        href: '#/notes/feedback-go-live',
+      },
+    },
+    {
       title: 'PR #14 review fixes: feedback intake and retry recovery',
       text: 'Sender limits now run before the global attempt budget, and the global minute/day counters update together. Production hides Feedback when intake is off; the dev server keeps the form available for review. The drawing checkbox explains when attachments are unavailable. Interrupted sends can reclaim an expired lease under a database row lock, with stale-worker protection and tracked image cleanup. The setup guide also explains the daily cron’s 401 response until its secret is configured.',
       link: {
@@ -9430,10 +9438,10 @@ export const PROGRESS: {
   next: [
     {
       title: 'Feedback: production acceptance and optional direct agent access',
-      text: 'After reviewing the branch, apply the migration and configure production bot verification, the privacy contact, private storage and scheduled cleanup. Check a real hosted report and observe traffic before enabling wider intake. F7 can then add report-specific, revocable agent grants.',
+      text: 'The migration and Cloudflare widget are ready. Add your contact email, copy the prepared feedback settings into Vercel Production, verify private storage and cleanup, then enable reporting and send a real browser report. Follow the guide and observe a week of usage. F7 can later add report-specific, revocable agent grants.',
       link: {
-        label: 'Feedback rollout and operation',
-        href: '#/notes/feedback-setup',
+        label: 'Turn on feedback: your remaining steps',
+        href: '#/notes/feedback-go-live',
       },
     },
     {
