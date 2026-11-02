@@ -6723,7 +6723,9 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'agra-twelve-six-stars',
     title: 'Twelve- and six-pointed stars of Agra Fort (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You kept this plain version on 2 November 2026. Its notes say it leaves out the twelve ribs and the knot of the real wall.',
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s IND0403 drawing. The drawing gives no steps. Three squares construct the star. A parallel intercept fixes the repeat length exactly; six parallel families through existing crossings supply all remaining lines.',
@@ -8873,24 +8875,7 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [
-  {
-    id: 'agra-plain-variant',
-    text: 'You were right about Design B: that picture was broken, because its small window cut off most of our lines. Redrawn over the whole panel, our lines follow the bands. The wall adds twelve ribs in two stars and a knot in the third, which this plain version leaves out. The kite version already has the ribs. Keep the plain version?',
-    choices: ['Keep it, and say so in its notes', 'Remove it'],
-    pictures: [
-      {
-        src: 'renders/agra-twelve-six-stars/photo-overlay.png',
-        caption: 'The plain version, with nothing inside the stars.',
-      },
-      {
-        src: 'renders/agra-twelve-six-stars-kites/photo-overlay-ind0403.png',
-        caption: 'The kite version, with the ribs inside every star.',
-      },
-    ],
-    card: 'agra-twelve-six-stars',
-  },
-];
+export const QUESTIONS: readonly Question[] = [];
 
 export interface ProgressItem {
   readonly title: string;
@@ -8917,7 +8902,7 @@ export const PROGRESS: {
   done: [
     {
       title: 'Your answers: the new patterns look right, Masjid-e Ali stays',
-      text: 'The Tiling Search cards are marked as checked by you, and the plain Masjid-e Ali stays and says what it leaves out. The Agra picture you questioned was broken, so it is redrawn over the whole panel and asked again.',
+      text: 'The Tiling Search cards are marked as checked by you, and the plain Masjid-e Ali stays and says what it leaves out. The Agra picture you questioned was broken, so it was redrawn over the whole panel, and the plain Agra stays too.',
     },
     {
       title:
