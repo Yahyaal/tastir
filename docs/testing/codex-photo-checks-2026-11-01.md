@@ -1,0 +1,151 @@
+# Photo checks, 1 November 2026
+
+Of 59 pairs, 7 have been assessed: 1 agree, 4 agree in part, 0 disagree and 2 are not checkable. 52 remain unassessed.
+
+This report checks the supplied private Wade photographs against the current tutorial dumps. Agreement means the visible geometric bands within the stated region, not the floral inlays, borders, colours or historical attribution. All picks, attempted registrations and overlays stay in this worktree under `docs/research/photo-checks/<tutorial id>/`; none are committed. Each picks file records its reading width, original photograph and tutorial coordinates. `refine` is false. Points used for fitting are not independent evidence; the entries name the regions inspected beyond them. A failed registration is not evidence of a wrong tutorial.
+
+## Disagreements
+
+No disagreement established so far.
+
+## Pair-by-pair findings
+
+### Alhambra and Nasrid Spain
+
+**1. `alhambra-arrayanes-portico-doors` — SPA 0214 (P077).** **agrees in part**. Four eight-star centres spanning the upper half register the main band layout. I followed the central diamonds, long horizontal six-sided fields and the lower repeat beyond the fitted stars; the lines sit within the broad striped moldings. The carving and floral infill prevent a groove-by-groove check, so this is a check of the broad geometric skeleton only. Overlay: `docs/research/photo-checks/alhambra-arrayanes-portico-doors/photo-overlay.png`.
+
+**2. `alhambra-leones-door-stars` — SPA 0424x (A233).** **agrees in part**. Four star centres register the top two rows. The repeated eight-pointed stars and long horizontal six-sided fields can be located in the overlay and in the lower repeat. Their broad stepped frames contain several parallel moldings, so I cannot assign a unique joint to every ink line or certify the narrow intervening pieces. The suspected long-polygon mismatch is not established. Overlay: `docs/research/photo-checks/alhambra-leones-door-stars/photo-overlay.png`.
+
+**3. `mexuar-twelve-star-bands` — SPA 1914 (W85).** **agrees in part**. Four twelve-star centres in two adjacent upper rows register the triangular lattice. I inspected the lower rows and their star, kite and pentagon arrangement. The large twelve-pointed figures and connecting mesh are present, but the floral carving, relief shadows and fine bands make exact offsets uncertain. This does not verify the carved rosettes inside the stars. Overlay: `docs/research/photo-checks/mexuar-twelve-star-bands/photo-overlay.png`.
+
+### Spain and Portugal, other
+
+**4. `alcazar-interlaced-stars` — SPA 2215 (SPA2215).** **agrees**. Four large eight-star centres in the upper left register the panel. Away from these picks, the small eight-stars, squared arrow turns and long six-sided spaces follow the white bands through the middle and lower rows. The two star sizes and their alternating positions agree. The separate decorative borders are outside the tutorial's repeat. Overlay: `docs/research/photo-checks/alcazar-interlaced-stars/photo-overlay.png`.
+
+**5. `alcazar-mosaic-stars` — SPA 2311 (H424).** Not assessed yet.
+
+**6. `alcazar-six-eight-stars` — SPA 2219 (CM022).** Not assessed yet.
+
+**7. `cordoba-synagogue-star-bands` — SPA 2103x (SPA2103X).** Not assessed yet.
+
+**8. `seville-six-eight-twelve-stars` — SPA 2200 (SEV2).** Not assessed yet.
+
+**9. `seville-vanda-star-rosettes` — MOR 0322 (PG229).** Not assessed yet.
+
+**10. `toledo-synagogue-star-bands` — SPA 2929 (SPA2929).** Not assessed yet.
+
+**11. `toledo-tile-stars` — MOR 2816x (RAY1).** Not assessed yet.
+
+### Morocco
+
+**12. `attarine-star-rosettes` — MOR 0323 (MOR0323).** Not assessed yet.
+
+**13. `fes-attarine-rosette` — MOR 0321 (MOR0321).** Not assessed yet.
+
+**14. `fes-bou-inania-cross-stars` — MOR 2832x (MOR2832X).** Not assessed yet.
+
+**15. `fes-bou-inania-interlaced-rosette` — MOR 0203 (P71TL).** Not assessed yet.
+
+**16. `fes-bou-inania-octagonal-rosettes` — MOR 2841x (MOR2841X).** Not assessed yet.
+
+**17. `fes-moulay-ismail-interlace` — MOR 0331 (MOR0331).** Not assessed yet.
+
+**18. `fes-palace-door-stars` — SPA 2505 (C101).** Not assessed yet.
+
+**19. `fes-petal-star-rosette` — MOR 0411 (MOR0411).** Not assessed yet.
+
+**20. `fes-rosette-rings` — MOR 0719 (MOR0719).** Not assessed yet.
+
+**21. `fes-throne-star-burst` — MOR 0422 (C122B).** Not assessed yet.
+
+**22. `fes-two-rosettes` — MOR 0837 (MOR0837).** Not assessed yet.
+
+**23. `marrakesh-bahia-rosette` — MOR 1218 (MOR1218).** Not assessed yet.
+
+**24. `meknes-bou-inania-petals` — MOR 0910 (MOR0910).** Not assessed yet.
+
+**25. `meknes-bou-inania-rosette-rings` — MOR 0909 (P70).** Not assessed yet.
+
+**26. `meknes-bou-inania-rosette` — MOR 2404x (MOR2404X).** Not assessed yet.
+
+**27. `meknes-bou-inania-star-rings` — MOR 0913 (P164).** Not assessed yet.
+
+**28. `meknes-moulay-ismail-rosette` — MOR 0803 (MOR0803).** Not assessed yet.
+
+**29. `moulay-idriss-interlace` — MOR 0329 (C268A).** Not assessed yet.
+
+**30. `moulay-ismail-octagons` — MOR 0606 (MOR0606).** Not assessed yet.
+
+**31. `rabat-mixed-star-rosette` — MOR 1118 (MOR1118).** **agrees in part**. The four small eight-star centres around the upper medallion register the mesh. I counted twelve long green petals around its twelve-pointed centre; the six-stars above and below, smaller hexagons and the second medallion below follow the same layout. The bottom medallion's centre is damaged and several narrow fillers are blurred, so I cannot certify every line. The suspected petal-count difference is not present. Overlay: `docs/research/photo-checks/rabat-mixed-star-rosette/photo-overlay.png`.
+
+**32. `rabat-rosette-bands` — MOR 1137 (MOR1137).** Not assessed yet.
+
+**33. `tetouan-sakkala-knots` — MOR 2615x (MOR2615).** Not assessed yet.
+
+### Egypt, Syria and Iraq
+
+**34. `bahramiye-mosque-stars` — TUR 0921 (AJL1).** Not assessed yet.
+
+**35. `barsbay-twelve-star-doors` — EGY 1030 (EGY1030).** Not assessed yet.
+
+**36. `bourgoin-106-star-lattice` — EGY 1514 (P106).** Not assessed yet.
+
+**37. `ibn-arabi-six-stars` — SYR 0222 (SYR0222).** Not assessed yet.
+
+**38. `khayrbak-mosque-stars` — EGY 0818 (P60B).** Not assessed yet.
+
+### Iran
+
+**39. `isfahan-ali-notched-tiles` — IRA 1330 (IRA1330).** Not assessed yet.
+
+**40. `isfahan-masjid-ali-crosses-plain` — IRA 1329 (IRA1329).** Not assessed yet.
+
+**41. `isfahan-masjid-ali-crosses` — IRA 1329 (IRA1329).** Not assessed yet.
+
+**42. `isfahan-royal-mosque-star-rows` — IRA 0501 (IRA0501).** Not assessed yet.
+
+**43. `isfahan-sayyed-crosses` — IRA 1617 (IRA1617).** Not assessed yet.
+
+**44. `mashhad-gowhar-interlace` — JAI 1033 (CM066B).** Not assessed yet.
+
+**45. `shiraz-qavam-crosses` — TRA 0308 (P47).** Not assessed yet.
+
+**46. `sultaniyeh-twelve-star-bands` — IRA 2633 (IRA2633).** Not assessed yet.
+
+### Central Asia
+
+**47. `shah-i-zinda-octagons` — TRA 0301 (F254L).** Not assessed yet.
+
+**48. `tillya-kari-squares` — SYR 0411 (A222).** Not assessed yet.
+
+### Turkey
+
+**49. `iznik-green-mosque-pinwheel` — TRA 0332 (GREEN1).** Not assessed yet.
+
+### India
+
+**50. `agra-fort-stars` — IND 0312 (IND0312).** Not assessed yet.
+
+**51. `agra-twelve-six-stars-kites` — IND 0405 (IND0405).** Not assessed yet.
+
+**52. `agra-twelve-six-stars` — IND 0403 (IND0403).** Not assessed yet.
+
+**53. `itimad-daula-stars` — TRA 0506 (F78).** Not assessed yet.
+
+**54. `mughal-jali-octagons` — IND 0820 (MET1).** **not checkable**. I enlarged the ring near photograph (135,165) and counted eight outer sides. Several centre-based registrations at different lattice assignments failed to align the interior mesh convincingly within the time box. The saved overlay is an unsuccessful trial, not evidence of disagreement. I could not establish the correct correspondence between the tutorial's pinwheel centres and this two-level grille; the octagon count alone does not verify it. Overlay: `docs/research/photo-checks/mughal-jali-octagons/photo-overlay.png`.
+
+**55. `salim-chishti-octagons` — IND 0820 (SM27).** **not checkable**. The same IND 0820 image has eight-sided outer rings. I attempted the analogous centre registrations independently against this tutorial's dump, but could not establish a reliable correspondence for the inner pinwheel network. The saved trial overlay must not be treated as a fit or an agreement check. This remains unresolved, rather than a claim that the rings have more than eight sides. Overlay: `docs/research/photo-checks/salim-chishti-octagons/photo-overlay.png`.
+
+**56. `sikandra-stars` — IND 0703 (IND0703).** Not assessed yet.
+
+### Books and other
+
+**57. `assisi-basilica-stars` — SIC 031 (P78B).** Not assessed yet.
+
+**58. `bourgoin-58-star-bands` — MOR 0316 (P058).** Not assessed yet.
+
+**59. `bourgoin-plate-64` — TUR 0626 (P064).** Not assessed yet.
+
+## Validation and scope
+
+Dependencies installed once with `pnpm install`; `pnpm nx run schema:build` succeeded (Nx local cache). Review renders and image calculations run sequentially under the 3 GB memory cap. No server was started. No tutorial, generator, application or review-page data was changed. Full automated check results will be recorded here before the final push.
