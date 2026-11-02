@@ -39,6 +39,63 @@ def transfers(entries):
     for entry in entries:transfer(*entry)
 
 
+def shorter_steps():
+    from lesson_steps import partition,merge,circle_parts,number
+    old={s['id']:s for s in cm.steps}
+    assert len(old)==28
+    del old[10]['create']['twice'];g.el.pop('twice')
+    old[10]['create']['N9']['point']['meet'][0]='cE'
+    old[10]['text']=(
+        'The circle with centre A through O crosses the horizontal line again at N9, right of A. '
+        'Draw a circle with centre N9 through O. '
+        'It crosses the horizontal line again at N10, right of N9.')
+    for n in [8,9,11]:old[n]=circle_parts(old[n],'Transfer the horizontal lengths.')
+    old[7]=partition(old[7],'Find the diagonal length.',[
+        ('Draw a circle with centre O and opening AE. It crosses the line at 45° from OA at P2, above O.',
+         ['root3','P2'],None),
+        ('Draw a vertical line through P2. It crosses the horizontal line at N4.',['projection4','N4'],None)])
+    old[14]=partition(old[14],'Find the tile midpoint.',[
+        ('Draw circles with centres O and N12 through each other. Their two crossings are P3 and P4.',
+         ['half0','half1','P3','P4'],None),
+        ('Draw a straight line through P3 and P4. It crosses the horizontal line at N13. '
+         'It crosses the line at 45° from OA at Q.',['half','N13','Q'],None)])
+    old[15]=partition(old[15],'Set the six-pointed star circle.',[
+        ('Draw a circle with centre O through N6. It crosses the line at 45° from OA at P5, above O.',
+         ['centralCircle','P5'],None),
+        ('Draw a circle with centre Q through P5.',['sc6'],None)])
+    old[18]=partition(old[18],'Find the small corner marks.',[
+        ('Draw a horizontal line through U1. Draw a vertical line through U1.',['cornerH','cornerV'],None),
+        ('Draw a circle with centre U1 and opening from O to N1. '
+         'It crosses these lines at T1, left of U1, and T2, below U1.',['smallCorner','T1','T2'],None)])
+    old[19]=partition(old[19],'Draw the corner guide lines.',[
+        ('Draw a circle with centre U1 and opening from O to N5. '
+         'It crosses the horizontal at V1, left of U1, and the vertical at V2, below U1.',
+         ['largeCorner','V1','V2'],None),
+        ('Draw vertical lines through T1 and V1. Draw horizontal lines through T2 and V2.',
+         ['tv','vv','th','vh'],None)])
+    old[22]=partition(old[22],'Divide the hexagon circle.',[
+        ('Draw a circle with centre Z through S3.',['hc'],None),
+        ('Draw lines through Z parallel to the lines at 15°, 75° and 135° from OA. '
+         'Their crossings with the circle are R1 to R6, counted round it.',
+         ['hexRay15','hexRay75','hexRay135',*[f'R{i}' for i in range(1,7)]],
+         'Draw a line through Z at 135° from OA. The circle’s six division points are R1 to R6, counted round it.')])
+    old[23]=partition(old[23],'Draw the two hexagons and their copies.',[
+        ('Reflect the circle and its three lines across the vertical line through O. '
+         'Their division points are X1 to X6.',
+         ['reflectCircle','reflectRay15','reflectRay75','reflectRay135',*[f'X{i}' for i in range(1,7)]],
+         'Reflect the circle with centre Z and its six division points across the vertical line through O. '
+         'Their copies are X1 to X6.'),
+        ('Draw a straight line through each pair of neighbouring points R1 to R6, including R6 and R1. '
+         'Draw a straight line through each pair of neighbouring points X1 to X6, including X6 and X1. '
+         'Turn the twelve sides round O by 90°, three times.',
+         [*[f'hex{j}{i}' for j in range(2) for i in range(6)],'hexagons'],None)])
+    pair=merge([old[25],old[26]],
+        'The 30° line through N6 crosses the 135° line through O at B2, below O. '
+        'The right tile side crosses the 120° line through W2 at B3. '
+        'Draw lines through B2 and B3 parallel to line OC. Turn each line round O by 90°, three times.')
+    cm.steps[:]=number([*[old[i] for i in range(1,25)],pair,old[27],old[28]])
+
+
 def build():
     opening()
     step('Draw the lines through O that halve angles AOB, BOC and COD. '
@@ -187,6 +244,7 @@ def build():
         'Turn the twelve sides round O by 90°, three times.')
     step('Join U1, U2, U3 and U4 to mark the tile that repeats.','fade')
     g.put('tile','polygon',None,{'polygon':['U1','U2','U3','U4']})
+    shorter_steps()
 
 
 def main():
