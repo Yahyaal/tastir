@@ -178,6 +178,73 @@ def description(name):
     return text
 
 
+def shorter_steps():
+    import re
+    from lesson_steps import partition,merge,circle_parts,number
+    old={s['id']:s for s in cm.steps}
+    assert len(old)==35
+    del old[18]['create']['Q3']
+    g.el.pop('Q3')
+    def rename(v):
+        if isinstance(v,str):return re.sub(r'\bQ3\b','Q2',v)
+        if isinstance(v,list):return [rename(x) for x in v]
+        if isinstance(v,dict):return {k:rename(x) for k,x in v.items()}
+        return v
+    old={i:rename(s) for i,s in old.items()}
+    old[8]=circle_parts(old[8],'Transfer the short edge lengths.')
+    # A wholly hidden helper must be its own step: the player skips steps,
+    # but does not skip individual parts. Avoid an empty part in that view.
+    intercept={'id':9,'text':
+        'The circle with centre O through N1 crosses the vertical line at P2, above O. '
+        'Draw a straight line through N4 and P2.',
+        'create':{n:old[9]['create'].pop(n) for n in ['P2','intercept']},'animate':'ruler'}
+    old[9]=partition(old[9],'Find one fifth of the edge.',[
+        ('Draw a line through N1 parallel to the line from N4 to P2. It crosses the vertical line at P3.',
+         ['fifth','P3'],
+         'The circle with centre O through N1 crosses the vertical line at P2, above O. '
+         'Draw a line through N1 parallel to the line from N4 to P2. It crosses the vertical line at P3.'),
+        ('Draw a circle with centre O through P3. It crosses the horizontal line at N5, right of O.',
+         ['fifthCircle','N5'],None)])
+    halves=merge([old[11],old[13]],'Halve the two lengths.')
+    halves=partition(halves,'Halve the two lengths.',[
+        ('Draw lines through N5 and N1 parallel to the line at 135° from OA. '
+         'They cross the line at 45° from OA at P4 and P6.',['half0','P4','half2','P6'],None),
+        ('Draw vertical lines through P4 and P6. They cross the horizontal line at N7 and N9.',
+         ['project0','N7','project2','N9'],None)])
+    old[12]=partition(old[12],'Halve the fifth again.',[
+        ('Draw a line through N7 parallel to the line at 135° from OA. '
+         'It crosses the line at 45° from OA at P5.',['half1','P5'],None),
+        ('Draw a vertical line through P5. It crosses the horizontal line at N8.',['project1','N8'],None)])
+    old[14]=circle_parts(old[14],'Transfer the second connector length.')
+    old[15]=partition(old[15],'Draw the outer guide family.',[
+        ('Draw a circle with centre P1 and opening from O to N11. '
+         'It crosses the line at 15° from OA at P7, further from O.',['outerCircle','P7'],None),
+        ('Draw a vertical line through P7. Turn it round O by 30°, eleven times.',['outer','outers'],None)])
+    old[28]=partition(old[28],'Draw the hexagonal frame.',[
+        ('The 165° line through Q7 turned 60° crosses the vertical line through Q12 at P8. '
+         'Draw a straight line through O and P8.',['P8','midRay'],None),
+        ('Draw a line through P8 at 90° to the line from O to P8. '
+         'Turn it round O by 60°, five times. The six lines frame the tile, with corners T1 to T6.',
+         ['frame','frames',*[f'T{i}' for i in range(1,7)]],None)])
+    spokes=merge([old[17],old[18]],
+        'The vertical line through O crosses the 30° line through Q1 at Q2. '
+        'Draw a horizontal line through Q2. Draw a line through Q2 at 15° from OA. '
+        'Turn each line round O by 30°, eleven times.',
+        'The vertical line through O crosses the 30° line through Q1 at Q2. '
+        'Draw a horizontal line through Q2. Turn it round O by 30°, eleven times. '
+        'Draw a line through Q2 at 15° from OA. '
+        'Turn it round O by 60°, 120°, 180°, 240° and 300°.')
+    def pair(a,b,points,angle):
+        intro=' '.join(old[i]['text'].split(' Draw ')[0] for i in [a,b])
+        return merge([old[a],old[b]],intro+
+            f' Draw lines through {points[0]} and {points[1]} at {angle}° from OA. '
+            'Turn each line round O by 30°, eleven times.')
+    result=[*[old[i] for i in range(1,9)],intercept,old[9],old[10],halves,old[12],old[14],old[15],old[16],spokes,
+            *[old[i] for i in range(21,31)],old[33],
+            pair(19,34,['Q4','Q19'],150),pair(20,32,['Q5','Q17'],30),pair(31,35,['Q16','Q20'],60)]
+    cm.steps[:]=number(result)
+
+
 def build():
     opening(opening_only=True)
     step('The line through A and D crosses line LB at P1, near A. '
@@ -257,6 +324,7 @@ def build():
             'Turn it round O by 60°, 120°, 180°, 240° and 300°.')
     cm.steps[28]['textWithoutHelpers']=cm.steps[28]['text']
     assert cell
+    shorter_steps()
     return cell
 
 

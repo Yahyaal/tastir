@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-The first three lessons are shorter by 29 steps in total. Their finished ink, tiles and piece polygons match the saved baselines. The owner’s requested corrections are applied. Work continues in the brief’s order, with dependent moves separated into parts.
+4 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -9,7 +9,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `rabat-mixed-star-rosette` | 49 → 38 | 52 → 46 | 1688 → 1457 | Yes, 352 segments |
 | `ismail-shrine-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1113 | Yes, 228 segments |
 | `chehel-sotoun-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1113 | Yes, 230 segments |
-| `shah-mosque-chiral-grille` | 36 → — | 38 → — | 1207 → — | — |
+| `shah-mosque-chiral-grille` | 36 → 32 | 38 → 42 | 1207 → 1150 | Yes, 318 segments |
 | `turkish-sultana-mixed-stars` | 28 → — | 28 → — | 971 → — | — |
 | `barsbay-twelve-star-doors` | 28 → — | 41 → — | 1339 → — | — |
 | `bourgoin-142-star-rows` | 27 → — | 30 → — | 912 → — | — |
@@ -61,6 +61,14 @@ Inspected all 32 step pictures in order and the wall. A human should look most c
 Applied the same construction changes as Ismail because the two lessons share their mesh. Kept Chehel Sotoun’s existing frame text, ink, colours, metadata and expect block. Its 230 ink segments match the saved set at nine decimal places. The tile and piece polygons match exactly. Its segment-set SHA-256 is `ad8b1c8930628c6b15d1c62b4876ff3591d292a547136c054d81b16b000a8873`.
 
 Inspected all 32 step pictures in order and the wall. The same steps 11–16, 23 and 30 deserve the closest human review. The Ismail generator supplies these steps; the Chehel Sotoun generator still makes its existing frame-text adjustment. Both generator constructions match their tutorials. Regenerated both complete tutorials into temporary files using the original SHAF18 and OR1 piece data from the owner’s worktree. Both regenerated steps, ink and expect blocks match exactly.
+
+## shah-mosque-chiral-grille
+
+Grouped independent guide families with the same direction and reused Q2 for the duplicate crossing Q3. The dependent compass transfers, halvings and frame construction now have one move per part. The unused helper intercept has its own step, because the player can skip a whole helper step but cannot skip one part. This prevents an empty part when helpers are hidden.
+
+The numbered steps fall from 36 to 32 and words from 1,207 to the count in the table. Moves rise from 38 to 42 because the original text chained several moves into one screen. This is clearer, and is not reported as fewer learner clicks. All 318 ink segments match the saved set at nine decimal places. The expect block, ink paths, metadata and sources are unchanged. Complete generator output reproduces the steps, ink and expect block exactly. Helper visibility is unchanged.
+
+Inspected the step pictures in order, the split move pictures and the wall. A human should look most closely at steps 8–15, 25 and 29–31. Geometry, golden and crossing-equivalence assertions passed for this lesson, and the complete library weave suite passed. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
