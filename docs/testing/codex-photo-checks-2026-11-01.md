@@ -1,6 +1,6 @@
 # Photo checks, 1 November 2026
 
-Of 59 pairs, 26 have been assessed: 1 agree, 10 agree in part, 0 disagree and 15 are not checkable. 33 remain unassessed.
+Of 59 pairs, 35 have been assessed: 1 agree, 13 agree in part, 0 disagree and 21 are not checkable. 24 remain unassessed.
 
 This report checks the supplied private Wade photographs against the current tutorial dumps. Agreement means the visible geometric bands within the stated region, not the floral inlays, borders, colours or historical attribution. All picks, attempted registrations and overlays stay in this worktree under `docs/research/photo-checks/<tutorial id>/`; none are committed. Each picks file records its reading width, original photograph and tutorial coordinates. `refine` is false. Points used for fitting are not independent evidence; the entries name the regions inspected beyond them. A failed registration is not evidence of a wrong tutorial.
 
@@ -62,25 +62,25 @@ No disagreement established so far.
 
 **23. `marrakesh-bahia-rosette` — MOR 1218 (MOR1218).** **not checkable**. I fitted the four axial tips of the small central eight-star, then inspected the outer petals and surrounding stars as holdouts. The local fit did not establish alignment across that mesh, and only one large rosette is fully exposed. The saved overlay is an unsuccessful local trial; I cannot distinguish a correspondence or proportion error without a wider reliable fit. Overlay: `docs/research/photo-checks/marrakesh-bahia-rosette/photo-overlay.png`.
 
-**24. `meknes-bou-inania-petals` — MOR 0910 (MOR0910).** Not assessed yet.
+**24. `meknes-bou-inania-petals` — MOR 0910 (MOR0910).** **not checkable**. The tile wraps around a faceted column: the left, front and right strips are different planes. Each front-facing strip is too narrow and small to provide a dependable four-point registration of the repeated mesh. I did not combine planes into one homography. No overlay was produced. Overlay: `docs/research/photo-checks/meknes-bou-inania-petals/photo-overlay.png`.
 
-**25. `meknes-bou-inania-rosette-rings` — MOR 0909 (P70).** Not assessed yet.
+**25. `meknes-bou-inania-rosette-rings` — MOR 0909 (P70).** **not checkable**. The dense lattice is visible only within the lower cusped field, and the upper area is another design. The small monochrome stars and pale seams could not be assigned reliably to the tutorial's alternating motif families. No fit or overlay was produced. Overlay: `docs/research/photo-checks/meknes-bou-inania-rosette-rings/photo-overlay.png`.
 
-**26. `meknes-bou-inania-rosette` — MOR 2404x (MOR2404X).** Not assessed yet.
+**26. `meknes-bou-inania-rosette` — MOR 2404x (MOR2404X).** **not checkable**. Only one complete octagonal eight-petal rosette appears above a different many-pointed medallion. Damage and indistinct monochrome seams obscure the small surrounding shapes needed to register the full repeat. The eight-petal count is visible, but no reliable overlay was produced. Overlay: `docs/research/photo-checks/meknes-bou-inania-rosette/photo-overlay.png`.
 
-**27. `meknes-bou-inania-star-rings` — MOR 0913 (P164).** Not assessed yet.
+**27. `meknes-bou-inania-star-rings` — MOR 0913 (P164).** **not checkable**. A four-centre trial did not align the ring arms and small cross-shaped centres across the panel. I could not resolve the correct motif-family and lattice correspondence, so the saved overlay is a failed trial. Its mismatch is not sufficient evidence that the tutorial is wrong. Overlay: `docs/research/photo-checks/meknes-bou-inania-star-rings/photo-overlay.png`.
 
-**28. `meknes-moulay-ismail-rosette` — MOR 0803 (MOR0803).** Not assessed yet.
+**28. `meknes-moulay-ismail-rosette` — MOR 0803 (MOR0803).** **agrees in part**. Four eight-star centres around the upper motif register the panel. I counted eight diamond-shaped petals and checked the lower rosette beyond those fitted centres. The surrounding hexagons and stepped white fields follow the overlay; damage and invisible seams between same-colour pieces prevent checking every short segment. Overlay: `docs/research/photo-checks/meknes-moulay-ismail-rosette/photo-overlay.png`.
 
-**29. `moulay-idriss-interlace` — MOR 0329 (C268A).** Not assessed yet.
+**29. `moulay-idriss-interlace` — MOR 0329 (C268A).** **not checkable**. The photograph is soft and the broad white strips have several carved or painted parallel edges. The narrow arched field exposes only one complete column, and I could not isolate reliable line centres for an exact registration. No overlay was produced. Overlay: `docs/research/photo-checks/moulay-idriss-interlace/photo-overlay.png`.
 
-**30. `moulay-ismail-octagons` — MOR 0606 (MOR0606).** Not assessed yet.
+**30. `moulay-ismail-octagons` — MOR 0606 (MOR0606).** **not checkable**. The photographed ceiling is steeply viewed and has several layers of narrow moldings around floral octagons. I could see eight-sided fields, but could not assign each tutorial centre line to one physical molding or obtain reliable points across the panel. No fit was forced and no overlay was produced. Overlay: `docs/research/photo-checks/moulay-ismail-octagons/photo-overlay.png`.
 
 **31. `rabat-mixed-star-rosette` — MOR 1118 (MOR1118).** **agrees in part**. The four small eight-star centres around the upper medallion register the mesh. I counted twelve long green petals around its twelve-pointed centre; the six-stars above and below, smaller hexagons and the second medallion below follow the same layout. The bottom medallion's centre is damaged and several narrow fillers are blurred, so I cannot certify every line. The suspected petal-count difference is not present. Overlay: `docs/research/photo-checks/rabat-mixed-star-rosette/photo-overlay.png`.
 
-**32. `rabat-rosette-bands` — MOR 1137 (MOR1137).** Not assessed yet.
+**32. `rabat-rosette-bands` — MOR 1137 (MOR1137).** **agrees in part**. Four side-star centres spanning two rows register the strip. The eight-petal rosettes, square fields and four-armed central crosses recur in the independent rows above and below the picks. Most visible tile boundaries follow the overlay. The physical crosses have rounded tips and several same-colour seams are hidden, so this does not certify every angular detail. Overlay: `docs/research/photo-checks/rabat-rosette-bands/photo-overlay.png`.
 
-**33. `tetouan-sakkala-knots` — MOR 2615x (MOR2615).** Not assessed yet.
+**33. `tetouan-sakkala-knots` — MOR 2615x (MOR2615).** **agrees in part**. Four flower-field centres in the upper left register the repeated framework. The square four-armed knots and long horizontal and vertical six-sided fields follow the broad frame bands across the right and lower rows. Floral carving and multiple molding edges prevent a precise check of the eight-star outlines around those field centres. Overlay: `docs/research/photo-checks/tetouan-sakkala-knots/photo-overlay.png`.
 
 ### Egypt, Syria and Iraq
 
