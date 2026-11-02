@@ -77,6 +77,8 @@ def star():
          'These sixteen lines make the star at O.')
     g.line_through('t', 'U1', 'U5')
     g.repeat('tr', ['t'], 'rot16')
+    from lesson_steps import sixteenfold_opening_parts
+    sixteenfold_opening_parts(cm.steps)
     for j in range(16):
         s16.DESC['t' if j == 0 else f't@{j}'] = 'a star line'
 
@@ -134,6 +136,10 @@ def build():
             'the 90° line through', 'the vertical line through').replace('The 90° line through', 'The vertical line through')
         if st['id'] in WITHOUT:
             st['textWithoutHelpers'] = WITHOUT[st['id']]
+    from lesson_steps import sentence_parts
+    cm.steps[4]=sentence_parts(cm.steps[4],'Draw the square frame.',[
+        (3,['qa','qb','Q']),
+        (4,['xl','M','xr','K1','K2','K3','K4'])])
 
 
 def lab():

@@ -120,6 +120,12 @@ def build():
             'the 90° line through', 'the vertical line through').replace('The 90° line through', 'The vertical line through')
         if st['id'] in WITHOUT:
             st['textWithoutHelpers'] = WITHOUT[st['id']]
+    from lesson_steps import merge,number
+    pair=merge(cm.steps[6:8],
+        'The 22.5° line through O crosses the vertical line through M at P1. '
+        'Draw lines through P1 parallel to the 45°, 112.5° and 135° lines through O. '
+        'Turn each line round O by 45°, seven times.')
+    cm.steps[:]=number([*cm.steps[:6],pair,*cm.steps[8:]])
 
 
 def lab():
