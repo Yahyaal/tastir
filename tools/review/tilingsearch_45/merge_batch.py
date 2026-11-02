@@ -89,7 +89,19 @@ def main():
         rows.append(f"| {tid} | {t['fold']} | {len(t['steps'])} | {seen} (batch {batch}) | "
                     f"{t['title']}, from Wichmann's {code}. {t['construction']['note']} |")
     s = s[:j] + cards + s[j:]
-    # The open question about the new patterns lists every one of them.
+    # The open question about the new patterns lists every one of them. The
+    # owner may have answered the last one, so a new batch opens it again.
+    if "id: 'tilingsearch-45-first'" not in s:
+        head = 'export const QUESTIONS: readonly Question[] = [\n'
+        s = s.replace(head, head + f"""  {{
+    id: 'tilingsearch-45-first',
+    text: 'New patterns from Tiling Search (cards marked new, Tiling Search). Do they look right?',
+    choices: ['They look right', 'Some need work (say which)'],
+    card: '{pairs[0][1]}',
+    also: [
+    ],
+  }},
+""", 1)
     qa = s.index("id: 'tilingsearch-45-first'")
     end = s.index('    ],\n  },', s.index('also: [', qa))
     s = s[:end] + ''.join(f"      '{tid}',\n" for _, tid in pairs) + s[end:]

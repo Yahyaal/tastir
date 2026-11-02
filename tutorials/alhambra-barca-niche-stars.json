@@ -1,0 +1,236 @@
+{
+  "format": 0,
+  "id": "alhambra-barca-niche-stars",
+  "title": "Turning stars in the niches of the Sala de la Barca (Alhambra)",
+  "short": "Sala de la Barca niche stars",
+  "subtitle": "Sala de la Barca, Alhambra",
+  "fold": 4,
+  "chiral": true,
+  "star": 8,
+  "style": "Nasrid",
+  "region": "Alhambra and Nasrid Spain",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s H153 drawing, its corners snapped to exact values. The drawing gives no steps; we devised the construction.",
+    "changes": "The compass steps, their order and the named points are ours. No photograph confirms this design: Wade’s photograph of the panel is taken at an angle, so we built it from Wichmann’s drawing alone. The colours follow the drawing; its dark green is shown in the palette’s teal.",
+    "reviewed": "2026-11-01"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data9/H153: Alhambra, Sala de la Barca",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data9/H153.html",
+      "kind": "drawing",
+      "note": "Read from his finished drawing, not construction instructions. His reference is Plate 153 of Claude Humbert, Islamic Ornamental Design: the tile mosaic inside the niches of the arch from the Patio de los Arrayanes into the Sala de la Barca. The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of a white four-pointed star.",
+    "A": "The centre of the next white sixteen-sided piece."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a line through each of A, B, C and D at 90° to its line from O. These four lines cross at K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler"
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre A through O. It crosses the first circle at G and H. Draw a straight line through G and H. Turn it round O by 45°, seven times.",
+      "create": {
+        "cA": {"circle": {"centre": "A", "through": "O"}},
+        "G": {"point": {"meet": ["c", "cA"], "pick": {"angle": 60.0}}},
+        "H": {"point": {"meet": ["c", "cA"], "pick": {"angle": 300.0}}},
+        "mid": {"line": {"through": ["G", "H"]}},
+        "midr": {"repeat": {"of": ["mid"], "by": "rot8"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "The first circle crosses the line through O and K1 at E. Draw the line through O that halves the angle AOE. It crosses line GH at T. Draw a line through T parallel to the line through O and K1. Turn it round O by 90°, three times.",
+      "create": {
+        "E": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "r22": {"line": {"through": "O", "bisects": ["A", "O", "E"]}},
+        "T": {"point": {"meet": ["mid", "r22"]}},
+        "d1": {"line": {"through": "T", "parallelTo": "d45"}},
+        "d1r": {"repeat": {"of": ["d1"], "by": "rot4"}}
+      },
+      "animate": "ruler",
+      "textWithoutHelpers": "The first circle crosses the line through O and K1 at E. Draw the line through O that halves the angle AOE. It crosses line GH at T. Draw a line through T parallel to the line through O and K1. Turn it round O by 90°. Keep only the turned line."
+    },
+    {
+      "id": 5,
+      "text": "Line OT crosses the line through T, turned by 90°, at P. Draw a horizontal line through P. Turn it round O by 45°, seven times.",
+      "create": {
+        "P": {"point": {"meet": ["r22", "d1@1"]}},
+        "a1": {"line": {"through": "P", "parallelTo": "h"}},
+        "a1r": {"repeat": {"of": ["a1"], "by": "rot8"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "The horizontal line through P, turned by 270°, crosses line OA at S. Draw a circle with centre A and radius OS. It crosses line OA at W, left of A. Draw a vertical line through W. Turn it round O by 45°, seven times.",
+      "create": {
+        "S": {"point": {"meet": ["a1@6", "h"]}},
+        "cAS": {"circle": {"centre": "A", "radiusFrom": ["O", "S"]}},
+        "W": {"point": {"meet": ["cAS", "h"], "pick": {"nearest": "O"}}},
+        "a3": {"line": {"through": "W", "perpendicularTo": "h"}},
+        "a3r": {"repeat": {"of": ["a3"], "by": "rot8"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "The vertical line through A crosses the horizontal line through P, turned by 225°, at Q. Draw a line through Q at 90° to the line through O and K1. Turn it round O by 90°, three times.",
+      "create": {
+        "Q": {"point": {"meet": ["gx", "a1@5"]}},
+        "d3": {"line": {"through": "Q", "perpendicularTo": "d45"}},
+        "d3r": {"repeat": {"of": ["d3"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They make the small star at O, the blue stars and the white pieces. They also make the black and six-sided pieces and the kites.",
+    "paths": [
+      {"along": "mid", "from": "gy", "to": "d1@2"},
+      {"along": "mid", "from": "a1@1", "to": "mid@7"},
+      {"along": "mid", "from": "a1@7", "to": "gys"},
+      {"along": "mid@1", "from": "gy", "to": "a3@2"},
+      {"along": "mid@1", "from": "a1@2", "to": "a1@6"},
+      {"along": "mid@1", "from": "mid@2", "to": "a1@4"},
+      {"along": "mid@1", "from": "a3", "to": "gx"},
+      {"along": "mid@2", "from": "gxw", "to": "d1@3"},
+      {"along": "mid@2", "from": "a1@3", "to": "mid@1"},
+      {"along": "mid@2", "from": "a1@1", "to": "gx"},
+      {"along": "mid@3", "from": "gxw", "to": "a3@4"},
+      {"along": "mid@3", "from": "a1@4", "to": "a1"},
+      {"along": "mid@3", "from": "mid@4", "to": "a1@6"},
+      {"along": "mid@3", "from": "a3@2", "to": "gy"},
+      {"along": "mid@4", "from": "gys", "to": "d1"},
+      {"along": "mid@4", "from": "a1@5", "to": "mid@3"},
+      {"along": "mid@4", "from": "a1@3", "to": "gy"},
+      {"along": "mid@5", "from": "gys", "to": "a3@6"},
+      {"along": "mid@5", "from": "a1@6", "to": "a1@2"},
+      {"along": "mid@5", "from": "mid@6", "to": "a1"},
+      {"along": "mid@5", "from": "a3@4", "to": "gxw"},
+      {"along": "mid@6", "from": "gx", "to": "d1@1"},
+      {"along": "mid@6", "from": "a1@7", "to": "mid@5"},
+      {"along": "mid@6", "from": "a1@5", "to": "gxw"},
+      {"along": "mid@7", "from": "gx", "to": "a3"},
+      {"along": "mid@7", "from": "a1", "to": "a1@4"},
+      {"along": "mid@7", "from": "mid", "to": "a1@2"},
+      {"along": "mid@7", "from": "a3@6", "to": "gys"},
+      {"along": "a1", "from": "a3@4", "to": "mid@5"},
+      {"along": "a1", "from": "mid@3", "to": "a1@1"},
+      {"along": "a1", "from": "mid@7", "to": "a3"},
+      {"along": "a1@1", "from": "a1", "to": "mid@2"},
+      {"along": "a1@1", "from": "mid", "to": "gy"},
+      {"along": "a1@2", "from": "a3@6", "to": "mid@7"},
+      {"along": "a1@2", "from": "mid@5", "to": "r22"},
+      {"along": "a1@2", "from": "mid@1", "to": "a3@2"},
+      {"along": "a1@3", "from": "r22", "to": "mid@4"},
+      {"along": "a1@3", "from": "mid@2", "to": "gxw"},
+      {"along": "a1@4", "from": "a3", "to": "mid@1"},
+      {"along": "a1@4", "from": "mid@7", "to": "a1@5"},
+      {"along": "a1@4", "from": "mid@3", "to": "a3@4"},
+      {"along": "a1@5", "from": "a1@4", "to": "mid@6"},
+      {"along": "a1@5", "from": "mid@4", "to": "gys"},
+      {"along": "a1@6", "from": "a3@2", "to": "mid@3"},
+      {"along": "a1@6", "from": "mid@1", "to": "r22"},
+      {"along": "a1@6", "from": "mid@5", "to": "a3@6"},
+      {"along": "a1@7", "from": "r22", "to": "mid"},
+      {"along": "a1@7", "from": "mid@6", "to": "gx"},
+      {"along": "a3", "from": "d3@3", "to": "a3@7"},
+      {"along": "a3", "from": "mid@1", "to": "a1@4"},
+      {"along": "a3", "from": "a1", "to": "mid@7"},
+      {"along": "a3@1", "from": "gx", "to": "mid"},
+      {"along": "a3@1", "from": "a3@2", "to": "gy"},
+      {"along": "a3@2", "from": "d3", "to": "a3@1"},
+      {"along": "a3@2", "from": "mid@3", "to": "a1@6"},
+      {"along": "a3@2", "from": "a1@2", "to": "mid@1"},
+      {"along": "a3@3", "from": "gy", "to": "mid@2"},
+      {"along": "a3@3", "from": "a3@4", "to": "gxw"},
+      {"along": "a3@4", "from": "d3@1", "to": "a3@3"},
+      {"along": "a3@4", "from": "mid@5", "to": "a1"},
+      {"along": "a3@4", "from": "a1@4", "to": "mid@3"},
+      {"along": "a3@5", "from": "gxw", "to": "mid@4"},
+      {"along": "a3@5", "from": "a3@6", "to": "gys"},
+      {"along": "a3@6", "from": "d3@2", "to": "a3@5"},
+      {"along": "a3@6", "from": "mid@7", "to": "a1@2"},
+      {"along": "a3@6", "from": "a1@6", "to": "mid@5"},
+      {"along": "a3@7", "from": "gys", "to": "mid@6"},
+      {"along": "a3@7", "from": "a3", "to": "gx"},
+      {"along": "d3", "from": "gx", "to": "a3@2"},
+      {"along": "d3@1", "from": "gy", "to": "a3@4"},
+      {"along": "d3@2", "from": "gxw", "to": "a3@6"},
+      {"along": "d3@3", "from": "gys", "to": "a3"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square tile side by side. A four-pointed star sits at the centre and at the corners of every tile. A white piece sits at the middle of every side.",
+    "palette": "Alhambra",
+    "look": "tiles",
+    "colors": {
+      "star": "d",
+      "black_piece": "a",
+      "six_sided": "c",
+      "white_piece": "ground",
+      "four_point_star": "ground",
+      "kite": "ground"
+    },
+    "placements": {
+      "repeat": [1, 1],
+      "rules": [
+        {"piece": "six_sided", "nth": 2, "color": "b"},
+        {"piece": "six_sided", "nth": 3, "color": "b"},
+        {"piece": "six_sided", "nth": 4, "color": "b"},
+        {"piece": "six_sided", "nth": 5, "color": "b"}
+      ]
+    }
+  },
+  "expect": {
+    "pieceTypes": 6,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 0.20101, "perCell": 4},
+      {"name": "black_piece", "vertices": 8, "area": 0.17157, "perCell": 4},
+      {"name": "six_sided", "vertices": 6, "area": 0.15685, "perCell": 8},
+      {"name": "white_piece", "vertices": 16, "area": 0.14214, "perCell": 2},
+      {"name": "four_point_star", "vertices": 8, "area": 0.05887, "perCell": 2},
+      {"name": "kite", "vertices": 4, "area": 0.03553, "perCell": 24}
+    ]
+  }
+}

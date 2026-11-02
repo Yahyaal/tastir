@@ -13,7 +13,7 @@
   "construction": {
     "basis": "reconstruction",
     "fidelity": "not-applicable",
-    "note": "The finished design was read from Wichmann’s IND0403 drawing. The drawing gives no steps. Three squares construct the star. A parallel intercept fixes the repeat length exactly; six parallel families through existing crossings supply all remaining lines.",
+    "note": "The finished design was read from Wichmann’s IND0403 drawing. The drawing gives no steps. Three squares construct the star. A parallel intercept fixes the repeat length exactly; six parallel families through existing crossings supply all remaining lines. This plain version leaves out the twelve ribs and the knot inside the large stars of the real panel; the variation with kites has the ribs.",
     "changes": "The teaching frame turns by 15°. Black and brown bevel facets are removed, and the coloured faces expanded by 5 pt to recover the 10 pt band centre lines. The compass steps, order and named points are ours. The palette is illustrative; no fort photograph was independently checked.",
     "reviewed": "2026-10-27"
   },

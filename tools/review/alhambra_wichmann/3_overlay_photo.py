@@ -5,7 +5,8 @@ eight-fold self-similarity): photo-overlay.png.
 Usage: 3_overlay_photo.py <dump.json> <out dir> [<picks.json>]
 picks.json: {"photo": file, "fold": n, "width": photo width the picks were read at,
              "picks": [[[x, y], [u, v]], ...], "crop": [x0, y0, x1, y1], "credit": text,
-             "refine": false to use the picks as given (flat motifs do not self-match)}
+             "refine": false to use the picks as given (flat motifs do not self-match),
+             "zoom": n to enlarge a small photo first, so the lines stay thin beside its bands}
 (from docs/research/alhambra-wichmann/)"""
 import json, math, os, sys
 import numpy as np
@@ -17,7 +18,9 @@ cfg = json.load(open(sys.argv[3])) if len(sys.argv) > 3 else {
     'credit': 'Carved panel (photo: David Wade)',
     'picks': [[[320, 180], [0, 0]], [[560, 180], [2, 0]], [[320, 410], [0, -2]], [[560, 410], [2, -2]],
               [[440, 295], [1, -1]], [[200, 295], [-1, -1]]]}
-rgb = Image.open(cfg['photo']).convert('RGB'); k = rgb.width/cfg['width']
+rgb = Image.open(cfg['photo']).convert('RGB'); zoom = cfg.get('zoom', 1)
+rgb = rgb.resize((rgb.width*zoom, rgb.height*zoom), Image.LANCZOS); k = rgb.width/cfg['width']
+cfg['crop'] = [c*zoom for c in cfg['crop']]
 g = ndi.gaussian_filter(np.asarray(rgb.convert('L')).astype(float), 1.5)
 def score(cx, cy, R=55):
     ys, xs = np.mgrid[-R:R:2, -R:R:2]; m = (xs**2 + ys**2 < R*R) & (xs**2 + ys**2 > 36)

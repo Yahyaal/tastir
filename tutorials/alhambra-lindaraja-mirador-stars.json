@@ -1,0 +1,223 @@
+{
+  "format": 0,
+  "id": "alhambra-lindaraja-mirador-stars",
+  "title": "Stars and crosses of the Mirador de Lindaraja (Alhambra)",
+  "short": "Mirador de Lindaraja stars",
+  "subtitle": "Mirador de Lindaraja, Alhambra",
+  "fold": 4,
+  "star": 8,
+  "style": "Nasrid",
+  "region": "Alhambra and Nasrid Spain",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s CM045 drawing, its corners snapped to exact values. The drawing gives no steps; we devised the construction.",
+    "changes": "The compass steps, their order and the named points are ours. No photograph confirms this design: the Wade photograph Wichmann links, SPA 1813, shows mixed panels, so we built it from his drawing alone. The colours follow the drawing.",
+    "reviewed": "2026-11-01"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data15/CM045: Mirador de Lindaraja, Alhambra",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data15/CM045.html",
+      "kind": "drawing",
+      "note": "Read from his finished drawing, not construction instructions. His references are David Wade’s photograph SPA 1813 and page 45 of Cahier and Martin, 376 Decorative Allover Patterns. The construction is ours."
+    }
+  ],
+  "given": {
+    "O": "The centre of a large eight-pointed star.",
+    "A": "The centre of the small square on the side of the tile."
+  },
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a line through each of A, B, C and D at 90° to its line from O. These four lines cross at K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a line through each of A, B and C at 90° to its line from O. These lines cross at K1 and K2. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "Draw a circle with centre A through O. It crosses the first circle at G and H. Draw a straight line through G and H. It crosses line OA at M.",
+      "create": {
+        "cA": {"circle": {"centre": "A", "through": "O"}},
+        "G": {"point": {"meet": ["c", "cA"], "pick": {"angle": 60.0}}},
+        "H": {"point": {"meet": ["c", "cA"], "pick": {"angle": 300.0}}},
+        "mid": {"line": {"through": ["G", "H"]}},
+        "M": {"point": {"meet": ["mid", "h"]}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 4,
+      "text": "Draw a circle with centre O through M. Draw a circle with centre M through O. They cross at R and S. Draw a straight line through R and S. It crosses line OA at E.",
+      "create": {
+        "cOM": {"circle": {"centre": "O", "through": "M"}},
+        "cMO": {"circle": {"centre": "M", "through": "O"}},
+        "R": {"point": {"meet": ["cOM", "cMO"], "pick": {"angle": 60.0}}},
+        "S": {"point": {"meet": ["cOM", "cMO"], "pick": {"angle": 300.0}}},
+        "a1": {"line": {"through": ["R", "S"]}},
+        "E": {"point": {"meet": ["a1", "h"]}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "Draw a circle with centre M through E. It crosses line OA again at F. Draw a vertical line through F. Turn this line and line RS round O by 90°, three times.",
+      "create": {
+        "cME": {"circle": {"centre": "M", "through": "E"}},
+        "F": {"point": {"meet": ["cME", "h"], "pick": {"farthest": "O"}}},
+        "a3": {"line": {"through": "F", "perpendicularTo": "h"}},
+        "ar": {"repeat": {"of": ["a1", "a3"], "by": "rot4"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 6,
+      "text": "Draw a circle with centre O through E. It crosses the line through O and K1 at T. Draw a line through T at 90° to the line through O and K1. Turn it round O by 90°, three times.",
+      "create": {
+        "cOE": {"circle": {"centre": "O", "through": "E"}},
+        "T": {"point": {"meet": ["cOE", "d45"], "pick": {"angle": 45.0}}},
+        "d1": {"line": {"through": "T", "perpendicularTo": "d45"}},
+        "d1r": {"repeat": {"of": ["d1"], "by": "rot4"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 7,
+      "text": "Line RS crosses the line through T at P. Draw a line through P parallel to the line through O and K1. Turn it round O by 90°, three times.",
+      "create": {
+        "P": {"point": {"meet": ["a1", "d1"]}},
+        "d2": {"line": {"through": "P", "parallelTo": "d45"}},
+        "d2r": {"repeat": {"of": ["d2"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 8,
+      "text": "Line RS crosses the line through T, turned by 90°, at Q. Draw a line through Q at 90° to the line through O and K1. Turn it round O by 90°, three times.",
+      "create": {
+        "Q": {"point": {"meet": ["a1", "d1@1"]}},
+        "d3": {"line": {"through": "Q", "perpendicularTo": "d45"}},
+        "d3r": {"repeat": {"of": ["d3"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 9,
+      "text": "The vertical line through A crosses the line through Q, turned by 270°, at U. Draw a line through U at 90° to the line through O and K1. Turn it round O by 90°, three times.",
+      "create": {
+        "U": {"point": {"meet": ["gx", "d3@3"]}},
+        "d4": {"line": {"through": "U", "perpendicularTo": "d45"}},
+        "d4r": {"repeat": {"of": ["d4"], "by": "rot4"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 10,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They make the star at O and the white piece at each corner. They also make the blue and black pieces, the ten-sided pieces and the small squares.",
+    "paths": [
+      {"along": "a1", "from": "d1@1", "to": "d1"},
+      {"along": "a1", "from": "d1@3", "to": "d1@2"},
+      {"along": "a3", "from": "d2@3", "to": "d1"},
+      {"along": "a3", "from": "d1@3", "to": "d2@2"},
+      {"along": "a1@1", "from": "d1@2", "to": "d1@1"},
+      {"along": "a1@1", "from": "d1", "to": "d1@3"},
+      {"along": "a1@2", "from": "d1@3", "to": "d1@2"},
+      {"along": "a1@2", "from": "d1@1", "to": "d1"},
+      {"along": "a1@3", "from": "d1", "to": "d1@3"},
+      {"along": "a1@3", "from": "d1@2", "to": "d1@1"},
+      {"along": "a3@1", "from": "d2", "to": "d1@1"},
+      {"along": "a3@1", "from": "d1", "to": "d2@3"},
+      {"along": "a3@2", "from": "d2@1", "to": "d1@2"},
+      {"along": "a3@2", "from": "d1@1", "to": "d2"},
+      {"along": "a3@3", "from": "d2@2", "to": "d1@3"},
+      {"along": "a3@3", "from": "d1@2", "to": "d2@1"},
+      {"along": "d1", "from": "h", "to": "a1"},
+      {"along": "d1", "from": "a1@1", "to": "v"},
+      {"along": "d1@1", "from": "v", "to": "a1@1"},
+      {"along": "d1@1", "from": "a1@2", "to": "h"},
+      {"along": "d1@2", "from": "h", "to": "a1@2"},
+      {"along": "d1@2", "from": "a1@3", "to": "v"},
+      {"along": "d1@3", "from": "v", "to": "a1@3"},
+      {"along": "d1@3", "from": "a1", "to": "h"},
+      {"along": "d2", "from": "gys", "to": "a3@2"},
+      {"along": "d2", "from": "a3@1", "to": "gx"},
+      {"along": "d2@1", "from": "gx", "to": "a3@3"},
+      {"along": "d2@1", "from": "a3@2", "to": "gy"},
+      {"along": "d2@2", "from": "gy", "to": "a3"},
+      {"along": "d2@2", "from": "a3@3", "to": "gxw"},
+      {"along": "d2@3", "from": "gxw", "to": "a3@1"},
+      {"along": "d2@3", "from": "a3", "to": "gys"},
+      {"along": "d3", "from": "gx", "to": "a1@1"},
+      {"along": "d3", "from": "a1", "to": "gy"},
+      {"along": "d3@1", "from": "gy", "to": "a1@2"},
+      {"along": "d3@1", "from": "a1@1", "to": "gxw"},
+      {"along": "d3@2", "from": "gxw", "to": "a1@3"},
+      {"along": "d3@2", "from": "a1@2", "to": "gys"},
+      {"along": "d3@3", "from": "gys", "to": "a1"},
+      {"along": "d3@3", "from": "a1@3", "to": "gx"},
+      {"along": "d4", "from": "gx", "to": "a3"},
+      {"along": "d4", "from": "a3@1", "to": "gy"},
+      {"along": "d4@1", "from": "gy", "to": "a3@1"},
+      {"along": "d4@1", "from": "a3@2", "to": "gxw"},
+      {"along": "d4@2", "from": "gxw", "to": "a3@2"},
+      {"along": "d4@2", "from": "a3@3", "to": "gys"},
+      {"along": "d4@3", "from": "gys", "to": "a3@3"},
+      {"along": "d4@3", "from": "a3", "to": "gx"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square tile side by side. A white star sits at the centre of every tile. A small square sits at the middle of every side.",
+    "palette": "Alhambra",
+    "look": "tiles",
+    "colors": {
+      "ten_sided": "ground",
+      "star": "ground",
+      "blue_piece": "d",
+      "black_piece": "a",
+      "corner_piece": "ground",
+      "square": "c"
+    }
+  },
+  "expect": {
+    "pieceTypes": 6,
+    "pieces": [
+      {"name": "ten_sided", "vertices": 10, "area": 0.375, "perCell": 4},
+      {"name": "star", "vertices": 16, "area": 0.29289, "perCell": 1},
+      {"name": "blue_piece", "vertices": 8, "area": 0.25, "perCell": 4},
+      {"name": "black_piece", "vertices": 8, "area": 0.22855, "perCell": 4},
+      {"name": "corner_piece", "vertices": 16, "area": 0.20711, "perCell": 1},
+      {"name": "square", "vertices": 4, "area": 0.04289, "perCell": 2}
+    ]
+  }
+}

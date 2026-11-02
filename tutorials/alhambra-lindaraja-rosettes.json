@@ -1,0 +1,151 @@
+{
+  "format": 0,
+  "id": "alhambra-lindaraja-rosettes",
+  "title": "Eight-fold rosettes of the Mirador de Lindaraja (Alhambra)",
+  "short": "Mirador de Lindaraja rosettes",
+  "subtitle": "Mirador de Lindaraja, Alhambra",
+  "fold": 4,
+  "star": 8,
+  "style": "Nasrid",
+  "region": "Alhambra and Nasrid Spain",
+  "level": "intermediate",
+  "construction": {
+    "basis": "reconstruction",
+    "fidelity": "not-applicable",
+    "note": "The finished design was read from Brian Wichmann’s P042 drawing of Bourgoin’s plate 42, its corners snapped to exact values. The drawing gives no steps; we devised the construction. The star is two squares, and their sides, carried on to the edge of the tile, make every line.",
+    "changes": "The compass steps, their order and the named points are ours. No photograph confirms this design: Wade’s photograph SPA 1009 shows a different panel of the Mirador de Lindaraja, with flower insets and five-sided petals. This is the plain form Wichmann draws, not that panel.",
+    "reviewed": "2026-11-01"
+  },
+  "credits": [
+    {
+      "source": "Tiling Search, data10/P042: Bourgoin, Plate 42",
+      "creator": "Brian Wichmann",
+      "url": "https://tilingsearch.mit.edu/HTML/data10/P042.html",
+      "kind": "drawing",
+      "note": "Read from his finished drawing, not construction instructions. He links plate 42 of Jules Bourgoin to the Mirador de Lindaraja and the Sala de los Reyes, which elaborate it. The construction is ours."
+    }
+  ],
+  "given": {"O": "The centre of an eight-pointed star.", "A": "Halfway from O to the next star."},
+  "steps": [
+    {
+      "id": 1,
+      "text": "Draw a horizontal straight line through O and A. Draw a circle with centre O through A.",
+      "create": {"c": {"circle": {"centre": "O", "through": "A"}}, "h": {"line": {"through": ["O", "A"]}}},
+      "animate": "compass"
+    },
+    {
+      "id": 2,
+      "text": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a line through each of A, B, C and D at 90° to its line from O. These four lines cross at K1, K2, K3 and K4. Draw a straight line through O and K1.",
+      "create": {
+        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+        "gx": {"line": {"through": "A", "perpendicularTo": "h"}},
+        "gxw": {"line": {"through": "B", "perpendicularTo": "h"}},
+        "gy": {"line": {"through": "C", "perpendicularTo": "v"}},
+        "gys": {"line": {"through": "D", "perpendicularTo": "v"}},
+        "K1": {"point": {"meet": ["gx", "gy"]}},
+        "K2": {"point": {"meet": ["gxw", "gy"]}},
+        "K3": {"point": {"meet": ["gxw", "gys"]}},
+        "K4": {"point": {"meet": ["gx", "gys"]}},
+        "d45": {"line": {"through": ["O", "K1"]}}
+      },
+      "highlight": ["c", "h"],
+      "animate": "ruler",
+      "textWithoutHelpers": "Draw a vertical line through O. The two lines cross the circle at A, B, C and D. Draw a line through each of A, B and C at 90° to its line from O. These lines cross at K1 and K2. Draw a straight line through O and K1."
+    },
+    {
+      "id": 3,
+      "text": "The first circle crosses the line through O and K1 at E. Draw the line through O that halves the angle AOE. Draw the line through O that halves the angle EOC. Draw a line through O at 90° to each of these two lines.",
+      "create": {
+        "E": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+        "r22": {"line": {"through": "O", "bisects": ["A", "O", "E"]}},
+        "r67": {"line": {"through": "O", "bisects": ["E", "O", "C"]}},
+        "r112": {"line": {"through": "O", "perpendicularTo": "r22"}},
+        "r157": {"line": {"through": "O", "perpendicularTo": "r67"}}
+      },
+      "animate": "ruler"
+    },
+    {
+      "id": 4,
+      "text": "Draw a circle with centre A through O. It crosses the first circle at G and H. Draw a straight line through G and H. It crosses the line that halves the angle AOE at T. Draw a circle with centre O through T.",
+      "create": {
+        "cA": {"circle": {"centre": "A", "through": "O"}},
+        "G": {"point": {"meet": ["c", "cA"], "pick": {"angle": 60.0}}},
+        "H": {"point": {"meet": ["c", "cA"], "pick": {"angle": 300.0}}},
+        "mid": {"line": {"through": ["G", "H"]}},
+        "T": {"point": {"meet": ["mid", "r22"]}},
+        "ct": {"circle": {"centre": "O", "through": "T"}}
+      },
+      "animate": "compass"
+    },
+    {
+      "id": 5,
+      "text": "The circle through T crosses the four lines through O at eight points. Starting at T and going left round the circle, name them S1, S2, S3, S4, S5, S6, S7 and S8. Draw a straight line through S1 and S3, S2 and S4, S3 and S5, and S4 and S6. Draw a straight line through S5 and S7, S6 and S8, S7 and S1, and S8 and S2.",
+      "create": {
+        "S1": {"point": {"meet": ["ct", "r22"], "pick": {"angle": 22.5}}},
+        "S2": {"point": {"meet": ["ct", "r67"], "pick": {"angle": 67.5}}},
+        "S3": {"point": {"meet": ["ct", "r112"], "pick": {"angle": 112.5}}},
+        "S4": {"point": {"meet": ["ct", "r157"], "pick": {"angle": 157.5}}},
+        "S5": {"point": {"meet": ["ct", "r22"], "pick": {"angle": 202.5}}},
+        "S6": {"point": {"meet": ["ct", "r67"], "pick": {"angle": 247.5}}},
+        "S7": {"point": {"meet": ["ct", "r112"], "pick": {"angle": 292.5}}},
+        "S8": {"point": {"meet": ["ct", "r157"], "pick": {"angle": 337.5}}},
+        "s0": {"line": {"through": ["S1", "S3"]}},
+        "s1": {"line": {"through": ["S2", "S4"]}},
+        "s2": {"line": {"through": ["S3", "S5"]}},
+        "s3": {"line": {"through": ["S4", "S6"]}},
+        "s4": {"line": {"through": ["S5", "S7"]}},
+        "s5": {"line": {"through": ["S6", "S8"]}},
+        "s6": {"line": {"through": ["S7", "S1"]}},
+        "s7": {"line": {"through": ["S8", "S2"]}}
+      },
+      "highlight": ["ct"],
+      "animate": "ruler"
+    },
+    {
+      "id": 6,
+      "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
+      "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
+      "animate": "fade"
+    }
+  ],
+  "ink": {
+    "text": "Ink the lines picked out in orange. They make the star at O and the petals round it. They also make the kites and the white stars between four rosettes.",
+    "paths": [
+      {"along": "s0", "from": "h", "to": "d45"},
+      {"along": "s0", "from": "v", "to": "gxw"},
+      {"along": "s1", "from": "gx", "to": "v"},
+      {"along": "s1", "from": "s2", "to": "h"},
+      {"along": "s2", "from": "v", "to": "s1"},
+      {"along": "s2", "from": "h", "to": "gys"},
+      {"along": "s3", "from": "gy", "to": "h"},
+      {"along": "s3", "from": "d45", "to": "v"},
+      {"along": "s4", "from": "h", "to": "d45"},
+      {"along": "s4", "from": "v", "to": "gx"},
+      {"along": "s5", "from": "gxw", "to": "v"},
+      {"along": "s5", "from": "s6", "to": "h"},
+      {"along": "s6", "from": "v", "to": "s5"},
+      {"along": "s6", "from": "h", "to": "gy"},
+      {"along": "s7", "from": "gys", "to": "h"},
+      {"along": "s7", "from": "d45", "to": "v"}
+    ]
+  },
+  "pattern": {
+    "cell": "tile",
+    "text": "Put copies of the square tile side by side. A rosette of eight petals sits at every grid point. A white star sits between four rosettes.",
+    "palette": "Alhambra",
+    "look": "tiles",
+    "colors": {"star": "c", "petal": "d", "white_star": "ground", "kite": "ground"}
+  },
+  "expect": {
+    "pieceTypes": 4,
+    "pieces": [
+      {"name": "star", "vertices": 16, "area": 0.68629, "perCell": 1},
+      {"name": "petal", "vertices": 6, "area": 0.53553, "perCell": 4},
+      {"name": "white_star", "vertices": 8, "area": 0.20101, "perCell": 1},
+      {"name": "kite", "vertices": 4, "area": 0.12132, "perCell": 8}
+    ]
+  }
+}
