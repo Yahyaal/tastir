@@ -7,8 +7,8 @@ Counts include all visible steps. Actions count each part in place of its parent
 | Tutorial | Steps before → after | Actions before → after | Words before → after | Ink matched |
 | --- | ---: | ---: | ---: | --- |
 | `rabat-mixed-star-rosette` | 49 → 38 | 52 → 46 | 1688 → 1457 | Yes, 352 segments |
-| `ismail-shrine-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1114 | Yes, 228 segments |
-| `chehel-sotoun-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1114 | Yes, 230 segments |
+| `ismail-shrine-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1113 | Yes, 228 segments |
+| `chehel-sotoun-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1113 | Yes, 230 segments |
 | `shah-mosque-chiral-grille` | 36 → — | 38 → — | 1207 → — | — |
 | `turkish-sultana-mixed-stars` | 28 → — | 28 → — | 971 → — | — |
 | `barsbay-twelve-star-doors` | 28 → — | 41 → — | 1339 → — | — |
@@ -50,7 +50,7 @@ Inspected all step pictures in order and the wall. A human should look most clos
 
 ## Ismail shrine divided stars
 
-Grouped independent parallel lines and the lines through each shared crossing. Found Q9 and Q16 with Q1 because all three depend only on the opening. Reused Q2 for Q3, Q4 for Q6, and Q10 for Q11 and Q12. Each group asks for the same line action, or for lines through one crossing. Dependent chains remain separate. The longest text still has five sentences in either helper view, so grouping does not create a longer sentence list.
+Grouped independent parallel lines and the lines through each shared crossing. Found Q9 and Q16 with Q1 because all three depend only on the opening. Reused Q2 for Q3, Q4 for Q6, and Q10 for Q11 and Q12. Each group asks for the same line action, or for lines through one crossing. The owner’s follow-up adds “The” at the start of step 11 in both family members. Dependent chains remain separate. The longest text still has five sentences in either helper view, so grouping does not create a longer sentence list.
 
 The generator’s construction matches the tutorial exactly. It changes only this family, because Chehel Sotoun is its only caller. The P142 opening and its other callers are unchanged. All metadata, credits, ink paths and the expect block remain unchanged. The 228 ink segments match as an unordered set at nine decimal places, and the tile and piece polygons match exactly. The segment-set SHA-256 is `a4b191a9ae3eace5ab7444cc21bf23ae55a61a4967f6035211a93cd2dabccf71`.
 

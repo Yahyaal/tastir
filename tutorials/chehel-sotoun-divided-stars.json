@@ -205,7 +205,7 @@
     },
     {
       "id": 11,
-      "text": "Line from S5 to S9 crosses the 75° line through O at Q1 and the vertical through N1 at Q16. The line from S10 to S2 crosses the vertical line through N2 at Q9. Draw lines through Q1, Q9 and Q16 at 15° from OA. Turn each line round O by 30°, eleven times.",
+      "text": "The line from S5 to S9 crosses the 75° line at Q1 and the vertical through N1 at Q16. The line from S10 to S2 crosses the vertical line through N2 at Q9. Draw lines through Q1, Q9 and Q16 at 15° from OA. Turn each line round O by 30°, eleven times.",
       "create": {
         "Q1": {"point": {"meet": ["r75", "st4"]}},
         "gl0": {"line": {"through": "Q1", "parallelTo": "r15"}},
@@ -218,7 +218,7 @@
         "copies15": {"repeat": {"of": ["gl15"], "by": "rot12"}}
       },
       "animate": "ruler",
-      "textWithoutHelpers": "Line from S5 to S9 crosses the 75° line through O at Q1 and the vertical through N1 at Q16. The line from S10 to S2 crosses the vertical line through N2 at Q9. Draw lines through Q1, Q9 and Q16 at 15° from OA. Turn the lines through Q1 and Q16 round O by 60°, 90°, 150°, 180°, 240°, 270° and 330°. Turn the line through Q9 round O by 150°, 180° and 330°."
+      "textWithoutHelpers": "The line from S5 to S9 crosses the 75° line at Q1 and the vertical through N1 at Q16. The line from S10 to S2 crosses the vertical line through N2 at Q9. Draw lines through Q1, Q9 and Q16 at 15° from OA. Turn the lines through Q1 and Q16 round O by 60°, 90°, 150°, 180°, 240°, 270° and 330°. Turn the line through Q9 round O by 150°, 180° and 330°."
     },
     {
       "id": 12,

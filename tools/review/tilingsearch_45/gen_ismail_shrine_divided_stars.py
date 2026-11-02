@@ -220,7 +220,7 @@ def shorten_steps():
         introductions=' '.join(old[n]['text'].split(' Draw ')[0] for n in numbers if n!=16)
         if numbers==[11,19,26]:
             introductions=(
-                'Line from S5 to S9 crosses the 75° line through O at Q1 and the vertical through N1 at Q16. '
+                'The line from S5 to S9 crosses the 75° line at Q1 and the vertical through N1 at Q16. '
                 'The line from S10 to S2 crosses the vertical line through N2 at Q9.')
         names=', '.join(points[:-1])+' and '+points[-1]
         prefix=introductions+f' Draw lines through {names} at {angle}° from OA. '
