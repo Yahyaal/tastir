@@ -33,6 +33,10 @@ export interface Pattern {
 
 const MAMOOT = 'https://mamootdiy.com';
 
+/** The owner's answer on 2 November 2026 to the Tiling Search question. */
+const LOOKS_RIGHT =
+  'You looked through these on 2 November 2026: they look right, and it is fine that most have no photo of the real wall yet.';
+
 export const PATTERNS: readonly Pattern[] = [
   {
     id: 'band-and-pointer-2026-10-22',
@@ -839,7 +843,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alhambra-mexuar-porch-fret',
     title: 'Ceiling fret of the Mexuar porch (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Long bars and hooked frets turning round a small star, like the Sala de los Reyes fret but with no diamonds where the bands cross. A variation of that fret: the two share one card in the library.',
     story: [
@@ -869,7 +874,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alhambra-mexuar-corridor-stars',
     title: 'Stars and frets of the Mexuar corridor (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Eight-pointed stars with T-shaped frets turning round them and a small square where four frets meet. A pinwheel, so it has no mirror.',
     story: [
@@ -899,7 +905,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alhambra-museum-loops',
     title: 'Interlaced loops of the Alhambra Museum (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Notched square loops woven together, with an eight-pointed star in each loop. The same design is on the Chellah minaret in Rabat (CM014), which can become a variation.',
     story: [
@@ -925,7 +932,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'shah-i-zinda-octagons',
     title: 'Octagons and stars of the Shah-i-Zinda (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Regular octagons touching corner to corner, with a four-pointed star in each gap: a five-step beginner tutorial.',
     story: [
@@ -961,7 +969,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'qaytbay-floor-octagons',
     title: 'Octagons of the Qaytbay madrasa floor (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'The Shah-i-Zinda octagons with their sides carried on past the corners, which closes a small octagon and four darts where four octagons meet.',
     story: [
@@ -987,7 +996,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'sircali-stars',
     title: 'Eight-pointed stars of the Sırçalı madrasa (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Sharp eight-pointed stars touching point to point, with notched crosses between them: a five-step beginner tutorial.',
     story: [
@@ -1013,7 +1023,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'topkapi-scroll-pinwheel',
     title: 'Pinwheel of stars from the Topkapı scroll (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Eight-pointed stars turned so they do not line up with the page, with boot-shaped pieces and pentagons wheeling round them. A pinwheel, so it has no mirror.',
     story: [
@@ -1040,7 +1051,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and arrows of the Patio de los Leones doors (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Equal eight-pointed stars at the centre and corners of each square, with hexagons, arrows, triangles and kites between them, every line a star side carried on.',
     story: [
@@ -1079,7 +1091,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alhambra-comares-soffit-stars',
     title: 'Interlaced stars of the Comares soffits (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'The same layout as the Leones door stars with smaller stars (radius ½), so the hexagons, kites and triangles merge into one ground piece, woven as interlace.',
     story: [
@@ -1109,7 +1122,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Black and white stars of the Comares throne alcove (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'A white star in the middle and black ones at the corners, with crosses, boats, octagons and hexagons in black and white between them; the colouring follows Wichmann’s.',
     story: [
@@ -1139,7 +1153,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and diamonds of the Patio de los Leones south-east doors (Alhambra) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A large star sits at every corner of every cell, and a small star at every centre.',
     story: [
@@ -1176,7 +1191,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars of the Patio de los Leones south gallery (Alhambra) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A small four-pointed star sits at every corner, ringed by four stars.',
     story: [
@@ -1213,7 +1229,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and octagons of the Patio de los Arrayanes doors (Alhambra) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the cell side by side. The stars make rows, and each row is the mirror image of the next.',
     story: [
@@ -1255,7 +1272,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced loops of the Chellah minaret (Rabat) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. Each loop weaves over and under its four neighbours.',
     story: [
@@ -1286,7 +1304,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alcazar-interlaced-stars',
     title: 'Interlaced stars of the Alcázar of Seville (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A large star sits at every centre and a small one at every corner. A long hexagon joins each two large stars.',
     story: [
@@ -1326,7 +1345,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'toledo-tile-interlace',
     title: 'Interlaced stars of a Toledo tile (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A large star sits at every centre and a smaller one at every corner.',
     story: [
@@ -1356,7 +1376,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'toledo-tile-stars',
     title: 'Stars and arrows of a Toledo tile (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and every corner. Eight arrows point at each star at a centre, and four at each star at a corner.',
     story: [
@@ -1392,7 +1413,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars of a Spanish tile mosaic (David Collection) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and every corner.',
     story: [
@@ -1422,7 +1444,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'alcazar-mosaic-stars',
     title: 'Tile mosaic stars of the Alcázar of Seville (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A large star sits at every centre and a small star at every corner. A cross sits between each two large stars.',
     story: [
@@ -1462,7 +1485,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'qom-atabaki-stars',
     title: 'Stars and squares of the Atabaki court, Qom (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre, with a large square at each corner and on each side of the cell.',
     story: [
@@ -1493,7 +1517,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and crosses of the new courtyard, Mashhad (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and a cross at every corner.',
     story: [
@@ -1524,7 +1549,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'shiraz-qavam-crosses',
     title: 'Crosses of the Qavam Hosseiniyeh, Shiraz (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A cross sits at every centre and a diamond at every corner.',
     story: [
@@ -1560,7 +1586,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and crosses of the Husayn Baykara minaret, Herat (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. Large stars sit on the grid, a cross between each two, and a large piece where four cells touch.',
     story: [
@@ -1592,7 +1619,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced star and cross of the Gowhar Shad mosque, Mashhad (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the tile side by side. Neighbouring stars touch at their points. The lines carried on from the stars weave over and under each other.',
     story: [
@@ -1628,7 +1656,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'casablanca-house-crosses',
     title: 'Crosses and arrows of a house in Casablanca (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. The arrows of neighbouring crosses touch tip to tip, and a large piece fills the space round each corner.',
     story: [
@@ -1660,7 +1689,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and squares of a tile photographed by Alberto Leon (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the tile side by side. A small square sits between each four stars, touching their points, and bands with ten sides join the squares.',
     story: [
@@ -1691,7 +1721,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'paccard-zellige-frets',
     title: 'Red frets of a Moroccan zellige panel (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. Small stars and large stars with arms take turns like the squares of a chessboard. Red frets wind between them.',
     story: [
@@ -1723,7 +1754,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of the El Badi Palace (Marrakesh) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and every corner, and a small square halfway between two stars.',
     story: [
@@ -1755,7 +1787,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of the Chellah mosque (Rabat) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. Stars sit in rows and columns, and the bands between them weave over and under.',
     story: [
@@ -1786,7 +1819,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars, squares and pentagons of the Nim Avard madrasa, Isfahan (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre. A square sits at every corner, with four pentagons round it.',
     story: [
@@ -1818,7 +1852,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced squares of the Tillya-Kari madrasa, Samarkand (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A turned square sits at every centre and an upright square at every corner.',
     story: [
@@ -1855,7 +1890,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of the Charbagh madrasa, Isfahan (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and every corner, and a ten-sided piece halfway between two stars.',
     story: [
@@ -1885,7 +1921,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'tash-khauli-crosses',
     title: 'Crosses of the Tash-Khauli palace, Khiva (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A cross sits at every centre, and a square with four pentagons round it at every corner.',
     story: [
@@ -1916,7 +1953,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'sikandra-stars',
     title: 'Stars and crosses of Akbar’s tomb, Sikandra (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. Four stars sit round every centre, and a cross sits at every corner.',
     story: [
@@ -1958,7 +1996,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and kite rosettes of a drawing from Agra (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre, an octagon between two stars, and eight kites round every corner.',
     story: [
@@ -1988,7 +2027,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'iznik-green-mosque-pinwheel',
     title: 'Pinwheel of the Green Mosque (Iznik) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. The ten-sided tiles turn round O like the sails of a windmill.',
     story: [
@@ -2023,7 +2063,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'iranian-tile-crosses',
     title: 'Crosses and squares of Iranian tilework (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. Squares and four-armed crosses take turns on the diagonals, with long crosses between them.',
     story: [
@@ -2055,7 +2096,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Pinwheel of eight-pointed stars (Cahier and Martin) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the tile side by side. The stars run in rows that climb one step in two. The thirteen-sided tiles turn round the points between them.',
     story: [
@@ -2086,7 +2128,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'pompeii-stars-and-rhombi',
     title: 'Stars and rhombi of a Roman mosaic (Pompeii) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. The stars touch point to point, and eight rhombi fill the space round each meeting point.',
     story: [
@@ -2117,7 +2160,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Braided octagons of a Roman mosaic (Hippo Regius) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. The bands run on from cell to cell and weave over and under.',
     story: [
@@ -2149,7 +2193,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of the Kritliya House (Cairo) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. The bands run on from star to star and weave over and under.',
     story: [
@@ -2180,7 +2225,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of the Bou Inania madrasa (Fez) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and every corner, and a long star halfway between two centres.',
     story: [
@@ -2210,7 +2256,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'dar-el-bey-crosses',
     title: 'Crosses and stars of Dar el Bey (Tunis) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A framed cross sits at every centre and a small star at every corner.',
     story: [
@@ -2241,7 +2288,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars, arrows and squares from Cahier and Martin (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star with four arrows sits in every large square, and a small star where the bands cross.',
     story: [
@@ -2273,7 +2321,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced star and squares of a tile from Khojent (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A large star sits at every centre, and a grid of small squares between two stars.',
     story: [
@@ -2305,7 +2354,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and crosses of the Tepe madrasa, Nishapur (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and a small square at every corner.',
     story: [
@@ -2335,7 +2385,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-star-octagons',
     title: 'Stars and octagons of Bourgoin’s plate 44 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and an octagon at every corner.',
     story: [
@@ -2365,7 +2416,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'mazar-shrine-stars',
     title: 'Stars of the Mazar-e Sharif shrine (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. Four stars sit round every cross, point to point with the next four.',
     story: [
@@ -2396,7 +2448,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'sale-madrasa-stars',
     title: 'Stars of the Merinid madrasa, Salé (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and a small star at every corner.',
     story: [
@@ -2427,7 +2480,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and crosses of the Masjid-e Ali, Isfahan (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. Stars and crosses take turns along every row.',
     story: [
@@ -2468,7 +2522,9 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and crosses of the Masjid-e Ali, Isfahan (without squares) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision:
+      'You kept this plain variant on 2 November 2026: it differs from the photo only where our lines run over the arch around the panel, and by the squares it leaves out on purpose. The richer patterns inside its stars and crosses are for later.',
     summary:
       'Put copies of the square cell side by side. Stars and crosses take turns along every row.',
     story: [
@@ -2480,7 +2536,7 @@ export const PATTERNS: readonly Pattern[] = [
       {
         src: 'renders/isfahan-masjid-ali-crosses-plain/photo-overlay.png',
         caption:
-          'David Wade’s photo IRA 1329 with our lines in red (private, not shipped). Codex’s verdict: disagrees.',
+          'David Wade’s photo IRA 1329 with our lines in red (private, not shipped). The stars and crosses agree; the arch around the panel is a different design, so the red over it means nothing.',
       },
       {
         src: 'renders/isfahan-masjid-ali-crosses-plain/photo-beside-wall.jpg',
@@ -2510,7 +2566,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars, crosses and squares from Cahier and Martin (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits in the middle and a cross at every corner and side. Large squares fill the space between them.',
     story: [
@@ -2542,7 +2599,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Small stars, crosses and hexagons from Cahier and Martin (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. The crosses join through the hexagons into a square net, with plain ground in each square.',
     story: [
@@ -2573,7 +2631,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'sutton-crosses-and-kites',
     title: 'Stars, hexagons and kites from Daud Sutton (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A large star sits in the middle and a small star at every corner.',
     story: [
@@ -2604,7 +2663,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'sicily-panel-stars',
     title: 'Stars of a wooden panel from medieval Sicily (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. Small and large stars take turns along every row.',
     story: [
@@ -2636,7 +2696,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of a Nasrid panel in the Alhambra Museum (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits in the middle and at every corner, with a long piece between each two.',
     story: [
@@ -2668,7 +2729,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and squares of the Basilica of St Francis, Assisi (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. The stars stand in rows, with a square between four stars and a diamond between two.',
     story: [
@@ -2705,7 +2767,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of the tomb of Itimad al-Daula, Agra (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre, two stars on every side and a small square at every corner.',
     story: [
@@ -2742,7 +2805,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of Rajah Birbal’s house, Fatehpur Sikri (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the tilted square tile side by side. Four stars turn one way round each centre and the other way round each corner.',
     story: [
@@ -2774,7 +2838,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Star and squares of the Friday mosque minaret, Damghan (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and a small square at every corner, with rows of squares between them.',
     story: [
@@ -2805,7 +2870,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and crosses of the French Embassy ceiling, Cairo (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the tilted square tile side by side. A large piece sits at every centre and every corner, with stars and crosses between them.',
     story: [
@@ -2835,7 +2901,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-plate-64',
     title: 'Stars and octagons of Bourgoin’s plate 64 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the tilted square tile side by side. A star sits at every centre and a large octagon at every corner.',
     story: [
@@ -2871,7 +2938,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and arrows of the Khayrbak mosque, Cairo (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A star sits at every centre and a small square at every corner, with arrows pointing from star to star.',
     story: [
@@ -2913,7 +2981,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and rosettes of a door in the Royal Palace Museum, Fès (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at every centre, and a star ringed by chevrons at every corner.',
     story: [
@@ -2949,7 +3018,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of the Moulay Idriss zaouia (Fez) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. The stars’ surroundings alternate along each row.',
     story: [
@@ -2985,7 +3055,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'meknes-bou-inania-star-rings',
     title: 'Star rings of the Bou Inania madrasa (Meknes) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A smaller star sits among each group of three larger stars.',
     story: [
@@ -3022,7 +3093,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and square knots of the Sakkala (Tetouan) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A square knot sits at every corner between four stars.',
     story: [
@@ -3062,7 +3134,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'attarine-star-rosettes',
     title: 'Star rosettes of the Attarine madrasa (Fez) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. Stars fill the spaces between the rosettes.',
     story: [
@@ -3103,7 +3176,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Petal rosettes of the Bou Inania madrasa (Meknes) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A pointed star sits at every corner between four rosettes.',
     story: [
@@ -3140,7 +3214,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Rosette rings of the Bou Inania madrasa (Meknes) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. Stars and arrows join the rosettes along the rows.',
     story: [
@@ -3177,7 +3252,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Crosses and stars of the Bou Inania madrasa (Fez) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. Stars and small squares fill the spaces between the crosses.',
     story: [
@@ -3214,7 +3290,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Octagons and stars of the Royal Palace throne room (Rabat) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s C126A drawing. Its band centre lines were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening and square-diagonal compass transfers are shared with the Meknes rosette rings; different crossings complete the octagons. The drawing gives no steps; we devised the construction.',
@@ -3244,7 +3321,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'rabat-rosette-bands',
     title: 'Rosette bands from Rabat (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s MOR1137 vector drawing and snapped to exact values in small-star-radius units. Four radii and two unit-square diagonals set the cell half-side. The construction shares the unit-star opening with the Meknes and Rabat reconstructions, then adds lines through the guide squares’ corners to make the bands and the small central cross. The drawing gives no steps; we devised the construction.',
@@ -3284,7 +3362,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Arrow bands of the Ben Youssef madrasa (Marrakesh) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s C129B drawing and snapped to exact values in small-star-radius units. Two radii and two unit-square diagonals set the cell half-side. The construction shares the unit-star opening with the Meknes reconstructions; crossings R, V and W then set the bands and square knots. The drawing gives no steps; we devised the construction.',
@@ -3315,7 +3394,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Octagonal rosettes of the Bou Inania madrasa (Fez) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s MOR2841X vector drawing and snapped to exact values in small-star-radius units. Three radii and two unit-square diagonals set the half-side. The unit-star opening is shared with the earlier reconstructions. Compass transfers from J give M2, whose distance from O is the outer octagon’s apothem. The drawing gives no steps; we devised the construction.',
@@ -3356,7 +3436,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Octagons and pointed stars of the Moulay Ismail mosque (Fez) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s MOR0606 vector drawing. Its band centre lines were snapped to the square-root-of-two grid in small-star-radius units. It uses the same construction grid as the Rabat throne-room octagons, but inks different runs to form the pointed centre star and the twelve-sided pieces. The drawing gives no steps; we devised the construction.',
@@ -3392,7 +3473,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Star rosettes of the Ben Youssef madrasa (Marrakesh) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s P77 drawing. Its exact tile shapes, areas and counts agree with the Attarine star rosettes after shifting the centre. This variation shares all of that tutorial’s construction steps. The repeat and proportions are the same; the source’s filling distinguishes this version. The drawing gives no steps; we devised the construction.',
@@ -3422,7 +3504,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'toledo-synagogue-star-bands',
     title: 'Stars and bands of a synagogue in Toledo (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s SPA2929 drawing. Grey bevel shading was separated from the coloured faces, and the 6 pt band centre lines snapped to exact values. The unit-star opening is shared with the earlier reconstructions. Three square-diagonal transfers from B give the cell; the lines through M complete the bands. The drawing gives no steps; we devised the construction.',
@@ -3457,7 +3540,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Grid fret of the Sala del Mexuar patio (Alhambra) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s data192/ALH1 drawing. After taking the 8 pt band centre lines and turning the frame by 45 degrees, the corners lie on a rational grid in tenths of OA. Line K4F gives a fifth, and line E1E2 halves it to a tenth; compass transfers make the odd tenths. The drawing gives no steps; we devised the construction.',
@@ -3488,7 +3572,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Pointed stars of the Dos Hermanas side-chamber ceiling (Alhambra) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s NC5 vector drawing. Its band centre lines were snapped to exact half-unit square-root-of-two values. Every edge is a side of one of four eight-pointed stars with 45-degree tips, continued. The circle transfer through E locates their centres, and the crossings make the small central star. The drawing gives no steps; we devised the construction.',
@@ -3519,7 +3604,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Star bands of the Sala de las Dos Hermanas (Alhambra) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s MUL128K drawing. Its band centre lines fit exact square-root-of-two values. The shared unit-star opening sets the smaller stars. Four radii and two square diagonals set the half-side; compass transfers and star-side crossings set the bands. The drawing gives no steps; we devised the construction.',
@@ -3549,7 +3635,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'seville-vanda-star-rosettes',
     title: 'Star rosettes of a Seville tile (V&A) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s PG229 drawing. Turning the frame by 45 degrees reveals the same primitive repeat, exact proportions and tile network as the Attarine star rosettes. This variation shares every construction step. Its source filling distinguishes this version. The drawing gives no steps; we devised the construction.',
@@ -3584,7 +3671,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'cordoba-synagogue-star-bands',
     title: 'Star bands of the synagogue in Córdoba (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s SPA2103X drawing and snapped to exact square-root-of-two values. Two radii and two unit-square diagonals set the half-side. The construction shares the Ben Youssef arrow-band grid, adding a radius transfer from J. The ink picks out different stars, connecting bands and square knots. The drawing gives no steps; we devised the construction.',
@@ -3619,7 +3707,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Octagons of the Dormitorio de Reyes Moros (Alcázar, Seville) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s NC7 drawing. Its band centre lines fit exact square-root-of-two values. The opening shares the Rabat throne-room octagon grid; three further crossing and compass steps complete the different stars and octagonal bands. The drawing gives no steps; we devised the construction.',
@@ -3649,7 +3738,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-58-star-bands',
     title: 'Star bands of Bourgoin plate 58 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s P058 drawing and its band centres snapped to exact square-root-of-two values. The unit-star opening is shared with the earlier reconstructions. Neighbouring stars on an axis have different surroundings, so the repeat spans two star spacings. The drawing gives no steps; we devised the construction.',
@@ -3683,7 +3773,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'hani-zeynebiye-stars',
     title: 'Stars of the Zeynebiye madrasa (Hani) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. The ring of stars repeats between the small squares.',
     story: [
@@ -3714,7 +3805,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-144-octagon-bands',
     title: 'Octagon bands of Bourgoin plate 144 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s P144 drawing. A 22.5-degree frame turn reveals its primitive square repeat. The guide octagon touches the unit circle, and its corners give the star. The star-side crossing P and compass transfers set the remaining parallels at exact square-root-of-two values. An axis-aligned cell chosen from neighbouring source stars would give a false repeat. The drawing gives no steps; we devised the construction.',
@@ -3744,7 +3836,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stepped bands from folio 2b of the Lindisfarne Gospels (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s L34A drawing. Its plain tile corners lie exactly on an integer grid, with a repeat sixteen small-square sides wide. Compass steps give that grid; four diagonals through the seventh mark close the outer stepped bands. This is a Celtic manuscript pattern, not an attribution to an Islamic building. The drawing gives no steps; we devised the construction.',
@@ -3774,7 +3867,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'leon-mosaic-star-rosettes',
     title: 'Star rosettes of Alberto Leon’s mosaic design (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s LEON7 drawing. Its primitive repeat, tile network and exact proportions match the Attarine star rosettes. This filling variation shares all fourteen construction steps, alongside the Ben Youssef and Seville versions. The drawing gives no steps; we devised the construction.',
@@ -3804,7 +3898,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'abas-salman-232-star-bands',
     title: 'Star bands from Abas and Salman, page 232 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s PG232 drawing and snapped to exact square-root-of-two values. Two radii and one unit-square diagonal set the half-side. The shared unit-star opening supplies the smaller star; the continued lines and exact parallels also close the larger star with 45-degree tips. The drawing gives no steps; we devised the construction.',
@@ -3834,7 +3929,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'racinet-37-octagonal-rings',
     title: 'Octagonal rings from Racinet plate 37 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s R37D drawing. Its band centres fit exact square-root-of-two values. The construction shares the Rabat throne-room octagon grid, adding two compass and crossing steps for the different rims and connecting pieces. The first two squares are guides for the larger pointed star. The drawing gives no steps; we devised the construction.',
@@ -3865,7 +3961,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Square lattice of Salim Chishti’s tomb (Fatehpur Sikri) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s data206/SM3 drawing. Its polygon edges already coincide; the ochre stroke is not a gap between inset tiles. Half the small-square side gives the unit. Two radii and a unit-square diagonal give the half-side 2 + square root of two; four diagonals then close the pentagons and hexagons. The drawing gives no steps; we devised the construction.',
@@ -3895,7 +3992,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'maku-floor-hexagons',
     title: 'Squares and long hexagons of a floor in Maku (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A small square sits at every corner, with a long hexagon on each side of it.',
     story: [
@@ -3927,7 +4025,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and arrows of a Nasrid textile in the Metropolitan Museum (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. The stars at O and at the corners make a chessboard. A bone joins each star at O to the next.',
     story: [
@@ -3959,7 +4058,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of a ceiling in the Royal Palace, Fès (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A star sits at every centre and every corner, with a diagonal cross between each two centres.',
     story: [
@@ -3990,7 +4090,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of a porch ceiling by the Patio de los Arrayanes, Alhambra (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A star sits at every centre and every corner, and at the middle of every side.',
     story: [
@@ -4026,7 +4127,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'dar-el-bey-stars',
     title: 'Stars round a cross, Dar el Bey (Tunis) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A cross sits at every centre with four stars round it, and a star sits at every corner.',
     story: [
@@ -4056,7 +4158,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'agra-fort-stars',
     title: 'Stars and crosses of the Agra Fort (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and a small cross of squares at every corner.',
     story: [
@@ -4096,7 +4199,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'birbal-house-stars',
     title: 'Stars of Rajah Birbal’s house, Fatehpur Sikri (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and every corner.',
     story: [
@@ -4127,7 +4231,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'seville-tile-stars',
     title: 'Sharp stars of a Seville tile panel (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star ringed by eight hexagons sits at every centre, and the stars between them have four.',
     story: [
@@ -4159,7 +4264,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced stars of the Bahramiye mosque, Aleppo (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and a small square at every corner.',
     story: [
@@ -4195,7 +4301,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and crosses of the Crafts Center, Marrakesh (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square cell side by side. A star sits at every centre and every corner, with a green cross between each two.',
     story: [
@@ -4226,7 +4333,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Pointed stars of a tile panel in the Alhambra museum (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A large star sits at the centre of every tile. A small star sits at every corner and at the middle of every side.',
     story: [
@@ -4258,7 +4366,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Rosette and octagons of the Royal Palace throne room (Marrakesh) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A small black star sits at every corner.',
     story: [
@@ -4290,7 +4399,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Rosette of the arch jambs in the Sala de las Dos Hermanas, Alhambra (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A small octagon sits at every corner.',
     story: [
@@ -4327,7 +4437,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and pentagons of the Seyyed mosque (Isfahan) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A blue star sits at every corner.',
     story: [
@@ -4359,7 +4470,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and crosses of the Masjid-e Sayyed (Isfahan) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side, corner to corner along the horizontal and vertical lines.',
     story: [
@@ -4396,7 +4508,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Large rosette of a Moroccan panel (Paccard, page 222) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A star rosette sits at every corner.',
     story: [
@@ -4428,7 +4541,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Ringed rosette of a Moroccan panel (Paccard, page 222) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A star rosette sits at every corner.',
     story: [
@@ -4460,7 +4574,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Rosette of the Royal Palace throne room (Meknes) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -4491,7 +4606,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'fes-rosette-rings',
     title: 'Rosettes in octagonal rings (Fès) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre and at every corner.',
     story: [
@@ -4532,7 +4648,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars in octagonal rings, a Seville tile panel (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A star sits at the centre and at every corner.',
     story: [
@@ -4564,7 +4681,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Pierced plaster window of the Dar Si Said museum (Marrakesh) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A small star sits at the centre and at every corner.',
     story: [
@@ -4595,7 +4713,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'fes-najjarin-rosette',
     title: 'Rosette of the Najjarin fountain (Fès) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -4626,7 +4745,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'meknes-bou-inania-rosette',
     title: 'Rosette of the Bou Inania madrasa (Meknes) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -4663,7 +4783,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Star rosette of the Royal Palace throne room (Meknes) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -4694,7 +4815,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'meknes-moulay-ismail-rosette',
     title: 'Rosette of the tomb of Moulay Ismail (Meknes) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -4736,7 +4858,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Star burst of the Royal Palace throne room (Fès) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -4772,7 +4895,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'marrakesh-bahia-rosette',
     title: 'Rosette of the Bahia Palace (Marrakesh) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -4808,7 +4932,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'fes-petal-star-rosette',
     title: 'Petal and star rosette (Fès) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. Four petal flowers ring the small star at the centre of every tile.',
     story: [
@@ -4843,7 +4968,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'paris-mosque-rosette',
     title: 'Rosette of the Grande Mosquée (Paris) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -4874,7 +5000,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Ringed rosette of the Royal Palace throne room (Meknes) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A ringed rosette sits at the centre of every tile.',
     story: [
@@ -4906,7 +5033,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced rosette of the Moulay Ismail mosque (Fès) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -4942,7 +5070,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'telouet-residence-rosettes',
     title: 'Rosettes of the royal residence (Telouet) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A large rosette sits at the centre of every tile, and a cross rosette at every corner.',
     story: [
@@ -4973,7 +5102,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Interlaced rosette of the Bou Inania madrasa (Fès) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -5014,7 +5144,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Framed rosette of the royal residence (Telouet) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A large rosette sits at every corner of the tile.',
     story: [
@@ -5044,7 +5175,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'fes-attarine-rosette',
     title: 'Rosette of the Attarine madrasa (Fès) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -5080,7 +5212,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Ringed rosette of the Bahia Palace (Marrakesh) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -5110,7 +5243,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'fes-two-rosettes',
     title: 'Two rosettes (Fès) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A large rosette sits at the centre of every tile, and a rosette of eight petals at each corner.',
     story: [
@@ -5145,7 +5279,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'meknes-manezeh-fountain-rosette',
     title: 'Rosette of the Manezeh fountain (Meknes) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A large rosette sits at the centre of every tile, and a rosette of eight petals at each corner.',
     story: [
@@ -5176,7 +5311,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Rosette dado of the Salón de Comares west wall, Alhambra (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile.',
     story: [
@@ -5208,7 +5344,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Rosette of the Dar el Bacha palace (Marrakesh) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette sits at the centre of every tile, and its mirror image at each corner.',
     story: [
@@ -5239,7 +5376,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'fes-motif-rosette',
     title: 'Star and rosette motif (Fès) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A red rosette sits at the centre of every tile, a white star at every corner.',
     story: [
@@ -5269,7 +5407,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'isfahan-ali-notched-tiles',
     title: 'Notched tiles of the Masjid-e Ali, Isfahan (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s IRA1330 drawing and its corners snapped to exact values. OA is the half-diagonal of a small square. Two compass transfers of the unit-square diagonal give the rectangular repeat. The drawing gives no steps; we devised the construction.',
@@ -5303,7 +5442,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'hama-azem-door-tiles',
     title: 'Notched door tiles of the Azem Palace, Hama (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s HAMA drawing and its corners snapped to exact values. OA is one straight side of the ten-sided tile. Compass transfers of the square diagonal fix the rectangular repeat. The drawing gives no steps; we devised the construction.',
@@ -5332,7 +5472,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'isfahan-royal-mosque-star-rows',
     title: 'Rows of stars of the Royal Mosque, Isfahan (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s IRA0501 drawing and its corners snapped to exact values. OA is the star’s point radius. Its two squares and compass transfers of the unit-square diagonal fix the rectangular repeat. The drawing gives no steps; we devised the construction.',
@@ -5367,7 +5508,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and upright connectors from an Iranian collection (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s F80 drawing and its corners snapped to exact values. It shares the Charbagh star construction, then adds verticals and diagonals for connectors that keep one direction. The drawing gives no steps; we devised the construction.',
@@ -5398,7 +5540,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Squares and triangles of a Roman mosaic, Pompeii (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s CM006A drawing. The frame is turned by 45° so OA follows a mirror line and is half a square diagonal. The square and its compass transfers give every corner exactly. The drawing gives no steps; we devised the construction.',
@@ -5428,7 +5571,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and connecting tiles of the Mahruq imamzadeh, Nishapur (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s F109 drawing and its corners snapped to exact values. OA is the star’s point radius. Compass transfers of the square diagonal and of OA give the longer rectangular repeat. The drawing gives no steps; we devised the construction.',
@@ -5459,7 +5603,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and chevrons of the Ganj Ali Khan complex, Kerman (new, Tiling Search)',
     fold: 1,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s P111 drawing and its corners snapped to exact values. OA is the star’s point radius and follows a mirror. The chevrons keep their direction, so the boundaries have no half-turn. The drawing gives no steps; we devised the construction.',
@@ -5489,7 +5634,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-52-octagon-rows',
     title: 'Octagon rows of Bourgoin plate 52 (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s P052 drawing and its corners snapped to exact values. The frame turns by −22.5°. OA is the radius of the circle inside the octagon through the star’s points. The guide construction is shared with plate 144; the narrower rectangle gives this different arrangement. The drawing gives no steps; we devised the construction.',
@@ -5519,7 +5665,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and connecting tiles of the Golestan Palace, Tehran (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s P30 drawing and its corners snapped to exact values. OA is the star’s point radius. The star’s two squares and transfers of the unit-square diagonal give the rectangular repeat. The drawing gives no steps; we devised the construction.',
@@ -5549,7 +5696,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars above the door of the Imam Yahya mosque, Mosul (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s S45A drawing and its corners snapped to exact values. The frame turns by 45° to put OA on a mirror. OA is the star’s point radius; compass transfers of the square diagonal fix the repeat. The drawing gives no steps; we devised the construction.',
@@ -5579,7 +5727,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'agra-fort-band-rows',
     title: 'Stars and banded rows of the Agra Fort (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s DW5 drawing and its band centre lines snapped to exact values. OA is the star’s point radius. The unit star and compass transfers fix the rectangular repeat. The drawing gives no steps; we devised the construction.',
@@ -5609,7 +5758,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Tile rows of the Mir Qavam al-Din Mar’ashi building, Amol (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s IRAN16 drawing and its corners snapped to exact values. OA is half a small square’s side. The unit-square diagonal and compass transfers give the longer rectangular repeat. The drawing gives no steps; we devised the construction.',
@@ -5639,7 +5789,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'qom-atiq-courtyard-rows',
     title: 'Stars and squares of the Atiq courtyard, Qom (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s P105 drawing and its corners snapped to exact values. OA is a small square’s half-diagonal. Compass transfers of OA, OM and the unit-square diagonal give the rectangular repeat. The drawing gives no steps; we devised the construction.',
@@ -5669,7 +5820,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'nasrid-casket-stars',
     title: 'Interlaced stars of a Nasrid casket (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Brian Wichmann’s VA1 drawing and its band centre lines snapped to exact values. OA is the full star’s point radius. The unit star and compass transfers fix the rectangular repeat. The drawing gives no steps; we devised the construction.',
@@ -5700,7 +5852,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Turned stars of the Torre de las Damas, Alhambra (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A turned star sits at the centre of every tile, and a square star at every corner.',
     story: [
@@ -5737,7 +5890,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Sixteen-pointed rosettes of the Mexuar vestibule ceiling, Alhambra (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the tile side by side, corner to corner. A rosette sits at the centre of every tile, and an eight-pointed star at every corner.',
     story: [
@@ -5768,7 +5922,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'cairo-bagasi-rosettes',
     title: 'Rosettes of Barsbay al-Bagasi (Cairo) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A sixteen-pointed star sits at the centre of every tile, and an octagon at each corner.',
     story: [
@@ -5798,7 +5953,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-153-rosettes',
     title: 'Rosettes of Bourgoin’s plate 153 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A sixteen-pointed star sits at the centre of every tile, and an octagon at each corner.',
     story: [
@@ -5829,7 +5985,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'mughal-jali-octagons',
     title: 'Octagons of a Mughal jali screen (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. The large octagons touch at the middles of the tile’s sides.',
     story: [
@@ -5866,7 +6023,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Octagons of Salim Chishti’s tomb (Fatehpur Sikri) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. The large octagons touch at the middles of the tile’s sides.',
     story: [
@@ -5902,7 +6060,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-149-rosettes',
     title: 'Rosettes of Bourgoin’s plate 149 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A sixteen-pointed star sits at the centre of every tile. Eight-pointed stars sit on its sides, and a four-pointed star at each corner.',
     story: [
@@ -5933,7 +6092,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'shafai-248-rosettes',
     title: 'Rosettes from Shafai, page 248 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A sixteen-pointed star sits at the centre of every tile, and eight-pointed stars sit on its sides.',
     story: [
@@ -5963,7 +6123,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-65-rosettes',
     title: 'Rosettes of Bourgoin’s plate 65 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A sixteen-pointed star sits at the centre of every tile, and an octagon at each corner.',
     story: [
@@ -5993,7 +6154,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'hafiz-tomb-rosettes',
     title: 'Rosettes of the tomb of Hafiz (Shiraz) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. The sixteen-pointed stars sit at the tile’s centre and, between them, four-pointed stars at its corners.',
     story: [
@@ -6023,7 +6185,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'jali-screen-pinwheel',
     title: 'Pinwheel of a Mughal jali screen (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. The pinwheel turns about the centre of every tile.',
     story: [
@@ -6055,7 +6218,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Ten-pointed stars of the shrine of Zayn al-Din, Tayabad (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at each corner of every tile.',
     story: [
@@ -6087,7 +6251,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Decagons and pentagons of the Friday Mosque, Fatehpur Sikri (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A decagon sits at the centre and at each corner of every tile.',
     story: [
@@ -6119,7 +6284,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Small decagons of the Friday Mosque, Fatehpur Sikri (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A decagon sits at the centre and at each corner of every tile.',
     story: [
@@ -6151,7 +6317,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Decagons of Salim Chishti’s tomb (Fatehpur Sikri) (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A decagon sits at the centre and at every corner.',
     story: [
@@ -6182,7 +6349,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'mirza-akber-31-stars',
     title: 'Ten-pointed stars of Mirza Akber’s sheet 31 (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at every corner.',
     story: [
@@ -6214,7 +6382,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Ten-pointed stars and decagons of Bourgoin’s plate 183 (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at every corner.',
     story: [
@@ -6246,7 +6415,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Ten-pointed stars of the Imamzadeh Ismail, Isfahan (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at every corner.',
     story: [
@@ -6278,7 +6448,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Ten-pointed stars of the Mihrimah Sultan mosque, Üsküdar (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre of every tile.',
     story: [
@@ -6310,7 +6481,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Ten-pointed stars of the Atik Valide mosque, Üsküdar (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at every corner.',
     story: [
@@ -6342,7 +6514,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Sixteen-pointed rosettes of the Sala del Mexuar dado, Alhambra (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the tile side by side, corner to corner. A rosette sits at the centre of every tile, and an eight-pointed star at every corner.',
     story: [
@@ -6379,7 +6552,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Ten-pointed stars of the Çamlıca mosque shutter, Istanbul (new, Tiling Search)',
     fold: 1,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre of every tile and halfway along its top and bottom sides.',
     story: [
@@ -6411,7 +6585,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Ten-pointed stars of a Topkapı Palace door, Istanbul (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the rectangular tile side by side. A ten-pointed star sits at the centre and at each corner of every tile.',
     story: [
@@ -6443,7 +6618,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Six- and eight-pointed stars of the Alcázar, Seville (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s CM022 drawing. The unit star and a square-root-of-three compass transfer fix the six-pointed stars and the full square repeat. The drawing gives no steps; we devised the construction.',
@@ -6484,7 +6660,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Dodecagons of Salim Chishti’s tomb, Fatehpur Sikri (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s ASU2 drawing. The drawing gives no construction steps. The standard twelve-division opening is shared with the existing Mian rosette lesson. The pentagon boundaries and the hexagonal repeat were reconstructed from the drawing.',
@@ -6515,7 +6692,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Mixed stars of the Turkish Sultana’s House, Fatehpur Sikri (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s P41 drawing. The drawing gives no steps. The twelve-division opening is shared with the Mian lesson. Compass transfers fix both eight-pointed stars, the six-pointed stars and the regular hexagons; parallels through their crossings complete the connectors.',
@@ -6556,7 +6734,7 @@ export const PATTERNS: readonly Pattern[] = [
       {
         src: 'renders/agra-twelve-six-stars/photo-overlay.png',
         caption:
-          'David Wade’s photo IND 0403 with our lines in red (private, not shipped). Codex’s verdict: disagrees.',
+          'David Wade’s photo IND 0403 with our lines in red over the whole panel (private, not shipped). Our lines follow the bands. The wall adds twelve ribs in two of the stars and a knot in the third.',
       },
       {
         src: 'renders/agra-twelve-six-stars/photo-beside-wall.jpg',
@@ -6585,7 +6763,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'agra-twelve-six-stars-kites',
     title: 'Kite-filled twelve-pointed stars of Agra Fort (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s IND0403 drawing. The drawing gives no steps. Three squares construct the star. A parallel intercept fixes the repeat length exactly; six parallel families through existing crossings supply all remaining lines. This variation shares the complete construction with agra-twelve-six-stars. The existing lines through O divide its central star into twelve kites.',
@@ -6597,6 +6776,11 @@ export const PATTERNS: readonly Pattern[] = [
         src: 'renders/agra-twelve-six-stars-kites/photo-overlay.png',
         caption:
           'David Wade’s photo IND 0405 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
+      {
+        src: 'renders/agra-twelve-six-stars-kites/photo-overlay-ind0403.png',
+        caption:
+          'The panel of David Wade’s photo IND 0403 with these lines in red (private, not shipped): the ribs match its top and bottom stars, and the middle one has a knot instead.',
       },
       {
         src: 'renders/agra-twelve-six-stars-kites/photo-beside-wall.jpg',
@@ -6626,7 +6810,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Six-pointed stars of the al-Dhahabi house, Cairo (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s F8785 drawing. The drawing gives no steps. The large unit star, small stars at the cell corners and three parallel families construct every boundary.',
@@ -6657,7 +6842,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Twelve-pointed star bands of the Mexuar patio, Alhambra (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s W85 drawing. The drawing gives no steps. The unit star of three squares shares IND0403’s opening. The unit-square diagonal fixes the hexagonal repeat; these lines supply every boundary.',
@@ -6697,7 +6883,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Twelve-pointed star bands of Öljeitü’s mausoleum, Sultaniyeh (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s IRA2633 coloured ribbon drawing. Its band centre lines coincide with W85’s complete mesh. This filling variation shares every construction step and ink reference with mexuar-twelve-star-bands. The drawing gives no construction instructions.',
@@ -6732,7 +6919,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'damascus-fountain-stars',
     title: 'Star surround of a Damascus fountain (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s DM1 drawing. The drawing gives no steps. The three-square star opening, a square diagonal, compass transfers and one midpoint fix the repeat and every parallel family.',
@@ -6762,7 +6950,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'ibn-arabi-six-stars',
     title: 'Six-pointed stars of Ibn al-Arabi’s mausoleum (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s SYR0222 drawing. The drawing gives no steps. Two triangles, diagonal intercepts and compass transfers fix every parallel family.',
@@ -6797,7 +6986,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-98-divided-stars',
     title: 'Divided stars of Bourgoin’s Plate 98 (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s A192 drawing. The drawing gives no steps. Three squares and two parallel families construct the divided stars and their connectors.',
@@ -6827,7 +7017,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'samarkand-star-knots',
     title: 'Four- and six-pointed star knots, Samarkand (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s SAM1 drawing. The drawing gives no steps. A four-pointed star, two compass transfers and parallels through earlier crossings fix the mesh.',
@@ -6857,7 +7048,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-106-star-lattice',
     title: 'Star lattice of Bourgoin’s Plate 106 (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s P106 drawing. The drawing gives no steps. An angle bisector and a projected circle point fix the eight-pointed star. Compass transfers and four parallel families complete its square repeat.',
@@ -6892,7 +7084,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-92-twelve-stars',
     title: 'Twelve-pointed stars of Bourgoin’s Plate 92 (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s P092 drawing. The drawing gives no steps. Two turned hexagons make the twelve-pointed star. Compass transfers set the hexagonal repeat and one height; a parallel through a crossing completes the mesh.',
@@ -6922,7 +7115,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'maragha-twelve-star-bands',
     title: 'Twelve-star bands of Gunbad-i Surkh, Maragha (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s CR1 drawing. The drawing gives no steps. Two turned hexagons, a diagonal intercept and a fifth-part construction fix the band centres.',
@@ -6951,7 +7145,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'qalawun-twelve-star-knots',
     title: 'Twelve-star knots of Qalawun’s mausoleum (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s DS1 drawing. The drawing gives no steps. Three squares make the twelve-pointed star. Compass transfers set the hexagonal repeat and one height; a parallel through a crossing completes the mesh.',
@@ -6981,7 +7176,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Twelve-star lattice of a Chester Beatty Qur’an (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s F294 drawing. The drawing gives no steps. Four triangles and six parallel families construct the stars and their connectors.',
@@ -7011,7 +7207,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'el-djem-dodecagons',
     title: 'Dodecagons of a Roman mosaic, El Djem (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s BON1 drawing. The drawing gives no steps. A regular dodecagon, a diagonal intercept and two parallel families construct the mesh.',
@@ -7041,7 +7238,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-141-mixed-stars',
     title: 'Mixed stars of Bourgoin’s Plate 141 (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s P141 drawing. The drawing gives no steps. Four triangles, compass sums and a third-part construction fix the repeat and parallel families.',
@@ -7070,7 +7268,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-142-star-rows',
     title: 'Star rows of Bourgoin’s Plate 142 (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Wichmann’s P142 drawing. The drawing gives no steps. The four-triangle opening is shared with P141. Compass transfers set a rectangular repeat; parallels through earlier crossings complete its mesh.',
@@ -7100,7 +7299,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Six-, eight- and twelve-pointed stars of Seville (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s SEV2 drawing. The drawing gives no steps. The four-triangle opening is shared with F294. A quarter-part construction fixes the repeat, and circle projections fix the eight-star carriers.',
@@ -7135,7 +7335,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'bourgoin-87-chelates',
     title: 'Star chelates of Bourgoin’s Plate 87 (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s B87 drawing. The drawing gives no steps. The first eight steps are shared with P141. Three diagonal halvings and compass complements construct all further parallel families.',
@@ -7164,7 +7365,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'fathabad-mixed-stars',
     title: 'Mixed stars of the Fathabad tile fragments (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s MIR24 drawing. The drawing gives no steps. A regular-hexagon side is the unit. Compass transfers set the three-square star and the repeat; corner-star and parallel families complete the mesh.',
@@ -7194,7 +7396,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'qawsun-quran-stars',
     title: 'Stars of a Qur’an page from Qawsun mosque (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s DA1 drawing. The drawing gives no steps. Three squares, a third-part construction and parallels through crossings fix the square mesh.',
@@ -7225,7 +7428,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Divided stars of the Turkish and Islamic Arts Museum (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s TAI1 drawing. The drawing gives no steps. The three-square opening is shared with the Agra star lesson. A third-part construction and compass sum set the repeat; parallels through crossings complete the divided stars.',
@@ -7255,7 +7459,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'otrush-star-chelates',
     title: 'Star chelates of al-Otrush mosque, Aleppo (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s AJL8 drawing. The drawing gives no steps. The first six steps share the Qawsun three-square opening. A third, compass sum and four diagonal halvings set the repeat and carrier distances.',
@@ -7285,7 +7490,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'barsbay-twelve-star-doors',
     title: 'Twelve-star doors of Sultan Barsbay, Cairo (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the rectangular tile side by side.',
     story: [
       'The finished design was read from Wichmann’s EGY1030 drawing. The drawing gives no steps. The first six steps share the Chester Beatty four-triangle opening. Compass sums construct the centred rectangle, small radius and corner diagonals; parallels through crossings complete the mesh.',
@@ -7320,7 +7526,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'ismail-shrine-divided-stars',
     title: 'Divided stars of Imamzadeh Ismail, Isfahan (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the diamond tile side by side.',
     story: [
       'The finished design was read from Wichmann’s SHAF18 drawing. The drawing gives no steps. The first nine construction operations share the P142 opening. Compass sums set the diamond repeat; parallels through crossings complete the divided stars.',
@@ -7351,7 +7558,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Chiral divided stars of the Shah Mosque grille (new, Tiling Search)',
     fold: 6,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the hexagonal tile side by side.',
     story: [
       'The finished design was read from Wichmann’s F38 drawing. The drawing gives no steps. The shared three-square opening locates a unit kite edge. A fifth and twentieth of it set two connector lengths. Parallels and one further compass transfer locate the chiral mesh and its angled hexagonal repeat.',
@@ -7381,7 +7589,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'chehel-sotoun-divided-stars',
     title: 'Divided stars of Chehel Sotoun, Isfahan (new, Tiling Search)',
     fold: 2,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the diamond tile side by side.',
     story: [
       'The finished design was read from Wichmann’s OR1 drawing. The drawing gives no steps. The complete construction is shared with the Ismail shrine tutorial. Turning the source frame by90° gives the same mesh and kite proportions.',
@@ -7411,7 +7620,8 @@ export const PATTERNS: readonly Pattern[] = [
     id: 'rabat-mixed-star-rosette',
     title: 'Mixed-star rosette from Rabat (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary: 'Put copies of the square tile side by side.',
     story: [
       'The finished design was read from Wichmann’s MOR1118 drawing. The drawing gives no steps. The first six steps share the Chester Beatty four-triangle opening. Compass sums and diagonal halvings locate the rosette and mixed-star mesh.',
@@ -7452,7 +7662,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Stars and crosses of the Mirador de Lindaraja (Alhambra) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A white star sits at the centre of every tile. A small square sits at the middle of every side.',
     story: [
@@ -7484,7 +7695,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Turning stars in the niches of the Sala de la Barca (Alhambra) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A four-pointed star sits at the centre and at the corners of every tile. A white piece sits at the middle of every side.',
     story: [
@@ -7516,7 +7728,8 @@ export const PATTERNS: readonly Pattern[] = [
     title:
       'Eight-fold rosettes of the Mirador de Lindaraja (Alhambra) (new, Tiling Search)',
     fold: 4,
-    status: 'decide',
+    status: 'decided',
+    decision: LOOKS_RIGHT,
     summary:
       'Put copies of the square tile side by side. A rosette of eight petals sits at every grid point. A white star sits between four rosettes.',
     story: [
@@ -8662,303 +8875,20 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
-    id: 'photo-checks-first',
-    text: 'Codex laid our lines over 59 photos: 1 agrees, 19 agree in part, 37 could not be lined up, and no tutorial is shown to have a wrong line. Two differ only because they are plain variants that leave out details the wall has. Keep them as plain variants?',
-    choices: ['Keep them, and say so in their notes', 'Remove them'],
+    id: 'agra-plain-variant',
+    text: 'You were right about Design B: that picture was broken, because its small window cut off most of our lines. Redrawn over the whole panel, our lines follow the bands. The wall adds twelve ribs in two stars and a knot in the third, which this plain version leaves out. The kite version already has the ribs. Keep the plain version?',
+    choices: ['Keep it, and say so in its notes', 'Remove it'],
     pictures: [
-      {
-        src: 'renders/isfahan-masjid-ali-crosses-plain/photo-overlay.png',
-        caption:
-          'Design A, Masjid-e Ali: the wall has small squares this plain variant leaves out.',
-      },
       {
         src: 'renders/agra-twelve-six-stars/photo-overlay.png',
-        caption:
-          'Design B, Agra Fort: the wall has twelve ribs inside each large star that this plain variant leaves out.',
-      },
-    ],
-    card: 'isfahan-masjid-ali-crosses-plain',
-    also: [
-      'alhambra-arrayanes-portico-doors',
-      'alhambra-leones-door-stars',
-      'mexuar-twelve-star-bands',
-      'alcazar-interlaced-stars',
-      'alcazar-mosaic-stars',
-      'alcazar-six-eight-stars',
-      'cordoba-synagogue-star-bands',
-      'seville-six-eight-twelve-stars',
-      'seville-vanda-star-rosettes',
-      'toledo-synagogue-star-bands',
-      'toledo-tile-stars',
-      'attarine-star-rosettes',
-      'fes-attarine-rosette',
-      'fes-bou-inania-cross-stars',
-      'fes-bou-inania-interlaced-rosette',
-      'fes-bou-inania-octagonal-rosettes',
-      'fes-moulay-ismail-interlace',
-      'fes-palace-door-stars',
-      'fes-petal-star-rosette',
-      'fes-rosette-rings',
-      'fes-throne-star-burst',
-      'fes-two-rosettes',
-      'marrakesh-bahia-rosette',
-      'meknes-bou-inania-petals',
-      'meknes-bou-inania-rosette-rings',
-      'meknes-bou-inania-rosette',
-      'meknes-bou-inania-star-rings',
-      'meknes-moulay-ismail-rosette',
-      'moulay-idriss-interlace',
-      'moulay-ismail-octagons',
-      'rabat-mixed-star-rosette',
-      'rabat-rosette-bands',
-      'tetouan-sakkala-knots',
-      'bahramiye-mosque-stars',
-      'barsbay-twelve-star-doors',
-      'bourgoin-106-star-lattice',
-      'ibn-arabi-six-stars',
-      'khayrbak-mosque-stars',
-      'isfahan-ali-notched-tiles',
-      'isfahan-masjid-ali-crosses-plain',
-      'isfahan-masjid-ali-crosses',
-      'isfahan-royal-mosque-star-rows',
-      'isfahan-sayyed-crosses',
-      'mashhad-gowhar-interlace',
-      'shiraz-qavam-crosses',
-      'sultaniyeh-twelve-star-bands',
-      'shah-i-zinda-octagons',
-      'tillya-kari-squares',
-      'iznik-green-mosque-pinwheel',
-      'agra-fort-stars',
-      'agra-twelve-six-stars-kites',
-      'agra-twelve-six-stars',
-      'itimad-daula-stars',
-      'salim-chishti-octagons',
-      'sikandra-stars',
-      'assisi-basilica-stars',
-      'bourgoin-58-star-bands',
-      'bourgoin-plate-64',
-    ],
-  },
-  {
-    id: 'tilingsearch-45-first',
-    text: 'A hundred and seventeen new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
-    choices: ['They look right', 'Some need work (say which)'],
-    pictures: [
-      {
-        src: 'renders/alhambra-mexuar-porch-fret/drawing-overlay.png',
-        caption: 'Mexuar porch fret: Wichmann’s drawing with our lines in red.',
+        caption: 'The plain version, with nothing inside the stars.',
       },
       {
-        src: 'renders/shah-i-zinda-octagons/wall.png',
-        caption: 'Shah-i-Zinda octagons: our wall.',
+        src: 'renders/agra-twelve-six-stars-kites/photo-overlay-ind0403.png',
+        caption: 'The kite version, with the ribs inside every star.',
       },
     ],
-    card: 'alhambra-mexuar-porch-fret',
-    also: [
-      'alhambra-mexuar-corridor-stars',
-      'alhambra-museum-loops',
-      'shah-i-zinda-octagons',
-      'qaytbay-floor-octagons',
-      'sircali-stars',
-      'topkapi-scroll-pinwheel',
-      'alhambra-leones-door-stars',
-      'alhambra-comares-soffit-stars',
-      'alhambra-comares-throne-dado',
-      'alhambra-leones-southeast-doors',
-      'alhambra-leones-gallery-stars',
-      'alhambra-arrayanes-portico-doors',
-      'chellah-minaret-loops',
-      'alcazar-interlaced-stars',
-      'toledo-tile-interlace',
-      'toledo-tile-stars',
-      'spanish-mosaic-stars',
-      'alcazar-mosaic-stars',
-      'qom-atabaki-stars',
-      'mashhad-courtyard-stars',
-      'shiraz-qavam-crosses',
-      'herat-minaret-stars',
-      'mashhad-gowhar-interlace',
-      'casablanca-house-crosses',
-      'leon-tile-stars',
-      'paccard-zellige-frets',
-      'badi-palace-stars',
-      'chellah-mosque-stars',
-      'nim-avard-stars',
-      'tillya-kari-squares',
-      'charbagh-stars',
-      'tash-khauli-crosses',
-      'sikandra-stars',
-      'agra-kite-stars',
-      'iznik-green-mosque-pinwheel',
-      'iranian-tile-crosses',
-      'cahier-pinwheel-stars',
-      'pompeii-stars-and-rhombi',
-      'hippo-mosaic-octagons',
-      'kritliya-house-stars',
-      'bou-inania-interlaced-stars',
-      'dar-el-bey-crosses',
-      'cahier-martin-arrow-stars',
-      'khojent-tile-stars',
-      'nishapur-madrasa-stars',
-      'bourgoin-star-octagons',
-      'mazar-shrine-stars',
-      'sale-madrasa-stars',
-      'isfahan-masjid-ali-crosses',
-      'isfahan-masjid-ali-crosses-plain',
-      'cahier-martin-cross-stars',
-      'cahier-martin-star-crosses',
-      'sutton-crosses-and-kites',
-      'sicily-panel-stars',
-      'alhambra-museum-interlaced-stars',
-      'assisi-basilica-stars',
-      'itimad-daula-stars',
-      'fatehpur-sikri-stars',
-      'damghan-minaret-stars',
-      'cairo-embassy-stars',
-      'bourgoin-plate-64',
-      'khayrbak-mosque-stars',
-      'fes-palace-door-stars',
-      'moulay-idriss-interlace',
-      'meknes-bou-inania-star-rings',
-      'tetouan-sakkala-knots',
-      'attarine-star-rosettes',
-      'meknes-bou-inania-petals',
-      'meknes-bou-inania-rosette-rings',
-      'fes-bou-inania-cross-stars',
-      'rabat-throne-octagons',
-      'rabat-rosette-bands',
-      'ben-youssef-arrow-bands',
-      'fes-bou-inania-octagonal-rosettes',
-      'moulay-ismail-octagons',
-      'ben-youssef-star-rosettes',
-      'toledo-synagogue-star-bands',
-      'alhambra-mexuar-grid-fret',
-      'alhambra-dos-hermanas-ceiling-stars',
-      'alhambra-dos-hermanas-band-stars',
-      'seville-vanda-star-rosettes',
-      'cordoba-synagogue-star-bands',
-      'alcazar-reyes-octagon-bands',
-      'bourgoin-58-star-bands',
-      'hani-zeynebiye-stars',
-      'bourgoin-144-octagon-bands',
-      'lindisfarne-folio-2b-stepped-bands',
-      'leon-mosaic-star-rosettes',
-      'abas-salman-232-star-bands',
-      'racinet-37-octagonal-rings',
-      'salim-chishti-square-lattice',
-      'maku-floor-hexagons',
-      'nasrid-textile-stars',
-      'fes-palace-ceiling-stars',
-      'alhambra-arrayanes-porch-ceiling',
-      'dar-el-bey-stars',
-      'agra-fort-stars',
-      'birbal-house-stars',
-      'seville-tile-stars',
-      'bahramiye-mosque-stars',
-      'marrakesh-crafts-stars',
-      'alhambra-museum-pointed-stars',
-      'marrakesh-throne-rosette',
-      'alhambra-dos-hermanas-jamb-rosette',
-      'isfahan-seyyed-stars',
-      'isfahan-sayyed-crosses',
-      'paccard-222-rosette',
-      'paccard-222-rosette-ring',
-      'meknes-throne-rosette',
-      'fes-rosette-rings',
-      'seville-octagon-rings',
-      'sidi-said-window',
-      'fes-najjarin-rosette',
-      'meknes-bou-inania-rosette',
-      'meknes-throne-star-rosette',
-      'meknes-moulay-ismail-rosette',
-      'fes-throne-star-burst',
-      'marrakesh-bahia-rosette',
-      'fes-petal-star-rosette',
-      'paris-mosque-rosette',
-      'meknes-throne-ring-rosette',
-      'fes-moulay-ismail-interlace',
-      'telouet-residence-rosettes',
-      'fes-bou-inania-interlaced-rosette',
-      'telouet-framed-rosette',
-      'fes-attarine-rosette',
-      'marrakesh-bahia-ring-rosette',
-      'fes-two-rosettes',
-      'meknes-manezeh-fountain-rosette',
-      'alhambra-comares-west-dado',
-      'marrakesh-dar-el-bacha-rosette',
-      'fes-motif-rosette',
-      'isfahan-ali-notched-tiles',
-      'hama-azem-door-tiles',
-      'isfahan-royal-mosque-star-rows',
-      'iranian-star-columns',
-      'pompeii-squares-and-triangles',
-      'nishapur-mahruq-star-rows',
-      'kerman-ganj-ali-khan-chevrons',
-      'bourgoin-52-octagon-rows',
-      'golestan-palace-star-rows',
-      'mosul-imam-yahya-star-rows',
-      'agra-fort-band-rows',
-      'amol-marashi-tile-rows',
-      'qom-atiq-courtyard-rows',
-      'nasrid-casket-stars',
-      'alhambra-partal-turned-stars',
-      'alhambra-mexuar-vestibule-rosettes',
-      'cairo-bagasi-rosettes',
-      'bourgoin-153-rosettes',
-      'mughal-jali-octagons',
-      'salim-chishti-octagons',
-      'bourgoin-149-rosettes',
-      'shafai-248-rosettes',
-      'bourgoin-65-rosettes',
-      'hafiz-tomb-rosettes',
-      'jali-screen-pinwheel',
-      'tayabad-zayn-stars',
-      'fatehpur-masjid-decagons',
-      'fatehpur-masjid-small-decagons',
-      'salim-chishti-decagons',
-      'mirza-akber-31-stars',
-      'bourgoin-183-stars',
-      'isfahan-imamzadeh-ismail-stars',
-      'mihrimah-uskudar-stars',
-      'atik-valide-uskudar-stars',
-      'alhambra-mexuar-dado-rosettes',
-      'camlica-mosque-stars',
-      'topkapi-door-stars',
-      'alcazar-six-eight-stars',
-      'salim-chishti-dodecagons',
-      'turkish-sultana-mixed-stars',
-      'agra-twelve-six-stars',
-      'agra-twelve-six-stars-kites',
-      'dhahabi-house-six-stars',
-      'mexuar-twelve-star-bands',
-      'sultaniyeh-twelve-star-bands',
-      'damascus-fountain-stars',
-      'ibn-arabi-six-stars',
-      'bourgoin-98-divided-stars',
-      'samarkand-star-knots',
-      'bourgoin-106-star-lattice',
-      'bourgoin-92-twelve-stars',
-      'maragha-twelve-star-bands',
-      'qalawun-twelve-star-knots',
-      'chester-beatty-twelve-stars',
-      'el-djem-dodecagons',
-      'bourgoin-141-mixed-stars',
-      'bourgoin-142-star-rows',
-      'seville-six-eight-twelve-stars',
-      'bourgoin-87-chelates',
-      'fathabad-mixed-stars',
-      'qawsun-quran-stars',
-      'museum-divided-stars',
-      'otrush-star-chelates',
-      'barsbay-twelve-star-doors',
-      'ismail-shrine-divided-stars',
-      'shah-mosque-chiral-grille',
-      'chehel-sotoun-divided-stars',
-      'rabat-mixed-star-rosette',
-      'alhambra-lindaraja-mirador-stars',
-      'alhambra-barca-niche-stars',
-      'alhambra-lindaraja-rosettes',
-    ],
+    card: 'agra-twelve-six-stars',
   },
 ];
 
@@ -8982,9 +8912,13 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '1 November 2026',
+  updated: '2 November 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'Your answers: the new patterns look right, Masjid-e Ali stays',
+      text: 'The Tiling Search cards are marked as checked by you, and the plain Masjid-e Ali stays and says what it leaves out. The Agra picture you questioned was broken, so it is redrawn over the whole panel and asked again.',
+    },
     {
       title:
         'Photo checks, first pass: 59 cards show the real wall beside ours',

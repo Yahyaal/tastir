@@ -12,7 +12,7 @@
   "construction": {
     "basis": "reconstruction",
     "fidelity": "not-applicable",
-    "note": "The finished design was read from Brian Wichmann’s data172/IRA1329 drawing, its corners snapped to exact values. We devised the construction: one line from K1 through E fixes P, and every line is drawn through P, F, J, M, N. The drawing gives no steps.",
+    "note": "The finished design was read from Brian Wichmann’s data172/IRA1329 drawing, its corners snapped to exact values. We devised the construction: one line from K1 through E fixes P, and every line is drawn through P, F, J, M, N. The drawing gives no steps. This variant leaves out the small squares of the real wall, which the variation with squares has.",
     "changes": "The compass steps, their order and the named points are ours. The comparison with the drawing checks the finished lines, not how the design was first laid out. Wichmann draws white bands over the lines; the tutorial draws the lines. Wichmann’s second drawing of the same portal leaves out the small squares; this variant follows it. His drawing was compared by eye with David Wade’s photo IRA 1329 (stars and crosses in rows, with small square panels of square Kufic in the crosses and the ground); no overlay was made, because the portal is curved.",
     "reviewed": "2026-10-26"
   },

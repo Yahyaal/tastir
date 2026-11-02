@@ -27,6 +27,10 @@ These were never looked at as candidates, and they are not promised:
 - 25 from the other lists whose angles are 45°, and 10 at 90°.
 - The mathematical lists: regular polygons (D and T codes), two-uniform tilings (44), tilings not constructible by ruler and compass (92, which cannot be taught here as they stand), modern designs in Islamic style (22), Koran illuminations (24), square Kufic (23).
 
+## Patterns inside patterns
+
+Some walls hold a second, more complex pattern inside the stars and crosses. The owner noticed this on the Masjid-e Ali (IRA 1329) on 2 November 2026 and set it aside for later. No tutorial draws these inner patterns yet. The tutorials draw the main framework.
+
 ## Sources other than Tiling Search
 
 [The queue](QUEUE.md) keeps these: more designs per family, and designs made by users and the community later.
