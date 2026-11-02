@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-20 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+21 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -26,7 +26,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `cairo-bagasi-rosettes` | 21 → 20 | 21 → 29 | 811 → 806 | Yes, 232 segments |
 | `qawsun-quran-stars` | 21 → 20 | 23 → 31 | 779 → 774 | Yes, 60 segments |
 | `bourgoin-87-chelates` | 21 → 19 | 24 → 30 | 690 → 694 | Yes, 132 segments |
-| `ibn-arabi-six-stars` | 21 → — | 21 → — | 580 → — | — |
+| `ibn-arabi-six-stars` | 21 → 19 | 21 → 24 | 580 → 569 | Yes, 120 segments |
 | `fes-petal-star-rosette` | 20 → — | 21 → — | 785 → — | — |
 | `alcazar-reyes-octagon-bands` | 20 → — | 21 → — | 765 → — | — |
 | `shafai-248-rosettes` | 20 → — | 20 → — | 702 → — | — |
@@ -168,6 +168,12 @@ Review steps 7–10, 13, 15 and 18–19 most closely. The ink matches the saved 
 Grouped all six independent final vertical families into one uniform action and its turns. Split the diagonal projections, dependent compass sums and the extra quarter-length construction into parts. Its four-triangle opening remains geometrically shared with P141; changes are local to this generator after the shared builder returns. Two parent steps are saved, while headings make the text four words longer.
 
 Review steps 7–8, 12–15 and 17–18 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## ibn-arabi-six-stars
+
+Reused the opening circle and grouped six independent final vertical families. Split the three-stage quarter projection and the following diagonal projections into parts. The two connector families still depend on one another and remain separate. This saves two parent steps and eleven words, while exposing three previously bundled moves.
+
+Review steps 7, 9–12 and 16 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
