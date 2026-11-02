@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-26 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+27 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -32,7 +32,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `shafai-248-rosettes` | 20 → 19 | 20 → 22 | 702 → 679 | Yes, 256 segments |
 | `fes-bou-inania-octagonal-rosettes` | 20 → 18 | 21 → 32 | 729 → 753 | Yes, 100 segments |
 | `kurt-eight-fold-zellige-shifted` | 20 → 20 | 23 → 26 | 746 → 745 | Yes, 352 segments |
-| `damascus-fountain-stars` | 20 → — | 22 → — | 641 → — | — |
+| `damascus-fountain-stars` | 20 → 19 | 22 → 28 | 641 → 645 | Yes, 144 segments |
 | `agra-twelve-six-stars-kites` | 20 → — | 22 → — | 625 → — | — |
 | `agra-twelve-six-stars` | 20 → — | 22 → — | 625 → — | — |
 
@@ -204,6 +204,12 @@ Review steps 2, 4–5, 8 and 12–17 most closely. The ink matches the saved bas
 The existing ring-circle corner on the line from X2 to X5 gives the row direction exactly. Name it B where used and draw OB. This removes the extra row circle, its crossing U and the reference line from T3 to U. The octagon step now draws its missing parallels before drawing the octagons. The hexagon’s circles also have individual parts. These pacing changes add words and clicks despite the simpler row construction. The other wheel variations are unchanged. Added a dedicated generator for this formerly hand-authored variation.
 
 Review both parts of step 16, step 19 and all six parts of 20 most closely. The ink matches the saved baseline at nine decimal places. Plain-text and helper-text checks pass, and helper visibility is unchanged. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## damascus-fountain-stars
+
+The distance AD is the same unit-square diagonal as the former crossing P1. Use it as the compass opening, removing two projection lines and that crossing. Paired the independent vertical families through Q5 and N8. Split the remaining compass transfers and midpoint construction into parts. One parent step is saved; the extra headings make the text four words longer.
+
+Review steps 7–8 and 15–18 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
 ## Checks
 

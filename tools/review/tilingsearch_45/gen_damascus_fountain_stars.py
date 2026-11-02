@@ -19,6 +19,29 @@ L=(3*math.sqrt(2)+math.sqrt(6))/2
 REF={0:'h',30:'r30',90:'v',105:'r105',120:'r120',150:'r150'}
 
 
+def shorter_steps():
+    from lesson_steps import partition,sentence_parts,circle_parts,parallel_groups
+    old={s['id']:s for s in cm.steps};assert len(old)==19
+    for name in ['ax','dy','P1']:del old[7]['create'][name];g.el.pop(name)
+    old[7]['create']['root2']={'circle':{'centre':'O','radiusFrom':['A','D']}}
+    old[7]['text']='Draw a circle with centre O and opening AD. It crosses the horizontal line at N1, right of A.'
+    old[7].pop('textWithoutHelpers',None)
+    old[8]=sentence_parts(old[8],'Transfer the tile length.',[
+        (2,['projection','N2']),(2,['c3','N3']),(2,['c4','N4'])])
+    old[15]['text']=old[15]['text'].replace('the last line','the line through Q4')
+    old[16]=partition(old[16],'Halve the vertical length.',[
+        ('Draw a horizontal line through S1. It crosses the vertical line through O at N5.',
+         ['sineProjection','N5'],None),
+        ('Draw a circle with centre O through N5.', ['sine'],None),
+        ('Draw a circle with centre N5 through O. It crosses the last circle at P2 and P3.',
+         ['halfSine','P2','P3'],None),
+        ('Draw a straight line through P2 and P3. It crosses the vertical line at N6.',
+         ['midpoint','N6'],None)])
+    old[17]=circle_parts(old[17],'Transfer the guide length.')
+    old[19]=sentence_parts(old[19],'Draw the outer guide family.',[(2,['cy','N9']),(2,['yv','ys'])])
+    cm.steps[:]=parallel_groups(list(old.values()),[[15,18]],g.el)
+
+
 def build():
     star(opening_only=True)
     step('Draw a vertical line through A. Draw a horizontal line through D. They cross at P1. '
@@ -75,6 +98,7 @@ def build():
     cm.steps[6]['textWithoutHelpers'] = (
         'P1 is where the vertical through A crosses the horizontal through D. '
         'Draw a circle with centre O through P1. It crosses the horizontal line at N1, right of A.')
+    shorter_steps()
     return cell
 
 
