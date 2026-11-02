@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-22 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+23 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -28,7 +28,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `bourgoin-87-chelates` | 21 → 19 | 24 → 30 | 690 → 694 | Yes, 132 segments |
 | `ibn-arabi-six-stars` | 21 → 19 | 21 → 24 | 580 → 569 | Yes, 120 segments |
 | `fes-petal-star-rosette` | 20 → 20 | 21 → 24 | 785 → 745 | Yes, 608 segments |
-| `alcazar-reyes-octagon-bands` | 20 → — | 21 → — | 765 → — | — |
+| `alcazar-reyes-octagon-bands` | 20 → 17 | 21 → 30 | 765 → 794 | Yes, 240 segments |
 | `shafai-248-rosettes` | 20 → — | 20 → — | 702 → — | — |
 | `fes-bou-inania-octagonal-rosettes` | 20 → — | 21 → — | 729 → — | — |
 | `kurt-eight-fold-zellige-shifted` | 20 → — | 23 → — | 746 → — | — |
@@ -180,6 +180,12 @@ Review steps 7, 9–12 and 16 most closely. The ink matches the saved baseline a
 Grouped independent horizontal and diagonal instructions in steps 5, 14, 16, 17 and 18, saving 45 words there. Split the opening’s dependent diagonal construction into four parts, adding five heading words. The later guide families remain in their original order because subsequent crossings use them.
 
 Review steps 2, 5, 14 and 16–18 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## alcazar-reyes-octagon-bands
+
+Grouped five independent diagonal families into one pair and one group of three, all with the same quarter turns. Split the two compass walks, diagonal opening, circle-to-line transitions and the dependent corner sequence into parts. Three parent steps are saved; explicit instructions for the compass transfers add words and clicks.
+
+Review steps 2, 4–5 and 11–16 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
