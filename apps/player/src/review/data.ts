@@ -934,6 +934,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/shah-i-zinda-octagons/photo-overlay.png',
+        caption:
+          'David Wade’s photo TRA 0301 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
+      {
         src: 'renders/shah-i-zinda-octagons/photo-beside-wall.jpg',
         caption:
           'Left: David Wade’s photo TRA 0301 (private, not shipped). Right: our wall. Same size only, not lined up.',
@@ -1042,6 +1047,11 @@ export const PATTERNS: readonly Pattern[] = [
       'One circle gives the star size (√2 − 1), and the rest is the stars’ own sides drawn long, in eight steps. Wichmann draws it turned by 45°; it is turned back to match David Wade’s photo SPA 0424x, which shows the same pieces (by eye; the photo is private).',
     ],
     pictures: [
+      {
+        src: 'renders/alhambra-leones-door-stars/photo-overlay.png',
+        caption:
+          'David Wade’s photo SPA 0424x with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
       {
         src: 'renders/alhambra-leones-door-stars/photo-beside-wall.jpg',
         caption:
@@ -1213,6 +1223,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/alhambra-arrayanes-portico-doors/photo-overlay.png',
+        caption:
+          'David Wade’s photo SPA 0214 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
+      {
         src: 'renders/alhambra-arrayanes-portico-doors/photo-beside-wall.jpg',
         caption:
           'Left: David Wade’s photo SPA 0214 (private, not shipped). Right: our wall. Same size only, not lined up.',
@@ -1280,6 +1295,11 @@ export const PATTERNS: readonly Pattern[] = [
       '8 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/alcazar-interlaced-stars/photo-overlay.png',
+        caption:
+          'David Wade’s photo SPA 2215 with our lines in red (private, not shipped). Codex’s verdict: agrees.',
+      },
       {
         src: 'renders/alcazar-interlaced-stars/photo-beside-wall.jpg',
         caption:
@@ -1411,6 +1431,11 @@ export const PATTERNS: readonly Pattern[] = [
       '11 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/alcazar-mosaic-stars/photo-overlay.png',
+        caption:
+          'David Wade’s photo SPA 2311 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
       {
         src: 'renders/alcazar-mosaic-stars/photo-beside-wall.jpg',
         caption:
@@ -1900,6 +1925,11 @@ export const PATTERNS: readonly Pattern[] = [
       '10 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/sikandra-stars/photo-overlay.png',
+        caption:
+          'David Wade’s photo IND 0703 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
       {
         src: 'renders/sikandra-stars/photo-beside-wall.jpg',
         caption:
@@ -2407,6 +2437,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/isfahan-masjid-ali-crosses/photo-overlay.png',
+        caption:
+          'David Wade’s photo IRA 1329 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
+      {
         src: 'renders/isfahan-masjid-ali-crosses/photo-beside-wall.jpg',
         caption:
           'Left: David Wade’s photo IRA 1329 (private, not shipped). Right: our wall. Same size only, not lined up.',
@@ -2442,6 +2477,11 @@ export const PATTERNS: readonly Pattern[] = [
       '8 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/isfahan-masjid-ali-crosses-plain/photo-overlay.png',
+        caption:
+          'David Wade’s photo IRA 1329 with our lines in red (private, not shipped). Codex’s verdict: disagrees.',
+      },
       {
         src: 'renders/isfahan-masjid-ali-crosses-plain/photo-beside-wall.jpg',
         caption:
@@ -2841,6 +2881,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/khayrbak-mosque-stars/photo-overlay.png',
+        caption:
+          'David Wade’s photo EGY 0818 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
+      {
         src: 'renders/khayrbak-mosque-stars/photo-beside-wall.jpg',
         caption:
           'Left: David Wade’s photo EGY 0818 (private, not shipped). Right: our wall. Same size only, not lined up.',
@@ -2987,6 +3032,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/tetouan-sakkala-knots/photo-overlay.png',
+        caption:
+          'David Wade’s photo MOR 2615x with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
+      {
         src: 'renders/tetouan-sakkala-knots/photo-beside-wall.jpg',
         caption:
           'Left: David Wade’s photo MOR 2615x (private, not shipped). Right: our wall. Same size only, not lined up.',
@@ -3021,6 +3071,11 @@ export const PATTERNS: readonly Pattern[] = [
       '14 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/attarine-star-rosettes/photo-overlay.png',
+        caption:
+          'David Wade’s photo MOR 0323 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
       {
         src: 'renders/attarine-star-rosettes/photo-beside-wall.jpg',
         caption:
@@ -3198,6 +3253,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/rabat-rosette-bands/photo-overlay.png',
+        caption:
+          'David Wade’s photo MOR 1137 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
+      {
         src: 'renders/rabat-rosette-bands/photo-beside-wall.jpg',
         caption:
           'Left: David Wade’s photo MOR 1137 (private, not shipped). Right: our wall. Same size only, not lined up.',
@@ -3263,6 +3323,11 @@ export const PATTERNS: readonly Pattern[] = [
       '20 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/fes-bou-inania-octagonal-rosettes/photo-overlay.png',
+        caption:
+          'David Wade’s photo MOR 2841x with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
       {
         src: 'renders/fes-bou-inania-octagonal-rosettes/photo-beside-wall.jpg',
         caption:
@@ -4001,6 +4066,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/agra-fort-stars/photo-overlay.png',
+        caption:
+          'David Wade’s photo IND 0312 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
+      {
         src: 'renders/agra-fort-stars/photo-beside-wall.jpg',
         caption:
           'Left: David Wade’s photo IND 0312 (private, not shipped). Right: our wall. Same size only, not lined up.',
@@ -4431,6 +4501,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/fes-rosette-rings/photo-overlay.png',
+        caption:
+          'David Wade’s photo MOR 0719 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
+      {
         src: 'renders/fes-rosette-rings/photo-beside-wall.jpg',
         caption:
           'Left: David Wade’s photo MOR 0719 (private, not shipped). Right: our wall. Same size only, not lined up.',
@@ -4628,6 +4703,11 @@ export const PATTERNS: readonly Pattern[] = [
       '11 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/meknes-moulay-ismail-rosette/photo-overlay.png',
+        caption:
+          'David Wade’s photo MOR 0803 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
       {
         src: 'renders/meknes-moulay-ismail-rosette/photo-beside-wall.jpg',
         caption:
@@ -4902,6 +4982,11 @@ export const PATTERNS: readonly Pattern[] = [
       '15 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/fes-bou-inania-interlaced-rosette/photo-overlay.png',
+        caption:
+          'David Wade’s photo MOR 0203 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
       {
         src: 'renders/fes-bou-inania-interlaced-rosette/photo-beside-wall.jpg',
         caption:
@@ -6367,6 +6452,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/alcazar-six-eight-stars/photo-overlay.png',
+        caption:
+          'David Wade’s photo SPA 2219 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
+      {
         src: 'renders/alcazar-six-eight-stars/photo-beside-wall.jpg',
         caption:
           'Left: David Wade’s photo SPA 2219 (private, not shipped). Right: our wall. Same size only, not lined up.',
@@ -6464,6 +6554,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/agra-twelve-six-stars/photo-overlay.png',
+        caption:
+          'David Wade’s photo IND 0403 with our lines in red (private, not shipped). Codex’s verdict: disagrees.',
+      },
+      {
         src: 'renders/agra-twelve-six-stars/photo-beside-wall.jpg',
         caption:
           'Left: David Wade’s photo IND 0403 (private, not shipped). Right: our wall. Same size only, not lined up.',
@@ -6498,6 +6593,11 @@ export const PATTERNS: readonly Pattern[] = [
       '20 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/agra-twelve-six-stars-kites/photo-overlay.png',
+        caption:
+          'David Wade’s photo IND 0405 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
       {
         src: 'renders/agra-twelve-six-stars-kites/photo-beside-wall.jpg',
         caption:
@@ -6565,6 +6665,11 @@ export const PATTERNS: readonly Pattern[] = [
       '9 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/mexuar-twelve-star-bands/photo-overlay.png',
+        caption:
+          'David Wade’s photo SPA 1914 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
       {
         src: 'renders/mexuar-twelve-star-bands/photo-beside-wall.jpg',
         caption:
@@ -7314,6 +7419,11 @@ export const PATTERNS: readonly Pattern[] = [
       '49 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/rabat-mixed-star-rosette/photo-overlay.png',
+        caption:
+          'David Wade’s photo MOR 1118 with our lines in red (private, not shipped). Codex’s verdict: agrees in part.',
+      },
       {
         src: 'renders/rabat-mixed-star-rosette/photo-beside-wall.jpg',
         caption:
@@ -8553,26 +8663,21 @@ export interface Question {
 export const QUESTIONS: readonly Question[] = [
   {
     id: 'photo-checks-first',
-    text: 'I put David Wade’s photo beside our wall on 59 pattern cards. No pattern is clearly wrong, but this is by eye, not lines laid over the photo. These three looked the most different: do they match?',
-    choices: ['All three match', 'Some differ (say which)'],
+    text: 'Codex laid our lines over 59 photos: 1 agrees, 19 agree in part, 37 could not be lined up, and no tutorial is shown to have a wrong line. Two differ only because they are plain variants that leave out details the wall has. Keep them as plain variants?',
+    choices: ['Keep them, and say so in their notes', 'Remove them'],
     pictures: [
       {
-        src: 'renders/mughal-jali-octagons/photo-beside-wall.jpg',
+        src: 'renders/isfahan-masjid-ali-crosses-plain/photo-overlay.png',
         caption:
-          'Design A: the Mughal jali. The photo’s rings may have more sides than our octagons.',
+          'Design A, Masjid-e Ali: the wall has small squares this plain variant leaves out.',
       },
       {
-        src: 'renders/rabat-mixed-star-rosette/photo-beside-wall.jpg',
+        src: 'renders/agra-twelve-six-stars/photo-overlay.png',
         caption:
-          'Design B: the Rabat rosette. Count the long petals round the centre against ours.',
-      },
-      {
-        src: 'renders/alhambra-leones-door-stars/photo-beside-wall.jpg',
-        caption:
-          'Design C: the Leones door. The photo shows long octagons that are hard to find in our wall.',
+          'Design B, Agra Fort: the wall has twelve ribs inside each large star that this plain variant leaves out.',
       },
     ],
-    card: 'mughal-jali-octagons',
+    card: 'isfahan-masjid-ali-crosses-plain',
     also: [
       'alhambra-arrayanes-portico-doors',
       'alhambra-leones-door-stars',
@@ -8883,7 +8988,7 @@ export const PROGRESS: {
     {
       title:
         'Photo checks, first pass: 59 cards show the real wall beside ours',
-      text: 'This is by eye only. Some photos show a similar design in another building, and many are too small, carved or angled to judge. Lines laid exactly over the photos come next, for the flat straight-on ones.',
+      text: 'This is by eye only. Some photos show a similar design in another building, and many are too small, carved or angled to judge. Codex then laid lines over the 59 photos: 1 agrees, 19 agree in part, 2 are plain variants that omit details, and 37 could not be lined up, so most patterns are still unconfirmed by a photo.',
     },
     {
       title: 'PR #14 review fixes: feedback intake and retry recovery',
