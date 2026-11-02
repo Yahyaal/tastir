@@ -54,6 +54,12 @@ export const DOCS: readonly {
     text: read('patterns/REGIONS.md'),
   },
   {
+    key: 'remaining',
+    label: 'Patterns still to build',
+    file: 'patterns/REMAINING.md',
+    text: read('patterns/REMAINING.md'),
+  },
+  {
     key: 'yours',
     label: 'Your own patterns',
     file: 'USER-PATTERNS.md',

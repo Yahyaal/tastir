@@ -934,6 +934,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/shah-i-zinda-octagons/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo TRA 0301 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'research/tilingsearch-45/F254L/F254L-pdf.png',
         caption: 'Wichmann’s drawing.',
       },
@@ -1037,6 +1042,11 @@ export const PATTERNS: readonly Pattern[] = [
       'One circle gives the star size (√2 − 1), and the rest is the stars’ own sides drawn long, in eight steps. Wichmann draws it turned by 45°; it is turned back to match David Wade’s photo SPA 0424x, which shows the same pieces (by eye; the photo is private).',
     ],
     pictures: [
+      {
+        src: 'renders/alhambra-leones-door-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SPA 0424x (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/alhambra-leones-door-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -1203,6 +1213,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/alhambra-arrayanes-portico-doors/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SPA 0214 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/alhambra-arrayanes-portico-doors/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -1266,6 +1281,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/alcazar-interlaced-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SPA 2215 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/alcazar-interlaced-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -1325,6 +1345,11 @@ export const PATTERNS: readonly Pattern[] = [
       '11 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/toledo-tile-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 2816x (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/toledo-tile-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -1386,6 +1411,11 @@ export const PATTERNS: readonly Pattern[] = [
       '11 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/alcazar-mosaic-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SPA 2311 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/alcazar-mosaic-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -1479,6 +1509,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/shiraz-qavam-crosses/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo TRA 0308 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/shiraz-qavam-crosses/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -1541,6 +1576,11 @@ export const PATTERNS: readonly Pattern[] = [
       '7 steps, beginner.',
     ],
     pictures: [
+      {
+        src: 'renders/mashhad-gowhar-interlace/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo JAI 1033 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/mashhad-gowhar-interlace/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -1763,6 +1803,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/tillya-kari-squares/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SYR 0411 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/tillya-kari-squares/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -1856,6 +1901,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/sikandra-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IND 0703 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/sikandra-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -1917,6 +1967,11 @@ export const PATTERNS: readonly Pattern[] = [
       '7 steps, beginner.',
     ],
     pictures: [
+      {
+        src: 'renders/iznik-green-mosque-pinwheel/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo TRA 0332 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/iznik-green-mosque-pinwheel/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -2352,6 +2407,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/isfahan-masjid-ali-crosses/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IRA 1329 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/isfahan-masjid-ali-crosses/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -2382,6 +2442,11 @@ export const PATTERNS: readonly Pattern[] = [
       '8 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/isfahan-masjid-ali-crosses-plain/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IRA 1329 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/isfahan-masjid-ali-crosses-plain/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -2573,6 +2638,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/assisi-basilica-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SIC 031 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/assisi-basilica-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -2604,6 +2674,11 @@ export const PATTERNS: readonly Pattern[] = [
       '10 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/itimad-daula-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo TRA 0506 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/itimad-daula-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -2730,6 +2805,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/bourgoin-plate-64/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo TUR 0626 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/bourgoin-plate-64/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -2760,6 +2840,11 @@ export const PATTERNS: readonly Pattern[] = [
       '9 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/khayrbak-mosque-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo EGY 0818 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/khayrbak-mosque-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -2793,6 +2878,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/fes-palace-door-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SPA 2505 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/fes-palace-door-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -2824,6 +2914,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/moulay-idriss-interlace/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0329 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/moulay-idriss-interlace/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -2854,6 +2949,11 @@ export const PATTERNS: readonly Pattern[] = [
       '13 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/meknes-bou-inania-star-rings/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0913 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/meknes-bou-inania-star-rings/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -2887,6 +2987,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/tetouan-sakkala-knots/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 2615x (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/tetouan-sakkala-knots/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -2916,6 +3021,11 @@ export const PATTERNS: readonly Pattern[] = [
       '14 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/attarine-star-rosettes/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0323 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/attarine-star-rosettes/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -2947,6 +3057,11 @@ export const PATTERNS: readonly Pattern[] = [
       '16 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/meknes-bou-inania-petals/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0910 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/meknes-bou-inania-petals/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -2980,6 +3095,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/meknes-bou-inania-rosette-rings/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0909 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/meknes-bou-inania-rosette-rings/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -3011,6 +3131,11 @@ export const PATTERNS: readonly Pattern[] = [
       '10 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/fes-bou-inania-cross-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 2832x (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/fes-bou-inania-cross-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -3073,6 +3198,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/rabat-rosette-bands/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 1137 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/rabat-rosette-bands/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -3134,6 +3264,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/fes-bou-inania-octagonal-rosettes/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 2841x (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/fes-bou-inania-octagonal-rosettes/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -3164,6 +3299,11 @@ export const PATTERNS: readonly Pattern[] = [
       '18 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/moulay-ismail-octagons/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0606 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/moulay-ismail-octagons/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -3225,6 +3365,11 @@ export const PATTERNS: readonly Pattern[] = [
       '8 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/toledo-synagogue-star-bands/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SPA 2929 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/toledo-synagogue-star-bands/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -3348,6 +3493,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/seville-vanda-star-rosettes/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0322 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/seville-vanda-star-rosettes/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -3377,6 +3527,11 @@ export const PATTERNS: readonly Pattern[] = [
       '16 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/cordoba-synagogue-star-bands/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SPA 2103x (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/cordoba-synagogue-star-bands/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -3437,6 +3592,11 @@ export const PATTERNS: readonly Pattern[] = [
       '13 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/bourgoin-58-star-bands/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0316 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/bourgoin-58-star-bands/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -3841,6 +4001,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/agra-fort-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IND 0312 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/agra-fort-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -3933,6 +4098,11 @@ export const PATTERNS: readonly Pattern[] = [
       '8 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/bahramiye-mosque-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo TUR 0921 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/bahramiye-mosque-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -4129,6 +4299,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/isfahan-sayyed-crosses/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IRA 1617 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/isfahan-sayyed-crosses/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -4256,6 +4431,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/fes-rosette-rings/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0719 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/fes-rosette-rings/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -4381,6 +4561,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/meknes-bou-inania-rosette/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 2404x (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/meknes-bou-inania-rosette/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -4444,6 +4629,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/meknes-moulay-ismail-rosette/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0803 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/meknes-moulay-ismail-rosette/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -4476,6 +4666,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/fes-throne-star-burst/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0422 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/fes-throne-star-burst/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -4507,6 +4702,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/marrakesh-bahia-rosette/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 1218 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/marrakesh-bahia-rosette/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -4537,6 +4737,11 @@ export const PATTERNS: readonly Pattern[] = [
       '20 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/fes-petal-star-rosette/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0411 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/fes-petal-star-rosette/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -4631,6 +4836,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/fes-moulay-ismail-interlace/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0331 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/fes-moulay-ismail-interlace/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -4693,6 +4903,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/fes-bou-inania-interlaced-rosette/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0203 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/fes-bou-inania-interlaced-rosette/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -4754,6 +4969,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/fes-attarine-rosette/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0321 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/fes-attarine-rosette/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -4814,6 +5034,11 @@ export const PATTERNS: readonly Pattern[] = [
       '14 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/fes-two-rosettes/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 0837 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/fes-two-rosettes/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -4968,6 +5193,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/isfahan-ali-notched-tiles/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IRA 1330 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/isfahan-ali-notched-tiles/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -5025,6 +5255,11 @@ export const PATTERNS: readonly Pattern[] = [
       '11 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/isfahan-royal-mosque-star-rows/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IRA 0501 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/isfahan-royal-mosque-star-rows/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -5519,6 +5754,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/mughal-jali-octagons/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IND 0820 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/mughal-jali-octagons/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -5550,6 +5790,11 @@ export const PATTERNS: readonly Pattern[] = [
       '8 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/salim-chishti-octagons/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IND 0820 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/salim-chishti-octagons/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -6122,6 +6367,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/alcazar-six-eight-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SPA 2219 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/alcazar-six-eight-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -6214,6 +6464,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/agra-twelve-six-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IND 0403 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/agra-twelve-six-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -6243,6 +6498,11 @@ export const PATTERNS: readonly Pattern[] = [
       '20 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/agra-twelve-six-stars-kites/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IND 0405 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/agra-twelve-six-stars-kites/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -6306,6 +6566,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/mexuar-twelve-star-bands/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SPA 1914 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/mexuar-twelve-star-bands/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -6335,6 +6600,11 @@ export const PATTERNS: readonly Pattern[] = [
       '9 steps, intermediate.',
     ],
     pictures: [
+      {
+        src: 'renders/sultaniyeh-twelve-star-bands/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo IRA 2633 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/sultaniyeh-twelve-star-bands/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -6395,6 +6665,11 @@ export const PATTERNS: readonly Pattern[] = [
       '21 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/ibn-arabi-six-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SYR 0222 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/ibn-arabi-six-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -6485,6 +6760,11 @@ export const PATTERNS: readonly Pattern[] = [
       '18 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/bourgoin-106-star-lattice/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo EGY 1514 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/bourgoin-106-star-lattice/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -6724,6 +7004,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/seville-six-eight-twelve-stars/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo SPA 2200 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/seville-six-eight-twelve-stars/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -6904,6 +7189,11 @@ export const PATTERNS: readonly Pattern[] = [
     ],
     pictures: [
       {
+        src: 'renders/barsbay-twelve-star-doors/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo EGY 1030 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
+      {
         src: 'renders/barsbay-twelve-star-doors/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
       },
@@ -7024,6 +7314,11 @@ export const PATTERNS: readonly Pattern[] = [
       '49 steps, advanced.',
     ],
     pictures: [
+      {
+        src: 'renders/rabat-mixed-star-rosette/photo-beside-wall.jpg',
+        caption:
+          'Left: David Wade’s photo MOR 1118 (private, not shipped). Right: our wall. Same size only, not lined up.',
+      },
       {
         src: 'renders/rabat-mixed-star-rosette/drawing-overlay.png',
         caption: 'Wichmann’s drawing with the tutorial’s lines in red.',
@@ -8161,6 +8456,89 @@ export interface Question {
  */
 export const QUESTIONS: readonly Question[] = [
   {
+    id: 'photo-checks-first',
+    text: 'I put David Wade’s photo beside our wall on 59 pattern cards. No pattern is clearly wrong, but this is by eye, not lines laid over the photo. These three looked the most different: do they match?',
+    choices: ['All three match', 'Some differ (say which)'],
+    pictures: [
+      {
+        src: 'renders/mughal-jali-octagons/photo-beside-wall.jpg',
+        caption:
+          'Design A: the Mughal jali. The photo’s rings may have more sides than our octagons.',
+      },
+      {
+        src: 'renders/rabat-mixed-star-rosette/photo-beside-wall.jpg',
+        caption:
+          'Design B: the Rabat rosette. Count the long petals round the centre against ours.',
+      },
+      {
+        src: 'renders/alhambra-leones-door-stars/photo-beside-wall.jpg',
+        caption:
+          'Design C: the Leones door. The photo shows long octagons that are hard to find in our wall.',
+      },
+    ],
+    card: 'mughal-jali-octagons',
+    also: [
+      'alhambra-arrayanes-portico-doors',
+      'alhambra-leones-door-stars',
+      'mexuar-twelve-star-bands',
+      'alcazar-interlaced-stars',
+      'alcazar-mosaic-stars',
+      'alcazar-six-eight-stars',
+      'cordoba-synagogue-star-bands',
+      'seville-six-eight-twelve-stars',
+      'seville-vanda-star-rosettes',
+      'toledo-synagogue-star-bands',
+      'toledo-tile-stars',
+      'attarine-star-rosettes',
+      'fes-attarine-rosette',
+      'fes-bou-inania-cross-stars',
+      'fes-bou-inania-interlaced-rosette',
+      'fes-bou-inania-octagonal-rosettes',
+      'fes-moulay-ismail-interlace',
+      'fes-palace-door-stars',
+      'fes-petal-star-rosette',
+      'fes-rosette-rings',
+      'fes-throne-star-burst',
+      'fes-two-rosettes',
+      'marrakesh-bahia-rosette',
+      'meknes-bou-inania-petals',
+      'meknes-bou-inania-rosette-rings',
+      'meknes-bou-inania-rosette',
+      'meknes-bou-inania-star-rings',
+      'meknes-moulay-ismail-rosette',
+      'moulay-idriss-interlace',
+      'moulay-ismail-octagons',
+      'rabat-mixed-star-rosette',
+      'rabat-rosette-bands',
+      'tetouan-sakkala-knots',
+      'bahramiye-mosque-stars',
+      'barsbay-twelve-star-doors',
+      'bourgoin-106-star-lattice',
+      'ibn-arabi-six-stars',
+      'khayrbak-mosque-stars',
+      'isfahan-ali-notched-tiles',
+      'isfahan-masjid-ali-crosses-plain',
+      'isfahan-masjid-ali-crosses',
+      'isfahan-royal-mosque-star-rows',
+      'isfahan-sayyed-crosses',
+      'mashhad-gowhar-interlace',
+      'shiraz-qavam-crosses',
+      'sultaniyeh-twelve-star-bands',
+      'shah-i-zinda-octagons',
+      'tillya-kari-squares',
+      'iznik-green-mosque-pinwheel',
+      'agra-fort-stars',
+      'agra-twelve-six-stars-kites',
+      'agra-twelve-six-stars',
+      'itimad-daula-stars',
+      'salim-chishti-octagons',
+      'sikandra-stars',
+      'assisi-basilica-stars',
+      'bourgoin-58-star-bands',
+      'bourgoin-plate-64',
+    ],
+  },
+  {
     id: 'tilingsearch-45-first',
     text: 'A hundred and seventeen new patterns from Tiling Search (twenty-eight of them built by Codex)’s 45° list (cards marked new, Tiling Search). Do they look right, and is it fine that most have no photo of the real wall yet?',
     choices: ['They look right', 'Some need work (say which)'],
@@ -8400,9 +8778,14 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '28 October 2026',
+  updated: '1 November 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title:
+        'Photo checks, first pass: 59 cards show the real wall beside ours',
+      text: 'This is by eye only. Some photos show a similar design in another building, and many are too small, carved or angled to judge. Lines laid exactly over the photos come next, for the flat straight-on ones.',
+    },
     {
       title: 'PR #14 review fixes: feedback intake and retry recovery',
       text: 'Sender limits now run before the global attempt budget, and the global minute/day counters update together. Production hides Feedback when intake is off; the dev server keeps the form available for review. The drawing checkbox explains when attachments are unavailable. Interrupted sends can reclaim an expired lease under a database row lock, with stale-worker protection and tracked image cleanup. The setup guide also explains the daily cron’s 401 response until its secret is configured.',
