@@ -31,6 +31,34 @@ def frame(mark, apothem):
     return corners
 
 
+def shorter_steps():
+    from lesson_steps import circle_parts,partition,merge,number
+    old={s['id']:s for s in cm.steps};assert len(old)==19
+    del old[7]['create']['c2'];g.el.pop('c2')
+    old[7]['create']['N1']['point']['meet'][0]='cE'
+    old[7]['text']=old[7]['text'].replace(
+        'Draw a circle with centre A through O. It crosses the horizontal line at N1, right of A.',
+        'The circle with centre A through O crosses the horizontal line at N1, right of A.')
+    for i in [7,9]:old[i]=circle_parts(old[i],'Transfer the compass lengths.')
+    # AD is the unit square diagonal. The former projections and their
+    # crossing have no other construction, ink or tile users.
+    for name in ['ax','dy','P1']:del old[11]['create'][name];g.el.pop(name)
+    old[11]['create']['root2']={'circle':{'centre':'O','radiusFrom':['A','D']}}
+    old[11]['text']='Draw a circle with centre O and opening AD. It crosses the horizontal line at N8, right of A.'
+    old[11].pop('textWithoutHelpers',None)
+    helper={'id':10,'text':'Draw a straight line through N3 and N6.',
+            'create':{'ratio':old[10]['create'].pop('ratio')},'animate':'ruler'}
+    old[10]['text']='Draw a line through N2 parallel to the line from N3 to N6. It crosses the vertical line at N7, above O.'
+    old[10]['textWithoutHelpers']=old[10]['text']
+    old[16]['text']=old[16]['text'].replace('The last line','The 15° line through Q1')
+    pair=merge([old[15],old[17]],
+        'The line through N9 crosses line OE at Q1, below O. '
+        'It crosses the vertical line through O at Q3, below O. '
+        'Draw lines through Q1 and Q3 at 15° from OA. Turn each line round O by 60°, five times.')
+    cm.steps[:]=number([*[old[i] for i in range(1,10)],helper,*[old[i] for i in range(10,15)],
+                      pair,old[16],old[18],old[19]])
+
+
 def build(opening_only=False):
     opening()
     step('Draw the lines through O that halve angles AOB, BOC and COD. '
@@ -98,6 +126,7 @@ def build(opening_only=False):
     cm.steps[10]['textWithoutHelpers'] = (
         'P1 is where the vertical through A crosses the horizontal through D. '
         'Draw a circle with centre O through P1. It crosses the horizontal line at N8, right of A.')
+    shorter_steps()
     return cell
 
 
@@ -113,7 +142,7 @@ def main(filled=False):
     polys=drawing(pieces,origin=(225.63,371) if filled else (297.5,374.6375),angle=-15 if filled else 15)
     if filled:
         cm.steps[3].pop('textWithoutHelpers',None)
-        cm.steps[12]['textWithoutHelpers'] = (
+        next(st for st in cm.steps if 'frame' in st.get('create',{}))['textWithoutHelpers'] = (
             'Draw a vertical line through N9. Draw its copies turned by 60°, 120°, 180° and 240° round O. '
             'The tile’s corners are T1 to T6.')
     paths=cm.along_ink(network(polys,cell))

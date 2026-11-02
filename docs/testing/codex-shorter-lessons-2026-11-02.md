@@ -1,8 +1,10 @@
 # Shorter lessons, 2 November 2026
 
-27 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+All 29 requested lessons have been reviewed and committed in the brief’s order, with shared families changed together. The owner’s Rabat parts and wording corrections are applied. Every finished ink set matches its saved baseline. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
-Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
+Across the 29 lessons, parent steps fall from 720 to 659. Actions rise from 771 to 988, and words from 27,629 to 28,338, because dependent moves now have separate parts. Çamlıca, Mihrimah, Atik Valide and Topkapı have pacing repairs without fewer parent steps. They are not reported as shortening successes. Bourgoin 149 was also checked because it shares Shafai’s revised opening.
+
+Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`.
 
 | Tutorial | Steps before → after | Actions before → after | Words before → after | Ink matched |
 | --- | ---: | ---: | ---: | --- |
@@ -33,8 +35,8 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `fes-bou-inania-octagonal-rosettes` | 20 → 18 | 21 → 32 | 729 → 753 | Yes, 100 segments |
 | `kurt-eight-fold-zellige-shifted` | 20 → 20 | 23 → 26 | 746 → 745 | Yes, 352 segments |
 | `damascus-fountain-stars` | 20 → 19 | 22 → 28 | 641 → 645 | Yes, 144 segments |
-| `agra-twelve-six-stars-kites` | 20 → — | 22 → — | 625 → — | — |
-| `agra-twelve-six-stars` | 20 → — | 22 → — | 625 → — | — |
+| `agra-twelve-six-stars-kites` | 20 → 20 | 22 → 24 | 625 → 601 | Yes, 78 segments |
+| `agra-twelve-six-stars` | 20 → 20 | 22 → 24 | 625 → 601 | Yes, 72 segments |
 
 ## Rabat mixed-star rosette
 
@@ -46,7 +48,7 @@ The local generator produces the same construction steps as the tutorial. Rabat�
 
 Saved each original dump at `docs/review/<id>/before/dump.json` before editing that lesson. These review files are ignored by git. For Rabat, I sorted each segment’s endpoints, rounded coordinates to nine decimal places, and compared the complete unordered sets. All 352 segments matched. The tile and every piece polygon matched exactly. The canonical segment-set SHA-256 is `53a3a0e39cb10a66aa57ed52e6831eacf3f8316199a166d61e361dc77177d958`.
 
-Inspected all step pictures in order and the wall. A human should look most closely at steps 14–18, where the halvings and compass sums are grouped, and 28–29, where the guide families are grouped. The full-helper pictures remain dense. The renderer fixes its view to the tile, so some distant compass centres are clipped as before. Browser playback and hand construction have not been checked.
+Inspected all step pictures in order and the wall. A human should look most closely at steps 13–18, where the halvings and compass sums are grouped, and 28–29, where the guide families are grouped. The full-helper pictures remain dense. The renderer fixes its view to the tile, so some distant compass centres are clipped as before. Browser playback and hand construction have not been checked.
 
 ## Ismail shrine divided stars
 
@@ -201,7 +203,7 @@ Review steps 2, 4–5, 8 and 12–17 most closely. The ink matches the saved bas
 
 ## kurt-eight-fold-zellige-shifted
 
-The existing ring-circle corner on the line from X2 to X5 gives the row direction exactly. Name it B where used and draw OB. This removes the extra row circle, its crossing U and the reference line from T3 to U. The octagon step now draws its missing parallels before drawing the octagons. The hexagon’s circles also have individual parts. These pacing changes add words and clicks despite the simpler row construction. The other wheel variations are unchanged. Added a dedicated generator for this formerly hand-authored variation.
+The existing ring-circle corner on the line from X2 to X5 gives the row direction exactly. Name it B where used and draw OB. This removes the extra row circle, its crossing U and the reference line from T3 to U. The octagon step now draws its missing parallels before drawing the octagons. The hexagon’s circles also have individual parts. The added parts increase clicks; the whole lesson is one word shorter. The other wheel variations are unchanged. Added a dedicated generator for this formerly hand-authored variation.
 
 Review both parts of step 16, step 19 and all six parts of 20 most closely. The ink matches the saved baseline at nine decimal places. Plain-text and helper-text checks pass, and helper visibility is unchanged. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
@@ -211,14 +213,28 @@ The distance AD is the same unit-square diagonal as the former crossing P1. Use 
 
 Review steps 7–8 and 15–18 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
+## agra-twelve-six-stars-kites
+
+Changed this together with the unfilled Agra lesson. Reused the opening circle and used the distance AD directly for the unit-square diagonal, removing two projection lines and their crossing P1. Paired the independent 15° families through Q1 and Q3. The reference line for the fraction remains a separate helper-only step, and the serial compass transfers are separate parts. Kept this variation’s frame helper text by selecting the frame element rather than a stale step index.
+
+Review steps 7, 9–12 and 16–17 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## agra-twelve-six-stars
+
+Applied the same construction changes as the kite-filled variation. The two ink sets remain different as before, but both use the same revised construction. Parent steps remain 20 because exposing the helper-only reference line offsets the paired guide step. Each lesson saves 24 words and removes three construction elements plus one duplicate circle.
+
+Review steps 7, 9–12 and 16–17 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
 ## Checks
 
 The initial two complete engine runs passed all 4,074 tests in 23 files. After the remaining construction edits, the final complete engine run passed all 4,074 again in 902.72 seconds. This includes golden, weave and crossing-equivalence checks for the whole library. Intermediate follow-up runs selected individual tutorials and the complete weave suite; later lessons were checked together by this final full run, rather than running the full library after each one. One early filtered run passed its 64 selected assertions but failed the weave suite’s global count check because filtering excluded most tutorials. Running the complete weave suite resolved that harness failure. No expect block was changed.
 
-All 1,215 plain-text and helper-text checks pass across the library. The last copy-instruction trims change text only: the complete construction maps were compared unchanged, and the text checks were rerun. The full before/after unordered ink sets match at nine decimal places for every requested lesson and the additional Bourgoin 149 family member. Their tile frames and complete piece-polygon multisets match at the same precision. All tutorial fields outside steps remain unchanged. Retained helper lines have unchanged visibility; the only removed visible line is Çamlıca’s unused mirror through O.
+All 1,215 plain-text and helper-text checks pass across the library. The last copy-instruction trims change text only: the complete construction maps were compared unchanged. After the final Kurt octagon split, all text checks were rerun; its targeted engine checks and the complete library weave suite passed as well. The extra split changes grouping, not construction definitions. The full before/after unordered ink sets match at nine decimal places for every requested lesson and the additional Bourgoin 149 family member. Their tile frames and complete piece-polygon multisets match at the same precision. All tutorial fields outside steps remain unchanged. Retained helper lines have unchanged visibility; the only removed visible line is Çamlıca’s unused mirror through O.
+
+Compared generator construction output with the checked-in steps for all 30 changed tutorials, including Bourgoin 149. Full regeneration also matched steps and ink for Çamlıca and Topkapı after the final text trims. Fathabad, Damascus and both Agra lessons reproduced their steps, ink and expect blocks exactly. Kurt’s new generator reproduces its steps from the primary wheel lesson while keeping the other wheel variations unchanged.
 
 Inspected the ordered step pictures and walls, and read the changed instructions. Separate part renders make the long chains reviewable too. Full-helper drawings can remain dense, and the renderer’s fixed tile view clips some distant compass centres as before. Browser playback and hand construction have not been checked. Claude is to do the browser review; no server or browser suite ran and port 4200 was not touched.
 
-Heavy commands ran sequentially under the 3 GB systemd memory cap, with no swap and a 2304 MB Node heap. Vitest used one worker. The initial install and schema build passed. Lint and type checks passed before the earlier pushes and will be rerun before the next push.
+Heavy commands ran sequentially under the 3 GB systemd memory cap, with no swap and a 2304 MB Node heap. Vitest used one worker. The initial install and schema build passed. Lint and type checks passed before the pushes, including the final push.
 
 The normal root typecheck and test scripts invoke the prohibited catalog command. Type checks use the same Nx targets directly, with a local copy of the owner’s existing ignored catalogue. Text checks use an ignored temporary Vitest configuration with the real tutorial fixtures and an unused empty catalogue module. No catalog command ran. Other application unit suites remain unchecked.
