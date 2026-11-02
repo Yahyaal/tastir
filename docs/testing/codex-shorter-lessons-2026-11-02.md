@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-24 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+25 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -30,7 +30,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `fes-petal-star-rosette` | 20 → 20 | 21 → 24 | 785 → 745 | Yes, 608 segments |
 | `alcazar-reyes-octagon-bands` | 20 → 17 | 21 → 30 | 765 → 794 | Yes, 240 segments |
 | `shafai-248-rosettes` | 20 → 19 | 20 → 22 | 702 → 679 | Yes, 256 segments |
-| `fes-bou-inania-octagonal-rosettes` | 20 → — | 21 → — | 729 → — | — |
+| `fes-bou-inania-octagonal-rosettes` | 20 → 18 | 21 → 32 | 729 → 753 | Yes, 100 segments |
 | `kurt-eight-fold-zellige-shifted` | 20 → — | 23 → — | 746 → — | — |
 | `damascus-fountain-stars` | 20 → — | 22 → — | 641 → — | — |
 | `agra-twelve-six-stars-kites` | 20 → — | 22 → — | 625 → — | — |
@@ -192,6 +192,12 @@ Review steps 2, 4–5 and 11–16 most closely. The ink matches the saved baseli
 Grouped the three independent directions through P1 and their identical turns. The shared sixteen-division opening now has four parts for its dependent halvings; applied this to Bourgoin 149 as well. Bourgoin 149 keeps its 18 parent steps and splits its own dependent frame into two parts. Bourgoin 149 changes from 18 to 22 actions and from 693 to 705 words; all 264 ink segments match. No other shared-star caller exists.
 
 Review steps 2 and 7; Bourgoin 149 steps 2 and 5 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## fes-bou-inania-octagonal-rosettes
+
+Grouped three independent diagonal families with identical quarter turns. Split the opening, compass walks, circle-to-line transitions and final serial compass transfer into parts. Two parent steps are saved; the newly explicit transfers and headings add words and clicks. The shared Meknes frame builder itself is unchanged.
+
+Review steps 2, 4–5, 8 and 12–17 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
