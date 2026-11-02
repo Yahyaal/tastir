@@ -61,6 +61,9 @@ def build():
     for i, (a, b, p) in enumerate([('gy@3', 'gy', (L, L)), ('gy', 'gy@1', (-L, L)),
                                    ('gy@1', 'gy@2', (-L, -L)), ('gy@2', 'gy@3', (L, -L))]):
         g.meet(f'K{i+1}', a, b, p)
+    from lesson_steps import group_words,eightfold_opening_parts
+    group_words(cm.steps)
+    eightfold_opening_parts(cm.steps)
 
 
 SPEC = {

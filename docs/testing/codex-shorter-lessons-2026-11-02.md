@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-14 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+15 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -19,7 +19,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `bourgoin-153-rosettes` | 23 → 22 | 23 → 34 | 938 → 938 | Yes, 248 segments |
 | `otrush-star-chelates` | 23 → 22 | 25 → 31 | 741 → 745 | Yes, 126 segments |
 | `atik-valide-uskudar-stars` | 22 → 22 | 22 → 30 | 998 → 1107 | Yes, 116 segments |
-| `meknes-throne-rosette` | 22 → — | 23 → — | 1033 → — | — |
+| `meknes-throne-rosette` | 22 → 22 | 23 → 26 | 1033 → 995 | Yes, 424 segments |
 | `meknes-bou-inania-rosette-rings` | 22 → — | 23 → — | 773 → — | — |
 | `topkapi-door-stars` | 21 → — | 21 → — | 1432 → — | — |
 | `fes-moulay-ismail-interlace` | 21 → — | 22 → — | 876 → — | — |
@@ -132,6 +132,12 @@ Review steps 8–10, 12–15 and 18 most closely. The ink matches the saved base
 No shorter exact construction was verified. Its ten-direction plan already separates dependent line families, and its later batches are independent branches. Split the opening’s serial circle walk and the circle-to-guide transition into parts. This keeps 22 parent steps and increases both words and learner clicks; it is a pacing repair.
 
 Review steps 3, 5 and 8 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## meknes-throne-rosette
+
+Grouped the independent parallel instructions through P18–P20, P9 and P23, and P24–P26. This saves 43 words in those later steps. Split the opening’s dependent diagonal construction into four parts, which adds five heading words. No later guide family was removed because each feeds the finished mesh or a later crossing.
+
+Review steps 2, 15, 18 and 19 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
