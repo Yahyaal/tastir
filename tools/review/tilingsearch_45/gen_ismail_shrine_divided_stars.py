@@ -6,6 +6,7 @@ OA=35(1+√2+√3)/2pt, the four-star radius; cell half-diagonal2√2+√6.
 The pale-grey pieces are real kites, above the0..0.5 bevel shades.
 """
 import math
+import re
 import sys
 import common as cm
 from common import g,step
@@ -176,6 +177,97 @@ def description(name):
     return text
 
 
+def shorten_steps():
+    """The Ismail and Chehel Sotoun lessons use this same local grouping.
+
+    Leave the P142 opening unchanged for its other callers. These numbers
+    identify the original operations, before renumbering the shorter lesson.
+    """
+    old={s['id']:s for s in cm.steps}
+    assert len(old)==40 and 'gl29' in old[40]['create']
+    aliases={'Q3':'Q2','Q6':'Q4','Q11':'Q10','Q12':'Q10'}
+    for number,name in [(13,'Q3'),(16,'Q6'),(21,'Q11'),(22,'Q12')]:
+        del old[number]['create'][name]
+        g.el.pop(name)
+
+    def rename(value):
+        if isinstance(value,str):
+            return re.sub(r'\bQ\d+\b',lambda m:aliases.get(m[0],m[0]),value)
+        if isinstance(value,list):return [rename(v) for v in value]
+        if isinstance(value,dict):return {k:rename(v) for k,v in value.items()}
+        return value
+    old={n:rename(s) for n,s in old.items()}
+
+    def combine(numbers,text):
+        members=[old[n] for n in numbers]
+        merged={**members[0], 'text':text,
+                'create':{k:v for s in members for k,v in s['create'].items()}}
+        if any('textWithoutHelpers' in s for s in members):
+            # Copy counts differ between some lines when helpers are hidden.
+            # Keep each count beside its line, but name a shared crossing once.
+            sentences=[];introduced=set()
+            for s in members:
+                for sentence in re.split(r'(?<=[.!?])\s+',s.get('textWithoutHelpers',s['text'])):
+                    if sentence.startswith('The '):
+                        if sentence in introduced:continue
+                        introduced.add(sentence)
+                    sentences.append(sentence)
+            merged['textWithoutHelpers']=' '.join(sentences)
+        return merged
+
+    def parallel(numbers,points,angle):
+        # Q4 was named in the preceding pair of 30-degree lines.
+        introductions=' '.join(old[n]['text'].split(' Draw ')[0] for n in numbers if n!=16)
+        if numbers==[11,19,26]:
+            introductions=(
+                'Line from S5 to S9 crosses the 75° line through O at Q1 and the vertical through N1 at Q16. '
+                'The line from S10 to S2 crosses the vertical line through N2 at Q9.')
+        names=', '.join(points[:-1])+' and '+points[-1]
+        prefix=introductions+f' Draw lines through {names} at {angle}° from OA. '
+        merged=combine(numbers,prefix+'Turn each line round O by 30°, eleven times.')
+        copies={}
+        for n,p in zip(numbers,points):
+            turns=old[n]['textWithoutHelpers'].split('Turn it round O by ')[1]
+            copies.setdefault(turns,[]).append(p)
+        instructions=[]
+        for turns,ps in copies.items():
+            if len(copies)==1:subject='each line'
+            elif len(ps)==1:subject=f'the line through {ps[0]}'
+            else:subject='the lines through '+', '.join(ps[:-1])+' and '+ps[-1]
+            instructions.append(f'Turn {subject} round O by {turns}')
+        merged['textWithoutHelpers']=prefix+' '.join(instructions)
+        return merged
+
+    result=[old[n] for n in range(1,11)]
+    # Q9 and Q16 use only the opening, so they can be found alongside Q1.
+    result.append(parallel([11,19,26],['Q1','Q9','Q16'],15))
+    result.append(combine([12,13],
+        'The vertical line through O crosses the line from S5 to S9 at Q2. '
+        'Draw a horizontal line through Q2. Draw a line through Q2 at 15° from OA. '
+        'Turn each line round O by 30°, eleven times.'))
+    result.append(parallel([14,15],['Q4','Q5'],30))
+    result.append(parallel([16,17],['Q4','Q7'],45))
+    result.append(old[18])
+    spokes=combine([20,21,22],
+        'The horizontal line through O crosses the 15° line through Q1 at Q10. '
+        'Draw lines through Q10 at 45°, 60° and 90° from OA. '
+        'Turn each line round O by 30°, eleven times.')
+    spokes['textWithoutHelpers']=(
+        'The horizontal line through O crosses the 15° line through Q1 at Q10. '
+        'Draw lines through Q10 at 45°, 60° and 90° from OA. '
+        'Turn the 45° line round O by 90°, 180° and 270°. '
+        'Turn the 60° line round O by 60°, 180° and 240°. '
+        'Turn the vertical line round O by 180°.')
+    result.append(spokes)
+    result.extend(old[n] for n in [23,24,25,27,28,29])
+    result.append(parallel([30,31],['Q20','Q21'],105))
+    result.extend(old[n] for n in range(32,38))
+    result.append(parallel([38,39],['Q28','Q29'],135))
+    result.append(old[40])
+    cm.steps[:]=result
+    for i,s in enumerate(cm.steps,1):s['id']=i
+
+
 def build():
     opening(width_only=True)
     cm.steps[5]['text']='Draw the four triangles.'
@@ -208,6 +300,7 @@ def build():
         words=turns[0] if len(turns)==1 else ', '.join(turns[:-1])+' and '+turns[-1]
         cm.steps[10+i]['textWithoutHelpers']=cm.steps[10+i]['text'].replace(
             'Turn it round O by 30°, eleven times.',f'Turn it round O by {words}.')
+    shorten_steps()
     return cell
 
 

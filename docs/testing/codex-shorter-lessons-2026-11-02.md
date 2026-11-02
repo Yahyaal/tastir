@@ -1,14 +1,14 @@
 # Shorter lessons, 2 November 2026
 
-Rabat is shorter by eleven steps. Its finished ink, tile and piece polygons match the saved baseline. The next lessons are the shared Ismail and Chehel Sotoun construction.
+The first three lessons are shorter by 29 steps in total. Their finished ink, tiles and piece polygons match the saved baselines. This session stops after these three lessons. The remaining lessons are unmodified; the next is the Shah Mosque grille.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
 | Tutorial | Steps before → after | Actions before → after | Words before → after | Ink matched |
 | --- | ---: | ---: | ---: | --- |
 | `rabat-mixed-star-rosette` | 49 → 38 | 52 → 41 | 1688 → 1442 | Yes, 352 segments |
-| `ismail-shrine-divided-stars` | 41 → — | 44 → — | 1302 → — | — |
-| `chehel-sotoun-divided-stars` | 41 → — | 44 → — | 1302 → — | — |
+| `ismail-shrine-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1114 | Yes, 228 segments |
+| `chehel-sotoun-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1114 | Yes, 230 segments |
 | `shah-mosque-chiral-grille` | 36 → — | 38 → — | 1207 → — | — |
 | `turkish-sultana-mixed-stars` | 28 → — | 28 → — | 971 → — | — |
 | `barsbay-twelve-star-doors` | 28 → — | 41 → — | 1339 → — | — |
@@ -46,8 +46,22 @@ Saved each original dump at `docs/review/<id>/before/dump.json` before editing t
 
 Inspected all step pictures in order and the wall. A human should look most closely at steps 14–18, where the halvings and compass sums are grouped, and 28–29, where the guide families are grouped. The full-helper pictures remain dense. The renderer fixes its view to the tile, so some distant compass centres are clipped as before. Browser playback and hand construction have not been checked.
 
+## Ismail shrine divided stars
+
+Grouped independent parallel lines and the lines through each shared crossing. Found Q9 and Q16 with Q1 because all three depend only on the opening. Reused Q2 for Q3, Q4 for Q6, and Q10 for Q11 and Q12. Each group asks for the same line action, or for lines through one crossing. Dependent chains remain separate. The longest text still has five sentences in either helper view, so grouping does not create a longer sentence list.
+
+The generator’s construction matches the tutorial exactly. It changes only this family, because Chehel Sotoun is its only caller. The P142 opening and its other callers are unchanged. All metadata, credits, ink paths and the expect block remain unchanged. The 228 ink segments match as an unordered set at nine decimal places, and the tile and piece polygons match exactly. The segment-set SHA-256 is `a4b191a9ae3eace5ab7444cc21bf23ae55a61a4967f6035211a93cd2dabccf71`.
+
+Inspected all 32 step pictures in order and the wall. A human should look most closely at steps 11–16, which group the independent guides and reuse crossing names. Steps 23 and 30 group later pairs of parallel lines. The helper text for step 11 gives different turns for Q9 and the other two lines. Step 16 gives each direction its own turns. Browser playback and hand construction have not been checked.
+
+## Chehel Sotoun divided stars
+
+Applied the same construction changes as Ismail because the two lessons share their mesh. Kept Chehel Sotoun’s existing frame text, ink, colours, metadata and expect block. Its 230 ink segments match the saved set at nine decimal places. The tile and piece polygons match exactly. Its segment-set SHA-256 is `ad8b1c8930628c6b15d1c62b4876ff3591d292a547136c054d81b16b000a8873`.
+
+Inspected all 32 step pictures in order and the wall. The same steps 11–16, 23 and 30 deserve the closest human review. The Ismail generator supplies these steps; the Chehel Sotoun generator still makes its existing frame-text adjustment. Both generator constructions match their tutorials. Regenerated both complete tutorials into temporary files using the original SHAF18 and OR1 piece data from the owner’s worktree. Both regenerated steps, ink and expect blocks match exactly.
+
 ## Checks
 
-`pnpm install` and `pnpm nx run schema:build` passed. Heavy commands run sequentially in a systemd scope with `MemoryMax=3G` and `MemorySwapMax=0`; Node has a 2304 MB heap and Vitest uses one worker. The full engine suite passed all 4,074 tests in 23 files, including golden, weave and crossing-equivalence checks. The final run took 869.39 seconds. All five targeted plain-text and helper-text checks for Rabat passed. Numbered points in the edited text exist by the step that names them. Comparing old and new helper visibility found no changed visibility for retained lines. Lint passed for all eight projects. Type checks passed for all eight projects and their seven prerequisite tasks.
+`pnpm install` and `pnpm nx run schema:build` passed. Heavy commands run sequentially in a systemd scope with `MemoryMax=3G` and `MemorySwapMax=0`; Node has a 2304 MB heap and Vitest uses one worker. Both full engine runs passed all 4,074 tests in 23 files, including golden, weave and crossing-equivalence checks. The final run took 869.39 seconds. All 15 targeted plain-text and helper-text checks passed. Numbered points in the edited text exist by the step that names them. Comparing old and new helper visibility found no changed visibility for retained lines. Lint passed for all eight projects. Type checks passed for all eight projects and their seven prerequisite tasks.
 
 The normal `pnpm typecheck` and `pnpm test` scripts invoke `pnpm catalog`. The brief prohibits that command. Type checks used the same Nx targets directly, with a local copy of the owner’s existing ignored catalogue so previews need not be regenerated, and text checks used an ignored temporary Vitest configuration with the real tutorial fixtures and an unused empty catalogue module. No catalogue command, server or browser suite ran. Browser playback, hand construction and the other application unit suites remain unchecked.
