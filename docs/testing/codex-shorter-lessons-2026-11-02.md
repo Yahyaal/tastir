@@ -1,12 +1,12 @@
 # Shorter lessons, 2 November 2026
 
-The first three lessons are shorter by 29 steps in total. Their finished ink, tiles and piece polygons match the saved baselines. This session stops after these three lessons. The remaining lessons are unmodified; the next is the Shah Mosque grille.
+The first three lessons are shorter by 29 steps in total. Their finished ink, tiles and piece polygons match the saved baselines. The owner’s requested corrections are applied. Work continues in the brief’s order, with dependent moves separated into parts.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
 | Tutorial | Steps before → after | Actions before → after | Words before → after | Ink matched |
 | --- | ---: | ---: | ---: | --- |
-| `rabat-mixed-star-rosette` | 49 → 38 | 52 → 41 | 1688 → 1442 | Yes, 352 segments |
+| `rabat-mixed-star-rosette` | 49 → 38 | 52 → 46 | 1688 → 1457 | Yes, 352 segments |
 | `ismail-shrine-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1114 | Yes, 228 segments |
 | `chehel-sotoun-divided-stars` | 41 → 32 | 44 → 35 | 1302 → 1114 | Yes, 230 segments |
 | `shah-mosque-chiral-grille` | 36 → — | 38 → — | 1207 → — | — |
@@ -40,6 +40,8 @@ Counts include all visible steps. Actions count each part in place of its parent
 
 Grouped the independent diagonal halvings, the three vertical guide families and the three circle-and-tangent families. Paired later lines with the same direction. Reused the circle about A from the opening and both crossings of the circle about N3. Kept one name, Q3, for the crossing that also had the name Q4. Removed the eleven unused copies of the horizontal line through P3 as well. These changes remove repeated instructions, two unnecessary circles and unused guide lines. The shared opening and four triangle parts are unchanged.
 
+The owner’s follow-up splits step 13 into three parts, step 14 into two, and step 18 into three. Each part now presents one move, and each circle in the dependent transfer chain has its own part. Step 32 now starts with “The line AE”. The corrected lesson has 46 moves when parts are counted, compared with 41 in the first revision and 52 originally.
+
 The local generator produces the same construction steps as the tutorial. Rabat’s changes are confined to its own generator. The existing ink paths, expect block, source statements and credits are unchanged. Regenerated the complete tutorial into a temporary file from the original MOR1118 piece data, read from the owner’s worktree. The steps, ink and expect block match exactly.
 
 Saved each original dump at `docs/review/<id>/before/dump.json` before editing that lesson. These review files are ignored by git. For Rabat, I sorted each segment’s endpoints, rounded coordinates to nine decimal places, and compared the complete unordered sets. All 352 segments matched. The tile and every piece polygon matched exactly. The canonical segment-set SHA-256 is `53a3a0e39cb10a66aa57ed52e6831eacf3f8316199a166d61e361dc77177d958`.
@@ -62,6 +64,6 @@ Inspected all 32 step pictures in order and the wall. The same steps 11–16, 23
 
 ## Checks
 
-`pnpm install` and `pnpm nx run schema:build` passed. Heavy commands run sequentially in a systemd scope with `MemoryMax=3G` and `MemorySwapMax=0`; Node has a 2304 MB heap and Vitest uses one worker. Both full engine runs passed all 4,074 tests in 23 files, including golden, weave and crossing-equivalence checks. The final run took 869.39 seconds. All 15 targeted plain-text and helper-text checks passed. Numbered points in the edited text exist by the step that names them. Comparing old and new helper visibility found no changed visibility for retained lines. Lint passed for all eight projects. Type checks passed for all eight projects and their seven prerequisite tasks.
+`pnpm install` and `pnpm nx run schema:build` passed. Heavy commands run sequentially in a systemd scope with `MemoryMax=3G` and `MemorySwapMax=0`; Node has a 2304 MB heap and Vitest uses one worker. The initial batch passed two complete engine runs of 4,074 tests in 23 files. For the follow-up, all 64 selected geometry assertions passed, but the filtered weave suite failed its library-wide coverage threshold. The complete weave suite was then run with the Turkish Sultana checks: 265 tests passed. All 25 selected plain-text and helper-text checks for the first five lessons passed. A complete engine run will follow the remaining lessons. Numbered points in the edited text exist by the step that names them. Comparing old and new helper visibility found no changed visibility for retained lines. Lint and type checks passed again before the follow-up push, for all eight projects and the type-check prerequisites.
 
 The normal `pnpm typecheck` and `pnpm test` scripts invoke `pnpm catalog`. The brief prohibits that command. Type checks used the same Nx targets directly, with a local copy of the owner’s existing ignored catalogue so previews need not be regenerated, and text checks used an ignored temporary Vitest configuration with the real tutorial fixtures and an unused empty catalogue module. No catalogue command, server or browser suite ran. Browser playback, hand construction and the other application unit suites remain unchecked.

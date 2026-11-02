@@ -106,7 +106,7 @@ def shorten_steps():
     del old[41]['create']['Q4']
     old[41]['create']['gl3']['line']['through']='Q3'
     old[40]['text']=(
-        'Line AE crosses the horizontal line through P3 at Q3. '
+        'The line AE crosses the horizontal line through P3 at Q3. '
         'Draw a line through Q3 at 30° from OA. Draw a vertical line through Q3. '
         'Turn both lines round O by 30°, eleven times.')
     old[41]['text']=''
@@ -165,6 +165,39 @@ def shorten_steps():
             'Draw lines through Q10 and Q11 at 135° from OA. Turn each line round O by 90°, 180° and 270°.')])
     cm.steps[:]=result
     for i,s in enumerate(cm.steps,1):s['id']=i
+    # Each part is one move. Keep a dependent construction off one text box.
+    def parts(number,heading,plan):
+        current=cm.steps[number-1];made=current.pop('create')
+        current.pop('textWithoutHelpers',None)
+        current['text']=heading
+        current['parts']=[]
+        for text,names,without in plan:
+            part={'text':text,'create':{name:made[name] for name in names},'animate':current['animate']}
+            if without:part['textWithoutHelpers']=without
+            current['parts'].append(part)
+        assert set(made)=={n for p in current['parts'] for n in p['create']}
+    parts(13,'Find the smaller diagonal guides.',[
+        ('Draw a line through N1 parallel to the line at 135° from OA. '
+         'It crosses the line at 45° from OA at P4.',['halfInner','P4'],None),
+        ('Draw a vertical line through P4. It crosses the horizontal line at N10.',
+         ['projectHalf','N10'],None),
+        ('Draw a line through N10 at 45° from OA. Turn it round O by 30°, eleven times.',
+         ['quarterDiag','quarterDiags'],
+         'Draw a line through N10 at 45° from OA. Turn it round O by 90°, 180° and 270°.')])
+    parts(14,'Halve the two horizontal lengths.',[
+        ('The circle with centre O and opening AE crosses the horizontal line at N11, right of O. '
+         'Draw lines through N11 and N3 parallel to the line at 135° from OA. '
+         'They cross the line at 45° from OA at P5 and P8.',
+         ['N11','N12half','P5','N15half','P8'],None),
+        ('Draw vertical lines through P5 and P8. They cross the horizontal line at N12 and N15.',
+         ['N12project','N12','N15project','N15'],None)])
+    parts(18,'Transfer the three lengths.',[
+        ('Draw a circle with centre N2 through O. '
+         'It crosses the horizontal line again at N20, right of N2.',['N20circle','N20'],None),
+        ('Draw a circle with centre N20 and opening from O to N11. '
+         'It crosses the horizontal line at N21, right of N20.',['N21circle','N21'],None),
+        ('Draw a circle with centre N21 and opening from O to N13. '
+         'It crosses the horizontal line at N22, right of N21.',['N22circle','N22'],None)])
     for name in ['N19circle','N31circle','Q4']:g.el.pop(name)
     for i in range(1,12):g.el.pop(f'sixAxis@{i}')
 

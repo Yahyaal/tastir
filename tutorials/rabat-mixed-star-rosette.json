@@ -208,33 +208,63 @@
     },
     {
       "id": 13,
-      "text": "Draw a line through N1 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P4. Draw a vertical line through P4. It crosses the horizontal line at N10. Draw a line through N10 at 45° from OA. Turn it round O by 30°, eleven times.",
-      "create": {
-        "halfInner": {"line": {"through": "N1", "parallelTo": "r135"}},
-        "P4": {"point": {"meet": ["halfInner", "r45"]}},
-        "projectHalf": {"line": {"through": "P4", "parallelTo": "v"}},
-        "N10": {"point": {"meet": ["projectHalf", "h"]}},
-        "quarterDiag": {"line": {"through": "N10", "parallelTo": "r45"}},
-        "quarterDiags": {"repeat": {"of": ["quarterDiag"], "by": "rot12"}}
-      },
+      "text": "Find the smaller diagonal guides.",
       "animate": "ruler",
-      "textWithoutHelpers": "Draw a line through N1 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P4. Draw a vertical line through P4. It crosses the horizontal line at N10. Draw a line through N10 at 45° from OA. Turn it round O by 90°, 180° and 270°."
+      "parts": [
+        {
+          "text": "Draw a line through N1 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P4.",
+          "create": {
+            "halfInner": {"line": {"through": "N1", "parallelTo": "r135"}},
+            "P4": {"point": {"meet": ["halfInner", "r45"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through P4. It crosses the horizontal line at N10.",
+          "create": {
+            "projectHalf": {"line": {"through": "P4", "parallelTo": "v"}},
+            "N10": {"point": {"meet": ["projectHalf", "h"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a line through N10 at 45° from OA. Turn it round O by 30°, eleven times.",
+          "create": {
+            "quarterDiag": {"line": {"through": "N10", "parallelTo": "r45"}},
+            "quarterDiags": {"repeat": {"of": ["quarterDiag"], "by": "rot12"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "Draw a line through N10 at 45° from OA. Turn it round O by 90°, 180° and 270°."
+        }
+      ]
     },
     {
       "id": 14,
-      "text": "The circle with centre O and opening AE crosses the horizontal line at N11, right of O. Draw lines through N11 and N3 parallel to the line at 135° from OA. They cross the line at 45° from OA at P5 and P8. Draw vertical lines through P5 and P8. They cross the horizontal line at N12 and N15.",
-      "create": {
-        "N11": {"point": {"meet": ["root3", "h"], "pick": {"angle": 0.0}}},
-        "N12half": {"line": {"through": "N11", "parallelTo": "r135"}},
-        "P5": {"point": {"meet": ["N12half", "r45"]}},
-        "N12project": {"line": {"through": "P5", "parallelTo": "v"}},
-        "N12": {"point": {"meet": ["N12project", "h"]}},
-        "N15half": {"line": {"through": "N3", "parallelTo": "r135"}},
-        "P8": {"point": {"meet": ["N15half", "r45"]}},
-        "N15project": {"line": {"through": "P8", "parallelTo": "v"}},
-        "N15": {"point": {"meet": ["N15project", "h"]}}
-      },
-      "animate": "ruler"
+      "text": "Halve the two horizontal lengths.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "The circle with centre O and opening AE crosses the horizontal line at N11, right of O. Draw lines through N11 and N3 parallel to the line at 135° from OA. They cross the line at 45° from OA at P5 and P8.",
+          "create": {
+            "N11": {"point": {"meet": ["root3", "h"], "pick": {"angle": 0.0}}},
+            "N12half": {"line": {"through": "N11", "parallelTo": "r135"}},
+            "P5": {"point": {"meet": ["N12half", "r45"]}},
+            "N15half": {"line": {"through": "N3", "parallelTo": "r135"}},
+            "P8": {"point": {"meet": ["N15half", "r45"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw vertical lines through P5 and P8. They cross the horizontal line at N12 and N15.",
+          "create": {
+            "N12project": {"line": {"through": "P5", "parallelTo": "v"}},
+            "N12": {"point": {"meet": ["N12project", "h"]}},
+            "N15project": {"line": {"through": "P8", "parallelTo": "v"}},
+            "N15": {"point": {"meet": ["N15project", "h"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 15,
@@ -276,16 +306,34 @@
     },
     {
       "id": 18,
-      "text": "Draw a circle with centre N2 through O. It crosses the horizontal line again at N20, right of N2. Draw a circle with centre N20 and opening from O to N11. It crosses the horizontal line at N21, right of N20. Draw a circle with centre N21 and opening from O to N13. It crosses the horizontal line at N22, right of N21.",
-      "create": {
-        "N20circle": {"circle": {"centre": "N2", "radiusFrom": ["O", "N2"]}},
-        "N20": {"point": {"meet": ["N20circle", "h"], "pick": {"farthest": "O"}}},
-        "N21circle": {"circle": {"centre": "N20", "radiusFrom": ["O", "N11"]}},
-        "N21": {"point": {"meet": ["N21circle", "h"], "pick": {"farthest": "O"}}},
-        "N22circle": {"circle": {"centre": "N21", "radiusFrom": ["O", "N13"]}},
-        "N22": {"point": {"meet": ["N22circle", "h"], "pick": {"farthest": "O"}}}
-      },
-      "animate": "compass"
+      "text": "Transfer the three lengths.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre N2 through O. It crosses the horizontal line again at N20, right of N2.",
+          "create": {
+            "N20circle": {"circle": {"centre": "N2", "radiusFrom": ["O", "N2"]}},
+            "N20": {"point": {"meet": ["N20circle", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre N20 and opening from O to N11. It crosses the horizontal line at N21, right of N20.",
+          "create": {
+            "N21circle": {"circle": {"centre": "N20", "radiusFrom": ["O", "N11"]}},
+            "N21": {"point": {"meet": ["N21circle", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre N21 and opening from O to N13. It crosses the horizontal line at N22, right of N21.",
+          "create": {
+            "N22circle": {"circle": {"centre": "N21", "radiusFrom": ["O", "N13"]}},
+            "N22": {"point": {"meet": ["N22circle", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 19,
@@ -438,7 +486,7 @@
     },
     {
       "id": 32,
-      "text": "Line AE crosses the horizontal line through P3 at Q3. Draw a line through Q3 at 30° from OA. Draw a vertical line through Q3. Turn both lines round O by 30°, eleven times.",
+      "text": "The line AE crosses the horizontal line through P3 at Q3. Draw a line through Q3 at 30° from OA. Draw a vertical line through Q3. Turn both lines round O by 30°, eleven times.",
       "create": {
         "Q3": {"point": {"meet": ["st0", "sixAxis"]}},
         "gl2": {"line": {"through": "Q3", "parallelTo": "r30"}},
