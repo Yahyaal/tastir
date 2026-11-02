@@ -1,6 +1,6 @@
 # Shorter lessons, 2 November 2026
 
-18 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
+19 of the 29 requested lessons have a recorded review. The owner’s requested Rabat and wording corrections are applied. Work continues in the brief’s order. Parts are counted below so a lower parent-step count cannot conceal dependent moves.
 
 Counts include all visible steps. Actions count each part in place of its parent step. Words include each step’s main text and its parts, including headings, but exclude alternative helper texts. The inventory was measured before editing, at `fc459d7`. Rows with no after-count are an inventory only, not a completed construction review. A dash means the lesson has not been changed or checked.
 
@@ -24,7 +24,7 @@ Counts include all visible steps. Actions count each part in place of its parent
 | `topkapi-door-stars` | 21 → 21 | 21 → 62 | 1432 → 2114 | Yes, 270 segments |
 | `fes-moulay-ismail-interlace` | 21 → 21 | 22 → 25 | 876 → 839 | Yes, 620 segments |
 | `cairo-bagasi-rosettes` | 21 → 20 | 21 → 29 | 811 → 806 | Yes, 232 segments |
-| `qawsun-quran-stars` | 21 → — | 23 → — | 779 → — | — |
+| `qawsun-quran-stars` | 21 → 20 | 23 → 31 | 779 → 774 | Yes, 60 segments |
 | `bourgoin-87-chelates` | 21 → — | 24 → — | 690 → — | — |
 | `ibn-arabi-six-stars` | 21 → — | 21 → — | 580 → — | — |
 | `fes-petal-star-rosette` | 20 → — | 21 → — | 785 → — | — |
@@ -156,6 +156,12 @@ Review steps 3, 5, 8–18 and 20 most closely. The ink matches the saved baselin
 Grouped independent parallels in steps 9, 11, 14, 17 and 18, saving 42 words there. Split the opening’s dependent diagonal construction into four parts, adding five heading words. Later crossings still depend on the earlier guide families, so no construction family was removed or reordered.
 
 Review steps 2, 9, 11, 14 and 17–18 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
+
+## qawsun-quran-stars
+
+Reused the opening circle and paired independent 15° and 75° guide families. Moved the O-centred intercept circle before the helper-only reference line, so helpers-off playback can skip that line without an empty part. Split the intercept transfer and the corner compass chains into parts. Used explicit line names after regrouping.
+
+Review steps 7–10, 13, 15 and 18–19 most closely. The ink matches the saved baseline at nine decimal places, and the plain-text and helper-text checks pass. The generator construction matches the tutorial. Browser playback and hand construction remain unchecked.
 
 ## Checks
 
