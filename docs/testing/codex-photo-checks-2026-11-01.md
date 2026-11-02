@@ -1,12 +1,12 @@
 # Photo checks, 1 November 2026
 
-Of 59 pairs, 35 have been assessed: 1 agree, 13 agree in part, 0 disagree and 21 are not checkable. 24 remain unassessed.
+Of 59 pairs, 51 have been assessed: 1 agree, 16 agree in part, 1 disagree and 33 are not checkable. 8 remain unassessed.
 
 This report checks the supplied private Wade photographs against the current tutorial dumps. Agreement means the visible geometric bands within the stated region, not the floral inlays, borders, colours or historical attribution. All picks, attempted registrations and overlays stay in this worktree under `docs/research/photo-checks/<tutorial id>/`; none are committed. Each picks file records its reading width, original photograph and tutorial coordinates. `refine` is false. Points used for fitting are not independent evidence; the entries name the regions inspected beyond them. A failed registration is not evidence of a wrong tutorial.
 
 ## Disagreements
 
-No disagreement established so far.
+- `isfahan-masjid-ali-crosses-plain` (IRA 1329): IRA 1329 has four small calligraphic squares around each eight-star and a square at each cross centre; this deliberately plain variant omits both sets. The common registration uses two star and two cross centres. For example, the four small squares around the star near photo (289,427) sit near (222,372), (352,372), (222,482) and (352,482), measured on the 1100-pixel preview. The main star and bar framework follows the photo, but the omitted fields make this variant incomplete as a literal reconstruction. The wall supports the version with squares; Wichmann's source drawing was not independently adjudicated here.
 
 ## Pair-by-pair findings
 
@@ -84,43 +84,43 @@ No disagreement established so far.
 
 ### Egypt, Syria and Iraq
 
-**34. `bahramiye-mosque-stars` — TUR 0921 (AJL1).** Not assessed yet.
+**34. `bahramiye-mosque-stars` — TUR 0921 (AJL1).** **not checkable**. TUR 0921 is a Turkish carved-stone fragment rather than the named Aleppo mosque. It also exposes only two large centres in a broken shallow strip. Under the brief's different-building rule it cannot verify the tutorial. No overlay was produced. Overlay: `docs/research/photo-checks/bahramiye-mosque-stars/photo-overlay.png`.
 
-**35. `barsbay-twelve-star-doors` — EGY 1030 (EGY1030).** Not assessed yet.
+**35. `barsbay-twelve-star-doors` — EGY 1030 (EGY1030).** **not checkable**. The door shows one central twelve-pointed star between two framed medallions, but the small inlays are surrounded by several bevels and metal edges. The narrow field did not give four unambiguous widely spaced matching points for the tutorial repeat. I could count twelve main star points, but produced no reliable overlay. Overlay: `docs/research/photo-checks/barsbay-twelve-star-doors/photo-overlay.png`.
 
-**36. `bourgoin-106-star-lattice` — EGY 1514 (P106).** Not assessed yet.
+**36. `bourgoin-106-star-lattice` — EGY 1514 (P106).** **not checkable**. The photograph shows floral relief inside polygon fields and nested star outlines at different depths. I could distinguish six-pointed figures and larger medallions but could not assign the competing band edges and centres to the tutorial's four-, six- and eight-star families reliably. No overlay was produced. Overlay: `docs/research/photo-checks/bourgoin-106-star-lattice/photo-overlay.png`.
 
-**37. `ibn-arabi-six-stars` — SYR 0222 (SYR0222).** Not assessed yet.
+**37. `ibn-arabi-six-stars` — SYR 0222 (SYR0222).** **not checkable**. The surviving horizontal carved strip is shallow and worn, with several parallel grooves per band. The strong light washes out edges on the left, while the right contains a partial motif. I could see six-fold figures but not reliably trace all their joints. No fit or overlay was produced. Overlay: `docs/research/photo-checks/ibn-arabi-six-stars/photo-overlay.png`.
 
-**38. `khayrbak-mosque-stars` — EGY 0818 (P60B).** Not assessed yet.
+**38. `khayrbak-mosque-stars` — EGY 0818 (P60B).** **agrees in part**. Four star centres register the upper square panel, not the unrelated lower panel. The diagonal bands, opposed arrowheads and small central diamond can be followed between the picks. Carved rounding and the shallow relief hide some endpoints, and this panel has no independent complete repeat beyond the fitted four centres, so agreement remains local. Overlay: `docs/research/photo-checks/khayrbak-mosque-stars/photo-overlay.png`.
 
 ### Iran
 
-**39. `isfahan-ali-notched-tiles` — IRA 1330 (IRA1330).** Not assessed yet.
+**39. `isfahan-ali-notched-tiles` — IRA 1330 (IRA1330).** **not checkable**. The photograph contains several tiled architectural fields, floral infill and border bands. The relevant central niche is narrow, and I could not separate the intended notched tile outlines from its painted internal decoration with enough confidence for a four-point fit. No overlay was produced. Overlay: `docs/research/photo-checks/isfahan-ali-notched-tiles/photo-overlay.png`.
 
-**40. `isfahan-masjid-ali-crosses-plain` — IRA 1329 (IRA1329).** Not assessed yet.
+**40. `isfahan-masjid-ali-crosses-plain` — IRA 1329 (IRA1329).** **disagrees**. IRA 1329 has four small calligraphic squares around each eight-star and a square at each cross centre; this deliberately plain variant omits both sets. The common registration uses two star and two cross centres. For example, the four small squares around the star near photo (289,427) sit near (222,372), (352,372), (222,482) and (352,482), measured on the 1100-pixel preview. The main star and bar framework follows the photo, but the omitted fields make this variant incomplete as a literal reconstruction. The wall supports the version with squares; Wichmann's source drawing was not independently adjudicated here. Overlay: `docs/research/photo-checks/isfahan-masjid-ali-crosses-plain/photo-overlay.png`.
 
-**41. `isfahan-masjid-ali-crosses` — IRA 1329 (IRA1329).** Not assessed yet.
+**41. `isfahan-masjid-ali-crosses` — IRA 1329 (IRA1329).** **agrees in part**. Using the same four-point registration as the plain variant, I checked the cross-centre squares and four small squares around the eight-stars, including the independent star to the right. Those fields and the star/bar framework follow the photo. The tutorial does not include the floral or calligraphic infill, and exact offsets among the multiple painted outlines are uncertain. Overlay: `docs/research/photo-checks/isfahan-masjid-ali-crosses/photo-overlay.png`.
 
-**42. `isfahan-royal-mosque-star-rows` — IRA 0501 (IRA0501).** Not assessed yet.
+**42. `isfahan-royal-mosque-star-rows` — IRA 0501 (IRA0501).** **not checkable**. The relevant pierced window is distant and steeply seen between columns. Its short edges are only a few pixels long in the supplied image, and its upper part is arched. It cannot support an exact line overlay at this resolution. No overlay was produced. Overlay: `docs/research/photo-checks/isfahan-royal-mosque-star-rows/photo-overlay.png`.
 
-**43. `isfahan-sayyed-crosses` — IRA 1617 (IRA1617).** Not assessed yet.
+**43. `isfahan-sayyed-crosses` — IRA 1617 (IRA1617).** **not checkable**. I tried four large-cluster centres in the rectangular upper part of the panel. The saved overlay does not align the smaller star and cross mesh confidently; the painted tile outlines form more than one apparent lattice. The correct correspondence remains unresolved, so this failed registration is not a discrepancy finding. Overlay: `docs/research/photo-checks/isfahan-sayyed-crosses/photo-overlay.png`.
 
-**44. `mashhad-gowhar-interlace` — JAI 1033 (CM066B).** Not assessed yet.
+**44. `mashhad-gowhar-interlace` — JAI 1033 (CM066B).** **not checkable**. JAI 1033 shows small pierced grilles in an Indian facade rather than the Gowhar Shad mosque in Mashhad. The central grille has a related star-and-cross design but cannot verify the named building under the brief. No overlay was produced. Overlay: `docs/research/photo-checks/mashhad-gowhar-interlace/photo-overlay.png`.
 
-**45. `shiraz-qavam-crosses` — TRA 0308 (P47).** Not assessed yet.
+**45. `shiraz-qavam-crosses` — TRA 0308 (P47).** **not checkable**. TRA 0308 is a Central Asian brick-and-tile facade rather than the named Shiraz building. The simple star/cross strip is only at the very bottom of the image; the large upper field is another design. No fit or overlay was produced. Overlay: `docs/research/photo-checks/shiraz-qavam-crosses/photo-overlay.png`.
 
-**46. `sultaniyeh-twelve-star-bands` — IRA 2633 (IRA2633).** Not assessed yet.
+**46. `sultaniyeh-twelve-star-bands` — IRA 2633 (IRA2633).** **not checkable**. The relevant band runs around a corner below a decorated ceiling. It is soft, partly overexposed and on more than one plane. I could not isolate a sufficiently clear planar area with matching centres and visible short joints for an exact check. No overlay was produced. Overlay: `docs/research/photo-checks/sultaniyeh-twelve-star-bands/photo-overlay.png`.
 
 ### Central Asia
 
-**47. `shah-i-zinda-octagons` — TRA 0301 (F254L).** Not assessed yet.
+**47. `shah-i-zinda-octagons` — TRA 0301 (F254L).** **agrees in part**. Four upper octagon centres register the outer mesh. The lower octagons, not used in fitting, retain eight sides and the same four-pointed interstitial fields. The overlay follows the broad outer frame bands approximately, but the frame has several outlines and some lower edges drift. The dense calligraphic and geometric decoration within each octagon is outside this tutorial and was not verified. Overlay: `docs/research/photo-checks/shah-i-zinda-octagons/photo-overlay.png`.
 
-**48. `tillya-kari-squares` — SYR 0411 (A222).** Not assessed yet.
+**48. `tillya-kari-squares` — SYR 0411 (A222).** **not checkable**. SYR 0411 shows Syrian carved masonry rather than the Tillya-Kari madrasa in Samarkand. It is a related interlace but a different building, so it cannot verify the named tutorial under the brief. No overlay was produced. Overlay: `docs/research/photo-checks/tillya-kari-squares/photo-overlay.png`.
 
 ### Turkey
 
-**49. `iznik-green-mosque-pinwheel` — TRA 0332 (GREEN1).** Not assessed yet.
+**49. `iznik-green-mosque-pinwheel` — TRA 0332 (GREEN1).** **not checkable**. TRA 0332 shows a Central Asian glazed-brick arch rather than the Green Mosque at Iznik. Its painted rectilinear mesh is a related comparison, not a photograph of that mosque. No fit or overlay was produced. Overlay: `docs/research/photo-checks/iznik-green-mosque-pinwheel/photo-overlay.png`.
 
 ### India
 
