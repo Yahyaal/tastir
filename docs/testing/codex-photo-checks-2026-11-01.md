@@ -1,6 +1,6 @@
 # Photo checks, 1 November 2026
 
-Of 59 pairs, 14 have been assessed: 1 agree, 6 agree in part, 0 disagree and 7 are not checkable. 45 remain unassessed.
+Of 59 pairs, 26 have been assessed: 1 agree, 10 agree in part, 0 disagree and 15 are not checkable. 33 remain unassessed.
 
 This report checks the supplied private Wade photographs against the current tutorial dumps. Agreement means the visible geometric bands within the stated region, not the floral inlays, borders, colours or historical attribution. All picks, attempted registrations and overlays stay in this worktree under `docs/research/photo-checks/<tutorial id>/`; none are committed. Each picks file records its reading width, original photograph and tutorial coordinates. `refine` is false. Points used for fitting are not independent evidence; the entries name the regions inspected beyond them. A failed registration is not evidence of a wrong tutorial.
 
@@ -38,29 +38,29 @@ No disagreement established so far.
 
 ### Morocco
 
-**12. `attarine-star-rosettes` — MOR 0323 (MOR0323).** Not assessed yet.
+**12. `attarine-star-rosettes` — MOR 0323 (MOR0323).** **agrees in part**. Four corner eight-stars around the upper rosette register the tile. I counted eight arrow-headed petals and checked the eight-star at the next rosette below, beyond the fitted points. Their visible edges and the intervening long hexagons follow the overlay. Same-colour adjoining pieces hide several seams, and the narrow strip does not expose a horizontal repeat. Overlay: `docs/research/photo-checks/attarine-star-rosettes/photo-overlay.png`.
 
-**13. `fes-attarine-rosette` — MOR 0321 (MOR0321).** Not assessed yet.
+**13. `fes-attarine-rosette` — MOR 0321 (MOR0321).** **not checkable**. The tutorial concerns the compact eight-fold motif between the large many-petalled medallions, not those medallions. I cropped that motif and attempted four surrounding star picks. At this resolution its tiny seams and adjacent eight-star families could not be matched confidently; the saved overlay is an unsuccessful trial, not a discrepancy finding. Overlay: `docs/research/photo-checks/fes-attarine-rosette/photo-overlay.png`.
 
-**14. `fes-bou-inania-cross-stars` — MOR 2832x (MOR2832X).** Not assessed yet.
+**14. `fes-bou-inania-cross-stars` — MOR 2832x (MOR2832X).** **not checkable**. The geometry occupies small low-contrast wooden panels. The carved bevels, scratches and door hardware obscure several joints, and I could not distinguish reliable matching centres and individual band edges at the supplied resolution. No fit or overlay was produced. Overlay: `docs/research/photo-checks/fes-bou-inania-cross-stars/photo-overlay.png`.
 
-**15. `fes-bou-inania-interlaced-rosette` — MOR 0203 (P71TL).** Not assessed yet.
+**15. `fes-bou-inania-interlaced-rosette` — MOR 0203 (P71TL).** **agrees in part**. Four surrounding eight-star centres register the middle rosette. The central eight-star, eight long petals, horizontal six-sided spaces and squared arrow turns can be followed in the overlay; the upper and lower continuation share that mesh. Some short turns lie among overlapping white bands and cannot be separated reliably at this resolution, so this does not certify every small piece. Overlay: `docs/research/photo-checks/fes-bou-inania-interlaced-rosette/photo-overlay.png`.
 
-**16. `fes-bou-inania-octagonal-rosettes` — MOR 2841x (MOR2841X).** Not assessed yet.
+**16. `fes-bou-inania-octagonal-rosettes` — MOR 2841x (MOR2841X).** **agrees in part**. Two rosette centres and two interstitial eight-stars at the left register the strip. The three rosettes to their right independently show the same eight petals, octagonal rings and corner-star mesh. The top and bottom of the strip are worn and several pale-on-pale seams cannot be seen, so the complete repeat is not verified. Overlay: `docs/research/photo-checks/fes-bou-inania-octagonal-rosettes/photo-overlay.png`.
 
-**17. `fes-moulay-ismail-interlace` — MOR 0331 (MOR0331).** Not assessed yet.
+**17. `fes-moulay-ismail-interlace` — MOR 0331 (MOR0331).** **not checkable**. The left wall is the relevant plane; the right wall is a second plane. Within the left panel the dense geometry leaves bands only a few pixels wide, with substantial wear at the bottom. I could see repeated eight-fold clusters but could not reliably assign the many small star families for a four-point fit. No overlay was produced. Overlay: `docs/research/photo-checks/fes-moulay-ismail-interlace/photo-overlay.png`.
 
-**18. `fes-palace-door-stars` — SPA 2505 (C101).** Not assessed yet.
+**18. `fes-palace-door-stars` — SPA 2505 (C101).** **not checkable**. The supplied SPA 2505 image is a Spanish tile panel, whereas the tutorial names a door in the Royal Palace Museum in Fès. This different-object comparison cannot verify that door under the brief. No fit or overlay was produced. Overlay: `docs/research/photo-checks/fes-palace-door-stars/photo-overlay.png`.
 
-**19. `fes-petal-star-rosette` — MOR 0411 (MOR0411).** Not assessed yet.
+**19. `fes-petal-star-rosette` — MOR 0411 (MOR0411).** **not checkable**. The arch contains dense eight-fold tile clusters, but the photo is soft and many white pieces merge with the pale seams. I could not trace the short edges of the mixed star families well enough to assign dependable correspondence points. No fit or overlay was produced. Overlay: `docs/research/photo-checks/fes-petal-star-rosette/photo-overlay.png`.
 
-**20. `fes-rosette-rings` — MOR 0719 (MOR0719).** Not assessed yet.
+**20. `fes-rosette-rings` — MOR 0719 (MOR0719).** **agrees in part**. Seven tips of the two central eight-stars register the vertical strip, with the rounded rosette at tutorial O and the pointed rosette half a repeat above it. Beyond those tips I counted eight arrow-headed petals in each rosette and followed the lower octagonal ring and intervening hexagons. These visible boundaries agree in the overlay. Same-colour seams and the missing horizontal repeat prevent a complete check. Overlay: `docs/research/photo-checks/fes-rosette-rings/photo-overlay.png`.
 
-**21. `fes-throne-star-burst` — MOR 0422 (C122B).** Not assessed yet.
+**21. `fes-throne-star-burst` — MOR 0422 (C122B).** **not checkable**. The panel combines large eight-fold bursts with other many-pointed medallions and several small star families. Wear and strong shadows obscure the lower half. I could count the eight main arms, but could not confidently assign four corresponding motif centres across this mixed panel. No fit or overlay was produced. Overlay: `docs/research/photo-checks/fes-throne-star-burst/photo-overlay.png`.
 
-**22. `fes-two-rosettes` — MOR 0837 (MOR0837).** Not assessed yet.
+**22. `fes-two-rosettes` — MOR 0837 (MOR0837).** **not checkable**. The photograph crops a mixed panel: a many-pointed fan at the top left and one complete eight-fold rosette at the right. I could see the eight petals, but the remaining small centres did not give a dependable correspondence to the tutorial's two-family repeat at this resolution. No overlay was produced. Overlay: `docs/research/photo-checks/fes-two-rosettes/photo-overlay.png`.
 
-**23. `marrakesh-bahia-rosette` — MOR 1218 (MOR1218).** Not assessed yet.
+**23. `marrakesh-bahia-rosette` — MOR 1218 (MOR1218).** **not checkable**. I fitted the four axial tips of the small central eight-star, then inspected the outer petals and surrounding stars as holdouts. The local fit did not establish alignment across that mesh, and only one large rosette is fully exposed. The saved overlay is an unsuccessful local trial; I cannot distinguish a correspondence or proportion error without a wider reliable fit. Overlay: `docs/research/photo-checks/marrakesh-bahia-rosette/photo-overlay.png`.
 
 **24. `meknes-bou-inania-petals` — MOR 0910 (MOR0910).** Not assessed yet.
 
