@@ -19,6 +19,33 @@ UNIT=195.4835/L
 R=3+math.sqrt(3)-math.sqrt(6)/2
 
 
+def shorter_steps():
+    from lesson_steps import partition,circle_parts,parallel_groups
+    old={s['id']:s for s in cm.steps};assert len(old)==23
+    del old[7]['create']['two'];g.el.pop('two')
+    old[7]['create']['N3']['point']['meet'][0]='cE'
+    old[7]['text']=old[7]['text'].replace(
+        'Draw a circle with centre A through O. It crosses the horizontal line at N3, right of A.',
+        'The circle with centre A through O crosses the horizontal line at N3, right of A.')
+    for n in [8,11,14]:old[n]=circle_parts(old[n],'Transfer the compass lengths.')
+    old[6]=partition(old[6],'Find the diagonal length.',[
+        ('Draw a circle with centre O and opening AE. It crosses the horizontal line at N1, right of A. '
+         'It crosses the line at 45° from OA at P1, above O.',['root3','N1','P1'],None),
+        ('Draw a vertical line through P1. It crosses the horizontal line at N2.',['p1v','N2'],None)])
+    old[13]=partition(old[13],'Find the middle guide lengths.',[
+        ('Draw a vertical line through B. It crosses the horizontal line at N10.',['bv','N10'],None),
+        ('Draw a circle with centre N1 and opening from O to N10. '
+         'It crosses that line at N11, right of N1.',['oneHalfRoot3','N11'],None),
+        ('Draw a circle with centre N4 and opening from O to N11. '
+         'It crosses that line at N12, right of N4.',['middleSum','N12'],None)])
+    old[23]['text']=old[23]['text'].replace('the new line','the line through Q3')
+    # Name the already divided circle where its first square uses the points.
+    first=old[10]['parts'][0]
+    first['text']=old[9]['text']+' '+first['text']
+    first['create']={**old[9]['create'],**first['create']}
+    cm.steps[:]=parallel_groups([s for n,s in old.items() if n!=9],[[17,18,19],[21,22]],g.el)
+
+
 def build():
     opening()
     step('Draw the lines through O that halve angles AOB, BOC and COD. '
@@ -111,6 +138,7 @@ def build():
     for index,n in [(17,'N11'),(18,'N10')]:
         cm.steps[index]['textWithoutHelpers']=(
             f'Turn the vertical through {n} round O by 30°, 60°, 120°, 150°, 210°, 240°, 300° and 330°.')
+    shorter_steps()
     return cell
 
 

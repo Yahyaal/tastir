@@ -35,6 +35,18 @@ def crossing_set(point, first, second, want, lines, text):
     g.repeat(point.lower()+'copies', names, 'rot4')
 
 
+def shorter_steps():
+    from lesson_steps import eightfold_opening_parts,compass_walk_parts,sentence_parts,parallel_groups
+    eightfold_opening_parts(cm.steps)
+    old={s['id']:s for s in cm.steps};assert len(old)==21
+    for i,opening in [(4,'OA'),(5,'OE')]:old[i]=compass_walk_parts(old[i],opening)
+    old[8]=sentence_parts(old[8],'Draw the guide through J.',[(3,['P','cp','J']),(2,['jv','jvp'])])
+    old[12]=sentence_parts(old[12],'Draw the guide through N.',[(3,['U','ct','N']),(2,['nv','nvp'])])
+    for i,first,last in [(13,['cn','P1'],['pv','pvp']),(14,['ck','Q'],['qv','qvp'])]:
+        old[i]=sentence_parts(old[i],'Draw the inner guide family.',[(2,first),(2,last)])
+    cm.steps[:]=parallel_groups(list(old.values()),[[15,16],[17,18],[19,20]],g.el)
+
+
 def build():
     mp.build_frame(4)
     step('The vertical side from S8 to S2 crosses the horizontal line at P. '
@@ -110,6 +122,7 @@ def build():
     crossing_set('Q2', 'ck', 'gx', (L, L-1), [('q2d', 'q01')],
                  'The circle with centre K1 crosses the vertical line through T1 at Q2, towards T1. '
                  'Draw a line through Q2 parallel to the line from S1 to S3. Turn it round O by 90°, three times.')
+    shorter_steps()
 
 
 def main():

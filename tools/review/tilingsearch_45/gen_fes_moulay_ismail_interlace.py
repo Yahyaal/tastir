@@ -75,6 +75,9 @@ def build():
     mp.build_unit_star()
     pl.emit(pl.group(PLAN, 3))
     build_tile('m12@1')
+    from lesson_steps import group_words,eightfold_opening_parts
+    group_words(cm.steps)
+    eightfold_opening_parts(cm.steps)
 
 
 SPEC = {

@@ -52,16 +52,25 @@
     },
     {
       "id": 3,
-      "text": "Draw a circle with centre F through O. It crosses the first circle at Y1 and Y2. Draw a straight line through Y1 and Y2. It crosses the horizontal line at M, halfway from O to F.",
-      "create": {
-        "cW": {"circle": {"centre": "F", "through": "O"}},
-        "Y1": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
-        "Y2": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}},
-        "m": {"line": {"through": ["Y1", "Y2"]}},
-        "M": {"point": {"meet": ["m", "h"]}}
-      },
+      "text": "Find the halfway point.",
       "highlight": ["F"],
-      "animate": "compass"
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre F through O. It crosses the first circle at Y1 and Y2.",
+          "create": {
+            "cW": {"circle": {"centre": "F", "through": "O"}},
+            "Y1": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
+            "Y2": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a straight line through Y1 and Y2. It crosses the horizontal line at M, halfway from O to F.",
+          "create": {"m": {"line": {"through": ["Y1", "Y2"]}}, "M": {"point": {"meet": ["m", "h"]}}},
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 4,
@@ -75,26 +84,68 @@
     },
     {
       "id": 5,
-      "text": "Draw a circle with centre A and opening from O to R. It crosses the circle at B and K. Draw circles of the same size round the circle, each centred where the last one crosses it. They mark C, D, E, G, H and J. The circle is now cut into ten.",
-      "create": {
-        "cF0": {"circle": {"centre": "A", "radiusFrom": ["O", "R"]}},
-        "B": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 36.0}}},
-        "K": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 324.0}}},
-        "cF1": {"circle": {"centre": "B", "radiusFrom": ["O", "R"]}},
-        "C": {"point": {"meet": ["c", "cF1"], "pick": {"angle": 72.0}}},
-        "cF2": {"circle": {"centre": "C", "radiusFrom": ["O", "R"]}},
-        "D": {"point": {"meet": ["c", "cF2"], "pick": {"angle": 108.0}}},
-        "cF3": {"circle": {"centre": "D", "radiusFrom": ["O", "R"]}},
-        "E": {"point": {"meet": ["c", "cF3"], "pick": {"angle": 144.0}}},
-        "cF9": {"circle": {"centre": "K", "radiusFrom": ["O", "R"]}},
-        "J": {"point": {"meet": ["c", "cF9"], "pick": {"angle": 288.0}}},
-        "cF8": {"circle": {"centre": "J", "radiusFrom": ["O", "R"]}},
-        "H": {"point": {"meet": ["c", "cF8"], "pick": {"angle": 252.0}}},
-        "cF7": {"circle": {"centre": "H", "radiusFrom": ["O", "R"]}},
-        "G": {"point": {"meet": ["c", "cF7"], "pick": {"angle": 216.0}}}
-      },
+      "text": "Divide the circle into ten.",
       "highlight": ["R"],
-      "animate": "compass"
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre A and opening from O to R. It crosses the first circle at B and K.",
+          "create": {
+            "cF0": {"circle": {"centre": "A", "radiusFrom": ["O", "R"]}},
+            "B": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 36.0}}},
+            "K": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 324.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre B and the same opening. It crosses the first circle at C, away from A.",
+          "create": {
+            "cF1": {"circle": {"centre": "B", "radiusFrom": ["O", "R"]}},
+            "C": {"point": {"meet": ["c", "cF1"], "pick": {"angle": 72.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre C and the same opening. It crosses the first circle at D, away from A.",
+          "create": {
+            "cF2": {"circle": {"centre": "C", "radiusFrom": ["O", "R"]}},
+            "D": {"point": {"meet": ["c", "cF2"], "pick": {"angle": 108.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre D and the same opening. It crosses the first circle at E, away from A.",
+          "create": {
+            "cF3": {"circle": {"centre": "D", "radiusFrom": ["O", "R"]}},
+            "E": {"point": {"meet": ["c", "cF3"], "pick": {"angle": 144.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre K and the same opening. It crosses the first circle at J, away from A.",
+          "create": {
+            "cF9": {"circle": {"centre": "K", "radiusFrom": ["O", "R"]}},
+            "J": {"point": {"meet": ["c", "cF9"], "pick": {"angle": 288.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre J and the same opening. It crosses the first circle at H, away from A.",
+          "create": {
+            "cF8": {"circle": {"centre": "J", "radiusFrom": ["O", "R"]}},
+            "H": {"point": {"meet": ["c", "cF8"], "pick": {"angle": 252.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre H and the same opening. It crosses the first circle at G, away from A. The first circle is now cut into ten.",
+          "create": {
+            "cF7": {"circle": {"centre": "H", "radiusFrom": ["O", "R"]}},
+            "G": {"point": {"meet": ["c", "cF7"], "pick": {"angle": 216.0}}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 6,
@@ -118,15 +169,27 @@
     },
     {
       "id": 8,
-      "text": "The star line through C crosses the horizontal line at T. Draw a circle with centre T and opening OA. It crosses the horizontal line at W2, beyond T. Draw a vertical line through W2. Turn it round O by 36°, nine times.",
-      "create": {
-        "T": {"point": {"meet": ["t@2", "h"]}},
-        "cT": {"circle": {"centre": "T", "radiusFrom": ["O", "A"]}},
-        "W2": {"point": {"meet": ["cT", "h"], "pick": {"farthest": "O"}}},
-        "w5": {"line": {"through": "W2", "perpendicularTo": "h"}},
-        "w5r": {"repeat": {"of": ["w5"], "by": "rot10"}}
-      },
-      "animate": "compass"
+      "text": "Draw the guide family.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "The star line through C crosses the horizontal line at T. Draw a circle with centre T and opening OA. It crosses the horizontal line at W2, beyond T.",
+          "create": {
+            "T": {"point": {"meet": ["t@2", "h"]}},
+            "cT": {"circle": {"centre": "T", "radiusFrom": ["O", "A"]}},
+            "W2": {"point": {"meet": ["cT", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a vertical line through W2. Turn it round O by 36°, nine times.",
+          "create": {
+            "w5": {"line": {"through": "W2", "perpendicularTo": "h"}},
+            "w5r": {"repeat": {"of": ["w5"], "by": "rot10"}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 9,

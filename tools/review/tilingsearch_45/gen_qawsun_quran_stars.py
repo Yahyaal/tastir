@@ -18,6 +18,42 @@ L=(3+5*math.sqrt(3))/6
 D=L-5/3
 
 
+def shorter_steps():
+    from lesson_steps import partition,circle_parts,sentence_parts,parallel_groups,number
+    old={s['id']:s for s in cm.steps};assert len(old)==20
+    del old[7]['create']['two'];g.el.pop('two')
+    old[7]['create']['N3']['point']['meet'][0]='cE'
+    # Move the independent O-centred circle before the separate helper line.
+    old[7]['create'].update({n:old[8]['create'].pop(n) for n in ['halfRoot3','P1']})
+    old[7]=partition(old[7],'Find the intercept lengths.',[
+        ('Draw vertical lines through B and C. They cross the horizontal line at N1 and N2.',
+         ['N1v','N1','N2v','N2'],None),
+        ('The circle with centre A through O crosses the horizontal line at N3, right of A. '
+         'Draw a circle with centre N3 and opening OA. It crosses that line at N4, right of N3.',
+         ['N3','three','N4'],None),
+        ('Draw a circle with centre O through N1. It crosses the vertical line at P1, above O.',
+         ['halfRoot3','P1'],None)])
+    helper={'id':8,'text':'Draw a straight line through N4 and P1.',
+            'create':{'intercept':old[8]['create'].pop('intercept')},'animate':'ruler'}
+    old[8]=partition(old[8],'Find the smaller compass opening.',[
+        ('Draw a line through A parallel to the line from N4 to P1. It crosses the vertical line at P2.',
+         ['third','P2'],
+         'Draw a line through A parallel to the line from N4 to P1. It crosses the vertical line at P2.'),
+        ('Draw a circle with centre O through P2. It crosses the horizontal line at N5, right of O.',
+         ['sixthRoot3','N5'],None)])
+    old[9]=circle_parts(old[9],'Transfer the frame lengths.')
+    old[12]['text']=old[12]['text'].replace('Line OE crosses the new line','The line OE crosses the line through Q1')
+    old[16]['text']=old[16]['text'].replace('Line FM crosses the new line','The line FM crosses the 45° line through Q4')
+    old[19]=sentence_parts(old[19],'Find the corner diagonal length.',[
+        (2,['frameCircle','P3']),(2,['diagonalProjection','N11']),(2,['diagonalDouble','N12'])])
+    old[20]=sentence_parts(old[20],'Draw the corner diagonal family.',[
+        (2,['cornerDiagonal','N13']),(2,['cornerCircle','P4']),(2,['cornerNet','cornerCopies'])])
+    steps=parallel_groups(list(old.values()),[[12,14],[13,16]],g.el)
+    at=next(i for i,st in enumerate(steps) if st.get('parts') and 'third' in st['parts'][0]['create'])
+    steps.insert(at,helper)
+    cm.steps[:]=number(steps)
+
+
 def build(opening_only=False):
     opening()
     step('Draw the lines through O that halve angles AOB, BOC and COD. '
@@ -115,6 +151,7 @@ def build(opening_only=False):
         'It crosses the horizontal line at N5, right of O.')
     cm.steps[10]['textWithoutHelpers'] = cm.steps[10]['text'].replace(
         ' Turn it round O by 90°, three times.', '')
+    shorter_steps()
     return cell
 
 

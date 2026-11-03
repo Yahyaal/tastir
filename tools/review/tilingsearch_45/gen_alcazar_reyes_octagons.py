@@ -15,6 +15,20 @@ from gen_meknes_bou_inania_rosette_rings import crossing_set
 H,L=throne.H,throne.L
 
 
+def shorter_steps():
+    from lesson_steps import eightfold_opening_parts,compass_walk_parts,sentence_parts,parallel_groups
+    eightfold_opening_parts(cm.steps)
+    old={s['id']:s for s in cm.steps};assert len(old)==19
+    for i,opening in [(4,'OA'),(5,'OE')]:old[i]=compass_walk_parts(old[i],opening)
+    old[11]=sentence_parts(old[11],'Draw the guide through P1.',[(3,['U','cu','P1']),(2,['pv','pp'])])
+    old[12]=sentence_parts(old[12],'Draw the guide through Q.',[(2,['ck','Q']),(2,['qv','qp'])])
+    old[17]=sentence_parts(old[17],'Draw the outer guide families.',[
+        (3,['J','cj','M']),(3,['mv','fd','mfp'])])
+    old[18]=sentence_parts(old[18],'Draw the corner guide families.',[
+        (2,['cn','N']),(2,['nv','np']),(3,['U1','u1d','u1p'])])
+    cm.steps[:]=parallel_groups(list(old.values()),[[13,14],[15,16,19]],g.el)
+
+
 def build():
     throne.build(include_y1=False)
     step('The vertical side from S8 to S2 crosses the horizontal line at J. '
@@ -34,6 +48,7 @@ def build():
     crossing_set('U2','pv','rd@3',(2+5*H,1+3*H),[('u2d','q01')],
                  'The vertical line through P1 crosses the diagonal through R, turned by 270°, at U2. '
                  'Draw a line through U2 parallel to the line from S1 to S3. Turn it round O by 90°, three times.')
+    shorter_steps()
 
 
 SPEC={'id':'alcazar-reyes-octagon-bands','title':'Octagons of the Dormitorio de Reyes Moros (Alcázar, Seville)',

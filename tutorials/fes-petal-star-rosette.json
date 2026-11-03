@@ -38,27 +38,49 @@
     },
     {
       "id": 2,
-      "text": "Draw a vertical line through O. It crosses the circle at C and D. The horizontal line crosses the circle at B on the left. Draw a vertical line through A. Draw a horizontal line through C. They cross at E. Draw a straight line through O and E. Draw a line through O at 90° to line OE. The circle crosses the four lines through O at S1 to S8.",
-      "create": {
-        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
-        "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
-        "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
-        "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
-        "ax": {"line": {"through": "A", "perpendicularTo": "h"}},
-        "cy": {"line": {"through": "C", "perpendicularTo": "v"}},
-        "E": {"point": {"meet": ["ax", "cy"]}},
-        "d45": {"line": {"through": ["O", "E"]}},
-        "d135": {"line": {"through": "O", "perpendicularTo": "d45"}},
-        "S1": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
-        "S2": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
-        "S3": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
-        "S4": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
-        "S5": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
-        "S6": {"point": {"meet": ["c", "d45"], "pick": {"angle": 225.0}}},
-        "S7": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
-        "S8": {"point": {"meet": ["c", "d135"], "pick": {"angle": 315.0}}}
-      },
-      "animate": "ruler"
+      "text": "Divide the circle into eight.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a vertical line through O. It crosses the circle at C and D. The horizontal line crosses the circle at B on the left.",
+          "create": {
+            "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+            "B": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+            "C": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+            "D": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through A. Draw a horizontal line through C. They cross at E.",
+          "create": {
+            "ax": {"line": {"through": "A", "perpendicularTo": "h"}},
+            "cy": {"line": {"through": "C", "perpendicularTo": "v"}},
+            "E": {"point": {"meet": ["ax", "cy"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a straight line through O and E.",
+          "create": {"d45": {"line": {"through": ["O", "E"]}}},
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a line through O at 90° to line OE. The circle crosses the four lines through O at S1 to S8.",
+          "create": {
+            "d135": {"line": {"through": "O", "perpendicularTo": "d45"}},
+            "S1": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
+            "S2": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
+            "S3": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
+            "S4": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
+            "S5": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+            "S6": {"point": {"meet": ["c", "d45"], "pick": {"angle": 225.0}}},
+            "S7": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+            "S8": {"point": {"meet": ["c", "d135"], "pick": {"angle": 315.0}}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 3,
@@ -99,7 +121,7 @@
     },
     {
       "id": 5,
-      "text": "The line from S3 to S5 crosses the vertical line through P1 at P2. The vertical line through P1 crosses the vertical line through P1, turned by 135°, at P3. Draw a horizontal line through P2. Draw a horizontal line through P3. Turn the new lines round O by 45°, seven times.",
+      "text": "The line from S3 to S5 crosses the vertical line through P1 at P2. The vertical line through P1 crosses the vertical line through P1, turned by 135°, at P3. Draw horizontal lines through P2 and P3. Turn the new lines round O by 45°, seven times.",
       "create": {
         "P2": {"point": {"meet": ["q02", "m1"]}},
         "P3": {"point": {"meet": ["m1", "m1@3"]}},
@@ -191,7 +213,7 @@
     },
     {
       "id": 14,
-      "text": "The line from S3 to S5 crosses the vertical line through P10 at P12. The vertical line through P1 crosses the horizontal line through P7, turned by 45°, at P13. Draw a horizontal line through P12. Draw a horizontal line through P13. Turn the new lines round O by 45°, seven times.",
+      "text": "The line from S3 to S5 crosses the vertical line through P10 at P12. The vertical line through P1 crosses the horizontal line through P7, turned by 45°, at P13. Draw horizontal lines through P12 and P13. Turn the new lines round O by 45°, seven times.",
       "create": {
         "P12": {"point": {"meet": ["q02", "m10"]}},
         "P13": {"point": {"meet": ["m1", "m7@1"]}},
@@ -213,7 +235,7 @@
     },
     {
       "id": 16,
-      "text": "The vertical line through P4 crosses the horizontal line through P11 at P15. The line from S2 to S4 crosses the vertical line through P8 at P16. Draw a line through P2 at 90° to line OE. Draw a line through P15 parallel to line OE. Draw a line through P16 parallel to line OE. Turn the new lines round O by 90°, three times.",
+      "text": "The vertical line through P4 crosses the horizontal line through P11 at P15. The line from S2 to S4 crosses the vertical line through P8 at P16. Draw a line through P2 at 90° to line OE. Draw lines through P15 and P16 parallel to line OE. Turn the new lines round O by 90°, three times.",
       "create": {
         "P15": {"point": {"meet": ["m4", "m11"]}},
         "P16": {"point": {"meet": ["q11", "m8"]}},
@@ -226,7 +248,7 @@
     },
     {
       "id": 17,
-      "text": "The vertical line through P10 crosses the horizontal line through P11 at P17. The vertical line through P8 crosses the line through P15 parallel to line OE at P18. Draw a line through P17 at 90° to line OE. Draw a line through P12 at 90° to line OE. Draw a line through P18 at 90° to line OE. Turn the new lines round O by 90°, three times.",
+      "text": "The vertical line through P10 crosses the horizontal line through P11 at P17. The vertical line through P8 crosses the line through P15 parallel to line OE at P18. Draw lines through P17, P12 and P18 at 90° to line OE. Turn the new lines round O by 90°, three times.",
       "create": {
         "P17": {"point": {"meet": ["m10", "m11"]}},
         "P18": {"point": {"meet": ["m8", "m16"]}},
@@ -239,7 +261,7 @@
     },
     {
       "id": 18,
-      "text": "The line from S7 to S1 crosses the horizontal line through P12 at P19. The line from S3 to S5 crosses the horizontal line through P13 at P20. Draw a line through P19 at 90° to line OE. Draw a line through P20 at 90° to line OE. Turn the new lines round O by 90°, three times.",
+      "text": "The line from S7 to S1 crosses the horizontal line through P12 at P19. The line from S3 to S5 crosses the horizontal line through P13 at P20. Draw lines through P19 and P20 at 90° to line OE. Turn the new lines round O by 90°, three times.",
       "create": {
         "P19": {"point": {"meet": ["q04", "m12"]}},
         "P20": {"point": {"meet": ["q02", "m13"]}},

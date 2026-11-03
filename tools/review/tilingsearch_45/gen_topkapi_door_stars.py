@@ -143,6 +143,32 @@ def build(pieces):
     s4.write_plan(entries, size=int(os.environ.get('SIZE', 5)))
     tile()
     without()
+    shorter_steps()
+
+
+def shorter_steps():
+    from lesson_steps import tenfold_opening_parts,mirrored_line_parts,partition
+    tenfold_opening_parts(cm.steps)
+    special={
+        'P13':'The line AD crosses line CF at P13. Draw a line through P13 parallel to line OD. '
+              'Reflect it in the horizontal line through O.',
+        'P33':'The vertical line through O crosses the line through P14 at P33. '
+              'Draw a line through P33 parallel to line OD. Reflect it in the horizontal line through O.',
+        'P40':'The line OB crosses the mirror image of the line through P33 at P40. '
+              'Draw a line through P40 parallel to line OD. Reflect it in the horizontal line through O.',
+        'P42':'The line AD crosses the mirror image of the line through P33 at P42. '
+              'Reflect a line through P42 parallel to line OD in the vertical line through O.',
+        'P44':'The line AD crosses the mirror image of the line through P14 at P44. '
+              'Turn a line through P44 parallel to line OD round O by 180°. '
+              'Reflect the turned line in the horizontal line through O.'}
+    cm.steps[:]=[mirrored_line_parts(st,special) if 8<=st['id']<=19 else st for st in cm.steps]
+    last=cm.steps[-1];assert last['id']==20
+    cm.steps[-1]=partition(last,'Draw the rectangular frame.',[
+        ('The mirror image of the line through P14 crosses the line through P27 at T. '
+         'Draw a vertical line through T.', ['T','side'],None),
+        ('The line through P6 crosses the line through P38 at U. Draw a horizontal line through U. '
+         'The two frame lines cross at K1. Turn both frame lines round O by 180°. '
+         'They frame the tile, with corners K1 to K4.', ['U','top','K1','frame','K2','K3','K4'],None)])
 
 
 TURN = 'Turn all of them round O by 180°.'

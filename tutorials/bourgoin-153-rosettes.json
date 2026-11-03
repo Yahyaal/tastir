@@ -38,33 +38,55 @@
     },
     {
       "id": 2,
-      "text": "Draw a vertical line through O. It crosses the circle at S5. Draw the line through O that halves the angle between the horizontal and the vertical line. It crosses the circle at S3. Draw a line through O at 90° to it. Draw the line through O that halves the angle between the horizontal line and the line through S3. It crosses the circle at S2. Turn this line round O by 45°, three times. The lines through O cross the circle at S1 to S16, with S1 at A.",
-      "create": {
-        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
-        "S5": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
-        "d45": {"line": {"through": "O", "bisects": ["A", "O", "S5"]}},
-        "S3": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
-        "r2": {"line": {"through": "O", "bisects": ["A", "O", "S3"]}},
-        "S2": {"point": {"meet": ["c", "r2"], "pick": {"angle": 22.5}}},
-        "r2r": {"repeat": {"of": ["r2"], "by": "rot8", "distinct": true}},
-        "d135": {"line": {"through": "O", "perpendicularTo": "d45"}},
-        "S1": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
-        "S4": {"point": {"meet": ["c", "r2@1"], "pick": {"angle": 67.5}}},
-        "S6": {"point": {"meet": ["c", "r2@2"], "pick": {"angle": 112.5}}},
-        "S7": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
-        "S8": {"point": {"meet": ["c", "r2@3"], "pick": {"angle": 157.5}}},
-        "S9": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
-        "S10": {"point": {"meet": ["c", "r2"], "pick": {"angle": 202.5}}},
-        "S11": {"point": {"meet": ["c", "d45"], "pick": {"angle": 225.0}}},
-        "S12": {"point": {"meet": ["c", "r2@1"], "pick": {"angle": 247.5}}},
-        "S13": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
-        "S14": {"point": {"meet": ["c", "r2@2"], "pick": {"angle": 292.5}}},
-        "S15": {"point": {"meet": ["c", "d135"], "pick": {"angle": 315.0}}},
-        "S16": {"point": {"meet": ["c", "r2@3"], "pick": {"angle": 337.5}}}
-      },
+      "text": "Divide the circle into sixteen.",
       "highlight": ["c", "h"],
       "animate": "ruler",
-      "textWithoutHelpers": "Draw a vertical line through O. It crosses the circle at S5. Draw the line through O that halves the angle between the horizontal and the vertical line. It crosses the circle at S3. Draw a line through O at 90° to it. Draw a line through O at 112.5° to the horizontal line."
+      "parts": [
+        {
+          "text": "Draw a vertical line through O. It crosses the circle at S5.",
+          "create": {
+            "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+            "S5": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw the line through O that halves the angle between the horizontal and the vertical line. It crosses the circle at S3.",
+          "create": {
+            "d45": {"line": {"through": "O", "bisects": ["A", "O", "S5"]}},
+            "S3": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a line through O at 90° to the line through S3.",
+          "create": {"d135": {"line": {"through": "O", "perpendicularTo": "d45"}}},
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw the line through O that halves the angle between the horizontal line and the line through S3. It crosses the circle at S2. Turn this line round O by 45°, three times. The lines through O cross the circle at S1 to S16, with S1 at A.",
+          "create": {
+            "r2": {"line": {"through": "O", "bisects": ["A", "O", "S3"]}},
+            "S2": {"point": {"meet": ["c", "r2"], "pick": {"angle": 22.5}}},
+            "r2r": {"repeat": {"of": ["r2"], "by": "rot8", "distinct": true}},
+            "S1": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
+            "S4": {"point": {"meet": ["c", "r2@1"], "pick": {"angle": 67.5}}},
+            "S6": {"point": {"meet": ["c", "r2@2"], "pick": {"angle": 112.5}}},
+            "S7": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
+            "S8": {"point": {"meet": ["c", "r2@3"], "pick": {"angle": 157.5}}},
+            "S9": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+            "S10": {"point": {"meet": ["c", "r2"], "pick": {"angle": 202.5}}},
+            "S11": {"point": {"meet": ["c", "d45"], "pick": {"angle": 225.0}}},
+            "S12": {"point": {"meet": ["c", "r2@1"], "pick": {"angle": 247.5}}},
+            "S13": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+            "S14": {"point": {"meet": ["c", "r2@2"], "pick": {"angle": 292.5}}},
+            "S15": {"point": {"meet": ["c", "d135"], "pick": {"angle": 315.0}}},
+            "S16": {"point": {"meet": ["c", "r2@3"], "pick": {"angle": 337.5}}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "Draw a line through O at 112.5° to the horizontal line."
+        }
+      ]
     },
     {
       "id": 3,
@@ -93,42 +115,86 @@
     },
     {
       "id": 4,
-      "text": "Draw a circle with centre A through O. It crosses the horizontal line at B1. Draw a circle with centre B1 through A. It crosses the horizontal line at B2. Draw a circle with centre O through B2. It crosses the vertical line at B3, and the horizontal line at B4.",
-      "create": {
-        "k1": {"circle": {"centre": "A", "through": "O"}},
-        "B1": {"point": {"meet": ["k1", "h"], "pick": {"farthest": "O"}}},
-        "k2": {"circle": {"centre": "B1", "through": "A"}},
-        "B2": {"point": {"meet": ["k2", "h"], "pick": {"farthest": "O"}}},
-        "k3": {"circle": {"centre": "O", "through": "B2"}},
-        "B3": {"point": {"meet": ["k3", "v"], "pick": {"angle": 90.0}}},
-        "B4": {"point": {"meet": ["k3", "h"], "pick": {"angle": 180.0}}}
-      },
+      "text": "Transfer the cell lengths.",
       "animate": "compass",
-      "textWithoutHelpers": "Draw a circle with centre A through O. It crosses the horizontal line at B1. Draw a circle with centre B1 through A. It crosses the horizontal line at B2. Draw a circle with centre O through B2. It crosses the vertical line at B3, and the horizontal line at B4."
+      "parts": [
+        {
+          "text": "Draw a circle with centre A through O. It crosses the horizontal line at B1.",
+          "create": {
+            "k1": {"circle": {"centre": "A", "through": "O"}},
+            "B1": {"point": {"meet": ["k1", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a circle with centre A through O. It crosses the horizontal line at B1."
+        },
+        {
+          "text": "Draw a circle with centre B1 through A. It crosses the horizontal line at B2.",
+          "create": {
+            "k2": {"circle": {"centre": "B1", "through": "A"}},
+            "B2": {"point": {"meet": ["k2", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a circle with centre B1 through A. It crosses the horizontal line at B2."
+        },
+        {
+          "text": "Draw a circle with centre O through B2. It crosses the vertical line at B3, and the horizontal line at B4.",
+          "create": {
+            "k3": {"circle": {"centre": "O", "through": "B2"}},
+            "B3": {"point": {"meet": ["k3", "v"], "pick": {"angle": 90.0}}},
+            "B4": {"point": {"meet": ["k3", "h"], "pick": {"angle": 180.0}}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a circle with centre O through B2. It crosses the vertical line at B3, and the horizontal line at B4."
+        }
+      ]
     },
     {
       "id": 5,
-      "text": "Draw a vertical line through B2. Draw a horizontal line through B3. They cross at Q. Draw a circle with centre O through Q. It crosses the horizontal line at R.",
-      "create": {
-        "x3": {"line": {"through": "B2", "perpendicularTo": "h"}},
-        "y3": {"line": {"through": "B3", "perpendicularTo": "v"}},
-        "Q": {"point": {"meet": ["x3", "y3"]}},
-        "k4": {"circle": {"centre": "O", "through": "Q"}},
-        "R": {"point": {"meet": ["k4", "h"], "pick": {"angle": 0.0}}}
-      },
-      "animate": "compass"
+      "text": "Find the diagonal cell length.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a vertical line through B2. Draw a horizontal line through B3. They cross at Q.",
+          "create": {
+            "x3": {"line": {"through": "B2", "perpendicularTo": "h"}},
+            "y3": {"line": {"through": "B3", "perpendicularTo": "v"}},
+            "Q": {"point": {"meet": ["x3", "y3"]}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre O through Q. It crosses the horizontal line at R.",
+          "create": {
+            "k4": {"circle": {"centre": "O", "through": "Q"}},
+            "R": {"point": {"meet": ["k4", "h"], "pick": {"angle": 0.0}}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 6,
-      "text": "Open the compass from B4 to B2. Draw a circle with this opening and centre R. It crosses the horizontal line at E, on the right. Open the compass from O to A. Draw a circle with this opening and centre E. It crosses the horizontal line at F and G.",
-      "create": {
-        "k5": {"circle": {"centre": "R", "radiusFrom": ["B4", "B2"]}},
-        "E": {"point": {"meet": ["k5", "h"], "pick": {"angle": 0.0}}},
-        "kE": {"circle": {"centre": "E", "radiusOf": "c"}},
-        "F": {"point": {"meet": ["kE", "h"], "pick": {"farthest": "O"}}},
-        "G": {"point": {"meet": ["kE", "h"], "pick": {"nearest": "O"}}}
-      },
-      "animate": "compass"
+      "text": "Transfer the two frame lengths.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Open the compass from B4 to B2. Draw a circle with this opening and centre R. It crosses the horizontal line at E, on the right.",
+          "create": {
+            "k5": {"circle": {"centre": "R", "radiusFrom": ["B4", "B2"]}},
+            "E": {"point": {"meet": ["k5", "h"], "pick": {"angle": 0.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Open the compass from O to A. Draw a circle with this opening and centre E. It crosses the horizontal line at F and G.",
+          "create": {
+            "kE": {"circle": {"centre": "E", "radiusOf": "c"}},
+            "F": {"point": {"meet": ["kE", "h"], "pick": {"farthest": "O"}}},
+            "G": {"point": {"meet": ["kE", "h"], "pick": {"nearest": "O"}}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 7,
@@ -168,17 +234,35 @@
     },
     {
       "id": 10,
-      "text": "Open the compass from M to E. Draw a circle with this opening and centre O. It crosses the 112.5° line through O at N1. Open the compass from M to G. Draw a circle with this opening and centre O. It crosses the 112.5° line through O at N2. Draw lines through N1 and N2 parallel to the 22.5° line through O. Turn the two new lines round O by 45°, seven times.",
-      "create": {
-        "k6": {"circle": {"centre": "O", "radiusFrom": ["M", "E"]}},
-        "k7": {"circle": {"centre": "O", "radiusFrom": ["M", "G"]}},
-        "N1": {"point": {"meet": ["k6", "r2@2"], "pick": {"angle": 112.5}}},
-        "N2": {"point": {"meet": ["k7", "r2@2"], "pick": {"angle": 112.5}}},
-        "sa": {"line": {"through": "N1", "parallelTo": "r2"}},
-        "sb": {"line": {"through": "N2", "parallelTo": "r2"}},
-        "sr": {"repeat": {"of": ["sa", "sb"], "by": "rot8"}}
-      },
-      "animate": "compass"
+      "text": "Draw the central strip families.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre O and opening ME. It crosses the 112.5° line through O at N1.",
+          "create": {
+            "k6": {"circle": {"centre": "O", "radiusFrom": ["M", "E"]}},
+            "N1": {"point": {"meet": ["k6", "r2@2"], "pick": {"angle": 112.5}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre O and opening MG. It crosses the 112.5° line through O at N2.",
+          "create": {
+            "k7": {"circle": {"centre": "O", "radiusFrom": ["M", "G"]}},
+            "N2": {"point": {"meet": ["k7", "r2@2"], "pick": {"angle": 112.5}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw lines through N1 and N2 parallel to the 22.5° line through O. Turn the two new lines round O by 45°, seven times.",
+          "create": {
+            "sa": {"line": {"through": "N1", "parallelTo": "r2"}},
+            "sb": {"line": {"through": "N2", "parallelTo": "r2"}},
+            "sr": {"repeat": {"of": ["sa", "sb"], "by": "rot8"}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 11,
@@ -234,16 +318,6 @@
     },
     {
       "id": 16,
-      "text": "The 45° line through O crosses the 112.5° line through M at P1. Draw a line through P1 parallel to the 78.75° line through O. Turn it round O by 22.5°, fifteen times.",
-      "create": {
-        "P1": {"point": {"meet": ["d45", "pm"]}},
-        "m1": {"line": {"through": "P1", "parallelTo": "r1@3"}},
-        "mr1": {"repeat": {"of": ["m1"], "by": "rot16"}}
-      },
-      "animate": "ruler"
-    },
-    {
-      "id": 17,
       "text": "Draw a line through M parallel to the 22.5° line through O. Turn it round O by 45°, seven times.",
       "create": {
         "m2": {"line": {"through": "M", "parallelTo": "r2"}},
@@ -252,9 +326,12 @@
       "animate": "ruler"
     },
     {
-      "id": 18,
-      "text": "The 22.5° line through N1, turned by 180°, crosses the 135° line through E at P2. Draw a line through P2 parallel to the 78.75° line through O. Turn it round O by 22.5°, fifteen times.",
+      "id": 17,
+      "text": "The 45° line through O crosses the 112.5° line through M at P1. The 22.5° line through N1, turned by 180°, crosses the 135° line through E at P2. Draw lines through P1 and P2 parallel to the 78.75° line through O. Turn each line round O by 22.5°, fifteen times.",
       "create": {
+        "P1": {"point": {"meet": ["d45", "pm"]}},
+        "m1": {"line": {"through": "P1", "parallelTo": "r1@3"}},
+        "mr1": {"repeat": {"of": ["m1"], "by": "rot16"}},
         "P2": {"point": {"meet": ["sa@4", "ue"]}},
         "m3": {"line": {"through": "P2", "parallelTo": "r1@3"}},
         "mr3": {"repeat": {"of": ["m3"], "by": "rot16"}}
@@ -262,7 +339,7 @@
       "animate": "ruler"
     },
     {
-      "id": 19,
+      "id": 18,
       "text": "The vertical line through M crosses the 78.75° line through P2, turned by 67.5°, at P3. Draw a line through P3 parallel to the 33.75° line through O. Turn it round O by 22.5°, fifteen times.",
       "create": {
         "P3": {"point": {"meet": ["xl", "m3@3"]}},
@@ -272,7 +349,7 @@
       "animate": "ruler"
     },
     {
-      "id": 20,
+      "id": 19,
       "text": "The vertical line through M, turned by 90°, crosses the 112.5° line through M at P4. The vertical line through X2, turned by 180°, crosses the vertical line through X1, turned by 225°, at P5. Draw a line through P4 parallel to the 157.5° line through O. Draw a line through P5 parallel to the 22.5° line through O. Turn the new lines round O by 45°, seven times.",
       "create": {
         "P4": {"point": {"meet": ["xl@1", "pm"]}},
@@ -284,24 +361,45 @@
       "animate": "ruler"
     },
     {
-      "id": 21,
-      "text": "The 157.5° line through P4 crosses its copy turned by 315° at V, a corner of the octagon. Draw a circle with centre V through K1. It crosses the 45° line through O at V2. Draw a circle with centre V2 through V. It crosses the circle with centre V at J3 and J4. Draw a straight line through J3 and J4. It crosses the 45° line through O at V3. Draw a line through V3 parallel to the 22.5° line through O. Turn it round O by 45°, seven times.",
-      "create": {
-        "V": {"point": {"meet": ["m5", "m5@7"]}},
-        "kv": {"circle": {"centre": "V", "through": "K1"}},
-        "V2": {"point": {"meet": ["kv", "d45"], "pick": {"nearest": "O"}}},
-        "kv2": {"circle": {"centre": "V2", "through": "V"}},
-        "J3": {"point": {"meet": ["kv", "kv2"], "pick": {"angle": 52.319}}},
-        "J4": {"point": {"meet": ["kv", "kv2"], "pick": {"angle": 37.681}}},
-        "jl": {"line": {"through": ["J3", "J4"]}},
-        "V3": {"point": {"meet": ["jl", "d45"]}},
-        "vl": {"line": {"through": "V3", "parallelTo": "r2"}},
-        "vlr": {"repeat": {"of": ["vl"], "by": "rot8"}}
-      },
-      "animate": "compass"
+      "id": 20,
+      "text": "Find the extra corner lines.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "The 157.5° line through P4 crosses its copy turned by 315° at V, a corner of the octagon. Draw a circle with centre V through K1. It crosses the 45° line through O at V2.",
+          "create": {
+            "V": {"point": {"meet": ["m5", "m5@7"]}},
+            "kv": {"circle": {"centre": "V", "through": "K1"}},
+            "V2": {"point": {"meet": ["kv", "d45"], "pick": {"nearest": "O"}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre V2 through V. It crosses the circle with centre V at J3 and J4.",
+          "create": {
+            "kv2": {"circle": {"centre": "V2", "through": "V"}},
+            "J3": {"point": {"meet": ["kv", "kv2"], "pick": {"angle": 52.319}}},
+            "J4": {"point": {"meet": ["kv", "kv2"], "pick": {"angle": 37.681}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a straight line through J3 and J4. It crosses the 45° line through O at V3.",
+          "create": {"jl": {"line": {"through": ["J3", "J4"]}}, "V3": {"point": {"meet": ["jl", "d45"]}}},
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a line through V3 parallel to the 22.5° line through O. Turn it round O by 45°, seven times.",
+          "create": {
+            "vl": {"line": {"through": "V3", "parallelTo": "r2"}},
+            "vlr": {"repeat": {"of": ["vl"], "by": "rot8"}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
-      "id": 22,
+      "id": 21,
       "text": "The vertical line through M crosses the 22.5° line through N1, turned by 180°, at P6. Draw a line through P6 parallel to the 157.5° line through O. Turn it round O by 45°, seven times.",
       "create": {
         "P6": {"point": {"meet": ["xl", "sa@4"]}},
@@ -311,7 +409,7 @@
       "animate": "ruler"
     },
     {
-      "id": 23,
+      "id": 22,
       "text": "Join K1, K2, K3 and K4 to mark the tile that repeats.",
       "create": {"tile": {"polygon": ["K1", "K2", "K3", "K4"]}},
       "animate": "fade"

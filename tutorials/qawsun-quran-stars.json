@@ -130,49 +130,104 @@
     },
     {
       "id": 7,
-      "text": "Draw vertical lines through B and C. They cross the horizontal line at N1 and N2. Draw a circle with centre A through O. It crosses that line at N3, right of A. Draw a circle with centre N3 and opening OA. It crosses that line at N4, right of N3.",
-      "create": {
-        "N1v": {"line": {"through": "B", "parallelTo": "v"}},
-        "N1": {"point": {"meet": ["N1v", "h"]}},
-        "N2v": {"line": {"through": "C", "parallelTo": "v"}},
-        "N2": {"point": {"meet": ["N2v", "h"]}},
-        "two": {"circle": {"centre": "A", "through": "O"}},
-        "N3": {"point": {"meet": ["two", "h"], "pick": {"farthest": "O"}}},
-        "three": {"circle": {"centre": "N3", "radiusFrom": ["O", "A"]}},
-        "N4": {"point": {"meet": ["three", "h"], "pick": {"farthest": "O"}}}
-      },
-      "animate": "compass"
+      "text": "Find the intercept lengths.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw vertical lines through B and C. They cross the horizontal line at N1 and N2.",
+          "create": {
+            "N1v": {"line": {"through": "B", "parallelTo": "v"}},
+            "N1": {"point": {"meet": ["N1v", "h"]}},
+            "N2v": {"line": {"through": "C", "parallelTo": "v"}},
+            "N2": {"point": {"meet": ["N2v", "h"]}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "The circle with centre A through O crosses the horizontal line at N3, right of A. Draw a circle with centre N3 and opening OA. It crosses that line at N4, right of N3.",
+          "create": {
+            "N3": {"point": {"meet": ["cE", "h"], "pick": {"farthest": "O"}}},
+            "three": {"circle": {"centre": "N3", "radiusFrom": ["O", "A"]}},
+            "N4": {"point": {"meet": ["three", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre O through N1. It crosses the vertical line at P1, above O.",
+          "create": {
+            "halfRoot3": {"circle": {"centre": "O", "through": "N1"}},
+            "P1": {"point": {"meet": ["halfRoot3", "v"], "pick": {"angle": 90.0}}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 8,
-      "text": "Draw a circle with centre O through N1. It crosses the vertical line at P1, above O. Draw a straight line through N4 and P1. Draw a line through A parallel to it. It crosses the vertical line at P2. Draw a circle with centre O through P2. It crosses the horizontal line at N5, right of O.",
-      "create": {
-        "halfRoot3": {"circle": {"centre": "O", "through": "N1"}},
-        "P1": {"point": {"meet": ["halfRoot3", "v"], "pick": {"angle": 90.0}}},
-        "intercept": {"line": {"through": ["N4", "P1"]}},
-        "third": {"line": {"through": "A", "parallelTo": "intercept"}},
-        "P2": {"point": {"meet": ["third", "v"]}},
-        "sixthRoot3": {"circle": {"centre": "O", "through": "P2"}},
-        "N5": {"point": {"meet": ["sixthRoot3", "h"], "pick": {"angle": 0.0}}}
-      },
-      "animate": "compass",
-      "textWithoutHelpers": "Draw a circle with centre O through N1. It crosses the vertical line at P1, above O. Draw a line through A parallel to the line from N4 to P1. It crosses the vertical line at P2. Draw a circle with centre O through P2. It crosses the horizontal line at N5, right of O."
+      "text": "Draw a straight line through N4 and P1.",
+      "create": {"intercept": {"line": {"through": ["N4", "P1"]}}},
+      "animate": "ruler"
     },
     {
       "id": 9,
-      "text": "Draw a circle with centre N1 through O. It crosses the horizontal line again at N6, right of N1. Draw a circle with centre N6 and opening from O to N5. It crosses that line at N7, towards O. Draw a circle with centre N7 and opening from O to N2. It crosses that line at N8, right of N7.",
-      "create": {
-        "root3": {"circle": {"centre": "N1", "through": "O"}},
-        "N6": {"point": {"meet": ["root3", "h"], "pick": {"farthest": "O"}}},
-        "fiveSixths": {"circle": {"centre": "N6", "radiusFrom": ["O", "N5"]}},
-        "N7": {"point": {"meet": ["fiveSixths", "h"], "pick": {"nearest": "O"}}},
-        "apothem": {"circle": {"centre": "N7", "radiusFrom": ["O", "N2"]}},
-        "N8": {"point": {"meet": ["apothem", "h"], "pick": {"farthest": "O"}}}
-      },
-      "animate": "compass"
+      "text": "Find the smaller compass opening.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a line through A parallel to the line from N4 to P1. It crosses the vertical line at P2.",
+          "create": {
+            "third": {"line": {"through": "A", "parallelTo": "intercept"}},
+            "P2": {"point": {"meet": ["third", "v"]}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a line through A parallel to the line from N4 to P1. It crosses the vertical line at P2."
+        },
+        {
+          "text": "Draw a circle with centre O through P2. It crosses the horizontal line at N5, right of O.",
+          "create": {
+            "sixthRoot3": {"circle": {"centre": "O", "through": "P2"}},
+            "N5": {"point": {"meet": ["sixthRoot3", "h"], "pick": {"angle": 0.0}}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 10,
+      "text": "Transfer the frame lengths.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre N1 through O. It crosses the horizontal line again at N6, right of N1.",
+          "create": {
+            "root3": {"circle": {"centre": "N1", "through": "O"}},
+            "N6": {"point": {"meet": ["root3", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a circle with centre N1 through O. It crosses the horizontal line again at N6, right of N1."
+        },
+        {
+          "text": "Draw a circle with centre N6 and opening from O to N5. It crosses that line at N7, towards O.",
+          "create": {
+            "fiveSixths": {"circle": {"centre": "N6", "radiusFrom": ["O", "N5"]}},
+            "N7": {"point": {"meet": ["fiveSixths", "h"], "pick": {"nearest": "O"}}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a circle with centre N6 and opening from O to N5. It crosses that line at N7, towards O."
+        },
+        {
+          "text": "Draw a circle with centre N7 and opening from O to N2. It crosses that line at N8, right of N7.",
+          "create": {
+            "apothem": {"circle": {"centre": "N7", "radiusFrom": ["O", "N2"]}},
+            "N8": {"point": {"meet": ["apothem", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass",
+          "textWithoutHelpers": "Draw a circle with centre N7 and opening from O to N2. It crosses that line at N8, right of N7."
+        }
+      ]
+    },
+    {
+      "id": 11,
       "text": "Draw a vertical line through N8. Turn it round O by 90°, three times. The four lines frame the tile, with corners T1 to T4.",
       "create": {
         "frame": {"line": {"through": "N8", "parallelTo": "v"}},
@@ -185,7 +240,7 @@
       "animate": "ruler"
     },
     {
-      "id": 11,
+      "id": 12,
       "text": "The line through A and D crosses the right tile side at Q1. Draw a line through Q1 parallel to the line at 45° from OA. Turn it round O by 90°, three times.",
       "create": {
         "Q1": {"point": {"meet": ["st0", "frame"]}},
@@ -196,29 +251,12 @@
       "textWithoutHelpers": "The line through A and D crosses the right tile side at Q1. Draw a line through Q1 parallel to the line at 45° from OA."
     },
     {
-      "id": 12,
-      "text": "Line OE crosses the new line at Q2, below O. Draw a line through Q2 parallel to the line at 15° from OA. Turn it round O by 90°, three times.",
+      "id": 13,
+      "text": "The line OE crosses the line through Q1 at Q2, below O. The circle with centre K crosses line OE again at Q4, below O. Draw lines through Q2 and Q4 parallel to the line at 15° from OA. Turn each line round O by 90°, three times.",
       "create": {
         "Q2": {"point": {"meet": ["r120", "gl0"]}},
         "gl1": {"line": {"through": "Q2", "parallelTo": "r15"}},
-        "copies1": {"repeat": {"of": ["gl1"], "by": "rot4"}}
-      },
-      "animate": "ruler"
-    },
-    {
-      "id": 13,
-      "text": "Line FM crosses the line through Q1 at Q3, below O. Draw a line through Q3 parallel to the line at 75° from OA. Turn it round O by 90°, three times.",
-      "create": {
-        "Q3": {"point": {"meet": ["r150", "gl0"]}},
-        "gl2": {"line": {"through": "Q3", "parallelTo": "r75"}},
-        "copies2": {"repeat": {"of": ["gl2"], "by": "rot4"}}
-      },
-      "animate": "ruler"
-    },
-    {
-      "id": 14,
-      "text": "The circle with centre K crosses line OE again at Q4, below O. Draw a line through Q4 parallel to the line at 15° from OA. Turn it round O by 90°, three times.",
-      "create": {
+        "copies1": {"repeat": {"of": ["gl1"], "by": "rot4"}},
         "Q4": {"point": {"meet": ["cS", "r120"], "pick": {"farthest": "O"}}},
         "gl3": {"line": {"through": "Q4", "parallelTo": "r15"}},
         "copies3": {"repeat": {"of": ["gl3"], "by": "rot4"}}
@@ -226,7 +264,7 @@
       "animate": "ruler"
     },
     {
-      "id": 15,
+      "id": 14,
       "text": "Draw a line through Q4 parallel to the line at 45° from OA. Turn it round O by 90°, three times.",
       "create": {
         "gl4": {"line": {"through": "Q4", "parallelTo": "r45"}},
@@ -235,9 +273,12 @@
       "animate": "ruler"
     },
     {
-      "id": 16,
-      "text": "Line FM crosses the new line at Q5, below O. Draw a line through Q5 parallel to the line at 75° from OA. Turn it round O by 90°, three times.",
+      "id": 15,
+      "text": "The line FM crosses the line through Q1 at Q3, below O. The line FM crosses the 45° line through Q4 at Q5, below O. Draw lines through Q3 and Q5 parallel to the line at 75° from OA. Turn each line round O by 90°, three times.",
       "create": {
+        "Q3": {"point": {"meet": ["r150", "gl0"]}},
+        "gl2": {"line": {"through": "Q3", "parallelTo": "r75"}},
+        "copies2": {"repeat": {"of": ["gl2"], "by": "rot4"}},
         "Q5": {"point": {"meet": ["r150", "gl4"]}},
         "gl5": {"line": {"through": "Q5", "parallelTo": "r75"}},
         "copies5": {"repeat": {"of": ["gl5"], "by": "rot4"}}
@@ -245,7 +286,7 @@
       "animate": "ruler"
     },
     {
-      "id": 17,
+      "id": 16,
       "text": "The line at 135° from OA crosses the line through Q2 at Q6, below O. Draw a horizontal line through Q6. Turn it round O by 90°, three times.",
       "create": {
         "Q6": {"point": {"meet": ["r135", "gl1"]}},
@@ -255,7 +296,7 @@
       "animate": "ruler"
     },
     {
-      "id": 18,
+      "id": 17,
       "text": "The last line turned by 90° crosses the horizontal line at N9, right of O. Draw a circle with centre N8 and opening from O to N9. It crosses that line at N10, towards O.",
       "create": {
         "N9": {"point": {"meet": ["axisNet@1", "h"]}},
@@ -265,33 +306,69 @@
       "animate": "compass"
     },
     {
+      "id": 18,
+      "text": "Find the corner diagonal length.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre O through N8. It crosses the line at 45° from OA at P3, above O.",
+          "create": {
+            "frameCircle": {"circle": {"centre": "O", "through": "N8"}},
+            "P3": {"point": {"meet": ["frameCircle", "r45"], "pick": {"angle": 45.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a vertical line through P3. It crosses the horizontal line at N11.",
+          "create": {
+            "diagonalProjection": {"line": {"through": "P3", "parallelTo": "v"}},
+            "N11": {"point": {"meet": ["diagonalProjection", "h"]}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre N11 through O. It crosses that line again at N12, right of N11.",
+          "create": {
+            "diagonalDouble": {"circle": {"centre": "N11", "through": "O"}},
+            "N12": {"point": {"meet": ["diagonalDouble", "h"], "pick": {"farthest": "O"}}}
+          },
+          "animate": "compass"
+        }
+      ]
+    },
+    {
       "id": 19,
-      "text": "Draw a circle with centre O through N8. It crosses the line at 45° from OA at P3, above O. Draw a vertical line through P3. It crosses the horizontal line at N11. Draw a circle with centre N11 through O. It crosses that line again at N12, right of N11.",
-      "create": {
-        "frameCircle": {"circle": {"centre": "O", "through": "N8"}},
-        "P3": {"point": {"meet": ["frameCircle", "r45"], "pick": {"angle": 45.0}}},
-        "diagonalProjection": {"line": {"through": "P3", "parallelTo": "v"}},
-        "N11": {"point": {"meet": ["diagonalProjection", "h"]}},
-        "diagonalDouble": {"circle": {"centre": "N11", "through": "O"}},
-        "N12": {"point": {"meet": ["diagonalDouble", "h"], "pick": {"farthest": "O"}}}
-      },
-      "animate": "compass"
+      "text": "Draw the corner diagonal family.",
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre N12 and opening from O to N10. It crosses the horizontal line at N13, towards O.",
+          "create": {
+            "cornerDiagonal": {"circle": {"centre": "N12", "radiusFrom": ["O", "N10"]}},
+            "N13": {"point": {"meet": ["cornerDiagonal", "h"], "pick": {"nearest": "O"}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre O through N13. It crosses the line at 135° from OA at P4, above O.",
+          "create": {
+            "cornerCircle": {"circle": {"centre": "O", "through": "N13"}},
+            "P4": {"point": {"meet": ["cornerCircle", "r135"], "pick": {"angle": 135.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a line through P4 parallel to the line at 45° from OA. Turn it round O by 90°, three times.",
+          "create": {
+            "cornerNet": {"line": {"through": "P4", "parallelTo": "r45"}},
+            "cornerCopies": {"repeat": {"of": ["cornerNet"], "by": "rot4"}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 20,
-      "text": "Draw a circle with centre N12 and opening from O to N10. It crosses the horizontal line at N13, towards O. Draw a circle with centre O through N13. It crosses the line at 135° from OA at P4, above O. Draw a line through P4 parallel to the line at 45° from OA. Turn it round O by 90°, three times.",
-      "create": {
-        "cornerDiagonal": {"circle": {"centre": "N12", "radiusFrom": ["O", "N10"]}},
-        "N13": {"point": {"meet": ["cornerDiagonal", "h"], "pick": {"nearest": "O"}}},
-        "cornerCircle": {"circle": {"centre": "O", "through": "N13"}},
-        "P4": {"point": {"meet": ["cornerCircle", "r135"], "pick": {"angle": 135.0}}},
-        "cornerNet": {"line": {"through": "P4", "parallelTo": "r45"}},
-        "cornerCopies": {"repeat": {"of": ["cornerNet"], "by": "rot4"}}
-      },
-      "animate": "compass"
-    },
-    {
-      "id": 21,
       "text": "Join T1, T2, T3 and T4 to mark the tile that repeats.",
       "create": {"tile": {"polygon": ["T1", "T2", "T3", "T4"]}},
       "animate": "fade"

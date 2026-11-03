@@ -181,6 +181,30 @@ WITHOUT = {
 }
 
 
+def shorter_steps():
+    from lesson_steps import partition,circle_parts,parallel_groups,sixteenfold_opening_parts
+    sixteenfold_opening_parts(cm.steps)
+    old={s['id']:s for s in cm.steps};assert len(old)==20
+    old[4]=circle_parts(old[4],'Transfer the cell lengths.')
+    old[5]=partition(old[5],'Find the diagonal cell length.',[
+        ('Draw a vertical line through B2. Draw a horizontal line through B3. They cross at Q.',
+         ['x3','y3','Q'],None),
+        ('Draw a circle with centre O through Q. It crosses the horizontal line at R.',['k4','R'],None)])
+    old[6]=partition(old[6],'Transfer the two frame lengths.',[
+        ('Open the compass from B4 to B2. Draw a circle with this opening and centre R. '
+         'It crosses the horizontal line at E, on the right.',['k5','E'],None),
+        ('Open the compass from O to A. Draw a circle with this opening and centre E. '
+         'It crosses the horizontal line at F and G.',['kE','F','G'],None)])
+    old[10]=partition(old[10],'Draw the central strip families.',[
+        ('Draw a circle with centre O and opening ME. It crosses the 112.5° line through O at N1.',
+         ['k6','N1'],None),
+        ('Draw a circle with centre O and opening MG. It crosses the 112.5° line through O at N2.',
+         ['k7','N2'],None),
+        ('Draw lines through N1 and N2 parallel to the 22.5° line through O. '
+         'Turn the two new lines round O by 45°, seven times.',['sa','sb','sr'],None)])
+    cm.steps[:]=parallel_groups(list(old.values()),[[16,18]],g.el)
+
+
 def build():
     seeds()
     s16.DESC.update(DESCS)
@@ -192,6 +216,7 @@ def build():
     # the first shown step after the skipped step 3 (all helper lines)
     st = cm.steps[3]
     st['textWithoutHelpers'] = st['text']
+    shorter_steps()
 
 
 def lab():

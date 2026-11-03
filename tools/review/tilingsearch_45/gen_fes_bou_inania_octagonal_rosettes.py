@@ -17,6 +17,22 @@ H, L = mp.H, 3+4*mp.H
 UNIT = 298.5/(4+6*H)
 
 
+def shorter_steps():
+    from lesson_steps import eightfold_opening_parts,compass_walk_parts,sentence_parts,parallel_groups
+    eightfold_opening_parts(cm.steps)
+    old={s['id']:s for s in cm.steps};assert len(old)==19
+    for i,opening in [(4,'OA'),(5,'OE')]:old[i]=compass_walk_parts(old[i],opening)
+    old[8]=sentence_parts(old[8],'Draw the guide through J.',[(3,['P','cp','J']),(1,['jv'])])
+    old[12]=sentence_parts(old[12],'Draw the guide through Q.',[(2,['cf','Q']),(2,['qv','qp'])])
+    old[13]=sentence_parts(old[13],'Draw the inner guide families.',[
+        (2,['ck','N']),(2,['nv','np']),(3,['Q2','q2d','q2p'])])
+    old[14]=sentence_parts(old[14],'Draw the guide through U.',[(2,['c2','U']),(2,['ud','up'])])
+    old[18]=sentence_parts(old[18],'Find the outer guide length.',[
+        (2,['cj','M1']),(2,['cm1','M2']),(2,['m2v','m2p'])])
+    old[19]=sentence_parts(old[19],'Draw the outer diagonal family.',[(2,['cm2','M3']),(2,['m3d','m3p'])])
+    cm.steps[:]=parallel_groups(list(old.values()),[[15,16,17]],g.el)
+
+
 def build():
     mp.build_frame(3, 2)
     step('The vertical side from S8 to S2 crosses the horizontal line at P. '
@@ -95,6 +111,7 @@ def build():
     g.meet('M3', 'cm2', 'd45', ((5*H-1)*H, (5*H-1)*H))
     g.line_par('m3d', 'M3', 'q01')
     g.repeat('m3p', ['m3d'], 'rot4')
+    shorter_steps()
 
 
 SPEC = {

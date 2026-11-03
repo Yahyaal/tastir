@@ -17,6 +17,25 @@ UNIT=30*math.sqrt(3)
 L=3
 
 
+def shorter_steps():
+    from lesson_steps import partition,merge,number,circle_parts,sentence_parts
+    old={s['id']:s for s in cm.steps};assert len(old)==20
+    del old[7]['create']['c2'];g.el.pop('c2')
+    old[7]['create']['N1']['point']['meet'][0]='cE'
+    old[7]['text']=old[7]['text'].replace(
+        'Draw a circle with centre A through O. It crosses the horizontal line at N1, right of A.',
+        'The circle with centre A through O crosses the horizontal line at N1, right of A.')
+    old[9]=sentence_parts(old[9],'Find the quarter length.',[
+        (2,['halfProjection','N3']),(2,['halfDiagonal','P1']),(2,['quarterProjection','N4'])])
+    for i,a,p,b in [(10,'quarterDiagonal','P2','eighthProjection'),
+                    (11,'eighthDiagonal','P3','xProjection'),(12,'unitDiagonal','P4','yProjection')]:
+        point={10:'N5',11:'N6',12:'N7'}[i]
+        old[i]=sentence_parts(old[i],'Project the diagonal crossing.',[(2,[a,p]),(2,[b,point])])
+    guides=merge([old[16],old[17],old[18]],
+        'Draw vertical lines through N6, N7, N8, N9, N10 and N11. Turn each line round O by 60°, five times.')
+    cm.steps[:]=number([*[old[i] for i in range(1,16)],guides,old[19],old[20]])
+
+
 def build():
     opening()
     step('Draw the line through O that halves angle BOC. Draw a line through O at 90° to it.')
@@ -76,6 +95,7 @@ def build():
         'The four circles cross the first circle at B, C, E, F, H, J, L and M. '
         'Draw a straight line through B and H. Draw a straight line through F and M.')
     cm.steps[4]['textWithoutHelpers']='Draw the line through O that halves angle BOC.'
+    shorter_steps()
     return cell
 
 

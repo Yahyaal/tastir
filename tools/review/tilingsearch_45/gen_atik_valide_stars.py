@@ -115,6 +115,19 @@ def build():
     g.meet('N2', 'kr@1', 'kt', (-W, H))
     g.meet('N3', 'kr@1', 'kt@1', (-W, -H))
     g.meet('N4', 'kr', 'kt@1', (W, -H))
+    shorter_steps()
+
+
+def shorter_steps():
+    from lesson_steps import group_words,partition,tenfold_opening_parts
+    group_words(cm.steps)
+    tenfold_opening_parts(cm.steps)
+    old=cm.steps[7]
+    cm.steps[7]=partition(old,'Draw the guide family.',[
+        ('The star line through C crosses the horizontal line at T. '
+         'Draw a circle with centre T and opening OA. It crosses the horizontal line at W2, beyond T.',
+         ['T','cT','W2'],None),
+        ('Draw a vertical line through W2. Turn it round O by 36°, nine times.', ['w5','w5r'],None)])
 
 
 SPEC = {

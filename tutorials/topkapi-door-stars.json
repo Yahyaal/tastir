@@ -49,16 +49,25 @@
     },
     {
       "id": 3,
-      "text": "Draw a circle with centre F through O. It crosses the first circle at Y1 and Y2. Draw a straight line through Y1 and Y2. It crosses the horizontal line at M, halfway from O to F.",
-      "create": {
-        "cW": {"circle": {"centre": "F", "through": "O"}},
-        "Y1": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
-        "Y2": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}},
-        "m": {"line": {"through": ["Y1", "Y2"]}},
-        "M": {"point": {"meet": ["m", "h"]}}
-      },
+      "text": "Find the halfway point.",
       "highlight": ["F"],
-      "animate": "compass"
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre F through O. It crosses the first circle at Y1 and Y2.",
+          "create": {
+            "cW": {"circle": {"centre": "F", "through": "O"}},
+            "Y1": {"point": {"meet": ["c", "cW"], "pick": {"angle": 120.0}}},
+            "Y2": {"point": {"meet": ["c", "cW"], "pick": {"angle": 240.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a straight line through Y1 and Y2. It crosses the horizontal line at M, halfway from O to F.",
+          "create": {"m": {"line": {"through": ["Y1", "Y2"]}}, "M": {"point": {"meet": ["m", "h"]}}},
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 4,
@@ -72,26 +81,68 @@
     },
     {
       "id": 5,
-      "text": "Draw a circle with centre A and opening from O to R. It crosses the circle at B and K. Draw circles of the same size round the circle, each centred where the last one crosses it. They mark C, D, E, G, H and J. The circle is now cut into ten.",
-      "create": {
-        "cF0": {"circle": {"centre": "A", "radiusFrom": ["O", "R"]}},
-        "B": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 36.0}}},
-        "K": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 324.0}}},
-        "cF1": {"circle": {"centre": "B", "radiusFrom": ["O", "R"]}},
-        "C": {"point": {"meet": ["c", "cF1"], "pick": {"angle": 72.0}}},
-        "cF2": {"circle": {"centre": "C", "radiusFrom": ["O", "R"]}},
-        "D": {"point": {"meet": ["c", "cF2"], "pick": {"angle": 108.0}}},
-        "cF3": {"circle": {"centre": "D", "radiusFrom": ["O", "R"]}},
-        "E": {"point": {"meet": ["c", "cF3"], "pick": {"angle": 144.0}}},
-        "cF9": {"circle": {"centre": "K", "radiusFrom": ["O", "R"]}},
-        "J": {"point": {"meet": ["c", "cF9"], "pick": {"angle": 288.0}}},
-        "cF8": {"circle": {"centre": "J", "radiusFrom": ["O", "R"]}},
-        "H": {"point": {"meet": ["c", "cF8"], "pick": {"angle": 252.0}}},
-        "cF7": {"circle": {"centre": "H", "radiusFrom": ["O", "R"]}},
-        "G": {"point": {"meet": ["c", "cF7"], "pick": {"angle": 216.0}}}
-      },
+      "text": "Divide the circle into ten.",
       "highlight": ["R"],
-      "animate": "compass"
+      "animate": "compass",
+      "parts": [
+        {
+          "text": "Draw a circle with centre A and opening from O to R. It crosses the first circle at B and K.",
+          "create": {
+            "cF0": {"circle": {"centre": "A", "radiusFrom": ["O", "R"]}},
+            "B": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 36.0}}},
+            "K": {"point": {"meet": ["c", "cF0"], "pick": {"angle": 324.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre B and the same opening. It crosses the first circle at C, away from A.",
+          "create": {
+            "cF1": {"circle": {"centre": "B", "radiusFrom": ["O", "R"]}},
+            "C": {"point": {"meet": ["c", "cF1"], "pick": {"angle": 72.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre C and the same opening. It crosses the first circle at D, away from A.",
+          "create": {
+            "cF2": {"circle": {"centre": "C", "radiusFrom": ["O", "R"]}},
+            "D": {"point": {"meet": ["c", "cF2"], "pick": {"angle": 108.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre D and the same opening. It crosses the first circle at E, away from A.",
+          "create": {
+            "cF3": {"circle": {"centre": "D", "radiusFrom": ["O", "R"]}},
+            "E": {"point": {"meet": ["c", "cF3"], "pick": {"angle": 144.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre K and the same opening. It crosses the first circle at J, away from A.",
+          "create": {
+            "cF9": {"circle": {"centre": "K", "radiusFrom": ["O", "R"]}},
+            "J": {"point": {"meet": ["c", "cF9"], "pick": {"angle": 288.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre J and the same opening. It crosses the first circle at H, away from A.",
+          "create": {
+            "cF8": {"circle": {"centre": "J", "radiusFrom": ["O", "R"]}},
+            "H": {"point": {"meet": ["c", "cF8"], "pick": {"angle": 252.0}}}
+          },
+          "animate": "compass"
+        },
+        {
+          "text": "Draw a circle with centre H and the same opening. It crosses the first circle at G, away from A. The first circle is now cut into ten.",
+          "create": {
+            "cF7": {"circle": {"centre": "H", "radiusFrom": ["O", "R"]}},
+            "G": {"point": {"meet": ["c", "cF7"], "pick": {"angle": 216.0}}}
+          },
+          "animate": "compass"
+        }
+      ]
     },
     {
       "id": 6,
@@ -123,21 +174,42 @@
     },
     {
       "id": 8,
-      "text": "The line through Y1 and Y2 crosses line KC at P1. Draw a line through P1 parallel to line OE. Line OB crosses the line through P1 at P2. Draw a line through P2 parallel to line OD. Line OC crosses the line through P1 at P3. Draw a horizontal line through P3. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
-      "create": {
-        "P1": {"point": {"meet": ["m", "sKC"]}},
-        "m1": {"line": {"through": "P1", "parallelTo": "oE"}},
-        "P2": {"point": {"meet": ["oB", "m1"]}},
-        "m2": {"line": {"through": "P2", "parallelTo": "oD"}},
-        "P3": {"point": {"meet": ["oC", "m1"]}},
-        "m3": {"line": {"through": "P3", "parallelTo": "h"}},
-        "mc3p": {"repeat": {"of": ["P1", "P2", "P3"], "by": "mirror:h"}},
-        "m1b": {"line": {"through": "P1@1", "parallelTo": "oB"}},
-        "m2b": {"line": {"through": "P2@1", "parallelTo": "oC"}},
-        "m3b": {"line": {"through": "P3@1", "parallelTo": "h"}},
-        "mc3r": {"repeat": {"of": ["m1", "m2", "m1b", "m2b"], "by": "rot2"}}
-      },
-      "animate": "ruler"
+      "text": "Draw the guide lines and their mirror images.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "The line through Y1 and Y2 crosses line KC at P1. Draw a line through P1 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P1": {"point": {"meet": ["m", "sKC"]}},
+            "m1": {"line": {"through": "P1", "parallelTo": "oE"}},
+            "mc3pPart1": {"repeat": {"of": ["P1"], "by": "mirror:h"}},
+            "m1b": {"line": {"through": "P1@1", "parallelTo": "oB"}},
+            "mc3rPart1": {"repeat": {"of": ["m1", "m1b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OB crosses the line through P1 at P2. Draw a line through P2 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P2": {"point": {"meet": ["oB", "m1"]}},
+            "m2": {"line": {"through": "P2", "parallelTo": "oD"}},
+            "mc3pPart2": {"repeat": {"of": ["P2"], "by": "mirror:h"}},
+            "m2b": {"line": {"through": "P2@1", "parallelTo": "oC"}},
+            "mc3rPart2": {"repeat": {"of": ["m2", "m2b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OC crosses the line through P1 at P3. Draw a horizontal line through P3. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P3": {"point": {"meet": ["oC", "m1"]}},
+            "m3": {"line": {"through": "P3", "parallelTo": "h"}},
+            "mc3pPart3": {"repeat": {"of": ["P3"], "by": "mirror:h"}},
+            "m3b": {"line": {"through": "P3@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 9,
@@ -153,217 +225,510 @@
     },
     {
       "id": 10,
-      "text": "The line through Y1 and Y2 crosses the turned mirror image of the line through P4 at P5. Draw a line through P5 parallel to line OE. Line OB crosses the line through P5 at P6. Draw a line through P6 parallel to line OD. Line OC crosses the line through P5 at P7. Draw a horizontal line through P7. The line through Y1 and Y2 crosses the turned mirror image of the line through P2 at P8. Draw a line through P8 parallel to line OB. Line OC crosses the line through P8 at P9. Draw a line through P9 parallel to line OD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
-      "create": {
-        "P5": {"point": {"meet": ["m", "m4b@1"]}},
-        "m5": {"line": {"through": "P5", "parallelTo": "oE"}},
-        "P6": {"point": {"meet": ["oB", "m5"]}},
-        "m6": {"line": {"through": "P6", "parallelTo": "oD"}},
-        "P7": {"point": {"meet": ["oC", "m5"]}},
-        "m7": {"line": {"through": "P7", "parallelTo": "h"}},
-        "P8": {"point": {"meet": ["m", "m2b@1"]}},
-        "m8": {"line": {"through": "P8", "parallelTo": "oB"}},
-        "P9": {"point": {"meet": ["oC", "m8"]}},
-        "m9": {"line": {"through": "P9", "parallelTo": "oD"}},
-        "mc9p": {"repeat": {"of": ["P5", "P6", "P7", "P8", "P9"], "by": "mirror:h"}},
-        "m5b": {"line": {"through": "P5@1", "parallelTo": "oB"}},
-        "m6b": {"line": {"through": "P6@1", "parallelTo": "oC"}},
-        "m7b": {"line": {"through": "P7@1", "parallelTo": "h"}},
-        "m8b": {"line": {"through": "P8@1", "parallelTo": "oE"}},
-        "m9b": {"line": {"through": "P9@1", "parallelTo": "oC"}},
-        "mc9r": {"repeat": {"of": ["m5", "m6", "m8", "m9", "m5b", "m6b", "m8b", "m9b"], "by": "rot2"}}
-      },
-      "animate": "ruler"
+      "text": "Draw the guide lines and their mirror images.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "The line through Y1 and Y2 crosses the turned mirror image of the line through P4 at P5. Draw a line through P5 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P5": {"point": {"meet": ["m", "m4b@1"]}},
+            "m5": {"line": {"through": "P5", "parallelTo": "oE"}},
+            "mc9pPart1": {"repeat": {"of": ["P5"], "by": "mirror:h"}},
+            "m5b": {"line": {"through": "P5@1", "parallelTo": "oB"}},
+            "mc9rPart1": {"repeat": {"of": ["m5", "m5b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OB crosses the line through P5 at P6. Draw a line through P6 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P6": {"point": {"meet": ["oB", "m5"]}},
+            "m6": {"line": {"through": "P6", "parallelTo": "oD"}},
+            "mc9pPart2": {"repeat": {"of": ["P6"], "by": "mirror:h"}},
+            "m6b": {"line": {"through": "P6@1", "parallelTo": "oC"}},
+            "mc9rPart2": {"repeat": {"of": ["m6", "m6b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OC crosses the line through P5 at P7. Draw a horizontal line through P7. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P7": {"point": {"meet": ["oC", "m5"]}},
+            "m7": {"line": {"through": "P7", "parallelTo": "h"}},
+            "mc9pPart3": {"repeat": {"of": ["P7"], "by": "mirror:h"}},
+            "m7b": {"line": {"through": "P7@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through Y1 and Y2 crosses the turned mirror image of the line through P2 at P8. Draw a line through P8 parallel to line OB. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P8": {"point": {"meet": ["m", "m2b@1"]}},
+            "m8": {"line": {"through": "P8", "parallelTo": "oB"}},
+            "mc9pPart4": {"repeat": {"of": ["P8"], "by": "mirror:h"}},
+            "m8b": {"line": {"through": "P8@1", "parallelTo": "oE"}},
+            "mc9rPart4": {"repeat": {"of": ["m8", "m8b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OC crosses the line through P8 at P9. Draw a line through P9 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P9": {"point": {"meet": ["oC", "m8"]}},
+            "m9": {"line": {"through": "P9", "parallelTo": "oD"}},
+            "mc9pPart5": {"repeat": {"of": ["P9"], "by": "mirror:h"}},
+            "m9b": {"line": {"through": "P9@1", "parallelTo": "oC"}},
+            "mc9rPart5": {"repeat": {"of": ["m9", "m9b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 11,
-      "text": "The line through Y1 and Y2 crosses the turned mirror image of the line through P8 at P10. Draw a line through P10 parallel to line OD. Line OB crosses the line through P10 at P11. Draw a line through P11 parallel to line OE. Line OC crosses the line through P11 at P12. Draw a horizontal line through P12. Line AD crosses line CF at P13. Draw a line through P13 parallel to line OD. The horizontal line through O crosses the line through P13 at P14. Draw a line through P14 parallel to line OE. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
-      "create": {
-        "P10": {"point": {"meet": ["m", "m8b@1"]}},
-        "m10": {"line": {"through": "P10", "parallelTo": "oD"}},
-        "P11": {"point": {"meet": ["oB", "m10"]}},
-        "m11": {"line": {"through": "P11", "parallelTo": "oE"}},
-        "P12": {"point": {"meet": ["oC", "m11"]}},
-        "m12": {"line": {"through": "P12", "parallelTo": "h"}},
-        "P13": {"point": {"meet": ["sAD", "sCF"]}},
-        "m13": {"line": {"through": "P13", "parallelTo": "oD"}},
-        "P14": {"point": {"meet": ["h", "m13"]}},
-        "m14": {"line": {"through": "P14", "parallelTo": "oE"}},
-        "mc14p": {"repeat": {"of": ["P10", "P11", "P12", "P13"], "by": "mirror:h"}},
-        "m10b": {"line": {"through": "P10@1", "parallelTo": "oC"}},
-        "m11b": {"line": {"through": "P11@1", "parallelTo": "oB"}},
-        "m12b": {"line": {"through": "P12@1", "parallelTo": "h"}},
-        "m13b": {"line": {"through": "P13@1", "parallelTo": "oC"}},
-        "m14b": {"line": {"through": "P14", "parallelTo": "oB"}},
-        "mc14r": {
-          "repeat": {"of": ["m10", "m11", "m13", "m14", "m10b", "m11b", "m13b", "m14b"], "by": "rot2"}
-        }
-      },
+      "text": "Draw the guide lines and their mirror images.",
       "animate": "ruler",
-      "textWithoutHelpers": "The line through Y1 and Y2 crosses the turned mirror image of the line through P8 at P10. Draw a line through P10 parallel to line OD. Line OB crosses the line through P10 at P11. Draw a line through P11 parallel to line OE. Line OC crosses the line through P11 at P12. Draw a horizontal line through P12. Line AD crosses line CF at P13. Draw a line through P13 parallel to line OD. The horizontal line through O crosses the line through P13 at P14. Draw a line through P14 parallel to line OE. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°, except the line through P13 and its mirror image."
+      "parts": [
+        {
+          "text": "The line through Y1 and Y2 crosses the turned mirror image of the line through P8 at P10. Draw a line through P10 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P10": {"point": {"meet": ["m", "m8b@1"]}},
+            "m10": {"line": {"through": "P10", "parallelTo": "oD"}},
+            "mc14pPart1": {"repeat": {"of": ["P10"], "by": "mirror:h"}},
+            "m10b": {"line": {"through": "P10@1", "parallelTo": "oC"}},
+            "mc14rPart1": {"repeat": {"of": ["m10", "m10b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line through Y1 and Y2 crosses the turned mirror image of the line through P8 at P10. Draw a line through P10 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°."
+        },
+        {
+          "text": "The line OB crosses the line through P10 at P11. Draw a line through P11 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P11": {"point": {"meet": ["oB", "m10"]}},
+            "m11": {"line": {"through": "P11", "parallelTo": "oE"}},
+            "mc14pPart2": {"repeat": {"of": ["P11"], "by": "mirror:h"}},
+            "m11b": {"line": {"through": "P11@1", "parallelTo": "oB"}},
+            "mc14rPart2": {"repeat": {"of": ["m11", "m11b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line OB crosses the line through P10 at P11. Draw a line through P11 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°."
+        },
+        {
+          "text": "The line OC crosses the line through P11 at P12. Draw a horizontal line through P12. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P12": {"point": {"meet": ["oC", "m11"]}},
+            "m12": {"line": {"through": "P12", "parallelTo": "h"}},
+            "mc14pPart3": {"repeat": {"of": ["P12"], "by": "mirror:h"}},
+            "m12b": {"line": {"through": "P12@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line OC crosses the line through P11 at P12. Draw a horizontal line through P12. Reflect the new line in the horizontal line through O."
+        },
+        {
+          "text": "The line AD crosses line CF at P13. Draw a line through P13 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P13": {"point": {"meet": ["sAD", "sCF"]}},
+            "m13": {"line": {"through": "P13", "parallelTo": "oD"}},
+            "mc14pPart4": {"repeat": {"of": ["P13"], "by": "mirror:h"}},
+            "m13b": {"line": {"through": "P13@1", "parallelTo": "oC"}},
+            "mc14rPart4": {"repeat": {"of": ["m13", "m13b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line AD crosses line CF at P13. Draw a line through P13 parallel to line OD. Reflect it in the horizontal line through O."
+        },
+        {
+          "text": "The horizontal line through O crosses the line through P13 at P14. Draw a line through P14 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P14": {"point": {"meet": ["h", "m13"]}},
+            "m14": {"line": {"through": "P14", "parallelTo": "oE"}},
+            "m14b": {"line": {"through": "P14", "parallelTo": "oB"}},
+            "mc14rPart5": {"repeat": {"of": ["m14", "m14b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The horizontal line through O crosses the line through P13 at P14. Draw a line through P14 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°."
+        }
+      ]
     },
     {
       "id": 12,
-      "text": "The line through P7 crosses the mirror image of the line through P13 at P15. Draw a line through P15 parallel to line OD. Line OB crosses the line through P15 at P16. Draw a line through P16 parallel to line OE. The line through P9 crosses the mirror image of the line through P13 at P17. Draw a horizontal line through P17. The line through P8 crosses the mirror image of the line through P13 at P18. Draw a line through P18 parallel to line OE. Line OC crosses the line through P18 at P19. Draw a horizontal line through P19. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
-      "create": {
-        "P15": {"point": {"meet": ["m7", "m13b"]}},
-        "m15": {"line": {"through": "P15", "parallelTo": "oD"}},
-        "P16": {"point": {"meet": ["oB", "m15"]}},
-        "m16": {"line": {"through": "P16", "parallelTo": "oE"}},
-        "P17": {"point": {"meet": ["m9", "m13b"]}},
-        "m17": {"line": {"through": "P17", "parallelTo": "h"}},
-        "P18": {"point": {"meet": ["m8", "m13b"]}},
-        "m18": {"line": {"through": "P18", "parallelTo": "oE"}},
-        "P19": {"point": {"meet": ["oC", "m18"]}},
-        "m19": {"line": {"through": "P19", "parallelTo": "h"}},
-        "mc19p": {"repeat": {"of": ["P15", "P16", "P17", "P18", "P19"], "by": "mirror:h"}},
-        "m15b": {"line": {"through": "P15@1", "parallelTo": "oC"}},
-        "m16b": {"line": {"through": "P16@1", "parallelTo": "oB"}},
-        "m17b": {"line": {"through": "P17@1", "parallelTo": "h"}},
-        "m18b": {"line": {"through": "P18@1", "parallelTo": "oB"}},
-        "m19b": {"line": {"through": "P19@1", "parallelTo": "h"}},
-        "mc19r": {"repeat": {"of": ["m15", "m16", "m18", "m15b", "m16b", "m18b"], "by": "rot2"}}
-      },
-      "animate": "ruler"
+      "text": "Draw the guide lines and their mirror images.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "The line through P7 crosses the mirror image of the line through P13 at P15. Draw a line through P15 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P15": {"point": {"meet": ["m7", "m13b"]}},
+            "m15": {"line": {"through": "P15", "parallelTo": "oD"}},
+            "mc19pPart1": {"repeat": {"of": ["P15"], "by": "mirror:h"}},
+            "m15b": {"line": {"through": "P15@1", "parallelTo": "oC"}},
+            "mc19rPart1": {"repeat": {"of": ["m15", "m15b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OB crosses the line through P15 at P16. Draw a line through P16 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P16": {"point": {"meet": ["oB", "m15"]}},
+            "m16": {"line": {"through": "P16", "parallelTo": "oE"}},
+            "mc19pPart2": {"repeat": {"of": ["P16"], "by": "mirror:h"}},
+            "m16b": {"line": {"through": "P16@1", "parallelTo": "oB"}},
+            "mc19rPart2": {"repeat": {"of": ["m16", "m16b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through P9 crosses the mirror image of the line through P13 at P17. Draw a horizontal line through P17. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P17": {"point": {"meet": ["m9", "m13b"]}},
+            "m17": {"line": {"through": "P17", "parallelTo": "h"}},
+            "mc19pPart3": {"repeat": {"of": ["P17"], "by": "mirror:h"}},
+            "m17b": {"line": {"through": "P17@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through P8 crosses the mirror image of the line through P13 at P18. Draw a line through P18 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P18": {"point": {"meet": ["m8", "m13b"]}},
+            "m18": {"line": {"through": "P18", "parallelTo": "oE"}},
+            "mc19pPart4": {"repeat": {"of": ["P18"], "by": "mirror:h"}},
+            "m18b": {"line": {"through": "P18@1", "parallelTo": "oB"}},
+            "mc19rPart4": {"repeat": {"of": ["m18", "m18b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OC crosses the line through P18 at P19. Draw a horizontal line through P19. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P19": {"point": {"meet": ["oC", "m18"]}},
+            "m19": {"line": {"through": "P19", "parallelTo": "h"}},
+            "mc19pPart5": {"repeat": {"of": ["P19"], "by": "mirror:h"}},
+            "m19b": {"line": {"through": "P19@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 13,
-      "text": "The mirror image of the line through P13 crosses the line through P19 at P20. Draw a line through P20 parallel to line OD. Line OC crosses the line through P20 at P21. Draw a line through P21 parallel to line OB. The line through P12 crosses the line through P13 at P22. Draw a line through P22 parallel to line OC. The line through P5 crosses the line through P13 at P23. Draw a line through P23 parallel to line OB. Line OC crosses the line through P23 at P24. Draw a line through P24 parallel to line OD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
-      "create": {
-        "P20": {"point": {"meet": ["m13b", "m19"]}},
-        "m20": {"line": {"through": "P20", "parallelTo": "oD"}},
-        "P21": {"point": {"meet": ["oC", "m20"]}},
-        "m21": {"line": {"through": "P21", "parallelTo": "oB"}},
-        "P22": {"point": {"meet": ["m12", "m13"]}},
-        "m22": {"line": {"through": "P22", "parallelTo": "oC"}},
-        "P23": {"point": {"meet": ["m5", "m13"]}},
-        "m23": {"line": {"through": "P23", "parallelTo": "oB"}},
-        "P24": {"point": {"meet": ["oC", "m23"]}},
-        "m24": {"line": {"through": "P24", "parallelTo": "oD"}},
-        "mc24p": {"repeat": {"of": ["P20", "P21", "P22", "P23", "P24"], "by": "mirror:h"}},
-        "m20b": {"line": {"through": "P20@1", "parallelTo": "oC"}},
-        "m21b": {"line": {"through": "P21@1", "parallelTo": "oE"}},
-        "m22b": {"line": {"through": "P22@1", "parallelTo": "oD"}},
-        "m23b": {"line": {"through": "P23@1", "parallelTo": "oE"}},
-        "m24b": {"line": {"through": "P24@1", "parallelTo": "oC"}},
-        "mc24r": {
-          "repeat": {
-            "of": ["m20", "m21", "m22", "m23", "m24", "m20b", "m21b", "m22b", "m23b", "m24b"],
-            "by": "rot2"
-          }
+      "text": "Draw the guide lines and their mirror images.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "The mirror image of the line through P13 crosses the line through P19 at P20. Draw a line through P20 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P20": {"point": {"meet": ["m13b", "m19"]}},
+            "m20": {"line": {"through": "P20", "parallelTo": "oD"}},
+            "mc24pPart1": {"repeat": {"of": ["P20"], "by": "mirror:h"}},
+            "m20b": {"line": {"through": "P20@1", "parallelTo": "oC"}},
+            "mc24rPart1": {"repeat": {"of": ["m20", "m20b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OC crosses the line through P20 at P21. Draw a line through P21 parallel to line OB. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P21": {"point": {"meet": ["oC", "m20"]}},
+            "m21": {"line": {"through": "P21", "parallelTo": "oB"}},
+            "mc24pPart2": {"repeat": {"of": ["P21"], "by": "mirror:h"}},
+            "m21b": {"line": {"through": "P21@1", "parallelTo": "oE"}},
+            "mc24rPart2": {"repeat": {"of": ["m21", "m21b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through P12 crosses the line through P13 at P22. Draw a line through P22 parallel to line OC. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P22": {"point": {"meet": ["m12", "m13"]}},
+            "m22": {"line": {"through": "P22", "parallelTo": "oC"}},
+            "mc24pPart3": {"repeat": {"of": ["P22"], "by": "mirror:h"}},
+            "m22b": {"line": {"through": "P22@1", "parallelTo": "oD"}},
+            "mc24rPart3": {"repeat": {"of": ["m22", "m22b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through P5 crosses the line through P13 at P23. Draw a line through P23 parallel to line OB. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P23": {"point": {"meet": ["m5", "m13"]}},
+            "m23": {"line": {"through": "P23", "parallelTo": "oB"}},
+            "mc24pPart4": {"repeat": {"of": ["P23"], "by": "mirror:h"}},
+            "m23b": {"line": {"through": "P23@1", "parallelTo": "oE"}},
+            "mc24rPart4": {"repeat": {"of": ["m23", "m23b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OC crosses the line through P23 at P24. Draw a line through P24 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P24": {"point": {"meet": ["oC", "m23"]}},
+            "m24": {"line": {"through": "P24", "parallelTo": "oD"}},
+            "mc24pPart5": {"repeat": {"of": ["P24"], "by": "mirror:h"}},
+            "m24b": {"line": {"through": "P24@1", "parallelTo": "oC"}},
+            "mc24rPart5": {"repeat": {"of": ["m24", "m24b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
         }
-      },
-      "animate": "ruler"
+      ]
     },
     {
       "id": 14,
-      "text": "The mirror image of the line through P13 crosses the line through P23 at P25. Draw a line through P25 parallel to line OE. Line OC crosses the line through P25 at P26. Draw a horizontal line through P26. The mirror image of the line through P13 crosses the turned mirror image of the line through P16 at P27. Draw a line through P27 parallel to line OE. The line through P13 crosses the line through P27 at P28. Draw a line through P28 parallel to line OB. Line OC crosses the line through P28 at P29. Draw a line through P29 parallel to line OD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
-      "create": {
-        "P25": {"point": {"meet": ["m13b", "m23"]}},
-        "m25": {"line": {"through": "P25", "parallelTo": "oE"}},
-        "P26": {"point": {"meet": ["oC", "m25"]}},
-        "m26": {"line": {"through": "P26", "parallelTo": "h"}},
-        "P27": {"point": {"meet": ["m13b", "m16b@1"]}},
-        "m27": {"line": {"through": "P27", "parallelTo": "oE"}},
-        "P28": {"point": {"meet": ["m13", "m27"]}},
-        "m28": {"line": {"through": "P28", "parallelTo": "oB"}},
-        "P29": {"point": {"meet": ["oC", "m28"]}},
-        "m29": {"line": {"through": "P29", "parallelTo": "oD"}},
-        "mc29p": {"repeat": {"of": ["P25", "P26", "P27", "P28", "P29"], "by": "mirror:h"}},
-        "m25b": {"line": {"through": "P25@1", "parallelTo": "oB"}},
-        "m26b": {"line": {"through": "P26@1", "parallelTo": "h"}},
-        "m27b": {"line": {"through": "P27@1", "parallelTo": "oB"}},
-        "m28b": {"line": {"through": "P28@1", "parallelTo": "oE"}},
-        "m29b": {"line": {"through": "P29@1", "parallelTo": "oC"}},
-        "mc29r": {
-          "repeat": {"of": ["m25", "m27", "m28", "m29", "m25b", "m27b", "m28b", "m29b"], "by": "rot2"}
+      "text": "Draw the guide lines and their mirror images.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "The mirror image of the line through P13 crosses the line through P23 at P25. Draw a line through P25 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P25": {"point": {"meet": ["m13b", "m23"]}},
+            "m25": {"line": {"through": "P25", "parallelTo": "oE"}},
+            "mc29pPart1": {"repeat": {"of": ["P25"], "by": "mirror:h"}},
+            "m25b": {"line": {"through": "P25@1", "parallelTo": "oB"}},
+            "mc29rPart1": {"repeat": {"of": ["m25", "m25b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OC crosses the line through P25 at P26. Draw a horizontal line through P26. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P26": {"point": {"meet": ["oC", "m25"]}},
+            "m26": {"line": {"through": "P26", "parallelTo": "h"}},
+            "mc29pPart2": {"repeat": {"of": ["P26"], "by": "mirror:h"}},
+            "m26b": {"line": {"through": "P26@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The mirror image of the line through P13 crosses the turned mirror image of the line through P16 at P27. Draw a line through P27 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P27": {"point": {"meet": ["m13b", "m16b@1"]}},
+            "m27": {"line": {"through": "P27", "parallelTo": "oE"}},
+            "mc29pPart3": {"repeat": {"of": ["P27"], "by": "mirror:h"}},
+            "m27b": {"line": {"through": "P27@1", "parallelTo": "oB"}},
+            "mc29rPart3": {"repeat": {"of": ["m27", "m27b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through P13 crosses the line through P27 at P28. Draw a line through P28 parallel to line OB. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P28": {"point": {"meet": ["m13", "m27"]}},
+            "m28": {"line": {"through": "P28", "parallelTo": "oB"}},
+            "mc29pPart4": {"repeat": {"of": ["P28"], "by": "mirror:h"}},
+            "m28b": {"line": {"through": "P28@1", "parallelTo": "oE"}},
+            "mc29rPart4": {"repeat": {"of": ["m28", "m28b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line OC crosses the line through P28 at P29. Draw a line through P29 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P29": {"point": {"meet": ["oC", "m28"]}},
+            "m29": {"line": {"through": "P29", "parallelTo": "oD"}},
+            "mc29pPart5": {"repeat": {"of": ["P29"], "by": "mirror:h"}},
+            "m29b": {"line": {"through": "P29@1", "parallelTo": "oC"}},
+            "mc29rPart5": {"repeat": {"of": ["m29", "m29b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
         }
-      },
-      "animate": "ruler"
+      ]
     },
     {
       "id": 15,
-      "text": "The mirror image of the line through P13 crosses the line through P28 at P30. Draw a line through P30 parallel to line OE. Line OC crosses the line through P30 at P31. Draw a horizontal line through P31. The line through Y1 and Y2 crosses the line through P28 at P32. Draw a line through P32 parallel to line OC. The vertical line through O crosses the line through P14 at P33. Draw a line through P33 parallel to line OD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
-      "create": {
-        "P30": {"point": {"meet": ["m13b", "m28"]}},
-        "m30": {"line": {"through": "P30", "parallelTo": "oE"}},
-        "P31": {"point": {"meet": ["oC", "m30"]}},
-        "m31": {"line": {"through": "P31", "parallelTo": "h"}},
-        "P32": {"point": {"meet": ["m", "m28"]}},
-        "m32": {"line": {"through": "P32", "parallelTo": "oC"}},
-        "P33": {"point": {"meet": ["v", "m14"]}},
-        "m33": {"line": {"through": "P33", "parallelTo": "oD"}},
-        "mc33p": {"repeat": {"of": ["P30", "P31", "P32", "P33"], "by": "mirror:h"}},
-        "m30b": {"line": {"through": "P30@1", "parallelTo": "oB"}},
-        "m31b": {"line": {"through": "P31@1", "parallelTo": "h"}},
-        "m32b": {"line": {"through": "P32@1", "parallelTo": "oD"}},
-        "m33b": {"line": {"through": "P33@1", "parallelTo": "oC"}},
-        "mc33r": {"repeat": {"of": ["m30", "m32", "m33", "m30b", "m32b", "m33b"], "by": "rot2"}}
-      },
+      "text": "Draw the guide lines and their mirror images.",
       "animate": "ruler",
-      "textWithoutHelpers": "The mirror image of the line through P13 crosses the line through P28 at P30. Draw a line through P30 parallel to line OE. Line OC crosses the line through P30 at P31. Draw a horizontal line through P31. The line through Y1 and Y2 crosses the line through P28 at P32. Draw a line through P32 parallel to line OC. The vertical line through O crosses the line through P14 at P33. Draw a line through P33 parallel to line OD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°, except the line through P33 and its mirror image."
+      "parts": [
+        {
+          "text": "The mirror image of the line through P13 crosses the line through P28 at P30. Draw a line through P30 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P30": {"point": {"meet": ["m13b", "m28"]}},
+            "m30": {"line": {"through": "P30", "parallelTo": "oE"}},
+            "mc33pPart1": {"repeat": {"of": ["P30"], "by": "mirror:h"}},
+            "m30b": {"line": {"through": "P30@1", "parallelTo": "oB"}},
+            "mc33rPart1": {"repeat": {"of": ["m30", "m30b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The mirror image of the line through P13 crosses the line through P28 at P30. Draw a line through P30 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°."
+        },
+        {
+          "text": "The line OC crosses the line through P30 at P31. Draw a horizontal line through P31. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P31": {"point": {"meet": ["oC", "m30"]}},
+            "m31": {"line": {"through": "P31", "parallelTo": "h"}},
+            "mc33pPart2": {"repeat": {"of": ["P31"], "by": "mirror:h"}},
+            "m31b": {"line": {"through": "P31@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line OC crosses the line through P30 at P31. Draw a horizontal line through P31. Reflect the new line in the horizontal line through O."
+        },
+        {
+          "text": "The line through Y1 and Y2 crosses the line through P28 at P32. Draw a line through P32 parallel to line OC. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P32": {"point": {"meet": ["m", "m28"]}},
+            "m32": {"line": {"through": "P32", "parallelTo": "oC"}},
+            "mc33pPart3": {"repeat": {"of": ["P32"], "by": "mirror:h"}},
+            "m32b": {"line": {"through": "P32@1", "parallelTo": "oD"}},
+            "mc33rPart3": {"repeat": {"of": ["m32", "m32b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line through Y1 and Y2 crosses the line through P28 at P32. Draw a line through P32 parallel to line OC. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°."
+        },
+        {
+          "text": "The vertical line through O crosses the line through P14 at P33. Draw a line through P33 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P33": {"point": {"meet": ["v", "m14"]}},
+            "m33": {"line": {"through": "P33", "parallelTo": "oD"}},
+            "mc33pPart4": {"repeat": {"of": ["P33"], "by": "mirror:h"}},
+            "m33b": {"line": {"through": "P33@1", "parallelTo": "oC"}},
+            "mc33rPart4": {"repeat": {"of": ["m33", "m33b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The vertical line through O crosses the line through P14 at P33. Draw a line through P33 parallel to line OD. Reflect it in the horizontal line through O."
+        }
+      ]
     },
     {
       "id": 16,
-      "text": "The line through P6 crosses the mirror image of the line through P33 at P34. Draw a horizontal line through P34. The line through P8 crosses the mirror image of the line through P33 at P35. Draw a line through P35 parallel to line OE. The line through P20 crosses the mirror image of the line through P33 at P36. Draw a horizontal line through P36. The line through P24 crosses the mirror image of the line through P33 at P37. Draw a horizontal line through P37. The line through P13 crosses the line through P34 at P38. Draw a line through P38 parallel to line OC. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
-      "create": {
-        "P34": {"point": {"meet": ["m6", "m33b"]}},
-        "m34": {"line": {"through": "P34", "parallelTo": "h"}},
-        "P35": {"point": {"meet": ["m8", "m33b"]}},
-        "m35": {"line": {"through": "P35", "parallelTo": "oE"}},
-        "P36": {"point": {"meet": ["m20", "m33b"]}},
-        "m36": {"line": {"through": "P36", "parallelTo": "h"}},
-        "P37": {"point": {"meet": ["m24", "m33b"]}},
-        "m37": {"line": {"through": "P37", "parallelTo": "h"}},
-        "P38": {"point": {"meet": ["m13", "m34"]}},
-        "m38": {"line": {"through": "P38", "parallelTo": "oC"}},
-        "mc38p": {"repeat": {"of": ["P34", "P35", "P36", "P37", "P38"], "by": "mirror:h"}},
-        "m34b": {"line": {"through": "P34@1", "parallelTo": "h"}},
-        "m35b": {"line": {"through": "P35@1", "parallelTo": "oB"}},
-        "m36b": {"line": {"through": "P36@1", "parallelTo": "h"}},
-        "m37b": {"line": {"through": "P37@1", "parallelTo": "h"}},
-        "m38b": {"line": {"through": "P38@1", "parallelTo": "oD"}},
-        "mc38r": {"repeat": {"of": ["m35", "m38", "m35b", "m38b"], "by": "rot2"}}
-      },
-      "animate": "ruler"
+      "text": "Draw the guide lines and their mirror images.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "The line through P6 crosses the mirror image of the line through P33 at P34. Draw a horizontal line through P34. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P34": {"point": {"meet": ["m6", "m33b"]}},
+            "m34": {"line": {"through": "P34", "parallelTo": "h"}},
+            "mc38pPart1": {"repeat": {"of": ["P34"], "by": "mirror:h"}},
+            "m34b": {"line": {"through": "P34@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through P8 crosses the mirror image of the line through P33 at P35. Draw a line through P35 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P35": {"point": {"meet": ["m8", "m33b"]}},
+            "m35": {"line": {"through": "P35", "parallelTo": "oE"}},
+            "mc38pPart2": {"repeat": {"of": ["P35"], "by": "mirror:h"}},
+            "m35b": {"line": {"through": "P35@1", "parallelTo": "oB"}},
+            "mc38rPart2": {"repeat": {"of": ["m35", "m35b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through P20 crosses the mirror image of the line through P33 at P36. Draw a horizontal line through P36. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P36": {"point": {"meet": ["m20", "m33b"]}},
+            "m36": {"line": {"through": "P36", "parallelTo": "h"}},
+            "mc38pPart3": {"repeat": {"of": ["P36"], "by": "mirror:h"}},
+            "m36b": {"line": {"through": "P36@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through P24 crosses the mirror image of the line through P33 at P37. Draw a horizontal line through P37. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P37": {"point": {"meet": ["m24", "m33b"]}},
+            "m37": {"line": {"through": "P37", "parallelTo": "h"}},
+            "mc38pPart4": {"repeat": {"of": ["P37"], "by": "mirror:h"}},
+            "m37b": {"line": {"through": "P37@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through P13 crosses the line through P34 at P38. Draw a line through P38 parallel to line OC. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P38": {"point": {"meet": ["m13", "m34"]}},
+            "m38": {"line": {"through": "P38", "parallelTo": "oC"}},
+            "mc38pPart5": {"repeat": {"of": ["P38"], "by": "mirror:h"}},
+            "m38b": {"line": {"through": "P38@1", "parallelTo": "oD"}},
+            "mc38rPart5": {"repeat": {"of": ["m38", "m38b"], "by": "rot2"}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 17,
-      "text": "Line OE crosses the line through P38 at P39. Draw a line through P39 parallel to line OB. Line OB crosses the mirror image of the line through P33 at P40. Draw a line through P40 parallel to line OD. The line through P27 crosses the line through P40 at P41. Draw a horizontal line through P41. Line AD crosses the mirror image of the line through P33 at P42. Draw a line through P42 parallel to line OD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
-      "create": {
-        "P39": {"point": {"meet": ["oE", "m38"]}},
-        "m39": {"line": {"through": "P39", "parallelTo": "oB"}},
-        "P40": {"point": {"meet": ["oB", "m33b"]}},
-        "m40": {"line": {"through": "P40", "parallelTo": "oD"}},
-        "P41": {"point": {"meet": ["m27", "m40"]}},
-        "m41": {"line": {"through": "P41", "parallelTo": "h"}},
-        "P42": {"point": {"meet": ["sAD", "m33b"]}},
-        "m42": {"line": {"through": "P42", "parallelTo": "oD"}},
-        "mc42p": {"repeat": {"of": ["P39", "P40", "P41", "P42"], "by": "mirror:h"}},
-        "m39b": {"line": {"through": "P39@1", "parallelTo": "oE"}},
-        "m40b": {"line": {"through": "P40@1", "parallelTo": "oC"}},
-        "m41b": {"line": {"through": "P41@1", "parallelTo": "h"}},
-        "m42b": {"line": {"through": "P42@1", "parallelTo": "oC"}},
-        "mc42r": {"repeat": {"of": ["m39", "m40", "m42", "m39b", "m40b", "m42b"], "by": "rot2"}}
-      },
+      "text": "Draw the guide lines and their mirror images.",
       "animate": "ruler",
-      "textWithoutHelpers": "Line OE crosses the line through P38 at P39. Draw a line through P39 parallel to line OB. Line OB crosses the mirror image of the line through P33 at P40. Draw a line through P40 parallel to line OD. The line through P27 crosses the line through P40 at P41. Draw a horizontal line through P41. Line AD crosses the mirror image of the line through P33 at P42. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°, except the line through P40 and its mirror image. Reflect a line through P42 parallel to line OD in the vertical line through O."
+      "parts": [
+        {
+          "text": "The line OE crosses the line through P38 at P39. Draw a line through P39 parallel to line OB. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P39": {"point": {"meet": ["oE", "m38"]}},
+            "m39": {"line": {"through": "P39", "parallelTo": "oB"}},
+            "mc42pPart1": {"repeat": {"of": ["P39"], "by": "mirror:h"}},
+            "m39b": {"line": {"through": "P39@1", "parallelTo": "oE"}},
+            "mc42rPart1": {"repeat": {"of": ["m39", "m39b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line OE crosses the line through P38 at P39. Draw a line through P39 parallel to line OB. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°."
+        },
+        {
+          "text": "The line OB crosses the mirror image of the line through P33 at P40. Draw a line through P40 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P40": {"point": {"meet": ["oB", "m33b"]}},
+            "m40": {"line": {"through": "P40", "parallelTo": "oD"}},
+            "mc42pPart2": {"repeat": {"of": ["P40"], "by": "mirror:h"}},
+            "m40b": {"line": {"through": "P40@1", "parallelTo": "oC"}},
+            "mc42rPart2": {"repeat": {"of": ["m40", "m40b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line OB crosses the mirror image of the line through P33 at P40. Draw a line through P40 parallel to line OD. Reflect it in the horizontal line through O."
+        },
+        {
+          "text": "The line through P27 crosses the line through P40 at P41. Draw a horizontal line through P41. Reflect the new line in the horizontal line through O.",
+          "create": {
+            "P41": {"point": {"meet": ["m27", "m40"]}},
+            "m41": {"line": {"through": "P41", "parallelTo": "h"}},
+            "mc42pPart3": {"repeat": {"of": ["P41"], "by": "mirror:h"}},
+            "m41b": {"line": {"through": "P41@1", "parallelTo": "h"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line through P27 crosses the line through P40 at P41. Draw a horizontal line through P41. Reflect the new line in the horizontal line through O."
+        },
+        {
+          "text": "The line AD crosses the mirror image of the line through P33 at P42. Draw a line through P42 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P42": {"point": {"meet": ["sAD", "m33b"]}},
+            "m42": {"line": {"through": "P42", "parallelTo": "oD"}},
+            "mc42pPart4": {"repeat": {"of": ["P42"], "by": "mirror:h"}},
+            "m42b": {"line": {"through": "P42@1", "parallelTo": "oC"}},
+            "mc42rPart4": {"repeat": {"of": ["m42", "m42b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line AD crosses the mirror image of the line through P33 at P42. Reflect a line through P42 parallel to line OD in the vertical line through O."
+        }
+      ]
     },
     {
       "id": 18,
-      "text": "The line through P23 crosses the turned mirror image of the line through P42 at P43. Draw a line through P43 parallel to line OE. Line AD crosses the mirror image of the line through P14 at P44. Draw a line through P44 parallel to line OD. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°.",
-      "create": {
-        "P43": {"point": {"meet": ["m23", "m42b@1"]}},
-        "m43": {"line": {"through": "P43", "parallelTo": "oE"}},
-        "P44": {"point": {"meet": ["sAD", "m14b"]}},
-        "m44": {"line": {"through": "P44", "parallelTo": "oD"}},
-        "mc44p": {"repeat": {"of": ["P43", "P44"], "by": "mirror:h"}},
-        "m43b": {"line": {"through": "P43@1", "parallelTo": "oB"}},
-        "m44b": {"line": {"through": "P44@1", "parallelTo": "oC"}},
-        "mc44r": {"repeat": {"of": ["m43", "m44", "m43b", "m44b"], "by": "rot2"}}
-      },
+      "text": "Draw the guide lines and their mirror images.",
       "animate": "ruler",
-      "textWithoutHelpers": "The line through P23 crosses the turned mirror image of the line through P42 at P43. Draw a line through P43 parallel to line OE. Line AD crosses the mirror image of the line through P14 at P44. Reflect the new lines in the horizontal line through O. Turn all of them round O by 180°. Turn a line through P44 parallel to line OD round O by 180°. Reflect the turned line in the horizontal line through O."
+      "parts": [
+        {
+          "text": "The line through P23 crosses the turned mirror image of the line through P42 at P43. Draw a line through P43 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P43": {"point": {"meet": ["m23", "m42b@1"]}},
+            "m43": {"line": {"through": "P43", "parallelTo": "oE"}},
+            "mc44pPart1": {"repeat": {"of": ["P43"], "by": "mirror:h"}},
+            "m43b": {"line": {"through": "P43@1", "parallelTo": "oB"}},
+            "mc44rPart1": {"repeat": {"of": ["m43", "m43b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line through P23 crosses the turned mirror image of the line through P42 at P43. Draw a line through P43 parallel to line OE. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°."
+        },
+        {
+          "text": "The line AD crosses the mirror image of the line through P14 at P44. Draw a line through P44 parallel to line OD. Reflect the new line in the horizontal line through O. Turn both lines round O by 180°.",
+          "create": {
+            "P44": {"point": {"meet": ["sAD", "m14b"]}},
+            "m44": {"line": {"through": "P44", "parallelTo": "oD"}},
+            "mc44pPart2": {"repeat": {"of": ["P44"], "by": "mirror:h"}},
+            "m44b": {"line": {"through": "P44@1", "parallelTo": "oC"}},
+            "mc44rPart2": {"repeat": {"of": ["m44", "m44b"], "by": "rot2"}}
+          },
+          "animate": "ruler",
+          "textWithoutHelpers": "The line AD crosses the mirror image of the line through P14 at P44. Turn a line through P44 parallel to line OD round O by 180°. Reflect the turned line in the horizontal line through O."
+        }
+      ]
     },
     {
       "id": 19,
@@ -378,19 +743,31 @@
     },
     {
       "id": 20,
-      "text": "The mirror image of the line through P14 crosses the line through P27 at T. Draw a vertical line through T. The line through P6 crosses the line through P38 at U. Draw a horizontal line through U. They cross at K1. Turn the two new lines round O by 180°. They make the tile, with corners K1, K2, K3 and K4.",
-      "create": {
-        "T": {"point": {"meet": ["m14b", "m27"]}},
-        "U": {"point": {"meet": ["m6", "m38"]}},
-        "side": {"line": {"through": "T", "parallelTo": "v"}},
-        "top": {"line": {"through": "U", "parallelTo": "h"}},
-        "K1": {"point": {"meet": ["side", "top"]}},
-        "frame": {"repeat": {"of": ["top", "side"], "by": "rot2"}},
-        "K2": {"point": {"meet": ["side@1", "top"]}},
-        "K3": {"point": {"meet": ["side@1", "top@1"]}},
-        "K4": {"point": {"meet": ["side", "top@1"]}}
-      },
-      "animate": "ruler"
+      "text": "Draw the rectangular frame.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "The mirror image of the line through P14 crosses the line through P27 at T. Draw a vertical line through T.",
+          "create": {
+            "T": {"point": {"meet": ["m14b", "m27"]}},
+            "side": {"line": {"through": "T", "parallelTo": "v"}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "The line through P6 crosses the line through P38 at U. Draw a horizontal line through U. The two frame lines cross at K1. Turn both frame lines round O by 180°. They frame the tile, with corners K1 to K4.",
+          "create": {
+            "U": {"point": {"meet": ["m6", "m38"]}},
+            "top": {"line": {"through": "U", "parallelTo": "h"}},
+            "K1": {"point": {"meet": ["side", "top"]}},
+            "frame": {"repeat": {"of": ["top", "side"], "by": "rot2"}},
+            "K2": {"point": {"meet": ["side@1", "top"]}},
+            "K3": {"point": {"meet": ["side@1", "top@1"]}},
+            "K4": {"point": {"meet": ["side", "top@1"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 21,

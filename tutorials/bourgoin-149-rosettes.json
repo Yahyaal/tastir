@@ -35,32 +35,54 @@
     },
     {
       "id": 2,
-      "text": "Draw a vertical line through O. It crosses the circle at S5. Draw the line through O that halves the angle between the horizontal and the vertical line. It crosses the circle at S3. Draw a line through O at 90° to it. Draw the line through O that halves the angle between the horizontal line and the line through S3. It crosses the circle at S2. Turn this line round O by 45°, three times. The lines through O cross the circle at S1 to S16, with S1 at A.",
-      "create": {
-        "v": {"line": {"through": "O", "perpendicularTo": "h"}},
-        "S5": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}},
-        "d45": {"line": {"through": "O", "bisects": ["A", "O", "S5"]}},
-        "S3": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}},
-        "r2": {"line": {"through": "O", "bisects": ["A", "O", "S3"]}},
-        "S2": {"point": {"meet": ["c", "r2"], "pick": {"angle": 22.5}}},
-        "r2r": {"repeat": {"of": ["r2"], "by": "rot8", "distinct": true}},
-        "d135": {"line": {"through": "O", "perpendicularTo": "d45"}},
-        "S1": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
-        "S4": {"point": {"meet": ["c", "r2@1"], "pick": {"angle": 67.5}}},
-        "S6": {"point": {"meet": ["c", "r2@2"], "pick": {"angle": 112.5}}},
-        "S7": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
-        "S8": {"point": {"meet": ["c", "r2@3"], "pick": {"angle": 157.5}}},
-        "S9": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
-        "S10": {"point": {"meet": ["c", "r2"], "pick": {"angle": 202.5}}},
-        "S11": {"point": {"meet": ["c", "d45"], "pick": {"angle": 225.0}}},
-        "S12": {"point": {"meet": ["c", "r2@1"], "pick": {"angle": 247.5}}},
-        "S13": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
-        "S14": {"point": {"meet": ["c", "r2@2"], "pick": {"angle": 292.5}}},
-        "S15": {"point": {"meet": ["c", "d135"], "pick": {"angle": 315.0}}},
-        "S16": {"point": {"meet": ["c", "r2@3"], "pick": {"angle": 337.5}}}
-      },
+      "text": "Divide the circle into sixteen.",
       "highlight": ["c", "h"],
-      "animate": "ruler"
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a vertical line through O. It crosses the circle at S5.",
+          "create": {
+            "v": {"line": {"through": "O", "perpendicularTo": "h"}},
+            "S5": {"point": {"meet": ["c", "v"], "pick": {"angle": 90.0}}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw the line through O that halves the angle between the horizontal and the vertical line. It crosses the circle at S3.",
+          "create": {
+            "d45": {"line": {"through": "O", "bisects": ["A", "O", "S5"]}},
+            "S3": {"point": {"meet": ["c", "d45"], "pick": {"angle": 45.0}}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a line through O at 90° to the line through S3.",
+          "create": {"d135": {"line": {"through": "O", "perpendicularTo": "d45"}}},
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw the line through O that halves the angle between the horizontal line and the line through S3. It crosses the circle at S2. Turn this line round O by 45°, three times. The lines through O cross the circle at S1 to S16, with S1 at A.",
+          "create": {
+            "r2": {"line": {"through": "O", "bisects": ["A", "O", "S3"]}},
+            "S2": {"point": {"meet": ["c", "r2"], "pick": {"angle": 22.5}}},
+            "r2r": {"repeat": {"of": ["r2"], "by": "rot8", "distinct": true}},
+            "S1": {"point": {"meet": ["c", "h"], "pick": {"angle": 0.0}}},
+            "S4": {"point": {"meet": ["c", "r2@1"], "pick": {"angle": 67.5}}},
+            "S6": {"point": {"meet": ["c", "r2@2"], "pick": {"angle": 112.5}}},
+            "S7": {"point": {"meet": ["c", "d135"], "pick": {"angle": 135.0}}},
+            "S8": {"point": {"meet": ["c", "r2@3"], "pick": {"angle": 157.5}}},
+            "S9": {"point": {"meet": ["c", "h"], "pick": {"angle": 180.0}}},
+            "S10": {"point": {"meet": ["c", "r2"], "pick": {"angle": 202.5}}},
+            "S11": {"point": {"meet": ["c", "d45"], "pick": {"angle": 225.0}}},
+            "S12": {"point": {"meet": ["c", "r2@1"], "pick": {"angle": 247.5}}},
+            "S13": {"point": {"meet": ["c", "v"], "pick": {"angle": 270.0}}},
+            "S14": {"point": {"meet": ["c", "r2@2"], "pick": {"angle": 292.5}}},
+            "S15": {"point": {"meet": ["c", "d135"], "pick": {"angle": 315.0}}},
+            "S16": {"point": {"meet": ["c", "r2@3"], "pick": {"angle": 337.5}}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 3,
@@ -95,20 +117,32 @@
     },
     {
       "id": 5,
-      "text": "Draw a line through A parallel to the 45° line through O. Draw a straight line through U3 and S7. The two lines cross at Q. Draw a vertical line through Q. It crosses the horizontal line at M. Turn the vertical line round O by 90°, three times. The four lines make a square with corners K1, K2, K3 and K4.",
-      "create": {
-        "qa": {"line": {"through": "A", "parallelTo": "d45"}},
-        "qb": {"line": {"through": ["U3", "S7"]}},
-        "Q": {"point": {"meet": ["qa", "qb"]}},
-        "xl": {"line": {"through": "Q", "perpendicularTo": "h"}},
-        "M": {"point": {"meet": ["xl", "h"]}},
-        "xr": {"repeat": {"of": ["xl"], "by": "rot4"}},
-        "K1": {"point": {"meet": ["xl", "xl@1"]}},
-        "K2": {"point": {"meet": ["xl@1", "xl@2"]}},
-        "K3": {"point": {"meet": ["xl@2", "xl@3"]}},
-        "K4": {"point": {"meet": ["xl@3", "xl"]}}
-      },
-      "animate": "ruler"
+      "text": "Draw the square frame.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a line through A parallel to the 45° line through O. Draw a straight line through U3 and S7. The two lines cross at Q.",
+          "create": {
+            "qa": {"line": {"through": "A", "parallelTo": "d45"}},
+            "qb": {"line": {"through": ["U3", "S7"]}},
+            "Q": {"point": {"meet": ["qa", "qb"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through Q. It crosses the horizontal line at M. Turn the vertical line round O by 90°, three times. The four lines make a square with corners K1, K2, K3 and K4.",
+          "create": {
+            "xl": {"line": {"through": "Q", "perpendicularTo": "h"}},
+            "M": {"point": {"meet": ["xl", "h"]}},
+            "xr": {"repeat": {"of": ["xl"], "by": "rot4"}},
+            "K1": {"point": {"meet": ["xl", "xl@1"]}},
+            "K2": {"point": {"meet": ["xl@1", "xl@2"]}},
+            "K3": {"point": {"meet": ["xl@2", "xl@3"]}},
+            "K4": {"point": {"meet": ["xl@3", "xl"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 6,

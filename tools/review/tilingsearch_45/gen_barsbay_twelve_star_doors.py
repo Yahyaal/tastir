@@ -19,6 +19,77 @@ V=L*(4-math.sqrt(3))
 S=V-2*L-.5
 
 
+def shorter_steps():
+    from lesson_steps import partition,merge,circle_parts,number
+    old={s['id']:s for s in cm.steps}
+    assert len(old)==25
+    del old[8]['create']['two'];g.el.pop('two')
+    old[8]['create']['N4']['point']['meet'][0]='cE'
+    old[8]['text']=old[8]['text'].replace(
+        'Draw a circle with centre A through O. It crosses the horizontal line at N4, right of A.',
+        'The circle with centre A through O crosses the horizontal line at N4, right of A.')
+    for n in [10,14]:old[n]=circle_parts(old[n],'Transfer the compass lengths.')
+    old[8]=partition(old[8],'Find the tile width.',[
+        ('Draw a circle with centre N2 and opening from O to N1. '
+         'It crosses the horizontal line at N5, towards O.',['difference','N5'],None),
+        ('The circle with centre A through O crosses the horizontal line at N4, right of A. '
+         'Draw a circle with centre N4 and opening from O to N5. '
+         'It crosses that line at N6, right of N4.',['N4','width','N6'],None)])
+    old[7]=partition(old[7],'Find the three horizontal lengths.',[
+        ('The first circle crosses the line at 45° from OA at P1, above O. '
+         'Draw a circle with centre O and opening AE. It crosses that line at P2, above O.',
+         ['P1','root3','P2'],None),
+        ('Draw vertical lines through P1, P2 and C. They cross the horizontal line at N1, N2 and N3.',
+         ['N1v','N1','N2v','N2','N3v','N3'],None)])
+    old[9]=partition(old[9],'Find the small-star radius.',[
+        ('Draw a line through N6 parallel to the line at 165° from OA. '
+         'It crosses the vertical line at P3, above O.',['heightIntercept','P3'],None),
+        ('Draw a circle with centre O through P3. It crosses the horizontal line at N7, right of O.',
+         ['fourStarRadius','N7'],None)])
+    old[12]=partition(old[12],'Find the inner frame lengths.',[
+        ('Draw circles with centres N6 and N9 and opening from O to N3. '
+         'They cross the horizontal line at N10 and N11, towards O.',
+         ['innerWidth','N10','innerHeight','N11'],None),
+        ('Draw a circle with centre O through N11. It crosses the vertical line at P5, above O.',
+         ['innerHeightCircle','P5'],None)])
+    old[16]=partition(old[16],'Find the corner diagonal length.',[
+        ('Draw a circle with centre O through N6. It crosses the line at 45° from OA at P7, above O.',
+         ['widthCircle','P7'],None),
+        ('Draw a vertical line through P7. It crosses the horizontal line at N13.',
+         ['diagonalProjection','N13'],None),
+        ('Draw a circle with centre N13 through O. It crosses that line again at N14, right of N13.',
+         ['diagonalDouble','N14'],None),
+        ('Draw a circle with centre N14 and opening from O to N12. '
+         'It crosses that line at N15, towards O.',['diagonalRadius','N15'],None)])
+    old[17]=partition(old[17],'Draw the corner diagonal family.',[
+        ('Draw a circle with centre O through N15. It crosses the line at 135° from OA at P8, above O.',
+         ['diagonalCircle','P8'],None),
+        ('Draw a line through P8 parallel to the line at 45° from OA. '
+         'Turn it round O by 90°, three times.',['diagonal','diagonals'],None)])
+    old[18]=partition(old[18],'Draw the upper guide lines.',[
+        ('Draw a circle with centre N6 and opening OA. '
+         'It crosses the horizontal line at N16, right of N6, and N17, towards O.',
+         ['topMarks','N16','N17'],None),
+        ('Draw vertical lines through N16 and N17. Turn both lines round O by 180°.',
+         ['topRight','topRightCopies','topLeft','topLeftCopies'],
+         'Draw vertical lines through N16 and N17.')])
+    first=merge([old[20],old[21]],
+        'Draw lines through N6 and P4 at 75° from OA. Turn each line round O by 30°, eleven times.')
+    second_intro=(
+        'The line through P6 turned by 270° crosses the right tile side at Q1. '
+        'The 75° line through N6 turned 270° crosses the right tile side at Q3. ')
+    second=merge([old[22],old[24]],second_intro+
+        'Draw lines through Q1 and Q3 at 15° from OA. Turn each line round O by 30°, eleven times.')
+    third_intro=(
+        'The line through R1 turned by 270° crosses the right tile side at Q2. '
+        'The vertical line through N12 turned by 210° crosses the right tile side at Q4. ')
+    third=merge([old[23],old[25]],third_intro+
+        'Draw lines through Q2 and Q4 parallel to line CJ. Turn each line round O by 30°, eleven times.',
+        third_intro+'Draw lines through Q2 and Q4 parallel to line CJ. '
+        'Turn each line round O by 60°, 180° and 240°.')
+    cm.steps[:]=number([*[old[i] for i in range(1,20)],first,second,third])
+
+
 def build():
     star_opening(opening_only=True)
     r,t=math.sqrt(2),math.sqrt(6)
@@ -118,6 +189,7 @@ def build():
                           (23,'150°, 180° and 330°'),(24,'60°, 180° and 240°')]:
         cm.steps[index]['textWithoutHelpers'] = cm.steps[index]['text'].replace(
             'Turn it round O by 30°, eleven times.',f'Turn it round O by {degrees}.')
+    shorter_steps()
     return cell
 
 

@@ -102,10 +102,9 @@
     },
     {
       "id": 7,
-      "text": "Draw a circle with centre A through O. It crosses the horizontal line at N1, right of A. Draw a circle with centre N1 and opening OA. It crosses that line at N2, right of N1.",
+      "text": "The circle with centre A through O crosses the horizontal line at N1, right of A. Draw a circle with centre N1 and opening OA. It crosses that line at N2, right of N1.",
       "create": {
-        "c2": {"circle": {"centre": "A", "through": "O"}},
-        "N1": {"point": {"meet": ["c2", "h"], "pick": {"farthest": "O"}}},
+        "N1": {"point": {"meet": ["cE", "h"], "pick": {"farthest": "O"}}},
         "c3": {"circle": {"centre": "N1", "radiusFrom": ["O", "A"]}},
         "N2": {"point": {"meet": ["c3", "h"], "pick": {"farthest": "O"}}}
       },
@@ -128,49 +127,103 @@
     },
     {
       "id": 9,
-      "text": "Draw a vertical line through C. It crosses the horizontal line at N3. Draw a line through N3 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P1. Draw a vertical line through P1. It crosses the horizontal line at N4.",
-      "create": {
-        "halfProjection": {"line": {"through": "C", "parallelTo": "v"}},
-        "N3": {"point": {"meet": ["halfProjection", "h"]}},
-        "halfDiagonal": {"line": {"through": "N3", "parallelTo": "r135"}},
-        "P1": {"point": {"meet": ["halfDiagonal", "r45"]}},
-        "quarterProjection": {"line": {"through": "P1", "parallelTo": "v"}},
-        "N4": {"point": {"meet": ["quarterProjection", "h"]}}
-      },
-      "animate": "ruler"
+      "text": "Find the quarter length.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a vertical line through C. It crosses the horizontal line at N3.",
+          "create": {
+            "halfProjection": {"line": {"through": "C", "parallelTo": "v"}},
+            "N3": {"point": {"meet": ["halfProjection", "h"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a line through N3 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P1.",
+          "create": {
+            "halfDiagonal": {"line": {"through": "N3", "parallelTo": "r135"}},
+            "P1": {"point": {"meet": ["halfDiagonal", "r45"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through P1. It crosses the horizontal line at N4.",
+          "create": {
+            "quarterProjection": {"line": {"through": "P1", "parallelTo": "v"}},
+            "N4": {"point": {"meet": ["quarterProjection", "h"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 10,
-      "text": "Draw a line through N4 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P2. Draw a vertical line through P2. It crosses the horizontal line at N5.",
-      "create": {
-        "quarterDiagonal": {"line": {"through": "N4", "parallelTo": "r135"}},
-        "P2": {"point": {"meet": ["quarterDiagonal", "r45"]}},
-        "eighthProjection": {"line": {"through": "P2", "parallelTo": "v"}},
-        "N5": {"point": {"meet": ["eighthProjection", "h"]}}
-      },
-      "animate": "ruler"
+      "text": "Project the diagonal crossing.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a line through N4 parallel to the line at 135° from OA. It crosses the line at 45° from OA at P2.",
+          "create": {
+            "quarterDiagonal": {"line": {"through": "N4", "parallelTo": "r135"}},
+            "P2": {"point": {"meet": ["quarterDiagonal", "r45"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through P2. It crosses the horizontal line at N5.",
+          "create": {
+            "eighthProjection": {"line": {"through": "P2", "parallelTo": "v"}},
+            "N5": {"point": {"meet": ["eighthProjection", "h"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 11,
-      "text": "Draw a line through N5 parallel to the line at 45° from OA. It crosses the line through N4 at P3. Draw a vertical line through P3. It crosses the horizontal line at N6.",
-      "create": {
-        "eighthDiagonal": {"line": {"through": "N5", "parallelTo": "r45"}},
-        "P3": {"point": {"meet": ["eighthDiagonal", "quarterDiagonal"]}},
-        "xProjection": {"line": {"through": "P3", "parallelTo": "v"}},
-        "N6": {"point": {"meet": ["xProjection", "h"]}}
-      },
-      "animate": "ruler"
+      "text": "Project the diagonal crossing.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a line through N5 parallel to the line at 45° from OA. It crosses the line through N4 at P3.",
+          "create": {
+            "eighthDiagonal": {"line": {"through": "N5", "parallelTo": "r45"}},
+            "P3": {"point": {"meet": ["eighthDiagonal", "quarterDiagonal"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through P3. It crosses the horizontal line at N6.",
+          "create": {
+            "xProjection": {"line": {"through": "P3", "parallelTo": "v"}},
+            "N6": {"point": {"meet": ["xProjection", "h"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 12,
-      "text": "Draw a line through A parallel to the line at 135° from OA. It crosses the line through N5 at P4. Draw a vertical line through P4. It crosses the horizontal line at N7.",
-      "create": {
-        "unitDiagonal": {"line": {"through": "A", "parallelTo": "r135"}},
-        "P4": {"point": {"meet": ["unitDiagonal", "eighthDiagonal"]}},
-        "yProjection": {"line": {"through": "P4", "parallelTo": "v"}},
-        "N7": {"point": {"meet": ["yProjection", "h"]}}
-      },
-      "animate": "ruler"
+      "text": "Project the diagonal crossing.",
+      "animate": "ruler",
+      "parts": [
+        {
+          "text": "Draw a line through A parallel to the line at 135° from OA. It crosses the line through N5 at P4.",
+          "create": {
+            "unitDiagonal": {"line": {"through": "A", "parallelTo": "r135"}},
+            "P4": {"point": {"meet": ["unitDiagonal", "eighthDiagonal"]}}
+          },
+          "animate": "ruler"
+        },
+        {
+          "text": "Draw a vertical line through P4. It crosses the horizontal line at N7.",
+          "create": {
+            "yProjection": {"line": {"through": "P4", "parallelTo": "v"}},
+            "N7": {"point": {"meet": ["yProjection", "h"]}}
+          },
+          "animate": "ruler"
+        }
+      ]
     },
     {
       "id": 13,
@@ -203,30 +256,16 @@
     },
     {
       "id": 16,
-      "text": "Draw vertical lines through N6 and N11. Turn them round O by 60°, five times.",
+      "text": "Draw vertical lines through N6, N7, N8, N9, N10 and N11. Turn each line round O by 60°, five times.",
       "create": {
         "N6v": {"line": {"through": "N6", "parallelTo": "v"}},
         "N6copies": {"repeat": {"of": ["N6v"], "by": "rot6"}},
         "N11v": {"line": {"through": "N11", "parallelTo": "v"}},
-        "N11copies": {"repeat": {"of": ["N11v"], "by": "rot6"}}
-      },
-      "animate": "ruler"
-    },
-    {
-      "id": 17,
-      "text": "Draw vertical lines through N7 and N10. Turn them round O by 60°, five times.",
-      "create": {
+        "N11copies": {"repeat": {"of": ["N11v"], "by": "rot6"}},
         "N7v": {"line": {"through": "N7", "parallelTo": "v"}},
         "N7copies": {"repeat": {"of": ["N7v"], "by": "rot6"}},
         "N10v": {"line": {"through": "N10", "parallelTo": "v"}},
-        "N10copies": {"repeat": {"of": ["N10v"], "by": "rot6"}}
-      },
-      "animate": "ruler"
-    },
-    {
-      "id": 18,
-      "text": "Draw vertical lines through N8 and N9. Turn them round O by 60°, five times.",
-      "create": {
+        "N10copies": {"repeat": {"of": ["N10v"], "by": "rot6"}},
         "N8v": {"line": {"through": "N8", "parallelTo": "v"}},
         "N8copies": {"repeat": {"of": ["N8v"], "by": "rot6"}},
         "N9v": {"line": {"through": "N9", "parallelTo": "v"}},
@@ -235,7 +274,7 @@
       "animate": "ruler"
     },
     {
-      "id": 19,
+      "id": 17,
       "text": "Draw a line through N2 parallel to line OB. Turn it round O by 60°, five times.",
       "create": {
         "connector": {"line": {"through": "N2", "parallelTo": "r30"}},
@@ -244,7 +283,7 @@
       "animate": "ruler"
     },
     {
-      "id": 20,
+      "id": 18,
       "text": "The line through L and C crosses the new line at Q, below O. Draw a horizontal line through Q. Turn it round O by 60°, five times.",
       "create": {
         "Q": {"point": {"meet": ["st5", "connector"]}},
@@ -254,7 +293,7 @@
       "animate": "ruler"
     },
     {
-      "id": 21,
+      "id": 19,
       "text": "Join T1, T2, T3, T4, T5 and T6 to mark the tile that repeats.",
       "create": {"tile": {"polygon": ["T1", "T2", "T3", "T4", "T5", "T6"]}},
       "animate": "fade"

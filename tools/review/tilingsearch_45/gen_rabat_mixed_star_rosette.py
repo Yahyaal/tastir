@@ -71,6 +71,137 @@ def description(name):
     return text
 
 
+def shorten_steps():
+    """Group independent copies of one action, after writing helper variants.
+
+    Keep this local: the shared triangle opening serves other tutorials.
+    The keys below refer to the original construction operations, before
+    the learner's steps are numbered again.
+    """
+    old={s['id']:s for s in cm.steps}
+    assert len(old)==48 and 'gl10' in old[48]['create']
+    # Only the horizontal seed is used; none of its eleven turns is needed.
+    del old[12]['create']['sixAxes']
+    old[12]['text']=old[12]['textWithoutHelpers']
+    # Both crossings of this circle are used. Do not draw it twice.
+    del old[21]['create']['N19circle']
+    old[21]['create']['N19']['point']['meet'][0]='N17circle'
+    old[20]['create']['N19']=old[21]['create'].pop('N19')
+    old[20]['text']=(
+        'Draw a circle with centre N3 and opening from O to N16. '
+        'It crosses the horizontal line at N17 towards O and N19 right of N3. '
+        'Draw a circle with centre N13 and opening from O to N14. '
+        'It crosses the horizontal line at N18, right of N13.')
+    old[21]['text']=(
+        'Draw a circle with centre N2 through O. '
+        'It crosses the horizontal line again at N20, right of N2.')
+    # The opening already drew the unit circle about A.
+    del old[27]['create']['N31circle']
+    old[27]['create']['N31']['point']['meet'][0]='cE'
+    old[27]['text']=(
+        'The circle with centre A through O crosses the horizontal line again at N31, right of A. '
+        'Draw a circle with centre N31 and opening from O to N15. '
+        'It crosses that line at N32, right of N31.')
+    # Q3 and Q4 were the very same crossing.
+    del old[41]['create']['Q4']
+    old[41]['create']['gl3']['line']['through']='Q3'
+    old[40]['text']=(
+        'The line AE crosses the horizontal line through P3 at Q3. '
+        'Draw a line through Q3 at 30° from OA. Draw a vertical line through Q3. '
+        'Turn both lines round O by 30°, eleven times.')
+    old[41]['text']=''
+
+    def combine(numbers,text=None,without=None):
+        members=[old[n] for n in numbers]
+        merged={**members[0], 'create':{k:v for s in members for k,v in s['create'].items()}}
+        merged['animate']=next((s['animate'] for s in members if s['animate']!='fade'),'fade')
+        merged['text']=text if text is not None else ' '.join(s['text'] for s in members).strip()
+        if without is not None:
+            merged['textWithoutHelpers']=without
+        elif any('textWithoutHelpers' in s for s in members):
+            merged['textWithoutHelpers']=' '.join(s.get('textWithoutHelpers',s['text']) for s in members).strip()
+        return merged
+
+    result=[old[n] for n in range(1,14)]
+    result.append(combine([14,15,18],
+        'The circle with centre O and opening AE crosses the horizontal line at N11, right of O. '
+        'Draw lines through N11 and N3 parallel to the line at 135° from OA. '
+        'They cross the line at 45° from OA at P5 and P8. '
+        'Draw vertical lines through P5 and P8. They cross the horizontal line at N12 and N15.'))
+    result.append(combine([16,19],
+        'Draw lines through N12 and N15 parallel to the line at 135° from OA. '
+        'They cross the line at 45° from OA at P6 and P9. '
+        'Draw vertical lines through P6 and P9. They cross the horizontal line at N13 and N16.'))
+    result.append(old[17])
+    result.append(old[20])
+    result.append(combine([21,22]))
+    result.extend(old[n] for n in range(23,32))
+    result.append(combine([32,33,34],
+        'Draw vertical lines through N24, N27 and N30. Turn each line round O by 30°, eleven times.'))
+    result.append(combine([35,36,37],
+        'Draw circles with centre O through N33, N36 and N39. '
+        'They cross the line at 45° from OA at P10, P11 and P12, above O. '
+        'Draw a line through each point at 90° to its line from O. '
+        'Turn each new line round O by 30°, eleven times.',
+        'Draw circles with centre O through N33, N36 and N39. '
+        'They cross the line at 45° from OA at P10, P11 and P12, above O. '
+        'Draw a line through each point at 90° to its line from O. '
+        'Turn each new line round O by 90°, 180° and 270°.'))
+    result.extend([old[38],old[39],combine([40,41]),old[42],
+        combine([43,44],
+            'The right tile side crosses the 135° line through N1 at Q6. '
+            'The vertical line through N1 crosses the 30° line through Q3 turned 330° at Q7. '
+            'Draw lines through Q6 and Q7 at 45° from OA. Turn each line round O by 30°, eleven times.',
+            'The right tile side crosses the 135° line through N1 at Q6. '
+            'The vertical line through N1 crosses the 30° line through Q3 turned 330° at Q7. '
+            'Draw lines through Q6 and Q7 at 45° from OA. Turn each line round O by 90°, 180° and 270°.'),
+        old[45],old[46],
+        combine([47,48],
+            'The right tile side crosses the 45° line through Q9 at Q10. '
+            'The right tile side turned 180° crosses the 45° line through Q7 at Q11. '
+            'Draw lines through Q10 and Q11 at 135° from OA. Turn each line round O by 30°, eleven times.',
+            'The right tile side crosses the 45° line through Q9 at Q10. '
+            'The right tile side turned 180° crosses the 45° line through Q7 at Q11. '
+            'Draw lines through Q10 and Q11 at 135° from OA. Turn each line round O by 90°, 180° and 270°.')])
+    cm.steps[:]=result
+    for i,s in enumerate(cm.steps,1):s['id']=i
+    # Each part is one move. Keep a dependent construction off one text box.
+    def parts(number,heading,plan):
+        current=cm.steps[number-1];made=current.pop('create')
+        current.pop('textWithoutHelpers',None)
+        current['text']=heading
+        current['parts']=[]
+        for text,names,without in plan:
+            part={'text':text,'create':{name:made[name] for name in names},'animate':current['animate']}
+            if without:part['textWithoutHelpers']=without
+            current['parts'].append(part)
+        assert set(made)=={n for p in current['parts'] for n in p['create']}
+    parts(13,'Find the smaller diagonal guides.',[
+        ('Draw a line through N1 parallel to the line at 135° from OA. '
+         'It crosses the line at 45° from OA at P4.',['halfInner','P4'],None),
+        ('Draw a vertical line through P4. It crosses the horizontal line at N10.',
+         ['projectHalf','N10'],None),
+        ('Draw a line through N10 at 45° from OA. Turn it round O by 30°, eleven times.',
+         ['quarterDiag','quarterDiags'],
+         'Draw a line through N10 at 45° from OA. Turn it round O by 90°, 180° and 270°.')])
+    parts(14,'Halve the two horizontal lengths.',[
+        ('The circle with centre O and opening AE crosses the horizontal line at N11, right of O. '
+         'Draw lines through N11 and N3 parallel to the line at 135° from OA. '
+         'They cross the line at 45° from OA at P5 and P8.',
+         ['N11','N12half','P5','N15half','P8'],None),
+        ('Draw vertical lines through P5 and P8. They cross the horizontal line at N12 and N15.',
+         ['N12project','N12','N15project','N15'],None)])
+    parts(18,'Transfer the three lengths.',[
+        ('Draw a circle with centre N2 through O. '
+         'It crosses the horizontal line again at N20, right of N2.',['N20circle','N20'],None),
+        ('Draw a circle with centre N20 and opening from O to N11. '
+         'It crosses the horizontal line at N21, right of N20.',['N21circle','N21'],None),
+        ('Draw a circle with centre N21 and opening from O to N13. '
+         'It crosses the horizontal line at N22, right of N21.',['N22circle','N22'],None)])
+    for name in ['N19circle','N31circle','Q4']:g.el.pop(name)
+    for i in range(1,12):g.el.pop(f'sixAxis@{i}')
+
+
 def build():
     opening(opening_only=True)
     step('The first circle crosses the line at 45° from OA at P1, above O. '
@@ -172,6 +303,7 @@ def build():
         words=', '.join(turns[:-1])+' and '+turns[-1]
         cm.steps[number-1]['textWithoutHelpers']=cm.steps[number-1]['text'].replace(
             'Turn it round O by 30°, eleven times.',f'Turn it round O by {words}.')
+    shorten_steps()
     return cell
 
 
