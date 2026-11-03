@@ -39,6 +39,42 @@ const LOOKS_RIGHT =
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'shorter-lessons-2026-11-02',
+    title: 'The 29 longest lessons, rewritten to be easier to follow',
+    fold: 8,
+    status: 'decide',
+    summary:
+      'Codex regrouped the steps of every lesson of 20 steps or more, and split crowded steps into parts of one move each.',
+    story: [
+      'The finished pattern of every lesson is exactly what it was: I compared all the lines and pieces before and after, and every test passes.',
+      'The steps fell from 720 to 659, but the moves you click through rose from 771 to 988, because moves that were packed into one step now have a part each. Only Rabat, Imamzadeh Ismail and Chehel Sotoun are shorter in moves too.',
+      'Çamlıca grew from 25 moves to 85 and Topkapı from 21 to 62. Codex found no simpler construction for either.',
+      '45 steps in 15 lessons are still crowded, with five or more sentences in one move, mostly in Mihrimah, the Meknes throne rosette and Atik Valide. They are no worse than before; a second Codex pass can split them.',
+    ],
+    pictures: [
+      {
+        src: 'renders/rabat-mixed-star-rosette/step-18.png',
+        caption:
+          'Rabat step 18: three circles, each found from the one before, now shown one part at a time.',
+      },
+      {
+        src: 'renders/camlica-mosque-stars/step-09.png',
+        caption:
+          'Çamlıca step 9: five guide lines that each depend on the one before, now five parts.',
+      },
+    ],
+    asks: [
+      'Play Rabat, Imamzadeh Ismail and Çamlıca with Next, and say if any move is hard to follow.',
+      'Say whether 85 moves for Çamlıca and 62 for Topkapı are acceptable.',
+    ],
+    sources: [
+      {
+        label: 'Codex’s report',
+        url: 'https://github.com/Yahyaal/tastir/blob/main/docs/testing/codex-shorter-lessons-2026-11-02.md',
+      },
+    ],
+  },
+  {
     id: 'band-and-pointer-2026-10-22',
     title: 'The home page’s star band and the editor’s pointers',
     fold: 8,
@@ -3221,7 +3257,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Brian Wichmann’s P70 vector drawing. The corners were snapped to exact values with the small star’s point radius as the unit. The drawing gives no steps. We devised the construction, sharing the unit-star and compass-transfer opening with the Meknes petal rosettes. The crossings R, V, W, X and Y1 to Y4 set the inner stars and outer pieces.',
       'The compass steps, their order and the named points are ours. OA is the small star’s point radius; the cell half-side is four radii plus three square diagonals. The finished tile edges follow the plain drawing. The palette is illustrative; no photograph was checked.',
-      '22 steps, advanced.',
+      '19 steps (31 moves counting parts), advanced. Shortened on 2 November 2026 from 22 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -3400,7 +3436,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s MOR2841X vector drawing and snapped to exact values in small-star-radius units. Three radii and two unit-square diagonals set the half-side. The unit-star opening is shared with the earlier reconstructions. Compass transfers from J give M2, whose distance from O is the outer octagon’s apothem. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. The finished tile edges follow the plain drawing. The palette is illustrative; no photograph was checked.',
-      '20 steps, advanced.',
+      '18 steps (32 moves counting parts), advanced. Shortened on 2 November 2026 from 20 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -3713,7 +3749,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s NC7 drawing. Its band centre lines fit exact square-root-of-two values. The opening shares the Rabat throne-room octagon grid; three further crossing and compass steps complete the different stars and octagonal bands. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. The 6 pt bands are represented by their centre lines. The palette is illustrative; no photograph was checked.',
-      '20 steps, advanced.',
+      '17 steps (30 moves counting parts), advanced. Shortened on 2 November 2026 from 20 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -4581,7 +4617,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s C176A drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of the star’s sides, carried on, with earlier lines, and turned round O. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing: red, black and white, in the Modern Moroccan palette. No photograph was checked. Wichmann notes that his drawing omits the panel’s central 24-pointed star; this repeat follows his drawing.',
-      '22 steps, advanced.',
+      '22 steps (26 moves counting parts), advanced. Shortened on 2 November 2026 from 22 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -4939,7 +4975,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s MOR0411 drawing. Its tile corners were snapped to the square-root-of-two grid in small-star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. The tile edges follow the plain drawing. The colours follow Wichmann’s drawing in the Modern Moroccan palette: his red is the palette’s red and his light blue its dark blue. Wade’s photo MOR 0411 was not checked.',
-      '20 steps, advanced.',
+      '20 steps (24 moves counting parts), advanced. Shortened on 2 November 2026 from 20 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -5040,7 +5076,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s MOR0331 drawing, an interlace of bands, by their centre lines. Its tile corners were snapped to the square-root-of-two grid in star-radius units. The unit-star opening is shared with the other Moroccan reconstructions. After it every line, the tile’s sides too, is drawn through a crossing of earlier lines and turned round O. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. The lines are the centre lines of the drawing’s bands; the over-and-under weave is not drawn. The colours follow Wichmann’s drawing: black, red and green, in the Tétouan palette, whose dark navy stands for his black; the bands themselves are not pieces. Wade’s photo MOR 0331 was not checked.',
-      '21 steps, advanced.',
+      '21 steps (25 moves counting parts), advanced. Shortened on 2 November 2026 from 21 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -5929,7 +5965,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s B153 drawing, a sixteen-pointed star on a square tile with an octagon at each corner, its bands drawn as parallel strips. Every edge runs at a multiple of 11.25°. The tile’s half-side is 6.5 + 3√2 strips (drawing: 10.7428), and every line but the star’s runs through a crossing of the strips, the tile’s sides and the lines through their middles. The star’s size is free in the drawing (2.0292 strips from O to each star line); we draw it through a crossing already on the board, 3(√3 − 1) cos 22.5° = 2.0290 strips from O. A narrower strip round the corner octagons is the star’s radius times sin 22.5°. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. The bands follow their centre lines; the band width is not drawn. The star is 0.0002 strips (0.005 pt in the drawing) smaller than Wichmann’s. Colours follow his drawing in the Mamluk wood palette. No photograph was checked.',
-      '21 steps, advanced.',
+      '20 steps (29 moves counting parts), advanced. Shortened on 2 November 2026 from 21 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -5960,7 +5996,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s B153A drawing of Bourgoin’s plate 153, the design of Barsbay al-Bagasi (B153) drawn as tiles. Every line of that design is a line here, so its whole construction is shared; more lines round the star, each through a crossing of earlier lines, change the pieces round it. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. The colours follow Wichmann’s drawing in the Mamluk wood palette. No photograph was checked.',
-      '23 steps, advanced.',
+      '22 steps (34 moves counting parts), advanced. Shortened on 2 November 2026 from 23 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6067,7 +6103,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s A285 drawing of Bourgoin’s plate 149 (top): a sixteen-pointed star on a square tile, eight-pointed stars on the tile’s sides and a four-pointed star at each corner, every star split into kites. Every edge runs at a multiple of 11.25°. The star’s lines join points of its circle 90° apart. The tile’s half-side is the one free length (drawing: 1.97067 times the star’s radius); we take the crossing of the 45° line through A with the chord from U3 to S7, 1.97086. Every other line runs through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. The tile is 0.01% larger than Wichmann’s (0.024 pt in his drawing). Wichmann colours each piece and its mirror image differently; we colour by shape. No photograph was checked.',
-      '18 steps, advanced.',
+      '18 steps (22 moves counting parts), advanced. Shortened on 2 November 2026 from 18 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6099,7 +6135,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s SHAF2 drawing of a pattern in Shafai’s book: the design of Bourgoin’s plate 149 on a smaller square tile, a sixteen-pointed star at its centre and eight-pointed stars on its sides, every star split into kites. Every edge runs at a multiple of 11.25°. The star is the same, so the first four steps are shared. The tile’s half-side comes exactly from two corners of the star’s own lines, and every other line runs through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. Wichmann colours each piece and its mirror image differently; we colour by shape. No photograph was checked.',
-      '20 steps, advanced.',
+      '19 steps (22 moves counting parts), advanced. Shortened on 2 November 2026 from 20 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6455,7 +6491,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s MIR17 drawing of interlaced bands; the band centre lines give the tiling. One ten-pointed star with sharp points of 72° sits in each tile, and every other band runs parallel to one of its ten lines. With OA the distance from O to the star’s lines, the tile is a rectangle 2(7 + 3√5) by 4 tan 72°, and every offset from O is a + b√5 (drawing within 0.003 of OA, the accuracy of its bevelled bands). Each line is drawn through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. The bands are drawn as their centre lines. Colours follow the shapes; his drawing has one colour for every piece but the star. No photograph was checked.',
-      '23 steps, advanced.',
+      '23 steps (32 moves counting parts), advanced. Shortened on 2 November 2026 from 23 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6488,7 +6524,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s MIR26 drawing of interlaced bands; the band centre lines give the tiling. Ten-pointed stars with sharp points of 72° sit at the centre and the corners of the tile, and the two kinds have different surroundings. Every band runs parallel to one of the star’s ten lines. With OA the distance from O to the star’s lines, the tile is a rectangle 2(11 + 5√5) by 2(11 + 5√5)/tan 72° (drawing within 0.003 of OA). Each line is drawn through a crossing of earlier lines. The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. The bands are drawn as their centre lines. Colours follow his drawing, by shape. No photograph was checked.',
-      '22 steps, advanced.',
+      '22 steps (30 moves counting parts), advanced. Shortened on 2 November 2026 from 22 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6559,7 +6595,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s MIR1 drawing, whose pieces are drawn edge to edge. O is the centre of a ten-pointed star whose sides are the ten lines AC, CE, … and BD, DF, …: two regular pentagons. The pattern has mirrors through the stars and half turns between them, but no half turn about a star, so it is checked by its mirror only. The repeat is a rectangle of half-sides 2 + √5 and φ/sin 36° (in OA, φ the golden ratio), with a second star on its top and bottom sides. Every line runs at an odd multiple of 18°, and every offset is (a + b√5)/20 (drawing within 0.0016 of OA). The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. Wichmann marks this drawing as his possible completion of a partial panel, a window shutter of the Çamlıca mosque; we build the completed pattern his drawing shows. His drawing of the shutter itself (MIR11, data213), a strip that repeats only along its length, lies exactly on our lines: every one of its edges is an edge of the completion. Colours follow the shapes. No photograph was checked.',
-      '25 steps, advanced.',
+      '25 steps (85 moves counting parts), advanced. Shortened on 2 November 2026 from 25 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6592,7 +6628,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s TOP1 drawing, whose pieces are drawn edge to edge. O is the centre of a ten-pointed star whose sides are the ten lines AD, BE, CF and on round, and OA is the radius of its points. The repeat is a rectangle of half-sides 2√5 and 10 tan 54° (in OA), with stars at its centre and corners and on rows between. Every line runs at a multiple of 36°, and every offset is sin 36° times a + b√5 with whole numbers a and b (drawing within 0.0002 of OA). The drawing gives no steps; we devised the construction.',
       'The compass steps, their order and the named points are ours. Wichmann draws the pieces red and white; our colours keep his red pieces in the warm slots and his white ones in the light slots. No photograph was checked.',
-      '21 steps, advanced.',
+      '21 steps (62 moves counting parts), advanced. Shortened on 2 November 2026 from 21 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6698,7 +6734,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s P41 drawing. The drawing gives no steps. The twelve-division opening is shared with the Mian lesson. Compass transfers fix both eight-pointed stars, the six-pointed stars and the regular hexagons; parallels through their crossings complete the connectors.',
       'The plain polygon boundaries are retained. The compass operations, step order and named points are ours. The palette is illustrative. No building photograph was checked.',
-      '28 steps, advanced.',
+      '27 steps (37 moves counting parts), advanced. Shortened on 2 November 2026 from 28 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6730,7 +6766,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s IND0403 drawing. The drawing gives no steps. Three squares construct the star. A parallel intercept fixes the repeat length exactly; six parallel families through existing crossings supply all remaining lines.',
       'The teaching frame turns by 15°. Black and brown bevel facets are removed, and the coloured faces expanded by 5 pt to recover the 10 pt band centre lines. The compass steps, order and named points are ours. The palette is illustrative; no fort photograph was independently checked.',
-      '20 steps, advanced.',
+      '20 steps (24 moves counting parts), advanced. Shortened on 2 November 2026 from 20 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6771,7 +6807,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s IND0403 drawing. The drawing gives no steps. Three squares construct the star. A parallel intercept fixes the repeat length exactly; six parallel families through existing crossings supply all remaining lines. This variation shares the complete construction with agra-twelve-six-stars. The existing lines through O divide its central star into twelve kites.',
       'The teaching frame turns by −15°. Black and brown bevel facets are removed, and the coloured faces expanded by 5 pt to recover the 10 pt band centre lines. The compass steps, order and named points are ours. The palette is illustrative; no fort photograph was independently checked.',
-      '20 steps, advanced.',
+      '20 steps (24 moves counting parts), advanced. Shortened on 2 November 2026 from 20 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6927,7 +6963,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s DM1 drawing. The drawing gives no steps. The three-square star opening, a square diagonal, compass transfers and one midpoint fix the repeat and every parallel family.',
       'The teaching frame turns−15°. The plain source boundaries are retained. The compass steps, order and named points are ours. The palette is illustrative. No fountain photograph was independently checked.',
-      '20 steps, advanced.',
+      '19 steps (28 moves counting parts), advanced. Shortened on 2 November 2026 from 20 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -6958,7 +6994,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s SYR0222 drawing. The drawing gives no steps. Two triangles, diagonal intercepts and compass transfers fix every parallel family.',
       'The teaching frame turns 30°. Plain source boundaries are retained. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
-      '21 steps, advanced.',
+      '19 steps (24 moves counting parts), advanced. Shortened on 2 November 2026 from 21 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -7276,7 +7312,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s P142 drawing. The drawing gives no steps. The four-triangle opening is shared with P141. Compass transfers set a rectangular repeat; parallels through earlier crossings complete its mesh.',
       'Plain polygon boundaries are retained. The teaching frame turns45°. The conventional centred rectangle contains two twelve-pointed stars. The guide families turn more often than the finished cmm pattern. The steps, order and named points are ours. The palette is illustrative. No historical photograph was independently checked.',
-      '27 steps, advanced.',
+      '25 steps (32 moves counting parts), advanced. Shortened on 2 November 2026 from 27 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -7343,7 +7379,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s B87 drawing. The drawing gives no steps. The first eight steps are shared with P141. Three diagonal halvings and compass complements construct all further parallel families.',
       'Plain polygon boundaries are retained. The teaching frame turns15°. The steps, order and named points are ours. The palette is illustrative. No historical photograph was independently checked.',
-      '21 steps, advanced.',
+      '19 steps (30 moves counting parts), advanced. Shortened on 2 November 2026 from 21 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -7373,7 +7409,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s MIR24 drawing. The drawing gives no steps. A regular-hexagon side is the unit. Compass transfers set the three-square star and the repeat; corner-star and parallel families complete the mesh.',
       'The 6pt bands are represented by their centre lines. The steps, order and named points are ours. The palette is illustrative. No fragment photograph was independently checked.',
-      '24 steps, advanced.',
+      '20 steps (31 moves counting parts), advanced. Shortened on 2 November 2026 from 24 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -7404,7 +7440,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s DA1 drawing. The drawing gives no steps. Three squares, a third-part construction and parallels through crossings fix the square mesh.',
       'Plain polygon boundaries are retained. The teaching frame turns45° onto the actual square slides. The steps, order and named points are ours. The palette is illustrative. No manuscript photograph was independently checked.',
-      '21 steps, advanced.',
+      '20 steps (31 moves counting parts), advanced. Shortened on 2 November 2026 from 21 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -7467,7 +7503,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s AJL8 drawing. The drawing gives no steps. The first six steps share the Qawsun three-square opening. A third, compass sum and four diagonal halvings set the repeat and carrier distances.',
       'Grey bevel facets are removed and the5pt bands represented by their centre lines. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
-      '23 steps, advanced.',
+      '22 steps (31 moves counting parts), advanced. Shortened on 2 November 2026 from 23 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -7498,7 +7534,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s EGY1030 drawing. The drawing gives no steps. The first six steps share the Chester Beatty four-triangle opening. Compass sums construct the centred rectangle, small radius and corner diagonals; parallels through crossings complete the mesh.',
       'Grey bevel facets are removed and the8pt bands represented by their centre lines. Guide families turn more often than the finished cmm pattern. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
-      '28 steps, advanced.',
+      '25 steps (50 moves counting parts), advanced. Shortened on 2 November 2026 from 28 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -7534,7 +7570,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s SHAF18 drawing. The drawing gives no steps. The first nine construction operations share the P142 opening. Compass sums set the diamond repeat; parallels through crossings complete the divided stars.',
       'Grey bevel facets below0.6 are removed; the pale-grey kites are retained. The10pt bands are represented by their centre lines. Guide families turn more often than the finished pattern. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
-      '41 steps, advanced.',
+      '32 steps (35 moves counting parts), advanced. Shortened on 2 November 2026 from 41 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -7566,7 +7602,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s F38 drawing. The drawing gives no steps. The shared three-square opening locates a unit kite edge. A fifth and twentieth of it set two connector lengths. Parallels and one further compass transfer locate the chiral mesh and its angled hexagonal repeat.',
       'Plain source boundaries are retained. The independent edge lengths use6/5 and29/20 of the unit kite edge, matching the rounded source vertices. The steps, order and named points are ours. Colours retain the diagram’s classes and are illustrative; the source states that the wooden original has no colour. No monument photograph was independently checked.',
-      '36 steps, advanced.',
+      '32 steps (42 moves counting parts), advanced. Shortened on 2 November 2026 from 36 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -7597,7 +7633,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s OR1 drawing. The drawing gives no steps. The complete construction is shared with the Ismail shrine tutorial. Turning the source frame by90° gives the same mesh and kite proportions.',
       'Brown bevel facets are removed. The7pt bands are represented by their centre lines. The steps, order and named points are ours. The colours retain the diagram’s classes and are illustrative. The olive six-stars use a two-by-two colour repeat, larger than the geometric repeat. The olive six-stars use a two-by-two colour repeat, larger than the geometric repeat. The olive six-stars use a two-by-two colour repeat, larger than the geometric repeat. No monument photograph was independently checked.',
-      '41 steps, advanced.',
+      '32 steps (35 moves counting parts), advanced. Shortened on 2 November 2026 from 41 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -7628,7 +7664,7 @@ export const PATTERNS: readonly Pattern[] = [
     story: [
       'The finished design was read from Wichmann’s MOR1118 drawing. The drawing gives no steps. The first six steps share the Chester Beatty four-triangle opening. Compass sums and diagonal halvings locate the rosette and mixed-star mesh.',
       'The6pt bands are represented by their centre lines. The square half-side is(3+5√2+√6)/2 of the twelve-star radius. The half inner-star edge sets the smaller stars. Extra guide turns do not assert extra symmetry of the finished ink. The steps, order and named points are ours. The palette is illustrative. No monument photograph was independently checked.',
-      '49 steps, advanced.',
+      '38 steps (46 moves counting parts), advanced. Shortened on 2 November 2026 from 49 steps; the finished lines are unchanged.',
     ],
     pictures: [
       {
@@ -8875,7 +8911,38 @@ export interface Question {
  * The questions for the owner, most important first; a question that only
  * matters given an earlier answer comes straight after it.
  */
-export const QUESTIONS: readonly Question[] = [];
+export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'shorter-lessons-read',
+    text: 'Play Rabat, Imamzadeh Ismail and Çamlıca with Next. Do the split steps read well?',
+    choices: ['They read well', 'Some moves are hard to follow (say which)'],
+    pictures: [
+      {
+        src: 'renders/rabat-mixed-star-rosette/step-18.png',
+        caption: 'Rabat step 18, now three parts.',
+      },
+    ],
+    card: 'shorter-lessons-2026-11-02',
+    also: [
+      'rabat-mixed-star-rosette',
+      'ismail-shrine-divided-stars',
+      'camlica-mosque-stars',
+    ],
+  },
+  {
+    id: 'shorter-lessons-long',
+    text: 'Çamlıca now has 85 moves and Topkapı 62. Keep them, or look for a simpler construction?',
+    choices: ['Keep them', 'Look for a simpler construction'],
+    pictures: [
+      {
+        src: 'renders/camlica-mosque-stars/step-09.png',
+        caption: 'Çamlıca step 9, now five parts.',
+      },
+    ],
+    card: 'shorter-lessons-2026-11-02',
+    also: ['camlica-mosque-stars', 'topkapi-door-stars'],
+  },
+];
 
 export interface ProgressItem {
   readonly title: string;
@@ -8900,6 +8967,11 @@ export const PROGRESS: {
   updated: '2 November 2026',
   goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
   done: [
+    {
+      title: 'The 29 longest lessons rewritten (Codex), patterns unchanged',
+      text: 'Steps fell from 720 to 659, and crowded steps are split into parts of one move, so the moves rose from 771 to 988. Every finished pattern is exactly as before. Two questions wait for you.',
+      link: { label: 'See the card', href: '#shorter-lessons-2026-11-02' },
+    },
     {
       title: 'Your answers: the new patterns look right, Masjid-e Ali stays',
       text: 'The Tiling Search cards are marked as checked by you, and the plain Masjid-e Ali stays and says what it leaves out. The Agra picture you questioned was broken, so it was redrawn over the whole panel, and the plain Agra stays too.',
