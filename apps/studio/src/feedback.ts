@@ -4,7 +4,17 @@ import {
   randomUUID,
   timingSafeEqual,
 } from 'node:crypto';
-import { and, desc, eq, gt, inArray, lt, sql } from 'drizzle-orm';
+import {
+  and,
+  desc,
+  eq,
+  gt,
+  inArray,
+  isNotNull,
+  lt,
+  or,
+  sql,
+} from 'drizzle-orm';
 import { Resvg } from '@resvg/resvg-js';
 import { inflateSync } from 'node:zlib';
 import {
@@ -998,8 +1008,16 @@ export class Feedback {
     const expired = await this.db
       .select({ id: reports.id, expires: reports.expires })
       .from(reports)
+      // Typed comparisons, not a raw sql`` template: the hosted postgres-js
+      // driver cannot bind a Date inside raw SQL (PGlite in tests can).
       .where(
-        sql`${reports.expires} < ${now} or ${reports.evidenceExpires} < ${now} and (${reports.snapshot} is not null or ${reports.imageKey} is not null)`,
+        or(
+          lt(reports.expires, now),
+          and(
+            lt(reports.evidenceExpires, now),
+            or(isNotNull(reports.snapshot), isNotNull(reports.imageKey)),
+          ),
+        ),
       )
       .limit(500);
     for (const row of expired) {
