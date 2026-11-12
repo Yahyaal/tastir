@@ -50,6 +50,8 @@ export const PATTERNS: readonly Pattern[] = [
       'The wall used to open six tiles wide. This tile holds 800 pieces (most hold under 100), so that was a field of tiny dots. Each wall now opens showing at most about 60 pieces across, and never less than one and a half tiles: Comares west dado opens about two tiles wide, 61 dense patterns open closer, and the other 182 open as before.',
       'At each crossing the app draws the top band again over the band below. That piece used to be cut off halfway to the next crossing, so where crossings crowd it stopped short and its dark edge ended in a square stub (A, B, C). It is now drawn as exactly the area where the two bands overlap, so the edge always runs across to the far side of the band below. The saved picture and the small preview draw it the same way.',
       'The woven double pen of the Lines look still uses the old pieces, so it may show the same stubs on crowded patterns.',
+      'Library cards and the hero now come closer on dense tiles too (at most about 25 pieces across, never under three quarters of a tile), so Comares west dado and Moulay Ismail mosque interlace read on their cards.',
+      'Why your MacBook looks different: the band width is kept per browser, and the MacBook has 1 where the Ubuntu has 0.5. At 1, in the densest patterns, some crossings sit closer together than one band width (A). Each crossing draws its own patch and the patches overlap, so the dark edges of one are covered by the white of the next. Plan: split each overlap between the crossings that share it, along the line halfway between them, so every crossing keeps its own edges. Also, where the top band bends right after a crossing, stop its white exactly at the bend (B).',
     ],
     pictures: [
       {
@@ -61,6 +63,15 @@ export const PATTERNS: readonly Pattern[] = [
         src: 'renders/interlace-edges/edges-after.png',
         caption:
           'After, at band width 0.75: every edge runs across the crossing.',
+      },
+      {
+        src: 'renders/interlace-edges/crowded-knot.png',
+        caption:
+          'Still open, band width 1: A, crossings closer than a band width; B, a white flag at a bend.',
+      },
+      {
+        src: 'renders/interlace-edges/moulay-card-after.png',
+        caption: 'The Moulay Ismail mosque interlace card, now about one tile.',
       },
       {
         src: 'renders/interlace-edges/default-zoom-before.png',
@@ -8950,6 +8961,20 @@ export interface Question {
  * matters given an earlier answer comes straight after it.
  */
 export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'interlace-crowded-plan',
+    text: 'Your MacBook shows band width 1, your Ubuntu 0.5 (each browser keeps its own). At 1, crossings crowd and break as in A and B. Fix them as the card says?',
+    choices: ['Go ahead', 'Leave it'],
+    pictures: [
+      {
+        src: 'renders/interlace-edges/crowded-knot.png',
+        caption:
+          'Moulay Ismail at band width 1. A: four crossings closer than a band width; edges stop and a hairline shows. B: a white flag where the top band bends.',
+      },
+    ],
+    card: 'wall-zoom-interlace-2026-11-11',
+    also: ['fes-moulay-ismail-interlace'],
+  },
   {
     id: 'wall-zoom-interlace-check',
     text: 'Comares west dado: does the wall open at a good size now, and do the interlace edges look right?',
