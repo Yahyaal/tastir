@@ -32,8 +32,9 @@ export const byOf = (c: Credit) =>
   (c.creator ?? c.source).split(/ \(|, after/)[0] ?? c.source;
 
 /**
- * A lesson's name in its header: the short name, the full title as its
- * tooltip, and under it the subtitle and the reference it was drawn from.
+ * A lesson's name in its header: the short name on one line, the full
+ * title as its tooltip (also when the name is cut short), and under it
+ * the subtitle and the reference it was drawn from.
  */
 export function LessonTitle({
   tutorial,
@@ -46,7 +47,7 @@ export function LessonTitle({
   const reference = referenceOf(tutorial);
   return (
     <div className="lesson-title">
-      <h1 title={name === tutorial.title ? undefined : tutorial.title}>
+      <h1 title={tutorial.title}>
         {prefix}
         {name}
       </h1>

@@ -401,9 +401,12 @@ a.button.primary:hover {
   letter-spacing: 0.01em;
 }
 
+/* One line, so a long name never stacks the header up word by word; the
+   full name is in the tooltip. */
 .lesson-title h1 {
   margin: 0;
   font: inherit;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -412,13 +415,21 @@ a.button.primary:hover {
    was drawn from, to check the drawing against. */
 .lesson-sub {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 2px 12px;
   margin: 2px 0 0;
   font-family: var(--text);
   font-size: 0.8rem;
   letter-spacing: 0;
   color: var(--theme-text-muted);
+}
+
+/* One line too: the place and the reference shorten together. */
+.lesson-sub > * {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .lesson-sub a,
@@ -690,8 +701,10 @@ a.button.primary:hover {
 
 /* Narrower screens keep the room for the pattern's own title: the
    previous and next links show "Previous" and "Next" (their titles stay
-   in the tooltip), and below 1180 px the title takes its own line. */
-@media (max-width: 1440px) {
+   in the tooltip), and below 1480 px the title takes its own line. Up to
+   1680 px their titles would squeeze the pattern's own name, and below
+   1480 px the row leaves the name too little room even without them. */
+@media (max-width: 1680px) {
   .topbar .neighbour-title {
     display: none;
   }
@@ -701,7 +714,7 @@ a.button.primary:hover {
   }
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1480px) {
   .player:not(.along) .topbar {
     flex-wrap: wrap;
     row-gap: 8px;
