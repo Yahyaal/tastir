@@ -1316,9 +1316,9 @@ export function Thumbnail({
     if (!woven) return;
     const place = (q: Vec) => `${sx(q)} ${sy(q)}`;
     for (const p of overlapsAt(model.pattern, i, j, widths.edge, widths.band))
-      if (meets(p.edge)) {
-        over.push(shapePath(p.edge, place));
-        overIn.push(shapePath(p.band, place));
+      if (p.edge.some(meets)) {
+        for (const ps of p.edge) over.push(shapePath(ps, place));
+        for (const ps of p.band) overIn.push(shapePath(ps, place));
       }
   };
   const overLayers = () =>

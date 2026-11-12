@@ -237,10 +237,19 @@ export function Wall({
           for (const s of pattern.ink)
             lines.push([move(s.segment.a), move(s.segment.b)]);
         // The patches are already placed in tile (i, j).
-        if (woven)
-          for (const p of style === 'interlace'
-            ? overlapsAt(pattern, i, j, groutWidth * 4, groutWidth * 2.4)
-            : patchesAt(pattern, i, j, groutWidth * weaveWidth)) {
+        if (style === 'interlace')
+          for (const p of overlapsAt(
+            pattern,
+            i,
+            j,
+            groutWidth * 4,
+            groutWidth * 2.4,
+          )) {
+            for (const ps of p.edge) over.push(ps.map(tile.toTile));
+            for (const ps of p.band) overIn.push(ps.map(tile.toTile));
+          }
+        else if (woven)
+          for (const p of patchesAt(pattern, i, j, groutWidth * weaveWidth)) {
             over.push(p.edge.map(tile.toTile));
             overIn.push(p.band.map(tile.toTile));
           }

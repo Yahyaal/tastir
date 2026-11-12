@@ -256,13 +256,13 @@ export function wallSvg(
           groutWidth * 4,
           groutWidth * 2.4,
         )) {
-          if (!inView(p.edge, zero)) continue;
-          for (const [ps, color] of [
+          if (!p.edge.some((ps) => inView(ps, zero))) continue;
+          for (const [list, color] of [
             [p.edge, INK],
             [p.band, BAND],
           ] as const)
             body.push(
-              `<path d="${shapePath(ps, (q) => pt(q, zero).replace(',', ' '))}" fill="${color}"/>`,
+              `<path d="${list.map((ps) => shapePath(ps, (q) => pt(q, zero).replace(',', ' '))).join('')}" fill="${color}"/>`,
             );
         }
       }
