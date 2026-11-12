@@ -8,6 +8,7 @@ import { Play } from './app';
 import { pieceColors } from './coloring';
 import { loadModel } from './model';
 import { Wall } from './Wall';
+import { tiling, wallView } from './drawing';
 import { DEFAULT_PEN, PAPER } from './pen';
 
 type P = { x: number; y: number };
@@ -309,5 +310,32 @@ describe('the wall controls', () => {
       }),
     );
     expect(screen.getByRole('heading', { name: 'Colors' })).toBeTruthy();
+  });
+});
+
+describe('the view the wall opens at', () => {
+  const model = loadModel(example);
+  const across = (r: { minX: number; maxX: number }) => r.maxX - r.minX;
+  const span = Math.hypot(model.pattern.cell.u.x, model.pattern.cell.u.y);
+  const dense = (n: number) => ({
+    ...model,
+    pattern: {
+      ...model.pattern,
+      pieces: Array.from({ length: n }, () => model.pattern.pieces[0]!),
+    },
+  });
+
+  it('is six tiles across for a tile of up to 100 pieces', () => {
+    expect(wallView(model)).toEqual(tiling(model).view);
+    expect(across(wallView(dense(100)))).toBeCloseTo(6 * span, 9);
+  });
+
+  it('comes closer for a dense tile, showing about 60 pieces across', () => {
+    // 400 pieces: 20 across a tile, so 3 tiles make 60.
+    expect(across(wallView(dense(400)))).toBeCloseTo(3 * span, 9);
+  });
+
+  it('always shows at least one and a half tiles', () => {
+    expect(across(wallView(dense(5000)))).toBeCloseTo(1.5 * span, 9);
   });
 });

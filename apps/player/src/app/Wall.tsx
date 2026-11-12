@@ -8,7 +8,7 @@ import {
 import { useId, useMemo, useRef } from 'react';
 import { fit, viewBox, width } from './camera';
 import { DEFAULT_FINISH, type Finish } from './coloring';
-import { relief, strapWidths, tiling } from './drawing';
+import { relief, strapWidths, wallView } from './drawing';
 import { patchesAt, patchPath, weaveRepeat } from './interlace';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
@@ -159,7 +159,7 @@ export function Wall({
   const id = useId().replace(/:/g, '');
   const ownRef = useRef<SVGSVGElement>(null);
   const svgRef = boardRef ?? ownRef;
-  const start = useMemo(() => tiling(model).view, [model]);
+  const start = useMemo(() => wallView(model), [model]);
   const ownCamera = useCamera(start, svgRef, { active: !boardCamera });
   const camera = boardCamera ?? ownCamera;
   const { pattern } = model;

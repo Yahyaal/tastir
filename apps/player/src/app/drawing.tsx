@@ -671,6 +671,31 @@ export function tiling(
   return { view, shifts };
 }
 
+/** The wall opens showing at most about this many pieces across. */
+export const WALL_PIECES_ACROSS = 60;
+/** ... and never fewer than this many tiles across. */
+export const WALL_MIN_TILES = 1.5;
+
+/**
+ * The view the wall opens at: six tiles across, closer in when the tile is
+ * so dense that six tiles would show more than WALL_PIECES_ACROSS average
+ * pieces across (a 6-tile view shows 6·√pieces of them), but never fewer
+ * than WALL_MIN_TILES tiles, so a whole repeat is always in view.
+ */
+export function wallView(model: Model): Rect {
+  const view = tiling(model).view;
+  const across = 6 * Math.sqrt(Math.max(1, model.pattern.pieces.length));
+  const scale = Math.max(
+    WALL_MIN_TILES / 6,
+    Math.min(1, WALL_PIECES_ACROSS / across),
+  );
+  if (scale === 1) return view;
+  const c = { x: (view.minX + view.maxX) / 2, y: (view.minY + view.maxY) / 2 };
+  const hw = ((view.maxX - view.minX) / 2) * scale;
+  const hh = ((view.maxY - view.minY) / 2) * scale;
+  return { minX: c.x - hw, maxX: c.x + hw, minY: c.y - hh, maxY: c.y + hh };
+}
+
 const isOrigin = (d: Vec) => d.x === 0 && d.y === 0;
 
 /**
