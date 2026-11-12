@@ -7,7 +7,7 @@ import {
   orderedPaletteColors,
   RepeatedInk,
   Thumbnail,
-  tiling,
+  cardView,
 } from './drawing';
 import { type Entry } from './library';
 import { asPanel, beatsOf, shownBeats, type Model } from './model';
@@ -55,10 +55,7 @@ function HeroPlay({ model }: { model: Model }) {
   const panelModel = useMemo(() => asPanel(model), [model]);
   // Where the repeat ends: the small wall the colours then fill, as on
   // the library's cards.
-  const wallView = useMemo(
-    () => tiling(model, { halfWide: 1, halfHigh: 1, reach: 2 }).view,
-    [model],
-  );
+  const wallView = useMemo(() => cardView(model), [model]);
   const n = beats.length;
 
   // The hero colours the pattern brightly, whatever the tutorial's own

@@ -8,7 +8,7 @@ import { Play } from './app';
 import { pieceColors } from './coloring';
 import { loadModel } from './model';
 import { Wall } from './Wall';
-import { tiling, wallView } from './drawing';
+import { cardView, tiling, wallView } from './drawing';
 import { DEFAULT_PEN, PAPER } from './pen';
 
 type P = { x: number; y: number };
@@ -345,5 +345,25 @@ describe('the view the wall opens at', () => {
 
   it('always shows at least one and a half tiles', () => {
     expect(across(wallView(dense(5000)))).toBeCloseTo(1.5 * span, 9);
+  });
+});
+
+describe('the view of a library card', () => {
+  const model = loadModel(example);
+  const across = (r: { minX: number; maxX: number }) => r.maxX - r.minX;
+  const span = Math.hypot(model.pattern.cell.u.x, model.pattern.cell.u.y);
+  const dense = (n: number) => ({
+    ...model,
+    pattern: {
+      ...model.pattern,
+      pieces: Array.from({ length: n }, () => model.pattern.pieces[0]!),
+    },
+  });
+
+  it('is two tiles across, closer on a dense tile, never under 3/4 tile', () => {
+    expect(across(cardView(model))).toBeCloseTo(2 * span, 9);
+    // 625 pieces: 25 across a tile, so one tile makes 25.
+    expect(across(cardView(dense(625)))).toBeCloseTo(span, 9);
+    expect(across(cardView(dense(5000)))).toBeCloseTo(0.75 * span, 9);
   });
 });
