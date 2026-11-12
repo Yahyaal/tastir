@@ -39,6 +39,44 @@ const LOOKS_RIGHT =
 
 export const PATTERNS: readonly Pattern[] = [
   {
+    id: 'wall-zoom-interlace-2026-11-11',
+    title:
+      'Comares west dado: the wall opens closer, and interlace edges run cleanly',
+    fold: 8,
+    status: 'decide',
+    summary:
+      'Two faults you saw on the live site, on the Result wall of Comares west dado with the Interlace look, now fixed (you said go ahead on 11 November 2026).',
+    story: [
+      'The wall used to open six tiles wide. This tile holds 800 pieces (most hold under 100), so that was a field of tiny dots. Each wall now opens showing at most about 60 pieces across, and never less than one and a half tiles: Comares west dado opens about two tiles wide, 61 dense patterns open closer, and the other 182 open as before.',
+      'At each crossing the app draws the top band again over the band below. That piece used to be cut off halfway to the next crossing, so where crossings crowd it stopped short and its dark edge ended in a square stub (A, B, C). It is now drawn as exactly the area where the two bands overlap, so the edge always runs across to the far side of the band below. The saved picture and the small preview draw it the same way.',
+      'The woven double pen of the Lines look still uses the old pieces, so it may show the same stubs on crowded patterns.',
+    ],
+    pictures: [
+      {
+        src: 'renders/interlace-edges/edge-stubs.png',
+        caption:
+          'Before. A, B, C: the dark edge of the top band stopped in a square stub, and the white bands ran together past it.',
+      },
+      {
+        src: 'renders/interlace-edges/edges-after.png',
+        caption:
+          'After, at band width 0.75: every edge runs across the crossing.',
+      },
+      {
+        src: 'renders/interlace-edges/default-zoom-before.png',
+        caption: 'Before: how the wall opened, six tiles wide.',
+      },
+      {
+        src: 'renders/interlace-edges/default-zoom-after.png',
+        caption: 'After: how the wall opens now, about two tiles wide.',
+      },
+    ],
+    asks: [
+      'Open the Result wall of Comares west dado and try Interlace at a few band widths and zooms.',
+    ],
+    sources: [],
+  },
+  {
     id: 'shorter-lessons-2026-11-02',
     title: 'The 29 longest lessons, rewritten to be easier to follow',
     fold: 8,
@@ -8912,6 +8950,19 @@ export interface Question {
  * matters given an earlier answer comes straight after it.
  */
 export const QUESTIONS: readonly Question[] = [
+  {
+    id: 'wall-zoom-interlace-check',
+    text: 'Comares west dado: does the wall open at a good size now, and do the interlace edges look right?',
+    choices: ['Both look right', 'Something still looks off (say what)'],
+    pictures: [
+      {
+        src: 'renders/interlace-edges/edges-after.png',
+        caption: 'The interlace after the fix, at band width 0.75.',
+      },
+    ],
+    card: 'wall-zoom-interlace-2026-11-11',
+    also: ['alhambra-comares-west-dado'],
+  },
   {
     id: 'shorter-lessons-read',
     text: 'Play Rabat, Imamzadeh Ismail and Çamlıca with Next. Do the split steps read well?',

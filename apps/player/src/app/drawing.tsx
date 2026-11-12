@@ -27,7 +27,7 @@ import {
 } from './coloring';
 import { byPlace, colouredModel, placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
-import { patchesAt, patchPath } from './interlace';
+import { overlapsAt, shapePath } from './interlace';
 import type { JaliAppearance, PenLook } from '@tastir/schema';
 import type { WallStyle } from './Wall';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
@@ -1286,10 +1286,10 @@ export function Thumbnail({
   const overAt = (i: number, j: number) => {
     if (!woven) return;
     const place = (q: Vec) => `${sx(q)} ${sy(q)}`;
-    for (const p of patchesAt(model.pattern, i, j, widths.edge))
-      if (meets(p.band)) {
-        over.push(patchPath(p.edge, place));
-        overIn.push(patchPath(p.band, place));
+    for (const p of overlapsAt(model.pattern, i, j, widths.edge, widths.band))
+      if (meets(p.edge)) {
+        over.push(shapePath(p.edge, place));
+        overIn.push(shapePath(p.band, place));
       }
   };
   const overLayers = () =>
@@ -1298,11 +1298,8 @@ export function Thumbnail({
         <path
           key={`over-${layer}`}
           d={(layer === 'edge' ? over : overIn).join('')}
-          fill="none"
-          stroke={layer === 'edge' ? finish.lines : finish.band}
-          strokeWidth={widths[layer]}
-          strokeLinecap="butt"
-          strokeLinejoin="round"
+          fill={layer === 'edge' ? finish.lines : finish.band}
+          stroke="none"
         />
       ) : null,
     );

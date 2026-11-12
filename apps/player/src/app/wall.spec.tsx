@@ -189,12 +189,12 @@ describe('the wall', () => {
       container.querySelector('.band-out path')?.getAttribute('d')?.split('M')
         .length,
     ).toBe(9 * 16 + 1);
-    // …and a piece of top band at each of the tile's two crossings, in
-    // the tile and its neighbours, edges and middle, with square ends.
+    // …and the top band filled where the bands overlap at each of the
+    // tile's two crossings, in the tile and its neighbours, edges and middle.
     for (const layer of ['out', 'in']) {
       const over = container.querySelector(`path.over-${layer}`);
       expect(over?.getAttribute('d')?.split('M').length).toBe(9 * 2 + 1);
-      expect(over?.getAttribute('stroke-linecap')).toBe('butt');
+      expect(over?.getAttribute('stroke')).toBe('none');
     }
     // Each piece lies on the bands it is redrawing, in the copy of the
     // tile it belongs to (not slid a second time).
@@ -203,10 +203,13 @@ describe('the wall', () => {
         .split('M')
         .filter(Boolean)
         .map((run) =>
-          run.split('L').map((q) => {
-            const [x, y] = q.trim().split(/\s+/).map(Number);
-            return { x: x as number, y: y as number };
-          }),
+          run
+            .replace('Z', '')
+            .split('L')
+            .map((q) => {
+              const [x, y] = q.trim().split(/\s+/).map(Number);
+              return { x: x as number, y: y as number };
+            }),
         );
     const bands = pairs(
       container.querySelector('.band-out path')?.getAttribute('d') ?? '',
@@ -224,10 +227,15 @@ describe('the wall', () => {
       container.querySelector('path.over-out')?.getAttribute('d') ?? '',
     );
     expect(patches.length).toBe(9 * 2);
-    for (const run of patches)
-      // Its inner points (the crossing among them); its ends may reach
-      // a little into a copy of the tile the test does not draw.
-      for (const q of run.slice(1, -1)) expect(onBand(q)).toBe(true);
+    for (const run of patches) {
+      // A parallelogram whose middle is on the band it redraws.
+      expect(run.length).toBe(4);
+      const mid = {
+        x: run.reduce((t, q) => t + q.x, 0) / 4,
+        y: run.reduce((t, q) => t + q.y, 0) / 4,
+      };
+      expect(onBand(mid)).toBe(true);
+    }
     expect(
       container
         .querySelector('svg.wall')

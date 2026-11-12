@@ -2,7 +2,7 @@ import { jaliTextureSvg } from './jaliTexture';
 import type { JaliAppearance, PenLook } from '@tastir/schema';
 import type { Vec } from '@tastir/engine';
 import type { Model } from './model';
-import { patchesAt, patchPath } from './interlace';
+import { overlapsAt, patchesAt, patchPath, shapePath } from './interlace';
 import { banded, type WallStyle } from './Wall';
 import { strapWidths } from './drawing';
 import { DEFAULT_FINISH, type Finish } from './coloring';
@@ -249,14 +249,20 @@ export function wallSvg(
     if (look === 'interlace')
       for (const d of shifts) {
         const zero = { x: 0, y: 0 };
-        for (const p of patchesAt(model.pattern, d.i, d.j, groutWidth * 4)) {
-          if (!inView(p.band, zero)) continue;
-          for (const [ps, color, k] of [
-            [p.edge, INK, 4],
-            [p.band, BAND, 2.4],
+        for (const p of overlapsAt(
+          model.pattern,
+          d.i,
+          d.j,
+          groutWidth * 4,
+          groutWidth * 2.4,
+        )) {
+          if (!inView(p.edge, zero)) continue;
+          for (const [ps, color] of [
+            [p.edge, INK],
+            [p.band, BAND],
           ] as const)
             body.push(
-              `<path d="${patchPath(ps, (q) => pt(q, zero).replace(',', ' '))}" fill="none" stroke="${color}" stroke-width="${f(groutWidth * k)}" stroke-linecap="butt" stroke-linejoin="round"/>`,
+              `<path d="${shapePath(ps, (q) => pt(q, zero).replace(',', ' '))}" fill="${color}"/>`,
             );
         }
       }

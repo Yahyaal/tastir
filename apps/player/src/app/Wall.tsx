@@ -9,7 +9,13 @@ import { useId, useMemo, useRef } from 'react';
 import { fit, viewBox, width } from './camera';
 import { DEFAULT_FINISH, type Finish } from './coloring';
 import { relief, strapWidths, wallView } from './drawing';
-import { patchesAt, patchPath, weaveRepeat } from './interlace';
+import {
+  overlapsAt,
+  patchesAt,
+  patchPath,
+  shapePath,
+  weaveRepeat,
+} from './interlace';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
 import { placeKey } from './placement';
@@ -232,7 +238,9 @@ export function Wall({
             lines.push([move(s.segment.a), move(s.segment.b)]);
         // The patches are already placed in tile (i, j).
         if (woven)
-          for (const p of patchesAt(pattern, i, j, groutWidth * weaveWidth)) {
+          for (const p of style === 'interlace'
+            ? overlapsAt(pattern, i, j, groutWidth * 4, groutWidth * 2.4)
+            : patchesAt(pattern, i, j, groutWidth * weaveWidth)) {
             over.push(p.edge.map(tile.toTile));
             overIn.push(p.band.map(tile.toTile));
           }
@@ -270,9 +278,12 @@ export function Wall({
     [shifted],
   );
   const overPath = useMemo(() => {
-    const d = (list: Vec[][]) => list.map((ps) => patchPath(ps)).join('');
+    // Interlace fills the overlap of the two bands; the double pen strokes
+    // a piece of its band.
+    const each = style === 'interlace' ? shapePath : patchPath;
+    const d = (list: Vec[][]) => list.map((ps) => each(ps)).join('');
     return { out: d(shifted.over), in: d(shifted.overIn) };
-  }, [shifted]);
+  }, [shifted, style]);
 
   // Coming in, each piece takes its colour in turn, from the middles out.
   const delays = useMemo(
@@ -473,20 +484,16 @@ export function Wall({
               ))
             : null}
           {/* Interlace: the band on top at each crossing, drawn again over
-              the one below, with square ends so it joins its own band. */}
+              the one below: its edges and middle filled across the whole
+              width of the band underneath. */}
           {style === 'interlace' && overPath.out
             ? (['out', 'in'] as const).map((layer) => (
                 <path
                   key={layer}
                   className={`over-${layer}`}
                   d={overPath[layer]}
-                  fill="none"
-                  stroke={layer === 'out' ? finish.lines : finish.band}
-                  strokeWidth={
-                    layer === 'out' ? groutWidth * 4 : groutWidth * 2.4
-                  }
-                  strokeLinecap="butt"
-                  strokeLinejoin="round"
+                  fill={layer === 'out' ? finish.lines : finish.band}
+                  stroke="none"
                 />
               ))
             : null}
