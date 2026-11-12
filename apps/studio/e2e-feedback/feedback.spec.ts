@@ -48,6 +48,14 @@ test('anonymous learner sends a contextual drawing report; owner reviews and exp
   await expect(
     page.getByAltText('Your board at the reported step'),
   ).toBeVisible();
+  // When nothing has gone wrong, Send is the only action besides Close.
+  for (const name of [
+    'Retry verification',
+    'Copy text',
+    'Download unsent report',
+    'Discard draft',
+  ])
+    await expect(page.getByRole('button', { name })).toHaveCount(0);
   await mkdir('docs/review/feedback', { recursive: true });
   await page.screenshot({
     path: `docs/review/feedback/${info.project.name}-form-light.png`,

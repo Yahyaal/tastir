@@ -104,6 +104,7 @@ function FeedbackForm({
   discard: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
   const widget = useRef<HTMLDivElement>(null);
   const [config, setConfig] = useState<Config>();
   const [context, setContext] = useState(capture.context);
@@ -127,9 +128,24 @@ function FeedbackForm({
     ? FeedbackSnapshotShape.safeParse(capture.snapshot)
     : undefined;
   const attachment = validSnapshot?.success ? validSnapshot.data : undefined;
+  // Ways to keep the message appear only once sending cannot go ahead.
+  const stuck =
+    !!error || !!verificationError || pending || config?.enabled === false;
+  useEffect(() => () => opener.current?.focus(), []);
   useEffect(() => {
-    if (visible) dialog.current?.showModal();
-    else dialog.current?.close();
+    // Non-modal: a side panel that leaves the board visible beside it.
+    const panel = dialog.current;
+    if (!panel) return;
+    if (visible) {
+      if (!panel.open) {
+        opener.current = document.activeElement as HTMLElement | null;
+        panel.show();
+        panel.querySelector<HTMLElement>('textarea, button')?.focus();
+      }
+    } else if (panel.open) {
+      panel.close();
+      opener.current?.focus();
+    }
   }, [visible]);
   useEffect(() => {
     if (!cooldown) return;
@@ -306,9 +322,13 @@ function FeedbackForm({
       ref={dialog}
       className="feedback-dialog"
       aria-labelledby="feedback-title"
-      onCancel={(e) => {
-        e.preventDefault();
-        close();
+      onKeyDown={(e) => {
+        // A non-modal dialog gets no cancel event, so Escape is handled here.
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          if (receipt) discard();
+          else close();
+        }
       }}
     >
       <div className="feedback-heading">
@@ -430,39 +450,28 @@ function FeedbackForm({
             </p>
           ) : null}
           {include ? (
-            <details open>
-              <summary>Drawing attachment preview</summary>
-              {image ? (
-                <>
-                  <img src={image} alt="Your board at the reported step" />
-                  <button
-                    type="button"
-                    className="secondary"
-                    disabled={pending || busy}
-                    onClick={() => setImage(undefined)}
-                  >
-                    Remove board image and keep drawing data
-                  </button>
-                </>
-              ) : (
-                <p>
-                  A board image is unavailable; the editable drawing will be
-                  included.
-                </p>
-              )}
-            </details>
+            image ? (
+              <img
+                className="feedback-preview"
+                src={image}
+                alt="Your board at the reported step"
+              />
+            ) : (
+              <p className="feedback-muted">
+                A board image is unavailable; the editable drawing will be
+                included.
+              </p>
+            )
           ) : null}
-          <p className="feedback-muted">
-            We'll include the pattern, the instruction shown, and basic app
-            details. Your report is private to the owner and may be shared with
-            an AI tool to investigate. Your email is excluded from AI exports.
-          </p>
-          <details>
-            <summary>Details included with this report</summary>
+          <details className="feedback-muted">
+            <summary>Private to the owner · Privacy and details</summary>
+            <p>
+              We'll include the pattern, the instruction shown, and basic app
+              details. Your report is private to the owner and may be shared
+              with an AI tool to investigate. Your email is excluded from AI
+              exports.
+            </p>
             <pre>{JSON.stringify(capture.context, null, 2)}</pre>
-          </details>
-          <details>
-            <summary>Privacy and deletion</summary>
             <p>
               Feedback is used to improve Tastir. Reports are kept for up to a
               year; optional email and drawing evidence for 90 days. Spam is
@@ -532,57 +541,65 @@ function FeedbackForm({
                     ? 'Retry same send'
                     : 'Send feedback'}
             </button>
-            <button
-              type="button"
-              className="secondary"
-              disabled={busy}
-              onClick={() => setRetry((n) => n + 1)}
-            >
-              Retry verification
-            </button>
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => {
-                void navigator.clipboard
-                  .writeText(JSON.stringify(unsent(), null, 2))
-                  .then(
-                    () => setError('Your unsent report was copied.'),
-                    () =>
-                      setError(
-                        'Copy is unavailable. Download the unsent report instead.',
-                      ),
-                  );
-              }}
-            >
-              Copy text
-            </button>
-            <button
-              type="button"
-              className="secondary"
-              onClick={() =>
-                feedbackDownload(unsent(), 'tastir-unsent-feedback.json')
-              }
-            >
-              Download unsent report
-            </button>
-            <button
-              type="button"
-              className="secondary"
-              disabled={busy}
-              onClick={() => {
-                if (
-                  !pending ||
-                  window.confirm(
-                    'This send has not been confirmed. Discarding the draft will stop retrying it; a later new report may duplicate an earlier send. Download the unsent report first if you want to keep it.',
-                  )
-                )
-                  discard();
-              }}
-            >
-              Discard draft
-            </button>
+            {verificationError ? (
+              <button
+                type="button"
+                className="secondary"
+                disabled={busy}
+                onClick={() => setRetry((n) => n + 1)}
+              >
+                Retry verification
+              </button>
+            ) : null}
           </div>
+          {stuck ? (
+            <div className="feedback-actions">
+              <span className="feedback-muted">Keep your message:</span>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => {
+                  void navigator.clipboard
+                    .writeText(JSON.stringify(unsent(), null, 2))
+                    .then(
+                      () => setError('Your unsent report was copied.'),
+                      () =>
+                        setError(
+                          'Copy is unavailable. Download the unsent report instead.',
+                        ),
+                    );
+                }}
+              >
+                Copy text
+              </button>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() =>
+                  feedbackDownload(unsent(), 'tastir-unsent-feedback.json')
+                }
+              >
+                Download unsent report
+              </button>
+              {pending ? (
+                <button
+                  type="button"
+                  className="secondary"
+                  disabled={busy}
+                  onClick={() => {
+                    if (
+                      window.confirm(
+                        'This send has not been confirmed. Discarding the draft will stop retrying it; a later new report may duplicate an earlier send. Download the unsent report first if you want to keep it.',
+                      )
+                    )
+                      discard();
+                  }}
+                >
+                  Discard draft
+                </button>
+              ) : null}
+            </div>
+          ) : null}
         </form>
       )}
     </dialog>
