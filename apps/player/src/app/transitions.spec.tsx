@@ -7,6 +7,7 @@ import starJson from '@tutorials/eight-fold-star-and-cross.json';
 import bouJson from '@tutorials/bou-inania-rosette.json';
 import { rulerOrder } from './animation';
 import mianJson from '@tutorials/twelve-fold-rosette-mian.json';
+import agraJson from '@tutorials/agra-fort-band-rows.json';
 import { pieceColors } from './coloring';
 import { Construction, RepeatedInk, rowBasis } from './drawing';
 import { loadModel } from './model';
@@ -86,6 +87,16 @@ describe('the move to the repeat', () => {
     const { row, next } = rowBasis(loadModel(squareJson));
     expect(Math.abs(row.y)).toBeLessThan(1e-9);
     expect(Math.abs(next.x)).toBeLessThan(1e-9);
+  });
+
+  it('lays the row along the tile on a tile wider than it is tall', () => {
+    // Agra Fort's tile is 4 wide and 2 tall: the row steps one tile to the
+    // right, and the next row one tile up, so the copies leave no gaps.
+    const { row, next } = rowBasis(loadModel(agraJson));
+    expect(row.x).toBeCloseTo(4, 9);
+    expect(row.y).toBeCloseTo(0, 9);
+    expect(Math.abs(next.x)).toBeLessThan(1e-9);
+    expect(Math.abs(next.y)).toBeCloseTo(2, 9);
   });
 
   it('shifts each row along by half a step when the rows are shifted', () => {

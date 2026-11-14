@@ -744,10 +744,14 @@ export function rowBasis(model: Model): { row: Vec; next: Vec } {
     for (let b = -2; b <= 2; b++)
       if (a || b) cands.push({ x: a * u.x + b * v.x, y: a * u.y + b * v.y });
   const len = (p: Vec) => Math.hypot(p.x, p.y);
-  const shortest = Math.min(...cands.map(len));
+  // The row runs to the right: the shortest step that does. (The shortest
+  // step of all may point straight up, as on a tile twice as wide as it
+  // is tall, and rows built on another step leave gaps between copies.)
+  const rightward = cands.filter((p) => p.x > 1e-9);
+  const shortest = Math.min(...rightward.map(len));
   const row =
-    cands
-      .filter((p) => len(p) < shortest * 1.001 && p.x > 1e-9)
+    rightward
+      .filter((p) => len(p) < shortest * 1.001)
       .sort((p, q) => Math.abs(p.y) - Math.abs(q.y))[0] ?? cands[0]!;
   const cross = (p: Vec) => row.x * p.y - row.y * p.x;
   const ups = cands.filter((p) => cross(p) > 1e-9);
