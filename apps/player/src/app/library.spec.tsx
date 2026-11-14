@@ -79,11 +79,24 @@ describe('the library', () => {
   );
   it('gives notes only to the members of their family', () => {
     for (const f of FAMILIES)
-      for (const id of Object.keys(f.notes ?? {}))
+      for (const [id, note] of Object.entries(f.notes ?? {})) {
         expect(f.members, `${f.id}: ${id}`).toContain(id);
+        expect(typeof note, `${f.id}: ${id}`).toBe('string');
+      }
     expect(
       Object.keys(familyOf('agra-fort-band-rows')?.notes ?? {}),
     ).toHaveLength(4);
+    // Every family of designs that share their pieces has a note for each.
+    for (const id of [
+      'charbagh-stars',
+      'fatehpur-sikri-stars',
+      'khojent-tile-stars',
+      'bourgoin-52-octagon-rows',
+      'camlica-mosque-stars',
+    ])
+      expect(familyOf(id)?.members.length, id).toBe(
+        Object.keys(familyOf(id)?.notes ?? {}).length,
+      );
   });
 
   it('lists every file in tutorials/, and each of its places', () => {
@@ -439,7 +452,8 @@ describe('the address', () => {
     expect(document.querySelector('.label')?.textContent).toBe('Color');
     go('#/');
     expect(screen.getByRole('heading', { name: 'Tastir' })).toBeTruthy();
-  }, 30000); // with the library; a busy machine can push it past the default 5 s. // The library computes every tutorial in tutorials/, so this grows
+  }, 90000); // The library computes every tutorial in tutorials/, so this grows
+  // with the library; a busy machine took 34 to 59 s on 14 November.
 
   it('links the patterns before and after it, by title', () => {
     render(<App />);

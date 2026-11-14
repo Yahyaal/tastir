@@ -160,5 +160,60 @@
       "golestan-palace-star-rows": "The same five pieces, with the stars in rows joined by connecting tiles.",
       "bahramiye-mosque-stars": "The same five pieces, with each star in a ring of interlaced bands."
     }
+  },
+  {
+    "id": "charbagh-pieces",
+    "title": "Stars and connectors of the Charbagh madrasa",
+    "members": [
+      "charbagh-stars",
+      "iranian-star-columns",
+      "qom-atiq-courtyard-rows"
+    ],
+    "notes": {
+      "charbagh-stars": "The khatam’s five pieces and one more, a long ten-sided connector, with the stars set in a square grid.",
+      "iranian-star-columns": "The same six pieces in the same amounts as Charbagh, with the stars set in upright columns.",
+      "qom-atiq-courtyard-rows": "The same six pieces, with more stars and fewer eight-sided pieces, set in rows."
+    }
+  },
+  {
+    "id": "star-cross-pentagon",
+    "title": "Eight-pointed stars, crosses and pentagons",
+    "members": [
+      "fatehpur-sikri-stars",
+      "isfahan-royal-mosque-star-rows",
+      "topkapi-scroll-pinwheel"
+    ],
+    "notes": {
+      "fatehpur-sikri-stars": "Three pieces only, eight-pointed stars, crosses and pentagons, with the stars in a square grid.",
+      "isfahan-royal-mosque-star-rows": "The same three pieces, with the stars in rows and the crosses in columns between them.",
+      "topkapi-scroll-pinwheel": "The same three pieces, turning round each star like a pinwheel."
+    }
+  },
+  {
+    "id": "khojent-pieces",
+    "title": "Stars, crosses and squares of Khojent and Mosul",
+    "members": ["khojent-tile-stars", "mosul-imam-yahya-star-rows"],
+    "notes": {
+      "khojent-tile-stars": "Eight-pointed stars, ten-sided crosses, squares and pentagons, with the squares gathered into large crosses.",
+      "mosul-imam-yahya-star-rows": "The same four pieces, with the stars in rows and one square between each four stars."
+    }
+  },
+  {
+    "id": "bourgoin-octagons",
+    "title": "Octagons of Bourgoin plates 144 and 52",
+    "members": ["bourgoin-144-octagon-bands", "bourgoin-52-octagon-rows"],
+    "notes": {
+      "bourgoin-144-octagon-bands": "Eight-pointed stars and octagons joined by long bands, laid in a square grid.",
+      "bourgoin-52-octagon-rows": "The same five pieces in nearly the same amounts, laid in rows instead."
+    }
+  },
+  {
+    "id": "ten-fold-stars",
+    "title": "Ten-pointed stars of Çamlıca and the Imamzadeh Ismail",
+    "members": ["camlica-mosque-stars", "isfahan-imamzadeh-ismail-stars"],
+    "notes": {
+      "camlica-mosque-stars": "Ten-pointed stars with pentagons and six-sided pieces, in a pattern mirrored only one way.",
+      "isfahan-imamzadeh-ismail-stars": "The same seven pieces, with the stars closer together and more of the small ones round them."
+    }
   }
 ]

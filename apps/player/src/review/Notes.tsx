@@ -30,6 +30,12 @@ export const DOCS: readonly {
     text: read('PROJECT.md'),
   },
   {
+    key: 'night-report',
+    label: 'Report: night of 14 November',
+    file: 'NIGHT-REPORT-2026-11-14.md',
+    text: read('NIGHT-REPORT-2026-11-14.md'),
+  },
+  {
     key: 'library-browsing',
     label: 'Plan: browsing the library',
     file: 'LIBRARY-BROWSING-PLAN.md',

@@ -115,7 +115,10 @@ export interface Family {
    * that share their pieces but arrange them differently. */
   readonly notes?: Readonly<Record<string, string>>;
 }
-export const FAMILIES: readonly Family[] = variations;
+// TypeScript merges the JSON's notes into one object type whose other
+// families' keys are optional `undefined`, so the shape is asserted here
+// and checked by variations.spec.ts instead.
+export const FAMILIES = variations as readonly Family[];
 
 export const familyOf = (id: string): Family | undefined =>
   FAMILIES.find((f) => f.members.includes(baseOf(id)));
