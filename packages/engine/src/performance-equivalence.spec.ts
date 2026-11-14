@@ -63,7 +63,7 @@ for (const file of tutorialFiles()) {
     const optimized = computePattern(scene, t);
     identical(optimized, own, 'tutorial pattern');
     expect(goldenOf(t, scene, optimized)).toEqual(goldenOf(t, scene, own));
-  }, 120_000);
+  }, 300_000);
 }
 
 it('keeps face traversal and tolerant junctions on irregular segment networks', () => {

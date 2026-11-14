@@ -26,6 +26,7 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 - Jali with colours, material finishes and textures (Codex, pull request #5; tasks 2.1–2.1d in [the tasks](TASKS.md)).
 - Interlace (task 2.3, pull requests #4 and #7), rebuilt after the owner found crossings in Barca stars and Bou Inania that were not woven.
 - Ink speed: the prepared ink stays in its worker, and only small typed arrays cross to the page. Pressing Ink on Bou Inania went from 9.6 s to 2.9 s on a slow cloud machine, so it is faster but not yet under one second. Timing tests now run in `pnpm test:perf`, not `pnpm test`.
+- Test time (13 November 2026): the two exact-equivalence specs, which run every tutorial through the frozen old engine and took about 35 minutes, now run in `pnpm test:equivalence`, after any change to the engine's geometry. The golden tests stay in `pnpm test`. `pnpm test:affected` runs only the projects a change touches; a tutorial change touches them all.
 - The owner's feedback on the zellige wheel: the shifted wheel repeats on a hexagon, and a new `kurt-eight-fold-zellige-filled` fills the space between four wheels by overlapping them, with the cross where four meet filled too (pull requests #6, #8, #9).
 
 **With Codex (13 October):** Ink under one second, the last step, on the branch `app/ink-speed-2` ([the task](prompts/codex-2026-10-13.md)). 

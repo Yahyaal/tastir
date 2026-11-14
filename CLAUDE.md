@@ -49,6 +49,10 @@ Run everything from the repo root. The workspace is Nx with pnpm, so `pnpm nx ru
 ```
 pnpm install       install all dependencies
 pnpm test          Vitest in every project
+pnpm test:affected Vitest only in the projects a change touches (a tutorial
+                   change touches them all, so the golden tests always run)
+pnpm test:equivalence  every tutorial against the frozen old engine (about
+                   half an hour); run it after any change to the engine's geometry
 pnpm lint          ESLint in every project
 pnpm typecheck     strict TypeScript in every project
 pnpm format        Prettier over code and config (Markdown and tutorials are left as written)

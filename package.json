@@ -15,6 +15,8 @@
     "review": "tools/review/review.sh",
     "compare": "python3 tools/review/compare.py",
     "test:perf": "TASTIR_PERF=1 vitest run --config packages/engine/vitest.config.mts",
+    "test:equivalence": "TASTIR_EQUIVALENCE=1 vitest run --config packages/engine/vitest.config.mts",
+    "test:affected": "pnpm catalog && nx affected -t test --parallel=1",
     "bench:ink": "node --conditions=@tastir/source --import tsx tools/bench-ink.mts",
     "catalog": "node --conditions=@tastir/source --import tsx apps/player/src/build/catalog.tsx",
     "test:browser": "nx run player:build && playwright test",
