@@ -12,6 +12,7 @@ These are the owner's standing wishes about how work is shown and discussed. Eac
 - **Explain the way the owner writes:** short connected sentences, each decision with its reason. No fragment lists, no options that were rejected, no jargon without a plain explanation.
 - **Keep the Progress section current** (`PROGRESS` in `data.ts`: now, done, next, waiting) after every piece of work.
 - **Tell the owner how to see visual work:** the address to open, and what they should see there.
+- **Everything in the app you mention carries its own link, in chat too.** A pattern, a family, a group on a plan page, a review card: give the `http://localhost:4200/#/...` or `https://tastir-studio.vercel.app/#/...` address each time, never only a name, a number or a file path. *Why (14 November, said many times before):* a reply asked about "groups 14 and 15" of the duplicates page with no link, and the owner had no idea what they were.
 - **Say "done" only when it is done,** then suggest the next goal.
 
 The owner’s 11 October Jali correction: minimize clicks. Show material choices as buttons and finish colors as directly visible swatches. A Custom color button must open the color picker directly; do not insert another dialog or dropdown when a few visible choices suffice. Apply this principle to later UI work.

@@ -45,7 +45,9 @@ These are different designs, not one design in several places, so they became Va
 - **Browser tests:** 240 pass and 17 are skipped. One fails: "bou-inania-rosette: stages open promptly while geometry runs in the background", which measures how fast the lesson stages open. Nothing in this change touches that path. It also failed on 13 November before any of this work, and it passed once when the machine was quieter. The load average was 14 to 16 all night, from the Python job. Run alone, it took 1.84 s against its 1 s limit, the same 1.5 to 1.8 s as on 13 November. Run it again when the machine is quiet, with `pnpm exec playwright test apps/player/e2e/large-patterns.spec.ts -g "bou-inania-rosette: stages"`.
 - **I also checked by hand** in the dev server that all five families show their Variations row with a sentence for each member, and that this report shows at http://localhost:4200/#/notes/night-report.
 
-## Two questions for you
+## Two questions for you (answered 14 November)
+
+The owner kept "Line OB" without "The" (the queue note is updated), and sees each rosette pair of groups 14 and 15 as one design in different colours, with Bou Inania a little different; that and their wish to turn such colourings into palettes are now the first item of [the queue](patterns/QUEUE.md).
 
 1. **"Line OB crosses…" in the step texts.** The work queue lists 34 steps that start "Line OB crosses…" (Atik Valide, Mihrimah, Imamzadeh Ismail and others) as missing "The". But the writing rules (`docs/tutorial-writing.md`, rule 4) say to name lines exactly as "Line OE". The two disagree, so I changed nothing. Which do you want?
 2. **Notes for groups 14 and 15.** Those two older families have no sentence per member. I could not tell their differences apart reliably from the small pictures, so I left them without notes rather than guess. Tell me what you see, or say "skip".
