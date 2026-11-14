@@ -45,9 +45,9 @@ export function LibraryMenu({
   const present = (key: 'region' | 'style' | 'level' | 'fold') =>
     new Set(
       entries.flatMap((e) =>
-        [e, ...(e.variations ?? [])].flatMap(
-          (v) => aboutOf(v.preview ?? v.json)[key] ?? [],
-        ),
+        [e, ...(e.variations ?? [])]
+          .flatMap((d) => [d, ...(d.places ?? [])])
+          .flatMap((v) => aboutOf(v.preview ?? v.json)[key] ?? []),
       ),
     );
   const folds = [...(present('fold') as Set<number>)].sort((a, b) => a - b);

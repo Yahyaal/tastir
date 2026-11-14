@@ -521,24 +521,34 @@ function Card({
   const variations = entry.variations?.length
     ? entry.variations.length + 1
     : undefined;
+  // And the places its design is found, the card's own among them.
+  const places = entry.places?.length ? entry.places.length + 1 : undefined;
   return entry.preview ? (
     <CardView
       id={entry.id}
       preview={entry.preview}
       variations={variations}
+      places={places}
       onFilter={onFilter}
     />
   ) : (
-    <LiveCard entry={entry} variations={variations} onFilter={onFilter} />
+    <LiveCard
+      entry={entry}
+      variations={variations}
+      places={places}
+      onFilter={onFilter}
+    />
   );
 }
 function LiveCard({
   entry: { id, json },
   variations,
+  places,
   onFilter,
 }: {
   entry: Entry;
   variations?: number;
+  places?: number;
   onFilter: (facet: Facet) => void;
 }) {
   const { model, error, progress } = useModel(json);
@@ -549,6 +559,7 @@ function LiveCard({
       error={error}
       progress={progress}
       variations={variations}
+      places={places}
       onFilter={onFilter}
     />
   );
@@ -560,6 +571,7 @@ function CardView({
   error,
   progress,
   variations,
+  places,
   onFilter,
 }: {
   id: string;
@@ -569,6 +581,8 @@ function CardView({
   progress?: import('./workerClient').Progress;
   /** How many variations the card's family has, when it stands for one. */
   variations?: number;
+  /** How many places its design is found, when more than one. */
+  places?: number;
   onFilter: (facet: Facet) => void;
 }) {
   const t = model?.tutorial;
@@ -615,6 +629,14 @@ function CardView({
             title="The same design on another tile, shifted or filled: switch between them in the pattern."
           >
             {variations} variations
+          </span>
+        ) : null}
+        {places ? (
+          <span
+            className="variations-label"
+            title="The same design found in other buildings, each in its own colours: switch between them in the pattern."
+          >
+            Seen in {places} places
           </span>
         ) : null}
         {isHidden(id) ? (

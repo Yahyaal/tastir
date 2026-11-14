@@ -4,6 +4,7 @@ import {
   type Pick,
   type Tutorial,
 } from './tutorial.js';
+import { atPlace } from './places.js';
 
 /** The kind of element a name refers to. A `repeat` names a group. */
 export type ElementKind =
@@ -229,46 +230,62 @@ export function checkReferences(t: Tutorial): Issue[] {
       message: `says ${t.expect.pieceTypes} piece types, but expect.pieces lists ${t.expect.pieces.length}`,
     });
   }
-  for (const name of Object.keys(t.pattern.colors)) {
-    if (!pieceNames.has(name)) {
-      issues.push({
-        path: `pattern.colors.${name}`,
-        message: `"${name}" is not a piece named in expect.pieces`,
-      });
+  // The colouring's names, for the tutorial and each of its places.
+  const colouring = (pattern: Tutorial['pattern'], at: string) => {
+    for (const name of Object.keys(pattern.colors)) {
+      if (!pieceNames.has(name)) {
+        issues.push({
+          path: `${at}pattern.colors.${name}`,
+          message: `"${name}" is not a piece named in expect.pieces`,
+        });
+      }
     }
-  }
-  const placements = t.pattern.placements;
-  placements?.rules.forEach((rule, i) => {
-    if (!pieceNames.has(rule.piece)) {
-      issues.push({
-        path: `pattern.placements.rules.${i}.piece`,
-        message: `"${rule.piece}" is not a piece named in expect.pieces`,
-      });
-    }
-    const [m, n] = placements.repeat;
-    if (rule.cell && (rule.cell[0] >= m || rule.cell[1] >= n)) {
-      issues.push({
-        path: `pattern.placements.rules.${i}.cell`,
-        message: `cell ${rule.cell.join(',')} is outside the ${m}×${n} repeat`,
-      });
-    }
-  });
-  const rings = t.pattern.rings;
-  if (rings && placements) {
-    issues.push({
-      path: 'pattern.rings',
-      message: 'colour by rings or by placements, not both',
+    const placements = pattern.placements;
+    placements?.rules.forEach((rule, i) => {
+      if (!pieceNames.has(rule.piece)) {
+        issues.push({
+          path: `${at}pattern.placements.rules.${i}.piece`,
+          message: `"${rule.piece}" is not a piece named in expect.pieces`,
+        });
+      }
+      const [m, n] = placements.repeat;
+      if (rule.cell && (rule.cell[0] >= m || rule.cell[1] >= n)) {
+        issues.push({
+          path: `${at}pattern.placements.rules.${i}.cell`,
+          message: `cell ${rule.cell.join(',')} is outside the ${m}×${n} repeat`,
+        });
+      }
     });
-  }
-  for (const key of Object.keys(rings === true ? {} : (rings?.colors ?? {}))) {
-    const name = key.split('@')[0] ?? key;
-    if (!pieceNames.has(name)) {
+    const rings = pattern.rings;
+    if (rings && placements) {
       issues.push({
-        path: `pattern.rings.colors.${key}`,
-        message: `"${name}" is not a piece named in expect.pieces`,
+        path: `${at}pattern.rings`,
+        message: 'colour by rings or by placements, not both',
       });
     }
-  }
+    for (const key of Object.keys(
+      rings === true ? {} : (rings?.colors ?? {}),
+    )) {
+      const name = key.split('@')[0] ?? key;
+      if (!pieceNames.has(name)) {
+        issues.push({
+          path: `${at}pattern.rings.colors.${key}`,
+          message: `"${name}" is not a piece named in expect.pieces`,
+        });
+      }
+    }
+  };
+  colouring(t.pattern, '');
+  const seen = new Set([t.id]);
+  t.places?.forEach((place, i) => {
+    if (seen.has(place.id))
+      issues.push({
+        path: `places.${i}.id`,
+        message: `"${place.id}" is already the id of the tutorial or another place`,
+      });
+    seen.add(place.id);
+    colouring(atPlace(t, place.id).pattern, `places.${i}.`);
+  });
   for (const name of Object.keys(t.expect.crossings ?? {})) {
     use(`expect.crossings.${name}`, name, ['points']);
   }

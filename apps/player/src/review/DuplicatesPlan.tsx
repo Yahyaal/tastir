@@ -316,9 +316,9 @@ export function DuplicatesPlan() {
 
       <h2 className="group">What this branch changes</h2>
       <p>
-        The branch <code>library/fold-duplicates</code> changes only which
-        library card each tutorial sits on; no tutorial changes. Compare the
-        library in production with the library on this branch:{' '}
+        The branch <code>library/fold-duplicates</code> moves tutorials between
+        library cards and merges the first two groups. Compare the library in
+        production with the library on this branch:{' '}
         <a href={PRODUCTION} target="_blank" rel="noreferrer">
           production library ↗
         </a>{' '}
@@ -348,6 +348,16 @@ export function DuplicatesPlan() {
           ) : null,
         )}
       </ul>
+      <p>
+        Groups 1 and 2 are now one tutorial each, with the other buildings as
+        its places. The Attarine star rosettes (Fez, 1323–1325, the oldest
+        dated) hold Ben Youssef, the Seville tile and Alberto Leon’s mosaic. The
+        four-fold ring of circles holds Hani and Itimad al-Daula, and now
+        repeats the square on its corner, half the old tile, which is the tile
+        Itimad al-Daula used. Each place keeps its address and its colours as
+        “The original” palette; in the pattern, “Seen at” switches between them,
+        and every palette now recolours them.
+      </p>
       <p>
         The last one, group 14, joins two different designs on one card because
         they are close relatives: the Bou Inania interlaced rosette becomes a

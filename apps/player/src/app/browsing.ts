@@ -167,8 +167,11 @@ export function filtered(
   };
   // A family shows the face of its best-matching member: under Morocco,
   // the Arrayanes squares family shows its Moroccan tile.
+  // A design's places count as members too: under Spain, the star
+  // rosettes show their Seville tile.
   const shown = entries.flatMap((e) => {
-    const members = [e, ...(e.variations ?? [])];
+    const designs = [e, ...(e.variations ?? [])];
+    const members = designs.flatMap((d) => [d, ...(d.places ?? [])]);
     let face: Entry | undefined;
     let best = -1;
     for (const m of members) {
@@ -180,10 +183,18 @@ export function filtered(
     }
     if (!face) return [];
     if (face === e) return [{ entry: e, best }];
-    const { variations: _own, ...rest } = face;
+    const design =
+      designs.find((d) => d === face || d.places?.includes(face)) ?? e;
+    const places = [design, ...(design.places ?? [])].filter((m) => m !== face);
+    const variations = designs.filter((d) => d !== design);
+    const { variations: _own, places: _places, ...rest } = face;
     return [
       {
-        entry: { ...rest, variations: members.filter((m) => m !== face) },
+        entry: {
+          ...rest,
+          ...(variations.length ? { variations } : {}),
+          ...(face.of || design.places?.length ? { places } : {}),
+        },
         best,
       },
     ];

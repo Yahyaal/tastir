@@ -1,9 +1,14 @@
 import fixtures from './libraryFixtures';
-import benYoussefJson from '@tutorials/ben-youssef-star-rosettes.json';
+import { atPlace, parseTutorial } from '@tastir/schema';
+import attarineJson from '@tutorials/attarine-star-rosettes.json';
 import { extraColors, ORIGINAL, PALETTES, SLOTS } from './coloring';
 import { loadModel } from './model';
 import { placeFills } from './placement';
 
+const benYoussefJson = atPlace(
+  parseTutorial(attarineJson),
+  'ben-youssef-star-rosettes',
+);
 const SLOT_NAMES: readonly string[] = [...SLOTS, 'e', 'f', 'g'];
 
 /** Every fill of one tile under a palette. */

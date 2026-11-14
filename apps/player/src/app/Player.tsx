@@ -52,7 +52,7 @@ import { ColourPanel } from './ColourPanel';
 import { Tiles } from './Tiles';
 import { brushOf, refamily, rosetteCounts } from './rosettes';
 import { ViewSwitch, viewAddress, type View } from './ViewSwitch';
-import { Variations } from './Variations';
+import { Places, Variations } from './Variations';
 import {
   byPlace,
   colorRepeat,
@@ -1122,6 +1122,24 @@ export function Player({
             id={address}
             // Another variation opens at the same stage: the colours, the
             // repeat, or the lesson's start.
+            at={
+              colorStage
+                ? 'result'
+                : stage.kind === 'repeat'
+                  ? 'repeat'
+                  : 'beginning'
+            }
+            guard={(to) => {
+              if (!changed) return false;
+              setLeaving(to);
+              return true;
+            }}
+          />
+        ) : null}
+        {browsing ? (
+          <Places
+            id={address}
+            // The same steps in another place's colours: the same stage.
             at={
               colorStage
                 ? 'result'

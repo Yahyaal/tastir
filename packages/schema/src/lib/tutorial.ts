@@ -442,6 +442,38 @@ export const TRADITIONS = [
   'Celtic',
 ] as const;
 
+/**
+ * Another place the same design is found: a building, a museum piece or a
+ * book. It shares the tutorial's construction, ink and pieces, and has its
+ * own name, credits and colouring, so the library shows one card for the
+ * design and the player switches between its places. Its `id` is an
+ * address of its own, so links to it keep working.
+ */
+export const Place = z.strictObject({
+  id: z
+    .string()
+    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'an id is lower-case words joined by -'),
+  title: z.string().min(1),
+  short: z.string().min(1).optional(),
+  subtitle: z.string().min(1).optional(),
+  style: z.string().min(1),
+  region: z.enum(REGIONS).optional(),
+  credits: z.array(Credit),
+  photos: z.array(Photo).optional(),
+  /** The place's colouring; what it leaves out it takes from the tutorial,
+   * except that rings and placements never mix. */
+  pattern: z
+    .strictObject({
+      palette: z.string().optional(),
+      look: z.enum(['tiles', 'strapwork', 'interlace', 'lines']).optional(),
+      colors: z.record(Name, z.string().min(1)).optional(),
+      placements: Placements.optional(),
+      rings: Rings.optional(),
+      original: Original.optional(),
+    })
+    .optional(),
+});
+
 export const TutorialShape = z.strictObject({
   format: z.literal(0),
   id: z
@@ -549,6 +581,8 @@ export const TutorialShape = z.strictObject({
     original: Original.optional(),
   }),
   expect: Expect,
+  /** Other places the same design is found (see Place). */
+  places: z.array(Place).min(1).optional(),
 });
 
 export type Tutorial = z.infer<typeof TutorialShape>;
@@ -585,5 +619,6 @@ export type InkThrough = z.infer<typeof InkThrough>;
 export type InkAlong = z.infer<typeof InkAlong>;
 export type InkEnd = z.infer<typeof InkEnd>;
 export type Photo = z.infer<typeof Photo>;
+export type Place = z.infer<typeof Place>;
 export type Expect = z.infer<typeof Expect>;
 export type ExpectedPiece = z.infer<typeof ExpectedPiece>;

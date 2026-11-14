@@ -708,7 +708,8 @@
     ]
   },
   "pattern": {
-    "cell": "cell",
+    "cell": "dynamic",
+    "panel": "cell",
     "text": "Put copies of the tile side by side. The corners of four tiles close into another eight-pointed star. The bands cross between the stars, as in a carved stone screen.",
     "palette": "Timurid tile",
     "colors": { "star": "a", "bowtie": "b", "dart": "c", "square": "ground" },
@@ -718,11 +719,73 @@
     "note": "Golden values computed by the engine; the pattern matches Sandy Kurt's drawing but no photo of a real example was found.",
     "pieceTypes": 4,
     "pieces": [
-      { "name": "star", "vertices": 16, "area": 0.20101, "perCell": 10 },
-      { "name": "bowtie", "vertices": 8, "area": 0.05025, "perCell": 16 },
-      { "name": "square", "vertices": 4, "area": 0.02944, "perCell": 2 },
-      { "name": "dart", "vertices": 5, "area": 0.02817, "perCell": 40 }
+      { "name": "star", "vertices": 16, "area": 0.20101, "perCell": 5 },
+      { "name": "bowtie", "vertices": 8, "area": 0.05025, "perCell": 8 },
+      { "name": "square", "vertices": 4, "area": 0.02944, "perCell": 1 },
+      { "name": "dart", "vertices": 5, "area": 0.02817, "perCell": 20 }
     ],
-    "cellArea": 4
-  }
+    "cellArea": 2
+  },
+  "places": [
+    {
+      "id": "hani-zeynebiye-stars",
+      "title": "Stars of the Zeynebiye madrasa (Hani)",
+      "short": "Hani Zeynebiye stars",
+      "subtitle": "Zeynebiye madrasa, Hani, Turkey",
+      "style": "Ottoman",
+      "region": "Turkey",
+      "credits": [
+        {
+          "source": "Tiling Search, data211/BON61: Zeynebiye madrasah, Hani, Turkey",
+          "creator": "Brian Wichmann",
+          "kind": "drawing",
+          "url": "https://tilingsearch.mit.edu/HTML/data211/BON61.html",
+          "note": "Read from his finished drawing, not construction instructions. His reference is Jay Bonner, Islamic Geometric Patterns (2016), page 276, figure 154, Zeynebiye madrasa, Hani, Turkey (1000–1300). Its geometry matches the separately credited Sandy Kurt construction."
+        }
+      ],
+      "pattern": {
+        "palette": "Timurid tile",
+        "look": "tiles",
+        "colors": {"square": "d", "star": "a", "dart": "c", "bowtie": "b"},
+        "placements": {
+          "repeat": [1, 1],
+          "rules": [
+            {"piece": "dart", "nth": 0, "color": "ground"},
+            {"piece": "dart", "nth": 3, "color": "ground"},
+            {"piece": "dart", "nth": 4, "color": "ground"},
+            {"piece": "dart", "nth": 8, "color": "ground"},
+            {"piece": "dart", "nth": 11, "color": "ground"},
+            {"piece": "dart", "nth": 15, "color": "ground"},
+            {"piece": "dart", "nth": 16, "color": "ground"},
+            {"piece": "dart", "nth": 19, "color": "ground"}
+          ]
+        },
+        "original": {
+          "palette": {"a": "#004080", "b": "#ffe680", "c": "#00bf00", "d": "#ab4f17", "ground": "#f8c499"}
+        }
+      }
+    },
+    {
+      "id": "itimad-daula-stars",
+      "title": "Interlaced stars of the tomb of Itimad al-Daula, Agra",
+      "short": "Itimad al-Daula stars",
+      "subtitle": "Tomb of Itimad al-Daula, Agra",
+      "style": "Mughal",
+      "region": "India",
+      "credits": [
+        {
+          "source": "Tiling Search, data153/F78: Mausoleum of Itimad al-Daula, Agra",
+          "creator": "Brian Wichmann",
+          "url": "https://tilingsearch.mit.edu/HTML/data153/F78.html",
+          "kind": "drawing",
+          "note": "The design was read from his drawing. He takes it from Clévenot, figure 78 (ornament on a pillar of the tomb of Itimad al-Daula, Agra, 1622), and lists the same design in David Wade’s photos IND 0414 (the same tomb), IRA 1002 (the Hakim mosque, Isfahan) and TRA 0506 (the Tillya-Kari madrasa, Samarkand), and at the Nim Avard madrasa, Isfahan. The construction is the four-fold ring of circles; this pattern is the same design, turned by 45°."
+        }
+      ],
+      "pattern": {
+        "palette": "Timurid tile",
+        "look": "interlace",
+        "colors": {"star": "a", "bowtie": "b", "square": "d", "dart": "ground"}
+      }
+    }
+  ]
 }

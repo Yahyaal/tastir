@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { titleOf } from './browsing';
-import { variationsOf } from './library';
+import { baseOf, placesOf, variationsOf, type Entry } from './library';
 import type { Start } from './Player';
 
 /** The address that opens a pattern where the learner is in this one. */
@@ -25,15 +25,76 @@ export function Variations({
   guard?: (to: string) => boolean;
 }) {
   const members = useMemo(() => variationsOf(id), [id]);
+  return (
+    <Switcher
+      name="Variations"
+      label="Variations of this pattern"
+      members={members}
+      current={baseOf(id)}
+      at={at}
+      guard={guard}
+    />
+  );
+}
+
+/**
+ * The places the same design is found (a tutorial's `places`), as a row
+ * of small pictures in each place's colours. The steps are the same, so
+ * each opens at the same stage.
+ */
+export function Places({
+  id,
+  at,
+  guard,
+}: {
+  id: string;
+  at: Start;
+  guard?: (to: string) => boolean;
+}) {
+  const members = useMemo(() => placesOf(id), [id]);
+  return (
+    <Switcher
+      name="Seen at"
+      label="Places this pattern is found"
+      members={members}
+      current={id}
+      at={at}
+      guard={guard}
+      place
+    />
+  );
+}
+
+function Switcher({
+  name,
+  label,
+  members,
+  current,
+  at,
+  guard,
+  place = false,
+}: {
+  name: string;
+  label: string;
+  members: readonly Entry[];
+  current: string;
+  at: Start;
+  guard?: (to: string) => boolean;
+  place?: boolean;
+}) {
+  const id = current;
   if (!members.length) return null;
   return (
-    <nav className="variations" aria-label="Variations of this pattern">
+    <nav className="variations" aria-label={label}>
       <span className="variations-name" aria-hidden="true">
-        Variations
+        {name}
       </span>
       {members.map((e) => {
         const to = startAddress(e.id, at);
-        const title = e.preview?.title ?? titleOf(e);
+        const title =
+          (place ? e.preview?.subtitle : undefined) ??
+          e.preview?.title ??
+          titleOf(e);
         return (
           <a
             key={e.id}

@@ -7,7 +7,7 @@ import { parseTutorial } from '@tastir/schema';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import App from './app';
-import { entriesOf, grouped, LIBRARY } from './library';
+import { entriesOf, grouped, LIBRARY, placesOf } from './library';
 
 // Tests run from apps/player or from the repo root.
 const TUTORIALS = join(
@@ -64,12 +64,32 @@ describe('the library', () => {
       );
     },
   );
-  it('lists every file in tutorials/', () => {
+  it('lists every file in tutorials/, and each of its places', () => {
     const files = readdirSync(TUTORIALS)
       .filter((f) => f.endsWith('.json'))
-      .map((f) => f.replace(/\.json$/, ''))
-      .sort();
-    expect(LIBRARY.map((e) => e.id)).toEqual(files);
+      .map((f) => f.replace(/\.json$/, ''));
+    expect(LIBRARY.filter((e) => !e.of).map((e) => e.id)).toEqual(
+      [...files].sort(),
+    );
+    const places = LIBRARY.filter((e) => e.of);
+    expect(places.map((e) => `${e.of} > ${e.id}`).sort()).toEqual([
+      'attarine-star-rosettes > ben-youssef-star-rosettes',
+      'attarine-star-rosettes > leon-mosaic-star-rosettes',
+      'attarine-star-rosettes > seville-vanda-star-rosettes',
+      'four-fold-ring-of-circles > hani-zeynebiye-stars',
+      'four-fold-ring-of-circles > itimad-daula-stars',
+    ]);
+    // A place keeps its own address and opens in its own colours.
+    expect(placesOf('itimad-daula-stars').map((e) => e.id)).toEqual([
+      'four-fold-ring-of-circles',
+      'hani-zeynebiye-stars',
+      'itimad-daula-stars',
+    ]);
+    expect(
+      grouped(LIBRARY).find((e) => e.id === 'attarine-star-rosettes')?.places
+        ?.length,
+    ).toBe(3);
+    expect(grouped(LIBRARY).some((e) => e.of)).toBe(false);
   });
 
   it.each(['beginner', 'intermediate', 'advanced'])(

@@ -337,5 +337,167 @@
       {"name": "triangle", "vertices": 3, "area": 0.01472, "perCell": 12},
       {"name": "kite", "vertices": 4, "area": 0.01219, "perCell": 40}
     ]
-  }
+  },
+  "places": [
+    {
+      "id": "ben-youssef-star-rosettes",
+      "title": "Star rosettes of the Ben Youssef madrasa (Marrakesh)",
+      "short": "Ben Youssef star rosettes",
+      "subtitle": "Ben Youssef madrasa, Marrakesh",
+      "style": "Moroccan",
+      "region": "Morocco",
+      "credits": [
+        {
+          "source": "Tiling Search, data205/P77: Ben Youssef madrasa, Marrakesh",
+          "creator": "Brian Wichmann",
+          "kind": "drawing",
+          "url": "https://tilingsearch.mit.edu/HTML/data205/P77.html",
+          "note": "Read from his finished drawing, not construction instructions. His reference is Degeorge and Porter, The Art of the Islamic Tile (2002), page 77 bottom left, Ben Youssef madrasa, Marrakesh (1565). His page links PG229 as using the same irregular tiles."
+        }
+      ],
+      "pattern": {
+        "palette": "Marinid zellige",
+        "look": "tiles",
+        "colors": {
+          "long_hexagon": "a",
+          "star": "a",
+          "petal": "a",
+          "eight": "ground",
+          "seven": "c",
+          "arrow": "b",
+          "rhombus": "ground",
+          "triangle": "ground",
+          "kite": "ground"
+        },
+        "placements": {
+          "repeat": [1, 1],
+          "rules": [
+            {"piece": "star", "color": "a"},
+            {"piece": "long_hexagon", "color": "a"},
+            {"piece": "petal", "color": "a"},
+            {"piece": "eight", "color": "ground"},
+            {"piece": "seven", "color": "b"},
+            {"piece": "arrow", "color": "c"},
+            {"piece": "rhombus", "color": "ground"},
+            {"piece": "triangle", "color": "ground"},
+            {"piece": "kite", "color": "ground"},
+            {"piece": "star", "nth": 0, "color": "ground"},
+            {"piece": "star", "nth": 4, "color": "d"}
+          ]
+        },
+        "original": {
+          "palette": {"a": "#000000", "b": "#404284", "c": "#385c33", "d": "#5e0d12", "ground": "#ffffff"}
+        }
+      }
+    },
+    {
+      "id": "seville-vanda-star-rosettes",
+      "title": "Star rosettes of a Seville tile (V&A)",
+      "short": "Seville tile rosettes",
+      "subtitle": "Seville tile, Victoria and Albert Museum",
+      "style": "Mudéjar",
+      "region": "Spain and Portugal, other",
+      "credits": [
+        {
+          "source": "Tiling Search, data8/PG229: Seville tile, Victoria and Albert Museum",
+          "creator": "Brian Wichmann",
+          "kind": "drawing",
+          "url": "https://tilingsearch.mit.edu/HTML/data8/PG229.html",
+          "note": "Read from his finished drawing, not construction instructions. His references are Abas and Salman, Symmetries of Islamic Geometrical Patterns (1995), page 229; V&A tile 184:1853, Seville, sixteenth century, cuenca, coloured as in the original; and Wade MOR 0322, Attarine madrasa, Fez. His page links the V&A record O159790 and the related MOR0323 drawing."
+        }
+      ],
+      "pattern": {
+        "palette": "Alhambra",
+        "look": "tiles",
+        "colors": {
+          "long_hexagon": "d",
+          "star": "b",
+          "petal": "d",
+          "eight": "ground",
+          "seven": "a",
+          "arrow": "c",
+          "rhombus": "ground",
+          "triangle": "ground",
+          "kite": "ground"
+        },
+        "placements": {
+          "repeat": [1, 1],
+          "rules": [
+            {"piece": "star", "color": "b"},
+            {"piece": "long_hexagon", "color": "c"},
+            {"piece": "petal", "color": "c"},
+            {"piece": "eight", "color": "ground"},
+            {"piece": "seven", "color": "a"},
+            {"piece": "arrow", "color": "a"},
+            {"piece": "rhombus", "color": "ground"},
+            {"piece": "triangle", "color": "ground"},
+            {"piece": "kite", "color": "ground"}
+          ]
+        },
+        "original": {
+          "palette": {"a": "#000000", "b": "#bf8033", "c": "#668099", "d": "#2b4f8f", "ground": "#ffffff"}
+        }
+      }
+    },
+    {
+      "id": "leon-mosaic-star-rosettes",
+      "title": "Star rosettes of Alberto Leon’s mosaic design",
+      "short": "Leon mosaic rosettes",
+      "subtitle": "Mosaic in Islamic Design, from Alberto Leon",
+      "style": "Islamic",
+      "region": "Books and other",
+      "credits": [
+        {
+          "source": "Tiling Search, data194/LEON7: Mosaic in Islamic Design, from Alberto Leon",
+          "creator": "Brian Wichmann",
+          "kind": "drawing",
+          "url": "https://tilingsearch.mit.edu/HTML/data194/LEON7.html",
+          "note": "Read from his finished drawing, not construction instructions. His reference is Alberto Leon, personal communication, Mosaic in Islamic Design. The page gives no building or country, and notes that the white surround of the black khatem is formed from several white tiles. It links P77 as a design using the same irregular tiles."
+        }
+      ],
+      "pattern": {
+        "palette": "Alhambra",
+        "look": "tiles",
+        "colors": {
+          "long_hexagon": "d",
+          "star": "b",
+          "petal": "d",
+          "eight": "ground",
+          "seven": "a",
+          "arrow": "c",
+          "rhombus": "ground",
+          "triangle": "ground",
+          "kite": "ground"
+        },
+        "placements": {
+          "repeat": [1, 1],
+          "rules": [
+            {"piece": "star", "color": "b"},
+            {"piece": "long_hexagon", "color": "c"},
+            {"piece": "petal", "color": "d"},
+            {"piece": "eight", "color": "ground"},
+            {"piece": "seven", "color": "e"},
+            {"piece": "arrow", "color": "ground"},
+            {"piece": "rhombus", "color": "ground"},
+            {"piece": "triangle", "color": "ground"},
+            {"piece": "kite", "color": "ground"},
+            {"piece": "star", "nth": 0, "color": "a"},
+            {"piece": "star", "nth": 4, "color": "a"},
+            {"piece": "long_hexagon", "nth": 0, "color": "a"},
+            {"piece": "long_hexagon", "nth": 3, "color": "a"}
+          ]
+        },
+        "original": {
+          "palette": {
+            "a": "#000000",
+            "b": "#c7000f",
+            "c": "#db8f26",
+            "d": "#050870",
+            "ground": "#ffffff",
+            "e": "#213df2"
+          }
+        }
+      }
+    }
+  ]
 }
