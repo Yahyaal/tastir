@@ -144,5 +144,21 @@
     "id": "agra-twelve-six-stars",
     "title": "Twelve- and six-pointed stars of the Agra Fort",
     "members": ["agra-twelve-six-stars", "agra-twelve-six-stars-kites"]
+  },
+  {
+    "id": "khatam-pieces",
+    "title": "The five pieces of the eight-fold khatam",
+    "members": [
+      "eight-fold-khatam",
+      "agra-fort-band-rows",
+      "golestan-palace-star-rows",
+      "bahramiye-mosque-stars"
+    ],
+    "notes": {
+      "eight-fold-khatam": "The plain design: eight-pointed stars packed close, with cross arms, eight-sided pieces, small squares and shields between them.",
+      "agra-fort-band-rows": "The same five pieces, with the stars set out in rows and bands between the rows.",
+      "golestan-palace-star-rows": "The same five pieces, with the stars in rows joined by connecting tiles.",
+      "bahramiye-mosque-stars": "The same five pieces, with each star in a ring of interlaced bands."
+    }
   }
 ]

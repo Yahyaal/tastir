@@ -1,6 +1,12 @@
 import { useMemo } from 'react';
 import { titleOf } from './browsing';
-import { baseOf, placesOf, variationsOf, type Entry } from './library';
+import {
+  baseOf,
+  familyOf,
+  placesOf,
+  variationsOf,
+  type Entry,
+} from './library';
 import type { Start } from './Player';
 
 /** The address that opens a pattern where the learner is in this one. */
@@ -30,6 +36,7 @@ export function Variations({
       name="Variations"
       label="Variations of this pattern"
       members={members}
+      notes={familyOf(id)?.notes}
       current={baseOf(id)}
       at={at}
       guard={guard}
@@ -73,7 +80,10 @@ function Switcher({
   at,
   guard,
   place = false,
+  notes,
 }: {
+  /** A sentence for each member, shown with its name. */
+  notes?: Readonly<Record<string, string>>;
   name: string;
   label: string;
   members: readonly Entry[];
@@ -91,10 +101,12 @@ function Switcher({
       </span>
       {members.map((e) => {
         const to = startAddress(e.id, at);
-        const title =
+        const name =
           (place ? e.preview?.subtitle : undefined) ??
           e.preview?.title ??
           titleOf(e);
+        const note = notes?.[e.id];
+        const title = note ? `${name}. ${note}` : name;
         return (
           <a
             key={e.id}

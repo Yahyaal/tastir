@@ -7,7 +7,14 @@ import { parseTutorial } from '@tastir/schema';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import App from './app';
-import { entriesOf, grouped, LIBRARY, placesOf } from './library';
+import {
+  entriesOf,
+  FAMILIES,
+  familyOf,
+  grouped,
+  LIBRARY,
+  placesOf,
+} from './library';
 
 // A plain tutorial for these tests, without the places it is found in.
 const { places: _places, ...example } = starAndCross as {
@@ -70,6 +77,15 @@ describe('the library', () => {
       );
     },
   );
+  it('gives notes only to the members of their family', () => {
+    for (const f of FAMILIES)
+      for (const id of Object.keys(f.notes ?? {}))
+        expect(f.members, `${f.id}: ${id}`).toContain(id);
+    expect(
+      Object.keys(familyOf('agra-fort-band-rows')?.notes ?? {}),
+    ).toHaveLength(4);
+  });
+
   it('lists every file in tutorials/, and each of its places', () => {
     const files = readdirSync(TUTORIALS)
       .filter((f) => f.endsWith('.json'))

@@ -111,6 +111,9 @@ export interface Family {
   readonly id: string;
   readonly title: string;
   readonly members: readonly string[];
+  /** What each member does with the design, in a sentence, for designs
+   * that share their pieces but arrange them differently. */
+  readonly notes?: Readonly<Record<string, string>>;
 }
 export const FAMILIES: readonly Family[] = variations;
 
