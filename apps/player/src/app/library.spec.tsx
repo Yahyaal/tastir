@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
-import example from '@tutorials/eight-fold-star-and-cross.json';
+import starAndCross from '@tutorials/eight-fold-star-and-cross.json';
 import khatam from '@tutorials/eight-fold-khatam.json';
 import octagons from '@tutorials/eight-fold-star-and-octagon.json';
 import rectangular from '@tutorials/ten-pointed-star-decagon-rect.json';
@@ -8,6 +8,12 @@ import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import App from './app';
 import { entriesOf, grouped, LIBRARY, placesOf } from './library';
+
+// A plain tutorial for these tests, without the places it is found in.
+const { places: _places, ...example } = starAndCross as {
+  places?: unknown;
+  [key: string]: unknown;
+};
 
 // Tests run from apps/player or from the repo root.
 const TUTORIALS = join(
@@ -72,13 +78,20 @@ describe('the library', () => {
       [...files].sort(),
     );
     const places = LIBRARY.filter((e) => e.of);
-    expect(places.map((e) => `${e.of} > ${e.id}`).sort()).toEqual([
-      'attarine-star-rosettes > ben-youssef-star-rosettes',
-      'attarine-star-rosettes > leon-mosaic-star-rosettes',
-      'attarine-star-rosettes > seville-vanda-star-rosettes',
-      'four-fold-ring-of-circles > hani-zeynebiye-stars',
-      'four-fold-ring-of-circles > itimad-daula-stars',
-    ]);
+    expect(places.map((e) => `${e.of} > ${e.id}`).sort()).toEqual(
+      [
+        'attarine-star-rosettes > ben-youssef-star-rosettes',
+        'attarine-star-rosettes > leon-mosaic-star-rosettes',
+        'attarine-star-rosettes > seville-vanda-star-rosettes',
+        'four-fold-ring-of-circles > hani-zeynebiye-stars',
+        'four-fold-ring-of-circles > itimad-daula-stars',
+        'chehel-sotoun-divided-stars > ismail-shrine-divided-stars',
+        'chellah-minaret-loops > alhambra-museum-loops',
+        'eight-fold-star-and-cross > alhambra-comares-stars',
+        'eight-fold-star-and-octagon > mashhad-gowhar-interlace',
+        'sultaniyeh-twelve-star-bands > mexuar-twelve-star-bands',
+      ].sort(),
+    );
     // A place keeps its own address and opens in its own colours.
     expect(placesOf('itimad-daula-stars').map((e) => e.id)).toEqual([
       'four-fold-ring-of-circles',

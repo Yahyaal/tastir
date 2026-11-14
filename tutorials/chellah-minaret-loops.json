@@ -151,5 +151,29 @@
       {"name": "star", "vertices": 16, "area": 0.58579, "perCell": 2},
       {"name": "square", "vertices": 4, "area": 0.08579, "perCell": 4}
     ]
-  }
+  },
+  "places": [
+    {
+      "id": "alhambra-museum-loops",
+      "title": "Interlaced loops of the Alhambra Museum",
+      "short": "Interlaced loops",
+      "subtitle": "Alhambra Museum, Granada",
+      "style": "Nasrid",
+      "region": "Alhambra and Nasrid Spain",
+      "credits": [
+        {
+          "source": "Tiling Search, data183/RE3559: Alhambra Museum",
+          "creator": "Brian Wichmann",
+          "url": "https://tilingsearch.mit.edu/HTML/data183/RE3559.html",
+          "note": "The design was read from his drawing of piece RE3559 in the Alhambra Museum, with two-colour interlacing as in the original. The construction is the Chellah minaret’s, the same design.",
+          "kind": "drawing"
+        }
+      ],
+      "pattern": {
+        "palette": "Alhambra",
+        "look": "interlace",
+        "colors": {"cross": "ground", "star": "a", "square": "c"}
+      }
+    }
+  ]
 }

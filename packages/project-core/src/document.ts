@@ -79,6 +79,8 @@ export function copyUpTo(
     photos: _photos,
     // The audit describes the complete library sequence, not an editable copy.
     construction: _construction,
+    // The buildings the design is found in are the library's, not the copy's.
+    places: _places,
     ...rest
   } = tutorial;
   return {

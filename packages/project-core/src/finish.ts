@@ -514,8 +514,11 @@ export function tutorialOf(
     // (and with them their colors and placements); new ones get plain
     // names that no other piece uses.
     const before = draft.expect?.pieces ?? [];
+    // A made pattern has no places: they name the library design's pieces,
+    // which the learner's ink may have changed.
+    const { places: _places, ...own } = draft;
     const bare = {
-      ...draft,
+      ...own,
       ink: draft.ink,
       pattern: draft.pattern,
       expect: { pieceTypes: before.length || 1, pieces: before },

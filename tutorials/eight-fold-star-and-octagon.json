@@ -248,5 +248,29 @@
       { "name": "octagon_arm", "vertices": 5, "area": 0.08211, "perCell": 8 }
     ],
     "cellArea": 2.0
-  }
+  },
+  "places": [
+    {
+      "id": "mashhad-gowhar-interlace",
+      "title": "Interlaced star and cross of the Gowhar Shad mosque, Mashhad",
+      "short": "Gowhar Shad interlace",
+      "subtitle": "Mosque of Gowhar Shad, Mashhad",
+      "style": "Timurid",
+      "region": "Iran",
+      "credits": [
+        {
+          "source": "Tiling Search, data15/CM066B: Mosque of Gowhar, Mashhad",
+          "creator": "Brian Wichmann",
+          "url": "https://tilingsearch.mit.edu/HTML/data15/CM066B.html",
+          "kind": "drawing",
+          "note": "The design was read from his drawing. He cites A. U. Pope’s photo 269 for the mosque of Gowhar Shad, Mashhad (1418), and lists the same design from Balkh, the minaret of Jam, Cairo, Gubbio, Agra, Samarkand, Lahore, Seville and Aleppo. The construction is the eight-fold star and octagon, the same design turned by 45°."
+        }
+      ],
+      "pattern": {
+        "palette": "Timurid tile",
+        "look": "interlace",
+        "colors": {"star": "a", "corner_square": "c", "octagon_arm": "b"}
+      }
+    }
+  ]
 }

@@ -317,8 +317,8 @@ export function DuplicatesPlan() {
       <h2 className="group">What this branch changes</h2>
       <p>
         The branch <code>library/fold-duplicates</code> moves tutorials between
-        library cards and merges the first two groups. Compare the library in
-        production with the library on this branch:{' '}
+        library cards and merges the seven groups of identical designs. Compare
+        the library in production with the library on this branch:{' '}
         <a href={PRODUCTION} target="_blank" rel="noreferrer">
           production library ↗
         </a>{' '}
@@ -349,8 +349,12 @@ export function DuplicatesPlan() {
         )}
       </ul>
       <p>
-        Groups 1 and 2 are now one tutorial each, with the other buildings as
-        its places. The Attarine star rosettes (Fez, 1323–1325, the oldest
+        Each group of identical designs is now one tutorial, with the other
+        buildings as its places. The main tutorial is the oldest dated building,
+        or the plain construction when there is one: Chellah minaret loops
+        (1339), Chehel Sotoun (1647), Öljeitü’s mausoleum at Sultaniyeh (1313),
+        the eight-fold star and cross, and the eight-fold star and octagon. In
+        groups 1 and 2: The Attarine star rosettes (Fez, 1323–1325, the oldest
         dated) hold Ben Youssef, the Seville tile and Alberto Leon’s mosaic. The
         four-fold ring of circles holds Hani and Itimad al-Daula, and now
         repeats the square on its corner, half the old tile, which is the tile

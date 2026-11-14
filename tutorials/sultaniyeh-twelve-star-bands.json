@@ -220,5 +220,29 @@
       {"name": "kite", "vertices": 4, "area": 0.1547, "perCell": 12},
       {"name": "triangle", "vertices": 3, "area": 0.06218, "perCell": 2}
     ]
-  }
+  },
+  "places": [
+    {
+      "id": "mexuar-twelve-star-bands",
+      "title": "Twelve-pointed star bands of the Mexuar patio, Alhambra",
+      "short": "Mexuar twelve-star bands",
+      "subtitle": "Mexuar patio, Alhambra",
+      "style": "Nasrid",
+      "region": "Alhambra and Nasrid Spain",
+      "credits": [
+        {
+          "source": "Tiling Search, data18/W85: Alhambra, Mexuar patio",
+          "creator": "Brian Wichmann",
+          "kind": "drawing",
+          "url": "https://tilingsearch.mit.edu/HTML/data18/W85.html",
+          "note": "The page cites Wade page85 and SPA1914 for the Mexuar patio, and Field page62 top left, the vestibule behind the south wall’s east door. It also records Lee figure10 (Kharraqan), Singer page102 (Turkish enamel), O’Kane page79 (Salar and Sangar al-Gawli), Topkapi EH762 folio412 (Baghdad Koran), Wade EGY1111 (Qalawun), Bonner page243 figure108a (Sultaniyya), Wichmann and Wade figure14.5c, Cahier page30, Broug page52 (Herat), Paccard volume2 page193 (Marrakesh), and photographs of Shakhrisabz, the Saadian Tombs and Junblat House. These are his attributions."
+        }
+      ],
+      "pattern": {
+        "palette": "Alhambra",
+        "look": "strapwork",
+        "colors": {"star": "a", "pentagon": "a", "kite": "a", "triangle": "a"}
+      }
+    }
+  ]
 }

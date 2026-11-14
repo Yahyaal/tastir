@@ -30,6 +30,13 @@ describe('pattern files', () => {
     });
   });
 
+  it('leaves the library’s places out of a copy', () => {
+    // The star and cross is also found in the Comares; the copy is the
+    // learner's own pattern, so it names no building.
+    expect(star.places?.length).toBeGreaterThan(0);
+    expect(copyUpTo(star, 3)).not.toHaveProperty('places');
+  });
+
   it('reads a library tutorial file too', () => {
     const read = readPattern(JSON.stringify(example));
     if ('reason' in read) throw new Error(read.reason);
