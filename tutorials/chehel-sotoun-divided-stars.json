@@ -702,23 +702,24 @@
     "cell": "tile",
     "look": "strapwork",
     "palette": "Kashan",
+    "original": {"palette": {"a": "#757f40", "b": "#3f8f9b", "c": "#c46b3a", "d": "#e9d8a6", "ground": "#fbf7ee"}},
     "colors": {"six_kite": "d", "connector_kite": "ground", "four_kite": "c", "three_kite": "b"},
     "text": "Put copies of the diamond tile side by side.",
     "placements": {
       "repeat": [2, 2],
       "rules": [
-        {"cell": [0, 0], "color": "#757f40", "nth": 8, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 10, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 11, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 12, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 13, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 14, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 21, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 22, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 23, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 24, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 25, "piece": "six_kite"},
-        {"cell": [0, 0], "color": "#757f40", "nth": 27, "piece": "six_kite"}
+        {"cell": [0, 0], "color": "a", "nth": 8, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 10, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 11, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 12, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 13, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 14, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 21, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 22, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 23, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 24, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 25, "piece": "six_kite"},
+        {"cell": [0, 0], "color": "a", "nth": 27, "piece": "six_kite"}
       ]
     }
   },

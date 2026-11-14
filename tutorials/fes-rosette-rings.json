@@ -681,6 +681,7 @@
   "pattern": {
     "cell": "tile",
     "palette": "Marinid zellige",
+    "original": {"palette": {"a": "#1e1a17", "b": "#13794a", "c": "#1f3c8f", "d": "#e0a42a", "ground": "#f3efe6", "e": "#1d8fa3"}},
     "look": "tiles",
     "colors": {
       "long_eight": "c",
@@ -703,7 +704,7 @@
     "placements": {
       "repeat": [1, 1],
       "rules": [
-        {"piece": "long_eight", "color": "#1d8fa3"},
+        {"piece": "long_eight", "color": "e"},
         {"piece": "star", "nth": 1, "color": "b"},
         {"piece": "star", "nth": 2, "color": "b"},
         {"piece": "arrow", "nth": 5, "color": "b"},

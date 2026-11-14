@@ -6,6 +6,7 @@ import {
 } from './squareBands.js';
 import type { Piece, Vec } from '@tastir/engine';
 import {
+  extraColors,
   glazeOf,
   paletteOf,
   slotOf,
@@ -229,8 +230,11 @@ export function placeKey(
 }
 
 /** A palette slot's color, or the color itself when it is not a slot. */
-function resolve(palette: Palette, color: string): string {
-  return (palette as Record<string, string>)[color] ?? color;
+function resolve(
+  palette: Readonly<Record<string, string>>,
+  color: string,
+): string {
+  return palette[color] ?? color;
 }
 
 /**
@@ -265,7 +269,10 @@ function basePlaceFills(
           squareBandColor(bands, i, j))
         : fallback(piece, i, j);
   }
-  const palette = paletteOf(model, coloring.palette);
+  const palette: Palette & Readonly<Record<string, string>> = {
+    ...paletteOf(model, coloring.palette),
+    ...extraColors(model, coloring.palette),
+  };
   const placements = model.tutorial.pattern.placements;
   const rings = ringsFor(model);
   if (rings) return ringFills(model, coloring, rings);

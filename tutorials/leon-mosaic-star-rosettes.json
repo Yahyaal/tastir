@@ -313,6 +313,7 @@
   "pattern": {
     "cell": "tile",
     "palette": "Alhambra",
+    "original": {"palette": {"a": "#000000", "b": "#c7000f", "c": "#db8f26", "d": "#050870", "ground": "#ffffff", "e": "#213df2"}},
     "look": "tiles",
     "colors": {
       "long_hexagon": "d",
@@ -329,19 +330,19 @@
     "placements": {
       "repeat": [1, 1],
       "rules": [
-        {"piece": "star", "color": "#c7000f"},
-        {"piece": "long_hexagon", "color": "#db8f26"},
-        {"piece": "petal", "color": "#050870"},
-        {"piece": "eight", "color": "#ffffff"},
-        {"piece": "seven", "color": "#213df2"},
-        {"piece": "arrow", "color": "#ffffff"},
-        {"piece": "rhombus", "color": "#ffffff"},
-        {"piece": "triangle", "color": "#ffffff"},
-        {"piece": "kite", "color": "#ffffff"},
-        {"piece": "star", "nth": 0, "color": "#000000"},
-        {"piece": "star", "nth": 4, "color": "#000000"},
-        {"piece": "long_hexagon", "nth": 0, "color": "#000000"},
-        {"piece": "long_hexagon", "nth": 3, "color": "#000000"}
+        {"piece": "star", "color": "b"},
+        {"piece": "long_hexagon", "color": "c"},
+        {"piece": "petal", "color": "d"},
+        {"piece": "eight", "color": "ground"},
+        {"piece": "seven", "color": "e"},
+        {"piece": "arrow", "color": "ground"},
+        {"piece": "rhombus", "color": "ground"},
+        {"piece": "triangle", "color": "ground"},
+        {"piece": "kite", "color": "ground"},
+        {"piece": "star", "nth": 0, "color": "a"},
+        {"piece": "star", "nth": 4, "color": "a"},
+        {"piece": "long_hexagon", "nth": 0, "color": "a"},
+        {"piece": "long_hexagon", "nth": 3, "color": "a"}
       ]
     }
   },

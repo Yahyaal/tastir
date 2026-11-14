@@ -395,6 +395,10 @@ const Original = z.strictObject({
     c: Hex,
     d: Hex,
     ground: Hex,
+    /** More colours, for placement rules that need more than five. */
+    e: Hex.optional(),
+    f: Hex.optional(),
+    g: Hex.optional(),
   }),
   lines: Hex.optional(),
   band: Hex.optional(),

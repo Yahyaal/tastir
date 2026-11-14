@@ -313,6 +313,7 @@
   "pattern": {
     "cell": "tile",
     "palette": "Marinid zellige",
+    "original": {"palette": {"a": "#000000", "b": "#404284", "c": "#385c33", "d": "#5e0d12", "ground": "#ffffff"}},
     "look": "tiles",
     "colors": {
       "long_hexagon": "a",
@@ -329,17 +330,17 @@
     "placements": {
       "repeat": [1, 1],
       "rules": [
-        {"piece": "star", "color": "#000000"},
-        {"piece": "long_hexagon", "color": "#000000"},
-        {"piece": "petal", "color": "#000000"},
-        {"piece": "eight", "color": "#ffffff"},
-        {"piece": "seven", "color": "#404284"},
-        {"piece": "arrow", "color": "#385c33"},
-        {"piece": "rhombus", "color": "#ffffff"},
-        {"piece": "triangle", "color": "#ffffff"},
-        {"piece": "kite", "color": "#ffffff"},
-        {"piece": "star", "nth": 0, "color": "#ffffff"},
-        {"piece": "star", "nth": 4, "color": "#5e0d12"}
+        {"piece": "star", "color": "a"},
+        {"piece": "long_hexagon", "color": "a"},
+        {"piece": "petal", "color": "a"},
+        {"piece": "eight", "color": "ground"},
+        {"piece": "seven", "color": "b"},
+        {"piece": "arrow", "color": "c"},
+        {"piece": "rhombus", "color": "ground"},
+        {"piece": "triangle", "color": "ground"},
+        {"piece": "kite", "color": "ground"},
+        {"piece": "star", "nth": 0, "color": "ground"},
+        {"piece": "star", "nth": 4, "color": "d"}
       ]
     }
   },

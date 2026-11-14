@@ -199,8 +199,50 @@ export const ORIGINAL = 'The original';
 /** A palette by name: a preset, or the original of the tutorial. */
 export function paletteOf(model: Model | undefined, name: string): Palette {
   const original = model?.tutorial.pattern.original;
-  if (name === ORIGINAL && original) return original.palette;
+  if (name === ORIGINAL && original) {
+    const { a, b, c, d, ground } = original.palette;
+    return { a, b, c, d, ground };
+  }
   return PALETTES[name] ?? (PALETTES[DEFAULT_PALETTE] as Palette);
+}
+
+/** The extra slots placement rules may name, past the five. */
+export type Extra = 'e' | 'f' | 'g';
+
+/** The average of two colours. */
+function blend(x: string, y: string): string {
+  const at = (h: string, i: number) =>
+    parseInt(h.slice(1 + 2 * i, 3 + 2 * i), 16);
+  return `#${[0, 1, 2]
+    .map((i) =>
+      Math.round((at(x, i) + at(y, i)) / 2)
+        .toString(16)
+        .padStart(2, '0'),
+    )
+    .join('')}`;
+}
+
+/**
+ * The colours of the extra slots `e`, `f` and `g`, for a wall coloured by
+ * placements with more colours than the five slots: the original's own,
+ * else glaze colours the five slots leave out, else a blend of two slots.
+ */
+export function extraColors(
+  model: Model | undefined,
+  name: string,
+): Record<Extra, string> {
+  const p = paletteOf(model, name);
+  const own =
+    name === ORIGINAL ? model?.tutorial.pattern.original?.palette : undefined;
+  const used = new Set(Object.values(p));
+  const spare = [...new Set(glazeOf(name, model).families.flat())].filter(
+    (c) => !used.has(c),
+  );
+  return {
+    e: own?.e ?? spare[0] ?? blend(p.b, p.c),
+    f: own?.f ?? spare[1] ?? blend(p.c, p.d),
+    g: own?.g ?? spare[2] ?? blend(p.b, p.d),
+  };
 }
 
 /** The palettes a tutorial offers: its original first, then the presets. */

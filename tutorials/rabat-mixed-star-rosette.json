@@ -925,6 +925,7 @@
     "cell": "tile",
     "look": "strapwork",
     "palette": "Kashan",
+    "original": {"palette": {"a": "#24476b", "b": "#3f8f9b", "c": "#c46b3a", "d": "#e9d8a6", "ground": "#fbf7ee", "e": "#87b2a8"}},
     "colors": {
       "twelve_star": "a",
       "six_star": "c",
@@ -962,7 +963,7 @@
     "placements": {
       "repeat": [1, 1],
       "rules": [
-        {"piece": "petal", "color": "#87b2a8"},
+        {"piece": "petal", "color": "e"},
         {"color": "d", "nth": 2, "piece": "small_rhombus"},
         {"color": "d", "nth": 3, "piece": "small_rhombus"},
         {"color": "d", "nth": 4, "piece": "small_rhombus"},
