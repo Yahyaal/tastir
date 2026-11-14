@@ -85,6 +85,15 @@ const DrawAlongPlan = import.meta.env.DEV
     )
   : undefined;
 
+/** Which tutorials draw the same design (#/plan/duplicates), dev server only. */
+const DuplicatesPlan = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/DuplicatesPlan').then((m) => ({
+        default: m.DuplicatesPlan,
+      })),
+    )
+  : undefined;
+
 /** Curatorial roadmap of upcoming patterns (#/upcoming). */
 const UpcomingPatterns = lazy(() =>
   import('./UpcomingPatterns').then((m) => ({
@@ -210,6 +219,15 @@ function AppPage({
       </Suspense>
     ) : (
       <Broken message="The plan only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'plan/duplicates') {
+    return DuplicatesPlan ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <DuplicatesPlan />
+      </Suspense>
+    ) : (
+      <Broken message="The duplicates page only exists on the dev server (pnpm dev)." />
     );
   }
   if (route === 'plan') {

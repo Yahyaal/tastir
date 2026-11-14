@@ -1,0 +1,210 @@
+/* The duplicates page (#/plan/duplicates). One colour for each piece
+   shape in a group; the light and dark values follow the two themes. */
+.dup-page {
+  --dup-0: #d9a441;
+  --dup-1: #1f4e8c;
+  --dup-2: #1e6b52;
+  --dup-3: #a3452a;
+  --dup-4: #e8dcc6;
+  --dup-5: #1d7480;
+  --dup-6: #6b4a2f;
+  --dup-7: #8a5fa8;
+  --dup-8: #c7c9cc;
+  --dup-9: #3c3f44;
+  --dup-edge: var(--theme-text-primary);
+  --dup-differs: color-mix(in srgb, var(--theme-danger) 16%, transparent);
+  --dup-yes: var(--malachite);
+  --dup-no: var(--theme-danger);
+}
+
+:root[data-theme='dark'] .dup-page {
+  --dup-0: #e0b45a;
+  --dup-1: #5b8fd6;
+  --dup-2: #3fa07e;
+  --dup-3: #d36d4f;
+  --dup-4: #cdbfa6;
+  --dup-5: #3fb0bd;
+  --dup-6: #a07a55;
+  --dup-7: #b48fd0;
+  --dup-8: #8d9196;
+  --dup-9: #5d636b;
+  --dup-yes: #5fc39c;
+}
+
+.dup-group {
+  margin: 28px 0 40px;
+  padding-top: 16px;
+  border-top: 1px solid var(--theme-border);
+}
+
+.dup-group h3 {
+  font-size: 1.1rem;
+  margin: 0 0 6px;
+}
+
+.dup-badge {
+  display: inline-block;
+  padding: 1px 10px;
+  margin-right: 6px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  vertical-align: 2px;
+  color: var(--on-act);
+  background: var(--malachite);
+}
+
+.dup-proportions .dup-badge,
+.dup-arranged .dup-badge {
+  background: var(--theme-text-muted);
+}
+
+.dup-family {
+  font-weight: 600;
+}
+
+.dup-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.dup-member {
+  margin: 0;
+  width: 210px;
+}
+
+.dup-member figcaption {
+  font-size: 0.85rem;
+  line-height: 1.3;
+  min-height: 4.8em;
+}
+
+.dup-id {
+  display: block;
+  color: var(--theme-text-muted);
+  font-size: 0.75rem;
+  word-break: break-all;
+}
+
+.dup-thumb,
+.dup-patch {
+  display: block;
+  width: 210px;
+  height: 210px;
+  object-fit: cover;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-card);
+}
+
+.dup-patch {
+  margin-top: 6px;
+}
+
+.dup-patch polygon,
+.dup-outline polygon {
+  stroke: var(--dup-edge);
+  stroke-width: 0.012;
+  stroke-linejoin: round;
+}
+
+.dup-outline {
+  width: 34px;
+  height: 34px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.dup-outline polygon {
+  stroke-width: 0.03;
+}
+
+.dup-s0 {
+  fill: var(--dup-0);
+}
+.dup-s1 {
+  fill: var(--dup-1);
+}
+.dup-s2 {
+  fill: var(--dup-2);
+}
+.dup-s3 {
+  fill: var(--dup-3);
+}
+.dup-s4 {
+  fill: var(--dup-4);
+}
+.dup-s5 {
+  fill: var(--dup-5);
+}
+.dup-s6 {
+  fill: var(--dup-6);
+}
+.dup-s7 {
+  fill: var(--dup-7);
+}
+.dup-s8 {
+  fill: var(--dup-8);
+}
+.dup-s9 {
+  fill: var(--dup-9);
+}
+
+.dup-hint {
+  font-size: 0.85rem;
+  color: var(--theme-text-muted);
+}
+
+.dup-table {
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 0.85rem;
+}
+
+.dup-table th,
+.dup-table td {
+  padding: 3px 10px;
+  border-bottom: 1px solid var(--theme-border);
+  text-align: left;
+}
+
+.dup-differs {
+  background: var(--dup-differs);
+}
+
+.dup-yes {
+  color: var(--dup-yes);
+  font-weight: 600;
+}
+
+.dup-no {
+  color: var(--dup-no);
+  font-weight: 600;
+}
+
+.dup-note {
+  padding: 10px 14px;
+  border-left: 3px solid var(--theme-danger);
+  background: var(--theme-bg-surface);
+}
+
+@media (max-width: 520px) {
+  .dup-member,
+  .dup-thumb,
+  .dup-patch {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+}
+
+.dup-links {
+  display: flex;
+  gap: 12px;
+  font-size: 0.8rem;
+}
+
+.dup-changed {
+  padding: 6px 10px;
+  border-left: 3px solid var(--malachite);
+  background: var(--theme-bg-surface);
+}

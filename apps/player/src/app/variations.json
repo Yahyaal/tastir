@@ -62,9 +62,14 @@
     "title": "Eight-fold star and cross",
     "members": [
       "eight-fold-star-and-cross",
-      "mashhad-gowhar-interlace",
+      "alhambra-comares-stars",
       "cairo-embassy-stars"
     ]
+  },
+  {
+    "id": "star-and-octagon",
+    "title": "Eight-fold star and octagon",
+    "members": ["eight-fold-star-and-octagon", "mashhad-gowhar-interlace"]
   },
   {
     "id": "arrayanes-squares",
@@ -92,7 +97,11 @@
   {
     "id": "ring-of-circles",
     "title": "Four-fold ring of circles",
-    "members": ["four-fold-ring-of-circles", "hani-zeynebiye-stars"]
+    "members": [
+      "four-fold-ring-of-circles",
+      "hani-zeynebiye-stars",
+      "itimad-daula-stars"
+    ]
   },
   {
     "id": "agra-kite-stars",
@@ -109,8 +118,12 @@
   },
   {
     "id": "paccard-222-rosettes",
-    "title": "Rosettes of Paccard's page 222",
-    "members": ["paccard-222-rosette", "paccard-222-rosette-ring"]
+    "title": "Interlaced rosettes of Paccard’s page 222 and Bou Inania",
+    "members": [
+      "paccard-222-rosette",
+      "paccard-222-rosette-ring",
+      "fes-bou-inania-interlaced-rosette"
+    ]
   },
   {
     "id": "isfahan-seyyed",
@@ -155,7 +168,10 @@
   {
     "id": "mexuar-rosettes",
     "title": "Sixteen-pointed rosettes of the Mexuar, Alhambra",
-    "members": ["alhambra-mexuar-vestibule-rosettes", "alhambra-mexuar-dado-rosettes"]
+    "members": [
+      "alhambra-mexuar-vestibule-rosettes",
+      "alhambra-mexuar-dado-rosettes"
+    ]
   },
   {
     "id": "agra-twelve-six-stars",
