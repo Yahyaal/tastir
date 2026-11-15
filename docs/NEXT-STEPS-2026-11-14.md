@@ -16,7 +16,7 @@ So the recommended order is: finish the open review, make the documents true, do
 
 - **The five rules in `CLAUDE.md` have held.** No tutorial has a coordinate, every tutorial has a golden test, and the engine stays pure, which is why Codex and other agents could add 190 tutorials without breaking old ones.
 - **The pattern pipeline is repeatable.** Reading a Tiling Search drawing, snapping it to an exact grid, building, and checking takes about ten minutes a pattern, and [the lessons](patterns/LESSONS.md) record each mistake once.
-- **The duplicates tool is the right idea.** It compares designs by their pieces and not by their look, and it found fifteen groups that the eye had missed. See http://localhost:4200/#/plan/duplicates.
+- **The duplicates tool is the right idea, as a finder of candidates.** It compares designs by their pieces and not by their look, and it found fifteen groups that the eye had missed. See http://localhost:4200/#/plan/duplicates. Finding 4 below says why its "Same design" is not yet proof.
 - **The way of working with the owner is written down** in [how to work with the owner](WORKING-WITH-OWNER.md), with the reason for each rule.
 
 ## What I found, most important first
@@ -33,11 +33,17 @@ The status page counts 17 verified, 15 approved, 6 checked by eye against a phot
 
 171 of 233 tutorials repeat on a square with four-fold symmetry, because the Tiling Search 45° list was the richest source. Levels are 41 beginner, 76 intermediate and 116 advanced. A beginner opening http://localhost:4200/#/ sees mostly dense advanced rosettes. The PRD's first user is a hobbyist who has seen one wall and wants to understand it, so the library needs a short marked path before it needs more designs.
 
-### 4. Families now mean two things
+### 4. The duplicates tool finds candidates but does not prove sameness
+
+Codex read `tools/duplicates.mts` on 14 November and found two limits, and both are true. Its `multiset` (line 254) is a set, so it records which neighbourhoods exist and not how many of each. It also groups only designs whose lists of piece shapes match exactly, so two designs that differ by one small piece are never compared. The ten merges into places that are already in production were decided on this evidence, and the "0 differences" reported afterwards was a check of the colours, not of the lines.
+
+The owner's idea closes the gap: lay the ink of one pattern over the ink of the other and see how much agrees. The engine already gives the ink as line segments with the two vectors that repeat it (`packages/engine/src/lib/pieces.ts`), so this can be measured and not only looked at. Piece 1 of the plan describes the tool.
+
+### 5. Families now mean two things
 
 A Variations family first meant "one design, small changes". Since 13 November it also means "different designs cut from the same pieces". The rule that a tutorial sits in one family at most already caused a wrong result: the Seyyed stars share their four pieces with Khojent and Mosul, but stay out of that family because they already sit in another. See http://localhost:4200/#/khojent-tile-stars/result and http://localhost:4200/#/isfahan-seyyed-stars/result. The second meaning is a fact the duplicates tool can compute, so it should not be kept by hand in the same list as the first.
 
-### 5. The start documents are stale
+### 6. The start documents are stale
 
 - [Start here](PROJECT.md) is dated 12 October, its next goal names the finished Alhambra work, and one paragraph about the local assistant is longer than the rest of the page.
 - [The status](patterns/STATUS.md) says "updated 12 October" and speaks of "all 39 tutorials"; [the remaining list](patterns/REMAINING.md) says 240 tutorials; the true number is 233 files and 10 places.
@@ -45,7 +51,7 @@ A Variations family first meant "one design, small changes". Since 13 November i
 - [The tasks](TASKS.md) still show 1.5 and 1.11 unticked although both tutorials exist.
 - The Progress block of the review page (http://localhost:4200/#/review) was last updated on 2 November.
 
-### 6. Code that will slow the next agents down
+### 7. Code that will slow the next agents down
 
 - `packages/project-core` (4,400 lines: colouring, placement, history, the drawing commands) has no test file of its own. The player's tests cover it from outside, but an agent changing it in the Studio or the assistant gets no quick answer.
 - `apps/player/src/review/data.ts` is 9,600 lines, and every agent that reports to the owner must edit it. Old cards should move out so the live file stays short.
@@ -63,7 +69,16 @@ Each piece below is one task for one agent: what to do, why, and how we know it 
 Do the five checks of [the handover](prompts/review-handover-2026-11-14.md) and write `docs/testing/review-duplicates-2026-11-14.md`, because the merged places and resampled colourings are already in production and nobody but their author has looked at them. Three points to add to that brief:
 
 - Run `pnpm test:equivalence` and the two timing tests only when `uptime` shows a load under 2. Record the load beside each result.
-- For the two rosette pairs, the piece counts already answer part of the question. `paccard-222-rosette` has 11 piece shapes and `paccard-222-rosette-ring` has 13, so they are two designs and stay a family (http://localhost:4200/#/paccard-222-rosette/result, http://localhost:4200/#/paccard-222-rosette-ring/result). `fes-najjarin-rosette` and `meknes-bou-inania-rosette` both have 20, so they may truly be one design in two places; compare them piece by piece before merging (http://localhost:4200/#/fes-najjarin-rosette/result, http://localhost:4200/#/meknes-bou-inania-rosette/result). Show the owner the differing pieces marked on a picture.
+- **Build the ink overlay first** (the owner's idea, 14 November), because every other judgement in this review rests on it. For any two tutorials it does four things.
+  1. It brings both walls to the same scale by giving their smallest repeating cells the same area, so a tile that holds two or four cells is not read as a difference.
+  2. It tries only the placements a repeating wall allows: the turns its lattice permits, each also mirrored, with a highest-symmetry centre of one wall laid on one of the other. This is a few dozen tries, and the best one is kept. A match that needs a mirror is labelled as such.
+  3. It joins strokes that lie on one line before comparing, so a line inked in three parts equals the same line inked in one, and then measures the length of ink that agrees within a stated tolerance, both ways: how much of A lies on B, and how much of B lies on A. Both numbers matter, because one design can be the other plus an extra ring.
+  4. It draws the result on http://localhost:4200/#/plan/duplicates: shared ink in grey, ink only in A in one colour, ink only in B in another, with the two numbers beside it.
+
+  When both walls have the same repeat after placing and each covers the other fully over one cell, the walls are the same everywhere, since the pieces are only the spaces between the ink. Keep the piece comparison beside it, because the overlay cannot tell "the same design at other proportions" from "a different design" and the pieces can. The page should then say one of three things for a pair: the same lines, the same arrangement at other proportions, or different.
+- **Run the overlay on the ten merges already made.** The old tutorial files are in git before commit `ac3b7bd`; compare each with the tutorial it became a place of. Any pair under full agreement goes to the owner with its overlay picture, and may need to be split again.
+- **Then the two rosette pairs.** `paccard-222-rosette` has 11 piece shapes and `paccard-222-rosette-ring` has 13, which suggests two designs if the pieces were found correctly (http://localhost:4200/#/paccard-222-rosette/result, http://localhost:4200/#/paccard-222-rosette-ring/result). `fes-najjarin-rosette` and `meknes-bou-inania-rosette` both have 20, so they may truly be one design in two places (http://localhost:4200/#/fes-najjarin-rosette/result, http://localhost:4200/#/meknes-bou-inania-rosette/result). The overlay decides both, and its picture is what the owner is shown.
+- **Fix the tool's two limits:** count the neighbourhoods instead of only listing them, and let the page compare any two tutorials the owner picks, not only those in one group.
 - Check that a search for a place's name, a share link made at a place, and a saved design made at a place each open the place and not the base tutorial.
 
 Done when the review is at `#/notes` and the owner has answered its one question.
@@ -134,7 +149,7 @@ These are independent and small, so any agent can take one between larger pieces
 1. Read `CLAUDE.md`, [Start here](PROJECT.md), [how to work with the owner](WORKING-WITH-OWNER.md) and this page, then take one numbered piece, show a short plan and wait for the owner's OK.
 2. Everything shown to the owner carries its own link, and anything they must judge carries a picture with the part marked.
 3. Run checks one project at a time with one worker, and look at `uptime` first; a timing result under load proves nothing.
-4. Before adding or merging a tutorial, run `tools/duplicates.mts` and read http://localhost:4200/#/plan/duplicates. The same pieces in the same amounts with the same neighbours is a place; the same pieces laid out differently is a related design; a small change to one design is a variation.
+4. Before adding or merging a tutorial, run `tools/duplicates.mts` and read http://localhost:4200/#/plan/duplicates. The tool only finds candidates; the ink overlay decides. Ink that agrees fully both ways is a place; the same pieces laid out differently is a related design; a small change to one design is a variation.
 5. Rules name palette slots and never hex colours, and a colour change goes on the review page as before and after before it goes anywhere else.
 6. Nothing is pushed, deployed or deleted without the owner's yes in chat.
 
