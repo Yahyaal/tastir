@@ -67,6 +67,15 @@ const ColorsPlan = import.meta.env.DEV
     )
   : undefined;
 
+/** Palette comparisons for owner review, dev server only. */
+const PalettesPlan = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/PalettesPlan').then((m) => ({
+        default: m.PalettesPlan,
+      })),
+    )
+  : undefined;
+
 /** The colour stage mock (#/plan/colour-stage), dev server only. */
 const ColourStagePlan = import.meta.env.DEV
   ? lazy(() =>
@@ -221,6 +230,15 @@ function AppPage({
       <Broken message="The plan only exists on the dev server (pnpm dev)." />
     );
   }
+  if (route === 'plan/palettes') {
+    return PalettesPlan ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <PalettesPlan />
+      </Suspense>
+    ) : (
+      <Broken message="The palette study only exists on the dev server (pnpm dev)." />
+    );
+  }
   if (route === 'plan/duplicates') {
     return DuplicatesPlan ? (
       <Suspense fallback={<p className="review-loading">Loading…</p>}>
@@ -349,6 +367,7 @@ function SharedPage({
   return (
     <Play
       json={opened.json}
+      presentation={opened.presentation}
       design={opened.design}
       address="shared"
       banner={

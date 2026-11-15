@@ -1,3 +1,6 @@
+import { SettingsReview } from './SettingsReview';
+import { TeachingUpdate } from './TeachingUpdate';
+import { InkPresentation } from './InkPresentation';
 import { Markdown } from './markdown';
 import './review.css';
 
@@ -8,6 +11,10 @@ const files = import.meta.glob<string>(
     '../../../../docs/patterns/*.md',
     '../../../../docs/testing/studio-chatgpt-2026-10-21.md',
     '../../../../docs/testing/codex-provenance-review-2026-10-23.md',
+    '../../../../docs/testing/ink-overlay-2026-11-14.md',
+    '../../../../docs/testing/teaching-followup-2026-11-15.md',
+    '../../../../docs/testing/guide-settings-sharing-2026-11-15.md',
+    '../../../../docs/testing/review-duplicates-2026-11-14.md',
     '../../../../docs/prompts/review-handover-2026-11-14.md',
   ],
   { query: '?raw', import: 'default', eager: true },
@@ -25,16 +32,52 @@ export const DOCS: readonly {
   text: string;
 }[] = [
   {
+    key: 'grok-review',
+    label: 'Grok review: priorities and verification',
+    file: 'GROK-REVIEW-2026-11-15.md',
+    text: read('GROK-REVIEW-2026-11-15.md'),
+  },
+  {
     key: 'start',
     label: 'Start here',
     file: 'PROJECT.md',
     text: read('PROJECT.md'),
   },
   {
+    key: 'status-archive',
+    label: 'Archived project status (15 November)',
+    file: 'HISTORY-STATE-2026-11-15.md',
+    text: read('HISTORY-STATE-2026-11-15.md'),
+  },
+  {
     key: 'next-steps',
     label: 'Next steps (14 November)',
     file: 'NEXT-STEPS-2026-11-14.md',
     text: read('NEXT-STEPS-2026-11-14.md'),
+  },
+  {
+    key: 'settings-evidence',
+    label: 'Guide, settings and sharing evidence',
+    file: 'testing/guide-settings-sharing-2026-11-15.md',
+    text: read('testing/guide-settings-sharing-2026-11-15.md'),
+  },
+  {
+    key: 'teaching-evidence',
+    label: 'Teaching follow-up evidence',
+    file: 'testing/teaching-followup-2026-11-15.md',
+    text: read('testing/teaching-followup-2026-11-15.md'),
+  },
+  {
+    key: 'ink-overlay',
+    label: 'Ink overlay (14 November)',
+    file: 'testing/ink-overlay-2026-11-14.md',
+    text: read('testing/ink-overlay-2026-11-14.md'),
+  },
+  {
+    key: 'duplicates-review',
+    label: 'Duplicates review (14 November)',
+    file: 'testing/review-duplicates-2026-11-14.md',
+    text: read('testing/review-duplicates-2026-11-14.md'),
   },
   {
     key: 'night-report',
@@ -237,6 +280,12 @@ function linkFrom(file: string) {
 }
 
 export function Notes({ page = 'start' }: { page?: string }) {
+  if (page === 'settings-designs') return <SettingsReview />;
+  if (page === 'settings-update') return <SettingsReview />;
+  if (page === 'ink-guide')
+    return <TeachingUpdate key={page} initialTopic="preview" />;
+  if (page === 'teaching-update') return <TeachingUpdate key={page} />;
+  if (page === 'ink-presentation') return <InkPresentation />;
   const doc = DOCS.find((d) => d.key === page) ?? DOCS[0];
   if (!doc) return null;
   return (
@@ -256,6 +305,15 @@ export function Notes({ page = 'start' }: { page?: string }) {
           Claude Code session reads first.
         </p>
       </header>
+      <p>
+        <a href="#/notes/teaching-update">
+          New: construction research and fixes
+        </a>{' '}
+        · <a href="#/plan/palettes">Palette study</a> ·{' '}
+        <a href="#/notes/ink-presentation">
+          Ink comparison: the visual research presentation →
+        </a>
+      </p>
       <nav className="notes-tabs" aria-label="Documents">
         {DOCS.map((d) => (
           <a

@@ -1,3 +1,4 @@
+import type { SharedPresentation } from '@tastir/schema';
 import { registerPageColoring } from '../agent/pageColoring';
 import { StepText } from './StepText';
 import { DEFAULT_JALI, sameJali } from './jali';
@@ -17,7 +18,7 @@ import {
 import { copyUpTo } from '../editor/document';
 import { addPattern, freeTitle, getPattern } from '../editor/patterns';
 import { planStep, play, playInk } from './animation';
-import { fullView, growingFrame, tileView, width } from './camera';
+import { fullView, growingFrame, tileView, width, type Rect } from './camera';
 import {
   colorReducer,
   finishOf,
@@ -72,7 +73,7 @@ import { useModalFocus } from './useModalFocus';
 import { banded, Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { WallControls } from './WallControls';
 import { PenControls } from './PenControls';
-import { HideToggle } from './HideToggle';
+import { PlayerSettings } from './PlayerSettings';
 import { DEFAULT_PEN, samePen } from './pen';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 
@@ -189,6 +190,18 @@ function sameDesign(
  * along), or the finished wall. */
 export type Start = 'beginning' | 'repeat' | 'result';
 
+/** Preserve an explicit progressive-ink preference; upgrade the old default. */
+function legacyInkMode(): InkMode {
+  try {
+    return JSON.parse(localStorage.getItem('tastir.inkMode') ?? 'null') ===
+      'asYouGo'
+      ? 'asYouGo'
+      : 'guide';
+  } catch {
+    return 'guide';
+  }
+}
+
 export function Player({
   model: full,
   start: asked = 'beginning',
@@ -196,6 +209,7 @@ export function Player({
   address: given,
   banner,
   reviewIndex,
+  presentation,
 }: {
   model: Model;
   /** A line over the workspace, such as a shared pattern's Keep a copy. */
@@ -208,12 +222,14 @@ export function Player({
   address?: string;
   /** An isolated owner review uses address="shared", which disables progress autosaves. */
   reviewIndex?: number;
+  presentation?: SharedPresentation;
 }) {
   // Helper lines (construction lines the pattern never runs along) are
   // left out unless the learner asks for them.
   const [showHelpers, setShowHelpers] = useRemembered<boolean>(
     'showHelpers',
     false,
+    { override: presentation?.showHelpers, persist: given !== 'shared' },
   );
   const model = useMemo(
     () => withHelpers(full, showHelpers),
@@ -228,14 +244,16 @@ export function Player({
   const browsing = !mine && !sharedView;
   const start = opened ? 'result' : asked;
   // After the ink the learner colours the unit first, or repeats it first.
-  const [colourFirst, setColourFirst] = useState(false);
+  const [colourFirst, setColourFirst] = useState(
+    presentation?.colourFirst ?? false,
+  );
   const stages = useMemo(
     () => stagesOf(tutorial, colourFirst),
     [tutorial, colourFirst],
   );
   // How many copies of the tile the repeat lays: so many along each
   // slide, or the whole wall.
-  const [copies, setCopies] = useState<Copies>('wall');
+  const [copies, setCopies] = useState<Copies>(presentation?.copies ?? 'wall');
   // Watching again, the lesson opens at the step the learner left.
   const [resumedAt, setResumedAt] = useState(() =>
     start === 'beginning' && !sharedView
@@ -244,6 +262,15 @@ export function Player({
   );
   const [index, setIndex] = useState(
     () =>
+      (presentation
+        ? Math.max(
+            0,
+            Math.min(
+              presentation.index,
+              stagesOf(tutorial, presentation.colourFirst).length - 1,
+            ),
+          )
+        : undefined) ??
       (reviewIndex === undefined
         ? undefined
         : Math.max(0, Math.min(reviewIndex, stagesOf(tutorial).length - 1))) ??
@@ -260,7 +287,7 @@ export function Player({
     [stages, index],
   );
   const last = stages.length - 1;
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeed] = useState<number>(presentation?.speed ?? 1);
   const [playing, setPlaying] = useState(
     start === 'beginning' &&
       resumedAt === undefined &&
@@ -270,9 +297,18 @@ export function Player({
   const clock = useRef<{ index: number; remaining: number } | undefined>(
     undefined,
   );
-  const [reduced, setReduced] = useState(prefersReducedMotion);
-  const [showNames, setShowNames] = useRemembered<boolean>('showNames', false);
-  const [inkMode, setInkMode] = useRemembered<InkMode>('inkMode', 'end');
+  const [reduced, setReduced] = useState(
+    () => prefersReducedMotion() || presentation?.reduced === true,
+  );
+  const [showNames, setShowNames] = useRemembered<boolean>('showNames', false, {
+    override: presentation?.showNames,
+    persist: !sharedView,
+  });
+  const [inkMode, setInkMode] = useRemembered<InkMode>(
+    'inkMode.v2',
+    legacyInkMode(),
+    { override: presentation?.inkMode, persist: !sharedView },
+  );
   const asYouGo = inkMode === 'asYouGo';
 
   // A design not yet named, kept from the learner's first change: it comes
@@ -498,7 +534,9 @@ export function Player({
   const [paper, setPaper] = useState<Paper>('A4');
   const [printing, setPrinting] = useState(false);
   // Opening at the result shows the original beside the wall at once.
-  const [comparing, setComparing] = useState(start === 'result');
+  const [comparing, setComparing] = useState(
+    presentation?.showOriginal ?? start === 'result',
+  );
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
     wallSvg(inking.shown, colors, {
@@ -538,9 +576,23 @@ export function Player({
           : fullView(model),
     [model, stage, hidden],
   );
+  const initialConstructionView = useRef(
+    stage.kind === 'step' || stage.kind === 'ink'
+      ? presentation?.camera
+      : undefined,
+  );
+  const wallViewRef = useRef<Rect | undefined>(
+    stage.kind === 'color' || (stage.kind === 'repeat' && colourFirst)
+      ? presentation?.camera
+      : undefined,
+  );
+  const keepWallView = useCallback((view: Rect) => {
+    wallViewRef.current = view;
+  }, []);
   const onConstruction = stage.kind === 'step' || stage.kind === 'ink';
   const camera = useCamera(frame, svgRef, {
     stage: index,
+    initialView: initialConstructionView.current,
     instant: reduced,
     active: onConstruction,
     paused: !playing && clock.current?.index === index,
@@ -713,7 +765,7 @@ export function Player({
       if (
         e.target instanceof Element &&
         e.target.closest(
-          'input, textarea, select, button, a, [contenteditable]:not([contenteditable="false"]), [role="dialog"], [role="alertdialog"]',
+          'input, textarea, select, button, summary, a, [contenteditable]:not([contenteditable="false"]), [role="dialog"], [role="alertdialog"]',
         )
       )
         return;
@@ -730,6 +782,11 @@ export function Player({
 
   const shown = shownSteps(tutorial);
   const beats = beatsOf(tutorial);
+  const destinationGuide =
+    inkMode === 'guide' &&
+    stage.kind === 'step' &&
+    stage.beat ===
+      Math.max(0, ...beats.filter((b) => !b.hidden).map((b) => b.beat));
   let label: string;
   let hint: string | undefined;
   let text: string;
@@ -755,6 +812,8 @@ export function Player({
         svgRef={svgRef}
         showNames={showNames}
         inkSoFar={asYouGo}
+        inkGuide={destinationGuide}
+        guideInk={inkModel.pattern.ink}
       />
     );
   } else if (stage.kind === 'ink') {
@@ -798,6 +857,8 @@ export function Player({
       count === 'wall' ? (
         <Wall
           model={coloured}
+          initialView={wallViewRef.current}
+          onCameraChange={keepWallView}
           colors={colors}
           fill={fill}
           finish={finishOf(coloured, colorHistory.now)}
@@ -888,8 +949,27 @@ export function Player({
       onSaved={keepSaved}
     />
   );
+  const sharePresentation = (): SharedPresentation => ({
+    index,
+    speed: speed as SharedPresentation['speed'],
+    inkMode,
+    showNames,
+    showOriginal: comparing,
+    showHelpers,
+    reduced,
+    colourFirst,
+    copies: copies === 'wall' ? 'wall' : [copies[0], copies[1]],
+    ...(stage.kind === 'step' || stage.kind === 'ink'
+      ? { camera: camera.view }
+      : (stage.kind === 'color' || (stage.kind === 'repeat' && colourFirst)) &&
+          copies === 'wall' &&
+          wallViewRef.current
+        ? { camera: wallViewRef.current }
+        : {}),
+  });
   const endShare = sharedView ? null : (
     <ShareLink
+      presentation={sharePresentation}
       compact
       address={address}
       name={design?.name ?? tutorial.title}
@@ -901,6 +981,7 @@ export function Player({
   );
   const shareLink = sharedView ? null : (
     <ShareLink
+      presentation={sharePresentation}
       address={address}
       name={design?.name ?? tutorial.title}
       fields={() => {
@@ -1165,74 +1246,19 @@ export function Player({
         {browsing ? (
           <ViewSwitch id={address} view={view} onShow={show} />
         ) : null}
-        <details className="view-menu">
-          <summary aria-label="View settings" title="View settings">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="3" />
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-            </svg>
-          </summary>
-          <div className="controls">
-            <label>
-              Speed
-              <select
-                value={speed}
-                onChange={(e) => setSpeed(Number(e.target.value))}
-              >
-                <option value={0.5}>½×</option>
-                <option value={1}>1×</option>
-                <option value={2}>2×</option>
-              </select>
-            </label>
-            <label>
-              Ink
-              <select
-                value={inkMode}
-                onChange={(e) => setInkMode(e.target.value as InkMode)}
-              >
-                <option value="end">at the end</option>
-                <option value="asYouGo">as you go</option>
-              </select>
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={reduced}
-                onChange={(e) => setReduced(e.target.checked)}
-              />
-              Reduce motion
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={showNames}
-                onChange={(e) => setShowNames(e.target.checked)}
-              />
-              Show names
-            </label>
-            <label title="Construction lines the pattern never runs along: they only help find points. Hidden, the drawing looks as simple as it is.">
-              <input
-                type="checkbox"
-                checked={showHelpers}
-                onChange={(e) => setShowHelpers(e.target.checked)}
-              />
-              Show helper lines
-            </label>
-            {import.meta.env.DEV && browsing ? (
-              <HideToggle id={address} />
-            ) : null}
-          </div>
-        </details>
+        <PlayerSettings
+          speed={speed}
+          setSpeed={setSpeed}
+          inkMode={inkMode}
+          setInkMode={setInkMode}
+          reduced={reduced}
+          setReduced={setReduced}
+          showNames={showNames}
+          setShowNames={setShowNames}
+          showHelpers={showHelpers}
+          setShowHelpers={setShowHelpers}
+          hideId={import.meta.env.DEV && browsing ? address : undefined}
+        />
         <ThemeSwitch />
       </header>
       {banner}
@@ -1241,6 +1267,11 @@ export function Player({
           <main className={showOriginal ? 'stage comparing' : 'stage'}>
             {showOriginal ? <Original photos={photos} /> : null}
             {picture}
+            {destinationGuide && (
+              <span className="destination-guide-caption">
+                Faint guide · the full inking reveal comes next
+              </span>
+            )}
           </main>
           {/* On the drawing itself, so the photo is hidden or shown where
               it is, on a phone as on a computer. */}
@@ -1540,6 +1571,9 @@ export function Player({
         </div>
         <div className="journey-row">
           <Journey stages={stages} index={index} onJump={jump} />
+          {!colorStage && !sharedView && (
+            <div className="lesson-share">{endShare}</div>
+          )}
           {colorStage && ready && !phone ? (
             <div className="end-actions" role="group" aria-label="Your design">
               {endSave}
@@ -1726,6 +1760,7 @@ export function Play({
   address,
   banner,
   reviewIndex,
+  presentation,
 }: {
   json: unknown;
   start?: Start;
@@ -1733,6 +1768,7 @@ export function Play({
   address?: string;
   banner?: React.ReactNode;
   reviewIndex?: number;
+  presentation?: SharedPresentation;
 }) {
   const { model, error, progress } = useModel(json);
   if (error !== undefined) return <Broken message={error} />;
@@ -1746,6 +1782,7 @@ export function Play({
   return (
     <Player
       model={model}
+      presentation={presentation}
       start={start}
       design={design}
       address={address}

@@ -174,3 +174,33 @@ test('the variations of a pattern switch at the same stage', async ({
     }),
   ).toHaveAttribute('aria-current', 'page');
 });
+
+test('a region count includes alternate places and equals its card results', async ({
+  page,
+}) => {
+  await page.goto('/#/');
+  const side = page.locator('.library-side');
+  let menu = side;
+  if (!(await side.isVisible())) {
+    await page.getByRole('button', { name: /^Browse/ }).click();
+    menu = page.getByRole('dialog', { name: 'Browse the patterns' });
+  }
+  const region = menu.getByRole('button', {
+    name: /^Alhambra and Nasrid Spain,/,
+  });
+  await region.waitFor();
+  const label = await region.getAttribute('aria-label');
+  const count = Number(label?.match(/, (\d+) patterns?$/)?.[1]);
+  expect(count).toBeGreaterThan(0);
+  await region.click();
+  if (
+    await page.getByRole('dialog', { name: 'Browse the patterns' }).isVisible()
+  )
+    await page.getByRole('button', { name: /^Show \d+ patterns?$/ }).click();
+  await expect(page.locator('.cards .card')).toHaveCount(count);
+  await expect(
+    page.getByRole('button', {
+      name: 'Remove the filter Alhambra and Nasrid Spain',
+    }),
+  ).toBeVisible();
+});

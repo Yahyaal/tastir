@@ -7,12 +7,13 @@
  * levels, each stricter than the last:
  *  1. shapes: the same piece shapes (corner angles and side proportions);
  *  2. proportions: also the same share of the wall for each shape;
- *  3. neighbours: also the same pieces round every piece and every corner.
- * Two tutorials that agree at level 3 tile the plane the same way.
+ *  3. neighbours: also the occurrence densities of local piece/corner sequences.
+ * These rounded local signatures find candidates; the ink overlay checks the lines.
  */
 import { execSync } from 'node:child_process';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { parseTutorial } from '../packages/schema/src/index.js';
+import { neighbourhoodCounts } from '../apps/player/src/review/neighbourhoodCounts.js';
 import {
   computePattern,
   evaluate,
@@ -226,7 +227,7 @@ for (const file of readdirSync(DIR)
               }),
             ) ?? '-',
         )
-        .join('');
+        .join(',');
     });
     return `${index.get(c.key)}:` + canonical(across, (x) => x);
   });
@@ -251,7 +252,10 @@ for (const file of readdirSync(DIR)
       return canonical(runs.length ? runs : [ring[0]], (x) => x);
     }),
   );
-  const multiset = (xs: string[]) => [...new Set(xs)].sort().join(' ; ');
+  // Compare occurrence densities in the same geometric unit, rather than raw
+  // counts per supplied tile. This handles supercells without repeat discovery.
+  const multiset = (xs: string[]) =>
+    neighbourhoodCounts(xs, cellArea / largest);
   // A square patch round O for the page, a few largest-piece widths across.
   const half = unit * 2.6;
   const patch = near

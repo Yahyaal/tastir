@@ -522,30 +522,37 @@ describe.each(BACKENDS)('the studio over MCP, with %s', (kind: BackendKind) => {
     expect((await call('undo', undo)).value.revision).toBe(3);
   });
 
-  it('keeps every default picture small enough for a chat app', async () => {
-    const project = (
-      await call('new_project', {
-        title: 'Pictures',
-        from_tutorial: 'eight-fold-star-and-cross',
-      })
-    ).value.project as string;
-    await call('set_reference', {
-      project,
-      path: 'apps/player/public/photos/cairo-minbar-doors-met.jpg',
+  describe('default chat pictures', () => {
+    let project: string;
+    beforeEach(async () => {
+      // Prepare the project/photo as a fixture; each case checks one view reply.
+      project = (
+        await call('new_project', {
+          title: 'Pictures',
+          from_tutorial: 'eight-fold-star-and-cross',
+        })
+      ).value.project as string;
+      await call('set_reference', {
+        project,
+        path: 'apps/player/public/photos/cairo-minbar-doors-met.jpg',
+      });
     });
-    for (const what of ['construction', 'reference', 'overlay']) {
-      const result = (await client.callTool({
-        name: 'view',
-        arguments: { project, what },
-      })) as {
-        content: { type: string; data?: string; text?: string }[];
-      };
-      const image = result.content.find((c) => c.type === 'image');
-      expect(image?.data?.length).toBeLessThan(100_000);
-      expect(result.content.find((c) => c.type === 'text')?.text).toMatch(
-        /not the owner's screen/,
-      );
-    }
+    it.each(['construction', 'reference', 'overlay'])(
+      'keeps the default %s picture small enough for a chat app',
+      async (what) => {
+        const result = (await client.callTool({
+          name: 'view',
+          arguments: { project, what },
+        })) as {
+          content: { type: string; data?: string; text?: string }[];
+        };
+        const image = result.content.find((c) => c.type === 'image');
+        expect(image?.data?.length).toBeLessThan(100_000);
+        expect(result.content.find((c) => c.type === 'text')?.text).toMatch(
+          /not the owner's screen/,
+        );
+      },
+    );
   });
 
   it('starts from a library tutorial', async () => {

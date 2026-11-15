@@ -125,3 +125,62 @@ describe('the side menu', () => {
     );
   });
 });
+
+describe('facet counts across alternate places', () => {
+  const member = (id: string, region: string, level = 'beginner'): Entry => ({
+    id,
+    json: { title: id, region, level, fold: 8, style: 'Nasrid' },
+  });
+  const cards: Entry[] = [
+    {
+      ...member('blue-parent', 'Morocco'),
+      places: [
+        member('spanish-place', 'Spain', 'advanced'),
+        member('other-place', 'Morocco'),
+      ],
+      variations: [
+        {
+          ...member('variant', 'Morocco'),
+          places: [member('variant-place', 'Spain')],
+        },
+      ],
+    },
+  ];
+  it('counts a family once even when several members match, including variation places', () => {
+    const counts = facetCounts(cards, {}, 'region');
+    expect(counts.get('Spain')).toBe(1);
+    expect(counts.get('Morocco')).toBe(1);
+  });
+  it('requires each matching member to satisfy the other filters and query too', () => {
+    for (const filters of [
+      {},
+      { level: 'advanced' },
+      { level: 'beginner' },
+      { query: 'blue' },
+      { query: 'spanish' },
+      { region: 'Morocco', level: 'advanced' },
+    ]) {
+      for (const key of ['region', 'style', 'level', 'fold'] as const) {
+        const counts = facetCounts(cards, filters, key);
+        const values =
+          key === 'fold'
+            ? [8, 12]
+            : key === 'region'
+              ? ['Spain', 'Morocco']
+              : key === 'level'
+                ? ['beginner', 'advanced']
+                : ['Nasrid'];
+        for (const value of values)
+          expect(counts.get(value as never) ?? 0).toBe(
+            filtered(cards, { ...filters, [key]: value }).length,
+          );
+      }
+    }
+    expect(facetCounts(cards, { query: 'blue' }, 'region').has('Spain')).toBe(
+      false,
+    );
+    expect(
+      facetCounts(cards, { region: 'Morocco' }, 'level').has('advanced'),
+    ).toBe(false);
+  });
+});

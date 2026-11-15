@@ -220,7 +220,7 @@ export function carriersOf(model: Model): ReadonlySet<string> {
 }
 
 /** When the ink is drawn: as each step makes it, or all at the end. */
-export type InkMode = 'end' | 'asYouGo';
+export type InkMode = 'guide' | 'end' | 'asYouGo';
 
 const strokeBeats = new WeakMap<Model, readonly number[]>();
 

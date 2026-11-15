@@ -5,8 +5,8 @@ import {
   type Pattern,
   type Vec,
 } from '@tastir/engine';
-import { useId, useMemo, useRef } from 'react';
-import { fit, viewBox, width } from './camera';
+import { useId, useLayoutEffect, useMemo, useRef } from 'react';
+import { fit, viewBox, width, type Rect } from './camera';
 import { DEFAULT_FINISH, type Finish } from './coloring';
 import { relief, strapWidths, wallView } from './drawing';
 import {
@@ -129,10 +129,14 @@ export function Wall({
   lit,
   boardRef,
   boardCamera,
+  initialView,
+  onCameraChange,
 }: {
   /** Optional shared board for image capture and annotations in the assistant. */
   boardRef?: React.RefObject<SVGSVGElement | null>;
   boardCamera?: ReturnType<typeof useCamera>;
+  initialView?: Rect;
+  onCameraChange?: (view: Rect) => void;
   model: Model;
   colors: readonly string[];
   /** The fill for each placement (piece, and the cell it is copied to),
@@ -166,8 +170,14 @@ export function Wall({
   const ownRef = useRef<SVGSVGElement>(null);
   const svgRef = boardRef ?? ownRef;
   const start = useMemo(() => wallView(model), [model]);
-  const ownCamera = useCamera(start, svgRef, { active: !boardCamera });
+  const ownCamera = useCamera(start, svgRef, {
+    active: !boardCamera,
+    initialView,
+  });
   const camera = boardCamera ?? ownCamera;
+  useLayoutEffect(() => {
+    onCameraChange?.(camera.view);
+  }, [camera.view, onCameraChange]);
   const { pattern } = model;
   const lines = style === 'lines';
   // Interlace, and the double pen, weave their bands over and under.

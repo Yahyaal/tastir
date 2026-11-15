@@ -1,3 +1,4 @@
+import type { SharedPresentation } from '@tastir/schema';
 import { useEffect, useState } from 'react';
 import { tutorialOf } from '../editor/finish';
 import { decodeShared, encodeShared, type Shared } from '../editor/files';
@@ -15,10 +16,12 @@ export function ShareLink({
   fields,
   name,
   compact = false,
+  presentation,
 }: {
   /** In the step bar: the explanation is a tooltip, and “Copied” shows
    * for a few seconds (the link itself only when it could not be copied). */
   compact?: boolean;
+  presentation?: () => SharedPresentation;
   /** Where the tutorial lives: a library id, or mine/<id>. */
   address: string;
   /** The design as the player has it now. */
@@ -50,6 +53,7 @@ export function ShareLink({
           }
         : { library: address }),
       design: { name, ...(inked ? { inked } : {}), ...rest },
+      ...(presentation ? { presentation: presentation() } : {}),
     };
     setLink(undefined);
     setCopied(false);
@@ -106,6 +110,7 @@ export function ShareLink({
 export type Opened =
   | {
       readonly json: unknown;
+      readonly presentation?: SharedPresentation;
       readonly design: Design;
       readonly keep: () => string | undefined;
     }
@@ -137,6 +142,7 @@ export function openShared(shared: Shared, library: readonly Entry[]): Opened {
   };
   return {
     json,
+    ...(shared.presentation ? { presentation: shared.presentation } : {}),
     design: {
       ...fields,
       id: 'shared',

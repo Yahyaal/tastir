@@ -298,7 +298,13 @@ export function Review() {
       <nav className="review-top">
         <a href="#/">← Library</a>
         <span>
-          <a href="#/notes">Project notes</a> ·{' '}
+          <a href="#/notes/settings-update">New: guide, settings & sharing</a> ·{' '}
+          <a href="#/notes/teaching-update">New: construction research</a> ·{' '}
+          <a href="#/plan/palettes">Palette study</a> ·{' '}
+          <a href="#/notes/ink-presentation">
+            Ink comparison: visual presentation
+          </a>{' '}
+          · <a href="#/notes">Project notes</a> ·{' '}
           <a href="#/plan">Plan: your own patterns</a> ·{' '}
           <a href="#/plan/draw-along">Plan: draw along</a> ·{' '}
           <a href="#/plan/colors">Colours</a>{' '}

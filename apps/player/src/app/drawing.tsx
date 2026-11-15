@@ -410,6 +410,8 @@ export function Construction({
   svgRef,
   showNames = false,
   inkSoFar = false,
+  inkGuide = false,
+  guideInk,
   pen = true,
   freeInk,
   enter = false,
@@ -441,6 +443,9 @@ export function Construction({
   showNames?: boolean;
   /** Inking as you go: the ink made so far, this step's in green. */
   inkSoFar?: boolean;
+  /** A preview on completed construction; it never commits or animates ink. */
+  inkGuide?: boolean;
+  guideInk?: readonly InkStroke[];
   /** On the ink stage, ink the pattern with a pen (inking at the end). */
   pen?: boolean;
   /** On the ink stage: every piece the learner can ink, and which are. */
@@ -509,6 +514,26 @@ export function Construction({
             />
           ))}
         </g>
+        {inkGuide && !ink ? (
+          <g
+            className="destination-guide"
+            aria-label="Faint final pattern guide"
+            pointerEvents="none"
+          >
+            {(guideInk ?? model.pattern.panel?.ink ?? model.pattern.ink).map(
+              ({ segment: s }, i) => (
+                <line
+                  key={i}
+                  x1={sx(s.a)}
+                  y1={sy(s.a)}
+                  x2={sx(s.b)}
+                  y2={sy(s.b)}
+                  vectorEffect="non-scaling-stroke"
+                />
+              ),
+            )}
+          </g>
+        ) : null}
         {inkSoFar && !ink ? <InkSoFar model={model} upTo={upTo} /> : null}
 
         {ink && freeInk ? <FreeInkPieces {...freeInk} /> : null}
@@ -595,6 +620,8 @@ export function Construction({
     drawn,
     showNames,
     inkSoFar,
+    inkGuide,
+    guideInk,
     pen,
     freeInk,
     enter,

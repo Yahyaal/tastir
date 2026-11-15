@@ -7,9 +7,18 @@ import {
   within,
 } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
+import snowflake from '@tutorials/six-fold-snowflake.json';
 import App, { Play } from './app';
 import { PALETTES } from './coloring';
 import { addDesign, listDesigns } from './designs';
+import { entriesOf } from './library';
+
+// Saving needs these two addresses, not a render of the entire catalogue.
+// The library's own specs exercise all tutorial cards.
+const entries = entriesOf({
+  'eight-fold-star-and-cross.json': example,
+  'six-fold-snowflake.json': snowflake,
+});
 
 const label = () => document.querySelector('.label')?.textContent;
 const click = (name: string | RegExp) =>
@@ -98,7 +107,7 @@ describe('saving a design', () => {
 
     // A fresh page at the design's address opens at the wall with them.
     cleanup();
-    render(<App />);
+    render(<App entries={entries} />);
     expect(label()).toBe('Color');
     expect(fills()).toEqual(colored);
     expect(
@@ -120,7 +129,7 @@ describe('saving a design', () => {
       look: 'tiles',
       grout: 1,
     });
-    render(<App />);
+    render(<App entries={entries} />);
     go(`#/eight-fold-star-and-cross/design/${first?.id}`);
     click('Save as new');
     name('Second');
@@ -137,7 +146,7 @@ describe('saving a design', () => {
       look: 'tiles',
       grout: 1,
     });
-    render(<App />);
+    render(<App entries={entries} />);
     go(`#/eight-fold-star-and-cross/design/${old?.id}`);
     expect(label()).toBe('Color');
     expect(screen.getByText(/The tutorial has changed/)).toBeTruthy();
@@ -149,7 +158,7 @@ describe('saving a design', () => {
   });
 
   it('says plainly when a design is not here, with the ways on', () => {
-    render(<App />);
+    render(<App entries={entries} />);
     go('#/eight-fold-star-and-cross/design/nothing');
     expect(
       screen.getByRole('heading', { name: 'This design is not here' }),
@@ -173,7 +182,7 @@ describe('saving a design', () => {
       look: 'tiles',
       grout: 1,
     });
-    render(<App />);
+    render(<App entries={entries} />);
     go(`#/six-fold-snowflake/design/${mine?.id}`);
     expect(screen.getByText(/is a design of another pattern/)).toBeTruthy();
     expect(screen.queryByText(/in this browser/)).toBeNull();
@@ -210,7 +219,7 @@ describe('saving a design', () => {
       look: 'tiles',
       grout: 1,
     });
-    render(<App />);
+    render(<App entries={entries} />);
     go(`#/eight-fold-star-and-cross/design/${d?.id}`);
     expect(screen.getByRole('button', { name: 'Saved' })).toHaveProperty(
       'disabled',

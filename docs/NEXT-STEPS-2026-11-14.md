@@ -1,6 +1,10 @@
 # Where Tastir stands and what to do next (14 November 2026)
 
-This is a whole-project view written after reading [the review handover](prompts/review-handover-2026-11-14.md), the project documents and the code. It is a proposal for the owner to approve or change, and then a work list for the agents who come next. Nothing here has been built, and no code, tutorial or production setting was changed.
+This is a whole-project view written after reading [the review handover](prompts/review-handover-2026-11-14.md), the project documents and the code. It is a proposal for the owner to approve or change, and then a work list for the agents who come next. A first local implementation of the ink overlay in piece 1a is now available; [the implementation report](testing/ink-overlay-2026-11-14.md) records its results and remaining limits. The rest of the plan remains proposed.
+
+## Status update, 15 November
+
+The owner authorized proceeding with the recommendations and chose visual research presentations as the default feedback format. The overlay and line-equivalence review are complete; local follow-ups fix phone pinch zoom, region counts and the Comares credit. Physical-phone acceptance and independent historical/photo/colour checks remain open. The start page and queue now reflect the agreed direction. [The visual teaching follow-up](http://localhost:4200/#/notes/teaching-update), [pre-ink guide prototype](http://localhost:4200/#/notes/ink-guide) and [palette comparison](http://localhost:4200/#/plan/palettes) are ready for review. Palette presets and construction steps have not been changed. See [the follow-up evidence](testing/teaching-followup-2026-11-15.md) for scope and validation.
 
 ## The short version
 
@@ -35,7 +39,7 @@ The status page counts 17 verified, 15 approved, 6 checked by eye against a phot
 
 ### 4. The duplicates tool finds candidates but does not prove sameness
 
-Codex read `tools/duplicates.mts` on 14 November and found two limits, and both are true. Its `multiset` (line 254) is a set, so it records which neighbourhoods exist and not how many of each. It also groups only designs whose lists of piece shapes match exactly, so two designs that differ by one small piece are never compared. The ten merges into places that are already in production were decided on this evidence, and the "0 differences" reported afterwards was a check of the colours, not of the lines.
+The initial review of `tools/duplicates.mts` on 14 November found two limits. Its `multiset` used a set, recording which neighbourhoods existed but not how often. It also compared only designs whose lists of piece shapes matched exactly, missing pairs that differed by one small piece. The ten earlier merges were decided before ink overlays were available, and the "0 differences" reported then checked colours, not lines. The implementation now counts normalized occurrences and lets any two current tutorials be compared; the separate historical ink audit supports all ten merges.
 
 The owner's idea closes the gap: lay the ink of one pattern over the ink of the other and see how much agrees. The engine already gives the ink as line segments with the two vectors that repeat it (`packages/engine/src/lib/pieces.ts`), so this can be measured and not only looked at. Piece 1a of the plan describes the tool.
 
@@ -66,17 +70,19 @@ Each piece below is one task for one agent: what to do, why, and how we know it 
 
 ### 1a. Build the ink overlay
 
+**Implementation status (14 November):** the first overlay is available at http://localhost:4200/#/plan/duplicates and its report at http://localhost:4200/#/notes/ink-overlay. Both rosette pairs below have been compared. The search is bounded and can report an inconclusive alignment. Neighbourhood occurrence counts are normalized by wall area in units of the largest piece, and all ten prior merges agree with their archived ink. [The merge review](testing/review-duplicates-2026-11-14.md) records the evidence and remaining provenance/photo checks.
+
 This is the owner's idea of 14 November: lay the ink of one pattern over the ink of another and measure how much agrees. It comes first because the review in 1b rests on it. Codex checked this design on 14 November, and its corrections are included. For any two tutorials the tool does five things.
 
-1. **It finds each wall's true repeat.** The tile a tutorial gives may hold two or four of the smallest cells, so the tool looks for the shortest shifts that carry the ink onto itself and uses those. Without this step two identical walls with different tiles get different scales.
-2. **It lays one repeat onto the other.** Mapping A's two shortest repeat vectors onto B's gives the scale and the turn between the drawings, whatever that turn is (two equal walls can be drawn 17° or 45° apart). Then it tries the turns and mirrors the lattice itself allows. A match that needs a mirror is labelled as such.
-3. **It finds the shift.** It lays a highest-symmetry centre of A on each such centre of B. A wall with no turning centre (the fold 1 tutorials) has none, so there it lays one corner of A's ink on each corner of B's ink within a cell. The best placement of all those tried is kept; the list is short, so nothing is searched freely.
+1. **It establishes each wall's repeat.** The supplied tile may hold two or four primitive cells. The tool verifies shifts that carry the ink onto itself and builds an independent lattice basis from them. Larger supplied tiles can be reduced by verified half-periods before discovery. A bounded search that cannot establish the repeat reports an inconclusive result.
+2. **It lays one repeat onto the other.** Matching shortest repeat directions determines a uniform scale and relative turn, whatever that turn is (two equal walls can be drawn 17° or 45° apart). It then verifies that both complete lattices agree. Shear and independent horizontal/vertical stretching are not allowed. Mirrored placements are tried separately and labelled when required.
+3. **It finds the shift.** A genuine ink vertex of B is laid on each compatible vertex of A within a cell. Vertices are ends of maximal strokes, or crossing points when the lines have no ends. Local stroke vectors discard incompatible placements before coverage is measured. This works independently of the tutorial's fold or named centre. The page reports the best tested placement and distinguishes an inconclusive search from different lines.
 4. **It measures agreement both ways.** It first joins strokes that lie on one line, so a line inked in three parts equals the same line inked in one. Then it measures the length of ink that agrees within a stated tolerance: how much of A lies on B, and how much of B lies on A. Both numbers matter, because one design can be the other plus an extra ring.
 5. **It draws the result** on http://localhost:4200/#/plan/duplicates for any two tutorials the owner picks, not only those in one group: shared ink in grey, ink only in A in one colour, ink only in B in another, with the two numbers beside it.
 
-The page then says one of two things. When both walls have the same true repeat after placing and each covers the other fully over one cell, it says **the same lines**, and that holds for the whole wall, since the pieces are only the spaces between the ink. Otherwise it says **different lines** and gives the numbers and the picture. It does not try to say "the same design at other proportions": the present piece comparison uses rounded shape measurements and cannot show that, so that reading stays with the owner until a comparison of how pieces meet, without lengths, is built.
+The page says **the same lines** when both walls agree over a common repeat within the stated numerical tolerances. It says **different lines** when unmatched ink remains after the exact-match candidates have been checked, and **alignment inconclusive** when the repeat or bounded alignment search cannot be established. Coverage numbers and a difference picture are shown only for an established placement. It does not try to say "the same design at other proportions": the present piece comparison uses rounded shape measurements and cannot show that, so that reading stays with the owner until a comparison of how pieces meet, without lengths, is built.
 
-Two fixes to the present tool belong here too. Count the neighbourhoods instead of only listing them, and count them per true repeating cell, because a larger tile holds more of everything.
+Two fixes to the present tool belong here too. Count the neighbourhoods instead of only listing them, and normalize their density by wall area in units of the largest piece. This is invariant under uniform scale and a larger tile, without needing primitive-repeat discovery for the candidate fingerprint.
 
 Done when the overlay of a tutorial with a turned, shifted and re-tiled copy of itself reports full agreement both ways, and a copy with one line removed shows that line in colour.
 
@@ -140,7 +146,7 @@ These are independent and small, so any agent can take one between larger pieces
 - **Tests for `project-core`.** Start with `placement.ts` and `coloring.ts`, since the palette work is about to change both.
 - **Timing tests.** Move the Bou Inania stage test and the library address test to `pnpm test:perf`, where the other timing tests already live, so `pnpm test:browser` passes or fails for real reasons only.
 - **"Built from the same pieces" as a computed row.** Let the build write, from the duplicates tool's first level, which designs share all their piece shapes, and show that as its own row under Variations. Then a design such as the Seyyed stars can be a variation in one family and still be listed beside Khojent and Mosul, and nobody has to keep the list by hand. The hand-written `notes` stay, attached to the pair.
-- **Run the duplicates tool as a check** when a tutorial is added, and fail when a new tutorial matches an old one at the second level and is neither a place nor in its family.
+- **Run the duplicates tool as a check** when a tutorial is added, and flag candidates for ink review. Fail for a confirmed ink match only when the new tutorial is neither an approved place nor an intentional family member; the second-level piece signature alone is not proof.
 - **Branches.** List the 83 merged local branches for the owner and delete them on a yes.
 - **Lint.** Clear the 260 warnings folder by folder, then make warnings fail.
 - **Split `styles.css`** by page, keeping the colour variables in one file, because the rule "every colour is a variable" is easier to hold when the variables are easy to find.

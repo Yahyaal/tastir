@@ -1,6 +1,9 @@
+import type { Coloring } from '../app/coloring';
 import type { WallStyle } from '../app/Wall';
 import {
   type JaliAppearance,
+  type SharedPresentation,
+  SharedPresentationShape,
   type PenLook,
   BasedOnShape,
   DraftShape,
@@ -101,10 +104,11 @@ export interface Shared {
   readonly library?: string;
   readonly tutorial?: Draft;
   readonly basedOn?: UserPattern['basedOn'];
+  readonly presentation?: SharedPresentation;
   readonly design?: {
     readonly name: string;
     readonly inked?: readonly string[];
-    readonly coloring: { palette: string; chosen: Record<string, string> };
+    readonly coloring: Coloring;
     readonly look: WallStyle;
     readonly grout: number;
     readonly jali?: JaliAppearance;
@@ -158,6 +162,13 @@ async function pipe(
  * (z…), else plain (j…), both in URL-safe base64.
  */
 export async function encodeShared(shared: Shared): Promise<string> {
+  if (
+    shared.presentation &&
+    !SharedPresentationShape.safeParse(shared.presentation).success
+  )
+    throw new Error(
+      'This view cannot be shared because its settings are invalid.',
+    );
   const bytes = new TextEncoder().encode(JSON.stringify(shared));
   const tooLarge = () =>
     new Error(

@@ -145,7 +145,9 @@ describe('the player', () => {
     expect(screen.getByText(/2 rosettes take turns/)).toBeTruthy();
     back();
     expect(label()).toBe('Repeat');
-    expect(screen.getByText(/Put copies of the tile side by side/)).toBeTruthy();
+    expect(
+      screen.getByText(/Put copies of the tile side by side/),
+    ).toBeTruthy();
     // One original star in color, copies of it in every other tile.
     expect(
       container.querySelector('.ink.original use')?.getAttribute('href'),
@@ -255,9 +257,8 @@ describe('the player', () => {
     const all = () => container.querySelectorAll('.so-far line').length;
     for (let i = 0; i < 4; i++) next(); // step 5: both squares exist
     expect(all()).toBe(0); // inking at the end, by default
-    fireEvent.change(screen.getByLabelText(/Ink/), {
-      target: { value: 'asYouGo' },
-    });
+    fireEvent.click(screen.getByLabelText('View settings'));
+    fireEvent.click(screen.getByRole('radio', { name: 'As you go' }));
     expect(fresh()).toBe(16);
     back();
     expect(all()).toBe(0); // step 4 inks nothing yet
@@ -367,9 +368,22 @@ describe('the player', () => {
         ?.split('M').length,
     ).toBe((panel?.ink.length ?? 0) + 1);
     expect(panel?.ink.length).not.toBe(model.pattern.ink.length);
+
     expect(
       container.querySelector('.copy-outline')?.getAttribute('points'),
     ).toBe((panel?.corners ?? []).map((p) => `${p.x},${-p.y}`).join(' '));
+    // The default destination guide must preview this clipped panel,
+    // rather than a different set of underlying periodic strokes.
+    back(); // ink
+    const actual = [...container.querySelectorAll('[data-ink]')].map((line) =>
+      ['x1', 'y1', 'x2', 'y2'].map((key) => line.getAttribute(key)),
+    );
+    back(); // last construction step
+    expect(
+      [...container.querySelectorAll('.destination-guide line')].map((line) =>
+        ['x1', 'y1', 'x2', 'y2'].map((key) => line.getAttribute(key)),
+      ),
+    ).toEqual(actual);
   }, 30000);
 
   it('skips a hidden step: never shown, never drawn, left out of the count', () => {
