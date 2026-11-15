@@ -37,7 +37,7 @@ The status page counts 17 verified, 15 approved, 6 checked by eye against a phot
 
 Codex read `tools/duplicates.mts` on 14 November and found two limits, and both are true. Its `multiset` (line 254) is a set, so it records which neighbourhoods exist and not how many of each. It also groups only designs whose lists of piece shapes match exactly, so two designs that differ by one small piece are never compared. The ten merges into places that are already in production were decided on this evidence, and the "0 differences" reported afterwards was a check of the colours, not of the lines.
 
-The owner's idea closes the gap: lay the ink of one pattern over the ink of the other and see how much agrees. The engine already gives the ink as line segments with the two vectors that repeat it (`packages/engine/src/lib/pieces.ts`), so this can be measured and not only looked at. Piece 1 of the plan describes the tool.
+The owner's idea closes the gap: lay the ink of one pattern over the ink of the other and see how much agrees. The engine already gives the ink as line segments with the two vectors that repeat it (`packages/engine/src/lib/pieces.ts`), so this can be measured and not only looked at. Piece 1a of the plan describes the tool.
 
 ### 5. Families now mean two things
 
@@ -62,23 +62,31 @@ A Variations family first meant "one design, small changes". Since 13 November i
 
 ## The plan, in order
 
-Each piece below is one task for one agent: what to do, why, and how we know it is done. Pieces 1 and 2 are small and clear the ground. Piece 3 is what the owner asked for. Pieces 4 to 6 turn the project toward learners. Piece 7 can run beside any of them.
+Each piece below is one task for one agent: what to do, why, and how we know it is done. Piece 1 is now the largest piece before the palettes, so it is split in two; piece 2 is small. Together they clear the ground. Piece 3 is what the owner asked for. Pieces 4 to 6 turn the project toward learners. Piece 7 can run beside any of them.
 
-### 1. Finish the review the handover asks for
+### 1a. Build the ink overlay
 
-Do the five checks of [the handover](prompts/review-handover-2026-11-14.md) and write `docs/testing/review-duplicates-2026-11-14.md`, because the merged places and resampled colourings are already in production and nobody but their author has looked at them. Three points to add to that brief:
+This is the owner's idea of 14 November: lay the ink of one pattern over the ink of another and measure how much agrees. It comes first because the review in 1b rests on it. Codex checked this design on 14 November, and its corrections are included. For any two tutorials the tool does five things.
 
-- Run `pnpm test:equivalence` and the two timing tests only when `uptime` shows a load under 2. Record the load beside each result.
-- **Build the ink overlay first** (the owner's idea, 14 November), because every other judgement in this review rests on it. For any two tutorials it does four things.
-  1. It brings both walls to the same scale by giving their smallest repeating cells the same area, so a tile that holds two or four cells is not read as a difference.
-  2. It tries only the placements a repeating wall allows: the turns its lattice permits, each also mirrored, with a highest-symmetry centre of one wall laid on one of the other. This is a few dozen tries, and the best one is kept. A match that needs a mirror is labelled as such.
-  3. It joins strokes that lie on one line before comparing, so a line inked in three parts equals the same line inked in one, and then measures the length of ink that agrees within a stated tolerance, both ways: how much of A lies on B, and how much of B lies on A. Both numbers matter, because one design can be the other plus an extra ring.
-  4. It draws the result on http://localhost:4200/#/plan/duplicates: shared ink in grey, ink only in A in one colour, ink only in B in another, with the two numbers beside it.
+1. **It finds each wall's true repeat.** The tile a tutorial gives may hold two or four of the smallest cells, so the tool looks for the shortest shifts that carry the ink onto itself and uses those. Without this step two identical walls with different tiles get different scales.
+2. **It lays one repeat onto the other.** Mapping A's two shortest repeat vectors onto B's gives the scale and the turn between the drawings, whatever that turn is (two equal walls can be drawn 17° or 45° apart). Then it tries the turns and mirrors the lattice itself allows. A match that needs a mirror is labelled as such.
+3. **It finds the shift.** It lays a highest-symmetry centre of A on each such centre of B. A wall with no turning centre (the fold 1 tutorials) has none, so there it lays one corner of A's ink on each corner of B's ink within a cell. The best placement of all those tried is kept; the list is short, so nothing is searched freely.
+4. **It measures agreement both ways.** It first joins strokes that lie on one line, so a line inked in three parts equals the same line inked in one. Then it measures the length of ink that agrees within a stated tolerance: how much of A lies on B, and how much of B lies on A. Both numbers matter, because one design can be the other plus an extra ring.
+5. **It draws the result** on http://localhost:4200/#/plan/duplicates for any two tutorials the owner picks, not only those in one group: shared ink in grey, ink only in A in one colour, ink only in B in another, with the two numbers beside it.
 
-  When both walls have the same repeat after placing and each covers the other fully over one cell, the walls are the same everywhere, since the pieces are only the spaces between the ink. Keep the piece comparison beside it, because the overlay cannot tell "the same design at other proportions" from "a different design" and the pieces can. The page should then say one of three things for a pair: the same lines, the same arrangement at other proportions, or different.
+The page then says one of two things. When both walls have the same true repeat after placing and each covers the other fully over one cell, it says **the same lines**, and that holds for the whole wall, since the pieces are only the spaces between the ink. Otherwise it says **different lines** and gives the numbers and the picture. It does not try to say "the same design at other proportions": the present piece comparison uses rounded shape measurements and cannot show that, so that reading stays with the owner until a comparison of how pieces meet, without lengths, is built.
+
+Two fixes to the present tool belong here too. Count the neighbourhoods instead of only listing them, and count them per true repeating cell, because a larger tile holds more of everything.
+
+Done when the overlay of a tutorial with a turned, shifted and re-tiled copy of itself reports full agreement both ways, and a copy with one line removed shows that line in colour.
+
+### 1b. Finish the review the handover asks for
+
+Do the five checks of [the handover](prompts/review-handover-2026-11-14.md) and write `docs/testing/review-duplicates-2026-11-14.md`, because the merged places and resampled colourings are already in production and nobody but their author has looked at them. Four points to add to that brief:
+
 - **Run the overlay on the ten merges already made.** The old tutorial files are in git before commit `ac3b7bd`; compare each with the tutorial it became a place of. Any pair under full agreement goes to the owner with its overlay picture, and may need to be split again.
 - **Then the two rosette pairs.** `paccard-222-rosette` has 11 piece shapes and `paccard-222-rosette-ring` has 13, which suggests two designs if the pieces were found correctly (http://localhost:4200/#/paccard-222-rosette/result, http://localhost:4200/#/paccard-222-rosette-ring/result). `fes-najjarin-rosette` and `meknes-bou-inania-rosette` both have 20, so they may truly be one design in two places (http://localhost:4200/#/fes-najjarin-rosette/result, http://localhost:4200/#/meknes-bou-inania-rosette/result). The overlay decides both, and its picture is what the owner is shown.
-- **Fix the tool's two limits:** count the neighbourhoods instead of only listing them, and let the page compare any two tutorials the owner picks, not only those in one group.
+- Run `pnpm test:equivalence` and the two timing tests only when `uptime` shows a load under 2. Record the load beside each result.
 - Check that a search for a place's name, a share link made at a place, and a saved design made at a place each open the place and not the base tutorial.
 
 Done when the review is at `#/notes` and the owner has answered its one question.
@@ -149,13 +157,13 @@ These are independent and small, so any agent can take one between larger pieces
 1. Read `CLAUDE.md`, [Start here](PROJECT.md), [how to work with the owner](WORKING-WITH-OWNER.md) and this page, then take one numbered piece, show a short plan and wait for the owner's OK.
 2. Everything shown to the owner carries its own link, and anything they must judge carries a picture with the part marked.
 3. Run checks one project at a time with one worker, and look at `uptime` first; a timing result under load proves nothing.
-4. Before adding or merging a tutorial, run `tools/duplicates.mts` and read http://localhost:4200/#/plan/duplicates. The tool only finds candidates; the ink overlay decides. Ink that agrees fully both ways is a place; the same pieces laid out differently is a related design; a small change to one design is a variation.
+4. Before adding or merging a tutorial, run `tools/duplicates.mts` and read http://localhost:4200/#/plan/duplicates. The tool only finds candidates; the ink overlay decides. Ink that agrees fully both ways over the true repeat is a place; anything less is shown to the owner with its picture and numbers before it is called a related design or a variation.
 5. Rules name palette slots and never hex colours, and a colour change goes on the review page as before and after before it goes anywhere else.
 6. Nothing is pushed, deployed or deleted without the owner's yes in chat.
 
 ## What I did not check
 
-I did not run the test suites, because another project's job was using eleven processors (load 13.8) and the results would not have been trustworthy. I did not open each merged place beside its photo; that is piece 1. The numbers on this page come from the tutorial files, `STATUS.md` and the code as of commit `7496447`.
+I did not run the test suites, because another project's job was using eleven processors (load 13.8) and the results would not have been trustworthy. I did not open each merged place beside its photo; that is piece 1b. The numbers on this page come from the tutorial files, `STATUS.md` and the code as of commit `7496447`.
 
 ## The decisions needed from the owner
 
