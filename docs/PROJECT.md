@@ -75,6 +75,7 @@ The redesign is done (R1 to R6, 13–14 October). Next: the owner’s look at it
 
 | Document | What it holds |
 | --- | --- |
+| [Next steps (14 November)](NEXT-STEPS-2026-11-14.md) | A whole-project view and a proposed order of work for the next agents; waits for the owner's approval |
 | [How to work with the owner](WORKING-WITH-OWNER.md) | How the owner wants to be shown work and asked questions, and the process mistakes made so far |
 | [History](HISTORY.md) | The dated record of reviews, merges and owner decisions since 8 October |
 | [Prompts](prompts/) | One dated file per batch of work handed to Gemini, Codex, Grok or a Claude cloud session |
