@@ -4,6 +4,8 @@ These are the owner's standing wishes about how work is shown and discussed. Eac
 
 ## Showing work and asking questions
 
+- **Screenshot review loop (owner, 16 November 2026).** For UI work, capture the real interface, inspect every screenshot, explicitly ask what would make it clearer, more intuitive and visually appealing, then improve and capture again. Check relevant states and screen sizes in both themes before declaring the pass satisfactory. Complete visual iteration before the expensive final test run. If several directions remain equally compelling, build them as switchable themes with the same real controls and ask the owner to compare them visually. Do not ask the owner to choose from prose descriptions.
+
 - **Preferred feedback format (owner, 15 November 2026): a visual research presentation.** Use the [ink comparison presentation](http://localhost:4200/#/notes/ink-presentation) as the model: explain the question, show what was done, show the evidence and conclusions, then propose the next steps. Keep each slide focused and the drawings beside the explanation. Use interactive comparisons and animations when they make an idea clearer; respect reduced motion and provide manual controls. Keep dense technical notes as supporting references. This is the owner's default preference for substantive reviews and progress reports, rather than long prose reports. Simple factual answers can remain short.
 
 - **Everything for the owner goes on the review page** (`#/review` on the dev server, written in `apps/player/src/review/data.ts`). That covers questions, updates and anything to look at. Markdown in `docs/` is reference, and the terminal only says what changed and where to look. *Why:* the owner finds long terminal text hard to scroll and read, and twice found that a question asked in the terminal was not on the page.
@@ -48,6 +50,8 @@ When choosing an aesthetic direction, show working visual alternatives. The owne
 The owner’s refinement: combine Mosaic’s blue/teal colours with Precision’s minimal layout and Atelier’s illustrated ink choices; make icons larger and spacing tighter. The owner selected Outline and requested removal of the other settings themes and the theme picker; keep Outline as the single settings design. Toggle labels should distinguish states through colour and weight; do not show On/Off words or check marks. Speed buttons need a clearly filled selection with good contrast, particularly in dark mode. For future aesthetic choices, show working visual alternatives before asking for a decision.
 
 Prefer visible segmented choices for two or three mutually exclusive values, and labelled switches for on/off settings. Use dropdowns only when a better alternative does not fit. Actions must look like buttons and have clear labels; icons supplement the words. Keep keyboard interaction, focus visibility, touch targets and both themes working. Preserve the satisfaction of the final inking reveal: the default lesson mode should show a faint destination guide before that reveal rather than commit ink throughout construction.
+
+The owner’s action-hierarchy preference (16 November): give actions with different importance different visual weight. At the lesson finish, Next lesson is the single filled primary action; Save and Share are secondary. Group previous/next pattern navigation as navigation. Keep Feedback as an accessible icon beside Settings in the lesson header, and use the shorter Settings tooltip. Keep light/dark contrast, 44px utility targets and keyboard focus visible.
 
 ## Standing goals
 

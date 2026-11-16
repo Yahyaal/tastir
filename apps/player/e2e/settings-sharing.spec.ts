@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 async function settings(page: Page) {
-  await page.getByLabel('View settings', { exact: true }).click();
+  await page.getByLabel('Settings', { exact: true }).click();
 }
 async function copyLink(page: Page) {
   await page
@@ -42,7 +42,7 @@ test('visible settings choices keep keyboard navigation inside the setting and p
   ).toBeChecked();
   await expect(page.locator('.label')).toHaveText('Step 1 of 6');
   await page.keyboard.press('Escape');
-  await expect(page.getByLabel('View settings', { exact: true })).toBeFocused();
+  await expect(page.getByLabel('Settings', { exact: true })).toBeFocused();
   for (let i = 0; i < 5; i++)
     await page.getByRole('button', { name: 'Next', exact: true }).click();
   await expect(page.locator('.destination-guide')).toHaveCount(1);
@@ -196,8 +196,6 @@ for (const legacy of [
       page.getByRole('radio', { name: '2×', exact: true }),
     ).toBeChecked();
     await page.keyboard.press('Escape');
-    await expect(
-      page.getByLabel('View settings', { exact: true }),
-    ).toBeFocused();
+    await expect(page.getByLabel('Settings', { exact: true })).toBeFocused();
   });
 }

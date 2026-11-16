@@ -183,6 +183,16 @@ for (const theme of ['light', 'dark'])
       exact: true,
     });
     await expect(next).toBeInViewport();
+    if (page.viewportSize()!.width > 760) {
+      const save = page
+        .getByRole('group', { name: 'Your design' })
+        .getByRole('button', { name: 'Save as my design', exact: true });
+      expect(
+        await save.evaluate((el) => getComputedStyle(el).backgroundColor),
+      ).not.toBe(
+        await next.evaluate((el) => getComputedStyle(el).backgroundColor),
+      );
+    }
     const box = await next.boundingBox();
     expect(box!.height).toBeGreaterThanOrEqual(44);
     expect(

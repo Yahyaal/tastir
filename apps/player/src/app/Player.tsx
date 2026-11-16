@@ -1276,31 +1276,13 @@ export function Player({
           </span>
           <span>All patterns</span>
         </a>
-        {browsing ? <PreviousPattern id={address} view={view} /> : null}
         <LessonTitle tutorial={tutorial} />
-        <FeedbackButton
-          context={{
-            ...basicFeedbackContext(
-              address,
-              tutorial.title,
-              colorStage ? 'result' : 'watch',
-            ),
-            stage: stage.kind,
-            index,
-            stepIds:
-              stage.kind === 'step' ? [beats[stage.beat - 1]?.step ?? 1] : [],
-            label,
-            instruction: text.slice(0, 8192),
-          }}
-          tutorial={tutorial}
-          pause={() => setPlaying(false)}
-          board={() => svgRef.current}
-          snapshot={() => ({
-            draft: inking.shown.tutorial,
-            coloring: colorHistory.now,
-          })}
-        />
-        {browsing ? <NextPattern id={address} view={view} /> : null}
+        {browsing ? (
+          <nav className="pattern-pagination" aria-label="Browse patterns">
+            <PreviousPattern id={address} view={view} />
+            <NextPattern id={address} view={view} />
+          </nav>
+        ) : null}
         {browsing ? (
           <Variations
             id={address}
@@ -1349,20 +1331,45 @@ export function Player({
         {browsing ? (
           <ViewSwitch id={address} view={view} onShow={show} />
         ) : null}
-        <PlayerSettings
-          speed={speed}
-          setSpeed={setSpeed}
-          inkMode={inkMode}
-          setInkMode={setInkMode}
-          reduced={reduced}
-          setReduced={setReduced}
-          showNames={showNames}
-          setShowNames={setShowNames}
-          showHelpers={showHelpers}
-          setShowHelpers={setShowHelpers}
-          hideId={import.meta.env.DEV && browsing ? address : undefined}
-        />
-        <ThemeSwitch />
+        <div className="player-utilities">
+          <FeedbackButton
+            iconOnly
+            context={{
+              ...basicFeedbackContext(
+                address,
+                tutorial.title,
+                colorStage ? 'result' : 'watch',
+              ),
+              stage: stage.kind,
+              index,
+              stepIds:
+                stage.kind === 'step' ? [beats[stage.beat - 1]?.step ?? 1] : [],
+              label,
+              instruction: text.slice(0, 8192),
+            }}
+            tutorial={tutorial}
+            pause={() => setPlaying(false)}
+            board={() => svgRef.current}
+            snapshot={() => ({
+              draft: inking.shown.tutorial,
+              coloring: colorHistory.now,
+            })}
+          />
+          <PlayerSettings
+            speed={speed}
+            setSpeed={setSpeed}
+            inkMode={inkMode}
+            setInkMode={setInkMode}
+            reduced={reduced}
+            setReduced={setReduced}
+            showNames={showNames}
+            setShowNames={setShowNames}
+            showHelpers={showHelpers}
+            setShowHelpers={setShowHelpers}
+            hideId={import.meta.env.DEV && browsing ? address : undefined}
+          />
+          <ThemeSwitch />
+        </div>
       </header>
       {banner}
       <div className={colorStage ? 'workspace with-panel' : 'workspace'}>
@@ -1514,6 +1521,9 @@ export function Player({
                 </div>
               ) : null}
             </div>
+            {phone && !colorStage && !sharedView ? (
+              <div className="lesson-share lesson-share-phone">{endShare}</div>
+            ) : null}
             <nav aria-label="Steps">
               <button
                 type="button"
@@ -1717,7 +1727,7 @@ export function Player({
         </div>
         <div className="journey-row">
           <Journey stages={stages} index={index} onJump={jump} />
-          {!colorStage && !sharedView && (
+          {!phone && !colorStage && !sharedView && (
             <div className="lesson-share">{endShare}</div>
           )}
           {colorStage && ready && !phone ? (

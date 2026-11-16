@@ -12,12 +12,16 @@ it('keeps the form available for development review without a configured backend
   try {
     render(
       <FeedbackButton
+        iconOnly
         context={basicFeedbackContext('test', 'Test pattern', 'draw')}
       />,
     );
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Report an issue or leave feedback' }),
-    );
+    const button = screen.getByRole('button', {
+      name: 'Report an issue or leave feedback',
+    });
+    expect(button.textContent?.trim()).toBe('');
+    expect(button.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
+    fireEvent.click(button);
     expect(opened).toHaveBeenCalledTimes(1);
     expect(fetcher).not.toHaveBeenCalled();
   } finally {

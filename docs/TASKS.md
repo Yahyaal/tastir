@@ -2,6 +2,10 @@
 
 Work top to bottom, one task per session and one commit per task. A task is done only when its acceptance test passes and the full test and lint commands are green. Tick the box in the same commit.
 
+## Player interface
+
+- [x] **UI.1 Clarify action hierarchy and header utilities.** Owner request, 16 November: keep Next lesson as the primary filled action, make Save secondary beside it, group previous/next pattern navigation with directional emphasis, place icon-only Feedback beside Settings, and shorten the tooltip to Settings. Preserve keyboard labels, feedback context and unsaved-work protection. Screenshot iteration also removed the phone Share row above the construction. Full root checks and final 39 sharing/layout browser cases passed. Local implementation; [evidence](testing/player-action-hierarchy-2026-11-16.md).
+
 ## Learning path
 
 - [x] **LEARN.1 Propose the beginner path visually.** Present twelve linked existing lessons with one new focus each, original difficulty ratings and explicit status/photo evidence. Show the order and missing free-photo gates before promoting a public course. Prototype: [review the path](http://localhost:4200/#/notes/beginner-path). Full root lint/typecheck/tests and the production build passed; 11 focused unit and six desktop/phone review-browser cases passed. Navigation was subsequently approved and built as LEARN.2; reference and newcomer checks remain LEARN.3.

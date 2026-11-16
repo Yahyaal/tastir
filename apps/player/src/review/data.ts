@@ -9616,9 +9616,12 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'The beginner’s path is ready to try',
-    text: 'Start here leads from the home page to the first lesson or the full twelve-lesson map. After your report that the finish was unclear, the main Next control now becomes Next lesson at Color; saving remains available in My design. Finished watch lessons also recommend the next pattern; draw-along offers it after the board is kept, in the same mode. Source limitations remain visible. Navigation is built locally; the prior repair release remains deployed.',
-    link: { label: 'Try the working learning path', href: '#/learn' },
+    title: 'Clearer lesson actions and a quieter header',
+    text: 'Next lesson is the filled primary action; Save is outlined beside it. Previous and Next patterns are grouped with directional emphasis. Feedback is an icon beside Settings, with keyboard access and context preserved. The Settings tooltip now says Settings. Light/dark phone and desktop layouts are checked. Local implementation; not deployed. Reference-photo and newcomer checks remain open.',
+    link: {
+      label: 'Try the updated lesson controls',
+      href: '#/eight-fold-star-and-cross/result',
+    },
   },
   next: [
     {

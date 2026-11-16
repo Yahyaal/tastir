@@ -198,7 +198,7 @@ describe('highlight before draw', () => {
   it('animates the new step on Next, at the chosen speed', () => {
     const { calls } = recordAnimations();
     render(<Play json={example} />);
-    fireEvent.click(screen.getByLabelText('View settings'));
+    fireEvent.click(screen.getByLabelText('Settings'));
     fireEvent.click(screen.getByRole('radio', { name: '2×' }));
     calls.length = 0;
     next();

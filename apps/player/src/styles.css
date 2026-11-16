@@ -6074,3 +6074,95 @@ svg.tiles {
 .end-actions:has(.learning-advance) {
   flex-wrap: wrap;
 }
+
+/* One clear progression action; keeping a design is a secondary choice. */
+.end-actions:has(.learning-advance) button.primary {
+  background: var(--theme-bg-card);
+  border-color: var(--theme-border-hover);
+  color: var(--theme-text-primary);
+  font-weight: 500;
+}
+.end-actions:has(.learning-advance) button.primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--theme-accent) 6%, var(--theme-bg-card));
+}
+.pattern-pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.topbar .pattern-pagination .neighbour {
+  min-height: 44px;
+  align-items: center;
+  border-radius: 8px;
+}
+.topbar .pattern-pagination .previous {
+  border-color: transparent;
+  color: var(--theme-text-secondary);
+}
+.topbar .pattern-pagination .next {
+  border-color: var(--theme-border-hover);
+  color: var(--theme-accent);
+  background: color-mix(in srgb, var(--theme-accent) 7%, var(--theme-bg-card));
+}
+.topbar .pattern-pagination .neighbour:hover {
+  background: color-mix(in srgb, var(--theme-accent) 12%, var(--theme-bg-card));
+  color: var(--theme-accent);
+}
+.player-utilities {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex: none;
+}
+.player .player-utilities .view-menu {
+  margin-left: 0;
+}
+.player
+  .player-utilities
+  :is(.feedback-icon, .view-menu summary, .theme-switch) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--theme-text-secondary);
+  background: transparent;
+}
+.player
+  .player-utilities
+  :is(.feedback-icon, .view-menu summary, .theme-switch):hover {
+  background: color-mix(in srgb, var(--theme-accent) 8%, var(--theme-bg-card));
+  color: var(--theme-accent);
+}
+.player
+  .player-utilities
+  :is(.feedback-icon, .view-menu summary, .theme-switch):focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 2px;
+}
+@media (max-width: 760px) {
+  .player .topbar .pattern-pagination {
+    display: none;
+  }
+  .player-utilities {
+    gap: 2px;
+  }
+}
+
+/* Medium desktop widths use two deliberate rows: browse/tools, then title/view. */
+@media (min-width: 761px) and (max-width: 1480px) {
+  .player:not(.along) .topbar .lesson-title {
+    flex: 1 1 calc(100% - 390px);
+    min-width: 0;
+  }
+  .player:not(.along) .topbar .view-switch {
+    order: 4;
+    margin-left: auto;
+  }
+}

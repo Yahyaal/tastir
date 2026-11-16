@@ -266,7 +266,7 @@ describe('the player', () => {
     const all = () => container.querySelectorAll('.so-far line').length;
     for (let i = 0; i < 4; i++) next(); // step 5: both squares exist
     expect(all()).toBe(0); // inking at the end, by default
-    fireEvent.click(screen.getByLabelText('View settings'));
+    fireEvent.click(screen.getByLabelText('Settings'));
     fireEvent.click(screen.getByRole('radio', { name: 'As you go' }));
     expect(fresh()).toBe(16);
     back();

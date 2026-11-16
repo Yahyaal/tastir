@@ -13,7 +13,9 @@ export function FeedbackButton({
   snapshot,
   board,
   pause,
+  iconOnly = false,
 }: {
+  iconOnly?: boolean;
   context: FeedbackContext;
   tutorial?: unknown;
   snapshot?: () => FeedbackSnapshot;
@@ -40,9 +42,9 @@ export function FeedbackButton({
   return (
     <button
       type="button"
-      className="secondary feedback-trigger"
+      className={`secondary feedback-trigger${iconOnly ? ' feedback-icon' : ''}`}
       aria-label="Report an issue or leave feedback"
-      title="Report an issue or leave feedback"
+      title={iconOnly ? 'Feedback' : 'Report an issue or leave feedback'}
       onClick={() => {
         pause?.();
         const raw = snapshot?.();
@@ -80,7 +82,24 @@ export function FeedbackButton({
         });
       }}
     >
-      Feedback
+      {iconOnly ? (
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H4l-2 2V11.5A8.5 8.5 0 0 1 10.5 3h2a8.5 8.5 0 0 1 8.5 8.5Z" />
+          <path d="M7 10h9M7 14h6" />
+        </svg>
+      ) : (
+        'Feedback'
+      )}
     </button>
   );
 }

@@ -170,7 +170,7 @@ export function PlayerSettings({
   }, []);
   return (
     <details className="view-menu player-settings" ref={menu}>
-      <summary aria-label="View settings" title="View settings">
+      <summary aria-label="Settings" title="Settings">
         <svg
           width="20"
           height="20"
@@ -189,12 +189,12 @@ export function PlayerSettings({
       <div className="controls settings-panel">
         <div className="settings-panel-heading">
           <div className="settings-heading-copy">
-            <h2>View settings</h2>
+            <h2>Settings</h2>
           </div>
           <button
             className="settings-close"
             type="button"
-            aria-label="Close view settings"
+            aria-label="Close settings"
             onClick={() => {
               if (menu.current) menu.current.open = false;
               menu.current?.querySelector('summary')?.focus();
