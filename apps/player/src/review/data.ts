@@ -9566,8 +9566,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Second reliability repair: editable downloads',
-    text: 'The viewer now downloads editable JSON beside SVG/PNG. Files keep the construction and current design; fresh-browser tests restore Lines and Jali with their palette, pen and material. Existing unfinished editor files remain supported. Full verification and 24 export/sharing browser cases passed. Library entry points are next.',
+    title: 'Third reliability repair: library entry points',
+    text: 'Collection anchors now open the library and retain return position. Arabic queries, common star/place aliases and Arabic/Persian point counts work, with right-to-left input and title-first ranking. Full verification and 23 browsing cases passed, with one intentional phone skip. Accessibility and performance are next.',
     link: {
       label: 'See the reliability repair',
       href: '#/notes/reliability-update',

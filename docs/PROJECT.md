@@ -20,7 +20,7 @@ Outline is now the single settings design. The alternatives, panel theme picker 
 
 ## The next goal
 
-Prioritize a reliability and discoverability pass from [Grok’s live-site review](GROK-REVIEW-2026-11-15.md): reproduce and guard signed-out retries, make editable JSON downloads visible, then fix direct collection links and Unicode search. Region counts are already addressed in the release. Keep prior draw-along reports unconfirmed until tested explicitly. Then resume palette selection, the shared-step teaching proposal, a beginner’s path and feedback rollout. New patterns wait while the existing library becomes easier to enter and trust.
+The first three repairs are implemented and verified locally: signed-out retry guards, portable editable downloads, and collection/Unicode search. Next, run the fresh accessibility and performance audit from [Grok’s live-site review](GROK-REVIEW-2026-11-15.md): reproduce and guard signed-out retries, make editable JSON downloads visible, then fix direct collection links and Unicode search. Region counts are already addressed in the release. Keep prior draw-along reports unconfirmed until tested explicitly. Then resume palette selection, the shared-step teaching proposal, a beginner’s path and feedback rollout. New patterns wait while the existing library becomes easier to enter and trust.
 
 ## How a session works
 

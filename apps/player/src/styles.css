@@ -5913,3 +5913,13 @@ svg.tiles {
     min-width: 0;
   }
 }
+
+/* Search follows the entered script without crowding the native clear control. */
+.filter-search:has(input:dir(rtl)) svg {
+  left: auto;
+  right: 12px;
+}
+.filter-search input:dir(rtl) {
+  padding-right: 38px;
+  padding-left: 12px;
+}

@@ -15,25 +15,32 @@ import type { Entry } from './library';
  * before matches in the sources.
  */
 
-/** Lower case without accents, so “fes” finds “Fès” and “salon” “Salón”. */
+/** Ignore case/diacritics and Arabic elongation; use one decimal digit form. */
 export const plain = (text: string) =>
-  text.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+  text
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .replace(/\u0640/g, '')
+    .replace(/[٠-٩]/g, (digit) => String(digit.charCodeAt(0) - 0x660))
+    .replace(/[۰-۹]/g, (digit) => String(digit.charCodeAt(0) - 0x6f0))
+    .toLowerCase();
 
 const words = (text: string) =>
   plain(text)
-    .split(/[^a-z0-9]+/)
+    .split(/[^\p{L}\p{N}]+/u)
     .filter(Boolean);
 
 /** Names that find each other: other spellings, and a city and its palace. */
 const SAME: readonly (readonly string[])[] = [
-  ['fez', 'fes'],
-  ['isfahan', 'esfahan', 'ispahan'],
-  ['granada', 'alhambra'],
-  ['istanbul', 'constantinople'],
-  ['cairo', 'qahira'],
-  ['marrakesh', 'marrakech'],
-  ['meknes', 'meknez'],
-  ['tetouan', 'tetuan'],
+  ['star', 'stars', 'نجمة', 'نجمه', 'نجوم', 'النجمة', 'النجوم'],
+  ['fez', 'fes', 'فاس'],
+  ['isfahan', 'esfahan', 'ispahan', 'اصفهان'],
+  ['granada', 'alhambra', 'غرناطة', 'الحمراء'],
+  ['istanbul', 'constantinople', 'اسطنبول'],
+  ['cairo', 'qahira', 'القاهرة', 'قاهرة'],
+  ['marrakesh', 'marrakech', 'مراكش'],
+  ['meknes', 'meknez', 'مكناس'],
+  ['tetouan', 'tetuan', 'تطوان'],
   ['samarkand', 'samarqand'],
   ['bukhara', 'bokhara'],
   ['mashhad', 'meshed'],
@@ -63,7 +70,15 @@ const NUMBERS: Record<string, number> = {
   sixteen: 16,
 };
 /** Words after a number that make it a count of points. */
-const POINTS = new Set(['fold', 'point', 'pointed', 'points']);
+const POINTS = new Set([
+  'fold',
+  'point',
+  'pointed',
+  'points',
+  'نقطة',
+  'نقطه',
+  'نقاط',
+]);
 
 /** What the learner typed: the words to look for, and a symmetry if they
  * asked for one ("16 point", "sixteen-fold"). */
@@ -78,7 +93,7 @@ export function readQuery(query: string): {
     const w = all[i] as string;
     const n = /^\d+$/.test(w) ? Number(w) : NUMBERS[w];
     // "16fold" and "16-fold" read alike once the hyphen is gone.
-    const glued = /^(\d+)(fold|point|pointed)$/.exec(w);
+    const glued = /^(\d+)(fold|point|pointed|نقطة|نقطه|نقاط)$/.exec(w);
     if (glued) fold = Number(glued[1]);
     else if (n !== undefined && POINTS.has(all[i + 1] ?? '')) {
       fold = n;

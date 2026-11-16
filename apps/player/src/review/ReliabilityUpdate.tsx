@@ -150,12 +150,56 @@ export function ReliabilityUpdate() {
         </a>
       </section>
       <section id="search-repair">
-        <p className="reliability-kicker">3 · Queued</p>
-        <h2>Make library entry points work.</h2>
+        <p className="reliability-kicker">3 · Fixed locally</p>
+        <h2>Library addresses and Arabic search work.</h2>
         <p>
-          Fix direct collection links and Arabic query tokenization. Preserve
-          title-first ranking and test mixed scripts and empty results.
+          Direct collection links now open the library, focus the collection on
+          a fresh visit, and preserve the card position when returning from a
+          tutorial.
         </p>
+        <div
+          className="search-evidence"
+          role="group"
+          aria-label="Verified search examples"
+        >
+          <div>
+            <bdi lang="ar" dir="rtl">
+              نجمة
+            </bdi>
+            <strong>171</strong>
+            <span>star patterns</span>
+          </div>
+          <div>
+            <bdi lang="ar" dir="rtl">
+              نجمة فاس
+            </bdi>
+            <strong>18</strong>
+            <span>stars in Fez</span>
+          </div>
+          <div>
+            <bdi lang="ar" dir="rtl">
+              ١٦ نقطة
+            </bdi>
+            <strong>6</strong>
+            <span>sixteen-point patterns</span>
+          </div>
+        </div>
+        <p className="reliability-caption">
+          Measured against the current 194 family cards. English and Arabic
+          equivalents return the same results; unknown Arabic or Chinese text
+          returns zero. Star remains a broad term in this collection.
+        </p>
+        <p>
+          Arabic text is no longer discarded. Search handles diacritics,
+          Arabic/Persian digits and common star/place aliases, follows the
+          entered text direction, and retains title-first ranking.
+        </p>
+        <p className="reliability-result">
+          28 focused checks and 23 desktop/phone browser cases passed, including
+          existing browsing behavior. One pre-existing phone skip applies to the
+          desktop-only next/previous controls.
+        </p>
+        <a href="#collection">Open the collection and try the queries →</a>
       </section>
       <section id="audit-repair">
         <p className="reliability-kicker">4 · Queued</p>

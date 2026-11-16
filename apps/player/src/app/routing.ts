@@ -6,6 +6,10 @@ import { keepPlace } from './browsing';
  */
 let stayGuard: ((to: string) => boolean) | undefined;
 
+/** Addresses that show the library, including its public collection anchor. */
+export const isLibraryRoute = (route: string) =>
+  route === '' || route === 'collection';
+
 /** The tutorial id in the address (#/id), or '' for the library. */
 export function useRoute(): string {
   const read = () => {
@@ -23,7 +27,7 @@ export function useRoute(): string {
       if (stayGuard?.(`#/${read()}`)) return;
       // Leaving the library: keep its place for the way back. The page
       // still shows it here, before the new route renders.
-      if (last === '') keepPlace();
+      if (isLibraryRoute(last)) keepPlace();
       last = read();
       setRoute(last);
       window.scrollTo?.(0, 0);

@@ -7,7 +7,7 @@ import { LIBRARY, listed, type Entry } from './library';
 import { Library } from './Library';
 import { WorkPage } from './YourWork';
 import { Broken, MissingDesign, Play } from './Player';
-import { useRoute } from './routing';
+import { isLibraryRoute, useRoute } from './routing';
 import { openShared, useShared } from './Sharing';
 import { FeedbackHost } from '../feedback/FeedbackHost';
 const FeedbackInbox = lazy(() =>
@@ -163,7 +163,15 @@ function AppPage({
     () => (own && 'entry' in own ? [...library, own.entry] : library),
     [own, library],
   );
-  if (!route) return <Library entries={listed(library)} />;
+  // Collection is a library anchor, never a tutorial id. Both #collection
+  // and #/collection arrive here through the hash router.
+  if (isLibraryRoute(route))
+    return (
+      <Library
+        entries={listed(library)}
+        startAtCollection={route === 'collection'}
+      />
+    );
   if (route === 'feedback' || route.startsWith('feedback/'))
     return (
       <Suspense fallback={<p>Loading feedback…</p>}>
