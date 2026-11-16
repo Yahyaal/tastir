@@ -4,6 +4,8 @@ Work top to bottom, one task per session and one commit per task. A task is done
 
 ## Player interface
 
+- [x] **UI.2 Restore the centered title and clarify three finish actions.** Owner refinement: Previous–title–Next as a centered group, quiet arrow navigation, an icon-only Patterns drawer toggle, and three distinct action weights: filled Next lesson, outlined Save, text-style Copy link with a link icon. Screenshot iteration tightened arrow spacing and fixed the 320px view switch; explicit arrow slots keep the title centered at either end of the library. Full root tests, lint/typecheck/build, and final 58 browser cases passed (two phone skips). [Visual review](http://localhost:4200/__review/renders/player-header-2026-11-16/index.html). Local only.
+
 - [x] **UI.1 Clarify action hierarchy and header utilities.** Owner request, 16 November: keep Next lesson as the primary filled action, make Save secondary beside it, group previous/next pattern navigation with directional emphasis, place icon-only Feedback beside Settings, and shorten the tooltip to Settings. Preserve keyboard labels, feedback context and unsaved-work protection. Screenshot iteration also removed the phone Share row above the construction. Full root checks and final 39 sharing/layout browser cases passed. Local implementation; [evidence](testing/player-action-hierarchy-2026-11-16.md).
 
 ## Learning path

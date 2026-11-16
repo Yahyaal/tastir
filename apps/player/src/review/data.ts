@@ -9616,11 +9616,11 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Clearer lesson actions and a quieter header',
-    text: 'Next lesson is the filled primary action; Save is outlined beside it. Previous and Next patterns are grouped with directional emphasis. Feedback is an icon beside Settings, with keyboard access and context preserved. The Settings tooltip now says Settings. Light/dark phone and desktop layouts are checked. Local implementation; not deployed. Reference-photo and newcomer checks remain open.',
+    title: 'Centered pattern title and three clear action levels',
+    text: 'Next lesson is filled, Save is outlined, and Copy link is a quiet text action with a link icon. The title is centered between compact Previous and Next arrows. Patterns is an icon-only side-menu toggle. Feedback is an icon beside Settings, with keyboard access and context preserved. The Settings tooltip now says Settings. Light/dark phone and desktop layouts are checked. Local implementation; not deployed. Reference-photo and newcomer checks remain open.',
     link: {
-      label: 'Try the updated lesson controls',
-      href: '#/eight-fold-star-and-cross/result',
+      label: 'See the centered header and action hierarchy',
+      href: '/__review/renders/player-header-2026-11-16/index.html',
     },
   },
   next: [

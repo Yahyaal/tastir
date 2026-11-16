@@ -39,12 +39,40 @@ export function NeighbourLink({
       aria-label={`${direction === 'previous' ? 'Previous' : 'Next'} pattern: ${title}`}
       title={title}
     >
-      {direction === 'previous' ? <span aria-hidden="true">‹</span> : null}
+      {direction === 'previous' ? (
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="m14 6-6 6 6 6" />
+        </svg>
+      ) : null}
       <span className="neighbour-title">{title}</span>
       <span className="neighbour-short">
         {direction === 'previous' ? 'Previous' : 'Next'}
       </span>
-      {direction === 'next' ? <span aria-hidden="true">›</span> : null}
+      {direction === 'next' ? (
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          width="20"
+          height="20"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="m10 6 6 6-6 6" />
+        </svg>
+      ) : null}
     </a>
   );
 }
@@ -97,9 +125,11 @@ export function PatternMenu({ id, view }: { id: string; view: View }) {
       <button
         type="button"
         className="menu-button"
+        aria-label="Patterns"
+        title="Browse patterns"
         aria-haspopup="dialog"
         aria-expanded={open}
-        onClick={() => setOpen(true)}
+        onClick={() => setOpen((open) => !open)}
       >
         <svg
           aria-hidden="true"
@@ -112,7 +142,6 @@ export function PatternMenu({ id, view }: { id: string; view: View }) {
         >
           <path d="M2 4h12M2 8h12M2 12h12" />
         </svg>
-        Patterns
       </button>
       {open ? (
         <MenuPanel id={id} view={view} onClose={() => setOpen(false)} />

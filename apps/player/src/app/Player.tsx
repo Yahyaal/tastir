@@ -1256,6 +1256,7 @@ export function Player({
         {browsing ? <PatternMenu id={address} view={view} /> : null}
         <a
           className="home"
+          aria-label="All patterns"
           href="#/"
           onClick={(e) => {
             if (!changed) return;
@@ -1276,61 +1277,61 @@ export function Player({
           </span>
           <span>All patterns</span>
         </a>
-        <LessonTitle tutorial={tutorial} />
-        {browsing ? (
-          <nav className="pattern-pagination" aria-label="Browse patterns">
-            <PreviousPattern id={address} view={view} />
-            <NextPattern id={address} view={view} />
-          </nav>
-        ) : null}
-        {browsing ? (
-          <Variations
-            id={address}
-            // Another variation opens at the same stage: the colours, the
-            // repeat, or the lesson's start.
-            at={
-              colorStage
-                ? 'result'
-                : stage.kind === 'repeat'
-                  ? 'repeat'
-                  : 'beginning'
-            }
-            guard={(to) => {
-              if (!changed) return false;
-              setLeaving(to);
-              return true;
-            }}
-          />
-        ) : null}
-        {browsing ? (
-          <Places
-            id={address}
-            // The same steps in another place's colours: the same stage.
-            at={
-              colorStage
-                ? 'result'
-                : stage.kind === 'repeat'
-                  ? 'repeat'
-                  : 'beginning'
-            }
-            guard={(to) => {
-              if (!changed) return false;
-              setLeaving(to);
-              return true;
-            }}
-          />
-        ) : null}
-        {mine ? (
-          <a
-            className="edit-link"
-            href={`#/edit/${address.slice('mine/'.length)}`}
-          >
-            Edit this pattern
-          </a>
-        ) : null}
-        {browsing ? (
-          <ViewSwitch id={address} view={view} onShow={show} />
-        ) : null}
+        <div className="pattern-heading">
+          {browsing ? <PreviousPattern id={address} view={view} /> : <span />}
+          <LessonTitle tutorial={tutorial} />
+          {browsing ? <NextPattern id={address} view={view} /> : <span />}
+        </div>
+        <div className="player-view-tools">
+          {browsing ? (
+            <Variations
+              id={address}
+              // Another variation opens at the same stage: the colours, the
+              // repeat, or the lesson's start.
+              at={
+                colorStage
+                  ? 'result'
+                  : stage.kind === 'repeat'
+                    ? 'repeat'
+                    : 'beginning'
+              }
+              guard={(to) => {
+                if (!changed) return false;
+                setLeaving(to);
+                return true;
+              }}
+            />
+          ) : null}
+          {browsing ? (
+            <Places
+              id={address}
+              // The same steps in another place's colours: the same stage.
+              at={
+                colorStage
+                  ? 'result'
+                  : stage.kind === 'repeat'
+                    ? 'repeat'
+                    : 'beginning'
+              }
+              guard={(to) => {
+                if (!changed) return false;
+                setLeaving(to);
+                return true;
+              }}
+            />
+          ) : null}
+          {mine ? (
+            <a
+              className="edit-link"
+              href={`#/edit/${address.slice('mine/'.length)}`}
+            >
+              Edit this pattern
+            </a>
+          ) : null}
+          {browsing ? (
+            <ViewSwitch id={address} view={view} onShow={show} />
+          ) : null}
+        </div>
         <div className="player-utilities">
           <FeedbackButton
             iconOnly

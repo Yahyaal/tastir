@@ -51,7 +51,7 @@ The owner’s refinement: combine Mosaic’s blue/teal colours with Precision’
 
 Prefer visible segmented choices for two or three mutually exclusive values, and labelled switches for on/off settings. Use dropdowns only when a better alternative does not fit. Actions must look like buttons and have clear labels; icons supplement the words. Keep keyboard interaction, focus visibility, touch targets and both themes working. Preserve the satisfaction of the final inking reveal: the default lesson mode should show a faint destination guide before that reveal rather than commit ink throughout construction.
 
-The owner’s action-hierarchy preference (16 November): give actions with different importance different visual weight. At the lesson finish, Next lesson is the single filled primary action; Save and Share are secondary. Group previous/next pattern navigation as navigation. Keep Feedback as an accessible icon beside Settings in the lesson header, and use the shorter Settings tooltip. Keep light/dark contrast, 44px utility targets and keyboard focus visible.
+The owner’s action-hierarchy preference (16 November): give actions with different importance different visual weight. At the lesson finish, Next lesson is the single filled primary action; Save and Share are secondary. The owner’s refinement: center the current title between Previous on the left and Next on the right; use compact arrows and an icon-only Patterns side-menu toggle. For three finish actions, use filled Next lesson, outlined Save and text-style Copy link with an icon. Keep Feedback as an accessible icon beside Settings in the lesson header, and use the shorter Settings tooltip. Keep light/dark contrast, 44px utility targets and keyboard focus visible.
 
 ## Standing goals
 

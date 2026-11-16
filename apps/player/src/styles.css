@@ -6085,29 +6085,6 @@ svg.tiles {
 .end-actions:has(.learning-advance) button.primary:hover:not(:disabled) {
   background: color-mix(in srgb, var(--theme-accent) 6%, var(--theme-bg-card));
 }
-.pattern-pagination {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.topbar .pattern-pagination .neighbour {
-  min-height: 44px;
-  align-items: center;
-  border-radius: 8px;
-}
-.topbar .pattern-pagination .previous {
-  border-color: transparent;
-  color: var(--theme-text-secondary);
-}
-.topbar .pattern-pagination .next {
-  border-color: var(--theme-border-hover);
-  color: var(--theme-accent);
-  background: color-mix(in srgb, var(--theme-accent) 7%, var(--theme-bg-card));
-}
-.topbar .pattern-pagination .neighbour:hover {
-  background: color-mix(in srgb, var(--theme-accent) 12%, var(--theme-bg-card));
-  color: var(--theme-accent);
-}
 .player-utilities {
   display: flex;
   align-items: center;
@@ -6147,22 +6124,183 @@ svg.tiles {
   outline-offset: 2px;
 }
 @media (max-width: 760px) {
-  .player .topbar .pattern-pagination {
-    display: none;
-  }
   .player-utilities {
     gap: 2px;
   }
 }
 
-/* Medium desktop widths use two deliberate rows: browse/tools, then title/view. */
-@media (min-width: 761px) and (max-width: 1480px) {
-  .player:not(.along) .topbar .lesson-title {
-    flex: 1 1 calc(100% - 390px);
-    min-width: 0;
+/* A calm header: the current pattern is centered between browsing arrows. */
+.player:not(.along) .topbar {
+  display: grid;
+  grid-template-columns: 44px auto minmax(0, 1fr) auto;
+  gap: 10px 16px;
+}
+.player:not(.along) .topbar > .menu-button {
+  grid-column: 1;
+  grid-row: 1;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-color: transparent;
+  border-radius: 10px;
+  background: transparent;
+  justify-content: center;
+}
+.player:not(.along) .topbar > .menu-button svg {
+  width: 21px;
+  height: 21px;
+}
+.player:not(.along) .topbar > .home {
+  grid-column: 2;
+  grid-row: 1;
+}
+.player:not(.along) .topbar > .home > span:last-child {
+  display: none;
+}
+.player:not(.along) .topbar > .player-utilities {
+  grid-column: 4;
+  grid-row: 1;
+}
+.pattern-heading {
+  display: grid;
+  grid-template-columns: 44px minmax(0, max-content) 44px;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  grid-column: 3;
+  grid-row: 1;
+}
+.player:not(.along) .topbar .pattern-heading .lesson-title {
+  order: 0;
+  min-width: 0;
+  text-align: center;
+  font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+}
+/* Reserve both arrow positions even at either end of the library. */
+.pattern-heading > .previous {
+  grid-column: 1;
+  grid-row: 1;
+}
+.pattern-heading > .lesson-title {
+  grid-column: 2;
+  grid-row: 1;
+}
+.pattern-heading > .next {
+  grid-column: 3;
+  grid-row: 1;
+}
+.pattern-heading .lesson-sub {
+  justify-content: center;
+}
+.player .topbar .pattern-heading .neighbour {
+  width: 44px;
+  height: 44px;
+  max-width: none;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  color: var(--theme-text-secondary);
+  background: transparent;
+}
+.player
+  .topbar
+  .pattern-heading
+  .neighbour
+  :is(.neighbour-short, .neighbour-title) {
+  display: none;
+}
+.player .topbar :is(.pattern-heading .neighbour, .menu-button):hover {
+  background: color-mix(in srgb, var(--theme-accent) 8%, var(--theme-bg-card));
+  color: var(--theme-accent);
+}
+.player .topbar :is(.pattern-heading .neighbour, .menu-button):focus-visible {
+  outline: 2px solid var(--theme-accent);
+  outline-offset: 2px;
+}
+.player-view-tools {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+.player:not(.along) .topbar .player-view-tools .view-switch {
+  order: 0;
+  margin-left: auto;
+}
+/* Three actions, three weights: filled Continue, outlined Save, text Share. */
+.player .end-actions .share-link > button.secondary {
+  min-height: 44px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  font-weight: 400;
+  padding-inline: 10px;
+}
+.player .end-actions .share-link > button.secondary:hover {
+  color: var(--theme-accent);
+  background: color-mix(in srgb, var(--theme-accent) 6%, var(--theme-bg-card));
+}
+@media (max-width: 760px) {
+  .player:not(.along) .topbar {
+    grid-template-columns: 44px 44px minmax(0, 1fr) auto;
+    gap: 6px;
   }
-  .player:not(.along) .topbar .view-switch {
-    order: 4;
-    margin-left: auto;
+  .player:not(.along) .topbar > .home {
+    grid-column: 1;
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .player:not(.along) .topbar > .menu-button {
+    grid-column: 2;
+    width: 44px;
+    min-width: 44px;
+  }
+  .player:not(.along) .topbar .pattern-heading {
+    display: block;
+  }
+  .player .topbar .pattern-heading .neighbour {
+    display: none;
+  }
+  .player:not(.along) .topbar .pattern-heading .lesson-title {
+    font-size: 1.05rem;
+  }
+  .player:not(.along) .topbar .player-view-tools .view-switch {
+    order: -1;
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+}
+
+.share-link > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.share-link > button svg {
+  flex: none;
+}
+
+@media (max-width: 360px) {
+  .player:not(.along) .topbar .pattern-heading {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .player:not(.along) .topbar .player-view-tools .view-switch {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .player:not(.along) .topbar .player-view-tools .view-switch a {
+    min-width: 0;
+    padding-inline: 6px;
+    font-size: 0.75rem;
+    gap: 4px;
+    justify-content: center;
   }
 }

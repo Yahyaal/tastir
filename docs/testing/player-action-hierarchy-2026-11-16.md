@@ -29,3 +29,17 @@ After the last phone-sharing refinement, full root tests passed across all eight
 The final dark phone construction capture confirms the stage starts at y=229 rather than y=301, a 72px improvement. Share remains reachable below the instructions and Next remains in the viewport after scrolling. Construction, result and open-Settings captures were inspected on desktop, tablet and phone; light/dark result views were checked. Feedback keyboard opening/closing and returned focus passed in both themes on desktop and phone, without submitting a report.
 
 Open [the before/after screenshot review](http://localhost:4200/__review/renders/player-actions-2026-11-16/index.html). The local ignored review folder keeps the comparison board and four full-size result screenshots; its HTML was rendered and visually inspected. The visual critique loop reached a satisfactory result for the requested controls. No competing direction required a theme vote. Everything remains local and un-deployed.
+
+## UI.2: owner refinement — centered navigation and three action weights
+
+The owner found the revised header crowded and preferred Previous–title–Next. The current title is now centered between compact, neutral chevrons. Patterns is an icon-only drawer toggle with its existing accessible name, expanded state, Escape behavior and focus return. The wordmark remains a link to the library; its accessible name is All patterns. Variations, places and viewing choices occupy a second row.
+
+The three finish actions now use filled Next lesson, outlined Save, and text-style Copy link with a link icon. The visual guideline is a single high-emphasis action with lower-emphasis alternatives ([Carbon guidance](https://carbondesignsystem.com/components/button/usage/)); the styling follows the selected Outline design.
+
+Screenshot critique first brought the arrows closer to the title, then caught a narrow view-switch overflow at 320px. At that width the title takes its own line and view choices fit. Menu and utility targets are 44px. Reviewed captures include 1280px light Result, 1280px dark Watch, 1024px dark Result, 390px Phone, 320px narrow Phone, and a 1600px pattern with source credits. Side-menu open/Escape/focus and Settings opening passed in the local app.
+
+[Current before/after visual review](http://localhost:4200/__review/renders/player-header-2026-11-16/index.html). Screenshots are kept in the ignored local review folder. Final regression results follow below.
+
+UI.2 validation: full root unit tests passed across all eight projects (13 tasks), with 36 focused player/settings/save tests and 86 desktop/tablet/phone browser cases passed (one existing phone skip). Final review caught a CSS grid boundary case when a neighboring arrow is absent. Explicit grid slots now preserve the title position. That CSS-only correction and its browser regression were checked with fresh root lint/typecheck/build and 58 browser cases passed, with two configured phone skips (phone pattern browsing uses the drawer). The TypeScript player behavior remained unchanged after the full unit pass. The new regression verifies both ends of the actual library on desktop and tablet. Final formatting and diff checks passed.
+
+The local screenshot gallery was rendered at 1440px, all visible images loaded, and the result was visually reviewed (`/tmp/tastir-centered-review.png`). No account was signed in and no feedback submitted. UI.2 remains local and un-deployed.

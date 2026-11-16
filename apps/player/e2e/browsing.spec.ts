@@ -204,3 +204,36 @@ test('a region count includes alternate places and equals its card results', asy
     }),
   ).toBeVisible();
 });
+
+test('the title stays centered at both ends of the library', async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name === 'phone',
+    'Phone pattern browsing uses the side menu.',
+  );
+  await page.goto('/#collection');
+  const cards = page.locator('.cards .card');
+  await cards.first().waitFor();
+  const first = await cards.first().getAttribute('href');
+  const last = await cards.last().getAttribute('href');
+  for (const [href, missing] of [
+    [first, 'previous'],
+    [last, 'next'],
+  ] as const) {
+    await page.goto('/' + href!);
+    const heading = page.locator('.pattern-heading');
+    await expect(heading.locator('.lesson-title h1')).toBeVisible();
+    await expect(heading.locator('.' + missing)).toHaveCount(0);
+    const offset = await heading.evaluate((element) => {
+      const frame = element.getBoundingClientRect();
+      const title = element
+        .querySelector('.lesson-title')!
+        .getBoundingClientRect();
+      return Math.abs(
+        (title.left + title.right) / 2 - (frame.left + frame.right) / 2,
+      );
+    });
+    expect(offset).toBeLessThan(1);
+  }
+});
