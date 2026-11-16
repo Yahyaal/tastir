@@ -8,6 +8,8 @@ Tastir teaches Islamic geometric patterns one ruler or compass step at a time. T
 
 ## Where things stand (16 November 2026)
 
+The only public site is https://tastir-studio.vercel.app, which Vercel deploys from main on every merge. The old GitHub Pages copy (`yahyaal.github.io/tastir`, last built 15 October) was retired on 16 November at the owner's request: Pages is switched off for the repository and its workflow is removed.
+
 The library has 233 tutorial files and ten additional places sharing existing designs. The player teaches construction, ink, repeat and colour; saved designs, drawing along, the editor and five wall styles are implemented. Verification against a real wall is separate from a valid construction: many tutorials still need photographic checks. [Pattern status](patterns/STATUS.md) holds the per-pattern evidence.
 
 The ink overlay is implemented. All ten earlier place merges agree with their archived ink; the Paccard pair and Najjarin/Bou Inania remain separate drawings. The rosette pairs already share four and ten complete opening steps respectively. A review-only Paccard reorder extends the common beginning to seven without changing final geometry. [Visual research follow-up](http://localhost:4200/#/notes/teaching-update) shows the constructions and the destination-guide study. “Guide first” is now the default in the actual lesson: a faint cue on the final construction step, followed by the full inking reveal.
