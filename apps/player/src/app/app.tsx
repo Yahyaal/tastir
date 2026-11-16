@@ -7,7 +7,7 @@ import { LIBRARY, listed, type Entry } from './library';
 import { Library } from './Library';
 import { WorkPage } from './YourWork';
 import { Broken, MissingDesign, Play } from './Player';
-import { useRoute } from './routing';
+import { isLibraryRoute, lessonRoute, useRoute } from './routing';
 import { openShared, useShared } from './Sharing';
 import { FeedbackHost } from '../feedback/FeedbackHost';
 const FeedbackInbox = lazy(() =>
@@ -163,7 +163,15 @@ function AppPage({
     () => (own && 'entry' in own ? [...library, own.entry] : library),
     [own, library],
   );
-  if (!route) return <Library entries={listed(library)} />;
+  // Collection is a library anchor, never a tutorial id. Both #collection
+  // and #/collection arrive here through the hash router.
+  if (isLibraryRoute(route))
+    return (
+      <Library
+        entries={listed(library)}
+        startAtCollection={route === 'collection'}
+      />
+    );
   if (route === 'feedback' || route.startsWith('feedback/'))
     return (
       <Suspense fallback={<p>Loading feedback…</p>}>
@@ -311,24 +319,21 @@ function AppPage({
   }
   // #/id and #/id/result open at the finished wall; #/id/watch autoplays;
   // #/id/repeat at the repeat, where drawing along goes on.
-  const result = route.endsWith('/result');
-  const repeat = route.endsWith('/repeat');
-  const watch = route.endsWith('/watch');
-  const id = result
-    ? route.slice(0, -'/result'.length)
-    : repeat
-      ? route.slice(0, -'/repeat'.length)
-      : watch
-        ? route.slice(0, -'/watch'.length)
-        : route;
+  const { id, position, colourFirst } = lessonRoute(route);
   const entry = entries.find((e) => e.id === id);
   if (!entry)
     return <Broken message={`There is no tutorial called "${route}".`} />;
   return (
     <Play
-      key={route}
+      key={`lesson:${id}`}
       json={entry.json}
-      start={watch ? 'beginning' : repeat ? 'repeat' : 'result'}
+      position={position}
+      lessonColourFirst={colourFirst ?? false}
+      start={
+        position === 'beginning' || typeof position === 'number'
+          ? 'beginning'
+          : position
+      }
       address={id}
     />
   );

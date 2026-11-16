@@ -1,9 +1,11 @@
 import type { SharedPresentation } from '@tastir/schema';
 import { registerPageColoring } from '../agent/pageColoring';
+import { PatternLoading } from './PatternLoading';
 import { StepText } from './StepText';
 import { DEFAULT_JALI, sameJali } from './jali';
 import { JaliControls } from './JaliControls';
 import { ExploreNext } from './ExploreNext';
+import { lessonIndex, writeLessonRoute, type LessonPosition } from './routing';
 import { keepLessonAt, lessonAt } from './lessons';
 import { ThemeSwitch } from './theme';
 import {
@@ -17,6 +19,7 @@ import {
 } from 'react';
 import { copyUpTo } from '../editor/document';
 import { addPattern, freeTitle, getPattern } from '../editor/patterns';
+import { MAX_FILE_BYTES, viewPatternFile } from '../editor/files';
 import { planStep, play, playInk } from './animation';
 import { fullView, growingFrame, tileView, width, type Rect } from './camera';
 import {
@@ -75,7 +78,7 @@ import { WallControls } from './WallControls';
 import { PenControls } from './PenControls';
 import { PlayerSettings } from './PlayerSettings';
 import { DEFAULT_PEN, samePen } from './pen';
-import { PROGRESS_TEXT, useModel } from './workerClient';
+import { useModel } from './workerClient';
 
 import { setStayGuard } from './routing';
 import { Khatam, PHASE_MARKS, PHASE_NAMES } from './khatam';
@@ -210,6 +213,8 @@ export function Player({
   banner,
   reviewIndex,
   presentation,
+  position,
+  lessonColourFirst,
 }: {
   model: Model;
   /** A line over the workspace, such as a shared pattern's Keep a copy. */
@@ -223,6 +228,8 @@ export function Player({
   /** An isolated owner review uses address="shared", which disables progress autosaves. */
   reviewIndex?: number;
   presentation?: SharedPresentation;
+  position?: LessonPosition;
+  lessonColourFirst?: boolean;
 }) {
   // Helper lines (construction lines the pattern never runs along) are
   // left out unless the learner asks for them.
@@ -245,7 +252,7 @@ export function Player({
   const start = opened ? 'result' : asked;
   // After the ink the learner colours the unit first, or repeats it first.
   const [colourFirst, setColourFirst] = useState(
-    presentation?.colourFirst ?? false,
+    presentation?.colourFirst ?? lessonColourFirst ?? false,
   );
   const stages = useMemo(
     () => stagesOf(tutorial, colourFirst),
@@ -256,7 +263,9 @@ export function Player({
   const [copies, setCopies] = useState<Copies>(presentation?.copies ?? 'wall');
   // Watching again, the lesson opens at the step the learner left.
   const [resumedAt, setResumedAt] = useState(() =>
-    start === 'beginning' && !sharedView
+    start === 'beginning' &&
+    !sharedView &&
+    (position === undefined || position === 'beginning')
       ? lessonAt(address, stagesOf(tutorial))
       : undefined,
   );
@@ -274,6 +283,9 @@ export function Player({
       (reviewIndex === undefined
         ? undefined
         : Math.max(0, Math.min(reviewIndex, stagesOf(tutorial).length - 1))) ??
+      (position !== undefined && position !== 'beginning'
+        ? lessonIndex(position, stagesOf(tutorial).length)
+        : undefined) ??
       resumedAt ??
       (start === 'result'
         ? stagesOf(tutorial).length - 1
@@ -291,7 +303,8 @@ export function Player({
   const [playing, setPlaying] = useState(
     start === 'beginning' &&
       resumedAt === undefined &&
-      reviewIndex === undefined,
+      reviewIndex === undefined &&
+      typeof position !== 'number',
   );
   const plateRef = useRef<HTMLElement>(null);
   const clock = useRef<{ index: number; remaining: number } | undefined>(
@@ -440,6 +453,50 @@ export function Player({
       ? { pen }
       : {}),
   });
+  const [fileError, setFileError] = useState<string>();
+  const downloadPattern = () => {
+    setFileError(undefined);
+    try {
+      const source = mine
+        ? getPattern(address.slice('mine/'.length))
+        : undefined;
+      const basedOn =
+        source?.basedOn ??
+        (!mine && !sharedView
+          ? {
+              tutorial: address,
+              title: full.tutorial.title,
+              step: full.tutorial.steps.at(-1)?.id ?? 0,
+            }
+          : undefined);
+      const { tutorial: _address, ...fields } = designFields();
+      const file = viewPatternFile(
+        full.tutorial,
+        {
+          name: design?.name ?? tutorial.title,
+          ...fields,
+        },
+        basedOn,
+      );
+      const blob = new Blob([`${JSON.stringify(file, null, 2)}\n`], {
+        type: 'application/json',
+      });
+      if (blob.size > MAX_FILE_BYTES)
+        throw new Error(
+          'This pattern file is too large to reopen (8 MB maximum).',
+        );
+      download(
+        blob,
+        `${tutorial.id.replace(/[^a-z0-9_-]/gi, '-')}.tastir.json`,
+      );
+    } catch (error) {
+      setFileError(
+        error instanceof Error
+          ? error.message
+          : 'This pattern file could not be created. Try again.',
+      );
+    }
+  };
   // Until it has a name, every change is kept as a draft; back to the
   // pattern's own, there is nothing to keep.
   const [draftKept, setDraftKept] = useState<boolean>();
@@ -550,8 +607,10 @@ export function Player({
   const svgRef = useRef<SVGSVGElement>(null);
   const running = useRef<Animation[]>([]);
   const reversing = useRef(false);
+  const navigationEpoch = useRef(0);
   // Set when the next render should animate its step in: on load and Next.
-  const animateNext = useRef(true);
+  const animateNext = useRef(typeof position !== 'number');
+  const historyMode = useRef<'push' | 'replace'>('replace');
   // Whether the learner arrived at this stage with Next (or on load), so
   // the stage plays its way in; Back shows it as it is.
   const [forward, setForward] = useState(start !== 'result');
@@ -633,6 +692,7 @@ export function Player({
   const next = useCallback(() => {
     setPlaying(false);
     clock.current = undefined;
+    historyMode.current = 'push';
     advance();
   }, [advance]);
 
@@ -642,6 +702,7 @@ export function Player({
     if (reversing.current) return settle();
     settle();
     if (index === 0) return;
+    historyMode.current = 'push';
     clock.current = undefined;
     setForward(false);
     const undraw =
@@ -653,9 +714,11 @@ export function Player({
           )
         : [];
     if (undraw.length === 0) return setIndex(index - 1);
+    const epoch = ++navigationEpoch.current;
     reversing.current = true;
     running.current = undraw;
     void Promise.allSettled(undraw.map((a) => a.finished)).then(() => {
+      if (epoch !== navigationEpoch.current) return;
       reversing.current = false;
       running.current = [];
       setIndex(index - 1);
@@ -686,6 +749,7 @@ export function Player({
 
   const togglePlayback = useCallback(() => {
     if (index === last) {
+      historyMode.current = 'push';
       clock.current = undefined;
       animateNext.current = true;
       setForward(true);
@@ -1087,6 +1151,8 @@ export function Player({
   const jump = (to: number) => {
     setPlaying(false);
     if (to === index) return;
+    historyMode.current = 'push';
+    navigationEpoch.current++;
     clock.current = undefined;
     settle();
     reversing.current = false;
@@ -1105,6 +1171,7 @@ export function Player({
       jump(last);
       setComparing(true);
     } else {
+      historyMode.current = 'push';
       settle();
       clock.current = undefined;
       reversing.current = false;
@@ -1115,15 +1182,44 @@ export function Player({
     }
     return true;
   };
-  const shownView = useRef(view);
+  // Browser navigation restores the live lesson rather than creating a fresh player.
+  const routePositionKey = `${position}:${lessonColourFirst}`;
+  const seenPosition = useRef(routePositionKey);
+  const restoringRoute = useRef(false);
+  useLayoutEffect(() => {
+    if (position === undefined || seenPosition.current === routePositionKey)
+      return;
+    seenPosition.current = routePositionKey;
+    const target = lessonIndex(position, stages.length);
+    if (target === index && colourFirst === (lessonColourFirst ?? false))
+      return;
+    restoringRoute.current = true;
+    setColourFirst(lessonColourFirst ?? false);
+    navigationEpoch.current++;
+    setPlaying(false);
+    clock.current = undefined;
+    reversing.current = false;
+    running.current.forEach((animation) => animation.cancel?.());
+    running.current = [];
+    animateNext.current = false;
+    setForward(false);
+    setIndex(target);
+    // Only a new browser position restores the stage; player state changes publish below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [position, lessonColourFirst]);
   useEffect(() => {
-    if (shownView.current === view) return;
-    shownView.current = view;
-    if (!browsing || design) return;
-    const want = viewAddress(address, view);
-    if (window.location.hash !== want)
-      window.history.replaceState(window.history.state, '', want);
-  }, [view, browsing, design, address]);
+    if (position === undefined || design || sharedView) return;
+    if (restoringRoute.current) {
+      restoringRoute.current = false;
+      return;
+    }
+    const want =
+      index === last
+        ? `#/${address}/result`
+        : `#/${address}/watch/${index + 1}${colourFirst ? '?order=color' : ''}`;
+    writeLessonRoute(want, historyMode.current);
+    historyMode.current = 'replace';
+  }, [index, last, position, design, sharedView, address, colourFirst]);
 
   return (
     <div
@@ -1521,6 +1617,26 @@ export function Player({
                 <div className="export-tools">
                   <button
                     type="button"
+                    className="secondary pattern-file-download"
+                    onClick={downloadPattern}
+                  >
+                    <svg
+                      width="19"
+                      height="19"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.7"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M9 12l-2 3 2 3M15 12l2 3-2 3" />
+                    </svg>
+                    Download pattern file (.json)
+                  </button>
+                  <button
+                    type="button"
                     className="secondary"
                     onClick={() =>
                       download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
@@ -1540,6 +1656,15 @@ export function Player({
                     Download PNG
                   </button>
                 </div>
+                <p className="pattern-file-hint">
+                  JSON keeps the editable construction, ink, colours and style.
+                  Open it with “Open a pattern file”. SVG and PNG are images.
+                </p>
+                {fileError && (
+                  <p className="refused" role="alert">
+                    {fileError}
+                  </p>
+                )}
                 {/* The paper is beside Print, the one thing it changes. */}
                 <div className="print-tools">
                   <button
@@ -1761,6 +1886,8 @@ export function Play({
   banner,
   reviewIndex,
   presentation,
+  position,
+  lessonColourFirst,
 }: {
   json: unknown;
   start?: Start;
@@ -1769,15 +1896,13 @@ export function Play({
   banner?: React.ReactNode;
   reviewIndex?: number;
   presentation?: SharedPresentation;
+  position?: LessonPosition;
+  lessonColourFirst?: boolean;
 }) {
   const { model, error, progress } = useModel(json);
   if (error !== undefined) return <Broken message={error} />;
   if (!model) {
-    return (
-      <div className="player loading" role="status">
-        <p>{PROGRESS_TEXT[progress ?? 'checking']}</p>
-      </div>
-    );
+    return <PatternLoading address={address} progress={progress} />;
   }
   return (
     <Player
@@ -1788,6 +1913,8 @@ export function Play({
       address={address}
       banner={banner}
       reviewIndex={reviewIndex}
+      position={position}
+      lessonColourFirst={lessonColourFirst}
     />
   );
 }

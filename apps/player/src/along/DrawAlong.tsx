@@ -1,3 +1,4 @@
+import { PatternLoading } from '../app/PatternLoading';
 import { Khatam, PHASE_MARKS } from '../app/khatam';
 import { ThemeSwitch } from '../app/theme';
 import { ViewSwitch } from '../app/ViewSwitch';
@@ -36,7 +37,7 @@ import {
 import { PiecePanel } from '../app/PiecePanel';
 import { useRemembered } from '../app/remembered';
 import { useCamera } from '../app/useCamera';
-import { PROGRESS_TEXT, useModel } from '../app/workerClient';
+import { useModel } from '../app/workerClient';
 import { check, emptyDraft, type Draft } from '../editor/document';
 import '../editor/editor.css';
 import { EditorDrawing } from '../editor/EditorDrawing';
@@ -111,12 +112,7 @@ export function DrawAlongPage({
         </section>
       </div>
     );
-  if (!model)
-    return (
-      <div className="player loading" role="status">
-        <p>{PROGRESS_TEXT[progress ?? 'checking']}</p>
-      </div>
-    );
+  if (!model) return <PatternLoading address={address} progress={progress} />;
   return <DrawAlong model={model} address={address} />;
 }
 
@@ -254,10 +250,6 @@ export function DrawAlong({
     () => readableNames(tutorial, model.scene),
     [tutorial, model.scene],
   );
-  const readAt = useMemo(
-    () => readableAt(model.scene, readable),
-    [model.scene, readable],
-  );
   // Where the learner left off, if they have been here before.
   const [saved] = useState(() => getProgress(address));
   const [index, setIndex] = useState(() =>
@@ -286,6 +278,11 @@ export function DrawAlong({
   const colouredWall = coloring || (repeating && colourFirst);
   const beat = shown[Math.min(index, shown.length - 1)] ?? 1;
   const info = beats[beat - 1];
+  // Later aliases must not rename the points in an earlier instruction.
+  const readAt = useMemo(
+    () => readableAt(model.scene, readable, beat),
+    [model.scene, readable, beat],
+  );
 
   // The learner's board: a draft of their own, drawn with the editor.
   const {
@@ -670,12 +667,16 @@ export function DrawAlong({
     () => toolsFor(tutorial, neededAt(model.scene, beat)),
     [tutorial, model.scene, beat],
   );
-  const ask = !tool
-    ? (guidance?.words ??
-      'Choose a tool above to draw with. Hold the pointer over a tool to see what it does.')
-    : tool.id === 'tile'
-      ? TILE_ASK
-      : (tool.asks[Math.min(targets.length, tool.asks.length - 1)] ?? '');
+  const needsDifferentTool = Boolean(
+    tool && guidance && tool.id !== guidance.tool,
+  );
+  const ask =
+    !tool || needsDifferentTool
+      ? (guidance?.words ??
+        'Choose a tool above to draw with. Hold the pointer over a tool to see what it does.')
+      : tool.id === 'tile'
+        ? TILE_ASK
+        : (tool.asks[Math.min(targets.length, tool.asks.length - 1)] ?? '');
   // The board's figures that are the step's, drawn green, and the step's
   // own names for them, whose dashes the guide no longer shows.
   const [currentOnBoard, drawnOfStep] = useMemo(() => {
@@ -1996,8 +1997,12 @@ export function DrawAlong({
           ) : (
             <>
               <p className="instruction" aria-live="polite">
-                {tool ? <b>{tool.label}: </b> : null}
-                {say(said ?? ask)}
+                {tool && !needsDifferentTool ? <b>{tool.label}: </b> : null}
+                {say(
+                  said
+                    ? `${said}${needsDifferentTool ? ` ${guidance?.words}` : ''}`
+                    : ask,
+                )}
                 {!said &&
                 tool &&
                 symmetry &&

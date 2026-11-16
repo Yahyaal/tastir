@@ -135,3 +135,36 @@ describe('the library search', () => {
     expect(ids('morocco')).toEqual(['fes-rosette', 'fes-stars']);
   });
 });
+
+describe('Unicode search queries', () => {
+  it('preserves Arabic text instead of treating it as an empty query', () => {
+    expect(readQuery('نَجْمَة')).toEqual({ words: ['نجمة'] });
+    expect(ids('نجمة')).toEqual(ids('star'));
+    expect(ids('نجمة')).not.toHaveLength(library.length);
+    expect(ids('نجمة')).not.toHaveLength(0);
+    expect(ids('نجمة Fez')).toEqual(['fes-stars']);
+    expect(ids('نجمة فاس')).toEqual(['fes-stars']);
+  });
+  it('normalizes Arabic-Indic and Persian digits and point names', () => {
+    expect(readQuery('١٦ نقطة')).toEqual({ words: [], fold: 16 });
+    expect(readQuery('۱۶ point')).toEqual({ words: [], fold: 16 });
+    expect(ids('١٦ نقطة')).toEqual(ids('16 point'));
+  });
+  it('finds Arabic titles and ranks titles above source-only matches', () => {
+    const entries = [
+      card('source', {
+        title: 'A geometric grid',
+        credits: [{ source: 'نجمة زرقاء' }],
+      }),
+      card('arabic', { title: 'نجمة زرقاء' }),
+    ];
+    expect(filtered(entries, { query: 'زرقاء' }).map((e) => e.id)).toEqual([
+      'arabic',
+      'source',
+    ]);
+  });
+  it('returns no matches for unknown non-Latin text', () => {
+    expect(ids('كلمةلاتوجدفيالفهرس')).toEqual([]);
+    expect(ids('不存在')).toEqual([]);
+  });
+});

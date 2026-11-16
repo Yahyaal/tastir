@@ -4,6 +4,7 @@ import {
   type JaliAppearance,
   type SharedPresentation,
   SharedPresentationShape,
+  SharedDesignShape,
   type PenLook,
   BasedOnShape,
   DraftShape,
@@ -32,6 +33,36 @@ export const patternFile = (p: UserPattern): PatternFile => ({
   ...(p.basedOn ? { basedOn: p.basedOn } : {}),
 });
 
+/** Version 2 keeps a viewer's editable construction and its current design.
+ * Version 1 remains the editor's format for unfinished drawings. */
+export interface ViewPatternFile extends Omit<PatternFile, 'version'> {
+  readonly version: 2;
+  readonly design: NonNullable<Shared['design']>;
+}
+export function viewPatternFile(
+  tutorial: Draft,
+  design: NonNullable<Shared['design']>,
+  basedOn?: UserPattern['basedOn'],
+): ViewPatternFile {
+  const full = safeParseTutorial(tutorial);
+  const appearance = SharedDesignShape.safeParse(design);
+  if (
+    !full.success ||
+    !appearance.success ||
+    (basedOn && !BasedOnShape.safeParse(basedOn).success)
+  )
+    throw new Error(
+      'This pattern could not be downloaded because its construction or design is incomplete.',
+    );
+  return {
+    tastir: 'pattern',
+    version: 2,
+    tutorial: full.tutorial,
+    design: appearance.data,
+    ...(basedOn ? { basedOn } : {}),
+  };
+}
+
 export const MAX_FILE_BYTES = 8 * 1024 * 1024;
 const MAX_LINK_CHARS = 2 * 1024 * 1024;
 
@@ -47,6 +78,7 @@ export function readPattern(text: string):
   | {
       readonly tutorial: Draft;
       readonly basedOn?: UserPattern['basedOn'];
+      readonly design?: NonNullable<Shared['design']>;
       /** Whether it was a pattern file, not a plain tutorial file. */
       readonly pattern: boolean;
     }
@@ -62,7 +94,7 @@ export function readPattern(text: string):
   if (!isObject(data))
     return { reason: 'This is not a pattern file: it holds no pattern.' };
   const wrapped = data['tastir'] === 'pattern';
-  if (wrapped && data['version'] !== 1)
+  if (wrapped && data['version'] !== 1 && data['version'] !== 2)
     return {
       reason:
         'This pattern file uses an unsupported version. Keep the original file and open it in the version of Tastir that created it.',
@@ -88,10 +120,23 @@ export function readPattern(text: string):
   if (basedOn && !basedOn.success)
     return { reason: 'This pattern file has damaged source information.' };
   const full = safeParseTutorial(draft.data);
+  const design =
+    wrapped && data['design'] !== undefined
+      ? SharedDesignShape.safeParse(data['design'])
+      : undefined;
+  if (
+    (design && !design.success) ||
+    (wrapped && data['version'] === 2 && (!design || !full.success))
+  )
+    return {
+      reason:
+        'This pattern file has a damaged or incomplete drawing or design.',
+    };
   return {
     pattern: wrapped,
     tutorial: full.success ? full.tutorial : draft.data,
     ...(basedOn?.success ? { basedOn: basedOn.data } : {}),
+    ...(design?.success ? { design: design.data } : {}),
   };
 }
 

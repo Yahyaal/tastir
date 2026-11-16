@@ -1,0 +1,100 @@
+{
+  "method": "Lighthouse 13.6.0; 390x844 DPR2; simulated mobile, 4x CPU; cold signed-out light-theme hosted production build on localhost; three serial runs per variant",
+  "before": [
+    {
+      "run": 1,
+      "version": "13.6.0",
+      "time": "2026-11-16T01:48:43.544Z",
+      "performance": 95,
+      "accessibility": 88,
+      "fcp": 1436.2700999999997,
+      "lcp": 1436.2700999999997,
+      "tbt": 236,
+      "cls": 0.00008775794151305146,
+      "bytes": 846081,
+      "failingAuditTypes": [
+        "aria-progressbar-name",
+        "aria-prohibited-attr",
+        "color-contrast",
+        "landmark-one-main"
+      ]
+    },
+    {
+      "run": 2,
+      "version": "13.6.0",
+      "time": "2026-11-16T01:48:53.831Z",
+      "performance": 97,
+      "accessibility": 88,
+      "fcp": 1439.0634499999996,
+      "lcp": 1439.0634499999996,
+      "tbt": 191.5,
+      "cls": 0.00008775794151305146,
+      "bytes": 846082,
+      "failingAuditTypes": [
+        "aria-progressbar-name",
+        "aria-prohibited-attr",
+        "color-contrast",
+        "landmark-one-main"
+      ]
+    },
+    {
+      "run": 3,
+      "version": "13.6.0",
+      "time": "2026-11-16T01:49:04.197Z",
+      "performance": 96,
+      "accessibility": 88,
+      "fcp": 1428.7421499999998,
+      "lcp": 1428.7421499999998,
+      "tbt": 226.5,
+      "cls": 0.00182499350547768,
+      "bytes": 846082,
+      "failingAuditTypes": [
+        "aria-progressbar-name",
+        "aria-prohibited-attr",
+        "color-contrast",
+        "landmark-one-main"
+      ]
+    }
+  ],
+  "after": [
+    {
+      "run": 1,
+      "version": "13.6.0",
+      "time": "2026-11-16T01:58:30.423Z",
+      "performance": 95,
+      "accessibility": 100,
+      "fcp": 1418.2551499999997,
+      "lcp": 1418.2551499999997,
+      "tbt": 261,
+      "cls": 0,
+      "bytes": 671938,
+      "failingAuditTypes": []
+    },
+    {
+      "run": 2,
+      "version": "13.6.0",
+      "time": "2026-11-16T01:58:42.025Z",
+      "performance": 96,
+      "accessibility": 100,
+      "fcp": 1420.0570000000002,
+      "lcp": 1420.0570000000002,
+      "tbt": 229,
+      "cls": 0,
+      "bytes": 671938,
+      "failingAuditTypes": []
+    },
+    {
+      "run": 3,
+      "version": "13.6.0",
+      "time": "2026-11-16T01:58:53.835Z",
+      "performance": 96,
+      "accessibility": 100,
+      "fcp": 1430.16055,
+      "lcp": 1430.16055,
+      "tbt": 223,
+      "cls": 0,
+      "bytes": 671938,
+      "failingAuditTypes": []
+    }
+  ]
+}

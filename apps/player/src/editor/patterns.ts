@@ -143,3 +143,22 @@ export function setPatternWall(
   if (!all.some((p) => p.id === id)) return false;
   return patterns.write(all.map((p) => (p.id === id ? { ...p, wall } : p)));
 }
+
+/** Copy the full local construction and any laid wall without changing the original. */
+export function duplicatePattern(id: string): UserPattern | undefined {
+  const all = listPatterns();
+  const before = all.find((pattern) => pattern.id === id);
+  if (!before) return undefined;
+  const at = now();
+  const copy: UserPattern = {
+    ...before,
+    id: newId(),
+    tutorial: {
+      ...before.tutorial,
+      title: freeTitle(`${before.tutorial.title} copy`),
+    },
+    created: at,
+    updated: at,
+  };
+  return patterns.write([copy, ...all]) ? copy : undefined;
+}

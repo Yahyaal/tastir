@@ -106,7 +106,13 @@ const TRADITIONS: Record<
 
 /** Every tutorial, with a picture of the finished pattern: one card for
  * each family of variations. */
-export function Library({ entries }: { entries: readonly Entry[] }) {
+export function Library({
+  entries,
+  startAtCollection = false,
+}: {
+  entries: readonly Entry[];
+  startAtCollection?: boolean;
+}) {
   const families = useMemo(() => grouped(entries), [entries]);
   const [region, setRegion] = useState(() => keptFilters().region);
   const [style, setStyle] = useState(() => keptFilters().style);
@@ -118,7 +124,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
     () => keepFilters({ query, region, style, level, fold }),
     [query, region, style, level, fold],
   );
-  useReturnToScroll();
+  useReturnToScroll(startAtCollection);
   const [designs] = useState(listDesigns);
   const [patterns] = useState(listPatterns);
   const [inProgress] = useState(() => workInProgress(entries));
@@ -208,7 +214,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
   const hero = entries.find((e) => e.id === HERO) ?? entries[0];
   const first = entries.find((e) => e.id === FIRST) ?? entries[0];
   return (
-    <div className="library">
+    <main className="library">
       <header className="masthead">
         <div className="masthead-brand">
           <h1 aria-label="Tastir">
@@ -307,7 +313,9 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
       {inProgress.length ? null : yourWork}
       <section aria-labelledby="collection">
         <div className="collection-head">
-          <h2 id="collection">The patterns</h2>
+          <h2 id="collection" tabIndex={-1}>
+            The patterns
+          </h2>
           <div className="collection-meta">
             <p>
               {shown.length === families.length
@@ -331,6 +339,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
                 <span className="visually-hidden">Search patterns</span>
                 <input
                   type="search"
+                  dir="auto"
                   placeholder="Search: a place, a source, “16 point”…"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -455,7 +464,7 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
           </div>
         ) : null}
       </footer>
-    </div>
+    </main>
   );
 }
 
@@ -466,9 +475,15 @@ export function Library({ entries }: { entries: readonly Entry[] }) {
  * each frame for a moment, and stops as soon as the learner scrolls or
  * types themselves.
  */
-function useReturnToScroll() {
+function useReturnToScroll(startAtCollection: boolean) {
   useLayoutEffect(() => {
     const place = keptPlace();
+    if (!place && startAtCollection) {
+      const target = document.getElementById('collection');
+      target?.scrollIntoView?.({ block: 'start' });
+      target?.focus({ preventScroll: true });
+      return;
+    }
     if (!place || typeof window.scrollTo !== 'function') return;
     const until = performance.now() + 1500;
     let frame = 0;
@@ -497,7 +512,7 @@ function useReturnToScroll() {
     };
     settle();
     return stop;
-  }, []);
+  }, [startAtCollection]);
 }
 
 /** Words joined as English lists them: “a”, “a and b”, “a, b and c”. */
@@ -607,6 +622,12 @@ function CardView({
           <img
             className="thumbnail"
             src={import.meta.env.BASE_URL + preview.thumbnail}
+            srcSet={
+              preview.thumbnailSmall
+                ? `${import.meta.env.BASE_URL + preview.thumbnailSmall} 320w, ${import.meta.env.BASE_URL + preview.thumbnail} 480w`
+                : undefined
+            }
+            sizes="auto, (max-width: 600px) 160px, 280px"
             alt=""
             loading="lazy"
             width="360"

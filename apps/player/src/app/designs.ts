@@ -155,3 +155,22 @@ export const renameDesign = (id: string, name: string) =>
 export function deleteDesign(id: string): boolean {
   return write(listDesigns().filter((d) => d.id !== id));
 }
+
+/** Save an independent appearance with a fresh identity and a distinct copy name. */
+export function duplicateDesign(id: string): Design | undefined {
+  const all = listDesigns();
+  const before = all.find((design) => design.id === id);
+  if (!before) return undefined;
+  const names = new Set(all.map((design) => design.name));
+  let name: string;
+  let count = 1;
+  do {
+    const suffix = count === 1 ? ' copy' : ` copy ${count}`;
+    const characters = Array.from(before.name || 'Design');
+    while (characters.join('').length + suffix.length > NAME_LIMIT)
+      characters.pop();
+    name = characters.join('').trimEnd() + suffix;
+    count++;
+  } while (names.has(name));
+  return addDesign({ ...before, name });
+}

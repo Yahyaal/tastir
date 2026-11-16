@@ -1,0 +1,55 @@
+{
+  "method": "Lighthouse 13.6.0; light-theme signed-out hosted production build on localhost:4413; three serial cold navigations; 390x844 DPR2; simulated mobile throttling with 4x CPU slowdown; same profile as 15 November baseline",
+  "baselineReference": "grok-audit-metrics-2026-11-15.json",
+  "runs": [
+    {
+      "run": 1,
+      "version": "13.6.0",
+      "time": "2026-11-16T08:32:35.398Z",
+      "performance": 96,
+      "accessibility": 100,
+      "fcp": 1449.8776,
+      "lcp": 1449.8776,
+      "tbt": 220.5,
+      "cls": 0,
+      "bytes": 672724,
+      "failingAuditTypes": []
+    },
+    {
+      "run": 2,
+      "version": "13.6.0",
+      "time": "2026-11-16T08:32:46.240Z",
+      "performance": 95,
+      "accessibility": 100,
+      "fcp": 1419.3574999999998,
+      "lcp": 1419.3574999999998,
+      "tbt": 249.5,
+      "cls": 0.00008775794151305146,
+      "bytes": 673676,
+      "failingAuditTypes": []
+    },
+    {
+      "run": 3,
+      "version": "13.6.0",
+      "time": "2026-11-16T08:32:57.042Z",
+      "performance": 96,
+      "accessibility": 100,
+      "fcp": 1429.5542,
+      "lcp": 1429.5542,
+      "tbt": 210.5,
+      "cls": 0,
+      "bytes": 672725,
+      "failingAuditTypes": []
+    }
+  ],
+  "medians": {
+    "performance": 96,
+    "accessibility": 100,
+    "fcp": 1429.5542,
+    "lcp": 1429.5542,
+    "tbt": 220.5,
+    "cls": 0,
+    "bytes": 672725
+  },
+  "transferReductionPercent": 20.489385189615195
+}

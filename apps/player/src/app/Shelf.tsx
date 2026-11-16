@@ -3,6 +3,7 @@ import { playable } from '../editor/patterns';
 import { Thumbnail } from './drawing';
 import {
   BACKUP,
+  duplicateDesign,
   deleteDesign,
   NAME_LIMIT,
   renameDesign,
@@ -88,7 +89,7 @@ export function DesignCard({
   const ownEntry = own && 'entry' in own ? own.entry : undefined;
   const shown = entry ?? ownEntry;
   return (
-    <li className="card-item">
+    <li className="card-item personal-card">
       {shown ? (
         <DesignLink design={design} entry={shown} />
       ) : (
@@ -154,6 +155,10 @@ function DesignActions({
 }) {
   const [doing, setDoing] = useState<'rename' | 'delete'>();
   const [name, setName] = useState(design.name);
+  const [copyMessage, setCopyMessage] = useState<{
+    text: string;
+    failed?: boolean;
+  }>();
   if (doing === 'rename')
     return (
       <form
@@ -217,6 +222,25 @@ function DesignActions({
       <button
         type="button"
         className="button secondary"
+        title="Save another design with these colors and ink."
+        onClick={() => {
+          const copy = duplicateDesign(design.id);
+          setCopyMessage(
+            copy
+              ? { text: `Saved “${copy.name}”.` }
+              : {
+                  text: 'Could not save a copy: browser storage is blocked or full.',
+                  failed: true,
+                },
+          );
+          if (copy) onChange();
+        }}
+      >
+        Duplicate
+      </button>
+      <button
+        type="button"
+        className="button secondary"
         onClick={() => {
           setName(design.name);
           setDoing('rename');
@@ -231,6 +255,14 @@ function DesignActions({
       >
         Delete
       </button>
+      {copyMessage ? (
+        <p
+          className={`copy-feedback${copyMessage.failed ? ' refused' : ''}`}
+          role={copyMessage.failed ? 'alert' : 'status'}
+        >
+          {copyMessage.text}
+        </p>
+      ) : null}
     </div>
   );
 }

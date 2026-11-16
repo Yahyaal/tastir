@@ -8,7 +8,9 @@ import { ThemeSwitch } from '../app/theme';
 import {
   HOSTED,
   SignedOut,
-  setLive,
+  ensureStudioSession,
+  verifyStudioSession,
+  useStudioSignedIn,
   studioCall,
   studioUrl,
   useStudioEvents,
@@ -31,39 +33,56 @@ import './studio.css';
  * editor, where the owner's changes and the agents' meet.
  */
 export function StudioPage({ route }: { route: string }) {
-  const signedIn = useSignedIn();
-  if (signedIn === false) return <SignIn route={route} />;
+  const signedIn = useStudioSignedIn();
+  const [error, setError] = useState<string>();
+  const retry = () => {
+    setError(undefined);
+    void verifyStudioSession().catch((e: Error) => {
+      if (!(e instanceof SignedOut)) setError(e.message);
+    });
+  };
+  useEffect(() => {
+    let active = true;
+    void ensureStudioSession().catch((e: Error) => {
+      if (active && !(e instanceof SignedOut)) setError(e.message);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+  if (signedIn === false)
+    return <SignIn route={route} check={retry} message={error} />;
   if (signedIn === undefined)
     return (
       <div className="player studio">
         <Top />
-        <p className="notice">Loading…</p>
+        {error ? (
+          <section className="notice">
+            <h1>Studio is unavailable</h1>
+            <p role="status">{error}</p>
+            <button type="button" onClick={retry}>
+              Try again
+            </button>
+          </section>
+        ) : (
+          <p className="notice" role="status">
+            Checking your sign-in…
+          </p>
+        )}
       </div>
     );
   return <StudioRoute route={route} />;
 }
 
-/**
- * Whether the owner may use the studio: always on this computer; on the
- * hosted site only once signed in. The rest of Tastir needs no sign-in.
- */
-function useSignedIn(): boolean | undefined {
-  const [state, setState] = useState<boolean | undefined>(
-    HOSTED ? undefined : true,
-  );
-  useEffect(() => {
-    if (!HOSTED) return;
-    studioCall<{ live?: boolean }>('GET', '/me')
-      .then((me) => {
-        setLive(!!me.live);
-        setState(true);
-      })
-      .catch((e: Error) => setState(e instanceof SignedOut ? false : true));
-  }, []);
-  return state;
-}
-
-function SignIn({ route }: { route: string }) {
+function SignIn({
+  route,
+  check,
+  message,
+}: {
+  route: string;
+  check: () => void;
+  message?: string;
+}) {
   const next = `/#/${route}`;
   const [chatgpt, setChatgpt] = useState(false);
   useEffect(() => {
@@ -85,6 +104,7 @@ function SignIn({ route }: { route: string }) {
           private, so it needs you to sign in. Everything else in Tastir works
           without signing in.
         </p>
+        {message && <p role="status">{message}</p>}
         <p className="notice-links">
           <a
             className="button"
@@ -100,6 +120,9 @@ function SignIn({ route }: { route: string }) {
               Continue with ChatGPT
             </a>
           )}
+          <button className="button secondary" type="button" onClick={check}>
+            Check sign-in
+          </button>
           <a className="button secondary" href="#/">
             All patterns
           </a>

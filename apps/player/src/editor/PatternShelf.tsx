@@ -5,12 +5,13 @@ import { useEffect, useState } from 'react';
 import { viewBox } from '../app/camera';
 import { Thumbnail } from '../app/drawing';
 import { useModel } from '../app/workerClient';
-import { deleteDesign, listDesigns } from '../app/designs';
+import { addDesign, deleteDesign, listDesigns } from '../app/designs';
 import { check, emptyDraft } from './document';
 import { MAX_FILE_BYTES, readPattern } from './files';
 import { frameOf } from './EditorDrawing';
 import {
   addPattern,
+  duplicatePattern,
   deletePattern,
   freeTitle,
   playable,
@@ -88,6 +89,26 @@ export function NewPattern() {
       read.basedOn,
     );
     if (!made) return refused();
+    if (read.design) {
+      const checked = playable(made.id);
+      if (!checked || !('entry' in checked)) {
+        deletePattern(made.id);
+        return setSaid(
+          'The construction in this file cannot be played. Keep the original file and check its drawing.',
+        );
+      }
+      const design = addDesign({ ...read.design, tutorial: `mine/${made.id}` });
+      if (!design) {
+        const removed = deletePattern(made.id);
+        return setSaid(
+          removed
+            ? 'This browser could not keep the file’s design: its storage is blocked or full. Your original file is unchanged.'
+            : 'The construction was kept, but its colours and style could not be saved. Keep your original file and free some browser storage.',
+        );
+      }
+      window.location.hash = `#/mine/${made.id}/design/${design.id}`;
+      return;
+    }
     window.location.hash = `#/edit/${made.id}`;
   };
   return (
@@ -169,6 +190,10 @@ export function PatternCard({
   const { tutorial } = pattern;
   const [doing, setDoing] = useState<'rename' | 'delete'>();
   const [name, setName] = useState(tutorial.title);
+  const [copyMessage, setCopyMessage] = useState<{
+    text: string;
+    failed?: boolean;
+  }>();
   // The drawing is worked out after the page shows, so a big pattern does
   // not hold up the home page.
   const ready = Boolean(tutorial.pattern?.cell && tutorial.ink?.paths.length);
@@ -199,7 +224,7 @@ export function PatternCard({
       ? listDesigns().filter((d) => d.tutorial === `mine/${pattern.id}`)
       : [];
   return (
-    <li className="card-item">
+    <li className="card-item personal-card">
       <a className="card" href={`#/edit/${pattern.id}`}>
         {file ? (
           <WallThumb json={file} />
@@ -312,6 +337,25 @@ export function PatternCard({
           <button
             type="button"
             className="button secondary"
+            title="Save a separate copy of this construction."
+            onClick={() => {
+              const copy = duplicatePattern(pattern.id);
+              setCopyMessage(
+                copy
+                  ? { text: `Saved “${copy.tutorial.title}”.` }
+                  : {
+                      text: 'Could not save a copy: browser storage is blocked or full.',
+                      failed: true,
+                    },
+              );
+              if (copy) onChange();
+            }}
+          >
+            Duplicate
+          </button>
+          <button
+            type="button"
+            className="button secondary"
             onClick={() => {
               setName(tutorial.title);
               setDoing('rename');
@@ -326,6 +370,14 @@ export function PatternCard({
           >
             Delete
           </button>
+          {copyMessage ? (
+            <p
+              className={`copy-feedback${copyMessage.failed ? ' refused' : ''}`}
+              role={copyMessage.failed ? 'alert' : 'status'}
+            >
+              {copyMessage.text}
+            </p>
+          ) : null}
         </div>
       )}
     </li>
