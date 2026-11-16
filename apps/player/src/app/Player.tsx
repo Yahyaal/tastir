@@ -1,4 +1,6 @@
 import { NextPathLesson } from './LearningPathNav';
+import { learningPosition } from './learningPath';
+import { LIBRARY, listed } from './library';
 import type { SharedPresentation } from '@tastir/schema';
 import { registerPageColoring } from '../agent/pageColoring';
 import { PatternLoading } from './PatternLoading';
@@ -1000,6 +1002,10 @@ export function Player({
   const colorStage = stage.kind === 'color' || index === last;
   // At the end: the pattern is ready, and Save and Share come first.
   const ready = index === last;
+  const pathFinish =
+    ready && !mine && !sharedView
+      ? learningPosition(address, listed(LIBRARY))
+      : undefined;
   const readyRef = useRef<HTMLElement>(null);
   // The same, in the step bar at the end: buttons with tooltips, and
   // what they say shown briefly above them.
@@ -1541,6 +1547,17 @@ export function Player({
                     Repeat it
                   </button>
                 </>
+              ) : pathFinish ? (
+                <a
+                  className="next learning-advance"
+                  href={
+                    pathFinish.next
+                      ? `#/${pathFinish.next.lesson.id}/watch/1`
+                      : '#/learn'
+                  }
+                >
+                  {pathFinish.next ? 'Next lesson' : 'See the learning path'}
+                </a>
               ) : (
                 <button
                   type="button"
@@ -1707,6 +1724,18 @@ export function Player({
             <div className="end-actions" role="group" aria-label="Your design">
               {endSave}
               {endShare}
+              {pathFinish ? (
+                <a
+                  className="learning-advance"
+                  href={
+                    pathFinish.next
+                      ? `#/${pathFinish.next.lesson.id}/watch/1`
+                      : '#/learn'
+                  }
+                >
+                  {pathFinish.next ? 'Next lesson' : 'See the learning path'}
+                </a>
+              ) : null}
             </div>
           ) : null}
         </div>

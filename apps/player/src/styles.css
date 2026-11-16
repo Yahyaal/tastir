@@ -1259,7 +1259,7 @@ main.stage .drawing:not(.wall) {
   margin-top: auto;
 }
 
-.caption nav button:not(.quiet) {
+.caption nav :is(button:not(.quiet), a.learning-advance) {
   flex: 1;
   min-width: 0;
   min-height: 52px;
@@ -3796,7 +3796,7 @@ main.stage .drawing:not(.wall) {
     border-top: 1px solid var(--lapis-line);
   }
 
-  .caption nav button:not(.quiet) {
+  .caption nav :is(button:not(.quiet), a.learning-advance) {
     min-width: 0;
     flex: 1;
     padding-inline: 12px;
@@ -6037,4 +6037,40 @@ svg.tiles {
 }
 .personal-card .pattern-actions > button {
   grid-column: span 2;
+}
+
+/* The lesson finish keeps the next destination beside the step controls. */
+.caption nav a.learning-advance {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--saffron);
+  text-decoration: none;
+}
+.caption nav a.learning-advance:focus-visible {
+  outline: 2px solid var(--theme-accent-cobalt);
+  outline-offset: 3px;
+}
+
+.end-actions a.learning-advance {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--saffron);
+  border-radius: 999px;
+  background: var(--saffron);
+  color: var(--lapis-deep);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.end-actions a.learning-advance:focus-visible {
+  outline: 2px solid var(--theme-accent-cobalt);
+  outline-offset: 3px;
+}
+.journey-row:has(.end-actions .learning-advance),
+.end-actions:has(.learning-advance) {
+  flex-wrap: wrap;
 }

@@ -23,3 +23,13 @@ No account was signed in or cloud project changed. This implementation is local 
 ## Next
 
 Prioritize a matching free photo for each opening lesson, read the instructions aloud and try the sequence with a newcomer. Only three recorded matching public examples exist across this path; nine photo gates remain open, including one historical-reference-only image. Navigation approval does not close those gates. Physical-phone gesture acceptance and controlled signed-in Studio acceptance remain separate tasks.
+
+## Follow-up: make the next lesson discoverable
+
+The owner reached Color from Start here and could not find what to do next. The recommendation was present below all the color, download and print settings, while the step controls offered Save my design. That placement failed the learning flow.
+
+The primary step control now becomes **Next lesson** at the finish for path lessons. On phones it remains in the fixed bottom step bar; desktop shows an additional prominent link beside the always-visible Save and Share actions in the bottom journey bar. The last lesson offers **See the learning path**. Saving and sharing remain available in My design, and the full recommendation remains available in the side panel. Native links preserve unsaved-work warnings. Non-path, personal and shared patterns retain their existing finish actions.
+
+Regression checks cover reaching the finish through the actual step controls, the next link being in the viewport and at least 44px tall in both themes on desktop/phone, the last lesson linking to the map, and leaving a changed saved design through the prominent link.
+
+Follow-up validation: full root tests passed (all eight projects; 13 Nx tasks), as did root lint/typecheck/build. All 18 desktop/phone path cases and 12 tablet path/layout cases passed. The 24 focused player/path unit checks passed before the full run. The visibility check initially exposed the desktop step controls scrolling out of view at Color; adding the next link to the persistent desktop journey bar resolved it. The native-link unsaved-work guard still passes. Owner-server finish screenshots: `/tmp/tastir-finish-next-desktop.png` and `/tmp/tastir-finish-next-phone.png`. Local only; not deployed.

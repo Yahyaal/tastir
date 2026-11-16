@@ -133,8 +133,17 @@ describe('the player', () => {
       ['Copy a share link', 'Anyone with the link sees this design'],
     ]);
     expect(screen.queryByText(/Your pattern is ready/)).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Save my design' }));
-    expect(document.activeElement).toBe(ready.querySelector('button'));
+    const steps = screen.getByRole('navigation', {
+      name: 'Steps',
+    });
+    expect(
+      within(steps)
+        .getByRole('link', { name: 'Next lesson' })
+        .getAttribute('href'),
+    ).toBe('#/six-fold-star-and-hexagons/watch/1');
+    expect(
+      within(ready).getByRole('button', { name: 'Save as my design' }),
+    ).toBeTruthy();
     expect(
       screen.getByText(
         'Color ring by ring, as on real zellige: pick a color, then click a piece, and its whole ring round the rosette takes the color.',

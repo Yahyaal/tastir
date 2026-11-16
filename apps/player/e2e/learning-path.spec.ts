@@ -96,7 +96,7 @@ test('the next lesson respects a changed saved design and Stay preserves it', as
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await page.getByRole('button', { name: 'Chefchaouen', exact: true }).click();
   await page
-    .locator('.learning-next')
+    .getByRole('navigation', { name: 'Steps', exact: true })
     .getByRole('link', { name: 'Next lesson', exact: true })
     .click();
   const dialog = page.getByRole('alertdialog', {
@@ -153,4 +153,48 @@ for (const colorFirst of [false, true])
             .length,
       ),
     ).toBe(1);
+  });
+
+for (const theme of ['light', 'dark'])
+  test(`the end-of-lesson step controls expose the next lesson in ${theme}`, async ({
+    page,
+  }) => {
+    await page.addInitScript(
+      (theme) => localStorage.setItem('tastir.theme', JSON.stringify(theme)),
+      theme,
+    );
+    await page.goto(`/#/${first}/watch/1`);
+    const controls = page.getByRole('navigation', {
+      name: 'Steps',
+      exact: true,
+    });
+    for (let step = 0; step < 6; step++)
+      await controls.getByRole('button', { name: 'Next', exact: true }).click();
+    await controls
+      .getByRole('button', { name: 'Repeat it', exact: true })
+      .click();
+    await controls.getByRole('button', { name: 'Next', exact: true }).click();
+    const finish =
+      page.viewportSize()!.width > 760
+        ? page.locator('.end-actions')
+        : controls;
+    const next = finish.getByRole('link', {
+      name: 'Next lesson',
+      exact: true,
+    });
+    await expect(next).toBeInViewport();
+    const box = await next.boundingBox();
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    ).toBe(true);
+    await next.click();
+    await expect(page).toHaveURL(new RegExp(second + '/watch/1$'));
+    await page.goto('/#/minbar-doors-cairo/result');
+    await finish
+      .getByRole('link', { name: 'See the learning path', exact: true })
+      .click();
+    await expect(page).toHaveURL(/#\/learn$/);
   });

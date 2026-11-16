@@ -9617,7 +9617,7 @@ export const PROGRESS: {
   ],
   now: {
     title: 'The beginner’s path is ready to try',
-    text: 'Start here leads from the home page to the first lesson or the full twelve-lesson map. Finished watch lessons recommend the next pattern; draw-along offers it after the board is kept, in the same mode. Source limitations remain visible. Navigation is built locally; the prior repair release remains deployed.',
+    text: 'Start here leads from the home page to the first lesson or the full twelve-lesson map. After your report that the finish was unclear, the main Next control now becomes Next lesson at Color; saving remains available in My design. Finished watch lessons also recommend the next pattern; draw-along offers it after the board is kept, in the same mode. Source limitations remain visible. Navigation is built locally; the prior repair release remains deployed.',
     link: { label: 'Try the working learning path', href: '#/learn' },
   },
   next: [
