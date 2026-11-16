@@ -83,23 +83,39 @@ test('next and previous follow the filtered library', async ({
   ).toBeVisible();
 });
 
-test('the side menu opens another pattern', async ({ page }) => {
+test('the pattern browser opens another pattern', async ({ page }, info) => {
+  const docked = info.project.name !== 'phone';
   await page.goto('/#/eight-fold-star-and-cross');
-  await page.getByRole('button', { name: 'Patterns' }).click();
-  const menu = page.getByRole('dialog', { name: 'Patterns' });
+  const toggle = page.getByRole('button', { name: 'Patterns', exact: true });
+  await toggle.click();
+  const menu = page.getByRole(docked ? 'complementary' : 'dialog', {
+    name: 'Patterns',
+  });
   await expect(menu.locator('[aria-current="page"]')).toBeInViewport();
   await menu.getByRole('link', { name: 'Six-fold snowflake' }).click();
   await expect(page).toHaveURL(/#\/six-fold-snowflake\/result$/);
-  await expect(menu).toHaveCount(0);
   await expect(page.locator('.topbar h1')).toHaveText('Six-fold snowflake');
-  // Escape closes it, and the top bar fits the screen.
-  await page.getByRole('button', { name: 'Patterns' }).click();
+  if (docked) {
+    await expect(menu).toBeVisible();
+    await expect(
+      menu.getByRole('link', { name: 'Six-fold snowflake' }),
+    ).toHaveAttribute('aria-current', 'page');
+    await toggle.click();
+  }
+  await expect(menu).toHaveCount(0);
+  await toggle.click();
+  if (docked)
+    await menu
+      .getByRole('button', { name: 'Close the list of patterns' })
+      .focus();
   await page.keyboard.press('Escape');
   await expect(menu).toHaveCount(0);
-  const overflow = await page.evaluate(
-    () => document.documentElement.scrollWidth - window.innerWidth,
-  );
-  expect(overflow).toBeLessThanOrEqual(0);
+  await expect(toggle).toBeFocused();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    ),
+  ).toBeLessThanOrEqual(0);
 });
 
 test('the view switch moves between watching, the result and drawing along', async ({
@@ -203,4 +219,37 @@ test('a region count includes alternate places and equals its card results', asy
       name: 'Remove the filter Alhambra and Nasrid Spain',
     }),
   ).toBeVisible();
+});
+
+test('the title stays centered at both ends of the library', async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name === 'phone',
+    'Phone pattern browsing uses the side menu.',
+  );
+  await page.goto('/#collection');
+  const cards = page.locator('.cards .card');
+  await cards.first().waitFor();
+  const first = await cards.first().getAttribute('href');
+  const last = await cards.last().getAttribute('href');
+  for (const [href, missing] of [
+    [first, 'previous'],
+    [last, 'next'],
+  ] as const) {
+    await page.goto('/' + href!);
+    const heading = page.locator('.pattern-heading');
+    await expect(heading.locator('.lesson-title h1')).toBeVisible();
+    await expect(heading.locator('.' + missing)).toHaveCount(0);
+    const offset = await heading.evaluate((element) => {
+      const frame = element.getBoundingClientRect();
+      const title = element
+        .querySelector('.lesson-title')!
+        .getBoundingClientRect();
+      return Math.abs(
+        (title.left + title.right) / 2 - (frame.left + frame.right) / 2,
+      );
+    });
+    expect(offset).toBeLessThan(1);
+  }
 });

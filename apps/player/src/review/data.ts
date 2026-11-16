@@ -9034,8 +9034,26 @@ export const PROGRESS: {
   goal: 'Review the reliability repairs and real-phone acceptance, then palette choices, clearer teaching, a beginner’s path and feedback. New patterns wait.',
   done: [
     {
+      title: 'LEARN.2 Start here and next-lesson navigation',
+      text: 'The approved path now connects twelve existing lessons. Start here opens the first paused watch step; finished lessons offer the next idea, and kept draw-along boards offer the next drawing. Original difficulty and photo limits remain visible. Nothing is marked complete from a visit. Included in the owner-approved learning and UI release.',
+      link: { label: 'Try the working learning path', href: '#/learn' },
+    },
+    {
+      title: 'LEARN.1 A visual beginner-path proposal',
+      text: 'Twelve linked existing drawings have one new focus each, original difficulty labels, explicit prerequisites and separate status/photo evidence. Three recorded matching public examples and nine open photo gates are visible. Full root checks and six desktop/phone review cases passed. The owner subsequently approved navigation; photo and newcomer checks remain open.',
+      link: { label: 'Try the proposed path', href: '#/notes/beginner-path' },
+    },
+    {
+      title: 'PR #17 published: reliability and saved-work repairs',
+      text: 'All seven repairs were merged at bb6f8c1 after a green preview. Production deployment is green and a fresh phone-sized live smoke passed Arabic search, numbered positions/Back, editable downloads, the A hint and one sign-out check with no project polling. No account was signed in.',
+      link: {
+        label: 'Merged release',
+        href: 'https://github.com/Yahyaal/tastir/pull/17',
+      },
+    },
+    {
       title: 'REPAIR.7 Copies, previews and preparation feedback',
-      text: 'Your work offers safe Duplicate actions, personal previews keep their rectangular edges, variation saving is explicit, loading shows real preparation stages, and repeat candidates are clearer. All root checks and 251 desktop/phone browser cases passed, with 11 configured platform skips. Final mobile home audits scored 100 accessibility and median performance 96. Local, not deployed.',
+      text: 'Your work offers safe Duplicate actions, personal previews keep their rectangular edges, variation saving is explicit, loading shows real preparation stages, and repeat candidates are clearer. All root checks and 251 desktop/phone browser cases passed, with 11 configured platform skips. Final mobile home audits scored 100 accessibility and median performance 96. Published through PR #17.',
       link: {
         label: 'Morning presentation',
         href: '#/notes/reliability-update',
@@ -9598,30 +9616,26 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Morning report: navigation, guidance and Your work',
-    text: 'All seven local repairs are verified. Root checks passed, the full desktop/phone suite passed 251 cases with 11 deliberate platform skips, and final mobile home audits scored 100 accessibility and median performance 96. The morning presentation shows the changes and remaining checks. Nothing from this repair branch is deployed.',
+    title: 'The pattern browser can stay beside the drawing',
+    text: 'Patterns now toggles a docked sidebar on wide screens. The canvas moves into the remaining space, without dimming or blocking it. The sidebar stays open across pattern choices and remembers the desktop preference. Narrow screens use a drawer that closes after a selection. Screenshot review checked light/dark desktop, tablet and phone, including resizing between modes. The owner approved publication following verification.',
     link: {
-      label: 'Open the morning presentation',
-      href: '#/notes/reliability-update',
+      label: 'Review the show/hide sidebar',
+      href: '/__review/renders/pattern-sidebar-2026-11-16/index.html',
     },
   },
   next: [
     {
-      title: 'Review the overnight repairs and close real-phone acceptance',
-      text: 'Review the concrete local changes before publishing. The pinch fix is already on the live site; physical-phone acceptance remains open. Keep the three older draw-along reports unconfirmed until their original lessons and steps can be identified. Authenticated Studio acceptance remains separate.',
+      title: 'Check the opening lessons with photos and a newcomer',
+      text: 'Prioritize matching free photos, plain-language/read-aloud checks and a newcomer trial. Three recorded matching examples and nine photo gates remain. Physical-phone zoom and controlled signed-in acceptance are still open.',
       link: {
-        label: 'Morning review and next checks',
-        href: '#/notes/reliability-update',
+        label: 'Review the source evidence',
+        href: '#/notes/beginner-path',
       },
     },
     {
       title: 'Choose palettes and teaching treatments',
       text: 'Review the palette comparison and proposed shared construction prefix before applying palette or construction rewrites. Guide first is already implemented.',
       link: { label: 'Compare palettes', href: '#/plan/palettes' },
-    },
-    {
-      title: 'A beginner’s path through the existing library',
-      text: 'Propose about twelve lessons with verified or owner-approved sources, each teaching one new idea. Show the linked pattern pictures before building the path.',
     },
     {
       title: 'Finish feedback rollout',
@@ -9639,7 +9653,7 @@ export const PROGRESS: {
   waiting: [
     {
       title: 'Physical-phone zoom acceptance',
-      text: 'The pinch implementation is already published and passes touch emulation. Confirm on your own phone that pinch in/out, midpoint anchoring, panning and ordinary taps work. The overnight teaching and usability repairs remain local.',
+      text: 'The pinch implementation is already published and passes touch emulation. Confirm on your own phone that pinch in/out, midpoint anchoring, panning and ordinary taps work. The reliability release is published; the learning path and UI changes are approved for release.',
       link: {
         label: 'Open the live zoom check',
         href: 'https://tastir-studio.vercel.app/#/eight-fold-star-and-cross/result',

@@ -20,7 +20,7 @@ import { decodeShared } from '../editor/files';
 const model = loadModel(example);
 const stages = stagesOf(model.tutorial);
 const finalStep = stages.findIndex((s) => s.kind === 'ink') - 1;
-const settings = () => fireEvent.click(screen.getByLabelText('View settings'));
+const settings = () => fireEvent.click(screen.getByLabelText('Settings'));
 const presentation: SharedPresentation = {
   index: finalStep,
   speed: 2,
@@ -68,7 +68,7 @@ describe('guide-first lesson mode and settings', () => {
     expect(screen.getAllByRole('switch')).toHaveLength(3);
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(container.querySelector('details')?.open).toBe(false);
-    expect(document.activeElement).toBe(screen.getByLabelText('View settings'));
+    expect(document.activeElement).toBe(screen.getByLabelText('Settings'));
   });
   it('preserves a previously selected progressive ink mode', () => {
     localStorage.setItem('tastir.inkMode', JSON.stringify('asYouGo'));
@@ -160,9 +160,7 @@ describe('guide-first lesson mode and settings', () => {
     fireEvent.click(screen.getByRole('radio', { name: '2×' }));
     fireEvent.click(screen.getByLabelText('Show names'));
     fireEvent.click(screen.getByLabelText('Show helper lines'));
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Close view settings' }),
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'Close settings' }));
     for (let i = 0; i < finalStep; i++)
       fireEvent.click(screen.getByRole('button', { name: 'Next' }));
     fireEvent.click(screen.getByRole('button', { name: 'Copy a share link' }));

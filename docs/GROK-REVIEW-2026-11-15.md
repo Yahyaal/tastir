@@ -28,7 +28,7 @@ The existing search scorer weights title/short title above subtitle, region/styl
 
 ## Retained follow-ups
 
-The bare loader, missing Duplicate action, unclear variation saving, cropped personal-preview corners and faint repeat cues have local repairs with browser evidence. Editor tooltips and sideways phone tool/work rows already existed and are covered by acceptance checks. These changes are not deployed. Preserve the three older unnamed draw-along reports until their original lessons and steps are identified; the named A/E and Perpendicular issues are repaired, and the full stage path through Repeat is verified. Physical-phone zoom and authenticated Studio acceptance remain separate.
+The bare loader, missing Duplicate action, unclear variation saving, cropped personal-preview corners and faint repeat cues have local repairs with browser evidence. Editor tooltips and sideways phone tool/work rows already existed and are covered by acceptance checks. These changes are published through PR #17 (`bb6f8c1`), with green Vercel preview and production statuses and a passing live phone-sized smoke check. Preserve the three older unnamed draw-along reports until their original lessons and steps are identified; the named A/E and Perpendicular issues are repaired, and the full stage path through Repeat is verified. Physical-phone zoom and authenticated Studio acceptance remain separate.
 
 The Studio’s authenticated workflow was not tested by Grok or this signed-out audit. Signing in on someone else’s computer is unnecessary for triage: use a controlled authenticated test session or an owner-run acceptance check instead. No account sign-in, issues, messages or configuration changes were made for this review.
 

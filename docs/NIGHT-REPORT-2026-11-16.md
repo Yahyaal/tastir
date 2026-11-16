@@ -1,6 +1,6 @@
 # Morning report, 16 November 2026
 
-Start with the [visual presentation](http://localhost:4200/#/notes/reliability-update). It puts the overnight work first and keeps the earlier four repairs in an expandable section. The owner's existing dev server remains on port 4200. Changes are local on `fix/grok-reliability-2026-11-15`; production is unchanged.
+Start with the [visual presentation](http://localhost:4200/#/notes/reliability-update). It puts the overnight work first and keeps the earlier four repairs in an expandable section. The owner's existing dev server remains on port 4200. This records the original overnight snapshot. The seven repairs were subsequently published through [PR #17](https://github.com/Yahyaal/tastir/pull/17), merge `bb6f8c1`, with green deployment status and a passing live smoke check. The new beginner-path proposal remains local.
 
 ## What changed
 
@@ -20,6 +20,6 @@ The final browser run covers ordinary navigation, rendering/ink timing, Jali, al
 
 ## Conclusions and remaining checks
 
-Review the local flow and visual changes before publishing. Real-phone acceptance of pinch zoom remains open; Chromium touch emulation is not a physical phone. The pinch fix was already published in PR #16, so that check can use [the live wall](https://tastir-studio.vercel.app/#/eight-fold-star-and-cross/result). The new overnight guidance and usability work remain local. The three older unnamed draw-along reports remain unconfirmed, since their original lesson/step reproductions are not supplied. This run does not mark them nonexistent. Authenticated Studio acceptance requires a controlled signed-in session and remains separate from the verified signed-out repairs.
+The repairs have now been published through PR #17. Real-phone acceptance of pinch zoom remains open; Chromium touch emulation is not a physical phone. The pinch fix was already published in PR #16, so that check can use [the live wall](https://tastir-studio.vercel.app/#/eight-fold-star-and-cross/result). The overnight guidance and usability repairs are included in that release. The three older unnamed draw-along reports remain unconfirmed, since their original lesson/step reproductions are not supplied. This run does not mark them nonexistent. Authenticated Studio acceptance requires a controlled signed-in session and remains separate from the verified signed-out repairs.
 
 The prior nonblocking-font experiment was removed after worse measurements. Font delivery is a measured future optimization, not a reason to defer the usability repairs. No private research imagery was shipped. This run performed no account sign-in, production write, issue creation, outbound message or deployment.

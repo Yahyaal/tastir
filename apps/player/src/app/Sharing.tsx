@@ -86,6 +86,21 @@ export function ShareLink({
         title={compact ? 'Anyone with the link sees this design' : undefined}
         onClick={() => void make()}
       >
+        {compact ? (
+          <svg
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m10 9 3-3a4.2 4.2 0 0 1 6 6l-3 3M14 15l-3 3a4.2 4.2 0 0 1-6-6l3-3M8 16l8-8" />
+          </svg>
+        ) : null}
         Copy a share link
       </button>
       {said ? (

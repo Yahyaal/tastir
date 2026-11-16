@@ -1,3 +1,4 @@
+import { LearningStart } from './LearningPathNav';
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { listPatterns } from '../editor/patterns';
 import { NewPattern } from '../editor/PatternShelf';
@@ -272,6 +273,7 @@ export function Library({
         </div>
       </header>
       {inProgress.length ? yourWork : null}
+      <LearningStart entries={entries} />
       <section className="hero">
         {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}
         <div className="hero-copy">

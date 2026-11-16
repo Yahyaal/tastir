@@ -1,3 +1,4 @@
+import { NextPathLesson } from '../app/LearningPathNav';
 import { PatternLoading } from '../app/PatternLoading';
 import { Khatam, PHASE_MARKS } from '../app/khatam';
 import { ThemeSwitch } from '../app/theme';
@@ -2059,6 +2060,9 @@ export function DrawAlong({
           )}
         </footer>
       </div>
+      {keptAs && unchanged && (colourFirst ? repeating : coloring) ? (
+        <NextPathLesson id={address} draw />
+      ) : null}
     </div>
   );
 }

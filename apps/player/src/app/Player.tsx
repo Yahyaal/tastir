@@ -1,3 +1,6 @@
+import { NextPathLesson } from './LearningPathNav';
+import { learningPosition } from './learningPath';
+import { LIBRARY, listed } from './library';
 import type { SharedPresentation } from '@tastir/schema';
 import { registerPageColoring } from '../agent/pageColoring';
 import { PatternLoading } from './PatternLoading';
@@ -549,6 +552,14 @@ export function Player({
   // the panel goes below the wall, under the wall so it is in view.
   const narrow = useNarrow();
   const phone = usePhone();
+  const dockPatterns = useMedia('(min-width: 1000px)');
+  const [sidebarOpen, setSidebarOpen] = useRemembered<boolean>(
+    'patternSidebar',
+    false,
+  );
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const patternsOpen = dockPatterns ? sidebarOpen : drawerOpen;
+  const setPatternsOpen = dockPatterns ? setSidebarOpen : setDrawerOpen;
   useEffect(() => {
     if (!changed) return;
     // Reloading or closing the tab: the browser's own question.
@@ -999,6 +1010,10 @@ export function Player({
   const colorStage = stage.kind === 'color' || index === last;
   // At the end: the pattern is ready, and Save and Share come first.
   const ready = index === last;
+  const pathFinish =
+    ready && !mine && !sharedView
+      ? learningPosition(address, listed(LIBRARY))
+      : undefined;
   const readyRef = useRef<HTMLElement>(null);
   // The same, in the step bar at the end: buttons with tooltips, and
   // what they say shown briefly above them.
@@ -1223,7 +1238,7 @@ export function Player({
 
   return (
     <div
-      className={colorStage ? 'player at-color' : 'player'}
+      className={`${colorStage ? 'player at-color' : 'player'}${browsing && dockPatterns && patternsOpen ? ' patterns-open' : ''}`}
       data-tastir-screen={
         import.meta.env.DEV
           ? design
@@ -1246,9 +1261,24 @@ export function Player({
         <PrintSheet model={inking.shown} paper={paper} onDone={stopPrinting} />
       ) : null}
       <header className="topbar">
-        {browsing ? <PatternMenu id={address} view={view} /> : null}
+        {browsing ? (
+          <PatternMenu
+            id={address}
+            view={view}
+            open={patternsOpen}
+            docked={dockPatterns}
+            onToggle={() => setPatternsOpen(!patternsOpen)}
+            onClose={() => {
+              setPatternsOpen(false);
+              document
+                .querySelector<HTMLButtonElement>('.topbar .menu-button')
+                ?.focus();
+            }}
+          />
+        ) : null}
         <a
           className="home"
+          aria-label="All patterns"
           href="#/"
           onClick={(e) => {
             if (!changed) return;
@@ -1269,93 +1299,100 @@ export function Player({
           </span>
           <span>All patterns</span>
         </a>
-        {browsing ? <PreviousPattern id={address} view={view} /> : null}
-        <LessonTitle tutorial={tutorial} />
-        <FeedbackButton
-          context={{
-            ...basicFeedbackContext(
-              address,
-              tutorial.title,
-              colorStage ? 'result' : 'watch',
-            ),
-            stage: stage.kind,
-            index,
-            stepIds:
-              stage.kind === 'step' ? [beats[stage.beat - 1]?.step ?? 1] : [],
-            label,
-            instruction: text.slice(0, 8192),
-          }}
-          tutorial={tutorial}
-          pause={() => setPlaying(false)}
-          board={() => svgRef.current}
-          snapshot={() => ({
-            draft: inking.shown.tutorial,
-            coloring: colorHistory.now,
-          })}
-        />
-        {browsing ? <NextPattern id={address} view={view} /> : null}
-        {browsing ? (
-          <Variations
-            id={address}
-            // Another variation opens at the same stage: the colours, the
-            // repeat, or the lesson's start.
-            at={
-              colorStage
-                ? 'result'
-                : stage.kind === 'repeat'
-                  ? 'repeat'
-                  : 'beginning'
-            }
-            guard={(to) => {
-              if (!changed) return false;
-              setLeaving(to);
-              return true;
+        <div className="pattern-heading">
+          {browsing ? <PreviousPattern id={address} view={view} /> : <span />}
+          <LessonTitle tutorial={tutorial} />
+          {browsing ? <NextPattern id={address} view={view} /> : <span />}
+        </div>
+        <div className="player-view-tools">
+          {browsing ? (
+            <Variations
+              id={address}
+              // Another variation opens at the same stage: the colours, the
+              // repeat, or the lesson's start.
+              at={
+                colorStage
+                  ? 'result'
+                  : stage.kind === 'repeat'
+                    ? 'repeat'
+                    : 'beginning'
+              }
+              guard={(to) => {
+                if (!changed) return false;
+                setLeaving(to);
+                return true;
+              }}
+            />
+          ) : null}
+          {browsing ? (
+            <Places
+              id={address}
+              // The same steps in another place's colours: the same stage.
+              at={
+                colorStage
+                  ? 'result'
+                  : stage.kind === 'repeat'
+                    ? 'repeat'
+                    : 'beginning'
+              }
+              guard={(to) => {
+                if (!changed) return false;
+                setLeaving(to);
+                return true;
+              }}
+            />
+          ) : null}
+          {mine ? (
+            <a
+              className="edit-link"
+              href={`#/edit/${address.slice('mine/'.length)}`}
+            >
+              Edit this pattern
+            </a>
+          ) : null}
+          {browsing ? (
+            <ViewSwitch id={address} view={view} onShow={show} />
+          ) : null}
+        </div>
+        <div className="player-utilities">
+          <FeedbackButton
+            iconOnly
+            context={{
+              ...basicFeedbackContext(
+                address,
+                tutorial.title,
+                colorStage ? 'result' : 'watch',
+              ),
+              stage: stage.kind,
+              index,
+              stepIds:
+                stage.kind === 'step' ? [beats[stage.beat - 1]?.step ?? 1] : [],
+              label,
+              instruction: text.slice(0, 8192),
             }}
+            tutorial={tutorial}
+            pause={() => setPlaying(false)}
+            board={() => svgRef.current}
+            snapshot={() => ({
+              draft: inking.shown.tutorial,
+              coloring: colorHistory.now,
+            })}
           />
-        ) : null}
-        {browsing ? (
-          <Places
-            id={address}
-            // The same steps in another place's colours: the same stage.
-            at={
-              colorStage
-                ? 'result'
-                : stage.kind === 'repeat'
-                  ? 'repeat'
-                  : 'beginning'
-            }
-            guard={(to) => {
-              if (!changed) return false;
-              setLeaving(to);
-              return true;
-            }}
+          <PlayerSettings
+            speed={speed}
+            setSpeed={setSpeed}
+            inkMode={inkMode}
+            setInkMode={setInkMode}
+            reduced={reduced}
+            setReduced={setReduced}
+            showNames={showNames}
+            setShowNames={setShowNames}
+            showHelpers={showHelpers}
+            setShowHelpers={setShowHelpers}
+            hideId={import.meta.env.DEV && browsing ? address : undefined}
           />
-        ) : null}
-        {mine ? (
-          <a
-            className="edit-link"
-            href={`#/edit/${address.slice('mine/'.length)}`}
-          >
-            Edit this pattern
-          </a>
-        ) : null}
-        {browsing ? (
-          <ViewSwitch id={address} view={view} onShow={show} />
-        ) : null}
-        <PlayerSettings
-          speed={speed}
-          setSpeed={setSpeed}
-          inkMode={inkMode}
-          setInkMode={setInkMode}
-          reduced={reduced}
-          setReduced={setReduced}
-          showNames={showNames}
-          setShowNames={setShowNames}
-          showHelpers={showHelpers}
-          setShowHelpers={setShowHelpers}
-          hideId={import.meta.env.DEV && browsing ? address : undefined}
-        />
-        <ThemeSwitch />
+          <ThemeSwitch />
+        </div>
       </header>
       {banner}
       <div className={colorStage ? 'workspace with-panel' : 'workspace'}>
@@ -1507,6 +1544,9 @@ export function Player({
                 </div>
               ) : null}
             </div>
+            {phone && !colorStage && !sharedView ? (
+              <div className="lesson-share lesson-share-phone">{endShare}</div>
+            ) : null}
             <nav aria-label="Steps">
               <button
                 type="button"
@@ -1540,6 +1580,17 @@ export function Player({
                     Repeat it
                   </button>
                 </>
+              ) : pathFinish ? (
+                <a
+                  className="next learning-advance"
+                  href={
+                    pathFinish.next
+                      ? `#/${pathFinish.next.lesson.id}/watch/1`
+                      : '#/learn'
+                  }
+                >
+                  {pathFinish.next ? 'Next lesson' : 'See the learning path'}
+                </a>
               ) : (
                 <button
                   type="button"
@@ -1689,20 +1740,35 @@ export function Player({
                 </div>
               </section>
               {!mine && !sharedView ? (
-                <ExploreNext tutorial={full.tutorial} />
+                <>
+                  {ready ? <NextPathLesson id={address} /> : null}
+                  <ExploreNext tutorial={full.tutorial} />
+                </>
               ) : null}
             </aside>
           ) : null}
         </div>
         <div className="journey-row">
           <Journey stages={stages} index={index} onJump={jump} />
-          {!colorStage && !sharedView && (
+          {!phone && !colorStage && !sharedView && (
             <div className="lesson-share">{endShare}</div>
           )}
           {colorStage && ready && !phone ? (
             <div className="end-actions" role="group" aria-label="Your design">
               {endSave}
               {endShare}
+              {pathFinish ? (
+                <a
+                  className="learning-advance"
+                  href={
+                    pathFinish.next
+                      ? `#/${pathFinish.next.lesson.id}/watch/1`
+                      : '#/learn'
+                  }
+                >
+                  {pathFinish.next ? 'Next lesson' : 'See the learning path'}
+                </a>
+              ) : null}
             </div>
           ) : null}
         </div>

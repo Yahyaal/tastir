@@ -14,7 +14,7 @@ export function ReliabilityUpdate() {
         <p>
           I continued with lesson navigation, draw-along guidance and everyday
           usability. Here is what changed, what the checks show and what
-          remains. Everything here is local; production is unchanged.
+          remains. These seven repairs are now published through PR #17.
         </p>
         <a href="#/notes/morning-report">
           Written report and supporting evidence →
@@ -232,12 +232,12 @@ export function ReliabilityUpdate() {
       </section>
       <section id="next-checks">
         <p className="reliability-kicker">Conclusions and next steps</p>
-        <h2>The local repairs are ready to review.</h2>
+        <h2>The repair release is live.</h2>
         <p>
-          Review the changed flows here before publishing. The original three
-          unnamed draw-along reports stay unconfirmed until their lessons and
-          steps can be identified. The reported jump from construction to Ink is
-          the intended sequence; the complete path through Repeat and Color was
+          Review the changed flows on the live site. The original three unnamed
+          draw-along reports stay unconfirmed until their lessons and steps can
+          be identified. The reported jump from construction to Ink is the
+          intended sequence; the complete path through Repeat and Color was
           verified.
         </p>
         <p className="reliability-result">
@@ -249,9 +249,8 @@ export function ReliabilityUpdate() {
         <p>
           Real-phone pinch acceptance is still open. That fix is already on the
           live site, so use the link below to pinch in and out and pan on your
-          phone. The overnight teaching/usability changes stay local until
-          reviewed. Authenticated Studio acceptance and publication remain
-          separate.
+          phone. The overnight teaching/usability changes are also published.
+          Authenticated Studio acceptance remains separate.
         </p>
         <a
           href="https://tastir-studio.vercel.app/#/eight-fold-star-and-cross/result"
