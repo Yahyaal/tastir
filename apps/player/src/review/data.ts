@@ -9566,8 +9566,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Four reliability repairs ready for review',
-    text: 'Signed-out requests stop, editable JSON downloads preserve designs, and collection/Arabic search work. Repeated mobile audits now score 100 for automated accessibility, retain median performance 96, and transfer 21% less data. The visual update shows the evidence and remaining work; these repairs are local, not published.',
+    title: 'Overnight follow-up: lesson navigation',
+    text: 'Continuing with numbered lesson URLs and browser Back/Forward, followed by draw-along guidance and remaining usability reports. Manual choices enter history while autoplay replaces the current position. Navigation passed full root verification and ten dedicated desktop/phone browser cases. Continuing into draw-along guidance; the repairs remain local.',
     link: {
       label: 'See the reliability repair',
       href: '#/notes/reliability-update',

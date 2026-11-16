@@ -9,6 +9,10 @@ Work top to bottom, one task per session and one commit per task. A task is done
 - [x] **REPAIR.3 Library anchors and Unicode search.** Fix direct collection links and Arabic-only/mixed-script queries, retaining useful title-first ranking.
 - [x] **REPAIR.4 Fresh accessibility and performance audit.** Three serial mobile runs before/after: accessibility 88→100, median performance 96→96, transfer −21%. Named progress, valid chip ARIA, main landmark, contrast and responsive previews verified; full checks and 51 browser cases passed (one intentional phone skip). [Evidence](testing/grok-accessibility-2026-11-15.md).
 
+- [x] **REPAIR.5 Numbered lesson links and deliberate Back history.** Open numbered watch links paused, preserve manual step visits in history without autoplay flooding it, retain the mounted drawing on Back/Forward, override local resume with explicit positions, and retain the color-first order. Verify reload, invalid links, existing sharing and browsing.
+- [ ] **REPAIR.6 Draw-along teaching guidance and named report audit.** Fix premature point aliases, keep the next required tool visible, and explicitly exercise construction → ink → repeat. Preserve unresolved older reports when their reproduction cannot be identified.
+- [ ] **REPAIR.7 Remaining everyday usability.** Improve loading feedback, copy/variation clarity, local-work previews and phone control access; verify existing editor tooltips before adding any.
+
 - [ ] **REVIEW.1 Grok’s live-site reliability and discoverability report.** [Triage and acceptance criteria](GROK-REVIEW-2026-11-15.md). The first four repairs are implemented locally with evidence: signed-out retry guards, editable JSON export/import, collection/Arabic search, and accessibility/thumbnail delivery. Review before publishing. Next handle ordinary step URLs and Back behavior. Retain reported loading/editor/variation/thumbnail/mobile issues and named-lesson draw-along checks. Existing region counts and exact-step share fixes are distinguished from outstanding ordinary step-history work.
 
 

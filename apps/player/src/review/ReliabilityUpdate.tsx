@@ -250,6 +250,40 @@ export function ReliabilityUpdate() {
           usability notes. Physical-phone zoom acceptance is still open.
         </p>
       </section>
+      <section id="navigation-repair">
+        <p className="reliability-kicker">5 · Overnight follow-up</p>
+        <h2>A bookmark should return to the step you saw.</h2>
+        <div
+          className="search-evidence"
+          role="group"
+          aria-label="Lesson history policy"
+        >
+          <div>
+            <span>Next, Next</span>
+            <strong>1 → 2 → 3</strong>
+            <span>deliberate visits enter history</span>
+          </div>
+          <div>
+            <span>Browser Back</span>
+            <strong>3 → 2</strong>
+            <span>same drawing, paused at the earlier position</span>
+          </div>
+          <div>
+            <span>Autoplay</span>
+            <strong>1 entry</strong>
+            <span>the address follows; history stays quiet</span>
+          </div>
+        </div>
+        <p>
+          Numbered links open paused, take priority over this browser’s saved
+          resume point, and survive reload. The color-first order is retained
+          when selected. Existing full-view share links still carry appearance
+          and framing; an ordinary step link identifies the lesson position.
+        </p>
+        <a href="#/eight-fold-star-and-cross/watch/3">
+          Open the star-and-cross lesson at position 3 →
+        </a>
+      </section>
     </main>
   );
 }

@@ -129,7 +129,7 @@ test('the view switch moves between watching, the result and drawing along', asy
   await views.getByRole('link', { name: 'Result' }).click();
   await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon\/result$/);
   await views.getByRole('link', { name: 'Watch it drawn' }).click();
-  await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon\/watch$/);
+  await expect(page).toHaveURL(/#\/eight-fold-star-and-octagon\/watch\/\d+$/);
   await expect(page.locator('svg.wall')).toHaveCount(0);
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - window.innerWidth,
