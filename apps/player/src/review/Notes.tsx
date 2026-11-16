@@ -1,3 +1,4 @@
+import { ReliabilityUpdate } from './ReliabilityUpdate';
 import { SettingsReview } from './SettingsReview';
 import { TeachingUpdate } from './TeachingUpdate';
 import { InkPresentation } from './InkPresentation';
@@ -280,6 +281,7 @@ function linkFrom(file: string) {
 }
 
 export function Notes({ page = 'start' }: { page?: string }) {
+  if (page === 'reliability-update') return <ReliabilityUpdate />;
   if (page === 'settings-designs') return <SettingsReview />;
   if (page === 'settings-update') return <SettingsReview />;
   if (page === 'ink-guide')

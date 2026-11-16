@@ -4,11 +4,13 @@ import {
   studioCall,
   studioUrl,
   useStudioEvents,
+  useStudioSignedIn,
   type ProjectLine,
 } from './client';
 
 /** Online projects belong on Your work alongside this browser's patterns. */
 export function StudioWork() {
+  const signedIn = useStudioSignedIn();
   const [projects, setProjects] = useState<readonly ProjectLine[]>();
   const [error, setError] = useState<Error>();
   const load = useCallback(() => {
@@ -17,9 +19,17 @@ export function StudioWork() {
         setProjects(result);
         setError(undefined);
       })
-      .catch((reason: Error) => setError(reason));
+      .catch((reason: Error) => {
+        if (!(reason instanceof SignedOut)) setError(reason);
+      });
   }, []);
-  useEffect(load, [load]);
+  useEffect(() => {
+    if (signedIn === false) {
+      setProjects(undefined);
+      return;
+    }
+    load();
+  }, [load, signedIn]);
   useStudioEvents(load);
   return (
     <section className="shelf" aria-labelledby="studio-projects">
@@ -28,14 +38,19 @@ export function StudioWork() {
         <p>Saved online and shared with your AI apps.</p>
         <a href="#/studio">Open Studio →</a>
       </div>
-      {error instanceof SignedOut ? (
+      {signedIn === false ? (
         <p>
           <a href="/login?next=%2F%23%2Fwork">
             Sign in to see your Studio projects
           </a>
         </p>
       ) : error ? (
-        <p role="status">{error.message}</p>
+        <p role="status">
+          {error.message}{' '}
+          <button type="button" onClick={load}>
+            Try again
+          </button>
+        </p>
       ) : projects === undefined ? (
         <p role="status">Loading Studio projects…</p>
       ) : projects.length === 0 ? (

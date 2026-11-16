@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { watchProject } from '@tastir/live-room/client';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
+import { watchProject, type ConnectionTicket } from '@tastir/live-room/client';
 
 /**
  * Calls to the studio. On this computer they go through the dev server,
@@ -34,32 +34,102 @@ export interface HistoryLine {
   readonly at: string;
 }
 
+// Shared for Studio, Your work and all protected requests. Keep this in memory:
+// a new document after the login redirect must verify its own cookie.
+let signedIn: boolean | undefined = HOSTED ? undefined : true;
+let sessionVersion = 0;
+const sessionListeners = new Set<() => void>();
+const subscribeSession = (listener: () => void) => {
+  sessionListeners.add(listener);
+  return () => {
+    sessionListeners.delete(listener);
+  };
+};
+const sessionSnapshot = () => signedIn;
+function setSignedIn(value: boolean) {
+  if (signedIn === value) return;
+  signedIn = value;
+  sessionVersion++;
+  if (!value) live = false;
+  for (const listener of sessionListeners) listener();
+}
+export function useStudioSignedIn() {
+  return useSyncExternalStore(
+    subscribeSession,
+    sessionSnapshot,
+    sessionSnapshot,
+  );
+}
+const signedOut = () => new SignedOut('Sign in to use the studio.');
+let checking: { version: number; promise: Promise<void> } | undefined;
+
+/** Explicitly verify a login or retry a failed connection. Only /me may bypass
+ * the signed-out gate; ordinary callers use ensureStudioSession below. */
+export function verifyStudioSession(): Promise<void> {
+  if (!HOSTED) return Promise.resolve();
+  if (checking?.version === sessionVersion) return checking.promise;
+  const version = sessionVersion;
+  const promise = studioRequest<{ live?: boolean }>('GET', '/me')
+    .then((me) => {
+      if (version !== sessionVersion) throw signedOut();
+      setLive(!!me.live);
+      setSignedIn(true);
+    })
+    .finally(() => {
+      if (checking?.promise === promise) checking = undefined;
+    });
+  checking = { version, promise };
+  return promise;
+}
+export function ensureStudioSession(): Promise<void> {
+  return signedIn === false
+    ? Promise.reject(signedOut())
+    : signedIn === true
+      ? Promise.resolve()
+      : verifyStudioSession();
+}
 export async function studioCall<T>(
   method: 'GET' | 'POST',
   path: string,
   data?: unknown,
+  signal?: AbortSignal,
 ): Promise<T> {
+  if (HOSTED) await ensureStudioSession();
+  return studioRequest<T>(method, path, data, signal);
+}
+async function studioRequest<T>(
+  method: 'GET' | 'POST',
+  path: string,
+  data?: unknown,
+  signal?: AbortSignal,
+): Promise<T> {
+  const version = sessionVersion;
   let response: Response;
   try {
     response = await fetch(studioUrl(path), {
       method,
+      signal,
       headers: { 'Content-Type': 'application/json' },
       ...(data === undefined ? {} : { body: JSON.stringify(data) }),
     });
-  } catch {
+  } catch (error) {
+    if (signal?.aborted) throw error;
     throw new Error(
       HOSTED
         ? 'The studio is not answering. Check the connection and try again.'
         : 'The studio is not answering. Start it with pnpm studio.',
     );
   }
-  if (HOSTED && response.status === 401)
-    throw new SignedOut('Sign in to use the studio.');
+  if (HOSTED && response.status === 401) {
+    if (version === sessionVersion) setSignedIn(false);
+    throw signedOut();
+  }
   if (!response.headers.get('content-type')?.includes('application/json'))
     throw new Error(
       'The studio is not running here. Start it with pnpm studio and open the address it prints.',
     );
   const value = (await response.json()) as T & { error?: string };
+  if (HOSTED && version !== sessionVersion) throw signedOut();
   if (!response.ok)
     throw new Error(value.error ?? 'The studio could not do that.');
   return value;
@@ -97,6 +167,7 @@ export function useStudioEvents(
   onChange: (event: StudioEvent) => void,
   project?: string,
 ) {
+  const session = useStudioSignedIn();
   const latest = useRef(onChange);
   latest.current = onChange;
   useEffect(() => {
@@ -111,6 +182,12 @@ export function useStudioEvents(
       };
       return () => source.close();
     }
+    if (session !== true) {
+      if (session === undefined)
+        void ensureStudioSession().catch(() => undefined);
+      return;
+    }
+    const lifetime = new AbortController();
     let stopped = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
     let changed = Date.now();
@@ -148,46 +225,62 @@ export function useStudioEvents(
     if (project && live)
       return watchProject({
         project,
-        getTicket: async (signal) => {
-          const response = await fetch(studioUrl(`/projects/${project}/live`), {
-            credentials: 'same-origin',
-            cache: 'no-store',
+        getTicket: (signal) =>
+          studioCall<ConnectionTicket>(
+            'GET',
+            `/projects/${project}/live`,
+            undefined,
             signal,
-          });
-          return response.ok ? response.json() : null;
-        },
+          ),
         refresh: async (signal) => {
-          const response = await fetch(studioUrl(pulsePath(project, last)), {
-            credentials: 'same-origin',
-            cache: 'no-store',
+          const p = await studioCall<Pulse>(
+            'GET',
+            pulsePath(project, last),
+            undefined,
             signal,
-          });
-          if (!response.ok) throw new Error('The studio did not answer.');
-          const p = (await response.json()) as Pulse;
+          );
           if (signal.aborted) throw new Error('Cancelled.');
-          compare(p);
+          if (!stopped) compare(p);
           return Number(p.stamp);
         },
       });
+    let pending = false;
+    let failures = 0;
     const tick = async () => {
       timer = undefined;
-      if (stopped) return;
-      if (!document.hidden)
-        try {
-          if (project)
-            compare(await studioCall<Pulse>('GET', pulsePath(project, last)));
-          else {
-            const now = JSON.stringify(await studioCall('GET', '/projects'));
-            if (now !== list) emit({ project: '', revision: 0 });
-            list = now;
-          }
-        } catch {
-          // A missed check is tried again at the next one.
+      if (stopped || pending || document.hidden || signedIn !== true) return;
+      pending = true;
+      try {
+        if (project) {
+          const p = await studioCall<Pulse>(
+            'GET',
+            pulsePath(project, last),
+            undefined,
+            lifetime.signal,
+          );
+          if (!stopped) compare(p);
+        } else {
+          const now = JSON.stringify(
+            await studioCall('GET', '/projects', undefined, lifetime.signal),
+          );
+          if (!stopped && now !== list) emit({ project: '', revision: 0 });
+          list = now;
         }
-      if (!stopped && !document.hidden)
+        failures = 0;
+      } catch (error) {
+        if (error instanceof SignedOut || lifetime.signal.aborted) return;
+        failures++;
+      } finally {
+        pending = false;
+      }
+      if (!stopped && !document.hidden && signedIn === true)
         timer = setTimeout(
           () => void tick(),
-          Date.now() - changed < 120_000 ? 1000 : 5000,
+          failures
+            ? Math.min(30000, 1000 * 2 ** Math.min(failures, 5))
+            : Date.now() - changed < 120000
+              ? 1000
+              : 5000,
         );
     };
     const shown = () => {
@@ -198,7 +291,8 @@ export function useStudioEvents(
     return () => {
       stopped = true;
       clearTimeout(timer);
+      lifetime.abort();
       document.removeEventListener('visibilitychange', shown);
     };
-  }, [project]);
+  }, [project, session]);
 }

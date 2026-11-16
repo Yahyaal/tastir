@@ -2,6 +2,10 @@
 
 The owner supplied Grok’s report on 15 November. Its successful newcomer journey is encouraging. A short review is evidence about the paths tested, not proof that every previously reported problem is absent. Keep the three draw-along reports as unconfirmed until their original steps have explicit regression coverage; do not delete them because they did not recur.
 
+## Implementation progress
+
+Item 1 is fixed locally. A controlled Your work poller regression reproduced 13 failed requests in 12 seconds; the shared session gate now reduces that to one sign-in check and no project requests. Ten focused unit cases, six hosted-browser cases and full root verification passed. This resolves a concrete path that the earlier short live Studio visit did not exercise. See [the visual update](http://localhost:4200/#/notes/reliability-update) and [the technical evidence](testing/grok-auth-2026-11-15.md). Item 2, editable downloads, is next.
+
 ## Recommended order
 
 | Order | Work | Evidence and acceptance |

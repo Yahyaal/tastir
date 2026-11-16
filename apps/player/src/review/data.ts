@@ -9566,11 +9566,11 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Outline is the final settings design',
-    text: 'The alternative panel themes, theme picker and comparison page have been removed. Settings now always use Outline, including browsers with an older theme saved. The large ink diagrams, colour-changing switch labels and filled speed selection remain in the light and dark interfaces.',
+    title: 'First reliability repair: signed-out retries',
+    text: 'A regression reproduced 13 failed protected calls in 12 seconds. The repair now checks sign-in once, stops after a 401 across navigation and visibility changes, hides cached cloud projects and resumes only after verified sign-in. The focused checks and full project verification passed. Editable pattern downloads are next.',
     link: {
-      label: 'Open a pattern and its view settings',
-      href: '#/eight-fold-star-and-cross/result',
+      label: 'See the reliability repair',
+      href: '#/notes/reliability-update',
     },
   },
   next: [
