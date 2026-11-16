@@ -39,8 +39,8 @@ export default defineConfig(({ mode }) => ({
     ),
   },
   root: import.meta.dirname,
-  // GitHub Pages serves the app under /<repo>/; the deploy workflow sets
-  // TASTIR_BASE to that path. Locally the app lives at the root.
+  // The app lives at the root, locally and on Vercel. TASTIR_BASE is kept
+  // for a build that must be served under a sub-path.
   base: process.env['TASTIR_BASE'] ?? '/',
   cacheDir: '../../node_modules/.vite/apps/player',
   server: {
