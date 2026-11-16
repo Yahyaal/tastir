@@ -552,6 +552,14 @@ export function Player({
   // the panel goes below the wall, under the wall so it is in view.
   const narrow = useNarrow();
   const phone = usePhone();
+  const dockPatterns = useMedia('(min-width: 1000px)');
+  const [sidebarOpen, setSidebarOpen] = useRemembered<boolean>(
+    'patternSidebar',
+    false,
+  );
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const patternsOpen = dockPatterns ? sidebarOpen : drawerOpen;
+  const setPatternsOpen = dockPatterns ? setSidebarOpen : setDrawerOpen;
   useEffect(() => {
     if (!changed) return;
     // Reloading or closing the tab: the browser's own question.
@@ -1230,7 +1238,7 @@ export function Player({
 
   return (
     <div
-      className={colorStage ? 'player at-color' : 'player'}
+      className={`${colorStage ? 'player at-color' : 'player'}${browsing && dockPatterns && patternsOpen ? ' patterns-open' : ''}`}
       data-tastir-screen={
         import.meta.env.DEV
           ? design
@@ -1253,7 +1261,21 @@ export function Player({
         <PrintSheet model={inking.shown} paper={paper} onDone={stopPrinting} />
       ) : null}
       <header className="topbar">
-        {browsing ? <PatternMenu id={address} view={view} /> : null}
+        {browsing ? (
+          <PatternMenu
+            id={address}
+            view={view}
+            open={patternsOpen}
+            docked={dockPatterns}
+            onToggle={() => setPatternsOpen(!patternsOpen)}
+            onClose={() => {
+              setPatternsOpen(false);
+              document
+                .querySelector<HTMLButtonElement>('.topbar .menu-button')
+                ?.focus();
+            }}
+          />
+        ) : null}
         <a
           className="home"
           aria-label="All patterns"

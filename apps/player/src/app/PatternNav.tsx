@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, type RefObject } from 'react';
 import {
   foldLabel,
   aboutOf,
@@ -112,41 +112,68 @@ function byFold(entries: readonly Entry[]) {
   return [...groups].sort(([a], [b]) => (a ?? Infinity) - (b ?? Infinity));
 }
 
-/**
- * A "Patterns" button that opens every pattern in a panel from the left,
- * so the learner can change pattern without going back to the library.
- * Like the library, it lists a family once (Variations switches in it).
- * Escape, a click outside or choosing a pattern closes it.
- */
-export function PatternMenu({ id, view }: { id: string; view: View }) {
-  const [open, setOpen] = useState(false);
+/** The desktop browser docks beside the player; narrow screens use a modal drawer. */
+export function PatternMenu({
+  id,
+  view,
+  open,
+  docked,
+  onToggle,
+  onClose,
+}: {
+  id: string;
+  view: View;
+  open: boolean;
+  docked: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+}) {
   return (
     <>
       <button
         type="button"
         className="menu-button"
         aria-label="Patterns"
-        title="Browse patterns"
-        aria-haspopup="dialog"
+        title={open ? 'Hide patterns' : 'Show patterns'}
+        aria-haspopup={docked ? undefined : 'dialog'}
+        aria-controls={open ? 'pattern-browser' : undefined}
         aria-expanded={open}
-        onClick={() => setOpen((open) => !open)}
+        onClick={onToggle}
       >
         <svg
           aria-hidden="true"
-          viewBox="0 0 16 16"
-          width="14"
-          height="14"
+          viewBox="0 0 24 24"
+          width="21"
+          height="21"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.6"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         >
-          <path d="M2 4h12M2 8h12M2 12h12" />
+          <rect x="3" y="4" width="18" height="16" rx="2" />
+          <path d="M9 4v16" />
         </svg>
       </button>
       {open ? (
-        <MenuPanel id={id} view={view} onClose={() => setOpen(false)} />
+        docked ? (
+          <MenuPanel id={id} view={view} docked onClose={onClose} />
+        ) : (
+          <PatternDrawer id={id} view={view} onClose={onClose} />
+        )
       ) : null}
     </>
+  );
+}
+
+function PatternDrawer(props: { id: string; view: View; onClose: () => void }) {
+  const panel = useRef<HTMLElement>(null);
+  const close = useRef<HTMLButtonElement>(null);
+  useModalFocus(panel, close, props.onClose, '.topbar', '.menu-button');
+  return (
+    <div className="pattern-menu-backdrop" onClick={props.onClose}>
+      <MenuPanel {...props} docked={false} panelRef={panel} closeRef={close} />
+    </div>
   );
 }
 
@@ -154,73 +181,91 @@ function MenuPanel({
   id,
   view,
   onClose,
+  docked,
+  panelRef,
+  closeRef,
 }: {
   id: string;
   view: View;
   onClose: () => void;
+  docked: boolean;
+  panelRef?: RefObject<HTMLElement | null>;
+  closeRef?: RefObject<HTMLButtonElement | null>;
 }) {
-  const panel = useRef<HTMLElement>(null);
-  const close = useRef<HTMLButtonElement>(null);
-  useModalFocus(panel, close, onClose, '.topbar', '.menu-button');
+  const ownPanel = useRef<HTMLElement>(null);
+  const panel = panelRef ?? ownPanel;
   const groups = useMemo(() => byFold(grouped(listed(LIBRARY))), []);
   // Open with the current pattern in sight.
   useLayoutEffect(() => {
     panel.current
       ?.querySelector('[aria-current="page"]')
       ?.scrollIntoView?.({ block: 'center' });
-  }, []);
+  }, [id, panel]);
   return (
-    <div className="pattern-menu-backdrop" onClick={onClose}>
-      <aside
-        ref={panel}
-        className="pattern-menu"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Patterns"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <header>
-          <h2>Patterns</h2>
-          <button
-            ref={close}
-            type="button"
-            className="quiet"
-            aria-label="Close the list of patterns"
-            onClick={onClose}
-          >
-            ✕
-          </button>
-        </header>
-        {groups.map(([fold, entries]) => (
-          <section key={fold ?? 'other'}>
-            <h3>{fold ? foldLabel(fold) : 'Other'}</h3>
-            <ul>
-              {entries.map((e) => (
-                <li key={e.id}>
-                  <a
-                    href={viewAddress(e.id, view)}
-                    aria-current={holds(e, id) ? 'page' : undefined}
-                    onClick={onClose}
-                  >
-                    {e.preview ? (
-                      <img
-                        src={import.meta.env.BASE_URL + e.preview.thumbnail}
-                        alt=""
-                        loading="lazy"
-                        width="44"
-                        height="44"
-                      />
-                    ) : (
-                      <span className="no-thumbnail" />
-                    )}
-                    <span>{titleOf(e)}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
-      </aside>
-    </div>
+    <aside
+      ref={panel}
+      id="pattern-browser"
+      className={`pattern-menu${docked ? ' pattern-menu-docked' : ''}`}
+      role={docked ? 'complementary' : 'dialog'}
+      aria-modal={docked ? undefined : true}
+      aria-label="Patterns"
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={
+        docked
+          ? (event) => {
+              if (event.key === 'Escape') {
+                event.preventDefault();
+                event.stopPropagation();
+                onClose();
+              }
+            }
+          : undefined
+      }
+    >
+      <header>
+        <h2>Patterns</h2>
+        <button
+          ref={closeRef}
+          type="button"
+          className="quiet"
+          aria-label="Close the list of patterns"
+          onClick={onClose}
+        >
+          ✕
+        </button>
+      </header>
+      {groups.map(([fold, entries]) => (
+        <section key={fold ?? 'other'}>
+          <h3>{fold ? foldLabel(fold) : 'Other'}</h3>
+          <ul>
+            {entries.map((e) => (
+              <li key={e.id}>
+                <a
+                  href={viewAddress(e.id, view)}
+                  aria-current={holds(e, id) ? 'page' : undefined}
+                  onClick={docked ? undefined : onClose}
+                >
+                  {e.preview ? (
+                    <img
+                      src={
+                        import.meta.env.BASE_URL +
+                        (e.preview.thumbnailSmall ?? e.preview.thumbnail)
+                      }
+                      alt=""
+                      loading="lazy"
+                      width="44"
+                      height="44"
+                    />
+                  ) : (
+                    <span className="no-thumbnail" />
+                  )}
+                  <span>{titleOf(e)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </aside>
   );
 }

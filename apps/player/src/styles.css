@@ -6304,3 +6304,38 @@ svg.tiles {
     justify-content: center;
   }
 }
+
+/* The wide-screen pattern browser occupies space beside the canvas. */
+.pattern-menu-docked {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 256px;
+  height: 100dvh;
+  z-index: 30;
+  animation: none;
+  box-shadow: none;
+}
+.player .topbar .menu-button[aria-expanded='true'] {
+  background: color-mix(in srgb, var(--theme-accent) 10%, var(--theme-bg-card));
+  color: var(--theme-accent);
+}
+@media (min-width: 1000px) {
+  .player.patterns-open {
+    padding-left: 276px;
+  }
+}
+@media (min-width: 1000px) and (max-width: 1199px) {
+  .player.patterns-open .workspace {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+}
+
+.pattern-menu header > button {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 8px;
+}
+.player.patterns-open .end-actions {
+  margin-left: auto;
+}

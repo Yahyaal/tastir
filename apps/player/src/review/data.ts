@@ -9035,7 +9035,7 @@ export const PROGRESS: {
   done: [
     {
       title: 'LEARN.2 Start here and next-lesson navigation',
-      text: 'The approved path now connects twelve existing lessons. Start here opens the first paused watch step; finished lessons offer the next idea, and kept draw-along boards offer the next drawing. Original difficulty and photo limits remain visible. Nothing is marked complete from a visit. Local implementation, not deployed.',
+      text: 'The approved path now connects twelve existing lessons. Start here opens the first paused watch step; finished lessons offer the next idea, and kept draw-along boards offer the next drawing. Original difficulty and photo limits remain visible. Nothing is marked complete from a visit. Included in the owner-approved learning and UI release.',
       link: { label: 'Try the working learning path', href: '#/learn' },
     },
     {
@@ -9616,11 +9616,11 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Centered pattern title and three clear action levels',
-    text: 'Next lesson is filled, Save is outlined, and Copy link is a quiet text action with a link icon. The title is centered between compact Previous and Next arrows. Patterns is an icon-only side-menu toggle. Feedback is an icon beside Settings, with keyboard access and context preserved. The Settings tooltip now says Settings. Light/dark phone and desktop layouts are checked. Local implementation; not deployed. Reference-photo and newcomer checks remain open.',
+    title: 'The pattern browser can stay beside the drawing',
+    text: 'Patterns now toggles a docked sidebar on wide screens. The canvas moves into the remaining space, without dimming or blocking it. The sidebar stays open across pattern choices and remembers the desktop preference. Narrow screens use a drawer that closes after a selection. Screenshot review checked light/dark desktop, tablet and phone, including resizing between modes. The owner approved publication following verification.',
     link: {
-      label: 'See the centered header and action hierarchy',
-      href: '/__review/renders/player-header-2026-11-16/index.html',
+      label: 'Review the show/hide sidebar',
+      href: '/__review/renders/pattern-sidebar-2026-11-16/index.html',
     },
   },
   next: [
@@ -9653,7 +9653,7 @@ export const PROGRESS: {
   waiting: [
     {
       title: 'Physical-phone zoom acceptance',
-      text: 'The pinch implementation is already published and passes touch emulation. Confirm on your own phone that pinch in/out, midpoint anchoring, panning and ordinary taps work. The reliability release is published; the working learning path remains local.',
+      text: 'The pinch implementation is already published and passes touch emulation. Confirm on your own phone that pinch in/out, midpoint anchoring, panning and ordinary taps work. The reliability release is published; the learning path and UI changes are approved for release.',
       link: {
         label: 'Open the live zoom check',
         href: 'https://tastir-studio.vercel.app/#/eight-fold-star-and-cross/result',
