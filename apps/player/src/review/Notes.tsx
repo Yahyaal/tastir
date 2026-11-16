@@ -1,3 +1,4 @@
+import { BeginnerPath } from './BeginnerPath';
 import { ReliabilityUpdate } from './ReliabilityUpdate';
 import { SettingsReview } from './SettingsReview';
 import { TeachingUpdate } from './TeachingUpdate';
@@ -33,6 +34,12 @@ export const DOCS: readonly {
   file: string;
   text: string;
 }[] = [
+  {
+    key: 'beginner-path-proposal',
+    label: 'Beginner path: selection and evidence',
+    file: 'BEGINNER-PATH-PROPOSAL-2026-11-16.md',
+    text: read('BEGINNER-PATH-PROPOSAL-2026-11-16.md'),
+  },
   {
     key: 'morning-report',
     label: 'Morning report: 16 November',
@@ -330,6 +337,7 @@ function linkFrom(file: string) {
 }
 
 export function Notes({ page = 'start' }: { page?: string }) {
+  if (page === 'beginner-path') return <BeginnerPath />;
   if (page === 'reliability-update') return <ReliabilityUpdate />;
   if (page === 'settings-designs') return <SettingsReview />;
   if (page === 'settings-update') return <SettingsReview />;

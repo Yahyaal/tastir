@@ -9034,8 +9034,21 @@ export const PROGRESS: {
   goal: 'Review the reliability repairs and real-phone acceptance, then palette choices, clearer teaching, a beginner’s path and feedback. New patterns wait.',
   done: [
     {
+      title: 'LEARN.1 A visual beginner-path proposal',
+      text: 'Twelve linked existing drawings have one new focus each, original difficulty labels, explicit prerequisites and separate status/photo evidence. Three recorded matching public examples and nine open photo gates are visible. Full root checks and six desktop/phone review cases passed. The proposal stays local until the order and launch gates are reviewed.',
+      link: { label: 'Try the proposed path', href: '#/notes/beginner-path' },
+    },
+    {
+      title: 'PR #17 published: reliability and saved-work repairs',
+      text: 'All seven repairs were merged at bb6f8c1 after a green preview. Production deployment is green and a fresh phone-sized live smoke passed Arabic search, numbered positions/Back, editable downloads, the A hint and one sign-out check with no project polling. No account was signed in.',
+      link: {
+        label: 'Merged release',
+        href: 'https://github.com/Yahyaal/tastir/pull/17',
+      },
+    },
+    {
       title: 'REPAIR.7 Copies, previews and preparation feedback',
-      text: 'Your work offers safe Duplicate actions, personal previews keep their rectangular edges, variation saving is explicit, loading shows real preparation stages, and repeat candidates are clearer. All root checks and 251 desktop/phone browser cases passed, with 11 configured platform skips. Final mobile home audits scored 100 accessibility and median performance 96. Local, not deployed.',
+      text: 'Your work offers safe Duplicate actions, personal previews keep their rectangular edges, variation saving is explicit, loading shows real preparation stages, and repeat candidates are clearer. All root checks and 251 desktop/phone browser cases passed, with 11 configured platform skips. Final mobile home audits scored 100 accessibility and median performance 96. Published through PR #17.',
       link: {
         label: 'Morning presentation',
         href: '#/notes/reliability-update',
@@ -9598,20 +9611,20 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Morning report: navigation, guidance and Your work',
-    text: 'All seven local repairs are verified. Root checks passed, the full desktop/phone suite passed 251 cases with 11 deliberate platform skips, and final mobile home audits scored 100 accessibility and median performance 96. The morning presentation shows the changes and remaining checks. Nothing from this repair branch is deployed.',
+    title: 'Beginner path: twelve linked candidates and visible evidence gaps',
+    text: 'PR #17 is merged and deployed; a live phone-sized smoke check passed the repaired flows. The next task is a review-only learning path, from one circle to a rosette. Twelve numbered cards preserve the original lesson ratings and give one new focus each. Three have recorded matching free photos; nine photo gates stay open. Full root checks, 11 focused tests and six desktop/phone review cases passed. The public home page and lessons are unchanged.',
     link: {
-      label: 'Open the morning presentation',
-      href: '#/notes/reliability-update',
+      label: 'Try the visual beginner-path proposal',
+      href: '#/notes/beginner-path',
     },
   },
   next: [
     {
-      title: 'Review the overnight repairs and close real-phone acceptance',
-      text: 'Review the concrete local changes before publishing. The pinch fix is already on the live site; physical-phone acceptance remains open. Keep the three older draw-along reports unconfirmed until their original lessons and steps can be identified. Authenticated Studio acceptance remains separate.',
+      title: 'Review the learning order and prioritize its photo checks',
+      text: 'Review the twelve linked candidates and the stretch-lesson difficulty labels. Then prioritize matching free photos for the opening lessons, plain-language/read-aloud checks and a newcomer trial before adding the public Start here path. The repair release is already deployed; physical-phone and controlled signed-in acceptance remain open.',
       link: {
-        label: 'Morning review and next checks',
-        href: '#/notes/reliability-update',
+        label: 'Review the twelve-lesson proposal',
+        href: '#/notes/beginner-path',
       },
     },
     {
@@ -9639,7 +9652,7 @@ export const PROGRESS: {
   waiting: [
     {
       title: 'Physical-phone zoom acceptance',
-      text: 'The pinch implementation is already published and passes touch emulation. Confirm on your own phone that pinch in/out, midpoint anchoring, panning and ordinary taps work. The overnight teaching and usability repairs remain local.',
+      text: 'The pinch implementation is already published and passes touch emulation. Confirm on your own phone that pinch in/out, midpoint anchoring, panning and ordinary taps work. The reliability release is published; the new path proposal remains local.',
       link: {
         label: 'Open the live zoom check',
         href: 'https://tastir-studio.vercel.app/#/eight-fold-star-and-cross/result',

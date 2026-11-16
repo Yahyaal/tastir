@@ -2,6 +2,11 @@
 
 Work top to bottom, one task per session and one commit per task. A task is done only when its acceptance test passes and the full test and lint commands are green. Tick the box in the same commit.
 
+## Learning path
+
+- [x] **LEARN.1 Propose the beginner path visually.** Present twelve linked existing lessons with one new focus each, original difficulty ratings and explicit status/photo evidence. Show the order and missing free-photo gates before promoting a public course. Prototype: [review the path](http://localhost:4200/#/notes/beginner-path). Full root lint/typecheck/tests and the production build passed; 11 focused unit and six desktop/phone review-browser cases passed. Public course promotion remains LEARN.2.
+- [ ] **LEARN.2 Complete the selected path’s reference checks and public navigation.** After the visual order is reviewed, prioritize matching free photos, plain-language/read-aloud checks and newcomer trials; then add Start here and next-lesson links. Do not infer completion from a visit.
+
 ## Reported bugs
 
 - [x] **REPAIR.1 Stop signed-out Studio retries.** Protect Studio and Your work with one shared session check, stop list/pulse/live-room calls after a 401, suppress stale responses, retain recovery after verified sign-in, and distinguish connection failures from sign-out. A controlled poller test reproduced 13 failed calls in 12 seconds before the fix. Ten focused unit cases, six hosted-browser cases and full root verification passed.
@@ -13,7 +18,7 @@ Work top to bottom, one task per session and one commit per task. A task is done
 - [x] **REPAIR.6 Draw-along teaching guidance and named report audit.** Fix premature point aliases, keep the next required tool visible, and explicitly exercise construction → ink → repeat. Preserve unresolved older reports when their reproduction cannot be identified.
 - [x] **REPAIR.7 Remaining everyday usability.** Added safe pattern/design Duplicate actions, explicit variation saving, rectangular personal previews with 44px actions, real preparation feedback and stronger repeat guides. Existing tooltips and horizontal phone rows are verified. Final root checks and all 251 desktop/phone browser cases passed; 11 configured platform skips. [Evidence](testing/grok-usability-2026-11-16.md).
 
-- [ ] **REVIEW.1 Close the remaining review acceptance.** All seven local reliability repairs are verified; [the morning report](NIGHT-REPORT-2026-11-16.md) shows the changes and evidence. Remaining: review before publishing, physical-phone zoom acceptance, controlled authenticated Studio acceptance, and the three older draw-along reports once their original lessons/steps can be identified. Keep these separate from the repaired named issues.
+- [ ] **REVIEW.1 Close the remaining review acceptance.** All seven local reliability repairs are verified; [the morning report](NIGHT-REPORT-2026-11-16.md) shows the changes and evidence. Published through PR #17 with a passing production smoke check. Remaining: physical-phone zoom acceptance, controlled authenticated Studio acceptance, and the three older draw-along reports once their original lessons/steps can be identified. Keep these separate from the repaired named issues.
 
 
 - [ ] **BUG.1 Phone pattern view does not zoom.** Reported by the owner on 14 November 2026 after encountering it on 13 November. On a phone, open a pattern and try to zoom the drawing: neither a two-finger pinch (in or out) nor double tapping changes the zoom. Expected: the pattern can be enlarged to inspect details and reduced again with touch gestures. The exact pattern, page/stage, phone model, OS and browser of the original report were not recorded. Pinch zoom was included in completed task 1.3.
