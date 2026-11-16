@@ -73,7 +73,7 @@
   --ink: #1c2733;
   --old: #9aa6b1;
   --faint: #d6ccbb;
-  --current: #c98112;
+  --current: #94600d;
   --used: #1f4e8c;
   --fresh: var(--malachite);
   --paper: var(--theme-bg-card);
@@ -5485,7 +5485,7 @@ svg.tiles {
 .library .meta .level-intermediate {
   border-color: transparent;
   background: color-mix(in srgb, var(--act-result) 18%, transparent);
-  color: var(--act-result);
+  color: light-dark(#80510b, #e3ad45);
 }
 
 .library .meta .level-advanced {

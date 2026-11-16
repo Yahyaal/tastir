@@ -20,7 +20,7 @@ Outline is now the single settings design. The alternatives, panel theme picker 
 
 ## The next goal
 
-The first three repairs are implemented and verified locally: signed-out retry guards, portable editable downloads, and collection/Unicode search. Next, run the fresh accessibility and performance audit from [Grok’s live-site review](GROK-REVIEW-2026-11-15.md): reproduce and guard signed-out retries, make editable JSON downloads visible, then fix direct collection links and Unicode search. Region counts are already addressed in the release. Keep prior draw-along reports unconfirmed until tested explicitly. Then resume palette selection, the shared-step teaching proposal, a beginner’s path and feedback rollout. New patterns wait while the existing library becomes easier to enter and trust.
+The first four reliability repairs are implemented locally: signed-out retry guards, portable editable downloads, collection/Unicode search, and measured accessibility/thumbnail repairs. The [visual update](http://localhost:4200/#/notes/reliability-update) shows the evidence. Three mobile audit runs before/after moved automated accessibility from 88 to 100, retained median performance 96, and reduced initial transfer by 21%. Review these changes before publishing. Then address ordinary step URLs and Back behavior and explicitly test the named draw-along reports; [Grok’s triage](GROK-REVIEW-2026-11-15.md) retains the other usability findings. Physical-phone zoom acceptance remains open. Then resume palette selection, shared-step teaching, a beginner’s path and feedback rollout. New patterns wait while the existing library becomes easier to use.
 
 ## How a session works
 

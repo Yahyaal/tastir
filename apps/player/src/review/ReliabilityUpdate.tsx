@@ -202,12 +202,52 @@ export function ReliabilityUpdate() {
         <a href="#collection">Open the collection and try the queries →</a>
       </section>
       <section id="audit-repair">
-        <p className="reliability-kicker">4 · Queued</p>
-        <h2>Measure the actual barriers.</h2>
+        <p className="reliability-kicker">4 · Measured and repaired locally</p>
+        <h2>Clearer to assistive technology. Lighter to download.</h2>
+        <div
+          className="search-evidence"
+          role="group"
+          aria-label="Median mobile audit results"
+        >
+          <div>
+            <span>Accessibility score</span>
+            <strong>88 → 100</strong>
+            <span>four failing audit types resolved</span>
+          </div>
+          <div>
+            <span>Initial transfer</span>
+            <strong>−21%</strong>
+            <span>846 KB → 672 KB</span>
+          </div>
+          <div>
+            <span>Performance score</span>
+            <strong>96 → 96</strong>
+            <span>maintained, with less data</span>
+          </div>
+        </div>
+        <p className="reliability-caption">
+          Medians from three cold mobile Lighthouse 13.6.0 runs before and
+          after, using the same light-theme hosted production build profile on
+          localhost, 390×844, simulated mobile throttling and 4× CPU slowdown.
+          These are not Grok’s live-site scores. Automated accessibility checks
+          do not replace testing with people or on a physical phone.
+        </p>
         <p>
-          Run a fresh accessibility and mobile-performance audit, identify the
-          failing elements and expensive requests, then compare the same checks
-          after the repairs.
+          The library has a main landmark, the animated progress bar has a name,
+          color chips have valid accessible labels, and amber badge/status text
+          has sufficient contrast. Small cards request smaller previews from the
+          same drawing; full-size construction and exports retain their detail.
+        </p>
+        <p>
+          First paint remains about 1.42 seconds. A nonblocking-font experiment
+          painted sooner but increased blocking time and introduced movement;
+          the existing font loading is retained. Heading-order failures were not
+          reproduced in this audit.
+        </p>
+        <p className="reliability-result">
+          Next: review these four local repairs, then address ordinary step URLs
+          and Back behavior, named draw-along reports, and the remaining
+          usability notes. Physical-phone zoom acceptance is still open.
         </p>
       </section>
     </main>

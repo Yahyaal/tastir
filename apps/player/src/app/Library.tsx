@@ -214,7 +214,7 @@ export function Library({
   const hero = entries.find((e) => e.id === HERO) ?? entries[0];
   const first = entries.find((e) => e.id === FIRST) ?? entries[0];
   return (
-    <div className="library">
+    <main className="library">
       <header className="masthead">
         <div className="masthead-brand">
           <h1 aria-label="Tastir">
@@ -464,7 +464,7 @@ export function Library({
           </div>
         ) : null}
       </footer>
-    </div>
+    </main>
   );
 }
 
@@ -622,6 +622,12 @@ function CardView({
           <img
             className="thumbnail"
             src={import.meta.env.BASE_URL + preview.thumbnail}
+            srcSet={
+              preview.thumbnailSmall
+                ? `${import.meta.env.BASE_URL + preview.thumbnailSmall} 320w, ${import.meta.env.BASE_URL + preview.thumbnail} 480w`
+                : undefined
+            }
+            sizes="auto, (max-width: 600px) 160px, 280px"
             alt=""
             loading="lazy"
             width="360"

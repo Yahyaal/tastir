@@ -24,6 +24,7 @@ export interface Preview {
   readonly photos: boolean;
   readonly verification?: import('@tastir/schema').Tutorial['verification'];
   readonly thumbnail: string;
+  readonly thumbnailSmall?: string;
   /** The tutorial this is another place of. */
   readonly of?: string;
 }

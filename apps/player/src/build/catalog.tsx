@@ -55,6 +55,13 @@ async function main() {
           .webp({ quality: 90 })
           .toFile(resolve(thumbnails, filename));
       }
+      const smallFilename = `${id}-${hash}-320.webp`;
+      if (!existsSync(resolve(thumbnails, smallFilename))) {
+        await sharp(Buffer.from(svg))
+          .resize(320, 320)
+          .webp({ quality: 90 })
+          .toFile(resolve(thumbnails, smallFilename));
+      }
       catalog.push({
         id,
         title: t.title,
@@ -72,12 +79,17 @@ async function main() {
         photos: Boolean(t.photos?.length),
         ...(t.verification ? { verification: t.verification } : {}),
         thumbnail: `thumbnails/${filename}`,
+        thumbnailSmall: `thumbnails/${smallFilename}`,
         ...(of ? { of } : {}),
       });
     }
   }
   const used = new Set(
-    catalog.map((entry) => entry.thumbnail.replace('thumbnails/', '')),
+    catalog.flatMap((entry) =>
+      [entry.thumbnail, entry.thumbnailSmall].map((path) =>
+        path.replace('thumbnails/', ''),
+      ),
+    ),
   );
   for (const name of readdirSync(thumbnails)) {
     if (/\.(svg|webp)$/.test(name) && !used.has(name))

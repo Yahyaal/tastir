@@ -9566,8 +9566,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Third reliability repair: library entry points',
-    text: 'Collection anchors now open the library and retain return position. Arabic queries, common star/place aliases and Arabic/Persian point counts work, with right-to-left input and title-first ranking. Full verification and 23 browsing cases passed, with one intentional phone skip. Accessibility and performance are next.',
+    title: 'Four reliability repairs ready for review',
+    text: 'Signed-out requests stop, editable JSON downloads preserve designs, and collection/Arabic search work. Repeated mobile audits now score 100 for automated accessibility, retain median performance 96, and transfer 21% less data. The visual update shows the evidence and remaining work; these repairs are local, not published.',
     link: {
       label: 'See the reliability repair',
       href: '#/notes/reliability-update',

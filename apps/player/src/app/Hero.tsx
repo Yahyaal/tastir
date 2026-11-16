@@ -208,6 +208,7 @@ function HeroPlay({ model }: { model: Model }) {
         {!reduced && (
           <div
             className="hero-progress-group"
+            role="group"
             aria-label="Hero animation progress"
           >
             <div
@@ -217,6 +218,7 @@ function HeroPlay({ model }: { model: Model }) {
               {palette.map((item, i) => (
                 <span
                   key={item.color}
+                  role="img"
                   className={`hero-color-chip ${
                     isFinished || i <= colorIndex ? 'active' : ''
                   } ${i === colorIndex && isColoring ? 'current' : ''}`}
@@ -235,6 +237,7 @@ function HeroPlay({ model }: { model: Model }) {
             <div
               className="hero-progress-track"
               role="progressbar"
+              aria-label="Pattern drawing progress"
               aria-valuenow={Math.round(((k + 1) / total) * 100)}
               aria-valuemin={0}
               aria-valuemax={100}
