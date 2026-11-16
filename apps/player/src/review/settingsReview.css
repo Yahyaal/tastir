@@ -1,0 +1,74 @@
+.settings-review {
+  max-width: 1100px;
+}
+.settings-review-kicker {
+  margin-top: 24px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--theme-text-secondary);
+}
+.settings-review-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+  margin: 24px 0;
+}
+.settings-review figure {
+  min-width: 0;
+}
+.settings-review figure img {
+  width: 100%;
+  height: auto;
+}
+.settings-review .settings-review-phone {
+  max-width: 290px;
+  margin: auto;
+}
+.settings-review-note {
+  padding-left: 16px;
+  border-left: 3px solid var(--theme-accent);
+}
+.settings-review-footer,
+.settings-review-footer nav,
+.settings-review-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.settings-review-footer {
+  border-top: 1px solid var(--theme-border);
+  margin-top: 32px;
+  padding-top: 20px;
+}
+.settings-review-footer button {
+  min-height: 44px;
+  padding: 8px 14px;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  background: var(--theme-bg-card);
+  color: var(--theme-text-primary);
+}
+.settings-review-footer button[aria-pressed='true'] {
+  background: var(--theme-accent);
+  color: var(--on-act);
+}
+.settings-review-footer button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+@media (max-width: 650px) {
+  .settings-review-pair {
+    grid-template-columns: 1fr;
+  }
+  .settings-review-footer > nav {
+    order: -1;
+    width: 100%;
+    justify-content: center;
+  }
+}

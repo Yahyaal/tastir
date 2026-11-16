@@ -8,8 +8,10 @@ import { useEffect, useState } from 'react';
 export function useRemembered<T extends string | boolean>(
   key: string,
   initial: T,
+  { override, persist = true }: { override?: T; persist?: boolean } = {},
 ): [T, (value: T) => void] {
   const [value, setValue] = useState<T>(() => {
+    if (override !== undefined) return override;
     try {
       const saved = window.localStorage.getItem(`tastir.${key}`);
       if (saved !== null) {
@@ -22,11 +24,12 @@ export function useRemembered<T extends string | boolean>(
     return initial;
   });
   useEffect(() => {
+    if (!persist) return;
     try {
       window.localStorage.setItem(`tastir.${key}`, JSON.stringify(value));
     } catch {
       // Not remembered, but still used for this visit.
     }
-  }, [key, value]);
+  }, [key, value, persist]);
   return [value, setValue];
 }

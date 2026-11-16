@@ -4,6 +4,8 @@ These are the owner's standing wishes about how work is shown and discussed. Eac
 
 ## Showing work and asking questions
 
+- **Preferred feedback format (owner, 15 November 2026): a visual research presentation.** Use the [ink comparison presentation](http://localhost:4200/#/notes/ink-presentation) as the model: explain the question, show what was done, show the evidence and conclusions, then propose the next steps. Keep each slide focused and the drawings beside the explanation. Use interactive comparisons and animations when they make an idea clearer; respect reduced motion and provide manual controls. Keep dense technical notes as supporting references. This is the owner's default preference for substantive reviews and progress reports, rather than long prose reports. Simple factual answers can remain short.
+
 - **Everything for the owner goes on the review page** (`#/review` on the dev server, written in `apps/player/src/review/data.ts`). That covers questions, updates and anything to look at. Markdown in `docs/` is reference, and the terminal only says what changed and where to look. *Why:* the owner finds long terminal text hard to scroll and read, and twice found that a question asked in the terminal was not on the page.
 - **Never ask the owner to judge something they cannot see.** If something needs their eye, put a picture on the page with the part marked; otherwise do not raise it. *Why (5 October):* a seam choice in the Bou Inania tile was described in words only, and the owner had no idea what it meant.
 - **Questions come first on the review page.** Nothing sits above them except what the owner needs to answer them; Progress and everything else come after. *Why (7 October):* the owner found the questions below Progress.
@@ -38,6 +40,14 @@ The owner’s 11 October Jali correction: minimize clicks. Show material choices
 - **Never `git stash`, or check out other versions of files, while the owner's dev server runs.** *Why:* Vite picked up an old schema during a stash and kept serving it, so two tutorials showed as broken. It happened twice.
 - **Resume after interruptions.** If work stops on a usage limit or a crash, pick it up from [the queue](patterns/QUEUE.md) as soon as possible.
 - **Ask when the docs and the code disagree;** do not silently pick one (`CLAUDE.md`).
+
+## UI preferences (owner, 15 November 2026)
+
+When choosing an aesthetic direction, show working visual alternatives. The owner cannot choose between style descriptions alone; provide switchable themes using the same real controls, light/dark comparison and a way to try them in the lesson before selecting one.
+
+The owner’s refinement: combine Mosaic’s blue/teal colours with Precision’s minimal layout and Atelier’s illustrated ink choices; make icons larger and spacing tighter. The owner selected Outline and requested removal of the other settings themes and the theme picker; keep Outline as the single settings design. Toggle labels should distinguish states through colour and weight; do not show On/Off words or check marks. Speed buttons need a clearly filled selection with good contrast, particularly in dark mode. For future aesthetic choices, show working visual alternatives before asking for a decision.
+
+Prefer visible segmented choices for two or three mutually exclusive values, and labelled switches for on/off settings. Use dropdowns only when a better alternative does not fit. Actions must look like buttons and have clear labels; icons supplement the words. Keep keyboard interaction, focus visibility, touch targets and both themes working. Preserve the satisfaction of the final inking reveal: the default lesson mode should show a faint destination guide before that reveal rather than commit ink throughout construction.
 
 ## Standing goals
 

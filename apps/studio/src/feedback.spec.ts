@@ -208,18 +208,25 @@ describe('private feedback with guarded anonymous intake', () => {
     expect(await db.select().from(feedbackReports)).toHaveLength(6);
   });
   it('refuses spoofed network headers without spending global budget on the refusal', async () => {
-    for (let n = 0; n < 120; n++) await service.attempt('127.0.0.1');
-    const response = await post(submission(), '/api/feedback', {
-      'X-Forwarded-For': '203.0.113.1',
-      'X-Vercel-Forwarded-For': '203.0.113.2',
-    });
-    expect(response.status).toBe(429);
-    expect(response.headers.get('retry-after')).toBe('60');
-    const global = await db
-      .select()
-      .from(feedbackCounters)
-      .where(sql`${feedbackCounters.key} like 'attempt:global:day:%'`);
-    expect(global[0]?.value).toBe(120);
+    // Keep all attempts in one rate window, even when a busy machine crosses
+    // a minute boundary while issuing the requests. Real timers still run.
+    const clock = vi.spyOn(Date, 'now').mockReturnValue(1_793_188_810_000);
+    try {
+      for (let n = 0; n < 120; n++) await service.attempt('127.0.0.1');
+      const response = await post(submission(), '/api/feedback', {
+        'X-Forwarded-For': '203.0.113.1',
+        'X-Vercel-Forwarded-For': '203.0.113.2',
+      });
+      expect(response.status).toBe(429);
+      expect(response.headers.get('retry-after')).toBe('60');
+      const global = await db
+        .select()
+        .from(feedbackCounters)
+        .where(sql`${feedbackCounters.key} like 'attempt:global:day:%'`);
+      expect(global[0]?.value).toBe(120);
+    } finally {
+      clock.mockRestore();
+    }
   });
   it('keeps global budgets at the allowed count when one network floods intake', async () => {
     const clock = vi.spyOn(Date, 'now').mockReturnValue(1_793_188_810_000);

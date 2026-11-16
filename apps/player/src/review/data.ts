@@ -9030,8 +9030,8 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '2 November 2026',
-  goal: 'Build the queue of pattern tutorials: every family with several real, verified designs, each drawn step by step with ruler and compass, and the player showing them well.',
+  updated: '15 November 2026',
+  goal: 'Choose palettes from the liked colourings, improve how lessons explain their destination, then a beginner’s path and feedback. New patterns wait.',
   done: [
     {
       title: 'The 29 longest lessons rewritten (Codex), patterns unchanged',
@@ -9566,42 +9566,42 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Tiling Search 45° tilings (your request while away, 25 October)',
-    text: 'Of the 161 tilings on the list, we had 4. Seven new ones are built so far, each checked against Wichmann’s drawing: the Mexuar porch fret and corridor stars, the Alhambra Museum loops, the Shah-i-Zinda and Qaytbay octagons, the Sırçalı stars and the Topkapı pinwheel. Variations of one design now share one library card, with a Variations switch at the top of the pattern (try the Sala de los Reyes fret). The way to read Wichmann’s drawings exactly was found today: every corner lies on a grid of whole numbers and halves of √2, so the proportions come out exact. More batches follow; the full comparison is in the notes.',
+    title: 'Outline is the final settings design',
+    text: 'The alternative panel themes, theme picker and comparison page have been removed. Settings now always use Outline, including browsers with an older theme saved. The large ink diagrams, colour-changing switch labels and filled speed selection remain in the light and dark interfaces.',
     link: {
-      label: 'Tiling Search notes',
-      href: '#/notes/tilingsearch-45',
+      label: 'Open a pattern and its view settings',
+      href: '#/eight-fold-star-and-cross/result',
     },
   },
   next: [
     {
-      title: 'Feedback: production acceptance and optional direct agent access',
-      text: 'The migration and Cloudflare widget are ready. Add your contact email, copy the prepared feedback settings into Vercel Production, verify private storage and cleanup, then enable reporting and send a real browser report. Follow the guide and observe a week of usage. F7 can later add report-specific, revocable agent grants.',
+      title: 'Reliability and discoverability before more visual work',
+      text: 'Trace the reported signed-out request loop, expose editable downloads beside SVG/PNG, then fix direct collection links and Arabic search. Region counts are already fixed in this release; exact-step sharing exists, while normal Back/step addresses remain separate work. Grok’s short successful visit does not close unreproduced draw-along reports.',
       link: {
-        label: 'Turn on feedback: your remaining steps',
+        label: 'Grok review: evidence and next steps',
+        href: '#/notes/grok-review',
+      },
+    },
+    {
+      title: 'Choose palettes and teaching treatments',
+      text: 'Review the palette comparison and proposed shared construction prefix before applying palette or construction rewrites. Guide first is already implemented.',
+      link: { label: 'Compare palettes', href: '#/plan/palettes' },
+    },
+    {
+      title: 'A beginner’s path through the existing library',
+      text: 'Propose about twelve lessons with verified or owner-approved sources, each teaching one new idea. Show the linked pattern pictures before building the path.',
+    },
+    {
+      title: 'Finish feedback rollout',
+      text: 'The owner completes the deployment settings and real submission check, then observes usage.',
+      link: {
+        label: 'Feedback go-live guide',
         href: '#/notes/feedback-go-live',
       },
     },
     {
-      title: 'AI agent: broader live evaluation and local release',
-      text: 'Exercise more original construction requests and recovery cases, then finish account recovery, credential storage and local packaging. The chat and normal drawing/coloring tools are implemented; the wider generation evaluation remains.',
-      link: { label: 'Read the remaining phases', href: '/#/notes/agent' },
-    },
-    {
-      title: 'Ink in under a second',
-      text: 'Pressing Ink in draw along on Bou Inania now takes about a third of the time it did, but still around three seconds on a slow machine. The goal is under one second on both Bou Inania tutorials.',
-    },
-    {
-      title: 'Your answers on four wall styles',
-      text: 'Gemini added six wall styles without asking. Jali and interlace are built; I recommend dropping the other four (illumination, carved stucco, wood marquetry, blueprint) because they are skins that teach nothing about the geometry. Say if you want any of them.',
-    },
-    {
-      title: 'More designs per family',
-      text: 'At least one more for each family: an Alhambra panel from Wichmann’s line drawings, an Ibn Tulun window grille with a published construction, and an eight-fold variant, each with a photo.',
-    },
-    {
-      title: 'Córdoba Synagogue, one more try',
-      text: 'The geometry is solved; choosing which bits of line are inked is not. One more attempt with the method in my notes; if it fails I will ask you whether a simpler Córdoba design is acceptable.',
+      title: 'Complete historical checks',
+      text: 'Ink matches do not independently verify source photographs, resampled original colours or the history of a construction. Prioritize the beginner’s path.',
     },
   ],
   waiting: [

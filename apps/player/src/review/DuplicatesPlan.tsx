@@ -2,6 +2,7 @@ import './review.css';
 import './plan.css';
 import './duplicates.css';
 import { LIBRARY } from '../app/library';
+import { InkOverlay } from './InkOverlay';
 // Raw text, so TypeScript does not infer a type for the large file.
 import raw from './duplicates.json?raw';
 
@@ -113,16 +114,16 @@ function Outline({ s, c }: { s: Shape; c: number }) {
 
 const VERDICT: Record<Group['level'], { title: string; text: string }> = {
   same: {
-    title: 'Same design',
-    text: 'The same piece shapes, in the same proportions, with the same neighbours round every piece and every corner. Only the colours, the zoom, the turn or the wall style differ.',
+    title: 'Candidate match',
+    text: 'The rounded piece measurements and sampled neighbourhood counts agree. Use the ink overlay to check whether the complete lines agree.',
   },
   arranged: {
-    title: 'Same pieces, laid out differently',
-    text: 'The same shapes in the same proportions, but the pieces meet different neighbours, so the wall looks different.',
+    title: 'Same proportions, different neighbourhoods',
+    text: 'The rounded shape signatures and wall shares agree, but the local neighbour sequences or their frequencies differ. Use the ink overlay to examine the lines.',
   },
   proportions: {
-    title: 'Same piece shapes, different designs',
-    text: 'Every piece shape in one is also in the other, but they use them in different amounts and arrangements. These are related designs, not copies.',
+    title: 'Shared shapes, different proportions',
+    text: 'The shape signatures agree, but their measured shares of the wall differ. Compare the ink before deciding how the designs are related.',
   },
 };
 
@@ -307,68 +308,25 @@ export function DuplicatesPlan() {
         <p className="lede">
           I compared all {DATA.count} tutorials by the pieces the engine cuts
           them into, not by their names or colours. {same.length} groups,{' '}
-          {sameCount} tutorials in all, draw the same design: they could be{' '}
-          {same.length} cards. {related.length} more groups share their piece
-          shapes but are different designs; they are at the end so you can see
-          the difference.
+          {sameCount} tutorials in all, are candidate matches. The ink overlay
+          below checks their lines. {related.length} more groups share their
+          piece shapes but differ in the existing measurements.
         </p>
       </header>
 
-      <h2 className="group">What this branch changes</h2>
       <p>
-        The branch <code>library/fold-duplicates</code> moves tutorials between
-        library cards and merges the seven groups of identical designs. Compare
-        the library in production with the library on this branch:{' '}
-        <a href={PRODUCTION} target="_blank" rel="noreferrer">
-          production library ↗
-        </a>{' '}
-        and{' '}
-        <a href="#/" target="_blank" rel="noreferrer">
-          this branch’s library ↗
+        <a href="#/notes/ink-presentation">
+          See the visual research presentation →
         </a>
-        . Each pattern below also has a link to itself in both.
       </p>
-      <ul>
-        {DATA.groups.map((g, i) =>
-          changed(g) ? (
-            <li key={i}>
-              <a
-                href={`#/plan/duplicates`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById(`group-${i + 1}`)?.scrollIntoView();
-                }}
-              >
-                Group {i + 1}
-              </a>
-              : {cards(g, 'mainFamily').length} cards in production become{' '}
-              {cards(g, 'family').length} here ({cards(g, 'family').join('; ')}
-              ).
-            </li>
-          ) : null,
-        )}
-      </ul>
+      <InkOverlay />
+
       <p>
-        Each group of identical designs is now one tutorial, with the other
-        buildings as its places. The main tutorial is the oldest dated building,
-        or the plain construction when there is one: Chellah minaret loops
-        (1339), Chehel Sotoun (1647), Öljeitü’s mausoleum at Sultaniyeh (1313),
-        the eight-fold star and cross, and the eight-fold star and octagon. In
-        groups 1 and 2: The Attarine star rosettes (Fez, 1323–1325, the oldest
-        dated) hold Ben Youssef, the Seville tile and Alberto Leon’s mosaic. The
-        four-fold ring of circles holds Hani and Itimad al-Daula, and now
-        repeats the square on its corner, half the old tile, which is the tile
-        Itimad al-Daula used. Each place keeps its address and its colours as
-        “The original” palette; in the pattern, “Seen at” switches between them,
-        and every palette now recolours them.
-      </p>
-      <p>
-        The last one, group 14, joins two different designs on one card because
-        they are close relatives: the Bou Inania interlaced rosette becomes a
-        variation of the Paccard rosette, beside its ring version. The other
-        changes put identical designs together. On the branch, a card with
-        variations shows small round pictures under its title, like “Variations”
-        in the Paccard rosette; click one to switch.
+        The ten earlier place merges were checked against their archived
+        tutorial ink.{' '}
+        <a href="#/notes/duplicates-review">
+          Read the merge audit and open each overlay.
+        </a>
       </p>
 
       <h2 className="group">How the comparison works</h2>
@@ -395,12 +353,15 @@ export function DuplicatesPlan() {
           <b>Same neighbours.</b> Going round every piece, the shapes across its
           sides must come in the same order, and going round every corner, the
           shapes meeting there must come in the same order. This is what tells
-          apart two walls built from the same pieces laid out differently.
+          apart local arrangements of the same pieces. These sequences must also
+          occur equally often per normalized wall area.
         </li>
       </ol>
       <p>
-        A group is called the same design only when every pair passes all three
-        checks. The pictures below let you check by eye. The tool is{' '}
+        These checks find candidates; they do not prove identical walls. The
+        neighbourhood comparison counts local sequences per normalized wall
+        area, so choosing a larger tile does not multiply the signature. Use the
+        overlay above to compare the actual ink. The candidate tool is{' '}
         <code>tools/duplicates.mts</code>, and its results were made on{' '}
         {DATA.made}.
       </p>
@@ -415,18 +376,16 @@ export function DuplicatesPlan() {
         check.
       </p>
 
-      <h2 className="group">The same design ({same.length} groups)</h2>
+      <h2 className="group">Candidate matches ({same.length} groups)</h2>
       {same.map((g, i) => (
         <GroupView key={i} g={g} n={i + 1} />
       ))}
 
-      <h2 className="group">
-        Same piece shapes, different designs ({related.length} groups)
-      </h2>
+      <h2 className="group">Shared piece shapes ({related.length} groups)</h2>
       <p>
-        These look alike and share every piece shape, but at least one check
-        fails, so they stay separate tutorials. Cells marked in colour in the
-        tables are where they differ.
+        These groups share rounded shape signatures, but other candidate
+        measurements differ. Highlighted cells show the differences; the ink
+        overlay compares the actual lines.
       </p>
       {related.map((g, i) => (
         <GroupView key={i} g={g} n={same.length + i + 1} />

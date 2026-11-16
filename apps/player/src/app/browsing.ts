@@ -223,17 +223,20 @@ export function facetCounts<K extends 'region' | 'style' | 'level' | 'fold'>(
 ): Map<NonNullable<LibraryFilters[K]>, number> {
   const others = { ...filters, [key]: undefined };
   const counts = new Map<NonNullable<LibraryFilters[K]>, number>();
-  for (const entry of filtered(entries, others)) {
-    // A family counts once for each value any of its variations has.
-    const values = new Set(
-      [entry, ...(entry.variations ?? [])].flatMap(
-        (e) => aboutOf(e.preview ?? e.json)[key] ?? [],
+  const values = new Set(
+    entries.flatMap((entry) =>
+      [entry, ...(entry.variations ?? [])].flatMap((design) =>
+        [design, ...(design.places ?? [])].flatMap(
+          (member) => aboutOf(member.preview ?? member.json)[key] ?? [],
+        ),
       ),
-    );
-    for (const v of values) {
-      const value = v as NonNullable<LibraryFilters[K]>;
-      counts.set(value, (counts.get(value) ?? 0) + 1);
-    }
+    ),
+  );
+  // Ask the same filter that supplies the cards. A region on one member
+  // must not borrow a matching level or search term from another member.
+  for (const value of values) {
+    const count = filtered(entries, { ...others, [key]: value }).length;
+    if (count) counts.set(value as NonNullable<LibraryFilters[K]>, count);
   }
   return counts;
 }

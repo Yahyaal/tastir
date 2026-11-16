@@ -44,7 +44,10 @@ afterEach(() => {
 
 /** Starts a new pattern from the home page. */
 function startNew(): string {
-  render(<App />);
+  // This exercises New pattern and the editor; catalogue coverage is separate.
+  render(
+    <App entries={[{ id: 'eight-fold-star-and-cross', json: example }]} />,
+  );
   fireEvent.click(screen.getByRole('button', { name: 'New pattern' }));
   const id = listPatterns()[0]?.id ?? '';
   expect(window.location.hash).toBe(`#/edit/${id}`);

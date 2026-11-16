@@ -58,11 +58,43 @@ const svgsOf = (refs: SvgRef | readonly SvgRef[]): SVGSVGElement[] =>
 export function useCamera(
   frame: Rect,
   svgRef: SvgRef | readonly SvgRef[],
-  { stage = 0, instant = false, active = true, paused = false } = {},
+  {
+    stage = 0,
+    instant = false,
+    active = true,
+    paused = false,
+    initialView,
+  }: {
+    stage?: number;
+    instant?: boolean;
+    active?: boolean;
+    paused?: boolean;
+    initialView?: Rect;
+  } = {},
 ) {
   const pausedRef = useRef(paused);
   pausedRef.current = paused;
-  const [view, setView] = useState(frame);
+  const [view, setView] = useState(() => {
+    if (!initialView) return frame;
+    // Bound supplied framing just as user gestures are bounded.
+    const ratio = width(initialView) / (initialView.maxY - initialView.minY);
+    const expected = width(frame) / (frame.maxY - frame.minY);
+    if (
+      !Number.isFinite(ratio) ||
+      ratio <= 0 ||
+      ratio / expected < 0.5 ||
+      ratio / expected > 2
+    )
+      return frame;
+    const wanted = width(initialView);
+    const bounded = Math.max(
+      width(frame) * ZOOM_IN,
+      Math.min(width(frame) * ZOOM_OUT, wanted),
+    );
+    return wanted === bounded
+      ? initialView
+      : zoomAt(initialView, centreOf(initialView), wanted / bounded);
+  });
   const current = useRef(view);
   current.current = view;
   const frameRef = useRef(frame);
@@ -109,8 +141,12 @@ export function useCamera(
 
   // A new stage or a new frame takes the view there.
   const frameKey = `${stage}:${frame.minX},${frame.minY},${frame.maxX},${frame.maxY}`;
+  const openingFrame = useRef(initialView ? frameKey : undefined);
   useLayoutEffect(() => {
     if (!active) return;
+    // Keep restoration idempotent when StrictMode replays mount effects.
+    if (openingFrame.current === frameKey) return stopGlide;
+    openingFrame.current = undefined;
     goTo(frame);
     return stopGlide;
     // The key stands for the frame's value.
@@ -146,21 +182,103 @@ export function useCamera(
     return () => offs.forEach((off) => off());
   }, [svgRef, active, stage]);
 
-  // Dragging pans. The drag starts only once the pointer has moved a few
-  // pixels, so a plain click still reaches what is under it (free inking).
+  // One pointer pans after the drag threshold. Two touch contacts zoom
+  // about their initial midpoint and pan with their moving midpoint.
+  // Use a gesture snapshot so batched pointer events cannot drift the anchor.
   useEffect(() => {
     const svgs = svgsOf(svgRef);
     if (!svgs.length || !active) return;
     const offs = svgs.map((svg) => {
+      type Contact = { x: number; y: number; touch: boolean };
+      const contacts = new Map<number, Contact>();
       let start: { x: number; y: number; id: number } | undefined;
       let last: { x: number; y: number } | undefined;
+      let pinch:
+        | {
+            view: Rect;
+            at: Vec;
+            x: number;
+            y: number;
+            distance: number;
+            units: number;
+          }
+        | undefined;
+      const apply = (target: Rect) => {
+        current.current = target;
+        setView(target);
+      };
+      const pair = () => {
+        const points = [...contacts.values()];
+        const a = points[0],
+          b = points[1];
+        if (points.length !== 2 || !a?.touch || !b?.touch) return undefined;
+        return {
+          x: (a.x + b.x) / 2,
+          y: (a.y + b.y) / 2,
+          distance: Math.hypot(a.x - b.x, a.y - b.y),
+        };
+      };
+      const beginPinch = () => {
+        const p = pair();
+        pinch =
+          p && p.distance > 0
+            ? {
+                ...p,
+                view: current.current,
+                at: frameAt(svg, current.current, p.x, p.y),
+                units: unitsPerPixel(svg, current.current),
+              }
+            : undefined;
+      };
       const down = (e: PointerEvent) => {
         if (e.button !== 0) return;
-        start = { x: e.clientX, y: e.clientY, id: e.pointerId };
-        dragged.current = false;
+        contacts.set(e.pointerId, {
+          x: e.clientX,
+          y: e.clientY,
+          touch: e.pointerType === 'touch',
+        });
+        if (contacts.size === 1) {
+          start = { x: e.clientX, y: e.clientY, id: e.pointerId };
+          last = undefined;
+          dragged.current = false;
+        } else {
+          stopGlide();
+          dragged.current = true;
+          start = undefined;
+          last = undefined;
+          beginPinch();
+        }
+        if (contacts.size > 1)
+          for (const id of contacts.keys()) svg.setPointerCapture?.(id);
       };
       const move = (e: PointerEvent) => {
-        if (!start) return;
+        const contact = contacts.get(e.pointerId);
+        if (!contact) return;
+        contacts.set(e.pointerId, { ...contact, x: e.clientX, y: e.clientY });
+        if (contacts.size >= 2) {
+          e.preventDefault();
+          const p = pair();
+          if (!p || !pinch) {
+            beginPinch();
+            return;
+          }
+          const w = width(pinch.view),
+            limit = width(frameRef.current);
+          const factor = Math.min(
+            Math.max(p.distance / pinch.distance, w / (limit * ZOOM_OUT)),
+            w / (limit * ZOOM_IN),
+          );
+          const zoomed = zoomAt(pinch.view, pinch.at, factor);
+          apply(
+            panBy(
+              zoomed,
+              (-(p.x - pinch.x) * pinch.units) / factor,
+              ((p.y - pinch.y) * pinch.units) / factor,
+            ),
+          );
+          return;
+        }
+        if (!start || start.id !== e.pointerId) return;
         if (!last) {
           if (Math.hypot(e.clientX - start.x, e.clientY - start.y) < DRAG_PX)
             return;
@@ -171,26 +289,45 @@ export function useCamera(
           svg.classList.add('dragging');
         }
         const u = unitsPerPixel(svg, current.current);
-        const dx = e.clientX - last.x;
-        const dy = e.clientY - last.y;
+        const dx = e.clientX - last.x,
+          dy = e.clientY - last.y;
         last = { x: e.clientX, y: e.clientY };
-        // Screen y points down, the frame's y up.
-        setView(panBy(current.current, -dx * u, dy * u));
+        apply(panBy(current.current, -dx * u, dy * u));
       };
-      const up = () => {
-        start = undefined;
+      const up = (e: PointerEvent) => {
+        if (!contacts.delete(e.pointerId)) return;
+        pinch = undefined;
         last = undefined;
+        start = undefined;
+        if (contacts.size === 1) {
+          const [id, point] = [...contacts.entries()][0] ?? [];
+          if (id !== undefined && point) {
+            start = { ...point, id };
+            // Continue panning without selecting a piece after a pinch.
+            last = { x: point.x, y: point.y };
+          }
+        } else if (contacts.size === 2) beginPinch();
         svg.classList.remove('dragging');
       };
+      const lost = (e: PointerEvent) => {
+        // Capturing a touch from a child path releases that child's implicit
+        // capture. That transfer is not the end of our gesture.
+        if (e.target === svg && !svg.hasPointerCapture?.(e.pointerId)) up(e);
+      };
       svg.addEventListener('pointerdown', down);
-      svg.addEventListener('pointermove', move);
+      svg.addEventListener('pointermove', move, { passive: false });
       svg.addEventListener('pointerup', up);
       svg.addEventListener('pointercancel', up);
+      svg.addEventListener('lostpointercapture', lost);
       return () => {
         svg.removeEventListener('pointerdown', down);
         svg.removeEventListener('pointermove', move);
         svg.removeEventListener('pointerup', up);
         svg.removeEventListener('pointercancel', up);
+        svg.removeEventListener('lostpointercapture', lost);
+        for (const id of contacts.keys())
+          if (svg.hasPointerCapture?.(id)) svg.releasePointerCapture?.(id);
+        svg.classList.remove('dragging');
       };
     });
     return () => offs.forEach((off) => off());

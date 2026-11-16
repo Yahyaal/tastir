@@ -124,12 +124,40 @@ export const SharedDesignShape = z.strictObject({
   jali: JaliAppearanceShape.optional(),
   pen: PenLookShape.optional(),
 });
+/** A link's viewing choices, isolated from the recipient's preferences. */
+export const SharedPresentationShape = z.strictObject({
+  index: z.int().min(0).max(10000),
+  speed: z.union([z.literal(0.5), z.literal(1), z.literal(2)]),
+  inkMode: z.enum(['guide', 'end', 'asYouGo']),
+  showOriginal: z.boolean(),
+  showNames: z.boolean(),
+  showHelpers: z.boolean(),
+  reduced: z.boolean(),
+  colourFirst: z.boolean(),
+  copies: z.union([
+    z.literal('wall'),
+    z.tuple([z.int().min(1).max(24), z.int().min(1).max(24)]),
+  ]),
+  camera: z
+    .strictObject({
+      minX: z.number().min(-1e6).max(1e6),
+      minY: z.number().min(-1e6).max(1e6),
+      maxX: z.number().min(-1e6).max(1e6),
+      maxY: z.number().min(-1e6).max(1e6),
+    })
+    .refine((r) => r.maxX - r.minX > 1e-8 && r.maxY - r.minY > 1e-8, {
+      message: 'The shared view must have positive dimensions.',
+    })
+    .optional(),
+});
+export type SharedPresentation = z.infer<typeof SharedPresentationShape>;
 export const SharedShape = z
   .strictObject({
     library: z.string().min(1).optional(),
     tutorial: DraftShape.optional(),
     basedOn: BasedOnShape.optional(),
     design: SharedDesignShape.optional(),
+    presentation: SharedPresentationShape.optional(),
   })
   .refine((s) => (s.library !== undefined) !== (s.tutorial !== undefined), {
     message:
