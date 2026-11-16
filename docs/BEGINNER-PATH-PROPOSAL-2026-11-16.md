@@ -1,5 +1,7 @@
 # Beginner path: a working visual proposal
 
+**Update, 16 November:** The owner approved building Start here and next-lesson navigation after the explanation of how it uses existing tutorials. Try [the working path](http://localhost:4200/#/learn). The historical proposal below records the evidence gaps; reference-photo and newcomer checks remain open, and the implementation is not deployed. [Implementation report](testing/learning-path-2026-11-16.md).
+
 Open [the twelve linked pictures](http://localhost:4200/#/notes/beginner-path). This is a review-only proposal built after the owner asked to start the next task. It does not add a course to the public home page or change any tutorial, palette, difficulty rating or saved progress.
 
 The proposed order starts with named points and equal compass openings, moves through grids and rotated corners, then reaches a rosette and comparisons of tile and ink. Each card has one new learning focus and a practice cue. Some later lessons remain intermediate stretch projects; short step counts are not treated as proof that a lesson is easy. Existing links open the actual result, first paused watch position, or draw-along board.
@@ -10,7 +12,7 @@ The source is the project's recorded status in `docs/patterns/STATUS.md`, cross-
 
 The twelve candidates have four shipped free photographs, but only three are recorded matching examples: Comares bones, Comares dado and the Cairo minbar doors. The star-and-octagon study's photo is explicitly a historical reference with an unverified match. Eight other candidates ship no free example photo, even where the status log records verification against an earlier reference or owner approval. Private references are not promoted into public photos.
 
-This does not yet satisfy the launch gate in `NEXT-STEPS-2026-11-14.md`: the path calls for a matching free photo for every lesson. The prototype therefore stays on the review page. Its filters make the three recorded matches and nine open photo gates visible; original lesson numbers stay stable when filtering.
+This does not yet satisfy the launch gate in `NEXT-STEPS-2026-11-14.md`: the path calls for a matching free photo for every lesson. The original prototype therefore stayed on the review page; subsequent owner approval authorized navigation while leaving these photo gates open. Its filters make the three recorded matches and nine open photo gates visible; original lesson numbers stay stable when filtering.
 
 | Order | Existing lesson | New focus | Shipping-photo gate |
 | --- | --- | --- | --- |

@@ -9034,8 +9034,13 @@ export const PROGRESS: {
   goal: 'Review the reliability repairs and real-phone acceptance, then palette choices, clearer teaching, a beginner’s path and feedback. New patterns wait.',
   done: [
     {
+      title: 'LEARN.2 Start here and next-lesson navigation',
+      text: 'The approved path now connects twelve existing lessons. Start here opens the first paused watch step; finished lessons offer the next idea, and kept draw-along boards offer the next drawing. Original difficulty and photo limits remain visible. Nothing is marked complete from a visit. Local implementation, not deployed.',
+      link: { label: 'Try the working learning path', href: '#/learn' },
+    },
+    {
       title: 'LEARN.1 A visual beginner-path proposal',
-      text: 'Twelve linked existing drawings have one new focus each, original difficulty labels, explicit prerequisites and separate status/photo evidence. Three recorded matching public examples and nine open photo gates are visible. Full root checks and six desktop/phone review cases passed. The proposal stays local until the order and launch gates are reviewed.',
+      text: 'Twelve linked existing drawings have one new focus each, original difficulty labels, explicit prerequisites and separate status/photo evidence. Three recorded matching public examples and nine open photo gates are visible. Full root checks and six desktop/phone review cases passed. The owner subsequently approved navigation; photo and newcomer checks remain open.',
       link: { label: 'Try the proposed path', href: '#/notes/beginner-path' },
     },
     {
@@ -9611,19 +9616,16 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Beginner path: twelve linked candidates and visible evidence gaps',
-    text: 'PR #17 is merged and deployed; a live phone-sized smoke check passed the repaired flows. The next task is a review-only learning path, from one circle to a rosette. Twelve numbered cards preserve the original lesson ratings and give one new focus each. Three have recorded matching free photos; nine photo gates stay open. Full root checks, 11 focused tests and six desktop/phone review cases passed. The public home page and lessons are unchanged.',
-    link: {
-      label: 'Try the visual beginner-path proposal',
-      href: '#/notes/beginner-path',
-    },
+    title: 'The beginner’s path is ready to try',
+    text: 'Start here leads from the home page to the first lesson or the full twelve-lesson map. Finished watch lessons recommend the next pattern; draw-along offers it after the board is kept, in the same mode. Source limitations remain visible. Navigation is built locally; the prior repair release remains deployed.',
+    link: { label: 'Try the working learning path', href: '#/learn' },
   },
   next: [
     {
-      title: 'Review the learning order and prioritize its photo checks',
-      text: 'Review the twelve linked candidates and the stretch-lesson difficulty labels. Then prioritize matching free photos for the opening lessons, plain-language/read-aloud checks and a newcomer trial before adding the public Start here path. The repair release is already deployed; physical-phone and controlled signed-in acceptance remain open.',
+      title: 'Check the opening lessons with photos and a newcomer',
+      text: 'Prioritize matching free photos, plain-language/read-aloud checks and a newcomer trial. Three recorded matching examples and nine photo gates remain. Physical-phone zoom and controlled signed-in acceptance are still open.',
       link: {
-        label: 'Review the twelve-lesson proposal',
+        label: 'Review the source evidence',
         href: '#/notes/beginner-path',
       },
     },
@@ -9631,10 +9633,6 @@ export const PROGRESS: {
       title: 'Choose palettes and teaching treatments',
       text: 'Review the palette comparison and proposed shared construction prefix before applying palette or construction rewrites. Guide first is already implemented.',
       link: { label: 'Compare palettes', href: '#/plan/palettes' },
-    },
-    {
-      title: 'A beginner’s path through the existing library',
-      text: 'Propose about twelve lessons with verified or owner-approved sources, each teaching one new idea. Show the linked pattern pictures before building the path.',
     },
     {
       title: 'Finish feedback rollout',
@@ -9652,7 +9650,7 @@ export const PROGRESS: {
   waiting: [
     {
       title: 'Physical-phone zoom acceptance',
-      text: 'The pinch implementation is already published and passes touch emulation. Confirm on your own phone that pinch in/out, midpoint anchoring, panning and ordinary taps work. The reliability release is published; the new path proposal remains local.',
+      text: 'The pinch implementation is already published and passes touch emulation. Confirm on your own phone that pinch in/out, midpoint anchoring, panning and ordinary taps work. The reliability release is published; the working learning path remains local.',
       link: {
         label: 'Open the live zoom check',
         href: 'https://tastir-studio.vercel.app/#/eight-fold-star-and-cross/result',

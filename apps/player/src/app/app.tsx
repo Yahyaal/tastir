@@ -10,6 +10,9 @@ import { Broken, MissingDesign, Play } from './Player';
 import { isLibraryRoute, lessonRoute, useRoute } from './routing';
 import { openShared, useShared } from './Sharing';
 import { FeedbackHost } from '../feedback/FeedbackHost';
+const LearningPath = lazy(() =>
+  import('./LearningPath').then((module) => ({ default: module.LearningPath })),
+);
 const FeedbackInbox = lazy(() =>
   import('../feedback/FeedbackInbox').then((m) => ({
     default: m.FeedbackInbox,
@@ -181,6 +184,12 @@ function AppPage({
   if (route === 'agent')
     return import.meta.env.DEV ? null : (
       <Broken message="The local assistant is available through pnpm dev:agent." />
+    );
+  if (route === 'learn')
+    return (
+      <Suspense fallback={<p role="status">Opening the learning path…</p>}>
+        <LearningPath entries={listed(library)} />
+      </Suspense>
     );
   if (route === 'work') return <WorkPage entries={library} />;
   if (route === 'studio' || route.startsWith('studio/'))

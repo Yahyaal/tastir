@@ -24,13 +24,13 @@ export function BeginnerPath() {
         </a>
       </nav>
       <header>
-        <p className="bp-kicker">Working proposal · existing library</p>
+        <p className="bp-kicker">Path evidence · existing library</p>
         <h1>From one circle to a rosette.</h1>
         <p>
           Twelve linked lessons, each with one new focus. The early lessons
           teach the tools; later ones are stretch projects and keep their
-          existing difficulty labels. Try the drawings before deciding on the
-          order.
+          existing difficulty labels. The owner approved the navigation; the
+          source checks below remain open.
         </p>
       </header>
       <nav className="bp-overview" aria-label="The twelve proposed drawings">
@@ -91,9 +91,10 @@ export function BeginnerPath() {
           the project’s status log, not a new independent photo audit.
         </p>
         <p>
-          This page is a review preview. It does not add a course to the home
-          page, mark lessons complete, change their ratings, or rewrite any
-          construction.
+          The owner approved Start here and next-lesson navigation. Try the{' '}
+          <a href="#/learn">working learning path</a>. This evidence review
+          stays separate; navigation does not mark lessons complete or close the
+          photo checks.
         </p>
       </aside>
       <div

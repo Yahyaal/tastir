@@ -1,3 +1,4 @@
+import { NextPathLesson } from './LearningPathNav';
 import type { SharedPresentation } from '@tastir/schema';
 import { registerPageColoring } from '../agent/pageColoring';
 import { PatternLoading } from './PatternLoading';
@@ -1689,7 +1690,10 @@ export function Player({
                 </div>
               </section>
               {!mine && !sharedView ? (
-                <ExploreNext tutorial={full.tutorial} />
+                <>
+                  {ready ? <NextPathLesson id={address} /> : null}
+                  <ExploreNext tutorial={full.tutorial} />
+                </>
               ) : null}
             </aside>
           ) : null}
