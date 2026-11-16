@@ -841,3 +841,20 @@
     background: color-mix(in srgb, var(--settings-accent) 10%, transparent);
   }
 }
+
+.export-tools .pattern-file-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-basis: 100%;
+  min-height: 44px;
+  border-color: var(--theme-accent-cobalt);
+  color: var(--theme-accent-cobalt);
+}
+.pattern-file-hint {
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--theme-text-secondary);
+  margin: 10px 0 0;
+}

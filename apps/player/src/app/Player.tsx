@@ -17,6 +17,7 @@ import {
 } from 'react';
 import { copyUpTo } from '../editor/document';
 import { addPattern, freeTitle, getPattern } from '../editor/patterns';
+import { MAX_FILE_BYTES, viewPatternFile } from '../editor/files';
 import { planStep, play, playInk } from './animation';
 import { fullView, growingFrame, tileView, width, type Rect } from './camera';
 import {
@@ -440,6 +441,50 @@ export function Player({
       ? { pen }
       : {}),
   });
+  const [fileError, setFileError] = useState<string>();
+  const downloadPattern = () => {
+    setFileError(undefined);
+    try {
+      const source = mine
+        ? getPattern(address.slice('mine/'.length))
+        : undefined;
+      const basedOn =
+        source?.basedOn ??
+        (!mine && !sharedView
+          ? {
+              tutorial: address,
+              title: full.tutorial.title,
+              step: full.tutorial.steps.at(-1)?.id ?? 0,
+            }
+          : undefined);
+      const { tutorial: _address, ...fields } = designFields();
+      const file = viewPatternFile(
+        full.tutorial,
+        {
+          name: design?.name ?? tutorial.title,
+          ...fields,
+        },
+        basedOn,
+      );
+      const blob = new Blob([`${JSON.stringify(file, null, 2)}\n`], {
+        type: 'application/json',
+      });
+      if (blob.size > MAX_FILE_BYTES)
+        throw new Error(
+          'This pattern file is too large to reopen (8 MB maximum).',
+        );
+      download(
+        blob,
+        `${tutorial.id.replace(/[^a-z0-9_-]/gi, '-')}.tastir.json`,
+      );
+    } catch (error) {
+      setFileError(
+        error instanceof Error
+          ? error.message
+          : 'This pattern file could not be created. Try again.',
+      );
+    }
+  };
   // Until it has a name, every change is kept as a draft; back to the
   // pattern's own, there is nothing to keep.
   const [draftKept, setDraftKept] = useState<boolean>();
@@ -1521,6 +1566,26 @@ export function Player({
                 <div className="export-tools">
                   <button
                     type="button"
+                    className="secondary pattern-file-download"
+                    onClick={downloadPattern}
+                  >
+                    <svg
+                      width="19"
+                      height="19"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.7"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M9 12l-2 3 2 3M15 12l2 3-2 3" />
+                    </svg>
+                    Download pattern file (.json)
+                  </button>
+                  <button
+                    type="button"
                     className="secondary"
                     onClick={() =>
                       download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
@@ -1540,6 +1605,15 @@ export function Player({
                     Download PNG
                   </button>
                 </div>
+                <p className="pattern-file-hint">
+                  JSON keeps the editable construction, ink, colours and style.
+                  Open it with “Open a pattern file”. SVG and PNG are images.
+                </p>
+                {fileError && (
+                  <p className="refused" role="alert">
+                    {fileError}
+                  </p>
+                )}
                 {/* The paper is beside Print, the one thing it changes. */}
                 <div className="print-tools">
                   <button

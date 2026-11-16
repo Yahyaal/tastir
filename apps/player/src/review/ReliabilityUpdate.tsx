@@ -107,12 +107,47 @@ export function ReliabilityUpdate() {
         </p>
       </section>
       <section id="download-repair">
-        <p className="reliability-kicker">2 · Next</p>
+        <p className="reliability-kicker">2 · Fixed locally</p>
         <h2>Keep an editable copy.</h2>
         <p>
-          Expose a pattern file beside SVG and PNG, then prove that opening it
-          in a clean browser restores the construction and design.
+          The viewer now offers Download pattern file (.json) beside SVG and
+          PNG. Opening the file in a clean browser restores the construction and
+          the current design, with an Edit this pattern link.
         </p>
+        <div className="portable-file-example">
+          <div>
+            <code>.svg · .png</code>
+            <h3>A finished picture</h3>
+            <p>Use it in a document, print or image editor.</p>
+          </div>
+          <div>
+            <code>.tastir.json</code>
+            <h3>An editable pattern</h3>
+            <p>
+              Construction steps · selected ink · palette and custom colours ·
+              style and finish
+            </p>
+          </div>
+        </div>
+        <ol className="reliability-flow">
+          <li>Download the pattern file</li>
+          <li>Open another browser</li>
+          <li>Choose Open a pattern file</li>
+          <li>See the design or edit its construction</li>
+        </ol>
+        <p>
+          Downloading only creates the file. Importing keeps an editable copy in
+          that browser. A storage failure is explained, and the original file is
+          never changed.
+        </p>
+        <p className="reliability-result">
+          All five styles round-trip in the file checks. Four desktop/phone
+          browser cases reopen Lines and Jali, including palette, pen and
+          material, and survive reload.
+        </p>
+        <a href="#/eight-fold-star-and-cross/result">
+          Try the download in a real pattern →
+        </a>
       </section>
       <section id="search-repair">
         <p className="reliability-kicker">3 · Queued</p>

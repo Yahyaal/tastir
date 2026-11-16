@@ -3,13 +3,18 @@ import example from '@tutorials/eight-fold-star-and-cross.json';
 import { parseTutorial } from '@tastir/schema';
 import App from '../app/app';
 import { changeStep, copyUpTo } from './document';
-import { patternFile, readPattern } from './files';
+import { patternFile, readPattern, viewPatternFile } from './files';
 import { addPattern, listPatterns } from './patterns';
+import { listDesigns } from '../app/designs';
+import { NewPattern } from './PatternShelf';
+import { DEFAULT_JALI } from '../app/jali';
+import { DEFAULT_PEN } from '../app/pen';
 
 const star = parseTutorial(example);
 
 afterEach(() => {
   window.location.hash = '';
+  vi.restoreAllMocks();
 });
 
 describe('pattern files', () => {
@@ -85,5 +90,107 @@ describe('pattern files', () => {
       () => expect(screen.getByRole('alert').textContent).toMatch(/not JSON/),
       { timeout: 5000 },
     );
+  });
+});
+
+const appearance = {
+  name: 'My blue design',
+  coloring: { palette: 'Chefchaouen', chosen: { custom: '#123456' } },
+  look: 'lines' as const,
+  grout: 2,
+  inked: ['segment-1', 'segment-2'],
+  pen: { ...DEFAULT_PEN, pen: 'double' as const, ink: '#6b4226', wash: false },
+  jali: DEFAULT_JALI,
+};
+
+describe('portable viewer pattern files', () => {
+  it.each(['tiles', 'strapwork', 'interlace', 'lines', 'jali'] as const)(
+    'round-trips the full construction and %s appearance',
+    (look) => {
+      const design = { ...appearance, look };
+      const basedOn = { tutorial: star.id, title: star.title, step: 6 };
+      const file = viewPatternFile(star, design, basedOn);
+      expect(file.version).toBe(2);
+      expect(readPattern(JSON.stringify(file))).toEqual({
+        tutorial: star,
+        design,
+        basedOn,
+        pattern: true,
+      });
+      expect(listPatterns()).toHaveLength(0);
+      expect(listDesigns()).toHaveLength(0);
+    },
+  );
+  it('rejects missing or damaged design metadata and unknown versions', () => {
+    const file = viewPatternFile(star, appearance);
+    for (const bad of [
+      { ...file, design: undefined },
+      {
+        ...file,
+        design: { ...appearance, pen: { ...DEFAULT_PEN, ink: 'not-a-colour' } },
+      },
+      { ...file, tutorial: copyUpTo(star, 2) },
+      { ...file, version: 99 },
+    ])
+      expect(readPattern(JSON.stringify(bad))).toHaveProperty('reason');
+  });
+  it('opens a portable file as an editable local pattern with its saved design', async () => {
+    const { inked: _inked, ...design } = appearance;
+    render(<NewPattern />);
+    const input = document.querySelector('input[type=file]');
+    if (!input) throw new Error('File input missing');
+    fireEvent.change(input, {
+      target: {
+        files: [
+          new File(
+            [JSON.stringify(viewPatternFile(star, design))],
+            'mine.tastir.json',
+          ),
+        ],
+      },
+    });
+    await waitFor(() => expect(listDesigns()).toHaveLength(1));
+    const pattern = listPatterns()[0];
+    const saved = listDesigns()[0];
+    expect(saved).toMatchObject({ ...design, tutorial: `mine/${pattern?.id}` });
+    expect(window.location.hash).toBe(
+      `#/mine/${pattern?.id}/design/${saved?.id}`,
+    );
+    expect(pattern?.tutorial.steps).toEqual(star.steps);
+  });
+  it('rolls back only the new pattern when storage refuses its appearance', async () => {
+    const original = addPattern(copyUpTo(star, 2));
+    const persist = Storage.prototype.setItem;
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(function (
+      this: Storage,
+      key,
+      value,
+    ) {
+      if (key === 'tastir.designs')
+        throw new DOMException('Full', 'QuotaExceededError');
+      persist.call(this, key, value);
+    });
+    render(<NewPattern />);
+    const input = document.querySelector('input[type=file]');
+    if (!input) throw new Error('File input missing');
+    fireEvent.change(input, {
+      target: {
+        files: [
+          new File(
+            [
+              JSON.stringify(
+                viewPatternFile(star, { ...appearance, inked: undefined }),
+              ),
+            ],
+            'mine.tastir.json',
+          ),
+        ],
+      },
+    });
+    await waitFor(() =>
+      expect(screen.getByRole('alert').textContent).toContain('could not keep'),
+    );
+    expect(listPatterns()).toEqual([original]);
+    expect(listDesigns()).toHaveLength(0);
   });
 });

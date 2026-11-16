@@ -5,7 +5,7 @@ Work top to bottom, one task per session and one commit per task. A task is done
 ## Reported bugs
 
 - [x] **REPAIR.1 Stop signed-out Studio retries.** Protect Studio and Your work with one shared session check, stop list/pulse/live-room calls after a 401, suppress stale responses, retain recovery after verified sign-in, and distinguish connection failures from sign-out. A controlled poller test reproduced 13 failed calls in 12 seconds before the fix. Ten focused unit cases, six hosted-browser cases and full root verification passed.
-- [ ] **REPAIR.2 Discoverable editable exports.** Add JSON beside SVG/PNG and verify importing into a clean browser preserves the construction and current design appearance.
+- [x] **REPAIR.2 Discoverable editable exports.** Add JSON beside SVG/PNG and verify importing into a clean browser preserves the construction and current design appearance.
 - [ ] **REPAIR.3 Library anchors and Unicode search.** Fix direct collection links and Arabic-only/mixed-script queries, retaining useful title-first ranking.
 - [ ] **REPAIR.4 Fresh accessibility and performance audit.** Capture baseline element-level failures and mobile measurements, repair them, and rerun the same conditions.
 

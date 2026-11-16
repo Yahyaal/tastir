@@ -9566,8 +9566,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'First reliability repair: signed-out retries',
-    text: 'A regression reproduced 13 failed protected calls in 12 seconds. The repair now checks sign-in once, stops after a 401 across navigation and visibility changes, hides cached cloud projects and resumes only after verified sign-in. The focused checks and full project verification passed. Editable pattern downloads are next.',
+    title: 'Second reliability repair: editable downloads',
+    text: 'The viewer now downloads editable JSON beside SVG/PNG. Files keep the construction and current design; fresh-browser tests restore Lines and Jali with their palette, pen and material. Existing unfinished editor files remain supported. Full verification and 24 export/sharing browser cases passed. Library entry points are next.',
     link: {
       label: 'See the reliability repair',
       href: '#/notes/reliability-update',

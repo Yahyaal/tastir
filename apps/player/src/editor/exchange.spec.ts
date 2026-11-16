@@ -56,7 +56,7 @@ it('preserves an unfinished draft but refuses unsupported file versions', () => 
     readPattern(JSON.stringify({ tastir: 'pattern', version: 1, tutorial })),
   ).toEqual({ pattern: true, tutorial });
   expect(
-    readPattern(JSON.stringify({ tastir: 'pattern', version: 2, tutorial })),
+    readPattern(JSON.stringify({ tastir: 'pattern', version: 999, tutorial })),
   ).toHaveProperty('reason', expect.stringContaining('unsupported version'));
 });
 it('refuses oversized files and damaged metadata', () => {
