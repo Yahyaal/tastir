@@ -1,3 +1,4 @@
+import { PatternLoading } from '../app/PatternLoading';
 import { Khatam, PHASE_MARKS } from '../app/khatam';
 import { ThemeSwitch } from '../app/theme';
 import { ViewSwitch } from '../app/ViewSwitch';
@@ -36,7 +37,7 @@ import {
 import { PiecePanel } from '../app/PiecePanel';
 import { useRemembered } from '../app/remembered';
 import { useCamera } from '../app/useCamera';
-import { PROGRESS_TEXT, useModel } from '../app/workerClient';
+import { useModel } from '../app/workerClient';
 import { check, emptyDraft, type Draft } from '../editor/document';
 import '../editor/editor.css';
 import { EditorDrawing } from '../editor/EditorDrawing';
@@ -111,12 +112,7 @@ export function DrawAlongPage({
         </section>
       </div>
     );
-  if (!model)
-    return (
-      <div className="player loading" role="status">
-        <p>{PROGRESS_TEXT[progress ?? 'checking']}</p>
-      </div>
-    );
+  if (!model) return <PatternLoading address={address} progress={progress} />;
   return <DrawAlong model={model} address={address} />;
 }
 

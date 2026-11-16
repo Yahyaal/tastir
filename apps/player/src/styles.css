@@ -43,6 +43,7 @@
      everywhere (src/app/actionIcons.tsx): see the result, watch it drawn,
      draw it along, make one's own. Text on them uses --on-act. */
   --act-result: #9a6410;
+  --level-intermediate-text: #80510b;
   --act-watch: #1f4e8c;
   --act-draw: #1e6b52;
   --act-make: #a3452a;
@@ -119,6 +120,7 @@
   --shadow-k: 1;
 
   --act-result: #e3ad45;
+  --level-intermediate-text: #e3ad45;
   --act-watch: #6a9bdb;
   --act-draw: #4cc49a;
   --act-make: #e8875f;
@@ -5485,7 +5487,7 @@ svg.tiles {
 .library .meta .level-intermediate {
   border-color: transparent;
   background: color-mix(in srgb, var(--act-result) 18%, transparent);
-  color: light-dark(#80510b, #e3ad45);
+  color: var(--level-intermediate-text);
 }
 
 .library .meta .level-advanced {
@@ -5922,4 +5924,117 @@ svg.tiles {
 .filter-search input:dir(rtl) {
   padding-right: 38px;
   padding-left: 12px;
+}
+
+/* Personal work previews keep their complete rectangular edges. Library arches remain. */
+.personal-card .card .thumbnail {
+  border-radius: 8px;
+}
+.copy-feedback {
+  grid-column: 1 / -1;
+  margin: 4px 0;
+  font-size: 0.82rem;
+  color: var(--theme-text-secondary);
+}
+.copy-feedback.refused {
+  color: var(--theme-danger);
+}
+.player.pattern-loading {
+  padding: 24px;
+  color: var(--theme-text-primary);
+  background: var(--theme-bg-canvas);
+}
+.pattern-loading-home {
+  align-self: flex-start;
+  color: var(--theme-accent);
+  text-decoration: none;
+  padding: 10px 0;
+}
+.pattern-loading-card {
+  width: min(100%, 580px);
+  margin: auto;
+  padding: 32px 20px;
+  text-align: center;
+  border: 1px solid var(--theme-border);
+  border-radius: 16px;
+  background: var(--theme-bg-card);
+}
+.pattern-loading-preview {
+  display: block;
+  width: min(220px, 60vw);
+  height: auto;
+  aspect-ratio: 1;
+  margin: 0 auto 24px;
+  border-radius: 8px;
+  color: var(--theme-accent-cobalt);
+}
+.pattern-loading-card h1 {
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  line-height: 1.3;
+  margin: 0 0 12px;
+}
+.pattern-loading-card [role='status'] {
+  color: var(--theme-accent);
+  margin: 0 0 24px;
+}
+.pattern-loading-stages {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+.pattern-loading-stages li {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: var(--theme-text-muted);
+  font-size: 0.8rem;
+}
+.pattern-loading-stages li span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--theme-border);
+  border-radius: 50%;
+}
+.pattern-loading-stages [aria-current='step'] {
+  color: var(--theme-accent);
+  font-weight: 700;
+}
+.pattern-loading-stages [aria-current='step'] span {
+  border-color: currentColor;
+  background: var(--theme-accent);
+  color: var(--theme-bg-card);
+}
+.pattern-loading-stages .complete {
+  color: var(--theme-text-secondary);
+}
+.pattern-loading-hint {
+  margin: 20px 0 0;
+  font-size: 0.85rem;
+  color: var(--theme-text-muted);
+}
+
+.personal-card
+  .card-actions:not(.pattern-actions):not(.design-rename):not(.design-delete) {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.personal-card .card-actions .button {
+  min-height: 44px;
+  padding-inline: 6px;
+}
+.personal-card .card-actions.pattern-actions {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.personal-card .pattern-actions > .watch,
+.personal-card .pattern-actions > .result,
+.personal-card .pattern-actions > .not-yet {
+  grid-column: span 3;
+}
+.personal-card .pattern-actions > button {
+  grid-column: span 2;
 }

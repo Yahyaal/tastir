@@ -10,6 +10,7 @@ const files = import.meta.glob<string>(
   [
     '../../../../docs/*.md',
     '../../../../docs/patterns/*.md',
+    '../../../../docs/testing/grok-*.md',
     '../../../../docs/testing/studio-chatgpt-2026-10-21.md',
     '../../../../docs/testing/codex-provenance-review-2026-10-23.md',
     '../../../../docs/testing/ink-overlay-2026-11-14.md',
@@ -32,6 +33,54 @@ export const DOCS: readonly {
   file: string;
   text: string;
 }[] = [
+  {
+    key: 'morning-report',
+    label: 'Morning report: 16 November',
+    file: 'NIGHT-REPORT-2026-11-16.md',
+    text: read('NIGHT-REPORT-2026-11-16.md'),
+  },
+  ...[
+    [
+      'grok-auth-evidence',
+      'Signed-out retry evidence',
+      'testing/grok-auth-2026-11-15.md',
+    ],
+    [
+      'grok-files-evidence',
+      'Editable-file evidence',
+      'testing/grok-files-2026-11-15.md',
+    ],
+    [
+      'grok-library-evidence',
+      'Collection and Arabic search evidence',
+      'testing/grok-library-2026-11-15.md',
+    ],
+    [
+      'grok-audit-evidence',
+      'Accessibility and delivery measurements',
+      'testing/grok-accessibility-2026-11-15.md',
+    ],
+    [
+      'grok-navigation-evidence',
+      'Step-link and history evidence',
+      'testing/grok-navigation-2026-11-16.md',
+    ],
+    [
+      'grok-teaching-evidence',
+      'Draw-along teaching evidence',
+      'testing/grok-draw-teaching-2026-11-16.md',
+    ],
+    [
+      'grok-usability-evidence',
+      'Copy, preview and loading evidence',
+      'testing/grok-usability-2026-11-16.md',
+    ],
+  ].map(([key, label, file]) => ({
+    key: key!,
+    label: label!,
+    file: file!,
+    text: read(file!),
+  })),
   {
     key: 'grok-review',
     label: 'Grok review: priorities and verification',

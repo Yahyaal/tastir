@@ -46,8 +46,8 @@ export function ExploreNext({ tutorial }: { tutorial: Tutorial }) {
     <section className="explore-next" aria-labelledby="explore-next-title">
       <h2 id="explore-next-title">Make a variation</h2>
       <p className="hint">
-        Keep this construction and tile, then try different ink lines in your
-        own copy.
+        Create and save a separate copy in this browser, then open it in the
+        editor to try different ink lines. Your original stays as it is.
       </p>
       <button type="button" className="secondary" onClick={create}>
         Make a variation

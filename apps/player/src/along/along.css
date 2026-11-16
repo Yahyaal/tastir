@@ -795,11 +795,11 @@
 }
 
 .repeat-board .ghost {
-  fill: var(--current);
-  fill-opacity: 0.06;
-  stroke: var(--current);
-  stroke-opacity: 0.5;
-  stroke-width: 1.2px;
+  fill: var(--theme-accent);
+  fill-opacity: 0.1;
+  stroke: var(--theme-accent);
+  stroke-opacity: 0.9;
+  stroke-width: 1.5px;
   stroke-dasharray: 3 4;
   vector-effect: non-scaling-stroke;
   cursor: pointer;

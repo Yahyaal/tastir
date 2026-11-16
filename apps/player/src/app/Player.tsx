@@ -1,5 +1,6 @@
 import type { SharedPresentation } from '@tastir/schema';
 import { registerPageColoring } from '../agent/pageColoring';
+import { PatternLoading } from './PatternLoading';
 import { StepText } from './StepText';
 import { DEFAULT_JALI, sameJali } from './jali';
 import { JaliControls } from './JaliControls';
@@ -77,7 +78,7 @@ import { WallControls } from './WallControls';
 import { PenControls } from './PenControls';
 import { PlayerSettings } from './PlayerSettings';
 import { DEFAULT_PEN, samePen } from './pen';
-import { PROGRESS_TEXT, useModel } from './workerClient';
+import { useModel } from './workerClient';
 
 import { setStayGuard } from './routing';
 import { Khatam, PHASE_MARKS, PHASE_NAMES } from './khatam';
@@ -1901,11 +1902,7 @@ export function Play({
   const { model, error, progress } = useModel(json);
   if (error !== undefined) return <Broken message={error} />;
   if (!model) {
-    return (
-      <div className="player loading" role="status">
-        <p>{PROGRESS_TEXT[progress ?? 'checking']}</p>
-      </div>
-    );
+    return <PatternLoading address={address} progress={progress} />;
   }
   return (
     <Player

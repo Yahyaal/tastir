@@ -9030,9 +9030,41 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '15 November 2026',
-  goal: 'Choose palettes from the liked colourings, improve how lessons explain their destination, then a beginner’s path and feedback. New patterns wait.',
+  updated: '16 November 2026',
+  goal: 'Review the reliability repairs and real-phone acceptance, then palette choices, clearer teaching, a beginner’s path and feedback. New patterns wait.',
   done: [
+    {
+      title: 'REPAIR.7 Copies, previews and preparation feedback',
+      text: 'Your work offers safe Duplicate actions, personal previews keep their rectangular edges, variation saving is explicit, loading shows real preparation stages, and repeat candidates are clearer. All root checks and 251 desktop/phone browser cases passed, with 11 configured platform skips. Final mobile home audits scored 100 accessibility and median performance 96. Local, not deployed.',
+      link: {
+        label: 'Morning presentation',
+        href: '#/notes/reliability-update',
+      },
+    },
+    {
+      title: 'REPAIR.6 Clearer draw-along names and tools',
+      text: 'The first circle hint uses A before E is introduced, and the next-tool advice remains visible. A full construction, ink, repeat and color path and 110 desktop/phone journey checks passed. The three older unnamed reports remain unconfirmed.',
+      link: {
+        label: 'Before and after, with evidence',
+        href: '#/notes/reliability-update',
+      },
+    },
+    {
+      title: 'REPAIR.5 Numbered lesson links and browser history',
+      text: 'Numbered links open paused, override saved resume and survive reload. Manual choices add history; autoplay replaces its entry. Back/Forward keeps the same player. Ten dedicated desktop/phone cases passed, including color-first order and navigation during reverse animation.',
+      link: {
+        label: 'Try the lesson-position link',
+        href: '#/eight-fold-star-and-cross/watch/3',
+      },
+    },
+    {
+      title: 'REPAIR.1–4 Dependable library and editable downloads',
+      text: 'Signed-out calls stop, JSON downloads reopen with the design, collection/Arabic search works, and the measured accessibility barriers and oversized previews are repaired. These earlier local commits are included in the morning review.',
+      link: {
+        label: 'Earlier repair evidence',
+        href: '#/notes/reliability-update',
+      },
+    },
     {
       title: 'The 29 longest lessons rewritten (Codex), patterns unchanged',
       text: 'Steps fell from 720 to 659, and crowded steps are split into parts of one move, so the moves rose from 771 to 988. Every finished pattern is exactly as before. Two questions wait for you.',
@@ -9566,20 +9598,20 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Overnight follow-up: clearer draw-along guidance',
-    text: 'Numbered navigation is committed locally. The first-step A/E mismatch and disappearing next-tool advice are repaired; the complete construction, ink, repeat and color path passed browser checks. All 110 desktop/phone journey cases passed. Full root verification passed. The remaining everyday-usability repairs are next.',
+    title: 'Morning report: navigation, guidance and Your work',
+    text: 'All seven local repairs are verified. Root checks passed, the full desktop/phone suite passed 251 cases with 11 deliberate platform skips, and final mobile home audits scored 100 accessibility and median performance 96. The morning presentation shows the changes and remaining checks. Nothing from this repair branch is deployed.',
     link: {
-      label: 'See the reliability repair',
+      label: 'Open the morning presentation',
       href: '#/notes/reliability-update',
     },
   },
   next: [
     {
-      title: 'Reliability and discoverability before more visual work',
-      text: 'Trace the reported signed-out request loop, expose editable downloads beside SVG/PNG, then fix direct collection links and Arabic search. Region counts are already fixed in this release; exact-step sharing exists, while normal Back/step addresses remain separate work. Grok’s short successful visit does not close unreproduced draw-along reports.',
+      title: 'Review the overnight repairs and close real-phone acceptance',
+      text: 'Review the concrete local changes before publishing. The pinch fix is already on the live site; physical-phone acceptance remains open. Keep the three older draw-along reports unconfirmed until their original lessons and steps can be identified. Authenticated Studio acceptance remains separate.',
       link: {
-        label: 'Grok review: evidence and next steps',
-        href: '#/notes/grok-review',
+        label: 'Morning review and next checks',
+        href: '#/notes/reliability-update',
       },
     },
     {
@@ -9605,6 +9637,19 @@ export const PROGRESS: {
     },
   ],
   waiting: [
+    {
+      title: 'Physical-phone zoom acceptance',
+      text: 'The pinch implementation is already published and passes touch emulation. Confirm on your own phone that pinch in/out, midpoint anchoring, panning and ordinary taps work. The overnight teaching and usability repairs remain local.',
+      link: {
+        label: 'Open the live zoom check',
+        href: 'https://tastir-studio.vercel.app/#/eight-fold-star-and-cross/result',
+      },
+    },
+    {
+      title: 'The three older draw-along reports',
+      text: 'Their original lesson and step reproductions are not supplied. Broad passing journeys do not establish that these reports never occurred; keep them unconfirmed until the specific paths can be tested.',
+      link: { label: 'Report triage and limits', href: '#/notes/grok-review' },
+    },
     {
       title: 'Hosted ChatGPT sign-in: confirm the OpenAI website registration',
       text: 'The hosted Studio sign-in code is prepared, with explicit linking from your existing owner account. It stays off until the provisioned OpenAI client ID, registered callback and authentication method are configured. OpenAI approval and a real hosted sign-in have not been verified. This identity login does not enable the in-app chatbot; hosted ChatGPT-plan usage needs separate partner access. The local assistant remains available with pnpm dev:agent.',

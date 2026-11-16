@@ -47,7 +47,7 @@ Before/after raw reports are local in `/tmp/tastir-lighthouse/`; durable summari
 
 All three final runs scored 100 for accessibility and had zero failed automated accessibility audits. Performance was 95/96/96; the 21% transfer reduction is the clear delivery improvement, rather than a claim of a higher score. Google Fonts remains in render-blocking diagnostics. Broad bundle splitting and font self-hosting are deferred, with this measured baseline for future work.
 
-[Durable per-run metrics](grok-audit-metrics-2026-11-15.json) include versions, timestamps and all six runs. The nonblocking-font experiment is excluded from final results; its three scores were 89/92/91.
+Durable per-run metrics in `docs/testing/grok-audit-metrics-2026-11-15.json` include versions, timestamps and all six runs. The nonblocking-font experiment is excluded from final results; its three scores were 89/92/91.
 
 ## Regression verification
 

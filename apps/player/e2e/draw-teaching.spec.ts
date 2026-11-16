@@ -76,6 +76,10 @@ test('construction leads to ink, then Repeat remains reachable', async ({
     page.getByRole('heading', { name: 'Repeat it yourself', exact: true }),
   ).toBeVisible();
   await expect(page.locator('.repeat-board .ghost').first()).toBeVisible();
+  const placed = page.locator('.repeat-board .copy-area');
+  const before = await placed.count();
+  await page.locator('.repeat-board .ghost').first().click();
+  await expect(placed).toHaveCount(before + 1);
   await page
     .getByRole('button', { name: 'Fill the wall for me', exact: true })
     .click();

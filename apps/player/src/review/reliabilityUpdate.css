@@ -208,3 +208,33 @@
     grid-template-columns: 1fr;
   }
 }
+
+.reliability-more-evidence summary,
+.reliability-earlier > summary {
+  cursor: pointer;
+  padding: 12px 0;
+  min-height: 44px;
+  color: var(--theme-accent);
+  font-weight: 600;
+}
+.reliability-earlier {
+  margin: 30px 0;
+  padding: 12px 20px;
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  scroll-margin-top: 65px;
+}
+.loading-evidence {
+  width: min(100%, 360px);
+  margin: 24px auto;
+}
+.loading-evidence img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.loading-evidence figcaption {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--theme-text-secondary);
+}
