@@ -64,10 +64,15 @@ const key = (p: Vec) =>
 export function readableAt(
   scene: Scene,
   readable: ReadonlySet<string>,
+  throughBeat = Infinity,
 ): Map<string, string> {
   const by = new Map<string, string[]>();
   for (const el of scene.elements.values())
-    if (el.geometry.kind === 'point' && readable.has(el.name)) {
+    if (
+      el.geometry.kind === 'point' &&
+      el.beat <= throughBeat &&
+      readable.has(el.name)
+    ) {
       const k = key(el.geometry.at);
       by.set(k, [...(by.get(k) ?? []), el.name]);
     }

@@ -9566,8 +9566,8 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'Overnight follow-up: lesson navigation',
-    text: 'Continuing with numbered lesson URLs and browser Back/Forward, followed by draw-along guidance and remaining usability reports. Manual choices enter history while autoplay replaces the current position. Navigation passed full root verification and ten dedicated desktop/phone browser cases. Continuing into draw-along guidance; the repairs remain local.',
+    title: 'Overnight follow-up: clearer draw-along guidance',
+    text: 'Numbered navigation is committed locally. The first-step A/E mismatch and disappearing next-tool advice are repaired; the complete construction, ink, repeat and color path passed browser checks. All 110 desktop/phone journey cases passed. Full root verification passed. The remaining everyday-usability repairs are next.',
     link: {
       label: 'See the reliability repair',
       href: '#/notes/reliability-update',

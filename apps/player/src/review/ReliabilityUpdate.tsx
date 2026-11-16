@@ -284,6 +284,78 @@ export function ReliabilityUpdate() {
           Open the star-and-cross lesson at position 3 →
         </a>
       </section>
+      <section id="draw-teaching-repair">
+        <p className="reliability-kicker">6 · Overnight teaching repair</p>
+        <h2>The hint should use the name you can see.</h2>
+        <p>
+          The first circle passes through A. E is a later name for that same
+          point; the old hint introduced it too soon.
+        </p>
+        <div className="reliability-compare">
+          <figure>
+            <img
+              src="/__review/renders/reliability-2026-11-16/before-hint.png"
+              alt="Before: Choose Circle, click O, then E."
+              loading="lazy"
+            />
+            <figcaption>
+              <strong>Before:</strong> the instruction said A, while the hint
+              said E.{' '}
+              <a href="/__review/renders/reliability-2026-11-16/before-first-step.png">
+                See the complete captured page.
+              </a>
+            </figcaption>
+          </figure>
+          <figure>
+            <img
+              src="/__review/renders/reliability-2026-11-16/after-hint.png"
+              alt="After: Choose Circle, click O, then A."
+              loading="lazy"
+            />
+            <figcaption>
+              <strong>After:</strong> point names follow the current step.{' '}
+              <a href="/__review/renders/reliability-2026-11-16/after-first-step.png">
+                See the complete captured page.
+              </a>
+            </figcaption>
+          </figure>
+        </div>
+        <p>
+          The next-tool recommendation now remains visible if another tool is
+          selected. After the horizontal line, it explicitly recommends
+          Perpendicular. It leaves the choice and the drawing to the learner.
+        </p>
+        <div
+          className="search-evidence"
+          role="group"
+          aria-label="Verified draw-along order"
+        >
+          <div>
+            <span>Finish construction</span>
+            <strong>Ink</strong>
+            <span>the final reveal comes next</span>
+          </div>
+          <div>
+            <span>After inking</span>
+            <strong>Repeat</strong>
+            <span>place copies of the tile</span>
+          </div>
+          <div>
+            <span>Then</span>
+            <strong>Color</strong>
+            <span>the complete path is reachable</span>
+          </div>
+        </div>
+        <p className="reliability-result">
+          110 desktop/phone browser checks passed, including every beginner
+          lesson’s board stability and guide checks. This verifies the named
+          reports; the three older reports without their original reproduction
+          details remain unconfirmed.
+        </p>
+        <a href="#/eight-fold-star-and-cross/draw">
+          Try the corrected first two draw-along steps →
+        </a>
+      </section>
     </main>
   );
 }

@@ -363,7 +363,7 @@ test('a beginner draws the first circle, gets a completed step, and resumes', as
 }, info) => {
   await page.goto(route(`${star}/draw`));
   await expect(
-    page.getByText(/Choose Circle, (click|tap) O, then E\./),
+    page.getByText(/Choose Circle, (click|tap) O, then A\./),
   ).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Circle', exact: true }),
