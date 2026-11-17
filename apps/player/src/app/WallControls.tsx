@@ -67,7 +67,7 @@ const STYLE_NAMES: Record<WallStyle, string> = {
   strapwork: 'Strapwork',
   interlace: 'Interlace',
   lines: 'Watercolour',
-  jali: 'Jali',
+  jali: 'Screen',
 };
 
 /**

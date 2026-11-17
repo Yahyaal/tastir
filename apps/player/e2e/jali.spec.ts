@@ -31,7 +31,7 @@ for (const id of [
     await page.goto(`/#/${id}/result`);
     await page
       .getByRole('group', { name: 'Style', exact: true })
-      .getByRole('button', { name: 'Jali', exact: true })
+      .getByRole('button', { name: 'Screen', exact: true })
       .click();
     const wall = page.locator('svg.wall.style-jali');
     await expect(wall).toBeVisible();
@@ -84,7 +84,7 @@ for (const id of [
       '#234a79',
     );
     await page
-      .getByRole('button', { name: 'Reset Jali finish', exact: true })
+      .getByRole('button', { name: 'Reset screen finish', exact: true })
       .click();
     await expectColor(page, 'Framework color', '#e6dcc7');
     await expectColor(page, 'Background color', '#708d87');
@@ -120,7 +120,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     .evaluateAll((pieces) => pieces.map((p) => p.getAttribute('fill')));
   await page
     .getByRole('group', { name: 'Style', exact: true })
-    .getByRole('button', { name: 'Jali', exact: true })
+    .getByRole('button', { name: 'Screen', exact: true })
     .click();
   await page.getByRole('button', { name: 'Wood', exact: true }).click();
   await setColor(page, 'Framework color', '#864b31');
@@ -143,7 +143,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await expect(
     page
       .getByRole('group', { name: 'Style', exact: true })
-      .getByRole('button', { name: 'Jali', exact: true }),
+      .getByRole('button', { name: 'Screen', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');
   await expect(lattice).toHaveValue('2');
   await expect(
@@ -170,7 +170,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await expect(
     other
       .getByRole('group', { name: 'Style', exact: true })
-      .getByRole('button', { name: 'Jali', exact: true }),
+      .getByRole('button', { name: 'Screen', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');
   await expect(other.getByLabel('Lattice', { exact: true })).toHaveValue('2');
   await expect(
@@ -254,7 +254,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await expect(
     page
       .getByRole('group', { name: 'Style', exact: true })
-      .getByRole('button', { name: 'Jali', exact: true }),
+      .getByRole('button', { name: 'Screen', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');
   await expect(lattice).toHaveValue('2');
   expect(
@@ -264,7 +264,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   ).toEqual(widths);
   // Reset must also replace the saved finish if another style is active at save time.
   await page
-    .getByRole('button', { name: 'Reset Jali finish', exact: true })
+    .getByRole('button', { name: 'Reset screen finish', exact: true })
     .click();
   await page
     .getByRole('group', { name: 'Style', exact: true })
@@ -274,7 +274,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await page.reload();
   await page
     .getByRole('group', { name: 'Style', exact: true })
-    .getByRole('button', { name: 'Jali', exact: true })
+    .getByRole('button', { name: 'Screen', exact: true })
     .click();
   await expect(
     page.getByRole('button', { name: 'Stone', exact: true }),

@@ -31,8 +31,8 @@ The owner's notes after looking at the finished walls on the live site, recorded
 - [ ] **STYLE.4 Interlace: no white pieces under white bands.** The bands are white, so white pieces behind them make the wall busy and lose the bands (both Arrayanes and Dos Hermanas). Avoid white pieces whenever the bands are white.
   *Published in PR #21, 17 November.*
 - [ ] **STYLE.5 Separate colours for Interlace and Tiles.** A colouring that suits Interlace does not always suit Tiles. Each style may keep its own colours.
-- [ ] **STYLE.6 A better name than "Jali".** Find a plain, descriptive name that a newcomer understands (it shows a pierced screen in stone, wood or metal).
-  *Proposal, 17 November:* Carved screen (alternatives: Pierced screen, Lattice); waiting for the owner.
+- [x] **STYLE.6 A better name than "Jali".** Find a plain, descriptive name that a newcomer understands (it shows a pierced screen in stone, wood or metal).
+  *Owner's choice, 17 November:* **Screen**. The style button, the finish heading and its reset now say Screen; the internal id stays `jali`, so designs and links keep working.
 - [ ] **STYLE.7 Jali: the pattern is hard to read at the default lattice.** With the default lattice the openings are small, and the pattern does not come through (Dos Hermanas looks like scattered holes). Choose a better default, perhaps per pattern.
   *Published in PR #21, 17 November.*
 

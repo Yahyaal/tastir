@@ -70,7 +70,7 @@ export function JaliControls({
   );
   return (
     <section>
-      <h2>Jali finish</h2>
+      <h2>Screen finish</h2>
       <div className="jali-controls">
         <div className="jali-materials" role="group" aria-label="Material">
           {JALI_MATERIALS.map((p) => (
@@ -181,7 +181,7 @@ export function JaliControls({
           className="quiet"
           onClick={() => onChange(DEFAULT_JALI)}
         >
-          Reset Jali finish
+          Reset screen finish
         </button>
       )}
     </section>

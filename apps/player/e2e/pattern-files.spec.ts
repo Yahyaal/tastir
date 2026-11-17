@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 
-for (const style of ['Watercolour', 'Jali']) {
+for (const style of ['Watercolour', 'Screen']) {
   test(`editable JSON restores ${style} and colours in a clean browser`, async ({
     page,
     browser,
@@ -14,7 +14,7 @@ for (const style of ['Watercolour', 'Jali']) {
       .getByRole('group', { name: 'Style', exact: true })
       .getByRole('button', { name: style, exact: true })
       .click();
-    if (style === 'Jali')
+    if (style === 'Screen')
       await page.getByRole('button', { name: 'Metal', exact: true }).click();
     const pending = page.waitForEvent('download');
     await page
