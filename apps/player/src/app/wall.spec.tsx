@@ -316,14 +316,15 @@ describe('the view the wall opens at', () => {
     },
   });
 
-  it('is six tiles across for a tile of up to 100 pieces', () => {
+  it('is six tiles across for a tile of up to 44 pieces', () => {
     expect(wallView(model)).toEqual(tiling(model).view);
-    expect(across(wallView(dense(100)))).toBeCloseTo(6 * span, 9);
+    // 44 pieces: under 7 across a tile, so 6 tiles stay under 40.
+    expect(across(wallView(dense(44)))).toBeCloseTo(6 * span, 9);
   });
 
-  it('comes closer for a dense tile, showing about 60 pieces across', () => {
-    // 400 pieces: 20 across a tile, so 3 tiles make 60.
-    expect(across(wallView(dense(400)))).toBeCloseTo(3 * span, 9);
+  it('comes closer for a dense tile, showing about 40 pieces across', () => {
+    // 400 pieces: 20 across a tile, so 2 tiles make 40.
+    expect(across(wallView(dense(400)))).toBeCloseTo(2 * span, 9);
   });
 
   it('always shows at least one and a half tiles', () => {

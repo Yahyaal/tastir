@@ -706,8 +706,9 @@ export function tiling(
   return { view, shifts };
 }
 
-/** The wall opens showing at most about this many pieces across. */
-export const WALL_PIECES_ACROSS = 60;
+/** The wall opens showing at most about this many pieces across: dense
+ * walls such as Dos Hermanas read as noise at 60 (STYLE.11). */
+export const WALL_PIECES_ACROSS = 40;
 /** ... and never fewer than this many tiles across. */
 export const WALL_MIN_TILES = 1.5;
 /** A library card shows at most about this many pieces across... */
