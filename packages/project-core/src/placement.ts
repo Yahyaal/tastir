@@ -7,12 +7,14 @@ import {
 import type { Piece, Vec } from '@tastir/engine';
 import { alternationOf } from './alternate.js';
 import {
+  designPalette,
   extraColors,
   glazeOf,
   ORIGINAL,
   lightness,
   paletteOf,
   pieceColors,
+  SLOTS,
   slotOf,
   typeKey,
   type Coloring,
@@ -365,13 +367,23 @@ function alternateFills(
 ): (piece: number, i: number, j: number) => string {
   const { pieces, types } = model.pattern;
   const colours = pieceColors(model, coloring);
+  // A design's own palette may give each slot its second shade (PAL.1).
+  const design = designPalette(model, coloring.palette);
+  const shadeOf = (colour: string) => {
+    const slot = design
+      ? SLOTS.find(
+          (s) => design.palette[s].toLowerCase() === colour.toLowerCase(),
+        )
+      : undefined;
+    return (slot && design?.shades?.[slot]) || secondShade(colour);
+  };
   const second = types.map((t, k) => {
     const own = colours[k] ?? '#999999';
     return !turns.types.has(k) ||
       coloring.palette === ORIGINAL ||
       coloring.chosen[typeKey(t)]
       ? own
-      : secondShade(own);
+      : shadeOf(own);
   });
   return (piece, i, j) => {
     const type = (pieces[piece] as Piece).type;

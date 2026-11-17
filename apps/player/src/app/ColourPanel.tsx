@@ -3,6 +3,7 @@ import { colourName } from './colourNames';
 import { PieceShape } from './drawing';
 import {
   GLAZES,
+  designPaletteNames,
   paletteNames,
   paletteOf,
   type ColorAction,
@@ -110,34 +111,53 @@ export function ColourPanel({
   );
   // The palette comes first: it sets every colour at once, and the
   // learner changes single rings after it.
+  const allNames = paletteNames(model, paper);
+  const ownNames = paper
+    ? []
+    : allNames.filter((n) => designPaletteNames(model).includes(n));
+  const sharedNames = allNames.filter((n) => !ownNames.includes(n));
   return (
     <div className="piece-panel colour-panel">
       <div className="colour-step">
-        <h3>Palette</h3>
-        <div className="palette-strips" role="group" aria-label="Palette">
-          {paletteNames(model, paper).map((name) => {
-            const g = GLAZES[name];
-            const p = paletteOf(model, name);
-            const strip = g
-              ? [g.white, g.black, ...g.families.flat()]
-              : [p.ground, p.a, p.b, p.c, p.d];
-            return (
-              <button
-                key={name}
-                type="button"
-                aria-pressed={name === now.palette}
-                onClick={() => dispatch({ kind: 'palette', palette: name })}
-              >
-                <span className="palette-strip" aria-hidden="true">
-                  {[...new Set(strip)].map((c) => (
-                    <span key={c} style={{ background: c }} />
-                  ))}
-                </span>
-                {name}
-              </button>
-            );
-          })}
-        </div>
+        {/* A design's own palettes first (PAL.1), then the shared ones. */}
+        {(
+          [
+            ['For this pattern', ownNames],
+            ['Palette', sharedNames],
+          ] as const
+        ).map(([title, names]) =>
+          names.length ? (
+            <div key={title}>
+              <h3>{title}</h3>
+              <div className="palette-strips" role="group" aria-label={title}>
+                {names.map((name) => {
+                  const g = GLAZES[name];
+                  const p = paletteOf(model, name);
+                  const strip = g
+                    ? [g.white, g.black, ...g.families.flat()]
+                    : [p.ground, p.a, p.b, p.c, p.d];
+                  return (
+                    <button
+                      key={name}
+                      type="button"
+                      aria-pressed={name === now.palette}
+                      onClick={() =>
+                        dispatch({ kind: 'palette', palette: name })
+                      }
+                    >
+                      <span className="palette-strip" aria-hidden="true">
+                        {[...new Set(strip)].map((c) => (
+                          <span key={c} style={{ background: c }} />
+                        ))}
+                      </span>
+                      {name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null,
+        )}
       </div>
       {now.squareBands ? (
         <p role="status">

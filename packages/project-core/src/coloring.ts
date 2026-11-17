@@ -226,7 +226,20 @@ export function glazeOf(name: string, model?: Model): Glaze {
 export const ORIGINAL = 'The original';
 
 /** A palette by name: a preset, or the original of the tutorial. */
+/** A palette of the design's own, by name (PAL.1). */
+export const designPalette = (model: Model | undefined, name: string) =>
+  model?.tutorial.pattern.palettes?.find((p) => p.name === name);
+
+/** The names of the design's own palettes, offered first. */
+export const designPaletteNames = (model: Model | undefined): string[] =>
+  model?.tutorial.pattern.palettes?.map((p) => p.name) ?? [];
+
 export function paletteOf(model: Model | undefined, name: string): Palette {
+  const own = designPalette(model, name);
+  if (own) {
+    const { a, b, c, d, ground } = own.palette;
+    return { a, b, c, d, ground };
+  }
   const original = model?.tutorial.pattern.original;
   if (name === ORIGINAL && original) {
     const { a, b, c, d, ground } = original.palette;
@@ -262,7 +275,8 @@ export function extraColors(
 ): Record<Extra, string> {
   const p = paletteOf(model, name);
   const own =
-    name === ORIGINAL ? model?.tutorial.pattern.original?.palette : undefined;
+    designPalette(model, name)?.palette ??
+    (name === ORIGINAL ? model?.tutorial.pattern.original?.palette : undefined);
   const used = new Set(Object.values(p));
   const spare = [...new Set(glazeOf(name, model).families.flat())].filter(
     (c) => !used.has(c),
@@ -294,6 +308,7 @@ export const isPaper = (name: string) => PAPER_PALETTES.includes(name);
 export function paletteNames(model: Model, paper = false): string[] {
   if (paper) return [...PAPER_PALETTES];
   return [
+    ...designPaletteNames(model),
     ...(model.tutorial.pattern.original ? [ORIGINAL] : []),
     ...Object.keys(PALETTES).filter((name) => !isPaper(name)),
   ];
@@ -388,6 +403,16 @@ export function underBand(
  * default grout gives way when a piece is its colour (groutFor). */
 export function finishOf(model: Model, coloring: Coloring): Finish {
   const original = model.tutorial.pattern.original;
+  const design = designPalette(model, coloring.palette);
+  if (design && (design.lines || design.band)) {
+    const base: Finish = {
+      lines: design.lines ?? DEFAULT_FINISH.lines,
+      band: design.band ?? DEFAULT_FINISH.band,
+      carved: false,
+    };
+    const chosen = coloring.finish;
+    return chosen?.lines || chosen?.band ? { ...base, ...chosen } : base;
+  }
   const preset = coloring.palette !== ORIGINAL || !original;
   const grout = preset
     ? groutFor(pieceColors(model, coloring), DEFAULT_FINISH.lines)
@@ -475,9 +500,12 @@ export interface Coloring {
 export const tutorialColoring = (model: Model): Coloring => ({
   palette: model.tutorial.pattern.original
     ? ORIGINAL
-    : model.tutorial.pattern.palette && PALETTES[model.tutorial.pattern.palette]
-      ? model.tutorial.pattern.palette
-      : DEFAULT_PALETTE,
+    : model.tutorial.pattern.palettes?.[0]
+      ? model.tutorial.pattern.palettes[0].name
+      : model.tutorial.pattern.palette &&
+          PALETTES[model.tutorial.pattern.palette]
+        ? model.tutorial.pattern.palette
+        : DEFAULT_PALETTE,
   chosen: {},
 });
 

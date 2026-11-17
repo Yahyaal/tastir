@@ -405,6 +405,30 @@ const Original = z.strictObject({
   carved: z.boolean().optional(),
 });
 
+/**
+ * A palette of the design's own (PAL.1), offered first for this pattern
+ * and its default when it has no photo original: a name, the five slots
+ * (and the extra e–g for placement rules), a second shade for slots whose
+ * copies take turns, and optionally its own grout and band colours.
+ */
+const DesignPalette = z.strictObject({
+  name: z.string().min(1),
+  palette: Original.shape.palette,
+  shades: z
+    .strictObject({
+      a: Hex.optional(),
+      b: Hex.optional(),
+      c: Hex.optional(),
+      d: Hex.optional(),
+      ground: Hex.optional(),
+    })
+    .optional(),
+  lines: Hex.optional(),
+  band: Hex.optional(),
+  /** Where the colours come from, when they follow a source. */
+  source: z.string().min(1).optional(),
+});
+
 /** Where a library pattern is from: the regions the library is browsed by. */
 export const REGIONS = [
   'Alhambra and Nasrid Spain',
@@ -579,6 +603,8 @@ export const TutorialShape = z.strictObject({
     placements: Placements.optional(),
     rings: Rings.optional(),
     original: Original.optional(),
+    /** Palettes of the design's own, offered first (PAL.1). */
+    palettes: z.array(DesignPalette).min(1).optional(),
   }),
   expect: Expect,
   /** Other places the same design is found (see Place). */
