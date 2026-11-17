@@ -1,0 +1,72 @@
+.lines-study .lines-looks {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 8px 0 16px;
+}
+.lines-study .lines-looks p {
+  margin: 0;
+}
+.lines-palettes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 20px;
+}
+.lines-palettes button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.lines-palettes button[aria-pressed='true'] {
+  outline: 2px solid var(--theme-accent, #3b82f6);
+  outline-offset: 1px;
+  font-weight: 600;
+}
+.lines-swatches {
+  display: inline-flex;
+}
+.lines-swatches span {
+  width: 12px;
+  height: 12px;
+}
+.lines-row {
+  margin: 28px 0;
+  border-top: 1px solid var(--theme-border);
+  padding-top: 16px;
+}
+.lines-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.lines-grid figure {
+  min-width: 0;
+  margin: 0;
+}
+.lines-grid figcaption {
+  color: var(--theme-text-primary);
+  margin-bottom: 6px;
+}
+.lines-today .drawing {
+  height: auto;
+  aspect-ratio: 1 / 0.75;
+  width: 100%;
+}
+.lines-sheet {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 0.75;
+  border-radius: 4px;
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.18),
+    0 6px 18px rgb(0 0 0 / 0.12);
+}
+@media (max-width: 760px) {
+  .lines-study .lines-looks,
+  .lines-grid {
+    grid-template-columns: 1fr;
+  }
+}

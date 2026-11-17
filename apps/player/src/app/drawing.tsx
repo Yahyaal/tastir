@@ -31,8 +31,14 @@ import { overlapsAt, shapePath } from './interlace';
 import type { JaliAppearance, PenLook } from '@tastir/schema';
 import type { WallStyle } from './Wall';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
-import { DEFAULT_PEN, PAPER, penStrokes } from './pen';
-import { washFill } from './drawnTexture';
+import { DEFAULT_PEN, PAPER } from './pen';
+import {
+  inset,
+  PAINT_OPACITY,
+  paintShade,
+  PAPER_GAP,
+  watercolour,
+} from './drawnTexture';
 
 /** SVG has y pointing down; the tutorial frame has y pointing up. */
 const sx = (p: Vec) => p.x;
@@ -1522,14 +1528,18 @@ export function Thumbnail({
       };
       if (!jali)
         model.pattern.pieces.forEach((p, k) => {
-          const polygon = p.polygon.map((q) => move(q, d));
+          const painted = lines && pen.wash;
+          const polygon = (
+            painted ? inset(p.polygon, widths.grout * PAPER_GAP) : p.polygon
+          ).map((q) => move(q, d));
           if (!meets(polygon)) return;
+          const base = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
           const color =
             lines && !pen.wash
               ? 'none'
-              : fill
-                ? fill(k, i, j)
-                : (colors[p.type] ?? '#999999');
+              : painted
+                ? paintShade(base, k, i, j)
+                : base;
           const list = byColor.get(color) ?? [];
           list.push(poly(polygon));
           byColor.set(color, list);
@@ -1559,11 +1569,15 @@ export function Thumbnail({
     );
   }
   if (lines) {
-    // A drawing: paper, the wash, and the pen along the ink.
-    const d = strokes.join('');
+    // Watercolour: paper, and each piece painted with the paper left
+    // between them; without the wash, the bare ink line.
     const g = widths.grout;
+    const paint = `${lightId}-paint`;
     return (
       <svg className="thumbnail" viewBox={viewBox(view)} aria-hidden="true">
+        {pen.wash ? (
+          <defs dangerouslySetInnerHTML={{ __html: watercolour(g, paint) }} />
+        ) : null}
         <rect
           x={view.minX}
           y={-view.maxY}
@@ -1571,27 +1585,27 @@ export function Thumbnail({
           height={view.maxY - view.minY}
           fill={PAPER}
         />
-        {[...byColor].map(([color, ds]) => (
+        {pen.wash ? (
+          <g filter={`url(#${paint})`}>
+            {[...byColor].map(([color, ds]) => (
+              <path
+                key={color}
+                d={ds.join('')}
+                fill={color}
+                fillOpacity={PAINT_OPACITY}
+              />
+            ))}
+          </g>
+        ) : (
           <path
-            key={color}
-            d={ds.join('')}
-            fill={color}
-            fillOpacity={washFill(pen.pen).opacity}
-          />
-        ))}
-        {penStrokes(pen.pen).map((s, k) => (
-          <path
-            key={k}
-            d={d}
+            d={strokes.join('')}
             fill="none"
-            stroke={s.paper ? PAPER : pen.ink}
-            strokeOpacity={s.opacity}
-            strokeWidth={g * s.width}
+            stroke={pen.ink}
+            strokeWidth={g * 0.8}
             strokeLinecap="round"
             strokeLinejoin="round"
-            transform={`translate(${g * s.dx} ${g * s.dy})`}
           />
-        ))}
+        )}
       </svg>
     );
   }

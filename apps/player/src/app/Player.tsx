@@ -78,9 +78,8 @@ import { useInking } from './useInking';
 import { useModalFocus } from './useModalFocus';
 import { banded, Wall, WALL_STYLES, type WallStyle } from './Wall';
 import { WallControls } from './WallControls';
-import { PenControls } from './PenControls';
 import { PlayerSettings } from './PlayerSettings';
-import { DEFAULT_PEN, samePen } from './pen';
+import { DEFAULT_PEN } from './pen';
 import { useModel } from './workerClient';
 
 import { setStayGuard } from './routing';
@@ -186,8 +185,7 @@ function sameDesign(
     sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
     design.look === now.look &&
     design.grout === now.grout &&
-    sameJali(design.jali, now.jali) &&
-    samePen(design.pen, now.pen)
+    sameJali(design.jali, now.jali)
   );
 }
 
@@ -440,7 +438,9 @@ export function Player({
   });
   const [grout, setGrout] = useState(opened?.grout ?? draft?.grout ?? 1);
   const [jali, setJali] = useState(opened?.jali ?? draft?.jali ?? DEFAULT_JALI);
-  const [pen, setPen] = useState(opened?.pen ?? draft?.pen ?? DEFAULT_PEN);
+  // The lines style is watercolour, with no pen to choose (STYLE.1). A
+  // design saved with an older pen opens in watercolour too.
+  const pen = DEFAULT_PEN;
   // The design being worked on: the one opened, or the last one saved.
   const [design, setDesign] = useState(opened);
   const designFields = () => ({
@@ -451,9 +451,6 @@ export function Player({
     grout,
     ...(wallStyle === 'jali' || design?.jali !== undefined || !sameJali(jali)
       ? { jali }
-      : {}),
-    ...(wallStyle === 'lines' || design?.pen !== undefined || !samePen(pen)
-      ? { pen }
       : {}),
   });
   const [fileError, setFileError] = useState<string>();
@@ -1123,7 +1120,7 @@ export function Player({
   // The colours, at the top of the panel while colouring, so they are the
   // first thing in view.
   const colorsSection =
-    !onWall || (wallStyle !== 'jali' && (wallStyle !== 'lines' || pen.wash)) ? (
+    !onWall || wallStyle !== 'jali' ? (
       <section>
         <h2>Colors</h2>
         <ColourPanel
@@ -1643,9 +1640,6 @@ export function Player({
               {onWall && wallStyle === 'jali' ? (
                 <JaliControls appearance={jali} onChange={setJali} />
               ) : null}
-              {onWall && wallStyle === 'lines' ? (
-                <PenControls look={pen} onChange={setPen} />
-              ) : null}
               {colorsSection}
               {ready && phone ? (
                 <section ref={readyRef}>
@@ -1989,7 +1983,7 @@ export function Broken({ message }: { message: string }) {
   return (
     <div className="player">
       <header className="topbar">
-        <a className="home" href="#/">
+        <a className="home" href="#/" aria-label="All patterns">
           <span className="wordmark">
             Tastir{' '}
             <span

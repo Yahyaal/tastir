@@ -155,6 +155,35 @@ export const PALETTES: Readonly<Record<string, Palette>> = {
     c: '#c46b3a',
     d: '#e9d8a6',
     ground: '#fbf7ee',
+  }, // For watercolour on paper (STYLE.1, 16 November 2026): bright,
+  // related colours, never brown and grey, which look dirty on paper.
+  Rose: {
+    a: '#b8185a',
+    b: '#d0333f',
+    c: '#e3739f',
+    d: '#7f1a4f',
+    ground: '#f2b9cf',
+  },
+  'Violet and sky': {
+    a: '#5a2a70',
+    b: '#79b6d8',
+    c: '#de5a7c',
+    d: '#3b1d50',
+    ground: '#f1d6e1',
+  },
+  'Indigo and ochre': {
+    a: '#2b4a7d',
+    b: '#c98a2b',
+    c: '#6f9a63',
+    d: '#a8452c',
+    ground: '#eedfbf',
+  },
+  'Teal and gold': {
+    a: '#14706f',
+    b: '#d7a52b',
+    c: '#2f5f9e',
+    d: '#c4532f',
+    ground: '#e8eedf',
   },
 };
 
