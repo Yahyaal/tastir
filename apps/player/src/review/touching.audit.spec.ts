@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { it } from 'vitest';
 import { loadModel } from '../app/model';
-import { pieceColors, tutorialColoring } from '../app/coloring';
+import { lightness, pieceColors, tutorialColoring } from '../app/coloring';
 import { byPlace, colouredModel, placeFills } from '../app/placement';
 
 /**
@@ -47,6 +47,7 @@ it.skipIf(!out)('audits touching same-colour pieces', () => {
     let shared = 0;
     let same = 0;
     let sameType = 0;
+    let plain = 0;
     for (const list of sides.values()) {
       if (list.length !== 2) continue;
       shared++;
@@ -54,6 +55,8 @@ it.skipIf(!out)('audits touching same-colour pieces', () => {
       if (a && b && a.colour.toLowerCase() === b.colour.toLowerCase()) {
         same++;
         if (a.type === b.type) sameType++;
+        const l = lightness(a.colour);
+        if (l > 85 || l < 20) plain++;
       }
     }
     rows.push({
@@ -62,7 +65,13 @@ it.skipIf(!out)('audits touching same-colour pieces', () => {
       same,
       sameType,
       share: shared ? same / shared : 0,
+      plain,
       method: coloring.method ?? (byPlace(coloured) ? 'place' : 'shape'),
+      kind: model.tutorial.pattern.rings
+        ? 'rings'
+        : model.tutorial.pattern.placements
+          ? 'placements'
+          : 'shape',
     });
   }
   writeFileSync(out as string, JSON.stringify(rows, null, 1));

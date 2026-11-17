@@ -5,11 +5,16 @@ import {
   squareBandPeriod,
 } from './squareBands.js';
 import type { Piece, Vec } from '@tastir/engine';
+import { alternationOf } from './alternate.js';
 import {
   extraColors,
   glazeOf,
+  ORIGINAL,
   paletteOf,
+  pieceColors,
+  SLOTS,
   slotOf,
+  touchingTypes,
   typeKey,
   type Coloring,
   type Method,
@@ -137,14 +142,21 @@ export function colouredModel(model: Model, coloring: Coloring): Model {
 
 /** Whether pieces of one shape can differ in colour: by placement or ring. */
 export function byPlace(model: Model): boolean {
-  return !!model.tutorial.pattern.placements || !!ringsFor(model);
+  return (
+    !!model.tutorial.pattern.placements ||
+    !!ringsFor(model) ||
+    !!alternationOf(model.pattern)
+  );
 }
 
 /** How many cells along each slide the coloring repeats after. */
 export function colorRepeat(model: Model): readonly [number, number] {
   return (
     ringsFor(model)?.repeat ??
-    model.tutorial.pattern.placements?.repeat ?? [1, 1]
+    model.tutorial.pattern.placements?.repeat ??
+    (model.tutorial.pattern.placements
+      ? undefined
+      : alternationOf(model.pattern)?.repeat) ?? [1, 1]
   );
 }
 
@@ -276,6 +288,8 @@ function basePlaceFills(
   const placements = model.tutorial.pattern.placements;
   const rings = ringsFor(model);
   if (rings) return ringFills(model, coloring, rings);
+  const alternation = !placements && alternationOf(model.pattern);
+  if (alternation) return alternateFills(model, coloring, alternation);
   const nth = nthOf(model);
   const turns = model.pattern.pieces.map((p) => turnOf(p.polygon));
   const [m, n] = colorRepeat(model);
@@ -311,6 +325,45 @@ function basePlaceFills(
     }
     cache.set(key, fill);
     return fill;
+  };
+}
+
+/**
+ * The fill for every placement when copies of a shape take turns
+ * (alternate.ts): the shape's colour, and for the other side a second
+ * palette colour that no touching shape has. A colour the learner chose
+ * for the shape, or a photo's original colours, go to every copy.
+ */
+function alternateFills(
+  model: Model,
+  coloring: Coloring,
+  turns: NonNullable<ReturnType<typeof alternationOf>>,
+): (piece: number, i: number, j: number) => string {
+  const { pieces, types } = model.pattern;
+  const colours = pieceColors(model, coloring);
+  const palette = paletteOf(model, coloring.palette);
+  const touching = touchingTypes(model);
+  const second = types.map((t, k) => {
+    const own = colours[k] ?? palette.a;
+    if (
+      !turns.types.has(k) ||
+      coloring.palette === ORIGINAL ||
+      coloring.chosen[typeKey(t)]
+    )
+      return own;
+    const near = colours.filter((_, o) =>
+      touching.has(k < o ? `${k},${o}` : `${o},${k}`),
+    );
+    const free = (c: string) =>
+      c.toLowerCase() !== own.toLowerCase() &&
+      !near.some((x) => x.toLowerCase() === c.toLowerCase());
+    return SLOTS.map((s) => palette[s]).find(free) ?? own;
+  });
+  return (piece, i, j) => {
+    const type = (pieces[piece] as Piece).type;
+    return turns.second(piece, i, j)
+      ? (second[type] ?? '#999999')
+      : (colours[type] ?? '#999999');
   };
 }
 
