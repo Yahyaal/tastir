@@ -18,7 +18,7 @@ Six more of your notes are done on the branch `style/next`. I held them back fro
 - **STYLE.11 Dense walls open closer.** The wall now opens at about 40 pieces across instead of 60. Dos Hermanas opens at about three repeats instead of four and a half. Simple patterns are unchanged.
 - **STYLE.7 Jali you can read.** The lattice now gets thinner on dense patterns, so the openings show the pattern. Dos Hermanas in Jali showed scattered holes and now shows its stars and rosettes. The Lattice slider still works.
 
-Checks on `style/next`: all 3,147 player unit tests pass and the typecheck is clean. The browser suite result is at the end of this report. While I worked, your emergence-lab calibration job was using every core, so the tests ran slowly and one test timed out once. That test passed when rerun on its own. I left the job running.
+Checks on `style/next`: all 3,147 player unit tests pass, the typecheck is clean, and the full browser suite passes (407 passed, 22 deliberate skips, none failed). While I worked, your emergence-lab calibration job was using every core, so the tests ran slowly and one test timed out once. That test passed when rerun on its own. I left the job running.
 
 ## Waiting for your decisions
 
