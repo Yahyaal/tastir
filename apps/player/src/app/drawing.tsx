@@ -1331,7 +1331,10 @@ export function Thumbnail({
   const coloured = colouredModel(model, coloring);
   const fill = byPlace(coloured) ? placeFills(coloured, coloring) : undefined;
   const jali = look === 'jali';
-  const widths = strapWidths(model, jali ? latticeWidth(grout) : grout);
+  const widths = strapWidths(
+    model,
+    jali ? latticeWidth(grout, model.pattern.pieces.length) : grout,
+  );
   // As the wall first shows it: strapwork bands, tiles with grout, or
   // only the lines.
   const strap = look === 'strapwork' || look === 'interlace';

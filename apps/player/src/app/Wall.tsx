@@ -201,7 +201,7 @@ export function Wall({
   const strokes = lines && !pen.wash ? penStrokes() : [];
   const groutWidth = strapWidths(
     model,
-    jali ? latticeWidth(grout) : grout,
+    jali ? latticeWidth(grout, model.pattern.pieces.length) : grout,
   ).grout;
 
   // The pieces and ink strokes in tile coordinates, with neighbours' copies.

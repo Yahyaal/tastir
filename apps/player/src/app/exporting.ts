@@ -83,7 +83,7 @@ export function wallSvg(
   const jali = look === 'jali';
   const groutWidth = strapWidths(
     model,
-    jali ? latticeWidth(grout) : grout,
+    jali ? latticeWidth(grout, model.pattern.pieces.length) : grout,
   ).grout;
   // Every shift of the cell whose pieces may reach into the view.
   const shifts: (Vec & { i: number; j: number })[] = [];
