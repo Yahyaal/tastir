@@ -42,6 +42,12 @@ export const DOCS: readonly {
     text: read('BEGINNER-PATH-PROPOSAL-2026-11-16.md'),
   },
   {
+    key: 'morning-report-17',
+    label: 'Morning report: 17 November',
+    file: 'NIGHT-REPORT-2026-11-17.md',
+    text: read('NIGHT-REPORT-2026-11-17.md'),
+  },
+  {
     key: 'morning-report',
     label: 'Morning report: 16 November',
     file: 'NIGHT-REPORT-2026-11-16.md',
