@@ -54,7 +54,10 @@ export function ColourPanel({
   place,
   oneTile = false,
   onLight,
+  paper = false,
 }: {
+  /** Offer the paper palettes (watercolour) instead of the glazes. */
+  paper?: boolean;
   /** The model as the coloring colours it (colouredModel). */
   model: Model;
   /** The tutorial's model, for the ways it can be coloured. */
@@ -112,7 +115,7 @@ export function ColourPanel({
       <div className="colour-step">
         <h3>Palette</h3>
         <div className="palette-strips" role="group" aria-label="Palette">
-          {paletteNames(model).map((name) => {
+          {paletteNames(model, paper).map((name) => {
             const g = GLAZES[name];
             const p = paletteOf(model, name);
             const strip = g

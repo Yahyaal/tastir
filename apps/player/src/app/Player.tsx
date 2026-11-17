@@ -27,16 +27,21 @@ import { MAX_FILE_BYTES, viewPatternFile } from '../editor/files';
 import { planStep, play, playInk } from './animation';
 import { fullView, growingFrame, tileView, width, type Rect } from './camera';
 import {
-  colorReducer,
   finishOf,
   pieceColors,
   tutorialColoring,
-  type History,
   type ColorAction,
   typeKey,
 } from './coloring';
 import { addDesign, type Design } from './designs';
 import { draftOf, forgetDraft, keepDraft } from './drafts';
+import {
+  historyOf,
+  storedColours,
+  styleColoursOf,
+  styleColoursReducer,
+  type StyleColours,
+} from './styleColours';
 import { Construction, RepeatedInk, Thumbnail } from './drawing';
 import { download, pngBlob, svgBlob, wallSvg } from './exporting';
 import {
@@ -175,7 +180,10 @@ function keptColoring(address: string) {
 /** Whether a saved design holds just what the player shows now. */
 function sameDesign(
   design: Design,
-  now: Pick<Design, 'inked' | 'coloring' | 'look' | 'grout' | 'jali' | 'pen'>,
+  now: Pick<
+    Design,
+    'inked' | 'coloring' | 'colorings' | 'look' | 'grout' | 'jali' | 'pen'
+  >,
 ): boolean {
   const sorted = (chosen: Readonly<Record<string, string>>) =>
     JSON.stringify(Object.entries(chosen).sort(([a], [b]) => (a < b ? -1 : 1)));
@@ -190,6 +198,8 @@ function sameDesign(
     JSON.stringify(design.coloring.squareBands) ===
       JSON.stringify(now.coloring.squareBands) &&
     sorted(design.coloring.chosen) === sorted(now.coloring.chosen) &&
+    JSON.stringify(design.colorings ?? {}) ===
+      JSON.stringify(now.colorings ?? {}) &&
     design.look === now.look &&
     design.grout === now.grout &&
     sameJali(design.jali, now.jali)
@@ -345,20 +355,34 @@ export function Player({
     () => (inking.editing ? inking.shown : asPanel(inking.shown)),
     [inking.editing, inking.shown],
   );
-  const [colorHistory, rawColorDispatch] = useReducer(
-    colorReducer,
-    model,
-    (m): History => ({
-      past: [],
-      // A pattern drawn along and coloured keeps its colours.
-      now:
-        opened?.coloring ??
-        draft?.coloring ??
-        keptColoring(address) ??
-        tutorialColoring(m),
-      future: [],
-    }),
+  // A pattern whose bands cannot weave is never shown woven: a saved
+  // interlace look falls back to plain bands.
+  const wallStyles = stylesFor(tutorial.pattern.woven);
+  const [wallStyle, setWallStyle] = useState<WallStyle>(() =>
+    shownStyle(
+      opened?.look ?? draft?.look ?? tutorial.pattern.look,
+      tutorial.pattern.woven,
+    ),
   );
+  // Each wall style keeps its own colours (STYLE.5). The style coloured
+  // now: the wall's, or a glaze style while one tile is coloured.
+  const [colourStyle, setColourStyle] = useState<WallStyle>(wallStyle);
+  const [styleColours, styleDispatch] = useReducer(
+    styleColoursReducer,
+    model,
+    (m): StyleColours =>
+      styleColoursOf(
+        // A pattern drawn along and coloured keeps its colours.
+        opened?.coloring ??
+          draft?.coloring ??
+          keptColoring(address) ??
+          tutorialColoring(m),
+        opened?.colorings ?? draft?.colorings,
+      ),
+  );
+  const colorHistory = historyOf(styleColours, colourStyle);
+  const rawColorDispatch = (action: ColorAction) =>
+    styleDispatch({ style: colourStyle, action });
   // The pattern as the learner colours it: ring by ring, by shape or by
   // place, with as many rosettes taking turns as they chose.
   const coloured = useMemo(
@@ -414,15 +438,6 @@ export function Player({
   // The ring pointed at in the colour panel, lit on the wall.
   const [lit, setLit] = useState<string>();
   const [selected, setSelected] = useState<number>();
-  // A pattern whose bands cannot weave is never shown woven: a saved
-  // interlace look falls back to plain bands.
-  const wallStyles = stylesFor(tutorial.pattern.woven);
-  const [wallStyle, setWallStyle] = useState<WallStyle>(() =>
-    shownStyle(
-      opened?.look ?? draft?.look ?? tutorial.pattern.look,
-      tutorial.pattern.woven,
-    ),
-  );
   useLayoutEffect(() => {
     if (
       !import.meta.env.DEV ||
@@ -451,7 +466,7 @@ export function Player({
   const designFields = () => ({
     tutorial: address,
     inked: inking.inked,
-    coloring: colorHistory.now,
+    ...storedColours(styleColours),
     look: wallStyle,
     grout,
     ...(wallStyle === 'jali' || design?.jali !== undefined || !sameJali(jali)
@@ -1075,6 +1090,11 @@ export function Player({
   const onWall =
     copies === 'wall' &&
     (colourFirst ? stage.kind === 'repeat' : stage.kind === 'color');
+  // One tile is coloured as tile; the wall in its own style.
+  useLayoutEffect(
+    () => setColourStyle(onWall ? wallStyle : 'tiles'),
+    [onWall, wallStyle],
+  );
 
   // The style samples show a few pieces round the middle of the pattern,
   // about a dozen whatever their size (at most a little over one repeat),
@@ -1106,7 +1126,7 @@ export function Player({
               <Thumbnail
                 key={look}
                 model={inking.shown}
-                coloring={colorHistory.now}
+                coloring={historyOf(styleColours, look).now}
                 look={look}
                 // Bands drawn wider than the wall's, so they read at
                 // button size.
@@ -1118,7 +1138,7 @@ export function Player({
             ]),
           )
         : undefined,
-    [onWall, inking.shown, colorHistory.now, jali, pen, sampleView],
+    [onWall, inking.shown, styleColours, jali, pen, sampleView],
   );
   const photos = tutorial.photos ?? [];
   const showOriginal = comparing && onWall && photos.length > 0;
@@ -1129,6 +1149,7 @@ export function Player({
       <section>
         <h2>Colors</h2>
         <ColourPanel
+          paper={onWall && wallStyle === 'lines'}
           model={coloured}
           base={inking.shown}
           colors={colors}

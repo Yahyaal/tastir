@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { historyOf, styleColoursOf } from './styleColours';
+import { shownStyle } from './wallStyles';
 import { playable } from '../editor/patterns';
 import { Thumbnail } from './drawing';
 import {
@@ -121,7 +123,13 @@ function DesignLink({ design, entry }: { design: Design; entry: Entry }) {
       {model ? (
         <Thumbnail
           model={model}
-          coloring={design.coloring}
+          // The colours of the style it was saved in (STYLE.5).
+          coloring={
+            historyOf(
+              styleColoursOf(design.coloring, design.colorings),
+              shownStyle(design.look, model.tutorial.pattern.woven),
+            ).now
+          }
           look={design.look}
           grout={design.grout}
           jali={design.jali}
