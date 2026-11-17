@@ -8,7 +8,7 @@ The same PR fixed a bug that PR #18 had shipped. On the "This pattern cannot be 
 
 ## Ready for you to look at, not merged
 
-Six more of your notes are done on the branch `style/next`. I held them back from merging, because each one changes how walls look and you should see them first. To try them, run `git switch style/next` and `pnpm dev`, then open the links below. When you are happy, they go out as one PR.
+Six more of your notes are done on the branch `style/next`. I held them back from merging, because each one changes how walls look and you should see them first. They are in [PR #21](https://github.com/Yahyaal/tastir/pull/21). The quickest way to see them is Vercel's preview of that PR, for example the [Dos Hermanas wall](https://tastir-git-style-next-yahyaal-gmailcoms-projects.vercel.app/#/alhambra-dos-hermanas-jamb-rosette/result); Vercel may ask you to sign in. Or run `git switch style/next` and `pnpm dev` and use the localhost links below. When you are happy, merging PR #21 publishes them.
 
 - **STYLE.9 Plain piece names.** The colour list says "pointed star", "twelve-sided piece" and "background" instead of `pointed_star`, `twelve` and `ground`. Stars are counted by their points. See [Dos Hermanas](http://localhost:4200/#/alhambra-dos-hermanas-jamb-rosette/result), under Colors.
 - **STYLE.10 One order for the colouring tabs.** By place, Ring by ring and By shape now appear in that order everywhere.
