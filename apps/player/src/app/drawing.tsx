@@ -21,8 +21,10 @@ import { boxOf, fit, fullView, viewBox, width, type Rect } from './camera';
 import {
   DEFAULT_FINISH,
   finishOf,
+  groutOf,
   pieceColors,
   tutorialColoring,
+  underBand,
   type Coloring,
 } from './coloring';
 import { byPlace, colouredModel, placeFills } from './placement';
@@ -704,8 +706,9 @@ export function tiling(
   return { view, shifts };
 }
 
-/** The wall opens showing at most about this many pieces across. */
-export const WALL_PIECES_ACROSS = 60;
+/** The wall opens showing at most about this many pieces across: dense
+ * walls such as Dos Hermanas read as noise at 60 (STYLE.11). */
+export const WALL_PIECES_ACROSS = 40;
 /** ... and never fewer than this many tiles across. */
 export const WALL_MIN_TILES = 1.5;
 /** A library card shows at most about this many pieces across... */
@@ -1328,7 +1331,10 @@ export function Thumbnail({
   const coloured = colouredModel(model, coloring);
   const fill = byPlace(coloured) ? placeFills(coloured, coloring) : undefined;
   const jali = look === 'jali';
-  const widths = strapWidths(model, jali ? latticeWidth(grout) : grout);
+  const widths = strapWidths(
+    model,
+    jali ? latticeWidth(grout, model.pattern.pieces.length) : grout,
+  );
   // As the wall first shows it: strapwork bands, tiles with grout, or
   // only the lines.
   const strap = look === 'strapwork' || look === 'interlace';
@@ -1533,7 +1539,8 @@ export function Thumbnail({
             painted ? inset(p.polygon, widths.grout * PAPER_GAP) : p.polygon
           ).map((q) => move(q, d));
           if (!meets(polygon)) return;
-          const base = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
+          const own = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
+          const base = strap ? underBand(own, finish.band, colors) : own;
           const color =
             lines && !pen.wash
               ? 'none'
@@ -1639,7 +1646,7 @@ export function Thumbnail({
         <path
           d={strokes.join('')}
           fill="none"
-          stroke={finish.lines}
+          stroke={groutOf(finish)}
           strokeWidth={widths.grout}
           strokeLinecap="round"
         />

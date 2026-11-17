@@ -1,4 +1,5 @@
 import type { Vec } from '@tastir/engine';
+import { pieceName } from './pieceNames';
 import { useId, useMemo } from 'react';
 import type { Model } from './model';
 import { placeKey } from './placement';
@@ -82,7 +83,7 @@ export function Tiles({
   }, [outlines]);
   const nameOf = (p: Place & { type: number }) => {
     const t = types[p.type];
-    const name = `the ${t?.name ?? `${t?.vertices ?? 0}-corner piece`}s`;
+    const name = `the ${pieceName(t)}s`;
     const ring = ringOf.get(placeKey(model, p.piece, p.i, p.j));
     return ring ? `Paint ring ${ring}, ${name}` : `Recolor ${name}`;
   };

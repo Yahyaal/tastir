@@ -27,6 +27,9 @@ const METHOD_NAMES: Record<Method, string> = {
   place: 'By place',
 };
 
+/** The ways to colour, always shown in this order. */
+const METHOD_ORDER: readonly Method[] = ['place', 'rings', 'shape'];
+
 type Fill = (piece: number, i: number, j: number) => string;
 
 /**
@@ -153,7 +156,9 @@ export function ColourPanel({
       ) : null}
       {methods.length > 1 ? (
         <div className="colour-methods" role="group" aria-label="Colour">
-          {methods.map((m) => (
+          {/* The same order on every pattern (STYLE.10); the pattern's own
+              way is still the one stored without a method. */}
+          {METHOD_ORDER.filter((m) => methods.includes(m)).map((m) => (
             <button
               key={m}
               type="button"

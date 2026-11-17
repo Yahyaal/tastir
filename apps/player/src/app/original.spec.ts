@@ -1,6 +1,9 @@
 import dadoJson from '@tutorials/alhambra-comares-dado.json';
 import {
+  colourDistance,
   DEFAULT_FINISH,
+  groutFor,
+  underBand,
   finishOf,
   colorReducer,
   ORIGINAL,
@@ -50,9 +53,11 @@ describe('the original look', () => {
       band: DEFAULT_FINISH.band,
       carved: false,
     });
-    expect(finishOf(dado, { palette: 'Alhambra', chosen: {} })).toBe(
-      DEFAULT_FINISH,
-    );
+    // Alhambra has a black piece, so its grout is not black (STYLE.8).
+    expect(finishOf(dado, { palette: 'Alhambra', chosen: {} })).toEqual({
+      ...DEFAULT_FINISH,
+      grout: '#6b4a33',
+    });
   });
 
   it('takes the grout and band colours the learner chose, one undo step each', () => {
@@ -71,8 +76,24 @@ describe('the original look', () => {
     });
     expect(finishOf(dado, palette.now)).toEqual({
       ...DEFAULT_FINISH,
+      grout: '#6b4a33',
       band: '#c4622d',
     });
     expect(colorReducer(band, { kind: 'undo' }).now.finish).toBeUndefined();
+  });
+});
+
+describe('colours that would hide the lines', () => {
+  it('moves the grout off a piece colour, and keeps it otherwise', () => {
+    expect(groutFor(['#1d5c7c', '#f2ead8'], '#23201c')).toBe('#23201c');
+    expect(groutFor(['#1a1a1a', '#f2ead8'], '#23201c')).toBe('#6b4a33');
+  });
+
+  it('tints a piece the colour of the band it lies under', () => {
+    const colours = ['#f7f2e6', '#1d5c7c', '#c9a227'];
+    expect(underBand('#1d5c7c', '#f7f2e6', colours)).toBe('#1d5c7c');
+    const tinted = underBand('#f7f2e6', '#f7f2e6', colours);
+    expect(tinted).not.toBe('#f7f2e6');
+    expect(colourDistance(tinted, '#f7f2e6')).toBeGreaterThanOrEqual(48);
   });
 });

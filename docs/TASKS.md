@@ -25,20 +25,30 @@ The owner's notes after looking at the finished walls on the live site, recorded
   *Owner's choice, 16 November:* Watercolour (paper lines, no ink).
   *Built, 16 November (awaiting the owner's look):* the Lines style is now called Watercolour. Each piece is drawn inside its outline so the paper shows between pieces, and one paint filter over the whole wall gives each piece a wavering edge, a darker pooled rim and paper grain, with no seam between tiles. The pen choices (Single, Double, Pencil), Lines only / Colour wash and the ink colours are removed; the slider is now Paper line. Old designs and share links with a pen open as Watercolour; the print sheet keeps its bare ink outline; downloads and the style thumbnails show the same paint. Four paper palettes (Rose, Violet and sky, Indigo and ochre, Teal and gold) are added to the palette list. Watercolour opening in a paper palette automatically waits for STYLE.5.
 - [ ] **STYLE.2 Tiles: no two touching pieces in the same colour.** Neighbouring pieces with the same colour merge into one shape (the large white areas of the Arrayanes ceiling). Colour assignment should avoid it wherever the pattern allows.
+  *Proposal, 17 November:* colour by place so touching copies differ; first a study counting affected patterns, with three before/after walls. See the [morning report](NIGHT-REPORT-2026-11-17.md).
 - [ ] **STYLE.3 Strapwork or Interlace: keep one?** The owner always prefers Interlace. Work out what Strapwork shows that Interlace does not, and whether anyone would miss it; if nothing, remove Strapwork.
+  *Recommendation, 17 November:* keep Strapwork only where bands cannot weave, Interlace everywhere else; waiting for the owner.
 - [ ] **STYLE.4 Interlace: no white pieces under white bands.** The bands are white, so white pieces behind them make the wall busy and lose the bands (both Arrayanes and Dos Hermanas). Avoid white pieces whenever the bands are white.
+  *Built on `style/next`, 17 November; waiting for the owner's look before merging.*
 - [ ] **STYLE.5 Separate colours for Interlace and Tiles.** A colouring that suits Interlace does not always suit Tiles. Each style may keep its own colours.
 - [ ] **STYLE.6 A better name than "Jali".** Find a plain, descriptive name that a newcomer understands (it shows a pierced screen in stone, wood or metal).
+  *Proposal, 17 November:* Carved screen (alternatives: Pierced screen, Lattice); waiting for the owner.
 - [ ] **STYLE.7 Jali: the pattern is hard to read at the default lattice.** With the default lattice the openings are small, and the pattern does not come through (Dos Hermanas looks like scattered holes). Choose a better default, perhaps per pattern.
+  *Built on `style/next`, 17 November; waiting for the owner's look before merging.*
 
 Found while reading the same screenshots (Claude, 16 November), for the owner to confirm or drop:
 
 - [ ] **STYLE.8 Grout or edges the same colour as pieces.** On the Dos Hermanas Tiles wall the background pieces are black and so is the grout, so the outlines vanish and the stars float on a black field. The grout should differ from every piece colour, or pieces should avoid the grout colour.
+  *Built on `style/next`, 17 November; waiting for the owner's look before merging.*
 - [ ] **STYLE.9 Raw names in the colour list.** The colour list shows internal names such as `pointed_star` and `twelve`. Show plain names ("pointed star", "twelve-pointed rosette") instead.
+  *Built on `style/next`, 17 November; waiting for the owner's look before merging.*
 - [ ] **STYLE.10 Colour tabs change order between patterns.** Arrayanes shows By shape, Ring by ring; Dos Hermanas shows By place, Ring by ring, By shape. Keep one order everywhere.
+  *Built on `style/next`, 17 November; waiting for the owner's look before merging.*
 - [ ] **STYLE.11 The default wall shows too many repeats.** Dense patterns such as Dos Hermanas open so far out that each piece is tiny and the Interlace bands become noise. Open closer, perhaps scaled to the pattern's size.
+  *Built on `style/next`, 17 November; waiting for the owner's look before merging.*
 - [ ] **STYLE.12 The panel's slider is named three ways.** Line width, Band width and Lattice are the same kind of control, each shown as "1×". Check that the names and the value make sense to a newcomer.
 - [ ] **STYLE.13 "Reset the drawing" is hard to see.** It is grey on dark and reads as disabled. Check its contrast in both themes.
+  *Built on `style/next`, 17 November; waiting for the owner's look before merging.*
 
 ## Cleanups (noted 16 November 2026)
 

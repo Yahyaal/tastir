@@ -160,8 +160,14 @@ export function jaliLight(background = DEFAULT_JALI.background) {
       ];
 }
 
-/** A zero-width framework would lose the screen altogether. */
-export const latticeWidth = (grout: number) => Math.max(0.5, grout);
+/**
+ * The lattice width as a multiple of the normal width. A zero-width
+ * framework would lose the screen altogether. On a dense tile the lattice
+ * is thinner, so the openings stay large enough to read the pattern
+ * (STYLE.7): at most about 6 pieces across a tile at full width.
+ */
+export const latticeWidth = (grout: number, pieces = 1) =>
+  Math.max(0.5, grout) * Math.min(1, 6 / Math.sqrt(Math.max(1, pieces)));
 
 /** One continuous ground, outside the repeated tile, so light has no seams. */
 export function JaliGround({

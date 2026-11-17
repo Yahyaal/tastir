@@ -7,7 +7,7 @@ import {
 } from '@tastir/engine';
 import { useId, useLayoutEffect, useMemo, useRef } from 'react';
 import { fit, viewBox, width, type Rect } from './camera';
-import { DEFAULT_FINISH, type Finish } from './coloring';
+import { DEFAULT_FINISH, groutOf, underBand, type Finish } from './coloring';
 import { relief, strapWidths, wallView } from './drawing';
 import { overlapsAt, shapePath, weaveRepeat } from './interlace';
 import type { Model } from './model';
@@ -201,7 +201,7 @@ export function Wall({
   const strokes = lines && !pen.wash ? penStrokes() : [];
   const groutWidth = strapWidths(
     model,
-    jali ? latticeWidth(grout) : grout,
+    jali ? latticeWidth(grout, model.pattern.pieces.length) : grout,
   ).grout;
 
   // The pieces and ink strokes in tile coordinates, with neighbours' copies.
@@ -240,9 +240,13 @@ export function Wall({
               corners.every((p) => p.y > tile.lv + margin)
             )
               return;
-            const colour = fill
+            const own = fill
               ? fill(k, i, j)
               : (colors[piece.type] ?? '#999999');
+            // A piece the band's colour would hide the band (STYLE.4).
+            const colour = banded(style)
+              ? underBand(own, finish.band, colors)
+              : own;
             out.push({
               type: piece.type,
               piece: k,
@@ -280,6 +284,7 @@ export function Wall({
     style,
     groutWidth,
     finish.carved,
+    finish.band,
     strokes.length,
   ]);
   // The watercolour's paint.
@@ -338,7 +343,7 @@ export function Wall({
           points={p.points}
           fill={(lines && !painted) || jali ? 'none' : p.fill}
           fillOpacity={painted ? PAINT_OPACITY : undefined}
-          stroke={style === 'tiles' ? finish.lines : 'none'}
+          stroke={style === 'tiles' ? groutOf(finish) : 'none'}
           strokeWidth={groutWidth}
           strokeLinejoin="round"
         />

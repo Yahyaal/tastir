@@ -288,6 +288,10 @@ export interface Finish {
   readonly lines: string;
   readonly band: string;
   readonly carved: boolean;
+  /** The tiles' grout, when it differs from the lines: a preset's dark
+   * grout gives way round pieces of its own colour (groutFor). Band edges
+   * keep `lines`. */
+  readonly grout?: string;
 }
 
 /** Dark lines and light bands, as glazed tile. */
@@ -297,21 +301,98 @@ export const DEFAULT_FINISH: Finish = {
   carved: false,
 };
 
+/** How far apart two colours are, 0 (the same) to about 441. */
+export function colourDistance(a: string, b: string): number {
+  const rgb = (c: string) => {
+    const n = parseInt(c.replace('#', '').slice(0, 6), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  };
+  const [x, y] = [rgb(a), rgb(b)];
+  return Math.hypot(...x.map((v, i) => v - (y[i] ?? 0)));
+}
+
+/** Colours this close read as one where they touch. */
+const NEAR = 48;
+
+/** The grout colours tried, in order, when the default matches a piece. */
+const GROUTS = ['#23201c', '#f7f2e6', '#6b4a33', '#8a8580'];
+
+/**
+ * A grout that differs from every piece (STYLE.8): black grout round black
+ * pieces lost their outlines, so the default grout gives way to the first
+ * of the others that no piece is close to, or else to the one farthest from
+ * them all.
+ */
+export function groutFor(colours: readonly string[], grout: string): string {
+  const gap = (g: string) =>
+    Math.min(...colours.map((c) => colourDistance(c, g)));
+  if (!colours.length || gap(grout) >= NEAR) return grout;
+  return (
+    GROUTS.find((g) => gap(g) >= NEAR) ??
+    [...GROUTS].sort((x, y) => gap(y) - gap(x))[0] ??
+    grout
+  );
+}
+
+/**
+ * A piece's colour under bands (STYLE.4): a piece the colour of the band
+ * (white pieces under white interlace) makes the band vanish, so it takes a
+ * light tint of the palette's strongest colour instead.
+ */
+export function underBand(
+  colour: string,
+  band: string,
+  colours: readonly string[],
+): string {
+  if (colourDistance(colour, band) >= NEAR) return colour;
+  const accent = [...colours].sort(
+    (x, y) => colourDistance(y, band) - colourDistance(x, band),
+  )[0];
+  if (!accent || colourDistance(accent, band) < NEAR) return colour;
+  const mix = (a: string, b: string, t: number) => {
+    const n = (c: string) => parseInt(c.replace('#', '').slice(0, 6), 16);
+    const [x, y] = [n(a), n(b)];
+    return (
+      '#' +
+      [16, 8, 0]
+        .map((k) =>
+          Math.round(((x >> k) & 255) * (1 - t) + ((y >> k) & 255) * t)
+            .toString(16)
+            .padStart(2, '0'),
+        )
+        .join('')
+    );
+  };
+  return mix(band, accent, 0.38);
+}
+
 /** The finish under a coloring: the original's with its own palette, and
- * over it the grout and band colours the learner chose. */
+ * over it the grout and band colours the learner chose. A preset palette's
+ * default grout gives way when a piece is its colour (groutFor). */
 export function finishOf(model: Model, coloring: Coloring): Finish {
   const original = model.tutorial.pattern.original;
-  const base =
-    coloring.palette !== ORIGINAL || !original
+  const preset = coloring.palette !== ORIGINAL || !original;
+  const grout = preset
+    ? groutFor(pieceColors(model, coloring), DEFAULT_FINISH.lines)
+    : undefined;
+  const base: Finish = preset
+    ? grout === DEFAULT_FINISH.lines
       ? DEFAULT_FINISH
-      : {
-          lines: original.lines ?? DEFAULT_FINISH.lines,
-          band: original.band ?? DEFAULT_FINISH.band,
-          carved: original.carved ?? false,
-        };
+      : { ...DEFAULT_FINISH, grout }
+    : {
+        lines: original.lines ?? DEFAULT_FINISH.lines,
+        band: original.band ?? DEFAULT_FINISH.band,
+        carved: original.carved ?? false,
+      };
   const own = coloring.finish;
-  return own?.lines || own?.band ? { ...base, ...own } : base;
+  if (!own?.lines && !own?.band) return base;
+  // A grout the learner chose is the grout.
+  const { grout: _auto, ...rest } = base;
+  return { ...(own.lines ? rest : base), ...own };
 }
+
+/** The grout tiles are drawn with. */
+export const groutOf = (finish: Finish) => finish.grout ?? finish.lines;
 
 /**
  * A piece type's key: its shape, so a color stays with the shape when the
