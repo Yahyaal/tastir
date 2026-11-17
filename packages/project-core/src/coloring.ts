@@ -275,10 +275,27 @@ export function extraColors(
 }
 
 /** The palettes a tutorial offers: its original first, then the presets. */
-export function paletteNames(model: Model): string[] {
+/** The palettes made for paper, offered with watercolour only (STYLE.5). */
+export const PAPER_PALETTES: readonly string[] = [
+  'Rose',
+  'Violet and sky',
+  'Indigo and ochre',
+  'Teal and gold',
+];
+
+/** Whether a palette is one of the paper palettes. */
+export const isPaper = (name: string) => PAPER_PALETTES.includes(name);
+
+/**
+ * The palettes offered: for watercolour the paper palettes, else the
+ * glaze palettes and the photo's original, since tile colours look dull on
+ * paper and paper colours look thin as tile (STYLE.5).
+ */
+export function paletteNames(model: Model, paper = false): string[] {
+  if (paper) return [...PAPER_PALETTES];
   return [
     ...(model.tutorial.pattern.original ? [ORIGINAL] : []),
-    ...Object.keys(PALETTES),
+    ...Object.keys(PALETTES).filter((name) => !isPaper(name)),
   ];
 }
 

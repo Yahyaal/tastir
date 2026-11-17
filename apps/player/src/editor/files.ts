@@ -154,6 +154,7 @@ export interface Shared {
     readonly name: string;
     readonly inked?: readonly string[];
     readonly coloring: Coloring;
+    readonly colorings?: Partial<Record<WallStyle, Coloring>>;
     readonly look: WallStyle;
     readonly grout: number;
     readonly jali?: JaliAppearance;

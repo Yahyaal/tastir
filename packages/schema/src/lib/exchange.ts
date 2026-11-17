@@ -115,10 +115,19 @@ export const PenLookShape = z.strictObject({
   ink: z.string().regex(/^#[0-9a-fA-F]{6}$/),
 });
 export type PenLook = z.infer<typeof PenLookShape>;
+/** Each wall style's own colours, where they differ (STYLE.5). */
+export const StyleColoringsShape = z.strictObject({
+  tiles: ColoringShape.optional(),
+  strapwork: ColoringShape.optional(),
+  interlace: ColoringShape.optional(),
+  lines: ColoringShape.optional(),
+  jali: ColoringShape.optional(),
+});
 export const SharedDesignShape = z.strictObject({
   name: z.string(),
   inked: z.array(z.string()).optional(),
   coloring: ColoringShape,
+  colorings: StyleColoringsShape.optional(),
   look: z.enum(['tiles', 'strapwork', 'interlace', 'lines', 'jali']),
   grout: z.number().min(0).max(100),
   jali: JaliAppearanceShape.optional(),

@@ -3,6 +3,7 @@ import {
   ColoringShape,
   JaliAppearanceShape,
   PenLookShape,
+  StyleColoringsShape,
   type JaliAppearance,
   type PenLook,
 } from '@tastir/schema';
@@ -25,6 +26,8 @@ export interface Design {
    * tutorial's own inking. */
   readonly inked?: readonly string[];
   readonly coloring: Coloring;
+  /** The styles coloured on their own (STYLE.5); else they show `coloring`. */
+  readonly colorings?: Partial<Record<WallStyle, Coloring>>;
   readonly look: WallStyle;
   readonly grout: number;
   readonly jali?: JaliAppearance;
@@ -68,6 +71,8 @@ export function isDesign(x: unknown): x is Design {
       (Number.isInteger(c['rosettes']) && (c['rosettes'] as number) >= 1)) &&
     (c['finish'] === undefined ||
       ColoringShape.shape.finish.safeParse(c['finish']).success) &&
+    (d['colorings'] === undefined ||
+      StyleColoringsShape.safeParse(d['colorings']).success) &&
     LOOKS.includes(d['look'] as string) &&
     typeof d['grout'] === 'number' &&
     (d['jali'] === undefined ||

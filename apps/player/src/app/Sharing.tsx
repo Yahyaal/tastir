@@ -150,6 +150,7 @@ export function openShared(shared: Shared, library: readonly Entry[]): Opened {
     name: d?.name ?? 'Shared design',
     ...(d?.inked ? { inked: d.inked } : {}),
     coloring: d?.coloring ?? { palette: 'Fès tile', chosen: {} },
+    ...(d?.colorings ? { colorings: d.colorings } : {}),
     look: d?.look ?? 'tiles',
     grout: d?.grout ?? 1,
     ...(d?.jali ? { jali: d.jali } : {}),
