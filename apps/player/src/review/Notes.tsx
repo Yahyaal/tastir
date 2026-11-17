@@ -3,6 +3,7 @@ import { ReliabilityUpdate } from './ReliabilityUpdate';
 import { SettingsReview } from './SettingsReview';
 import { TeachingUpdate } from './TeachingUpdate';
 import { InkPresentation } from './InkPresentation';
+import { LinesStudy } from './LinesStudy';
 import { Markdown } from './markdown';
 import './review.css';
 
@@ -338,6 +339,7 @@ function linkFrom(file: string) {
 
 export function Notes({ page = 'start' }: { page?: string }) {
   if (page === 'beginner-path') return <BeginnerPath />;
+  if (page === 'lines-study') return <LinesStudy />;
   if (page === 'reliability-update') return <ReliabilityUpdate />;
   if (page === 'settings-designs') return <SettingsReview />;
   if (page === 'settings-update') return <SettingsReview />;
