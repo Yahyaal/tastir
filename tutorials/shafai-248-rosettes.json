@@ -535,6 +535,15 @@
   "pattern": {
     "cell": "tile",
     "palette": "Mamluk wood",
+    "palettes": [
+      {
+        "name": "Violet and green",
+        "source": "Colours as in Brian Wichmann's drawing on Tiling Search (data200/SHAF2)",
+        "palette": { "a": "#6633ff", "b": "#229900", "c": "#1a5500", "d": "#b3b3b3", "ground": "#ffffff" },
+        "shades": { "a": "#22ccff", "b": "#1a5500", "c": "#229900", "d": "#ffffff", "ground": "#b3b3b3" },
+        "lines": "#111111"
+      }
+    ],
     "look": "tiles",
     "colors": {
       "star_kite": "a",

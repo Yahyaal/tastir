@@ -51,6 +51,11 @@ Found while reading the same screenshots (Claude, 16 November), for the owner to
 - [ ] **STYLE.13 "Reset the drawing" is hard to see.** It is grey on dark and reads as disabled. Check its contrast in both themes.
   *Published in PR #21, 17 November.*
 
+## Palettes for each design (owner, 17 November 2026)
+
+- [x] **PAL.1 Let a tutorial carry palettes of its own.** The owner wants designs to be able to have their own colours instead of only the shared palettes. *Plan, waiting for the owner's OK:* add an optional `pattern.palettes` list to the tutorial format: each entry a name, the five slots (and the extra `e`–`g` the original already allows), an optional second shade per slot for copies that take turns, and optionally its own grout and band colours, the same fields as `original`. The player lists them first under "For this pattern", before the shared palettes, and the first one becomes the pattern's default unless it has a photo original. The shared palettes stay for every pattern. Shades a palette gives are used by alternating copies (STYLE.2); without them the automatic lighter/darker shade applies. The schema, `docs/tutorial-format.md` and the golden tests are updated; pattern pieces do not change. First palettes: Shafai 248 rosettes from the owner's reference (violet and cyan, green and dark green, white and grey), then a handful of patterns whose sources show clear colours.
+  *Built, 17 November:* the format, the player ("For this pattern" above the shared palettes, the first as the default), shades for alternating copies, docs in `tutorial-format.md`, and Shafai 248 rosettes' "Violet and green" palette. More designs get palettes as their sources are read.
+
 ## Cleanups (noted 16 November 2026)
 
 Found while reviewing Codex's PRs #16–#18 and retiring GitHub Pages. None of them changes what learners see, so they can wait, but do not lose them.
