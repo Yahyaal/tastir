@@ -472,15 +472,80 @@ export function slotOf(model: Model, t: PieceType, i: number): Slot {
   return SLOTS[i % SLOTS.length] as Slot;
 }
 
-/** The fill for each piece type under a coloring. */
+/**
+ * Which piece types touch: a pair of type indexes, the smaller first, for
+ * every side two pieces share, over the cell and its neighbours.
+ */
+const touchingCache = new WeakMap<object, ReadonlySet<string>>();
+export function touchingTypes(model: Model): ReadonlySet<string> {
+  const cached = touchingCache.get(model.pattern);
+  if (cached) return cached;
+  const { u, v } = model.pattern.cell;
+  const key = (x: number, y: number) => `${x.toFixed(4)},${y.toFixed(4)}`;
+  const sides = new Map<string, number[]>();
+  for (let i = -1; i <= 1; i++)
+    for (let j = -1; j <= 1; j++)
+      for (const p of model.pattern.pieces) {
+        const dx = u.x * i + v.x * j;
+        const dy = u.y * i + v.y * j;
+        const ps = p.polygon.map((q) => key(q.x + dx, q.y + dy));
+        ps.forEach((a, n) => {
+          const b = ps[(n + 1) % ps.length] ?? a;
+          const side = a < b ? `${a}|${b}` : `${b}|${a}`;
+          const list = sides.get(side) ?? [];
+          list.push(p.type);
+          sides.set(side, list);
+        });
+      }
+  const pairs = new Set<string>();
+  for (const list of sides.values()) {
+    const [a, b] = list;
+    if (list.length === 2 && a !== undefined && b !== undefined && a !== b)
+      pairs.add(a < b ? `${a},${b}` : `${b},${a}`);
+  }
+  touchingCache.set(model.pattern, pairs);
+  return pairs;
+}
+
+/**
+ * The fill for each piece type under a coloring.
+ *
+ * With a preset palette, two different shapes that touch never share a
+ * colour where the palette allows it (STYLE.2): a tutorial maps several
+ * shapes to one slot, and where those shapes meet they merged into one
+ * blot (44% of the shared sides on the Arrayanes ceiling). Going from the
+ * largest shape down, a shape keeps its slot unless a touching shape
+ * already has that colour, and then takes the first slot that no touching
+ * shape has. Every copy of a shape keeps one colour, so the symmetry is
+ * the tutorial's. Colours the learner chose, and a photo's original
+ * colours, are kept as they are.
+ */
 export function pieceColors(
   model: Model,
   coloring: Coloring = tutorialColoring(model),
 ): string[] {
   const palette = paletteOf(model, coloring.palette);
-  return model.pattern.types.map(
+  const { types } = model.pattern;
+  const wanted = types.map(
     (t, i) => coloring.chosen[typeKey(t)] ?? palette[slotOf(model, t, i)],
   );
+  if (coloring.palette === ORIGINAL) return wanted;
+  const touching = touchingTypes(model);
+  const near = (a: number, b: number) =>
+    touching.has(a < b ? `${a},${b}` : `${b},${a}`);
+  const out: string[] = [];
+  types.forEach((t, i) => {
+    const want = wanted[i] ?? palette.a;
+    const taken = out.flatMap((c, k) => (near(i, k) ? [c] : []));
+    const free = (c: string) =>
+      !taken.some((x) => x.toLowerCase() === c.toLowerCase());
+    if (coloring.chosen[typeKey(t)] || free(want)) {
+      out.push(want);
+      return;
+    }
+    out.push(SLOTS.map((s) => palette[s]).find(free) ?? want);
+  });
+  return out;
 }
 
 /** A coloring with its undo and redo history. */
