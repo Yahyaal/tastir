@@ -1,6 +1,6 @@
 import { useId, type ReactNode } from 'react';
 import { banded, WALL_STYLES, type WallStyle } from './Wall';
-import type { Finish } from './coloring';
+import { groutOf, type Finish } from './coloring';
 import { CustomColor } from './JaliControls';
 
 type Swatch = { readonly name: string; readonly color: string };
@@ -145,7 +145,7 @@ export function WallControls({
         <FinishColors
           label="Grout color"
           swatches={LINES}
-          color={finish.lines}
+          color={groutOf(finish)}
           onChange={(lines) => onFinish({ lines })}
         />
       ) : null}

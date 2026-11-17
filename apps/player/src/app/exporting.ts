@@ -5,7 +5,7 @@ import type { Model } from './model';
 import { overlapsAt, shapePath } from './interlace';
 import { banded, type WallStyle } from './Wall';
 import { strapWidths } from './drawing';
-import { DEFAULT_FINISH, type Finish } from './coloring';
+import { DEFAULT_FINISH, groutOf, underBand, type Finish } from './coloring';
 import { DEFAULT_JALI, jaliLayers, jaliLight, latticeWidth } from './jali';
 import { DEFAULT_PEN, PAPER } from './pen';
 import {
@@ -125,7 +125,8 @@ export function wallSvg(
   for (const d of jali ? [] : shifts) {
     for (const [k, p] of pieces.entries()) {
       if (!inView(p.polygon, d)) continue;
-      const base = placed ? placed(k, d.i, d.j) : (colors[p.type] ?? '#999999');
+      const own = placed ? placed(k, d.i, d.j) : (colors[p.type] ?? '#999999');
+      const base = banded(look) ? underBand(own, finish.band, colors) : own;
       // The print sheet: each piece left bare, to colour in by hand.
       if (lines && !pen.wash) {
         body.push(
@@ -140,7 +141,7 @@ export function wallSvg(
         );
         continue;
       }
-      const stroke = banded(look) ? 'none' : INK;
+      const stroke = banded(look) ? 'none' : groutOf(finish);
       body.push(
         `<polygon data-type="${p.type}" points="${p.polygon.map((q) => pt(q, d)).join(' ')}" fill="${base}" stroke="${stroke}" stroke-width="${f(groutWidth)}" stroke-linejoin="round"/>`,
       );

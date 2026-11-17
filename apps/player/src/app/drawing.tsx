@@ -21,8 +21,10 @@ import { boxOf, fit, fullView, viewBox, width, type Rect } from './camera';
 import {
   DEFAULT_FINISH,
   finishOf,
+  groutOf,
   pieceColors,
   tutorialColoring,
+  underBand,
   type Coloring,
 } from './coloring';
 import { byPlace, colouredModel, placeFills } from './placement';
@@ -1533,7 +1535,8 @@ export function Thumbnail({
             painted ? inset(p.polygon, widths.grout * PAPER_GAP) : p.polygon
           ).map((q) => move(q, d));
           if (!meets(polygon)) return;
-          const base = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
+          const own = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
+          const base = strap ? underBand(own, finish.band, colors) : own;
           const color =
             lines && !pen.wash
               ? 'none'
@@ -1639,7 +1642,7 @@ export function Thumbnail({
         <path
           d={strokes.join('')}
           fill="none"
-          stroke={finish.lines}
+          stroke={groutOf(finish)}
           strokeWidth={widths.grout}
           strokeLinecap="round"
         />
