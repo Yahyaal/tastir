@@ -5,10 +5,14 @@ import {
   squareBandPeriod,
 } from './squareBands.js';
 import type { Piece, Vec } from '@tastir/engine';
+import { alternationOf } from './alternate.js';
 import {
   extraColors,
   glazeOf,
+  ORIGINAL,
+  lightness,
   paletteOf,
+  pieceColors,
   slotOf,
   typeKey,
   type Coloring,
@@ -137,14 +141,21 @@ export function colouredModel(model: Model, coloring: Coloring): Model {
 
 /** Whether pieces of one shape can differ in colour: by placement or ring. */
 export function byPlace(model: Model): boolean {
-  return !!model.tutorial.pattern.placements || !!ringsFor(model);
+  return (
+    !!model.tutorial.pattern.placements ||
+    !!ringsFor(model) ||
+    !!alternationOf(model.pattern)
+  );
 }
 
 /** How many cells along each slide the coloring repeats after. */
 export function colorRepeat(model: Model): readonly [number, number] {
   return (
     ringsFor(model)?.repeat ??
-    model.tutorial.pattern.placements?.repeat ?? [1, 1]
+    model.tutorial.pattern.placements?.repeat ??
+    (model.tutorial.pattern.placements
+      ? undefined
+      : alternationOf(model.pattern)?.repeat) ?? [1, 1]
   );
 }
 
@@ -276,6 +287,8 @@ function basePlaceFills(
   const placements = model.tutorial.pattern.placements;
   const rings = ringsFor(model);
   if (rings) return ringFills(model, coloring, rings);
+  const alternation = !placements && alternationOf(model.pattern);
+  if (alternation) return alternateFills(model, coloring, alternation);
   const nth = nthOf(model);
   const turns = model.pattern.pieces.map((p) => turnOf(p.polygon));
   const [m, n] = colorRepeat(model);
@@ -311,6 +324,60 @@ function basePlaceFills(
     }
     cache.set(key, fill);
     return fill;
+  };
+}
+
+/**
+ * The second shade of a colour, for copies of a shape that take turns: a
+ * lighter shade of a dark colour, a darker one of a light colour, as the
+ * owner's Shafai reference does (blue and cyan, green and dark green,
+ * white and grey). The piece stays in its colour family, so a rosette
+ * still reads as one ring.
+ */
+export function secondShade(colour: string): string {
+  const n = parseInt(colour.replace('#', '').slice(0, 6), 16);
+  if (!/^#[0-9a-f]{6}$/i.test(colour)) return colour;
+  const light = lightness(colour) >= 55;
+  const t = light ? 0.2 : 0.32;
+  return (
+    '#' +
+    [16, 8, 0]
+      .map((k) => {
+        const v = (n >> k) & 255;
+        return Math.round(light ? v * (1 - t) : v + (255 - v) * t)
+          .toString(16)
+          .padStart(2, '0');
+      })
+      .join('')
+  );
+}
+
+/**
+ * The fill for every placement when copies of a shape take turns
+ * (alternate.ts): the shape's colour, and for the other side its second
+ * shade. A colour the learner chose for the shape, or a photo's original
+ * colours, go to every copy.
+ */
+function alternateFills(
+  model: Model,
+  coloring: Coloring,
+  turns: NonNullable<ReturnType<typeof alternationOf>>,
+): (piece: number, i: number, j: number) => string {
+  const { pieces, types } = model.pattern;
+  const colours = pieceColors(model, coloring);
+  const second = types.map((t, k) => {
+    const own = colours[k] ?? '#999999';
+    return !turns.types.has(k) ||
+      coloring.palette === ORIGINAL ||
+      coloring.chosen[typeKey(t)]
+      ? own
+      : secondShade(own);
+  });
+  return (piece, i, j) => {
+    const type = (pieces[piece] as Piece).type;
+    return turns.second(piece, i, j)
+      ? (second[type] ?? '#999999')
+      : (colours[type] ?? '#999999');
   };
 }
 
