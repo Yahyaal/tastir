@@ -119,7 +119,7 @@ test('a wall link restores palette, watercolour and zoom in a clean browser', as
     .getByRole('group', { name: 'Style', exact: true })
     .getByRole('button', { name: 'Watercolour', exact: true })
     .click();
-  await page.getByRole('button', { name: 'Chefchaouen', exact: true }).click();
+  await page.getByRole('button', { name: 'Teal and gold', exact: true }).click();
   const wall = page.locator('svg.wall');
   await wall.scrollIntoViewIfNeeded();
   await wall.hover();
@@ -144,7 +144,7 @@ test('a wall link restores palette, watercolour and zoom in a clean browser', as
       view ?? '',
     );
     await expect(
-      recipient.getByRole('button', { name: 'Chefchaouen', exact: true }),
+      recipient.getByRole('button', { name: 'Teal and gold', exact: true }),
     ).toHaveAttribute('aria-pressed', 'true');
     await expect(recipient.locator('svg.wall g.wash')).toHaveCount(1);
   } finally {
