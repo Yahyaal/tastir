@@ -173,14 +173,17 @@ export function JaliControls({
           onChange={(background) => onChange({ ...appearance, background })}
         />
       </div>
-      <button
-        type="button"
-        className="quiet"
-        disabled={sameJali(appearance)}
-        onClick={() => onChange(DEFAULT_JALI)}
-      >
-        Reset Jali finish
-      </button>
+      {/* Shown only when there is something to reset: a disabled button
+          read as broken (STYLE.13). */}
+      {sameJali(appearance) ? null : (
+        <button
+          type="button"
+          className="quiet"
+          onClick={() => onChange(DEFAULT_JALI)}
+        >
+          Reset Jali finish
+        </button>
+      )}
     </section>
   );
 }
