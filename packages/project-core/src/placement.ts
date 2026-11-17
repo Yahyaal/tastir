@@ -10,11 +10,10 @@ import {
   extraColors,
   glazeOf,
   ORIGINAL,
+  lightness,
   paletteOf,
   pieceColors,
-  SLOTS,
   slotOf,
-  touchingTypes,
   typeKey,
   type Coloring,
   type Method,
@@ -329,10 +328,35 @@ function basePlaceFills(
 }
 
 /**
+ * The second shade of a colour, for copies of a shape that take turns: a
+ * lighter shade of a dark colour, a darker one of a light colour, as the
+ * owner's Shafai reference does (blue and cyan, green and dark green,
+ * white and grey). The piece stays in its colour family, so a rosette
+ * still reads as one ring.
+ */
+export function secondShade(colour: string): string {
+  const n = parseInt(colour.replace('#', '').slice(0, 6), 16);
+  if (!/^#[0-9a-f]{6}$/i.test(colour)) return colour;
+  const light = lightness(colour) >= 55;
+  const t = light ? 0.2 : 0.32;
+  return (
+    '#' +
+    [16, 8, 0]
+      .map((k) => {
+        const v = (n >> k) & 255;
+        return Math.round(light ? v * (1 - t) : v + (255 - v) * t)
+          .toString(16)
+          .padStart(2, '0');
+      })
+      .join('')
+  );
+}
+
+/**
  * The fill for every placement when copies of a shape take turns
- * (alternate.ts): the shape's colour, and for the other side a second
- * palette colour that no touching shape has. A colour the learner chose
- * for the shape, or a photo's original colours, go to every copy.
+ * (alternate.ts): the shape's colour, and for the other side its second
+ * shade. A colour the learner chose for the shape, or a photo's original
+ * colours, go to every copy.
  */
 function alternateFills(
   model: Model,
@@ -341,23 +365,13 @@ function alternateFills(
 ): (piece: number, i: number, j: number) => string {
   const { pieces, types } = model.pattern;
   const colours = pieceColors(model, coloring);
-  const palette = paletteOf(model, coloring.palette);
-  const touching = touchingTypes(model);
   const second = types.map((t, k) => {
-    const own = colours[k] ?? palette.a;
-    if (
-      !turns.types.has(k) ||
+    const own = colours[k] ?? '#999999';
+    return !turns.types.has(k) ||
       coloring.palette === ORIGINAL ||
       coloring.chosen[typeKey(t)]
-    )
-      return own;
-    const near = colours.filter((_, o) =>
-      touching.has(k < o ? `${k},${o}` : `${o},${k}`),
-    );
-    const free = (c: string) =>
-      c.toLowerCase() !== own.toLowerCase() &&
-      !near.some((x) => x.toLowerCase() === c.toLowerCase());
-    return SLOTS.map((s) => palette[s]).find(free) ?? own;
+      ? own
+      : secondShade(own);
   });
   return (piece, i, j) => {
     const type = (pieces[piece] as Piece).type;
