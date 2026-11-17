@@ -77,7 +77,14 @@ import { ShareLink } from './Sharing';
 import { useCamera } from './useCamera';
 import { useInking } from './useInking';
 import { useModalFocus } from './useModalFocus';
-import { banded, Wall, WALL_STYLES, type WallStyle } from './Wall';
+import {
+  banded,
+  shownStyle,
+  stylesFor,
+  Wall,
+  WALL_STYLES,
+  type WallStyle,
+} from './Wall';
 import { WallControls } from './WallControls';
 import { PlayerSettings } from './PlayerSettings';
 import { DEFAULT_PEN } from './pen';
@@ -409,15 +416,13 @@ export function Player({
   const [selected, setSelected] = useState<number>();
   // A pattern whose bands cannot weave is never shown woven: a saved
   // interlace look falls back to plain bands.
-  const unwoven = tutorial.pattern.woven === false;
-  const wallStyles = unwoven
-    ? WALL_STYLES.filter((s) => s !== 'interlace')
-    : WALL_STYLES;
-  const [wallStyle, setWallStyle] = useState<WallStyle>(() => {
-    const look =
-      opened?.look ?? draft?.look ?? tutorial.pattern.look ?? 'tiles';
-    return unwoven && look === 'interlace' ? 'strapwork' : look;
-  });
+  const wallStyles = stylesFor(tutorial.pattern.woven);
+  const [wallStyle, setWallStyle] = useState<WallStyle>(() =>
+    shownStyle(
+      opened?.look ?? draft?.look ?? tutorial.pattern.look,
+      tutorial.pattern.woven,
+    ),
+  );
   useLayoutEffect(() => {
     if (
       !import.meta.env.DEV ||
@@ -506,12 +511,12 @@ export function Player({
       name: '',
       tutorial: address,
       coloring: tutorialColoring(model),
-      look: tutorial.pattern.look ?? 'tiles',
+      look: shownStyle(tutorial.pattern.look, tutorial.pattern.woven),
       grout: 1,
       created: '',
       updated: '',
     }),
-    [address, model, tutorial.pattern.look],
+    [address, model, tutorial.pattern.look, tutorial.pattern.woven],
   );
   const draftFields = designFields();
   const draftKey = JSON.stringify(draftFields);

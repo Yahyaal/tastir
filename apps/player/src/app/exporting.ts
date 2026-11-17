@@ -4,6 +4,7 @@ import type { Vec } from '@tastir/engine';
 import type { Model } from './model';
 import { overlapsAt, shapePath } from './interlace';
 import { banded, type WallStyle } from './Wall';
+import { shownStyle } from './wallStyles';
 import { strapWidths } from './drawing';
 import { DEFAULT_FINISH, groutOf, underBand, type Finish } from './coloring';
 import { DEFAULT_JALI, jaliLayers, jaliLight, latticeWidth } from './jali';
@@ -49,7 +50,7 @@ export function wallSvg(
   options: WallOptions = {},
 ): string {
   const {
-    look = 'tiles',
+    look: asked = 'tiles',
     grout = 1,
     jali: appearance = DEFAULT_JALI,
     pen = DEFAULT_PEN,
@@ -61,6 +62,7 @@ export function wallSvg(
     fill: placed,
     finish = DEFAULT_FINISH,
   } = options;
+  const look = shownStyle(asked, model.tutorial.pattern.woven);
   const INK = finish.lines;
   const BAND = finish.band;
   const { cell, pieces, ink } = model.pattern;

@@ -7,7 +7,7 @@ import { tutorialColoring } from './coloring';
 import { Play } from './app';
 import { pieceColors } from './coloring';
 import { loadModel } from './model';
-import { Wall } from './Wall';
+import { shownStyle, stylesFor, Wall } from './Wall';
 import { cardView, tiling, wallView } from './drawing';
 import { DEFAULT_PEN, PAPER } from './pen';
 
@@ -349,5 +349,25 @@ describe('the view of a library card', () => {
     // 625 pieces: 25 across a tile, so one tile makes 25.
     expect(across(cardView(dense(625)))).toBeCloseTo(span, 9);
     expect(across(cardView(dense(5000)))).toBeCloseTo(0.75 * span, 9);
+  });
+});
+
+describe('interlace in place of strapwork (STYLE.3)', () => {
+  it('opens strapwork as interlace, unless the bands cannot weave', () => {
+    expect(shownStyle('strapwork', undefined)).toBe('interlace');
+    expect(shownStyle('interlace', undefined)).toBe('interlace');
+    expect(shownStyle(undefined, undefined)).toBe('tiles');
+    expect(shownStyle('interlace', false)).toBe('strapwork');
+    expect(shownStyle('strapwork', false)).toBe('strapwork');
+  });
+
+  it('offers interlace, or strapwork where the bands cannot weave', () => {
+    expect(stylesFor(undefined)).toEqual([
+      'tiles',
+      'interlace',
+      'lines',
+      'jali',
+    ]);
+    expect(stylesFor(false)).toEqual(['tiles', 'strapwork', 'lines', 'jali']);
   });
 });

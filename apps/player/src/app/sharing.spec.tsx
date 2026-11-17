@@ -34,7 +34,7 @@ async function shareFrom(
   fireEvent.click(screen.getByRole('button', { name: 'Chefchaouen' }));
   fireEvent.click(
     within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
-      name: 'Strapwork',
+      name: 'Interlace',
     }),
   );
   const colored = fills();
@@ -68,7 +68,7 @@ describe('share links', () => {
     expect(fills()).toEqual(colored);
     expect(
       within(screen.getByRole('group', { name: 'Style' }))
-        .getByRole('button', { name: 'Strapwork' })
+        .getByRole('button', { name: 'Interlace' })
         .getAttribute('aria-pressed'),
     ).toBe('true');
     fireEvent.click(
