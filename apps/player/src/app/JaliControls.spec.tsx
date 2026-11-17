@@ -129,6 +129,6 @@ it('chooses background presets immediately, keeps custom colors independent, and
     framework: '#593d2b',
     background: '#314253',
   });
-  fireEvent.click(screen.getByRole('button', { name: 'Reset Jali finish' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Reset screen finish' }));
   expect(appearance()).toEqual(DEFAULT_JALI);
 });

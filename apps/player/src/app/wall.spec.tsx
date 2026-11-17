@@ -275,7 +275,7 @@ describe('the wall controls', () => {
     expect(width()).toBeCloseTo(before / 2, 9);
     fireEvent.click(
       within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
-        name: 'Jali',
+        name: 'Screen',
       }),
     );
     expect(

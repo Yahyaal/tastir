@@ -27,7 +27,7 @@ for (const id of ['eight-fold-star-and-cross', 'bou-inania-rosette']) {
     await page.goto(`/#/${id}/result`);
     await page
       .getByRole('group', { name: 'Style', exact: true })
-      .getByRole('button', { name: 'Jali', exact: true })
+      .getByRole('button', { name: 'Screen', exact: true })
       .click();
     const wall = page.locator('svg.wall');
     await expect(wall).toBeVisible();
