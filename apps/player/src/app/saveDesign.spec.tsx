@@ -92,7 +92,7 @@ describe('saving a design', () => {
     const colored = fills();
     fireEvent.click(
       within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
-        name: 'Strapwork',
+        name: 'Interlace',
       }),
     );
     expect(screen.getByText('Test', { selector: 'b' })).toBeTruthy();
@@ -101,7 +101,7 @@ describe('saving a design', () => {
     expect(listDesigns()[0]).toMatchObject({
       id: saved?.id,
       inked: saved?.inked,
-      look: 'strapwork',
+      look: 'interlace',
       coloring: { palette: 'Chefchaouen' },
     });
 
@@ -112,7 +112,7 @@ describe('saving a design', () => {
     expect(fills()).toEqual(colored);
     expect(
       within(screen.getByRole('group', { name: 'Style' }))
-        .getByRole('button', { name: 'Strapwork' })
+        .getByRole('button', { name: 'Interlace' })
         .getAttribute('aria-pressed'),
     ).toBe('true');
     expect(screen.getByText('Test', { selector: 'b' })).toBeTruthy();

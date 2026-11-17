@@ -32,6 +32,7 @@ import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
 import { overlapsAt, shapePath } from './interlace';
 import type { JaliAppearance, PenLook } from '@tastir/schema';
 import type { WallStyle } from './Wall';
+import { shownStyle } from './wallStyles';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
 import { DEFAULT_PEN, PAPER } from './pen';
 import {
@@ -1295,7 +1296,7 @@ export function orderedPaletteColors(
 export function Thumbnail({
   model,
   coloring = tutorialColoring(model),
-  look = model.tutorial.pattern.look,
+  look: asked = model.tutorial.pattern.look,
   grout = 1,
   jali: appearance,
   pen = DEFAULT_PEN,
@@ -1320,6 +1321,7 @@ export function Thumbnail({
   /** If set, renders within this camera view (e.g. locked to fullView) rather than tiling view. */
   view?: Rect;
 }) {
+  const look = shownStyle(asked, model.tutorial.pattern.woven);
   const lightId = `jali-thumb-${useId().replace(/:/g, '')}`;
   const reach = 2;
   const view = givenView ?? cardView(model);

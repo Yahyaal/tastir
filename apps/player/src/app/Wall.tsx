@@ -17,6 +17,7 @@ import { ringsOf } from './rings';
 import { boardRef as agentBoardRef } from '../agent/screenTargets';
 import { repeatTargets } from '../agent/repeatTargets';
 import { JaliFramework, JaliGround, latticeWidth } from './jali';
+import { shownStyle } from './wallStyles';
 import { DEFAULT_PEN, PAPER, penStrokes } from './pen';
 import {
   inset,
@@ -25,6 +26,8 @@ import {
   PAPER_GAP,
   watercolour,
 } from './drawnTexture';
+
+export { shownStyle, stylesFor } from './wallStyles';
 
 export type WallStyle = 'tiles' | 'strapwork' | 'interlace' | 'lines' | 'jali';
 export const WALL_STYLES: readonly WallStyle[] = [
@@ -118,7 +121,7 @@ export function Wall({
   colors,
   fill,
   repeat = [1, 1],
-  look: style = 'tiles',
+  look: asked = 'tiles',
   grout = 1,
   jali: appearance,
   pen = DEFAULT_PEN,
@@ -166,6 +169,7 @@ export function Wall({
    * ring by ring from the middles of the rosettes outward. */
   enter?: boolean;
 }) {
+  const style = shownStyle(asked, model.tutorial.pattern.woven);
   const id = useId().replace(/:/g, '');
   const ownRef = useRef<SVGSVGElement>(null);
   const svgRef = boardRef ?? ownRef;
