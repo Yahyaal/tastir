@@ -2,13 +2,19 @@ import { jaliTextureSvg } from './jaliTexture';
 import type { JaliAppearance, PenLook } from '@tastir/schema';
 import type { Vec } from '@tastir/engine';
 import type { Model } from './model';
-import { overlapsAt, patchesAt, patchPath, shapePath } from './interlace';
+import { overlapsAt, shapePath } from './interlace';
 import { banded, type WallStyle } from './Wall';
 import { strapWidths } from './drawing';
 import { DEFAULT_FINISH, type Finish } from './coloring';
 import { DEFAULT_JALI, jaliLayers, jaliLight, latticeWidth } from './jali';
-import { DEFAULT_PEN, DOUBLE, PAPER, penStrokes } from './pen';
-import { graphite, texture, washFill } from './drawnTexture';
+import { DEFAULT_PEN, PAPER } from './pen';
+import {
+  inset,
+  PAINT_OPACITY,
+  paintShade,
+  PAPER_GAP,
+  watercolour,
+} from './drawnTexture';
 
 const f = (n: number) => String(Math.round(n * 1e5) / 1e5);
 
@@ -111,45 +117,37 @@ export function wallSvg(
     body.push(
       `<rect x="${f(view.minX)}" y="${f(-view.maxY)}" width="${f(w)}" height="${f(h)}" fill="${paper}"/>`,
     );
-  // The lines style's wash goes through a paint or pencil texture, turned
-  // for pencil so its streaks slant like shading.
+  // Watercolour: each piece painted with the paper left between them, one
+  // paint filter over them all; without the wash, a bare ink line to
+  // colour in by hand.
   const washed = lines && pen.wash;
-  const tex = texture(pen.pen, groutWidth, 'wash');
-  const { opacity: washAlpha, edge: washEdge } = washFill(pen.pen);
-  if (washed)
-    body.push(
-      `<g transform="rotate(${tex.turn})" filter="url(#wash)"><g transform="rotate(${-tex.turn})">`,
-    );
+  if (washed) body.push('<g filter="url(#paint)">');
   for (const d of jali ? [] : shifts) {
     for (const [k, p] of pieces.entries()) {
       if (!inView(p.polygon, d)) continue;
-      const fill =
-        lines && !pen.wash
-          ? 'none'
-          : placed
-            ? placed(k, d.i, d.j)
-            : (colors[p.type] ?? '#999999');
-      // Paint pools darker at the edge of each piece.
-      const stroke = lines
-        ? washed && washEdge
-          ? fill
-          : 'none'
-        : banded(look)
-          ? 'none'
-          : INK;
-      const width = lines ? groutWidth * 1.6 : groutWidth;
-      const wash = washed
-        ? ` fill-opacity="${washAlpha}" stroke-opacity="${washEdge}"`
-        : '';
+      const base = placed ? placed(k, d.i, d.j) : (colors[p.type] ?? '#999999');
+      // The print sheet: each piece left bare, to colour in by hand.
+      if (lines && !pen.wash) {
+        body.push(
+          `<polygon data-type="${p.type}" points="${p.polygon.map((q) => pt(q, d)).join(' ')}" fill="none" stroke="none"/>`,
+        );
+        continue;
+      }
+      if (washed) {
+        const polygon = inset(p.polygon, groutWidth * PAPER_GAP);
+        body.push(
+          `<polygon data-type="${p.type}" points="${polygon.map((q) => pt(q, d)).join(' ')}" fill="${paintShade(base, k, d.i, d.j)}" fill-opacity="${PAINT_OPACITY}"/>`,
+        );
+        continue;
+      }
+      const stroke = banded(look) ? 'none' : INK;
       body.push(
-        `<polygon data-type="${p.type}" points="${p.polygon.map((q) => pt(q, d)).join(' ')}" fill="${fill}"${wash} stroke="${stroke}" stroke-width="${f(width)}" stroke-linejoin="round"/>`,
+        `<polygon data-type="${p.type}" points="${p.polygon.map((q) => pt(q, d)).join(' ')}" fill="${base}" stroke="${stroke}" stroke-width="${f(groutWidth)}" stroke-linejoin="round"/>`,
       );
     }
   }
-  if (washed) body.push('</g></g>');
-  // The pen along the ink; the double pen's band casts a shadow and is
-  // woven over and under, as interlace is.
-  if (lines) {
+  if (washed) body.push('</g>');
+  if (lines && !pen.wash) {
     const path = shifts
       .flatMap((d) =>
         ink.flatMap((s) =>
@@ -161,37 +159,9 @@ export function wallSvg(
         ),
       )
       .join('');
-    const double = pen.pen === 'double';
-    if (double)
-      body.push(
-        `<path d="${path}" fill="none" stroke="#000" stroke-opacity="0.22" stroke-width="${f(groutWidth * DOUBLE.edge)}" stroke-linecap="round" transform="translate(${f(groutWidth * 0.7)} ${f(groutWidth * 0.9)})" filter="url(#soft)"/>`,
-      );
-    for (const s of penStrokes(pen.pen))
-      body.push(
-        `<path d="${path}" fill="none" stroke="${s.paper ? paper : pen.ink}" stroke-opacity="${s.opacity}" stroke-width="${f(groutWidth * s.width)}" stroke-linecap="round" stroke-linejoin="round" transform="translate(${f(groutWidth * s.dx)} ${f(groutWidth * s.dy)})"${pen.pen === 'pencil' && !s.paper ? ' filter="url(#graphite)"' : ''}/>`,
-      );
-    if (double) {
-      const zero = { x: 0, y: 0 };
-      const place = (q: Vec) => pt(q, zero).replace(',', ' ');
-      const edges: string[] = [];
-      const bands: string[] = [];
-      for (const d of shifts)
-        for (const p of patchesAt(
-          model.pattern,
-          d.i,
-          d.j,
-          groutWidth * DOUBLE.edge,
-        )) {
-          if (!inView(p.band, zero)) continue;
-          edges.push(patchPath(p.edge, place));
-          bands.push(patchPath(p.band, place));
-        }
-      body.push(
-        `<path d="${edges.join('')}" fill="none" stroke="#000" stroke-opacity="0.35" stroke-width="${f(groutWidth * (DOUBLE.edge + 1.6))}" stroke-linecap="butt" filter="url(#soft)"/>`,
-        `<path d="${edges.join('')}" fill="none" stroke="${pen.ink}" stroke-width="${f(groutWidth * DOUBLE.edge)}" stroke-linecap="butt" stroke-linejoin="round"/>`,
-        `<path d="${bands.join('')}" fill="none" stroke="${paper}" stroke-width="${f(groutWidth * DOUBLE.band)}" stroke-linecap="butt" stroke-linejoin="round"/>`,
-      );
-    }
+    body.push(
+      `<path d="${path}" fill="none" stroke="${pen.ink}" stroke-width="${f(groutWidth * 0.8)}" stroke-linecap="round" stroke-linejoin="round"/>`,
+    );
   }
   if (jali) {
     const path = shifts
@@ -271,11 +241,7 @@ export function wallSvg(
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(w * scale)}" height="${Math.round(h * scale)}" viewBox="${f(view.minX)} ${f(-view.maxY)} ${f(w)} ${f(h)}">`,
     `<title>${esc(title)}</title>`,
-    ...(lines
-      ? [
-          `<defs>${tex.markup}${graphite(groutWidth, 'graphite')}<filter id="soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="${f(groutWidth * 0.35)}"/></filter></defs>`,
-        ]
-      : []),
+    ...(lines ? [`<defs>${watercolour(groutWidth, 'paint')}</defs>`] : []),
     ...(jali
       ? [
           `<defs><linearGradient id="jali-light" x1="0" y1="0" x2="0.8" y2="1">${jaliLight(

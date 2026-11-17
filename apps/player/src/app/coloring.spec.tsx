@@ -49,7 +49,7 @@ describe('the coloring history', () => {
     expect(colorReducer(start, { kind: 'undo' })).toBe(start);
   });
 
-  it('has the tradition palettes first, then the older ones, each filling every slot', () => {
+  it('has the tradition palettes first, then the older ones and the paper ones, each filling every slot', () => {
     expect(Object.keys(PALETTES)).toEqual([
       'Marinid zellige',
       'Alhambra',
@@ -63,6 +63,10 @@ describe('the coloring history', () => {
       'Tétouan',
       'Isfahan',
       'Kashan',
+      'Rose',
+      'Violet and sky',
+      'Indigo and ochre',
+      'Teal and gold',
     ]);
     for (const p of Object.values(PALETTES))
       expect(Object.keys(p)).toEqual(['a', 'b', 'c', 'd', 'ground']);

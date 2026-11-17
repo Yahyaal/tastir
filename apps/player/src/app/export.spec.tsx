@@ -60,11 +60,13 @@ describe('the SVG of a drawing in the lines style', () => {
   const svgOf = (pen: Parameters<typeof wallSvg>[2] = {}) =>
     parse(wallSvg(model, colors, { look: 'lines', ...pen })).documentElement;
 
-  it('washes the pieces on paper, or leaves them bare', () => {
+  it('paints the pieces in watercolour on paper, or leaves them bare', () => {
     const doc = svgOf();
-    const washed = doc.querySelector('g[filter="url(#wash)"] polygon');
-    expect(washed?.getAttribute('fill-opacity')).toBe('0.82');
-    expect(doc.querySelector('filter#wash feTurbulence')).not.toBeNull();
+    const painted = doc.querySelector('g[filter="url(#paint)"] polygon');
+    expect(painted?.getAttribute('fill-opacity')).toBe('0.93');
+    expect(doc.querySelector('filter#paint feMorphology')).not.toBeNull();
+    // No ink: the pattern is the paper left between the pieces.
+    expect(doc.querySelector('path[stroke]')).toBeNull();
     const bare = svgOf({
       pen: { pen: 'single', wash: false, ink: '#23201c' },
       paper: '#ffffff',
@@ -73,24 +75,13 @@ describe('the SVG of a drawing in the lines style', () => {
       '#ffffff',
     );
     expect(bare.querySelector('polygon')?.getAttribute('fill')).toBe('none');
+    expect(bare.querySelector('path')?.getAttribute('stroke')).toBe('#23201c');
   });
 
-  it('draws a double line as ink under paper, with a shadow, woven', () => {
-    const paths = [
-      ...svgOf({
-        pen: { pen: 'double', wash: false, ink: '#2b3d6e' },
-      }).querySelectorAll('path'),
-    ];
-    // The band's shadow, the band, then at the crossings a shadow and the
-    // top band again.
-    expect(paths.map((p) => p.getAttribute('stroke'))).toEqual([
-      '#000',
-      '#2b3d6e',
-      '#fbf8f1',
-      '#000',
-      '#2b3d6e',
-      '#fbf8f1',
-    ]);
+  it('opens an older double or pencil design in watercolour too', () => {
+    const doc = svgOf({ pen: { pen: 'double', wash: true, ink: '#2b3d6e' } });
+    expect(doc.querySelector('g[filter="url(#paint)"] polygon')).not.toBeNull();
+    expect(doc.querySelector('path[stroke="#2b3d6e"]')).toBeNull();
   });
 });
 

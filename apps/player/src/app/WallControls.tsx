@@ -66,7 +66,7 @@ const STYLE_NAMES: Record<WallStyle, string> = {
   tiles: 'Tiles',
   strapwork: 'Strapwork',
   interlace: 'Interlace',
-  lines: 'Lines',
+  lines: 'Watercolour',
   jali: 'Jali',
 };
 
@@ -99,7 +99,7 @@ export function WallControls({
 }) {
   const id = useId();
   const jali = style === 'jali';
-  // The lines style always draws a line, however thin.
+  // Watercolour always leaves a paper line, however thin.
   const least = jali ? 0.5 : style === 'lines' ? 0.25 : 0;
   const width = Math.max(least, grout);
   return (
@@ -120,7 +120,13 @@ export function WallControls({
       </div>
       <div className="wall-width">
         <label htmlFor={id}>
-          {jali ? 'Lattice' : banded(style) ? 'Band width' : 'Line width'}
+          {jali
+            ? 'Lattice'
+            : banded(style)
+              ? 'Band width'
+              : style === 'lines'
+                ? 'Paper line'
+                : 'Line width'}
         </label>
         <input
           id={id}

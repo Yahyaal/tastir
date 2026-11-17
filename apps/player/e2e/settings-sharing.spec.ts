@@ -110,21 +110,16 @@ test('a lesson link restores the exact step and overrides settings without repla
     await other.close();
   }
 });
-test('a wall link restores palette, pen, wash and zoom in a clean browser', async ({
+test('a wall link restores palette, watercolour and zoom in a clean browser', async ({
   page,
   browser,
 }) => {
   await page.goto('/#/eight-fold-star-and-cross/result');
   await page
     .getByRole('group', { name: 'Style', exact: true })
-    .getByRole('button', { name: 'Lines', exact: true })
+    .getByRole('button', { name: 'Watercolour', exact: true })
     .click();
   await page.getByRole('button', { name: 'Chefchaouen', exact: true }).click();
-  await page
-    .getByRole('group', { name: 'Pen', exact: true })
-    .getByRole('button', { name: 'Double', exact: true })
-    .click();
-  await page.getByRole('button', { name: 'Colour wash', exact: true }).click();
   const wall = page.locator('svg.wall');
   await wall.scrollIntoViewIfNeeded();
   await wall.hover();
@@ -151,14 +146,7 @@ test('a wall link restores palette, pen, wash and zoom in a clean browser', asyn
     await expect(
       recipient.getByRole('button', { name: 'Chefchaouen', exact: true }),
     ).toHaveAttribute('aria-pressed', 'true');
-    await expect(
-      recipient
-        .getByRole('group', { name: 'Pen', exact: true })
-        .getByRole('button', { name: 'Double', exact: true }),
-    ).toHaveAttribute('aria-pressed', 'true');
-    await expect(
-      recipient.getByRole('button', { name: 'Colour wash', exact: true }),
-    ).toHaveAttribute('aria-pressed', 'true');
+    await expect(recipient.locator('svg.wall g.wash')).toHaveCount(1);
   } finally {
     await other.close();
   }

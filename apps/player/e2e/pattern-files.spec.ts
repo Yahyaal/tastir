@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 
-for (const style of ['Lines', 'Jali']) {
+for (const style of ['Watercolour', 'Jali']) {
   test(`editable JSON restores ${style} and colours in a clean browser`, async ({
     page,
     browser,
@@ -14,16 +14,7 @@ for (const style of ['Lines', 'Jali']) {
       .getByRole('group', { name: 'Style', exact: true })
       .getByRole('button', { name: style, exact: true })
       .click();
-    if (style === 'Lines') {
-      await page
-        .getByRole('group', { name: 'Pen', exact: true })
-        .getByRole('button', { name: 'Double', exact: true })
-        .click();
-      await page
-        .getByRole('button', { name: 'Lines only', exact: true })
-        .click();
-      await page.getByRole('button', { name: 'Sepia', exact: true }).click();
-    } else
+    if (style === 'Jali')
       await page.getByRole('button', { name: 'Metal', exact: true }).click();
     const pending = page.waitForEvent('download');
     await page
@@ -82,19 +73,9 @@ for (const style of ['Lines', 'Jali']) {
         unknown
       >;
       expect(kept[0]).toMatchObject(appearance);
-      if (style === 'Lines') {
-        await expect(
-          recipient
-            .getByRole('group', { name: 'Pen', exact: true })
-            .getByRole('button', { name: 'Double', exact: true }),
-        ).toHaveAttribute('aria-pressed', 'true');
-        await expect(
-          recipient.getByRole('button', { name: 'Colour wash', exact: true }),
-        ).toHaveAttribute('aria-pressed', 'false');
-        await expect(
-          recipient.getByRole('button', { name: 'Sepia', exact: true }),
-        ).toHaveAttribute('aria-pressed', 'true');
-      } else
+      if (style === 'Watercolour')
+        await expect(recipient.locator('svg.wall g.wash')).toHaveCount(1);
+      else
         await expect(
           recipient.locator('svg.wall .jali-framework'),
         ).toHaveAttribute('data-material', 'metal');

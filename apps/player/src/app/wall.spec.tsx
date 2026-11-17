@@ -125,20 +125,28 @@ describe('the wall', () => {
     ).toBe('none');
     straps.unmount();
 
-    // Lines wash the pieces with their colours on paper by default, in a
-    // tile of their own laid through a paint texture over the whole wall.
+    // Watercolour paints each piece a little inside its outline, so the
+    // paper shows between pieces, in a tile of its own laid through one
+    // paint filter over the whole wall. No ink is drawn.
     const lines = render(<Wall model={model} colors={colors} look="lines" />);
     expect(
       lines.container.querySelector('svg.wall > rect')?.getAttribute('fill'),
     ).toBe(PAPER);
-    const washed = lines.container.querySelector(
-      'pattern[id^="wash-"] polygon.wall-piece[data-type="0"]',
-    );
-    expect(washed?.getAttribute('fill')).toBe(colors[0]);
-    expect(washed?.getAttribute('fill-opacity')).toBe('0.82');
+    const painted = [
+      ...lines.container.querySelectorAll(
+        'pattern[id^="wash-"] polygon.wall-piece',
+      ),
+    ];
+    expect(painted.length).toBeGreaterThan(0);
+    expect(painted[0]?.getAttribute('fill-opacity')).toBe('0.93');
+    // Each copy is painted a shade lighter or deeper than the next.
+    expect(
+      new Set(painted.map((p) => p.getAttribute('fill'))).size,
+    ).toBeGreaterThan(1);
     expect(
       lines.container.querySelector('g.wash')?.getAttribute('filter'),
-    ).toMatch(/^url\(#.*-wash\)$/);
+    ).toMatch(/^url\(#.*-paint\)$/);
+    expect(lines.container.querySelector('path.pen-single')).toBeNull();
     lines.unmount();
 
     const bare = render(
@@ -153,31 +161,6 @@ describe('the wall', () => {
       bare.container.querySelector('polygon.wall-piece')?.getAttribute('fill'),
     ).toBe('none');
     bare.unmount();
-  });
-
-  it('draws a double line as ink with paper between, woven over and under', () => {
-    const { container } = render(
-      <Wall
-        model={model}
-        colors={colors}
-        look="lines"
-        pen={{ pen: 'double', wash: true, ink: '#6b4226' }}
-      />,
-    );
-    const [outer, inner] = [...container.querySelectorAll('path.pen-double')];
-    expect(outer?.getAttribute('stroke')).toBe('#6b4226');
-    expect(inner?.getAttribute('stroke')).toBe(PAPER);
-    expect(Number(outer?.getAttribute('stroke-width'))).toBeGreaterThan(
-      Number(inner?.getAttribute('stroke-width')),
-    );
-    // At each crossing the top band is drawn again over a shadow.
-    expect(container.querySelector('path.over-shadow')).not.toBeNull();
-    expect(
-      container.querySelector('path.over-out')?.getAttribute('stroke'),
-    ).toBe('#6b4226');
-    expect(
-      container.querySelector('path.over-in')?.getAttribute('stroke'),
-    ).toBe(PAPER);
   });
 
   it('weaves the bands for interlace: the top band drawn again at each crossing', () => {
@@ -273,7 +256,7 @@ describe('the wall controls', () => {
       );
     fireEvent.click(
       within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
-        name: 'Lines',
+        name: 'Watercolour',
       }),
     );
     expect(
@@ -286,7 +269,7 @@ describe('the wall controls', () => {
           ?.getAttribute('stroke-width'),
       );
     const before = width();
-    fireEvent.change(screen.getByLabelText('Line width'), {
+    fireEvent.change(screen.getByLabelText('Paper line'), {
       target: { value: '0.5' },
     });
     expect(width()).toBeCloseTo(before / 2, 9);
