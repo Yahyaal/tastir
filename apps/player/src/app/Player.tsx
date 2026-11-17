@@ -1,4 +1,5 @@
 import { NextPathLesson } from './LearningPathNav';
+import { pieceName } from './pieceNames';
 import { learningPosition } from './learningPath';
 import { LIBRARY, listed } from './library';
 import type { SharedPresentation } from '@tastir/schema';
@@ -99,8 +100,7 @@ const count = (n: number) => NUMBER_WORDS[n] ?? String(n);
 
 /** A piece type's name; one without a name is called by its corners. */
 const nameOf = (model: Model, i: number) => {
-  const t = model.pattern.types[i];
-  return t?.name ?? `${t?.vertices ?? 0}-corner piece`;
+  return pieceName(model.pattern.types[i]);
 };
 
 /** "star", "stars"; "cross", "crosses"; "4-corner piece", "4-corner pieces". */

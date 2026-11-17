@@ -1,4 +1,5 @@
 import { useState, type Dispatch } from 'react';
+import { pieceDetail, pieceName } from './pieceNames';
 import {
   paletteNames,
   paletteOf,
@@ -53,8 +54,7 @@ export function PiecePanel({
 }) {
   const [onlyHere, setOnlyHere] = useState(true);
   const { types } = model.pattern;
-  const nameOf = (i: number) =>
-    types[i]?.name ?? `${types[i]?.vertices ?? 0}-corner piece`;
+  const nameOf = (i: number) => pieceName(types[i]);
   const palette = paletteOf(model, history.now.palette);
   const chosenType = selected === undefined ? undefined : types[selected];
   const here = place && onlyHere ? place : undefined;
@@ -119,9 +119,7 @@ export function PiecePanel({
               <PieceShape model={model} type={i} color={colors[i] ?? '#999'} />
               <span>
                 {nameOf(i)}
-                <small>
-                  {t.vertices} corners · {t.perCell} per tile
-                </small>
+                <small>{pieceDetail(t)}</small>
               </span>
             </button>
           </li>

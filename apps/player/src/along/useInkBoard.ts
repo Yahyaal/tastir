@@ -1,4 +1,5 @@
 import { type Vec } from '@tastir/engine';
+import { pieceName } from '../app/pieceNames';
 import { useEffect, useMemo, useState } from 'react';
 import { type Model } from '../app/model';
 import { check, type Draft } from '../editor/document';
@@ -108,7 +109,8 @@ export function useInkBoard(
     const erasing = !missing.length && extra.length > 0;
     const focus = erasing ? extra : forKind.length ? forKind : missing;
     const first = ready.pieces.find((q) => q.id === focus[0]);
-    const kindName = kind >= 0 ? pattern.types[kind]?.name : undefined;
+    const kindType = kind >= 0 ? pattern.types[kind] : undefined;
+    const kindName = kindType?.name ? pieceName(kindType) : undefined;
     // A missing stroke: its start and end dots are ringed.
     const stroke =
       !erasing && first && hintLevel >= 2
@@ -271,7 +273,7 @@ export function useInkBoard(
       );
       return ready.pattern.types
         .filter((t) => !have.has(`${t.vertices},${t.area.toFixed(4)}`))
-        .map((t) => t.name ?? `${t.vertices}-cornered piece`);
+        .map((t) => pieceName(t));
     })(),
     stroke,
     /** Erases one bit (and its copies when copies are on). */
