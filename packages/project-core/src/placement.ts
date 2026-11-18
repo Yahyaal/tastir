@@ -22,7 +22,13 @@ import {
   type Palette,
 } from './coloring.js';
 import type { Model } from './model.js';
-import { ringsOf, withRosettes, type RingRole, type Rings } from './rings.js';
+import {
+  hasRings,
+  ringsOf,
+  withRosettes,
+  type RingRole,
+  type Rings,
+} from './rings.js';
 
 /**
  * Coloring by where a piece sits (the tutorial's pattern.placements): the
@@ -51,7 +57,7 @@ export function ringsFor(model: Model): Rings | undefined {
 export function methodsOf(model: Model): Method[] {
   const own = ownMethod(model);
   const all: Method[] = [own];
-  if (own !== 'rings' && ringsOf(model.pattern)) all.push('rings');
+  if (own !== 'rings' && hasRings(model.pattern)) all.push('rings');
   if (own !== 'shape') all.push('shape');
   return all;
 }

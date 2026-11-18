@@ -1293,6 +1293,24 @@ export function orderedPaletteColors(
  * wall first shows it: tiles with grout, or strapwork, where each pattern
  * line is a light band with dark edges.
  */
+/** The box round some points (quicker than boxOf for many calls). */
+function boundsOf(ps: readonly Vec[]): Rect {
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+  for (const p of ps) {
+    if (p.x < minX) minX = p.x;
+    if (p.x > maxX) maxX = p.x;
+    if (p.y < minY) minY = p.y;
+    if (p.y > maxY) maxY = p.y;
+  }
+  return { minX, maxX, minY, maxY };
+}
+
+const boxMeets = (a: Rect, b: Rect) =>
+  a.maxX >= b.minX && a.minX <= b.maxX && a.maxY >= b.minY && a.minY <= b.maxY;
+
 export function Thumbnail({
   model,
   coloring = tutorialColoring(model),
@@ -1344,11 +1362,23 @@ export function Thumbnail({
   const lines = look === 'lines';
   // Only what shows: pieces and lines whose box meets the view.
   const seen = fit(view, 1 + widths.edge);
-  const meets = (ps: readonly Vec[]) =>
-    Math.max(...ps.map((p) => p.x)) >= seen.minX &&
-    Math.min(...ps.map((p) => p.x)) <= seen.maxX &&
-    Math.max(...ps.map((p) => p.y)) >= seen.minY &&
-    Math.min(...ps.map((p) => p.y)) <= seen.maxY;
+  const meets = (ps: readonly Vec[]) => boxMeets(boundsOf(ps), seen);
+  // A copy of the tile wholly out of sight is skipped at once: a dense
+  // pattern has hundreds of pieces to a tile and the card shows few tiles.
+  const extent = boundsOf([
+    ...model.pattern.pieces.flatMap((p) => p.polygon),
+    ...model.pattern.ink.flatMap((s) => [s.segment.a, s.segment.b]),
+  ]);
+  const tileShows = (d: Vec) =>
+    boxMeets(
+      {
+        minX: extent.minX + d.x - widths.edge,
+        maxX: extent.maxX + d.x + widths.edge,
+        minY: extent.minY + d.y - widths.edge,
+        maxY: extent.maxY + d.y + widths.edge,
+      },
+      seen,
+    );
   const move = (p: Vec, d: Vec): Vec => ({ x: p.x + d.x, y: p.y + d.y });
   const poly = (ps: readonly Vec[]) =>
     `M${ps.map((q) => `${sx(q)} ${sy(q)}`).join('L')}Z`;
@@ -1400,6 +1430,7 @@ export function Thumbnail({
           x: cell.u.x * i + cell.v.x * j,
           y: cell.u.y * i + cell.v.y * j,
         };
+        if (!tileShows(d)) continue;
         model.pattern.pieces.forEach((p, k) => {
           const polygon = p.polygon.map((q) => move(q, d));
           if (!meets(polygon)) return;
@@ -1534,6 +1565,7 @@ export function Thumbnail({
         x: cell.u.x * i + cell.v.x * j,
         y: cell.u.y * i + cell.v.y * j,
       };
+      if (!tileShows(d)) continue;
       if (!jali)
         model.pattern.pieces.forEach((p, k) => {
           const painted = lines && pen.wash;

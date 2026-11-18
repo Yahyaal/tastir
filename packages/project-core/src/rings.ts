@@ -308,6 +308,22 @@ export function ringsOf(pattern: Pattern, own = false): Rings | undefined {
   return found;
 }
 
+const known = new WeakMap<Pattern, boolean>();
+
+/** Whether a pattern has rings to colour round, found elsewhere (the
+ * player's worker), so the page need not find them again to know. */
+export function knowRings(pattern: Pattern, has: boolean) {
+  known.set(pattern, has);
+}
+
+/** Whether a pattern has rings (see ringsOf), without finding them when
+ * that is already known. */
+export function hasRings(pattern: Pattern): boolean {
+  const hit = cache.get(pattern);
+  if (hit !== undefined) return hit !== null;
+  return known.get(pattern) ?? !!ringsOf(pattern);
+}
+
 /** The most rosettes a unit holds with each rosette of the repeat its own
  * family: four (A B over C D) on a square lattice, where two take turns
  * over 2×2 cells with one rosette each. */

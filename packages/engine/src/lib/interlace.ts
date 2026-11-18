@@ -72,6 +72,9 @@ export interface Weave {
 }
 
 const EPS = 1e-7;
+/** One number for a pair of whole numbers, each under 2^26 in size: map
+ * keys as numbers are much quicker than as text. */
+const cellKey = (x: number, y: number) => x * 134217728 + y;
 const SNAP = 1e-6;
 /** Directions this close are the same. */
 const SAME = 1e-6;
@@ -141,15 +144,15 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
 
   // Points, merged within SNAP through a grid of buckets.
   const points: Vec[] = [];
-  const buckets = new Map<string, number[]>();
+  const buckets = new Map<number, number[]>();
   const bucket = (x: number, y: number) =>
-    `${Math.floor(x / (4 * SNAP))},${Math.floor(y / (4 * SNAP))}`;
+    cellKey(Math.floor(x / (4 * SNAP)), Math.floor(y / (4 * SNAP)));
   const pointId = (p: Vec): number => {
     const bx = Math.floor(p.x / (4 * SNAP));
     const by = Math.floor(p.y / (4 * SNAP));
     for (let ox = -1; ox <= 1; ox++)
       for (let oy = -1; oy <= 1; oy++)
-        for (const k of buckets.get(`${bx + ox},${by + oy}`) ?? []) {
+        for (const k of buckets.get(cellKey(bx + ox, by + oy)) ?? []) {
           const q = points[k] as Vec;
           if (Math.abs(q.x - p.x) <= SNAP && Math.abs(q.y - p.y) <= SNAP)
             return k;
@@ -166,7 +169,7 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
   // Split every band where another crosses or touches it, through a grid
   // of the segments' boxes.
   const size = Math.max(Math.hypot(u.x, u.y), Math.hypot(v.x, v.y)) / 8;
-  const grid = new Map<string, number[]>();
+  const grid = new Map<number, number[]>();
   const boxOf = (s: { a: Vec; b: Vec }) => ({
     x0: Math.floor((Math.min(s.a.x, s.b.x) - SNAP) / size),
     x1: Math.floor((Math.max(s.a.x, s.b.x) + SNAP) / size),
@@ -177,16 +180,18 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
     const b = boxOf(s);
     for (let x = b.x0; x <= b.x1; x++)
       for (let y = b.y0; y <= b.y1; y++) {
-        const key = `${x},${y}`;
+        const key = cellKey(x, y);
         const list = grid.get(key);
         if (list) list.push(k);
         else grid.set(key, [k]);
       }
   });
   const cuts: number[][] = segs.map(() => [0, 1]);
+  // The last segment each other one was checked against, so each pair is
+  // checked once (quicker than a set for each segment).
+  const seenBy = new Int32Array(segs.length).fill(-1);
   segs.forEach((s, k) => {
     const b = boxOf(s);
-    const seen = new Set<number>();
     const d = { x: s.b.x - s.a.x, y: s.b.y - s.a.y };
     const len2 = d.x * d.x + d.y * d.y;
     if (len2 < SNAP * SNAP) return;
@@ -200,9 +205,9 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
     };
     for (let x = b.x0; x <= b.x1; x++)
       for (let y = b.y0; y <= b.y1; y++)
-        for (const o of grid.get(`${x},${y}`) ?? []) {
-          if (o === k || seen.has(o)) continue;
-          seen.add(o);
+        for (const o of grid.get(cellKey(x, y)) ?? []) {
+          if (o === k || seenBy[o] === k) continue;
+          seenBy[o] = k;
           const r = segs[o] as { a: Vec; b: Vec };
           on(r.a);
           on(r.b);
@@ -218,7 +223,7 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
   });
 
   // The edges between neighbouring points, each once.
-  const edges = new Map<string, [number, number]>();
+  const edges = new Map<number, [number, number]>();
   segs.forEach((s, k) => {
     const ts = [...new Set(cuts[k])].sort((x, y) => x - y);
     const ids = ts.map((t) =>
@@ -231,7 +236,7 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
       const a = ids[i] as number;
       const b = ids[i + 1] as number;
       if (a === b) continue;
-      edges.set(a < b ? `${a},${b}` : `${b},${a}`, [a, b]);
+      edges.set(a < b ? cellKey(a, b) : cellKey(b, a), [a, b]);
     }
   });
 
@@ -241,14 +246,14 @@ export function weave(ink: readonly Segment[], cell: Cell): Weave {
     return { i: wrap(s), j: wrap(t) };
   };
   const vertices: Vertex[] = [];
-  const vertexGrid = new Map<string, number[]>();
+  const vertexGrid = new Map<number, number[]>();
   /** The vertex at a central point, if there is one already. */
   const vertexNear = (q: Vec) => {
     const bx = Math.floor(q.x / (4 * SNAP));
     const by = Math.floor(q.y / (4 * SNAP));
     for (let ox = -1; ox <= 1; ox++)
       for (let oy = -1; oy <= 1; oy++)
-        for (const k of vertexGrid.get(`${bx + ox},${by + oy}`) ?? []) {
+        for (const k of vertexGrid.get(cellKey(bx + ox, by + oy)) ?? []) {
           const at = (vertices[k] as Vertex).at;
           if (Math.abs(at.x - q.x) <= SNAP && Math.abs(at.y - q.y) <= SNAP)
             return k;

@@ -2,7 +2,9 @@
 // page stays responsive. Reports each stage as it starts.
 import { computePattern, evaluate } from '@tastir/engine';
 import { parseTutorial } from '@tastir/schema';
+import { weaveOf } from './interlace';
 import { withHelpers, withInking, type Model } from './model';
+import { hasRings } from './rings';
 import type { Progress, Reply, Request } from './workerClient';
 
 const post = (reply: Reply) => postMessage(reply);
@@ -30,7 +32,18 @@ onmessage = ({ data }: MessageEvent<Request>) => {
         optional: hidden.optionalHelpers ?? new Set<string>(),
       },
     };
-    post({ id, kind: 'done', model: withInking(prepared, inked).model });
+    const done = withInking(prepared, inked).model;
+    // The weave and the rings take a second or more in the densest
+    // patterns: found here, the page does not freeze while it draws.
+    const weave =
+      done.tutorial.pattern.woven === false ? undefined : weaveOf(done.pattern);
+    post({
+      id,
+      kind: 'done',
+      model: done,
+      weave,
+      rings: hasRings(done.pattern),
+    });
   } catch (e) {
     post({
       id,
