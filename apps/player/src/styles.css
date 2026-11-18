@@ -560,6 +560,25 @@ a.button.primary:hover {
   border-bottom: 1px solid var(--theme-border);
 }
 
+.pattern-menu header {
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+.pattern-menu .pattern-menu-search {
+  flex: 1 1 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: none;
+  min-height: 40px;
+}
+
+.pattern-menu-empty {
+  margin: 16px;
+  color: var(--on-lapis-muted);
+  font-size: 0.9rem;
+}
+
 .pattern-menu h2 {
   margin: 0;
   font-family: var(--display);

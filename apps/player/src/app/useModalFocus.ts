@@ -26,6 +26,15 @@ export function useModalFocus(
     const onKey = (e: KeyboardEvent) => {
       e.stopPropagation();
       if (e.key === 'Escape') {
+        // In a search box with words in it, Escape empties the box (the
+        // browser's own way) and the dialog stays open.
+        const target = e.target;
+        if (
+          target instanceof HTMLInputElement &&
+          target.type === 'search' &&
+          target.value
+        )
+          return;
         e.preventDefault();
         close.current();
       } else if (e.key === 'Tab') {

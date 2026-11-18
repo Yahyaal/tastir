@@ -70,3 +70,34 @@ test('browsing with unsaved work still offers Stay without changing the design',
     page.getByRole('button', { name: 'Chefchaouen', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');
 });
+
+test('the pattern menu searches the library from any pattern', async ({
+  page,
+}, info) => {
+  const docked = info.project.name !== 'phone';
+  await page.goto('/#/eight-fold-star-and-cross/result');
+  const toggle = page.getByRole('button', { name: 'Patterns', exact: true });
+  await toggle.click();
+  const browser = page.getByRole(docked ? 'complementary' : 'dialog', {
+    name: 'Patterns',
+  });
+  const search = browser.getByRole('searchbox', { name: 'Search patterns' });
+  const links = browser.getByRole('link');
+  const all = await links.count();
+  await search.fill('Comares');
+  await expect(
+    browser.getByRole('link', { name: /Comares west dado/ }),
+  ).toBeVisible();
+  expect(await links.count()).toBeLessThan(all);
+  await search.fill('zzqx');
+  await expect(browser.getByRole('status')).toHaveText(/No patterns match/);
+  await expect(links).toHaveCount(0);
+  // Escape empties the search first, and the menu stays open.
+  await search.press('Escape');
+  await expect(search).toHaveValue('');
+  await expect(browser).toBeVisible();
+  await expect(links).toHaveCount(all);
+  await search.fill('Comares');
+  await browser.getByRole('link', { name: /Comares west dado/ }).click();
+  await expect(page).toHaveURL(/alhambra-comares-west-dado\/result/);
+});
