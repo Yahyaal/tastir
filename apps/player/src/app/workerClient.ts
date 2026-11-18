@@ -25,7 +25,7 @@ export type Reply =
        * the weave (unless the pattern cannot weave), and whether there are
        * rings to colour round. */
       readonly weave?: Weave;
-      readonly rings: boolean;
+      readonly rings?: boolean;
     }
   | { readonly id: number; readonly kind: 'error'; readonly message: string };
 
@@ -83,7 +83,8 @@ export function loadInWorker(
       waiting.delete(id);
       if (reply.kind === 'done') {
         if (reply.weave) knowWeave(reply.model.pattern, reply.weave);
-        knowRings(reply.model.pattern, reply.rings);
+        if (reply.rings !== undefined)
+          knowRings(reply.model.pattern, reply.rings);
         resolve(reply.model);
       } else reject(new Error(reply.message));
     });
