@@ -5,9 +5,9 @@ import type { Model } from './model';
 import { overlapsAt, shapePath } from './interlace';
 import { banded, type WallStyle } from './Wall';
 import { shownStyle } from './wallStyles';
-import { strapWidths } from './drawing';
+import { strapWidths, styleGrout } from './drawing';
 import { DEFAULT_FINISH, groutOf, underBand, type Finish } from './coloring';
-import { DEFAULT_JALI, jaliLayers, jaliLight, latticeWidth } from './jali';
+import { DEFAULT_JALI, jaliLayers, jaliLight } from './jali';
 import { DEFAULT_PEN, PAPER } from './pen';
 import {
   inset,
@@ -83,10 +83,7 @@ export function wallSvg(
   const w = view.maxX - view.minX;
   const h = view.maxY - view.minY;
   const jali = look === 'jali';
-  const groutWidth = strapWidths(
-    model,
-    jali ? latticeWidth(grout, model.pattern.pieces.length) : grout,
-  ).grout;
+  const groutWidth = strapWidths(model, styleGrout(model, look, grout)).grout;
   // Every shift of the cell whose pieces may reach into the view.
   const shifts: (Vec & { i: number; j: number })[] = [];
   const reach = Math.ceil(Math.max(across, down) / 2) + 2;
@@ -128,7 +125,9 @@ export function wallSvg(
     for (const [k, p] of pieces.entries()) {
       if (!inView(p.polygon, d)) continue;
       const own = placed ? placed(k, d.i, d.j) : (colors[p.type] ?? '#999999');
-      const base = banded(look) ? underBand(own, finish.band, colors) : own;
+      const base = banded(look)
+        ? underBand(own, finish.band, colors, finish.lines)
+        : own;
       // The print sheet: each piece left bare, to colour in by hand.
       if (lines && !pen.wash) {
         body.push(

@@ -26,6 +26,52 @@ export function knowWeave(pattern: Pattern, found: Weave) {
   weaves.set(pattern, found);
 }
 
+/** How far apart crossings must sit, in band widths (dark edges and
+ * all), for the over and under to read cleanly. Closer, the bands overlap
+ * their neighbours: the dark edges come out thick and thin and stop short,
+ * and the white of one band runs into the next. */
+export const CROSSING_ROOM = 1.4;
+
+const fits = new WeakMap<Pattern, number>();
+
+/**
+ * What to multiply the interlace's band width by so that crossings sit at
+ * least CROSSING_ROOM band widths apart, for bands `edge` wide at the
+ * normal width: 1 where there is room already (most patterns), less in
+ * the densest (Comares west dado, 800 crossings to a tile). One crossing
+ * in twenty may sit closer, so a few crowded spots do not thin the whole
+ * pattern's bands.
+ */
+export function bandFit(pattern: Pattern, edge: number): number {
+  const known = fits.get(pattern);
+  if (known !== undefined) return known;
+  const w = weaveOf(pattern);
+  const [m, n] = w.repeat;
+  const { u, v } = pattern.cell;
+  const nearest = w.crossings
+    .map((a) => {
+      let best = Infinity;
+      for (let di = -1; di <= 1; di++)
+        for (let dj = -1; dj <= 1; dj++) {
+          const sx = u.x * m * di + v.x * n * dj;
+          const sy = u.y * m * di + v.y * n * dj;
+          for (const b of w.crossings) {
+            const d = Math.hypot(b.at.x + sx - a.at.x, b.at.y + sy - a.at.y);
+            if (d > 1e-9 && d < best) best = d;
+          }
+        }
+      return best;
+    })
+    .sort((a, b) => a - b);
+  const close = nearest[Math.floor(nearest.length * 0.05)];
+  const fit =
+    close === undefined || !Number.isFinite(close) || edge <= 0
+      ? 1
+      : Math.min(1, close / (CROSSING_ROOM * edge));
+  fits.set(pattern, fit);
+  return fit;
+}
+
 /** A short piece of the band on top at a crossing, along the band and
  * round its bends: its dark edges (`edge`), and its light middle a little
  * longer (`band`), so no seam shows where the piece meets its own band. */

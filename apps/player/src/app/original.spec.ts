@@ -96,4 +96,11 @@ describe('colours that would hide the lines', () => {
     expect(tinted).not.toBe('#f7f2e6');
     expect(colourDistance(tinted, '#f7f2e6')).toBeGreaterThanOrEqual(48);
   });
+
+  it('gives a piece a shade off the dark edge the edge colour', () => {
+    const colours = ['#f7f2e6', '#1d1a18', '#2b4f8f'];
+    // A near-black piece by the near-black edge: one black, not two.
+    expect(underBand('#1d1a18', '#f7f2e6', colours, '#23201c')).toBe('#23201c');
+    expect(underBand('#2b4f8f', '#f7f2e6', colours, '#23201c')).toBe('#2b4f8f');
+  });
 });

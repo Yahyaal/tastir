@@ -29,7 +29,7 @@ import {
 } from './coloring';
 import { byPlace, colouredModel, placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
-import { overlapsAt, shapePath } from './interlace';
+import { bandFit, overlapsAt, shapePath } from './interlace';
 import type { JaliAppearance, PenLook } from '@tastir/schema';
 import type { WallStyle } from './Wall';
 import { shownStyle } from './wallStyles';
@@ -1213,6 +1213,19 @@ export function strapWidths(model: Model, grout = 1) {
   return { grout: g, edge: g * 4, band: g * 2.4 };
 }
 
+/**
+ * The band or grout width a wall style draws at, as a multiple of the
+ * normal width, for the learner's `grout`: the interlace's bands thinner
+ * in patterns whose crossings crowd (bandFit), the screen's lattice by
+ * how many pieces there are, the rest as asked.
+ */
+export function styleGrout(model: Model, look: WallStyle, grout: number) {
+  if (look === 'jali') return latticeWidth(grout, model.pattern.pieces.length);
+  if (look === 'interlace')
+    return grout * bandFit(model.pattern, strapWidths(model).edge);
+  return grout;
+}
+
 export interface PaletteColorGroup {
   color: string;
   minDistance: number;
@@ -1351,10 +1364,7 @@ export function Thumbnail({
   const coloured = colouredModel(model, coloring);
   const fill = byPlace(coloured) ? placeFills(coloured, coloring) : undefined;
   const jali = look === 'jali';
-  const widths = strapWidths(
-    model,
-    jali ? latticeWidth(grout, model.pattern.pieces.length) : grout,
-  );
+  const widths = strapWidths(model, styleGrout(model, look, grout));
   // As the wall first shows it: strapwork bands, tiles with grout, or
   // only the lines.
   const strap = look === 'strapwork' || look === 'interlace';
@@ -1574,7 +1584,9 @@ export function Thumbnail({
           ).map((q) => move(q, d));
           if (!meets(polygon)) return;
           const own = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
-          const base = strap ? underBand(own, finish.band, colors) : own;
+          const base = strap
+            ? underBand(own, finish.band, colors, finish.lines)
+            : own;
           const color =
             lines && !pen.wash
               ? 'none'
