@@ -1,7 +1,14 @@
-import { useLayoutEffect, useMemo, useRef, type RefObject } from 'react';
+import {
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type RefObject,
+} from 'react';
 import {
   foldLabel,
   aboutOf,
+  filtered,
   keptFilters,
   neighbours,
   titleOf,
@@ -194,7 +201,15 @@ function MenuPanel({
 }) {
   const ownPanel = useRef<HTMLElement>(null);
   const panel = panelRef ?? ownPanel;
-  const groups = useMemo(() => byFold(grouped(listed(LIBRARY))), []);
+  // The menu's own search, matched as the library's search box matches
+  // (places, sources, "16 point"). It is not the library's: the Previous
+  // and Next arrows follow the library's filters, and must not change
+  // while the learner looks something up here.
+  const [query, setQuery] = useState('');
+  const groups = useMemo(() => {
+    const all = grouped(listed(LIBRARY));
+    return byFold(query.trim() ? filtered(all, { query }) : all);
+  }, [query]);
   // Open with the current pattern in sight.
   useLayoutEffect(() => {
     panel.current
@@ -233,7 +248,34 @@ function MenuPanel({
         >
           ✕
         </button>
+        <label className="filter-search pattern-menu-search">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="16.5" y1="16.5" x2="21" y2="21" />
+          </svg>
+          <span className="visually-hidden">Search patterns</span>
+          <input
+            type="search"
+            dir="auto"
+            placeholder="Search: a place, “16 point”…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(event) => {
+              // Escape empties the search first, then closes the menu.
+              if (event.key === 'Escape' && query) {
+                event.preventDefault();
+                event.stopPropagation();
+                setQuery('');
+              }
+            }}
+          />
+        </label>
       </header>
+      {query.trim() && !groups.length ? (
+        <p className="pattern-menu-empty" role="status">
+          No patterns match “{query.trim()}”.
+        </p>
+      ) : null}
       {groups.map(([fold, entries]) => (
         <section key={fold ?? 'other'}>
           <h3>{fold ? foldLabel(fold) : 'Other'}</h3>

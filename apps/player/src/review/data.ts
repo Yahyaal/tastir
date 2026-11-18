@@ -9030,9 +9030,17 @@ export const PROGRESS: {
   readonly next: readonly ProgressItem[];
   readonly waiting: readonly ProgressItem[];
 } = {
-  updated: '16 November 2026',
+  updated: '17 November 2026',
   goal: 'Review the reliability repairs and real-phone acceptance, then palette choices, clearer teaching, a beginner’s path and feedback. New patterns wait.',
   done: [
+    {
+      title: 'The pattern browser can stay beside the drawing',
+      text: 'Patterns now toggles a docked sidebar on wide screens. The canvas moves into the remaining space, without dimming or blocking it. The sidebar stays open across pattern choices and remembers the desktop preference. Narrow screens use a drawer that closes after a selection. Screenshot review checked light/dark desktop, tablet and phone, including resizing between modes. The owner approved publication following verification.',
+      link: {
+        label: 'Review the show/hide sidebar',
+        href: '/__review/renders/pattern-sidebar-2026-11-16/index.html',
+      },
+    },
     {
       title: 'LEARN.2 Start here and next-lesson navigation',
       text: 'The approved path now connects twelve existing lessons. Start here opens the first paused watch step; finished lessons offer the next idea, and kept draw-along boards offer the next drawing. Original difficulty and photo limits remain visible. Nothing is marked complete from a visit. Included in the owner-approved learning and UI release.',
@@ -9616,11 +9624,11 @@ export const PROGRESS: {
     },
   ],
   now: {
-    title: 'The pattern browser can stay beside the drawing',
-    text: 'Patterns now toggles a docked sidebar on wide screens. The canvas moves into the remaining space, without dimming or blocking it. The sidebar stays open across pattern choices and remembers the desktop preference. Narrow screens use a drawer that closes after a selection. Screenshot review checked light/dark desktop, tablet and phone, including resizing between modes. The owner approved publication following verification.',
+    title: 'Faster loading, cleaner interlace, menu search',
+    text: 'Comares west dado opened after nine seconds: the page froze drawing the interlace after the pieces were found. The crossing check now looks only nearby and the worker finds the weave and rings, with the same shapes as before. Its interlace bands were wider than the gaps between crossings, so edges ran thick, thin and broken; bands now thin only where crossings crowd. The Patterns menu has its own search box.',
     link: {
-      label: 'Review the show/hide sidebar',
-      href: '/__review/renders/pattern-sidebar-2026-11-16/index.html',
+      label: 'Review the three changes',
+      href: '/__review/renders/interlace-speed-search-2026-11-17/index.html',
     },
   },
   next: [

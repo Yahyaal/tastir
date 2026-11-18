@@ -1,7 +1,14 @@
 import example from '@tutorials/eight-fold-star-and-cross.json';
 import dado from '@tutorials/alhambra-comares-west-dado.json';
 import type { Vec } from '@tastir/engine';
-import { overlapsAt, PAST_BAND, PAST_EDGE, weaveOf } from './interlace';
+import {
+  bandFit,
+  CROSSING_ROOM,
+  overlapsAt,
+  PAST_BAND,
+  PAST_EDGE,
+  weaveOf,
+} from './interlace';
 import { loadModel } from './model';
 
 describe('the top band at a crossing', () => {
@@ -75,5 +82,37 @@ describe('crossings closer than a band width', () => {
       });
     });
     expect(split).toBeGreaterThan(0);
+  });
+});
+
+describe('the band width that fits the crossings', () => {
+  const edgeOf = (model: ReturnType<typeof loadModel>) => {
+    const xs = model.pattern.cell.corners.map((p) => p.x);
+    return 0.012 * ((Math.max(...xs) - Math.min(...xs)) / 2) * 4;
+  };
+
+  it('leaves a pattern with room as it is', () => {
+    const model = loadModel(example);
+    expect(bandFit(model.pattern, edgeOf(model))).toBe(1);
+  });
+
+  it('thins the bands where crossings crowd, so they sit apart', () => {
+    const model = loadModel(dado);
+    const edge = edgeOf(model);
+    const fit = bandFit(model.pattern, edge);
+    expect(fit).toBeLessThan(0.7);
+    expect(fit).toBeGreaterThan(0.4);
+    // Nineteen crossings in twenty have CROSSING_ROOM band widths to the
+    // nearest other.
+    const w = weaveOf(model.pattern);
+    const near = w.crossings.map((a) =>
+      Math.min(
+        ...w.crossings
+          .filter((b) => b !== a)
+          .map((b) => Math.hypot(b.at.x - a.at.x, b.at.y - a.at.y)),
+      ),
+    );
+    const roomy = near.filter((d) => d >= CROSSING_ROOM * edge * fit - 1e-9);
+    expect(roomy.length / near.length).toBeGreaterThanOrEqual(0.95);
   });
 });

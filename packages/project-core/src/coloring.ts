@@ -366,16 +366,23 @@ export function groutFor(colours: readonly string[], grout: string): string {
   );
 }
 
+/** Colours this close read as the same colour a shade apart. */
+const SHADE = 16;
+
 /**
  * A piece's colour under bands (STYLE.4): a piece the colour of the band
  * (white pieces under white interlace) makes the band vanish, so it takes a
- * light tint of the palette's strongest colour instead.
+ * light tint of the palette's strongest colour instead. A piece a shade off
+ * the bands' dark `edge` (a near-black piece by the near-black edge) takes
+ * the edge's colour, or the edge shows round it as a second black.
  */
 export function underBand(
   colour: string,
   band: string,
   colours: readonly string[],
+  edge?: string,
 ): string {
+  if (edge !== undefined && colourDistance(colour, edge) < SHADE) return edge;
   if (colourDistance(colour, band) >= NEAR) return colour;
   const accent = [...colours].sort(
     (x, y) => colourDistance(y, band) - colourDistance(x, band),

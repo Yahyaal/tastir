@@ -8,7 +8,7 @@ import {
 import { useId, useLayoutEffect, useMemo, useRef } from 'react';
 import { fit, viewBox, width, type Rect } from './camera';
 import { DEFAULT_FINISH, groutOf, underBand, type Finish } from './coloring';
-import { relief, strapWidths, wallView } from './drawing';
+import { relief, strapWidths, styleGrout, wallView } from './drawing';
 import { overlapsAt, shapePath, weaveRepeat } from './interlace';
 import type { Model } from './model';
 import { useCamera } from './useCamera';
@@ -16,7 +16,7 @@ import { placeKey } from './placement';
 import { ringsOf } from './rings';
 import { boardRef as agentBoardRef } from '../agent/screenTargets';
 import { repeatTargets } from '../agent/repeatTargets';
-import { JaliFramework, JaliGround, latticeWidth } from './jali';
+import { JaliFramework, JaliGround } from './jali';
 import { shownStyle } from './wallStyles';
 import { DEFAULT_PEN, PAPER, penStrokes } from './pen';
 import {
@@ -203,10 +203,7 @@ export function Wall({
   const jali = style === 'jali';
   // The bare ink line of the print sheet.
   const strokes = lines && !pen.wash ? penStrokes() : [];
-  const groutWidth = strapWidths(
-    model,
-    jali ? latticeWidth(grout, model.pattern.pieces.length) : grout,
-  ).grout;
+  const groutWidth = strapWidths(model, styleGrout(model, style, grout)).grout;
 
   // The pieces and ink strokes in tile coordinates, with neighbours' copies.
   const shifted = useMemo(() => {
@@ -247,9 +244,10 @@ export function Wall({
             const own = fill
               ? fill(k, i, j)
               : (colors[piece.type] ?? '#999999');
-            // A piece the band's colour would hide the band (STYLE.4).
+            // A piece the band's colour would hide the band (STYLE.4); one
+            // a shade off the dark edge takes the edge's colour.
             const colour = banded(style)
-              ? underBand(own, finish.band, colors)
+              ? underBand(own, finish.band, colors, finish.lines)
               : own;
             out.push({
               type: piece.type,
@@ -289,6 +287,7 @@ export function Wall({
     groutWidth,
     finish.carved,
     finish.band,
+    finish.lines,
     strokes.length,
   ]);
   // The watercolour's paint.

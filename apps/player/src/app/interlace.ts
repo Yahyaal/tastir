@@ -21,6 +21,57 @@ export function weaveOf(pattern: Pattern): Weave {
   return found;
 }
 
+/** A weave found elsewhere (the worker), so the page need not find it. */
+export function knowWeave(pattern: Pattern, found: Weave) {
+  weaves.set(pattern, found);
+}
+
+/** How far apart crossings must sit, in band widths (dark edges and
+ * all), for the over and under to read cleanly. Closer, the bands overlap
+ * their neighbours: the dark edges come out thick and thin and stop short,
+ * and the white of one band runs into the next. */
+export const CROSSING_ROOM = 1.4;
+
+const fits = new WeakMap<Pattern, number>();
+
+/**
+ * What to multiply the interlace's band width by so that crossings sit at
+ * least CROSSING_ROOM band widths apart, for bands `edge` wide at the
+ * normal width: 1 where there is room already (most patterns), less in
+ * the densest (Comares west dado, 800 crossings to a tile). One crossing
+ * in twenty may sit closer, so a few crowded spots do not thin the whole
+ * pattern's bands.
+ */
+export function bandFit(pattern: Pattern, edge: number): number {
+  const known = fits.get(pattern);
+  if (known !== undefined) return known;
+  const w = weaveOf(pattern);
+  const [m, n] = w.repeat;
+  const { u, v } = pattern.cell;
+  const nearest = w.crossings
+    .map((a) => {
+      let best = Infinity;
+      for (let di = -1; di <= 1; di++)
+        for (let dj = -1; dj <= 1; dj++) {
+          const sx = u.x * m * di + v.x * n * dj;
+          const sy = u.y * m * di + v.y * n * dj;
+          for (const b of w.crossings) {
+            const d = Math.hypot(b.at.x + sx - a.at.x, b.at.y + sy - a.at.y);
+            if (d > 1e-9 && d < best) best = d;
+          }
+        }
+      return best;
+    })
+    .sort((a, b) => a - b);
+  const close = nearest[Math.floor(nearest.length * 0.05)];
+  const fit =
+    close === undefined || !Number.isFinite(close) || edge <= 0
+      ? 1
+      : Math.min(1, close / (CROSSING_ROOM * edge));
+  fits.set(pattern, fit);
+  return fit;
+}
+
 /** A short piece of the band on top at a crossing, along the band and
  * round its bends: its dark edges (`edge`), and its light middle a little
  * longer (`band`), so no seam shows where the piece meets its own band. */
@@ -272,29 +323,54 @@ function overlapsOf(pattern: Pattern, outer: number, inner: number) {
     return { at: c.at, edge, band: shape(inner / 2, pastBand), radius };
   });
   const share = outer * SHARE;
+  // Every shape and its copies one repeat over, in a grid of squares as
+  // wide as two of the largest shapes, so each crossing looks only at the
+  // shapes near it (Comares west dado has 800 crossings to a tile).
+  const size = 2 * Math.max(...shapes.map((s) => s.radius), 1e-9);
+  const square = (x: number, y: number) =>
+    `${Math.floor(x / size)},${Math.floor(y / size)}`;
+  const grid = new Map<string, number[]>();
+  const copies: { l: number; sx: number; sy: number; home: boolean }[] = [];
+  for (let di = -1; di <= 1; di++)
+    for (let dj = -1; dj <= 1; dj++) {
+      const sx = u.x * m * di + v.x * n * dj;
+      const sy = u.y * m * di + v.y * n * dj;
+      shapes.forEach((b, l) => {
+        const key = square(b.at.x + sx, b.at.y + sy);
+        const list = grid.get(key);
+        if (list) list.push(copies.length);
+        else grid.set(key, [copies.length]);
+        copies.push({ l, sx, sy, home: !di && !dj });
+      });
+    }
   const out = shapes.map((a, k): Overlap => {
     let edge: Poly[] = [a.edge];
     let band: Poly[] = [a.band];
-    for (let di = -1; di <= 1; di++)
-      for (let dj = -1; dj <= 1; dj++) {
-        const sx = u.x * m * di + v.x * n * dj;
-        const sy = u.y * m * di + v.y * n * dj;
-        shapes.forEach((b, l) => {
-          if (l === k && !di && !dj) return;
-          const bx = b.at.x + sx;
-          const by = b.at.y + sy;
-          const d = Math.hypot(bx - a.at.x, by - a.at.y);
-          if (d === 0 || d >= a.radius + b.radius) return;
-          // The line halfway between them: this one keeps its own side
-          // and a hair over it.
-          const nx = (bx - a.at.x) / d;
-          const ny = (by - a.at.y) / d;
-          const c = (nx * (a.at.x + bx)) / 2 + (ny * (a.at.y + by)) / 2 + share;
-          const other = b.edge.map((q) => ({ x: q.x + sx, y: q.y + sy }));
-          edge = cede(edge, other, { x: nx, y: ny }, c);
-          band = cede(band, other, { x: nx, y: ny }, c);
-        });
-      }
+    const gx = Math.floor(a.at.x / size);
+    const gy = Math.floor(a.at.y / size);
+    const near: number[] = [];
+    for (let x = gx - 1; x <= gx + 1; x++)
+      for (let y = gy - 1; y <= gy + 1; y++)
+        near.push(...(grid.get(`${x},${y}`) ?? []));
+    // In the order of the copies, so the shapes come out the same.
+    near.sort((p, q) => p - q);
+    for (const c of near) {
+      const { l, sx, sy, home } = copies[c] as (typeof copies)[number];
+      if (l === k && home) continue;
+      const b = shapes[l] as (typeof shapes)[number];
+      const bx = b.at.x + sx;
+      const by = b.at.y + sy;
+      const d = Math.hypot(bx - a.at.x, by - a.at.y);
+      if (d === 0 || d >= a.radius + b.radius) continue;
+      // The line halfway between them: this one keeps its own side and a
+      // hair over it.
+      const nx = (bx - a.at.x) / d;
+      const ny = (by - a.at.y) / d;
+      const c2 = (nx * (a.at.x + bx)) / 2 + (ny * (a.at.y + by)) / 2 + share;
+      const other = b.edge.map((q) => ({ x: q.x + sx, y: q.y + sy }));
+      edge = cede(edge, other, { x: nx, y: ny }, c2);
+      band = cede(band, other, { x: nx, y: ny }, c2);
+    }
     return { edge, band };
   });
   byWidth.set(key, out);

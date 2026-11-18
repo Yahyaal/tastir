@@ -24,6 +24,8 @@ The player header now centers the title between compact Previous and Next arrows
 
 Patterns now toggles a real sidebar on wide screens: the drawing makes room, remains usable, and the list stays open while choosing patterns. The desktop open/closed preference is remembered; narrow screens use a drawer. [Sidebar screenshot review](http://localhost:4200/__review/renders/pattern-sidebar-2026-11-16/index.html). Full root checks and 94 desktop/tablet/phone browser checks passed (two intentional phone skips). The owner approved publishing the learning path and all UI changes on 16 November; [GitHub deployments](https://github.com/Yahyaal/tastir/deployments) records release status.
 
+On 17 November three owner reports were fixed: Comares west dado no longer freezes for seconds after its pieces are found (PERF.1), dense patterns' interlace bands thin so crossings read cleanly (STYLE.14), and the Patterns menu has a search box (NAV.1). [Before/after review](http://localhost:4200/__review/renders/interlace-speed-search-2026-11-17/index.html).
+
 ## The next goal
 
 Try [the working learning path](http://localhost:4200/#/learn), approved by the owner on 16 November after the proposal was explained. The library now offers Start here; finished lessons suggest the next existing tutorial, and kept draw-along boards keep the learner in drawing mode. The twelve lessons preserve their original ratings and visible reference-photo limitations. The owner approved publication after the final sidebar checks. [Implementation and checks](testing/learning-path-2026-11-16.md).

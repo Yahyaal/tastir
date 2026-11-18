@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import type { Weave } from '@tastir/engine';
+import { knowWeave } from './interlace';
 import { loadModel, withInking, type Model } from './model';
+import { knowRings } from './rings';
 
 /** The stage a tutorial is at while it loads. */
 export type Progress = 'checking' | 'drawing' | 'pieces';
@@ -14,7 +17,16 @@ export interface Request {
 
 export type Reply =
   | { readonly id: number; readonly kind: 'progress'; readonly stage: Progress }
-  | { readonly id: number; readonly kind: 'done'; readonly model: Model }
+  | {
+      readonly id: number;
+      readonly kind: 'done';
+      readonly model: Model;
+      /** Found in the worker too, so the page does not stop to find them:
+       * the weave (unless the pattern cannot weave), and whether there are
+       * rings to colour round. */
+      readonly weave?: Weave;
+      readonly rings?: boolean;
+    }
   | { readonly id: number; readonly kind: 'error'; readonly message: string };
 
 export const PROGRESS_TEXT: Record<Progress, string> = {
@@ -69,8 +81,12 @@ export function loadInWorker(
       if (reply.kind === 'progress') return onProgress(reply.stage);
       clearTimeout(timeout);
       waiting.delete(id);
-      if (reply.kind === 'done') resolve(reply.model);
-      else reject(new Error(reply.message));
+      if (reply.kind === 'done') {
+        if (reply.weave) knowWeave(reply.model.pattern, reply.weave);
+        if (reply.rings !== undefined)
+          knowRings(reply.model.pattern, reply.rings);
+        resolve(reply.model);
+      } else reject(new Error(reply.message));
     });
     try {
       engineWorker().postMessage({ id, json, inked } satisfies Request);

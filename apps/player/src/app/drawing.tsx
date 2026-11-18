@@ -29,7 +29,7 @@ import {
 } from './coloring';
 import { byPlace, colouredModel, placeFills } from './placement';
 import { carriersOf, hiddenBeats, inkBeatsOf, type Model } from './model';
-import { overlapsAt, shapePath } from './interlace';
+import { bandFit, overlapsAt, shapePath } from './interlace';
 import type { JaliAppearance, PenLook } from '@tastir/schema';
 import type { WallStyle } from './Wall';
 import { shownStyle } from './wallStyles';
@@ -1213,6 +1213,19 @@ export function strapWidths(model: Model, grout = 1) {
   return { grout: g, edge: g * 4, band: g * 2.4 };
 }
 
+/**
+ * The band or grout width a wall style draws at, as a multiple of the
+ * normal width, for the learner's `grout`: the interlace's bands thinner
+ * in patterns whose crossings crowd (bandFit), the screen's lattice by
+ * how many pieces there are, the rest as asked.
+ */
+export function styleGrout(model: Model, look: WallStyle, grout: number) {
+  if (look === 'jali') return latticeWidth(grout, model.pattern.pieces.length);
+  if (look === 'interlace')
+    return grout * bandFit(model.pattern, strapWidths(model).edge);
+  return grout;
+}
+
 export interface PaletteColorGroup {
   color: string;
   minDistance: number;
@@ -1293,6 +1306,24 @@ export function orderedPaletteColors(
  * wall first shows it: tiles with grout, or strapwork, where each pattern
  * line is a light band with dark edges.
  */
+/** The box round some points (quicker than boxOf for many calls). */
+function boundsOf(ps: readonly Vec[]): Rect {
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+  for (const p of ps) {
+    if (p.x < minX) minX = p.x;
+    if (p.x > maxX) maxX = p.x;
+    if (p.y < minY) minY = p.y;
+    if (p.y > maxY) maxY = p.y;
+  }
+  return { minX, maxX, minY, maxY };
+}
+
+const boxMeets = (a: Rect, b: Rect) =>
+  a.maxX >= b.minX && a.minX <= b.maxX && a.maxY >= b.minY && a.minY <= b.maxY;
+
 export function Thumbnail({
   model,
   coloring = tutorialColoring(model),
@@ -1333,10 +1364,7 @@ export function Thumbnail({
   const coloured = colouredModel(model, coloring);
   const fill = byPlace(coloured) ? placeFills(coloured, coloring) : undefined;
   const jali = look === 'jali';
-  const widths = strapWidths(
-    model,
-    jali ? latticeWidth(grout, model.pattern.pieces.length) : grout,
-  );
+  const widths = strapWidths(model, styleGrout(model, look, grout));
   // As the wall first shows it: strapwork bands, tiles with grout, or
   // only the lines.
   const strap = look === 'strapwork' || look === 'interlace';
@@ -1344,11 +1372,23 @@ export function Thumbnail({
   const lines = look === 'lines';
   // Only what shows: pieces and lines whose box meets the view.
   const seen = fit(view, 1 + widths.edge);
-  const meets = (ps: readonly Vec[]) =>
-    Math.max(...ps.map((p) => p.x)) >= seen.minX &&
-    Math.min(...ps.map((p) => p.x)) <= seen.maxX &&
-    Math.max(...ps.map((p) => p.y)) >= seen.minY &&
-    Math.min(...ps.map((p) => p.y)) <= seen.maxY;
+  const meets = (ps: readonly Vec[]) => boxMeets(boundsOf(ps), seen);
+  // A copy of the tile wholly out of sight is skipped at once: a dense
+  // pattern has hundreds of pieces to a tile and the card shows few tiles.
+  const extent = boundsOf([
+    ...model.pattern.pieces.flatMap((p) => p.polygon),
+    ...model.pattern.ink.flatMap((s) => [s.segment.a, s.segment.b]),
+  ]);
+  const tileShows = (d: Vec) =>
+    boxMeets(
+      {
+        minX: extent.minX + d.x - widths.edge,
+        maxX: extent.maxX + d.x + widths.edge,
+        minY: extent.minY + d.y - widths.edge,
+        maxY: extent.maxY + d.y + widths.edge,
+      },
+      seen,
+    );
   const move = (p: Vec, d: Vec): Vec => ({ x: p.x + d.x, y: p.y + d.y });
   const poly = (ps: readonly Vec[]) =>
     `M${ps.map((q) => `${sx(q)} ${sy(q)}`).join('L')}Z`;
@@ -1400,6 +1440,7 @@ export function Thumbnail({
           x: cell.u.x * i + cell.v.x * j,
           y: cell.u.y * i + cell.v.y * j,
         };
+        if (!tileShows(d)) continue;
         model.pattern.pieces.forEach((p, k) => {
           const polygon = p.polygon.map((q) => move(q, d));
           if (!meets(polygon)) return;
@@ -1534,6 +1575,7 @@ export function Thumbnail({
         x: cell.u.x * i + cell.v.x * j,
         y: cell.u.y * i + cell.v.y * j,
       };
+      if (!tileShows(d)) continue;
       if (!jali)
         model.pattern.pieces.forEach((p, k) => {
           const painted = lines && pen.wash;
@@ -1542,7 +1584,9 @@ export function Thumbnail({
           ).map((q) => move(q, d));
           if (!meets(polygon)) return;
           const own = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
-          const base = strap ? underBand(own, finish.band, colors) : own;
+          const base = strap
+            ? underBand(own, finish.band, colors, finish.lines)
+            : own;
           const color =
             lines && !pen.wash
               ? 'none'
