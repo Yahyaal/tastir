@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -13,19 +14,30 @@ import {
   neighbours,
   titleOf,
 } from './browsing';
-import { grouped, holds, LIBRARY, listed, type Entry } from './library';
+import { holds, libraryFamilies, type Entry } from './library';
 import { useModalFocus } from './useModalFocus';
 import { viewAddress, type View } from './ViewSwitch';
+import { prepareModel } from './workerClient';
 
 /**
  * Links to the patterns before and after this one in the library's order,
  * named by their titles so they are not mistaken for the step buttons.
  */
+let lastNeighbours:
+  { key: string; found: ReturnType<typeof neighbours> } | undefined;
+
 export function useNeighbours(id: string) {
-  return useMemo(
-    () => neighbours(grouped(listed(LIBRARY)), id, keptFilters()),
-    [id],
-  );
+  return useMemo(() => {
+    // Previous and Next each ask: the second finds the first's answer.
+    const filters = keptFilters();
+    const key = `${id} ${JSON.stringify(filters)}`;
+    if (lastNeighbours?.key !== key)
+      lastNeighbours = {
+        key,
+        found: neighbours(libraryFamilies(), id, filters),
+      };
+    return lastNeighbours.found;
+  }, [id]);
 }
 
 export function NeighbourLink({
@@ -84,9 +96,31 @@ export function NeighbourLink({
   );
 }
 
+/**
+ * Prepares a pattern's model once the page has settled and the browser is
+ * idle, so following the link needs no wait.
+ */
+function usePrepareLater(json: unknown) {
+  useEffect(() => {
+    if (json === undefined) return undefined;
+    let idle: number | undefined;
+    const settle = setTimeout(() => {
+      const go = () => prepareModel(json);
+      if (typeof requestIdleCallback === 'function')
+        idle = requestIdleCallback(go, { timeout: 3000 });
+      else go();
+    }, 600);
+    return () => {
+      clearTimeout(settle);
+      if (idle !== undefined) cancelIdleCallback(idle);
+    };
+  }, [json]);
+}
+
 /** The views keep: from a result, the next pattern opens at its result. */
 export function PreviousPattern({ id, view }: { id: string; view: View }) {
   const { previous } = useNeighbours(id);
+  usePrepareLater(previous?.json);
   return previous ? (
     <NeighbourLink
       id={previous.id}
@@ -99,6 +133,7 @@ export function PreviousPattern({ id, view }: { id: string; view: View }) {
 
 export function NextPattern({ id, view }: { id: string; view: View }) {
   const { next } = useNeighbours(id);
+  usePrepareLater(next?.json);
   return next ? (
     <NeighbourLink
       id={next.id}
@@ -207,7 +242,7 @@ function MenuPanel({
   // while the learner looks something up here.
   const [query, setQuery] = useState('');
   const groups = useMemo(() => {
-    const all = grouped(listed(LIBRARY));
+    const all = libraryFamilies();
     return byFold(query.trim() ? filtered(all, { query }) : all);
   }, [query]);
   // Open with the current pattern in sight.
@@ -286,6 +321,10 @@ function MenuPanel({
                   href={viewAddress(e.id, view)}
                   aria-current={holds(e, id) ? 'page' : undefined}
                   onClick={docked ? undefined : onClose}
+                  // Pointing at a pattern prepares it, so the click that
+                  // usually follows opens it at once.
+                  onPointerEnter={() => prepareModel(e.json)}
+                  onFocus={() => prepareModel(e.json)}
                 >
                   {e.preview ? (
                     <img

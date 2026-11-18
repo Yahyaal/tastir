@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import type { Tutorial } from '@tastir/schema';
 import { addPattern, freeTitle } from '../editor/patterns';
-import { grouped, holds, LIBRARY, listed } from './library';
+import { holds, libraryFamilies } from './library';
 import { aboutOf, foldLabel } from './browsing';
 
 /** A finished lesson leads into experimenting and exploring the same symmetry. */
 export function ExploreNext({ tutorial }: { tutorial: Tutorial }) {
   const [refused, setRefused] = useState(false);
   const fold = tutorial.star ?? tutorial.fold;
-  const related = grouped(listed(LIBRARY))
+  const related = libraryFamilies()
     .filter(
       (entry) =>
         !holds(entry, tutorial.id) &&

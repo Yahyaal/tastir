@@ -26,6 +26,8 @@ Patterns now toggles a real sidebar on wide screens: the drawing makes room, rem
 
 On 17 November three owner reports were fixed: Comares west dado no longer freezes for seconds after its pieces are found (PERF.1), dense patterns' interlace bands thin so crossings read cleanly (STYLE.14), and the Patterns menu has a search box (NAV.1). [Before/after review](http://localhost:4200/__review/renders/interlace-speed-search-2026-11-17/index.html).
 
+Loading followed (PERF.2): the card now appears only past 0.4 s, and patterns just seen or prepared as Next, Previous or under the pointer in the menu open at once.
+
 ## The next goal
 
 Try [the working learning path](http://localhost:4200/#/learn), approved by the owner on 16 November after the proposal was explained. The library now offers Start here; finished lessons suggest the next existing tutorial, and kept draw-along boards keep the learner in drawing mode. The twelve lessons preserve their original ratings and visible reference-photo limitations. The owner approved publication after the final sidebar checks. [Implementation and checks](testing/learning-path-2026-11-16.md).

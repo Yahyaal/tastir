@@ -5909,6 +5909,24 @@ svg.tiles {
   color: var(--theme-text-primary);
   background: var(--theme-bg-canvas);
 }
+/* Most patterns are ready in a tenth of a second: the card waits 0.4 s
+   before it shows, so a quick load is not a flash of "loading". It is in
+   the page all along, for screen readers. */
+.pattern-loading-home,
+.pattern-loading-card {
+  animation: pattern-loading-in 0.2s ease-out 0.4s both;
+}
+@keyframes pattern-loading-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pattern-loading-home,
+  .pattern-loading-card {
+    animation-duration: 0.01s;
+  }
+}
 .pattern-loading-home {
   align-self: flex-start;
   color: var(--theme-accent);

@@ -114,11 +114,77 @@ function loadNow(json: unknown, inked?: readonly string[]): Loading {
   }
 }
 
+/** A model asked of the worker: its stage while it loads, then the model. */
+interface Kept {
+  readonly json: unknown;
+  /** The saved design's inked pieces, as text, if any. */
+  readonly ink: string | undefined;
+  readonly promise: Promise<Model>;
+  model?: Model;
+  stage: Progress;
+  readonly listeners: Set<(stage: Progress) => void>;
+}
+
+/** The last few models, so going back to a pattern, or on to one prepared
+ * ahead, needs no wait. A dense pattern's model is about half a megabyte. */
+const KEEP = 6;
+let kept: Kept[] = [];
+
+/** The model for a tutorial (and a design's inking), from those kept or
+ * asked of the worker now. */
+function prepare(json: unknown, ink: string | undefined): Kept {
+  const found = kept.find((k) => k.json === json && k.ink === ink);
+  if (found) {
+    kept = [found, ...kept.filter((k) => k !== found)];
+    return found;
+  }
+  const listeners = new Set<(stage: Progress) => void>();
+  const entry: Kept = {
+    json,
+    ink,
+    stage: 'checking',
+    listeners,
+    promise: (async () => {
+      const data = typeof json === 'function' ? await json() : json;
+      return loadInWorker(
+        data,
+        (stage) => {
+          entry.stage = stage;
+          for (const listen of listeners) listen(stage);
+        },
+        ink === undefined ? undefined : (JSON.parse(ink) as string[]),
+      );
+    })(),
+  };
+  entry.promise.then(
+    (model) => {
+      entry.model = model;
+    },
+    // A failed load is not kept: the next ask tries again.
+    () => {
+      kept = kept.filter((k) => k !== entry);
+    },
+  );
+  kept = [entry, ...kept].slice(0, KEEP);
+  return entry;
+}
+
+/**
+ * Prepares a tutorial's model in the worker before it is asked for (the
+ * next and previous patterns, the one under the pointer in the menu), so
+ * opening it needs no wait.
+ */
+export function prepareModel(json: unknown, inked?: readonly string[]) {
+  if (json === undefined || !canUseWorker()) return;
+  prepare(json, inked && JSON.stringify(inked));
+}
+
 /**
  * A tutorial's model, loaded in the Web Worker; where there is no worker
  * (tests, old browsers) it loads at once on the main thread. With a saved
  * design's inked pieces, the model has the pattern they make (or the
- * tutorial's own, when they no longer fit).
+ * tutorial's own, when they no longer fit). A model loaded or prepared a
+ * moment ago is there at once.
  */
 export function useModel(json: unknown, inked?: readonly string[]): Loading {
   // The inking by value, so a new array with the same pieces is no change.
@@ -143,23 +209,40 @@ export function useModel(json: unknown, inked?: readonly string[]): Loading {
     if (direct) return;
     let live = true;
     const set = (state: Loading) => live && setLoaded({ json, ink, state });
-    set({ progress: 'checking' });
-    const load = async () => {
-      const data = typeof json === 'function' ? await json() : json;
-      if (!live) return undefined;
-      if (!canUseWorker()) return withInking(loadModel(data), pieces).model;
-      return loadInWorker(data, (stage) => set({ progress: stage }), pieces);
-    };
-    load().then(
-      (model) => model && set({ model }),
+    if (!canUseWorker()) {
+      // A tutorial still to fetch, with no worker: load it here.
+      set({ progress: 'checking' });
+      (async () => {
+        const data = typeof json === 'function' ? await json() : json;
+        return withInking(loadModel(data), pieces).model;
+      })().then(
+        (model) => set({ model }),
+        (e: Error) => set({ error: e.message }),
+      );
+      return () => {
+        live = false;
+      };
+    }
+    const entry = prepare(json, ink);
+    if (entry.model) {
+      set({ model: entry.model });
+      return undefined;
+    }
+    set({ progress: entry.stage });
+    const listen = (stage: Progress) => set({ progress: stage });
+    entry.listeners.add(listen);
+    entry.promise.then(
+      (model) => set({ model }),
       (e: Error) => set({ error: e.message }),
     );
     return () => {
       live = false;
+      entry.listeners.delete(listen);
     };
   }, [json, ink, pieces, direct]);
   if (direct) return direct;
-  return loaded && loaded.json === json && loaded.ink === ink
-    ? loaded.state
-    : { progress: 'checking' };
+  if (loaded && loaded.json === json && loaded.ink === ink) return loaded.state;
+  // Kept from a moment ago: shown at once, with no loading screen at all.
+  const ready = kept.find((k) => k.json === json && k.ink === ink)?.model;
+  return ready ? { model: ready } : { progress: 'checking' };
 }

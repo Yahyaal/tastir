@@ -48,18 +48,41 @@ export function bandFit(pattern: Pattern, edge: number): number {
   const w = weaveOf(pattern);
   const [m, n] = w.repeat;
   const { u, v } = pattern.cell;
+  // Each crossing's nearest other, through a grid of squares about as
+  // wide as the crossings are apart, widening the search ring by ring.
+  const points: Vec[] = [];
+  for (let di = -1; di <= 1; di++)
+    for (let dj = -1; dj <= 1; dj++)
+      for (const c of w.crossings)
+        points.push({
+          x: c.at.x + u.x * m * di + v.x * n * dj,
+          y: c.at.y + u.y * m * di + v.y * n * dj,
+        });
+  const area = Math.abs(u.x * v.y - u.y * v.x) * m * n;
+  const size = Math.sqrt(area / Math.max(1, w.crossings.length)) || 1;
+  const grid = new Map<string, Vec[]>();
+  const cellOf = (p: Vec) => [Math.floor(p.x / size), Math.floor(p.y / size)];
+  for (const p of points) {
+    const [x, y] = cellOf(p);
+    const key = `${x},${y}`;
+    const list = grid.get(key);
+    if (list) list.push(p);
+    else grid.set(key, [p]);
+  }
   const nearest = w.crossings
-    .map((a) => {
+    .map(({ at: a }) => {
+      const [gx, gy] = cellOf(a) as [number, number];
       let best = Infinity;
-      for (let di = -1; di <= 1; di++)
-        for (let dj = -1; dj <= 1; dj++) {
-          const sx = u.x * m * di + v.x * n * dj;
-          const sy = u.y * m * di + v.y * n * dj;
-          for (const b of w.crossings) {
-            const d = Math.hypot(b.at.x + sx - a.at.x, b.at.y + sy - a.at.y);
-            if (d > 1e-9 && d < best) best = d;
+      // Ring r holds every point nearer than r squares.
+      for (let r = 0; r <= 32 && best > (r - 1) * size; r++)
+        for (let x = gx - r; x <= gx + r; x++)
+          for (let y = gy - r; y <= gy + r; y++) {
+            if (Math.max(Math.abs(x - gx), Math.abs(y - gy)) !== r) continue;
+            for (const b of grid.get(`${x},${y}`) ?? []) {
+              const d = Math.hypot(b.x - a.x, b.y - a.y);
+              if (d > 1e-9 && d < best) best = d;
+            }
           }
-        }
       return best;
     })
     .sort((a, b) => a - b);
