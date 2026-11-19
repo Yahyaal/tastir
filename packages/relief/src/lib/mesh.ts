@@ -414,15 +414,34 @@ function joined(faces: readonly (readonly P3[])[]) {
   return { points: corners.points, faces: list, seen };
 }
 
+/** A convex outline cut to a convex cell (both counter-clockwise). */
+export function clipOutline(outline: readonly P2[], cell: readonly P2[]): P2[] {
+  return clip(
+    outline.map((p) => ({ x: p.x, y: p.y, z: 0 })),
+    cell,
+  ).map((p) => ({ x: p.x, y: p.y }));
+}
+
+/** Is p on the boundary of the convex outline? */
+export function isOnOutline(p: P2, outline: readonly P2[], tol = 1e-4): boolean {
+  return onOutline(p, outline, tol);
+}
+
 /**
  * The top of a solid over its outline: the carved surface clipped inside
  * the frame, and when there is a frame, upright walls from the carving up
  * to it and the frame itself at `top`. Its edge lies on the outline.
+ *
+ * Given a `cell` (convex), only the part of it over the cell: the frame
+ * is the whole outline's frame, and along the cell's sides (the seams
+ * with the next parts) the top stops with no wall, for `standOn` to close.
  */
-export function topOf(solid: Solid): P3[][] {
+export function topOf(solid: Solid, cell?: readonly P2[]): P3[][] {
   const { outline, frame, top } = solid;
-  const inner = frame > 0 ? inset(outline, frame) : outline.slice();
+  const whole = frame > 0 ? inset(outline, frame) : outline.slice();
+  const inner = cell ? clipOutline(whole, cell) : whole;
   const surface: P3[][] = [];
+  if (inner.length < 3) return frameOver(outline, whole, top, cell);
   // A concave face cut by the outline can fold back along it; its convex
   // parts cut cleanly.
   for (const whole of solid.surface)
@@ -441,18 +460,31 @@ export function topOf(solid: Solid): P3[][] {
       if (an === bn || seen.has(`${bn},${an}`)) continue;
       const p = points[an]!;
       const q = points[bn]!;
-      checkOnOutline(p, q, inner);
+      const mid = { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 };
+      if (p.x === q.x && p.y === q.y) continue;
+      if (cell && onOutline(mid, cell, 1e-4) && !onOutline(mid, whole, 1e-4)) continue;
+      checkOnOutline(p, q, whole);
       out.push([at(q, top), q, p, at(p, top)]);
     }
+  out.push(...frameOver(outline, whole, top, cell));
+  return out;
+}
+
+/** The frame between an outline and its inset, at `top`, over a cell. */
+function frameOver(
+  outline: readonly P2[],
+  inner: readonly P2[],
+  top: number,
+  cell: readonly P2[] | undefined,
+): P3[][] {
+  const at = (p: P2): P3 => ({ x: p.x, y: p.y, z: top });
+  const out: P3[][] = [];
   const m = outline.length;
   for (let i = 0; i < m; i++) {
     const k = (i + 1) % m;
-    out.push([
-      at(outline[i]!, top),
-      at(outline[k]!, top),
-      at(inner[k]!, top),
-      at(inner[i]!, top),
-    ]);
+    const quad = [at(outline[i]!), at(outline[k]!), at(inner[k]!), at(inner[i]!)];
+    const cut = cell ? clip(quad, cell) : quad;
+    if (cut.length >= 3 && Math.abs(signedArea(cut)) > 1e-12) out.push(cut);
   }
   return out;
 }
@@ -465,18 +497,52 @@ function checkOnOutline(p: P2, q: P2, outline: readonly P2[]) {
     );
 }
 
+/** A round hole for an alignment pin, across a seam: its centre on the
+ * outline and its height. It runs square into the solid. */
+export interface Pin {
+  readonly centre: P2;
+  readonly z: number;
+}
+
+/** Pin holes take 1.75 mm filament: 2 mm across, 6 mm deep, 16 sides. */
+export const PIN_HOLE = { across: 2, depth: 6, sides: 16 } as const;
+
+/** The hole's corner radius, so the circle 2 mm across fits inside it. */
+const PIN_R = PIN_HOLE.across / 2 / Math.cos(Math.PI / PIN_HOLE.sides);
+
+/** The volume of one pin hole, mm³. */
+export function pinHoleVolume(): number {
+  const n = PIN_HOLE.sides;
+  return (n / 2) * PIN_R * PIN_R * Math.sin((2 * Math.PI) / n) * PIN_HOLE.depth;
+}
+
 /**
  * A top standing on the table: upright walls from its edge (which must
  * lie on the outline) down to `base`, and a flat bottom there. Throws
- * when the top has a gap, rather than close it with a guess.
+ * when the top has a gap, rather than close it with a guess. Each pin
+ * cuts its hole into the wall it lies on.
  */
 export function standOn(
   top: readonly (readonly P3[])[],
   outline: readonly P2[],
   base = 0,
+  pins: readonly Pin[] = [],
 ): Mesh {
   const { points, faces, seen } = joined(top);
   const out: P3[][] = faces.map((f) => f.map((n) => points[n]!));
+  const m = outline.length;
+  // The pins on each side of the outline, as distances along it.
+  const holes = new Map<number, { s: number; z: number }[]>();
+  for (const pin of pins) {
+    const side = sideOf(pin.centre, outline);
+    if (side < 0) throw new Error(`A pin at (${pin.centre.x.toFixed(2)}, ${pin.centre.y.toFixed(2)}) mm is off the outline.`);
+    const a = outline[side]!;
+    const s = Math.hypot(pin.centre.x - a.x, pin.centre.y - a.y);
+    const list = holes.get(side) ?? [];
+    list.push({ s, z: pin.z });
+    holes.set(side, list);
+  }
+  const along = new Map<number, { s0: number; z0: number; s1: number; z1: number }[]>();
   for (const f of faces)
     for (let i = 0; i < f.length; i++) {
       const an = f[i]!;
@@ -484,11 +550,118 @@ export function standOn(
       if (an === bn || seen.has(`${bn},${an}`)) continue;
       const p = points[an]!;
       const q = points[bn]!;
+      // An upright edge on the outline closes against the walls beside it.
+      if (p.x === q.x && p.y === q.y) continue;
       checkOnOutline(p, q, outline);
+      const side = holes.size ? sideOf({ x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 }, outline) : -1;
+      if (side >= 0 && holes.has(side)) {
+        const a = outline[side]!;
+        const s = (r: P2) => Math.hypot(r.x - a.x, r.y - a.y);
+        const list = along.get(side) ?? [];
+        list.push({ s0: s(p), z0: p.z, s1: s(q), z1: q.z });
+        along.set(side, list);
+        continue;
+      }
       out.push([p, { ...p, z: base }, { ...q, z: base }, q]);
     }
+  for (const [side, edges] of along) {
+    const a = outline[side]!;
+    const b = outline[(side + 1) % m]!;
+    out.push(...wallWithHoles(a, b, edges, holes.get(side)!, base));
+  }
   out.push(outline.map((p) => ({ ...p, z: base })).reverse());
   return meshOf(out);
+}
+
+/** Which side of a convex outline p lies on (-1 for none). */
+function sideOf(p: P2, outline: readonly P2[]): number {
+  for (let i = 0; i < outline.length; i++)
+    if (onOutline(p, [outline[i]!, outline[(i + 1) % outline.length]!], 1e-4)) return i;
+  return -1;
+}
+
+/**
+ * The wall under one side of the outline, from a to b, with round holes
+ * running into the solid. Away from the holes it is cut as usual, one
+ * upright quad under each edge of the top. Over each hole's width it is
+ * a face below the hole and a face above it up to the top.
+ */
+function wallWithHoles(
+  a: P2,
+  b: P2,
+  edges: readonly { s0: number; z0: number; s1: number; z1: number }[],
+  holes: readonly { s: number; z: number }[],
+  base: number,
+): P3[][] {
+  const len = Math.hypot(b.x - a.x, b.y - a.y);
+  const d = { x: (b.x - a.x) / len, y: (b.y - a.y) / len };
+  const inward = { x: -d.y, y: d.x };
+  const at = (s: number, z: number, deep = 0): P3 => ({
+    x: a.x + d.x * s + inward.x * deep,
+    y: a.y + d.y * s + inward.y * deep,
+    z,
+  });
+  const n = PIN_HOLE.sides;
+  const cols = holes
+    .map((h) => ({ ...h, s0: h.s - PIN_R, s1: h.s + PIN_R, profile: [] as { s: number; z: number }[] }))
+    .sort((p, q) => p.s - q.s);
+  for (let i = 0; i < cols.length; i++) {
+    const c = cols[i]!;
+    if (c.s0 <= 1e-6 || c.s1 >= len - 1e-6 || (i > 0 && cols[i - 1]!.s1 >= c.s0))
+      throw new Error('A pin hole runs off its seam or into another.');
+  }
+  const out: P3[][] = [];
+  const sorted = edges.slice().sort((p, q) => p.s0 - q.s0);
+  for (const e of sorted) {
+    const cuts = [e.s0, e.s1];
+    for (const c of cols) for (const s of [c.s0, c.s1]) if (s > e.s0 && s < e.s1) cuts.push(s);
+    cuts.sort((p, q) => p - q);
+    const zAt = (s: number) => e.z0 + ((e.z1 - e.z0) * (s - e.s0)) / (e.s1 - e.s0);
+    for (let k = 0; k + 1 < cuts.length; k++) {
+      const s0 = cuts[k]!;
+      const s1 = cuts[k + 1]!;
+      if (s1 - s0 <= 0) continue;
+      const mid = (s0 + s1) / 2;
+      const col = cols.find((c) => mid > c.s0 && mid < c.s1);
+      if (col) {
+        const last = col.profile[col.profile.length - 1];
+        if (!last || last.s !== s0 || last.z !== zAt(s0)) col.profile.push({ s: s0, z: zAt(s0) });
+        col.profile.push({ s: s1, z: zAt(s1) });
+      } else out.push([at(s0, zAt(s0)), at(s0, base), at(s1, base), at(s1, zAt(s1))]);
+    }
+  }
+  for (const c of cols) {
+    const ring = Array.from({ length: n }, (_, k) => {
+      const t = (2 * Math.PI * k) / n;
+      return { s: c.s + PIN_R * Math.cos(t), z: c.z + PIN_R * Math.sin(t) };
+    });
+    const top = c.profile;
+    if (!top.length || top[0]!.s - c.s0 > 1e-6 || c.s1 - top[top.length - 1]!.s > 1e-6)
+      throw new Error('A pin hole is not under the top of its seam.');
+    if (Math.min(...top.map((p) => p.z)) <= c.z + PIN_R || c.z - PIN_R <= base)
+      throw new Error('A pin hole does not fit in its seam.');
+    // Below the hole: across the bottom, then back along the hole's lower half.
+    const below: P3[] = [at(c.s0, c.z), at(c.s0, base), at(c.s1, base)];
+    for (let k = 0; k > -n / 2; k--) {
+      const r = ring[(k + n) % n]!;
+      below.push(at(r.s, r.z));
+    }
+    out.push(below);
+    // Above it: along the hole's upper half, then back along the top.
+    const above: P3[] = [];
+    for (let k = n / 2; k >= 0; k--) above.push(at(ring[k]!.s, ring[k]!.z));
+    for (let k = top.length - 1; k >= 0; k--) above.push(at(top[k]!.s, top[k]!.z));
+    out.push(above);
+    // The hole itself and its end.
+    const depth = PIN_HOLE.depth;
+    for (let k = 0; k < n; k++) {
+      const p = ring[k]!;
+      const q = ring[(k + 1) % n]!;
+      out.push([at(p.s, p.z), at(q.s, q.z), at(q.s, q.z, depth), at(p.s, p.z, depth)]);
+    }
+    out.push(ring.map((r) => at(r.s, r.z, depth)));
+  }
+  return out;
 }
 
 /**

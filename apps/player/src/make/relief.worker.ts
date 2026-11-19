@@ -8,12 +8,11 @@ onmessage = ({ data }: MessageEvent<CarveRequest & { id: number }>) => {
   try {
     const done = carve(data);
     const reply: CarveReply = { id, kind: 'done', ...done };
-    const buffers = [done.mesh, done.master].flatMap((m) =>
-      m && m !== done.mesh ? [m.positions.buffer, m.triangles.buffer] : [],
-    );
-    postMessage(reply, {
-      transfer: [done.mesh.positions.buffer, done.mesh.triangles.buffer, ...buffers],
-    });
+    const meshes = [done.mesh, done.master, ...(done.parts ?? []).map((p) => p.mesh)];
+    const buffers = new Set<ArrayBuffer>();
+    for (const m of meshes)
+      if (m) for (const a of [m.positions, m.triangles]) buffers.add(a.buffer as ArrayBuffer);
+    postMessage(reply, { transfer: [...buffers] });
   } catch (e) {
     const reply: CarveReply = {
       id,

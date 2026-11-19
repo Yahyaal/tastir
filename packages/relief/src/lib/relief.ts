@@ -1,4 +1,5 @@
-import { standOn, topOf, type Mesh } from './mesh.js';
+import { isOnOutline, standOn, topOf, type Mesh, type Pin } from './mesh.js';
+import { partsOf, type Cuts } from './parts.js';
 import { depthOf, profileOf, type Carving } from './profile.js';
 import { signedArea, skeletonHeight, sweep, type P2, type P3 } from './skeleton.js';
 
@@ -137,6 +138,19 @@ export function reliefTop(
   pattern: PatternShape,
   options: ReliefOptions,
 ): { top: P3[][]; outline: P2[] } {
+  const { surface, outline } = reliefSurface(pattern, options);
+  return {
+    top: topOf({ surface, outline, frame: options.frame, top: options.thickness }),
+    outline,
+  };
+}
+
+/** The carved pieces over the whole outline, before the frame and the
+ * outline cut them: what each part of a large panel is cut from. */
+export function reliefSurface(
+  pattern: PatternShape,
+  options: ReliefOptions,
+): { surface: P3[][]; outline: P2[] } {
   const { scale, thickness, band, frame } = options;
   const outline = options.outline ?? rectangle(options.width, options.height);
   if (outline.length < 3 || !(signedArea(outline) > 0) || !(scale > 0))
@@ -169,8 +183,44 @@ export function reliefTop(
   const surface: P3[][] = [];
   for (const piece of piecesOver(pattern, scale, half))
     surface.push(...carvePiece(piece.polygon, options.carving(piece.type), thickness, band));
-  return {
-    top: topOf({ surface, outline, frame, top: thickness }),
-    outline: outline.slice(),
-  };
+  return { surface, outline: outline.slice() };
+}
+
+/** One part of a large object, closed and ready to print. */
+export interface MeshPart {
+  readonly name: string;
+  /** From the left and from the top, from 0. */
+  readonly column: number;
+  readonly row: number;
+  readonly mesh: Mesh;
+  /** Its outline, in the whole object's place. */
+  readonly outline: P2[];
+  /** How many pin holes it has. */
+  readonly pins: number;
+}
+
+/**
+ * A panel too large for the bed, as parts cut at `cuts`, each with the
+ * whole panel's frame on its outer sides only and pin holes at `pins`
+ * along its seams.
+ */
+export function panelParts(
+  surface: readonly (readonly P3[])[],
+  outline: readonly P2[],
+  options: Pick<ReliefOptions, 'frame' | 'thickness'>,
+  cuts: Cuts,
+  pins: readonly Pin[],
+): MeshPart[] {
+  const solid = { surface, outline, frame: options.frame, top: options.thickness };
+  return partsOf(outline, cuts).map((part) => {
+    const mine = pins.filter((p) => isOnOutline(p.centre, part.outline) && !isOnOutline(p.centre, outline));
+    return {
+      name: part.name,
+      column: part.column,
+      row: part.row,
+      mesh: standOn(topOf(solid, part.cell), part.outline, 0, mine),
+      outline: part.outline,
+      pins: mine.length,
+    };
+  });
 }

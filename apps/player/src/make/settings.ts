@@ -1,5 +1,8 @@
 import {
   boxOutline,
+  cutsFor,
+  type Cuts,
+  type Repeat,
   mouldOutline,
   rectangle,
   round,
@@ -7,11 +10,13 @@ import {
   type P2,
   type PatternShape,
 } from '@tastir/relief';
-import { BOX_WALL, type Print } from './carve';
+import { BOX_WALL, SPLIT_FLOOR, type Print } from './carve';
 
-/** What the learner makes: a rectangular panel, a round one, or one tile
- * of the repeat, which fits its copies edge to edge. */
-export type Shape = 'panel' | 'round' | 'tile';
+/** What the learner makes: a rectangular panel, a round one, one tile
+ * of the repeat, which fits its copies edge to edge, or a long border. */
+export type Shape = 'panel' | 'round' | 'tile' | 'border';
+/** A border's ends: square, or cut at 45° so four borders make a frame. */
+export type Ends = 'square' | 'mitred';
 /** How a kind of piece is carved. */
 export type Style = 'facets' | 'flat' | 'cushion' | 'raised';
 
@@ -26,6 +31,7 @@ export interface MakeSettings {
   readonly depth: number;
   readonly band: number;
   readonly frame: number;
+  readonly ends: Ends;
   /** The carving of each kind of piece (the engine's type), when not facets. */
   readonly kinds: Readonly<Record<number, Style>>;
   /** What is printed: the object, a mould for plaster, or a silicone box. */
@@ -82,6 +88,7 @@ export const DEFAULT_SETTINGS: MakeSettings = {
   depth: 8,
   band: 3,
   frame: 8,
+  ends: 'square',
   kinds: {},
   print: 'object',
   mouldFloor: 3,
@@ -97,7 +104,14 @@ export const FRAME_OF: Readonly<Record<Shape, number>> = {
   panel: 8,
   round: 8,
   tile: 0,
+  border: 8,
 };
+
+/** A border, when first chosen: 600 mm long, one repeat between its frames. */
+export const borderOf = (s: MakeSettings): Partial<MakeSettings> => ({
+  width: Math.max(s.width, 600),
+  height: s.repeat + 2 * FRAME_OF.border,
+});
 
 export const STYLES: readonly { style: Style; name: string }[] = [
   { style: 'facets', name: 'Facets' },
@@ -110,7 +124,11 @@ export const SHAPES: readonly { shape: Shape; name: string }[] = [
   { shape: 'panel', name: 'Panel' },
   { shape: 'round', name: 'Round' },
   { shape: 'tile', name: 'Tile' },
+  { shape: 'border', name: 'Border' },
 ];
+
+/** The bed less room for a brim: no part is longer. */
+export const PART = 250;
 
 export const styleOf = (s: MakeSettings, type: number): Style => s.kinds[type] ?? 'facets';
 
@@ -154,7 +172,51 @@ export function outlineOf(
     }
     return area < 0 ? corners.reverse() : corners;
   }
+  if (s.shape === 'border' && s.ends === 'mitred') {
+    // The inner side is shorter by the height at each end.
+    const w = s.width / 2;
+    const h = s.height / 2;
+    const inner = Math.max(w - s.height, 1);
+    return [
+      { x: -w, y: -h },
+      { x: w, y: -h },
+      { x: inner, y: h },
+      { x: -inner, y: h },
+    ];
+  }
   return rectangle(s.width, s.height);
+}
+
+/** The lines the pattern repeats along, upright and level, in
+ * millimetres: the shortest repeats straight across and straight up. */
+export function repeatsOf(pattern: PatternShape, s: MakeSettings): { x?: Repeat; y?: Repeat } {
+  const { u, v } = pattern.cell;
+  const scale = scaleOf(pattern, s);
+  const tiny = 1e-6 * Math.hypot(u.x, u.y);
+  let x: number | undefined;
+  let y: number | undefined;
+  for (let i = -4; i <= 4; i++)
+    for (let j = -4; j <= 4; j++) {
+      const w = { x: i * u.x + j * v.x, y: i * u.y + j * v.y };
+      if (Math.abs(w.y) < tiny && w.x > tiny && (x === undefined || w.x < x)) x = w.x;
+      if (Math.abs(w.x) < tiny && w.y > tiny && (y === undefined || w.y < y)) y = w.y;
+    }
+  return {
+    ...(x ? { x: { step: x * scale, at: 0 } } : {}),
+    ...(y ? { y: { step: y * scale, at: 0 } } : {}),
+  };
+}
+
+/** Where what is printed is cut into parts that fit the bed: on the
+ * pattern's repeat where it can be (mirrored for a mould). A silicone box
+ * is never cut. */
+export function cutsOf(pattern: PatternShape, outline: readonly P2[], s: MakeSettings): Cuts {
+  if (s.print === 'box' || !outline.length) return { xs: [], ys: [] };
+  const r = repeatsOf(pattern, s);
+  return cutsFor(printedOutline(outline, s), PART, {
+    ...(r.x ? { x: s.print === 'mould' ? { step: r.x.step, at: -r.x.at } : r.x } : {}),
+    ...(r.y ? { y: r.y } : {}),
+  });
 }
 
 /** The outline of what is printed: the object, its mould or its box. */
@@ -165,8 +227,8 @@ export function printedOutline(outline: readonly P2[], s: MakeSettings): P2[] {
 }
 
 /** How tall what is printed stands. */
-export function printedHeight(s: MakeSettings): number {
-  if (s.print === 'mould') return s.mouldFloor + s.thickness;
+export function printedHeight(s: MakeSettings, split = false): number {
+  if (s.print === 'mould') return Math.max(s.mouldFloor, split ? SPLIT_FLOOR : 0) + s.thickness;
   if (s.print === 'box') return s.thickness + s.boxCover;
   return s.thickness;
 }
@@ -202,6 +264,7 @@ export function sane(s: Partial<MakeSettings>): MakeSettings {
     depth: num(s.depth, 0.4, thickness - FLOOR, Math.min(d.depth, thickness - FLOOR)),
     band: num(s.band, 0.4, 20, d.band),
     frame: num(s.frame, 0, Math.min(width, height) / 2 - 5, d.frame),
+    ends: s.ends === 'mitred' ? 'mitred' : 'square',
     kinds,
     print: PRINTS.some((x) => x.print === s.print) ? s.print! : d.print,
     mouldFloor: num(s.mouldFloor, 1, 20, d.mouldFloor),

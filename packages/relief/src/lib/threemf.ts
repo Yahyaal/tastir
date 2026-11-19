@@ -1,13 +1,16 @@
 import type { Mesh } from './mesh.js';
 
 /**
- * A mesh as a 3MF file: the format Bambu Studio and other slicers open
+ * A mesh, or several named parts, as a 3MF file: the format Bambu Studio and other slicers open
  * first. It is a zip holding an XML model in millimetres, written here
  * with stored (uncompressed) entries so nothing beyond the language is
  * needed.
  */
-export function threeMf(mesh: Mesh, name = 'Tastir relief'): Uint8Array {
-  const { positions: p, triangles: t } = mesh;
+export function threeMf(
+  mesh: Mesh | readonly { readonly name: string; readonly mesh: Mesh }[],
+  name = 'Tastir relief',
+): Uint8Array {
+  const objects = 'positions' in mesh ? [{ name, mesh }] : mesh;
   const num = (x: number) => String(Math.round(x * 1e5) / 1e5);
   const parts: string[] = [];
   parts.push(
@@ -15,17 +18,21 @@ export function threeMf(mesh: Mesh, name = 'Tastir relief'): Uint8Array {
     '<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">\n',
     `<metadata name="Title">${escapeXml(name)}</metadata>\n`,
     '<metadata name="Application">Tastir</metadata>\n',
-    '<resources>\n<object id="1" type="model">\n<mesh>\n<vertices>\n',
+    '<resources>\n',
   );
-  for (let i = 0; i < p.length; i += 3)
-    parts.push(`<vertex x="${num(p[i]!)}" y="${num(p[i + 1]!)}" z="${num(p[i + 2]!)}"/>\n`);
-  parts.push('</vertices>\n<triangles>\n');
-  for (let i = 0; i < t.length; i += 3)
-    parts.push(`<triangle v1="${t[i]}" v2="${t[i + 1]}" v3="${t[i + 2]}"/>\n`);
-  parts.push(
-    '</triangles>\n</mesh>\n</object>\n</resources>\n',
-    '<build>\n<item objectid="1"/>\n</build>\n</model>\n',
-  );
+  objects.forEach((o, k) => {
+    const { positions: p, triangles: t } = o.mesh;
+    parts.push(`<object id="${k + 1}" name="${escapeXml(o.name)}" type="model">\n<mesh>\n<vertices>\n`);
+    for (let i = 0; i < p.length; i += 3)
+      parts.push(`<vertex x="${num(p[i]!)}" y="${num(p[i + 1]!)}" z="${num(p[i + 2]!)}"/>\n`);
+    parts.push('</vertices>\n<triangles>\n');
+    for (let i = 0; i < t.length; i += 3)
+      parts.push(`<triangle v1="${t[i]}" v2="${t[i + 1]}" v3="${t[i + 2]}"/>\n`);
+    parts.push('</triangles>\n</mesh>\n</object>\n');
+  });
+  parts.push('</resources>\n<build>\n');
+  objects.forEach((_, k) => parts.push(`<item objectid="${k + 1}"/>\n`));
+  parts.push('</build>\n</model>\n');
   const types =
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +

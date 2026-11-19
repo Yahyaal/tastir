@@ -32,6 +32,30 @@ test('a finished pattern opens in 3D and downloads a 3MF for the slicer', async 
   await page.getByRole('button', { name: 'Download STL' }).click();
   expect((await mould).suggestedFilename()).toBe('eight-fold-star-and-cross-tile-100mm-mould.stl');
 
+  // A panel larger than the bed, in parts: one object each in the 3MF,
+  // one STL each in the zip.
+  await page.getByRole('button', { name: 'The object', exact: true }).click();
+  await page.getByRole('button', { name: 'Panel', exact: true }).click();
+  await page.getByLabel('Width', { exact: true }).fill('400');
+  await page.getByLabel('Height', { exact: true }).fill('400');
+  await expect(page.getByText('4 parts', { exact: true })).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByRole('status')).toHaveText('');
+  const parts = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download 3MF' }).click();
+  const partsFile = await parts;
+  expect(partsFile.suggestedFilename()).toBe('eight-fold-star-and-cross-panel-400mm-parts.3mf');
+  const model = (await readFile((await partsFile.path())!)).toString('latin1');
+  expect(model.match(/<object id="\d+" name="[A-B][12]"/g)).toHaveLength(4);
+  const zipped = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download STLs (zip)' }).click();
+  const zipFile = await zipped;
+  expect(zipFile.suggestedFilename()).toBe('eight-fold-star-and-cross-panel-400mm-parts-stl.zip');
+  const names = (await readFile((await zipFile.path())!)).toString('latin1').match(/panel-400mm-[AB][12]\.stl/g);
+  // Each name is in the zip twice: in its entry and in the directory.
+  expect(new Set(names)).toEqual(
+    new Set(['A1', 'B1', 'A2', 'B2'].map((n) => `panel-400mm-${n}.stl`)),
+  );
+
   // Nothing wider than the screen.
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

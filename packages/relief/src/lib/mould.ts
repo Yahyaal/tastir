@@ -1,4 +1,6 @@
-import { inset, meshOf, standOn, topOf, type Mesh } from './mesh.js';
+import { inset, isOnOutline, meshOf, standOn, topOf, type Mesh, type Pin } from './mesh.js';
+import { partsOf, type Cuts } from './parts.js';
+import type { MeshPart } from './relief.js';
 import { signedArea, type P2, type P3 } from './skeleton.js';
 
 /**
@@ -34,6 +36,39 @@ export function mouldOf(
   const inner = outline.map((p) => ({ x: -p.x, y: p.y })).reverse();
   const outer = inset(inner, -wall);
   return standOn(topOf({ surface: cavity, outline: outer, frame: wall, top: rim }), outer);
+}
+
+/**
+ * A mould too large for the bed, as parts cut at `cuts` (in the mould's
+ * own place, see `mouldOutline`), with its rim on the outer sides only
+ * and pin holes at `pins` along the seams.
+ */
+export function mouldParts(
+  top: readonly (readonly P3[])[],
+  outline: readonly P2[],
+  thickness: number,
+  { floor, wall }: MouldOptions,
+  cuts: Cuts,
+  pins: readonly Pin[],
+): MeshPart[] {
+  if (!(floor > 0) || !(wall > 0)) throw new Error('A mould needs a floor and a rim.');
+  const rim = floor + thickness;
+  const cavity = top.map((f) =>
+    f.map((p) => ({ x: -p.x, y: p.y, z: rim - p.z })).reverse(),
+  );
+  const outer = mouldOutline(outline, wall);
+  const solid = { surface: cavity, outline: outer, frame: wall, top: rim };
+  return partsOf(outer, cuts).map((part) => {
+    const mine = pins.filter((p) => isOnOutline(p.centre, part.outline) && !isOnOutline(p.centre, outer));
+    return {
+      name: part.name,
+      column: part.column,
+      row: part.row,
+      mesh: standOn(topOf(solid, part.cell), part.outline, 0, mine),
+      outline: part.outline,
+      pins: mine.length,
+    };
+  });
 }
 
 /** The outline of a mould round a panel (mirrored, with its rim). */

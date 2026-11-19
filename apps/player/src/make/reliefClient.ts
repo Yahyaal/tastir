@@ -65,8 +65,8 @@ export function useCarved(
       if (data.id !== id || id !== latest.current) return;
       if (data.kind === 'error') setCarved({ error: data.message, busy: false });
       else {
-        const { mesh, master, volume, cast, upright } = data;
-        setCarved({ mesh, ...(master ? { master } : {}), volume, cast, upright, busy: false });
+        const { id: _, kind: __, ...done } = data;
+        setCarved({ ...done, busy: false });
       }
     };
     w.addEventListener('message', onMessage);

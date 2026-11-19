@@ -62,4 +62,23 @@ describe('3MF', () => {
     };
     expect(volumeOf(read)).toBeCloseTo(volumeOf(mesh), 0);
   });
+
+  it('holds each part as its own named object', () => {
+    const mesh = relief(squares, {
+      width: 40,
+      height: 40,
+      scale: 20,
+      thickness: 8,
+      band: 2,
+      frame: 0,
+      carving: () => ({ kind: 'flat', depth: 4, draft: 6 }),
+    });
+    const dir = mkdtempSync(join(tmpdir(), 'tastir-3mf-'));
+    const file = join(dir, 'parts.3mf');
+    writeFileSync(file, threeMf([{ name: 'A1', mesh }, { name: 'B1', mesh }], 'Panel'));
+    execFileSync('unzip', ['-q', '-o', file, '-d', dir]);
+    const model = readFileSync(join(dir, '3D', '3dmodel.model'), 'utf8');
+    expect([...model.matchAll(/<object id="(\d)" name="([^"]+)"/g)].map((m) => m[2])).toEqual(['A1', 'B1']);
+    expect(model.match(/<item objectid=/g)).toHaveLength(2);
+  });
 });

@@ -1,20 +1,23 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { plasterFor, siliconeFor, stl, threeMf } from '@tastir/relief';
+import { inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, threeMf, zip } from '@tastir/relief';
 import { PieceShape } from '../app/drawing';
 import { download } from '../app/exporting';
 import { pieceName } from '../app/pieceNames';
 import { useModel } from '../app/workerClient';
 import { ReliefView } from './ReliefView';
-import { MOULD_DRAFT, type Print } from './carve';
+import { MOULD_DRAFT, SPLIT_FLOOR, type Print } from './carve';
 import { shapeOf, useCarved } from './reliefClient';
 import {
   BED,
+  borderOf,
   carvingOf,
+  cutsOf,
   extent,
   FLOOR,
   FRAME_OF,
   NARROWEST_BAND,
   outlineOf,
+  PART,
   PLA,
   PRINTS,
   printedHeight,
@@ -26,6 +29,7 @@ import {
   SHAPES,
   STYLES,
   styleOf,
+  type Ends,
   type MakeSettings,
   type Shape,
   type Style,
@@ -55,6 +59,7 @@ function ShapeIcon({ shape }: { shape: Shape }) {
       {shape === 'panel' ? <rect x="3" y="3" width="18" height="18" rx="1" /> : null}
       {shape === 'round' ? <circle cx="12" cy="12" r="9.5" /> : null}
       {shape === 'tile' ? <path d="M12 2.5 20.2 7.25V16.75L12 21.5 3.8 16.75V7.25Z" /> : null}
+      {shape === 'border' ? <path d="M1.5 8H22.5L19 16H5Z" /> : null}
     </svg>
   );
 }
@@ -151,6 +156,12 @@ export function Make({ json, address }: { json: unknown; address: string }) {
   }, [settings, types]);
   const scale = pattern && model ? scaleOf(model.pattern, settings) : 1;
   const frame = settings.shape === 'tile' ? 0 : settings.frame;
+  const cuts = useMemo(
+    () => (pattern ? cutsOf(pattern, outline, settings) : { xs: [], ys: [] }),
+    [pattern, outline, settings],
+  );
+  const split = cuts.xs.length > 0 || cuts.ys.length > 0;
+  const partCount = split && outline.length ? partsOf(printedOutline(outline, settings), cuts).length : 1;
   const carved = useCarved(pattern, {
     outline,
     scale,
@@ -163,17 +174,21 @@ export function Make({ json, address }: { json: unknown; address: string }) {
     wall: settings.mouldWall,
     gap: settings.boxGap,
     cover: settings.boxCover,
+    cuts,
   });
 
   const title = model?.tutorial.title ?? 'Pattern';
   const size = outline.length ? extent(outline) : { width: 0, height: 0 };
   const printed = outline.length ? extent(printedOutline(outline, settings)) : size;
-  const tall = printedHeight(settings);
-  const fits = printed.width <= BED && printed.height <= BED && tall <= BED;
+  const tall = printedHeight(settings, split);
+  // Parts are cut no larger than PART, which fits the bed.
+  const fits = (split || (printed.width <= BED && printed.height <= BED)) && tall <= BED;
   const grams = carved.volume ? (carved.volume / 1000) * PLA : undefined;
   const kind = { object: '', mould: '-mould', box: '-silicone-box' }[settings.print];
   const file = `${address}-${settings.shape}-${Math.round(size.width)}mm${kind}`;
   const what = { object: 'object', mould: 'mould', box: 'box' }[settings.print];
+  const parts = carved.parts;
+  const boxInside = settings.print === 'box' && outline.length ? extent(inset(outline, -settings.boxGap)) : undefined;
 
   const setAll = (style: Style) =>
     update({ kinds: Object.fromEntries(types.map((_, i) => [i, style])) });
@@ -246,15 +261,34 @@ export function Make({ json, address }: { json: unknown; address: string }) {
                   key={shape}
                   type="button"
                   aria-pressed={settings.shape === shape}
-                  onClick={() => update({ shape, frame: FRAME_OF[shape] })}
+                  onClick={() =>
+                    update({
+                      shape,
+                      frame: FRAME_OF[shape],
+                      ...(shape === 'border' && settings.shape !== 'border' ? borderOf(settings) : {}),
+                    })
+                  }
                 >
                   <ShapeIcon shape={shape} />
                   {name}
                 </button>
               ))}
             </div>
+            {settings.shape === 'border' ? (
+              <div className="make-choices make-ends" role="group" aria-label="Ends">
+                {(['square', 'mitred'] as Ends[]).map((ends) => (
+                  <button key={ends} type="button" aria-pressed={settings.ends === ends} onClick={() => update({ ends })}>
+                    {ends === 'square' ? 'Square ends' : 'Mitred ends'}
+                  </button>
+                ))}
+              </div>
+            ) : null}
             <p className="make-hint">
-              {settings.shape === 'tile'
+              {settings.shape === 'border'
+                ? settings.ends === 'mitred'
+                  ? 'A long strip with its ends cut at 45°: four of them frame a panel or a mirror.'
+                  : 'A long strip of the pattern, cut into parts that fit the bed.'
+                : settings.shape === 'tile'
                 ? 'One repeat of the pattern: copies fit edge to edge into a wall.'
                 : settings.shape === 'round'
                   ? 'A round medallion, centred on the pattern.'
@@ -290,14 +324,14 @@ export function Make({ json, address }: { json: unknown; address: string }) {
             ) : null}
           </Section>
           <Section title="Size">
-            {settings.shape === 'panel' ? (
+            {settings.shape === 'panel' || settings.shape === 'border' ? (
               <>
-                <Measure label="Width" value={settings.width} min={20} max={600} step={1} onChange={(width) => update({ width })} />
-                <Measure label="Height" value={settings.height} min={20} max={600} step={1} onChange={(height) => update({ height })} />
+                <Measure label={settings.shape === 'border' ? 'Length' : 'Width'} value={settings.width} min={20} max={1000} step={1} onChange={(width) => update({ width })} />
+                <Measure label="Height" value={settings.height} min={20} max={settings.shape === 'border' ? 400 : 1000} step={1} onChange={(height) => update({ height })} />
               </>
             ) : null}
             {settings.shape === 'round' ? (
-              <Measure label="Diameter" value={settings.width} min={20} max={600} step={1} onChange={(width) => update({ width })} />
+              <Measure label="Diameter" value={settings.width} min={20} max={1000} step={1} onChange={(width) => update({ width })} />
             ) : null}
             <Measure label="One repeat" value={settings.repeat} min={10} max={400} step={1} onChange={(repeat) => update({ repeat })} />
             <Measure label="Thickness" value={settings.thickness} min={3} max={40} onChange={(thickness) => update({ thickness })} />
@@ -307,9 +341,13 @@ export function Make({ json, address }: { json: unknown; address: string }) {
             <p className={fits ? 'make-fit' : 'make-fit too-big'}>
               {settings.print === 'object' ? '' : `The ${what}: `}
               {mm(printed.width)} × {mm(printed.height)} × {mm(tall)}:{' '}
-              {fits
-                ? `fits the ${BED} mm bed of the Bambu Lab A1.`
-                : `larger than the ${BED} mm bed of the Bambu Lab A1. Make it smaller, or wait for splitting into parts.`}
+              {!fits
+                ? settings.print === 'box'
+                  ? `larger than the ${BED} mm bed of the Bambu Lab A1, so build the box from boards instead: ${mm(boxInside?.width ?? 0)} × ${mm(boxInside?.height ?? 0)} inside and ${mm(settings.thickness + settings.boxCover)} tall.`
+                  : `taller than the ${BED} mm bed of the Bambu Lab A1 allows.`
+                : split
+                  ? `in ${partCount} parts, none longer than ${PART} mm, so each fits the ${BED} mm bed of the Bambu Lab A1.`
+                  : `fits the ${BED} mm bed of the Bambu Lab A1.`}
             </p>
           </Section>
           <Section title="Carving">
@@ -352,10 +390,10 @@ export function Make({ json, address }: { json: unknown; address: string }) {
                 onClick={() =>
                   carved.mesh &&
                   download(
-                    new Blob([threeMf(carved.mesh, title) as BlobPart], {
+                    new Blob([threeMf(parts ?? carved.mesh, title) as BlobPart], {
                       type: 'model/3mf',
                     }),
-                    `${file}.3mf`,
+                    `${file}${parts ? '-parts' : ''}.3mf`,
                   )
                 }
               >
@@ -365,19 +403,35 @@ export function Make({ json, address }: { json: unknown; address: string }) {
                 type="button"
                 className="secondary"
                 disabled={!carved.mesh}
-                onClick={() =>
-                  carved.mesh &&
-                  download(
-                    new Blob([stl(carved.mesh, title) as BlobPart], { type: 'model/stl' }),
-                    `${file}.stl`,
-                  )
-                }
+                onClick={() => {
+                  if (!carved.mesh) return;
+                  if (parts)
+                    download(
+                      new Blob(
+                        [
+                          zip(
+                            parts.map((p) => ({ name: `${file}-${p.name}.stl`, data: stl(p.mesh, `${title} ${p.name}`) })),
+                          ) as BlobPart,
+                        ],
+                        { type: 'application/zip' },
+                      ),
+                      `${file}-parts-stl.zip`,
+                    );
+                  else
+                    download(
+                      new Blob([stl(carved.mesh, title) as BlobPart], { type: 'model/stl' }),
+                      `${file}.stl`,
+                    );
+                }}
               >
-                Download STL
+                {parts ? 'Download STLs (zip)' : 'Download STL'}
               </button>
             </div>
+            {parts ? <Parts parts={parts} pins={carved.pins ?? 0} mould={settings.print === 'mould'} floor={settings.mouldFloor} /> : null}
             <p className="make-hint">
-              3MF opens in Bambu Studio in millimetres; STL opens in any slicer.{' '}
+              {parts
+                ? 'The 3MF holds every part as its own object: in Bambu Studio, arrange them one or more to a plate. The zip holds one STL to a part.'
+                : '3MF opens in Bambu Studio in millimetres; STL opens in any slicer.'}{' '}
               {settings.print === 'box'
                 ? 'Print the box upright, as it stands.'
                 : 'It prints face up with no supports.'}
@@ -401,6 +455,45 @@ export function Make({ json, address }: { json: unknown; address: string }) {
           </Section>
         </aside>
       </div>
+    </div>
+  );
+}
+
+/** The parts, their sizes, and the pins that join them. */
+function Parts({
+  parts,
+  pins,
+  mould,
+  floor,
+}: {
+  parts: readonly { name: string; width: number; height: number; pins: number }[];
+  pins: number;
+  mould: boolean;
+  floor: number;
+}) {
+  // A pin fills both holes, less half a millimetre at each end.
+  const length = 2 * PIN_HOLE.depth - 1;
+  return (
+    <div className="make-casting make-parts">
+      <h3>{parts.length} parts</h3>
+      <ul>
+        {parts.map((p) => (
+          <li key={p.name}>
+            <strong>{p.name}</strong> {Math.round(p.width)} × {Math.round(p.height)} mm
+          </li>
+        ))}
+      </ul>
+      <p>
+        {pins > 0 ? (
+          <>
+            Cut <strong>{pins} pins</strong> of 1.75 mm filament, <strong>{length} mm long</strong>. Push them into the
+            holes along each seam, glue the edges, and press the parts together; A1 is the top left part seen from above.
+          </>
+        ) : (
+          'The solid under the carving is too thin for pins, so glue the parts edge to edge on a flat board.'
+        )}
+        {mould && floor < SPLIT_FLOOR ? ` The mould's floor is ${SPLIT_FLOOR} mm in parts, so the pins fit.` : ''}
+      </p>
     </div>
   );
 }

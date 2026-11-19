@@ -2,6 +2,11 @@ export { signedArea, skeletonHeight, sweep, type P2, type P3, type Sweep } from 
 export { depthOf, profileOf, type Carving, type Profile } from './lib/profile.js';
 export {
   clip,
+  clipOutline,
+  isOnOutline,
+  PIN_HOLE,
+  pinHoleVolume,
+  type Pin,
   closeSolid,
   standOn,
   topOf,
@@ -15,6 +20,9 @@ export {
 } from './lib/mesh.js';
 export {
   carvePiece,
+  panelParts,
+  reliefSurface,
+  type MeshPart,
   MIN_BASE,
   piecesOver,
   rectangle,
@@ -31,6 +39,7 @@ export {
   boxOutline,
   mouldBox,
   mouldOf,
+  mouldParts,
   mouldOutline,
   plasterFor,
   siliconeFor,
@@ -38,3 +47,12 @@ export {
   type BoxOptions,
   type MouldOptions,
 } from './lib/mould.js';
+export {
+  cutsFor,
+  partsOf,
+  pinsFor,
+  PIN_ROOM,
+  type Cuts,
+  type Part,
+  type Repeat,
+} from './lib/parts.js';
