@@ -322,6 +322,20 @@ function AppPage({
       />
     );
   }
+  // #/id/design/d/make: a saved design carved in 3D, with its own inking.
+  const mineMake = /^(.+)\/design\/([^/]+)\/make$/.exec(route);
+  if (mineMake) {
+    const [, tutorial = '', designId = ''] = mineMake;
+    const design = getDesign(designId);
+    const entry = entries.find((e) => e.id === tutorial);
+    if (!entry || design?.tutorial !== tutorial)
+      return <Broken message="This design is not saved in this browser." />;
+    return (
+      <Suspense fallback={<p role="status">Opening the 3D workshop…</p>}>
+        <Make key={route} json={entry.json} address={tutorial} design={design} />
+      </Suspense>
+    );
+  }
   // #/id/make: the pattern carved in 3D, to print.
   if (route.endsWith('/make')) {
     const id = route.slice(0, -'/make'.length);

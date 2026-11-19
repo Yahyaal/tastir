@@ -352,3 +352,21 @@
   min-height: 100vh;
   flex: none;
 }
+.carve-kind .carve-depth {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 2px;
+}
+.carve-depth .measure > label {
+  font-size: 0.8rem;
+  color: var(--theme-text-muted);
+}
+.player .carve-depth .link-button {
+  justify-self: end;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--theme-accent);
+  font-size: 0.8rem;
+  text-decoration: underline;
+}

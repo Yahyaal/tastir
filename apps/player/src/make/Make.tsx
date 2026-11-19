@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { dxf, inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, svg, threeMf, zip } from '@tastir/relief';
 import { PieceShape } from '../app/drawing';
 import { download } from '../app/exporting';
+import type { Design } from '../app/designs';
+import { draftOf } from '../app/drafts';
 import { weaveOf } from '../app/interlace';
 import { pieceName } from '../app/pieceNames';
 import { useModel } from '../app/workerClient';
@@ -14,11 +16,13 @@ import {
   borderOf,
   bridgeOf,
   carvingOf,
+  depthFor,
   cutsOf,
   extent,
   FLOOR,
   FRAME_OF,
   gapOf,
+  mostGap,
   MIN_GAP,
   NARROWEST_BAND,
   NARROWEST_BRIDGE,
@@ -136,9 +140,22 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
  * make and its size, how each kind of piece is carved, and download it
  * for the slicer.
  */
-export function Make({ json, address }: { json: unknown; address: string }) {
-  const { model, error: loadError } = useModel(json);
-  const [settings, setSettings] = useState<MakeSettings>(() => rememberedSettings(address));
+export function Make({
+  json,
+  address,
+  design,
+}: {
+  json: unknown;
+  address: string;
+  /** A saved design: carved with its own inking, its settings kept apart. */
+  design?: Design;
+}) {
+  // The pattern as the wall shows it: a saved design's inking, or the
+  // learner's unsaved changes to the tutorial's.
+  const [inked] = useState(() => design?.inked ?? (design ? undefined : draftOf(address)?.inked));
+  const { model, error: loadError } = useModel(json, inked);
+  const key = design ? `${address}/design/${design.id}` : address;
+  const [settings, setSettings] = useState<MakeSettings>(() => rememberedSettings(key));
   const [light, setLight] = useState(35);
   const update = (change: Partial<MakeSettings>) =>
     setSettings((s) => {
@@ -146,7 +163,7 @@ export function Make({ json, address }: { json: unknown; address: string }) {
       if (next.depth > next.thickness - FLOOR) next.depth = next.thickness - FLOOR;
       return next;
     });
-  useEffect(() => rememberSettings(address, settings), [address, settings]);
+  useEffect(() => rememberSettings(key, settings), [key, settings]);
 
   const pattern = useMemo(
     () =>
@@ -165,7 +182,7 @@ export function Make({ json, address }: { json: unknown; address: string }) {
     const out: Record<number, ReturnType<typeof carvingOf>> = {
       [-1]: carvingOf(settings, 'facets'),
     };
-    types.forEach((_, i) => (out[i] = carvingOf(settings, styleOf(settings, i))));
+    types.forEach((_, i) => (out[i] = carvingOf(settings, styleOf(settings, i), i)));
     return out;
   }, [settings, types]);
   const scale = pattern && model ? scaleOf(model.pattern, settings) : 1;
@@ -193,7 +210,7 @@ export function Make({ json, address }: { json: unknown; address: string }) {
     cuts,
   });
 
-  const title = model?.tutorial.title ?? 'Pattern';
+  const title = design ? design.name : (model?.tutorial.title ?? 'Pattern');
   const size = outline.length ? extent(outline) : { width: 0, height: 0 };
   const printed = outline.length ? extent(printedOutline(outline, settings)) : size;
   const tall = printedHeight(settings, split);
@@ -201,7 +218,8 @@ export function Make({ json, address }: { json: unknown; address: string }) {
   const fits = (split || (printed.width <= BED && printed.height <= BED)) && tall <= BED;
   const grams = carved.volume ? (carved.volume / 1000) * PLA : undefined;
   const kind = { object: '', mould: '-mould', box: '-silicone-box' }[settings.print];
-  const file = `${address}-${settings.shape}-${Math.round(size.width)}mm${kind}`;
+  const slug = design ? `${address}-${design.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'design'}` : address;
+  const file = `${slug}-${settings.shape}-${Math.round(size.width)}mm${kind}`;
   const what = { object: 'object', mould: 'mould', box: 'box' }[settings.print];
   const parts = carved.parts;
   const boxInside = settings.print === 'box' && outline.length ? extent(inset(outline, -settings.boxGap)) : undefined;
@@ -227,7 +245,7 @@ export function Make({ json, address }: { json: unknown; address: string }) {
         <div className="lesson-title">
           <h1 title={title}>Make it in 3D: {title}</h1>
         </div>
-        <a className="make-back" href={`#/${address}`}>
+        <a className="make-back" href={design ? `#/${address}/design/${design.id}` : `#/${address}`}>
           Back to the pattern
         </a>
       </header>
@@ -389,7 +407,7 @@ export function Make({ json, address }: { json: unknown; address: string }) {
                     label="Gap"
                     value={gapOf(settings)}
                     min={MIN_GAP}
-                    max={Math.max(MIN_GAP, Math.min(settings.depth, settings.thickness - FLOOR) / 3)}
+                    max={mostGap(settings)}
                     step={0.1}
                     onChange={(gap) => update({ gap })}
                   />
@@ -427,6 +445,22 @@ export function Make({ json, address }: { json: unknown; address: string }) {
                         value={styleOf(settings, i)}
                         onPick={(style) => update({ kinds: { ...settings.kinds, [i]: style } })}
                       />
+                      {styleOf(settings, i) !== 'raised' && styleOf(settings, i) !== 'pierced' ? (
+                        <KindDepth
+                          name={pieceName(t)}
+                          value={depthFor(settings, i)}
+                          own={settings.depths[i] !== undefined}
+                          max={settings.thickness - FLOOR}
+                          onChange={(depth) =>
+                            update({
+                              depths:
+                                depth === undefined
+                                  ? Object.fromEntries(Object.entries(settings.depths).filter(([k]) => Number(k) !== i))
+                                  : { ...settings.depths, [i]: depth },
+                            })
+                          }
+                        />
+                      ) : null}
                     </li>
                   ))
                 : null}
@@ -574,6 +608,32 @@ function Parts({
         )}
         {mould && floor < SPLIT_FLOOR && pins > 0 ? ` The mould's floor is ${SPLIT_FLOOR} mm in parts, so the pins fit.` : ''}
       </p>
+    </div>
+  );
+}
+
+/** One kind of piece's own depth, or the common one with a way back. */
+function KindDepth({
+  name,
+  value,
+  own,
+  max,
+  onChange,
+}: {
+  name: string;
+  value: number;
+  own: boolean;
+  max: number;
+  onChange: (depth: number | undefined) => void;
+}) {
+  return (
+    <div className="carve-depth">
+      <Measure label={`Depth of ${name}`} value={value} min={0.5} max={max} onChange={onChange} />
+      {own ? (
+        <button type="button" className="link-button" onClick={() => onChange(undefined)}>
+          Use the common depth
+        </button>
+      ) : null}
     </div>
   );
 }

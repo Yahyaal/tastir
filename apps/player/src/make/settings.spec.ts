@@ -7,6 +7,7 @@ import {
   extent,
   FLOOR,
   gapOf,
+  depthFor,
   MIN_GAP,
   repeatsOf,
   outlineOf,
@@ -67,6 +68,15 @@ describe('make settings', () => {
   it('keeps the gap of the weave printable and within the carving', () => {
     expect(gapOf({ ...DEFAULT_SETTINGS, gap: 0.1 })).toBe(MIN_GAP);
     expect(gapOf({ ...DEFAULT_SETTINGS, gap: 9, depth: 6 })).toBe(2);
+    // A shallow carving: a third of 2 mm, to the tenth below.
+    expect(gapOf({ ...DEFAULT_SETTINGS, depth: 2 })).toBe(0.6);
+    expect(gapOf({ ...DEFAULT_SETTINGS, depth: 2.5 })).toBe(0.8);
+    // A kind's own depth, kept under the panel's floor.
+    const s = sane({ thickness: 10, depth: 4, depths: { 1: 7, 2: 99, x: 3 } as never });
+    expect(s.depths).toEqual({ 1: 7, 2: 9 });
+    expect(depthFor(s, 1)).toBe(7);
+    expect(depthFor(s, 0)).toBe(4);
+    expect(carvingOf(s, 'flat', 1)).toMatchObject({ depth: 7 });
     expect(sane({ bands: 'wavy' as never, woven: 'yes' as never }).bands).toBe('flat');
     expect(sane({ woven: false }).woven).toBe(false);
   });

@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
+import type { Design } from '../app/designs';
 import { Make } from './Make';
 
 describe('Make', () => {
@@ -99,5 +100,42 @@ describe('Make', () => {
     );
     expect(screen.getByRole('button', { name: 'Download DXF' })).toHaveProperty('disabled', false);
     await waitFor(() => expect(screen.queryByRole('alert')).toBeNull(), { timeout: 20_000 });
+  }, 40_000);
+
+  it('carves a saved design under its own name, with its settings apart', async () => {
+    const design = {
+      id: 'd1',
+      name: 'Blue floor',
+      tutorial: 'eight-fold-star-and-cross',
+      coloring: { palette: 'fes', method: 'kinds', rosettes: false, chosen: [], squareBands: false },
+      look: 'tiles',
+      grout: 1,
+      created: '2026-11-19',
+      updated: '2026-11-19',
+    } as unknown as Design;
+    render(<Make json={example} address="eight-fold-star-and-cross" design={design} />);
+    expect(screen.getByRole('heading', { name: 'Make it in 3D: Blue floor' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Back to the pattern' }).getAttribute('href')).toBe(
+      '#/eight-fold-star-and-cross/design/d1',
+    );
+    await waitFor(() => expect(screen.getByText('PLA if printed solid')).toBeTruthy(), { timeout: 20_000 });
+    act(() => screen.getByRole('button', { name: 'Round' }).click());
+    expect(localStorage.getItem('tastir.make.eight-fold-star-and-cross/design/d1')).toContain('"round"');
+    expect(localStorage.getItem('tastir.make.eight-fold-star-and-cross')).toBeNull();
+  }, 30_000);
+
+  it('carves one kind deeper than the rest, and back', async () => {
+    render(<Make json={example} address="eight-fold-star-and-cross" />);
+    await waitFor(() => expect(screen.getByText('PLA if printed solid')).toBeTruthy(), { timeout: 20_000 });
+    const volume = () => screen.getByText(/cm³/).textContent;
+    const before = volume();
+    const star = screen.getByLabelText('Depth of star') as HTMLInputElement;
+    expect(star.value).toBe('8');
+    fireEvent.change(star, { target: { value: '4' } });
+    expect((screen.getByLabelText('Depth of cross') as HTMLInputElement).value).toBe('8');
+    await waitFor(() => expect(volume()).not.toBe(before), { timeout: 20_000 });
+    act(() => screen.getByRole('button', { name: 'Use the common depth' }).click());
+    expect((screen.getByLabelText('Depth of star') as HTMLInputElement).value).toBe('8');
+    await waitFor(() => expect(volume()).toBe(before), { timeout: 20_000 });
   }, 40_000);
 });
