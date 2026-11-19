@@ -1,0 +1,60 @@
+export { signedArea, skeletonHeight, sweep, type P2, type P3, type Sweep } from './lib/skeleton.js';
+export { bandEdge, depthOf, grooveDepth, profileOf, type BandShape, type Carving, type Profile } from './lib/profile.js';
+export { walls, weaveTop, RAMP, type Crossing, type Tag, type TaggedFace, type WeaveOptions } from './lib/weave.js';
+export {
+  clip,
+  clipOutline,
+  isOnOutline,
+  PIN_HOLE,
+  pinHoleVolume,
+  type Pin,
+  closeSolid,
+  standOn,
+  topOf,
+  inset,
+  meshOf,
+  openEdges,
+  volumeOf,
+  WELD,
+  type Mesh,
+  type Solid,
+} from './lib/mesh.js';
+export {
+  carvePiece,
+  panelParts,
+  reliefSurface,
+  type MeshPart,
+  MIN_BASE,
+  piecesOver,
+  rectangle,
+  round,
+  relief,
+  reliefTop,
+  type PatternShape,
+  type ReliefOptions,
+} from './lib/relief.js';
+export { stl } from './lib/stl.js';
+export { crc32, threeMf, zip } from './lib/threemf.js';
+export { picture, sunFrom, type PictureOptions } from './lib/picture.js';
+export {
+  boxOutline,
+  mouldBox,
+  mouldOf,
+  mouldParts,
+  mouldOutline,
+  plasterFor,
+  siliconeFor,
+  uprightArea,
+  type BoxOptions,
+  type MouldOptions,
+} from './lib/mould.js';
+export {
+  cutsFor,
+  partsOf,
+  pinsFor,
+  PIN_ROOM,
+  type Cuts,
+  type Part,
+  type Repeat,
+} from './lib/parts.js';
+export { boundary, dxf, flatLines, svg, type FlatLines } from './lib/flat.js';

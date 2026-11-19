@@ -19,6 +19,11 @@
     "@tastir/engine": "workspace:*",
     "@tastir/live-room": "workspace:*",
     "@tastir/project-core": "workspace:*",
-    "@tastir/schema": "workspace:*"
+    "@tastir/relief": "workspace:*",
+    "@tastir/schema": "workspace:*",
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.180.0"
   }
 }

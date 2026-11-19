@@ -107,6 +107,10 @@ const DuplicatesPlan = import.meta.env.DEV
   : undefined;
 
 /** Curatorial roadmap of upcoming patterns (#/upcoming). */
+// three.js is large: it loads only when a pattern is made in 3D.
+const Make = lazy(() =>
+  import('../make/Make').then((m) => ({ default: m.Make })),
+);
 const UpcomingPatterns = lazy(() =>
   import('./UpcomingPatterns').then((m) => ({
     default: m.UpcomingPatterns,
@@ -316,6 +320,18 @@ function AppPage({
         design={design}
         known={design ? entries.some((e) => e.id === design.tutorial) : false}
       />
+    );
+  }
+  // #/id/make: the pattern carved in 3D, to print.
+  if (route.endsWith('/make')) {
+    const id = route.slice(0, -'/make'.length);
+    const entry = entries.find((e) => e.id === id);
+    if (!entry)
+      return <Broken message={`There is no tutorial called "${id}".`} />;
+    return (
+      <Suspense fallback={<p role="status">Opening the 3D workshop…</p>}>
+        <Make key={route} json={entry.json} address={id} />
+      </Suspense>
     );
   }
   // #/id/draw: the learner draws the tutorial along, step by step.

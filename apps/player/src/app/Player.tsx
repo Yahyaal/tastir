@@ -1743,6 +1743,11 @@ export function Player({
                     Download PNG
                   </button>
                 </div>
+                {address !== 'shared' ? (
+                  <a className="button secondary make-3d" href={`#/${address}/make`}>
+                    Make it in 3D
+                  </a>
+                ) : null}
                 <p className="pattern-file-hint">
                   JSON keeps the editable construction, ink, colours and style.
                   Open it with “Open a pattern file”. SVG and PNG are images.
