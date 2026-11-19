@@ -9,7 +9,9 @@ import {
   reliefSurface,
   topOf,
   type BandShape,
+  flatLines,
   type Cuts,
+  type FlatLines,
   type MeshPart,
   mouldOf,
   openEdges,
@@ -80,8 +82,12 @@ export interface Carving3D {
   readonly upright: number;
   /** What is printed, in parts for the bed, when it is cut. */
   readonly parts?: readonly Part3D[];
-  /** How many pins join the parts (none when the solid is too thin). */
+  /** How many pins join the parts: none when the solid is too thin, or
+   * pierced, where a pin could open into a hole. */
   readonly pins?: number;
+  readonly pinless?: 'thin' | 'pierced';
+  /** The object's lines, flat, for a laser or a router. */
+  readonly lines: FlatLines;
 }
 
 export function carve(r: CarveRequest): Carving3D {
@@ -97,7 +103,9 @@ export function carve(r: CarveRequest): Carving3D {
     bands: r.bands,
     gap: r.weaveGap,
   };
-  const { surface, outline } = reliefSurface(r.pattern, options);
+  const { surface, outline, tagged } = reliefSurface(r.pattern, options);
+  const pierced = Object.values(r.carvings).some((c) => c.kind === 'pierced');
+  let pinless: 'thin' | 'pierced' | undefined;
   const top = topOf({ surface, outline, frame: r.frame, top: r.thickness });
   const object = standOn(top, outline);
   const split = r.print !== 'box' && (r.cuts.xs.length > 0 || r.cuts.ys.length > 0);
@@ -105,13 +113,15 @@ export function carve(r: CarveRequest): Carving3D {
   let pins = 0;
   if (split && r.print === 'mould') {
     const floor = Math.max(r.floor, SPLIT_FLOOR);
-    const at = pinsFor(mouldOutline(outline, r.wall), r.cuts, floor / 2);
+    const at = pierced ? [] : pinsFor(mouldOutline(outline, r.wall), r.cuts, floor / 2);
+    if (pierced) pinless = 'pierced';
     parts = mouldParts(top, outline, r.thickness, { floor, wall: r.wall }, r.cuts, at);
     pins = at.length;
   } else if (split) {
     const deepest = Math.max(...Object.values(r.carvings).map(depthOf));
     const room = r.thickness - deepest;
-    const at = room >= PIN_ROOM ? pinsFor(outline, r.cuts, room / 2) : [];
+    const at = !pierced && room >= PIN_ROOM ? pinsFor(outline, r.cuts, room / 2) : [];
+    if (!at.length) pinless = pierced ? 'pierced' : 'thin';
     parts = panelParts(surface, outline, r, r.cuts, at);
     pins = at.length;
   }
@@ -133,7 +143,8 @@ export function carve(r: CarveRequest): Carving3D {
     volume: volumeOf(mesh),
     cast: volumeOf(object),
     upright: r.print === 'mould' ? uprightArea(object, outline, MOULD_DRAFT) : 0,
-    ...(apart ? { parts: apart, pins } : {}),
+    ...(apart ? { parts: apart, pins, ...(pinless ? { pinless } : {}) } : {}),
+    lines: flatLines(surface, tagged, outline, r.frame, r.thickness),
   };
 }
 

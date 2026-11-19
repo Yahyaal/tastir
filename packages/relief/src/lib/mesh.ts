@@ -422,6 +422,16 @@ export function clipOutline(outline: readonly P2[], cell: readonly P2[]): P2[] {
   ).map((p) => ({ x: p.x, y: p.y }));
 }
 
+/** Is an upright face standing on one side of a convex outline? */
+function onLine(face: readonly P3[], outline: readonly P2[]): boolean {
+  if (Math.abs(signedArea(face)) > 1e-12) return false;
+  for (let i = 0; i < outline.length; i++) {
+    const side = [outline[i]!, outline[(i + 1) % outline.length]!];
+    if (face.every((p) => onOutline(p, side, 1e-7))) return true;
+  }
+  return false;
+}
+
 /** Is p on the boundary of the convex outline? */
 export function isOnOutline(p: P2, outline: readonly P2[], tol = 1e-4): boolean {
   return onOutline(p, outline, tol);
@@ -447,7 +457,9 @@ export function topOf(solid: Solid, cell?: readonly P2[]): P3[][] {
   for (const whole of solid.surface)
     for (const face of convexParts(whole)) {
       const cut = clip(face, inner);
-      if (cut.length >= 3) surface.push(cut);
+      // An upright wall left lying on the cut stood between a face kept
+      // and one cut away: the frame's wall, or the outer wall, is there.
+      if (cut.length >= 3 && !onLine(cut, inner)) surface.push(cut);
     }
   if (frame <= 0) return surface;
   const at = (p: P2, z: number): P3 => ({ x: p.x, y: p.y, z });
@@ -528,6 +540,11 @@ export function standOn(
   base = 0,
   pins: readonly Pin[] = [],
 ): Mesh {
+  // Faces carved down to the table are holes through the panel: left out,
+  // with a bottom under the rest of the top only.
+  const flat = (f: readonly P3[]) => f.every((p) => Math.abs(p.z - base) < 1e-9);
+  const pierced = top.some(flat);
+  if (pierced) top = top.filter((f) => !flat(f));
   const { points, faces, seen } = joined(top);
   const out: P3[][] = faces.map((f) => f.map((n) => points[n]!));
   const m = outline.length;
@@ -552,6 +569,8 @@ export function standOn(
       const q = points[bn]!;
       // An upright edge on the outline closes against the walls beside it.
       if (p.x === q.x && p.y === q.y) continue;
+      // The foot of a hole's wall meets the bottom.
+      if (pierced && Math.abs(p.z - base) < 1e-9 && Math.abs(q.z - base) < 1e-9) continue;
       checkOnOutline(p, q, outline);
       const side = holes.size ? sideOf({ x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 }, outline) : -1;
       if (side >= 0 && holes.has(side)) {
@@ -569,7 +588,10 @@ export function standOn(
     const b = outline[(side + 1) % m]!;
     out.push(...wallWithHoles(a, b, edges, holes.get(side)!, base));
   }
-  out.push(outline.map((p) => ({ ...p, z: base })).reverse());
+  if (!pierced) out.push(outline.map((p) => ({ ...p, z: base })).reverse());
+  else
+    for (const f of top)
+      if (Math.abs(signedArea(f)) > 1e-12) out.push(f.map((p) => ({ ...p, z: base })).reverse());
   return meshOf(out);
 }
 

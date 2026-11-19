@@ -57,3 +57,4 @@ export {
   type Part,
   type Repeat,
 } from './lib/parts.js';
+export { boundary, dxf, flatLines, svg, type FlatLines } from './lib/flat.js';

@@ -1,7 +1,7 @@
 import { isOnOutline, standOn, topOf, type Mesh, type Pin } from './mesh.js';
 import { partsOf, type Cuts } from './parts.js';
 import { bandEdge, depthOf, profileOf, type BandShape, type Carving } from './profile.js';
-import { weaveTop, type Crossing, type Tag, type TaggedFace } from './weave.js';
+import { walls, weaveTop, type Crossing, type Tag, type TaggedFace } from './weave.js';
 import { signedArea, skeletonHeight, sweep, type P2, type P3 } from './skeleton.js';
 
 /** What the relief needs from a Tastir pattern (the engine's Pattern
@@ -155,8 +155,11 @@ function carveTagged(
     face: f.map((p) => ({ x: p.x, y: p.y, z: profile.z(p.z) })),
     tag: (f.every((p) => p.z <= h) ? 'band' : 'field') as Tag,
   }));
-  const floorZ = profile.z(profile.end);
-  const floorTag: Tag = carving.kind === 'raised' ? 'level' : 'field';
+  // A pierced piece's inside is carved at the table, for the walls to
+  // close down to; the object leaves it out, a mould stands it up as a post.
+  const floorZ = carving.kind === 'pierced' ? 0 : profile.z(profile.end);
+  const floorTag: Tag =
+    carving.kind === 'raised' ? 'level' : carving.kind === 'pierced' ? 'hole' : 'field';
   for (const f of s.floor) faces.push({ face: f.map((p) => ({ ...p, z: floorZ })), tag: floorTag });
   return faces;
 }
@@ -223,7 +226,7 @@ export function reliefTop(
 export function reliefSurface(
   pattern: PatternShape,
   options: ReliefOptions,
-): { surface: P3[][]; outline: P2[]; dips: number } {
+): { surface: P3[][]; outline: P2[]; dips: number; tagged: TaggedFace[] } {
   const { scale, thickness, band, frame } = options;
   const outline = options.outline ?? rectangle(options.width, options.height);
   if (outline.length < 3 || !(signedArea(outline) > 0) || !(scale > 0))
@@ -259,15 +262,21 @@ export function reliefSurface(
   const tagged: TaggedFace[] = [];
   for (const piece of pieces)
     tagged.push(...carveTagged(piece.polygon, options.carving(piece.type), thickness, band, bands, woven));
-  if (!woven) return { surface: tagged.map((f) => f.face), outline: outline.slice(), dips: 0 };
-  const corners = pieces.flatMap((p) => p.polygon);
-  const { faces, dips } = weaveTop(tagged, crossingsOver(pattern, scale, half), corners, {
-    gap: options.gap!,
-    band,
-    edge: bandEdge(bands, band),
-    top: thickness,
-  });
-  return { surface: faces, outline: outline.slice(), dips };
+  const pierced = tagged.some((f) => f.tag === 'hole');
+  let faces = tagged;
+  let dips = 0;
+  if (woven) {
+    const corners = pieces.flatMap((p) => p.polygon);
+    ({ faces, dips } = weaveTop(tagged, crossingsOver(pattern, scale, half), corners, {
+      gap: options.gap!,
+      band,
+      edge: bandEdge(bands, band),
+      top: thickness,
+    }));
+  }
+  const surface = faces.map((f) => f.face);
+  if (woven || pierced) surface.push(...walls(surface));
+  return { surface, outline: outline.slice(), dips, tagged: faces };
 }
 
 /** One part of a large object, closed and ready to print. */

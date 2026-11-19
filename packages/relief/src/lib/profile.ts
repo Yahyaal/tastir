@@ -7,6 +7,8 @@
 export type Carving =
   /** Left at the top: the piece and its bands make one flat surface. */
   | { readonly kind: 'raised' }
+  /** Cut straight through the panel inside its band: a screen's holes. */
+  | { readonly kind: 'pierced' }
   /** A flat-bottomed recess; its walls lean out by `draft` from upright
    * so a mould lets go. */
   | { readonly kind: 'flat'; readonly depth: number; readonly draft: number }
@@ -121,7 +123,9 @@ export function profileOf(
   };
   switch (carving.kind) {
     case 'raised':
-      // The band's strip is kept apart from the rest, which stays level.
+    case 'pierced':
+      // The band's strip is kept apart from the rest, which stays level
+      // or is cut away.
       return make([], h);
     case 'flat': {
       const wall = h + carving.depth * Math.tan(rad(carving.draft));
@@ -152,5 +156,5 @@ export function profileOf(
 
 /** How deep a carving goes below the top. */
 export function depthOf(carving: Carving): number {
-  return carving.kind === 'raised' ? 0 : carving.depth;
+  return carving.kind === 'raised' || carving.kind === 'pierced' ? 0 : carving.depth;
 }

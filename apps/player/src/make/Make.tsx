@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, threeMf, zip } from '@tastir/relief';
+import { dxf, inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, svg, threeMf, zip } from '@tastir/relief';
 import { PieceShape } from '../app/drawing';
 import { download } from '../app/exporting';
 import { weaveOf } from '../app/interlace';
@@ -12,6 +12,7 @@ import {
   BANDS,
   BED,
   borderOf,
+  bridgeOf,
   carvingOf,
   cutsOf,
   extent,
@@ -20,6 +21,7 @@ import {
   gapOf,
   MIN_GAP,
   NARROWEST_BAND,
+  NARROWEST_BRIDGE,
   outlineOf,
   PART,
   PLA,
@@ -49,10 +51,11 @@ function StyleIcon({ style }: { style: Style }) {
     flat: 'M1 5 H6 L7.5 15 H20.5 L22 5 H27',
     cushion: 'M1 5 H6 L7 15 Q14 6 21 15 L22 5 H27',
     raised: 'M1 5 H27',
+    pierced: '',
   }[style];
   return (
     <svg className="style-icon" viewBox="0 0 28 18" aria-hidden="true">
-      <path d={`${d} V17 H1 Z`} />
+      {style === 'pierced' ? <path d="M1 5 H6 V17 H1 Z M22 5 H27 V17 H22 Z" /> : <path d={`${d} V17 H1 Z`} />}
     </svg>
   );
 }
@@ -205,6 +208,7 @@ export function Make({ json, address }: { json: unknown; address: string }) {
 
   const setAll = (style: Style) =>
     update({ kinds: Object.fromEntries(types.map((_, i) => [i, style])) });
+  const bridge = bridgeOf(settings, types.length);
   const allStyle = types.length && types.every((_, i) => styleOf(settings, i) === styleOf(settings, 0))
     ? styleOf(settings, 0)
     : undefined;
@@ -392,6 +396,14 @@ export function Make({ json, address }: { json: unknown; address: string }) {
                 ) : null}
               </>
             ) : null}
+            {bridge !== undefined ? (
+              <p className={bridge < NARROWEST_BRIDGE ? 'make-warning' : 'make-hint'}>
+                Narrowest bridge of the screen: {mm(bridge)}
+                {bridge < NARROWEST_BRIDGE
+                  ? `, under ${NARROWEST_BRIDGE} mm, so it may break: widen the bands${settings.frame > 0 && settings.frame < settings.band ? ' or the frame' : ''}.`
+                  : ', where the band runs between two holes.'}
+              </p>
+            ) : null}
             {settings.band < NARROWEST_BAND ? (
               <p className="make-warning">
                 Bands under {NARROWEST_BAND} mm are thinner than two lines of a 0.4 mm nozzle and may not print.
@@ -466,7 +478,34 @@ export function Make({ json, address }: { json: unknown; address: string }) {
                 {parts ? 'Download STLs (zip)' : 'Download STL'}
               </button>
             </div>
-            {parts ? <Parts parts={parts} pins={carved.pins ?? 0} mould={settings.print === 'mould'} floor={settings.mouldFloor} /> : null}
+            <div className="make-downloads make-flat">
+              <button
+                type="button"
+                className="secondary"
+                disabled={!carved.lines}
+                onClick={() =>
+                  carved.lines &&
+                  download(new Blob([svg(carved.lines, title)], { type: 'image/svg+xml' }), `${file}-lines.svg`)
+                }
+              >
+                Download SVG
+              </button>
+              <button
+                type="button"
+                className="secondary"
+                disabled={!carved.lines}
+                onClick={() =>
+                  carved.lines && download(new Blob([dxf(carved.lines)], { type: 'image/vnd.dxf' }), `${file}-lines.dxf`)
+                }
+              >
+                Download DXF
+              </button>
+            </div>
+            <p className="make-hint">
+              SVG and DXF are the {settings.shape} flat, in millimetres, for a laser cutter, a CNC router or a stencil: the
+              outline and every hole to cut in red, the edge of each carved piece to engrave in blue.
+            </p>
+            {parts ? <Parts parts={parts} pins={carved.pins ?? 0} pinless={carved.pinless} mould={settings.print === 'mould'} floor={settings.mouldFloor} /> : null}
             <p className="make-hint">
               {parts
                 ? 'The 3MF holds every part as its own object: in Bambu Studio, arrange them one or more to a plate. The zip holds one STL to a part.'
@@ -502,11 +541,13 @@ export function Make({ json, address }: { json: unknown; address: string }) {
 function Parts({
   parts,
   pins,
+  pinless,
   mould,
   floor,
 }: {
   parts: readonly { name: string; width: number; height: number; pins: number }[];
   pins: number;
+  pinless: 'thin' | 'pierced' | undefined;
   mould: boolean;
   floor: number;
 }) {
@@ -529,9 +570,9 @@ function Parts({
             holes along each seam, glue the edges, and press the parts together; A1 is the top left part seen from above.
           </>
         ) : (
-          'The solid under the carving is too thin for pins, so glue the parts edge to edge on a flat board.'
+          `${pinless === 'pierced' ? 'A pin could open into a hole of the screen' : 'The solid under the carving is too thin for pins'}, so glue the parts edge to edge on a flat board.`
         )}
-        {mould && floor < SPLIT_FLOOR ? ` The mould's floor is ${SPLIT_FLOOR} mm in parts, so the pins fit.` : ''}
+        {mould && floor < SPLIT_FLOOR && pins > 0 ? ` The mould's floor is ${SPLIT_FLOOR} mm in parts, so the pins fit.` : ''}
       </p>
     </div>
   );

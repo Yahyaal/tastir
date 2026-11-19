@@ -26,6 +26,8 @@ const IMAGE_TYPES: Record<string, string> = {
   '.avif': 'image/avif',
   '.pdf': 'application/pdf',
   '.stl': 'model/stl',
+  '.svg': 'image/svg+xml',
+  '.dxf': 'image/vnd.dxf',
   '.html': 'text/html; charset=utf-8',
 };
 

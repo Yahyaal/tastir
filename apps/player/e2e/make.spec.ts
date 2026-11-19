@@ -56,6 +56,24 @@ test('a finished pattern opens in 3D and downloads a 3MF for the slicer', async 
     new Set(['A1', 'B1', 'A2', 'B2'].map((n) => `panel-400mm-${n}.stl`)),
   );
 
+  // Stars pierced: the screen's lines, flat, as SVG and DXF.
+  await page.getByRole('group', { name: 'Carving of star' }).getByRole('button', { name: 'Pierced' }).click();
+  await expect(page.getByText(/Narrowest bridge of the screen/)).toBeVisible();
+  await expect(page.getByRole('status')).toHaveText('', { timeout: 20_000 });
+  const svgDownload = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download SVG' }).click();
+  const svgFile = await svgDownload;
+  expect(svgFile.suggestedFilename()).toBe('eight-fold-star-and-cross-panel-400mm-lines.svg');
+  const drawing = (await readFile((await svgFile.path())!)).toString('utf8');
+  expect(drawing).toContain('width="400mm" height="400mm"');
+  expect(drawing).toContain('id="cut"');
+  expect(drawing).toContain('id="engrave"');
+  const dxfDownload = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download DXF' }).click();
+  const lines = (await readFile((await (await dxfDownload).path())!)).toString('utf8');
+  expect(lines).toMatch(/^CUT$/m);
+  expect(lines).toMatch(/^ENGRAVE$/m);
+
   // Nothing wider than the screen.
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

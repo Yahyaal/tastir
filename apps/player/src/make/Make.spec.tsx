@@ -84,4 +84,20 @@ describe('Make', () => {
     const kept = JSON.parse(localStorage.getItem('tastir.make.eight-fold-star-and-cross') ?? '{}');
     expect(kept).toMatchObject({ woven: false, bands: 'double' });
   }, 40_000);
+
+  it('pierces a screen, checks its bridges, and offers flat lines', async () => {
+    render(<Make json={example} address="eight-fold-star-and-cross" />);
+    const groups = () => screen.getAllByRole('group', { name: /^Carving of / });
+    await waitFor(() => expect(groups().length).toBeGreaterThan(1), { timeout: 20_000 });
+    act(() => within(groups()[1]!).getByRole('button', { name: 'Pierced' }).click());
+    expect(screen.getByText(/Narrowest bridge of the screen: 3 mm/)).toBeTruthy();
+    fireEvent.change(screen.getByLabelText('Bands'), { target: { value: '1.2' } });
+    expect(screen.getByText(/Narrowest bridge of the screen: 1.2 mm, under 1.5 mm/)).toBeTruthy();
+    await waitFor(
+      () => expect(screen.getByRole('button', { name: 'Download SVG' })).toHaveProperty('disabled', false),
+      { timeout: 20_000 },
+    );
+    expect(screen.getByRole('button', { name: 'Download DXF' })).toHaveProperty('disabled', false);
+    await waitFor(() => expect(screen.queryByRole('alert')).toBeNull(), { timeout: 20_000 });
+  }, 40_000);
 });

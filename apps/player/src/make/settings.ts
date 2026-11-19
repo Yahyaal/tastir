@@ -19,7 +19,7 @@ export type Shape = 'panel' | 'round' | 'tile' | 'border';
 /** A border's ends: square, or cut at 45° so four borders make a frame. */
 export type Ends = 'square' | 'mitred';
 /** How a kind of piece is carved. */
-export type Style = 'facets' | 'flat' | 'cushion' | 'raised';
+export type Style = 'facets' | 'flat' | 'cushion' | 'raised' | 'pierced';
 
 export interface MakeSettings {
   readonly shape: Shape;
@@ -127,6 +127,7 @@ export const STYLES: readonly { style: Style; name: string }[] = [
   { style: 'flat', name: 'Flat' },
   { style: 'cushion', name: 'Cushion' },
   { style: 'raised', name: 'Raised' },
+  { style: 'pierced', name: 'Pierced' },
 ];
 
 export const SHAPES: readonly { shape: Shape; name: string }[] = [
@@ -141,6 +142,19 @@ export const BANDS: readonly { bands: BandShape; name: string }[] = [
   { bands: 'rounded', name: 'Rounded' },
   { bands: 'double', name: 'Double' },
 ];
+
+/** A screen's bridges thinner than this (about four printed lines) may
+ * break. */
+export const NARROWEST_BRIDGE = 1.5;
+
+/** The narrowest bridge of a pierced screen: the band between two holes,
+ * or the frame where a hole meets it. Undefined with nothing pierced. */
+export function bridgeOf(s: MakeSettings, kinds: number): number | undefined {
+  const pierced = Array.from({ length: kinds }, (_, i) => styleOf(s, i)).includes('pierced');
+  if (!pierced) return undefined;
+  const frame = s.shape === 'tile' ? 0 : s.frame;
+  return frame > 0 ? Math.min(s.band, frame) : s.band;
+}
 
 /** The thinnest gap that prints: three layers of 0.2 mm. */
 export const MIN_GAP = 0.6;
@@ -162,6 +176,8 @@ export function carvingOf(s: MakeSettings, style: Style): Carving {
   switch (style) {
     case 'raised':
       return { kind: 'raised' };
+    case 'pierced':
+      return { kind: 'pierced' };
     case 'flat':
       return { kind: 'flat', depth, draft: DRAFT };
     case 'cushion':

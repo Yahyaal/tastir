@@ -14,7 +14,7 @@ import type { P2, P3 } from './skeleton.js';
 
 /** What a face of the carved top is: part of a band, part of the carving
  * beside it, or the inside of a piece left level. */
-export type Tag = 'band' | 'field' | 'level';
+export type Tag = 'band' | 'field' | 'level' | 'hole';
 
 export interface TaggedFace {
   readonly face: P3[];
@@ -141,7 +141,7 @@ export function weaveTop(
   crossings: readonly Crossing[],
   corners: readonly P2[],
   o: WeaveOptions,
-): { faces: P3[][]; dips: number } {
+): { faces: TaggedFace[]; dips: number } {
   const half = o.band / 2;
   const drop = o.gap + o.edge;
   const dips = dipsFor(crossings, corners, o.band);
@@ -177,7 +177,7 @@ export function weaveTop(
     ];
     const next: WFace[] = [];
     for (const f of list) {
-      if (f.tag === 'level' || f.x1 < bx0 || f.x0 > bx1 || f.y1 < by0 || f.y0 > by1) {
+      if (f.tag === 'level' || f.tag === 'hole' || f.x1 < bx0 || f.x0 > bx1 || f.y1 < by0 || f.y0 > by1) {
         next.push(f);
         continue;
       }
@@ -218,8 +218,7 @@ export function weaveTop(
     }
     list = next;
   }
-  const out = list.map((f) => f.p);
-  return { faces: [...out, ...walls(out)], dips: dips.length };
+  return { faces: list.map((f) => ({ face: f.p, tag: f.tag })), dips: dips.length };
 }
 
 /** The sides of each crossing to lower, with slopes that stop halfway to
