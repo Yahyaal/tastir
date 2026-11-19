@@ -16,7 +16,7 @@ class FakeWorker {
   terminate() {
     this.queue = [];
   }
-  private queue: Reply[] = [];
+  queue: Reply[] = [];
   constructor() {
     FakeWorker.last = this;
   }
@@ -65,6 +65,16 @@ describe('loading in a worker', () => {
     // The finished model arrives through a promise.
     await act(() => Promise.resolve());
     expect(document.querySelector('.label')?.textContent).toBe('Step 1 of 6');
+  });
+  it('opens a pattern loaded a moment ago at once, without the worker', async () => {
+    // The model from the test above is kept.
+    const before = FakeWorker.last;
+    const queued = FakeWorker.last?.queue.length;
+    render(<Play json={example} />);
+    expect(screen.queryByText('Checking the tutorial…')).toBeNull();
+    expect(document.querySelector('.label')?.textContent).toBe('Step 1 of 6');
+    expect(FakeWorker.last).toBe(before);
+    expect(FakeWorker.last?.queue.length).toBe(queued);
   });
   it('rejects pending requests after a worker crash and creates a fresh worker', async () => {
     const failed = loadInWorker(example, () => undefined);

@@ -1115,11 +1115,27 @@ export function Player({
     );
     return { minX: x - r, minY: y - r, maxX: x + r, maxY: y + r };
   }, [inking.shown]);
+  // The samples wait until the wall has shown: in the densest patterns
+  // they take a few tenths of a second, which need not hold the wall up.
+  const [samplesFor, setSamplesFor] = useState<Model>();
+  useEffect(() => {
+    if (!onWall) return undefined;
+    // After the next frame is painted, not merely after this render.
+    let later: ReturnType<typeof setTimeout> | undefined;
+    const frame = requestAnimationFrame(() => {
+      later = setTimeout(() => setSamplesFor(inking.shown), 0);
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(later);
+    };
+  }, [onWall, inking.shown]);
+  const samplesReady = samplesFor === inking.shown;
   // Drawn once per pattern, colouring and finish, not on every slide of
   // the width or point at a ring.
   const styleSamples = useMemo(
     () =>
-      onWall
+      onWall && samplesReady
         ? Object.fromEntries(
             WALL_STYLES.map((look) => [
               look,
@@ -1138,7 +1154,7 @@ export function Player({
             ]),
           )
         : undefined,
-    [onWall, inking.shown, styleColours, jali, pen, sampleView],
+    [onWall, samplesReady, inking.shown, styleColours, jali, pen, sampleView],
   );
   const photos = tutorial.photos ?? [];
   const showOriginal = comparing && onWall && photos.length > 0;

@@ -189,3 +189,10 @@ export const LIBRARY: readonly Entry[] =
               : load,
         };
       });
+
+let families: readonly Entry[] | undefined;
+
+/** The library's families in its order (grouped, listed), found once: the
+ * player asks for them on every pattern it opens. */
+export const libraryFamilies = (): readonly Entry[] =>
+  (families ??= grouped(listed(LIBRARY)));
