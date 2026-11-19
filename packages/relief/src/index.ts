@@ -15,8 +15,12 @@ export {
   carvePiece,
   MIN_BASE,
   piecesOver,
+  rectangle,
+  round,
   relief,
   type PatternShape,
   type ReliefOptions,
 } from './lib/relief.js';
 export { stl } from './lib/stl.js';
+export { crc32, threeMf, zip } from './lib/threemf.js';
+export { picture, sunFrom, type PictureOptions } from './lib/picture.js';

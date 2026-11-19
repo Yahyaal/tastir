@@ -16,6 +16,9 @@ export interface ReliefOptions {
   /** The panel's size in millimetres, centred on the pattern's origin. */
   readonly width: number;
   readonly height: number;
+  /** Another outline in place of the rectangle: convex, counter-clockwise,
+   * in millimetres around the pattern's origin (a round panel, a tile). */
+  readonly outline?: readonly P2[];
   /** Millimetres for one pattern unit (OA). */
   readonly scale: number;
   /** The height of the top of the bands above the table. */
@@ -26,6 +29,24 @@ export interface ReliefOptions {
   readonly frame: number;
   /** How each kind of piece (the engine's piece type) is carved. */
   readonly carving: (type: number) => Carving;
+}
+
+/** A rectangle centred on the origin, counter-clockwise. */
+export function rectangle(width: number, height: number): P2[] {
+  return [
+    { x: -width / 2, y: -height / 2 },
+    { x: width / 2, y: -height / 2 },
+    { x: width / 2, y: height / 2 },
+    { x: -width / 2, y: height / 2 },
+  ];
+}
+
+/** A round outline: a regular polygon fine enough to print smooth. */
+export function round(diameter: number, sides = 180): P2[] {
+  return Array.from({ length: sides }, (_, i) => {
+    const a = (2 * Math.PI * i) / sides;
+    return { x: (diameter / 2) * Math.cos(a), y: (diameter / 2) * Math.sin(a) };
+  });
 }
 
 /** The thinnest the panel may be under any carving. */
@@ -106,13 +127,27 @@ export function carvePiece(
  * would go through the panel.
  */
 export function relief(pattern: PatternShape, options: ReliefOptions): Mesh {
-  const { width, height, scale, thickness, band, frame } = options;
-  if (!(width > 0 && height > 0 && scale > 0))
+  const { scale, thickness, band, frame } = options;
+  const outline = options.outline ?? rectangle(options.width, options.height);
+  if (outline.length < 3 || !(signedArea(outline) > 0) || !(scale > 0))
     throw new Error('The panel needs a size and a scale.');
+  for (let i = 0; i < outline.length; i++) {
+    const a = outline[i]!;
+    const b = outline[(i + 1) % outline.length]!;
+    const c = outline[(i + 2) % outline.length]!;
+    if ((b.x - a.x) * (c.y - b.y) - (b.y - a.y) * (c.x - b.x) < -1e-9)
+      throw new Error('The panel outline must be convex.');
+  }
   if (!(band > 0)) throw new Error('The bands need a width.');
-  if (frame < 0 || 2 * frame >= Math.min(width, height))
+  if (!(thickness > MIN_BASE)) throw new Error(`The panel must be thicker than ${MIN_BASE} mm.`);
+  const xs = outline.map((p) => p.x);
+  const ys = outline.map((p) => p.y);
+  const half = {
+    x: Math.max(...xs.map(Math.abs)),
+    y: Math.max(...ys.map(Math.abs)),
+  };
+  if (frame < 0 || 2 * frame >= Math.min(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)))
     throw new Error('The frame leaves no room for the pattern.');
-  const half = { x: width / 2, y: height / 2 };
   const types = new Set(pattern.pieces.map((p) => p.type));
   for (const type of types) {
     const depth = depthOf(options.carving(type));
@@ -124,11 +159,5 @@ export function relief(pattern: PatternShape, options: ReliefOptions): Mesh {
   const surface: P3[][] = [];
   for (const piece of piecesOver(pattern, scale, half))
     surface.push(...carvePiece(piece.polygon, options.carving(piece.type), thickness, band));
-  const outline = [
-    { x: -half.x, y: -half.y },
-    { x: half.x, y: -half.y },
-    { x: half.x, y: half.y },
-    { x: -half.x, y: half.y },
-  ];
   return closeSolid({ surface, outline, frame, top: thickness });
 }

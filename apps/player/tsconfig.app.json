@@ -57,6 +57,9 @@
       "path": "../../packages/engine/tsconfig.lib.json"
     },
     {
+      "path": "../../packages/relief/tsconfig.lib.json"
+    },
+    {
       "path": "../../packages/agent-protocol/tsconfig.lib.json"
     }
   ]

@@ -28,7 +28,7 @@ On 17 November three owner reports were fixed: Comares west dado no longer freez
 
 Loading followed (PERF.2): the card now appears only past 0.4 s, and patterns just seen or prepared as Next, Previous or under the pointer in the menu open at once.
 
-On 19 November the owner asked for a 3D extension: carved panels, tiles and moulds for the Bambu Lab A1. The [3D plan](http://localhost:4200/#/notes/3d-plan) was approved, and its first task (3D.1, `packages/relief` and `pnpm relief <pattern>`) is done, with three panels to look at linked from the plan. Next is 3D.2, the Make stage in the player.
+On 19 November the owner asked for a 3D extension: carved panels, tiles and moulds for the Bambu Lab A1. The [3D plan](http://localhost:4200/#/notes/3d-plan) was approved, and its first task (3D.1, `packages/relief` and `pnpm relief <pattern>`) is done, with three panels to look at linked from the plan. 3D.2 followed the same day: [Make it in 3D](http://localhost:4200/#/eight-fold-star-and-cross/make) on every pattern's finished wall, with downloads for Bambu Studio. Next is 3D.3, moulds.
 
 ## The next goal
 
