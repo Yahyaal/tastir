@@ -1,5 +1,6 @@
 export { signedArea, skeletonHeight, sweep, type P2, type P3, type Sweep } from './lib/skeleton.js';
-export { depthOf, profileOf, type Carving, type Profile } from './lib/profile.js';
+export { bandEdge, depthOf, grooveDepth, profileOf, type BandShape, type Carving, type Profile } from './lib/profile.js';
+export { walls, weaveTop, RAMP, type Crossing, type Tag, type TaggedFace, type WeaveOptions } from './lib/weave.js';
 export {
   clip,
   clipOutline,

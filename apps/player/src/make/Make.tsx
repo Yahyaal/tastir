@@ -2,12 +2,14 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, threeMf, zip } from '@tastir/relief';
 import { PieceShape } from '../app/drawing';
 import { download } from '../app/exporting';
+import { weaveOf } from '../app/interlace';
 import { pieceName } from '../app/pieceNames';
 import { useModel } from '../app/workerClient';
 import { ReliefView } from './ReliefView';
 import { MOULD_DRAFT, SPLIT_FLOOR, type Print } from './carve';
 import { shapeOf, useCarved } from './reliefClient';
 import {
+  BANDS,
   BED,
   borderOf,
   carvingOf,
@@ -15,6 +17,8 @@ import {
   extent,
   FLOOR,
   FRAME_OF,
+  gapOf,
+  MIN_GAP,
   NARROWEST_BAND,
   outlineOf,
   PART,
@@ -141,7 +145,14 @@ export function Make({ json, address }: { json: unknown; address: string }) {
     });
   useEffect(() => rememberSettings(address, settings), [address, settings]);
 
-  const pattern = useMemo(() => (model ? shapeOf(model.pattern) : undefined), [model]);
+  const pattern = useMemo(
+    () =>
+      model
+        ? shapeOf(model.pattern, model.tutorial.pattern.woven === false ? undefined : weaveOf(model.pattern))
+        : undefined,
+    [model],
+  );
+  const weaves = pattern?.weave !== undefined;
   const outline = useMemo(
     () => (model ? outlineOf(model.pattern, settings) : []),
     [model, settings],
@@ -168,6 +179,8 @@ export function Make({ json, address }: { json: unknown; address: string }) {
     thickness: settings.thickness,
     band: settings.band,
     frame,
+    bands: settings.bands,
+    weaveGap: weaves && settings.woven ? gapOf(settings) : 0,
     carvings,
     print: settings.print,
     floor: settings.mouldFloor,
@@ -353,6 +366,32 @@ export function Make({ json, address }: { json: unknown; address: string }) {
           <Section title="Carving">
             <Measure label="Depth" value={Math.min(settings.depth, settings.thickness - FLOOR)} min={0.5} max={settings.thickness - FLOOR} onChange={(depth) => update({ depth })} />
             <Measure label="Bands" value={settings.band} min={0.4} max={12} step={0.1} onChange={(band) => update({ band })} />
+            <div className="make-choices make-bands" role="group" aria-label="Band shape">
+              {BANDS.map(({ bands, name }) => (
+                <button key={bands} type="button" aria-pressed={settings.bands === bands} onClick={() => update({ bands })}>
+                  <BandIcon bands={bands} />
+                  {name}
+                </button>
+              ))}
+            </div>
+            {weaves ? (
+              <>
+                <label className="make-switch">
+                  <input type="checkbox" checked={settings.woven} onChange={(e) => update({ woven: e.target.checked })} />
+                  Woven: one band passes under the other at each crossing
+                </label>
+                {settings.woven ? (
+                  <Measure
+                    label="Gap"
+                    value={gapOf(settings)}
+                    min={MIN_GAP}
+                    max={Math.max(MIN_GAP, Math.min(settings.depth, settings.thickness - FLOOR) / 3)}
+                    step={0.1}
+                    onChange={(gap) => update({ gap })}
+                  />
+                ) : null}
+              </>
+            ) : null}
             {settings.band < NARROWEST_BAND ? (
               <p className="make-warning">
                 Bands under {NARROWEST_BAND} mm are thinner than two lines of a 0.4 mm nozzle and may not print.
@@ -495,6 +534,20 @@ function Parts({
         {mould && floor < SPLIT_FLOOR ? ` The mould's floor is ${SPLIT_FLOOR} mm in parts, so the pins fit.` : ''}
       </p>
     </div>
+  );
+}
+
+/** A band's cross-section. */
+function BandIcon({ bands }: { bands: string }) {
+  const d = {
+    flat: 'M2 14V6H26V14Z',
+    rounded: 'M2 14V9Q14 1 26 9V14Z',
+    double: 'M2 14V5H12L13 9H15L16 5H26V14Z',
+  }[bands];
+  return (
+    <svg className="shape-icon" viewBox="0 0 28 16" aria-hidden="true">
+      <path d={d} />
+    </svg>
   );
 }
 

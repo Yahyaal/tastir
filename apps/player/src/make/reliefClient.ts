@@ -21,11 +21,20 @@ function reliefWorker(): Worker | undefined {
   return worker;
 }
 
-/** Only what the carving needs from a pattern, to send to the worker. */
-export function shapeOf(pattern: PatternShape): PatternShape {
+/** Only what the carving needs from a pattern, to send to the worker:
+ * the repeat, the pieces, and the crossings of its weave if it has one. */
+export function shapeOf(pattern: PatternShape, weave?: PatternShape['weave']): PatternShape {
   return {
     cell: { u: pattern.cell.u, v: pattern.cell.v },
     pieces: pattern.pieces.map((p) => ({ polygon: p.polygon, type: p.type })),
+    ...(weave && weave.crossings.length
+      ? {
+          weave: {
+            repeat: weave.repeat,
+            crossings: weave.crossings.map(({ at, i, j, over, under }) => ({ at, i, j, over, under })),
+          },
+        }
+      : {}),
   };
 }
 

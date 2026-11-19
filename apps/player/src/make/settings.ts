@@ -1,6 +1,7 @@
 import {
   boxOutline,
   cutsFor,
+  type BandShape,
   type Cuts,
   type Repeat,
   mouldOutline,
@@ -32,6 +33,11 @@ export interface MakeSettings {
   readonly band: number;
   readonly frame: number;
   readonly ends: Ends;
+  /** The bands' cross-section. */
+  readonly bands: BandShape;
+  /** Whether the bands weave over and under, and by how much. */
+  readonly woven: boolean;
+  readonly gap: number;
   /** The carving of each kind of piece (the engine's type), when not facets. */
   readonly kinds: Readonly<Record<number, Style>>;
   /** What is printed: the object, a mould for plaster, or a silicone box. */
@@ -89,6 +95,9 @@ export const DEFAULT_SETTINGS: MakeSettings = {
   band: 3,
   frame: 8,
   ends: 'square',
+  bands: 'flat',
+  woven: true,
+  gap: 1.5,
   kinds: {},
   print: 'object',
   mouldFloor: 3,
@@ -126,6 +135,22 @@ export const SHAPES: readonly { shape: Shape; name: string }[] = [
   { shape: 'tile', name: 'Tile' },
   { shape: 'border', name: 'Border' },
 ];
+
+export const BANDS: readonly { bands: BandShape; name: string }[] = [
+  { bands: 'flat', name: 'Flat' },
+  { bands: 'rounded', name: 'Rounded' },
+  { bands: 'double', name: 'Double' },
+];
+
+/** The thinnest gap that prints: three layers of 0.2 mm. */
+export const MIN_GAP = 0.6;
+
+/** The gap the weave uses: at least three layers, at most a third of the
+ * carving's depth. */
+export function gapOf(s: MakeSettings): number {
+  const depth = Math.min(s.depth, s.thickness - FLOOR);
+  return Math.max(MIN_GAP, Math.min(s.gap, depth / 3));
+}
 
 /** The bed less room for a brim: no part is longer. */
 export const PART = 250;
@@ -265,6 +290,9 @@ export function sane(s: Partial<MakeSettings>): MakeSettings {
     band: num(s.band, 0.4, 20, d.band),
     frame: num(s.frame, 0, Math.min(width, height) / 2 - 5, d.frame),
     ends: s.ends === 'mitred' ? 'mitred' : 'square',
+    bands: BANDS.some((b) => b.bands === s.bands) ? s.bands! : d.bands,
+    woven: typeof s.woven === 'boolean' ? s.woven : d.woven,
+    gap: num(s.gap, MIN_GAP, 20, d.gap),
     kinds,
     print: PRINTS.some((x) => x.print === s.print) ? s.print! : d.print,
     mouldFloor: num(s.mouldFloor, 1, 20, d.mouldFloor),

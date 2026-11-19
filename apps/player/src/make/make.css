@@ -115,8 +115,21 @@
 
 .make-choices {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
   gap: 6px;
+}
+.make-bands .shape-icon {
+  height: 16px;
+}
+.make-switch {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 0.9rem;
+}
+.make-switch input {
+  margin-top: 3px;
+  accent-color: var(--theme-accent);
 }
 .player .make-choices button {
   display: grid;

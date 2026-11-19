@@ -8,6 +8,7 @@ import {
   pinsFor,
   reliefSurface,
   topOf,
+  type BandShape,
   type Cuts,
   type MeshPart,
   mouldOf,
@@ -32,6 +33,9 @@ export interface CarveRequest {
   readonly thickness: number;
   readonly band: number;
   readonly frame: number;
+  readonly bands: BandShape;
+  /** The weave's gap, or 0 for bands that do not weave. */
+  readonly weaveGap: number;
   /** The carving of each piece type; -1 for any type not listed. */
   readonly carvings: Readonly<Record<number, Carving>>;
   readonly print: Print;
@@ -90,6 +94,8 @@ export function carve(r: CarveRequest): Carving3D {
     band: r.band,
     frame: r.frame,
     carving: (type: number) => r.carvings[type] ?? r.carvings[-1]!,
+    bands: r.bands,
+    gap: r.weaveGap,
   };
   const { surface, outline } = reliefSurface(r.pattern, options);
   const top = topOf({ surface, outline, frame: r.frame, top: r.thickness });

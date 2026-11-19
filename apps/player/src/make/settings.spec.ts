@@ -6,6 +6,9 @@ import {
   DEFAULT_SETTINGS,
   extent,
   FLOOR,
+  gapOf,
+  MIN_GAP,
+  repeatsOf,
   outlineOf,
   sane,
   scaleOf,
@@ -59,5 +62,20 @@ describe('make settings', () => {
     expect(s.width).toBe(20);
     expect(s.depth).toBe(6 - FLOOR);
     expect(s.kinds).toEqual({ 0: 'cushion' });
+  });
+
+  it('keeps the gap of the weave printable and within the carving', () => {
+    expect(gapOf({ ...DEFAULT_SETTINGS, gap: 0.1 })).toBe(MIN_GAP);
+    expect(gapOf({ ...DEFAULT_SETTINGS, gap: 9, depth: 6 })).toBe(2);
+    expect(sane({ bands: 'wavy' as never, woven: 'yes' as never }).bands).toBe('flat');
+    expect(sane({ woven: false }).woven).toBe(false);
+  });
+
+  it('finds the repeat straight across and straight up', () => {
+    const square = loadModel(example).pattern;
+    expect(repeatsOf(square, DEFAULT_SETTINGS)).toEqual({ x: { step: 100, at: 0 }, y: { step: 100, at: 0 } });
+    const r = repeatsOf(loadModel(hex).pattern, DEFAULT_SETTINGS);
+    expect(r.x!.step).toBeCloseTo(100, 9);
+    expect(r.y!.step).toBeCloseTo(100 * Math.sqrt(3), 9);
   });
 });

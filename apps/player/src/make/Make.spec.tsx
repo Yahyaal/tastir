@@ -63,4 +63,25 @@ describe('Make', () => {
     expect(screen.getByText('A1')).toBeTruthy();
     expect(screen.getByText('C1')).toBeTruthy();
   }, 30_000);
+
+  it('weaves the bands, and shapes them', async () => {
+    render(<Make json={example} address="eight-fold-star-and-cross" />);
+    await waitFor(() => expect(screen.getByText('PLA if printed solid')).toBeTruthy(), {
+      timeout: 20_000,
+    });
+    const woven = screen.getByRole('checkbox', { name: /Woven/ }) as HTMLInputElement;
+    expect(woven.checked).toBe(true);
+    expect((screen.getByLabelText('Gap') as HTMLInputElement).value).toBe('1.5');
+    const volume = () => screen.getByText(/cm³/).textContent;
+    const before = volume();
+    act(() => woven.click());
+    expect(screen.queryByLabelText('Gap')).toBeNull();
+    await waitFor(() => expect(volume()).not.toBe(before), { timeout: 20_000 });
+    const group = screen.getByRole('group', { name: 'Band shape' });
+    act(() => within(group).getByRole('button', { name: 'Double' }).click());
+    expect(within(group).getByRole('button', { name: 'Double' }).getAttribute('aria-pressed')).toBe('true');
+    await waitFor(() => expect(screen.queryByRole('alert')).toBeNull(), { timeout: 20_000 });
+    const kept = JSON.parse(localStorage.getItem('tastir.make.eight-fold-star-and-cross') ?? '{}');
+    expect(kept).toMatchObject({ woven: false, bands: 'double' });
+  }, 40_000);
 });

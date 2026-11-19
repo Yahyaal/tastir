@@ -1,6 +1,7 @@
 import { isOnOutline, standOn, topOf, type Mesh, type Pin } from './mesh.js';
 import { partsOf, type Cuts } from './parts.js';
-import { depthOf, profileOf, type Carving } from './profile.js';
+import { bandEdge, depthOf, profileOf, type BandShape, type Carving } from './profile.js';
+import { weaveTop, type Crossing, type Tag, type TaggedFace } from './weave.js';
 import { signedArea, skeletonHeight, sweep, type P2, type P3 } from './skeleton.js';
 
 /** What the relief needs from a Tastir pattern (the engine's Pattern
@@ -11,6 +12,18 @@ export interface PatternShape {
     readonly polygon: readonly P2[];
     readonly type: number;
   }[];
+  /** Which band is on top at each crossing (the engine's weave): the
+   * crossings of the tiles of one repeat, `repeat` tiles along u and v. */
+  readonly weave?: {
+    readonly repeat: readonly [number, number];
+    readonly crossings: readonly {
+      readonly at: P2;
+      readonly i: number;
+      readonly j: number;
+      readonly over: P2;
+      readonly under: P2;
+    }[];
+  };
 }
 
 export interface ReliefOptions {
@@ -30,6 +43,11 @@ export interface ReliefOptions {
   readonly frame: number;
   /** How each kind of piece (the engine's piece type) is carved. */
   readonly carving: (type: number) => Carving;
+  /** The bands' cross-section (flat when left out). */
+  readonly bands?: BandShape;
+  /** Woven bands: the band underneath passes this far below the top
+   * band's edge at each crossing (needs the pattern's weave). */
+  readonly gap?: number;
 }
 
 /** A rectangle centred on the origin, counter-clockwise. */
@@ -111,15 +129,70 @@ export function carvePiece(
   carving: Carving,
   top: number,
   band: number,
+  bands: BandShape = 'flat',
 ): P3[][] {
-  if (carving.kind === 'raised') return [polygon.map((p) => ({ ...p, z: top }))];
+  return carveTagged(polygon, carving, top, band, bands, false).map((f) => f.face);
+}
+
+/** The carved top of one piece, each face marked as band, carving, or
+ * the level inside of a raised piece. `apart` keeps a raised piece's band
+ * strip apart from its inside, for weaving. */
+function carveTagged(
+  polygon: readonly P2[],
+  carving: Carving,
+  top: number,
+  band: number,
+  bands: BandShape,
+  apart: boolean,
+): TaggedFace[] {
+  if (carving.kind === 'raised' && !apart)
+    return [{ face: polygon.map((p) => ({ ...p, z: top })), tag: 'level' }];
   const height = carving.kind === 'cushion' ? skeletonHeight(polygon) : 0;
-  const profile = profileOf(carving, top, band, height);
+  const profile = profileOf(carving, top, band, height, bands);
   const s = sweep(polygon, profile.stops, profile.end);
-  const faces = s.faces.map((f) => f.map((p) => ({ x: p.x, y: p.y, z: profile.z(p.z) })));
+  const h = band / 2 + 1e-9;
+  const faces: TaggedFace[] = s.faces.map((f) => ({
+    face: f.map((p) => ({ x: p.x, y: p.y, z: profile.z(p.z) })),
+    tag: (f.every((p) => p.z <= h) ? 'band' : 'field') as Tag,
+  }));
   const floorZ = profile.z(profile.end);
-  for (const f of s.floor) faces.push(f.map((p) => ({ ...p, z: floorZ })));
+  const floorTag: Tag = carving.kind === 'raised' ? 'level' : 'field';
+  for (const f of s.floor) faces.push({ face: f.map((p) => ({ ...p, z: floorZ })), tag: floorTag });
   return faces;
+}
+
+/** The weave's crossings copied over a rectangle, in millimetres. */
+function crossingsOver(pattern: PatternShape, scale: number, half: P2): Crossing[] {
+  const w = pattern.weave;
+  if (!w) return [];
+  const { u, v } = pattern.cell;
+  const [m, n] = w.repeat;
+  const U = { x: u.x * m, y: u.y * m };
+  const V = { x: v.x * n, y: v.y * n };
+  const det = U.x * V.y - U.y * V.x;
+  const ex = half.x / scale + Math.hypot(U.x, U.y) + Math.hypot(V.x, V.y);
+  const ey = half.y / scale + Math.hypot(U.x, U.y) + Math.hypot(V.x, V.y);
+  const span = [
+    [-ex, -ey],
+    [ex, -ey],
+    [ex, ey],
+    [-ex, ey],
+  ].map(([x, y]) => ({ i: (x! * V.y - y! * V.x) / det, j: (U.x * y! - U.y * x!) / det }));
+  const i0 = Math.floor(Math.min(...span.map((s) => s.i)));
+  const i1 = Math.ceil(Math.max(...span.map((s) => s.i)));
+  const j0 = Math.floor(Math.min(...span.map((s) => s.j)));
+  const j1 = Math.ceil(Math.max(...span.map((s) => s.j)));
+  const out: Crossing[] = [];
+  const reach = 1 + 4 / scale;
+  for (let i = i0; i <= i1; i++)
+    for (let j = j0; j <= j1; j++)
+      for (const c of w.crossings) {
+        const x = (c.at.x + i * U.x + j * V.x) * scale;
+        const y = (c.at.y + i * U.y + j * V.y) * scale;
+        if (Math.abs(x) > half.x + reach * scale || Math.abs(y) > half.y + reach * scale) continue;
+        out.push({ at: { x, y }, over: c.over, under: c.under });
+      }
+  return out;
 }
 
 /**
@@ -150,7 +223,7 @@ export function reliefTop(
 export function reliefSurface(
   pattern: PatternShape,
   options: ReliefOptions,
-): { surface: P3[][]; outline: P2[] } {
+): { surface: P3[][]; outline: P2[]; dips: number } {
   const { scale, thickness, band, frame } = options;
   const outline = options.outline ?? rectangle(options.width, options.height);
   if (outline.length < 3 || !(signedArea(outline) > 0) || !(scale > 0))
@@ -180,10 +253,21 @@ export function reliefSurface(
         `Piece kind ${type + 1} is carved ${depth} mm deep, which leaves less than ${MIN_BASE} mm of a ${thickness} mm panel.`,
       );
   }
-  const surface: P3[][] = [];
-  for (const piece of piecesOver(pattern, scale, half))
-    surface.push(...carvePiece(piece.polygon, options.carving(piece.type), thickness, band));
-  return { surface, outline: outline.slice() };
+  const bands = options.bands ?? 'flat';
+  const woven = options.gap !== undefined && options.gap > 0 && pattern.weave !== undefined;
+  const pieces = piecesOver(pattern, scale, half);
+  const tagged: TaggedFace[] = [];
+  for (const piece of pieces)
+    tagged.push(...carveTagged(piece.polygon, options.carving(piece.type), thickness, band, bands, woven));
+  if (!woven) return { surface: tagged.map((f) => f.face), outline: outline.slice(), dips: 0 };
+  const corners = pieces.flatMap((p) => p.polygon);
+  const { faces, dips } = weaveTop(tagged, crossingsOver(pattern, scale, half), corners, {
+    gap: options.gap!,
+    band,
+    edge: bandEdge(bands, band),
+    top: thickness,
+  });
+  return { surface: faces, outline: outline.slice(), dips };
 }
 
 /** One part of a large object, closed and ready to print. */

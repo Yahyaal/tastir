@@ -402,7 +402,7 @@ export interface Solid {
 }
 
 /** Faces welded and joined at their Ts, with the directed edges they use. */
-function joined(faces: readonly (readonly P3[])[]) {
+export function joined(faces: readonly (readonly P3[])[]) {
   const corners = new Corners();
   const indexedFaces = faces
     .map((f) => indexed(corners, f))
