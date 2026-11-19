@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "review": "tools/review/review.sh",
+    "relief": "node --conditions=@tastir/source --import tsx tools/relief.mts",
     "compare": "python3 tools/review/compare.py",
     "test:perf": "TASTIR_PERF=1 vitest run --config packages/engine/vitest.config.mts",
     "test:equivalence": "TASTIR_EQUIVALENCE=1 vitest run --config packages/engine/vitest.config.mts",

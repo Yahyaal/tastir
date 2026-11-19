@@ -25,6 +25,7 @@ const IMAGE_TYPES: Record<string, string> = {
   '.webp': 'image/webp',
   '.avif': 'image/avif',
   '.pdf': 'application/pdf',
+  '.stl': 'model/stl',
   '.html': 'text/html; charset=utf-8',
 };
 

@@ -1,0 +1,115 @@
+/**
+ * How a piece is carved: its height as a function of the distance from
+ * its edge (the ink's centre line). The first half band stays at the top,
+ * which is the raised strapwork; after it the surface falls as chosen.
+ * Angles are in degrees and lengths in millimetres.
+ */
+export type Carving =
+  /** Left at the top: the piece and its bands make one flat surface. */
+  | { readonly kind: 'raised' }
+  /** A flat-bottomed recess; its walls lean out by `draft` from upright
+   * so a mould lets go. */
+  | { readonly kind: 'flat'; readonly depth: number; readonly draft: number }
+  /** Cut as straight slopes from the band down to the ridges of the
+   * piece's skeleton, as a carver cuts plaster or wood; `slope` is the
+   * slope from level, and a recess deeper than `depth` is cut flat. */
+  | { readonly kind: 'facets'; readonly slope: number; readonly depth: number }
+  /** A recess whose floor swells back up in a rounded cushion, reaching
+   * `rise` above the floor at the piece's middle. */
+  | {
+      readonly kind: 'cushion';
+      readonly depth: number;
+      readonly draft: number;
+      readonly rise: number;
+    };
+
+export interface Profile {
+  /** The distances where the height bends; straight between them. */
+  readonly stops: readonly number[];
+  /** Where the carving reaches its floor (Infinity: no floor). */
+  readonly end: number;
+  /** The height at a distance from the edge. */
+  readonly z: (d: number) => number;
+}
+
+const rad = (deg: number) => (deg * Math.PI) / 180;
+
+/** Straight between the given (distance, height) points, level after. */
+function polyline(points: readonly (readonly [number, number])[]) {
+  return (d: number) => {
+    if (d <= points[0]![0]) return points[0]![1];
+    for (let i = 1; i < points.length; i++) {
+      const [d1, z1] = points[i]!;
+      if (d <= d1) {
+        const [d0, z0] = points[i - 1]!;
+        return d1 === d0 ? z1 : z0 + ((z1 - z0) * (d - d0)) / (d1 - d0);
+      }
+    }
+    return points[points.length - 1]![1];
+  };
+}
+
+/** How many straight pieces make a cushion's curve. */
+const CURVE = 16;
+
+/**
+ * The profile of a carving under a top at `top`, with bands `band` wide.
+ * `height` is how far the piece's wavefront goes before it closes (its
+ * skeleton's height), which a cushion needs to find its middle.
+ */
+export function profileOf(
+  carving: Carving,
+  top: number,
+  band: number,
+  height: number,
+): Profile {
+  const h = band / 2;
+  switch (carving.kind) {
+    case 'raised':
+      return { stops: [], end: 0, z: () => top };
+    case 'flat': {
+      const wall = h + carving.depth * Math.tan(rad(carving.draft));
+      const z = polyline([
+        [h, top],
+        [wall, top - carving.depth],
+      ]);
+      return { stops: [h, wall], end: wall, z };
+    }
+    case 'facets': {
+      const run = carving.depth / Math.tan(rad(carving.slope));
+      const z = polyline([
+        [h, top],
+        [h + run, top - carving.depth],
+      ]);
+      return { stops: [h, h + run], end: h + run, z };
+    }
+    case 'cushion': {
+      const wall = h + carving.depth * Math.tan(rad(carving.draft));
+      const floor = top - carving.depth;
+      const points: [number, number][] = [
+        [h, top],
+        [wall, floor],
+      ];
+      // A quarter ellipse from the foot of the wall to the middle.
+      if (height > wall)
+        for (let i = 1; i <= CURVE; i++) {
+          const s = i / CURVE;
+          const a = (s * Math.PI) / 2;
+          points.push([
+            wall + (height - wall) * (1 - Math.cos(a)),
+            floor + carving.rise * Math.sin(a),
+          ]);
+        }
+      return {
+        stops: points.map((p) => p[0]),
+        end: Infinity,
+        z: polyline(points),
+      };
+    }
+  }
+}
+
+/** How deep a carving goes below the top. */
+export function depthOf(carving: Carving): number {
+  return carving.kind === 'raised' ? 0 : carving.depth;
+}

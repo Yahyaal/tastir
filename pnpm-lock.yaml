@@ -263,6 +263,18 @@ importers:
         specifier: workspace:*
         version: link:../schema
 
+  packages/relief:
+    devDependencies:
+      '@tastir/engine':
+        specifier: workspace:*
+        version: link:../engine
+      '@tastir/project-core':
+        specifier: workspace:*
+        version: link:../project-core
+      '@tastir/schema':
+        specifier: workspace:*
+        version: link:../schema
+
   packages/schema:
     dependencies:
       zod:

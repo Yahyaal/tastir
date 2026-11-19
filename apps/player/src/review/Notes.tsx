@@ -36,6 +36,12 @@ export const DOCS: readonly {
   text: string;
 }[] = [
   {
+    key: '3d-plan',
+    label: 'Make it in 3D: plan',
+    file: '3D-PLAN.md',
+    text: read('3D-PLAN.md'),
+  },
+  {
     key: 'beginner-path-proposal',
     label: 'Beginner path: selection and evidence',
     file: 'BEGINNER-PATH-PROPOSAL-2026-11-16.md',
