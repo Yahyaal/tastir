@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { picture, type Mesh } from '@tastir/relief';
@@ -6,6 +6,26 @@ import { BED } from './settings';
 
 /** The plaster colour of the carving, light and dark theme alike. */
 const PLASTER = '#efe6d6';
+/** Moulds and boxes, in a pale printed plastic. */
+const PRINTED = '#a9c4cc';
+
+/** A mesh for the scene, each face with its own normals so facets stay crisp. */
+function meshObject(mesh: Mesh, color: string): THREE.Mesh {
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.BufferAttribute(Float32Array.from(mesh.positions), 3));
+  geometry.setIndex(new THREE.BufferAttribute(mesh.triangles, 1));
+  const flat = geometry.toNonIndexed();
+  geometry.dispose();
+  flat.computeVertexNormals();
+  flat.computeBoundingBox();
+  const object = new THREE.Mesh(
+    flat,
+    new THREE.MeshStandardMaterial({ color, roughness: 0.9, metalness: 0 }),
+  );
+  object.castShadow = true;
+  object.receiveShadow = true;
+  return object;
+}
 
 interface Stage {
   readonly renderer: THREE.WebGLRenderer;
@@ -15,6 +35,7 @@ interface Stage {
   readonly sun: THREE.DirectionalLight;
   readonly bed: THREE.LineSegments;
   object?: THREE.Mesh;
+  master?: THREE.Mesh;
   /** The size the camera was last framed for, to keep the view on a redraw. */
   framed?: number;
 }
@@ -47,11 +68,17 @@ function placeSun(stage: Stage, angle: number, size: number) {
  */
 export function ReliefView({
   mesh,
+  master,
+  printed = false,
   light,
   fits,
   label,
 }: {
   mesh: Mesh | undefined;
+  /** The object, shown inside its silicone box. */
+  master?: Mesh | undefined;
+  /** A mould or a box: shown in the colour of printed plastic. */
+  printed?: boolean;
   /** Where the light comes from, in degrees round the panel. */
   light: number;
   /** Whether the object fits the bed; the bed's outline turns red if not. */
@@ -62,6 +89,10 @@ export function ReliefView({
   const stage = useRef<Stage | undefined>(undefined);
   const [failed, setFailed] = useState(false);
   const draw = useRef<() => void>(() => undefined);
+  const still = useMemo(
+    () => (failed && mesh && master ? merged(mesh, master) : mesh),
+    [failed, mesh, master],
+  );
 
   useEffect(() => {
     const el = host.current;
@@ -146,40 +177,28 @@ export function ReliefView({
       cancelAnimationFrame(frame);
       controls.dispose();
       s.object?.geometry.dispose();
+      s.master?.geometry.dispose();
       renderer.dispose();
       renderer.domElement.remove();
       stage.current = undefined;
     };
   }, []);
 
-  // The object itself.
+  // What is printed, and the master inside a silicone box.
   useEffect(() => {
     const s = stage.current;
     if (!s || !mesh) return;
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute(
-      'position',
-      new THREE.BufferAttribute(Float32Array.from(mesh.positions), 3),
-    );
-    geometry.setIndex(new THREE.BufferAttribute(mesh.triangles, 1));
-    // Each face its own normals, so facets stay crisp.
-    const flat = geometry.toNonIndexed();
-    geometry.dispose();
-    flat.computeVertexNormals();
-    flat.computeBoundingBox();
-    const object = new THREE.Mesh(
-      flat,
-      new THREE.MeshStandardMaterial({ color: PLASTER, roughness: 0.92, metalness: 0 }),
-    );
-    object.castShadow = true;
-    object.receiveShadow = true;
-    if (s.object) {
-      s.scene.remove(s.object);
-      s.object.geometry.dispose();
+    for (const old of [s.object, s.master]) {
+      if (!old) continue;
+      s.scene.remove(old);
+      old.geometry.dispose();
     }
+    const object = meshObject(mesh, printed ? PRINTED : PLASTER);
     s.scene.add(object);
     s.object = object;
-    const box = flat.boundingBox!;
+    s.master = master ? meshObject(master, PLASTER) : undefined;
+    if (s.master) s.scene.add(s.master);
+    const box = object.geometry.boundingBox!;
     const size = Math.max(box.max.x - box.min.x, box.max.y - box.min.y, 40);
     placeSun(s, light, Math.max(size, BED) * 0.75);
     // Frame the camera the first time, and when the size changes a lot.
@@ -192,8 +211,8 @@ export function ReliefView({
       s.controls.update();
     }
     draw.current();
-    // light changes are handled below; only a new mesh reframes.
-  }, [mesh]);
+    // light changes are handled below; only new meshes reframe.
+  }, [mesh, master, printed]);
 
   useEffect(() => {
     const s = stage.current;
@@ -213,7 +232,7 @@ export function ReliefView({
 
   return (
     <div className="relief-view" ref={host} role="img" aria-label={label}>
-      {failed ? <StillView mesh={mesh} light={light} /> : null}
+      {failed ? <StillView mesh={still} light={light} printed={printed} /> : null}
       <p className="relief-hint" aria-hidden="true">
         {failed ? 'Drag sideways to turn it.' : 'Drag to turn it; scroll or pinch to come closer.'}
       </p>
@@ -221,11 +240,31 @@ export function ReliefView({
   );
 }
 
+/** Two meshes as one, for the still picture. */
+function merged(a: Mesh, b: Mesh): Mesh {
+  const positions = new Float64Array(a.positions.length + b.positions.length);
+  positions.set(a.positions);
+  positions.set(b.positions, a.positions.length);
+  const shift = a.positions.length / 3;
+  const triangles = new Uint32Array(a.triangles.length + b.triangles.length);
+  triangles.set(a.triangles);
+  triangles.set(b.triangles.map((i) => i + shift), a.triangles.length);
+  return { positions, triangles };
+}
+
 /**
  * Where the browser has no WebGL: the same object drawn as a still
  * picture, in the same light. Dragging sideways turns it.
  */
-function StillView({ mesh, light }: { mesh: Mesh | undefined; light: number }) {
+function StillView({
+  mesh,
+  light,
+  printed,
+}: {
+  mesh: Mesh | undefined;
+  light: number;
+  printed: boolean;
+}) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const [spin, setSpin] = useState(0);
   const [dragging, setDragging] = useState<{ x: number; spin: number }>();
@@ -245,14 +284,14 @@ function StillView({ mesh, light }: { mesh: Mesh | undefined; light: number }) {
         tilt: 50,
         spin,
         light,
-        material: [0.94, 0.9, 0.84],
+        material: printed ? [0.66, 0.77, 0.8] : [0.94, 0.9, 0.84],
       });
       el.width = width;
       el.height = height;
       el.getContext('2d')?.putImageData(new ImageData(rgba as Uint8ClampedArray<ArrayBuffer>, width, height), 0, 0);
     });
     return () => cancelAnimationFrame(frame);
-  }, [mesh, light, spin, dragging]);
+  }, [mesh, light, spin, dragging, printed]);
   return (
     <canvas
       ref={canvas}

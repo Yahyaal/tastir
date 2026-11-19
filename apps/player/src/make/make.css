@@ -82,7 +82,7 @@
 
 .measure {
   display: grid;
-  grid-template-columns: 6.5em minmax(0, 1fr) auto;
+  grid-template-columns: 7.6em minmax(0, 1fr) auto;
   gap: 10px;
   align-items: center;
 }
@@ -289,4 +289,53 @@
     height: 46vh;
     min-height: 260px;
   }
+}
+
+.make-prints {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+.player .make-prints button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  background: transparent;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+.player .make-prints button[aria-pressed='true'] {
+  border-color: var(--theme-accent);
+  box-shadow: 0 0 0 1px var(--theme-accent);
+  background: var(--theme-accent-muted);
+  font-weight: 700;
+}
+.make-prints .shape-icon {
+  width: 34px;
+  height: 24px;
+}
+.make-casting {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--theme-bg-raised);
+}
+.make-casting h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.make-casting p {
+  margin: 0;
+}
+.make-casting .measure {
+  grid-template-columns: 8.5em minmax(0, 1fr) auto;
+}
+
+/* The page grows with its choices; the lesson's player keeps to the window. */
+.player.make-page {
+  height: auto;
+  min-height: 100vh;
+  flex: none;
 }

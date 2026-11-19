@@ -24,6 +24,14 @@ test('a finished pattern opens in 3D and downloads a 3MF for the slicer', async 
   expect(bytes.subarray(0, 2).toString()).toBe('PK');
   expect(bytes.toString('latin1')).toContain('unit="millimeter"');
 
+  // The mould for the same tile, mirrored, with its plaster.
+  await page.getByRole('button', { name: 'Mould for plaster', exact: true }).click();
+  await expect(page.getByText(/g of plaster/)).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByRole('status')).toHaveText('');
+  const mould = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download STL' }).click();
+  expect((await mould).suggestedFilename()).toBe('eight-fold-star-and-cross-tile-100mm-mould.stl');
+
   // Nothing wider than the screen.
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

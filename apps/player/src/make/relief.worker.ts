@@ -1,31 +1,19 @@
-// Carves the pattern into a closed mesh off the page's thread, so the
+// Carves the pattern into closed meshes off the page's thread, so the
 // sliders stay smooth while a dense pattern is carved.
-import { openEdges, relief, volumeOf } from '@tastir/relief';
-import type { CarveReply, CarveRequest } from './reliefClient';
+import { carve, type CarveRequest } from './carve';
+import type { CarveReply } from './reliefClient';
 
-onmessage = ({ data }: MessageEvent<CarveRequest>) => {
-  const { id, pattern, outline, scale, thickness, band, frame, carvings } = data;
+onmessage = ({ data }: MessageEvent<CarveRequest & { id: number }>) => {
+  const { id } = data;
   try {
-    const mesh = relief(pattern, {
-      width: 0,
-      height: 0,
-      outline,
-      scale,
-      thickness,
-      band,
-      frame,
-      carving: (type) => carvings[type] ?? carvings[-1]!,
+    const done = carve(data);
+    const reply: CarveReply = { id, kind: 'done', ...done };
+    const buffers = [done.mesh, done.master].flatMap((m) =>
+      m && m !== done.mesh ? [m.positions.buffer, m.triangles.buffer] : [],
+    );
+    postMessage(reply, {
+      transfer: [done.mesh.positions.buffer, done.mesh.triangles.buffer, ...buffers],
     });
-    const open = openEdges(mesh);
-    if (open) throw new Error(`The carved mesh has ${open} open edges.`);
-    const reply: CarveReply = {
-      id,
-      kind: 'done',
-      positions: mesh.positions,
-      triangles: mesh.triangles,
-      volume: volumeOf(mesh),
-    };
-    postMessage(reply, { transfer: [mesh.positions.buffer, mesh.triangles.buffer] });
   } catch (e) {
     const reply: CarveReply = {
       id,

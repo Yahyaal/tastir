@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { stl, threeMf } from '@tastir/relief';
+import { plasterFor, siliconeFor, stl, threeMf } from '@tastir/relief';
 import { PieceShape } from '../app/drawing';
 import { download } from '../app/exporting';
 import { pieceName } from '../app/pieceNames';
 import { useModel } from '../app/workerClient';
 import { ReliefView } from './ReliefView';
+import { MOULD_DRAFT, type Print } from './carve';
 import { shapeOf, useCarved } from './reliefClient';
 import {
   BED,
@@ -15,6 +16,10 @@ import {
   NARROWEST_BAND,
   outlineOf,
   PLA,
+  PRINTS,
+  printedHeight,
+  printedOutline,
+  SILICONE,
   rememberedSettings,
   rememberSettings,
   scaleOf,
@@ -61,9 +66,11 @@ function Measure({
   min,
   max,
   step = 0.5,
+  unit = 'mm',
   onChange,
 }: {
   label: string;
+  unit?: string;
   value: number;
   min: number;
   max: number;
@@ -97,7 +104,7 @@ function Measure({
           value={value}
           onChange={(e) => set(e.target.value)}
         />
-        <span aria-hidden="true">mm</span>
+        <span aria-hidden="true">{unit}</span>
       </span>
     </div>
   );
@@ -151,13 +158,22 @@ export function Make({ json, address }: { json: unknown; address: string }) {
     band: settings.band,
     frame,
     carvings,
+    print: settings.print,
+    floor: settings.mouldFloor,
+    wall: settings.mouldWall,
+    gap: settings.boxGap,
+    cover: settings.boxCover,
   });
 
   const title = model?.tutorial.title ?? 'Pattern';
   const size = outline.length ? extent(outline) : { width: 0, height: 0 };
-  const fits = size.width <= BED && size.height <= BED;
+  const printed = outline.length ? extent(printedOutline(outline, settings)) : size;
+  const tall = printedHeight(settings);
+  const fits = printed.width <= BED && printed.height <= BED && tall <= BED;
   const grams = carved.volume ? (carved.volume / 1000) * PLA : undefined;
-  const file = `${address}-${settings.shape}-${Math.round(size.width)}mm`;
+  const kind = { object: '', mould: '-mould', box: '-silicone-box' }[settings.print];
+  const file = `${address}-${settings.shape}-${Math.round(size.width)}mm${kind}`;
+  const what = { object: 'object', mould: 'mould', box: 'box' }[settings.print];
 
   const setAll = (style: Style) =>
     update({ kinds: Object.fromEntries(types.map((_, i) => [i, style])) });
@@ -192,9 +208,11 @@ export function Make({ json, address }: { json: unknown; address: string }) {
         <div className="make-stage">
           <ReliefView
             mesh={carved.mesh}
+            master={carved.master}
+            printed={settings.print !== 'object'}
             light={light}
             fits={fits}
-            label={`The carved ${settings.shape} of ${title}, ${mm(size.width)} by ${mm(size.height)}`}
+            label={`The ${settings.print === 'object' ? `carved ${settings.shape}` : what} of ${title}, ${mm(printed.width)} by ${mm(printed.height)}`}
           />
           <p className="make-status" role="status">
             {!model
@@ -243,6 +261,34 @@ export function Make({ json, address }: { json: unknown; address: string }) {
                   : 'A rectangular panel, centred on the pattern.'}
             </p>
           </Section>
+          <Section title="Print">
+            <div className="make-prints" role="group" aria-label="Print">
+              {PRINTS.map(({ print, name }) => (
+                <button
+                  key={print}
+                  type="button"
+                  aria-pressed={settings.print === print}
+                  onClick={() => update({ print })}
+                >
+                  <PrintIcon print={print} />
+                  {name}
+                </button>
+              ))}
+            </div>
+            <p className="make-hint">{PRINTS.find((p) => p.print === settings.print)?.hint}</p>
+            {settings.print === 'mould' ? (
+              <>
+                <Measure label="Mould floor" value={settings.mouldFloor} min={1} max={20} onChange={(mouldFloor) => update({ mouldFloor })} />
+                <Measure label="Mould rim" value={settings.mouldWall} min={2} max={30} onChange={(mouldWall) => update({ mouldWall })} />
+              </>
+            ) : null}
+            {settings.print === 'box' ? (
+              <>
+                <Measure label="Silicone sides" value={settings.boxGap} min={3} max={40} onChange={(boxGap) => update({ boxGap })} />
+                <Measure label="Silicone top" value={settings.boxCover} min={3} max={40} onChange={(boxCover) => update({ boxCover })} />
+              </>
+            ) : null}
+          </Section>
           <Section title="Size">
             {settings.shape === 'panel' ? (
               <>
@@ -259,7 +305,8 @@ export function Make({ json, address }: { json: unknown; address: string }) {
               <Measure label="Frame" value={settings.frame} min={0} max={30} onChange={(frame) => update({ frame })} />
             ) : null}
             <p className={fits ? 'make-fit' : 'make-fit too-big'}>
-              {mm(size.width)} × {mm(size.height)} × {mm(settings.thickness)}:{' '}
+              {settings.print === 'object' ? '' : `The ${what}: `}
+              {mm(printed.width)} × {mm(printed.height)} × {mm(tall)}:{' '}
               {fits
                 ? `fits the ${BED} mm bed of the Bambu Lab A1.`
                 : `larger than the ${BED} mm bed of the Bambu Lab A1. Make it smaller, or wait for splitting into parts.`}
@@ -330,7 +377,10 @@ export function Make({ json, address }: { json: unknown; address: string }) {
               </button>
             </div>
             <p className="make-hint">
-              3MF opens in Bambu Studio in millimetres; STL opens in any slicer. It prints face up with no supports.
+              3MF opens in Bambu Studio in millimetres; STL opens in any slicer.{' '}
+              {settings.print === 'box'
+                ? 'Print the box upright, as it stands.'
+                : 'It prints face up with no supports.'}
             </p>
             {carved.mesh && carved.volume ? (
               <dl className="make-numbers">
@@ -342,9 +392,75 @@ export function Make({ json, address }: { json: unknown; address: string }) {
                 <dd>{(carved.mesh.triangles.length / 3).toLocaleString('en')}</dd>
               </dl>
             ) : null}
+            {settings.print === 'mould' && carved.cast ? (
+              <Casting cast={carved.cast} upright={carved.upright ?? 0} water={settings.water} onWater={(water) => update({ water })} />
+            ) : null}
+            {settings.print === 'box' && carved.cast && outline.length ? (
+              <Silicone ml={siliconeFor(outline, settings.thickness, carved.cast, { gap: settings.boxGap, cover: settings.boxCover }) / 1000} />
+            ) : null}
           </Section>
         </aside>
       </div>
+    </div>
+  );
+}
+
+function PrintIcon({ print }: { print: Print }) {
+  // Cross-sections: the panel; the mould holding it upside down; the box
+  // round the master.
+  return (
+    <svg className="shape-icon" viewBox="0 0 28 20" aria-hidden="true">
+      {print === 'object' ? <path d="M2 16H26V9H21L18 13H10L7 9H2Z" /> : null}
+      {print === 'mould' ? <path d="M2 4H6V9H7L10 5H18L21 9H22V4H26V17H2Z" /> : null}
+      {print === 'box' ? (
+        <>
+          <path d="M2 2H4V17H2ZM24 2H26V17H24Z" />
+          <path d="M7 17V11H10L12 14H16L18 11H21V17Z" />
+        </>
+      ) : null}
+    </svg>
+  );
+}
+
+/** How much plaster and water to mix for the cast, and how it comes out. */
+function Casting({
+  cast,
+  upright,
+  water,
+  onWater,
+}: {
+  cast: number;
+  upright: number;
+  water: number;
+  onWater: (water: number) => void;
+}) {
+  // A tenth more than the mould holds, for what stays in the bowl.
+  const mix = plasterFor(cast * 1.1, water);
+  return (
+    <div className="make-casting">
+      <h3>Plaster</h3>
+      <Measure label="Water per 100 g" value={water} min={20} max={120} step={1} unit="g" onChange={onWater} />
+      <p>
+        The cast holds {(cast / 1000).toFixed(0)} ml. Mix <strong>{Math.round(mix.plaster)} g of plaster</strong> into{' '}
+        <strong>{Math.round(mix.water)} g of water</strong>, a tenth more than it needs. Moulding plaster takes about 70 g of water to 100 g; the bag says.
+      </p>
+      <p className={upright > 0 ? 'make-warning' : 'make-hint'}>
+        {upright > 0
+          ? `${(upright / 100).toFixed(1)} cm² of wall stands upright (where the frame cuts the carving), and the sides of the cast stand upright too: brush the mould well with release agent so the cast slides out.`
+          : `Every carved wall leans at least ${MOULD_DRAFT}°, so the face lets go cleanly; only the sides of the cast stand upright, so brush the mould with release agent.`}
+      </p>
+    </div>
+  );
+}
+
+function Silicone({ ml }: { ml: number }) {
+  return (
+    <div className="make-casting">
+      <h3>Silicone</h3>
+      <p>
+        About <strong>{Math.round(ml)} ml</strong> of silicone fills the box round the master, which is about{' '}
+        <strong>{Math.round(ml * SILICONE)} g</strong> at {SILICONE} g/ml; the tin gives its own figure.
+      </p>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { closeSolid, type Mesh } from './mesh.js';
+import { standOn, topOf, type Mesh } from './mesh.js';
 import { depthOf, profileOf, type Carving } from './profile.js';
 import { signedArea, skeletonHeight, sweep, type P2, type P3 } from './skeleton.js';
 
@@ -127,6 +127,16 @@ export function carvePiece(
  * would go through the panel.
  */
 export function relief(pattern: PatternShape, options: ReliefOptions): Mesh {
+  const { top, outline } = reliefTop(pattern, options);
+  return standOn(top, outline);
+}
+
+/** The carved face of a panel, as flat faces over its outline (with the
+ * frame), and the outline: what a panel and its mould are both made from. */
+export function reliefTop(
+  pattern: PatternShape,
+  options: ReliefOptions,
+): { top: P3[][]; outline: P2[] } {
   const { scale, thickness, band, frame } = options;
   const outline = options.outline ?? rectangle(options.width, options.height);
   if (outline.length < 3 || !(signedArea(outline) > 0) || !(scale > 0))
@@ -159,5 +169,8 @@ export function relief(pattern: PatternShape, options: ReliefOptions): Mesh {
   const surface: P3[][] = [];
   for (const piece of piecesOver(pattern, scale, half))
     surface.push(...carvePiece(piece.polygon, options.carving(piece.type), thickness, band));
-  return closeSolid({ surface, outline, frame, top: thickness });
+  return {
+    top: topOf({ surface, outline, frame, top: thickness }),
+    outline: outline.slice(),
+  };
 }

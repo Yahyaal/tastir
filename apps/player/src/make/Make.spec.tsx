@@ -29,8 +29,16 @@ describe('Make', () => {
     act(() => within(groups[1]!).getByRole('button', { name: 'Raised' }).click());
     expect(within(every).queryByRole('button', { pressed: true })).toBeNull();
 
+    // A mould for plaster: the plaster to mix, and the walls that stand upright.
+    act(() => screen.getByRole('button', { name: 'Mould for plaster' }).click());
+    await waitFor(() => expect(screen.getByText(/g of plaster/)).toBeTruthy(), { timeout: 20_000 });
+    expect(screen.getByText(/The mould: /)).toBeTruthy();
+    act(() => screen.getByRole('button', { name: 'Box for silicone' }).click());
+    await waitFor(() => expect(screen.getByText(/ml/, { selector: 'p' })).toBeTruthy(), { timeout: 20_000 });
+    expect(screen.getByText(/of silicone fills the box/)).toBeTruthy();
+
     // Remembered for next time.
     const kept = JSON.parse(localStorage.getItem('tastir.make.eight-fold-star-and-cross') ?? '{}');
-    expect(kept).toMatchObject({ shape: 'round', width: 300 });
+    expect(kept).toMatchObject({ shape: 'round', width: 300, print: 'box' });
   }, 30_000);
 });

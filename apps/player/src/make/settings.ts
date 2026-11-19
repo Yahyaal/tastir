@@ -1,4 +1,13 @@
-import { rectangle, round, type Carving, type P2, type PatternShape } from '@tastir/relief';
+import {
+  boxOutline,
+  mouldOutline,
+  rectangle,
+  round,
+  type Carving,
+  type P2,
+  type PatternShape,
+} from '@tastir/relief';
+import { BOX_WALL, type Print } from './carve';
 
 /** What the learner makes: a rectangular panel, a round one, or one tile
  * of the repeat, which fits its copies edge to edge. */
@@ -19,7 +28,38 @@ export interface MakeSettings {
   readonly frame: number;
   /** The carving of each kind of piece (the engine's type), when not facets. */
   readonly kinds: Readonly<Record<number, Style>>;
+  /** What is printed: the object, a mould for plaster, or a silicone box. */
+  readonly print: Print;
+  /** The plaster mould's floor under the face, and its rim. */
+  readonly mouldFloor: number;
+  readonly mouldWall: number;
+  /** Silicone round the master and over it. */
+  readonly boxGap: number;
+  readonly boxCover: number;
+  /** Grams of water to 100 g of plaster. */
+  readonly water: number;
 }
+
+export const PRINTS: readonly { print: Print; name: string; hint: string }[] = [
+  {
+    print: 'object',
+    name: 'The object',
+    hint: 'Print it to keep, or as the master for a silicone mould.',
+  },
+  {
+    print: 'mould',
+    name: 'Mould for plaster',
+    hint: 'A rigid mould: brush it with release agent, pour plaster level with the rim, and turn the cast out face up.',
+  },
+  {
+    print: 'box',
+    name: 'Box for silicone',
+    hint: 'Glue the printed object face up on a flat board, stand this box round it, and pour silicone to the top. The silicone mould casts plaster many times.',
+  },
+];
+
+/** Silicone, grams per millilitre (most are 1.08 to 1.2; the tin says). */
+export const SILICONE = 1.1;
 
 /** The Bambu Lab A1's bed, in millimetres. */
 export const BED = 256;
@@ -43,6 +83,12 @@ export const DEFAULT_SETTINGS: MakeSettings = {
   band: 3,
   frame: 8,
   kinds: {},
+  print: 'object',
+  mouldFloor: 3,
+  mouldWall: 6,
+  boxGap: 10,
+  boxCover: 8,
+  water: 70,
 };
 
 /** Choosing a shape sets the frame that suits it: a panel or a medallion
@@ -111,6 +157,20 @@ export function outlineOf(
   return rectangle(s.width, s.height);
 }
 
+/** The outline of what is printed: the object, its mould or its box. */
+export function printedOutline(outline: readonly P2[], s: MakeSettings): P2[] {
+  if (s.print === 'mould') return mouldOutline(outline, s.mouldWall);
+  if (s.print === 'box') return boxOutline(outline, { gap: s.boxGap, wall: BOX_WALL });
+  return outline.slice();
+}
+
+/** How tall what is printed stands. */
+export function printedHeight(s: MakeSettings): number {
+  if (s.print === 'mould') return s.mouldFloor + s.thickness;
+  if (s.print === 'box') return s.thickness + s.boxCover;
+  return s.thickness;
+}
+
 /** The outline's width and height. */
 export function extent(outline: readonly P2[]): { width: number; height: number } {
   const xs = outline.map((p) => p.x);
@@ -143,6 +203,12 @@ export function sane(s: Partial<MakeSettings>): MakeSettings {
     band: num(s.band, 0.4, 20, d.band),
     frame: num(s.frame, 0, Math.min(width, height) / 2 - 5, d.frame),
     kinds,
+    print: PRINTS.some((x) => x.print === s.print) ? s.print! : d.print,
+    mouldFloor: num(s.mouldFloor, 1, 20, d.mouldFloor),
+    mouldWall: num(s.mouldWall, 2, 30, d.mouldWall),
+    boxGap: num(s.boxGap, 3, 40, d.boxGap),
+    boxCover: num(s.boxCover, 3, 40, d.boxCover),
+    water: num(s.water, 20, 120, d.water),
   };
 }
 

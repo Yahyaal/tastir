@@ -3,6 +3,8 @@ export { depthOf, profileOf, type Carving, type Profile } from './lib/profile.js
 export {
   clip,
   closeSolid,
+  standOn,
+  topOf,
   inset,
   meshOf,
   openEdges,
@@ -18,9 +20,21 @@ export {
   rectangle,
   round,
   relief,
+  reliefTop,
   type PatternShape,
   type ReliefOptions,
 } from './lib/relief.js';
 export { stl } from './lib/stl.js';
 export { crc32, threeMf, zip } from './lib/threemf.js';
 export { picture, sunFrom, type PictureOptions } from './lib/picture.js';
+export {
+  boxOutline,
+  mouldBox,
+  mouldOf,
+  mouldOutline,
+  plasterFor,
+  siliconeFor,
+  uprightArea,
+  type BoxOptions,
+  type MouldOptions,
+} from './lib/mould.js';

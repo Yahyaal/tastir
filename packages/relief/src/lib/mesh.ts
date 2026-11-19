@@ -119,6 +119,9 @@ function joinTs(points: readonly P3[], faces: number[][]): number[][] {
   });
 }
 
+/** Corners whose sides turn by less than this sine are on a straight side. */
+const STRAIGHT = 1e-6;
+
 /** Newell's normal of a face (not of unit length). */
 function normalOf(points: readonly P3[], face: readonly number[]): P3 {
   let x = 0;
@@ -166,12 +169,21 @@ function triangulate(points: P3[], face: readonly number[], out: number[]) {
   };
   const scale = Math.abs(signedArea(flat));
   const tiny = scale * 1e-9;
+  const bend = (i: number, j: number, k: number) => {
+    const a = flat[i]!;
+    const b = flat[j]!;
+    const c = flat[k]!;
+    const l = Math.hypot(b.x - a.x, b.y - a.y) * Math.hypot(c.x - b.x, c.y - b.y);
+    return l === 0 ? 0 : turn(i, j, k) / l;
+  };
   let convex = true;
   let straight = false;
   for (let i = 0; i < m; i++) {
-    const t = turn((i - 1 + m) % m, i, (i + 1) % m);
-    if (t < -tiny) convex = false;
-    if (Math.abs(t) <= tiny) straight = true;
+    // The sine of the turn, so a corner nudged off its side by welding
+    // counts as straight whatever the face's size.
+    const t = bend((i - 1 + m) % m, i, (i + 1) % m);
+    if (t < -STRAIGHT) convex = false;
+    if (Math.abs(t) <= STRAIGHT) straight = true;
   }
   if (convex && !straight) {
     for (let i = 1; i < m - 1; i++) out.push(face[0]!, face[i]!, face[i + 1]!);
@@ -208,7 +220,7 @@ function triangulate(points: P3[], face: readonly number[], out: number[]) {
       const i = left[(e - 1 + left.length) % left.length]!;
       const j = left[e]!;
       const k = left[(e + 1) % left.length]!;
-      if (turn(i, j, k) <= tiny) continue;
+      if (bend(i, j, k) <= STRAIGHT) continue;
       const a = flat[i]!;
       const b = flat[j]!;
       const c = flat[k]!;
@@ -301,6 +313,50 @@ export function clip(face: readonly P3[], outline: readonly P2[]): P3[] {
   return poly;
 }
 
+/**
+ * A face that is not upright, as convex parts: itself when it is convex
+ * (seen from above), else its triangles, cut ear by ear.
+ */
+export function convexParts(face: readonly P3[]): (readonly P3[])[] {
+  const m = face.length;
+  const turn = (a: P3, b: P3, c: P3) =>
+    (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+  let size = 0;
+  for (const p of face) size = Math.max(size, Math.abs(p.x), Math.abs(p.y), 1);
+  const tiny = size * size * 1e-12;
+  const area = signedArea(face);
+  // Upright faces, and faces too small to matter, stay as they are.
+  if (Math.abs(area) <= tiny) return [face];
+  const sign = Math.sign(area);
+  let convex = true;
+  for (let i = 0; i < m && convex; i++)
+    if (sign * turn(face[(i - 1 + m) % m]!, face[i]!, face[(i + 1) % m]!) < -tiny) convex = false;
+  if (convex) return [face];
+  const left = face.slice();
+  const out: P3[][] = [];
+  const inside = (p: P3, a: P3, b: P3, c: P3) =>
+    sign * turn(a, b, p) >= -tiny && sign * turn(b, c, p) >= -tiny && sign * turn(c, a, p) >= -tiny;
+  let guard = 0;
+  while (left.length > 3) {
+    if (++guard > m * m + 10) throw new Error('A carved face could not be cut into parts.');
+    let cut = false;
+    for (let e = 0; e < left.length; e++) {
+      const a = left[(e - 1 + left.length) % left.length]!;
+      const b = left[e]!;
+      const c = left[(e + 1) % left.length]!;
+      if (sign * turn(a, b, c) <= tiny) continue;
+      if (left.some((p) => p !== a && p !== b && p !== c && inside(p, a, b, c))) continue;
+      out.push([a, b, c]);
+      left.splice(e, 1);
+      cut = true;
+      break;
+    }
+    if (!cut) throw new Error('A carved face could not be cut into parts.');
+  }
+  out.push(left);
+  return out;
+}
+
 /** An outline moved inward by d along each side (convex, counter-clockwise). */
 export function inset(outline: readonly P2[], d: number): P2[] {
   const m = outline.length;
@@ -345,65 +401,103 @@ export interface Solid {
   readonly top: number;
 }
 
+/** Faces welded and joined at their Ts, with the directed edges they use. */
+function joined(faces: readonly (readonly P3[])[]) {
+  const corners = new Corners();
+  const indexedFaces = faces
+    .map((f) => indexed(corners, f))
+    .filter((f) => f.length >= 3);
+  const list = joinTs(corners.points, indexedFaces);
+  const seen = new Set<string>();
+  for (const f of list)
+    for (let i = 0; i < f.length; i++) seen.add(`${f[i]},${f[(i + 1) % f.length]}`);
+  return { points: corners.points, faces: list, seen };
+}
+
 /**
- * The closed solid under a carved top: the top clipped to the outline
- * (inside the frame), upright walls from its edge down to the table or
- * up to the frame, the frame, the outer walls and the flat bottom.
- * Throws when the top has a gap, rather than close it with a guess.
+ * The top of a solid over its outline: the carved surface clipped inside
+ * the frame, and when there is a frame, upright walls from the carving up
+ * to it and the frame itself at `top`. Its edge lies on the outline.
  */
-export function closeSolid(solid: Solid): Mesh {
+export function topOf(solid: Solid): P3[][] {
   const { outline, frame, top } = solid;
   const inner = frame > 0 ? inset(outline, frame) : outline.slice();
-  const corners = new Corners();
-  const surface: number[][] = [];
-  for (const face of solid.surface) {
-    const cut = clip(face, inner);
-    if (cut.length < 3) continue;
-    const f = indexed(corners, cut);
-    if (f.length >= 3) surface.push(f);
-  }
-  const joined = joinTs(corners.points, surface);
-  // The surface's own edges that no other face of it shares: these must
-  // all lie on the inner outline.
-  const seen = new Set<string>();
-  for (const f of joined)
-    for (let i = 0; i < f.length; i++) seen.add(`${f[i]},${f[(i + 1) % f.length]}`);
-  const faces: P3[][] = joined.map((f) => f.map((n) => corners.points[n]!));
-  const at = (p: P3, z: number): P3 => ({ x: p.x, y: p.y, z });
-  for (const f of joined)
+  const surface: P3[][] = [];
+  // A concave face cut by the outline can fold back along it; its convex
+  // parts cut cleanly.
+  for (const whole of solid.surface)
+    for (const face of convexParts(whole)) {
+      const cut = clip(face, inner);
+      if (cut.length >= 3) surface.push(cut);
+    }
+  if (frame <= 0) return surface;
+  const at = (p: P2, z: number): P3 => ({ x: p.x, y: p.y, z });
+  const { points, faces, seen } = joined(surface);
+  const out: P3[][] = faces.map((f) => f.map((n) => points[n]!));
+  for (const f of faces)
     for (let i = 0; i < f.length; i++) {
       const an = f[i]!;
       const bn = f[(i + 1) % f.length]!;
       if (an === bn || seen.has(`${bn},${an}`)) continue;
-      const p = corners.points[an]!;
-      const q = corners.points[bn]!;
-      const mid = { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 };
-      if (!onOutline(mid, inner, 1e-4))
-        throw new Error(
-          `The carved surface has a gap at (${mid.x.toFixed(3)}, ${mid.y.toFixed(3)}) mm.`,
-        );
-      if (frame > 0) faces.push([at(q, top), q, p, at(p, top)]);
-      else faces.push([p, at(p, 0), at(q, 0), q]);
+      const p = points[an]!;
+      const q = points[bn]!;
+      checkOnOutline(p, q, inner);
+      out.push([at(q, top), q, p, at(p, top)]);
     }
   const m = outline.length;
-  if (frame > 0)
-    for (let i = 0; i < m; i++) {
-      const k = (i + 1) % m;
-      faces.push([
-        at({ ...outline[i]!, z: 0 }, top),
-        at({ ...outline[k]!, z: 0 }, top),
-        at({ ...inner[k]!, z: 0 }, top),
-        at({ ...inner[i]!, z: 0 }, top),
-      ]);
-      faces.push([
-        at({ ...outline[i]!, z: 0 }, top),
-        { ...outline[i]!, z: 0 },
-        { ...outline[k]!, z: 0 },
-        at({ ...outline[k]!, z: 0 }, top),
-      ]);
+  for (let i = 0; i < m; i++) {
+    const k = (i + 1) % m;
+    out.push([
+      at(outline[i]!, top),
+      at(outline[k]!, top),
+      at(inner[k]!, top),
+      at(inner[i]!, top),
+    ]);
+  }
+  return out;
+}
+
+function checkOnOutline(p: P2, q: P2, outline: readonly P2[]) {
+  const mid = { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 };
+  if (!onOutline(mid, outline, 1e-4))
+    throw new Error(
+      `The carved surface has a gap at (${mid.x.toFixed(3)}, ${mid.y.toFixed(3)}) mm.`,
+    );
+}
+
+/**
+ * A top standing on the table: upright walls from its edge (which must
+ * lie on the outline) down to `base`, and a flat bottom there. Throws
+ * when the top has a gap, rather than close it with a guess.
+ */
+export function standOn(
+  top: readonly (readonly P3[])[],
+  outline: readonly P2[],
+  base = 0,
+): Mesh {
+  const { points, faces, seen } = joined(top);
+  const out: P3[][] = faces.map((f) => f.map((n) => points[n]!));
+  for (const f of faces)
+    for (let i = 0; i < f.length; i++) {
+      const an = f[i]!;
+      const bn = f[(i + 1) % f.length]!;
+      if (an === bn || seen.has(`${bn},${an}`)) continue;
+      const p = points[an]!;
+      const q = points[bn]!;
+      checkOnOutline(p, q, outline);
+      out.push([p, { ...p, z: base }, { ...q, z: base }, q]);
     }
-  faces.push(outline.map((p) => ({ ...p, z: 0 })).reverse());
-  return meshOf(faces);
+  out.push(outline.map((p) => ({ ...p, z: base })).reverse());
+  return meshOf(out);
+}
+
+/**
+ * The closed solid under a carved top: the top clipped to the outline
+ * (inside the frame), upright walls down to the table or up to the frame,
+ * the frame, the outer walls and the flat bottom.
+ */
+export function closeSolid(solid: Solid): Mesh {
+  return standOn(topOf(solid), solid.outline);
 }
 
 /** Welds, joins the Ts and cuts the faces into triangles. */
