@@ -1411,7 +1411,11 @@ export function Player({
             }}
             tutorial={tutorial}
             pause={() => setPlaying(false)}
-            board={() => svgRef.current}
+            board={() =>
+              svgRef.current ??
+              plateRef.current?.querySelector<SVGSVGElement>('svg') ??
+              null
+            }
             snapshot={() => ({
               draft: inking.shown.tutorial,
               coloring: colorHistory.now,
@@ -1746,7 +1750,11 @@ export function Player({
                 {address !== 'shared' ? (
                   <a
                     className="button secondary make-3d"
-                    href={opened ? `#/${address}/design/${opened.id}/make` : `#/${address}/make`}
+                    href={
+                      design
+                        ? `#/${address}/design/${design.id}/make`
+                        : `#/${address}/make`
+                    }
                   >
                     Make it in 3D
                   </a>

@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { REGIONS, TRADITIONS } from '@tastir/schema';
 import {
@@ -79,6 +79,7 @@ export function LibraryMenu({
       label: String,
     },
   ];
+  const idPrefix = useId();
   return (
     <nav className="library-menu" aria-label="Browse the patterns">
       {groups.map((group) => {
@@ -87,9 +88,10 @@ export function LibraryMenu({
           number
         >;
         const chosen = filters[group.key];
+        const headingId = `${idPrefix}-${group.key}`;
         return (
-          <section key={group.key} aria-labelledby={`menu-${group.key}`}>
-            <h3 id={`menu-${group.key}`}>{group.title}</h3>
+          <section key={group.key} aria-labelledby={headingId}>
+            <h3 id={headingId}>{group.title}</h3>
             <ul>
               {group.values.map((value) => {
                 const count = counts.get(value) ?? 0;

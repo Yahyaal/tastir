@@ -75,6 +75,7 @@
   --old: #9aa6b1;
   --faint: #d6ccbb;
   --current: #94600d;
+  --on-current: #ffffff;
   --used: #1f4e8c;
   --fresh: var(--malachite);
   --paper: var(--theme-bg-card);
@@ -82,9 +83,10 @@
 
   /* Typography */
   --display: 'Marcellus', 'Reem Kufi', 'Iowan Old Style', Georgia, serif;
-  --text: 'Manrope', 'Reem Kufi', system-ui, -apple-system, sans-serif;
+  --text: 'Manrope', 'Noto Sans Arabic', system-ui, -apple-system, sans-serif;
   --sans: var(--text);
-  --arabic: 'Reem Kufi', 'Noto Kufi Arabic', sans-serif;
+  --arabic-display: 'Reem Kufi', 'Noto Kufi Arabic', sans-serif;
+  --arabic: 'Noto Sans Arabic', 'Segoe UI', system-ui, sans-serif;
   /* Labels and badges once used a typewriter face; the design has none, so
      they share the text face, set as small letter-spaced capitals. */
   --mono: var(--text);
@@ -132,6 +134,7 @@
   --old: #5b6b79;
   --faint: #2c3a47;
   --current: #e3ad45;
+  --on-current: #1c2733;
   --used: #6fa8e8;
   --muted: #7d8a96;
 }
@@ -736,17 +739,17 @@ a.button.primary:hover {
 }
 
 @media (max-width: 1480px) {
-  .player:not(.along) .topbar {
+  .player:not(.along):not(.editor) .topbar {
     flex-wrap: wrap;
     row-gap: 8px;
   }
 
-  .player:not(.along) .topbar .lesson-title {
+  .player:not(.along):not(.editor) .topbar .lesson-title {
     order: 3;
     flex-basis: 100%;
   }
 
-  .player:not(.along) .topbar .view-menu {
+  .player:not(.along):not(.editor) .topbar .view-menu {
     margin-left: auto;
   }
 }
@@ -1130,7 +1133,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .player .journey [aria-current='step'] {
-  color: #1c2733;
+  color: var(--on-current);
 }
 
 .player .journey .phase[aria-current='step'] .phase-name {
@@ -1156,6 +1159,13 @@ main.stage .drawing:not(.wall) {
 
 .workspace:not(.with-panel) .caption {
   flex: 1;
+  min-height: 0;
+}
+
+.workspace:not(.with-panel) .caption > .text {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .text p {
@@ -1639,7 +1649,7 @@ main.stage .drawing:not(.wall) {
    in each style. */
 .wall-styles {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
   gap: 6px;
 }
 .player .wall-styles button {
@@ -1647,9 +1657,10 @@ main.stage .drawing:not(.wall) {
   justify-items: center;
   gap: 4px;
   min-width: 0;
-  padding: 6px 2px 5px;
+  padding: 6px 3px 5px;
   background: transparent;
   font-size: 0.72rem;
+  white-space: nowrap;
 }
 .player .wall-styles button[aria-pressed='true'] {
   border-color: var(--saffron);
@@ -2591,7 +2602,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .brand-arabic {
-  font-family: var(--arabic);
+  font-family: var(--arabic-display);
   font-size: 1.05em;
   color: var(--saffron);
   letter-spacing: 0;
@@ -3727,9 +3738,11 @@ main.stage .drawing:not(.wall) {
     padding-top: 0;
   }
 
-  /* Swiped along by a finger: no bar. */
+  /* Swiped along by a finger: no bar, with a soft right-edge scroll cue. */
   .journey {
     scrollbar-width: none;
+    padding-right: 18px;
+    mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
   }
 
   .lesson-side {
@@ -5197,13 +5210,13 @@ svg.tiles {
 
 @media (max-width: 760px) {
   /* One row: back, Patterns, the title, settings, light or dark. */
-  .player:not(.along) .topbar {
+  .player:not(.along):not(.editor) .topbar {
     flex-wrap: wrap;
     gap: 6px 8px;
     padding: 8px 0;
   }
 
-  .player:not(.along) .topbar .lesson-title {
+  .player:not(.along):not(.editor) .topbar .lesson-title {
     order: 0;
     flex: 1 1 0;
     flex-basis: 0;
@@ -5230,7 +5243,7 @@ svg.tiles {
   }
 
   /* Patterns as its icon alone; the word stays for screen readers. */
-  .player:not(.along) .topbar .menu-button {
+  .player:not(.along):not(.editor) .topbar .menu-button {
     order: -1;
     min-width: 40px;
     min-height: 40px;
@@ -5239,7 +5252,7 @@ svg.tiles {
     font-size: 0;
   }
 
-  .player:not(.along) .topbar .menu-button svg {
+  .player:not(.along):not(.editor) .topbar .menu-button svg {
     width: 18px;
     height: 18px;
   }
@@ -5249,7 +5262,7 @@ svg.tiles {
     display: none;
   }
 
-  .player:not(.along) .topbar .view-menu {
+  .player:not(.along):not(.editor) .topbar .view-menu {
     margin-left: 0;
   }
 
@@ -5258,28 +5271,28 @@ svg.tiles {
     height: 40px;
   }
 
-  .player:not(.along) .view-switch {
+  .player:not(.along):not(.editor) .view-switch {
     order: 5;
   }
 
   /* The variations under the view switch, in a row of their own. */
-  .player:not(.along) .topbar .variations {
+  .player:not(.along):not(.editor) .topbar .variations {
     order: 6;
   }
 
   /* The drawing a little shorter, so the step's words show under it. */
-  .player:not(.along) .stage {
+  .player:not(.along):not(.editor) .stage {
     min-height: 0;
     height: 46vh;
     border-width: 6px;
     border-radius: 18px;
   }
 
-  .player:not(.along) .caption {
+  .player:not(.along):not(.editor) .caption {
     gap: 8px;
   }
 
-  .player:not(.along) .caption .label {
+  .player:not(.along):not(.editor) .caption .label {
     margin-bottom: 2px;
   }
 
@@ -6113,12 +6126,12 @@ svg.tiles {
 }
 
 /* A calm header: the current pattern is centered between browsing arrows. */
-.player:not(.along) .topbar {
+.player:not(.along):not(.editor) .topbar {
   display: grid;
   grid-template-columns: 44px auto minmax(0, 1fr) auto;
   gap: 10px 16px;
 }
-.player:not(.along) .topbar > .menu-button {
+.player:not(.along):not(.editor) .topbar > .menu-button {
   grid-column: 1;
   grid-row: 1;
   width: 44px;
@@ -6129,18 +6142,18 @@ svg.tiles {
   background: transparent;
   justify-content: center;
 }
-.player:not(.along) .topbar > .menu-button svg {
+.player:not(.along):not(.editor) .topbar > .menu-button svg {
   width: 21px;
   height: 21px;
 }
-.player:not(.along) .topbar > .home {
+.player:not(.along):not(.editor) .topbar > .home {
   grid-column: 2;
   grid-row: 1;
 }
-.player:not(.along) .topbar > .home > span:last-child {
+.player:not(.along):not(.editor) .topbar > .home > span:last-child {
   display: none;
 }
-.player:not(.along) .topbar > .player-utilities {
+.player:not(.along):not(.editor) .topbar > .player-utilities {
   grid-column: 4;
   grid-row: 1;
 }
@@ -6154,7 +6167,7 @@ svg.tiles {
   grid-column: 3;
   grid-row: 1;
 }
-.player:not(.along) .topbar .pattern-heading .lesson-title {
+.player:not(.along):not(.editor) .topbar .pattern-heading .lesson-title {
   order: 0;
   min-width: 0;
   text-align: center;
@@ -6211,7 +6224,7 @@ svg.tiles {
   gap: 8px;
   min-width: 0;
 }
-.player:not(.along) .topbar .player-view-tools .view-switch {
+.player:not(.along):not(.editor) .topbar .player-view-tools .view-switch {
   order: 0;
   margin-left: auto;
 }
@@ -6229,31 +6242,31 @@ svg.tiles {
   background: color-mix(in srgb, var(--theme-accent) 6%, var(--theme-bg-card));
 }
 @media (max-width: 760px) {
-  .player:not(.along) .topbar {
+  .player:not(.along):not(.editor) .topbar {
     grid-template-columns: 44px 44px minmax(0, 1fr) auto;
     gap: 6px;
   }
-  .player:not(.along) .topbar > .home {
+  .player:not(.along):not(.editor) .topbar > .home {
     grid-column: 1;
     width: 44px;
     min-width: 44px;
     min-height: 44px;
   }
-  .player:not(.along) .topbar > .menu-button {
+  .player:not(.along):not(.editor) .topbar > .menu-button {
     grid-column: 2;
     width: 44px;
     min-width: 44px;
   }
-  .player:not(.along) .topbar .pattern-heading {
+  .player:not(.along):not(.editor) .topbar .pattern-heading {
     display: block;
   }
   .player .topbar .pattern-heading .neighbour {
     display: none;
   }
-  .player:not(.along) .topbar .pattern-heading .lesson-title {
+  .player:not(.along):not(.editor) .topbar .pattern-heading .lesson-title {
     font-size: 1.05rem;
   }
-  .player:not(.along) .topbar .player-view-tools .view-switch {
+  .player:not(.along):not(.editor) .topbar .player-view-tools .view-switch {
     order: -1;
     flex-basis: 100%;
     margin-left: 0;
@@ -6271,15 +6284,15 @@ svg.tiles {
 }
 
 @media (max-width: 360px) {
-  .player:not(.along) .topbar .pattern-heading {
+  .player:not(.along):not(.editor) .topbar .pattern-heading {
     grid-column: 1 / -1;
     grid-row: 2;
   }
-  .player:not(.along) .topbar .player-view-tools .view-switch {
+  .player:not(.along):not(.editor) .topbar .player-view-tools .view-switch {
     min-width: 0;
     max-width: 100%;
   }
-  .player:not(.along) .topbar .player-view-tools .view-switch a {
+  .player:not(.along):not(.editor) .topbar .player-view-tools .view-switch a {
     min-width: 0;
     padding-inline: 6px;
     font-size: 0.75rem;

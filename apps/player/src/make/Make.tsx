@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
 import { bambuProject, dxf, inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, svg, threeMf, TRAY, zip, type BambuSettings } from '@tastir/relief';
 import type { Model } from '@tastir/project-core/model';
 import { colourName } from '../app/colourNames';
@@ -148,7 +148,7 @@ function Measure({
   step?: number;
   onChange: (value: number) => void;
 }) {
-  const id = `measure-${label.toLowerCase().replace(/\W+/g, '-')}`;
+  const id = useId();
   const set = (raw: string) => {
     const n = Number(raw);
     if (Number.isFinite(n)) onChange(Math.min(max, Math.max(min, n)));
