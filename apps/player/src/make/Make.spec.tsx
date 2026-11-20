@@ -184,4 +184,26 @@ describe('Make', () => {
       tray: true,
     });
   }, 40_000);
+
+  it('prints whole pieces, one set to a repeat, with no frame and no tray', async () => {
+    render(<Make json={example} address="eight-fold-star-and-cross" />);
+    act(() => screen.getByRole('button', { name: 'Tile' }).click());
+    act(() => screen.getByRole('button', { name: 'Tile pieces' }).click());
+    act(() => screen.getByRole('button', { name: 'Whole pieces' }).click());
+    await waitFor(() => expect(screen.getByText(/1 × 1 repeat of .*: \d+ pieces on/)).toBeTruthy(), { timeout: 20_000 });
+    const perRepeat = loadModel(example).pattern.pieces.length;
+    expect(screen.getByText(`${perRepeat} pieces to a repeat.`, { exact: false })).toBeTruthy();
+    expect(screen.queryByLabelText(/A tray to lay the pieces in/)).toBeNull();
+    expect(screen.queryByText(/frame strip/)).toBeNull();
+    fireEvent.change(screen.getByLabelText('Repeats across'), { target: { value: '3' } });
+    fireEvent.change(screen.getByLabelText('Repeats down'), { target: { value: '2' } });
+    await waitFor(() => expect(screen.getByRole('heading', { name: `${6 * perRepeat} pieces` })).toBeTruthy(), {
+      timeout: 20_000,
+    });
+    expect(JSON.parse(localStorage.getItem('tastir.make.eight-fold-star-and-cross') ?? '{}')).toMatchObject({
+      edges: 'whole',
+      across: 3,
+      down: 2,
+    });
+  }, 40_000);
 });

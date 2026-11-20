@@ -30,6 +30,8 @@ Each is 200 × 200 × 12 mm and is made in under a fifth of a second. The tests 
 
 Next, once the owner has printed a first panel and a plate of pieces on the A1: check that 1.75 mm filament fits the pin holes, that a 1.5 mm gap reads at arm's length, that a pierced 1.5 mm bridge holds, and that a 0.6 mm joint lets printed pieces lie side by side.
 
+**3D.8, whole pieces (19 November).** Tile pieces have an **Edges** choice. **Cut straight** is 3D.7: pieces cut along the outline, with a frame on a panel. **Whole pieces** never cuts a piece and has no frame or tray: on a panel, round or border, a piece is printed when its centre of area lies inside the outline, so the edge zig-zags and more pieces can always be laid on. On a **Tile**, the set is each piece of the repeat once, and **Repeats across** and **Repeats down** (1 to 10 each) print that many repeats in their wall colours, so a wall grows set by set. Each piece is made once and its copies moved, so many repeats stay quick. The tests check that one repeat's whole pieces cover exactly one repeat, that each copy is the first moved by the repeat with its own colour, and that a panel of whole pieces has nothing cut and no frame. On the Attarine star rosettes one repeat is 108 whole pieces; 2 × 2 repeats at 100 mm are 432 pieces on 5 plates.
+
 ## 3D.7 Tile pieces (the plan as approved)
 
 The owner wants each piece of a pattern printed on its own, so a learner can lay the pieces side by side and build the pattern for real, the way zellige is made, with small magnets in the bottom so the pieces hold on a steel sheet, a fridge or a whiteboard.
@@ -84,6 +86,7 @@ Each task is one session and one commit, with tests, and each ends with somethin
 - **3D.5 Woven bands in 3D.** The interlace the player already draws becomes real: the band underneath dips at each crossing. Rounded and double-line bands. *Test:* each crossing has one band above the other by the chosen gap.
 - **3D.6 Screens and flat cutting.** Pieces cut through for jali screens and lamp panels, with the minimum bridge checked, and SVG/DXF outlines for laser and CNC.
 - **3D.7 Tile pieces.** Every piece printed on its own in its wall colour, with a joint, a bevel and a magnet pocket, packed onto one-colour plates, with a full-size layout and an optional tray. *Test:* the pieces cover the panel exactly once before shrinking, every piece is closed, every pocket keeps its wall, and no plate overlaps or overflows.
+- **3D.8 Whole pieces.** An Edges choice: cut straight, or whole pieces with a zig-zag edge, and on a tile a number of repeats across and down. *Test:* one repeat's pieces cover one repeat exactly, and copies are the same pieces moved.
 
 Later, once these are in use: carving on a cylinder for columns and lamps, stamps for pressing clay or plaster, and the learner's own carving profiles.
 
