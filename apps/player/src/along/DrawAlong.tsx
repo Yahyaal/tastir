@@ -1290,6 +1290,7 @@ export function DrawAlong({
         </a>
         <LessonTitle tutorial={tutorial} prefix="Draw along: " />
         <FeedbackButton
+          iconOnly
           context={{
             ...basicFeedbackContext(address, tutorial.title, 'draw'),
             stage: inking
