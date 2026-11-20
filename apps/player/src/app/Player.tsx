@@ -1744,7 +1744,10 @@ export function Player({
                   </button>
                 </div>
                 {address !== 'shared' ? (
-                  <a className="button secondary make-3d" href={`#/${address}/make`}>
+                  <a
+                    className="button secondary make-3d"
+                    href={opened ? `#/${address}/design/${opened.id}/make` : `#/${address}/make`}
+                  >
                     Make it in 3D
                   </a>
                 ) : null}

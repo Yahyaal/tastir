@@ -38,6 +38,8 @@ export interface MakeSettings {
   /** Whether the bands weave over and under, and by how much. */
   readonly woven: boolean;
   readonly gap: number;
+  /** A kind's own depth (the engine's type), where it is not `depth`. */
+  readonly depths: Readonly<Record<number, number>>;
   /** The carving of each kind of piece (the engine's type), when not facets. */
   readonly kinds: Readonly<Record<number, Style>>;
   /** What is printed: the object, a mould for plaster, or a silicone box. */
@@ -99,6 +101,7 @@ export const DEFAULT_SETTINGS: MakeSettings = {
   woven: true,
   gap: 1.5,
   kinds: {},
+  depths: {},
   print: 'object',
   mouldFloor: 3,
   mouldWall: 6,
@@ -162,8 +165,13 @@ export const MIN_GAP = 0.6;
 /** The gap the weave uses: at least three layers, at most a third of the
  * carving's depth. */
 export function gapOf(s: MakeSettings): number {
+  return Math.max(MIN_GAP, Math.min(s.gap, mostGap(s)));
+}
+
+/** The deepest gap the carving allows, to a tenth of a millimetre. */
+export function mostGap(s: MakeSettings): number {
   const depth = Math.min(s.depth, s.thickness - FLOOR);
-  return Math.max(MIN_GAP, Math.min(s.gap, depth / 3));
+  return Math.max(MIN_GAP, Math.floor((depth / 3) * 10 + 1e-9) / 10);
 }
 
 /** The bed less room for a brim: no part is longer. */
@@ -171,8 +179,14 @@ export const PART = 250;
 
 export const styleOf = (s: MakeSettings, type: number): Style => s.kinds[type] ?? 'facets';
 
-export function carvingOf(s: MakeSettings, style: Style): Carving {
-  const depth = Math.min(s.depth, s.thickness - FLOOR);
+/** How deep a kind of piece is carved: its own depth, or the common one. */
+export function depthFor(s: MakeSettings, type?: number): number {
+  const own = type === undefined ? undefined : s.depths[type];
+  return Math.min(own ?? s.depth, s.thickness - FLOOR);
+}
+
+export function carvingOf(s: MakeSettings, style: Style, type?: number): Carving {
+  const depth = depthFor(s, type);
   switch (style) {
     case 'raised':
       return { kind: 'raised' };
@@ -294,6 +308,11 @@ export function sane(s: Partial<MakeSettings>): MakeSettings {
   if (s.kinds && typeof s.kinds === 'object')
     for (const [k, v] of Object.entries(s.kinds))
       if (STYLES.some((x) => x.style === v) && /^\d+$/.test(k)) kinds[Number(k)] = v;
+  const depths: Record<number, number> = {};
+  if (s.depths && typeof s.depths === 'object')
+    for (const [k, v] of Object.entries(s.depths))
+      if (/^\d+$/.test(k) && typeof v === 'number' && Number.isFinite(v))
+        depths[Number(k)] = Math.min(thickness - FLOOR, Math.max(0.4, v));
   const width = num(s.width, 20, 1000, d.width);
   const height = num(s.height, 20, 1000, d.height);
   return {
@@ -310,6 +329,7 @@ export function sane(s: Partial<MakeSettings>): MakeSettings {
     woven: typeof s.woven === 'boolean' ? s.woven : d.woven,
     gap: num(s.gap, MIN_GAP, 20, d.gap),
     kinds,
+    depths,
     print: PRINTS.some((x) => x.print === s.print) ? s.print! : d.print,
     mouldFloor: num(s.mouldFloor, 1, 20, d.mouldFloor),
     mouldWall: num(s.mouldWall, 2, 30, d.mouldWall),
