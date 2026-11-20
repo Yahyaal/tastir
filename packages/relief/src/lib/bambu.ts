@@ -56,8 +56,27 @@ export function plateColumns(count: number): number {
   return Math.max(1, v > r ? r + 1 : r);
 }
 
+/**
+ * What every Tastir project sets over the saved settings, so small pieces
+ * hold to the plate. A piece touches the plate over a few square
+ * centimetres, less its magnet pocket: a fast first layer drags it loose,
+ * and the part fan, on from the second layer, cools its points until they
+ * curl up. So each piece gets an outer brim (left to itself Bambu Studio
+ * adds none to pieces this small), with a gap that lets it peel off
+ * clean; the first layer is slowed; and the fan waits three layers. A
+ * setting kept as a list keeps its length, with this value in each place.
+ */
+export const STEADY_START: Readonly<Record<string, string>> = {
+  brim_type: 'outer_only',
+  brim_width: '3',
+  brim_object_gap: '0.15',
+  initial_layer_speed: '30',
+  initial_layer_infill_speed: '60',
+  close_fan_the_first_x_layers: '3',
+};
+
 /** The settings for these colours: every per-filament setting repeated
- * once a colour, in that colour. */
+ * once a colour, in that colour, and the steady start over them. */
 export function projectSettings(s: BambuSettings, colours: readonly string[]): Record<string, string | string[]> {
   const n = Math.max(1, colours.length);
   const out: Record<string, string | string[]> = {};
@@ -65,6 +84,10 @@ export function projectSettings(s: BambuSettings, colours: readonly string[]): R
   for (const key of s.perFilament) {
     const one = s.config[key];
     if (Array.isArray(one)) out[key] = Array.from({ length: n }, () => one).flat();
+  }
+  for (const [key, value] of Object.entries(STEADY_START)) {
+    const was = out[key];
+    out[key] = Array.isArray(was) ? was.map(() => value) : value;
   }
   out.filament_colour = Array.from({ length: n }, (_, k) => (colours[k] ?? '#FFFFFF').toUpperCase());
   out.filament_self_index = Array.from({ length: n }, (_, k) => String(k + 1));
