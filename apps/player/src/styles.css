@@ -83,10 +83,9 @@
 
   /* Typography */
   --display: 'Marcellus', 'Reem Kufi', 'Iowan Old Style', Georgia, serif;
-  --text: 'Manrope', 'Noto Sans Arabic', system-ui, -apple-system, sans-serif;
+  --text: 'Manrope', 'Reem Kufi', system-ui, -apple-system, sans-serif;
   --sans: var(--text);
-  --arabic-display: 'Reem Kufi', 'Noto Kufi Arabic', sans-serif;
-  --arabic: 'Noto Sans Arabic', 'Segoe UI', system-ui, sans-serif;
+  --arabic: 'Reem Kufi', 'Noto Kufi Arabic', sans-serif;
   /* Labels and badges once used a typewriter face; the design has none, so
      they share the text face, set as small letter-spaced capitals. */
   --mono: var(--text);
@@ -2573,7 +2572,7 @@ main.stage .drawing:not(.wall) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 12px;
   padding: 16px 0;
   border-bottom: 1px solid
     var(
@@ -2602,7 +2601,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .brand-arabic {
-  font-family: var(--arabic-display);
+  font-family: var(--arabic);
   font-size: 1.05em;
   color: var(--saffron);
   letter-spacing: 0;
@@ -2641,7 +2640,7 @@ main.stage .drawing:not(.wall) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 14px;
+  padding: 5px 10px;
   border-radius: 9999px;
   font-size: 0.82rem;
   font-weight: 500;

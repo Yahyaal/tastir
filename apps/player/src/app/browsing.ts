@@ -241,8 +241,10 @@ export function filtered(
   // sort order was chosen.
   if (sort === 'easiest') {
     shown.sort((a, b) => {
-      const la = LEVEL_RANK[aboutOf(a.entry.preview ?? a.entry.json).level ?? ''] ?? 9;
-      const lb = LEVEL_RANK[aboutOf(b.entry.preview ?? b.entry.json).level ?? ''] ?? 9;
+      const la =
+        LEVEL_RANK[aboutOf(a.entry.preview ?? a.entry.json).level ?? ''] ?? 9;
+      const lb =
+        LEVEL_RANK[aboutOf(b.entry.preview ?? b.entry.json).level ?? ''] ?? 9;
       return la - lb || stepsOf(a.entry) - stepsOf(b.entry);
     });
   } else if (sort === 'shortest') {
@@ -284,7 +286,10 @@ export function facetCounts<K extends 'region' | 'style' | 'level' | 'fold'>(
       for (const m of members) {
         const about = aboutOf(m.preview ?? m.json);
         const value = about[key];
-        if (value === undefined || seen.has(value as NonNullable<LibraryFilters[K]>))
+        if (
+          value === undefined ||
+          seen.has(value as NonNullable<LibraryFilters[K]>)
+        )
           continue;
         if (
           (key !== 'region' && region && about.region !== region) ||

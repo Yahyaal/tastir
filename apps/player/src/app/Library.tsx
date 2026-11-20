@@ -128,8 +128,12 @@ export function Library({
   const [style, setStyle] = useState(() => keptFilters().style);
   const [level, setLevel] = useState(() => keptFilters().level);
   const [fold, setFold] = useState(() => keptFilters().fold);
-  const [withPhoto, setWithPhoto] = useState(() => keptFilters().withPhoto ?? false);
-  const [sort, setSort] = useState<SortOrder>(() => keptFilters().sort ?? 'default');
+  const [withPhoto, setWithPhoto] = useState(
+    () => keptFilters().withPhoto ?? false,
+  );
+  const [sort, setSort] = useState<SortOrder>(
+    () => keptFilters().sort ?? 'default',
+  );
   const [query, setQuery] = useState(() => keptFilters().query ?? '');
   const [browsing, setBrowsing] = useState(false);
   useEffect(
@@ -292,7 +296,7 @@ export function Library({
             <span className="nav-badge">{families.length}</span>
           </a>
           <a className="nav-item" href="#/learn">
-            <span>Learning path</span>
+            <span>Learn</span>
             <span className="nav-badge highlight">{LEARNING_PATH.length}</span>
           </a>
           <a className="nav-item jump-link upcoming-nav-link" href="#/upcoming">

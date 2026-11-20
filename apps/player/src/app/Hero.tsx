@@ -224,9 +224,7 @@ function HeroPlay({ model }: { model: Model }) {
               className="hero-pause"
               aria-pressed={paused}
               aria-label={
-                paused
-                  ? 'Resume preview animation'
-                  : 'Pause preview animation'
+                paused ? 'Resume preview animation' : 'Pause preview animation'
               }
               onClick={() => setPaused((was) => !was)}
             >

@@ -335,7 +335,12 @@ function AppPage({
       return <Broken message="This design is not saved in this browser." />;
     return (
       <Suspense fallback={<p role="status">Opening the 3D workshop…</p>}>
-        <Make key={route} json={entry.json} address={tutorial} design={design} />
+        <Make
+          key={route}
+          json={entry.json}
+          address={tutorial}
+          design={design}
+        />
       </Suspense>
     );
   }

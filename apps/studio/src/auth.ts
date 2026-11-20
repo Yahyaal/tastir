@@ -75,7 +75,10 @@ export function isSafeMetadataUrl(id: string): boolean {
     return false;
   }
   if (url.protocol !== 'https:' || url.username || url.password) return false;
-  const host = url.hostname.replace(/^\[|\]$/g, '').replace(/\.$/, '').toLowerCase();
+  const host = url.hostname
+    .replace(/^\[|\]$/g, '')
+    .replace(/\.$/, '')
+    .toLowerCase();
   if (
     !host ||
     host === 'localhost' ||
