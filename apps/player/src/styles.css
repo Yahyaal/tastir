@@ -3776,7 +3776,7 @@ main.stage .drawing:not(.wall) {
   /* Swiped along by a finger: no bar, with a soft right-edge scroll cue. */
   .journey {
     scrollbar-width: none;
-    padding-right: 18px;
+    padding-right: 28px;
     mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
   }
 

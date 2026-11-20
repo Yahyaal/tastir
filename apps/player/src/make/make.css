@@ -30,6 +30,7 @@
   align-items: center;
   gap: 8px;
   flex: none;
+  margin-left: auto;
 }
 .make-page .make-back {
   color: var(--theme-accent);

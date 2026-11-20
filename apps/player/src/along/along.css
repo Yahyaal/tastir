@@ -197,7 +197,7 @@
   min-height: 0;
   display: flex;
   gap: 24px;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   padding: 10px 16px;
   border: 1px solid var(--theme-border);
@@ -261,8 +261,8 @@
 
 /* Feedback uses the space beside the instruction, without shortening boards. */
 .along-text .along-check {
-  height: 3.8lh;
-  min-height: 3.8lh;
+  height: 3lh;
+  min-height: 3lh;
   font-size: 0.85rem;
   overflow-y: auto;
 }
@@ -1039,7 +1039,7 @@
    words with Back and Next, then the hints. */
 @media (max-width: 760px) {
   .along-steps ol {
-    padding-right: 18px;
+    padding-right: 28px;
     mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
   }
 
