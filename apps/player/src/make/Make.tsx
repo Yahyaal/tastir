@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { dxf, inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, svg, threeMf, TRAY, zip } from '@tastir/relief';
+import { bambuProject, dxf, inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, svg, threeMf, TRAY, zip, type BambuSettings } from '@tastir/relief';
 import type { Model } from '@tastir/project-core/model';
 import { colourName } from '../app/colourNames';
 import {
@@ -989,21 +989,38 @@ function PieceList({ set, names, repeats }: { set: PiecesResult; names: readonly
         {set.dropped ? ` ${set.dropped} slivers at the edge, under 1 mm, are left out.` : ''}
       </p>
       <p className="make-hint">
-        Each plate is one colour, so it prints in one filament with no colour changes. In Bambu Studio the pieces open
-        already placed; each is named by its colour, its kind and its number on the layout.
+        Each plate is one colour, so it prints in one filament with no colour changes. Download for Bambu Studio gives
+        one file: double-click it and Bambu Studio opens every plate, each in its colour, with the A1&apos;s settings.
+        Each piece is named by its colour, its kind and its number on the layout.
       </p>
     </div>
   );
 }
 
-/** The plates, the layout and the tray. */
+/** One Bambu Studio project: every plate, each in its colour's filament,
+ * with the A1's settings, which Bambu Studio needs to open the plates. */
+async function bambuFile(set: PiecesResult, title: string, file: string) {
+  const settings = (await import('./bambu-a1.json')).default as unknown as BambuSettings;
+  const colours = [...new Set(set.plates.map((p) => p.colour))];
+  const data = bambuProject(
+    set.plates.map((p) => ({ name: p.name, filament: colours.indexOf(p.colour) + 1, items: p.items })),
+    title,
+    { settings, colours },
+  );
+  download(new Blob([data as BlobPart], { type: 'model/3mf' }), `${file}.3mf`);
+}
+
+/** The project, the plates apart, the layout and the tray. */
 function PieceDownloads({ set, file, title }: { set: PiecesResult; file: string; title: string }) {
   const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   return (
     <div className="make-downloads">
+      <button type="button" className="make-primary" onClick={() => void bambuFile(set, title, file)}>
+        Download for Bambu Studio
+      </button>
       <button
         type="button"
-        className="make-primary"
+        className="secondary"
         onClick={() =>
           download(
             new Blob(
@@ -1021,7 +1038,7 @@ function PieceDownloads({ set, file, title }: { set: PiecesResult; file: string;
           )
         }
       >
-        Download plates (zip)
+        Plates as separate files (zip)
       </button>
       <button
         type="button"

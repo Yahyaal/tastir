@@ -22,33 +22,29 @@ The Make page opens with a 3D view on the left and the choices on the right.
 
 Under the buttons, the page says how many pieces and plates you get. Lower down, the pieces list shows each colour with its pieces, how many plates and grams of filament, and the magnets to buy. If it warns that the smallest piece is under 3 mm, raise **One repeat** to the size it suggests.
 
-## 3. Download the files
+## 3. Download the file
 
-1. Under **Download**, click **Download plates (zip)**. Your browser saves a file ending in `-plates.zip` in your Downloads folder.
+1. Under **Download**, click **Download for Bambu Studio**. Your browser saves one file ending in `.3mf` in your Downloads folder, for example `attarine-star-rosettes-tile-100mm-pieces.3mf`.
 2. Click **Download layout** too. This saves an SVG drawing of the whole panel at full size, with every piece numbered.
-3. Open your Downloads folder and double-click the zip to unpack it. Inside there is one file to a plate, named by its colour, for example `01-cream-plate-1-of-1.3mf`.
 
-Each file holds only pieces of one colour, so each plate prints with one filament and no colour changes.
+The `.3mf` file holds every plate. Each plate holds only pieces of one colour, so it prints with one filament and no colour changes. (**Plates as separate files (zip)** gives the same plates one file each, for other slicers; you do not need it for Bambu Studio.)
 
-## 4. Open a plate in Bambu Studio
+## 4. Open it in Bambu Studio
 
-1. Open Bambu Studio and click **New Project** (or **File → New Project**).
-2. At the top left, check the printer is **Bambu Lab A1 0.4 nozzle**. Under it, choose the filament you will load, for example **Bambu PLA Basic**, and the plate you use, for example **Textured PEI Plate**.
-3. Click **File → Import → Import 3MF/STL/STEP/SVG/OBJ/AMF…** (or press Ctrl+I) and choose the first plate file, for example `01-cream-plate-1-of-1.3mf`.
-4. Bambu Studio may say the file was not made by Bambu Studio and that it will load only the shapes. Click **OK** or **Yes**: the shapes are all we need. If it asks whether to load the file as **one object with several parts**, click **No**, so each piece stays its own object.
-5. The pieces appear on the plate, already spaced apart. If any lie off the plate, press **A** (Arrange) and Bambu Studio packs them again.
+1. Double-click the `.3mf` file in your Downloads folder. If it opens in another program, open Bambu Studio and choose **File → Open Project** (Ctrl+O) instead.
+2. If Bambu Studio asks whether to load the project's settings, choose to load them. They are the A1's own: **Bambu Lab A1 0.4 nozzle**, **0.20mm Standard @BBL A1**, **Bambu PLA Basic** and the **Textured PEI Plate**.
+3. Bambu Studio shows every plate side by side, each named by its colour, for example **cream, plate 1 of 1**. On the left, under **Project Filaments**, there is one filament to a colour.
 
-Do not scale or rotate the pieces: they are already the right size, face up.
+Do not scale or rotate the pieces: they are already the right size, face up, and spaced apart on their plates.
 
 ## 5. Slice and print
 
-1. In the process settings on the left, choose **0.20mm Standard @BBL A1**. The defaults are fine: no supports are needed, because every piece is flat underneath and its magnet pocket bridges cleanly.
-2. Click **Slice plate** at the top right. The preview shows the time and the grams of filament.
-3. Load the filament of that colour in the A1.
-4. Click **Print plate**. If your A1 is connected to Bambu Studio over Wi-Fi, choose it in the window that opens and click **Send**. If it is not connected, click the arrow next to **Print plate**, choose **Export plate sliced file**, save it to the A1's microSD card, put the card in the printer, and start the print from the A1's screen.
-5. When the plate is done and cool, flex the plate a little and the pieces come off.
+1. Click a plate to choose it, then click **Slice plate** at the top right. The preview shows the time and the grams of filament. No supports are needed, because every piece is flat underneath and its magnet pocket bridges cleanly.
+2. Load the filament of that colour: in a slot of the AMS lite, or on the A1's spool holder.
+3. Click **Print plate**. In the window that opens, check the plate's filament points to the spool of that colour, then click **Send**. If the A1 is not connected over Wi-Fi, click the arrow next to **Print plate**, choose **Export plate sliced file**, save it to the A1's microSD card, put the card in the printer, and start the print from the A1's screen.
+4. When the plate is done and cool, flex the plate a little and the pieces come off.
 
-Then repeat steps 4 and 5 for each of the other plate files, changing the filament each time.
+Then do the same for each of the other plates.
 
 ## 6. Magnets and laying the pattern
 

@@ -170,7 +170,8 @@ describe('Make', () => {
     expect(new Set(shown.slice(0, -1))).toEqual(wall);
     expect(screen.getByText(/frame strip × 4/)).toBeTruthy();
     expect(screen.getByText(/Magnets to buy:/)).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Download plates (zip)' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Download for Bambu Studio' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Plates as separate files (zip)' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Download layout' })).toBeTruthy();
 
     act(() => screen.getByRole('button', { name: 'None' }).click());
