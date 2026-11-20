@@ -12,7 +12,7 @@ export function LearningStart({ entries }: { entries: readonly Entry[] }) {
         <p className="learning-eyebrow">A guided beginning</p>
         <h2 id="learning-start-title">Start here</h2>
         <p>
-          From one circle to a rosette: {lessons.length} existing lessons in a
+          From one circle to a rosette: {lessons.length} lessons in a
           recommended order, each introducing a new focus.
         </p>
         <div className="learning-actions">

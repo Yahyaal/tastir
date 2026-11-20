@@ -1,3 +1,6 @@
+import { useMemo } from 'react';
+import { allProgress } from '../along/progress';
+import { lessonsInProgress } from './lessons';
 import { ThemeSwitch } from './theme';
 import {
   availableLearningPath,
@@ -9,10 +12,44 @@ import './learningPath.css';
 
 export function LearningPath({ entries }: { entries: readonly Entry[] }) {
   const lessons = availableLearningPath(entries);
+  const progressById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const item of lessonsInProgress()) {
+      map.set(
+        item.address,
+        item.label ? `Watching · ${item.label}` : 'Watching in progress',
+      );
+    }
+    for (const item of allProgress()) {
+      if (item.kept?.pattern) {
+        map.set(item.tutorial, 'Drawn & kept in My patterns');
+      } else if (item.board.steps.length > 0 || item.inked.length > 0) {
+        map.set(
+          item.tutorial,
+          item.label ? `Drawing · ${item.label}` : 'Drawing in progress',
+        );
+      }
+    }
+    return map;
+  }, []);
   return (
     <main className="learning-page">
       <header className="learning-top">
-        <a href="#/">← All patterns</a>
+        <a className="home" href="#/">
+          <span aria-hidden="true">←</span>
+          <span className="wordmark">
+            Tastir{' '}
+            <span
+              className="brand-arabic"
+              aria-hidden="true"
+              lang="ar"
+              dir="rtl"
+            >
+              تسطير
+            </span>
+          </span>
+          <span className="learning-crumb">All patterns</span>
+        </a>
         <ThemeSwitch />
       </header>
       <header className="learning-intro">
@@ -89,6 +126,11 @@ export function LearningPath({ entries }: { entries: readonly Entry[] }) {
                       {entry.preview?.level ?? 'Lesson'}
                       {entry.preview ? ` · ${entry.preview.steps} steps` : ''}
                     </p>
+                    {progressById.get(lesson.id) ? (
+                      <p className="learning-progress-pill">
+                        {progressById.get(lesson.id)}
+                      </p>
+                    ) : null}
                     <p className="learning-focus">{lesson.focus}</p>
                     <p>{lesson.practice}</p>
                     <p className="learning-reference">

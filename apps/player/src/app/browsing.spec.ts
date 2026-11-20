@@ -183,4 +183,67 @@ describe('facet counts across alternate places', () => {
       facetCounts(cards, { region: 'Morocco' }, 'level').has('advanced'),
     ).toBe(false);
   });
+
+  it('filters by real-wall photo and sorts by easiest, shortest, or title', () => {
+    const items: Entry[] = [
+      {
+        id: 'zeta',
+        json: {},
+        preview: {
+          title: 'Zeta',
+          level: 'advanced',
+          steps: 14,
+          style: 'Nasrid',
+          fold: 8,
+          photos: true,
+          thumbnail: 'z.webp',
+        },
+      },
+      {
+        id: 'alpha',
+        json: {},
+        preview: {
+          title: 'Alpha',
+          level: 'beginner',
+          steps: 8,
+          style: 'Moroccan',
+          fold: 6,
+          photos: false,
+          thumbnail: 'a.webp',
+        },
+      },
+      {
+        id: 'beta',
+        json: {},
+        preview: {
+          title: 'Beta',
+          level: 'beginner',
+          steps: 5,
+          style: 'Moroccan',
+          fold: 8,
+          photos: true,
+          thumbnail: 'b.webp',
+        },
+      },
+    ];
+    expect(filtered(items, { withPhoto: true }).map((e) => e.id)).toEqual([
+      'zeta',
+      'beta',
+    ]);
+    expect(filtered(items, { sort: 'easiest' }).map((e) => e.id)).toEqual([
+      'beta',
+      'alpha',
+      'zeta',
+    ]);
+    expect(filtered(items, { sort: 'shortest' }).map((e) => e.id)).toEqual([
+      'beta',
+      'alpha',
+      'zeta',
+    ]);
+    expect(filtered(items, { sort: 'title' }).map((e) => e.id)).toEqual([
+      'alpha',
+      'beta',
+      'zeta',
+    ]);
+  });
 });

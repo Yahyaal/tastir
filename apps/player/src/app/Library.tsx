@@ -1,4 +1,5 @@
 import { LearningStart } from './LearningPathNav';
+import { LEARNING_PATH } from './learningPath';
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { listPatterns } from '../editor/patterns';
 import { NewPattern } from '../editor/PatternShelf';
@@ -10,6 +11,7 @@ import {
   keptFilters,
   cardAt,
   keptPlace,
+  type SortOrder,
 } from './browsing';
 import { LibraryDrawer, LibraryMenu, type MenuChange } from './LibraryMenu';
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
@@ -105,6 +107,13 @@ const TRADITIONS: Record<
   },
 };
 
+const SORT_OPTIONS: readonly { value: SortOrder; label: string }[] = [
+  { value: 'default', label: 'Featured' },
+  { value: 'easiest', label: 'Easiest' },
+  { value: 'shortest', label: 'Shortest' },
+  { value: 'title', label: 'A–Z' },
+];
+
 /** Every tutorial, with a picture of the finished pattern: one card for
  * each family of variations. */
 export function Library({
@@ -119,11 +128,22 @@ export function Library({
   const [style, setStyle] = useState(() => keptFilters().style);
   const [level, setLevel] = useState(() => keptFilters().level);
   const [fold, setFold] = useState(() => keptFilters().fold);
+  const [withPhoto, setWithPhoto] = useState(() => keptFilters().withPhoto ?? false);
+  const [sort, setSort] = useState<SortOrder>(() => keptFilters().sort ?? 'default');
   const [query, setQuery] = useState(() => keptFilters().query ?? '');
   const [browsing, setBrowsing] = useState(false);
   useEffect(
-    () => keepFilters({ query, region, style, level, fold }),
-    [query, region, style, level, fold],
+    () =>
+      keepFilters({
+        query,
+        region,
+        style,
+        level,
+        fold,
+        withPhoto: withPhoto || undefined,
+        sort: sort === 'default' ? undefined : sort,
+      }),
+    [query, region, style, level, fold, withPhoto, sort],
   );
   useReturnToScroll(startAtCollection);
   const [designs] = useState(listDesigns);
@@ -142,8 +162,19 @@ export function Library({
       patterns={patterns}
     />
   ) : null;
-  const filters = { query, region, style, level, fold };
-  const shown = filtered(families, filters);
+  const filters = useMemo(
+    () => ({
+      query,
+      region,
+      style,
+      level,
+      fold,
+      withPhoto: withPhoto || undefined,
+      sort: sort === 'default' ? undefined : sort,
+    }),
+    [query, region, style, level, fold, withPhoto, sort],
+  );
+  const shown = useMemo(() => filtered(families, filters), [families, filters]);
   const choose = (change: MenuChange) => {
     if (change.key === 'region') setRegion(change.value);
     if (change.key === 'style') setStyle(change.value);
@@ -151,33 +182,45 @@ export function Library({
     if (change.key === 'fold') setFold(change.value);
   };
   // The filters chosen, each a tag that removes it.
-  const tags: readonly { label: string; change: MenuChange }[] = [
+  const tags: readonly { label: string; remove: () => void; key: string }[] = [
     ...(region
       ? [
           {
+            key: 'region',
             label: region,
-            change: { key: 'region', value: undefined } as const,
+            remove: () => setRegion(undefined),
           },
         ]
       : []),
     ...(fold
       ? [
           {
+            key: 'fold',
             label: foldLabel(fold),
-            change: { key: 'fold', value: undefined } as const,
+            remove: () => setFold(undefined),
           },
         ]
       : []),
     ...(level
       ? [
           {
+            key: 'level',
             label: capital(level),
-            change: { key: 'level', value: undefined } as const,
+            remove: () => setLevel(undefined),
           },
         ]
       : []),
     ...(style
-      ? [{ label: style, change: { key: 'style', value: undefined } as const }]
+      ? [{ key: 'style', label: style, remove: () => setStyle(undefined) }]
+      : []),
+    ...(withPhoto
+      ? [
+          {
+            key: 'photo',
+            label: 'With photo',
+            remove: () => setWithPhoto(false),
+          },
+        ]
       : []),
   ];
   const menu = (
@@ -199,6 +242,7 @@ export function Library({
     setStyle(undefined);
     setLevel(undefined);
     setFold(undefined);
+    setWithPhoto(false);
   };
   // The filters chosen, in words: “8-fold, for beginners and Nasrid”.
   const chosenWords = andList(
@@ -210,6 +254,7 @@ export function Library({
         : '',
       style ? `from the ${style} tradition` : '',
       region ? `from ${region}` : '',
+      withPhoto ? 'with a real-wall photo' : '',
     ].filter(Boolean),
   );
   const hero = entries.find((e) => e.id === HERO) ?? entries[0];
@@ -246,9 +291,13 @@ export function Library({
             <span>Library</span>
             <span className="nav-badge">{families.length}</span>
           </a>
+          <a className="nav-item" href="#/learn">
+            <span>Learning path</span>
+            <span className="nav-badge highlight">{LEARNING_PATH.length}</span>
+          </a>
           <a className="nav-item jump-link upcoming-nav-link" href="#/upcoming">
-            <span>Upcoming patterns</span>
-            <span className="nav-badge highlight">24</span>
+            <span>Upcoming</span>
+            <span className="nav-badge">24</span>
           </a>
           {HOSTED ? (
             <a className="nav-item jump-link" href="#/studio">
@@ -273,7 +322,6 @@ export function Library({
         </div>
       </header>
       {inProgress.length ? yourWork : null}
-      <LearningStart entries={entries} />
       <section className="hero">
         {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}
         <div className="hero-copy">
@@ -312,6 +360,7 @@ export function Library({
           ) : null}
         </div>
       </section>
+      <LearningStart entries={entries} />
       {inProgress.length ? null : yourWork}
       <section aria-labelledby="collection">
         <div className="collection-head">
@@ -349,6 +398,30 @@ export function Library({
               </label>
               <button
                 type="button"
+                className={`photo-filter${withPhoto ? ' active' : ''}`}
+                aria-pressed={withPhoto}
+                onClick={() => setWithPhoto((was) => !was)}
+              >
+                With photo
+              </button>
+              <div
+                className="sort-control"
+                role="group"
+                aria-label="Sort patterns"
+              >
+                {SORT_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    aria-pressed={sort === option.value}
+                    onClick={() => setSort(option.value)}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
                 className="browse-button"
                 aria-haspopup="dialog"
                 onClick={() => setBrowsing(true)}
@@ -359,11 +432,11 @@ export function Library({
             {tags.length || query ? (
               <ul className="filter-tags" aria-label="Chosen filters">
                 {tags.map((tag) => (
-                  <li key={tag.change.key}>
+                  <li key={tag.key}>
                     <button
                       type="button"
                       aria-label={`Remove the filter ${tag.label}`}
-                      onClick={() => choose(tag.change)}
+                      onClick={tag.remove}
                     >
                       {tag.label} <span aria-hidden="true">✕</span>
                     </button>
