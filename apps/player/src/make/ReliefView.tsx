@@ -214,8 +214,10 @@ export function ReliefView({
       s.framed = size;
       const distance = size * 2.4;
       const tilt = (50 * Math.PI) / 180;
-      s.camera.position.set(0, -Math.cos(tilt) * distance, Math.sin(tilt) * distance);
-      s.controls.target.set(0, 0, 0);
+      // On what is shown: whole pieces of several repeats lie off centre.
+      const mid = box.getCenter(new THREE.Vector3());
+      s.camera.position.set(mid.x, mid.y - Math.cos(tilt) * distance, Math.sin(tilt) * distance);
+      s.controls.target.set(mid.x, mid.y, 0);
       s.controls.update();
     }
     draw.current();

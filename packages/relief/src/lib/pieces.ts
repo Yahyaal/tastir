@@ -60,6 +60,14 @@ export interface PieceOptions {
   readonly frameColour: string;
   /** The longest frame strip (the bed less room for a brim). */
   readonly longest?: number;
+  /** Whole pieces: none is cut and there is no frame. A piece is printed
+   * when its middle lies inside the outline, so the edge zig-zags and
+   * more pieces can always be laid on. */
+  readonly whole?: boolean;
+  /** With whole pieces, the pieces of these copies of the tile instead of
+   * those inside the outline: each piece of the tile once a copy, so the
+   * copies join into a wall of any size. */
+  readonly cells?: readonly { readonly i: number; readonly j: number }[];
 }
 
 export interface TilePiece {
@@ -130,6 +138,41 @@ export function tilePieces(pattern: PatternShape, o: PieceOptions): PieceSet {
       });
     }
   };
+  if (o.whole) {
+    // Every copy of a piece is the same solid moved: make each once.
+    const { u, v } = pattern.cell;
+    const made = new Map<number, TilePiece[]>();
+    const madeOf = (k: number): TilePiece[] => {
+      const known = made.get(k);
+      if (known) return known;
+      const from = pieces.length;
+      const piece = pattern.pieces[k]!;
+      const polygon = piece.polygon.map((p) => ({ x: p.x * o.scale, y: p.y * o.scale }));
+      if (signedArea(polygon) < 0) polygon.reverse();
+      add(polygon, piece.type, '', false);
+      const out = pieces.splice(from);
+      made.set(k, out);
+      return out;
+    };
+    const copies =
+      o.cells?.flatMap(({ i, j }) => pattern.pieces.map((_, k) => ({ k, i, j }))) ??
+      piecesOver(pattern, o.scale, half)
+        .filter((piece) => within(middleOf(piece.polygon), outline))
+        .map(({ k, i, j }) => ({ k, i, j }));
+    for (const { k, i, j } of copies) {
+      const d = { x: (i * u.x + j * v.x) * o.scale, y: (i * u.y + j * v.y) * o.scale };
+      const colour = o.colour(k, i, j);
+      for (const p of madeOf(k))
+        pieces.push({
+          ...p,
+          colour,
+          outline: p.outline.map((q) => ({ x: q.x + d.x, y: q.y + d.y })),
+          ...(p.at ? { at: { x: p.at.x + d.x, y: p.at.y + d.y } } : {}),
+          mesh: moved(p.mesh, d),
+        });
+    }
+    return { pieces, dropped, droppedArea, smallest: Number.isFinite(smallest) ? smallest : 0 };
+  }
   for (const piece of piecesOver(pattern, o.scale, half)) {
     const colour = o.colour(piece.k, piece.i, piece.j);
     const inside = piece.polygon.every((p) => within(p, inner));
@@ -142,6 +185,30 @@ export function tilePieces(pattern: PatternShape, o: PieceOptions): PieceSet {
   if (o.frame > 0)
     for (const strip of frameStrips(outline, o.frame, o.longest ?? 240)) add(strip, -1, o.frameColour, false);
   return { pieces, dropped, droppedArea, smallest: Number.isFinite(smallest) ? smallest : 0 };
+}
+
+/** A polygon's centre of area. */
+function middleOf(polygon: readonly P2[]): P2 {
+  let a = 0;
+  let x = 0;
+  let y = 0;
+  for (let n = 0; n < polygon.length; n++) {
+    const p = polygon[n]!;
+    const q = polygon[(n + 1) % polygon.length]!;
+    const c = p.x * q.y - q.x * p.y;
+    a += c;
+    x += (p.x + q.x) * c;
+    y += (p.y + q.y) * c;
+  }
+  return { x: x / (3 * a), y: y / (3 * a) };
+}
+
+/** A mesh moved across the bed. */
+function moved(mesh: Mesh, d: P2): Mesh {
+  return {
+    positions: Float64Array.from(mesh.positions, (w, n) => w + (n % 3 === 0 ? d.x : n % 3 === 1 ? d.y : 0)),
+    triangles: mesh.triangles,
+  };
 }
 
 /** Is p inside the convex outline (or on it)? */
@@ -612,7 +679,9 @@ export function layoutSvg(set: readonly TilePiece[], outline: readonly P2[], tit
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     `<svg xmlns="http://www.w3.org/2000/svg" width="${num(w + 2 * pad)}mm" height="${num(h + 2 * pad)}mm" viewBox="0 0 ${num(w + 2 * pad)} ${num(h + 2 * pad)}">\n` +
     `<title>${title.replace(/[<>&"']/g, (c) => `&#${c.charCodeAt(0)};`)}</title>\n` +
-    `<path d="${path(outline)}" fill="none" stroke="#1d1d1b" stroke-width="0.3" stroke-dasharray="2 1"/>\n` +
+    (outline.length
+      ? `<path d="${path(outline)}" fill="none" stroke="#1d1d1b" stroke-width="0.3" stroke-dasharray="2 1"/>\n`
+      : '') +
     `<g font-family="sans-serif" text-anchor="middle">\n${rows.join('\n')}\n</g>\n` +
     `<text x="${pad}" y="${num(h + 2 * pad - 1.5)}" font-family="sans-serif" font-size="3" fill="#1d1d1b">${title.replace(/[<>&"']/g, (c) => `&#${c.charCodeAt(0)};`)}: print at 100%, then lay each piece on its place.</text>\n` +
     '</svg>\n'

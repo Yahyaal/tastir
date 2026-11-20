@@ -155,6 +155,50 @@ describe('tile pieces', () => {
       expect(set.pieces.some((p) => p.magnet === SMALL_MAGNET) || set.pieces.every((p) => p.magnet)).toBe(true);
     });
 
+  it('prints whole pieces: one set to a copy of the tile, and those whose middle is inside an outline', () => {
+    const pattern = tutorial('attarine-star-rosettes');
+    const scale = 100 / Math.hypot(pattern.cell.u.x, pattern.cell.u.y);
+    const { u, v } = pattern.cell;
+    const cell = Math.abs(u.x * v.y - u.y * v.x) * scale * scale;
+    const one = tilePieces(pattern, base({ scale, joint: 0, whole: true, cells: [{ i: 0, j: 0 }] }));
+    // The tile's pieces are each there once: they cover one repeat exactly.
+    expect(one.pieces).toHaveLength(pattern.pieces.length);
+    expect(one.pieces.reduce((a, p) => a + signedArea(p.outline), 0)).toBeCloseTo(cell, 4);
+    const cells = [
+      { i: 0, j: 0 },
+      { i: 1, j: 0 },
+      { i: 0, j: 1 },
+      { i: 1, j: 1 },
+    ];
+    const four = tilePieces(pattern, {
+      ...base({ scale, bevel: 0.6, magnet: MAGNETS['6x2'], whole: true, cells }),
+      colour: (k, i, j) => `#00${i}${j}${k % 10}0`,
+    });
+    expect(four.pieces).toHaveLength(4 * pattern.pieces.length);
+    expect(four.pieces.every((p) => !p.cut && p.type >= 0)).toBe(true);
+    // Each copy is the first moved by the repeat, with its own colour.
+    const n = pattern.pieces.length;
+    for (let k = 0; k < n; k++) {
+      const a = four.pieces[k]!;
+      const b = four.pieces[3 * n + k]!;
+      const d = { x: (u.x + v.x) * scale, y: (u.y + v.y) * scale };
+      a.outline.forEach((p, m) => {
+        expect(b.outline[m]!.x).toBeCloseTo(p.x + d.x, 9);
+        expect(b.outline[m]!.y).toBeCloseTo(p.y + d.y, 9);
+      });
+      expect(volumeOf(b.mesh)).toBeCloseTo(volumeOf(a.mesh), 6);
+      expect(openEdges(b.mesh)).toBe(0);
+      expect(b.colour).toBe(`#0011${k % 10}0`);
+    }
+    // Over a panel: no cut piece and no frame, every middle inside.
+    const panel = tilePieces(pattern, base({ outline: rectangle(150, 120), scale, frame: 8, whole: true }));
+    expect(panel.pieces.length).toBeGreaterThan(50);
+    expect(panel.pieces.every((p) => !p.cut && p.type >= 0)).toBe(true);
+    const area = panel.pieces.reduce((a, p) => a + signedArea(p.outline), 0);
+    expect(area).toBeGreaterThan(150 * 120 * 0.8);
+    expect(layoutSvg(panel.pieces, [], 'Whole')).not.toContain('stroke-dasharray');
+  });
+
   it('frames a panel in mitred strips, a round one in arcs, none longer than the bed allows', () => {
     const square = frameStrips(rectangle(200, 200), 8, 240);
     expect(square).toHaveLength(4);

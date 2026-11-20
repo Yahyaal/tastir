@@ -14,10 +14,11 @@ The Make page opens with a 3D view on the left and the choices on the right.
 
 1. Under **What to make**, click **Tile** for the first test (one repeat of the pattern). For a full panel, click **Panel** and set **Width** and **Height**.
 2. Under **Print**, click **Tile pieces**. The view now shows every piece in its colour with thin gaps between them.
-3. Leave **Joint** at **0.6 mm**. This is the gap between two pieces: printed pieces come out a little large, and the gap lets them still lie side by side.
-4. Leave **Bevel the top edge** ticked. It makes each joint read as a fine line.
-5. Under the magnet sizes, click the magnets you have: **6 × 2 mm** is the common size. Click **None** if you have no magnets yet.
-6. Under **Size**, set **One repeat** to **100 mm** and **Thickness** to **5 mm**.
+3. Choose the edges. **Cut straight** cuts the pieces at the edge along the outline, for a finished piece with straight sides. **Whole pieces** cuts nothing: the edge zig-zags, so you can print more later and lay them on to make the wall larger. With **Tile** and **Whole pieces**, set **Repeats across** and **Repeats down** under **Size** for how many repeats to print.
+4. Leave **Joint** at **0.6 mm**. This is the gap between two pieces: printed pieces come out a little large, and the gap lets them still lie side by side.
+5. Leave **Bevel the top edge** ticked. It makes each joint read as a fine line.
+6. Under the magnet sizes, click the magnets you have: **6 × 2 mm** is the common size. Click **None** if you have no magnets yet.
+7. Under **Size**, set **One repeat** to **100 mm** and **Thickness** to **5 mm**.
 
 Under the buttons, the page says how many pieces and plates you get. Lower down, the pieces list shows each colour with its pieces, how many plates and grams of filament, and the magnets to buy. If it warns that the smallest piece is under 3 mm, raise **One repeat** to the size it suggests.
 

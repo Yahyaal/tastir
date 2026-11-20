@@ -31,6 +31,9 @@ import {
   SMALLEST_PIECE,
   thinnestFor,
   trayCutsOf,
+  cellsOf,
+  EDGES,
+  hasTray,
   borderOf,
   bridgeOf,
   carvingOf,
@@ -58,6 +61,7 @@ import {
   STYLES,
   styleOf,
   type Ends,
+  type Edges,
   type MakeSettings,
   type Shape,
   type Style,
@@ -245,6 +249,8 @@ export function Make({
   }, [settings, types]);
   const scale = pattern && model ? scaleOf(model.pattern, settings) : 1;
   const frame = settings.shape === 'tile' ? 0 : settings.frame;
+  const whole = isPieces && settings.edges === 'whole';
+  const tray = hasTray(settings);
   const cuts = useMemo(
     () => (pattern ? cutsOf(pattern, outline, settings) : { xs: [], ys: [] }),
     [pattern, outline, settings],
@@ -273,7 +279,8 @@ export function Make({
             joint: settings.joint,
             bevel: settings.bevel ? BEVEL : 0,
             magnet: settings.magnet,
-            tray: settings.tray,
+            tray,
+            ...(whole ? { whole: true, ...(settings.shape === 'tile' ? { cells: cellsOf(settings) } : {}) } : {}),
             ...table,
             names: types.map((t) => pieceName(t)),
             trayCuts: trayCutsOf(outline, settings),
@@ -293,7 +300,7 @@ export function Make({
   const kind = { object: '', mould: '-mould', box: '-silicone-box', pieces: '-pieces' }[settings.print];
   const slug = design ? `${address}-${design.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'design'}` : address;
   const file = `${slug}-${settings.shape}-${Math.round(size.width)}mm${kind}`;
-  const what = { object: 'object', mould: 'mould', box: 'box', pieces: settings.tray ? 'tray' : 'pieces' }[settings.print];
+  const what = { object: 'object', mould: 'mould', box: 'box', pieces: tray ? 'tray' : 'pieces' }[settings.print];
   const parts = carved.parts;
   const boxInside = settings.print === 'box' && outline.length ? extent(inset(outline, -settings.boxGap)) : undefined;
 
@@ -436,6 +443,7 @@ export function Make({
                 bevel={settings.bevel}
                 magnet={settings.magnet}
                 tray={settings.tray}
+                edges={settings.edges}
                 onChange={update}
               />
             ) : null}
@@ -468,12 +476,20 @@ export function Make({
             ) : (
               <Measure label="Thickness" value={settings.thickness} min={3} max={40} onChange={(thickness) => update({ thickness })} />
             )}
-            {settings.shape !== 'tile' ? (
+            {whole && settings.shape === 'tile' ? (
+              <>
+                <Measure label="Repeats across" unit="" value={settings.across} min={1} max={10} step={1} onChange={(across) => update({ across })} />
+                <Measure label="Repeats down" unit="" value={settings.down} min={1} max={10} step={1} onChange={(down) => update({ down })} />
+              </>
+            ) : null}
+            {settings.shape !== 'tile' && !whole ? (
               <Measure label="Frame" value={settings.frame} min={0} max={30} onChange={(frame) => update({ frame })} />
             ) : null}
             {isPieces ? (
               <p className="make-fit">
-                {mm(size.width)} × {mm(size.height)}
+                {whole && settings.shape === 'tile'
+                  ? `${settings.across} × ${settings.down} ${settings.across * settings.down === 1 ? 'repeat' : 'repeats'} of ${mm(settings.repeat)}`
+                  : `${whole ? 'About ' : ''}${mm(size.width)} × ${mm(size.height)}`}
                 {set
                   ? `: ${set.pieces} pieces on ${set.plates.length} plates of the ${BED} mm bed of the Bambu Lab A1${set.tray ? `, and a tray in ${set.tray.length === 1 ? 'one part' : `${set.tray.length} parts`}` : ''}.`
                   : '.'}
@@ -658,7 +674,7 @@ export function Make({
                 ? 'SVG and DXF are every piece’s outline in millimetres, joints and all, to cut the pieces from sheets with a laser or a router.'
                 : `SVG and DXF are the ${settings.shape} flat, in millimetres, for a laser cutter, a CNC router or a stencil: the outline and every hole to cut in red, the edge of each carved piece to engrave in blue.`}
             </p>
-            {set ? <PieceList set={set} names={types.map((t) => pieceName(t))} /> : null}
+            {set ? <PieceList set={set} names={types.map((t) => pieceName(t))} repeats={whole && settings.shape === 'tile' ? settings.across * settings.down : 0} /> : null}
             {parts ? <Parts parts={parts} pins={carved.pins ?? 0} pinless={carved.pinless} mould={settings.print === 'mould'} floor={settings.mouldFloor} /> : null}
             {set ? null : (
             <p className="make-hint">
@@ -868,16 +884,26 @@ function PieceOptions({
   bevel,
   magnet,
   tray,
+  edges,
   onChange,
 }: {
   joint: number;
   bevel: boolean;
   magnet: MagnetChoice;
   tray: boolean;
+  edges: Edges;
   onChange: (change: Partial<MakeSettings>) => void;
 }) {
   return (
     <>
+      <div className="make-choices" role="group" aria-label="Edges">
+        {EDGES.map((e) => (
+          <button key={e.edges} type="button" aria-pressed={edges === e.edges} onClick={() => onChange({ edges: e.edges })}>
+            {e.name}
+          </button>
+        ))}
+      </div>
+      <p className="make-hint">{EDGES.find((e) => e.edges === edges)?.hint}</p>
       <Measure label="Joint" value={joint} min={0} max={3} step={0.1} onChange={(j) => onChange({ joint: j })} />
       <p className="make-hint">
         The gap between two pieces. Each piece is {mm(joint / 2)} smaller on every side, so printed pieces, which come
@@ -896,20 +922,22 @@ function PieceOptions({
       </div>
       <p className="make-hint">
         {magnet === 'none'
-          ? 'No magnets: the pieces lie loose, or in the tray.'
+          ? edges === 'cut' ? 'No magnets: the pieces lie loose, or in the tray.' : 'No magnets: the pieces lie loose.'
           : 'A disc magnet in a pocket under each piece, so the pieces hold on a steel sheet, a fridge or a whiteboard. Press it in or add a drop of glue; either face holds on steel.'}
       </p>
-      <label className="make-switch">
-        <input type="checkbox" checked={tray} onChange={(e) => onChange({ tray: e.target.checked })} />
-        A tray to lay the pieces in, {TRAY.rim} mm deep
-      </label>
+      {edges === 'cut' ? (
+        <label className="make-switch">
+          <input type="checkbox" checked={tray} onChange={(e) => onChange({ tray: e.target.checked })} />
+          A tray to lay the pieces in, {TRAY.rim} mm deep
+        </label>
+      ) : null}
     </>
   );
 }
 
 /** How many pieces of each kind in each colour, the plates, and the
  * magnets to buy. */
-function PieceList({ set, names }: { set: PiecesResult; names: readonly string[] }) {
+function PieceList({ set, names, repeats }: { set: PiecesResult; names: readonly string[]; repeats: number }) {
   const colours = [...new Set(set.counts.map((c) => c.colour))];
   const magnetText = MAGNET_CHOICES.filter((m) => set.magnets[m.magnet]).map(
     (m) => `${set.magnets[m.magnet]} of ${m.name}`,
@@ -917,6 +945,12 @@ function PieceList({ set, names }: { set: PiecesResult; names: readonly string[]
   return (
     <div className="make-casting make-pieces">
       <h3>{set.pieces} pieces</h3>
+      {repeats ? (
+        <p>
+          {set.pieces / repeats} pieces to a repeat. Each repeat is a whole set: print more later and lay them on any side
+          to make the wall larger.
+        </p>
+      ) : null}
       <ul className="piece-colours">
         {colours.map((colour) => {
           const plates = set.plates.filter((p) => p.colour === colour);

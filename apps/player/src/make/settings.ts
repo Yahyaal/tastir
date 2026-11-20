@@ -63,6 +63,37 @@ export interface MakeSettings {
   readonly bevel: boolean;
   readonly magnet: MagnetChoice;
   readonly tray: boolean;
+  /** Pieces cut straight at the outline, with a frame, or whole pieces
+   * only, so the edge zig-zags and more can be laid on. */
+  readonly edges: Edges;
+  /** Whole pieces of a tile: how many repeats across and down. */
+  readonly across: number;
+  readonly down: number;
+}
+
+export type Edges = 'cut' | 'whole';
+
+export const EDGES: readonly { edges: Edges; name: string; hint: string }[] = [
+  {
+    edges: 'cut',
+    name: 'Cut straight',
+    hint: 'The pieces at the edge are cut along the outline, and a panel gets a frame: a finished piece with straight sides.',
+  },
+  {
+    edges: 'whole',
+    name: 'Whole pieces',
+    hint: 'No piece is cut and there is no frame: the edge zig-zags, so more pieces can always be laid on to make the wall larger.',
+  },
+];
+
+/** Whether a tray is printed: only for pieces cut straight. */
+export const hasTray = (s: MakeSettings): boolean => s.print === 'pieces' && s.tray && s.edges === 'cut';
+
+/** The copies of the tile a set of whole pieces takes, row by row. */
+export function cellsOf(s: MakeSettings): { i: number; j: number }[] {
+  const out: { i: number; j: number }[] = [];
+  for (let j = 0; j < s.down; j++) for (let i = 0; i < s.across; i++) out.push({ i, j });
+  return out;
 }
 
 export const PRINTS: readonly { print: Print; name: string; hint: string }[] = [
@@ -141,6 +172,9 @@ export const DEFAULT_SETTINGS: MakeSettings = {
   bevel: true,
   magnet: '6x2',
   tray: false,
+  edges: 'cut',
+  across: 1,
+  down: 1,
 };
 
 /** Choosing a shape sets the frame that suits it: a panel or a medallion
@@ -311,7 +345,7 @@ export function cutsOf(pattern: PatternShape, outline: readonly P2[], s: MakeSet
 export function printedOutline(outline: readonly P2[], s: MakeSettings): P2[] {
   if (s.print === 'mould') return mouldOutline(outline, s.mouldWall);
   if (s.print === 'box') return boxOutline(outline, { gap: s.boxGap, wall: BOX_WALL });
-  if (s.print === 'pieces' && s.tray) return trayOutline(outline, s.joint);
+  if (hasTray(s)) return trayOutline(outline, s.joint);
   return outline.slice();
 }
 
@@ -376,6 +410,9 @@ export function sane(s: Partial<MakeSettings>): MakeSettings {
     bevel: typeof s.bevel === 'boolean' ? s.bevel : d.bevel,
     magnet: MAGNET_CHOICES.some((m) => m.magnet === s.magnet) ? s.magnet! : d.magnet,
     tray: typeof s.tray === 'boolean' ? s.tray : d.tray,
+    edges: s.edges === 'whole' ? 'whole' : 'cut',
+    across: Math.round(num(s.across, 1, 10, d.across)),
+    down: Math.round(num(s.down, 1, 10, d.down)),
   };
 }
 
@@ -400,7 +437,7 @@ export function rememberSettings(id: string, s: MakeSettings): void {
 
 /** The tray's cuts, when it is larger than the bed. */
 export function trayCutsOf(outline: readonly P2[], s: MakeSettings): Cuts {
-  if (!s.tray || !outline.length) return { xs: [], ys: [] };
+  if (!hasTray(s) || !outline.length) return { xs: [], ys: [] };
   return cutsFor(trayOutline(outline, s.joint), PART);
 }
 

@@ -49,6 +49,10 @@ export interface PiecesRequest {
   readonly bevel: number;
   readonly magnet: MagnetChoice;
   readonly tray: boolean;
+  /** Whole pieces, none cut and no frame: those whose middle is inside
+   * the outline, or those of these copies of the tile. */
+  readonly whole?: boolean;
+  readonly cells?: readonly { readonly i: number; readonly j: number }[];
   /** Each piece's colour as the wall shows it: `fill[(k * m + i) * n + j]`
    * for the k-th piece of the tile, copied i (mod m) times along u and j
    * (mod n) times along v. */
@@ -273,6 +277,7 @@ function carvePieces(r: CarveRequest, p: PiecesRequest): Carving3D {
     ...(p.magnet === 'none' ? {} : { magnet: MAGNETS[p.magnet] }),
     colour: (k, i, j) => p.colours.fill[(k * m + mod(i, m)) * n + mod(j, n)] ?? '#999999',
     frameColour: p.frameColour,
+    ...(p.whole ? { whole: true, ...(p.cells ? { cells: p.cells } : {}) } : {}),
   });
   if (!set.pieces.length) throw new Error('No piece is left inside the outline.');
   for (const piece of set.pieces) {
@@ -325,12 +330,13 @@ function carvePieces(r: CarveRequest, p: PiecesRequest): Carving3D {
     else if (p.magnet !== 'none') without++;
   }
   // In the view the pieces stand in the tray, on its floor.
-  const lift = p.tray ? TRAY.floor : 0;
+  const withTray = p.tray && !p.whole;
+  const lift = withTray ? TRAY.floor : 0;
   const byColour = new Map<string, Mesh[]>();
   for (const piece of set.pieces)
     byColour.set(piece.colour, [...(byColour.get(piece.colour) ?? []), raised(piece.mesh, lift)]);
   const colours = [...byColour].map(([colour, meshes]) => ({ colour, mesh: joinMeshes(meshes) }));
-  const trayParts = p.tray ? spread(tray(r.outline, p.joint, p.trayCuts), p.trayCuts) : undefined;
+  const trayParts = withTray ? spread(tray(r.outline, p.joint, p.trayCuts), p.trayCuts) : undefined;
   for (const part of trayParts ?? []) {
     const open = openEdges(part.mesh);
     if (open) throw new Error(`The tray has ${open} open edges.`);
@@ -353,7 +359,7 @@ function carvePieces(r: CarveRequest, p: PiecesRequest): Carving3D {
       pieces: set.pieces.length,
       smallest: set.smallest,
       dropped: set.dropped,
-      layout: layoutSvg(set.pieces, r.outline),
+      layout: layoutSvg(set.pieces, p.whole ? [] : r.outline),
       ...(trayParts ? { tray: trayParts } : {}),
     },
   };
