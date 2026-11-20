@@ -1,5 +1,17 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { dxf, inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, svg, threeMf, zip } from '@tastir/relief';
+import { dxf, inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, svg, threeMf, TRAY, zip } from '@tastir/relief';
+import type { Model } from '@tastir/project-core/model';
+import { colourName } from '../app/colourNames';
+import {
+  finishOf,
+  groutOf,
+  pieceColors,
+  tutorialColoring,
+  type Coloring,
+} from '../app/coloring';
+import { byPlace, colorRepeat, colouredModel, placeFills } from '../app/placement';
+import { historyOf, styleColoursOf } from '../app/styleColours';
+import { getPattern } from '../editor/patterns';
 import { PieceShape } from '../app/drawing';
 import { download } from '../app/exporting';
 import type { Design } from '../app/designs';
@@ -8,11 +20,17 @@ import { weaveOf } from '../app/interlace';
 import { pieceName } from '../app/pieceNames';
 import { useModel } from '../app/workerClient';
 import { ReliefView } from './ReliefView';
-import { MOULD_DRAFT, SPLIT_FLOOR, type Print } from './carve';
+import { MOULD_DRAFT, SPLIT_FLOOR, type MagnetChoice, type PiecesResult, type Print } from './carve';
 import { shapeOf, useCarved } from './reliefClient';
 import {
   BANDS,
   BED,
+  BEVEL,
+  MAGNET_CHOICES,
+  repeatFor,
+  SMALLEST_PIECE,
+  thinnestFor,
+  trayCutsOf,
   borderOf,
   bridgeOf,
   carvingOf,
@@ -47,6 +65,39 @@ import {
 import './make.css';
 
 const mm = (n: number) => `${Math.round(n * 10) / 10} mm`;
+
+/** The colouring the wall's tile style shows: a saved design's, the
+ * learner's unsaved one, the colours of their own pattern, or the
+ * tutorial's. */
+function wallColoring(
+  model: Model,
+  address: string,
+  saved: { coloring?: Coloring; colorings?: Parameters<typeof styleColoursOf>[1] } | undefined,
+): Coloring {
+  const own = address.startsWith('mine/') ? getPattern(address.slice('mine/'.length))?.wall?.coloring : undefined;
+  return historyOf(
+    styleColoursOf(saved?.coloring ?? own ?? tutorialColoring(model), saved?.colorings),
+    'tiles',
+  ).now;
+}
+
+/** Each piece's colour as the wall shows it, over one colour repeat, and
+ * the grout's colour for the frame. */
+function colourTable(model: Model, coloring: Coloring) {
+  const coloured = colouredModel(model, coloring);
+  const colors = pieceColors(coloured, coloring);
+  const fill = byPlace(coloured) ? placeFills(coloured, coloring) : undefined;
+  const [m, n] = fill ? colorRepeat(coloured) : ([1, 1] as const);
+  const out: string[] = [];
+  coloured.pattern.pieces.forEach((p, k) => {
+    for (let i = 0; i < m; i++)
+      for (let j = 0; j < n; j++) out.push(fill ? fill(k, i, j) : (colors[p.type] ?? '#999999'));
+  });
+  return {
+    colours: { repeat: [m, n] as [number, number], fill: out },
+    frameColour: groutOf(finishOf(coloured, coloring)),
+  };
+}
 
 /** A small cross-section of each carving: band, then the cut. */
 function StyleIcon({ style }: { style: Style }) {
@@ -152,7 +203,8 @@ export function Make({
 }) {
   // The pattern as the wall shows it: a saved design's inking, or the
   // learner's unsaved changes to the tutorial's.
-  const [inked] = useState(() => design?.inked ?? (design ? undefined : draftOf(address)?.inked));
+  const [draft] = useState(() => (design ? undefined : draftOf(address)));
+  const inked = design ? design.inked : draft?.inked;
   const { model, error: loadError } = useModel(json, inked);
   const key = design ? `${address}/design/${design.id}` : address;
   const [settings, setSettings] = useState<MakeSettings>(() => rememberedSettings(key));
@@ -178,6 +230,12 @@ export function Make({
     [model, settings],
   );
   const types = model?.pattern.types ?? [];
+  const isPieces = settings.print === 'pieces';
+  const table = useMemo(
+    () => (model && isPieces ? colourTable(model, wallColoring(model, address, design ?? draft)) : undefined),
+    [model, isPieces, address, design, draft],
+  );
+  const pieceThickness = Math.max(settings.pieceThickness, thinnestFor(settings.magnet));
   const carvings = useMemo(() => {
     const out: Record<number, ReturnType<typeof carvingOf>> = {
       [-1]: carvingOf(settings, 'facets'),
@@ -208,7 +266,22 @@ export function Make({
     gap: settings.boxGap,
     cover: settings.boxCover,
     cuts,
+    ...(isPieces && table
+      ? {
+          pieces: {
+            thickness: pieceThickness,
+            joint: settings.joint,
+            bevel: settings.bevel ? BEVEL : 0,
+            magnet: settings.magnet,
+            tray: settings.tray,
+            ...table,
+            names: types.map((t) => pieceName(t)),
+            trayCuts: trayCutsOf(outline, settings),
+          },
+        }
+      : {}),
   });
+  const set = isPieces ? carved.set : undefined;
 
   const title = design ? design.name : (model?.tutorial.title ?? 'Pattern');
   const size = outline.length ? extent(outline) : { width: 0, height: 0 };
@@ -217,10 +290,10 @@ export function Make({
   // Parts are cut no larger than PART, which fits the bed.
   const fits = (split || (printed.width <= BED && printed.height <= BED)) && tall <= BED;
   const grams = carved.volume ? (carved.volume / 1000) * PLA : undefined;
-  const kind = { object: '', mould: '-mould', box: '-silicone-box' }[settings.print];
+  const kind = { object: '', mould: '-mould', box: '-silicone-box', pieces: '-pieces' }[settings.print];
   const slug = design ? `${address}-${design.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'design'}` : address;
   const file = `${slug}-${settings.shape}-${Math.round(size.width)}mm${kind}`;
-  const what = { object: 'object', mould: 'mould', box: 'box' }[settings.print];
+  const what = { object: 'object', mould: 'mould', box: 'box', pieces: settings.tray ? 'tray' : 'pieces' }[settings.print];
   const parts = carved.parts;
   const boxInside = settings.print === 'box' && outline.length ? extent(inset(outline, -settings.boxGap)) : undefined;
 
@@ -258,11 +331,17 @@ export function Make({
         <div className="make-stage">
           <ReliefView
             mesh={carved.mesh}
-            master={carved.master}
-            printed={settings.print !== 'object'}
+            master={set ? undefined : carved.master}
+            coloured={set?.colours}
+            tray={set ? carved.master : undefined}
+            printed={settings.print !== 'object' && !set}
             light={light}
             fits={fits}
-            label={`The ${settings.print === 'object' ? `carved ${settings.shape}` : what} of ${title}, ${mm(printed.width)} by ${mm(printed.height)}`}
+            label={
+              set
+                ? `The ${set.pieces} pieces of ${title}, laid out with their joints, ${mm(size.width)} by ${mm(size.height)}`
+                : `The ${settings.print === 'object' ? `carved ${settings.shape}` : what} of ${title}, ${mm(printed.width)} by ${mm(printed.height)}`
+            }
           />
           <p className="make-status" role="status">
             {!model
@@ -351,6 +430,15 @@ export function Make({
                 <Measure label="Mould rim" value={settings.mouldWall} min={2} max={30} onChange={(mouldWall) => update({ mouldWall })} />
               </>
             ) : null}
+            {isPieces ? (
+              <PieceOptions
+                joint={settings.joint}
+                bevel={settings.bevel}
+                magnet={settings.magnet}
+                tray={settings.tray}
+                onChange={update}
+              />
+            ) : null}
             {settings.print === 'box' ? (
               <>
                 <Measure label="Silicone sides" value={settings.boxGap} min={3} max={40} onChange={(boxGap) => update({ boxGap })} />
@@ -369,10 +457,28 @@ export function Make({
               <Measure label="Diameter" value={settings.width} min={20} max={1000} step={1} onChange={(width) => update({ width })} />
             ) : null}
             <Measure label="One repeat" value={settings.repeat} min={10} max={400} step={1} onChange={(repeat) => update({ repeat })} />
-            <Measure label="Thickness" value={settings.thickness} min={3} max={40} onChange={(thickness) => update({ thickness })} />
+            {isPieces ? (
+              <Measure
+                label="Thickness"
+                value={pieceThickness}
+                min={thinnestFor(settings.magnet)}
+                max={20}
+                onChange={(t) => update({ pieceThickness: t })}
+              />
+            ) : (
+              <Measure label="Thickness" value={settings.thickness} min={3} max={40} onChange={(thickness) => update({ thickness })} />
+            )}
             {settings.shape !== 'tile' ? (
               <Measure label="Frame" value={settings.frame} min={0} max={30} onChange={(frame) => update({ frame })} />
             ) : null}
+            {isPieces ? (
+              <p className="make-fit">
+                {mm(size.width)} × {mm(size.height)}
+                {set
+                  ? `: ${set.pieces} pieces on ${set.plates.length} plates of the ${BED} mm bed of the Bambu Lab A1${set.tray ? `, and a tray in ${set.tray.length === 1 ? 'one part' : `${set.tray.length} parts`}` : ''}.`
+                  : '.'}
+              </p>
+            ) : (
             <p className={fits ? 'make-fit' : 'make-fit too-big'}>
               {settings.print === 'object' ? '' : `The ${what}: `}
               {mm(printed.width)} × {mm(printed.height)} × {mm(tall)}:{' '}
@@ -384,7 +490,15 @@ export function Make({
                   ? `in ${partCount} parts, none longer than ${PART} mm, so each fits the ${BED} mm bed of the Bambu Lab A1.`
                   : `fits the ${BED} mm bed of the Bambu Lab A1.`}
             </p>
+            )}
+            {set && set.smallest > 0 && set.smallest < SMALLEST_PIECE ? (
+              <p className="make-warning">
+                The smallest piece is {mm(set.smallest)} across, under {SMALLEST_PIECE} mm, so it is hard to print and to
+                hold: a repeat of {repeatFor(settings, set.smallest)} mm brings it to {SMALLEST_PIECE} mm.
+              </p>
+            ) : null}
           </Section>
+          {isPieces ? null : (
           <Section title="Carving">
             <Measure label="Depth" value={Math.min(settings.depth, settings.thickness - FLOOR)} min={0.5} max={settings.thickness - FLOOR} onChange={(depth) => update({ depth })} />
             <Measure label="Bands" value={settings.band} min={0.4} max={12} step={0.1} onChange={(band) => update({ band })} />
@@ -466,7 +580,10 @@ export function Make({
                 : null}
             </ul>
           </Section>
+          )}
           <Section title="Download">
+            {set ? <PieceDownloads set={set} file={file} title={title} /> : null}
+            {set ? null : (
             <div className="make-downloads">
               <button
                 type="button"
@@ -512,6 +629,7 @@ export function Make({
                 {parts ? 'Download STLs (zip)' : 'Download STL'}
               </button>
             </div>
+            )}
             <div className="make-downloads make-flat">
               <button
                 type="button"
@@ -536,10 +654,13 @@ export function Make({
               </button>
             </div>
             <p className="make-hint">
-              SVG and DXF are the {settings.shape} flat, in millimetres, for a laser cutter, a CNC router or a stencil: the
-              outline and every hole to cut in red, the edge of each carved piece to engrave in blue.
+              {set
+                ? 'SVG and DXF are every piece’s outline in millimetres, joints and all, to cut the pieces from sheets with a laser or a router.'
+                : `SVG and DXF are the ${settings.shape} flat, in millimetres, for a laser cutter, a CNC router or a stencil: the outline and every hole to cut in red, the edge of each carved piece to engrave in blue.`}
             </p>
+            {set ? <PieceList set={set} names={types.map((t) => pieceName(t))} /> : null}
             {parts ? <Parts parts={parts} pins={carved.pins ?? 0} pinless={carved.pinless} mould={settings.print === 'mould'} floor={settings.mouldFloor} /> : null}
+            {set ? null : (
             <p className="make-hint">
               {parts
                 ? 'The 3MF holds every part as its own object: in Bambu Studio, arrange them one or more to a plate. The zip holds one STL to a part.'
@@ -548,11 +669,12 @@ export function Make({
                 ? 'Print the box upright, as it stands.'
                 : 'It prints face up with no supports.'}
             </p>
+            )}
             {carved.mesh && carved.volume ? (
               <dl className="make-numbers">
                 <dt>Volume</dt>
                 <dd>{(carved.volume / 1000).toFixed(1)} cm³</dd>
-                <dt>PLA if printed solid</dt>
+                <dt>{set ? 'PLA, every piece solid' : 'PLA if printed solid'}</dt>
                 <dd>{Math.round(grams ?? 0)} g</dd>
                 <dt>Triangles</dt>
                 <dd>{(carved.mesh.triangles.length / 3).toLocaleString('en')}</dd>
@@ -659,6 +781,7 @@ function PrintIcon({ print }: { print: Print }) {
     <svg className="shape-icon" viewBox="0 0 28 20" aria-hidden="true">
       {print === 'object' ? <path d="M2 16H26V9H21L18 13H10L7 9H2Z" /> : null}
       {print === 'mould' ? <path d="M2 4H6V9H7L10 5H18L21 9H22V4H26V17H2Z" /> : null}
+      {print === 'pieces' ? <path d="M2 17V11H9V17ZM11 17V8L15 5L19 8V17ZM21 17L23.5 10L26 17Z" /> : null}
       {print === 'box' ? (
         <>
           <path d="M2 2H4V17H2ZM24 2H26V17H24Z" />
@@ -735,6 +858,161 @@ function StylePicker({
           <span>{name}</span>
         </button>
       ))}
+    </div>
+  );
+}
+
+/** The joint, the bevel, the magnet and the tray. */
+function PieceOptions({
+  joint,
+  bevel,
+  magnet,
+  tray,
+  onChange,
+}: {
+  joint: number;
+  bevel: boolean;
+  magnet: MagnetChoice;
+  tray: boolean;
+  onChange: (change: Partial<MakeSettings>) => void;
+}) {
+  return (
+    <>
+      <Measure label="Joint" value={joint} min={0} max={3} step={0.1} onChange={(j) => onChange({ joint: j })} />
+      <p className="make-hint">
+        The gap between two pieces. Each piece is {mm(joint / 2)} smaller on every side, so printed pieces, which come
+        out a little large, still lie side by side.
+      </p>
+      <label className="make-switch">
+        <input type="checkbox" checked={bevel} onChange={(e) => onChange({ bevel: e.target.checked })} />
+        Bevel the top edge ({BEVEL} mm at 45°), so each joint reads as a line
+      </label>
+      <div className="make-choices make-magnets" role="group" aria-label="Magnet">
+        {MAGNET_CHOICES.map((m) => (
+          <button key={m.magnet} type="button" aria-pressed={magnet === m.magnet} onClick={() => onChange({ magnet: m.magnet })}>
+            {m.name}
+          </button>
+        ))}
+      </div>
+      <p className="make-hint">
+        {magnet === 'none'
+          ? 'No magnets: the pieces lie loose, or in the tray.'
+          : 'A disc magnet in a pocket under each piece, so the pieces hold on a steel sheet, a fridge or a whiteboard. Press it in or add a drop of glue; either face holds on steel.'}
+      </p>
+      <label className="make-switch">
+        <input type="checkbox" checked={tray} onChange={(e) => onChange({ tray: e.target.checked })} />
+        A tray to lay the pieces in, {TRAY.rim} mm deep
+      </label>
+    </>
+  );
+}
+
+/** How many pieces of each kind in each colour, the plates, and the
+ * magnets to buy. */
+function PieceList({ set, names }: { set: PiecesResult; names: readonly string[] }) {
+  const colours = [...new Set(set.counts.map((c) => c.colour))];
+  const magnetText = MAGNET_CHOICES.filter((m) => set.magnets[m.magnet]).map(
+    (m) => `${set.magnets[m.magnet]} of ${m.name}`,
+  );
+  return (
+    <div className="make-casting make-pieces">
+      <h3>{set.pieces} pieces</h3>
+      <ul className="piece-colours">
+        {colours.map((colour) => {
+          const plates = set.plates.filter((p) => p.colour === colour);
+          const grams = (plates.reduce((v, p) => v + p.volume, 0) / 1000) * PLA;
+          return (
+            <li key={colour}>
+              <span className="piece-swatch" style={{ background: colour }} aria-hidden="true" />
+              <div>
+                <strong>{colourName(colour)}</strong>: {plates.length} {plates.length === 1 ? 'plate' : 'plates'}, {Math.round(grams)} g
+                <ul>
+                  {set.counts
+                    .filter((c) => c.colour === colour)
+                    .map((c) => (
+                      <li key={c.type}>
+                        {c.type < 0 ? 'frame strip' : (names[c.type] ?? 'piece')} × {c.whole + c.cut}
+                        {c.cut && c.type >= 0 ? ` (${c.cut} cut at the edge)` : ''}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+      <p>
+        {magnetText.length ? (
+          <>
+            Magnets to buy: <strong>{magnetText.join(' and ')}</strong>
+            {set.without ? `; ${set.without} ${set.without === 1 ? 'piece is' : 'pieces are'} too small for one` : ''}.
+          </>
+        ) : set.without ? (
+          `Every piece is too small for a magnet.`
+        ) : (
+          'No magnets.'
+        )}
+        {set.dropped ? ` ${set.dropped} slivers at the edge, under 1 mm, are left out.` : ''}
+      </p>
+      <p className="make-hint">
+        Each plate is one colour, so it prints in one filament with no colour changes. In Bambu Studio the pieces open
+        already placed; each is named by its colour, its kind and its number on the layout.
+      </p>
+    </div>
+  );
+}
+
+/** The plates, the layout and the tray. */
+function PieceDownloads({ set, file, title }: { set: PiecesResult; file: string; title: string }) {
+  const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return (
+    <div className="make-downloads">
+      <button
+        type="button"
+        className="make-primary"
+        onClick={() =>
+          download(
+            new Blob(
+              [
+                zip(
+                  set.plates.map((p, i) => ({
+                    name: `${String(i + 1).padStart(2, '0')}-${slug(p.name)}.3mf`,
+                    data: threeMf(p.items, `${title}: ${p.name}`),
+                  })),
+                ) as BlobPart,
+              ],
+              { type: 'application/zip' },
+            ),
+            `${file}-plates.zip`,
+          )
+        }
+      >
+        Download plates (zip)
+      </button>
+      <button
+        type="button"
+        className="secondary"
+        onClick={() => download(new Blob([set.layout], { type: 'image/svg+xml' }), `${file}-layout.svg`)}
+      >
+        Download layout
+      </button>
+      {set.tray ? (
+        <button
+          type="button"
+          className="secondary"
+          onClick={() =>
+            set.tray &&
+            download(
+              new Blob([threeMf(set.tray.length === 1 ? set.tray[0]!.mesh : set.tray, `${title}: tray`) as BlobPart], {
+                type: 'model/3mf',
+              }),
+              `${file}-tray.3mf`,
+            )
+          }
+        >
+          Download tray
+        </button>
+      ) : null}
     </div>
   );
 }

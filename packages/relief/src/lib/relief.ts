@@ -72,12 +72,13 @@ export function round(diameter: number, sides = 180): P2[] {
 export const MIN_BASE = 1;
 
 /** A pattern's pieces copied over a rectangle, in millimetres,
- * counter-clockwise, with their types. */
+ * counter-clockwise, with their types: the k-th piece of the tile copied
+ * i times along u and j times along v. */
 export function piecesOver(
   pattern: PatternShape,
   scale: number,
   half: P2,
-): { polygon: P2[]; type: number }[] {
+): { polygon: P2[]; type: number; k: number; i: number; j: number }[] {
   const { u, v } = pattern.cell;
   const det = u.x * v.y - u.y * v.x;
   if (Math.abs(det) < 1e-12) throw new Error('The pattern has no repeat.');
@@ -100,10 +101,10 @@ export function piecesOver(
   const i1 = Math.ceil(Math.max(...span.map((s) => s.i)));
   const j0 = Math.floor(Math.min(...span.map((s) => s.j)));
   const j1 = Math.ceil(Math.max(...span.map((s) => s.j)));
-  const out: { polygon: P2[]; type: number }[] = [];
+  const out: { polygon: P2[]; type: number; k: number; i: number; j: number }[] = [];
   for (let i = i0; i <= i1; i++)
     for (let j = j0; j <= j1; j++)
-      for (const piece of pattern.pieces) {
+      pattern.pieces.forEach((piece, k) => {
         const polygon = piece.polygon.map((p) => ({
           x: (p.x + i * u.x + j * v.x) * scale,
           y: (p.y + i * u.y + j * v.y) * scale,
@@ -116,10 +117,10 @@ export function piecesOver(
           Math.max(...ys) < -half.y ||
           Math.min(...ys) > half.y
         )
-          continue;
+          return;
         if (signedArea(polygon) < 0) polygon.reverse();
-        out.push({ polygon, type: piece.type });
-      }
+        out.push({ polygon, type: piece.type, k, i, j });
+      });
   return out;
 }
 

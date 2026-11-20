@@ -81,3 +81,27 @@ test('a finished pattern opens in 3D and downloads a 3MF for the slicer', async 
   expect(overflow).toBeLessThanOrEqual(0);
   expect(errors).toEqual([]);
 });
+
+test('tile pieces download as one-colour plates and a full-size layout', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('/#/eight-fold-star-and-cross/make');
+  await page.getByRole('button', { name: 'Tile pieces' }).click();
+  await expect(page.getByText(/\d+ pieces on \d+ plates of the 256 mm bed/)).toBeVisible({ timeout: 20_000 });
+  await expect(page.getByRole('status')).toHaveText('', { timeout: 20_000 });
+  const plates = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download plates (zip)' }).click();
+  const zipFile = await plates;
+  expect(zipFile.suggestedFilename()).toBe('eight-fold-star-and-cross-panel-200mm-pieces-plates.zip');
+  const zipped = (await readFile((await zipFile.path())!)).toString('latin1');
+  const names = new Set(zipped.match(/\d\d-[a-z0-9-]+-plate-\d+-of-\d+\.3mf/g));
+  const count = Number((await page.getByText(/\d+ pieces on \d+ plates/).textContent())!.match(/on (\d+) plates/)![1]);
+  expect(names.size).toBe(count);
+  const layout = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download layout' }).click();
+  const svgFile = await layout;
+  expect(svgFile.suggestedFilename()).toBe('eight-fold-star-and-cross-panel-200mm-pieces-layout.svg');
+  const drawing = (await readFile((await svgFile.path())!)).toString('utf8');
+  expect(drawing).toMatch(/width="210mm" height="210mm"/);
+  expect(errors).toEqual([]);
+});

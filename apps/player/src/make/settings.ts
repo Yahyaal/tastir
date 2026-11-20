@@ -1,6 +1,10 @@
 import {
   boxOutline,
   cutsFor,
+  MAGNET_ROOF,
+  MAGNET_ROOM,
+  MAGNETS,
+  trayOutline,
   type BandShape,
   type Cuts,
   type Repeat,
@@ -11,7 +15,7 @@ import {
   type P2,
   type PatternShape,
 } from '@tastir/relief';
-import { BOX_WALL, SPLIT_FLOOR, type Print } from './carve';
+import { BOX_WALL, SPLIT_FLOOR, type MagnetChoice, type Print } from './carve';
 
 /** What the learner makes: a rectangular panel, a round one, one tile
  * of the repeat, which fits its copies edge to edge, or a long border. */
@@ -52,6 +56,13 @@ export interface MakeSettings {
   readonly boxCover: number;
   /** Grams of water to 100 g of plaster. */
   readonly water: number;
+  /** Tile pieces: how thick, the joint between two, whether their top
+   * edge is bevelled, the magnet in each, and whether a tray holds them. */
+  readonly pieceThickness: number;
+  readonly joint: number;
+  readonly bevel: boolean;
+  readonly magnet: MagnetChoice;
+  readonly tray: boolean;
 }
 
 export const PRINTS: readonly { print: Print; name: string; hint: string }[] = [
@@ -70,7 +81,24 @@ export const PRINTS: readonly { print: Print; name: string; hint: string }[] = [
     name: 'Box for silicone',
     hint: 'Glue the printed object face up on a flat board, stand this box round it, and pour silicone to the top. The silicone mould casts plaster many times.',
   },
+  {
+    print: 'pieces',
+    name: 'Tile pieces',
+    hint: 'Every piece on its own, in the colours of your wall, to lay side by side like zellige. Each colour prints on its own plates in one filament.',
+  },
 ];
+
+export const MAGNET_CHOICES: readonly { magnet: MagnetChoice; name: string }[] = [
+  { magnet: '6x2', name: '6 × 2 mm' },
+  { magnet: '5x2', name: '5 × 2 mm' },
+  { magnet: '3x1', name: '3 × 1 mm' },
+  { magnet: 'none', name: 'None' },
+];
+
+/** The bevel round a piece's top edge, when it has one. */
+export const BEVEL = 0.6;
+/** Pieces smaller than this across are hard to print and to hold. */
+export const SMALLEST_PIECE = 3;
 
 /** Silicone, grams per millilitre (most are 1.08 to 1.2; the tin says). */
 export const SILICONE = 1.1;
@@ -108,6 +136,11 @@ export const DEFAULT_SETTINGS: MakeSettings = {
   boxGap: 10,
   boxCover: 8,
   water: 70,
+  pieceThickness: 5,
+  joint: 0.6,
+  bevel: true,
+  magnet: '6x2',
+  tray: false,
 };
 
 /** Choosing a shape sets the frame that suits it: a panel or a medallion
@@ -266,7 +299,7 @@ export function repeatsOf(pattern: PatternShape, s: MakeSettings): { x?: Repeat;
  * pattern's repeat where it can be (mirrored for a mould). A silicone box
  * is never cut. */
 export function cutsOf(pattern: PatternShape, outline: readonly P2[], s: MakeSettings): Cuts {
-  if (s.print === 'box' || !outline.length) return { xs: [], ys: [] };
+  if (s.print === 'box' || s.print === 'pieces' || !outline.length) return { xs: [], ys: [] };
   const r = repeatsOf(pattern, s);
   return cutsFor(printedOutline(outline, s), PART, {
     ...(r.x ? { x: s.print === 'mould' ? { step: r.x.step, at: -r.x.at } : r.x } : {}),
@@ -278,6 +311,7 @@ export function cutsOf(pattern: PatternShape, outline: readonly P2[], s: MakeSet
 export function printedOutline(outline: readonly P2[], s: MakeSettings): P2[] {
   if (s.print === 'mould') return mouldOutline(outline, s.mouldWall);
   if (s.print === 'box') return boxOutline(outline, { gap: s.boxGap, wall: BOX_WALL });
+  if (s.print === 'pieces' && s.tray) return trayOutline(outline, s.joint);
   return outline.slice();
 }
 
@@ -285,6 +319,7 @@ export function printedOutline(outline: readonly P2[], s: MakeSettings): P2[] {
 export function printedHeight(s: MakeSettings, split = false): number {
   if (s.print === 'mould') return Math.max(s.mouldFloor, split ? SPLIT_FLOOR : 0) + s.thickness;
   if (s.print === 'box') return s.thickness + s.boxCover;
+  if (s.print === 'pieces') return s.pieceThickness;
   return s.thickness;
 }
 
@@ -336,6 +371,11 @@ export function sane(s: Partial<MakeSettings>): MakeSettings {
     boxGap: num(s.boxGap, 3, 40, d.boxGap),
     boxCover: num(s.boxCover, 3, 40, d.boxCover),
     water: num(s.water, 20, 120, d.water),
+    pieceThickness: num(s.pieceThickness, 2, 20, d.pieceThickness),
+    joint: num(s.joint, 0, 3, d.joint),
+    bevel: typeof s.bevel === 'boolean' ? s.bevel : d.bevel,
+    magnet: MAGNET_CHOICES.some((m) => m.magnet === s.magnet) ? s.magnet! : d.magnet,
+    tray: typeof s.tray === 'boolean' ? s.tray : d.tray,
   };
 }
 
@@ -356,4 +396,22 @@ export function rememberSettings(id: string, s: MakeSettings): void {
   } catch {
     // A browser that keeps nothing still makes the object.
   }
+}
+
+/** The tray's cuts, when it is larger than the bed. */
+export function trayCutsOf(outline: readonly P2[], s: MakeSettings): Cuts {
+  if (!s.tray || !outline.length) return { xs: [], ys: [] };
+  return cutsFor(trayOutline(outline, s.joint), PART);
+}
+
+/** The thinnest piece a magnet's pocket leaves a roof over. */
+export function thinnestFor(magnet: MagnetChoice): number {
+  if (magnet === 'none') return 2;
+  return MAGNETS[magnet].thick + MAGNET_ROOM + MAGNET_ROOF;
+}
+
+/** The repeat that brings the smallest piece to SMALLEST_PIECE across. */
+export function repeatFor(s: MakeSettings, smallest: number): number {
+  if (smallest <= 0) return s.repeat;
+  return Math.ceil((s.repeat * (SMALLEST_PIECE + s.joint)) / (smallest + s.joint));
 }
