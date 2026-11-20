@@ -271,22 +271,37 @@ export function facetCounts<K extends 'region' | 'style' | 'level' | 'fold'>(
   filters: LibraryFilters,
   key: K,
 ): Map<NonNullable<LibraryFilters[K]>, number> {
-  const others = { ...filters, [key]: undefined };
+  const { query, region, style, level, fold, withPhoto } = filters;
+  const asked = readQuery(query ?? '');
   const counts = new Map<NonNullable<LibraryFilters[K]>, number>();
-  const values = new Set(
-    entries.flatMap((entry) =>
-      [entry, ...(entry.variations ?? [])].flatMap((design) =>
-        [design, ...(design.places ?? [])].flatMap(
-          (member) => aboutOf(member.preview ?? member.json)[key] ?? [],
-        ),
-      ),
-    ),
-  );
-  // Ask the same filter that supplies the cards. A region on one member
-  // must not borrow a matching level or search term from another member.
-  for (const value of values) {
-    const count = filtered(entries, { ...others, [key]: value }).length;
-    if (count) counts.set(value as NonNullable<LibraryFilters[K]>, count);
+  // Single pass over every family: each matching member contributes its
+  // value for `key`, and a family is counted at most once per value.
+  for (const entry of entries) {
+    const seen = new Set<NonNullable<LibraryFilters[K]>>();
+    const designs = [entry, ...(entry.variations ?? [])];
+    for (const design of designs) {
+      const members = [design, ...(design.places ?? [])];
+      for (const m of members) {
+        const about = aboutOf(m.preview ?? m.json);
+        const value = about[key];
+        if (value === undefined || seen.has(value as NonNullable<LibraryFilters[K]>))
+          continue;
+        if (
+          (key !== 'region' && region && about.region !== region) ||
+          (key !== 'style' && style && about.style !== style) ||
+          (key !== 'level' && level && about.level !== level) ||
+          (key !== 'fold' && fold && about.fold !== fold) ||
+          (withPhoto && !hasPhoto(m)) ||
+          (asked.fold &&
+            about.fold !== asked.fold &&
+            !m.preview?.stars?.includes(asked.fold))
+        )
+          continue;
+        if (scoreOf(m, asked.words) === undefined) continue;
+        seen.add(value as NonNullable<LibraryFilters[K]>);
+      }
+    }
+    for (const value of seen) counts.set(value, (counts.get(value) ?? 0) + 1);
   }
   return counts;
 }

@@ -9,3 +9,9 @@ declare module 'virtual:tastir-fixtures' {
   const files: Record<string, unknown>;
   export default files;
 }
+
+declare module 'virtual:tastir-routes' {
+  import type { ComponentType } from 'react';
+  export const DrawAlongPage: ComponentType<{ json: unknown; address: string }>;
+  export const Editor: ComponentType<{ id: string }>;
+}

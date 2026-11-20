@@ -333,4 +333,29 @@ describe('signing in to the hosted studio', () => {
       await auth.clientsStore.getClient('https://app.example/wrong.json'),
     ).toBeUndefined();
   });
+
+  it('rejects private/loopback metadata URLs and oversized metadata documents', async () => {
+    let fetched = 0;
+    const auth = new StudioAuth({
+      db: (store.backend as PgBackend).db,
+      fetch: (async () => {
+        fetched++;
+        return new Response('x'.repeat(70_000), { status: 200 });
+      }) as typeof fetch,
+    });
+    for (const unsafe of [
+      'https://127.0.0.1/client.json',
+      'https://169.254.169.254/latest/meta-data',
+      'https://10.0.0.1/client.json',
+      'https://localhost/client.json',
+      'https://[::1]/client.json',
+    ]) {
+      expect(await auth.clientsStore.getClient(unsafe), unsafe).toBeUndefined();
+    }
+    expect(fetched).toBe(0);
+    expect(
+      await auth.clientsStore.getClient('https://app.example/huge.json'),
+    ).toBeUndefined();
+    expect(fetched).toBe(1);
+  });
 });
