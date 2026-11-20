@@ -1,6 +1,9 @@
-import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import { bambuProject, dxf, inset, partsOf, PIN_HOLE, plasterFor, siliconeFor, stl, svg, threeMf, TRAY, zip, type BambuSettings } from '@tastir/relief';
 import type { Model } from '@tastir/project-core/model';
+import { ThemeSwitch } from '../app/theme';
+import { FeedbackButton } from '../feedback/FeedbackButton';
+import { basicFeedbackContext } from '../feedback/client';
 import { colourName } from '../app/colourNames';
 import {
   finishOf,
@@ -213,6 +216,7 @@ export function Make({
   const key = design ? `${address}/design/${design.id}` : address;
   const [settings, setSettings] = useState<MakeSettings>(() => rememberedSettings(key));
   const [light, setLight] = useState(35);
+  const downloadSectionRef = useRef<HTMLDivElement>(null);
   const update = (change: Partial<MakeSettings>) =>
     setSettings((s) => {
       const next = { ...s, ...change };
@@ -325,9 +329,16 @@ export function Make({
         <div className="lesson-title">
           <h1 title={title}>Make it in 3D: {title}</h1>
         </div>
-        <a className="make-back" href={design ? `#/${address}/design/${design.id}` : `#/${address}`}>
-          Back to the pattern
-        </a>
+        <div className="make-top-actions">
+          <a className="make-back" href={design ? `#/${address}/design/${design.id}` : `#/${address}`}>
+            Back to the pattern
+          </a>
+          <FeedbackButton
+            iconOnly
+            context={basicFeedbackContext(address, `3D: ${title}`, 'result')}
+          />
+          <ThemeSwitch />
+        </div>
       </header>
       {loadError ? (
         <p className="refused" role="alert">
@@ -372,9 +383,31 @@ export function Make({
               value={light}
               onChange={(e) => setLight(Number(e.target.value))}
             />
+            <output htmlFor="make-light" className="make-light-angle">
+              {light}°
+            </output>
           </div>
         </div>
         <aside className="side-panel make-panel" aria-label="What to make">
+          <div className="make-quick-bar">
+            <span className="make-quick-summary">
+              {set
+                ? `${set.pieces} pieces · ${set.plates.length} ${set.plates.length === 1 ? 'plate' : 'plates'}`
+                : `${mm(printed.width)} × ${mm(printed.height)}`}
+            </span>
+            <button
+              type="button"
+              className="make-jump-download"
+              onClick={() =>
+                downloadSectionRef.current?.scrollIntoView?.({
+                  behavior: 'smooth',
+                  block: 'start',
+                })
+              }
+            >
+              Download ↓
+            </button>
+          </div>
           <Section title="What to make">
             <div className="make-choices" role="group" aria-label="What to make">
               {SHAPES.map(({ shape, name }) => (
@@ -597,6 +630,7 @@ export function Make({
             </ul>
           </Section>
           )}
+          <div ref={downloadSectionRef} className="make-download-anchor">
           <Section title="Download">
             {set ? <PieceDownloads set={set} file={file} title={title} /> : null}
             {set ? null : (
@@ -703,6 +737,7 @@ export function Make({
               <Silicone ml={siliconeFor(outline, settings.thickness, carved.cast, { gap: settings.boxGap, cover: settings.boxCover }) / 1000} />
             ) : null}
           </Section>
+          </div>
         </aside>
       </div>
     </div>

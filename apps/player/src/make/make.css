@@ -25,16 +25,23 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.make-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
 .make-page .make-back {
   color: var(--theme-accent);
   font-size: 0.9rem;
   font-weight: 600;
   white-space: nowrap;
+  padding: 6px 10px;
 }
 
 .make-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 360px;
+  grid-template-columns: minmax(0, 1fr) 372px;
   gap: 24px;
   align-items: start;
 }
@@ -42,13 +49,16 @@
 .make-stage {
   position: sticky;
   top: 12px;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
+  min-height: 0;
 }
 
 .relief-view {
   position: relative;
-  height: min(72vh, 760px);
+  flex: 1;
+  height: min(74vh, 760px);
   min-height: 320px;
   border: 1px solid var(--theme-border);
   border-radius: 10px;
@@ -110,7 +120,54 @@
   text-align: right;
 }
 .make-light {
-  grid-template-columns: 6.5em minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 260px) 3.4em;
+  justify-content: start;
+}
+.make-light-angle {
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--theme-text-muted);
+  text-align: right;
+}
+
+.make-quick-bar {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 10px;
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  background: var(--theme-bg-surface);
+  box-shadow: 0 4px 12px
+    color-mix(in srgb, var(--shadow) calc(12% * var(--shadow-k)), transparent);
+}
+.make-quick-summary {
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--theme-text-secondary);
+}
+.player .make-jump-download {
+  min-height: 32px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border-color: var(--theme-accent);
+  background: var(--theme-accent);
+  color: var(--theme-bg-canvas);
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.player .make-jump-download:hover {
+  background: var(--theme-accent-hover);
+  border-color: var(--theme-accent-hover);
+}
+.make-download-anchor {
+  scroll-margin-top: 52px;
 }
 
 .make-choices {
@@ -346,11 +403,43 @@
   grid-template-columns: 8.5em minmax(0, 1fr) auto;
 }
 
-/* The page grows with its choices; the lesson's player keeps to the window. */
+/* Desktop keeps the 3D model framed on screen while the controls scroll.
+   Narrow screens let the whole page scroll naturally. */
 .player.make-page {
-  height: auto;
-  min-height: 100vh;
-  flex: none;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 901px) {
+  .make-layout {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+  .make-stage {
+    position: static;
+    height: 100%;
+    padding-bottom: 12px;
+  }
+  .relief-view {
+    height: auto;
+    min-height: 0;
+  }
+  .make-panel {
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 4px;
+    padding-bottom: 24px;
+  }
+}
+@media (max-width: 900px) {
+  .player.make-page {
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    flex: none;
+  }
 }
 .carve-kind .carve-depth {
   grid-column: 1 / -1;
