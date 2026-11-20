@@ -36,6 +36,12 @@ export const DOCS: readonly {
   text: string;
 }[] = [
   {
+    key: 'print-pieces',
+    label: 'Printing tile pieces on the A1',
+    file: 'PRINT-PIECES.md',
+    text: read('PRINT-PIECES.md'),
+  },
+  {
     key: '3d-plan',
     label: 'Make it in 3D: plan',
     file: '3D-PLAN.md',
