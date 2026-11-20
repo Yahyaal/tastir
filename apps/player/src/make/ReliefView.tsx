@@ -34,8 +34,9 @@ interface Stage {
   readonly controls: OrbitControls;
   readonly sun: THREE.DirectionalLight;
   readonly bed: THREE.LineSegments;
-  object?: THREE.Mesh;
-  master?: THREE.Mesh;
+  /** Everything shown, and its size across. */
+  shown: THREE.Mesh[];
+  size?: number;
   /** The size the camera was last framed for, to keep the view on a redraw. */
   framed?: number;
 }
@@ -69,6 +70,8 @@ function placeSun(stage: Stage, angle: number, size: number) {
 export function ReliefView({
   mesh,
   master,
+  coloured,
+  tray,
   printed = false,
   light,
   fits,
@@ -77,6 +80,10 @@ export function ReliefView({
   mesh: Mesh | undefined;
   /** The object, shown inside its silicone box. */
   master?: Mesh | undefined;
+  /** Tile pieces, one mesh to a colour, shown in place of `mesh`. */
+  coloured?: readonly { readonly colour: string; readonly mesh: Mesh }[] | undefined;
+  /** The tray the pieces lie in. */
+  tray?: Mesh | undefined;
   /** A mould or a box: shown in the colour of printed plastic. */
   printed?: boolean;
   /** Where the light comes from, in degrees round the panel. */
@@ -149,7 +156,7 @@ export function ReliefView({
     );
     ground.receiveShadow = true;
     scene.add(ground);
-    const s: Stage = { renderer, scene, camera, controls, sun, bed };
+    const s: Stage = { renderer, scene, camera, controls, sun, bed, shown: [] };
     stage.current = s;
     let frame = 0;
     const render = () => {
@@ -176,8 +183,7 @@ export function ReliefView({
       observer.disconnect();
       cancelAnimationFrame(frame);
       controls.dispose();
-      s.object?.geometry.dispose();
-      s.master?.geometry.dispose();
+      for (const o of s.shown) o.geometry.dispose();
       renderer.dispose();
       renderer.domElement.remove();
       stage.current = undefined;
@@ -188,18 +194,20 @@ export function ReliefView({
   useEffect(() => {
     const s = stage.current;
     if (!s || !mesh) return;
-    for (const old of [s.object, s.master]) {
-      if (!old) continue;
+    for (const old of s.shown) {
       s.scene.remove(old);
       old.geometry.dispose();
     }
-    const object = meshObject(mesh, printed ? PRINTED : PLASTER);
-    s.scene.add(object);
-    s.object = object;
-    s.master = master ? meshObject(master, PLASTER) : undefined;
-    if (s.master) s.scene.add(s.master);
-    const box = object.geometry.boundingBox!;
+    s.shown = coloured?.length
+      ? [...coloured.map((c) => meshObject(c.mesh, c.colour)), ...(tray ? [meshObject(tray, PRINTED)] : [])]
+      : [meshObject(mesh, printed ? PRINTED : PLASTER), ...(master ? [meshObject(master, PLASTER)] : [])];
+    const box = new THREE.Box3();
+    for (const o of s.shown) {
+      s.scene.add(o);
+      box.union(o.geometry.boundingBox!);
+    }
     const size = Math.max(box.max.x - box.min.x, box.max.y - box.min.y, 40);
+    s.size = size;
     placeSun(s, light, Math.max(size, BED) * 0.75);
     // Frame the camera the first time, and when the size changes a lot.
     if (!s.framed || Math.abs(s.framed - size) / s.framed > 0.25) {
@@ -212,14 +220,12 @@ export function ReliefView({
     }
     draw.current();
     // light changes are handled below; only new meshes reframe.
-  }, [mesh, master, printed]);
+  }, [mesh, master, printed, coloured, tray]);
 
   useEffect(() => {
     const s = stage.current;
     if (!s) return;
-    const box = s.object?.geometry.boundingBox;
-    const size = box ? Math.max(box.max.x - box.min.x, box.max.y - box.min.y, 40) : BED;
-    placeSun(s, light, Math.max(size, BED) * 0.75);
+    placeSun(s, light, Math.max(s.size ?? BED, BED) * 0.75);
     draw.current();
   }, [light]);
 

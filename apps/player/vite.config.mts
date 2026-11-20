@@ -28,6 +28,8 @@ const IMAGE_TYPES: Record<string, string> = {
   '.stl': 'model/stl',
   '.svg': 'image/svg+xml',
   '.dxf': 'image/vnd.dxf',
+  '.zip': 'application/zip',
+  '.3mf': 'model/3mf',
   '.html': 'text/html; charset=utf-8',
 };
 

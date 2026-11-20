@@ -1,5 +1,8 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import example from '@tutorials/eight-fold-star-and-cross.json';
+import { loadModel } from '@tastir/project-core/model';
+import { tutorialColoring } from '../app/coloring';
+import { colorRepeat, colouredModel, placeFills } from '../app/placement';
 import type { Design } from '../app/designs';
 import { Make } from './Make';
 
@@ -137,5 +140,48 @@ describe('Make', () => {
     act(() => screen.getByRole('button', { name: 'Use the common depth' }).click());
     expect((screen.getByLabelText('Depth of star') as HTMLInputElement).value).toBe('8');
     await waitFor(() => expect(volume()).toBe(before), { timeout: 20_000 });
+  }, 40_000);
+
+  it('lays the pattern out as tile pieces in the colours of the wall, with magnets and a tray', async () => {
+    render(<Make json={example} address="eight-fold-star-and-cross" />);
+    act(() => screen.getByRole('button', { name: 'Tile pieces' }).click());
+    await waitFor(() => expect(screen.getByText(/\d+ pieces on \d+ plates of the 256 mm bed/)).toBeTruthy(), {
+      timeout: 20_000,
+    });
+    // Pieces are not carved.
+    expect(screen.queryByRole('heading', { name: 'Carving' })).toBeNull();
+    expect((screen.getByLabelText('Thickness') as HTMLInputElement).value).toBe('5');
+    // Every colour is one the wall shows, and the frame's.
+    const model = loadModel(example);
+    const coloring = tutorialColoring(model);
+    const coloured = colouredModel(model, coloring);
+    const fill = placeFills(coloured, coloring);
+    const [m, n] = colorRepeat(coloured);
+    const wall = new Set<string>();
+    model.pattern.pieces.forEach((_, k) => {
+      for (let i = 0; i < m; i++) for (let j = 0; j < n; j++) wall.add(fill(k, i, j).toLowerCase());
+    });
+    const swatches = [...document.querySelectorAll<HTMLElement>('.piece-swatch')].map((el) => el.style.background);
+    expect(swatches.length).toBeGreaterThanOrEqual(2);
+    const hex = (rgb: string) =>
+      '#' + (rgb.match(/\d+/g) ?? []).slice(0, 3).map((n) => Number(n).toString(16).padStart(2, '0')).join('');
+    const shown = swatches.map(hex);
+    expect(shown.slice(0, -1).every((c) => wall.has(c))).toBe(true);
+    expect(new Set(shown.slice(0, -1))).toEqual(wall);
+    expect(screen.getByText(/frame strip × 4/)).toBeTruthy();
+    expect(screen.getByText(/Magnets to buy:/)).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Download plates (zip)' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Download layout' })).toBeTruthy();
+
+    act(() => screen.getByRole('button', { name: 'None' }).click());
+    await waitFor(() => expect(screen.getByText('No magnets.')).toBeTruthy(), { timeout: 20_000 });
+    act(() => screen.getByLabelText(/A tray to lay the pieces in/).click());
+    await waitFor(() => expect(screen.getByText(/and a tray in one part/)).toBeTruthy(), { timeout: 20_000 });
+    expect(screen.getByRole('button', { name: 'Download tray' })).toBeTruthy();
+    expect(JSON.parse(localStorage.getItem('tastir.make.eight-fold-star-and-cross') ?? '{}')).toMatchObject({
+      print: 'pieces',
+      magnet: 'none',
+      tray: true,
+    });
   }, 40_000);
 });
