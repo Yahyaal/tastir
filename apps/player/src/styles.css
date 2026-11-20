@@ -6427,3 +6427,44 @@ svg.tiles {
 .player.patterns-open .end-actions {
   margin-left: auto;
 }
+
+/* Sticky section shortcuts at the top of the Result sidebar so Export & 3D
+   are always visible without scrolling past the palette grid. */
+.side-panel-nav {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 0 4px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  box-shadow: 0 4px 12px
+    color-mix(in srgb, var(--shadow) calc(12% * var(--shadow-k)), transparent);
+}
+
+.player .side-panel-nav button {
+  flex: 1;
+  min-height: 32px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  font: 600 0.78rem var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.player .side-panel-nav button:hover,
+.player .side-panel-nav button:focus-visible {
+  background: var(--theme-bg-raised);
+  color: var(--theme-text-primary);
+}
+
+.side-panel-anchor,
+.side-panel > section {
+  scroll-margin-top: 48px;
+}
