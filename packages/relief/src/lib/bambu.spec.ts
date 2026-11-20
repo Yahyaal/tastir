@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { bambuProject, BAMBU_VERSION, plateColumns, plateOrigin, projectSettings, type BambuSettings } from './bambu.js';
+import { bambuProject, BAMBU_VERSION, STEADY_START, plateColumns, plateOrigin, projectSettings, type BambuSettings } from './bambu.js';
 import { volumeOf } from './mesh.js';
 import { placed, plates, tilePieces } from './pieces.js';
 import { rectangle } from './relief.js';
@@ -108,7 +108,13 @@ describe('Bambu Studio project', () => {
     const saved: BambuSettings = {
       version: '02.09.01.70',
       flush: 600,
-      perFilament: ['filament_settings_id', 'nozzle_temperature', 'filament_dev_ams_drying_time', 'filament_colour'],
+      perFilament: [
+        'filament_settings_id',
+        'nozzle_temperature',
+        'filament_dev_ams_drying_time',
+        'filament_colour',
+        'close_fan_the_first_x_layers',
+      ],
       config: {
         printer_model: 'Bambu Lab A1',
         filament_settings_id: ['Bambu PLA Basic @BBL A1'],
@@ -118,6 +124,12 @@ describe('Bambu Studio project', () => {
         filament_self_index: ['1'],
         printable_area: ['0x0', '256x0', '256x256', '0x256'],
         flush_volumes_matrix: ['0'],
+        close_fan_the_first_x_layers: ['1'],
+        initial_layer_speed: ['50'],
+        initial_layer_infill_speed: ['105'],
+        brim_type: 'auto_brim',
+        brim_width: '5',
+        brim_object_gap: '0.1',
       },
     };
     const c = projectSettings(saved, ['#f1ead8', '#1d1d1b', '#d9a42a']);
@@ -129,6 +141,15 @@ describe('Bambu Studio project', () => {
     expect(c.flush_volumes_matrix).toEqual(['0', '600', '600', '600', '0', '600', '600', '600', '0']);
     expect(c.printable_area).toEqual(saved.config.printable_area);
     expect(c.printer_model).toBe('Bambu Lab A1');
+    // The steady start, over what was saved: a brim, a slow first layer, the
+    // fan off for three layers in every filament.
+    expect(c.brim_type).toBe('outer_only');
+    expect(c.brim_width).toBe('3');
+    expect(c.brim_object_gap).toBe('0.15');
+    expect(c.initial_layer_speed).toEqual(['30']);
+    expect(c.initial_layer_infill_speed).toEqual(['60']);
+    expect(c.close_fan_the_first_x_layers).toEqual(['3', '3', '3']);
+    for (const key of Object.keys(STEADY_START)) expect(c[key]).toBeDefined();
 
     const dir = mkdtempSync(join(tmpdir(), 'tastir-bambu-'));
     const file = join(dir, 'p.3mf');
@@ -152,5 +173,6 @@ describe('Bambu Studio project', () => {
     expect([...config.matchAll(/key="extruder" value="(\d)"/g)].map((m) => m[1])).toEqual(['1', '2']);
     const written = JSON.parse(readFileSync(join(dir, 'Metadata', 'project_settings.config'), 'utf8'));
     expect(written.filament_colour).toEqual(['#F1EAD8', '#1D1D1B']);
+    expect(written.brim_type).toBe('outer_only');
   });
 });

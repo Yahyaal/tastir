@@ -42,7 +42,10 @@ Do not scale or rotate the pieces: they are already the right size, face up, and
 1. Click a plate to choose it, then click **Slice plate** at the top right. The preview shows the time and the grams of filament. No supports are needed, because every piece is flat underneath and its magnet pocket bridges cleanly.
 2. Load the filament of that colour: in a slot of the AMS lite, or on the A1's spool holder.
 3. Click **Print plate**. In the window that opens, check the plate's filament points to the spool of that colour, then click **Send**. If the A1 is not connected over Wi-Fi, click the arrow next to **Print plate**, choose **Export plate sliced file**, save it to the A1's microSD card, put the card in the printer, and start the print from the A1's screen.
-4. When the plate is done and cool, flex the plate a little and the pieces come off.
+4. Watch the first layer. Each piece prints with a thin brim around it, slowly, with the fan off for the first three layers, so small pieces stay down and their points do not curl. If pieces still slide or lift, stop the print, wash the plate (below) and start again.
+5. When the plate is done and cool, flex the plate a little and the pieces come off. Peel the brim off each piece, and rub off any thin line it leaves on the sides, so the pieces lie close.
+
+Before each plate, wash the plate with warm water and a drop of dish soap, dry it with a paper towel, and hold it only by its edges: finger grease is the most common reason pieces let go. If they still lift on a clean plate, spread a thin layer of glue stick where they print.
 
 Then do the same for each of the other plates.
 
