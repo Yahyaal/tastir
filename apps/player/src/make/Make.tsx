@@ -381,11 +381,12 @@ export function Make({
               min={0}
               max={360}
               value={light}
+              aria-valuetext={`${light}°`}
               onChange={(e) => setLight(Number(e.target.value))}
             />
-            <output htmlFor="make-light" className="make-light-angle">
+            <span className="make-light-angle" aria-hidden="true">
               {light}°
-            </output>
+            </span>
           </div>
         </div>
         <aside className="side-panel make-panel" aria-label="What to make">
