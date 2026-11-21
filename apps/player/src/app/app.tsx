@@ -1,6 +1,5 @@
 import { lazy, Suspense, useMemo, useState } from 'react';
-import { DrawAlongPage } from '../along/DrawAlong';
-import { Editor } from '../editor/Editor';
+import { DrawAlongPage, Editor } from 'virtual:tastir-routes';
 import { playable } from '../editor/patterns';
 import { getDesign } from './designs';
 import { LIBRARY, listed, type Entry } from './library';
@@ -298,7 +297,11 @@ function AppPage({
     );
   // #/edit/p opens one of the learner's own patterns in the editor.
   if (route.startsWith('edit/'))
-    return <Editor key={route} id={route.slice('edit/'.length)} />;
+    return (
+      <Suspense fallback={<p role="status">Opening the editor…</p>}>
+        <Editor key={route} id={route.slice('edit/'.length)} />
+      </Suspense>
+    );
   // #/id/design/d opens a saved design at its wall.
   const mine = /^(.+)\/design\/([^/]+)$/.exec(route);
   if (mine) {
@@ -332,7 +335,12 @@ function AppPage({
       return <Broken message="This design is not saved in this browser." />;
     return (
       <Suspense fallback={<p role="status">Opening the 3D workshop…</p>}>
-        <Make key={route} json={entry.json} address={tutorial} design={design} />
+        <Make
+          key={route}
+          json={entry.json}
+          address={tutorial}
+          design={design}
+        />
       </Suspense>
     );
   }
@@ -354,7 +362,11 @@ function AppPage({
     const entry = entries.find((e) => e.id === id);
     if (!entry)
       return <Broken message={`There is no tutorial called "${id}".`} />;
-    return <DrawAlongPage key={route} json={entry.json} address={id} />;
+    return (
+      <Suspense fallback={<p role="status">Opening draw along…</p>}>
+        <DrawAlongPage key={route} json={entry.json} address={id} />
+      </Suspense>
+    );
   }
   // #/id and #/id/result open at the finished wall; #/id/watch autoplays;
   // #/id/repeat at the repeat, where drawing along goes on.

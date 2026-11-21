@@ -262,6 +262,14 @@ export function PlayerSettings({
             onChange={setShowHelpers}
           />
         </section>
+        <p className="settings-shortcuts">
+          <span>
+            <kbd>←</kbd> <kbd>→</kbd> step
+          </span>
+          <span>
+            <kbd>Space</kbd> play / pause
+          </span>
+        </p>
         {HideToggle && hideId ? (
           <div className="settings-owner">
             <span>Library visibility</span>

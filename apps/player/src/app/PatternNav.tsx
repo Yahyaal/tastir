@@ -292,7 +292,7 @@ function MenuPanel({
           <input
             type="search"
             dir="auto"
-            placeholder="Search: a place, “16 point”…"
+            placeholder="Search patterns…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(event) => {

@@ -7,21 +7,26 @@
 }
 .learning-start {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-  gap: 28px;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr);
+  gap: 24px;
   align-items: center;
-  padding: 24px;
-  margin: 16px 0 32px;
+  padding: 18px 22px;
+  margin: 0 0 28px;
   border: 1px solid var(--theme-border);
   border-radius: 14px;
   background: var(--theme-bg-card);
 }
 .learning-start h2 {
-  font: 500 1.8rem/1.2 var(--display);
-  margin: 8px 0;
+  font: 500 1.45rem/1.2 var(--display);
+  margin: 4px 0 6px;
 }
 .learning-start p {
+  margin: 0;
   max-width: 54ch;
+  font-size: 0.94rem;
+}
+.learning-start .learning-actions {
+  margin-top: 12px;
 }
 .learning-actions {
   display: flex;
@@ -97,8 +102,35 @@
   border-bottom: 1px solid var(--theme-border);
 }
 .learning-top a {
-  padding: 12px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  color: var(--theme-text-primary);
+  text-decoration: none;
+}
+.learning-top .wordmark {
+  font-family: var(--display);
+  font-size: 1.25rem;
+}
+.learning-top .learning-crumb {
+  font-size: 0.88rem;
+  color: var(--theme-text-muted);
+}
+.learning-top a:hover .learning-crumb {
   color: var(--theme-accent);
+  text-decoration: underline;
+}
+.learning-progress-pill {
+  align-self: flex-start;
+  margin: 4px 0 2px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--malachite);
+  background: color-mix(in srgb, var(--malachite) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--malachite) 28%, transparent);
 }
 .learning-intro {
   max-width: 740px;

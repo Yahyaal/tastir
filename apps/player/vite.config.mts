@@ -92,6 +92,7 @@ export default defineConfig(({ mode }) => ({
       name: 'library-previews',
       resolveId(id) {
         if (id === 'virtual:tastir-fixtures') return '\0tastir-fixtures';
+        if (id === 'virtual:tastir-routes') return '\0tastir-routes';
         return null;
       },
       load(id) {
@@ -99,6 +100,17 @@ export default defineConfig(({ mode }) => ({
           return mode === 'test'
             ? `export { default } from ${JSON.stringify(resolve(import.meta.dirname, 'src/app/libraryFixtures.ts'))};`
             : 'export default {};';
+        if (id === '\0tastir-routes') {
+          const along = JSON.stringify(
+            resolve(import.meta.dirname, 'src/along/DrawAlong.tsx'),
+          );
+          const editor = JSON.stringify(
+            resolve(import.meta.dirname, 'src/editor/Editor.tsx'),
+          );
+          return mode === 'test'
+            ? `export { DrawAlongPage } from ${along};\nexport { Editor } from ${editor};`
+            : `import { lazy } from 'react';\nexport const DrawAlongPage = lazy(() => import(${along}).then((m) => ({ default: m.DrawAlongPage })));\nexport const Editor = lazy(() => import(${editor}).then((m) => ({ default: m.Editor })));`;
+        }
         return null;
       },
       buildStart() {

@@ -858,3 +858,24 @@
   color: var(--theme-text-secondary);
   margin: 10px 0 0;
 }
+
+.view-menu.player-settings .settings-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 12px 0 0;
+  padding: 10px 18px 2px;
+  border-top: 1px solid var(--settings-rule);
+  font-size: 0.76rem;
+  color: var(--theme-text-muted);
+}
+
+.view-menu.player-settings .settings-shortcuts kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 4px;
+  background: var(--theme-bg-canvas);
+  color: var(--theme-text-primary);
+  font: 600 0.72rem var(--text);
+}

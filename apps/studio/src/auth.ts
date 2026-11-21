@@ -1,4 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
+import { isIP } from 'node:net';
 import type { Response } from 'express';
 import { and, eq, gt, isNull, lt } from 'drizzle-orm';
 import type { OAuthRegisteredClientsStore } from '@modelcontextprotocol/sdk/server/auth/clients.js';
@@ -61,6 +62,91 @@ export function redirectAllowed(uri: string, extra: readonly string[] = []) {
   } catch {
     return false;
   }
+}
+
+const MAX_METADATA_BYTES = 64_000;
+
+/** Rejects non-HTTPS, loopback, link-local, and private network hosts for OAuth metadata fetches. */
+export function isSafeMetadataUrl(id: string): boolean {
+  let url: URL;
+  try {
+    url = new URL(id);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== 'https:' || url.username || url.password) return false;
+  const host = url.hostname
+    .replace(/^\[|\]$/g, '')
+    .replace(/\.$/, '')
+    .toLowerCase();
+  if (
+    !host ||
+    host === 'localhost' ||
+    host.endsWith('.localhost') ||
+    host.endsWith('.local') ||
+    host.endsWith('.internal')
+  )
+    return false;
+  const ipVersion = isIP(host);
+  if (ipVersion === 4) {
+    const [a = 0, b = 0] = host.split('.').map(Number);
+    if (
+      a === 0 ||
+      a === 10 ||
+      a === 127 ||
+      (a === 100 && b >= 64 && b <= 127) ||
+      (a === 169 && b === 254) ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && b === 168) ||
+      a >= 224
+    )
+      return false;
+  } else if (ipVersion === 6) {
+    if (
+      host === '::' ||
+      host === '::1' ||
+      host.startsWith('::ffff:') ||
+      /^f[cd]/i.test(host) ||
+      /^fe[89ab]/i.test(host) ||
+      host.startsWith('ff')
+    )
+      return false;
+  }
+  return true;
+}
+
+/** Reads a response body up to `limit` bytes without buffering unbounded payloads into memory. */
+async function readBodyLimited(
+  response: globalThis.Response,
+  limit: number,
+): Promise<string | undefined> {
+  const announced = Number(response.headers.get('content-length'));
+  if (Number.isFinite(announced) && announced > limit) {
+    await response.body?.cancel?.();
+    return undefined;
+  }
+  const reader = response.body?.getReader?.();
+  if (!reader) {
+    const text = await response.text();
+    return Buffer.byteLength(text, 'utf8') <= limit ? text : undefined;
+  }
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > limit) {
+        await reader.cancel();
+        return undefined;
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  return Buffer.concat(chunks, total).toString('utf8');
 }
 
 const hash = (secret: string) =>
@@ -134,6 +220,7 @@ export class StudioAuth implements OAuthServerProvider {
    * redirects, checked, and kept for an hour.
    */
   private async metadataClient(id: string) {
+    if (!isSafeMetadataUrl(id)) return undefined;
     const get = this.options.fetch ?? fetch;
     let info: OAuthClientInformationFull;
     try {
@@ -142,8 +229,9 @@ export class StudioAuth implements OAuthServerProvider {
         signal: AbortSignal.timeout(5000),
         headers: { Accept: 'application/json' },
       });
-      const text = await response.text();
-      if (!response.ok || text.length > 64_000) return undefined;
+      if (!response.ok) return undefined;
+      const text = await readBodyLimited(response, MAX_METADATA_BYTES);
+      if (text === undefined) return undefined;
       info = JSON.parse(text) as OAuthClientInformationFull;
     } catch {
       return undefined;

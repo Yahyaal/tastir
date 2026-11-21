@@ -75,6 +75,7 @@
   --old: #9aa6b1;
   --faint: #d6ccbb;
   --current: #94600d;
+  --on-current: #ffffff;
   --used: #1f4e8c;
   --fresh: var(--malachite);
   --paper: var(--theme-bg-card);
@@ -132,6 +133,7 @@
   --old: #5b6b79;
   --faint: #2c3a47;
   --current: #e3ad45;
+  --on-current: #1c2733;
   --used: #6fa8e8;
   --muted: #7d8a96;
 }
@@ -736,17 +738,17 @@ a.button.primary:hover {
 }
 
 @media (max-width: 1480px) {
-  .player:not(.along) .topbar {
+  .player:not(.along):not(.editor) .topbar {
     flex-wrap: wrap;
     row-gap: 8px;
   }
 
-  .player:not(.along) .topbar .lesson-title {
+  .player:not(.along):not(.editor) .topbar .lesson-title {
     order: 3;
     flex-basis: 100%;
   }
 
-  .player:not(.along) .topbar .view-menu {
+  .player:not(.along):not(.editor) .topbar .view-menu {
     margin-left: auto;
   }
 }
@@ -1130,7 +1132,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .player .journey [aria-current='step'] {
-  color: #1c2733;
+  color: var(--on-current);
 }
 
 .player .journey .phase[aria-current='step'] .phase-name {
@@ -1156,6 +1158,13 @@ main.stage .drawing:not(.wall) {
 
 .workspace:not(.with-panel) .caption {
   flex: 1;
+  min-height: 0;
+}
+
+.workspace:not(.with-panel) .caption > .text {
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .text p {
@@ -1639,7 +1648,7 @@ main.stage .drawing:not(.wall) {
    in each style. */
 .wall-styles {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
   gap: 6px;
 }
 .player .wall-styles button {
@@ -1647,9 +1656,10 @@ main.stage .drawing:not(.wall) {
   justify-items: center;
   gap: 4px;
   min-width: 0;
-  padding: 6px 2px 5px;
+  padding: 6px 3px 5px;
   background: transparent;
   font-size: 0.72rem;
+  white-space: nowrap;
 }
 .player .wall-styles button[aria-pressed='true'] {
   border-color: var(--saffron);
@@ -2562,7 +2572,7 @@ main.stage .drawing:not(.wall) {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 12px;
   padding: 16px 0;
   border-bottom: 1px solid
     var(
@@ -2630,7 +2640,7 @@ main.stage .drawing:not(.wall) {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 14px;
+  padding: 5px 10px;
   border-radius: 9999px;
   font-size: 0.82rem;
   font-weight: 500;
@@ -2875,10 +2885,10 @@ main.stage .drawing:not(.wall) {
 /* The opening: a pattern drawing itself, beside one plain sentence. */
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  gap: 48px;
+  grid-template-columns: minmax(0, 480px) minmax(0, 1fr);
+  gap: 40px;
   align-items: center;
-  padding: 16px 0 56px;
+  padding: 12px 0 28px;
 }
 
 .hero-plate {
@@ -2947,9 +2957,16 @@ main.stage .drawing:not(.wall) {
 }
 
 .hero-status-row {
-  margin-top: 14px;
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
+  gap: 8px;
+}
+
+.hero-caption-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 10px;
 }
 
@@ -2958,6 +2975,29 @@ main.stage .drawing:not(.wall) {
   color: var(--on-lapis);
   font-weight: 500;
   min-height: 1.3em;
+}
+
+.hero-pause {
+  flex: none;
+  padding: 4px 12px;
+  min-height: 30px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-secondary);
+  font: 600 0.78rem var(--text);
+  cursor: pointer;
+}
+
+.hero-pause:hover {
+  border-color: var(--saffron);
+  color: var(--saffron);
+}
+
+.hero-pause[aria-pressed='true'] {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--theme-bg-canvas);
 }
 
 .hero-progress-group {
@@ -3434,6 +3474,11 @@ main.stage .drawing:not(.wall) {
     box-shadow 150ms ease;
 }
 
+.cards > .card-item {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 480px;
+}
+
 .card-item:hover {
   border-color: var(--theme-border-hover);
   box-shadow: 0 12px 32px
@@ -3727,9 +3772,11 @@ main.stage .drawing:not(.wall) {
     padding-top: 0;
   }
 
-  /* Swiped along by a finger: no bar. */
+  /* Swiped along by a finger: no bar, with a soft right-edge scroll cue. */
   .journey {
     scrollbar-width: none;
+    padding-right: 28px;
+    mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
   }
 
   .lesson-side {
@@ -5197,13 +5244,13 @@ svg.tiles {
 
 @media (max-width: 760px) {
   /* One row: back, Patterns, the title, settings, light or dark. */
-  .player:not(.along) .topbar {
+  .player:not(.along):not(.editor) .topbar {
     flex-wrap: wrap;
     gap: 6px 8px;
     padding: 8px 0;
   }
 
-  .player:not(.along) .topbar .lesson-title {
+  .player:not(.along):not(.editor) .topbar .lesson-title {
     order: 0;
     flex: 1 1 0;
     flex-basis: 0;
@@ -5230,7 +5277,7 @@ svg.tiles {
   }
 
   /* Patterns as its icon alone; the word stays for screen readers. */
-  .player:not(.along) .topbar .menu-button {
+  .player:not(.along):not(.editor) .topbar .menu-button {
     order: -1;
     min-width: 40px;
     min-height: 40px;
@@ -5239,7 +5286,7 @@ svg.tiles {
     font-size: 0;
   }
 
-  .player:not(.along) .topbar .menu-button svg {
+  .player:not(.along):not(.editor) .topbar .menu-button svg {
     width: 18px;
     height: 18px;
   }
@@ -5249,7 +5296,7 @@ svg.tiles {
     display: none;
   }
 
-  .player:not(.along) .topbar .view-menu {
+  .player:not(.along):not(.editor) .topbar .view-menu {
     margin-left: 0;
   }
 
@@ -5258,28 +5305,28 @@ svg.tiles {
     height: 40px;
   }
 
-  .player:not(.along) .view-switch {
+  .player:not(.along):not(.editor) .view-switch {
     order: 5;
   }
 
   /* The variations under the view switch, in a row of their own. */
-  .player:not(.along) .topbar .variations {
+  .player:not(.along):not(.editor) .topbar .variations {
     order: 6;
   }
 
   /* The drawing a little shorter, so the step's words show under it. */
-  .player:not(.along) .stage {
+  .player:not(.along):not(.editor) .stage {
     min-height: 0;
     height: 46vh;
     border-width: 6px;
     border-radius: 18px;
   }
 
-  .player:not(.along) .caption {
+  .player:not(.along):not(.editor) .caption {
     gap: 8px;
   }
 
-  .player:not(.along) .caption .label {
+  .player:not(.along):not(.editor) .caption .label {
     margin-bottom: 2px;
   }
 
@@ -5755,13 +5802,70 @@ svg.tiles {
 
 .collection-tools {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 10px 12px;
   margin-bottom: 14px;
 }
 
 .collection-tools .filter-search {
-  max-width: 420px;
+  flex: 1 1 240px;
+  max-width: 380px;
+}
+
+.photo-filter {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--theme-border-hover);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-secondary);
+  font: 600 0.84rem var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.photo-filter:hover {
+  border-color: var(--saffron);
+  color: var(--theme-text-primary);
+}
+
+.photo-filter[aria-pressed='true'] {
+  background: var(--saffron);
+  border-color: var(--saffron);
+  color: var(--theme-bg-canvas);
+}
+
+.sort-control {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  margin-left: auto;
+}
+
+.sort-control button {
+  min-height: 34px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  font: 500 0.8rem var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sort-control button:hover {
+  color: var(--theme-text-primary);
+}
+
+.sort-control button[aria-pressed='true'] {
+  background: var(--theme-bg-raised);
+  color: var(--theme-text-primary);
+  font-weight: 700;
 }
 
 .browse-button {
@@ -6113,12 +6217,12 @@ svg.tiles {
 }
 
 /* A calm header: the current pattern is centered between browsing arrows. */
-.player:not(.along) .topbar {
+.player:not(.along):not(.editor) .topbar {
   display: grid;
   grid-template-columns: 44px auto minmax(0, 1fr) auto;
   gap: 10px 16px;
 }
-.player:not(.along) .topbar > .menu-button {
+.player:not(.along):not(.editor) .topbar > .menu-button {
   grid-column: 1;
   grid-row: 1;
   width: 44px;
@@ -6129,18 +6233,18 @@ svg.tiles {
   background: transparent;
   justify-content: center;
 }
-.player:not(.along) .topbar > .menu-button svg {
+.player:not(.along):not(.editor) .topbar > .menu-button svg {
   width: 21px;
   height: 21px;
 }
-.player:not(.along) .topbar > .home {
+.player:not(.along):not(.editor) .topbar > .home {
   grid-column: 2;
   grid-row: 1;
 }
-.player:not(.along) .topbar > .home > span:last-child {
+.player:not(.along):not(.editor) .topbar > .home > span:last-child {
   display: none;
 }
-.player:not(.along) .topbar > .player-utilities {
+.player:not(.along):not(.editor) .topbar > .player-utilities {
   grid-column: 4;
   grid-row: 1;
 }
@@ -6154,7 +6258,7 @@ svg.tiles {
   grid-column: 3;
   grid-row: 1;
 }
-.player:not(.along) .topbar .pattern-heading .lesson-title {
+.player:not(.along):not(.editor) .topbar .pattern-heading .lesson-title {
   order: 0;
   min-width: 0;
   text-align: center;
@@ -6211,7 +6315,7 @@ svg.tiles {
   gap: 8px;
   min-width: 0;
 }
-.player:not(.along) .topbar .player-view-tools .view-switch {
+.player:not(.along):not(.editor) .topbar .player-view-tools .view-switch {
   order: 0;
   margin-left: auto;
 }
@@ -6229,31 +6333,31 @@ svg.tiles {
   background: color-mix(in srgb, var(--theme-accent) 6%, var(--theme-bg-card));
 }
 @media (max-width: 760px) {
-  .player:not(.along) .topbar {
+  .player:not(.along):not(.editor) .topbar {
     grid-template-columns: 44px 44px minmax(0, 1fr) auto;
     gap: 6px;
   }
-  .player:not(.along) .topbar > .home {
+  .player:not(.along):not(.editor) .topbar > .home {
     grid-column: 1;
     width: 44px;
     min-width: 44px;
     min-height: 44px;
   }
-  .player:not(.along) .topbar > .menu-button {
+  .player:not(.along):not(.editor) .topbar > .menu-button {
     grid-column: 2;
     width: 44px;
     min-width: 44px;
   }
-  .player:not(.along) .topbar .pattern-heading {
+  .player:not(.along):not(.editor) .topbar .pattern-heading {
     display: block;
   }
   .player .topbar .pattern-heading .neighbour {
     display: none;
   }
-  .player:not(.along) .topbar .pattern-heading .lesson-title {
+  .player:not(.along):not(.editor) .topbar .pattern-heading .lesson-title {
     font-size: 1.05rem;
   }
-  .player:not(.along) .topbar .player-view-tools .view-switch {
+  .player:not(.along):not(.editor) .topbar .player-view-tools .view-switch {
     order: -1;
     flex-basis: 100%;
     margin-left: 0;
@@ -6271,15 +6375,15 @@ svg.tiles {
 }
 
 @media (max-width: 360px) {
-  .player:not(.along) .topbar .pattern-heading {
+  .player:not(.along):not(.editor) .topbar .pattern-heading {
     grid-column: 1 / -1;
     grid-row: 2;
   }
-  .player:not(.along) .topbar .player-view-tools .view-switch {
+  .player:not(.along):not(.editor) .topbar .player-view-tools .view-switch {
     min-width: 0;
     max-width: 100%;
   }
-  .player:not(.along) .topbar .player-view-tools .view-switch a {
+  .player:not(.along):not(.editor) .topbar .player-view-tools .view-switch a {
     min-width: 0;
     padding-inline: 6px;
     font-size: 0.75rem;
@@ -6321,4 +6425,45 @@ svg.tiles {
 }
 .player.patterns-open .end-actions {
   margin-left: auto;
+}
+
+/* Sticky section shortcuts at the top of the Result sidebar so Export & 3D
+   are always visible without scrolling past the palette grid. */
+.side-panel-nav {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  margin: 0 0 4px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  box-shadow: 0 4px 12px
+    color-mix(in srgb, var(--shadow) calc(12% * var(--shadow-k)), transparent);
+}
+
+.player .side-panel-nav button {
+  flex: 1;
+  min-height: 32px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-text-secondary);
+  font: 600 0.78rem var(--text);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.player .side-panel-nav button:hover,
+.player .side-panel-nav button:focus-visible {
+  background: var(--theme-bg-raised);
+  color: var(--theme-text-primary);
+}
+
+.side-panel-anchor,
+.side-panel > section {
+  scroll-margin-top: 48px;
 }

@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useId, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { REGIONS, TRADITIONS } from '@tastir/schema';
 import {
@@ -42,54 +42,68 @@ export function LibraryMenu({
   filters: LibraryFilters;
   onChange: (change: MenuChange) => void;
 }) {
-  const present = (key: 'region' | 'style' | 'level' | 'fold') =>
-    new Set(
-      entries.flatMap((e) =>
-        [e, ...(e.variations ?? [])]
-          .flatMap((d) => [d, ...(d.places ?? [])])
-          .flatMap((v) => aboutOf(v.preview ?? v.json)[key] ?? []),
+  const groups = useMemo((): readonly Group[] => {
+    const present = (key: 'region' | 'style' | 'level' | 'fold') =>
+      new Set(
+        entries.flatMap((e) =>
+          [e, ...(e.variations ?? [])]
+            .flatMap((d) => [d, ...(d.places ?? [])])
+            .flatMap((v) => aboutOf(v.preview ?? v.json)[key] ?? []),
+        ),
+      );
+    const folds = [...(present('fold') as Set<number>)].sort((a, b) => a - b);
+    const styles = present('style') as Set<string>;
+    const regions = present('region') as Set<string>;
+    return [
+      {
+        key: 'region',
+        title: 'Region',
+        values: REGIONS.filter((r) => regions.has(r)),
+        label: String,
+      },
+      {
+        key: 'fold',
+        title: 'Symmetry',
+        values: folds,
+        label: (f) => foldLabel(f as number),
+      },
+      {
+        key: 'level',
+        title: 'Level',
+        values: LEVELS,
+        label: (l) => capital(l as string),
+      },
+      {
+        key: 'style',
+        title: 'Tradition',
+        values: TRADITIONS.filter((t) => styles.has(t)),
+        label: String,
+      },
+    ];
+  }, [entries]);
+  const countsByKey = useMemo(
+    () =>
+      Object.fromEntries(
+        groups.map((group) => [
+          group.key,
+          facetCounts(entries, filters, group.key) as Map<
+            string | number,
+            number
+          >,
+        ]),
       ),
-    );
-  const folds = [...(present('fold') as Set<number>)].sort((a, b) => a - b);
-  const styles = present('style') as Set<string>;
-  const regions = present('region') as Set<string>;
-  const groups: readonly Group[] = [
-    {
-      key: 'region',
-      title: 'Region',
-      values: REGIONS.filter((r) => regions.has(r)),
-      label: String,
-    },
-    {
-      key: 'fold',
-      title: 'Symmetry',
-      values: folds,
-      label: (f) => foldLabel(f as number),
-    },
-    {
-      key: 'level',
-      title: 'Level',
-      values: LEVELS,
-      label: (l) => capital(l as string),
-    },
-    {
-      key: 'style',
-      title: 'Tradition',
-      values: TRADITIONS.filter((t) => styles.has(t)),
-      label: String,
-    },
-  ];
+    [entries, filters, groups],
+  );
+  const idPrefix = useId();
   return (
     <nav className="library-menu" aria-label="Browse the patterns">
       {groups.map((group) => {
-        const counts = facetCounts(entries, filters, group.key) as Map<
-          string | number,
-          number
-        >;
+        const counts = countsByKey[group.key]!;
         const chosen = filters[group.key];
+        const headingId = `${idPrefix}-${group.key}`;
         return (
-          <section key={group.key} aria-labelledby={`menu-${group.key}`}>
-            <h3 id={`menu-${group.key}`}>{group.title}</h3>
+          <section key={group.key} aria-labelledby={headingId}>
+            <h3 id={headingId}>{group.title}</h3>
             <ul>
               {group.values.map((value) => {
                 const count = counts.get(value) ?? 0;

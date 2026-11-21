@@ -159,7 +159,7 @@
 }
 
 .player .along-dot.on {
-  color: #1c2733;
+  color: var(--on-current);
 }
 
 .player .along-dot.on .phase-name {
@@ -185,10 +185,9 @@
   min-height: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  /* The step's words take the room the longest step needs (the steps are
-     stacked in one place), so they never scroll and the board holds still;
-     the line under the board has a fixed height its words fit in. */
-  grid-template-rows: minmax(6.75rem, auto) auto minmax(180px, 1fr) 4.2rem;
+  /* The step's words take a compact fixed height, so they never shift the
+     board between stages; the line under the board holds its height too. */
+  grid-template-rows: minmax(5.2rem, auto) auto minmax(180px, 1fr) 4.2rem;
   column-gap: 28px;
   row-gap: 8px;
 }
@@ -200,6 +199,10 @@
   gap: 24px;
   align-items: flex-start;
   justify-content: space-between;
+  padding: 10px 16px;
+  border: 1px solid var(--theme-border);
+  border-radius: 14px;
+  background: var(--theme-bg-surface);
 }
 
 .along-text {
@@ -258,8 +261,8 @@
 
 /* Feedback uses the space beside the instruction, without shortening boards. */
 .along-text .along-check {
-  height: 6lh;
-  min-height: 6lh;
+  height: 3lh;
+  min-height: 3lh;
   font-size: 0.85rem;
   overflow-y: auto;
 }
@@ -271,8 +274,8 @@
   font-size: 0.78rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  line-height: 1.6;
-  height: 2lh;
+  line-height: 1.45;
+  height: 1.5lh;
   color: var(--theme-label);
 }
 
@@ -856,10 +859,28 @@
 .along-helpers {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
-  color: var(--on-lapis-muted);
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--theme-border);
+  border-radius: 999px;
+  background: var(--theme-bg-surface);
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: var(--theme-text-secondary);
   white-space: nowrap;
+  cursor: pointer;
+}
+
+.along-helpers:hover {
+  border-color: var(--theme-border-hover);
+  color: var(--theme-text-primary);
+}
+
+.along-helpers:has(input:checked) {
+  border-color: var(--saffron);
+  background: color-mix(in srgb, var(--saffron) 10%, var(--theme-bg-surface));
+  color: var(--theme-text-primary);
 }
 
 .along-helpers input {
@@ -887,6 +908,12 @@
   align-content: flex-start;
   align-items: center;
   gap: 8px;
+}
+
+@media (min-width: 761px) {
+  .along-grid.one-board .along-hints-row {
+    justify-content: flex-end;
+  }
 }
 
 .player .along-hints button {
@@ -1011,6 +1038,11 @@
 /* The phone (R6): the board first, the tools under it, then the step's
    words with Back and Next, then the hints. */
 @media (max-width: 760px) {
+  .along-steps ol {
+    padding-right: 28px;
+    mask-image: linear-gradient(to right, #000 calc(100% - 20px), transparent);
+  }
+
   .along-grid > .along-plate {
     order: 1;
   }

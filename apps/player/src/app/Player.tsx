@@ -673,6 +673,10 @@ export function Player({
       ? presentation?.camera
       : undefined,
   );
+  const resetWallRef = useRef<(() => void) | undefined>(undefined);
+  const wallSectionRef = useRef<HTMLDivElement>(null);
+  const colorsSectionRef = useRef<HTMLElement>(null);
+  const exportSectionRef = useRef<HTMLElement>(null);
   const keepWallView = useCallback((view: Rect) => {
     wallViewRef.current = view;
   }, []);
@@ -951,6 +955,7 @@ export function Player({
           model={coloured}
           initialView={wallViewRef.current}
           onCameraChange={keepWallView}
+          resetRef={resetWallRef}
           colors={colors}
           fill={fill}
           finish={finishOf(coloured, colorHistory.now)}
@@ -1162,7 +1167,7 @@ export function Player({
   // first thing in view.
   const colorsSection =
     !onWall || wallStyle !== 'jali' ? (
-      <section>
+      <section ref={colorsSectionRef}>
         <h2>Colors</h2>
         <ColourPanel
           paper={onWall && wallStyle === 'lines'}
@@ -1411,7 +1416,11 @@ export function Player({
             }}
             tutorial={tutorial}
             pause={() => setPlaying(false)}
-            board={() => svgRef.current}
+            board={() =>
+              svgRef.current ??
+              plateRef.current?.querySelector<SVGSVGElement>('svg') ??
+              null
+            }
             snapshot={() => ({
               draft: inking.shown.tutorial,
               coloring: colorHistory.now,
@@ -1465,6 +1474,18 @@ export function Player({
               aria-label="Fit"
               title="Show the whole drawing"
               onClick={() => camera.goTo(fullView(model))}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+              </svg>
+            </button>
+          ) : onWall ? (
+            <button
+              type="button"
+              className="fit"
+              aria-label="Reset view"
+              title="Reset wall zoom and position"
+              onClick={() => resetWallRef.current?.()}
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
@@ -1590,6 +1611,13 @@ export function Player({
               <button
                 type="button"
                 className="quiet playback"
+                title={
+                  playing
+                    ? 'Pause (Space)'
+                    : index === last
+                      ? 'Replay from step 1 (Space)'
+                      : 'Play (Space)'
+                }
                 onClick={togglePlayback}
               >
                 {playing ? 'Pause' : index === last ? 'Replay' : 'Play'}
@@ -1597,6 +1625,7 @@ export function Player({
               <button
                 type="button"
                 className="secondary"
+                title="Previous step (←)"
                 onClick={back}
                 disabled={index === 0}
               >
@@ -1634,6 +1663,7 @@ export function Player({
                 <button
                   type="button"
                   className="next"
+                  title={ready ? undefined : 'Next step (→)'}
                   onClick={
                     ready
                       ? () => {
@@ -1656,28 +1686,71 @@ export function Player({
           </footer>
           {colorStage ? (
             <aside className="side-panel" aria-label="The wall">
+              {!narrow ? (
+                <nav className="side-panel-nav" aria-label="Wall sections">
+                  {onWall ? (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        wallSectionRef.current?.scrollIntoView?.({
+                          behavior: 'smooth',
+                          block: 'start',
+                        })
+                      }
+                    >
+                      Style
+                    </button>
+                  ) : null}
+                  {!onWall || wallStyle !== 'jali' ? (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        colorsSectionRef.current?.scrollIntoView?.({
+                          behavior: 'smooth',
+                          block: 'start',
+                        })
+                      }
+                    >
+                      Colors
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      exportSectionRef.current?.scrollIntoView?.({
+                        behavior: 'smooth',
+                        block: 'start',
+                      })
+                    }
+                  >
+                    Export &amp; 3D
+                  </button>
+                </nav>
+              ) : null}
               {/* At the end on a computer or tablet, Save and Share are in the step
                   bar, where Next was; only a note about changes stays here. */}
               {ready && !phone ? draftNote : null}
               {/* On the finished wall its style and width come first; while
                   one tile is coloured, the colours do. */}
               {onWall ? (
-                <WallControls
-                  style={wallStyle}
-                  styles={wallStyles}
-                  onStyle={(style) => {
-                    setWallStyle(style);
-                    if (style === 'jali' && grout < 0.5) setGrout(0.5);
-                    if (style === 'lines' && grout < 0.25) setGrout(0.25);
-                  }}
-                  grout={grout}
-                  onGrout={setGrout}
-                  finish={finishOf(coloured, colorHistory.now)}
-                  onFinish={(change) =>
-                    colorDispatch({ kind: 'finish', ...change })
-                  }
-                  sample={(look) => styleSamples?.[look]}
-                />
+                <div ref={wallSectionRef} className="side-panel-anchor">
+                  <WallControls
+                    style={wallStyle}
+                    styles={wallStyles}
+                    onStyle={(style) => {
+                      setWallStyle(style);
+                      if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                      if (style === 'lines' && grout < 0.25) setGrout(0.25);
+                    }}
+                    grout={grout}
+                    onGrout={setGrout}
+                    finish={finishOf(coloured, colorHistory.now)}
+                    onFinish={(change) =>
+                      colorDispatch({ kind: 'finish', ...change })
+                    }
+                    sample={(look) => styleSamples?.[look]}
+                  />
+                </div>
               ) : null}
               {onWall && wallStyle === 'jali' ? (
                 <JaliControls appearance={jali} onChange={setJali} />
@@ -1698,7 +1771,7 @@ export function Player({
                   {draftNote}
                 </section>
               )}
-              <section>
+              <section ref={exportSectionRef} className="side-panel-anchor">
                 <h2>Take it with you</h2>
                 {ready ? null : shareLink}
                 <div className="export-tools">
@@ -1746,7 +1819,11 @@ export function Player({
                 {address !== 'shared' ? (
                   <a
                     className="button secondary make-3d"
-                    href={opened ? `#/${address}/design/${opened.id}/make` : `#/${address}/make`}
+                    href={
+                      design
+                        ? `#/${address}/design/${design.id}/make`
+                        : `#/${address}/make`
+                    }
                   >
                     Make it in 3D
                   </a>

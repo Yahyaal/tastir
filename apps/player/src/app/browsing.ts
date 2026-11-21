@@ -1,6 +1,9 @@
 import { holds, type Entry } from './library';
 import { readQuery, scoreOf } from './search';
 
+/** How the library orders the cards. */
+export type SortOrder = 'default' | 'easiest' | 'shortest' | 'title';
+
 /** The library's filters: words to look for, a region, a tradition, a
  * level and a fold, each optional. */
 export interface LibraryFilters {
@@ -9,6 +12,8 @@ export interface LibraryFilters {
   readonly style?: string;
   readonly level?: string;
   readonly fold?: number;
+  readonly withPhoto?: boolean;
+  readonly sort?: SortOrder;
 }
 
 /**
@@ -50,13 +55,17 @@ function write(change: Kept) {
 }
 
 export function keptFilters(): LibraryFilters {
-  const { query, region, style, level, fold } = read();
+  const { query, region, style, level, fold, withPhoto, sort } = read();
   return {
     ...(typeof query === 'string' && query ? { query } : {}),
     ...(typeof region === 'string' ? { region } : {}),
     ...(typeof style === 'string' ? { style } : {}),
     ...(typeof level === 'string' ? { level } : {}),
     ...(typeof fold === 'number' ? { fold } : {}),
+    ...(withPhoto === true ? { withPhoto: true } : {}),
+    ...(sort === 'easiest' || sort === 'shortest' || sort === 'title'
+      ? { sort }
+      : {}),
   };
 }
 
@@ -67,8 +76,18 @@ export function keepFilters({
   style,
   level,
   fold,
+  withPhoto,
+  sort,
 }: LibraryFilters) {
-  write({ query: query || undefined, region, style, level, fold });
+  write({
+    query: query || undefined,
+    region,
+    style,
+    level,
+    fold,
+    withPhoto: withPhoto ? true : undefined,
+    sort: sort && sort !== 'default' ? sort : undefined,
+  });
 }
 
 /** Where the learner was in the library, if anywhere. */
@@ -141,11 +160,29 @@ export function aboutOf(json: unknown): {
   };
 }
 
+const LEVEL_RANK: Record<string, number> = {
+  beginner: 0,
+  intermediate: 1,
+  advanced: 2,
+};
+
+function hasPhoto(e: Entry): boolean {
+  if (e.preview) return e.preview.photos;
+  const photos = (e.json as { photos?: unknown } | undefined)?.photos;
+  return Array.isArray(photos) && photos.length > 0;
+}
+
+function stepsOf(e: Entry): number {
+  if (e.preview) return e.preview.steps;
+  const steps = (e.json as { steps?: unknown } | undefined)?.steps;
+  return Array.isArray(steps) ? steps.length : Number.MAX_SAFE_INTEGER;
+}
+
 /** The entries the library shows under these filters, in its order. A
  * family's card is shown when any of its variations matches. */
 export function filtered(
   entries: readonly Entry[],
-  { query, region, style, level, fold }: LibraryFilters,
+  { query, region, style, level, fold, withPhoto, sort }: LibraryFilters,
 ): readonly Entry[] {
   // "16 point" in the search box asks for stars of sixteen points.
   const asked = readQuery(query ?? '');
@@ -156,6 +193,7 @@ export function filtered(
       (style && about.style !== style) ||
       (level && about.level !== level) ||
       (fold && about.fold !== fold) ||
+      (withPhoto && !hasPhoto(e)) ||
       // "16 point" in the search also finds a sixteen-pointed star on a
       // square tile, which the menu files as 4- or 8-fold.
       (asked.fold &&
@@ -199,9 +237,23 @@ export function filtered(
       },
     ];
   });
-  // With words to look for, the best matches come first; the library's
-  // own order breaks ties.
-  if (asked.words.length) shown.sort((a, b) => b.best - a.best);
+  // With words to look for, the best matches come first unless an explicit
+  // sort order was chosen.
+  if (sort === 'easiest') {
+    shown.sort((a, b) => {
+      const la =
+        LEVEL_RANK[aboutOf(a.entry.preview ?? a.entry.json).level ?? ''] ?? 9;
+      const lb =
+        LEVEL_RANK[aboutOf(b.entry.preview ?? b.entry.json).level ?? ''] ?? 9;
+      return la - lb || stepsOf(a.entry) - stepsOf(b.entry);
+    });
+  } else if (sort === 'shortest') {
+    shown.sort((a, b) => stepsOf(a.entry) - stepsOf(b.entry));
+  } else if (sort === 'title') {
+    shown.sort((a, b) => titleOf(a.entry).localeCompare(titleOf(b.entry)));
+  } else if (asked.words.length) {
+    shown.sort((a, b) => b.best - a.best);
+  }
   return shown.map((s) => s.entry);
 }
 
@@ -221,22 +273,40 @@ export function facetCounts<K extends 'region' | 'style' | 'level' | 'fold'>(
   filters: LibraryFilters,
   key: K,
 ): Map<NonNullable<LibraryFilters[K]>, number> {
-  const others = { ...filters, [key]: undefined };
+  const { query, region, style, level, fold, withPhoto } = filters;
+  const asked = readQuery(query ?? '');
   const counts = new Map<NonNullable<LibraryFilters[K]>, number>();
-  const values = new Set(
-    entries.flatMap((entry) =>
-      [entry, ...(entry.variations ?? [])].flatMap((design) =>
-        [design, ...(design.places ?? [])].flatMap(
-          (member) => aboutOf(member.preview ?? member.json)[key] ?? [],
-        ),
-      ),
-    ),
-  );
-  // Ask the same filter that supplies the cards. A region on one member
-  // must not borrow a matching level or search term from another member.
-  for (const value of values) {
-    const count = filtered(entries, { ...others, [key]: value }).length;
-    if (count) counts.set(value as NonNullable<LibraryFilters[K]>, count);
+  // Single pass over every family: each matching member contributes its
+  // value for `key`, and a family is counted at most once per value.
+  for (const entry of entries) {
+    const seen = new Set<NonNullable<LibraryFilters[K]>>();
+    const designs = [entry, ...(entry.variations ?? [])];
+    for (const design of designs) {
+      const members = [design, ...(design.places ?? [])];
+      for (const m of members) {
+        const about = aboutOf(m.preview ?? m.json);
+        const value = about[key];
+        if (
+          value === undefined ||
+          seen.has(value as NonNullable<LibraryFilters[K]>)
+        )
+          continue;
+        if (
+          (key !== 'region' && region && about.region !== region) ||
+          (key !== 'style' && style && about.style !== style) ||
+          (key !== 'level' && level && about.level !== level) ||
+          (key !== 'fold' && fold && about.fold !== fold) ||
+          (withPhoto && !hasPhoto(m)) ||
+          (asked.fold &&
+            about.fold !== asked.fold &&
+            !m.preview?.stars?.includes(asked.fold))
+        )
+          continue;
+        if (scoreOf(m, asked.words) === undefined) continue;
+        seen.add(value as NonNullable<LibraryFilters[K]>);
+      }
+    }
+    for (const value of seen) counts.set(value, (counts.get(value) ?? 0) + 1);
   }
   return counts;
 }

@@ -134,12 +134,15 @@ export function Wall({
   boardCamera,
   initialView,
   onCameraChange,
+  resetRef,
 }: {
   /** Optional shared board for image capture and annotations in the assistant. */
   boardRef?: React.RefObject<SVGSVGElement | null>;
   boardCamera?: ReturnType<typeof useCamera>;
   initialView?: Rect;
   onCameraChange?: (view: Rect) => void;
+  /** Registers a callback to smoothly reset the wall camera to its default framing. */
+  resetRef?: React.MutableRefObject<(() => void) | undefined>;
   model: Model;
   colors: readonly string[];
   /** The fill for each placement (piece, and the cell it is copied to),
@@ -182,6 +185,13 @@ export function Wall({
   useLayoutEffect(() => {
     onCameraChange?.(camera.view);
   }, [camera.view, onCameraChange]);
+  useLayoutEffect(() => {
+    if (!resetRef) return;
+    resetRef.current = () => camera.goTo(start);
+    return () => {
+      resetRef.current = undefined;
+    };
+  }, [resetRef, camera, start]);
   const { pattern } = model;
   const lines = style === 'lines';
   // The lines style is watercolour: each piece painted, the paper left

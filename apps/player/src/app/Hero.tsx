@@ -49,6 +49,7 @@ function HeroPlay({ model }: { model: Model }) {
   const all = beatsOf(model.tutorial).length;
   const reduced = useMemo(prefersReducedMotion, []);
   const [k, setK] = useState(0);
+  const [paused, setPaused] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const view = useMemo(() => fullView(model), [model]);
@@ -86,6 +87,13 @@ function HeroPlay({ model }: { model: Model }) {
 
   useLayoutEffect(() => {
     if (reduced) return;
+    if (paused) {
+      const active = frameRef.current?.getAnimations?.({ subtree: true }) ?? [];
+      for (const a of active) {
+        if (a.playState === 'running') a.pause?.();
+      }
+      return;
+    }
     let anims: Animation[] = [];
     if (k < n) {
       anims = play(
@@ -99,6 +107,9 @@ function HeroPlay({ model }: { model: Model }) {
     const sliding = isRepeating
       ? (frameRef.current?.getAnimations?.({ subtree: true }) ?? [])
       : [];
+    for (const a of sliding) {
+      if (a.playState === 'paused') a.play?.();
+    }
     const ends = [...anims, ...sliding].map(
       (a) => Number(a.effect?.getComputedTiming().endTime ?? 0) || 0,
     );
@@ -125,6 +136,7 @@ function HeroPlay({ model }: { model: Model }) {
     model,
     panelModel,
     reduced,
+    paused,
     isFadingLines,
     isRepeating,
     isColoring,
@@ -204,7 +216,22 @@ function HeroPlay({ model }: { model: Model }) {
       </div>
 
       <div className="hero-status-row">
-        <figcaption>{caption}</figcaption>
+        <div className="hero-caption-line">
+          <figcaption>{caption}</figcaption>
+          {!reduced && (
+            <button
+              type="button"
+              className="hero-pause"
+              aria-pressed={paused}
+              aria-label={
+                paused ? 'Resume preview animation' : 'Pause preview animation'
+              }
+              onClick={() => setPaused((was) => !was)}
+            >
+              {paused ? 'Play' : 'Pause'}
+            </button>
+          )}
+        </div>
         {!reduced && (
           <div
             className="hero-progress-group"

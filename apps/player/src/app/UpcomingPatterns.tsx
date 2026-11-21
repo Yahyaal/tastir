@@ -212,8 +212,8 @@ export function UpcomingPatterns() {
             </span>
             <span className="metrics-dot">·</span>
             <span>
-              Covering <strong>8 geometric traditions</strong> &{' '}
-              <strong>5 symmetry families</strong>
+              Covering <strong>{styles.length} geometric traditions</strong> &{' '}
+              <strong>{folds.length} symmetry families</strong>
             </span>
           </div>
         </section>
