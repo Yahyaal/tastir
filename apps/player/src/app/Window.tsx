@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { ActionIcon } from './actionIcons';
 import {
   ARCH_KINDS,
@@ -21,7 +22,7 @@ import './window.css';
  * two other actions are small icons under the title (window.css).
  */
 
-const clipId = (kind: ArchKind) => `tastir-arch-${kind}`;
+export const clipId = (kind: ArchKind) => `tastir-arch-${kind}`;
 const PISHTAQ_MASK = 'tastir-arch-pishtaq-mask';
 const PISHTAQ_TRANSFORM = `translate(${PISHTAQ_ARCH.x} ${PISHTAQ_ARCH.y}) scale(${PISHTAQ_ARCH.sx} ${PISHTAQ_ARCH.sy})`;
 
@@ -59,7 +60,7 @@ export function WindowDefs() {
 
 /** The window's frame over the picture: a thin inner line always, and an
  * edge that turns gold when the window is pointed at or focused. */
-function WindowFrame({ kind }: { kind: ArchKind }) {
+export function WindowFrame({ kind }: { kind: ArchKind }) {
   const d = ARCH_PATHS[kind];
   return (
     <svg
@@ -98,7 +99,7 @@ const LEVELS = ['beginner', 'intermediate', 'advanced'];
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** The level as one to three dots, named for screen readers. */
-function LevelDots({ level }: { level: string }) {
+export function LevelDots({ level }: { level: string }) {
   const n = LEVELS.indexOf(level) + 1 || 1;
   return (
     <span className="window-dots" role="img" aria-label={capital(level)}>
@@ -115,6 +116,9 @@ export function Window({
   preview,
   designs = 1,
   arch = archOf(preview.region, preview.style),
+  place,
+  hidden = false,
+  picture,
 }: {
   id: string;
   preview: Preview;
@@ -122,6 +126,12 @@ export function Window({
   designs?: number;
   /** The arch, when not the pattern's own (the review page). */
   arch?: ArchKind;
+  /** The place's short name, under the title. */
+  place?: string;
+  /** Hidden from the live site (the dev server lists it, marked). */
+  hidden?: boolean;
+  /** Drawn in place of the prepared picture (a tutorial given as data). */
+  picture?: ReactNode;
 }) {
   const title = preview.short ?? preview.title;
   const base = import.meta.env.BASE_URL;
@@ -140,23 +150,34 @@ export function Window({
           tabIndex={-1}
           aria-hidden="true"
         >
-          <img
-            src={base + preview.thumbnail}
-            srcSet={
-              preview.thumbnailSmall
-                ? `${base + preview.thumbnailSmall} 320w, ${base + preview.thumbnail} 480w`
-                : undefined
-            }
-            sizes="auto, (max-width: 600px) 180px, 300px"
-            alt=""
-            loading="lazy"
-            width="360"
-            height="450"
-          />
+          {picture ??
+            (preview.thumbnail ? (
+              <img
+                src={base + preview.thumbnail}
+                srcSet={
+                  preview.thumbnailSmall
+                    ? `${base + preview.thumbnailSmall} 320w, ${base + preview.thumbnail} 480w`
+                    : undefined
+                }
+                sizes="auto, (max-width: 600px) 180px, 300px"
+                alt=""
+                loading="lazy"
+                width="360"
+                height="450"
+              />
+            ) : null)}
         </a>
         <WindowFrame kind={arch} />
         {designs > 1 ? (
           <span className="window-badge">{designs} designs</span>
+        ) : null}
+        {hidden ? (
+          <span
+            className="window-hidden"
+            title="Hidden from the library on the live site; only the dev server lists it."
+          >
+            Hidden
+          </span>
         ) : null}
         <div className="window-actions">
           <a
@@ -203,7 +224,13 @@ export function Window({
         <span>{preview.fold}-fold</span>
         <LevelDots level={preview.level} />
         <span>{preview.steps} steps</span>
+        {place ? <span className="window-place">{place}</span> : null}
       </p>
+      {preview.verification?.status === 'unverified' ? (
+        <p className="window-note" title={preview.verification.note}>
+          Historical match unverified
+        </p>
+      ) : null}
     </li>
   );
 }

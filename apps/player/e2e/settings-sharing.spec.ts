@@ -119,7 +119,9 @@ test('a wall link restores palette, watercolour and zoom in a clean browser', as
     .getByRole('group', { name: 'Style', exact: true })
     .getByRole('button', { name: 'Watercolour', exact: true })
     .click();
-  await page.getByRole('button', { name: 'Teal and gold', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Teal and gold', exact: true })
+    .click();
   const wall = page.locator('svg.wall');
   await wall.scrollIntoViewIfNeeded();
   await wall.hover();

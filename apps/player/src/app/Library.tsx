@@ -1,118 +1,126 @@
-import { LearningStart } from './LearningPathNav';
-import { LEARNING_PATH } from './learningPath';
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { listPatterns } from '../editor/patterns';
 import { NewPattern } from '../editor/PatternShelf';
 import { HOSTED } from '../studio/client';
 import {
-  foldLabel,
+  cardAt,
+  facetCounts,
   filtered,
+  foldLabel,
   keepFilters,
   keptFilters,
-  cardAt,
   keptPlace,
+  type LibraryFilters,
   type SortOrder,
 } from './browsing';
-import { LibraryDrawer, LibraryMenu, type MenuChange } from './LibraryMenu';
 import { listDesigns, unreadableKept, unreadableNow } from './designs';
-import { ActionIcon } from './actionIcons';
-import { workInProgress, WorkRow } from './YourWork';
 import { Thumbnail } from './drawing';
-import { grouped, isHidden, type Entry } from './library';
-import { shownSteps } from './model';
-import { ThemeSwitch } from './theme';
 import { PROGRESS_TEXT, useModel } from './workerClient';
+import { isHidden, grouped, type Entry, type Preview } from './library';
+import { BOOKS, PLACES, placeHref } from './places';
+import { Route } from './Route';
+import { StartHere } from './StartHere';
+import { ThemeSwitch } from './theme';
+import { LevelDots, Window, WindowDefs } from './Window';
+import { workInProgress } from './YourWork';
+import './libraryPage.css';
 
-import { HeroDrawing } from './Hero';
+/*
+ * The library (REDESIGN.3, docs/REDESIGN-PLAN-2026-11-22.md): a one-line
+ * top bar with search, the route from Córdoba to Agra that chooses a place,
+ * one row of filters, Start here, then every pattern as a window shaped like
+ * its tradition's arch. The place lives in the address (#/places/<place>),
+ * so it can be shared and Back returns to all patterns; the other filters
+ * are remembered for the tab, as before.
+ */
+
 const capital = (s: string) => (s ? s[0]?.toUpperCase() + s.slice(1) : s);
-
-/** The pattern that draws itself at the top of the library. */
-const HERO = 'twelve-fold-rosette-mian';
-/** Where a newcomer starts. */
-const FIRST = 'eight-fold-star-and-cross';
-
-const TRADITIONS: Record<
-  string,
-  {
-    arabic: string;
-    era: string;
-    region: string;
-    medium: string;
-    summary: string;
-  }
-> = {
-  Moroccan: {
-    arabic: 'الزليج المغربي',
-    era: '12th Century – Present',
-    region: 'Fez, Marrakech & Rabat',
-    medium: 'Glazed terracotta tesserae (zellij)',
-    summary:
-      'Masterful geometric mosaics hand-chiselled from enamelled terracotta, renowned for rich saffron, cobalt, and emerald glazes radiating through celestial star rosettes.',
-  },
-  Marinid: {
-    arabic: 'الزليج المريني بفاس',
-    era: '1244 – 1465 CE',
-    region: 'Bou Inania & Attarine Medersas, Fez',
-    medium: 'Classical Marinid zellij & carved cedarwood',
-    summary:
-      'The zenith of western Islamic geometry, epitomized by the monumental 16-fold and 12-fold star rosettes of Fez madrasas, harmonizing cut tilework with intricate stucco and cedar joinery.',
-  },
-  Nasrid: {
-    arabic: 'العمارة النصرية بغرناطة',
-    era: '1238 – 1492 CE',
-    region: 'The Alhambra, Granada',
-    medium: 'Interlacing tilework (alicatado) & carved stucco',
-    summary:
-      'Sophisticated lacería strapwork with infinite ribbons weaving over and under through celestial 12, 16, and 24-pointed stars, celebrating proportion and harmony in the Palaces of the Alhambra.',
-  },
-  Mamluk: {
-    arabic: 'العمارة المملوكية بالقاهرة',
-    era: '1250 – 1517 CE',
-    region: 'Cairo, Egypt',
-    medium: 'Pierced marble, minbar inlays & brass doorplates',
-    summary:
-      'Monumental Cairo geometry characterized by crisp polygonal strapwork, decagram star rosettes, and ivory-inlaid geometric minbars of Sultan Hassan and Qaytbay.',
-  },
-  Timurid: {
-    arabic: 'العمارة التيمورية',
-    era: '1370 – 1507 CE',
-    region: 'Samarkand, Bukhara & Herat',
-    medium: 'Banna’i glazed brickwork & girih tiles',
-    summary:
-      'Monumental turquoise and lapis lazuli geometric faience adorning colossal iwans, domes, and portals, pioneering complex quasi-crystalline girih decagrams.',
-  },
-  Seljuk: {
-    arabic: 'الهندسة السلجوقية',
-    era: '1037 – 1194 CE',
-    region: 'Isfahan, Konya & Divriği',
-    medium: 'Carved stone portals & brick strapwork',
-    summary:
-      'Bold three-dimensional geometric relief carved deeply into monumental stone portals, madrasa gates, and intricate brickwork throughout Anatolia and Persia.',
-  },
-  Tulunid: {
-    arabic: 'الطراز الطولوني',
-    era: '868 – 905 CE',
-    region: 'Ibn Tulun Mosque, Cairo',
-    medium: 'Carved stucco arcades & geometric window grilles',
-    summary:
-      'Pioneering openwork stucco lattices with stylized geometric strapwork filtering sacred desert daylight into early Islamic hypostyle prayer halls.',
-  },
-  Mughal: {
-    arabic: 'العمارة المغولية',
-    era: '1526 – 1857 CE',
-    region: 'Agra, Delhi & Lahore',
-    medium: 'Carved red sandstone & pierced marble jali lattices',
-    summary:
-      'Intricate marble jali screens and pietra dura stonework uniting imperial Islamic geometric symmetry with refined architectural grace.',
-  },
-};
 
 const SORT_OPTIONS: readonly { value: SortOrder; label: string }[] = [
   { value: 'default', label: 'Featured' },
-  { value: 'easiest', label: 'Easiest' },
-  { value: 'shortest', label: 'Shortest' },
-  { value: 'title', label: 'A–Z' },
+  { value: 'easiest', label: 'Easiest first' },
+  { value: 'shortest', label: 'Shortest first' },
+  { value: 'title', label: 'A to Z' },
 ];
+const LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
+
+/** What a card shows of a tutorial: its prepared preview, or (for a
+ * tutorial given as data, in tests and user files) the same read from it. */
+function previewOf(entry: Entry): Preview {
+  if (entry.preview) return entry.preview;
+  const t = (entry.json ?? {}) as Partial<{
+    title: string;
+    short: string;
+    style: string;
+    region: string;
+    level: string;
+    fold: number;
+    star: number;
+    steps: unknown[];
+    verification: Preview['verification'];
+  }>;
+  return {
+    title: t.title ?? entry.id,
+    ...(t.short ? { short: t.short } : {}),
+    style: t.style ?? '',
+    ...(t.region ? { region: t.region } : {}),
+    level: t.level ?? 'beginner',
+    fold: t.star ?? t.fold ?? 0,
+    steps: Array.isArray(t.steps) ? t.steps.length : 0,
+    photos: false,
+    ...(t.verification ? { verification: t.verification } : {}),
+    thumbnail: '',
+  };
+}
+
+/** A tutorial given as data: drawn by the engine in its window, or the
+ * reason it cannot be played. */
+function LiveWindow({
+  entry,
+  ...props
+}: Parameters<typeof Window>[0] & { entry: Entry }) {
+  const { model, error, progress } = useModel(entry.json);
+  return (
+    <Window
+      {...props}
+      picture={
+        model ? (
+          <Thumbnail model={model} />
+        ) : (
+          <p className={error ? 'window-error' : 'window-waiting'}>
+            {error
+              ? `Cannot be played: ${error}`
+              : PROGRESS_TEXT[progress ?? 'checking']}
+          </p>
+        )
+      }
+    />
+  );
+}
+
+/** An n-pointed star: the sign for a fold. */
+function FoldStar({ n }: { n: number }) {
+  const k = n <= 4 ? 0.5 : n <= 6 ? 0.58 : 0.66;
+  const pts: string[] = [];
+  for (let i = 0; i < n * 2; i++) {
+    const r = i % 2 ? 10 * (1 - k) + 1 : 10;
+    const a = (Math.PI * i) / n - Math.PI / 2;
+    pts.push(
+      `${(12 + r * Math.cos(a)).toFixed(2)},${(12 + r * Math.sin(a)).toFixed(2)}`,
+    );
+  }
+  return (
+    <svg
+      className="fold-star"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <polygon points={pts.join(' ')} fill="currentColor" />
+    </svg>
+  );
+}
 
 /** Every tutorial, with a picture of the finished pattern: one card for
  * each family of variations. */
@@ -123,16 +131,11 @@ export function Library({
 }: {
   entries: readonly Entry[];
   startAtCollection?: boolean;
-  /** The place the address names (#/places/<place>): the library opens on
-   * it. The route that writes these addresses joins the library in
-   * REDESIGN.3. */
+  /** The place the address names (#/places/<place>); none shows all. */
   place?: string;
 }) {
   const families = useMemo(() => grouped(entries), [entries]);
-  const [region, setRegion] = useState(() => place ?? keptFilters().region);
-  useEffect(() => {
-    if (place) setRegion(place);
-  }, [place]);
+  const region = place;
   const [style, setStyle] = useState(() => keptFilters().style);
   const [level, setLevel] = useState(() => keptFilters().level);
   const [fold, setFold] = useState(() => keptFilters().fold);
@@ -143,7 +146,7 @@ export function Library({
     () => keptFilters().sort ?? 'default',
   );
   const [query, setQuery] = useState(() => keptFilters().query ?? '');
-  const [browsing, setBrowsing] = useState(false);
+  // The place is kept too, so next and previous in a pattern follow it.
   useEffect(
     () =>
       keepFilters({
@@ -163,18 +166,7 @@ export function Library({
   const [inProgress] = useState(() => workInProgress(entries));
   const designNote = unreadableKept() || unreadableNow();
   const workCount = inProgress.length + designs.length + patterns.length;
-  // The learner's own work, one row of it: above the welcome when a
-  // lesson waits to be continued (the likeliest next click), below it
-  // otherwise. All of it is on #/work.
-  const yourWork = workCount ? (
-    <WorkRow
-      entries={entries}
-      inProgress={inProgress}
-      designs={designs}
-      patterns={patterns}
-    />
-  ) : null;
-  const filters = useMemo(
+  const filters: LibraryFilters = useMemo(
     () => ({
       query,
       region,
@@ -187,74 +179,47 @@ export function Library({
     [query, region, style, level, fold, withPhoto, sort],
   );
   const shown = useMemo(() => filtered(families, filters), [families, filters]);
-  const choose = (change: MenuChange) => {
-    if (change.key === 'region') setRegion(change.value);
-    if (change.key === 'style') setStyle(change.value);
-    if (change.key === 'level') setLevel(change.value);
-    if (change.key === 'fold') setFold(change.value);
-  };
-  // The filters chosen, each a tag that removes it.
-  const tags: readonly { label: string; remove: () => void; key: string }[] = [
-    ...(region
-      ? [
-          {
-            key: 'region',
-            label: region,
-            remove: () => setRegion(undefined),
-          },
-        ]
-      : []),
-    ...(fold
-      ? [
-          {
-            key: 'fold',
-            label: foldLabel(fold),
-            remove: () => setFold(undefined),
-          },
-        ]
-      : []),
-    ...(level
-      ? [
-          {
-            key: 'level',
-            label: capital(level),
-            remove: () => setLevel(undefined),
-          },
-        ]
-      : []),
-    ...(style
-      ? [{ key: 'style', label: style, remove: () => setStyle(undefined) }]
-      : []),
-    ...(withPhoto
-      ? [
-          {
-            key: 'photo',
-            label: 'With photo',
-            remove: () => setWithPhoto(false),
-          },
-        ]
-      : []),
-  ];
-  const menu = (
-    <LibraryMenu entries={families} filters={filters} onChange={choose} />
+  // The counts each choice would show under the other filters.
+  const regionCounts = useMemo(
+    () =>
+      facetCounts(families, { ...filters, region: undefined }, 'region') as Map<
+        string,
+        number
+      >,
+    [families, filters],
   );
-  // A card's level, symmetry or tradition shows every pattern like it,
-  // with the list brought into view under its filters.
-  const filterBy = (facet: Facet) => {
-    if ('level' in facet) setLevel(facet.level);
-    if ('fold' in facet) setFold(facet.fold);
-    if ('style' in facet) setStyle(facet.style);
-    document
-      .getElementById('collection')
-      ?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
-  };
+  const foldCounts = useMemo(
+    () => facetCounts(families, { ...filters, fold: undefined }, 'fold'),
+    [families, filters],
+  );
+  const levelCounts = useMemo(
+    () => facetCounts(families, { ...filters, level: undefined }, 'level'),
+    [families, filters],
+  );
+  const styleCounts = useMemo(
+    () =>
+      facetCounts(families, { ...filters, style: undefined }, 'style') as Map<
+        string,
+        number
+      >,
+    [families, filters],
+  );
+  // Every fold of the library, in order, whatever the filters.
+  const folds = useMemo(
+    () => [...facetCounts(families, {}, 'fold').keys()].sort((a, b) => a - b),
+    [families],
+  );
+  const chosen = PLACES.find((p) => p.key === region);
+  const any = Boolean(
+    query.trim() || region || style || level || fold || withPhoto,
+  );
   const clear = () => {
     setQuery('');
-    setRegion(undefined);
     setStyle(undefined);
     setLevel(undefined);
     setFold(undefined);
     setWithPhoto(false);
+    if (region) window.location.hash = placeHref();
   };
   // The filters chosen, in words: “8-fold, for beginners and Nasrid”.
   const chosenWords = andList(
@@ -265,293 +230,254 @@ export function Library({
         ? `for ${level === 'beginner' ? 'beginners' : `the ${level} level`}`
         : '',
       style ? `from the ${style} tradition` : '',
-      region ? `from ${region}` : '',
+      chosen ? `from ${chosen.short}` : '',
       withPhoto ? 'with a real-wall photo' : '',
     ].filter(Boolean),
   );
-  const hero = entries.find((e) => e.id === HERO) ?? entries[0];
-  const first = entries.find((e) => e.id === FIRST) ?? entries[0];
+  // Under a chosen place, its traditions; else only a chosen one, to undo.
+  const traditions = chosen
+    ? [...styleCounts.entries()]
+        .filter(([, n]) => n > 0)
+        .sort((a, b) => b[1] - a[1])
+    : style
+      ? [[style, styleCounts.get(style) ?? 0] as [string, number]]
+      : [];
+  const books = region === BOOKS.key;
   return (
-    <main className="library">
-      <header className="masthead">
-        <div className="masthead-brand">
-          <h1 aria-label="Tastir">
+    <div className="library lib-page">
+      <WindowDefs />
+      <header className="lib-top">
+        <a className="lib-logo" href="#/" aria-label="Tastir, all patterns">
+          <h1>
             Tastir{' '}
-            <span
-              className="brand-arabic"
-              aria-hidden="true"
-              lang="ar"
-              dir="rtl"
-            >
+            <span lang="ar" dir="rtl" aria-hidden="true">
               تسطير
             </span>
           </h1>
-          <span className="brand-badge">ATELIER</span>
-        </div>
-
-        <nav className="masthead-nav" aria-label="Main Navigation">
-          <a
-            href="#collection"
-            className="nav-item"
-            onClick={(e) => {
-              e.preventDefault();
-              document
-                .getElementById('collection')
-                ?.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            <span>Library</span>
-            <span className="nav-badge">{families.length}</span>
+        </a>
+        <nav className="lib-nav" aria-label="Sections">
+          <a href="#/" aria-current="page">
+            Library
           </a>
-          <a className="nav-item" href="#/learn">
-            <span>Learn</span>
-            <span className="nav-badge highlight">{LEARNING_PATH.length}</span>
-          </a>
-          <a className="nav-item jump-link upcoming-nav-link" href="#/upcoming">
-            <span>Upcoming</span>
-            <span className="nav-badge">24</span>
-          </a>
-          {HOSTED ? (
-            <a className="nav-item jump-link" href="#/studio">
-              Studio
-            </a>
-          ) : null}
+          <a href="#/learn">Learn</a>
+          {HOSTED ? <a href="#/studio">Studio</a> : null}
           {workCount || designNote || HOSTED ? (
             <a
-              className="nav-item jump-link"
               href="#/work"
               aria-label={HOSTED ? 'Your work' : `Your work (${workCount})`}
             >
-              <span>Your work</span>{' '}
-              {HOSTED ? null : <span className="nav-badge">({workCount})</span>}
+              Your work
+              {HOSTED ? null : <small> ({workCount})</small>}
             </a>
           ) : null}
         </nav>
-
-        <div className="masthead-actions">
+        <label className="lib-search">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" />
+            <line x1="16.5" y1="16.5" x2="21" y2="21" />
+          </svg>
+          <span className="visually-hidden">Search patterns</span>
+          <input
+            type="search"
+            dir="auto"
+            placeholder="Search: a place, a source, “16 point”…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </label>
+        <div className="lib-actions">
           <NewPattern />
           <ThemeSwitch />
         </div>
       </header>
-      {inProgress.length ? yourWork : null}
-      <section className="hero">
-        {hero ? <HeroDrawing key={hero.id} entry={hero} /> : null}
-        <div className="hero-copy">
-          <div className="eyebrow">
-            <span>Islamic Geometric Drafting Atelier</span>
-            <span className="eyebrow-sep">·</span>
-            <span className="eyebrow-arabic" lang="ar" dir="rtl">
-              علم التسطير والهندسة
-            </span>
-          </div>
-          <h2>Draw Islamic geometric patterns with a compass and a ruler.</h2>
-          <p>
-            Every pattern here starts from one circle. Each step adds a circle
-            or a line, and the pattern appears out of the lines you drew.
-          </p>
-          <ol className="hero-steps">
-            <li>Follow the construction, one step at a time.</li>
-            <li>Ink the lines that make the pattern.</li>
-            <li>Repeat the tile into a wall and color it.</li>
-          </ol>
-          {first ? (
-            <p className="hero-start">
-              <a
-                className="button primary act-watch"
-                href={`#/${first.id}/watch`}
+      <Route place={chosen?.key} counts={regionCounts} />
+      <main className="lib-main">
+        <div className="lib-filters" role="toolbar" aria-label="Filters">
+          <span className="lib-flabel" aria-hidden="true">
+            Star
+          </span>
+          {folds.map((f) => {
+            const n = foldCounts.get(f) ?? 0;
+            const on = fold === f;
+            return (
+              <button
+                key={f}
+                type="button"
+                className="lib-chip"
+                aria-pressed={on}
+                aria-label={`${foldLabel(f)}, ${n} ${n === 1 ? 'pattern' : 'patterns'}`}
+                disabled={!on && n === 0}
+                onClick={() => setFold(on ? undefined : f)}
               >
-                <ActionIcon action="watch" />
-                Start with the star and cross
-              </a>
-              {first.preview ? (
-                <span className="hero-start-meta">
-                  {capital(first.preview.level)} · {first.preview.steps} steps
+                {f > 2 ? <FoldStar n={f} /> : null}
+                {f === 1 ? 'Mirror' : f}
+              </button>
+            );
+          })}
+          <span className="lib-sep" aria-hidden="true" />
+          <span className="lib-flabel" aria-hidden="true">
+            Level
+          </span>
+          {LEVELS.map((l) => {
+            const n = levelCounts.get(l) ?? 0;
+            const on = level === l;
+            return (
+              <button
+                key={l}
+                type="button"
+                className="lib-chip"
+                aria-pressed={on}
+                aria-label={`${capital(l)}, ${n} ${n === 1 ? 'pattern' : 'patterns'}`}
+                disabled={!on && n === 0}
+                onClick={() => setLevel(on ? undefined : l)}
+              >
+                <LevelDots level={l} />
+                {capital(l)}
+              </button>
+            );
+          })}
+          <span className="lib-sep" aria-hidden="true" />
+          <button
+            type="button"
+            className="lib-chip"
+            aria-pressed={withPhoto}
+            onClick={() => setWithPhoto((was) => !was)}
+          >
+            With photo
+          </button>
+        </div>
+        {any ? null : <StartHere entries={entries} inProgress={inProgress} />}
+        <section className="lib-patterns" aria-labelledby="collection">
+          <div className="lib-head">
+            <h2 id="collection" tabIndex={-1}>
+              {chosen ? chosen.short : 'All patterns'}
+              {chosen ? (
+                <span className="lib-arabic" lang="ar" dir="rtl">
+                  {chosen.arabic}
                 </span>
               ) : null}
-            </p>
-          ) : null}
-        </div>
-      </section>
-      <LearningStart entries={entries} />
-      {inProgress.length ? null : yourWork}
-      <section aria-labelledby="collection">
-        <div className="collection-head">
-          <h2 id="collection" tabIndex={-1}>
-            The patterns
-          </h2>
-          <div className="collection-meta">
-            <p>
-              {shown.length === families.length
-                ? `${families.length} patterns, many checked against photos of the real walls.`
-                : `${shown.length} of ${families.length} patterns.`}
-            </p>
-            <a className="upcoming-teaser-link" href="#/upcoming">
-              Upcoming masterworks roadmap (24) →
-            </a>
-          </div>
-        </div>
-        <div className="collection-body">
-          <aside className="library-side">{menu}</aside>
-          <div className="collection-main">
-            <div className="collection-tools">
-              <label className="filter-search">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="11" cy="11" r="7" />
-                  <line x1="16.5" y1="16.5" x2="21" y2="21" />
-                </svg>
-                <span className="visually-hidden">Search patterns</span>
-                <input
-                  type="search"
-                  dir="auto"
-                  placeholder="Search: a place, a source, “16 point”…"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                />
-              </label>
-              <button
-                type="button"
-                className={`photo-filter${withPhoto ? ' active' : ''}`}
-                aria-pressed={withPhoto}
-                onClick={() => setWithPhoto((was) => !was)}
-              >
-                With photo
-              </button>
-              <div
-                className="sort-control"
-                role="group"
-                aria-label="Sort patterns"
-              >
-                {SORT_OPTIONS.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    aria-pressed={sort === option.value}
-                    onClick={() => setSort(option.value)}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
-              <button
-                type="button"
-                className="browse-button"
-                aria-haspopup="dialog"
-                onClick={() => setBrowsing(true)}
-              >
-                Browse{tags.length ? ` (${tags.length})` : ''}
-              </button>
-            </div>
-            {tags.length || query ? (
-              <ul className="filter-tags" aria-label="Chosen filters">
-                {tags.map((tag) => (
-                  <li key={tag.key}>
-                    <button
-                      type="button"
-                      aria-label={`Remove the filter ${tag.label}`}
-                      onClick={tag.remove}
-                    >
-                      {tag.label} <span aria-hidden="true">✕</span>
-                    </button>
-                  </li>
-                ))}
-                <li>
-                  <button
-                    type="button"
-                    className="clear-filters"
-                    onClick={clear}
-                  >
-                    Clear all
-                  </button>
-                </li>
-              </ul>
-            ) : null}
-            {style && TRADITIONS[style] ? (
-              <aside
-                className="tradition-dossier"
-                aria-label={`Context for ${style}`}
-              >
-                <div className="dossier-header">
-                  <div className="dossier-badge">
-                    <span className="dossier-tag">TRADITION CONTEXT</span>
-                    <span className="dossier-sep">·</span>
-                    <span className="dossier-ar" lang="ar" dir="rtl">
-                      {TRADITIONS[style].arabic}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    className="dossier-clear"
-                    onClick={() => setStyle(undefined)}
-                  >
-                    Clear tradition filter ✕
-                  </button>
-                </div>
-                <div className="dossier-body">
-                  <div className="dossier-heading">
-                    <h3 className="dossier-title">{style}</h3>
-                    <p className="dossier-meta">
-                      <span>{TRADITIONS[style].era}</span>
-                      <span className="meta-dot">·</span>
-                      <span>{TRADITIONS[style].region}</span>
-                      <span className="meta-dot">·</span>
-                      <span>{TRADITIONS[style].medium}</span>
-                    </p>
-                  </div>
-                  <p className="dossier-summary">{TRADITIONS[style].summary}</p>
-                </div>
-              </aside>
-            ) : null}
-            {shown.length ? (
-              <ul className="cards">
-                {shown.map((entry) => (
-                  <Card key={entry.id} entry={entry} onFilter={filterBy} />
-                ))}
-              </ul>
-            ) : (
-              <p className="empty">
-                No pattern is {chosenWords}.{' '}
-                <button type="button" className="clear-filters" onClick={clear}>
-                  Clear all
+            </h2>
+            <p className="lib-count">
+              {chosen ? `${chosen.about} ` : ''}
+              <b>
+                {shown.length === families.length
+                  ? `${families.length} patterns`
+                  : `${shown.length} of ${families.length} patterns`}
+              </b>
+              {any ? (
+                <button type="button" className="lib-clear" onClick={clear}>
+                  Clear filters
                 </button>
-              </p>
-            )}
-          </div>
-        </div>
-        {browsing ? (
-          <LibraryDrawer
-            onClose={() => setBrowsing(false)}
-            shown={shown.length}
-          >
-            {menu}
-          </LibraryDrawer>
-        ) : null}
-      </section>
-      <footer className="site-footer">
-        Tastir draws every point from crossings of earlier circles and lines, as
-        with a real compass and ruler. Sources and photographers are named with
-        each pattern.
-        {import.meta.env.DEV ? (
-          <div className="dev-links" aria-label="Developer quick links">
-            <span className="dev-tag">Dev</span>
+              ) : null}
+            </p>
             <a
-              href="#/review"
-              className="dev-link"
-              title="Progress, decisions and questions"
+              className="lib-books"
+              href={placeHref(books ? undefined : BOOKS.key)}
+              aria-current={books ? 'page' : undefined}
             >
-              <strong>Review page</strong>
+              {books ? 'Back to all places' : 'Pattern books'}{' '}
+              <small>{regionCounts.get(BOOKS.key) ?? 0}</small>
             </a>
-            <span className="dev-sep">/</span>
-            <a
-              href="#/notes"
-              className="dev-link"
-              title="Goal, queue, status and lessons"
-            >
-              <strong>Project notes</strong>
-            </a>
+            <label className="lib-sort">
+              <span className="visually-hidden">Sort patterns</span>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortOrder)}
+              >
+                {SORT_OPTIONS.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
-        ) : null}
-      </footer>
-    </main>
+          {traditions.length ? (
+            <div
+              className="lib-traditions"
+              role="group"
+              aria-label="Traditions"
+            >
+              {traditions.map(([s, n]) => (
+                <button
+                  key={s}
+                  type="button"
+                  className="lib-chip"
+                  aria-pressed={style === s}
+                  aria-label={`${s}, ${n} ${n === 1 ? 'pattern' : 'patterns'}`}
+                  onClick={() => setStyle(style === s ? undefined : s)}
+                >
+                  {s} <small>{n}</small>
+                </button>
+              ))}
+            </div>
+          ) : null}
+          {shown.length ? (
+            <ul className="library-grid">
+              {shown.map((entry) => {
+                const preview = previewOf(entry);
+                const props = {
+                  id: entry.id,
+                  preview,
+                  designs:
+                    1 +
+                    (entry.variations?.length ?? 0) +
+                    (entry.places?.length ?? 0),
+                  place: chosen
+                    ? undefined
+                    : PLACES.find((p) => p.key === preview.region)?.short,
+                  hidden: isHidden(entry.id),
+                };
+                return entry.preview ? (
+                  <Window key={entry.id} {...props} />
+                ) : (
+                  <LiveWindow key={entry.id} entry={entry} {...props} />
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="lib-empty">
+              No pattern is {chosenWords}.{' '}
+              <button type="button" className="lib-clear" onClick={clear}>
+                Clear filters
+              </button>
+            </p>
+          )}
+        </section>
+        <footer className="site-footer">
+          <p>
+            Tastir draws every point from crossings of earlier circles and
+            lines, as with a real compass and ruler. Sources and photographers
+            are named with each pattern.
+          </p>
+          <p>
+            <a className="upcoming-link" href="#/upcoming">
+              Patterns we are working on →
+            </a>
+          </p>
+          {import.meta.env.DEV ? (
+            <div className="dev-links" aria-label="Developer quick links">
+              <span className="dev-tag">Dev</span>
+              <a
+                href="#/review"
+                className="dev-link"
+                title="Progress, decisions and questions"
+              >
+                <strong>Review page</strong>
+              </a>
+              <span className="dev-sep">/</span>
+              <a
+                href="#/notes"
+                className="dev-link"
+                title="Goal, queue, status and lessons"
+              >
+                <strong>Project notes</strong>
+              </a>
+            </div>
+          ) : null}
+        </footer>
+      </main>
+    </div>
   );
 }
 
@@ -606,221 +532,4 @@ function useReturnToScroll(startAtCollection: boolean) {
 function andList(words: readonly string[]): string {
   if (words.length < 2) return words[0] ?? '';
   return `${words.slice(0, -1).join(', ')} and ${words.at(-1)}`;
-}
-
-/** A filter a card's facts set: its level, its symmetry or its tradition. */
-type Facet = { level: string } | { fold: number } | { style: string };
-
-/** One tutorial in the library, loaded in the worker. */
-function Card({
-  entry,
-  onFilter,
-}: {
-  entry: Entry;
-  onFilter: (facet: Facet) => void;
-}) {
-  // A family's card counts the main tutorial with its variations.
-  const variations = entry.variations?.length
-    ? entry.variations.length + 1
-    : undefined;
-  // And the places its design is found, the card's own among them.
-  const places = entry.places?.length ? entry.places.length + 1 : undefined;
-  return entry.preview ? (
-    <CardView
-      id={entry.id}
-      preview={entry.preview}
-      variations={variations}
-      places={places}
-      onFilter={onFilter}
-    />
-  ) : (
-    <LiveCard
-      entry={entry}
-      variations={variations}
-      places={places}
-      onFilter={onFilter}
-    />
-  );
-}
-function LiveCard({
-  entry: { id, json },
-  variations,
-  places,
-  onFilter,
-}: {
-  entry: Entry;
-  variations?: number;
-  places?: number;
-  onFilter: (facet: Facet) => void;
-}) {
-  const { model, error, progress } = useModel(json);
-  return (
-    <CardView
-      id={id}
-      model={model}
-      error={error}
-      progress={progress}
-      variations={variations}
-      places={places}
-      onFilter={onFilter}
-    />
-  );
-}
-function CardView({
-  id,
-  preview,
-  model,
-  error,
-  progress,
-  variations,
-  places,
-  onFilter,
-}: {
-  id: string;
-  preview?: import('./library').Preview;
-  model?: import('./model').Model;
-  error?: string;
-  progress?: import('./workerClient').Progress;
-  /** How many variations the card's family has, when it stands for one. */
-  variations?: number;
-  /** How many places its design is found, when more than one. */
-  places?: number;
-  onFilter: (facet: Facet) => void;
-}) {
-  const t = model?.tutorial;
-  const title = preview?.short ?? t?.short ?? preview?.title ?? t?.title ?? id;
-  const subtitle = preview?.subtitle ?? t?.subtitle;
-  const fullTitle = preview?.title ?? t?.title ?? id;
-  const level = preview?.level ?? t?.level;
-  const fold = preview?.fold ?? t?.star ?? t?.fold;
-  const style = preview?.style ?? t?.style;
-  const verification = preview?.verification ?? t?.verification;
-  return (
-    <li className="card-item">
-      {/* The card opens the finished pattern (beside its photo, when there
-          is one), so the learner sees it whole before choosing to watch it
-          drawn or draw it along. */}
-      <a
-        className="card"
-        href={`#/${id}/result`}
-        title={title === fullTitle ? undefined : fullTitle}
-      >
-        {preview ? (
-          <img
-            className="thumbnail"
-            src={import.meta.env.BASE_URL + preview.thumbnail}
-            srcSet={
-              preview.thumbnailSmall
-                ? `${import.meta.env.BASE_URL + preview.thumbnailSmall} 320w, ${import.meta.env.BASE_URL + preview.thumbnail} 480w`
-                : undefined
-            }
-            sizes="auto, (max-width: 600px) 160px, 280px"
-            alt=""
-            loading="lazy"
-            width="360"
-            height="360"
-          />
-        ) : model ? (
-          <Thumbnail model={model} />
-        ) : (
-          <div className={error ? 'thumbnail broken' : 'thumbnail waiting'} />
-        )}
-        <span className="card-see">
-          <ActionIcon action="result" />
-          See it
-        </span>
-        <h3>{title}</h3>
-        {subtitle ? <p className="card-subtitle">{subtitle}</p> : null}
-        {variations ? (
-          <span
-            className="variations-label"
-            title="The same design on another tile, shifted or filled: switch between them in the pattern."
-          >
-            {variations} variations
-          </span>
-        ) : null}
-        {places ? (
-          <span
-            className="variations-label"
-            title="The same design found in other buildings, each in its own colours: switch between them in the pattern."
-          >
-            Seen in {places} places
-          </span>
-        ) : null}
-        {isHidden(id) ? (
-          <span
-            className="hidden-label"
-            title="Hidden from the library on the live site; only the dev server lists it."
-          >
-            Hidden
-          </span>
-        ) : null}
-        {verification?.status === 'unverified' ? (
-          <span className="verification-label" title={verification.note}>
-            Historical match unverified
-          </span>
-        ) : null}
-        {preview || model ? null : error ? (
-          <p className="error">Cannot be played: {error}</p>
-        ) : (
-          <p>{PROGRESS_TEXT[progress ?? 'checking']}</p>
-        )}
-      </a>
-      {preview || model ? (
-        <>
-          {/* Its facts filter the library: every pattern of that level,
-              that symmetry, that tradition. */}
-          <div className="meta">
-            {level ? (
-              <button
-                type="button"
-                className={`level fact level-${level}`}
-                title={`Show every ${level} pattern`}
-                onClick={() => onFilter({ level })}
-              >
-                {capital(level)}
-              </button>
-            ) : null}
-            <span className="steps">
-              {preview?.steps ?? (t ? shownSteps(t).length : 0)} steps
-            </span>
-            {fold ? (
-              <button
-                type="button"
-                className="fact"
-                title={`Show every ${foldLabel(fold).toLowerCase()} pattern`}
-                onClick={() => onFilter({ fold })}
-              >
-                {foldLabel(fold)}
-              </button>
-            ) : null}
-            {style ? (
-              <button
-                type="button"
-                className="fact"
-                title={`Show every ${style} pattern`}
-                onClick={() => onFilter({ style })}
-              >
-                {style}
-              </button>
-            ) : null}
-          </div>
-          <div className="card-actions">
-            <a className="card-link act-watch" href={`#/${id}/watch`}>
-              <ActionIcon action="watch" />
-              Watch it drawn
-            </a>
-            <a
-              className="card-link act-draw"
-              href={`#/${id}/draw`}
-              title="Draw it yourself, step by step"
-            >
-              <ActionIcon action="draw" />
-              Draw along
-            </a>
-          </div>
-        </>
-      ) : null}
-    </li>
-  );
 }

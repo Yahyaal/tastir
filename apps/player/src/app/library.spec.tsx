@@ -41,19 +41,20 @@ afterEach(() => {
   window.sessionStorage.clear();
 });
 
-/** Picks an option in one of the library's menus (Level, Tradition). */
-/** Chooses a value in a group of the library's side menu. */
-const pick = (group: string, value: string) =>
-  act(() => menuButton(group, value).click());
-const menuButton = (group: string, value: string) =>
+/** A chip of the filter row (a star or a level), or of a place's
+ * traditions, by its name. */
+const chip = (group: 'Filters' | 'Traditions', value: string) =>
   within(
-    within(document.querySelector('.library-side') as HTMLElement).getByRole(
-      'region',
-      { name: group },
-    ),
+    screen.getByRole(group === 'Filters' ? 'toolbar' : 'group', {
+      name: group,
+    }),
   ).getByRole('button', {
     name: new RegExp(`^${value},`),
   }) as HTMLButtonElement;
+/** The library's cards. */
+const cards = () => document.querySelectorAll('.library-grid > li').length;
+/** The place every test tutorial here is from. */
+const BOOKS = '#/places/Books%20and%20other';
 
 describe('the library', () => {
   it.each([khatam, octagons, rectangular].map(parseTutorial))(
@@ -68,13 +69,17 @@ describe('the library', () => {
       ).toBeTruthy();
       // The card shows the short name where the tutorial has one.
       expect(
-        screen.getByRole('heading', {
+        within(
+          document.querySelector('.library-grid') as HTMLElement,
+        ).getByRole('heading', {
           name: (json as { short?: string }).short ?? json.title,
         }),
       ).toBeTruthy();
-      expect(document.querySelector('.card-item .level')?.textContent).toBe(
-        json.level === 'intermediate' ? 'Intermediate' : 'Advanced',
-      );
+      expect(
+        document
+          .querySelector('.library-grid .window-dots')
+          ?.getAttribute('aria-label'),
+      ).toBe(json.level === 'intermediate' ? 'Intermediate' : 'Advanced');
     },
   );
   it('gives notes only to the members of their family', () => {
@@ -148,25 +153,26 @@ describe('the library', () => {
         '../../../../tutorials/another-star.json': extra,
       });
       render(<App entries={entries} />);
-      const links = within(document.querySelector('.cards') as HTMLElement)
-        .getAllByRole('link')
-        .map((c) => c.getAttribute('href'));
-      // The whole card opens the finished pattern; two quiet links under it
-      // watch it drawn from the first step or draw it along.
+      const grid = document.querySelector('.library-grid') as HTMLElement;
+      const links = [...grid.querySelectorAll('.window-actions a')].map((c) =>
+        c.getAttribute('href'),
+      );
+      // The window opens the finished wall; its buttons View, Watch it
+      // drawn and Draw along.
       expect(links).toEqual([
-        '#/another-star/result',
+        '#/another-star',
         '#/another-star/watch',
         '#/another-star/draw',
-        '#/eight-fold-star-and-cross/result',
+        '#/eight-fold-star-and-cross',
         '#/eight-fold-star-and-cross/watch',
         '#/eight-fold-star-and-cross/draw',
       ]);
       expect(
-        screen.getAllByRole('link', { name: 'Watch it drawn' }),
+        within(grid).getAllByRole('link', { name: 'Watch it drawn' }),
       ).toHaveLength(2);
-      expect(screen.getAllByRole('link', { name: 'Draw along' })).toHaveLength(
-        2,
-      );
+      expect(
+        within(grid).getAllByRole('link', { name: 'Draw along' }),
+      ).toHaveLength(2);
       expect(
         screen.getByRole('heading', { name: 'Another star' }),
       ).toBeTruthy();
@@ -182,9 +188,9 @@ describe('the library', () => {
       ).toBe('#/notes');
       // Each card says its level and length.
       expect(
-        screen.getAllByText('Beginner', { selector: '.meta *' }),
+        within(grid).getAllByRole('img', { name: 'Beginner' }),
       ).toHaveLength(level === 'beginner' ? 2 : 1);
-      expect(screen.getAllByText('6 steps')).toHaveLength(2);
+      expect(within(grid).getAllByText('6 steps')).toHaveLength(2);
       // Each card has a picture of the colored pattern.
       expect(
         document.querySelectorAll('svg.thumbnail .piece').length,
@@ -204,25 +210,29 @@ describe('the library', () => {
       '../../../../tutorials/eight-fold-star-and-cross.json': example,
       '../../../../tutorials/another-star.json': extra,
     });
+    // A place shows its traditions as chips.
+    window.location.hash = BOOKS;
     render(<App entries={entries} />);
-    const cards = () => document.querySelectorAll('.cards > li').length;
     expect(cards()).toBe(2);
-    pick('Tradition', 'Nasrid');
+    act(() => chip('Traditions', 'Nasrid').click());
     expect(cards()).toBe(1);
-    // No Nasrid pattern is for beginners, so the menu does not offer it.
-    expect(menuButton('Level', 'Beginner').disabled).toBe(true);
-    // The empty library names what was chosen, and Clear all undoes it.
+    // No Nasrid pattern is for beginners, so the row does not offer it.
+    expect(chip('Filters', 'Beginner').disabled).toBe(true);
+    // The empty library names what was chosen, and Clear filters undoes it.
     fireEvent.change(screen.getByRole('searchbox'), {
       target: { value: 'nothing' },
     });
     expect(
       screen.getByText(
-        /No pattern is called “nothing” and from the Nasrid tradition/,
+        /No pattern is called “nothing”, from the Nasrid tradition and from Pattern books/,
       ),
     ).toBeTruthy();
-    act(() => screen.getAllByRole('button', { name: 'Clear all' })[0]?.click());
+    act(() =>
+      screen.getAllByRole('button', { name: 'Clear filters' })[0]?.click(),
+    );
+    go('#/');
     expect(cards()).toBe(2);
-    expect(screen.queryByRole('button', { name: 'Clear all' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Clear filters' })).toBeNull();
   });
 
   it('finds patterns by the words of their name', () => {
@@ -236,7 +246,6 @@ describe('the library', () => {
       '../../../../tutorials/another-star.json': extra,
     });
     render(<App entries={entries} />);
-    const cards = () => document.querySelectorAll('.cards > li').length;
     const search = screen.getByRole('searchbox', { name: 'Search patterns' });
     fireEvent.change(search, { target: { value: 'another' } });
     expect(cards()).toBe(1);
@@ -244,17 +253,18 @@ describe('the library', () => {
     expect(
       screen.getByText(/No pattern is called “nothing like it”/),
     ).toBeTruthy();
-    act(() => screen.getAllByRole('button', { name: 'Clear all' })[0]?.click());
+    act(() =>
+      screen.getAllByRole('button', { name: 'Clear filters' })[0]?.click(),
+    );
     expect(cards()).toBe(2);
     expect((search as HTMLInputElement).value).toBe('');
   });
 
-  it('filters by a card’s level, symmetry or tradition when it is clicked', () => {
+  it('filters by a star or a level from the row of filters', () => {
     const extra = {
       ...(structuredClone(example) as object),
       id: 'another-star',
       title: 'Another star',
-      style: 'Nasrid',
       level: 'advanced',
     };
     const entries = entriesOf({
@@ -262,19 +272,22 @@ describe('the library', () => {
       '../../../../tutorials/another-star.json': extra,
     });
     render(<App entries={entries} />);
-    const cards = () => document.querySelectorAll('.cards > li').length;
     expect(cards()).toBe(2);
-    act(() => screen.getByRole('button', { name: 'Advanced' }).click());
+    act(() => chip('Filters', 'Advanced').click());
     expect(cards()).toBe(1);
-    expect(menuButton('Level', 'Advanced').getAttribute('aria-pressed')).toBe(
+    expect(chip('Filters', 'Advanced').getAttribute('aria-pressed')).toBe(
       'true',
     );
-    act(() => screen.getByRole('button', { name: 'Clear all' }).click());
-    act(() => screen.getAllByRole('button', { name: 'Nasrid' })[0]?.click());
-    expect(cards()).toBe(1);
+    // Start here steps aside while a filter is on.
+    expect(screen.queryByRole('heading', { name: 'Start here' })).toBeNull();
+    act(() => chip('Filters', 'Advanced').click());
+    expect(cards()).toBe(2);
+    act(() => chip('Filters', '8-fold').click());
+    expect(cards()).toBe(2);
+    expect(chip('Filters', '8-fold').getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('shows a short name and the line under it, with the full title on hover', () => {
+  it('shows a short name, with the full title on hover', () => {
     const named = {
       ...(structuredClone(example) as object),
       id: 'long-star',
@@ -292,12 +305,11 @@ describe('the library', () => {
     expect(
       screen.getByRole('heading', { name: 'Squares and stars' }),
     ).toBeTruthy();
-    expect(screen.getByText('Patio de los Arrayanes, Alhambra')).toBeTruthy();
-    expect(document.querySelector('.card')?.getAttribute('title')).toBe(
-      'Squares and stars of the Patio de los Arrayanes (Alhambra)',
-    );
+    expect(
+      document.querySelector('.library-grid h3')?.getAttribute('title'),
+    ).toBe('Squares and stars of the Patio de los Arrayanes (Alhambra)');
     // No Arabic on the cards.
-    expect(document.querySelector('.cards [lang="ar"]')).toBeNull();
+    expect(document.querySelector('.library-grid [lang="ar"]')).toBeNull();
   });
 
   it('keeps a card for a tutorial that cannot be played, with the reason', () => {
@@ -324,14 +336,17 @@ describe('the way in', () => {
     render(<App entries={entries()} />);
     expect(
       screen
-        .getByRole('link', { name: 'Start with the star and cross' })
+        .getByRole('link', { name: 'Begin: lesson 1' })
         .getAttribute('href'),
-    ).toBe('#/eight-fold-star-and-cross/watch');
+    ).toBe('#/eight-fold-star-and-cross/watch/1');
+    // A first visit is welcomed in Start here.
+    expect(screen.getByText('New here?')).toBeTruthy();
   });
 
-  it('lists the lessons left partway under Your work, the latest first', () => {
+  it('offers the work left partway at the front of Start here', () => {
     const { unmount } = render(<App entries={entries()} />);
-    expect(screen.queryByRole('region', { name: 'Your work' })).toBeNull();
+    expect(document.querySelector('.continue-card')).toBeNull();
+    expect(screen.queryByRole('link', { name: /^Your work/ })).toBeNull();
     unmount();
     window.localStorage.setItem(
       'tastir.lessonAt.eight-fold-star-and-cross',
@@ -355,30 +370,20 @@ describe('the way in', () => {
       ]),
     );
     render(<App entries={entries()} />);
-    // One row on the home page: the lessons in progress come first.
-    const yours = screen.getByRole('region', { name: 'Your work' });
-    const links = [...yours.querySelectorAll<HTMLElement>('.cards a.card')];
-    // The drawing was left last: it comes first, and opens its board.
-    expect(links.map((l) => l.getAttribute('href'))).toEqual([
-      '#/eight-fold-star-and-cross/draw',
-      '#/eight-fold-star-and-cross/watch',
-    ]);
+    // The drawing was left last: it is the Continue card, and opens its
+    // board.
+    const card = document.querySelector('.continue-card') as HTMLElement;
+    expect(card.getAttribute('href')).toBe('#/eight-fold-star-and-cross/draw');
+    expect(card.textContent).toContain('Continue drawing');
+    expect(within(card).getByText('Step 2 of 6')).toBeTruthy();
+    // The lesson begun goes on where it was left.
     expect(
-      within(links[0] as HTMLElement).getByText('Step 2 of 6'),
-    ).toBeTruthy();
-    expect(links[0]?.textContent).toContain('Continue drawing');
-    expect(links[1]?.textContent).toContain('Continue watching');
-    expect(
-      within(links[1] as HTMLElement).getByText('Step 3 of 6'),
-    ).toBeTruthy();
-    // Something in progress: Your work comes before the welcome.
-    const hero = document.querySelector('.hero') as HTMLElement;
-    expect(
-      yours.compareDocumentPosition(hero) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
-    expect(
-      within(yours).getByRole('link', { name: /See all \(2\)/ }),
-    ).toHaveProperty('hash', '#/work');
+      screen
+        .getByRole('link', { name: 'Go on: lesson 1' })
+        .getAttribute('href'),
+    ).toBe('#/eight-fold-star-and-cross/watch');
+    // No welcome once something was begun.
+    expect(screen.queryByText('New here?')).toBeNull();
     expect(
       screen.getByRole('link', { name: 'Your work (2)' }).getAttribute('href'),
     ).toBe('#/work');
@@ -391,7 +396,7 @@ describe('the way in', () => {
       within(footer).getByRole('link', { name: /Review page/ }),
     ).toBeTruthy();
     expect(
-      document.querySelector('.masthead')?.querySelector('.dev-links'),
+      document.querySelector('.lib-top')?.querySelector('.dev-links'),
     ).toBeNull();
   });
 });
@@ -410,14 +415,15 @@ describe('coming back to the library', () => {
 
   it('keeps the filters the learner chose', () => {
     const entries = twoStars();
+    window.location.hash = BOOKS;
     const { unmount } = render(<App entries={entries} />);
-    pick('Tradition', 'Nasrid');
+    act(() => chip('Traditions', 'Nasrid').click());
     unmount();
     render(<App entries={entries} />);
-    expect(menuButton('Tradition', 'Nasrid').getAttribute('aria-pressed')).toBe(
+    expect(chip('Traditions', 'Nasrid').getAttribute('aria-pressed')).toBe(
       'true',
     );
-    expect(document.querySelectorAll('.cards > li').length).toBe(1);
+    expect(cards()).toBe(1);
   });
 
   it('returns to the place on the page it left from', () => {
@@ -517,18 +523,14 @@ describe('the address', () => {
 
   it('shows a family as one card that counts its variations', () => {
     render(<App />);
-    expect(document.querySelectorAll('.cards > li').length).toBe(
-      grouped(LIBRARY).length,
-    );
+    expect(cards()).toBe(grouped(LIBRARY).length);
     const card = document
-      .querySelector('.card[href="#/alhambra-star-and-arrows/result"]')
+      .querySelector('.window-link[href="#/alhambra-star-and-arrows"]')
       ?.closest('li');
-    expect(card?.querySelector('.variations-label')?.textContent).toBe(
-      '2 variations',
-    );
+    expect(card?.querySelector('.window-badge')?.textContent).toBe('2 designs');
     expect(
       document.querySelector(
-        '.card[href="#/alhambra-star-and-arrows-shifted/result"]',
+        '.window-link[href="#/alhambra-star-and-arrows-shifted"]',
       ),
     ).toBeNull();
   }, 30000);

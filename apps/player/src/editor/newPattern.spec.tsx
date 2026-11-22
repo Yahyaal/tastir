@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import App from '../app/app';
 import { listPatterns } from './patterns';
 
@@ -43,15 +43,15 @@ describe('new pattern', () => {
         window.location.hash = '';
         window.dispatchEvent(new HashChangeEvent('hashchange'));
       });
-      // The pattern is in Your work's row, and New pattern stays in the header.
+      // The pattern counts in Your work, and New pattern stays in the top
+      // bar.
       expect(
-        within(screen.getByRole('region', { name: 'Your work' })).getByRole(
-          'heading',
-          { name: 'My pattern' },
-        ),
-      ).toBeTruthy();
+        screen
+          .getByRole('link', { name: 'Your work (1)' })
+          .getAttribute('href'),
+      ).toBe('#/work');
       expect(
-        document.querySelector('.masthead .new-pattern button')?.textContent,
+        document.querySelector('.lib-top .new-pattern button')?.textContent,
       ).toBe('New pattern');
     },
   );

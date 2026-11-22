@@ -97,7 +97,7 @@ One task per session and one commit per task, each with its acceptance test. Eac
 The owner answered on 22 November:
 
 1. **The arch follows the pattern's tradition**, with its place as the fallback: Mudéjar takes the horseshoe, Nasrid the scalloped arch, Marinid, Moroccan and Maghrebi the pointed horseshoe, Mamluk and Tulunid the keel, Ottoman and Seljuk the pointed arch, Persian and Safavid the four-centred arch, Timurid the portal, Mughal the cusped arch, and the rest the round arch.
-2. **The welcome for first-time visitors is still open.** The hero goes (the owner: a wow for a first visit, but not useful beyond that and it takes a lot of space). Three ways to welcome a first visit are shown at [#/notes/ui-concepts](http://localhost:4200/#/notes/ui-concepts) for the owner to choose later; REDESIGN.3 builds the chosen one.
+2. **The welcome for first-time visitors is still open.** The hero goes (the owner: a wow for a first visit, but not useful beyond that and it takes a lot of space). Three ways to welcome a first visit are shown at [#/notes/ui-concepts](http://localhost:4200/#/notes/ui-concepts) for the owner to choose later. Until then REDESIGN.3 (23 November) built option 1, so the library has a welcome: "New here?" and one sentence in the Start here heading, with lesson 1 drawing itself until it is pointed away, shown until a lesson or a drawing has been begun. The choice lives in `WELCOME` and `welcomed()` in `apps/player/src/app/StartHere.tsx`, so another option replaces those two and nothing else.
 3. **The pencil band is made at build time**, in a light and a dark version.
 4. **The tradition filter stays**, as chips under a chosen place.
 5. **The Patterns sidebar stays** on the pattern page, as an icon in the top bar.

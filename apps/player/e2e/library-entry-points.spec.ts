@@ -4,12 +4,12 @@ for (const hash of ['#collection', '#/collection', '#%63ollection']) {
   test(`direct ${hash} opens and focuses the collection`, async ({ page }) => {
     await page.goto(`/${hash}`);
     const heading = page.getByRole('heading', {
-      name: 'The patterns',
+      name: 'All patterns',
       exact: true,
     });
     await expect(heading).toBeFocused();
     await expect(page.getByText(/There is no tutorial called/)).toHaveCount(0);
-    await expect(page.locator('.cards .card').first()).toBeVisible();
+    await expect(page.locator('.library-grid .window').first()).toBeVisible();
     await page.reload();
     await expect(heading).toBeFocused();
   });
@@ -20,7 +20,7 @@ test('Arabic, mixed-script and point-count searches narrow the actual library', 
 }) => {
   await page.goto('/#collection');
   const search = page.getByRole('searchbox', { name: 'Search patterns' });
-  const cards = page.locator('.cards .card');
+  const cards = page.locator('.library-grid .window-link');
   await cards.first().waitFor();
   const all = await cards.count();
   const ids = () =>
@@ -64,18 +64,18 @@ test('Back from a tutorial preserves the library position when entered through t
   page,
 }) => {
   await page.goto('/#collection');
-  await page.locator('.cards .card').first().waitFor();
+  await page.locator('.library-grid .window-link').first().waitFor();
   await page.waitForLoadState('networkidle');
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
   const href = await page
-    .locator('.cards .card')
+    .locator('.library-grid .window-link')
     .evaluateAll((nodes) =>
       nodes
         .find((n) => n.getBoundingClientRect().top > 0)
         ?.getAttribute('href'),
     );
   if (!href) throw new Error('No card in view');
-  const card = page.locator(`.cards .card[href="${href}"]`);
+  const card = page.locator(`.library-grid .window-link[href="${href}"]`);
   await card.scrollIntoViewIfNeeded();
   const top = await card.evaluate((n) => n.getBoundingClientRect().top);
   await card.click();

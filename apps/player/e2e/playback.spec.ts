@@ -6,7 +6,7 @@ test('a pattern card opens the result beside the photo of the original', async (
   page,
 }) => {
   await page.goto('/');
-  await page.locator('.card[href="#/minbar-doors-cairo/result"]').click();
+  await page.locator('.window-link[href="#/minbar-doors-cairo"]').click();
   await expect(page.locator('.label')).toHaveText('Color');
   await expect(
     page.getByRole('figure', { name: 'The original' }),

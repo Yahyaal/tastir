@@ -27,7 +27,7 @@ const route = (id: string) => `/#/${id}`;
 const payload = (data: unknown) =>
   'j' + Buffer.from(JSON.stringify(data)).toString('base64url');
 
-test('library previews need no construction downloads except the animated hero', async ({
+test('library previews need no construction downloads but the first lesson', async ({
   page,
 }) => {
   const tutorials: string[] = [];
@@ -35,8 +35,8 @@ test('library previews need no construction downloads except the animated hero',
     if (/\/assets\/.*\.js/.test(r.url())) tutorials.push(r.url());
   });
   await page.goto('/');
-  await expect(page.locator('.cards > li')).toHaveCount(cardCount);
-  const previews = page.locator('.cards img.thumbnail');
+  await expect(page.locator('.library-grid > li')).toHaveCount(cardCount);
+  const previews = page.locator('.library-grid .window-pic img');
   await expect(previews).toHaveCount(cardCount);
   await expect(previews.first()).toBeVisible();
   await expect
@@ -55,17 +55,22 @@ test('library previews need no construction downloads except the animated hero',
       return { width, height };
     }),
   );
+  // Each window is 4:5, as its arch is drawn.
   for (const { width, height } of sizes) {
     expect(width).toBeGreaterThan(0);
-    expect(Math.abs(width - height)).toBeLessThan(1);
+    expect(Math.abs(height / width - 1.25)).toBeLessThan(0.02);
   }
   await expect(
-    page.getByRole('link', { name: 'Start with the star and cross' }),
+    page.getByRole('link', { name: /^Begin: lesson 1$/ }),
   ).toBeVisible();
-  // A library card must be usable without downloading its JSON module.
-  expect(
-    tutorials.some((url) => url.includes('eight-fold-star-and-cross-')),
-  ).toBe(false);
+  // A library card must be usable without downloading its JSON module:
+  // only lesson 1, drawing itself to welcome a first visit, loads its
+  // construction.
+  for (const card of [
+    'six-fold-star-and-hexagons-',
+    'alhambra-star-and-arrows-',
+  ])
+    expect(tutorials.some((url) => url.includes(card))).toBe(false);
 });
 
 test('home navigation fits narrow phones before and after saving a design', async ({
@@ -77,11 +82,11 @@ test('home navigation fits narrow phones before and after saving a design', asyn
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(320);
-    const header = await page.locator('.masthead').boundingBox();
+    const header = await page.locator('.lib-top').boundingBox();
     expect(header).not.toBeNull();
     for (const link of await page
-      .getByRole('navigation', { name: 'Main Navigation' })
-      .locator('a, button')
+      .locator('.lib-top')
+      .locator('a, button, label')
       .all()) {
       const box = await link.boundingBox();
       expect(box).not.toBeNull();
@@ -477,7 +482,7 @@ test('bad links recover and never leave a blank page', async ({ page }) => {
     page.getByRole('heading', { name: 'This pattern cannot be shown' }),
   ).toBeVisible();
   await page.getByRole('link', { name: /All patterns/ }).click();
-  await expect(page.locator('.cards > li')).toHaveCount(cardCount);
+  await expect(page.locator('.library-grid > li')).toHaveCount(cardCount);
   await page.goto('/#/%E0%A4%A');
   await expect(
     page.getByRole('heading', { name: 'This pattern cannot be shown' }),

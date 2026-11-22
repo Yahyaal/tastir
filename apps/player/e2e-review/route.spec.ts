@@ -146,6 +146,9 @@ test('the band, the light and dark routes, and the slim line', async ({
 test('#/places/<place> opens the library on that place', async ({ page }) => {
   await page.goto('/#/places/Morocco');
   await expect(
-    page.getByRole('button', { name: 'Remove the filter Morocco' }),
-  ).toBeAttached();
+    page.getByRole('heading', { name: /^Morocco/, level: 2 }),
+  ).toBeVisible();
+  await expect(
+    page.locator('.library .route-stop[aria-current="page"]'),
+  ).toContainText('Morocco');
 });

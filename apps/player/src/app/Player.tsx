@@ -1,4 +1,5 @@
 import { NextPathLesson } from './LearningPathNav';
+import { libraryHref } from './browsing';
 import { pieceName } from './pieceNames';
 import { learningPosition } from './learningPath';
 import { LIBRARY, listed } from './library';
@@ -1323,11 +1324,11 @@ export function Player({
         <a
           className="home"
           aria-label="All patterns"
-          href="#/"
+          href={libraryHref()}
           onClick={(e) => {
             if (!changed) return;
             e.preventDefault();
-            setLeaving('#/');
+            setLeaving(libraryHref());
           }}
         >
           <span className="wordmark">

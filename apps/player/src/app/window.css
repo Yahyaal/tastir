@@ -16,11 +16,6 @@
   position: relative;
   aspect-ratio: 4 / 5;
   background: var(--theme-bg-raised);
-  transition: transform 0.2s;
-}
-.window-pic:hover,
-.window-pic:focus-within {
-  transform: translateY(-2px);
 }
 .window-link,
 .window-pic img {
@@ -30,6 +25,22 @@
 }
 .window-pic img {
   object-fit: cover;
+}
+.window-link > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.window-error,
+.window-waiting {
+  margin: 0;
+  padding: 30% 14% 0;
+  font-size: 13px;
+  text-align: center;
+  color: var(--theme-text-secondary);
+}
+.window-error {
+  color: var(--theme-danger);
 }
 
 /* The frame, drawn over the picture in the arch's own shape. */
@@ -77,6 +88,20 @@
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
+}
+
+.window-hidden {
+  position: absolute;
+  z-index: 2;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--theme-danger);
+  color: var(--theme-bg-canvas);
+  font-size: 11.5px;
+  font-weight: 700;
 }
 
 /* The three actions, centred and as wide as their words, on pointing or
@@ -160,6 +185,14 @@
   gap: 4px 12px;
   color: var(--theme-text-secondary);
   font-size: 13.5px;
+}
+.window-place {
+  color: var(--theme-text-muted);
+}
+.window-note {
+  margin: 4px 2px 0;
+  font-size: 12.5px;
+  color: var(--theme-danger);
 }
 .window-dots {
   display: inline-flex;

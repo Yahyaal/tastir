@@ -19,7 +19,9 @@ test('each merged place is found at its own address by name', async ({
   await page.goto('/#/');
   for (const [id, query] of places) {
     await page.getByRole('searchbox').fill(query);
-    await expect(page.locator(`a.card[href^="#/${id}"]`).first()).toBeVisible();
+    await expect(
+      page.locator(`a.window-link[href^="#/${id}"]`).first(),
+    ).toBeVisible();
   }
 });
 
