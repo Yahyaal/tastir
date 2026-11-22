@@ -17,7 +17,7 @@ test('a pattern card opens the wall, and the photo of the original beside it', a
     page.getByRole('figure', { name: 'The original' }),
   ).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Learn', exact: true }),
+    page.getByRole('link', { name: 'Watch it drawn', exact: true }),
   ).toBeVisible();
 });
 

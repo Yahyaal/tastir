@@ -80,6 +80,7 @@ import {
 } from './placement';
 import { PrintSheet, type Paper } from './PrintSheet';
 import { useRemembered } from './remembered';
+import { InfoTip } from './InfoTip';
 import { SaveDesign } from './SaveDesign';
 import { ShareLink } from './Sharing';
 import { useCamera } from './useCamera';
@@ -1208,10 +1209,25 @@ export function Player({
   const showOriginal = comparing && onWall && photos.length > 0;
   // The colours, at the top of the panel while colouring, so they are the
   // first thing in view.
+  // On the finished wall, how to colour is said behind an ⓘ beside the
+  // heading, not as a paragraph over the colours.
+  const colourHint =
+    ready && onWall && !sharedView ? (
+      <InfoTip label="How to colour">
+        <StepText text={text} />
+      </InfoTip>
+    ) : null;
   const colorsSection =
     !onWall || wallStyle !== 'jali' ? (
       <section ref={colorsSectionRef}>
-        <h2>Colors</h2>
+        {colourHint ? (
+          <div className="section-head">
+            <h2>Colors</h2>
+            {colourHint}
+          </div>
+        ) : (
+          <h2>Colors</h2>
+        )}
         <ColourPanel
           paper={onWall && wallStyle === 'lines'}
           model={coloured}
@@ -1431,14 +1447,6 @@ export function Player({
         <h2>Make it yours</h2>
         <button
           type="button"
-          className="make-learn"
-          title="Watch it drawn, step by step"
-          onClick={() => show('watch')}
-        >
-          Learn
-        </button>
-        <button
-          type="button"
           className="make-hide"
           aria-label="Hide Make it yours to see the whole wall"
           title="Hide this panel"
@@ -1487,9 +1495,6 @@ export function Player({
           <>
             {/* Coloured before it was repeated: how many copies to lay. */}
             {stage.kind === 'repeat' ? copiesChooser : null}
-            <p className="make-about">
-              <StepText text={text} />
-            </p>
             {colorsSection}
           </>
         ) : makeTab === 'style' ? (
@@ -1636,6 +1641,9 @@ export function Player({
             title={nextLabel[1]}
           >
             {nextLabel[0]}
+            <svg className="foot-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
           </a>
         ) : browsing ? (
           <button
@@ -1677,6 +1685,9 @@ export function Player({
           aria-label="Make it in 3D"
           title="Make it in 3D"
         >
+          <svg className="foot-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9" />
+          </svg>
           3D
         </a>
       </div>

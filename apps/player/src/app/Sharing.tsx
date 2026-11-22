@@ -100,7 +100,9 @@ export function ShareLink({
     <div className="share-link">
       <button
         type="button"
-        className={compact || short ? 'secondary' : 'quiet'}
+        className={
+          short ? 'secondary make-share' : compact ? 'secondary' : 'quiet'
+        }
         title={
           short
             ? 'Copy a link to this design: anyone who opens it sees this wall'
@@ -110,8 +112,9 @@ export function ShareLink({
         }
         onClick={() => void make()}
       >
-        {compact && !short ? (
+        {compact || short ? (
           <svg
+            className={short ? 'foot-icon' : undefined}
             width="17"
             height="17"
             viewBox="0 0 24 24"

@@ -7,6 +7,12 @@ import {
   type DesignFields,
 } from './designs';
 
+const saveIcon = (
+  <svg className="foot-icon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M7 4h10v16l-5-4-5 4z" />
+  </svg>
+);
+
 const REFUSED =
   'Not saved: this browser would not keep the design, because its storage is blocked (a private window) or full. Your inking and colors are still on this page.';
 
@@ -121,7 +127,11 @@ export function SaveDesign({
           <button
             type="button"
             className={
-              changed ? `unsaved${short ? ' pending' : ''}` : 'secondary'
+              short
+                ? `secondary make-save${changed ? ' unsaved pending' : ''}`
+                : changed
+                  ? 'unsaved'
+                  : 'secondary'
             }
             disabled={!changed}
             title={short ? `Your design “${design.name}”` : undefined}
@@ -133,6 +143,7 @@ export function SaveDesign({
               )
             }
           >
+            {short ? saveIcon : null}
             {changed ? 'Save' : 'Saved'}
           </button>
           <button
@@ -150,7 +161,7 @@ export function SaveDesign({
             type="button"
             className={
               short
-                ? `secondary${pending ? ' pending' : ''}`
+                ? `secondary make-save${pending ? ' pending' : ''}`
                 : compact
                   ? 'primary'
                   : 'secondary'
@@ -164,6 +175,7 @@ export function SaveDesign({
             }
             onClick={ask}
           >
+            {short ? saveIcon : null}
             {short ? 'Save' : 'Save as my design'}
           </button>
           {compact || short ? null : (

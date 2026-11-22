@@ -253,7 +253,10 @@ test('player shortcuts respect controls and still work on the page', async ({
     .focus();
   await page.keyboard.press('ArrowLeft');
   await expect(wall).toBeVisible();
-  await page.getByRole('button', { name: 'Learn', exact: true }).focus();
+  await page
+    .getByRole('group', { name: 'Your design' })
+    .getByRole('button', { name: 'Share', exact: true })
+    .focus();
   await page.keyboard.press('ArrowLeft');
   await expect(wall).toBeVisible();
   await page.evaluate(() => {
