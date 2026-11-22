@@ -6,6 +6,7 @@ import { LIBRARY, listed, type Entry } from './library';
 import { Library } from './Library';
 import { WorkPage } from './YourWork';
 import { Broken, MissingDesign, Play } from './Player';
+import { placeInRoute } from './places';
 import { isLibraryRoute, lessonRoute, useRoute } from './routing';
 import { openShared, useShared } from './Sharing';
 import { FeedbackHost } from '../feedback/FeedbackHost';
@@ -33,6 +34,15 @@ const WindowsReview = import.meta.env.DEV
   ? lazy(() =>
       import('../review/WindowsReview').then((m) => ({
         default: m.WindowsReview,
+      })),
+    )
+  : undefined;
+
+/** The route of the redesign (#/review/route), dev server only. */
+const RouteReview = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/RouteReview').then((m) => ({
+        default: m.RouteReview,
       })),
     )
   : undefined;
@@ -186,6 +196,7 @@ function AppPage({
       <Library
         entries={listed(library)}
         startAtCollection={route === 'collection'}
+        place={placeInRoute(route)}
       />
     );
   if (route === 'feedback' || route.startsWith('feedback/'))
@@ -237,6 +248,15 @@ function AppPage({
     return WindowsReview ? (
       <Suspense fallback={<p className="review-loading">Loading…</p>}>
         <WindowsReview />
+      </Suspense>
+    ) : (
+      <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'review/route' || route.startsWith('review/route/')) {
+    return RouteReview ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <RouteReview place={route.slice('review/route/'.length) || undefined} />
       </Suspense>
     ) : (
       <Broken message="The review page only exists on the dev server (pnpm dev)." />

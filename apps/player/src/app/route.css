@@ -1,0 +1,282 @@
+/* The route from Córdoba to Agra (Route.tsx). */
+
+/* Which pencil band shows: each theme scope sets its own, so a dark panel
+   inside a light page shows the dark band (as styles.css does colours). */
+:root,
+[data-theme] {
+  --route-band-light: block;
+  --route-band-dark: none;
+  --route-band-opacity: 0.5;
+}
+:root[data-theme='dark'],
+[data-theme='dark'] {
+  --route-band-light: none;
+  --route-band-dark: block;
+  --route-band-opacity: 0.32;
+}
+
+.route {
+  --route-gold: linear-gradient(180deg, #ecc463, #c9962f);
+  position: sticky;
+  /* Under the top bar, once the page has one (REDESIGN.3). */
+  top: var(--route-top, 0px);
+  z-index: 15;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: var(--theme-bg-canvas);
+  border-bottom: 1px solid var(--theme-border);
+}
+.route::-webkit-scrollbar {
+  display: none;
+}
+.route-in {
+  position: relative;
+  min-width: 960px;
+  height: 196px;
+  transition: height 0.3s ease;
+}
+.route.is-slim .route-in {
+  height: 92px;
+}
+
+/* The band, at the route's full width so each drawing stays under its
+   stop; taller than the route, so it is cut top and bottom. */
+.route-band {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: var(--route-band-opacity);
+  pointer-events: none;
+}
+.route-band img {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: auto;
+  transform: translateY(-50%);
+  user-select: none;
+}
+.route-band-light {
+  display: var(--route-band-light);
+}
+.route-band-dark {
+  display: var(--route-band-dark);
+}
+/* A soft wash so the line and the names read on top of the band. */
+.route-band::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--theme-bg-surface) 55%, transparent),
+    transparent 30%,
+    transparent 70%,
+    color-mix(in srgb, var(--theme-bg-surface) 55%, transparent)
+  );
+}
+
+.route-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.route-line path {
+  fill: none;
+  stroke: #c9962f;
+  stroke-width: 4;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.25));
+}
+.route-end {
+  position: absolute;
+  top: 10px;
+  z-index: 3;
+  display: grid;
+  line-height: 1.35;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--theme-label);
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.route-end.west {
+  left: 18px;
+}
+.route-end.east {
+  right: 18px;
+  text-align: right;
+}
+.route.is-slim .route-end {
+  opacity: 0;
+}
+
+/* Each place's stretch: a click anywhere on it chooses the place. */
+.route-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.route-zone.is-lit {
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgb(217 166 60 / 0.12) 30%,
+    rgb(217 166 60 / 0.12) 70%,
+    transparent
+  );
+}
+
+.route-stop {
+  position: absolute;
+  z-index: 3;
+  width: 0;
+  height: 0;
+  display: block;
+  color: var(--theme-text-primary);
+  text-decoration: none;
+}
+.route-dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--theme-bg-surface);
+  border: 3px solid var(--theme-text-primary);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.3);
+  transition:
+    transform 0.2s,
+    background 0.2s;
+}
+.route-stop.is-lit .route-dot,
+.route-stop:hover .route-dot,
+.route-stop:focus-visible .route-dot {
+  transform: translate(-50%, -50%) scale(1.25);
+}
+.route-stop[aria-current='page'] .route-dot {
+  background: var(--route-gold);
+  border-color: #8a6410;
+  box-shadow:
+    0 0 0 6px rgb(217 166 60 / 0.35),
+    0 1px 4px rgb(0 0 0 / 0.3);
+}
+/* Names sit above the high stops and below the low ones. */
+.route-name {
+  position: absolute;
+  left: 0;
+  top: 13px;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  padding: 3px 9px;
+  border-radius: 10px;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--theme-bg-surface) 82%, transparent);
+  backdrop-filter: blur(3px);
+  transition: top 0.3s;
+}
+.route-stop.up .route-name {
+  top: auto;
+  bottom: 13px;
+}
+.route-name b {
+  font-size: 14.5px;
+  font-weight: 750;
+}
+.route-name small {
+  font-size: 12px;
+  color: var(--theme-text-secondary);
+}
+.route-stop[aria-current='page'] .route-name b {
+  color: var(--act-result);
+}
+.route-stop.is-lit .route-name,
+.route-stop:hover .route-name {
+  background: var(--theme-bg-surface);
+}
+.route-stop:focus-visible {
+  outline: none;
+}
+.route-stop:focus-visible .route-name {
+  outline: 3px solid var(--theme-accent);
+  outline-offset: 2px;
+}
+.route.is-slim .route-name small {
+  display: none;
+}
+.route.is-slim .route-name {
+  top: 10px;
+  padding: 1px 7px;
+}
+.route.is-slim .route-stop.up .route-name {
+  top: auto;
+  bottom: 10px;
+}
+.route.is-slim .route-name b {
+  font-size: 13px;
+}
+
+.route-caption {
+  margin: 0;
+  padding: 12px 18px 0;
+  font-size: 15px;
+  color: var(--theme-text-secondary);
+  text-align: center;
+}
+.route.is-slim .route-caption {
+  display: none;
+}
+
+/* On a phone the route is a row that scrolls sideways. */
+@media (max-width: 760px) {
+  .route {
+    position: relative;
+    top: 0;
+  }
+  .route-in,
+  .route.is-slim .route-in {
+    min-width: 900px;
+    margin: 0 56px;
+    height: 188px;
+  }
+  .route-end {
+    display: none;
+  }
+  /* It does not stick on a phone, so it keeps its size as the page
+     scrolls. */
+  .route.is-slim .route-name small {
+    display: inline;
+  }
+  .route.is-slim .route-name {
+    top: 13px;
+    padding: 3px 9px;
+  }
+  .route.is-slim .route-stop.up .route-name {
+    top: auto;
+    bottom: 13px;
+  }
+  .route.is-slim .route-name b {
+    font-size: 14.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-in,
+  .route-name,
+  .route-dot,
+  .route-zone,
+  .route-end {
+    transition: none;
+  }
+}

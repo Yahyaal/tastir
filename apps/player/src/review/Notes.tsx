@@ -391,8 +391,13 @@ export function Notes({ page = 'start' }: { page?: string }) {
         </p>
       </header>
       <p>
+        <a href="#/review/route">
+          New: the route from Córdoba to Agra, in light and dark →
+        </a>
+      </p>
+      <p>
         <a href="#/review/windows">
-          New: the window cards, every arch in light and dark →
+          The window cards, every arch in light and dark →
         </a>
       </p>
       <p>

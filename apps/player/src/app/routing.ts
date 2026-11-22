@@ -52,9 +52,10 @@ export function writeLessonRoute(hash: string, mode: 'push' | 'replace') {
 
 let stayGuard: ((to: string) => boolean) | undefined;
 
-/** Addresses that show the library, including its public collection anchor. */
+/** Addresses that show the library, including its public collection anchor
+ * and a place's address (#/places/<place>, REDESIGN.2). */
 export const isLibraryRoute = (route: string) =>
-  route === '' || route === 'collection';
+  route === '' || route === 'collection' || route.startsWith('places/');
 
 /** The tutorial id in the address (#/id), or '' for the library. */
 export function useRoute(): string {

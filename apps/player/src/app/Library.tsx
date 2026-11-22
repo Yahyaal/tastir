@@ -119,12 +119,20 @@ const SORT_OPTIONS: readonly { value: SortOrder; label: string }[] = [
 export function Library({
   entries,
   startAtCollection = false,
+  place,
 }: {
   entries: readonly Entry[];
   startAtCollection?: boolean;
+  /** The place the address names (#/places/<place>): the library opens on
+   * it. The route that writes these addresses joins the library in
+   * REDESIGN.3. */
+  place?: string;
 }) {
   const families = useMemo(() => grouped(entries), [entries]);
-  const [region, setRegion] = useState(() => keptFilters().region);
+  const [region, setRegion] = useState(() => place ?? keptFilters().region);
+  useEffect(() => {
+    if (place) setRegion(place);
+  }, [place]);
   const [style, setStyle] = useState(() => keptFilters().style);
   const [level, setLevel] = useState(() => keptFilters().level);
   const [fold, setFold] = useState(() => keptFilters().fold);

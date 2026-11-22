@@ -253,3 +253,13 @@ test('the title stays centered at both ends of the library', async ({
     expect(offset).toBeLessThan(1);
   }
 });
+
+test('a place address opens the library on that place', async ({ page }) => {
+  // #/places/<place> (REDESIGN.2): a place can be shared as a link.
+  await page.goto('/#/places/Iran');
+  await expect(
+    page.getByRole('button', { name: 'Remove the filter Iran' }),
+  ).toBeAttached();
+  await page.goto('/#/places/Atlantis');
+  await expect(page.locator('.library')).toBeVisible();
+});

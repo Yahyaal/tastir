@@ -20,6 +20,7 @@
     "test:affected": "pnpm catalog && nx affected -t test --parallel=1",
     "bench:ink": "node --conditions=@tastir/source --import tsx tools/bench-ink.mts",
     "catalog": "node --conditions=@tastir/source --import tsx apps/player/src/build/catalog.tsx",
+    "route-band": "node --conditions=@tastir/source --import tsx apps/player/src/build/routeBand.tsx",
     "test:browser": "nx run player:build && playwright test",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm test:browser",
     "dev:agent": "node --conditions=@tastir/source --import tsx tools/dev-agent.mts",
