@@ -4,7 +4,11 @@ import { Player } from './Player';
 import { loadModel } from './model';
 
 const model = loadModel(example);
-const label = () => document.querySelector('.label')?.textContent;
+/** Where the learner is: the stage's label, or the finished wall (the
+ * wall page, where Make it yours floats over the wall). */
+const label = () =>
+  document.querySelector('.label')?.textContent ??
+  (document.querySelector('.make-panel') ? 'Wall' : undefined);
 const click = (name: string) =>
   fireEvent.click(screen.getByRole('button', { name }));
 const tick = (ms: number) => act(() => vi.advanceTimersByTime(ms));
@@ -39,11 +43,12 @@ it('lets Back and Next take over and pauses automatic advancement', () => {
   expect(label()).toBe('Step 1 of 6');
 });
 
-it('finishes at the result and can replay from the beginning', () => {
+it('finishes at the result and can learn it again from the beginning', () => {
   render(<Player model={model} />);
   for (let step = 0; step < 8; step++) tick(1000);
-  expect(label()).toBe('Color');
-  click('Replay');
+  expect(label()).toBe('Wall');
+  // From the finished wall, Learn to draw it plays it from the start.
+  click('Learn to draw it');
   expect(label()).toBe('Step 1 of 6');
   tick(1000);
   expect(label()).toBe('Step 2 of 6');
@@ -52,7 +57,7 @@ it('finishes at the result and can replay from the beginning', () => {
 it('opens the result calmly and starts the movie when Watch it drawn is selected', () => {
   render(<Player model={model} start="result" />);
   tick(5000);
-  expect(label()).toBe('Color');
+  expect(label()).toBe('Wall');
   fireEvent.click(screen.getByRole('link', { name: 'Watch it drawn' }));
   expect(label()).toBe('Step 1 of 6');
   tick(1000);

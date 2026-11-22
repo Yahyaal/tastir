@@ -64,23 +64,17 @@ for (const theme of ['light', 'dark'])
 test('a finished wall offers the next idea and the final pattern offers the path', async ({
   page,
 }) => {
+  // The filled button at the foot of Make it yours.
   await page.goto(`/#/${first}/result`);
-  const next = page.locator('.learning-next');
-  await expect(
-    next.getByRole('heading', { name: 'Next recommended lesson', exact: true }),
-  ).toBeVisible();
-  await next.getByRole('link', { name: 'Next lesson', exact: true }).click();
+  const panel = page.getByRole('complementary', { name: 'Make it yours' });
+  await panel.getByRole('link', { name: 'Next lesson', exact: true }).click();
   await expect(page).toHaveURL(new RegExp(second + '/watch/1$'));
   await page.goto('/#/minbar-doors-cairo/result');
   await expect(
-    page
-      .locator('.learning-next')
-      .getByRole('link', { name: 'Review the learning path', exact: true }),
+    panel.getByRole('link', { name: 'See the learning path', exact: true }),
   ).toBeVisible();
   await expect(
-    page
-      .locator('.learning-next')
-      .getByRole('link', { name: 'Next lesson', exact: true }),
+    panel.getByRole('link', { name: 'Next lesson', exact: true }),
   ).toHaveCount(0);
 });
 test('the next lesson respects a changed saved design and Stay preserves it', async ({
@@ -96,7 +90,7 @@ test('the next lesson respects a changed saved design and Stay preserves it', as
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await page.getByRole('button', { name: 'Chefchaouen', exact: true }).click();
   await page
-    .getByRole('navigation', { name: 'Steps', exact: true })
+    .getByRole('complementary', { name: 'Make it yours' })
     .getByRole('link', { name: 'Next lesson', exact: true })
     .click();
   const dialog = page.getByRole('alertdialog', {
@@ -174,14 +168,14 @@ for (const theme of ['light', 'dark'])
       .getByRole('button', { name: 'Repeat it', exact: true })
       .click();
     await controls.getByRole('button', { name: 'Next', exact: true }).click();
-    const finish =
-      page.viewportSize()!.width > 760
-        ? page.locator('.end-actions')
-        : controls;
+    // The finished wall: the way on is at the foot of Make it yours.
+    const finish = page.getByRole('complementary', { name: 'Make it yours' });
     const next = finish.getByRole('link', {
       name: 'Next lesson',
       exact: true,
     });
+    // On a phone the sheet is short and scrolls to it.
+    await next.scrollIntoViewIfNeeded();
     await expect(next).toBeInViewport();
     if (page.viewportSize()!.width > 760) {
       const save = page

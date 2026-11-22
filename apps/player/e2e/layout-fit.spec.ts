@@ -8,7 +8,7 @@ test('the result opens at the top, with the drawing within the screen', async ({
   page,
 }) => {
   await page.goto('/#/eight-fold-star-and-cross/result');
-  await expect(page.locator('.label')).toHaveText('Color');
+  await expect(page.locator('.make-panel')).toBeVisible();
   const fit = await page.evaluate(() => ({
     scroll: window.scrollY,
     stage: document.querySelector('.stage')?.getBoundingClientRect().height,

@@ -147,7 +147,8 @@ test('unsaved changes confirmation keeps focus and Escape preserves the design',
   await page.keyboard.press('Shift+Tab');
   await expect(stay).toBeFocused();
   await page.keyboard.press('ArrowLeft');
-  await expect(page.locator('.label')).toHaveText('Color');
+  // Still the finished wall: the arrow did not step behind the dialog.
+  await expect(page.locator('.make-panel')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
   await expect(home).toBeFocused();
@@ -244,17 +245,19 @@ test('player shortcuts respect controls and still work on the page', async ({
   await expect(page.locator('.label')).toHaveText('Step 1 of 6');
   await page.getByRole('button', { name: 'Next', exact: true }).press('Space');
   await expect(page.locator('.label')).toHaveText('Step 2 of 6');
+  // The colour stage is the finished wall, with Make it yours over it.
   await page.getByRole('button', { name: 'Go to color', exact: true }).click();
-  await expect(page.locator('.label')).toHaveText('Color');
+  const wall = page.locator('.make-panel');
+  await expect(wall).toBeVisible();
   await page
     .getByRole('group', { name: 'Style', exact: true })
     .getByRole('button', { name: 'Tiles', exact: true })
     .focus();
   await page.keyboard.press('ArrowLeft');
-  await expect(page.locator('.label')).toHaveText('Color');
-  await page.getByRole('button', { name: 'Back', exact: true }).focus();
+  await expect(wall).toBeVisible();
+  await page.getByRole('button', { name: 'Learn to draw it' }).focus();
   await page.keyboard.press('ArrowLeft');
-  await expect(page.locator('.label')).toHaveText('Color');
+  await expect(wall).toBeVisible();
   await page.evaluate(() => {
     if (document.activeElement instanceof HTMLElement)
       document.activeElement.blur();
@@ -267,6 +270,8 @@ test('the original photo viewer contains keyboard focus and restores it on Escap
   page,
 }) => {
   await page.goto(route('minbar-doors-cairo/result'));
+  // The real wall, in Make it yours, opens the photo beside the wall.
+  await page.getByRole('button', { name: 'Show the original' }).click();
   const opener = page.getByRole('button', {
     name: /See the photo at full size/,
   });
@@ -346,6 +351,7 @@ test('a missing original photo keeps its source link and shows no broken image',
     request.fulfill({ status: 404, body: 'Not found' }),
   );
   await page.goto(route('minbar-doors-cairo/result'));
+  await page.getByRole('button', { name: 'Show the original' }).click();
   const original = page.getByRole('figure', { name: 'The original' });
   await expect(
     original.getByText('This photo could not be loaded.'),
@@ -458,6 +464,8 @@ test('a finished wall can be saved, shared, reopened, and used for a variation',
       .getByRole('group', { name: 'Palette' })
       .getByRole('button', { name: 'Chefchaouen', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');
+  // A lesson's filled button is Next lesson; a variation is in More.
+  await page.locator('.make-more > summary').click();
   await page
     .getByRole('button', { name: 'Make a variation', exact: true })
     .click();

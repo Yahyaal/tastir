@@ -95,7 +95,7 @@ describe('from a copy to a played pattern', () => {
     // Played like any tutorial, opening at the wall: octagons and the
     // four-pointed stars between them.
     go(`#/mine/${id}`);
-    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    expect(document.querySelector('.make-panel')).not.toBeNull();
     expect(
       [...document.querySelectorAll('.piece-button')].map((b) =>
         b.getAttribute('aria-label'),

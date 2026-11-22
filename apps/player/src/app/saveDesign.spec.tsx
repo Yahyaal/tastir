@@ -20,7 +20,11 @@ const entries = entriesOf({
   'six-fold-snowflake.json': snowflake,
 });
 
-const label = () => document.querySelector('.label')?.textContent;
+/** Where the learner is: the stage's label, or the finished wall (the
+ * wall page, where Make it yours floats over the wall). */
+const label = () =>
+  document.querySelector('.label')?.textContent ??
+  (document.querySelector('.make-panel') ? 'Wall' : undefined);
 const click = (name: string | RegExp) =>
   fireEvent.click(screen.getByRole('button', { name }));
 const inked = () => document.querySelectorAll('.free-ink .piece-line.inked');
@@ -88,7 +92,7 @@ describe('saving a design', () => {
       screen.getAllByRole('button', { name: /^Paint ring/ })[0] as Element,
     );
     click('Next');
-    expect(label()).toBe('Repeat');
+    expect(label()).toBe('Wall');
     const colored = fills();
     fireEvent.click(
       within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
@@ -108,7 +112,7 @@ describe('saving a design', () => {
     // A fresh page at the design's address opens at the wall with them.
     cleanup();
     render(<App entries={entries} />);
-    expect(label()).toBe('Color');
+    expect(label()).toBe('Wall');
     expect(fills()).toEqual(colored);
     expect(
       within(screen.getByRole('group', { name: 'Style' }))
@@ -148,7 +152,7 @@ describe('saving a design', () => {
     });
     render(<App entries={entries} />);
     go(`#/eight-fold-star-and-cross/design/${old?.id}`);
-    expect(label()).toBe('Color');
+    expect(label()).toBe('Wall');
     expect(screen.getByText(/The tutorial has changed/)).toBeTruthy();
     // The star and cross, in the design's own palette, ring by ring.
     expect(screen.getByRole('group', { name: 'Paint with' })).toBeTruthy();
@@ -243,7 +247,7 @@ describe('saving a design', () => {
     fireEvent.keyDown(leave, { key: 'Tab', shiftKey: true });
     expect(document.activeElement).toBe(stay);
     fireEvent.keyDown(stay, { key: 'ArrowLeft' });
-    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    expect(document.querySelector('.make-panel')).not.toBeNull();
     fireEvent.keyDown(stay, { key: 'Escape' });
     expect(screen.queryByRole('alertdialog')).toBeNull();
     expect(document.activeElement).toBe(home);
@@ -261,7 +265,7 @@ describe('saving a design', () => {
     expect(window.location.hash).toBe(
       `#/eight-fold-star-and-cross/design/${d?.id}`,
     );
-    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    expect(document.querySelector('.make-panel')).not.toBeNull();
     click('Stay');
     click('Save');
     expect(screen.queryByText(/Unsaved changes/)).toBeNull();
@@ -274,7 +278,7 @@ describe('saving a design', () => {
     const input = screen.getByLabelText('Name');
     fireEvent.keyDown(input, { key: ' ' });
     fireEvent.keyDown(input, { key: 'ArrowLeft' });
-    expect(label()).toBe('Color');
+    expect(label()).toBe('Wall');
     click('Cancel');
     expect(screen.queryByLabelText('Name')).toBeNull();
     // Escape closes the name box too.

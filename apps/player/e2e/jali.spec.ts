@@ -180,6 +180,8 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await expectColor(other, 'Background color', '#234a79');
   await other.close();
 
+  // The downloads are in Make it yours' More menu.
+  await page.locator('.make-more > summary').click();
   for (const extension of ['SVG', 'PNG']) {
     const downloading = page.waitForEvent('download');
     await page

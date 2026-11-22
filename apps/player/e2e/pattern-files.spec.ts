@@ -16,6 +16,8 @@ for (const style of ['Watercolour', 'Screen']) {
       .click();
     if (style === 'Screen')
       await page.getByRole('button', { name: 'Metal', exact: true }).click();
+    // The downloads are in Make it yours' More menu.
+    await page.locator('.make-more > summary').click();
     const pending = page.waitForEvent('download');
     await page
       .getByRole('button', {

@@ -455,7 +455,7 @@ describe('the address', () => {
     expect(
       screen.getByRole('heading', { name: 'Eight-fold star and cross' }),
     ).toBeTruthy();
-    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    expect(document.querySelector('.make-panel')).not.toBeNull();
     go('#/');
     expect(screen.getByRole('heading', { name: 'Tastir' })).toBeTruthy();
   }, 90000); // The library computes every tutorial in tutorials/, so this grows
@@ -568,36 +568,37 @@ describe('the address', () => {
   it('opens the tutorial in the address on load', () => {
     window.location.hash = '#/eight-fold-star-and-cross';
     render(<App />);
-    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    expect(document.querySelector('.make-panel')).not.toBeNull();
   });
 
   it.each(['', '/result'])(
-    'opens at the finished wall with %s, beside the original',
+    'opens at the finished wall with %s, the real wall a click away',
     (suffix) => {
       window.location.hash = `#/minbar-doors-cairo${suffix}`;
       render(<App />);
-      expect(document.querySelector('.label')?.textContent).toBe('Color');
-      expect(screen.getByRole('figure', { name: 'The original' })).toBeTruthy();
+      expect(document.querySelector('.make-panel')).not.toBeNull();
+      // The photo is for reference: The real wall opens it beside the wall.
+      expect(screen.queryByRole('figure', { name: 'The original' })).toBeNull();
       expect(
-        screen.getByRole('button', { name: 'Hide the original' }),
+        screen.getByRole('button', { name: 'Show the original' }),
       ).toBeTruthy();
     },
     15000,
   );
 
-  it('hides and shows the original from the button on the drawing', () => {
+  it('shows and hides the original from The real wall', () => {
     window.location.hash = '#/minbar-doors-cairo/result';
     render(<App />);
-    fireEvent.click(screen.getByRole('button', { name: 'Hide the original' }));
-    expect(screen.queryByRole('figure', { name: 'The original' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Show the original' }));
     expect(screen.getByRole('figure', { name: 'The original' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Hide the original' }));
+    expect(screen.queryByRole('figure', { name: 'The original' })).toBeNull();
   }, 15000);
 
   it('opens at the finished wall alone when there is no photo', () => {
     window.location.hash = '#/eight-fold-star-and-cross/result';
     render(<App />);
-    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    expect(document.querySelector('.make-panel')).not.toBeNull();
     expect(screen.queryByRole('figure', { name: 'The original' })).toBeNull();
   });
 

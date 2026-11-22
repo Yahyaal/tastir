@@ -17,7 +17,7 @@ function atColor(json: unknown = starAndCross) {
   render(<Play json={json} />);
   fireEvent.click(screen.getByLabelText('Reduce motion'));
   fireEvent.click(screen.getByRole('button', { name: 'Go to color' }));
-  expect(document.querySelector('.label')?.textContent).toBe('Color');
+  expect(document.querySelector('.make-panel')).not.toBeNull();
 }
 
 const star = loadModel(zellige).pattern.types.findIndex(
@@ -156,7 +156,7 @@ describe('colouring the unit before repeating it', () => {
   it('then repeats the coloured unit as many times as asked', () => {
     atUnit();
     fireEvent.click(button('Next'));
-    expect(document.querySelector('.label')?.textContent).toBe('Repeat');
+    expect(document.querySelector('.make-panel')).not.toBeNull();
     fireEvent.click(button('3 × 3'));
     expect(
       screen

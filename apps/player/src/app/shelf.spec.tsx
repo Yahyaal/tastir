@@ -73,7 +73,7 @@ describe('the shelf of my designs', () => {
       window.location.hash = link.getAttribute('href') ?? '';
       window.dispatchEvent(new HashChangeEvent('hashchange'));
     });
-    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    expect(document.querySelector('.make-panel')).not.toBeNull();
     expect(screen.getByText('Blue one', { selector: 'b' })).toBeTruthy();
   });
 

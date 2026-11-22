@@ -5,9 +5,8 @@ test('a variation saves immediately and its construction can be duplicated indep
   page,
 }) => {
   await page.goto(`/#/${id}/result`);
-  await expect(
-    page.getByText(/Create and save a separate copy in this browser/),
-  ).toBeVisible();
+  // A lesson's filled button is Next lesson; a variation is in More.
+  await page.locator('.make-more > summary').click();
   await page
     .getByRole('button', { name: 'Make a variation', exact: true })
     .click();

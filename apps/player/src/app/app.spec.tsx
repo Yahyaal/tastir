@@ -10,7 +10,11 @@ const next = () =>
   fireEvent.click(screen.getByRole('button', { name: /^(Next|Repeat it)$/ }));
 const back = () =>
   fireEvent.click(screen.getByRole('button', { name: 'Back' }));
-const label = () => document.querySelector('.label')?.textContent;
+/** Where the learner is: the stage's label, or the finished wall (the
+ * wall page, where Make it yours floats over the wall). */
+const label = () =>
+  document.querySelector('.label')?.textContent ??
+  (document.querySelector('.make-panel') ? 'Wall' : undefined);
 
 describe('the player', () => {
   it('shows where the learner is, and jumps anywhere from the journey', () => {
@@ -19,8 +23,9 @@ describe('the player', () => {
     expect(journey.querySelector('[aria-current="step"]')?.textContent).toBe(
       '1',
     );
+    // The color stage is the end: the finished wall, Make it yours over it.
     fireEvent.click(screen.getByRole('button', { name: 'Go to color' }));
-    expect(label()).toBe('Color');
+    expect(label()).toBe('Wall');
     fireEvent.click(screen.getByRole('button', { name: 'Go to step 3' }));
     expect(label()).toBe('Step 3 of 6');
     // Steps already passed are marked done.
@@ -115,10 +120,10 @@ describe('the player', () => {
       'Step 6 of 6',
       'Ink',
       'Repeat',
-      'Color',
+      'Wall',
     ]);
-    // At the end the pattern is ready: Save and Share take Next's place
-    // in the step bar, each with a tooltip.
+    // At the end the pattern is ready: Save and Share are at the foot of
+    // Make it yours, each with a tooltip.
     expect(screen.queryByRole('button', { name: 'Next' })).toBeNull();
     const ready = screen.getByRole('group', { name: 'Your design' });
     expect(
@@ -133,11 +138,9 @@ describe('the player', () => {
       ['Copy a share link', 'Anyone with the link sees this design'],
     ]);
     expect(screen.queryByText(/Your pattern is ready/)).toBeNull();
-    const steps = screen.getByRole('navigation', {
-      name: 'Steps',
-    });
+    const panel = screen.getByRole('complementary', { name: 'Make it yours' });
     expect(
-      within(steps)
+      within(panel)
         .getByRole('link', { name: 'Next lesson' })
         .getAttribute('href'),
     ).toBe('#/six-fold-star-and-hexagons/watch/1');
@@ -152,7 +155,8 @@ describe('the player', () => {
     // Two rosettes take turns, each coloured ring by ring with the brush.
     expect(screen.getByRole('group', { name: 'Paint with' })).toBeTruthy();
     expect(screen.getByText(/2 rosettes take turns/)).toBeTruthy();
-    back();
+    // The wall has no step bar; the arrow keys and the journey still step.
+    fireEvent.keyDown(window, { key: 'ArrowLeft' });
     expect(label()).toBe('Repeat');
     expect(
       screen.getByText(/Put copies of the tile side by side/),
@@ -201,7 +205,7 @@ describe('the player', () => {
         key: 'ArrowLeft',
       },
     );
-    expect(label()).toBe('Color');
+    expect(label()).toBe('Wall');
   });
 
   it('does not step for modified or already-handled keyboard events', () => {
@@ -346,8 +350,10 @@ describe('the player', () => {
       (p) => p.textContent,
     );
     expect(phases).toEqual(['Ink', 'Color', 'Repeat']);
+    // Repeated last, the whole wall is the end; Make it yours chooses how
+    // many copies.
     next();
-    expect(label()).toBe('Repeat');
+    expect(label()).toBe('Wall');
     fireEvent.click(screen.getByRole('button', { name: '2 × 2' }));
     expect(
       screen.getByRole('img', { name: 'The unit repeated 2 by 2' }),
