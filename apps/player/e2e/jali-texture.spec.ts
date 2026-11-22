@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { styleGroup } from './panel';
 
 const FINISHES = [
   ['Stone', 'Limestone', 'limestone-grain'],
@@ -25,8 +26,9 @@ for (const id of ['eight-fold-star-and-cross', 'bou-inania-rosette']) {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto(`/#/${id}/result`);
-    await page
-      .getByRole('group', { name: 'Style', exact: true })
+    await (
+      await styleGroup(page)
+    )
       .getByRole('button', { name: 'Screen', exact: true })
       .click();
     const wall = page.locator('svg.wall');

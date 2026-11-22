@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { tab, styleGroup } from './panel';
 
 // The built library lists every tutorial the owner has not hidden.
 const hidden: string[] = JSON.parse(
@@ -100,9 +101,7 @@ test('home navigation fits narrow phones before and after saving a design', asyn
   await expect(page.locator('.library')).toBeVisible();
   await fits();
   await page.goto(route(`${star}/result`));
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Phone wall');
@@ -119,9 +118,7 @@ test('unsaved changes confirmation keeps focus and Escape preserves the design',
   page,
 }) => {
   await page.goto(route(`${star}/result`));
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Unsaved wall');
@@ -249,13 +246,14 @@ test('player shortcuts respect controls and still work on the page', async ({
   await page.getByRole('button', { name: 'Go to color', exact: true }).click();
   const wall = page.locator('.make-panel');
   await expect(wall).toBeVisible();
-  await page
-    .getByRole('group', { name: 'Style', exact: true })
+  await (
+    await styleGroup(page)
+  )
     .getByRole('button', { name: 'Tiles', exact: true })
     .focus();
   await page.keyboard.press('ArrowLeft');
   await expect(wall).toBeVisible();
-  await page.getByRole('button', { name: 'Learn to draw it' }).focus();
+  await page.getByRole('button', { name: 'Learn', exact: true }).focus();
   await page.keyboard.press('ArrowLeft');
   await expect(wall).toBeVisible();
   await page.evaluate(() => {
@@ -271,6 +269,7 @@ test('the original photo viewer contains keyboard focus and restores it on Escap
 }) => {
   await page.goto(route('minbar-doors-cairo/result'));
   // The real wall, in Make it yours, opens the photo beside the wall.
+  await tab(page, 'More');
   await page.getByRole('button', { name: 'Show the original' }).click();
   const opener = page.getByRole('button', {
     name: /See the photo at full size/,
@@ -351,6 +350,7 @@ test('a missing original photo keeps its source link and shows no broken image',
     request.fulfill({ status: 404, body: 'Not found' }),
   );
   await page.goto(route('minbar-doors-cairo/result'));
+  await tab(page, 'More');
   await page.getByRole('button', { name: 'Show the original' }).click();
   const original = page.getByRole('figure', { name: 'The original' });
   await expect(
@@ -435,9 +435,7 @@ test('a finished wall can be saved, shared, reopened, and used for a variation',
     .getByRole('group', { name: 'Palette' })
     .getByRole('button', { name: 'Chefchaouen', exact: true })
     .click();
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Browser test wall');
@@ -445,7 +443,9 @@ test('a finished wall can be saved, shared, reopened, and used for a variation',
   await expect(
     page.getByText('Saved as “Browser test wall”.', { exact: false }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Copy a share link' }).click();
+  await page
+    .getByRole('button', { name: /^(Share|Copy a share link)$/ })
+    .click();
   const link = await page
     .getByRole('textbox', { name: 'Share link' })
     .inputValue();
@@ -465,7 +465,7 @@ test('a finished wall can be saved, shared, reopened, and used for a variation',
       .getByRole('button', { name: 'Chefchaouen', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');
   // A lesson's filled button is Next lesson; a variation is in More.
-  await page.locator('.make-more > summary').click();
+  await tab(page, 'More');
   await page
     .getByRole('button', { name: 'Make a variation', exact: true })
     .click();

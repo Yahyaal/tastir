@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
+import { styleGroup, tab } from './panel';
 
 for (const style of ['Watercolour', 'Screen']) {
   test(`editable JSON restores ${style} and colours in a clean browser`, async ({
@@ -10,14 +11,15 @@ for (const style of ['Watercolour', 'Screen']) {
     await page
       .getByRole('button', { name: 'Chefchaouen', exact: true })
       .click();
-    await page
-      .getByRole('group', { name: 'Style', exact: true })
+    await (
+      await styleGroup(page)
+    )
       .getByRole('button', { name: style, exact: true })
       .click();
     if (style === 'Screen')
       await page.getByRole('button', { name: 'Metal', exact: true }).click();
     // The downloads are in Make it yours' More menu.
-    await page.locator('.make-more > summary').click();
+    await tab(page, 'More');
     const pending = page.waitForEvent('download');
     await page
       .getByRole('button', {
@@ -59,9 +61,10 @@ for (const style of ['Watercolour', 'Screen']) {
         recipient.getByRole('link', { name: 'Edit this pattern', exact: true }),
       ).toHaveAttribute('href', /#\/edit\/[^/]+$/);
       await expect(
-        recipient
-          .getByRole('group', { name: 'Style', exact: true })
-          .getByRole('button', { name: style, exact: true }),
+        (await styleGroup(recipient)).getByRole('button', {
+          name: style,
+          exact: true,
+        }),
       ).toHaveAttribute('aria-pressed', 'true');
       const kept = await recipient.evaluate(
         () =>
@@ -83,14 +86,17 @@ for (const style of ['Watercolour', 'Screen']) {
         ).toHaveAttribute('data-material', 'metal');
       await recipient.reload();
       await expect(
-        recipient
-          .getByRole('group', { name: 'Style', exact: true })
-          .getByRole('button', { name: style, exact: true }),
+        (await styleGroup(recipient)).getByRole('button', {
+          name: style,
+          exact: true,
+        }),
       ).toHaveAttribute('aria-pressed', 'true');
-      await recipient
-        .getByRole('group', { name: 'Style', exact: true })
+      await (
+        await styleGroup(recipient)
+      )
         .getByRole('button', { name: 'Tiles', exact: true })
         .click();
+      await tab(recipient, 'Colour');
       await expect(
         recipient.getByRole('button', { name: 'Chefchaouen', exact: true }),
       ).toHaveAttribute('aria-pressed', 'true');

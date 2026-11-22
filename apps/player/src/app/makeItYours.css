@@ -9,7 +9,8 @@
   min-height: calc(100vh - 190px);
 }
 .workspace.wall-page .make-panel {
-  max-height: calc(100% - 100px);
+  /* One height for every tab, so switching tabs does not jump. */
+  height: min(720px, calc(100% - 100px));
 }
 .make-about {
   margin: 0;
@@ -25,11 +26,11 @@
   z-index: 7;
   width: 390px;
   max-height: calc(100% - 36px);
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 16px 18px 18px;
+  gap: 12px;
+  padding: 16px 18px 14px;
   border-radius: 20px;
   border: 1px solid var(--theme-border);
   /* Opaque, and no backdrop filter: a filter would make the panel the
@@ -129,89 +130,103 @@
   display: block;
 }
 
-.make-more-colours > summary,
-.make-more > summary {
-  cursor: pointer;
-  font-weight: 650;
-  color: var(--theme-accent);
+.make-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(
+    --theme-bg-muted,
+    color-mix(in srgb, var(--theme-text-primary) 7%, transparent)
+  );
 }
-.make-more-colours[open] > summary {
-  margin-bottom: 8px;
+.player .make-panel .make-tabs button {
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--theme-text-secondary);
+  font-weight: 650;
+}
+.player .make-panel .make-tabs button[aria-selected='true'] {
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.18);
+}
+/* The tab's contents scroll; the top and the foot stay. */
+.make-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 -18px;
+  padding: 2px 18px 8px;
+}
+.make-files {
+  display: grid;
+  gap: 8px;
 }
 
+/* The way on, Save, Share and 3D: one row. */
 .make-foot {
-  /* The way on (Next, Save, Share) stays in view while the colours
-     scroll. */
-  position: sticky;
-  bottom: -18px;
-  z-index: 3;
-  display: grid;
-  gap: 10px;
-  margin: 0 -18px -18px;
-  padding: 12px 18px 16px;
-  border-top: 1px solid var(--theme-border);
-  background: var(--theme-bg-surface);
-}
-.player .make-panel .make-next {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--theme-border);
+}
+.make-foot .design-tools,
+.make-foot .share-link,
+.make-foot .design-buttons {
+  display: contents;
+}
+/* What Save and Share say, and the name to save under, on their own line. */
+.make-foot .hint,
+.make-foot .refused,
+.make-foot input[type='text'],
+.make-foot .design-name {
+  flex-basis: 100%;
+  margin: 0;
+}
+.player .make-panel .make-foot > a,
+.player .make-panel .make-foot button {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 44px;
+  padding: 0 14px;
   border-radius: 999px;
+  font-size: 15px;
+}
+.player .make-panel .make-next {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
   background: var(--act-watch);
   color: var(--on-act);
   font-weight: 750;
   text-decoration: none;
 }
-.make-actions {
+/* Changes kept only in this browser: a dot on Save. */
+.make-foot button.pending {
   position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
-.make-row {
-  flex: 1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-.make-row > * {
-  flex: none;
-}
-.make-more {
-  margin-left: auto;
-}
-.make-more > summary {
-  list-style: none;
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  border: 1px solid var(--theme-border);
-  font-size: 20px;
-  line-height: 1;
-  color: var(--theme-text-primary);
-}
-.make-more > summary::-webkit-details-marker {
-  display: none;
-}
-.make-more-menu {
+.make-foot button.pending::after {
+  content: '';
   position: absolute;
-  right: 0;
-  bottom: calc(100% + 8px);
-  z-index: 6;
-  display: grid;
-  gap: 8px;
-  min-width: 240px;
-  padding: 12px;
-  border-radius: 14px;
-  border: 1px solid var(--theme-border);
-  background: var(--theme-bg-surface);
-  box-shadow: 0 10px 30px
-    color-mix(in srgb, var(--shadow) calc(40% * var(--shadow-k)), transparent);
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e0ad45;
 }
 
 /* Brings the panel back when it was hidden. */
@@ -273,7 +288,7 @@
     .workspace.wall-page.make-open
     .stage:not(.comparing) {
     flex: none;
-    height: calc(60vh - 170px);
+    height: calc(54vh - 170px);
     min-height: 180px;
   }
   /* A sheet held at the bottom of the screen, low enough that the middle
@@ -285,20 +300,15 @@
     right: 6px;
     bottom: 6px;
     width: auto;
-    max-height: 40vh;
+    max-height: 46vh;
     border-radius: 20px 20px 14px 14px;
     padding: 12px 14px 14px;
   }
+  .workspace.wall-page .make-panel {
+    height: 46vh;
+  }
   .make-top h2 {
     font-size: 19px;
-  }
-  /* The sheet is short: its foot scrolls with the rest instead of taking
-     most of it. */
-  .make-foot {
-    position: static;
-    margin: 0;
-    padding: 12px 0 0;
-    background: none;
   }
   /* Reset view moves to the top, clear of the sheet. */
   .player .wall-page .plate-area .fit {

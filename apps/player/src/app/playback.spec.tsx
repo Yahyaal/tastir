@@ -47,8 +47,8 @@ it('finishes at the result and can learn it again from the beginning', () => {
   render(<Player model={model} />);
   for (let step = 0; step < 8; step++) tick(1000);
   expect(label()).toBe('Wall');
-  // From the finished wall, Learn to draw it plays it from the start.
-  click('Learn to draw it');
+  // From the finished wall, Learn plays it from the start.
+  click('Learn');
   expect(label()).toBe('Step 1 of 6');
   tick(1000);
   expect(label()).toBe('Step 2 of 6');

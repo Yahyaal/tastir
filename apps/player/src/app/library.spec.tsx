@@ -497,6 +497,7 @@ describe('the address', () => {
   it('switches between the variations of a pattern at the same stage', () => {
     render(<App />);
     go('#/twelve-fold-rosette-mian-hex/result');
+    fireEvent.click(screen.getByRole('tab', { name: 'More' }));
     const switcher = screen.getByRole('navigation', {
       name: 'Variations of this pattern',
     });
@@ -507,6 +508,7 @@ describe('the address', () => {
     ]);
     expect(links[1]?.getAttribute('aria-current')).toBe('page');
     go(links[0]?.getAttribute('href') ?? '');
+    fireEvent.click(screen.getByRole('tab', { name: 'More' }));
     expect(
       within(
         screen.getByRole('navigation', { name: 'Variations of this pattern' }),
@@ -579,6 +581,7 @@ describe('the address', () => {
       expect(document.querySelector('.make-panel')).not.toBeNull();
       // The photo is for reference: The real wall opens it beside the wall.
       expect(screen.queryByRole('figure', { name: 'The original' })).toBeNull();
+      fireEvent.click(screen.getByRole('tab', { name: 'More' }));
       expect(
         screen.getByRole('button', { name: 'Show the original' }),
       ).toBeTruthy();
@@ -589,6 +592,7 @@ describe('the address', () => {
   it('shows and hides the original from The real wall', () => {
     window.location.hash = '#/minbar-doors-cairo/result';
     render(<App />);
+    fireEvent.click(screen.getByRole('tab', { name: 'More' }));
     fireEvent.click(screen.getByRole('button', { name: 'Show the original' }));
     expect(screen.getByRole('figure', { name: 'The original' })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Hide the original' }));

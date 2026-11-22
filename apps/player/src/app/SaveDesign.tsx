@@ -23,6 +23,8 @@ export function SaveDesign({
   lost = false,
   changed = false,
   compact = false,
+  short = false,
+  pending = false,
 }: {
   /** The tutorial's title, the name a new design starts with. */
   title: string;
@@ -38,15 +40,20 @@ export function SaveDesign({
   /** In the step bar: the explanation is a tooltip, and “Saved” shows for
    * a few seconds. */
   compact?: boolean;
+  /** In Make it yours: one word, “Save”, said in full on hover. Implies
+   * compact. */
+  short?: boolean;
+  /** Changes kept only as this browser's draft: a dot on Save. */
+  pending?: boolean;
 }) {
   const [naming, setNaming] = useState(false);
   const [name, setName] = useState('');
   const [said, setSaid] = useState<{ text: string; refused?: boolean }>();
   useEffect(() => {
-    if (!compact || !said || said.refused) return;
+    if (!(compact || short) || !said || said.refused) return;
     const t = setTimeout(() => setSaid(undefined), 5000);
     return () => clearTimeout(t);
-  }, [compact, said]);
+  }, [compact, short, said]);
 
   const keep = (saved: Design | undefined) => {
     if (!saved) return setSaid({ text: REFUSED, refused: true });
@@ -106,13 +113,18 @@ export function SaveDesign({
         </form>
       ) : design ? (
         <div className="design-buttons">
-          <span>
-            Your design <b>{design.name}</b>
-          </span>
+          {short ? null : (
+            <span>
+              Your design <b>{design.name}</b>
+            </span>
+          )}
           <button
             type="button"
-            className={changed ? 'unsaved' : 'secondary'}
+            className={
+              changed ? `unsaved${short ? ' pending' : ''}` : 'secondary'
+            }
             disabled={!changed}
+            title={short ? `Your design “${design.name}”` : undefined}
             onClick={() =>
               // Deleted meanwhile (in another tab): kept again as new.
               keep(
@@ -123,7 +135,12 @@ export function SaveDesign({
           >
             {changed ? 'Save' : 'Saved'}
           </button>
-          <button type="button" className="secondary" onClick={ask}>
+          <button
+            type="button"
+            className="secondary"
+            title={short ? 'Save as a new design' : undefined}
+            onClick={ask}
+          >
             Save as new
           </button>
         </div>
@@ -131,22 +148,30 @@ export function SaveDesign({
         <div className="design-buttons">
           <button
             type="button"
-            className={compact ? 'primary' : 'secondary'}
+            className={
+              short
+                ? `secondary${pending ? ' pending' : ''}`
+                : compact
+                  ? 'primary'
+                  : 'secondary'
+            }
             title={
-              compact
-                ? 'Keeps your colours in this browser, under Your work'
-                : undefined
+              short
+                ? `Save as my design, under Your work.${pending ? ' Until then your changes are kept in this browser only.' : ''}`
+                : compact
+                  ? 'Keeps your colours in this browser, under Your work'
+                  : undefined
             }
             onClick={ask}
           >
-            Save as my design
+            {short ? 'Save' : 'Save as my design'}
           </button>
-          {compact ? null : (
+          {compact || short ? null : (
             <span>Keeps your inking and colors in this browser.</span>
           )}
         </div>
       )}
-      {design && changed && !naming ? (
+      {design && changed && !naming && !short ? (
         <p className="hint unsaved-note">● Unsaved changes</p>
       ) : null}
       {said?.refused ? (

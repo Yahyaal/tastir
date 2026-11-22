@@ -22,17 +22,20 @@ describe('changes before a design has a name', () => {
     expect(draftOf('eight-fold-star-and-cross')?.coloring.palette).toBe(
       'Alhambra',
     );
-    expect(
-      screen.getAllByText(/kept in this browser until you save them/).length,
-    ).toBeGreaterThan(0);
+    // Save says so on hover, with a dot.
+    const save = screen.getByRole('button', { name: 'Save' });
+    expect(save.title).toMatch(/kept in this browser only/);
+    expect(save.classList.contains('pending')).toBe(true);
     first.unmount();
 
     // Coming back: the colours are as they were left, and it says so.
     render(<Play json={example} start="result" />);
     expect(pressed()).toMatch(/Alhambra/);
     expect(
-      screen.getAllByText(/Your changes from last time are back/).length,
-    ).toBeGreaterThan(0);
+      screen
+        .getByRole('button', { name: 'Save' })
+        .classList.contains('pending'),
+    ).toBe(true);
     expect(listDesigns()).toHaveLength(0);
 
     // Back to the pattern's own colours: nothing left to keep.

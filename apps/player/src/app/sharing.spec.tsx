@@ -13,6 +13,13 @@ import { addPattern, listPatterns } from '../editor/patterns';
 import App from './app';
 import { listDesigns } from './designs';
 
+/** The Style group, in its tab of Make it yours when there is one. */
+const styleGroup = () => {
+  const tab = screen.queryByRole('tab', { name: 'Style' });
+  if (tab && tab.getAttribute('aria-selected') !== 'true') fireEvent.click(tab);
+  return screen.getByRole('group', { name: 'Style' });
+};
+
 /** Every piece's fill on the wall, in order. */
 const fills = () =>
   [...document.querySelectorAll('.wall .wall-piece')].map((p) =>
@@ -33,12 +40,12 @@ async function shareFrom(
   render(<App />);
   fireEvent.click(screen.getByRole('button', { name: 'Chefchaouen' }));
   fireEvent.click(
-    within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+    within(styleGroup()).getByRole('button', {
       name: 'Interlace',
     }),
   );
   const colored = fills();
-  fireEvent.click(screen.getByRole('button', { name: 'Copy a share link' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Share' }));
   const input = await waitFor(() => screen.getByLabelText('Share link'));
   const link = (input as HTMLInputElement).value;
   expect(link).toMatch(/#\/shared\/[zj][\w-]+$/);
@@ -59,6 +66,33 @@ afterEach(() => {
 });
 
 describe('share links', () => {
+  it('keeps the design in the finished wall’s address, so the address bar can be shared', async () => {
+    go('#/eight-fold-star-and-cross/result');
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: 'Chefchaouen' }));
+    const colored = fills();
+    await waitFor(
+      () => {
+        expect(window.location.hash).toMatch(
+          /^#\/eight-fold-star-and-cross\/result\?d=[zj][\w-]+$/,
+        );
+      },
+      { timeout: 3000 },
+    );
+    const hash = window.location.hash;
+    cleanup();
+    // Another browser, nothing kept: the address alone brings the colours.
+    window.localStorage.clear();
+    window.location.hash = '';
+    go(hash);
+    render(<App />);
+    await waitFor(() =>
+      screen.getByRole('complementary', { name: 'Make it yours' }),
+    );
+    expect(fills()).toEqual(colored);
+    expect(screen.queryByText(/A pattern shared with you/)).toBeNull();
+  });
+
   it('opens a library pattern with the same wall and colours elsewhere, and keeps a copy', async () => {
     const { hash, colored } = await shareFrom(
       '#/eight-fold-star-and-cross/result',
@@ -67,7 +101,7 @@ describe('share links', () => {
     expect(document.querySelector('.label')?.textContent).toBe('Color');
     expect(fills()).toEqual(colored);
     expect(
-      within(screen.getByRole('group', { name: 'Style' }))
+      within(styleGroup())
         .getByRole('button', { name: 'Interlace' })
         .getAttribute('aria-pressed'),
     ).toBe('true');

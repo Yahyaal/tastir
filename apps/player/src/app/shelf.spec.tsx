@@ -74,7 +74,7 @@ describe('the shelf of my designs', () => {
       window.dispatchEvent(new HashChangeEvent('hashchange'));
     });
     expect(document.querySelector('.make-panel')).not.toBeNull();
-    expect(screen.getByText('Blue one', { selector: 'b' })).toBeTruthy();
+    expect(screen.getByTitle('Your design “Blue one”')).toBeTruthy();
   });
 
   it('draws a design with its own inking', () => {

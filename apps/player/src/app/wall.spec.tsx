@@ -11,6 +11,13 @@ import { shownStyle, stylesFor, Wall } from './Wall';
 import { cardView, tiling, wallView } from './drawing';
 import { DEFAULT_PEN, PAPER } from './pen';
 
+/** The Style group, in its tab of Make it yours when there is one. */
+const styleGroup = () => {
+  const tab = screen.queryByRole('tab', { name: 'Style' });
+  if (tab && tab.getAttribute('aria-selected') !== 'true') fireEvent.click(tab);
+  return screen.getByRole('group', { name: 'Style' });
+};
+
 type P = { x: number; y: number };
 const parse = (s: string | null): P[] =>
   (s ?? '')
@@ -255,7 +262,7 @@ describe('the wall controls', () => {
         screen.getByRole('button', { name: /^(Next|Repeat it)$/ }),
       );
     fireEvent.click(
-      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+      within(styleGroup()).getByRole('button', {
         name: 'Watercolour',
       }),
     );
@@ -274,7 +281,7 @@ describe('the wall controls', () => {
     });
     expect(width()).toBeCloseTo(before / 2, 9);
     fireEvent.click(
-      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+      within(styleGroup()).getByRole('button', {
         name: 'Screen',
       }),
     );
@@ -296,10 +303,11 @@ describe('the wall controls', () => {
       ),
     ).toBeCloseTo(0.024 * 5.4, 9);
     fireEvent.click(
-      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+      within(styleGroup()).getByRole('button', {
         name: 'Tiles',
       }),
     );
+    fireEvent.click(screen.getByRole('tab', { name: 'Colour' }));
     expect(screen.getByRole('heading', { name: 'Colors' })).toBeTruthy();
   });
 });

@@ -111,6 +111,7 @@ describe('export in the player', () => {
     atColor();
     fireEvent.click(screen.getByRole('button', { name: 'Recolor every star' }));
     fireEvent.click(screen.getByRole('button', { name: /third color/ }));
+    fireEvent.click(screen.getByRole('tab', { name: 'More' }));
     fireEvent.click(screen.getByRole('button', { name: 'Download SVG' }));
     expect(names).toEqual(['eight-fold-star-and-cross.svg']);
     expect(blobs[0]?.type).toBe('image/svg+xml');
@@ -128,6 +129,7 @@ describe('export in the player', () => {
     window.print = print;
     vi.useFakeTimers();
     atColor();
+    fireEvent.click(screen.getByRole('tab', { name: 'More' }));
     fireEvent.click(screen.getByRole('button', { name: 'Letter' }));
     fireEvent.click(screen.getByRole('button', { name: 'Print line sheet' }));
     const sheet = document.querySelector('.print-sheet');

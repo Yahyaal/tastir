@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from '@playwright/test';
+import { tab } from './panel';
 
 /** The library's cards: each window's picture, a link to its wall. */
 const CARDS = '.library-grid .window-link';
@@ -165,6 +166,8 @@ test('the variations of a pattern switch at the same stage', async ({
     page.locator(`${CARDS}[href="#/alhambra-star-and-arrows-shifted"]`),
   ).toHaveCount(0);
   await card.click();
+  // The designs are in Make it yours' More tab.
+  await tab(page, 'More');
   const switcher = page.getByRole('navigation', {
     name: 'Variations of this pattern',
   });
@@ -183,6 +186,7 @@ test('the variations of a pattern switch at the same stage', async ({
     .getByRole('link', { name: 'Alhambra star and arrows, shifted rows' })
     .click();
   await expect(page).toHaveURL(/alhambra-star-and-arrows-shifted\/result$/);
+  await tab(page, 'More');
   await expect(
     switcher.getByRole('link', {
       name: 'Alhambra star and arrows, shifted rows',

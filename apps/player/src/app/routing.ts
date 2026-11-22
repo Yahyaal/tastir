@@ -7,11 +7,19 @@ import { keepPlace } from './browsing';
 export type LessonPosition = number | 'beginning' | 'repeat' | 'result';
 
 /** A numbered watch position is one-based in the URL, zero-based in the player. */
-export function lessonRoute(route: string): {
+export function lessonRoute(address: string): {
   id: string;
   position: LessonPosition;
   colourFirst?: true;
+  /** The design carried by a finished wall's address (#/id/result?d=…). */
+  design?: string;
 } {
+  const carried = /^(.*\/result)\?d=([A-Za-z0-9_-]+)$/.exec(address);
+  const route = carried ? carried[1]! : address;
+  if (carried) {
+    const { id } = lessonRoute(route);
+    return { id, position: 'result', design: carried[2]! };
+  }
   const numbered = /^(.*)\/watch\/([1-9]\d*)(\?order=color)?$/.exec(route);
   if (numbered && Number.isSafeInteger(Number(numbered[2])))
     return {

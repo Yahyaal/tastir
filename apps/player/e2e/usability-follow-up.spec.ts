@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { tab } from './panel';
 const id = 'eight-fold-star-and-cross';
 
 test('a variation saves immediately and its construction can be duplicated independently', async ({
@@ -6,7 +7,7 @@ test('a variation saves immediately and its construction can be duplicated indep
 }) => {
   await page.goto(`/#/${id}/result`);
   // A lesson's filled button is Next lesson; a variation is in More.
-  await page.locator('.make-more > summary').click();
+  await tab(page, 'More');
   await page
     .getByRole('button', { name: 'Make a variation', exact: true })
     .click();
@@ -55,9 +56,7 @@ test('saved design copies preserve appearance, reopen, and are named on the home
 }) => {
   await page.goto(`/#/${id}/result`);
   await page.getByRole('button', { name: 'Chefchaouen', exact: true }).click();
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Blue original');
@@ -109,9 +108,7 @@ test('a refused duplicate shows an error and leaves the original stored', async 
   page,
 }) => {
   await page.goto(`/#/${id}/result`);
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Safe original');

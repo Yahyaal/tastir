@@ -1,11 +1,12 @@
 import { expect, test, type Page } from '@playwright/test';
+import { styleGroup, tab } from './panel';
 
 async function settings(page: Page) {
   await page.getByLabel('Settings', { exact: true }).click();
 }
 async function copyLink(page: Page) {
   await page
-    .getByRole('button', { name: 'Copy a share link', exact: true })
+    .getByRole('button', { name: /^(Share|Copy a share link)$/ })
     .click();
   return page
     .getByRole('textbox', { name: 'Share link', exact: true })
@@ -115,10 +116,12 @@ test('a wall link restores palette, watercolour and zoom in a clean browser', as
   browser,
 }) => {
   await page.goto('/#/eight-fold-star-and-cross/result');
-  await page
-    .getByRole('group', { name: 'Style', exact: true })
+  await (
+    await styleGroup(page)
+  )
     .getByRole('button', { name: 'Watercolour', exact: true })
     .click();
+  await tab(page, 'Colour');
   await page
     .getByRole('button', { name: 'Teal and gold', exact: true })
     .click();

@@ -26,7 +26,7 @@ import {
 } from 'react';
 import { copyUpTo } from '../editor/document';
 import { addPattern, freeTitle, getPattern } from '../editor/patterns';
-import { MAX_FILE_BYTES, viewPatternFile } from '../editor/files';
+import { encodeShared, MAX_FILE_BYTES, viewPatternFile } from '../editor/files';
 import { planStep, play, playInk } from './animation';
 import { fullView, growingFrame, tileView, width, type Rect } from './camera';
 import {
@@ -37,7 +37,7 @@ import {
   typeKey,
 } from './coloring';
 import { addDesign, type Design } from './designs';
-import { draftOf, forgetDraft, keepDraft } from './drafts';
+import { draftOf, forgetDraft, keepDraft, type Draft } from './drafts';
 import {
   historyOf,
   storedColours,
@@ -226,6 +226,8 @@ function legacyInkMode(): InkMode {
   }
 }
 
+type MakeTab = 'colour' | 'style' | 'more';
+
 export function Player({
   model: full,
   start: asked = 'beginning',
@@ -236,8 +238,11 @@ export function Player({
   presentation,
   position,
   lessonColourFirst,
+  carried,
 }: {
   model: Model;
+  /** The design a finished wall's address carried (#/id/result?d=…). */
+  carried?: Draft;
   /** A line over the workspace, such as a shared pattern's Keep a copy. */
   banner?: React.ReactNode;
   start?: Start;
@@ -349,7 +354,7 @@ export function Player({
   // back when they return, until they save it or go back to the pattern's
   // own colours.
   const [draft] = useState(() =>
-    opened || sharedView ? undefined : draftOf(address),
+    opened || sharedView ? undefined : (carried ?? draftOf(address)),
   );
   const inking = useInking(model, opened?.inked ?? draft?.inked);
   // The ink stage shows the one unit the ink makes: the whole panel, when
@@ -547,6 +552,33 @@ export function Player({
     // The fields change with every render; their contents are the key.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftKey, design, sharedView, own, address]);
+  // The finished wall's address carries the design, so the address bar
+  // can be copied and shared as it is: #/id/result?d=… (a library
+  // pattern only; the pattern's own colours need no code).
+  const [designCode, setDesignCode] = useState<string>();
+  useEffect(() => {
+    if (design || sharedView || mine || sameDesign(own, draftFields)) {
+      setDesignCode(undefined);
+      return;
+    }
+    let live = true;
+    const { tutorial: _t, ...fields } = draftFields;
+    const t = setTimeout(() => {
+      encodeShared({
+        library: address,
+        design: { name: tutorial.title, ...fields },
+      }).then(
+        (code) => live && setDesignCode(code),
+        () => live && setDesignCode(undefined),
+      );
+    }, 300);
+    return () => {
+      live = false;
+      clearTimeout(t);
+    };
+    // The fields change with every render; their contents are the key.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftKey, design, sharedView, mine, own, address]);
   // A design opened or saved, changed since: Save is offered, and leaving
   // asks first.
   const changed = design !== undefined && !sameDesign(design, designFields());
@@ -629,6 +661,9 @@ export function Player({
   // Make it yours floats over the finished wall; it can be hidden to see
   // the wall whole.
   const [makeOpen, setMakeOpen] = useState(true);
+  // Make it yours shows one tab at a time: colour first, as most people
+  // come to colour.
+  const [makeTab, setMakeTab] = useState<MakeTab>('colour');
   const [variationRefused, setVariationRefused] = useState(false);
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
@@ -1281,11 +1316,20 @@ export function Player({
     }
     const want =
       index === last
-        ? `#/${address}/result`
+        ? `#/${address}/result${designCode ? `?d=${designCode}` : ''}`
         : `#/${address}/watch/${index + 1}${colourFirst ? '?order=color' : ''}`;
     writeLessonRoute(want, historyMode.current);
     historyMode.current = 'replace';
-  }, [index, last, position, design, sharedView, address, colourFirst]);
+  }, [
+    index,
+    last,
+    position,
+    design,
+    sharedView,
+    address,
+    colourFirst,
+    designCode,
+  ]);
 
   const copiesChooser = (
     <div className="copies" role="group" aria-label="Copies">
@@ -1371,6 +1415,16 @@ export function Player({
   const wallPage = ready && onWall && !sharedView;
   const wallColours = [...new Set(Object.values(colors))];
   const lastShown = shown[shown.length - 1] ?? 1;
+  const makeTabs: readonly (readonly [MakeTab, string])[] = [
+    ['colour', 'Colour'],
+    ['style', 'Style'],
+    ['more', 'More'],
+  ];
+  const nextLabel = pathFinish
+    ? pathFinish.next
+      ? ['Next', `Next lesson: ${pathFinish.next.lesson.focus}`]
+      : ['Path', 'Your learning path']
+    : ['Variation', 'Make a variation: a copy of your own, in the editor'];
   const makePanel = (
     <aside className="make-panel" aria-label="Make it yours">
       <div className="make-top">
@@ -1378,9 +1432,10 @@ export function Player({
         <button
           type="button"
           className="make-learn"
+          title="Watch it drawn, step by step"
           onClick={() => show('watch')}
         >
-          Learn to draw it
+          Learn
         </button>
         <button
           type="button"
@@ -1394,120 +1449,109 @@ export function Player({
           </svg>
         </button>
       </div>
-      {browsing ? <div className="make-designs">{designsNav}</div> : null}
-      {/* Coloured before it was repeated: how many copies to lay. */}
-      {stage.kind === 'repeat' ? copiesChooser : null}
-      <p className="make-about">
-        <StepText text={text} />
-      </p>
-      {tutorial.verification?.status === 'unverified' ? (
-        <details className="verification-note">
-          <summary>Historical match unverified</summary>
-          <p>{tutorial.verification.note}</p>
-        </details>
-      ) : null}
-      <ConstructionSource tutorial={tutorial} />
-      <WallControls
-        parts="style"
-        heading="Style"
-        style={wallStyle}
-        styles={wallStyles}
-        onStyle={(style) => {
-          setWallStyle(style);
-          if (style === 'jali' && grout < 0.5) setGrout(0.5);
-          if (style === 'lines' && grout < 0.25) setGrout(0.25);
-        }}
-        grout={grout}
-        onGrout={setGrout}
-        sample={(look) => <StyleIcon style={look} colors={wallColours} />}
-      />
-      {colorsSection}
-      <details
-        key={wallStyle === 'jali' ? 'jali' : 'colours'}
-        className="make-more-colours"
-        open={wallStyle === 'jali' || undefined}
+      <div className="make-tabs" role="tablist" aria-label="Make it yours">
+        {makeTabs.map(([tab, name]) => (
+          <button
+            key={tab}
+            type="button"
+            role="tab"
+            id={`make-tab-${tab}`}
+            aria-controls="make-body"
+            aria-selected={makeTab === tab}
+            tabIndex={makeTab === tab ? 0 : -1}
+            onClick={() => setMakeTab(tab)}
+            onKeyDown={(e) => {
+              const at = makeTabs.findIndex(([t]) => t === makeTab);
+              const step =
+                e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+              if (!step) return;
+              e.preventDefault();
+              e.stopPropagation();
+              const [to] =
+                makeTabs[(at + step + makeTabs.length) % makeTabs.length]!;
+              setMakeTab(to);
+              document.getElementById(`make-tab-${to}`)?.focus();
+            }}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+      <div
+        className="make-body"
+        id="make-body"
+        role="tabpanel"
+        aria-labelledby={`make-tab-${makeTab}`}
       >
-        <summary>More colours</summary>
-        <WallControls
-          parts="finish"
-          heading=""
-          style={wallStyle}
-          styles={wallStyles}
-          onStyle={setWallStyle}
-          grout={grout}
-          onGrout={setGrout}
-          finish={finishOf(coloured, colorHistory.now)}
-          onFinish={(change) => colorDispatch({ kind: 'finish', ...change })}
-          sample={() => null}
-        />
-        {wallStyle === 'jali' ? (
-          <JaliControls appearance={jali} onChange={setJali} />
-        ) : null}
-      </details>
-      {photos.length > 0 ? (
-        <section className="make-real">
-          <h2>The real wall</h2>
-          <button
-            type="button"
-            className="secondary"
-            aria-pressed={comparing}
-            title="A photo of the real pattern, beside the wall"
-            onClick={() => setComparing(!comparing)}
-          >
-            {comparing ? 'Hide the original' : 'Show the original'}
-          </button>
-        </section>
-      ) : null}
-      <div className="make-foot">
-        {pathFinish ? (
-          <a
-            className="make-next learning-advance"
-            href={
-              pathFinish.next
-                ? `#/${pathFinish.next.lesson.id}/watch/1`
-                : '#/learn'
-            }
-          >
-            {pathFinish.next ? 'Next lesson' : 'See the learning path'}
-          </a>
-        ) : browsing ? (
-          <button
-            type="button"
-            className="make-next"
-            title="A copy of this pattern of your own, opened in the editor"
-            onClick={() => setVariationRefused(!makeVariation(full.tutorial))}
-          >
-            Make a variation
-          </button>
-        ) : null}
-        {variationRefused ? (
-          <p className="refused" role="alert">
-            This browser could not save your copy. Free some storage and try
-            again.
-          </p>
-        ) : null}
-        <div className="make-actions">
-          <div className="make-row" role="group" aria-label="Your design">
-            {endSave}
-            {endShare}
-            <a
-              className="button secondary make-3d"
-              href={
-                design
-                  ? `#/${address}/design/${design.id}/make`
-                  : `#/${address}/make`
+        {makeTab === 'colour' ? (
+          <>
+            {/* Coloured before it was repeated: how many copies to lay. */}
+            {stage.kind === 'repeat' ? copiesChooser : null}
+            <p className="make-about">
+              <StepText text={text} />
+            </p>
+            {colorsSection}
+          </>
+        ) : makeTab === 'style' ? (
+          <>
+            <WallControls
+              parts="style"
+              heading="Style"
+              style={wallStyle}
+              styles={wallStyles}
+              onStyle={(style) => {
+                setWallStyle(style);
+                if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                if (style === 'lines' && grout < 0.25) setGrout(0.25);
+              }}
+              grout={grout}
+              onGrout={setGrout}
+              sample={(look) => <StyleIcon style={look} colors={wallColours} />}
+            />
+            <WallControls
+              parts="finish"
+              heading=""
+              style={wallStyle}
+              styles={wallStyles}
+              onStyle={setWallStyle}
+              grout={grout}
+              onGrout={setGrout}
+              finish={finishOf(coloured, colorHistory.now)}
+              onFinish={(change) =>
+                colorDispatch({ kind: 'finish', ...change })
               }
-              aria-label="Make it in 3D"
-              title="Make it in 3D"
-            >
-              3D
-            </a>
-          </div>
-          <details className="make-more">
-            <summary aria-label="More" title="More">
-              <span aria-hidden="true">⋯</span>
-            </summary>
-            <div className="make-more-menu">
+              sample={() => null}
+            />
+            {wallStyle === 'jali' ? (
+              <JaliControls appearance={jali} onChange={setJali} />
+            ) : null}
+          </>
+        ) : (
+          <>
+            {browsing ? <div className="make-designs">{designsNav}</div> : null}
+            {photos.length > 0 ? (
+              <section className="make-real">
+                <h2>The real wall</h2>
+                <button
+                  type="button"
+                  className="secondary"
+                  aria-pressed={comparing}
+                  title="A photo of the real pattern, beside the wall"
+                  onClick={() => setComparing(!comparing)}
+                >
+                  {comparing ? 'Hide the original' : 'Show the original'}
+                </button>
+              </section>
+            ) : null}
+            {tutorial.verification?.status === 'unverified' ? (
+              <details className="verification-note">
+                <summary>Historical match unverified</summary>
+                <p>{tutorial.verification.note}</p>
+              </details>
+            ) : null}
+            <ConstructionSource tutorial={tutorial} />
+            <section className="make-files">
+              <h2>Print and files</h2>
               <div className="print-tools">
                 <button
                   type="button"
@@ -1576,16 +1620,78 @@ export function Player({
                 Download PNG
               </button>
               <FeedbackButton {...feedbackProps} />
-            </div>
-          </details>
-        </div>
-        {draftNote}
-        {fileError && (
-          <p className="refused" role="alert">
-            {fileError}
-          </p>
+            </section>
+          </>
         )}
       </div>
+      <div className="make-foot" role="group" aria-label="Your design">
+        {pathFinish ? (
+          <a
+            className="make-next learning-advance"
+            href={
+              pathFinish.next
+                ? `#/${pathFinish.next.lesson.id}/watch/1`
+                : '#/learn'
+            }
+            title={nextLabel[1]}
+          >
+            {nextLabel[0]}
+          </a>
+        ) : browsing ? (
+          <button
+            type="button"
+            className="make-next"
+            title={nextLabel[1]}
+            onClick={() => setVariationRefused(!makeVariation(full.tutorial))}
+          >
+            {nextLabel[0]}
+          </button>
+        ) : null}
+        <SaveDesign
+          short
+          pending={draftKept === true}
+          title={tutorial.title}
+          design={design}
+          lost={inking.lost}
+          changed={changed}
+          fields={designFields}
+          onSaved={keepSaved}
+        />
+        <ShareLink
+          short
+          presentation={sharePresentation}
+          address={address}
+          name={design?.name ?? tutorial.title}
+          fields={() => {
+            const { tutorial: _t, ...rest } = designFields();
+            return rest;
+          }}
+        />
+        <a
+          className="button secondary make-3d"
+          href={
+            design
+              ? `#/${address}/design/${design.id}/make`
+              : `#/${address}/make`
+          }
+          aria-label="Make it in 3D"
+          title="Make it in 3D"
+        >
+          3D
+        </a>
+      </div>
+      {variationRefused ? (
+        <p className="refused" role="alert">
+          This browser could not save your copy. Free some storage and try
+          again.
+        </p>
+      ) : null}
+      {draftKept === false && !design ? draftNote : null}
+      {fileError && (
+        <p className="refused" role="alert">
+          {fileError}
+        </p>
+      )}
     </aside>
   );
   return (
@@ -2338,7 +2444,9 @@ export function Play({
   presentation,
   position,
   lessonColourFirst,
+  carried,
 }: {
+  carried?: Draft;
   json: unknown;
   start?: Start;
   design?: Design;
@@ -2365,6 +2473,7 @@ export function Play({
       reviewIndex={reviewIndex}
       position={position}
       lessonColourFirst={lessonColourFirst}
+      carried={carried}
     />
   );
 }

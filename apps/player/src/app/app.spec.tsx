@@ -131,22 +131,18 @@ describe('the player', () => {
         .getAllByRole('button')
         .map((b) => [b.textContent, b.title]),
     ).toEqual([
+      ['Save', 'Save as my design, under Your work.'],
       [
-        'Save as my design',
-        'Keeps your colours in this browser, under Your work',
+        'Share',
+        'Copy a link to this design: anyone who opens it sees this wall',
       ],
-      ['Copy a share link', 'Anyone with the link sees this design'],
     ]);
     expect(screen.queryByText(/Your pattern is ready/)).toBeNull();
     const panel = screen.getByRole('complementary', { name: 'Make it yours' });
     expect(
-      within(panel)
-        .getByRole('link', { name: 'Next lesson' })
-        .getAttribute('href'),
+      within(panel).getByRole('link', { name: 'Next' }).getAttribute('href'),
     ).toBe('#/six-fold-star-and-hexagons/watch/1');
-    expect(
-      within(ready).getByRole('button', { name: 'Save as my design' }),
-    ).toBeTruthy();
+    expect(within(ready).getByRole('button', { name: 'Save' })).toBeTruthy();
     expect(
       screen.getByText(
         'Color ring by ring, as on real zellige: pick a color, then click a piece, and its whole ring round the rosette takes the color.',
@@ -197,6 +193,7 @@ describe('the player', () => {
     fireEvent.click(forward);
     expect(label()).toBe('Step 2 of 6');
     fireEvent.click(screen.getByRole('button', { name: 'Go to color' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Style' }));
     fireEvent.keyDown(
       within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
         name: 'Tiles',

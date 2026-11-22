@@ -13,6 +13,13 @@ import { PALETTES } from './coloring';
 import { addDesign, listDesigns } from './designs';
 import { entriesOf } from './library';
 
+/** The Style group, in its tab of Make it yours when there is one. */
+const styleGroup = () => {
+  const tab = screen.queryByRole('tab', { name: 'Style' });
+  if (tab && tab.getAttribute('aria-selected') !== 'true') fireEvent.click(tab);
+  return screen.getByRole('group', { name: 'Style' });
+};
+
 // Saving needs these two addresses, not a render of the entire catalogue.
 // The library's own specs exercise all tutorial cards.
 const entries = entriesOf({
@@ -95,11 +102,11 @@ describe('saving a design', () => {
     expect(label()).toBe('Wall');
     const colored = fills();
     fireEvent.click(
-      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+      within(styleGroup()).getByRole('button', {
         name: 'Interlace',
       }),
     );
-    expect(screen.getByText('Test', { selector: 'b' })).toBeTruthy();
+    expect(screen.getByTitle('Your design “Test”')).toBeTruthy();
     click('Save');
     expect(listDesigns()).toHaveLength(1);
     expect(listDesigns()[0]).toMatchObject({
@@ -115,11 +122,11 @@ describe('saving a design', () => {
     expect(label()).toBe('Wall');
     expect(fills()).toEqual(colored);
     expect(
-      within(screen.getByRole('group', { name: 'Style' }))
+      within(styleGroup())
         .getByRole('button', { name: 'Interlace' })
         .getAttribute('aria-pressed'),
     ).toBe('true');
-    expect(screen.getByText('Test', { selector: 'b' })).toBeTruthy();
+    expect(screen.getByTitle('Your design “Test”')).toBeTruthy();
     click('Go to ink');
     click('Make your own');
     expect(inked()).toHaveLength(17);
@@ -202,7 +209,7 @@ describe('saving a design', () => {
       .mockImplementation(() => {
         throw new Error('QuotaExceededError');
       });
-    click('Save as my design');
+    click('Save');
     name('Kept?');
     set.mockRestore();
     expect(screen.getByRole('alert').textContent).toMatch(
@@ -230,7 +237,12 @@ describe('saving a design', () => {
       true,
     );
     fireEvent.click(screen.getByRole('button', { name: 'Marrakech' }));
-    expect(screen.getByText(/Unsaved changes/)).toBeTruthy();
+    // A dot on Save marks the changes.
+    expect(
+      screen
+        .getByRole('button', { name: 'Save' })
+        .classList.contains('pending'),
+    ).toBe(true);
     const home = screen.getByRole('link', { name: /All patterns/ });
     home.focus();
     const overflow = document.body.style.overflow;
@@ -274,7 +286,7 @@ describe('saving a design', () => {
 
   it('typing a name does not step the player', () => {
     render(<Play json={example} start="result" />);
-    click('Save as my design');
+    click('Save');
     const input = screen.getByLabelText('Name');
     fireEvent.keyDown(input, { key: ' ' });
     fireEvent.keyDown(input, { key: 'ArrowLeft' });
@@ -282,7 +294,7 @@ describe('saving a design', () => {
     click('Cancel');
     expect(screen.queryByLabelText('Name')).toBeNull();
     // Escape closes the name box too.
-    click('Save as my design');
+    click('Save');
     fireEvent.keyDown(screen.getByLabelText('Name'), { key: 'Escape' });
     expect(screen.queryByLabelText('Name')).toBeNull();
   });

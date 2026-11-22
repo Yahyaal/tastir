@@ -102,7 +102,7 @@ describe('from a copy to a played pattern', () => {
       ),
     ).toEqual(['Recolor every octagon', 'Recolor every star']);
     // And it can be saved as a design, like a library pattern.
-    click('Save as my design');
+    click('Save');
     fireEvent.change(screen.getByLabelText('Name'), {
       target: { value: 'Octagons' },
     });

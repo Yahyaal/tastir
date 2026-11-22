@@ -7,7 +7,12 @@ import { Library } from './Library';
 import { WorkPage } from './YourWork';
 import { Broken, MissingDesign, Play } from './Player';
 import { placeInRoute } from './places';
-import { isLibraryRoute, lessonRoute, useRoute } from './routing';
+import {
+  isLibraryRoute,
+  lessonRoute,
+  useRoute,
+  type LessonPosition,
+} from './routing';
 import { openShared, useShared } from './Sharing';
 import { FeedbackHost } from '../feedback/FeedbackHost';
 const LearningPath = lazy(() =>
@@ -409,22 +414,73 @@ function AppPage({
   }
   // #/id and #/id/result open at the finished wall; #/id/watch autoplays;
   // #/id/repeat at the repeat, where drawing along goes on.
-  const { id, position, colourFirst } = lessonRoute(route);
+  const { id, position, colourFirst, design } = lessonRoute(route);
   const entry = entries.find((e) => e.id === id);
   if (!entry)
     return <Broken message={`There is no tutorial called "${route}".`} />;
   return (
-    <Play
+    <Lesson
       key={`lesson:${id}`}
+      id={id}
       json={entry.json}
       position={position}
-      lessonColourFirst={colourFirst ?? false}
+      colourFirst={colourFirst ?? false}
+      design={design}
+    />
+  );
+}
+
+/**
+ * A lesson. A finished wall's address may carry a design (?d=…): it is
+ * read once, when the lesson opens, and played as this browser's draft.
+ */
+function Lesson({
+  id,
+  json,
+  position,
+  colourFirst,
+  design,
+}: {
+  id: string;
+  json: unknown;
+  position: LessonPosition;
+  colourFirst: boolean;
+  design?: string;
+}) {
+  const [code] = useState(design);
+  const shared = useShared(code ?? '');
+  if (code && shared === undefined)
+    return (
+      <div className="player loading" role="status">
+        <p>Opening the design…</p>
+      </div>
+    );
+  const d = code && shared?.library === id ? shared.design : undefined;
+  return (
+    <Play
+      json={json}
+      position={position}
+      lessonColourFirst={colourFirst}
       start={
         position === 'beginning' || typeof position === 'number'
           ? 'beginning'
           : position
       }
       address={id}
+      carried={
+        d
+          ? {
+              tutorial: id,
+              ...(d.inked ? { inked: d.inked } : {}),
+              coloring: d.coloring,
+              ...(d.colorings ? { colorings: d.colorings } : {}),
+              look: d.look,
+              grout: d.grout,
+              ...(d.jali ? { jali: d.jali } : {}),
+              ...(d.pen ? { pen: d.pen } : {}),
+            }
+          : undefined
+      }
     />
   );
 }

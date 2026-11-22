@@ -102,3 +102,5 @@ The owner answered on 22 November:
 4. **The tradition filter stays**, as chips under a chosen place.
 5. **The Patterns sidebar stays** on the pattern page, as an icon in the top bar.
 6. **The demos are committed on `ui/concept-lab` as a record**, and the redesign is built on a fresh branch from main.
+7. **Make it yours has three tabs and a one-line foot** (the owner, 22 November, after seeing REDESIGN.4). Colour opens first, as most people come to colour; Style holds the styles with their band, edge and screen colours; More holds the designs and places, The real wall, how the construction was made, print, the files and feedback. Button names are one word, with the full sentence on hover: Learn, Next (or Path at the end of the path, Variation outside it), Save, Share and 3D. "Your changes are kept in this browser" became a dot on Save, said in full on hover.
+8. **The finished wall's address carries the design** (`#/<id>/result?d=…`), kept up to date as the colours and style change, so copying the address bar shares the same wall. Share stays as one small button, because a phone hides the address bar; on a phone it opens the phone's own share menu.
