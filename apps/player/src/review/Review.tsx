@@ -298,6 +298,7 @@ export function Review() {
       <nav className="review-top">
         <a href="#/">← Library</a>
         <span>
+          <a href="#/review/windows">New: window cards</a> ·{' '}
           <a href="#/notes/settings-update">New: guide, settings & sharing</a> ·{' '}
           <a href="#/notes/teaching-update">New: construction research</a> ·{' '}
           <a href="#/plan/palettes">Palette study</a> ·{' '}

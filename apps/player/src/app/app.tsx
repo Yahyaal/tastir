@@ -27,6 +27,16 @@ const Review = import.meta.env.DEV
   ? lazy(() => import('../review/Review').then((m) => ({ default: m.Review })))
   : undefined;
 
+/** The window cards of the redesign, every arch in light and dark
+ * (#/review/windows), dev server only like the review page. */
+const WindowsReview = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/WindowsReview').then((m) => ({
+        default: m.WindowsReview,
+      })),
+    )
+  : undefined;
+
 /** The studio (#/studio): drawings shared with AI agents, on the dev server
  * and in the hosted studio's build (VITE_TASTIR_STUDIO=hosted), never in the
  * public site. */
@@ -218,6 +228,15 @@ function AppPage({
     return Review ? (
       <Suspense fallback={<p className="review-loading">Loading…</p>}>
         <Review />
+      </Suspense>
+    ) : (
+      <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'review/windows') {
+    return WindowsReview ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <WindowsReview />
       </Suspense>
     ) : (
       <Broken message="The review page only exists on the dev server (pnpm dev)." />

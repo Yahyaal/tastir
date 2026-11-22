@@ -4,9 +4,13 @@
  * ink lines drawn as on paper; the dark theme keeps every role on a deep ink
  * ground. Zellige colours appear only on coloured pieces and on the step
  * being drawn. Every colour below has a light and a dark value; the page
- * picks one with data-theme on <html> (src/app/theme.tsx).
+ * picks one with data-theme on <html> (src/app/theme.tsx). Any element
+ * with its own data-theme shows that theme inside it (the review page puts
+ * light and dark side by side), so the light values apply to every
+ * data-theme and the dark ones override them.
  */
-:root {
+:root,
+[data-theme] {
   color-scheme: light;
 
   /* Grounds and surfaces */
@@ -95,7 +99,8 @@
   background: var(--theme-bg-canvas);
 }
 
-:root[data-theme='dark'] {
+:root[data-theme='dark'],
+[data-theme='dark'] {
   color-scheme: dark;
 
   --theme-bg-canvas: #0f1820; /* Night: the page */

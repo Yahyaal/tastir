@@ -1,0 +1,55 @@
+/* The window cards review (#/review/windows). */
+.windows-review {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+  line-height: 1.55;
+  color: var(--theme-text-primary);
+}
+.windows-review h1 {
+  font: 2rem var(--display);
+  margin: 28px 0 8px;
+}
+.windows-review .lede {
+  font-size: 1.1rem;
+  max-width: 46em;
+  color: var(--theme-text-secondary);
+}
+.windows-review-names {
+  columns: 2 22em;
+  color: var(--theme-text-secondary);
+  font-size: 0.95rem;
+}
+.windows-review-panel {
+  margin-top: 28px;
+  padding: 20px 24px 32px;
+  border-radius: 16px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-canvas);
+  color: var(--theme-text-primary);
+}
+.windows-review-panel h2 {
+  margin: 0 0 16px;
+  font: 1.3rem var(--display);
+  color: var(--theme-label);
+}
+.windows-review-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 30px 24px;
+}
+@media (max-width: 600px) {
+  .windows-review-panel {
+    padding: 16px 12px 24px;
+  }
+  .windows-review-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 14px;
+  }
+  .windows-review .window h3 {
+    font-size: 15px;
+  }
+}

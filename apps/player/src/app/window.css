@@ -1,0 +1,222 @@
+/* Window cards (Window.tsx): the picture clipped to its tradition's arch. */
+.window-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+.window {
+  --window-gold: linear-gradient(180deg, #ecc463, #c9962f);
+  --window-gold-ink: #2b1d04;
+  --window-gold-edge: #d9a63c;
+  min-width: 0;
+  list-style: none;
+}
+.window-pic {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  background: var(--theme-bg-raised);
+  transition: transform 0.2s;
+}
+.window-pic:hover,
+.window-pic:focus-within {
+  transform: translateY(-2px);
+}
+.window-link,
+.window-pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.window-pic img {
+  object-fit: cover;
+}
+
+/* The frame, drawn over the picture in the arch's own shape. */
+.window-frame {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.window-frame path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+.window-frame .edge {
+  stroke: color-mix(in srgb, var(--theme-text-primary) 35%, transparent);
+  stroke-width: 3;
+  transition: stroke 0.2s;
+}
+.window-pic:hover .window-frame .edge,
+.window-pic:focus-within .window-frame .edge {
+  stroke: var(--window-gold-edge);
+  stroke-width: 7;
+}
+.window-frame .spandrel {
+  fill: rgb(28 39 51 / 0.55);
+  stroke: none;
+}
+.window-frame .inner {
+  stroke: rgb(255 255 255 / 0.6);
+  stroke-width: 1.5;
+}
+
+.window-badge {
+  position: absolute;
+  z-index: 2;
+  top: 26%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgb(28 39 51 / 0.82);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* The three actions, centred and as wide as their words, on pointing or
+   keyboard focus; View first, in gold. */
+.window-actions {
+  position: absolute;
+  z-index: 2;
+  inset: auto 10px 14px;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+  pointer-events: none;
+}
+.window-pic:hover .window-actions,
+.window-pic:focus-within .window-actions {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.window-actions a {
+  height: 36px;
+  min-width: 56%;
+  padding: 0 16px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-weight: 750;
+  font-size: 14px;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+}
+.window-actions a:hover {
+  filter: brightness(1.1);
+}
+.window-actions a:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 1px;
+}
+.window-actions .view {
+  background: var(--window-gold);
+  color: var(--window-gold-ink);
+  box-shadow: 0 2px 8px rgb(80 50 0 / 0.35);
+}
+.window-actions .watch {
+  background: rgb(31 78 140 / 0.93);
+}
+.window-actions .draw {
+  background: rgb(30 107 82 / 0.93);
+}
+
+.window-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 2px 3px;
+}
+.window h3 {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  font: 600 17px/1.25 var(--text);
+  color: var(--theme-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.window-meta {
+  margin: 0 2px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  color: var(--theme-text-secondary);
+  font-size: 13.5px;
+}
+.window-dots {
+  display: inline-flex;
+  gap: 3px;
+}
+.window-dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+}
+.window-dots i.on {
+  background: currentColor;
+}
+
+/* Touch screens cannot point: a tap on the picture opens the wall, and
+   Watch it drawn and Draw along are small icons beside the title. */
+.window-touch {
+  display: none;
+  gap: 4px;
+}
+.window-touch a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
+}
+.window-touch .watch {
+  color: var(--act-watch);
+}
+.window-touch .draw {
+  color: var(--act-draw);
+}
+@media (hover: none) {
+  .window-touch {
+    display: flex;
+  }
+  /* A tap must open the wall, not reveal buttons first; the buttons still
+     show for a keyboard. */
+  .window-pic:hover .window-actions {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .window-pic:has(:focus-visible) .window-actions {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .window-pic,
+  .window-actions,
+  .window-frame .edge {
+    transition: none;
+  }
+}
