@@ -25,9 +25,12 @@ export function photoSrc(
 export function Original({
   photos,
   dev = import.meta.env.DEV,
+  onWipe,
 }: {
   photos: readonly Photo[];
   dev?: boolean;
+  /** Lays the photo over the wall, to wipe between the two. */
+  onWipe?: () => void;
 }) {
   const [shown, setShown] = useState(0);
   const [full, setFull] = useState(false);
@@ -53,6 +56,7 @@ export function Original({
           caption={photo.caption}
           onError={failed}
           onFull={() => setFull(true)}
+          onWipe={onWipe}
         />
       ) : (
         <PhotoPlaceholder photo={photo} unavailable={missing} />
@@ -211,11 +215,13 @@ function ZoomPhoto({
   caption,
   onError,
   onFull,
+  onWipe,
 }: {
   src: string;
   caption: string;
   onError: () => void;
   onFull: () => void;
+  onWipe?: () => void;
 }) {
   const [view, setView] = useState({ k: 1, x: 0, y: 0 });
   const box = useRef<HTMLDivElement>(null);
@@ -361,6 +367,18 @@ function ZoomPhoto({
             <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
           </svg>
         </button>
+        {onWipe ? (
+          <button
+            type="button"
+            aria-label="Lay the photo over the wall"
+            title="Lay the photo over the wall, and wipe between the two"
+            onClick={onWipe}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v18M9 8l-4 4 4 4M15 8l4 4-4 4" />
+            </svg>
+          </button>
+        ) : null}
       </div>
     </div>
   );

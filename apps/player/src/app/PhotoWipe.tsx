@@ -4,7 +4,8 @@ import { photoSrc } from './Original';
 
 /**
  * The real wall's photo badge, in the corner of the finished wall: a small
- * picture of the photo that opens the wipe.
+ * picture of the photo that shows it beside the wall, as The real wall in
+ * More does. The photo's own tools lay it over the wall to wipe.
  */
 export function PhotoBadge({
   photo,
@@ -24,12 +25,12 @@ export function PhotoBadge({
       title={
         open
           ? 'Close the photo of the real wall'
-          : 'Compare with a photo of the real wall'
+          : 'A photo of the real pattern, beside the wall'
       }
       onClick={onToggle}
     >
       {src ? <img src={src} alt="" /> : null}
-      <span>{open ? 'Close photo' : 'Real wall'}</span>
+      <span>{open ? 'Hide photo' : 'Real wall'}</span>
     </button>
   );
 }

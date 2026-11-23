@@ -108,6 +108,12 @@ export const DOCS: readonly {
     text: read(file!),
   })),
   {
+    key: 'palette-engine',
+    label: 'Overnight: the palette engine',
+    file: 'PALETTE-ENGINE.md',
+    text: read('PALETTE-ENGINE.md'),
+  },
+  {
     key: 'redesign-plan-2026-11-22',
     label: 'Redesign plan: windows on a route',
     file: 'REDESIGN-PLAN-2026-11-22.md',
@@ -393,6 +399,11 @@ export function Notes({ page = 'start' }: { page?: string }) {
       <p>
         <a href="#/review/route">
           New: the route from Córdoba to Agra, in light and dark →
+        </a>
+      </p>
+      <p>
+        <a href="#/notes/palette-engine">
+          New: the palette engine, the overnight report →
         </a>
       </p>
       <p>

@@ -1357,7 +1357,13 @@ export function Thumbnail({
   const reach = 2;
   const view = givenView ?? cardView(model);
   const { cell } = model.pattern;
-  const colors = pieceColors(model, coloring);
+  const strapped = look === 'strapwork' || look === 'interlace';
+  const finish0 = strapped ? finishOf(model, coloring) : undefined;
+  const colors = pieceColors(
+    model,
+    coloring,
+    finish0 ? { band: finish0.band, edge: finish0.lines } : {},
+  );
   const finish = finishOf(model, coloring);
   // Pieces of one shape can take different colors by where they sit (the
   // Comares bones); the wall's own rule then colors each copy.

@@ -230,6 +230,40 @@ function legacyInkMode(): InkMode {
 
 type MakeTab = 'colour' | 'style' | 'more';
 
+/** Where Letter is the usual paper: the United States, Canada, Mexico and
+ * much of Central and South America, and the Philippines. */
+const LETTER = new Set([
+  'US',
+  'CA',
+  'MX',
+  'PH',
+  'CL',
+  'CO',
+  'VE',
+  'CR',
+  'GT',
+  'PA',
+  'SV',
+  'DO',
+  'PR',
+  'NI',
+  'HN',
+  'BO',
+  'BZ',
+]);
+/** The paper of the learner's country, from the browser's languages. */
+function localPaper(): Paper {
+  const tags =
+    typeof navigator === 'undefined'
+      ? []
+      : [...(navigator.languages ?? []), navigator.language];
+  for (const tag of tags) {
+    const region = /-([A-Z]{2})\b/i.exec(tag ?? '')?.[1]?.toUpperCase();
+    if (region) return LETTER.has(region) ? 'Letter' : 'A4';
+  }
+  return 'A4';
+}
+
 /** Whether the learner left Make it yours open on a phone. */
 const MAKE_OPEN_KEY = 'tastir.makeOpen';
 function keptMakeOpen(): boolean | undefined {
@@ -440,10 +474,15 @@ export function Player({
       });
     } else rawColorDispatch(action);
   };
-  const colors = useMemo(
-    () => pieceColors(coloured, colorHistory.now),
-    [coloured, colorHistory.now],
-  );
+  // Under bands, the colours keep clear of the bands' own (STYLE.4).
+  const colors = useMemo(() => {
+    if (!banded(colourStyle)) return pieceColors(coloured, colorHistory.now);
+    const f = finishOf(coloured, colorHistory.now);
+    return pieceColors(coloured, colorHistory.now, {
+      band: f.band,
+      edge: f.lines,
+    });
+  }, [coloured, colorHistory.now, colourStyle]);
   // Fills by placement, when the tutorial colors same shapes differently.
   const fill = useMemo(
     () =>
@@ -664,7 +703,7 @@ export function Player({
       onSaved={keepSaved}
     />
   );
-  const [paper, setPaper] = useState<Paper>('A4');
+  const [paper, setPaper] = useState<Paper>(localPaper);
   const [printing, setPrinting] = useState(false);
   // The photo of the real wall is for reference: it opens beside the wall
   // from The real wall in Make it yours (or a shared link that showed it).
@@ -690,7 +729,16 @@ export function Player({
   };
   // The real wall's photo, wiped across ours by a golden handle.
   const [wiping, setWiping] = useState(false);
-  const [paperOpen, setPaperOpen] = useState(false);
+  // The real wall: the badge on the wall and The real wall in More do the
+  // same thing, showing the photo beside the wall (or closing it, from
+  // either view); the photo's own tools lay it over the wall to wipe.
+  const photoOpen = comparing || wiping;
+  const togglePhoto = () => {
+    if (photoOpen) {
+      setComparing(false);
+      setWiping(false);
+    } else setComparing(true);
+  };
   // Make it yours shows one tab at a time: colour first, as most people
   // come to colour.
   const [makeTab, setMakeTab] = useState<MakeTab>('colour');
@@ -1586,15 +1634,15 @@ export function Player({
                 <button
                   type="button"
                   className="make-photo-tile"
-                  aria-pressed={comparing}
+                  aria-pressed={photoOpen}
                   title="A photo of the real pattern, beside the wall"
-                  onClick={() => setComparing(!comparing)}
+                  onClick={togglePhoto}
                 >
                   {photoSrc(photos[0]) ? (
                     <img src={photoSrc(photos[0])} alt="" />
                   ) : null}
                   <span>
-                    {comparing ? 'Hide the original' : 'Show the original'}
+                    {photoOpen ? 'Hide the original' : 'Show the original'}
                   </span>
                 </button>
               </section>
@@ -1609,49 +1657,16 @@ export function Player({
             <section className="make-files">
               <h2>Print and files</h2>
               <div className="make-tiles">
-                {/* Print on the paper chosen (A4 at first); the arrow beside
-                    it offers the other size. */}
-                <div className="make-print">
-                  <MakeTile
-                    icon="print"
-                    label={`Print · ${paper}`}
-                    name="Print line sheet"
-                    onClick={() => setPrinting(true)}
-                  />
-                  <button
-                    type="button"
-                    className="make-print-paper"
-                    aria-label="Paper size"
-                    title="Paper size"
-                    aria-expanded={paperOpen}
-                    onClick={() => setPaperOpen(!paperOpen)}
-                  >
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M6 9l6 6 6-6" />
-                    </svg>
-                  </button>
-                  {paperOpen ? (
-                    <div
-                      className="make-paper-menu"
-                      role="group"
-                      aria-label="Paper"
-                    >
-                      {(['A4', 'Letter'] as const).map((p) => (
-                        <button
-                          key={p}
-                          type="button"
-                          aria-pressed={p === paper}
-                          onClick={() => {
-                            setPaper(p);
-                            setPaperOpen(false);
-                          }}
-                        >
-                          {p}
-                        </button>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
+                {/* One click: the paper is the learner's own country's
+                    (Letter in most of the Americas, A4 elsewhere), and the
+                    browser's print dialog can still change it. */}
+                <MakeTile
+                  icon="print"
+                  label="Print"
+                  name="Print line sheet"
+                  title={`Print a line sheet to draw on (${paper})`}
+                  onClick={() => setPrinting(true)}
+                />
                 <MakeTile
                   icon="file"
                   label="Pattern file"
@@ -1893,7 +1908,19 @@ export function Player({
       >
         <section ref={plateRef} className="plate-area">
           <main className={showOriginal ? 'stage comparing' : 'stage'}>
-            {showOriginal ? <Original photos={photos} /> : null}
+            {showOriginal ? (
+              <Original
+                photos={photos}
+                onWipe={
+                  wallPage
+                    ? () => {
+                        setComparing(false);
+                        setWiping(true);
+                      }
+                    : undefined
+                }
+              />
+            ) : null}
             {picture}
             {wallPage && wiping && !showOriginal && photos[0] ? (
               <PhotoWipe photo={photos[0]} />
@@ -1942,11 +1969,11 @@ export function Player({
               </svg>
             </button>
           ) : null}
-          {wallPage && photos[0] && !showOriginal ? (
+          {wallPage && photos[0] ? (
             <PhotoBadge
               photo={photos[0]}
-              open={wiping}
-              onToggle={() => setWiping(!wiping)}
+              open={photoOpen}
+              onToggle={togglePhoto}
             />
           ) : null}
           {wallPage && !makeOpen ? (

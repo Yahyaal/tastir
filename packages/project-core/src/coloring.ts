@@ -559,45 +559,202 @@ export function touchingTypes(model: Model): ReadonlySet<string> {
   return pairs;
 }
 
+/** What the colours must also keep clear of, beyond the pieces. */
+export interface Surround {
+  /** The interlace or strapwork bands' colour, when the wall has bands: a
+   * piece of their colour hides them (STYLE.4). */
+  readonly band?: string;
+  /** The bands' or grout's dark edge: a piece a shade off it shows the edge
+   * as a second black. */
+  readonly edge?: string;
+}
+
 /**
- * The fill for each piece type under a coloring.
+ * The fill for each piece type under a coloring: the palette engine.
  *
- * With a preset palette, two different shapes that touch never share a
- * colour where the palette allows it (STYLE.2): a tutorial maps several
- * shapes to one slot, and where those shapes meet they merged into one
- * blot (44% of the shared sides on the Arrayanes ceiling). Going from the
- * largest shape down, a shape keeps its slot unless a touching shape
- * already has that colour, and then takes the first slot that no touching
- * shape has. Every copy of a shape keeps one colour, so the symmetry is
- * the tutorial's. Colours the learner chose, and a photo's original
- * colours, are kept as they are.
+ * A tutorial names a palette slot for each shape, and with the tutorial's
+ * own colours (its photo's original) those are kept as they are, as are
+ * colours the learner chose. With any other palette the slots are only a
+ * wish, and the engine looks for the colouring that keeps them best while
+ * following the rules zellige follows (docs/PALETTE-ENGINE.md):
+ *
+ * 1. Two shapes that touch never share a colour, or two colours that read
+ *    as one (STYLE.2): where they meet they merge into one blot.
+ * 2. Under bands no piece takes the bands' colour, or a shade of their dark
+ *    edge (STYLE.4): white pieces under white interlace lose the bands.
+ * 3. Neighbours differ in lightness as well as hue, so the shapes read in
+ *    a photo, in grey and for colour-blind eyes.
+ * 4. No colour floods the wall while the palette's others stay unused: one
+ *    colour over half of it, with colours to spare, is a dull wall.
+ * 5. Every copy of a shape keeps one colour, so the symmetry is the
+ *    pattern's own.
+ *
+ * Colours come from the palette's five slots and, when those run out, from
+ * its glaze's other colours, and last from a lighter or darker shade of a
+ * slot's colour; never from a mix of two colours. The search is
+ * deterministic: from the tutorial's wish, each shape in turn (smallest
+ * first, so the large shapes that set the look keep their colour) takes
+ * the colour that lowers the cost most, until nothing lowers it. The cost weighs the rules above against keeping the wish.
  */
 export function pieceColors(
   model: Model,
   coloring: Coloring = tutorialColoring(model),
+  surround: Surround = {},
 ): string[] {
   const palette = paletteOf(model, coloring.palette);
   const { types } = model.pattern;
-  const wanted = types.map(
-    (t, i) => coloring.chosen[typeKey(t)] ?? palette[slotOf(model, t, i)],
-  );
+  const chosen = types.map((t) => coloring.chosen[typeKey(t)]);
+  const wanted = types.map((t, i) => chosen[i] ?? palette[slotOf(model, t, i)]);
   if (coloring.palette === ORIGINAL) return wanted;
-  const touching = touchingTypes(model);
-  const near = (a: number, b: number) =>
-    touching.has(a < b ? `${a},${b}` : `${b},${a}`);
-  const out: string[] = [];
-  types.forEach((t, i) => {
-    const want = wanted[i] ?? palette.a;
-    const taken = out.flatMap((c, k) => (near(i, k) ? [c] : []));
-    const free = (c: string) =>
-      !taken.some((x) => x.toLowerCase() === c.toLowerCase());
-    if (coloring.chosen[typeKey(t)] || free(want)) {
-      out.push(want);
-      return;
-    }
-    out.push(SLOTS.map((s) => palette[s]).find(free) ?? want);
+  // Past the five slots, only the glaze's own colours: never a mix.
+  const glaze = glazeOf(coloring.palette, model);
+  const extras = [glaze.white, glaze.black, ...glaze.families.flat()];
+  return assignColours(model, palette, wanted, chosen, {
+    extras,
+    ...surround,
   });
-  return out;
+}
+
+/** The engine's weights: a broken rule costs far more than a moved wish. */
+const COST = {
+  touchSame: 1000,
+  touchNear: 300,
+  hidden: 800,
+  contrast: 0.2,
+  flood: 1500,
+  moved: 12,
+  movedArea: 60,
+  extra: 3,
+  shade: 9,
+} as const;
+
+/** A colour moved towards white (t > 0) or black (t < 0). */
+function shadeOf(hex: string, t: number): string {
+  const n = parseInt(hex.replace('#', '').slice(0, 6), 16);
+  const to = t > 0 ? 255 : 0;
+  const k = Math.abs(t);
+  return (
+    '#' +
+    [16, 8, 0]
+      .map((b) =>
+        Math.round(((n >> b) & 255) * (1 - k) + to * k)
+          .toString(16)
+          .padStart(2, '0'),
+      )
+      .join('')
+  );
+}
+
+/** Lightness this close between neighbours reads as one tone. */
+const TONE = 10;
+
+/**
+ * Colours for each type: the wish kept where the rules allow (see
+ * pieceColors). Types with a colour the learner chose keep it.
+ */
+export function assignColours(
+  model: Model,
+  palette: Palette,
+  wanted: readonly string[],
+  chosen: readonly (string | undefined)[] = [],
+  options: Surround & { readonly extras?: readonly string[] } = {},
+): string[] {
+  const { types } = model.pattern;
+  const n = types.length;
+  if (!n) return [];
+  const lower = (c: string) => c.toLowerCase();
+  const slots = [...new Set(SLOTS.map((s) => lower(palette[s])))];
+  const extras = [...new Set((options.extras ?? []).map(lower))].filter(
+    (c) => !slots.includes(c),
+  );
+  const hides = (c: string) =>
+    (options.band !== undefined && colourDistance(c, options.band) < NEAR) ||
+    (options.edge !== undefined && colourDistance(c, options.edge) < SHADE);
+  // Each type's share of the wall's area.
+  const areas = types.map((t) => Math.abs(t.area) * Math.max(1, t.perCell));
+  const total = areas.reduce((x, y) => x + y, 0) || 1;
+  const share = areas.map((a) => a / total);
+  const touching = touchingTypes(model);
+  const pairs: [number, number][] = [...touching].map(
+    (k) => k.split(',').map(Number) as [number, number],
+  );
+  const want = wanted.map((c) => lower(c ?? palette.a));
+  const locked = types.map((_, i) => chosen[i] !== undefined);
+  // Last of all, a lighter and a darker firing of each slot's colour, as
+  // copies that take turns already use: a shade of the palette, never a mix
+  // of two of its colours.
+  const shades = [
+    ...new Set(
+      slots
+        .filter((c) => lightness(c) > 15 && lightness(c) < 90)
+        .flatMap((c) => [shadeOf(c, 0.38), shadeOf(c, -0.35)]),
+    ),
+  ].filter((c) => !slots.includes(c) && !extras.includes(c));
+  const candidates = [...slots, ...extras, ...shades];
+  const L = new Map(candidates.concat(want).map((c) => [c, lightness(c)]));
+  const tone = (c: string) => L.get(c) ?? lightness(c);
+
+  const cost = (at: readonly string[]) => {
+    let sum = 0;
+    for (const [a, b] of pairs) {
+      const x = at[a] ?? '';
+      const y = at[b] ?? '';
+      const weight = 0.5 + Math.min(share[a] ?? 0, share[b] ?? 0) * 4;
+      if (x === y) sum += COST.touchSame * weight;
+      else if (colourDistance(x, y) < NEAR) sum += COST.touchNear * weight;
+      else if (Math.abs(tone(x) - tone(y)) < TONE) sum += COST.contrast;
+    }
+    const used = new Map<string, number>();
+    at.forEach((c, i) => {
+      used.set(c, (used.get(c) ?? 0) + (share[i] ?? 0));
+      if (hides(c) && !locked[i]) sum += COST.hidden;
+      if (c !== want[i]) sum += COST.moved + COST.movedArea * (share[i] ?? 0);
+      if (extras.includes(c)) sum += COST.extra;
+      else if (shades.includes(c)) sum += COST.shade;
+    });
+    // One colour over half the wall while slots stay unused.
+    const spare = slots.some((c) => !used.has(c) && !hides(c));
+    if (spare)
+      for (const s of used.values()) if (s > 0.5) sum += COST.flood * (s - 0.5);
+    return sum;
+  };
+
+  const at = [...want];
+  // The smallest shapes give way first: the largest set the wall's look
+  // and keep the tutorial's colour longest.
+  const order = [...types.keys()].sort(
+    (x, y) => (share[x] ?? 0) - (share[y] ?? 0) || x - y,
+  );
+  let best = cost(at);
+  for (let pass = 0; pass < 12; pass++) {
+    let moved = false;
+    for (const i of order) {
+      if (locked[i]) continue;
+      const was = at[i] as string;
+      let pick = was;
+      for (const c of candidates) {
+        if (c === was) continue;
+        at[i] = c;
+        const v = cost(at);
+        if (v < best - 1e-9) {
+          best = v;
+          pick = c;
+        }
+      }
+      at[i] = pick;
+      if (pick !== was) moved = true;
+    }
+    if (!moved) break;
+  }
+  // Keep the case the palette wrote.
+  const original = new Map(
+    [...SLOTS.map((s) => palette[s]), ...(options.extras ?? []), ...wanted]
+      .filter((c): c is string => typeof c === 'string')
+      .map((c) => [lower(c), c]),
+  );
+  return at.map((c, i) =>
+    locked[i] ? (chosen[i] as string) : (original.get(c) ?? c),
+  );
 }
 
 /** A coloring with its undo and redo history. */

@@ -43,6 +43,15 @@ const WindowsReview = import.meta.env.DEV
     )
   : undefined;
 
+/** The palette engine, before and after (#/review/palette-engine). */
+const PaletteEngineReview = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/PaletteEngineReview').then((m) => ({
+        default: m.PaletteEngineReview,
+      })),
+    )
+  : undefined;
+
 /** The route of the redesign (#/review/route), dev server only. */
 const RouteReview = import.meta.env.DEV
   ? lazy(() =>
@@ -253,6 +262,15 @@ function AppPage({
     return WindowsReview ? (
       <Suspense fallback={<p className="review-loading">Loading…</p>}>
         <WindowsReview />
+      </Suspense>
+    ) : (
+      <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'review/palette-engine') {
+    return PaletteEngineReview ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <PaletteEngineReview />
       </Suspense>
     ) : (
       <Broken message="The review page only exists on the dev server (pnpm dev)." />

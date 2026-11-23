@@ -124,14 +124,33 @@ describe('export in the player', () => {
     click.mockRestore();
   });
 
-  it('prints a line sheet with the title and the chosen paper', () => {
+  it('prints a line sheet in one click, on A4 outside the Americas', () => {
+    const languages = vi
+      .spyOn(navigator, 'languages', 'get')
+      .mockReturnValue(['fr-FR']);
+    window.print = vi.fn();
+    vi.useFakeTimers();
+    atColor();
+    fireEvent.click(screen.getByRole('tab', { name: 'More' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Print line sheet' }));
+    expect(
+      document.querySelector('.print-sheet')?.classList.contains('paper-A4'),
+    ).toBe(true);
+    vi.runAllTimers();
+    window.dispatchEvent(new Event('afterprint'));
+    vi.useRealTimers();
+    languages.mockRestore();
+  });
+
+  it('prints a line sheet with the title, on Letter in the United States', () => {
+    const languages = vi
+      .spyOn(navigator, 'languages', 'get')
+      .mockReturnValue(['en-US']);
     const print = vi.fn();
     window.print = print;
     vi.useFakeTimers();
     atColor();
     fireEvent.click(screen.getByRole('tab', { name: 'More' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Paper size' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Letter' }));
     fireEvent.click(screen.getByRole('button', { name: 'Print line sheet' }));
     const sheet = document.querySelector('.print-sheet');
     expect(sheet?.classList.contains('paper-Letter')).toBe(true);
@@ -148,5 +167,6 @@ describe('export in the player', () => {
     expect(print).toHaveBeenCalled();
     window.dispatchEvent(new Event('afterprint'));
     vi.useRealTimers();
+    languages.mockRestore();
   });
 });
