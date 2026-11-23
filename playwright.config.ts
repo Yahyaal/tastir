@@ -42,6 +42,17 @@ export default defineConfig({
         viewport: { width: 390, height: 844 },
         isMobile: true,
         hasTouch: true,
+        // Make it yours opened before, so the tests reach its colours; a
+        // first visit, folded, has its own test (layout-fit).
+        storageState: {
+          cookies: [],
+          origins: [
+            {
+              origin: baseURL,
+              localStorage: [{ name: 'tastir.makeOpen', value: '1' }],
+            },
+          ],
+        },
       },
     },
   ],

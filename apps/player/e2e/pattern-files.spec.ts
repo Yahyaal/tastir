@@ -96,7 +96,7 @@ for (const style of ['Watercolour', 'Screen']) {
       )
         .getByRole('button', { name: 'Tiles', exact: true })
         .click();
-      await tab(recipient, 'Colour');
+      await tab(recipient, 'Color');
       await expect(
         recipient.getByRole('button', { name: 'Chefchaouen', exact: true }),
       ).toHaveAttribute('aria-pressed', 'true');

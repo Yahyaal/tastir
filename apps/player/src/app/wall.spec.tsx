@@ -307,7 +307,7 @@ describe('the wall controls', () => {
         name: 'Tiles',
       }),
     );
-    fireEvent.click(screen.getByRole('tab', { name: 'Colour' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Color' }));
     expect(screen.getByRole('heading', { name: 'Colors' })).toBeTruthy();
   });
 });

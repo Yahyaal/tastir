@@ -58,7 +58,8 @@ import {
   type Model,
   type Stage,
 } from './model';
-import { Original } from './Original';
+import { Original, photoSrc } from './Original';
+import { PhotoBadge, PhotoWipe } from './PhotoWipe';
 import { LessonTitle, byOf, stepSources } from './LessonTitle';
 import { FeedbackButton } from '../feedback/FeedbackButton';
 import { basicFeedbackContext } from '../feedback/client';
@@ -228,6 +229,17 @@ function legacyInkMode(): InkMode {
 }
 
 type MakeTab = 'colour' | 'style' | 'more';
+
+/** Whether the learner left Make it yours open on a phone. */
+const MAKE_OPEN_KEY = 'tastir.makeOpen';
+function keptMakeOpen(): boolean | undefined {
+  try {
+    const v = window.localStorage.getItem(MAKE_OPEN_KEY);
+    return v === null ? undefined : v === '1';
+  } catch {
+    return undefined;
+  }
+}
 
 export function Player({
   model: full,
@@ -662,6 +674,22 @@ export function Player({
   // Make it yours floats over the finished wall; it can be hidden to see
   // the wall whole.
   const [makeOpen, setMakeOpen] = useState(true);
+  // On a phone the panel starts as a slim bar, so the wall has the screen;
+  // a tap opens it upwards.
+  // Opened once, it opens again: the learner's choice is kept.
+  const [makePeek, setMakePeekState] = useState(
+    () => phone && keptMakeOpen() !== true,
+  );
+  const setMakePeek = (peek: boolean) => {
+    setMakePeekState(peek);
+    try {
+      window.localStorage.setItem(MAKE_OPEN_KEY, peek ? '0' : '1');
+    } catch {
+      // Not kept: a phone folds it again next time.
+    }
+  };
+  // The real wall's photo, wiped across ours by a golden handle.
+  const [wiping, setWiping] = useState(false);
   // Make it yours shows one tab at a time: colour first, as most people
   // come to colour.
   const [makeTab, setMakeTab] = useState<MakeTab>('colour');
@@ -1432,7 +1460,7 @@ export function Player({
   const wallColours = [...new Set(Object.values(colors))];
   const lastShown = shown[shown.length - 1] ?? 1;
   const makeTabs: readonly (readonly [MakeTab, string])[] = [
-    ['colour', 'Colour'],
+    ['colour', 'Color'],
     ['style', 'Style'],
     ['more', 'More'],
   ];
@@ -1442,9 +1470,26 @@ export function Player({
       : ['Path', 'Your learning path']
     : ['Variation', 'Make a variation: a copy of your own, in the editor'];
   const makePanel = (
-    <aside className="make-panel" aria-label="Make it yours">
+    <aside
+      className={makePeek ? 'make-panel peek' : 'make-panel'}
+      aria-label="Make it yours"
+    >
       <div className="make-top">
-        <h2>Make it yours</h2>
+        <h2>
+          <button
+            type="button"
+            className="make-title"
+            aria-expanded={!makePeek}
+            aria-controls="make-body"
+            title={makePeek ? 'Open Make it yours' : 'Fold Make it yours'}
+            onClick={() => setMakePeek(!makePeek)}
+          >
+            Make it yours
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 15l6-6 6 6" />
+            </svg>
+          </button>
+        </h2>
         <button
           type="button"
           className="make-hide"
@@ -1534,17 +1579,22 @@ export function Player({
         ) : (
           <>
             {browsing ? <div className="make-designs">{designsNav}</div> : null}
-            {photos.length > 0 ? (
+            {photos[0] ? (
               <section className="make-real">
                 <h2>The real wall</h2>
                 <button
                   type="button"
-                  className="secondary"
+                  className="make-photo-tile"
                   aria-pressed={comparing}
                   title="A photo of the real pattern, beside the wall"
                   onClick={() => setComparing(!comparing)}
                 >
-                  {comparing ? 'Hide the original' : 'Show the original'}
+                  {photoSrc(photos[0]) ? (
+                    <img src={photoSrc(photos[0])} alt="" />
+                  ) : null}
+                  <span>
+                    {comparing ? 'Hide the original' : 'Show the original'}
+                  </span>
                 </button>
               </section>
             ) : null}
@@ -1557,74 +1607,73 @@ export function Player({
             <ConstructionSource tutorial={tutorial} />
             <section className="make-files">
               <h2>Print and files</h2>
-              <div className="print-tools">
-                <button
-                  type="button"
-                  className="secondary"
+              <div className="make-tiles">
+                <MakeTile
+                  icon="print"
+                  label="Print"
+                  name="Print line sheet"
                   onClick={() => setPrinting(true)}
-                >
-                  Print line sheet
-                </button>
-                <div className="paper" role="group" aria-label="Paper">
-                  {(['A4', 'Letter'] as const).map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      aria-pressed={p === paper}
-                      onClick={() => setPaper(p)}
-                    >
-                      {p}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {pathFinish && browsing ? (
-                <button
-                  type="button"
-                  className="secondary"
-                  title="A copy of this pattern of your own, opened in the editor"
+                />
+                <MakeTile
+                  icon="file"
+                  label="Pattern file"
+                  name="Download pattern file (.json)"
+                  className="pattern-file-download"
+                  onClick={downloadPattern}
+                />
+                <MakeTile
+                  icon="vector"
+                  label="SVG"
+                  name="Download SVG"
                   onClick={() =>
-                    setVariationRefused(!makeVariation(full.tutorial))
+                    download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
                   }
-                >
-                  Make a variation
-                </button>
-              ) : null}
-              <CopyHere
-                tutorial={tutorial}
-                address={address}
-                step={lastShown}
-                shownNumber={shown.length}
-                label="Copy into the editor"
-              />
-              <button
-                type="button"
-                className="secondary pattern-file-download"
-                onClick={downloadPattern}
-              >
-                Download pattern file (.json)
-              </button>
-              <button
-                type="button"
-                className="secondary"
-                onClick={() =>
-                  download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
-                }
-              >
-                Download SVG
-              </button>
-              <button
-                type="button"
-                className="secondary"
-                onClick={() =>
-                  void pngBlob(exportSvg()).then((png) =>
-                    download(png, `${tutorial.id}.png`),
-                  )
-                }
-              >
-                Download PNG
-              </button>
-              <FeedbackButton {...feedbackProps} />
+                />
+                <MakeTile
+                  icon="image"
+                  label="PNG"
+                  name="Download PNG"
+                  onClick={() =>
+                    void pngBlob(exportSvg()).then((png) =>
+                      download(png, `${tutorial.id}.png`),
+                    )
+                  }
+                />
+                {pathFinish && browsing ? (
+                  <MakeTile
+                    icon="variation"
+                    label="Variation"
+                    name="Make a variation"
+                    title="A copy of this pattern of your own, opened in the editor"
+                    onClick={() =>
+                      setVariationRefused(!makeVariation(full.tutorial))
+                    }
+                  />
+                ) : null}
+              </div>
+              <div className="paper" role="group" aria-label="Paper">
+                <span aria-hidden="true">Paper</span>
+                {(['A4', 'Letter'] as const).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    aria-pressed={p === paper}
+                    onClick={() => setPaper(p)}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+              <div className="make-links">
+                <CopyHere
+                  tutorial={tutorial}
+                  address={address}
+                  step={lastShown}
+                  shownNumber={shown.length}
+                  label="Copy into the editor"
+                />
+                <FeedbackButton {...feedbackProps} />
+              </div>
             </section>
           </>
         )}
@@ -1773,8 +1822,10 @@ export function Player({
           <LessonTitle tutorial={tutorial} />
           {browsing ? <NextPattern id={address} view={view} /> : <span />}
         </div>
+        {!wallPage && designsNav ? (
+          <div className="player-designs">{designsNav}</div>
+        ) : null}
         <div className="player-view-tools">
-          {wallPage ? null : designsNav}
           {mine ? (
             <a
               className="edit-link"
@@ -1809,7 +1860,7 @@ export function Player({
       <div
         className={
           wallPage
-            ? `workspace wall-page${makeOpen ? ' make-open' : ''}`
+            ? `workspace wall-page${makeOpen ? (makePeek ? ' make-open make-peek' : ' make-open') : ''}`
             : colorStage
               ? 'workspace with-panel'
               : 'workspace'
@@ -1819,6 +1870,9 @@ export function Player({
           <main className={showOriginal ? 'stage comparing' : 'stage'}>
             {showOriginal ? <Original photos={photos} /> : null}
             {picture}
+            {wallPage && wiping && !showOriginal && photos[0] ? (
+              <PhotoWipe photo={photos[0]} />
+            ) : null}
             {destinationGuide && (
               <span className="destination-guide-caption">
                 Faint guide · the full inking reveal comes next
@@ -1862,6 +1916,13 @@ export function Player({
                 <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
               </svg>
             </button>
+          ) : null}
+          {wallPage && photos[0] && !showOriginal ? (
+            <PhotoBadge
+              photo={photos[0]}
+              open={wiping}
+              onToggle={() => setWiping(!wiping)}
+            />
           ) : null}
           {wallPage && !makeOpen ? (
             <button
@@ -2596,5 +2657,46 @@ export function MissingDesign({
         </p>
       </section>
     </div>
+  );
+}
+
+const TILE_ICONS = {
+  print:
+    'M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2M7 14h10v6H7z',
+  file: 'M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7zM14 3v4h4M9.5 13.5 8 15l1.5 1.5M14.5 13.5 16 15l-1.5 1.5',
+  vector: 'M5 19 12 5l7 14M8.5 12h7M3 17h4v4H3zM17 17h4v4h-4zM10 3h4v4h-4z',
+  image: 'M4 5h16v14H4zM4 16l5-5 4 4 2-2 5 5M15.5 9.5v.01',
+  variation: 'M12 3l2.2 5.3L20 9l-4.4 3.8L17 19l-5-3-5 3 1.4-6.2L4 9l5.8-.7z',
+} as const;
+
+/** One of More's tiles: an icon over a word, named in full for a reader. */
+function MakeTile({
+  icon,
+  label,
+  name,
+  title,
+  className,
+  onClick,
+}: {
+  icon: keyof typeof TILE_ICONS;
+  label: string;
+  name: string;
+  title?: string;
+  className?: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className={className ? `make-tile ${className}` : 'make-tile'}
+      aria-label={name}
+      title={title ?? name}
+      onClick={onClick}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d={TILE_ICONS[icon]} />
+      </svg>
+      <span>{label}</span>
+    </button>
   );
 }

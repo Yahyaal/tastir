@@ -6324,6 +6324,31 @@ svg.tiles {
   order: 0;
   margin-left: auto;
 }
+.player-designs {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+/* On a wide screen Watch it drawn, Result and Draw along sit in the top
+   bar itself, so the drawing gets the row they took. */
+@media (min-width: 1024px) {
+  .player:not(.along):not(.editor) .topbar {
+    grid-template-columns: 44px auto minmax(0, 1fr) auto auto;
+  }
+  .player:not(.along):not(.editor) .topbar > .player-view-tools {
+    grid-column: 4;
+    grid-row: 1;
+    flex-wrap: nowrap;
+  }
+  .player:not(.along):not(.editor) .topbar > .player-utilities {
+    grid-column: 5;
+  }
+  .player:not(.along):not(.editor) .topbar > .player-designs {
+    grid-row: 2;
+  }
+}
 /* Three actions, three weights: filled Continue, outlined Save, text Share. */
 .player .end-actions .share-link > button.secondary {
   min-height: 44px;
@@ -6471,4 +6496,7 @@ svg.tiles {
 .side-panel-anchor,
 .side-panel > section {
   scroll-margin-top: 48px;
+}
+.player-designs:empty {
+  display: none;
 }

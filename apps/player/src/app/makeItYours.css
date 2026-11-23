@@ -409,3 +409,269 @@
   visibility: visible;
   opacity: 1;
 }
+
+/* The title folds and opens the panel. */
+.make-top h2 {
+  display: flex;
+}
+.player .make-panel button.make-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+.make-title svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--theme-text-secondary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: rotate(180deg);
+  transition: transform 0.2s;
+}
+.make-panel.peek .make-title svg {
+  transform: none;
+}
+/* Folded: only the title and the foot. */
+.make-panel.peek .make-tabs,
+.make-panel.peek .make-body {
+  display: none;
+}
+.workspace.wall-page .make-panel.peek {
+  height: auto;
+}
+
+/* The tab's end fades out while there is more below. */
+.make-body {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - 26px),
+    transparent
+  );
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 26px), transparent);
+  padding-bottom: 26px;
+}
+
+/* More: the photo, then tiles with an icon over a word. */
+.player .make-panel button.make-photo-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 96px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1.5px solid #c9962f;
+  background: #2b2116;
+}
+.make-photo-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.make-photo-tile span {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ecc463, #c9962f);
+  color: #2b1d04;
+  font-weight: 750;
+  font-size: 13px;
+}
+.make-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 8px;
+}
+.player .make-panel button.make-tile {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-height: 74px;
+  padding: 10px 4px 8px;
+  border-radius: 14px;
+  border: 1px solid var(--theme-border);
+  background: color-mix(in srgb, var(--theme-text-primary) 4%, transparent);
+  color: var(--theme-text-primary);
+  font-size: 12.5px;
+  font-weight: 650;
+}
+.make-tile svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Each tile its own glaze. */
+.make-tile:nth-child(5n + 1) svg {
+  stroke: #2f8f6b;
+}
+.make-tile:nth-child(5n + 2) svg {
+  stroke: #c9962f;
+}
+.make-tile:nth-child(5n + 3) svg {
+  stroke: #2a7fb8;
+}
+.make-tile:nth-child(5n + 4) svg {
+  stroke: #c0563a;
+}
+.make-tile:nth-child(5n + 5) svg {
+  stroke: #7a5bb5;
+}
+.player .make-panel button.make-tile:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+}
+.make-files .paper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--theme-text-secondary);
+}
+.make-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* The real wall's badge, in the corner of the wall. */
+.player .plate-area button.photo-badge {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 3px 14px 3px 3px;
+  border-radius: 999px;
+  border: 2px solid #d9a63b;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  font-weight: 700;
+  font-size: 13.5px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.28);
+}
+.photo-badge img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.player .plate-area button.photo-badge[aria-pressed='true'] {
+  background: linear-gradient(180deg, #ecc463, #c9962f);
+  color: #2b1d04;
+}
+
+/* The wipe: the photo left of a golden handle, our wall right of it. */
+.photo-wipe {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.photo-wipe-photo {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #1b140d;
+}
+.photo-wipe-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.photo-wipe-credit {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  margin: 0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgb(0 0 0 / 0.55);
+  color: #f4ead8;
+  font-size: 11.5px;
+}
+.photo-wipe-missing {
+  color: #f4ead8;
+}
+.photo-wipe-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 44px;
+  margin-left: -22px;
+  pointer-events: auto;
+  cursor: ew-resize;
+  touch-action: none;
+  display: grid;
+  place-items: center;
+}
+.photo-wipe-handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 20px;
+  width: 4px;
+  background: linear-gradient(180deg, #f0cd75, #c9962f);
+  box-shadow: 0 0 12px rgb(0 0 0 / 0.4);
+}
+.photo-wipe-grip {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #ecc463, #c9962f);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.4);
+}
+.photo-wipe-grip svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #2b1d04;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.photo-wipe-handle:focus-visible .photo-wipe-grip {
+  outline: 3px solid var(--theme-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  /* The slim bar: the wall takes the rest of the screen. */
+  .player.at-color:not(.along):not(.editor)
+    .workspace.wall-page.make-peek
+    .stage,
+  .player.at-color:not(.along)
+    .workspace.wall-page.make-peek
+    .stage:not(.comparing) {
+    height: calc(100vh - 310px);
+  }
+  /* Reset view has the top left corner on a phone. */
+  .player .plate-area button.photo-badge {
+    top: 12px;
+    left: auto;
+    right: 12px;
+  }
+}
