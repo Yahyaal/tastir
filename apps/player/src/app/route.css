@@ -283,6 +283,9 @@
 
 /* A chosen or pointed-at place blooms into colour: its own pattern, as its
    card shows it, over its stretch of the pencil band. */
+/* As large as the pencil drawing under it, so the two match, but shown
+   only in the middle of it: a place's colour keeps to its own stretch and
+   leaves its neighbours in pencil. */
 .route-glaze {
   position: absolute;
   top: 50%;
@@ -296,17 +299,17 @@
   transition: opacity 0.35s ease;
   -webkit-mask-image: linear-gradient(
     90deg,
-    transparent,
-    #000 30%,
-    #000 70%,
-    transparent
+    transparent 18%,
+    #000 34%,
+    #000 66%,
+    transparent 82%
   );
   mask-image: linear-gradient(
     90deg,
-    transparent,
-    #000 30%,
-    #000 70%,
-    transparent
+    transparent 18%,
+    #000 34%,
+    #000 66%,
+    transparent 82%
   );
 }
 .route-glaze.is-on {

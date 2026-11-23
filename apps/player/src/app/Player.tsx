@@ -690,6 +690,7 @@ export function Player({
   };
   // The real wall's photo, wiped across ours by a golden handle.
   const [wiping, setWiping] = useState(false);
+  const [paperOpen, setPaperOpen] = useState(false);
   // Make it yours shows one tab at a time: colour first, as most people
   // come to colour.
   const [makeTab, setMakeTab] = useState<MakeTab>('colour');
@@ -1608,12 +1609,49 @@ export function Player({
             <section className="make-files">
               <h2>Print and files</h2>
               <div className="make-tiles">
-                <MakeTile
-                  icon="print"
-                  label="Print"
-                  name="Print line sheet"
-                  onClick={() => setPrinting(true)}
-                />
+                {/* Print on the paper chosen (A4 at first); the arrow beside
+                    it offers the other size. */}
+                <div className="make-print">
+                  <MakeTile
+                    icon="print"
+                    label={`Print · ${paper}`}
+                    name="Print line sheet"
+                    onClick={() => setPrinting(true)}
+                  />
+                  <button
+                    type="button"
+                    className="make-print-paper"
+                    aria-label="Paper size"
+                    title="Paper size"
+                    aria-expanded={paperOpen}
+                    onClick={() => setPaperOpen(!paperOpen)}
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </button>
+                  {paperOpen ? (
+                    <div
+                      className="make-paper-menu"
+                      role="group"
+                      aria-label="Paper"
+                    >
+                      {(['A4', 'Letter'] as const).map((p) => (
+                        <button
+                          key={p}
+                          type="button"
+                          aria-pressed={p === paper}
+                          onClick={() => {
+                            setPaper(p);
+                            setPaperOpen(false);
+                          }}
+                        >
+                          {p}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
                 <MakeTile
                   icon="file"
                   label="Pattern file"
@@ -1650,19 +1688,6 @@ export function Player({
                     }
                   />
                 ) : null}
-              </div>
-              <div className="paper" role="group" aria-label="Paper">
-                <span aria-hidden="true">Paper</span>
-                {(['A4', 'Letter'] as const).map((p) => (
-                  <button
-                    key={p}
-                    type="button"
-                    aria-pressed={p === paper}
-                    onClick={() => setPaper(p)}
-                  >
-                    {p}
-                  </button>
-                ))}
               </div>
               <div className="make-links">
                 <CopyHere

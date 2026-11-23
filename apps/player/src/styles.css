@@ -143,44 +143,6 @@
   --muted: #7d8a96;
 }
 
-/* A darker, richer night for review (#/review/dark): midnight lapis with
-   warmer gold and turquoise. Only a review frame asks for it. */
-:root[data-theme='dark'][data-palette='lapis'] {
-  --theme-bg-canvas: #0a1230;
-  --theme-bg-surface: #111c40;
-  --theme-bg-card: #0f193a;
-  --theme-bg-raised: #192852;
-  --theme-border: #243563;
-  --theme-border-hover: #36498a;
-
-  --theme-text-primary: #f6edd9;
-  --theme-text-secondary: #d6cbb3;
-  --theme-text-muted: #a4b0cf;
-  --theme-label: #ecbd5c;
-
-  --theme-accent: #4fc6cf;
-  --theme-accent-hover: #7cdbe1;
-  --theme-accent-cobalt: #4fc6cf;
-  --theme-frame: #b88a3e;
-
-  --act-result: #f2be4c;
-  --level-intermediate-text: #f2be4c;
-  --act-watch: #7aa9ff;
-  --act-draw: #3fd3a2;
-  --act-make: #f48b5c;
-  --on-act: #0a1230;
-
-  --malachite: #2fb487;
-
-  --ink: #f6edd9;
-  --old: #5b6a98;
-  --faint: #1f2d58;
-  --current: #f2be4c;
-  --on-current: #121c3c;
-  --used: #79b7f2;
-  --muted: #7f8bb0;
-}
-
 * {
   box-sizing: border-box;
 }
@@ -6538,4 +6500,60 @@ svg.tiles {
 }
 .player-designs:empty {
   display: none;
+}
+
+/* The photo beside the wall, zoomed with the wheel, a pinch or the
+   buttons, and moved by a drag once zoomed. */
+.photo-zoom {
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+}
+.photo-zoom-box {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  touch-action: none;
+  cursor: zoom-in;
+}
+.photo-zoom-box.is-zoomed {
+  cursor: grab;
+}
+.photo-zoom-box img {
+  display: block;
+  transform-origin: 0 0;
+  user-select: none;
+}
+.photo-zoom-tools {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  gap: 6px;
+}
+.player .photo-zoom-tools button {
+  width: 36px;
+  height: 36px;
+  min-height: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(0 0 0 / 0.55);
+  color: #f4ead8;
+  cursor: pointer;
+}
+.player .photo-zoom-tools button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.photo-zoom-tools svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
 }

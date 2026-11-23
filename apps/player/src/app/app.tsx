@@ -43,15 +43,6 @@ const WindowsReview = import.meta.env.DEV
     )
   : undefined;
 
-/** The two dark palettes side by side (#/review/dark), dev server only. */
-const DarkReview = import.meta.env.DEV
-  ? lazy(() =>
-      import('../review/DarkReview').then((m) => ({
-        default: m.DarkReview,
-      })),
-    )
-  : undefined;
-
 /** The route of the redesign (#/review/route), dev server only. */
 const RouteReview = import.meta.env.DEV
   ? lazy(() =>
@@ -262,15 +253,6 @@ function AppPage({
     return WindowsReview ? (
       <Suspense fallback={<p className="review-loading">Loading…</p>}>
         <WindowsReview />
-      </Suspense>
-    ) : (
-      <Broken message="The review page only exists on the dev server (pnpm dev)." />
-    );
-  }
-  if (route === 'review/dark') {
-    return DarkReview ? (
-      <Suspense fallback={<p className="review-loading">Loading…</p>}>
-        <DarkReview />
       </Suspense>
     ) : (
       <Broken message="The review page only exists on the dev server (pnpm dev)." />

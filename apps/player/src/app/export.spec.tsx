@@ -130,6 +130,7 @@ describe('export in the player', () => {
     vi.useFakeTimers();
     atColor();
     fireEvent.click(screen.getByRole('tab', { name: 'More' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Paper size' }));
     fireEvent.click(screen.getByRole('button', { name: 'Letter' }));
     fireEvent.click(screen.getByRole('button', { name: 'Print line sheet' }));
     const sheet = document.querySelector('.print-sheet');

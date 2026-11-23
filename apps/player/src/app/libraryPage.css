@@ -704,12 +704,21 @@
 .start-here-stone span {
   position: relative;
 }
-.start-here-stone.is-next svg {
-  fill: #d9a63b;
-  filter: drop-shadow(0 0 6px color-mix(in srgb, #d9a63b 60%, transparent));
-}
+/* The lesson to go on with keeps its level's colour, and stands out by
+   a ring and its size, not by another colour. */
 .start-here-stone.is-next {
-  color: #2b1d04;
+  transform: scale(1.18);
+}
+.start-here-stone.is-next svg {
+  stroke: var(--theme-text-primary);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  filter: drop-shadow(
+    0 0 5px color-mix(in srgb, var(--theme-text-primary) 45%, transparent)
+  );
+}
+.start-here-stone.is-next:hover {
+  transform: scale(1.25) rotate(11deg);
 }
 .start-here-stone:hover {
   transform: scale(1.12) rotate(11deg);
