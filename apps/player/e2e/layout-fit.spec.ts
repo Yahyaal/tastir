@@ -75,7 +75,7 @@ test('on a phone a first visit finds Make it yours folded, and it stays as left'
     const panel = page.getByRole('complementary', { name: 'Make it yours' });
     await expect(panel).toBeVisible();
     // Folded: the foot, no colours, and most of the screen for the wall.
-    await expect(panel.getByRole('tab', { name: 'Color' })).toBeHidden();
+    await expect(panel.getByRole('tab', { name: 'Look' })).toBeHidden();
     await expect(
       panel.getByRole('button', { name: 'Share', exact: true }),
     ).toBeVisible();
@@ -84,12 +84,12 @@ test('on a phone a first visit finds Make it yours folded, and it stays as left'
     await panel
       .getByRole('button', { name: 'Make it yours', exact: true })
       .click();
-    await expect(panel.getByRole('tab', { name: 'Color' })).toBeVisible();
+    await expect(panel.getByRole('tab', { name: 'Look' })).toBeVisible();
     await page.reload();
     await expect(
       page
         .getByRole('complementary', { name: 'Make it yours' })
-        .getByRole('tab', { name: 'Color' }),
+        .getByRole('tab', { name: 'Look' }),
     ).toBeVisible();
   } finally {
     await context.close();

@@ -93,6 +93,8 @@ describe('export in the player', () => {
       fireEvent.click(
         screen.getByRole('button', { name: /^(Next|Repeat it)$/ }),
       );
+    const tab = screen.queryByRole('tab', { name: 'Pieces' });
+    if (tab) fireEvent.click(tab);
   }
 
   it('downloads the colored wall as SVG, named after the tutorial', async () => {

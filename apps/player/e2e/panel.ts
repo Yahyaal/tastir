@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 
 /** Opens a tab of Make it yours on the finished wall, when it is there. */
-export async function tab(page: Page, name: 'Color' | 'Style' | 'More') {
+export async function tab(page: Page, name: 'Look' | 'Pieces' | 'More') {
   // On a phone the panel starts folded: open it first.
   const fold = page.locator('.make-panel.peek .make-title');
   if (await fold.count()) await fold.click();
@@ -16,6 +16,6 @@ export async function tab(page: Page, name: 'Color' | 'Style' | 'More') {
 
 /** The wall styles, in their tab of Make it yours. */
 export async function styleGroup(page: Page) {
-  await tab(page, 'Style');
+  await tab(page, 'Look');
   return page.getByRole('group', { name: 'Style', exact: true });
 }

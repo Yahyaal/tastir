@@ -143,6 +143,7 @@ describe('the player', () => {
       within(panel).getByRole('link', { name: 'Next' }).getAttribute('href'),
     ).toBe('#/six-fold-star-and-hexagons/watch/1');
     expect(within(ready).getByRole('button', { name: 'Save' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('tab', { name: 'Pieces' }));
     expect(
       screen.getByText(
         'Color ring by ring, as on real zellige: pick a color, then click a piece, and its whole ring round the rosette takes the color.',
@@ -193,7 +194,7 @@ describe('the player', () => {
     fireEvent.click(forward);
     expect(label()).toBe('Step 2 of 6');
     fireEvent.click(screen.getByRole('button', { name: 'Go to color' }));
-    fireEvent.click(screen.getByRole('tab', { name: 'Style' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Look' }));
     fireEvent.keyDown(
       within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
         name: 'Tiles',

@@ -228,7 +228,7 @@ function legacyInkMode(): InkMode {
   }
 }
 
-type MakeTab = 'colour' | 'style' | 'more';
+type MakeTab = 'look' | 'pieces' | 'more';
 
 /** Where Letter is the usual paper: the United States, Canada, Mexico and
  * much of Central and South America, and the Philippines. */
@@ -745,7 +745,7 @@ export function Player({
   };
   // Make it yours shows one tab at a time: colour first, as most people
   // come to colour.
-  const [makeTab, setMakeTab] = useState<MakeTab>('colour');
+  const [makeTab, setMakeTab] = useState<MakeTab>('look');
   const [variationRefused, setVariationRefused] = useState(false);
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
@@ -1298,18 +1298,21 @@ export function Player({
         <StepText text={text} />
       </InfoTip>
     ) : null;
-  const colorsSection =
+  // Make it yours shows the palettes in Look and the way to colour with the
+  // pieces in Pieces; every other page shows both together.
+  const coloursFor = (parts: 'all' | 'palette' | 'pieces') =>
     !onWall || wallStyle !== 'jali' ? (
       <section ref={colorsSectionRef}>
-        {colourHint ? (
+        {colourHint && parts !== 'palette' ? (
           <div className="section-head">
-            <h2>Colors</h2>
+            <h2>{parts === 'pieces' ? 'Pieces' : 'Colors'}</h2>
             {colourHint}
           </div>
         ) : (
-          <h2>Colors</h2>
+          <h2>{parts === 'pieces' ? 'Pieces' : 'Colors'}</h2>
         )}
         <ColourPanel
+          parts={parts}
           paper={onWall && wallStyle === 'lines'}
           model={coloured}
           base={inking.shown}
@@ -1345,6 +1348,7 @@ export function Player({
         />
       </section>
     ) : null;
+  const colorsSection = coloursFor('all');
 
   /** Jumps straight to a stage from the journey, without playing it in. */
   const jump = (to: number) => {
@@ -1513,8 +1517,8 @@ export function Player({
   const wallColours = [...new Set(Object.values(colors))];
   const lastShown = shown[shown.length - 1] ?? 1;
   const makeTabs: readonly (readonly [MakeTab, string])[] = [
-    ['colour', 'Color'],
-    ['style', 'Style'],
+    ['look', 'Look'],
+    ['pieces', 'Pieces'],
     ['more', 'More'],
   ];
   const nextLabel = pathFinish
@@ -1589,14 +1593,17 @@ export function Player({
         role="tabpanel"
         aria-labelledby={`make-tab-${makeTab}`}
       >
-        {makeTab === 'colour' ? (
+        {makeTab === 'pieces' ? (
+          <>
+            {coloursFor('pieces') ?? (
+              <p className="hint">A jali screen is cut, not coloured.</p>
+            )}
+          </>
+        ) : makeTab === 'look' ? (
           <>
             {/* Coloured before it was repeated: how many copies to lay. */}
             {stage.kind === 'repeat' ? copiesChooser : null}
-            {colorsSection}
-          </>
-        ) : makeTab === 'style' ? (
-          <>
+            {coloursFor('palette')}
             <WallControls
               parts="style"
               heading="Style"

@@ -56,7 +56,11 @@ export function ColourPanel({
   oneTile = false,
   onLight,
   paper = false,
+  parts = 'all',
 }: {
+  /** Which half to show: the palettes, or the way to colour and the
+   * pieces (Make it yours puts them in two tabs), or both. */
+  parts?: 'all' | 'palette' | 'pieces';
   /** Offer the paper palettes (watercolour) instead of the glazes. */
   paper?: boolean;
   /** The model as the coloring colours it (colouredModel). */
@@ -116,50 +120,54 @@ export function ColourPanel({
     ? []
     : allNames.filter((n) => designPaletteNames(model).includes(n));
   const sharedNames = allNames.filter((n) => !ownNames.includes(n));
+  const palettes = parts !== 'pieces';
+  const pieces = parts !== 'palette';
   return (
     <div className="piece-panel colour-panel">
-      <div className="colour-step">
-        {/* A design's own palettes first (PAL.1), then the shared ones. */}
-        {(
-          [
-            ['For this pattern', ownNames],
-            ['Palette', sharedNames],
-          ] as const
-        ).map(([title, names]) =>
-          names.length ? (
-            <div key={title}>
-              <h3>{title}</h3>
-              <div className="palette-strips" role="group" aria-label={title}>
-                {names.map((name) => {
-                  const g = GLAZES[name];
-                  const p = paletteOf(model, name);
-                  const strip = g
-                    ? [g.white, g.black, ...g.families.flat()]
-                    : [p.ground, p.a, p.b, p.c, p.d];
-                  return (
-                    <button
-                      key={name}
-                      type="button"
-                      aria-pressed={name === now.palette}
-                      onClick={() =>
-                        dispatch({ kind: 'palette', palette: name })
-                      }
-                    >
-                      <span className="palette-strip" aria-hidden="true">
-                        {[...new Set(strip)].map((c) => (
-                          <span key={c} style={{ background: c }} />
-                        ))}
-                      </span>
-                      {name}
-                    </button>
-                  );
-                })}
+      {palettes ? (
+        <div className="colour-step">
+          {/* A design's own palettes first (PAL.1), then the shared ones. */}
+          {(
+            [
+              ['For this pattern', ownNames],
+              ['Palette', sharedNames],
+            ] as const
+          ).map(([title, names]) =>
+            names.length ? (
+              <div key={title}>
+                <h3>{title}</h3>
+                <div className="palette-strips" role="group" aria-label={title}>
+                  {names.map((name) => {
+                    const g = GLAZES[name];
+                    const p = paletteOf(model, name);
+                    const strip = g
+                      ? [g.white, g.black, ...g.families.flat()]
+                      : [p.ground, p.a, p.b, p.c, p.d];
+                    return (
+                      <button
+                        key={name}
+                        type="button"
+                        aria-pressed={name === now.palette}
+                        onClick={() =>
+                          dispatch({ kind: 'palette', palette: name })
+                        }
+                      >
+                        <span className="palette-strip" aria-hidden="true">
+                          {[...new Set(strip)].map((c) => (
+                            <span key={c} style={{ background: c }} />
+                          ))}
+                        </span>
+                        {name}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ) : null,
-        )}
-      </div>
-      {now.squareBands ? (
+            ) : null,
+          )}
+        </div>
+      ) : null}
+      {palettes && now.squareBands ? (
         <p role="status">
           Concentric square bands: {now.squareBands.colors.length} colors, one
           square thick. The motif repeats every{' '}
@@ -177,7 +185,7 @@ export function ColourPanel({
           </button>
         </p>
       ) : null}
-      {methods.length > 1 ? (
+      {pieces && methods.length > 1 ? (
         <div className="colour-methods" role="group" aria-label="Colour">
           {/* The same order on every pattern (STYLE.10); the pattern's own
               way is still the one stored without a method. */}
@@ -203,7 +211,9 @@ export function ColourPanel({
           ))}
         </div>
       ) : null}
-      {rings && fill ? (
+      {!pieces ? (
+        tools
+      ) : rings && fill ? (
         <Rosettes
           model={model}
           fill={fill}

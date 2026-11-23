@@ -121,7 +121,7 @@ test('a wall link restores palette, watercolour and zoom in a clean browser', as
   )
     .getByRole('button', { name: 'Watercolour', exact: true })
     .click();
-  await tab(page, 'Color');
+  await tab(page, 'Look');
   await page
     .getByRole('button', { name: 'Teal and gold', exact: true })
     .click();

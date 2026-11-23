@@ -13,7 +13,7 @@ import { DEFAULT_PEN, PAPER } from './pen';
 
 /** The Style group, in its tab of Make it yours when there is one. */
 const styleGroup = () => {
-  const tab = screen.queryByRole('tab', { name: 'Style' });
+  const tab = screen.queryByRole('tab', { name: 'Look' });
   if (tab && tab.getAttribute('aria-selected') !== 'true') fireEvent.click(tab);
   return screen.getByRole('group', { name: 'Style' });
 };
@@ -307,7 +307,7 @@ describe('the wall controls', () => {
         name: 'Tiles',
       }),
     );
-    fireEvent.click(screen.getByRole('tab', { name: 'Color' }));
+    fireEvent.click(screen.getByRole('tab', { name: 'Look' }));
     expect(screen.getByRole('heading', { name: 'Colors' })).toBeTruthy();
   });
 });

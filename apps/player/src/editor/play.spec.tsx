@@ -96,6 +96,7 @@ describe('from a copy to a played pattern', () => {
     // four-pointed stars between them.
     go(`#/mine/${id}`);
     expect(document.querySelector('.make-panel')).not.toBeNull();
+    fireEvent.click(screen.getByRole('tab', { name: 'Pieces' }));
     expect(
       [...document.querySelectorAll('.piece-button')].map((b) =>
         b.getAttribute('aria-label'),

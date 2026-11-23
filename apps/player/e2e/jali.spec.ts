@@ -228,7 +228,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   )
     .getByRole('button', { name: 'Tiles', exact: true })
     .click();
-  await tab(page, 'Color');
+  await tab(page, 'Look');
   await expect(
     page
       .getByRole('group', { name: 'Palette' })

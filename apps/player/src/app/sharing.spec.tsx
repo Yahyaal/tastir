@@ -15,7 +15,7 @@ import { listDesigns } from './designs';
 
 /** The Style group, in its tab of Make it yours when there is one. */
 const styleGroup = () => {
-  const tab = screen.queryByRole('tab', { name: 'Style' });
+  const tab = screen.queryByRole('tab', { name: 'Look' });
   if (tab && tab.getAttribute('aria-selected') !== 'true') fireEvent.click(tab);
   return screen.getByRole('group', { name: 'Style' });
 };

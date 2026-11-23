@@ -15,7 +15,7 @@ import { entriesOf } from './library';
 
 /** The Style group, in its tab of Make it yours when there is one. */
 const styleGroup = () => {
-  const tab = screen.queryByRole('tab', { name: 'Style' });
+  const tab = screen.queryByRole('tab', { name: 'Look' });
   if (tab && tab.getAttribute('aria-selected') !== 'true') fireEvent.click(tab);
   return screen.getByRole('group', { name: 'Style' });
 };
@@ -164,6 +164,7 @@ describe('saving a design', () => {
     expect(label()).toBe('Wall');
     expect(screen.getByText(/The tutorial has changed/)).toBeTruthy();
     // The star and cross, in the design's own palette, ring by ring.
+    fireEvent.click(screen.getByRole('tab', { name: 'Pieces' }));
     expect(screen.getByRole('group', { name: 'Paint with' })).toBeTruthy();
     const marrakech = Object.values(PALETTES['Marrakech'] ?? {});
     expect(fills().length).toBeGreaterThan(0);
