@@ -143,6 +143,44 @@
   --muted: #7d8a96;
 }
 
+/* A darker, richer night for review (#/review/dark): midnight lapis with
+   warmer gold and turquoise. Only a review frame asks for it. */
+:root[data-theme='dark'][data-palette='lapis'] {
+  --theme-bg-canvas: #0a1230;
+  --theme-bg-surface: #111c40;
+  --theme-bg-card: #0f193a;
+  --theme-bg-raised: #192852;
+  --theme-border: #243563;
+  --theme-border-hover: #36498a;
+
+  --theme-text-primary: #f6edd9;
+  --theme-text-secondary: #d6cbb3;
+  --theme-text-muted: #a4b0cf;
+  --theme-label: #ecbd5c;
+
+  --theme-accent: #4fc6cf;
+  --theme-accent-hover: #7cdbe1;
+  --theme-accent-cobalt: #4fc6cf;
+  --theme-frame: #b88a3e;
+
+  --act-result: #f2be4c;
+  --level-intermediate-text: #f2be4c;
+  --act-watch: #7aa9ff;
+  --act-draw: #3fd3a2;
+  --act-make: #f48b5c;
+  --on-act: #0a1230;
+
+  --malachite: #2fb487;
+
+  --ink: #f6edd9;
+  --old: #5b6a98;
+  --faint: #1f2d58;
+  --current: #f2be4c;
+  --on-current: #121c3c;
+  --used: #79b7f2;
+  --muted: #7f8bb0;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -2608,7 +2646,8 @@ main.stage .drawing:not(.wall) {
 .brand-arabic {
   font-family: var(--arabic);
   font-size: 1.05em;
-  color: var(--saffron);
+  /* Brass, as on the library's top bar (REDESIGN.3), on every page. */
+  color: var(--theme-label);
   letter-spacing: 0;
   font-weight: 400;
 }

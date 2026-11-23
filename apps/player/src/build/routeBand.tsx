@@ -1,10 +1,19 @@
+/** @jsxRuntime automatic */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import sharp from 'sharp';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { parseTutorial } from '@tastir/schema';
-import { cardView } from '../app/drawing';
+import { cardView, Thumbnail } from '../app/drawing';
 import { loadModel } from '../app/model';
-import { BAND, BAND_ZOOM, ROUTE_PLACES, STOPS } from '../app/places';
+import {
+  BAND,
+  BAND_ZOOM,
+  colourSquare as squareFile,
+  ROUTE_PLACES,
+  STOPS,
+} from '../app/places';
 
 /*
  * The pencil band behind the route (pnpm route-band, REDESIGN.2). Drawing
@@ -26,8 +35,34 @@ const THEMES = { light: '#4f483f', dark: '#e9e1d0' } as const;
 
 const r1 = (v: number) => Math.round(v * 10) / 10;
 
+type Part = ReturnType<typeof lines>;
+
+/**
+ * One place's square in colour, for the route to bloom into when the place
+ * is chosen: the same pattern, framing and zoom as its pencil drawing, as
+ * tiles in the tutorial's colours, with the lines drawn over them so pieces
+ * of one colour side by side stay apart.
+ */
+async function colourSquare(part: Part, file: string) {
+  const px = 440;
+  const tiles = renderToStaticMarkup(
+    <Thumbnail model={part.model} look="tiles" view={part.view} />,
+  ).replace(
+    '<svg ',
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${px}" height="${px}" `,
+  );
+  // The pencil lines, in this square's own pixels.
+  const k = px / SIDE;
+  const lines = `<svg xmlns="http://www.w3.org/2000/svg" width="${px}" height="${px}" viewBox="0 0 ${px} ${px}"><path d="${part.d}" transform="scale(${k}) translate(${-part.left} ${-(H - SIDE) / 2})" fill="none" stroke="#2b2116" stroke-opacity="0.75" stroke-width="${(1.1 / k) * 2}" stroke-linecap="round"/></svg>`;
+  await sharp(Buffer.from(tiles))
+    .resize(px, px)
+    .composite([{ input: Buffer.from(lines) }])
+    .webp({ quality: 82 })
+    .toFile(file);
+}
+
 /** One place's finished lines, in band coordinates, as path data. */
-function lines(root: string, i: number, ids: readonly string[]) {
+function lines(root: string, i: number, ids: readonly string[], zoom?: number) {
   const key = ROUTE_PLACES[i]?.key ?? '';
   for (const id of ids) {
     const file = resolve(root, 'tutorials', `${id}.json`);
@@ -76,15 +111,18 @@ function lines(root: string, i: number, ids: readonly string[]) {
           out.push(`M${r1(x0)} ${r1(y0)}L${r1(x1)} ${r1(y1)}`);
         }
       }
-    return { key, id, left, d: out.join('') };
+    const view = {
+      minX: cx - side / 2,
+      minY: cy - side / 2,
+      maxX: cx + side / 2,
+      maxY: cy + side / 2,
+    };
+    return { key, id, left, d: out.join(''), model, view, scale };
   }
   throw new Error(`No pattern of BAND["${key}"] exists.`);
 }
 
-function bandSvg(
-  parts: readonly { key: string; id: string; left: number; d: string }[],
-  colour: string,
-): string {
+function bandSvg(parts: readonly Part[], colour: string): string {
   const body = parts
     .map(
       (p, i) =>
@@ -105,14 +143,24 @@ function bandSvg(
   );
 }
 
-const root = fileURLToPath(new URL('../../../../', import.meta.url));
-const out = resolve(root, 'apps/player/public/route');
-mkdirSync(out, { recursive: true });
-const parts = ROUTE_PLACES.map((p, i) => lines(root, i, BAND[p.key] ?? []));
-for (const [theme, colour] of Object.entries(THEMES)) {
-  const svg = bandSvg(parts, colour);
-  writeFileSync(resolve(out, `band-${theme}.svg`), svg);
-  console.log(
-    `Wrote apps/player/public/route/band-${theme}.svg (${Math.round(svg.length / 1024)} kB).`,
-  );
+async function main() {
+  const root = fileURLToPath(new URL('../../../../', import.meta.url));
+  const out = resolve(root, 'apps/player/public/route');
+  mkdirSync(out, { recursive: true });
+  const parts = ROUTE_PLACES.map((p, i) => lines(root, i, BAND[p.key] ?? []));
+  for (const part of parts) {
+    const key = part.key;
+    const file = resolve(root, 'apps/player/public', squareFile(key));
+    await colourSquare(part, file);
+    console.log(`Wrote apps/player/public/${squareFile(key)}.`);
+  }
+  for (const [theme, colour] of Object.entries(THEMES)) {
+    const svg = bandSvg(parts, colour);
+    writeFileSync(resolve(out, `band-${theme}.svg`), svg);
+    console.log(
+      `Wrote apps/player/public/route/band-${theme}.svg (${Math.round(svg.length / 1024)} kB).`,
+    );
+  }
 }
+
+void main();

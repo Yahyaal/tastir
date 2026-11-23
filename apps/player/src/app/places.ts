@@ -149,7 +149,21 @@ export const BAND: Readonly<Record<string, readonly string[]>> = {
   'Central Asia': ['samarkand-star-knots', 'tash-khauli-crosses'],
   India: ['agra-fort-stars', 'fatehpur-sikri-stars'],
 };
-export const BAND_ZOOM: Readonly<Record<string, number>> = { Turkey: 2.2 };
+/** A place's colour square in public/route (pnpm route-band). */
+export const colourSquare = (key: string) =>
+  `route/colour-${key
+    .normalize('NFD')
+    .replace(/[^A-Za-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase()}.webp`;
+/** Closer (above 1) or further (below 1) than the card, per place, for
+ * the pencil and the colour alike: further where the card's view is a few
+ * big pieces. */
+export const BAND_ZOOM: Readonly<Record<string, number>> = {
+  Turkey: 2.2,
+  'Alhambra and Nasrid Spain': 0.4,
+  India: 0.4,
+};
 
 /** The address of a place (`#/places/<place>`), or of all patterns. */
 export const placeHref = (key?: string) =>

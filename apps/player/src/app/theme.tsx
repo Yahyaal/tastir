@@ -12,8 +12,20 @@ const KEY = 'tastir.theme';
 
 const isTheme = (x: unknown): x is Theme => x === 'light' || x === 'dark';
 
+/**
+ * A review page's frames ask for a theme and a palette in the address
+ * (`?theme=dark&palette=lapis`, dev server only), without changing what
+ * this browser remembers.
+ */
+const asked = (name: string): string | null =>
+  import.meta.env.DEV && typeof window.location?.search === 'string'
+    ? new URLSearchParams(window.location.search).get(name)
+    : null;
+
 /** The theme picked with the switch, or null when the device decides. */
 export function savedTheme(): Theme | null {
+  const review = asked('theme');
+  if (isTheme(review)) return review;
   try {
     const saved: unknown = JSON.parse(
       window.localStorage.getItem(KEY) ?? 'null',
@@ -37,6 +49,8 @@ export function deviceTheme(): Theme {
 /** Puts the theme on the page: the colours follow `data-theme` on <html>. */
 export function applyTheme(theme: Theme): void {
   document.documentElement.dataset.theme = theme;
+  const palette = asked('palette');
+  if (palette) document.documentElement.dataset.palette = palette;
   document
     .querySelector('meta[name="theme-color"]')
     ?.setAttribute('content', theme === 'dark' ? '#0f1820' : '#f4ede1');
@@ -61,6 +75,7 @@ export function useTheme(): [Theme, (theme: Theme) => void] {
 
   const pick = (next: Theme) => {
     setPicked(next);
+    if (isTheme(asked('theme'))) return;
     try {
       window.localStorage.setItem(KEY, JSON.stringify(next));
     } catch {

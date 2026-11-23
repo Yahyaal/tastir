@@ -285,37 +285,32 @@
    card shows it, over its stretch of the pencil band. */
 .route-glaze {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  overflow: hidden;
+  top: 50%;
+  width: 22%;
+  height: auto;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
   pointer-events: none;
+  user-select: none;
   opacity: 0;
   transition: opacity 0.35s ease;
   -webkit-mask-image: linear-gradient(
     90deg,
     transparent,
-    #000 12%,
-    #000 88%,
+    #000 30%,
+    #000 70%,
     transparent
   );
   mask-image: linear-gradient(
     90deg,
     transparent,
-    #000 22%,
-    #000 78%,
+    #000 30%,
+    #000 70%,
     transparent
   );
 }
 .route-glaze.is-on {
-  opacity: 0.9;
-}
-.route-glaze img {
-  position: absolute;
-  top: 50%;
-  height: auto;
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
-  user-select: none;
+  opacity: 0.92;
 }
 /* The names stay readable over the colour. */
 .route-name {

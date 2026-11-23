@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
+  colourSquare,
   isHigh,
   placeHref,
   ROUTE_PLACES,
@@ -30,7 +31,6 @@ export function Route({
   counts,
   hrefOf = placeHref,
   caption,
-  pictures,
 }: {
   /** The chosen place's key, if one is chosen. */
   place?: string;
@@ -40,9 +40,6 @@ export function Route({
   hrefOf?: (key?: string) => string;
   /** A line above the route, for a first visit. */
   caption?: string;
-  /** Each place's pattern in colour (its card picture), shown over its
-   * stretch of the pencil band while the place is chosen or pointed at. */
-  pictures?: ReadonlyMap<string, string>;
 }) {
   const max = Math.max(...counts.values(), 1);
   const [lit, setLit] = useState<string>();
@@ -97,35 +94,20 @@ export function Route({
             draggable={false}
           />
         </div>
-        {ROUTE_PLACES.map((r, i) => {
-          const src = pictures?.get(r.key);
-          if (!src) return null;
-          const z = zones[i] ?? { from: 0, to: 1 };
-          const stop = STOPS[i]?.[0] ?? 0.5;
-          const span = z.to - z.from || 1;
-          return (
-            <span
-              key={`glaze-${r.key}`}
-              className={`route-glaze${focus === r.key ? ' is-on' : ''}`}
-              aria-hidden="true"
-              style={{
-                left: `${z.from * 100}%`,
-                width: `${span * 100}%`,
-              }}
-            >
-              <img
-                src={src}
-                alt=""
-                loading="lazy"
-                draggable={false}
-                style={{
-                  left: `${((stop - z.from) / span) * 100}%`,
-                  width: `${(0.3 / span) * 100}%`,
-                }}
-              />
-            </span>
-          );
-        })}
+        {ROUTE_PLACES.map((r, i) => (
+          // As the pencil drawing under it: 22% of the band wide, centred
+          // on the stop, fading into its neighbours.
+          <img
+            key={`glaze-${r.key}`}
+            className={`route-glaze${focus === r.key ? ' is-on' : ''}`}
+            src={base + colourSquare(r.key)}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            draggable={false}
+            style={{ left: `${(STOPS[i]?.[0] ?? 0.5) * 100}%` }}
+          />
+        ))}
         <svg
           className="route-line"
           viewBox={`0 0 ${W} ${H}`}

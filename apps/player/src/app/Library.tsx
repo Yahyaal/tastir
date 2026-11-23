@@ -17,7 +17,7 @@ import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { Thumbnail } from './drawing';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 import { isHidden, grouped, type Entry, type Preview } from './library';
-import { BAND, BOOKS, PLACES, placeHref } from './places';
+import { BOOKS, PLACES, placeHref } from './places';
 import { Route } from './Route';
 import { StartHere } from './StartHere';
 import { ThemeSwitch } from './theme';
@@ -221,18 +221,6 @@ export function Library({
       ? [[style, styleCounts.get(style) ?? 0] as [string, number]]
       : [];
   const books = region === BOOKS.key;
-  // Each place's band pattern in colour, for the route to bloom into.
-  const routePictures = useMemo(() => {
-    const base = import.meta.env.BASE_URL;
-    const out = new Map<string, string>();
-    for (const [key, ids] of Object.entries(BAND)) {
-      const entry = entries.find((e) => ids.includes(e.id));
-      const p = entry?.preview;
-      const file = p?.thumbnailSmall ?? p?.thumbnail;
-      if (file) out.set(key, base + file);
-    }
-    return out;
-  }, [entries]);
   const foldChip = (f: number) => {
     const n = foldCounts.get(f) ?? 0;
     const on = fold === f;
@@ -299,11 +287,7 @@ export function Library({
           <ThemeSwitch />
         </div>
       </header>
-      <Route
-        place={chosen?.key}
-        counts={regionCounts}
-        pictures={routePictures}
-      />
+      <Route place={chosen?.key} counts={regionCounts} />
       <main className="lib-main">
         <div className="lib-filters" role="toolbar" aria-label="Filters">
           <span className="lib-flabel" aria-hidden="true">
