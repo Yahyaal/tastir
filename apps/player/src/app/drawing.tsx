@@ -1368,7 +1368,13 @@ export function Thumbnail({
   // Pieces of one shape can take different colors by where they sit (the
   // Comares bones); the wall's own rule then colors each copy.
   const coloured = colouredModel(model, coloring);
-  const fill = byPlace(coloured) ? placeFills(coloured, coloring) : undefined;
+  const fill = byPlace(coloured)
+    ? placeFills(
+        coloured,
+        coloring,
+        finish0 ? { band: finish0.band, edge: finish0.lines } : {},
+      )
+    : undefined;
   const jali = look === 'jali';
   const widths = strapWidths(model, styleGrout(model, look, grout));
   // As the wall first shows it: strapwork bands, tiles with grout, or

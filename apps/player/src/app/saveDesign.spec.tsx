@@ -100,12 +100,14 @@ describe('saving a design', () => {
     );
     click('Next');
     expect(label()).toBe('Wall');
-    const colored = fills();
     fireEvent.click(
       within(styleGroup()).getByRole('button', {
         name: 'Interlace',
       }),
     );
+    // Under white bands the palette engine moves pale colours off the
+    // bands, so the wall is read once it is interlaced.
+    const colored = fills();
     expect(screen.getByTitle('Your design “Test”')).toBeTruthy();
     click('Save');
     expect(listDesigns()).toHaveLength(1);

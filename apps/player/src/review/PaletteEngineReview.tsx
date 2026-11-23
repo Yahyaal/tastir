@@ -12,6 +12,13 @@ import {
   type Coloring,
 } from '../app/coloring';
 import { Wall } from '../app/Wall';
+import {
+  byPlace,
+  colorRepeat,
+  colouredModel,
+  placeFills,
+  ruleFills,
+} from '../app/placement';
 import type { Model } from '../app/model';
 import './review.css';
 import './paletteEngine.css';
@@ -23,7 +30,10 @@ import './paletteEngine.css';
  */
 
 const SAMPLES = [
+  ['marrakesh-throne-rosette', 'Marrakesh throne-room rosette', 'tiles'],
   ['alhambra-arrayanes-porch-ceiling', 'Arrayanes porch ceiling', 'interlace'],
+  ['samarkand-star-knots', 'Samarkand star knots', 'interlace'],
+  ['alhambra-comares-west-dado', 'Comares west dado', 'tiles'],
   ['alhambra-dos-hermanas-band-stars', 'Dos Hermanas band stars', 'interlace'],
   ['abas-salman-232-star-bands', 'Abas and Salman 232 star bands', 'tiles'],
   [
@@ -73,11 +83,30 @@ function Pair({
   palette: string;
   look: 'tiles' | 'interlace';
 }) {
+  // The wall's own way of colouring (by shape, ring or place).
   const coloring = useMemo<Coloring>(
-    () => ({ palette, chosen: {}, method: 'shape' }),
+    () => ({ palette, chosen: {} }),
     [palette],
   );
-  const finish = finishOf(model, coloring);
+  const shown = useMemo(
+    () => colouredModel(model, coloring),
+    [model, coloring],
+  );
+  const placed = byPlace(shown);
+  const finish = finishOf(shown, coloring);
+  const surround =
+    look === 'interlace' ? { band: finish.band, edge: finish.lines } : {};
+  const fills = useMemo(
+    () =>
+      placed
+        ? {
+            a: ruleFills(shown, coloring),
+            b: placeFills(shown, coloring, surround),
+          }
+        : undefined,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [shown, coloring, placed, look, finish.band, finish.lines],
+  );
   const old = useMemo(() => before(model, coloring), [model, coloring]);
   const now = useMemo(
     () =>
@@ -88,21 +117,29 @@ function Pair({
       ),
     [model, coloring, look, finish.band, finish.lines],
   );
-  const changed = now.some(
-    (c, i) => c.toLowerCase() !== (old[i] ?? '').toLowerCase(),
-  );
+  const changed =
+    placed ||
+    now.some((c, i) => c.toLowerCase() !== (old[i] ?? '').toLowerCase());
   return (
     <div className={`engine-pair${changed ? '' : ' same'}`}>
       <h3>
         {palette}
         {changed ? '' : ' · unchanged'}
+        {placed ? ' · coloured by ring or place' : ''}
       </h3>
       <figure>
         <figcaption>
           <b>A</b> before
         </figcaption>
         <div className="engine-wall">
-          <Wall model={model} colors={old} look={look} finish={finish} />
+          <Wall
+            model={shown}
+            colors={old}
+            fill={fills?.a}
+            repeat={colorRepeat(shown)}
+            look={look}
+            finish={finish}
+          />
         </div>
       </figure>
       <figure>
@@ -110,7 +147,14 @@ function Pair({
           <b>B</b> the engine
         </figcaption>
         <div className="engine-wall">
-          <Wall model={model} colors={now} look={look} finish={finish} />
+          <Wall
+            model={shown}
+            colors={now}
+            fill={fills?.b}
+            repeat={colorRepeat(shown)}
+            look={look}
+            finish={finish}
+          />
         </div>
       </figure>
     </div>

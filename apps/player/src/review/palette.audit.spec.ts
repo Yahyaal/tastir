@@ -1,10 +1,8 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { it } from 'vitest';
-import { loadModel } from '../app/model';
+import { loadModel, type Model } from '../app/model';
 import {
-  colourDistance,
-  extraColors,
   finishOf,
   isPaper,
   paletteOf,
@@ -14,35 +12,39 @@ import {
   slotOf,
   touchingTypes,
   typeKey,
-  underBand,
   type Coloring,
 } from '../app/coloring';
-import type { Model } from '../app/model';
+import {
+  byPlace,
+  colorRepeat,
+  colouredModel,
+  placeFills,
+  ruleFills,
+} from '../app/placement';
+import { deltaE, disharmony, lch, merges } from '@tastir/project-core/harmony';
 
 /**
  * The palette engine's audit, run by hand (PALETTE_OUT=path): every
- * tutorial under every tile palette, as tiles and under bands, coloured by
- * shape with the old rule (each shape its slot, a touching repeat moved to
- * the first free slot, then re-tinted under bands) and with the engine.
- * Writes the rows and a summary to PALETTE_OUT.
+ * tutorial under every tile palette, as tiles and under white bands, in
+ * its own way of colouring (by shape, ring or place), measured piece by
+ * piece over the repeat and its neighbours, with the rules alone (A) and
+ * with the engine (B).
  */
 const out = process.env['PALETTE_OUT'];
+const only = process.env['PALETTE_ONLY'];
 const dir = resolve(__dirname, '../../../../tutorials');
-const NEAR = 48;
 
-/** The rule before the engine (STYLE.2), for comparison. */
-function before(model: Model, coloring: Coloring): string[] {
+/** By shape before the engine: each shape its slot, a touching repeat moved
+ * to the first free slot. */
+function shapeBefore(model: Model, coloring: Coloring): string[] {
   const palette = paletteOf(model, coloring.palette);
   const { types } = model.pattern;
-  const wanted = types.map(
-    (t, i) => coloring.chosen[typeKey(t)] ?? palette[slotOf(model, t, i)],
-  );
   const touching = touchingTypes(model);
   const near = (a: number, b: number) =>
     touching.has(a < b ? `${a},${b}` : `${b},${a}`);
   const res: string[] = [];
-  types.forEach((_, i) => {
-    const want = wanted[i] ?? palette.a;
+  types.forEach((t, i) => {
+    const want = coloring.chosen[typeKey(t)] ?? palette[slotOf(model, t, i)];
     const taken = res.flatMap((c, k) => (near(i, k) ? [c] : []));
     const free = (c: string) =>
       !taken.some((x) => x.toLowerCase() === c.toLowerCase());
@@ -54,63 +56,93 @@ function before(model: Model, coloring: Coloring): string[] {
 }
 
 interface Score {
-  touchSame: number;
-  touchNear: number;
+  same: number;
+  near: number;
+  flatValue: number;
   hidden: number;
-  greyed: number;
   flood: number;
-  colours: number;
+  accent: number;
+  disharmony: number;
 }
 
-function score(
+function measure(
   model: Model,
-  colours: string[],
+  colour: (piece: number, i: number, j: number) => string,
   band?: string,
-  edge?: string,
 ): Score {
-  const shown = band
-    ? colours.map((c) => underBand(c, band, colours, edge))
-    : colours;
-  const { types } = model.pattern;
-  const areas = types.map((t) => Math.abs(t.area) * Math.max(1, t.perCell));
-  const total = areas.reduce((x, y) => x + y, 0) || 1;
-  let touchSame = 0;
-  let touchNear = 0;
-  for (const k of touchingTypes(model)) {
-    const [a, b] = k.split(',').map(Number) as [number, number];
-    const x = shown[a] ?? '';
-    const y = shown[b] ?? '';
-    if (x.toLowerCase() === y.toLowerCase()) touchSame++;
-    else if (colourDistance(x, y) < NEAR) touchNear++;
-  }
+  const { pieces, cell } = model.pattern;
+  const [m, n] = colorRepeat(model);
+  const key = (x: number, y: number) => `${x.toFixed(4)},${y.toFixed(4)}`;
+  const sides = new Map<string, [string, number][]>();
   const used = new Map<string, number>();
-  shown.forEach((c, i) =>
-    used.set(
-      c.toLowerCase(),
-      (used.get(c.toLowerCase()) ?? 0) + (areas[i] ?? 0) / total,
-    ),
-  );
+  for (let i = -1; i <= m; i++)
+    for (let j = -1; j <= n; j++) {
+      const dx = cell.u.x * i + cell.v.x * j;
+      const dy = cell.u.y * i + cell.v.y * j;
+      pieces.forEach((p, k) => {
+        const c = colour(k, i, j).toLowerCase();
+        if (i >= 0 && j >= 0 && i < m && j < n) {
+          const a2 = Math.abs(
+            p.polygon.reduce((s, q, t) => {
+              const r = p.polygon[(t + 1) % p.polygon.length]!;
+              return s + q.x * r.y - r.x * q.y;
+            }, 0),
+          );
+          used.set(c, (used.get(c) ?? 0) + a2);
+        }
+        const ps = p.polygon.map((q) => key(q.x + dx, q.y + dy));
+        ps.forEach((a, s) => {
+          const b = ps[(s + 1) % ps.length] ?? a;
+          const side = a < b ? `${a}|${b}` : `${b}|${a}`;
+          const list = sides.get(side) ?? [];
+          list.push([c, p.type]);
+          sides.set(side, list);
+        });
+      });
+    }
+  let shared = 0;
+  let same = 0;
+  let near = 0;
+  let flat = 0;
+  for (const list of sides.values()) {
+    if (list.length !== 2) continue;
+    const [[a, ta], [b, tb]] = list as [[string, number], [string, number]];
+    // A ring's or a shape's own pieces touching is the colouring's design;
+    // the rule is about different shapes running together.
+    if (ta === tb) continue;
+    shared++;
+    if (a === b) same++;
+    else if (merges(a, b)) near++;
+    else if (Math.abs(lch(a).L - lch(b).L) < 0.05) flat++;
+  }
+  const total = [...used.values()].reduce((x, y) => x + y, 0) || 1;
+  const shares = new Map([...used].map(([c, a]) => [c, a / total]));
+  const strongest = [...shares.keys()].sort((x, y) => lch(y).C - lch(x).C)[0];
   return {
-    touchSame,
-    touchNear,
+    same: shared ? same / shared : 0,
+    near: shared ? near / shared : 0,
+    flatValue: shared ? flat / shared : 0,
     hidden: band
-      ? colours.filter((c) => colourDistance(c, band) < NEAR).length
+      ? [...shares]
+          .filter(([c]) => deltaE(c, band) < 0.15)
+          .reduce((x, [, s]) => x + s, 0)
       : 0,
-    // Pieces re-tinted under the bands, the grey of the owner's note.
-    greyed: shown.filter((c, i) => c !== colours[i]).length,
-    flood: Math.max(...used.values()),
-    colours: used.size,
+    flood: Math.max(...shares.values()),
+    accent: strongest ? (shares.get(strongest) ?? 0) : 0,
+    disharmony: disharmony(shares),
   };
 }
 
 it.skipIf(!out)(
-  'audits the palette engine against the old rule',
+  'audits the palette engine against the rules alone',
   () => {
     const palettes = Object.keys(PALETTES).filter((p) => !isPaper(p));
     const rows: Record<string, unknown>[] = [];
-    for (const f of readdirSync(dir)
-      .filter((n) => n.endsWith('.json'))
-      .sort()) {
+    const files = readdirSync(dir)
+      .filter((f) => f.endsWith('.json'))
+      .filter((f) => !only || only.split(',').includes(f.replace('.json', '')))
+      .sort();
+    for (const f of files) {
       let model: Model;
       try {
         model = loadModel(JSON.parse(readFileSync(resolve(dir, f), 'utf8')));
@@ -120,62 +152,92 @@ it.skipIf(!out)(
       if (!model.pattern.types.length) continue;
       for (const palette of palettes) {
         const coloring: Coloring = { palette, chosen: {} };
-        const finish = finishOf(model, coloring);
+        const coloured = colouredModel(model, coloring);
+        const placed = byPlace(coloured);
+        const finish = finishOf(coloured, coloring);
         for (const look of ['tiles', 'interlace'] as const) {
-          const band = look === 'interlace' ? finish.band : undefined;
-          const edge = look === 'interlace' ? finish.lines : undefined;
-          const old = before(model, coloring);
-          const palette0 = paletteOf(model, palette);
-          const wish = model.pattern.types.map(
-            (t, i) => palette0[slotOf(model, t, i)],
-          );
-          const now = pieceColors(model, coloring, band ? { band, edge } : {});
+          const surround =
+            look === 'interlace'
+              ? { band: finish.band, edge: finish.lines }
+              : {};
+          let a: (k: number, i: number, j: number) => string;
+          let b: (k: number, i: number, j: number) => string;
+          if (placed) {
+            a = ruleFills(coloured, coloring);
+            b = placeFills(coloured, coloring, surround);
+          } else {
+            const old = shapeBefore(coloured, coloring);
+            const now = pieceColors(coloured, coloring, surround);
+            const type = (k: number) => coloured.pattern.pieces[k]!.type;
+            a = (k) => old[type(k)] ?? '#999999';
+            b = (k) => now[type(k)] ?? '#999999';
+          }
           rows.push({
             id: f.replace('.json', ''),
             palette,
             look,
-            types: model.pattern.types.length,
-            before: score(model, old, band, edge),
-            after: score(model, now, band, edge),
-            wish: score(model, wish, band, edge),
-            fromWish: now.filter(
-              (c, i) => c.toLowerCase() !== (wish[i] ?? '').toLowerCase(),
-            ).length,
-            changed: now.filter(
-              (c, i) => c.toLowerCase() !== (old[i] ?? '').toLowerCase(),
-            ).length,
-            extras: now.filter((c) =>
-              Object.values(extraColors(model, palette)).includes(c),
-            ).length,
+            method: placed
+              ? coloured.tutorial.pattern.rings
+                ? 'rings'
+                : 'place'
+              : 'shape',
+            before: measure(coloured, a, surround.band),
+            after: measure(coloured, b, surround.band),
           });
         }
       }
     }
-    const sum = (look: string, side: 'before' | 'after', k: keyof Score) =>
-      rows
-        .filter((r) => r['look'] === look)
-        .reduce(
-          (x, r) =>
-            x + ((r[side] as Score)[k] > (k === 'flood' ? 0.5 : 0) ? 1 : 0),
-          0,
-        );
+    const avg = (look: string, side: 'before' | 'after', k: keyof Score) => {
+      const r = rows.filter((x) => x['look'] === look);
+      return r.reduce((s, x) => s + (x[side] as Score)[k], 0) / (r.length || 1);
+    };
+    const count = (
+      look: string,
+      side: 'before' | 'after',
+      test: (s: Score) => boolean,
+    ) =>
+      rows.filter((x) => x['look'] === look && test(x[side] as Score)).length;
     const summary = Object.fromEntries(
       ['tiles', 'interlace'].map((look) => [
         look,
-        Object.fromEntries(
-          (
-            ['touchSame', 'touchNear', 'hidden', 'greyed', 'flood'] as const
-          ).map((k) => [
-            k,
-            { before: sum(look, 'before', k), after: sum(look, 'after', k) },
-          ]),
-        ),
+        {
+          walls: rows.filter((x) => x['look'] === look).length,
+          wallsWithSameColourNeighbours: [
+            count(look, 'before', (s) => s.same > 0),
+            count(look, 'after', (s) => s.same > 0),
+          ],
+          wallsWithNearColourNeighbours: [
+            count(look, 'before', (s) => s.near > 0),
+            count(look, 'after', (s) => s.near > 0),
+          ],
+          wallsHidingBands: [
+            count(look, 'before', (s) => s.hidden > 0),
+            count(look, 'after', (s) => s.hidden > 0),
+          ],
+          sameSideShare: [
+            avg(look, 'before', 'same'),
+            avg(look, 'after', 'same'),
+          ],
+          flatValueShare: [
+            avg(look, 'before', 'flatValue'),
+            avg(look, 'after', 'flatValue'),
+          ],
+          disharmony: [
+            avg(look, 'before', 'disharmony'),
+            avg(look, 'after', 'disharmony'),
+          ],
+          accentOver35: [
+            count(look, 'before', (s) => s.accent > 0.35),
+            count(look, 'after', (s) => s.accent > 0.35),
+          ],
+          floodOver60: [
+            count(look, 'before', (s) => s.flood > 0.6),
+            count(look, 'after', (s) => s.flood > 0.6),
+          ],
+        },
       ]),
     );
-    writeFileSync(
-      out as string,
-      JSON.stringify({ walls: rows.length / 2, summary, rows }, null, 1),
-    );
+    writeFileSync(out as string, JSON.stringify({ summary, rows }, null, 1));
   },
-  1_800_000,
+  3_600_000,
 );

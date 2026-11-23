@@ -484,11 +484,15 @@ export function Player({
     });
   }, [coloured, colorHistory.now, colourStyle]);
   // Fills by placement, when the tutorial colors same shapes differently.
-  const fill = useMemo(
-    () =>
-      byPlace(coloured) ? placeFills(coloured, colorHistory.now) : undefined,
-    [coloured, colorHistory.now, inking.shown],
-  );
+  const fill = useMemo(() => {
+    if (!byPlace(coloured)) return undefined;
+    if (!banded(colourStyle)) return placeFills(coloured, colorHistory.now);
+    const f = finishOf(coloured, colorHistory.now);
+    return placeFills(coloured, colorHistory.now, {
+      band: f.band,
+      edge: f.lines,
+    });
+  }, [coloured, colorHistory.now, inking.shown, colourStyle]);
   const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
   // The colour a click paints with, when colouring ring by ring.
   const [brush, setBrush] = useState<string>();

@@ -2,6 +2,7 @@ import type { SquareBands } from '@tastir/schema';
 import type { HistoryAction } from '@tastir/agent-protocol';
 import type { PieceType } from '@tastir/engine';
 import type { Model } from './model.js';
+import { deltaE, lch, oklab, solveColours } from './harmony.js';
 
 /** The slots every palette fills; a tutorial maps its pieces to these. */
 export const SLOTS = ['a', 'b', 'c', 'd', 'ground'] as const;
@@ -606,30 +607,11 @@ export function pieceColors(
   const chosen = types.map((t) => coloring.chosen[typeKey(t)]);
   const wanted = types.map((t, i) => chosen[i] ?? palette[slotOf(model, t, i)]);
   if (coloring.palette === ORIGINAL) return wanted;
-  // Past the five slots, only the glaze's own colours: never a mix.
-  const glaze = glazeOf(coloring.palette, model);
-  const extras = [glaze.white, glaze.black, ...glaze.families.flat()];
-  return assignColours(model, palette, wanted, chosen, {
-    extras,
-    ...surround,
-  });
+  return assignColours(model, coloring.palette, wanted, chosen, surround);
 }
 
-/** The engine's weights: a broken rule costs far more than a moved wish. */
-const COST = {
-  touchSame: 1000,
-  touchNear: 300,
-  hidden: 800,
-  contrast: 0.2,
-  flood: 1500,
-  moved: 12,
-  movedArea: 60,
-  extra: 3,
-  shade: 9,
-} as const;
-
 /** A colour moved towards white (t > 0) or black (t < 0). */
-function shadeOf(hex: string, t: number): string {
+export function shadeOf(hex: string, t: number): string {
   const n = parseInt(hex.replace('#', '').slice(0, 6), 16);
   const to = t > 0 ? 255 : 0;
   const k = Math.abs(t);
@@ -645,116 +627,99 @@ function shadeOf(hex: string, t: number): string {
   );
 }
 
-/** Lightness this close between neighbours reads as one tone. */
-const TONE = 10;
+/**
+ * The colours a palette may give, best first: its five slots, its glaze's
+ * other colours, then a lighter and a darker firing of each slot's colour
+ * (never a mix of two colours).
+ */
+export function paletteChoices(
+  model: Model | undefined,
+  name: string,
+  surround: Surround = {},
+): { palette: string[]; extras: string[]; shades: string[] } {
+  const p = paletteOf(model, name);
+  const palette = SLOTS.map((s) => p[s]);
+  const glaze = glazeOf(name, model);
+  const extras = [glaze.white, glaze.black, ...glaze.families.flat()];
+  // Under light bands the white ground cannot stay, and the reviewers
+  // preferred a pale glaze (a celadon, a pale blue-grey) to a loud colour
+  // taking the ground: one pale tint of the palette's first colour.
+  if (surround.band && oklab(surround.band).L > 0.8) {
+    // From the palette's strongest cool colour (a green, teal or blue): a
+    // tint of red made a pink the reviewers found foreign to the tile.
+    const cool = [...new Set([...glaze.families.flat(), ...palette])]
+      .map((c) => ({ c, ...lch(c) }))
+      .filter((x) => x.h > 120 && x.h < 300 && x.C > 0.04)
+      .sort((x, y) => y.C - x.C)[0]?.c;
+    extras.push(mixColour(surround.band, cool ?? p.b, 0.42));
+  }
+  // No made-up shades: the reviewers found every generated tint (pink of
+  // red, periwinkle of blue, dark ochre) off the tradition, and merging
+  // with the colour it came from.
+  return { palette, extras, shades: [] };
+}
+
+/** Two colours mixed: t of the second. */
+function mixColour(a: string, b: string, t: number): string {
+  const n = (c: string) => parseInt(c.replace('#', '').slice(0, 6), 16);
+  const [x, y] = [n(a), n(b)];
+  return (
+    '#' +
+    [16, 8, 0]
+      .map((k) =>
+        Math.round(((x >> k) & 255) * (1 - t) + ((y >> k) & 255) * t)
+          .toString(16)
+          .padStart(2, '0'),
+      )
+      .join('')
+  );
+}
+
+/** Whether a colour would hide the bands (or show their edge twice): one
+ * close to the bands' colour, and under light bands a pale colour or a
+ * grey, which wash out beside them. */
+export function hidesBands(surround: Surround) {
+  const band = surround.band;
+  const light = band !== undefined && oklab(band).L > 0.8;
+  // A black piece by the bands' near-black edge is allowed: it reads as
+  // the dark anchor the rosettes need (the reviewers saw them turn to
+  // confetti without it), and the wall draws it in the edge's colour.
+  return (c: string) => {
+    if (band === undefined) return false;
+    if (deltaE(c, band) < 0.15) return true;
+    const { L, C } = lch(c);
+    return light && (L > 0.9 || (C < 0.03 && L > 0.55));
+  };
+}
 
 /**
  * Colours for each type: the wish kept where the rules allow (see
- * pieceColors). Types with a colour the learner chose keep it.
+ * pieceColors and harmony.ts). Types with a colour the learner chose keep
+ * it.
  */
 export function assignColours(
   model: Model,
-  palette: Palette,
+  name: string,
   wanted: readonly string[],
   chosen: readonly (string | undefined)[] = [],
-  options: Surround & { readonly extras?: readonly string[] } = {},
+  surround: Surround = {},
 ): string[] {
   const { types } = model.pattern;
-  const n = types.length;
-  if (!n) return [];
-  const lower = (c: string) => c.toLowerCase();
-  const slots = [...new Set(SLOTS.map((s) => lower(palette[s])))];
-  const extras = [...new Set((options.extras ?? []).map(lower))].filter(
-    (c) => !slots.includes(c),
-  );
-  const hides = (c: string) =>
-    (options.band !== undefined && colourDistance(c, options.band) < NEAR) ||
-    (options.edge !== undefined && colourDistance(c, options.edge) < SHADE);
-  // Each type's share of the wall's area.
+  if (!types.length) return [];
   const areas = types.map((t) => Math.abs(t.area) * Math.max(1, t.perCell));
   const total = areas.reduce((x, y) => x + y, 0) || 1;
-  const share = areas.map((a) => a / total);
-  const touching = touchingTypes(model);
-  const pairs: [number, number][] = [...touching].map(
-    (k) => k.split(',').map(Number) as [number, number],
-  );
-  const want = wanted.map((c) => lower(c ?? palette.a));
-  const locked = types.map((_, i) => chosen[i] !== undefined);
-  // Last of all, a lighter and a darker firing of each slot's colour, as
-  // copies that take turns already use: a shade of the palette, never a mix
-  // of two of its colours.
-  const shades = [
-    ...new Set(
-      slots
-        .filter((c) => lightness(c) > 15 && lightness(c) < 90)
-        .flatMap((c) => [shadeOf(c, 0.38), shadeOf(c, -0.35)]),
-    ),
-  ].filter((c) => !slots.includes(c) && !extras.includes(c));
-  const candidates = [...slots, ...extras, ...shades];
-  const L = new Map(candidates.concat(want).map((c) => [c, lightness(c)]));
-  const tone = (c: string) => L.get(c) ?? lightness(c);
-
-  const cost = (at: readonly string[]) => {
-    let sum = 0;
-    for (const [a, b] of pairs) {
-      const x = at[a] ?? '';
-      const y = at[b] ?? '';
-      const weight = 0.5 + Math.min(share[a] ?? 0, share[b] ?? 0) * 4;
-      if (x === y) sum += COST.touchSame * weight;
-      else if (colourDistance(x, y) < NEAR) sum += COST.touchNear * weight;
-      else if (Math.abs(tone(x) - tone(y)) < TONE) sum += COST.contrast;
-    }
-    const used = new Map<string, number>();
-    at.forEach((c, i) => {
-      used.set(c, (used.get(c) ?? 0) + (share[i] ?? 0));
-      if (hides(c) && !locked[i]) sum += COST.hidden;
-      if (c !== want[i]) sum += COST.moved + COST.movedArea * (share[i] ?? 0);
-      if (extras.includes(c)) sum += COST.extra;
-      else if (shades.includes(c)) sum += COST.shade;
-    });
-    // One colour over half the wall while slots stay unused.
-    const spare = slots.some((c) => !used.has(c) && !hides(c));
-    if (spare)
-      for (const s of used.values()) if (s > 0.5) sum += COST.flood * (s - 0.5);
-    return sum;
-  };
-
-  const at = [...want];
-  // The smallest shapes give way first: the largest set the wall's look
-  // and keep the tutorial's colour longest.
-  const order = [...types.keys()].sort(
-    (x, y) => (share[x] ?? 0) - (share[y] ?? 0) || x - y,
-  );
-  let best = cost(at);
-  for (let pass = 0; pass < 12; pass++) {
-    let moved = false;
-    for (const i of order) {
-      if (locked[i]) continue;
-      const was = at[i] as string;
-      let pick = was;
-      for (const c of candidates) {
-        if (c === was) continue;
-        at[i] = c;
-        const v = cost(at);
-        if (v < best - 1e-9) {
-          best = v;
-          pick = c;
-        }
-      }
-      at[i] = pick;
-      if (pick !== was) moved = true;
-    }
-    if (!moved) break;
-  }
-  // Keep the case the palette wrote.
-  const original = new Map(
-    [...SLOTS.map((s) => palette[s]), ...(options.extras ?? []), ...wanted]
-      .filter((c): c is string => typeof c === 'string')
-      .map((c) => [lower(c), c]),
-  );
-  return at.map((c, i) =>
-    locked[i] ? (chosen[i] as string) : (original.get(c) ?? c),
-  );
+  const pairs = [...touchingTypes(model)].map((k) => {
+    const [a, b] = k.split(',').map(Number) as [number, number];
+    return [a, b, 1] as const;
+  });
+  return solveColours({
+    wish: types.map((_, i) => chosen[i] ?? wanted[i] ?? '#999999'),
+    share: areas.map((a) => a / total),
+    pairs,
+    locked: types.map((_, i) => chosen[i] !== undefined),
+    ...paletteChoices(model, name, surround),
+    hides: hidesBands(surround),
+  });
 }
 
 /** A coloring with its undo and redo history. */

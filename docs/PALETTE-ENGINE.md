@@ -1,66 +1,94 @@
 # The palette engine (23 November 2026)
 
-## Overnight, in short
+## In short
 
-Three things were done overnight, each on the branch `claude/jovial-mestorf-ae177f`; nothing is pushed.
+When you choose a palette, the engine decides which colour each part of the wall takes. A part is one shape, one ring of a rosette, or one group of matching pieces. The tutorial's colours are the starting point, and the engine changes them only where they break a rule. It then picks the change that looks best by modern colour practice. It now works for all three ways of colouring: By shape, Ring by ring and By place. Last night's version covered By shape only.
 
-1. **The palette engine.** A palette now colours a pattern by rules, not by slot alone. The grey twelve-sided pieces you saw on the Arrayanes porch ceiling are gone, and so are touching shapes in one colour. See the pictures at [#/review/palette-engine](http://localhost:4300/#/review/palette-engine).
-2. **The real wall badge** on the wall now does what Show the original does: the photo opens beside the wall. Both read "Hide" when it is open, and either closes it. The golden wipe is kept as a button among the photo's own tools (the two arrows), so it is one click from the photo.
-3. **Print is one click.** The paper is your country's (Letter in the United States, Canada, Mexico and most of Central and South America and the Philippines; A4 elsewhere), and the browser's print dialog can still change it. The arrow and the menu are gone.
+Four reviewer agents judged its picks on 24 walls under six palettes, over four rounds. They saw the old rule (A) beside the engine (B) and scored both from 1 to 5. Each round was tuned from what they found.
 
-## What was wrong
+Look at it on [#/review/palette-engine](http://localhost:4300/#/review/palette-engine). Start with the Marrakesh throne-room rosette and the Arrayanes porch ceiling.
 
-A tutorial names a palette slot for each shape: the Arrayanes ceiling gives `ground` (the white) to four shapes, the twelve-sided pieces, octagons, triangles and kites. With its own Mamluk wood that is a mid wood, and fine. With any other palette it is white, and under the white interlace a white piece hides the bands, so the wall re-tinted it towards the palette's colour farthest from the band. That is nearly always its black, which made the grey. No palette has that grey.
+## What it fixes
 
-The audit below ran every one of the 233 walls under each of the twelve tile palettes, as tiles and under bands (2,796 walls each way), with the old rule and with the engine.
+The audit measured all 233 walls under each of the twelve tile palettes, piece by piece, in each wall's own way of colouring. It measured them as tiles and under white bands: 2,796 walls each way.
 
-| Broken rule | Tiles, before | Tiles, engine | Under bands, before | Under bands, engine |
+| Broken rule | Tiles, old rule | Tiles, engine | Under bands, old rule | Under bands, engine |
 | --- | --- | --- | --- | --- |
-| Two touching shapes in one colour | 56 | 0 | 56 | 0 |
-| Two touching shapes in colours that read as one | 116 | 0 | 120 | 6 |
-| A piece in the bands' own colour | – | – | 2,344 | 0 |
-| A piece re-tinted under the bands (the grey) | – | – | 2,463 | 0 |
-| One colour over half the wall | 707 | 588 | 707 | 848 |
+| Different shapes touching in one colour | 330 walls | 31 | 330 | 37 |
+| Different shapes touching in colours that read as one | 372 | 17 | 372 | 91 |
+| A piece in the bands' colour, or turned grey under them | – | – | 2,459 | 130 |
+| One colour over 60% of the wall | 237 | 169 | 237 | 165 |
 
-Where a tutorial's colours already broke no rule (1,003 walls as tiles), the engine kept every one of them exactly. It changes colours only to mend a broken rule.
+The pieces of one ring touch each other in one colour by design, so the audit counts only different shapes touching.
 
-The last row is the one rule the engine cannot always keep: on walls where one shape alone is more than half of the wall (the Comares bones, the Infantas crosses), a colour per shape has to flood. Ring by ring and colouring by placement are the way out there, and the tutorials that need it already have them. Under bands it rose because the white is no longer allowed: the colours that remain cover the wall between them.
+The walls that still break a rule mostly have a reason:
+- A few palettes don't have enough colours. Almohad is green and white only, and Chefchaouen is light blues, so neither has a colour left under white bands.
+- Some walls are coloured by place, and pieces of one group touch each other there.
 
-## The rules
+## The rules, and where they come from
 
-These come from how the tradition colours its tile, and from the problems seen in the app (STYLE.2 and STYLE.4 in the task list):
+Colours are measured in OKLab (Ottosson, 2020), a modern colour space where equal distances look equally different.
 
-1. **Shapes that touch never share a colour,** nor two colours that read as one. Where they meet they merge into one blot.
-2. **Under bands, no piece takes the bands' colour,** or a shade of their dark edge. A white piece under white interlace loses the bands.
-3. **Every copy of a shape keeps one colour,** so the colouring keeps the pattern's symmetry. Grünbaum and Shephard showed that colour is part of these patterns' symmetry, and that a colouring which breaks it changes the pattern's group. Alhambra colourings are regular enough that the colours can be read back from the carving.
-4. **No colour floods the wall** while the palette has colours to spare.
-5. **Neighbours differ in lightness as well as hue,** so the shapes read in grey and for colour-blind eyes. This only settles ties.
+1. **Shapes that touch never share a colour, or two that read as one.** "Read as one" means either of:
+   - colours very close in OKLab;
+   - two darks, such as black beside navy or dark teal beside teal.
+2. **Under white bands, no piece in the band's colour, a pale colour or a grey.** Those hide the bands (task STYLE.4). Black is allowed: under the bands it reads as the rosettes' dark anchor.
+3. **A moved part keeps its role.**
+   - It keeps its lightness: a light ground stays light, and the ground never turns to the loudest colour (the 60–30–10 proportion).
+   - Black never goes onto a large shape that wasn't dark.
+4. **Symmetry is kept.** A part is every piece of one shape that the tutorial's rules colour alike, so a ring, or an orbit of a placement, changes as one piece. The rules' colouring stays symmetric. Grünbaum and Shephard showed that colour is part of a pattern's symmetry.
+5. **Taste chooses among the colours that fix a broken rule.** It never repaints a wall that breaks no rule. Taste here means:
+   - neighbours differ in lightness (Itten's light–dark contrast);
+   - two strong complements of one lightness don't sit side by side, because they vibrate;
+   - the strongest colour is a small accent;
+   - the hues fall within one of Matsuda's harmonic templates, as used for colour harmonisation by Cohen-Or et al. (2006).
+6. **Only real colours.** The engine uses the palette's colours first, then its glaze's other colours. Under white bands it may also use one pale glaze of the palette's cool colour (a celadon or pale blue-grey) for the ground. It never generates tints: the reviewers found every generated tint off-tradition (pink from red, periwinkle from blue).
+7. **The author's colours are kept** wherever someone set them on purpose:
+   - a photo's original colours;
+   - a palette made for one design;
+   - a tutorial's ring corrections;
+   - colours the learner painted.
 
-## How it works
+## What the reviewers said
 
-The tutorial's slots are the wish. The engine starts from them and keeps them unless a rule breaks. Then it looks for the colouring that breaks the fewest rules and moves the fewest shapes. A broken rule costs far more than a moved shape, and a large shape costs more to move than a small one.
+Each reviewer scored the same walls, 1 to 5, round after round:
 
-The smallest shapes give way first, because the large shapes set the wall's look. On the Abas and Salman bands the large bowties keep their white and the small kites move instead.
+- **Round 1:** B made blots of black, invented tints, and broke symmetry by moving single pieces.
+- **Round 2:** symmetry was fixed. Grounds that had to change took the loudest colour.
+- **Round 3:** black returned as an anchor. A wide "reads as one" test moved pieces of walls they liked.
+- **Round 4:** averages A 3.30, B 3.38.
+  - B is clearly better under white bands: Arrayanes, Bou Inania, Mexuar, Barca and Samarkand score 3–4 against A's 2.
+  - B is the same on most plain-tile walls.
+  - B is worse on a few walls coloured by place: Comares west dado, Nasrid casket and Samarkand as tiles, scoring 2–3 against A's 4.
 
-Colours come from the palette's five slots first. When those run out, they come from the palette's glaze: the tradition's other glazes, such as the turquoise of Marinid zellige. Last of all, a lighter or darker shade of a slot's colour may be used. It never mixes two colours, since a mix would make a colour no palette has.
+## Still wrong
 
-The search is deterministic, so a wall is always coloured the same way. Colours the learner chose, a design palette's own, and a photo's original are never changed.
+Most important first:
 
-The code is `pieceColors` and `assignColours` in `packages/project-core/src/coloring.ts`, and the tests are in `apps/player/src/app/paletteEngine.spec.ts`. The audit (`apps/player/src/review/palette.audit.spec.ts`) runs again with `PALETTE_OUT=out.json`.
+1. **The Comares west dado and Nasrid casket as tiles.** The engine moves groups that the tutorial's rules set well, and the result reads as confetti. These walls need their placements reviewed, not more engine rules.
+2. **Some palettes' own colours sit close together.**
+   - Mamluk wood's two mid browns are close in value.
+   - Fès tile's green and blue are close in value.
+   - Alhambra's orange and ochre are close in hue.
 
-## What to look at
+   The palettes themselves would need a wider spread.
+3. **Modern Moroccan and Fès tile are loud everywhere.** Their yellow, mustard or crimson often covers most of the wall. That comes from the palettes more than the walls.
+4. **Grey second shades.** Copies that take turns (Khojent) use a second shade, and with a black or white colour that shade is a grey.
 
-- [#/review/palette-engine](http://localhost:4300/#/review/palette-engine): four walls under six palettes, A the old rule and B the engine. Start with the Arrayanes porch ceiling.
-- [The Arrayanes porch ceiling](http://localhost:4300/#/alhambra-arrayanes-porch-ceiling/result), in By shape: no grey pieces under any palette.
-- [The Minbar doors](http://localhost:4300/#/minbar-doors-cairo/result): the Real wall badge and Show the original now do the same thing; Print in More is one click.
+## Code and checks
 
-## Open questions for you
-
-1. **Under white bands, the Arrayanes ceiling now has no white pieces at all.** It reads as a coloured wall with white bands, as the tradition does it, but it is darker than before. Is that the look you want, or should a light glaze (a pale honey, say) stand in for the white?
-2. **Flooding walls** (one shape over half the wall) still flood when coloured by shape. Should By shape be hidden on those walls, so Ring by ring or By place is used instead?
+- **Code:**
+  - `packages/project-core/src/harmony.ts` measures colour and runs the search;
+  - `packages/project-core/src/coloring.ts` holds the palette's colours and By shape;
+  - `packages/project-core/src/placement.ts` holds Ring by ring and By place.
+- **Tests:** `apps/player/src/app/paletteEngine.spec.ts`.
+- **The audit:** `apps/player/src/review/palette.audit.spec.ts` (`PALETTE_OUT=out.json`).
+- **The reviewers' contact sheets:** `apps/player/src/build/paletteSheets.tsx`.
 
 ## Sources
 
-- Branko Grünbaum, Zdenka Grünbaum and G. C. Shephard, "Symmetry in Moorish and other ornaments" (1986), and Branko Grünbaum, "What symmetry groups are present in the Alhambra?" (2006): colour as part of a pattern's symmetry.
-- Blanco and Harris, "Symmetry groups in the Alhambra" (2011): the Alhambra's groups with colour taken into account.
-- The glaze notes already in `coloring.ts` (Marçais; Cambazard-Amahan) for which colours each tradition had.
+- Björn Ottosson, "A perceptual color space for image processing" (OKLab, 2020).
+- Daniel Cohen-Or, Olga Sorkine, Ran Gal, Tommer Leyvand and Ying-Qing Xu, "Color Harmonization" (SIGGRAPH 2006), after Matsuda's harmonic templates.
+- Johannes Itten, *The Art of Color* (1961): the contrasts of light and dark, and of proportion.
+- Branko Grünbaum, Zdenka Grünbaum and G. C. Shephard, "Symmetry in Moorish and other ornaments" (1986).
+- The glaze notes in `coloring.ts` (Marçais; Cambazard-Amahan).
