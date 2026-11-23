@@ -253,3 +253,29 @@
     transition: none;
   }
 }
+
+/* The level on a card: its star and name in its own colour. */
+.window-dots {
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--level, currentColor) 13%, transparent);
+  color: var(--level-text, currentColor);
+  font-weight: 700;
+}
+.window-dots .fold-star {
+  color: var(--level, currentColor);
+}
+.window-dots.level-beginner {
+  --level: var(--malachite);
+  --level-text: var(--act-draw);
+}
+.window-dots.level-intermediate {
+  --level: var(--act-result);
+  --level-text: var(--level-intermediate-text);
+}
+.window-dots.level-advanced {
+  --level: var(--act-make);
+  --level-text: var(--act-make);
+}

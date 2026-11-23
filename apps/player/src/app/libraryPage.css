@@ -559,3 +559,196 @@
     gap: 2px 8px;
   }
 }
+
+/* ---------- Colour in the filters ---------- */
+/* Each level its own glaze and star: green, gold, terracotta. */
+.level-beginner {
+  --level: var(--malachite);
+  --level-text: var(--act-draw);
+}
+.level-intermediate {
+  --level: var(--act-result);
+  --level-text: var(--level-intermediate-text);
+}
+.level-advanced {
+  --level: var(--act-make);
+  --level-text: var(--act-make);
+}
+.lib-chip.lib-level {
+  border-color: color-mix(in srgb, var(--level) 45%, transparent);
+  background: color-mix(in srgb, var(--level) 10%, var(--theme-bg-surface));
+  color: var(--level-text);
+}
+.lib-chip.lib-level .fold-star {
+  color: var(--level);
+}
+.lib-chip.lib-level[aria-pressed='true'] {
+  border-color: var(--level);
+  background: var(--level);
+  color: #fff;
+}
+.lib-chip.lib-level[aria-pressed='true'] .fold-star {
+  color: #fff;
+}
+.lib-chip.lib-level .window-dots {
+  color: inherit;
+  background: none;
+  padding: 0;
+}
+/* The stars: no box, just the star and its number, gold when chosen. */
+.lib-chip.lib-star {
+  border-color: transparent;
+  background: none;
+  padding: 0 8px;
+  gap: 4px;
+}
+.lib-chip.lib-star .fold-star {
+  color: color-mix(in srgb, var(--theme-text-primary) 55%, #2a7fb8);
+}
+.lib-chip.lib-star:hover:not(:disabled) {
+  border-color: transparent;
+  background: color-mix(in srgb, #d9a63b 12%, transparent);
+}
+.lib-chip.lib-star[aria-pressed='true'] {
+  border-color: #d9a63b;
+  background: color-mix(in srgb, #d9a63b 22%, var(--theme-bg-surface));
+  color: var(--theme-text-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, #d9a63b 25%, transparent);
+}
+.lib-chip.lib-star[aria-pressed='true'] .fold-star {
+  color: #c9962f;
+}
+.lib-other {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.lib-other > summary {
+  list-style: none;
+}
+.lib-other > summary::-webkit-details-marker {
+  display: none;
+}
+.lib-other-menu {
+  display: inline-flex;
+  gap: 6px;
+}
+.lib-chip.lib-photo svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: #2a8fa0;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+.lib-chip.lib-photo[aria-pressed='true'] {
+  border-color: #2a8fa0;
+  background: color-mix(in srgb, #2a8fa0 16%, var(--theme-bg-surface));
+  color: var(--theme-text-primary);
+}
+
+/* Start here folded: the path as numbered stars, each in its level's
+   colour, the next one in gold. */
+.start-here-fold {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border);
+  background: none;
+  color: var(--theme-text-primary);
+  font: 650 14px var(--text);
+  cursor: pointer;
+}
+.start-here-fold svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s;
+}
+.start-here-fold[aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+.start-here-stones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.start-here-stone {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: #fff;
+  font: 800 13px var(--text);
+  text-decoration: none;
+  transition: transform 0.15s;
+}
+.start-here-stone svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--level, var(--malachite));
+}
+.start-here-stone span {
+  position: relative;
+}
+.start-here-stone.is-next svg {
+  fill: #d9a63b;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, #d9a63b 60%, transparent));
+}
+.start-here-stone.is-next {
+  color: #2b1d04;
+}
+.start-here-stone:hover {
+  transform: scale(1.12) rotate(11deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .start-here-stone {
+    transition: none;
+  }
+}
+.start-here-folded {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+.continue-card.compact {
+  display: inline-grid;
+  grid-template-columns: 44px auto;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  align-items: center;
+  width: auto;
+  height: auto;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+}
+.continue-card.compact .continue-pic {
+  grid-row: 1 / span 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  aspect-ratio: 1;
+}
+.continue-card.compact .continue-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.continue-card.compact small {
+  display: none;
+}

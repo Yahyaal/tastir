@@ -34,6 +34,29 @@ export function welcomed(): boolean {
   return Boolean(lastLesson()) || allProgress().length > 0;
 }
 
+const OPEN_KEY = 'tastir.startHere.open';
+function keptOpen(): boolean | undefined {
+  try {
+    const v = window.localStorage.getItem(OPEN_KEY);
+    return v === null ? undefined : v === '1';
+  } catch {
+    return undefined;
+  }
+}
+function keepOpen(open: boolean) {
+  try {
+    window.localStorage.setItem(OPEN_KEY, open ? '1' : '0');
+  } catch {
+    // Not kept: it folds again next time.
+  }
+}
+/** An eight-pointed star, a stepping stone of the path. */
+const STONE = Array.from({ length: 16 }, (_, i) => {
+  const r = i % 2 ? 7.4 : 11;
+  const a = (Math.PI * i) / 8 - Math.PI / 2;
+  return `${(12 + r * Math.cos(a)).toFixed(2)},${(12 + r * Math.sin(a)).toFixed(2)}`;
+}).join(' ');
+
 export function StartHere({
   entries,
   inProgress,
@@ -43,6 +66,14 @@ export function StartHere({
 }) {
   const path = useMemo(() => availableLearningPath(entries), [entries]);
   const [newcomer] = useState(() => !welcomed());
+  // A first visit sees the lessons as windows; after that they fold to a
+  // row of numbered stars, so the patterns show without scrolling. The
+  // learner's choice is kept.
+  const [open, setOpen] = useState(() => keptOpen() ?? newcomer);
+  const toggle = () => {
+    setOpen(!open);
+    keepOpen(!open);
+  };
   const row = useRef<HTMLOListElement>(null);
   const [ends, setEnds] = useState({ start: true, end: false });
   const update = () => {
@@ -91,47 +122,85 @@ export function StartHere({
         <a className="start-here-path" href="#/learn">
           See the learning path
         </a>
+        <button
+          type="button"
+          className="start-here-fold"
+          aria-expanded={open}
+          aria-controls="start-here-lessons"
+          onClick={toggle}
+        >
+          {open ? 'Fold the lessons' : 'Show the lessons'}
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </button>
       </div>
-      <div className="start-here-shelf">
-        {ends.start ? null : (
-          <button
-            type="button"
-            className="start-here-arrow left"
-            aria-label="Earlier lessons"
-            onClick={() => nudge(-1)}
-          >
-            <span aria-hidden="true">‹</span>
-          </button>
-        )}
-        <ol className="start-here-row" ref={row} onScroll={update}>
+      {open ? null : (
+        <div className="start-here-folded">
           {work && workEntry ? (
-            <li className="start-here-continue">
-              <ContinueCard work={work} entry={workEntry} />
-            </li>
+            <ContinueCard work={work} entry={workEntry} compact />
           ) : null}
-          {path.map((p) => (
-            <li key={p.lesson.id}>
-              <LessonWindow
-                entry={p.entry}
-                number={p.number}
-                focus={p.lesson.focus}
-                next={p === next}
-                autoplay={newcomer && p.number === 1}
-              />
-            </li>
-          ))}
-        </ol>
-        {ends.end ? null : (
-          <button
-            type="button"
-            className="start-here-arrow right"
-            aria-label="Later lessons"
-            onClick={() => nudge(1)}
-          >
-            <span aria-hidden="true">›</span>
-          </button>
-        )}
-      </div>
+          <ol className="start-here-stones" id="start-here-lessons">
+            {path.map((p) => (
+              <li key={p.lesson.id}>
+                <a
+                  href={`#/${p.lesson.id}/watch/1`}
+                  className={`start-here-stone level-${p.entry.preview?.level ?? 'beginner'}${p === next ? ' is-next' : ''}${started.has(p.lesson.id) ? ' is-started' : ''}`}
+                  title={`Lesson ${p.number}: ${p.lesson.focus}`}
+                  aria-label={`Lesson ${p.number}: ${p.lesson.focus}`}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <polygon points={STONE} />
+                  </svg>
+                  <span aria-hidden="true">{p.number}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+      {open ? (
+        <div className="start-here-shelf" id="start-here-lessons">
+          {ends.start ? null : (
+            <button
+              type="button"
+              className="start-here-arrow left"
+              aria-label="Earlier lessons"
+              onClick={() => nudge(-1)}
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+          )}
+          <ol className="start-here-row" ref={row} onScroll={update}>
+            {work && workEntry ? (
+              <li className="start-here-continue">
+                <ContinueCard work={work} entry={workEntry} />
+              </li>
+            ) : null}
+            {path.map((p) => (
+              <li key={p.lesson.id}>
+                <LessonWindow
+                  entry={p.entry}
+                  number={p.number}
+                  focus={p.lesson.focus}
+                  next={p === next}
+                  autoplay={newcomer && p.number === 1}
+                />
+              </li>
+            ))}
+          </ol>
+          {ends.end ? null : (
+            <button
+              type="button"
+              className="start-here-arrow right"
+              aria-label="Later lessons"
+              onClick={() => nudge(1)}
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+          )}
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -148,12 +217,21 @@ const titleOf = (entry: Entry) => {
 };
 
 /** The work left partway, first in the row. */
-function ContinueCard({ work, entry }: { work: InProgress; entry: Entry }) {
+function ContinueCard({
+  work,
+  entry,
+  compact = false,
+}: {
+  work: InProgress;
+  entry: Entry;
+  /** One line, beside the folded path. */
+  compact?: boolean;
+}) {
   const draw = work.mode === 'draw';
   const title = titleOf(entry);
   return (
     <a
-      className={`continue-card act-${work.mode}`}
+      className={`continue-card act-${work.mode}${compact ? ' compact' : ''}`}
       href={`#/${work.address}/${draw ? 'draw' : 'watch'}`}
     >
       <span className="continue-pic">

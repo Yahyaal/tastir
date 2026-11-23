@@ -99,13 +99,54 @@ const LEVELS = ['beginner', 'intermediate', 'advanced'];
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 /** The level as one to three dots, named for screen readers. */
-export function LevelDots({ level }: { level: string }) {
+/** A star of n points, for the star filter and the levels. */
+export function FoldStar({ n, size = 16 }: { n: number; size?: number }) {
+  const k = n <= 4 ? 0.5 : n <= 6 ? 0.58 : 0.66;
+  const pts: string[] = [];
+  for (let i = 0; i < n * 2; i++) {
+    const r = i % 2 ? 10 * (1 - k) + 1 : 10;
+    const a = (Math.PI * i) / n - Math.PI / 2;
+    pts.push(
+      `${(12 + r * Math.cos(a)).toFixed(2)},${(12 + r * Math.sin(a)).toFixed(2)}`,
+    );
+  }
+  return (
+    <svg
+      className="fold-star"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <polygon points={pts.join(' ')} fill="currentColor" />
+    </svg>
+  );
+}
+
+/** Each level's star: more points as the patterns grow harder. */
+const LEVEL_POINTS = [4, 8, 12];
+
+/**
+ * A level in its own colour and star: green with four points for beginner,
+ * gold with eight for intermediate, terracotta with twelve for advanced.
+ */
+export function LevelDots({
+  level,
+  word = false,
+}: {
+  level: string;
+  /** With the level's name beside its star. */
+  word?: boolean;
+}) {
   const n = LEVELS.indexOf(level) + 1 || 1;
   return (
-    <span className="window-dots" role="img" aria-label={capital(level)}>
-      {[1, 2, 3].map((i) => (
-        <i key={i} className={i <= n ? 'on' : undefined} />
-      ))}
+    <span
+      className={`window-dots level-${LEVELS[n - 1] ?? 'beginner'}`}
+      role="img"
+      aria-label={capital(level)}
+    >
+      <FoldStar n={LEVEL_POINTS[n - 1] ?? 4} size={15} />
+      {word ? <span aria-hidden="true">{capital(level)}</span> : null}
     </span>
   );
 }
@@ -222,7 +263,7 @@ export function Window({
       </div>
       <p className="window-meta">
         <span>{preview.fold}-fold</span>
-        <LevelDots level={preview.level} />
+        <LevelDots level={preview.level} word />
         <span>{preview.steps} steps</span>
         {place ? <span className="window-place">{place}</span> : null}
       </p>

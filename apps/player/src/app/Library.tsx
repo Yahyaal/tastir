@@ -17,11 +17,11 @@ import { listDesigns, unreadableKept, unreadableNow } from './designs';
 import { Thumbnail } from './drawing';
 import { PROGRESS_TEXT, useModel } from './workerClient';
 import { isHidden, grouped, type Entry, type Preview } from './library';
-import { BOOKS, PLACES, placeHref } from './places';
+import { BAND, BOOKS, PLACES, placeHref } from './places';
 import { Route } from './Route';
 import { StartHere } from './StartHere';
 import { ThemeSwitch } from './theme';
-import { LevelDots, Window, WindowDefs } from './Window';
+import { FoldStar, LevelDots, Window, WindowDefs } from './Window';
 import { workInProgress } from './YourWork';
 import './libraryPage.css';
 
@@ -99,28 +99,6 @@ function LiveWindow({
 }
 
 /** An n-pointed star: the sign for a fold. */
-function FoldStar({ n }: { n: number }) {
-  const k = n <= 4 ? 0.5 : n <= 6 ? 0.58 : 0.66;
-  const pts: string[] = [];
-  for (let i = 0; i < n * 2; i++) {
-    const r = i % 2 ? 10 * (1 - k) + 1 : 10;
-    const a = (Math.PI * i) / n - Math.PI / 2;
-    pts.push(
-      `${(12 + r * Math.cos(a)).toFixed(2)},${(12 + r * Math.sin(a)).toFixed(2)}`,
-    );
-  }
-  return (
-    <svg
-      className="fold-star"
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <polygon points={pts.join(' ')} fill="currentColor" />
-    </svg>
-  );
-}
 
 /** Every tutorial, with a picture of the finished pattern: one card for
  * each family of variations. */
@@ -243,6 +221,37 @@ export function Library({
       ? [[style, styleCounts.get(style) ?? 0] as [string, number]]
       : [];
   const books = region === BOOKS.key;
+  // Each place's band pattern in colour, for the route to bloom into.
+  const routePictures = useMemo(() => {
+    const base = import.meta.env.BASE_URL;
+    const out = new Map<string, string>();
+    for (const [key, ids] of Object.entries(BAND)) {
+      const entry = entries.find((e) => ids.includes(e.id));
+      const p = entry?.preview;
+      const file = p?.thumbnailSmall ?? p?.thumbnail;
+      if (file) out.set(key, base + file);
+    }
+    return out;
+  }, [entries]);
+  const foldChip = (f: number) => {
+    const n = foldCounts.get(f) ?? 0;
+    const on = fold === f;
+    return (
+      <button
+        key={f}
+        type="button"
+        className={f > 2 ? 'lib-chip lib-star' : 'lib-chip'}
+        aria-pressed={on}
+        aria-label={`${foldLabel(f)}, ${n} ${n === 1 ? 'pattern' : 'patterns'}`}
+        title={foldLabel(f)}
+        disabled={!on && n === 0}
+        onClick={() => setFold(on ? undefined : f)}
+      >
+        {f > 2 ? <FoldStar n={f} size={18} /> : null}
+        {f === 1 ? 'Mirror, no star' : f === 2 ? 'Two-fold' : f}
+      </button>
+    );
+  };
   return (
     <div className="library lib-page">
       <WindowDefs />
@@ -290,30 +299,28 @@ export function Library({
           <ThemeSwitch />
         </div>
       </header>
-      <Route place={chosen?.key} counts={regionCounts} />
+      <Route
+        place={chosen?.key}
+        counts={regionCounts}
+        pictures={routePictures}
+      />
       <main className="lib-main">
         <div className="lib-filters" role="toolbar" aria-label="Filters">
           <span className="lib-flabel" aria-hidden="true">
             Star
           </span>
-          {folds.map((f) => {
-            const n = foldCounts.get(f) ?? 0;
-            const on = fold === f;
-            return (
-              <button
-                key={f}
-                type="button"
-                className="lib-chip"
-                aria-pressed={on}
-                aria-label={`${foldLabel(f)}, ${n} ${n === 1 ? 'pattern' : 'patterns'}`}
-                disabled={!on && n === 0}
-                onClick={() => setFold(on ? undefined : f)}
-              >
-                {f > 2 ? <FoldStar n={f} /> : null}
-                {f === 1 ? 'Mirror' : f}
-              </button>
-            );
-          })}
+          {folds.filter((f) => f > 2).map((f) => foldChip(f))}
+          {folds.some((f) => f <= 2) ? (
+            <details
+              className="lib-other"
+              open={fold !== undefined && fold <= 2 ? true : undefined}
+            >
+              <summary className="lib-chip">Other</summary>
+              <div className="lib-other-menu">
+                {folds.filter((f) => f <= 2).map((f) => foldChip(f))}
+              </div>
+            </details>
+          ) : null}
           <span className="lib-sep" aria-hidden="true" />
           <span className="lib-flabel" aria-hidden="true">
             Level
@@ -325,7 +332,7 @@ export function Library({
               <button
                 key={l}
                 type="button"
-                className="lib-chip"
+                className={`lib-chip lib-level level-${l}`}
                 aria-pressed={on}
                 aria-label={`${capital(l)}, ${n} ${n === 1 ? 'pattern' : 'patterns'}`}
                 disabled={!on && n === 0}
@@ -339,10 +346,13 @@ export function Library({
           <span className="lib-sep" aria-hidden="true" />
           <button
             type="button"
-            className="lib-chip"
+            className="lib-chip lib-photo"
             aria-pressed={withPhoto}
             onClick={() => setWithPhoto((was) => !was)}
           >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 8h3l2-3h6l2 3h3v11H4zM12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" />
+            </svg>
             With photo
           </button>
         </div>
