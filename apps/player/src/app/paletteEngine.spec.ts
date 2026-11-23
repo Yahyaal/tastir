@@ -13,6 +13,12 @@ import {
   typeKey,
   type Coloring,
 } from './coloring';
+import {
+  colorRepeat,
+  colouredModel,
+  placeFills,
+  ruleFills,
+} from './placement';
 
 const load = (id: string): Model =>
   loadModel(
@@ -105,5 +111,21 @@ describe('the palette engine', () => {
     expect(pieceColors(ceiling, coloring)).toEqual(
       pieceColors(ceiling, coloring),
     );
+  });
+
+  it('keeps the rules on a wall coloured by place, as plain tiles', () => {
+    const wall = load('alhambra-comares-west-dado');
+    for (const palette of ['Marinid zellige', 'Alhambra', 'Modern Moroccan']) {
+      const coloring: Coloring = { palette, chosen: {} };
+      const model = colouredModel(wall, coloring);
+      const rules = ruleFills(model, coloring);
+      const fill = placeFills(model, coloring);
+      const [m, n] = colorRepeat(model);
+      for (let i = 0; i < m; i++)
+        for (let j = 0; j < n; j++)
+          model.pattern.pieces.forEach((_, k) =>
+            expect(fill(k, i, j)).toBe(rules(k, i, j)),
+          );
+    }
   });
 });

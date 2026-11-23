@@ -19,6 +19,7 @@ import {
   pieceColors,
   SLOTS,
   slotOf,
+  tutorialColoring,
   typeKey,
   type Coloring,
   type Method,
@@ -593,6 +594,35 @@ function harmonised(
       continue;
     const pair = a < b ? `${a},${b}` : `${b},${a}`;
     touch.set(pair, (touch.get(pair) ?? 0) + 1);
+  }
+  // A wall coloured by place, as plain tiles, keeps the rules' colours:
+  // the reviewers judged them better than any move the engine made. Only
+  // two different shapes that touch in one colour by accident of this
+  // palette may move, where the tutorial's own colours tell them apart;
+  // shapes its own colours join into one field stay joined.
+  if (model.tutorial.pattern.placements && !surround.band) {
+    const own = basePlaceFills(model, {
+      ...tutorialColoring(model),
+      chosen: {},
+    });
+    const ownOf = new Map<number, string>();
+    for (const [at, part] of partAt) {
+      if (ownOf.has(part)) continue;
+      const [k, i, j] = at.split(',').map(Number) as [number, number, number];
+      ownOf.set(part, own(k, i, j).toLowerCase());
+    }
+    const clash = new Set<number>();
+    for (const pair of touch.keys()) {
+      const [a, b] = pair.split(',').map(Number) as [number, number];
+      if (wish[a]?.toLowerCase() !== wish[b]?.toLowerCase()) continue;
+      if (ownOf.get(a) === ownOf.get(b)) continue;
+      clash.add(a);
+      clash.add(b);
+    }
+    if (!clash.size) return base;
+    wish.forEach((_, part) => {
+      if (!clash.has(part)) locked[part] = true;
+    });
   }
   const most = Math.max(1, ...touch.values());
   const solved = solveColours({

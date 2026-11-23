@@ -14,16 +14,16 @@ The audit measured all 233 walls under each of the twelve tile palettes, piece b
 
 | Broken rule | Tiles, old rule | Tiles, engine | Under bands, old rule | Under bands, engine |
 | --- | --- | --- | --- | --- |
-| Different shapes touching in one colour | 330 walls | 31 | 330 | 37 |
-| Different shapes touching in colours that read as one | 372 | 17 | 372 | 91 |
+| Different shapes touching in one colour | 330 walls | 133 | 330 | 37 |
+| Different shapes touching in colours that read as one | 372 | 72 | 372 | 91 |
 | A piece in the bands' colour, or turned grey under them | – | – | 2,459 | 130 |
-| One colour over 60% of the wall | 237 | 169 | 237 | 165 |
+| One colour over 60% of the wall | 237 | 204 | 237 | 165 |
 
 The pieces of one ring touch each other in one colour by design, so the audit counts only different shapes touching.
 
 The walls that still break a rule mostly have a reason:
 - A few palettes don't have enough colours. Almohad is green and white only, and Chefchaouen is light blues, so neither has a colour left under white bands.
-- Some walls are coloured by place, and pieces of one group touch each other there.
+- Most of the plain-tile walls left are coloured by place. There the tutorial's own colours join neighbouring shapes into one field on purpose, and the engine keeps them (rule 7). Before rule 7 the engine left 31 such walls, but it repainted the rules into confetti to do it.
 
 ## The rules, and where they come from
 
@@ -43,7 +43,8 @@ Colours are measured in OKLab (Ottosson, 2020), a modern colour space where equa
    - the strongest colour is a small accent;
    - the hues fall within one of Matsuda's harmonic templates, as used for colour harmonisation by Cohen-Or et al. (2006).
 6. **Only real colours.** The engine uses the palette's colours first, then its glaze's other colours. Under white bands it may also use one pale glaze of the palette's cool colour (a celadon or pale blue-grey) for the ground. It never generates tints: the reviewers found every generated tint off-tradition (pink from red, periwinkle from blue).
-7. **The author's colours are kept** wherever someone set them on purpose:
+7. **A wall coloured by place keeps the rules' colours as plain tiles.** The reviewers judged the rules' placements better there. The engine moves a part only where two different shapes touch in one colour by accident of the palette, meaning the tutorial's own colours tell them apart. Shapes the tutorial's own colours join into one field stay joined. Under white bands the engine works as everywhere else, because there it scored better.
+8. **The author's colours are kept** wherever someone set them on purpose:
    - a photo's original colours;
    - a palette made for one design;
    - a tutorial's ring corrections;
@@ -65,7 +66,7 @@ Each reviewer scored the same walls, 1 to 5, round after round:
 
 Most important first:
 
-1. **The Comares west dado and Nasrid casket as tiles.** The engine moves groups that the tutorial's rules set well, and the result reads as confetti. These walls need their placements reviewed, not more engine rules.
+1. **Fixed on 23 November:** the Comares west dado and Nasrid casket as tiles read as confetti. Walls coloured by place now keep the rules' colours (rule 7).
 2. **Some palettes' own colours sit close together.**
    - Mamluk wood's two mid browns are close in value.
    - Fès tile's green and blue are close in value.
