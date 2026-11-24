@@ -159,6 +159,67 @@ describe('the hosted studio refuses what the 23 November audit found', () => {
     });
   });
 
+  describe('importing a zip with a photo', () => {
+    let store: TestBackend;
+    let studio: Studio;
+    beforeEach(async () => {
+      store = await testBackend('files');
+      studio = new Studio(store.root, tutorials, store.backend);
+    });
+    afterEach(() => store.close());
+
+    it('checks the photo itself, as setting a reference does', async () => {
+      const { unzipSync, strFromU8 } = await import('fflate');
+      const id = (await studio.create({ author: 'owner', title: 'Photo' }))
+        .project;
+      await studio.setReference(id, {
+        author: 'owner',
+        path: 'apps/player/public/photos/cairo-minbar-doors-met.jpg',
+      });
+      const files = unzipSync((await studio.exportZip(id)).bytes);
+      const project = JSON.parse(strFromU8(files['project.json']!));
+      const photo = files[project.reference.file]!;
+      const zip = (reference: unknown, bytes: Uint8Array) =>
+        Buffer.from(
+          zipSync({
+            'project.json': strToU8(JSON.stringify({ ...project, reference })),
+            [project.reference.file]: bytes,
+          }),
+        ).toString('base64');
+      // The exported zip imports as it is.
+      await expect(
+        studio.importZip({
+          author: 'owner',
+          zip: zip(project.reference, photo),
+        }),
+      ).resolves.toBeDefined();
+      // Text dressed as a JPEG, a size that does not match, and a photo over 15 MB.
+      await expect(
+        studio.importZip({
+          author: 'owner',
+          zip: zip(project.reference, strToU8('<svg onload="x"/>')),
+        }),
+      ).rejects.toThrow(/PNG or JPEG/);
+      await expect(
+        studio.importZip({
+          author: 'owner',
+          zip: zip(
+            { ...project.reference, width: project.reference.width + 1 },
+            photo,
+          ),
+        }),
+      ).rejects.toThrow(/does not match/);
+      const huge = new Uint8Array(15_000_001);
+      huge.set(photo);
+      await expect(
+        studio.importZip({
+          author: 'owner',
+          zip: zip(project.reference, huge),
+        }),
+      ).rejects.toThrow(/under 15 MB/);
+    });
+  });
+
   it('writes only numbers and a known type into the overlay SVG', () => {
     const good: Reference = {
       file: 'reference.png',

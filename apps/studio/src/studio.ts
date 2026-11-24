@@ -270,6 +270,8 @@ export const AlignRequest = z.strictObject({
   a: Pixel,
 });
 
+/** The largest reference photo, sent or imported. */
+const PHOTO_BYTES = 15_000_000;
 /** The most an imported zip may hold: a project, its pattern and a photo. */
 export const ZIP_LIMITS = { entries: 16, bytes: 40_000_000 };
 const ZIP_FILES = /^(project\.json|reference\.(png|jpg))$/;
@@ -549,6 +551,21 @@ export class Studio {
     const photo = reference ? files[reference.file] : undefined;
     if (reference && !photo)
       throw new StudioError('The zip names a photo it does not hold.');
+    // The same rules as setReference: a PNG or JPEG under the photo limit,
+    // whose header agrees with the type and size the project gives.
+    if (reference && photo) {
+      if (photo.byteLength > PHOTO_BYTES)
+        throw new StudioError('Use a photo under 15 MB.');
+      const size = imageSize(Buffer.from(photo));
+      if (
+        size.type !== reference.type ||
+        size.width !== reference.width ||
+        size.height !== reference.height
+      )
+        throw new StudioError(
+          'The photo in the zip does not match its project.json.',
+        );
+    }
     const at = new Date().toISOString();
     const project: Project = {
       ...p,
@@ -619,7 +636,7 @@ export class Studio {
         );
       bytes = await readFile(file);
     } else throw new StudioError('Send a photo, or name one in docs/research.');
-    if (bytes.length > 15_000_000)
+    if (bytes.length > PHOTO_BYTES)
       throw new StudioError('Use a photo under 15 MB.');
     const size = imageSize(bytes);
     const file = `reference${size.type === 'image/png' ? '.png' : '.jpg'}`;
