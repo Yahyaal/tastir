@@ -9,6 +9,7 @@ import {
   PISHTAQ_ARCH,
   type ArchKind,
 } from './arches';
+import { foldLabel } from './browsing';
 import type { Preview } from './library';
 import './window.css';
 
@@ -262,7 +263,7 @@ export function Window({
         </span>
       </div>
       <p className="window-meta">
-        <span>{preview.fold}-fold</span>
+        {preview.fold > 0 ? <span>{foldLabel(preview.fold)}</span> : null}
         <LevelDots level={preview.level} word />
         <span>{preview.steps} steps</span>
         {place ? <span className="window-place">{place}</span> : null}

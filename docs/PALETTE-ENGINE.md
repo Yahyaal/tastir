@@ -6,7 +6,7 @@ When you choose a palette, the engine decides which colour each part of the wall
 
 Four reviewer agents judged its picks on 24 walls under six palettes, over four rounds. They saw the old rule (A) beside the engine (B) and scored both from 1 to 5. Each round was tuned from what they found.
 
-Look at it on [#/review/palette-engine](http://localhost:4300/#/review/palette-engine). Start with the Marrakesh throne-room rosette and the Arrayanes porch ceiling.
+Look at it on [#/review/palette-engine](http://localhost:4200/#/review/palette-engine). Start with the Marrakesh throne-room rosette and the Arrayanes porch ceiling.
 
 ## What it fixes
 

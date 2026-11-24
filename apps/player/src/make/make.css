@@ -1,24 +1,24 @@
 /* The Make page (#/id/make): the carved object on the left, the choices
    on the right; one column on a phone. */
-.make-top {
+.relief-top {
   display: flex;
   align-items: center;
   gap: 16px;
   min-height: 58px;
   padding: 10px 0;
 }
-.make-top .home {
+.relief-top .home {
   color: var(--on-lapis);
   text-decoration: none;
 }
-.make-top .lesson-title {
+.relief-top .lesson-title {
   flex: 1;
   min-width: 0;
   margin: 0;
   font-family: var(--display);
   font-size: 1.35rem;
 }
-.make-top h1 {
+.relief-top h1 {
   margin: 0;
   font: inherit;
   white-space: nowrap;
@@ -90,7 +90,7 @@
   font-size: 0.85rem;
 }
 
-.make-panel {
+.relief-panel {
   max-width: 100%;
 }
 
@@ -272,7 +272,7 @@
   background: transparent;
   font-size: 0.75rem;
 }
-.style-icon {
+.relief-style-icon {
   width: 28px;
   height: 18px;
   fill: var(--theme-bg-raised);
@@ -347,16 +347,16 @@
 }
 
 @media (max-width: 600px) {
-  .make-top {
+  .relief-top {
     flex-wrap: wrap;
     gap: 4px 16px;
   }
-  .make-top .lesson-title {
+  .relief-top .lesson-title {
     order: 3;
     flex-basis: 100%;
     font-size: 1.15rem;
   }
-  .make-top h1 {
+  .relief-top h1 {
     white-space: normal;
   }
   .relief-view {
@@ -430,7 +430,7 @@
     height: auto;
     min-height: 0;
   }
-  .make-panel {
+  .relief-panel {
     height: 100%;
     overflow-y: auto;
     padding-right: 4px;

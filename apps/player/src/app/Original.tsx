@@ -29,8 +29,9 @@ export function Original({
 }: {
   photos: readonly Photo[];
   dev?: boolean;
-  /** Lays the photo over the wall, to wipe between the two. */
-  onWipe?: () => void;
+  /** Lays the photo shown (its index) over the wall, to wipe between the
+   * two. */
+  onWipe?: (photo: number) => void;
 }) {
   const [shown, setShown] = useState(0);
   const [full, setFull] = useState(false);
@@ -56,7 +57,7 @@ export function Original({
           caption={photo.caption}
           onError={failed}
           onFull={() => setFull(true)}
-          onWipe={onWipe}
+          onWipe={onWipe ? () => onWipe(selected) : undefined}
         />
       ) : (
         <PhotoPlaceholder photo={photo} unavailable={missing} />
@@ -65,7 +66,9 @@ export function Original({
         {photo.caption}{' '}
         <span className="credit">
           Photo: {photo.creator}, {photo.license}.{' '}
-          <a href={photo.url}>Source</a>
+          <a href={photo.url} target="_blank" rel="noreferrer">
+            Source
+          </a>
           {src && photo.private ? ' (shown on the dev server only)' : ''}
         </span>
         {photos.length > 1 ? (
@@ -114,7 +117,10 @@ function PhotoPlaceholder({
         {unavailable
           ? 'You can still see it at '
           : 'We are looking for one we may show here. Meanwhile you can see it at '}
-        <a href={photo.url}>its source</a>.
+        <a href={photo.url} target="_blank" rel="noreferrer">
+          its source
+        </a>
+        .
       </p>
     </div>
   );

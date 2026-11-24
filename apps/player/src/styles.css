@@ -3427,7 +3427,8 @@ main.stage .drawing:not(.wall) {
   font-weight: 500;
 }
 
-.library .chip {
+.library .chip,
+.work-tabs .chip {
   padding: 4px 12px;
   font-size: 0.8rem;
   background: color-mix(in srgb, var(--theme-text-primary) 4%, transparent);
@@ -3442,7 +3443,8 @@ main.stage .drawing:not(.wall) {
   transition: all 140ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.library .chip:hover {
+.library .chip:hover,
+.work-tabs .chip:hover {
   border-color: var(
     --theme-border-hover,
     color-mix(in srgb, var(--theme-text-primary) 20%, transparent)
@@ -3451,7 +3453,8 @@ main.stage .drawing:not(.wall) {
   background: color-mix(in srgb, var(--theme-text-primary) 8%, transparent);
 }
 
-.library .chip[aria-pressed='true'] {
+.library .chip[aria-pressed='true'],
+.work-tabs .chip[aria-pressed='true'] {
   background: color-mix(in srgb, var(--theme-accent) 16%, transparent);
   color: var(--saffron);
   border-color: var(--saffron);

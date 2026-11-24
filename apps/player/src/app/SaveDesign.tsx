@@ -66,7 +66,7 @@ export function SaveDesign({
     onSaved(saved);
     setNaming(false);
     setSaid({
-      text: `Saved as “${saved.name}”. It is on the home page, under Your work.`,
+      text: `Saved as “${saved.name}”. Find it under Your work, at the top of the home page.`,
     });
   };
   const ask = () => {

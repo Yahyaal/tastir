@@ -31,6 +31,7 @@ import { planStep, play, playInk } from './animation';
 import { fullView, growingFrame, tileView, width, type Rect } from './camera';
 import {
   finishOf,
+  PAPER_PALETTES,
   pieceColors,
   tutorialColoring,
   type ColorAction,
@@ -40,6 +41,7 @@ import { addDesign, type Design } from './designs';
 import { draftOf, forgetDraft, keepDraft, type Draft } from './drafts';
 import {
   historyOf,
+  paperStyle,
   storedColours,
   styleColoursOf,
   styleColoursReducer,
@@ -733,6 +735,8 @@ export function Player({
   };
   // The real wall's photo, wiped across ours by a golden handle.
   const [wiping, setWiping] = useState(false);
+  // Which photo is laid over the wall (Original may show another).
+  const [wipePhoto, setWipePhoto] = useState(0);
   // The real wall: the badge on the wall and The real wall in More do the
   // same thing, showing the photo beside the wall (or closing it, from
   // either view); the photo's own tools lay it over the wall to wipe.
@@ -986,7 +990,7 @@ export function Player({
       if (
         e.target instanceof Element &&
         e.target.closest(
-          'input, textarea, select, button, summary, a, [contenteditable]:not([contenteditable="false"]), [role="dialog"], [role="alertdialog"]',
+          'input, textarea, select, button, summary, a, [role="slider"], [contenteditable]:not([contenteditable="false"]), [role="dialog"], [role="alertdialog"]',
         )
       )
         return;
@@ -1339,12 +1343,22 @@ export function Player({
           }
           oneTile={colourFirst && stage.kind === 'color'}
           onLight={setLit}
-          onReset={() =>
+          onReset={() => {
+            // Watercolour resets to its first paper palette, the same way
+            // of colouring: a glaze would leave no palette chosen.
+            const own = tutorialColoring(model);
+            const { finish: _finish, ...rest } = own;
             colorDispatch({
               kind: 'reset',
-              to: tutorialColoring(model),
-            })
-          }
+              to: paperStyle(colourStyle)
+                ? {
+                    ...rest,
+                    palette: PAPER_PALETTES[0] ?? own.palette,
+                    chosen: {},
+                  }
+                : own,
+            });
+          }}
         />
       </section>
     ) : null;
@@ -1924,7 +1938,8 @@ export function Player({
                 photos={photos}
                 onWipe={
                   wallPage
-                    ? () => {
+                    ? (photo: number) => {
+                        setWipePhoto(photo);
                         setComparing(false);
                         setWiping(true);
                       }
@@ -1934,7 +1949,7 @@ export function Player({
             ) : null}
             {picture}
             {wallPage && wiping && !showOriginal && photos[0] ? (
-              <PhotoWipe photo={photos[0]} />
+              <PhotoWipe photo={photos[wipePhoto] ?? photos[0]} />
             ) : null}
             {destinationGuide && (
               <span className="destination-guide-caption">

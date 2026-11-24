@@ -254,6 +254,10 @@
   line-height: 1;
   box-shadow: var(--lib-shadow);
   cursor: pointer;
+  /* The global button padding left the glyph 2px to sit in. */
+  padding: 0;
+  display: grid;
+  place-items: center;
 }
 .start-here-arrow.left {
   left: -14px;
@@ -585,10 +589,10 @@
 .lib-chip.lib-level[aria-pressed='true'] {
   border-color: var(--level);
   background: var(--level);
-  color: #fff;
+  color: var(--on-act);
 }
 .lib-chip.lib-level[aria-pressed='true'] .fold-star {
-  color: #fff;
+  color: var(--on-act);
 }
 .lib-chip.lib-level .window-dots {
   color: inherit;
@@ -689,7 +693,7 @@
   place-items: center;
   width: 44px;
   height: 44px;
-  color: #fff;
+  color: var(--on-act);
   font: 800 13px var(--text);
   text-decoration: none;
   transition: transform 0.15s;

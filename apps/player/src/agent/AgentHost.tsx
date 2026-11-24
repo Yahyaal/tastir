@@ -22,6 +22,7 @@ export function AgentHost({
     const find = () =>
       setToolbar(
         [
+          '.lib-actions',
           '.masthead-actions',
           '.topbar',
           '.upcoming-topbar',
