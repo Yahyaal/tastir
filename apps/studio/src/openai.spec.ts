@@ -260,14 +260,12 @@ describe('hosted ChatGPT identity sign-in', () => {
   });
 
   it('does not overwrite a subject linked to another local owner', async () => {
-    await db()
-      .insert(openaiIdentities)
-      .values({
-        issuer: openai.url,
-        client: 'registered-client',
-        subject: 'openai-owner',
-        owner: 'another@example.com',
-      });
+    await db().insert(openaiIdentities).values({
+      issuer: openai.url,
+      client: 'registered-client',
+      subject: 'openai-owner',
+      owner: 'another@example.com',
+    });
     expect((await link()).status).toBe(403);
     const [identity] = await db().select().from(openaiIdentities);
     expect(identity!.owner).toBe('another@example.com');

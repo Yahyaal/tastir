@@ -21,6 +21,37 @@ export interface Reference {
   readonly align?: { readonly o: Vec; readonly a: Vec };
 }
 
+const finite = (n: unknown): n is number =>
+  typeof n === 'number' && Number.isFinite(n);
+const point = (p: unknown) =>
+  typeof p === 'object' &&
+  p !== null &&
+  finite((p as Vec).x) &&
+  finite((p as Vec).y);
+const SIDE = 100_000;
+
+/**
+ * Whether a reference read from outside (an imported zip) is one the studio
+ * could have written: a known photo file and type, whole-pixel sizes and
+ * numeric alignment, so nothing but numbers reaches the overlay's SVG.
+ */
+export function isReference(x: unknown): x is Reference {
+  if (typeof x !== 'object' || x === null) return false;
+  const r = x as Record<string, unknown>;
+  const size = (n: unknown) =>
+    Number.isInteger(n) && (n as number) > 0 && (n as number) <= SIDE;
+  const align = r['align'] as Record<string, unknown> | undefined;
+  return (
+    ((r['file'] === 'reference.png' && r['type'] === 'image/png') ||
+      (r['file'] === 'reference.jpg' && r['type'] === 'image/jpeg')) &&
+    size(r['width']) &&
+    size(r['height']) &&
+    (r['source'] === undefined ||
+      (typeof r['source'] === 'string' && r['source'].length <= 2000)) &&
+    (align === undefined || (point(align['o']) && point(align['a'])))
+  );
+}
+
 /** The type and size of a PNG or JPEG, read from its header. */
 export function imageSize(
   bytes: Buffer,
@@ -78,6 +109,9 @@ export function overlaySvg(
   draft?: Draft,
   area?: { x: number; y: number; width: number; height: number },
 ): string {
+  // Only numbers and a known image type are written into the SVG.
+  if (!isReference(ref))
+    throw new StudioError('This reference photo cannot be read.');
   let box = { x: 0, y: 0, w: ref.width, h: ref.height };
   const map = ref.align ? toPhoto(ref.align) : undefined;
   if (area) {

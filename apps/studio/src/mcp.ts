@@ -11,6 +11,7 @@ import { CONSTRUCTION_GUIDE, ConstructionShape } from '@tastir/agent-protocol';
 import { StudioClient, type StudioCaller } from './client.js';
 import { GoalsShape, LONGEST_WAIT, PaintColorShape } from './studio.js';
 import { CARD_HTML } from './card/page.js';
+import { ID } from './store.js';
 
 /**
  * The Tastir studio as an MCP server, for Claude Code, Codex, Gemini or any
@@ -31,8 +32,11 @@ Pictures from view are drawn by the studio from the saved project at a named rev
 
 When the project has a reference photo, you are recreating that pattern. Look at the overlay (your ink in magenta over the photo) after each meaningful change, find where your lines leave the photo's, and change the construction, not the ink alone: the result must still be a ruler-and-compass construction. Where the photo is worn, hidden or unclear, ask the owner rather than guess. A reconstruction is done when check passes and the owner accepts the overlay. Leave a short note when you finish a stage or need the owner to decide something.`;
 
+// The same ids the store accepts, so an id can never walk out of
+// /projects/<id> in the address the tools call.
 const Project = z
   .string()
+  .regex(ID, 'a project id is lower-case letters, digits and dashes')
   .describe('The project id, from list_projects or new_project.');
 const CommandId = z
   .string()

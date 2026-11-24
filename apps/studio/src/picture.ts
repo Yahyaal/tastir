@@ -31,6 +31,9 @@ const GUIDE = '#8f9aa6';
 const INK = '#1c2733';
 const LABEL = '#17676b';
 const TILE = '#b8862a';
+/** A fill reaches the SVG only as #rrggbb; anything else draws as paper. */
+const colour = (value: unknown) =>
+  typeof value === 'string' && /^#[0-9a-fA-F]{6}$/.test(value) ? value : PAPER;
 
 const num = (n: number) => Number(n.toFixed(4));
 
@@ -159,7 +162,7 @@ export function wallSvg(draft: Draft, copies = 2, area?: Area): string {
         const poly = p.polygon.map((q) => ({ x: q.x + dx, y: q.y + dy }));
         extent.push(...poly);
         parts.push(
-          `<polygon points="${poly.map((q) => `${num(q.x)},${num(q.y)}`).join(' ')}" fill="${fill(k, i, j)}"/>`,
+          `<polygon points="${poly.map((q) => `${num(q.x)},${num(q.y)}`).join(' ')}" fill="${colour(fill(k, i, j))}"/>`,
         );
       });
     }
