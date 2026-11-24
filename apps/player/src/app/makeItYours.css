@@ -334,6 +334,11 @@
 .player .make-panel .make-foot button.make-save:hover:not(:disabled) {
   background: color-mix(in srgb, #d9a63b 16%, transparent);
 }
+/* Changed since saved: the accent fill, with text that reads on it. */
+.player .make-panel .make-foot button.make-save.unsaved,
+.player .make-panel .make-foot button.make-save.unsaved .foot-icon {
+  color: var(--on-act);
+}
 .player .make-panel .make-foot button.make-share {
   border: 1.5px solid var(--act-watch);
   color: var(--theme-text-primary);
@@ -602,9 +607,9 @@
 }
 .photo-wipe-credit {
   position: absolute;
-  left: 12px;
-  /* At the top, clear of the wall's own buttons at its foot. */
-  top: 10px;
+  left: 22px;
+  /* Under the photo badge, clear of the wall's buttons at its foot. */
+  top: 76px;
   margin: 0;
   padding: 3px 8px;
   border-radius: 6px;

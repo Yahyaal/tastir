@@ -254,6 +254,10 @@
   line-height: 1;
   box-shadow: var(--lib-shadow);
   cursor: pointer;
+  /* The global button padding left the glyph 2px to sit in. */
+  padding: 0;
+  display: grid;
+  place-items: center;
 }
 .start-here-arrow.left {
   left: -14px;
