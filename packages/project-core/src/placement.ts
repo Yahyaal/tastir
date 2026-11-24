@@ -9,6 +9,10 @@ import { alternationOf } from './alternate.js';
 import {
   designPalette,
   extraColors,
+  hidesBands,
+  paletteChoices,
+  pointNamer,
+  type Surround,
   glazeOf,
   ORIGINAL,
   lightness,
@@ -16,12 +20,14 @@ import {
   pieceColors,
   SLOTS,
   slotOf,
+  tutorialColoring,
   typeKey,
   type Coloring,
   type Method,
   type Palette,
 } from './coloring.js';
 import type { Model } from './model.js';
+import { solveColours } from './harmony.js';
 import {
   hasRings,
   ringsOf,
@@ -261,6 +267,14 @@ function resolve(
  * placement, else one chosen for its whole shape, else the tutorial's
  * placement rules, else the shape's palette slot.
  */
+export function ruleFills(
+  model: Model,
+  coloring: Coloring,
+): (piece: number, i: number, j: number) => string {
+  return basePlaceFills(model, coloring);
+}
+
+/** The rules' own fills, before the engine: for audits and reviews. */
 function basePlaceFills(
   model: Model,
   coloring: Coloring,
@@ -471,6 +485,161 @@ function ringFills(
   };
 }
 
+/** Twice a polygon's signed area. */
+const area2 = (ps: readonly Vec[]) =>
+  ps.reduce((s, p, k) => {
+    const q = ps[(k + 1) % ps.length] as Vec;
+    return s + p.x * q.y - q.x * p.y;
+  }, 0);
+
+/** Placed parts beyond this many are left as the rules give them. */
+const MOST_PARTS = 4000;
+
+/**
+ * The palette engine (harmony.ts) for walls coloured by ring or by place:
+ * each shape in each colour the rules give it is a part; the parts that
+ * touch, in this copy of the repeat or the next, must not share a colour
+ * or one that reads as it, and the rest of the engine's rules follow. The
+ * rules' colours are the wish. A photo's original, and parts the learner
+ * coloured, are kept as they are.
+ */
+function harmonised(
+  model: Model,
+  coloring: Coloring,
+  base: (piece: number, i: number, j: number) => string,
+  surround: Surround,
+): (piece: number, i: number, j: number) => string {
+  if (coloring.palette === ORIGINAL || designPalette(model, coloring.palette))
+    return base;
+  const { pieces, types, cell } = model.pattern;
+  const [m, n] = colorRepeat(model);
+  if (m * n * pieces.length > MOST_PARTS) return base;
+  // A part: the colour key of the piece's place, and its colour (copies
+  // that take turns share a key but not a colour).
+  const index = new Map<string, number>();
+  const wish: string[] = [];
+  const locked: boolean[] = [];
+  const share: number[] = [];
+  const partAt = new Map<string, number>();
+  const partOf = (k: number, i: number, j: number) => {
+    const at = `${k},${mod(i, m)},${mod(j, n)}`;
+    const hit = partAt.get(at);
+    if (hit !== undefined) return hit;
+    const key = placeKey(model, k, mod(i, m), mod(j, n));
+    const colour = base(k, mod(i, m), mod(j, n));
+    // A part is every piece of one shape that the rules colour alike: the
+    // rules' symmetry (each ring, each orbit of a placement) moves as one,
+    // and never breaks into single pieces (the reviewers saw stripes and
+    // blots where single pieces moved).
+    const id = `${(pieces[k] as Piece).type}|${colour.toLowerCase()}`;
+    let part = index.get(id);
+    if (part === undefined) {
+      part = wish.length;
+      index.set(id, part);
+      wish.push(colour);
+      share.push(0);
+      locked.push(false);
+    }
+    if (
+      coloring.chosen[key] !== undefined ||
+      (types[(pieces[k] as Piece).type] !== undefined &&
+        coloring.chosen[typeKey(types[(pieces[k] as Piece).type]!)] !==
+          undefined)
+    )
+      locked[part] = true;
+    partAt.set(at, part);
+    return part;
+  };
+  for (let i = 0; i < m; i++)
+    for (let j = 0; j < n; j++)
+      pieces.forEach((p, k) => {
+        const part = partOf(k, i, j);
+        share[part] = (share[part] ?? 0) + Math.abs(area2(p.polygon));
+      });
+  // A tutorial's own corrections to its rings (pattern.rings.colors) are
+  // the author's colours, kept as they are.
+  const fixes = model.tutorial.pattern.rings;
+  const fixed = fixes && fixes !== true ? Object.keys(fixes.colors ?? {}) : [];
+  if (fixed.length && ringsFor(model))
+    for (let i = 0; i < m; i++)
+      for (let j = 0; j < n; j++)
+        pieces.forEach((p, k) => {
+          const name = types[p.type]?.name;
+          if (name && fixed.some((f) => f === name || f.startsWith(`${name}@`)))
+            locked[partOf(k, i, j)] = true;
+        });
+  const total = share.reduce((x, y) => x + y, 0) || 1;
+  // Shared sides, over the repeat and one cell round it.
+  const key = pointNamer();
+  const sides = new Map<string, number[]>();
+  for (let i = -1; i <= m; i++)
+    for (let j = -1; j <= n; j++) {
+      const dx = cell.u.x * i + cell.v.x * j;
+      const dy = cell.u.y * i + cell.v.y * j;
+      pieces.forEach((p, k) => {
+        const part = partOf(k, i, j);
+        const ps = p.polygon.map((q) => key(q.x + dx, q.y + dy));
+        ps.forEach((a, s) => {
+          const b = ps[(s + 1) % ps.length] ?? a;
+          const side = a < b ? `${a}|${b}` : `${b}|${a}`;
+          const list = sides.get(side) ?? [];
+          list.push(part);
+          sides.set(side, list);
+        });
+      });
+    }
+  const touch = new Map<string, number>();
+  for (const list of sides.values()) {
+    const [a, b] = list;
+    if (list.length !== 2 || a === undefined || b === undefined || a === b)
+      continue;
+    const pair = a < b ? `${a},${b}` : `${b},${a}`;
+    touch.set(pair, (touch.get(pair) ?? 0) + 1);
+  }
+  // A wall coloured by place, as plain tiles, keeps the rules' colours:
+  // the reviewers judged them better than any move the engine made. Only
+  // two different shapes that touch in one colour by accident of this
+  // palette may move, where the tutorial's own colours tell them apart;
+  // shapes its own colours join into one field stay joined.
+  if (model.tutorial.pattern.placements && !surround.band) {
+    const own = basePlaceFills(model, {
+      ...tutorialColoring(model),
+      chosen: {},
+    });
+    const ownOf = new Map<number, string>();
+    for (const [at, part] of partAt) {
+      if (ownOf.has(part)) continue;
+      const [k, i, j] = at.split(',').map(Number) as [number, number, number];
+      ownOf.set(part, own(k, i, j).toLowerCase());
+    }
+    const clash = new Set<number>();
+    for (const pair of touch.keys()) {
+      const [a, b] = pair.split(',').map(Number) as [number, number];
+      if (wish[a]?.toLowerCase() !== wish[b]?.toLowerCase()) continue;
+      if (ownOf.get(a) === ownOf.get(b)) continue;
+      clash.add(a);
+      clash.add(b);
+    }
+    if (!clash.size) return base;
+    wish.forEach((_, part) => {
+      if (!clash.has(part)) locked[part] = true;
+    });
+  }
+  const most = Math.max(1, ...touch.values());
+  const solved = solveColours({
+    wish,
+    share: share.map((s) => s / total),
+    pairs: [...touch].map(([pair, count]) => {
+      const [a, b] = pair.split(',').map(Number) as [number, number];
+      return [a, b, 0.5 + count / most] as const;
+    }),
+    locked,
+    ...paletteChoices(model, coloring.palette, surround),
+    hides: hidesBands(surround),
+  });
+  return (piece, i, j) => solved[partOf(piece, i, j)] ?? base(piece, i, j);
+}
+
 /** Exact position within the current finite color repeat, independent of its ring. */
 export function placementKey(
   model: Model,
@@ -482,8 +651,17 @@ export function placementKey(
   const [m, n] = colorRepeat(model);
   return `${typeKey(type)}#placement${piece}@${mod(i, m)},${mod(j, n)}/${m},${n}`;
 }
-export function placeFills(model: Model, coloring: Coloring) {
-  const fill = basePlaceFills(model, coloring);
+export function placeFills(
+  model: Model,
+  coloring: Coloring,
+  surround: Surround = {},
+) {
+  const fill = harmonised(
+    model,
+    coloring,
+    basePlaceFills(model, coloring),
+    surround,
+  );
   const overrides = new Map<
     number,
     { i: number; j: number; m: number; n: number; color: string }[]

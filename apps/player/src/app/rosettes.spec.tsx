@@ -13,11 +13,18 @@ const starOf = model.pattern.pieces.findIndex(
   (p) => model.pattern.types[p.type]?.name === 'star',
 );
 
+/** Opens the Pieces tab of Make it yours, where the pieces are. */
+const piecesTab = () => {
+  const tab = screen.queryByRole('tab', { name: 'Pieces' });
+  if (tab) fireEvent.click(tab);
+};
+
 function atColor(json: unknown = starAndCross) {
   render(<Play json={json} />);
   fireEvent.click(screen.getByLabelText('Reduce motion'));
   fireEvent.click(screen.getByRole('button', { name: 'Go to color' }));
-  expect(document.querySelector('.label')?.textContent).toBe('Color');
+  expect(document.querySelector('.make-panel')).not.toBeNull();
+  piecesTab();
 }
 
 const star = loadModel(zellige).pattern.types.findIndex(
@@ -38,6 +45,7 @@ function atUnit() {
   fireEvent.click(button('Go to ink'));
   fireEvent.click(button('Color it'));
   expect(document.querySelector('.label')?.textContent).toBe('Color');
+  piecesTab();
 }
 
 describe('colouring rosette by rosette', () => {
@@ -108,16 +116,13 @@ describe('colouring rosette by rosette', () => {
     expect(wall.querySelectorAll('.wall-piece.lit').length).toBeGreaterThan(0);
   });
 
-  it('puts the palettes before the colours to paint with', () => {
+  it('puts the palettes in Look and the colours to paint with in Pieces', () => {
     atColor();
-    const panel = document.querySelector('.colour-panel') as HTMLElement;
-    const paint = screen.getByRole('group', { name: 'Paint with' });
-    const palettes = screen.getByRole('group', { name: 'Palette' });
-    expect(panel.contains(paint) && panel.contains(palettes)).toBe(true);
-    expect(
-      palettes.compareDocumentPosition(paint) &
-        Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
+    expect(screen.getByRole('group', { name: 'Paint with' })).toBeTruthy();
+    expect(screen.queryByRole('group', { name: 'Palette' })).toBeNull();
+    fireEvent.click(screen.getByRole('tab', { name: 'Look' }));
+    expect(screen.getByRole('group', { name: 'Palette' })).toBeTruthy();
+    expect(screen.queryByRole('group', { name: 'Paint with' })).toBeNull();
   });
 
   it('switches to colouring by shape, and back', () => {
@@ -156,7 +161,7 @@ describe('colouring the unit before repeating it', () => {
   it('then repeats the coloured unit as many times as asked', () => {
     atUnit();
     fireEvent.click(button('Next'));
-    expect(document.querySelector('.label')?.textContent).toBe('Repeat');
+    expect(document.querySelector('.make-panel')).not.toBeNull();
     fireEvent.click(button('3 × 3'));
     expect(
       screen

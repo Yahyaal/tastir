@@ -4,9 +4,13 @@
  * ink lines drawn as on paper; the dark theme keeps every role on a deep ink
  * ground. Zellige colours appear only on coloured pieces and on the step
  * being drawn. Every colour below has a light and a dark value; the page
- * picks one with data-theme on <html> (src/app/theme.tsx).
+ * picks one with data-theme on <html> (src/app/theme.tsx). Any element
+ * with its own data-theme shows that theme inside it (the review page puts
+ * light and dark side by side), so the light values apply to every
+ * data-theme and the dark ones override them.
  */
-:root {
+:root,
+[data-theme] {
   color-scheme: light;
 
   /* Grounds and surfaces */
@@ -95,7 +99,8 @@
   background: var(--theme-bg-canvas);
 }
 
-:root[data-theme='dark'] {
+:root[data-theme='dark'],
+[data-theme='dark'] {
   color-scheme: dark;
 
   --theme-bg-canvas: #0f1820; /* Night: the page */
@@ -2603,7 +2608,8 @@ main.stage .drawing:not(.wall) {
 .brand-arabic {
   font-family: var(--arabic);
   font-size: 1.05em;
-  color: var(--saffron);
+  /* Brass, as on the library's top bar (REDESIGN.3), on every page. */
+  color: var(--theme-label);
   letter-spacing: 0;
   font-weight: 400;
 }
@@ -6319,6 +6325,31 @@ svg.tiles {
   order: 0;
   margin-left: auto;
 }
+.player-designs {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+/* On a wide screen Watch it drawn, Result and Draw along sit in the top
+   bar itself, so the drawing gets the row they took. */
+@media (min-width: 1024px) {
+  .player:not(.along):not(.editor) .topbar {
+    grid-template-columns: 44px auto minmax(0, 1fr) auto auto;
+  }
+  .player:not(.along):not(.editor) .topbar > .player-view-tools {
+    grid-column: 4;
+    grid-row: 1;
+    flex-wrap: nowrap;
+  }
+  .player:not(.along):not(.editor) .topbar > .player-utilities {
+    grid-column: 5;
+  }
+  .player:not(.along):not(.editor) .topbar > .player-designs {
+    grid-row: 2;
+  }
+}
 /* Three actions, three weights: filled Continue, outlined Save, text Share. */
 .player .end-actions .share-link > button.secondary {
   min-height: 44px;
@@ -6466,4 +6497,65 @@ svg.tiles {
 .side-panel-anchor,
 .side-panel > section {
   scroll-margin-top: 48px;
+}
+.player-designs:empty {
+  display: none;
+}
+
+/* The photo beside the wall, zoomed with the wheel, a pinch or the
+   buttons, and moved by a drag once zoomed. */
+.photo-zoom {
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+}
+.photo-zoom-box {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  /* At full size a swipe still scrolls the page; two fingers zoom. */
+  touch-action: pan-y;
+  cursor: zoom-in;
+}
+.photo-zoom-box.is-zoomed {
+  touch-action: none;
+  cursor: grab;
+}
+.photo-zoom-box img {
+  display: block;
+  transform-origin: 0 0;
+  user-select: none;
+}
+.photo-zoom-tools {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  gap: 6px;
+}
+.player .photo-zoom-tools button {
+  width: 36px;
+  height: 36px;
+  min-height: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(0 0 0 / 0.55);
+  color: #f4ead8;
+  cursor: pointer;
+}
+.player .photo-zoom-tools button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.photo-zoom-tools svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
 }

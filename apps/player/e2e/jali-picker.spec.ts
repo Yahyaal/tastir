@@ -1,13 +1,15 @@
 import { expect, test } from '@playwright/test';
 import { mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { styleGroup } from './panel';
 
 test('Jali materials, finish swatches and custom colors need no dropdown or modal', async ({
   page,
 }, info) => {
   await page.goto('/#/eight-fold-star-and-cross/result');
-  await page
-    .getByRole('group', { name: 'Style', exact: true })
+  await (
+    await styleGroup(page)
+  )
     .getByRole('button', { name: 'Screen', exact: true })
     .click();
   const controls = page.locator('.jali-controls');

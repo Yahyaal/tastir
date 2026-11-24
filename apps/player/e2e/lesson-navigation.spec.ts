@@ -46,7 +46,7 @@ test('autoplay replaces its position without filling browser history', async ({
   expect(await page.evaluate(() => window.history.length)).toBe(before);
   await page.goBack();
   await expect(
-    page.getByRole('heading', { name: 'The patterns', exact: true }),
+    page.getByRole('heading', { name: 'All patterns', exact: true }),
   ).toBeVisible();
 });
 

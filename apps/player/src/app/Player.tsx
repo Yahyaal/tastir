@@ -1,4 +1,5 @@
 import { NextPathLesson } from './LearningPathNav';
+import { libraryHref } from './browsing';
 import { pieceName } from './pieceNames';
 import { learningPosition } from './learningPath';
 import { LIBRARY, listed } from './library';
@@ -8,7 +9,9 @@ import { PatternLoading } from './PatternLoading';
 import { StepText } from './StepText';
 import { DEFAULT_JALI, sameJali } from './jali';
 import { JaliControls } from './JaliControls';
-import { ExploreNext } from './ExploreNext';
+import { ExploreNext, makeVariation } from './ExploreNext';
+import { StyleIcon } from './StyleIcon';
+import './makeItYours.css';
 import { lessonIndex, writeLessonRoute, type LessonPosition } from './routing';
 import { keepLessonAt, lessonAt } from './lessons';
 import { ThemeSwitch } from './theme';
@@ -23,7 +26,7 @@ import {
 } from 'react';
 import { copyUpTo } from '../editor/document';
 import { addPattern, freeTitle, getPattern } from '../editor/patterns';
-import { MAX_FILE_BYTES, viewPatternFile } from '../editor/files';
+import { encodeShared, MAX_FILE_BYTES, viewPatternFile } from '../editor/files';
 import { planStep, play, playInk } from './animation';
 import { fullView, growingFrame, tileView, width, type Rect } from './camera';
 import {
@@ -34,7 +37,7 @@ import {
   typeKey,
 } from './coloring';
 import { addDesign, type Design } from './designs';
-import { draftOf, forgetDraft, keepDraft } from './drafts';
+import { draftOf, forgetDraft, keepDraft, type Draft } from './drafts';
 import {
   historyOf,
   storedColours,
@@ -55,7 +58,8 @@ import {
   type Model,
   type Stage,
 } from './model';
-import { Original } from './Original';
+import { Original, photoSrc } from './Original';
+import { PhotoBadge, PhotoWipe } from './PhotoWipe';
 import { LessonTitle, byOf, stepSources } from './LessonTitle';
 import { FeedbackButton } from '../feedback/FeedbackButton';
 import { basicFeedbackContext } from '../feedback/client';
@@ -77,6 +81,7 @@ import {
 } from './placement';
 import { PrintSheet, type Paper } from './PrintSheet';
 import { useRemembered } from './remembered';
+import { InfoTip } from './InfoTip';
 import { SaveDesign } from './SaveDesign';
 import { ShareLink } from './Sharing';
 import { useCamera } from './useCamera';
@@ -223,6 +228,53 @@ function legacyInkMode(): InkMode {
   }
 }
 
+type MakeTab = 'look' | 'pieces' | 'more';
+
+/** Where Letter is the usual paper: the United States, Canada, Mexico and
+ * much of Central and South America, and the Philippines. */
+const LETTER = new Set([
+  'US',
+  'CA',
+  'MX',
+  'PH',
+  'CL',
+  'CO',
+  'VE',
+  'CR',
+  'GT',
+  'PA',
+  'SV',
+  'DO',
+  'PR',
+  'NI',
+  'HN',
+  'BO',
+  'BZ',
+]);
+/** The paper of the learner's country, from the browser's languages. */
+function localPaper(): Paper {
+  const tags =
+    typeof navigator === 'undefined'
+      ? []
+      : [...(navigator.languages ?? []), navigator.language];
+  for (const tag of tags) {
+    const region = /-([A-Z]{2})\b/i.exec(tag ?? '')?.[1]?.toUpperCase();
+    if (region) return LETTER.has(region) ? 'Letter' : 'A4';
+  }
+  return 'A4';
+}
+
+/** Whether the learner left Make it yours open on a phone. */
+const MAKE_OPEN_KEY = 'tastir.makeOpen';
+function keptMakeOpen(): boolean | undefined {
+  try {
+    const v = window.localStorage.getItem(MAKE_OPEN_KEY);
+    return v === null ? undefined : v === '1';
+  } catch {
+    return undefined;
+  }
+}
+
 export function Player({
   model: full,
   start: asked = 'beginning',
@@ -233,8 +285,11 @@ export function Player({
   presentation,
   position,
   lessonColourFirst,
+  carried,
 }: {
   model: Model;
+  /** The design a finished wall's address carried (#/id/result?d=…). */
+  carried?: Draft;
   /** A line over the workspace, such as a shared pattern's Keep a copy. */
   banner?: React.ReactNode;
   start?: Start;
@@ -346,7 +401,7 @@ export function Player({
   // back when they return, until they save it or go back to the pattern's
   // own colours.
   const [draft] = useState(() =>
-    opened || sharedView ? undefined : draftOf(address),
+    opened || sharedView ? undefined : (carried ?? draftOf(address)),
   );
   const inking = useInking(model, opened?.inked ?? draft?.inked);
   // The ink stage shows the one unit the ink makes: the whole panel, when
@@ -419,16 +474,25 @@ export function Player({
       });
     } else rawColorDispatch(action);
   };
-  const colors = useMemo(
-    () => pieceColors(coloured, colorHistory.now),
-    [coloured, colorHistory.now],
-  );
+  // Under bands, the colours keep clear of the bands' own (STYLE.4).
+  const colors = useMemo(() => {
+    if (!banded(colourStyle)) return pieceColors(coloured, colorHistory.now);
+    const f = finishOf(coloured, colorHistory.now);
+    return pieceColors(coloured, colorHistory.now, {
+      band: f.band,
+      edge: f.lines,
+    });
+  }, [coloured, colorHistory.now, colourStyle]);
   // Fills by placement, when the tutorial colors same shapes differently.
-  const fill = useMemo(
-    () =>
-      byPlace(coloured) ? placeFills(coloured, colorHistory.now) : undefined,
-    [coloured, colorHistory.now, inking.shown],
-  );
+  const fill = useMemo(() => {
+    if (!byPlace(coloured)) return undefined;
+    if (!banded(colourStyle)) return placeFills(coloured, colorHistory.now);
+    const f = finishOf(coloured, colorHistory.now);
+    return placeFills(coloured, colorHistory.now, {
+      band: f.band,
+      edge: f.lines,
+    });
+  }, [coloured, colorHistory.now, inking.shown, colourStyle]);
   const [place, setPlace] = useState<{ piece: number; i: number; j: number }>();
   // The colour a click paints with, when colouring ring by ring.
   const [brush, setBrush] = useState<string>();
@@ -544,6 +608,33 @@ export function Player({
     // The fields change with every render; their contents are the key.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftKey, design, sharedView, own, address]);
+  // The finished wall's address carries the design, so the address bar
+  // can be copied and shared as it is: #/id/result?d=… (a library
+  // pattern only; the pattern's own colours need no code).
+  const [designCode, setDesignCode] = useState<string>();
+  useEffect(() => {
+    if (design || sharedView || mine || sameDesign(own, draftFields)) {
+      setDesignCode(undefined);
+      return;
+    }
+    let live = true;
+    const { tutorial: _t, ...fields } = draftFields;
+    const t = setTimeout(() => {
+      encodeShared({
+        library: address,
+        design: { name: tutorial.title, ...fields },
+      }).then(
+        (code) => live && setDesignCode(code),
+        () => live && setDesignCode(undefined),
+      );
+    }, 300);
+    return () => {
+      live = false;
+      clearTimeout(t);
+    };
+    // The fields change with every render; their contents are the key.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftKey, design, sharedView, mine, own, address]);
   // A design opened or saved, changed since: Save is offered, and leaving
   // asks first.
   const changed = design !== undefined && !sameDesign(design, designFields());
@@ -616,12 +707,46 @@ export function Player({
       onSaved={keepSaved}
     />
   );
-  const [paper, setPaper] = useState<Paper>('A4');
+  const [paper, setPaper] = useState<Paper>(localPaper);
   const [printing, setPrinting] = useState(false);
-  // Opening at the result shows the original beside the wall at once.
+  // The photo of the real wall is for reference: it opens beside the wall
+  // from The real wall in Make it yours (or a shared link that showed it).
   const [comparing, setComparing] = useState(
-    presentation?.showOriginal ?? start === 'result',
+    presentation?.showOriginal ?? false,
   );
+  // Make it yours floats over the finished wall; it can be hidden to see
+  // the wall whole.
+  const [makeOpen, setMakeOpen] = useState(true);
+  // On a phone the panel starts as a slim bar, so the wall has the screen;
+  // a tap opens it upwards.
+  // Opened once, it opens again: the learner's choice is kept.
+  const [makePeek, setMakePeekState] = useState(
+    () => phone && keptMakeOpen() !== true,
+  );
+  const setMakePeek = (peek: boolean) => {
+    setMakePeekState(peek);
+    try {
+      window.localStorage.setItem(MAKE_OPEN_KEY, peek ? '0' : '1');
+    } catch {
+      // Not kept: a phone folds it again next time.
+    }
+  };
+  // The real wall's photo, wiped across ours by a golden handle.
+  const [wiping, setWiping] = useState(false);
+  // The real wall: the badge on the wall and The real wall in More do the
+  // same thing, showing the photo beside the wall (or closing it, from
+  // either view); the photo's own tools lay it over the wall to wipe.
+  const photoOpen = comparing || wiping;
+  const togglePhoto = () => {
+    if (photoOpen) {
+      setComparing(false);
+      setWiping(false);
+    } else setComparing(true);
+  };
+  // Make it yours shows one tab at a time: colour first, as most people
+  // come to colour.
+  const [makeTab, setMakeTab] = useState<MakeTab>('look');
+  const [variationRefused, setVariationRefused] = useState(false);
   const stopPrinting = useCallback(() => setPrinting(false), []);
   const exportSvg = () =>
     wallSvg(inking.shown, colors, {
@@ -1165,11 +1290,29 @@ export function Player({
   const showOriginal = comparing && onWall && photos.length > 0;
   // The colours, at the top of the panel while colouring, so they are the
   // first thing in view.
-  const colorsSection =
+  // On the finished wall, how to colour is said behind an ⓘ beside the
+  // heading, not as a paragraph over the colours.
+  const colourHint =
+    ready && onWall && !sharedView ? (
+      <InfoTip label="How to colour">
+        <StepText text={text} />
+      </InfoTip>
+    ) : null;
+  // Make it yours shows the palettes in Look and the way to colour with the
+  // pieces in Pieces; every other page shows both together.
+  const coloursFor = (parts: 'all' | 'palette' | 'pieces') =>
     !onWall || wallStyle !== 'jali' ? (
       <section ref={colorsSectionRef}>
-        <h2>Colors</h2>
+        {colourHint && parts !== 'palette' ? (
+          <div className="section-head">
+            <h2>{parts === 'pieces' ? 'Pieces' : 'Colors'}</h2>
+            {colourHint}
+          </div>
+        ) : (
+          <h2>{parts === 'pieces' ? 'Pieces' : 'Colors'}</h2>
+        )}
         <ColourPanel
+          parts={parts}
           paper={onWall && wallStyle === 'lines'}
           model={coloured}
           base={inking.shown}
@@ -1205,6 +1348,7 @@ export function Player({
         />
       </section>
     ) : null;
+  const colorsSection = coloursFor('all');
 
   /** Jumps straight to a stage from the journey, without playing it in. */
   const jump = (to: number) => {
@@ -1228,7 +1372,6 @@ export function Player({
     if (to === 'draw') return false;
     if (to === 'result') {
       jump(last);
-      setComparing(true);
     } else {
       historyMode.current = 'push';
       settle();
@@ -1274,12 +1417,394 @@ export function Player({
     }
     const want =
       index === last
-        ? `#/${address}/result`
+        ? `#/${address}/result${designCode ? `?d=${designCode}` : ''}`
         : `#/${address}/watch/${index + 1}${colourFirst ? '?order=color' : ''}`;
     writeLessonRoute(want, historyMode.current);
     historyMode.current = 'replace';
-  }, [index, last, position, design, sharedView, address, colourFirst]);
+  }, [
+    index,
+    last,
+    position,
+    design,
+    sharedView,
+    address,
+    colourFirst,
+    designCode,
+  ]);
 
+  const copiesChooser = (
+    <div className="copies" role="group" aria-label="Copies">
+      {COPIES.map((c) => (
+        <button
+          key={String(c)}
+          type="button"
+          aria-pressed={String(c) === String(copies)}
+          onClick={() => setCopies(c)}
+        >
+          {c === 'wall' ? 'The whole wall' : `${c[0]} × ${c[1]}`}
+        </button>
+      ))}
+    </div>
+  );
+  const designsNav = (
+    <>
+      {browsing ? (
+        <Variations
+          id={address}
+          // Another variation opens at the same stage: the colours, the
+          // repeat, or the lesson's start.
+          at={
+            colorStage
+              ? 'result'
+              : stage.kind === 'repeat'
+                ? 'repeat'
+                : 'beginning'
+          }
+          guard={(to) => {
+            if (!changed) return false;
+            setLeaving(to);
+            return true;
+          }}
+        />
+      ) : null}
+      {browsing ? (
+        <Places
+          id={address}
+          // The same steps in another place's colours: the same stage.
+          at={
+            colorStage
+              ? 'result'
+              : stage.kind === 'repeat'
+                ? 'repeat'
+                : 'beginning'
+          }
+          guard={(to) => {
+            if (!changed) return false;
+            setLeaving(to);
+            return true;
+          }}
+        />
+      ) : null}
+    </>
+  );
+  const feedbackProps = {
+    context: {
+      ...basicFeedbackContext(
+        address,
+        tutorial.title,
+        colorStage ? 'result' : 'watch',
+      ),
+      stage: stage.kind,
+      index,
+      stepIds: stage.kind === 'step' ? [beats[stage.beat - 1]?.step ?? 1] : [],
+      label,
+      instruction: text.slice(0, 8192),
+    },
+    tutorial,
+    pause: () => setPlaying(false),
+    board: () =>
+      svgRef.current ??
+      plateRef.current?.querySelector<SVGSVGElement>('svg') ??
+      null,
+    snapshot: () => ({
+      draft: inking.shown.tutorial,
+      coloring: colorHistory.now,
+    }),
+  };
+  // REDESIGN.4: on the finished wall the wall fills the page and Make it
+  // yours floats over it, holding everything the side panel held.
+  const wallPage = ready && onWall && !sharedView;
+  const wallColours = [...new Set(Object.values(colors))];
+  const lastShown = shown[shown.length - 1] ?? 1;
+  const makeTabs: readonly (readonly [MakeTab, string])[] = [
+    ['look', 'Look'],
+    ['pieces', 'Pieces'],
+    ['more', 'More'],
+  ];
+  const nextLabel = pathFinish
+    ? pathFinish.next
+      ? ['Next', `Next lesson: ${pathFinish.next.lesson.focus}`]
+      : ['Path', 'Your learning path']
+    : ['Variation', 'Make a variation: a copy of your own, in the editor'];
+  const makePanel = (
+    <aside
+      className={makePeek ? 'make-panel peek' : 'make-panel'}
+      aria-label="Make it yours"
+    >
+      <div className="make-top">
+        <h2>
+          <button
+            type="button"
+            className="make-title"
+            aria-expanded={!makePeek}
+            aria-controls="make-body"
+            title={makePeek ? 'Open Make it yours' : 'Fold Make it yours'}
+            onClick={() => setMakePeek(!makePeek)}
+          >
+            Make it yours
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 15l6-6 6 6" />
+            </svg>
+          </button>
+        </h2>
+        <button
+          type="button"
+          className="make-hide"
+          aria-label="Hide Make it yours to see the whole wall"
+          title="Hide this panel"
+          onClick={() => setMakeOpen(false)}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
+        </button>
+      </div>
+      <div className="make-tabs" role="tablist" aria-label="Make it yours">
+        {makeTabs.map(([tab, name]) => (
+          <button
+            key={tab}
+            type="button"
+            role="tab"
+            id={`make-tab-${tab}`}
+            aria-controls="make-body"
+            aria-selected={makeTab === tab}
+            tabIndex={makeTab === tab ? 0 : -1}
+            onClick={() => setMakeTab(tab)}
+            onKeyDown={(e) => {
+              const at = makeTabs.findIndex(([t]) => t === makeTab);
+              const step =
+                e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+              if (!step) return;
+              e.preventDefault();
+              e.stopPropagation();
+              const [to] =
+                makeTabs[(at + step + makeTabs.length) % makeTabs.length]!;
+              setMakeTab(to);
+              document.getElementById(`make-tab-${to}`)?.focus();
+            }}
+          >
+            {name}
+          </button>
+        ))}
+      </div>
+      <div
+        className="make-body"
+        id="make-body"
+        role="tabpanel"
+        aria-labelledby={`make-tab-${makeTab}`}
+      >
+        {makeTab === 'pieces' ? (
+          <>
+            {coloursFor('pieces') ?? (
+              <p className="hint">A jali screen is cut, not coloured.</p>
+            )}
+          </>
+        ) : makeTab === 'look' ? (
+          <>
+            {/* Coloured before it was repeated: how many copies to lay. */}
+            {stage.kind === 'repeat' ? copiesChooser : null}
+            {coloursFor('palette')}
+            <WallControls
+              parts="style"
+              heading="Style"
+              style={wallStyle}
+              styles={wallStyles}
+              onStyle={(style) => {
+                setWallStyle(style);
+                if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                if (style === 'lines' && grout < 0.25) setGrout(0.25);
+              }}
+              grout={grout}
+              onGrout={setGrout}
+              sample={(look) => <StyleIcon style={look} colors={wallColours} />}
+            />
+            <WallControls
+              parts="finish"
+              heading=""
+              style={wallStyle}
+              styles={wallStyles}
+              onStyle={setWallStyle}
+              grout={grout}
+              onGrout={setGrout}
+              finish={finishOf(coloured, colorHistory.now)}
+              onFinish={(change) =>
+                colorDispatch({ kind: 'finish', ...change })
+              }
+              sample={() => null}
+            />
+            {wallStyle === 'jali' ? (
+              <JaliControls appearance={jali} onChange={setJali} />
+            ) : null}
+          </>
+        ) : (
+          <>
+            {browsing ? <div className="make-designs">{designsNav}</div> : null}
+            {photos[0] ? (
+              <section className="make-real">
+                <h2>The real wall</h2>
+                <button
+                  type="button"
+                  className="make-photo-tile"
+                  aria-pressed={photoOpen}
+                  title="A photo of the real pattern, beside the wall"
+                  onClick={togglePhoto}
+                >
+                  {photoSrc(photos[0]) ? (
+                    <img src={photoSrc(photos[0])} alt="" />
+                  ) : null}
+                  <span>
+                    {photoOpen ? 'Hide the original' : 'Show the original'}
+                  </span>
+                </button>
+              </section>
+            ) : null}
+            {tutorial.verification?.status === 'unverified' ? (
+              <details className="verification-note">
+                <summary>Historical match unverified</summary>
+                <p>{tutorial.verification.note}</p>
+              </details>
+            ) : null}
+            <ConstructionSource tutorial={tutorial} />
+            <section className="make-files">
+              <h2>Print and files</h2>
+              <div className="make-tiles">
+                {/* One click: the paper is the learner's own country's
+                    (Letter in most of the Americas, A4 elsewhere), and the
+                    browser's print dialog can still change it. */}
+                <MakeTile
+                  icon="print"
+                  label="Print"
+                  name="Print line sheet"
+                  title={`Print a line sheet to draw on (${paper})`}
+                  onClick={() => setPrinting(true)}
+                />
+                <MakeTile
+                  icon="file"
+                  label="Pattern file"
+                  name="Download pattern file (.json)"
+                  className="pattern-file-download"
+                  onClick={downloadPattern}
+                />
+                <MakeTile
+                  icon="vector"
+                  label="SVG"
+                  name="Download SVG"
+                  onClick={() =>
+                    download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
+                  }
+                />
+                <MakeTile
+                  icon="image"
+                  label="PNG"
+                  name="Download PNG"
+                  onClick={() =>
+                    void pngBlob(exportSvg()).then((png) =>
+                      download(png, `${tutorial.id}.png`),
+                    )
+                  }
+                />
+                {pathFinish && browsing ? (
+                  <MakeTile
+                    icon="variation"
+                    label="Variation"
+                    name="Make a variation"
+                    title="A copy of this pattern of your own, opened in the editor"
+                    onClick={() =>
+                      setVariationRefused(!makeVariation(full.tutorial))
+                    }
+                  />
+                ) : null}
+              </div>
+              <div className="make-links">
+                <CopyHere
+                  tutorial={tutorial}
+                  address={address}
+                  step={lastShown}
+                  shownNumber={shown.length}
+                  label="Copy into the editor"
+                />
+                <FeedbackButton {...feedbackProps} />
+              </div>
+            </section>
+          </>
+        )}
+      </div>
+      <div className="make-foot" role="group" aria-label="Your design">
+        {pathFinish ? (
+          <a
+            className="make-next learning-advance"
+            href={
+              pathFinish.next
+                ? `#/${pathFinish.next.lesson.id}/watch/1`
+                : '#/learn'
+            }
+            title={nextLabel[1]}
+          >
+            {nextLabel[0]}
+            <svg className="foot-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </a>
+        ) : browsing ? (
+          <button
+            type="button"
+            className="make-next"
+            title={nextLabel[1]}
+            onClick={() => setVariationRefused(!makeVariation(full.tutorial))}
+          >
+            {nextLabel[0]}
+          </button>
+        ) : null}
+        <SaveDesign
+          short
+          pending={draftKept === true}
+          title={tutorial.title}
+          design={design}
+          lost={inking.lost}
+          changed={changed}
+          fields={designFields}
+          onSaved={keepSaved}
+        />
+        <ShareLink
+          short
+          presentation={sharePresentation}
+          address={address}
+          name={design?.name ?? tutorial.title}
+          fields={() => {
+            const { tutorial: _t, ...rest } = designFields();
+            return rest;
+          }}
+        />
+        <a
+          className="button secondary make-3d"
+          href={
+            design
+              ? `#/${address}/design/${design.id}/make`
+              : `#/${address}/make`
+          }
+          aria-label="Make it in 3D"
+          title="Make it in 3D"
+        >
+          <svg className="foot-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9" />
+          </svg>
+          3D
+        </a>
+      </div>
+      {variationRefused ? (
+        <p className="refused" role="alert">
+          This browser could not save your copy. Free some storage and try
+          again.
+        </p>
+      ) : null}
+      {draftKept === false && !design ? draftNote : null}
+      {fileError && (
+        <p className="refused" role="alert">
+          {fileError}
+        </p>
+      )}
+    </aside>
+  );
   return (
     <div
       className={`${colorStage ? 'player at-color' : 'player'}${browsing && dockPatterns && patternsOpen ? ' patterns-open' : ''}`}
@@ -1323,11 +1848,11 @@ export function Player({
         <a
           className="home"
           aria-label="All patterns"
-          href="#/"
+          href={libraryHref()}
           onClick={(e) => {
             if (!changed) return;
             e.preventDefault();
-            setLeaving('#/');
+            setLeaving(libraryHref());
           }}
         >
           <span className="wordmark">
@@ -1348,44 +1873,10 @@ export function Player({
           <LessonTitle tutorial={tutorial} />
           {browsing ? <NextPattern id={address} view={view} /> : <span />}
         </div>
+        {!wallPage && designsNav ? (
+          <div className="player-designs">{designsNav}</div>
+        ) : null}
         <div className="player-view-tools">
-          {browsing ? (
-            <Variations
-              id={address}
-              // Another variation opens at the same stage: the colours, the
-              // repeat, or the lesson's start.
-              at={
-                colorStage
-                  ? 'result'
-                  : stage.kind === 'repeat'
-                    ? 'repeat'
-                    : 'beginning'
-              }
-              guard={(to) => {
-                if (!changed) return false;
-                setLeaving(to);
-                return true;
-              }}
-            />
-          ) : null}
-          {browsing ? (
-            <Places
-              id={address}
-              // The same steps in another place's colours: the same stage.
-              at={
-                colorStage
-                  ? 'result'
-                  : stage.kind === 'repeat'
-                    ? 'repeat'
-                    : 'beginning'
-              }
-              guard={(to) => {
-                if (!changed) return false;
-                setLeaving(to);
-                return true;
-              }}
-            />
-          ) : null}
           {mine ? (
             <a
               className="edit-link"
@@ -1399,33 +1890,7 @@ export function Player({
           ) : null}
         </div>
         <div className="player-utilities">
-          <FeedbackButton
-            iconOnly
-            context={{
-              ...basicFeedbackContext(
-                address,
-                tutorial.title,
-                colorStage ? 'result' : 'watch',
-              ),
-              stage: stage.kind,
-              index,
-              stepIds:
-                stage.kind === 'step' ? [beats[stage.beat - 1]?.step ?? 1] : [],
-              label,
-              instruction: text.slice(0, 8192),
-            }}
-            tutorial={tutorial}
-            pause={() => setPlaying(false)}
-            board={() =>
-              svgRef.current ??
-              plateRef.current?.querySelector<SVGSVGElement>('svg') ??
-              null
-            }
-            snapshot={() => ({
-              draft: inking.shown.tutorial,
-              coloring: colorHistory.now,
-            })}
-          />
+          {wallPage ? null : <FeedbackButton iconOnly {...feedbackProps} />}
           <PlayerSettings
             speed={speed}
             setSpeed={setSpeed}
@@ -1443,11 +1908,34 @@ export function Player({
         </div>
       </header>
       {banner}
-      <div className={colorStage ? 'workspace with-panel' : 'workspace'}>
+      <div
+        className={
+          wallPage
+            ? `workspace wall-page${makeOpen ? (makePeek ? ' make-open make-peek' : ' make-open') : ''}`
+            : colorStage
+              ? 'workspace with-panel'
+              : 'workspace'
+        }
+      >
         <section ref={plateRef} className="plate-area">
           <main className={showOriginal ? 'stage comparing' : 'stage'}>
-            {showOriginal ? <Original photos={photos} /> : null}
+            {showOriginal ? (
+              <Original
+                photos={photos}
+                onWipe={
+                  wallPage
+                    ? () => {
+                        setComparing(false);
+                        setWiping(true);
+                      }
+                    : undefined
+                }
+              />
+            ) : null}
             {picture}
+            {wallPage && wiping && !showOriginal && photos[0] ? (
+              <PhotoWipe photo={photos[0]} />
+            ) : null}
             {destinationGuide && (
               <span className="destination-guide-caption">
                 Faint guide · the full inking reveal comes next
@@ -1456,7 +1944,7 @@ export function Player({
           </main>
           {/* On the drawing itself, so the photo is hidden or shown where
               it is, on a phone as on a computer. */}
-          {onWall && photos.length > 0 ? (
+          {onWall && !wallPage && photos.length > 0 ? (
             <button
               type="button"
               className="original-toggle"
@@ -1492,389 +1980,403 @@ export function Player({
               </svg>
             </button>
           ) : null}
+          {wallPage && photos[0] ? (
+            <PhotoBadge
+              photo={photos[0]}
+              open={photoOpen}
+              onToggle={togglePhoto}
+            />
+          ) : null}
+          {wallPage && !makeOpen ? (
+            <button
+              type="button"
+              className="make-show"
+              onClick={() => setMakeOpen(true)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v6M12 15v6M3 12h6M15 12h6" />
+              </svg>
+              Make it yours
+            </button>
+          ) : null}
         </section>
-        <div className="lesson-side">
-          <footer className="caption">
-            <div className="text">
-              {resumedAt !== undefined ? (
-                <p className="resumed">
-                  Continued where you left off.{' '}
-                  <button
-                    type="button"
-                    className="quiet"
-                    onClick={() => show('watch')}
-                  >
-                    Start from step 1
-                  </button>
-                </p>
-              ) : null}
-              <p className="label">{label}</p>
-              {hint ? <p className="stage-hint">{hint}</p> : null}
-              <ConstructionSource tutorial={tutorial} />
-              {tutorial.verification?.status === 'unverified' ? (
-                <details className="verification-note">
-                  <summary>Historical match unverified</summary>
-                  <p>{tutorial.verification.note}</p>
-                </details>
-              ) : null}
-              {colorStage && narrow && !ready ? (
-                <>
-                  {saveDesign}
-                  {draftNote}
-                </>
-              ) : null}
-              <div className="instruction" aria-live="polite">
-                <StepText text={text} />
-              </div>
-              {sources.length ? (
-                <p className="step-source">
-                  Source for this step:{' '}
-                  {sources.map((c, i) => (
-                    <span key={c.url}>
-                      {i ? ' and ' : ''}
-                      <a
-                        href={c.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        title={c.source}
-                      >
-                        {byOf(c)} <span aria-hidden="true">↗</span>
-                      </a>
-                    </span>
-                  ))}
-                  .
-                </p>
-              ) : null}
-              {stage.kind === 'step' ? (
-                <p className="dot-key">
-                  <span className="new">orange: what this step makes</span>
-                  <span className="used">blue: what it works from</span>
-                </p>
-              ) : null}
-              {stage.kind === 'step' && !sharedView ? (
-                <CopyHere
-                  tutorial={tutorial}
-                  address={address}
-                  step={beats[stage.beat - 1]?.step ?? 1}
-                  shownNumber={
-                    shown.indexOf(beats[stage.beat - 1]?.step ?? 0) + 1
-                  }
-                />
-              ) : null}
-              {stage.kind === 'ink' ? (
-                <div className="ink-tools">
-                  <button
-                    type="button"
-                    className="secondary"
-                    aria-pressed={inking.editing}
-                    onClick={() => {
-                      setPlaying(false);
-                      inking.setEditing(!inking.editing);
-                    }}
-                  >
-                    {inking.editing ? 'Done' : 'Make your own'}
-                  </button>
-                  {inking.isClassic ? null : (
+        {wallPage ? (makeOpen ? makePanel : null) : null}
+        {wallPage ? null : (
+          <div className="lesson-side">
+            <footer className="caption">
+              <div className="text">
+                {resumedAt !== undefined ? (
+                  <p className="resumed">
+                    Continued where you left off.{' '}
+                    <button
+                      type="button"
+                      className="quiet"
+                      onClick={() => show('watch')}
+                    >
+                      Start from step 1
+                    </button>
+                  </p>
+                ) : null}
+                <p className="label">{label}</p>
+                {hint ? <p className="stage-hint">{hint}</p> : null}
+                <ConstructionSource tutorial={tutorial} />
+                {tutorial.verification?.status === 'unverified' ? (
+                  <details className="verification-note">
+                    <summary>Historical match unverified</summary>
+                    <p>{tutorial.verification.note}</p>
+                  </details>
+                ) : null}
+                {colorStage && narrow && !ready ? (
+                  <>
+                    {saveDesign}
+                    {draftNote}
+                  </>
+                ) : null}
+                <div className="instruction" aria-live="polite">
+                  <StepText text={text} />
+                </div>
+                {sources.length ? (
+                  <p className="step-source">
+                    Source for this step:{' '}
+                    {sources.map((c, i) => (
+                      <span key={c.url}>
+                        {i ? ' and ' : ''}
+                        <a
+                          href={c.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          title={c.source}
+                        >
+                          {byOf(c)} <span aria-hidden="true">↗</span>
+                        </a>
+                      </span>
+                    ))}
+                    .
+                  </p>
+                ) : null}
+                {stage.kind === 'step' ? (
+                  <p className="dot-key">
+                    <span className="new">orange: what this step makes</span>
+                    <span className="used">blue: what it works from</span>
+                  </p>
+                ) : null}
+                {stage.kind === 'step' && !sharedView ? (
+                  <CopyHere
+                    tutorial={tutorial}
+                    address={address}
+                    step={beats[stage.beat - 1]?.step ?? 1}
+                    shownNumber={
+                      shown.indexOf(beats[stage.beat - 1]?.step ?? 0) + 1
+                    }
+                  />
+                ) : null}
+                {stage.kind === 'ink' ? (
+                  <div className="ink-tools">
                     <button
                       type="button"
                       className="secondary"
-                      onClick={inking.restoreClassic}
+                      aria-pressed={inking.editing}
+                      onClick={() => {
+                        setPlaying(false);
+                        inking.setEditing(!inking.editing);
+                      }}
                     >
-                      Back to the classic
+                      {inking.editing ? 'Done' : 'Make your own'}
                     </button>
-                  )}
-                  {inking.editing ? (
-                    <span>Click a line to ink or erase it.</span>
-                  ) : null}
+                    {inking.isClassic ? null : (
+                      <button
+                        type="button"
+                        className="secondary"
+                        onClick={inking.restoreClassic}
+                      >
+                        Back to the classic
+                      </button>
+                    )}
+                    {inking.editing ? (
+                      <span>Click a line to ink or erase it.</span>
+                    ) : null}
+                  </div>
+                ) : null}
+                {stage.kind === 'ink' ? saveDesign : null}
+                {stage.kind === 'repeat' ? copiesChooser : null}
+              </div>
+              {phone && !colorStage && !sharedView ? (
+                <div className="lesson-share lesson-share-phone">
+                  {endShare}
                 </div>
               ) : null}
-              {stage.kind === 'ink' ? saveDesign : null}
-              {stage.kind === 'repeat' ? (
-                <div className="copies" role="group" aria-label="Copies">
-                  {COPIES.map((c) => (
+              <nav aria-label="Steps">
+                <button
+                  type="button"
+                  className="quiet playback"
+                  title={
+                    playing
+                      ? 'Pause (Space)'
+                      : index === last
+                        ? 'Replay from step 1 (Space)'
+                        : 'Play (Space)'
+                  }
+                  onClick={togglePlayback}
+                >
+                  {playing ? 'Pause' : index === last ? 'Replay' : 'Play'}
+                </button>
+                <button
+                  type="button"
+                  className="secondary"
+                  title="Previous step (←)"
+                  onClick={back}
+                  disabled={index === 0}
+                >
+                  Back
+                </button>
+                {stage.kind === 'ink' ? (
+                  <>
                     <button
-                      key={String(c)}
                       type="button"
-                      aria-pressed={String(c) === String(copies)}
-                      onClick={() => setCopies(c)}
+                      className="secondary"
+                      onClick={() => after(true)}
                     >
-                      {c === 'wall' ? 'The whole wall' : `${c[0]} × ${c[1]}`}
+                      Color it
                     </button>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-            {phone && !colorStage && !sharedView ? (
-              <div className="lesson-share lesson-share-phone">{endShare}</div>
-            ) : null}
-            <nav aria-label="Steps">
-              <button
-                type="button"
-                className="quiet playback"
-                title={
-                  playing
-                    ? 'Pause (Space)'
-                    : index === last
-                      ? 'Replay from step 1 (Space)'
-                      : 'Play (Space)'
-                }
-                onClick={togglePlayback}
-              >
-                {playing ? 'Pause' : index === last ? 'Replay' : 'Play'}
-              </button>
-              <button
-                type="button"
-                className="secondary"
-                title="Previous step (←)"
-                onClick={back}
-                disabled={index === 0}
-              >
-                Back
-              </button>
-              {stage.kind === 'ink' ? (
-                <>
-                  <button
-                    type="button"
-                    className="secondary"
-                    onClick={() => after(true)}
+                    <button
+                      type="button"
+                      className="next"
+                      onClick={() => after(false)}
+                    >
+                      Repeat it
+                    </button>
+                  </>
+                ) : pathFinish ? (
+                  <a
+                    className="next learning-advance"
+                    href={
+                      pathFinish.next
+                        ? `#/${pathFinish.next.lesson.id}/watch/1`
+                        : '#/learn'
+                    }
                   >
-                    Color it
-                  </button>
+                    {pathFinish.next ? 'Next lesson' : 'See the learning path'}
+                  </a>
+                ) : (
                   <button
                     type="button"
                     className="next"
-                    onClick={() => after(false)}
-                  >
-                    Repeat it
-                  </button>
-                </>
-              ) : pathFinish ? (
-                <a
-                  className="next learning-advance"
-                  href={
-                    pathFinish.next
-                      ? `#/${pathFinish.next.lesson.id}/watch/1`
-                      : '#/learn'
-                  }
-                >
-                  {pathFinish.next ? 'Next lesson' : 'See the learning path'}
-                </a>
-              ) : (
-                <button
-                  type="button"
-                  className="next"
-                  title={ready ? undefined : 'Next step (→)'}
-                  onClick={
-                    ready
-                      ? () => {
-                          const card =
-                            readyRef.current ??
-                            document.querySelector<HTMLElement>('.end-actions');
-                          card?.scrollIntoView?.({ block: 'nearest' });
-                          card
-                            ?.querySelector<HTMLElement>('button, input')
-                            ?.focus();
-                        }
-                      : next
-                  }
-                  disabled={ready && sharedView}
-                >
-                  {ready ? 'Save my design' : 'Next'}
-                </button>
-              )}
-            </nav>
-          </footer>
-          {colorStage ? (
-            <aside className="side-panel" aria-label="The wall">
-              {!narrow ? (
-                <nav className="side-panel-nav" aria-label="Wall sections">
-                  {onWall ? (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        wallSectionRef.current?.scrollIntoView?.({
-                          behavior: 'smooth',
-                          block: 'start',
-                        })
-                      }
-                    >
-                      Style
-                    </button>
-                  ) : null}
-                  {!onWall || wallStyle !== 'jali' ? (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        colorsSectionRef.current?.scrollIntoView?.({
-                          behavior: 'smooth',
-                          block: 'start',
-                        })
-                      }
-                    >
-                      Colors
-                    </button>
-                  ) : null}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      exportSectionRef.current?.scrollIntoView?.({
-                        behavior: 'smooth',
-                        block: 'start',
-                      })
+                    title={ready ? undefined : 'Next step (→)'}
+                    onClick={
+                      ready
+                        ? () => {
+                            const card =
+                              readyRef.current ??
+                              document.querySelector<HTMLElement>(
+                                '.end-actions',
+                              );
+                            card?.scrollIntoView?.({ block: 'nearest' });
+                            card
+                              ?.querySelector<HTMLElement>('button, input')
+                              ?.focus();
+                          }
+                        : next
                     }
+                    disabled={ready && sharedView}
                   >
-                    Export &amp; 3D
+                    {ready ? 'Save my design' : 'Next'}
                   </button>
-                </nav>
-              ) : null}
-              {/* At the end on a computer or tablet, Save and Share are in the step
-                  bar, where Next was; only a note about changes stays here. */}
-              {ready && !phone ? draftNote : null}
-              {/* On the finished wall its style and width come first; while
-                  one tile is coloured, the colours do. */}
-              {onWall ? (
-                <div ref={wallSectionRef} className="side-panel-anchor">
-                  <WallControls
-                    style={wallStyle}
-                    styles={wallStyles}
-                    onStyle={(style) => {
-                      setWallStyle(style);
-                      if (style === 'jali' && grout < 0.5) setGrout(0.5);
-                      if (style === 'lines' && grout < 0.25) setGrout(0.25);
-                    }}
-                    grout={grout}
-                    onGrout={setGrout}
-                    finish={finishOf(coloured, colorHistory.now)}
-                    onFinish={(change) =>
-                      colorDispatch({ kind: 'finish', ...change })
-                    }
-                    sample={(look) => styleSamples?.[look]}
-                  />
-                </div>
-              ) : null}
-              {onWall && wallStyle === 'jali' ? (
-                <JaliControls appearance={jali} onChange={setJali} />
-              ) : null}
-              {colorsSection}
-              {ready && phone ? (
-                <section ref={readyRef}>
-                  <h2>My design</h2>
-                  {saveDesign}
-                  {draftNote}
-                  {shareLink}
-                </section>
-              ) : null}
-              {narrow || ready ? null : (
-                <section>
-                  <h2>My design</h2>
-                  {saveDesign}
-                  {draftNote}
-                </section>
-              )}
-              <section ref={exportSectionRef} className="side-panel-anchor">
-                <h2>Take it with you</h2>
-                {ready ? null : shareLink}
-                <div className="export-tools">
-                  <button
-                    type="button"
-                    className="secondary pattern-file-download"
-                    onClick={downloadPattern}
-                  >
-                    <svg
-                      width="19"
-                      height="19"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.7"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden="true"
-                    >
-                      <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M9 12l-2 3 2 3M15 12l2 3-2 3" />
-                    </svg>
-                    Download pattern file (.json)
-                  </button>
-                  <button
-                    type="button"
-                    className="secondary"
-                    onClick={() =>
-                      download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
-                    }
-                  >
-                    Download SVG
-                  </button>
-                  <button
-                    type="button"
-                    className="secondary"
-                    onClick={() =>
-                      void pngBlob(exportSvg()).then((png) =>
-                        download(png, `${tutorial.id}.png`),
-                      )
-                    }
-                  >
-                    Download PNG
-                  </button>
-                </div>
-                {address !== 'shared' ? (
-                  <a
-                    className="button secondary make-3d"
-                    href={
-                      design
-                        ? `#/${address}/design/${design.id}/make`
-                        : `#/${address}/make`
-                    }
-                  >
-                    Make it in 3D
-                  </a>
-                ) : null}
-                <p className="pattern-file-hint">
-                  JSON keeps the editable construction, ink, colours and style.
-                  Open it with “Open a pattern file”. SVG and PNG are images.
-                </p>
-                {fileError && (
-                  <p className="refused" role="alert">
-                    {fileError}
-                  </p>
                 )}
-                {/* The paper is beside Print, the one thing it changes. */}
-                <div className="print-tools">
-                  <button
-                    type="button"
-                    className="secondary"
-                    onClick={() => setPrinting(true)}
-                  >
-                    Print line sheet
-                  </button>
-                  <div className="paper" role="group" aria-label="Paper">
-                    {(['A4', 'Letter'] as const).map((p) => (
+              </nav>
+            </footer>
+            {colorStage ? (
+              <aside className="side-panel" aria-label="The wall">
+                {!narrow ? (
+                  <nav className="side-panel-nav" aria-label="Wall sections">
+                    {onWall ? (
                       <button
-                        key={p}
                         type="button"
-                        aria-pressed={p === paper}
-                        onClick={() => setPaper(p)}
+                        onClick={() =>
+                          wallSectionRef.current?.scrollIntoView?.({
+                            behavior: 'smooth',
+                            block: 'start',
+                          })
+                        }
                       >
-                        {p}
+                        Style
                       </button>
-                    ))}
+                    ) : null}
+                    {!onWall || wallStyle !== 'jali' ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          colorsSectionRef.current?.scrollIntoView?.({
+                            behavior: 'smooth',
+                            block: 'start',
+                          })
+                        }
+                      >
+                        Colors
+                      </button>
+                    ) : null}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        exportSectionRef.current?.scrollIntoView?.({
+                          behavior: 'smooth',
+                          block: 'start',
+                        })
+                      }
+                    >
+                      Export &amp; 3D
+                    </button>
+                  </nav>
+                ) : null}
+                {/* At the end on a computer or tablet, Save and Share are in the step
+                  bar, where Next was; only a note about changes stays here. */}
+                {ready && !phone ? draftNote : null}
+                {/* On the finished wall its style and width come first; while
+                  one tile is coloured, the colours do. */}
+                {onWall ? (
+                  <div ref={wallSectionRef} className="side-panel-anchor">
+                    <WallControls
+                      style={wallStyle}
+                      styles={wallStyles}
+                      onStyle={(style) => {
+                        setWallStyle(style);
+                        if (style === 'jali' && grout < 0.5) setGrout(0.5);
+                        if (style === 'lines' && grout < 0.25) setGrout(0.25);
+                      }}
+                      grout={grout}
+                      onGrout={setGrout}
+                      finish={finishOf(coloured, colorHistory.now)}
+                      onFinish={(change) =>
+                        colorDispatch({ kind: 'finish', ...change })
+                      }
+                      sample={(look) => styleSamples?.[look]}
+                    />
                   </div>
-                </div>
-              </section>
-              {!mine && !sharedView ? (
-                <>
-                  {ready ? <NextPathLesson id={address} /> : null}
-                  <ExploreNext tutorial={full.tutorial} />
-                </>
-              ) : null}
-            </aside>
-          ) : null}
-        </div>
+                ) : null}
+                {onWall && wallStyle === 'jali' ? (
+                  <JaliControls appearance={jali} onChange={setJali} />
+                ) : null}
+                {colorsSection}
+                {ready && phone ? (
+                  <section ref={readyRef}>
+                    <h2>My design</h2>
+                    {saveDesign}
+                    {draftNote}
+                    {shareLink}
+                  </section>
+                ) : null}
+                {narrow || ready ? null : (
+                  <section>
+                    <h2>My design</h2>
+                    {saveDesign}
+                    {draftNote}
+                  </section>
+                )}
+                <section ref={exportSectionRef} className="side-panel-anchor">
+                  <h2>Take it with you</h2>
+                  {ready ? null : shareLink}
+                  <div className="export-tools">
+                    <button
+                      type="button"
+                      className="secondary pattern-file-download"
+                      onClick={downloadPattern}
+                    >
+                      <svg
+                        width="19"
+                        height="19"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M9 12l-2 3 2 3M15 12l2 3-2 3" />
+                      </svg>
+                      Download pattern file (.json)
+                    </button>
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={() =>
+                        download(svgBlob(exportSvg()), `${tutorial.id}.svg`)
+                      }
+                    >
+                      Download SVG
+                    </button>
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={() =>
+                        void pngBlob(exportSvg()).then((png) =>
+                          download(png, `${tutorial.id}.png`),
+                        )
+                      }
+                    >
+                      Download PNG
+                    </button>
+                  </div>
+                  {address !== 'shared' ? (
+                    <a
+                      className="button secondary make-3d"
+                      href={
+                        design
+                          ? `#/${address}/design/${design.id}/make`
+                          : `#/${address}/make`
+                      }
+                    >
+                      Make it in 3D
+                    </a>
+                  ) : null}
+                  <p className="pattern-file-hint">
+                    JSON keeps the editable construction, ink, colours and
+                    style. Open it with “Open a pattern file”. SVG and PNG are
+                    images.
+                  </p>
+                  {fileError && (
+                    <p className="refused" role="alert">
+                      {fileError}
+                    </p>
+                  )}
+                  {/* The paper is beside Print, the one thing it changes. */}
+                  <div className="print-tools">
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={() => setPrinting(true)}
+                    >
+                      Print line sheet
+                    </button>
+                    <div className="paper" role="group" aria-label="Paper">
+                      {(['A4', 'Letter'] as const).map((p) => (
+                        <button
+                          key={p}
+                          type="button"
+                          aria-pressed={p === paper}
+                          onClick={() => setPaper(p)}
+                        >
+                          {p}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+                {!mine && !sharedView ? (
+                  <>
+                    {ready ? <NextPathLesson id={address} /> : null}
+                    <ExploreNext tutorial={full.tutorial} />
+                  </>
+                ) : null}
+              </aside>
+            ) : null}
+          </div>
+        )}
         <div className="journey-row">
           <Journey stages={stages} index={index} onJump={jump} />
           {!phone && !colorStage && !sharedView && (
             <div className="lesson-share">{endShare}</div>
           )}
-          {colorStage && ready && !phone ? (
+          {colorStage && ready && !phone && !wallPage ? (
             <div className="end-actions" role="group" aria-label="Your design">
               {endSave}
               {endShare}
@@ -1945,6 +2447,7 @@ function CopyHere({
   address,
   step,
   shownNumber,
+  label = 'Make my own copy from here',
 }: {
   tutorial: Model['tutorial'];
   address: string;
@@ -1952,6 +2455,7 @@ function CopyHere({
   step: number;
   /** Its number as the learner sees it. */
   shownNumber: number;
+  label?: string;
 }) {
   const [refused, setRefused] = useState(false);
   const copy = () => {
@@ -1970,7 +2474,7 @@ function CopyHere({
   return (
     <div className="copy-here">
       <button type="button" className="quiet" onClick={copy}>
-        Make my own copy from here
+        {label}
       </button>
       {refused ? (
         <span className="refused" role="alert">
@@ -2075,7 +2579,9 @@ export function Play({
   presentation,
   position,
   lessonColourFirst,
+  carried,
 }: {
+  carried?: Draft;
   json: unknown;
   start?: Start;
   design?: Design;
@@ -2102,6 +2608,7 @@ export function Play({
       reviewIndex={reviewIndex}
       position={position}
       lessonColourFirst={lessonColourFirst}
+      carried={carried}
     />
   );
 }
@@ -2213,5 +2720,46 @@ export function MissingDesign({
         </p>
       </section>
     </div>
+  );
+}
+
+const TILE_ICONS = {
+  print:
+    'M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2M7 14h10v6H7z',
+  file: 'M14 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V7zM14 3v4h4M9.5 13.5 8 15l1.5 1.5M14.5 13.5 16 15l-1.5 1.5',
+  vector: 'M5 19 12 5l7 14M8.5 12h7M3 17h4v4H3zM17 17h4v4h-4zM10 3h4v4h-4z',
+  image: 'M4 5h16v14H4zM4 16l5-5 4 4 2-2 5 5M15.5 9.5v.01',
+  variation: 'M12 3l2.2 5.3L20 9l-4.4 3.8L17 19l-5-3-5 3 1.4-6.2L4 9l5.8-.7z',
+} as const;
+
+/** One of More's tiles: an icon over a word, named in full for a reader. */
+function MakeTile({
+  icon,
+  label,
+  name,
+  title,
+  className,
+  onClick,
+}: {
+  icon: keyof typeof TILE_ICONS;
+  label: string;
+  name: string;
+  title?: string;
+  className?: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      className={className ? `make-tile ${className}` : 'make-tile'}
+      aria-label={name}
+      title={title ?? name}
+      onClick={onClick}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d={TILE_ICONS[icon]} />
+      </svg>
+      <span>{label}</span>
+    </button>
   );
 }

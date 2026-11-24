@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { mkdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { styleGroup, tab } from './panel';
 
 async function setColor(page: Page, label: string, color: string) {
   await page.getByLabel(label, { exact: true }).evaluate((node, value) => {
@@ -29,8 +30,9 @@ for (const id of [
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto(`/#/${id}/result`);
-    await page
-      .getByRole('group', { name: 'Style', exact: true })
+    await (
+      await styleGroup(page)
+    )
       .getByRole('button', { name: 'Screen', exact: true })
       .click();
     const wall = page.locator('svg.wall.style-jali');
@@ -118,8 +120,9 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   const colors = await page
     .locator('.wall-piece')
     .evaluateAll((pieces) => pieces.map((p) => p.getAttribute('fill')));
-  await page
-    .getByRole('group', { name: 'Style', exact: true })
+  await (
+    await styleGroup(page)
+  )
     .getByRole('button', { name: 'Screen', exact: true })
     .click();
   await page.getByRole('button', { name: 'Wood', exact: true }).click();
@@ -129,9 +132,7 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await lattice.fill('2');
   await lattice.dispatchEvent('input');
   await expect(lattice).toHaveValue('2');
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('My Jali screen');
@@ -141,9 +142,10 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   ).toBeVisible();
   await page.reload();
   await expect(
-    page
-      .getByRole('group', { name: 'Style', exact: true })
-      .getByRole('button', { name: 'Screen', exact: true }),
+    (await styleGroup(page)).getByRole('button', {
+      name: 'Screen',
+      exact: true,
+    }),
   ).toHaveAttribute('aria-pressed', 'true');
   await expect(lattice).toHaveValue('2');
   await expect(
@@ -161,16 +163,19 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await expect(
     page.getByRole('button', { name: 'Saved', exact: true }),
   ).toBeDisabled();
-  await page.getByRole('button', { name: 'Copy a share link' }).click();
+  await page
+    .getByRole('button', { name: /^(Share|Copy a share link)$/ })
+    .click();
   const address = await page
     .getByRole('textbox', { name: 'Share link' })
     .inputValue();
   const other = await context.newPage();
   await other.goto(address);
   await expect(
-    other
-      .getByRole('group', { name: 'Style', exact: true })
-      .getByRole('button', { name: 'Screen', exact: true }),
+    (await styleGroup(other)).getByRole('button', {
+      name: 'Screen',
+      exact: true,
+    }),
   ).toHaveAttribute('aria-pressed', 'true');
   await expect(other.getByLabel('Lattice', { exact: true })).toHaveValue('2');
   await expect(
@@ -180,6 +185,8 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await expectColor(other, 'Background color', '#234a79');
   await other.close();
 
+  // The downloads are in Make it yours' More menu.
+  await tab(page, 'More');
   for (const extension of ['SVG', 'PNG']) {
     const downloading = page.waitForEvent('download');
     await page
@@ -216,10 +223,12 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     }
   }
 
-  await page
-    .getByRole('group', { name: 'Style', exact: true })
+  await (
+    await styleGroup(page)
+  )
     .getByRole('button', { name: 'Tiles', exact: true })
     .click();
+  await tab(page, 'Look');
   await expect(
     page
       .getByRole('group', { name: 'Palette' })
@@ -252,9 +261,10 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
     .evaluateAll((paths) => paths.map((p) => p.getAttribute('stroke-width')));
   await preview.click();
   await expect(
-    page
-      .getByRole('group', { name: 'Style', exact: true })
-      .getByRole('button', { name: 'Screen', exact: true }),
+    (await styleGroup(page)).getByRole('button', {
+      name: 'Screen',
+      exact: true,
+    }),
   ).toHaveAttribute('aria-pressed', 'true');
   await expect(lattice).toHaveValue('2');
   expect(
@@ -266,14 +276,16 @@ test('Jali saves, reloads, shares, previews and downloads without losing colors'
   await page
     .getByRole('button', { name: 'Reset screen finish', exact: true })
     .click();
-  await page
-    .getByRole('group', { name: 'Style', exact: true })
+  await (
+    await styleGroup(page)
+  )
     .getByRole('button', { name: 'Tiles', exact: true })
     .click();
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await page.reload();
-  await page
-    .getByRole('group', { name: 'Style', exact: true })
+  await (
+    await styleGroup(page)
+  )
     .getByRole('button', { name: 'Screen', exact: true })
     .click();
   await expect(

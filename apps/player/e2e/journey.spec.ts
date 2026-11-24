@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { tab, styleGroup } from './panel';
 
 // The built library lists every tutorial the owner has not hidden.
 const hidden: string[] = JSON.parse(
@@ -27,7 +28,7 @@ const route = (id: string) => `/#/${id}`;
 const payload = (data: unknown) =>
   'j' + Buffer.from(JSON.stringify(data)).toString('base64url');
 
-test('library previews need no construction downloads except the animated hero', async ({
+test('library previews need no construction downloads but the first lesson', async ({
   page,
 }) => {
   const tutorials: string[] = [];
@@ -35,8 +36,8 @@ test('library previews need no construction downloads except the animated hero',
     if (/\/assets\/.*\.js/.test(r.url())) tutorials.push(r.url());
   });
   await page.goto('/');
-  await expect(page.locator('.cards > li')).toHaveCount(cardCount);
-  const previews = page.locator('.cards img.thumbnail');
+  await expect(page.locator('.library-grid > li')).toHaveCount(cardCount);
+  const previews = page.locator('.library-grid .window-pic img');
   await expect(previews).toHaveCount(cardCount);
   await expect(previews.first()).toBeVisible();
   await expect
@@ -55,17 +56,22 @@ test('library previews need no construction downloads except the animated hero',
       return { width, height };
     }),
   );
+  // Each window is 4:5, as its arch is drawn.
   for (const { width, height } of sizes) {
     expect(width).toBeGreaterThan(0);
-    expect(Math.abs(width - height)).toBeLessThan(1);
+    expect(Math.abs(height / width - 1.25)).toBeLessThan(0.02);
   }
   await expect(
-    page.getByRole('link', { name: 'Start with the star and cross' }),
+    page.getByRole('link', { name: /^Begin: lesson 1$/ }),
   ).toBeVisible();
-  // A library card must be usable without downloading its JSON module.
-  expect(
-    tutorials.some((url) => url.includes('eight-fold-star-and-cross-')),
-  ).toBe(false);
+  // A library card must be usable without downloading its JSON module:
+  // only lesson 1, drawing itself to welcome a first visit, loads its
+  // construction.
+  for (const card of [
+    'six-fold-star-and-hexagons-',
+    'alhambra-star-and-arrows-',
+  ])
+    expect(tutorials.some((url) => url.includes(card))).toBe(false);
 });
 
 test('home navigation fits narrow phones before and after saving a design', async ({
@@ -77,11 +83,11 @@ test('home navigation fits narrow phones before and after saving a design', asyn
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(320);
-    const header = await page.locator('.masthead').boundingBox();
+    const header = await page.locator('.lib-top').boundingBox();
     expect(header).not.toBeNull();
     for (const link of await page
-      .getByRole('navigation', { name: 'Main Navigation' })
-      .locator('a, button')
+      .locator('.lib-top')
+      .locator('a, button, label')
       .all()) {
       const box = await link.boundingBox();
       expect(box).not.toBeNull();
@@ -95,9 +101,7 @@ test('home navigation fits narrow phones before and after saving a design', asyn
   await expect(page.locator('.library')).toBeVisible();
   await fits();
   await page.goto(route(`${star}/result`));
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Phone wall');
@@ -114,9 +118,7 @@ test('unsaved changes confirmation keeps focus and Escape preserves the design',
   page,
 }) => {
   await page.goto(route(`${star}/result`));
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Unsaved wall');
@@ -142,7 +144,8 @@ test('unsaved changes confirmation keeps focus and Escape preserves the design',
   await page.keyboard.press('Shift+Tab');
   await expect(stay).toBeFocused();
   await page.keyboard.press('ArrowLeft');
-  await expect(page.locator('.label')).toHaveText('Color');
+  // Still the finished wall: the arrow did not step behind the dialog.
+  await expect(page.locator('.make-panel')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(dialog).toHaveCount(0);
   await expect(home).toBeFocused();
@@ -239,17 +242,23 @@ test('player shortcuts respect controls and still work on the page', async ({
   await expect(page.locator('.label')).toHaveText('Step 1 of 6');
   await page.getByRole('button', { name: 'Next', exact: true }).press('Space');
   await expect(page.locator('.label')).toHaveText('Step 2 of 6');
+  // The colour stage is the finished wall, with Make it yours over it.
   await page.getByRole('button', { name: 'Go to color', exact: true }).click();
-  await expect(page.locator('.label')).toHaveText('Color');
-  await page
-    .getByRole('group', { name: 'Style', exact: true })
+  const wall = page.locator('.make-panel');
+  await expect(wall).toBeVisible();
+  await (
+    await styleGroup(page)
+  )
     .getByRole('button', { name: 'Tiles', exact: true })
     .focus();
   await page.keyboard.press('ArrowLeft');
-  await expect(page.locator('.label')).toHaveText('Color');
-  await page.getByRole('button', { name: 'Back', exact: true }).focus();
+  await expect(wall).toBeVisible();
+  await page
+    .getByRole('group', { name: 'Your design' })
+    .getByRole('button', { name: 'Share', exact: true })
+    .focus();
   await page.keyboard.press('ArrowLeft');
-  await expect(page.locator('.label')).toHaveText('Color');
+  await expect(wall).toBeVisible();
   await page.evaluate(() => {
     if (document.activeElement instanceof HTMLElement)
       document.activeElement.blur();
@@ -262,6 +271,9 @@ test('the original photo viewer contains keyboard focus and restores it on Escap
   page,
 }) => {
   await page.goto(route('minbar-doors-cairo/result'));
+  // The real wall, in Make it yours, opens the photo beside the wall.
+  await tab(page, 'More');
+  await page.getByRole('button', { name: 'Show the original' }).click();
   const opener = page.getByRole('button', {
     name: /See the photo at full size/,
   });
@@ -341,6 +353,8 @@ test('a missing original photo keeps its source link and shows no broken image',
     request.fulfill({ status: 404, body: 'Not found' }),
   );
   await page.goto(route('minbar-doors-cairo/result'));
+  await tab(page, 'More');
+  await page.getByRole('button', { name: 'Show the original' }).click();
   const original = page.getByRole('figure', { name: 'The original' });
   await expect(
     original.getByText('This photo could not be loaded.'),
@@ -424,9 +438,7 @@ test('a finished wall can be saved, shared, reopened, and used for a variation',
     .getByRole('group', { name: 'Palette' })
     .getByRole('button', { name: 'Chefchaouen', exact: true })
     .click();
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Browser test wall');
@@ -434,7 +446,9 @@ test('a finished wall can be saved, shared, reopened, and used for a variation',
   await expect(
     page.getByText('Saved as “Browser test wall”.', { exact: false }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Copy a share link' }).click();
+  await page
+    .getByRole('button', { name: /^(Share|Copy a share link)$/ })
+    .click();
   const link = await page
     .getByRole('textbox', { name: 'Share link' })
     .inputValue();
@@ -453,6 +467,8 @@ test('a finished wall can be saved, shared, reopened, and used for a variation',
       .getByRole('group', { name: 'Palette' })
       .getByRole('button', { name: 'Chefchaouen', exact: true }),
   ).toHaveAttribute('aria-pressed', 'true');
+  // A lesson's filled button is Next lesson; a variation is in More.
+  await tab(page, 'More');
   await page
     .getByRole('button', { name: 'Make a variation', exact: true })
     .click();
@@ -477,7 +493,7 @@ test('bad links recover and never leave a blank page', async ({ page }) => {
     page.getByRole('heading', { name: 'This pattern cannot be shown' }),
   ).toBeVisible();
   await page.getByRole('link', { name: /All patterns/ }).click();
-  await expect(page.locator('.cards > li')).toHaveCount(cardCount);
+  await expect(page.locator('.library-grid > li')).toHaveCount(cardCount);
   await page.goto('/#/%E0%A4%A');
   await expect(
     page.getByRole('heading', { name: 'This pattern cannot be shown' }),

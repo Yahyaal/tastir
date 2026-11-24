@@ -95,14 +95,15 @@ describe('from a copy to a played pattern', () => {
     // Played like any tutorial, opening at the wall: octagons and the
     // four-pointed stars between them.
     go(`#/mine/${id}`);
-    expect(document.querySelector('.label')?.textContent).toBe('Color');
+    expect(document.querySelector('.make-panel')).not.toBeNull();
+    fireEvent.click(screen.getByRole('tab', { name: 'Pieces' }));
     expect(
       [...document.querySelectorAll('.piece-button')].map((b) =>
         b.getAttribute('aria-label'),
       ),
     ).toEqual(['Recolor every octagon', 'Recolor every star']);
     // And it can be saved as a design, like a library pattern.
-    click('Save as my design');
+    click('Save');
     fireEvent.change(screen.getByLabelText('Name'), {
       target: { value: 'Octagons' },
     });

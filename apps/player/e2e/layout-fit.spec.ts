@@ -8,7 +8,7 @@ test('the result opens at the top, with the drawing within the screen', async ({
   page,
 }) => {
   await page.goto('/#/eight-fold-star-and-cross/result');
-  await expect(page.locator('.label')).toHaveText('Color');
+  await expect(page.locator('.make-panel')).toBeVisible();
   const fit = await page.evaluate(() => ({
     scroll: window.scrollY,
     stage: document.querySelector('.stage')?.getBoundingClientRect().height,
@@ -55,4 +55,43 @@ test('draw along says what to tap in view, beside the board', async ({
     .getByRole('button', { name: /Circle$/ });
   await expect(compass).toHaveClass(/hinted/);
   await expect(compass).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('on a phone a first visit finds Make it yours folded, and it stays as left', async ({
+  browser,
+}, info) => {
+  test.skip(info.project.name !== 'phone', 'The slim bar is for phones.');
+  const context = await browser.newContext({
+    baseURL: info.project.use.baseURL,
+    // A first visit: nothing kept (the project opens Make it yours).
+    storageState: { cookies: [], origins: [] },
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  try {
+    const page = await context.newPage();
+    await page.goto('/#/eight-fold-star-and-cross/result');
+    const panel = page.getByRole('complementary', { name: 'Make it yours' });
+    await expect(panel).toBeVisible();
+    // Folded: the foot, no colours, and most of the screen for the wall.
+    await expect(panel.getByRole('tab', { name: 'Look' })).toBeHidden();
+    await expect(
+      panel.getByRole('button', { name: 'Share', exact: true }),
+    ).toBeVisible();
+    const box = await panel.boundingBox();
+    expect(box!.height).toBeLessThan(200);
+    await panel
+      .getByRole('button', { name: 'Make it yours', exact: true })
+      .click();
+    await expect(panel.getByRole('tab', { name: 'Look' })).toBeVisible();
+    await page.reload();
+    await expect(
+      page
+        .getByRole('complementary', { name: 'Make it yours' })
+        .getByRole('tab', { name: 'Look' }),
+    ).toBeVisible();
+  } finally {
+    await context.close();
+  }
 });

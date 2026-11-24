@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { tab } from './panel';
 
 const places = [
   ['ben-youssef-star-rosettes', 'Ben Youssef star rosettes'],
@@ -19,7 +20,9 @@ test('each merged place is found at its own address by name', async ({
   await page.goto('/#/');
   for (const [id, query] of places) {
     await page.getByRole('searchbox').fill(query);
-    await expect(page.locator(`a.card[href^="#/${id}"]`).first()).toBeVisible();
+    await expect(
+      page.locator(`a.window-link[href^="#/${id}"]`).first(),
+    ).toBeVisible();
   }
 });
 
@@ -42,6 +45,7 @@ for (const [id] of places) {
     await expect(title).toBeVisible();
     const originalTitle = await title.getAttribute('title');
     expect(originalTitle).toBeTruthy();
+    await tab(page, 'More');
     await expect(
       page
         .getByRole('navigation', { name: 'Places this pattern is found' })
@@ -49,7 +53,7 @@ for (const [id] of places) {
     ).toHaveAttribute('href', `#/${id}/result`);
 
     await page
-      .getByRole('button', { name: 'Copy a share link', exact: true })
+      .getByRole('button', { name: /^(Share|Copy a share link)$/ })
       .first()
       .click();
     const link = await page
@@ -66,7 +70,7 @@ for (const [id] of places) {
 
     await page.goto(`/#/${id}/result`);
     await page
-      .getByRole('button', { name: 'Save as my design', exact: true })
+      .getByRole('button', { name: /^Save( as my design)?$/ })
       .first()
       .click();
     const name = `Place audit: ${id}`;
@@ -77,7 +81,8 @@ for (const [id] of places) {
       .click();
     await expect(page).toHaveURL(new RegExp(`#/${id}/design/`));
     await page.reload();
-    await expect(page.getByText(name, { exact: true }).first()).toBeVisible();
+    // On the wall, Save names the design on hover.
+    await expect(page.getByTitle(`Your design “${name}”`)).toBeVisible();
     await expect(title).toHaveAttribute('title', originalTitle ?? '');
   });
 }

@@ -1,0 +1,677 @@
+/* The finished wall with Make it yours floating over it (REDESIGN.4). */
+.workspace.wall-page {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+/* The wall fills the page above the journey's track. */
+.workspace.wall-page .stage {
+  min-height: calc(100vh - 190px);
+}
+.workspace.wall-page .make-panel {
+  /* One height for every tab, so switching tabs does not jump. */
+  height: min(720px, calc(100% - 100px));
+}
+
+.make-panel {
+  --make-gold: linear-gradient(180deg, #ecc463, #c9962f);
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 7;
+  width: 390px;
+  max-height: calc(100% - 36px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--theme-border);
+  /* Opaque, and no backdrop filter: a filter would make the panel the
+     containing block of the colour pickers' fixed anchors. */
+  background: var(--theme-bg-surface);
+  box-shadow: 0 18px 50px
+    color-mix(in srgb, var(--shadow) calc(45% * var(--shadow-k)), transparent);
+  color: var(--theme-text-primary);
+}
+.make-panel h2 {
+  margin: 0 0 6px;
+  font: 700 12px var(--text);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--theme-label);
+}
+.make-panel > section,
+.make-panel .wall-section {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.make-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.make-top h2 {
+  flex: 1;
+  margin: 0;
+  font: 22px/1.1 var(--display);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--theme-text-primary);
+}
+.player .make-panel button.make-hide {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-secondary);
+}
+.make-hide svg,
+.make-show svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.make-designs:empty {
+  display: none;
+}
+.make-designs {
+  display: grid;
+  gap: 8px;
+}
+
+/* The styles: a small picture of each. */
+.make-panel .wall-styles {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+.make-panel .wall-styles button {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 6px 2px;
+  border-radius: 12px;
+  font-size: 11.5px;
+}
+.make-panel .wall-styles .style-sample {
+  width: 44px;
+  height: 44px;
+}
+.style-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: block;
+}
+
+.make-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(
+    --theme-bg-muted,
+    color-mix(in srgb, var(--theme-text-primary) 7%, transparent)
+  );
+}
+.player .make-panel .make-tabs button {
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--theme-text-secondary);
+  font-weight: 650;
+}
+.player .make-panel .make-tabs button[aria-selected='true'] {
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.18);
+}
+/* The tab's contents scroll; the top and the foot stay. */
+.make-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 -18px;
+  padding: 2px 18px 8px;
+}
+.make-files {
+  display: grid;
+  gap: 8px;
+}
+
+/* The way on, Save, Share and 3D: one row. */
+.make-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--theme-border);
+}
+.make-foot .design-tools,
+.make-foot .share-link,
+.make-foot .design-buttons {
+  display: contents;
+}
+/* What Save and Share say, and the name to save under, on their own line. */
+.make-foot .hint,
+.make-foot .refused,
+.make-foot input[type='text'],
+.make-foot .design-name {
+  flex-basis: 100%;
+  margin: 0;
+}
+.player .make-panel .make-foot > a,
+.player .make-panel .make-foot button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 11px;
+  border-radius: 999px;
+  font-size: 14.5px;
+}
+.player .make-panel .make-next {
+  /* Takes what the others leave, so the four keep to one line. */
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: var(--act-watch);
+  color: var(--on-act);
+  font-weight: 750;
+  text-decoration: none;
+}
+/* Changes kept only in this browser: a dot on Save. */
+.make-foot button.pending {
+  position: relative;
+}
+.make-foot button.pending::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e0ad45;
+}
+
+/* Brings the panel back when it was hidden. */
+.player .plate-area button.make-show {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 0;
+  background: linear-gradient(180deg, #ecc463, #c9962f);
+  color: #2b1d04;
+  font-weight: 750;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.3);
+}
+
+.player .plate-area button.make-show:hover:not(:disabled) {
+  background: linear-gradient(180deg, #f0cd75, #d3a23a);
+}
+.player .make-panel button.make-next:hover:not(:disabled) {
+  background: var(--act-watch);
+  filter: brightness(1.08);
+}
+
+/* On a phone the panel is a sheet over the bottom of the wall. */
+@media (max-width: 760px) {
+  /* The journey's strip sits above the wall on a phone. */
+  .workspace.wall-page {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  /* The wall fills the screen under the sheet: not pinned and shortened as
+     at the colour stage of a lesson. */
+  .player.at-color .workspace.wall-page .plate-area,
+  .player.at-color
+    .workspace.wall-page
+    .plate-area:has(> .stage:not(.comparing)) {
+    position: relative;
+    top: auto;
+    z-index: auto;
+    padding: 0;
+    background: none;
+  }
+  .player.at-color:not(.along):not(.editor) .workspace.wall-page .stage,
+  .player.at-color:not(.along) .workspace.wall-page .stage:not(.comparing) {
+    min-height: 0;
+    height: calc(100vh - 170px);
+  }
+  /* With the sheet up, the wall sits above it, whole. */
+  .player.at-color:not(.along):not(.editor)
+    .workspace.wall-page.make-open
+    .stage,
+  .player.at-color:not(.along)
+    .workspace.wall-page.make-open
+    .stage:not(.comparing) {
+    flex: none;
+    height: calc(54vh - 170px);
+    min-height: 180px;
+  }
+  /* A sheet held at the bottom of the screen, low enough that the middle
+     of the wall stays free to pinch, drag and point at. */
+  .workspace.wall-page .make-panel {
+    position: fixed;
+    top: auto;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    width: auto;
+    max-height: 46vh;
+    border-radius: 20px 20px 14px 14px;
+    padding: 12px 14px 14px;
+  }
+  .workspace.wall-page .make-panel {
+    height: 46vh;
+  }
+  .make-top h2 {
+    font-size: 19px;
+  }
+  /* Reset view moves to the top, clear of the sheet. */
+  .player .wall-page .plate-area .fit {
+    top: 20px;
+    bottom: auto;
+  }
+  .player .plate-area button.make-show {
+    position: fixed;
+    top: auto;
+    bottom: 22px;
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+
+/* The foot's buttons, each told apart by an icon and a colour: the way on
+   filled, Save in gold, Share in blue, 3D plain. */
+.make-foot .foot-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.player .make-panel .make-foot > a,
+.player .make-panel .make-foot button {
+  gap: 6px;
+}
+.player .make-panel .make-foot button.make-save {
+  border: 1.5px solid #c9962f;
+  color: var(--theme-text-primary);
+}
+.player .make-panel .make-foot button.make-save .foot-icon {
+  color: #d9a63b;
+}
+.player .make-panel .make-foot button.make-save:hover:not(:disabled) {
+  background: color-mix(in srgb, #d9a63b 16%, transparent);
+}
+.player .make-panel .make-foot button.make-share {
+  border: 1.5px solid var(--act-watch);
+  color: var(--theme-text-primary);
+}
+.player .make-panel .make-foot button.make-share .foot-icon {
+  color: var(--act-watch);
+}
+.player .make-panel .make-foot button.make-share:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--act-watch) 16%, transparent);
+}
+.make-foot .make-3d .foot-icon {
+  color: var(--theme-text-secondary);
+}
+
+/* A heading with its ⓘ. */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.make-panel .section-head h2 {
+  margin: 0;
+}
+.info-tip {
+  position: relative;
+  display: inline-flex;
+}
+.player button.info-tip-button {
+  width: 22px;
+  height: 22px;
+  min-height: 0;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--theme-text-secondary);
+}
+.info-tip-button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.info-tip-bubble {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: -40px;
+  z-index: 8;
+  width: min(290px, 80vw);
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.28);
+  color: var(--theme-text-primary);
+  font-size: 13.5px;
+  line-height: 1.45;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.info-tip:hover .info-tip-bubble,
+.info-tip:focus-within .info-tip-bubble,
+.info-tip.open .info-tip-bubble {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* The title folds and opens the panel. */
+.make-top h2 {
+  display: flex;
+}
+.player .make-panel button.make-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  min-height: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+.make-title svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--theme-text-secondary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transform: rotate(180deg);
+  transition: transform 0.2s;
+}
+.make-panel.peek .make-title svg {
+  transform: none;
+}
+/* Folded: only the title and the foot. */
+.make-panel.peek .make-tabs,
+.make-panel.peek .make-body {
+  display: none;
+}
+.workspace.wall-page .make-panel.peek {
+  height: auto;
+}
+
+/* The tab's end fades out while there is more below. */
+.make-body {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 calc(100% - 26px),
+    transparent
+  );
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 26px), transparent);
+  padding-bottom: 26px;
+}
+
+/* More: the photo, then tiles with an icon over a word. */
+.player .make-panel button.make-photo-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 96px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1.5px solid #c9962f;
+  background: #2b2116;
+}
+.make-photo-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.make-photo-tile span {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ecc463, #c9962f);
+  color: #2b1d04;
+  font-weight: 750;
+  font-size: 13px;
+}
+.make-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 8px;
+}
+.player .make-panel button.make-tile {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-height: 74px;
+  padding: 10px 4px 8px;
+  border-radius: 14px;
+  border: 1px solid var(--theme-border);
+  background: color-mix(in srgb, var(--theme-text-primary) 4%, transparent);
+  color: var(--theme-text-primary);
+  font-size: 12.5px;
+  font-weight: 650;
+}
+.make-tile svg {
+  width: 26px;
+  height: 26px;
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Each tile its own glaze. */
+.make-tile:nth-child(5n + 1) svg {
+  stroke: #2f8f6b;
+}
+.make-tile:nth-child(5n + 2) svg {
+  stroke: #c9962f;
+}
+.make-tile:nth-child(5n + 3) svg {
+  stroke: #2a7fb8;
+}
+.make-tile:nth-child(5n + 4) svg {
+  stroke: #c0563a;
+}
+.make-tile:nth-child(5n + 5) svg {
+  stroke: #7a5bb5;
+}
+.player .make-panel button.make-tile:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+}
+.make-files .paper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--theme-text-secondary);
+}
+.make-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* The real wall's badge, in the corner of the wall. */
+.player .plate-area button.photo-badge {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 3px 14px 3px 3px;
+  border-radius: 999px;
+  border: 2px solid #d9a63b;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  font-weight: 700;
+  font-size: 13.5px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.28);
+}
+.photo-badge img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.player .plate-area button.photo-badge[aria-pressed='true'] {
+  background: linear-gradient(180deg, #ecc463, #c9962f);
+  color: #2b1d04;
+}
+
+/* The wipe: the photo left of a golden handle, our wall right of it. */
+.photo-wipe {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.photo-wipe-photo {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #1b140d;
+}
+.photo-wipe-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.photo-wipe-credit {
+  position: absolute;
+  left: 12px;
+  bottom: 10px;
+  margin: 0;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgb(0 0 0 / 0.55);
+  color: #f4ead8;
+  font-size: 11.5px;
+}
+.photo-wipe-missing {
+  color: #f4ead8;
+}
+.photo-wipe-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 44px;
+  margin-left: -22px;
+  pointer-events: auto;
+  cursor: ew-resize;
+  touch-action: none;
+  display: grid;
+  place-items: center;
+}
+.photo-wipe-handle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 20px;
+  width: 4px;
+  background: linear-gradient(180deg, #f0cd75, #c9962f);
+  box-shadow: 0 0 12px rgb(0 0 0 / 0.4);
+}
+.photo-wipe-grip {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #ecc463, #c9962f);
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.4);
+}
+.photo-wipe-grip svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: #2b1d04;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.photo-wipe-handle:focus-visible .photo-wipe-grip {
+  outline: 3px solid var(--theme-accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 760px) {
+  /* The slim bar: the wall takes the rest of the screen. */
+  .player.at-color:not(.along):not(.editor)
+    .workspace.wall-page.make-peek
+    .stage,
+  .player.at-color:not(.along)
+    .workspace.wall-page.make-peek
+    .stage:not(.comparing) {
+    height: calc(100vh - 310px);
+  }
+  /* Reset view has the top left corner on a phone. */
+  .player .plate-area button.photo-badge {
+    top: 12px;
+    left: auto;
+    right: 12px;
+  }
+}

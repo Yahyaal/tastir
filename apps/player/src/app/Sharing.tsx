@@ -16,8 +16,12 @@ export function ShareLink({
   fields,
   name,
   compact = false,
+  short = false,
   presentation,
 }: {
+  /** In Make it yours: one word, “Share”, said in full on hover; a phone
+   * offers its own share sheet. Implies compact. */
+  short?: boolean;
   /** In the step bar: the explanation is a tooltip, and “Copied” shows
    * for a few seconds (the link itself only when it could not be copied). */
   compact?: boolean;
@@ -32,13 +36,13 @@ export function ShareLink({
   const [said, setSaid] = useState<string>();
   const [copied, setCopied] = useState(false);
   useEffect(() => {
-    if (!compact || !copied) return;
+    if (!(compact || short) || !copied) return;
     const t = setTimeout(() => {
       setSaid(undefined);
       setCopied(false);
     }, 5000);
     return () => clearTimeout(t);
-  }, [compact, copied]);
+  }, [compact, short, copied]);
   const make = async () => {
     const own = /^mine\/(.+)$/.exec(address)?.[1];
     const pattern = own ? getPattern(own) : undefined;
@@ -70,6 +74,20 @@ export function ShareLink({
     }
     const url = `${window.location.origin}${window.location.pathname}#/shared/${code}`;
     setLink(url);
+    // A phone's own share sheet, when it has one.
+    if (
+      short &&
+      typeof navigator.share === 'function' &&
+      window.matchMedia?.('(pointer: coarse)').matches
+    ) {
+      try {
+        await navigator.share({ title: name, url });
+        setCopied(true);
+        return;
+      } catch {
+        // Closed or refused: copy it instead.
+      }
+    }
     try {
       await navigator.clipboard.writeText(url);
       setSaid('Copied. Anyone who opens it sees this wall, in any browser.');
@@ -82,12 +100,21 @@ export function ShareLink({
     <div className="share-link">
       <button
         type="button"
-        className={compact ? 'secondary' : 'quiet'}
-        title={compact ? 'Anyone with the link sees this design' : undefined}
+        className={
+          short ? 'secondary make-share' : compact ? 'secondary' : 'quiet'
+        }
+        title={
+          short
+            ? 'Copy a link to this design: anyone who opens it sees this wall'
+            : compact
+              ? 'Anyone with the link sees this design'
+              : undefined
+        }
         onClick={() => void make()}
       >
-        {compact ? (
+        {compact || short ? (
           <svg
+            className={short ? 'foot-icon' : undefined}
             width="17"
             height="17"
             viewBox="0 0 24 24"
@@ -101,14 +128,14 @@ export function ShareLink({
             <path d="m10 9 3-3a4.2 4.2 0 0 1 6 6l-3 3M14 15l-3 3a4.2 4.2 0 0 1-6-6l3-3M8 16l8-8" />
           </svg>
         ) : null}
-        Copy a share link
+        {short ? 'Share' : 'Copy a share link'}
       </button>
       {said ? (
         <p className="hint" role="status">
           {said}
         </p>
       ) : null}
-      {link && !(compact && copied) ? (
+      {link && !((compact || short) && copied) ? (
         <input
           type="text"
           readOnly

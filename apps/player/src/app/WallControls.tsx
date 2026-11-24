@@ -62,7 +62,7 @@ function FinishColors({
   );
 }
 
-const STYLE_NAMES: Record<WallStyle, string> = {
+export const STYLE_NAMES: Record<WallStyle, string> = {
   tiles: 'Tiles',
   strapwork: 'Strapwork',
   interlace: 'Interlace',
@@ -84,6 +84,8 @@ export function WallControls({
   sample,
   finish,
   onFinish,
+  parts = 'all',
+  heading = 'The wall',
 }: {
   style: WallStyle;
   /** The styles offered: a pattern whose bands cannot weave leaves out interlace. */
@@ -96,52 +98,63 @@ export function WallControls({
   /** The grout or band colours, chosen with swatches. */
   finish?: Finish;
   onFinish?: (change: { lines?: string; band?: string }) => void;
+  /** All of it, or (in Make it yours) the style and width apart from the
+   * finish colours, which fold away under More colours. */
+  parts?: 'all' | 'style' | 'finish';
+  /** The heading, or none. */
+  heading?: string;
 }) {
   const id = useId();
   const jali = style === 'jali';
   // Watercolour always leaves a paper line, however thin.
   const least = jali ? 0.5 : style === 'lines' ? 0.25 : 0;
   const width = Math.max(least, grout);
+  const showStyle = parts !== 'finish';
+  const showFinish = parts !== 'style';
   return (
     <section className="wall-section">
-      <h2>The wall</h2>
-      <div className="wall-styles" role="group" aria-label="Style">
-        {styles.map((s) => (
-          <button
-            key={s}
-            type="button"
-            aria-pressed={s === style}
-            onClick={() => onStyle(s)}
-          >
-            <span className="style-sample">{sample(s)}</span>
-            <span>{STYLE_NAMES[s]}</span>
-          </button>
-        ))}
-      </div>
-      <div className="wall-width">
-        <label htmlFor={id}>
-          {jali
-            ? 'Lattice'
-            : banded(style)
-              ? 'Band width'
-              : style === 'lines'
-                ? 'Paper line'
-                : 'Line width'}
-        </label>
-        <input
-          id={id}
-          type="range"
-          min={least}
-          max={3}
-          step={0.25}
-          value={width}
-          onChange={(e) => onGrout(Number(e.target.value))}
-        />
-        <output htmlFor={id} aria-hidden="true">
-          {width === 0 ? 'none' : `${width}×`}
-        </output>
-      </div>
-      {finish && onFinish && style === 'tiles' ? (
+      {heading ? <h2>{heading}</h2> : null}
+      {showStyle ? (
+        <>
+          <div className="wall-styles" role="group" aria-label="Style">
+            {styles.map((s) => (
+              <button
+                key={s}
+                type="button"
+                aria-pressed={s === style}
+                onClick={() => onStyle(s)}
+              >
+                <span className="style-sample">{sample(s)}</span>
+                <span>{STYLE_NAMES[s]}</span>
+              </button>
+            ))}
+          </div>
+          <div className="wall-width">
+            <label htmlFor={id}>
+              {jali
+                ? 'Lattice'
+                : banded(style)
+                  ? 'Band width'
+                  : style === 'lines'
+                    ? 'Paper line'
+                    : 'Line width'}
+            </label>
+            <input
+              id={id}
+              type="range"
+              min={least}
+              max={3}
+              step={0.25}
+              value={width}
+              onChange={(e) => onGrout(Number(e.target.value))}
+            />
+            <output htmlFor={id} aria-hidden="true">
+              {width === 0 ? 'none' : `${width}×`}
+            </output>
+          </div>
+        </>
+      ) : null}
+      {showFinish && finish && onFinish && style === 'tiles' ? (
         <FinishColors
           label="Grout color"
           swatches={LINES}
@@ -149,7 +162,7 @@ export function WallControls({
           onChange={(lines) => onFinish({ lines })}
         />
       ) : null}
-      {finish && onFinish && banded(style) ? (
+      {showFinish && finish && onFinish && banded(style) ? (
         <>
           <FinishColors
             label="Band color"
@@ -165,10 +178,14 @@ export function WallControls({
           />
         </>
       ) : null}
-      <p className="hint">
-        {jali ? 'An open screen. Switch styles to see your tile colors. ' : ''}
-        Drag to move along the wall, scroll to zoom.
-      </p>
+      {showStyle ? (
+        <p className="hint">
+          {jali
+            ? 'An open screen. Switch styles to see your tile colors. '
+            : ''}
+          Drag to move along the wall, scroll to zoom.
+        </p>
+      ) : null}
     </section>
   );
 }

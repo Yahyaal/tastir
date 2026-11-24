@@ -11,6 +11,13 @@ import { shownStyle, stylesFor, Wall } from './Wall';
 import { cardView, tiling, wallView } from './drawing';
 import { DEFAULT_PEN, PAPER } from './pen';
 
+/** The Style group, in its tab of Make it yours when there is one. */
+const styleGroup = () => {
+  const tab = screen.queryByRole('tab', { name: 'Look' });
+  if (tab && tab.getAttribute('aria-selected') !== 'true') fireEvent.click(tab);
+  return screen.getByRole('group', { name: 'Style' });
+};
+
 type P = { x: number; y: number };
 const parse = (s: string | null): P[] =>
   (s ?? '')
@@ -255,7 +262,7 @@ describe('the wall controls', () => {
         screen.getByRole('button', { name: /^(Next|Repeat it)$/ }),
       );
     fireEvent.click(
-      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+      within(styleGroup()).getByRole('button', {
         name: 'Watercolour',
       }),
     );
@@ -274,7 +281,7 @@ describe('the wall controls', () => {
     });
     expect(width()).toBeCloseTo(before / 2, 9);
     fireEvent.click(
-      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+      within(styleGroup()).getByRole('button', {
         name: 'Screen',
       }),
     );
@@ -296,10 +303,11 @@ describe('the wall controls', () => {
       ),
     ).toBeCloseTo(0.024 * 5.4, 9);
     fireEvent.click(
-      within(screen.getByRole('group', { name: 'Style' })).getByRole('button', {
+      within(styleGroup()).getByRole('button', {
         name: 'Tiles',
       }),
     );
+    fireEvent.click(screen.getByRole('tab', { name: 'Look' }));
     expect(screen.getByRole('heading', { name: 'Colors' })).toBeTruthy();
   });
 });
@@ -344,10 +352,16 @@ describe('the view of a library card', () => {
     },
   });
 
-  it('is two tiles across, closer on a dense tile, never under 3/4 tile', () => {
-    expect(across(cardView(model))).toBeCloseTo(2 * span, 9);
-    // 625 pieces: 25 across a tile, so one tile makes 25.
-    expect(across(cardView(dense(625)))).toBeCloseTo(span, 9);
+  it('shows 8 to 24 pieces across, never under 3/4 tile', () => {
+    const { u, v } = model.pattern.cell;
+    const area = Math.abs(u.x * v.y - u.y * v.x);
+    const piecesAcross = (m: typeof model) =>
+      across(cardView(m)) / Math.sqrt(area / m.pattern.pieces.length);
+    // The star and cross: two pieces to a tile, drawn further out.
+    expect(piecesAcross(model)).toBeCloseTo(8, 6);
+    expect(across(cardView(model))).toBeGreaterThan(2 * span);
+    // 400 pieces: closer in, to 24 across.
+    expect(piecesAcross(dense(400))).toBeCloseTo(24, 6);
     expect(across(cardView(dense(5000)))).toBeCloseTo(0.75 * span, 9);
   });
 });

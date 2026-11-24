@@ -10,16 +10,19 @@ for (const theme of ['light', 'dark'] as const) {
     });
     await page.goto('/');
     await expect(page.getByRole('main')).toHaveCount(1);
-    const progress = page.getByRole('progressbar', {
-      name: 'Pattern drawing progress',
-    });
-    await expect(progress).toHaveAttribute('aria-valuemin', '0');
-    await expect(progress).toHaveAttribute('aria-valuemax', '100');
-    await expect(page.locator('.hero-color-chip').first()).toHaveAttribute(
-      'role',
-      'img',
-    );
-    const image = page.locator('img.thumbnail').first();
+    await expect(
+      page.getByRole('navigation', { name: 'Places, west to east' }),
+    ).toBeVisible();
+    await expect(page.getByRole('toolbar', { name: 'Filters' })).toBeVisible();
+    await expect(
+      page.getByRole('searchbox', { name: 'Search patterns' }),
+    ).toBeVisible();
+    // Tab reaches a window's View, and its three buttons show.
+    const first = page.locator('.library-grid .window').first();
+    await first.getByRole('link', { name: /^View / }).focus();
+    await expect(first.locator('.window-actions')).toHaveCSS('opacity', '1');
+    await expect(first.locator('.window-dots')).toHaveAttribute('role', 'img');
+    const image = page.locator('.library-grid .window-pic img').first();
     await image.scrollIntoViewIfNeeded();
     await expect(image).toHaveAttribute('srcset', /320w, .*480w/);
     await expect
@@ -30,7 +33,7 @@ for (const theme of ['light', 'dark'] as const) {
       )
       .toBe(true);
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-    for (const selector of ['.level-intermediate', '.verification-label']) {
+    for (const selector of ['.window-meta', '.window-note']) {
       const ratios = await page.locator(selector).evaluateAll((elements) => {
         const canvas = document.createElement('canvas');
         canvas.width = canvas.height = 1;

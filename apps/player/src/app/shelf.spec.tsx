@@ -73,8 +73,8 @@ describe('the shelf of my designs', () => {
       window.location.hash = link.getAttribute('href') ?? '';
       window.dispatchEvent(new HashChangeEvent('hashchange'));
     });
-    expect(document.querySelector('.label')?.textContent).toBe('Color');
-    expect(screen.getByText('Blue one', { selector: 'b' })).toBeTruthy();
+    expect(document.querySelector('.make-panel')).not.toBeNull();
+    expect(screen.getByTitle('Your design “Blue one”')).toBeTruthy();
   });
 
   it('draws a design with its own inking', () => {
@@ -148,24 +148,15 @@ describe('the shelf of my designs', () => {
     expect(design('x'.repeat(300))?.name).toHaveLength(60);
   });
 
-  it('shows one row of them on the home page, and links to the rest', () => {
+  it('counts them on the home page, and links to #/work for the rest', () => {
     window.location.hash = '';
     for (const n of ['One', 'Two', 'Three', 'Four', 'Five']) design(n);
     render(<App entries={entries} />);
+    // The home names the work in its top bar; the designs are on #/work.
     expect(
       screen.getByRole('link', { name: 'Your work (5)' }).getAttribute('href'),
     ).toBe('#/work');
-    const yours = screen.getByRole('region', { name: 'Your work' });
-    // The four latest, without rename or delete (those are on #/work).
-    expect(
-      within(yours)
-        .getAllByRole('heading', { level: 4 })
-        .map((h) => h.textContent),
-    ).toEqual(['Five', 'Four', 'Three', 'Two']);
-    expect(within(yours).queryByRole('button', { name: 'Rename' })).toBeNull();
-    expect(
-      within(yours).getByRole('link', { name: /See all \(5\)/ }),
-    ).toHaveProperty('hash', '#/work');
+    expect(screen.queryByRole('region', { name: 'Your work' })).toBeNull();
   });
 
   it('says what goes on #/work while there is nothing yet', () => {
@@ -174,19 +165,6 @@ describe('the shelf of my designs', () => {
       screen.getByRole('heading', { level: 1, name: 'Your work' }),
     ).toBeTruthy();
     expect(screen.getByText(/Nothing here yet/)).toBeTruthy();
-  });
-
-  it('puts Your work after the welcome when nothing is in progress', () => {
-    window.location.hash = '';
-    design('One');
-    render(<App entries={entries} />);
-    const yours = screen.getByRole('region', { name: 'Your work' });
-    const hero = document.querySelector('.hero') as HTMLElement;
-    expect(
-      hero.compareDocumentPosition(yours) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
-    // A row of cards, without tabs.
-    expect(within(yours).queryByRole('group', { name: 'Show' })).toBeNull();
   });
 
   it('keeps an unreadable store aside before writing, and says so', () => {

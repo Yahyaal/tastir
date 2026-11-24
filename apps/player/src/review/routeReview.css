@@ -1,0 +1,52 @@
+/* The route review (#/review/route). */
+.route-review {
+  color: var(--theme-text-primary);
+  line-height: 1.55;
+}
+.route-review .review-top {
+  padding: 12px 20px;
+}
+.route-review-body {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px 70vh;
+}
+.route-review h1 {
+  font: 2rem var(--display);
+  margin: 28px 0 8px;
+}
+.route-review h2 {
+  font: 1.3rem var(--display);
+  color: var(--theme-label);
+}
+.route-review .lede {
+  font-size: 1.1rem;
+  max-width: 46em;
+  color: var(--theme-text-secondary);
+}
+.route-review-chosen {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+}
+.route-review-panel {
+  margin-top: 24px;
+  padding: 16px 0 0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-canvas);
+  color: var(--theme-text-primary);
+}
+.route-review-panel h2 {
+  margin: 0 0 8px 20px;
+}
+/* Only the page's own route sticks to the top. */
+.route-review-panel .route {
+  position: relative;
+  top: 0;
+}
+.route-review-places {
+  color: var(--theme-text-secondary);
+}

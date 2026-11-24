@@ -1,0 +1,763 @@
+/* The library page (Library.tsx, StartHere.tsx), REDESIGN.3. */
+.library {
+  --lib-gold: linear-gradient(180deg, #ecc463, #c9962f);
+  --lib-shadow: 0 1px 2px rgb(60 40 20 / 0.08), 0 8px 24px rgb(60 40 20 / 0.1);
+  --route-top: 64px;
+  min-height: 100vh;
+  color: var(--theme-text-primary);
+  background: var(--theme-bg-canvas);
+}
+/* The old library's column (styles.css) gives way to the full width. */
+.library.lib-page {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------- the top bar: one line ---------- */
+.lib-top {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  background: color-mix(in srgb, var(--theme-bg-surface) 94%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--theme-border);
+}
+.lib-logo {
+  color: inherit;
+  text-decoration: none;
+}
+.lib-logo h1 {
+  margin: 0;
+  font: 26px/1 var(--display);
+  white-space: nowrap;
+}
+.lib-logo h1 span {
+  font: 600 20px/1 var(--arabic);
+  color: var(--theme-label);
+}
+.lib-nav {
+  display: flex;
+  gap: 4px;
+}
+.lib-nav a {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 650;
+  color: var(--theme-text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.lib-nav a:hover {
+  color: var(--theme-text-primary);
+}
+.lib-nav a[aria-current='page'] {
+  background: var(--theme-bg-raised);
+  color: var(--theme-text-primary);
+}
+.lib-nav small {
+  font-size: inherit;
+  color: var(--theme-text-muted);
+}
+.lib-search {
+  flex: 1;
+  max-width: 420px;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
+}
+.lib-search:focus-within {
+  border-color: var(--theme-accent);
+}
+.lib-search svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: none;
+  stroke: var(--theme-text-muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.lib-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  outline: none;
+}
+.lib-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- the main column ---------- */
+.lib-main {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 28px 40px;
+}
+
+/* One row of filters under the route. */
+.lib-filters,
+.lib-traditions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.lib-filters {
+  padding: 14px 0 4px;
+}
+.lib-flabel {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--theme-text-muted);
+  margin-right: 2px;
+}
+.lib-chip {
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 650 14px var(--text);
+  cursor: pointer;
+}
+.lib-chip:hover:not(:disabled) {
+  border-color: var(--theme-border-hover);
+}
+.lib-chip:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.lib-chip[aria-pressed='true'] {
+  border-color: var(--theme-accent);
+  background: color-mix(
+    in srgb,
+    var(--theme-accent) 12%,
+    var(--theme-bg-surface)
+  );
+  color: var(--theme-accent);
+}
+.lib-chip small {
+  font-size: 12px;
+  color: var(--theme-text-muted);
+}
+.fold-star {
+  flex: none;
+}
+.lib-sep {
+  width: 1px;
+  height: 22px;
+  background: var(--theme-border);
+  margin: 0 6px;
+}
+
+/* ---------- Start here ---------- */
+.start-here {
+  margin: 18px 0 6px;
+  padding: 20px 22px 22px;
+  border-radius: 22px;
+  background: color-mix(
+    in srgb,
+    var(--theme-accent) 6%,
+    var(--theme-bg-surface)
+  );
+  border: 1px solid var(--theme-border);
+}
+.start-here-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.start-here-head h2 {
+  margin: 0;
+  font: 26px/1 var(--display);
+}
+.start-here-head p {
+  margin: 0;
+  flex: 1;
+  min-width: 220px;
+  color: var(--theme-text-secondary);
+}
+.start-here-head p b {
+  color: var(--theme-label);
+}
+.start-here-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  background: var(--act-watch);
+  color: var(--on-act);
+  font-weight: 750;
+  text-decoration: none;
+}
+.start-here-path {
+  color: var(--theme-accent);
+  font-weight: 650;
+}
+.start-here-shelf {
+  position: relative;
+}
+.start-here-row {
+  list-style: none;
+  margin: 0;
+  padding: 4px 2px 8px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 190px;
+  gap: 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 2px;
+}
+.start-here-row > li {
+  scroll-snap-align: start;
+  min-width: 0;
+}
+.start-here-arrow {
+  position: absolute;
+  top: 78px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  font-size: 24px;
+  line-height: 1;
+  box-shadow: var(--lib-shadow);
+  cursor: pointer;
+}
+.start-here-arrow.left {
+  left: -14px;
+}
+.start-here-arrow.right {
+  right: -14px;
+}
+.lesson-window {
+  min-width: 0;
+}
+.lesson-window h3 {
+  margin: 10px 2px 2px;
+  font: 600 15.5px/1.25 var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lesson-focus {
+  margin: 0 2px;
+  font-size: 13px;
+  color: var(--theme-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.lesson-number {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  font-weight: 800;
+  box-shadow: var(--lib-shadow);
+}
+.lesson-window.is-next .lesson-number {
+  background: var(--act-watch);
+  color: var(--on-act);
+}
+.lesson-playing {
+  position: absolute;
+  inset: 0;
+  background: var(--theme-bg-card);
+}
+.lesson-playing > svg {
+  width: 100%;
+  height: 100%;
+}
+.lesson-step {
+  position: absolute;
+  left: 50%;
+  top: 22%;
+  transform: translateX(-50%);
+  padding: 3px 10px;
+  border-radius: 99px;
+  background: rgb(28 39 51 / 0.82);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+/* The work left partway, at the front of the row. */
+.continue-card {
+  display: grid;
+  gap: 4px;
+  height: 100%;
+  padding: 10px;
+  border-radius: 18px;
+  border: 2px solid currentColor;
+  background: var(--theme-bg-surface);
+  color: var(--act-watch);
+  text-decoration: none;
+}
+.continue-card.act-draw {
+  color: var(--act-draw);
+}
+.continue-pic {
+  display: block;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--theme-bg-raised);
+}
+.continue-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.continue-what {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 14px;
+}
+.continue-card b {
+  color: var(--theme-text-primary);
+  font-weight: 650;
+  font-size: 14.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.continue-card small {
+  color: var(--theme-text-secondary);
+}
+
+/* ---------- the heading of the patterns ---------- */
+.lib-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px 16px;
+  flex-wrap: wrap;
+  margin: 24px 0 14px;
+  scroll-margin-top: 170px;
+}
+.lib-head h2 {
+  margin: 0;
+  font: 28px/1.1 var(--display);
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  scroll-margin-top: 170px;
+}
+.lib-head h2:focus {
+  outline: none;
+}
+.lib-arabic {
+  font: 600 24px/1 var(--arabic);
+  color: var(--theme-label);
+}
+.lib-count {
+  flex: 1;
+  min-width: 240px;
+  margin: 0;
+  color: var(--theme-text-secondary);
+}
+.lib-count b {
+  color: var(--theme-text-primary);
+}
+.lib-clear {
+  margin-left: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--theme-accent);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.lib-books {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  font-weight: 650;
+  text-decoration: none;
+}
+.lib-books[aria-current='page'] {
+  border-color: var(--theme-accent);
+  color: var(--theme-accent);
+}
+.lib-books small {
+  color: var(--theme-text-muted);
+}
+.lib-sort select {
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  font: 650 14px var(--text);
+}
+.lib-traditions {
+  margin: -4px 0 16px;
+}
+
+/* ---------- the grid of windows ---------- */
+.library-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 32px 24px;
+}
+.lib-empty {
+  padding: 40px 0;
+  font-size: 17px;
+  color: var(--theme-text-secondary);
+}
+
+.library .site-footer {
+  margin-top: 56px;
+  padding: 24px 0 0;
+  border-top: 1px solid var(--theme-border);
+  color: var(--theme-text-muted);
+  font-size: 14px;
+}
+.library .site-footer p {
+  margin: 0 0 8px;
+}
+.upcoming-link {
+  color: var(--theme-text-secondary);
+}
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 900px) {
+  .lib-nav a:not([aria-current]) {
+    padding: 8px 8px;
+  }
+}
+@media (max-width: 760px) {
+  .library {
+    --route-top: 0px;
+  }
+  /* The top bar takes two lines: the name and actions, then search. */
+  .lib-top {
+    position: relative;
+    height: auto;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    padding: 10px 14px;
+  }
+  .lib-logo h1 {
+    font-size: 22px;
+  }
+  .lib-nav {
+    order: 3;
+    flex: 1 1 100%;
+    overflow-x: auto;
+  }
+  .lib-actions {
+    margin-left: auto;
+  }
+  /* "Open a pattern file" keeps its name for screen readers but shows
+     only its icon, so the name and the actions fit one line. */
+  .library .lib-actions .new-pattern .open-file {
+    font-size: 0;
+    gap: 0;
+    padding-inline: 10px;
+  }
+  .library .lib-actions .new-pattern .open-file .btn-icon {
+    width: 16px;
+    height: 16px;
+  }
+  .lib-search {
+    order: 4;
+    flex: 1 1 100%;
+    max-width: none;
+    margin: 0;
+  }
+  .lib-main {
+    padding: 0 14px 32px;
+  }
+  /* The filters are one row that scrolls sideways. */
+  .lib-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .lib-filters > * {
+    flex: none;
+  }
+  .start-here {
+    padding: 16px 14px;
+    margin-inline: -4px;
+  }
+  .start-here-row {
+    grid-auto-columns: 150px;
+  }
+  .start-here-arrow {
+    display: none;
+  }
+  .lib-head h2 {
+    font-size: 24px;
+  }
+  .library-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 14px;
+  }
+  .library-grid .window h3 {
+    font-size: 15px;
+  }
+  .library-grid .window-meta {
+    font-size: 12.5px;
+    gap: 2px 8px;
+  }
+}
+
+/* ---------- Colour in the filters ---------- */
+/* Each level its own glaze and star: green, gold, terracotta. */
+.level-beginner {
+  --level: var(--malachite);
+  --level-text: var(--act-draw);
+}
+.level-intermediate {
+  --level: var(--act-result);
+  --level-text: var(--level-intermediate-text);
+}
+.level-advanced {
+  --level: var(--act-make);
+  --level-text: var(--act-make);
+}
+.lib-chip.lib-level {
+  border-color: color-mix(in srgb, var(--level) 45%, transparent);
+  background: color-mix(in srgb, var(--level) 10%, var(--theme-bg-surface));
+  color: var(--level-text);
+}
+.lib-chip.lib-level .fold-star {
+  color: var(--level);
+}
+.lib-chip.lib-level[aria-pressed='true'] {
+  border-color: var(--level);
+  background: var(--level);
+  color: #fff;
+}
+.lib-chip.lib-level[aria-pressed='true'] .fold-star {
+  color: #fff;
+}
+.lib-chip.lib-level .window-dots {
+  color: inherit;
+  background: none;
+  padding: 0;
+}
+/* The stars: no box, just the star and its number, gold when chosen. */
+.lib-chip.lib-star {
+  border-color: transparent;
+  background: none;
+  padding: 0 8px;
+  gap: 4px;
+}
+.lib-chip.lib-star .fold-star {
+  color: color-mix(in srgb, var(--theme-text-primary) 55%, #2a7fb8);
+}
+.lib-chip.lib-star:hover:not(:disabled) {
+  border-color: transparent;
+  background: color-mix(in srgb, #d9a63b 12%, transparent);
+}
+.lib-chip.lib-star[aria-pressed='true'] {
+  border-color: #d9a63b;
+  background: color-mix(in srgb, #d9a63b 22%, var(--theme-bg-surface));
+  color: var(--theme-text-primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, #d9a63b 25%, transparent);
+}
+.lib-chip.lib-star[aria-pressed='true'] .fold-star {
+  color: #c9962f;
+}
+.lib-other {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.lib-other > summary {
+  list-style: none;
+}
+.lib-other > summary::-webkit-details-marker {
+  display: none;
+}
+.lib-other-menu {
+  display: inline-flex;
+  gap: 6px;
+}
+.lib-chip.lib-photo svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: #2a8fa0;
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+}
+.lib-chip.lib-photo[aria-pressed='true'] {
+  border-color: #2a8fa0;
+  background: color-mix(in srgb, #2a8fa0 16%, var(--theme-bg-surface));
+  color: var(--theme-text-primary);
+}
+
+/* Start here folded: the path as numbered stars, each in its level's
+   colour, the next one in gold. */
+.start-here-fold {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--theme-border);
+  background: none;
+  color: var(--theme-text-primary);
+  font: 650 14px var(--text);
+  cursor: pointer;
+}
+.start-here-fold svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s;
+}
+.start-here-fold[aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+.start-here-stones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.start-here-stone {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: #fff;
+  font: 800 13px var(--text);
+  text-decoration: none;
+  transition: transform 0.15s;
+}
+.start-here-stone svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: var(--level, var(--malachite));
+}
+.start-here-stone span {
+  position: relative;
+}
+/* The lesson to go on with keeps its level's colour, and stands out by
+   a ring and its size, not by another colour. */
+.start-here-stone.is-next {
+  transform: scale(1.18);
+}
+.start-here-stone.is-next svg {
+  stroke: var(--theme-text-primary);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  filter: drop-shadow(
+    0 0 5px color-mix(in srgb, var(--theme-text-primary) 45%, transparent)
+  );
+}
+.start-here-stone.is-next:hover {
+  transform: scale(1.25) rotate(11deg);
+}
+.start-here-stone:hover {
+  transform: scale(1.12) rotate(11deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .start-here-stone {
+    transition: none;
+  }
+}
+.start-here-folded {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+.continue-card.compact {
+  display: inline-grid;
+  grid-template-columns: 44px auto;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  align-items: center;
+  width: auto;
+  height: auto;
+  padding: 6px 14px 6px 6px;
+  border-radius: 999px;
+}
+.continue-card.compact .continue-pic {
+  grid-row: 1 / span 2;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  aspect-ratio: 1;
+}
+.continue-card.compact .continue-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.continue-card.compact small {
+  display: none;
+}

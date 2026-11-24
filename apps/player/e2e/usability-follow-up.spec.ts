@@ -1,13 +1,13 @@
 import { expect, test } from '@playwright/test';
+import { tab } from './panel';
 const id = 'eight-fold-star-and-cross';
 
 test('a variation saves immediately and its construction can be duplicated independently', async ({
   page,
 }) => {
   await page.goto(`/#/${id}/result`);
-  await expect(
-    page.getByText(/Create and save a separate copy in this browser/),
-  ).toBeVisible();
+  // A lesson's filled button is Next lesson; a variation is in More.
+  await tab(page, 'More');
   await page
     .getByRole('button', { name: 'Make a variation', exact: true })
     .click();
@@ -51,14 +51,12 @@ test('a variation saves immediately and its construction can be duplicated indep
   await expect(page.locator('svg.wall')).toBeVisible();
 });
 
-test('saved design copies preserve appearance, reopen, and remain reachable in the phone work row', async ({
+test('saved design copies preserve appearance, reopen, and are named on the home page', async ({
   page,
-}, info) => {
+}) => {
   await page.goto(`/#/${id}/result`);
   await page.getByRole('button', { name: 'Chefchaouen', exact: true }).click();
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Blue original');
@@ -94,18 +92,11 @@ test('saved design copies preserve appearance, reopen, and remain reachable in t
   await expect(page.locator('svg.wall')).toBeVisible();
   await page.reload();
   await expect(page.locator('svg.wall')).toBeVisible();
+  // The home names the work in its top bar; all of it is on #/work.
   await page.goto('/');
-  const row = page.locator('.work-row .cards').first();
-  await row.scrollIntoViewIfNeeded();
-  if (info.project.name === 'phone') {
-    expect(await row.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(
-      true,
-    );
-    await row.evaluate((el) => {
-      el.scrollLeft = el.scrollWidth;
-    });
-    await expect(row.locator('.card').last()).toBeInViewport();
-  }
+  await expect(
+    page.getByRole('link', { name: 'Your work (3)', exact: true }),
+  ).toBeVisible();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -117,9 +108,7 @@ test('a refused duplicate shows an error and leaves the original stored', async 
   page,
 }) => {
   await page.goto(`/#/${id}/result`);
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Safe original');

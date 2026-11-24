@@ -6,7 +6,13 @@ import { LIBRARY, listed, type Entry } from './library';
 import { Library } from './Library';
 import { WorkPage } from './YourWork';
 import { Broken, MissingDesign, Play } from './Player';
-import { isLibraryRoute, lessonRoute, useRoute } from './routing';
+import { placeInRoute } from './places';
+import {
+  isLibraryRoute,
+  lessonRoute,
+  useRoute,
+  type LessonPosition,
+} from './routing';
 import { openShared, useShared } from './Sharing';
 import { FeedbackHost } from '../feedback/FeedbackHost';
 const LearningPath = lazy(() =>
@@ -25,6 +31,34 @@ const FeedbackInbox = lazy(() =>
  */
 const Review = import.meta.env.DEV
   ? lazy(() => import('../review/Review').then((m) => ({ default: m.Review })))
+  : undefined;
+
+/** The window cards of the redesign, every arch in light and dark
+ * (#/review/windows), dev server only like the review page. */
+const WindowsReview = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/WindowsReview').then((m) => ({
+        default: m.WindowsReview,
+      })),
+    )
+  : undefined;
+
+/** The palette engine, before and after (#/review/palette-engine). */
+const PaletteEngineReview = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/PaletteEngineReview').then((m) => ({
+        default: m.PaletteEngineReview,
+      })),
+    )
+  : undefined;
+
+/** The route of the redesign (#/review/route), dev server only. */
+const RouteReview = import.meta.env.DEV
+  ? lazy(() =>
+      import('../review/RouteReview').then((m) => ({
+        default: m.RouteReview,
+      })),
+    )
   : undefined;
 
 /** The studio (#/studio): drawings shared with AI agents, on the dev server
@@ -176,6 +210,7 @@ function AppPage({
       <Library
         entries={listed(library)}
         startAtCollection={route === 'collection'}
+        place={placeInRoute(route)}
       />
     );
   if (route === 'feedback' || route.startsWith('feedback/'))
@@ -218,6 +253,33 @@ function AppPage({
     return Review ? (
       <Suspense fallback={<p className="review-loading">Loading…</p>}>
         <Review />
+      </Suspense>
+    ) : (
+      <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'review/windows') {
+    return WindowsReview ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <WindowsReview />
+      </Suspense>
+    ) : (
+      <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'review/palette-engine') {
+    return PaletteEngineReview ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <PaletteEngineReview />
+      </Suspense>
+    ) : (
+      <Broken message="The review page only exists on the dev server (pnpm dev)." />
+    );
+  }
+  if (route === 'review/route' || route.startsWith('review/route/')) {
+    return RouteReview ? (
+      <Suspense fallback={<p className="review-loading">Loading…</p>}>
+        <RouteReview place={route.slice('review/route/'.length) || undefined} />
       </Suspense>
     ) : (
       <Broken message="The review page only exists on the dev server (pnpm dev)." />
@@ -370,22 +432,73 @@ function AppPage({
   }
   // #/id and #/id/result open at the finished wall; #/id/watch autoplays;
   // #/id/repeat at the repeat, where drawing along goes on.
-  const { id, position, colourFirst } = lessonRoute(route);
+  const { id, position, colourFirst, design } = lessonRoute(route);
   const entry = entries.find((e) => e.id === id);
   if (!entry)
     return <Broken message={`There is no tutorial called "${route}".`} />;
   return (
-    <Play
+    <Lesson
       key={`lesson:${id}`}
+      id={id}
       json={entry.json}
       position={position}
-      lessonColourFirst={colourFirst ?? false}
+      colourFirst={colourFirst ?? false}
+      design={design}
+    />
+  );
+}
+
+/**
+ * A lesson. A finished wall's address may carry a design (?d=…): it is
+ * read once, when the lesson opens, and played as this browser's draft.
+ */
+function Lesson({
+  id,
+  json,
+  position,
+  colourFirst,
+  design,
+}: {
+  id: string;
+  json: unknown;
+  position: LessonPosition;
+  colourFirst: boolean;
+  design?: string;
+}) {
+  const [code] = useState(design);
+  const shared = useShared(code ?? '');
+  if (code && shared === undefined)
+    return (
+      <div className="player loading" role="status">
+        <p>Opening the design…</p>
+      </div>
+    );
+  const d = code && shared?.library === id ? shared.design : undefined;
+  return (
+    <Play
+      json={json}
+      position={position}
+      lessonColourFirst={colourFirst}
       start={
         position === 'beginning' || typeof position === 'number'
           ? 'beginning'
           : position
       }
       address={id}
+      carried={
+        d
+          ? {
+              tutorial: id,
+              ...(d.inked ? { inked: d.inked } : {}),
+              coloring: d.coloring,
+              ...(d.colorings ? { colorings: d.colorings } : {}),
+              look: d.look,
+              grout: d.grout,
+              ...(d.jali ? { jali: d.jali } : {}),
+              ...(d.pen ? { pen: d.pen } : {}),
+            }
+          : undefined
+      }
     />
   );
 }

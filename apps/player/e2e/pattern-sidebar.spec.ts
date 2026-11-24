@@ -48,9 +48,7 @@ test('browsing with unsaved work still offers Stay without changing the design',
 }, info) => {
   const docked = info.project.name !== 'phone';
   await page.goto('/#/eight-fold-star-and-cross/result');
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Sidebar original');

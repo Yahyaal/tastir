@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { tab } from './panel';
 
 for (const [id, level] of [
   ['eight-fold-khatam', 'Intermediate'],
@@ -12,15 +13,19 @@ for (const [id, level] of [
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto('/');
     // A card opens the finished pattern.
-    const card = page.locator(`.card[href="#/${id}/result"]`);
-    await expect(card.locator('.verification-label')).toHaveText(
+    const card = page.locator('.library-grid .window').filter({
+      has: page.locator(`.window-link[href="#/${id}"]`),
+    });
+    await expect(card.locator('.window-note')).toHaveText(
       'Historical match unverified',
     );
-    await expect(
-      page.locator('.card-item', { has: card }).locator('.level'),
-    ).toHaveText(level!);
+    await expect(card.locator('.window-dots')).toHaveAttribute(
+      'aria-label',
+      level!,
+    );
     await page.goto(`/#/${id}/result`);
     await expect(page.locator('svg.wall')).toBeVisible();
+    await tab(page, 'More');
     await page.locator('.verification-note summary').click();
     await expect(page.locator('.verification-note p')).toContainText(
       /not been verified/,

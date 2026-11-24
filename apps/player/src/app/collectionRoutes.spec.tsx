@@ -16,7 +16,7 @@ it.each(['#collection', '#/collection', '#%63ollection'])(
     window.history.replaceState(null, '', hash);
     render(<App entries={[]} />);
     const heading = screen.getByRole('heading', {
-      name: 'The patterns',
+      name: 'All patterns',
     });
     expect(screen.queryByText(/There is no tutorial called/)).toBeNull();
     expect(document.activeElement).toBe(heading);

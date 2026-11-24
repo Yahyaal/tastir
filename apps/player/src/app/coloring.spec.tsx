@@ -73,13 +73,20 @@ describe('the coloring history', () => {
   });
 });
 
+/** Opens the Pieces tab of Make it yours, where the pieces are. */
+const piecesTab = () => {
+  const tab = screen.queryByRole('tab', { name: 'Pieces' });
+  if (tab) fireEvent.click(tab);
+};
+
 /** Opens the star and cross at its color stage. */
 function atColor() {
   render(<Play json={example} />);
   fireEvent.click(screen.getByLabelText('Reduce motion'));
   for (let i = 0; i < 8; i++)
     fireEvent.click(screen.getByRole('button', { name: /^(Next|Repeat it)$/ }));
-  expect(document.querySelector('.label')?.textContent).toBe('Color');
+  expect(document.querySelector('.make-panel')).not.toBeNull();
+  piecesTab();
 }
 /** The fills of every star on the wall (type 0, the largest). */
 const starFills = () =>
@@ -121,6 +128,7 @@ describe('coloring in the player', () => {
 
   it('switches palette', () => {
     atColor();
+    fireEvent.click(screen.getByRole('tab', { name: 'Look' }));
     fireEvent.click(screen.getByRole('button', { name: 'Chefchaouen' }));
     expect(starFills()).toEqual(new Set([PALETTES.Chefchaouen?.a]));
   });
@@ -157,6 +165,7 @@ describe('the color text', () => {
       fireEvent.click(
         screen.getByRole('button', { name: /^(Next|Repeat it)$/ }),
       );
+    piecesTab();
     expect(
       screen.getByText(/Each tile holds one star and one cross\./),
     ).toBeTruthy();

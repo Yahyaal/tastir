@@ -1,18 +1,23 @@
 import { expect, test } from '@playwright/test';
+import { tab } from './panel';
 
 test.use({ reducedMotion: 'no-preference' });
 
-test('a pattern card opens the result beside the photo of the original', async ({
+test('a pattern card opens the wall, and the photo of the original beside it', async ({
   page,
 }) => {
   await page.goto('/');
-  await page.locator('.card[href="#/minbar-doors-cairo/result"]').click();
-  await expect(page.locator('.label')).toHaveText('Color');
+  await page.locator('.window-link[href="#/minbar-doors-cairo"]').click();
+  // The finished wall, with Make it yours over it; The real wall opens the
+  // photo beside it.
+  await expect(page.locator('.make-panel')).toBeVisible();
+  await tab(page, 'More');
+  await page.getByRole('button', { name: 'Show the original' }).click();
   await expect(
     page.getByRole('figure', { name: 'The original' }),
   ).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Replay', exact: true }),
+    page.getByRole('link', { name: 'Watch it drawn', exact: true }),
   ).toBeVisible();
 });
 

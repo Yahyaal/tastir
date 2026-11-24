@@ -298,6 +298,9 @@ export function Review() {
       <nav className="review-top">
         <a href="#/">← Library</a>
         <span>
+          <a href="#/review/palette-engine">New: the palette engine</a> ·{' '}
+          <a href="#/review/route">New: the route</a> ·{' '}
+          <a href="#/review/windows">Window cards</a> ·{' '}
           <a href="#/notes/settings-update">New: guide, settings & sharing</a> ·{' '}
           <a href="#/notes/teaching-update">New: construction research</a> ·{' '}
           <a href="#/plan/palettes">Palette study</a> ·{' '}

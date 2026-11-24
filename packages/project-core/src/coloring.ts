@@ -2,6 +2,7 @@ import type { SquareBands } from '@tastir/schema';
 import type { HistoryAction } from '@tastir/agent-protocol';
 import type { PieceType } from '@tastir/engine';
 import type { Model } from './model.js';
+import { deltaE, lch, oklab, solveColours } from './harmony.js';
 
 /** The slots every palette fills; a tutorial maps its pieces to these. */
 export const SLOTS = ['a', 'b', 'c', 'd', 'ground'] as const;
@@ -529,11 +530,38 @@ export function slotOf(model: Model, t: PieceType, i: number): Slot {
  * every side two pieces share, over the cell and its neighbours.
  */
 const touchingCache = new WeakMap<object, ReadonlySet<string>>();
+/**
+ * A name for each point, the same for points closer than 1e-6: two copies
+ * of a corner, worked out from different tiles, differ in the last digits,
+ * and rounding to a fixed number of places split a pair that sat either
+ * side of a rounding step (or either side of zero, as -0.0000).
+ */
+export function pointNamer(): (x: number, y: number) => string {
+  const grid = new Map<string, { x: number; y: number; name: string }[]>();
+  const CELL = 1e-4;
+  let next = 0;
+  return (x, y) => {
+    const gx = Math.floor(x / CELL);
+    const gy = Math.floor(y / CELL);
+    for (let i = -1; i <= 1; i++)
+      for (let j = -1; j <= 1; j++)
+        for (const p of grid.get(`${gx + i},${gy + j}`) ?? [])
+          if (Math.abs(p.x - x) < 1e-6 && Math.abs(p.y - y) < 1e-6)
+            return p.name;
+    const name = String(next++).padStart(8, '0');
+    const at = `${gx},${gy}`;
+    const list = grid.get(at) ?? [];
+    list.push({ x, y, name });
+    grid.set(at, list);
+    return name;
+  };
+}
+
 export function touchingTypes(model: Model): ReadonlySet<string> {
   const cached = touchingCache.get(model.pattern);
   if (cached) return cached;
   const { u, v } = model.pattern.cell;
-  const key = (x: number, y: number) => `${x.toFixed(4)},${y.toFixed(4)}`;
+  const key = pointNamer();
   const sides = new Map<string, number[]>();
   for (let i = -1; i <= 1; i++)
     for (let j = -1; j <= 1; j++)
@@ -559,45 +587,155 @@ export function touchingTypes(model: Model): ReadonlySet<string> {
   return pairs;
 }
 
+/** What the colours must also keep clear of, beyond the pieces. */
+export interface Surround {
+  /** The interlace or strapwork bands' colour, when the wall has bands: a
+   * piece of their colour hides them (STYLE.4). */
+  readonly band?: string;
+  /** The bands' or grout's dark edge: a piece a shade off it shows the edge
+   * as a second black. */
+  readonly edge?: string;
+}
+
 /**
- * The fill for each piece type under a coloring.
+ * The fill for each piece type under a coloring: the palette engine.
  *
- * With a preset palette, two different shapes that touch never share a
- * colour where the palette allows it (STYLE.2): a tutorial maps several
- * shapes to one slot, and where those shapes meet they merged into one
- * blot (44% of the shared sides on the Arrayanes ceiling). Going from the
- * largest shape down, a shape keeps its slot unless a touching shape
- * already has that colour, and then takes the first slot that no touching
- * shape has. Every copy of a shape keeps one colour, so the symmetry is
- * the tutorial's. Colours the learner chose, and a photo's original
- * colours, are kept as they are.
+ * A tutorial names a palette slot for each shape, and with the tutorial's
+ * own colours (its photo's original) those are kept as they are, as are
+ * colours the learner chose. With any other palette the slots are only a
+ * wish, and the engine looks for the colouring that keeps them best while
+ * following the rules zellige follows (docs/PALETTE-ENGINE.md):
+ *
+ * 1. Two shapes that touch never share a colour, or two colours that read
+ *    as one (STYLE.2): where they meet they merge into one blot.
+ * 2. Under bands no piece takes the bands' colour, and under light bands
+ *    no pale colour or grey (STYLE.4): those wash the bands out.
+ * 3. A moved shape keeps its role: its lightness, and no louder than it
+ *    was, so a light ground stays light.
+ * 4. Taste chooses among the colours that mend a broken rule: neighbours
+ *    differ in lightness, strong complements don't vibrate side by side,
+ *    the strongest colour is a small accent, no colour floods over 60% of
+ *    the wall, and the hues keep to one harmonic template (harmony.ts).
+ * 5. Every copy of a shape keeps one colour, so the symmetry is the
+ *    pattern's own.
+ *
+ * Colours come from the palette's five slots and then its glaze's other
+ * colours; under light bands also one pale glaze of its cool colour. Never
+ * a made-up tint. The search is deterministic: from the tutorial's wish,
+ * each shape in turn (smallest first, so the large shapes that set the
+ * look keep their colour) takes the colour that lowers the cost most,
+ * until nothing lowers it. A photo's original, a palette made for this
+ * design, and colours the learner chose are kept as they are.
  */
 export function pieceColors(
   model: Model,
   coloring: Coloring = tutorialColoring(model),
+  surround: Surround = {},
 ): string[] {
   const palette = paletteOf(model, coloring.palette);
   const { types } = model.pattern;
-  const wanted = types.map(
-    (t, i) => coloring.chosen[typeKey(t)] ?? palette[slotOf(model, t, i)],
+  const chosen = types.map((t) => coloring.chosen[typeKey(t)]);
+  const wanted = types.map((t, i) => chosen[i] ?? palette[slotOf(model, t, i)]);
+  // A photo's original, and a palette made for this design, are the
+  // author's colours, kept as they are.
+  if (coloring.palette === ORIGINAL || designPalette(model, coloring.palette))
+    return wanted;
+  return assignColours(model, coloring.palette, wanted, chosen, surround);
+}
+
+/**
+ * The colours a palette may give, best first: its five slots, then its
+ * glaze's other colours, and under light bands one pale glaze of its cool
+ * colour. `shades` stays empty: generated tints are not offered.
+ */
+export function paletteChoices(
+  model: Model | undefined,
+  name: string,
+  surround: Surround = {},
+): { palette: string[]; extras: string[]; shades: string[] } {
+  const p = paletteOf(model, name);
+  const palette = SLOTS.map((s) => p[s]);
+  const glaze = glazeOf(name, model);
+  const extras = [glaze.white, glaze.black, ...glaze.families.flat()];
+  // Under light bands the white ground cannot stay, and the reviewers
+  // preferred a pale glaze (a celadon, a pale blue-grey) to a loud colour
+  // taking the ground: one pale tint of the palette's first colour.
+  if (surround.band && oklab(surround.band).L > 0.8) {
+    // From the palette's strongest cool colour (a green, teal or blue): a
+    // tint of red made a pink the reviewers found foreign to the tile.
+    const cool = [...new Set([...glaze.families.flat(), ...palette])]
+      .map((c) => ({ c, ...lch(c) }))
+      .filter((x) => x.h > 120 && x.h < 300 && x.C > 0.04)
+      .sort((x, y) => y.C - x.C)[0]?.c;
+    extras.push(mixColour(surround.band, cool ?? p.b, 0.42));
+  }
+  // No made-up shades: the reviewers found every generated tint (pink of
+  // red, periwinkle of blue, dark ochre) off the tradition, and merging
+  // with the colour it came from.
+  return { palette, extras, shades: [] };
+}
+
+/** Two colours mixed: t of the second. */
+function mixColour(a: string, b: string, t: number): string {
+  const n = (c: string) => parseInt(c.replace('#', '').slice(0, 6), 16);
+  const [x, y] = [n(a), n(b)];
+  return (
+    '#' +
+    [16, 8, 0]
+      .map((k) =>
+        Math.round(((x >> k) & 255) * (1 - t) + ((y >> k) & 255) * t)
+          .toString(16)
+          .padStart(2, '0'),
+      )
+      .join('')
   );
-  if (coloring.palette === ORIGINAL) return wanted;
-  const touching = touchingTypes(model);
-  const near = (a: number, b: number) =>
-    touching.has(a < b ? `${a},${b}` : `${b},${a}`);
-  const out: string[] = [];
-  types.forEach((t, i) => {
-    const want = wanted[i] ?? palette.a;
-    const taken = out.flatMap((c, k) => (near(i, k) ? [c] : []));
-    const free = (c: string) =>
-      !taken.some((x) => x.toLowerCase() === c.toLowerCase());
-    if (coloring.chosen[typeKey(t)] || free(want)) {
-      out.push(want);
-      return;
-    }
-    out.push(SLOTS.map((s) => palette[s]).find(free) ?? want);
+}
+
+/** Whether a colour would hide the bands (or show their edge twice): one
+ * close to the bands' colour, and under light bands a pale colour or a
+ * grey, which wash out beside them. */
+export function hidesBands(surround: Surround) {
+  const band = surround.band;
+  const light = band !== undefined && oklab(band).L > 0.8;
+  // A black piece by the bands' near-black edge is allowed: it reads as
+  // the dark anchor the rosettes need (the reviewers saw them turn to
+  // confetti without it), and the wall draws it in the edge's colour.
+  return (c: string) => {
+    if (band === undefined) return false;
+    if (deltaE(c, band) < 0.15) return true;
+    const { L, C } = lch(c);
+    return light && (L > 0.9 || (C < 0.03 && L > 0.55));
+  };
+}
+
+/**
+ * Colours for each type: the wish kept where the rules allow (see
+ * pieceColors and harmony.ts). Types with a colour the learner chose keep
+ * it.
+ */
+export function assignColours(
+  model: Model,
+  name: string,
+  wanted: readonly string[],
+  chosen: readonly (string | undefined)[] = [],
+  surround: Surround = {},
+): string[] {
+  const { types } = model.pattern;
+  if (!types.length) return [];
+  const areas = types.map((t) => Math.abs(t.area) * Math.max(1, t.perCell));
+  const total = areas.reduce((x, y) => x + y, 0) || 1;
+  const pairs = [...touchingTypes(model)].map((k) => {
+    const [a, b] = k.split(',').map(Number) as [number, number];
+    return [a, b, 1] as const;
   });
-  return out;
+  return solveColours({
+    wish: types.map((_, i) => chosen[i] ?? wanted[i] ?? '#999999'),
+    share: areas.map((a) => a / total),
+    pairs,
+    locked: types.map((_, i) => chosen[i] !== undefined),
+    ...paletteChoices(model, name, surround),
+    hides: hidesBands(surround),
+  });
 }
 
 /** A coloring with its undo and redo history. */

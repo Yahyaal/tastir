@@ -54,6 +54,15 @@ function write(change: Kept) {
   }
 }
 
+/** The library as the learner left it: the place they chose, or all
+ * patterns (#/places/<place> or #/). */
+export function libraryHref(): string {
+  const { region } = read();
+  return typeof region === 'string' && region
+    ? `#/places/${encodeURIComponent(region)}`
+    : '#/';
+}
+
 export function keptFilters(): LibraryFilters {
   const { query, region, style, level, fold, withPhoto, sort } = read();
   return {
@@ -129,7 +138,9 @@ export function cardAt(anchor: string): HTMLElement | undefined {
 }
 
 function cards() {
-  return [...document.querySelectorAll<HTMLElement>('.cards .card')];
+  return [
+    ...document.querySelectorAll<HTMLElement>('.library-grid .window-link'),
+  ];
 }
 
 /** What the library needs to know about a tutorial before it is loaded. */

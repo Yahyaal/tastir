@@ -4,6 +4,34 @@ import { addPattern, freeTitle } from '../editor/patterns';
 import { holds, libraryFamilies } from './library';
 import { aboutOf, foldLabel } from './browsing';
 
+/** Copies the tutorial as one of the learner's own patterns and opens it
+ * in the editor; false when the browser would not keep it. */
+export function makeVariation(tutorial: Tutorial): boolean {
+  const { photos: _photos, ...construction } = tutorial;
+  const made = addPattern(
+    {
+      ...construction,
+      id: `${tutorial.id}-variation`,
+      title: freeTitle(`My ${tutorial.title}`),
+      credits: [
+        ...tutorial.credits,
+        {
+          source: `Tastir: ${tutorial.title}`,
+          note: `A personal variation of ${tutorial.id}.`,
+        },
+      ],
+    },
+    {
+      tutorial: tutorial.id,
+      title: tutorial.title,
+      step: tutorial.steps.length,
+    },
+  );
+  if (!made) return false;
+  window.location.hash = `#/edit/${made.id}`;
+  return true;
+}
+
 /** A finished lesson leads into experimenting and exploring the same symmetry. */
 export function ExploreNext({ tutorial }: { tutorial: Tutorial }) {
   const [refused, setRefused] = useState(false);
@@ -15,33 +43,7 @@ export function ExploreNext({ tutorial }: { tutorial: Tutorial }) {
         (entry.preview?.fold ?? aboutOf(entry.json).fold) === fold,
     )
     .slice(0, 3);
-  const create = () => {
-    const { photos: _photos, ...construction } = tutorial;
-    const made = addPattern(
-      {
-        ...construction,
-        id: `${tutorial.id}-variation`,
-        title: freeTitle(`My ${tutorial.title}`),
-        credits: [
-          ...tutorial.credits,
-          {
-            source: `Tastir: ${tutorial.title}`,
-            note: `A personal variation of ${tutorial.id}.`,
-          },
-        ],
-      },
-      {
-        tutorial: tutorial.id,
-        title: tutorial.title,
-        step: tutorial.steps.length,
-      },
-    );
-    if (!made) {
-      setRefused(true);
-      return;
-    }
-    window.location.hash = `#/edit/${made.id}`;
-  };
+  const create = () => setRefused(!makeVariation(tutorial));
   return (
     <section className="explore-next" aria-labelledby="explore-next-title">
       <h2 id="explore-next-title">Make a variation</h2>

@@ -64,40 +64,32 @@ for (const theme of ['light', 'dark'])
 test('a finished wall offers the next idea and the final pattern offers the path', async ({
   page,
 }) => {
+  // The filled button at the foot of Make it yours.
   await page.goto(`/#/${first}/result`);
-  const next = page.locator('.learning-next');
-  await expect(
-    next.getByRole('heading', { name: 'Next recommended lesson', exact: true }),
-  ).toBeVisible();
-  await next.getByRole('link', { name: 'Next lesson', exact: true }).click();
+  const panel = page.getByRole('complementary', { name: 'Make it yours' });
+  await panel.getByRole('link', { name: 'Next', exact: true }).click();
   await expect(page).toHaveURL(new RegExp(second + '/watch/1$'));
   await page.goto('/#/minbar-doors-cairo/result');
   await expect(
-    page
-      .locator('.learning-next')
-      .getByRole('link', { name: 'Review the learning path', exact: true }),
+    panel.getByRole('link', { name: 'Path', exact: true }),
   ).toBeVisible();
   await expect(
-    page
-      .locator('.learning-next')
-      .getByRole('link', { name: 'Next lesson', exact: true }),
+    panel.getByRole('link', { name: 'Next', exact: true }),
   ).toHaveCount(0);
 });
 test('the next lesson respects a changed saved design and Stay preserves it', async ({
   page,
 }) => {
   await page.goto(`/#/${first}/result`);
-  await page
-    .getByRole('button', { name: 'Save as my design', exact: true })
-    .click();
+  await page.getByRole('button', { name: /^Save( as my design)?$/ }).click();
   await page
     .getByRole('textbox', { name: 'Name', exact: true })
     .fill('Path original');
   await page.getByRole('button', { name: 'Save', exact: true }).click();
   await page.getByRole('button', { name: 'Chefchaouen', exact: true }).click();
   await page
-    .getByRole('navigation', { name: 'Steps', exact: true })
-    .getByRole('link', { name: 'Next lesson', exact: true })
+    .getByRole('complementary', { name: 'Make it yours' })
+    .getByRole('link', { name: 'Next', exact: true })
     .click();
   const dialog = page.getByRole('alertdialog', {
     name: 'Unsaved changes',
@@ -174,19 +166,16 @@ for (const theme of ['light', 'dark'])
       .getByRole('button', { name: 'Repeat it', exact: true })
       .click();
     await controls.getByRole('button', { name: 'Next', exact: true }).click();
-    const finish =
-      page.viewportSize()!.width > 760
-        ? page.locator('.end-actions')
-        : controls;
-    const next = finish.getByRole('link', {
-      name: 'Next lesson',
-      exact: true,
-    });
+    // The finished wall: the way on is at the foot of Make it yours.
+    const finish = page.getByRole('complementary', { name: 'Make it yours' });
+    const next = finish.getByRole('link', { name: 'Next', exact: true });
+    // On a phone the sheet is short and scrolls to it.
+    await next.scrollIntoViewIfNeeded();
     await expect(next).toBeInViewport();
     if (page.viewportSize()!.width > 760) {
       const save = page
         .getByRole('group', { name: 'Your design' })
-        .getByRole('button', { name: 'Save as my design', exact: true });
+        .getByRole('button', { name: /^Save( as my design)?$/ });
       expect(
         await save.evaluate((el) => getComputedStyle(el).backgroundColor),
       ).not.toBe(
@@ -203,8 +192,6 @@ for (const theme of ['light', 'dark'])
     await next.click();
     await expect(page).toHaveURL(new RegExp(second + '/watch/1$'));
     await page.goto('/#/minbar-doors-cairo/result');
-    await finish
-      .getByRole('link', { name: 'See the learning path', exact: true })
-      .click();
+    await finish.getByRole('link', { name: 'Path', exact: true }).click();
     await expect(page).toHaveURL(/#\/learn$/);
   });

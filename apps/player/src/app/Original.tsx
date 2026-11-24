@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useModalFocus } from './useModalFocus';
 import { createPortal } from 'react-dom';
 import type { Photo } from '@tastir/schema';
@@ -25,9 +25,12 @@ export function photoSrc(
 export function Original({
   photos,
   dev = import.meta.env.DEV,
+  onWipe,
 }: {
   photos: readonly Photo[];
   dev?: boolean;
+  /** Lays the photo over the wall, to wipe between the two. */
+  onWipe?: () => void;
 }) {
   const [shown, setShown] = useState(0);
   const [full, setFull] = useState(false);
@@ -47,15 +50,14 @@ export function Original({
   return (
     <figure className="original" aria-label="The original">
       {src ? (
-        <button
-          type="button"
-          className="photo-open"
-          title="See the photo at full size"
-          aria-label={`See the photo at full size: ${photo.caption}`}
-          onClick={() => setFull(true)}
-        >
-          <img src={src} alt={photo.caption} onError={failed} />
-        </button>
+        <ZoomPhoto
+          key={src}
+          src={src}
+          caption={photo.caption}
+          onError={failed}
+          onFull={() => setFull(true)}
+          onWipe={onWipe}
+        />
       ) : (
         <PhotoPlaceholder photo={photo} unavailable={missing} />
       )}
@@ -198,5 +200,186 @@ function FullSize({
       </div>
     </div>,
     document.body,
+  );
+}
+
+const MAX_ZOOM = 6;
+
+/**
+ * The photo beside the wall, to look closer at: the wheel or a pinch zooms
+ * about the pointer, a drag moves it once it is zoomed, and the buttons
+ * zoom in, out, back, or open it over the whole page.
+ */
+function ZoomPhoto({
+  src,
+  caption,
+  onError,
+  onFull,
+  onWipe,
+}: {
+  src: string;
+  caption: string;
+  onError: () => void;
+  onFull: () => void;
+  onWipe?: () => void;
+}) {
+  const [view, setView] = useState({ k: 1, x: 0, y: 0 });
+  const box = useRef<HTMLDivElement>(null);
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const pinch = useRef<number | undefined>(undefined);
+  // Zoom by f about a point in the box (its centre when none is given),
+  // keeping the photo over the box.
+  const zoom = (f: number, at?: { x: number; y: number }) =>
+    setView((v) => {
+      const r = box.current?.getBoundingClientRect();
+      const w = r?.width ?? 0;
+      const h = r?.height ?? 0;
+      const k = Math.min(MAX_ZOOM, Math.max(1, v.k * f));
+      const px = at ? at.x : w / 2;
+      const py = at ? at.y : h / 2;
+      const x = px - ((px - v.x) * k) / v.k;
+      const y = py - ((py - v.y) * k) / v.k;
+      return clamp({ k, x, y }, w, h);
+    });
+  const clamp = (
+    v: { k: number; x: number; y: number },
+    w: number,
+    h: number,
+  ) =>
+    v.k === 1
+      ? { k: 1, x: 0, y: 0 }
+      : {
+          k: v.k,
+          x: Math.min(0, Math.max(w - w * v.k, v.x)),
+          y: Math.min(0, Math.max(h - h * v.k, v.y)),
+        };
+  const local = (e: { clientX: number; clientY: number }) => {
+    const r = box.current?.getBoundingClientRect();
+    return { x: e.clientX - (r?.left ?? 0), y: e.clientY - (r?.top ?? 0) };
+  };
+  // The wheel zooms the photo, not the page: a listener that may prevent
+  // the page's scroll (React's own is passive).
+  const wheel = useRef<(e: WheelEvent) => void>(() => undefined);
+  wheel.current = (e) => {
+    e.preventDefault();
+    zoom(e.deltaY < 0 ? 1.2 : 1 / 1.2, local(e));
+  };
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const on = (e: WheelEvent) => wheel.current(e);
+    el.addEventListener('wheel', on, { passive: false });
+    return () => el.removeEventListener('wheel', on);
+  }, []);
+  return (
+    <div className="photo-zoom">
+      <div
+        className={`photo-zoom-box${view.k > 1 ? ' is-zoomed' : ''}`}
+        ref={box}
+        onDoubleClick={(e) =>
+          view.k > 1 ? setView({ k: 1, x: 0, y: 0 }) : zoom(2.5, local(e))
+        }
+        onPointerDown={(e) => {
+          e.currentTarget.setPointerCapture?.(e.pointerId);
+          pointers.current.set(e.pointerId, local(e));
+          pinch.current = undefined;
+        }}
+        onPointerMove={(e) => {
+          const was = pointers.current.get(e.pointerId);
+          if (!was) return;
+          const now = local(e);
+          pointers.current.set(e.pointerId, now);
+          const all = [...pointers.current.values()];
+          if (all.length === 2 && all[0] && all[1]) {
+            const d = Math.hypot(all[0].x - all[1].x, all[0].y - all[1].y);
+            if (pinch.current)
+              zoom(d / pinch.current, {
+                x: (all[0].x + all[1].x) / 2,
+                y: (all[0].y + all[1].y) / 2,
+              });
+            pinch.current = d;
+            return;
+          }
+          if (view.k === 1) return;
+          const r = box.current?.getBoundingClientRect();
+          setView((v) =>
+            clamp(
+              { k: v.k, x: v.x + now.x - was.x, y: v.y + now.y - was.y },
+              r?.width ?? 0,
+              r?.height ?? 0,
+            ),
+          );
+        }}
+        onPointerUp={(e) => {
+          pointers.current.delete(e.pointerId);
+          pinch.current = undefined;
+        }}
+        onPointerCancel={(e) => {
+          pointers.current.delete(e.pointerId);
+          pinch.current = undefined;
+        }}
+      >
+        <img
+          src={src}
+          alt={caption}
+          onError={onError}
+          draggable={false}
+          style={{
+            transform: `translate(${view.x}px, ${view.y}px) scale(${view.k})`,
+          }}
+        />
+      </div>
+      <div
+        className="photo-zoom-tools"
+        role="group"
+        aria-label="Zoom the photo"
+      >
+        <button
+          type="button"
+          aria-label="Zoom in"
+          title="Zoom in"
+          disabled={view.k >= MAX_ZOOM}
+          onClick={() => zoom(1.5)}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 6v12M6 12h12" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          aria-label="Zoom out"
+          title="Zoom out"
+          disabled={view.k <= 1}
+          onClick={() => zoom(1 / 1.5)}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 12h12" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          className="photo-open"
+          title="See the photo at full size"
+          aria-label={`See the photo at full size: ${caption}`}
+          onClick={onFull}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+          </svg>
+        </button>
+        {onWipe ? (
+          <button
+            type="button"
+            aria-label="Lay the photo over the wall"
+            title="Lay the photo over the wall, and wipe between the two"
+            onClick={onWipe}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v18M9 8l-4 4 4 4M15 8l4 4-4 4" />
+            </svg>
+          </button>
+        ) : null}
+      </div>
+    </div>
   );
 }
