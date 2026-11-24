@@ -156,7 +156,7 @@ function StyleIcon({ style }: { style: Style }) {
     pierced: '',
   }[style];
   return (
-    <svg className="style-icon" viewBox="0 0 28 18" aria-hidden="true">
+    <svg className="relief-style-icon" viewBox="0 0 28 18" aria-hidden="true">
       {style === 'pierced' ? (
         <path d="M1 5 H6 V17 H1 Z M22 5 H27 V17 H22 Z" />
       ) : (
@@ -416,7 +416,7 @@ export function Make({
 
   return (
     <div className="player make-page">
-      <header className="make-top">
+      <header className="relief-top">
         <a className="home" href="#/" aria-label="All patterns">
           <span className="wordmark">
             Tastir{' '}
@@ -492,7 +492,7 @@ export function Make({
             </span>
           </div>
         </div>
-        <aside className="side-panel make-panel" aria-label="What to make">
+        <aside className="side-panel relief-panel" aria-label="What to make">
           <div className="make-quick-bar">
             <span className="make-quick-summary">
               {set

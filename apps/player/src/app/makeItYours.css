@@ -596,12 +596,15 @@
 .photo-wipe-photo img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  /* Filling the wall, as the wall does: a wide photo of a dado is cropped
+     to the pattern rather than left as a strip in a dark void. */
+  object-fit: cover;
 }
 .photo-wipe-credit {
   position: absolute;
   left: 12px;
-  bottom: 10px;
+  /* At the top, clear of the wall's own buttons at its foot. */
+  top: 10px;
   margin: 0;
   padding: 3px 8px;
   border-radius: 6px;

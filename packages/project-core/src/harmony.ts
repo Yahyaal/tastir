@@ -77,6 +77,10 @@ const TEMPLATES: readonly (readonly (readonly [number, number])[])[] = [
   ], // L
   [
     [0, 18],
+    [270, 79.2],
+  ], // L mirrored: L is not symmetric, so turning it never gives its mirror
+  [
+    [0, 18],
     [180, 18],
   ], // I: complements
   [[0, 180]], // T: half the wheel

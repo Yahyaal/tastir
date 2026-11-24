@@ -560,12 +560,20 @@ function harmonised(
   // the author's colours, kept as they are.
   const fixes = model.tutorial.pattern.rings;
   const fixed = fixes && fixes !== true ? Object.keys(fixes.colors ?? {}) : [];
-  if (fixed.length && ringsFor(model))
+  // A fix names a shape (every ring of it) or one ring (`name@n`), as
+  // ringFills reads it: only the rings it names are locked.
+  const rings = ringsFor(model);
+  if (fixed.length && rings)
     for (let i = 0; i < m; i++)
       for (let j = 0; j < n; j++)
         pieces.forEach((p, k) => {
           const name = types[p.type]?.name;
-          if (name && fixed.some((f) => f === name || f.startsWith(`${name}@`)))
+          if (!name) return;
+          const ring = rings.place(k, i, j).n;
+          if (
+            fixed.includes(name) ||
+            (ring && fixed.includes(`${name}@${ring}`))
+          )
             locked[partOf(k, i, j)] = true;
         });
   const total = share.reduce((x, y) => x + y, 0) || 1;
