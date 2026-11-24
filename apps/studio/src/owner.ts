@@ -6,6 +6,7 @@ import {
   jwtVerify,
   type JWTVerifyGetKey,
 } from 'jose';
+import { safeNext } from './safe.js';
 
 /**
  * The owner's sign-in to the hosted studio: Google's OpenID Connect code
@@ -41,19 +42,17 @@ function cookies(request: Request): Record<string, string> {
   const out: Record<string, string> = {};
   for (const part of (request.headers.cookie ?? '').split(';')) {
     const at = part.indexOf('=');
-    if (at > 0)
-      out[part.slice(0, at).trim()] = decodeURIComponent(
-        part.slice(at + 1).trim(),
-      );
+    if (at <= 0) continue;
+    const value = part.slice(at + 1).trim();
+    // A malformed escape is kept as written rather than failing the request.
+    try {
+      out[part.slice(0, at).trim()] = decodeURIComponent(value);
+    } catch {
+      out[part.slice(0, at).trim()] = value;
+    }
   }
   return out;
 }
-
-/** Only a path on this site may be returned to after signing in. */
-const safeNext = (next: unknown) =>
-  typeof next === 'string' && next.startsWith('/') && !next.startsWith('//')
-    ? next
-    : '/connections';
 
 export class Owner {
   private readonly key: Uint8Array;

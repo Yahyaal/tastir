@@ -1,10 +1,10 @@
 import express, { type Request } from 'express';
 import { isIP } from 'node:net';
-import { timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
 import { FEEDBACK_LIMITS } from '@tastir/schema';
 import { Feedback, FeedbackError } from './feedback.js';
 import type { Owner } from './owner.js';
+import { sameSecret } from './safe.js';
 
 function cookie(request: Request) {
   return request.headers.cookie
@@ -26,11 +26,6 @@ function network(request: Request, vercel: boolean) {
     );
   return value.startsWith('::ffff:') ? value.slice(7) : value.toLowerCase();
 }
-const sameSecret = (a: string, b: string) => {
-  const first = Buffer.from(a),
-    second = Buffer.from(b);
-  return first.length === second.length && timingSafeEqual(first, second);
-};
 const ExportShape = z.strictObject({
   ids: z.array(z.uuid()).min(1).max(20),
   goal: z.string().trim().min(1).max(4000),
@@ -47,6 +42,8 @@ export function feedbackRoutes(
   feedback: Feedback,
   owner: Owner,
   origin: string,
+  /** More daily cleanup for the same cron, such as expired sign-in tokens. */
+  sweep?: () => Promise<void>,
 ) {
   const router = express.Router();
   router.use((_q, r, next) => {
@@ -67,7 +64,9 @@ export function feedbackRoutes(
       r.status(401).json({ error: 'Sign in to manage feedback.' });
       return;
     }
-    r.json(await feedback.cleanup());
+    const result = await feedback.cleanup();
+    await sweep?.();
+    r.json(result);
   });
   router.use(['/feedback/session', '/feedback'], async (q, _r, next) => {
     if (q.method !== 'POST') {
@@ -138,7 +137,7 @@ export function feedbackRoutes(
     if (
       q.method !== 'GET' &&
       (q.headers.origin !== origin ||
-        q.headers['x-tastir-csrf'] !== owner.csrf(q))
+        !sameSecret(q.headers['x-tastir-csrf'], owner.csrf(q)))
     ) {
       r.status(403).json({ error: 'Reload the inbox before saving.' });
       return;

@@ -119,6 +119,11 @@ describe.each(BACKENDS)('the studio over MCP, with %s', (kind: BackendKind) => {
     }
   });
 
+  it('refuses a project id that could leave its own address', async () => {
+    for (const project of ['../library', 'one/../../projects', 'One', ''])
+      expect((await call('inspect', { project })).error, project).toBeDefined();
+  });
+
   it('plays a recorded session that draws the square from O and A', async () => {
     const tools = (await client.listTools()).tools.map((t) => t.name);
     expect(tools).toEqual(

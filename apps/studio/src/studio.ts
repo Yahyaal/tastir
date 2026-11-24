@@ -26,7 +26,12 @@ import {
 } from './project.js';
 import { Conflict, FileBackend, type Backend, type Mark } from './backend.js';
 import { constructionSvg, png, wallSvg, type Area } from './picture.js';
-import { imageSize, overlaySvg, type Reference } from './reference.js';
+import {
+  imageSize,
+  isReference,
+  overlaySvg,
+  type Reference,
+} from './reference.js';
 import { check, copyUpTo, emptyDraft, type Draft } from './player.js';
 import { isProject } from './store.js';
 
@@ -264,6 +269,11 @@ export const AlignRequest = z.strictObject({
   o: Pixel,
   a: Pixel,
 });
+
+/** The most an imported zip may hold: a project, its pattern and a photo. */
+export const ZIP_LIMITS = { entries: 16, bytes: 40_000_000 };
+const ZIP_FILES = /^(project\.json|reference\.(png|jpg))$/;
+class ZipTooBig extends Error {}
 
 export const ImportRequest = z.strictObject({
   author: Author,
@@ -503,9 +513,25 @@ export class Studio {
   /** A project from an exported zip, as a new project beside the others. */
   async importZip(request: z.infer<typeof ImportRequest>) {
     let files: Record<string, Uint8Array>;
+    let entries = 0;
+    let bytes = 0;
     try {
-      files = unzipSync(Buffer.from(request.zip, 'base64'));
-    } catch {
+      files = unzipSync(Buffer.from(request.zip, 'base64'), {
+        // Each entry's unzipped size is known before it is unzipped, and
+        // the output never grows past it, so a zip bomb stops here.
+        filter: (file) => {
+          entries += 1;
+          bytes += file.originalSize;
+          if (entries > ZIP_LIMITS.entries || bytes > ZIP_LIMITS.bytes)
+            throw new ZipTooBig();
+          return ZIP_FILES.test(file.name);
+        },
+      });
+    } catch (error) {
+      if (error instanceof ZipTooBig)
+        throw new StudioError(
+          `That zip is too big to import: at most ${ZIP_LIMITS.entries} files and ${ZIP_LIMITS.bytes / 1_000_000} MB unzipped.`,
+        );
       throw new StudioError('That is not a studio project zip.');
     }
     let p: unknown;
@@ -517,9 +543,11 @@ export class Studio {
     if (!isProject(p))
       throw new StudioError('The project.json in the zip cannot be read.');
     const id = await this.freshId(p.title);
+    if (p.reference !== undefined && !isReference(p.reference))
+      throw new StudioError('The project.json in the zip cannot be read.');
     const reference = p.reference;
     const photo = reference ? files[reference.file] : undefined;
-    if (reference && (!photo || !/^reference\.(png|jpg)$/.test(reference.file)))
+    if (reference && !photo)
       throw new StudioError('The zip names a photo it does not hold.');
     const at = new Date().toISOString();
     const project: Project = {

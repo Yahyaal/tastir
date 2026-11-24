@@ -21,6 +21,8 @@ import {
   feedbackContacts,
   feedbackSettings,
   feedbackEvents,
+  connections,
+  tokens,
 } from './pg.js';
 
 const secret = 'feedback-fixture-session-secret-32-characters';
@@ -423,6 +425,39 @@ describe('private feedback with guarded anonymous intake', () => {
       resumeUpload();
       await original;
     }
+  });
+  it('clears expired sign-in tokens from the daily cleanup cron', async () => {
+    options.cronSecret = 'c'.repeat(32);
+    await db
+      .insert(connections)
+      .values({ id: 'c-cron', client: 'app', name: 'App' })
+      .onConflictDoNothing();
+    await db.insert(tokens).values([
+      {
+        hash: 'old',
+        kind: 'access',
+        client: 'app',
+        connection: 'c-cron',
+        expires: new Date(Date.now() - 60_000),
+      },
+      {
+        hash: 'live',
+        kind: 'access',
+        client: 'app',
+        connection: 'c-cron',
+        expires: new Date(Date.now() + 60_000),
+      },
+    ]);
+    const response = await fetch(`${origin}/api/feedback/cleanup`, {
+      headers: { Authorization: `Bearer ${'c'.repeat(32)}` },
+    });
+    expect(response.status).toBe(200);
+    const left = await db
+      .select()
+      .from(tokens)
+      .where(eq(tokens.connection, 'c-cron'));
+    expect(left.map((t) => t.hash)).toEqual(['live']);
+    await db.delete(connections).where(eq(connections.id, 'c-cron'));
   });
   it('quarantines verified network bursts without discarding separate learner messages', async () => {
     for (let n = 0; n < 31; n++)

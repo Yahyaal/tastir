@@ -1,5 +1,8 @@
 import { createHash, randomBytes } from 'node:crypto';
-import { isIP } from 'node:net';
+import { lookup } from 'node:dns/promises';
+import { request as httpsRequest } from 'node:https';
+import { isIP, type LookupFunction } from 'node:net';
+import { Readable } from 'node:stream';
 import type { Response } from 'express';
 import { and, eq, gt, isNull, lt } from 'drizzle-orm';
 import type { OAuthRegisteredClientsStore } from '@modelcontextprotocol/sdk/server/auth/clients.js';
@@ -66,6 +69,35 @@ export function redirectAllowed(uri: string, extra: readonly string[] = []) {
 
 const MAX_METADATA_BYTES = 64_000;
 
+/** Whether an IP address is on the public internet, not loopback, private, link-local or multicast. */
+export function isPublicAddress(address: string): boolean {
+  const host = address.replace(/^\[|\]$/g, '').toLowerCase();
+  const version = isIP(host);
+  if (version === 4) {
+    const [a = 0, b = 0] = host.split('.').map(Number);
+    return !(
+      a === 0 ||
+      a === 10 ||
+      a === 127 ||
+      (a === 100 && b >= 64 && b <= 127) ||
+      (a === 169 && b === 254) ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && b === 168) ||
+      a >= 224
+    );
+  }
+  if (version === 6)
+    return !(
+      host === '::' ||
+      host === '::1' ||
+      host.startsWith('::ffff:') ||
+      /^f[cd]/i.test(host) ||
+      /^fe[89ab]/i.test(host) ||
+      host.startsWith('ff')
+    );
+  return false;
+}
+
 /** Rejects non-HTTPS, loopback, link-local, and private network hosts for OAuth metadata fetches. */
 export function isSafeMetadataUrl(id: string): boolean {
   let url: URL;
@@ -87,32 +119,82 @@ export function isSafeMetadataUrl(id: string): boolean {
     host.endsWith('.internal')
   )
     return false;
-  const ipVersion = isIP(host);
-  if (ipVersion === 4) {
-    const [a = 0, b = 0] = host.split('.').map(Number);
-    if (
-      a === 0 ||
-      a === 10 ||
-      a === 127 ||
-      (a === 100 && b >= 64 && b <= 127) ||
-      (a === 169 && b === 254) ||
-      (a === 172 && b >= 16 && b <= 31) ||
-      (a === 192 && b === 168) ||
-      a >= 224
-    )
-      return false;
-  } else if (ipVersion === 6) {
-    if (
-      host === '::' ||
-      host === '::1' ||
-      host.startsWith('::ffff:') ||
-      /^f[cd]/i.test(host) ||
-      /^fe[89ab]/i.test(host) ||
-      host.startsWith('ff')
-    )
-      return false;
-  }
-  return true;
+  return isIP(host) ? isPublicAddress(host) : true;
+}
+
+type Resolve = (
+  host: string,
+) => Promise<readonly { address: string; family: number }[]>;
+
+/**
+ * A lookup for node:https that resolves the name and refuses it unless
+ * every address is public. The socket then connects to the address that was
+ * checked, so a public name that resolves (or re-resolves) to a private
+ * address cannot reach the private network.
+ */
+export function publicLookup(
+  resolve: Resolve = (host) => lookup(host, { all: true, verbatim: true }),
+): LookupFunction {
+  return (host, options, callback) => {
+    resolve(host).then(
+      (found) => {
+        const bad = found.find((a) => !isPublicAddress(a.address));
+        if (!found.length || bad) {
+          const error = Object.assign(
+            new Error(
+              `${host} resolves to ${bad?.address ?? 'nothing'}, which is not a public address.`,
+            ),
+            { code: 'EADDRNOTPUBLIC' },
+          );
+          callback(error, '', 0);
+          return;
+        }
+        if (options.all) callback(null, [...found]);
+        else callback(null, found[0]!.address, found[0]!.family);
+      },
+      (error: NodeJS.ErrnoException) => callback(error, '', 0),
+    );
+  };
+}
+
+/**
+ * Fetches a client id metadata document over https, checking the resolved
+ * address at connect time and never following redirects.
+ */
+export function metadataFetch(lookupFn: LookupFunction = publicLookup()) {
+  return (async (input: string | URL, init?: RequestInit) =>
+    new Promise<globalThis.Response>((done, fail) => {
+      const signal = init?.signal ?? undefined;
+      const request = httpsRequest(
+        input,
+        {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          lookup: lookupFn,
+          ...(signal ? { signal } : {}),
+        },
+        (response) => {
+          const status = response.statusCode ?? 500;
+          const headers = new Headers();
+          for (const [k, v] of Object.entries(response.headers))
+            if (typeof v === 'string') headers.set(k, v);
+          // A redirect is an error: the next address was never checked.
+          if (status >= 300 && status < 400) {
+            response.destroy();
+            fail(new Error('Metadata documents may not redirect.'));
+            return;
+          }
+          done(
+            new globalThis.Response(
+              Readable.toWeb(response) as ReadableStream<Uint8Array>,
+              { status, headers },
+            ),
+          );
+        },
+      );
+      request.on('error', fail);
+      request.end();
+    })) as unknown as typeof fetch;
 }
 
 /** Reads a response body up to `limit` bytes without buffering unbounded payloads into memory. */
@@ -221,7 +303,7 @@ export class StudioAuth implements OAuthServerProvider {
    */
   private async metadataClient(id: string) {
     if (!isSafeMetadataUrl(id)) return undefined;
-    const get = this.options.fetch ?? fetch;
+    const get = this.options.fetch ?? metadataFetch();
     let info: OAuthClientInformationFull;
     try {
       const response = await get(id, {

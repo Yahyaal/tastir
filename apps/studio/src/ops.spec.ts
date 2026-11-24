@@ -272,6 +272,30 @@ describe('studio pictures', () => {
     expect(inspect(plain).tile!.pieces[0]).not.toHaveProperty('placed');
   });
 
+  it('writes only #rrggbb fills into the wall, whatever the saved colours say', () => {
+    const plain = paint(
+      setTile(ink(construct(blank(), SQUARE), SIDES), ['A', 'N', 'W', 'S']),
+      null,
+      [{ piece: 'square', color: '#c62828' }],
+    );
+    const evil = '"/><image href="file:///etc/passwd"/><x a="';
+    // A saved draft is not checked for #rrggbb, so its rules could hold anything.
+    const placements = plain.pattern!.placements!;
+    const text = wallSvg({
+      ...plain,
+      pattern: {
+        ...plain.pattern!,
+        placements: {
+          ...placements,
+          rules: placements.rules.map((r) => ({ ...r, color: evil })),
+        },
+      },
+    } as typeof plain);
+    expect(text).toContain('fill="#fbf8f3"');
+    expect(text).not.toContain('passwd');
+    expect(text).not.toContain('<image');
+  });
+
   it('refuses a placed color that names no pieces, saying which', () => {
     const tiled = setTile(ink(construct(blank(), SQUARE), SIDES), [
       'A',

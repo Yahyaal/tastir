@@ -20,6 +20,7 @@ import { DirectClient, failure, route } from './routes.js';
 import type { Studio } from './studio.js';
 import { Feedback, type FeedbackOptions } from './feedback.js';
 import { feedbackRoutes } from './feedbackRoutes.js';
+import { sameSecret } from './safe.js';
 
 /**
  * The hosted studio as one Express app, which Vercel runs as a function:
@@ -163,7 +164,7 @@ export function hostedApp(options: HostedOptions) {
   };
   const form = express.urlencoded({ extended: false, limit: '8kb' });
   const checked = (request: Request, response: Response) => {
-    if (request.body?.csrf !== owner.csrf(request)) {
+    if (!sameSecret(request.body?.csrf, owner.csrf(request))) {
       response.status(403).type('text/plain').send('This form has expired.');
       return false;
     }
@@ -311,6 +312,8 @@ ${chatgpt}
       ),
       owner,
       baseUrl.origin,
+      // Vercel's daily cron also clears expired sign-in requests, codes and tokens.
+      () => auth.sweep(),
     ),
   );
 

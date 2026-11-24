@@ -4,6 +4,7 @@ import type { Request, Response } from 'express';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { openaiIdentities, openaiTransactions, type Db } from './pg.js';
 import type { Owner } from './owner.js';
+import { safeNext } from './safe.js';
 
 export interface OpenAIOptions {
   readonly clientId: string;
@@ -18,13 +19,6 @@ const COOKIE = 'tastir_openai_login';
 const random = () => randomBytes(32).toString('base64url');
 const hash = (value: string) =>
   createHash('sha256').update(value).digest('base64url');
-const safeNext = (value: unknown) =>
-  typeof value === 'string' &&
-  value.startsWith('/') &&
-  !value.startsWith('//') &&
-  !/[\\\r\n]/.test(value)
-    ? value
-    : '/connections';
 
 /** Keep this feature off until the hosted client registration is configured. */
 export function openAISettings(
