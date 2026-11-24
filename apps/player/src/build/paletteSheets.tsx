@@ -8,9 +8,7 @@ import { parseTutorial } from '@tastir/schema';
 import { Thumbnail } from '../app/drawing';
 import { loadModel, type Model } from '../app/model';
 import {
-  finishOf,
   paletteOf,
-  pieceColors,
   SLOTS,
   slotOf,
   touchingTypes,
@@ -73,7 +71,6 @@ function frozen(model: Model, coloring: Coloring, look: string): Coloring {
       chosen[typeKey(t)] = c;
     });
   }
-  void look;
   return { ...coloring, chosen };
 }
 
@@ -148,8 +145,6 @@ async function main() {
       console.log(file);
     }
   }
-  void finishOf;
-  void pieceColors;
 }
 
 void main();

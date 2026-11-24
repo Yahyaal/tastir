@@ -157,13 +157,9 @@ export const colourSquare = (key: string) =>
     .replace(/^-|-$/g, '')
     .toLowerCase()}.webp`;
 /** Closer (above 1) or further (below 1) than the card, per place, for
- * the pencil and the colour alike: further where the card's view is a few
- * big pieces. */
-export const BAND_ZOOM: Readonly<Record<string, number>> = {
-  Turkey: 2.2,
-  'Alhambra and Nasrid Spain': 0.4,
-  India: 0.4,
-};
+ * the pencil and the colour alike. None is needed since the card's view
+ * keeps every pattern at a like number of pieces across. */
+export const BAND_ZOOM: Readonly<Record<string, number>> = {};
 
 /** The address of a place (`#/places/<place>`), or of all patterns. */
 export const placeHref = (key?: string) =>

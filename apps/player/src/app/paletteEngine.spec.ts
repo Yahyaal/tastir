@@ -13,12 +13,7 @@ import {
   typeKey,
   type Coloring,
 } from './coloring';
-import {
-  colorRepeat,
-  colouredModel,
-  placeFills,
-  ruleFills,
-} from './placement';
+import { colorRepeat, colouredModel, placeFills, ruleFills } from './placement';
 
 const load = (id: string): Model =>
   loadModel(
@@ -127,5 +122,12 @@ describe('the palette engine', () => {
             expect(fill(k, i, j)).toBe(rules(k, i, j)),
           );
     }
+  });
+
+  it('keeps a palette made for the design, by shape too', () => {
+    const wall = load('shafai-248-rosettes');
+    const name = wall.tutorial.pattern.palettes![0]!.name;
+    const coloring: Coloring = { palette: name, chosen: {}, method: 'shape' };
+    expect(pieceColors(wall, coloring)).toEqual(wish(wall, name));
   });
 });

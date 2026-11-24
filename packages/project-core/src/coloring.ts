@@ -530,11 +530,38 @@ export function slotOf(model: Model, t: PieceType, i: number): Slot {
  * every side two pieces share, over the cell and its neighbours.
  */
 const touchingCache = new WeakMap<object, ReadonlySet<string>>();
+/**
+ * A name for each point, the same for points closer than 1e-6: two copies
+ * of a corner, worked out from different tiles, differ in the last digits,
+ * and rounding to a fixed number of places split a pair that sat either
+ * side of a rounding step (or either side of zero, as -0.0000).
+ */
+export function pointNamer(): (x: number, y: number) => string {
+  const grid = new Map<string, { x: number; y: number; name: string }[]>();
+  const CELL = 1e-4;
+  let next = 0;
+  return (x, y) => {
+    const gx = Math.floor(x / CELL);
+    const gy = Math.floor(y / CELL);
+    for (let i = -1; i <= 1; i++)
+      for (let j = -1; j <= 1; j++)
+        for (const p of grid.get(`${gx + i},${gy + j}`) ?? [])
+          if (Math.abs(p.x - x) < 1e-6 && Math.abs(p.y - y) < 1e-6)
+            return p.name;
+    const name = String(next++).padStart(8, '0');
+    const at = `${gx},${gy}`;
+    const list = grid.get(at) ?? [];
+    list.push({ x, y, name });
+    grid.set(at, list);
+    return name;
+  };
+}
+
 export function touchingTypes(model: Model): ReadonlySet<string> {
   const cached = touchingCache.get(model.pattern);
   if (cached) return cached;
   const { u, v } = model.pattern.cell;
-  const key = (x: number, y: number) => `${x.toFixed(4)},${y.toFixed(4)}`;
+  const key = pointNamer();
   const sides = new Map<string, number[]>();
   for (let i = -1; i <= 1; i++)
     for (let j = -1; j <= 1; j++)
@@ -581,21 +608,24 @@ export interface Surround {
  *
  * 1. Two shapes that touch never share a colour, or two colours that read
  *    as one (STYLE.2): where they meet they merge into one blot.
- * 2. Under bands no piece takes the bands' colour, or a shade of their dark
- *    edge (STYLE.4): white pieces under white interlace lose the bands.
- * 3. Neighbours differ in lightness as well as hue, so the shapes read in
- *    a photo, in grey and for colour-blind eyes.
- * 4. No colour floods the wall while the palette's others stay unused: one
- *    colour over half of it, with colours to spare, is a dull wall.
+ * 2. Under bands no piece takes the bands' colour, and under light bands
+ *    no pale colour or grey (STYLE.4): those wash the bands out.
+ * 3. A moved shape keeps its role: its lightness, and no louder than it
+ *    was, so a light ground stays light.
+ * 4. Taste chooses among the colours that mend a broken rule: neighbours
+ *    differ in lightness, strong complements don't vibrate side by side,
+ *    the strongest colour is a small accent, no colour floods over 60% of
+ *    the wall, and the hues keep to one harmonic template (harmony.ts).
  * 5. Every copy of a shape keeps one colour, so the symmetry is the
  *    pattern's own.
  *
- * Colours come from the palette's five slots and, when those run out, from
- * its glaze's other colours, and last from a lighter or darker shade of a
- * slot's colour; never from a mix of two colours. The search is
- * deterministic: from the tutorial's wish, each shape in turn (smallest
- * first, so the large shapes that set the look keep their colour) takes
- * the colour that lowers the cost most, until nothing lowers it. The cost weighs the rules above against keeping the wish.
+ * Colours come from the palette's five slots and then its glaze's other
+ * colours; under light bands also one pale glaze of its cool colour. Never
+ * a made-up tint. The search is deterministic: from the tutorial's wish,
+ * each shape in turn (smallest first, so the large shapes that set the
+ * look keep their colour) takes the colour that lowers the cost most,
+ * until nothing lowers it. A photo's original, a palette made for this
+ * design, and colours the learner chose are kept as they are.
  */
 export function pieceColors(
   model: Model,
@@ -606,31 +636,17 @@ export function pieceColors(
   const { types } = model.pattern;
   const chosen = types.map((t) => coloring.chosen[typeKey(t)]);
   const wanted = types.map((t, i) => chosen[i] ?? palette[slotOf(model, t, i)]);
-  if (coloring.palette === ORIGINAL) return wanted;
+  // A photo's original, and a palette made for this design, are the
+  // author's colours, kept as they are.
+  if (coloring.palette === ORIGINAL || designPalette(model, coloring.palette))
+    return wanted;
   return assignColours(model, coloring.palette, wanted, chosen, surround);
 }
 
-/** A colour moved towards white (t > 0) or black (t < 0). */
-export function shadeOf(hex: string, t: number): string {
-  const n = parseInt(hex.replace('#', '').slice(0, 6), 16);
-  const to = t > 0 ? 255 : 0;
-  const k = Math.abs(t);
-  return (
-    '#' +
-    [16, 8, 0]
-      .map((b) =>
-        Math.round(((n >> b) & 255) * (1 - k) + to * k)
-          .toString(16)
-          .padStart(2, '0'),
-      )
-      .join('')
-  );
-}
-
 /**
- * The colours a palette may give, best first: its five slots, its glaze's
- * other colours, then a lighter and a darker firing of each slot's colour
- * (never a mix of two colours).
+ * The colours a palette may give, best first: its five slots, then its
+ * glaze's other colours, and under light bands one pale glaze of its cool
+ * colour. `shades` stays empty: generated tints are not offered.
  */
 export function paletteChoices(
   model: Model | undefined,

@@ -76,6 +76,11 @@ Most important first:
 3. **Modern Moroccan and Fès tile are loud everywhere.** Their yellow, mustard or crimson often covers most of the wall. That comes from the palettes more than the walls.
 4. **Grey second shades.** Copies that take turns (Khojent) use a second shade, and with a black or white colour that shade is a grey.
 
+## Decisions (the owner, 23 November, on my recommendation)
+
+1. **Under white bands the wall is coloured all over.** The ground takes a pale glaze of the palette's cool colour rather than staying white, because white pieces wash the bands out, and the reviewers scored these walls better than the old rule's.
+2. **By shape stays offered on every wall, even where one colour floods it.** A flood comes from a palette or a pattern with one large shape, not from the way of colouring, and the engine already holds a flood back where a rule breaks. Hiding the choice on some walls would make the panel differ from pattern to pattern for little gain.
+
 ## Code and checks
 
 - **Code:**

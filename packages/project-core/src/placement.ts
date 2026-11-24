@@ -11,6 +11,7 @@ import {
   extraColors,
   hidesBands,
   paletteChoices,
+  pointNamer,
   type Surround,
   glazeOf,
   ORIGINAL,
@@ -569,7 +570,7 @@ function harmonised(
         });
   const total = share.reduce((x, y) => x + y, 0) || 1;
   // Shared sides, over the repeat and one cell round it.
-  const key = (x: number, y: number) => `${x.toFixed(4)},${y.toFixed(4)}`;
+  const key = pointNamer();
   const sides = new Map<string, number[]>();
   for (let i = -1; i <= m; i++)
     for (let j = -1; j <= n; j++) {

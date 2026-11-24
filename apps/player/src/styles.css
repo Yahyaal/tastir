@@ -6514,10 +6514,12 @@ svg.tiles {
   position: relative;
   width: 100%;
   overflow: hidden;
-  touch-action: none;
+  /* At full size a swipe still scrolls the page; two fingers zoom. */
+  touch-action: pan-y;
   cursor: zoom-in;
 }
 .photo-zoom-box.is-zoomed {
+  touch-action: none;
   cursor: grab;
 }
 .photo-zoom-box img {

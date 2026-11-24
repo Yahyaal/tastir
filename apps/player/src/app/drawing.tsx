@@ -712,8 +712,10 @@ export function tiling(
 export const WALL_PIECES_ACROSS = 40;
 /** ... and never fewer than this many tiles across. */
 export const WALL_MIN_TILES = 1.5;
-/** A library card shows at most about this many pieces across... */
-export const CARD_PIECES_ACROSS = 25;
+/** A library card shows between these many pieces across, measured by the
+ * pieces' average size, so a tile of a few large pieces is drawn further
+ * out and a dense one closer in: every card reads at a like zoom. */
+export const CARD_PIECES_ACROSS = [8, 24] as const;
 /** ... and never less than this share of a tile across. */
 export const CARD_MIN_TILES = 0.75;
 
@@ -754,18 +756,31 @@ export const wallView = (model: Model): Rect =>
   );
 
 /**
- * The small wall of a library card (and the hero): two tiles across,
- * closer in on a dense tile, since the card is small (at most
- * CARD_PIECES_ACROSS pieces across, never under CARD_MIN_TILES of a tile).
+ * The small wall of a library card: two tiles across, then further out or
+ * closer in about its middle until it shows CARD_PIECES_ACROSS pieces
+ * across (by the pieces' average size), never under CARD_MIN_TILES of a
+ * tile. The owner saw a four-piece tile (Squares and stars) drawn far
+ * closer than its neighbours.
  */
-export const cardView = (model: Model): Rect =>
-  closerOnDense(
-    model,
-    tiling(model, { halfWide: 1, halfHigh: 1, reach: 2 }).view,
-    2,
-    CARD_PIECES_ACROSS,
-    CARD_MIN_TILES,
-  );
+export const cardView = (model: Model): Rect => {
+  const view = tiling(model, { halfWide: 1, halfHigh: 1, reach: 2 }).view;
+  const { u, v } = model.pattern.cell;
+  const span = Math.hypot(u.x, u.y);
+  const area = Math.abs(u.x * v.y - u.y * v.x);
+  const n = model.pattern.pieces.length;
+  const wide = view.maxX - view.minX;
+  if (!n || !area || !wide) return view;
+  const across = wide / Math.sqrt(area / n);
+  const [least, most] = CARD_PIECES_ACROSS;
+  let scale =
+    across < least ? least / across : across > most ? most / across : 1;
+  scale = Math.max(scale, (CARD_MIN_TILES * span) / wide);
+  if (scale === 1) return view;
+  const c = { x: (view.minX + view.maxX) / 2, y: (view.minY + view.maxY) / 2 };
+  const hw = ((view.maxX - view.minX) / 2) * scale;
+  const hh = ((view.maxY - view.minY) / 2) * scale;
+  return { minX: c.x - hw, maxX: c.x + hw, minY: c.y - hh, maxY: c.y + hh };
+};
 
 const isOrigin = (d: Vec) => d.x === 0 && d.y === 0;
 
@@ -1226,81 +1241,6 @@ export function styleGrout(model: Model, look: WallStyle, grout: number) {
   return grout;
 }
 
-export interface PaletteColorGroup {
-  color: string;
-  minDistance: number;
-  names: string[];
-}
-
-/**
- * Returns distinct colors present in the pattern, ordered strictly by how close
- * their innermost piece sits to the middle (0, 0) of the design.
- */
-export function orderedPaletteColors(
-  model: Model,
-  coloring = tutorialColoring(model),
-  view?: Rect,
-): PaletteColorGroup[] {
-  const reach = 2;
-  const { view: defaultView } = tiling(model, {
-    halfWide: 1,
-    halfHigh: 1,
-    reach,
-  });
-  const activeView = view ?? defaultView;
-  const { cell } = model.pattern;
-  const colors = pieceColors(model, coloring);
-  const coloured = colouredModel(model, coloring);
-  const fill = byPlace(coloured) ? placeFills(coloured, coloring) : undefined;
-  const widths = strapWidths(model);
-  const seen = fit(activeView, 1 + widths.edge);
-  const meets = (ps: readonly Vec[]) =>
-    Math.max(...ps.map((p) => p.x)) >= seen.minX &&
-    Math.min(...ps.map((p) => p.x)) <= seen.maxX &&
-    Math.max(...ps.map((p) => p.y)) >= seen.minY &&
-    Math.min(...ps.map((p) => p.y)) <= seen.maxY;
-  const move = (p: Vec, d: Vec): Vec => ({ x: p.x + d.x, y: p.y + d.y });
-
-  const colorMap = new Map<
-    string,
-    { minDistance: number; names: Set<string> }
-  >();
-
-  for (let i = -reach; i <= reach; i++) {
-    for (let j = -reach; j <= reach; j++) {
-      const d = {
-        x: cell.u.x * i + cell.v.x * j,
-        y: cell.u.y * i + cell.v.y * j,
-      };
-      model.pattern.pieces.forEach((p, k) => {
-        const polygon = p.polygon.map((q) => move(q, d));
-        if (!meets(polygon)) return;
-        const color = fill ? fill(k, i, j) : (colors[p.type] ?? '#999999');
-        const cx = polygon.reduce((sum, q) => sum + q.x, 0) / polygon.length;
-        const cy = polygon.reduce((sum, q) => sum + q.y, 0) / polygon.length;
-        const dist = Math.hypot(cx, cy);
-        const name = model.pattern.types[p.type]?.name;
-
-        const entry = colorMap.get(color) ?? {
-          minDistance: Infinity,
-          names: new Set<string>(),
-        };
-        if (dist < entry.minDistance) entry.minDistance = dist;
-        if (name) entry.names.add(name);
-        colorMap.set(color, entry);
-      });
-    }
-  }
-
-  return [...colorMap.entries()]
-    .map(([color, { minDistance, names }]) => ({
-      color,
-      minDistance,
-      names: [...names],
-    }))
-    .sort((a, b) => a.minDistance - b.minDistance);
-}
-
 /**
  * A small square picture of the colored pattern, for the library, as the
  * wall first shows it: tiles with grout, or strapwork, where each pattern
@@ -1331,7 +1271,6 @@ export function Thumbnail({
   grout = 1,
   jali: appearance,
   pen = DEFAULT_PEN,
-  coloredUpTo,
   activeColorIndex,
   view: givenView,
 }: {
@@ -1345,8 +1284,6 @@ export function Thumbnail({
   jali?: JaliAppearance;
   /** How the lines style draws: pen, wash and ink. */
   pen?: PenLook;
-  /** If set, only colors with index < coloredUpTo receive their color; others show blueprint tone. */
-  coloredUpTo?: number;
   /** Currently active color index being animated/rippled in quick succession. */
   activeColorIndex?: number;
   /** If set, renders within this camera view (e.g. locked to fullView) rather than tiling view. */
@@ -1354,9 +1291,21 @@ export function Thumbnail({
 }) {
   const look = shownStyle(asked, model.tutorial.pattern.woven);
   const lightId = `jali-thumb-${useId().replace(/:/g, '')}`;
-  const reach = 2;
   const view = givenView ?? cardView(model);
   const { cell } = model.pattern;
+  // Copies of the tile far enough out to fill the view (a card of a sparse
+  // tile is drawn several tiles across).
+  const shortest = Math.min(
+    Math.hypot(cell.u.x, cell.u.y),
+    Math.hypot(cell.v.x, cell.v.y),
+  );
+  const reach = Math.max(
+    2,
+    Math.ceil(
+      Math.max(view.maxX - view.minX, view.maxY - view.minY) /
+        Math.max(1e-9, shortest),
+    ) + 1,
+  );
   const strapped = look === 'strapwork' || look === 'interlace';
   const finish0 = strapped ? finishOf(model, coloring) : undefined;
   const colors = pieceColors(
@@ -1430,156 +1379,7 @@ export function Thumbnail({
       ) : null,
     );
 
-  // When coloredUpTo is defined (e.g. progressive coloring in hero), render individual pieces
-  // grouped by UNIQUE COLOR, rippling strictly from the middle (center rosette) outward.
-  if (coloredUpTo !== undefined && !jali) {
-    const palette = orderedPaletteColors(model, coloring, view);
-    const colorIndexMap = new Map<string, number>();
-    palette.forEach((p, idx) => colorIndexMap.set(p.color, idx));
-
-    interface VisPiece {
-      id: string;
-      d: string;
-      color: string;
-      dist: number;
-      angle: number;
-    }
-    const visPieces: VisPiece[] = [];
-
-    for (let i = -reach; i <= reach; i++) {
-      for (let j = -reach; j <= reach; j++) {
-        const d = {
-          x: cell.u.x * i + cell.v.x * j,
-          y: cell.u.y * i + cell.v.y * j,
-        };
-        if (!tileShows(d)) continue;
-        model.pattern.pieces.forEach((p, k) => {
-          const polygon = p.polygon.map((q) => move(q, d));
-          if (!meets(polygon)) return;
-          const targetColor = fill
-            ? fill(k, i, j)
-            : (colors[p.type] ?? '#999999');
-          const cx = polygon.reduce((sum, q) => sum + q.x, 0) / polygon.length;
-          const cy = polygon.reduce((sum, q) => sum + q.y, 0) / polygon.length;
-          const dist = Math.hypot(cx, cy);
-          // Angle normalized from 12 o'clock clockwise: [0, 2*PI)
-          let angle = Math.atan2(cy, cx) + Math.PI / 2;
-          if (angle < 0) angle += Math.PI * 2;
-
-          visPieces.push({
-            id: `p-${p.type}-${i}-${j}-${k}`,
-            d: poly(polygon),
-            color: lines ? 'none' : targetColor,
-            dist,
-            angle,
-          });
-        });
-        for (const s of model.pattern.ink) {
-          const a = move(s.segment.a, d);
-          const b = move(s.segment.b, d);
-          if (meets([a, b]))
-            strokes.push(`M${sx(a)} ${sy(a)}L${sx(b)} ${sy(b)}`);
-        }
-        overAt(i, j);
-      }
-    }
-
-    // Group by unique color
-    const byColorGroup = new Map<string, VisPiece[]>();
-    for (const vp of visPieces) {
-      const list = byColorGroup.get(vp.color) ?? [];
-      list.push(vp);
-      byColorGroup.set(vp.color, list);
-    }
-
-    interface StaggeredPiece extends VisPiece {
-      colorIndex: number;
-      staggerIndex: number;
-      stepDelay: number;
-    }
-    const staggeredPieces: StaggeredPiece[] = [];
-
-    for (const [color, list] of byColorGroup.entries()) {
-      const cIdx = colorIndexMap.get(color) ?? 0;
-
-      // Sort strictly from the middle (center rosette, lowest r) outward:
-      list.sort((a, b) => {
-        const dDiff = a.dist - b.dist;
-        if (Math.abs(dDiff) > 0.15) {
-          return dDiff;
-        }
-        return a.angle - b.angle;
-      });
-
-      // Quick, smooth cadence: between 22ms and 48ms per piece so each color family
-      // completes within ~500ms without feeling sluggish or frenetic
-      const stepDelay = Math.max(
-        22,
-        Math.min(48, Math.floor(480 / Math.max(1, list.length))),
-      );
-
-      list.forEach((vp, idx) => {
-        staggeredPieces.push({
-          ...vp,
-          colorIndex: cIdx,
-          staggerIndex: idx,
-          stepDelay,
-        });
-      });
-    }
-
-    return (
-      <svg className="thumbnail" viewBox={viewBox(view)} aria-hidden="true">
-        {staggeredPieces.map((p) => {
-          const isColored = p.colorIndex < coloredUpTo;
-          const isRippling = p.colorIndex === activeColorIndex;
-          const currentColor = isColored ? p.color : 'rgba(18, 28, 48, 0.45)';
-          return (
-            <path
-              key={p.id}
-              className={`piece ${strap ? 'strap' : ''} ${isRippling ? 'rippling' : ''}`}
-              d={p.d}
-              fill={currentColor}
-              style={{
-                fill: currentColor,
-                stroke: strap ? currentColor : undefined,
-                transition:
-                  'fill 0.35s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
-                transitionDelay: isRippling
-                  ? `${p.staggerIndex * p.stepDelay}ms`
-                  : '0ms',
-              }}
-              vectorEffect="non-scaling-stroke"
-            />
-          );
-        })}
-        {(strap ? (['edge', 'band'] as const) : []).map((layer) => (
-          <path
-            key={layer}
-            d={strokes.join('')}
-            fill="none"
-            stroke={layer === 'edge' ? finish.lines : finish.band}
-            strokeWidth={widths[layer]}
-            strokeLinecap="round"
-          />
-        ))}
-        {overLayers()}
-        {!strap && strokes.length > 0 && (
-          <path
-            className="thumbnail-lines"
-            d={strokes.join('')}
-            fill="none"
-            stroke="rgba(226, 232, 240, 0.4)"
-            strokeWidth={0.015}
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        )}
-      </svg>
-    );
-  }
-
-  // Fast bundled path rendering for static catalog thumbnails (coloredUpTo === undefined)
+  // Pieces bundled into one path per colour.
   const byColor = new Map<string, string[]>();
   for (let i = -reach; i <= reach; i++) {
     for (let j = -reach; j <= reach; j++) {
@@ -1707,17 +1507,6 @@ export function Thumbnail({
           stroke={groutOf(finish)}
           strokeWidth={widths.grout}
           strokeLinecap="round"
-        />
-      )}
-      {!strap && coloredUpTo !== undefined && strokes.length > 0 && (
-        <path
-          className="thumbnail-lines"
-          d={strokes.join('')}
-          fill="none"
-          stroke="rgba(226, 232, 240, 0.4)"
-          strokeWidth={0.015}
-          strokeLinecap="round"
-          vectorEffect="non-scaling-stroke"
         />
       )}
     </svg>
