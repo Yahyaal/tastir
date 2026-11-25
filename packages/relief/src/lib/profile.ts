@@ -119,7 +119,11 @@ export function profileOf(
   const leadStops = lead.slice(1).map((p) => p[0]);
   const make = (rest: [number, number][], end: number): Profile => {
     const points = [...lead, ...rest];
-    return { stops: [...leadStops, ...rest.map((p) => p[0])], end, z: polyline(points) };
+    return {
+      stops: [...leadStops, ...rest.map((p) => p[0])],
+      end,
+      z: polyline(points),
+    };
   };
   switch (carving.kind) {
     case 'raised':
@@ -156,5 +160,7 @@ export function profileOf(
 
 /** How deep a carving goes below the top. */
 export function depthOf(carving: Carving): number {
-  return carving.kind === 'raised' || carving.kind === 'pierced' ? 0 : carving.depth;
+  return carving.kind === 'raised' || carving.kind === 'pierced'
+    ? 0
+    : carving.depth;
 }

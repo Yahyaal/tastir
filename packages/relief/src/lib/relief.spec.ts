@@ -20,7 +20,8 @@ const squares: PatternShape = {
   ],
 };
 
-const frustum = (a: number, b: number, h: number) => (h / 3) * (a * a + a * b + b * b);
+const frustum = (a: number, b: number, h: number) =>
+  (h / 3) * (a * a + a * b + b * b);
 const tan = (deg: number) => Math.tan((deg * Math.PI) / 180);
 
 describe('relief', () => {
@@ -28,7 +29,12 @@ describe('relief', () => {
 
   it('cuts flat recesses with drafted walls, to the exact volume', () => {
     const carving: Carving = { kind: 'flat', depth: 5, draft: 6 };
-    const mesh = relief(squares, { ...base, width: 60, height: 60, carving: () => carving });
+    const mesh = relief(squares, {
+      ...base,
+      width: 60,
+      height: 60,
+      carving: () => carving,
+    });
     expect(openEdges(mesh)).toBe(0);
     const a = 18;
     const b = a - 2 * 5 * tan(6);
@@ -87,7 +93,9 @@ function topArea(mesh: Mesh): number {
   for (let i = 0; i < t.length; i += 3) {
     const [a, b, c] = [t[i]! * 3, t[i + 1]! * 3, t[i + 2]! * 3];
     const z =
-      ((p[b]! - p[a]!) * (p[c + 1]! - p[a + 1]!) - (p[b + 1]! - p[a + 1]!) * (p[c]! - p[a]!)) / 2;
+      ((p[b]! - p[a]!) * (p[c + 1]! - p[a + 1]!) -
+        (p[b + 1]! - p[a + 1]!) * (p[c]! - p[a]!)) /
+      2;
     if (z > 0) area += z;
   }
   return area;
@@ -95,7 +103,12 @@ function topArea(mesh: Mesh): number {
 
 const tutorial = (id: string) =>
   loadModel(
-    JSON.parse(readFileSync(new URL(`../../../../tutorials/${id}.json`, import.meta.url), 'utf8')),
+    JSON.parse(
+      readFileSync(
+        new URL(`../../../../tutorials/${id}.json`, import.meta.url),
+        'utf8',
+      ),
+    ),
   );
 
 describe('relief of real patterns', () => {
@@ -122,7 +135,8 @@ describe('relief of real patterns', () => {
           thickness: 10,
           band: 2.4,
           frame: k === 1 ? 4 : 0,
-          carving: (type) => (type % 3 === k % 3 ? { kind: 'raised' } : carving),
+          carving: (type) =>
+            type % 3 === k % 3 ? { kind: 'raised' } : carving,
         });
         expect(openEdges(mesh), carving.kind).toBe(0);
         expect(topArea(mesh)).toBeCloseTo(120 * 90, 6);

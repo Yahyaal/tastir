@@ -1,7 +1,19 @@
-import { clip, convexParts, inset, meshOf, volumeOf, type Mesh } from './mesh.js';
+import {
+  clip,
+  convexParts,
+  inset,
+  meshOf,
+  volumeOf,
+  type Mesh,
+} from './mesh.js';
 import { boundary } from './flat.js';
 import type { Cuts } from './parts.js';
-import { panelParts, piecesOver, type MeshPart, type PatternShape } from './relief.js';
+import {
+  panelParts,
+  piecesOver,
+  type MeshPart,
+  type PatternShape,
+} from './relief.js';
 import { signedArea, sweep, type P2, type P3 } from './skeleton.js';
 
 /**
@@ -134,7 +146,12 @@ export function tilePieces(pattern: PatternShape, o: PieceOptions): PieceSet {
         cut,
         across: 2 * radius,
         ...(magnet ? { magnet, at: centre } : {}),
-        mesh: pieceSolid(shape, o.thickness, o.bevel, magnet ? { magnet, at: centre } : undefined),
+        mesh: pieceSolid(
+          shape,
+          o.thickness,
+          o.bevel,
+          magnet ? { magnet, at: centre } : undefined,
+        ),
       });
     }
   };
@@ -147,7 +164,10 @@ export function tilePieces(pattern: PatternShape, o: PieceOptions): PieceSet {
       if (known) return known;
       const from = pieces.length;
       const piece = pattern.pieces[k]!;
-      const polygon = piece.polygon.map((p) => ({ x: p.x * o.scale, y: p.y * o.scale }));
+      const polygon = piece.polygon.map((p) => ({
+        x: p.x * o.scale,
+        y: p.y * o.scale,
+      }));
       if (signedArea(polygon) < 0) polygon.reverse();
       add(polygon, piece.type, '', false);
       const out = pieces.splice(from);
@@ -155,12 +175,17 @@ export function tilePieces(pattern: PatternShape, o: PieceOptions): PieceSet {
       return out;
     };
     const copies =
-      o.cells?.flatMap(({ i, j }) => pattern.pieces.map((_, k) => ({ k, i, j }))) ??
+      o.cells?.flatMap(({ i, j }) =>
+        pattern.pieces.map((_, k) => ({ k, i, j })),
+      ) ??
       piecesOver(pattern, o.scale, half)
         .filter((piece) => within(middleOf(piece.polygon), outline))
         .map(({ k, i, j }) => ({ k, i, j }));
     for (const { k, i, j } of copies) {
-      const d = { x: (i * u.x + j * v.x) * o.scale, y: (i * u.y + j * v.y) * o.scale };
+      const d = {
+        x: (i * u.x + j * v.x) * o.scale,
+        y: (i * u.y + j * v.y) * o.scale,
+      };
       const colour = o.colour(k, i, j);
       for (const p of madeOf(k))
         pieces.push({
@@ -171,7 +196,12 @@ export function tilePieces(pattern: PatternShape, o: PieceOptions): PieceSet {
           mesh: moved(p.mesh, d),
         });
     }
-    return { pieces, dropped, droppedArea, smallest: Number.isFinite(smallest) ? smallest : 0 };
+    return {
+      pieces,
+      dropped,
+      droppedArea,
+      smallest: Number.isFinite(smallest) ? smallest : 0,
+    };
   }
   for (const piece of piecesOver(pattern, o.scale, half)) {
     const colour = o.colour(piece.k, piece.i, piece.j);
@@ -180,11 +210,18 @@ export function tilePieces(pattern: PatternShape, o: PieceOptions): PieceSet {
       add(piece.polygon, piece.type, colour, false);
       continue;
     }
-    for (const part of cutTo(piece.polygon, inner)) add(part, piece.type, colour, true);
+    for (const part of cutTo(piece.polygon, inner))
+      add(part, piece.type, colour, true);
   }
   if (o.frame > 0)
-    for (const strip of frameStrips(outline, o.frame, o.longest ?? 240)) add(strip, -1, o.frameColour, false);
-  return { pieces, dropped, droppedArea, smallest: Number.isFinite(smallest) ? smallest : 0 };
+    for (const strip of frameStrips(outline, o.frame, o.longest ?? 240))
+      add(strip, -1, o.frameColour, false);
+  return {
+    pieces,
+    dropped,
+    droppedArea,
+    smallest: Number.isFinite(smallest) ? smallest : 0,
+  };
 }
 
 /** A polygon's centre of area. */
@@ -206,7 +243,10 @@ function middleOf(polygon: readonly P2[]): P2 {
 /** A mesh moved across the bed. */
 function moved(mesh: Mesh, d: P2): Mesh {
   return {
-    positions: Float64Array.from(mesh.positions, (w, n) => w + (n % 3 === 0 ? d.x : n % 3 === 1 ? d.y : 0)),
+    positions: Float64Array.from(
+      mesh.positions,
+      (w, n) => w + (n % 3 === 0 ? d.x : n % 3 === 1 ? d.y : 0),
+    ),
     triangles: mesh.triangles,
   };
 }
@@ -217,7 +257,8 @@ function within(p: P2, outline: readonly P2[]): boolean {
     const a = outline[i]!;
     const b = outline[(i + 1) % outline.length]!;
     const len = Math.hypot(b.x - a.x, b.y - a.y);
-    if ((b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x) < -1e-7 * len) return false;
+    if ((b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x) < -1e-7 * len)
+      return false;
   }
   return true;
 }
@@ -243,12 +284,16 @@ export function shrunk(polygon: readonly P2[], d: number): P2[][] {
 /** The largest circle inside a polygon: its radius is how far the
  * wavefront goes before it closes, and its centre is where it closes
  * last (the middle of those points, when a ridge closes at once). */
-export function deepest(polygon: readonly P2[]): { radius: number; centre: P2 } {
+export function deepest(polygon: readonly P2[]): {
+  radius: number;
+  centre: P2;
+} {
   const s = sweep(polygon, [], Infinity);
   const radius = s.reached;
   const top: P2[] = [];
   for (const f of s.faces)
-    for (const p of f) if (Math.abs(p.z - radius) <= 1e-7 * Math.max(1, radius)) top.push(p);
+    for (const p of f)
+      if (Math.abs(p.z - radius) <= 1e-7 * Math.max(1, radius)) top.push(p);
   if (!top.length) return { radius, centre: polygon[0]! };
   const mid = {
     x: top.reduce((a, p) => a + p.x, 0) / top.length,
@@ -256,11 +301,18 @@ export function deepest(polygon: readonly P2[]): { radius: number; centre: P2 } 
   };
   // Their middle when it is as deep (the middle of one ridge), else the
   // point at the top nearest it (one of two separate peaks).
-  if (inPolygon(mid, polygon) && sideDistance(mid, polygon) >= radius * (1 - 1e-9) - 1e-12)
+  if (
+    inPolygon(mid, polygon) &&
+    sideDistance(mid, polygon) >= radius * (1 - 1e-9) - 1e-12
+  )
     return { radius, centre: mid };
   let centre = top[0]!;
   for (const p of top)
-    if (Math.hypot(p.x - mid.x, p.y - mid.y) < Math.hypot(centre.x - mid.x, centre.y - mid.y)) centre = p;
+    if (
+      Math.hypot(p.x - mid.x, p.y - mid.y) <
+      Math.hypot(centre.x - mid.x, centre.y - mid.y)
+    )
+      centre = p;
   return { radius, centre: { x: centre.x, y: centre.y } };
 }
 
@@ -271,8 +323,17 @@ function sideDistance(p: P2, polygon: readonly P2[]): number {
     const a = polygon[i]!;
     const b = polygon[(i + 1) % polygon.length]!;
     const ab = { x: b.x - a.x, y: b.y - a.y };
-    const t = Math.max(0, Math.min(1, ((p.x - a.x) * ab.x + (p.y - a.y) * ab.y) / (ab.x ** 2 + ab.y ** 2)));
-    best = Math.min(best, Math.hypot(p.x - a.x - ab.x * t, p.y - a.y - ab.y * t));
+    const t = Math.max(
+      0,
+      Math.min(
+        1,
+        ((p.x - a.x) * ab.x + (p.y - a.y) * ab.y) / (ab.x ** 2 + ab.y ** 2),
+      ),
+    );
+    best = Math.min(
+      best,
+      Math.hypot(p.x - a.x - ab.x * t, p.y - a.y - ab.y * t),
+    );
   }
   return best;
 }
@@ -283,7 +344,11 @@ function inPolygon(p: P2, polygon: readonly P2[]): boolean {
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
     const a = polygon[i]!;
     const b = polygon[j]!;
-    if (a.y > p.y !== b.y > p.y && p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x) c = !c;
+    if (
+      a.y > p.y !== b.y > p.y &&
+      p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x
+    )
+      c = !c;
   }
   return c;
 }
@@ -291,7 +356,8 @@ function inPolygon(p: P2, polygon: readonly P2[]): boolean {
 /** The pocket's corners: a polygon whose sides touch the circle the
  * magnet needs, so the magnet fits between them. */
 function pocketOf(magnet: Magnet, at: P2): P2[] {
-  const r = (magnet.across + MAGNET_ROOM) / 2 / Math.cos(Math.PI / POCKET_SIDES);
+  const r =
+    (magnet.across + MAGNET_ROOM) / 2 / Math.cos(Math.PI / POCKET_SIDES);
   return Array.from({ length: POCKET_SIDES }, (_, i) => {
     const a = (2 * Math.PI * i) / POCKET_SIDES;
     return { x: at.x + r * Math.cos(a), y: at.y + r * Math.sin(a) };
@@ -300,12 +366,18 @@ function pocketOf(magnet: Magnet, at: P2): P2[] {
 
 /** How far a pocket reaches from its centre, wall included. */
 export function pocketReach(magnet: Magnet): number {
-  return (magnet.across + MAGNET_ROOM) / 2 / Math.cos(Math.PI / POCKET_SIDES) + MAGNET_WALL;
+  return (
+    (magnet.across + MAGNET_ROOM) / 2 / Math.cos(Math.PI / POCKET_SIDES) +
+    MAGNET_WALL
+  );
 }
 
 /** The magnet a piece with this largest circle takes: the one chosen,
  * else the smallest, else none. */
-export function magnetFor(radius: number, chosen: Magnet | undefined): Magnet | undefined {
+export function magnetFor(
+  radius: number,
+  chosen: Magnet | undefined,
+): Magnet | undefined {
   if (!chosen) return undefined;
   if (radius >= pocketReach(chosen)) return chosen;
   if (radius >= pocketReach(SMALL_MAGNET)) return SMALL_MAGNET;
@@ -328,7 +400,8 @@ export function pieceSolid(
   const side = thickness - b;
   if (b > 0) {
     const s = sweep(shape, [], b);
-    for (const f of s.faces) faces.push(f.map((p) => ({ x: p.x, y: p.y, z: side + p.z })));
+    for (const f of s.faces)
+      faces.push(f.map((p) => ({ x: p.x, y: p.y, z: side + p.z })));
     for (const f of s.floor) faces.push(f.map((p) => ({ ...p, z: thickness })));
   } else faces.push(shape.map((p) => ({ ...p, z: thickness })));
   const n = shape.length;
@@ -361,7 +434,12 @@ export function pieceSolid(
     ]);
   }
   faces.push(hole.map((p) => ({ ...p, z: depth })).reverse());
-  faces.push(...aroundHole(bottom, hole.map((p) => ({ ...p, z: 0 }))));
+  faces.push(
+    ...aroundHole(
+      bottom,
+      hole.map((p) => ({ ...p, z: 0 })),
+    ),
+  );
   return meshOf(faces);
 }
 
@@ -375,7 +453,8 @@ function aroundHole(outer: readonly P3[], hole: readonly P3[]): P3[][] {
   const crosses = (p: P2, q: P2, also: readonly (readonly [P2, P2])[] = []) => {
     const edges: [P2, P2][] = [];
     for (const loop of [outer, hole])
-      for (let i = 0; i < loop.length; i++) edges.push([loop[i]!, loop[(i + 1) % loop.length]!]);
+      for (let i = 0; i < loop.length; i++)
+        edges.push([loop[i]!, loop[(i + 1) % loop.length]!]);
     for (const [a, b] of [...edges, ...also]) {
       if (a === p || b === p || a === q || b === q) continue;
       const d1 = turn(p, q, a);
@@ -386,7 +465,11 @@ function aroundHole(outer: readonly P3[], hole: readonly P3[]): P3[][] {
     }
     return false;
   };
-  const nearest = (h: number, skip: number, also: readonly (readonly [P2, P2])[]) => {
+  const nearest = (
+    h: number,
+    skip: number,
+    also: readonly (readonly [P2, P2])[],
+  ) => {
     let best = -1;
     let d = Infinity;
     outer.forEach((p, o) => {
@@ -422,7 +505,8 @@ function aroundHole(outer: readonly P3[], hole: readonly P3[]): P3[][] {
   throw new Error('A magnet pocket could not be joined to its piece.');
 }
 
-const turn = (a: P2, b: P2, c: P2) => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+const turn = (a: P2, b: P2, c: P2) =>
+  (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 
 /**
  * The frame round a panel as strips, mitred at its corners like a
@@ -430,7 +514,11 @@ const turn = (a: P2, b: P2, c: P2) => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * 
  * gently (a round one) joined into arcs, and any strip longer than
  * `longest` cut square across.
  */
-export function frameStrips(outline: readonly P2[], frame: number, longest: number): P2[][] {
+export function frameStrips(
+  outline: readonly P2[],
+  frame: number,
+  longest: number,
+): P2[][] {
   const inner = inset(outline, frame);
   const n = outline.length;
   const units: { outer: P2[]; inner: P2[]; dir: P2 }[] = [];
@@ -463,10 +551,25 @@ export function frameStrips(outline: readonly P2[], frame: number, longest: numb
     let prevOuter = a;
     let prevInner = ia;
     for (let p = 1; p <= pieces; p++) {
-      const endOuter = p === pieces ? b : { x: a.x + (dir.x * len * p) / pieces, y: a.y + (dir.y * len * p) / pieces };
+      const endOuter =
+        p === pieces
+          ? b
+          : {
+              x: a.x + (dir.x * len * p) / pieces,
+              y: a.y + (dir.y * len * p) / pieces,
+            };
       const endInner =
-        p === pieces ? ib : { x: endOuter.x + normal.x * frame, y: endOuter.y + normal.y * frame };
-      units.push({ outer: [prevOuter, endOuter], inner: [prevInner, endInner], dir });
+        p === pieces
+          ? ib
+          : {
+              x: endOuter.x + normal.x * frame,
+              y: endOuter.y + normal.y * frame,
+            };
+      units.push({
+        outer: [prevOuter, endOuter],
+        inner: [prevInner, endInner],
+        dir,
+      });
       prevOuter = endOuter;
       prevInner = endInner;
     }
@@ -477,20 +580,39 @@ export function frameStrips(outline: readonly P2[], frame: number, longest: numb
     const last = strips[strips.length - 1];
     if (last) {
       const prev = last.outer;
-      const d = { x: prev[prev.length - 1]!.x - prev[prev.length - 2]!.x, y: prev[prev.length - 1]!.y - prev[prev.length - 2]!.y };
-      const t = Math.atan2(d.x * u.dir.y - d.y * u.dir.x, d.x * u.dir.x + d.y * u.dir.y);
+      const d = {
+        x: prev[prev.length - 1]!.x - prev[prev.length - 2]!.x,
+        y: prev[prev.length - 1]!.y - prev[prev.length - 2]!.y,
+      };
+      const t = Math.atan2(
+        d.x * u.dir.y - d.y * u.dir.x,
+        d.x * u.dir.x + d.y * u.dir.y,
+      );
       const joined = [...last.outer, u.outer[1]!, ...last.inner];
       const xs = joined.map((p) => p.x);
       const ys = joined.map((p) => p.y);
-      const size = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys));
-      if (Math.abs(t) > 1e-9 && Math.abs(t) < SHARP && Math.abs(last.turned + t) <= Math.PI / 2 + 1e-9 && size <= longest) {
+      const size = Math.max(
+        Math.max(...xs) - Math.min(...xs),
+        Math.max(...ys) - Math.min(...ys),
+      );
+      if (
+        Math.abs(t) > 1e-9 &&
+        Math.abs(t) < SHARP &&
+        Math.abs(last.turned + t) <= Math.PI / 2 + 1e-9 &&
+        size <= longest
+      ) {
         last.outer.push(u.outer[1]!);
         last.inner.push(u.inner[1]!);
         last.turned += t;
         continue;
       }
     }
-    strips.push({ outer: u.outer.slice(), inner: u.inner.slice(), first: u.dir, turned: 0 });
+    strips.push({
+      outer: u.outer.slice(),
+      inner: u.inner.slice(),
+      first: u.dir,
+      turned: 0,
+    });
   }
   return strips.map((s) => [...s.outer, ...s.inner.slice().reverse()]);
 }
@@ -519,7 +641,9 @@ export function plates(
   bed = 256,
 ): Plate[] {
   const byColour = new Map<string, number[]>();
-  set.forEach((p, k) => byColour.set(p.colour, [...(byColour.get(p.colour) ?? []), k]));
+  set.forEach((p, k) =>
+    byColour.set(p.colour, [...(byColour.get(p.colour) ?? []), k]),
+  );
   const out: Plate[] = [];
   for (const [colour, list] of byColour) {
     const boxes = list.map((k) => {
@@ -527,7 +651,8 @@ export function plates(
       return { k, angle, box };
     });
     boxes.sort((a, b) => b.box.h - a.box.h || b.box.w - a.box.w);
-    let plate: (PlateItem & { x: number; y: number; w: number; h: number })[] = [];
+    let plate: (PlateItem & { x: number; y: number; w: number; h: number })[] =
+      [];
     let x = 0;
     let y = 0;
     let row = 0;
@@ -539,13 +664,19 @@ export function plates(
       const dy = (bed - h) / 2;
       out.push({
         colour,
-        items: plate.map((p) => ({ piece: p.piece, angle: p.angle, shift: { x: p.shift.x + dx, y: p.shift.y + dy } })),
+        items: plate.map((p) => ({
+          piece: p.piece,
+          angle: p.angle,
+          shift: { x: p.shift.x + dx, y: p.shift.y + dy },
+        })),
       });
       plate = [];
     };
     for (const { k, angle, box } of boxes) {
       if (box.w > size || box.h > size)
-        throw new Error(`A piece ${Math.round(box.w)} × ${Math.round(box.h)} mm is larger than the bed.`);
+        throw new Error(
+          `A piece ${Math.round(box.w)} × ${Math.round(box.h)} mm is larger than the bed.`,
+        );
       if (x > 0 && x + box.w > size) {
         x = 0;
         y += row + gap;
@@ -557,7 +688,15 @@ export function plates(
         y = 0;
         row = 0;
       }
-      plate.push({ piece: k, angle, shift: { x: x - box.x, y: y - box.y }, x, y, w: box.w, h: box.h });
+      plate.push({
+        piece: k,
+        angle,
+        shift: { x: x - box.x, y: y - box.y },
+        x,
+        y,
+        w: box.w,
+        h: box.h,
+      });
       x += box.w + gap;
       row = Math.max(row, box.h);
     }
@@ -567,8 +706,13 @@ export function plates(
 }
 
 /** The turn that gives a polygon its smallest box, long side across. */
-function bestTurn(polygon: readonly P2[]): { angle: number; box: { x: number; y: number; w: number; h: number } } {
-  let best: { angle: number; box: { x: number; y: number; w: number; h: number } } | undefined;
+function bestTurn(polygon: readonly P2[]): {
+  angle: number;
+  box: { x: number; y: number; w: number; h: number };
+} {
+  let best:
+    | { angle: number; box: { x: number; y: number; w: number; h: number } }
+    | undefined;
   const n = polygon.length;
   for (let i = 0; i < n; i++) {
     const a = polygon[i]!;
@@ -577,7 +721,8 @@ function bestTurn(polygon: readonly P2[]): { angle: number; box: { x: number; y:
       const angle = -Math.atan2(b.y - a.y, b.x - a.x) + extra;
       const box = boxOf(polygon.map((p) => turned(p, angle)));
       if (box.h > box.w + 1e-9) continue;
-      if (!best || box.w * box.h < best.box.w * best.box.h - 1e-9) best = { angle, box };
+      if (!best || box.w * box.h < best.box.w * best.box.h - 1e-9)
+        best = { angle, box };
     }
   }
   return best!;
@@ -632,10 +777,20 @@ export const trayOutline = (outline: readonly P2[], joint: number) =>
  * (each shrunk by half a joint) fit with the same joint against the rim.
  * Cut into parts when it is larger than the bed.
  */
-export function tray(outline: readonly P2[], joint: number, cuts: Cuts): MeshPart[] {
+export function tray(
+  outline: readonly P2[],
+  joint: number,
+  cuts: Cuts,
+): MeshPart[] {
   const outer = trayOutline(outline, joint);
   const surface = [outer.map((p) => ({ ...p, z: TRAY.floor }))];
-  return panelParts(surface, outer, { frame: TRAY.wall, thickness: TRAY.floor + TRAY.rim }, cuts, []);
+  return panelParts(
+    surface,
+    outer,
+    { frame: TRAY.wall, thickness: TRAY.floor + TRAY.rim },
+    cuts,
+    [],
+  );
 }
 
 /** The volume of a set of pieces, in mm³. */
@@ -648,7 +803,11 @@ const num = (x: number) => String(Math.round(x * 100) / 100);
 function inkOver(hex: string): string {
   const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex.trim());
   if (!m) return '#000';
-  const [r, g, b] = [m[1]!, m[2]!, m[3]!].map((x) => parseInt(x, 16) / 255) as [number, number, number];
+  const [r, g, b] = [m[1]!, m[2]!, m[3]!].map((x) => parseInt(x, 16) / 255) as [
+    number,
+    number,
+    number,
+  ];
   return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.55 ? '#1d1d1b' : '#fbf8f1';
 }
 
@@ -658,7 +817,11 @@ function inkOver(hex: string): string {
  * counted from the top left. The numbers are those of the pieces in the
  * plates' files.
  */
-export function layoutSvg(set: readonly TilePiece[], outline: readonly P2[], title = 'Tastir'): string {
+export function layoutSvg(
+  set: readonly TilePiece[],
+  outline: readonly P2[],
+  title = 'Tastir',
+): string {
   const all = [...outline, ...set.flatMap((p) => p.outline)];
   const { x: x0, y: y0, w, h } = boxOf(all);
   const y1 = y0 + h;
@@ -697,7 +860,9 @@ export function numbering(set: readonly TilePiece[]): number[] {
   const tallest = Math.max(1, ...centres.map((c) => c.h));
   // Rows half the tallest piece high, so a row reads as one line.
   const band = tallest / 2;
-  centres.sort((a, b) => Math.floor(-a.y / band) - Math.floor(-b.y / band) || a.x - b.x);
+  centres.sort(
+    (a, b) => Math.floor(-a.y / band) - Math.floor(-b.y / band) || a.x - b.x,
+  );
   const out: number[] = new Array(set.length);
   centres.forEach((c, n) => (out[c.k] = n + 1));
   return out;

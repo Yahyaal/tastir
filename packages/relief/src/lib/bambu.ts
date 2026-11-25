@@ -43,7 +43,11 @@ export const BAMBU_VERSION = '01.08.00.00';
 const PLATE_GAP = 1 / 5;
 
 /** Where plate n (from 0) lies in the project, out of `count`. */
-export function plateOrigin(n: number, count: number, bed: number): { x: number; y: number } {
+export function plateOrigin(
+  n: number,
+  count: number,
+  bed: number,
+): { x: number; y: number } {
   const cols = plateColumns(count);
   const stride = bed * (1 + PLATE_GAP);
   return { x: (n % cols) * stride, y: 0 - Math.floor(n / cols) * stride };
@@ -77,19 +81,26 @@ export const STEADY_START: Readonly<Record<string, string>> = {
 
 /** The settings for these colours: every per-filament setting repeated
  * once a colour, in that colour, and the steady start over them. */
-export function projectSettings(s: BambuSettings, colours: readonly string[]): Record<string, string | string[]> {
+export function projectSettings(
+  s: BambuSettings,
+  colours: readonly string[],
+): Record<string, string | string[]> {
   const n = Math.max(1, colours.length);
   const out: Record<string, string | string[]> = {};
-  for (const [key, value] of Object.entries(s.config)) out[key] = Array.isArray(value) ? value.slice() : (value as string);
+  for (const [key, value] of Object.entries(s.config))
+    out[key] = Array.isArray(value) ? value.slice() : (value as string);
   for (const key of s.perFilament) {
     const one = s.config[key];
-    if (Array.isArray(one)) out[key] = Array.from({ length: n }, () => one).flat();
+    if (Array.isArray(one))
+      out[key] = Array.from({ length: n }, () => one).flat();
   }
   for (const [key, value] of Object.entries(STEADY_START)) {
     const was = out[key];
     out[key] = Array.isArray(was) ? was.map(() => value) : value;
   }
-  out.filament_colour = Array.from({ length: n }, (_, k) => (colours[k] ?? '#FFFFFF').toUpperCase());
+  out.filament_colour = Array.from({ length: n }, (_, k) =>
+    (colours[k] ?? '#FFFFFF').toUpperCase(),
+  );
   out.filament_self_index = Array.from({ length: n }, (_, k) => String(k + 1));
   out.flush_volumes_matrix = Array.from({ length: n * n }, (_, k) =>
     Math.floor(k / n) === k % n ? '0' : String(s.flush),
@@ -100,7 +111,11 @@ export function projectSettings(s: BambuSettings, colours: readonly string[]): R
 export function bambuProject(
   plates: readonly ProjectPlate[],
   title: string,
-  options: { readonly settings?: BambuSettings; readonly colours?: readonly string[]; readonly bed?: number } = {},
+  options: {
+    readonly settings?: BambuSettings;
+    readonly colours?: readonly string[];
+    readonly bed?: number;
+  } = {},
 ): Uint8Array {
   const bed = options.bed ?? 256;
   const version = options.settings?.version ?? BAMBU_VERSION;
@@ -128,12 +143,19 @@ export function bambuProject(
         hi[i % 3] = Math.max(hi[i % 3]!, p[i]!);
       }
       const mid = lo.map((l, a) => (l + hi[a]!) / 2);
-      const body: string[] = [`<object id="${meshId}" p:UUID="${uuid(meshId, 1)}" type="model">\n<mesh>\n<vertices>\n`];
+      const body: string[] = [
+        `<object id="${meshId}" p:UUID="${uuid(meshId, 1)}" type="model">\n<mesh>\n<vertices>\n`,
+      ];
       for (let i = 0; i < p.length; i += 3)
-        body.push(`<vertex x="${num(p[i]! - mid[0]!)}" y="${num(p[i + 1]! - mid[1]!)}" z="${num(p[i + 2]! - mid[2]!)}"/>\n`);
+        body.push(
+          `<vertex x="${num(p[i]! - mid[0]!)}" y="${num(p[i + 1]! - mid[1]!)}" z="${num(p[i + 2]! - mid[2]!)}"/>\n`,
+        );
       body.push('</vertices>\n<triangles>\n');
       const t = item.mesh.triangles;
-      for (let i = 0; i < t.length; i += 3) body.push(`<triangle v1="${t[i]}" v2="${t[i + 1]}" v3="${t[i + 2]}"/>\n`);
+      for (let i = 0; i < t.length; i += 3)
+        body.push(
+          `<triangle v1="${t[i]}" v2="${t[i + 1]}" v3="${t[i + 2]}"/>\n`,
+        );
       body.push('</triangles>\n</mesh>\n</object>\n');
       objectFiles.push({
         name: path.slice(1),
@@ -189,7 +211,10 @@ export function bambuProject(
     `<resources>\n${main.join('')}</resources>\n` +
     `<build p:UUID="${uuid(0, 5)}">\n${build.join('')}</build>\n</model>\n`;
   const config =
-    '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n' + settings.join('') + plateXml.join('') + '</config>\n';
+    '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n' +
+    settings.join('') +
+    plateXml.join('') +
+    '</config>\n';
   const types =
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
@@ -206,14 +231,23 @@ export function bambuProject(
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
     objectFiles
-      .map((f, k) => `<Relationship Target="/${f.name}" Id="rel-${k + 1}" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>`)
+      .map(
+        (f, k) =>
+          `<Relationship Target="/${f.name}" Id="rel-${k + 1}" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>`,
+      )
       .join('') +
     '</Relationships>\n';
   const settingsFile = options.settings
     ? [
         {
           name: 'Metadata/project_settings.config',
-          data: utf8(JSON.stringify(projectSettings(options.settings, options.colours ?? []), null, 4) + '\n'),
+          data: utf8(
+            JSON.stringify(
+              projectSettings(options.settings, options.colours ?? []),
+              null,
+              4,
+            ) + '\n',
+          ),
         },
       ]
     : [];
@@ -235,7 +269,8 @@ const NAMESPACES =
 
 /** A UUID that is the same every time for the same object and use. */
 function uuid(id: number, use: number): string {
-  const hex = (n: number, w: number) => n.toString(16).padStart(w, '0').slice(-w);
+  const hex = (n: number, w: number) =>
+    n.toString(16).padStart(w, '0').slice(-w);
   return `${hex(id, 8)}-${hex(use, 4)}-4000-8000-${hex(id * 7919 + use, 12)}`;
 }
 
