@@ -61,8 +61,16 @@ function escapeXml(s: string): string {
   return s.replace(/[<>&"']/g, (c) => `&#${c.charCodeAt(0)};`);
 }
 
-/** UTF-8 without TextEncoder, which the engine's packages do not type. */
+const TextEncoderCtor = (
+  globalThis as {
+    readonly TextEncoder?: new () => { encode(input: string): Uint8Array };
+  }
+).TextEncoder;
+const textEncoder = TextEncoderCtor ? new TextEncoderCtor() : undefined;
+
+/** UTF-8 using TextEncoder when available, with a pure-JS fallback. */
 export function utf8(s: string): Uint8Array {
+  if (textEncoder) return textEncoder.encode(s);
   const out: number[] = [];
   for (const ch of s) {
     const c = ch.codePointAt(0)!;

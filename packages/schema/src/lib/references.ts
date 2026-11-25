@@ -205,6 +205,7 @@ export function checkReferences(t: Tutorial): Issue[] {
     }
   });
   use('pattern.cell', t.pattern.cell, ['polygon']);
+  if (t.pattern.panel) use('pattern.panel', t.pattern.panel, ['polygon']);
 
   const pieceNames = new Set<string>();
   t.expect.pieces.forEach((p, i) => {

@@ -92,6 +92,8 @@ export interface TilePiece {
   readonly cut: boolean;
   /** The diameter of the largest circle inside it. */
   readonly across: number;
+  /** The centre of that largest circle (reused by layoutSvg). */
+  readonly centre?: P2;
   /** Its magnet and where, if one fits. */
   readonly magnet?: Magnet;
   readonly at?: P2;
@@ -145,6 +147,7 @@ export function tilePieces(pattern: PatternShape, o: PieceOptions): PieceSet {
         outline: shape,
         cut,
         across: 2 * radius,
+        centre,
         ...(magnet ? { magnet, at: centre } : {}),
         mesh: pieceSolid(
           shape,
@@ -192,6 +195,9 @@ export function tilePieces(pattern: PatternShape, o: PieceOptions): PieceSet {
           ...p,
           colour,
           outline: p.outline.map((q) => ({ x: q.x + d.x, y: q.y + d.y })),
+          ...(p.centre
+            ? { centre: { x: p.centre.x + d.x, y: p.centre.y + d.y } }
+            : {}),
           ...(p.at ? { at: { x: p.at.x + d.x, y: p.at.y + d.y } } : {}),
           mesh: moved(p.mesh, d),
         });
@@ -462,6 +468,15 @@ function aroundHole(outer: readonly P3[], hole: readonly P3[]): P3[][] {
       const d3 = turn(a, b, p);
       const d4 = turn(a, b, q);
       if (d1 * d2 < 0 && d3 * d4 < 0) return true;
+      // Reject bridges that pass collinearly through an intermediate vertex
+      // (e.g., a concave reflex corner or opposite hole corner).
+      const onSeg = (u: P2, v: P2, pt: P2) =>
+        Math.abs(turn(u, v, pt)) <= 1e-9 &&
+        pt.x >= Math.min(u.x, v.x) - 1e-9 &&
+        pt.x <= Math.max(u.x, v.x) + 1e-9 &&
+        pt.y >= Math.min(u.y, v.y) - 1e-9 &&
+        pt.y <= Math.max(u.y, v.y) + 1e-9;
+      if (onSeg(p, q, a) || onSeg(p, q, b)) return true;
     }
     return false;
   };
@@ -651,56 +666,111 @@ export function plates(
       return { k, angle, box };
     });
     boxes.sort((a, b) => b.box.h - a.box.h || b.box.w - a.box.w);
-    let plate: (PlateItem & { x: number; y: number; w: number; h: number })[] =
-      [];
-    let x = 0;
-    let y = 0;
-    let row = 0;
-    const finish = () => {
-      if (!plate.length) return;
-      const w = Math.max(...plate.map((p) => p.x + p.w));
-      const h = Math.max(...plate.map((p) => p.y + p.h));
-      const dx = (bed - w) / 2;
-      const dy = (bed - h) / 2;
-      out.push({
-        colour,
-        items: plate.map((p) => ({
-          piece: p.piece,
-          angle: p.angle,
-          shift: { x: p.shift.x + dx, y: p.shift.y + dy },
-        })),
-      });
-      plate = [];
-    };
+    interface Shelf {
+      y: number;
+      h: number;
+      x: number;
+    }
+    interface OpenPlate {
+      shelves: Shelf[];
+      usedY: number;
+      items: (PlateItem & { x: number; y: number; w: number; h: number })[];
+    }
+    const openPlates: OpenPlate[] = [];
     for (const { k, angle, box } of boxes) {
       if (box.w > size || box.h > size)
         throw new Error(
           `A piece ${Math.round(box.w)} × ${Math.round(box.h)} mm is larger than the bed.`,
         );
-      if (x > 0 && x + box.w > size) {
-        x = 0;
-        y += row + gap;
-        row = 0;
+      // Try Best-Fit shelf across existing plates (both upright and 90° turned
+      // when rotating fits a shorter remaining shelf cleanly).
+      const rotated = boxOf(
+        set[k]!.outline.map((p) => turned(p, angle + Math.PI / 2)),
+      );
+      const poses =
+        Math.abs(box.w - box.h) > 1e-6 && rotated.w <= size && rotated.h <= size
+          ? [
+              { angle, box },
+              { angle: angle + Math.PI / 2, box: rotated },
+            ]
+          : [{ angle, box }];
+      let best:
+        | {
+            plate: OpenPlate;
+            shelf: Shelf;
+            pose: (typeof poses)[number];
+            waste: number;
+          }
+        | undefined;
+      for (const pl of openPlates) {
+        for (const shelf of pl.shelves) {
+          for (const pose of poses) {
+            const xAt = shelf.x > 0 ? shelf.x + gap : 0;
+            if (
+              pose.box.h <= shelf.h + 1e-9 &&
+              xAt + pose.box.w <= size + 1e-9
+            ) {
+              const waste = shelf.h - pose.box.h;
+              if (!best || waste < best.waste - 1e-9)
+                best = { plate: pl, shelf, pose, waste };
+            }
+          }
+        }
       }
-      if (y + box.h > size) {
-        finish();
-        x = 0;
-        y = 0;
-        row = 0;
+      if (best) {
+        const xAt = best.shelf.x > 0 ? best.shelf.x + gap : 0;
+        best.plate.items.push({
+          piece: k,
+          angle: best.pose.angle,
+          shift: {
+            x: xAt - best.pose.box.x,
+            y: best.shelf.y - best.pose.box.y,
+          },
+          x: xAt,
+          y: best.shelf.y,
+          w: best.pose.box.w,
+          h: best.pose.box.h,
+        });
+        best.shelf.x = xAt + best.pose.box.w;
+        continue;
       }
-      plate.push({
+      // Otherwise open a new shelf on the first plate that has vertical room.
+      let target = openPlates.find(
+        (pl) => (pl.usedY > 0 ? pl.usedY + gap : 0) + box.h <= size + 1e-9,
+      );
+      if (!target) {
+        target = { shelves: [], usedY: 0, items: [] };
+        openPlates.push(target);
+      }
+      const yAt = target.usedY > 0 ? target.usedY + gap : 0;
+      const shelf: Shelf = { y: yAt, h: box.h, x: box.w };
+      target.shelves.push(shelf);
+      target.usedY = yAt + box.h;
+      target.items.push({
         piece: k,
         angle,
-        shift: { x: x - box.x, y: y - box.y },
-        x,
-        y,
+        shift: { x: -box.x, y: yAt - box.y },
+        x: 0,
+        y: yAt,
         w: box.w,
         h: box.h,
       });
-      x += box.w + gap;
-      row = Math.max(row, box.h);
     }
-    finish();
+    for (const pl of openPlates) {
+      if (!pl.items.length) continue;
+      const w = Math.max(...pl.items.map((p) => p.x + p.w));
+      const h = Math.max(...pl.items.map((p) => p.y + p.h));
+      const dx = (bed - w) / 2;
+      const dy = (bed - h) / 2;
+      out.push({
+        colour,
+        items: pl.items.map((p) => ({
+          piece: p.piece,
+          angle: p.angle,
+          shift: { x: p.shift.x + dx, y: p.shift.y + dy },
+        })),
+      });
+    }
   }
   return out;
 }
@@ -831,7 +901,9 @@ export function layoutSvg(
   const path = (loop: readonly P2[]) => 'M' + loop.map(at).join(' L') + ' Z';
   const rows: string[] = [];
   set.forEach((p, k) => {
-    const label = deepest(p.outline);
+    const label = p.centre
+      ? { centre: p.centre, radius: p.across / 2 }
+      : deepest(p.outline);
     const size = Math.max(0.8, Math.min(4, label.radius * 0.9));
     rows.push(
       `<path d="${path(p.outline)}" fill="${p.colour}" stroke="#1d1d1b" stroke-width="0.15"/>`,

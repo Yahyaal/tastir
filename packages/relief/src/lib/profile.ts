@@ -136,8 +136,11 @@ export function profileOf(
       return make([[wall, top - carving.depth]], wall);
     }
     case 'facets': {
-      const run = (carving.depth - (top - edge)) / Math.tan(rad(carving.slope));
-      return make([[h + run, top - carving.depth]], h + run);
+      const tanSlope = Math.tan(rad(Math.max(1, Math.min(89, carving.slope))));
+      const drop = Math.max(0, carving.depth - (top - edge));
+      const run = drop > 0 ? drop / tanSlope : 1e-4;
+      const floor = Math.min(edge, top - carving.depth);
+      return make([[h + run, floor]], h + run);
     }
     case 'cushion': {
       const wall = h + carving.depth * Math.tan(rad(carving.draft));

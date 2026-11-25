@@ -3,6 +3,7 @@ import { partsOf, type Cuts } from './parts.js';
 import {
   bandEdge,
   depthOf,
+  grooveDepth,
   profileOf,
   type BandShape,
   type Carving,
@@ -315,6 +316,20 @@ export function reliefSurface(
   const bands = options.bands ?? 'flat';
   const woven =
     options.gap !== undefined && options.gap > 0 && pattern.weave !== undefined;
+  const maxCarve = thickness - MIN_BASE;
+  const edgeDrop = bandEdge(bands, band);
+  if (edgeDrop > maxCarve)
+    throw new Error(
+      `The band edge drops ${edgeDrop} mm, which leaves less than ${MIN_BASE} mm of a ${thickness} mm panel.`,
+    );
+  if (bands === 'double' && grooveDepth(band) > maxCarve)
+    throw new Error(
+      `The double-band groove is ${grooveDepth(band)} mm deep, which leaves less than ${MIN_BASE} mm of a ${thickness} mm panel.`,
+    );
+  if (woven && options.gap! + edgeDrop > maxCarve)
+    throw new Error(
+      `The woven crossing dips ${options.gap! + edgeDrop} mm, which leaves less than ${MIN_BASE} mm of a ${thickness} mm panel.`,
+    );
   const pieces = piecesOver(pattern, scale, half);
   const tagged: TaggedFace[] = [];
   for (const piece of pieces)

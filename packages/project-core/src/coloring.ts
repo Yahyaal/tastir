@@ -627,6 +627,16 @@ export interface Surround {
  * until nothing lowers it. A photo's original, a palette made for this
  * design, and colours the learner chose are kept as they are.
  */
+const pieceColorsCache = new WeakMap<Model, Map<string, readonly string[]>>();
+
+function pieceColorCacheKey(coloring: Coloring, surround: Surround): string {
+  const chosenKeys = Object.keys(coloring.chosen).sort();
+  const chosenPart = chosenKeys
+    .map((k) => `${k}=${coloring.chosen[k] ?? ''}`)
+    .join(',');
+  return `${coloring.palette}|${surround.band ?? ''}|${surround.edge ?? ''}|${chosenPart}`;
+}
+
 export function pieceColors(
   model: Model,
   coloring: Coloring = tutorialColoring(model),
@@ -638,9 +648,29 @@ export function pieceColors(
   const wanted = types.map((t, i) => chosen[i] ?? palette[slotOf(model, t, i)]);
   // A photo's original, and a palette made for this design, are the
   // author's colours, kept as they are.
-  if (coloring.palette === ORIGINAL || designPalette(model, coloring.palette))
+  if (
+    (coloring.palette === ORIGINAL && model.tutorial.pattern.original) ||
+    designPalette(model, coloring.palette)
+  )
     return wanted;
-  return assignColours(model, coloring.palette, wanted, chosen, surround);
+  const key = pieceColorCacheKey(coloring, surround);
+  let byModel = pieceColorsCache.get(model);
+  const cached = byModel?.get(key);
+  if (cached) return cached.slice();
+  const solved = assignColours(
+    model,
+    coloring.palette,
+    wanted,
+    chosen,
+    surround,
+  );
+  if (!byModel) {
+    byModel = new Map();
+    pieceColorsCache.set(model, byModel);
+  }
+  if (byModel.size >= 64) byModel.clear();
+  byModel.set(key, solved);
+  return solved.slice();
 }
 
 /**

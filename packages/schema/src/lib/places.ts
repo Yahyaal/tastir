@@ -3,6 +3,7 @@ import type { Tutorial } from './tutorial.js';
 /** The pattern fields that make a colouring, which a place may replace. */
 const COLOURING = [
   'palette',
+  'palettes',
   'look',
   'colors',
   'placements',

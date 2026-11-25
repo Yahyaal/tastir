@@ -256,5 +256,11 @@ describe('Bambu Studio project', () => {
     );
     expect(written.filament_colour).toEqual(['#F1EAD8', '#1D1D1B']);
     expect(written.brim_type).toBe('outer_only');
+    // Identical centred tile meshes share one 3D/Objects model file.
+    const modelXml = readFileSync(join(dir, '3D', '3dmodel.model'), 'utf8');
+    const paths = new Set(
+      [...modelXml.matchAll(/p:path="([^"]+)"/g)].map((m) => m[1]),
+    );
+    expect(paths.size).toBe(1);
   });
 });

@@ -41,6 +41,50 @@ export function oklab(hex: string): Lab {
   return lab;
 }
 
+/** Convert OKLab back to #rrggbb sRGB, scaling chroma into gamut while preserving hue and lightness. */
+export function fromOklab(lab: Lab): string {
+  const L = Math.max(0, Math.min(1, lab.L));
+  const linear = (a: number, b: number): [number, number, number] => {
+    const l_ = L + 0.3963377774 * a + 0.2158037573 * b;
+    const m_ = L - 0.1055613458 * a - 0.0638541728 * b;
+    const s_ = L - 0.0894841775 * a - 1.291485548 * b;
+    const l = l_ * l_ * l_;
+    const m = m_ * m_ * m_;
+    const s = s_ * s_ * s_;
+    return [
+      +4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+      -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+      -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s,
+    ];
+  };
+  const inGamut = (rgb: [number, number, number]) =>
+    rgb[0] >= -1e-6 &&
+    rgb[0] <= 1 + 1e-6 &&
+    rgb[1] >= -1e-6 &&
+    rgb[1] <= 1 + 1e-6 &&
+    rgb[2] >= -1e-6 &&
+    rgb[2] <= 1 + 1e-6;
+  let rgb = linear(lab.a, lab.b);
+  if (!inGamut(rgb)) {
+    let lo = 0;
+    let hi = 1;
+    for (let k = 0; k < 14; k++) {
+      const mid = (lo + hi) / 2;
+      if (inGamut(linear(lab.a * mid, lab.b * mid))) lo = mid;
+      else hi = mid;
+    }
+    rgb = linear(lab.a * lo, lab.b * lo);
+  }
+  const srgb = (v: number) => {
+    const c = Math.max(0, Math.min(1, v));
+    const enc = c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055;
+    return Math.round(Math.max(0, Math.min(1, enc)) * 255)
+      .toString(16)
+      .padStart(2, '0');
+  };
+  return `#${srgb(rgb[0])}${srgb(rgb[1])}${srgb(rgb[2])}`;
+}
+
 /** How different two colours look: OKLab distance (0 the same, ~1 black to
  * white). */
 export function deltaE(x: string, y: string): number {
@@ -226,6 +270,7 @@ export function solveColours(problem: ColourProblem): string[] {
   const near: number[][] = Array.from({ length: n }, () => []);
   const weight: number[][] = Array.from({ length: n }, () => []);
   for (const [x, y, w] of pairs) {
+    if (x === y) continue;
     near[x]?.push(y);
     weight[x]?.push(w);
     near[y]?.push(x);
@@ -284,7 +329,10 @@ export function solveColours(problem: ColourProblem): string[] {
       if (s <= 1e-9) continue;
       if (s > 0.6) sum += COST.flood * (s - 0.6);
       const C = lch(c).C;
-      if (C > chroma) {
+      if (
+        C > chroma + 1e-12 ||
+        (Math.abs(C - chroma) <= 1e-12 && (!strongest || c < strongest))
+      ) {
         chroma = C;
         strongest = c;
       }

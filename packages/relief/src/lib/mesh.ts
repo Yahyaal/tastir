@@ -379,10 +379,13 @@ export function inset(outline: readonly P2[], d: number): P2[] {
     const n = { x: -(q.y - p.y) / len, y: (q.x - p.x) / len };
     return { n, c: n.x * p.x + n.y * p.y + d };
   });
-  return outline.map((_, i) => {
+  return outline.map((p, i) => {
     const a = lines[(i - 1 + m) % m]!;
     const b = lines[i]!;
     const det = a.n.x * b.n.y - a.n.y * b.n.x;
+    if (Math.abs(det) < 1e-9) {
+      return { x: p.x + b.n.x * d, y: p.y + b.n.y * d };
+    }
     return {
       x: (a.c * b.n.y - b.c * a.n.y) / det,
       y: (a.n.x * b.c - b.n.x * a.c) / det,

@@ -2,12 +2,14 @@ import { describe, expect, it } from 'vitest';
 import {
   deltaE,
   disharmony,
+  fromOklab,
   lch,
   merges,
   oklab,
   solveColours,
   type ColourProblem,
 } from './harmony.js';
+import { secondShade } from './placement.js';
 
 describe('colour measures (OKLab)', () => {
   it('puts white at lightness 1 and black at 0, with no hue', () => {
@@ -143,5 +145,37 @@ describe('the search', () => {
       locked: [false, false, false],
     });
     expect(solveColours(p)).toEqual(solveColours(p));
+  });
+
+  it('ignores self-loop pairs cleanly', () => {
+    const out = solveColours(
+      problem({
+        wish: ['#1f4e9c'],
+        share: [1],
+        pairs: [[0, 0, 1]],
+        locked: [false],
+      }),
+    );
+    expect(out).toEqual(['#1f4e9c']);
+  });
+});
+
+describe('OKLCH secondShade and round-trip', () => {
+  it('round-trips sRGB hex through OKLab', () => {
+    for (const c of ['#1f4e9c', '#2f8a57', '#e0a030', '#f4ead8', '#111111']) {
+      expect(deltaE(c, fromOklab(oklab(c)))).toBeLessThan(0.01);
+    }
+  });
+
+  it('preserves hue and vibrancy in secondShade rather than turning grey', () => {
+    const base = '#1f4e9c';
+    const next = secondShade(base);
+    expect(next).not.toBe(base);
+    const a = lch(base);
+    const b = lch(next);
+    // Noticeably lighter, still saturated, and in the same hue family.
+    expect(b.L).toBeGreaterThan(a.L + 0.08);
+    expect(b.C).toBeGreaterThan(0.08);
+    expect(Math.abs(((b.h - a.h + 540) % 360) - 180)).toBeLessThan(8);
   });
 });

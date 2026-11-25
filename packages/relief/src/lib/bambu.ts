@@ -121,6 +121,9 @@ export function bambuProject(
   const version = options.settings?.version ?? BAMBU_VERSION;
   const num = (x: number) => String(Math.round(x * 1e5) / 1e5);
   const objectFiles: { name: string; data: Uint8Array }[] = [];
+  // Identical centred tile meshes share one 3D/Objects/object_N.model file
+  // instead of repeating identical geometry XML for every copy on the plates.
+  const sharedMeshes = new Map<string, { meshId: number; path: string }>();
   const main: string[] = [];
   const build: string[] = [];
   const settings: string[] = [];
@@ -130,9 +133,6 @@ export function bambuProject(
     const origin = plateOrigin(n, plates.length, bed);
     const instances: string[] = [];
     for (const item of plate.items) {
-      const meshId = next++;
-      const objectId = next++;
-      const path = `/3D/Objects/object_${meshId}.model`;
       // The mesh about its own middle, as Bambu Studio keeps it, and the
       // build moving it there and onto its plate.
       const p = item.mesh.positions;
@@ -142,32 +142,41 @@ export function bambuProject(
         lo[i % 3] = Math.min(lo[i % 3]!, p[i]!);
         hi[i % 3] = Math.max(hi[i % 3]!, p[i]!);
       }
-      const mid = lo.map((l, a) => (l + hi[a]!) / 2);
-      const body: string[] = [
-        `<object id="${meshId}" p:UUID="${uuid(meshId, 1)}" type="model">\n<mesh>\n<vertices>\n`,
-      ];
+      const mid = p.length ? lo.map((l, a) => (l + hi[a]!) / 2) : [0, 0, 0];
+      const geomParts: string[] = ['<mesh>\n<vertices>\n'];
       for (let i = 0; i < p.length; i += 3)
-        body.push(
+        geomParts.push(
           `<vertex x="${num(p[i]! - mid[0]!)}" y="${num(p[i + 1]! - mid[1]!)}" z="${num(p[i + 2]! - mid[2]!)}"/>\n`,
         );
-      body.push('</vertices>\n<triangles>\n');
+      geomParts.push('</vertices>\n<triangles>\n');
       const t = item.mesh.triangles;
       for (let i = 0; i < t.length; i += 3)
-        body.push(
+        geomParts.push(
           `<triangle v1="${t[i]}" v2="${t[i + 1]}" v3="${t[i + 2]}"/>\n`,
         );
-      body.push('</triangles>\n</mesh>\n</object>\n');
-      objectFiles.push({
-        name: path.slice(1),
-        data: utf8(
-          '<?xml version="1.0" encoding="UTF-8"?>\n' +
-            `<model unit="millimeter" xml:lang="en-US" ${NAMESPACES} requiredextensions="p">\n` +
-            `<metadata name="BambuStudio:3mfVersion">1</metadata>\n<resources>\n${body.join('')}</resources>\n<build/>\n</model>\n`,
-        ),
-      });
+      geomParts.push('</triangles>\n</mesh>\n');
+      const geomXml = geomParts.join('');
+      let shared = sharedMeshes.get(geomXml);
+      if (!shared) {
+        const meshId = next++;
+        const path = `/3D/Objects/object_${meshId}.model`;
+        const body = `<object id="${meshId}" p:UUID="${uuid(meshId, 1)}" type="model">\n${geomXml}</object>\n`;
+        objectFiles.push({
+          name: path.slice(1),
+          data: utf8(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+              `<model unit="millimeter" xml:lang="en-US" ${NAMESPACES} requiredextensions="p">\n` +
+              `<metadata name="BambuStudio:3mfVersion">1</metadata>\n<resources>\n${body}</resources>\n<build/>\n</model>\n`,
+          ),
+        });
+        shared = { meshId, path };
+        sharedMeshes.set(geomXml, shared);
+      }
+      const { meshId, path } = shared;
+      const objectId = next++;
       main.push(
         `<object id="${objectId}" p:UUID="${uuid(objectId, 2)}" type="model">\n` +
-          `<components>\n<component p:path="${path}" objectid="${meshId}" p:UUID="${uuid(meshId, 3)}" transform="1 0 0 0 1 0 0 0 1 0 0 0"/>\n</components>\n</object>\n`,
+          `<components>\n<component p:path="${path}" objectid="${meshId}" p:UUID="${uuid(objectId, 3)}" transform="1 0 0 0 1 0 0 0 1 0 0 0"/>\n</components>\n</object>\n`,
       );
       const at = [mid[0]! + origin.x, mid[1]! + origin.y, mid[2]!];
       build.push(

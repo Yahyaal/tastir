@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { loadModel } from '@tastir/project-core/model';
-import { openEdges, volumeOf, type Mesh } from './mesh.js';
+import { inset, openEdges, volumeOf, type Mesh } from './mesh.js';
 import { relief, type PatternShape } from './relief.js';
 import type { Carving } from './profile.js';
 
@@ -145,4 +145,37 @@ describe('relief of real patterns', () => {
         expect(v).toBeLessThan(120 * 90 * 10);
       });
     });
+
+  it('rejects double-band grooves or rounded band edges that cut into MIN_BASE', () => {
+    const { pattern } = tutorial('eight-fold-star-and-cross');
+    expect(() =>
+      relief(pattern, {
+        width: 80,
+        height: 80,
+        scale: 40,
+        thickness: 3,
+        band: 10,
+        bands: 'rounded',
+        frame: 0,
+        carving: () => ({ kind: 'raised' }),
+      }),
+    ).toThrow(/MIN_BASE|less than/i);
+  });
+
+  it('insets convex outlines with collinear vertices without producing NaN', () => {
+    const out = inset(
+      [
+        { x: 0, y: 0 },
+        { x: 50, y: 0 },
+        { x: 100, y: 0 },
+        { x: 100, y: 100 },
+        { x: 0, y: 100 },
+      ],
+      5,
+    );
+    expect(out.every((p) => Number.isFinite(p.x) && Number.isFinite(p.y))).toBe(
+      true,
+    );
+    expect(out[1]).toEqual({ x: 50, y: 5 });
+  });
 });
