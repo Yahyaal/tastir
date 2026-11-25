@@ -33,7 +33,7 @@ export async function cardPage() {
     'utf8',
   );
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tastir studio</title><style>${style}</style></head><body><main><h1 id="title">Tastir studio</h1><p id="meta" class="muted"></p><img id="picture" hidden alt=""><p id="picture-caption" class="muted"></p><h2 id="questions-heading" hidden>Questions for you</h2><div id="questions"></div><p id="status" class="muted" role="status"></p></main><script>${script}</script></body></html>`;
-  return `// Made by tools/studio-card.mjs from card.ts and card.css; do not edit.\nexport const CARD_HTML = ${JSON.stringify(html)};\n`;
+  return `// Made by tools/studio-card.mjs from card.ts and card.css; do not edit.\nexport const CARD_HTML = ${JSON.stringify(html)} as string;\n`;
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

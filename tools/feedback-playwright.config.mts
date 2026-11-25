@@ -1,5 +1,5 @@
 import { defineConfig } from '@playwright/test';
-const port = '4498';
+const port = process.env['TASTIR_FEEDBACK_PORT'] ?? '4498';
 const baseURL = `http://127.0.0.1:${port}`;
 export default defineConfig({
   testDir: '../apps/studio/e2e-feedback',
