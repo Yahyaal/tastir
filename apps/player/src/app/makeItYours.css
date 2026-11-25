@@ -4,9 +4,10 @@
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
 }
-/* The wall fills the page above the journey's track. */
+/* The wall fills the space above the journey's track without pushing it
+   off-screen when the topbar wraps on mid-width screens (761–1023px). */
 .workspace.wall-page .stage {
-  min-height: calc(100vh - 190px);
+  min-height: 0;
 }
 .workspace.wall-page .make-panel {
   /* One height for every tab, so switching tabs does not jump. */
@@ -88,6 +89,9 @@
   display: grid;
   gap: 8px;
 }
+.make-designs .variations {
+  flex-wrap: wrap;
+}
 
 /* The styles: a small picture of each. */
 .make-panel .wall-styles {
@@ -139,7 +143,8 @@
   color: var(--theme-text-primary);
   box-shadow: 0 1px 4px rgb(0 0 0 / 0.18);
 }
-/* The tab's contents scroll; the top and the foot stay. */
+/* The tab's contents scroll; the top and the foot stay. A soft bottom edge
+   fade cues scrollable controls (such as Grout/Band color) below the fold. */
 .make-body {
   flex: 1;
   min-height: 0;
@@ -148,7 +153,19 @@
   flex-direction: column;
   gap: 14px;
   margin: 0 -18px;
-  padding: 2px 18px 8px;
+  padding: 2px 18px 20px;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    #000 0,
+    #000 calc(100% - 18px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    #000 0,
+    #000 calc(100% - 18px),
+    transparent 100%
+  );
 }
 .make-files {
   display: grid;
@@ -264,16 +281,19 @@
     min-height: 0;
     height: calc(100vh - 170px);
   }
-  /* With the sheet up, the wall sits above it, whole. */
+  /* With the sheet up, the wall sits above it, whole; keep stacked photo
+     comparison taller so both Original and Wall stay legible. */
   .player.at-color:not(.along):not(.editor)
-    .workspace.wall-page.make-open
-    .stage,
-  .player.at-color:not(.along)
     .workspace.wall-page.make-open
     .stage:not(.comparing) {
     flex: none;
     height: calc(54vh - 170px);
     min-height: 180px;
+  }
+  .player.at-color:not(.along):not(.editor)
+    .workspace.wall-page.make-open
+    .stage.comparing {
+    min-height: 240px;
   }
   /* A sheet held at the bottom of the screen, low enough that the middle
      of the wall stays free to pinch, drag and point at. */
@@ -284,12 +304,16 @@
     right: 6px;
     bottom: 6px;
     width: auto;
+    height: min(46vh, calc(100dvh - 180px));
     max-height: 46vh;
     border-radius: 20px 20px 14px 14px;
     padding: 12px 14px 14px;
   }
-  .workspace.wall-page .make-panel {
-    height: 46vh;
+  @media (max-height: 500px) {
+    .workspace.wall-page .make-panel {
+      height: auto;
+      max-height: 70dvh;
+    }
   }
   .make-top h2 {
     font-size: 19px;
@@ -408,8 +432,8 @@
   opacity: 0;
   transition: opacity 0.12s;
 }
-.info-tip:hover .info-tip-bubble,
-.info-tip:focus-within .info-tip-bubble,
+.info-tip:not(.dismissed):hover .info-tip-bubble,
+.info-tip:not(.dismissed):focus-within .info-tip-bubble,
 .info-tip.open .info-tip-bubble {
   visibility: visible;
   opacity: 1;
@@ -554,7 +578,24 @@
   margin-top: 6px;
 }
 
+/* Reserve room for the floating bottom-left Reset view button so it never
+   covers the side-by-side photo caption and Source link on desktop. */
+@media (min-width: 761px) {
+  .workspace.wall-page .stage.comparing .original figcaption {
+    padding-left: 56px;
+  }
+}
+
 /* The real wall's badge, in the corner of the wall. */
+.player .plate-area .photo-badge-group {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .player .plate-area button.photo-badge {
   position: absolute;
   top: 22px;
@@ -572,6 +613,86 @@
   font-weight: 700;
   font-size: 13.5px;
   box-shadow: 0 4px 14px rgb(0 0 0 / 0.28);
+}
+.player .plate-area .photo-badge-group button.photo-badge {
+  position: static;
+}
+.player .plate-area button.photo-mode-btn,
+.player .plate-area button.photo-full-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  border-radius: 999px;
+  border: 1.5px solid rgb(255 255 255 / 0.24);
+  background: rgb(15 24 32 / 0.78);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13.5px;
+  white-space: nowrap;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.28);
+}
+.player .plate-area button.photo-mode-btn {
+  gap: 7px;
+  padding: 0 14px;
+}
+.player .plate-area button.photo-full-btn {
+  min-width: 44px;
+  padding: 0 13px;
+  gap: 0;
+  transition:
+    padding 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    gap 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+.player .plate-area button.photo-full-btn .photo-bar-label {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.18s ease;
+}
+@media (hover: hover) {
+  .player .plate-area button.photo-full-btn:hover,
+  .player .plate-area button.photo-full-btn:focus-visible {
+    gap: 7px;
+    padding: 0 14px 0 13px;
+  }
+  .player .plate-area button.photo-full-btn:hover .photo-bar-label,
+  .player .plate-area button.photo-full-btn:focus-visible .photo-bar-label {
+    max-width: 84px;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .player .plate-area button.photo-full-btn,
+  .player .plate-area button.photo-full-btn .photo-bar-label {
+    transition: none;
+  }
+}
+
+.player .plate-area button.photo-mode-btn svg,
+.player .plate-area button.photo-full-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.player .plate-area button.photo-mode-btn:hover,
+.player .plate-area button.photo-mode-btn:focus-visible,
+.player .plate-area button.photo-full-btn:hover,
+.player .plate-area button.photo-full-btn:focus-visible {
+  background: rgb(15 24 32 / 0.92);
+  border-color: #d9a63b;
 }
 .photo-badge img {
   width: 34px;
@@ -677,9 +798,15 @@
     height: calc(100vh - 310px);
   }
   /* Reset view has the top left corner on a phone. */
-  .player .plate-area button.photo-badge {
+  .player .plate-area button.photo-badge,
+  .player .plate-area .photo-badge-group {
     top: 12px;
     left: auto;
     right: 12px;
+  }
+  .player .plate-area .photo-badge-group {
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    max-width: calc(100% - 64px);
   }
 }

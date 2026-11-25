@@ -116,6 +116,7 @@ export function StepPanel({
             </p>
             <button
               type="button"
+              className="danger"
               onClick={() => {
                 setAsking(false);
                 onDelete(true);
@@ -125,7 +126,7 @@ export function StepPanel({
             </button>
             <button
               type="button"
-              className="secondary"
+              className="secondary danger-outline"
               onClick={() => {
                 setAsking(false);
                 onDelete(false);

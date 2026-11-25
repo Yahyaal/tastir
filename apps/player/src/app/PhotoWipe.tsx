@@ -3,21 +3,28 @@ import type { Photo } from '@tastir/schema';
 import { photoSrc } from './Original';
 
 /**
- * The real wall's photo badge, in the corner of the finished wall: a small
- * picture of the photo that shows it beside the wall, as The real wall in
- * More does. The photo's own tools lay it over the wall to wipe.
+ * The real wall's photo controls, anchored in one fixed top-left bar:
+ * closed, a single badge opens the photo beside the wall; open (in either
+ * side-by-side or wipe), the same spot holds Hide photo, an in-place toggle
+ * between Wipe over wall and Side by side, and Full size.
  */
 export function PhotoBadge({
   photo,
   open,
+  wiping = false,
   onToggle,
+  onToggleWipe,
+  onFullSize,
 }: {
   photo: Photo;
   open: boolean;
+  wiping?: boolean;
   onToggle: () => void;
+  onToggleWipe?: () => void;
+  onFullSize?: () => void;
 }) {
   const src = photoSrc(photo);
-  return (
+  const badge = (
     <button
       type="button"
       className="photo-badge"
@@ -33,6 +40,53 @@ export function PhotoBadge({
       <span>{open ? 'Hide photo' : 'Real wall'}</span>
     </button>
   );
+  if (!open || (!onToggleWipe && !onFullSize)) return badge;
+  return (
+    <div className="photo-badge-group">
+      {badge}
+      {onToggleWipe ? (
+        <button
+          type="button"
+          className="photo-mode-btn"
+          aria-pressed={wiping}
+          title={
+            wiping
+              ? 'Return to the photo beside the wall'
+              : 'Lay the photo over the wall, and wipe between the two'
+          }
+          onClick={onToggleWipe}
+        >
+          {wiping ? (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="M12 5v14" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3v18M9 8l-4 4 4 4M15 8l4 4-4 4" />
+            </svg>
+          )}
+          <span>{wiping ? 'Side by side' : 'Wipe over wall'}</span>
+        </button>
+      ) : null}
+      {onFullSize ? (
+        <button
+          type="button"
+          className="photo-full-btn"
+          aria-label={`See the photo at full size: ${photo.caption}`}
+          title="See the photo at full size"
+          onClick={onFullSize}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+          </svg>
+          <span className="photo-bar-label" aria-hidden="true">
+            Full size
+          </span>
+        </button>
+      ) : null}
+    </div>
+  );
 }
 
 /**
@@ -40,8 +94,15 @@ export function PhotoBadge({
  * left of the handle, our wall right of it. Drag the handle, or focus it and
  * use the arrow keys.
  */
-export function PhotoWipe({ photo }: { photo: Photo }) {
+export function PhotoWipe({
+  photo,
+  onClose,
+}: {
+  photo: Photo;
+  onClose?: () => void;
+}) {
   const [at, setAt] = useState(50);
+  const [missing, setMissing] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const src = photoSrc(photo);
   const move = (clientX: number) => {
@@ -55,8 +116,13 @@ export function PhotoWipe({ photo }: { photo: Photo }) {
         className="photo-wipe-photo"
         style={{ clipPath: `inset(0 ${100 - at}% 0 0)` }}
       >
-        {src ? (
-          <img src={src} alt={photo.caption} />
+        {src && !missing ? (
+          <img
+            src={src}
+            alt={photo.caption}
+            draggable={false}
+            onError={() => setMissing(true)}
+          />
         ) : (
           <p className="photo-wipe-missing">The photo is not available here.</p>
         )}
@@ -72,6 +138,7 @@ export function PhotoWipe({ photo }: { photo: Photo }) {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(at)}
+        aria-valuetext={`${Math.round(at)}% photo, ${100 - Math.round(at)}% pattern`}
         style={{ left: `${at}%` }}
         onPointerDown={(e) => {
           e.preventDefault();
@@ -86,8 +153,34 @@ export function PhotoWipe({ photo }: { photo: Photo }) {
           }
         }}
         onKeyDown={(e) => {
+          if (e.key === 'Escape' && onClose) {
+            e.preventDefault();
+            e.stopPropagation();
+            onClose();
+            return;
+          }
+          if (e.key === 'Home') {
+            e.preventDefault();
+            e.stopPropagation();
+            setAt(0);
+            return;
+          }
+          if (e.key === 'End') {
+            e.preventDefault();
+            e.stopPropagation();
+            setAt(100);
+            return;
+          }
           const step =
-            e.key === 'ArrowLeft' ? -5 : e.key === 'ArrowRight' ? 5 : 0;
+            e.key === 'ArrowLeft' || e.key === 'ArrowDown'
+              ? -5
+              : e.key === 'ArrowRight' || e.key === 'ArrowUp'
+                ? 5
+                : e.key === 'PageDown'
+                  ? -15
+                  : e.key === 'PageUp'
+                    ? 15
+                    : 0;
           if (!step) return;
           e.preventDefault();
           e.stopPropagation();

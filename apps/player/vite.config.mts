@@ -33,14 +33,22 @@ const IMAGE_TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
 };
 
+function gitBuildId(): string {
+  try {
+    return execFileSync('git', ['rev-parse', '--short=12', 'HEAD'], {
+      encoding: 'utf8',
+    }).trim();
+  } catch {
+    return 'dev';
+  }
+}
+
 export default defineConfig(({ mode }) => ({
   define: {
     'import.meta.env.VITE_TASTIR_BUILD_ID': JSON.stringify(
       process.env['VERCEL_GIT_COMMIT_SHA'] ??
         process.env['VITE_TASTIR_BUILD_ID'] ??
-        execFileSync('git', ['rev-parse', '--short=12', 'HEAD'], {
-          encoding: 'utf8',
-        }).trim(),
+        gitBuildId(),
     ),
   },
   root: import.meta.dirname,

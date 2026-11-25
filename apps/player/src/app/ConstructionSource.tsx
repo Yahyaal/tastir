@@ -79,7 +79,15 @@ function SourceDialog({
       >
         <header>
           <h2>How this construction was made</h2>
-          <button ref={closeButton} type="button" onClick={onClose}>
+          <button
+            ref={closeButton}
+            type="button"
+            className="construction-source-close"
+            onClick={onClose}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
             Close
           </button>
         </header>

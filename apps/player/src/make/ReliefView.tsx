@@ -12,7 +12,10 @@ const PRINTED = '#a9c4cc';
 /** A mesh for the scene, each face with its own normals so facets stay crisp. */
 function meshObject(mesh: Mesh, color: string): THREE.Mesh {
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.BufferAttribute(Float32Array.from(mesh.positions), 3));
+  geometry.setAttribute(
+    'position',
+    new THREE.BufferAttribute(Float32Array.from(mesh.positions), 3),
+  );
   geometry.setIndex(new THREE.BufferAttribute(mesh.triangles, 1));
   const flat = geometry.toNonIndexed();
   geometry.dispose();
@@ -81,7 +84,8 @@ export function ReliefView({
   /** The object, shown inside its silicone box. */
   master?: Mesh | undefined;
   /** Tile pieces, one mesh to a colour, shown in place of `mesh`. */
-  coloured?: readonly { readonly colour: string; readonly mesh: Mesh }[] | undefined;
+  coloured?:
+    readonly { readonly colour: string; readonly mesh: Mesh }[] | undefined;
   /** The tray the pieces lie in. */
   tray?: Mesh | undefined;
   /** A mould or a box: shown in the colour of printed plastic. */
@@ -147,7 +151,11 @@ export function ReliefView({
     );
     const bed = new THREE.LineSegments(
       bedGeometry,
-      new THREE.LineBasicMaterial({ color: '#8a7a66', transparent: true, opacity: 0.6 }),
+      new THREE.LineBasicMaterial({
+        color: '#8a7a66',
+        transparent: true,
+        opacity: 0.6,
+      }),
     );
     scene.add(bed);
     const ground = new THREE.Mesh(
@@ -183,7 +191,11 @@ export function ReliefView({
       observer.disconnect();
       cancelAnimationFrame(frame);
       controls.dispose();
-      for (const o of s.shown) o.geometry.dispose();
+      for (const o of s.shown) disposeMesh(o);
+      bed.geometry.dispose();
+      (bed.material as THREE.Material).dispose();
+      ground.geometry.dispose();
+      (ground.material as THREE.Material).dispose();
       renderer.dispose();
       renderer.domElement.remove();
       stage.current = undefined;
@@ -196,11 +208,17 @@ export function ReliefView({
     if (!s || !mesh) return;
     for (const old of s.shown) {
       s.scene.remove(old);
-      old.geometry.dispose();
+      disposeMesh(old);
     }
     s.shown = coloured?.length
-      ? [...coloured.map((c) => meshObject(c.mesh, c.colour)), ...(tray ? [meshObject(tray, PRINTED)] : [])]
-      : [meshObject(mesh, printed ? PRINTED : PLASTER), ...(master ? [meshObject(master, PLASTER)] : [])];
+      ? [
+          ...coloured.map((c) => meshObject(c.mesh, c.colour)),
+          ...(tray ? [meshObject(tray, PRINTED)] : []),
+        ]
+      : [
+          meshObject(mesh, printed ? PRINTED : PLASTER),
+          ...(master ? [meshObject(master, PLASTER)] : []),
+        ];
     const box = new THREE.Box3();
     for (const o of s.shown) {
       s.scene.add(o);
@@ -216,7 +234,11 @@ export function ReliefView({
       const tilt = (50 * Math.PI) / 180;
       // On what is shown: whole pieces of several repeats lie off centre.
       const mid = box.getCenter(new THREE.Vector3());
-      s.camera.position.set(mid.x, mid.y - Math.cos(tilt) * distance, Math.sin(tilt) * distance);
+      s.camera.position.set(
+        mid.x,
+        mid.y - Math.cos(tilt) * distance,
+        Math.sin(tilt) * distance,
+      );
       s.controls.target.set(mid.x, mid.y, 0);
       s.controls.update();
     }
@@ -234,15 +256,21 @@ export function ReliefView({
   useEffect(() => {
     const s = stage.current;
     if (!s) return;
-    (s.bed.material as THREE.LineBasicMaterial).color.set(fits ? '#8a7a66' : '#c0392b');
+    (s.bed.material as THREE.LineBasicMaterial).color.set(
+      fits ? '#8a7a66' : '#c0392b',
+    );
     draw.current();
   }, [fits]);
 
   return (
     <div className="relief-view" ref={host} role="img" aria-label={label}>
-      {failed ? <StillView mesh={still} light={light} printed={printed} /> : null}
+      {failed ? (
+        <StillView mesh={still} light={light} printed={printed} />
+      ) : null}
       <p className="relief-hint" aria-hidden="true">
-        {failed ? 'Drag sideways to turn it.' : 'Drag to turn it; scroll or pinch to come closer.'}
+        {failed
+          ? 'Drag sideways to turn it.'
+          : 'Drag to turn it; scroll or pinch to come closer.'}
       </p>
     </div>
   );
@@ -256,7 +284,10 @@ function merged(a: Mesh, b: Mesh): Mesh {
   const shift = a.positions.length / 3;
   const triangles = new Uint32Array(a.triangles.length + b.triangles.length);
   triangles.set(a.triangles);
-  triangles.set(b.triangles.map((i) => i + shift), a.triangles.length);
+  triangles.set(
+    b.triangles.map((i) => i + shift),
+    a.triangles.length,
+  );
   return { positions, triangles };
 }
 
@@ -296,7 +327,11 @@ function StillView({
       });
       el.width = width;
       el.height = height;
-      el.getContext('2d')?.putImageData(new ImageData(rgba as Uint8ClampedArray<ArrayBuffer>, width, height), 0, 0);
+      el.getContext('2d')?.putImageData(
+        new ImageData(rgba as Uint8ClampedArray<ArrayBuffer>, width, height),
+        0,
+        0,
+      );
     });
     return () => cancelAnimationFrame(frame);
   }, [mesh, light, spin, dragging, printed]);
@@ -315,4 +350,13 @@ function StillView({
       onPointerCancel={() => setDragging(undefined)}
     />
   );
+}
+
+function disposeMesh(o: THREE.Mesh) {
+  o.geometry.dispose();
+  if (Array.isArray(o.material)) {
+    for (const m of o.material) m.dispose();
+  } else {
+    o.material.dispose();
+  }
 }

@@ -1,4 +1,4 @@
-import { type Dispatch } from 'react';
+import { useMemo, type Dispatch } from 'react';
 import { colourName } from './colourNames';
 import { PieceShape } from './drawing';
 import {
@@ -89,7 +89,8 @@ export function ColourPanel({
   const now = history.now;
   const methods = methodsOf(base);
   const method = methodOf(base, now);
-  const rings = method === 'rings' && !!fill && rosetteCards(model).length > 0;
+  const cards = useMemo(() => rosetteCards(model), [model]);
+  const rings = method === 'rings' && !!fill && cards.length > 0;
   const tools = (
     <div className="color-tools">
       <button
@@ -216,6 +217,7 @@ export function ColourPanel({
       ) : rings && fill ? (
         <Rosettes
           model={model}
+          cards={cards}
           fill={fill}
           brush={brush}
           onBrush={onBrush}
@@ -264,6 +266,7 @@ function cardName(card: RosetteCard, rosettes: number): string {
  */
 function Rosettes({
   model,
+  cards,
   fill,
   brush,
   onBrush,
@@ -274,6 +277,7 @@ function Rosettes({
   onLight,
 }: {
   model: Model;
+  cards: readonly RosetteCard[];
   fill: Fill;
   brush: string;
   onBrush: (colour: string) => void;
@@ -303,7 +307,6 @@ function Rosettes({
   const at = options.indexOf(count);
   const bigger = options[at + 1];
   const smaller = options[at - 1];
-  const cards = rosetteCards(model);
   return (
     <div className="rosettes">
       <div className="colour-step">

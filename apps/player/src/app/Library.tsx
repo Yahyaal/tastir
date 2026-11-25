@@ -261,10 +261,14 @@ export function Library({
           {workCount || designNote || HOSTED ? (
             <a
               href="#/work"
-              aria-label={HOSTED ? 'Your work' : `Your work (${workCount})`}
+              aria-label={
+                HOSTED || workCount === 0
+                  ? 'Your work'
+                  : `Your work (${workCount})`
+              }
             >
               Your work
-              {HOSTED ? null : <small> ({workCount})</small>}
+              {HOSTED || workCount === 0 ? null : <small> ({workCount})</small>}
             </a>
           ) : null}
         </nav>

@@ -148,6 +148,20 @@ function FeedbackForm({
     }
   }, [visible]);
   useEffect(() => {
+    if (!visible) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.key !== 'Escape') return;
+      // Let any modal dialog open on top handle Escape first.
+      if (document.querySelector('[role="dialog"], [role="alertdialog"]'))
+        return;
+      e.preventDefault();
+      if (receipt) discard();
+      else close();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [visible, receipt, close, discard]);
+  useEffect(() => {
     if (!cooldown) return;
     const timer = setTimeout(
       () => setCooldown((n) => Math.max(0, n - 1)),
@@ -337,10 +351,13 @@ function FeedbackForm({
         </h2>
         <button
           type="button"
-          className="secondary"
+          className="feedback-close"
           onClick={receipt ? discard : close}
           aria-label="Close feedback"
         >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" />
+          </svg>
           Close
         </button>
       </div>
@@ -584,7 +601,7 @@ function FeedbackForm({
               {pending ? (
                 <button
                   type="button"
-                  className="secondary"
+                  className="secondary feedback-danger"
                   disabled={busy}
                   onClick={() => {
                     if (

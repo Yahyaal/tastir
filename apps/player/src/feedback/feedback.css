@@ -43,12 +43,56 @@
   align-items: center;
 }
 .feedback-heading {
+  position: sticky;
+  top: -1.25rem;
+  z-index: 2;
+  margin: -1.25rem -1.25rem 0.9rem;
+  padding: 1rem 1.25rem 0.85rem;
   justify-content: space-between;
-  align-items: start;
+  align-items: center;
+  background: var(--paper);
+  border-bottom: 1px solid var(--theme-border);
 }
 .feedback-heading h2 {
   margin: 0;
   flex: 1;
+  font-size: 1.1rem;
+}
+.feedback-close {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--theme-text-primary);
+  background: var(--theme-text-primary);
+  color: var(--theme-bg-canvas);
+  font: 600 0.85rem/1 var(--text);
+  cursor: pointer;
+}
+.feedback-close svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.feedback-close:hover,
+.feedback-close:focus-visible {
+  opacity: 0.88;
+}
+.feedback-dialog button.feedback-danger {
+  color: var(--theme-danger);
+  border-color: color-mix(in srgb, var(--theme-danger) 55%, transparent);
+}
+.feedback-dialog button.feedback-danger:hover:not(:disabled),
+.feedback-dialog button.feedback-danger:focus-visible {
+  background: var(--theme-danger);
+  border-color: var(--theme-danger);
+  color: #fff;
 }
 .feedback-dialog form,
 .feedback-inbox {

@@ -257,6 +257,7 @@
 
 .along-stack > .along-layer:not(.on) {
   visibility: hidden;
+  pointer-events: none;
 }
 
 /* Feedback uses the space beside the instruction, without shortening boards. */
@@ -284,6 +285,12 @@
   line-height: 1.4;
   font-size: 1rem;
   min-height: 3lh;
+}
+
+.player.along button.secondary:disabled {
+  opacity: 0.56;
+  color: var(--theme-text-secondary);
+  border-color: var(--theme-border-hover);
 }
 
 .along-tools .editor-tools {

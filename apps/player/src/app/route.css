@@ -35,6 +35,11 @@
   height: 196px;
   transition: height 0.3s ease;
 }
+/* Keep total flow space constant (92 + 104 = 196px) while sticky so shrinking
+   the route never yanks the pattern grid up under the cursor. */
+.route.is-slim {
+  margin-bottom: 104px;
+}
 .route.is-slim .route-in {
   height: 92px;
 }
@@ -243,6 +248,9 @@
   .route {
     position: relative;
     top: 0;
+  }
+  .route.is-slim {
+    margin-bottom: 0;
   }
   .route-in,
   .route.is-slim .route-in {
