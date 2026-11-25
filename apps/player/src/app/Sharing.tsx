@@ -84,8 +84,9 @@ export function ShareLink({
         await navigator.share({ title: name, url });
         setCopied(true);
         return;
-      } catch {
-        // Closed or refused: copy it instead.
+      } catch (e) {
+        if (e instanceof DOMException && e.name === 'AbortError') return;
+        // Not supported or refused: copy it instead.
       }
     }
     try {

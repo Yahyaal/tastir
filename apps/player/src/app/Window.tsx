@@ -228,15 +228,15 @@ export function Window({
             aria-label={`View ${title}: the finished wall`}
           >
             <ActionIcon action="result" />
-            View
+            <span className="window-action-label">View</span>
           </a>
           <a className="watch" href={`#/${id}/watch`}>
             <ActionIcon action="watch" />
-            Watch it drawn
+            <span className="window-action-label">Watch it drawn</span>
           </a>
           <a className="draw" href={`#/${id}/draw`}>
             <ActionIcon action="draw" />
-            Draw along
+            <span className="window-action-label">Draw along</span>
           </a>
         </div>
       </div>

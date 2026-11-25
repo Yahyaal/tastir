@@ -27,7 +27,7 @@ import {
   type Palette,
 } from './coloring.js';
 import type { Model } from './model.js';
-import { solveColours } from './harmony.js';
+import { fromOklab, oklab, solveColours } from './harmony.js';
 import {
   hasRings,
   ringsOf,
@@ -357,21 +357,15 @@ function basePlaceFills(
  * still reads as one ring.
  */
 export function secondShade(colour: string): string {
-  const n = parseInt(colour.replace('#', '').slice(0, 6), 16);
   if (!/^#[0-9a-f]{6}$/i.test(colour)) return colour;
-  const light = lightness(colour) >= 55;
-  const t = light ? 0.2 : 0.32;
-  return (
-    '#' +
-    [16, 8, 0]
-      .map((k) => {
-        const v = (n >> k) & 255;
-        return Math.round(light ? v * (1 - t) : v + (255 - v) * t)
-          .toString(16)
-          .padStart(2, '0');
-      })
-      .join('')
-  );
+  // Step lightness in OKLab at constant hue and chroma (gamut-clamped) so
+  // chromatic glazes stay vibrant instead of washing into grey.
+  const lab = oklab(colour);
+  const darker = lightness(colour) >= 55;
+  const nextL = darker
+    ? Math.max(0.08, lab.L - 0.14)
+    : Math.min(0.92, lab.L + 0.16);
+  return fromOklab({ L: nextL, a: lab.a, b: lab.b });
 }
 
 /**
@@ -400,7 +394,8 @@ function alternateFills(
   const second = types.map((t, k) => {
     const own = colours[k] ?? '#999999';
     return !turns.types.has(k) ||
-      coloring.palette === ORIGINAL ||
+      (coloring.palette === ORIGINAL &&
+        Boolean(model.tutorial.pattern.original)) ||
       coloring.chosen[typeKey(t)]
       ? own
       : shadeOf(own);
@@ -509,11 +504,15 @@ function harmonised(
   base: (piece: number, i: number, j: number) => string,
   surround: Surround,
 ): (piece: number, i: number, j: number) => string {
-  if (coloring.palette === ORIGINAL || designPalette(model, coloring.palette))
+  if (
+    (coloring.palette === ORIGINAL && model.tutorial.pattern.original) ||
+    designPalette(model, coloring.palette)
+  )
     return base;
   const { pieces, types, cell } = model.pattern;
   const [m, n] = colorRepeat(model);
   if (m * n * pieces.length > MOST_PARTS) return base;
+  const rings = ringsFor(model);
   // A part: the colour key of the piece's place, and its colour (copies
   // that take turns share a key but not a colour).
   const index = new Map<string, number>();
@@ -527,11 +526,15 @@ function harmonised(
     if (hit !== undefined) return hit;
     const key = placeKey(model, k, mod(i, m), mod(j, n));
     const colour = base(k, mod(i, m), mod(j, n));
-    // A part is every piece of one shape that the rules colour alike: the
-    // rules' symmetry (each ring, each orbit of a placement) moves as one,
-    // and never breaks into single pieces (the reviewers saw stripes and
-    // blots where single pieces moved).
-    const id = `${(pieces[k] as Piece).type}|${colour.toLowerCase()}`;
+    // A part is every piece of one shape in one ring/orbit (or coloured
+    // alike under placement rules), so distinct rings never fuse or leak
+    // locks onto each other when they start at the same base colour.
+    const orbit = rings
+      ? `ring:${rings.place(k, mod(i, m), mod(j, n)).ring}`
+      : coloring.chosen[key] !== undefined
+        ? `chosen:${key}`
+        : colour.toLowerCase();
+    const id = `${(pieces[k] as Piece).type}|${orbit}`;
     let part = index.get(id);
     if (part === undefined) {
       part = wish.length;
@@ -562,7 +565,6 @@ function harmonised(
   const fixed = fixes && fixes !== true ? Object.keys(fixes.colors ?? {}) : [];
   // A fix names a shape (every ring of it) or one ring (`name@n`), as
   // ringFills reads it: only the rings it names are locked.
-  const rings = ringsFor(model);
   if (fixed.length && rings)
     for (let i = 0; i < m; i++)
       for (let j = 0; j < n; j++)

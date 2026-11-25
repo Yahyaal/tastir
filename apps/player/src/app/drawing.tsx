@@ -293,9 +293,16 @@ function FreeInkPieces({ pieces, chosen, onToggle }: FreeInk) {
           data-id={id}
           className={chosen.has(id) ? 'piece-line inked' : 'piece-line'}
           role="button"
+          tabIndex={0}
           aria-pressed={chosen.has(id)}
           aria-label="Ink or erase this line"
           onClick={() => onToggle(id)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onToggle(id);
+            }
+          }}
         >
           <line
             className="hit"
@@ -1307,22 +1314,14 @@ export function Thumbnail({
     ) + 1,
   );
   const strapped = look === 'strapwork' || look === 'interlace';
-  const finish0 = strapped ? finishOf(model, coloring) : undefined;
-  const colors = pieceColors(
-    model,
-    coloring,
-    finish0 ? { band: finish0.band, edge: finish0.lines } : {},
-  );
   const finish = finishOf(model, coloring);
+  const surround = strapped ? { band: finish.band, edge: finish.lines } : {};
+  const colors = pieceColors(model, coloring, surround);
   // Pieces of one shape can take different colors by where they sit (the
   // Comares bones); the wall's own rule then colors each copy.
   const coloured = colouredModel(model, coloring);
   const fill = byPlace(coloured)
-    ? placeFills(
-        coloured,
-        coloring,
-        finish0 ? { band: finish0.band, edge: finish0.lines } : {},
-      )
+    ? placeFills(coloured, coloring, surround)
     : undefined;
   const jali = look === 'jali';
   const widths = strapWidths(model, styleGrout(model, look, grout));

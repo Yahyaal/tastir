@@ -33,13 +33,18 @@ A web app that walks people through Islamic geometric pattern tutorials one step
 ## Layout (created in task 0.1)
 
 ```
-packages/engine    geometry, evaluator, pieces
-packages/schema    Zod schema for the tutorial format
-packages/project-core  the drawing and the commands that edit it, shared by
-                   the editor, the assistant and the studio (pure, like the engine)
-apps/player        React + Vite + SVG player
-tutorials/         tutorial JSON files
-docs/              PRD, tasks, format, notes, prototype
+packages/engine         geometry, evaluator, pieces
+packages/schema         Zod schema for the tutorial format
+packages/project-core   the drawing, palette engine and commands, shared by
+                        the editor, the assistant and the studio (pure, like the engine)
+packages/relief         3D relief carving, moulds, tile pieces and 3MF/Bambu export
+packages/agent-protocol shared observation, highlighting and drawing contracts
+apps/player             React + Vite + SVG player and 3D Make workshop
+apps/studio             local and hosted Studio server, OAuth, feedback and MCP
+apps/live-room          Cloudflare Worker live revision notifications
+apps/agent-local        local ChatGPT sign-in and drawing assistant bridge
+tutorials/              tutorial JSON files
+docs/                   PRD, tasks, format, notes, prototype
 ```
 
 ## Commands

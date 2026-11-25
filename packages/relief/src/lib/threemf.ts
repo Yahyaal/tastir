@@ -22,12 +22,18 @@ export function threeMf(
   );
   objects.forEach((o, k) => {
     const { positions: p, triangles: t } = o.mesh;
-    parts.push(`<object id="${k + 1}" name="${escapeXml(o.name)}" type="model">\n<mesh>\n<vertices>\n`);
+    parts.push(
+      `<object id="${k + 1}" name="${escapeXml(o.name)}" type="model">\n<mesh>\n<vertices>\n`,
+    );
     for (let i = 0; i < p.length; i += 3)
-      parts.push(`<vertex x="${num(p[i]!)}" y="${num(p[i + 1]!)}" z="${num(p[i + 2]!)}"/>\n`);
+      parts.push(
+        `<vertex x="${num(p[i]!)}" y="${num(p[i + 1]!)}" z="${num(p[i + 2]!)}"/>\n`,
+      );
     parts.push('</vertices>\n<triangles>\n');
     for (let i = 0; i < t.length; i += 3)
-      parts.push(`<triangle v1="${t[i]}" v2="${t[i + 1]}" v3="${t[i + 2]}"/>\n`);
+      parts.push(
+        `<triangle v1="${t[i]}" v2="${t[i + 1]}" v3="${t[i + 2]}"/>\n`,
+      );
     parts.push('</triangles>\n</mesh>\n</object>\n');
   });
   parts.push('</resources>\n<build>\n');
@@ -55,8 +61,16 @@ function escapeXml(s: string): string {
   return s.replace(/[<>&"']/g, (c) => `&#${c.charCodeAt(0)};`);
 }
 
-/** UTF-8 without TextEncoder, which the engine's packages do not type. */
+const TextEncoderCtor = (
+  globalThis as {
+    readonly TextEncoder?: new () => { encode(input: string): Uint8Array };
+  }
+).TextEncoder;
+const textEncoder = TextEncoderCtor ? new TextEncoderCtor() : undefined;
+
+/** UTF-8 using TextEncoder when available, with a pure-JS fallback. */
 export function utf8(s: string): Uint8Array {
+  if (textEncoder) return textEncoder.encode(s);
   const out: number[] = [];
   for (const ch of s) {
     const c = ch.codePointAt(0)!;
@@ -87,12 +101,15 @@ const CRC_TABLE = (() => {
 
 export function crc32(bytes: Uint8Array): number {
   let c = 0xffffffff;
-  for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]!) & 0xff]! ^ (c >>> 8);
+  for (let i = 0; i < bytes.length; i++)
+    c = CRC_TABLE[(c ^ bytes[i]!) & 0xff]! ^ (c >>> 8);
   return (c ^ 0xffffffff) >>> 0;
 }
 
 /** A zip of stored entries. */
-export function zip(files: readonly { name: string; data: Uint8Array }[]): Uint8Array {
+export function zip(
+  files: readonly { name: string; data: Uint8Array }[],
+): Uint8Array {
   const locals: Uint8Array[] = [];
   const centrals: Uint8Array[] = [];
   let offset = 0;

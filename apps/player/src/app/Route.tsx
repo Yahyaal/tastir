@@ -43,6 +43,14 @@ export function Route({
 }) {
   const max = Math.max(...counts.values(), 1);
   const [lit, setLit] = useState<string>();
+  // Only mount glaze WebP images once a place is hovered, focused, or chosen
+  // so initial page load does not eagerly fetch all 9 hidden (~404 KB) WebPs.
+  const [seenGlazes, setSeenGlazes] = useState<ReadonlySet<string>>(() =>
+    place ? new Set([place]) : new Set(),
+  );
+  const [loadedGlazes, setLoadedGlazes] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
   // Once the page scrolls down to the cards, the route shrinks to a slim
   // line; it grows back near the top (a gap between the two, so it never
   // flickers at one point).
@@ -61,11 +69,25 @@ export function Route({
     const on = el?.querySelector<HTMLElement>(
       '.route-stop[aria-current="page"]',
     );
-    if (el && on && el.scrollWidth > el.clientWidth)
-      el.scrollLeft = on.offsetLeft - el.clientWidth / 2;
+    if (el && on && el.scrollWidth > el.clientWidth) {
+      const target =
+        el.scrollLeft +
+        (on.getBoundingClientRect().left - el.getBoundingClientRect().left) -
+        el.clientWidth / 2;
+      el.scrollLeft = Math.max(0, target);
+    }
   }, [place]);
   const zones = stretches();
   const focus = lit ?? place;
+  useEffect(() => {
+    if (!focus) return;
+    setSeenGlazes((prev) => {
+      if (prev.has(focus)) return prev;
+      const next = new Set(prev);
+      next.add(focus);
+      return next;
+    });
+  }, [focus]);
   const go = (key: string) => {
     window.location.hash = hrefOf(place === key ? undefined : key);
   };
@@ -83,31 +105,41 @@ export function Route({
             className="route-band-light"
             src={`${base}route/band-light.svg`}
             alt=""
-            loading="lazy"
+            decoding="async"
             draggable={false}
           />
           <img
             className="route-band-dark"
             src={`${base}route/band-dark.svg`}
             alt=""
-            loading="lazy"
+            decoding="async"
             draggable={false}
           />
         </div>
-        {ROUTE_PLACES.map((r, i) => (
-          // As the pencil drawing under it: 22% of the band wide, centred
-          // on the stop, fading into its neighbours.
-          <img
-            key={`glaze-${r.key}`}
-            className={`route-glaze${focus === r.key ? ' is-on' : ''}`}
-            src={base + colourSquare(r.key)}
-            alt=""
-            aria-hidden="true"
-            loading="lazy"
-            draggable={false}
-            style={{ left: `${(STOPS[i]?.[0] ?? 0.5) * 100}%` }}
-          />
-        ))}
+        {ROUTE_PLACES.map((r, i) =>
+          seenGlazes.has(r.key) || focus === r.key ? (
+            // As the pencil drawing under it: 22% of the band wide, centred
+            // on the stop, fading into its neighbours.
+            <img
+              key={`glaze-${r.key}`}
+              className={`route-glaze${focus === r.key && loadedGlazes.has(r.key) ? ' is-on' : ''}`}
+              src={base + colourSquare(r.key)}
+              alt=""
+              aria-hidden="true"
+              decoding="async"
+              draggable={false}
+              onLoad={() =>
+                setLoadedGlazes((prev) => {
+                  if (prev.has(r.key)) return prev;
+                  const next = new Set(prev);
+                  next.add(r.key);
+                  return next;
+                })
+              }
+              style={{ left: `${(STOPS[i]?.[0] ?? 0.5) * 100}%` }}
+            />
+          ) : null,
+        )}
         <svg
           className="route-line"
           viewBox={`0 0 ${W} ${H}`}
@@ -137,8 +169,12 @@ export function Route({
                 width: `${(z.to - z.from) * 100}%`,
               }}
               onClick={() => go(r.key)}
-              onPointerEnter={() => setLit(r.key)}
-              onPointerLeave={() => setLit(undefined)}
+              onPointerEnter={(e) => {
+                if (e.pointerType !== 'touch') setLit(r.key);
+              }}
+              onPointerLeave={(e) => {
+                if (e.pointerType !== 'touch') setLit(undefined);
+              }}
             />
           );
         })}
@@ -155,8 +191,12 @@ export function Route({
               aria-current={on ? 'page' : undefined}
               title={on ? 'Show all places again' : r.about}
               style={{ left: `${x * 100}%`, top: `${y * 100}%` }}
-              onPointerEnter={() => setLit(r.key)}
-              onPointerLeave={() => setLit(undefined)}
+              onPointerEnter={(e) => {
+                if (e.pointerType !== 'touch') setLit(r.key);
+              }}
+              onPointerLeave={(e) => {
+                if (e.pointerType !== 'touch') setLit(undefined);
+              }}
               onFocus={() => setLit(r.key)}
               onBlur={() => setLit(undefined)}
             >

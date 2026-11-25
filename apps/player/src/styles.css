@@ -980,24 +980,59 @@ a.button.primary:hover {
   color: var(--theme-text-primary);
 }
 
-/* Fit: back to the whole drawing, in the frame's corner. */
+/* Fit: back to the whole drawing, in the frame's corner; expands into a
+   labeled pill on hover/focus without moving any neighbour. */
 .player .plate-area .fit {
   position: absolute;
   left: 20px;
   bottom: 20px;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  width: 44px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-width: 44px;
   height: 44px;
-  padding: 0;
-  border-radius: 12px;
+  padding: 0 12px;
+  border-radius: 999px;
   border: 1px solid var(--theme-border-hover);
   background: var(--theme-bg-surface);
   color: var(--theme-text-primary);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.16);
+  font: 650 13.5px/1 var(--text);
+  white-space: nowrap;
+  transition:
+    padding 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    gap 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.15s ease;
+}
+
+.player .plate-area .fit .fit-label {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.18s ease;
+}
+
+@media (hover: hover) {
+  .player .plate-area .fit:hover,
+  .player .plate-area .fit:focus-visible {
+    gap: 7px;
+    padding: 0 15px 0 13px;
+  }
+  .player .plate-area .fit:hover .fit-label,
+  .player .plate-area .fit:focus-visible .fit-label {
+    max-width: 110px;
+    opacity: 1;
+  }
 }
 
 .player .plate-area .fit svg {
+  flex: none;
   width: 18px;
   height: 18px;
   fill: none;
@@ -1430,28 +1465,64 @@ main.stage .drawing:not(.wall) {
   display: grid;
   place-items: center;
   padding: 16px;
-  background: color-mix(in srgb, var(--theme-bg-surface) 60%, transparent);
+  background: color-mix(in srgb, var(--shadow) 55%, transparent);
+  backdrop-filter: blur(3px);
 }
 
 .leave-check {
   max-width: 26rem;
-  padding: 18px 20px;
-  border: 2px solid var(--saffron);
-  border-radius: 10px;
-  background: var(--lapis-deep);
-  box-shadow: 0 12px 40px
+  padding: 20px 22px;
+  border: 1.5px solid var(--saffron);
+  border-radius: 14px;
+  background: var(--theme-bg-surface);
+  color: var(--theme-text-primary);
+  box-shadow: 0 16px 48px
     color-mix(in srgb, var(--shadow) calc(45% * var(--shadow-k)), transparent);
 }
 
-.leave-check p {
-  margin: 0 0 14px;
-  font-size: 1rem;
+.leave-check h2 {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  color: var(--theme-text-primary);
 }
 
-.leave-check div {
+.leave-check p {
+  margin: 0 0 18px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--theme-text-secondary);
+}
+
+.leave-check .leave-check-actions {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
+}
+
+.leave-check button.danger-outline {
+  background: transparent;
+  color: var(--theme-danger);
+  border: 1px solid color-mix(in srgb, var(--theme-danger) 55%, transparent);
+}
+
+.leave-check button.danger-outline:hover,
+.leave-check button.danger-outline:focus-visible {
+  background: var(--theme-danger);
+  border-color: var(--theme-danger);
+  color: #fff;
+}
+
+.leave-check button.leave-stay {
+  background: var(--theme-text-primary);
+  border: 1px solid var(--theme-text-primary);
+  color: var(--theme-bg-canvas);
+  font-weight: 650;
+}
+
+.leave-check button.leave-stay:hover,
+.leave-check button.leave-stay:focus-visible {
+  opacity: 0.9;
 }
 
 /* A page that only says something, such as a design that is not here. */
@@ -1459,6 +1530,7 @@ main.stage .drawing:not(.wall) {
   max-width: 36rem;
   margin: 48px auto;
   display: grid;
+  justify-items: start;
   gap: 12px;
 }
 
@@ -1475,6 +1547,7 @@ main.stage .drawing:not(.wall) {
 }
 
 .notice .error {
+  justify-self: stretch;
   margin: 0;
   padding: 12px 16px;
   border: 1px solid var(--theme-border);
@@ -2347,7 +2420,7 @@ main.stage .drawing:not(.wall) {
   padding: 1px 8px;
   border-radius: 999px;
   font-size: 0.75rem;
-  color: var(--theme-bg);
+  color: var(--theme-bg-canvas);
   background: var(--theme-text-muted);
 }
 
@@ -2518,21 +2591,86 @@ main.stage .drawing:not(.wall) {
 
 .full-size-bar {
   display: flex;
-  gap: 10px;
+  flex-wrap: wrap;
+  gap: 12px;
   align-items: center;
-  padding: 10px 16px;
+  padding: 12px 18px;
   font-size: 0.85rem;
+  border-bottom: 1px solid var(--theme-border);
+  background: var(--theme-bg-surface);
 }
 
-.full-size-bar span {
-  flex: 1;
+.full-size-bar > span {
+  flex: 1 1 240px;
+  color: var(--theme-text-secondary);
+}
+
+.full-size-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
 }
 
 .full-size-bar button {
-  color: var(--on-lapis);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.full-size-bar button svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+
+.full-size-bar button.full-size-zoom {
+  color: var(--theme-text-primary);
   background: transparent;
-  border: 1px solid var(--on-lapis);
-  padding: 4px 14px;
+  border: 1px solid var(--theme-border-hover);
+}
+
+.full-size-bar button.full-size-zoom:hover,
+.full-size-bar button.full-size-zoom:focus-visible {
+  background: var(--theme-bg-raised);
+  border-color: var(--theme-text-secondary);
+}
+
+.full-size-bar button.full-size-zoom[aria-pressed='true'] {
+  background: color-mix(
+    in srgb,
+    var(--theme-accent) 16%,
+    var(--theme-bg-raised)
+  );
+  border-color: var(--theme-accent);
+}
+
+.full-size-bar button.full-size-close {
+  margin-left: 4px;
+  color: var(--theme-bg-canvas);
+  background: var(--theme-text-primary);
+  border: 1px solid var(--theme-text-primary);
+}
+
+.full-size-bar button.full-size-close:hover,
+.full-size-bar button.full-size-close:focus-visible {
+  opacity: 0.88;
 }
 
 .full-size-view {
@@ -3302,8 +3440,36 @@ main.stage .drawing:not(.wall) {
 }
 
 .card-actions .button.danger {
-  background: #c0533f;
-  border-color: #c0533f;
+  background: var(--theme-danger);
+  border-color: var(--theme-danger);
+  color: #fff;
+}
+
+.card-actions .button.danger-quiet {
+  color: var(--theme-danger);
+}
+
+.card-actions .button.danger-quiet:hover,
+.card-actions .button.danger-quiet:focus-visible {
+  background: color-mix(in srgb, var(--theme-danger) 12%, transparent);
+  border-color: var(--theme-danger);
+}
+
+.delete-check button.danger {
+  background: var(--theme-danger);
+  border-color: var(--theme-danger);
+  color: #fff;
+}
+
+.delete-check button.danger-outline {
+  color: var(--theme-danger);
+  border-color: color-mix(in srgb, var(--theme-danger) 55%, transparent);
+}
+
+.delete-check button.danger-outline:hover,
+.delete-check button.danger-outline:focus-visible {
+  background: var(--theme-danger);
+  border-color: var(--theme-danger);
   color: #fff;
 }
 
@@ -6525,6 +6691,9 @@ svg.tiles {
   touch-action: none;
   cursor: grab;
 }
+.photo-zoom-box.is-zoomed.is-dragging {
+  cursor: grabbing;
+}
 .photo-zoom-box img {
   display: block;
   transform-origin: 0 0;
@@ -6535,26 +6704,77 @@ svg.tiles {
   top: 8px;
   right: 8px;
   display: grid;
+  justify-items: end;
   gap: 6px;
 }
 .player .photo-zoom-tools button {
-  width: 36px;
+  min-width: 36px;
   height: 36px;
   min-height: 0;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: 10px;
-  background: rgb(0 0 0 / 0.55);
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  border-radius: 999px;
+  background: rgb(15 24 32 / 0.78);
+  backdrop-filter: blur(6px);
   color: #f4ead8;
+  font: 650 12.5px/1 var(--text);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.35);
   cursor: pointer;
+  transition:
+    padding 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    gap 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.15s ease;
 }
+.player .photo-zoom-tools button:hover:not(:disabled) {
+  background: rgb(15 24 32 / 0.92);
+  border-color: rgb(236 196 99 / 0.75);
+}
+.player .photo-zoom-tools .photo-tool-label {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.18s ease;
+}
+@media (hover: hover) {
+  .player .photo-zoom-tools button.photo-wipe-btn:hover,
+  .player .photo-zoom-tools button.photo-wipe-btn:focus-visible {
+    gap: 7px;
+    padding: 0 10px 0 13px;
+  }
+  .player .photo-zoom-tools button.photo-wipe-btn:hover .photo-tool-label,
+  .player
+    .photo-zoom-tools
+    button.photo-wipe-btn:focus-visible
+    .photo-tool-label {
+    max-width: 120px;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .player .plate-area .fit,
+  .player .plate-area .fit .fit-label,
+  .player .photo-zoom-tools button.photo-wipe-btn,
+  .player .photo-zoom-tools .photo-tool-label,
+  .full-size-bar button {
+    transition: none;
+  }
+}
+
 .player .photo-zoom-tools button:disabled {
   opacity: 0.4;
   cursor: default;
 }
 .photo-zoom-tools svg {
+  flex: none;
   width: 18px;
   height: 18px;
   fill: none;

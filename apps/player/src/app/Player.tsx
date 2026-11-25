@@ -3,7 +3,7 @@ import { libraryHref } from './browsing';
 import { pieceName } from './pieceNames';
 import { learningPosition } from './learningPath';
 import { LIBRARY, listed } from './library';
-import type { SharedPresentation } from '@tastir/schema';
+import type { Photo, SharedPresentation } from '@tastir/schema';
 import { registerPageColoring } from '../agent/pageColoring';
 import { PatternLoading } from './PatternLoading';
 import { StepText } from './StepText';
@@ -60,7 +60,7 @@ import {
   type Model,
   type Stage,
 } from './model';
-import { Original, photoSrc } from './Original';
+import { FullSize, Original, photoSrc } from './Original';
 import { PhotoBadge, PhotoWipe } from './PhotoWipe';
 import { LessonTitle, byOf, stepSources } from './LessonTitle';
 import { FeedbackButton } from '../feedback/FeedbackButton';
@@ -717,8 +717,17 @@ export function Player({
     presentation?.showOriginal ?? false,
   );
   // Make it yours floats over the finished wall; it can be hidden to see
-  // the wall whole.
+  // the wall whole. Restore focus between hide/show toggles so keyboard
+  // focus never drops to document.body.
   const [makeOpen, setMakeOpen] = useState(true);
+  const makeHideRef = useRef<HTMLButtonElement>(null);
+  const makeShowRef = useRef<HTMLButtonElement>(null);
+  const toggleMakeOpen = (open: boolean) => {
+    setMakeOpen(open);
+    requestAnimationFrame(() => {
+      (open ? makeHideRef.current : makeShowRef.current)?.focus();
+    });
+  };
   // On a phone the panel starts as a slim bar, so the wall has the screen;
   // a tap opens it upwards.
   // Opened once, it opens again: the learner's choice is kept.
@@ -733,19 +742,47 @@ export function Player({
       // Not kept: a phone folds it again next time.
     }
   };
+  useEffect(() => {
+    const mq = window.matchMedia?.('(max-width: 760px)');
+    if (!mq) return;
+    const sync = () => {
+      if (!mq.matches) setMakePeekState(false);
+    };
+    mq.addEventListener?.('change', sync);
+    return () => mq.removeEventListener?.('change', sync);
+  }, []);
   // The real wall's photo, wiped across ours by a golden handle.
   const [wiping, setWiping] = useState(false);
-  // Which photo is laid over the wall (Original may show another).
-  const [wipePhoto, setWipePhoto] = useState(0);
+  // Active photo index shared between side-by-side, wipe, and full size.
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [photoFull, setPhotoFull] = useState(false);
+  const [unavailablePhotos, setUnavailablePhotos] = useState<
+    ReadonlySet<string>
+  >(new Set());
+  const closePhotoFull = useCallback(() => setPhotoFull(false), []);
+  const markPhotoUnavailable = useCallback((src: string) => {
+    setUnavailablePhotos((prev) => new Set([...prev, src]));
+  }, []);
   // The real wall: the badge on the wall and The real wall in More do the
   // same thing, showing the photo beside the wall (or closing it, from
-  // either view); the photo's own tools lay it over the wall to wipe.
+  // either view); the top-left bar switches in-place between side-by-side
+  // and wipe, and opens full size in either mode.
   const photoOpen = comparing || wiping;
   const togglePhoto = () => {
     if (photoOpen) {
       setComparing(false);
       setWiping(false);
+      setPhotoFull(false);
     } else setComparing(true);
+  };
+  const toggleWipe = () => {
+    if (wiping) {
+      setWiping(false);
+      setComparing(true);
+    } else {
+      setComparing(false);
+      setWiping(true);
+    }
   };
   // Make it yours shows one tab at a time: colour first, as most people
   // come to colour.
@@ -1093,7 +1130,11 @@ export function Player({
           grout={grout}
           jali={jali}
           pen={pen}
-          onHover={setHovered}
+          onHover={
+            paints || (index === last && !sharedView && makeTab !== 'pieces')
+              ? undefined
+              : setHovered
+          }
           onPick={pick}
           enter={enter}
           lit={lit}
@@ -1108,7 +1149,7 @@ export function Player({
               : (colors[coloured.pattern.pieces[k]?.type ?? 0] ?? '#999999')
           }
           lines={finishOf(coloured, colorHistory.now).lines}
-          onHover={setHovered}
+          onHover={paints ? undefined : setHovered}
           onPick={pick}
         />
       );
@@ -1224,6 +1265,15 @@ export function Player({
   const onWall =
     copies === 'wall' &&
     (colourFirst ? stage.kind === 'repeat' : stage.kind === 'color');
+  // REDESIGN.4: on the finished wall the wall fills the page and Make it
+  // yours floats over it, holding everything the side panel held.
+  const wallPage = ready && onWall && !sharedView;
+  useEffect(() => {
+    if (!wallPage) {
+      setWiping(false);
+      setPhotoFull(false);
+    }
+  }, [wallPage]);
   // One tile is coloured as tile; the wall in its own style.
   useLayoutEffect(
     () => setColourStyle(onWall ? wallStyle : 'tiles'),
@@ -1253,7 +1303,7 @@ export function Player({
   // they take a few tenths of a second, which need not hold the wall up.
   const [samplesFor, setSamplesFor] = useState<Model>();
   useEffect(() => {
-    if (!onWall) return undefined;
+    if (!onWall || wallPage) return undefined;
     // After the next frame is painted, not merely after this render.
     let later: ReturnType<typeof setTimeout> | undefined;
     const frame = requestAnimationFrame(() => {
@@ -1263,7 +1313,7 @@ export function Player({
       cancelAnimationFrame(frame);
       clearTimeout(later);
     };
-  }, [onWall, inking.shown]);
+  }, [onWall, wallPage, inking.shown]);
   const samplesReady = samplesFor === inking.shown;
   // Drawn once per pattern, colouring and finish, not on every slide of
   // the width or point at a ring.
@@ -1525,9 +1575,6 @@ export function Player({
       coloring: colorHistory.now,
     }),
   };
-  // REDESIGN.4: on the finished wall the wall fills the page and Make it
-  // yours floats over it, holding everything the side panel held.
-  const wallPage = ready && onWall && !sharedView;
   const wallColours = [...new Set(Object.values(colors))];
   const lastShown = shown[shown.length - 1] ?? 1;
   const makeTabs: readonly (readonly [MakeTab, string])[] = [
@@ -1562,11 +1609,12 @@ export function Player({
           </button>
         </h2>
         <button
+          ref={makeHideRef}
           type="button"
           className="make-hide"
           aria-label="Hide Make it yours to see the whole wall"
           title="Hide this panel"
-          onClick={() => setMakeOpen(false)}
+          onClick={() => toggleMakeOpen(false)}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M6 6l12 12M18 6 6 18" />
@@ -1712,8 +1760,12 @@ export function Player({
                   label="PNG"
                   name="Download PNG"
                   onClick={() =>
-                    void pngBlob(exportSvg()).then((png) =>
-                      download(png, `${tutorial.id}.png`),
+                    void pngBlob(exportSvg()).then(
+                      (png) => download(png, `${tutorial.id}.png`),
+                      () =>
+                        setFileError(
+                          'Could not prepare the PNG image to save.',
+                        ),
                     )
                   }
                 />
@@ -1936,20 +1988,18 @@ export function Player({
             {showOriginal ? (
               <Original
                 photos={photos}
-                onWipe={
-                  wallPage
-                    ? (photo: number) => {
-                        setWipePhoto(photo);
-                        setComparing(false);
-                        setWiping(true);
-                      }
-                    : undefined
-                }
+                selected={photoIndex}
+                onSelect={setPhotoIndex}
+                showFullButton={!wallPage}
+                onUnavailable={markPhotoUnavailable}
               />
             ) : null}
             {picture}
             {wallPage && wiping && !showOriginal && photos[0] ? (
-              <PhotoWipe photo={photos[wipePhoto] ?? photos[0]} />
+              <PhotoWipe
+                photo={photos[photoIndex] ?? photos[0]}
+                onClose={() => setWiping(false)}
+              />
             ) : null}
             {destinationGuide && (
               <span className="destination-guide-caption">
@@ -1981,6 +2031,9 @@ export function Player({
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
               </svg>
+              <span className="fit-label" aria-hidden="true">
+                Fit view
+              </span>
             </button>
           ) : onWall ? (
             <button
@@ -1993,20 +2046,31 @@ export function Player({
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
               </svg>
+              <span className="fit-label" aria-hidden="true">
+                Reset view
+              </span>
             </button>
           ) : null}
           {wallPage && photos[0] ? (
-            <PhotoBadge
-              photo={photos[0]}
+            <WallPhotoControls
+              photo={photos[photoIndex] ?? photos[0]}
               open={photoOpen}
+              wiping={wiping}
+              full={photoFull}
+              unavailablePhotos={unavailablePhotos}
               onToggle={togglePhoto}
+              onToggleWipe={toggleWipe}
+              onOpenFull={() => setPhotoFull(true)}
+              onCloseFull={closePhotoFull}
+              onUnavailable={markPhotoUnavailable}
             />
           ) : null}
           {wallPage && !makeOpen ? (
             <button
+              ref={makeShowRef}
               type="button"
               className="make-show"
-              onClick={() => setMakeOpen(true)}
+              onClick={() => toggleMakeOpen(true)}
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path d="M12 3v6M12 15v6M3 12h6M15 12h6" />
@@ -2323,8 +2387,12 @@ export function Player({
                       type="button"
                       className="secondary"
                       onClick={() =>
-                        void pngBlob(exportSvg()).then((png) =>
-                          download(png, `${tutorial.id}.png`),
+                        void pngBlob(exportSvg()).then(
+                          (png) => download(png, `${tutorial.id}.png`),
+                          () =>
+                            setFileError(
+                              'Could not prepare the PNG image to save.',
+                            ),
                         )
                       }
                     >
@@ -2415,6 +2483,57 @@ export function Player({
   );
 }
 
+function WallPhotoControls({
+  photo,
+  open,
+  wiping,
+  full,
+  unavailablePhotos,
+  onToggle,
+  onToggleWipe,
+  onOpenFull,
+  onCloseFull,
+  onUnavailable,
+}: {
+  photo: Photo;
+  open: boolean;
+  wiping: boolean;
+  full: boolean;
+  unavailablePhotos: ReadonlySet<string>;
+  onToggle: () => void;
+  onToggleWipe: () => void;
+  onOpenFull: () => void;
+  onCloseFull: () => void;
+  onUnavailable: (src: string) => void;
+}) {
+  const src = photoSrc(photo);
+  const readyPhoto = Boolean(src && !unavailablePhotos.has(src));
+  return (
+    <>
+      <PhotoBadge
+        photo={photo}
+        open={open}
+        wiping={wiping}
+        onToggle={onToggle}
+        onToggleWipe={readyPhoto ? onToggleWipe : undefined}
+        onFullSize={readyPhoto ? onOpenFull : undefined}
+      />
+      {full ? (
+        <FullSize
+          photo={photo}
+          src={readyPhoto ? src : undefined}
+          returnRoot=".plate-area"
+          returnTarget=".photo-badge"
+          onUnavailable={() => {
+            if (src) onUnavailable(src);
+          }}
+          onClose={onCloseFull}
+        />
+      ) : null}
+    </>
+  );
+}
+
 function LeaveConfirmation({
   name,
   onStay,
@@ -2434,16 +2553,26 @@ function LeaveConfirmation({
         className="leave-check"
         role="alertdialog"
         aria-modal="true"
-        aria-label="Unsaved changes"
+        aria-labelledby="leave-check-title"
       >
+        <h2 id="leave-check-title">Unsaved changes</h2>
         <p>
           Your changes to “{name}” are not saved. Leave without saving them?
         </p>
-        <div>
-          <button type="button" className="secondary" onClick={onLeave}>
+        <div className="leave-check-actions">
+          <button
+            type="button"
+            className="secondary danger-outline"
+            onClick={onLeave}
+          >
             Leave without saving
           </button>
-          <button ref={stay} type="button" onClick={onStay}>
+          <button
+            ref={stay}
+            type="button"
+            className="leave-stay"
+            onClick={onStay}
+          >
             Stay
           </button>
         </div>

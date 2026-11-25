@@ -25,10 +25,20 @@ export function photoSrc(
 export function Original({
   photos,
   dev = import.meta.env.DEV,
+  selected: controlledSelected,
+  onSelect,
+  showFullButton = true,
+  onUnavailable,
   onWipe,
 }: {
   photos: readonly Photo[];
   dev?: boolean;
+  /** Controlled index into `photos`, when the parent shares the active photo. */
+  selected?: number;
+  onSelect?: (photo: number) => void;
+  /** Show the full-size button inside the photo toolbar (true by default). */
+  showFullButton?: boolean;
+  onUnavailable?: (src: string) => void;
   /** Lays the photo shown (its index) over the wall, to wipe between the
    * two. */
   onWipe?: (photo: number) => void;
@@ -39,14 +49,22 @@ export function Original({
   const [unavailable, setUnavailable] = useState<ReadonlySet<string>>(
     new Set(),
   );
-  const selected = photos[shown] ? shown : 0;
+  const current = controlledSelected ?? shown;
+  const selected = photos[current] ? current : 0;
+  const selectPhoto = (i: number) => {
+    setShown(i);
+    onSelect?.(i);
+  };
   const photo = photos[selected];
   if (!photo) return null;
   const source = photoSrc(photo, dev);
   const missing = Boolean(source && unavailable.has(source));
   const src = missing ? undefined : source;
   const failed = () => {
-    if (source) setUnavailable((files) => new Set([...files, source]));
+    if (source) {
+      setUnavailable((files) => new Set([...files, source]));
+      onUnavailable?.(source);
+    }
   };
   return (
     <figure className="original" aria-label="The original">
@@ -56,7 +74,7 @@ export function Original({
           src={src}
           caption={photo.caption}
           onError={failed}
-          onFull={() => setFull(true)}
+          onFull={showFullButton ? () => setFull(true) : undefined}
           onWipe={onWipe ? () => onWipe(selected) : undefined}
         />
       ) : (
@@ -79,7 +97,7 @@ export function Original({
                 type="button"
                 className="quiet"
                 aria-pressed={i === selected}
-                onClick={() => setShown(i)}
+                onClick={() => selectPhoto(i)}
               >
                 Photo {i + 1}
               </button>
@@ -131,27 +149,25 @@ function PhotoPlaceholder({
  * to scroll around (a click on the photo switches). Esc, the close button or
  * a click outside the photo closes it.
  */
-function FullSize({
+export function FullSize({
   photo,
   src,
   onClose,
   onUnavailable,
+  returnRoot = '.original',
+  returnTarget = '.photo-placeholder a',
 }: {
   photo: Photo;
   src?: string;
   onClose: () => void;
   onUnavailable: () => void;
+  returnRoot?: string;
+  returnTarget?: string;
 }) {
   const [actual, setActual] = useState(false);
   const dialog = useRef<HTMLDivElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null);
-  useModalFocus(
-    dialog,
-    closeButton,
-    onClose,
-    '.original',
-    '.photo-placeholder a',
-  );
+  useModalFocus(dialog, closeButton, onClose, returnRoot, returnTarget);
   // Over the whole page, outside the comparison's own layout.
   return createPortal(
     <div
@@ -168,24 +184,34 @@ function FullSize({
         <span>
           {photo.caption} Photo: {photo.creator}, {photo.license}.
         </span>
-        {src ? (
+        <div className="full-size-actions">
+          {src ? (
+            <button
+              type="button"
+              className="secondary full-size-zoom"
+              aria-pressed={actual}
+              onClick={() => setActual(!actual)}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5M8 11h6" />
+                {actual ? null : <path d="M11 8v6" />}
+              </svg>
+              {actual ? 'Fit to the window' : 'Actual size'}
+            </button>
+          ) : null}
           <button
+            ref={closeButton}
             type="button"
-            className="secondary"
-            aria-pressed={actual}
-            onClick={() => setActual(!actual)}
+            className="full-size-close"
+            onClick={onClose}
           >
-            {actual ? 'Fit to the window' : 'Actual size'}
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+            Close
           </button>
-        ) : null}
-        <button
-          ref={closeButton}
-          type="button"
-          className="secondary"
-          onClick={onClose}
-        >
-          Close
-        </button>
+        </div>
       </div>
       <div
         className={src && actual ? 'full-size-view actual' : 'full-size-view'}
@@ -212,9 +238,10 @@ function FullSize({
 const MAX_ZOOM = 6;
 
 /**
- * The photo beside the wall, to look closer at: the wheel or a pinch zooms
- * about the pointer, a drag moves it once it is zoomed, and the buttons
- * zoom in, out, back, or open it over the whole page.
+ * The photo beside the wall, to look closer at: a single click toggles zoom
+ * about the pointer, the wheel or a pinch zooms smoothly, a drag pans once
+ * zoomed, and the buttons zoom in, out, open full size, or lay it over the
+ * wall to wipe.
  */
 function ZoomPhoto({
   src,
@@ -226,13 +253,17 @@ function ZoomPhoto({
   src: string;
   caption: string;
   onError: () => void;
-  onFull: () => void;
+  onFull?: () => void;
   onWipe?: () => void;
 }) {
   const [view, setView] = useState({ k: 1, x: 0, y: 0 });
+  const [dragging, setDragging] = useState(false);
   const box = useRef<HTMLDivElement>(null);
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pinch = useRef<number | undefined>(undefined);
+  const tap = useRef<{ x: number; y: number; moved: boolean } | undefined>(
+    undefined,
+  );
   // Zoom by f about a point in the box (its centre when none is given),
   // keeping the photo over the box.
   const zoom = (f: number, at?: { x: number; y: number }) =>
@@ -280,20 +311,32 @@ function ZoomPhoto({
   return (
     <div className="photo-zoom">
       <div
-        className={`photo-zoom-box${view.k > 1 ? ' is-zoomed' : ''}`}
+        className={`photo-zoom-box${view.k > 1 ? ' is-zoomed' : ''}${dragging ? ' is-dragging' : ''}`}
         ref={box}
-        onDoubleClick={(e) =>
-          view.k > 1 ? setView({ k: 1, x: 0, y: 0 }) : zoom(2.5, local(e))
-        }
         onPointerDown={(e) => {
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
           e.currentTarget.setPointerCapture?.(e.pointerId);
-          pointers.current.set(e.pointerId, local(e));
+          const pt = local(e);
+          if (pointers.current.size === 0) {
+            tap.current = { x: pt.x, y: pt.y, moved: false };
+          } else if (tap.current) {
+            tap.current.moved = true;
+          }
+          pointers.current.set(e.pointerId, pt);
           pinch.current = undefined;
+          if (view.k > 1) setDragging(true);
         }}
         onPointerMove={(e) => {
           const was = pointers.current.get(e.pointerId);
           if (!was) return;
           const now = local(e);
+          if (
+            tap.current &&
+            !tap.current.moved &&
+            Math.hypot(now.x - tap.current.x, now.y - tap.current.y) > 5
+          ) {
+            tap.current.moved = true;
+          }
           pointers.current.set(e.pointerId, now);
           const all = [...pointers.current.values()];
           if (all.length === 2 && all[0] && all[1]) {
@@ -319,10 +362,21 @@ function ZoomPhoto({
         onPointerUp={(e) => {
           pointers.current.delete(e.pointerId);
           pinch.current = undefined;
+          setDragging(false);
+          const pending = tap.current;
+          if (pointers.current.size === 0) {
+            tap.current = undefined;
+            if (pending && !pending.moved) {
+              if (view.k > 1) setView({ k: 1, x: 0, y: 0 });
+              else zoom(2.5, local(e));
+            }
+          }
         }}
         onPointerCancel={(e) => {
           pointers.current.delete(e.pointerId);
           pinch.current = undefined;
+          tap.current = undefined;
+          setDragging(false);
         }}
       >
         <img
@@ -362,24 +416,30 @@ function ZoomPhoto({
             <path d="M6 12h12" />
           </svg>
         </button>
-        <button
-          type="button"
-          className="photo-open"
-          title="See the photo at full size"
-          aria-label={`See the photo at full size: ${caption}`}
-          onClick={onFull}
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
-          </svg>
-        </button>
+        {onFull ? (
+          <button
+            type="button"
+            className="photo-open"
+            title="See the photo at full size"
+            aria-label={`See the photo at full size: ${caption}`}
+            onClick={onFull}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+            </svg>
+          </button>
+        ) : null}
         {onWipe ? (
           <button
             type="button"
+            className="photo-wipe-btn"
             aria-label="Lay the photo over the wall"
             title="Lay the photo over the wall, and wipe between the two"
             onClick={onWipe}
           >
+            <span className="photo-tool-label" aria-hidden="true">
+              Wipe over wall
+            </span>
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 3v18M9 8l-4 4 4 4M15 8l4 4-4 4" />
             </svg>

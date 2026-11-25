@@ -6,7 +6,7 @@ This page is the way into the project for the owner and for every new Claude Cod
 
 Tastir teaches Islamic geometric patterns one ruler or compass step at a time. The current goal is a rich library: every pattern family with several real designs, each verified against a photo or a published drawing of a real example, drawn exactly with ruler and compass, and shown well by the player (inking by hand, the repeat built tile by tile, colouring piece by piece). Later, learners should be able to make their own designs from a construction.
 
-## Where things stand (23 November 2026)
+## Where things stand (24 November 2026)
 
 The only public site is https://tastir-studio.vercel.app, which Vercel deploys from main on every merge. The old GitHub Pages copy (`yahyaal.github.io/tastir`, last built 15 October) was retired on 16 November at the owner's request: Pages is switched off for the repository and its workflow is removed.
 
@@ -30,7 +30,7 @@ Loading followed (PERF.2): the card now appears only past 0.4 s, and patterns ju
 
 On 19 November the owner asked for a 3D extension: carved panels, tiles and moulds for the Bambu Lab A1. The [3D plan](http://localhost:4200/#/notes/3d-plan) was approved, and its first task (3D.1, `packages/relief` and `pnpm relief <pattern>`) is done, with three panels to look at linked from the plan. 3D.2 followed the same day: [Make it in 3D](http://localhost:4200/#/eight-fold-star-and-cross/make) on every pattern's finished wall, with downloads for Bambu Studio. 3D.3 added moulds: a rigid mould for plaster that holds exactly the panel, and a box for pouring silicone round a printed master, with the plaster and silicone quantities. 3D.4 cut anything larger than the bed into parts with pin holes along the seams, and added mitred borders. 3D.5 made the bands weave over and under in 3D, and gave them rounded and double shapes. 3D.6 added pierced screens and SVG and DXF lines for laser and CNC. Saved designs and a depth for each kind of piece followed. 3D.7, asked for the same day, prints every piece of a pattern on its own in the wall's colours, with a joint, a bevel and a magnet pocket, packed onto one-colour plates, with a full-size layout and an optional tray. 3D.8 added whole pieces: no piece cut, a zig-zag edge, and on a tile any number of repeats across and down, so a wall can grow set by set. 3D.9 made the download one Bambu Studio project file: double-click it and every plate opens in its colour with the A1's settings. 3D.10 keeps small pieces on the plate with a brim, a slower first layer and the fan held back for three layers. Next is printing on the A1 to check the fits and the look, then the later ideas in the plan.
 
-From 22 to 23 November the [redesign plan](REDESIGN-PLAN-2026-11-22.md) was built on branch `claude/jovial-mestorf-ae177f` (not yet merged). It covers REDESIGN.1–4 and their follow-ups:
+From 22 to 24 November the [redesign plan](REDESIGN-PLAN-2026-11-22.md) (REDESIGN.1–4 and follow-ups) was built and merged to `main` via PR #38 (`99d9de1`), followed by post-merge UI/palette fixes in PR #39 (`be51ac6`) and hosted Studio security hardening in PR #40 (`a8c2779`; write-up in `docs/STUDIO-SECURITY-2026-11-24.md`). It covers:
 - the arched window cards;
 - the route from Córdoba to Agra, with each place's pattern in colour;
 - the new library, with level colours and Start here;

@@ -173,7 +173,8 @@ function triangulate(points: P3[], face: readonly number[], out: number[]) {
     const a = flat[i]!;
     const b = flat[j]!;
     const c = flat[k]!;
-    const l = Math.hypot(b.x - a.x, b.y - a.y) * Math.hypot(c.x - b.x, c.y - b.y);
+    const l =
+      Math.hypot(b.x - a.x, b.y - a.y) * Math.hypot(c.x - b.x, c.y - b.y);
     return l === 0 ? 0 : turn(i, j, k) / l;
   };
   let convex = true;
@@ -228,7 +229,8 @@ function triangulate(points: P3[], face: readonly number[], out: number[]) {
       for (const o of left) {
         if (o === i || o === j || o === k) continue;
         const p = flat[o]!;
-        if ((p.x === a.x && p.y === a.y) || (p.x === c.x && p.y === c.y)) continue;
+        if ((p.x === a.x && p.y === a.y) || (p.x === c.x && p.y === c.y))
+          continue;
         if (inside(p, a, b, c)) {
           blocked = true;
           break;
@@ -287,7 +289,8 @@ export function clip(face: readonly P3[], outline: readonly P2[]): P3[] {
   for (let i = 0; i < outline.length && poly.length; i++) {
     const a = outline[i]!;
     const b = outline[(i + 1) % outline.length]!;
-    const side = (p: P2) => (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+    const side = (p: P2) =>
+      (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
     const next: P3[] = [];
     for (let k = 0; k < poly.length; k++) {
       const p = poly[k]!;
@@ -295,11 +298,13 @@ export function clip(face: readonly P3[], outline: readonly P2[]): P3[] {
       const sp = side(p);
       const sq = side(q);
       if (sp >= 0) next.push(p);
-      if ((sp >= 0) !== (sq >= 0)) {
+      if (sp >= 0 !== sq >= 0) {
         // Always measure from the same end, so two faces sharing this
         // edge find the same crossing.
         const [u, v, su, sv] =
-          p.x < q.x || (p.x === q.x && p.y < q.y) ? [p, q, sp, sq] : [q, p, sq, sp];
+          p.x < q.x || (p.x === q.x && p.y < q.y)
+            ? [p, q, sp, sq]
+            : [q, p, sq, sp];
         const t = su / (su - sv);
         next.push({
           x: u.x + (v.x - u.x) * t,
@@ -330,22 +335,30 @@ export function convexParts(face: readonly P3[]): (readonly P3[])[] {
   const sign = Math.sign(area);
   let convex = true;
   for (let i = 0; i < m && convex; i++)
-    if (sign * turn(face[(i - 1 + m) % m]!, face[i]!, face[(i + 1) % m]!) < -tiny) convex = false;
+    if (
+      sign * turn(face[(i - 1 + m) % m]!, face[i]!, face[(i + 1) % m]!) <
+      -tiny
+    )
+      convex = false;
   if (convex) return [face];
   const left = face.slice();
   const out: P3[][] = [];
   const inside = (p: P3, a: P3, b: P3, c: P3) =>
-    sign * turn(a, b, p) >= -tiny && sign * turn(b, c, p) >= -tiny && sign * turn(c, a, p) >= -tiny;
+    sign * turn(a, b, p) >= -tiny &&
+    sign * turn(b, c, p) >= -tiny &&
+    sign * turn(c, a, p) >= -tiny;
   let guard = 0;
   while (left.length > 3) {
-    if (++guard > m * m + 10) throw new Error('A carved face could not be cut into parts.');
+    if (++guard > m * m + 10)
+      throw new Error('A carved face could not be cut into parts.');
     let cut = false;
     for (let e = 0; e < left.length; e++) {
       const a = left[(e - 1 + left.length) % left.length]!;
       const b = left[e]!;
       const c = left[(e + 1) % left.length]!;
       if (sign * turn(a, b, c) <= tiny) continue;
-      if (left.some((p) => p !== a && p !== b && p !== c && inside(p, a, b, c))) continue;
+      if (left.some((p) => p !== a && p !== b && p !== c && inside(p, a, b, c)))
+        continue;
       out.push([a, b, c]);
       left.splice(e, 1);
       cut = true;
@@ -366,10 +379,13 @@ export function inset(outline: readonly P2[], d: number): P2[] {
     const n = { x: -(q.y - p.y) / len, y: (q.x - p.x) / len };
     return { n, c: n.x * p.x + n.y * p.y + d };
   });
-  return outline.map((_, i) => {
+  return outline.map((p, i) => {
     const a = lines[(i - 1 + m) % m]!;
     const b = lines[i]!;
     const det = a.n.x * b.n.y - a.n.y * b.n.x;
+    if (Math.abs(det) < 1e-9) {
+      return { x: p.x + b.n.x * d, y: p.y + b.n.y * d };
+    }
     return {
       x: (a.c * b.n.y - b.c * a.n.y) / det,
       y: (a.n.x * b.c - b.n.x * a.c) / det,
@@ -410,7 +426,8 @@ export function joined(faces: readonly (readonly P3[])[]) {
   const list = joinTs(corners.points, indexedFaces);
   const seen = new Set<string>();
   for (const f of list)
-    for (let i = 0; i < f.length; i++) seen.add(`${f[i]},${f[(i + 1) % f.length]}`);
+    for (let i = 0; i < f.length; i++)
+      seen.add(`${f[i]},${f[(i + 1) % f.length]}`);
   return { points: corners.points, faces: list, seen };
 }
 
@@ -433,7 +450,11 @@ function onLine(face: readonly P3[], outline: readonly P2[]): boolean {
 }
 
 /** Is p on the boundary of the convex outline? */
-export function isOnOutline(p: P2, outline: readonly P2[], tol = 1e-4): boolean {
+export function isOnOutline(
+  p: P2,
+  outline: readonly P2[],
+  tol = 1e-4,
+): boolean {
   return onOutline(p, outline, tol);
 }
 
@@ -474,7 +495,8 @@ export function topOf(solid: Solid, cell?: readonly P2[]): P3[][] {
       const q = points[bn]!;
       const mid = { x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 };
       if (p.x === q.x && p.y === q.y) continue;
-      if (cell && onOutline(mid, cell, 1e-4) && !onOutline(mid, whole, 1e-4)) continue;
+      if (cell && onOutline(mid, cell, 1e-4) && !onOutline(mid, whole, 1e-4))
+        continue;
       checkOnOutline(p, q, whole);
       out.push([at(q, top), q, p, at(p, top)]);
     }
@@ -494,7 +516,12 @@ function frameOver(
   const m = outline.length;
   for (let i = 0; i < m; i++) {
     const k = (i + 1) % m;
-    const quad = [at(outline[i]!), at(outline[k]!), at(inner[k]!), at(inner[i]!)];
+    const quad = [
+      at(outline[i]!),
+      at(outline[k]!),
+      at(inner[k]!),
+      at(inner[i]!),
+    ];
     const cut = cell ? clip(quad, cell) : quad;
     if (cut.length >= 3 && Math.abs(signedArea(cut)) > 1e-12) out.push(cut);
   }
@@ -542,7 +569,8 @@ export function standOn(
 ): Mesh {
   // Faces carved down to the table are holes through the panel: left out,
   // with a bottom under the rest of the top only.
-  const flat = (f: readonly P3[]) => f.every((p) => Math.abs(p.z - base) < 1e-9);
+  const flat = (f: readonly P3[]) =>
+    f.every((p) => Math.abs(p.z - base) < 1e-9);
   const pierced = top.some(flat);
   if (pierced) top = top.filter((f) => !flat(f));
   const { points, faces, seen } = joined(top);
@@ -552,14 +580,20 @@ export function standOn(
   const holes = new Map<number, { s: number; z: number }[]>();
   for (const pin of pins) {
     const side = sideOf(pin.centre, outline);
-    if (side < 0) throw new Error(`A pin at (${pin.centre.x.toFixed(2)}, ${pin.centre.y.toFixed(2)}) mm is off the outline.`);
+    if (side < 0)
+      throw new Error(
+        `A pin at (${pin.centre.x.toFixed(2)}, ${pin.centre.y.toFixed(2)}) mm is off the outline.`,
+      );
     const a = outline[side]!;
     const s = Math.hypot(pin.centre.x - a.x, pin.centre.y - a.y);
     const list = holes.get(side) ?? [];
     list.push({ s, z: pin.z });
     holes.set(side, list);
   }
-  const along = new Map<number, { s0: number; z0: number; s1: number; z1: number }[]>();
+  const along = new Map<
+    number,
+    { s0: number; z0: number; s1: number; z1: number }[]
+  >();
   for (const f of faces)
     for (let i = 0; i < f.length; i++) {
       const an = f[i]!;
@@ -570,9 +604,12 @@ export function standOn(
       // An upright edge on the outline closes against the walls beside it.
       if (p.x === q.x && p.y === q.y) continue;
       // The foot of a hole's wall meets the bottom.
-      if (pierced && Math.abs(p.z - base) < 1e-9 && Math.abs(q.z - base) < 1e-9) continue;
+      if (pierced && Math.abs(p.z - base) < 1e-9 && Math.abs(q.z - base) < 1e-9)
+        continue;
       checkOnOutline(p, q, outline);
-      const side = holes.size ? sideOf({ x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 }, outline) : -1;
+      const side = holes.size
+        ? sideOf({ x: (p.x + q.x) / 2, y: (p.y + q.y) / 2 }, outline)
+        : -1;
       if (side >= 0 && holes.has(side)) {
         const a = outline[side]!;
         const s = (r: P2) => Math.hypot(r.x - a.x, r.y - a.y);
@@ -591,14 +628,16 @@ export function standOn(
   if (!pierced) out.push(outline.map((p) => ({ ...p, z: base })).reverse());
   else
     for (const f of top)
-      if (Math.abs(signedArea(f)) > 1e-12) out.push(f.map((p) => ({ ...p, z: base })).reverse());
+      if (Math.abs(signedArea(f)) > 1e-12)
+        out.push(f.map((p) => ({ ...p, z: base })).reverse());
   return meshOf(out);
 }
 
 /** Which side of a convex outline p lies on (-1 for none). */
 function sideOf(p: P2, outline: readonly P2[]): number {
   for (let i = 0; i < outline.length; i++)
-    if (onOutline(p, [outline[i]!, outline[(i + 1) % outline.length]!], 1e-4)) return i;
+    if (onOutline(p, [outline[i]!, outline[(i + 1) % outline.length]!], 1e-4))
+      return i;
   return -1;
 }
 
@@ -625,20 +664,31 @@ function wallWithHoles(
   });
   const n = PIN_HOLE.sides;
   const cols = holes
-    .map((h) => ({ ...h, s0: h.s - PIN_R, s1: h.s + PIN_R, profile: [] as { s: number; z: number }[] }))
+    .map((h) => ({
+      ...h,
+      s0: h.s - PIN_R,
+      s1: h.s + PIN_R,
+      profile: [] as { s: number; z: number }[],
+    }))
     .sort((p, q) => p.s - q.s);
   for (let i = 0; i < cols.length; i++) {
     const c = cols[i]!;
-    if (c.s0 <= 1e-6 || c.s1 >= len - 1e-6 || (i > 0 && cols[i - 1]!.s1 >= c.s0))
+    if (
+      c.s0 <= 1e-6 ||
+      c.s1 >= len - 1e-6 ||
+      (i > 0 && cols[i - 1]!.s1 >= c.s0)
+    )
       throw new Error('A pin hole runs off its seam or into another.');
   }
   const out: P3[][] = [];
   const sorted = edges.slice().sort((p, q) => p.s0 - q.s0);
   for (const e of sorted) {
     const cuts = [e.s0, e.s1];
-    for (const c of cols) for (const s of [c.s0, c.s1]) if (s > e.s0 && s < e.s1) cuts.push(s);
+    for (const c of cols)
+      for (const s of [c.s0, c.s1]) if (s > e.s0 && s < e.s1) cuts.push(s);
     cuts.sort((p, q) => p - q);
-    const zAt = (s: number) => e.z0 + ((e.z1 - e.z0) * (s - e.s0)) / (e.s1 - e.s0);
+    const zAt = (s: number) =>
+      e.z0 + ((e.z1 - e.z0) * (s - e.s0)) / (e.s1 - e.s0);
     for (let k = 0; k + 1 < cuts.length; k++) {
       const s0 = cuts[k]!;
       const s1 = cuts[k + 1]!;
@@ -647,9 +697,16 @@ function wallWithHoles(
       const col = cols.find((c) => mid > c.s0 && mid < c.s1);
       if (col) {
         const last = col.profile[col.profile.length - 1];
-        if (!last || last.s !== s0 || last.z !== zAt(s0)) col.profile.push({ s: s0, z: zAt(s0) });
+        if (!last || last.s !== s0 || last.z !== zAt(s0))
+          col.profile.push({ s: s0, z: zAt(s0) });
         col.profile.push({ s: s1, z: zAt(s1) });
-      } else out.push([at(s0, zAt(s0)), at(s0, base), at(s1, base), at(s1, zAt(s1))]);
+      } else
+        out.push([
+          at(s0, zAt(s0)),
+          at(s0, base),
+          at(s1, base),
+          at(s1, zAt(s1)),
+        ]);
     }
   }
   for (const c of cols) {
@@ -658,7 +715,11 @@ function wallWithHoles(
       return { s: c.s + PIN_R * Math.cos(t), z: c.z + PIN_R * Math.sin(t) };
     });
     const top = c.profile;
-    if (!top.length || top[0]!.s - c.s0 > 1e-6 || c.s1 - top[top.length - 1]!.s > 1e-6)
+    if (
+      !top.length ||
+      top[0]!.s - c.s0 > 1e-6 ||
+      c.s1 - top[top.length - 1]!.s > 1e-6
+    )
       throw new Error('A pin hole is not under the top of its seam.');
     if (Math.min(...top.map((p) => p.z)) <= c.z + PIN_R || c.z - PIN_R <= base)
       throw new Error('A pin hole does not fit in its seam.');
@@ -672,14 +733,20 @@ function wallWithHoles(
     // Above it: along the hole's upper half, then back along the top.
     const above: P3[] = [];
     for (let k = n / 2; k >= 0; k--) above.push(at(ring[k]!.s, ring[k]!.z));
-    for (let k = top.length - 1; k >= 0; k--) above.push(at(top[k]!.s, top[k]!.z));
+    for (let k = top.length - 1; k >= 0; k--)
+      above.push(at(top[k]!.s, top[k]!.z));
     out.push(above);
     // The hole itself and its end.
     const depth = PIN_HOLE.depth;
     for (let k = 0; k < n; k++) {
       const p = ring[k]!;
       const q = ring[(k + 1) % n]!;
-      out.push([at(p.s, p.z), at(q.s, q.z), at(q.s, q.z, depth), at(p.s, p.z, depth)]);
+      out.push([
+        at(p.s, p.z),
+        at(q.s, q.z),
+        at(q.s, q.z, depth),
+        at(p.s, p.z, depth),
+      ]);
     }
     out.push(ring.map((r) => at(r.s, r.z, depth)));
   }

@@ -84,7 +84,12 @@ export function StartHere({
       end: el.scrollLeft + el.clientWidth > el.scrollWidth - 8,
     });
   };
-  useEffect(update, [path.length]);
+  useEffect(() => {
+    if (!open) return;
+    update();
+    window.addEventListener('resize', update, { passive: true });
+    return () => window.removeEventListener('resize', update);
+  }, [path.length, open]);
   const nudge = (dir: number) =>
     row.current?.scrollBy?.({
       left: dir * row.current.clientWidth * 0.8,

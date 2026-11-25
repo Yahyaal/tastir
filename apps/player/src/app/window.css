@@ -104,46 +104,77 @@
   font-weight: 700;
 }
 
-/* The three actions, centred and as wide as their words, on pointing or
-   keyboard focus; View first, in gold. */
+/* The three actions, stacked vertically in the bottom-right corner so the
+   central star stays clear and each pill can expand leftward without
+   truncating or shifting its neighbours; View first, in gold. */
 .window-actions {
   position: absolute;
   z-index: 2;
-  inset: auto 10px 14px;
-  display: grid;
-  justify-items: center;
-  gap: 6px;
+  inset: auto max(12px, 11%) 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(6px);
   transition:
-    opacity 0.15s,
-    transform 0.15s;
+    opacity 0.16s ease,
+    transform 0.16s ease;
   pointer-events: none;
 }
 .window-pic:hover .window-actions,
 .window-pic:focus-within .window-actions {
   opacity: 1;
   transform: none;
+}
+.window-pic:hover .window-actions a,
+.window-pic:focus-within .window-actions a {
   pointer-events: auto;
 }
 .window-actions a {
   height: 36px;
-  min-width: 56%;
-  padding: 0 16px;
+  min-width: 36px;
+  padding: 0 10px;
   border-radius: 999px;
-  display: flex;
+  display: inline-flex;
+  flex-direction: row-reverse;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 0;
   font-weight: 750;
-  font-size: 14px;
+  font-size: 13.5px;
   color: #fff;
   text-decoration: none;
   white-space: nowrap;
-  backdrop-filter: blur(4px);
+  pointer-events: none;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.32);
+  transition:
+    padding 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    gap 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.15s ease,
+    transform 0.15s ease;
 }
-.window-actions a:hover {
-  filter: brightness(1.1);
+.window-actions .window-action-label {
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    max-width 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.18s ease;
+}
+.window-actions a:hover,
+.window-actions a:focus-visible {
+  padding: 0 10px 0 14px;
+  gap: 7px;
+  filter: brightness(1.08);
+}
+.window-actions a:hover .window-action-label,
+.window-actions a:focus-visible .window-action-label {
+  max-width: 150px;
+  opacity: 1;
 }
 .window-actions a:focus-visible {
   outline: 3px solid #fff;
@@ -237,11 +268,15 @@
      show for a keyboard. */
   .window-pic:hover .window-actions {
     opacity: 0;
+  }
+  .window-pic:hover .window-actions a {
     pointer-events: none;
   }
   .window-pic:has(:focus-visible) .window-actions {
     opacity: 1;
     transform: none;
+  }
+  .window-pic:has(:focus-visible) .window-actions a {
     pointer-events: auto;
   }
 }
@@ -249,6 +284,8 @@
 @media (prefers-reduced-motion: reduce) {
   .window-pic,
   .window-actions,
+  .window-actions a,
+  .window-actions .window-action-label,
   .window-frame .edge {
     transition: none;
   }

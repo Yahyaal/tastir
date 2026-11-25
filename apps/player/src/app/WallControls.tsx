@@ -111,6 +111,11 @@ export function WallControls({
   const width = Math.max(least, grout);
   const showStyle = parts !== 'finish';
   const showFinish = parts !== 'style';
+  const hasFinish =
+    showFinish &&
+    Boolean(finish && onFinish) &&
+    (style === 'tiles' || banded(style));
+  if (!showStyle && !hasFinish) return null;
   return (
     <section className="wall-section">
       {heading ? <h2>{heading}</h2> : null}
@@ -183,7 +188,7 @@ export function WallControls({
           {jali
             ? 'An open screen. Switch styles to see your tile colors. '
             : ''}
-          Drag to move along the wall, scroll to zoom.
+          Drag to move along the wall, scroll or pinch to zoom.
         </p>
       ) : null}
     </section>

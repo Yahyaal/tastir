@@ -1,8 +1,27 @@
 import { isOnOutline, standOn, topOf, type Mesh, type Pin } from './mesh.js';
 import { partsOf, type Cuts } from './parts.js';
-import { bandEdge, depthOf, profileOf, type BandShape, type Carving } from './profile.js';
-import { walls, weaveTop, type Crossing, type Tag, type TaggedFace } from './weave.js';
-import { signedArea, skeletonHeight, sweep, type P2, type P3 } from './skeleton.js';
+import {
+  bandEdge,
+  depthOf,
+  grooveDepth,
+  profileOf,
+  type BandShape,
+  type Carving,
+} from './profile.js';
+import {
+  walls,
+  weaveTop,
+  type Crossing,
+  type Tag,
+  type TaggedFace,
+} from './weave.js';
+import {
+  signedArea,
+  skeletonHeight,
+  sweep,
+  type P2,
+  type P3,
+} from './skeleton.js';
 
 /** What the relief needs from a Tastir pattern (the engine's Pattern
  * fits): the repeat and the pieces of one tile, in pattern units. */
@@ -101,7 +120,13 @@ export function piecesOver(
   const i1 = Math.ceil(Math.max(...span.map((s) => s.i)));
   const j0 = Math.floor(Math.min(...span.map((s) => s.j)));
   const j1 = Math.ceil(Math.max(...span.map((s) => s.j)));
-  const out: { polygon: P2[]; type: number; k: number; i: number; j: number }[] = [];
+  const out: {
+    polygon: P2[];
+    type: number;
+    k: number;
+    i: number;
+    j: number;
+  }[] = [];
   for (let i = i0; i <= i1; i++)
     for (let j = j0; j <= j1; j++)
       pattern.pieces.forEach((piece, k) => {
@@ -132,7 +157,9 @@ export function carvePiece(
   band: number,
   bands: BandShape = 'flat',
 ): P3[][] {
-  return carveTagged(polygon, carving, top, band, bands, false).map((f) => f.face);
+  return carveTagged(polygon, carving, top, band, bands, false).map(
+    (f) => f.face,
+  );
 }
 
 /** The carved top of one piece, each face marked as band, carving, or
@@ -160,13 +187,22 @@ function carveTagged(
   // close down to; the object leaves it out, a mould stands it up as a post.
   const floorZ = carving.kind === 'pierced' ? 0 : profile.z(profile.end);
   const floorTag: Tag =
-    carving.kind === 'raised' ? 'level' : carving.kind === 'pierced' ? 'hole' : 'field';
-  for (const f of s.floor) faces.push({ face: f.map((p) => ({ ...p, z: floorZ })), tag: floorTag });
+    carving.kind === 'raised'
+      ? 'level'
+      : carving.kind === 'pierced'
+        ? 'hole'
+        : 'field';
+  for (const f of s.floor)
+    faces.push({ face: f.map((p) => ({ ...p, z: floorZ })), tag: floorTag });
   return faces;
 }
 
 /** The weave's crossings copied over a rectangle, in millimetres. */
-function crossingsOver(pattern: PatternShape, scale: number, half: P2): Crossing[] {
+function crossingsOver(
+  pattern: PatternShape,
+  scale: number,
+  half: P2,
+): Crossing[] {
   const w = pattern.weave;
   if (!w) return [];
   const { u, v } = pattern.cell;
@@ -181,7 +217,10 @@ function crossingsOver(pattern: PatternShape, scale: number, half: P2): Crossing
     [ex, -ey],
     [ex, ey],
     [-ex, ey],
-  ].map(([x, y]) => ({ i: (x! * V.y - y! * V.x) / det, j: (U.x * y! - U.y * x!) / det }));
+  ].map(([x, y]) => ({
+    i: (x! * V.y - y! * V.x) / det,
+    j: (U.x * y! - U.y * x!) / det,
+  }));
   const i0 = Math.floor(Math.min(...span.map((s) => s.i)));
   const i1 = Math.ceil(Math.max(...span.map((s) => s.i)));
   const j0 = Math.floor(Math.min(...span.map((s) => s.j)));
@@ -193,7 +232,11 @@ function crossingsOver(pattern: PatternShape, scale: number, half: P2): Crossing
       for (const c of w.crossings) {
         const x = (c.at.x + i * U.x + j * V.x) * scale;
         const y = (c.at.y + i * U.y + j * V.y) * scale;
-        if (Math.abs(x) > half.x + reach * scale || Math.abs(y) > half.y + reach * scale) continue;
+        if (
+          Math.abs(x) > half.x + reach * scale ||
+          Math.abs(y) > half.y + reach * scale
+        )
+          continue;
         out.push({ at: { x, y }, over: c.over, under: c.under });
       }
   return out;
@@ -217,7 +260,12 @@ export function reliefTop(
 ): { top: P3[][]; outline: P2[] } {
   const { surface, outline } = reliefSurface(pattern, options);
   return {
-    top: topOf({ surface, outline, frame: options.frame, top: options.thickness }),
+    top: topOf({
+      surface,
+      outline,
+      frame: options.frame,
+      top: options.thickness,
+    }),
     outline,
   };
 }
@@ -240,14 +288,22 @@ export function reliefSurface(
       throw new Error('The panel outline must be convex.');
   }
   if (!(band > 0)) throw new Error('The bands need a width.');
-  if (!(thickness > MIN_BASE)) throw new Error(`The panel must be thicker than ${MIN_BASE} mm.`);
+  if (!(thickness > MIN_BASE))
+    throw new Error(`The panel must be thicker than ${MIN_BASE} mm.`);
   const xs = outline.map((p) => p.x);
   const ys = outline.map((p) => p.y);
   const half = {
     x: Math.max(...xs.map(Math.abs)),
     y: Math.max(...ys.map(Math.abs)),
   };
-  if (frame < 0 || 2 * frame >= Math.min(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)))
+  if (
+    frame < 0 ||
+    2 * frame >=
+      Math.min(
+        Math.max(...xs) - Math.min(...xs),
+        Math.max(...ys) - Math.min(...ys),
+      )
+  )
     throw new Error('The frame leaves no room for the pattern.');
   const types = new Set(pattern.pieces.map((p) => p.type));
   for (const type of types) {
@@ -258,22 +314,51 @@ export function reliefSurface(
       );
   }
   const bands = options.bands ?? 'flat';
-  const woven = options.gap !== undefined && options.gap > 0 && pattern.weave !== undefined;
+  const woven =
+    options.gap !== undefined && options.gap > 0 && pattern.weave !== undefined;
+  const maxCarve = thickness - MIN_BASE;
+  const edgeDrop = bandEdge(bands, band);
+  if (edgeDrop > maxCarve)
+    throw new Error(
+      `The band edge drops ${edgeDrop} mm, which leaves less than ${MIN_BASE} mm of a ${thickness} mm panel.`,
+    );
+  if (bands === 'double' && grooveDepth(band) > maxCarve)
+    throw new Error(
+      `The double-band groove is ${grooveDepth(band)} mm deep, which leaves less than ${MIN_BASE} mm of a ${thickness} mm panel.`,
+    );
+  if (woven && options.gap! + edgeDrop > maxCarve)
+    throw new Error(
+      `The woven crossing dips ${options.gap! + edgeDrop} mm, which leaves less than ${MIN_BASE} mm of a ${thickness} mm panel.`,
+    );
   const pieces = piecesOver(pattern, scale, half);
   const tagged: TaggedFace[] = [];
   for (const piece of pieces)
-    tagged.push(...carveTagged(piece.polygon, options.carving(piece.type), thickness, band, bands, woven));
+    tagged.push(
+      ...carveTagged(
+        piece.polygon,
+        options.carving(piece.type),
+        thickness,
+        band,
+        bands,
+        woven,
+      ),
+    );
   const pierced = tagged.some((f) => f.tag === 'hole');
   let faces = tagged;
   let dips = 0;
   if (woven) {
     const corners = pieces.flatMap((p) => p.polygon);
-    ({ faces, dips } = weaveTop(tagged, crossingsOver(pattern, scale, half), corners, {
-      gap: options.gap!,
-      band,
-      edge: bandEdge(bands, band),
-      top: thickness,
-    }));
+    ({ faces, dips } = weaveTop(
+      tagged,
+      crossingsOver(pattern, scale, half),
+      corners,
+      {
+        gap: options.gap!,
+        band,
+        edge: bandEdge(bands, band),
+        top: thickness,
+      },
+    ));
   }
   const surface = faces.map((f) => f.face);
   if (woven || pierced) surface.push(...walls(surface));
@@ -305,9 +390,17 @@ export function panelParts(
   cuts: Cuts,
   pins: readonly Pin[],
 ): MeshPart[] {
-  const solid = { surface, outline, frame: options.frame, top: options.thickness };
+  const solid = {
+    surface,
+    outline,
+    frame: options.frame,
+    top: options.thickness,
+  };
   return partsOf(outline, cuts).map((part) => {
-    const mine = pins.filter((p) => isOnOutline(p.centre, part.outline) && !isOnOutline(p.centre, outline));
+    const mine = pins.filter(
+      (p) =>
+        isOnOutline(p.centre, part.outline) && !isOnOutline(p.centre, outline),
+    );
     return {
       name: part.name,
       column: part.column,

@@ -258,7 +258,7 @@ function DesignActions({
       </button>
       <button
         type="button"
-        className="button secondary"
+        className="button secondary danger-quiet"
         onClick={() => setDoing('delete')}
       >
         Delete

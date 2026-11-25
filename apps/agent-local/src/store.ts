@@ -1,4 +1,12 @@
-import { mkdir, open, readFile, rename, rm, chmod } from 'node:fs/promises';
+import {
+  mkdir,
+  open,
+  readFile,
+  rename,
+  rm,
+  chmod,
+  stat,
+} from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
@@ -26,6 +34,8 @@ const StateShape = z.object({
 });
 type State = z.infer<typeof StateShape>;
 
+const EMPTY_LOCK_GRACE_MS = 5_000;
+
 export class StateStore {
   private queue: Promise<unknown> = Promise.resolve();
   private constructor(
@@ -43,14 +53,24 @@ export class StateStore {
       await lock.close();
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
-      const pid = Number(await readFile(lockPath, 'utf8'));
-      let running = true;
+      const raw = (await readFile(lockPath, 'utf8')).trim();
+      const pid = raw ? Number(raw) : NaN;
+      let running = false;
       if (Number.isInteger(pid) && pid > 0) {
         try {
           process.kill(pid, 0);
           running = true;
         } catch (e) {
           running = (e as NodeJS.ErrnoException).code !== 'ESRCH';
+        }
+      } else {
+        // A second process may read the file between open('wx') and writeFile(pid).
+        // Treat an empty/corrupt lock as stale only after a brief grace period.
+        try {
+          const info = await stat(lockPath);
+          running = Date.now() - info.mtimeMs < EMPTY_LOCK_GRACE_MS;
+        } catch (e) {
+          if ((e as NodeJS.ErrnoException).code !== 'ENOENT') throw e;
         }
       }
       if (running)

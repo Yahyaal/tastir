@@ -337,6 +337,7 @@ export function Wall({
 
   // Camera changes only move the covering rectangle; the tile's SVG
   // children can be reused without rebuilding every polygon on each frame.
+  const tileStroke = style === 'tiles' ? groutOf(finish) : 'none';
   const pieceNodes = useMemo(
     () =>
       shifted.pieces.map((p, i) => (
@@ -356,22 +357,12 @@ export function Wall({
           points={p.points}
           fill={(lines && !painted) || jali ? 'none' : p.fill}
           fillOpacity={painted ? PAINT_OPACITY : undefined}
-          stroke={style === 'tiles' ? groutOf(finish) : 'none'}
+          stroke={tileStroke}
           strokeWidth={groutWidth}
           strokeLinejoin="round"
         />
       )),
-    [
-      shifted,
-      jali,
-      style,
-      lines,
-      painted,
-      groutWidth,
-      finish,
-      delays,
-      litPieces,
-    ],
+    [shifted, jali, lines, painted, tileStroke, groutWidth, delays, litPieces],
   );
 
   /** The piece type under a screen position. */

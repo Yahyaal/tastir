@@ -529,11 +529,29 @@
   .lib-main {
     padding: 0 14px 32px;
   }
-  /* The filters are one row that scrolls sideways. */
+  /* The filters are one row that scrolls sideways, with a right-edge fade
+     hinting that Level and With photo continue off-screen. */
   .lib-filters {
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 8px;
+    padding-right: 28px;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      #000 0,
+      #000 calc(100% - 28px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      90deg,
+      #000 0,
+      #000 calc(100% - 28px),
+      transparent 100%
+    );
+  }
+  .lib-filters::-webkit-scrollbar {
+    display: none;
   }
   .lib-filters > * {
     flex: none;
