@@ -53,17 +53,22 @@ This draws and inks seven tutorials, repeats and colors them, and measures both 
 
 Generated previews, reports, and browser traces are ignored by Git. `pnpm catalog` rebuilds the library metadata and thumbnails; adding a tutorial does not require changing the app's code. Browser test traces and screenshots appear in `test-results/` on failure.
 
-**GitHub Actions is disabled at the owner's request.** Tests run locally and consume no GitHub Actions minutes. The Pages workflow is manual-only; automatic deployments are paused. Re-enabling Actions and requesting a deployment are separate, explicit actions.
+**GitHub Actions is disabled at the owner's request.** Tests run locally and consume no GitHub Actions minutes. The public site deploys from `main` on Vercel; GitHub Pages has been retired.
 
 ## Project structure
 
 - `packages/engine`: pure TypeScript geometry, construction evaluation, inking, and piece finding. No DOM or React.
 - `packages/schema`: tutorial, draft, and sharing validation.
+- `packages/project-core`: shared drawing commands, palette engine, and colour harmony.
+- `packages/relief`: 3D relief carving, moulds, tile pieces, and 3MF/Bambu Studio export.
 - `packages/agent-protocol`: shared observation, highlighting and drawing contracts.
 - `apps/agent-local`: local ChatGPT authentication and model/tool request handling.
+- `apps/studio`: local and hosted studio server, OAuth, feedback inbox, and MCP server.
+- `apps/live-room`: Cloudflare Worker real-time project revision sync for Studio.
 - `apps/player/src/app`: routing, library, player, saving, and sharing.
 - `apps/player/src/along`: drawing beside a tutorial, hints, pen inking, and hand-placed repeats.
 - `apps/player/src/editor`: construction tools and editable patterns.
+- `apps/player/src/make`: interactive 3D relief & Bambu A1 print workshop.
 - `tutorials`: source JSON, validated against golden geometry tests.
 - `apps/player/e2e`: real-browser regression tests.
 - `docs`: product decisions, pattern verification, and working notes.
