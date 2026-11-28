@@ -3923,7 +3923,8 @@ main.stage .drawing:not(.wall) {
   }
 
   .view-switch a {
-    flex: 1;
+    flex: 1 1 auto;
+    justify-content: center;
     text-align: center;
   }
 
@@ -5489,16 +5490,19 @@ svg.tiles {
     order: 6;
   }
 
-  /* The drawing a little shorter, so the step's words show under it. */
+  /* The drawing a little shorter, so the step's words and legend show cleanly
+     above the sticky Back and Next bar. */
   .player:not(.along):not(.editor) .stage {
+    flex: none;
     min-height: 0;
-    height: 46vh;
+    height: 38vh;
     border-width: 6px;
     border-radius: 18px;
   }
 
   .player:not(.along):not(.editor) .caption {
     gap: 8px;
+    padding-bottom: 88px;
   }
 
   .player:not(.along):not(.editor) .caption .label {
@@ -6706,6 +6710,15 @@ svg.tiles {
   display: grid;
   justify-items: end;
   gap: 6px;
+}
+@media (max-width: 760px) {
+  /* Keep +/− clear of the top photo controls bar on phones. */
+  .photo-zoom-tools {
+    top: auto;
+    bottom: 10px;
+    right: 10px;
+    grid-auto-flow: column;
+  }
 }
 .player .photo-zoom-tools button {
   min-width: 36px;

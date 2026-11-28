@@ -95,3 +95,98 @@ test('on a phone a first visit finds Make it yours folded, and it stays as left'
     await context.close();
   }
 });
+
+test('on a landscape phone Make it yours starts folded and fits when opened', async ({
+  browser,
+}, info) => {
+  test.skip(info.project.name !== 'phone', 'Landscape phone layout check.');
+  const context = await browser.newContext({
+    baseURL: info.project.use.baseURL,
+    storageState: { cookies: [], origins: [] },
+    viewport: { width: 844, height: 390 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  try {
+    const page = await context.newPage();
+    await page.goto('/#/eight-fold-star-and-cross/result');
+    const panel = page.getByRole('complementary', { name: 'Make it yours' });
+    await expect(panel).toBeVisible();
+    await expect(panel.getByRole('tab', { name: 'Look' })).toBeHidden();
+
+    await panel
+      .getByRole('button', { name: 'Make it yours', exact: true })
+      .click();
+    await expect(panel.getByRole('tab', { name: 'Look' })).toBeVisible();
+    const box = await panel.boundingBox();
+    expect(box!.y).toBeGreaterThanOrEqual(0);
+    expect(box!.y + box!.height).toBeLessThanOrEqual(390);
+    await expect(
+      panel.getByRole('button', { name: 'Share', exact: true }),
+    ).toBeInViewport();
+  } finally {
+    await context.close();
+  }
+});
+
+test('on a landscape phone Draw Along keeps the board visible above the fold', async ({
+  browser,
+}, info) => {
+  test.skip(info.project.name !== 'phone', 'Landscape phone layout check.');
+  const context = await browser.newContext({
+    baseURL: info.project.use.baseURL,
+    viewport: { width: 844, height: 390 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  try {
+    const page = await context.newPage();
+    await page.goto('/#/eight-fold-star-and-cross/draw');
+    const plate = page.locator('.along-plate').first();
+    await expect(plate).toBeVisible();
+    const metrics = await page.evaluate(() => {
+      const r = document.querySelector('.along-plate')?.getBoundingClientRect();
+      return {
+        top: r?.top ?? 999,
+        scrollW: document.documentElement.scrollWidth,
+        innerW: window.innerWidth,
+      };
+    });
+    expect(metrics.top).toBeLessThan(320);
+    expect(metrics.scrollW).toBeLessThanOrEqual(metrics.innerW + 1);
+  } finally {
+    await context.close();
+  }
+});
+
+test('on a short portrait phone the open Make it yours sheet does not cover the wall', async ({
+  browser,
+}, info) => {
+  test.skip(
+    info.project.name !== 'phone',
+    'Short portrait phone layout check.',
+  );
+  const context = await browser.newContext({
+    baseURL: info.project.use.baseURL,
+    storageState: { cookies: [], origins: [] },
+    viewport: { width: 390, height: 480 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  try {
+    const page = await context.newPage();
+    await page.goto('/#/eight-fold-star-and-cross/result');
+    const panel = page.getByRole('complementary', { name: 'Make it yours' });
+    await expect(panel).toBeVisible();
+    await panel
+      .getByRole('button', { name: 'Make it yours', exact: true })
+      .click();
+    await expect(panel.getByRole('tab', { name: 'Look' })).toBeVisible();
+    const box = await panel.boundingBox();
+    // Must stay a bottom sheet (<= 70dvh = 336px), leaving the wall visible above.
+    expect(box!.height).toBeLessThanOrEqual(340);
+    expect(box!.y).toBeGreaterThanOrEqual(120);
+  } finally {
+    await context.close();
+  }
+});

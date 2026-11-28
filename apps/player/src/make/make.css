@@ -349,7 +349,16 @@
 @media (max-width: 600px) {
   .relief-top {
     flex-wrap: wrap;
-    gap: 4px 16px;
+    gap: 6px 8px;
+    min-height: 0;
+    padding: 8px 0;
+  }
+  .relief-top .brand-arabic {
+    display: none;
+  }
+  .make-page .make-back {
+    font-size: 0.85rem;
+    padding: 6px 8px;
   }
   .relief-top .lesson-title {
     order: 3;
