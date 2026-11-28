@@ -246,6 +246,246 @@
     order: 3;
   }
 }
+.start-here-open {
+  display: grid;
+  grid-template-columns: 258px minmax(0, 1fr);
+  grid-template-areas:
+    'head head'
+    'showcase shelf';
+  column-gap: 20px;
+  row-gap: 14px;
+  align-items: start;
+}
+.start-here-open > .start-here-head {
+  grid-area: head;
+  margin-bottom: 0;
+}
+.start-here-open > .start-here-shelf {
+  grid-area: shelf;
+  min-width: 0;
+}
+.start-here-showcase {
+  grid-area: showcase;
+  padding: 4px 20px 0 0;
+  border-right: 1px solid var(--theme-border);
+}
+.living-arch {
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.living-arch-shell {
+  position: relative;
+  width: 100%;
+  max-width: 238px;
+}
+/* Square cedar-framed drafting plate matching the real player canvas,
+   clearly distinct from the arched pattern cards beside it. */
+.living-arch-window {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  border: 5px solid var(--theme-frame);
+  overflow: hidden;
+  background-color: var(--theme-bg-card);
+  background-size: 22px 22px;
+  background-image:
+    linear-gradient(to right, var(--theme-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--theme-grid-line) 1px, transparent 1px);
+  box-shadow: 0 10px 26px
+    color-mix(in srgb, var(--shadow) calc(32% * var(--shadow-k)), transparent);
+}
+.living-arch-link {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  color: inherit;
+  text-decoration: none;
+}
+.living-arch-link > svg,
+.living-arch-link > img {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.living-arch-window.is-coloring .piece {
+  transition: fill 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.living-arch-toggle {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 3;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--theme-border-hover);
+  background: color-mix(in srgb, var(--theme-bg-surface) 92%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--theme-text-primary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.16);
+}
+.living-arch-toggle:hover {
+  border-color: var(--theme-accent);
+  color: var(--theme-accent);
+}
+.living-arch-toggle svg {
+  width: 13px;
+  height: 13px;
+}
+.living-arch-meta {
+  display: grid;
+  gap: 5px;
+  width: 100%;
+}
+.living-arch-kicker {
+  font: 600 15.5px/1.25 var(--text);
+  color: var(--theme-text-primary);
+}
+.living-arch-phases {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  width: 100%;
+  justify-content: space-between;
+}
+.living-arch-phases li {
+  position: relative;
+  padding: 3px 6px;
+  border-radius: 999px;
+  font: 650 11.5px/1.1 var(--text);
+  letter-spacing: 0.01em;
+  color: var(--theme-text-muted);
+  text-align: center;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+.living-arch-phases li.is-done {
+  color: var(--malachite);
+}
+.living-arch-phases li.is-active {
+  color: var(--theme-text-primary);
+  background: color-mix(in srgb, var(--current) 22%, var(--theme-bg-surface));
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--current) 60%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .living-arch-window.is-coloring .piece,
+  .living-arch-phases li {
+    transition: none;
+  }
+}
+@media (max-width: 900px) {
+  /* Pair the live drafting plate directly beside the Start here intro & CTA
+     so tablets and phones have zero empty whitespace beside the preview. */
+  .start-here-open {
+    grid-template-columns: 184px minmax(0, 1fr);
+    grid-template-areas:
+      'showcase head'
+      'shelf shelf';
+    column-gap: 18px;
+    row-gap: 16px;
+    align-items: center;
+  }
+  .start-here-open > .start-here-head {
+    align-items: flex-start;
+    gap: 10px 12px;
+  }
+  .start-here-open > .start-here-head p {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+  .start-here-showcase {
+    padding: 0;
+    border-right: 0;
+  }
+  .living-arch {
+    gap: 8px;
+  }
+  .living-arch-shell {
+    max-width: 184px;
+  }
+  .living-arch-kicker {
+    display: none;
+  }
+  .living-arch-phases {
+    justify-content: space-between;
+    gap: 2px;
+  }
+  .living-arch-phases li {
+    padding: 3px 5px;
+    font-size: 10.5px;
+  }
+}
+@media (max-width: 600px) {
+  .start-here-open {
+    grid-template-columns: 126px minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 14px;
+    align-items: start;
+  }
+  .start-here-open > .start-here-head {
+    gap: 8px;
+  }
+  .start-here-open > .start-here-head h2 {
+    font-size: 22px;
+    order: 0;
+  }
+  .start-here-open > .start-here-head p {
+    order: 1;
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+  .start-here-open > .start-here-head .start-here-go {
+    order: 2;
+    height: 36px;
+    padding: 0 14px;
+    font-size: 13.5px;
+  }
+  .start-here-open > .start-here-head .start-here-path {
+    order: 3;
+    font-size: 13.5px;
+  }
+  .start-here-open > .start-here-head .start-here-fold {
+    order: 4;
+    margin-left: 0;
+    height: 32px;
+    font-size: 12.5px;
+    padding: 0 10px;
+  }
+  .living-arch-shell {
+    max-width: 126px;
+  }
+  .living-arch-window {
+    border-width: 4px;
+    border-radius: 13px;
+  }
+  .living-arch-toggle {
+    right: 7px;
+    bottom: 7px;
+    width: 26px;
+    height: 26px;
+  }
+  .living-arch-phases {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .living-arch-phases li {
+    padding: 3px 4px;
+    font-size: 10.5px;
+  }
+}
 .start-here-shelf {
   position: relative;
 }
@@ -258,8 +498,12 @@
   grid-auto-columns: 190px;
   gap: 18px;
   overflow-x: auto;
+  scrollbar-width: none;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: 2px;
+}
+.start-here-row::-webkit-scrollbar {
+  display: none;
 }
 .start-here-row > li {
   scroll-snap-align: start;
@@ -509,6 +753,37 @@
 @media (max-width: 900px) {
   .lib-nav a:not([aria-current]) {
     padding: 8px 8px;
+  }
+}
+@media (max-width: 1040px) {
+  .lib-top {
+    gap: 8px;
+    padding: 0 14px;
+  }
+  .lib-logo h1 {
+    font-size: 21px;
+  }
+  .lib-nav a {
+    padding: 8px 10px;
+  }
+  .lib-search {
+    min-width: 110px;
+    padding: 0 10px;
+  }
+  .library .lib-actions .new-pattern {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+  /* Compact "Open a pattern file" to its icon on tablet widths so actions
+     never wrap out of the 64px top bar onto the route banner. */
+  .library .lib-actions .new-pattern .open-file {
+    font-size: 0;
+    gap: 0;
+    padding-inline: 10px;
+  }
+  .library .lib-actions .new-pattern .open-file .btn-icon {
+    width: 16px;
+    height: 16px;
   }
 }
 @media (max-width: 760px) {

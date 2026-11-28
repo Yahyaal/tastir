@@ -1336,12 +1336,16 @@ export function DrawAlong({
         <ThemeSwitch />
       </header>
       <nav className="along-steps" aria-label="Steps">
-        <span className="along-steps-label">Construct</span>
         <ol ref={stepChips}>
           {shown.map((b, i) => {
             const done = ticks[i] ?? false;
             return (
               <li key={b}>
+                {i === 0 ? (
+                  <span className="along-steps-label" aria-hidden="true">
+                    Construct
+                  </span>
+                ) : null}
                 <button
                   type="button"
                   className={[

@@ -771,7 +771,12 @@ export function Player({
       setComparing(false);
       setWiping(false);
       setPhotoFull(false);
-    } else setComparing(true);
+    } else {
+      setComparing(true);
+      // On tablets (<= 1100px) the floating Make it yours panel would cover the
+      // right half of a side-by-side comparison; fold it neatly out of the way.
+      if (narrow) setMakePeekState(true);
+    }
   };
   const toggleWipe = () => {
     if (wiping) {
@@ -1901,12 +1906,7 @@ export function Player({
             open={patternsOpen}
             docked={dockPatterns}
             onToggle={() => setPatternsOpen(!patternsOpen)}
-            onClose={() => {
-              setPatternsOpen(false);
-              document
-                .querySelector<HTMLButtonElement>('.topbar .menu-button')
-                ?.focus();
-            }}
+            onClose={() => setPatternsOpen(false)}
           />
         ) : null}
         <a

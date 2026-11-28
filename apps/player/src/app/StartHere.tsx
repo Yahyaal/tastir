@@ -8,8 +8,12 @@ import { lastLesson } from './lessons';
 import type { Entry } from './library';
 import { shownSteps } from './model';
 import { clipId, WindowFrame } from './Window';
+import { LivingArch } from './LivingArch';
 import { useModel } from './workerClient';
 import type { InProgress } from './YourWork';
+
+/** Preferred pattern for the live four-stage arch preview. */
+const SHOWCASE_ID = 'twelve-fold-rosette-mian';
 
 /*
  * Start here on the library page (REDESIGN.3): the twelve lessons of the
@@ -102,110 +106,127 @@ export function StartHere({
   const next = going ?? path[0];
   const work = inProgress[0];
   const workEntry = work && entries.find((e) => e.id === work.address);
-  return (
-    <section className="start-here" aria-labelledby="start-here-title">
-      <div className="start-here-head">
-        <h2 id="start-here-title">Start here</h2>
-        <p>
-          {newcomer ? (
-            <>
-              <b>New here?</b> {WELCOME}
-            </>
-          ) : (
-            `${path.length} lessons, from one circle to a rosette. Point at one to watch it drawn.`
-          )}
-        </p>
-        {next ? (
-          <a
-            className="start-here-go"
-            href={`#/${next.lesson.id}/watch${going ? '' : '/1'}`}
-          >
-            <ActionIcon action="watch" />
-            {going ? 'Go on' : 'Begin'}: lesson {next.number}
-          </a>
-        ) : null}
-        <a className="start-here-path" href="#/learn">
-          See the learning path
-        </a>
-        <button
-          type="button"
-          className="start-here-fold"
-          aria-expanded={open}
-          aria-controls="start-here-lessons"
-          onClick={toggle}
+  const showcase = entries.find((e) => e.id === SHOWCASE_ID) ?? path[0]?.entry;
+  const subtitle = newcomer ? (
+    <>
+      <b>New here?</b> {WELCOME}
+    </>
+  ) : open ? (
+    `${path.length} lessons, from one circle to a rosette. Point at a lesson to watch it drawn.`
+  ) : (
+    `${path.length} lessons, from one circle to a rosette. Pick a step to jump in, or show the lessons.`
+  );
+  const head = (
+    <div className="start-here-head">
+      <h2 id="start-here-title">Start here</h2>
+      <p>{subtitle}</p>
+      {next ? (
+        <a
+          className="start-here-go"
+          href={`#/${next.lesson.id}/watch${going ? '' : '/1'}`}
         >
-          {open ? 'Fold the lessons' : 'Show the lessons'}
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </button>
-      </div>
-      {open ? null : (
-        <div className="start-here-folded">
-          {work && workEntry ? (
-            <ContinueCard work={work} entry={workEntry} compact />
-          ) : null}
-          <ol className="start-here-stones" id="start-here-lessons">
-            {path.map((p) => (
-              <li key={p.lesson.id}>
-                <a
-                  href={`#/${p.lesson.id}/watch/1`}
-                  className={`start-here-stone level-${p.entry.preview?.level ?? 'beginner'}${p === next ? ' is-next' : ''}${started.has(p.lesson.id) ? ' is-started' : ''}`}
-                  title={`Lesson ${p.number}: ${p.lesson.focus}`}
-                  aria-label={`Lesson ${p.number}: ${p.lesson.focus}`}
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <polygon points={STONE} />
-                  </svg>
-                  <span aria-hidden="true">{p.number}</span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
-      {open ? (
-        <div className="start-here-shelf" id="start-here-lessons">
-          {ends.start ? null : (
-            <button
-              type="button"
-              className="start-here-arrow left"
-              aria-label="Earlier lessons"
-              onClick={() => nudge(-1)}
-            >
-              <span aria-hidden="true">‹</span>
-            </button>
-          )}
-          <ol className="start-here-row" ref={row} onScroll={update}>
-            {work && workEntry ? (
-              <li className="start-here-continue">
-                <ContinueCard work={work} entry={workEntry} />
-              </li>
-            ) : null}
-            {path.map((p) => (
-              <li key={p.lesson.id}>
-                <LessonWindow
-                  entry={p.entry}
-                  number={p.number}
-                  focus={p.lesson.focus}
-                  next={p === next}
-                  autoplay={newcomer && p.number === 1}
-                />
-              </li>
-            ))}
-          </ol>
-          {ends.end ? null : (
-            <button
-              type="button"
-              className="start-here-arrow right"
-              aria-label="Later lessons"
-              onClick={() => nudge(1)}
-            >
-              <span aria-hidden="true">›</span>
-            </button>
-          )}
-        </div>
+          <ActionIcon action="watch" />
+          {going ? 'Go on' : 'Begin'}: lesson {next.number}
+        </a>
       ) : null}
+      <a className="start-here-path" href="#/learn">
+        See the learning path
+      </a>
+      <button
+        type="button"
+        className="start-here-fold"
+        aria-expanded={open}
+        aria-controls="start-here-lessons"
+        onClick={toggle}
+      >
+        {open ? 'Fold the lessons' : 'Show the lessons'}
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+    </div>
+  );
+  return (
+    <section
+      className={`start-here${open ? ' is-open' : ''}`}
+      aria-labelledby="start-here-title"
+    >
+      {open ? (
+        <div className="start-here-open">
+          {head}
+          {showcase ? (
+            <div className="start-here-showcase">
+              <LivingArch entry={showcase} />
+            </div>
+          ) : null}
+          <div className="start-here-shelf" id="start-here-lessons">
+            {ends.start ? null : (
+              <button
+                type="button"
+                className="start-here-arrow left"
+                aria-label="Earlier lessons"
+                onClick={() => nudge(-1)}
+              >
+                <span aria-hidden="true">‹</span>
+              </button>
+            )}
+            <ol className="start-here-row" ref={row} onScroll={update}>
+              {work && workEntry ? (
+                <li className="start-here-continue">
+                  <ContinueCard work={work} entry={workEntry} />
+                </li>
+              ) : null}
+              {path.map((p) => (
+                <li key={p.lesson.id}>
+                  <LessonWindow
+                    entry={p.entry}
+                    number={p.number}
+                    focus={p.lesson.focus}
+                    next={p === next}
+                    autoplay={false}
+                  />
+                </li>
+              ))}
+            </ol>
+            {ends.end ? null : (
+              <button
+                type="button"
+                className="start-here-arrow right"
+                aria-label="Later lessons"
+                onClick={() => nudge(1)}
+              >
+                <span aria-hidden="true">›</span>
+              </button>
+            )}
+          </div>
+        </div>
+      ) : (
+        <>
+          {head}
+          <div className="start-here-folded">
+            {work && workEntry ? (
+              <ContinueCard work={work} entry={workEntry} compact />
+            ) : null}
+            <ol className="start-here-stones" id="start-here-lessons">
+              {path.map((p) => (
+                <li key={p.lesson.id}>
+                  <a
+                    href={`#/${p.lesson.id}/watch/1`}
+                    className={`start-here-stone level-${p.entry.preview?.level ?? 'beginner'}${p === next ? ' is-next' : ''}${started.has(p.lesson.id) ? ' is-started' : ''}`}
+                    title={`Lesson ${p.number}: ${p.lesson.focus}`}
+                    aria-label={`Lesson ${p.number}: ${p.lesson.focus}`}
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <polygon points={STONE} />
+                    </svg>
+                    <span aria-hidden="true">{p.number}</span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </>
+      )}
     </section>
   );
 }
