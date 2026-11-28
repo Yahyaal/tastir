@@ -119,8 +119,10 @@ test('on a landscape phone Make it yours starts folded and fits when opened', as
       .click();
     await expect(panel.getByRole('tab', { name: 'Look' })).toBeVisible();
     const box = await panel.boundingBox();
-    expect(box!.y).toBeGreaterThanOrEqual(0);
-    expect(box!.y + box!.height).toBeLessThanOrEqual(390);
+    expect(box).not.toBeNull();
+    if (!box) return;
+    expect(box.y).toBeGreaterThanOrEqual(0);
+    expect(box.y + box.height).toBeLessThanOrEqual(390);
     await expect(
       panel.getByRole('button', { name: 'Share', exact: true }),
     ).toBeInViewport();
@@ -152,7 +154,7 @@ test('on a landscape phone Draw Along keeps the board visible above the fold', a
         innerW: window.innerWidth,
       };
     });
-    expect(metrics.top).toBeLessThan(320);
+    expect(metrics.top).toBeLessThan(275);
     expect(metrics.scrollW).toBeLessThanOrEqual(metrics.innerW + 1);
   } finally {
     await context.close();
@@ -183,10 +185,53 @@ test('on a short portrait phone the open Make it yours sheet does not cover the 
       .click();
     await expect(panel.getByRole('tab', { name: 'Look' })).toBeVisible();
     const box = await panel.boundingBox();
+    expect(box).not.toBeNull();
+    if (!box) return;
     // Must stay a bottom sheet (<= 70dvh = 336px), leaving the wall visible above.
-    expect(box!.height).toBeLessThanOrEqual(340);
-    expect(box!.y).toBeGreaterThanOrEqual(120);
+    expect(box.height).toBeLessThanOrEqual(340);
+    expect(box.y).toBeGreaterThanOrEqual(120);
   } finally {
     await context.close();
   }
+});
+
+test('Start here shows the aligned live drafting preview and updates copy when folded', async ({
+  page,
+}, info) => {
+  await page.goto('/#/');
+  const plate = page.locator('.living-arch-window');
+  await expect(plate.locator('svg')).toBeVisible();
+  await expect(page.locator('.living-arch-phases li')).toHaveCount(4);
+
+  // On desktop the square drafting plate aligns top and bottom with the lesson arches.
+  if (info.project.name === 'desktop') {
+    const firstArch = page.locator('.lesson-window .window-pic').first();
+    const plateBox = await plate.boundingBox();
+    const archBox = await firstArch.boundingBox();
+    expect(plateBox).not.toBeNull();
+    expect(archBox).not.toBeNull();
+    if (plateBox && archBox) {
+      expect(Math.abs(plateBox.y - archBox.y)).toBeLessThanOrEqual(2);
+      expect(
+        Math.abs(plateBox.y + plateBox.height - (archBox.y + archBox.height)),
+      ).toBeLessThanOrEqual(2);
+    }
+  }
+
+  // Returning visit folded into numbered stars should not claim hover draws.
+  await page.evaluate(() => {
+    window.localStorage.setItem(
+      'tastir.lastLesson',
+      JSON.stringify({
+        address: 'eight-fold-star-and-cross',
+        label: 'Step 1 of 6',
+        at: '2026-11-28T10:00:00.000Z',
+      }),
+    );
+  });
+  await page.reload();
+  await expect(page.locator('.start-here-stones')).toBeVisible();
+  await expect(page.locator('.start-here-head p')).not.toContainText(
+    'Point at one to watch it drawn',
+  );
 });

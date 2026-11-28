@@ -1278,6 +1278,7 @@ export function Thumbnail({
   grout = 1,
   jali: appearance,
   pen = DEFAULT_PEN,
+  coloredUpTo,
   activeColorIndex,
   view: givenView,
 }: {
@@ -1291,6 +1292,8 @@ export function Thumbnail({
   jali?: JaliAppearance;
   /** How the lines style draws: pen, wash and ink. */
   pen?: PenLook;
+  /** Reveal only the first N colour groups (for progressive colour animation). */
+  coloredUpTo?: number;
   /** Currently active color index being animated/rippled in quick succession. */
   activeColorIndex?: number;
   /** If set, renders within this camera view (e.g. locked to fullView) rather than tiling view. */
@@ -1475,16 +1478,20 @@ export function Thumbnail({
   }
   return (
     <svg className="thumbnail" viewBox={viewBox(view)} aria-hidden="true">
-      {[...byColor].map(([color, ds]) => (
-        <path
-          key={color}
-          className={strap ? 'piece strap' : 'piece'}
-          d={ds.join('')}
-          fill={color}
-          style={strap ? { stroke: color } : undefined}
-          vectorEffect="non-scaling-stroke"
-        />
-      ))}
+      {[...byColor].map(([color, ds], idx) => {
+        const revealed = coloredUpTo === undefined || idx < coloredUpTo;
+        const shownFill = revealed ? color : 'transparent';
+        return (
+          <path
+            key={color}
+            className={`${strap ? 'piece strap' : 'piece'}${activeColorIndex === idx ? ' is-coloring-now' : ''}`}
+            d={ds.join('')}
+            fill={shownFill}
+            style={strap ? { stroke: shownFill } : undefined}
+            vectorEffect="non-scaling-stroke"
+          />
+        );
+      })}
       {finish.carved && !woven
         ? relief(strokes.join(''), strap ? widths.edge : widths.grout)
         : null}
