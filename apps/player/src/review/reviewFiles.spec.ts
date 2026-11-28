@@ -8,7 +8,7 @@ import {
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
-import { reviewFile, reviewFolders } from '../../reviewFiles';
+import { reviewFile, reviewFolders } from '../../reviewFiles.mts';
 
 describe('review pictures in linked worktrees', () => {
   let root: string;

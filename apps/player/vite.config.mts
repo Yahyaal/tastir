@@ -10,7 +10,7 @@ import { extname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defaultClientConditions, defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { reviewFile, reviewFolders } from './reviewFiles';
+import { reviewFile, reviewFolders } from './reviewFiles.mts';
 
 const tutorials = fileURLToPath(new URL('../../tutorials', import.meta.url));
 const packages = fileURLToPath(new URL('../../packages', import.meta.url));

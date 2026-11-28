@@ -170,9 +170,15 @@ export function PatternMenu({
   onToggle: () => void;
   onClose: () => void;
 }) {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const closeAndReturnFocus = () => {
+    onClose();
+    buttonRef.current?.focus();
+  };
   return (
     <>
       <button
+        ref={buttonRef}
         type="button"
         className="menu-button"
         aria-label="Patterns"
@@ -199,9 +205,9 @@ export function PatternMenu({
       </button>
       {open ? (
         docked ? (
-          <MenuPanel id={id} view={view} docked onClose={onClose} />
+          <MenuPanel id={id} view={view} docked onClose={closeAndReturnFocus} />
         ) : (
-          <PatternDrawer id={id} view={view} onClose={onClose} />
+          <PatternDrawer id={id} view={view} onClose={closeAndReturnFocus} />
         )
       ) : null}
     </>

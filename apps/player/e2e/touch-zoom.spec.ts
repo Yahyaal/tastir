@@ -16,6 +16,9 @@ for (const stage of ['/watch', '/result']) {
       await expect(svg).not.toHaveClass(/wall/);
     } else await expect(svg).toHaveClass(/wall/);
     await svg.scrollIntoViewIfNeeded();
+    // Wait for web fonts to settle so font-swap does not shift the SVG top
+    // edge by 1–2 px mid-pinch and skew the viewport-coordinate anchor check.
+    await page.evaluate(() => document.fonts.ready);
     const bounds = await svg.boundingBox();
     if (!bounds) throw new Error('No drawing bounds');
     const x = bounds.x + bounds.width * 0.6;

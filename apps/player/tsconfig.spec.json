@@ -14,13 +14,14 @@
     "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "lib": ["es2022", "dom", "dom.iterable"]
   },
   "include": [
     "src/test-setup.ts",
     "vite.config.ts",
     "vite.config.mts",
-    "reviewFiles.ts",
+    "reviewFiles.mts",
     "vitest.config.ts",
     "vitest.config.mts",
     "src/**/*.test.ts",
