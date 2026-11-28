@@ -221,6 +221,31 @@
   color: var(--theme-accent);
   font-weight: 650;
 }
+@media (max-width: 600px) {
+  .start-here {
+    padding: 16px 16px 18px;
+  }
+  .start-here-head {
+    gap: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .start-here-head h2 {
+    order: 0;
+  }
+  .start-here-fold {
+    order: 1;
+    margin-left: auto;
+  }
+  .start-here-head p {
+    order: 2;
+    flex-basis: 100%;
+    min-width: 0;
+  }
+  .start-here-go,
+  .start-here-path {
+    order: 3;
+  }
+}
 .start-here-shelf {
   position: relative;
 }

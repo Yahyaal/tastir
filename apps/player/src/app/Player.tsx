@@ -728,11 +728,15 @@ export function Player({
       (open ? makeHideRef.current : makeShowRef.current)?.focus();
     });
   };
-  // On a phone the panel starts as a slim bar, so the wall has the screen;
-  // a tap opens it upwards.
+  // On a phone (portrait or landscape) the panel starts as a slim bar,
+  // so the wall has the screen; a tap opens it. Wide short desktop windows
+  // (e.g. DevTools docked at 1280x460) stay open.
   // Opened once, it opens again: the learner's choice is kept.
+  const compactMake = useMedia(
+    '(max-width: 760px), (max-height: 500px) and (max-width: 960px)',
+  );
   const [makePeek, setMakePeekState] = useState(
-    () => phone && keptMakeOpen() !== true,
+    () => compactMake && keptMakeOpen() !== true,
   );
   const setMakePeek = (peek: boolean) => {
     setMakePeekState(peek);
@@ -743,14 +747,8 @@ export function Player({
     }
   };
   useEffect(() => {
-    const mq = window.matchMedia?.('(max-width: 760px)');
-    if (!mq) return;
-    const sync = () => {
-      if (!mq.matches) setMakePeekState(false);
-    };
-    mq.addEventListener?.('change', sync);
-    return () => mq.removeEventListener?.('change', sync);
-  }, []);
+    if (!compactMake) setMakePeekState(false);
+  }, [compactMake]);
   // The real wall's photo, wiped across ours by a golden handle.
   const [wiping, setWiping] = useState(false);
   // Active photo index shared between side-by-side, wipe, and full size.

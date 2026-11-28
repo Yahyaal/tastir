@@ -188,11 +188,39 @@
 }
 /* What Save and Share say, and the name to save under, on their own line. */
 .make-foot .hint,
-.make-foot .refused,
-.make-foot input[type='text'],
-.make-foot .design-name {
+.make-foot .refused {
   flex-basis: 100%;
   margin: 0;
+}
+.make-foot .design-name {
+  flex: 1 0 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--theme-border);
+  border-bottom: 1px solid var(--theme-border);
+}
+.make-foot .design-name label {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--theme-text-secondary);
+}
+.make-foot .design-name input[type='text'] {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 80px;
+  height: 38px;
+  margin: 0;
+}
+.player .make-panel .make-foot .design-name button {
+  min-height: 38px;
+  padding: 0 10px;
+  flex-shrink: 0;
 }
 .player .make-panel .make-foot > a,
 .player .make-panel .make-foot button {
@@ -284,7 +312,7 @@
   /* With the sheet up, the wall sits above it, whole; keep stacked photo
      comparison taller so both Original and Wall stay legible. */
   .player.at-color:not(.along):not(.editor)
-    .workspace.wall-page.make-open
+    .workspace.wall-page.make-open:not(.make-peek)
     .stage:not(.comparing) {
     flex: none;
     height: calc(54vh - 170px);
@@ -320,8 +348,12 @@
   }
   /* Reset view moves to the top, clear of the sheet. */
   .player .wall-page .plate-area .fit {
-    top: 20px;
+    top: 10px;
+    left: 10px;
     bottom: auto;
+    height: 36px;
+    min-width: 36px;
+    padding: 0 9px;
   }
   .player .plate-area button.make-show {
     position: fixed;
@@ -788,25 +820,111 @@
 }
 
 @media (max-width: 760px) {
-  /* The slim bar: the wall takes the rest of the screen. */
+  /* The slim bar: the wall takes the rest of the screen cleanly above it. */
   .player.at-color:not(.along):not(.editor)
-    .workspace.wall-page.make-peek
-    .stage,
-  .player.at-color:not(.along)
-    .workspace.wall-page.make-peek
+    .workspace.wall-page.make-open.make-peek
     .stage:not(.comparing) {
-    height: calc(100vh - 310px);
+    height: calc(100dvh - 300px);
+    min-height: 220px;
   }
-  /* Reset view has the top left corner on a phone. */
+  /* Reset view has the top-left corner on a phone; keep all photo controls
+     compact on one single row to its right with zero wrapping or overlap. */
   .player .plate-area button.photo-badge,
   .player .plate-area .photo-badge-group {
-    top: 12px;
+    top: 10px;
     left: auto;
-    right: 12px;
+    right: 10px;
   }
   .player .plate-area .photo-badge-group {
+    left: 52px;
     flex-direction: row-reverse;
-    flex-wrap: wrap;
-    max-width: calc(100% - 64px);
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 6px;
+    max-width: none;
+  }
+  .player .plate-area button.photo-badge {
+    height: 36px;
+    padding: 2px 10px 2px 2px;
+    font-size: 12.5px;
+    gap: 6px;
+  }
+  .photo-badge img {
+    width: 28px;
+    height: 28px;
+  }
+  .player .plate-area button.photo-mode-btn {
+    height: 36px;
+    padding: 0 10px;
+    font-size: 12.5px;
+    gap: 5px;
+  }
+  .player .plate-area button.photo-full-btn {
+    height: 36px;
+    min-width: 36px;
+    width: 36px;
+    padding: 0;
+  }
+  .photo-wipe-credit {
+    top: 54px;
+    left: 10px;
+    max-width: calc(100% - 20px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* Comfortable touch targets for secondary controls on phones. */
+  .player .make-panel button.make-hide {
+    width: 40px;
+    height: 40px;
+  }
+  .player button.info-tip-button {
+    width: 36px;
+    height: 36px;
+  }
+  .player .make-panel .colour-actions button {
+    min-height: 40px;
+    padding: 0 10px;
+  }
+}
+
+/* Landscape phones (e.g. 844x390): keep Make it yours compact and scrollable
+   when opened, and reclaim vertical space for the wall. Scoped to min-width
+   761px so portrait phones with a short viewport (e.g. keyboard open at
+   390x480) stay on the bottom-sheet max-height: 70dvh rule instead. */
+@media (max-height: 500px) and (min-width: 761px) {
+  .workspace.wall-page .make-panel:not(.peek) {
+    top: 6px;
+    bottom: 6px;
+    right: 8px;
+    height: auto;
+    max-height: calc(100dvh - 12px);
+    padding: 10px 12px;
+    gap: 6px;
+  }
+  .workspace.wall-page .make-panel.peek {
+    top: auto;
+    bottom: 8px;
+    right: 8px;
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  .workspace.wall-page .make-panel .make-top h2 {
+    font-size: 17px;
+  }
+  .workspace.wall-page .make-panel .make-tabs {
+    padding: 2px;
+  }
+  .player .make-panel .make-tabs button {
+    min-height: 30px;
+    font-size: 12.5px;
+  }
+  .player .make-panel .make-foot {
+    padding-top: 8px;
+  }
+  .player .make-panel .make-foot > a,
+  .player .make-panel .make-foot button {
+    height: 36px;
+    font-size: 13px;
   }
 }

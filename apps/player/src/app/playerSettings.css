@@ -596,6 +596,7 @@
     width: auto;
     max-width: none;
     max-height: calc(100dvh - 82px);
+    overflow-y: auto;
   }
   .view-menu.player-settings .settings-panel-heading {
     padding-left: 20px;
@@ -616,6 +617,12 @@
   .view-menu.player-settings .settings-owner {
     padding-left: 20px;
     padding-right: 20px;
+  }
+}
+@media (max-height: 500px) {
+  .view-menu.player-settings .settings-panel {
+    max-height: calc(100dvh - 68px);
+    overflow-y: auto;
   }
 }
 @media (prefers-reduced-motion: reduce) {

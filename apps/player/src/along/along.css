@@ -611,11 +611,20 @@
     scrollbar-width: none;
   }
 
-  /* One row of tools that scrolls sideways, so the board shows. */
+  /* One row of tools that scrolls sideways, so the board shows; a right-edge
+     fade hints at off-screen tools while leaving room for the last button's
+     focus ring once scrolled to the end. */
   .along .editor-tools {
     flex-wrap: nowrap;
     overflow-x: auto;
     padding-bottom: 4px;
+    padding-right: 28px;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      #000 calc(100% - 18px),
+      transparent
+    );
+    mask-image: linear-gradient(to right, #000 calc(100% - 18px), transparent);
   }
 
   .along .editor-tools .tool {
@@ -1082,9 +1091,11 @@
   .along-plate,
   .along .along-plate,
   .along .stage {
-    height: 52vh;
-    min-height: 52vh;
-    max-height: 52vh;
+    /* Fit board + instruction + tool bar above the sticky Back/Next footer
+       even on short phones like iPhone SE (375x667). */
+    height: clamp(210px, calc(100dvh - 385px), 440px);
+    min-height: 210px;
+    max-height: 440px;
   }
 
   .along .topbar h1 {
@@ -1162,5 +1173,81 @@
   .along-hints button {
     min-height: 44px;
     padding: 0 16px;
+  }
+}
+
+/* Landscape phones (e.g. 844x390): keep chrome compact and collapse inactive
+   stage layers so the drawing board stays visible above the fold. */
+@media (max-height: 500px) and (min-width: 761px) {
+  .player.along {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+    padding: 0 14px 14px;
+  }
+  .along .topbar {
+    min-height: 40px;
+    padding: 4px 0;
+    gap: 8px;
+  }
+  .along .topbar .brand-arabic {
+    display: none;
+  }
+  .along-steps,
+  .along-steps ol {
+    height: 52px;
+    margin-bottom: 4px;
+  }
+  .along-steps-label {
+    top: 0;
+  }
+  .player .along-dot,
+  .along-steps .phase-mark {
+    width: 34px;
+    height: 34px;
+  }
+  .player .along-dot:not([aria-label^='Step ']) {
+    gap: 1px;
+  }
+  .along-grid {
+    grid-template-rows: auto auto minmax(220px, 1fr) auto;
+    row-gap: 6px;
+    column-gap: 16px;
+  }
+  /* Trade-off on 390px-tall screens: collapsing inactive stage layers means
+     the text/tool rows can change height between stages instead of holding
+     the tallest layer's height, keeping the drawing board visible above the
+     fold. Hidden layers already carry aria-hidden and inert. */
+  .along-grid .along-stack > .along-layer:not(.on) {
+    display: none;
+  }
+  .along-text-row {
+    padding: 6px 12px;
+    gap: 12px;
+    align-items: center;
+  }
+  .along-text-row h2 {
+    height: auto;
+    margin: 0 0 2px;
+  }
+  .along-text-row .instruction {
+    min-height: 0;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+  .along-text-row .step-list {
+    columns: 2;
+    column-gap: 24px;
+    margin: 0;
+  }
+  .along-text .along-check {
+    height: auto;
+    min-height: 0;
+  }
+  .along-grid.one-board .along-tools .editor-tools[aria-label='Tools'] {
+    min-height: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
   }
 }
